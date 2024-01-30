@@ -23,13 +23,13 @@ if (!semver.satisfies(process.version, pkg.engines.node)) {
                'Please use a version that satisfies ' + pkg.engines.node);
 }
 
-// Yarn version checks
-var expectedYarnVersion = pkg.engines.yarn;
-var currentYarnVersion = exec('yarn --version', {silent: true}).stdout.trim();
-if (!semver.satisfies(currentYarnVersion, expectedYarnVersion)) {
-  reportOrFail('Invalid yarn version (' + currentYarnVersion + '). ' +
-               'Please use a version that satisfies ' + expectedYarnVersion);
-}
+// // Yarn version checks
+// var expectedYarnVersion = pkg.engines.yarn;
+// var currentYarnVersion = exec('yarn --version', {silent: true}).stdout.trim();
+// if (!semver.satisfies(currentYarnVersion, expectedYarnVersion)) {
+//   reportOrFail('Invalid yarn version (' + currentYarnVersion + '). ' +
+//                'Please use a version that satisfies ' + expectedYarnVersion);
+// }
 
 // Grunt CLI version checks
 var expectedGruntVersion = pkg.engines['grunt-cli'];
@@ -47,9 +47,9 @@ if (!match) {
 
 // Ensure Node.js dependencies have been installed
 if (!process.env.CI) {
-  var yarnOutput = exec('yarn install');
-  if (yarnOutput.code !== 0) {
-    throw new Error('Yarn install failed: ' + yarnOutput.stderr);
+  var npmOutput = exec('npm install');
+  if (npmOutput.code !== 0) {
+    throw new Error('Npm install failed: ' + npmOutput.stderr);
   }
 }
 
@@ -64,7 +64,7 @@ module.exports = function(grunt) {
 
   // compute version related info for this build
   var NG_VERSION = versionInfo.currentVersion;
-  NG_VERSION.cdn = versionInfo.cdnVersion;
+  NG_VERSION.cdn = versionInfo.cdnVersion || pkg.branchVersion;
   var dist = 'angular-' + NG_VERSION.full;
 
   var deployVersion = NG_VERSION.full;
@@ -73,10 +73,10 @@ module.exports = function(grunt) {
     deployVersion = NG_VERSION.distTag === 'latest' ? 'snapshot-stable' : 'snapshot';
   }
 
-  if (versionInfo.cdnVersion == null) {
-    throw new Error('Unable to read CDN version, are you offline or has the CDN not been properly pushed?\n' +
-                    'Perhaps you want to set the NG1_BUILD_NO_REMOTE_VERSION_REQUESTS environment variable?');
-  }
+  // if (versionInfo.cdnVersion == null) {
+  //   throw new Error('Unable to read CDN version, are you offline or has the CDN not been properly pushed?\n' +
+  //                   'Perhaps you want to set the NG1_BUILD_NO_REMOTE_VERSION_REQUESTS environment variable?');
+  // }
 
   //config
   grunt.initConfig({
@@ -425,7 +425,7 @@ module.exports = function(grunt) {
 
     shell: {
       'install-node-dependencies': {
-        command: 'yarn'
+        command: 'npm i'
       },
       'promises-aplus-tests': {
         options: {
