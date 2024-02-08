@@ -10,7 +10,7 @@
  * @installation
  *
  * Currently, the **Component Router** module must be installed via `npm`/`yarn`, it is not available
- * on Bower or the Google CDN.
+ * on Google CDN.
  *
  * ```bash
  * yarn add @angular/router@0.2.0

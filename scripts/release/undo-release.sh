@@ -25,9 +25,6 @@ function phase {
   VERSION_NUMBER_ARG="--version-number=$VERSION_NUMBER"
   ../angular.js/untag-release.sh $ACTION_ARG $VERBOSE_ARG\
     --version-number=$VERSION_NUMBER
-
-  ../code.angularjs.org/unpublish.sh $ACTION_ARG $VERSION_NUMBER_ARG $VERBOSE_ARG
-  ../bower/unpublish.sh $ACTION_ARG $VERSION_NUMBER_ARG $VERBOSE_ARG
 }
 
 function run {

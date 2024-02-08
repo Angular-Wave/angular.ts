@@ -51,9 +51,6 @@ function phase {
     # The build requires the tag to be set already!
     build
   fi
-
-  ../code.angularjs.org/publish.sh $ACTION_ARG $VERBOSE_ARG
-  ../bower/publish.sh $ACTION_ARG $VERBOSE_ARG
 }
 
 function run {
