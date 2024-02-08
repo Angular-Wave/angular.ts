@@ -817,9 +817,7 @@ orderByFilter(['a', undefined, 'o', null, 'z']);
 ### **ngScenario** due to:
   - **[0cd392](https://github.com/angular/angular.js/commit/0cd39217828b0ad53eaf731576af17d66c18ff60)**: completely remove the angular scenario runner
 
-The angular scenario runner end-to-end test framework has been
-removed from the project and will no longer be available on npm
-or bower starting with 1.7.0.
+
 It was deprecated and removed from the documentation in 2014.
 Applications that still use it should migrate to
 [Protractor](http://www.protractortest.org).
@@ -1650,9 +1648,7 @@ orderByFilter(['a', undefined, 'o', null, 'z']);
 ### **ngScenario** due to:
   - **[0cd392](https://github.com/angular/angular.js/commit/0cd39217828b0ad53eaf731576af17d66c18ff60)**: completely remove the angular scenario runner
 
-The angular scenario runner end-to-end test framework has been
-removed from the project and will no longer be available on npm
-or bower starting with 1.7.0.
+
 It was deprecated and removed from the documentation in 2014.
 Applications that still use it should migrate to
 [Protractor](http://www.protractortest.org).

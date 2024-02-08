@@ -803,10 +803,6 @@ it('...', function() {
 <a name="migrate1.6to1.7-ngScenario"></a>
 ### ngScenario
 
-**Due to[0cd392](https://github.com/angular/angular.js/commit/0cd39217828b0ad53eaf731576af17d66c18ff60)**,
-the angular scenario runner end-to-end test framework has been
-removed from the project and will no longer be available on npm
-or bower starting with 1.7.0.
 It has been deprecated and removed from the documentation since 2014.
 Applications that still use it should migrate to
 [Protractor](http://www.protractortest.org).

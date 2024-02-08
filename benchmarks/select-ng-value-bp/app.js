@@ -1,7 +1,5 @@
 'use strict';
 
-/* globals angular, benchmarkSteps */
-
 var app = angular.module('selectBenchmark', []);
 
 app.config(function($compileProvider) {

@@ -138,8 +138,6 @@ module.exports = function(grunt) {
     tests: {
       jqlite: 'karma-jqlite.conf.js',
       jquery: 'karma-jquery.conf.js',
-      'jquery-2.2': 'karma-jquery-2.2.conf.js',
-      'jquery-2.1': 'karma-jquery-2.1.conf.js',
       docs: 'karma-docs.conf.js',
       modules: 'karma-modules.conf.js',
       'modules-ngAnimate': 'karma-modules-ngAnimate.conf.js',
@@ -179,7 +177,6 @@ module.exports = function(grunt) {
           '*.js',
           'benchmarks/**/*.js',
           'lib/**/*.js',
-          'scripts/**/*.js',
           '!scripts/*/*/node_modules/**',
           'src/**/*.js',
           'test/**/*.js',

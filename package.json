@@ -29,7 +29,7 @@
     "cross-spawn": "^4.0.0",
     "cz-conventional-changelog": "1.1.4",
     "dgeni": "^0.4.9",
-    "dgeni-packages": "^0.8.3",
+    "dgeni-packages": "^0.30.0",
     "eslint-plugin-promise": "^3.6.0",
     "event-stream": "~3.1.0",
     "firebase-tools": "^13.1.0",
