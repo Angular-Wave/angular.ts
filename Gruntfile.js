@@ -178,7 +178,6 @@ module.exports = function(grunt) {
         src: [
           '*.js',
           'benchmarks/**/*.js',
-          'docs/**/*.js',
           'lib/**/*.js',
           'scripts/**/*.js',
           '!scripts/*/*/node_modules/**',
@@ -496,18 +495,15 @@ module.exports = function(grunt) {
   ]);
   grunt.registerTask('minify', [
     'clean',
-    'build',
-    'minall'
+    'build'
   ]);
   grunt.registerTask('webserver', ['connect:devserver']);
   grunt.registerTask('package', [
     'validate-angular-files',
     'clean',
     'buildall',
-    'minall',
     'collect-errors',
     'write',
-    'docs',
     'copy:i18n',
     'compress:build'
   ]);
