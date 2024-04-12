@@ -21,7 +21,7 @@
   "devDependencies": {
     "angular-benchpress": "0.x.x",
     "benchmark": "1.x.x",
-    "bootstrap": "3.1.1",
+    "bootstrap": "3.4.1",
     "browserstacktunnel-wrapper": "2.0.4",
     "canonical-path": "0.0.2",
     "changez": "^2.1.1",
