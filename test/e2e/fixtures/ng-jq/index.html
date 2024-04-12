@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html ng-app="test" ng-jq>
   <body>
     <span>{{jqueryVersion}}</span>
@@ -7,7 +7,7 @@
     <script type="text/javascript">
       // Verify that empty ng-jq is not accessing `window['']`.
       // (See https://github.com/angular/angular.js/issues/12741 for more details)
-      window[''] = window.jQuery;
+      window[""] = window.jQuery;
     </script>
     <script src="angular.js"></script>
     <script src="script.js"></script>

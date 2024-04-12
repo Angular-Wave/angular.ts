@@ -1,14 +1,12 @@
-'use strict';
-
-var supportTests = {
-  classes: '/^class\\b/.test((class C {}).toString())',
-  fatArrows: 'a => a',
-  shorthandMethods: '({ fn(x) { return; } })'
+const supportTests = {
+  classes: "/^class\\b/.test((class C {}).toString())",
+  fatArrows: "a => a",
+  shorthandMethods: "({ fn(x) { return; } })",
 };
 
-var support = {};
+const support = {};
 
-for (var prop in supportTests) {
+for (const prop in supportTests) {
   if (supportTests.hasOwnProperty(prop)) {
     try {
       // eslint-disable-next-line no-eval

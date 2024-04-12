@@ -1,4 +1,4 @@
-'use strict';
+import { getBlockNodes } from "../../jqLite";
 
 /**
  * @ngdoc directive
@@ -42,7 +42,7 @@
  * @element ANY
  * @scope
  * @priority 600
- * @param {expression} ngIf If the {@link guide/expression expression} is falsy then
+ * @param {string} ngIf If the {@link guide/expression expression} is falsy then
  *     the element is removed from the DOM tree. If it is truthy a copy of the compiled
  *     element is added to the DOM tree.
  *
@@ -78,50 +78,57 @@
     </file>
   </example>
  */
-var ngIfDirective = ['$animate', '$compile', function($animate, $compile) {
-  return {
+export const ngIfDirective = [
+  "$animate",
+  "$compile",
+  ($animate, $compile) => ({
     multiElement: true,
-    transclude: 'element',
+    transclude: "element",
     priority: 600,
     terminal: true,
-    restrict: 'A',
+    restrict: "A",
     $$tlb: true,
-    link: function($scope, $element, $attr, ctrl, $transclude) {
-        var block, childScope, previousElements;
-        $scope.$watch($attr.ngIf, function ngIfWatchAction(value) {
-
-          if (value) {
-            if (!childScope) {
-              $transclude(function(clone, newScope) {
-                childScope = newScope;
-                clone[clone.length++] = $compile.$$createComment('end ngIf', $attr.ngIf);
-                // Note: We only need the first/last node of the cloned nodes.
-                // However, we need to keep the reference to the jqlite wrapper as it might be changed later
-                // by a directive with templateUrl when its template arrives.
-                block = {
-                  clone: clone
-                };
-                $animate.enter(clone, $element.parent(), $element);
-              });
-            }
-          } else {
-            if (previousElements) {
-              previousElements.remove();
-              previousElements = null;
-            }
-            if (childScope) {
-              childScope.$destroy();
-              childScope = null;
-            }
-            if (block) {
-              previousElements = getBlockNodes(block.clone);
-              $animate.leave(previousElements).done(function(response) {
-                if (response !== false) previousElements = null;
-              });
-              block = null;
-            }
+    link($scope, $element, $attr, ctrl, $transclude) {
+      let block;
+      let childScope;
+      let previousElements;
+      $scope.$watch($attr.ngIf, (value) => {
+        if (value) {
+          if (!childScope) {
+            $transclude((clone, newScope) => {
+              childScope = newScope;
+              // eslint-disable-next-line no-plusplus, no-param-reassign
+              clone[clone.length++] = $compile.$$createComment(
+                "end ngIf",
+                $attr.ngIf,
+              );
+              // Note: We only need the first/last node of the cloned nodes.
+              // However, we need to keep the reference to the jqlite wrapper as it might be changed later
+              // by a directive with templateUrl when its template arrives.
+              block = {
+                clone,
+              };
+              $animate.enter(clone, $element.parent(), $element);
+            });
           }
-        });
-    }
-  };
-}];
+        } else {
+          if (previousElements) {
+            previousElements.remove();
+            previousElements = null;
+          }
+          if (childScope) {
+            childScope.$destroy();
+            childScope = null;
+          }
+          if (block) {
+            previousElements = getBlockNodes(block.clone);
+            $animate.leave(previousElements).done((response) => {
+              if (response !== false) previousElements = null;
+            });
+            block = null;
+          }
+        }
+      });
+    },
+  }),
+];

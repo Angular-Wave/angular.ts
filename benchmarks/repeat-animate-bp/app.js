@@ -1,7 +1,7 @@
-'use strict';
+
 
 angular.module('repeatAnimateBenchmark', ['ngAnimate'])
-  .run(function($rootScope) {
+  .run(($rootScope) => {
     $rootScope.fileType = 'default';
   });
 

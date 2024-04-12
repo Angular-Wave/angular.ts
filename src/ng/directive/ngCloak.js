@@ -1,4 +1,4 @@
-'use strict';
+import { ngDirective } from "./directives";
 
 /**
  * @ngdoc directive
@@ -35,26 +35,11 @@
  *
  * @element ANY
  *
- * @example
-   <example name="ng-cloak">
-     <file name="index.html">
-        <div id="template1" ng-cloak>{{ 'hello' }}</div>
-        <div id="template2" class="ng-cloak">{{ 'world' }}</div>
-     </file>
-     <file name="protractor.js" type="protractor">
-       it('should remove the template directive and css class', function() {
-         expect($('#template1').getAttribute('ng-cloak')).
-           toBeNull();
-         expect($('#template2').getAttribute('ng-cloak')).
-           toBeNull();
-       });
-     </file>
-   </example>
  *
  */
-var ngCloakDirective = ngDirective({
-  compile: function(element, attr) {
-    attr.$set('ngCloak', undefined);
-    element.removeClass('ng-cloak');
-  }
+export const ngCloakDirective = ngDirective({
+  compile(element, attr) {
+    attr.$set("ngCloak", undefined);
+    element.removeClass("ng-cloak");
+  },
 });

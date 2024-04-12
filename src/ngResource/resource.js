@@ -1,25 +1,44 @@
-'use strict';
+import {
+  copy,
+  minErr,
+  isDefined,
+  forEach,
+  extend,
+  isFunction,
+  isArray,
+  isNumber,
+  encodeUriQuery,
+  encodeUriSegment,
+} from "../ng/utils";
 
-var $resourceMinErr = angular.$$minErr('$resource');
+const $resourceMinErr = minErr("$resource");
 
 // Helper functions and regex to lookup a dotted path on an object
 // stopping at undefined/null.  The path must be composed of ASCII
 // identifiers (just like $parse)
-var MEMBER_NAME_REGEX = /^(\.[a-zA-Z_$@][0-9a-zA-Z_$@]*)+$/;
+const MEMBER_NAME_REGEX = /^(\.[a-zA-Z_$@][0-9a-zA-Z_$@]*)+$/;
 
 function isValidDottedPath(path) {
-  return (path != null && path !== '' && path !== 'hasOwnProperty' &&
-      MEMBER_NAME_REGEX.test('.' + path));
+  return (
+    path != null &&
+    path !== "" &&
+    path !== "hasOwnProperty" &&
+    MEMBER_NAME_REGEX.test(`.${path}`)
+  );
 }
 
 function lookupDottedPath(obj, path) {
   if (!isValidDottedPath(path)) {
-    throw $resourceMinErr('badmember', 'Dotted member path "@{0}" is invalid.', path);
+    throw $resourceMinErr(
+      "badmember",
+      'Dotted member path "@{0}" is invalid.',
+      path,
+    );
   }
-  var keys = path.split('.');
-  for (var i = 0, ii = keys.length; i < ii && angular.isDefined(obj); i++) {
-    var key = keys[i];
-    obj = (obj !== null) ? obj[key] : undefined;
+  const keys = path.split(".");
+  for (let i = 0, ii = keys.length; i < ii && isDefined(obj); i++) {
+    const key = keys[i];
+    obj = obj !== null ? obj[key] : undefined;
   }
   return obj;
 }
@@ -30,12 +49,15 @@ function lookupDottedPath(obj, path) {
 function shallowClearAndCopy(src, dst) {
   dst = dst || {};
 
-  angular.forEach(dst, function(value, key) {
+  forEach(dst, (value, key) => {
     delete dst[key];
   });
 
-  for (var key in src) {
-    if (src.hasOwnProperty(key) && !(key.charAt(0) === '$' && key.charAt(1) === '$')) {
+  for (const key in src) {
+    if (
+      Object.prototype.hasOwnProperty.call(src, key) &&
+      !(key.charAt(0) === "$" && key.charAt(1) === "$")
+    ) {
       dst[key] = src[key];
     }
   }
@@ -229,7 +251,7 @@ function shallowClearAndCopy(src, dst) {
  *   the `$` prefix. This allows you to easily perform CRUD operations (create, read, update,
  *   delete) on server-side data like this:
  *   ```js
- *   var User = $resource('/user/:userId', {userId: '@id'});
+ *   let User = $resource('/user/:userId', {userId: '@id'});
  *   User.get({userId: 123}).$promise.then(function(user) {
  *     user.abc = true;
  *     user.$save();
@@ -304,19 +326,19 @@ function shallowClearAndCopy(src, dst) {
  *
    ```js
      // Define a CreditCard class
-     var CreditCard = $resource('/users/:userId/cards/:cardId',
+     let CreditCard = $resource('/users/:userId/cards/:cardId',
        {userId: 123, cardId: '@id'}, {
          charge: {method: 'POST', params: {charge: true}}
        });
 
      // We can retrieve a collection from the server
-     var cards = CreditCard.query();
+     let cards = CreditCard.query();
          // GET: /users/123/cards
          // server returns: [{id: 456, number: '1234', name: 'Smith'}]
 
      // Wait for the request to complete
      cards.$promise.then(function() {
-       var card = cards[0];
+       let card = cards[0];
 
        // Each item is an instance of CreditCard
        expect(card instanceof CreditCard).toEqual(true);
@@ -333,10 +355,10 @@ function shallowClearAndCopy(src, dst) {
      });
 
      // We can create an instance as well
-     var newCard = new CreditCard({number: '0123'});
+     let newCard = new CreditCard({number: '0123'});
      newCard.name = 'Mike Smith';
 
-     var savePromise = newCard.$save();
+     let savePromise = newCard.$save();
          // POST: /users/123/cards {number: '0123', name: 'Mike Smith'}
          // server returns: {id: 789, number: '0123', name: 'Mike Smith'}
 
@@ -362,7 +384,7 @@ function shallowClearAndCopy(src, dst) {
  * operations (create, read, update, delete) on server-side data.
  *
    ```js
-     var User = $resource('/users/:userId', {userId: '@id'});
+     let User = $resource('/users/:userId', {userId: '@id'});
      User.get({userId: 123}).$promise.then(function(user) {
        user.abc = true;
        user.$save();
@@ -375,7 +397,7 @@ function shallowClearAndCopy(src, dst) {
  * the above example and get access to HTTP headers as follows:
  *
    ```js
-     var User = $resource('/users/:userId', {userId: '@id'});
+     let User = $resource('/users/:userId', {userId: '@id'});
      User.get({userId: 123}, function(user, getResponseHeaders) {
        user.abc = true;
        user.$save(function(user, putResponseHeaders) {
@@ -392,7 +414,7 @@ function shallowClearAndCopy(src, dst) {
  * In this example we create a custom method on our resource to make a PUT request:
  *
    ```js
-      var app = angular.module('app', ['ngResource']);
+      let app = angular.module('app', ['ngResource']);
 
       // Some APIs expect a PUT request in the format URL/object/ID
       // Here we are creating an 'update' method
@@ -406,8 +428,8 @@ function shallowClearAndCopy(src, dst) {
       app.controller('NotesCtrl', ['$location', 'Notes', function($location, Notes) {
         // First, retrieve the corresponding `Note` object from the server
         // (Assuming a URL of the form `.../notes?id=XYZ`)
-        var noteId = $location.search().id;
-        var note = Notes.get({id: noteId});
+        let noteId = $location.search().id;
+        let note = Notes.get({id: noteId});
 
         note.$promise.then(function() {
           note.content = 'Hello, world!';
@@ -432,7 +454,7 @@ function shallowClearAndCopy(src, dst) {
  *
    ```js
      // ...defining the `Hotel` resource...
-     var Hotel = $resource('/api/hotels/:id', {id: '@id'}, {
+     let Hotel = $resource('/api/hotels/:id', {id: '@id'}, {
        // Let's make the `query()` method cancellable
        query: {method: 'get', isArray: true, cancellable: true}
      });
@@ -461,7 +483,7 @@ function shallowClearAndCopy(src, dst) {
  * interceptors to augment the returned instance with additional info:
  *
    ```js
-     var Thing = $resource('/api/things/:id', {id: '@id'}, {
+     let Thing = $resource('/api/things/:id', {id: '@id'}, {
        save: {
          method: 'POST',
          interceptor: {
@@ -472,7 +494,7 @@ function shallowClearAndCopy(src, dst) {
            },
            response: function(response) {
              // Get the instance from the response object
-             var instance = response.resource;
+             let instance = response.resource;
 
              // Augment the instance with a custom `saveLatency` property, computed as the time
              // between sending the request and receiving the response.
@@ -491,107 +513,101 @@ function shallowClearAndCopy(src, dst) {
    ```
  *
  */
-angular.module('ngResource', ['ng']).
-  info({ angularVersion: '"NG_VERSION_FULL"' }).
-  provider('$resource', function ResourceProvider() {
-    var PROTOCOL_AND_IPV6_REGEX = /^https?:\/\/\[[^\]]*][^/]*/;
+export function $ResourceProvider() {
+  const PROTOCOL_AND_IPV6_REGEX = /^https?:\/\/\[[^\]]*][^/]*/;
 
-    var provider = this;
+  const provider = this;
 
-    /**
-     * @ngdoc property
-     * @name $resourceProvider#defaults
-     * @description
-     * Object containing default options used when creating `$resource` instances.
-     *
-     * The default values satisfy a wide range of usecases, but you may choose to overwrite any of
-     * them to further customize your instances. The available properties are:
-     *
-     * - **stripTrailingSlashes** – `{boolean}` – If true, then the trailing slashes from any
-     *   calculated URL will be stripped.<br />
-     *   (Defaults to true.)
-     * - **cancellable** – `{boolean}` – If true, the request made by a "non-instance" call will be
-     *   cancelled (if not already completed) by calling `$cancelRequest()` on the call's return
-     *   value. For more details, see {@link ngResource.$resource}. This can be overwritten per
-     *   resource class or action.<br />
-     *   (Defaults to false.)
-     * - **actions** - `{Object.<Object>}` - A hash with default actions declarations. Actions are
-     *   high-level methods corresponding to RESTful actions/methods on resources. An action may
-     *   specify what HTTP method to use, what URL to hit, if the return value will be a single
-     *   object or a collection (array) of objects etc. For more details, see
-     *   {@link ngResource.$resource}. The actions can also be enhanced or overwritten per resource
-     *   class.<br />
-     *   The default actions are:
-     *   ```js
-     *   {
-     *     get: {method: 'GET'},
-     *     save: {method: 'POST'},
-     *     query: {method: 'GET', isArray: true},
-     *     remove: {method: 'DELETE'},
-     *     delete: {method: 'DELETE'}
-     *   }
-     *   ```
-     *
-     * #### Example
-     *
-     * For example, you can specify a new `update` action that uses the `PUT` HTTP verb:
-     *
-     * ```js
-     *   angular.
-     *     module('myApp').
-     *     config(['$resourceProvider', function ($resourceProvider) {
-     *       $resourceProvider.defaults.actions.update = {
-     *         method: 'PUT'
-     *       };
-     *     }]);
-     * ```
-     *
-     * Or you can even overwrite the whole `actions` list and specify your own:
-     *
-     * ```js
-     *   angular.
-     *     module('myApp').
-     *     config(['$resourceProvider', function ($resourceProvider) {
-     *       $resourceProvider.defaults.actions = {
-     *         create: {method: 'POST'},
-     *         get:    {method: 'GET'},
-     *         getAll: {method: 'GET', isArray:true},
-     *         update: {method: 'PUT'},
-     *         delete: {method: 'DELETE'}
-     *       };
-     *     });
-     * ```
-     *
-     */
-    this.defaults = {
-      // Strip slashes by default
-      stripTrailingSlashes: true,
+  /**
+   * @ngdoc property
+   * @name $resourceProvider#defaults
+   * @description
+   * Object containing default options used when creating `$resource` instances.
+   *
+   * The default values satisfy a wide range of usecases, but you may choose to overwrite any of
+   * them to further customize your instances. The available properties are:
+   *
+   * - **stripTrailingSlashes** – `{boolean}` – If true, then the trailing slashes from any
+   *   calculated URL will be stripped.<br />
+   *   (Defaults to true.)
+   * - **cancellable** – `{boolean}` – If true, the request made by a "non-instance" call will be
+   *   cancelled (if not already completed) by calling `$cancelRequest()` on the call's return
+   *   value. For more details, see {@link ngResource.$resource}. This can be overwritten per
+   *   resource class or action.<br />
+   *   (Defaults to false.)
+   * - **actions** - `{Object.<Object>}` - A hash with default actions declarations. Actions are
+   *   high-level methods corresponding to RESTful actions/methods on resources. An action may
+   *   specify what HTTP method to use, what URL to hit, if the return value will be a single
+   *   object or a collection (array) of objects etc. For more details, see
+   *   {@link ngResource.$resource}. The actions can also be enhanced or overwritten per resource
+   *   class.<br />
+   *   The default actions are:
+   *   ```js
+   *   {
+   *     get: {method: 'GET'},
+   *     save: {method: 'POST'},
+   *     query: {method: 'GET', isArray: true},
+   *     remove: {method: 'DELETE'},
+   *     delete: {method: 'DELETE'}
+   *   }
+   *   ```
+   *
+   * #### Example
+   *
+   * For example, you can specify a new `update` action that uses the `PUT` HTTP verb:
+   *
+   * ```js
+   *   angular.
+   *     module('myApp').
+   *     config(['$resourceProvider', function ($resourceProvider) {
+   *       $resourceProvider.defaults.actions.update = {
+   *         method: 'PUT'
+   *       };
+   *     }]);
+   * ```
+   *
+   * Or you can even overwrite the whole `actions` list and specify your own:
+   *
+   * ```js
+   *   angular.
+   *     module('myApp').
+   *     config(['$resourceProvider', function ($resourceProvider) {
+   *       $resourceProvider.defaults.actions = {
+   *         create: {method: 'POST'},
+   *         get:    {method: 'GET'},
+   *         getAll: {method: 'GET', isArray:true},
+   *         update: {method: 'PUT'},
+   *         delete: {method: 'DELETE'}
+   *       };
+   *     });
+   * ```
+   *
+   */
+  this.defaults = {
+    // Strip slashes by default
+    stripTrailingSlashes: true,
 
-      // Make non-instance requests cancellable (via `$cancelRequest()`)
-      cancellable: false,
+    // Make non-instance requests cancellable (via `$cancelRequest()`)
+    cancellable: false,
 
-      // Default actions configuration
-      actions: {
-        'get': {method: 'GET'},
-        'save': {method: 'POST'},
-        'query': {method: 'GET', isArray: true},
-        'remove': {method: 'DELETE'},
-        'delete': {method: 'DELETE'}
-      }
-    };
+    // Default actions configuration
+    actions: {
+      get: { method: "GET" },
+      save: { method: "POST" },
+      query: { method: "GET", isArray: true },
+      remove: { method: "DELETE" },
+      delete: { method: "DELETE" },
+    },
+  };
 
-    this.$get = ['$http', '$log', '$q', '$timeout', function($http, $log, $q, $timeout) {
-
-      var noop = angular.noop,
-          forEach = angular.forEach,
-          extend = angular.extend,
-          copy = angular.copy,
-          isArray = angular.isArray,
-          isDefined = angular.isDefined,
-          isFunction = angular.isFunction,
-          isNumber = angular.isNumber,
-          encodeUriQuery = angular.$$encodeUriQuery,
-          encodeUriSegment = angular.$$encodeUriSegment;
+  this.$get = [
+    "$http",
+    "$log",
+    "$q",
+    "$timeout",
+    function ($http, $log, $q, $timeout) {
+      // const encodeUriQuery = angular.$$encodeUriQuery;
+      // const encodeUriSegment = angular.$$encodeUriSegment;
 
       function Route(template, defaults) {
         this.template = template;
@@ -600,91 +616,105 @@ angular.module('ngResource', ['ng']).
       }
 
       Route.prototype = {
-        setUrlParams: function(config, params, actionUrl) {
-          var self = this,
-            url = actionUrl || self.template,
-            val,
-            encodedVal,
-            protocolAndIpv6 = '';
+        setUrlParams(config, params, actionUrl) {
+          const self = this;
+          let url = actionUrl || self.template;
+          let val;
+          let encodedVal;
+          let protocolAndIpv6 = "";
 
-          var urlParams = self.urlParams = Object.create(null);
-          forEach(url.split(/\W/), function(param) {
-            if (param === 'hasOwnProperty') {
-              throw $resourceMinErr('badname', 'hasOwnProperty is not a valid parameter name.');
+          const urlParams = (self.urlParams = Object.create(null));
+          forEach(url.split(/\W/), (param) => {
+            if (param === "hasOwnProperty") {
+              throw $resourceMinErr(
+                "badname",
+                "hasOwnProperty is not a valid parameter name.",
+              );
             }
-            if (!(new RegExp('^\\d+$').test(param)) && param &&
-              (new RegExp('(^|[^\\\\]):' + param + '(\\W|$)').test(url))) {
+            if (
+              !new RegExp("^\\d+$").test(param) &&
+              param &&
+              new RegExp(`(^|[^\\\\]):${param}(\\W|$)`).test(url)
+            ) {
               urlParams[param] = {
-                isQueryParamValue: (new RegExp('\\?.*=:' + param + '(?:\\W|$)')).test(url)
+                isQueryParamValue: new RegExp(`\\?.*=:${param}(?:\\W|$)`).test(
+                  url,
+                ),
               };
             }
           });
-          url = url.replace(/\\:/g, ':');
-          url = url.replace(PROTOCOL_AND_IPV6_REGEX, function(match) {
+          url = url.replace(/\\:/g, ":");
+          url = url.replace(PROTOCOL_AND_IPV6_REGEX, (match) => {
             protocolAndIpv6 = match;
-            return '';
+            return "";
           });
 
           params = params || {};
-          forEach(self.urlParams, function(paramInfo, urlParam) {
-            val = params.hasOwnProperty(urlParam) ? params[urlParam] : self.defaults[urlParam];
+          forEach(self.urlParams, (paramInfo, urlParam) => {
+            val = Object.prototype.hasOwnProperty.call(params, urlParam)
+              ? params[urlParam]
+              : self.defaults[urlParam];
             if (isDefined(val) && val !== null) {
               if (paramInfo.isQueryParamValue) {
                 encodedVal = encodeUriQuery(val, true);
               } else {
                 encodedVal = encodeUriSegment(val);
               }
-              url = url.replace(new RegExp(':' + urlParam + '(\\W|$)', 'g'), function(match, p1) {
-                return encodedVal + p1;
-              });
+              url = url.replace(
+                new RegExp(`:${urlParam}(\\W|$)`, "g"),
+                (match, p1) => encodedVal + p1,
+              );
             } else {
-              url = url.replace(new RegExp('(/?):' + urlParam + '(\\W|$)', 'g'), function(match,
-                  leadingSlashes, tail) {
-                if (tail.charAt(0) === '/') {
-                  return tail;
-                } else {
+              url = url.replace(
+                new RegExp(`(/?):${urlParam}(\\W|$)`, "g"),
+                (match, leadingSlashes, tail) => {
+                  if (tail.charAt(0) === "/") {
+                    return tail;
+                  }
                   return leadingSlashes + tail;
-                }
-              });
+                },
+              );
             }
           });
 
           // strip trailing slashes and set the url (unless this behavior is specifically disabled)
           if (self.defaults.stripTrailingSlashes) {
-            url = url.replace(/\/+$/, '') || '/';
+            url = url.replace(/\/+$/, "") || "/";
           }
 
           // Collapse `/.` if found in the last URL path segment before the query.
           // E.g. `http://url.com/id/.format?q=x` becomes `http://url.com/id.format?q=x`.
-          url = url.replace(/\/\.(?=\w+($|\?))/, '.');
+          url = url.replace(/\/\.(?=\w+($|\?))/, ".");
           // Replace escaped `/\.` with `/.`.
           // (If `\.` comes from a param value, it will be encoded as `%5C.`.)
-          config.url = protocolAndIpv6 + url.replace(/\/(\\|%5C)\./, '/.');
-
+          config.url = protocolAndIpv6 + url.replace(/\/(\\|%5C)\./, "/.");
 
           // set params - delegate param encoding to $http
-          forEach(params, function(value, key) {
+          forEach(params, (value, key) => {
             if (!self.urlParams[key]) {
               config.params = config.params || {};
               config.params[key] = value;
             }
           });
-        }
+        },
       };
 
-
       function resourceFactory(url, paramDefaults, actions, options) {
-        var route = new Route(url, options);
+        const route = new Route(url, options);
 
         actions = extend({}, provider.defaults.actions, actions);
 
         function extractParams(data, actionParams) {
-          var ids = {};
+          const ids = {};
           actionParams = extend({}, paramDefaults, actionParams);
-          forEach(actionParams, function(value, key) {
-            if (isFunction(value)) { value = value(data); }
-            ids[key] = value && value.charAt && value.charAt(0) === '@' ?
-              lookupDottedPath(data, value.substr(1)) : value;
+          forEach(actionParams, (value, key) => {
+            if (isFunction(value)) {
+              value = value(data);
+            }
+            ids[key] =
+              value && value.charAt && value.charAt(0) === "@"
+                ? lookupDottedPath(data, value.substr(1))
+                : value;
           });
           return ids;
         }
@@ -697,38 +727,47 @@ angular.module('ngResource', ['ng']).
           shallowClearAndCopy(value || {}, this);
         }
 
-        Resource.prototype.toJSON = function() {
-          var data = extend({}, this);
+        Resource.prototype.toJSON = function () {
+          const data = extend({}, this);
           delete data.$promise;
           delete data.$resolved;
           delete data.$cancelRequest;
           return data;
         };
 
-        forEach(actions, function(action, name) {
-          var hasBody = action.hasBody === true || (action.hasBody !== false && /^(POST|PUT|PATCH)$/i.test(action.method));
-          var numericTimeout = action.timeout;
-          var cancellable = isDefined(action.cancellable) ?
-              action.cancellable : route.defaults.cancellable;
+        forEach(actions, (action, name) => {
+          const hasBody =
+            action.hasBody === true ||
+            (action.hasBody !== false &&
+              /^(POST|PUT|PATCH)$/i.test(action.method));
+          let numericTimeout = action.timeout;
+          const cancellable = isDefined(action.cancellable)
+            ? action.cancellable
+            : route.defaults.cancellable;
 
           if (numericTimeout && !isNumber(numericTimeout)) {
-            $log.debug('ngResource:\n' +
-                       '  Only numeric values are allowed as `timeout`.\n' +
-                       '  Promises are not supported in $resource, because the same value would ' +
-                       'be used for multiple requests. If you are looking for a way to cancel ' +
-                       'requests, you should use the `cancellable` option.');
+            $log.debug(
+              "ngResource:\n" +
+                "  Only numeric values are allowed as `timeout`.\n" +
+                "  Promises are not supported in $resource, because the same value would " +
+                "be used for multiple requests. If you are looking for a way to cancel " +
+                "requests, you should use the `cancellable` option.",
+            );
             delete action.timeout;
             numericTimeout = null;
           }
 
-          Resource[name] = function(a1, a2, a3, a4) {
-            var params = {}, data, onSuccess, onError;
+          Resource[name] = function (a1, a2, a3, a4) {
+            let params = {};
+            let data;
+            let onSuccess;
+            let onError;
 
             switch (arguments.length) {
               case 4:
                 onError = a4;
                 onSuccess = a3;
-                // falls through
+              // falls through
               case 3:
               case 2:
                 if (isFunction(a2)) {
@@ -747,46 +786,64 @@ angular.module('ngResource', ['ng']).
                   onSuccess = a3;
                   break;
                 }
-                // falls through
+              // falls through
               case 1:
                 if (isFunction(a1)) onSuccess = a1;
                 else if (hasBody) data = a1;
                 else params = a1;
                 break;
-              case 0: break;
+              case 0:
+                break;
               default:
-                throw $resourceMinErr('badargs',
-                  'Expected up to 4 arguments [params, data, success, error], got {0} arguments',
-                  arguments.length);
+                throw $resourceMinErr(
+                  "badargs",
+                  "Expected up to 4 arguments [params, data, success, error], got {0} arguments",
+                  arguments.length,
+                );
             }
 
-            var isInstanceCall = this instanceof Resource;
-            var value = isInstanceCall ? data : (action.isArray ? [] : new Resource(data));
-            var httpConfig = {};
-            var requestInterceptor = action.interceptor && action.interceptor.request || undefined;
-            var requestErrorInterceptor = action.interceptor && action.interceptor.requestError ||
+            const isInstanceCall = this instanceof Resource;
+            const value = isInstanceCall
+              ? data
+              : action.isArray
+                ? []
+                : new Resource(data);
+            const httpConfig = {};
+            const requestInterceptor =
+              (action.interceptor && action.interceptor.request) || undefined;
+            const requestErrorInterceptor =
+              (action.interceptor && action.interceptor.requestError) ||
               undefined;
-            var responseInterceptor = action.interceptor && action.interceptor.response ||
+            const responseInterceptor =
+              (action.interceptor && action.interceptor.response) ||
               defaultResponseInterceptor;
-            var responseErrorInterceptor = action.interceptor && action.interceptor.responseError ||
+            const responseErrorInterceptor =
+              (action.interceptor && action.interceptor.responseError) ||
               $q.reject;
-            var successCallback = onSuccess ? function(val) {
-              onSuccess(val, response.headers, response.status, response.statusText);
-            } : undefined;
-            var errorCallback = onError || undefined;
-            var timeoutDeferred;
-            var numericTimeoutPromise;
-            var response;
+            const successCallback = onSuccess
+              ? function (val) {
+                  onSuccess(
+                    val,
+                    response.headers,
+                    response.status,
+                    response.statusText,
+                  );
+                }
+              : undefined;
+            const errorCallback = onError || undefined;
+            let timeoutDeferred;
+            let numericTimeoutPromise;
+            let response;
 
-            forEach(action, function(value, key) {
+            forEach(action, (value, key) => {
               switch (key) {
                 default:
                   httpConfig[key] = copy(value);
                   break;
-                case 'params':
-                case 'isArray':
-                case 'interceptor':
-                case 'cancellable':
+                case "params":
+                case "isArray":
+                case "interceptor":
+                case "cancellable":
                   break;
               }
             });
@@ -796,67 +853,84 @@ angular.module('ngResource', ['ng']).
               httpConfig.timeout = timeoutDeferred.promise;
 
               if (numericTimeout) {
-                numericTimeoutPromise = $timeout(timeoutDeferred.resolve, numericTimeout);
+                numericTimeoutPromise = $timeout(
+                  timeoutDeferred.resolve,
+                  numericTimeout,
+                );
               }
             }
 
             if (hasBody) httpConfig.data = data;
-            route.setUrlParams(httpConfig,
+            route.setUrlParams(
+              httpConfig,
               extend({}, extractParams(data, action.params || {}), params),
-              action.url);
+              action.url,
+            );
 
             // Start the promise chain
-            var promise = $q.
-              resolve(httpConfig).
-              then(requestInterceptor).
-              catch(requestErrorInterceptor).
-              then($http);
+            let promise = $q
+              .resolve(httpConfig)
+              .then(requestInterceptor)
+              .catch(requestErrorInterceptor)
+              .then($http);
 
-            promise = promise.then(function(resp) {
-              var data = resp.data;
+            promise = promise.then(
+              (resp) => {
+                const { data } = resp;
 
-              if (data) {
-                // Need to convert action.isArray to boolean in case it is undefined
-                if (isArray(data) !== (!!action.isArray)) {
-                  throw $resourceMinErr('badcfg',
-                      'Error in resource configuration for action `{0}`. Expected response to ' +
-                      'contain an {1} but got an {2} (Request: {3} {4})', name, action.isArray ? 'array' : 'object',
-                    isArray(data) ? 'array' : 'object', httpConfig.method, httpConfig.url);
+                if (data) {
+                  // Need to convert action.isArray to boolean in case it is undefined
+                  if (isArray(data) !== !!action.isArray) {
+                    throw $resourceMinErr(
+                      "badcfg",
+                      "Error in resource configuration for action `{0}`. Expected response to " +
+                        "contain an {1} but got an {2} (Request: {3} {4})",
+                      name,
+                      action.isArray ? "array" : "object",
+                      isArray(data) ? "array" : "object",
+                      httpConfig.method,
+                      httpConfig.url,
+                    );
+                  }
+                  if (action.isArray) {
+                    value.length = 0;
+                    forEach(data, (item) => {
+                      if (typeof item === "object") {
+                        value.push(new Resource(item));
+                      } else {
+                        // Valid JSON values may be string literals, and these should not be converted
+                        // into objects. These items will not have access to the Resource prototype
+                        // methods, but unfortunately there
+                        value.push(item);
+                      }
+                    });
+                  } else {
+                    const promise = value.$promise; // Save the promise
+                    shallowClearAndCopy(data, value);
+                    value.$promise = promise; // Restore the promise
+                  }
                 }
-                if (action.isArray) {
-                  value.length = 0;
-                  forEach(data, function(item) {
-                    if (typeof item === 'object') {
-                      value.push(new Resource(item));
-                    } else {
-                      // Valid JSON values may be string literals, and these should not be converted
-                      // into objects. These items will not have access to the Resource prototype
-                      // methods, but unfortunately there
-                      value.push(item);
-                    }
-                  });
-                } else {
-                  var promise = value.$promise;     // Save the promise
-                  shallowClearAndCopy(data, value);
-                  value.$promise = promise;         // Restore the promise
-                }
-              }
 
-              resp.resource = value;
-              response = resp;
-              return responseInterceptor(resp);
-            }, function(rejectionOrResponse) {
-              rejectionOrResponse.resource = value;
-              response = rejectionOrResponse;
-              return responseErrorInterceptor(rejectionOrResponse);
-            });
+                resp.resource = value;
+                response = resp;
+                return responseInterceptor(resp);
+              },
+              (rejectionOrResponse) => {
+                rejectionOrResponse.resource = value;
+                response = rejectionOrResponse;
+                return responseErrorInterceptor(rejectionOrResponse);
+              },
+            );
 
-            promise = promise['finally'](function() {
+            promise = promise.finally(() => {
               value.$resolved = true;
               if (!isInstanceCall && cancellable) {
-                value.$cancelRequest = noop;
+                value.$cancelRequest = () => {};
                 $timeout.cancel(numericTimeoutPromise);
-                timeoutDeferred = numericTimeoutPromise = httpConfig.timeout = null;
+                timeoutDeferred =
+                  numericTimeoutPromise =
+                  httpConfig.timeout =
+                    null;
               }
             });
 
@@ -878,19 +952,26 @@ angular.module('ngResource', ['ng']).
             return promise;
 
             function cancelRequest(value) {
-              promise.catch(noop);
+              promise.catch(() => {});
               if (timeoutDeferred !== null) {
                 timeoutDeferred.resolve(value);
               }
             }
           };
 
-
-          Resource.prototype['$' + name] = function(params, success, error) {
+          Resource.prototype[`$${name}`] = function (params, success, error) {
             if (isFunction(params)) {
-              error = success; success = params; params = {};
+              error = success;
+              success = params;
+              params = {};
             }
-            var result = Resource[name].call(this, params, this, success, error);
+            const result = Resource[name].call(
+              this,
+              params,
+              this,
+              success,
+              error,
+            );
             return result.$promise || result;
           };
         });
@@ -899,5 +980,6 @@ angular.module('ngResource', ['ng']).
       }
 
       return resourceFactory;
-    }];
-  });
+    },
+  ];
+}

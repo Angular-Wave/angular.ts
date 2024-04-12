@@ -1,11 +1,9 @@
-'use strict';
-
-angular.
-  module('test', []).
-  controller('TestController', function($anchorScroll, $location, $scope) {
+angular
+  .module("test", [])
+  .controller("TestController", ($anchorScroll, $location, $scope) => {
     $anchorScroll.yOffset = 50;
 
-    $scope.scrollTo = function(target) {
+    $scope.scrollTo = function (target) {
       if ($location.hash() !== target) {
         // Set `$location.hash()` to `target` and
         // `$anchorScroll` will detect the change and scroll

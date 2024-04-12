@@ -1,10 +1,13 @@
-'use strict';
+import { isNumberNaN, isString, toInt, minErr, isUndefined } from "../utils";
+import { REGEX_STRING_REGEXP } from "./attrs";
+import { startingTag } from "../../jqLite";
+
 /**
  * @ngdoc directive
- * @name ngRequired
+ * @name ngRequiredf
  * @restrict A
  *
- * @param {expression} ngRequired AngularJS expression. If it evaluates to `true`, it sets the
+ * @param {String} ngRequired AngularJS expression. If it evaluates to `true`, it sets the
  *                                `required` attribute to the element and adds the `required`
  *                                {@link ngModel.NgModelController#$validators `validator`}.
  *
@@ -25,51 +28,18 @@
  * `$isEmpty()` implementation for `input[text]` checks the length of the `$viewValue`. When developing
  * custom controls, `$isEmpty()` can be overwritten to account for a $viewValue that is not string-based.
  *
- * @example
- * <example name="ngRequiredDirective" module="ngRequiredExample">
- *   <file name="index.html">
- *     <script>
- *       angular.module('ngRequiredExample', [])
- *         .controller('ExampleController', ['$scope', function($scope) {
- *           $scope.required = true;
- *         }]);
- *     </script>
- *     <div ng-controller="ExampleController">
- *       <form name="form">
- *         <label for="required">Toggle required: </label>
- *         <input type="checkbox" ng-model="required" id="required" />
- *         <br>
- *         <label for="input">This input must be filled if `required` is true: </label>
- *         <input type="text" ng-model="model" id="input" name="input" ng-required="required" /><br>
- *         <hr>
- *         required error set? = <code>{{form.input.$error.required}}</code><br>
- *         model = <code>{{model}}</code>
- *       </form>
- *     </div>
- *   </file>
- *   <file name="protractor.js" type="protractor">
-       var required = element(by.binding('form.input.$error.required'));
-       var model = element(by.binding('model'));
-       var input = element(by.id('input'));
-
-       it('should set the required error', function() {
-         expect(required.getText()).toContain('true');
-
-         input.sendKeys('123');
-         expect(required.getText()).not.toContain('true');
-         expect(model.getText()).toContain('123');
-       });
- *   </file>
- * </example>
  */
-var requiredDirective = ['$parse', function($parse) {
-  return {
-    restrict: 'A',
-    require: '?ngModel',
-    link: function(scope, elm, attr, ctrl) {
+export const requiredDirective = [
+  "$parse",
+  ($parse) => ({
+    restrict: "A",
+    require: "?ngModel",
+    link(scope, elm, attr, ctrl) {
       if (!ctrl) return;
       // For boolean attributes like required, presence means true
-      var value = attr.hasOwnProperty('required') || $parse(attr.ngRequired)(scope);
+      let value =
+        Object.prototype.hasOwnProperty.call(attr, "required") ||
+        $parse(attr.ngRequired)(scope);
 
       if (!attr.ngRequired) {
         // force truthy in case we are on non input element
@@ -77,27 +47,26 @@ var requiredDirective = ['$parse', function($parse) {
         attr.required = true;
       }
 
-      ctrl.$validators.required = function(modelValue, viewValue) {
+      ctrl.$validators.required = function (modelValue, viewValue) {
         return !value || !ctrl.$isEmpty(viewValue);
       };
 
-      attr.$observe('required', function(newVal) {
-
+      attr.$observe("required", (newVal) => {
         if (value !== newVal) {
           value = newVal;
           ctrl.$validate();
         }
       });
-    }
-  };
-}];
+    },
+  }),
+];
 
 /**
  * @ngdoc directive
  * @name ngPattern
  * @restrict A
  *
- * @param {expression|RegExp} ngPattern AngularJS expression that must evaluate to a `RegExp` or a `String`
+ * @param {String|RegExp} ngPattern AngularJS expression that must evaluate to a `RegExp` or a `String`
  *                                      parsable into a `RegExp`, or a `RegExp` literal. See above for
  *                                      more details.
  *
@@ -134,105 +103,80 @@ var requiredDirective = ['$parse', function($parse) {
  *   </li>
  * </ol>
  * </div>
- *
- * @example
- * <example name="ngPatternDirective" module="ngPatternExample">
- *   <file name="index.html">
- *     <script>
- *       angular.module('ngPatternExample', [])
- *         .controller('ExampleController', ['$scope', function($scope) {
- *           $scope.regex = '\\d+';
- *         }]);
- *     </script>
- *     <div ng-controller="ExampleController">
- *       <form name="form">
- *         <label for="regex">Set a pattern (regex string): </label>
- *         <input type="text" ng-model="regex" id="regex" />
- *         <br>
- *         <label for="input">This input is restricted by the current pattern: </label>
- *         <input type="text" ng-model="model" id="input" name="input" ng-pattern="regex" /><br>
- *         <hr>
- *         input valid? = <code>{{form.input.$valid}}</code><br>
- *         model = <code>{{model}}</code>
- *       </form>
- *     </div>
- *   </file>
- *   <file name="protractor.js" type="protractor">
-       var model = element(by.binding('model'));
-       var input = element(by.id('input'));
-
-       it('should validate the input with the default pattern', function() {
-         input.sendKeys('aaa');
-         expect(model.getText()).not.toContain('aaa');
-
-         input.clear().then(function() {
-           input.sendKeys('123');
-           expect(model.getText()).toContain('123');
-         });
-       });
- *   </file>
- * </example>
  */
-var patternDirective = ['$parse', function($parse) {
-  return {
-    restrict: 'A',
-    require: '?ngModel',
-    compile: function(tElm, tAttr) {
-      var patternExp;
-      var parseFn;
+export const patternDirective = [
+  "$parse",
+  function ($parse) {
+    return {
+      restrict: "A",
+      require: "?ngModel",
+      compile: function (tElm, tAttr) {
+        var patternExp;
+        var parseFn;
 
-      if (tAttr.ngPattern) {
-        patternExp = tAttr.ngPattern;
+        if (tAttr.ngPattern) {
+          patternExp = tAttr.ngPattern;
 
-        // ngPattern might be a scope expression, or an inlined regex, which is not parsable.
-        // We get value of the attribute here, so we can compare the old and the new value
-        // in the observer to avoid unnecessary validations
-        if (tAttr.ngPattern.charAt(0) === '/' && REGEX_STRING_REGEXP.test(tAttr.ngPattern)) {
-          parseFn = function() { return tAttr.ngPattern; };
-        } else {
-          parseFn = $parse(tAttr.ngPattern);
-        }
-      }
-
-      return function(scope, elm, attr, ctrl) {
-        if (!ctrl) return;
-
-        var attrVal = attr.pattern;
-
-        if (attr.ngPattern) {
-          attrVal = parseFn(scope);
-        } else {
-          patternExp = attr.pattern;
-        }
-
-        var regexp = parsePatternAttr(attrVal, patternExp, elm);
-
-        attr.$observe('pattern', function(newVal) {
-          var oldRegexp = regexp;
-
-          regexp = parsePatternAttr(newVal, patternExp, elm);
-
-          if ((oldRegexp && oldRegexp.toString()) !== (regexp && regexp.toString())) {
-            ctrl.$validate();
+          // ngPattern might be a scope expression, or an inlined regex, which is not parsable.
+          // We get value of the attribute here, so we can compare the old and the new value
+          // in the observer to avoid unnecessary validations
+          if (
+            tAttr.ngPattern.charAt(0) === "/" &&
+            REGEX_STRING_REGEXP.test(tAttr.ngPattern)
+          ) {
+            parseFn = function () {
+              return tAttr.ngPattern;
+            };
+          } else {
+            parseFn = $parse(tAttr.ngPattern);
           }
-        });
+        }
 
-        ctrl.$validators.pattern = function(modelValue, viewValue) {
-          // HTML5 pattern constraint validates the input value, so we validate the viewValue
-          return ctrl.$isEmpty(viewValue) || isUndefined(regexp) || regexp.test(viewValue);
+        return function (scope, elm, attr, ctrl) {
+          if (!ctrl) return;
+
+          var attrVal = attr.pattern;
+
+          if (attr.ngPattern) {
+            attrVal = parseFn(scope);
+          } else {
+            patternExp = attr.pattern;
+          }
+
+          var regexp = parsePatternAttr(attrVal, patternExp, elm);
+          attr.$observe("pattern", function (newVal) {
+            var oldRegexp = regexp;
+
+            regexp = parsePatternAttr(newVal, patternExp, elm);
+
+            if (
+              (oldRegexp && oldRegexp.toString()) !==
+              (regexp && regexp.toString())
+            ) {
+              ctrl.$validate();
+            }
+          });
+
+          ctrl.$validators.pattern = function (modelValue, viewValue) {
+            // HTML5 pattern constraint validates the input value, so we validate the viewValue
+            return (
+              ctrl.$isEmpty(viewValue) ||
+              isUndefined(regexp) ||
+              regexp.test(viewValue)
+            );
+          };
         };
-      };
-    }
-
-  };
-}];
+      },
+    };
+  },
+];
 
 /**
  * @ngdoc directive
  * @name ngMaxlength
  * @restrict A
  *
- * @param {expression} ngMaxlength AngularJS expression that must evaluate to a `Number` or `String`
+ * @param {String} ngMaxlength AngularJS expression that must evaluate to a `Number` or `String`
  *                                 parsable into a `Number`. Used as value for the `maxlength`
  *                                 {@link ngModel.NgModelController#$validators validator}.
  *
@@ -260,67 +204,35 @@ var patternDirective = ['$parse', function($parse) {
  * </ol>
  * </div>
  *
- * @example
- * <example name="ngMaxlengthDirective" module="ngMaxlengthExample">
- *   <file name="index.html">
- *     <script>
- *       angular.module('ngMaxlengthExample', [])
- *         .controller('ExampleController', ['$scope', function($scope) {
- *           $scope.maxlength = 5;
- *         }]);
- *     </script>
- *     <div ng-controller="ExampleController">
- *       <form name="form">
- *         <label for="maxlength">Set a maxlength: </label>
- *         <input type="number" ng-model="maxlength" id="maxlength" />
- *         <br>
- *         <label for="input">This input is restricted by the current maxlength: </label>
- *         <input type="text" ng-model="model" id="input" name="input" ng-maxlength="maxlength" /><br>
- *         <hr>
- *         input valid? = <code>{{form.input.$valid}}</code><br>
- *         model = <code>{{model}}</code>
- *       </form>
- *     </div>
- *   </file>
- *   <file name="protractor.js" type="protractor">
-       var model = element(by.binding('model'));
-       var input = element(by.id('input'));
-
-       it('should validate the input with the default maxlength', function() {
-         input.sendKeys('abcdef');
-         expect(model.getText()).not.toContain('abcdef');
-
-         input.clear().then(function() {
-           input.sendKeys('abcde');
-           expect(model.getText()).toContain('abcde');
-         });
-       });
- *   </file>
- * </example>
  */
-var maxlengthDirective = ['$parse', function($parse) {
-  return {
-    restrict: 'A',
-    require: '?ngModel',
-    link: function(scope, elm, attr, ctrl) {
+export const maxlengthDirective = [
+  "$parse",
+  ($parse) => ({
+    restrict: "A",
+    require: "?ngModel",
+    link(scope, elm, attr, ctrl) {
       if (!ctrl) return;
 
-      var maxlength = attr.maxlength || $parse(attr.ngMaxlength)(scope);
-      var maxlengthParsed = parseLength(maxlength);
+      let maxlength = attr.maxlength || $parse(attr.ngMaxlength)(scope);
+      let maxlengthParsed = parseLength(maxlength);
 
-      attr.$observe('maxlength', function(value) {
+      attr.$observe("maxlength", (value) => {
         if (maxlength !== value) {
           maxlengthParsed = parseLength(value);
           maxlength = value;
           ctrl.$validate();
         }
       });
-      ctrl.$validators.maxlength = function(modelValue, viewValue) {
-        return (maxlengthParsed < 0) || ctrl.$isEmpty(viewValue) || (viewValue.length <= maxlengthParsed);
+      ctrl.$validators.maxlength = function (modelValue, viewValue) {
+        return (
+          maxlengthParsed < 0 ||
+          ctrl.$isEmpty(viewValue) ||
+          viewValue.length <= maxlengthParsed
+        );
       };
-    }
-  };
-}];
+    },
+  }),
+];
 
 /**
  * @ngdoc directive
@@ -355,85 +267,57 @@ var maxlengthDirective = ['$parse', function($parse) {
  * </ol>
  * </div>
  *
- * @example
- * <example name="ngMinlengthDirective" module="ngMinlengthExample">
- *   <file name="index.html">
- *     <script>
- *       angular.module('ngMinlengthExample', [])
- *         .controller('ExampleController', ['$scope', function($scope) {
- *           $scope.minlength = 3;
- *         }]);
- *     </script>
- *     <div ng-controller="ExampleController">
- *       <form name="form">
- *         <label for="minlength">Set a minlength: </label>
- *         <input type="number" ng-model="minlength" id="minlength" />
- *         <br>
- *         <label for="input">This input is restricted by the current minlength: </label>
- *         <input type="text" ng-model="model" id="input" name="input" ng-minlength="minlength" /><br>
- *         <hr>
- *         input valid? = <code>{{form.input.$valid}}</code><br>
- *         model = <code>{{model}}</code>
- *       </form>
- *     </div>
- *   </file>
- *   <file name="protractor.js" type="protractor">
-       var model = element(by.binding('model'));
-       var input = element(by.id('input'));
-
-       it('should validate the input with the default minlength', function() {
-         input.sendKeys('ab');
-         expect(model.getText()).not.toContain('ab');
-
-         input.sendKeys('abc');
-         expect(model.getText()).toContain('abc');
-       });
- *   </file>
- * </example>
  */
-var minlengthDirective = ['$parse', function($parse) {
-  return {
-    restrict: 'A',
-    require: '?ngModel',
-    link: function(scope, elm, attr, ctrl) {
-      if (!ctrl) return;
+export const minlengthDirective = [
+  "$parse",
+  function ($parse) {
+    return {
+      restrict: "A",
+      require: "?ngModel",
+      link(scope, elm, attr, ctrl) {
+        if (!ctrl) return;
 
-      var minlength = attr.minlength || $parse(attr.ngMinlength)(scope);
-      var minlengthParsed = parseLength(minlength) || -1;
+        let minlength = attr.minlength || $parse(attr.ngMinlength)(scope);
+        let minlengthParsed = parseLength(minlength) || -1;
 
-      attr.$observe('minlength', function(value) {
-        if (minlength !== value) {
-          minlengthParsed = parseLength(value) || -1;
-          minlength = value;
-          ctrl.$validate();
-        }
-
-      });
-      ctrl.$validators.minlength = function(modelValue, viewValue) {
-        return ctrl.$isEmpty(viewValue) || viewValue.length >= minlengthParsed;
-      };
-    }
-  };
-}];
-
+        attr.$observe("minlength", (value) => {
+          if (minlength !== value) {
+            minlengthParsed = parseLength(value) || -1;
+            minlength = value;
+            ctrl.$validate();
+          }
+        });
+        ctrl.$validators.minlength = function (modelValue, viewValue) {
+          return (
+            ctrl.$isEmpty(viewValue) || viewValue.length >= minlengthParsed
+          );
+        };
+      },
+    };
+  },
+];
 
 function parsePatternAttr(regex, patternExp, elm) {
   if (!regex) return undefined;
 
   if (isString(regex)) {
-    regex = new RegExp('^' + regex + '$');
+    regex = new RegExp(`^${regex}$`);
   }
 
   if (!regex.test) {
-    throw minErr('ngPattern')('noregexp',
-      'Expected {0} to be a RegExp but was {1}. Element: {2}', patternExp,
-      regex, startingTag(elm));
+    throw minErr("ngPattern")(
+      "noregexp",
+      "Expected {0} to be a RegExp but was {1}. Element: {2}",
+      patternExp,
+      regex,
+      startingTag(elm),
+    );
   }
 
   return regex;
 }
 
 function parseLength(val) {
-  var intVal = toInt(val);
+  const intVal = toInt(val);
   return isNumberNaN(intVal) ? -1 : intVal;
 }

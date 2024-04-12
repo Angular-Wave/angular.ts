@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc directive
  * @name ngController
@@ -24,7 +22,7 @@
  * @element ANY
  * @scope
  * @priority 500
- * @param {expression} ngController Name of a constructor function registered with the current
+ * @param {String} ngController Name of a constructor function registered with the current
  * {@link ng.$controllerProvider $controllerProvider} or an {@link guide/expression expression}
  * that on the current scope evaluates to a constructor function.
  *
@@ -55,180 +53,12 @@
  * * Since there is always a `.` in the bindings, you don't have to worry about prototypal
  * inheritance masking primitives.
  *
- * This example demonstrates the `controller as` syntax.
- *
- * <example name="ngControllerAs" module="controllerAsExample">
- *   <file name="index.html">
- *    <div id="ctrl-as-exmpl" ng-controller="SettingsController1 as settings">
- *      <label>Name: <input type="text" ng-model="settings.name"/></label>
- *      <button ng-click="settings.greet()">greet</button><br/>
- *      Contact:
- *      <ul>
- *        <li ng-repeat="contact in settings.contacts">
- *          <select ng-model="contact.type" aria-label="Contact method" id="select_{{$index}}">
- *             <option>phone</option>
- *             <option>email</option>
- *          </select>
- *          <input type="text" ng-model="contact.value" aria-labelledby="select_{{$index}}" />
- *          <button ng-click="settings.clearContact(contact)">clear</button>
- *          <button ng-click="settings.removeContact(contact)" aria-label="Remove">X</button>
- *        </li>
- *        <li><button ng-click="settings.addContact()">add</button></li>
- *     </ul>
- *    </div>
- *   </file>
- *   <file name="app.js">
- *    angular.module('controllerAsExample', [])
- *      .controller('SettingsController1', SettingsController1);
- *
- *    function SettingsController1() {
- *      this.name = 'John Smith';
- *      this.contacts = [
- *        {type: 'phone', value: '408 555 1212'},
- *        {type: 'email', value: 'john.smith@example.org'}
- *      ];
- *    }
- *
- *    SettingsController1.prototype.greet = function() {
- *      alert(this.name);
- *    };
- *
- *    SettingsController1.prototype.addContact = function() {
- *      this.contacts.push({type: 'email', value: 'yourname@example.org'});
- *    };
- *
- *    SettingsController1.prototype.removeContact = function(contactToRemove) {
- *     var index = this.contacts.indexOf(contactToRemove);
- *      this.contacts.splice(index, 1);
- *    };
- *
- *    SettingsController1.prototype.clearContact = function(contact) {
- *      contact.type = 'phone';
- *      contact.value = '';
- *    };
- *   </file>
- *   <file name="protractor.js" type="protractor">
- *     it('should check controller as', function() {
- *       var container = element(by.id('ctrl-as-exmpl'));
- *         expect(container.element(by.model('settings.name'))
- *           .getAttribute('value')).toBe('John Smith');
- *
- *       var firstRepeat =
- *           container.element(by.repeater('contact in settings.contacts').row(0));
- *       var secondRepeat =
- *           container.element(by.repeater('contact in settings.contacts').row(1));
- *
- *       expect(firstRepeat.element(by.model('contact.value')).getAttribute('value'))
- *           .toBe('408 555 1212');
- *
- *       expect(secondRepeat.element(by.model('contact.value')).getAttribute('value'))
- *           .toBe('john.smith@example.org');
- *
- *       firstRepeat.element(by.buttonText('clear')).click();
- *
- *       expect(firstRepeat.element(by.model('contact.value')).getAttribute('value'))
- *           .toBe('');
- *
- *       container.element(by.buttonText('add')).click();
- *
- *       expect(container.element(by.repeater('contact in settings.contacts').row(2))
- *           .element(by.model('contact.value'))
- *           .getAttribute('value'))
- *           .toBe('yourname@example.org');
- *     });
- *   </file>
- * </example>
- *
- * This example demonstrates the "attach to `$scope`" style of controller.
- *
- * <example name="ngController" module="controllerExample">
- *  <file name="index.html">
- *   <div id="ctrl-exmpl" ng-controller="SettingsController2">
- *     <label>Name: <input type="text" ng-model="name"/></label>
- *     <button ng-click="greet()">greet</button><br/>
- *     Contact:
- *     <ul>
- *       <li ng-repeat="contact in contacts">
- *         <select ng-model="contact.type" id="select_{{$index}}">
- *            <option>phone</option>
- *            <option>email</option>
- *         </select>
- *         <input type="text" ng-model="contact.value" aria-labelledby="select_{{$index}}" />
- *         <button ng-click="clearContact(contact)">clear</button>
- *         <button ng-click="removeContact(contact)">X</button>
- *       </li>
- *       <li>[ <button ng-click="addContact()">add</button> ]</li>
- *    </ul>
- *   </div>
- *  </file>
- *  <file name="app.js">
- *   angular.module('controllerExample', [])
- *     .controller('SettingsController2', ['$scope', SettingsController2]);
- *
- *   function SettingsController2($scope) {
- *     $scope.name = 'John Smith';
- *     $scope.contacts = [
- *       {type:'phone', value:'408 555 1212'},
- *       {type:'email', value:'john.smith@example.org'}
- *     ];
- *
- *     $scope.greet = function() {
- *       alert($scope.name);
- *     };
- *
- *     $scope.addContact = function() {
- *       $scope.contacts.push({type:'email', value:'yourname@example.org'});
- *     };
- *
- *     $scope.removeContact = function(contactToRemove) {
- *       var index = $scope.contacts.indexOf(contactToRemove);
- *       $scope.contacts.splice(index, 1);
- *     };
- *
- *     $scope.clearContact = function(contact) {
- *       contact.type = 'phone';
- *       contact.value = '';
- *     };
- *   }
- *  </file>
- *  <file name="protractor.js" type="protractor">
- *    it('should check controller', function() {
- *      var container = element(by.id('ctrl-exmpl'));
- *
- *      expect(container.element(by.model('name'))
- *          .getAttribute('value')).toBe('John Smith');
- *
- *      var firstRepeat =
- *          container.element(by.repeater('contact in contacts').row(0));
- *      var secondRepeat =
- *          container.element(by.repeater('contact in contacts').row(1));
- *
- *      expect(firstRepeat.element(by.model('contact.value')).getAttribute('value'))
- *          .toBe('408 555 1212');
- *      expect(secondRepeat.element(by.model('contact.value')).getAttribute('value'))
- *          .toBe('john.smith@example.org');
- *
- *      firstRepeat.element(by.buttonText('clear')).click();
- *
- *      expect(firstRepeat.element(by.model('contact.value')).getAttribute('value'))
- *          .toBe('');
- *
- *      container.element(by.buttonText('add')).click();
- *
- *      expect(container.element(by.repeater('contact in contacts').row(2))
- *          .element(by.model('contact.value'))
- *          .getAttribute('value'))
- *          .toBe('yourname@example.org');
- *    });
- *  </file>
- *</example>
-
  */
-var ngControllerDirective = [function() {
-  return {
-    restrict: 'A',
+export const ngControllerDirective = [
+  () => ({
+    restrict: "A",
     scope: true,
-    controller: '@',
-    priority: 500
-  };
-}];
+    controller: "@",
+    priority: 500,
+  }),
+];

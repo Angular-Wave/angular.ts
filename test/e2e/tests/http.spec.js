@@ -1,11 +1,9 @@
-'use strict';
-
-describe('$http', function() {
-  beforeEach(function() {
-    loadFixture('http');
+describe("$http", () => {
+  beforeEach(() => {
+    loadFixture("http");
   });
 
-  it('should correctly update the outstanding request count', function() {
-    expect(element(by.binding('text')).getText()).toBe('Hello, world!');
+  it("should correctly update the outstanding request count", () => {
+    expect(element(by.binding("text")).getText()).toBe("Hello, world!");
   });
 });

@@ -1,54 +1,71 @@
-'use strict';
+import { createInjector } from "../../../src/injector";
+import { dealoc } from "../../../src/jqLite";
+import { publishExternalAPI } from "../../../src/public";
 
-/* globals generateInputCompilerHelper: false */
+describe("ngChange", () => {
+  let injector;
+  let el;
 
-describe('ngChange', function() {
+  beforeEach(() => {
+    publishExternalAPI();
+    injector = createInjector(["ng"]);
+  });
 
-  var helper = {}, $rootScope;
+  afterEach(() => dealoc(el));
 
-  generateInputCompilerHelper(helper);
+  it("should $eval expression after new value is set in the model", () => {
+    injector.invoke(($compile, $rootScope) => {
+      el = $compile(
+        '<input type="text" ng-model="value" ng-change="change()" />',
+      )($rootScope);
 
-  beforeEach(inject(function(_$rootScope_) {
-    $rootScope = _$rootScope_;
-  }));
+      $rootScope.change = jasmine.createSpy("change").and.callFake(() => {
+        expect($rootScope.value).toBe("new value");
+      });
 
-  it('should $eval expression after new value is set in the model', function() {
-    helper.compileInput('<input type="text" ng-model="value" ng-change="change()" />');
+      el[0].setAttribute("value", "new value");
+      el[0].dispatchEvent(new Event("change"));
 
-    $rootScope.change = jasmine.createSpy('change').and.callFake(function() {
-      expect($rootScope.value).toBe('new value');
+      expect($rootScope.change).toHaveBeenCalled();
     });
-
-    helper.changeInputValueTo('new value');
-    expect($rootScope.change).toHaveBeenCalledOnce();
   });
 
+  it("should not $eval the expression if changed from model", () => {
+    injector.invoke(($compile, $rootScope) => {
+      el = $compile(
+        '<input type="text" ng-model="value" ng-change="change()" />',
+      )($rootScope);
 
-  it('should not $eval the expression if changed from model', function() {
-    helper.compileInput('<input type="text" ng-model="value" ng-change="change()" />');
+      $rootScope.change = jasmine.createSpy("change");
+      $rootScope.$apply("value = true");
 
-    $rootScope.change = jasmine.createSpy('change');
-    $rootScope.$apply('value = true');
-
-    expect($rootScope.change).not.toHaveBeenCalled();
+      expect($rootScope.change).not.toHaveBeenCalled();
+    });
   });
 
+  it("should $eval ngChange expression on checkbox", () => {
+    injector.invoke(($compile, $rootScope) => {
+      el = $compile(
+        '<input type="checkbox" ng-model="foo" ng-change="changeFn()">',
+      )($rootScope);
 
-  it('should $eval ngChange expression on checkbox', function() {
-    var inputElm = helper.compileInput('<input type="checkbox" ng-model="foo" ng-change="changeFn()">');
+      $rootScope.changeFn = jasmine.createSpy("changeFn");
+      expect($rootScope.changeFn).not.toHaveBeenCalled();
 
-    $rootScope.changeFn = jasmine.createSpy('changeFn');
-    expect($rootScope.changeFn).not.toHaveBeenCalled();
-
-    browserTrigger(inputElm, 'click');
-    expect($rootScope.changeFn).toHaveBeenCalledOnce();
+      el[0].dispatchEvent(new Event("change"));
+      expect($rootScope.changeFn).toHaveBeenCalled();
+    });
   });
 
+  it("should be able to change the model and via that also update the view", () => {
+    injector.invoke(($compile, $rootScope) => {
+      el = $compile(
+        '<input type="text" ng-model="value" ng-change="value=\'b\'" />',
+      )($rootScope);
 
-  it('should be able to change the model and via that also update the view', function() {
-    var inputElm = helper.compileInput('<input type="text" ng-model="value" ng-change="value=\'b\'" />');
-
-    helper.changeInputValueTo('a');
-    expect(inputElm.val()).toBe('b');
+      el[0].setAttribute("value", "a");
+      el[0].dispatchEvent(new Event("change"));
+      expect(el.val()).toBe("b");
+    });
   });
 });

@@ -1,4 +1,4 @@
-'use strict';
+import { ngDirective } from "./directives";
 
 /**
  * @ngdoc directive
@@ -35,41 +35,14 @@
  * </pre>
  * </div>
  *
- * @example
-   <example module="initExample" name="ng-init">
-     <file name="index.html">
-   <script>
-     angular.module('initExample', [])
-       .controller('ExampleController', ['$scope', function($scope) {
-         $scope.list = [['a', 'b'], ['c', 'd']];
-       }]);
-   </script>
-   <div ng-controller="ExampleController">
-     <div ng-repeat="innerList in list" ng-init="outerIndex = $index">
-       <div ng-repeat="value in innerList" ng-init="innerIndex = $index">
-          <span class="example-init">list[ {{outerIndex}} ][ {{innerIndex}} ] = {{value}};</span>
-       </div>
-     </div>
-   </div>
-     </file>
-     <file name="protractor.js" type="protractor">
-       it('should alias index positions', function() {
-         var elements = element.all(by.css('.example-init'));
-         expect(elements.get(0).getText()).toBe('list[ 0 ][ 0 ] = a;');
-         expect(elements.get(1).getText()).toBe('list[ 0 ][ 1 ] = b;');
-         expect(elements.get(2).getText()).toBe('list[ 1 ][ 0 ] = c;');
-         expect(elements.get(3).getText()).toBe('list[ 1 ][ 1 ] = d;');
-       });
-     </file>
-   </example>
  */
-var ngInitDirective = ngDirective({
+export const ngInitDirective = ngDirective({
   priority: 450,
-  compile: function() {
+  compile() {
     return {
-      pre: function(scope, element, attrs) {
+      pre(scope, _element, attrs) {
         scope.$eval(attrs.ngInit);
-      }
+      },
     };
-  }
+  },
 });

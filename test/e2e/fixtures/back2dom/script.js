@@ -1,11 +1,7 @@
-'use strict';
+angular.module("test", []).run(($rootScope) => {
+  $rootScope.internalFnCalled = false;
 
-angular
-  .module('test', [])
-  .run(function($rootScope) {
-    $rootScope.internalFnCalled = false;
-
-    $rootScope.internalFn = function() {
-        $rootScope.internalFnCalled = true;
-    };
-  });
+  $rootScope.internalFn = function () {
+    $rootScope.internalFnCalled = true;
+  };
+});

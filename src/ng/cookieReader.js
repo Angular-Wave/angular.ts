@@ -1,4 +1,4 @@
-'use strict';
+import { isUndefined } from "./utils";
 
 /**
  * @name $$cookieReader
@@ -9,16 +9,16 @@
  *
  * @return {Object} a key/value map of the current cookies
  */
-function $$CookieReader($document) {
-  var rawDocument = $document[0] || {};
-  var lastCookies = {};
-  var lastCookieString = '';
+export function $$CookieReader($document) {
+  const rawDocument = $document[0] || {};
+  let lastCookies = {};
+  let lastCookieString = "";
 
   function safeGetCookie(rawDocument) {
     try {
-      return rawDocument.cookie || '';
+      return rawDocument.cookie || "";
     } catch (e) {
-      return '';
+      return "";
     }
   }
 
@@ -30,25 +30,33 @@ function $$CookieReader($document) {
     }
   }
 
-  return function() {
-    var cookieArray, cookie, i, index, name;
-    var currentCookieString = safeGetCookie(rawDocument);
+  return function () {
+    let cookieArray;
+    let cookie;
+    let i;
+    let index;
+    let name;
+    const currentCookieString = safeGetCookie(rawDocument);
 
     if (currentCookieString !== lastCookieString) {
       lastCookieString = currentCookieString;
-      cookieArray = lastCookieString.split('; ');
+      cookieArray = lastCookieString.split("; ");
       lastCookies = {};
 
+      // eslint-disable-next-line no-plusplus
       for (i = 0; i < cookieArray.length; i++) {
         cookie = cookieArray[i];
-        index = cookie.indexOf('=');
-        if (index > 0) { //ignore nameless cookies
+        index = cookie.indexOf("=");
+        if (index > 0) {
+          // ignore nameless cookies
           name = safeDecodeURIComponent(cookie.substring(0, index));
           // the first value that is seen for a cookie is the most
           // specific one.  values for the same cookie name that
           // follow are for less specific paths.
           if (isUndefined(lastCookies[name])) {
-            lastCookies[name] = safeDecodeURIComponent(cookie.substring(index + 1));
+            lastCookies[name] = safeDecodeURIComponent(
+              cookie.substring(index + 1),
+            );
           }
         }
       }
@@ -57,9 +65,8 @@ function $$CookieReader($document) {
   };
 }
 
-$$CookieReader.$inject = ['$document'];
+$$CookieReader.$inject = ["$document"];
 
-/** @this */
-function $$CookieReaderProvider() {
+export function CookieReaderProvider() {
   this.$get = $$CookieReader;
 }

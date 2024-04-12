@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc directive
  * @name ngClick
@@ -11,64 +9,69 @@
  * The ngClick directive allows you to specify custom behavior when
  * an element is clicked.
  *
- * @param {expression} ngClick {@link guide/expression Expression} to evaluate upon
+ * @param {String} ngClick {@link guide/expression Expression} to evaluate upon
  * click. ({@link guide/expression#-event- Event object is available as `$event`})
  *
- * @example
-   <example name="ng-click">
-     <file name="index.html">
-      <button ng-click="count = count + 1" ng-init="count=0">
-        Increment
-      </button>
-      <span>
-        count: {{count}}
-      </span>
-     </file>
-     <file name="protractor.js" type="protractor">
-       it('should check ng-click', function() {
-         expect(element(by.binding('count')).getText()).toMatch('0');
-         element(by.css('button')).click();
-         expect(element(by.binding('count')).getText()).toMatch('1');
-       });
-     </file>
-   </example>
  */
+
+import { forEach } from "../utils";
+import { directiveNormalize } from "../compile";
+
 /*
  * A collection of directives that allows creation of custom event handlers that are defined as
  * AngularJS expressions and are compiled and executed within the current scope.
  */
-var ngEventDirectives = {};
+export const ngEventDirectives = {};
 
 // For events that might fire synchronously during DOM manipulation
 // we need to execute their event handlers asynchronously using $evalAsync,
 // so that they are not executed in an inconsistent state.
-var forceAsyncEvents = {
-  'blur': true,
-  'focus': true
+const forceAsyncEvents = {
+  blur: true,
+  focus: true,
 };
-forEach(
-  'click dblclick mousedown mouseup mouseover mouseout mousemove mouseenter mouseleave keydown keyup keypress submit focus blur copy cut paste'.split(' '),
-  function(eventName) {
-    var directiveName = directiveNormalize('ng-' + eventName);
-    ngEventDirectives[directiveName] = ['$parse', '$rootScope', '$exceptionHandler', function($parse, $rootScope, $exceptionHandler) {
-      return createEventDirective($parse, $rootScope, $exceptionHandler, directiveName, eventName, forceAsyncEvents[eventName]);
-    }];
-  }
-);
 
-function createEventDirective($parse, $rootScope, $exceptionHandler, directiveName, eventName, forceAsync) {
+const events = "click dblclick submit focus blur copy cut paste".split(" ");
+
+events.forEach((eventName) => {
+  const directiveName = directiveNormalize(`ng-${eventName}`);
+  ngEventDirectives[directiveName] = [
+    "$parse",
+    "$rootScope",
+    "$exceptionHandler",
+    ($parse, $rootScope, $exceptionHandler) => {
+      return createEventDirective(
+        $parse,
+        $rootScope,
+        $exceptionHandler,
+        directiveName,
+        eventName,
+        forceAsyncEvents[eventName],
+      );
+    },
+  ];
+});
+
+function createEventDirective(
+  $parse,
+  $rootScope,
+  $exceptionHandler,
+  directiveName,
+  eventName,
+  forceAsync,
+) {
   return {
-    restrict: 'A',
-    compile: function($element, attr) {
+    restrict: "A",
+    compile($element, attr) {
       // NOTE:
       // We expose the powerful `$event` object on the scope that provides access to the Window,
       // etc. This is OK, because expressions are not sandboxed any more (and the expression
       // sandbox was never meant to be a security feature anyway).
-      var fn = $parse(attr[directiveName]);
+      const fn = $parse(attr[directiveName]);
       return function ngEventHandler(scope, element) {
-        element.on(eventName, function(event) {
-          var callback = function() {
-            fn(scope, {$event: event});
+        element.on(eventName, (event) => {
+          const callback = function () {
+            fn(scope, { $event: event });
           };
 
           if (!$rootScope.$$phase) {
@@ -84,7 +87,7 @@ function createEventDirective($parse, $rootScope, $exceptionHandler, directiveNa
           }
         });
       };
-    }
+    },
   };
 }
 
@@ -112,7 +115,6 @@ function createEventDirective($parse, $rootScope, $exceptionHandler, directiveNa
    </example>
  */
 
-
 /**
  * @ngdoc directive
  * @name ngMousedown
@@ -136,7 +138,6 @@ function createEventDirective($parse, $rootScope, $exceptionHandler, directiveNa
      </file>
    </example>
  */
-
 
 /**
  * @ngdoc directive
@@ -186,7 +187,6 @@ function createEventDirective($parse, $rootScope, $exceptionHandler, directiveNa
    </example>
  */
 
-
 /**
  * @ngdoc directive
  * @name ngMouseenter
@@ -210,7 +210,6 @@ function createEventDirective($parse, $rootScope, $exceptionHandler, directiveNa
      </file>
    </example>
  */
-
 
 /**
  * @ngdoc directive
@@ -236,7 +235,6 @@ function createEventDirective($parse, $rootScope, $exceptionHandler, directiveNa
    </example>
  */
 
-
 /**
  * @ngdoc directive
  * @name ngMousemove
@@ -261,7 +259,6 @@ function createEventDirective($parse, $rootScope, $exceptionHandler, directiveNa
    </example>
  */
 
-
 /**
  * @ngdoc directive
  * @name ngKeydown
@@ -283,7 +280,6 @@ function createEventDirective($parse, $rootScope, $exceptionHandler, directiveNa
      </file>
    </example>
  */
-
 
 /**
  * @ngdoc directive
@@ -312,7 +308,6 @@ function createEventDirective($parse, $rootScope, $exceptionHandler, directiveNa
    </example>
  */
 
-
 /**
  * @ngdoc directive
  * @name ngKeypress
@@ -334,7 +329,6 @@ function createEventDirective($parse, $rootScope, $exceptionHandler, directiveNa
      </file>
    </example>
  */
-
 
 /**
  * @ngdoc directive
@@ -360,44 +354,6 @@ function createEventDirective($parse, $rootScope, $exceptionHandler, directiveNa
  * @param {expression} ngSubmit {@link guide/expression Expression} to eval.
  * ({@link guide/expression#-event- Event object is available as `$event`})
  *
- * @example
-   <example module="submitExample" name="ng-submit">
-     <file name="index.html">
-      <script>
-        angular.module('submitExample', [])
-          .controller('ExampleController', ['$scope', function($scope) {
-            $scope.list = [];
-            $scope.text = 'hello';
-            $scope.submit = function() {
-              if ($scope.text) {
-                $scope.list.push(this.text);
-                $scope.text = '';
-              }
-            };
-          }]);
-      </script>
-      <form ng-submit="submit()" ng-controller="ExampleController">
-        Enter text and hit enter:
-        <input type="text" ng-model="text" name="text" />
-        <input type="submit" id="submit" value="Submit" />
-        <pre>list={{list}}</pre>
-      </form>
-     </file>
-     <file name="protractor.js" type="protractor">
-       it('should check ng-submit', function() {
-         expect(element(by.binding('list')).getText()).toBe('list=[]');
-         element(by.css('#submit')).click();
-         expect(element(by.binding('list')).getText()).toContain('hello');
-         expect(element(by.model('text')).getAttribute('value')).toBe('');
-       });
-       it('should ignore empty strings', function() {
-         expect(element(by.binding('list')).getText()).toBe('list=[]');
-         element(by.css('#submit')).click();
-         element(by.css('#submit')).click();
-         expect(element(by.binding('list')).getText()).toContain('hello');
-        });
-     </file>
-   </example>
  */
 
 /**

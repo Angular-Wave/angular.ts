@@ -1,7 +1,5 @@
-'use strict';
-
-var NG_HIDE_CLASS = 'ng-hide';
-var NG_HIDE_IN_PROGRESS_CLASS = 'ng-hide-animate';
+const NG_HIDE_CLASS = "ng-hide";
+const NG_HIDE_IN_PROGRESS_CLASS = "ng-hide-animate";
 /**
  * @ngdoc directive
  * @name ngShow
@@ -92,96 +90,8 @@ var NG_HIDE_IN_PROGRESS_CLASS = 'ng-hide-animate';
  *
  * @example
  * A simple example, animating the element's opacity:
- *
-  <example module="ngAnimate" deps="angular-animate.js" animations="true" name="ng-show-simple">
-    <file name="index.html">
-      Show: <input type="checkbox" ng-model="checked" aria-label="Toggle ngShow"><br />
-      <div class="check-element animate-show-hide" ng-show="checked">
-        I show up when your checkbox is checked.
-      </div>
-    </file>
-    <file name="animations.css">
-      .animate-show-hide.ng-hide {
-        opacity: 0;
-      }
 
-      .animate-show-hide.ng-hide-add,
-      .animate-show-hide.ng-hide-remove {
-        transition: all linear 0.5s;
-      }
-
-      .check-element {
-        border: 1px solid black;
-        opacity: 1;
-        padding: 10px;
-      }
-    </file>
-    <file name="protractor.js" type="protractor">
-      it('should check ngShow', function() {
-        var checkbox = element(by.model('checked'));
-        var checkElem = element(by.css('.check-element'));
-
-        expect(checkElem.isDisplayed()).toBe(false);
-        checkbox.click();
-        expect(checkElem.isDisplayed()).toBe(true);
-      });
-    </file>
-  </example>
- *
- * <hr />
- * @example
- * A more complex example, featuring different show/hide animations:
- *
-  <example module="ngAnimate" deps="angular-animate.js" animations="true" name="ng-show-complex">
-    <file name="index.html">
-      Show: <input type="checkbox" ng-model="checked" aria-label="Toggle ngShow"><br />
-      <div class="check-element funky-show-hide" ng-show="checked">
-        I show up when your checkbox is checked.
-      </div>
-    </file>
-    <file name="animations.css">
-      body {
-        overflow: hidden;
-        perspective: 1000px;
-      }
-
-      .funky-show-hide.ng-hide-add {
-        transform: rotateZ(0);
-        transform-origin: right;
-        transition: all 0.5s ease-in-out;
-      }
-
-      .funky-show-hide.ng-hide-add.ng-hide-add-active {
-        transform: rotateZ(-135deg);
-      }
-
-      .funky-show-hide.ng-hide-remove {
-        transform: rotateY(90deg);
-        transform-origin: left;
-        transition: all 0.5s ease;
-      }
-
-      .funky-show-hide.ng-hide-remove.ng-hide-remove-active {
-        transform: rotateY(0);
-      }
-
-      .check-element {
-        border: 1px solid black;
-        opacity: 1;
-        padding: 10px;
-      }
-    </file>
-    <file name="protractor.js" type="protractor">
-      it('should check ngShow', function() {
-        var checkbox = element(by.model('checked'));
-        var checkElem = element(by.css('.check-element'));
-
-        expect(checkElem.isDisplayed()).toBe(false);
-        checkbox.click();
-        expect(checkElem.isDisplayed()).toBe(true);
-      });
-    </file>
-  </example>
+* <hr />
  *
  * @knownIssue
  *
@@ -191,9 +101,8 @@ var NG_HIDE_IN_PROGRESS_CLASS = 'ng-hide-animate';
  * happen that both the element to show and the element to hide are visible for a very short time.
  *
  * This usually happens when the {@link ngAnimate ngAnimate module} is included, but no actual animations
- * are defined for {@link ngShow} / {@link ngHide}. Internet Explorer is affected more often than
- * other browsers.
- *
+ * are defined for {@link ngShow} / {@link ngHide}.
+ * 
  * There are several way to mitigate this problem:
  *
  * - {@link guide/animations#how-to-selectively-enable-disable-and-skip-animations Disable animations on the affected elements}.
@@ -202,24 +111,24 @@ var NG_HIDE_IN_PROGRESS_CLASS = 'ng-hide-animate';
  * - Use `ng-class="{'ng-hide': expression}` instead of instead of {@link ngShow} / {@link ngHide}.
  * - Define an animation on the affected elements.
  */
-var ngShowDirective = ['$animate', function($animate) {
-  return {
-    restrict: 'A',
+export const ngShowDirective = [
+  "$animate",
+  ($animate) => ({
+    restrict: "A",
     multiElement: true,
-    link: function(scope, element, attr) {
-      scope.$watch(attr.ngShow, function ngShowWatchAction(value) {
+    link(scope, element, attr) {
+      scope.$watch(attr.ngShow, (value) => {
         // we're adding a temporary, animation-specific class for ng-hide since this way
         // we can control when the element is actually displayed on screen without having
         // to have a global/greedy CSS selector that breaks when other animations are run.
         // Read: https://github.com/angular/angular.js/issues/9103#issuecomment-58335845
-        $animate[value ? 'removeClass' : 'addClass'](element, NG_HIDE_CLASS, {
-          tempClasses: NG_HIDE_IN_PROGRESS_CLASS
+        $animate[value ? "removeClass" : "addClass"](element, NG_HIDE_CLASS, {
+          tempClasses: NG_HIDE_IN_PROGRESS_CLASS,
         });
       });
-    }
-  };
-}];
-
+    },
+  }),
+];
 
 /**
  * @ngdoc directive
@@ -309,99 +218,6 @@ var ngShowDirective = ['$animate', function($animate) {
  * @param {expression} ngHide If the {@link guide/expression expression} is truthy/falsy then the
  *                            element is hidden/shown respectively.
  *
- * @example
- * A simple example, animating the element's opacity:
- *
-  <example module="ngAnimate" deps="angular-animate.js" animations="true" name="ng-hide-simple">
-    <file name="index.html">
-      Hide: <input type="checkbox" ng-model="checked" aria-label="Toggle ngHide"><br />
-      <div class="check-element animate-show-hide" ng-hide="checked">
-        I hide when your checkbox is checked.
-      </div>
-    </file>
-    <file name="animations.css">
-      .animate-show-hide.ng-hide {
-        opacity: 0;
-      }
-
-      .animate-show-hide.ng-hide-add,
-      .animate-show-hide.ng-hide-remove {
-        transition: all linear 0.5s;
-      }
-
-      .check-element {
-        border: 1px solid black;
-        opacity: 1;
-        padding: 10px;
-      }
-    </file>
-    <file name="protractor.js" type="protractor">
-      it('should check ngHide', function() {
-        var checkbox = element(by.model('checked'));
-        var checkElem = element(by.css('.check-element'));
-
-        expect(checkElem.isDisplayed()).toBe(true);
-        checkbox.click();
-        expect(checkElem.isDisplayed()).toBe(false);
-      });
-    </file>
-  </example>
- *
- * <hr />
- * @example
- * A more complex example, featuring different show/hide animations:
- *
-  <example module="ngAnimate" deps="angular-animate.js" animations="true" name="ng-hide-complex">
-    <file name="index.html">
-      Hide: <input type="checkbox" ng-model="checked" aria-label="Toggle ngHide"><br />
-      <div class="check-element funky-show-hide" ng-hide="checked">
-        I hide when your checkbox is checked.
-      </div>
-    </file>
-    <file name="animations.css">
-      body {
-        overflow: hidden;
-        perspective: 1000px;
-      }
-
-      .funky-show-hide.ng-hide-add {
-        transform: rotateZ(0);
-        transform-origin: right;
-        transition: all 0.5s ease-in-out;
-      }
-
-      .funky-show-hide.ng-hide-add.ng-hide-add-active {
-        transform: rotateZ(-135deg);
-      }
-
-      .funky-show-hide.ng-hide-remove {
-        transform: rotateY(90deg);
-        transform-origin: left;
-        transition: all 0.5s ease;
-      }
-
-      .funky-show-hide.ng-hide-remove.ng-hide-remove-active {
-        transform: rotateY(0);
-      }
-
-      .check-element {
-        border: 1px solid black;
-        opacity: 1;
-        padding: 10px;
-      }
-    </file>
-    <file name="protractor.js" type="protractor">
-      it('should check ngHide', function() {
-        var checkbox = element(by.model('checked'));
-        var checkElem = element(by.css('.check-element'));
-
-        expect(checkElem.isDisplayed()).toBe(true);
-        checkbox.click();
-        expect(checkElem.isDisplayed()).toBe(false);
-      });
-    </file>
-  </example>
- *
  * @knownIssue
  *
  * ### Flickering when using ngHide to toggle between elements
@@ -421,18 +237,19 @@ var ngShowDirective = ['$animate', function($animate) {
  * - Use `ng-class="{'ng-hide': expression}` instead of instead of {@link ngShow} / {@link ngHide}.
  * - Define an animation on the affected elements.
  */
-var ngHideDirective = ['$animate', function($animate) {
-  return {
-    restrict: 'A',
+export const ngHideDirective = [
+  "$animate",
+  ($animate) => ({
+    restrict: "A",
     multiElement: true,
-    link: function(scope, element, attr) {
-      scope.$watch(attr.ngHide, function ngHideWatchAction(value) {
+    link(scope, element, attr) {
+      scope.$watch(attr.ngHide, (value) => {
         // The comment inside of the ngShowDirective explains why we add and
         // remove a temporary class for the show/hide animation
-        $animate[value ? 'addClass' : 'removeClass'](element,NG_HIDE_CLASS, {
-          tempClasses: NG_HIDE_IN_PROGRESS_CLASS
+        $animate[value ? "addClass" : "removeClass"](element, NG_HIDE_CLASS, {
+          tempClasses: NG_HIDE_IN_PROGRESS_CLASS,
         });
       });
-    }
-  };
-}];
+    },
+  }),
+];

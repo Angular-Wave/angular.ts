@@ -1,23 +1,21 @@
-'use strict';
 
-var app = angular.module('eventDelegationBenchmark', []);
 
-app.directive('noopDir', function() {
-  return {
-    compile: function($element, $attrs) {
+const app = angular.module('eventDelegationBenchmark', []);
+
+app.directive('noopDir', () => ({
+    compile($element, $attrs) {
       return function($scope, $element) {
         return 1;
       };
     }
-  };
-});
+  }));
 
 app.directive('nativeClick', ['$parse', function($parse) {
   return {
-    compile: function($element, $attrs) {
+    compile($element, $attrs) {
       $parse($attrs.tstEvent);
       return function($scope, $element) {
-        $element[0].addEventListener('click', function() {
+        $element[0].addEventListener('click', () => {
           console.log('clicked');
         }, false);
       };
@@ -25,31 +23,29 @@ app.directive('nativeClick', ['$parse', function($parse) {
   };
 }]);
 
-app.directive('dlgtClick', function() {
-  return {
-    compile: function($element, $attrs) {
+app.directive('dlgtClick', () => ({
+    compile($element, $attrs) {
       // We don't setup the global event listeners as the costs are small and one time only...
     }
-  };
-});
+  }));
 
 app.controller('DataController', function DataController($rootScope) {
   this.ngRepeatCount = 1000;
   this.rows = [];
-  var self = this;
+  const self = this;
 
   benchmarkSteps.push({
     name: '$apply',
-    fn: function() {
-      var oldRows = self.rows;
-      $rootScope.$apply(function() {
+    fn() {
+      const oldRows = self.rows;
+      $rootScope.$apply(() => {
         self.rows = [];
       });
       self.rows = oldRows;
       if (self.rows.length !== self.ngRepeatCount) {
         self.rows = [];
-        for (var i = 0; i < self.ngRepeatCount; i++) {
-          self.rows.push('row' + i);
+        for (let i = 0; i < self.ngRepeatCount; i++) {
+          self.rows.push(`row${  i}`);
         }
       }
       $rootScope.$apply();

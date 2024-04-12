@@ -1,4 +1,4 @@
-'use strict';
+import { valueFn } from "./utils";
 
 /**
  * ! This is a private undocumented service !
@@ -13,19 +13,20 @@
  * @param {$log} log - A logger instance (such as `$log`). Used to log error during callback
  *     execution.
  *
- * @this
+ *
  */
-function $$TaskTrackerFactoryProvider() {
-  this.$get = valueFn(function(log) { return new TaskTracker(log); });
+export function $$TaskTrackerFactoryProvider() {
+  // eslint-disable-next-line no-use-before-define
+  this.$get = valueFn((log) => new TaskTracker(log));
 }
 
-function TaskTracker(log) {
-  var self = this;
-  var taskCounts = {};
-  var taskCallbacks = [];
+export function TaskTracker(log) {
+  const self = this;
+  const taskCounts = {};
+  const taskCallbacks = [];
 
-  var ALL_TASKS_TYPE = self.ALL_TASKS_TYPE = '$$all$$';
-  var DEFAULT_TASK_TYPE = self.DEFAULT_TASK_TYPE = '$$default$$';
+  const ALL_TASKS_TYPE = (self.ALL_TASKS_TYPE = "$$all$$");
+  const DEFAULT_TASK_TYPE = (self.DEFAULT_TASK_TYPE = "$$default$$");
 
   /**
    * Execute the specified function and decrement the appropriate `taskCounts` counter.
@@ -63,13 +64,15 @@ function TaskTracker(log) {
     } finally {
       decTaskCount(taskType);
 
-      var countForType = taskCounts[taskType];
-      var countForAll = taskCounts[ALL_TASKS_TYPE];
+      const countForType = taskCounts[taskType];
+      const countForAll = taskCounts[ALL_TASKS_TYPE];
 
       // If at least one of the queues (`ALL_TASKS_TYPE` or `taskType`) is empty, run callbacks.
       if (!countForAll || !countForType) {
-        var getNextCallback = !countForAll ? getLastCallback : getLastCallbackForType;
-        var nextCb;
+        const getNextCallback = !countForAll
+          ? getLastCallback
+          : getLastCallbackForType;
+        let nextCb;
 
         while ((nextCb = getNextCallback(taskType))) {
           try {
@@ -91,13 +94,13 @@ function TaskTracker(log) {
   }
 
   function getLastCallback() {
-    var cbInfo = taskCallbacks.pop();
+    const cbInfo = taskCallbacks.pop();
     return cbInfo && cbInfo.cb;
   }
 
   function getLastCallbackForType(taskType) {
-    for (var i = taskCallbacks.length - 1; i >= 0; --i) {
-      var cbInfo = taskCallbacks[i];
+    for (let i = taskCallbacks.length - 1; i >= 0; --i) {
+      const cbInfo = taskCallbacks[i];
       if (cbInfo.type === taskType) {
         taskCallbacks.splice(i, 1);
         return cbInfo.cb;
@@ -116,7 +119,7 @@ function TaskTracker(log) {
     if (!taskCounts[taskType]) {
       callback();
     } else {
-      taskCallbacks.push({type: taskType, cb: callback});
+      taskCallbacks.push({ type: taskType, cb: callback });
     }
   }
 }

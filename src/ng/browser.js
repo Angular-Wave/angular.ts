@@ -1,17 +1,23 @@
-'use strict';
-/* global getHash: true, stripHash: false */
+/* eslint-disable no-use-before-define */
+import { jqLite } from "../jqLite";
+import { urlResolve } from "./urlUtils";
+import { forEach, isUndefined, equals } from "./utils";
+import { stripHash } from "./location";
 
-function getHash(url) {
-  var index = url.indexOf('#');
-  return index === -1 ? '' : url.substr(index);
+// This variable should be used *only* inside the cacheState function.
+let lastCachedState = null;
+
+export function getHash(url) {
+  const index = url.indexOf("#");
+  return index === -1 ? "" : url.substr(index);
 }
 
-function trimEmptyHash(url) {
-  return url.replace(/#$/, '');
+export function trimEmptyHash(url) {
+  return url.replace(/#$/, "");
 }
 
 /**
- * ! This is a private undocumented service !
+ *
  *
  * @name $browser
  * @requires $log
@@ -21,30 +27,23 @@ function trimEmptyHash(url) {
  * - hide all the global state in the browser caused by the window object
  * - abstract away all the browser specific features and inconsistencies
  *
- * For tests we provide {@link ngMock.$browser mock implementation} of the `$browser`
- * service, which can be used for convenient testing of the application without the interaction with
- * the real browser apis.
  */
+
 /**
- * @param {object} window The global window object.
- * @param {object} document jQuery wrapped document.
  * @param {object} $log window.console or an object with the same interface.
- * @param {object} $sniffer $sniffer service
  */
-function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
-  var self = this,
-      location = window.location,
-      history = window.history,
-      setTimeout = window.setTimeout,
-      clearTimeout = window.clearTimeout,
-      pendingDeferIds = {},
-      taskTracker = $$taskTrackerFactory($log);
+export function Browser($log, $$taskTrackerFactory) {
+  const self = this;
+  let { location } = window;
+  let { history } = window;
+  const { setTimeout } = window;
+  const { clearTimeout } = window;
+  const pendingDeferIds = {};
+  const taskTracker = $$taskTrackerFactory($log);
 
-  self.isMock = false;
-
-  //////////////////////////////////////////////////////////////
+  /// ///////////////////////////////////////////////////////////
   // Task-tracking API
-  //////////////////////////////////////////////////////////////
+  /// ///////////////////////////////////////////////////////////
 
   // TODO(vojta): remove this temporary api
   self.$$completeOutstandingRequest = taskTracker.completeTask;
@@ -53,21 +52,18 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
   // TODO(vojta): prefix this method with $$ ?
   self.notifyWhenNoOutstandingRequests = taskTracker.notifyWhenNoPendingTasks;
 
-  //////////////////////////////////////////////////////////////
+  /// ///////////////////////////////////////////////////////////
   // URL API
-  //////////////////////////////////////////////////////////////
+  /// ///////////////////////////////////////////////////////////
 
-  var cachedState, lastHistoryState,
-      lastBrowserUrl = location.href,
-      baseElement = document.find('base'),
-      pendingLocation = null,
-      getCurrentState = !$sniffer.history ? noop : function getCurrentState() {
-        try {
-          return history.state;
-        } catch (e) {
-          // MSIE can reportedly throw when there is no state (UNCONFIRMED).
-        }
-      };
+  let cachedState;
+  let lastHistoryState;
+  let lastBrowserUrl = location.href;
+  const baseElement = jqLite(document).find("base");
+  let pendingLocation = null;
+  const getCurrentState = function getCurrentState() {
+    return history.state;
+  };
 
   cacheState();
 
@@ -92,7 +88,7 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
    * @param {boolean=} replace Should new url replace current history record?
    * @param {object=} state State object to use with `pushState`/`replaceState`
    */
-  self.url = function(url, replace, state) {
+  self.url = function (url, replace, state) {
     // In modern browsers `history.state` is `null` by default; treating it separately
     // from `undefined` would cause `$browser.url('/foo')` to change `history.state`
     // to undefined via `pushState`. Instead, let's change `undefined` to `null` here.
@@ -106,7 +102,7 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
 
     // setter
     if (url) {
-      var sameState = lastHistoryState === state;
+      const sameState = lastHistoryState === state;
 
       // Normalize the inputted URL
       url = urlResolve(url).href;
@@ -114,45 +110,26 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
       // Don't change anything if previous and current URLs and states match. This also prevents
       // IE<10 from getting into redirect loop when in LocationHashbangInHtml5Url mode.
       // See https://github.com/angular/angular.js/commit/ffb2701
-      if (lastBrowserUrl === url && (!$sniffer.history || sameState)) {
+      if (lastBrowserUrl === url && sameState) {
         return self;
       }
-      var sameBase = lastBrowserUrl && stripHash(lastBrowserUrl) === stripHash(url);
+      const sameBase =
+        lastBrowserUrl && stripHash(lastBrowserUrl) === stripHash(url);
       lastBrowserUrl = url;
       lastHistoryState = state;
       // Don't use history API if only the hash changed
       // due to a bug in IE10/IE11 which leads
       // to not firing a `hashchange` nor `popstate` event
       // in some cases (see #9143).
-      if ($sniffer.history && (!sameBase || !sameState)) {
-        history[replace ? 'replaceState' : 'pushState'](state, '', url);
-        cacheState();
-      } else {
-        if (!sameBase) {
-          pendingLocation = url;
-        }
-        if (replace) {
-          location.replace(url);
-        } else if (!sameBase) {
-          location.href = url;
-        } else {
-          location.hash = getHash(url);
-        }
-        if (location.href !== url) {
-          pendingLocation = url;
-        }
-      }
-      if (pendingLocation) {
-        pendingLocation = url;
-      }
+      history[replace ? "replaceState" : "pushState"](state, "", url);
+      cacheState();
       return self;
-    // getter
-    } else {
-      // - pendingLocation is needed as browsers don't allow to read out
-      //   the new location.href if a reload happened or if there is a bug like in iOS 9 (see
-      //   https://openradar.appspot.com/22186109).
-      return trimEmptyHash(pendingLocation || location.href);
+      // getter
     }
+    // - pendingLocation is needed as browsers don't allow to read out
+    //   the new location.href if a reload happened or if there is a bug like in iOS 9 (see
+    //   https://openradar.appspot.com/22186109).
+    return trimEmptyHash(pendingLocation || location.href);
   };
 
   /**
@@ -165,20 +142,18 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
    *
    * @returns {object} state
    */
-  self.state = function() {
+  self.state = function () {
     return cachedState;
   };
 
-  var urlChangeListeners = [],
-      urlChangeInit = false;
+  const urlChangeListeners = [];
+  let urlChangeInit = false;
 
   function cacheStateAndFireUrlChange() {
     pendingLocation = null;
     fireStateOrUrlChange();
   }
 
-  // This variable should be used *only* inside the cacheState function.
-  var lastCachedState = null;
   function cacheState() {
     // This should be the only place in $browser where `history.state` is read.
     cachedState = getCurrentState();
@@ -194,7 +169,7 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
   }
 
   function fireStateOrUrlChange() {
-    var prevLastHistoryState = lastHistoryState;
+    const prevLastHistoryState = lastHistoryState;
     cacheState();
 
     if (lastBrowserUrl === self.url() && prevLastHistoryState === cachedState) {
@@ -203,7 +178,7 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
 
     lastBrowserUrl = self.url();
     lastHistoryState = cachedState;
-    forEach(urlChangeListeners, function(listener) {
+    forEach(urlChangeListeners, (listener) => {
       listener(self.url(), cachedState);
     });
   }
@@ -229,7 +204,7 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
    * @param {function(string)} listener Listener function to be called when url changes.
    * @return {function(string)} Returns the registered listener fn - handy if the fn is anonymous.
    */
-  self.onUrlChange = function(callback) {
+  self.onUrlChange = function (callback) {
     // TODO(vojta): refactor to use node's syntax for events
     if (!urlChangeInit) {
       // We listen on both (hashchange/popstate) when available, as some browsers don't
@@ -237,9 +212,9 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
       // changed by push/replaceState
 
       // html5 history api - popstate event
-      if ($sniffer.history) jqLite(window).on('popstate', cacheStateAndFireUrlChange);
+      jqLite(window).on("popstate", cacheStateAndFireUrlChange);
       // hashchange event
-      jqLite(window).on('hashchange', cacheStateAndFireUrlChange);
+      jqLite(window).on("hashchange", cacheStateAndFireUrlChange);
 
       urlChangeInit = true;
     }
@@ -249,13 +224,12 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
   };
 
   /**
-   * @private
    * Remove popstate and hashchange handler from window.
    *
    * NOTE: this api is intended for use only by $rootScope.
    */
-  self.$$applicationDestroyed = function() {
-    jqLite(window).off('hashchange popstate', cacheStateAndFireUrlChange);
+  self.$$applicationDestroyed = function () {
+    jqLite(window).off("hashchange popstate", cacheStateAndFireUrlChange);
   };
 
   /**
@@ -265,9 +239,9 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
    */
   self.$$checkUrlChange = fireStateOrUrlChange;
 
-  //////////////////////////////////////////////////////////////
+  /// ///////////////////////////////////////////////////////////
   // Misc API
-  //////////////////////////////////////////////////////////////
+  /// ///////////////////////////////////////////////////////////
 
   /**
    * @name $browser#baseHref
@@ -278,9 +252,9 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
    *
    * @returns {string} The current base href
    */
-  self.baseHref = function() {
-    var href = baseElement.attr('href');
-    return href ? href.replace(/^(https?:)?\/\/[^/]*/, '') : '';
+  self.baseHref = function () {
+    const href = baseElement.attr("href");
+    return href ? href.replace(/^(https?:)?\/\/[^/]*/, "") : "";
   };
 
   /**
@@ -298,14 +272,14 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
    * via `$browser.defer.flush()`.
    *
    */
-  self.defer = function(fn, delay, taskType) {
-    var timeoutId;
+  self.defer = function (fn, delay, taskType) {
+    let timeoutId;
 
     delay = delay || 0;
     taskType = taskType || taskTracker.DEFAULT_TASK_TYPE;
 
     taskTracker.incTaskCount(taskType);
-    timeoutId = setTimeout(function() {
+    timeoutId = setTimeout(() => {
       delete pendingDeferIds[timeoutId];
       taskTracker.completeTask(fn, taskType);
     }, delay);
@@ -313,7 +287,6 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
 
     return timeoutId;
   };
-
 
   /**
    * @name $browser#defer.cancel
@@ -325,23 +298,24 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
    * @returns {boolean} Returns `true` if the task hasn't executed yet and was successfully
    *                    canceled.
    */
-  self.defer.cancel = function(deferId) {
+  self.defer.cancel = function (deferId) {
     if (pendingDeferIds.hasOwnProperty(deferId)) {
-      var taskType = pendingDeferIds[deferId];
+      const taskType = pendingDeferIds[deferId];
       delete pendingDeferIds[deferId];
       clearTimeout(deferId);
-      taskTracker.completeTask(noop, taskType);
+      taskTracker.completeTask(() => {}, taskType);
       return true;
     }
     return false;
   };
-
 }
 
-/** @this */
-function $BrowserProvider() {
-  this.$get = ['$window', '$log', '$sniffer', '$document', '$$taskTrackerFactory',
-       function($window,   $log,   $sniffer,   $document,   $$taskTrackerFactory) {
-    return new Browser($window, $document, $log, $sniffer, $$taskTrackerFactory);
-  }];
+export function BrowserProvider() {
+  this.$get = [
+    "$log",
+    "$$taskTrackerFactory",
+    function ($log, $$taskTrackerFactory) {
+      return new Browser($log, $$taskTrackerFactory);
+    },
+  ];
 }

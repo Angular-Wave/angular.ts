@@ -1,11 +1,11 @@
-'use strict';
 
-var app = angular.module('boostrapCompileBenchmark', []);
 
-var commentDirectivesEnabled;
-var cssClassDirectivesEnabled;
+const app = angular.module('boostrapCompileBenchmark', []);
 
-app.config(function($compileProvider) {
+let commentDirectivesEnabled;
+let cssClassDirectivesEnabled;
+
+app.config(($compileProvider) => {
   $compileProvider.debugInfoEnabled(false);
 
   commentDirectivesEnabled = window.location.toString().indexOf('comment=disabled') === -1;
@@ -33,19 +33,19 @@ app.config(function($compileProvider) {
   this.loadTemplate = function() {
     this.html = null;
     $http.get(window.location.pathname + this.selectedTemplate)
-      .then(function(response) { this.html = response.data; }.bind(this));
+      .then((response) => { this.html = response.data; });
   };
 
   this.selectedTemplate = this.templates[0];
   this.loadTemplate();
 
 
-  var linkers = [];
+  const linkers = [];
   benchmarkSteps.push({
     name: 'create',
     fn: function() {
-      for (var i = 0; i < this.repeats; i++) {
-        var linker = $compile(this.html);
+      for (let i = 0; i < this.repeats; i++) {
+        const linker = $compile(this.html);
         linkers.push(linker);
       }
     }.bind(this)
@@ -53,7 +53,7 @@ app.config(function($compileProvider) {
 
   benchmarkSteps.push({
     name: 'destroy',
-    fn: function() {
+    fn() {
       linkers.length = 0;
     }
   });

@@ -1,8 +1,9 @@
-'use strict';
+/* eslint-disable no-use-before-define */
+import { extend, forEach, isDefined, trim } from "../utils";
 
 /* exported defaultModelOptions */
-var defaultModelOptions;
-var DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/;
+export let defaultModelOptions;
+const DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/;
 
 /**
  * @ngdoc type
@@ -15,7 +16,6 @@ function ModelOptions(options) {
 }
 
 ModelOptions.prototype = {
-
   /**
    * @ngdoc method
    * @name ModelOptions#getOption
@@ -24,7 +24,7 @@ ModelOptions.prototype = {
    * @description
    * Returns the value of the given option
    */
-  getOption: function(name) {
+  getOption(name) {
     return this.$$options[name];
   },
 
@@ -34,40 +34,44 @@ ModelOptions.prototype = {
    * @param {Object} options a hash of options for the new child that will override the parent's options
    * @return {ModelOptions} a new `ModelOptions` object initialized with the given options.
    */
-  createChild: function(options) {
-    var inheritAll = false;
+  createChild(options) {
+    let inheritAll = false;
 
     // make a shallow copy
     options = extend({}, options);
 
     // Inherit options from the parent if specified by the value `"$inherit"`
-    forEach(options, /** @this */ function(option, key) {
-      if (option === '$inherit') {
-        if (key === '*') {
-          inheritAll = true;
-        } else {
-          options[key] = this.$$options[key];
-          // `updateOn` is special so we must also inherit the `updateOnDefault` option
-          if (key === 'updateOn') {
-            options.updateOnDefault = this.$$options.updateOnDefault;
+    forEach(
+      options,
+      function (option, key) {
+        if (option === "$inherit") {
+          if (key === "*") {
+            inheritAll = true;
+          } else {
+            options[key] = this.$$options[key];
+            // `updateOn` is special so we must also inherit the `updateOnDefault` option
+            if (key === "updateOn") {
+              options.updateOnDefault = this.$$options.updateOnDefault;
+            }
           }
-        }
-      } else {
-        if (key === 'updateOn') {
+        } else if (key === "updateOn") {
           // If the `updateOn` property contains the `default` event then we have to remove
           // it from the event list and set the `updateOnDefault` flag.
           options.updateOnDefault = false;
-          options[key] = trim(option.replace(DEFAULT_REGEXP, function() {
-            options.updateOnDefault = true;
-            return ' ';
-          }));
+          options[key] = trim(
+            option.replace(DEFAULT_REGEXP, () => {
+              options.updateOnDefault = true;
+              return " ";
+            }),
+          );
         }
-      }
-    }, this);
+      },
+      this,
+    );
 
     if (inheritAll) {
       // We have a property of the form: `"*": "$inherit"`
-      delete options['*'];
+      delete options["*"];
       defaults(options, this.$$options);
     }
 
@@ -75,19 +79,17 @@ ModelOptions.prototype = {
     defaults(options, defaultModelOptions.$$options);
 
     return new ModelOptions(options);
-  }
+  },
 };
 
-
 defaultModelOptions = new ModelOptions({
-  updateOn: '',
+  updateOn: "",
   updateOnDefault: true,
   debounce: 0,
   getterSetter: false,
   allowInvalid: false,
-  timezone: null
+  timezone: null,
 });
-
 
 /**
  * @ngdoc directive
@@ -183,86 +185,10 @@ defaultModelOptions = new ModelOptions({
  * form will update the model only when the control loses focus (blur event). If `escape` key is
  * pressed while the input field is focused, the value is reset to the value in the current model.
  *
- * <example name="ngModelOptions-directive-blur" module="optionsExample">
- *   <file name="index.html">
- *     <div ng-controller="ExampleController">
- *       <form name="userForm">
- *         <label>
- *           Name:
- *           <input type="text" name="userName"
- *                  ng-model="user.name"
- *                  ng-model-options="{ updateOn: 'blur' }"
- *                  ng-keyup="cancel($event)" />
- *         </label><br />
- *         <label>
- *           Other data:
- *           <input type="text" ng-model="user.data" />
- *         </label><br />
- *       </form>
- *       <pre>user.name = <span ng-bind="user.name"></span></pre>
- *     </div>
- *   </file>
- *   <file name="app.js">
- *     angular.module('optionsExample', [])
- *       .controller('ExampleController', ['$scope', function($scope) {
- *         $scope.user = { name: 'say', data: '' };
- *
- *         $scope.cancel = function(e) {
- *           if (e.keyCode === 27) {
- *             $scope.userForm.userName.$rollbackViewValue();
- *           }
- *         };
- *       }]);
- *   </file>
- *   <file name="protractor.js" type="protractor">
- *     var model = element(by.binding('user.name'));
- *     var input = element(by.model('user.name'));
- *     var other = element(by.model('user.data'));
- *
- *     it('should allow custom events', function() {
- *       input.sendKeys(' hello');
- *       input.click();
- *       expect(model.getText()).toEqual('say');
- *       other.click();
- *       expect(model.getText()).toEqual('say hello');
- *     });
- *
- *     it('should $rollbackViewValue when model changes', function() {
- *       input.sendKeys(' hello');
- *       expect(input.getAttribute('value')).toEqual('say hello');
- *       input.sendKeys(protractor.Key.ESCAPE);
- *       expect(input.getAttribute('value')).toEqual('say');
- *       other.click();
- *       expect(model.getText()).toEqual('say');
- *     });
- *   </file>
- * </example>
- *
  * ### Debouncing updates
  *
  * The next example shows how to debounce model changes. Model will be updated only 1 sec after last change.
  * If the `Clear` button is pressed, any debounced action is canceled and the value becomes empty.
- *
- * <example name="ngModelOptions-directive-debounce" module="optionsExample">
- *   <file name="index.html">
- *     <div ng-controller="ExampleController">
- *       <form name="userForm">
- *         Name:
- *         <input type="text" name="userName"
- *                ng-model="user.name"
- *                ng-model-options="{ debounce: 1000 }" />
- *         <button ng-click="userForm.userName.$rollbackViewValue(); user.name=''">Clear</button><br />
- *       </form>
- *       <pre>user.name = <span ng-bind="user.name"></span></pre>
- *     </div>
- *   </file>
- *   <file name="app.js">
- *     angular.module('optionsExample', [])
- *       .controller('ExampleController', ['$scope', function($scope) {
- *         $scope.user = { name: 'say' };
- *       }]);
- *   </file>
- * </example>
  *
  * ### Default events, extra triggers, and catch-all debounce values
  *
@@ -308,11 +234,11 @@ defaultModelOptions = new ModelOptions({
             };
 
             this.updateEvents = function() {
-              var eventList = this.options.updateOn.split(' ');
+              let eventList = this.options.updateOn.split(' ');
               eventList.push('*');
-              var events = {};
+              let events = {};
 
-              for (var i = 0; i < eventList.length; i++) {
+              for (let i = 0; i < eventList.length; i++) {
                 events[eventList[i]] = this.options.debounce[eventList[i]];
               }
 
@@ -320,7 +246,7 @@ defaultModelOptions = new ModelOptions({
             };
 
             this.updateOptions = function() {
-              var options = angular.extend(this.options, {
+              let options = angular.extend(this.options, {
                 updateOn: Object.keys(this.events).join(' ').replace('*', ''),
                 debounce: this.events
               });
@@ -395,7 +321,7 @@ defaultModelOptions = new ModelOptions({
  *   <file name="app.js">
  *     angular.module('getterSetterExample', [])
  *       .controller('ExampleController', ['$scope', function($scope) {
- *         var _name = 'Brian';
+ *         let _name = 'Brian';
  *         $scope.user = {
  *           name: function(newName) {
  *             return angular.isDefined(newName) ? (_name = newName) : _name;
@@ -544,35 +470,38 @@ defaultModelOptions = new ModelOptions({
  *     {@link ngModelOptions#formatting-the-value-of-time-and-datetime-local- See the example}.
  *
  */
-var ngModelOptionsDirective = function() {
-  NgModelOptionsController.$inject = ['$attrs', '$scope'];
+export const ngModelOptionsDirective = function () {
+  NgModelOptionsController.$inject = ["$attrs", "$scope"];
   function NgModelOptionsController($attrs, $scope) {
     this.$$attrs = $attrs;
     this.$$scope = $scope;
   }
   NgModelOptionsController.prototype = {
-    $onInit: function() {
-      var parentOptions = this.parentCtrl ? this.parentCtrl.$options : defaultModelOptions;
-      var modelOptionsDefinition = this.$$scope.$eval(this.$$attrs.ngModelOptions);
+    $onInit() {
+      const parentOptions = this.parentCtrl
+        ? this.parentCtrl.$options
+        : defaultModelOptions;
+      const modelOptionsDefinition = this.$$scope.$eval(
+        this.$$attrs.ngModelOptions,
+      );
 
       this.$options = parentOptions.createChild(modelOptionsDefinition);
-    }
+    },
   };
 
   return {
-    restrict: 'A',
+    restrict: "A",
     // ngModelOptions needs to run before ngModel and input directives
     priority: 10,
-    require: {parentCtrl: '?^^ngModelOptions'},
+    require: { parentCtrl: "?^^ngModelOptions" },
     bindToController: true,
-    controller: NgModelOptionsController
+    controller: NgModelOptionsController,
   };
 };
 
-
 // shallow copy over values from `src` that are not already specified on `dst`
 function defaults(dst, src) {
-  forEach(src, function(value, key) {
+  forEach(src, (value, key) => {
     if (!isDefined(dst[key])) {
       dst[key] = value;
     }

@@ -1,11 +1,11 @@
-'use strict';
 
-var app = angular.module('orderByBenchmark', []);
+
+const app = angular.module('orderByBenchmark', []);
 
 app.controller('DataController', function DataController($rootScope, $scope) {
   this.ngRepeatCount = 5000;
   this.rows = [];
-  var self = this;
+  const self = this;
 
   $scope.benchmarkType = 'baseline';
 
@@ -23,15 +23,15 @@ app.controller('DataController', function DataController($rootScope, $scope) {
   benchmarkSteps.push({
     name: 'setup',
     description: 'Set rows to empty array and apply, then push new rows to be applied in next step',
-    fn: function() {
-      var oldRows = self.rows;
-      $rootScope.$apply(function() {
+    fn() {
+      const oldRows = self.rows;
+      $rootScope.$apply(() => {
         self.rows = [];
       });
       self.rows = oldRows;
       if (self.rows.length !== self.ngRepeatCount) {
         self.rows = [];
-        for (var i = 0; i < self.ngRepeatCount; i++) {
+        for (let i = 0; i < self.ngRepeatCount; i++) {
           self.rows.push({
             'name': getRandomInt(i, (i + 40)),
             'index': i
@@ -43,7 +43,7 @@ app.controller('DataController', function DataController($rootScope, $scope) {
 
   benchmarkSteps.push({
     name: '$apply',
-    fn: function() {
+    fn() {
       $rootScope.$apply();
     }
   });
