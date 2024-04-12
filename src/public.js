@@ -208,6 +208,6 @@ export function publishExternalAPI() {
 
   initAnimateModule();
   initMessageModule();
-  
+
   return ng;
 }
