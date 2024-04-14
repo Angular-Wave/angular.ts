@@ -1,4 +1,3 @@
-/* eslint-disable no-use-before-define */
 import { jqLite } from "../jqLite";
 import { urlResolve } from "./urlUtils";
 import {

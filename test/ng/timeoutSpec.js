@@ -162,10 +162,7 @@ describe("$timeout", () => {
   });
 
   describe("exception handling", () => {
-    it("should delegate exception to the $exceptionHandler service", inject((
-      $timeout,
-      $exceptionHandler,
-    ) => {
+    it("should delegate exception to the $exceptionHandler service", () => {
       $timeout(() => {
         throw "Test Error";
       });
@@ -176,12 +173,9 @@ describe("$timeout", () => {
         "Test Error",
         "Possibly unhandled rejection: Test Error",
       ]);
-    }));
+    });
 
-    it("should call $apply even if an exception is thrown in callback", inject((
-      $timeout,
-      $rootScope,
-    ) => {
+    it("should call $apply even if an exception is thrown in callback", () => {
       const applySpy = spyOn($rootScope, "$apply").and.callThrough();
 
       $timeout(() => {
@@ -191,7 +185,7 @@ describe("$timeout", () => {
 
       $timeout.flush();
       expect(applySpy).toHaveBeenCalled();
-    }));
+    });
 
     it("should reject the timeout promise when an exception is thrown in the timeout callback", () => {
       const promise = $timeout(() => {
@@ -206,10 +200,7 @@ describe("$timeout", () => {
       expect(log).toEqual("error: Some Error");
     });
 
-    it("should pass the timeout arguments in the timeout callback even if an exception is thrown", inject((
-      $timeout,
-      log,
-    ) => {
+    it("should pass the timeout arguments in the timeout callback even if an exception is thrown", () => {
       const promise1 = $timeout(
         (arg) => {
           throw arg;
@@ -245,12 +236,9 @@ describe("$timeout", () => {
       expect(log).toEqual(
         "error: Some Arguments; error: Are Meant To Be Thrown",
       );
-    }));
+    });
 
-    it("should forget references to relevant deferred even when exception is thrown", inject((
-      $timeout,
-      $browser,
-    ) => {
+    it("should forget references to relevant deferred even when exception is thrown", () => {
       // $browser.defer.cancel is only called on cancel if the deferred object is still referenced
       const cancelSpy = spyOn($browser.defer, "cancel").and.callThrough();
 
@@ -266,7 +254,7 @@ describe("$timeout", () => {
       expect(cancelSpy).not.toHaveBeenCalled();
       $timeout.cancel(promise);
       expect(cancelSpy).not.toHaveBeenCalled();
-    }));
+    });
   });
 
   describe("cancel", () => {
@@ -348,10 +336,7 @@ describe("$timeout", () => {
       }).toThrow("$timeout", "badprom");
     }));
 
-    it("should forget references to relevant deferred", inject((
-      $timeout,
-      $browser,
-    ) => {
+    it("should forget references to relevant deferred", () => {
       // $browser.defer.cancel is only called on cancel if the deferred object is still referenced
       const cancelSpy = spyOn($browser.defer, "cancel").and.callThrough();
 
@@ -364,13 +349,9 @@ describe("$timeout", () => {
       // Promise deferred object should already be removed from the list and not cancellable again
       $timeout.cancel(promise);
       expect(cancelSpy).toHaveBeenCalled();
-    }));
+    });
 
-    it("should not trigger digest when cancelled", inject((
-      $timeout,
-      $rootScope,
-      $browser,
-    ) => {
+    it("should not trigger digest when cancelled", () => {
       const watchSpy = jasmine.createSpy("watchSpy");
       $rootScope.$watch(watchSpy);
 
@@ -380,6 +361,6 @@ describe("$timeout", () => {
         $browser.defer.flush();
       }).toThrowError("No deferred tasks to be flushed");
       expect(watchSpy).not.toHaveBeenCalled();
-    }));
+    });
   });
 });

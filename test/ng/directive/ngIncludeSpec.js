@@ -377,7 +377,7 @@ describe("ngInclude", () => {
       }, 200);
     });
 
-    xit("should exec scripts when jQuery is included", (done) => {
+    it("should exec scripts when jQuery is included", (done) => {
       // TODO make this independent of Jquery
 
       window.angular.module("myModule", []);

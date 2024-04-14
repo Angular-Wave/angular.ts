@@ -48,7 +48,7 @@ import { forEach, isDefined, isError } from "./utils";
 /**
  * @ngdoc provider
  * @name $logProvider
- * @type {ng.ILogProvider}
+//  * @type {ng.ILogProvider}
  *
  * @description
  * Use the `$logProvider` to configure how the application logs messages

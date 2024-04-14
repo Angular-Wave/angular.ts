@@ -370,7 +370,7 @@ describe("ngModel", () => {
 
         ctrl.$setViewValue("123");
         scope.$digest();
-        debugger;
+
         expect(element[0].classList.contains("ng-valid-parse")).toBeTrue();
         expect(element[0].classList.contains("ng-invalid-parse")).toBeFalse();
         expect(

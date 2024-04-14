@@ -1149,6 +1149,7 @@ const $compileMinErr = minErr("$compile");
 
 function UNINITIALIZED_VALUE() {}
 const _UNINITIALIZED_VALUE = new UNINITIALIZED_VALUE();
+let config = { TTL: 10 };
 
 /**
  * @ngdoc provider
@@ -1640,7 +1641,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
     return strictComponentBindingsEnabled;
   };
 
-  let TTL = 10;
   /**
    * @ngdoc method
    * @name $compileProvider#onChangesTtl
@@ -1663,10 +1663,10 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    */
   this.onChangesTtl = function (value) {
     if (arguments.length) {
-      TTL = value;
+      config.TTL = value;
       return this;
     }
-    return TTL;
+    return config.TTL;
   };
 
   let commentDirectivesEnabledConfig = true;
@@ -1851,7 +1851,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
       const commentDirectivesEnabled = commentDirectivesEnabledConfig;
       const cssClassDirectivesEnabled = cssClassDirectivesEnabledConfig;
 
-      let onChangesTtl = TTL;
       // The onChanges hooks should all be run together in a single digest
       // When changes occur, the call to trigger their hooks will be added to this queue
       let onChangesQueue;
@@ -1859,13 +1858,13 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
       // This function is called in a $$postDigest to trigger all the onChanges hooks in a single digest
       function flushOnChangesQueue() {
         try {
-          if (!--onChangesTtl) {
+          if (!--config.TTL) {
             // We have hit the TTL limit so reset everything
             onChangesQueue = undefined;
             throw $compileMinErr(
               "infchng",
               "{0} $onChanges() iterations reached. Aborting!\n",
-              TTL,
+              config.TTL,
             );
           }
           // We must run this hook in an apply since the $$postDigest runs outside apply
@@ -1881,7 +1880,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             onChangesQueue = undefined;
           });
         } finally {
-          onChangesTtl++;
+          config.TTL++;
         }
       }
 

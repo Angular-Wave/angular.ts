@@ -1523,7 +1523,7 @@ describe("angular", () => {
     });
 
     it("should handle HTMLCollection objects like arrays", () => {
-      document.body.innerHTML =
+      document.getElementById("dummy").innerHTML =
         "<p>" +
         "<a name='x'>a</a>" +
         "<a name='y'>b</a>" +
@@ -2096,7 +2096,7 @@ describe("angular", () => {
   describe("isError", () => {
     function testErrorFromDifferentContext(createError) {
       const iframe = document.createElement("iframe");
-      document.body.appendChild(iframe);
+      document.getElementById("dummy").appendChild(iframe);
       try {
         const error = createError(iframe.contentWindow);
         expect(isError(error)).toBe(true);

@@ -89,6 +89,10 @@ app.get('/divexpr', (req, res) => {
   res.send('<div>{{expr}}</div>') 
 })
 
+app.get('/divctrlexpr', (req, res) => {
+  res.send('<div>{{$ctrl.expr}}</div>') 
+})
+
 app.get('/template.html', (req, res) => {
   res.send('<p>template.html</p>') 
 })

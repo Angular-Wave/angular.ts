@@ -62,7 +62,7 @@ describe("ngRef", () => {
       $rootScope = injector.get("$rootScope");
     });
 
-    xit("should bind in the current scope the controller of a component", () => {
+    it("should bind in the current scope the controller of a component", () => {
       $rootScope.$ctrl = "undamaged";
       debugger;
       $compile('<my-component ng-ref="myComponentRef"></my-component>')(

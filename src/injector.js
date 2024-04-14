@@ -358,8 +358,6 @@ function annotate(fn, strictDi, name) {
  *
  * @description
  *
- * **This is a dangerous API, which you use at your own risk!**
- *
  * Add the specified modules to the current injector.
  *
  * This method will add each of the injectables to the injector and execute all of the config and run
@@ -1014,19 +1012,18 @@ export function createInjector(modulesToLoad, strictDi) {
       return new (Function.prototype.bind.apply(ctor, args))();
     }
 
+    function has(name) {
+      const hasProvider = providerCache.hasOwnProperty(name + providerSuffix);
+      const hasCache = cache.hasOwnProperty(name);
+      return hasProvider || hasCache;
+    }
+
     return {
       invoke,
       instantiate,
       get,
       annotate,
-      has(name) {
-        return (
-          Object.prototype.hasOwnProperty.call(
-            providerCache,
-            name + providerSuffix,
-          ) || Object.prototype.hasOwnProperty.call(cache, name)
-        );
-      },
+      has,
     };
   }
 }

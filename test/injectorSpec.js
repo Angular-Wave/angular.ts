@@ -259,7 +259,8 @@ describe("injector.modules", () => {
   it("loads each module only once", () => {
     angular.module("myModule", ["myOtherModule"]);
     angular.module("myOtherModule", ["myModule"]);
-    createInjector(["myModule"]);
+    let injector = createInjector(["myModule"]);
+    expect(Object.keys(injector.modules).length).toEqual(2);
   });
 
   it("invokes an annotated function with dependency injection", () => {

@@ -6,7 +6,6 @@ describe("ngBindHtml", () => {
   let injector;
   let $rootScope;
   let $compile;
-  let element;
 
   beforeEach(() => {
     publishExternalAPI();

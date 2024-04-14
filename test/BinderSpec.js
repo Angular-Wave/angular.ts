@@ -115,7 +115,7 @@ describe("Binder", () => {
     expect(savedCalled).toBe(true);
   });
 
-  xit("RepeaterUpdateBindings", () => {
+  it("RepeaterUpdateBindings", () => {
     const form = $compile(
       "<ul>" +
         '<LI ng-repeat="item in model.items" ng-bind="item.a"></LI>' +
@@ -166,7 +166,7 @@ describe("Binder", () => {
     $rootScope.$apply();
   });
 
-  xit("RepeaterContentDoesNotBind", () => {
+  it("RepeaterContentDoesNotBind", () => {
     element = $compile(
       "<ul>" +
         '<LI ng-repeat="item in model.items"><span ng-bind="item.a"></span></li>' +
@@ -183,7 +183,7 @@ describe("Binder", () => {
     );
   });
 
-  xit("DoNotOverwriteCustomAction", function () {
+  it("DoNotOverwriteCustomAction", function () {
     const html = this.compileToHtml(
       '<input type="submit" value="Save" action="foo();">',
     );
@@ -209,7 +209,7 @@ describe("Binder", () => {
     expect(element[0].childNodes.length).toEqual(1);
   });
 
-  xit("IfAttrBindingThrowsErrorDecorateTheAttribute", () => {
+  it("IfAttrBindingThrowsErrorDecorateTheAttribute", () => {
     $compile(
       '<div attr="before {{error.throw()}} after"></div>',
       null,
@@ -235,7 +235,7 @@ describe("Binder", () => {
     expect(errorLogs.length).toMatch("0");
   });
 
-  xit("NestedRepeater", () => {
+  it("NestedRepeater", () => {
     element = $compile(
       "<div>" +
         '<div ng-repeat="m in model" name="{{m.name}}">' +
@@ -379,7 +379,7 @@ describe("Binder", () => {
     $rootScope.$apply();
   });
 
-  xit("ActionOnAHrefThrowsError", () => {
+  it("ActionOnAHrefThrowsError", () => {
     const input = $compile('<a ng-click="action()">Add Phone</a>')($rootScope);
     $rootScope.action = function () {
       throw new Error("MyError");
@@ -408,7 +408,7 @@ describe("Binder", () => {
     expect(element.text()).toBe("123{{a}}{{b}}{{c}}");
   });
 
-  xit("ShouldTemplateBindPreElements", () => {
+  it("ShouldTemplateBindPreElements", () => {
     element = $compile("<pre>Hello {{name}}!</pre>")($rootScope);
     $rootScope.name = "World";
     $rootScope.$apply();
@@ -441,7 +441,7 @@ describe("Binder", () => {
     expect(optionC.text()).toEqual("C");
   });
 
-  xit("ItShouldSelectTheCorrectRadioBox", () => {
+  it("ItShouldSelectTheCorrectRadioBox", () => {
     element = $compile(
       "<div>" +
         '<input type="radio" ng-model="sex" value="female">' +
@@ -469,7 +469,7 @@ describe("Binder", () => {
     expect(male.val()).toBe("male");
   });
 
-  xit("ItShouldRepeatOnHashes", () => {
+  it("ItShouldRepeatOnHashes", () => {
     element = $compile(
       "<ul>" +
         '<li ng-repeat="(k,v) in {a:0,b:1}" ng-bind="k + v"></li>' +
@@ -487,7 +487,7 @@ describe("Binder", () => {
     );
   });
 
-  xit("ItShouldFireChangeListenersBeforeUpdate", () => {
+  it("ItShouldFireChangeListenersBeforeUpdate", () => {
     element = $compile('<div ng-bind="name"></div>')($rootScope);
     $rootScope.name = "";
     $rootScope.$watch("watched", () => {

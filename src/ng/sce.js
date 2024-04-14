@@ -280,7 +280,6 @@ export function $SceDelegateProvider() {
       };
 
       if ($injector.has("$sanitize")) {
-        debugger;
         htmlSanitizer = $injector.get("$sanitize");
       }
 

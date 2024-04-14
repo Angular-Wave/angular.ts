@@ -1299,7 +1299,7 @@ describe("ngRepeat", () => {
   });
 
   describe("compatibility", () => {
-    xit("should allow mixing ngRepeat and another element transclusion directive", () => {
+    it("should allow mixing ngRepeat and another element transclusion directive", () => {
       $compileProvider.directive(
         "elmTrans",
         valueFn({
@@ -1321,7 +1321,7 @@ describe("ngRepeat", () => {
       expect(element.text()).toBe("[[1]][[2]]");
     });
 
-    xit("should allow mixing ngRepeat with ngInclude", (done) => {
+    it("should allow mixing ngRepeat with ngInclude", (done) => {
       element = $compile(
         '<div><div ng-repeat="i in [1,2]" ng-include="\'test.html\'"></div></div>',
       )(scope);

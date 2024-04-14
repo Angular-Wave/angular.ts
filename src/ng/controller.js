@@ -19,7 +19,6 @@ export function identifierForController(controller, ident) {
     const match = CNTRL_REG.exec(controller);
     if (match) return match[3];
   }
-  throw new Error("No match");
 }
 
 /**

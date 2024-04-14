@@ -29,10 +29,9 @@ describe("form", function () {
     var log = "";
     var element = angular.element("<div>A</div>");
     element.on("$destroy", function () {
-      debugger;
       log += "destroy;";
     });
-    debugger;
+
     element.remove();
     expect(log).toEqual("destroy;");
   });

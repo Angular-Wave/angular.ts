@@ -4,23 +4,16 @@
     <script src="../dist/build/angular.js"></script>
   </head>
   <body>
-    <div my-transcluder><div in-transclude></div></div>
+    Test:
+    <my-component></my-component>
+    {{ 2 + 2 }}
   </body>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      window.res = window.angular
-        .module("myModule", [])
-        .directive("myTranscluder", function () {
-          return {
-            transclude: true,
-            template: "<div ng-transclude></div>",
-            controller: function ($element, $transclude) {
-              let res = $transclude();
-              $element.append(res);
-            },
-          };
-        });
+      window.angular.module("myModule", []).component("myComponent", {
+        template: "<div>ME</div>",
+      });
       window.angular.bootstrap(document, ["myModule"]);
       //angularInit(document, window.angular.bootstrap);
     });

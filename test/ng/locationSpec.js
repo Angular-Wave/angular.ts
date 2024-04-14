@@ -1,5 +1,3 @@
-/* global LocationHashbangUrl: false, LocationHtml5Url: false */
-
 describe("$location", () => {
   afterEach(() => {
     // link rewriting used in html5 mode on legacy browsers binds to document.onClick, so we need
