@@ -48,6 +48,7 @@ describe("$compile", () => {
   const $ = jqLite;
   let $rootScope,
     myModule,
+    module,
     injector,
     defaultModule,
     element,
@@ -59,6 +60,7 @@ describe("$compile", () => {
   beforeEach(() => {
     log = [];
     publishExternalAPI();
+    module = window.angular.module("test1", ["ng"]);
     defaultModule = window.angular.module("defaultModule", ["ng"]);
     myModule = window.angular.module("myModule", ["ng"]);
     injector = createInjector(["ng", "defaultModule"]);
@@ -11992,9 +11994,9 @@ describe("$compile", () => {
 
               it(`(${description.join(", ")})`, () => {
                 let controllerCalled = false;
-                module
-                  .contoller("myCtrl", () => {
-                    this.$onInit = () => {
+                myModule
+                  .controller("myCtrl", function () {
+                    this.$onInit = function () {
                       expect(this.data).toEqual({
                         foo: "bar",
                         baz: "biz",
@@ -12009,6 +12011,8 @@ describe("$compile", () => {
                     controllerCalled = true;
                   })
                   .directive("fooDir", valueFn(ddo));
+
+                initInjector("myModule");
 
                 $templateCache.put("test.html", "<p>template</p>");
                 $rootScope.fn = valueFn("called!");
@@ -12084,6 +12088,7 @@ describe("$compile", () => {
               },
             }),
           );
+        initInjector("test1");
         $rootScope.fn = valueFn("called!");
         $rootScope.string = "world";
         $rootScope.data = { foo: "bar", baz: "biz" };
@@ -12154,7 +12159,7 @@ describe("$compile", () => {
               },
             }),
           );
-
+        initInjector("test1");
         $rootScope.fn = valueFn("called!");
         $rootScope.string = "world";
         $rootScope.data = { foo: "bar", baz: "biz" };
@@ -12226,7 +12231,7 @@ describe("$compile", () => {
               },
             }),
           );
-
+        initInjector("test1");
         $rootScope.fn = valueFn("called!");
         $rootScope.string = "world";
         $rootScope.data = { foo: "bar", baz: "biz" };
@@ -12252,7 +12257,7 @@ describe("$compile", () => {
 
       it("should evaluate against the correct scope, when using `bindToController` (new scope)", () => {
         module
-          .controller("ParentCtrl", () => {
+          .controller("ParentCtrl", function () {
             this.value1 = "parent1";
             this.value2 = "parent2";
             this.value3 = () => {
@@ -12260,7 +12265,7 @@ describe("$compile", () => {
             };
             this.value4 = "parent4";
           })
-          .controller("ChildCtrl", () => {
+          .controller("ChildCtrl", function () {
             this.value1 = "child1";
             this.value2 = "child2";
             this.value3 = () => {
@@ -12282,7 +12287,7 @@ describe("$compile", () => {
               template: "",
             }),
           );
-
+        initInjector("test1");
         element = $compile(
           '<div ng-controller="ParentCtrl as ctrl">' +
             "<child " +
@@ -12316,7 +12321,7 @@ describe("$compile", () => {
 
       it("should evaluate against the correct scope, when using `bindToController` (new iso scope)", () => {
         module
-          .controller("ParentCtrl", () => {
+          .controller("ParentCtrl", function () {
             this.value1 = "parent1";
             this.value2 = "parent2";
             this.value3 = () => {
@@ -12324,7 +12329,7 @@ describe("$compile", () => {
             };
             this.value4 = "parent4";
           })
-          .controller("ChildCtrl", () => {
+          .controller("ChildCtrl", function () {
             this.value1 = "child1";
             this.value2 = "child2";
             this.value3 = () => {
@@ -12347,6 +12352,7 @@ describe("$compile", () => {
             }),
           );
 
+        initInjector("test1");
         element = $compile(
           '<div ng-controller="ParentCtrl as ctrl">' +
             "<child " +
@@ -12382,7 +12388,7 @@ describe("$compile", () => {
         let controllerCalled = false;
         let myCtrl;
         module
-          .controller("myCtrl", () => {
+          .controller("myCtrl", function () {
             controllerCalled = true;
             myCtrl = this;
           })
@@ -12395,7 +12401,7 @@ describe("$compile", () => {
               controller: "myCtrl as theCtrl",
             }),
           );
-
+        initInjector("test1");
         $templateCache.put("test.html", "<p>isolate</p>");
         element = $compile("<div foo-dir>")($rootScope);
         $rootScope.$digest();
@@ -12410,7 +12416,7 @@ describe("$compile", () => {
         let myCtrl;
 
         function MyCtrl() {}
-        MyCtrl.prototype.test = () => {
+        MyCtrl.prototype.test = function () {
           expect(this.data).toEqual({
             foo: "bar",
             baz: "biz",
@@ -12424,7 +12430,7 @@ describe("$compile", () => {
         };
 
         module
-          .controller("myCtrl", () => {
+          .controller("myCtrl", function () {
             controllerCalled = true;
             myCtrl = this;
             return new MyCtrl();
@@ -12443,7 +12449,7 @@ describe("$compile", () => {
               controller: "myCtrl as theCtrl",
             }),
           );
-
+        initInjector("test1");
         $templateCache.put("test.html", "<p>isolate</p>");
         $rootScope.fn = valueFn("called!");
         $rootScope.whom = "world";
@@ -12470,7 +12476,7 @@ describe("$compile", () => {
         let myCtrl;
 
         function MyCtrl() {}
-        MyCtrl.prototype.test = () => {
+        MyCtrl.prototype.test = function () {
           expect(this.data).toEqual({
             foo: "bar",
             baz: "biz",
@@ -12503,7 +12509,7 @@ describe("$compile", () => {
               controller: "myCtrl as theCtrl",
             }),
           );
-
+        initInjector("test1");
         $templateCache.put("test.html", "<p>isolate</p>");
         $rootScope.fn = valueFn("called!");
         $rootScope.whom = "world";
@@ -12547,7 +12553,7 @@ describe("$compile", () => {
               template: "<p></p>",
             }),
           );
-
+          initInjector("test1");
           element = $compile("<div test-dir></div>")($rootScope);
           const scope = element.scope();
           expect(scope.ctrl.getProp()).toBe("default");
@@ -12577,7 +12583,7 @@ describe("$compile", () => {
               template: "<p></p>",
             }),
           );
-
+          initInjector("test1");
           element = $compile("<div test-dir></div>")($rootScope);
           const scope = element.isolateScope();
           expect(scope.ctrl.getProp()).toBe("default");
@@ -12589,6 +12595,12 @@ describe("$compile", () => {
     });
 
     describe("require", () => {
+      let module;
+
+      beforeEach(() => {
+        module = window.angular.module("test1", ["ng"]);
+      });
+
       it("should get required controller", () => {
         module
           .directive("main", () => ({
@@ -12612,9 +12624,9 @@ describe("$compile", () => {
               log.push(!!controller); // should be false
             },
           }));
-
+        initInjector("test1");
         element = $compile("<div main dep other></div>")($rootScope);
-        expect(log[0]).toEqual("false; dep:main; main");
+        expect(log.join("; ")).toEqual("false; dep:main; main");
       });
 
       it("should respect explicit return value from controller", () => {
@@ -12632,7 +12644,7 @@ describe("$compile", () => {
             log.push("done");
           },
         }));
-
+        initInjector("test1");
         element = $compile("<log-controller-prop></log-controller-prop>")(
           $rootScope,
         );
@@ -12659,7 +12671,7 @@ describe("$compile", () => {
             }
           },
         }));
-
+        initInjector("test1");
         element = $compile("<div nested><div nested></div></div>")($rootScope);
         expect(log[0]).toEqual("done");
         expect(element.data("$nestedController")).toBe(expectedController);
@@ -12675,6 +12687,7 @@ describe("$compile", () => {
           },
           controllerAs: "mainCtrl",
         }));
+        initInjector("test1");
         $templateCache.put(
           "main.html",
           "<span>template:{{mainCtrl.name}}</span>",
@@ -12712,7 +12725,7 @@ describe("$compile", () => {
               log.push("done");
             },
           }));
-
+        initInjector("test1");
         element = $compile("<div nester><div nested></div></div>")($rootScope);
         $rootScope.$apply();
         expect(log.toString()).toBe("done");
@@ -12729,6 +12742,7 @@ describe("$compile", () => {
             log.push(controller.foo);
           },
         }));
+        initInjector("test1");
         element = $compile("<log-controller-prop></log-controller-prop>")(
           $rootScope,
         );
@@ -12757,7 +12771,7 @@ describe("$compile", () => {
               return otherDirectiveController;
             },
           }));
-
+        initInjector("test1");
         element = $compile("<my-directive my-other-directive></my-directive>")(
           $rootScope,
         );
@@ -12777,8 +12791,9 @@ describe("$compile", () => {
             log.push(!!controller);
           },
         }));
+        initInjector("test1");
         element = $compile("<div nested><div nested></div></div>")($rootScope);
-        expect(log[0]).toEqual("true; false");
+        expect(log.join("; ")).toEqual("true; false");
       });
 
       it("should get required parent controller when the question mark precedes the ^^", () => {
@@ -12789,9 +12804,9 @@ describe("$compile", () => {
             log.push(!!controller);
           },
         }));
-
+        initInjector("test1");
         element = $compile("<div nested><div nested></div></div>")($rootScope);
-        expect(log[0]).toEqual("true; false");
+        expect(log.join("; ")).toEqual("true; false");
       });
 
       it("should throw if required parent is not found", () => {
@@ -12800,6 +12815,7 @@ describe("$compile", () => {
           controller($scope) {},
           link(scope, element, attrs, controller) {},
         }));
+        initInjector("test1");
         expect(() => {
           element = $compile("<div nested></div>")($rootScope);
         }).toThrowError(/ctreq/);
@@ -12819,7 +12835,7 @@ describe("$compile", () => {
               log.push(`dirAController.name: ${dirAController.name}`);
             },
           }));
-
+        initInjector("test1");
         element = $compile("<div dir-a dir-b></div>")($rootScope);
         expect(log[0]).toEqual("dirAController.name: dirA");
       });
@@ -12838,7 +12854,7 @@ describe("$compile", () => {
               log.push(`dirAController.name: ${dirAController.name}`);
             },
           }));
-
+        initInjector("test1");
         $templateCache.put("dirB.html", "<p>dirB</p>");
         element = $compile("<div dir-a dir-b></div>")($rootScope);
         $rootScope.$digest();
@@ -12858,7 +12874,7 @@ describe("$compile", () => {
         function MeController() {
           this.name = "Me";
         }
-        MeController.prototype.$onInit = () => {
+        MeController.prototype.$onInit = function () {
           parentController = this.container;
           siblingController = this.friend;
         };
@@ -12881,7 +12897,7 @@ describe("$compile", () => {
           .directive("sibling", () => ({
             controller: SiblingController,
           }));
-
+        initInjector("test1");
         element = $compile("<parent><me sibling></me></parent>")($rootScope);
         expect(MeController.prototype.$onInit).toHaveBeenCalled();
         expect(parentController).toEqual(jasmine.any(ParentController));
@@ -12939,7 +12955,7 @@ describe("$compile", () => {
           .directive("siblingOpt", () => ({
             controller: SiblingOptController,
           }));
-
+        initInjector("test1");
         const template =
           "<div>" +
           // With optional
@@ -13020,7 +13036,7 @@ describe("$compile", () => {
           .directive("sibling", () => ({
             controller: SiblingController,
           }));
-
+        initInjector("test1");
         element = $compile("<parent><me sibling></me></parent>")($rootScope);
         expect(MeController.prototype.$onInit).toHaveBeenCalled();
         expect(parentController).toBeUndefined();
@@ -13067,7 +13083,7 @@ describe("$compile", () => {
           .directive("sibling", () => ({
             controller: SiblingController,
           }));
-
+        initInjector("test1");
         element = $compile("<parent><me sibling></me></parent>")($rootScope);
         expect(meController.$onInit).toHaveBeenCalled();
         expect(parentController).toEqual(jasmine.any(ParentController));
@@ -13115,14 +13131,14 @@ describe("$compile", () => {
           .directive("sibling", () => ({
             controller: SiblingController,
           }));
-
+        initInjector("test1");
         element = $compile("<parent><me sibling></me></parent>")($rootScope);
         expect(containerController).toEqual(parentController);
         expect(friendController).toEqual(siblingController);
       });
 
       it("should require controller of an isolate directive from a non-isolate directive on the same element", () => {
-        const IsolateController = () => {};
+        const IsolateController = function () {};
         let isolateDirControllerInNonIsolateDirective;
 
         module
@@ -13136,7 +13152,7 @@ describe("$compile", () => {
               isolateDirControllerInNonIsolateDirective = isolateDirController;
             },
           }));
-
+        initInjector("test1");
         element = $compile("<div isolate non-isolate></div>")($rootScope);
 
         expect(isolateDirControllerInNonIsolateDirective).toBeDefined();
@@ -13153,8 +13169,10 @@ describe("$compile", () => {
           scope: {},
           template: '<input type="checkbox" ng-model="model">',
         }));
-
-        $compile("<div><test-directive></test-directive></div>");
+        initInjector("test1");
+        element = $compile("<div><test-directive></test-directive></div>")(
+          $rootScope,
+        );
 
         element = element.children().eq(0);
         expect(element[0].checked).toBe(false);
@@ -13181,7 +13199,7 @@ describe("$compile", () => {
               normalScope = s;
             },
           }));
-
+        initInjector("test1");
         element = $compile("<div isolate non-isolate></div>")($rootScope);
 
         expect(normalScope).toBe($rootScope);
@@ -13209,7 +13227,7 @@ describe("$compile", () => {
               normalScope = s;
             },
           }));
-
+        initInjector("test1");
         $templateCache.put(
           "main.html",
           "<span ng-init=\"name='WORKS'\">{{name}}</span>",
@@ -13238,7 +13256,7 @@ describe("$compile", () => {
               );
             },
           }));
-
+        initInjector("test1");
         element = $compile(
           "<div>" +
             '<div isolate scope-tester="outside"></div>' +
@@ -13247,7 +13265,7 @@ describe("$compile", () => {
         )($rootScope);
 
         $rootScope.$digest();
-        expect(log[0]).toEqual(
+        expect(log.join("; ")).toEqual(
           "inside=isolate; " +
             "outside replaced=non-isolate; " + // outside
             "outside replaced=isolate; " + // replaced
@@ -13259,7 +13277,7 @@ describe("$compile", () => {
         "should require controller of a non-isolate directive from an isolate directive on the " +
           "same element",
         () => {
-          const NonIsolateController = () => {};
+          const NonIsolateController = function () {};
           let nonIsolateDirControllerInIsolateDirective;
 
           module
@@ -13274,7 +13292,7 @@ describe("$compile", () => {
             .directive("nonIsolate", () => ({
               controller: NonIsolateController,
             }));
-
+          initInjector("test1");
           element = $compile("<div isolate non-isolate></div>")($rootScope);
 
           expect(nonIsolateDirControllerInIsolateDirective).toBeDefined();
@@ -13295,7 +13313,7 @@ describe("$compile", () => {
           },
           controllerAs: "mainCtrl",
         }));
-
+        initInjector("test1");
         $templateCache.put(
           "main.html",
           "<span>template:{{mainCtrl.name}} <div ng-transclude></div></span>",
@@ -13309,7 +13327,7 @@ describe("$compile", () => {
 
       it("should support controller alias", () => {
         module
-          .controller("MainCtrl", () => {
+          .controller("MainCtrl", function () {
             this.name = "lucas";
           })
           .directive("main", () => ({
@@ -13317,7 +13335,7 @@ describe("$compile", () => {
             scope: {},
             controller: "MainCtrl as mainCtrl",
           }));
-
+        initInjector("test1");
         $templateCache.put("main.html", "<span>{{mainCtrl.name}}</span>");
         element = $compile("<div main></div>")($rootScope);
         $rootScope.$apply();
@@ -13337,7 +13355,7 @@ describe("$compile", () => {
               log.push(`dep:${controller.name}`);
             },
           }));
-
+        initInjector("test1");
         element = $compile("<div main><div dep></div></div>")($rootScope);
         expect(log[0]).toEqual("dep:main");
       });
@@ -13349,6 +13367,7 @@ describe("$compile", () => {
             log.push(`dep:${controller.name}`);
           },
         }));
+        initInjector("test1");
         expect(() => {
           $compile("<div main><div dep></div></div>")($rootScope);
         }).toThrowError(/ctreq/);
@@ -13361,7 +13380,7 @@ describe("$compile", () => {
             log.push(`dep:${controller}`);
           },
         }));
-
+        initInjector("test1");
         $compile("<div main><div dep></div></div>")($rootScope);
         expect(log[0]).toEqual("dep:null");
       });
@@ -13373,7 +13392,7 @@ describe("$compile", () => {
             log.push(`dep:${controller}`);
           },
         }));
-
+        initInjector("test1");
         $compile("<div main><div dep></div></div>")($rootScope);
         expect(log[0]).toEqual("dep:null");
       });
@@ -13385,7 +13404,7 @@ describe("$compile", () => {
             log.push(`dep:${!!controller}`);
           },
         }));
-
+        initInjector("test1");
         element = $compile("<div main><div dep></div></div>")($rootScope);
         expect(log[0]).toEqual("dep:false");
       });
@@ -13414,6 +13433,7 @@ describe("$compile", () => {
               log.push(`dep:${controller[0].name}-${controller[1].name}`);
             },
           }));
+        initInjector("test1");
         element = $compile("<div c1 c2><div dep></div></div>")($rootScope);
         expect(log[0]).toEqual("dep:c1-c2");
       });
@@ -13442,7 +13462,7 @@ describe("$compile", () => {
               log.push(`dep:${controllers.myC1.name}-${controllers.myC2.name}`);
             },
           }));
-
+        initInjector("test1");
         element = $compile("<div c1 c2><div dep></div></div>")($rootScope);
         expect(log[0]).toEqual("dep:c1-c2");
       });
@@ -13471,7 +13491,7 @@ describe("$compile", () => {
               log.push(`dep:${controllers.myC1.name}-${controllers.myC2.name}`);
             },
           }));
-
+        initInjector("test1");
         element = $compile("<div my-c1 my-c2><div dep></div></div>")(
           $rootScope,
         );
@@ -13500,7 +13520,7 @@ describe("$compile", () => {
               },
             }),
           );
-
+        initInjector("test1");
         expect(syncCtrlSpy).not.toHaveBeenCalled();
         expect(asyncCtrlSpy).not.toHaveBeenCalled();
 
@@ -13544,7 +13564,7 @@ describe("$compile", () => {
               log.push("childController");
             },
           }));
-
+        initInjector("test1");
         $templateCache.put(
           "parentDirective.html",
           "<div ng-transclude>parentTemplateText;</div>",
@@ -13558,12 +13578,12 @@ describe("$compile", () => {
           "<div parent-directive><div child-directive></div>childContentText;</div>",
         )($rootScope);
         $rootScope.$apply();
-        expect(log[0]).toEqual("parentController; childController");
+        expect(log.join("; ")).toEqual("parentController; childController");
         expect(element.text()).toBe("childTemplateText;childContentText;");
       });
 
       it("should instantiate the controller after the isolate scope bindings are initialized (with template)", () => {
-        const Ctrl = function ($scope, log) {
+        const Ctrl = function ($scope) {
           log.push(`myFoo=${$scope.myFoo}`);
         };
 
@@ -13574,7 +13594,7 @@ describe("$compile", () => {
           template: "<p>Hello</p>",
           controller: Ctrl,
         }));
-
+        initInjector("test1");
         $rootScope.foo = "bar";
 
         element = $compile('<div my-directive my-foo="foo"></div>')($rootScope);
@@ -13583,7 +13603,7 @@ describe("$compile", () => {
       });
 
       it("should instantiate the controller after the isolate scope bindings are initialized (with templateUrl)", () => {
-        const Ctrl = function ($scope, log) {
+        const Ctrl = function ($scope) {
           log.push(`myFoo=${$scope.myFoo}`);
         };
 
@@ -13594,7 +13614,7 @@ describe("$compile", () => {
           templateUrl: "mock/hello",
           controller: Ctrl,
         }));
-
+        initInjector("test1");
         $templateCache.put("mock/hello", "<p>Hello</p>");
         $rootScope.foo = "bar";
 
@@ -13631,7 +13651,7 @@ describe("$compile", () => {
               log.push("babyController");
             },
           }));
-
+        initInjector("test1");
         $templateCache.put(
           "parentDirective.html",
           "<div ng-transclude>parentTemplateText;</div>",
@@ -13654,7 +13674,7 @@ describe("$compile", () => {
             "</div>",
         )($rootScope);
         $rootScope.$apply();
-        expect(log[0]).toEqual(
+        expect(log.join("; ")).toEqual(
           "parentController; childController; babyController",
         );
         expect(element.text()).toBe("childContentText;babyTemplateText;");
@@ -13676,7 +13696,7 @@ describe("$compile", () => {
             };
           },
         }));
-
+        initInjector("test1");
         $templateCache.put("mock/hello", "<p>Hello</p>");
 
         element = $compile("<div my-directive></div>")($rootScope);
@@ -13702,7 +13722,7 @@ describe("$compile", () => {
             };
           },
         }));
-
+        initInjector("test1");
         element = $compile("<div my-directive></div>")($rootScope);
         $rootScope.$apply();
 
@@ -13719,905 +13739,813 @@ describe("$compile", () => {
             link: () => {},
           }),
         );
+        initInjector("test1");
+        expect(() => {
+          // a-dir will cause a ctreq error to be thrown. Previously, the error would reference
+          // the last directive in the chain (which in this case would be ngClick), based on
+          // priority and alphabetical ordering. This test verifies that the ordering does not
+          // affect which directive is referenced in the minErr message.
+          element = $compile('<a-dir ng-click="foo=bar"></a-dir>')($rootScope);
+        }).toThrowError(/ctreq/);
       });
-      expect(() => {
-        // a-dir will cause a ctreq error to be thrown. Previously, the error would reference
-        // the last directive in the chain (which in this case would be ngClick), based on
-        // priority and alphabetical ordering. This test verifies that the ordering does not
-        // affect which directive is referenced in the minErr message.
-        element = $compile('<a-dir ng-click="foo=bar"></a-dir>')($rootScope);
-      }).toThrowError(/ctreq/);
     });
   });
-});
 
-describe("$compile", () => {
-  const { document } = window;
+  describe("$compile", () => {
+    // const { document } = window;
 
-  let element;
-  let directive;
-  let $compile;
-  let $rootScope;
+    // let directive;
 
-  beforeEach(
-    module(provideLog, ($provide, $compileProvider) => {
-      element = null;
-      directive = $compileProvider.directive;
-      return function (_$compile_, _$rootScope_) {
-        $rootScope = _$rootScope_;
-        $compile = _$compile_;
-      };
-    }),
-  );
+    // beforeEach(() => {
+    //   module(provideLog, ($provide, $compileProvider) => {
+    //     element = null;
+    //     directive = $compileProvider.directive;
+    //     return function (_$compile_, _$rootScope_) {
+    //       $rootScope = _$rootScope_;
+    //       $compile = _$compile_;
+    //     };
+    // });
 
-  function compile(html) {
-    element = angular.element(html);
-    $compile(element)($rootScope);
-  }
+    // function compile(html) {
+    //   element = angular.element(html);
+    //   $compile(element)($rootScope);
+    // }
 
-  describe("transclude", () => {
-    describe("content transclusion", () => {
-      it("should support transclude directive", () => {
-        module.directive("trans", () => ({
-          transclude: "content",
-          replace: true,
-          scope: {},
-          link(scope) {
-            scope.x = "iso";
-          },
-          template:
-            "<ul><li>W:{{x}}-{{$parent.$id}}-{{$id}};</li><li ng-transclude></li></ul>",
-        }));
-
-        element = $compile(
-          "<div><div trans>T:{{x}}-{{$parent.$id}}-{{$id}}<span>;</span></div></div>",
-        )($rootScope);
-        $rootScope.x = "root";
-        $rootScope.$apply();
-        expect(element.text()).toEqual("W:iso-1-2;T:root-2-3;");
-        expect(
-          jqLite(jqLite(element.find("li")[1]).contents()[0]).text(),
-        ).toEqual("T:root-2-3");
-        expect(jqLite(element.find("span")[0]).text()).toEqual(";");
-      });
-
-      it("should transclude transcluded content", () => {
-        module
-          .directive(
-            "book",
-            valueFn({
-              transclude: "content",
-              template:
-                "<div>book-<div chapter>(<div ng-transclude></div>)</div></div>",
-            }),
-          )
-          .directive(
-            "chapter",
-            valueFn({
-              transclude: "content",
-              templateUrl: "chapter.html",
-            }),
-          )
-          .directive(
-            "section",
-            valueFn({
-              transclude: "content",
-              template: "<div>section-!<div ng-transclude></div>!</div></div>",
-            }),
-          );
-        // return function ($httpBackend) {
-        //   $httpBackend
-        //     .expect("GET", "chapter.html")
-        //     .respond(
-        //       "<div>chapter-<div section>[<div ng-transclude></div>]</div></div>",
-        //     );
-        // };
-        element = $compile("<div><div book>paragraph</div></div>")($rootScope);
-        $rootScope.$apply();
-
-        expect(element.text()).toEqual("book-");
-
-        $rootScope.$digest();
-        $rootScope.$apply();
-        expect(element.text()).toEqual("book-chapter-section-![(paragraph)]!");
-      });
-
-      it("should compile directives with lower priority than ngTransclude", () => {
-        let ngTranscludePriority;
-        const lowerPriority = -1;
-
-        module
-          .directive("lower", () => ({
-            priority: lowerPriority,
-            link: {
-              pre() {
-                log.push("pre");
-              },
-              post() {
-                log.push("post");
-              },
-            },
-          }))
-          .directive("trans", () => ({
-            transclude: true,
-            template: "<div lower ng-transclude></div>",
-          }));
-        // (($provide) => {
-        //   $provide.decorator("ngTranscludeDirective", ($delegate) => {
-        //     ngTranscludePriority = $delegate[0].priority;
-        //     return $delegate;
-        //   });
-        element = $compile("<div trans><span>transcluded content</span></div>")(
-          $rootScope,
-        );
-
-        expect(lowerPriority).toBeLessThan(ngTranscludePriority);
-
-        $rootScope.$apply();
-
-        expect(element.text()).toEqual("transcluded content");
-        expect(log[0]).toEqual("pre; post");
-      });
-
-      it("should not merge text elements from transcluded content", () => {
-        module.directive(
-          "foo",
-          valueFn({
+    describe("transclude", () => {
+      describe("content transclusion", () => {
+        it("should support transclude directive", () => {
+          module.directive("trans", () => ({
             transclude: "content",
-            template: "<div>This is before {{before}}. </div>",
-            link(scope, element, attr, ctrls, $transclude) {
-              const futureParent = element.children().eq(0);
-              $transclude((clone) => {
-                futureParent.append(clone);
-              }, futureParent);
-            },
-            scope: true,
-          }),
-        );
-
-        element = $compile("<div><div foo>This is after {{after}}</div></div>")(
-          $rootScope,
-        );
-        $rootScope.before = "BEFORE";
-        $rootScope.after = "AFTER";
-        $rootScope.$apply();
-        expect(element.text()).toEqual(
-          "This is before BEFORE. This is after AFTER",
-        );
-
-        $rootScope.before = "Not-Before";
-        $rootScope.after = "AfTeR";
-        $rootScope.$$childHead.before = "BeFoRe";
-        $rootScope.$$childHead.after = "Not-After";
-        $rootScope.$apply();
-        expect(element.text()).toEqual(
-          "This is before BeFoRe. This is after AfTeR",
-        );
-      });
-
-      it("should only allow one content transclusion per element", () => {
-        module
-          .directive(
-            "first",
-            valueFn({
-              transclude: true,
-            }),
-          )
-          .directive(
-            "second",
-            valueFn({
-              transclude: true,
-            }),
-          );
-
-        expect(() => {
-          $compile('<div first="" second=""></div>');
-        }).toThrowError(/multidir/);
-      });
-
-      it("should correctly handle multi-element directives", () => {
-        module
-          .directive(
-            "foo",
-            valueFn({
-              template: "[<div ng-transclude></div>]",
-              transclude: true,
-            }),
-          )
-          .directive(
-            "bar",
-            valueFn({
-              template:
-                '[<div ng-transclude="header"></div>|<div ng-transclude="footer"></div>]',
-              transclude: {
-                header: "header",
-                footer: "footer",
-              },
-            }),
-          );
-
-        const tmplWithFoo =
-          "<foo>" +
-          '<div ng-if-start="true">Hello, </div>' +
-          "<div ng-if-end>world!</div>" +
-          "</foo>";
-        const tmplWithBar =
-          "<bar>" +
-          '<header ng-if-start="true">This is a </header>' +
-          "<header ng-if-end>header!</header>" +
-          '<footer ng-if-start="true">This is a </footer>' +
-          "<footer ng-if-end>footer!</footer>" +
-          "</bar>";
-
-        const elem1 = $compile(tmplWithFoo)($rootScope);
-        const elem2 = $compile(tmplWithBar)($rootScope);
-
-        $rootScope.$digest();
-
-        expect(elem1.text()).toBe("[Hello, world!]");
-        expect(elem2.text()).toBe("[This is a header!|This is a footer!]");
-
-        dealoc(elem1);
-        dealoc(elem2);
-      });
-
-      // see issue https://github.com/angular/angular.js/issues/12936
-      it("should use the proper scope when it is on the root element of a replaced directive template", () => {
-        module
-          .directive(
-            "isolate",
-            valueFn({
-              scope: {},
-              replace: true,
-              template: "<div trans>{{x}}</div>",
-              link(scope, element, attr, ctrl) {
-                scope.x = "iso";
-              },
-            }),
-          )
-          .directive(
-            "trans",
-            valueFn({
-              transclude: "content",
-              link(scope, element, attr, ctrl, $transclude) {
-                $transclude((clone) => {
-                  element.append(clone);
-                });
-              },
-            }),
-          );
-
-        element = $compile("<isolate></isolate>")($rootScope);
-        $rootScope.x = "root";
-        $rootScope.$apply();
-        expect(element.text()).toEqual("iso");
-      });
-
-      // see issue https://github.com/angular/angular.js/issues/12936
-      it("should use the proper scope when it is on the root element of a replaced directive template with child scope", () => {
-        module
-          .directive(
-            "child",
-            valueFn({
-              scope: true,
-              replace: true,
-              template: "<div trans>{{x}}</div>",
-              link(scope, element, attr, ctrl) {
-                scope.x = "child";
-              },
-            }),
-          )
-          .directive(
-            "trans",
-            valueFn({
-              transclude: "content",
-              link(scope, element, attr, ctrl, $transclude) {
-                $transclude((clone) => {
-                  element.append(clone);
-                });
-              },
-            }),
-          );
-
-        element = $compile("<child></child>")($rootScope);
-        $rootScope.x = "root";
-        $rootScope.$apply();
-        expect(element.text()).toEqual("child");
-      });
-
-      it("should throw if a transcluded node is transcluded again", () => {
-        module.directive(
-          "trans",
-          valueFn({
-            transclude: true,
-            link(scope, element, attr, ctrl, $transclude) {
-              $transclude();
-              $transclude();
-            },
-          }),
-        );
-
-        expect(() => {
-          $compile("<trans></trans>")($rootScope);
-        }).toThrowError(/multilink/);
-      });
-
-      it('should not leak if two "element" transclusions are on the same element (with debug info)', () => {
-        // module(($compileProvider) => {
-        //   $compileProvider.debugInfoEnabled(true);
-        // });
-
-        const cacheSize = jqLiteCacheSize();
-
-        element = $compile(
-          '<div><div ng-repeat="x in xs" ng-if="x==1">{{x}}</div></div>',
-        )($rootScope);
-        expect(jqLiteCacheSize()).toEqual(cacheSize + 1);
-
-        $rootScope.$apply("xs = [0,1]");
-        expect(jqLiteCacheSize()).toEqual(cacheSize + 2);
-
-        $rootScope.$apply("xs = [0]");
-        expect(jqLiteCacheSize()).toEqual(cacheSize + 1);
-
-        $rootScope.$apply("xs = []");
-        expect(jqLiteCacheSize()).toEqual(cacheSize + 1);
-
-        element.remove();
-        expect(jqLiteCacheSize()).toEqual(cacheSize + 0);
-      });
-
-      it('should not leak if two "element" transclusions are on the same element (without debug info)', () => {
-        module(($compileProvider) => {
-          $compileProvider.debugInfoEnabled(false);
-        });
-
-        const cacheSize = jqLiteCacheSize();
-
-        element = $compile(
-          '<div><div ng-repeat="x in xs" ng-if="x==1">{{x}}</div></div>',
-        )($rootScope);
-        expect(jqLiteCacheSize()).toEqual(cacheSize);
-
-        $rootScope.$apply("xs = [0,1]");
-        expect(jqLiteCacheSize()).toEqual(cacheSize);
-
-        $rootScope.$apply("xs = [0]");
-        expect(jqLiteCacheSize()).toEqual(cacheSize);
-
-        $rootScope.$apply("xs = []");
-        expect(jqLiteCacheSize()).toEqual(cacheSize);
-
-        element.remove();
-        expect(jqLiteCacheSize()).toEqual(cacheSize);
-      });
-
-      it('should not leak if two "element" transclusions are on the same element (with debug info)', () => {
-        module(($compileProvider) => {
-          $compileProvider.debugInfoEnabled(true);
-        });
-
-        const cacheSize = jqLiteCacheSize();
-        element = $compile(
-          '<div><div ng-repeat="x in xs" ng-if="val">{{x}}</div></div>',
-        )($rootScope);
-
-        $rootScope.$apply("xs = [0,1]");
-        // At this point we have a bunch of comment placeholders but no real transcluded elements
-        // So the cache only contains the root element's data
-        expect(jqLiteCacheSize()).toEqual(cacheSize + 1);
-
-        $rootScope.$apply("val = true");
-        // Now we have two concrete transcluded elements plus some comments so two more cache items
-        expect(jqLiteCacheSize()).toEqual(cacheSize + 3);
-
-        $rootScope.$apply("val = false");
-        // Once again we only have comments so no transcluded elements and the cache is back to just
-        // the root element
-        expect(jqLiteCacheSize()).toEqual(cacheSize + 1);
-
-        element.remove();
-        // Now we've even removed the root element along with its cache
-        expect(jqLiteCacheSize()).toEqual(cacheSize + 0);
-      });
-
-      it("should not leak when continuing the compilation of elements on a scope that was destroyed", () => {
-        const linkFn = jasmine.createSpy("linkFn");
-
-        module
-          .controller("Leak", ($scope, $timeout) => {
-            $scope.code = "red";
-            $timeout(() => {
-              $scope.code = "blue";
-            });
-          })
-          .directive("isolateRed", () => ({
-            restrict: "A",
+            replace: true,
             scope: {},
-            template: "<div red></div>",
-          }))
-          .directive("red", () => ({
-            restrict: "A",
-            templateUrl: "red.html",
-            scope: {},
-            link: linkFn,
+            link(scope) {
+              scope.x = "iso";
+            },
+            template: "<ul><li>W:{{x}}</li><li ng-transclude></li></ul>",
           }));
-
-        const cacheSize = jqLiteCacheSize();
-        $httpBackend.whenGET("red.html").respond("<p>red.html</p>");
-        const template = $compile(
-          '<div ng-controller="Leak">' +
-            '<div ng-switch="code">' +
-            '<div ng-switch-when="red">' +
-            "<div isolate-red></div>" +
-            "</div>" +
-            "</div>" +
-            "</div>",
-        );
-        element = template($rootScope, () => {});
-        $rootScope.$digest();
-        $timeout.flush();
-        $rootScope.$digest();
-        expect(linkFn).not.toHaveBeenCalled();
-        expect(jqLiteCacheSize()).toEqual(cacheSize + 2);
-
-        $templateCache.removeAll();
-        const destroyedScope = $rootScope.$new();
-        destroyedScope.$destroy();
-        const clone = template(destroyedScope, () => {});
-        $rootScope.$digest();
-        $timeout.flush();
-        expect(linkFn).not.toHaveBeenCalled();
-        clone.remove();
-      });
-
-      describe("cleaning up after a replaced element", () => {
-        let $compile;
-        let xs;
-        beforeEach(() => {
-          xs = [0, 1];
+          initInjector("test1");
+          element = $compile(
+            "<div><div trans>T:{{x}}<span>;</span></div></div>",
+          )($rootScope);
+          $rootScope.x = "root";
+          $rootScope.$apply();
+          expect(element.text()).toEqual("W:isoT:root;");
+          expect(
+            jqLite(jqLite(element.find("li")[1]).contents()[0]).text(),
+          ).toEqual("T:root");
+          expect(jqLite(element.find("span")[0]).text()).toEqual(";");
         });
 
-        function testCleanup() {
-          let privateData;
-          let firstRepeatedElem;
+        it("should transclude transcluded content", () => {
+          module
+            .directive(
+              "book",
+              valueFn({
+                transclude: "content",
+                template:
+                  "<div>book-<div chapter>(<div ng-transclude></div>)</div></div>",
+              }),
+            )
+            .directive(
+              "chapter",
+              valueFn({
+                transclude: "content",
+                templateUrl: "chapter.html",
+              }),
+            )
+            .directive(
+              "section",
+              valueFn({
+                transclude: "content",
+                template:
+                  "<div>section-!<div ng-transclude></div>!</div></div>",
+              }),
+            );
+          initInjector("test1");
+          // return function ($httpBackend) {
+          $templateCache.put(
+            "chapter.html",
+            "<div>chapter-<div section>[<div ng-transclude></div>]</div></div>",
+          );
+          element = $compile("<div><div book>paragraph</div></div>")(
+            $rootScope,
+          );
+          expect(element.text()).toEqual("book-");
+          $rootScope.$apply();
+          expect(element.text()).toEqual(
+            "book-chapter-section-![(paragraph)]!",
+          );
+        });
 
+        it("should compile directives with lower priority than ngTransclude", () => {
+          let ngTranscludePriority;
+          const lowerPriority = -1;
+
+          module
+            .directive("lower", () => ({
+              priority: lowerPriority,
+              link: {
+                pre() {
+                  log.push("pre");
+                },
+                post() {
+                  log.push("post");
+                },
+              },
+            }))
+            .directive("trans", () => ({
+              transclude: true,
+              template: "<div lower ng-transclude></div>",
+            }))
+            .decorator("ngTranscludeDirective", ($delegate) => {
+              ngTranscludePriority = $delegate[0].priority;
+              return $delegate;
+            });
+
+          initInjector("test1");
           element = $compile(
-            '<div><div ng-repeat="x in xs" ng-click="() => {}()">{{x}}</div></div>',
+            "<div trans><span>transcluded content</span></div>",
           )($rootScope);
 
-          $rootScope.$apply(`xs = [${xs}]`);
-          firstRepeatedElem = element.children(".ng-scope").eq(0);
+          expect(lowerPriority).toBeLessThan(ngTranscludePriority);
 
-          expect(firstRepeatedElem.data("$scope")).toBeDefined();
-          privateData = jqLite._data(firstRepeatedElem[0]);
-          expect(privateData.events).toBeDefined();
-          expect(privateData.events.click).toBeDefined();
-          expect(privateData.events.click[0]).toBeDefined();
+          $rootScope.$apply();
 
-          // Ensure the AngularJS $destroy event is still sent
-          let destroyCount = 0;
-          element.find("div").on("$destroy", () => {
-            destroyCount++;
+          expect(element.text()).toEqual("transcluded content");
+          expect(log.join("; ")).toEqual("pre; post");
+        });
+
+        it("should not merge text elements from transcluded content", () => {
+          module.directive(
+            "foo",
+            valueFn({
+              transclude: "content",
+              template: "<div>This is before {{before}}. </div>",
+              link(scope, element, attr, ctrls, $transclude) {
+                const futureParent = element.children().eq(0);
+                $transclude((clone) => {
+                  futureParent.append(clone);
+                }, futureParent);
+              },
+              scope: true,
+            }),
+          );
+          initInjector("test1");
+          element = $compile(
+            "<div><div foo>This is after {{after}}</div></div>",
+          )($rootScope);
+          $rootScope.before = "BEFORE";
+          $rootScope.after = "AFTER";
+          $rootScope.$apply();
+          expect(element.text()).toEqual(
+            "This is before BEFORE. This is after AFTER",
+          );
+
+          $rootScope.before = "Not-Before";
+          $rootScope.after = "AfTeR";
+          $rootScope.$$childHead.before = "BeFoRe";
+          $rootScope.$$childHead.after = "Not-After";
+          $rootScope.$apply();
+          expect(element.text()).toEqual(
+            "This is before BeFoRe. This is after AfTeR",
+          );
+        });
+
+        it("should only allow one content transclusion per element", () => {
+          module
+            .directive(
+              "first",
+              valueFn({
+                transclude: true,
+              }),
+            )
+            .directive(
+              "second",
+              valueFn({
+                transclude: true,
+              }),
+            );
+          initInjector("test1");
+          expect(() => {
+            $compile('<div first="" second=""></div>');
+          }).toThrowError(/multidir/);
+        });
+
+        it("should correctly handle multi-element directives", () => {
+          module
+            .directive(
+              "foo",
+              valueFn({
+                template: "[<div ng-transclude></div>]",
+                transclude: true,
+              }),
+            )
+            .directive(
+              "bar",
+              valueFn({
+                template:
+                  '[<div ng-transclude="header"></div>|<div ng-transclude="footer"></div>]',
+                transclude: {
+                  header: "header",
+                  footer: "footer",
+                },
+              }),
+            );
+          initInjector("test1");
+          const tmplWithFoo =
+            "<foo>" +
+            '<div ng-if-start="true">Hello, </div>' +
+            "<div ng-if-end>world!</div>" +
+            "</foo>";
+          const tmplWithBar =
+            "<bar>" +
+            '<header ng-if-start="true">This is a </header>' +
+            "<header ng-if-end>header!</header>" +
+            '<footer ng-if-start="true">This is a </footer>' +
+            "<footer ng-if-end>footer!</footer>" +
+            "</bar>";
+
+          const elem1 = $compile(tmplWithFoo)($rootScope);
+          const elem2 = $compile(tmplWithBar)($rootScope);
+
+          $rootScope.$digest();
+
+          expect(elem1.text()).toBe("[Hello, world!]");
+          expect(elem2.text()).toBe("[This is a header!|This is a footer!]");
+
+          dealoc(elem1);
+          dealoc(elem2);
+        });
+
+        // see issue https://github.com/angular/angular.js/issues/12936
+        it("should use the proper scope when it is on the root element of a replaced directive template", () => {
+          module
+            .directive(
+              "isolate",
+              valueFn({
+                scope: {},
+                replace: true,
+                template: "<div trans>{{x}}</div>",
+                link(scope, element, attr, ctrl) {
+                  scope.x = "iso";
+                },
+              }),
+            )
+            .directive(
+              "trans",
+              valueFn({
+                transclude: "content",
+                link(scope, element, attr, ctrl, $transclude) {
+                  $transclude((clone) => {
+                    element.append(clone);
+                  });
+                },
+              }),
+            );
+          initInjector("test1");
+          element = $compile("<isolate></isolate>")($rootScope);
+          $rootScope.x = "root";
+          $rootScope.$apply();
+          expect(element.text()).toEqual("iso");
+        });
+
+        // see issue https://github.com/angular/angular.js/issues/12936
+        it("should use the proper scope when it is on the root element of a replaced directive template with child scope", () => {
+          module
+            .directive(
+              "child",
+              valueFn({
+                scope: true,
+                replace: true,
+                template: "<div trans>{{x}}</div>",
+                link(scope, element, attr, ctrl) {
+                  scope.x = "child";
+                },
+              }),
+            )
+            .directive(
+              "trans",
+              valueFn({
+                transclude: "content",
+                link(scope, element, attr, ctrl, $transclude) {
+                  $transclude((clone) => {
+                    element.append(clone);
+                  });
+                },
+              }),
+            );
+          initInjector("test1");
+          element = $compile("<child></child>")($rootScope);
+          $rootScope.x = "root";
+          $rootScope.$apply();
+          expect(element.text()).toEqual("child");
+        });
+
+        it("should throw if a transcluded node is transcluded again", () => {
+          module.directive(
+            "trans",
+            valueFn({
+              transclude: true,
+              link(scope, element, attr, ctrl, $transclude) {
+                $transclude();
+                $transclude();
+              },
+            }),
+          );
+          initInjector("test1");
+          expect(() => {
+            $compile("<trans></trans>")($rootScope);
+          }).toThrowError(/multilink/);
+        });
+
+        it('should not leak if two "element" transclusions are on the same element', () => {
+          const cacheSize = Object.keys(jqLite.cache).length;
+
+          element = $compile(
+            '<div><div ng-repeat="x in xs" ng-if="x==1">{{x}}</div></div>',
+          )($rootScope);
+          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 1);
+
+          $rootScope.$apply("xs = [0,1]");
+          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 2);
+
+          $rootScope.$apply("xs = [0]");
+          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 1);
+
+          $rootScope.$apply("xs = []");
+          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 1);
+
+          element.remove();
+          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 0);
+        });
+
+        it('should not leak if two "element" transclusions are on the same element', () => {
+          const cacheSize = Object.keys(jqLite.cache).length;
+          element = $compile(
+            '<div><div ng-repeat="x in xs" ng-if="val">{{x}}</div></div>',
+          )($rootScope);
+
+          $rootScope.$apply("xs = [0,1]");
+          // At this point we have a bunch of comment placeholders but no real transcluded elements
+          // So the cache only contains the root element's data
+          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 1);
+
+          $rootScope.$apply("val = true");
+          // Now we have two concrete transcluded elements plus some comments so two more cache items
+          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 3);
+
+          $rootScope.$apply("val = false");
+          // Once again we only have comments so no transcluded elements and the cache is back to just
+          // the root element
+          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 1);
+
+          element.remove();
+          // Now we've even removed the root element along with its cache
+          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 0);
+        });
+
+        it("should not leak when continuing the compilation of elements on a scope that was destroyed", () => {
+          const linkFn = jasmine.createSpy("linkFn");
+
+          module
+            .controller("Leak", ($scope, $timeout) => {
+              $scope.code = "red";
+              $timeout(() => {
+                $scope.code = "blue";
+              });
+            })
+            .directive("isolateRed", () => ({
+              restrict: "A",
+              scope: {},
+              template: "<div red></div>",
+            }))
+            .directive("red", () => ({
+              restrict: "A",
+              templateUrl: "red.html",
+              scope: {},
+              link: linkFn,
+            }));
+          initInjector("test1");
+          const cacheSize = Object.keys(jqLite.cache).length;
+          $templateCache.put("red.html", "<p>red.html</p>");
+          const template = $compile(
+            '<div ng-controller="Leak">' +
+              '<div ng-switch="code">' +
+              '<div ng-switch-when="red">' +
+              "<div isolate-red></div>" +
+              "</div>" +
+              "</div>" +
+              "</div>",
+          );
+          element = template($rootScope, () => {});
+          $rootScope.$digest();
+
+          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 2);
+
+          $templateCache.removeAll();
+          const destroyedScope = $rootScope.$new();
+          destroyedScope.$destroy();
+          const clone = template(destroyedScope, () => {});
+          $rootScope.$digest();
+
+          expect(linkFn).not.toHaveBeenCalled();
+          clone.remove();
+        });
+
+        describe("cleaning up after a replaced element", () => {
+          let xs;
+
+          beforeEach(() => {
+            xs = [0, 1];
           });
 
-          $rootScope.$apply("xs = null");
+          function testCleanup() {
+            let privateData;
+            let firstRepeatedElem;
 
-          expect(destroyCount).toBe(2);
-          expect(firstRepeatedElem.data("$scope")).not.toBeDefined();
-          privateData = jqLite._data(firstRepeatedElem[0]);
-          expect(privateData && privateData.events).not.toBeDefined();
-        }
+            element = $compile(
+              '<div><div ng-repeat="x in xs" ng-click="() => {}()">{{x}}</div></div>',
+            )($rootScope);
 
-        it(
-          "should work without external libraries (except jQuery)",
-          testCleanup,
-        );
+            $rootScope.$apply(`xs = [${xs}]`);
+            firstRepeatedElem = element.children(".ng-scope").eq(0);
 
-        it("should work with another library patching jqLite/jQuery.cleanData after AngularJS", () => {
-          let cleanedCount = 0;
-          const currentCleanData = jqLite.cleanData;
-          jqLite.cleanData = function (elems) {
-            cleanedCount += elems.length;
-            // Don't return the output and explicitly pass only the first parameter
-            // so that we're sure we're not relying on either of them. jQuery UI patch
-            // behaves in this way.
-            currentCleanData(elems);
-          };
+            expect(firstRepeatedElem.data("$scope")).toBeDefined();
+            privateData = jqLite._data(firstRepeatedElem[0]);
+            expect(privateData.events).toBeDefined();
+            expect(privateData.events.click).toBeDefined();
+            expect(privateData.events.click[0]).toBeDefined();
 
-          testCleanup();
+            // Ensure the AngularJS $destroy event is still sent
+            let destroyCount = 0;
+            element.find("div").on("$destroy", () => {
+              destroyCount++;
+            });
 
-          // The ng-repeat template is removed/cleaned (the +1)
-          // and each clone of the ng-repeat template is also removed (xs.length)
-          expect(cleanedCount).toBe(xs.length + 1);
+            $rootScope.$apply("xs = null");
 
-          // Restore the previous cleanData.
-          jqLite.cleanData = currentCleanData;
+            expect(destroyCount).toBe(2);
+            expect(firstRepeatedElem.data("$scope")).not.toBeDefined();
+            privateData = jqLite._data(firstRepeatedElem[0]);
+            expect(privateData && privateData.events).not.toBeDefined();
+          }
+
+          it(
+            "should work without external libraries (except jQuery)",
+            testCleanup,
+          );
+
+          it("should work with another library patching jqLite/jQuery.cleanData after AngularJS", () => {
+            let cleanedCount = 0;
+            const currentCleanData = jqLite.cleanData;
+            jqLite.cleanData = function (elems) {
+              cleanedCount += elems.length;
+              // Don't return the output and explicitly pass only the first parameter
+              // so that we're sure we're not relying on either of them. jQuery UI patch
+              // behaves in this way.
+              currentCleanData(elems);
+            };
+
+            testCleanup();
+
+            // The ng-repeat template is removed/cleaned (the +1)
+            // and each clone of the ng-repeat template is also removed (xs.length)
+            expect(cleanedCount).toBe(xs.length + 1);
+
+            // Restore the previous cleanData.
+            jqLite.cleanData = currentCleanData;
+          });
         });
-      });
 
-      it("should add a $$transcluded property onto the transcluded scope", () => {
-        module.directive("trans", () => ({
-          transclude: true,
-          replace: true,
-          scope: true,
-          template:
-            "<div><span>I:{{$$transcluded}}</span><span ng-transclude></span></div>",
-        }));
-
-        element = $compile("<div><div trans>T:{{$$transcluded}}</div></div>")(
-          $rootScope,
-        );
-        $rootScope.$apply();
-        expect(jqLite(element.find("span")[0]).text()).toEqual("I:");
-        expect(jqLite(element.find("span")[1]).text()).toEqual("T:true");
-      });
-
-      it("should clear contents of the ng-transclude element before appending transcluded content if transcluded content exists", () => {
-        module.directive("trans", () => ({
-          transclude: true,
-          template: "<div ng-transclude>old stuff!</div>",
-        }));
-
-        element = $compile("<div trans>unicorn!</div>")($rootScope);
-        $rootScope.$apply();
-        expect(sortedHtml(element.html())).toEqual(
-          '<div ng-transclude="">unicorn!</div>',
-        );
-      });
-
-      it("should NOT clear contents of the ng-transclude element before appending transcluded content if transcluded content does NOT exist", () => {
-        module.directive("trans", () => ({
-          transclude: true,
-          template: "<div ng-transclude>old stuff!</div>",
-        }));
-        element = $compile("<div trans></div>")($rootScope);
-        $rootScope.$apply();
-        expect(sortedHtml(element.html())).toEqual(
-          '<div ng-transclude="">old stuff!</div>',
-        );
-      });
-
-      it("should clear the fallback content from the element during compile and before linking", () => {
-        module.directive("trans", () => ({
-          transclude: true,
-          template: "<div ng-transclude>fallback content</div>",
-        }));
-        element = jqLite("<div trans></div>");
-        const linkfn = $compile(element);
-        expect(element.html()).toEqual('<div ng-transclude=""></div>');
-        linkfn($rootScope);
-        $rootScope.$apply();
-        expect(sortedHtml(element.html())).toEqual(
-          '<div ng-transclude="">fallback content</div>',
-        );
-      });
-
-      it("should allow cloning of the fallback via ngRepeat", () => {
-        module.directive("trans", () => ({
-          transclude: true,
-          template:
-            '<div ng-repeat="i in [0,1,2]"><div ng-transclude>{{i}}</div></div>',
-        }));
-
-        element = $compile("<div trans></div>")($rootScope);
-        $rootScope.$apply();
-        expect(element.text()).toEqual("012");
-      });
-
-      it("should not link the fallback content if transcluded content is provided", () => {
-        const linkSpy = jasmine.createSpy("postlink");
-
-        module
-          .directive("inner", () => ({
-            restrict: "E",
-            template: "old stuff! ",
-            link: linkSpy,
-          }))
-          .directive("trans", () => ({
-            transclude: true,
-            template: "<div ng-transclude><inner></inner></div>",
-          }));
-        element = $compile("<div trans>unicorn!</div>")($rootScope);
-        $rootScope.$apply();
-        expect(sortedHtml(element.html())).toEqual(
-          '<div ng-transclude="">unicorn!</div>',
-        );
-        expect(linkSpy).not.toHaveBeenCalled();
-      });
-
-      it("should compile and link the fallback content if no transcluded content is provided", () => {
-        const linkSpy = jasmine.createSpy("postlink");
-
-        module
-          .directive("inner", () => ({
-            restrict: "E",
-            template: "old stuff! ",
-            link: linkSpy,
-          }))
-          .directive("trans", () => ({
-            transclude: true,
-            template: "<div ng-transclude><inner></inner></div>",
-          }));
-
-        element = $compile("<div trans></div>")($rootScope);
-        $rootScope.$apply();
-        expect(sortedHtml(element.html())).toEqual(
-          '<div ng-transclude=""><inner>old stuff! </inner></div>',
-        );
-        expect(linkSpy).toHaveBeenCalled();
-      });
-
-      it("should compile and link the fallback content if only whitespace transcluded content is provided", () => {
-        const linkSpy = jasmine.createSpy("postlink");
-
-        module
-          .directive("inner", () => ({
-            restrict: "E",
-            template: "old stuff! ",
-            link: linkSpy,
-          }))
-          .directive("trans", () => ({
-            transclude: true,
-            template: "<div ng-transclude><inner></inner></div>",
-          }));
-
-        element = $compile("<div trans>\n  \n</div>")($rootScope);
-        $rootScope.$apply();
-        expect(sortedHtml(element.html())).toEqual(
-          '<div ng-transclude=""><inner>old stuff! </inner></div>',
-        );
-        expect(linkSpy).toHaveBeenCalled();
-      });
-
-      it("should not link the fallback content if only whitespace and comments are provided as transclude content", () => {
-        const linkSpy = jasmine.createSpy("postlink");
-
-        module
-          .directive("inner", () => ({
-            restrict: "E",
-            template: "old stuff! ",
-            link: linkSpy,
-          }))
-          .directive("trans", () => ({
-            transclude: true,
-            template: "<div ng-transclude><inner></inner></div>",
-          }));
-
-        element = $compile("<div trans>\n<!-- some comment -->  \n</div>")(
-          $rootScope,
-        );
-        $rootScope.$apply();
-        expect(sortedHtml(element.html())).toEqual(
-          '<div ng-transclude="">\n<!-- some comment -->  \n</div>',
-        );
-        expect(linkSpy).not.toHaveBeenCalled();
-      });
-
-      it("should compile and link the fallback content if an optional transclusion slot is not provided", () => {
-        const linkSpy = jasmine.createSpy("postlink");
-
-        module
-          .directive("inner", () => ({
-            restrict: "E",
-            template: "old stuff! ",
-            link: linkSpy,
-          }))
-
-          .directive("trans", () => ({
-            transclude: { optionalSlot: "?optional" },
-            template: '<div ng-transclude="optionalSlot"><inner></inner></div>',
-          }));
-
-        element = $compile("<div trans></div>")($rootScope);
-        $rootScope.$apply();
-        expect(sortedHtml(element.html())).toEqual(
-          '<div ng-transclude="optionalSlot"><inner>old stuff! </inner></div>',
-        );
-        expect(linkSpy).toHaveBeenCalled();
-      });
-
-      it("should cope if there is neither transcluded content nor fallback content", () => {
-        module.directive("trans", () => ({
-          transclude: true,
-          template: "<div ng-transclude></div>",
-        }));
-
-        element = $compile("<div trans></div>")($rootScope);
-        $rootScope.$apply();
-        expect(sortedHtml(element.html())).toEqual(
-          '<div ng-transclude=""></div>',
-        );
-      });
-
-      it("should throw on an ng-transclude element inside no transclusion directive", () => {
-        let error;
-
-        try {
-          $compile("<div><div ng-transclude></div></div>")($rootScope);
-        } catch (e) {
-          error = e;
-        }
-
-        expect(error).toEqualMinErr(
-          "ngTransclude",
-          "orphan",
-          "Illegal use of ngTransclude directive in the template! " +
-            "No parent directive that requires a transclusion found. " +
-            "Element: <div ng-transclude",
-        );
-        // we need to do this because different browsers print empty attributes differently
-      });
-
-      it("should not pass transclusion into a template directive when the directive didn't request transclusion", () => {
-        module
-          .directive(
-            "transFoo",
-            valueFn({
-              template:
-                "<div>" +
-                "<div no-trans-bar></div>" +
-                "<div ng-transclude>this one should get replaced with content</div>" +
-                '<div class="foo" ng-transclude></div>' +
-                "</div>",
-              transclude: true,
-            }),
-          )
-          .directive(
-            "noTransBar",
-            valueFn({
-              template:
-                "<div>" +
-                // This ng-transclude is invalid. It should throw an error.
-                '<div class="bar" ng-transclude></div>' +
-                "</div>",
-              transclude: false,
-            }),
-          );
-
-        expect(() => {
-          $compile("<div trans-foo>content</div>")($rootScope);
-        }).toThrowError(/orphan/);
-      });
-
-      it("should not pass transclusion into a templateUrl directive", () => {
-        module
-          .directive(
-            "transFoo",
-            valueFn({
-              template:
-                "<div>" +
-                "<div no-trans-bar></div>" +
-                "<div ng-transclude>this one should get replaced with content</div>" +
-                '<div class="foo" ng-transclude></div>' +
-                "</div>",
-              transclude: true,
-            }),
-          )
-          .directive(
-            "noTransBar",
-            valueFn({
-              templateUrl: "noTransBar.html",
-              transclude: false,
-            }),
-          );
-
-        $templateCache.put(
-          "noTransBar.html",
-          "<div>" +
-            // This ng-transclude is invalid. It should throw an error.
-            '<div class="bar" ng-transclude></div>' +
-            "</div>",
-        );
-
-        expect(() => {
-          element = $compile("<div trans-foo>content</div>")($rootScope);
-          $rootScope.$digest();
-        }).toThrowError(/orphan/);
-      });
-
-      it("should expose transcludeFn in compile fn even for templateUrl", () => {
-        module.directive(
-          "transInCompile",
-          valueFn({
-            transclude: true,
-            // template: '<div class="foo">whatever</div>',
-            templateUrl: "foo.html",
-            compile(_, __, transclude) {
-              return function (scope, element) {
-                transclude(scope, (clone, scope) => {
-                  element.html("");
-                  element.append(clone);
-                });
-              };
-            },
-          }),
-        );
-
-        $templateCache.put("foo.html", '<div class="foo">whatever</div>');
-
-        compile("<div trans-in-compile>transcluded content</div>");
-        $rootScope.$apply();
-
-        expect(trim(element.text())).toBe("transcluded content");
-      });
-
-      it("should make the result of a transclusion available to the parent directive in post-linking phase (template)", () => {
-        module.directive("trans", () => ({
-          transclude: true,
-          template: "<div ng-transclude></div>",
-          link: {
-            pre($scope, $element) {
-              log.push(`pre(${$element.text()})`);
-            },
-            post($scope, $element) {
-              log.push(`post(${$element.text()})`);
-            },
-          },
-        }));
-
-        element = $compile("<div trans><span>unicorn!</span></div>")(
-          $rootScope,
-        );
-        $rootScope.$apply();
-        expect(log[0]).toEqual("pre(); post(unicorn!)");
-      });
-
-      it("should make the result of a transclusion available to the parent directive in post-linking phase (templateUrl)", () => {
-        // when compiling an async directive the transclusion is always processed before the directive
-        // this is different compared to sync directive. delaying the transclusion makes little sense.
-
-        module.directive("trans", () => ({
-          transclude: true,
-          templateUrl: "trans.html",
-          link: {
-            pre($scope, $element) {
-              log.push(`pre(${$element.text()})`);
-            },
-            post($scope, $element) {
-              log.push(`post(${$element.text()})`);
-            },
-          },
-        }));
-
-        $templateCache.put("trans.html", "<div ng-transclude></div>");
-
-        element = $compile("<div trans><span>unicorn!</span></div>")(
-          $rootScope,
-        );
-        $rootScope.$apply();
-        expect(log[0]).toEqual("pre(); post(unicorn!)");
-      });
-
-      it("should make the result of a transclusion available to the parent *replace* directive in post-linking phase (template)", () => {
-        module.directive("replacedTrans", () => ({
-          transclude: true,
-          replace: true,
-          template: "<div ng-transclude></div>",
-          link: {
-            pre($scope, $element) {
-              log.push(`pre(${$element.text()})`);
-            },
-            post($scope, $element) {
-              log.push(`post(${$element.text()})`);
-            },
-          },
-        }));
-
-        element = $compile("<div replaced-trans><span>unicorn!</span></div>")(
-          $rootScope,
-        );
-        $rootScope.$apply();
-        expect(log[0]).toEqual("pre(); post(unicorn!)");
-      });
-
-      it(
-        "should make the result of a transclusion available to the parent *replace* directive in post-linking phase" +
-          " (templateUrl)",
-        () => {
-          module.directive("replacedTrans", () => ({
+        it("should add a $$transcluded property onto the transcluded scope", () => {
+          module.directive("trans", () => ({
             transclude: true,
             replace: true,
+            scope: true,
+            template:
+              "<div><span>I:{{$$transcluded}}</span><span ng-transclude></span></div>",
+          }));
+          initInjector("test1");
+          element = $compile("<div><div trans>T:{{$$transcluded}}</div></div>")(
+            $rootScope,
+          );
+          $rootScope.$apply();
+          expect(jqLite(element.find("span")[0]).text()).toEqual("I:");
+          expect(jqLite(element.find("span")[1]).text()).toEqual("T:true");
+        });
+
+        it("should clear contents of the ng-transclude element before appending transcluded content if transcluded content exists", () => {
+          module.directive("trans", () => ({
+            transclude: true,
+            template: "<div ng-transclude>old stuff!</div>",
+          }));
+          initInjector("test1");
+          element = $compile("<div trans>unicorn!</div>")($rootScope);
+          $rootScope.$apply();
+          expect(element.html()).toEqual(
+            '<div ng-transclude="">unicorn!</div>',
+          );
+        });
+
+        it("should NOT clear contents of the ng-transclude element before appending transcluded content if transcluded content does NOT exist", () => {
+          module.directive("trans", () => ({
+            transclude: true,
+            template: "<div ng-transclude>old stuff!</div>",
+          }));
+          initInjector("test1");
+          element = $compile("<div trans></div>")($rootScope);
+          $rootScope.$apply();
+          expect(element.html()).toEqual(
+            '<div ng-transclude="">old stuff!</div>',
+          );
+        });
+
+        it("should clear the fallback content from the element during compile and before linking", () => {
+          module.directive("trans", () => ({
+            transclude: true,
+            template: "<div ng-transclude>fallback content</div>",
+          }));
+          initInjector("test1");
+          element = jqLite("<div trans></div>");
+          const linkfn = $compile(element);
+          expect(element.html()).toEqual('<div ng-transclude=""></div>');
+          linkfn($rootScope);
+          $rootScope.$apply();
+          expect(element.html()).toEqual(
+            '<div ng-transclude="">fallback content</div>',
+          );
+        });
+
+        it("should allow cloning of the fallback via ngRepeat", () => {
+          module.directive("trans", () => ({
+            transclude: true,
+            template:
+              '<div ng-repeat="i in [0,1,2]"><div ng-transclude>{{i}}</div></div>',
+          }));
+          initInjector("test1");
+          element = $compile("<div trans></div>")($rootScope);
+          $rootScope.$apply();
+          expect(element.text()).toEqual("012");
+        });
+
+        it("should not link the fallback content if transcluded content is provided", () => {
+          const linkSpy = jasmine.createSpy("postlink");
+
+          module
+            .directive("inner", () => ({
+              restrict: "E",
+              template: "old stuff! ",
+              link: linkSpy,
+            }))
+            .directive("trans", () => ({
+              transclude: true,
+              template: "<div ng-transclude><inner></inner></div>",
+            }));
+          initInjector("test1");
+          element = $compile("<div trans>unicorn!</div>")($rootScope);
+          $rootScope.$apply();
+          expect(element.html()).toEqual(
+            '<div ng-transclude="">unicorn!</div>',
+          );
+          expect(linkSpy).not.toHaveBeenCalled();
+        });
+
+        it("should compile and link the fallback content if no transcluded content is provided", () => {
+          const linkSpy = jasmine.createSpy("postlink");
+
+          module
+            .directive("inner", () => ({
+              restrict: "E",
+              template: "old stuff! ",
+              link: linkSpy,
+            }))
+            .directive("trans", () => ({
+              transclude: true,
+              template: "<div ng-transclude><inner></inner></div>",
+            }));
+          initInjector("test1");
+          element = $compile("<div trans></div>")($rootScope);
+          $rootScope.$apply();
+          expect(element.html()).toEqual(
+            '<div ng-transclude=""><inner>old stuff! </inner></div>',
+          );
+          expect(linkSpy).toHaveBeenCalled();
+        });
+
+        it("should compile and link the fallback content if only whitespace transcluded content is provided", () => {
+          const linkSpy = jasmine.createSpy("postlink");
+
+          module
+            .directive("inner", () => ({
+              restrict: "E",
+              template: "old stuff! ",
+              link: linkSpy,
+            }))
+            .directive("trans", () => ({
+              transclude: true,
+              template: "<div ng-transclude><inner></inner></div>",
+            }));
+          initInjector("test1");
+          element = $compile("<div trans>\n  \n</div>")($rootScope);
+          $rootScope.$apply();
+          expect(element.html()).toEqual(
+            '<div ng-transclude=""><inner>old stuff! </inner></div>',
+          );
+          expect(linkSpy).toHaveBeenCalled();
+        });
+
+        it("should not link the fallback content if only whitespace and comments are provided as transclude content", () => {
+          const linkSpy = jasmine.createSpy("postlink");
+
+          module
+            .directive("inner", () => ({
+              restrict: "E",
+              template: "old stuff! ",
+              link: linkSpy,
+            }))
+            .directive("trans", () => ({
+              transclude: true,
+              template: "<div ng-transclude><inner></inner></div>",
+            }));
+          initInjector("test1");
+          element = $compile("<div trans>\n<!-- some comment -->  \n</div>")(
+            $rootScope,
+          );
+          $rootScope.$apply();
+          expect(element.html()).toEqual(
+            '<div ng-transclude="">\n<!-- some comment -->  \n</div>',
+          );
+          expect(linkSpy).not.toHaveBeenCalled();
+        });
+
+        it("should compile and link the fallback content if an optional transclusion slot is not provided", () => {
+          const linkSpy = jasmine.createSpy("postlink");
+
+          module
+            .directive("inner", () => ({
+              restrict: "E",
+              template: "old stuff! ",
+              link: linkSpy,
+            }))
+
+            .directive("trans", () => ({
+              transclude: { optionalSlot: "?optional" },
+              template:
+                '<div ng-transclude="optionalSlot"><inner></inner></div>',
+            }));
+          initInjector("test1");
+          element = $compile("<div trans></div>")($rootScope);
+          $rootScope.$apply();
+          expect(element.html()).toEqual(
+            '<div ng-transclude="optionalSlot"><inner>old stuff! </inner></div>',
+          );
+          expect(linkSpy).toHaveBeenCalled();
+        });
+
+        it("should cope if there is neither transcluded content nor fallback content", () => {
+          module.directive("trans", () => ({
+            transclude: true,
+            template: "<div ng-transclude></div>",
+          }));
+          initInjector("test1");
+          element = $compile("<div trans></div>")($rootScope);
+          $rootScope.$apply();
+          expect(element.html()).toEqual('<div ng-transclude=""></div>');
+        });
+
+        it("should throw on an ng-transclude element inside no transclusion directive", () => {
+          let error;
+          initInjector("test1");
+          try {
+            $compile("<div><div ng-transclude></div></div>")($rootScope);
+          } catch (e) {
+            error = e;
+          }
+
+          expect(error).toThrowError(/orphan/);
+          // we need to do this because different browsers print empty attributes differently
+        });
+
+        it("should not pass transclusion into a template directive when the directive didn't request transclusion", () => {
+          module
+            .directive(
+              "transFoo",
+              valueFn({
+                template:
+                  "<div>" +
+                  "<div no-trans-bar></div>" +
+                  "<div ng-transclude>this one should get replaced with content</div>" +
+                  '<div class="foo" ng-transclude></div>' +
+                  "</div>",
+                transclude: true,
+              }),
+            )
+            .directive(
+              "noTransBar",
+              valueFn({
+                template:
+                  "<div>" +
+                  // This ng-transclude is invalid. It should throw an error.
+                  '<div class="bar" ng-transclude></div>' +
+                  "</div>",
+                transclude: false,
+              }),
+            );
+          initInjector("test1");
+          expect(() => {
+            $compile("<div trans-foo>content</div>")($rootScope);
+          }).toThrowError(/orphan/);
+        });
+
+        it("should not pass transclusion into a templateUrl directive", () => {
+          module
+            .directive(
+              "transFoo",
+              valueFn({
+                template:
+                  "<div>" +
+                  "<div no-trans-bar></div>" +
+                  "<div ng-transclude>this one should get replaced with content</div>" +
+                  '<div class="foo" ng-transclude></div>' +
+                  "</div>",
+                transclude: true,
+              }),
+            )
+            .directive(
+              "noTransBar",
+              valueFn({
+                templateUrl: "noTransBar.html",
+                transclude: false,
+              }),
+            );
+          initInjector("test1");
+          $templateCache.put(
+            "noTransBar.html",
+            "<div>" +
+              // This ng-transclude is invalid. It should throw an error.
+              '<div class="bar" ng-transclude></div>' +
+              "</div>",
+          );
+
+          expect(() => {
+            element = $compile("<div trans-foo>content</div>")($rootScope);
+            $rootScope.$digest();
+          }).toThrowError(/orphan/);
+        });
+
+        it("should expose transcludeFn in compile fn even for templateUrl", () => {
+          module.directive(
+            "transInCompile",
+            valueFn({
+              transclude: true,
+              // template: '<div class="foo">whatever</div>',
+              templateUrl: "foo.html",
+              compile(_, __, transclude) {
+                return function (scope, element) {
+                  transclude(scope, (clone, scope) => {
+                    element.html("");
+                    element.append(clone);
+                  });
+                };
+              },
+            }),
+          );
+          initInjector("test1");
+          $templateCache.put("foo.html", '<div class="foo">whatever</div>');
+
+          compile("<div trans-in-compile>transcluded content</div>");
+          $rootScope.$apply();
+
+          expect(trim(element.text())).toBe("transcluded content");
+        });
+
+        it("should make the result of a transclusion available to the parent directive in post-linking phase (template)", () => {
+          module.directive("trans", () => ({
+            transclude: true,
+            template: "<div ng-transclude></div>",
+            link: {
+              pre($scope, $element) {
+                log.push(`pre(${$element.text()})`);
+              },
+              post($scope, $element) {
+                log.push(`post(${$element.text()})`);
+              },
+            },
+          }));
+          initInjector("test1");
+          element = $compile("<div trans><span>unicorn!</span></div>")(
+            $rootScope,
+          );
+          $rootScope.$apply();
+          expect(log.join("; ")).toEqual("pre(); post(unicorn!)");
+        });
+
+        it("should make the result of a transclusion available to the parent directive in post-linking phase (templateUrl)", () => {
+          // when compiling an async directive the transclusion is always processed before the directive
+          // this is different compared to sync directive. delaying the transclusion makes little sense.
+
+          module.directive("trans", () => ({
+            transclude: true,
             templateUrl: "trans.html",
             link: {
               pre($scope, $element) {
@@ -14628,16 +14556,899 @@ describe("$compile", () => {
               },
             },
           }));
-
+          initInjector("test1");
           $templateCache.put("trans.html", "<div ng-transclude></div>");
 
+          element = $compile("<div trans><span>unicorn!</span></div>")(
+            $rootScope,
+          );
+          $rootScope.$apply();
+          expect(log.join("; ")).toEqual("pre(); post(unicorn!)");
+        });
+
+        it("should make the result of a transclusion available to the parent *replace* directive in post-linking phase (template)", () => {
+          module.directive("replacedTrans", () => ({
+            transclude: true,
+            replace: true,
+            template: "<div ng-transclude></div>",
+            link: {
+              pre($scope, $element) {
+                log.push(`pre(${$element.text()})`);
+              },
+              post($scope, $element) {
+                log.push(`post(${$element.text()})`);
+              },
+            },
+          }));
+          initInjector("test1");
           element = $compile("<div replaced-trans><span>unicorn!</span></div>")(
             $rootScope,
           );
           $rootScope.$apply();
-          expect(log[0]).toEqual("pre(); post(unicorn!)");
-        },
-      );
+          expect(log.join("; ")).toEqual("pre(); post(unicorn!)");
+        });
+
+        it(
+          "should make the result of a transclusion available to the parent *replace* directive in post-linking phase" +
+            " (templateUrl)",
+          () => {
+            module.directive("replacedTrans", () => ({
+              transclude: true,
+              replace: true,
+              templateUrl: "trans.html",
+              link: {
+                pre($scope, $element) {
+                  log.push(`pre(${$element.text()})`);
+                },
+                post($scope, $element) {
+                  log.push(`post(${$element.text()})`);
+                },
+              },
+            }));
+            initInjector("test1");
+            $templateCache.put("trans.html", "<div ng-transclude></div>");
+
+            element = $compile(
+              "<div replaced-trans><span>unicorn!</span></div>",
+            )($rootScope);
+            $rootScope.$apply();
+            expect(log.join("; ")).toEqual("pre(); post(unicorn!)");
+          },
+        );
+
+        it("should copy the directive controller to all clones", () => {
+          let transcludeCtrl;
+          const cloneCount = 2;
+          module.directive(
+            "transclude",
+            valueFn({
+              transclude: "content",
+              controller($transclude) {
+                transcludeCtrl = this;
+              },
+              link(scope, el, attr, ctrl, $transclude) {
+                let i;
+                for (i = 0; i < cloneCount; i++) {
+                  $transclude(cloneAttach);
+                }
+
+                function cloneAttach(clone) {
+                  el.append(clone);
+                }
+              },
+            }),
+          );
+          initInjector("test1");
+          element = $compile("<div transclude><span></span></div>")($rootScope);
+          const children = element.children();
+          let i;
+          expect(transcludeCtrl).toBeDefined();
+
+          expect(element.data("$transcludeController")).toBe(transcludeCtrl);
+          for (i = 0; i < cloneCount; i++) {
+            expect(
+              children.eq(i).data("$transcludeController"),
+            ).toBeUndefined();
+          }
+        });
+
+        it("should provide the $transclude controller local as 5th argument to the pre and post-link function", () => {
+          let ctrlTransclude;
+          let preLinkTransclude;
+          let postLinkTransclude;
+          module.directive(
+            "transclude",
+            valueFn({
+              transclude: "content",
+              controller($transclude) {
+                ctrlTransclude = $transclude;
+              },
+              compile() {
+                return {
+                  pre(scope, el, attr, ctrl, $transclude) {
+                    preLinkTransclude = $transclude;
+                  },
+                  post(scope, el, attr, ctrl, $transclude) {
+                    postLinkTransclude = $transclude;
+                  },
+                };
+              },
+            }),
+          );
+          initInjector("test1");
+          element = $compile("<div transclude></div>")($rootScope);
+          expect(ctrlTransclude).toBeDefined();
+          expect(ctrlTransclude).toBe(preLinkTransclude);
+          expect(ctrlTransclude).toBe(postLinkTransclude);
+        });
+
+        it("should allow an optional scope argument in $transclude", () => {
+          let capturedChildCtrl;
+          module.directive(
+            "transclude",
+            valueFn({
+              transclude: "content",
+              link(scope, element, attr, ctrl, $transclude) {
+                $transclude(scope, (clone) => {
+                  element.append(clone);
+                });
+              },
+            }),
+          );
+          initInjector("test1");
+          element = $compile("<div transclude>{{$id}}</div>")($rootScope);
+          $rootScope.$apply();
+          expect(element.text()).toBe(`${$rootScope.$id}`);
+        });
+
+        it("should expose the directive controller to transcluded children", () => {
+          let capturedChildCtrl;
+          module
+            .directive(
+              "transclude",
+              valueFn({
+                transclude: "content",
+                controller() {},
+                link(scope, element, attr, ctrl, $transclude) {
+                  $transclude((clone) => {
+                    element.append(clone);
+                  });
+                },
+              }),
+            )
+            .directive(
+              "child",
+              valueFn({
+                require: "^transclude",
+                link(scope, element, attr, ctrl) {
+                  capturedChildCtrl = ctrl;
+                },
+              }),
+            );
+          initInjector("test1");
+          element = $compile("<div transclude><div child></div></div>")(
+            $rootScope,
+          );
+          expect(capturedChildCtrl).toBeTruthy();
+        });
+
+        // See issue https://github.com/angular/angular.js/issues/14924
+        it("should not process top-level transcluded text nodes merged into their sibling", () => {
+          module.directive(
+            "transclude",
+            valueFn({
+              template: "<ng-transclude></ng-transclude>",
+              transclude: true,
+              scope: {},
+            }),
+          );
+          initInjector("test1");
+          element = jqLite("<div transclude></div>");
+          element[0].appendChild(document.createTextNode("1{{ value }}"));
+          element[0].appendChild(document.createTextNode("2{{ value }}"));
+          element[0].appendChild(document.createTextNode("3{{ value }}"));
+
+          const initialWatcherCount = $rootScope.$countWatchers();
+          $compile(element)($rootScope);
+          $rootScope.$apply("value = 0");
+          const newWatcherCount =
+            $rootScope.$countWatchers() - initialWatcherCount;
+
+          expect(element.text()).toBe("102030");
+          expect(newWatcherCount).toBe(3);
+        });
+
+        // see issue https://github.com/angular/angular.js/issues/9413
+        describe("passing a parent bound transclude function to the link function returned from `$compile`", () => {
+          beforeEach(() => {
+            module
+              .directive("lazyCompile", ($compile) => ({
+                compile(tElement, tAttrs) {
+                  const content = tElement.contents();
+                  tElement.empty();
+                  return function (scope, element, attrs, ctrls, transcludeFn) {
+                    element.append(content);
+                    $compile(content)(scope, undefined, {
+                      parentBoundTranscludeFn: transcludeFn,
+                    });
+                  };
+                },
+              }))
+              .directive(
+                "toggle",
+                valueFn({
+                  scope: { t: "=toggle" },
+                  transclude: true,
+                  template:
+                    '<div ng-if="t"><lazy-compile><div ng-transclude></div></lazy-compile></div>',
+                }),
+              );
+            initInjector("test1");
+          });
+
+          it("should preserve the bound scope", () => {
+            element = $compile(
+              "<div>" +
+                '<div ng-init="outer=true"></div>' +
+                '<div toggle="t">' +
+                '<span ng-if="outer">Success</span><span ng-if="!outer">Error</span>' +
+                "</div>" +
+                "</div>",
+            )($rootScope);
+
+            $rootScope.$apply("t = false");
+            expect($rootScope.$countChildScopes()).toBe(1);
+            expect(element.text()).toBe("");
+
+            $rootScope.$apply("t = true");
+            expect($rootScope.$countChildScopes()).toBe(4);
+            expect(element.text()).toBe("Success");
+
+            $rootScope.$apply("t = false");
+            expect($rootScope.$countChildScopes()).toBe(1);
+            expect(element.text()).toBe("");
+
+            $rootScope.$apply("t = true");
+            expect($rootScope.$countChildScopes()).toBe(4);
+            expect(element.text()).toBe("Success");
+          });
+
+          it("should preserve the bound scope when using recursive transclusion", () => {
+            module.directive(
+              "recursiveTransclude",
+              valueFn({
+                transclude: true,
+                template:
+                  "<div><lazy-compile><div ng-transclude></div></lazy-compile></div>",
+              }),
+            );
+            initInjector("test1");
+            element = $compile(
+              "<div>" +
+                '<div ng-init="outer=true"></div>' +
+                '<div toggle="t">' +
+                "<div recursive-transclude>" +
+                '<span ng-if="outer">Success</span><span ng-if="!outer">Error</span>' +
+                "</div>" +
+                "</div>" +
+                "</div>",
+            )($rootScope);
+
+            $rootScope.$apply("t = false");
+            expect($rootScope.$countChildScopes()).toBe(1);
+            expect(element.text()).toBe("");
+
+            $rootScope.$apply("t = true");
+            expect($rootScope.$countChildScopes()).toBe(4);
+            expect(element.text()).toBe("Success");
+
+            $rootScope.$apply("t = false");
+            expect($rootScope.$countChildScopes()).toBe(1);
+            expect(element.text()).toBe("");
+
+            $rootScope.$apply("t = true");
+            expect($rootScope.$countChildScopes()).toBe(4);
+            expect(element.text()).toBe("Success");
+          });
+        });
+
+        // see issue https://github.com/angular/angular.js/issues/9095
+        describe("removing a transcluded element", () => {
+          beforeEach(() => {
+            module.directive("toggle", () => ({
+              transclude: true,
+              template: '<div ng:if="t"><div ng:transclude></div></div>',
+            }));
+            initInjector("test1");
+          });
+
+          it("should not leak the transclude scope when the transcluded content is an element transclusion directive", () => {
+            element = $compile(
+              "<div toggle>" +
+                "<div ng:repeat=\"msg in ['msg-1']\">{{ msg }}</div>" +
+                "</div>",
+            )($rootScope);
+
+            $rootScope.$apply("t = true");
+            expect(element.text()).toContain("msg-1");
+            // Expected scopes: $rootScope, ngIf, transclusion, ngRepeat
+            expect($rootScope.$countChildScopes()).toBe(3);
+
+            $rootScope.$apply("t = false");
+            expect(element.text()).not.toContain("msg-1");
+            // Expected scopes: $rootScope
+            expect($rootScope.$countChildScopes()).toBe(0);
+
+            $rootScope.$apply("t = true");
+            expect(element.text()).toContain("msg-1");
+            // Expected scopes: $rootScope, ngIf, transclusion, ngRepeat
+            expect($rootScope.$countChildScopes()).toBe(3);
+
+            $rootScope.$apply("t = false");
+            expect(element.text()).not.toContain("msg-1");
+            // Expected scopes: $rootScope
+            expect($rootScope.$countChildScopes()).toBe(0);
+          });
+
+          it("should not leak the transclude scope when the transcluded content is an multi-element transclusion directive", () => {
+            element = $compile(
+              "<div toggle>" +
+                "<div ng:repeat-start=\"msg in ['msg-1']\">{{ msg }}</div>" +
+                "<div ng:repeat-end>{{ msg }}</div>" +
+                "</div>",
+            )($rootScope);
+
+            $rootScope.$apply("t = true");
+            expect(element.text()).toContain("msg-1msg-1");
+            // Expected scopes: $rootScope, ngIf, transclusion, ngRepeat
+            expect($rootScope.$countChildScopes()).toBe(3);
+
+            $rootScope.$apply("t = false");
+            expect(element.text()).not.toContain("msg-1msg-1");
+            // Expected scopes: $rootScope
+            expect($rootScope.$countChildScopes()).toBe(0);
+
+            $rootScope.$apply("t = true");
+            expect(element.text()).toContain("msg-1msg-1");
+            // Expected scopes: $rootScope, ngIf, transclusion, ngRepeat
+            expect($rootScope.$countChildScopes()).toBe(3);
+
+            $rootScope.$apply("t = false");
+            expect(element.text()).not.toContain("msg-1msg-1");
+            // Expected scopes: $rootScope
+            expect($rootScope.$countChildScopes()).toBe(0);
+          });
+
+          it("should not leak the transclude scope if the transcluded contains only comments", () => {
+            element = $compile("<div toggle><!-- some comment --></div>")(
+              $rootScope,
+            );
+
+            $rootScope.$apply("t = true");
+            expect(element.html()).toContain("some comment");
+            // Expected scopes: $rootScope, ngIf, transclusion
+            expect($rootScope.$countChildScopes()).toBe(2);
+
+            $rootScope.$apply("t = false");
+            expect(element.html()).not.toContain("some comment");
+            // Expected scopes: $rootScope
+            expect($rootScope.$countChildScopes()).toBe(0);
+
+            $rootScope.$apply("t = true");
+            expect(element.html()).toContain("some comment");
+            // Expected scopes: $rootScope, ngIf, transclusion
+            expect($rootScope.$countChildScopes()).toBe(2);
+
+            $rootScope.$apply("t = false");
+            expect(element.html()).not.toContain("some comment");
+            // Expected scopes: $rootScope
+            expect($rootScope.$countChildScopes()).toBe(0);
+          });
+
+          it("should not leak the transclude scope if the transcluded contains only text nodes", () => {
+            element = $compile("<div toggle>some text</div>")($rootScope);
+
+            $rootScope.$apply("t = true");
+            expect(element.html()).toContain("some text");
+            // Expected scopes: $rootScope, ngIf, transclusion
+            expect($rootScope.$countChildScopes()).toBe(2);
+
+            $rootScope.$apply("t = false");
+            expect(element.html()).not.toContain("some text");
+            // Expected scopes: $rootScope
+            expect($rootScope.$countChildScopes()).toBe(0);
+
+            $rootScope.$apply("t = true");
+            expect(element.html()).toContain("some text");
+            // Expected scopes: $rootScope, ngIf, transclusion
+            expect($rootScope.$countChildScopes()).toBe(2);
+
+            $rootScope.$apply("t = false");
+            expect(element.html()).not.toContain("some text");
+            // Expected scopes: $rootScope
+            expect($rootScope.$countChildScopes()).toBe(0);
+          });
+
+          it("should mark as destroyed all sub scopes of the scope being destroyed", () => {
+            element = $compile(
+              "<div toggle>" +
+                "<div ng:repeat=\"msg in ['msg-1']\">{{ msg }}</div>" +
+                "</div>",
+            )($rootScope);
+
+            $rootScope.$apply("t = true");
+            const childScopes = getChildScopes($rootScope);
+
+            $rootScope.$apply("t = false");
+            for (let i = 0; i < childScopes.length; ++i) {
+              expect(childScopes[i].$$destroyed).toBe(true);
+            }
+          });
+        });
+
+        describe("nested transcludes", () => {
+          beforeEach(() => {
+            module
+              .directive("() => {}", valueFn({}))
+              .directive(
+                "sync",
+                valueFn({
+                  template: "<div ng-transclude></div>",
+                  transclude: true,
+                }),
+              )
+              .directive(
+                "async",
+                valueFn({
+                  templateUrl: "async",
+                  transclude: true,
+                }),
+              )
+              .directive(
+                "syncSync",
+                valueFn({
+                  template:
+                    "<div () => {}><div sync><div ng-transclude></div></div></div>",
+                  transclude: true,
+                }),
+              )
+              .directive(
+                "syncAsync",
+                valueFn({
+                  template:
+                    "<div () => {}><div async><div ng-transclude></div></div></div>",
+                  transclude: true,
+                }),
+              )
+              .directive(
+                "asyncSync",
+                valueFn({
+                  templateUrl: "asyncSync",
+                  transclude: true,
+                }),
+              )
+              .directive(
+                "asyncAsync",
+                valueFn({
+                  templateUrl: "asyncAsync",
+                  transclude: true,
+                }),
+              );
+
+            initInjector("test1");
+            $templateCache.put("async", "<div ng-transclude></div>");
+            $templateCache.put(
+              "asyncSync",
+              "<div () => {}><div sync><div ng-transclude></div></div></div>",
+            );
+            $templateCache.put(
+              "asyncAsync",
+              "<div () => {}><div async><div ng-transclude></div></div></div>",
+            );
+          });
+
+          it("should allow nested transclude directives with sync template containing sync template", () => {
+            element = $compile("<div sync-sync>transcluded content</div>")(
+              $rootScope,
+            );
+            $rootScope.$digest();
+            expect(element.text()).toEqual("transcluded content");
+          });
+
+          it("should allow nested transclude directives with sync template containing async template", () => {
+            element = $compile("<div sync-async>transcluded content</div>")(
+              $rootScope,
+            );
+            $rootScope.$digest();
+            expect(element.text()).toEqual("transcluded content");
+          });
+
+          it("should allow nested transclude directives with async template containing sync template", () => {
+            element = $compile("<div async-sync>transcluded content</div>")(
+              $rootScope,
+            );
+            $rootScope.$digest();
+            expect(element.text()).toEqual("transcluded content");
+          });
+
+          it("should allow nested transclude directives with async template containing asynch template", () => {
+            element = $compile("<div async-async>transcluded content</div>")(
+              $rootScope,
+            );
+            $rootScope.$digest();
+            expect(element.text()).toEqual("transcluded content");
+          });
+
+          it("should not leak memory with nested transclusion", () => {
+            let size;
+            const initialSize = Object.keys(jqLite.cache).length;
+
+            element = jqLite(
+              '<div><ul><li ng-repeat="n in nums">{{n}} => <i ng-if="0 === n%2">Even</i><i ng-if="1 === n%2">Odd</i></li></ul></div>',
+            );
+            $compile(element)($rootScope.$new());
+
+            $rootScope.nums = [0, 1, 2];
+            $rootScope.$apply();
+            size = Object.keys(jqLite.cache).length;
+
+            $rootScope.nums = [3, 4, 5];
+            $rootScope.$apply();
+            expect(Object.keys(jqLite.cache).length).toEqual(size);
+
+            element.remove();
+            expect(Object.keys(jqLite.cache).length).toEqual(initialSize);
+          });
+        });
+
+        describe("nested isolated scope transcludes", () => {
+          beforeEach(() => {
+            module
+              .directive(
+                "trans",
+                valueFn({
+                  restrict: "E",
+                  template: "<div ng-transclude></div>",
+                  transclude: true,
+                }),
+              )
+              .directive(
+                "transAsync",
+                valueFn({
+                  restrict: "E",
+                  templateUrl: "transAsync",
+                  transclude: true,
+                }),
+              )
+              .directive(
+                "iso",
+                valueFn({
+                  restrict: "E",
+                  transclude: true,
+                  template: "<trans><span ng-transclude></span></trans>",
+                  scope: {},
+                }),
+              )
+              .directive(
+                "isoAsync1",
+                valueFn({
+                  restrict: "E",
+                  transclude: true,
+                  template:
+                    "<trans-async><span ng-transclude></span></trans-async>",
+                  scope: {},
+                }),
+              )
+              .directive(
+                "isoAsync2",
+                valueFn({
+                  restrict: "E",
+                  transclude: true,
+                  templateUrl: "isoAsync",
+                  scope: {},
+                }),
+              );
+
+            $templateCache.put("transAsync", "<div ng-transclude></div>");
+            $templateCache.put(
+              "isoAsync",
+              "<trans-async><span ng-transclude></span></trans-async>",
+            );
+          });
+
+          it("should pass the outer scope to the transclude on the isolated template sync-sync", () => {
+            $rootScope.val = "transcluded content";
+            element = $compile('<iso><span ng-bind="val"></span></iso>')(
+              $rootScope,
+            );
+            $rootScope.$digest();
+            expect(element.text()).toEqual("transcluded content");
+          });
+
+          it("should pass the outer scope to the transclude on the isolated template async-sync", () => {
+            $rootScope.val = "transcluded content";
+            element = $compile(
+              '<iso-async1><span ng-bind="val"></span></iso-async1>',
+            )($rootScope);
+            $rootScope.$digest();
+            expect(element.text()).toEqual("transcluded content");
+          });
+
+          it("should pass the outer scope to the transclude on the isolated template async-async", () => {
+            $rootScope.val = "transcluded content";
+            element = $compile(
+              '<iso-async2><span ng-bind="val"></span></iso-async2>',
+            )($rootScope);
+            $rootScope.$digest();
+            expect(element.text()).toEqual("transcluded content");
+          });
+        });
+
+        describe("multiple siblings receiving transclusion", () => {
+          it("should only receive transclude from parent", () => {
+            module.directive(
+              "myExample",
+              valueFn({
+                scope: {},
+                link: function link(scope, element, attrs) {
+                  const foo = element[0].querySelector(".foo");
+                  scope.children = angular.element(foo).children().length;
+                },
+                template:
+                  "<div>" +
+                  "<div>myExample {{children}}!</div>" +
+                  '<div ng-if="children">has children</div>' +
+                  '<div class="foo" ng-transclude></div>' +
+                  "</div>",
+                transclude: true,
+              }),
+            );
+          });
+
+          let element = $compile("<div my-example></div>")($rootScope);
+          $rootScope.$digest();
+          expect(element.text()).toEqual("myExample 0!");
+          dealoc(element);
+
+          element = $compile("<div my-example><p></p></div>")($rootScope);
+          $rootScope.$digest();
+          expect(element.text()).toEqual("myExample 1!has children");
+          dealoc(element);
+        });
+      });
+    });
+
+    describe("element transclusion", () => {
+      it("should support basic element transclusion", () => {
+        module.directive("trans", () => ({
+          transclude: "element",
+          priority: 2,
+          controller($transclude) {
+            this.$transclude = $transclude;
+          },
+          compile(element, attrs, template) {
+            log.push(`compile: ${angular.mock.dump(element)}`);
+            return function (scope, element, attrs, ctrl) {
+              log.push("link");
+              let cursor = element;
+              template(scope.$new(), (clone) => {
+                cursor.after((cursor = clone));
+              });
+              ctrl.$transclude((clone) => {
+                cursor.after(clone);
+              });
+            };
+          },
+        }));
+
+        element = $compile(
+          '<div><div high-log trans="text" log>{{$parent.$id}}-{{$id}};</div></div>',
+        )($rootScope);
+        $rootScope.$apply();
+        expect(log[0]).toEqual(
+          "compile: <!-- trans: text -->; link; LOG; LOG; HIGH",
+        );
+        expect(element.text()).toEqual("1-2;1-3;");
+      });
+
+      it("should only allow one element transclusion per element", () => {
+        module
+          .directive(
+            "first",
+            valueFn({
+              transclude: "element",
+            }),
+          )
+          .directive(
+            "second",
+            valueFn({
+              transclude: "element",
+            }),
+          );
+        expect(() => {
+          $compile("<div first second></div>");
+        }).toThrow(/multidir/);
+      });
+
+      it("should only allow one element transclusion per element when directives have different priorities", () => {
+        // we restart compilation in this case and we need to remember the duplicates during the second compile
+        // regression #3893
+        module
+          .directive(
+            "first",
+            valueFn({
+              transclude: "element",
+              priority: 100,
+            }),
+          )
+          .directive(
+            "second",
+            valueFn({
+              transclude: "element",
+            }),
+          );
+
+        expect(() => {
+          $compile("<div first second></div>");
+        }).toThrow(/multidir/);
+      });
+
+      it("should only allow one element transclusion per element when async replace directive is in the mix", () => {
+        module
+          .directive(
+            "template",
+            valueFn({
+              templateUrl: "template.html",
+              replace: true,
+            }),
+          )
+          .directive(
+            "first",
+            valueFn({
+              transclude: "element",
+              priority: 100,
+            }),
+          )
+          .directive(
+            "second",
+            valueFn({
+              transclude: "element",
+            }),
+          );
+
+        // $httpBackend
+        //   .expectGET("template.html")
+        //   .respond("<p second>template.html</p>");
+
+        expect(() => {
+          $compile("<div template first></div>");
+          $rootScope.$digest();
+        }).toThrow(/multidir/);
+      });
+
+      it("should only allow one element transclusion per element when replace directive is in the mix", () => {
+        module
+          .directive(
+            "template",
+            valueFn({
+              template: "<p second></p>",
+              replace: true,
+            }),
+          )
+          .directive(
+            "first",
+            valueFn({
+              transclude: "element",
+              priority: 100,
+            }),
+          )
+          .directive(
+            "second",
+            valueFn({
+              transclude: "element",
+            }),
+          );
+
+        expect(() => {
+          $compile("<div template first></div>");
+        }).toThrowError(/multidir/);
+      });
+
+      it("should support transcluded element on root content", () => {
+        let comment;
+        module.directive(
+          "transclude",
+          valueFn({
+            transclude: "element",
+            compile(element, attr, linker) {
+              return function (scope, element, attr) {
+                comment = element;
+              };
+            },
+          }),
+        );
+
+        const element = jqLite(
+          "<div>before<div transclude></div>after</div>",
+        ).contents();
+        expect(element.length).toEqual(3);
+        expect(nodeName_(element[1])).toBe("div");
+        $compile(element)($rootScope);
+        expect(nodeName_(element[1])).toBe("#comment");
+        expect(nodeName_(comment)).toBe("#comment");
+      });
+
+      it("should terminate compilation only for element transclusion", () => {
+        module
+          .directive("elementTrans", () => ({
+            transclude: "element",
+            priority: 50,
+            compile: log.fn("compile:elementTrans"),
+          }))
+          .directive("regularTrans", () => ({
+            transclude: true,
+            priority: 50,
+            compile: log.fn("compile:regularTrans"),
+          }));
+
+        $compile(
+          '<div><div element-trans log="elem"></div><div regular-trans log="regular"></div></div>',
+        )($rootScope);
+        expect(log[0]).toEqual(
+          "compile:elementTrans; compile:regularTrans; regular",
+        );
+      });
+
+      it("should instantiate high priority controllers only once, but low priority ones each time we transclude", () => {
+        module
+          .directive("elementTrans", () => ({
+            transclude: "element",
+            priority: 50,
+            controller($transclude, $element) {
+              log.push("controller:elementTrans");
+              $transclude((clone) => {
+                $element.after(clone);
+              });
+              $transclude((clone) => {
+                $element.after(clone);
+              });
+              $transclude((clone) => {
+                $element.after(clone);
+              });
+            },
+          }))
+          .directive("normalDir", () => ({
+            controller() {
+              log.push("controller:normalDir");
+            },
+          }));
+
+        element = $compile("<div><div element-trans normal-dir></div></div>")(
+          $rootScope,
+        );
+        expect(log[0]).toEqual([
+          "controller:elementTrans",
+          "controller:normalDir",
+          "controller:normalDir",
+          "controller:normalDir",
+        ]);
+      });
+
+      it("should allow to access $transclude in the same directive", () => {
+        let _$transclude;
+        module.directive(
+          "transclude",
+          valueFn({
+            transclude: "element",
+            controller($transclude) {
+              _$transclude = $transclude;
+            },
+          }),
+        );
+
+        element = $compile("<div transclude></div>")($rootScope);
+        expect(_$transclude).toBeDefined();
+      });
 
       it("should copy the directive controller to all clones", () => {
         let transcludeCtrl;
@@ -14645,8 +15456,8 @@ describe("$compile", () => {
         module.directive(
           "transclude",
           valueFn({
-            transclude: "content",
-            controller($transclude) {
+            transclude: "element",
+            controller() {
               transcludeCtrl = this;
             },
             link(scope, el, attr, ctrl, $transclude) {
@@ -14656,83 +15467,32 @@ describe("$compile", () => {
               }
 
               function cloneAttach(clone) {
-                el.append(clone);
+                el.after(clone);
               }
             },
           }),
         );
-
-        element = $compile("<div transclude><span></span></div>")($rootScope);
+        element = $compile("<div><div transclude></div></div>")($rootScope);
         const children = element.children();
         let i;
-        expect(transcludeCtrl).toBeDefined();
-
-        expect(element.data("$transcludeController")).toBe(transcludeCtrl);
         for (i = 0; i < cloneCount; i++) {
-          expect(children.eq(i).data("$transcludeController")).toBeUndefined();
+          expect(children.eq(i).data("$transcludeController")).toBe(
+            transcludeCtrl,
+          );
         }
       });
 
-      it("should provide the $transclude controller local as 5th argument to the pre and post-link function", () => {
-        let ctrlTransclude;
-        let preLinkTransclude;
-        let postLinkTransclude;
-        module.directive(
-          "transclude",
-          valueFn({
-            transclude: "content",
-            controller($transclude) {
-              ctrlTransclude = $transclude;
-            },
-            compile() {
-              return {
-                pre(scope, el, attr, ctrl, $transclude) {
-                  preLinkTransclude = $transclude;
-                },
-                post(scope, el, attr, ctrl, $transclude) {
-                  postLinkTransclude = $transclude;
-                },
-              };
-            },
-          }),
-        );
-
-        element = $compile("<div transclude></div>")($rootScope);
-        expect(ctrlTransclude).toBeDefined();
-        expect(ctrlTransclude).toBe(preLinkTransclude);
-        expect(ctrlTransclude).toBe(postLinkTransclude);
-      });
-
-      it("should allow an optional scope argument in $transclude", () => {
-        let capturedChildCtrl;
-        module.directive(
-          "transclude",
-          valueFn({
-            transclude: "content",
-            link(scope, element, attr, ctrl, $transclude) {
-              $transclude(scope, (clone) => {
-                element.append(clone);
-              });
-            },
-          }),
-        );
-
-        element = $compile("<div transclude>{{$id}}</div>")($rootScope);
-        $rootScope.$apply();
-        expect(element.text()).toBe(`${$rootScope.$id}`);
-      });
-
       it("should expose the directive controller to transcluded children", () => {
-        let capturedChildCtrl;
+        let capturedTranscludeCtrl;
         module
           .directive(
             "transclude",
             valueFn({
-              transclude: "content",
+              transclude: "element",
               controller() {},
               link(scope, element, attr, ctrl, $transclude) {
-                $transclude((clone) => {
-                  element.append(clone);
+                $transclude(scope, (clone) => {
+                  element.after(clone);
                 });
               },
             }),
@@ -14742,1073 +15502,255 @@ describe("$compile", () => {
             valueFn({
               require: "^transclude",
               link(scope, element, attr, ctrl) {
-                capturedChildCtrl = ctrl;
+                capturedTranscludeCtrl = ctrl;
               },
             }),
           );
-
-        element = $compile("<div transclude><div child></div></div>")(
-          $rootScope,
-        );
-        expect(capturedChildCtrl).toBeTruthy();
+        // We need to wrap the transclude directive's element in a parent element so that the
+        // cloned element gets deallocated/cleaned up correctly
+        element = $compile(
+          "<div><div transclude><div child></div></div></div>",
+        )($rootScope);
+        expect(capturedTranscludeCtrl).toBeTruthy();
       });
 
-      // See issue https://github.com/angular/angular.js/issues/14924
-      it("should not process top-level transcluded text nodes merged into their sibling", () => {
-        module.directive(
-          "transclude",
-          valueFn({
-            template: "<ng-transclude></ng-transclude>",
-            transclude: true,
-            scope: {},
-          }),
-        );
-
-        element = jqLite("<div transclude></div>");
-        element[0].appendChild(document.createTextNode("1{{ value }}"));
-        element[0].appendChild(document.createTextNode("2{{ value }}"));
-        element[0].appendChild(document.createTextNode("3{{ value }}"));
-
-        const initialWatcherCount = $rootScope.$countWatchers();
-        $compile(element)($rootScope);
-        $rootScope.$apply("value = 0");
-        const newWatcherCount =
-          $rootScope.$countWatchers() - initialWatcherCount;
-
-        expect(element.text()).toBe("102030");
-        expect(newWatcherCount).toBe(3);
-      });
-
-      // see issue https://github.com/angular/angular.js/issues/9413
-      describe("passing a parent bound transclude function to the link function returned from `$compile`", () => {
-        beforeEach(() => {
-          module
-            .directive("lazyCompile", ($compile) => ({
-              compile(tElement, tAttrs) {
-                const content = tElement.contents();
-                tElement.empty();
-                return function (scope, element, attrs, ctrls, transcludeFn) {
-                  element.append(content);
-                  $compile(content)(scope, undefined, {
-                    parentBoundTranscludeFn: transcludeFn,
-                  });
-                };
-              },
-            }))
-            .directive(
-              "toggle",
-              valueFn({
-                scope: { t: "=toggle" },
-                transclude: true,
-                template:
-                  '<div ng-if="t"><lazy-compile><div ng-transclude></div></lazy-compile></div>',
-              }),
-            );
-        });
-
-        it("should preserve the bound scope", () => {
-          element = $compile(
-            "<div>" +
-              '<div ng-init="outer=true"></div>' +
-              '<div toggle="t">' +
-              '<span ng-if="outer">Success</span><span ng-if="!outer">Error</span>' +
-              "</div>" +
-              "</div>",
-          )($rootScope);
-
-          $rootScope.$apply("t = false");
-          expect($rootScope.$countChildScopes()).toBe(1);
-          expect(element.text()).toBe("");
-
-          $rootScope.$apply("t = true");
-          expect($rootScope.$countChildScopes()).toBe(4);
-          expect(element.text()).toBe("Success");
-
-          $rootScope.$apply("t = false");
-          expect($rootScope.$countChildScopes()).toBe(1);
-          expect(element.text()).toBe("");
-
-          $rootScope.$apply("t = true");
-          expect($rootScope.$countChildScopes()).toBe(4);
-          expect(element.text()).toBe("Success");
-        });
-
-        it("should preserve the bound scope when using recursive transclusion", () => {
-          module.directive(
-            "recursiveTransclude",
+      it("should allow access to $transclude in a templateUrl directive", () => {
+        let transclude;
+        module
+          .directive(
+            "template",
             valueFn({
-              transclude: true,
-              template:
-                "<div><lazy-compile><div ng-transclude></div></lazy-compile></div>",
+              templateUrl: "template.html",
+              replace: true,
             }),
-          );
-
-          element = $compile(
-            "<div>" +
-              '<div ng-init="outer=true"></div>' +
-              '<div toggle="t">' +
-              "<div recursive-transclude>" +
-              '<span ng-if="outer">Success</span><span ng-if="!outer">Error</span>' +
-              "</div>" +
-              "</div>" +
-              "</div>",
-          )($rootScope);
-
-          $rootScope.$apply("t = false");
-          expect($rootScope.$countChildScopes()).toBe(1);
-          expect(element.text()).toBe("");
-
-          $rootScope.$apply("t = true");
-          expect($rootScope.$countChildScopes()).toBe(4);
-          expect(element.text()).toBe("Success");
-
-          $rootScope.$apply("t = false");
-          expect($rootScope.$countChildScopes()).toBe(1);
-          expect(element.text()).toBe("");
-
-          $rootScope.$apply("t = true");
-          expect($rootScope.$countChildScopes()).toBe(4);
-          expect(element.text()).toBe("Success");
-        });
-      });
-
-      // see issue https://github.com/angular/angular.js/issues/9095
-      describe("removing a transcluded element", () => {
-        beforeEach(() => {
-          module.directive("toggle", () => ({
-            transclude: true,
-            template: '<div ng:if="t"><div ng:transclude></div></div>',
-          }));
-        });
-
-        it("should not leak the transclude scope when the transcluded content is an element transclusion directive", () => {
-          element = $compile(
-            "<div toggle>" +
-              "<div ng:repeat=\"msg in ['msg-1']\">{{ msg }}</div>" +
-              "</div>",
-          )($rootScope);
-
-          $rootScope.$apply("t = true");
-          expect(element.text()).toContain("msg-1");
-          // Expected scopes: $rootScope, ngIf, transclusion, ngRepeat
-          expect($rootScope.$countChildScopes()).toBe(3);
-
-          $rootScope.$apply("t = false");
-          expect(element.text()).not.toContain("msg-1");
-          // Expected scopes: $rootScope
-          expect($rootScope.$countChildScopes()).toBe(0);
-
-          $rootScope.$apply("t = true");
-          expect(element.text()).toContain("msg-1");
-          // Expected scopes: $rootScope, ngIf, transclusion, ngRepeat
-          expect($rootScope.$countChildScopes()).toBe(3);
-
-          $rootScope.$apply("t = false");
-          expect(element.text()).not.toContain("msg-1");
-          // Expected scopes: $rootScope
-          expect($rootScope.$countChildScopes()).toBe(0);
-        });
-
-        it("should not leak the transclude scope when the transcluded content is an multi-element transclusion directive", () => {
-          element = $compile(
-            "<div toggle>" +
-              "<div ng:repeat-start=\"msg in ['msg-1']\">{{ msg }}</div>" +
-              "<div ng:repeat-end>{{ msg }}</div>" +
-              "</div>",
-          )($rootScope);
-
-          $rootScope.$apply("t = true");
-          expect(element.text()).toContain("msg-1msg-1");
-          // Expected scopes: $rootScope, ngIf, transclusion, ngRepeat
-          expect($rootScope.$countChildScopes()).toBe(3);
-
-          $rootScope.$apply("t = false");
-          expect(element.text()).not.toContain("msg-1msg-1");
-          // Expected scopes: $rootScope
-          expect($rootScope.$countChildScopes()).toBe(0);
-
-          $rootScope.$apply("t = true");
-          expect(element.text()).toContain("msg-1msg-1");
-          // Expected scopes: $rootScope, ngIf, transclusion, ngRepeat
-          expect($rootScope.$countChildScopes()).toBe(3);
-
-          $rootScope.$apply("t = false");
-          expect(element.text()).not.toContain("msg-1msg-1");
-          // Expected scopes: $rootScope
-          expect($rootScope.$countChildScopes()).toBe(0);
-        });
-
-        it("should not leak the transclude scope if the transcluded contains only comments", () => {
-          element = $compile("<div toggle><!-- some comment --></div>")(
-            $rootScope,
-          );
-
-          $rootScope.$apply("t = true");
-          expect(element.html()).toContain("some comment");
-          // Expected scopes: $rootScope, ngIf, transclusion
-          expect($rootScope.$countChildScopes()).toBe(2);
-
-          $rootScope.$apply("t = false");
-          expect(element.html()).not.toContain("some comment");
-          // Expected scopes: $rootScope
-          expect($rootScope.$countChildScopes()).toBe(0);
-
-          $rootScope.$apply("t = true");
-          expect(element.html()).toContain("some comment");
-          // Expected scopes: $rootScope, ngIf, transclusion
-          expect($rootScope.$countChildScopes()).toBe(2);
-
-          $rootScope.$apply("t = false");
-          expect(element.html()).not.toContain("some comment");
-          // Expected scopes: $rootScope
-          expect($rootScope.$countChildScopes()).toBe(0);
-        });
-
-        it("should not leak the transclude scope if the transcluded contains only text nodes", () => {
-          element = $compile("<div toggle>some text</div>")($rootScope);
-
-          $rootScope.$apply("t = true");
-          expect(element.html()).toContain("some text");
-          // Expected scopes: $rootScope, ngIf, transclusion
-          expect($rootScope.$countChildScopes()).toBe(2);
-
-          $rootScope.$apply("t = false");
-          expect(element.html()).not.toContain("some text");
-          // Expected scopes: $rootScope
-          expect($rootScope.$countChildScopes()).toBe(0);
-
-          $rootScope.$apply("t = true");
-          expect(element.html()).toContain("some text");
-          // Expected scopes: $rootScope, ngIf, transclusion
-          expect($rootScope.$countChildScopes()).toBe(2);
-
-          $rootScope.$apply("t = false");
-          expect(element.html()).not.toContain("some text");
-          // Expected scopes: $rootScope
-          expect($rootScope.$countChildScopes()).toBe(0);
-        });
-
-        it("should mark as destroyed all sub scopes of the scope being destroyed", () => {
-          element = $compile(
-            "<div toggle>" +
-              "<div ng:repeat=\"msg in ['msg-1']\">{{ msg }}</div>" +
-              "</div>",
-          )($rootScope);
-
-          $rootScope.$apply("t = true");
-          const childScopes = getChildScopes($rootScope);
-
-          $rootScope.$apply("t = false");
-          for (let i = 0; i < childScopes.length; ++i) {
-            expect(childScopes[i].$$destroyed).toBe(true);
-          }
-        });
-      });
-
-      describe("nested transcludes", () => {
-        beforeEach(() => {
-          module
-            .directive("() => {}", valueFn({}))
-            .directive(
-              "sync",
-              valueFn({
-                template: "<div ng-transclude></div>",
-                transclude: true,
-              }),
-            )
-            .directive(
-              "async",
-              valueFn({
-                templateUrl: "async",
-                transclude: true,
-              }),
-            )
-            .directive(
-              "syncSync",
-              valueFn({
-                template:
-                  "<div () => {}><div sync><div ng-transclude></div></div></div>",
-                transclude: true,
-              }),
-            )
-            .directive(
-              "syncAsync",
-              valueFn({
-                template:
-                  "<div () => {}><div async><div ng-transclude></div></div></div>",
-                transclude: true,
-              }),
-            )
-            .directive(
-              "asyncSync",
-              valueFn({
-                templateUrl: "asyncSync",
-                transclude: true,
-              }),
-            )
-            .directive(
-              "asyncAsync",
-              valueFn({
-                templateUrl: "asyncAsync",
-                transclude: true,
-              }),
-            );
-        });
-
-        beforeEach(() => {
-          $templateCache.put("async", "<div ng-transclude></div>");
-          $templateCache.put(
-            "asyncSync",
-            "<div () => {}><div sync><div ng-transclude></div></div></div>",
-          );
-          $templateCache.put(
-            "asyncAsync",
-            "<div () => {}><div async><div ng-transclude></div></div></div>",
-          );
-        });
-
-        it("should allow nested transclude directives with sync template containing sync template", () => {
-          element = $compile("<div sync-sync>transcluded content</div>")(
-            $rootScope,
-          );
-          $rootScope.$digest();
-          expect(element.text()).toEqual("transcluded content");
-        });
-
-        it("should allow nested transclude directives with sync template containing async template", () => {
-          element = $compile("<div sync-async>transcluded content</div>")(
-            $rootScope,
-          );
-          $rootScope.$digest();
-          expect(element.text()).toEqual("transcluded content");
-        });
-
-        it("should allow nested transclude directives with async template containing sync template", () => {
-          element = $compile("<div async-sync>transcluded content</div>")(
-            $rootScope,
-          );
-          $rootScope.$digest();
-          expect(element.text()).toEqual("transcluded content");
-        });
-
-        it("should allow nested transclude directives with async template containing asynch template", () => {
-          element = $compile("<div async-async>transcluded content</div>")(
-            $rootScope,
-          );
-          $rootScope.$digest();
-          expect(element.text()).toEqual("transcluded content");
-        });
-
-        it("should not leak memory with nested transclusion", () => {
-          let size;
-          const initialSize = jqLiteCacheSize();
-
-          element = jqLite(
-            '<div><ul><li ng-repeat="n in nums">{{n}} => <i ng-if="0 === n%2">Even</i><i ng-if="1 === n%2">Odd</i></li></ul></div>',
-          );
-          $compile(element)($rootScope.$new());
-
-          $rootScope.nums = [0, 1, 2];
-          $rootScope.$apply();
-          size = jqLiteCacheSize();
-
-          $rootScope.nums = [3, 4, 5];
-          $rootScope.$apply();
-          expect(jqLiteCacheSize()).toEqual(size);
-
-          element.remove();
-          expect(jqLiteCacheSize()).toEqual(initialSize);
-        });
-      });
-
-      describe("nested isolated scope transcludes", () => {
-        beforeEach(() => {
-          module
-            .directive(
-              "trans",
-              valueFn({
-                restrict: "E",
-                template: "<div ng-transclude></div>",
-                transclude: true,
-              }),
-            )
-            .directive(
-              "transAsync",
-              valueFn({
-                restrict: "E",
-                templateUrl: "transAsync",
-                transclude: true,
-              }),
-            )
-            .directive(
-              "iso",
-              valueFn({
-                restrict: "E",
-                transclude: true,
-                template: "<trans><span ng-transclude></span></trans>",
-                scope: {},
-              }),
-            )
-            .directive(
-              "isoAsync1",
-              valueFn({
-                restrict: "E",
-                transclude: true,
-                template:
-                  "<trans-async><span ng-transclude></span></trans-async>",
-                scope: {},
-              }),
-            )
-            .directive(
-              "isoAsync2",
-              valueFn({
-                restrict: "E",
-                transclude: true,
-                templateUrl: "isoAsync",
-                scope: {},
-              }),
-            );
-
-          $templateCache.put("transAsync", "<div ng-transclude></div>");
-          $templateCache.put(
-            "isoAsync",
-            "<trans-async><span ng-transclude></span></trans-async>",
-          );
-        });
-
-        it("should pass the outer scope to the transclude on the isolated template sync-sync", () => {
-          $rootScope.val = "transcluded content";
-          element = $compile('<iso><span ng-bind="val"></span></iso>')(
-            $rootScope,
-          );
-          $rootScope.$digest();
-          expect(element.text()).toEqual("transcluded content");
-        });
-
-        it("should pass the outer scope to the transclude on the isolated template async-sync", () => {
-          $rootScope.val = "transcluded content";
-          element = $compile(
-            '<iso-async1><span ng-bind="val"></span></iso-async1>',
-          )($rootScope);
-          $rootScope.$digest();
-          expect(element.text()).toEqual("transcluded content");
-        });
-
-        it("should pass the outer scope to the transclude on the isolated template async-async", () => {
-          $rootScope.val = "transcluded content";
-          element = $compile(
-            '<iso-async2><span ng-bind="val"></span></iso-async2>',
-          )($rootScope);
-          $rootScope.$digest();
-          expect(element.text()).toEqual("transcluded content");
-        });
-      });
-
-      describe("multiple siblings receiving transclusion", () => {
-        it("should only receive transclude from parent", () => {
-          module.directive(
-            "myExample",
+          )
+          .directive(
+            "transclude",
             valueFn({
-              scope: {},
-              link: function link(scope, element, attrs) {
-                const foo = element[0].querySelector(".foo");
-                scope.children = angular.element(foo).children().length;
+              transclude: "content",
+              controller($transclude) {
+                transclude = $transclude;
               },
-              template:
-                "<div>" +
-                "<div>myExample {{children}}!</div>" +
-                '<div ng-if="children">has children</div>' +
-                '<div class="foo" ng-transclude></div>' +
-                "</div>",
-              transclude: true,
             }),
           );
-        });
-
-        let element = $compile("<div my-example></div>")($rootScope);
+        // $httpBackend
+        //   .expectGET("template.html")
+        //   .respond("<div transclude></div>");
+        element = $compile("<div template></div>")($rootScope);
         $rootScope.$digest();
-        expect(element.text()).toEqual("myExample 0!");
-        dealoc(element);
-
-        element = $compile("<div my-example><p></p></div>")($rootScope);
-        $rootScope.$digest();
-        expect(element.text()).toEqual("myExample 1!has children");
-        dealoc(element);
+        expect(transclude).toBeDefined();
       });
-    });
-  });
 
-  describe("element transclusion", () => {
-    it("should support basic element transclusion", () => {
-      module.directive("trans", () => ({
-        transclude: "element",
-        priority: 2,
-        controller($transclude) {
-          this.$transclude = $transclude;
-        },
-        compile(element, attrs, template) {
-          log.push(`compile: ${angular.mock.dump(element)}`);
-          return function (scope, element, attrs, ctrl) {
-            log.push("link");
-            let cursor = element;
-            template(scope.$new(), (clone) => {
-              cursor.after((cursor = clone));
-            });
-            ctrl.$transclude((clone) => {
-              cursor.after(clone);
-            });
-          };
-        },
-      }));
-
-      element = $compile(
-        '<div><div high-log trans="text" log>{{$parent.$id}}-{{$id}};</div></div>',
-      )($rootScope);
-      $rootScope.$apply();
-      expect(log[0]).toEqual(
-        "compile: <!-- trans: text -->; link; LOG; LOG; HIGH",
-      );
-      expect(element.text()).toEqual("1-2;1-3;");
-    });
-
-    it("should only allow one element transclusion per element", () => {
-      module
-        .directive(
-          "first",
-          valueFn({
+      // issue #6006
+      it("should link directive with $element as a comment node", () => {
+        module
+          .directive("innerAgain", () => ({
             transclude: "element",
-          }),
-        )
-        .directive(
-          "second",
-          valueFn({
-            transclude: "element",
-          }),
-        );
-      expect(() => {
-        $compile("<div first second></div>");
-      }).toThrow(/multidir/);
-    });
-
-    it("should only allow one element transclusion per element when directives have different priorities", () => {
-      // we restart compilation in this case and we need to remember the duplicates during the second compile
-      // regression #3893
-      module
-        .directive(
-          "first",
-          valueFn({
-            transclude: "element",
-            priority: 100,
-          }),
-        )
-        .directive(
-          "second",
-          valueFn({
-            transclude: "element",
-          }),
-        );
-
-      expect(() => {
-        $compile("<div first second></div>");
-      }).toThrow(/multidir/);
-    });
-
-    it("should only allow one element transclusion per element when async replace directive is in the mix", () => {
-      module
-        .directive(
-          "template",
-          valueFn({
-            templateUrl: "template.html",
-            replace: true,
-          }),
-        )
-        .directive(
-          "first",
-          valueFn({
-            transclude: "element",
-            priority: 100,
-          }),
-        )
-        .directive(
-          "second",
-          valueFn({
-            transclude: "element",
-          }),
-        );
-
-      // $httpBackend
-      //   .expectGET("template.html")
-      //   .respond("<p second>template.html</p>");
-
-      expect(() => {
-        $compile("<div template first></div>");
-        $rootScope.$digest();
-      }).toThrow(/multidir/);
-    });
-
-    it("should only allow one element transclusion per element when replace directive is in the mix", () => {
-      module
-        .directive(
-          "template",
-          valueFn({
-            template: "<p second></p>",
-            replace: true,
-          }),
-        )
-        .directive(
-          "first",
-          valueFn({
-            transclude: "element",
-            priority: 100,
-          }),
-        )
-        .directive(
-          "second",
-          valueFn({
-            transclude: "element",
-          }),
-        );
-
-      expect(() => {
-        $compile("<div template first></div>");
-      }).toThrowError(/multidir/);
-    });
-
-    it("should support transcluded element on root content", () => {
-      let comment;
-      module.directive(
-        "transclude",
-        valueFn({
-          transclude: "element",
-          compile(element, attr, linker) {
-            return function (scope, element, attr) {
-              comment = element;
-            };
-          },
-        }),
-      );
-
-      const element = jqLite(
-        "<div>before<div transclude></div>after</div>",
-      ).contents();
-      expect(element.length).toEqual(3);
-      expect(nodeName_(element[1])).toBe("div");
-      $compile(element)($rootScope);
-      expect(nodeName_(element[1])).toBe("#comment");
-      expect(nodeName_(comment)).toBe("#comment");
-    });
-
-    it("should terminate compilation only for element transclusion", () => {
-      module
-        .directive("elementTrans", () => ({
-          transclude: "element",
-          priority: 50,
-          compile: log.fn("compile:elementTrans"),
-        }))
-        .directive("regularTrans", () => ({
-          transclude: true,
-          priority: 50,
-          compile: log.fn("compile:regularTrans"),
-        }));
-
-      $compile(
-        '<div><div element-trans log="elem"></div><div regular-trans log="regular"></div></div>',
-      )($rootScope);
-      expect(log[0]).toEqual(
-        "compile:elementTrans; compile:regularTrans; regular",
-      );
-    });
-
-    it("should instantiate high priority controllers only once, but low priority ones each time we transclude", () => {
-      module
-        .directive("elementTrans", () => ({
-          transclude: "element",
-          priority: 50,
-          controller($transclude, $element) {
-            log.push("controller:elementTrans");
-            $transclude((clone) => {
-              $element.after(clone);
-            });
-            $transclude((clone) => {
-              $element.after(clone);
-            });
-            $transclude((clone) => {
-              $element.after(clone);
-            });
-          },
-        }))
-        .directive("normalDir", () => ({
-          controller() {
-            log.push("controller:normalDir");
-          },
-        }));
-
-      element = $compile("<div><div element-trans normal-dir></div></div>")(
-        $rootScope,
-      );
-      expect(log[0]).toEqual([
-        "controller:elementTrans",
-        "controller:normalDir",
-        "controller:normalDir",
-        "controller:normalDir",
-      ]);
-    });
-
-    it("should allow to access $transclude in the same directive", () => {
-      let _$transclude;
-      module.directive(
-        "transclude",
-        valueFn({
-          transclude: "element",
-          controller($transclude) {
-            _$transclude = $transclude;
-          },
-        }),
-      );
-
-      element = $compile("<div transclude></div>")($rootScope);
-      expect(_$transclude).toBeDefined();
-    });
-
-    it("should copy the directive controller to all clones", () => {
-      let transcludeCtrl;
-      const cloneCount = 2;
-      module.directive(
-        "transclude",
-        valueFn({
-          transclude: "element",
-          controller() {
-            transcludeCtrl = this;
-          },
-          link(scope, el, attr, ctrl, $transclude) {
-            let i;
-            for (i = 0; i < cloneCount; i++) {
-              $transclude(cloneAttach);
-            }
-
-            function cloneAttach(clone) {
-              el.after(clone);
-            }
-          },
-        }),
-      );
-      element = $compile("<div><div transclude></div></div>")($rootScope);
-      const children = element.children();
-      let i;
-      for (i = 0; i < cloneCount; i++) {
-        expect(children.eq(i).data("$transcludeController")).toBe(
-          transcludeCtrl,
-        );
-      }
-    });
-
-    it("should expose the directive controller to transcluded children", () => {
-      let capturedTranscludeCtrl;
-      module
-        .directive(
-          "transclude",
-          valueFn({
-            transclude: "element",
-            controller() {},
-            link(scope, element, attr, ctrl, $transclude) {
-              $transclude(scope, (clone) => {
-                element.after(clone);
+            link(scope, element, attr, controllers, transclude) {
+              log.push(
+                `innerAgain:${lowercase(nodeName_(element))}:${trim(element[0].data)}`,
+              );
+              transclude(scope, (clone) => {
+                element.parent().append(clone);
               });
             },
-          }),
-        )
-        .directive(
-          "child",
-          valueFn({
-            require: "^transclude",
-            link(scope, element, attr, ctrl) {
-              capturedTranscludeCtrl = ctrl;
-            },
-          }),
-        );
-      // We need to wrap the transclude directive's element in a parent element so that the
-      // cloned element gets deallocated/cleaned up correctly
-      element = $compile("<div><div transclude><div child></div></div></div>")(
-        $rootScope,
-      );
-      expect(capturedTranscludeCtrl).toBeTruthy();
-    });
-
-    it("should allow access to $transclude in a templateUrl directive", () => {
-      let transclude;
-      module
-        .directive(
-          "template",
-          valueFn({
-            templateUrl: "template.html",
+          }))
+          .directive("inner", () => ({
             replace: true,
-          }),
-        )
-        .directive(
-          "transclude",
-          valueFn({
-            transclude: "content",
-            controller($transclude) {
-              transclude = $transclude;
+            templateUrl: "inner.html",
+            link(scope, element) {
+              log.push(
+                `inner:${lowercase(nodeName_(element))}:${trim(element[0].data)}`,
+              );
             },
-          }),
+          }))
+          .directive("outer", () => ({
+            transclude: "element",
+            link(scope, element, attrs, controllers, transclude) {
+              log.push(
+                `outer:${lowercase(nodeName_(element))}:${trim(element[0].data)}`,
+              );
+              transclude(scope, (clone) => {
+                element.parent().append(clone);
+              });
+            },
+          }));
+
+        // $templateCache.put(
+        //   "inner.html",
+        //   "<div inner-again><p>Content</p></div>",
+        // );
+        element = $compile("<div><div outer><div inner></div></div></div>")(
+          $rootScope,
         );
-      // $httpBackend
-      //   .expectGET("template.html")
-      //   .respond("<div transclude></div>");
-      element = $compile("<div template></div>")($rootScope);
-      $rootScope.$digest();
-      expect(transclude).toBeDefined();
+        $rootScope.$digest();
+        const child = element.children();
+
+        expect(log.toArray()).toEqual([
+          "outer:#comment:outer:",
+          "innerAgain:#comment:innerAgain:",
+          "inner:#comment:innerAgain:",
+        ]);
+        expect(child.length).toBe(1);
+        expect(child.contents().length).toBe(2);
+        expect(lowercase(nodeName_(child.contents().eq(0)))).toBe("#comment");
+        expect(lowercase(nodeName_(child.contents().eq(1)))).toBe("div");
+      });
     });
 
-    // issue #6006
-    it("should link directive with $element as a comment node", () => {
-      module
-        .directive("innerAgain", () => ({
-          transclude: "element",
-          link(scope, element, attr, controllers, transclude) {
-            log.push(
-              `innerAgain:${lowercase(nodeName_(element))}:${trim(element[0].data)}`,
-            );
-            transclude(scope, (clone) => {
-              element.parent().append(clone);
-            });
-          },
-        }))
-        .directive("inner", () => ({
-          replace: true,
-          templateUrl: "inner.html",
-          link(scope, element) {
-            log.push(
-              `inner:${lowercase(nodeName_(element))}:${trim(element[0].data)}`,
-            );
-          },
-        }))
-        .directive("outer", () => ({
-          transclude: "element",
-          link(scope, element, attrs, controllers, transclude) {
-            log.push(
-              `outer:${lowercase(nodeName_(element))}:${trim(element[0].data)}`,
-            );
-            transclude(scope, (clone) => {
-              element.parent().append(clone);
-            });
-          },
-        }));
+    // it("should be possible to change the scope of a directive using $provide", () => {
+    //   module.(($provide) => {
+    //     directive("foo", () => ({
+    //       scope: {},
+    //       template: "<div></div>",
+    //     });
+    //     $provide.decorator("fooDirective", ($delegate) => {
+    //       const directive = $delegate[0];
+    //       directive.scope.something = "=";
+    //       directive.template = "<span>{{something}}</span>";
+    //       return $delegate;
+    //     });
+    //   });
+    //   () => {
+    //     element = $compile('<div><div foo something="bar"></div></div>')(
+    //       $rootScope,
+    //     );
+    //     $rootScope.bar = "bar";
+    //     $rootScope.$digest();
+    //     expect(element.text()).toBe("bar");
+    //   });
+    // });
 
-      // $templateCache.put(
-      //   "inner.html",
-      //   "<div inner-again><p>Content</p></div>",
-      // );
-      element = $compile("<div><div outer><div inner></div></div></div>")(
+    it("should distinguish different bindings with the same binding name", () => {
+      module.directive("foo", () => ({
+        scope: {
+          foo: "=",
+          bar: "=",
+        },
+        template: "<div><div>{{foo}}</div><div>{{bar}}</div></div>",
+      }));
+
+      element = $compile("<div><div foo=\"'foo'\" bar=\"'bar'\"></div></div>")(
         $rootScope,
       );
       $rootScope.$digest();
-      const child = element.children();
-
-      expect(log.toArray()).toEqual([
-        "outer:#comment:outer:",
-        "innerAgain:#comment:innerAgain:",
-        "inner:#comment:innerAgain:",
-      ]);
-      expect(child.length).toBe(1);
-      expect(child.contents().length).toBe(2);
-      expect(lowercase(nodeName_(child.contents().eq(0)))).toBe("#comment");
-      expect(lowercase(nodeName_(child.contents().eq(1)))).toBe("div");
+      expect(element.text()).toBe("foobar");
     });
-  });
 
-  // it("should be possible to change the scope of a directive using $provide", () => {
-  //   module.(($provide) => {
-  //     directive("foo", () => ({
-  //       scope: {},
-  //       template: "<div></div>",
-  //     });
-  //     $provide.decorator("fooDirective", ($delegate) => {
-  //       const directive = $delegate[0];
-  //       directive.scope.something = "=";
-  //       directive.template = "<span>{{something}}</span>";
-  //       return $delegate;
-  //     });
-  //   });
-  //   () => {
-  //     element = $compile('<div><div foo something="bar"></div></div>')(
-  //       $rootScope,
-  //     );
-  //     $rootScope.bar = "bar";
-  //     $rootScope.$digest();
-  //     expect(element.text()).toBe("bar");
-  //   });
-  // });
+    it('should safely create transclude comment node and not break with "-->"', () => {
+      // see: https://github.com/angular/angular.js/issues/1740
+      element = $compile(
+        "<ul><li ng-repeat=\"item in ['-->', 'x']\">{{item}}|</li></ul>",
+      )($rootScope);
+      $rootScope.$digest();
 
-  it("should distinguish different bindings with the same binding name", () => {
-    module.directive("foo", () => ({
-      scope: {
-        foo: "=",
-        bar: "=",
-      },
-      template: "<div><div>{{foo}}</div><div>{{bar}}</div></div>",
-    }));
+      expect(element.text()).toBe("-->|x|");
+    });
 
-    element = $compile("<div><div foo=\"'foo'\" bar=\"'bar'\"></div></div>")(
-      $rootScope,
-    );
-    $rootScope.$digest();
-    expect(element.text()).toBe("foobar");
-  });
+    describe("lazy compilation", () => {
+      // See https://github.com/angular/angular.js/issues/7183
+      it("should pass transclusion through to template of a 'replace' directive", () => {
+        module
+          .directive("transSync", () => ({
+            transclude: true,
+            link(scope, element, attr, ctrl, transclude) {
+              expect(transclude).toEqual(jasmine.any(Function));
 
-  it('should safely create transclude comment node and not break with "-->"', () => {
-    // see: https://github.com/angular/angular.js/issues/1740
-    element = $compile(
-      "<ul><li ng-repeat=\"item in ['-->', 'x']\">{{item}}|</li></ul>",
-    )($rootScope);
-    $rootScope.$digest();
-
-    expect(element.text()).toBe("-->|x|");
-  });
-
-  describe("lazy compilation", () => {
-    // See https://github.com/angular/angular.js/issues/7183
-    it("should pass transclusion through to template of a 'replace' directive", () => {
-      module
-        .directive("transSync", () => ({
-          transclude: true,
-          link(scope, element, attr, ctrl, transclude) {
-            expect(transclude).toEqual(jasmine.any(Function));
-
-            transclude((child) => {
-              element.append(child);
-            });
-          },
-        }))
-        .directive("trans", ($timeout) => ({
-          transclude: true,
-          link(scope, element, attrs, ctrl, transclude) {
-            // We use timeout here to simulate how ng-if works
-            $timeout(() => {
               transclude((child) => {
                 element.append(child);
               });
-            });
-          },
-        }))
-        .directive("replaceWithTemplate", () => ({
-          templateUrl: "template.html",
-          replace: true,
-        }));
-
-      $templateCache.put(
-        "template.html",
-        "<div trans-sync>Content To Be Transcluded</div>",
-      );
-
-      expect(() => {
-        element = $compile(
-          "<div><div trans><div replace-with-template></div></div></div>",
-        )($rootScope);
-        $timeout.flush();
-      }).not.toThrow();
-
-      expect(element.text()).toEqual("Content To Be Transcluded");
-    });
-
-    it("should lazily compile the contents of directives that are transcluded", () => {
-      let innerCompilationCount = 0;
-      let transclude;
-
-      module
-        .directive(
-          "trans",
-          valueFn({
+            },
+          }))
+          .directive("trans", ($timeout) => ({
             transclude: true,
-            controller($transclude) {
-              transclude = $transclude;
+            link(scope, element, attrs, ctrl, transclude) {
+              // We use timeout here to simulate how ng-if works
+              $timeout(() => {
+                transclude((child) => {
+                  element.append(child);
+                });
+              });
             },
-          }),
-        )
-        .directive(
-          "inner",
-          valueFn({
-            template: "<span>FooBar</span>",
-            compile() {
-              innerCompilationCount += 1;
-            },
-          }),
+          }))
+          .directive("replaceWithTemplate", () => ({
+            templateUrl: "template.html",
+            replace: true,
+          }));
+
+        $templateCache.put(
+          "template.html",
+          "<div trans-sync>Content To Be Transcluded</div>",
         );
 
-      element = $compile("<trans><inner></inner></trans>")($rootScope);
-      expect(innerCompilationCount).toBe(0);
-      transclude((child) => {
-        element.append(child);
+        expect(() => {
+          element = $compile(
+            "<div><div trans><div replace-with-template></div></div></div>",
+          )($rootScope);
+          $timeout.flush();
+        }).not.toThrow();
+
+        expect(element.text()).toEqual("Content To Be Transcluded");
       });
-      expect(innerCompilationCount).toBe(1);
-      expect(element.text()).toBe("FooBar");
-    });
 
-    it("should lazily compile the contents of directives that are transcluded with a template", () => {
-      let innerCompilationCount = 0;
-      let transclude;
+      it("should lazily compile the contents of directives that are transcluded", () => {
+        let innerCompilationCount = 0;
+        let transclude;
 
-      module
-        .directive(
-          "trans",
-          valueFn({
-            transclude: true,
-            template: "<div>Baz</div>",
-            controller($transclude) {
-              transclude = $transclude;
-            },
-          }),
-        )
-        .directive(
-          "inner",
-          valueFn({
-            template: "<span>FooBar</span>",
-            compile() {
-              innerCompilationCount += 1;
-            },
-          }),
-        );
+        module
+          .directive(
+            "trans",
+            valueFn({
+              transclude: true,
+              controller($transclude) {
+                transclude = $transclude;
+              },
+            }),
+          )
+          .directive(
+            "inner",
+            valueFn({
+              template: "<span>FooBar</span>",
+              compile() {
+                innerCompilationCount += 1;
+              },
+            }),
+          );
 
-      element = $compile("<trans><inner></inner></trans>")($rootScope);
-      expect(innerCompilationCount).toBe(0);
-      transclude((child) => {
-        element.append(child);
-      });
-      expect(innerCompilationCount).toBe(1);
-      expect(element.text()).toBe("BazFooBar");
-    });
-
-    it("should lazily compile the contents of directives that are transcluded with a templateUrl", () => {
-      let innerCompilationCount = 0;
-      let transclude;
-
-      module
-        .directive(
-          "trans",
-          valueFn({
-            transclude: true,
-            templateUrl: "baz.html",
-            controller($transclude) {
-              transclude = $transclude;
-            },
-          }),
-        )
-        .directive(
-          "inner",
-          valueFn({
-            template: "<span>FooBar</span>",
-            compile() {
-              innerCompilationCount += 1;
-            },
-          }),
-        );
-
-      inject(($compile, $rootScope, $httpBackend) => {
-        $httpBackend.expectGET("baz.html").respond("<div>Baz</div>");
         element = $compile("<trans><inner></inner></trans>")($rootScope);
-        $rootScope.$digest();
+        expect(innerCompilationCount).toBe(0);
+        transclude((child) => {
+          element.append(child);
+        });
+        expect(innerCompilationCount).toBe(1);
+        expect(element.text()).toBe("FooBar");
+      });
 
+      it("should lazily compile the contents of directives that are transcluded with a template", () => {
+        let innerCompilationCount = 0;
+        let transclude;
+
+        module
+          .directive(
+            "trans",
+            valueFn({
+              transclude: true,
+              template: "<div>Baz</div>",
+              controller($transclude) {
+                transclude = $transclude;
+              },
+            }),
+          )
+          .directive(
+            "inner",
+            valueFn({
+              template: "<span>FooBar</span>",
+              compile() {
+                innerCompilationCount += 1;
+              },
+            }),
+          );
+
+        element = $compile("<trans><inner></inner></trans>")($rootScope);
         expect(innerCompilationCount).toBe(0);
         transclude((child) => {
           element.append(child);
@@ -15816,2370 +15758,2425 @@ describe("$compile", () => {
         expect(innerCompilationCount).toBe(1);
         expect(element.text()).toBe("BazFooBar");
       });
-    });
 
-    it("should lazily compile the contents of directives that are transclude element", () => {
-      let innerCompilationCount = 0;
-      let transclude;
+      it("should lazily compile the contents of directives that are transcluded with a templateUrl", () => {
+        let innerCompilationCount = 0;
+        let transclude;
 
-      module
-        .directive(
-          "trans",
-          valueFn({
-            transclude: "element",
-            controller($transclude) {
-              transclude = $transclude;
-            },
-          }),
-        )
-        .directive(
-          "inner",
-          valueFn({
-            template: "<span>FooBar</span>",
-            compile() {
-              innerCompilationCount += 1;
-            },
-          }),
-        );
+        module
+          .directive(
+            "trans",
+            valueFn({
+              transclude: true,
+              templateUrl: "baz.html",
+              controller($transclude) {
+                transclude = $transclude;
+              },
+            }),
+          )
+          .directive(
+            "inner",
+            valueFn({
+              template: "<span>FooBar</span>",
+              compile() {
+                innerCompilationCount += 1;
+              },
+            }),
+          );
 
-      element = $compile("<div><trans><inner></inner></trans></div>")(
-        $rootScope,
-      );
-      expect(innerCompilationCount).toBe(0);
-      transclude((child) => {
-        element.append(child);
+        inject(($compile, $rootScope, $httpBackend) => {
+          $httpBackend.expectGET("baz.html", "<div>Baz</div>");
+          element = $compile("<trans><inner></inner></trans>")($rootScope);
+          $rootScope.$digest();
+
+          expect(innerCompilationCount).toBe(0);
+          transclude((child) => {
+            element.append(child);
+          });
+          expect(innerCompilationCount).toBe(1);
+          expect(element.text()).toBe("BazFooBar");
+        });
       });
-      expect(innerCompilationCount).toBe(1);
-      expect(element.text()).toBe("FooBar");
-    });
 
-    it("should lazily compile transcluded directives with ngIf on them", () => {
-      let innerCompilationCount = 0;
-      let outerCompilationCount = 0;
-      let transclude;
+      it("should lazily compile the contents of directives that are transclude element", () => {
+        let innerCompilationCount = 0;
+        let transclude;
 
-      module
-        .directive(
-          "outer",
-          valueFn({
-            transclude: true,
-            compile() {
-              outerCompilationCount += 1;
-            },
-            controller($transclude) {
-              transclude = $transclude;
-            },
-          }),
-        )
-        .directive(
-          "inner",
-          valueFn({
-            template: "<span>FooBar</span>",
-            compile() {
-              innerCompilationCount += 1;
-            },
-          }),
+        module
+          .directive(
+            "trans",
+            valueFn({
+              transclude: "element",
+              controller($transclude) {
+                transclude = $transclude;
+              },
+            }),
+          )
+          .directive(
+            "inner",
+            valueFn({
+              template: "<span>FooBar</span>",
+              compile() {
+                innerCompilationCount += 1;
+              },
+            }),
+          );
+
+        element = $compile("<div><trans><inner></inner></trans></div>")(
+          $rootScope,
         );
-
-      $rootScope.shouldCompile = false;
-
-      element = $compile(
-        '<div><outer ng-if="shouldCompile"><inner></inner></outer></div>',
-      )($rootScope);
-      expect(outerCompilationCount).toBe(0);
-      expect(innerCompilationCount).toBe(0);
-      expect(transclude).toBeUndefined();
-      $rootScope.$apply("shouldCompile=true");
-      expect(outerCompilationCount).toBe(1);
-      expect(innerCompilationCount).toBe(0);
-      expect(transclude).toBeDefined();
-      transclude((child) => {
-        element.append(child);
+        expect(innerCompilationCount).toBe(0);
+        transclude((child) => {
+          element.append(child);
+        });
+        expect(innerCompilationCount).toBe(1);
+        expect(element.text()).toBe("FooBar");
       });
-      expect(outerCompilationCount).toBe(1);
-      expect(innerCompilationCount).toBe(1);
-      expect(element.text()).toBe("FooBar");
+
+      it("should lazily compile transcluded directives with ngIf on them", () => {
+        let innerCompilationCount = 0;
+        let outerCompilationCount = 0;
+        let transclude;
+
+        module
+          .directive(
+            "outer",
+            valueFn({
+              transclude: true,
+              compile() {
+                outerCompilationCount += 1;
+              },
+              controller($transclude) {
+                transclude = $transclude;
+              },
+            }),
+          )
+          .directive(
+            "inner",
+            valueFn({
+              template: "<span>FooBar</span>",
+              compile() {
+                innerCompilationCount += 1;
+              },
+            }),
+          );
+
+        $rootScope.shouldCompile = false;
+
+        element = $compile(
+          '<div><outer ng-if="shouldCompile"><inner></inner></outer></div>',
+        )($rootScope);
+        expect(outerCompilationCount).toBe(0);
+        expect(innerCompilationCount).toBe(0);
+        expect(transclude).toBeUndefined();
+        $rootScope.$apply("shouldCompile=true");
+        expect(outerCompilationCount).toBe(1);
+        expect(innerCompilationCount).toBe(0);
+        expect(transclude).toBeDefined();
+        transclude((child) => {
+          element.append(child);
+        });
+        expect(outerCompilationCount).toBe(1);
+        expect(innerCompilationCount).toBe(1);
+        expect(element.text()).toBe("FooBar");
+      });
+
+      it("should eagerly compile multiple directives with transclusion and templateUrl/replace", () => {
+        let innerCompilationCount = 0;
+
+        module
+          .directive(
+            "outer",
+            valueFn({
+              transclude: true,
+            }),
+          )
+          .directive(
+            "outer",
+            valueFn({
+              templateUrl: "inner.html",
+              replace: true,
+            }),
+          )
+          .directive(
+            "inner",
+            valueFn({
+              compile() {
+                innerCompilationCount += 1;
+              },
+            }),
+          );
+
+        $httpBackend.expectGET("inner.html", "<inner></inner>");
+        element = $compile("<outer></outer>")($rootScope);
+        $rootScope.$digest();
+
+        expect(innerCompilationCount).toBe(1);
+      });
     });
-
-    it("should eagerly compile multiple directives with transclusion and templateUrl/replace", () => {
-      let innerCompilationCount = 0;
-
-      module
-        .directive(
-          "outer",
-          valueFn({
-            transclude: true,
-          }),
-        )
-        .directive(
-          "outer",
-          valueFn({
-            templateUrl: "inner.html",
-            replace: true,
-          }),
-        )
-        .directive(
-          "inner",
-          valueFn({
-            compile() {
-              innerCompilationCount += 1;
-            },
-          }),
-        );
-
-      $httpBackend.expectGET("inner.html").respond("<inner></inner>");
-      element = $compile("<outer></outer>")($rootScope);
-      $rootScope.$digest();
-
-      expect(innerCompilationCount).toBe(1);
-    });
-  });
-});
-
-describe("multi-slot transclude", () => {
-  it("should only include elements without a matching transclusion element in default transclusion slot", () => {
-    module.directive("minionComponent", () => ({
-      restrict: "E",
-      scope: {},
-      transclude: {
-        bossSlot: "boss",
-      },
-      template: '<div class="other" ng-transclude></div>',
-    }));
-
-    element = $compile(
-      "<minion-component>" +
-        "<span>stuart</span>" +
-        "<span>bob</span>" +
-        "<boss>gru</boss>" +
-        "<span>kevin</span>" +
-        "</minion-component>",
-    )($rootScope);
-    $rootScope.$apply();
-    expect(element.text()).toEqual("stuartbobkevin");
   });
 
-  it("should use the default transclusion slot if the ng-transclude attribute has the same value as its key", () => {
-    module.directive("minionComponent", () => ({
-      restrict: "E",
-      scope: {},
-      transclude: {},
-      template:
-        '<div class="a" ng-transclude="ng-transclude"></div>' +
-        '<div class="b" ng:transclude="ng:transclude"></div>' +
-        '<div class="c" data-ng-transclude="data-ng-transclude"></div>',
-    }));
-
-    element = $compile(
-      "<minion-component>" +
-        "<span>stuart</span>" +
-        "<span>bob</span>" +
-        "<span>kevin</span>" +
-        "</minion-component>",
-    )($rootScope);
-    $rootScope.$apply();
-    const a = element.children().eq(0);
-    const b = element.children().eq(1);
-    const c = element.children().eq(2);
-    expect(a).hasClass("a");
-    expect(b).hasClass("b");
-    expect(c).hasClass("c");
-    expect(a.text()).toEqual("stuartbobkevin");
-    expect(b.text()).toEqual("stuartbobkevin");
-    expect(c.text()).toEqual("stuartbobkevin");
-  });
-
-  it("should include non-element nodes in the default transclusion", () => {
-    module.directive("minionComponent", () => ({
-      restrict: "E",
-      scope: {},
-      transclude: {
-        bossSlot: "boss",
-      },
-      template: '<div class="other" ng-transclude></div>',
-    }));
-
-    element = $compile(
-      "<minion-component>" +
-        "text1" +
-        "<span>stuart</span>" +
-        "<span>bob</span>" +
-        "<boss>gru</boss>" +
-        "text2" +
-        "<span>kevin</span>" +
-        "</minion-component>",
-    )($rootScope);
-    $rootScope.$apply();
-    expect(element.text()).toEqual("text1stuartbobtext2kevin");
-  });
-
-  it("should transclude elements to an `ng-transclude` with a matching transclusion slot name", () => {
-    module.directive("minionComponent", () => ({
-      restrict: "E",
-      scope: {},
-      transclude: {
-        minionSlot: "minion",
-        bossSlot: "boss",
-      },
-      template:
-        '<div class="boss" ng-transclude="bossSlot"></div>' +
-        '<div class="minion" ng-transclude="minionSlot"></div>' +
-        '<div class="other" ng-transclude></div>',
-    }));
-
-    element = $compile(
-      "<minion-component>" +
-        "<minion>stuart</minion>" +
-        "<span>dorothy</span>" +
-        "<boss>gru</boss>" +
-        "<minion>kevin</minion>" +
-        "</minion-component>",
-    )($rootScope);
-    $rootScope.$apply();
-    expect(element.children().eq(0).text()).toEqual("gru");
-    expect(element.children().eq(1).text()).toEqual("stuartkevin");
-    expect(element.children().eq(2).text()).toEqual("dorothy");
-  });
-
-  it("should use the `ng-transclude-slot` attribute if ng-transclude is used as an element", () => {
-    module.directive("minionComponent", () => ({
-      restrict: "E",
-      scope: {},
-      transclude: {
-        minionSlot: "minion",
-        bossSlot: "boss",
-      },
-      template:
-        '<ng-transclude class="boss" ng-transclude-slot="bossSlot"></ng-transclude>' +
-        '<ng-transclude class="minion" ng-transclude-slot="minionSlot"></ng-transclude>' +
-        '<ng-transclude class="other"></ng-transclude>',
-    }));
-
-    element = $compile(
-      "<minion-component>" +
-        "<minion>stuart</minion>" +
-        "<span>dorothy</span>" +
-        "<boss>gru</boss>" +
-        "<minion>kevin</minion>" +
-        "</minion-component>",
-    )($rootScope);
-    $rootScope.$apply();
-    expect(element.children().eq(0).text()).toEqual("gru");
-    expect(element.children().eq(1).text()).toEqual("stuartkevin");
-    expect(element.children().eq(2).text()).toEqual("dorothy");
-  });
-
-  it("should error if a required transclude slot is not filled", () => {
-    module.directive("minionComponent", () => ({
-      restrict: "E",
-      scope: {},
-      transclude: {
-        minionSlot: "minion",
-        bossSlot: "boss",
-      },
-      template:
-        '<div class="boss" ng-transclude="bossSlot"></div>' +
-        '<div class="minion" ng-transclude="minionSlot"></div>' +
-        '<div class="other" ng-transclude></div>',
-    }));
-
-    expect(() => {
-      element = $compile(
-        "<minion-component>" +
-          "<minion>stuart</minion>" +
-          "<span>dorothy</span>" +
-          "</minion-component>",
-      )($rootScope);
-    }).toThrowError(/reqslot/);
-  });
-
-  it("should not error if an optional transclude slot is not filled", () => {
-    module.directive("minionComponent", () => ({
-      restrict: "E",
-      scope: {},
-      transclude: {
-        minionSlot: "minion",
-        bossSlot: "?boss",
-      },
-      template:
-        '<div class="boss" ng-transclude="bossSlot"></div>' +
-        '<div class="minion" ng-transclude="minionSlot"></div>' +
-        '<div class="other" ng-transclude></div>',
-    }));
-
-    element = $compile(
-      "<minion-component>" +
-        "<minion>stuart</minion>" +
-        "<span>dorothy</span>" +
-        "</minion-component>",
-    )($rootScope);
-    $rootScope.$apply();
-    expect(element.children().eq(1).text()).toEqual("stuart");
-    expect(element.children().eq(2).text()).toEqual("dorothy");
-  });
-
-  it("should error if we try to transclude a slot that was not declared by the directive", () => {
-    module.directive("minionComponent", () => ({
-      restrict: "E",
-      scope: {},
-      transclude: {
-        minionSlot: "minion",
-      },
-      template:
-        '<div class="boss" ng-transclude="bossSlot"></div>' +
-        '<div class="minion" ng-transclude="minionSlot"></div>' +
-        '<div class="other" ng-transclude></div>',
-    }));
-
-    expect(() => {
-      element = $compile(
-        "<minion-component>" +
-          "<minion>stuart</minion>" +
-          "<span>dorothy</span>" +
-          "</minion-component>",
-      )($rootScope);
-    }).toThrowError(/noslot/);
-  });
-
-  it("should allow the slot name to equal the element name", () => {
-    module.directive("foo", () => ({
-      restrict: "E",
-      scope: {},
-      transclude: {
-        bar: "bar",
-      },
-      template: '<div class="other" ng-transclude="bar"></div>',
-    }));
-
-    element = $compile("<foo><bar>baz</bar></foo>")($rootScope);
-    $rootScope.$apply();
-    expect(element.text()).toEqual("baz");
-  });
-
-  it("should match the normalized form of the element name", () => {
-    module.directive("foo", () => ({
-      restrict: "E",
-      scope: {},
-      transclude: {
-        fooBarSlot: "fooBar",
-        mooKarSlot: "mooKar",
-      },
-      template:
-        '<div class="a" ng-transclude="fooBarSlot"></div>' +
-        '<div class="b" ng-transclude="mooKarSlot"></div>',
-    }));
-
-    element = $compile(
-      "<foo>" +
-        "<foo-bar>bar1</foo-bar>" +
-        "<foo:bar>bar2</foo:bar>" +
-        "<moo-kar>baz1</moo-kar>" +
-        "<data-moo-kar>baz2</data-moo-kar>" +
-        "</foo>",
-    )($rootScope);
-    $rootScope.$apply();
-    expect(element.children().eq(0).text()).toEqual("bar1bar2");
-    expect(element.children().eq(1).text()).toEqual("baz1baz2");
-  });
-
-  it("should return true from `isSlotFilled(slotName) for slots that have content in the transclusion", () => {
-    let capturedTranscludeFn;
-    module.directive("minionComponent", () => ({
-      restrict: "E",
-      scope: {},
-      transclude: {
-        minionSlot: "minion",
-        bossSlot: "?boss",
-      },
-      template:
-        '<div class="boss" ng-transclude="bossSlot"></div>' +
-        '<div class="minion" ng-transclude="minionSlot"></div>' +
-        '<div class="other" ng-transclude></div>',
-      link(s, e, a, c, transcludeFn) {
-        capturedTranscludeFn = transcludeFn;
-      },
-    }));
-
-    element = $compile(
-      "<minion-component>" +
-        "  <minion>stuart</minion>" +
-        "  <minion>bob</minion>" +
-        "  <span>dorothy</span>" +
-        "</minion-component>",
-    )($rootScope);
-    $rootScope.$apply();
-
-    const hasMinions = capturedTranscludeFn.isSlotFilled("minionSlot");
-    const hasBosses = capturedTranscludeFn.isSlotFilled("bossSlot");
-
-    expect(hasMinions).toBe(true);
-    expect(hasBosses).toBe(false);
-  });
-
-  it("should not overwrite the contents of an `ng-transclude` element, if the matching optional slot is not filled", () => {
-    module.directive("minionComponent", () => ({
-      restrict: "E",
-      scope: {},
-      transclude: {
-        minionSlot: "minion",
-        bossSlot: "?boss",
-      },
-      template:
-        '<div class="boss" ng-transclude="bossSlot">default boss content</div>' +
-        '<div class="minion" ng-transclude="minionSlot">default minion content</div>' +
-        '<div class="other" ng-transclude>default content</div>',
-    }));
-
-    element = $compile(
-      "<minion-component>" +
-        "<minion>stuart</minion>" +
-        "<span>dorothy</span>" +
-        "<minion>kevin</minion>" +
-        "</minion-component>",
-    )($rootScope);
-    $rootScope.$apply();
-    expect(element.children().eq(0).text()).toEqual("default boss content");
-    expect(element.children().eq(1).text()).toEqual("stuartkevin");
-    expect(element.children().eq(2).text()).toEqual("dorothy");
-  });
-
-  // See issue https://github.com/angular/angular.js/issues/14924
-  it("should not process top-level transcluded text nodes merged into their sibling", () => {
-    module.directive(
-      "transclude",
-      valueFn({
-        template: "<ng-transclude></ng-transclude>",
-        transclude: {},
+  describe("multi-slot transclude", () => {
+    it("should only include elements without a matching transclusion element in default transclusion slot", () => {
+      module.directive("minionComponent", () => ({
+        restrict: "E",
         scope: {},
-      }),
-    );
-
-    element = jqLite("<div transclude></div>");
-    element[0].appendChild(document.createTextNode("1{{ value }}"));
-    element[0].appendChild(document.createTextNode("2{{ value }}"));
-    element[0].appendChild(document.createTextNode("3{{ value }}"));
-
-    const initialWatcherCount = $rootScope.$countWatchers();
-    $compile(element)($rootScope);
-    $rootScope.$apply("value = 0");
-    const newWatcherCount = $rootScope.$countWatchers() - initialWatcherCount;
-
-    expect(element.text()).toBe("102030");
-    expect(newWatcherCount).toBe(3);
-  });
-});
-
-["img", "audio", "video"].forEach((tag) => {
-  describe(`${tag}[src] context requirement`, () => {
-    it("should NOT require trusted values for trusted URIs", () => {
-      element = $compile(`<${tag} src="{{testUrl}}"></${tag}>`)($rootScope);
-      $rootScope.testUrl = "http://example.com/image.mp4"; // `http` is trusted
-      $rootScope.$digest();
-      expect(element.attr("src")).toEqual("http://example.com/image.mp4");
-    });
-
-    it("should accept trusted values", () => {
-      // As a MEDIA_URL URL
-      element = $compile(`<${tag} src="{{testUrl}}"></${tag}>`)($rootScope);
-      // Some browsers complain if you try to write `javascript:` into an `img[src]`
-      // So for the test use something different
-      $rootScope.testUrl = $sce.trustAsMediaUrl("untrusted:foo()");
-      $rootScope.$digest();
-      expect(element.attr("src")).toEqual("untrusted:foo()");
-
-      // As a URL
-      element = $compile(`<${tag} src="{{testUrl}}"></${tag}>`)($rootScope);
-      $rootScope.testUrl = $sce.trustAsUrl("untrusted:foo()");
-      $rootScope.$digest();
-      expect(element.attr("src")).toEqual("untrusted:foo()");
-
-      // As a RESOURCE URL
-      element = $compile(`<${tag} src="{{testUrl}}"></${tag}>`)($rootScope);
-      $rootScope.testUrl = $sce.trustAsResourceUrl("untrusted:foo()");
-      $rootScope.$digest();
-      expect(element.attr("src")).toEqual("untrusted:foo()");
-    });
-  });
-});
-
-["source", "track"].forEach((tag) => {
-  describe(`${tag}[src]`, () => {
-    it("should NOT require trusted values for trusted URIs", () => {
-      element = $compile(`<video><${tag} src="{{testUrl}}"></${tag}></video>`)(
-        $rootScope,
-      );
-      $rootScope.testUrl = "http://example.com/image.mp4"; // `http` is trusted
-      $rootScope.$digest();
-      expect(element.find(tag).attr("src")).toEqual(
-        "http://example.com/image.mp4",
-      );
-    });
-
-    it("should accept trusted values", () => {
-      // As a MEDIA_URL URL
-      element = $compile(`<video><${tag} src="{{testUrl}}"></${tag}></video>`)(
-        $rootScope,
-      );
-      $rootScope.testUrl = $sce.trustAsMediaUrl("javascript:foo()");
-      $rootScope.$digest();
-      expect(element.find(tag).attr("src")).toEqual("javascript:foo()");
-
-      // As a URL
-      element = $compile(`<video><${tag} src="{{testUrl}}"></${tag}></video>`)(
-        $rootScope,
-      );
-      $rootScope.testUrl = $sce.trustAsUrl("javascript:foo()");
-      $rootScope.$digest();
-      expect(element.find(tag).attr("src")).toEqual("javascript:foo()");
-
-      // As a RESOURCE URL
-      element = $compile(`<video><${tag} src="{{testUrl}}"></${tag}></video>`)(
-        $rootScope,
-      );
-      $rootScope.testUrl = $sce.trustAsResourceUrl("javascript:foo()");
-      $rootScope.$digest();
-      expect(element.find(tag).attr("src")).toEqual("javascript:foo()");
-    });
-  });
-});
-
-describe("img[src] sanitization", () => {
-  it("should accept trusted values", () => {
-    element = $compile('<img src="{{testUrl}}"></img>')($rootScope);
-    // Some browsers complain if you try to write `javascript:` into an `img[src]`
-    // So for the test use something different
-    $rootScope.testUrl = $sce.trustAsMediaUrl("someUntrustedThing:foo();");
-    $rootScope.$digest();
-    expect(element.attr("src")).toEqual("someUntrustedThing:foo();");
-  });
-
-  it("should sanitize concatenated values even if they are trusted", () => {
-    element = $compile('<img src="{{testUrl}}ponies"></img>')($rootScope);
-    $rootScope.testUrl = $sce.trustAsUrl("untrusted:foo();");
-    $rootScope.$digest();
-    expect(element.attr("src")).toEqual("unsafe:untrusted:foo();ponies");
-
-    element = $compile('<img src="http://{{testUrl2}}"></img>')($rootScope);
-    $rootScope.testUrl2 = $sce.trustAsUrl("xyz;");
-    $rootScope.$digest();
-    expect(element.attr("src")).toEqual("http://xyz;");
-
-    element = $compile('<img src="{{testUrl3}}{{testUrl3}}"></img>')(
-      $rootScope,
-    );
-    $rootScope.testUrl3 = $sce.trustAsUrl("untrusted:foo();");
-    $rootScope.$digest();
-    expect(element.attr("src")).toEqual(
-      "unsafe:untrusted:foo();untrusted:foo();",
-    );
-  });
-
-  it("should not sanitize attributes other than src", () => {
-    element = $compile('<img title="{{testUrl}}"></img>')($rootScope);
-    $rootScope.testUrl = "javascript:doEvilStuff()";
-    $rootScope.$apply();
-    expect(element.attr("title")).toBe("javascript:doEvilStuff()");
-  });
-
-  it("should use $$sanitizeUri", () => {
-    const $$sanitizeUri = jasmine.createSpy("$$sanitizeUri");
-    module.value("$$sanitizeUri", $$sanitizeUri);
-
-    element = $compile('<img src="{{testUrl}}"></img>')($rootScope);
-    $rootScope.testUrl = "someUrl";
-
-    $$sanitizeUri.and.returnValue("someSanitizedUrl");
-    $rootScope.$apply();
-    expect(element.attr("src")).toBe("someSanitizedUrl");
-    expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, true);
-  });
-
-  it("should use $$sanitizeUri on concatenated trusted values", () => {
-    const $$sanitizeUri = jasmine
-      .createSpy("$$sanitizeUri")
-      .and.returnValue("someSanitizedUrl");
-    module(($provide) => {
-      $provide.value("$$sanitizeUri", $$sanitizeUri);
-    });
-
-    element = $compile('<img src="{{testUrl}}ponies"></img>')($rootScope);
-    $rootScope.testUrl = $sce.trustAsUrl("javascript:foo();");
-    $rootScope.$digest();
-    expect(element.attr("src")).toEqual("someSanitizedUrl");
-
-    element = $compile('<img src="http://{{testUrl}}"></img>')($rootScope);
-    $rootScope.testUrl = $sce.trustAsUrl("xyz");
-    $rootScope.$digest();
-    expect(element.attr("src")).toEqual("someSanitizedUrl");
-  });
-
-  it("should not use $$sanitizeUri with trusted values", () => {
-    const $$sanitizeUri = jasmine
-      .createSpy("$$sanitizeUri")
-      .and.throwError("Should not have been called");
-    module.value("$$sanitizeUri", $$sanitizeUri);
-
-    element = $compile('<img src="{{testUrl}}"></img>')($rootScope);
-    // Assigning javascript:foo to src makes at least IE9-11 complain, so use another
-    // protocol name.
-    $rootScope.testUrl = $sce.trustAsMediaUrl("untrusted:foo();");
-    $rootScope.$apply();
-    expect(element.attr("src")).toEqual("untrusted:foo();");
-  });
-});
-
-describe("img[srcset] sanitization", () => {
-  it("should not error if srcset is undefined", () => {
-    let linked = false;
-    module.directive(
-      "setter",
-      valueFn((scope, elem, attrs) => {
-        // Set srcset to a value
-        attrs.$set("srcset", "http://example.com/");
-        expect(attrs.srcset).toBe("http://example.com/");
-        // Now set it to undefined
-        attrs.$set("srcset", undefined);
-        expect(attrs.srcset).toBeUndefined();
-        linked = true;
-      }),
-    );
-
-    element = $compile("<img setter></img>")($rootScope);
-    expect(linked).toBe(true);
-    expect(element.attr("srcset")).toBeUndefined();
-  });
-
-  it("should NOT require trusted values for trusted URI values", () => {
-    element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
-    $rootScope.testUrl = "http://example.com/image.png"; // `http` is trusted
-    $rootScope.$digest();
-    expect(element.attr("srcset")).toEqual("http://example.com/image.png");
-  });
-
-  it("should accept trusted values, if they are also trusted URIs", () => {
-    element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
-    $rootScope.testUrl = $sce.trustAsUrl("http://example.com");
-    $rootScope.$digest();
-    expect(element.attr("srcset")).toEqual("http://example.com");
-  });
-
-  it("should NOT work with trusted values", () => {
-    // A limitation of the approach used for srcset is that you cannot use `trustAsUrl`.
-    // Use trustAsHtml and ng-bind-html to work around this.
-    element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
-    $rootScope.testUrl = $sce.trustAsUrl("javascript:something");
-    $rootScope.$digest();
-    expect(element.attr("srcset")).toEqual("unsafe:javascript:something");
-
-    element = $compile('<img srcset="{{testUrl}},{{testUrl}}"></img>')(
-      $rootScope,
-    );
-    $rootScope.testUrl = $sce.trustAsUrl("javascript:something");
-    $rootScope.$digest();
-    expect(element.attr("srcset")).toEqual(
-      "unsafe:javascript:something ,unsafe:javascript:something",
-    );
-  });
-
-  it("should use $$sanitizeUri", () => {
-    const $$sanitizeUri = jasmine
-      .createSpy("$$sanitizeUri")
-      .and.returnValue("someSanitizedUrl");
-    module(($provide) => {
-      $provide.value("$$sanitizeUri", $$sanitizeUri);
-
-      element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
-      $rootScope.testUrl = "someUrl";
-      $rootScope.$apply();
-      expect(element.attr("srcset")).toBe("someSanitizedUrl");
-      expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, true);
-
-      element = $compile('<img srcset="{{testUrl}}, {{testUrl}}"></img>')(
-        $rootScope,
-      );
-      $rootScope.testUrl = "javascript:yay";
-      $rootScope.$apply();
-      expect(element.attr("srcset")).toEqual(
-        "someSanitizedUrl ,someSanitizedUrl",
-      );
-
-      element = $compile('<img srcset="java{{testUrl}}"></img>')($rootScope);
-      $rootScope.testUrl = "script:yay, javascript:nay";
-      $rootScope.$apply();
-      expect(element.attr("srcset")).toEqual(
-        "someSanitizedUrl ,someSanitizedUrl",
-      );
-    });
-  });
-
-  it("should sanitize all uris in srcset", () => {
-    element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
-    const testSet = {
-      "http://example.com/image.png": "http://example.com/image.png",
-      " http://example.com/image.png": "http://example.com/image.png",
-      "http://example.com/image.png ": "http://example.com/image.png",
-      "http://example.com/image.png 128w": "http://example.com/image.png 128w",
-      "http://example.com/image.png 2x": "http://example.com/image.png 2x",
-      "http://example.com/image.png 1.5x": "http://example.com/image.png 1.5x",
-      "http://example.com/image1.png 1x,http://example.com/image2.png 2x":
-        "http://example.com/image1.png 1x,http://example.com/image2.png 2x",
-      "http://example.com/image1.png 1x ,http://example.com/image2.png 2x":
-        "http://example.com/image1.png 1x ,http://example.com/image2.png 2x",
-      "http://example.com/image1.png 1x, http://example.com/image2.png 2x":
-        "http://example.com/image1.png 1x,http://example.com/image2.png 2x",
-      "http://example.com/image1.png 1x , http://example.com/image2.png 2x":
-        "http://example.com/image1.png 1x ,http://example.com/image2.png 2x",
-      "http://example.com/image1.png 48w,http://example.com/image2.png 64w":
-        "http://example.com/image1.png 48w,http://example.com/image2.png 64w",
-      // Test regex to make sure doesn't mistake parts of url for width descriptors
-      "http://example.com/image1.png?w=48w,http://example.com/image2.png 64w":
-        "http://example.com/image1.png?w=48w,http://example.com/image2.png 64w",
-      "http://example.com/image1.png 1x,http://example.com/image2.png 64w":
-        "http://example.com/image1.png 1x,http://example.com/image2.png 64w",
-      "http://example.com/image1.png,http://example.com/image2.png":
-        "http://example.com/image1.png ,http://example.com/image2.png",
-      "http://example.com/image1.png ,http://example.com/image2.png":
-        "http://example.com/image1.png ,http://example.com/image2.png",
-      "http://example.com/image1.png, http://example.com/image2.png":
-        "http://example.com/image1.png ,http://example.com/image2.png",
-      "http://example.com/image1.png , http://example.com/image2.png":
-        "http://example.com/image1.png ,http://example.com/image2.png",
-      "http://example.com/image1.png 1x, http://example.com/image2.png 2x, http://example.com/image3.png 3x":
-        "http://example.com/image1.png 1x,http://example.com/image2.png 2x,http://example.com/image3.png 3x",
-      "javascript:doEvilStuff() 2x": "unsafe:javascript:doEvilStuff() 2x",
-      "http://example.com/image1.png 1x,javascript:doEvilStuff() 2x":
-        "http://example.com/image1.png 1x,unsafe:javascript:doEvilStuff() 2x",
-      "http://example.com/image1.jpg?x=a,b 1x,http://example.com/ima,ge2.jpg 2x":
-        "http://example.com/image1.jpg?x=a,b 1x,http://example.com/ima,ge2.jpg 2x",
-      // Test regex to make sure doesn't mistake parts of url for pixel density descriptors
-      "http://example.com/image1.jpg?x=a2x,b 1x,http://example.com/ima,ge2.jpg 2x":
-        "http://example.com/image1.jpg?x=a2x,b 1x,http://example.com/ima,ge2.jpg 2x",
-    };
-
-    forEach(testSet, (ref, url) => {
-      $rootScope.testUrl = url;
-      $rootScope.$digest();
-      expect(element.attr("srcset")).toEqual(ref);
-    });
-  });
-});
-
-describe("a[href] sanitization", () => {
-  it("should NOT require trusted values for trusted URI values", () => {
-    $rootScope.testUrl = "http://example.com/image.png"; // `http` is trusted
-    element = $compile('<a href="{{testUrl}}"></a>')($rootScope);
-    $rootScope.$digest();
-    expect(element.attr("href")).toEqual("http://example.com/image.png");
-
-    element = $compile('<a ng-href="{{testUrl}}"></a>')($rootScope);
-    $rootScope.$digest();
-    expect(element.attr("ng-href")).toEqual("http://example.com/image.png");
-  });
-
-  it("should accept trusted values for non-trusted URI values", () => {
-    $rootScope.testUrl = $sce.trustAsUrl("javascript:foo()"); // `javascript` is not trusted
-    element = $compile('<a href="{{testUrl}}"></a>')($rootScope);
-    $rootScope.$digest();
-    expect(element.attr("href")).toEqual("javascript:foo()");
-
-    element = $compile('<a ng-href="{{testUrl}}"></a>')($rootScope);
-    $rootScope.$digest();
-    expect(element.attr("ng-href")).toEqual("javascript:foo()");
-  });
-
-  it("should sanitize non-trusted values", () => {
-    $rootScope.testUrl = "javascript:foo()"; // `javascript` is not trusted
-    element = $compile('<a href="{{testUrl}}"></a>')($rootScope);
-    $rootScope.$digest();
-    expect(element.attr("href")).toEqual("unsafe:javascript:foo()");
-
-    element = $compile('<a ng-href="{{testUrl}}"></a>')($rootScope);
-    $rootScope.$digest();
-    expect(element.attr("href")).toEqual("unsafe:javascript:foo()");
-  });
-
-  it("should not sanitize href on elements other than anchor", () => {
-    element = $compile('<div href="{{testUrl}}"></div>')($rootScope);
-    $rootScope.testUrl = "javascript:doEvilStuff()";
-    $rootScope.$apply();
-
-    expect(element.attr("href")).toBe("javascript:doEvilStuff()");
-  });
-
-  it("should not sanitize attributes other than href/ng-href", () => {
-    element = $compile('<a title="{{testUrl}}"></a>')($rootScope);
-    $rootScope.testUrl = "javascript:doEvilStuff()";
-    $rootScope.$apply();
-
-    expect(element.attr("title")).toBe("javascript:doEvilStuff()");
-  });
-
-  it("should use $$sanitizeUri", () => {
-    const $$sanitizeUri = jasmine
-      .createSpy("$$sanitizeUri")
-      .and.returnValue("someSanitizedUrl");
-    module(($provide) => {
-      $provide.value("$$sanitizeUri", $$sanitizeUri);
-
-      element = $compile('<a href="{{testUrl}}"></a>')($rootScope);
-      $rootScope.testUrl = "someUrl";
-      $rootScope.$apply();
-      expect(element.attr("href")).toBe("someSanitizedUrl");
-      expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);
-
-      $$sanitizeUri.calls.reset();
-
-      element = $compile('<a ng-href="{{testUrl}}"></a>')($rootScope);
-      $rootScope.$apply();
-      expect(element.attr("href")).toBe("someSanitizedUrl");
-      expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);
-    });
-  });
-
-  it("should use $$sanitizeUri when working with svg and xlink:href", () => {
-    const $$sanitizeUri = jasmine
-      .createSpy("$$sanitizeUri")
-      .and.returnValue("https://clean.example.org");
-    module(($provide) => {
-      $provide.value("$$sanitizeUri", $$sanitizeUri);
-
-      // This URL would fail the RESOURCE_URL trusted list, but that test shouldn't be run
-      // because these interpolations will be resolved against the URL context instead
-      $rootScope.testUrl = "https://bad.example.org";
-
-      const elementA = $compile(
-        "<svg><a xlink:href=\"{{ testUrl + 'aTag' }}\"></a></svg>",
-      )($rootScope);
-      $rootScope.$apply();
-      expect(elementA.find("a").attr("xlink:href")).toBe(
-        "https://clean.example.org",
-      );
-      expect($$sanitizeUri).toHaveBeenCalledWith(
-        `${$rootScope.testUrl}aTag`,
-        false,
-      );
-
-      const elementImage = $compile(
-        "<svg><image xlink:href=\"{{ testUrl + 'imageTag' }}\"></image></svg>",
-      )($rootScope);
-      $rootScope.$apply();
-      expect(elementImage.find("image").attr("xlink:href")).toBe(
-        "https://clean.example.org",
-      );
-      expect($$sanitizeUri).toHaveBeenCalledWith(
-        `${$rootScope.testUrl}imageTag`,
-        true,
-      );
-    });
-  });
-
-  it("should use $$sanitizeUri when working with svg and xlink:href through ng-href", () => {
-    const $$sanitizeUri = jasmine
-      .createSpy("$$sanitizeUri")
-      .and.returnValue("https://clean.example.org");
-    module(($provide) => {
-      $provide.value("$$sanitizeUri", $$sanitizeUri);
-
-      // This URL would fail the RESOURCE_URL trusted list, but that test shouldn't be run
-      // because these interpolations will be resolved against the URL context instead
-      $rootScope.testUrl = "https://bad.example.org";
-
-      element = $compile(
-        '<svg><a xlink:href="" ng-href="{{ testUrl }}"></a></svg>',
-      )($rootScope);
-      $rootScope.$apply();
-      expect(element.find("a").prop("href").baseVal).toBe(
-        "https://clean.example.org",
-      );
-      expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);
-    });
-  });
-
-  it("should require a RESOURCE_URL context for xlink:href by if not on an anchor or image", () => {
-    element = $compile(
-      '<svg><whatever xlink:href="{{ testUrl }}"></whatever></svg>',
-    )($rootScope);
-    $rootScope.testUrl = "https://bad.example.org";
-
-    expect(() => {
-      $rootScope.$apply();
-    }).toThrow(
-      "$interpolate",
-      "interr",
-      "Can't interpolate: {{ testUrl }}\n" +
-        "Error: [$sce:insecurl] Blocked loading resource from url not allowed by $sceDelegate policy.  " +
-        "URL: https://bad.example.org",
-    );
-  });
-
-  it("should not have endless digests when given arrays in concatenable context", () => {
-    element = $compile(
-      '<foo href="{{testUrl}}"></foo><foo href="{{::testUrl}}"></foo>' +
-        '<foo href="http://example.com/{{testUrl}}"></foo><foo href="http://example.com/{{::testUrl}}"></foo>',
-    )($rootScope);
-    $rootScope.testUrl = [1];
-    $rootScope.$digest();
-
-    $rootScope.testUrl = [];
-    $rootScope.$digest();
-
-    $rootScope.testUrl = { a: "b" };
-    $rootScope.$digest();
-
-    $rootScope.testUrl = {};
-    $rootScope.$digest();
-  });
-});
-
-describe("interpolation on HTML DOM event handler attributes onclick, onXYZ, formaction", () => {
-  it("should disallow interpolation on onclick", () => {
-    // All interpolations are disallowed.
-    $rootScope.onClickJs = "";
-    expect(() => {
-      $compile('<button onclick="{{onClickJs}}"></button>');
-    }).toThrow(
-      "$compile",
-      "nodomevents",
-      "Interpolations for HTML DOM event attributes are disallowed",
-    );
-    expect(() => {
-      $compile('<button ONCLICK="{{onClickJs}}"></button>');
-    }).toThrow(
-      "$compile",
-      "nodomevents",
-      "Interpolations for HTML DOM event attributes are disallowed",
-    );
-    expect(() => {
-      $compile('<button ng-attr-onclick="{{onClickJs}}"></button>');
-    }).toThrow(
-      "$compile",
-      "nodomevents",
-      "Interpolations for HTML DOM event attributes are disallowed",
-    );
-    expect(() => {
-      $compile('<button ng-attr-ONCLICK="{{onClickJs}}"></button>');
-    }).toThrow(
-      "$compile",
-      "nodomevents",
-      "Interpolations for HTML DOM event attributes are disallowed",
-    );
-  });
-
-  it("should pass through arbitrary values on onXYZ event attributes that contain a hyphen", () => {
-    element = $compile('<button on-click="{{onClickJs}}"></button>')(
-      $rootScope,
-    );
-    $rootScope.onClickJs = "javascript:doSomething()";
-    $rootScope.$apply();
-    expect(element.attr("on-click")).toEqual("javascript:doSomething()");
-  });
-
-  it('should pass through arbitrary values on "on" and "data-on" attributes', () => {
-    element = $compile('<button data-on="{{dataOnVar}}"></button>')($rootScope);
-    $rootScope.dataOnVar = "data-on text";
-    $rootScope.$apply();
-    expect(element.attr("data-on")).toEqual("data-on text");
-
-    element = $compile('<button on="{{onVar}}"></button>')($rootScope);
-    $rootScope.onVar = "on text";
-    $rootScope.$apply();
-    expect(element.attr("on")).toEqual("on text");
-  });
-});
-
-describe("iframe[src]", () => {
-  it("should pass through src attributes for the same domain", () => {
-    element = $compile('<iframe src="{{testUrl}}"></iframe>')($rootScope);
-    $rootScope.testUrl = "different_page";
-    $rootScope.$apply();
-    expect(element.attr("src")).toEqual("different_page");
-  });
-
-  it("should clear out src attributes for a different domain", () => {
-    element = $compile('<iframe src="{{testUrl}}"></iframe>')($rootScope);
-    $rootScope.testUrl = "http://a.different.domain.example.com";
-    expect(() => {
-      $rootScope.$apply();
-    }).toThrow(
-      "$interpolate",
-      "interr",
-      "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
-        "loading resource from url not allowed by $sceDelegate policy.  URL: " +
-        "http://a.different.domain.example.com",
-    );
-  });
-
-  it("should clear out JS src attributes", () => {
-    element = $compile('<iframe src="{{testUrl}}"></iframe>')($rootScope);
-    $rootScope.testUrl = "javascript:alert(1);";
-    expect(() => {
-      $rootScope.$apply();
-    }).toThrow(
-      "$interpolate",
-      "interr",
-      "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
-        "loading resource from url not allowed by $sceDelegate policy.  URL: " +
-        "javascript:alert(1);",
-    );
-  });
-
-  it("should clear out non-resource_url src attributes", () => {
-    element = $compile('<iframe src="{{testUrl}}"></iframe>')($rootScope);
-    $rootScope.testUrl = $sce.trustAsUrl("javascript:doTrustedStuff()");
-    expect($rootScope.$apply).toThrow(
-      "$interpolate",
-      "interr",
-      "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
-        "loading resource from url not allowed by $sceDelegate policy.  URL: javascript:doTrustedStuff()",
-    );
-  });
-
-  it("should pass through $sce.trustAs() values in src attributes", () => {
-    element = $compile('<iframe src="{{testUrl}}"></iframe>')($rootScope);
-    $rootScope.testUrl = $sce.trustAsResourceUrl("javascript:doTrustedStuff()");
-    $rootScope.$apply();
-
-    expect(element.attr("src")).toEqual("javascript:doTrustedStuff()");
-  });
-});
-
-describe("base[href]", () => {
-  it("should be a RESOURCE_URL context", () => {
-    element = $compile('<base href="{{testUrl}}"/>')($rootScope);
-
-    $rootScope.testUrl = $sce.trustAsResourceUrl("https://example.com/");
-    $rootScope.$apply();
-    expect(element.attr("href")).toContain("https://example.com/");
-
-    $rootScope.testUrl = "https://not.example.com/";
-    expect(() => {
-      $rootScope.$apply();
-    }).toThrow(
-      "$interpolate",
-      "interr",
-      "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
-        "loading resource from url not allowed by $sceDelegate policy.  URL: " +
-        "https://not.example.com/",
-    );
-  });
-});
-
-describe("form[action]", () => {
-  it("should pass through action attribute for the same domain", () => {
-    element = $compile('<form action="{{testUrl}}"></form>')($rootScope);
-    $rootScope.testUrl = "different_page";
-    $rootScope.$apply();
-    expect(element.attr("action")).toEqual("different_page");
-  });
-
-  it("should clear out action attribute for a different domain", () => {
-    element = $compile('<form action="{{testUrl}}"></form>')($rootScope);
-    $rootScope.testUrl = "http://a.different.domain.example.com";
-    expect(() => {
-      $rootScope.$apply();
-    }).toThrow(
-      "$interpolate",
-      "interr",
-      "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
-        "loading resource from url not allowed by $sceDelegate policy.  URL: " +
-        "http://a.different.domain.example.com",
-    );
-  });
-
-  it("should clear out JS action attribute", () => {
-    element = $compile('<form action="{{testUrl}}"></form>')($rootScope);
-    $rootScope.testUrl = "javascript:alert(1);";
-    expect(() => {
-      $rootScope.$apply();
-    }).toThrow(
-      "$interpolate",
-      "interr",
-      "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
-        "loading resource from url not allowed by $sceDelegate policy.  URL: " +
-        "javascript:alert(1);",
-    );
-  });
-
-  it("should clear out non-resource_url action attribute", () => {
-    element = $compile('<form action="{{testUrl}}"></form>')($rootScope);
-    $rootScope.testUrl = $sce.trustAsUrl("javascript:doTrustedStuff()");
-    expect($rootScope.$apply).toThrow(
-      "$interpolate",
-      "interr",
-      "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
-        "loading resource from url not allowed by $sceDelegate policy.  URL: javascript:doTrustedStuff()",
-    );
-  });
-
-  it("should pass through $sce.trustAsResourceUrl() values in action attribute", () => {
-    element = $compile('<form action="{{testUrl}}"></form>')($rootScope);
-    $rootScope.testUrl = $sce.trustAsResourceUrl("javascript:doTrustedStuff()");
-    $rootScope.$apply();
-
-    expect(element.attr("action")).toEqual("javascript:doTrustedStuff()");
-  });
-});
-
-describe("link[href]", () => {
-  it("should reject invalid RESOURCE_URLs", () => {
-    element = $compile('<link href="{{testUrl}}" rel="stylesheet" />')(
-      $rootScope,
-    );
-    $rootScope.testUrl = "https://evil.example.org/css.css";
-    expect(() => {
-      $rootScope.$apply();
-    }).toThrow(
-      "$interpolate",
-      "interr",
-      "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
-        "loading resource from url not allowed by $sceDelegate policy.  URL: " +
-        "https://evil.example.org/css.css",
-    );
-  });
-
-  it("should accept valid RESOURCE_URLs", () => {
-    element = $compile('<link href="{{testUrl}}" rel="stylesheet" />')(
-      $rootScope,
-    );
-
-    $rootScope.testUrl = "./css1.css";
-    $rootScope.$apply();
-    expect(element.attr("href")).toContain("css1.css");
-
-    $rootScope.testUrl = $sce.trustAsResourceUrl(
-      "https://elsewhere.example.org/css2.css",
-    );
-    $rootScope.$apply();
-    expect(element.attr("href")).toContain(
-      "https://elsewhere.example.org/css2.css",
-    );
-  });
-
-  it("should accept valid constants", () => {
-    element = $compile(
-      '<link href="https://elsewhere.example.org/css2.css" rel="stylesheet" />',
-    )($rootScope);
-
-    $rootScope.$apply();
-    expect(element.attr("href")).toContain(
-      "https://elsewhere.example.org/css2.css",
-    );
-  });
-});
-
-describe("ngAttr* attribute binding", () => {
-  it("should bind after digest but not before", () => {
-    $rootScope.name = "Misko";
-    element = $compile('<span ng-attr-test="{{name}}"></span>')($rootScope);
-    expect(element.attr("test")).toBeUndefined();
-    $rootScope.$digest();
-    expect(element.attr("test")).toBe("Misko");
-  });
-
-  it("should bind after digest but not before when after overridden attribute", () => {
-    $rootScope.name = "Misko";
-    element = $compile('<span test="123" ng-attr-test="{{name}}"></span>')(
-      $rootScope,
-    );
-    expect(element.attr("test")).toBe("123");
-    $rootScope.$digest();
-    expect(element.attr("test")).toBe("Misko");
-  });
-
-  it("should bind after digest but not before when before overridden attribute", () => {
-    $rootScope.name = "Misko";
-    element = $compile('<span ng-attr-test="{{name}}" test="123"></span>')(
-      $rootScope,
-    );
-    expect(element.attr("test")).toBe("123");
-    $rootScope.$digest();
-    expect(element.attr("test")).toBe("Misko");
-  });
-
-  it("should set the attribute (after digest) even if there is no interpolation", () => {
-    element = $compile('<span ng-attr-test="foo"></span>')($rootScope);
-    expect(element.attr("test")).toBeUndefined();
-
-    $rootScope.$digest();
-    expect(element.attr("test")).toBe("foo");
-  });
-
-  it("should remove attribute if any bindings are undefined", () => {
-    element = $compile('<span ng-attr-test="{{name}}{{emphasis}}"></span>')(
-      $rootScope,
-    );
-    $rootScope.$digest();
-    expect(element.attr("test")).toBeUndefined();
-    $rootScope.name = "caitp";
-    $rootScope.$digest();
-    expect(element.attr("test")).toBeUndefined();
-    $rootScope.emphasis = "!!!";
-    $rootScope.$digest();
-    expect(element.attr("test")).toBe("caitp!!!");
-  });
-
-  describe("in directive", () => {
-    let log;
-
-    beforeEach(() => {
-      module.directive("syncTest", () =>
-        ({
-          link: {
-            pre(s, e, attr) {
-              log.push(attr.test);
-            },
-            post(s, e, attr) {
-              log.push(attr.test);
-            },
-          },
-        }).directive("asyncTest", () => ({
-          templateUrl: "async.html",
-          link: {
-            pre(s, e, attr) {
-              log.push(attr.test);
-            },
-            post(s, e, attr) {
-              log.push(attr.test);
-            },
-          },
-        })),
-      );
-    });
-
-    beforeEach(() => {
-      log = _log_;
-      $templateCache.put("async.html", "<h1>Test</h1>");
-    });
-
-    it("should provide post-digest value in synchronous directive link functions when after overridden attribute", () => {
-      $rootScope.test = "TEST";
-      element = $compile(
-        '<div sync-test test="123" ng-attr-test="{{test}}"></div>',
-      )($rootScope);
-      expect(element.attr("test")).toBe("123");
-      expect(log.toArray()).toEqual(["TEST", "TEST"]);
-    });
-
-    it("should provide post-digest value in synchronous directive link functions when before overridden attribute", () => {
-      $rootScope.test = "TEST";
-      element = $compile(
-        '<div sync-test ng-attr-test="{{test}}" test="123"></div>',
-      )($rootScope);
-      expect(element.attr("test")).toBe("123");
-      expect(log.toArray()).toEqual(["TEST", "TEST"]);
-    });
-
-    it("should provide post-digest value in asynchronous directive link functions when after overridden attribute", () => {
-      $rootScope.test = "TEST";
-      element = $compile(
-        '<div async-test test="123" ng-attr-test="{{test}}"></div>',
-      )($rootScope);
-      expect(element.attr("test")).toBe("123");
-      $rootScope.$digest();
-      expect(log.toArray()).toEqual(["TEST", "TEST"]);
-    });
-
-    it("should provide post-digest value in asynchronous directive link functions when before overridden attribute", () => {
-      $rootScope.test = "TEST";
-      element = $compile(
-        '<div async-test ng-attr-test="{{test}}" test="123"></div>',
-      )($rootScope);
-      expect(element.attr("test")).toBe("123");
-      $rootScope.$digest();
-      expect(log.toArray()).toEqual(["TEST", "TEST"]);
-    });
-  });
-
-  it("should work with different prefixes", () => {
-    $rootScope.name = "Misko";
-    element = $compile(
-      '<span ng:attr:test="{{name}}" ng-Attr-test2="{{name}}" ng_Attr_test3="{{name}}"></span>',
-    )($rootScope);
-    expect(element.attr("test")).toBeUndefined();
-    expect(element.attr("test2")).toBeUndefined();
-    expect(element.attr("test3")).toBeUndefined();
-    $rootScope.$digest();
-    expect(element.attr("test")).toBe("Misko");
-    expect(element.attr("test2")).toBe("Misko");
-    expect(element.attr("test3")).toBe("Misko");
-  });
-
-  it("should use the non-prefixed name in $attr mappings", () => {
-    let attrs;
-    module.directive(
-      "attrExposer",
-      valueFn({
-        link($scope, $element, $attrs) {
-          attrs = $attrs;
+        transclude: {
+          bossSlot: "boss",
         },
-      }),
-    );
-
-    $compile(
-      '<div attr-exposer ng-attr-title="12" ng-attr-super-title="34" ng-attr-my-camel_title="56">',
-    )($rootScope);
-    $rootScope.$apply();
-
-    expect(attrs.title).toBe("12");
-    expect(attrs.$attr.title).toBe("title");
-    expect(attrs.ngAttrTitle).toBeUndefined();
-    expect(attrs.$attr.ngAttrTitle).toBeUndefined();
-
-    expect(attrs.superTitle).toBe("34");
-    expect(attrs.$attr.superTitle).toBe("super-title");
-    expect(attrs.ngAttrSuperTitle).toBeUndefined();
-    expect(attrs.$attr.ngAttrSuperTitle).toBeUndefined();
-
-    // Note the casing is incorrect: https://github.com/angular/angular.js/issues/16624
-    expect(attrs.myCameltitle).toBe("56");
-    expect(attrs.$attr.myCameltitle).toBe("my-camelTitle");
-    expect(attrs.ngAttrMyCameltitle).toBeUndefined();
-    expect(attrs.ngAttrMyCamelTitle).toBeUndefined();
-    expect(attrs.$attr.ngAttrMyCameltitle).toBeUndefined();
-    expect(attrs.$attr.ngAttrMyCamelTitle).toBeUndefined();
-  });
-
-  it('should work with the "href" attribute', () => {
-    $rootScope.value = "test";
-    element = $compile('<a ng-attr-href="test/{{value}}"></a>')($rootScope);
-    $rootScope.$digest();
-    expect(element.attr("href")).toBe("test/test");
-  });
-
-  it("should work if they are prefixed with x- or data- and different prefixes", () => {
-    $rootScope.name = "Misko";
-    element = $compile(
-      '<span data-ng-attr-test2="{{name}}" x-ng-attr-test3="{{name}}" data-ng:attr-test4="{{name}}" ' +
-        'x_ng-attr-test5="{{name}}" data:ng-attr-test6="{{name}}"></span>',
-    )($rootScope);
-    expect(element.attr("test2")).toBeUndefined();
-    expect(element.attr("test3")).toBeUndefined();
-    expect(element.attr("test4")).toBeUndefined();
-    expect(element.attr("test5")).toBeUndefined();
-    expect(element.attr("test6")).toBeUndefined();
-    $rootScope.$digest();
-    expect(element.attr("test2")).toBe("Misko");
-    expect(element.attr("test3")).toBe("Misko");
-    expect(element.attr("test4")).toBe("Misko");
-    expect(element.attr("test5")).toBe("Misko");
-    expect(element.attr("test6")).toBe("Misko");
-  });
-
-  describe("with media url attributes", () => {
-    it("should work with interpolated ng-attr-src", () => {
-      $rootScope.name = "some-image.png";
-      element = $compile('<img ng-attr-src="{{name}}">')($rootScope);
-      expect(element.attr("src")).toBeUndefined();
-
-      $rootScope.$digest();
-      expect(element.attr("src")).toBe("some-image.png");
-
-      $rootScope.name = "other-image.png";
-      $rootScope.$digest();
-      expect(element.attr("src")).toBe("other-image.png");
-    });
-
-    it("should work with interpolated ng-attr-data-src", () => {
-      $rootScope.name = "some-image.png";
-      element = $compile('<img ng-attr-data-src="{{name}}">')($rootScope);
-      expect(element.attr("data-src")).toBeUndefined();
-
-      $rootScope.$digest();
-      expect(element.attr("data-src")).toBe("some-image.png");
-
-      $rootScope.name = "other-image.png";
-      $rootScope.$digest();
-      expect(element.attr("data-src")).toBe("other-image.png");
-    });
-
-    it("should work alongside constant [src]-attribute and [ng-attr-data-src] attributes", () => {
-      $rootScope.name = "some-image.png";
-      element = $compile(
-        '<img src="constant.png" ng-attr-data-src="{{name}}">',
-      )($rootScope);
-      expect(element.attr("data-src")).toBeUndefined();
-
-      $rootScope.$digest();
-      expect(element.attr("src")).toBe("constant.png");
-      expect(element.attr("data-src")).toBe("some-image.png");
-
-      $rootScope.name = "other-image.png";
-      $rootScope.$digest();
-      expect(element.attr("src")).toBe("constant.png");
-      expect(element.attr("data-src")).toBe("other-image.png");
-    });
-  });
-
-  describe("when an attribute has a dash-separated name", () => {
-    it("should work with different prefixes", () => {
-      $rootScope.name = "JamieMason";
-      element = $compile(
-        '<span ng:attr:dash-test="{{name}}" ng-Attr-dash-test2="{{name}}" ng_Attr_dash-test3="{{name}}"></span>',
-      )($rootScope);
-      expect(element.attr("dash-test")).toBeUndefined();
-      expect(element.attr("dash-test2")).toBeUndefined();
-      expect(element.attr("dash-test3")).toBeUndefined();
-      $rootScope.$digest();
-      expect(element.attr("dash-test")).toBe("JamieMason");
-      expect(element.attr("dash-test2")).toBe("JamieMason");
-      expect(element.attr("dash-test3")).toBe("JamieMason");
-    });
-
-    it("should work if they are prefixed with x- or data-", () => {
-      $rootScope.name = "JamieMason";
-      element = $compile(
-        '<span data-ng-attr-dash-test2="{{name}}" x-ng-attr-dash-test3="{{name}}" data-ng:attr-dash-test4="{{name}}"></span>',
-      )($rootScope);
-      expect(element.attr("dash-test2")).toBeUndefined();
-      expect(element.attr("dash-test3")).toBeUndefined();
-      expect(element.attr("dash-test4")).toBeUndefined();
-      $rootScope.$digest();
-      expect(element.attr("dash-test2")).toBe("JamieMason");
-      expect(element.attr("dash-test3")).toBe("JamieMason");
-      expect(element.attr("dash-test4")).toBe("JamieMason");
-    });
-
-    it("should keep attributes ending with -start single-element directives", () => {
-      module.directive("dashStarter", () => ({
-        link(scope, element, attrs) {
-          log.push(attrs.onDashStart);
-        },
+        template: '<div class="other" ng-transclude></div>',
       }));
 
-      $compile('<span data-dash-starter data-on-dash-start="starter"></span>')(
-        $rootScope,
-      );
-      $rootScope.$digest();
-      expect(log[0]).toEqual("starter");
+      element = $compile(
+        "<minion-component>" +
+          "<span>stuart</span>" +
+          "<span>bob</span>" +
+          "<boss>gru</boss>" +
+          "<span>kevin</span>" +
+          "</minion-component>",
+      )($rootScope);
+      $rootScope.$apply();
+      expect(element.text()).toEqual("stuartbobkevin");
     });
 
-    it("should keep attributes ending with -end single-element directives", () => {
-      module.directive("dashEnder", () => ({
-        link(scope, element, attrs) {
-          log.push(attrs.onDashEnd);
-        },
+    it("should use the default transclusion slot if the ng-transclude attribute has the same value as its key", () => {
+      module.directive("minionComponent", () => ({
+        restrict: "E",
+        scope: {},
+        transclude: {},
+        template:
+          '<div class="a" ng-transclude="ng-transclude"></div>' +
+          '<div class="b" ng:transclude="ng:transclude"></div>' +
+          '<div class="c" data-ng-transclude="data-ng-transclude"></div>',
       }));
 
-      $compile('<span data-dash-ender data-on-dash-end="ender"></span>')(
-        $rootScope,
-      );
-      $rootScope.$digest();
-      expect(log[0]).toEqual("ender");
+      element = $compile(
+        "<minion-component>" +
+          "<span>stuart</span>" +
+          "<span>bob</span>" +
+          "<span>kevin</span>" +
+          "</minion-component>",
+      )($rootScope);
+      $rootScope.$apply();
+      const a = element.children().eq(0);
+      const b = element.children().eq(1);
+      const c = element.children().eq(2);
+      expect(a).hasClass("a");
+      expect(b).hasClass("b");
+      expect(c).hasClass("c");
+      expect(a.text()).toEqual("stuartbobkevin");
+      expect(b.text()).toEqual("stuartbobkevin");
+      expect(c.text()).toEqual("stuartbobkevin");
     });
-  });
-});
 
-describe("addPropertySecurityContext", () => {
-  function testProvider(provider) {
-    module(provider);
-    inject(($compile) => {
-      /* done! */
+    it("should include non-element nodes in the default transclusion", () => {
+      module.directive("minionComponent", () => ({
+        restrict: "E",
+        scope: {},
+        transclude: {
+          bossSlot: "boss",
+        },
+        template: '<div class="other" ng-transclude></div>',
+      }));
+
+      element = $compile(
+        "<minion-component>" +
+          "text1" +
+          "<span>stuart</span>" +
+          "<span>bob</span>" +
+          "<boss>gru</boss>" +
+          "text2" +
+          "<span>kevin</span>" +
+          "</minion-component>",
+      )($rootScope);
+      $rootScope.$apply();
+      expect(element.text()).toEqual("text1stuartbobtext2kevin");
     });
-  }
 
-  it("should allow adding new properties", () => {
-    testProvider(($compileProvider) => {
-      $compileProvider.addPropertySecurityContext("div", "title", "mediaUrl");
-      $compileProvider.addPropertySecurityContext(
-        "*",
-        "my-prop",
-        "resourceUrl",
-      );
+    it("should transclude elements to an `ng-transclude` with a matching transclusion slot name", () => {
+      module.directive("minionComponent", () => ({
+        restrict: "E",
+        scope: {},
+        transclude: {
+          minionSlot: "minion",
+          bossSlot: "boss",
+        },
+        template:
+          '<div class="boss" ng-transclude="bossSlot"></div>' +
+          '<div class="minion" ng-transclude="minionSlot"></div>' +
+          '<div class="other" ng-transclude></div>',
+      }));
+
+      element = $compile(
+        "<minion-component>" +
+          "<minion>stuart</minion>" +
+          "<span>dorothy</span>" +
+          "<boss>gru</boss>" +
+          "<minion>kevin</minion>" +
+          "</minion-component>",
+      )($rootScope);
+      $rootScope.$apply();
+      expect(element.children().eq(0).text()).toEqual("gru");
+      expect(element.children().eq(1).text()).toEqual("stuartkevin");
+      expect(element.children().eq(2).text()).toEqual("dorothy");
     });
-  });
 
-  it("should allow different sce types of a property on different element types", () => {
-    testProvider(($compileProvider) => {
-      $compileProvider.addPropertySecurityContext("div", "title", "mediaUrl");
-      $compileProvider.addPropertySecurityContext("span", "title", "css");
-      $compileProvider.addPropertySecurityContext("*", "title", "resourceUrl");
-      $compileProvider.addPropertySecurityContext("article", "title", "html");
+    it("should use the `ng-transclude-slot` attribute if ng-transclude is used as an element", () => {
+      module.directive("minionComponent", () => ({
+        restrict: "E",
+        scope: {},
+        transclude: {
+          minionSlot: "minion",
+          bossSlot: "boss",
+        },
+        template:
+          '<ng-transclude class="boss" ng-transclude-slot="bossSlot"></ng-transclude>' +
+          '<ng-transclude class="minion" ng-transclude-slot="minionSlot"></ng-transclude>' +
+          '<ng-transclude class="other"></ng-transclude>',
+      }));
+
+      element = $compile(
+        "<minion-component>" +
+          "<minion>stuart</minion>" +
+          "<span>dorothy</span>" +
+          "<boss>gru</boss>" +
+          "<minion>kevin</minion>" +
+          "</minion-component>",
+      )($rootScope);
+      $rootScope.$apply();
+      expect(element.children().eq(0).text()).toEqual("gru");
+      expect(element.children().eq(1).text()).toEqual("stuartkevin");
+      expect(element.children().eq(2).text()).toEqual("dorothy");
     });
-  });
 
-  it("should throw 'ctxoverride' when changing an existing context", () => {
-    testProvider(($compileProvider) => {
-      $compileProvider.addPropertySecurityContext("div", "title", "mediaUrl");
+    it("should error if a required transclude slot is not filled", () => {
+      module.directive("minionComponent", () => ({
+        restrict: "E",
+        scope: {},
+        transclude: {
+          minionSlot: "minion",
+          bossSlot: "boss",
+        },
+        template:
+          '<div class="boss" ng-transclude="bossSlot"></div>' +
+          '<div class="minion" ng-transclude="minionSlot"></div>' +
+          '<div class="other" ng-transclude></div>',
+      }));
 
       expect(() => {
+        element = $compile(
+          "<minion-component>" +
+            "<minion>stuart</minion>" +
+            "<span>dorothy</span>" +
+            "</minion-component>",
+        )($rootScope);
+      }).toThrowError(/reqslot/);
+    });
+
+    it("should not error if an optional transclude slot is not filled", () => {
+      module.directive("minionComponent", () => ({
+        restrict: "E",
+        scope: {},
+        transclude: {
+          minionSlot: "minion",
+          bossSlot: "?boss",
+        },
+        template:
+          '<div class="boss" ng-transclude="bossSlot"></div>' +
+          '<div class="minion" ng-transclude="minionSlot"></div>' +
+          '<div class="other" ng-transclude></div>',
+      }));
+
+      element = $compile(
+        "<minion-component>" +
+          "<minion>stuart</minion>" +
+          "<span>dorothy</span>" +
+          "</minion-component>",
+      )($rootScope);
+      $rootScope.$apply();
+      expect(element.children().eq(1).text()).toEqual("stuart");
+      expect(element.children().eq(2).text()).toEqual("dorothy");
+    });
+
+    it("should error if we try to transclude a slot that was not declared by the directive", () => {
+      module.directive("minionComponent", () => ({
+        restrict: "E",
+        scope: {},
+        transclude: {
+          minionSlot: "minion",
+        },
+        template:
+          '<div class="boss" ng-transclude="bossSlot"></div>' +
+          '<div class="minion" ng-transclude="minionSlot"></div>' +
+          '<div class="other" ng-transclude></div>',
+      }));
+
+      expect(() => {
+        element = $compile(
+          "<minion-component>" +
+            "<minion>stuart</minion>" +
+            "<span>dorothy</span>" +
+            "</minion-component>",
+        )($rootScope);
+      }).toThrowError(/noslot/);
+    });
+
+    it("should allow the slot name to equal the element name", () => {
+      module.directive("foo", () => ({
+        restrict: "E",
+        scope: {},
+        transclude: {
+          bar: "bar",
+        },
+        template: '<div class="other" ng-transclude="bar"></div>',
+      }));
+
+      element = $compile("<foo><bar>baz</bar></foo>")($rootScope);
+      $rootScope.$apply();
+      expect(element.text()).toEqual("baz");
+    });
+
+    it("should match the normalized form of the element name", () => {
+      module.directive("foo", () => ({
+        restrict: "E",
+        scope: {},
+        transclude: {
+          fooBarSlot: "fooBar",
+          mooKarSlot: "mooKar",
+        },
+        template:
+          '<div class="a" ng-transclude="fooBarSlot"></div>' +
+          '<div class="b" ng-transclude="mooKarSlot"></div>',
+      }));
+
+      element = $compile(
+        "<foo>" +
+          "<foo-bar>bar1</foo-bar>" +
+          "<foo:bar>bar2</foo:bar>" +
+          "<moo-kar>baz1</moo-kar>" +
+          "<data-moo-kar>baz2</data-moo-kar>" +
+          "</foo>",
+      )($rootScope);
+      $rootScope.$apply();
+      expect(element.children().eq(0).text()).toEqual("bar1bar2");
+      expect(element.children().eq(1).text()).toEqual("baz1baz2");
+    });
+
+    it("should return true from `isSlotFilled(slotName) for slots that have content in the transclusion", () => {
+      let capturedTranscludeFn;
+      module.directive("minionComponent", () => ({
+        restrict: "E",
+        scope: {},
+        transclude: {
+          minionSlot: "minion",
+          bossSlot: "?boss",
+        },
+        template:
+          '<div class="boss" ng-transclude="bossSlot"></div>' +
+          '<div class="minion" ng-transclude="minionSlot"></div>' +
+          '<div class="other" ng-transclude></div>',
+        link(s, e, a, c, transcludeFn) {
+          capturedTranscludeFn = transcludeFn;
+        },
+      }));
+
+      element = $compile(
+        "<minion-component>" +
+          "  <minion>stuart</minion>" +
+          "  <minion>bob</minion>" +
+          "  <span>dorothy</span>" +
+          "</minion-component>",
+      )($rootScope);
+      $rootScope.$apply();
+
+      const hasMinions = capturedTranscludeFn.isSlotFilled("minionSlot");
+      const hasBosses = capturedTranscludeFn.isSlotFilled("bossSlot");
+
+      expect(hasMinions).toBe(true);
+      expect(hasBosses).toBe(false);
+    });
+
+    it("should not overwrite the contents of an `ng-transclude` element, if the matching optional slot is not filled", () => {
+      module.directive("minionComponent", () => ({
+        restrict: "E",
+        scope: {},
+        transclude: {
+          minionSlot: "minion",
+          bossSlot: "?boss",
+        },
+        template:
+          '<div class="boss" ng-transclude="bossSlot">default boss content</div>' +
+          '<div class="minion" ng-transclude="minionSlot">default minion content</div>' +
+          '<div class="other" ng-transclude>default content</div>',
+      }));
+
+      element = $compile(
+        "<minion-component>" +
+          "<minion>stuart</minion>" +
+          "<span>dorothy</span>" +
+          "<minion>kevin</minion>" +
+          "</minion-component>",
+      )($rootScope);
+      $rootScope.$apply();
+      expect(element.children().eq(0).text()).toEqual("default boss content");
+      expect(element.children().eq(1).text()).toEqual("stuartkevin");
+      expect(element.children().eq(2).text()).toEqual("dorothy");
+    });
+
+    // See issue https://github.com/angular/angular.js/issues/14924
+    it("should not process top-level transcluded text nodes merged into their sibling", () => {
+      module.directive(
+        "transclude",
+        valueFn({
+          template: "<ng-transclude></ng-transclude>",
+          transclude: {},
+          scope: {},
+        }),
+      );
+
+      element = jqLite("<div transclude></div>");
+      element[0].appendChild(document.createTextNode("1{{ value }}"));
+      element[0].appendChild(document.createTextNode("2{{ value }}"));
+      element[0].appendChild(document.createTextNode("3{{ value }}"));
+
+      const initialWatcherCount = $rootScope.$countWatchers();
+      $compile(element)($rootScope);
+      $rootScope.$apply("value = 0");
+      const newWatcherCount = $rootScope.$countWatchers() - initialWatcherCount;
+
+      expect(element.text()).toBe("102030");
+      expect(newWatcherCount).toBe(3);
+    });
+  });
+
+  ["img", "audio", "video"].forEach((tag) => {
+    describe(`${tag}[src] context requirement`, () => {
+      it("should NOT require trusted values for trusted URIs", () => {
+        element = $compile(`<${tag} src="{{testUrl}}"></${tag}>`)($rootScope);
+        $rootScope.testUrl = "http://example.com/image.mp4"; // `http` is trusted
+        $rootScope.$digest();
+        expect(element.attr("src")).toEqual("http://example.com/image.mp4");
+      });
+
+      it("should accept trusted values", () => {
+        // As a MEDIA_URL URL
+        element = $compile(`<${tag} src="{{testUrl}}"></${tag}>`)($rootScope);
+        // Some browsers complain if you try to write `javascript:` into an `img[src]`
+        // So for the test use something different
+        $rootScope.testUrl = $sce.trustAsMediaUrl("untrusted:foo()");
+        $rootScope.$digest();
+        expect(element.attr("src")).toEqual("untrusted:foo()");
+
+        // As a URL
+        element = $compile(`<${tag} src="{{testUrl}}"></${tag}>`)($rootScope);
+        $rootScope.testUrl = $sce.trustAsUrl("untrusted:foo()");
+        $rootScope.$digest();
+        expect(element.attr("src")).toEqual("untrusted:foo()");
+
+        // As a RESOURCE URL
+        element = $compile(`<${tag} src="{{testUrl}}"></${tag}>`)($rootScope);
+        $rootScope.testUrl = $sce.trustAsResourceUrl("untrusted:foo()");
+        $rootScope.$digest();
+        expect(element.attr("src")).toEqual("untrusted:foo()");
+      });
+    });
+  });
+
+  ["source", "track"].forEach((tag) => {
+    describe(`${tag}[src]`, () => {
+      it("should NOT require trusted values for trusted URIs", () => {
+        element = $compile(
+          `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
+        )($rootScope);
+        $rootScope.testUrl = "http://example.com/image.mp4"; // `http` is trusted
+        $rootScope.$digest();
+        expect(element.find(tag).attr("src")).toEqual(
+          "http://example.com/image.mp4",
+        );
+      });
+
+      it("should accept trusted values", () => {
+        // As a MEDIA_URL URL
+        element = $compile(
+          `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
+        )($rootScope);
+        $rootScope.testUrl = $sce.trustAsMediaUrl("javascript:foo()");
+        $rootScope.$digest();
+        expect(element.find(tag).attr("src")).toEqual("javascript:foo()");
+
+        // As a URL
+        element = $compile(
+          `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
+        )($rootScope);
+        $rootScope.testUrl = $sce.trustAsUrl("javascript:foo()");
+        $rootScope.$digest();
+        expect(element.find(tag).attr("src")).toEqual("javascript:foo()");
+
+        // As a RESOURCE URL
+        element = $compile(
+          `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
+        )($rootScope);
+        $rootScope.testUrl = $sce.trustAsResourceUrl("javascript:foo()");
+        $rootScope.$digest();
+        expect(element.find(tag).attr("src")).toEqual("javascript:foo()");
+      });
+    });
+  });
+
+  describe("img[src] sanitization", () => {
+    it("should accept trusted values", () => {
+      element = $compile('<img src="{{testUrl}}"></img>')($rootScope);
+      // Some browsers complain if you try to write `javascript:` into an `img[src]`
+      // So for the test use something different
+      $rootScope.testUrl = $sce.trustAsMediaUrl("someUntrustedThing:foo();");
+      $rootScope.$digest();
+      expect(element.attr("src")).toEqual("someUntrustedThing:foo();");
+    });
+
+    it("should sanitize concatenated values even if they are trusted", () => {
+      element = $compile('<img src="{{testUrl}}ponies"></img>')($rootScope);
+      $rootScope.testUrl = $sce.trustAsUrl("untrusted:foo();");
+      $rootScope.$digest();
+      expect(element.attr("src")).toEqual("unsafe:untrusted:foo();ponies");
+
+      element = $compile('<img src="http://{{testUrl2}}"></img>')($rootScope);
+      $rootScope.testUrl2 = $sce.trustAsUrl("xyz;");
+      $rootScope.$digest();
+      expect(element.attr("src")).toEqual("http://xyz;");
+
+      element = $compile('<img src="{{testUrl3}}{{testUrl3}}"></img>')(
+        $rootScope,
+      );
+      $rootScope.testUrl3 = $sce.trustAsUrl("untrusted:foo();");
+      $rootScope.$digest();
+      expect(element.attr("src")).toEqual(
+        "unsafe:untrusted:foo();untrusted:foo();",
+      );
+    });
+
+    it("should not sanitize attributes other than src", () => {
+      element = $compile('<img title="{{testUrl}}"></img>')($rootScope);
+      $rootScope.testUrl = "javascript:doEvilStuff()";
+      $rootScope.$apply();
+      expect(element.attr("title")).toBe("javascript:doEvilStuff()");
+    });
+
+    it("should use $$sanitizeUri", () => {
+      const $$sanitizeUri = jasmine.createSpy("$$sanitizeUri");
+      module.value("$$sanitizeUri", $$sanitizeUri);
+
+      element = $compile('<img src="{{testUrl}}"></img>')($rootScope);
+      $rootScope.testUrl = "someUrl";
+
+      $$sanitizeUri.and.returnValue("someSanitizedUrl");
+      $rootScope.$apply();
+      expect(element.attr("src")).toBe("someSanitizedUrl");
+      expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, true);
+    });
+
+    it("should use $$sanitizeUri on concatenated trusted values", () => {
+      const $$sanitizeUri = jasmine
+        .createSpy("$$sanitizeUri")
+        .and.returnValue("someSanitizedUrl");
+      module(($provide) => {
+        $provide.value("$$sanitizeUri", $$sanitizeUri);
+      });
+
+      element = $compile('<img src="{{testUrl}}ponies"></img>')($rootScope);
+      $rootScope.testUrl = $sce.trustAsUrl("javascript:foo();");
+      $rootScope.$digest();
+      expect(element.attr("src")).toEqual("someSanitizedUrl");
+
+      element = $compile('<img src="http://{{testUrl}}"></img>')($rootScope);
+      $rootScope.testUrl = $sce.trustAsUrl("xyz");
+      $rootScope.$digest();
+      expect(element.attr("src")).toEqual("someSanitizedUrl");
+    });
+
+    it("should not use $$sanitizeUri with trusted values", () => {
+      const $$sanitizeUri = jasmine
+        .createSpy("$$sanitizeUri")
+        .and.throwError("Should not have been called");
+      module.value("$$sanitizeUri", $$sanitizeUri);
+
+      element = $compile('<img src="{{testUrl}}"></img>')($rootScope);
+      // Assigning javascript:foo to src makes at least IE9-11 complain, so use another
+      // protocol name.
+      $rootScope.testUrl = $sce.trustAsMediaUrl("untrusted:foo();");
+      $rootScope.$apply();
+      expect(element.attr("src")).toEqual("untrusted:foo();");
+    });
+  });
+
+  describe("img[srcset] sanitization", () => {
+    it("should not error if srcset is undefined", () => {
+      let linked = false;
+      module.directive(
+        "setter",
+        valueFn((scope, elem, attrs) => {
+          // Set srcset to a value
+          attrs.$set("srcset", "http://example.com/");
+          expect(attrs.srcset).toBe("http://example.com/");
+          // Now set it to undefined
+          attrs.$set("srcset", undefined);
+          expect(attrs.srcset).toBeUndefined();
+          linked = true;
+        }),
+      );
+
+      element = $compile("<img setter></img>")($rootScope);
+      expect(linked).toBe(true);
+      expect(element.attr("srcset")).toBeUndefined();
+    });
+
+    it("should NOT require trusted values for trusted URI values", () => {
+      element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
+      $rootScope.testUrl = "http://example.com/image.png"; // `http` is trusted
+      $rootScope.$digest();
+      expect(element.attr("srcset")).toEqual("http://example.com/image.png");
+    });
+
+    it("should accept trusted values, if they are also trusted URIs", () => {
+      element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
+      $rootScope.testUrl = $sce.trustAsUrl("http://example.com");
+      $rootScope.$digest();
+      expect(element.attr("srcset")).toEqual("http://example.com");
+    });
+
+    it("should NOT work with trusted values", () => {
+      // A limitation of the approach used for srcset is that you cannot use `trustAsUrl`.
+      // Use trustAsHtml and ng-bind-html to work around this.
+      element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
+      $rootScope.testUrl = $sce.trustAsUrl("javascript:something");
+      $rootScope.$digest();
+      expect(element.attr("srcset")).toEqual("unsafe:javascript:something");
+
+      element = $compile('<img srcset="{{testUrl}},{{testUrl}}"></img>')(
+        $rootScope,
+      );
+      $rootScope.testUrl = $sce.trustAsUrl("javascript:something");
+      $rootScope.$digest();
+      expect(element.attr("srcset")).toEqual(
+        "unsafe:javascript:something ,unsafe:javascript:something",
+      );
+    });
+
+    it("should use $$sanitizeUri", () => {
+      const $$sanitizeUri = jasmine
+        .createSpy("$$sanitizeUri")
+        .and.returnValue("someSanitizedUrl");
+      module(($provide) => {
+        $provide.value("$$sanitizeUri", $$sanitizeUri);
+
+        element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
+        $rootScope.testUrl = "someUrl";
+        $rootScope.$apply();
+        expect(element.attr("srcset")).toBe("someSanitizedUrl");
+        expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, true);
+
+        element = $compile('<img srcset="{{testUrl}}, {{testUrl}}"></img>')(
+          $rootScope,
+        );
+        $rootScope.testUrl = "javascript:yay";
+        $rootScope.$apply();
+        expect(element.attr("srcset")).toEqual(
+          "someSanitizedUrl ,someSanitizedUrl",
+        );
+
+        element = $compile('<img srcset="java{{testUrl}}"></img>')($rootScope);
+        $rootScope.testUrl = "script:yay, javascript:nay";
+        $rootScope.$apply();
+        expect(element.attr("srcset")).toEqual(
+          "someSanitizedUrl ,someSanitizedUrl",
+        );
+      });
+    });
+
+    it("should sanitize all uris in srcset", () => {
+      element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
+      const testSet = {
+        "http://example.com/image.png": "http://example.com/image.png",
+        " http://example.com/image.png": "http://example.com/image.png",
+        "http://example.com/image.png ": "http://example.com/image.png",
+        "http://example.com/image.png 128w":
+          "http://example.com/image.png 128w",
+        "http://example.com/image.png 2x": "http://example.com/image.png 2x",
+        "http://example.com/image.png 1.5x":
+          "http://example.com/image.png 1.5x",
+        "http://example.com/image1.png 1x,http://example.com/image2.png 2x":
+          "http://example.com/image1.png 1x,http://example.com/image2.png 2x",
+        "http://example.com/image1.png 1x ,http://example.com/image2.png 2x":
+          "http://example.com/image1.png 1x ,http://example.com/image2.png 2x",
+        "http://example.com/image1.png 1x, http://example.com/image2.png 2x":
+          "http://example.com/image1.png 1x,http://example.com/image2.png 2x",
+        "http://example.com/image1.png 1x , http://example.com/image2.png 2x":
+          "http://example.com/image1.png 1x ,http://example.com/image2.png 2x",
+        "http://example.com/image1.png 48w,http://example.com/image2.png 64w":
+          "http://example.com/image1.png 48w,http://example.com/image2.png 64w",
+        // Test regex to make sure doesn't mistake parts of url for width descriptors
+        "http://example.com/image1.png?w=48w,http://example.com/image2.png 64w":
+          "http://example.com/image1.png?w=48w,http://example.com/image2.png 64w",
+        "http://example.com/image1.png 1x,http://example.com/image2.png 64w":
+          "http://example.com/image1.png 1x,http://example.com/image2.png 64w",
+        "http://example.com/image1.png,http://example.com/image2.png":
+          "http://example.com/image1.png ,http://example.com/image2.png",
+        "http://example.com/image1.png ,http://example.com/image2.png":
+          "http://example.com/image1.png ,http://example.com/image2.png",
+        "http://example.com/image1.png, http://example.com/image2.png":
+          "http://example.com/image1.png ,http://example.com/image2.png",
+        "http://example.com/image1.png , http://example.com/image2.png":
+          "http://example.com/image1.png ,http://example.com/image2.png",
+        "http://example.com/image1.png 1x, http://example.com/image2.png 2x, http://example.com/image3.png 3x":
+          "http://example.com/image1.png 1x,http://example.com/image2.png 2x,http://example.com/image3.png 3x",
+        "javascript:doEvilStuff() 2x": "unsafe:javascript:doEvilStuff() 2x",
+        "http://example.com/image1.png 1x,javascript:doEvilStuff() 2x":
+          "http://example.com/image1.png 1x,unsafe:javascript:doEvilStuff() 2x",
+        "http://example.com/image1.jpg?x=a,b 1x,http://example.com/ima,ge2.jpg 2x":
+          "http://example.com/image1.jpg?x=a,b 1x,http://example.com/ima,ge2.jpg 2x",
+        // Test regex to make sure doesn't mistake parts of url for pixel density descriptors
+        "http://example.com/image1.jpg?x=a2x,b 1x,http://example.com/ima,ge2.jpg 2x":
+          "http://example.com/image1.jpg?x=a2x,b 1x,http://example.com/ima,ge2.jpg 2x",
+      };
+
+      forEach(testSet, (ref, url) => {
+        $rootScope.testUrl = url;
+        $rootScope.$digest();
+        expect(element.attr("srcset")).toEqual(ref);
+      });
+    });
+  });
+
+  describe("a[href] sanitization", () => {
+    it("should NOT require trusted values for trusted URI values", () => {
+      $rootScope.testUrl = "http://example.com/image.png"; // `http` is trusted
+      element = $compile('<a href="{{testUrl}}"></a>')($rootScope);
+      $rootScope.$digest();
+      expect(element.attr("href")).toEqual("http://example.com/image.png");
+
+      element = $compile('<a ng-href="{{testUrl}}"></a>')($rootScope);
+      $rootScope.$digest();
+      expect(element.attr("ng-href")).toEqual("http://example.com/image.png");
+    });
+
+    it("should accept trusted values for non-trusted URI values", () => {
+      $rootScope.testUrl = $sce.trustAsUrl("javascript:foo()"); // `javascript` is not trusted
+      element = $compile('<a href="{{testUrl}}"></a>')($rootScope);
+      $rootScope.$digest();
+      expect(element.attr("href")).toEqual("javascript:foo()");
+
+      element = $compile('<a ng-href="{{testUrl}}"></a>')($rootScope);
+      $rootScope.$digest();
+      expect(element.attr("ng-href")).toEqual("javascript:foo()");
+    });
+
+    it("should sanitize non-trusted values", () => {
+      $rootScope.testUrl = "javascript:foo()"; // `javascript` is not trusted
+      element = $compile('<a href="{{testUrl}}"></a>')($rootScope);
+      $rootScope.$digest();
+      expect(element.attr("href")).toEqual("unsafe:javascript:foo()");
+
+      element = $compile('<a ng-href="{{testUrl}}"></a>')($rootScope);
+      $rootScope.$digest();
+      expect(element.attr("href")).toEqual("unsafe:javascript:foo()");
+    });
+
+    it("should not sanitize href on elements other than anchor", () => {
+      element = $compile('<div href="{{testUrl}}"></div>')($rootScope);
+      $rootScope.testUrl = "javascript:doEvilStuff()";
+      $rootScope.$apply();
+
+      expect(element.attr("href")).toBe("javascript:doEvilStuff()");
+    });
+
+    it("should not sanitize attributes other than href/ng-href", () => {
+      element = $compile('<a title="{{testUrl}}"></a>')($rootScope);
+      $rootScope.testUrl = "javascript:doEvilStuff()";
+      $rootScope.$apply();
+
+      expect(element.attr("title")).toBe("javascript:doEvilStuff()");
+    });
+
+    it("should use $$sanitizeUri", () => {
+      const $$sanitizeUri = jasmine
+        .createSpy("$$sanitizeUri")
+        .and.returnValue("someSanitizedUrl");
+      module(($provide) => {
+        $provide.value("$$sanitizeUri", $$sanitizeUri);
+
+        element = $compile('<a href="{{testUrl}}"></a>')($rootScope);
+        $rootScope.testUrl = "someUrl";
+        $rootScope.$apply();
+        expect(element.attr("href")).toBe("someSanitizedUrl");
+        expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);
+
+        $$sanitizeUri.calls.reset();
+
+        element = $compile('<a ng-href="{{testUrl}}"></a>')($rootScope);
+        $rootScope.$apply();
+        expect(element.attr("href")).toBe("someSanitizedUrl");
+        expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);
+      });
+    });
+
+    it("should use $$sanitizeUri when working with svg and xlink:href", () => {
+      const $$sanitizeUri = jasmine
+        .createSpy("$$sanitizeUri")
+        .and.returnValue("https://clean.example.org");
+      module(($provide) => {
+        $provide.value("$$sanitizeUri", $$sanitizeUri);
+
+        // This URL would fail the RESOURCE_URL trusted list, but that test shouldn't be run
+        // because these interpolations will be resolved against the URL context instead
+        $rootScope.testUrl = "https://bad.example.org";
+
+        const elementA = $compile(
+          "<svg><a xlink:href=\"{{ testUrl + 'aTag' }}\"></a></svg>",
+        )($rootScope);
+        $rootScope.$apply();
+        expect(elementA.find("a").attr("xlink:href")).toBe(
+          "https://clean.example.org",
+        );
+        expect($$sanitizeUri).toHaveBeenCalledWith(
+          `${$rootScope.testUrl}aTag`,
+          false,
+        );
+
+        const elementImage = $compile(
+          "<svg><image xlink:href=\"{{ testUrl + 'imageTag' }}\"></image></svg>",
+        )($rootScope);
+        $rootScope.$apply();
+        expect(elementImage.find("image").attr("xlink:href")).toBe(
+          "https://clean.example.org",
+        );
+        expect($$sanitizeUri).toHaveBeenCalledWith(
+          `${$rootScope.testUrl}imageTag`,
+          true,
+        );
+      });
+    });
+
+    it("should use $$sanitizeUri when working with svg and xlink:href through ng-href", () => {
+      const $$sanitizeUri = jasmine
+        .createSpy("$$sanitizeUri")
+        .and.returnValue("https://clean.example.org");
+      module(($provide) => {
+        $provide.value("$$sanitizeUri", $$sanitizeUri);
+
+        // This URL would fail the RESOURCE_URL trusted list, but that test shouldn't be run
+        // because these interpolations will be resolved against the URL context instead
+        $rootScope.testUrl = "https://bad.example.org";
+
+        element = $compile(
+          '<svg><a xlink:href="" ng-href="{{ testUrl }}"></a></svg>',
+        )($rootScope);
+        $rootScope.$apply();
+        expect(element.find("a").prop("href").baseVal).toBe(
+          "https://clean.example.org",
+        );
+        expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);
+      });
+    });
+
+    it("should require a RESOURCE_URL context for xlink:href by if not on an anchor or image", () => {
+      element = $compile(
+        '<svg><whatever xlink:href="{{ testUrl }}"></whatever></svg>',
+      )($rootScope);
+      $rootScope.testUrl = "https://bad.example.org";
+
+      expect(() => {
+        $rootScope.$apply();
+      }).toThrow(
+        "$interpolate",
+        "interr",
+        "Can't interpolate: {{ testUrl }}\n" +
+          "Error: [$sce:insecurl] Blocked loading resource from url not allowed by $sceDelegate policy.  " +
+          "URL: https://bad.example.org",
+      );
+    });
+
+    it("should not have endless digests when given arrays in concatenable context", () => {
+      element = $compile(
+        '<foo href="{{testUrl}}"></foo><foo href="{{::testUrl}}"></foo>' +
+          '<foo href="http://example.com/{{testUrl}}"></foo><foo href="http://example.com/{{::testUrl}}"></foo>',
+      )($rootScope);
+      $rootScope.testUrl = [1];
+      $rootScope.$digest();
+
+      $rootScope.testUrl = [];
+      $rootScope.$digest();
+
+      $rootScope.testUrl = { a: "b" };
+      $rootScope.$digest();
+
+      $rootScope.testUrl = {};
+      $rootScope.$digest();
+    });
+  });
+
+  describe("interpolation on HTML DOM event handler attributes onclick, onXYZ, formaction", () => {
+    it("should disallow interpolation on onclick", () => {
+      // All interpolations are disallowed.
+      $rootScope.onClickJs = "";
+      expect(() => {
+        $compile('<button onclick="{{onClickJs}}"></button>');
+      }).toThrow(
+        "$compile",
+        "nodomevents",
+        "Interpolations for HTML DOM event attributes are disallowed",
+      );
+      expect(() => {
+        $compile('<button ONCLICK="{{onClickJs}}"></button>');
+      }).toThrow(
+        "$compile",
+        "nodomevents",
+        "Interpolations for HTML DOM event attributes are disallowed",
+      );
+      expect(() => {
+        $compile('<button ng-attr-onclick="{{onClickJs}}"></button>');
+      }).toThrow(
+        "$compile",
+        "nodomevents",
+        "Interpolations for HTML DOM event attributes are disallowed",
+      );
+      expect(() => {
+        $compile('<button ng-attr-ONCLICK="{{onClickJs}}"></button>');
+      }).toThrow(
+        "$compile",
+        "nodomevents",
+        "Interpolations for HTML DOM event attributes are disallowed",
+      );
+    });
+
+    it("should pass through arbitrary values on onXYZ event attributes that contain a hyphen", () => {
+      element = $compile('<button on-click="{{onClickJs}}"></button>')(
+        $rootScope,
+      );
+      $rootScope.onClickJs = "javascript:doSomething()";
+      $rootScope.$apply();
+      expect(element.attr("on-click")).toEqual("javascript:doSomething()");
+    });
+
+    it('should pass through arbitrary values on "on" and "data-on" attributes', () => {
+      element = $compile('<button data-on="{{dataOnVar}}"></button>')(
+        $rootScope,
+      );
+      $rootScope.dataOnVar = "data-on text";
+      $rootScope.$apply();
+      expect(element.attr("data-on")).toEqual("data-on text");
+
+      element = $compile('<button on="{{onVar}}"></button>')($rootScope);
+      $rootScope.onVar = "on text";
+      $rootScope.$apply();
+      expect(element.attr("on")).toEqual("on text");
+    });
+  });
+
+  describe("iframe[src]", () => {
+    it("should pass through src attributes for the same domain", () => {
+      element = $compile('<iframe src="{{testUrl}}"></iframe>')($rootScope);
+      $rootScope.testUrl = "different_page";
+      $rootScope.$apply();
+      expect(element.attr("src")).toEqual("different_page");
+    });
+
+    it("should clear out src attributes for a different domain", () => {
+      element = $compile('<iframe src="{{testUrl}}"></iframe>')($rootScope);
+      $rootScope.testUrl = "http://a.different.domain.example.com";
+      expect(() => {
+        $rootScope.$apply();
+      }).toThrow(
+        "$interpolate",
+        "interr",
+        "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
+          "loading resource from url not allowed by $sceDelegate policy.  URL: " +
+          "http://a.different.domain.example.com",
+      );
+    });
+
+    it("should clear out JS src attributes", () => {
+      element = $compile('<iframe src="{{testUrl}}"></iframe>')($rootScope);
+      $rootScope.testUrl = "javascript:alert(1);";
+      expect(() => {
+        $rootScope.$apply();
+      }).toThrow(
+        "$interpolate",
+        "interr",
+        "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
+          "loading resource from url not allowed by $sceDelegate policy.  URL: " +
+          "javascript:alert(1);",
+      );
+    });
+
+    it("should clear out non-resource_url src attributes", () => {
+      element = $compile('<iframe src="{{testUrl}}"></iframe>')($rootScope);
+      $rootScope.testUrl = $sce.trustAsUrl("javascript:doTrustedStuff()");
+      expect($rootScope.$apply).toThrow(
+        "$interpolate",
+        "interr",
+        "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
+          "loading resource from url not allowed by $sceDelegate policy.  URL: javascript:doTrustedStuff()",
+      );
+    });
+
+    it("should pass through $sce.trustAs() values in src attributes", () => {
+      element = $compile('<iframe src="{{testUrl}}"></iframe>')($rootScope);
+      $rootScope.testUrl = $sce.trustAsResourceUrl(
+        "javascript:doTrustedStuff()",
+      );
+      $rootScope.$apply();
+
+      expect(element.attr("src")).toEqual("javascript:doTrustedStuff()");
+    });
+  });
+
+  describe("base[href]", () => {
+    it("should be a RESOURCE_URL context", () => {
+      element = $compile('<base href="{{testUrl}}"/>')($rootScope);
+
+      $rootScope.testUrl = $sce.trustAsResourceUrl("https://example.com/");
+      $rootScope.$apply();
+      expect(element.attr("href")).toContain("https://example.com/");
+
+      $rootScope.testUrl = "https://not.example.com/";
+      expect(() => {
+        $rootScope.$apply();
+      }).toThrow(
+        "$interpolate",
+        "interr",
+        "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
+          "loading resource from url not allowed by $sceDelegate policy.  URL: " +
+          "https://not.example.com/",
+      );
+    });
+  });
+
+  describe("form[action]", () => {
+    it("should pass through action attribute for the same domain", () => {
+      element = $compile('<form action="{{testUrl}}"></form>')($rootScope);
+      $rootScope.testUrl = "different_page";
+      $rootScope.$apply();
+      expect(element.attr("action")).toEqual("different_page");
+    });
+
+    it("should clear out action attribute for a different domain", () => {
+      element = $compile('<form action="{{testUrl}}"></form>')($rootScope);
+      $rootScope.testUrl = "http://a.different.domain.example.com";
+      expect(() => {
+        $rootScope.$apply();
+      }).toThrow(
+        "$interpolate",
+        "interr",
+        "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
+          "loading resource from url not allowed by $sceDelegate policy.  URL: " +
+          "http://a.different.domain.example.com",
+      );
+    });
+
+    it("should clear out JS action attribute", () => {
+      element = $compile('<form action="{{testUrl}}"></form>')($rootScope);
+      $rootScope.testUrl = "javascript:alert(1);";
+      expect(() => {
+        $rootScope.$apply();
+      }).toThrow(
+        "$interpolate",
+        "interr",
+        "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
+          "loading resource from url not allowed by $sceDelegate policy.  URL: " +
+          "javascript:alert(1);",
+      );
+    });
+
+    it("should clear out non-resource_url action attribute", () => {
+      element = $compile('<form action="{{testUrl}}"></form>')($rootScope);
+      $rootScope.testUrl = $sce.trustAsUrl("javascript:doTrustedStuff()");
+      expect($rootScope.$apply).toThrow(
+        "$interpolate",
+        "interr",
+        "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
+          "loading resource from url not allowed by $sceDelegate policy.  URL: javascript:doTrustedStuff()",
+      );
+    });
+
+    it("should pass through $sce.trustAsResourceUrl() values in action attribute", () => {
+      element = $compile('<form action="{{testUrl}}"></form>')($rootScope);
+      $rootScope.testUrl = $sce.trustAsResourceUrl(
+        "javascript:doTrustedStuff()",
+      );
+      $rootScope.$apply();
+
+      expect(element.attr("action")).toEqual("javascript:doTrustedStuff()");
+    });
+  });
+
+  describe("link[href]", () => {
+    it("should reject invalid RESOURCE_URLs", () => {
+      element = $compile('<link href="{{testUrl}}" rel="stylesheet" />')(
+        $rootScope,
+      );
+      $rootScope.testUrl = "https://evil.example.org/css.css";
+      expect(() => {
+        $rootScope.$apply();
+      }).toThrow(
+        "$interpolate",
+        "interr",
+        "Can't interpolate: {{testUrl}}\nError: [$sce:insecurl] Blocked " +
+          "loading resource from url not allowed by $sceDelegate policy.  URL: " +
+          "https://evil.example.org/css.css",
+      );
+    });
+
+    it("should accept valid RESOURCE_URLs", () => {
+      element = $compile('<link href="{{testUrl}}" rel="stylesheet" />')(
+        $rootScope,
+      );
+
+      $rootScope.testUrl = "./css1.css";
+      $rootScope.$apply();
+      expect(element.attr("href")).toContain("css1.css");
+
+      $rootScope.testUrl = $sce.trustAsResourceUrl(
+        "https://elsewhere.example.org/css2.css",
+      );
+      $rootScope.$apply();
+      expect(element.attr("href")).toContain(
+        "https://elsewhere.example.org/css2.css",
+      );
+    });
+
+    it("should accept valid constants", () => {
+      element = $compile(
+        '<link href="https://elsewhere.example.org/css2.css" rel="stylesheet" />',
+      )($rootScope);
+
+      $rootScope.$apply();
+      expect(element.attr("href")).toContain(
+        "https://elsewhere.example.org/css2.css",
+      );
+    });
+  });
+
+  describe("ngAttr* attribute binding", () => {
+    it("should bind after digest but not before", () => {
+      $rootScope.name = "Misko";
+      element = $compile('<span ng-attr-test="{{name}}"></span>')($rootScope);
+      expect(element.attr("test")).toBeUndefined();
+      $rootScope.$digest();
+      expect(element.attr("test")).toBe("Misko");
+    });
+
+    it("should bind after digest but not before when after overridden attribute", () => {
+      $rootScope.name = "Misko";
+      element = $compile('<span test="123" ng-attr-test="{{name}}"></span>')(
+        $rootScope,
+      );
+      expect(element.attr("test")).toBe("123");
+      $rootScope.$digest();
+      expect(element.attr("test")).toBe("Misko");
+    });
+
+    it("should bind after digest but not before when before overridden attribute", () => {
+      $rootScope.name = "Misko";
+      element = $compile('<span ng-attr-test="{{name}}" test="123"></span>')(
+        $rootScope,
+      );
+      expect(element.attr("test")).toBe("123");
+      $rootScope.$digest();
+      expect(element.attr("test")).toBe("Misko");
+    });
+
+    it("should set the attribute (after digest) even if there is no interpolation", () => {
+      element = $compile('<span ng-attr-test="foo"></span>')($rootScope);
+      expect(element.attr("test")).toBeUndefined();
+
+      $rootScope.$digest();
+      expect(element.attr("test")).toBe("foo");
+    });
+
+    it("should remove attribute if any bindings are undefined", () => {
+      element = $compile('<span ng-attr-test="{{name}}{{emphasis}}"></span>')(
+        $rootScope,
+      );
+      $rootScope.$digest();
+      expect(element.attr("test")).toBeUndefined();
+      $rootScope.name = "caitp";
+      $rootScope.$digest();
+      expect(element.attr("test")).toBeUndefined();
+      $rootScope.emphasis = "!!!";
+      $rootScope.$digest();
+      expect(element.attr("test")).toBe("caitp!!!");
+    });
+
+    describe("in directive", () => {
+      let log;
+
+      beforeEach(() => {
+        module.directive("syncTest", () =>
+          ({
+            link: {
+              pre(s, e, attr) {
+                log.push(attr.test);
+              },
+              post(s, e, attr) {
+                log.push(attr.test);
+              },
+            },
+          }).directive("asyncTest", () => ({
+            templateUrl: "async.html",
+            link: {
+              pre(s, e, attr) {
+                log.push(attr.test);
+              },
+              post(s, e, attr) {
+                log.push(attr.test);
+              },
+            },
+          })),
+        );
+      });
+
+      beforeEach(() => {
+        log = _log_;
+        $templateCache.put("async.html", "<h1>Test</h1>");
+      });
+
+      it("should provide post-digest value in synchronous directive link functions when after overridden attribute", () => {
+        $rootScope.test = "TEST";
+        element = $compile(
+          '<div sync-test test="123" ng-attr-test="{{test}}"></div>',
+        )($rootScope);
+        expect(element.attr("test")).toBe("123");
+        expect(log.toArray()).toEqual(["TEST", "TEST"]);
+      });
+
+      it("should provide post-digest value in synchronous directive link functions when before overridden attribute", () => {
+        $rootScope.test = "TEST";
+        element = $compile(
+          '<div sync-test ng-attr-test="{{test}}" test="123"></div>',
+        )($rootScope);
+        expect(element.attr("test")).toBe("123");
+        expect(log.toArray()).toEqual(["TEST", "TEST"]);
+      });
+
+      it("should provide post-digest value in asynchronous directive link functions when after overridden attribute", () => {
+        $rootScope.test = "TEST";
+        element = $compile(
+          '<div async-test test="123" ng-attr-test="{{test}}"></div>',
+        )($rootScope);
+        expect(element.attr("test")).toBe("123");
+        $rootScope.$digest();
+        expect(log.toArray()).toEqual(["TEST", "TEST"]);
+      });
+
+      it("should provide post-digest value in asynchronous directive link functions when before overridden attribute", () => {
+        $rootScope.test = "TEST";
+        element = $compile(
+          '<div async-test ng-attr-test="{{test}}" test="123"></div>',
+        )($rootScope);
+        expect(element.attr("test")).toBe("123");
+        $rootScope.$digest();
+        expect(log.toArray()).toEqual(["TEST", "TEST"]);
+      });
+    });
+
+    it("should work with different prefixes", () => {
+      $rootScope.name = "Misko";
+      element = $compile(
+        '<span ng:attr:test="{{name}}" ng-Attr-test2="{{name}}" ng_Attr_test3="{{name}}"></span>',
+      )($rootScope);
+      expect(element.attr("test")).toBeUndefined();
+      expect(element.attr("test2")).toBeUndefined();
+      expect(element.attr("test3")).toBeUndefined();
+      $rootScope.$digest();
+      expect(element.attr("test")).toBe("Misko");
+      expect(element.attr("test2")).toBe("Misko");
+      expect(element.attr("test3")).toBe("Misko");
+    });
+
+    it("should use the non-prefixed name in $attr mappings", () => {
+      let attrs;
+      module.directive(
+        "attrExposer",
+        valueFn({
+          link($scope, $element, $attrs) {
+            attrs = $attrs;
+          },
+        }),
+      );
+
+      $compile(
+        '<div attr-exposer ng-attr-title="12" ng-attr-super-title="34" ng-attr-my-camel_title="56">',
+      )($rootScope);
+      $rootScope.$apply();
+
+      expect(attrs.title).toBe("12");
+      expect(attrs.$attr.title).toBe("title");
+      expect(attrs.ngAttrTitle).toBeUndefined();
+      expect(attrs.$attr.ngAttrTitle).toBeUndefined();
+
+      expect(attrs.superTitle).toBe("34");
+      expect(attrs.$attr.superTitle).toBe("super-title");
+      expect(attrs.ngAttrSuperTitle).toBeUndefined();
+      expect(attrs.$attr.ngAttrSuperTitle).toBeUndefined();
+
+      // Note the casing is incorrect: https://github.com/angular/angular.js/issues/16624
+      expect(attrs.myCameltitle).toBe("56");
+      expect(attrs.$attr.myCameltitle).toBe("my-camelTitle");
+      expect(attrs.ngAttrMyCameltitle).toBeUndefined();
+      expect(attrs.ngAttrMyCamelTitle).toBeUndefined();
+      expect(attrs.$attr.ngAttrMyCameltitle).toBeUndefined();
+      expect(attrs.$attr.ngAttrMyCamelTitle).toBeUndefined();
+    });
+
+    it('should work with the "href" attribute', () => {
+      $rootScope.value = "test";
+      element = $compile('<a ng-attr-href="test/{{value}}"></a>')($rootScope);
+      $rootScope.$digest();
+      expect(element.attr("href")).toBe("test/test");
+    });
+
+    it("should work if they are prefixed with x- or data- and different prefixes", () => {
+      $rootScope.name = "Misko";
+      element = $compile(
+        '<span data-ng-attr-test2="{{name}}" x-ng-attr-test3="{{name}}" data-ng:attr-test4="{{name}}" ' +
+          'x_ng-attr-test5="{{name}}" data:ng-attr-test6="{{name}}"></span>',
+      )($rootScope);
+      expect(element.attr("test2")).toBeUndefined();
+      expect(element.attr("test3")).toBeUndefined();
+      expect(element.attr("test4")).toBeUndefined();
+      expect(element.attr("test5")).toBeUndefined();
+      expect(element.attr("test6")).toBeUndefined();
+      $rootScope.$digest();
+      expect(element.attr("test2")).toBe("Misko");
+      expect(element.attr("test3")).toBe("Misko");
+      expect(element.attr("test4")).toBe("Misko");
+      expect(element.attr("test5")).toBe("Misko");
+      expect(element.attr("test6")).toBe("Misko");
+    });
+
+    describe("with media url attributes", () => {
+      it("should work with interpolated ng-attr-src", () => {
+        $rootScope.name = "some-image.png";
+        element = $compile('<img ng-attr-src="{{name}}">')($rootScope);
+        expect(element.attr("src")).toBeUndefined();
+
+        $rootScope.$digest();
+        expect(element.attr("src")).toBe("some-image.png");
+
+        $rootScope.name = "other-image.png";
+        $rootScope.$digest();
+        expect(element.attr("src")).toBe("other-image.png");
+      });
+
+      it("should work with interpolated ng-attr-data-src", () => {
+        $rootScope.name = "some-image.png";
+        element = $compile('<img ng-attr-data-src="{{name}}">')($rootScope);
+        expect(element.attr("data-src")).toBeUndefined();
+
+        $rootScope.$digest();
+        expect(element.attr("data-src")).toBe("some-image.png");
+
+        $rootScope.name = "other-image.png";
+        $rootScope.$digest();
+        expect(element.attr("data-src")).toBe("other-image.png");
+      });
+
+      it("should work alongside constant [src]-attribute and [ng-attr-data-src] attributes", () => {
+        $rootScope.name = "some-image.png";
+        element = $compile(
+          '<img src="constant.png" ng-attr-data-src="{{name}}">',
+        )($rootScope);
+        expect(element.attr("data-src")).toBeUndefined();
+
+        $rootScope.$digest();
+        expect(element.attr("src")).toBe("constant.png");
+        expect(element.attr("data-src")).toBe("some-image.png");
+
+        $rootScope.name = "other-image.png";
+        $rootScope.$digest();
+        expect(element.attr("src")).toBe("constant.png");
+        expect(element.attr("data-src")).toBe("other-image.png");
+      });
+    });
+
+    describe("when an attribute has a dash-separated name", () => {
+      it("should work with different prefixes", () => {
+        $rootScope.name = "JamieMason";
+        element = $compile(
+          '<span ng:attr:dash-test="{{name}}" ng-Attr-dash-test2="{{name}}" ng_Attr_dash-test3="{{name}}"></span>',
+        )($rootScope);
+        expect(element.attr("dash-test")).toBeUndefined();
+        expect(element.attr("dash-test2")).toBeUndefined();
+        expect(element.attr("dash-test3")).toBeUndefined();
+        $rootScope.$digest();
+        expect(element.attr("dash-test")).toBe("JamieMason");
+        expect(element.attr("dash-test2")).toBe("JamieMason");
+        expect(element.attr("dash-test3")).toBe("JamieMason");
+      });
+
+      it("should work if they are prefixed with x- or data-", () => {
+        $rootScope.name = "JamieMason";
+        element = $compile(
+          '<span data-ng-attr-dash-test2="{{name}}" x-ng-attr-dash-test3="{{name}}" data-ng:attr-dash-test4="{{name}}"></span>',
+        )($rootScope);
+        expect(element.attr("dash-test2")).toBeUndefined();
+        expect(element.attr("dash-test3")).toBeUndefined();
+        expect(element.attr("dash-test4")).toBeUndefined();
+        $rootScope.$digest();
+        expect(element.attr("dash-test2")).toBe("JamieMason");
+        expect(element.attr("dash-test3")).toBe("JamieMason");
+        expect(element.attr("dash-test4")).toBe("JamieMason");
+      });
+
+      it("should keep attributes ending with -start single-element directives", () => {
+        module.directive("dashStarter", () => ({
+          link(scope, element, attrs) {
+            log.push(attrs.onDashStart);
+          },
+        }));
+
+        $compile(
+          '<span data-dash-starter data-on-dash-start="starter"></span>',
+        )($rootScope);
+        $rootScope.$digest();
+        expect(log[0]).toEqual("starter");
+      });
+
+      it("should keep attributes ending with -end single-element directives", () => {
+        module.directive("dashEnder", () => ({
+          link(scope, element, attrs) {
+            log.push(attrs.onDashEnd);
+          },
+        }));
+
+        $compile('<span data-dash-ender data-on-dash-end="ender"></span>')(
+          $rootScope,
+        );
+        $rootScope.$digest();
+        expect(log[0]).toEqual("ender");
+      });
+    });
+  });
+
+  describe("addPropertySecurityContext", () => {
+    function testProvider(provider) {
+      module(provider);
+      inject(($compile) => {
+        /* done! */
+      });
+    }
+
+    it("should allow adding new properties", () => {
+      testProvider(($compileProvider) => {
+        $compileProvider.addPropertySecurityContext("div", "title", "mediaUrl");
         $compileProvider.addPropertySecurityContext(
-          "div",
+          "*",
+          "my-prop",
+          "resourceUrl",
+        );
+      });
+    });
+
+    it("should allow different sce types of a property on different element types", () => {
+      testProvider(($compileProvider) => {
+        $compileProvider.addPropertySecurityContext("div", "title", "mediaUrl");
+        $compileProvider.addPropertySecurityContext("span", "title", "css");
+        $compileProvider.addPropertySecurityContext(
+          "*",
           "title",
           "resourceUrl",
         );
-      }).toThrow(
-        "$compile",
-        "ctxoverride",
-        "Property context 'div.title' already set to 'mediaUrl', cannot override to 'resourceUrl'.",
+        $compileProvider.addPropertySecurityContext("article", "title", "html");
+      });
+    });
+
+    it("should throw 'ctxoverride' when changing an existing context", () => {
+      testProvider(($compileProvider) => {
+        $compileProvider.addPropertySecurityContext("div", "title", "mediaUrl");
+
+        expect(() => {
+          $compileProvider.addPropertySecurityContext(
+            "div",
+            "title",
+            "resourceUrl",
+          );
+        }).toThrow(
+          "$compile",
+          "ctxoverride",
+          "Property context 'div.title' already set to 'mediaUrl', cannot override to 'resourceUrl'.",
+        );
+      });
+    });
+
+    it("should allow setting the same property/element to the same value", () => {
+      testProvider(($compileProvider) => {
+        $compileProvider.addPropertySecurityContext("div", "title", "mediaUrl");
+        $compileProvider.addPropertySecurityContext("div", "title", "mediaUrl");
+      });
+    });
+
+    it("should enforce the specified sce type for properties added for specific elements", () => {
+      module(($compileProvider) => {
+        $compileProvider.addPropertySecurityContext("div", "foo", "mediaUrl");
+      });
+
+      const element = $compile('<div ng-prop-foo="bar"></div>')($rootScope);
+
+      $rootScope.bar = "untrusted:test1";
+      $rootScope.$apply();
+      expect(element.prop("foo")).toBe("unsafe:untrusted:test1");
+
+      $rootScope.bar = $sce.trustAsCss("untrusted:test2");
+      $rootScope.$apply();
+      expect(element.prop("foo")).toBe("unsafe:untrusted:test2");
+
+      $rootScope.bar = $sce.trustAsMediaUrl("untrusted:test3");
+      $rootScope.$apply();
+      expect(element.prop("foo")).toBe("untrusted:test3");
+    });
+
+    it("should enforce the specified sce type for properties added for all elements (*)", () => {
+      module(($compileProvider) => {
+        $compileProvider.addPropertySecurityContext("*", "foo", "mediaUrl");
+      });
+
+      const element = $compile('<div ng-prop-foo="bar"></div>')($rootScope);
+
+      $rootScope.bar = "untrusted:test1";
+      $rootScope.$apply();
+      expect(element.prop("foo")).toBe("unsafe:untrusted:test1");
+
+      $rootScope.bar = $sce.trustAsCss("untrusted:test2");
+      $rootScope.$apply();
+      expect(element.prop("foo")).toBe("unsafe:untrusted:test2");
+
+      $rootScope.bar = $sce.trustAsMediaUrl("untrusted:test3");
+      $rootScope.$apply();
+      expect(element.prop("foo")).toBe("untrusted:test3");
+    });
+
+    it("should enforce the specific sce type when both an element specific and generic exist", () => {
+      module(($compileProvider) => {
+        $compileProvider.addPropertySecurityContext("*", "foo", "css");
+        $compileProvider.addPropertySecurityContext("div", "foo", "mediaUrl");
+      });
+
+      const element = $compile('<div ng-prop-foo="bar"></div>')($rootScope);
+
+      $rootScope.bar = "untrusted:test1";
+      $rootScope.$apply();
+      expect(element.prop("foo")).toBe("unsafe:untrusted:test1");
+
+      $rootScope.bar = $sce.trustAsCss("untrusted:test2");
+      $rootScope.$apply();
+      expect(element.prop("foo")).toBe("unsafe:untrusted:test2");
+
+      $rootScope.bar = $sce.trustAsMediaUrl("untrusted:test3");
+      $rootScope.$apply();
+      expect(element.prop("foo")).toBe("untrusted:test3");
+    });
+  });
+
+  describe("when an attribute has an underscore-separated name", () => {
+    it("should work with different prefixes", () => {
+      $rootScope.dimensions = "0 0 0 0";
+      element = $compile('<svg ng:attr:view_box="{{dimensions}}"></svg>')(
+        $rootScope,
       );
-    });
-  });
-
-  it("should allow setting the same property/element to the same value", () => {
-    testProvider(($compileProvider) => {
-      $compileProvider.addPropertySecurityContext("div", "title", "mediaUrl");
-      $compileProvider.addPropertySecurityContext("div", "title", "mediaUrl");
-    });
-  });
-
-  it("should enforce the specified sce type for properties added for specific elements", () => {
-    module(($compileProvider) => {
-      $compileProvider.addPropertySecurityContext("div", "foo", "mediaUrl");
+      expect(element.attr("viewBox")).toBeUndefined();
+      $rootScope.$digest();
+      expect(element.attr("viewBox")).toBe("0 0 0 0");
     });
 
-    const element = $compile('<div ng-prop-foo="bar"></div>')($rootScope);
-
-    $rootScope.bar = "untrusted:test1";
-    $rootScope.$apply();
-    expect(element.prop("foo")).toBe("unsafe:untrusted:test1");
-
-    $rootScope.bar = $sce.trustAsCss("untrusted:test2");
-    $rootScope.$apply();
-    expect(element.prop("foo")).toBe("unsafe:untrusted:test2");
-
-    $rootScope.bar = $sce.trustAsMediaUrl("untrusted:test3");
-    $rootScope.$apply();
-    expect(element.prop("foo")).toBe("untrusted:test3");
-  });
-
-  it("should enforce the specified sce type for properties added for all elements (*)", () => {
-    module(($compileProvider) => {
-      $compileProvider.addPropertySecurityContext("*", "foo", "mediaUrl");
-    });
-
-    const element = $compile('<div ng-prop-foo="bar"></div>')($rootScope);
-
-    $rootScope.bar = "untrusted:test1";
-    $rootScope.$apply();
-    expect(element.prop("foo")).toBe("unsafe:untrusted:test1");
-
-    $rootScope.bar = $sce.trustAsCss("untrusted:test2");
-    $rootScope.$apply();
-    expect(element.prop("foo")).toBe("unsafe:untrusted:test2");
-
-    $rootScope.bar = $sce.trustAsMediaUrl("untrusted:test3");
-    $rootScope.$apply();
-    expect(element.prop("foo")).toBe("untrusted:test3");
-  });
-
-  it("should enforce the specific sce type when both an element specific and generic exist", () => {
-    module(($compileProvider) => {
-      $compileProvider.addPropertySecurityContext("*", "foo", "css");
-      $compileProvider.addPropertySecurityContext("div", "foo", "mediaUrl");
-    });
-
-    const element = $compile('<div ng-prop-foo="bar"></div>')($rootScope);
-
-    $rootScope.bar = "untrusted:test1";
-    $rootScope.$apply();
-    expect(element.prop("foo")).toBe("unsafe:untrusted:test1");
-
-    $rootScope.bar = $sce.trustAsCss("untrusted:test2");
-    $rootScope.$apply();
-    expect(element.prop("foo")).toBe("unsafe:untrusted:test2");
-
-    $rootScope.bar = $sce.trustAsMediaUrl("untrusted:test3");
-    $rootScope.$apply();
-    expect(element.prop("foo")).toBe("untrusted:test3");
-  });
-});
-
-describe("when an attribute has an underscore-separated name", () => {
-  it("should work with different prefixes", () => {
-    $rootScope.dimensions = "0 0 0 0";
-    element = $compile('<svg ng:attr:view_box="{{dimensions}}"></svg>')(
-      $rootScope,
-    );
-    expect(element.attr("viewBox")).toBeUndefined();
-    $rootScope.$digest();
-    expect(element.attr("viewBox")).toBe("0 0 0 0");
-  });
-
-  it("should work if they are prefixed with x- or data-", () => {
-    $rootScope.dimensions = "0 0 0 0";
-    $rootScope.number = 0.42;
-    $rootScope.scale = 1;
-    element = $compile(
-      '<svg data-ng-attr-view_box="{{dimensions}}">' +
-        '<filter x-ng-attr-filter_units="{{number}}">' +
-        '<feDiffuseLighting data-ng:attr_surface_scale="{{scale}}">' +
-        "</feDiffuseLighting>" +
-        '<feSpecularLighting x-ng:attr_surface_scale="{{scale}}">' +
-        "</feSpecularLighting></filter></svg>",
-    )($rootScope);
-    expect(element.attr("viewBox")).toBeUndefined();
-    $rootScope.$digest();
-    expect(element.attr("viewBox")).toBe("0 0 0 0");
-    expect(element.find("filter").attr("filterUnits")).toBe("0.42");
-    expect(element.find("feDiffuseLighting").attr("surfaceScale")).toBe("1");
-    expect(element.find("feSpecularLighting").attr("surfaceScale")).toBe("1");
-  });
-});
-
-describe("multi-element directive", () => {
-  it("should group on link function", () => {
-    $rootScope.show = false;
-    element = $compile(
-      "<div>" +
-        '<span ng-show-start="show"></span>' +
-        "<span ng-show-end></span>" +
-        "</div>",
-    )($rootScope);
-    $rootScope.$digest();
-    const spans = element.find("span");
-    expect(spans.eq(0)).toBeHidden();
-    expect(spans.eq(1)).toBeHidden();
-  });
-
-  it("should group on compile function", () => {
-    $rootScope.show = false;
-    element = $compile(
-      "<div>" +
-        '<span ng-repeat-start="i in [1,2]">{{i}}A</span>' +
-        "<span ng-repeat-end>{{i}}B;</span>" +
-        "</div>",
-    )($rootScope);
-    $rootScope.$digest();
-    expect(element.text()).toEqual("1A1B;2A2B;");
-  });
-
-  it("should support grouping over text nodes", () => {
-    $rootScope.show = false;
-    element = $compile(
-      "<div>" +
-        '<span ng-repeat-start="i in [1,2]">{{i}}A</span>' +
-        ":" + // Important: proves that we can iterate over non-elements
-        "<span ng-repeat-end>{{i}}B;</span>" +
-        "</div>",
-    )($rootScope);
-    $rootScope.$digest();
-    expect(element.text()).toEqual("1A:1B;2A:2B;");
-  });
-
-  it("should group on $root compile function", () => {
-    $rootScope.show = false;
-    element = $compile(
-      "<div></div>" +
-        '<span ng-repeat-start="i in [1,2]">{{i}}A</span>' +
-        "<span ng-repeat-end>{{i}}B;</span>" +
-        "<div></div>",
-    )($rootScope);
-    $rootScope.$digest();
-    element = jqLite(element[0].parentNode.childNodes); // reset because repeater is top level.
-    expect(element.text()).toEqual("1A1B;2A2B;");
-  });
-
-  it("should group on nested groups", () => {
-    module.directive(
-      "ngMultiBind",
-      valueFn({
-        multiElement: true,
-        link(scope, element, attr) {
-          element.text(scope.$eval(attr.ngMultiBind));
-        },
-      }),
-    );
-
-    $rootScope.show = false;
-    element = $compile(
-      "<div></div>" +
-        '<div ng-repeat-start="i in [1,2]">{{i}}A</div>' +
-        "<span ng-multi-bind-start=\"'.'\"></span>" +
-        "<span ng-multi-bind-end></span>" +
-        "<div ng-repeat-end>{{i}}B;</div>" +
-        "<div></div>",
-    )($rootScope);
-    $rootScope.$digest();
-    element = jqLite(element[0].parentNode.childNodes); // reset because repeater is top level.
-    expect(element.text()).toEqual("1A..1B;2A..2B;");
-  });
-
-  it("should group on nested groups of same directive", () => {
-    $rootScope.show = false;
-    element = $compile(
-      "<div></div>" +
-        '<div ng-repeat-start="i in [1,2]">{{i}}(</div>' +
-        '<span ng-repeat-start="j in [2,3]">{{j}}-</span>' +
-        "<span ng-repeat-end>{{j}}</span>" +
-        "<div ng-repeat-end>){{i}};</div>" +
-        "<div></div>",
-    )($rootScope);
-    $rootScope.$digest();
-    element = jqLite(element[0].parentNode.childNodes); // reset because repeater is top level.
-    expect(element.text()).toEqual("1(2-23-3)1;2(2-23-3)2;");
-  });
-
-  it("should set up and destroy the transclusion scopes correctly", () => {
-    element = $compile(
-      "<div>" +
-        '<div ng-if-start="val0"><span ng-if="val1"></span></div>' +
-        '<div ng-if-end><span ng-if="val2"></span></div>' +
-        "</div>",
-    )($rootScope);
-    $rootScope.$apply("val0 = true; val1 = true; val2 = true");
-
-    // At this point we should have something like:
-    //
-    // <div class="ng-scope">
-    //
-    //   <!-- ngIf: val0 -->
-    //
-    //   <div ng-if-start="val0" class="ng-scope">
-    //     <!-- ngIf: val1 -->
-    //     <span ng-if="val1" class="ng-scope"></span>
-    //     <!-- end ngIf: val1 -->
-    //   </div>
-    //
-    //   <div ng-if-end="" class="ng-scope">
-    //     <!-- ngIf: val2 -->
-    //     <span ng-if="val2" class="ng-scope"></span>
-    //     <!-- end ngIf: val2 -->
-    //   </div>
-    //
-    //   <!-- end ngIf: val0 -->
-    // </div>
-    const ngIfStartScope = element.find("div").eq(0).scope();
-    const ngIfEndScope = element.find("div").eq(1).scope();
-
-    expect(ngIfStartScope.$id).toEqual(ngIfEndScope.$id);
-
-    const ngIf1Scope = element.find("span").eq(0).scope();
-    const ngIf2Scope = element.find("span").eq(1).scope();
-
-    expect(ngIf1Scope.$id).not.toEqual(ngIf2Scope.$id);
-    expect(ngIf1Scope.$parent.$id).toEqual(ngIf2Scope.$parent.$id);
-
-    $rootScope.$apply("val1 = false");
-
-    // Now we should have something like:
-    //
-    // <div class="ng-scope">
-    //   <!-- ngIf: val0 -->
-    //   <div ng-if-start="val0" class="ng-scope">
-    //     <!-- ngIf: val1 -->
-    //   </div>
-    //   <div ng-if-end="" class="ng-scope">
-    //     <!-- ngIf: val2 -->
-    //     <span ng-if="val2" class="ng-scope"></span>
-    //     <!-- end ngIf: val2 -->
-    //   </div>
-    //   <!-- end ngIf: val0 -->
-    // </div>
-
-    expect(ngIfStartScope.$$destroyed).not.toEqual(true);
-    expect(ngIf1Scope.$$destroyed).toEqual(true);
-    expect(ngIf2Scope.$$destroyed).not.toEqual(true);
-
-    $rootScope.$apply("val0 = false");
-
-    // Now we should have something like:
-    //
-    // <div class="ng-scope">
-    //   <!-- ngIf: val0 -->
-    // </div>
-
-    expect(ngIfStartScope.$$destroyed).toEqual(true);
-    expect(ngIf1Scope.$$destroyed).toEqual(true);
-    expect(ngIf2Scope.$$destroyed).toEqual(true);
-  });
-
-  it("should set up and destroy the transclusion scopes correctly", () => {
-    element = $compile(
-      "<div>" +
-        '<div ng-repeat-start="val in val0" ng-if="val1"></div>' +
-        '<div ng-repeat-end ng-if="val2"></div>' +
-        "</div>",
-    )($rootScope);
-
-    // To begin with there is (almost) nothing:
-    // <div class="ng-scope">
-    //   <!-- ngRepeat: val in val0 -->
-    // </div>
-
-    expect(element.scope().$id).toEqual($rootScope.$id);
-
-    // Now we create all the elements
-    $rootScope.$apply("val0 = [1]; val1 = true; val2 = true");
-
-    // At this point we have:
-    //
-    // <div class="ng-scope">
-    //
-    //   <!-- ngRepeat: val in val0 -->
-    //   <!-- ngIf: val1 -->
-    //   <div ng-repeat-start="val in val0" class="ng-scope">
-    //   </div>
-    //   <!-- end ngIf: val1 -->
-    //
-    //   <!-- ngIf: val2 -->
-    //   <div ng-repeat-end="" class="ng-scope">
-    //   </div>
-    //   <!-- end ngIf: val2 -->
-    //   <!-- end ngRepeat: val in val0 -->
-    // </div>
-    const ngIf1Scope = element.find("div").eq(0).scope();
-    const ngIf2Scope = element.find("div").eq(1).scope();
-    const ngRepeatScope = ngIf1Scope.$parent;
-
-    expect(ngIf1Scope.$id).not.toEqual(ngIf2Scope.$id);
-    expect(ngIf1Scope.$parent.$id).toEqual(ngRepeatScope.$id);
-    expect(ngIf2Scope.$parent.$id).toEqual(ngRepeatScope.$id);
-
-    // What is happening here??
-    // We seem to have a repeater scope which doesn't actually match to any element
-    expect(ngRepeatScope.$parent.$id).toEqual($rootScope.$id);
-
-    // Now remove the first ngIf element from the first item in the repeater
-    $rootScope.$apply("val1 = false");
-
-    // At this point we should have:
-    //
-    // <div class="ng-scope">
-    //   <!-- ngRepeat: val in val0 -->
-    //
-    //   <!-- ngIf: val1 -->
-    //
-    //   <!-- ngIf: val2 -->
-    //   <div ng-repeat-end="" ng-if="val2" class="ng-scope"></div>
-    //   <!-- end ngIf: val2 -->
-    //
-    //   <!-- end ngRepeat: val in val0 -->
-    // </div>
-    //
-    expect(ngRepeatScope.$$destroyed).toEqual(false);
-    expect(ngIf1Scope.$$destroyed).toEqual(true);
-    expect(ngIf2Scope.$$destroyed).toEqual(false);
-
-    // Now remove the second ngIf element from the first item in the repeater
-    $rootScope.$apply("val2 = false");
-
-    // We are mostly back to where we started
-    //
-    // <div class="ng-scope">
-    //   <!-- ngRepeat: val in val0 -->
-    //   <!-- ngIf: val1 -->
-    //   <!-- ngIf: val2 -->
-    //   <!-- end ngRepeat: val in val0 -->
-    // </div>
-
-    expect(ngRepeatScope.$$destroyed).toEqual(false);
-    expect(ngIf1Scope.$$destroyed).toEqual(true);
-    expect(ngIf2Scope.$$destroyed).toEqual(true);
-
-    // Finally remove the repeat items
-    $rootScope.$apply("val0 = []");
-
-    // Somehow this ngRepeat scope knows how to destroy itself...
-    expect(ngRepeatScope.$$destroyed).toEqual(true);
-    expect(ngIf1Scope.$$destroyed).toEqual(true);
-    expect(ngIf2Scope.$$destroyed).toEqual(true);
-  });
-
-  it("should throw error if unterminated", () => {
-    module.directive("foo", () => ({
-      multiElement: true,
-    }));
-
-    expect(() => {
-      element = $compile("<div><span foo-start></span></div>");
-    }).toThrowError(/uterdir/);
-  });
-
-  it("should correctly collect ranges on multiple directives on a single element", () => {
-    module.directive("emptyDirective", () =>
-      ({
-        multiElement: true,
-        link(scope, element) {
-          element.data("x", "abc");
-        },
-      }).directive("rangeDirective", () => ({
-        multiElement: true,
-        link(scope) {
-          scope.x = "X";
-          scope.y = "Y";
-        },
-      })),
-    );
-
-    element = $compile(
-      "<div>" +
-        "<div range-directive-start empty-directive>{{x}}</div>" +
-        "<div range-directive-end>{{y}}</div>" +
-        "</div>",
-    )($rootScope);
-
-    $rootScope.$digest();
-    expect(element.text()).toBe("XY");
-    expect(angular.element(element[0].firstChild).data("x")).toBe("abc");
-  });
-
-  it("should throw error if unterminated (containing termination as a child)", () => {
-    module.directive("foo", () => ({
-      multiElement: true,
-    }));
-
-    expect(() => {
+    it("should work if they are prefixed with x- or data-", () => {
+      $rootScope.dimensions = "0 0 0 0";
+      $rootScope.number = 0.42;
+      $rootScope.scale = 1;
       element = $compile(
-        "<div><span foo-start><span foo-end></span></span></div>",
+        '<svg data-ng-attr-view_box="{{dimensions}}">' +
+          '<filter x-ng-attr-filter_units="{{number}}">' +
+          '<feDiffuseLighting data-ng:attr_surface_scale="{{scale}}">' +
+          "</feDiffuseLighting>" +
+          '<feSpecularLighting x-ng:attr_surface_scale="{{scale}}">' +
+          "</feSpecularLighting></filter></svg>",
+      )($rootScope);
+      expect(element.attr("viewBox")).toBeUndefined();
+      $rootScope.$digest();
+      expect(element.attr("viewBox")).toBe("0 0 0 0");
+      expect(element.find("filter").attr("filterUnits")).toBe("0.42");
+      expect(element.find("feDiffuseLighting").attr("surfaceScale")).toBe("1");
+      expect(element.find("feSpecularLighting").attr("surfaceScale")).toBe("1");
+    });
+  });
+
+  describe("multi-element directive", () => {
+    it("should group on link function", () => {
+      $rootScope.show = false;
+      element = $compile(
+        "<div>" +
+          '<span ng-show-start="show"></span>' +
+          "<span ng-show-end></span>" +
+          "</div>",
+      )($rootScope);
+      $rootScope.$digest();
+      const spans = element.find("span");
+      expect(spans.eq(0)).toBeHidden();
+      expect(spans.eq(1)).toBeHidden();
+    });
+
+    it("should group on compile function", () => {
+      $rootScope.show = false;
+      element = $compile(
+        "<div>" +
+          '<span ng-repeat-start="i in [1,2]">{{i}}A</span>' +
+          "<span ng-repeat-end>{{i}}B;</span>" +
+          "</div>",
+      )($rootScope);
+      $rootScope.$digest();
+      expect(element.text()).toEqual("1A1B;2A2B;");
+    });
+
+    it("should support grouping over text nodes", () => {
+      $rootScope.show = false;
+      element = $compile(
+        "<div>" +
+          '<span ng-repeat-start="i in [1,2]">{{i}}A</span>' +
+          ":" + // Important: proves that we can iterate over non-elements
+          "<span ng-repeat-end>{{i}}B;</span>" +
+          "</div>",
+      )($rootScope);
+      $rootScope.$digest();
+      expect(element.text()).toEqual("1A:1B;2A:2B;");
+    });
+
+    it("should group on $root compile function", () => {
+      $rootScope.show = false;
+      element = $compile(
+        "<div></div>" +
+          '<span ng-repeat-start="i in [1,2]">{{i}}A</span>' +
+          "<span ng-repeat-end>{{i}}B;</span>" +
+          "<div></div>",
+      )($rootScope);
+      $rootScope.$digest();
+      element = jqLite(element[0].parentNode.childNodes); // reset because repeater is top level.
+      expect(element.text()).toEqual("1A1B;2A2B;");
+    });
+
+    it("should group on nested groups", () => {
+      module.directive(
+        "ngMultiBind",
+        valueFn({
+          multiElement: true,
+          link(scope, element, attr) {
+            element.text(scope.$eval(attr.ngMultiBind));
+          },
+        }),
       );
-    }).toThrow(
-      "$compile",
-      "uterdir",
-      "Unterminated attribute, found 'foo-start' but no matching 'foo-end' found.",
-    );
-  });
 
-  it("should support data- and x- prefix", () => {
-    $rootScope.show = false;
-    element = $compile(
-      "<div>" +
-        '<span data-ng-show-start="show"></span>' +
-        "<span data-ng-show-end></span>" +
-        '<span x-ng-show-start="show"></span>' +
-        "<span x-ng-show-end></span>" +
-        "</div>",
-    )($rootScope);
-    $rootScope.$digest();
-    const spans = element.find("span");
-    expect(spans.eq(0)).toBeHidden();
-    expect(spans.eq(1)).toBeHidden();
-    expect(spans.eq(2)).toBeHidden();
-    expect(spans.eq(3)).toBeHidden();
-  });
-});
+      $rootScope.show = false;
+      element = $compile(
+        "<div></div>" +
+          '<div ng-repeat-start="i in [1,2]">{{i}}A</div>' +
+          "<span ng-multi-bind-start=\"'.'\"></span>" +
+          "<span ng-multi-bind-end></span>" +
+          "<div ng-repeat-end>{{i}}B;</div>" +
+          "<div></div>",
+      )($rootScope);
+      $rootScope.$digest();
+      element = jqLite(element[0].parentNode.childNodes); // reset because repeater is top level.
+      expect(element.text()).toEqual("1A..1B;2A..2B;");
+    });
 
-// TODO ANIMATIONS
-// describe("$animate animation hooks", () => {
-//   beforeEach(module("ngAnimateMock"));
+    it("should group on nested groups of same directive", () => {
+      $rootScope.show = false;
+      element = $compile(
+        "<div></div>" +
+          '<div ng-repeat-start="i in [1,2]">{{i}}(</div>' +
+          '<span ng-repeat-start="j in [2,3]">{{j}}-</span>' +
+          "<span ng-repeat-end>{{j}}</span>" +
+          "<div ng-repeat-end>){{i}};</div>" +
+          "<div></div>",
+      )($rootScope);
+      $rootScope.$digest();
+      element = jqLite(element[0].parentNode.childNodes); // reset because repeater is top level.
+      expect(element.text()).toEqual("1(2-23-3)1;2(2-23-3)2;");
+    });
 
-//   it("should automatically fire the addClass and removeClass animation hooks", () => {
-//     let data;
-//     const element = jqLite('<div class="{{val1}} {{val2}} fire"></div>');
-//     $compile(element)($rootScope);
+    it("should set up and destroy the transclusion scopes correctly", () => {
+      element = $compile(
+        "<div>" +
+          '<div ng-if-start="val0"><span ng-if="val1"></span></div>' +
+          '<div ng-if-end><span ng-if="val2"></span></div>' +
+          "</div>",
+      )($rootScope);
+      $rootScope.$apply("val0 = true; val1 = true; val2 = true");
 
-//     $rootScope.$digest();
+      // At this point we should have something like:
+      //
+      // <div class="ng-scope">
+      //
+      //   <!-- ngIf: val0 -->
+      //
+      //   <div ng-if-start="val0" class="ng-scope">
+      //     <!-- ngIf: val1 -->
+      //     <span ng-if="val1" class="ng-scope"></span>
+      //     <!-- end ngIf: val1 -->
+      //   </div>
+      //
+      //   <div ng-if-end="" class="ng-scope">
+      //     <!-- ngIf: val2 -->
+      //     <span ng-if="val2" class="ng-scope"></span>
+      //     <!-- end ngIf: val2 -->
+      //   </div>
+      //
+      //   <!-- end ngIf: val0 -->
+      // </div>
+      const ngIfStartScope = element.find("div").eq(0).scope();
+      const ngIfEndScope = element.find("div").eq(1).scope();
 
-//     expect(element.hasClass("fire")).toBe(true);
+      expect(ngIfStartScope.$id).toEqual(ngIfEndScope.$id);
 
-//     $rootScope.val1 = "ice";
-//     $rootScope.val2 = "rice";
-//     $rootScope.$digest();
+      const ngIf1Scope = element.find("span").eq(0).scope();
+      const ngIf2Scope = element.find("span").eq(1).scope();
 
-//     data = $animate.queue.shift();
-//     expect(data.event).toBe("addClass");
-//     expect(data.args[1]).toBe("ice rice");
+      expect(ngIf1Scope.$id).not.toEqual(ngIf2Scope.$id);
+      expect(ngIf1Scope.$parent.$id).toEqual(ngIf2Scope.$parent.$id);
 
-//     expect(element.hasClass("ice")).toBe(true);
-//     expect(element.hasClass("rice")).toBe(true);
-//     expect(element.hasClass("fire")).toBe(true);
+      $rootScope.$apply("val1 = false");
 
-//     $rootScope.val2 = "dice";
-//     $rootScope.$digest();
+      // Now we should have something like:
+      //
+      // <div class="ng-scope">
+      //   <!-- ngIf: val0 -->
+      //   <div ng-if-start="val0" class="ng-scope">
+      //     <!-- ngIf: val1 -->
+      //   </div>
+      //   <div ng-if-end="" class="ng-scope">
+      //     <!-- ngIf: val2 -->
+      //     <span ng-if="val2" class="ng-scope"></span>
+      //     <!-- end ngIf: val2 -->
+      //   </div>
+      //   <!-- end ngIf: val0 -->
+      // </div>
 
-//     data = $animate.queue.shift();
-//     expect(data.event).toBe("addClass");
-//     expect(data.args[1]).toBe("dice");
+      expect(ngIfStartScope.$$destroyed).not.toEqual(true);
+      expect(ngIf1Scope.$$destroyed).toEqual(true);
+      expect(ngIf2Scope.$$destroyed).not.toEqual(true);
 
-//     data = $animate.queue.shift();
-//     expect(data.event).toBe("removeClass");
-//     expect(data.args[1]).toBe("rice");
+      $rootScope.$apply("val0 = false");
 
-//     expect(element.hasClass("ice")).toBe(true);
-//     expect(element.hasClass("dice")).toBe(true);
-//     expect(element.hasClass("fire")).toBe(true);
+      // Now we should have something like:
+      //
+      // <div class="ng-scope">
+      //   <!-- ngIf: val0 -->
+      // </div>
 
-//     $rootScope.val1 = "";
-//     $rootScope.val2 = "";
-//     $rootScope.$digest();
+      expect(ngIfStartScope.$$destroyed).toEqual(true);
+      expect(ngIf1Scope.$$destroyed).toEqual(true);
+      expect(ngIf2Scope.$$destroyed).toEqual(true);
+    });
 
-//     data = $animate.queue.shift();
-//     expect(data.event).toBe("removeClass");
-//     expect(data.args[1]).toBe("ice dice");
+    it("should set up and destroy the transclusion scopes correctly", () => {
+      element = $compile(
+        "<div>" +
+          '<div ng-repeat-start="val in val0" ng-if="val1"></div>' +
+          '<div ng-repeat-end ng-if="val2"></div>' +
+          "</div>",
+      )($rootScope);
 
-//     expect(element.hasClass("ice")).toBe(false);
-//     expect(element.hasClass("dice")).toBe(false);
-//     expect(element.hasClass("fire")).toBe(true);
-//   });
-// });
+      // To begin with there is (almost) nothing:
+      // <div class="ng-scope">
+      //   <!-- ngRepeat: val in val0 -->
+      // </div>
 
-describe("element replacement", () => {
-  it("should broadcast $destroy only on removed elements, not replaced", () => {
-    const linkCalls = [];
-    const destroyCalls = [];
+      expect(element.scope().$id).toEqual($rootScope.$id);
 
-    module
-      .directive("replace", () => ({
+      // Now we create all the elements
+      $rootScope.$apply("val0 = [1]; val1 = true; val2 = true");
+
+      // At this point we have:
+      //
+      // <div class="ng-scope">
+      //
+      //   <!-- ngRepeat: val in val0 -->
+      //   <!-- ngIf: val1 -->
+      //   <div ng-repeat-start="val in val0" class="ng-scope">
+      //   </div>
+      //   <!-- end ngIf: val1 -->
+      //
+      //   <!-- ngIf: val2 -->
+      //   <div ng-repeat-end="" class="ng-scope">
+      //   </div>
+      //   <!-- end ngIf: val2 -->
+      //   <!-- end ngRepeat: val in val0 -->
+      // </div>
+      const ngIf1Scope = element.find("div").eq(0).scope();
+      const ngIf2Scope = element.find("div").eq(1).scope();
+      const ngRepeatScope = ngIf1Scope.$parent;
+
+      expect(ngIf1Scope.$id).not.toEqual(ngIf2Scope.$id);
+      expect(ngIf1Scope.$parent.$id).toEqual(ngRepeatScope.$id);
+      expect(ngIf2Scope.$parent.$id).toEqual(ngRepeatScope.$id);
+
+      // What is happening here??
+      // We seem to have a repeater scope which doesn't actually match to any element
+      expect(ngRepeatScope.$parent.$id).toEqual($rootScope.$id);
+
+      // Now remove the first ngIf element from the first item in the repeater
+      $rootScope.$apply("val1 = false");
+
+      // At this point we should have:
+      //
+      // <div class="ng-scope">
+      //   <!-- ngRepeat: val in val0 -->
+      //
+      //   <!-- ngIf: val1 -->
+      //
+      //   <!-- ngIf: val2 -->
+      //   <div ng-repeat-end="" ng-if="val2" class="ng-scope"></div>
+      //   <!-- end ngIf: val2 -->
+      //
+      //   <!-- end ngRepeat: val in val0 -->
+      // </div>
+      //
+      expect(ngRepeatScope.$$destroyed).toEqual(false);
+      expect(ngIf1Scope.$$destroyed).toEqual(true);
+      expect(ngIf2Scope.$$destroyed).toEqual(false);
+
+      // Now remove the second ngIf element from the first item in the repeater
+      $rootScope.$apply("val2 = false");
+
+      // We are mostly back to where we started
+      //
+      // <div class="ng-scope">
+      //   <!-- ngRepeat: val in val0 -->
+      //   <!-- ngIf: val1 -->
+      //   <!-- ngIf: val2 -->
+      //   <!-- end ngRepeat: val in val0 -->
+      // </div>
+
+      expect(ngRepeatScope.$$destroyed).toEqual(false);
+      expect(ngIf1Scope.$$destroyed).toEqual(true);
+      expect(ngIf2Scope.$$destroyed).toEqual(true);
+
+      // Finally remove the repeat items
+      $rootScope.$apply("val0 = []");
+
+      // Somehow this ngRepeat scope knows how to destroy itself...
+      expect(ngRepeatScope.$$destroyed).toEqual(true);
+      expect(ngIf1Scope.$$destroyed).toEqual(true);
+      expect(ngIf2Scope.$$destroyed).toEqual(true);
+    });
+
+    it("should throw error if unterminated", () => {
+      module.directive("foo", () => ({
         multiElement: true,
-        replace: true,
-        templateUrl: "template123",
-      }))
-      .directive("foo", () => ({
-        priority: 1, // before the replace directive
-        link($scope, $element, $attrs) {
-          linkCalls.push($attrs.foo);
-          $element.on("$destroy", () => {
-            destroyCalls.push($attrs.foo);
-          });
-        },
       }));
 
-    $templateCache.put("template123", "<p></p>");
-
-    $compile(
-      '<div replace-start foo="1"><span foo="1.1"></span></div>' +
-        '<div foo="2"><span foo="2.1"></span></div>' +
-        '<div replace-end foo="3"><span foo="3.1"></span></div>',
-    )($rootScope);
-
-    expect(linkCalls).toEqual(["2", "3"]);
-    expect(destroyCalls).toEqual([]);
-    $rootScope.$apply();
-    expect(linkCalls).toEqual(["2", "3", "1"]);
-    expect(destroyCalls).toEqual(["2", "3"]);
-  });
-
-  function getAll($root) {
-    // check for .querySelectorAll to support comment nodes
-    return [$root[0]].concat(
-      $root[0].querySelectorAll
-        ? sliceArgs($root[0].querySelectorAll("*"))
-        : [],
-    );
-  }
-
-  function testCompileLinkDataCleanup(template) {
-    const toCompile = jqLite(template);
-
-    const preCompiledChildren = getAll(toCompile);
-    forEach(preCompiledChildren, (element, i) => {
-      jqLite.data(element, "foo", `template#${i}`);
+      expect(() => {
+        element = $compile("<div><span foo-start></span></div>");
+      }).toThrowError(/uterdir/);
     });
 
-    const linkedElements = $compile(toCompile)($rootScope);
-    $rootScope.$apply();
-    linkedElements.remove();
+    it("should correctly collect ranges on multiple directives on a single element", () => {
+      module.directive("emptyDirective", () =>
+        ({
+          multiElement: true,
+          link(scope, element) {
+            element.data("x", "abc");
+          },
+        }).directive("rangeDirective", () => ({
+          multiElement: true,
+          link(scope) {
+            scope.x = "X";
+            scope.y = "Y";
+          },
+        })),
+      );
 
-    forEach(preCompiledChildren, (element, i) => {
-      expect(jqLite.hasData(element)).toBe(false, `template#${i}`);
-    });
-    forEach(getAll(linkedElements), (element, i) => {
-      expect(jqLite.hasData(element)).toBe(false, `linked#${i}`);
-    });
-  }
+      element = $compile(
+        "<div>" +
+          "<div range-directive-start empty-directive>{{x}}</div>" +
+          "<div range-directive-end>{{y}}</div>" +
+          "</div>",
+      )($rootScope);
 
-  it("should clean data of element-transcluded link-cloned elements", () => {
-    testCompileLinkDataCleanup(
-      '<div><div ng-repeat-start="i in [1,2]"><span></span></div><div ng-repeat-end></div></div>',
-    );
-  });
-
-  it("should clean data of element-transcluded elements", () => {
-    testCompileLinkDataCleanup(
-      '<div ng-if-start="false"><span><span/></div><span></span><div ng-if-end><span></span></div>',
-    );
-  });
-
-  function testReplaceElementCleanup(dirOptions) {
-    const template = "<div></div>";
-    module.directive("theDir", () => ({
-      multiElement: true,
-      replace: dirOptions.replace,
-      transclude: dirOptions.transclude,
-      template: dirOptions.asyncTemplate ? undefined : template,
-      templateUrl: dirOptions.asyncTemplate
-        ? "the-dir-template-url"
-        : undefined,
-    }));
-
-    $templateCache.put("the-dir-template-url", template);
-
-    testCompileLinkDataCleanup(
-      "<div>" +
-        "<div the-dir-start><span></span></div>" +
-        "<div><span></span><span></span></div>" +
-        "<div the-dir-end><span></span></div>" +
-        "</div>",
-    );
-  }
-  it("should clean data of elements removed for directive template", () => {
-    testReplaceElementCleanup({});
-  });
-  it("should clean data of elements removed for directive templateUrl", () => {
-    testReplaceElementCleanup({ asyncTemplate: true });
-  });
-  it("should clean data of elements transcluded into directive template", () => {
-    testReplaceElementCleanup({ transclude: true });
-  });
-  it("should clean data of elements transcluded into directive templateUrl", () => {
-    testReplaceElementCleanup({ transclude: true, asyncTemplate: true });
-  });
-  it("should clean data of elements replaced with directive template", () => {
-    testReplaceElementCleanup({ replace: true });
-  });
-  it("should clean data of elements replaced with directive templateUrl", () => {
-    testReplaceElementCleanup({ replace: true, asyncTemplate: true });
-  });
-});
-
-describe("component helper", () => {
-  it("should return the module", () => {
-    const myModule = module;
-    expect(myModule.component("myComponent", {})).toBe(myModule);
-    expect(myModule.component({})).toBe(myModule);
-  });
-
-  it("should register a directive", () => {
-    module.component("myComponent", {
-      template: "<div>SUCCESS</div>",
-      controller() {
-        log.push("OK");
-      },
+      $rootScope.$digest();
+      expect(element.text()).toBe("XY");
+      expect(angular.element(element[0].firstChild).data("x")).toBe("abc");
     });
 
-    element = $compile("<my-component></my-component>")($rootScope);
-    expect(element.find("div").text()).toEqual("SUCCESS");
-    expect(log[0]).toEqual("OK");
+    it("should throw error if unterminated (containing termination as a child)", () => {
+      module.directive("foo", () => ({
+        multiElement: true,
+      }));
+
+      expect(() => {
+        element = $compile(
+          "<div><span foo-start><span foo-end></span></span></div>",
+        );
+      }).toThrow(
+        "$compile",
+        "uterdir",
+        "Unterminated attribute, found 'foo-start' but no matching 'foo-end' found.",
+      );
+    });
+
+    it("should support data- and x- prefix", () => {
+      $rootScope.show = false;
+      element = $compile(
+        "<div>" +
+          '<span data-ng-show-start="show"></span>' +
+          "<span data-ng-show-end></span>" +
+          '<span x-ng-show-start="show"></span>' +
+          "<span x-ng-show-end></span>" +
+          "</div>",
+      )($rootScope);
+      $rootScope.$digest();
+      const spans = element.find("span");
+      expect(spans.eq(0)).toBeHidden();
+      expect(spans.eq(1)).toBeHidden();
+      expect(spans.eq(2)).toBeHidden();
+      expect(spans.eq(3)).toBeHidden();
+    });
   });
 
-  it("should register multiple directives when object passed as first parameter", () => {
-    let log = "";
-    module.component({
-      fooComponent: {
-        template: "<div>FOO SUCCESS</div>",
+  // TODO ANIMATIONS
+  // describe("$animate animation hooks", () => {
+  //   beforeEach(module("ngAnimateMock"));
+
+  //   it("should automatically fire the addClass and removeClass animation hooks", () => {
+  //     let data;
+  //     const element = jqLite('<div class="{{val1}} {{val2}} fire"></div>');
+  //     $compile(element)($rootScope);
+
+  //     $rootScope.$digest();
+
+  //     expect(element.hasClass("fire")).toBe(true);
+
+  //     $rootScope.val1 = "ice";
+  //     $rootScope.val2 = "rice";
+  //     $rootScope.$digest();
+
+  //     data = $animate.queue.shift();
+  //     expect(data.event).toBe("addClass");
+  //     expect(data.args[1]).toBe("ice rice");
+
+  //     expect(element.hasClass("ice")).toBe(true);
+  //     expect(element.hasClass("rice")).toBe(true);
+  //     expect(element.hasClass("fire")).toBe(true);
+
+  //     $rootScope.val2 = "dice";
+  //     $rootScope.$digest();
+
+  //     data = $animate.queue.shift();
+  //     expect(data.event).toBe("addClass");
+  //     expect(data.args[1]).toBe("dice");
+
+  //     data = $animate.queue.shift();
+  //     expect(data.event).toBe("removeClass");
+  //     expect(data.args[1]).toBe("rice");
+
+  //     expect(element.hasClass("ice")).toBe(true);
+  //     expect(element.hasClass("dice")).toBe(true);
+  //     expect(element.hasClass("fire")).toBe(true);
+
+  //     $rootScope.val1 = "";
+  //     $rootScope.val2 = "";
+  //     $rootScope.$digest();
+
+  //     data = $animate.queue.shift();
+  //     expect(data.event).toBe("removeClass");
+  //     expect(data.args[1]).toBe("ice dice");
+
+  //     expect(element.hasClass("ice")).toBe(false);
+  //     expect(element.hasClass("dice")).toBe(false);
+  //     expect(element.hasClass("fire")).toBe(true);
+  //   });
+  // });
+
+  describe("element replacement", () => {
+    it("should broadcast $destroy only on removed elements, not replaced", () => {
+      const linkCalls = [];
+      const destroyCalls = [];
+
+      module
+        .directive("replace", () => ({
+          multiElement: true,
+          replace: true,
+          templateUrl: "template123",
+        }))
+        .directive("foo", () => ({
+          priority: 1, // before the replace directive
+          link($scope, $element, $attrs) {
+            linkCalls.push($attrs.foo);
+            $element.on("$destroy", () => {
+              destroyCalls.push($attrs.foo);
+            });
+          },
+        }));
+
+      $templateCache.put("template123", "<p></p>");
+
+      $compile(
+        '<div replace-start foo="1"><span foo="1.1"></span></div>' +
+          '<div foo="2"><span foo="2.1"></span></div>' +
+          '<div replace-end foo="3"><span foo="3.1"></span></div>',
+      )($rootScope);
+
+      expect(linkCalls).toEqual(["2", "3"]);
+      expect(destroyCalls).toEqual([]);
+      $rootScope.$apply();
+      expect(linkCalls).toEqual(["2", "3", "1"]);
+      expect(destroyCalls).toEqual(["2", "3"]);
+    });
+
+    function getAll($root) {
+      // check for .querySelectorAll to support comment nodes
+      return [$root[0]].concat(
+        $root[0].querySelectorAll
+          ? sliceArgs($root[0].querySelectorAll("*"))
+          : [],
+      );
+    }
+
+    function testCompileLinkDataCleanup(template) {
+      const toCompile = jqLite(template);
+
+      const preCompiledChildren = getAll(toCompile);
+      forEach(preCompiledChildren, (element, i) => {
+        jqLite.data(element, "foo", `template#${i}`);
+      });
+
+      const linkedElements = $compile(toCompile)($rootScope);
+      $rootScope.$apply();
+      linkedElements.remove();
+
+      forEach(preCompiledChildren, (element, i) => {
+        expect(jqLite.hasData(element)).toBe(false, `template#${i}`);
+      });
+      forEach(getAll(linkedElements), (element, i) => {
+        expect(jqLite.hasData(element)).toBe(false, `linked#${i}`);
+      });
+    }
+
+    it("should clean data of element-transcluded link-cloned elements", () => {
+      testCompileLinkDataCleanup(
+        '<div><div ng-repeat-start="i in [1,2]"><span></span></div><div ng-repeat-end></div></div>',
+      );
+    });
+
+    it("should clean data of element-transcluded elements", () => {
+      testCompileLinkDataCleanup(
+        '<div ng-if-start="false"><span><span/></div><span></span><div ng-if-end><span></span></div>',
+      );
+    });
+
+    function testReplaceElementCleanup(dirOptions) {
+      const template = "<div></div>";
+      module.directive("theDir", () => ({
+        multiElement: true,
+        replace: dirOptions.replace,
+        transclude: dirOptions.transclude,
+        template: dirOptions.asyncTemplate ? undefined : template,
+        templateUrl: dirOptions.asyncTemplate
+          ? "the-dir-template-url"
+          : undefined,
+      }));
+
+      $templateCache.put("the-dir-template-url", template);
+
+      testCompileLinkDataCleanup(
+        "<div>" +
+          "<div the-dir-start><span></span></div>" +
+          "<div><span></span><span></span></div>" +
+          "<div the-dir-end><span></span></div>" +
+          "</div>",
+      );
+    }
+    it("should clean data of elements removed for directive template", () => {
+      testReplaceElementCleanup({});
+    });
+    it("should clean data of elements removed for directive templateUrl", () => {
+      testReplaceElementCleanup({ asyncTemplate: true });
+    });
+    it("should clean data of elements transcluded into directive template", () => {
+      testReplaceElementCleanup({ transclude: true });
+    });
+    it("should clean data of elements transcluded into directive templateUrl", () => {
+      testReplaceElementCleanup({ transclude: true, asyncTemplate: true });
+    });
+    it("should clean data of elements replaced with directive template", () => {
+      testReplaceElementCleanup({ replace: true });
+    });
+    it("should clean data of elements replaced with directive templateUrl", () => {
+      testReplaceElementCleanup({ replace: true, asyncTemplate: true });
+    });
+  });
+
+  describe("component helper", () => {
+    it("should return the module", () => {
+      const myModule = module;
+      expect(myModule.component("myComponent", {})).toBe(myModule);
+      expect(myModule.component({})).toBe(myModule);
+    });
+
+    it("should register a directive", () => {
+      module.component("myComponent", {
+        template: "<div>SUCCESS</div>",
         controller() {
-          log += "FOO:OK";
+          log.push("OK");
         },
-      },
-      barComponent: {
-        template: "<div>BAR SUCCESS</div>",
+      });
+
+      element = $compile("<my-component></my-component>")($rootScope);
+      expect(element.find("div").text()).toEqual("SUCCESS");
+      expect(log[0]).toEqual("OK");
+    });
+
+    it("should register multiple directives when object passed as first parameter", () => {
+      let log = "";
+      module.component({
+        fooComponent: {
+          template: "<div>FOO SUCCESS</div>",
+          controller() {
+            log += "FOO:OK";
+          },
+        },
+        barComponent: {
+          template: "<div>BAR SUCCESS</div>",
+          controller() {
+            log += "BAR:OK";
+          },
+        },
+      });
+
+      const fooElement = $compile("<foo-component></foo-component>")(
+        $rootScope,
+      );
+      const barElement = $compile("<bar-component></bar-component>")(
+        $rootScope,
+      );
+
+      expect(fooElement.find("div").text()).toEqual("FOO SUCCESS");
+      expect(barElement.find("div").text()).toEqual("BAR SUCCESS");
+      expect(log[0]).toEqual("FOO:OKBAR:OK");
+    });
+
+    it("should register a directive via $compileProvider.component()", () => {
+      module.component("myComponent", {
+        template: "<div>SUCCESS</div>",
         controller() {
-          log += "BAR:OK";
+          log.push("OK");
         },
-      },
+      });
+      element = $compile("<my-component></my-component>")($rootScope);
+      expect(element.find("div").text()).toEqual("SUCCESS");
+      expect(log[0]).toEqual("OK");
     });
 
-    const fooElement = $compile("<foo-component></foo-component>")($rootScope);
-    const barElement = $compile("<bar-component></bar-component>")($rootScope);
-
-    expect(fooElement.find("div").text()).toEqual("FOO SUCCESS");
-    expect(barElement.find("div").text()).toEqual("BAR SUCCESS");
-    expect(log[0]).toEqual("FOO:OKBAR:OK");
-  });
-
-  it("should register a directive via $compileProvider.component()", () => {
-    module.component("myComponent", {
-      template: "<div>SUCCESS</div>",
-      controller() {
-        log.push("OK");
-      },
-    });
-    element = $compile("<my-component></my-component>")($rootScope);
-    expect(element.find("div").text()).toEqual("SUCCESS");
-    expect(log[0]).toEqual("OK");
-  });
-
-  it("should add additional annotations to directive factory", () => {
-    const myModule = module.component("myComponent", {
-      $canActivate: "canActivate",
-      $routeConfig: "routeConfig",
-      $customAnnotation: "XXX",
-    });
-    expect(myModule._invokeQueue.pop().pop()[1]).toEqual(
-      jasmine.objectContaining({
+    it("should add additional annotations to directive factory", () => {
+      const myModule = module.component("myComponent", {
         $canActivate: "canActivate",
         $routeConfig: "routeConfig",
         $customAnnotation: "XXX",
-      }),
-    );
-  });
-
-  it("should expose additional annotations on the directive definition object", () => {
-    module.component("myComponent", {
-      $canActivate: "canActivate",
-      $routeConfig: "routeConfig",
-      $customAnnotation: "XXX",
-    });
-
-    expect(myComponentDirective[0]).toEqual(
-      jasmine.objectContaining({
-        $canActivate: "canActivate",
-        $routeConfig: "routeConfig",
-        $customAnnotation: "XXX",
-      }),
-    );
-  });
-
-  it("should support custom annotations if the controller is named", () => {
-    module.component("myComponent", {
-      $customAnnotation: "XXX",
-      controller: "SomeNamedController",
-    });
-    module("my");
-    inject((myComponentDirective) => {
-      expect(myComponentDirective[0]).toEqual(
+      });
+      expect(myModule._invokeQueue.pop().pop()[1]).toEqual(
         jasmine.objectContaining({
+          $canActivate: "canActivate",
+          $routeConfig: "routeConfig",
           $customAnnotation: "XXX",
         }),
       );
     });
-  });
 
-  it("should provide a new empty controller if none is specified", () => {
-    module
-      .component("myComponent1", { $customAnnotation1: "XXX" })
-      .component("myComponent2", { $customAnnotation2: "YYY" });
+    it("should expose additional annotations on the directive definition object", () => {
+      module.component("myComponent", {
+        $canActivate: "canActivate",
+        $routeConfig: "routeConfig",
+        $customAnnotation: "XXX",
+      });
 
-    module("my");
-
-    inject((myComponent1Directive, myComponent2Directive) => {
-      const ctrl1 = myComponent1Directive[0].controller;
-      const ctrl2 = myComponent2Directive[0].controller;
-
-      expect(ctrl1).not.toBe(ctrl2);
-      expect(ctrl1.$customAnnotation1).toBe("XXX");
-      expect(ctrl1.$customAnnotation2).toBeUndefined();
-      expect(ctrl2.$customAnnotation1).toBeUndefined();
-      expect(ctrl2.$customAnnotation2).toBe("YYY");
-    });
-  });
-
-  it("should return ddo with reasonable defaults", () => {
-    module.component("myComponent", {});
-    module("my");
-    inject((myComponentDirective) => {
       expect(myComponentDirective[0]).toEqual(
         jasmine.objectContaining({
-          controller: jasmine.any(Function),
-          controllerAs: "$ctrl",
-          template: "",
-          templateUrl: undefined,
-          transclude: undefined,
-          scope: {},
-          bindToController: {},
-          restrict: "E",
+          $canActivate: "canActivate",
+          $routeConfig: "routeConfig",
+          $customAnnotation: "XXX",
         }),
       );
     });
-  });
 
-  it("should return ddo with assigned options", () => {
-    function myCtrl() {}
-    module.component("myComponent", {
-      controller: myCtrl,
-      controllerAs: "ctrl",
-      template: "abc",
-      templateUrl: "def.html",
-      transclude: true,
-      bindings: { abc: "=" },
+    it("should support custom annotations if the controller is named", () => {
+      module.component("myComponent", {
+        $customAnnotation: "XXX",
+        controller: "SomeNamedController",
+      });
+      module("my");
+      inject((myComponentDirective) => {
+        expect(myComponentDirective[0]).toEqual(
+          jasmine.objectContaining({
+            $customAnnotation: "XXX",
+          }),
+        );
+      });
     });
-    module("my");
-    inject((myComponentDirective) => {
-      expect(myComponentDirective[0]).toEqual(
-        jasmine.objectContaining({
-          controller: myCtrl,
-          controllerAs: "ctrl",
-          template: "abc",
-          templateUrl: "def.html",
-          transclude: true,
-          scope: {},
-          bindToController: { abc: "=" },
-          restrict: "E",
-        }),
-      );
+
+    it("should provide a new empty controller if none is specified", () => {
+      module
+        .component("myComponent1", { $customAnnotation1: "XXX" })
+        .component("myComponent2", { $customAnnotation2: "YYY" });
+
+      module("my");
+
+      inject((myComponent1Directive, myComponent2Directive) => {
+        const ctrl1 = myComponent1Directive[0].controller;
+        const ctrl2 = myComponent2Directive[0].controller;
+
+        expect(ctrl1).not.toBe(ctrl2);
+        expect(ctrl1.$customAnnotation1).toBe("XXX");
+        expect(ctrl1.$customAnnotation2).toBeUndefined();
+        expect(ctrl2.$customAnnotation1).toBeUndefined();
+        expect(ctrl2.$customAnnotation2).toBe("YYY");
+      });
     });
-  });
 
-  it("should allow passing injectable functions as template/templateUrl", () => {
-    let log = "";
-    module
-      .component("myComponent", {
-        template($element, $attrs, myValue) {
-          log += `template,${$element},${$attrs},${myValue}\n`;
-        },
-        templateUrl($element, $attrs, myValue) {
-          log += `templateUrl,${$element},${$attrs},${myValue}\n`;
-        },
-      })
-      .value("myValue", "blah");
+    it("should return ddo with reasonable defaults", () => {
+      module.component("myComponent", {});
+      module("my");
+      inject((myComponentDirective) => {
+        expect(myComponentDirective[0]).toEqual(
+          jasmine.objectContaining({
+            controller: jasmine.any(Function),
+            controllerAs: "$ctrl",
+            template: "",
+            templateUrl: undefined,
+            transclude: undefined,
+            scope: {},
+            bindToController: {},
+            restrict: "E",
+          }),
+        );
+      });
+    });
 
-    myComponentDirective[0].template("a", "b");
-    myComponentDirective[0].templateUrl("c", "d");
-    expect(log[0]).toEqual("template,a,b,blah\ntemplateUrl,c,d,blah\n");
-  });
+    it("should return ddo with assigned options", () => {
+      function myCtrl() {}
+      module.component("myComponent", {
+        controller: myCtrl,
+        controllerAs: "ctrl",
+        template: "abc",
+        templateUrl: "def.html",
+        transclude: true,
+        bindings: { abc: "=" },
+      });
+      module("my");
+      inject((myComponentDirective) => {
+        expect(myComponentDirective[0]).toEqual(
+          jasmine.objectContaining({
+            controller: myCtrl,
+            controllerAs: "ctrl",
+            template: "abc",
+            templateUrl: "def.html",
+            transclude: true,
+            scope: {},
+            bindToController: { abc: "=" },
+            restrict: "E",
+          }),
+        );
+      });
+    });
 
-  it("should allow passing injectable arrays as template/templateUrl", () => {
-    let log = "";
-    module
-      .component("myComponent", {
-        template: [
-          "$element",
-          "$attrs",
-          "myValue",
-          function ($element, $attrs, myValue) {
+    it("should allow passing injectable functions as template/templateUrl", () => {
+      let log = "";
+      module
+        .component("myComponent", {
+          template($element, $attrs, myValue) {
             log += `template,${$element},${$attrs},${myValue}\n`;
           },
-        ],
-        templateUrl: [
-          "$element",
-          "$attrs",
-          "myValue",
-          function ($element, $attrs, myValue) {
+          templateUrl($element, $attrs, myValue) {
             log += `templateUrl,${$element},${$attrs},${myValue}\n`;
           },
-        ],
-      })
-      .value("myValue", "blah");
+        })
+        .value("myValue", "blah");
 
-    myComponentDirective[0].template("a", "b");
-    myComponentDirective[0].templateUrl("c", "d");
-    expect(log[0]).toEqual("template,a,b,blah\ntemplateUrl,c,d,blah\n");
-  });
-
-  it("should allow passing transclude as object", () => {
-    module.component("myComponent", {
-      transclude: {},
+      myComponentDirective[0].template("a", "b");
+      myComponentDirective[0].templateUrl("c", "d");
+      expect(log[0]).toEqual("template,a,b,blah\ntemplateUrl,c,d,blah\n");
     });
 
-    expect(myComponentDirective[0]).toEqual(
-      jasmine.objectContaining({
+    it("should allow passing injectable arrays as template/templateUrl", () => {
+      let log = "";
+      module
+        .component("myComponent", {
+          template: [
+            "$element",
+            "$attrs",
+            "myValue",
+            function ($element, $attrs, myValue) {
+              log += `template,${$element},${$attrs},${myValue}\n`;
+            },
+          ],
+          templateUrl: [
+            "$element",
+            "$attrs",
+            "myValue",
+            function ($element, $attrs, myValue) {
+              log += `templateUrl,${$element},${$attrs},${myValue}\n`;
+            },
+          ],
+        })
+        .value("myValue", "blah");
+
+      myComponentDirective[0].template("a", "b");
+      myComponentDirective[0].templateUrl("c", "d");
+      expect(log[0]).toEqual("template,a,b,blah\ntemplateUrl,c,d,blah\n");
+    });
+
+    it("should allow passing transclude as object", () => {
+      module.component("myComponent", {
         transclude: {},
-      }),
-    );
-  });
+      });
 
-  it("should give ctrl as syntax priority over controllerAs", () => {
-    module.component("myComponent", {
-      controller: "MyCtrl as vm",
+      expect(myComponentDirective[0]).toEqual(
+        jasmine.objectContaining({
+          transclude: {},
+        }),
+      );
     });
 
-    expect(myComponentDirective[0]).toEqual(
-      jasmine.objectContaining({
-        controllerAs: "vm",
-      }),
-    );
-  });
-});
+    it("should give ctrl as syntax priority over controllerAs", () => {
+      module.component("myComponent", {
+        controller: "MyCtrl as vm",
+      });
 
-describe("$$createComment", () => {
-  it("should create empty comments if `debugInfoEnabled` is false", () => {
-    module(($compileProvider) => {
-      $compileProvider.debugInfoEnabled(false);
-    });
-
-    inject(($compile) => {
-      const comment = $compile.$$createComment("foo", "bar");
-      expect(comment.data).toBe("");
+      expect(myComponentDirective[0]).toEqual(
+        jasmine.objectContaining({
+          controllerAs: "vm",
+        }),
+      );
     });
   });
 
-  it("should create descriptive comments if `debugInfoEnabled` is true", () => {
-    module(($compileProvider) => {
-      $compileProvider.debugInfoEnabled(true);
+  describe("$$createComment", () => {
+    it("should create empty comments if `debugInfoEnabled` is false", () => {
+      module(($compileProvider) => {
+        $compileProvider.debugInfoEnabled(false);
+      });
+
+      inject(($compile) => {
+        const comment = $compile.$$createComment("foo", "bar");
+        expect(comment.data).toBe("");
+      });
     });
 
-    inject(($compile) => {
-      const comment = $compile.$$createComment("foo", "bar");
-      expect(comment.data).toBe(" foo: bar ");
+    it("should create descriptive comments if `debugInfoEnabled` is true", () => {
+      module(($compileProvider) => {
+        $compileProvider.debugInfoEnabled(true);
+      });
+
+      inject(($compile) => {
+        const comment = $compile.$$createComment("foo", "bar");
+        expect(comment.data).toBe(" foo: bar ");
+      });
     });
   });
 });
