@@ -24,7 +24,7 @@ import { forEach, isDefined, isPromiseLike, isUndefined } from "./utils";
  * @param {string} url URL of the request.
  */
 export function $xhrFactoryProvider() {
-  this.$get = function () {
+  this.$get = () => {
     return function createXhr() {
       return new window.XMLHttpRequest();
     };
