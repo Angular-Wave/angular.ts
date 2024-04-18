@@ -1530,3 +1530,54 @@ function flushApplyAsync() {
   }
   applyAsyncId = null;
 }
+
+/**
+ * Counts all the watchers of direct and indirect child scopes of the current scope.
+ *
+ * The watchers of the current scope are included in the count and so are all the watchers of
+ * isolate child scopes.
+ * @param {Scope} scope
+ * @returns {number} Total number of watchers.
+ */
+export function countWatchers(scope) {
+  var count = scope.$$watchers ? scope.$$watchers.length : 0; // include the current scope
+  var pendingChildHeads = [scope.$$childHead];
+  var currentScope;
+
+  while (pendingChildHeads.length) {
+    currentScope = pendingChildHeads.shift();
+
+    while (currentScope) {
+      count += currentScope.$$watchers ? currentScope.$$watchers.length : 0;
+      pendingChildHeads.push(currentScope.$$childHead);
+      currentScope = currentScope.$$nextSibling;
+    }
+  }
+
+  return count;
+}
+
+/**
+ * Counts all the direct and indirect child scopes of the current scope.
+ *
+ * The current scope is excluded from the count. The count includes all isolate child scopes.
+ * @param {Scope} scope
+ * @returns {number} Total number of child scopes.
+ */
+export function countChildScopes(scope) {
+  var count = 0; // exclude the current scope
+  var pendingChildHeads = [scope.$$childHead];
+  var currentScope;
+
+  while (pendingChildHeads.length) {
+    currentScope = pendingChildHeads.shift();
+
+    while (currentScope) {
+      count += 1;
+      pendingChildHeads.push(currentScope.$$childHead);
+      currentScope = currentScope.$$nextSibling;
+    }
+  }
+
+  return count;
+}
