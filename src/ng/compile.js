@@ -3537,7 +3537,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           // RECURSION
           // We only pass the isolate scope, if the isolate directive has a template,
           // otherwise the child elements do not belong to the isolate directive.
-          let scopeToChild = scope;
+          var scopeToChild = scope;
           if (
             newIsolateScopeDirective &&
             (newIsolateScopeDirective.template ||

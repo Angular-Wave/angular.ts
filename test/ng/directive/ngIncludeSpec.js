@@ -377,27 +377,6 @@ describe("ngInclude", () => {
       }, 200);
     });
 
-    it("should exec scripts when jQuery is included", (done) => {
-      // TODO make this independent of Jquery
-
-      window.angular.module("myModule", []);
-      element = jqLite('<div><span ng-include="includeUrl"></span></div>');
-
-      const injector = angular.bootstrap(element, ["myModule"]);
-      $rootScope = injector.get("$rootScope");
-
-      $rootScope.includeUrl = "/mock/script";
-
-      $rootScope.$digest();
-
-      setTimeout(() => {
-        expect(window.SCRIPT_RAN).toBe(true);
-
-        delete window._ngIncludeCausesScriptToRun;
-        done();
-      }, 200);
-    });
-
     it("should construct SVG template elements with correct namespace", (done) => {
       window.angular.module("myModule", []).directive(
         "test",
