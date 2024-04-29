@@ -1185,11 +1185,12 @@ export function convertTimezoneToLocal(date, timezone, reverse) {
 
 /**
  * Parses an escaped url query string into key-value pairs.
+ * @param {string} keyValue
  * @returns {Object.<string,boolean|Array>}
  */
-export function parseKeyValue(/** string */ keyValue) {
+export function parseKeyValue(keyValue) {
   const obj = {};
-  forEach((keyValue || "").split("&"), (keyValue) => {
+  (keyValue || "").split("&").forEach((keyValue) => {
     let splitPoint;
     let key;
     let val;
@@ -1239,17 +1240,14 @@ export function toKeyValue(obj) {
 /**
  * Tries to decode the URI component without throwing an exception.
  *
- * @param str value potential URI component to check.
- * @returns {boolean} True if `value` can be decoded
- * with the decodeURIComponent function.
+ * @param  {string} value potential URI component to check.
+ * @returns {string}
  */
 export function tryDecodeURIComponent(value) {
   try {
-    decodeURIComponent(value);
-    return true;
-  } catch {
-    // Ignore any invalid uri component.
-    return false;
+    return decodeURIComponent(value);
+  } catch (e) {
+    value;
   }
 }
 

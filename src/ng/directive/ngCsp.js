@@ -78,4 +78,5 @@
 // `ngCsp` is not implemented as a proper directive any more, because we need it be processed while
 // we bootstrap the app (before `$parse` is instantiated). For this reason, we just have the `csp()`
 // fn that looks for the `ng-csp` attribute anywhere in the current doc.
+// TODO MOVE CSP to PARSE CONFIG as this should not even be a directive
 */

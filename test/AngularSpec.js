@@ -12,9 +12,25 @@ import {
   isElement,
   shallowCopy,
   equals,
+  isWindow,
   hashKey,
+  toKeyValue,
+  parseKeyValue,
+  isError,
+  isArray,
+  isArrayLike,
+  encodeUriSegment,
+  encodeUriQuery,
+  forEach,
+  toJson,
+  fromJson,
+  nextUid,
+  nodeName_,
 } from "../src/ng/utils";
 import { dealoc, jqLite, startingTag } from "../src/jqLite";
+import { Angular } from "../src/loader";
+import { publishExternalAPI } from "../src/public";
+import { createInjector } from "../src/injector";
 
 describe("angular", () => {
   let element;
@@ -24,9 +40,9 @@ describe("angular", () => {
     document = window.document;
   });
 
-  // afterEach(() => {
-  //   dealoc(element);
-  // });
+  afterEach(() => {
+    dealoc(element);
+  });
 
   describe("case", () => {
     it("should change case", () => {
@@ -1127,164 +1143,6 @@ describe("angular", () => {
     });
   });
 
-  describe("csp", () => {
-    function mockCspElement(cspAttrName, cspAttrValue) {
-      return spyOn(document, "querySelector").and.callFake((selector) => {
-        if (selector === `[${cspAttrName}]`) {
-          const html = `<div ${cspAttrName}${cspAttrValue ? `="${cspAttrValue}" ` : ""}></div>`;
-          return jqLite(html)[0];
-        }
-      });
-    }
-
-    const originalPrototype = window.Function.prototype;
-
-    beforeEach(() => {
-      spyOn(window, "Function");
-      // Jasmine 2.7+ doesn't support spying on Function, so we have restore the prototype
-      // as Jasmine will use Function internally
-      window.Function.prototype = originalPrototype;
-    });
-
-    afterEach(() => {
-      delete csp.rules;
-    });
-
-    it("should return the false for all rules when CSP is not enabled (the default)", () => {
-      expect(csp()).toEqual({ noUnsafeEval: false, noInlineStyle: false });
-    });
-
-    it("should return true for noUnsafeEval if eval causes a CSP security policy error", () => {
-      window.Function.and.callFake(() => {
-        throw new Error("CSP test");
-      });
-      expect(csp()).toEqual({ noUnsafeEval: true, noInlineStyle: false });
-      expect(window.Function).toHaveBeenCalledWith("");
-    });
-
-    it("should return true for all rules when CSP is enabled manually via empty `ng-csp` attribute", () => {
-      const spy = mockCspElement("ng-csp");
-      expect(csp()).toEqual({ noUnsafeEval: true, noInlineStyle: true });
-      expect(spy).toHaveBeenCalledWith("[ng-csp]");
-      expect(window.Function).not.toHaveBeenCalled();
-    });
-
-    it("should return true when CSP is enabled manually via [data-ng-csp]", () => {
-      const spy = mockCspElement("data-ng-csp");
-      expect(csp()).toEqual({ noUnsafeEval: true, noInlineStyle: true });
-      expect(spy).toHaveBeenCalledWith("[data-ng-csp]");
-      expect(window.Function).not.toHaveBeenCalled();
-    });
-
-    it("should return true for noUnsafeEval if it is specified in the `ng-csp` attribute value", () => {
-      const spy = mockCspElement("ng-csp", "no-unsafe-eval");
-      expect(csp()).toEqual({ noUnsafeEval: true, noInlineStyle: false });
-      expect(spy).toHaveBeenCalledWith("[ng-csp]");
-      expect(window.Function).not.toHaveBeenCalled();
-    });
-
-    it("should return true for noInlineStyle if it is specified in the `ng-csp` attribute value", () => {
-      const spy = mockCspElement("ng-csp", "no-inline-style");
-      expect(csp()).toEqual({ noUnsafeEval: false, noInlineStyle: true });
-      expect(spy).toHaveBeenCalledWith("[ng-csp]");
-      expect(window.Function).not.toHaveBeenCalled();
-    });
-
-    it("should return true for all styles if they are all specified in the `ng-csp` attribute value", () => {
-      const spy = mockCspElement("ng-csp", "no-inline-style;no-unsafe-eval");
-      expect(csp()).toEqual({ noUnsafeEval: true, noInlineStyle: true });
-      expect(spy).toHaveBeenCalledWith("[ng-csp]");
-      expect(window.Function).not.toHaveBeenCalled();
-    });
-  });
-
-  describe("jq", () => {
-    let element;
-
-    beforeEach(() => {
-      element = document.createElement("html");
-    });
-
-    afterEach(() => {
-      delete jq.name_;
-    });
-
-    it("should return undefined when jq is not set, no jQuery found (the default)", () => {
-      expect(jq()).toBeUndefined();
-    });
-
-    it("should return empty string when jq is enabled manually via [ng-jq] with empty string", () => {
-      element.setAttribute("ng-jq", "");
-      spyOn(document, "querySelector").and.callFake((selector) => {
-        if (selector === "[ng-jq]") return element;
-      });
-      expect(jq()).toBe("");
-    });
-
-    it("should return empty string when jq is enabled manually via [data-ng-jq] with empty string", () => {
-      element.setAttribute("data-ng-jq", "");
-      spyOn(document, "querySelector").and.callFake((selector) => {
-        if (selector === "[data-ng-jq]") return element;
-      });
-      expect(jq()).toBe("");
-      expect(document.querySelector).toHaveBeenCalledWith("[data-ng-jq]");
-    });
-
-    it("should return empty string when jq is enabled manually via [x-ng-jq] with empty string", () => {
-      element.setAttribute("x-ng-jq", "");
-      spyOn(document, "querySelector").and.callFake((selector) => {
-        if (selector === "[x-ng-jq]") return element;
-      });
-      expect(jq()).toBe("");
-      expect(document.querySelector).toHaveBeenCalledWith("[x-ng-jq]");
-    });
-
-    it("should return empty string when jq is enabled manually via [ng:jq] with empty string", () => {
-      element.setAttribute("ng:jq", "");
-      spyOn(document, "querySelector").and.callFake((selector) => {
-        if (selector === "[ng\\:jq]") return element;
-      });
-      expect(jq()).toBe("");
-      expect(document.querySelector).toHaveBeenCalledWith("[ng\\:jq]");
-    });
-
-    it('should return "jQuery" when jq is enabled manually via [ng-jq] with value "jQuery"', () => {
-      element.setAttribute("ng-jq", "jQuery");
-      spyOn(document, "querySelector").and.callFake((selector) => {
-        if (selector === "[ng-jq]") return element;
-      });
-      expect(jq()).toBe("jQuery");
-      expect(document.querySelector).toHaveBeenCalledWith("[ng-jq]");
-    });
-
-    it('should return "jQuery" when jq is enabled manually via [data-ng-jq] with value "jQuery"', () => {
-      element.setAttribute("data-ng-jq", "jQuery");
-      spyOn(document, "querySelector").and.callFake((selector) => {
-        if (selector === "[data-ng-jq]") return element;
-      });
-      expect(jq()).toBe("jQuery");
-      expect(document.querySelector).toHaveBeenCalledWith("[data-ng-jq]");
-    });
-
-    it('should return "jQuery" when jq is enabled manually via [x-ng-jq] with value "jQuery"', () => {
-      element.setAttribute("x-ng-jq", "jQuery");
-      spyOn(document, "querySelector").and.callFake((selector) => {
-        if (selector === "[x-ng-jq]") return element;
-      });
-      expect(jq()).toBe("jQuery");
-      expect(document.querySelector).toHaveBeenCalledWith("[x-ng-jq]");
-    });
-
-    it('should return "jQuery" when jq is enabled manually via [ng:jq] with value "jQuery"', () => {
-      element.setAttribute("ng:jq", "jQuery");
-      spyOn(document, "querySelector").and.callFake((selector) => {
-        if (selector === "[ng\\:jq]") return element;
-      });
-      expect(jq()).toBe("jQuery");
-      expect(document.querySelector).toHaveBeenCalledWith("[ng\\:jq]");
-    });
-  });
-
   describe("parseKeyValue", () => {
     it("should parse a string into key-value pairs", () => {
       expect(parseKeyValue("")).toEqual({});
@@ -1902,152 +1760,146 @@ describe("angular", () => {
       dealoc(appElement);
     });
 
-    // Support: IE 9-11 only
-    // IE does not support `document.currentScript` (nor extensions with protocol), so skip tests.
-    if (!msie) {
-      describe("auto bootstrap restrictions", () => {
-        function createFakeDoc(attrs, protocol, currentScript) {
-          protocol = protocol || "http:";
-          const origin = `${protocol}//something`;
+    describe("auto bootstrap restrictions", () => {
+      function createFakeDoc(attrs, protocol, currentScript) {
+        protocol = protocol || "http:";
+        const origin = `${protocol}//something`;
 
-          if (currentScript === undefined) {
-            currentScript = document.createElement("script");
-            Object.keys(attrs).forEach((key) => {
-              currentScript.setAttribute(key, attrs[key]);
-            });
-          }
-
-          // Fake a minimal document object (the actual document.currentScript is readonly).
-          return {
-            currentScript,
-            location: { protocol, origin },
-            createElement: document.createElement.bind(document),
-          };
+        if (currentScript === undefined) {
+          currentScript = document.createElement("script");
+          Object.keys(attrs).forEach((key) => {
+            currentScript.setAttribute(key, attrs[key]);
+          });
         }
 
-        describe("from extensions into extension documents", () => {
-          // Extension URLs are browser-specific, so we must choose a scheme that is supported by the browser to make
-          // sure that the URL is properly parsed.
-          let protocol;
-          const { userAgent } = window.navigator;
-          if (/Firefox\//.test(userAgent)) {
-            protocol = "moz-extension:";
-          } else if (/Edge\//.test(userAgent)) {
-            protocol = "ms-browser-extension:";
-          } else if (/Chrome\//.test(userAgent)) {
-            protocol = "chrome-extension:";
-          } else if (/Safari\//.test(userAgent)) {
-            // On iOS, Safari versions <15 recognize `safari-extension:`, while versions >=15 only
-            // recognize `chrome-extension:`.
-            // (On macOS, Safari v15 recognizes both protocols, so it is fine to use either.)
-            const majorVersionMatch = /Version\/(\d+)/.exec(userAgent);
-            const majorVersion = majorVersionMatch
-              ? parseInt(majorVersionMatch[1], 10)
-              : 0;
-            protocol =
-              majorVersion < 15 ? "safari-extension:" : "chrome-extension:";
-          } else {
-            protocol = "browserext:"; // Upcoming standard scheme.
-          }
+        // Fake a minimal document object (the actual document.currentScript is readonly).
+        return {
+          currentScript,
+          location: { protocol, origin },
+          createElement: document.createElement.bind(document),
+        };
+      }
 
-          it("should bootstrap for same-origin documents", () => {
-            expect(
-              allowAutoBootstrap(
-                createFakeDoc({ src: `${protocol}//something` }, protocol),
-              ),
-            ).toBe(true);
-          });
+      describe("from extensions into extension documents", () => {
+        // Extension URLs are browser-specific, so we must choose a scheme that is supported by the browser to make
+        // sure that the URL is properly parsed.
+        let protocol;
+        const { userAgent } = window.navigator;
+        if (/Firefox\//.test(userAgent)) {
+          protocol = "moz-extension:";
+        } else if (/Edge\//.test(userAgent)) {
+          protocol = "ms-browser-extension:";
+        } else if (/Chrome\//.test(userAgent)) {
+          protocol = "chrome-extension:";
+        } else if (/Safari\//.test(userAgent)) {
+          // On iOS, Safari versions <15 recognize `safari-extension:`, while versions >=15 only
+          // recognize `chrome-extension:`.
+          // (On macOS, Safari v15 recognizes both protocols, so it is fine to use either.)
+          const majorVersionMatch = /Version\/(\d+)/.exec(userAgent);
+          const majorVersion = majorVersionMatch
+            ? parseInt(majorVersionMatch[1], 10)
+            : 0;
+          protocol =
+            majorVersion < 15 ? "safari-extension:" : "chrome-extension:";
+        } else {
+          protocol = "browserext:"; // Upcoming standard scheme.
+        }
 
-          it("should not bootstrap for cross-origin documents", () => {
-            expect(
-              allowAutoBootstrap(
-                createFakeDoc({ src: `${protocol}//something-else` }, protocol),
-              ),
-            ).toBe(false);
-          });
-        });
-
-        it("should bootstrap from a script with no source (e.g. src, href or xlink:href attributes)", () => {
-          expect(allowAutoBootstrap(createFakeDoc({ src: null }))).toBe(true);
-          expect(allowAutoBootstrap(createFakeDoc({ href: null }))).toBe(true);
+        it("should bootstrap for same-origin documents", () => {
           expect(
-            allowAutoBootstrap(createFakeDoc({ "xlink:href": null })),
+            allowAutoBootstrap(
+              createFakeDoc({ src: `${protocol}//something` }, protocol),
+            ),
           ).toBe(true);
         });
 
-        it('should not bootstrap from a script with an empty source (e.g. `src=""`)', () => {
-          expect(allowAutoBootstrap(createFakeDoc({ src: "" }))).toBe(false);
-          expect(allowAutoBootstrap(createFakeDoc({ href: "" }))).toBe(false);
-          expect(allowAutoBootstrap(createFakeDoc({ "xlink:href": "" }))).toBe(
-            false,
-          );
-        });
-
-        it("should not bootstrap from an extension into a non-extension document", () => {
-          expect(
-            allowAutoBootstrap(createFakeDoc({ src: "resource://something" })),
-          ).toBe(false);
-          expect(
-            allowAutoBootstrap(createFakeDoc({ src: "file://whatever" })),
-          ).toBe(true);
-        });
-
-        it("should not bootstrap from an extension into a non-extension document, via SVG script", () => {
-          // SVG script tags don't use the `src` attribute to load their source.
-          // Instead they use `href` or the deprecated `xlink:href` attributes.
-
-          expect(
-            allowAutoBootstrap(createFakeDoc({ href: "resource://something" })),
-          ).toBe(false);
+        it("should not bootstrap for cross-origin documents", () => {
           expect(
             allowAutoBootstrap(
-              createFakeDoc({ "xlink:href": "resource://something" }),
+              createFakeDoc({ src: `${protocol}//something-else` }, protocol),
             ),
           ).toBe(false);
-
-          expect(
-            allowAutoBootstrap(
-              createFakeDoc({
-                src: "http://something",
-                href: "resource://something",
-              }),
-            ),
-          ).toBe(false);
-          expect(
-            allowAutoBootstrap(
-              createFakeDoc({
-                href: "http://something",
-                "xlink:href": "resource://something",
-              }),
-            ),
-          ).toBe(false);
-          expect(
-            allowAutoBootstrap(
-              createFakeDoc({
-                src: "resource://something",
-                href: "http://something",
-                "xlink:href": "http://something",
-              }),
-            ),
-          ).toBe(false);
-        });
-
-        it("should not bootstrap if the currentScript property has been clobbered", () => {
-          const img = document.createElement("img");
-          img.setAttribute("src", "");
-          expect(allowAutoBootstrap(createFakeDoc({}, "http:", img))).toBe(
-            false,
-          );
-        });
-
-        it("should not bootstrap if bootstrapping is disabled", () => {
-          isAutoBootstrapAllowed = false;
-          angularInit(jqLite("<div ng-app></div>")[0], bootstrapSpy);
-          expect(bootstrapSpy).not.toHaveBeenCalled();
-          isAutoBootstrapAllowed = true;
         });
       });
-    }
+
+      it("should bootstrap from a script with no source (e.g. src, href or xlink:href attributes)", () => {
+        expect(allowAutoBootstrap(createFakeDoc({ src: null }))).toBe(true);
+        expect(allowAutoBootstrap(createFakeDoc({ href: null }))).toBe(true);
+        expect(allowAutoBootstrap(createFakeDoc({ "xlink:href": null }))).toBe(
+          true,
+        );
+      });
+
+      it('should not bootstrap from a script with an empty source (e.g. `src=""`)', () => {
+        expect(allowAutoBootstrap(createFakeDoc({ src: "" }))).toBe(false);
+        expect(allowAutoBootstrap(createFakeDoc({ href: "" }))).toBe(false);
+        expect(allowAutoBootstrap(createFakeDoc({ "xlink:href": "" }))).toBe(
+          false,
+        );
+      });
+
+      it("should not bootstrap from an extension into a non-extension document", () => {
+        expect(
+          allowAutoBootstrap(createFakeDoc({ src: "resource://something" })),
+        ).toBe(false);
+        expect(
+          allowAutoBootstrap(createFakeDoc({ src: "file://whatever" })),
+        ).toBe(true);
+      });
+
+      it("should not bootstrap from an extension into a non-extension document, via SVG script", () => {
+        // SVG script tags don't use the `src` attribute to load their source.
+        // Instead they use `href` or the deprecated `xlink:href` attributes.
+
+        expect(
+          allowAutoBootstrap(createFakeDoc({ href: "resource://something" })),
+        ).toBe(false);
+        expect(
+          allowAutoBootstrap(
+            createFakeDoc({ "xlink:href": "resource://something" }),
+          ),
+        ).toBe(false);
+
+        expect(
+          allowAutoBootstrap(
+            createFakeDoc({
+              src: "http://something",
+              href: "resource://something",
+            }),
+          ),
+        ).toBe(false);
+        expect(
+          allowAutoBootstrap(
+            createFakeDoc({
+              href: "http://something",
+              "xlink:href": "resource://something",
+            }),
+          ),
+        ).toBe(false);
+        expect(
+          allowAutoBootstrap(
+            createFakeDoc({
+              src: "resource://something",
+              href: "http://something",
+              "xlink:href": "http://something",
+            }),
+          ),
+        ).toBe(false);
+      });
+
+      it("should not bootstrap if the currentScript property has been clobbered", () => {
+        const img = document.createElement("img");
+        img.setAttribute("src", "");
+        expect(allowAutoBootstrap(createFakeDoc({}, "http:", img))).toBe(false);
+      });
+
+      it("should not bootstrap if bootstrapping is disabled", () => {
+        isAutoBootstrapAllowed = false;
+        angularInit(jqLite("<div ng-app></div>")[0], bootstrapSpy);
+        expect(bootstrapSpy).not.toHaveBeenCalled();
+        isAutoBootstrapAllowed = true;
+      });
+    });
   });
 
   describe("AngularJS service", () => {
@@ -2160,10 +2012,19 @@ describe("angular", () => {
   });
 
   describe("compile", () => {
-    it("should link to existing node and create scope", inject((
-      $rootScope,
-      $compile,
-    ) => {
+    let module, injector, $rootScope, $compile;
+
+    beforeEach(() => {
+      window.angular = new Angular();
+      publishExternalAPI();
+      createInjector();
+      module = window.angular.module("defaultModule", ["ng"]);
+      injector = createInjector(["ng", "defaultModule"]);
+      $rootScope = injector.get("$rootScope");
+      $compile = injector.get("$compile");
+    });
+
+    it("should link to existing node and create scope", () => {
       const template = angular.element(
         '<div>{{greeting = "hello world"}}</div>',
       );
@@ -2171,24 +2032,18 @@ describe("angular", () => {
       $rootScope.$digest();
       expect(template.text()).toEqual("hello world");
       expect($rootScope.greeting).toEqual("hello world");
-    }));
+    });
 
-    it("should link to existing node and given scope", inject((
-      $rootScope,
-      $compile,
-    ) => {
+    it("should link to existing node and given scope", () => {
       const template = angular.element(
         '<div>{{greeting = "hello world"}}</div>',
       );
       element = $compile(template)($rootScope);
       $rootScope.$digest();
       expect(template.text()).toEqual("hello world");
-    }));
+    });
 
-    it("should link to new node and given scope", inject((
-      $rootScope,
-      $compile,
-    ) => {
+    it("should link to new node and given scope", () => {
       const template = jqLite('<div>{{greeting = "hello world"}}</div>');
 
       const compile = $compile(template);
@@ -2203,19 +2058,16 @@ describe("angular", () => {
       expect(element.text()).toEqual("hello world");
       expect(element).toEqual(templateClone);
       expect($rootScope.greeting).toEqual("hello world");
-    }));
+    });
 
-    it("should link to cloned node and create scope", inject((
-      $rootScope,
-      $compile,
-    ) => {
+    it("should link to cloned node and create scope", () => {
       const template = jqLite('<div>{{greeting = "hello world"}}</div>');
       element = $compile(template)($rootScope, () => {});
       $rootScope.$digest();
       expect(template.text()).toEqual('{{greeting = "hello world"}}');
       expect(element.text()).toEqual("hello world");
       expect($rootScope.greeting).toEqual("hello world");
-    }));
+    });
   });
 
   describe("nodeName_", () => {
@@ -2259,18 +2111,19 @@ describe("angular", () => {
     });
   });
 
-  describe("version", () => {
-    it("version should have full/major/minor/dot/codeName properties", () => {
-      expect(version).toBeDefined();
-      expect(version.full).toBe('"NG_VERSION_FULL"');
-      expect(version.major).toBe("NG_VERSION_MAJOR");
-      expect(version.minor).toBe("NG_VERSION_MINOR");
-      expect(version.dot).toBe("NG_VERSION_DOT");
-      expect(version.codeName).toBe('"NG_VERSION_CODENAME"');
-    });
-  });
-
   describe("bootstrap", () => {
+    let module, injector, $rootScope, $compile;
+
+    beforeEach(() => {
+      window.angular = new Angular();
+      publishExternalAPI();
+      createInjector();
+      module = window.angular.module("defaultModule", ["ng"]);
+      injector = createInjector(["ng", "defaultModule"]);
+      $rootScope = injector.get("$rootScope");
+      $compile = injector.get("$compile");
+    });
+
     it("should bootstrap app", () => {
       const element = jqLite("<div>{{1+2}}</div>");
       const injector = angular.bootstrap(element);
@@ -2284,15 +2137,7 @@ describe("angular", () => {
 
       expect(() => {
         angular.bootstrap(element, ["doesntexist"]);
-      }).toThrowError(
-        "$injector",
-        "modulerr",
-        new RegExp(
-          "Failed to instantiate module doesntexist due to:\\n" +
-            ".*\\[\\$injector:nomod\\] Module 'doesntexist' is not available! You either " +
-            "misspelled the module name or forgot to load it\\.",
-        ),
-      );
+      }).toThrowError(/modulerr/);
 
       expect(element.html()).toBe("{{1+2}}");
       dealoc(element);

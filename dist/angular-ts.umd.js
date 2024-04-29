@@ -1190,11 +1190,12 @@
 
   /**
    * Parses an escaped url query string into key-value pairs.
+   * @param {string} keyValue
    * @returns {Object.<string,boolean|Array>}
    */
-  function parseKeyValue(/** string */ keyValue) {
+  function parseKeyValue(keyValue) {
     const obj = {};
-    forEach((keyValue || "").split("&"), (keyValue) => {
+    (keyValue || "").split("&").forEach((keyValue) => {
       let splitPoint;
       let key;
       let val;
@@ -1244,17 +1245,13 @@
   /**
    * Tries to decode the URI component without throwing an exception.
    *
-   * @param str value potential URI component to check.
-   * @returns {boolean} True if `value` can be decoded
-   * with the decodeURIComponent function.
+   * @param  {string} value potential URI component to check.
+   * @returns {string}
    */
   function tryDecodeURIComponent(value) {
     try {
-      decodeURIComponent(value);
-      return true;
-    } catch {
-      // Ignore any invalid uri component.
-      return false;
+      return decodeURIComponent(value);
+    } catch (e) {
     }
   }
 
@@ -10186,7 +10183,7 @@
             // RECURSION
             // We only pass the isolate scope, if the isolate directive has a template,
             // otherwise the child elements do not belong to the isolate directive.
-            let scopeToChild = scope;
+            var scopeToChild = scope;
             if (
               newIsolateScopeDirective &&
               (newIsolateScopeDirective.template ||
@@ -27458,7 +27455,7 @@
    * @param {string} url URL of the request.
    */
   function $xhrFactoryProvider() {
-    this.$get = function () {
+    this.$get = () => {
       return function createXhr() {
         return new window.XMLHttpRequest();
       };

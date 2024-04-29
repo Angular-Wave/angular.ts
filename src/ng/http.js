@@ -23,7 +23,6 @@ import {
   extend,
   uppercase,
   isPromiseLike,
-  parseKeyValue,
 } from "./utils";
 
 const APPLICATION_JSON = "application/json";
