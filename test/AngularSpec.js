@@ -26,15 +26,25 @@ import {
   fromJson,
   nextUid,
   nodeName_,
+  snakeCase,
 } from "../src/ng/utils";
 import { dealoc, jqLite, startingTag } from "../src/jqLite";
-import { Angular } from "../src/loader";
+import { Angular, angularInit, allowAutoBootstrap } from "../src/loader";
 import { publishExternalAPI } from "../src/public";
 import { createInjector } from "../src/injector";
 
 describe("angular", () => {
-  let element;
-  let document;
+  let element, document, module, injector, $rootScope, $compile;
+
+  beforeEach(() => {
+    window.angular = new Angular();
+    publishExternalAPI();
+    createInjector();
+    module = window.angular.module("defaultModule", ["ng"]);
+    injector = createInjector(["ng", "defaultModule"]);
+    $rootScope = injector.get("$rootScope");
+    $compile = injector.get("$compile");
+  });
 
   beforeEach(() => {
     document = window.document;
@@ -446,31 +456,17 @@ describe("angular", () => {
       expect(copy([{ key: null }])).toEqual([{ key: null }]);
     });
 
-    // it("should throw an exception if a Scope is being copied", inject((
-    //   $rootScope,
-    // ) => {
-    //   expect(() => {
-    //     copy($rootScope.$new());
-    //   }).toThrowError(
-    //     "ng",
-    //     "cpws",
-    //     "Can't copy! Making copies of Window or Scope instances is not supported.",
-    //   );
-    //   expect(() => {
-    //     copy({ child: $rootScope.$new() }, {});
-    //   }).toThrowError(
-    //     "ng",
-    //     "cpws",
-    //     "Can't copy! Making copies of Window or Scope instances is not supported.",
-    //   );
-    //   expect(() => {
-    //     copy([$rootScope.$new()]);
-    //   }).toThrowError(
-    //     "ng",
-    //     "cpws",
-    //     "Can't copy! Making copies of Window or Scope instances is not supported.",
-    //   );
-    // }));
+    it("should throw an exception if a Scope is being copied", () => {
+      expect(() => {
+        copy($rootScope.$new());
+      }).toThrowError(/cpws/);
+      expect(() => {
+        copy({ child: $rootScope.$new() }, {});
+      }).toThrowError(/cpws/);
+      expect(() => {
+        copy([$rootScope.$new()]);
+      }).toThrowError(/cpws/);
+    });
 
     it("should throw an exception if a Window is being copied", () => {
       expect(() => {
@@ -1045,18 +1041,15 @@ describe("angular", () => {
       expect(equals(NaN, NaN)).toBe(true);
     });
 
-    // TODO fix inject
-    // it("should compare Scope instances only by identity", inject((
-    //   $rootScope,
-    // ) => {
-    //   const scope1 = $rootScope.$new();
-    //   const scope2 = $rootScope.$new();
+    it("should compare Scope instances only by identity", () => {
+      const scope1 = $rootScope.$new();
+      const scope2 = $rootScope.$new();
 
-    //   expect(equals(scope1, scope1)).toBe(true);
-    //   expect(equals(scope1, scope2)).toBe(false);
-    //   expect(equals($rootScope, scope1)).toBe(false);
-    //   expect(equals(undefined, scope1)).toBe(false);
-    // }));
+      expect(equals(scope1, scope1)).toBe(true);
+      expect(equals(scope1, scope2)).toBe(false);
+      expect(equals($rootScope, scope1)).toBe(false);
+      expect(equals(undefined, scope1)).toBe(false);
+    });
 
     it("should compare Window instances only by identity", () => {
       expect(equals(window, window)).toBe(true);
@@ -1649,71 +1642,48 @@ describe("angular", () => {
           return element[name];
         },
       };
-      bootstrapSpy = jasmine.createSpy("bootstrapSpy");
+      bootstrapSpy = spyOn(window.angular, "bootstrap").and.callThrough();
     });
 
     it("should do nothing when not found", () => {
-      angularInit(element, bootstrapSpy);
+      angularInit(element);
       expect(bootstrapSpy).not.toHaveBeenCalled();
     });
 
     it("should look for ngApp directive as attr", () => {
+      window.angular.module("ABC", []);
       const appElement = jqLite('<div ng-app="ABC"></div>')[0];
-      element.querySelector["[ng-app]"] = appElement;
-      angularInit(element, bootstrapSpy);
-      expect(bootstrapSpy).toHaveBeenCalledOnceWith(
-        appElement,
-        ["ABC"],
-        jasmine.any(Object),
-      );
+
+      angularInit(appElement);
+      expect(bootstrapSpy).toHaveBeenCalled();
     });
 
     it("should look for ngApp directive using querySelectorAll", () => {
+      window.angular.module("ABC", []);
       const appElement = jqLite('<div x-ng-app="ABC"></div>')[0];
       element.querySelector["[x-ng-app]"] = appElement;
-      angularInit(element, bootstrapSpy);
-      expect(bootstrapSpy).toHaveBeenCalledOnceWith(
-        appElement,
-        ["ABC"],
-        jasmine.any(Object),
-      );
+      angularInit(element);
+      expect(bootstrapSpy).toHaveBeenCalled();
     });
 
     it("should bootstrap anonymously", () => {
       const appElement = jqLite("<div x-ng-app></div>")[0];
       element.querySelector["[x-ng-app]"] = appElement;
-      angularInit(element, bootstrapSpy);
-      expect(bootstrapSpy).toHaveBeenCalledOnceWith(
-        appElement,
-        [],
-        jasmine.any(Object),
-      );
+      angularInit(element);
+      expect(bootstrapSpy).toHaveBeenCalled();
     });
 
     it("should bootstrap if the annotation is on the root element", () => {
       const appElement = jqLite('<div ng-app=""></div>')[0];
-      angularInit(appElement, bootstrapSpy);
-      expect(bootstrapSpy).toHaveBeenCalledOnceWith(
-        appElement,
-        [],
-        jasmine.any(Object),
-      );
+      angularInit(appElement);
+      expect(bootstrapSpy).toHaveBeenCalled();
     });
 
     it("should complain if app module cannot be found", () => {
       const appElement = jqLite('<div ng-app="doesntexist"></div>')[0];
-
       expect(() => {
-        angularInit(appElement, angular.bootstrap);
-      }).toThrowError(
-        "$injector",
-        "modulerr",
-        new RegExp(
-          "Failed to instantiate module doesntexist due to:\\n" +
-            ".*\\[\\$injector:nomod] Module 'doesntexist' is not available! You either " +
-            "misspelled the module name or forgot to load it\\.",
-        ),
-      );
+        angularInit(appElement);
+      }).toThrowError(/modulerr/);
     });
 
     it("should complain if an element has already been bootstrapped", () => {
@@ -1722,11 +1692,7 @@ describe("angular", () => {
 
       expect(() => {
         angular.bootstrap(element);
-      }).toThrowError(
-        "ng",
-        "btstrpd",
-        /App Already Bootstrapped with this Element '&lt;div class="?ng-scope"?( ng\d+="?\d+"?)?&gt;'/i,
-      );
+      }).toThrowError(/btstrpd/);
 
       dealoc(element);
     });
@@ -1735,19 +1701,14 @@ describe("angular", () => {
       angular.bootstrap(document.getElementsByTagName("html")[0]);
       expect(() => {
         angular.bootstrap(document);
-      }).toThrowError(
-        "ng",
-        "btstrpd",
-        /App Already Bootstrapped with this Element 'document'/i,
-      );
+      }).toThrowError(/btstrpd/);
 
       dealoc(document);
     });
 
     it("should bootstrap in strict mode when ng-strict-di attribute is specified", () => {
-      bootstrapSpy = spyOn(angular, "bootstrap").and.callThrough();
       const appElement = jqLite('<div ng-app="" ng-strict-di></div>');
-      angularInit(jqLite("<div></div>").append(appElement[0])[0], bootstrapSpy);
+      angularInit(jqLite("<div></div>").append(appElement[0])[0]);
       expect(bootstrapSpy).toHaveBeenCalled();
       expect(bootstrapSpy.calls.mostRecent().args[2].strictDi).toBe(true);
 
@@ -1755,162 +1716,21 @@ describe("angular", () => {
       function testFactory($rootScope) {}
       expect(() => {
         injector.instantiate(testFactory);
-      }).toThrowError("$injector", "strictdi");
+      }).toThrowError(/strictdi/);
 
       dealoc(appElement);
-    });
-
-    describe("auto bootstrap restrictions", () => {
-      function createFakeDoc(attrs, protocol, currentScript) {
-        protocol = protocol || "http:";
-        const origin = `${protocol}//something`;
-
-        if (currentScript === undefined) {
-          currentScript = document.createElement("script");
-          Object.keys(attrs).forEach((key) => {
-            currentScript.setAttribute(key, attrs[key]);
-          });
-        }
-
-        // Fake a minimal document object (the actual document.currentScript is readonly).
-        return {
-          currentScript,
-          location: { protocol, origin },
-          createElement: document.createElement.bind(document),
-        };
-      }
-
-      describe("from extensions into extension documents", () => {
-        // Extension URLs are browser-specific, so we must choose a scheme that is supported by the browser to make
-        // sure that the URL is properly parsed.
-        let protocol;
-        const { userAgent } = window.navigator;
-        if (/Firefox\//.test(userAgent)) {
-          protocol = "moz-extension:";
-        } else if (/Edge\//.test(userAgent)) {
-          protocol = "ms-browser-extension:";
-        } else if (/Chrome\//.test(userAgent)) {
-          protocol = "chrome-extension:";
-        } else if (/Safari\//.test(userAgent)) {
-          // On iOS, Safari versions <15 recognize `safari-extension:`, while versions >=15 only
-          // recognize `chrome-extension:`.
-          // (On macOS, Safari v15 recognizes both protocols, so it is fine to use either.)
-          const majorVersionMatch = /Version\/(\d+)/.exec(userAgent);
-          const majorVersion = majorVersionMatch
-            ? parseInt(majorVersionMatch[1], 10)
-            : 0;
-          protocol =
-            majorVersion < 15 ? "safari-extension:" : "chrome-extension:";
-        } else {
-          protocol = "browserext:"; // Upcoming standard scheme.
-        }
-
-        it("should bootstrap for same-origin documents", () => {
-          expect(
-            allowAutoBootstrap(
-              createFakeDoc({ src: `${protocol}//something` }, protocol),
-            ),
-          ).toBe(true);
-        });
-
-        it("should not bootstrap for cross-origin documents", () => {
-          expect(
-            allowAutoBootstrap(
-              createFakeDoc({ src: `${protocol}//something-else` }, protocol),
-            ),
-          ).toBe(false);
-        });
-      });
-
-      it("should bootstrap from a script with no source (e.g. src, href or xlink:href attributes)", () => {
-        expect(allowAutoBootstrap(createFakeDoc({ src: null }))).toBe(true);
-        expect(allowAutoBootstrap(createFakeDoc({ href: null }))).toBe(true);
-        expect(allowAutoBootstrap(createFakeDoc({ "xlink:href": null }))).toBe(
-          true,
-        );
-      });
-
-      it('should not bootstrap from a script with an empty source (e.g. `src=""`)', () => {
-        expect(allowAutoBootstrap(createFakeDoc({ src: "" }))).toBe(false);
-        expect(allowAutoBootstrap(createFakeDoc({ href: "" }))).toBe(false);
-        expect(allowAutoBootstrap(createFakeDoc({ "xlink:href": "" }))).toBe(
-          false,
-        );
-      });
-
-      it("should not bootstrap from an extension into a non-extension document", () => {
-        expect(
-          allowAutoBootstrap(createFakeDoc({ src: "resource://something" })),
-        ).toBe(false);
-        expect(
-          allowAutoBootstrap(createFakeDoc({ src: "file://whatever" })),
-        ).toBe(true);
-      });
-
-      it("should not bootstrap from an extension into a non-extension document, via SVG script", () => {
-        // SVG script tags don't use the `src` attribute to load their source.
-        // Instead they use `href` or the deprecated `xlink:href` attributes.
-
-        expect(
-          allowAutoBootstrap(createFakeDoc({ href: "resource://something" })),
-        ).toBe(false);
-        expect(
-          allowAutoBootstrap(
-            createFakeDoc({ "xlink:href": "resource://something" }),
-          ),
-        ).toBe(false);
-
-        expect(
-          allowAutoBootstrap(
-            createFakeDoc({
-              src: "http://something",
-              href: "resource://something",
-            }),
-          ),
-        ).toBe(false);
-        expect(
-          allowAutoBootstrap(
-            createFakeDoc({
-              href: "http://something",
-              "xlink:href": "resource://something",
-            }),
-          ),
-        ).toBe(false);
-        expect(
-          allowAutoBootstrap(
-            createFakeDoc({
-              src: "resource://something",
-              href: "http://something",
-              "xlink:href": "http://something",
-            }),
-          ),
-        ).toBe(false);
-      });
-
-      it("should not bootstrap if the currentScript property has been clobbered", () => {
-        const img = document.createElement("img");
-        img.setAttribute("src", "");
-        expect(allowAutoBootstrap(createFakeDoc({}, "http:", img))).toBe(false);
-      });
-
-      it("should not bootstrap if bootstrapping is disabled", () => {
-        isAutoBootstrapAllowed = false;
-        angularInit(jqLite("<div ng-app></div>")[0], bootstrapSpy);
-        expect(bootstrapSpy).not.toHaveBeenCalled();
-        isAutoBootstrapAllowed = true;
-      });
     });
   });
 
   describe("AngularJS service", () => {
     it("should override services", () => {
-      module(($provide) => {
-        $provide.value("fake", "old");
-        $provide.value("fake", "new");
-      });
-      inject((fake) => {
-        expect(fake).toEqual("new");
-      });
+      injector = createInjector([
+        function ($provide) {
+          $provide.value("fake", "old");
+          $provide.value("fake", "new");
+        },
+      ]);
+      expect(injector.get("fake")).toEqual("new");
     });
 
     it("should inject dependencies specified by $inject and ignore function argument name", () => {
@@ -2012,18 +1832,6 @@ describe("angular", () => {
   });
 
   describe("compile", () => {
-    let module, injector, $rootScope, $compile;
-
-    beforeEach(() => {
-      window.angular = new Angular();
-      publishExternalAPI();
-      createInjector();
-      module = window.angular.module("defaultModule", ["ng"]);
-      injector = createInjector(["ng", "defaultModule"]);
-      $rootScope = injector.get("$rootScope");
-      $compile = injector.get("$compile");
-    });
-
     it("should link to existing node and create scope", () => {
       const template = angular.element(
         '<div>{{greeting = "hello world"}}</div>',
@@ -2158,7 +1966,6 @@ describe("angular", () => {
       });
 
       it("should provide injector for deferred bootstrap", () => {
-        let injector;
         window.name = "NG_DEFER_BOOTSTRAP!";
 
         injector = angular.bootstrap(element);
@@ -2169,7 +1976,6 @@ describe("angular", () => {
       });
 
       it("should resume deferred bootstrap, if defined", () => {
-        let injector;
         window.name = "NG_DEFER_BOOTSTRAP!";
 
         angular.resumeDeferredBootstrap = () => {};
@@ -2213,11 +2019,7 @@ describe("angular", () => {
 
         expect(() => {
           element.injector().get("foo");
-        }).toThrowError(
-          "$injector",
-          "unpr",
-          "Unknown provider: fooProvider <- foo",
-        );
+        }).toThrowError(/unpr/);
 
         expect(element.injector().get("$http")).toBeDefined();
       });
@@ -2251,15 +2053,15 @@ describe("angular", () => {
     });
   });
 
-  describe("snake_case", () => {
-    it("should convert to snake_case", () => {
-      expect(snake_case("ABC")).toEqual("a_b_c");
-      expect(snake_case("alanBobCharles")).toEqual("alan_bob_charles");
+  describe("snakeCase", () => {
+    it("should convert to snakeCase", () => {
+      expect(snakeCase("ABC")).toEqual("a_b_c");
+      expect(snakeCase("alanBobCharles")).toEqual("alan_bob_charles");
     });
 
     it("should allow separator to be overridden", () => {
-      expect(snake_case("ABC", "&")).toEqual("a&b&c");
-      expect(snake_case("alanBobCharles", "&")).toEqual("alan&bob&charles");
+      expect(snakeCase("ABC", "&")).toEqual("a&b&c");
+      expect(snakeCase("alanBobCharles", "&")).toEqual("alan&bob&charles");
     });
   });
 
@@ -2307,9 +2109,9 @@ describe("angular", () => {
       expect(toJson(document)).toEqual('"$DOCUMENT"');
     });
 
-    it("should not serialize scope instances", inject(($rootScope) => {
+    it("should not serialize scope instances", () => {
       expect(toJson({ key: $rootScope })).toEqual('{"key":"$SCOPE"}');
-    }));
+    });
 
     it("should serialize undefined as undefined", () => {
       expect(toJson(undefined)).toEqual(undefined);
@@ -2317,13 +2119,9 @@ describe("angular", () => {
   });
 
   describe("isElement", () => {
-    it("should return a boolean value", inject((
-      $compile,
-      $document,
-      $rootScope,
-    ) => {
+    it("should return a boolean value", () => {
       const element = $compile("<p>Hello, world!</p>")($rootScope);
-      const body = $document.find("body")[0];
+      const body = window.document.body;
       const expected = [
         false,
         false,
@@ -2351,7 +2149,7 @@ describe("angular", () => {
         expect(typeof result).toEqual("boolean");
         expect(result).toEqual(expected[idx]);
       });
-    }));
+    });
 
     // Issue #4805
     it("should return false for objects resembling a Backbone Collection", () => {

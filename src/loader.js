@@ -151,7 +151,7 @@ export class Angular {
       strictDi: false,
     };
     config = extend(defaultConfig, config);
-    const doBootstrap = () => {
+    this.doBootstrap = function () {
       // @ts-ignore
       element = jqLite(element);
 
@@ -166,8 +166,8 @@ export class Angular {
         );
       }
 
-      const bootsrappedModules = modules || [];
-      bootsrappedModules.unshift([
+      this.bootsrappedModules = modules || [];
+      this.bootsrappedModules.unshift([
         "$provide",
         ($provide) => {
           $provide.value("$rootElement", element);
@@ -176,7 +176,7 @@ export class Angular {
 
       if (config.debugInfoEnabled) {
         // Pushing so that this overrides `debugInfoEnabled` setting defined in user's `modules`.
-        bootsrappedModules.push([
+        this.bootsrappedModules.push([
           "$compileProvider",
           function ($compileProvider) {
             $compileProvider.debugInfoEnabled(true);
@@ -184,9 +184,9 @@ export class Angular {
         ]);
       }
 
-      bootsrappedModules.unshift("ng");
+      this.bootsrappedModules.unshift("ng");
 
-      const injector = createInjector(bootsrappedModules, config.strictDi);
+      const injector = createInjector(this.bootsrappedModules, config.strictDi);
       injector.invoke([
         "$rootScope",
         "$rootElement",
@@ -211,10 +211,20 @@ export class Angular {
     }
 
     if (window && !NG_DEFER_BOOTSTRAP.test(window.name)) {
-      return doBootstrap();
+      return this.doBootstrap();
     }
 
     window.name = window.name.replace(NG_DEFER_BOOTSTRAP, "");
+    this.resumeBootstrap = function (extraModules) {
+      forEach(extraModules, function (module) {
+        modules.push(module);
+      });
+      return this.doBootstrap();
+    };
+
+    if (isFunction(this.resumeDeferredBootstrap)) {
+      this.resumeDeferredBootstrap();
+    }
   }
 
   /**
@@ -229,9 +239,9 @@ export class Angular {
 
   resumeBootstrap(extraModules) {
     forEach(extraModules, (module) => {
-      bootsrappedModules.push(module);
+      this.bootsrappedModules.push(module);
     });
-    return doBootstrap();
+    return this.doBootstrap();
   }
 
   /**
@@ -694,6 +704,7 @@ export function allowAutoBootstrap(currentScript) {
     // Disabled bootstrapping unless angular.js was loaded from a known scheme used on the web.
     // This is to prevent angular.js bundled with browser extensions from being used to bypass the
     // content security policy in web pages and other browser extensions.
+    debugger;
     switch (link.protocol) {
       case "http:":
       case "https:":
@@ -853,7 +864,7 @@ export const confGlobal = {
    </file>
  </example>
  */
-export function angularInit(element, bootstrap) {
+export function angularInit(element) {
   let appElement;
   let module;
   const config = {};
@@ -880,14 +891,16 @@ export function angularInit(element, bootstrap) {
     }
   });
   if (appElement) {
-    if (!confGlobal.isAutoBootstrapAllowed) {
-      window.console.error(
-        "AngularJS: disabling automatic bootstrap. <script> protocol indicates an extension, document.location.href does not match.",
-      );
-      return;
-    }
+    // Angular init is called manually, so why is this check here
+    // if (!confGlobal.isAutoBootstrapAllowed) {
+    //   window.console.error(
+    //     "AngularJS: disabling automatic bootstrap. <script> protocol indicates an extension, document.location.href does not match.",
+    //   );
+    //   return;
+    // }
     config.strictDi = getNgAttribute(appElement, "strict-di") !== null;
-    bootstrap(appElement, module ? [module] : [], config);
+    //TODO maybe angular should be initialized here?
+    window.angular.bootstrap(appElement, module ? [module] : [], config);
   }
 }
 

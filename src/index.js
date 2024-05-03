@@ -12,5 +12,5 @@ window.angular = new Angular();
 publishExternalAPI();
 
 document.addEventListener("DOMContentLoaded", () => {
-  angularInit(document, window.angular.bootstrap);
+  angularInit(document);
 });
