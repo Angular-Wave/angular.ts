@@ -14,5 +14,5 @@ export const TOUCHED_CLASS = "ng-touched";
 export const EMPTY_CLASS = "ng-empty";
 export const NOT_EMPTY_CLASS = "ng-not-empty";
 
-export const  PREFIX_REGEXP = /^((?:x|data)[:\-_])/i;
-export const  SPECIAL_CHARS_REGEXP = /[:\-_]+(.)/g;
+export const PREFIX_REGEXP = /^((?:x|data)[:\-_])/i;
+export const SPECIAL_CHARS_REGEXP = /[:\-_]+(.)/g;

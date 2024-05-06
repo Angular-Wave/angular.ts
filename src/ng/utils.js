@@ -1523,7 +1523,6 @@ export function mergeClasses(a, b) {
  * @param name Name to normalize
  */
 
-
 export function directiveNormalize(name) {
   return name
     .replace(PREFIX_REGEXP, "")

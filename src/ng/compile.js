@@ -50,7 +50,6 @@ import {
 } from "../constants";
 import { createEventDirective } from "./directive/ngEventDirs";
 
-
 /* ! VARIABLE/FUNCTION NAMING CONVENTIONS THAT APPLY TO THIS FILE!
  *
  * DOM-related variables:

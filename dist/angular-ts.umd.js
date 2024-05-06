@@ -19,8 +19,8 @@
   const EMPTY_CLASS = "ng-empty";
   const NOT_EMPTY_CLASS = "ng-not-empty";
 
-  const  PREFIX_REGEXP = /^((?:x|data)[:\-_])/i;
-  const  SPECIAL_CHARS_REGEXP = /[:\-_]+(.)/g;
+  const PREFIX_REGEXP = /^((?:x|data)[:\-_])/i;
+  const SPECIAL_CHARS_REGEXP = /[:\-_]+(.)/g;
 
   const ngMinErr$2 = minErr("ng");
 
@@ -1543,7 +1543,6 @@
    * Converts all accepted directives format into proper directive name.
    * @param name Name to normalize
    */
-
 
   function directiveNormalize(name) {
     return name
