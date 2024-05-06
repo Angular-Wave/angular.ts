@@ -43,7 +43,7 @@ export function $xhrFactoryProvider() {
  * XMLHttpRequest object and deals with browser incompatibilities.
  *
  * You should never need to use this service directly, instead use the higher-level abstractions:
- * {@link ng.$http $http} or {@link ngResource.$resource $resource}.
+ * {@link ng.$http $http}.
  *
  */
 export function $HttpBackendProvider() {

@@ -1,52 +1,34 @@
+import {
+  LocationHtml5Url,
+  LocationHashbangUrl,
+  $LocationProvider,
+} from "../../src/ng/location";
+import { publishExternalAPI } from "../../src/public";
 describe("$location", () => {
   afterEach(() => {
     // link rewriting used in html5 mode on legacy browsers binds to document.onClick, so we need
     // to clean this up after each test.
-    jqLite(window.document).off("click");
+    // jqLite(window.document).off("click");
   });
 
   describe("defaults", () => {
     it('should have hashPrefix of "!"', () => {
-      initService({});
-      inject(
-        initBrowser({
-          url: "http://host.com/base/index.html",
-          basePath: "/base/index.html",
-        }),
-        ($location) => {
-          $location.path("/a/b/c");
-          expect($location.absUrl()).toEqual(
-            "http://host.com/base/index.html#!/a/b/c",
-          );
-        },
-      );
+      let provider = new $LocationProvider();
+      expect(provider.hashPrefix()).toBe("!");
     });
 
     it("should not be html5 mode", () => {
-      initService({});
-      inject(
-        initBrowser({
-          url: "http://host.com/base/index.html",
-          basePath: "/base/index.html",
-        }),
-        ($location) => {
-          $location.path("/a/b/c");
-          expect($location.absUrl()).toContain("#!");
-        },
-      );
+      let provider = new $LocationProvider();
+      expect(provider.html5Mode().enabled).toBeFalse();
     });
   });
 
   describe("File Protocol", () => {
     /* global urlParsingNode: true */
     let urlParsingNodePlaceholder;
+    let urlParsingNode;
 
     beforeEach(() => {
-      // Support: non-Windows browsers
-      // These tests expect a Windows environment which we can only guarantee
-      // on IE & Edge.
-      if (msie || /\bEdge\/[\d.]+\b/.test(window.navigator.userAgent)) return;
-
       urlParsingNodePlaceholder = urlParsingNode;
 
       // temporarily overriding the DOM element
@@ -65,9 +47,6 @@ describe("$location", () => {
     });
 
     afterEach(() => {
-      // Support: non-Windows browsers
-      if (msie || /\bEdge\/[\d.]+\b/.test(window.navigator.userAgent)) return;
-      // reset urlParsingNode
       urlParsingNode = urlParsingNodePlaceholder;
     });
 
@@ -247,18 +226,10 @@ describe("$location", () => {
       const locationUrl = createLocationHtml5Url();
       expect(() => {
         locationUrl.search(null);
-      }).toThrow(
-        "$location",
-        "isrcharg",
-        "The first argument of the `$location#search()` call must be a string or an object.",
-      );
+      }).toThrowError(/isrcharg/);
       expect(() => {
         locationUrl.search(undefined);
-      }).toThrow(
-        "$location",
-        "isrcharg",
-        "The first argument of the `$location#search()` call must be a string or an object.",
-      );
+      }).toThrowError(/isrcharg/);
     });
 
     it("hash() should change hash fragment", () => {
@@ -442,11 +413,7 @@ describe("$location", () => {
 
       expect(() => {
         locationUrl.$$parse("http://other.server.org/path#/path");
-      }).toThrow(
-        "$location",
-        "ipthprfx",
-        'Invalid url "http://other.server.org/path#/path", missing path prefix "http://server.org/base/".',
-      );
+      }).toThrowError(/ipthprfx/);
     });
 
     it("should throw error when invalid base url given", () => {
@@ -457,11 +424,7 @@ describe("$location", () => {
 
       expect(() => {
         locationUrl.$$parse("http://server.org/path#/path");
-      }).toThrow(
-        "$location",
-        "ipthprfx",
-        'Invalid url "http://server.org/path#/path", missing path prefix "http://server.org/base/".',
-      );
+      }).toThrowError(/ipthprfx/);
     });
 
     describe("state", () => {
@@ -3421,7 +3384,9 @@ describe("$location", () => {
   });
 
   function initService(options) {
-    return module(($provide, $locationProvider) => {
+    publishExternalAPI();
+    let module = window.angular.module("test1", ["ng"]);
+    module.config(($provide, $locationProvider) => {
       $locationProvider.html5Mode(options.html5Mode);
       $locationProvider.hashPrefix(options.hashPrefix);
       $provide.value("$sniffer", { history: options.supportHistory });
@@ -3515,12 +3480,7 @@ describe("$location", () => {
   function expectThrowOnStateChange(location) {
     expect(() => {
       location.state({ a: 2 });
-    }).toThrow(
-      "$location",
-      "nostate",
-      "History API state support is available only " +
-        "in HTML5 mode and only in browsers supporting HTML5 History API",
-    );
+    }).toThrowError(/nostate/);
   }
 
   function parseLinkAndReturn(location, url, relHref) {

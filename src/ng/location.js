@@ -136,7 +136,7 @@ export function serverBase(url) {
  * @param {string} appBaseNoFile application base URL stripped of any filename
  * @param {string} basePrefix URL path prefix
  */
-function LocationHtml5Url(appBase, appBaseNoFile, basePrefix) {
+export function LocationHtml5Url(appBase, appBaseNoFile, basePrefix) {
   this.$$html5 = true;
   basePrefix = basePrefix || "";
   parseAbsoluteUrl(appBase, this);
@@ -213,7 +213,7 @@ function LocationHtml5Url(appBase, appBaseNoFile, basePrefix) {
  * @param {string} appBaseNoFile application base URL stripped of any filename
  * @param {string} hashPrefix hashbang prefix
  */
-function LocationHashbangUrl(appBase, appBaseNoFile, hashPrefix) {
+export function LocationHashbangUrl(appBase, appBaseNoFile, hashPrefix) {
   parseAbsoluteUrl(appBase, this);
 
   /**

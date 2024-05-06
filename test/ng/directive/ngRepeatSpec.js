@@ -2,6 +2,7 @@ import { publishExternalAPI } from "../../../src/public";
 import { createInjector } from "../../../src/injector";
 import { dealoc, jqLite } from "../../../src/jqLite";
 import { forEach, valueFn } from "../../../src/ng/utils";
+import { Angular } from "../../../src/loader";
 
 describe("ngRepeat", () => {
   let element;
@@ -1322,12 +1323,19 @@ describe("ngRepeat", () => {
     });
 
     it("should allow mixing ngRepeat with ngInclude", (done) => {
-      element = $compile(
-        '<div><div ng-repeat="i in [1,2]" ng-include="\'test.html\'"></div></div>',
-      )(scope);
+      window.angular = new Angular();
+      publishExternalAPI();
+
+      element = jqLite(
+        '<div><div ng-repeat="i in [1,2]" ng-include="\'/test.html\'"></div></div>',
+      );
+      const injector = window.angular.bootstrap(element);
+      scope = injector.get("$rootScope");
+      $templateCache = injector.get("$templateCache");
+      $templateCache.put("test.html", "hello");
       scope.$digest();
       setTimeout(() => {
-        expect(element.text()).toBe("hello hello ");
+        expect(element.text()).toBe("hellohello");
         done();
       }, 500);
     });

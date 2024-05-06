@@ -1,4 +1,26 @@
+import { publishExternalAPI } from "../../src/public";
+import { createInjector } from "../../src/injector";
+
 describe("$timeout", () => {
+  let injector;
+  let $window;
+  let $interval;
+  let $rootScope;
+  let errors;
+
+  beforeEach(() => {
+    errors = [];
+    publishExternalAPI().decorator("$exceptionHandler", function () {
+      return (exception) => {
+        errors.push(exception);
+      };
+    });
+    injector = createInjector(["ng"]);
+
+    $interval = injector.get("$interval");
+    $rootScope = injector.get("$rootScope");
+  });
+
   it("should delegate functions to $browser.defer", () => {
     let counter = 0;
     $timeout(() => {

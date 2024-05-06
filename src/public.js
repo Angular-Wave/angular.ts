@@ -91,7 +91,6 @@ import { $TimeoutProvider } from "./ng/timeout";
 import { SanitizeUriProvider } from "./ng/sanitizeUri";
 import { $SanitizeProvider } from "./ngSanitize/sanitize";
 import { setupModuleLoader } from "./loader";
-import { $ResourceProvider } from "./ngResource/resource";
 import { initAnimateModule } from "./ngAnimate/module";
 import { initMessageModule } from "./ngMessages/messages";
 
@@ -187,7 +186,6 @@ export function publishExternalAPI() {
           $location: $LocationProvider,
           $log: $LogProvider,
           $parse: $ParseProvider,
-          $resource: $ResourceProvider,
           $$jqLite: $$jqLiteProvider,
           $rootScope: $RootScopeProvider,
           $q: $QProvider,
