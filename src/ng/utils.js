@@ -1,3 +1,5 @@
+import { PREFIX_REGEXP, SPECIAL_CHARS_REGEXP } from "../constants";
+
 const ngMinErr = minErr("ng");
 
 /**
@@ -1514,4 +1516,18 @@ export function mergeClasses(a, b) {
   if (isArray(a)) a = a.join(" ");
   if (isArray(b)) b = b.join(" ");
   return a + " " + b;
+}
+
+/**
+ * Converts all accepted directives format into proper directive name.
+ * @param name Name to normalize
+ */
+
+
+export function directiveNormalize(name) {
+  return name
+    .replace(PREFIX_REGEXP, "")
+    .replace(SPECIAL_CHARS_REGEXP, (_, letter, offset) =>
+      offset ? letter.toUpperCase() : letter,
+    );
 }

@@ -14,8 +14,7 @@
  *
  */
 
-import { forEach } from "../utils";
-import { directiveNormalize } from "../compile";
+import { directiveNormalize } from "../utils";
 
 /*
  * A collection of directives that allows creation of custom event handlers that are defined as
@@ -52,7 +51,7 @@ events.forEach((eventName) => {
   ];
 });
 
-function createEventDirective(
+export function createEventDirective(
   $parse,
   $rootScope,
   $exceptionHandler,

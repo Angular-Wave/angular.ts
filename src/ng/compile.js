@@ -37,6 +37,7 @@ import {
   sliceArgs,
   simpleCompare,
   isError,
+  directiveNormalize,
 } from "./utils";
 
 import { SCE_CONTEXTS } from "./sce";
@@ -45,7 +46,10 @@ import {
   NODE_TYPE_ELEMENT,
   NODE_TYPE_DOCUMENT,
   NODE_TYPE_TEXT,
+  PREFIX_REGEXP,
 } from "../constants";
+import { createEventDirective } from "./directive/ngEventDirs";
+
 
 /* ! VARIABLE/FUNCTION NAMING CONVENTIONS THAT APPLY TO THIS FILE!
  *
@@ -4704,21 +4708,6 @@ function SimpleChange(previous, current) {
 SimpleChange.prototype.isFirstChange = function () {
   return this.previousValue === _UNINITIALIZED_VALUE;
 };
-
-let PREFIX_REGEXP = /^((?:x|data)[:\-_])/i;
-const SPECIAL_CHARS_REGEXP = /[:\-_]+(.)/g;
-
-/**
- * Converts all accepted directives format into proper directive name.
- * @param name Name to normalize
- */
-export function directiveNormalize(name) {
-  return name
-    .replace(PREFIX_REGEXP, "")
-    .replace(SPECIAL_CHARS_REGEXP, (_, letter, offset) =>
-      offset ? letter.toUpperCase() : letter,
-    );
-}
 
 /**
  * @ngdoc type
