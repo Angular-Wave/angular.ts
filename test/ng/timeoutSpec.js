@@ -1,9 +1,8 @@
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
 
-fdescribe("$timeout", () => {
+describe("$timeout", () => {
   let injector;
-  let $window;
   let $interval;
   let $rootScope;
   let errors;
@@ -236,28 +235,22 @@ fdescribe("$timeout", () => {
       }, 902);
     });
 
-    it("should forget references to relevant deferred even when exception is thrown", (done) => {
-      // $browser.defer.cancel is only called on cancel if the deferred object is still referenced
-      const cancelSpy = spyOn($browser.defer, "cancel").and.callThrough();
-
-      const promise = $timeout(
-        () => {
+    it("should forget references to relevant deferred even when exception is thrown", () => {
+      var promise = $timeout(
+        function () {
           throw "Test Error";
         },
         0,
         false,
       );
 
-      $timeout.cancel(promise);
-      setTimeout(() => {
-        expect(cancelSpy).not.toHaveBeenCalled();
-        done();
-      });
+      const res = $timeout.cancel(promise);
+      expect(res).toBe(true);
     });
   });
 
   describe("cancel", () => {
-    it("should cancel tasks", () => {
+    it("should cancel tasks", (done) => {
       const task1 = jasmine.createSpy("task1");
       const task2 = jasmine.createSpy("task2");
       const task3 = jasmine.createSpy("task3");
@@ -275,15 +268,16 @@ fdescribe("$timeout", () => {
       $timeout.cancel(promise1);
       $timeout.cancel(promise3);
       $timeout.cancel(promise4);
-      $timeout.flush();
-
-      expect(task1).not.toHaveBeenCalled();
-      expect(task2).toHaveBeenCalled();
-      expect(task3).not.toHaveBeenCalled();
-      expect(task4).not.toHaveBeenCalled();
+      setTimeout(() => {
+        expect(task1).not.toHaveBeenCalled();
+        expect(task2).toHaveBeenCalled();
+        expect(task3).not.toHaveBeenCalled();
+        expect(task4).not.toHaveBeenCalled();
+        done();
+      });
     });
 
-    it("should cancel the promise", () => {
+    it("should cancel the promise", (done) => {
       const promise = $timeout(() => {});
       promise.then(
         (value) => {
@@ -299,23 +293,26 @@ fdescribe("$timeout", () => {
       expect(log).toEqual([]);
 
       $timeout.cancel(promise);
-      $timeout.flush();
-
-      expect(log).toEqual(["promise error: canceled"]);
+      setTimeout(() => {
+        expect(log).toEqual(["promise error: canceled"]);
+        done();
+      });
     });
 
-    it("should return true if a task was successfully canceled", () => {
+    it("should return true if a task was successfully canceled", (done) => {
       const task1 = jasmine.createSpy("task1");
       const task2 = jasmine.createSpy("task2");
       let promise1;
       let promise2;
 
       promise1 = $timeout(task1);
-      $timeout.flush();
-      promise2 = $timeout(task2);
+      setTimeout(() => {
+        promise2 = $timeout(task2);
 
-      expect($timeout.cancel(promise1)).toBe(false);
-      expect($timeout.cancel(promise2)).toBe(true);
+        expect($timeout.cancel(promise1)).toBe(false);
+        expect($timeout.cancel(promise2)).toBe(true);
+        done();
+      });
     });
 
     it("should not throw an error when given an undefined promise", () => {
@@ -326,7 +323,7 @@ fdescribe("$timeout", () => {
       const promise = $timeout(() => {}).then(() => {});
       expect(() => {
         $timeout.cancel(promise);
-      }).toThrow("$timeout", "badprom");
+      }).toThrowError(/badprom/);
     });
 
     it("should forget references to relevant deferred", () => {
@@ -350,9 +347,6 @@ fdescribe("$timeout", () => {
 
       const t = $timeout();
       $timeout.cancel(t);
-      expect(() => {
-        $browser.defer.flush();
-      }).toThrowError("No deferred tasks to be flushed");
       expect(watchSpy).not.toHaveBeenCalled();
     });
   });

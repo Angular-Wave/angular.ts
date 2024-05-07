@@ -93,9 +93,7 @@ export function $timeout($rootScope, $browser, $q, $$q, $exceptionHandler) {
       );
     }
 
-    if (!Object.prototype.hasOwnProperty.call(deferreds, promise.$$timeoutId))
-      return false;
-
+    if (!deferreds.hasOwnProperty(promise.$$timeoutId)) return false;
     const id = promise.$$timeoutId;
     const deferred = deferreds[id];
 
