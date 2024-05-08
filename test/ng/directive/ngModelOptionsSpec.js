@@ -980,9 +980,7 @@ describe("ngModelOptions", () => {
     });
 
     describe("on directives with `replace: true`", () => {
-      let $rootScope;
       let inputElm;
-      let module;
 
       beforeEach(() => {
         angular = new Angular();

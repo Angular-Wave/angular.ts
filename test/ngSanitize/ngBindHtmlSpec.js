@@ -3,14 +3,11 @@ import { forEach } from "../../src/ng/utils";
 import { publishExternalAPI } from "../../src/public";
 
 describe("ngBindHtml", () => {
-  let injector;
-  let $rootScope;
-  let $compile;
+  let $rootScope, $compile;
 
   beforeEach(() => {
     publishExternalAPI();
-    injector = createInjector(["ng", "ngSanitize"]);
-    injector.invoke((_$rootScope_, _$compile_) => {
+    createInjector(["ng", "ngSanitize"]).invoke((_$rootScope_, _$compile_) => {
       $rootScope = _$rootScope_;
       $compile = _$compile_;
     });

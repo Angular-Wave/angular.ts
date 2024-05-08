@@ -17,7 +17,7 @@ import {
   toKeyValue,
 } from "./utils";
 
-const PATH_MATCH = /^([^?#]*)(\?([^#]*))?(#(.*))?$/;
+export const PATH_MATCH = /^([^?#]*)(\?([^#]*))?(#(.*))?$/;
 const DEFAULT_PORTS = { http: 80, https: 443, ftp: 21 };
 const $locationMinErr = minErr("$location");
 
@@ -313,7 +313,7 @@ export function LocationHashbangUrl(appBase, appBaseNoFile, hashPrefix) {
  * @param {string} appBaseNoFile application base URL stripped of any filename
  * @param {string} hashPrefix hashbang prefix
  */
-function LocationHashbangInHtml5Url(appBase, appBaseNoFile, hashPrefix) {
+export function LocationHashbangInHtml5Url(appBase, appBaseNoFile, hashPrefix) {
   this.$$html5 = true;
   LocationHashbangUrl.apply(this, arguments);
 
