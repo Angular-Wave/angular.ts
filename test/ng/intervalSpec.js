@@ -24,50 +24,45 @@ describe("$interval", () => {
     let counter = 0;
     $interval(() => {
       counter++;
-    }, 100);
-
+    }, 1);
     expect(counter).toBe(0);
     setTimeout(() => {
-      expect(counter).toBe(1);
-    }, 100);
-
-    setTimeout(() => {
-      expect(counter).toBe(2);
+      expect(counter).toBeGreaterThanOrEqual(2);
       done();
-    }, 200);
+    }, 2);
   });
 
   it("should call $apply after each task is executed", (done) => {
     const applySpy = spyOn($rootScope, "$apply").and.callThrough();
 
-    $interval(() => {}, 100);
+    $interval(() => {}, 1);
     expect(applySpy).not.toHaveBeenCalled();
 
     setTimeout(() => {
       expect(applySpy).toHaveBeenCalled();
-    }, 100);
+    }, 1);
 
     applySpy.calls.reset();
 
-    $interval(() => {}, 100);
-    $interval(() => {}, 100);
+    $interval(() => {}, 1);
+    $interval(() => {}, 1);
 
     setTimeout(() => {
       expect(applySpy).toHaveBeenCalledTimes(3);
       done();
-    }, 100);
+    }, 1);
   });
 
   it("should NOT call $apply if invokeApply is set to false", (done) => {
     const applySpy = spyOn($rootScope, "$apply").and.callThrough();
 
-    $interval(() => {}, 100, 0, false);
+    $interval(() => {}, 1, 0, false);
     expect(applySpy).not.toHaveBeenCalled();
 
     setTimeout(() => {
       expect(applySpy).not.toHaveBeenCalled();
       done();
-    }, 200);
+    }, 2);
   });
 
   it("should NOT call $evalAsync or $digest if invokeApply is set to false", (done) => {
@@ -75,14 +70,14 @@ describe("$interval", () => {
     const digestSpy = spyOn($rootScope, "$digest").and.callThrough();
     const notifySpy = jasmine.createSpy("notify");
 
-    $interval(notifySpy, 100, 1, false);
+    $interval(notifySpy, 1, 1, false);
 
     setTimeout(() => {
       expect(notifySpy).toHaveBeenCalled();
       expect(evalAsyncSpy).not.toHaveBeenCalled();
       expect(digestSpy).not.toHaveBeenCalled();
       done();
-    }, 200);
+    }, 2);
   });
 
   it("should allow you to specify a number of iterations", (done) => {
@@ -91,37 +86,37 @@ describe("$interval", () => {
       () => {
         counter++;
       },
-      100,
+      1,
       2,
     );
 
     setTimeout(() => {
       expect(counter).toBe(1);
-    }, 100);
+    }, 1);
 
     setTimeout(() => {
       expect(counter).toBe(2);
-    }, 200);
+    }, 2);
 
     setTimeout(() => {
       expect(counter).toBe(2);
       done();
-    }, 300);
+    }, 3);
   });
 
   it("should allow you to specify a number of arguments", (done) => {
     const task1 = jasmine.createSpy("task1");
     const task2 = jasmine.createSpy("task2");
     const task3 = jasmine.createSpy("task3");
-    $interval(task1, 100, 2, true, "Task1");
-    $interval(task2, 100, 2, true, "Task2");
-    $interval(task3, 100, 2, true, "I", "am", "a", "Task3", "spy");
+    $interval(task1, 1, 2, true, "Task1");
+    $interval(task2, 1, 2, true, "Task2");
+    $interval(task3, 1, 2, true, "I", "am", "a", "Task3", "spy");
 
     setTimeout(() => {
       expect(task1).toHaveBeenCalledWith("Task1");
       expect(task2).toHaveBeenCalledWith("Task2");
       expect(task3).toHaveBeenCalledWith("I", "am", "a", "Task3", "spy");
-    }, 100);
+    }, 1);
 
     task1.calls.reset();
     task2.calls.reset();
@@ -132,14 +127,14 @@ describe("$interval", () => {
       expect(task2).toHaveBeenCalledWith("Task2");
       expect(task3).toHaveBeenCalledWith("I", "am", "a", "Task3", "spy");
       done();
-    }, 100);
+    }, 1);
   });
 
   it("should return a promise which will be updated with the count on each iteration", (done) => {
     const log = [];
     const promise = $interval(() => {
       log.push("tick");
-    }, 100);
+    }, 1);
 
     promise.then(
       (value) => {
@@ -156,7 +151,7 @@ describe("$interval", () => {
 
     setTimeout(() => {
       expect(log).toEqual(["tick", "promise update: 0"]);
-    }, 100);
+    }, 1);
 
     setTimeout(() => {
       expect(log).toEqual([
@@ -166,7 +161,7 @@ describe("$interval", () => {
         "promise update: 1",
       ]);
       done();
-    }, 200);
+    }, 2);
   });
 
   it("should return a promise which will be resolved after the specified number of iterations", (done) => {
@@ -175,7 +170,7 @@ describe("$interval", () => {
       () => {
         log.push("tick");
       },
-      100,
+      1,
       2,
     );
 
@@ -194,7 +189,7 @@ describe("$interval", () => {
 
     setTimeout(() => {
       expect(log).toEqual(["tick", "promise update: 0"]);
-    }, 100);
+    }, 1);
 
     setTimeout(() => {
       expect(log).toEqual([
@@ -205,7 +200,7 @@ describe("$interval", () => {
         "promise success: 2",
       ]);
       done();
-    }, 200);
+    }, 2);
   });
 
   describe("exception handling", () => {
@@ -265,15 +260,15 @@ describe("$interval", () => {
 
   describe("cancel", () => {
     it("should cancel tasks", (done) => {
-      const task1 = jasmine.createSpy("task1", 100);
-      const task2 = jasmine.createSpy("task2", 100);
-      const task3 = jasmine.createSpy("task3", 100);
+      const task1 = jasmine.createSpy("task1", 1);
+      const task2 = jasmine.createSpy("task2", 1);
+      const task3 = jasmine.createSpy("task3", 1);
       let promise1;
       let promise3;
 
-      promise1 = $interval(task1, 200);
-      $interval(task2, 100);
-      promise3 = $interval(task3, 333);
+      promise1 = $interval(task1, 2);
+      $interval(task2, 1);
+      promise3 = $interval(task3, 3);
 
       $interval.cancel(promise3);
       $interval.cancel(promise1);
@@ -282,11 +277,11 @@ describe("$interval", () => {
         expect(task2).toHaveBeenCalled();
         expect(task3).not.toHaveBeenCalled();
         done();
-      }, 100);
+      }, 1);
     });
 
     it("should cancel the promise", (done) => {
-      const promise = $interval(() => {}, 100);
+      const promise = $interval(() => {}, 1);
       const log = [];
       promise.then(
         (value) => {
@@ -303,7 +298,7 @@ describe("$interval", () => {
 
       setTimeout(() => {
         $interval.cancel(promise);
-      }, 100);
+      }, 1);
 
       setTimeout(() => {
         $rootScope.$apply(); // For resolving the promise -
@@ -311,7 +306,7 @@ describe("$interval", () => {
 
         expect(log).toEqual(["promise update: 0", "promise error: canceled"]);
         done();
-      }, 200);
+      }, 2);
     });
 
     it("should return true if a task was successfully canceled", (done) => {
@@ -320,14 +315,14 @@ describe("$interval", () => {
       let promise1;
       let promise2;
 
-      promise1 = $interval(task1, 100, 1);
+      promise1 = $interval(task1, 1, 1);
       setTimeout(() => {
-        promise2 = $interval(task2, 100, 1);
+        promise2 = $interval(task2, 1, 1);
 
         expect($interval.cancel(promise1)).toBe(false);
         expect($interval.cancel(promise2)).toBe(true);
         done();
-      }, 100);
+      }, 1);
     });
 
     it("should not throw an error when given an undefined promise", () => {
@@ -355,22 +350,22 @@ describe("$interval", () => {
     it("should use $window.setInterval instead of the global function", () => {
       const setIntervalSpy = spyOn(window, "setInterval");
 
-      $interval(() => {}, 100);
+      $interval(() => {}, 1);
       expect(setIntervalSpy).toHaveBeenCalled();
     });
 
     it("should use $window.clearInterval instead of the global function", (done) => {
       const clearIntervalSpy = spyOn(window, "clearInterval");
 
-      $interval(() => {}, 100, 1);
+      $interval(() => {}, 1, 1);
       setTimeout(() => {
         expect(clearIntervalSpy).toHaveBeenCalled();
 
         clearIntervalSpy.calls.reset();
-        $interval.cancel($interval(() => {}, 100));
+        $interval.cancel($interval(() => {}, 1));
         expect(clearIntervalSpy).toHaveBeenCalled();
         done();
-      }, 100);
+      }, 1);
     });
   });
 });

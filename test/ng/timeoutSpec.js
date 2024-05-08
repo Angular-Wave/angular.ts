@@ -76,14 +76,14 @@ describe("$timeout", () => {
     const digestSpy = spyOn($rootScope, "$digest").and.callThrough();
     const fulfilledSpy = jasmine.createSpy("fulfilled");
 
-    $timeout(fulfilledSpy, 100, false);
+    $timeout(fulfilledSpy, 1, false);
 
     setTimeout(() => {
       expect(fulfilledSpy).toHaveBeenCalled();
       expect(evalAsyncSpy).not.toHaveBeenCalled();
       expect(digestSpy).not.toHaveBeenCalled();
       done();
-    }, 100);
+    }, 1);
   });
 
   it("should allow you to specify the delay time", () => {
@@ -127,7 +127,7 @@ describe("$timeout", () => {
       log = [];
     });
 
-    $timeout(100).then(
+    $timeout(1).then(
       (value) => {
         log.push(`promise success: ${value}`);
       },
@@ -137,7 +137,7 @@ describe("$timeout", () => {
     setTimeout(() => {
       expect(log).toEqual(["promise success: undefined"]);
       done();
-    }, 100);
+    }, 1);
   });
 
   describe("exception handling", () => {
@@ -192,7 +192,7 @@ describe("$timeout", () => {
         (arg) => {
           throw arg;
         },
-        900,
+        1,
         true,
         "Some Arguments",
       );
@@ -200,7 +200,7 @@ describe("$timeout", () => {
         (arg1, args2) => {
           throw `${arg1} ${args2}`;
         },
-        901,
+        2,
         false,
         "Are Meant",
         "To Be Thrown",
@@ -225,14 +225,14 @@ describe("$timeout", () => {
 
       setTimeout(() => {
         expect(log).toEqual(["error: Some Arguments"]);
-      }, 900);
+      }, 1);
       setTimeout(() => {
         expect(log).toEqual([
           "error: Some Arguments",
           "error: Are Meant To Be Thrown",
         ]);
         done();
-      }, 902);
+      }, 3);
     });
 
     it("should forget references to relevant deferred even when exception is thrown", () => {

@@ -67,7 +67,7 @@
       <script type="module" src="test/ng/httpSpec.js"></script>
       
       <script type="module" src="test/ng/interpolateSpec.js"></script>
-      <script type="module" src="test/ng/intervalSpec.js"></script>
+     
       <script type="module" src="test/ng/locationSpec.js"></script> 
       <script type="module" src="test/ng/ngOnSpec.js"></script>
       <script type="module" src="test/ng/ngPropSpec.js"></script>
@@ -80,7 +80,7 @@
       <script type="module" src="test/ng/scopeSpec.js"></script>
       
       <script type="module" src="test/ng/templateRequestSpec.js"></script>
-      <script type="module" src="test/ng/timeoutSpec.js"></script>
+     
       <script type="module" src="test/ng/utilsSpec.js"></script>
       <script type="module" src="test/ng/urlUtilsSpec.js"></script>
 
@@ -96,6 +96,10 @@
       <script type="module" src="test/minErrSpec.js"></script>
       <script type="module" src="test/publicSpec.js"></script>   
       <script type="module" src="test/stringifySpec.js"></script>
+
+      <!-- Run asyncs last to prevent digest polution-->
+      <script type="module" src="test/ng/intervalSpec.js"></script>
+      <script type="module" src="test/ng/timeoutSpec.js"></script>
     </head>
     <body>
       <div id="dummy"></div>
