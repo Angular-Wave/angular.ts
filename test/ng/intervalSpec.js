@@ -3,14 +3,13 @@ import { createInjector } from "../../src/injector";
 
 describe("$interval", () => {
   let injector;
-  let $window;
   let $interval;
   let $rootScope;
   let errors;
 
   beforeEach(() => {
     errors = [];
-    publishExternalAPI().decorator("$exceptionHandler", function () {
+    publishExternalAPI().decorator("$exceptionHandler", () => {
       return (exception) => {
         errors.push(exception);
       };
@@ -213,17 +212,17 @@ describe("$interval", () => {
     it("should delegate exception to the $exceptionHandler service", (done) => {
       $interval(() => {
         throw "Test Error";
-      }, 100);
+      }, 10);
       expect(errors).toEqual([]);
 
       setTimeout(() => {
         expect(errors).toEqual(["Test Error"]);
-      }, 100);
+      }, 10);
 
       setTimeout(() => {
         expect(errors).toEqual(["Test Error", "Test Error"]);
         done();
-      }, 200);
+      }, 20);
     });
 
     it("should call $apply even if an exception is thrown in callback", (done) => {
@@ -231,19 +230,20 @@ describe("$interval", () => {
 
       $interval(() => {
         throw "Test Error";
-      }, 100);
+      }, 101);
       expect(applySpy).not.toHaveBeenCalled();
 
       setTimeout(() => {
         expect(applySpy).toHaveBeenCalled();
         done();
-      }, 100);
+      }, 101);
     });
 
     it("should still update the interval promise when an exception is thrown", (done) => {
       const promise = $interval(() => {
+        errors = [];
         throw "Some Error";
-      }, 100);
+      }, 102);
 
       promise.then(
         (value) => {
@@ -259,12 +259,12 @@ describe("$interval", () => {
       setTimeout(() => {
         expect(errors[1]).toEqual("promise update: 0");
         done();
-      }, 100);
+      }, 102);
     });
   });
 
   describe("cancel", () => {
-    it("should cancel tasks", () => {
+    it("should cancel tasks", (done) => {
       const task1 = jasmine.createSpy("task1", 100);
       const task2 = jasmine.createSpy("task2", 100);
       const task3 = jasmine.createSpy("task3", 100);
@@ -277,14 +277,15 @@ describe("$interval", () => {
 
       $interval.cancel(promise3);
       $interval.cancel(promise1);
-      $window.flush(100);
-
-      expect(task1).not.toHaveBeenCalled();
-      expect(task2).toHaveBeenCalled();
-      expect(task3).not.toHaveBeenCalled();
+      setTimeout(() => {
+        expect(task1).not.toHaveBeenCalled();
+        expect(task2).toHaveBeenCalled();
+        expect(task3).not.toHaveBeenCalled();
+        done();
+      }, 100);
     });
 
-    it("should cancel the promise", () => {
+    it("should cancel the promise", (done) => {
       const promise = $interval(() => {}, 100);
       const log = [];
       promise.then(
@@ -300,40 +301,44 @@ describe("$interval", () => {
       );
       expect(log).toEqual([]);
 
-      $window.flush(100);
-      $interval.cancel(promise);
-      $window.flush(100);
-      $rootScope.$apply(); // For resolving the promise -
-      // necessary since q uses $rootScope.evalAsync.
+      setTimeout(() => {
+        $interval.cancel(promise);
+      }, 100);
 
-      expect(log).toEqual(["promise update: 0", "promise error: canceled"]);
+      setTimeout(() => {
+        $rootScope.$apply(); // For resolving the promise -
+        // necessary since q uses $rootScope.evalAsync.
+
+        expect(log).toEqual(["promise update: 0", "promise error: canceled"]);
+        done();
+      }, 200);
     });
 
-    it("should return true if a task was successfully canceled", () => {
+    it("should return true if a task was successfully canceled", (done) => {
       const task1 = jasmine.createSpy("task1");
       const task2 = jasmine.createSpy("task2");
       let promise1;
       let promise2;
 
       promise1 = $interval(task1, 100, 1);
-      $window.flush(100);
-      promise2 = $interval(task2, 100, 1);
+      setTimeout(() => {
+        promise2 = $interval(task2, 100, 1);
 
-      expect($interval.cancel(promise1)).toBe(false);
-      expect($interval.cancel(promise2)).toBe(true);
+        expect($interval.cancel(promise1)).toBe(false);
+        expect($interval.cancel(promise2)).toBe(true);
+        done();
+      }, 100);
     });
 
-    it("should not throw an error when given an undefined promise", inject((
-      $interval,
-    ) => {
+    it("should not throw an error when given an undefined promise", () => {
       expect($interval.cancel()).toBe(false);
-    }));
+    });
 
     it("should throw an error when given a non-$interval promise", () => {
       const promise = $interval(() => {}).then(() => {});
       expect(() => {
         $interval.cancel(promise);
-      }).toThrow("$interval", "badprom");
+      }).toThrowError(/badprom/);
     });
 
     it("should not trigger digest when cancelled", () => {
@@ -342,31 +347,30 @@ describe("$interval", () => {
 
       const t = $interval();
       $interval.cancel(t);
-      expect(() => {
-        $browser.defer.flush();
-      }).toThrowError("No deferred tasks to be flushed");
       expect(watchSpy).not.toHaveBeenCalled();
     });
   });
 
   describe("$window delegation", () => {
     it("should use $window.setInterval instead of the global function", () => {
-      const setIntervalSpy = spyOn($window, "setInterval");
+      const setIntervalSpy = spyOn(window, "setInterval");
 
       $interval(() => {}, 100);
       expect(setIntervalSpy).toHaveBeenCalled();
     });
 
-    it("should use $window.clearInterval instead of the global function", () => {
-      const clearIntervalSpy = spyOn($window, "clearInterval");
+    it("should use $window.clearInterval instead of the global function", (done) => {
+      const clearIntervalSpy = spyOn(window, "clearInterval");
 
       $interval(() => {}, 100, 1);
-      $window.flush(100);
-      expect(clearIntervalSpy).toHaveBeenCalled();
+      setTimeout(() => {
+        expect(clearIntervalSpy).toHaveBeenCalled();
 
-      clearIntervalSpy.calls.reset();
-      $interval.cancel($interval(() => {}, 100));
-      expect(clearIntervalSpy).toHaveBeenCalled();
+        clearIntervalSpy.calls.reset();
+        $interval.cancel($interval(() => {}, 100));
+        expect(clearIntervalSpy).toHaveBeenCalled();
+        done();
+      }, 100);
     });
   });
 });

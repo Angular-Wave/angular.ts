@@ -14,19 +14,13 @@ describe("$location", () => {
     module = window.angular.module("test1", ["ng"]);
   });
 
-  afterEach(() => {
-    // link rewriting used in html5 mode on legacy browsers binds to document.onClick, so we need
-    // to clean this up after each test.
-    // jqLite(window.document).off("click");
-  });
-
-  function initService(options) {
-    module.config(($provide, $locationProvider) => {
-      $locationProvider.html5Mode(options.html5Mode);
-      $locationProvider.hashPrefix(options.hashPrefix);
-      $provide.value("$sniffer", { history: options.supportHistory });
-    });
-  }
+  // function initService(options) {
+  //   module.config(($provide, $locationProvider) => {
+  //     $locationProvider.html5Mode(options.html5Mode);
+  //     $locationProvider.hashPrefix(options.hashPrefix);
+  //     $provide.value("$sniffer", { history: options.supportHistory });
+  //   });
+  // }
 
   describe("defaults", () => {
     it('should have hashPrefix of "!"', () => {
