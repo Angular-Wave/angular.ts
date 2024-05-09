@@ -57,9 +57,329 @@ import { extend } from "../ng/utils";
  */
 const ARIA_DISABLE_ATTR = "ngAriaDisable";
 
-const ngAriaModule = window.angular
-  .module("ngAria", ["ng"])
-  .provider("$aria", $AriaProvider);
+export function initAriaModule() {
+  window.angular
+    .module("ngAria", ["ng"])
+    .provider("$aria", $AriaProvider)
+    .directive("ngShow", [
+      "$aria",
+      function ($aria) {
+        return $aria.$$watchExpr("ngShow", "aria-hidden", [], true);
+      },
+    ])
+    .directive("ngHide", [
+      "$aria",
+      function ($aria) {
+        return $aria.$$watchExpr("ngHide", "aria-hidden", [], false);
+      },
+    ])
+    .directive("ngValue", [
+      "$aria",
+      function ($aria) {
+        return $aria.$$watchExpr(
+          "ngValue",
+          "aria-checked",
+          nativeAriaNodeNames,
+          false,
+        );
+      },
+    ])
+    .directive("ngChecked", [
+      "$aria",
+      function ($aria) {
+        return $aria.$$watchExpr(
+          "ngChecked",
+          "aria-checked",
+          nativeAriaNodeNames,
+          false,
+        );
+      },
+    ])
+    .directive("ngReadonly", [
+      "$aria",
+      function ($aria) {
+        return $aria.$$watchExpr(
+          "ngReadonly",
+          "aria-readonly",
+          nativeAriaNodeNames,
+          false,
+        );
+      },
+    ])
+    .directive("ngRequired", [
+      "$aria",
+      function ($aria) {
+        return $aria.$$watchExpr(
+          "ngRequired",
+          "aria-required",
+          nativeAriaNodeNames,
+          false,
+        );
+      },
+    ])
+    .directive("ngModel", [
+      "$aria",
+      function ($aria) {
+        function shouldAttachAttr(
+          attr,
+          normalizedAttr,
+          elem,
+          allowNonAriaNodes,
+        ) {
+          return (
+            $aria.config(normalizedAttr) &&
+            !elem.attr(attr) &&
+            (allowNonAriaNodes || !isNodeOneOf(elem, nativeAriaNodeNames)) &&
+            (elem.attr("type") !== "hidden" || elem[0].nodeName !== "INPUT")
+          );
+        }
+
+        function shouldAttachRole(role, elem) {
+          // if element does not have role attribute
+          // AND element type is equal to role (if custom element has a type equaling shape) <-- remove?
+          // AND element is not in nativeAriaNodeNames
+          return (
+            !elem.attr("role") &&
+            elem.attr("type") === role &&
+            !isNodeOneOf(elem, nativeAriaNodeNames)
+          );
+        }
+
+        function getShape(attr, elem) {
+          const { type } = attr;
+          const { role } = attr;
+
+          return (type || role) === "checkbox" || role === "menuitemcheckbox"
+            ? "checkbox"
+            : (type || role) === "radio" || role === "menuitemradio"
+              ? "radio"
+              : type === "range" || role === "progressbar" || role === "slider"
+                ? "range"
+                : "";
+        }
+
+        return {
+          restrict: "A",
+          require: "ngModel",
+          priority: 200, // Make sure watches are fired after any other directives that affect the ngModel value
+          compile(elem, attr) {
+            if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR))
+              return;
+
+            const shape = getShape(attr, elem);
+
+            return {
+              post(scope, elem, attr, ngModel) {
+                const needsTabIndex = shouldAttachAttr(
+                  "tabindex",
+                  "tabindex",
+                  elem,
+                  false,
+                );
+
+                function ngAriaWatchModelValue() {
+                  return ngModel.$modelValue;
+                }
+
+                function getRadioReaction(newVal) {
+                  // Strict comparison would cause a BC
+                  // eslint-disable-next-line eqeqeq
+                  const boolVal = attr.value == ngModel.$viewValue;
+                  elem.attr("aria-checked", boolVal);
+                }
+
+                function getCheckboxReaction() {
+                  elem.attr(
+                    "aria-checked",
+                    !ngModel.$isEmpty(ngModel.$viewValue),
+                  );
+                }
+
+                switch (shape) {
+                  case "radio":
+                  case "checkbox":
+                    if (shouldAttachRole(shape, elem)) {
+                      elem.attr("role", shape);
+                    }
+                    if (
+                      shouldAttachAttr(
+                        "aria-checked",
+                        "ariaChecked",
+                        elem,
+                        false,
+                      )
+                    ) {
+                      scope.$watch(
+                        ngAriaWatchModelValue,
+                        shape === "radio"
+                          ? getRadioReaction
+                          : getCheckboxReaction,
+                      );
+                    }
+                    if (needsTabIndex) {
+                      elem.attr("tabindex", 0);
+                    }
+                    break;
+                  case "range":
+                    if (shouldAttachRole(shape, elem)) {
+                      elem.attr("role", "slider");
+                    }
+                    if ($aria.config("ariaValue")) {
+                      const needsAriaValuemin =
+                        !elem.attr("aria-valuemin") &&
+                        (Object.prototype.hasOwnProperty.call(attr, "min") ||
+                          Object.prototype.hasOwnProperty.call(attr, "ngMin"));
+                      const needsAriaValuemax =
+                        !elem.attr("aria-valuemax") &&
+                        (Object.prototype.hasOwnProperty.call(attr, "max") ||
+                          Object.prototype.hasOwnProperty.call(attr, "ngMax"));
+                      const needsAriaValuenow = !elem.attr("aria-valuenow");
+
+                      if (needsAriaValuemin) {
+                        attr.$observe("min", (newVal) => {
+                          elem.attr("aria-valuemin", newVal);
+                        });
+                      }
+                      if (needsAriaValuemax) {
+                        attr.$observe("max", (newVal) => {
+                          elem.attr("aria-valuemax", newVal);
+                        });
+                      }
+                      if (needsAriaValuenow) {
+                        scope.$watch(ngAriaWatchModelValue, (newVal) => {
+                          elem.attr("aria-valuenow", newVal);
+                        });
+                      }
+                    }
+                    if (needsTabIndex) {
+                      elem.attr("tabindex", 0);
+                    }
+                    break;
+                }
+
+                if (
+                  !Object.prototype.hasOwnProperty.call(attr, "ngRequired") &&
+                  ngModel.$validators.required &&
+                  shouldAttachAttr("aria-required", "ariaRequired", elem, false)
+                ) {
+                  // ngModel.$error.required is undefined on custom controls
+                  attr.$observe("required", () => {
+                    elem.attr("aria-required", !!attr.required);
+                  });
+                }
+
+                if (
+                  shouldAttachAttr("aria-invalid", "ariaInvalid", elem, true)
+                ) {
+                  scope.$watch(
+                    () => ngModel.$invalid,
+                    (newVal) => {
+                      elem.attr("aria-invalid", !!newVal);
+                    },
+                  );
+                }
+              },
+            };
+          },
+        };
+      },
+    ])
+    .directive("ngDisabled", [
+      "$aria",
+      function ($aria) {
+        return $aria.$$watchExpr(
+          "ngDisabled",
+          "aria-disabled",
+          nativeAriaNodeNames,
+          false,
+        );
+      },
+    ])
+    .directive("ngMessages", () => ({
+      restrict: "A",
+      require: "?ngMessages",
+      link(_scope, elem, attr) {
+        if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR))
+          return;
+
+        if (!elem.attr("aria-live")) {
+          elem.attr("aria-live", "assertive");
+        }
+      },
+    }))
+    .directive("ngClick", [
+      "$aria",
+      "$parse",
+      function ($aria, $parse) {
+        return {
+          restrict: "A",
+          compile(elem, attr) {
+            if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR))
+              return;
+
+            const fn = $parse(attr.ngClick);
+            return function (scope, elem, attr) {
+              if (!isNodeOneOf(elem, nativeAriaNodeNames)) {
+                if ($aria.config("bindRoleForClick") && !elem.attr("role")) {
+                  elem.attr("role", "button");
+                }
+
+                if ($aria.config("tabindex") && !elem.attr("tabindex")) {
+                  elem.attr("tabindex", 0);
+                }
+
+                if (
+                  $aria.config("bindKeydown") &&
+                  !attr.ngKeydown &&
+                  !attr.ngKeypress &&
+                  !attr.ngKeyup
+                ) {
+                  elem.on("keydown", (event) => {
+                    const keyCode = event.which || event.keyCode;
+
+                    if (keyCode === 13 || keyCode === 32) {
+                      // If the event is triggered on a non-interactive element ...
+                      if (
+                        nativeAriaNodeNames.indexOf(event.target.nodeName) ===
+                          -1 &&
+                        !event.target.isContentEditable
+                      ) {
+                        // ... prevent the default browser behavior (e.g. scrolling when pressing spacebar)
+                        // See https://github.com/angular/angular.js/issues/16664
+                        event.preventDefault();
+                      }
+                      scope.$apply(callback);
+                    }
+
+                    function callback() {
+                      fn(scope, { $event: event });
+                    }
+                  });
+                }
+              }
+            };
+          },
+        };
+      },
+    ])
+    .directive("ngDblclick", [
+      "$aria",
+      function ($aria) {
+        return function (scope, elem, attr) {
+          if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR))
+            return;
+
+          if (
+            $aria.config("tabindex") &&
+            !elem.attr("tabindex") &&
+            !isNodeOneOf(elem, nativeAriaNodeNames)
+          ) {
+            elem.attr("tabindex", 0);
+          }
+        };
+      },
+    ]);
+}
 
 /**
  * Internal Utilities
@@ -220,310 +540,3 @@ function $AriaProvider() {
     };
   };
 }
-
-ngAriaModule
-  .directive("ngShow", [
-    "$aria",
-    function ($aria) {
-      return $aria.$$watchExpr("ngShow", "aria-hidden", [], true);
-    },
-  ])
-  .directive("ngHide", [
-    "$aria",
-    function ($aria) {
-      return $aria.$$watchExpr("ngHide", "aria-hidden", [], false);
-    },
-  ])
-  .directive("ngValue", [
-    "$aria",
-    function ($aria) {
-      return $aria.$$watchExpr(
-        "ngValue",
-        "aria-checked",
-        nativeAriaNodeNames,
-        false,
-      );
-    },
-  ])
-  .directive("ngChecked", [
-    "$aria",
-    function ($aria) {
-      return $aria.$$watchExpr(
-        "ngChecked",
-        "aria-checked",
-        nativeAriaNodeNames,
-        false,
-      );
-    },
-  ])
-  .directive("ngReadonly", [
-    "$aria",
-    function ($aria) {
-      return $aria.$$watchExpr(
-        "ngReadonly",
-        "aria-readonly",
-        nativeAriaNodeNames,
-        false,
-      );
-    },
-  ])
-  .directive("ngRequired", [
-    "$aria",
-    function ($aria) {
-      return $aria.$$watchExpr(
-        "ngRequired",
-        "aria-required",
-        nativeAriaNodeNames,
-        false,
-      );
-    },
-  ])
-  .directive("ngModel", [
-    "$aria",
-    function ($aria) {
-      function shouldAttachAttr(attr, normalizedAttr, elem, allowNonAriaNodes) {
-        return (
-          $aria.config(normalizedAttr) &&
-          !elem.attr(attr) &&
-          (allowNonAriaNodes || !isNodeOneOf(elem, nativeAriaNodeNames)) &&
-          (elem.attr("type") !== "hidden" || elem[0].nodeName !== "INPUT")
-        );
-      }
-
-      function shouldAttachRole(role, elem) {
-        // if element does not have role attribute
-        // AND element type is equal to role (if custom element has a type equaling shape) <-- remove?
-        // AND element is not in nativeAriaNodeNames
-        return (
-          !elem.attr("role") &&
-          elem.attr("type") === role &&
-          !isNodeOneOf(elem, nativeAriaNodeNames)
-        );
-      }
-
-      function getShape(attr, elem) {
-        const { type } = attr;
-        const { role } = attr;
-
-        return (type || role) === "checkbox" || role === "menuitemcheckbox"
-          ? "checkbox"
-          : (type || role) === "radio" || role === "menuitemradio"
-            ? "radio"
-            : type === "range" || role === "progressbar" || role === "slider"
-              ? "range"
-              : "";
-      }
-
-      return {
-        restrict: "A",
-        require: "ngModel",
-        priority: 200, // Make sure watches are fired after any other directives that affect the ngModel value
-        compile(elem, attr) {
-          if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR))
-            return;
-
-          const shape = getShape(attr, elem);
-
-          return {
-            post(scope, elem, attr, ngModel) {
-              const needsTabIndex = shouldAttachAttr(
-                "tabindex",
-                "tabindex",
-                elem,
-                false,
-              );
-
-              function ngAriaWatchModelValue() {
-                return ngModel.$modelValue;
-              }
-
-              function getRadioReaction(newVal) {
-                // Strict comparison would cause a BC
-                // eslint-disable-next-line eqeqeq
-                const boolVal = attr.value == ngModel.$viewValue;
-                elem.attr("aria-checked", boolVal);
-              }
-
-              function getCheckboxReaction() {
-                elem.attr(
-                  "aria-checked",
-                  !ngModel.$isEmpty(ngModel.$viewValue),
-                );
-              }
-
-              switch (shape) {
-                case "radio":
-                case "checkbox":
-                  if (shouldAttachRole(shape, elem)) {
-                    elem.attr("role", shape);
-                  }
-                  if (
-                    shouldAttachAttr("aria-checked", "ariaChecked", elem, false)
-                  ) {
-                    scope.$watch(
-                      ngAriaWatchModelValue,
-                      shape === "radio"
-                        ? getRadioReaction
-                        : getCheckboxReaction,
-                    );
-                  }
-                  if (needsTabIndex) {
-                    elem.attr("tabindex", 0);
-                  }
-                  break;
-                case "range":
-                  if (shouldAttachRole(shape, elem)) {
-                    elem.attr("role", "slider");
-                  }
-                  if ($aria.config("ariaValue")) {
-                    const needsAriaValuemin =
-                      !elem.attr("aria-valuemin") &&
-                      (Object.prototype.hasOwnProperty.call(attr, "min") ||
-                        Object.prototype.hasOwnProperty.call(attr, "ngMin"));
-                    const needsAriaValuemax =
-                      !elem.attr("aria-valuemax") &&
-                      (Object.prototype.hasOwnProperty.call(attr, "max") ||
-                        Object.prototype.hasOwnProperty.call(attr, "ngMax"));
-                    const needsAriaValuenow = !elem.attr("aria-valuenow");
-
-                    if (needsAriaValuemin) {
-                      attr.$observe("min", (newVal) => {
-                        elem.attr("aria-valuemin", newVal);
-                      });
-                    }
-                    if (needsAriaValuemax) {
-                      attr.$observe("max", (newVal) => {
-                        elem.attr("aria-valuemax", newVal);
-                      });
-                    }
-                    if (needsAriaValuenow) {
-                      scope.$watch(ngAriaWatchModelValue, (newVal) => {
-                        elem.attr("aria-valuenow", newVal);
-                      });
-                    }
-                  }
-                  if (needsTabIndex) {
-                    elem.attr("tabindex", 0);
-                  }
-                  break;
-              }
-
-              if (
-                !Object.prototype.hasOwnProperty.call(attr, "ngRequired") &&
-                ngModel.$validators.required &&
-                shouldAttachAttr("aria-required", "ariaRequired", elem, false)
-              ) {
-                // ngModel.$error.required is undefined on custom controls
-                attr.$observe("required", () => {
-                  elem.attr("aria-required", !!attr.required);
-                });
-              }
-
-              if (shouldAttachAttr("aria-invalid", "ariaInvalid", elem, true)) {
-                scope.$watch(
-                  () => ngModel.$invalid,
-                  (newVal) => {
-                    elem.attr("aria-invalid", !!newVal);
-                  },
-                );
-              }
-            },
-          };
-        },
-      };
-    },
-  ])
-  .directive("ngDisabled", [
-    "$aria",
-    function ($aria) {
-      return $aria.$$watchExpr(
-        "ngDisabled",
-        "aria-disabled",
-        nativeAriaNodeNames,
-        false,
-      );
-    },
-  ])
-  .directive("ngMessages", () => ({
-    restrict: "A",
-    require: "?ngMessages",
-    link(_scope, elem, attr) {
-      if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR)) return;
-
-      if (!elem.attr("aria-live")) {
-        elem.attr("aria-live", "assertive");
-      }
-    },
-  }))
-  .directive("ngClick", [
-    "$aria",
-    "$parse",
-    function ($aria, $parse) {
-      return {
-        restrict: "A",
-        compile(elem, attr) {
-          if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR))
-            return;
-
-          const fn = $parse(attr.ngClick);
-          return function (scope, elem, attr) {
-            if (!isNodeOneOf(elem, nativeAriaNodeNames)) {
-              if ($aria.config("bindRoleForClick") && !elem.attr("role")) {
-                elem.attr("role", "button");
-              }
-
-              if ($aria.config("tabindex") && !elem.attr("tabindex")) {
-                elem.attr("tabindex", 0);
-              }
-
-              if (
-                $aria.config("bindKeydown") &&
-                !attr.ngKeydown &&
-                !attr.ngKeypress &&
-                !attr.ngKeyup
-              ) {
-                elem.on("keydown", (event) => {
-                  const keyCode = event.which || event.keyCode;
-
-                  if (keyCode === 13 || keyCode === 32) {
-                    // If the event is triggered on a non-interactive element ...
-                    if (
-                      nativeAriaNodeNames.indexOf(event.target.nodeName) ===
-                        -1 &&
-                      !event.target.isContentEditable
-                    ) {
-                      // ... prevent the default browser behavior (e.g. scrolling when pressing spacebar)
-                      // See https://github.com/angular/angular.js/issues/16664
-                      event.preventDefault();
-                    }
-                    scope.$apply(callback);
-                  }
-
-                  function callback() {
-                    fn(scope, { $event: event });
-                  }
-                });
-              }
-            }
-          };
-        },
-      };
-    },
-  ])
-  .directive("ngDblclick", [
-    "$aria",
-    function ($aria) {
-      return function (scope, elem, attr) {
-        if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR))
-          return;
-
-        if (
-          $aria.config("tabindex") &&
-          !elem.attr("tabindex") &&
-          !isNodeOneOf(elem, nativeAriaNodeNames)
-        ) {
-          elem.attr("tabindex", 0);
-        }
-      };
-    },
-  ]);

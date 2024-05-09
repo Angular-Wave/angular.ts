@@ -93,6 +93,7 @@ import { $SanitizeProvider } from "./ngSanitize/sanitize";
 import { setupModuleLoader } from "./loader";
 import { initAnimateModule } from "./ngAnimate/module";
 import { initMessageModule } from "./ngMessages/messages";
+import { initAriaModule } from "./ngAria/aria";
 
 export function publishExternalAPI() {
   const module = setupModuleLoader(window);
@@ -206,6 +207,7 @@ export function publishExternalAPI() {
 
   initAnimateModule();
   initMessageModule();
+  initAriaModule();
 
   return ng;
 }
