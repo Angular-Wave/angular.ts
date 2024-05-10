@@ -17042,10 +17042,9 @@ const ngBindTemplateDirective = [
    </example>
  */
 const ngBindHtmlDirective = [
-  "$sce",
   "$parse",
   "$compile",
-  ($sce, $parse, $compile) => {
+  ($parse, $compile) => {
     return {
       restrict: "A",
       compile: (tElement, tAttrs) => {
@@ -17054,7 +17053,7 @@ const ngBindHtmlDirective = [
           tAttrs.ngBindHtml,
           function sceValueOf(val) {
             // Unwrap the value to compare the actual inner safe value, not the wrapper object.
-            return $sce.valueOf(val);
+            return val;
           },
         );
         $compile.$$addBindingClass(tElement);
@@ -17065,7 +17064,7 @@ const ngBindHtmlDirective = [
           scope.$watch(ngBindHtmlWatch, () => {
             // The watched value is the unwrapped value. To avoid re-escaping, use the direct getter.
             var value = ngBindHtmlGetter(scope);
-            element.html($sce.getTrustedHtml(value) || "");
+            element.html(value || "");
           });
         };
       },
@@ -32071,581 +32070,6 @@ function SanitizeUriProvider() {
   };
 }
 
-const $sanitizeMinErr = minErr("$sanitize");
-let htmlParser;
-let htmlSanitizeWriter;
-let nodeContains;
-
-/**
- * @ngdoc module
- * @name ngSanitize
- * @description
- *
- * The `ngSanitize` module provides functionality to sanitize HTML.
- *
- * See {@link ngSanitize.$sanitize `$sanitize`} for usage.
- */
-
-/**
- * @ngdoc service
- * @name $sanitize
- * @kind function
- *
- * @description
- *   Sanitizes an html string by stripping all potentially dangerous tokens.
- *
- *   The input is sanitized by parsing the HTML into tokens. All safe tokens (from a trusted URI list) are
- *   then serialized back to a properly escaped HTML string. This means that no unsafe input can make
- *   it into the returned string.
- *
- *   The trusted URIs for URL sanitization of attribute values is configured using the functions
- *   `aHrefSanitizationTrustedUrlList` and `imgSrcSanitizationTrustedUrlList` of {@link $compileProvider}.
- *
- *   The input may also contain SVG markup if this is enabled via {@link $sanitizeProvider}.
- *
- * @param {string} html HTML input.
- * @returns {string} Sanitized HTML.
- *
- */
-
-/**
- * @ngdoc provider
- * @name $sanitizeProvider
- *
- *
- * @description
- * Creates and configures {@link $sanitize} instance.
- */
-function $SanitizeProvider() {
-  let hasBeenInstantiated = false;
-  let svgEnabled = false;
-
-  this.$get = [
-    "$$sanitizeUri",
-    function ($$sanitizeUri) {
-      hasBeenInstantiated = true;
-      if (svgEnabled) {
-        extend(validElements, svgElements);
-      }
-      return function (html) {
-        const buf = [];
-        htmlParser(
-          html,
-          htmlSanitizeWriter(
-            buf,
-            (uri, isImage) => !/^unsafe:/.test($$sanitizeUri(uri, isImage)),
-          ),
-        );
-        return buf.join("");
-      };
-    },
-  ];
-
-  /**
-   * @ngdoc method
-   * @name $sanitizeProvider#enableSvg
-   * @kind function
-   *
-   * @description
-   * Enables a subset of svg to be supported by the sanitizer.
-   *
-   * <div class="alert alert-warning">
-   *   <p>By enabling this setting without taking other precautions, you might expose your
-   *   application to click-hijacking attacks. In these attacks, sanitized svg elements could be positioned
-   *   outside of the containing element and be rendered over other elements on the page (e.g. a login
-   *   link). Such behavior can then result in phishing incidents.</p>
-   *
-   *   <p>To protect against these, explicitly setup `overflow: hidden` css rule for all potential svg
-   *   tags within the sanitized content:</p>
-   *
-   *   <br>
-   *
-   *   <pre><code>
-   *   .rootOfTheIncludedContent svg {
-   *     overflow: hidden !important;
-   *   }
-   *   </code></pre>
-   * </div>
-   *
-   * @param {boolean=} flag Enable or disable SVG support in the sanitizer.
-   * @returns {boolean|$sanitizeProvider} Returns the currently configured value if called
-   *    without an argument or self for chaining otherwise.
-   */
-  this.enableSvg = function (enableSvg) {
-    if (isDefined(enableSvg)) {
-      svgEnabled = enableSvg;
-      return this;
-    }
-    return svgEnabled;
-  };
-
-  /**
-   * @ngdoc method
-   * @name $sanitizeProvider#addValidElements
-   * @kind function
-   *
-   * @description
-   * Extends the built-in lists of valid HTML/SVG elements, i.e. elements that are considered safe
-   * and are not stripped off during sanitization. You can extend the following lists of elements:
-   *
-   * - `htmlElements`: A list of elements (tag names) to extend the current list of safe HTML
-   *   elements. HTML elements considered safe will not be removed during sanitization. All other
-   *   elements will be stripped off.
-   *
-   * - `htmlVoidElements`: This is similar to `htmlElements`, but marks the elements as
-   *   "void elements" (similar to HTML
-   *   [void elements](https://rawgit.com/w3c/html/html5.1-2/single-page.html#void-elements)). These
-   *   elements have no end tag and cannot have content.
-   *
-   * - `svgElements`: This is similar to `htmlElements`, but for SVG elements. This list is only
-   *   taken into account if SVG is {@link ngSanitize.$sanitizeProvider#enableSvg enabled} for
-   *   `$sanitize`.
-   *
-   * <div class="alert alert-info">
-   *   This method must be called during the {@link angular.IModule#config config} phase. Once the
-   *   `$sanitize` service has been instantiated, this method has no effect.
-   * </div>
-   *
-   * <div class="alert alert-warning">
-   *   Keep in mind that extending the built-in lists of elements may expose your app to XSS or
-   *   other vulnerabilities. Be very mindful of the elements you add.
-   * </div>
-   *
-   * @param {Array<String>|Object} elements - A list of valid HTML elements or an object with one or
-   *   more of the following properties:
-   *   - **htmlElements** - `{Array<String>}` - A list of elements to extend the current list of
-   *     HTML elements.
-   *   - **htmlVoidElements** - `{Array<String>}` - A list of elements to extend the current list of
-   *     void HTML elements; i.e. elements that do not have an end tag.
-   *   - **svgElements** - `{Array<String>}` - A list of elements to extend the current list of SVG
-   *     elements. The list of SVG elements is only taken into account if SVG is
-   *     {@link ngSanitize.$sanitizeProvider#enableSvg enabled} for `$sanitize`.
-   *
-   * Passing an array (`[...]`) is equivalent to passing `{htmlElements: [...]}`.
-   *
-   * @return {$sanitizeProvider} Returns self for chaining.
-   */
-  this.addValidElements = function (elements) {
-    if (!hasBeenInstantiated) {
-      if (isArray(elements)) {
-        elements = { htmlElements: elements };
-      }
-
-      addElementsTo(svgElements, elements.svgElements);
-      addElementsTo(voidElements, elements.htmlVoidElements);
-      addElementsTo(validElements, elements.htmlVoidElements);
-      addElementsTo(validElements, elements.htmlElements);
-    }
-
-    return this;
-  };
-
-  /**
-   * @ngdoc method
-   * @name $sanitizeProvider#addValidAttrs
-   * @kind function
-   *
-   * @description
-   * Extends the built-in list of valid attributes, i.e. attributes that are considered safe and are
-   * not stripped off during sanitization.
-   *
-   * **Note**:
-   * The new attributes will not be treated as URI attributes, which means their values will not be
-   * sanitized as URIs using `$compileProvider`'s
-   * {@link ng.$compileProvider#aHrefSanitizationTrustedUrlList aHrefSanitizationTrustedUrlList} and
-   * {@link ng.$compileProvider#imgSrcSanitizationTrustedUrlList imgSrcSanitizationTrustedUrlList}.
-   *
-   * <div class="alert alert-info">
-   *   This method must be called during the {@link angular.IModule#config config} phase. Once the
-   *   `$sanitize` service has been instantiated, this method has no effect.
-   * </div>
-   *
-   * <div class="alert alert-warning">
-   *   Keep in mind that extending the built-in list of attributes may expose your app to XSS or
-   *   other vulnerabilities. Be very mindful of the attributes you add.
-   * </div>
-   *
-   * @param {Array<String>} attrs - A list of valid attributes.
-   *
-   * @returns {$sanitizeProvider} Returns self for chaining.
-   */
-  this.addValidAttrs = function (attrs) {
-    if (!hasBeenInstantiated) {
-      extend(validAttrs, arrayToMap(attrs, true));
-    }
-    return this;
-  };
-
-  /// ///////////////////////////////////////////////////////////////////////////////////////////////
-  // Private stuff
-  /// ///////////////////////////////////////////////////////////////////////////////////////////////
-
-  htmlParser = htmlParserImpl;
-  htmlSanitizeWriter = htmlSanitizeWriterImpl;
-
-  nodeContains =
-    window.Node.prototype.contains ||
-    function (arg) {
-      // eslint-disable-next-line no-bitwise
-      return !!(this.compareDocumentPosition(arg) & 16);
-    };
-
-  // Regular Expressions for parsing tags and attributes
-  const SURROGATE_PAIR_REGEXP = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
-  // Match everything outside of normal chars and " (quote character)
-  const NON_ALPHANUMERIC_REGEXP = /([^#-~ |!])/g;
-
-  // Good source of info about elements and attributes
-  // http://dev.w3.org/html5/spec/Overview.html#semantics
-  // http://simon.html5.org/html-elements
-
-  // Safe Void Elements - HTML5
-  // http://dev.w3.org/html5/spec/Overview.html#void-elements
-  let voidElements = stringToMap("area,br,col,hr,img,wbr");
-
-  // Elements that you can, intentionally, leave open (and which close themselves)
-  // http://dev.w3.org/html5/spec/Overview.html#optional-tags
-  const optionalEndTagBlockElements = stringToMap(
-    "colgroup,dd,dt,li,p,tbody,td,tfoot,th,thead,tr",
-  );
-  const optionalEndTagInlineElements = stringToMap("rp,rt");
-  const optionalEndTagElements = extend(
-    {},
-    optionalEndTagInlineElements,
-    optionalEndTagBlockElements,
-  );
-
-  // Safe Block Elements - HTML5
-  const blockElements = extend(
-    {},
-    optionalEndTagBlockElements,
-    stringToMap(
-      "address,article," +
-        "aside,blockquote,caption,center,del,dir,div,dl,figure,figcaption,footer,h1,h2,h3,h4,h5," +
-        "h6,header,hgroup,hr,ins,map,menu,nav,ol,pre,section,table,ul",
-    ),
-  );
-
-  // Inline Elements - HTML5
-  const inlineElements = extend(
-    {},
-    optionalEndTagInlineElements,
-    stringToMap(
-      "a,abbr,acronym,b," +
-        "bdi,bdo,big,br,cite,code,del,dfn,em,font,i,img,ins,kbd,label,map,mark,q,ruby,rp,rt,s," +
-        "samp,small,span,strike,strong,sub,sup,time,tt,u,var",
-    ),
-  );
-
-  // SVG Elements
-  // https://wiki.whatwg.org/wiki/Sanitization_rules#svg_Elements
-  // Note: the elements animate,animateColor,animateMotion,animateTransform,set are intentionally omitted.
-  // They can potentially allow for arbitrary javascript to be executed. See #11290
-  let svgElements = stringToMap(
-    "circle,defs,desc,ellipse,font-face,font-face-name,font-face-src,g,glyph," +
-      "hkern,image,linearGradient,line,marker,metadata,missing-glyph,mpath,path,polygon,polyline," +
-      "radialGradient,rect,stop,svg,switch,text,title,tspan",
-  );
-
-  // Blocked Elements (will be stripped)
-  const blockedElements = stringToMap("script,style");
-
-  let validElements = extend(
-    {},
-    voidElements,
-    blockElements,
-    inlineElements,
-    optionalEndTagElements,
-  );
-
-  // Attributes that have href and hence need to be sanitized
-  const uriAttrs = stringToMap(
-    "background,cite,href,longdesc,src,xlink:href,xml:base",
-  );
-
-  const htmlAttrs = stringToMap(
-    "abbr,align,alt,axis,bgcolor,border,cellpadding,cellspacing,class,clear," +
-      "color,cols,colspan,compact,coords,dir,face,headers,height,hreflang,hspace," +
-      "ismap,lang,language,nohref,nowrap,rel,rev,rows,rowspan,rules," +
-      "scope,scrolling,shape,size,span,start,summary,tabindex,target,title,type," +
-      "valign,value,vspace,width",
-  );
-
-  // SVG attributes (without "id" and "name" attributes)
-  // https://wiki.whatwg.org/wiki/Sanitization_rules#svg_Attributes
-  const svgAttrs = stringToMap(
-    "accent-height,accumulate,additive,alphabetic,arabic-form,ascent," +
-      "baseProfile,bbox,begin,by,calcMode,cap-height,class,color,color-rendering,content," +
-      "cx,cy,d,dx,dy,descent,display,dur,end,fill,fill-rule,font-family,font-size,font-stretch," +
-      "font-style,font-variant,font-weight,from,fx,fy,g1,g2,glyph-name,gradientUnits,hanging," +
-      "height,horiz-adv-x,horiz-origin-x,ideographic,k,keyPoints,keySplines,keyTimes,lang," +
-      "marker-end,marker-mid,marker-start,markerHeight,markerUnits,markerWidth,mathematical," +
-      "max,min,offset,opacity,orient,origin,overline-position,overline-thickness,panose-1," +
-      "path,pathLength,points,preserveAspectRatio,r,refX,refY,repeatCount,repeatDur," +
-      "requiredExtensions,requiredFeatures,restart,rotate,rx,ry,slope,stemh,stemv,stop-color," +
-      "stop-opacity,strikethrough-position,strikethrough-thickness,stroke,stroke-dasharray," +
-      "stroke-dashoffset,stroke-linecap,stroke-linejoin,stroke-miterlimit,stroke-opacity," +
-      "stroke-width,systemLanguage,target,text-anchor,to,transform,type,u1,u2,underline-position," +
-      "underline-thickness,unicode,unicode-range,units-per-em,values,version,viewBox,visibility," +
-      "width,widths,x,x-height,x1,x2,xlink:actuate,xlink:arcrole,xlink:role,xlink:show,xlink:title," +
-      "xlink:type,xml:base,xml:lang,xml:space,xmlns,xmlns:xlink,y,y1,y2,zoomAndPan",
-    true,
-  );
-
-  let validAttrs = extend({}, uriAttrs, svgAttrs, htmlAttrs);
-
-  function stringToMap(str, lowercaseKeys) {
-    return arrayToMap(str.split(","), lowercaseKeys);
-  }
-
-  function arrayToMap(items, lowercaseKeys) {
-    const obj = {};
-    let i;
-    for (i = 0; i < items.length; i++) {
-      obj[lowercaseKeys ? lowercase(items[i]) : items[i]] = true;
-    }
-    return obj;
-  }
-
-  function addElementsTo(elementsMap, newElements) {
-    if (newElements && newElements.length) {
-      extend(elementsMap, arrayToMap(newElements));
-    }
-  }
-
-  /**
-   * Create an inert document that contains the dirty HTML that needs sanitizing.
-   * We use the DOMParser API by default and fall back to createHTMLDocument if DOMParser is not
-   * available.
-   */
-  const getInertBodyElement /* function(html: string): HTMLBodyElement */ =
-    (function (window, document) {
-      if (isDOMParserAvailable()) {
-        return getInertBodyElement_DOMParser;
-      }
-
-      if (!document || !document.implementation) {
-        throw $sanitizeMinErr("noinert", "Can't create an inert html document");
-      }
-      const inertDocument = document.implementation.createHTMLDocument("inert");
-      const inertBodyElement =
-        inertDocument.documentElement.querySelector("body");
-      return getInertBodyElement_InertDocument;
-
-      function isDOMParserAvailable() {
-        try {
-          return !!getInertBodyElement_DOMParser("");
-        } catch (e) {
-          return false;
-        }
-      }
-
-      function getInertBodyElement_DOMParser(html) {
-        // We add this dummy element to ensure that the rest of the content is parsed as expected
-        // e.g. leading whitespace is maintained and tags like `<meta>` do not get hoisted to the `<head>` tag.
-        html = `<remove></remove>${html}`;
-        try {
-          const { body } = new window.DOMParser().parseFromString(
-            html,
-            "text/html",
-          );
-          body.firstChild.remove();
-          return body;
-        } catch (e) {
-          return undefined;
-        }
-      }
-
-      function getInertBodyElement_InertDocument(html) {
-        inertBodyElement.innerHTML = html;
-        return inertBodyElement;
-      }
-    })(window, window.document);
-
-  /**
-   * @example
-   * htmlParser(htmlString, {
-   *     start: function(tag, attrs) {},
-   *     end: function(tag) {},
-   *     chars: function(text) {},
-   *     comment: function(text) {}
-   * });
-   *
-   * @param {string} html string
-   * @param {object} handler
-   */
-  function htmlParserImpl(html, handler) {
-    if (html === null || html === undefined) {
-      html = "";
-    } else if (typeof html !== "string") {
-      html = `${html}`;
-    }
-
-    let inertBodyElement = getInertBodyElement(html);
-    if (!inertBodyElement) return "";
-
-    // mXSS protection
-    let mXSSAttempts = 5;
-    do {
-      if (mXSSAttempts === 0) {
-        throw $sanitizeMinErr(
-          "uinput",
-          "Failed to sanitize html because the input is unstable",
-        );
-      }
-      mXSSAttempts--;
-
-      // trigger mXSS if it is going to happen by reading and writing the innerHTML
-      html = inertBodyElement.innerHTML;
-      inertBodyElement = getInertBodyElement(html);
-    } while (html !== inertBodyElement.innerHTML);
-
-    let node = inertBodyElement.firstChild;
-    while (node) {
-      switch (node.nodeType) {
-        case 1: // ELEMENT_NODE
-          handler.start(
-            node.nodeName.toLowerCase(),
-            attrToMap(node.attributes),
-          );
-          break;
-        case 3: // TEXT NODE
-          handler.chars(node.textContent);
-          break;
-      }
-
-      let nextNode;
-      if (!(nextNode = node.firstChild)) {
-        if (node.nodeType === 1) {
-          handler.end(node.nodeName.toLowerCase());
-        }
-        nextNode = getNonDescendant("nextSibling", node);
-        if (!nextNode) {
-          while (nextNode == null) {
-            node = getNonDescendant("parentNode", node);
-            if (node === inertBodyElement) break;
-            nextNode = getNonDescendant("nextSibling", node);
-            if (node.nodeType === 1) {
-              handler.end(node.nodeName.toLowerCase());
-            }
-          }
-        }
-      }
-      node = nextNode;
-    }
-
-    while ((node = inertBodyElement.firstChild)) {
-      inertBodyElement.removeChild(node);
-    }
-  }
-
-  function attrToMap(attrs) {
-    const map = {};
-    for (let i = 0, ii = attrs.length; i < ii; i++) {
-      const attr = attrs[i];
-      map[attr.name] = attr.value;
-    }
-    return map;
-  }
-
-  /**
-   * Escapes all potentially dangerous characters, so that the
-   * resulting string can be safely inserted into attribute or
-   * element text.
-   * @param value
-   * @returns {string} escaped text
-   */
-  function encodeEntities(value) {
-    return value
-      .replace(/&/g, "&amp;")
-      .replace(SURROGATE_PAIR_REGEXP, (value) => {
-        const hi = value.charCodeAt(0);
-        const low = value.charCodeAt(1);
-        return `&#${(hi - 0xd800) * 0x400 + (low - 0xdc00) + 0x10000};`;
-      })
-      .replace(NON_ALPHANUMERIC_REGEXP, (value) => `&#${value.charCodeAt(0)};`)
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-  }
-
-  /**
-   * create an HTML/XML writer which writes to buffer
-   * @param {Array} buf use buf.join('') to get out sanitized html string
-   * @returns {object} in the form of {
-   *     start: function(tag, attrs) {},
-   *     end: function(tag) {},
-   *     chars: function(text) {},
-   *     comment: function(text) {}
-   * }
-   */
-  function htmlSanitizeWriterImpl(buf, uriValidator) {
-    let ignoreCurrentElement = false;
-    const out = bind(buf, buf.push);
-    return {
-      start(tag, attrs) {
-        tag = lowercase(tag);
-        if (!ignoreCurrentElement && blockedElements[tag]) {
-          ignoreCurrentElement = tag;
-        }
-        if (!ignoreCurrentElement && validElements[tag] === true) {
-          out("<");
-          out(tag);
-          forEach(attrs, (value, key) => {
-            const lkey = lowercase(key);
-            const isImage =
-              (tag === "img" && lkey === "src") || lkey === "background";
-            if (
-              validAttrs[lkey] === true &&
-              (uriAttrs[lkey] !== true || uriValidator(value, isImage))
-            ) {
-              out(" ");
-              out(key);
-              out('="');
-              out(encodeEntities(value));
-              out('"');
-            }
-          });
-          out(">");
-        }
-      },
-      end(tag) {
-        tag = lowercase(tag);
-        if (
-          !ignoreCurrentElement &&
-          validElements[tag] === true &&
-          voidElements[tag] !== true
-        ) {
-          out("</");
-          out(tag);
-          out(">");
-        }
-        // eslint-disable-next-line eqeqeq
-        if (tag == ignoreCurrentElement) {
-          ignoreCurrentElement = false;
-        }
-      },
-      chars(chars) {
-        if (!ignoreCurrentElement) {
-          out(encodeEntities(chars));
-        }
-      },
-    };
-  }
-
-  function getNonDescendant(propName, node) {
-    // An element is clobbered if its `propName` property points to one of its descendants
-    const nextNode = node[propName];
-    if (nextNode && nodeContains.call(node, nextNode)) {
-      throw $sanitizeMinErr(
-        "elclob",
-        "Failed to sanitize html because the element is clobbered: {0}",
-        node.outerHTML || node.outerText,
-      );
-    }
-    return nextNode;
-  }
-}
-
 const ELEMENT_NODE = 1;
 
 const ADD_CLASS_SUFFIX = "-add";
@@ -38077,6 +37501,547 @@ function initMessageModule() {
   }
 }
 
+/**
+ * @ngdoc module
+ * @name ngAria
+ * @description
+ *
+ * The `ngAria` module provides support for common
+ * [<abbr title="Accessible Rich Internet Applications">ARIA</abbr>](http://www.w3.org/TR/wai-aria/)
+ * attributes that convey state or semantic information about the application for users
+ * of assistive technologies, such as screen readers.
+ *
+ * ## Usage
+ *
+ * For ngAria to do its magic, simply include the module `ngAria` as a dependency. The following
+ * directives are supported:
+ * `ngModel`, `ngChecked`, `ngReadonly`, `ngRequired`, `ngValue`, `ngDisabled`, `ngShow`, `ngHide`,
+ * `ngClick`, `ngDblClick`, and `ngMessages`.
+ *
+ * Below is a more detailed breakdown of the attributes handled by ngAria:
+ *
+ * | Directive                                   | Supported Attributes                                                                                |
+ * |---------------------------------------------|-----------------------------------------------------------------------------------------------------|
+ * | {@link ng.directive:ngModel ngModel}        | aria-checked, aria-valuemin, aria-valuemax, aria-valuenow, aria-invalid, aria-required, input roles |
+ * | {@link ng.directive:ngDisabled ngDisabled}  | aria-disabled                                                                                       |
+ * | {@link ng.directive:ngRequired ngRequired}  | aria-required                                                                                       |
+ * | {@link ng.directive:ngChecked ngChecked}    | aria-checked                                                                                        |
+ * | {@link ng.directive:ngReadonly ngReadonly}  | aria-readonly                                                                                       |
+ * | {@link ng.directive:ngValue ngValue}        | aria-checked                                                                                        |
+ * | {@link ng.directive:ngShow ngShow}          | aria-hidden                                                                                         |
+ * | {@link ng.directive:ngHide ngHide}          | aria-hidden                                                                                         |
+ * | {@link ng.directive:ngDblclick ngDblclick}  | tabindex                                                                                            |
+ * | {@link module:ngMessages ngMessages}        | aria-live                                                                                           |
+ * | {@link ng.directive:ngClick ngClick}        | tabindex, keydown event, button role                                                                |
+ *
+ * Find out more information about each directive by reading the
+ * {@link guide/accessibility ngAria Developer Guide}.
+ *
+ * ## Example
+ * Using ngDisabled with ngAria:
+ * ```html
+ * <md-checkbox ng-disabled="disabled">
+ * ```
+ * Becomes:
+ * ```html
+ * <md-checkbox ng-disabled="disabled" aria-disabled="true">
+ * ```
+ *
+ * ## Disabling Specific Attributes
+ * It is possible to disable individual attributes added by ngAria with the
+ * {@link ngAria.$ariaProvider#config config} method. For more details, see the
+ * {@link guide/accessibility Developer Guide}.
+ *
+ * ## Disabling `ngAria` on Specific Elements
+ * It is possible to make `ngAria` ignore a specific element, by adding the `ng-aria-disable`
+ * attribute on it. Note that only the element itself (and not its child elements) will be ignored.
+ */
+const ARIA_DISABLE_ATTR = "ngAriaDisable";
+
+function initAriaModule() {
+  window.angular
+    .module("ngAria", ["ng"])
+    .provider("$aria", $AriaProvider)
+    .directive("ngShow", [
+      "$aria",
+      function ($aria) {
+        return $aria.$$watchExpr("ngShow", "aria-hidden", [], true);
+      },
+    ])
+    .directive("ngHide", [
+      "$aria",
+      function ($aria) {
+        return $aria.$$watchExpr("ngHide", "aria-hidden", [], false);
+      },
+    ])
+    .directive("ngValue", [
+      "$aria",
+      function ($aria) {
+        return $aria.$$watchExpr(
+          "ngValue",
+          "aria-checked",
+          nativeAriaNodeNames,
+          false,
+        );
+      },
+    ])
+    .directive("ngChecked", [
+      "$aria",
+      function ($aria) {
+        return $aria.$$watchExpr(
+          "ngChecked",
+          "aria-checked",
+          nativeAriaNodeNames,
+          false,
+        );
+      },
+    ])
+    .directive("ngReadonly", [
+      "$aria",
+      function ($aria) {
+        return $aria.$$watchExpr(
+          "ngReadonly",
+          "aria-readonly",
+          nativeAriaNodeNames,
+          false,
+        );
+      },
+    ])
+    .directive("ngRequired", [
+      "$aria",
+      function ($aria) {
+        return $aria.$$watchExpr(
+          "ngRequired",
+          "aria-required",
+          nativeAriaNodeNames,
+          false,
+        );
+      },
+    ])
+    .directive("ngModel", [
+      "$aria",
+      function ($aria) {
+        function shouldAttachAttr(
+          attr,
+          normalizedAttr,
+          elem,
+          allowNonAriaNodes,
+        ) {
+          return (
+            $aria.config(normalizedAttr) &&
+            !elem.attr(attr) &&
+            (allowNonAriaNodes || !isNodeOneOf(elem, nativeAriaNodeNames)) &&
+            (elem.attr("type") !== "hidden" || elem[0].nodeName !== "INPUT")
+          );
+        }
+
+        function shouldAttachRole(role, elem) {
+          // if element does not have role attribute
+          // AND element type is equal to role (if custom element has a type equaling shape) <-- remove?
+          // AND element is not in nativeAriaNodeNames
+          return (
+            !elem.attr("role") &&
+            elem.attr("type") === role &&
+            !isNodeOneOf(elem, nativeAriaNodeNames)
+          );
+        }
+
+        function getShape(attr, elem) {
+          const { type } = attr;
+          const { role } = attr;
+
+          return (type || role) === "checkbox" || role === "menuitemcheckbox"
+            ? "checkbox"
+            : (type || role) === "radio" || role === "menuitemradio"
+              ? "radio"
+              : type === "range" || role === "progressbar" || role === "slider"
+                ? "range"
+                : "";
+        }
+
+        return {
+          restrict: "A",
+          require: "ngModel",
+          priority: 200, // Make sure watches are fired after any other directives that affect the ngModel value
+          compile(elem, attr) {
+            if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR))
+              return;
+
+            const shape = getShape(attr);
+
+            return {
+              post(scope, elem, attr, ngModel) {
+                const needsTabIndex = shouldAttachAttr(
+                  "tabindex",
+                  "tabindex",
+                  elem,
+                  false,
+                );
+
+                function ngAriaWatchModelValue() {
+                  return ngModel.$modelValue;
+                }
+
+                function getRadioReaction(newVal) {
+                  // Strict comparison would cause a BC
+                  // eslint-disable-next-line eqeqeq
+                  const boolVal = attr.value == ngModel.$viewValue;
+                  elem.attr("aria-checked", boolVal);
+                }
+
+                function getCheckboxReaction() {
+                  elem.attr(
+                    "aria-checked",
+                    !ngModel.$isEmpty(ngModel.$viewValue),
+                  );
+                }
+
+                switch (shape) {
+                  case "radio":
+                  case "checkbox":
+                    if (shouldAttachRole(shape, elem)) {
+                      elem.attr("role", shape);
+                    }
+                    if (
+                      shouldAttachAttr(
+                        "aria-checked",
+                        "ariaChecked",
+                        elem,
+                        false,
+                      )
+                    ) {
+                      scope.$watch(
+                        ngAriaWatchModelValue,
+                        shape === "radio"
+                          ? getRadioReaction
+                          : getCheckboxReaction,
+                      );
+                    }
+                    if (needsTabIndex) {
+                      elem.attr("tabindex", 0);
+                    }
+                    break;
+                  case "range":
+                    if (shouldAttachRole(shape, elem)) {
+                      elem.attr("role", "slider");
+                    }
+                    if ($aria.config("ariaValue")) {
+                      const needsAriaValuemin =
+                        !elem.attr("aria-valuemin") &&
+                        (Object.prototype.hasOwnProperty.call(attr, "min") ||
+                          Object.prototype.hasOwnProperty.call(attr, "ngMin"));
+                      const needsAriaValuemax =
+                        !elem.attr("aria-valuemax") &&
+                        (Object.prototype.hasOwnProperty.call(attr, "max") ||
+                          Object.prototype.hasOwnProperty.call(attr, "ngMax"));
+                      const needsAriaValuenow = !elem.attr("aria-valuenow");
+
+                      if (needsAriaValuemin) {
+                        attr.$observe("min", (newVal) => {
+                          elem.attr("aria-valuemin", newVal);
+                        });
+                      }
+                      if (needsAriaValuemax) {
+                        attr.$observe("max", (newVal) => {
+                          elem.attr("aria-valuemax", newVal);
+                        });
+                      }
+                      if (needsAriaValuenow) {
+                        scope.$watch(ngAriaWatchModelValue, (newVal) => {
+                          elem.attr("aria-valuenow", newVal);
+                        });
+                      }
+                    }
+                    if (needsTabIndex) {
+                      elem.attr("tabindex", 0);
+                    }
+                    break;
+                }
+
+                if (
+                  !Object.prototype.hasOwnProperty.call(attr, "ngRequired") &&
+                  ngModel.$validators.required &&
+                  shouldAttachAttr("aria-required", "ariaRequired", elem, false)
+                ) {
+                  // ngModel.$error.required is undefined on custom controls
+                  attr.$observe("required", () => {
+                    elem.attr("aria-required", !!attr.required);
+                  });
+                }
+
+                if (
+                  shouldAttachAttr("aria-invalid", "ariaInvalid", elem, true)
+                ) {
+                  scope.$watch(
+                    () => ngModel.$invalid,
+                    (newVal) => {
+                      elem.attr("aria-invalid", !!newVal);
+                    },
+                  );
+                }
+              },
+            };
+          },
+        };
+      },
+    ])
+    .directive("ngDisabled", [
+      "$aria",
+      function ($aria) {
+        return $aria.$$watchExpr(
+          "ngDisabled",
+          "aria-disabled",
+          nativeAriaNodeNames,
+          false,
+        );
+      },
+    ])
+    .directive("ngMessages", () => ({
+      restrict: "A",
+      require: "?ngMessages",
+      link(_scope, elem, attr) {
+        if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR))
+          return;
+
+        if (!elem.attr("aria-live")) {
+          elem.attr("aria-live", "assertive");
+        }
+      },
+    }))
+    .directive("ngClick", [
+      "$aria",
+      "$parse",
+      function ($aria, $parse) {
+        return {
+          restrict: "A",
+          compile(elem, attr) {
+            if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR))
+              return;
+
+            const fn = $parse(attr.ngClick);
+            return function (scope, elem, attr) {
+              if (!isNodeOneOf(elem, nativeAriaNodeNames)) {
+                if ($aria.config("bindRoleForClick") && !elem.attr("role")) {
+                  elem.attr("role", "button");
+                }
+
+                if ($aria.config("tabindex") && !elem.attr("tabindex")) {
+                  elem.attr("tabindex", 0);
+                }
+
+                if (
+                  $aria.config("bindKeydown") &&
+                  !attr.ngKeydown &&
+                  !attr.ngKeypress &&
+                  !attr.ngKeyup
+                ) {
+                  elem.on("keydown", (event) => {
+                    const keyCode = event.which || event.keyCode;
+
+                    if (keyCode === 13 || keyCode === 32) {
+                      // If the event is triggered on a non-interactive element ...
+                      if (
+                        nativeAriaNodeNames.indexOf(event.target.nodeName) ===
+                          -1 &&
+                        !event.target.isContentEditable
+                      ) {
+                        // ... prevent the default browser behavior (e.g. scrolling when pressing spacebar)
+                        // See https://github.com/angular/angular.js/issues/16664
+                        event.preventDefault();
+                      }
+                      scope.$apply(callback);
+                    }
+
+                    function callback() {
+                      fn(scope, { $event: event });
+                    }
+                  });
+                }
+              }
+            };
+          },
+        };
+      },
+    ])
+    .directive("ngDblclick", [
+      "$aria",
+      function ($aria) {
+        return function (scope, elem, attr) {
+          if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR))
+            return;
+
+          if (
+            $aria.config("tabindex") &&
+            !elem.attr("tabindex") &&
+            !isNodeOneOf(elem, nativeAriaNodeNames)
+          ) {
+            elem.attr("tabindex", 0);
+          }
+        };
+      },
+    ]);
+}
+
+/**
+ * Internal Utilities
+ */
+const nativeAriaNodeNames = [
+  "BUTTON",
+  "A",
+  "INPUT",
+  "TEXTAREA",
+  "SELECT",
+  "DETAILS",
+  "SUMMARY",
+];
+
+const isNodeOneOf = function (elem, nodeTypeArray) {
+  if (nodeTypeArray.indexOf(elem[0].nodeName) !== -1) {
+    return true;
+  }
+};
+/**
+ * @ngdoc provider
+ * @name $ariaProvider
+ *
+ *
+ * @description
+ *
+ * Used for configuring the ARIA attributes injected and managed by ngAria.
+ *
+ * ```js
+ * angular.module('myApp', ['ngAria'], function config($ariaProvider) {
+ *   $ariaProvider.config({
+ *     ariaValue: true,
+ *     tabindex: false
+ *   });
+ * });
+ *```
+ *
+ * ## Dependencies
+ * Requires the {@link ngAria} module to be installed.
+ *
+ */
+function $AriaProvider() {
+  let config = {
+    ariaHidden: true,
+    ariaChecked: true,
+    ariaReadonly: true,
+    ariaDisabled: true,
+    ariaRequired: true,
+    ariaInvalid: true,
+    ariaValue: true,
+    tabindex: true,
+    bindKeydown: true,
+    bindRoleForClick: true,
+  };
+
+  /**
+   * @ngdoc method
+   * @name $ariaProvider#config
+   *
+   * @param {object} config object to enable/disable specific ARIA attributes
+   *
+   *  - **ariaHidden** – `{boolean}` – Enables/disables aria-hidden tags
+   *  - **ariaChecked** – `{boolean}` – Enables/disables aria-checked tags
+   *  - **ariaReadonly** – `{boolean}` – Enables/disables aria-readonly tags
+   *  - **ariaDisabled** – `{boolean}` – Enables/disables aria-disabled tags
+   *  - **ariaRequired** – `{boolean}` – Enables/disables aria-required tags
+   *  - **ariaInvalid** – `{boolean}` – Enables/disables aria-invalid tags
+   *  - **ariaValue** – `{boolean}` – Enables/disables aria-valuemin, aria-valuemax and
+   *    aria-valuenow tags
+   *  - **tabindex** – `{boolean}` – Enables/disables tabindex tags
+   *  - **bindKeydown** – `{boolean}` – Enables/disables keyboard event binding on non-interactive
+   *    elements (such as `div` or `li`) using ng-click, making them more accessible to users of
+   *    assistive technologies
+   *  - **bindRoleForClick** – `{boolean}` – Adds role=button to non-interactive elements (such as
+   *    `div` or `li`) using ng-click, making them more accessible to users of assistive
+   *    technologies
+   *
+   * @description
+   * Enables/disables various ARIA attributes
+   */
+  this.config = function (newConfig) {
+    config = extend(config, newConfig);
+  };
+
+  function watchExpr(attrName, ariaAttr, nativeAriaNodeNames, negate) {
+    return function (scope, elem, attr) {
+      if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR)) return;
+
+      const ariaCamelName = attr.$normalize(ariaAttr);
+      if (
+        config[ariaCamelName] &&
+        !isNodeOneOf(elem, nativeAriaNodeNames) &&
+        !attr[ariaCamelName]
+      ) {
+        scope.$watch(attr[attrName], (boolVal) => {
+          // ensure boolean value
+          boolVal = negate ? !boolVal : !!boolVal;
+          elem.attr(ariaAttr, boolVal);
+        });
+      }
+    };
+  }
+  /**
+   * @ngdoc service
+   * @name $aria
+   *
+   * @description
+   *
+   * The $aria service contains helper methods for applying common
+   * [ARIA](http://www.w3.org/TR/wai-aria/) attributes to HTML directives.
+   *
+   * ngAria injects common accessibility attributes that tell assistive technologies when HTML
+   * elements are enabled, selected, hidden, and more. To see how this is performed with ngAria,
+   * let's review a code snippet from ngAria itself:
+   *
+   *```js
+   * ngAriaModule.directive('ngDisabled', ['$aria', function($aria) {
+   *   return $aria.$$watchExpr('ngDisabled', 'aria-disabled', nativeAriaNodeNames, false);
+   * }])
+   *```
+   * Shown above, the ngAria module creates a directive with the same signature as the
+   * traditional `ng-disabled` directive. But this ngAria version is dedicated to
+   * solely managing accessibility attributes on custom elements. The internal `$aria` service is
+   * used to watch the boolean attribute `ngDisabled`. If it has not been explicitly set by the
+   * developer, `aria-disabled` is injected as an attribute with its value synchronized to the
+   * value in `ngDisabled`.
+   *
+   * Because ngAria hooks into the `ng-disabled` directive, developers do not have to do
+   * anything to enable this feature. The `aria-disabled` attribute is automatically managed
+   * simply as a silent side-effect of using `ng-disabled` with the ngAria module.
+   *
+   * The full list of directives that interface with ngAria:
+   * * **ngModel**
+   * * **ngChecked**
+   * * **ngReadonly**
+   * * **ngRequired**
+   * * **ngDisabled**
+   * * **ngValue**
+   * * **ngShow**
+   * * **ngHide**
+   * * **ngClick**
+   * * **ngDblclick**
+   * * **ngMessages**
+   *
+   * Read the {@link guide/accessibility ngAria Developer Guide} for a thorough explanation of each
+   * directive.
+   *
+   *
+   * ## Dependencies
+   * Requires the {@link ngAria} module to be installed.
+   */
+  this.$get = function () {
+    return {
+      config(key) {
+        return config[key];
+      },
+      $$watchExpr: watchExpr,
+    };
+  };
+}
+
 function publishExternalAPI() {
   const module = setupModuleLoader(window);
   const ng = module(
@@ -38185,10 +38150,9 @@ function publishExternalAPI() {
     ],
   ).info({ angularVersion: '"NG_VERSION_FULL"' });
 
-  module("ngSanitize", []).provider("$sanitize", $SanitizeProvider);
-
   initAnimateModule();
   initMessageModule();
+  initAriaModule();
 
   return ng;
 }
