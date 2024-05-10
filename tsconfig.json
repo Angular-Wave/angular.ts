@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": ["ES2018", "DOM"],
+    "target": "ES5",
+    "sourceMap": false,
+    "declaration": false,
+    "incremental": true,
+    "typeRoots": ["./global.d.ts", "node_modules/@types"]
+  },
+  "include": ["./src/*.js", "./**/*.ts"],
+  "exclude": []
+}

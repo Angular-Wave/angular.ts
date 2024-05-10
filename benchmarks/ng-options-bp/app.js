@@ -1,10 +1,10 @@
-'use strict';
+
 
 /* globals angular, benchmarkSteps */
 
-var app = angular.module('ngOptionsBenchmark', []);
+const app = angular.module('ngOptionsBenchmark', []);
 
-app.config(function($compileProvider) {
+app.config(($compileProvider) => {
   if ($compileProvider.debugInfoEnabled) {
     $compileProvider.debugInfoEnabled(false);
   }
@@ -12,29 +12,29 @@ app.config(function($compileProvider) {
 
 
 
-app.controller('DataController', function($scope, $element) {
+app.controller('DataController', ($scope, $element) => {
   $scope.items = [];
   $scope.count = 10000;
 
   function changeOptions() {
     $scope.items = [];
-    for (var i = 0; i < $scope.count; ++i) {
+    for (let i = 0; i < $scope.count; ++i) {
       $scope.items.push({
         id: i,
-        label: 'item-' + i,
-        group: 'group-' + i % 100
+        label: `item-${  i}`,
+        group: `group-${  i % 100}`
       });
     }
   }
 
-  var selectElement = $element.find('select');
+  const selectElement = $element.find('select');
   console.log(selectElement);
 
 
   benchmarkSteps.push({
     name: 'add-options',
-    fn: function() {
-      $scope.$apply(function() {
+    fn() {
+      $scope.$apply(() => {
         $scope.count = 10000;
         changeOptions();
       });
@@ -43,8 +43,8 @@ app.controller('DataController', function($scope, $element) {
 
   benchmarkSteps.push({
     name: 'set-model-1',
-    fn: function() {
-      $scope.$apply(function() {
+    fn() {
+      $scope.$apply(() => {
         $scope.x = $scope.items[1000];
       });
     }
@@ -52,8 +52,8 @@ app.controller('DataController', function($scope, $element) {
 
   benchmarkSteps.push({
     name: 'set-model-2',
-    fn: function() {
-      $scope.$apply(function() {
+    fn() {
+      $scope.$apply(() => {
         $scope.x = $scope.items[10];
       });
     }
@@ -61,7 +61,7 @@ app.controller('DataController', function($scope, $element) {
 
   benchmarkSteps.push({
     name: 'remove-options',
-    fn: function() {
+    fn() {
       $scope.count = 100;
       changeOptions();
     }
@@ -69,8 +69,8 @@ app.controller('DataController', function($scope, $element) {
 
   benchmarkSteps.push({
     name: 'add-options',
-    fn: function() {
-      $scope.$apply(function() {
+    fn() {
+      $scope.$apply(() => {
         $scope.count = 10000;
         changeOptions();
       });
@@ -79,7 +79,7 @@ app.controller('DataController', function($scope, $element) {
 
   benchmarkSteps.push({
     name: 'set-view-1',
-    fn: function() {
+    fn() {
       selectElement.val('2000');
       selectElement.triggerHandler('change');
     }
@@ -87,7 +87,7 @@ app.controller('DataController', function($scope, $element) {
 
   benchmarkSteps.push({
     name: 'set-view-2',
-    fn: function() {
+    fn() {
       selectElement.val('1000');
       selectElement.triggerHandler('change');
     }

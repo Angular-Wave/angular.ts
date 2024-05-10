@@ -1,15 +1,8 @@
-'use strict';
-
-/* global currencyFilter: true,
- dateFilter: true,
- filterFilter: true,
- jsonFilter: true,
- limitToFilter: true,
- lowercaseFilter: true,
- numberFilter: true,
- orderByFilter: true,
- uppercaseFilter: true,
- */
+import { forEach, isObject } from "./utils";
+import { filterFilter } from "./filter/filter";
+import { jsonFilter } from "./filter/filters";
+import { limitToFilter } from "./filter/limitTo";
+import { orderByFilter } from "./filter/orderBy";
 
 /**
  * @ngdoc provider
@@ -105,10 +98,9 @@
      </file>
    </example>
   */
-$FilterProvider.$inject = ['$provide'];
-/** @this */
-function $FilterProvider($provide) {
-  var suffix = 'Filter';
+$FilterProvider.$inject = ["$provide"];
+export function $FilterProvider($provide) {
+  const suffix = "Filter";
 
   /**
    * @ngdoc method
@@ -122,50 +114,33 @@ function $FilterProvider($provide) {
    *    your filters, then you can use capitalization (`myappSubsectionFilterx`) or underscores
    *    (`myapp_subsection_filterx`).
    *    </div>
-    * @param {Function} factory If the first argument was a string, a factory function for the filter to be registered.
+   * @param {Function} factory If the first argument was a string, a factory function for the filter to be registered.
    * @returns {Object} Registered filter instance, or if a map of filters was provided then a map
    *    of the registered filter instances.
    */
   function register(name, factory) {
     if (isObject(name)) {
-      var filters = {};
-      forEach(name, function(filter, key) {
+      const filters = {};
+      forEach(name, (filter, key) => {
         filters[key] = register(key, filter);
       });
       return filters;
-    } else {
-      return $provide.factory(name + suffix, factory);
     }
+    return $provide.factory(name + suffix, factory);
   }
   this.register = register;
 
-  this.$get = ['$injector', function($injector) {
-    return function(name) {
-      return $injector.get(name + suffix);
-    };
-  }];
+  this.$get = [
+    "$injector",
+    function ($injector) {
+      return function (name) {
+        return $injector.get(name + suffix);
+      };
+    },
+  ];
 
-  ////////////////////////////////////////
-
-  /* global
-    currencyFilter: false,
-    dateFilter: false,
-    filterFilter: false,
-    jsonFilter: false,
-    limitToFilter: false,
-    lowercaseFilter: false,
-    numberFilter: false,
-    orderByFilter: false,
-    uppercaseFilter: false
-  */
-
-  register('currency', currencyFilter);
-  register('date', dateFilter);
-  register('filter', filterFilter);
-  register('json', jsonFilter);
-  register('limitTo', limitToFilter);
-  register('lowercase', lowercaseFilter);
-  register('number', numberFilter);
-  register('orderBy', orderByFilter);
-  register('uppercase', uppercaseFilter);
+  register("filter", filterFilter);
+  register("json", jsonFilter);
+  register("limitTo", limitToFilter);
+  register("orderBy", orderByFilter);
 }

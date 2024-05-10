@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="../dist/build/angular.js"></script>
+  </head>
+  <body>
+    Test:
+    <my-component></my-component>
+    {{ 2 + 2 }}
+  </body>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      window.angular.module("myModule", []).component("myComponent", {
+        template: "<div>ME</div>",
+      });
+      window.angular.bootstrap(document, ["myModule"]);
+      //angularInit(document, window.angular.bootstrap);
+    });
+  </script>
+</html>

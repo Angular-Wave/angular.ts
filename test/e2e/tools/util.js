@@ -1,24 +1,22 @@
-'use strict';
+const fs = require("fs");
+const path = require("path");
 
-var fs = require('fs');
-var path = require('path');
-
-var root = path.resolve(__dirname, '..');
-var tests = path.resolve(root, 'fixtures');
+const root = path.resolve(__dirname, "..");
+const tests = path.resolve(root, "fixtures");
 
 function stat(path) {
   try {
     return fs.statSync(path);
   } catch (e) {
     // Ignore ENOENT.
-    if (e.code !== 'ENOENT') {
+    if (e.code !== "ENOENT") {
       throw e;
     }
   }
 }
 
 function testExists(testname) {
-  var s = stat(path.resolve(tests, testname));
+  const s = stat(path.resolve(tests, testname));
   return s && s.isDirectory();
 }
 
@@ -27,18 +25,18 @@ function rewriteTestFile(testname, testfile) {
     return testfile;
   }
 
-  var i = 0;
-  while (testfile[i] === '/') ++i;
+  let i = 0;
+  while (testfile[i] === "/") ++i;
   testfile = testfile.slice(i);
-  var s = stat(path.resolve(tests, testname, testfile));
+  const s = stat(path.resolve(tests, testname, testfile));
   if (s && (s.isFile() || s.isDirectory())) {
-    return ['/test/e2e/fixtures', testname, testfile].join('/');
+    return ["/test/e2e/fixtures", testname, testfile].join("/");
   }
   return false;
 }
 
 module.exports = {
-  stat: stat,
-  testExists: testExists,
-  rewriteTestFile: rewriteTestFile
+  stat,
+  testExists,
+  rewriteTestFile,
 };

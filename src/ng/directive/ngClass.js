@@ -1,33 +1,35 @@
-'use strict';
-
 /* exported
   ngClassDirective,
   ngClassEvenDirective,
   ngClassOddDirective
 */
 
+import { createMap, forEach, isArray, isObject, isString } from "../utils";
+
 function classDirective(name, selector) {
-  name = 'ngClass' + name;
+  // eslint-disable-next-line no-param-reassign
+  name = `ngClass${name}`;
   var indexWatchExpression;
 
-  return ['$parse', function($parse) {
-    return {
-      restrict: 'AC',
-      link: function(scope, element, attr) {
-        var classCounts = element.data('$classCounts');
-        var oldModulo = true;
-        var oldClassString;
+  return [
+    "$parse",
+    ($parse) => ({
+      restrict: "AC",
+      link(scope, element, attr) {
+        let classCounts = element.data("$classCounts");
+        let oldModulo = true;
+        let oldClassString;
 
         if (!classCounts) {
           // Use createMap() to prevent class assumptions involving property
           // names in Object.prototype
           classCounts = createMap();
-          element.data('$classCounts', classCounts);
+          element.data("$classCounts", classCounts);
         }
 
-        if (name !== 'ngClass') {
+        if (name !== "ngClass") {
           if (!indexWatchExpression) {
-            indexWatchExpression = $parse('$index', function moduloTwo($index) {
+            indexWatchExpression = $parse("$index", function moduloTwo($index) {
               // eslint-disable-next-line no-bitwise
               return $index & 1;
             });
@@ -49,23 +51,23 @@ function classDirective(name, selector) {
         }
 
         function updateClasses(oldClassString, newClassString) {
-          var oldClassArray = split(oldClassString);
-          var newClassArray = split(newClassString);
+          const oldClassArray = split(oldClassString);
+          const newClassArray = split(newClassString);
 
-          var toRemoveArray = arrayDifference(oldClassArray, newClassArray);
-          var toAddArray = arrayDifference(newClassArray, oldClassArray);
+          const toRemoveArray = arrayDifference(oldClassArray, newClassArray);
+          const toAddArray = arrayDifference(newClassArray, oldClassArray);
 
-          var toRemoveString = digestClassCounts(toRemoveArray, -1);
-          var toAddString = digestClassCounts(toAddArray, 1);
+          const toRemoveString = digestClassCounts(toRemoveArray, -1);
+          const toAddString = digestClassCounts(toAddArray, 1);
 
           attr.$addClass(toAddString);
           attr.$removeClass(toRemoveString);
         }
 
         function digestClassCounts(classArray, count) {
-          var classesToUpdate = [];
+          const classesToUpdate = [];
 
-          forEach(classArray, function(className) {
+          forEach(classArray, (className) => {
             if (count > 0 || classCounts[className]) {
               classCounts[className] = (classCounts[className] || 0) + count;
               if (classCounts[className] === +(count > 0)) {
@@ -74,7 +76,7 @@ function classDirective(name, selector) {
             }
           });
 
-          return classesToUpdate.join(' ');
+          return classesToUpdate.join(" ");
         }
 
         function ngClassIndexWatchAction(newModulo) {
@@ -97,21 +99,20 @@ function classDirective(name, selector) {
 
           oldClassString = newClassString;
         }
-      }
-    };
-  }];
+      },
+    }),
+  ];
 
   // Helpers
   function arrayDifference(tokens1, tokens2) {
     if (!tokens1 || !tokens1.length) return [];
     if (!tokens2 || !tokens2.length) return tokens1;
 
-    var values = [];
+    const values = [];
 
-    outer:
-    for (var i = 0; i < tokens1.length; i++) {
-      var token = tokens1[i];
-      for (var j = 0; j < tokens2.length; j++) {
+    outer: for (let i = 0; i < tokens1.length; i++) {
+      const token = tokens1[i];
+      for (let j = 0; j < tokens2.length; j++) {
         if (token === tokens2[j]) continue outer;
       }
       values.push(token);
@@ -121,22 +122,22 @@ function classDirective(name, selector) {
   }
 
   function split(classString) {
-    return classString && classString.split(' ');
+    return classString && classString.split(" ");
   }
 
   function toClassString(classValue) {
     if (!classValue) return classValue;
 
-    var classString = classValue;
+    let classString = classValue;
 
     if (isArray(classValue)) {
-      classString = classValue.map(toClassString).join(' ');
+      classString = classValue.map(toClassString).join(" ");
     } else if (isObject(classValue)) {
-      classString = Object.keys(classValue).
-        filter(function(key) { return classValue[key]; }).
-        join(' ');
+      classString = Object.keys(classValue)
+        .filter((key) => classValue[key])
+        .join(" ");
     } else if (!isString(classValue)) {
-      classString = classValue + '';
+      classString = `${classValue}`;
     }
 
     return classString;
@@ -191,144 +192,14 @@ function classDirective(name, selector) {
    to view the step by step details of {@link $animate#addClass $animate.addClass} and
    {@link $animate#removeClass $animate.removeClass}.
  *
- * @param {expression} ngClass {@link guide/expression Expression} to eval. The result
+ * @param {String} ngClass {@link guide/expression Expression} to eval. The result
  *   of the evaluation can be a string representing space delimited class
  *   names, an array, or a map of class names to boolean values. In the case of a map, the
  *   names of the properties whose values are truthy will be added as css classes to the
  *   element.
  *
- * @example
- * ### Basic
-   <example name="ng-class">
-     <file name="index.html">
-       <p ng-class="{strike: deleted, bold: important, 'has-error': error}">Map Syntax Example</p>
-       <label>
-          <input type="checkbox" ng-model="deleted">
-          deleted (apply "strike" class)
-       </label><br>
-       <label>
-          <input type="checkbox" ng-model="important">
-          important (apply "bold" class)
-       </label><br>
-       <label>
-          <input type="checkbox" ng-model="error">
-          error (apply "has-error" class)
-       </label>
-       <hr>
-       <p ng-class="style">Using String Syntax</p>
-       <input type="text" ng-model="style"
-              placeholder="Type: bold strike red" aria-label="Type: bold strike red">
-       <hr>
-       <p ng-class="[style1, style2, style3]">Using Array Syntax</p>
-       <input ng-model="style1"
-              placeholder="Type: bold, strike or red" aria-label="Type: bold, strike or red"><br>
-       <input ng-model="style2"
-              placeholder="Type: bold, strike or red" aria-label="Type: bold, strike or red 2"><br>
-       <input ng-model="style3"
-              placeholder="Type: bold, strike or red" aria-label="Type: bold, strike or red 3"><br>
-       <hr>
-       <p ng-class="[style4, {orange: warning}]">Using Array and Map Syntax</p>
-       <input ng-model="style4" placeholder="Type: bold, strike" aria-label="Type: bold, strike"><br>
-       <label><input type="checkbox" ng-model="warning"> warning (apply "orange" class)</label>
-     </file>
-     <file name="style.css">
-       .strike {
-           text-decoration: line-through;
-       }
-       .bold {
-           font-weight: bold;
-       }
-       .red {
-           color: red;
-       }
-       .has-error {
-           color: red;
-           background-color: yellow;
-       }
-       .orange {
-           color: orange;
-       }
-     </file>
-     <file name="protractor.js" type="protractor">
-       var ps = element.all(by.css('p'));
-
-       it('should let you toggle the class', function() {
-
-         expect(ps.first().getAttribute('class')).not.toMatch(/bold/);
-         expect(ps.first().getAttribute('class')).not.toMatch(/has-error/);
-
-         element(by.model('important')).click();
-         expect(ps.first().getAttribute('class')).toMatch(/bold/);
-
-         element(by.model('error')).click();
-         expect(ps.first().getAttribute('class')).toMatch(/has-error/);
-       });
-
-       it('should let you toggle string example', function() {
-         expect(ps.get(1).getAttribute('class')).toBe('');
-         element(by.model('style')).clear();
-         element(by.model('style')).sendKeys('red');
-         expect(ps.get(1).getAttribute('class')).toBe('red');
-       });
-
-       it('array example should have 3 classes', function() {
-         expect(ps.get(2).getAttribute('class')).toBe('');
-         element(by.model('style1')).sendKeys('bold');
-         element(by.model('style2')).sendKeys('strike');
-         element(by.model('style3')).sendKeys('red');
-         expect(ps.get(2).getAttribute('class')).toBe('bold strike red');
-       });
-
-       it('array with map example should have 2 classes', function() {
-         expect(ps.last().getAttribute('class')).toBe('');
-         element(by.model('style4')).sendKeys('bold');
-         element(by.model('warning')).click();
-         expect(ps.last().getAttribute('class')).toBe('bold orange');
-       });
-     </file>
-   </example>
-
-   @example
-   ### Animations
-
-   The example below demonstrates how to perform animations using ngClass.
-
-   <example module="ngAnimate" deps="angular-animate.js" animations="true" name="ng-class">
-     <file name="index.html">
-      <input id="setbtn" type="button" value="set" ng-click="myVar='my-class'">
-      <input id="clearbtn" type="button" value="clear" ng-click="myVar=''">
-      <br>
-      <span class="base-class" ng-class="myVar">Sample Text</span>
-     </file>
-     <file name="style.css">
-       .base-class {
-         transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-       }
-
-       .base-class.my-class {
-         color: red;
-         font-size:3em;
-       }
-     </file>
-     <file name="protractor.js" type="protractor">
-       it('should check ng-class', function() {
-         expect(element(by.css('.base-class')).getAttribute('class')).not.
-           toMatch(/my-class/);
-
-         element(by.id('setbtn')).click();
-
-         expect(element(by.css('.base-class')).getAttribute('class')).
-           toMatch(/my-class/);
-
-         element(by.id('clearbtn')).click();
-
-         expect(element(by.css('.base-class')).getAttribute('class')).not.
-           toMatch(/my-class/);
-       });
-     </file>
-   </example>
  */
-var ngClassDirective = classDirective('', true);
+export const ngClassDirective = classDirective("", true);
 
 /**
  * @ngdoc directive
@@ -350,95 +221,12 @@ var ngClassDirective = classDirective('', true);
  * | {@link ng.$animate#removeClass removeClass} | just before the class is removed from the element |
  *
  * @element ANY
- * @param {expression} ngClassOdd {@link guide/expression Expression} to eval. The result
+ * @param {String} ngClassOdd {@link guide/expression Expression} to eval. The result
  *   of the evaluation can be a string representing space delimited class names or an array.
  *
- * @example
-   <example name="ng-class-odd">
-     <file name="index.html">
-        <ol ng-init="names=['John', 'Mary', 'Cate', 'Suz']">
-          <li ng-repeat="name in names">
-           <span ng-class-odd="'odd'" ng-class-even="'even'">
-             {{name}}
-           </span>
-          </li>
-        </ol>
-     </file>
-     <file name="style.css">
-       .odd {
-         color: red;
-       }
-       .even {
-         color: blue;
-       }
-     </file>
-     <file name="protractor.js" type="protractor">
-       it('should check ng-class-odd and ng-class-even', function() {
-         expect(element(by.repeater('name in names').row(0).column('name')).getAttribute('class')).
-           toMatch(/odd/);
-         expect(element(by.repeater('name in names').row(1).column('name')).getAttribute('class')).
-           toMatch(/even/);
-       });
-     </file>
-   </example>
  *
- * <hr />
- * @example
- * An example on how to implement animations using `ngClassOdd`:
- *
-   <example module="ngAnimate" deps="angular-animate.js" animations="true" name="ng-class-odd-animate">
-     <file name="index.html">
-       <div ng-init="items=['Item 3', 'Item 2', 'Item 1', 'Item 0']">
-         <button ng-click="items.unshift('Item ' + items.length)">Add item</button>
-         <hr />
-         <table>
-           <tr ng-repeat="item in items" ng-class-odd="'odd'">
-             <td>{{ item }}</td>
-           </tr>
-         </table>
-       </div>
-     </file>
-     <file name="style.css">
-       .odd {
-         background: rgba(255, 255, 0, 0.25);
-       }
-
-       .odd-add, .odd-remove {
-         transition: 1.5s;
-       }
-     </file>
-     <file name="protractor.js" type="protractor">
-       it('should add new entries to the beginning of the list', function() {
-         var button = element(by.buttonText('Add item'));
-         var rows = element.all(by.repeater('item in items'));
-
-         expect(rows.count()).toBe(4);
-         expect(rows.get(0).getText()).toBe('Item 3');
-         expect(rows.get(1).getText()).toBe('Item 2');
-
-         button.click();
-
-         expect(rows.count()).toBe(5);
-         expect(rows.get(0).getText()).toBe('Item 4');
-         expect(rows.get(1).getText()).toBe('Item 3');
-       });
-
-       it('should add odd class to odd entries', function() {
-         var button = element(by.buttonText('Add item'));
-         var rows = element.all(by.repeater('item in items'));
-
-         expect(rows.get(0).getAttribute('class')).toMatch(/odd/);
-         expect(rows.get(1).getAttribute('class')).not.toMatch(/odd/);
-
-         button.click();
-
-         expect(rows.get(0).getAttribute('class')).toMatch(/odd/);
-         expect(rows.get(1).getAttribute('class')).not.toMatch(/odd/);
-       });
-     </file>
-   </example>
  */
-var ngClassOddDirective = classDirective('Odd', 0);
+export const ngClassOddDirective = classDirective("Odd", 0);
 
 /**
  * @ngdoc directive
@@ -460,92 +248,8 @@ var ngClassOddDirective = classDirective('Odd', 0);
  * | {@link ng.$animate#removeClass removeClass} | just before the class is removed from the element |
  *
  * @element ANY
- * @param {expression} ngClassEven {@link guide/expression Expression} to eval. The
+ * @param {String} ngClassEven {@link guide/expression Expression} to eval. The
  *   result of the evaluation can be a string representing space delimited class names or an array.
  *
- * @example
-   <example name="ng-class-even">
-     <file name="index.html">
-        <ol ng-init="names=['John', 'Mary', 'Cate', 'Suz']">
-          <li ng-repeat="name in names">
-           <span ng-class-odd="'odd'" ng-class-even="'even'">
-             {{name}} &nbsp; &nbsp; &nbsp;
-           </span>
-          </li>
-        </ol>
-     </file>
-     <file name="style.css">
-       .odd {
-         color: red;
-       }
-       .even {
-         color: blue;
-       }
-     </file>
-     <file name="protractor.js" type="protractor">
-       it('should check ng-class-odd and ng-class-even', function() {
-         expect(element(by.repeater('name in names').row(0).column('name')).getAttribute('class')).
-           toMatch(/odd/);
-         expect(element(by.repeater('name in names').row(1).column('name')).getAttribute('class')).
-           toMatch(/even/);
-       });
-     </file>
-   </example>
- *
- * <hr />
- * @example
- * An example on how to implement animations using `ngClassEven`:
- *
-   <example module="ngAnimate" deps="angular-animate.js" animations="true" name="ng-class-even-animate">
-     <file name="index.html">
-       <div ng-init="items=['Item 3', 'Item 2', 'Item 1', 'Item 0']">
-         <button ng-click="items.unshift('Item ' + items.length)">Add item</button>
-         <hr />
-         <table>
-           <tr ng-repeat="item in items" ng-class-even="'even'">
-             <td>{{ item }}</td>
-           </tr>
-         </table>
-       </div>
-     </file>
-     <file name="style.css">
-       .even {
-         background: rgba(255, 255, 0, 0.25);
-       }
-
-       .even-add, .even-remove {
-         transition: 1.5s;
-       }
-     </file>
-     <file name="protractor.js" type="protractor">
-       it('should add new entries to the beginning of the list', function() {
-         var button = element(by.buttonText('Add item'));
-         var rows = element.all(by.repeater('item in items'));
-
-         expect(rows.count()).toBe(4);
-         expect(rows.get(0).getText()).toBe('Item 3');
-         expect(rows.get(1).getText()).toBe('Item 2');
-
-         button.click();
-
-         expect(rows.count()).toBe(5);
-         expect(rows.get(0).getText()).toBe('Item 4');
-         expect(rows.get(1).getText()).toBe('Item 3');
-       });
-
-       it('should add even class to even entries', function() {
-         var button = element(by.buttonText('Add item'));
-         var rows = element.all(by.repeater('item in items'));
-
-         expect(rows.get(0).getAttribute('class')).not.toMatch(/even/);
-         expect(rows.get(1).getAttribute('class')).toMatch(/even/);
-
-         button.click();
-
-         expect(rows.get(0).getAttribute('class')).not.toMatch(/even/);
-         expect(rows.get(1).getAttribute('class')).toMatch(/even/);
-       });
-     </file>
-   </example>
  */
-var ngClassEvenDirective = classDirective('Even', 1);
+export const ngClassEvenDirective = classDirective("Even", 1);

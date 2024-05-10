@@ -1,26 +1,38 @@
-'use strict';
+import { dealoc } from "../../../src/jqLite";
+import { publishExternalAPI } from "../../../src/public";
+import { createInjector } from "../../../src/injector";
 
-describe('ngClick', function() {
-  var element;
+describe("ngClick", () => {
+  let element;
+  let $compile;
+  let $rootScope;
+  let injector;
 
-  afterEach(function() {
+  beforeEach(() => {
+    publishExternalAPI();
+    injector = createInjector(["ng"]);
+    $compile = injector.get("$compile");
+    $rootScope = injector.get("$rootScope");
+  });
+
+  afterEach(() => {
     dealoc(element);
   });
 
-  it('should get called on a click', inject(function($rootScope, $compile) {
+  it("should get called on a click", () => {
     element = $compile('<div ng-click="clicked = true"></div>')($rootScope);
     $rootScope.$digest();
     expect($rootScope.clicked).toBeFalsy();
 
-    browserTrigger(element, 'click');
+    element[0].click();
     expect($rootScope.clicked).toEqual(true);
-  }));
+  });
 
-  it('should pass event object', inject(function($rootScope, $compile) {
+  it("should pass event object", () => {
     element = $compile('<div ng-click="event = $event"></div>')($rootScope);
     $rootScope.$digest();
 
-    browserTrigger(element, 'click');
+    element[0].click();
     expect($rootScope.event).toBeDefined();
-  }));
+  });
 });

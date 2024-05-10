@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @ngdoc directive
  * @name ngAnimateSwap
@@ -40,7 +38,7 @@
  *           $scope.number++;
  *         }, 1000);
  *
- *         var colors = ['red','blue','green','yellow','orange'];
+ *         let colors = ['red','blue','green','yellow','orange'];
  *         $scope.colorClass = function(number) {
  *           return colors[number % colors.length];
  *         };
@@ -87,31 +85,35 @@
  *  </file>
  * </example>
  */
-var ngAnimateSwapDirective = ['$animate', function($animate) {
-  return {
-    restrict: 'A',
-    transclude: 'element',
-    terminal: true,
-    priority: 550, // We use 550 here to ensure that the directive is caught before others,
-                   // but after `ngIf` (at priority 600).
-    link: function(scope, $element, attrs, ctrl, $transclude) {
-      var previousElement, previousScope;
-      scope.$watchCollection(attrs.ngAnimateSwap || attrs['for'], function(value) {
-        if (previousElement) {
-          $animate.leave(previousElement);
-        }
-        if (previousScope) {
-          previousScope.$destroy();
-          previousScope = null;
-        }
-        if (value || value === 0) {
-          $transclude(function(clone, childScope) {
-            previousElement = clone;
-            previousScope = childScope;
-            $animate.enter(clone, null, $element);
-          });
-        }
-      });
-    }
-  };
-}];
+export const ngAnimateSwapDirective = [
+  "$animate",
+  function ($animate) {
+    return {
+      restrict: "A",
+      transclude: "element",
+      terminal: true,
+      priority: 550, // We use 550 here to ensure that the directive is caught before others,
+      // but after `ngIf` (at priority 600).
+      link(scope, $element, attrs, ctrl, $transclude) {
+        let previousElement;
+        let previousScope;
+        scope.$watchCollection(attrs.ngAnimateSwap || attrs.for, (value) => {
+          if (previousElement) {
+            $animate.leave(previousElement);
+          }
+          if (previousScope) {
+            previousScope.$destroy();
+            previousScope = null;
+          }
+          if (value || value === 0) {
+            $transclude((clone, childScope) => {
+              previousElement = clone;
+              previousScope = childScope;
+              $animate.enter(clone, null, $element);
+            });
+          }
+        });
+      },
+    };
+  },
+];

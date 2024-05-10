@@ -1,7 +1,3 @@
-'use strict';
-
-angular.
-  module('test', []).
-  run(function($rootScope) {
-    $rootScope.jqueryVersion = window.angular.element().jquery || 'jqLite';
-  });
+angular.module("test", []).run(($rootScope) => {
+  $rootScope.jqueryVersion = angular.element().jquery || "jqLite";
+});

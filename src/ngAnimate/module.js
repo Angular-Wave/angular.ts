@@ -1,4 +1,13 @@
-'use strict';
+import { $$AnimateChildrenDirective } from "./animateChildrenDirective";
+import { $$AnimationProvider } from "./animation";
+import { $$rAFSchedulerFactory } from "./rafScheduler";
+import { ngAnimateSwapDirective } from "./ngAnimateSwap";
+import { $$AnimateQueueProvider } from "./animateQueue";
+import { $$AnimateCacheProvider } from "./animateCache";
+import { $AnimateCssProvider } from "./animateCss";
+import { $$AnimateCssDriverProvider } from "./animateCssDriver";
+import { $$AnimateJsProvider } from "./animateJs";
+import { $$AnimateJsDriverProvider } from "./animateJsDriver";
 
 /**
  * @ngdoc module
@@ -21,7 +30,7 @@
  * |-------------------------------------------------------------------------------|---------------------------------------------------------------------------|
  * | {@link ng.directive:form#animations form / ngForm}                            | add and remove ({@link ng.directive:form#css-classes various classes})    |
  * | {@link ngAnimate.directive:ngAnimateSwap#animations ngAnimateSwap}            | enter and leave                                                           |
- * | {@link ng.directive:ngClass#animations ngClass / {{class&#125;&#8203;&#125;}  | add and remove                                                            |
+ * | {@link ng.directive:ngClass#animations ngClass / class&#125;&#8203;&#125;}  | add and remove                                                            |
  * | {@link ng.directive:ngClassEven#animations ngClassEven}                       | add and remove                                                            |
  * | {@link ng.directive:ngClassOdd#animations ngClassOdd}                         | add and remove                                                            |
  * | {@link ng.directive:ngHide#animations ngHide}                                 | add and remove (the `ng-hide` class)                                      |
@@ -202,7 +211,7 @@
  * The following code will issue the **ng-leave-stagger** event on the element provided:
  *
  * ```js
- * var kids = parent.children();
+ * let kids = parent.children();
  *
  * $animate.leave(kids[0]); //stagger index=0
  * $animate.leave(kids[1]); //stagger index=1
@@ -592,8 +601,8 @@
         }])
         .controller('ProfileController', ['$rootScope', '$routeParams',
             function ProfileController($rootScope, $routeParams) {
-          var index = parseInt($routeParams.id, 10);
-          var record = $rootScope.records[index - 1];
+          let index = parseInt($routeParams.id, 10);
+          let record = $rootScope.records[index - 1];
 
           this.title = record.title;
           this.id = record.id;
@@ -740,19 +749,6 @@
  * (Note that you will need to trigger a digest within the callback to get AngularJS to notice any scope-related changes.)
  */
 
-var copy;
-var extend;
-var forEach;
-var isArray;
-var isDefined;
-var isElement;
-var isFunction;
-var isObject;
-var isString;
-var isUndefined;
-var jqLite;
-var noop;
-
 /**
  * @ngdoc service
  * @name $animate
@@ -763,34 +759,21 @@ var noop;
  *
  * Click here {@link ng.$animate to learn more about animations with `$animate`}.
  */
-angular.module('ngAnimate', [], function initAngularHelpers() {
-  // Access helpers from AngularJS core.
-  // Do it inside a `config` block to ensure `window.angular` is available.
-  noop        = angular.noop;
-  copy        = angular.copy;
-  extend      = angular.extend;
-  jqLite      = angular.element;
-  forEach     = angular.forEach;
-  isArray     = angular.isArray;
-  isString    = angular.isString;
-  isObject    = angular.isObject;
-  isUndefined = angular.isUndefined;
-  isDefined   = angular.isDefined;
-  isFunction  = angular.isFunction;
-  isElement   = angular.isElement;
-})
-  .info({ angularVersion: '"NG_VERSION_FULL"' })
-  .directive('ngAnimateSwap', ngAnimateSwapDirective)
+export function initAnimateModule() {
+  window.angular
+    .module("ngAnimate", [])
+    .directive("ngAnimateSwap", ngAnimateSwapDirective)
 
-  .directive('ngAnimateChildren', $$AnimateChildrenDirective)
-  .factory('$$rAFScheduler', $$rAFSchedulerFactory)
+    .directive("ngAnimateChildren", $$AnimateChildrenDirective)
+    .factory("$$rAFScheduler", $$rAFSchedulerFactory)
 
-  .provider('$$animateQueue', $$AnimateQueueProvider)
-  .provider('$$animateCache', $$AnimateCacheProvider)
-  .provider('$$animation', $$AnimationProvider)
+    .provider("$$animateQueue", $$AnimateQueueProvider)
+    .provider("$$animateCache", $$AnimateCacheProvider)
+    .provider("$$animation", $$AnimationProvider)
 
-  .provider('$animateCss', $AnimateCssProvider)
-  .provider('$$animateCssDriver', $$AnimateCssDriverProvider)
+    .provider("$animateCss", $AnimateCssProvider)
+    .provider("$$animateCssDriver", $$AnimateCssDriverProvider)
 
-  .provider('$$animateJs', $$AnimateJsProvider)
-  .provider('$$animateJsDriver', $$AnimateJsDriverProvider);
+    .provider("$$animateJs", $$AnimateJsProvider)
+    .provider("$$animateJsDriver", $$AnimateJsDriverProvider);
+}

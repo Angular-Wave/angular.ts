@@ -1,7 +1,3 @@
-'use strict';
-
-/* global routeToRegExp: true */
-
 /**
  * @param {string} path - The path to parse. (It is assumed to have query and hash stripped off.)
  * @param {Object} opts - Options.
@@ -14,33 +10,32 @@
  *
  * Originally inspired by `pathRexp` in `visionmedia/express/lib/utils.js`.
  */
-function routeToRegExp(path, opts) {
-  var keys = [];
+export function routeToRegExp(path, opts) {
+  const keys = [];
 
-  var pattern = path
-    .replace(/([().])/g, '\\$1')
-    .replace(/(\/)?:(\w+)(\*\?|[?*])?/g, function(_, slash, key, option) {
-      var optional = option === '?' || option === '*?';
-      var star = option === '*' || option === '*?';
-      keys.push({name: key, optional: optional});
-      slash = slash || '';
+  let pattern = path
+    .replace(/([().])/g, "\\$1")
+    .replace(/(\/)?:(\w+)(\*\?|[?*])?/g, (_, slash, key, option) => {
+      const optional = option === "?" || option === "*?";
+      const star = option === "*" || option === "*?";
+      keys.push({ name: key, optional });
       return (
-        (optional ? '(?:' + slash : slash + '(?:') +
-        (star ? '(.+?)' : '([^/]+)') +
-        (optional ? '?)?' : ')')
+        (optional ? `(?:${slash || ""}` : `${slash || ""}(?:`) +
+        (star ? "(.+?)" : "([^/]+)") +
+        (optional ? "?)?" : ")")
       );
     })
-    .replace(/([/$*])/g, '\\$1');
+    .replace(/([/$*])/g, "\\$1");
 
   if (opts.ignoreTrailingSlashes) {
-    pattern = pattern.replace(/\/+$/, '') + '/*';
+    pattern = `${pattern.replace(/\/+$/, "")}/*`;
   }
 
   return {
-    keys: keys,
+    keys,
     regexp: new RegExp(
-      '^' + pattern + '(?:[?#]|$)',
-      opts.caseInsensitiveMatch ? 'i' : ''
-    )
+      `^${pattern}(?:[?#]|$)`,
+      opts.caseInsensitiveMatch ? "i" : "",
+    ),
   };
 }

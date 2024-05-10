@@ -1,11 +1,9 @@
-'use strict';
-
-describe('App where AngularJS is loaded more than once', function() {
-  beforeEach(function() {
-    loadFixture('angularjs-already-loaded');
+describe("App where AngularJS is loaded more than once", () => {
+  beforeEach(() => {
+    loadFixture("angularjs-already-loaded");
   });
 
-  it('should have the interpolated text', function() {
-    expect(element(by.binding('text')).getText()).toBe('Hello, world!');
+  it("should have the interpolated text", () => {
+    expect(element(by.binding("text")).getText()).toBe("Hello, world!");
   });
 });

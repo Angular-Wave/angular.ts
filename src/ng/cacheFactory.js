@@ -1,9 +1,9 @@
-'use strict';
+import { createMap, extend, forEach, isUndefined, minErr } from "./utils";
 
 /**
  * @ngdoc service
  * @name $cacheFactory
- * @this
+ * 
  *
  * @description
  * Factory that constructs {@link $cacheFactory.Cache Cache} objects and gives access to
@@ -11,7 +11,7 @@
  *
  * ```js
  *
- *  var cache = $cacheFactory('cacheId');
+ *  let cache = $cacheFactory('cacheId');
  *  expect($cacheFactory.get('cacheId')).toBe(cache);
  *  expect($cacheFactory.get('noSuchCacheId')).not.toBeDefined();
  *
@@ -23,21 +23,6 @@
  *
  * ```
  *
- *
- * @param {string} cacheId Name or id of the newly created cache.
- * @param {object=} options Options object that specifies the cache behavior. Properties:
- *
- *   - `{number=}` `capacity` — turns the cache into LRU cache.
- *
- * @returns {object} Newly created cache object with the following set of methods:
- *
- * - `{object}` `info()` — Returns id, size, and options of cache.
- * - `{{*}}` `put({string} key, {*} value)` — Puts a new key-value pair into the cache and returns
- *   it.
- * - `{{*}}` `get({string} key)` — Returns cached value for `key` or undefined for cache miss.
- * - `{void}` `remove({string} key)` — Removes a key-value pair from the cache.
- * - `{void}` `removeAll()` — Removes all cached values.
- * - `{void}` `destroy()` — Removes references to this cache from $cacheFactory.
  *
  * @example
    <example module="cacheExampleApp" name="cache-factory">
@@ -82,23 +67,42 @@
      </file>
    </example>
  */
-function $CacheFactoryProvider() {
+export function CacheFactoryProvider() {
+  this.$get = function () {
+    const caches = {};
 
-  this.$get = function() {
-    var caches = {};
-
+    /**
+     * @param {string} cacheId Name or id of the newly created cache.
+     * @param {object=} options Options object that specifies the cache behavior. Properties:
+     *
+     *   - `{number=}` `capacity` — turns the cache into LRU cache.
+     *
+     * @returns {object} Newly created cache object with the following set of methods:
+     *
+     * - `{object}` `info()` — Returns id, size, and options of cache.
+     * - `{{*}}` `put({string} key, {*} value)` — Puts a new key-value pair into the cache and returns
+     *   it.
+     * - `{{*}}` `get({string} key)` — Returns cached value for `key` or undefined for cache miss.
+     * - `{void}` `remove({string} key)` — Removes a key-value pair from the cache.
+     * - `{void}` `removeAll()` — Removes all cached values.
+     * - `{void}` `destroy()` — Removes references to this cache from $cacheFactory.
+     */
     function cacheFactory(cacheId, options) {
       if (cacheId in caches) {
-        throw minErr('$cacheFactory')('iid', 'CacheId \'{0}\' is already taken!', cacheId);
+        throw minErr("$cacheFactory")(
+          "iid",
+          "CacheId '{0}' is already taken!",
+          cacheId,
+        );
       }
 
-      var size = 0,
-          stats = extend({}, options, {id: cacheId}),
-          data = createMap(),
-          capacity = (options && options.capacity) || Number.MAX_VALUE,
-          lruHash = createMap(),
-          freshEnd = null,
-          staleEnd = null;
+      let size = 0;
+      let stats = extend({}, options, { id: cacheId });
+      let data = createMap();
+      const capacity = (options && options.capacity) || Number.MAX_VALUE;
+      let lruHash = createMap();
+      let freshEnd = null;
+      let staleEnd = null;
 
       /**
        * @ngdoc type
@@ -140,7 +144,6 @@ function $CacheFactoryProvider() {
        * ```
        */
       return (caches[cacheId] = {
-
         /**
          * @ngdoc method
          * @name $cacheFactory.Cache#put
@@ -159,10 +162,10 @@ function $CacheFactoryProvider() {
          *    will not be stored.
          * @returns {*} the value stored.
          */
-        put: function(key, value) {
+        put(key, value) {
           if (isUndefined(value)) return;
           if (capacity < Number.MAX_VALUE) {
-            var lruEntry = lruHash[key] || (lruHash[key] = {key: key});
+            const lruEntry = lruHash[key] || (lruHash[key] = { key });
 
             refresh(lruEntry);
           }
@@ -188,9 +191,9 @@ function $CacheFactoryProvider() {
          * @param {string} key the key of the data to be retrieved
          * @returns {*} the value stored.
          */
-        get: function(key) {
+        get(key) {
           if (capacity < Number.MAX_VALUE) {
-            var lruEntry = lruHash[key];
+            const lruEntry = lruHash[key];
 
             if (!lruEntry) return;
 
@@ -199,7 +202,6 @@ function $CacheFactoryProvider() {
 
           return data[key];
         },
-
 
         /**
          * @ngdoc method
@@ -211,15 +213,15 @@ function $CacheFactoryProvider() {
          *
          * @param {string} key the key of the entry to be removed
          */
-        remove: function(key) {
+        remove(key) {
           if (capacity < Number.MAX_VALUE) {
-            var lruEntry = lruHash[key];
+            const lruEntry = lruHash[key];
 
             if (!lruEntry) return;
 
             if (lruEntry === freshEnd) freshEnd = lruEntry.p;
             if (lruEntry === staleEnd) staleEnd = lruEntry.n;
-            link(lruEntry.n,lruEntry.p);
+            link(lruEntry.n, lruEntry.p);
 
             delete lruHash[key];
           }
@@ -230,7 +232,6 @@ function $CacheFactoryProvider() {
           size--;
         },
 
-
         /**
          * @ngdoc method
          * @name $cacheFactory.Cache#removeAll
@@ -239,13 +240,12 @@ function $CacheFactoryProvider() {
          * @description
          * Clears the cache object of any entries.
          */
-        removeAll: function() {
+        removeAll() {
           data = createMap();
           size = 0;
           lruHash = createMap();
           freshEnd = staleEnd = null;
         },
-
 
         /**
          * @ngdoc method
@@ -256,13 +256,12 @@ function $CacheFactoryProvider() {
          * Destroys the {@link $cacheFactory.Cache Cache} object entirely,
          * removing it from the {@link $cacheFactory $cacheFactory} set.
          */
-        destroy: function() {
+        destroy() {
           data = null;
           stats = null;
           lruHash = null;
           delete caches[cacheId];
         },
-
 
         /**
          * @ngdoc method
@@ -280,11 +279,10 @@ function $CacheFactoryProvider() {
          *       cache.</li>
          *   </ul>
          */
-        info: function() {
-          return extend({}, stats, {size: size});
-        }
+        info() {
+          return extend({}, stats, { size });
+        },
       });
-
 
       /**
        * makes the `entry` the freshEnd of the LRU linked list
@@ -304,60 +302,54 @@ function $CacheFactoryProvider() {
         }
       }
 
-
       /**
        * bidirectionally links two entries of the LRU linked list
        */
       function link(nextEntry, prevEntry) {
         if (nextEntry !== prevEntry) {
-          if (nextEntry) nextEntry.p = prevEntry; //p stands for previous, 'prev' didn't minify
-          if (prevEntry) prevEntry.n = nextEntry; //n stands for next, 'next' didn't minify
+          if (nextEntry) nextEntry.p = prevEntry; // p stands for previous, 'prev' didn't minify
+          if (prevEntry) prevEntry.n = nextEntry; // n stands for next, 'next' didn't minify
         }
       }
     }
 
-
-  /**
-   * @ngdoc method
-   * @name $cacheFactory#info
-   *
-   * @description
-   * Get information about all the caches that have been created
-   *
-   * @returns {Object} - key-value map of `cacheId` to the result of calling `cache#info`
-   */
-    cacheFactory.info = function() {
-      var info = {};
-      forEach(caches, function(cache, cacheId) {
+    /**
+     * @ngdoc method
+     * @name $cacheFactory#info
+     *
+     * @description
+     * Get information about all the caches that have been created
+     *
+     * @returns {Object} - key-value map of `cacheId` to the result of calling `cache#info`
+     */
+    cacheFactory.info = function () {
+      const info = {};
+      forEach(caches, (cache, cacheId) => {
         info[cacheId] = cache.info();
       });
       return info;
     };
 
-
-  /**
-   * @ngdoc method
-   * @name $cacheFactory#get
-   *
-   * @description
-   * Get access to a cache object by the `cacheId` used when it was created.
-   *
-   * @param {string} cacheId Name or id of a cache to access.
-   * @returns {object} Cache object identified by the cacheId or undefined if no such cache.
-   */
-    cacheFactory.get = function(cacheId) {
+    /**
+     * @ngdoc method
+     * @name $cacheFactory#get
+     *
+     * @description
+     * Get access to a cache object by the `cacheId` used when it was created.
+     *
+     * @param {string} cacheId Name or id of a cache to access.
+     * @returns {object} Cache object identified by the cacheId or undefined if no such cache.
+     */
+    cacheFactory.get = function (cacheId) {
       return caches[cacheId];
     };
-
 
     return cacheFactory;
   };
 }
 
 /**
- * @ngdoc service
  * @name $templateCache
- * @this
  *
  * @description
  * `$templateCache` is a {@link $cacheFactory.Cache Cache object} created by the
@@ -382,7 +374,7 @@ function $CacheFactoryProvider() {
  * Adding via the `$templateCache` service:
  *
  * ```js
- * var myApp = angular.module('myApp', []);
+ * let myApp = angular.module('myApp', []);
  * myApp.run(function($templateCache) {
  *   $templateCache.put('templateId.html', 'This is the content of the template');
  * });
@@ -401,8 +393,6 @@ function $CacheFactoryProvider() {
  * ```
  *
  */
-function $TemplateCacheProvider() {
-  this.$get = ['$cacheFactory', function($cacheFactory) {
-    return $cacheFactory('templates');
-  }];
+export function TemplateCacheProvider() {
+  this.$get = ["$cacheFactory", ($cacheFactory) => $cacheFactory("templates")];
 }

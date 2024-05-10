@@ -1,55 +1,52 @@
-'use strict';
+import { publishExternalAPI } from "../../src/public";
+import { createInjector } from "../../src/injector";
+import { jqLite } from "../../src/jqLite";
 
-describe('$document', function() {
+describe("$document", () => {
+  let $document, $httpBackend, $http, $$isDocumentHidden;
 
-
-  it('should inject $document', inject(function($document) {
-    expect($document).toEqual(jqLite(window.document));
-  }));
-
-
-  it('should be able to mock $document object', function() {
-    module({$document: {}});
-    inject(function($httpBackend, $http) {
-      $httpBackend.expectGET('/dummy').respond('dummy');
-      $http.get('/dummy');
-      $httpBackend.flush();
-    });
+  beforeEach(() => {
+    publishExternalAPI();
+    var injector = createInjector(["ng"]);
+    $document = injector.get("$document");
+    $httpBackend = injector.get("$httpBackend");
+    $http = injector.get("$http");
+    $$isDocumentHidden = injector.get("$$isDocumentHidden");
   });
 
-
-  it('should be able to mock $document array', function() {
-    module({$document: [{}]});
-    inject(function($httpBackend, $http) {
-      $httpBackend.expectGET('/dummy').respond('dummy');
-      $http.get('/dummy');
-      $httpBackend.flush();
-    });
+  it("should inject $document", () => {
+    expect($document).toEqual(jqLite(window.document));
   });
 });
 
+describe("$$isDocumentHidden", () => {
+  let $rootScope;
 
-describe('$$isDocumentHidden', function() {
-  it('should listen on the visibilitychange event', function() {
-    var doc;
-
-    var spy = spyOn(window.document, 'addEventListener').and.callThrough();
-
-    inject(function($$isDocumentHidden, $document) {
-      expect(spy.calls.mostRecent().args[0]).toBe('visibilitychange');
-      expect(spy.calls.mostRecent().args[1]).toEqual(jasmine.any(Function));
-      expect($$isDocumentHidden()).toBeFalsy(); // undefined in browsers that don't support visibility
-    });
-
+  beforeEach(() => {
+    publishExternalAPI();
+    var injector = createInjector(["ng"]);
+    $rootScope = injector.get("$rootScope");
   });
 
-  it('should remove the listener when the $rootScope is destroyed', function() {
-    var spy = spyOn(window.document, 'removeEventListener').and.callThrough();
+  it("should listen on the visibilitychange event", () => {
+    let doc;
 
-    inject(function($$isDocumentHidden, $rootScope) {
-      $rootScope.$destroy();
-      expect(spy.calls.mostRecent().args[0]).toBe('visibilitychange');
+    const spy = spyOn(window.document, "addEventListener").and.callThrough();
+
+    () => {
+      expect(spy.calls.mostRecent().args[0]).toBe("visibilitychange");
       expect(spy.calls.mostRecent().args[1]).toEqual(jasmine.any(Function));
-    });
+      expect($$isDocumentHidden()).toBeFalsy(); // undefined in browsers that don't support visibility
+    };
+  });
+
+  it("should remove the listener when the $rootScope is destroyed", () => {
+    const spy = spyOn(window.document, "removeEventListener").and.callThrough();
+
+    () => {
+      $rootScope.$destroy();
+      expect(spy.calls.mostRecent().args[0]).toBe("visibilitychange");
+      expect(spy.calls.mostRecent().args[1]).toEqual(jasmine.any(Function));
+    };
   });
 });

@@ -1,10 +1,9 @@
-'use strict';
+import { jqLite } from "../jqLite";
 
 /**
  * @ngdoc service
  * @name $document
- * @requires $window
- * @this
+ * 
  *
  * @description
  * A {@link angular.element jQuery or jqLite} wrapper for the browser's `window.document` object.
@@ -26,35 +25,40 @@
      </file>
    </example>
  */
-function $DocumentProvider() {
-  this.$get = ['$window', function(window) {
-    return jqLite(window.document);
-  }];
+export function $DocumentProvider() {
+  this.$get = [
+    function () {
+      return jqLite(window.document);
+    },
+  ];
 }
-
 
 /**
  * @private
- * @this
- * Listens for document visibility change and makes the current status accessible.
+ *
+s * Listens for document visibility change and makes the current status accessible.
  */
-function $$IsDocumentHiddenProvider() {
-  this.$get = ['$document', '$rootScope', function($document, $rootScope) {
-    var doc = $document[0];
-    var hidden = doc && doc.hidden;
+export function $$IsDocumentHiddenProvider() {
+  this.$get = [
+    "$document",
+    "$rootScope",
+    function ($document, $rootScope) {
+      const doc = $document[0];
+      let hidden = doc && doc.hidden;
 
-    $document.on('visibilitychange', changeListener);
+      $document.on("visibilitychange", changeListener);
 
-    $rootScope.$on('$destroy', function() {
-      $document.off('visibilitychange', changeListener);
-    });
+      $rootScope.$on("$destroy", () => {
+        $document.off("visibilitychange", changeListener);
+      });
 
-    function changeListener() {
-      hidden = doc.hidden;
-    }
+      function changeListener() {
+        hidden = doc.hidden;
+      }
 
-    return function() {
-      return hidden;
-    };
-  }];
+      return function () {
+        return hidden;
+      };
+    },
+  ];
 }

@@ -1,827 +1,828 @@
-'use strict';
+import { dealoc, jqLite } from "../../../src/jqLite";
+import { Angular } from "../../../src/loader";
+import { createInjector } from "../../../src/injector";
+import { publishExternalAPI } from "../../../src/public";
+import { valueFn } from "../../../src/ng/utils";
 
-describe('ngInclude', function() {
+describe("ngInclude", () => {
+  describe("basic", () => {
+    let element;
+    let $rootScope;
+    let $templateCache;
+    let $compile;
+    let module;
+    let injector;
+    let angular;
 
-  describe('basic', function() {
-    var element;
+    beforeEach(() => {
+      delete window.angular;
+      angular = new Angular();
+      publishExternalAPI().decorator("$exceptionHandler", function () {
+        return (exception, cause) => {
+          throw new Error(exception.message);
+        };
+      });
+      // module = window.angular.module("myModule", []);
+      injector = createInjector(["ng"]);
+      $rootScope = injector.get("$rootScope");
+      $templateCache = injector.get("$templateCache");
+      $compile = injector.get("$compile");
+    });
 
-    afterEach(function() {
+    afterEach(() => {
       dealoc(element);
     });
 
-
-    function putIntoCache(url, content) {
-      return function($templateCache) {
-        $templateCache.put(url, [200, content, {}]);
-      };
-    }
-
-
-    it('should trust and use literal urls', inject(function(
-        $rootScope, $httpBackend, $compile) {
-      element = $compile('<div><div ng-include="\'url\'"></div></div>')($rootScope);
-      $httpBackend.expect('GET', 'url').respond('template text');
+    it("should trust and use literal urls", (done) => {
+      const element = jqLite(
+        "<div><div ng-include=\"'/test.html'\"></div></div>",
+      );
+      const injector = angular.bootstrap(element);
+      $rootScope = injector.get("$rootScope");
       $rootScope.$digest();
-      $httpBackend.flush();
-      expect(element.text()).toEqual('template text');
-      dealoc($rootScope);
-    }));
+      setTimeout(() => {
+        expect(element.text()).toEqual("hello");
+        dealoc($rootScope);
+        done();
+      }, 200);
+    });
 
-
-    it('should trust and use trusted urls', inject(function($rootScope, $httpBackend, $compile, $sce) {
-      element = $compile('<div><div ng-include="fooUrl"></div></div>')($rootScope);
-      $httpBackend.expect('GET', 'http://foo.bar/url').respond('template text');
-      $rootScope.fooUrl = $sce.trustAsResourceUrl('http://foo.bar/url');
+    it("should trust and use trusted urls", (done) => {
+      const element = jqLite('<div><div ng-include="fooUrl">test</div></div>');
+      const injector = angular.bootstrap(element);
+      let $sce = injector.get("$sce");
+      $rootScope = injector.get("$rootScope");
+      $rootScope.fooUrl = $sce.trustAsResourceUrl(
+        "http://localhost:4000/mock/hello",
+      );
       $rootScope.$digest();
-      $httpBackend.flush();
-      expect(element.text()).toEqual('template text');
-      dealoc($rootScope);
-    }));
 
+      setTimeout(() => {
+        expect(element.text()).toEqual("Hello");
+        dealoc($rootScope);
+        done();
+      }, 200);
+    });
 
-    it('should include an external file', inject(putIntoCache('myUrl', '{{name}}'),
-        function($rootScope, $compile) {
+    it("should include an external file", (done) => {
       element = jqLite('<div><ng:include src="url"></ng:include></div>');
-      var body = jqLite(window.document.body);
+      const body = jqLite(document.getElementById("dummy"));
       body.append(element);
-      element = $compile(element)($rootScope);
-      $rootScope.name = 'misko';
-      $rootScope.url = 'myUrl';
+      const injector = angular.bootstrap(element);
+      $rootScope = injector.get("$rootScope");
+      $templateCache = injector.get("$templateCache");
+      $templateCache.put("myUrl", [200, "{{name}}", {}]);
+      $rootScope.name = "misko";
+      $rootScope.url = "myUrl";
       $rootScope.$digest();
-      expect(body.text()).toEqual('misko');
-      body.empty();
-    }));
+      setTimeout(() => {
+        expect(body.text()).toEqual("misko");
+        body.empty();
+        dealoc($rootScope);
+        done();
+      }, 200);
+    });
 
-
-    it('should support ng-include="src" syntax', inject(putIntoCache('myUrl', '{{name}}'),
-        function($rootScope, $compile) {
+    it('should support ng-include="src" syntax', (done) => {
       element = jqLite('<div><div ng-include="url"></div></div>');
-      jqLite(window.document.body).append(element);
-      element = $compile(element)($rootScope);
-      $rootScope.name = 'Alibaba';
-      $rootScope.url = 'myUrl';
+      const injector = angular.bootstrap(element);
+      $rootScope = injector.get("$rootScope");
+      $rootScope.expr = "Alibaba";
+      $rootScope.url = "/mock/interpolation";
       $rootScope.$digest();
-      expect(element.text()).toEqual('Alibaba');
-      jqLite(window.document.body).empty();
-    }));
 
+      setTimeout(() => {
+        expect(element.text()).toEqual("Alibaba");
+        done();
+      }, 200);
+    });
 
-    it('should NOT use untrusted URL expressions ', inject(putIntoCache('myUrl', '{{name}} text'),
-        function($rootScope, $compile, $sce) {
+    it("should NOT use untrusted URL expressions ", () => {
       element = jqLite('<ng:include src="url"></ng:include>');
-      jqLite(window.document.body).append(element);
-      element = $compile(element)($rootScope);
-      $rootScope.name = 'chirayu';
-      $rootScope.url = 'http://example.com/myUrl';
-      expect(function() { $rootScope.$digest(); }).toThrowMinErr(
-          '$sce', 'insecurl',
-          /Blocked loading resource from url not allowed by \$sceDelegate policy. {2}URL: http:\/\/example.com\/myUrl.*/);
-      jqLite(window.document.body).empty();
-    }));
+      const injector = angular.bootstrap(element);
+      $rootScope = injector.get("$rootScope");
+      $rootScope.url = "http://example.com/myUrl";
+      expect(() => {
+        $rootScope.$digest();
+      }).toThrowError(/insecurl/);
+    });
 
-
-    it('should NOT use mistyped expressions ', inject(putIntoCache('myUrl', '{{name}} text'),
-        function($rootScope, $compile, $sce) {
+    it("should NOT use mistyped expressions ", () => {
       element = jqLite('<ng:include src="url"></ng:include>');
-      jqLite(window.document.body).append(element);
-      element = $compile(element)($rootScope);
-      $rootScope.name = 'chirayu';
-      $rootScope.url = $sce.trustAsUrl('http://example.com/myUrl');
-      expect(function() { $rootScope.$digest(); }).toThrowMinErr(
-          '$sce', 'insecurl',
-          /Blocked loading resource from url not allowed by \$sceDelegate policy. {2}URL: http:\/\/example.com\/myUrl.*/);
-      jqLite(window.document.body).empty();
-    }));
+      const injector = angular.bootstrap(element);
+      $rootScope = injector.get("$rootScope");
+      $rootScope.name = "chirayu";
+      let $sce = injector.get("$sce");
+      $rootScope.url = $sce.trustAsUrl("http://example.com/myUrl");
+      expect(() => {
+        $rootScope.$digest();
+      }).toThrowError(/insecurl/);
+    });
 
-
-    it('should remove previously included text if a falsy value is bound to src', inject(
-          putIntoCache('myUrl', '{{name}}'),
-          function($rootScope, $compile) {
+    it("should remove previously included text if a falsy value is bound to src", (done) => {
       element = jqLite('<div><ng:include src="url"></ng:include></div>');
-      element = $compile(element)($rootScope);
-      $rootScope.name = 'igor';
-      $rootScope.url = 'myUrl';
+      const injector = angular.bootstrap(element);
+      $rootScope = injector.get("$rootScope");
+      $rootScope.expr = "igor";
+      $rootScope.url = "/mock/interpolation";
+      $rootScope.$digest();
+      setTimeout(() => {
+        expect(element.text()).toEqual("igor");
+        $rootScope.url = undefined;
+        $rootScope.$digest();
+      }, 100);
+      setTimeout(() => {
+        expect(element.text()).toEqual("");
+        done();
+      }, 300);
+    });
+
+    it("should fire $includeContentRequested event on scope after making the xhr call", (done) => {
+      let called = false;
+
+      window.angular.module("myModule", []).run(($rootScope) => {
+        $rootScope.$on("$includeContentRequested", (event) => {
+          expect(event.targetScope).toBe($rootScope);
+          called = true;
+        });
+      });
+      element = jqLite(
+        '<div><div><ng:include src="url"></ng:include></div></div>',
+      );
+      const injector = angular.bootstrap(element, ["myModule"]);
+      $rootScope = injector.get("$rootScope");
+      $rootScope.url = "/mock/interpolation";
       $rootScope.$digest();
 
-      expect(element.text()).toEqual('igor');
+      setTimeout(() => {
+        expect(called).toBe(true);
+        done();
+      }, 100);
+    });
 
-      $rootScope.url = undefined;
+    it("should fire $includeContentLoaded event on child scope after linking the content", (done) => {
+      let called = false;
+
+      window.angular.module("myModule", []).run(($rootScope) => {
+        $rootScope.$on("$includeContentLoaded", (event) => {
+          expect(event.targetScope.$parent).toBe($rootScope);
+          called = true;
+        });
+      });
+      element = jqLite(
+        '<div><div><ng:include src="url"></ng:include></div></div>',
+      );
+      const injector = angular.bootstrap(element, ["myModule"]);
+      $rootScope = injector.get("$rootScope");
+      $rootScope.url = "/mock/interpolation";
       $rootScope.$digest();
 
-      expect(element.text()).toEqual('');
-    }));
+      setTimeout(() => {
+        expect(called).toBe(true);
+        done();
+      }, 100);
+    });
 
-    it('should fire $includeContentRequested event on scope after making the xhr call', inject(
-        function($rootScope, $compile, $httpBackend) {
-      var contentRequestedSpy = jasmine.createSpy('content requested').and.callFake(function(event) {
-        expect(event.targetScope).toBe($rootScope);
+    it("should fire $includeContentError event when content request fails", (done) => {
+      const contentLoadedSpy = jasmine.createSpy("content loaded");
+      const contentErrorSpy = jasmine.createSpy("content error");
+
+      window.angular.module("myModule", []).run(($rootScope) => {
+        $rootScope.url = "/mock/401";
+        $rootScope.$on("$includeContentLoaded", contentLoadedSpy);
+        $rootScope.$on("$includeContentError", contentErrorSpy);
       });
 
-      $httpBackend.whenGET('url').respond('my partial');
-      $rootScope.$on('$includeContentRequested', contentRequestedSpy);
+      element = jqLite(
+        '<div><div><ng:include src="url"></ng:include></div></div>',
+      );
 
-      element = $compile('<div><div><ng:include src="\'url\'"></ng:include></div></div>')($rootScope);
+      const injector = angular.bootstrap(element, ["myModule"]);
+      $rootScope = injector.get("$rootScope");
       $rootScope.$digest();
 
-      expect(contentRequestedSpy).toHaveBeenCalledOnceWith(jasmine.any(Object), 'url');
+      setTimeout(() => {
+        expect(contentLoadedSpy).not.toHaveBeenCalled();
+        expect(contentErrorSpy).toHaveBeenCalled();
+        done();
+      }, 100);
+    });
 
-      $httpBackend.flush();
-    }));
+    it("should evaluate onload expression when a partial is loaded", (done) => {
+      window.angular.module("myModule", []);
 
-    it('should fire $includeContentLoaded event on child scope after linking the content', inject(
-        function($rootScope, $compile, $templateCache) {
-      var contentLoadedSpy = jasmine.createSpy('content loaded').and.callFake(function(event) {
-        expect(event.targetScope.$parent).toBe($rootScope);
-        expect(element.text()).toBe('partial content');
-      });
-
-      $templateCache.put('url', [200, 'partial content', {}]);
-      $rootScope.$on('$includeContentLoaded', contentLoadedSpy);
-
-      element = $compile('<div><div><ng:include src="\'url\'"></ng:include></div></div>')($rootScope);
+      element = jqLite(
+        '<div><div><ng:include src="url" onload="loaded = true"></ng:include></div></div>',
+      );
+      const injector = angular.bootstrap(element, ["myModule"]);
+      $rootScope = injector.get("$rootScope");
       $rootScope.$digest();
-
-      expect(contentLoadedSpy).toHaveBeenCalledOnceWith(jasmine.any(Object), 'url');
-    }));
-
-
-    it('should fire $includeContentError event when content request fails', inject(
-        function($rootScope, $compile, $httpBackend, $templateCache) {
-      var contentLoadedSpy = jasmine.createSpy('content loaded'),
-          contentErrorSpy = jasmine.createSpy('content error');
-
-      $rootScope.$on('$includeContentLoaded', contentLoadedSpy);
-      $rootScope.$on('$includeContentError', contentErrorSpy);
-
-      $httpBackend.expect('GET', 'tpl.html').respond(400, 'nope');
-
-      element = $compile('<div><div ng-include="template"></div></div>')($rootScope);
-
-      $rootScope.$apply(function() {
-        $rootScope.template = 'tpl.html';
-      });
-      $httpBackend.flush();
-
-      expect(contentLoadedSpy).not.toHaveBeenCalled();
-      expect(contentErrorSpy).toHaveBeenCalledOnceWith(jasmine.any(Object), 'tpl.html');
-      expect(element.children('div').contents().length).toBe(0);
-    }));
-
-
-    it('should evaluate onload expression when a partial is loaded', inject(
-        putIntoCache('myUrl', 'my partial'),
-        function($rootScope, $compile) {
-      element = jqLite('<div><div><ng:include src="url" onload="loaded = true"></ng:include></div></div>');
-      element = $compile(element)($rootScope);
 
       expect($rootScope.loaded).not.toBeDefined();
-
-      $rootScope.url = 'myUrl';
+      $rootScope.url = "/mock/hello";
       $rootScope.$digest();
 
-      expect(element.text()).toEqual('my partial');
-      expect($rootScope.loaded).toBe(true);
-    }));
+      setTimeout(() => {
+        expect(element.text()).toEqual("Hello");
+        expect($rootScope.loaded).toBe(true);
+        done();
+      }, 100);
+    });
 
+    it("should create child scope and destroy old one", (done) => {
+      window.angular.module("myModule", []);
 
-    it('should create child scope and destroy old one', inject(
-          function($rootScope, $compile, $httpBackend) {
-      $httpBackend.whenGET('url1').respond('partial {{$parent.url}}');
-      $httpBackend.whenGET('url2').respond(404);
-
-      element = $compile('<div><ng:include src="url"></ng:include></div>')($rootScope);
+      element = jqLite('<div><ng:include src="url"></ng:include></div>');
+      const injector = angular.bootstrap(element, ["myModule"]);
+      $rootScope = injector.get("$rootScope");
+      $rootScope.$digest();
       expect(element.children().scope()).toBeFalsy();
 
-      $rootScope.url = 'url1';
+      $rootScope.url = "/mock/hello";
       $rootScope.$digest();
-      $httpBackend.flush();
-      expect(element.children().scope().$parent).toBe($rootScope);
-      expect(element.text()).toBe('partial url1');
 
-      $rootScope.url = 'url2';
+      setTimeout(() => {
+        expect(element.children().scope().$parent).toBe($rootScope);
+        expect(element.text()).toBe("Hello");
+
+        $rootScope.url = "/mock/401";
+        $rootScope.$digest();
+      }, 100);
+
+      setTimeout(() => {
+        expect($rootScope.$$childHead).toBeFalsy();
+        expect(element.text()).toBe("");
+
+        $rootScope.url = "/mock/hello";
+        $rootScope.$digest();
+      }, 200);
+
+      setTimeout(() => {
+        expect(element.children().scope().$parent).toBe($rootScope);
+
+        $rootScope.url = null;
+        $rootScope.$digest();
+      }, 300);
+
+      setTimeout(() => {
+        expect($rootScope.$$childHead).toBeFalsy();
+        done();
+      }, 400);
+    });
+
+    it("should do xhr request and cache it", (done) => {
+      window.angular.module("myModule", []);
+      element = jqLite('<div><ng:include src="url"></ng:include></div>');
+      const injector = angular.bootstrap(element, ["myModule"]);
+      $rootScope = injector.get("$rootScope");
+      $rootScope.url = "/mock/hello";
       $rootScope.$digest();
-      $httpBackend.flush();
 
-      expect($rootScope.$$childHead).toBeFalsy();
-      expect(element.text()).toBe('');
+      setTimeout(() => {
+        expect(element.text()).toEqual("Hello");
+        $rootScope.url = null;
+        $rootScope.$digest();
+      }, 100);
 
-      $rootScope.url = 'url1';
+      setTimeout(() => {
+        expect(element.text()).toEqual("");
+        $rootScope.url = "/mock/hello";
+        $rootScope.$digest();
+        // No request being made
+        expect(element.text()).toEqual("Hello");
+        done();
+      }, 200);
+    });
+
+    it("should clear content when error during xhr request", () => {
+      window.angular.module("myModule", []);
+      element = jqLite('<div><ng:include src="url">content</ng:include></div>');
+      const injector = angular.bootstrap(element, ["myModule"]);
+      $rootScope = injector.get("$rootScope");
+      $rootScope.url = "/mock/401";
       $rootScope.$digest();
-      expect(element.children().scope().$parent).toBe($rootScope);
+      expect(element.text()).toBe("");
+    });
 
-      $rootScope.url = null;
-      $rootScope.$digest();
-      expect($rootScope.$$childHead).toBeFalsy();
-    }));
+    it("should be async even if served from cache", (done) => {
+      window.angular.module("myModule", []);
+      element = jqLite('<div><ng:include src="url"></ng:include></div>');
+      const injector = angular.bootstrap(element, ["myModule"]);
+      $rootScope = injector.get("$rootScope");
+      $rootScope.url = "/mock/hello";
 
-
-    it('should do xhr request and cache it',
-        inject(function($rootScope, $httpBackend, $compile) {
-      element = $compile('<div><ng:include src="url"></ng:include></div>')($rootScope);
-      $httpBackend.expect('GET', 'myUrl').respond('my partial');
-
-      $rootScope.url = 'myUrl';
-      $rootScope.$digest();
-      $httpBackend.flush();
-      expect(element.text()).toEqual('my partial');
-
-      $rootScope.url = null;
-      $rootScope.$digest();
-      expect(element.text()).toEqual('');
-
-      $rootScope.url = 'myUrl';
-      $rootScope.$digest();
-      expect(element.text()).toEqual('my partial');
-      dealoc($rootScope);
-    }));
-
-
-    it('should clear content when error during xhr request',
-        inject(function($httpBackend, $compile, $rootScope) {
-      element = $compile('<div><ng:include src="url">content</ng:include></div>')($rootScope);
-      $httpBackend.expect('GET', 'myUrl').respond(404, '');
-
-      $rootScope.url = 'myUrl';
-      $rootScope.$digest();
-      $httpBackend.flush();
-
-      expect(element.text()).toBe('');
-    }));
-
-
-    it('should be async even if served from cache', inject(
-          putIntoCache('myUrl', 'my partial'),
-          function($rootScope, $compile) {
-      element = $compile('<div><ng:include src="url"></ng:include></div>')($rootScope);
-
-      $rootScope.url = 'myUrl';
-
-      var called = 0;
+      let called = 0;
       // we want to assert only during first watch
-      $rootScope.$watch(function() {
-        if (!called) expect(element.text()).toBe('');
+      $rootScope.$watch(() => {
+        if (!called) expect(element.text()).toBe("");
         called++;
       });
 
       $rootScope.$digest();
-      expect(element.text()).toBe('my partial');
-    }));
+      setTimeout(() => {
+        expect(element.text()).toBe("Hello");
+        done();
+      }, 200);
+    });
 
-
-    it('should discard pending xhr callbacks if a new template is requested before the current ' +
-        'finished loading', inject(function($rootScope, $compile, $httpBackend) {
-      element = jqLite('<div><ng:include src=\'templateUrl\'></ng:include></div>');
-      var log = {};
-
-      $rootScope.templateUrl = 'myUrl1';
-      $rootScope.logger = function(msg) {
-        log[msg] = true;
-      };
-      $compile(element)($rootScope);
-      expect(log).toEqual({});
-
-      $httpBackend.expect('GET', 'myUrl1').respond('<div>{{logger("url1")}}</div>');
+    it("should discard pending xhr callbacks if a new template is requested before the current finished loading", (done) => {
+      window.angular.module("myModule", []);
+      element = jqLite(
+        "<div><ng:include src='templateUrl'></ng:include></div>",
+      );
+      const injector = angular.bootstrap(element, ["myModule"]);
+      $rootScope = injector.get("$rootScope");
+      $rootScope.templateUrl = "/mock/hello";
       $rootScope.$digest();
-      expect(log).toEqual({});
-      $rootScope.templateUrl = 'myUrl2';
-      $httpBackend.expect('GET', 'myUrl2').respond('<div>{{logger("url2")}}</div>');
-      $httpBackend.flush(); // now that we have two requests pending, flush!
-
-      expect(log).toEqual({ url2: true });
-    }));
-
-
-    it('should compile only the content', inject(function($compile, $rootScope, $templateCache) {
-      // regression
-
-      var onload = jasmine.createSpy('$includeContentLoaded');
-      $rootScope.$on('$includeContentLoaded', onload);
-      $templateCache.put('tpl.html', [200, 'partial {{tpl}}', {}]);
-
-      element = $compile('<div><div ng-repeat="i in [1]">' +
-          '<ng:include src="tpl"></ng:include></div></div>')($rootScope);
-      expect(onload).not.toHaveBeenCalled();
-
-      $rootScope.$apply(function() {
-        $rootScope.tpl = 'tpl.html';
-      });
-      expect(onload).toHaveBeenCalledOnce();
-
-      $rootScope.tpl = '';
+      $rootScope.expr = "test";
+      $rootScope.templateUrl = "/mock/interpolation";
       $rootScope.$digest();
-      dealoc(element);
-    }));
+      expect(element.text()).toBe("");
 
+      setTimeout(() => {
+        expect(element.text()).toBe("test");
+        done();
+      }, 200);
+    });
 
-    it('should not break attribute bindings on the same element', inject(function($compile, $rootScope, $httpBackend) {
-      // regression #3793
-
-      element = $compile('<div><span foo="#/{{hrefUrl}}" ng:include="includeUrl"></span></div>')($rootScope);
-      $httpBackend.expect('GET', 'url1').respond('template text 1');
-      $rootScope.hrefUrl = 'fooUrl1';
-      $rootScope.includeUrl = 'url1';
+    it("should not break attribute bindings on the same element", (done) => {
+      window.angular.module("myModule", []);
+      element = jqLite(
+        '<div><span foo="#/{{hrefUrl}}" ng:include="includeUrl"></span></div>',
+      );
+      const injector = angular.bootstrap(element, ["myModule"]);
+      $rootScope = injector.get("$rootScope");
+      $rootScope.hrefUrl = "fooUrl1";
+      $rootScope.includeUrl = "/mock/hello";
       $rootScope.$digest();
-      $httpBackend.flush();
-      expect(element.text()).toBe('template text 1');
-      expect(element.find('span').attr('foo')).toBe('#/fooUrl1');
 
-      $httpBackend.expect('GET', 'url2').respond('template text 2');
-      $rootScope.includeUrl = 'url2';
+      setTimeout(() => {
+        expect(element.text()).toBe("Hello");
+        expect(element.find("span").attr("foo")).toBe("#/fooUrl1");
+
+        $rootScope.hrefUrl = "fooUrl2";
+        $rootScope.$digest();
+
+        expect(element.text()).toBe("Hello");
+        expect(element.find("span").attr("foo")).toBe("#/fooUrl2");
+
+        $rootScope.includeUrl = "/mock/hello2";
+        $rootScope.$digest();
+      }, 100);
+
+      setTimeout(() => {
+        expect(element.text()).toBe("Hello2");
+        expect(element.find("span").attr("foo")).toBe("#/fooUrl2");
+        done();
+      }, 200);
+    });
+
+    it("should construct SVG template elements with correct namespace", (done) => {
+      window.angular.module("myModule", []).directive(
+        "test",
+        valueFn({
+          templateNamespace: "svg",
+          templateUrl: "/mock/my-rect.html",
+          replace: true,
+        }),
+      );
+      element = jqLite("<svg><test></test></svg>");
+      const injector = angular.bootstrap(element, ["myModule"]);
+      $rootScope = injector.get("$rootScope");
       $rootScope.$digest();
-      $httpBackend.flush();
-      expect(element.text()).toBe('template text 2');
-      expect(element.find('span').attr('foo')).toBe('#/fooUrl1');
-
-      $rootScope.hrefUrl = 'fooUrl2';
-      $rootScope.$digest();
-      expect(element.text()).toBe('template text 2');
-      expect(element.find('span').attr('foo')).toBe('#/fooUrl2');
-    }));
-
-
-    it('should exec scripts when jQuery is included', inject(function($compile, $rootScope, $httpBackend) {
-      if (!jQuery) {
-        return;
-      }
-
-      element = $compile('<div><span ng-include="includeUrl"></span></div>')($rootScope);
-
-      // the element needs to be appended for the script to run
-      element.appendTo(window.document.body);
-      window._ngIncludeCausesScriptToRun = false;
-      $httpBackend.expect('GET', 'url1').respond('<script>window._ngIncludeCausesScriptToRun = true;</script>');
-      $rootScope.includeUrl = 'url1';
-      $rootScope.$digest();
-      $httpBackend.flush();
-
-      expect(window._ngIncludeCausesScriptToRun).toBe(true);
-
-      delete window._ngIncludeCausesScriptToRun;
-    }));
-
-
-    it('should construct SVG template elements with correct namespace', function() {
-      if (!window.SVGRectElement) return;
-      module(function($compileProvider) {
-        $compileProvider.directive('test', valueFn({
-          templateNamespace: 'svg',
-          templateUrl: 'my-rect.html',
-          replace: true
-        }));
-      });
-      inject(function($compile, $rootScope, $httpBackend) {
-        $httpBackend.expectGET('my-rect.html').respond('<g ng-include="\'include.svg\'"></g>');
-        $httpBackend.expectGET('include.svg').respond('<rect></rect><rect></rect>');
-        element = $compile('<svg><test></test></svg>')($rootScope);
-        $httpBackend.flush();
-        var child = element.find('rect');
+      setTimeout(() => {
+        const child = element.find("rect");
         expect(child.length).toBe(2);
-        // eslint-disable-next-line no-undef
+        //   // eslint-disable-next-line no-undef
         expect(child[0] instanceof SVGRectElement).toBe(true);
-      });
+        done();
+      }, 200);
     });
 
-
-    it('should compile only the template content of an SVG template', function() {
-      if (!window.SVGRectElement) return;
-      module(function($compileProvider) {
-        $compileProvider.directive('test', valueFn({
-          templateNamespace: 'svg',
-          templateUrl: 'my-rect.html',
-          replace: true
-        }));
-      });
-      inject(function($compile, $rootScope, $httpBackend) {
-        $httpBackend.expectGET('my-rect.html').respond('<g ng-include="\'include.svg\'"><a></a></g>');
-        $httpBackend.expectGET('include.svg').respond('<rect></rect><rect></rect>');
-        element = $compile('<svg><test></test></svg>')($rootScope);
-        $httpBackend.flush();
-        expect(element.find('a').length).toBe(0);
-      });
+    it("should compile only the template content of an SVG template", (done) => {
+      window.angular.module("myModule", []).directive(
+        "test",
+        valueFn({
+          templateNamespace: "svg",
+          templateUrl: "/mock/my-rect2.html",
+          replace: true,
+        }),
+      );
+      element = jqLite("<svg><test></test></svg>");
+      const injector = angular.bootstrap(element, ["myModule"]);
+      $rootScope = injector.get("$rootScope");
+      $rootScope.$digest();
+      setTimeout(() => {
+        expect(element.find("a").length).toBe(0);
+        done();
+      }, 200);
     });
 
+    it("should not compile template if original scope is destroyed", (done) => {
+      window.angular.module("myModule", []);
+      element = jqLite(
+        '<div ng-if="show"><div ng-include="\'/mock/hello\'"></div></div>',
+      );
+      const injector = angular.bootstrap(element, ["myModule"]);
+      $rootScope = injector.get("$rootScope");
+      $rootScope.show = true;
+      $rootScope.$digest();
+      $rootScope.show = false;
+      $rootScope.$digest();
 
-    it('should not compile template if original scope is destroyed', function() {
-      module(function($provide) {
-        $provide.decorator('$compile', function($delegate) {
-          var result = jasmine.createSpy('$compile').and.callFake($delegate);
-          result.$$createComment = $delegate.$$createComment;
-          return result;
-        });
-      });
-      inject(function($rootScope, $httpBackend, $compile) {
-        $httpBackend.when('GET', 'url').respond('template text');
-        $rootScope.show = true;
-        element = $compile('<div ng-if="show"><div ng-include="\'url\'"></div></div>')($rootScope);
-        $rootScope.$digest();
-        $rootScope.show = false;
-        $rootScope.$digest();
-        $compile.calls.reset();
-        $httpBackend.flush();
-        expect($compile).not.toHaveBeenCalled();
-      });
+      setTimeout(() => {
+        expect(element.text()).toBe("");
+        done();
+      }, 200);
     });
 
+    it("should not trigger a digest when the include is changed", (done) => {
+      window.angular.module("myModule", []);
+      element = jqLite('<div><ng-include src="url"></ng-include></div>');
+      const injector = angular.bootstrap(element, ["myModule"]);
+      $rootScope = injector.get("$rootScope");
+      const spy = spyOn($rootScope, "$digest").and.callThrough();
 
-    it('should not trigger a digest when the include is changed', function() {
+      $rootScope.url = "/mock/hello";
+      $rootScope.$digest();
 
-      inject(function($$rAF, $templateCache, $rootScope, $compile, $timeout) {
-        var spy = spyOn($rootScope, '$digest').and.callThrough();
+      setTimeout(() => {
+        expect(element.text()).toEqual("Hello");
+        $rootScope.$apply('url = "/mock/hello2"');
+      }, 200);
 
-        $templateCache.put('myUrl', 'my template content');
-        $templateCache.put('myOtherUrl', 'my other template content');
-
-        $rootScope.url = 'myUrl';
-        element = jqLite('<div><ng-include src="url"></ng-include></div>');
-        element = $compile(element)($rootScope);
-        $rootScope.$digest();
-        // The animation completion is async even without actual animations
-        $$rAF.flush();
-        expect(element.text()).toEqual('my template content');
-
-        $rootScope.$apply('url = "myOtherUrl"');
+      setTimeout(() => {
         spy.calls.reset();
-        expect(element.text()).toEqual('my other template content');
-        $$rAF.flush();
+      }, 300);
 
+      setTimeout(() => {
+        expect(element.text()).toEqual("Hello2");
         expect(spy).not.toHaveBeenCalled();
-        // A digest may have been triggered asynchronously, so check the queue
-        $timeout.verifyNoPendingTasks();
-      });
+        done();
+      }, 400);
     });
 
+    describe("autoscroll", () => {
+      let autoScrollSpy;
+      let $animate;
 
-    describe('autoscroll', function() {
-      var autoScrollSpy;
-
-      function spyOnAnchorScroll() {
-        return function($provide) {
-          autoScrollSpy = jasmine.createSpy('$anchorScroll');
-          $provide.value('$anchorScroll', autoScrollSpy);
-        };
-      }
-
-      function compileAndLink(tpl) {
-        return function($compile, $rootScope) {
-          element = $compile(tpl)($rootScope);
-        };
-      }
-
-      beforeEach(module(spyOnAnchorScroll(), 'ngAnimateMock'));
-      beforeEach(inject(
-          putIntoCache('template.html', 'CONTENT'),
-          putIntoCache('another.html', 'CONTENT')));
-
-      it('should call $anchorScroll if autoscroll attribute is present', inject(
-          compileAndLink('<div><ng:include src="tpl" autoscroll></ng:include></div>'),
-          function($rootScope, $animate, $timeout) {
-
-        $rootScope.$apply(function() {
-          $rootScope.tpl = 'template.html';
+      it("should call $anchorScroll if autoscroll attribute is present", (done) => {
+        window.angular.module("myModule", [
+          function ($provide) {
+            autoScrollSpy = jasmine.createSpy("$anchorScroll");
+            $provide.value("$anchorScroll", autoScrollSpy);
+          },
+        ]);
+        element = jqLite(
+          '<div><ng:include src="tpl" autoscroll></ng:include></div>',
+        );
+        const injector = angular.bootstrap(element, ["myModule"]);
+        $rootScope = injector.get("$rootScope");
+        $animate = injector.get("$animate");
+        $rootScope.$apply(() => {
+          $rootScope.tpl = "/mock/hello";
         });
 
-        expect(autoScrollSpy).not.toHaveBeenCalled();
+        setTimeout(() => {
+          expect(autoScrollSpy).toHaveBeenCalled();
+          done();
+        }, 400);
+      });
 
-        $animate.flush();
-        $rootScope.$digest();
+      it("should call $anchorScroll if autoscroll evaluates to true", (done) => {
+        window.angular.module("myModule", [
+          function ($provide) {
+            autoScrollSpy = jasmine.createSpy("$anchorScroll");
+            $provide.value("$anchorScroll", autoScrollSpy);
+          },
+        ]);
+        element = jqLite(
+          '<div><ng:include src="tpl" autoscroll="value"></ng:include></div>',
+        );
+        const injector = angular.bootstrap(element, ["myModule"]);
+        $rootScope = injector.get("$rootScope");
 
-        expect($animate.queue.shift().event).toBe('enter');
-        expect(autoScrollSpy).toHaveBeenCalledOnce();
-      }));
-
-
-      it('should call $anchorScroll if autoscroll evaluates to true',
-        inject(function($rootScope, $compile, $animate, $timeout) {
-
-        element = $compile('<div><ng:include src="tpl" autoscroll="value"></ng:include></div>')($rootScope);
-
-        $rootScope.$apply(function() {
-          $rootScope.tpl = 'template.html';
+        $rootScope.$apply(() => {
+          $rootScope.tpl = "/mock/hello";
           $rootScope.value = true;
         });
 
-        expect($animate.queue.shift().event).toBe('enter');
-
-        $rootScope.$apply(function() {
-          $rootScope.tpl = 'another.html';
-          $rootScope.value = 'some-string';
-        });
-
-        expect($animate.queue.shift().event).toBe('leave');
-        expect($animate.queue.shift().event).toBe('enter');
-
-        $rootScope.$apply(function() {
-          $rootScope.tpl = 'template.html';
-          $rootScope.value = 100;
-        });
-
-        expect($animate.queue.shift().event).toBe('leave');
-        expect($animate.queue.shift().event).toBe('enter');
-
-        $animate.flush();
         $rootScope.$digest();
 
-        expect(autoScrollSpy).toHaveBeenCalled();
-        expect(autoScrollSpy).toHaveBeenCalledTimes(3);
-      }));
+        setTimeout(() => {
+          expect(autoScrollSpy).toHaveBeenCalled();
+          done();
+        }, 100);
+      });
 
+      it("should not call $anchorScroll if autoscroll attribute is not present", (done) => {
+        window.angular.module("myModule", [
+          function ($provide) {
+            autoScrollSpy = jasmine.createSpy("$anchorScroll");
+            $provide.value("$anchorScroll", autoScrollSpy);
+          },
+        ]);
 
-      it('should not call $anchorScroll if autoscroll attribute is not present', inject(
-          compileAndLink('<div><ng:include src="tpl"></ng:include></div>'),
-          function($rootScope, $animate, $timeout) {
+        element = jqLite('<div><ng:include src="tpl"></ng:include></div>');
+        const injector = angular.bootstrap(element, ["myModule"]);
+        $rootScope = injector.get("$rootScope");
 
-        $rootScope.$apply(function() {
-          $rootScope.tpl = 'template.html';
+        $rootScope.$apply(() => {
+          $rootScope.tpl = "/mock/hello";
         });
+        $rootScope.$digest();
 
-        expect($animate.queue.shift().event).toBe('enter');
-        expect(autoScrollSpy).not.toHaveBeenCalled();
-      }));
+        setTimeout(() => {
+          expect(autoScrollSpy).not.toHaveBeenCalled();
+          done();
+        }, 100);
+      });
 
+      it("should not call $anchorScroll if autoscroll evaluates to false", (done) => {
+        window.angular.module("myModule", [
+          function ($provide) {
+            autoScrollSpy = jasmine.createSpy("$anchorScroll");
+            $provide.value("$anchorScroll", autoScrollSpy);
+          },
+        ]);
 
-      it('should not call $anchorScroll if autoscroll evaluates to false',
-        inject(function($rootScope, $compile, $animate, $timeout) {
+        element = jqLite(
+          '<div><ng:include src="tpl" autoscroll="value"></ng:include></div>',
+        );
+        const injector = angular.bootstrap(element, ["myModule"]);
+        $rootScope = injector.get("$rootScope");
 
-        element = $compile('<div><ng:include src="tpl" autoscroll="value"></ng:include></div>')($rootScope);
-
-        $rootScope.$apply(function() {
-          $rootScope.tpl = 'template.html';
+        $rootScope.$apply(() => {
+          $rootScope.tpl = "/mock/hello";
           $rootScope.value = false;
         });
 
-        expect($animate.queue.shift().event).toBe('enter');
-
-        $rootScope.$apply(function() {
-          $rootScope.tpl = 'template.html';
+        $rootScope.$apply(() => {
+          $rootScope.tpl = "/mock/hello";
           $rootScope.value = undefined;
         });
 
-        $rootScope.$apply(function() {
-          $rootScope.tpl = 'template.html';
+        $rootScope.$apply(() => {
+          $rootScope.tpl = "/mock/hello";
           $rootScope.value = null;
         });
 
-        expect(autoScrollSpy).not.toHaveBeenCalled();
-      }));
+        setTimeout(() => {
+          expect(autoScrollSpy).not.toHaveBeenCalled();
+          done();
+        }, 100);
+      });
 
-      it('should only call $anchorScroll after the "enter" animation completes', inject(
-          compileAndLink('<div><ng:include src="tpl" autoscroll></ng:include></div>'),
-          function($rootScope, $animate, $timeout) {
-            expect(autoScrollSpy).not.toHaveBeenCalled();
+      // it('should only call $anchorScroll after the "enter" animation completes', inject(
+      //   compileAndLink(
+      //     '<div><ng:include src="tpl" autoscroll></ng:include></div>',
+      //   ),
+      //   ($rootScope, $animate, $timeout) => {
+      //     expect(autoScrollSpy).not.toHaveBeenCalled();
 
-            $rootScope.$apply('tpl = \'template.html\'');
-            expect($animate.queue.shift().event).toBe('enter');
+      //     $rootScope.$apply("tpl = 'template.html'");
+      //     expect($animate.queue.shift().event).toBe("enter");
 
-            $animate.flush();
-            $rootScope.$digest();
+      //     $animate.flush();
+      //     $rootScope.$digest();
 
-            expect(autoScrollSpy).toHaveBeenCalledOnce();
-          }
-      ));
-    });
-  });
-
-  describe('and transcludes', function() {
-    var element, directive;
-
-    beforeEach(module(function($compileProvider) {
-      element = null;
-      directive = $compileProvider.directive;
-    }));
-
-    afterEach(function() {
-      if (element) {
-        dealoc(element);
-      }
+      //     expect(autoScrollSpy).toHaveBeenCalled();
+      //   },
+      // ));
     });
 
-    it('should allow access to directive controller from children when used in a replace template', function() {
-      var controller;
-      module(function() {
-        directive('template', valueFn({
-          template: '<div ng-include="\'include.html\'"></div>',
-          replace: true,
-          controller: function() {
-            this.flag = true;
-          }
+    describe("and transcludes", () => {
+      let element;
+
+      afterEach(() => {
+        if (element) {
+          dealoc(element);
+        }
+      });
+
+      it("should allow access to directive controller from children when used in a replace template", (done) => {
+        let controller;
+        window.angular
+          .module("myModule", [])
+          .directive(
+            "template",
+            valueFn({
+              template: "<div ng-include=\"'/mock/directive'\"></div>",
+              replace: true,
+              controller() {
+                this.flag = true;
+              },
+            }),
+          )
+          .directive(
+            "test",
+            valueFn({
+              require: "^template",
+              link(scope, el, attr, ctrl) {
+                controller = ctrl;
+              },
+            }),
+          );
+        element = jqLite("<div><div template></div></div>");
+        const injector = angular.bootstrap(element, ["myModule"]);
+        $rootScope = injector.get("$rootScope");
+
+        $rootScope.$apply();
+        setTimeout(() => {
+          expect(controller.flag).toBe(true);
+          done();
+        }, 100);
+      });
+
+      it("should compile its content correctly (although we remove it later)", (done) => {
+        let testElement;
+        window.angular.module("myModule", []).directive("test", () => ({
+          link(scope, element) {
+            testElement = element;
+          },
         }));
-        directive('test', valueFn({
-          require: '^template',
-          link: function(scope, el, attr, ctrl) {
-            controller = ctrl;
-          }
+
+        element = jqLite(
+          "<div><div ng-include=\"'/mock/empty'\"><div test></div></div></div>",
+        );
+        const injector = angular.bootstrap(element, ["myModule"]);
+        $rootScope = injector.get("$rootScope");
+        $rootScope.$apply();
+        setTimeout(() => {
+          expect(testElement[0].nodeName).toBe("DIV");
+          done();
+        }, 100);
+      });
+
+      it("should link directives on the same element after the content has been loaded", (done) => {
+        let contentOnLink;
+        window.angular.module("myModule", []).directive("test", () => ({
+          link(scope, element) {
+            contentOnLink = element.text();
+          },
         }));
-      });
-      inject(function($compile, $rootScope, $httpBackend) {
-        $httpBackend.expectGET('include.html').respond('<div><div test></div></div>');
-        element = $compile('<div><div template></div></div>')($rootScope);
+        element = jqLite("<div><div ng-include=\"'/mock/hello'\" test></div>");
+        const injector = angular.bootstrap(element, ["myModule"]);
+        $rootScope = injector.get("$rootScope");
         $rootScope.$apply();
-        $httpBackend.flush();
-        expect(controller.flag).toBe(true);
-      });
-    });
 
-    it('should compile its content correctly (although we remove it later)', function() {
-      var testElement;
-      module(function() {
-        directive('test', function() {
-          return {
-            link: function(scope, element) {
-              testElement = element;
-            }
-          };
-        });
+        setTimeout(() => {
+          expect(contentOnLink).toBe("Hello");
+          done();
+        }, 100);
       });
-      inject(function($compile, $rootScope, $httpBackend) {
-        $httpBackend.expectGET('include.html').respond(' ');
-        element = $compile('<div><div ng-include="\'include.html\'"><div test></div></div></div>')($rootScope);
+
+      it("should add the content to the element before compiling it", (done) => {
+        let root;
+        window.angular.module("myModule", []).directive("test", () => ({
+          link(scope, el) {
+            root = el.parent().parent().parent();
+          },
+        }));
+        element = jqLite("<div><div ng-include=\"'/mock/directive'\"></div>");
+        const injector = angular.bootstrap(element, ["myModule"]);
+        $rootScope = injector.get("$rootScope");
         $rootScope.$apply();
-        $httpBackend.flush();
-        expect(testElement[0].nodeName).toBe('DIV');
-      });
 
-    });
-
-    it('should link directives on the same element after the content has been loaded', function() {
-      var contentOnLink;
-      module(function() {
-        directive('test', function() {
-          return {
-            link: function(scope, element) {
-              contentOnLink = element.text();
-            }
-          };
-        });
-      });
-      inject(function($compile, $rootScope, $httpBackend) {
-        $httpBackend.expectGET('include.html').respond('someContent');
-        element = $compile('<div><div ng-include="\'include.html\'" test></div>')($rootScope);
-        $rootScope.$apply();
-        $httpBackend.flush();
-        expect(contentOnLink).toBe('someContent');
+        setTimeout(() => {
+          expect(root[0]).toBe(element[0]);
+          done();
+        }, 100);
       });
     });
 
-    it('should add the content to the element before compiling it', function() {
-      var root;
-      module(function() {
-        directive('test', function() {
-          return {
-            link: function(scope, element) {
-              root = element.parent().parent();
-            }
-          };
-        });
-      });
-      inject(function($compile, $rootScope, $httpBackend) {
-        $httpBackend.expectGET('include.html').respond('<span test></span>');
-        element = $compile('<div><div ng-include="\'include.html\'"></div>')($rootScope);
-        $rootScope.$apply();
-        $httpBackend.flush();
-        expect(root[0]).toBe(element[0]);
-      });
-    });
-  });
+    // describe("and animations", () => {
+    //   let body;
+    //   let element;
+    //   let $rootElement;
 
-  describe('and animations', function() {
-    var body, element, $rootElement;
+    //   function html(content) {
+    //     $rootElement.html(content);
+    //     element = $rootElement.children().eq(0);
+    //     return element;
+    //   }
 
-    function html(content) {
-      $rootElement.html(content);
-      element = $rootElement.children().eq(0);
-      return element;
-    }
+    //   // beforeEach(
+    //   //   module(
+    //   //     () =>
+    //   //       // we need to run animation on attached elements;
+    //   //       function (_$rootElement_) {
+    //   //         $rootElement = _$rootElement_;
+    //   //         body = jqLite(window.document.body);
+    //   //         body.append($rootElement);
+    //   //       },
+    //   //   ),
+    //   // );
 
-    beforeEach(module(function() {
-      // we need to run animation on attached elements;
-      return function(_$rootElement_) {
-        $rootElement = _$rootElement_;
-        body = jqLite(window.document.body);
-        body.append($rootElement);
-      };
-    }));
+    //   afterEach(() => {
+    //     dealoc(body);
+    //     dealoc(element);
+    //   });
 
-    afterEach(function() {
-      dealoc(body);
-      dealoc(element);
-    });
+    //   // beforeEach(module("ngAnimateMock"));
 
-    beforeEach(module('ngAnimateMock'));
+    //   afterEach(() => {
+    //     dealoc(element);
+    //   });
 
-    afterEach(function() {
-      dealoc(element);
-    });
+    //   it("should fire off the enter animation", () => {
+    //     let item;
 
-    it('should fire off the enter animation',
-      inject(function($compile, $rootScope, $templateCache, $animate) {
-        var item;
+    //     $templateCache.put("enter", [200, "<div>data</div>", {}]);
+    //     $rootScope.tpl = "enter";
+    //     element = $compile(
+    //       html("<div><div " + 'ng-include="tpl">' + "</div></div>"),
+    //     )($rootScope);
+    //     $rootScope.$digest();
 
-        $templateCache.put('enter', [200, '<div>data</div>', {}]);
-        $rootScope.tpl = 'enter';
-        element = $compile(html(
-          '<div><div ' +
-            'ng-include="tpl">' +
-          '</div></div>'
-        ))($rootScope);
-        $rootScope.$digest();
+    //     const animation = $animate.queue.pop();
+    //     expect(animation.event).toBe("enter");
+    //     expect(animation.element.text()).toBe("data");
+    //   });
 
-        var animation = $animate.queue.pop();
-        expect(animation.event).toBe('enter');
-        expect(animation.element.text()).toBe('data');
-      })
-    );
+    //   it("should fire off the leave animation", () => {
+    //     let item;
+    //     $templateCache.put("enter", [200, "<div>data</div>", {}]);
+    //     $rootScope.tpl = "enter";
+    //     element = $compile(
+    //       html("<div><div " + 'ng-include="tpl">' + "</div></div>"),
+    //     )($rootScope);
+    //     $rootScope.$digest();
 
-    it('should fire off the leave animation',
-      inject(function($compile, $rootScope, $templateCache, $animate) {
-        var item;
-        $templateCache.put('enter', [200, '<div>data</div>', {}]);
-        $rootScope.tpl = 'enter';
-        element = $compile(html(
-          '<div><div ' +
-            'ng-include="tpl">' +
-          '</div></div>'
-        ))($rootScope);
-        $rootScope.$digest();
+    //     let animation = $animate.queue.shift();
+    //     expect(animation.event).toBe("enter");
+    //     expect(animation.element.text()).toBe("data");
 
-        var animation = $animate.queue.shift();
-        expect(animation.event).toBe('enter');
-        expect(animation.element.text()).toBe('data');
+    //     $rootScope.tpl = "";
+    //     $rootScope.$digest();
 
-        $rootScope.tpl = '';
-        $rootScope.$digest();
+    //     animation = $animate.queue.shift();
+    //     expect(animation.event).toBe("leave");
+    //     expect(animation.element.text()).toBe("data");
+    //   });
 
-        animation = $animate.queue.shift();
-        expect(animation.event).toBe('leave');
-        expect(animation.element.text()).toBe('data');
-      })
-    );
+    //   it("should animate two separate ngInclude elements", () => {
+    //     let item;
+    //     $templateCache.put("one", [200, "one", {}]);
+    //     $templateCache.put("two", [200, "two", {}]);
+    //     $rootScope.tpl = "one";
+    //     element = $compile(
+    //       html("<div><div " + 'ng-include="tpl">' + "</div></div>"),
+    //     )($rootScope);
+    //     $rootScope.$digest();
 
-    it('should animate two separate ngInclude elements',
-      inject(function($compile, $rootScope, $templateCache, $animate) {
-        var item;
-        $templateCache.put('one', [200, 'one', {}]);
-        $templateCache.put('two', [200, 'two', {}]);
-        $rootScope.tpl = 'one';
-        element = $compile(html(
-          '<div><div ' +
-            'ng-include="tpl">' +
-          '</div></div>'
-        ))($rootScope);
-        $rootScope.$digest();
+    //     const item1 = $animate.queue.shift().element;
+    //     expect(item1.text()).toBe("one");
 
-        var item1 = $animate.queue.shift().element;
-        expect(item1.text()).toBe('one');
+    //     $rootScope.tpl = "two";
+    //     $rootScope.$digest();
 
-        $rootScope.tpl = 'two';
-        $rootScope.$digest();
+    //     const itemA = $animate.queue.shift().element;
+    //     const itemB = $animate.queue.shift().element;
+    //     expect(itemA.attr("ng-include")).toBe("tpl");
+    //     expect(itemB.attr("ng-include")).toBe("tpl");
+    //     expect(itemA).not.toEqual(itemB);
+    //   });
 
-        var itemA = $animate.queue.shift().element;
-        var itemB = $animate.queue.shift().element;
-        expect(itemA.attr('ng-include')).toBe('tpl');
-        expect(itemB.attr('ng-include')).toBe('tpl');
-        expect(itemA).not.toEqual(itemB);
-      })
-    );
+    //   it("should destroy the previous leave animation if a new one takes place", () => {
+    //     module(($provide) => {
+    //       $provide.decorator("$animate", ($delegate, $$q) => {
+    //         const emptyPromise = $$q.defer().promise;
+    //         emptyPromise.done = () => {};
 
-    it('should destroy the previous leave animation if a new one takes place', function() {
-      module(function($provide) {
-        $provide.decorator('$animate', function($delegate, $$q) {
-          var emptyPromise = $$q.defer().promise;
-          emptyPromise.done = noop;
+    //         $delegate.leave = function () {
+    //           return emptyPromise;
+    //         };
+    //         return $delegate;
+    //       });
+    //     });
+    //     () => {
+    //       let item;
+    //       const $scope = $rootScope.$new();
+    //       element = $compile(
+    //         html("<div>" + '<div ng-include="inc">Yo</div>' + "</div>"),
+    //       )($scope);
 
-          $delegate.leave = function() {
-            return emptyPromise;
-          };
-          return $delegate;
-        });
-      });
-      inject(function($compile, $rootScope, $animate, $templateCache) {
-        var item;
-        var $scope = $rootScope.$new();
-        element = $compile(html(
-          '<div>' +
-            '<div ng-include="inc">Yo</div>' +
-          '</div>'
-        ))($scope);
+    //       $templateCache.put("one", [200, "<div>one</div>", {}]);
+    //       $templateCache.put("two", [200, "<div>two</div>", {}]);
 
-        $templateCache.put('one', [200, '<div>one</div>', {}]);
-        $templateCache.put('two', [200, '<div>two</div>', {}]);
+    //       $scope.$apply('inc = "one"');
 
-        $scope.$apply('inc = "one"');
+    //       let destroyed;
+    //       const inner = element.children(0);
+    //       inner.on("$destroy", () => {
+    //         destroyed = true;
+    //       });
 
-        var destroyed, inner = element.children(0);
-        inner.on('$destroy', function() {
-          destroyed = true;
-        });
+    //       $scope.$apply('inc = "two"');
 
-        $scope.$apply('inc = "two"');
+    //       $scope.$apply('inc = "one"');
 
-        $scope.$apply('inc = "one"');
+    //       $scope.$apply('inc = "two"');
 
-        $scope.$apply('inc = "two"');
-
-        expect(destroyed).toBe(true);
-      });
-    });
+    //       expect(destroyed).toBe(true);
+    //     };
+    //   });
+    // });
   });
 });

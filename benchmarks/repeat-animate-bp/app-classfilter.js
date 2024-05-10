@@ -1,9 +1,9 @@
-'use strict';
+
 
 angular.module('repeatAnimateBenchmark', ['ngAnimate'])
-  .config(function($animateProvider) {
+  .config(($animateProvider) => {
     $animateProvider.classNameFilter(/animate-/);
   })
-  .run(function($rootScope) {
+  .run(($rootScope) => {
     $rootScope.fileType = 'classfilter';
   });

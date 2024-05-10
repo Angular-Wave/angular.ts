@@ -1,11 +1,12 @@
-'use strict';
+/* eslint-disable no-param-reassign */
+import { isFunction, valueFn } from "../utils";
 
-function ngDirective(directive) {
+export function ngDirective(directive) {
   if (isFunction(directive)) {
     directive = {
-      link: directive
+      link: directive,
     };
   }
-  directive.restrict = directive.restrict || 'AC';
+  directive.restrict = directive.restrict || "AC";
   return valueFn(directive);
 }

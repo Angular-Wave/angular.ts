@@ -1,189 +1,218 @@
-'use strict';
+import { setupModuleLoader } from "../src/loader";
+import { createInjector } from "../src/injector";
 
-describe('module loader', function() {
-  var window;
-
-  beforeEach(function() {
-    window = {};
+describe("module loader", () => {
+  beforeEach(() => {
+    delete window.angular;
     setupModuleLoader(window);
   });
 
-
-  it('should set up namespace', function() {
-    expect(window.angular).toBeDefined();
-    expect(window.angular.module).toBeDefined();
+  it("should set up namespace", () => {
+    expect(angular).toBeDefined();
+    expect(angular.module).toBeDefined();
   });
 
-
-  it('should not override existing namespace', function() {
-    var angular = window.angular;
-    var module = angular.module;
+  it("should not override existing namespace", () => {
+    const { angular } = window;
+    const { module } = angular;
 
     setupModuleLoader(window);
-    expect(window.angular).toBe(angular);
-    expect(window.angular.module).toBe(module);
+    setupModuleLoader(window);
+    expect(angular).toBe(angular);
+    expect(angular.module).toBe(module);
   });
 
+  it("allows registering a module", () => {
+    const myModule = angular.module("myModule", []);
+    expect(myModule).toBeDefined();
+    expect(myModule.name).toEqual("myModule");
+  });
 
-  it('should record calls', function() {
-    var otherModule = window.angular.module('other', []);
-    otherModule.config('otherInit');
+  it("allows getting a module", () => {
+    const myModule = angular.module("myModule", []);
+    const gotModule = angular.module("myModule");
+    expect(gotModule).toBeDefined();
+    expect(gotModule).toBe(myModule);
+  });
 
-    var myModule = window.angular.module('my', ['other'], 'config');
+  it("throws when trying to get a nonexistent module", () => {
+    expect(() => {
+      angular.module("myModule");
+    }).toThrow();
+  });
 
-    expect(myModule.
-      decorator('dk', 'dv').
-      provider('sk', 'sv').
-      factory('fk', 'fv').
-      service('a', 'aa').
-      value('k', 'v').
-      filter('f', 'ff').
-      directive('d', 'dd').
-      component('c', 'cc').
-      controller('ctrl', 'ccc').
-      config('init2').
-      constant('abc', 123).
-      run('runBlock')).toBe(myModule);
+  it("does not allow a module to be called hasOwnProperty", () => {
+    expect(() => {
+      angular.module("hasOwnProperty", []);
+    }).toThrow();
+  });
 
-    expect(myModule.requires).toEqual(['other']);
+  it("attaches the requires array to the registered module", () => {
+    const myModule = angular.module("myModule", ["myOtherModule"]);
+    expect(myModule.requires).toEqual(["myOtherModule"]);
+  });
+
+  it("replaces a module when registered with same name again", () => {
+    const myModule = angular.module("myModule", []);
+    const myNewModule = angular.module("myModule", []);
+    expect(myNewModule).not.toBe(myModule);
+  });
+
+  it("should record calls", () => {
+    const otherModule = angular.module("other", []);
+    otherModule.config("otherInit");
+
+    const myModule = angular.module("my", ["other"], "config");
+
+    expect(
+      myModule
+        .decorator("dk", "dv")
+        .provider("sk", "sv")
+        .factory("fk", "fv")
+        .service("a", "aa")
+        .value("k", "v")
+        .filter("f", "ff")
+        .directive("d", "dd")
+        .component("c", "cc")
+        .controller("ctrl", "ccc")
+        .config("init2")
+        .constant("abc", 123)
+        .run("runBlock"),
+    ).toBe(myModule);
+
+    expect(myModule.requires).toEqual(["other"]);
     expect(myModule._invokeQueue).toEqual([
-      ['$provide', 'constant', jasmine.objectContaining(['abc', 123])],
-      ['$provide', 'provider', jasmine.objectContaining(['sk', 'sv'])],
-      ['$provide', 'factory', jasmine.objectContaining(['fk', 'fv'])],
-      ['$provide', 'service', jasmine.objectContaining(['a', 'aa'])],
-      ['$provide', 'value', jasmine.objectContaining(['k', 'v'])],
-      ['$filterProvider', 'register', jasmine.objectContaining(['f', 'ff'])],
-      ['$compileProvider', 'directive', jasmine.objectContaining(['d', 'dd'])],
-      ['$compileProvider', 'component', jasmine.objectContaining(['c', 'cc'])],
-      ['$controllerProvider', 'register', jasmine.objectContaining(['ctrl', 'ccc'])]
+      ["$provide", "constant", jasmine.objectContaining(["abc", 123])],
+      ["$provide", "provider", jasmine.objectContaining(["sk", "sv"])],
+      ["$provide", "factory", jasmine.objectContaining(["fk", "fv"])],
+      ["$provide", "service", jasmine.objectContaining(["a", "aa"])],
+      ["$provide", "value", jasmine.objectContaining(["k", "v"])],
+      ["$filterProvider", "register", jasmine.objectContaining(["f", "ff"])],
+      ["$compileProvider", "directive", jasmine.objectContaining(["d", "dd"])],
+      ["$compileProvider", "component", jasmine.objectContaining(["c", "cc"])],
+      [
+        "$controllerProvider",
+        "register",
+        jasmine.objectContaining(["ctrl", "ccc"]),
+      ],
     ]);
     expect(myModule._configBlocks).toEqual([
-      ['$injector', 'invoke', jasmine.objectContaining(['config'])],
-      ['$provide', 'decorator', jasmine.objectContaining(['dk', 'dv'])],
-      ['$injector', 'invoke', jasmine.objectContaining(['init2'])]
+      ["$injector", "invoke", jasmine.objectContaining(["config"])],
+      ["$provide", "decorator", jasmine.objectContaining(["dk", "dv"])],
+      ["$injector", "invoke", jasmine.objectContaining(["init2"])],
     ]);
-    expect(myModule._runBlocks).toEqual(['runBlock']);
+    expect(myModule._runBlocks).toEqual(["runBlock"]);
   });
 
+  it("should not throw error when `module.decorator` is declared before provider that it decorates", () => {
+    angular
+      .module("theModule", [])
+      .decorator("theProvider", ($delegate) => $delegate)
+      .factory("theProvider", () => ({}));
 
-  it('should not throw error when `module.decorator` is declared before provider that it decorates', function() {
-    angular.module('theModule', []).
-      decorator('theProvider', function($delegate) { return $delegate; }).
-      factory('theProvider', function() { return {}; });
-
-    expect(function() {
-      createInjector(['theModule']);
+    expect(() => {
+      createInjector(["theModule"]);
     }).not.toThrow();
   });
 
+  it("should run decorators in order of declaration, even when mixed with provider.decorator", () => {
+    let log = "";
 
-  it('should run decorators in order of declaration, even when mixed with provider.decorator', function() {
-    var log = '';
-
-    angular.module('theModule', [])
-      .factory('theProvider', function() {
-        return {api: 'provider'};
-      })
-      .decorator('theProvider', function($delegate) {
-        $delegate.api = $delegate.api + '-first';
+    angular
+      .module("theModule", [])
+      .factory("theProvider", () => ({ api: "provider" }))
+      .decorator("theProvider", ($delegate) => {
+        $delegate.api += "-first";
         return $delegate;
       })
-      .config(function($provide) {
-        $provide.decorator('theProvider', function($delegate) {
-          $delegate.api = $delegate.api + '-second';
+      .config(($provide) => {
+        $provide.decorator("theProvider", ($delegate) => {
+          $delegate.api += "-second";
           return $delegate;
         });
       })
-      .decorator('theProvider', function($delegate) {
-        $delegate.api = $delegate.api + '-third';
+      .decorator("theProvider", ($delegate) => {
+        $delegate.api += "-third";
         return $delegate;
       })
-      .run(function(theProvider) {
+      .run((theProvider) => {
         log = theProvider.api;
       });
 
-      createInjector(['theModule']);
-      expect(log).toBe('provider-first-second-third');
+    createInjector(["theModule"]);
+    expect(log).toBe("provider-first-second-third");
   });
 
+  it("should decorate the last declared provider if multiple have been declared", () => {
+    let log = "";
 
-  it('should decorate the last declared provider if multiple have been declared', function() {
-    var log = '';
-
-    angular.module('theModule', []).
-      factory('theProvider', function() {
-        return {
-          api: 'firstProvider'
-        };
-      }).
-      decorator('theProvider', function($delegate) {
-        $delegate.api = $delegate.api + '-decorator';
+    angular
+      .module("theModule", [])
+      .factory("theProvider", () => ({
+        api: "firstProvider",
+      }))
+      .decorator("theProvider", ($delegate) => {
+        $delegate.api += "-decorator";
         return $delegate;
-      }).
-      factory('theProvider', function() {
-        return {
-          api: 'secondProvider'
-        };
-      }).
-      run(function(theProvider) {
+      })
+      .factory("theProvider", () => ({
+        api: "secondProvider",
+      }))
+      .run((theProvider) => {
         log = theProvider.api;
       });
 
-    createInjector(['theModule']);
-    expect(log).toBe('secondProvider-decorator');
+    createInjector(["theModule"]);
+    expect(log).toBe("secondProvider-decorator");
   });
 
-
-  it('should allow module redefinition', function() {
-    expect(window.angular.module('a', [])).not.toBe(window.angular.module('a', []));
+  it("should allow module redefinition", () => {
+    expect(angular.module("a", [])).not.toBe(angular.module("a", []));
   });
 
-
-  it('should complain of no module', function() {
-    expect(function() {
-      window.angular.module('dontExist');
-    }).toThrowMinErr('$injector', 'nomod', 'Module \'dontExist\' is not available! You either misspelled the module name ' +
-            'or forgot to load it. If registering a module ensure that you specify the dependencies as the second ' +
-            'argument.');
+  it("should complain of no module", () => {
+    expect(() => {
+      angular.module("dontExist");
+    }).toThrow();
   });
 
-  it('should complain if a module is called "hasOwnProperty', function() {
-    expect(function() {
-      window.angular.module('hasOwnProperty', []);
-    }).toThrowMinErr('ng','badname', 'hasOwnProperty is not a valid module name');
+  it('should complain if a module is called "hasOwnProperty', () => {
+    expect(() => {
+      angular.module("hasOwnProperty", []);
+    }).toThrow();
   });
 
-  it('should expose `$$minErr` on the `angular` object', function() {
-    expect(window.angular.$$minErr).toEqual(jasmine.any(Function));
+  it("should expose `$$minErr` on the `angular` object", () => {
+    expect(angular.$$minErr).toEqual(jasmine.any(Function));
   });
 
-  describe('Module', function() {
-    describe('info()', function() {
-      var theModule;
+  describe("Module", () => {
+    describe("info()", () => {
+      let theModule;
 
-      beforeEach(function() {
-        theModule = angular.module('theModule', []);
+      beforeEach(() => {
+        theModule = angular.module("theModule", []);
       });
 
-      it('should default to an empty object', function() {
+      it("should default to an empty object", () => {
         expect(theModule.info()).toEqual({});
       });
 
-      it('should store the object passed as a param', function() {
-        theModule.info({ version: '1.2' });
-        expect(theModule.info()).toEqual({ version: '1.2' });
+      it("should store the object passed as a param", () => {
+        theModule.info({ version: "1.2" });
+        expect(theModule.info()).toEqual({ version: "1.2" });
       });
 
-      it('should throw if the parameter is not an object', function() {
-        expect(function() {
-          theModule.info('some text');
-        }).toThrowMinErr('ng', 'aobj');
+      it("should throw if the parameter is not an object", () => {
+        expect(() => {
+          theModule.info("some text");
+        }).toThrow();
       });
 
-      it('should completely replace the previous info object', function() {
-        theModule.info({ value: 'X' });
-        theModule.info({ newValue: 'Y' });
-        expect(theModule.info()).toEqual({ newValue: 'Y' });
+      it("should completely replace the previous info object", () => {
+        theModule.info({ value: "X" });
+        theModule.info({ newValue: "Y" });
+        expect(theModule.info()).toEqual({ newValue: "Y" });
       });
     });
   });

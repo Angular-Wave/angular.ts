@@ -1,9 +1,0 @@
-@ngdoc error
-@name $sce:iwcard
-@fullName The sequence *** is not a valid pattern wildcard
-@description
-
-The strings in {@link $sceDelegateProvider#trustedResourceUrlList
-$sceDelegateProvider.trustedResourceUrlList} and {@link
-$sceDelegateProvider#bannedResourceUrlList $sceDelegateProvider.bannedResourceUrlList} may not
-contain the undefined sequence `***`.  Only `*` and `**` wildcard patterns are defined.

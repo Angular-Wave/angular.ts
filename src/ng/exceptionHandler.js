@@ -1,18 +1,15 @@
-'use strict';
-
+/* eslint-disable no-use-before-define */
 /**
  * @ngdoc service
  * @name $exceptionHandler
  * @requires ng.$log
- * @this
+ *
  *
  * @description
  * Any uncaught exception in AngularJS expressions is delegated to this service.
  * The default implementation simply delegates to `$log.error` which logs it into
  * the browser console.
  *
- * In unit tests, if `angular-mocks.js` is loaded, this service is overridden by
- * {@link ngMock.$exceptionHandler mock $exceptionHandler} which aids in testing.
  *
  * ## Example:
  *
@@ -44,10 +41,23 @@
  *       the error was thrown.
  *
  */
-function $ExceptionHandlerProvider() {
-  this.$get = ['$log', function($log) {
-    return function(exception, cause) {
-      $log.error.apply($log, arguments);
-    };
-  }];
+export function $ExceptionHandlerProvider() {
+  this.$get = [
+    "$log",
+    function ($log) {
+      return function (exception, cause) {
+        $log.error.apply($log, arguments);
+      };
+    },
+  ];
 }
+
+// let $log;
+
+// export function ExceptionHandler(log) {
+//   $log = log || window.console;
+
+//   return function(exception, cause) {
+//     $log.error.apply($log, arguments);
+//   };
+// }
