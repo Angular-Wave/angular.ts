@@ -655,19 +655,6 @@ describe("SCE", () => {
           }).toThrowError(/unsafe/);
         });
       });
-
-      describe("when $sanitize is available", () => {
-        it("should sanitize html using $sanitize", () => {
-          let injector = createInjector(["ng", "ngSanitize"]);
-
-          injector.invoke((_$sce_) => {
-            $sce = _$sce_;
-          });
-          expect($sce.getTrustedHtml("a<xxx><B>b</B></xxx>c")).toBe(
-            "a<b>b</b>c",
-          );
-        });
-      });
     });
   });
 });

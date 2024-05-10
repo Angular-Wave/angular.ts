@@ -1,7 +1,6 @@
 angular
   .module("test", [
     "ngTouch",
-    "ngSanitize",
     "ngRoute",
     "ngResource",
     "ngParseExt",

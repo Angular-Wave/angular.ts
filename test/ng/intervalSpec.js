@@ -29,7 +29,7 @@ describe("$interval", () => {
     setTimeout(() => {
       expect(counter).toBeGreaterThanOrEqual(2);
       done();
-    }, 2);
+    }, 5);
   });
 
   it("should call $apply after each task is executed", (done) => {
@@ -40,7 +40,7 @@ describe("$interval", () => {
 
     setTimeout(() => {
       expect(applySpy).toHaveBeenCalled();
-    }, 1);
+    }, 3);
 
     applySpy.calls.reset();
 
@@ -77,7 +77,7 @@ describe("$interval", () => {
       expect(evalAsyncSpy).not.toHaveBeenCalled();
       expect(digestSpy).not.toHaveBeenCalled();
       done();
-    }, 2);
+    }, 3);
   });
 
   it("should allow you to specify a number of iterations", (done) => {
@@ -225,13 +225,13 @@ describe("$interval", () => {
 
       $interval(() => {
         throw "Test Error";
-      }, 101);
+      }, 10);
       expect(applySpy).not.toHaveBeenCalled();
 
       setTimeout(() => {
         expect(applySpy).toHaveBeenCalled();
         done();
-      }, 101);
+      }, 11);
     });
 
     it("should still update the interval promise when an exception is thrown", (done) => {

@@ -89,7 +89,6 @@ import { $$TaskTrackerFactoryProvider } from "./ng/taskTrackerFactory";
 import { TemplateRequestProvider } from "./ng/templateRequest";
 import { $TimeoutProvider } from "./ng/timeout";
 import { SanitizeUriProvider } from "./ng/sanitizeUri";
-import { $SanitizeProvider } from "./ngSanitize/sanitize";
 import { setupModuleLoader } from "./loader";
 import { initAnimateModule } from "./ngAnimate/module";
 import { initMessageModule } from "./ngMessages/messages";
@@ -202,8 +201,6 @@ export function publishExternalAPI() {
       },
     ],
   ).info({ angularVersion: '"NG_VERSION_FULL"' });
-
-  module("ngSanitize", []).provider("$sanitize", $SanitizeProvider);
 
   initAnimateModule();
   initMessageModule();

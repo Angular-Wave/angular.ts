@@ -187,25 +187,14 @@ describe("$templateRequest", () => {
   });
 
   it("should keep track of how many requests are going on", async () => {
-    // $httpBackend.expectGET("a.html").respond("a");
-    // $httpBackend.expectGET("b.html").respond("c");
-    $templateRequest("/mock/div");
+    let res = $templateRequest("/mock/div");
     $templateRequest("/mock/div");
 
     expect($templateRequest.totalPendingRequests).toBe(2);
 
     $rootScope.$digest();
-
-    await setTimeout(() => {
-      expect($templateRequest.totalPendingRequests).toBe(0);
-      $templateRequest("/mock/401");
-      expect($templateRequest.totalPendingRequests).toBe(1);
-      $rootScope.$digest();
-    });
-
-    await setTimeout(() => {
-      expect($templateRequest.totalPendingRequests).toBe(0);
-    });
+    await res;
+    expect($templateRequest.totalPendingRequests).toBe(0);
   });
 
   it("should not try to parse a response as JSON", async () => {

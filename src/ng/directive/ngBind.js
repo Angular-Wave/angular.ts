@@ -140,10 +140,9 @@ export const ngBindTemplateDirective = [
    </example>
  */
 export const ngBindHtmlDirective = [
-  "$sce",
   "$parse",
   "$compile",
-  ($sce, $parse, $compile) => {
+  ($parse, $compile) => {
     return {
       restrict: "A",
       compile: (tElement, tAttrs) => {
@@ -152,7 +151,7 @@ export const ngBindHtmlDirective = [
           tAttrs.ngBindHtml,
           function sceValueOf(val) {
             // Unwrap the value to compare the actual inner safe value, not the wrapper object.
-            return $sce.valueOf(val);
+            return val;
           },
         );
         $compile.$$addBindingClass(tElement);
@@ -163,7 +162,7 @@ export const ngBindHtmlDirective = [
           scope.$watch(ngBindHtmlWatch, () => {
             // The watched value is the unwrapped value. To avoid re-escaping, use the direct getter.
             var value = ngBindHtmlGetter(scope);
-            element.html($sce.getTrustedHtml(value) || "");
+            element.html(value || "");
           });
         };
       },

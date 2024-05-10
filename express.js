@@ -150,3 +150,7 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
+// messageSpec.js
+app.get('/my-messages', (req, res) => {
+  res.send('<div ng-message="required">You did not enter a value</div>')
+})

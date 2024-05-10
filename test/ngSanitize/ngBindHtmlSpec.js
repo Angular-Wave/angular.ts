@@ -7,7 +7,7 @@ describe("ngBindHtml", () => {
 
   beforeEach(() => {
     publishExternalAPI();
-    createInjector(["ng", "ngSanitize"]).invoke((_$rootScope_, _$compile_) => {
+    createInjector(["ng"]).invoke((_$rootScope_, _$compile_) => {
       $rootScope = _$rootScope_;
       $compile = _$compile_;
     });
@@ -15,8 +15,9 @@ describe("ngBindHtml", () => {
 
   it("should set html", () => {
     const element = $compile('<div ng-bind-html="html"></div>')($rootScope);
-    $rootScope.html = "<div unknown>hello</div>";
+    $rootScope.html = "<div>hello</div>";
     $rootScope.$digest();
+    debugger;
     expect(element.html()).toEqual("<div>hello</div>");
   });
 

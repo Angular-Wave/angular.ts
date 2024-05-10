@@ -258,22 +258,6 @@ describe("ngBind*", () => {
 
       afterEach(() => dealoc(element));
 
-      it("should NOT set html for untrusted values", () => {
-        expect(() => {
-          element = $compile('<div ng-bind-html="html"></div>')($rootScope);
-          $rootScope.html = '<div onclick="">hello</div>';
-          $rootScope.$digest();
-        }).toThrow();
-      });
-
-      it("should NOT set html for wrongly typed values", () => {
-        element = $compile('<div ng-bind-html="html"></div>')($rootScope);
-        $rootScope.html = $sce.trustAsCss('<div onclick="">hello</div>');
-        expect(() => {
-          $rootScope.$digest();
-        }).toThrow();
-      });
-
       it("should set html for trusted values", () => {
         element = $compile('<div ng-bind-html="html"></div>')($rootScope);
         $rootScope.html = $sce.trustAsHtml('<div onclick="">hello</div>');
