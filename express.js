@@ -61,8 +61,13 @@ app.post('/hello', (req, res) => {
   res.json('Hello')
 })
 
+
 app.get('/interpolation', (req, res) => {
   res.send('{{expr}}') 
+})
+
+app.get('/jsoninterpolation', (req, res) => {
+  res.json('{{expr}}') 
 })
 
 app.get('/scopeinit', (req, res) => {
@@ -115,6 +120,10 @@ app.get('/script', (req, res) => {
 
 app.get("/401", (req, res) => {
   res.sendStatus(401)
+})
+
+app.get("/404", (req, res) => {
+  res.sendStatus(404)
 })
 
 app.get("/never", (req, res) => {
