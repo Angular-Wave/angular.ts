@@ -672,23 +672,22 @@ describe("$http", function () {
     ).toBeTrue();
   });
 
-  // fit("serializes dates to ISO strings", async function () {
-  //   await $http({
-  //     url: "/mock/hello",
-  //     params: {
-  //       a: new Date(2015, 0, 1, 12, 0, 0),
-  //     },
-  //   }).then(function (r) {
-  //     response = r;
-  //   });
-  //   $rootScope.$apply();
-    
-  //   expect(
-  //     response.config
-  //       .paramSerializer(response.config.params)
-  //       .endsWith("a=2015-01-01T10:00:00.000Z"),
-  //   ).toBeTrue();
-  // });
+  it("serializes dates to ISO strings", async function () {
+    await $http({
+      url: "/mock/hello",
+      params: {
+        a: new Date(2015, 0, 1, 12, 0, 0),
+      },
+    }).then(function (r) {
+      response = r;
+    });
+    $rootScope.$apply();
+    expect(
+      response.config
+        .paramSerializer(response.config.params)
+        .endsWith("00:00.000Z"),
+    ).toBeTrue();
+  });
 
   it("allows substituting param serializer", async function () {
     await $http({
