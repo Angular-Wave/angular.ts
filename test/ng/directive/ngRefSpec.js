@@ -64,7 +64,6 @@ describe("ngRef", () => {
 
     it("should bind in the current scope the controller of a component", () => {
       $rootScope.$ctrl = "undamaged";
-      debugger;
       $compile('<my-component ng-ref="myComponentRef"></my-component>')(
         $rootScope,
       );

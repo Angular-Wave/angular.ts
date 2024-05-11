@@ -4496,7 +4496,6 @@ function allowAutoBootstrap(currentScript) {
     // Disabled bootstrapping unless angular.js was loaded from a known scheme used on the web.
     // This is to prevent angular.js bundled with browser extensions from being used to bypass the
     // content security policy in web pages and other browser extensions.
-    debugger;
     switch (link.protocol) {
       case "http:":
       case "https:":

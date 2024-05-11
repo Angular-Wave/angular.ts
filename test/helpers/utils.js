@@ -5,3 +5,7 @@ export function browserTrigger(element, event) {
     new Event(event, { bubbles: true, cancelable: true }),
   );
 }
+
+export function wait(t) {
+  return new Promise((resolve, _) => setTimeout(resolve, t));
+}

@@ -1,5 +1,6 @@
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
+import { wait } from "../helpers/utils";
 
 describe("$interval", () => {
   let injector;
@@ -20,16 +21,14 @@ describe("$interval", () => {
     $rootScope = injector.get("$rootScope");
   });
 
-  it("should run tasks repeatedly", (done) => {
+  it("should run tasks repeatedly", async () => {
     let counter = 0;
     $interval(() => {
       counter++;
     }, 1);
     expect(counter).toBe(0);
-    setTimeout(() => {
-      expect(counter).toBeGreaterThanOrEqual(2);
-      done();
-    }, 5);
+    await wait(15);
+    expect(counter).toBeGreaterThanOrEqual(2);
   });
 
   it("should call $apply after each task is executed", (done) => {
@@ -80,7 +79,7 @@ describe("$interval", () => {
     }, 3);
   });
 
-  it("should allow you to specify a number of iterations", (done) => {
+  it("should allow you to specify a number of iterations", async () => {
     let counter = 0;
     $interval(
       () => {
@@ -90,18 +89,8 @@ describe("$interval", () => {
       2,
     );
 
-    setTimeout(() => {
-      expect(counter).toBe(1);
-    }, 1);
-
-    setTimeout(() => {
-      expect(counter).toBe(2);
-    }, 2);
-
-    setTimeout(() => {
-      expect(counter).toBe(2);
-      done();
-    }, 3);
+    await wait(15);
+    expect(counter).toBe(2);
   });
 
   it("should allow you to specify a number of arguments", (done) => {

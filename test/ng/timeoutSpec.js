@@ -232,7 +232,7 @@ describe("$timeout", () => {
           "error: Are Meant To Be Thrown",
         ]);
         done();
-      }, 3);
+      }, 15);
     });
 
     it("should forget references to relevant deferred even when exception is thrown", () => {

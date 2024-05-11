@@ -17,7 +17,6 @@ describe("ngBindHtml", () => {
     const element = $compile('<div ng-bind-html="html"></div>')($rootScope);
     $rootScope.html = "<div>hello</div>";
     $rootScope.$digest();
-    debugger;
     expect(element.html()).toEqual("<div>hello</div>");
   });
 

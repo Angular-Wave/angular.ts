@@ -19,3 +19,13 @@ check:
 
 serve:
 	@npm run serve
+
+PLAYWRIGHT_TEST := npx playwright test
+
+test:
+	@echo $(INFO) "Playwright test JS"
+	@$(PLAYWRIGHT_TEST) 
+
+test-ui:
+	@echo $(INFO) "Playwright test JS with ui"
+	@$(PLAYWRIGHT_TEST) --ui
