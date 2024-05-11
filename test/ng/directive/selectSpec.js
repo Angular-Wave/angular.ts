@@ -370,8 +370,6 @@ describe("select", () => {
 
       $compile(select)(scope);
       scope.$apply();
-
-      debugger;
       expect(select).toEqualSelectWithOptions({
         first: ["A"],
         second: [["B"]],

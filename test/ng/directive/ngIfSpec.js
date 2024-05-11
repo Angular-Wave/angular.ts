@@ -175,7 +175,6 @@ describe("ngIf", () => {
 
       $scope.show = false;
       $scope.$apply();
-      debugger;
       // expect(element.text()).toBe("before;after;");
     });
 
