@@ -5,7 +5,7 @@ import { defineConfig, devices } from '@playwright/test';
  * https://github.com/motdotla/dotenv
  */
 // require('dotenv').config();
-const baseUrl = 'http://127.0.0.1:4000';
+const baseUrl = 'http://localhost:4000';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
