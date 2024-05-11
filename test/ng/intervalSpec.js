@@ -64,19 +64,17 @@ describe("$interval", () => {
     }, 2);
   });
 
-  it("should NOT call $evalAsync or $digest if invokeApply is set to false", (done) => {
+  it("should NOT call $evalAsync or $digest if invokeApply is set to false", async () => {
     const evalAsyncSpy = spyOn($rootScope, "$evalAsync").and.callThrough();
     const digestSpy = spyOn($rootScope, "$digest").and.callThrough();
     const notifySpy = jasmine.createSpy("notify");
 
     $interval(notifySpy, 1, 1, false);
 
-    setTimeout(() => {
-      expect(notifySpy).toHaveBeenCalled();
-      expect(evalAsyncSpy).not.toHaveBeenCalled();
-      expect(digestSpy).not.toHaveBeenCalled();
-      done();
-    }, 3);
+    await wait(10);
+    expect(notifySpy).toHaveBeenCalled();
+    expect(evalAsyncSpy).not.toHaveBeenCalled();
+    expect(digestSpy).not.toHaveBeenCalled();
   });
 
   it("should allow you to specify a number of iterations", async () => {
@@ -139,10 +137,10 @@ describe("$interval", () => {
     expect(log).toEqual([]);
 
     await wait(5);
-    expect(log[0]).toEqual(  "tick");
-    expect(log[1]).toEqual(  "promise update: 0");
-    expect(log[2]).toEqual(   "tick");
-    expect(log[3]).toEqual(   "promise update: 1");
+    expect(log[0]).toEqual("tick");
+    expect(log[1]).toEqual("promise update: 0");
+    expect(log[2]).toEqual("tick");
+    expect(log[3]).toEqual("promise update: 1");
   });
 
   it("should return a promise which will be resolved after the specified number of iterations", async () => {
