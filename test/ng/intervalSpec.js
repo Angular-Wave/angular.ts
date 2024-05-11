@@ -153,7 +153,7 @@ describe("$interval", () => {
     }, 2);
   });
 
-  it("should return a promise which will be resolved after the specified number of iterations", (done) => {
+  it("should return a promise which will be resolved after the specified number of iterations", async () => {
     const log = [];
     const promise = $interval(
       () => {
@@ -175,21 +175,14 @@ describe("$interval", () => {
       },
     );
     expect(log).toEqual([]);
-
-    setTimeout(() => {
-      expect(log).toEqual(["tick", "promise update: 0"]);
-    }, 1);
-
-    setTimeout(() => {
-      expect(log).toEqual([
-        "tick",
-        "promise update: 0",
-        "tick",
-        "promise update: 1",
-        "promise success: 2",
-      ]);
-      done();
-    }, 2);
+    await wait(15);
+    expect(log).toEqual([
+      "tick",
+      "promise update: 0",
+      "tick",
+      "promise update: 1",
+      "promise success: 2",
+    ]);
   });
 
   describe("exception handling", () => {
