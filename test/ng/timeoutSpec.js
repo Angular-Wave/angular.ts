@@ -1,5 +1,6 @@
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
+import { wait } from "../helpers/utils";
 
 describe("$timeout", () => {
   let injector;
@@ -141,33 +142,30 @@ describe("$timeout", () => {
   });
 
   describe("exception handling", () => {
-    it("should delegate exception to the $exceptionHandler service", (done) => {
+    it("should delegate exception to the $exceptionHandler service", async () => {
+      errors = [];
       $timeout(() => {
+        errors = [];
         throw "Test Error";
-      });
+      }, 1);
       expect(errors).toEqual([]);
 
-      setTimeout(() => {
-        expect(errors).toEqual([
-          "Test Error",
-          "Possibly unhandled rejection: Test Error",
-        ]);
-        done();
-      });
+      await wait(1);
+      expect(errors).toEqual([
+        "Test Error",
+        "Possibly unhandled rejection: Test Error",
+      ]);
     });
 
-    it("should call $apply even if an exception is thrown in callback", (done) => {
+    it("should call $apply even if an exception is thrown in callback", async () => {
       const applySpy = spyOn($rootScope, "$apply").and.callThrough();
 
       $timeout(() => {
-        throw "Test Error";
+        throw "Test $apply";
       });
       expect(applySpy).not.toHaveBeenCalled();
-
-      setTimeout(() => {
-        expect(applySpy).toHaveBeenCalled();
-        done();
-      });
+      await wait(2);
+      expect(applySpy).toHaveBeenCalled();
     });
 
     it("should reject the timeout promise when an exception is thrown in the timeout callback", (done) => {

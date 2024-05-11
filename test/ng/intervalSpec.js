@@ -119,7 +119,7 @@ describe("$interval", () => {
     }, 1);
   });
 
-  it("should return a promise which will be updated with the count on each iteration", (done) => {
+  it("should return a promise which will be updated with the count on each iteration", async () => {
     const log = [];
     const promise = $interval(() => {
       log.push("tick");
@@ -138,19 +138,13 @@ describe("$interval", () => {
     );
     expect(log).toEqual([]);
 
-    setTimeout(() => {
-      expect(log).toEqual(["tick", "promise update: 0"]);
-    }, 1);
-
-    setTimeout(() => {
-      expect(log).toEqual([
-        "tick",
-        "promise update: 0",
-        "tick",
-        "promise update: 1",
-      ]);
-      done();
-    }, 2);
+    await wait(2);
+    expect(log).toEqual([
+      "tick",
+      "promise update: 0",
+      "tick",
+      "promise update: 1",
+    ]);
   });
 
   it("should return a promise which will be resolved after the specified number of iterations", async () => {
