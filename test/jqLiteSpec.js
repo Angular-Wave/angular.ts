@@ -9,7 +9,7 @@ import { angularInit } from "../src/loader";
 import { createInjector } from "../src/injector";
 import { publishExternalAPI } from "../src/public";
 import { equals, forEach } from "../src/ng/utils";
-import { browserTrigger } from "./helpers/utils";
+import { browserTrigger } from "./utils";
 
 describe("jqLite", () => {
   let scope;

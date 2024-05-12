@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
-import { wait } from "../helpers/utils";
+import { wait } from "../utils";
 
 describe("$interval", () => {
   let injector;

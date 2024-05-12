@@ -1,18 +1,9 @@
 {
   "srcDir": "src",
-  "srcFiles": [
-    "constants.js",
-    "ng/utils.js",
-    "jqLite.js"
-
-  ],
+  "srcFiles": ["constants.js", "ng/utils.js", "jqLite.js"],
   "specDir": "test",
-  "specFiles": [
-    "jqLiteSpec.js"
-  ],
-  "helpers": [
-    "spec/helpers/**/*.?(m)js"
-  ],
+  "specFiles": ["jqLiteSpec.js"],
+  "helpers": ["spec/helpers/**/*.?(m)js"],
   "esmFilenameExtension": ".mjs",
   "enableTopLevelAwait": false,
   "env": {
