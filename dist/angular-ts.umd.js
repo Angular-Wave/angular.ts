@@ -318,28 +318,6 @@
 
   /**
    * @param {*} value
-   * @returns {boolean}
-   */
-  function isTypedArray(value) {
-    return (
-      value &&
-      isNumber(value.length) &&
-      /^\[object (?:Uint8|Uint8Clamped|Uint16|Uint32|Int8|Int16|Int32|Float32|Float64)Array]$/.test(
-        toString.call(value),
-      )
-    );
-  }
-
-  /**
-   * @param {*} obj
-   * @returns {boolean}
-   */
-  function isArrayBuffer(obj) {
-    return toString.call(obj) === "[object ArrayBuffer]";
-  }
-
-  /**
-   * @param {*} value
    * @returns {string | *}
    */
   function trim(value) {
@@ -645,174 +623,6 @@
       array.splice(index, 1);
     }
     return index;
-  }
-
-  /**
-   * Creates a deep copy of the source, which should be an object or an array.
-   * - If no destination is supplied, a copy of the object or array is created.
-   * - If a destination is provided, all of its elements (for arrays) or properties (for objects) are deleted,
-   *   and then all elements/properties from the source are copied to it.
-   * - If the source is not an object or array (including null and undefined), the source is returned.
-   * - If the source is identical to the destination, an exception will be thrown.
-   *
-   * @template T The type of the source and destination.
-   * @param {T} source The source that will be used to make a copy. Can be any type, including primitives, null, and undefined.
-   * @param {T} [destination] Destination into which the source is copied. If provided, must be of the same type as source.
-   * @returns {T} A deep copy of the source.
-   */
-  function copy$1(source, destination, maxDepth) {
-    const stackSource = [];
-    const stackDest = [];
-    maxDepth = isValidObjectMaxDepth(maxDepth) ? maxDepth : NaN;
-
-    if (destination) {
-      if (isTypedArray(destination) || isArrayBuffer(destination)) {
-        throw ngMinErr$2(
-          "cpta",
-          "Can't copy! TypedArray destination cannot be mutated.",
-        );
-      }
-      if (source === destination) {
-        throw ngMinErr$2(
-          "cpi",
-          "Can't copy! Source and destination are identical.",
-        );
-      }
-
-      // Empty the destination object
-      if (isArray(destination)) {
-        destination.length = 0;
-      } else {
-        forEach(destination, (value, key) => {
-          if (key !== "$$hashKey") {
-            delete destination[key];
-          }
-        });
-      }
-
-      stackSource.push(source);
-      stackDest.push(destination);
-      return copyRecurse(source, destination, maxDepth);
-    }
-
-    return copyElement(source, maxDepth);
-
-    function copyRecurse(source, destination, maxDepth) {
-      maxDepth--;
-      if (maxDepth < 0) {
-        return "...";
-      }
-      const h = destination.$$hashKey;
-      let key;
-      if (isArray(source)) {
-        for (let i = 0, ii = source.length; i < ii; i++) {
-          destination.push(copyElement(source[i], maxDepth));
-        }
-      } else if (isBlankObject(source)) {
-        // createMap() fast path --- Safe to avoid hasOwnProperty check because prototype chain is empty
-        for (key in source) {
-          destination[key] = copyElement(source[key], maxDepth);
-        }
-      } else if (source && typeof source.hasOwnProperty === "function") {
-        // Slow path, which must rely on hasOwnProperty
-        for (key in source) {
-          if (Object.prototype.hasOwnProperty.call(source, key)) {
-            destination[key] = copyElement(source[key], maxDepth);
-          }
-        }
-      }
-      setHashKey(destination, h);
-      return destination;
-    }
-
-    function copyElement(source, maxDepth) {
-      // Simple values
-      if (!isObject(source)) {
-        return source;
-      }
-
-      // Already copied values
-      const index = stackSource.indexOf(source);
-      if (index !== -1) {
-        return stackDest[index];
-      }
-
-      if (isWindow(source) || isScope(source)) {
-        throw ngMinErr$2(
-          "cpws",
-          "Can't copy! Making copies of Window or Scope instances is not supported.",
-        );
-      }
-
-      let needsRecurse = false;
-      let destination = copyType(source);
-
-      if (destination === undefined) {
-        destination = isArray(source)
-          ? []
-          : Object.create(Object.getPrototypeOf(source));
-        needsRecurse = true;
-      }
-
-      stackSource.push(source);
-      stackDest.push(destination);
-
-      return needsRecurse
-        ? copyRecurse(source, destination, maxDepth)
-        : destination;
-    }
-
-    function copyType(source) {
-      switch (toString.call(source)) {
-        case "[object Int8Array]":
-        case "[object Int16Array]":
-        case "[object Int32Array]":
-        case "[object Float32Array]":
-        case "[object Float64Array]":
-        case "[object Uint8Array]":
-        case "[object Uint8ClampedArray]":
-        case "[object Uint16Array]":
-        case "[object Uint32Array]":
-          return new source.constructor(
-            copyElement(source.buffer),
-            source.byteOffset,
-            source.length,
-          );
-
-        case "[object ArrayBuffer]":
-          // Support: IE10
-          if (!source.slice) {
-            // If we're in this case we know the environment supports ArrayBuffer
-            /* eslint-disable no-undef */
-            const copied = new ArrayBuffer(source.byteLength);
-            new Uint8Array(copied).set(new Uint8Array(source));
-            /* eslint-enable */
-            return copied;
-          }
-          return source.slice(0);
-
-        case "[object Boolean]":
-        case "[object Number]":
-        case "[object String]":
-        case "[object Date]":
-          return new source.constructor(source.valueOf());
-
-        case "[object RegExp]":
-          const re = new RegExp(
-            source.source,
-            source.toString().match(/[^/]*$/)[0],
-          );
-          re.lastIndex = source.lastIndex;
-          return re;
-
-        case "[object Blob]":
-          return new source.constructor([source], { type: source.type });
-      }
-
-      if (isFunction(source.cloneNode)) {
-        return source.cloneNode(true);
-      }
-    }
   }
 
   function simpleCompare(a, b) {
@@ -1428,7 +1238,7 @@
       const template = arguments[1];
       let message = `[${module ? `${module}:` : ""}${code}] `;
       const templateArgs = sliceArgs(arguments, 2).map((arg) =>
-        toDebugString(arg, minErrConfig.objectMaxDepth),
+        toDebugString(arg),
       );
       let paramPrefix;
       let i;
@@ -1464,17 +1274,9 @@
     };
   }
 
-  function serializeObject(obj, maxDepth) {
+  function serializeObject(obj) {
     const seen = [];
-    let copyObj = obj;
-    // There is no direct way to stringify object until reaching a specific depth
-    // and a very deep object can cause a performance issue, so we copy the object
-    // based on this specific depth and then stringify it.
-    if (isValidObjectMaxDepth(maxDepth)) {
-      // This file is also included in `angular-loader`, so `copy()` might not always be available in
-      // the closure. Therefore, it is lazily retrieved as `angular.copy()` when needed.
-      copyObj = copy$1(obj, null, maxDepth);
-    }
+    let copyObj = structuredClone(obj);
     return JSON.stringify(copyObj, (key, val) => {
       const replace = toJsonReplacer(key, val);
       if (isObject(replace)) {
@@ -1486,7 +1288,7 @@
     });
   }
 
-  function toDebugString(obj, maxDepth) {
+  function toDebugString(obj) {
     if (typeof obj === "function") {
       return obj.toString().replace(/ \{[\s\S]*$/, "");
     }
@@ -1494,7 +1296,7 @@
       return "undefined";
     }
     if (typeof obj !== "string") {
-      return serializeObject(obj, maxDepth);
+      return serializeObject(obj);
     }
     return obj;
   }
@@ -2789,7 +2591,7 @@
 
   /**
    * Return the DOM siblings between the first and last node in the given array.
-   * @param {Array} array like object
+   * @param {Array} nodes An array-like object
    * @returns {Array} the inputted object or a jqLite collection containing the nodes
    */
   function getBlockNodes(nodes) {
@@ -3860,7 +3662,6 @@
 
       // Utility methods kept for backwards purposes
       this.bind = bind;
-      this.copy = copy$1;
       this.equals = equals;
       this.element = jqLite;
       this.extend = extend;
@@ -4463,58 +4264,6 @@
 
   /// //////////////////////////////////////////////
 
-  function allowAutoBootstrap(currentScript) {
-    const script = currentScript;
-
-    // If the `currentScript` property has been clobbered just return false, since this indicates a probable attack
-    if (
-      !(
-        script instanceof window.HTMLScriptElement ||
-        script instanceof window.SVGScriptElement
-      )
-    ) {
-      return false;
-    }
-
-    const { attributes } = script;
-    const srcs = [
-      attributes.getNamedItem("src"),
-      attributes.getNamedItem("href"),
-      attributes.getNamedItem("xlink:href"),
-    ];
-
-    return srcs.every((src) => {
-      if (!src) {
-        return true;
-      }
-      if (!src.value) {
-        return false;
-      }
-
-      const link = document.createElement("a");
-      link.href = src.value;
-
-      if (document.location.origin === link.origin) {
-        // Same-origin resources are always allowed, even for banned URL schemes.
-        return true;
-      }
-      // Disabled bootstrapping unless angular.js was loaded from a known scheme used on the web.
-      // This is to prevent angular.js bundled with browser extensions from being used to bypass the
-      // content security policy in web pages and other browser extensions.
-      switch (link.protocol) {
-        case "http:":
-        case "https:":
-        case "ftp:":
-        case "blob:":
-        case "file:":
-        case "data:":
-          return true;
-        default:
-          return false;
-      }
-    });
-  }
-
   /**
    * @ngdoc directive
    * @name ngApp
@@ -4662,7 +4411,7 @@
     const config = {};
 
     // The element `element` has priority over any other element.
-    forEach(ngAttrPrefixes, (prefix) => {
+    ngAttrPrefixes.forEach((prefix) => {
       const name = `${prefix}app`;
 
       if (!appElement && element.hasAttribute && element.hasAttribute(name)) {
@@ -4670,7 +4419,7 @@
         module = element.getAttribute(name);
       }
     });
-    forEach(ngAttrPrefixes, (prefix) => {
+    ngAttrPrefixes.forEach((prefix) => {
       const name = `${prefix}app`;
       let candidate;
 
@@ -7408,7 +7157,7 @@
    *              }
    *              if (!angular.equals(this.items_clone, this.items)) {
    *                this.log.push('doCheck: items mutated');
-   *                this.items_clone = angular.copy(this.items);
+   *                this.items_clone = structuredClone(this.items);
    *              }
    *            };
    *          }
@@ -18331,11 +18080,11 @@
           };
 
           $scope.copy = function() {
-            $scope.friends = angular.copy($scope.friends);
+            $scope.friends = structuredClone($scope.friends);
           };
 
           $scope.reset = function() {
-            $scope.friends = angular.copy(friends);
+            $scope.friends = structuredClone(friends);
           };
 
           $scope.reset();
@@ -19396,7 +19145,9 @@
               getViewValueFromOption(option) {
                 // If the viewValue could be an object that may be mutated by the application,
                 // we need to make a copy and not return the reference to the value on the option.
-                return trackBy ? copy$1(option.viewValue) : option.viewValue;
+                return trackBy
+                  ? structuredClone(option.viewValue)
+                  : option.viewValue;
               },
             };
           },
@@ -22032,7 +21783,7 @@
             search = search.toString();
             this.$$search = parseKeyValue(search);
           } else if (isObject(search)) {
-            search = copy$1(search, {});
+            search = structuredClone(search, {});
             // remove object undefined or null properties
             forEach(search, (value, key) => {
               if (value == null) delete search[key];
@@ -22862,9 +22613,8 @@
    */
   function CoreAnimateCssProvider() {
     this.$get = [
-      "$q",
       "$$AnimateRunner",
-      ($q, $$AnimateRunner) =>
+      ($$AnimateRunner) =>
         function (element, initialOptions) {
           // all of the animation functions should create
           // a copy of the options data, however, if a
@@ -22872,7 +22622,7 @@
           // we should stick to using that
           let options = initialOptions || {};
           if (!options.$$prepared) {
-            options = copy$1(options);
+            options = structuredClone(options);
           }
 
           // there is no point in applying the styles since
@@ -27804,11 +27554,6 @@
     ];
   }
 
-  /* eslint-disable no-param-reassign */
-  /* eslint-disable max-classes-per-file */
-  /* eslint-disable no-use-before-define */
-
-
   const $parseMinErr = minErr("$parse");
 
   const objectValueOf = {}.constructor.prototype.valueOf;
@@ -28316,7 +28061,7 @@
           this.peek().text,
         )
       ) {
-        primary = copy$1(this.selfReferential[this.consume().text]);
+        primary = structuredClone(this.selfReferential[this.consume().text]);
       } else if (
         Object.prototype.hasOwnProperty.call(
           this.options.literals,
@@ -29825,7 +29570,7 @@
         var noUnsafeEval = csp().noUnsafeEval;
         var $parseOptions = {
           csp: noUnsafeEval,
-          literals: copy$1(literals),
+          literals: structuredClone(literals),
           isIdentifierStart: isFunction(identStart) && identStart,
           isIdentifierContinue: isFunction(identContinue) && identContinue,
         };
@@ -30373,10 +30118,10 @@
    *   (see next point)
    * - When `objectEquality == true`, inequality of the `watchExpression` is determined
    *   according to the {@link angular.equals} function. To save the value of the object for
-   *   later comparison, the {@link angular.copy} function is used. This therefore means that
+   *   later comparison, the {@link structuredClone} function is used. This therefore means that
    *   watching complex objects will have adverse memory and performance implications.
    * - This should not be used to watch for changes in objects that are (or contain)
-   *   [File](https://developer.mozilla.org/docs/Web/API/File) objects due to limitations with {@link angular.copy `angular.copy`}.
+   *   [File](https://developer.mozilla.org/docs/Web/API/File) objects due to limitations with {@link structuredClone `structuredClone`}.
    * - The watch `listener` may change the model, which may trigger other `listener`s to fire.
    *   This is achieved by rerunning the watchers until no changes are detected. The rerun
    *   iteration limit is 10 to prevent an infinite loop deadlock.
@@ -30901,7 +30646,7 @@
                   ) {
                     dirty = true;
                     lastDirtyWatch = watch;
-                    watch.last = watch.eq ? copy$1(value, null) : value;
+                    watch.last = watch.eq ? structuredClone(value) : value;
                     fn = watch.fn;
                     fn(value, last === initWatchVal ? value : last, current);
                     if (ttl < 5) {
@@ -33579,7 +33324,7 @@
             // we always make a copy of the options since
             // there should never be any side effects on
             // the input data when running `$animateCss`.
-            let options = copy$1(initialOptions);
+            let options = structuredClone(initialOptions);
 
             let element = stripCommentsFromElement(originalElement);
             const node = getDomNode(element);
@@ -38159,8 +37904,6 @@
     return ng;
   }
 
-  // Current script not available in submodule
-  window.AUTOBOOTSTRAP || allowAutoBootstrap(document.currentScript);
   /**
    * @type {angular.IAngularStatic}
    */

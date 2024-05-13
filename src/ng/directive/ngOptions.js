@@ -1,7 +1,6 @@
 import { NODE_TYPE_COMMENT } from "../../constants";
 import { jqLite, jqLiteRemove, startingTag } from "../../jqLite";
 import {
-  copy,
   equals,
   forEach,
   hashKey,
@@ -356,7 +355,9 @@ export const ngOptionsDirective = [
             getViewValueFromOption(option) {
               // If the viewValue could be an object that may be mutated by the application,
               // we need to make a copy and not return the reference to the value on the option.
-              return trackBy ? copy(option.viewValue) : option.viewValue;
+              return trackBy
+                ? structuredClone(option.viewValue)
+                : option.viewValue;
             },
           };
         },

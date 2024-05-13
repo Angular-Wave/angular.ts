@@ -1,9 +1,6 @@
 import {
   lowercase,
   uppercase,
-  copy,
-  isObject,
-  isBlob,
   extend,
   isDefined,
   merge,

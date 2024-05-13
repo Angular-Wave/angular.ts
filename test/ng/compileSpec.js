@@ -9,7 +9,6 @@ import {
   nodeName_,
   extend,
   isArray,
-  copy,
 } from "../../src/ng/utils";
 import { countChildScopes, countWatchers } from "../../src/ng/rootScope";
 
@@ -10948,7 +10947,7 @@ describe("$compile", () => {
 
                 this.$onChanges = function (changes) {
                   if (changes.input) {
-                    log.push(["$onChanges", copy(changes.input)]);
+                    log.push(["$onChanges", structuredClone(changes.input)]);
                   }
                 };
               },

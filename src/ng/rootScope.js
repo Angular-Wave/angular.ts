@@ -8,7 +8,6 @@ import {
   isObject,
   isArrayLike,
   isNumberNaN,
-  copy,
   arrayRemove,
   equals,
 } from "./utils";
@@ -294,10 +293,10 @@ class Scope {
  *   (see next point)
  * - When `objectEquality == true`, inequality of the `watchExpression` is determined
  *   according to the {@link angular.equals} function. To save the value of the object for
- *   later comparison, the {@link angular.copy} function is used. This therefore means that
+ *   later comparison, the {@link structuredClone} function is used. This therefore means that
  *   watching complex objects will have adverse memory and performance implications.
  * - This should not be used to watch for changes in objects that are (or contain)
- *   [File](https://developer.mozilla.org/docs/Web/API/File) objects due to limitations with {@link angular.copy `angular.copy`}.
+ *   [File](https://developer.mozilla.org/docs/Web/API/File) objects due to limitations with {@link structuredClone `structuredClone`}.
  * - The watch `listener` may change the model, which may trigger other `listener`s to fire.
  *   This is achieved by rerunning the watchers until no changes are detected. The rerun
  *   iteration limit is 10 to prevent an infinite loop deadlock.
@@ -822,7 +821,7 @@ class Scope {
                 ) {
                   dirty = true;
                   lastDirtyWatch = watch;
-                  watch.last = watch.eq ? copy(value, null) : value;
+                  watch.last = watch.eq ? structuredClone(value) : value;
                   fn = watch.fn;
                   fn(value, last === initWatchVal ? value : last, current);
                   if (ttl < 5) {

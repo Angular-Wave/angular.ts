@@ -121,11 +121,11 @@ import { getBlockNodes } from "../../jqLite";
         };
 
         $scope.copy = function() {
-          $scope.friends = angular.copy($scope.friends);
+          $scope.friends = structuredClone($scope.friends);
         };
 
         $scope.reset = function() {
-          $scope.friends = angular.copy(friends);
+          $scope.friends = structuredClone(friends);
         };
 
         $scope.reset();

@@ -390,7 +390,7 @@ describe("$animate", () => {
       removeClass: "two",
     };
 
-    const copiedOptions = copy(initialOptions);
+    const copiedOptions = structuredClone(initialOptions);
     expect(copiedOptions).toEqual(initialOptions);
 
     const runner = $animate.enter(element, parent, null, copiedOptions);

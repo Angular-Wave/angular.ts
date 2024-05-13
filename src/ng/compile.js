@@ -270,7 +270,7 @@ import { createEventDirective } from "./directive/ngEventDirs";
  *              }
  *              if (!angular.equals(this.items_clone, this.items)) {
  *                this.log.push('doCheck: items mutated');
- *                this.items_clone = angular.copy(this.items);
+ *                this.items_clone = structuredClone(this.items);
  *              }
  *            };
  *          }

@@ -1,9 +1,4 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable max-classes-per-file */
-/* eslint-disable no-use-before-define */
-
 import {
-  copy,
   createMap,
   csp,
   forEach,
@@ -523,7 +518,7 @@ AST.prototype = {
         this.peek().text,
       )
     ) {
-      primary = copy(this.selfReferential[this.consume().text]);
+      primary = structuredClone(this.selfReferential[this.consume().text]);
     } else if (
       Object.prototype.hasOwnProperty.call(
         this.options.literals,
@@ -2082,7 +2077,7 @@ export function $ParseProvider() {
       var noUnsafeEval = csp().noUnsafeEval;
       var $parseOptions = {
         csp: noUnsafeEval,
-        literals: copy(literals),
+        literals: structuredClone(literals),
         isIdentifierStart: isFunction(identStart) && identStart,
         isIdentifierContinue: isFunction(identContinue) && identContinue,
       };

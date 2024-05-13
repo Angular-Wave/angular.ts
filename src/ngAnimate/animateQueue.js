@@ -6,7 +6,6 @@ import {
   isArray,
   isString,
   isElement,
-  copy,
   isDefined,
   extend,
 } from "../ng/utils";
@@ -400,7 +399,7 @@ export const $$AnimateQueueProvider = [
           // we always make a copy of the options since
           // there should never be any side effects on
           // the input data when running `$animateCss`.
-          let options = copy(initialOptions);
+          let options = structuredClone(initialOptions);
 
           let element = stripCommentsFromElement(originalElement);
           const node = getDomNode(element);

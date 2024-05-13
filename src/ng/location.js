@@ -1,7 +1,6 @@
 import { jqLite } from "../jqLite";
 import { urlResolve } from "./urlUtils";
 import {
-  copy,
   encodeUriSegment,
   forEach,
   isBoolean,
@@ -582,7 +581,7 @@ const locationPrototype = {
           search = search.toString();
           this.$$search = parseKeyValue(search);
         } else if (isObject(search)) {
-          search = copy(search, {});
+          search = structuredClone(search, {});
           // remove object undefined or null properties
           forEach(search, (value, key) => {
             if (value == null) delete search[key];

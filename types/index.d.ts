@@ -65,19 +65,6 @@ declare namespace angular {
         ): auto.IInjectorService;
 
         /**
-         * Creates a deep copy of source, which should be an object or an array.
-         *
-         * - If no destination is supplied, a copy of the object or array is created.
-         * - If a destination is provided, all of its elements (for array) or properties (for objects) are deleted and then all elements/properties from the source are copied to it.
-         * - If source is not an object or array (inc. null and undefined), source is returned.
-         * - If source is identical to 'destination' an exception will be thrown.
-         *
-         * @param source The source that will be used to make a copy. Can be any type, including primitives, null, and undefined.
-         * @param destination Destination into which the source is copied. If provided, must be of the same type as source.
-         */
-        copy<T>(source: T, destination?: T): T;
-
-        /**
          * Wraps a raw DOM element or HTML string as a jQuery element.
          *
          * If jQuery is available, angular.element is an alias for the jQuery function. If jQuery is not available, angular.element delegates to Angular's built-in subset of jQuery, called "jQuery lite" or "jqLite."

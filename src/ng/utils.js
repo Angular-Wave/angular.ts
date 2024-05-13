@@ -625,174 +625,6 @@ export function arrayRemove(array, value) {
   return index;
 }
 
-/**
- * Creates a deep copy of the source, which should be an object or an array.
- * - If no destination is supplied, a copy of the object or array is created.
- * - If a destination is provided, all of its elements (for arrays) or properties (for objects) are deleted,
- *   and then all elements/properties from the source are copied to it.
- * - If the source is not an object or array (including null and undefined), the source is returned.
- * - If the source is identical to the destination, an exception will be thrown.
- *
- * @template T The type of the source and destination.
- * @param {T} source The source that will be used to make a copy. Can be any type, including primitives, null, and undefined.
- * @param {T} [destination] Destination into which the source is copied. If provided, must be of the same type as source.
- * @returns {T} A deep copy of the source.
- */
-export function copy(source, destination, maxDepth) {
-  const stackSource = [];
-  const stackDest = [];
-  maxDepth = isValidObjectMaxDepth(maxDepth) ? maxDepth : NaN;
-
-  if (destination) {
-    if (isTypedArray(destination) || isArrayBuffer(destination)) {
-      throw ngMinErr(
-        "cpta",
-        "Can't copy! TypedArray destination cannot be mutated.",
-      );
-    }
-    if (source === destination) {
-      throw ngMinErr(
-        "cpi",
-        "Can't copy! Source and destination are identical.",
-      );
-    }
-
-    // Empty the destination object
-    if (isArray(destination)) {
-      destination.length = 0;
-    } else {
-      forEach(destination, (value, key) => {
-        if (key !== "$$hashKey") {
-          delete destination[key];
-        }
-      });
-    }
-
-    stackSource.push(source);
-    stackDest.push(destination);
-    return copyRecurse(source, destination, maxDepth);
-  }
-
-  return copyElement(source, maxDepth);
-
-  function copyRecurse(source, destination, maxDepth) {
-    maxDepth--;
-    if (maxDepth < 0) {
-      return "...";
-    }
-    const h = destination.$$hashKey;
-    let key;
-    if (isArray(source)) {
-      for (let i = 0, ii = source.length; i < ii; i++) {
-        destination.push(copyElement(source[i], maxDepth));
-      }
-    } else if (isBlankObject(source)) {
-      // createMap() fast path --- Safe to avoid hasOwnProperty check because prototype chain is empty
-      for (key in source) {
-        destination[key] = copyElement(source[key], maxDepth);
-      }
-    } else if (source && typeof source.hasOwnProperty === "function") {
-      // Slow path, which must rely on hasOwnProperty
-      for (key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          destination[key] = copyElement(source[key], maxDepth);
-        }
-      }
-    }
-    setHashKey(destination, h);
-    return destination;
-  }
-
-  function copyElement(source, maxDepth) {
-    // Simple values
-    if (!isObject(source)) {
-      return source;
-    }
-
-    // Already copied values
-    const index = stackSource.indexOf(source);
-    if (index !== -1) {
-      return stackDest[index];
-    }
-
-    if (isWindow(source) || isScope(source)) {
-      throw ngMinErr(
-        "cpws",
-        "Can't copy! Making copies of Window or Scope instances is not supported.",
-      );
-    }
-
-    let needsRecurse = false;
-    let destination = copyType(source);
-
-    if (destination === undefined) {
-      destination = isArray(source)
-        ? []
-        : Object.create(Object.getPrototypeOf(source));
-      needsRecurse = true;
-    }
-
-    stackSource.push(source);
-    stackDest.push(destination);
-
-    return needsRecurse
-      ? copyRecurse(source, destination, maxDepth)
-      : destination;
-  }
-
-  function copyType(source) {
-    switch (toString.call(source)) {
-      case "[object Int8Array]":
-      case "[object Int16Array]":
-      case "[object Int32Array]":
-      case "[object Float32Array]":
-      case "[object Float64Array]":
-      case "[object Uint8Array]":
-      case "[object Uint8ClampedArray]":
-      case "[object Uint16Array]":
-      case "[object Uint32Array]":
-        return new source.constructor(
-          copyElement(source.buffer),
-          source.byteOffset,
-          source.length,
-        );
-
-      case "[object ArrayBuffer]":
-        // Support: IE10
-        if (!source.slice) {
-          // If we're in this case we know the environment supports ArrayBuffer
-          /* eslint-disable no-undef */
-          const copied = new ArrayBuffer(source.byteLength);
-          new Uint8Array(copied).set(new Uint8Array(source));
-          /* eslint-enable */
-          return copied;
-        }
-        return source.slice(0);
-
-      case "[object Boolean]":
-      case "[object Number]":
-      case "[object String]":
-      case "[object Date]":
-        return new source.constructor(source.valueOf());
-
-      case "[object RegExp]":
-        const re = new RegExp(
-          source.source,
-          source.toString().match(/[^/]*$/)[0],
-        );
-        re.lastIndex = source.lastIndex;
-        return re;
-
-      case "[object Blob]":
-        return new source.constructor([source], { type: source.type });
-    }
-
-    if (isFunction(source.cloneNode)) {
-      return source.cloneNode(true);
-    }
-  }
-}
-
 export function simpleCompare(a, b) {
   return a === b || (a !== a && b !== b);
 }
@@ -1407,7 +1239,7 @@ export function minErr(module) {
     const template = arguments[1];
     let message = `[${module ? `${module}:` : ""}${code}] `;
     const templateArgs = sliceArgs(arguments, 2).map((arg) =>
-      toDebugString(arg, minErrConfig.objectMaxDepth),
+      toDebugString(arg),
     );
     let paramPrefix;
     let i;
@@ -1443,17 +1275,9 @@ export function minErr(module) {
   };
 }
 
-export function serializeObject(obj, maxDepth) {
+export function serializeObject(obj) {
   const seen = [];
-  let copyObj = obj;
-  // There is no direct way to stringify object until reaching a specific depth
-  // and a very deep object can cause a performance issue, so we copy the object
-  // based on this specific depth and then stringify it.
-  if (isValidObjectMaxDepth(maxDepth)) {
-    // This file is also included in `angular-loader`, so `copy()` might not always be available in
-    // the closure. Therefore, it is lazily retrieved as `angular.copy()` when needed.
-    copyObj = copy(obj, null, maxDepth);
-  }
+  let copyObj = structuredClone(obj);
   return JSON.stringify(copyObj, (key, val) => {
     const replace = toJsonReplacer(key, val);
     if (isObject(replace)) {
@@ -1465,7 +1289,7 @@ export function serializeObject(obj, maxDepth) {
   });
 }
 
-export function toDebugString(obj, maxDepth) {
+export function toDebugString(obj) {
   if (typeof obj === "function") {
     return obj.toString().replace(/ \{[\s\S]*$/, "");
   }
@@ -1473,7 +1297,7 @@ export function toDebugString(obj, maxDepth) {
     return "undefined";
   }
   if (typeof obj !== "string") {
-    return serializeObject(obj, maxDepth);
+    return serializeObject(obj);
   }
   return obj;
 }

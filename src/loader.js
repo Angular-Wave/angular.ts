@@ -1,6 +1,5 @@
 import {
   minErr,
-  copy,
   extend,
   forEach,
   getNgAttribute,
@@ -63,7 +62,6 @@ export class Angular {
 
     // Utility methods kept for backwards purposes
     this.bind = bind;
-    this.copy = copy;
     this.equals = equals;
     this.element = jqLite;
     this.extend = extend;

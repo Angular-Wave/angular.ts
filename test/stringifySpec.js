@@ -41,18 +41,4 @@ describe("serializeObject", () => {
     expect(serializeObject(a)).toEqual('{"a":"..."}');
     expect(serializeObject([a, a])).toEqual('[{"a":"..."},"..."]');
   });
-
-  it("should convert its argument that are objects to string based on maxDepth", () => {
-    const a = { b: { c: { d: 1 } } };
-    expect(serializeObject(a, 1)).toEqual('{"b":"..."}');
-    expect(serializeObject(a, 2)).toEqual('{"b":{"c":"..."}}');
-    expect(serializeObject(a, 3)).toEqual('{"b":{"c":{"d":1}}}');
-  });
-
-  it("should convert its argument that object to string  and ignore max depth when maxDepth = $prop", () => {
-    [NaN, null, undefined, true, false, -1, 0].forEach((x) => {
-      const a = { b: { c: { d: 1 } } };
-      expect(serializeObject(a, x)).toEqual('{"b":{"c":{"d":1}}}');
-    });
-  });
 });

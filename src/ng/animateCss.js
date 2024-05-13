@@ -1,5 +1,3 @@
-import { copy } from "./utils";
-
 /**
  * @ngdoc service
  * @name $animateCss
@@ -14,9 +12,8 @@ import { copy } from "./utils";
  */
 export function CoreAnimateCssProvider() {
   this.$get = [
-    "$q",
     "$$AnimateRunner",
-    ($q, $$AnimateRunner) =>
+    ($$AnimateRunner) =>
       function (element, initialOptions) {
         // all of the animation functions should create
         // a copy of the options data, however, if a
@@ -24,7 +21,7 @@ export function CoreAnimateCssProvider() {
         // we should stick to using that
         let options = initialOptions || {};
         if (!options.$$prepared) {
-          options = copy(options);
+          options = structuredClone(options);
         }
 
         // there is no point in applying the styles since
