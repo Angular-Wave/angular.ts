@@ -29,7 +29,7 @@ import {
   snakeCase,
 } from "../src/ng/utils";
 import { dealoc, jqLite, startingTag } from "../src/jqLite";
-import { Angular, angularInit, allowAutoBootstrap } from "../src/loader";
+import { Angular, angularInit } from "../src/loader";
 import { publishExternalAPI } from "../src/public";
 import { createInjector } from "../src/injector";
 
@@ -66,658 +66,658 @@ describe("angular", () => {
     });
   });
 
-  describe("copy", () => {
-    it("should return same object", () => {
-      const obj = {};
-      const arr = [];
-      expect(copy({}, obj)).toBe(obj);
-      expect(copy([], arr)).toBe(arr);
-    });
-
-    it("should preserve prototype chaining", () => {
-      const GrandParentProto = {};
-      const ParentProto = Object.create(GrandParentProto);
-      const obj = Object.create(ParentProto);
-      expect(ParentProto.isPrototypeOf(copy(obj))).toBe(true);
-      expect(GrandParentProto.isPrototypeOf(copy(obj))).toBe(true);
-      const Foo = function () {};
-      expect(copy(new Foo()) instanceof Foo).toBe(true);
-    });
-
-    it("should copy Date", () => {
-      const date = new Date(123);
-      expect(copy(date) instanceof Date).toBeTruthy();
-      expect(copy(date).getTime()).toEqual(123);
-      expect(copy(date) === date).toBeFalsy();
-    });
-
-    it("should copy RegExp", () => {
-      const re = new RegExp(".*");
-      expect(copy(re) instanceof RegExp).toBeTruthy();
-      expect(copy(re).source).toBe(".*");
-      expect(copy(re) === re).toBe(false);
-    });
-
-    it("should copy literal RegExp", () => {
-      const re = /.*/;
-      expect(copy(re) instanceof RegExp).toBeTruthy();
-      expect(copy(re).source).toEqual(".*");
-      expect(copy(re) === re).toBeFalsy();
-    });
-
-    it("should copy RegExp with flags", () => {
-      const re = new RegExp(".*", "gim");
-      expect(copy(re).global).toBe(true);
-      expect(copy(re).ignoreCase).toBe(true);
-      expect(copy(re).multiline).toBe(true);
-    });
-
-    it("should copy RegExp with lastIndex", () => {
-      const re = /a+b+/g;
-      const str = "ab aabb";
-      expect(re.exec(str)[0]).toEqual("ab");
-      expect(copy(re).exec(str)[0]).toEqual("aabb");
-    });
-
-    it("should deeply copy literal RegExp", () => {
-      const objWithRegExp = {
-        re: /.*/,
-      };
-      expect(copy(objWithRegExp).re instanceof RegExp).toBeTruthy();
-      expect(copy(objWithRegExp).re.source).toEqual(".*");
-      expect(copy(objWithRegExp.re) === objWithRegExp.re).toBeFalsy();
-    });
-
-    it("should copy a Uint8Array with no destination", () => {
-      if (typeof Uint8Array !== "undefined") {
-        const src = new Uint8Array(2);
-        src[1] = 1;
-        const dst = copy(src);
-        expect(copy(src) instanceof Uint8Array).toBeTruthy();
-        expect(dst).toEqual(src);
-        expect(dst).not.toBe(src);
-        expect(dst.buffer).not.toBe(src.buffer);
-      }
-    });
-
-    it("should copy a Uint8ClampedArray with no destination", () => {
-      if (typeof Uint8ClampedArray !== "undefined") {
-        const src = new Uint8ClampedArray(2);
-        src[1] = 1;
-        const dst = copy(src);
-        expect(copy(src) instanceof Uint8ClampedArray).toBeTruthy();
-        expect(dst).toEqual(src);
-        expect(dst).not.toBe(src);
-        expect(dst.buffer).not.toBe(src.buffer);
-      }
-    });
-
-    it("should copy a Uint16Array with no destination", () => {
-      if (typeof Uint16Array !== "undefined") {
-        const src = new Uint16Array(2);
-        src[1] = 1;
-        const dst = copy(src);
-        expect(copy(src) instanceof Uint16Array).toBeTruthy();
-        expect(dst).toEqual(src);
-        expect(dst).not.toBe(src);
-        expect(dst.buffer).not.toBe(src.buffer);
-      }
-    });
-
-    it("should copy a Uint32Array with no destination", () => {
-      if (typeof Uint32Array !== "undefined") {
-        const src = new Uint32Array(2);
-        src[1] = 1;
-        const dst = copy(src);
-        expect(copy(src) instanceof Uint32Array).toBeTruthy();
-        expect(dst).toEqual(src);
-        expect(dst).not.toBe(src);
-        expect(dst.buffer).not.toBe(src.buffer);
-      }
-    });
-
-    it("should copy a Int8Array with no destination", () => {
-      if (typeof Int8Array !== "undefined") {
-        const src = new Int8Array(2);
-        src[1] = 1;
-        const dst = copy(src);
-        expect(copy(src) instanceof Int8Array).toBeTruthy();
-        expect(dst).toEqual(src);
-        expect(dst).not.toBe(src);
-        expect(dst.buffer).not.toBe(src.buffer);
-      }
-    });
-
-    it("should copy a Int16Array with no destination", () => {
-      if (typeof Int16Array !== "undefined") {
-        const src = new Int16Array(2);
-        src[1] = 1;
-        const dst = copy(src);
-        expect(copy(src) instanceof Int16Array).toBeTruthy();
-        expect(dst).toEqual(src);
-        expect(dst).not.toBe(src);
-        expect(dst.buffer).not.toBe(src.buffer);
-      }
-    });
-
-    it("should copy a Int32Array with no destination", () => {
-      if (typeof Int32Array !== "undefined") {
-        const src = new Int32Array(2);
-        src[1] = 1;
-        const dst = copy(src);
-        expect(copy(src) instanceof Int32Array).toBeTruthy();
-        expect(dst).toEqual(src);
-        expect(dst).not.toBe(src);
-        expect(dst.buffer).not.toBe(src.buffer);
-      }
-    });
-
-    it("should copy a Float32Array with no destination", () => {
-      if (typeof Float32Array !== "undefined") {
-        const src = new Float32Array(2);
-        src[1] = 1;
-        const dst = copy(src);
-        expect(copy(src) instanceof Float32Array).toBeTruthy();
-        expect(dst).toEqual(src);
-        expect(dst).not.toBe(src);
-        expect(dst.buffer).not.toBe(src.buffer);
-      }
-    });
-
-    it("should copy a Float64Array with no destination", () => {
-      if (typeof Float64Array !== "undefined") {
-        const src = new Float64Array(2);
-        src[1] = 1;
-        const dst = copy(src);
-        expect(copy(src) instanceof Float64Array).toBeTruthy();
-        expect(dst).toEqual(src);
-        expect(dst).not.toBe(src);
-        expect(dst.buffer).not.toBe(src.buffer);
-      }
-    });
-
-    it("should copy an ArrayBuffer with no destination", () => {
-      if (typeof ArrayBuffer !== "undefined") {
-        const src = new ArrayBuffer(8);
-        new Int32Array(src).set([1, 2]);
-
-        const dst = copy(src);
-        expect(dst instanceof ArrayBuffer).toBeTruthy();
-        expect(dst).toEqual(src);
-        expect(dst).not.toBe(src);
-      }
-    });
-
-    it("should handle ArrayBuffer objects with multiple references", () => {
-      if (typeof ArrayBuffer !== "undefined") {
-        const buffer = new ArrayBuffer(8);
-        const src = [new Int32Array(buffer), new Float32Array(buffer)];
-        src[0].set([1, 2]);
-
-        const dst = copy(src);
-        expect(dst).toEqual(src);
-        expect(dst[0]).not.toBe(src[0]);
-        expect(dst[1]).not.toBe(src[1]);
-        expect(dst[0].buffer).toBe(dst[1].buffer);
-        expect(dst[0].buffer).not.toBe(buffer);
-      }
-    });
-
-    it("should handle Int32Array objects with multiple references", () => {
-      if (typeof Int32Array !== "undefined") {
-        const arr = new Int32Array(2);
-        const src = [arr, arr];
-        arr.set([1, 2]);
-
-        const dst = copy(src);
-        expect(dst).toEqual(src);
-        expect(dst).not.toBe(src);
-        expect(dst[0]).not.toBe(src[0]);
-        expect(dst[0]).toBe(dst[1]);
-        expect(dst[0].buffer).toBe(dst[1].buffer);
-      }
-    });
-
-    it("should handle Blob objects", () => {
-      if (typeof Blob !== "undefined") {
-        const src = new Blob(["foo"], { type: "bar" });
-        const dst = copy(src);
-
-        expect(dst).not.toBe(src);
-        expect(dst.size).toBe(3);
-        expect(dst.type).toBe("bar");
-        expect(isBlob(dst)).toBe(true);
-      }
-    });
-
-    it("should handle Uint16Array subarray", () => {
-      if (typeof Uint16Array !== "undefined") {
-        const arr = new Uint16Array(4);
-        arr[1] = 1;
-        const src = arr.subarray(1, 2);
-        const dst = copy(src);
-        expect(dst instanceof Uint16Array).toBeTruthy();
-        expect(dst.length).toEqual(1);
-        expect(dst[0]).toEqual(1);
-        expect(dst).not.toBe(src);
-        expect(dst.buffer).not.toBe(src.buffer);
-      }
-    });
-
-    it("should throw an exception if a Uint8Array is the destination", () => {
-      if (typeof Uint8Array !== "undefined") {
-        const src = new Uint8Array();
-        const dst = new Uint8Array(5);
-        expect(() => {
-          copy(src, dst);
-        }).toThrowError();
-      }
-    });
-
-    it("should throw an exception if a Uint8ClampedArray is the destination", () => {
-      if (typeof Uint8ClampedArray !== "undefined") {
-        const src = new Uint8ClampedArray();
-        const dst = new Uint8ClampedArray(5);
-        expect(() => {
-          copy(src, dst);
-        }).toThrowError();
-      }
-    });
-
-    it("should throw an exception if a Uint16Array is the destination", () => {
-      if (typeof Uint16Array !== "undefined") {
-        const src = new Uint16Array();
-        const dst = new Uint16Array(5);
-        expect(() => {
-          copy(src, dst);
-        }).toThrowError();
-      }
-    });
-
-    it("should throw an exception if a Uint32Array is the destination", () => {
-      if (typeof Uint32Array !== "undefined") {
-        const src = new Uint32Array();
-        const dst = new Uint32Array(5);
-        expect(() => {
-          copy(src, dst);
-        }).toThrowError();
-      }
-    });
-
-    it("should throw an exception if a Int8Array is the destination", () => {
-      if (typeof Int8Array !== "undefined") {
-        const src = new Int8Array();
-        const dst = new Int8Array(5);
-        expect(() => {
-          copy(src, dst);
-        }).toThrowError();
-      }
-    });
-
-    it("should throw an exception if a Int16Array is the destination", () => {
-      if (typeof Int16Array !== "undefined") {
-        const src = new Int16Array();
-        const dst = new Int16Array(5);
-        expect(() => {
-          copy(src, dst);
-        }).toThrowError();
-      }
-    });
-
-    it("should throw an exception if a Int32Array is the destination", () => {
-      if (typeof Int32Array !== "undefined") {
-        const src = new Int32Array();
-        const dst = new Int32Array(5);
-        expect(() => {
-          copy(src, dst);
-        }).toThrowError();
-      }
-    });
-
-    it("should throw an exception if a Float32Array is the destination", () => {
-      if (typeof Float32Array !== "undefined") {
-        const src = new Float32Array();
-        const dst = new Float32Array(5);
-        expect(() => {
-          copy(src, dst);
-        }).toThrowError();
-      }
-    });
-
-    it("should throw an exception if a Float64Array is the destination", () => {
-      if (typeof Float64Array !== "undefined") {
-        const src = new Float64Array();
-        const dst = new Float64Array(5);
-        expect(() => {
-          copy(src, dst);
-        }).toThrowError();
-      }
-    });
-
-    it("should throw an exception if an ArrayBuffer is the destination", () => {
-      if (typeof ArrayBuffer !== "undefined") {
-        const src = new ArrayBuffer(5);
-        const dst = new ArrayBuffer(5);
-        expect(() => {
-          copy(src, dst);
-        }).toThrowError();
-      }
-    });
-
-    it("should deeply copy an array into an existing array", () => {
-      const src = [1, { name: "value" }];
-      const dst = [{ key: "v" }];
-      expect(copy(src, dst)).toBe(dst);
-      expect(dst).toEqual([1, { name: "value" }]);
-      expect(dst[1]).toEqual({ name: "value" });
-      expect(dst[1]).not.toBe(src[1]);
-    });
-
-    it("should deeply copy an array into a new array", () => {
-      const src = [1, { name: "value" }];
-      const dst = copy(src);
-      expect(src).toEqual([1, { name: "value" }]);
-      expect(dst).toEqual(src);
-      expect(dst).not.toBe(src);
-      expect(dst[1]).not.toBe(src[1]);
-    });
-
-    it("should copy empty array", () => {
-      const src = [];
-      const dst = [{ key: "v" }];
-      expect(copy(src, dst)).toEqual([]);
-      expect(dst).toEqual([]);
-    });
-
-    it("should deeply copy an object into an existing object", () => {
-      const src = { a: { name: "value" } };
-      const dst = { b: { key: "v" } };
-      expect(copy(src, dst)).toBe(dst);
-      expect(dst).toEqual({ a: { name: "value" } });
-      expect(dst.a).toEqual(src.a);
-      expect(dst.a).not.toBe(src.a);
-    });
-
-    it("should deeply copy an object into a non-existing object", () => {
-      const src = { a: { name: "value" } };
-      const dst = copy(src, undefined);
-      expect(src).toEqual({ a: { name: "value" } });
-      expect(dst).toEqual(src);
-      expect(dst).not.toBe(src);
-      expect(dst.a).toEqual(src.a);
-      expect(dst.a).not.toBe(src.a);
-    });
-
-    it("should copy primitives", () => {
-      expect(copy(null)).toEqual(null);
-      expect(copy("")).toBe("");
-      expect(copy("lala")).toBe("lala");
-      expect(copy(123)).toEqual(123);
-      expect(copy([{ key: null }])).toEqual([{ key: null }]);
-    });
-
-    it("should throw an exception if a Scope is being copied", () => {
-      expect(() => {
-        copy($rootScope.$new());
-      }).toThrowError(/cpws/);
-      expect(() => {
-        copy({ child: $rootScope.$new() }, {});
-      }).toThrowError(/cpws/);
-      expect(() => {
-        copy([$rootScope.$new()]);
-      }).toThrowError(/cpws/);
-    });
-
-    it("should throw an exception if a Window is being copied", () => {
-      expect(() => {
-        copy(window);
-      }).toThrowError();
-      expect(() => {
-        copy({ child: window });
-      }).toThrowError();
-      expect(() => {
-        copy([window], []);
-      }).toThrowError();
-    });
-
-    it("should throw an exception when source and destination are equivalent", () => {
-      let src;
-      let dst;
-      src = dst = { key: "value" };
-      expect(() => {
-        copy(src, dst);
-      }).toThrowError();
-      src = dst = [2, 4];
-      expect(() => {
-        copy(src, dst);
-      }).toThrowError();
-    });
-
-    it("should not copy the private $$hashKey", () => {
-      let src;
-      let dst;
-      src = {};
-      hashKey(src);
-      dst = copy(src);
-      expect(hashKey(dst)).not.toEqual(hashKey(src));
-
-      src = { foo: {} };
-      hashKey(src.foo);
-      dst = copy(src);
-      expect(hashKey(src.foo)).not.toEqual(hashKey(dst.foo));
-    });
-
-    it("should retain the previous $$hashKey when copying object with hashKey", () => {
-      let src;
-      let dst;
-      let h;
-      src = {};
-      dst = {};
-      // force creation of a hashkey
-      h = hashKey(dst);
-      hashKey(src);
-      dst = copy(src, dst);
-
-      // make sure we don't copy the key
-      expect(hashKey(dst)).not.toEqual(hashKey(src));
-      // make sure we retain the old key
-      expect(hashKey(dst)).toEqual(h);
-    });
-
-    it("should retain the previous $$hashKey when copying non-object", () => {
-      const dst = {};
-      const h = hashKey(dst);
-
-      copy(null, dst);
-      expect(hashKey(dst)).toEqual(h);
-
-      copy(42, dst);
-      expect(hashKey(dst)).toEqual(h);
-
-      copy(new Date(), dst);
-      expect(hashKey(dst)).toEqual(h);
-    });
-
-    it("should handle circular references", () => {
-      const a = { b: { a: null }, self: null, selfs: [null, null, [null]] };
-      a.b.a = a;
-      a.self = a;
-      a.selfs = [a, a.b, [a]];
-
-      let aCopy = copy(a, null);
-      expect(aCopy).toEqual(a);
-
-      expect(aCopy).not.toBe(a);
-      expect(aCopy).toBe(aCopy.self);
-      expect(aCopy).toBe(aCopy.selfs[2][0]);
-      expect(aCopy.selfs[2]).not.toBe(a.selfs[2]);
-
-      const copyTo = [];
-      aCopy = copy(a, copyTo);
-      expect(aCopy).toBe(copyTo);
-      expect(aCopy).not.toBe(a);
-      expect(aCopy).toBe(aCopy.self);
-    });
-
-    it("should deeply copy XML nodes", () => {
-      const anElement = document.createElement("foo");
-      anElement.appendChild(document.createElement("bar"));
-      const theCopy = anElement.cloneNode(true);
-      expect(copy(anElement).outerHTML).toEqual(theCopy.outerHTML);
-      expect(copy(anElement)).not.toBe(anElement);
-    });
-
-    it("should not try to call a non-function called `cloneNode`", () => {
-      expect(copy.bind(null, { cloneNode: 100 })).not.toThrow();
-    });
-
-    it("should handle objects with multiple references", () => {
-      const b = {};
-      const a = [b, -1, b];
-
-      let aCopy = copy(a);
-      expect(aCopy[0]).not.toBe(a[0]);
-      expect(aCopy[0]).toBe(aCopy[2]);
-
-      const copyTo = [];
-      aCopy = copy(a, copyTo);
-      expect(aCopy).toBe(copyTo);
-      expect(aCopy[0]).not.toBe(a[0]);
-      expect(aCopy[0]).toBe(aCopy[2]);
-    });
-
-    it("should handle date/regex objects with multiple references", () => {
-      const re = /foo/;
-      const d = new Date();
-      const o = { re, re2: re, d, d2: d };
-
-      let oCopy = copy(o);
-      expect(oCopy.re).toBe(oCopy.re2);
-      expect(oCopy.d).toBe(oCopy.d2);
-
-      oCopy = copy(o, {});
-      expect(oCopy.re).toBe(oCopy.re2);
-      expect(oCopy.d).toBe(oCopy.d2);
-    });
-
-    it("should clear destination arrays correctly when source is non-array", () => {
-      expect(copy(null, [1, 2, 3])).toEqual([]);
-      expect(copy(undefined, [1, 2, 3])).toEqual([]);
-      expect(copy({ 0: 1, 1: 2 }, [1, 2, 3])).toEqual([1, 2]);
-      expect(copy(new Date(), [1, 2, 3])).toEqual([]);
-      expect(copy(/a/, [1, 2, 3])).toEqual([]);
-      expect(copy(true, [1, 2, 3])).toEqual([]);
-    });
-
-    it("should clear destination objects correctly when source is non-array", () => {
-      expect(copy(null, { 0: 1, 1: 2, 2: 3 })).toEqual({});
-      expect(copy(undefined, { 0: 1, 1: 2, 2: 3 })).toEqual({});
-      expect(copy(new Date(), { 0: 1, 1: 2, 2: 3 })).toEqual({});
-      expect(copy(/a/, { 0: 1, 1: 2, 2: 3 })).toEqual({});
-      expect(copy(true, { 0: 1, 1: 2, 2: 3 })).toEqual({});
-    });
-
-    it("should copy objects with no prototype parent", () => {
-      const obj = extend(Object.create(null), {
-        a: 1,
-        b: 2,
-        c: 3,
-      });
-      const dest = copy(obj);
-
-      expect(Object.getPrototypeOf(dest)).toBe(null);
-      expect(dest.a).toBe(1);
-      expect(dest.b).toBe(2);
-      expect(dest.c).toBe(3);
-      expect(Object.keys(dest)).toEqual(["a", "b", "c"]);
-    });
-
-    it("should copy String() objects", () => {
-      const obj = new String("foo");
-      const dest = copy(obj);
-      expect(dest).not.toBe(obj);
-      expect(isObject(dest)).toBe(true);
-      expect(dest.valueOf()).toBe(obj.valueOf());
-    });
-
-    it("should copy Boolean() objects", () => {
-      const obj = new Boolean(true);
-      const dest = copy(obj);
-      expect(dest).not.toBe(obj);
-      expect(isObject(dest)).toBe(true);
-      expect(dest.valueOf()).toBe(obj.valueOf());
-    });
-
-    it("should copy Number() objects", () => {
-      const obj = new Number(42);
-      const dest = copy(obj);
-      expect(dest).not.toBe(obj);
-      expect(isObject(dest)).toBe(true);
-      expect(dest.valueOf()).toBe(obj.valueOf());
-    });
-
-    it("should copy falsy String/Boolean/Number objects", () => {
-      expect(copy(new String("")).valueOf()).toBe("");
-      expect(copy(new Boolean(false)).valueOf()).toBe(false);
-      expect(copy(new Number(0)).valueOf()).toBe(0);
-      expect(copy(new Number(NaN)).valueOf()).toBeNaN();
-    });
-
-    it("should copy source until reaching a given max depth", () => {
-      const source = {
-        a1: 1,
-        b1: { b2: { b3: 1 } },
-        c1: [1, { c2: 1 }],
-        d1: { d2: 1 },
-      };
-      let dest;
-
-      dest = copy(source, {}, 1);
-      expect(dest).toEqual({ a1: 1, b1: "...", c1: "...", d1: "..." });
-
-      dest = copy(source, {}, 2);
-      expect(dest).toEqual({
-        a1: 1,
-        b1: { b2: "..." },
-        c1: [1, "..."],
-        d1: { d2: 1 },
-      });
-
-      dest = copy(source, {}, 3);
-      expect(dest).toEqual({
-        a1: 1,
-        b1: { b2: { b3: 1 } },
-        c1: [1, { c2: 1 }],
-        d1: { d2: 1 },
-      });
-
-      dest = copy(source, {}, 4);
-      expect(dest).toEqual({
-        a1: 1,
-        b1: { b2: { b3: 1 } },
-        c1: [1, { c2: 1 }],
-        d1: { d2: 1 },
-      });
-    });
-
-    it("should copy source and ignore max depth when maxDepth = $prop", () => {
-      [NaN, null, undefined, true, false, -1, 0].forEach((maxDepth) => {
-        const source = {
-          a1: 1,
-          b1: { b2: { b3: 1 } },
-          c1: [1, { c2: 1 }],
-          d1: { d2: 1 },
-        };
-        const dest = copy(source, {}, maxDepth);
-        expect(dest).toEqual({
-          a1: 1,
-          b1: { b2: { b3: 1 } },
-          c1: [1, { c2: 1 }],
-          d1: { d2: 1 },
-        });
-      });
-    });
-  });
+  // describe("copy", () => {
+  //   it("should return same object", () => {
+  //     const obj = {};
+  //     const arr = [];
+  //     expect(copy({}, obj)).toBe(obj);
+  //     expect(copy([], arr)).toBe(arr);
+  //   });
+
+  //   it("should preserve prototype chaining", () => {
+  //     const GrandParentProto = {};
+  //     const ParentProto = Object.create(GrandParentProto);
+  //     const obj = Object.create(ParentProto);
+  //     expect(ParentProto.isPrototypeOf(copy(obj))).toBe(true);
+  //     expect(GrandParentProto.isPrototypeOf(copy(obj))).toBe(true);
+  //     const Foo = function () {};
+  //     expect(copy(new Foo()) instanceof Foo).toBe(true);
+  //   });
+
+  //   it("should copy Date", () => {
+  //     const date = new Date(123);
+  //     expect(copy(date) instanceof Date).toBeTruthy();
+  //     expect(copy(date).getTime()).toEqual(123);
+  //     expect(copy(date) === date).toBeFalsy();
+  //   });
+
+  //   it("should copy RegExp", () => {
+  //     const re = new RegExp(".*");
+  //     expect(copy(re) instanceof RegExp).toBeTruthy();
+  //     expect(copy(re).source).toBe(".*");
+  //     expect(copy(re) === re).toBe(false);
+  //   });
+
+  //   it("should copy literal RegExp", () => {
+  //     const re = /.*/;
+  //     expect(copy(re) instanceof RegExp).toBeTruthy();
+  //     expect(copy(re).source).toEqual(".*");
+  //     expect(copy(re) === re).toBeFalsy();
+  //   });
+
+  //   it("should copy RegExp with flags", () => {
+  //     const re = new RegExp(".*", "gim");
+  //     expect(copy(re).global).toBe(true);
+  //     expect(copy(re).ignoreCase).toBe(true);
+  //     expect(copy(re).multiline).toBe(true);
+  //   });
+
+  //   it("should copy RegExp with lastIndex", () => {
+  //     const re = /a+b+/g;
+  //     const str = "ab aabb";
+  //     expect(re.exec(str)[0]).toEqual("ab");
+  //     expect(copy(re).exec(str)[0]).toEqual("aabb");
+  //   });
+
+  //   it("should deeply copy literal RegExp", () => {
+  //     const objWithRegExp = {
+  //       re: /.*/,
+  //     };
+  //     expect(copy(objWithRegExp).re instanceof RegExp).toBeTruthy();
+  //     expect(copy(objWithRegExp).re.source).toEqual(".*");
+  //     expect(copy(objWithRegExp.re) === objWithRegExp.re).toBeFalsy();
+  //   });
+
+  //   it("should copy a Uint8Array with no destination", () => {
+  //     if (typeof Uint8Array !== "undefined") {
+  //       const src = new Uint8Array(2);
+  //       src[1] = 1;
+  //       const dst = copy(src);
+  //       expect(copy(src) instanceof Uint8Array).toBeTruthy();
+  //       expect(dst).toEqual(src);
+  //       expect(dst).not.toBe(src);
+  //       expect(dst.buffer).not.toBe(src.buffer);
+  //     }
+  //   });
+
+  //   it("should copy a Uint8ClampedArray with no destination", () => {
+  //     if (typeof Uint8ClampedArray !== "undefined") {
+  //       const src = new Uint8ClampedArray(2);
+  //       src[1] = 1;
+  //       const dst = copy(src);
+  //       expect(copy(src) instanceof Uint8ClampedArray).toBeTruthy();
+  //       expect(dst).toEqual(src);
+  //       expect(dst).not.toBe(src);
+  //       expect(dst.buffer).not.toBe(src.buffer);
+  //     }
+  //   });
+
+  //   it("should copy a Uint16Array with no destination", () => {
+  //     if (typeof Uint16Array !== "undefined") {
+  //       const src = new Uint16Array(2);
+  //       src[1] = 1;
+  //       const dst = copy(src);
+  //       expect(copy(src) instanceof Uint16Array).toBeTruthy();
+  //       expect(dst).toEqual(src);
+  //       expect(dst).not.toBe(src);
+  //       expect(dst.buffer).not.toBe(src.buffer);
+  //     }
+  //   });
+
+  //   it("should copy a Uint32Array with no destination", () => {
+  //     if (typeof Uint32Array !== "undefined") {
+  //       const src = new Uint32Array(2);
+  //       src[1] = 1;
+  //       const dst = copy(src);
+  //       expect(copy(src) instanceof Uint32Array).toBeTruthy();
+  //       expect(dst).toEqual(src);
+  //       expect(dst).not.toBe(src);
+  //       expect(dst.buffer).not.toBe(src.buffer);
+  //     }
+  //   });
+
+  //   it("should copy a Int8Array with no destination", () => {
+  //     if (typeof Int8Array !== "undefined") {
+  //       const src = new Int8Array(2);
+  //       src[1] = 1;
+  //       const dst = copy(src);
+  //       expect(copy(src) instanceof Int8Array).toBeTruthy();
+  //       expect(dst).toEqual(src);
+  //       expect(dst).not.toBe(src);
+  //       expect(dst.buffer).not.toBe(src.buffer);
+  //     }
+  //   });
+
+  //   it("should copy a Int16Array with no destination", () => {
+  //     if (typeof Int16Array !== "undefined") {
+  //       const src = new Int16Array(2);
+  //       src[1] = 1;
+  //       const dst = copy(src);
+  //       expect(copy(src) instanceof Int16Array).toBeTruthy();
+  //       expect(dst).toEqual(src);
+  //       expect(dst).not.toBe(src);
+  //       expect(dst.buffer).not.toBe(src.buffer);
+  //     }
+  //   });
+
+  //   it("should copy a Int32Array with no destination", () => {
+  //     if (typeof Int32Array !== "undefined") {
+  //       const src = new Int32Array(2);
+  //       src[1] = 1;
+  //       const dst = copy(src);
+  //       expect(copy(src) instanceof Int32Array).toBeTruthy();
+  //       expect(dst).toEqual(src);
+  //       expect(dst).not.toBe(src);
+  //       expect(dst.buffer).not.toBe(src.buffer);
+  //     }
+  //   });
+
+  //   it("should copy a Float32Array with no destination", () => {
+  //     if (typeof Float32Array !== "undefined") {
+  //       const src = new Float32Array(2);
+  //       src[1] = 1;
+  //       const dst = copy(src);
+  //       expect(copy(src) instanceof Float32Array).toBeTruthy();
+  //       expect(dst).toEqual(src);
+  //       expect(dst).not.toBe(src);
+  //       expect(dst.buffer).not.toBe(src.buffer);
+  //     }
+  //   });
+
+  //   it("should copy a Float64Array with no destination", () => {
+  //     if (typeof Float64Array !== "undefined") {
+  //       const src = new Float64Array(2);
+  //       src[1] = 1;
+  //       const dst = copy(src);
+  //       expect(copy(src) instanceof Float64Array).toBeTruthy();
+  //       expect(dst).toEqual(src);
+  //       expect(dst).not.toBe(src);
+  //       expect(dst.buffer).not.toBe(src.buffer);
+  //     }
+  //   });
+
+  //   it("should copy an ArrayBuffer with no destination", () => {
+  //     if (typeof ArrayBuffer !== "undefined") {
+  //       const src = new ArrayBuffer(8);
+  //       new Int32Array(src).set([1, 2]);
+
+  //       const dst = copy(src);
+  //       expect(dst instanceof ArrayBuffer).toBeTruthy();
+  //       expect(dst).toEqual(src);
+  //       expect(dst).not.toBe(src);
+  //     }
+  //   });
+
+  //   it("should handle ArrayBuffer objects with multiple references", () => {
+  //     if (typeof ArrayBuffer !== "undefined") {
+  //       const buffer = new ArrayBuffer(8);
+  //       const src = [new Int32Array(buffer), new Float32Array(buffer)];
+  //       src[0].set([1, 2]);
+
+  //       const dst = copy(src);
+  //       expect(dst).toEqual(src);
+  //       expect(dst[0]).not.toBe(src[0]);
+  //       expect(dst[1]).not.toBe(src[1]);
+  //       expect(dst[0].buffer).toBe(dst[1].buffer);
+  //       expect(dst[0].buffer).not.toBe(buffer);
+  //     }
+  //   });
+
+  //   it("should handle Int32Array objects with multiple references", () => {
+  //     if (typeof Int32Array !== "undefined") {
+  //       const arr = new Int32Array(2);
+  //       const src = [arr, arr];
+  //       arr.set([1, 2]);
+
+  //       const dst = copy(src);
+  //       expect(dst).toEqual(src);
+  //       expect(dst).not.toBe(src);
+  //       expect(dst[0]).not.toBe(src[0]);
+  //       expect(dst[0]).toBe(dst[1]);
+  //       expect(dst[0].buffer).toBe(dst[1].buffer);
+  //     }
+  //   });
+
+  //   it("should handle Blob objects", () => {
+  //     if (typeof Blob !== "undefined") {
+  //       const src = new Blob(["foo"], { type: "bar" });
+  //       const dst = copy(src);
+
+  //       expect(dst).not.toBe(src);
+  //       expect(dst.size).toBe(3);
+  //       expect(dst.type).toBe("bar");
+  //       expect(isBlob(dst)).toBe(true);
+  //     }
+  //   });
+
+  //   it("should handle Uint16Array subarray", () => {
+  //     if (typeof Uint16Array !== "undefined") {
+  //       const arr = new Uint16Array(4);
+  //       arr[1] = 1;
+  //       const src = arr.subarray(1, 2);
+  //       const dst = copy(src);
+  //       expect(dst instanceof Uint16Array).toBeTruthy();
+  //       expect(dst.length).toEqual(1);
+  //       expect(dst[0]).toEqual(1);
+  //       expect(dst).not.toBe(src);
+  //       expect(dst.buffer).not.toBe(src.buffer);
+  //     }
+  //   });
+
+  //   it("should throw an exception if a Uint8Array is the destination", () => {
+  //     if (typeof Uint8Array !== "undefined") {
+  //       const src = new Uint8Array();
+  //       const dst = new Uint8Array(5);
+  //       expect(() => {
+  //         copy(src, dst);
+  //       }).toThrowError();
+  //     }
+  //   });
+
+  //   it("should throw an exception if a Uint8ClampedArray is the destination", () => {
+  //     if (typeof Uint8ClampedArray !== "undefined") {
+  //       const src = new Uint8ClampedArray();
+  //       const dst = new Uint8ClampedArray(5);
+  //       expect(() => {
+  //         copy(src, dst);
+  //       }).toThrowError();
+  //     }
+  //   });
+
+  //   it("should throw an exception if a Uint16Array is the destination", () => {
+  //     if (typeof Uint16Array !== "undefined") {
+  //       const src = new Uint16Array();
+  //       const dst = new Uint16Array(5);
+  //       expect(() => {
+  //         copy(src, dst);
+  //       }).toThrowError();
+  //     }
+  //   });
+
+  //   it("should throw an exception if a Uint32Array is the destination", () => {
+  //     if (typeof Uint32Array !== "undefined") {
+  //       const src = new Uint32Array();
+  //       const dst = new Uint32Array(5);
+  //       expect(() => {
+  //         copy(src, dst);
+  //       }).toThrowError();
+  //     }
+  //   });
+
+  //   it("should throw an exception if a Int8Array is the destination", () => {
+  //     if (typeof Int8Array !== "undefined") {
+  //       const src = new Int8Array();
+  //       const dst = new Int8Array(5);
+  //       expect(() => {
+  //         copy(src, dst);
+  //       }).toThrowError();
+  //     }
+  //   });
+
+  //   it("should throw an exception if a Int16Array is the destination", () => {
+  //     if (typeof Int16Array !== "undefined") {
+  //       const src = new Int16Array();
+  //       const dst = new Int16Array(5);
+  //       expect(() => {
+  //         copy(src, dst);
+  //       }).toThrowError();
+  //     }
+  //   });
+
+  //   it("should throw an exception if a Int32Array is the destination", () => {
+  //     if (typeof Int32Array !== "undefined") {
+  //       const src = new Int32Array();
+  //       const dst = new Int32Array(5);
+  //       expect(() => {
+  //         copy(src, dst);
+  //       }).toThrowError();
+  //     }
+  //   });
+
+  //   it("should throw an exception if a Float32Array is the destination", () => {
+  //     if (typeof Float32Array !== "undefined") {
+  //       const src = new Float32Array();
+  //       const dst = new Float32Array(5);
+  //       expect(() => {
+  //         copy(src, dst);
+  //       }).toThrowError();
+  //     }
+  //   });
+
+  //   it("should throw an exception if a Float64Array is the destination", () => {
+  //     if (typeof Float64Array !== "undefined") {
+  //       const src = new Float64Array();
+  //       const dst = new Float64Array(5);
+  //       expect(() => {
+  //         copy(src, dst);
+  //       }).toThrowError();
+  //     }
+  //   });
+
+  //   it("should throw an exception if an ArrayBuffer is the destination", () => {
+  //     if (typeof ArrayBuffer !== "undefined") {
+  //       const src = new ArrayBuffer(5);
+  //       const dst = new ArrayBuffer(5);
+  //       expect(() => {
+  //         copy(src, dst);
+  //       }).toThrowError();
+  //     }
+  //   });
+
+  //   it("should deeply copy an array into an existing array", () => {
+  //     const src = [1, { name: "value" }];
+  //     const dst = [{ key: "v" }];
+  //     expect(copy(src, dst)).toBe(dst);
+  //     expect(dst).toEqual([1, { name: "value" }]);
+  //     expect(dst[1]).toEqual({ name: "value" });
+  //     expect(dst[1]).not.toBe(src[1]);
+  //   });
+
+  //   it("should deeply copy an array into a new array", () => {
+  //     const src = [1, { name: "value" }];
+  //     const dst = copy(src);
+  //     expect(src).toEqual([1, { name: "value" }]);
+  //     expect(dst).toEqual(src);
+  //     expect(dst).not.toBe(src);
+  //     expect(dst[1]).not.toBe(src[1]);
+  //   });
+
+  //   it("should copy empty array", () => {
+  //     const src = [];
+  //     const dst = [{ key: "v" }];
+  //     expect(copy(src, dst)).toEqual([]);
+  //     expect(dst).toEqual([]);
+  //   });
+
+  //   it("should deeply copy an object into an existing object", () => {
+  //     const src = { a: { name: "value" } };
+  //     const dst = { b: { key: "v" } };
+  //     expect(copy(src, dst)).toBe(dst);
+  //     expect(dst).toEqual({ a: { name: "value" } });
+  //     expect(dst.a).toEqual(src.a);
+  //     expect(dst.a).not.toBe(src.a);
+  //   });
+
+  //   it("should deeply copy an object into a non-existing object", () => {
+  //     const src = { a: { name: "value" } };
+  //     const dst = copy(src, undefined);
+  //     expect(src).toEqual({ a: { name: "value" } });
+  //     expect(dst).toEqual(src);
+  //     expect(dst).not.toBe(src);
+  //     expect(dst.a).toEqual(src.a);
+  //     expect(dst.a).not.toBe(src.a);
+  //   });
+
+  //   it("should copy primitives", () => {
+  //     expect(copy(null)).toEqual(null);
+  //     expect(copy("")).toBe("");
+  //     expect(copy("lala")).toBe("lala");
+  //     expect(copy(123)).toEqual(123);
+  //     expect(copy([{ key: null }])).toEqual([{ key: null }]);
+  //   });
+
+  //   it("should throw an exception if a Scope is being copied", () => {
+  //     expect(() => {
+  //       copy($rootScope.$new());
+  //     }).toThrowError(/cpws/);
+  //     expect(() => {
+  //       copy({ child: $rootScope.$new() }, {});
+  //     }).toThrowError(/cpws/);
+  //     expect(() => {
+  //       copy([$rootScope.$new()]);
+  //     }).toThrowError(/cpws/);
+  //   });
+
+  //   it("should throw an exception if a Window is being copied", () => {
+  //     expect(() => {
+  //       copy(window);
+  //     }).toThrowError();
+  //     expect(() => {
+  //       copy({ child: window });
+  //     }).toThrowError();
+  //     expect(() => {
+  //       copy([window], []);
+  //     }).toThrowError();
+  //   });
+
+  //   it("should throw an exception when source and destination are equivalent", () => {
+  //     let src;
+  //     let dst;
+  //     src = dst = { key: "value" };
+  //     expect(() => {
+  //       copy(src, dst);
+  //     }).toThrowError();
+  //     src = dst = [2, 4];
+  //     expect(() => {
+  //       copy(src, dst);
+  //     }).toThrowError();
+  //   });
+
+  //   it("should not copy the private $$hashKey", () => {
+  //     let src;
+  //     let dst;
+  //     src = {};
+  //     hashKey(src);
+  //     dst = copy(src);
+  //     expect(hashKey(dst)).not.toEqual(hashKey(src));
+
+  //     src = { foo: {} };
+  //     hashKey(src.foo);
+  //     dst = copy(src);
+  //     expect(hashKey(src.foo)).not.toEqual(hashKey(dst.foo));
+  //   });
+
+  //   it("should retain the previous $$hashKey when copying object with hashKey", () => {
+  //     let src;
+  //     let dst;
+  //     let h;
+  //     src = {};
+  //     dst = {};
+  //     // force creation of a hashkey
+  //     h = hashKey(dst);
+  //     hashKey(src);
+  //     dst = copy(src, dst);
+
+  //     // make sure we don't copy the key
+  //     expect(hashKey(dst)).not.toEqual(hashKey(src));
+  //     // make sure we retain the old key
+  //     expect(hashKey(dst)).toEqual(h);
+  //   });
+
+  //   it("should retain the previous $$hashKey when copying non-object", () => {
+  //     const dst = {};
+  //     const h = hashKey(dst);
+
+  //     copy(null, dst);
+  //     expect(hashKey(dst)).toEqual(h);
+
+  //     copy(42, dst);
+  //     expect(hashKey(dst)).toEqual(h);
+
+  //     copy(new Date(), dst);
+  //     expect(hashKey(dst)).toEqual(h);
+  //   });
+
+  //   it("should handle circular references", () => {
+  //     const a = { b: { a: null }, self: null, selfs: [null, null, [null]] };
+  //     a.b.a = a;
+  //     a.self = a;
+  //     a.selfs = [a, a.b, [a]];
+
+  //     let aCopy = copy(a, null);
+  //     expect(aCopy).toEqual(a);
+
+  //     expect(aCopy).not.toBe(a);
+  //     expect(aCopy).toBe(aCopy.self);
+  //     expect(aCopy).toBe(aCopy.selfs[2][0]);
+  //     expect(aCopy.selfs[2]).not.toBe(a.selfs[2]);
+
+  //     const copyTo = [];
+  //     aCopy = copy(a, copyTo);
+  //     expect(aCopy).toBe(copyTo);
+  //     expect(aCopy).not.toBe(a);
+  //     expect(aCopy).toBe(aCopy.self);
+  //   });
+
+  //   it("should deeply copy XML nodes", () => {
+  //     const anElement = document.createElement("foo");
+  //     anElement.appendChild(document.createElement("bar"));
+  //     const theCopy = anElement.cloneNode(true);
+  //     expect(copy(anElement).outerHTML).toEqual(theCopy.outerHTML);
+  //     expect(copy(anElement)).not.toBe(anElement);
+  //   });
+
+  //   it("should not try to call a non-function called `cloneNode`", () => {
+  //     expect(copy.bind(null, { cloneNode: 100 })).not.toThrow();
+  //   });
+
+  //   it("should handle objects with multiple references", () => {
+  //     const b = {};
+  //     const a = [b, -1, b];
+
+  //     let aCopy = copy(a);
+  //     expect(aCopy[0]).not.toBe(a[0]);
+  //     expect(aCopy[0]).toBe(aCopy[2]);
+
+  //     const copyTo = [];
+  //     aCopy = copy(a, copyTo);
+  //     expect(aCopy).toBe(copyTo);
+  //     expect(aCopy[0]).not.toBe(a[0]);
+  //     expect(aCopy[0]).toBe(aCopy[2]);
+  //   });
+
+  //   it("should handle date/regex objects with multiple references", () => {
+  //     const re = /foo/;
+  //     const d = new Date();
+  //     const o = { re, re2: re, d, d2: d };
+
+  //     let oCopy = copy(o);
+  //     expect(oCopy.re).toBe(oCopy.re2);
+  //     expect(oCopy.d).toBe(oCopy.d2);
+
+  //     oCopy = copy(o, {});
+  //     expect(oCopy.re).toBe(oCopy.re2);
+  //     expect(oCopy.d).toBe(oCopy.d2);
+  //   });
+
+  //   it("should clear destination arrays correctly when source is non-array", () => {
+  //     expect(copy(null, [1, 2, 3])).toEqual([]);
+  //     expect(copy(undefined, [1, 2, 3])).toEqual([]);
+  //     expect(copy({ 0: 1, 1: 2 }, [1, 2, 3])).toEqual([1, 2]);
+  //     expect(copy(new Date(), [1, 2, 3])).toEqual([]);
+  //     expect(copy(/a/, [1, 2, 3])).toEqual([]);
+  //     expect(copy(true, [1, 2, 3])).toEqual([]);
+  //   });
+
+  //   it("should clear destination objects correctly when source is non-array", () => {
+  //     expect(copy(null, { 0: 1, 1: 2, 2: 3 })).toEqual({});
+  //     expect(copy(undefined, { 0: 1, 1: 2, 2: 3 })).toEqual({});
+  //     expect(copy(new Date(), { 0: 1, 1: 2, 2: 3 })).toEqual({});
+  //     expect(copy(/a/, { 0: 1, 1: 2, 2: 3 })).toEqual({});
+  //     expect(copy(true, { 0: 1, 1: 2, 2: 3 })).toEqual({});
+  //   });
+
+  //   it("should copy objects with no prototype parent", () => {
+  //     const obj = extend(Object.create(null), {
+  //       a: 1,
+  //       b: 2,
+  //       c: 3,
+  //     });
+  //     const dest = copy(obj);
+
+  //     expect(Object.getPrototypeOf(dest)).toBe(null);
+  //     expect(dest.a).toBe(1);
+  //     expect(dest.b).toBe(2);
+  //     expect(dest.c).toBe(3);
+  //     expect(Object.keys(dest)).toEqual(["a", "b", "c"]);
+  //   });
+
+  //   it("should copy String() objects", () => {
+  //     const obj = new String("foo");
+  //     const dest = copy(obj);
+  //     expect(dest).not.toBe(obj);
+  //     expect(isObject(dest)).toBe(true);
+  //     expect(dest.valueOf()).toBe(obj.valueOf());
+  //   });
+
+  //   it("should copy Boolean() objects", () => {
+  //     const obj = new Boolean(true);
+  //     const dest = copy(obj);
+  //     expect(dest).not.toBe(obj);
+  //     expect(isObject(dest)).toBe(true);
+  //     expect(dest.valueOf()).toBe(obj.valueOf());
+  //   });
+
+  //   it("should copy Number() objects", () => {
+  //     const obj = new Number(42);
+  //     const dest = copy(obj);
+  //     expect(dest).not.toBe(obj);
+  //     expect(isObject(dest)).toBe(true);
+  //     expect(dest.valueOf()).toBe(obj.valueOf());
+  //   });
+
+  //   it("should copy falsy String/Boolean/Number objects", () => {
+  //     expect(copy(new String("")).valueOf()).toBe("");
+  //     expect(copy(new Boolean(false)).valueOf()).toBe(false);
+  //     expect(copy(new Number(0)).valueOf()).toBe(0);
+  //     expect(copy(new Number(NaN)).valueOf()).toBeNaN();
+  //   });
+
+  //   it("should copy source until reaching a given max depth", () => {
+  //     const source = {
+  //       a1: 1,
+  //       b1: { b2: { b3: 1 } },
+  //       c1: [1, { c2: 1 }],
+  //       d1: { d2: 1 },
+  //     };
+  //     let dest;
+
+  //     dest = copy(source, {}, 1);
+  //     expect(dest).toEqual({ a1: 1, b1: "...", c1: "...", d1: "..." });
+
+  //     dest = copy(source, {}, 2);
+  //     expect(dest).toEqual({
+  //       a1: 1,
+  //       b1: { b2: "..." },
+  //       c1: [1, "..."],
+  //       d1: { d2: 1 },
+  //     });
+
+  //     dest = copy(source, {}, 3);
+  //     expect(dest).toEqual({
+  //       a1: 1,
+  //       b1: { b2: { b3: 1 } },
+  //       c1: [1, { c2: 1 }],
+  //       d1: { d2: 1 },
+  //     });
+
+  //     dest = copy(source, {}, 4);
+  //     expect(dest).toEqual({
+  //       a1: 1,
+  //       b1: { b2: { b3: 1 } },
+  //       c1: [1, { c2: 1 }],
+  //       d1: { d2: 1 },
+  //     });
+  //   });
+
+  //   it("should copy source and ignore max depth when maxDepth = $prop", () => {
+  //     [NaN, null, undefined, true, false, -1, 0].forEach((maxDepth) => {
+  //       const source = {
+  //         a1: 1,
+  //         b1: { b2: { b3: 1 } },
+  //         c1: [1, { c2: 1 }],
+  //         d1: { d2: 1 },
+  //       };
+  //       const dest = copy(source, {}, maxDepth);
+  //       expect(dest).toEqual({
+  //         a1: 1,
+  //         b1: { b2: { b3: 1 } },
+  //         c1: [1, { c2: 1 }],
+  //         d1: { d2: 1 },
+  //       });
+  //     });
+  //   });
+  // });
 
   describe("extend", () => {
     it("should not copy the private $$hashKey", () => {

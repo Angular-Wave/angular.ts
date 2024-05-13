@@ -666,62 +666,6 @@ export class Angular {
 
 /// //////////////////////////////////////////////
 
-export function allowAutoBootstrap(currentScript) {
-  const script = currentScript;
-
-  // If the `currentScript` property has been clobbered just return false, since this indicates a probable attack
-  if (
-    !(
-      script instanceof window.HTMLScriptElement ||
-      script instanceof window.SVGScriptElement
-    )
-  ) {
-    return false;
-  }
-
-  const { attributes } = script;
-  const srcs = [
-    attributes.getNamedItem("src"),
-    attributes.getNamedItem("href"),
-    attributes.getNamedItem("xlink:href"),
-  ];
-
-  return srcs.every((src) => {
-    if (!src) {
-      return true;
-    }
-    if (!src.value) {
-      return false;
-    }
-
-    const link = document.createElement("a");
-    link.href = src.value;
-
-    if (document.location.origin === link.origin) {
-      // Same-origin resources are always allowed, even for banned URL schemes.
-      return true;
-    }
-    // Disabled bootstrapping unless angular.js was loaded from a known scheme used on the web.
-    // This is to prevent angular.js bundled with browser extensions from being used to bypass the
-    // content security policy in web pages and other browser extensions.
-    switch (link.protocol) {
-      case "http:":
-      case "https:":
-      case "ftp:":
-      case "blob:":
-      case "file:":
-      case "data:":
-        return true;
-      default:
-        return false;
-    }
-  });
-}
-
-export const confGlobal = {
-  isAutoBootstrapAllowed: false,
-};
-
 /**
  * @ngdoc directive
  * @name ngApp
@@ -869,7 +813,7 @@ export function angularInit(element) {
   const config = {};
 
   // The element `element` has priority over any other element.
-  forEach(ngAttrPrefixes, (prefix) => {
+  ngAttrPrefixes.forEach((prefix) => {
     const name = `${prefix}app`;
 
     if (!appElement && element.hasAttribute && element.hasAttribute(name)) {
@@ -877,7 +821,7 @@ export function angularInit(element) {
       module = element.getAttribute(name);
     }
   });
-  forEach(ngAttrPrefixes, (prefix) => {
+  ngAttrPrefixes.forEach((prefix) => {
     const name = `${prefix}app`;
     let candidate;
 

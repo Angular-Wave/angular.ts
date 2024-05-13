@@ -26,7 +26,6 @@
     "@playwright/test": "^1.44.0",
     "@rollup/plugin-commonjs": "latest",
     "@rollup/plugin-node-resolve": "latest",
-    "@types/angular": "latest",
     "@types/jasmine": "latest",
     "@types/node": "latest",
     "eslint": "latest",

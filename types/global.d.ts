@@ -1,6 +1,7 @@
+/// <reference path="index.d.ts" />
+
 declare global {
   interface Window {
-    AUTOBOOTSTRAP: boolean;
     angular: ng.IAngularStatic;
   }
 }

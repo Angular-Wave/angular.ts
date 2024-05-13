@@ -1260,7 +1260,7 @@ export function startingTag(element) {
 
 /**
  * Return the DOM siblings between the first and last node in the given array.
- * @param {Array} array like object
+ * @param {Array} nodes An array-like object
  * @returns {Array} the inputted object or a jqLite collection containing the nodes
  */
 export function getBlockNodes(nodes) {
