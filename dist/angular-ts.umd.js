@@ -1223,10 +1223,7 @@
    * @returns {function(string, string, ...*): Error} minErr instance
    */
 
-  const minErrConfig = {
-    objectMaxDepth: 5,
-    urlErrorParamsEnabled: true,
-  };
+  const minErrConfig = {};
 
   function minErr(module) {
     const url = 'https://errors.angularjs.org/"NG_VERSION_FULL"/';
@@ -1274,20 +1271,6 @@
     };
   }
 
-  function serializeObject(obj) {
-    const seen = [];
-    let copyObj = structuredClone(obj);
-    return JSON.stringify(copyObj, (key, val) => {
-      const replace = toJsonReplacer(key, val);
-      if (isObject(replace)) {
-        if (seen.indexOf(replace) >= 0) return "...";
-
-        seen.push(replace);
-      }
-      return replace;
-    });
-  }
-
   function toDebugString(obj) {
     if (typeof obj === "function") {
       return obj.toString().replace(/ \{[\s\S]*$/, "");
@@ -1296,7 +1279,17 @@
       return "undefined";
     }
     if (typeof obj !== "string") {
-      return serializeObject(obj);
+      const seen = [];
+      let copyObj = structuredClone(obj);
+      return JSON.stringify(copyObj, (key, val) => {
+        const replace = toJsonReplacer(key, val);
+        if (isObject(replace)) {
+          if (seen.indexOf(replace) >= 0) return "...";
+
+          seen.push(replace);
+        }
+        return replace;
+      });
     }
     return obj;
   }
@@ -24652,7 +24645,6 @@
     }
 
     function processChecks() {
-      // eslint-disable-next-line no-unmodified-loop-condition
       while (!queueSize && checkQueue.length) {
         const toCheck = checkQueue.shift();
         if (!isStateExceptionHandled(toCheck)) {

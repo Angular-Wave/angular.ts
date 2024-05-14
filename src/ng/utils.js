@@ -917,7 +917,7 @@ export function bind(context, fn) {
   return fn;
 }
 
-export function toJsonReplacer(key, value) {
+function toJsonReplacer(key, value) {
   let val = value;
 
   if (
@@ -1224,10 +1224,7 @@ export function assertArgFn(arg, name, acceptArrayAnnotation) {
  * @returns {function(string, string, ...*): Error} minErr instance
  */
 
-export const minErrConfig = {
-  objectMaxDepth: 5,
-  urlErrorParamsEnabled: true,
-};
+export const minErrConfig = {};
 
 export function minErr(module) {
   const url = 'https://errors.angularjs.org/"NG_VERSION_FULL"/';
@@ -1275,20 +1272,6 @@ export function minErr(module) {
   };
 }
 
-export function serializeObject(obj) {
-  const seen = [];
-  let copyObj = structuredClone(obj);
-  return JSON.stringify(copyObj, (key, val) => {
-    const replace = toJsonReplacer(key, val);
-    if (isObject(replace)) {
-      if (seen.indexOf(replace) >= 0) return "...";
-
-      seen.push(replace);
-    }
-    return replace;
-  });
-}
-
 export function toDebugString(obj) {
   if (typeof obj === "function") {
     return obj.toString().replace(/ \{[\s\S]*$/, "");
@@ -1297,7 +1280,17 @@ export function toDebugString(obj) {
     return "undefined";
   }
   if (typeof obj !== "string") {
-    return serializeObject(obj);
+    const seen = [];
+    let copyObj = structuredClone(obj);
+    return JSON.stringify(copyObj, (key, val) => {
+      const replace = toJsonReplacer(key, val);
+      if (isObject(replace)) {
+        if (seen.indexOf(replace) >= 0) return "...";
+
+        seen.push(replace);
+      }
+      return replace;
+    });
   }
   return obj;
 }

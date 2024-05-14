@@ -1,61 +1,8 @@
-import { minErrConfig, minErr, isDefined } from "../src/ng/utils";
+import { minErr, isDefined, toDebugString } from "../src/ng/utils";
 import { errorHandlingConfig } from "../src/loader";
 
 describe("errors", () => {
-  const originalObjectMaxDepthInErrorMessage = minErrConfig.objectMaxDepth;
-  const originalUrlErrorParamsEnabled = minErrConfig.urlErrorParamsEnabled;
-
-  afterEach(() => {
-    minErrConfig.objectMaxDepth = originalObjectMaxDepthInErrorMessage;
-    minErrConfig.urlErrorParamsEnabled = originalUrlErrorParamsEnabled;
-  });
-
-  describe("errorHandlingConfig", () => {
-    describe("objectMaxDepth", () => {
-      it("should get default objectMaxDepth", () => {
-        expect(errorHandlingConfig().objectMaxDepth).toBe(5);
-      });
-
-      it("should set objectMaxDepth", () => {
-        errorHandlingConfig({ objectMaxDepth: 3 });
-        expect(errorHandlingConfig().objectMaxDepth).toBe(3);
-      });
-
-      it("should not change objectMaxDepth when undefined is supplied", () => {
-        errorHandlingConfig({ objectMaxDepth: undefined });
-        expect(errorHandlingConfig().objectMaxDepth).toBe(
-          originalObjectMaxDepthInErrorMessage,
-        );
-      });
-
-      it("should set objectMaxDepth to NaN when $prop is supplied", () => {
-        [NaN, null, true, false, -1, 0].forEach((maxDepth) => {
-          errorHandlingConfig({ objectMaxDepth: maxDepth });
-          expect(errorHandlingConfig().objectMaxDepth).toBeNaN();
-        });
-      });
-    });
-
-    describe("urlErrorParamsEnabled", () => {
-      it("should get default urlErrorParamsEnabled", () => {
-        expect(errorHandlingConfig().urlErrorParamsEnabled).toBe(true);
-      });
-
-      it("should set urlErrorParamsEnabled", () => {
-        errorHandlingConfig({ urlErrorParamsEnabled: false });
-        expect(errorHandlingConfig().urlErrorParamsEnabled).toBe(false);
-        errorHandlingConfig({ urlErrorParamsEnabled: true });
-        expect(errorHandlingConfig().urlErrorParamsEnabled).toBe(true);
-      });
-
-      it("should not change its value when non-boolean is supplied", () => {
-        errorHandlingConfig({ urlErrorParamsEnabled: 123 });
-        expect(errorHandlingConfig().urlErrorParamsEnabled).toBe(
-          originalUrlErrorParamsEnabled,
-        );
-      });
-    });
-  });
+  afterEach(() => {});
 
   describe("minErr", () => {
     const supportStackTraces = function () {
@@ -142,41 +89,6 @@ describe("errors", () => {
       expect(myError.message).toMatch(/a is {"b":{"a":"..."}}/);
     });
 
-    it("should handle arguments that are objects with max depth", () => {
-      const a = { b: { c: { d: { e: { f: { g: 1 } } } } } };
-
-      let myError = testError(
-        "26",
-        "a when objectMaxDepth is default=5 is {0}",
-        a,
-      );
-      expect(myError.message).toMatch(
-        /a when objectMaxDepth is default=5 is {"b":{"c":{"d":{"e":{"f":"..."}}}}}/,
-      );
-
-      errorHandlingConfig({ objectMaxDepth: 1 });
-      myError = testError("26", "a when objectMaxDepth is set to 1 is {0}", a);
-      expect(myError.message).toMatch(
-        /a when objectMaxDepth is set to 1 is {"b":"..."}/,
-      );
-
-      errorHandlingConfig({ objectMaxDepth: 2 });
-      myError = testError("26", "a when objectMaxDepth is set to 2 is {0}", a);
-      expect(myError.message).toMatch(
-        /a when objectMaxDepth is set to 2 is {"b":{"c":"..."}}/,
-      );
-
-      errorHandlingConfig({ objectMaxDepth: undefined });
-      myError = testError(
-        "26",
-        "a when objectMaxDepth is set to undefined is {0}",
-        a,
-      );
-      expect(myError.message).toMatch(
-        /a when objectMaxDepth is set to undefined is {"b":{"c":"..."}}/,
-      );
-    });
-
     it("should handle arguments that are objects and ignore max depth when objectMaxDepth = $prop", () => {
       [NaN, null, true, false, -1, 0].forEach((maxDepth) => {
         const a = { b: { c: { d: { e: { f: { g: 1 } } } } } };
@@ -214,30 +126,23 @@ describe("errors", () => {
       expect(myNamespacedError.message).toMatch(/^\[test:26] That is a Bar/);
     });
 
-    it("should include a properly formatted error reference URL in the message", () => {
-      // to avoid maintaining the root URL in two locations, we only validate the parameters
-      expect(
-        testError("acode", "aproblem", "a", "b", "value with space").message,
-      ).toMatch(/^[\s\S]*\?p0=a&p1=b&p2=value%20with%20space$/);
-    });
+    // it("should strip error reference urls from the error message parameters", () => {
+    //   const firstError = testError("firstcode", "longer string and so on");
 
-    it("should strip error reference urls from the error message parameters", () => {
-      const firstError = testError("firstcode", "longer string and so on");
+    //   const error = testError(
+    //     "secondcode",
+    //     "description {0}, and {1}",
+    //     "a",
+    //     firstError.message,
+    //   );
 
-      const error = testError(
-        "secondcode",
-        "description {0}, and {1}",
-        "a",
-        firstError.message,
-      );
-
-      expect(error.message).toBe(
-        "[test:secondcode] description a, and [test:firstcode] longer " +
-          'string and so on\n\nhttps://errors.angularjs.org/"NG_VERSION_FULL"/test/' +
-          "secondcode?p0=a&p1=%5Btest%3Afirstcode%5D%20longer%20string%20and%20so%20on%0Ahttps" +
-          "%3A%2F%2Ferrors.angularjs.org%2F%22NG_VERSION_FULL%22%2Ftest%2Ffirstcode",
-      );
-    });
+    //   expect(error.message).toBe(
+    //     "[test:secondcode] description a, and [test:firstcode] longer " +
+    //       'string and so on\n\nhttps://errors.angularjs.org/"NG_VERSION_FULL"/test/' +
+    //       "secondcode?p0=a&p1=%5Btest%3Afirstcode%5D%20longer%20string%20and%20so%20on%0Ahttps" +
+    //       "%3A%2F%2Ferrors.angularjs.org%2F%22NG_VERSION_FULL%22%2Ftest%2Ffirstcode",
+    //   );
+    // });
 
     it("should not generate URL query parameters when urlErrorParamsEnabled is  false", () => {
       errorHandlingConfig({ urlErrorParamsEnabled: false });
@@ -247,5 +152,23 @@ describe("errors", () => {
           'https://errors.angularjs.org/"NG_VERSION_FULL"/test/acode',
       );
     });
+  });
+});
+
+describe("toDebugString", () => {
+  it("should convert its argument to a string", () => {
+    expect(toDebugString("string")).toEqual("string");
+    expect(toDebugString(123)).toEqual("123");
+    expect(toDebugString({ a: { b: "c" } })).toEqual('{"a":{"b":"c"}}');
+    expect(
+      toDebugString(function fn() {
+        const a = 10;
+      }),
+    ).toEqual("function fn()");
+    expect(toDebugString()).toEqual("undefined");
+    const a = {};
+    a.a = a;
+    expect(toDebugString(a)).toEqual('{"a":"..."}');
+    expect(toDebugString([a, a])).toEqual('[{"a":"..."},"..."]');
   });
 });

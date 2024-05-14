@@ -420,7 +420,6 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
   }
 
   function processChecks() {
-    // eslint-disable-next-line no-unmodified-loop-condition
     while (!queueSize && checkQueue.length) {
       const toCheck = checkQueue.shift();
       if (!isStateExceptionHandled(toCheck)) {
