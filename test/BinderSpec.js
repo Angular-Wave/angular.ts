@@ -373,7 +373,7 @@ describe("Binder", () => {
     $rootScope.$eval('style={height: "10px"}');
     $rootScope.$apply();
 
-    expect(element.css("height")).toBe("10px");
+    expect(element[0].style["height"]).toBe("10px");
 
     $rootScope.$eval("style={}");
     $rootScope.$apply();

@@ -15,7 +15,7 @@ import {
   shallowCopy,
 } from "./utils";
 
-import { fnCamelCaseReplace } from "../jqLite";
+import { snakeToCamel } from "../jqLite";
 
 const $sceMinErr = minErr("$sce");
 
@@ -42,14 +42,6 @@ export const SCE_CONTEXTS = {
   // Script. Currently unused in AngularJS.
   JS: "js",
 };
-
-// Helper functions follow.
-
-const UNDERSCORE_LOWERCASE_REGEXP = /_([a-z])/g;
-
-function snakeToCamel(name) {
-  return name.replace(UNDERSCORE_LOWERCASE_REGEXP, fnCamelCaseReplace);
-}
 
 // Copied from:
 // http://docs.closure-library.googlecode.com/git/local_closure_goog_string_string.js.source.html#line1021
@@ -272,7 +264,7 @@ export function $SceDelegateProvider() {
     "$$sanitizeUri",
 
     function ($injector, $$sanitizeUri) {
-      let htmlSanitizer = function htmlSanitizer(html) {
+      let htmlSanitizer = function () {
         throw $sceMinErr(
           "unsafe",
           "Attempting to use an unsafe value in a safe context.",

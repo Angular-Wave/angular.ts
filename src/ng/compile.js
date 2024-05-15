@@ -41,13 +41,7 @@ import {
 } from "./utils";
 
 import { SCE_CONTEXTS } from "./sce";
-import {
-  NODE_TYPE_COMMENT,
-  NODE_TYPE_ELEMENT,
-  NODE_TYPE_DOCUMENT,
-  NODE_TYPE_TEXT,
-  PREFIX_REGEXP,
-} from "../constants";
+import { PREFIX_REGEXP } from "../constants";
 import { createEventDirective } from "./directive/ngEventDirs";
 
 /* ! VARIABLE/FUNCTION NAMING CONVENTIONS THAT APPLY TO THIS FILE!
@@ -2605,7 +2599,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         let className;
 
         switch (nodeType) {
-          case NODE_TYPE_ELEMENT /* Element */:
+          case Node.ELEMENT_NODE /* Element */:
             nodeName = nodeName_(node);
 
             // use the node name: <directive>
@@ -2746,10 +2740,10 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               }
             }
             break;
-          case NODE_TYPE_TEXT /* Text Node */:
+          case Node.TEXT_NODE:
             addTextInterpolateDirective(directives, node.nodeValue);
             break;
-          case NODE_TYPE_COMMENT /* Comment */:
+          case Node.COMMENT_NODE:
             if (!commentDirectivesEnabled) break;
             collectCommentDirectives(
               node,
@@ -2812,7 +2806,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                 attrEnd,
               );
             }
-            if (node.nodeType === NODE_TYPE_ELEMENT) {
+            if (node.nodeType === Node.ELEMENT_NODE) {
               if (node.hasAttribute(attrStart)) depth++;
               if (node.hasAttribute(attrEnd)) depth--;
             }
@@ -3213,7 +3207,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
               if (
                 $template.length !== 1 ||
-                compileNode.nodeType !== NODE_TYPE_ELEMENT
+                compileNode.nodeType !== Node.ELEMENT_NODE
               ) {
                 throw $compileMinErr(
                   "tplrt",
@@ -3676,7 +3670,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             if (
               inheritType === "^^" &&
               $element[0] &&
-              $element[0].nodeType === NODE_TYPE_DOCUMENT
+              $element[0].nodeType === Node.DOCUMENT_NODE
             ) {
               // inheritedData() uses the documentElement when it finds the document, so we would
               // require from the element itself.
@@ -3966,7 +3960,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
               if (
                 $template.length !== 1 ||
-                compileNode.nodeType !== NODE_TYPE_ELEMENT
+                compileNode.nodeType !== Node.ELEMENT_NODE
               ) {
                 throw $compileMinErr(
                   "tplrt",
@@ -4772,8 +4766,8 @@ function removeComments(jqNodes) {
   while (i--) {
     const node = jqNodes[i];
     if (
-      node.nodeType === NODE_TYPE_COMMENT ||
-      (node.nodeType === NODE_TYPE_TEXT && node.nodeValue.trim() === "")
+      node.nodeType === Node.COMMENT_NODE ||
+      (node.nodeType === Node.TEXT_NODE && node.nodeValue.trim() === "")
     ) {
       [].splice.call(jqNodes, i, 1);
     }

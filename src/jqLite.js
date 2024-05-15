@@ -1,14 +1,3 @@
-/* eslint-disable no-multi-assign */
-/* eslint-disable no-use-before-define */
-/* eslint-disable class-methods-use-this */
-import {
-  NODE_TYPE_ELEMENT,
-  NODE_TYPE_DOCUMENT,
-  NODE_TYPE_DOCUMENT_FRAGMENT,
-  NODE_TYPE_TEXT,
-  NODE_TYPE_ATTRIBUTE,
-  NODE_TYPE_COMMENT,
-} from "./constants";
 import {
   minErr,
   arrayRemove,
@@ -86,9 +75,7 @@ import {
  * - [`text()`](http://api.jquery.com/text/)
  * - [`toggleClass()`](http://api.jquery.com/toggleClass/) - Does not support a function as first argument
  * - [`triggerHandler()`](http://api.jquery.com/triggerHandler/) - Passes a dummy event object to handlers
- * - [`unbind()`](http://api.jquery.com/unbind/) (_deprecated_, use [`off()`](http://api.jquery.com/off/)) - Does not support namespaces or event object as parameter
  * - [`val()`](http://api.jquery.com/val/)
- * - [`wrap()`](http://api.jquery.com/wrap/)
  *
  * ## jQuery/jqLite Extras
  * AngularJS also provides the following additional methods and events to both jQuery and jqLite:
@@ -139,29 +126,35 @@ function jqNextId() {
 }
 
 const DASH_LOWERCASE_REGEXP = /-([a-z])/g;
-const MS_HACK_REGEXP = /^-ms-/;
+const UNDERSCORE_LOWERCASE_REGEXP = /_([a-z])/g;
 const MOUSE_EVENT_MAP = { mouseleave: "mouseout", mouseenter: "mouseover" };
 const jqLiteMinErr = minErr("jqLite");
 
 /**
- * Converts kebab-case to camelCase.
- * There is also a special case for the ms prefix starting with a lowercase letter.
- * @param name Name to normalize
+ * @param {string} _all
+ * @param {string} letter
+ * @returns {string}
  */
-function cssKebabToCamel(name) {
-  return kebabToCamel(name.replace(MS_HACK_REGEXP, "ms-"));
-}
-
-export function fnCamelCaseReplace(all, letter) {
+function fnCamelCaseReplace(_all, letter) {
   return letter.toUpperCase();
 }
 
 /**
  * Converts kebab-case to camelCase.
- * @param name Name to normalize
+ * @param {string} name Name to normalize
+ * @returns {string}
  */
 export function kebabToCamel(name) {
   return name.replace(DASH_LOWERCASE_REGEXP, fnCamelCaseReplace);
+}
+
+/**
+ * Converts sname to camelCase.
+ * @param {string} name
+ * @returns {string}
+ */
+export function snakeToCamel(name) {
+  return name.replace(UNDERSCORE_LOWERCASE_REGEXP, fnCamelCaseReplace);
 }
 
 const SINGLE_TAG_REGEXP = /^<([\w-]+)\s*\/?>(?:<\/\1>|)$/;
@@ -191,14 +184,19 @@ export function jqLiteIsTextNode(html) {
   return !HTML_REGEXP.test(html);
 }
 
+/**
+ *
+ * @param {Node} node
+ * @returns {boolean}
+ */
 function jqLiteAcceptsData(node) {
   // The window object can accept data but has no nodeType
   // Otherwise we are only interested in elements (1) and documents (9)
-  var nodeType = node.nodeType;
+  const nodeType = node.nodeType;
   return (
-    nodeType === NODE_TYPE_ELEMENT ||
+    nodeType === Node.ELEMENT_NODE ||
     !nodeType ||
-    nodeType === NODE_TYPE_DOCUMENT
+    nodeType === Node.DOCUMENT_NODE
   );
 }
 
@@ -267,16 +265,6 @@ function jqLiteParseHTML(html, context) {
   }
 
   return [];
-}
-
-function jqLiteWrapNode(node, wrapper) {
-  const parent = node.parentNode;
-
-  if (parent) {
-    parent.replaceChild(wrapper, node);
-  }
-
-  wrapper.appendChild(node);
 }
 
 // IE9-11 has no method "contains" in SVG element and in Node.prototype. Bug #10259.
@@ -539,7 +527,7 @@ function jqLiteController(element, name) {
 function jqLiteInheritedData(element, name, value) {
   // if element is the document object work with the html element instead
   // this makes $(document).scope() possible
-  if (element.nodeType === NODE_TYPE_DOCUMENT) {
+  if (element.nodeType === Node.DOCUMENT_NODE) {
     element = element.documentElement;
   }
   const names = isArray(name) ? name : [name];
@@ -554,7 +542,7 @@ function jqLiteInheritedData(element, name, value) {
     // to lookup parent controllers.
     element =
       element.parentNode ||
-      (element.nodeType === NODE_TYPE_DOCUMENT_FRAGMENT && element.host);
+      (element.nodeType === Node.DOCUMENT_FRAGMENT_NODE && element.host);
   }
 }
 
@@ -569,19 +557,6 @@ export function jqLiteRemove(element, keepData) {
   if (!keepData) dealoc(element);
   const parent = element.parentNode;
   if (parent) parent.removeChild(element);
-}
-
-export function jqLiteDocumentLoaded(action, win) {
-  win = win || window;
-  if (win.document.readyState === "complete") {
-    // Force the action to be run async for consistent behavior
-    // from the action's point of view
-    // i.e. it will definitely not be in a $apply
-    win.setTimeout(action);
-  } else {
-    // No need to unbind this handler as load is only ever called once
-    jqLite(win).on("load", action);
-  }
 }
 
 function jqLiteReady(fn) {
@@ -728,7 +703,7 @@ forEach(
     hasClass: jqLiteHasClass,
 
     css(element, name, value) {
-      name = cssKebabToCamel(name);
+      name = kebabToCamel(name);
 
       if (isDefined(value)) {
         element.style[name] = value;
@@ -741,9 +716,9 @@ forEach(
       let ret;
       const { nodeType } = element;
       if (
-        nodeType === NODE_TYPE_TEXT ||
-        nodeType === NODE_TYPE_ATTRIBUTE ||
-        nodeType === NODE_TYPE_COMMENT ||
+        nodeType === Node.TEXT_NODE ||
+        nodeType === Node.ATTRIBUTE_NODE ||
+        nodeType === Node.COMMENT_NODE ||
         !element.getAttribute
       ) {
         return;
@@ -788,7 +763,7 @@ forEach(
       function getText(element, value) {
         if (isUndefined(value)) {
           const { nodeType } = element;
-          return nodeType === NODE_TYPE_ELEMENT || nodeType === NODE_TYPE_TEXT
+          return nodeType === Node.ELEMENT_NODE || nodeType === Node.TEXT_NODE
             ? element.textContent
             : "";
         }
@@ -1044,7 +1019,7 @@ forEach(
     children(element) {
       const children = [];
       forEach(element.childNodes, (element) => {
-        if (element.nodeType === NODE_TYPE_ELEMENT) {
+        if (element.nodeType === Node.ELEMENT_NODE) {
           children.push(element);
         }
       });
@@ -1058,8 +1033,8 @@ forEach(
     append(element, node) {
       const { nodeType } = element;
       if (
-        nodeType !== NODE_TYPE_ELEMENT &&
-        nodeType !== NODE_TYPE_DOCUMENT_FRAGMENT
+        nodeType !== Node.ELEMENT_NODE &&
+        nodeType !== Node.DOCUMENT_FRAGMENT_NODE
       )
         return;
 
@@ -1072,16 +1047,12 @@ forEach(
     },
 
     prepend(element, node) {
-      if (element.nodeType === NODE_TYPE_ELEMENT) {
+      if (element.nodeType === Node.ELEMENT_NODE) {
         const index = element.firstChild;
         forEach(new JQLite(node), (child) => {
           element.insertBefore(child, index);
         });
       }
-    },
-
-    wrap(element, wrapNode) {
-      jqLiteWrapNode(element, jqLite(wrapNode).eq(0).clone()[0]);
     },
 
     remove: jqLiteRemove,
@@ -1125,7 +1096,7 @@ forEach(
 
     parent(element) {
       const parent = element.parentNode;
-      return parent && parent.nodeType !== NODE_TYPE_DOCUMENT_FRAGMENT
+      return parent && parent.nodeType !== Node.DOCUMENT_FRAGMENT_NODE
         ? parent
         : null;
     },
@@ -1214,10 +1185,6 @@ forEach(
   },
 );
 
-// bind legacy bind/unbind to on/off
-JQLite.prototype.bind = JQLite.prototype.on;
-JQLite.prototype.unbind = JQLite.prototype.off;
-
 // Provider for private $$jqLite service
 export function $$jqLiteProvider() {
   this.$get = function $$jqLite() {
@@ -1246,7 +1213,7 @@ export function startingTag(element) {
   element = jqLite(element).clone().empty();
   var elemHtml = jqLite("<div></div>").append(element).html();
   try {
-    return element[0].nodeType === NODE_TYPE_TEXT
+    return element[0].nodeType === Node.TEXT_NODE
       ? lowercase(elemHtml)
       : elemHtml
           .match(/^(<[^>]+>)/)[1]

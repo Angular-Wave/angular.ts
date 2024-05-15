@@ -1,4 +1,3 @@
-import { jqLiteDocumentLoaded } from "../jqLite";
 import { isElement, isFunction, isNumber, isString, nodeName_ } from "./utils";
 
 export function AnchorScrollProvider() {
@@ -105,9 +104,15 @@ export function AnchorScrollProvider() {
             // skip the initial scroll if $location.hash is empty
             if (newVal === oldVal && newVal === "") return;
 
-            jqLiteDocumentLoaded(() => {
-              $rootScope.$evalAsync(scroll);
-            });
+            const action = () => $rootScope.$evalAsync(scroll);
+            if (window.document.readyState === "complete") {
+              // Force the action to be run async for consistent behavior
+              // from the action's point of view
+              // i.e. it will definitely not be in a $apply
+              window.setTimeout(() => action());
+            } else {
+              window.addEventListener("load", () => action());
+            }
           },
         );
       }

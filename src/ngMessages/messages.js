@@ -845,7 +845,7 @@ export function initMessageModule() {
       if (collection) {
         return isArray(collection)
           ? collection.indexOf(key) >= 0
-          : collection.hasOwnProperty(key);
+          : Object.prototype.hasOwnProperty.call(collection, key);
       }
     }
   }

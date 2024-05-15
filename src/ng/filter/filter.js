@@ -220,7 +220,7 @@ function deepCompare(
 
   switch (actualType) {
     case "object":
-      let key;
+      var key;
       if (matchAgainstAnyProp) {
         for (key in actual) {
           // Under certain, rare, circumstances, key may not be a string and `charAt` will be undefined

@@ -303,7 +303,7 @@ export const $$AnimationProvider = [
 
                 const prepareClassName = element.data(PREPARE_CLASSES_KEY);
                 if (prepareClassName) {
-                  jqLite.addClass(element, prepareClassName);
+                  element[0].classList.add(prepareClassName);
                 }
               }
             }

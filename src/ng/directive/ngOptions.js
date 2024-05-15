@@ -1,4 +1,3 @@
-import { NODE_TYPE_COMMENT } from "../../constants";
 import { jqLite, jqLiteRemove, startingTag } from "../../jqLite";
 import {
   equals,
@@ -522,7 +521,7 @@ export const ngOptionsDirective = [
 
         selectElement.prepend(selectCtrl.emptyOption);
 
-        if (selectCtrl.emptyOption[0].nodeType === NODE_TYPE_COMMENT) {
+        if (selectCtrl.emptyOption[0].nodeType === Node.COMMENT_NODE) {
           // This means the empty option has currently no actual DOM node, probably because
           // it has been modified by a transclusion directive.
           selectCtrl.hasEmptyOption = false;

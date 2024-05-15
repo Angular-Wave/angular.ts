@@ -145,7 +145,7 @@ export function initAriaModule() {
           );
         }
 
-        function getShape(attr, elem) {
+        function getShape(attr) {
           const { type } = attr;
           const { role } = attr;
 
@@ -166,7 +166,7 @@ export function initAriaModule() {
             if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR))
               return;
 
-            const shape = getShape(attr, elem);
+            const shape = getShape(attr);
 
             return {
               post(scope, elem, attr, ngModel) {
@@ -181,17 +181,19 @@ export function initAriaModule() {
                   return ngModel.$modelValue;
                 }
 
-                function getRadioReaction(newVal) {
+                function getRadioReaction() {
                   // Strict comparison would cause a BC
                   // eslint-disable-next-line eqeqeq
-                  const boolVal = attr.value == ngModel.$viewValue;
-                  elem.attr("aria-checked", boolVal);
+                  elem[0].setAttribute(
+                    "aria-checked",
+                    (attr.value == ngModel.$viewValue).toString(),
+                  );
                 }
 
                 function getCheckboxReaction() {
                   elem.attr(
                     "aria-checked",
-                    !ngModel.$isEmpty(ngModel.$viewValue),
+                    (!ngModel.$isEmpty(ngModel.$viewValue)).toString(),
                   );
                 }
 
@@ -264,7 +266,7 @@ export function initAriaModule() {
                 ) {
                   // ngModel.$error.required is undefined on custom controls
                   attr.$observe("required", () => {
-                    elem.attr("aria-required", !!attr.required);
+                    elem.attr("aria-required", (!!attr.required).toString());
                   });
                 }
 
@@ -274,7 +276,7 @@ export function initAriaModule() {
                   scope.$watch(
                     () => ngModel.$invalid,
                     (newVal) => {
-                      elem.attr("aria-invalid", !!newVal);
+                      elem.attr("aria-invalid", (!!newVal).toString());
                     },
                   );
                 }
@@ -439,7 +441,7 @@ function $AriaProvider() {
    * @ngdoc method
    * @name $ariaProvider#config
    *
-   * @param {object} config object to enable/disable specific ARIA attributes
+   * @param {object} newConfig object to enable/disable specific ARIA attributes
    *
    *  - **ariaHidden** – `{boolean}` – Enables/disables aria-hidden tags
    *  - **ariaChecked** – `{boolean}` – Enables/disables aria-checked tags

@@ -19,7 +19,6 @@
     "dev": "vite",
     "express": "node --watch express.js",
     "build": "vite build",
-    "preview": "vite preview",
     "playwright": "./node_modules/.bin/playwright test"
   },
   "devDependencies": {

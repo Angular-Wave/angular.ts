@@ -1,4 +1,3 @@
-import { NODE_TYPE_TEXT } from "../../constants";
 import { minErr } from "../utils";
 import { startingTag } from "../../jqLite";
 
@@ -87,7 +86,7 @@ export const ngTranscludeDirective = [
           function notWhitespace(nodes) {
             for (let i = 0, ii = nodes.length; i < ii; i++) {
               const node = nodes[i];
-              if (node.nodeType !== NODE_TYPE_TEXT || node.nodeValue.trim()) {
+              if (node.nodeType !== Node.TEXT_NODE || node.nodeValue.trim()) {
                 return true;
               }
             }

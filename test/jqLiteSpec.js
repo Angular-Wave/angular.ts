@@ -1,10 +1,4 @@
-import {
-  jqLite,
-  JQLite,
-  dealoc,
-  kebabToCamel,
-  jqLiteDocumentLoaded,
-} from "../src/jqLite";
+import { jqLite, JQLite, dealoc, kebabToCamel } from "../src/jqLite";
 import { angularInit } from "../src/loader";
 import { createInjector } from "../src/injector";
 import { publishExternalAPI } from "../src/public";
@@ -1289,59 +1283,12 @@ describe("jqLite", () => {
       expect(a.style["foo-42- A-B"]).toBe("foo");
     });
 
-    it("should convert the -ms- prefix to ms instead of Ms", () => {
-      const jqA = jqLite(a);
-
-      jqA.css("-ms-foo-bar", "foo");
-      jqA.css("-moz-foo-bar", "bar");
-      jqA.css("-webkit-foo-bar", "baz");
-
-      expect(a.style.msFooBar).toBe("foo");
-      expect(a.style.MozFooBar).toBe("bar");
-      expect(a.style.WebkitFooBar).toBe("baz");
-    });
-
     it("should not collapse sequences of dashes", () => {
       const jqA = jqLite(a);
 
       jqA.css("foo---bar-baz--qaz", "foo");
 
       expect(a.style["foo--BarBaz-Qaz"]).toBe("foo");
-    });
-
-    it("should read vendor prefixes with the special -ms- exception", () => {
-      // jQuery uses getComputedStyle() in a css getter so these tests would fail there.
-      const jqA = jqLite(a);
-
-      a.style.WebkitFooBar = "webkit-uppercase";
-      a.style.webkitFooBar = "webkit-lowercase";
-
-      a.style.MozFooBaz = "moz-uppercase";
-      a.style.mozFooBaz = "moz-lowercase";
-
-      a.style.MsFooQaz = "ms-uppercase";
-      a.style.msFooQaz = "ms-lowercase";
-
-      expect(jqA.css("-webkit-foo-bar")).toBe("webkit-uppercase");
-      expect(jqA.css("-moz-foo-baz")).toBe("moz-uppercase");
-      expect(jqA.css("-ms-foo-qaz")).toBe("ms-lowercase");
-    });
-
-    it("should write vendor prefixes with the special -ms- exception", () => {
-      const jqA = jqLite(a);
-
-      jqA.css("-webkit-foo-bar", "webkit");
-      jqA.css("-moz-foo-baz", "moz");
-      jqA.css("-ms-foo-qaz", "ms");
-
-      expect(a.style.WebkitFooBar).toBe("webkit");
-      expect(a.style.webkitFooBar).not.toBeDefined();
-
-      expect(a.style.MozFooBaz).toBe("moz");
-      expect(a.style.mozFooBaz).not.toBeDefined();
-
-      expect(a.style.MsFooQaz).not.toBeDefined();
-      expect(a.style.msFooQaz).toBe("ms");
     });
   });
 
@@ -2255,42 +2202,6 @@ describe("jqLite", () => {
     });
   });
 
-  describe("wrap", () => {
-    it("should wrap text node", () => {
-      const root = jqLite("<div>A&lt;a&gt;B&lt;/a&gt;C</div>");
-      const text = root.contents();
-      expect(text.wrap("<span>")[0]).toBe(text[0]);
-      expect(root.find("span").text()).toEqual("A<a>B</a>C");
-    });
-    it("should wrap free text node", () => {
-      const root = jqLite("<div>A&lt;a&gt;B&lt;/a&gt;C</div>");
-      const text = root.contents();
-      text.remove();
-      expect(root.text()).toBe("");
-
-      text.wrap("<span>");
-      expect(text.parent().text()).toEqual("A<a>B</a>C");
-    });
-    it("should clone elements to be wrapped around target", () => {
-      const root = jqLite('<div class="sigil"></div>');
-      const span = jqLite("<span>A</span>");
-
-      span.wrap(root);
-      expect(root.children().length).toBe(0);
-      expect(span.parent().hasClass("sigil")).toBeTruthy();
-    });
-    it("should wrap multiple elements", () => {
-      const root = jqLite('<div class="sigil"></div>');
-      const spans = jqLite("<span>A</span><span>B</span><span>C</span>");
-
-      spans.wrap(root);
-
-      expect(spans.eq(0).parent().hasClass("sigil")).toBeTruthy();
-      expect(spans.eq(1).parent().hasClass("sigil")).toBeTruthy();
-      expect(spans.eq(2).parent().hasClass("sigil")).toBeTruthy();
-    });
-  });
-
   describe("prepend", () => {
     it("should prepend to empty", () => {
       const root = jqLite("<div>");
@@ -2605,62 +2516,6 @@ describe("jqLite", () => {
 
     it("should not collapse sequences of dashes", () => {
       expect(kebabToCamel("foo---bar-baz--qaz")).toBe("foo--BarBaz-Qaz");
-    });
-  });
-
-  describe("jqLiteDocumentLoaded", () => {
-    function createMockWindow(readyState) {
-      return {
-        document: { readyState: readyState || "loading" },
-        setTimeout: jasmine.createSpy("window.setTimeout"),
-        addEventListener: jasmine.createSpy("window.addEventListener"),
-        removeEventListener: jasmine.createSpy("window.removeEventListener"),
-      };
-    }
-
-    it("should execute the callback via a timeout if the document has already completed loading", () => {
-      function onLoadCallback() {}
-
-      const mockWindow = createMockWindow("complete");
-
-      jqLiteDocumentLoaded(onLoadCallback, mockWindow);
-
-      expect(mockWindow.addEventListener).not.toHaveBeenCalled();
-      expect(mockWindow.setTimeout.calls.mostRecent().args[0]).toBe(
-        onLoadCallback,
-      );
-    });
-
-    it("should register a listener for the `load` event", () => {
-      const onLoadCallback = jasmine.createSpy("onLoadCallback");
-      const mockWindow = createMockWindow();
-
-      jqLiteDocumentLoaded(onLoadCallback, mockWindow);
-
-      expect(mockWindow.addEventListener).toHaveBeenCalled();
-    });
-
-    it("should execute the callback only once the document completes loading", () => {
-      const onLoadCallback = jasmine.createSpy("onLoadCallback");
-      const mockWindow = createMockWindow();
-
-      jqLiteDocumentLoaded(onLoadCallback, mockWindow);
-      expect(onLoadCallback).not.toHaveBeenCalled();
-
-      jqLite(mockWindow).triggerHandler("load");
-      expect(onLoadCallback).toHaveBeenCalled();
-    });
-  });
-
-  describe("bind/unbind", () => {
-    it("should alias bind() to on()", () => {
-      const element = jqLite(a);
-      expect(element.bind).toBe(element.on);
-    });
-
-    it("should alias unbind() to off()", () => {
-      const element = jqLite(a);
-      expect(element.unbind).toBe(element.off);
     });
   });
 });

@@ -111,7 +111,7 @@ export const ngBindTemplateDirective = [
  * will have an exception (instead of an exploit.)
  *
  * @element ANY
- * @param {expression} ngBindHtml {@link guide/expression Expression} to evaluate.
+ * @param {string} ngBindHtml {@link guide/expression Expression} to evaluate.
  *
  * @example
 

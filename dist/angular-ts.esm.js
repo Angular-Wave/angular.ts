@@ -1,10 +1,3 @@
-const NODE_TYPE_ELEMENT = 1;
-const NODE_TYPE_ATTRIBUTE = 2;
-const NODE_TYPE_TEXT = 3;
-const NODE_TYPE_COMMENT = 8;
-const NODE_TYPE_DOCUMENT = 9;
-const NODE_TYPE_DOCUMENT_FRAGMENT = 11;
-
 const VALID_CLASS = "ng-valid";
 const INVALID_CLASS = "ng-invalid";
 const PRISTINE_CLASS = "ng-pristine";
@@ -1342,10 +1335,6 @@ function directiveNormalize(name) {
     );
 }
 
-/* eslint-disable no-multi-assign */
-/* eslint-disable no-use-before-define */
-/* eslint-disable class-methods-use-this */
-
 /**
  * @ngdoc function
  * @name angular.element
@@ -1405,9 +1394,7 @@ function directiveNormalize(name) {
  * - [`text()`](http://api.jquery.com/text/)
  * - [`toggleClass()`](http://api.jquery.com/toggleClass/) - Does not support a function as first argument
  * - [`triggerHandler()`](http://api.jquery.com/triggerHandler/) - Passes a dummy event object to handlers
- * - [`unbind()`](http://api.jquery.com/unbind/) (_deprecated_, use [`off()`](http://api.jquery.com/off/)) - Does not support namespaces or event object as parameter
  * - [`val()`](http://api.jquery.com/val/)
- * - [`wrap()`](http://api.jquery.com/wrap/)
  *
  * ## jQuery/jqLite Extras
  * AngularJS also provides the following additional methods and events to both jQuery and jqLite:
@@ -1458,29 +1445,35 @@ function jqNextId() {
 }
 
 const DASH_LOWERCASE_REGEXP = /-([a-z])/g;
-const MS_HACK_REGEXP = /^-ms-/;
+const UNDERSCORE_LOWERCASE_REGEXP = /_([a-z])/g;
 const MOUSE_EVENT_MAP = { mouseleave: "mouseout", mouseenter: "mouseover" };
 const jqLiteMinErr = minErr("jqLite");
 
 /**
- * Converts kebab-case to camelCase.
- * There is also a special case for the ms prefix starting with a lowercase letter.
- * @param name Name to normalize
+ * @param {string} _all
+ * @param {string} letter
+ * @returns {string}
  */
-function cssKebabToCamel(name) {
-  return kebabToCamel(name.replace(MS_HACK_REGEXP, "ms-"));
-}
-
-function fnCamelCaseReplace(all, letter) {
+function fnCamelCaseReplace(_all, letter) {
   return letter.toUpperCase();
 }
 
 /**
  * Converts kebab-case to camelCase.
- * @param name Name to normalize
+ * @param {string} name Name to normalize
+ * @returns {string}
  */
 function kebabToCamel(name) {
   return name.replace(DASH_LOWERCASE_REGEXP, fnCamelCaseReplace);
+}
+
+/**
+ * Converts sname to camelCase.
+ * @param {string} name
+ * @returns {string}
+ */
+function snakeToCamel(name) {
+  return name.replace(UNDERSCORE_LOWERCASE_REGEXP, fnCamelCaseReplace);
 }
 
 const SINGLE_TAG_REGEXP = /^<([\w-]+)\s*\/?>(?:<\/\1>|)$/;
@@ -1510,14 +1503,19 @@ function jqLiteIsTextNode(html) {
   return !HTML_REGEXP.test(html);
 }
 
+/**
+ *
+ * @param {Node} node
+ * @returns {boolean}
+ */
 function jqLiteAcceptsData(node) {
   // The window object can accept data but has no nodeType
   // Otherwise we are only interested in elements (1) and documents (9)
-  var nodeType = node.nodeType;
+  const nodeType = node.nodeType;
   return (
-    nodeType === NODE_TYPE_ELEMENT ||
+    nodeType === Node.ELEMENT_NODE ||
     !nodeType ||
-    nodeType === NODE_TYPE_DOCUMENT
+    nodeType === Node.DOCUMENT_NODE
   );
 }
 
@@ -1586,16 +1584,6 @@ function jqLiteParseHTML(html, context) {
   }
 
   return [];
-}
-
-function jqLiteWrapNode(node, wrapper) {
-  const parent = node.parentNode;
-
-  if (parent) {
-    parent.replaceChild(wrapper, node);
-  }
-
-  wrapper.appendChild(node);
 }
 
 // IE9-11 has no method "contains" in SVG element and in Node.prototype. Bug #10259.
@@ -1858,7 +1846,7 @@ function jqLiteController(element, name) {
 function jqLiteInheritedData(element, name, value) {
   // if element is the document object work with the html element instead
   // this makes $(document).scope() possible
-  if (element.nodeType === NODE_TYPE_DOCUMENT) {
+  if (element.nodeType === Node.DOCUMENT_NODE) {
     element = element.documentElement;
   }
   const names = isArray(name) ? name : [name];
@@ -1873,7 +1861,7 @@ function jqLiteInheritedData(element, name, value) {
     // to lookup parent controllers.
     element =
       element.parentNode ||
-      (element.nodeType === NODE_TYPE_DOCUMENT_FRAGMENT && element.host);
+      (element.nodeType === Node.DOCUMENT_FRAGMENT_NODE && element.host);
   }
 }
 
@@ -1888,19 +1876,6 @@ function jqLiteRemove(element, keepData) {
   if (!keepData) dealoc(element);
   const parent = element.parentNode;
   if (parent) parent.removeChild(element);
-}
-
-function jqLiteDocumentLoaded(action, win) {
-  win = win || window;
-  if (win.document.readyState === "complete") {
-    // Force the action to be run async for consistent behavior
-    // from the action's point of view
-    // i.e. it will definitely not be in a $apply
-    win.setTimeout(action);
-  } else {
-    // No need to unbind this handler as load is only ever called once
-    jqLite(win).on("load", action);
-  }
 }
 
 function jqLiteReady(fn) {
@@ -2047,7 +2022,7 @@ forEach(
     hasClass: jqLiteHasClass,
 
     css(element, name, value) {
-      name = cssKebabToCamel(name);
+      name = kebabToCamel(name);
 
       if (isDefined(value)) {
         element.style[name] = value;
@@ -2060,9 +2035,9 @@ forEach(
       let ret;
       const { nodeType } = element;
       if (
-        nodeType === NODE_TYPE_TEXT ||
-        nodeType === NODE_TYPE_ATTRIBUTE ||
-        nodeType === NODE_TYPE_COMMENT ||
+        nodeType === Node.TEXT_NODE ||
+        nodeType === Node.ATTRIBUTE_NODE ||
+        nodeType === Node.COMMENT_NODE ||
         !element.getAttribute
       ) {
         return;
@@ -2107,7 +2082,7 @@ forEach(
       function getText(element, value) {
         if (isUndefined(value)) {
           const { nodeType } = element;
-          return nodeType === NODE_TYPE_ELEMENT || nodeType === NODE_TYPE_TEXT
+          return nodeType === Node.ELEMENT_NODE || nodeType === Node.TEXT_NODE
             ? element.textContent
             : "";
         }
@@ -2363,7 +2338,7 @@ forEach(
     children(element) {
       const children = [];
       forEach(element.childNodes, (element) => {
-        if (element.nodeType === NODE_TYPE_ELEMENT) {
+        if (element.nodeType === Node.ELEMENT_NODE) {
           children.push(element);
         }
       });
@@ -2377,8 +2352,8 @@ forEach(
     append(element, node) {
       const { nodeType } = element;
       if (
-        nodeType !== NODE_TYPE_ELEMENT &&
-        nodeType !== NODE_TYPE_DOCUMENT_FRAGMENT
+        nodeType !== Node.ELEMENT_NODE &&
+        nodeType !== Node.DOCUMENT_FRAGMENT_NODE
       )
         return;
 
@@ -2391,16 +2366,12 @@ forEach(
     },
 
     prepend(element, node) {
-      if (element.nodeType === NODE_TYPE_ELEMENT) {
+      if (element.nodeType === Node.ELEMENT_NODE) {
         const index = element.firstChild;
         forEach(new JQLite(node), (child) => {
           element.insertBefore(child, index);
         });
       }
-    },
-
-    wrap(element, wrapNode) {
-      jqLiteWrapNode(element, jqLite(wrapNode).eq(0).clone()[0]);
     },
 
     remove: jqLiteRemove,
@@ -2444,7 +2415,7 @@ forEach(
 
     parent(element) {
       const parent = element.parentNode;
-      return parent && parent.nodeType !== NODE_TYPE_DOCUMENT_FRAGMENT
+      return parent && parent.nodeType !== Node.DOCUMENT_FRAGMENT_NODE
         ? parent
         : null;
     },
@@ -2533,10 +2504,6 @@ forEach(
   },
 );
 
-// bind legacy bind/unbind to on/off
-JQLite.prototype.bind = JQLite.prototype.on;
-JQLite.prototype.unbind = JQLite.prototype.off;
-
 // Provider for private $$jqLite service
 function $$jqLiteProvider() {
   this.$get = function $$jqLite() {
@@ -2565,7 +2532,7 @@ function startingTag(element) {
   element = jqLite(element).clone().empty();
   var elemHtml = jqLite("<div></div>").append(element).html();
   try {
-    return element[0].nodeType === NODE_TYPE_TEXT
+    return element[0].nodeType === Node.TEXT_NODE
       ? lowercase(elemHtml)
       : elemHtml
           .match(/^(<[^>]+>)/)[1]
@@ -5332,14 +5299,6 @@ const SCE_CONTEXTS = {
   JS: "js",
 };
 
-// Helper functions follow.
-
-const UNDERSCORE_LOWERCASE_REGEXP = /_([a-z])/g;
-
-function snakeToCamel(name) {
-  return name.replace(UNDERSCORE_LOWERCASE_REGEXP, fnCamelCaseReplace);
-}
-
 // Copied from:
 // http://docs.closure-library.googlecode.com/git/local_closure_goog_string_string.js.source.html#line1021
 // Prereq: s is a string.
@@ -5561,7 +5520,7 @@ function $SceDelegateProvider() {
     "$$sanitizeUri",
 
     function ($injector, $$sanitizeUri) {
-      let htmlSanitizer = function htmlSanitizer(html) {
+      let htmlSanitizer = function () {
         throw $sceMinErr(
           "unsafe",
           "Attempting to use an unsafe value in a safe context.",
@@ -9477,7 +9436,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
         let className;
 
         switch (nodeType) {
-          case NODE_TYPE_ELEMENT /* Element */:
+          case Node.ELEMENT_NODE /* Element */:
             nodeName = nodeName_(node);
 
             // use the node name: <directive>
@@ -9618,10 +9577,10 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
               }
             }
             break;
-          case NODE_TYPE_TEXT /* Text Node */:
+          case Node.TEXT_NODE:
             addTextInterpolateDirective(directives, node.nodeValue);
             break;
-          case NODE_TYPE_COMMENT /* Comment */:
+          case Node.COMMENT_NODE:
             if (!commentDirectivesEnabled) break;
             collectCommentDirectives(
               node,
@@ -9684,7 +9643,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                 attrEnd,
               );
             }
-            if (node.nodeType === NODE_TYPE_ELEMENT) {
+            if (node.nodeType === Node.ELEMENT_NODE) {
               if (node.hasAttribute(attrStart)) depth++;
               if (node.hasAttribute(attrEnd)) depth--;
             }
@@ -10085,7 +10044,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
               if (
                 $template.length !== 1 ||
-                compileNode.nodeType !== NODE_TYPE_ELEMENT
+                compileNode.nodeType !== Node.ELEMENT_NODE
               ) {
                 throw $compileMinErr(
                   "tplrt",
@@ -10548,7 +10507,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             if (
               inheritType === "^^" &&
               $element[0] &&
-              $element[0].nodeType === NODE_TYPE_DOCUMENT
+              $element[0].nodeType === Node.DOCUMENT_NODE
             ) {
               // inheritedData() uses the documentElement when it finds the document, so we would
               // require from the element itself.
@@ -10838,7 +10797,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
               if (
                 $template.length !== 1 ||
-                compileNode.nodeType !== NODE_TYPE_ELEMENT
+                compileNode.nodeType !== Node.ELEMENT_NODE
               ) {
                 throw $compileMinErr(
                   "tplrt",
@@ -11644,8 +11603,8 @@ function removeComments(jqNodes) {
   while (i--) {
     const node = jqNodes[i];
     if (
-      node.nodeType === NODE_TYPE_COMMENT ||
-      (node.nodeType === NODE_TYPE_TEXT && node.nodeValue.trim() === "")
+      node.nodeType === Node.COMMENT_NODE ||
+      (node.nodeType === Node.TEXT_NODE && node.nodeValue.trim() === "")
     ) {
       [].splice.call(jqNodes, i, 1);
     }
@@ -16171,7 +16130,7 @@ var SelectController = [
     // Tell the select control that an option, with the given value, has been added
     self.addOption = function (value, element) {
       // Skip comment nodes, as they only pollute the `optionsMap`
-      if (element[0].nodeType === NODE_TYPE_COMMENT) return;
+      if (element[0].nodeType === Node.COMMENT_NODE) return;
 
       assertNotHasOwnProperty(value, '"option value"');
       if (value === "") {
@@ -16752,7 +16711,7 @@ const ngBindTemplateDirective = [
  * will have an exception (instead of an exploit.)
  *
  * @element ANY
- * @param {expression} ngBindHtml {@link guide/expression Expression} to evaluate.
+ * @param {string} ngBindHtml {@link guide/expression Expression} to evaluate.
  *
  * @example
 
@@ -19300,7 +19259,7 @@ const ngOptionsDirective = [
 
         selectElement.prepend(selectCtrl.emptyOption);
 
-        if (selectCtrl.emptyOption[0].nodeType === NODE_TYPE_COMMENT) {
+        if (selectCtrl.emptyOption[0].nodeType === Node.COMMENT_NODE) {
           // This means the empty option has currently no actual DOM node, probably because
           // it has been modified by a transclusion directive.
           selectCtrl.hasEmptyOption = false;
@@ -19542,7 +19501,7 @@ const ngTranscludeDirective = [
           function notWhitespace(nodes) {
             for (let i = 0, ii = nodes.length; i < ii; i++) {
               const node = nodes[i];
-              if (node.nodeType !== NODE_TYPE_TEXT || node.nodeValue.trim()) {
+              if (node.nodeType !== Node.TEXT_NODE || node.nodeValue.trim()) {
                 return true;
               }
             }
@@ -20359,9 +20318,15 @@ function AnchorScrollProvider() {
             // skip the initial scroll if $location.hash is empty
             if (newVal === oldVal && newVal === "") return;
 
-            jqLiteDocumentLoaded(() => {
-              $rootScope.$evalAsync(scroll);
-            });
+            const action = () => $rootScope.$evalAsync(scroll);
+            if (window.document.readyState === "complete") {
+              // Force the action to be run async for consistent behavior
+              // from the action's point of view
+              // i.e. it will definitely not be in a $apply
+              window.setTimeout(() => action());
+            } else {
+              window.addEventListener("load", () => action());
+            }
           },
         );
       }
@@ -23661,7 +23626,7 @@ function deepCompare(
 
   switch (actualType) {
     case "object":
-      let key;
+      var key;
       if (matchAgainstAnyProp) {
         for (key in actual) {
           // Under certain, rare, circumstances, key may not be a string and `charAt` will be undefined
@@ -32564,7 +32529,7 @@ const $$AnimationProvider = [
 
                 const prepareClassName = element.data(PREPARE_CLASSES_KEY);
                 if (prepareClassName) {
-                  jqLite.addClass(element, prepareClassName);
+                  element[0].classList.add(prepareClassName);
                 }
               }
             }
@@ -37229,7 +37194,7 @@ function initMessageModule() {
       if (collection) {
         return isArray(collection)
           ? collection.indexOf(key) >= 0
-          : collection.hasOwnProperty(key);
+          : Object.prototype.hasOwnProperty.call(collection, key);
       }
     }
   }
@@ -37380,7 +37345,7 @@ function initAriaModule() {
           );
         }
 
-        function getShape(attr, elem) {
+        function getShape(attr) {
           const { type } = attr;
           const { role } = attr;
 
@@ -37416,17 +37381,19 @@ function initAriaModule() {
                   return ngModel.$modelValue;
                 }
 
-                function getRadioReaction(newVal) {
+                function getRadioReaction() {
                   // Strict comparison would cause a BC
                   // eslint-disable-next-line eqeqeq
-                  const boolVal = attr.value == ngModel.$viewValue;
-                  elem.attr("aria-checked", boolVal);
+                  elem[0].setAttribute(
+                    "aria-checked",
+                    (attr.value == ngModel.$viewValue).toString(),
+                  );
                 }
 
                 function getCheckboxReaction() {
                   elem.attr(
                     "aria-checked",
-                    !ngModel.$isEmpty(ngModel.$viewValue),
+                    (!ngModel.$isEmpty(ngModel.$viewValue)).toString(),
                   );
                 }
 
@@ -37499,7 +37466,7 @@ function initAriaModule() {
                 ) {
                   // ngModel.$error.required is undefined on custom controls
                   attr.$observe("required", () => {
-                    elem.attr("aria-required", !!attr.required);
+                    elem.attr("aria-required", (!!attr.required).toString());
                   });
                 }
 
@@ -37509,7 +37476,7 @@ function initAriaModule() {
                   scope.$watch(
                     () => ngModel.$invalid,
                     (newVal) => {
-                      elem.attr("aria-invalid", !!newVal);
+                      elem.attr("aria-invalid", (!!newVal).toString());
                     },
                   );
                 }
@@ -37674,7 +37641,7 @@ function $AriaProvider() {
    * @ngdoc method
    * @name $ariaProvider#config
    *
-   * @param {object} config object to enable/disable specific ARIA attributes
+   * @param {object} newConfig object to enable/disable specific ARIA attributes
    *
    *  - **ariaHidden** – `{boolean}` – Enables/disables aria-hidden tags
    *  - **ariaChecked** – `{boolean}` – Enables/disables aria-checked tags
