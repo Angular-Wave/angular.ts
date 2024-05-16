@@ -353,8 +353,7 @@ function registerRestorableStyles(backup, node, properties) {
 }
 
 export const $AnimateCssProvider = [
-  "$animateProvider",
-  function ($animateProvider) {
+  function () {
     this.$get = [
       "$$AnimateRunner",
       "$timeout",
@@ -488,7 +487,7 @@ export const $AnimateCssProvider = [
           // we should stick to using that
           let options = initialOptions || {};
           if (!options.$$prepared) {
-            options = prepareAnimationOptions(copy(options));
+            options = prepareAnimationOptions(structuredClone(options));
           }
 
           const restoreStyles = {};
@@ -607,7 +606,7 @@ export const $AnimateCssProvider = [
           }
 
           if (!options.$$skipPreparationClasses) {
-            jqLite.addClass(element, preparationClasses);
+            element[0].classList.add(preparationClasses);
           }
 
           let applyOnlyDuration;
@@ -714,7 +713,7 @@ export const $AnimateCssProvider = [
           );
 
           if (options.delay != null) {
-            let delayStyle;
+            var delayStyle;
             if (typeof options.delay !== "boolean") {
               delayStyle = parseFloat(options.delay);
               // number in options.delay means we have to recalculate the delay for the closing timeout

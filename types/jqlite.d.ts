@@ -141,13 +141,6 @@ interface JQLite {
      * @see {@link https://api.jquery.com/css/#css-propertyName-function}
      */
     css(propertyName: string, value: (index: number, value: string) => string | number): this;
-    /**
-     * Set one or more CSS properties for the set of matched elements.
-     *
-     * @param properties An object of property-value pairs to set.
-     * @see {@link https://api.jquery.com/css/#css-properties}
-     */
-    css(properties: JQLiteCssProperties): this;
 
     /**
      * Store arbitrary data associated with the matched elements.
@@ -542,22 +535,6 @@ interface JQLite {
     text(func: (index: number, text: string) => string): this;
 
     /**
-     * Add or remove one or more classes from each element in the set of matched elements, depending on either the class's presence or the value of the switch argument.
-     *
-     * @param className One or more class names (separated by spaces) to be toggled for each element in the matched set.
-     * @param swtch A Boolean (not just truthy/falsy) value to determine whether the class should be added or removed.
-     * @see {@link https://api.jquery.com/toggleClass/#toggleClass-className}
-     */
-    toggleClass(className: string, swtch?: boolean): this;
-    /**
-     * Add or remove one or more classes from each element in the set of matched elements, depending on either the class's presence or the value of the switch argument.
-     *
-     * @param swtch A boolean value to determine whether the class should be added or removed.
-     * @see {@link https://api.jquery.com/toggleClass/#toggleClass-state}
-     */
-    toggleClass(swtch?: boolean): this;
-
-    /**
      * Execute all handlers attached to an element for an event.
      *
      * @param eventType A string containing a JavaScript event type, such as click or submit.
@@ -572,7 +549,7 @@ interface JQLite {
      * @param extraParameters An array of additional parameters to pass along to the event handler.
      * @see {@link https://api.jquery.com/triggerHandler/#triggerHandler-event-extraParameters}
      */
-    triggerHandler(event: JQueryEventObject, ...extraParameters: any[]): Object;
+    triggerHandler(event: Event, ...extraParameters: any[]): Object;
 
     /**
      * Remove a previously-attached event handler from the elements.
@@ -581,7 +558,7 @@ interface JQLite {
      * @param handler The function that is to be no longer executed.
      * @see {@link https://api.jquery.com/unbind/#unbind-eventType-handler}
      */
-    unbind(eventType?: string, handler?: (eventObject: JQueryEventObject) => any): this;
+    unbind(eventType?: string, handler?: (eventObject: Event) => any): this;
     /**
      * Remove a previously-attached event handler from the elements.
      *

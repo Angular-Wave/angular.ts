@@ -59,7 +59,6 @@ import {
  * - [`find()`](http://api.jquery.com/find/) - Limited to lookups by tag name
  * - [`hasClass()`](http://api.jquery.com/hasClass/)
  * - [`html()`](http://api.jquery.com/html/)
- * - [`next()`](http://api.jquery.com/next/) - Does not support selectors
  * - [`on()`](http://api.jquery.com/on/) - Does not support namespaces, selectors or eventData
  * - [`off()`](http://api.jquery.com/off/) - Does not support namespaces, selectors or event object as parameter
  * - [`one()`](http://api.jquery.com/one/) - Does not support namespaces or selectors
@@ -73,7 +72,6 @@ import {
  * - [`removeData()`](http://api.jquery.com/removeData/)
  * - [`replaceWith()`](http://api.jquery.com/replaceWith/)
  * - [`text()`](http://api.jquery.com/text/)
- * - [`toggleClass()`](http://api.jquery.com/toggleClass/) - Does not support a function as first argument
  * - [`triggerHandler()`](http://api.jquery.com/triggerHandler/) - Passes a dummy event object to handlers
  * - [`val()`](http://api.jquery.com/val/)
  *
@@ -583,7 +581,7 @@ function jqLiteReady(fn) {
 /// ///////////////////////////////////////
 // Functions which are declared directly.
 /// ///////////////////////////////////////
-const JQLitePrototype = (JQLite.prototype = {
+JQLite.prototype = {
   ready: jqLiteReady,
   toString() {
     const value = [];
@@ -601,7 +599,7 @@ const JQLitePrototype = (JQLite.prototype = {
   push: [].push,
   sort: [].sort,
   splice: [].splice,
-});
+};
 
 /// ///////////////////////////////////////
 // Functions iterating getter/setters.
@@ -1078,31 +1076,11 @@ forEach(
 
     addClass: jqLiteAddClass,
     removeClass: jqLiteRemoveClass,
-
-    toggleClass(element, selector, condition) {
-      if (selector) {
-        forEach(selector.split(" "), (className) => {
-          let classCondition = condition;
-          if (isUndefined(classCondition)) {
-            classCondition = !jqLiteHasClass(element, className);
-          }
-          (classCondition ? jqLiteAddClass : jqLiteRemoveClass)(
-            element,
-            className,
-          );
-        });
-      }
-    },
-
     parent(element) {
       const parent = element.parentNode;
       return parent && parent.nodeType !== Node.DOCUMENT_FRAGMENT_NODE
         ? parent
         : null;
-    },
-
-    next(element) {
-      return element.nextElementSibling;
     },
 
     find(element, selector) {

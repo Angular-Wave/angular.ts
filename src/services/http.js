@@ -1306,8 +1306,8 @@ export function $HttpProvider() {
 
       return $http;
 
-      function createShortMethods(names) {
-        forEach(arguments, (name) => {
+      function createShortMethods(...names) {
+        names.forEach((name) => {
           $http[name] = function (url, config) {
             return $http(
               extend({}, config || {}, {
@@ -1319,8 +1319,8 @@ export function $HttpProvider() {
         });
       }
 
-      function createShortMethodsWithData(name) {
-        forEach(arguments, (name) => {
+      function createShortMethodsWithData(...names) {
+        names.forEach((name) => {
           $http[name] = function (url, data, config) {
             return $http(
               extend({}, config || {}, {

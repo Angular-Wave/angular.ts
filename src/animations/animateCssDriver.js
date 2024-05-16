@@ -1,6 +1,6 @@
 import { jqLite } from "../jqLite";
 import { forEach, isString } from "../core/utils";
-import { getDomNode } from "./shared";
+import { concatWithSpace, getDomNode } from "./shared";
 
 export const $$AnimateCssDriverProvider = [
   "$$animationProvider",

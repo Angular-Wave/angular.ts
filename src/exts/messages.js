@@ -677,7 +677,7 @@ export function initMessageModule() {
      * </ng-messages>
      * ```
      *
-     * @param {expression} ngMessage|when a string value corresponding to the message key.
+     * @param {string} ngMessage|when a string value corresponding to the message key.
      */
     .directive("ngMessage", ngMessageDirectiveFactory())
 
@@ -707,7 +707,7 @@ export function initMessageModule() {
      *
      * {@link module:ngMessages Click here} to learn more about `ngMessages` and `ngMessage`.
      *
-     * @param {expression} ngMessageExp|whenExp an expression value corresponding to the message key.
+     * @param {string} ngMessageExp|whenExp an expression value corresponding to the message key.
      */
     .directive("ngMessageExp", ngMessageDirectiveFactory())
 

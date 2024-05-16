@@ -1376,7 +1376,6 @@ function directiveNormalize(name) {
  * - [`find()`](http://api.jquery.com/find/) - Limited to lookups by tag name
  * - [`hasClass()`](http://api.jquery.com/hasClass/)
  * - [`html()`](http://api.jquery.com/html/)
- * - [`next()`](http://api.jquery.com/next/) - Does not support selectors
  * - [`on()`](http://api.jquery.com/on/) - Does not support namespaces, selectors or eventData
  * - [`off()`](http://api.jquery.com/off/) - Does not support namespaces, selectors or event object as parameter
  * - [`one()`](http://api.jquery.com/one/) - Does not support namespaces or selectors
@@ -1390,7 +1389,6 @@ function directiveNormalize(name) {
  * - [`removeData()`](http://api.jquery.com/removeData/)
  * - [`replaceWith()`](http://api.jquery.com/replaceWith/)
  * - [`text()`](http://api.jquery.com/text/)
- * - [`toggleClass()`](http://api.jquery.com/toggleClass/) - Does not support a function as first argument
  * - [`triggerHandler()`](http://api.jquery.com/triggerHandler/) - Passes a dummy event object to handlers
  * - [`val()`](http://api.jquery.com/val/)
  *
@@ -1900,7 +1898,7 @@ function jqLiteReady(fn) {
 /// ///////////////////////////////////////
 // Functions which are declared directly.
 /// ///////////////////////////////////////
-(JQLite.prototype = {
+JQLite.prototype = {
   ready: jqLiteReady,
   toString() {
     const value = [];
@@ -1918,7 +1916,7 @@ function jqLiteReady(fn) {
   push: [].push,
   sort: [].sort,
   splice: [].splice,
-});
+};
 
 /// ///////////////////////////////////////
 // Functions iterating getter/setters.
@@ -2395,31 +2393,11 @@ forEach(
 
     addClass: jqLiteAddClass,
     removeClass: jqLiteRemoveClass,
-
-    toggleClass(element, selector, condition) {
-      if (selector) {
-        forEach(selector.split(" "), (className) => {
-          let classCondition = condition;
-          if (isUndefined(classCondition)) {
-            classCondition = !jqLiteHasClass(element, className);
-          }
-          (classCondition ? jqLiteAddClass : jqLiteRemoveClass)(
-            element,
-            className,
-          );
-        });
-      }
-    },
-
     parent(element) {
       const parent = element.parentNode;
       return parent && parent.nodeType !== Node.DOCUMENT_FRAGMENT_NODE
         ? parent
         : null;
-    },
-
-    next(element) {
-      return element.nextElementSibling;
     },
 
     find(element, selector) {
@@ -3563,8 +3541,11 @@ function createInjector(modulesToLoad, strictDi) {
     }
 
     function has(name) {
-      const hasProvider = providerCache.hasOwnProperty(name + providerSuffix);
-      const hasCache = cache.hasOwnProperty(name);
+      const hasProvider = Object.prototype.hasOwnProperty.call(
+        providerCache,
+        name + providerSuffix,
+      );
+      const hasCache = Object.prototype.hasOwnProperty.call(cache, name);
       return hasProvider || hasCache;
     }
 
@@ -4478,7 +4459,7 @@ function setupModuleLoader(window) {
       let info = {};
 
       assertNotHasOwnProperty(name, "module");
-      if (requires && modules.hasOwnProperty(name)) {
+      if (requires && Object.prototype.hasOwnProperty.call(modules, name)) {
         modules[name] = null;
       }
       return ensure(modules, name, () => {
@@ -6513,7 +6494,7 @@ function createEventDirective(
  * @description
  * The `ngDblclick` directive allows you to specify custom behavior on a dblclick event.
  *
- * @param {expression} ngDblclick {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngDblclick {@link guide/expression Expression} to evaluate upon
  * a dblclick. (The Event object is available as `$event`)
  *
  * @example
@@ -6537,7 +6518,7 @@ function createEventDirective(
  * @description
  * The ngMousedown directive allows you to specify custom behavior on mousedown event.
  *
- * @param {expression} ngMousedown {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngMousedown {@link guide/expression Expression} to evaluate upon
  * mousedown. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -6561,7 +6542,7 @@ function createEventDirective(
  * @description
  * Specify custom behavior on mouseup event.
  *
- * @param {expression} ngMouseup {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngMouseup {@link guide/expression Expression} to evaluate upon
  * mouseup. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -6585,7 +6566,7 @@ function createEventDirective(
  * @description
  * Specify custom behavior on mouseover event.
  *
- * @param {expression} ngMouseover {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngMouseover {@link guide/expression Expression} to evaluate upon
  * mouseover. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -6609,7 +6590,7 @@ function createEventDirective(
  * @description
  * Specify custom behavior on mouseenter event.
  *
- * @param {expression} ngMouseenter {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngMouseenter {@link guide/expression Expression} to evaluate upon
  * mouseenter. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -6633,7 +6614,7 @@ function createEventDirective(
  * @description
  * Specify custom behavior on mouseleave event.
  *
- * @param {expression} ngMouseleave {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngMouseleave {@link guide/expression Expression} to evaluate upon
  * mouseleave. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -6657,7 +6638,7 @@ function createEventDirective(
  * @description
  * Specify custom behavior on mousemove event.
  *
- * @param {expression} ngMousemove {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngMousemove {@link guide/expression Expression} to evaluate upon
  * mousemove. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -6681,7 +6662,7 @@ function createEventDirective(
  * @description
  * Specify custom behavior on keydown event.
  *
- * @param {expression} ngKeydown {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngKeydown {@link guide/expression Expression} to evaluate upon
  * keydown. (Event object is available as `$event` and can be interrogated for keyCode, altKey, etc.)
  *
  * @example
@@ -6703,7 +6684,7 @@ function createEventDirective(
  * @description
  * Specify custom behavior on keyup event.
  *
- * @param {expression} ngKeyup {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngKeyup {@link guide/expression Expression} to evaluate upon
  * keyup. (Event object is available as `$event` and can be interrogated for keyCode, altKey, etc.)
  *
  * @example
@@ -6729,7 +6710,7 @@ function createEventDirective(
  * @description
  * Specify custom behavior on keypress event.
  *
- * @param {expression} ngKeypress {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngKeypress {@link guide/expression Expression} to evaluate upon
  * keypress. ({@link guide/expression#-event- Event object is available as `$event`}
  * and can be interrogated for keyCode, altKey, etc.)
  *
@@ -6763,7 +6744,7 @@ function createEventDirective(
  * for a detailed discussion of when `ngSubmit` may be triggered.
  * </div>
  *
- * @param {expression} ngSubmit {@link guide/expression Expression} to eval.
+ * @param {string} ngSubmit {@link guide/expression Expression} to eval.
  * ({@link guide/expression#-event- Event object is available as `$event`})
  *
  */
@@ -6782,7 +6763,7 @@ function createEventDirective(
  * AngularJS executes the expression using `scope.$evalAsync` if the event is fired
  * during an `$apply` to ensure a consistent state.
  *
- * @param {expression} ngFocus {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngFocus {@link guide/expression Expression} to evaluate upon
  * focus. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -6807,7 +6788,7 @@ function createEventDirective(
  * AngularJS executes the expression using `scope.$evalAsync` if the event is fired
  * during an `$apply` to ensure a consistent state.
  *
- * @param {expression} ngBlur {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngBlur {@link guide/expression Expression} to evaluate upon
  * blur. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -6824,7 +6805,7 @@ function createEventDirective(
  * @description
  * Specify custom behavior on copy event.
  *
- * @param {expression} ngCopy {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngCopy {@link guide/expression Expression} to evaluate upon
  * copy. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -6846,7 +6827,7 @@ function createEventDirective(
  * @description
  * Specify custom behavior on cut event.
  *
- * @param {expression} ngCut {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngCut {@link guide/expression Expression} to evaluate upon
  * cut. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -6868,7 +6849,7 @@ function createEventDirective(
  * @description
  * Specify custom behavior on paste event.
  *
- * @param {expression} ngPaste {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngPaste {@link guide/expression Expression} to evaluate upon
  * paste. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -10992,7 +10973,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
         switch (type) {
           case "svg":
           case "math":
-            const wrapper = window.document.createElement("div");
+            var wrapper = window.document.createElement("div");
             wrapper.innerHTML = `<${type}>${template}</${type}>`;
             return wrapper.childNodes[0].childNodes;
           default:
@@ -13954,7 +13935,7 @@ addSetValidityMethod({
  * @name ngModel
  * @restrict A
  * @priority 1
- * @param {expression} ngModel assignable {@link guide/expression Expression} to bind to.
+ * @param {string} ngModel assignable {@link guide/expression Expression} to bind to.
  *
  * @description
  * The `ngModel` directive binds an `input`,`select`, `textarea` (or custom form control) to a
@@ -17007,59 +16988,18 @@ const ngClassOddDirective = classDirective("Odd", 0);
  */
 const ngClassEvenDirective = classDirective("Even", 1);
 
-function ngDirective(directive) {
-  if (isFunction(directive)) {
-    directive = {
-      link: directive,
-    };
-  }
-  directive.restrict = directive.restrict || "AC";
-  return valueFn(directive);
-}
-
 /**
- * @ngdoc directive
- * @name ngCloak
- * @restrict AC
- *
- * @description
- * The `ngCloak` directive is used to prevent the AngularJS html template from being briefly
- * displayed by the browser in its raw (uncompiled) form while your application is loading. Use this
- * directive to avoid the undesirable flicker effect caused by the html template display.
- *
- * The directive can be applied to the `<body>` element, but the preferred usage is to apply
- * multiple `ngCloak` directives to small portions of the page to permit progressive rendering
- * of the browser view.
- *
- * `ngCloak` works in cooperation with the following css rule embedded within `angular.js` and
- * `angular.min.js`.
- * For CSP mode please add `angular-csp.css` to your html file (see {@link ng.directive:ngCsp ngCsp}).
- *
- * ```css
- * [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
- *   display: none !important;
- * }
- * ```
- *
- * When this css rule is loaded by the browser, all html elements (including their children) that
- * are tagged with the `ngCloak` directive are hidden. When AngularJS encounters this directive
- * during the compilation of the template it deletes the `ngCloak` element attribute, making
- * the compiled element visible.
- *
- * For the best result, the `angular.js` script must be loaded in the head section of the html
- * document; alternatively, the css rule above must be included in the external stylesheet of the
- * application.
- *
- * @element ANY
- *
- *
+ * @returns {angular.IDirective}
  */
-const ngCloakDirective = ngDirective({
-  compile(element, attr) {
-    attr.$set("ngCloak", undefined);
-    element.removeClass("ng-cloak");
-  },
-});
+function ngCloakDirective() {
+  return {
+    restrict: "AC",
+    compile(element, attr) {
+      attr.$set("ngCloak", undefined);
+      element[0].classList.remove("ng-cloak");
+    },
+  };
+}
 
 /**
  * @ngdoc directive
@@ -17213,7 +17153,7 @@ const NG_HIDE_IN_PROGRESS_CLASS = "ng-hide-animate";
  * to block during animation states - ngAnimate will automatically handle the style toggling for you.
  *
  * @element ANY
- * @param {expression} ngShow If the {@link guide/expression expression} is truthy/falsy then the
+ * @param {string} ngShow If the {@link guide/expression expression} is truthy/falsy then the
  *                            element is shown/hidden respectively.
  *
  * @example
@@ -17343,7 +17283,7 @@ const ngShowDirective = [
  * to block during animation states - ngAnimate will automatically handle the style toggling for you.
  *
  * @element ANY
- * @param {expression} ngHide If the {@link guide/expression expression} is truthy/falsy then the
+ * @param {string} ngHide If the {@link guide/expression expression} is truthy/falsy then the
  *                            element is hidden/shown respectively.
  *
  * @knownIssue
@@ -17732,71 +17672,32 @@ const ngIncludeFillContentDirective = [
 ];
 
 /**
- * @ngdoc directive
- * @name ngInit
- * @restrict AC
- * @priority 450
- * @element ANY
- *
- * @param {expression} ngInit {@link guide/expression Expression} to eval.
- *
- * @description
- * The `ngInit` directive allows you to evaluate an expression in the
- * current scope.
- *
- * <div class="alert alert-danger">
- * This directive can be abused to add unnecessary amounts of logic into your templates.
- * There are only a few appropriate uses of `ngInit`:
- * <ul>
- *   <li>aliasing special properties of {@link ng.directive:ngRepeat `ngRepeat`},
- *     as seen in the demo below.</li>
- *   <li>initializing data during development, or for examples, as seen throughout these docs.</li>
- *   <li>injecting data via server side scripting.</li>
- * </ul>
- *
- * Besides these few cases, you should use {@link guide/component Components} or
- * {@link guide/controller Controllers} rather than `ngInit` to initialize values on a scope.
- * </div>
- *
- * <div class="alert alert-warning">
- * **Note**: If you have assignment in `ngInit` along with a {@link ng.$filter `filter`}, make
- * sure you have parentheses to ensure correct operator precedence:
- * <pre class="prettyprint">
- * `<div ng-init="test1 = ($index | toString)"></div>`
- * </pre>
- * </div>
- *
+ * @returns {angular.IDirective}
  */
-const ngInitDirective = ngDirective({
-  priority: 450,
-  compile() {
-    return {
-      pre(scope, _element, attrs) {
-        scope.$eval(attrs.ngInit);
-      },
-    };
-  },
-});
+function ngInitDirective() {
+  return {
+    priority: 450,
+    compile() {
+      return {
+        pre(scope, _element, attrs) {
+          scope.$eval(attrs.ngInit);
+        },
+      };
+    },
+  };
+}
 
 /**
- * @ngdoc directive
- * @name ngNonBindable
- * @restrict AC
- * @priority 1000
- * @element ANY
  *
- * @description
- * The `ngNonBindable` directive tells AngularJS not to compile or bind the contents of the current
- * DOM element, including directives on the element itself that have a lower priority than
- * `ngNonBindable`. This is useful if the element contains what appears to be AngularJS directives
- * and bindings but which should be ignored by AngularJS. This could be the case if you have a site
- * that displays snippets of code, for instance.
- *
+ * @returns {angular.IDirective}
  */
-const ngNonBindableDirective = ngDirective({
-  terminal: true,
-  priority: 1000,
-});
+function ngNonBindableDirective() {
+  return {
+    restrict: "AC",
+    terminal: true,
+    priority: 1000,
+  };
+}
 
 /**
  * @ngdoc directive
@@ -18530,39 +18431,27 @@ const ngRepeatDirective = [
 ];
 
 /**
- * @ngdoc directive
- * @name ngStyle
- * @restrict AC
- *
- * @description
- * The `ngStyle` directive allows you to set CSS style on an HTML element conditionally.
- *
- * @knownIssue
- * You should not use {@link guide/interpolation interpolation} in the value of the `style`
- * attribute, when using the `ngStyle` directive on the same element.
- * See {@link guide/interpolation#known-issues here} for more info.
- *
- * @element ANY
- * @param {expression} ngStyle
- *
- * {@link guide/expression Expression} which evals to an
- * object whose keys are CSS style names and values are corresponding values for those CSS
- * keys.
- *
- * Since some CSS style names are not valid keys for an object, they must be quoted.
- * See the 'background-color' style in the example below.
- *
+ * @returns {angular.IDirective}
  */
-const ngStyleDirective = ngDirective((scope, element, attr) => {
-  scope.$watchCollection(attr.ngStyle, (newStyles, oldStyles) => {
-    if (oldStyles && newStyles !== oldStyles) {
-      forEach(oldStyles, (val, style) => {
-        element.css(style, "");
+function ngStyleDirective() {
+  return {
+    restrict: "AC",
+    link: (scope, element, attr) => {
+      scope.$watchCollection(attr.ngStyle, (newStyles, oldStyles) => {
+        if (oldStyles) {
+          Object.keys(oldStyles).forEach((key) => {
+            element[0].style[key] = "";
+          });
+        }
+        if (newStyles) {
+          Object.entries(newStyles).forEach(([key, value]) => {
+            element[0].style[key] = value;
+          });
+        }
       });
-    }
-    if (newStyles) element.css(newStyles);
-  });
-});
+    },
+  };
+}
 
 /**
  * @ngdoc directive
@@ -18693,40 +18582,52 @@ const ngSwitchDirective = [
   }),
 ];
 
-const ngSwitchWhenDirective = ngDirective({
-  transclude: "element",
-  priority: 1200,
-  require: "^ngSwitch",
-  multiElement: true,
-  link(scope, element, attrs, ctrl, $transclude) {
-    const cases = attrs.ngSwitchWhen
-      .split(attrs.ngSwitchWhenSeparator)
-      .sort()
-      .filter(
-        // Filter duplicate cases
-        (element, index, array) => array[index - 1] !== element,
-      );
+/**
+ * @returns {angular.IDirective}
+ */
+function ngSwitchWhenDirective() {
+  return {
+    transclude: "element",
+    priority: 1200,
+    restrict: "AC",
+    require: "^ngSwitch",
+    multiElement: true,
+    link(scope, element, attrs, ctrl, $transclude) {
+      const cases = attrs.ngSwitchWhen
+        .split(attrs.ngSwitchWhenSeparator)
+        .sort()
+        .filter(
+          // Filter duplicate cases
+          (element, index, array) => array[index - 1] !== element,
+        );
 
-    forEach(cases, (whenCase) => {
-      ctrl.cases[`!${whenCase}`] = ctrl.cases[`!${whenCase}`] || [];
-      ctrl.cases[`!${whenCase}`].push({
-        transclude: $transclude,
-        element,
+      cases.forEach((whenCase) => {
+        ctrl.cases[`!${whenCase}`] = ctrl.cases[`!${whenCase}`] || [];
+        ctrl.cases[`!${whenCase}`].push({
+          transclude: $transclude,
+          element,
+        });
       });
-    });
-  },
-});
+    },
+  };
+}
 
-const ngSwitchDefaultDirective = ngDirective({
-  transclude: "element",
-  priority: 1200,
-  require: "^ngSwitch",
-  multiElement: true,
-  link(scope, element, attr, ctrl, $transclude) {
-    ctrl.cases["?"] = ctrl.cases["?"] || [];
-    ctrl.cases["?"].push({ transclude: $transclude, element });
-  },
-});
+/**
+ * @returns {angular.IDirective}
+ */
+function ngSwitchDefaultDirective() {
+  return {
+    restrict: "AC",
+    transclude: "element",
+    priority: 1200,
+    require: "^ngSwitch",
+    multiElement: true,
+    link(_scope, element, _attr, ctrl, $transclude) {
+      ctrl.cases["?"] = ctrl.cases["?"] || [];
+      ctrl.cases["?"].push({ transclude: $transclude, element });
+    },
+  };
+}
 
 const ngOptionsMinErr = minErr("ngOptions");
 
@@ -19493,34 +19394,14 @@ const ngTranscludeDirective = [
 ];
 
 /**
- * @ngdoc directive
- * @name ngList
- * @restrict A
- * @priority 100
- *
- * @param {string=} ngList optional delimiter that should be used to split the value.
- *
- * @description
- * Text input that converts between a delimited string and an array of strings. The default
- * delimiter is a comma followed by a space - equivalent to `ng-list=", "`. You can specify a custom
- * delimiter as the value of the `ngList` attribute - for example, `ng-list=" | "`.
- *
- * The behaviour of the directive is affected by the use of the `ngTrim` attribute.
- * * If `ngTrim` is set to `"false"` then whitespace around both the separator and each
- *   list item is respected. This implies that the user of the directive is responsible for
- *   dealing with whitespace but also allows you to use whitespace as a delimiter, such as a
- *   tab or newline character.
- * * Otherwise whitespace around the delimiter is ignored when splitting (although it is respected
- *   when joining the list items back together) and whitespace around each list item is stripped
- *   before it is added to the model.
- *
+ * @returns {angular.IDirective}
  */
 function ngListDirective() {
   return {
     restrict: "A",
     priority: 100,
     require: "ngModel",
-    link(scope, element, attr, ctrl) {
+    link(_scope, _element, attr, ctrl) {
       const ngList = attr.ngList || ", ";
       const trimValues = attr.ngTrim !== "false";
       const separator = trimValues ? trim(ngList) : ngList;
@@ -19580,7 +19461,7 @@ function ngListDirective() {
  * Note, this directive requires `ngModel` to be present.
  *
  * @element ANY
- * @param {expression} ngChange {@link guide/expression Expression} to evaluate upon change
+ * @param {string} ngChange {@link guide/expression Expression} to evaluate upon change
  * in input value.
  *
  */
@@ -19691,7 +19572,7 @@ const REGEX_STRING_REGEXP = /^\/(.+)\/([a-z]*)$/;
  * A special directive is necessary because we cannot use interpolation inside the `disabled`
  * attribute. See the {@link guide/interpolation interpolation guide} for more info.
  *
- * @param {expression} ngDisabled If the {@link guide/expression expression} is truthy,
+ * @param {string} ngDisabled If the {@link guide/expression expression} is truthy,
  *     then the `disabled` attribute will be set on the element
  */
 
@@ -19711,7 +19592,7 @@ const REGEX_STRING_REGEXP = /^\/(.+)\/([a-z]*)$/;
  * attribute. See the {@link guide/interpolation interpolation guide} for more info.
  *
  * @element INPUT
- * @param {expression} ngChecked If the {@link guide/expression expression} is truthy,
+ * @param {string} ngChecked If the {@link guide/expression expression} is truthy,
  *     then the `checked` attribute will be set on the element
  */
 
@@ -19726,7 +19607,7 @@ const REGEX_STRING_REGEXP = /^\/(.+)\/([a-z]*)$/;
  * A special directive is necessary because we cannot use interpolation inside the `readonly`
  * attribute. See the {@link guide/interpolation interpolation guide} for more info.
  * @element INPUT
- * @param {expression} ngReadonly If the {@link guide/expression expression} is truthy,
+ * @param {string} ngReadonly If the {@link guide/expression expression} is truthy,
  *     then special attribute "readonly" will be set on the element
  */
 
@@ -19750,7 +19631,7 @@ const REGEX_STRING_REGEXP = /^\/(.+)\/([a-z]*)$/;
  *   selected options.
  * </div>
  * @element OPTION
- * @param {expression} ngSelected If the {@link guide/expression expression} is truthy,
+ * @param {string} ngSelected If the {@link guide/expression expression} is truthy,
  *     then special attribute "selected" will be set on the element
  */
 
@@ -19773,7 +19654,7 @@ const REGEX_STRING_REGEXP = /^\/(.+)\/([a-z]*)$/;
  * recommended to use {@link ng.ngShow} and {@link ng.ngHide} instead.
  *
  * @element DETAILS
- * @param {expression} ngOpen If the {@link guide/expression expression} is truthy,
+ * @param {string} ngOpen If the {@link guide/expression expression} is truthy,
  *     then special attribute "open" will be set on the element
  */
 
@@ -20111,7 +19992,7 @@ const maxlengthDirective = [
  * @name ngMinlength
  * @restrict A
  *
- * @param {expression} ngMinlength AngularJS expression that must evaluate to a `Number` or `String`
+ * @param {string} ngMinlength AngularJS expression that must evaluate to a `Number` or `String`
  *                                 parsable into a `Number`. Used as value for the `minlength`
  *                                 {@link ngModel.NgModelController#$validators validator}.
  *
@@ -23398,76 +23279,6 @@ function $ExceptionHandlerProvider() {
 //   };
 // }
 
-/**
- * @ngdoc filter
- * @name filter
- * @kind function
- *
- * @description
- * Selects a subset of items from `array` and returns it as a new array.
- *
- * @param {Array} array The source array.
- * <div class="alert alert-info">
- *   **Note**: If the array contains objects that reference themselves, filtering is not possible.
- * </div>
- * @param {string|Object|function()} expression The predicate to be used for selecting items from
- *   `array`.
- *
- *   Can be one of:
- *
- *   - `string`: The string is used for matching against the contents of the `array`. All strings or
- *     objects with string properties in `array` that match this string will be returned. This also
- *     applies to nested object properties.
- *     The predicate can be negated by prefixing the string with `!`.
- *
- *   - `Object`: A pattern object can be used to filter specific properties on objects contained
- *     by `array`. For example `{name:"M", phone:"1"}` predicate will return an array of items
- *     which have property `name` containing "M" and property `phone` containing "1". A special
- *     property name (`$` by default) can be used (e.g. as in `{$: "text"}`) to accept a match
- *     against any property of the object or its nested object properties. That's equivalent to the
- *     simple substring match with a `string` as described above. The special property name can be
- *     overwritten, using the `anyPropertyKey` parameter.
- *     The predicate can be negated by prefixing the string with `!`.
- *     For example `{name: "!M"}` predicate will return an array of items which have property `name`
- *     not containing "M".
- *
- *     Note that a named property will match properties on the same level only, while the special
- *     `$` property will match properties on the same level or deeper. E.g. an array item like
- *     `{name: {first: 'John', last: 'Doe'}}` will **not** be matched by `{name: 'John'}`, but
- *     **will** be matched by `{$: 'John'}`.
- *
- *   - `function(value, index, array)`: A predicate function can be used to write arbitrary filters.
- *     The function is called for each element of the array, with the element, its index, and
- *     the entire array itself as arguments.
- *
- *     The final result is an array of those elements that the predicate returned true for.
- *
- * @param {function(actual, expected)|true|false} [comparator] Comparator which is used in
- *     determining if values retrieved using `expression` (when it is not a function) should be
- *     considered a match based on the expected value (from the filter expression) and actual
- *     value (from the object in the array).
- *
- *   Can be one of:
- *
- *   - `function(actual, expected)`:
- *     The function will be given the object value and the predicate value to compare and
- *     should return true if both values should be considered equal.
- *
- *   - `true`: A shorthand for `function(actual, expected) { return angular.equals(actual, expected)}`.
- *     This is essentially strict comparison of expected and actual.
- *
- *   - `false`: A short hand for a function which will look for a substring match in a case
- *     insensitive way. Primitive values are converted to strings. Objects are not compared against
- *     primitives, unless they have a custom `toString` method (e.g. `Date` objects).
- *
- *
- *   Defaults to `false`.
- *
- * @param {string} [anyPropertyKey] The special property name that matches against any property.
- *     By default `$`.
- *
- */
-
 function filterFilter() {
   return function (array, expression, comparator, anyPropertyKey) {
     if (!isArrayLike(array)) {
@@ -23482,11 +23293,10 @@ function filterFilter() {
     }
 
     anyPropertyKey = anyPropertyKey || "$";
-    const expressionType = getTypeForFilter(expression);
     let predicateFn;
     let matchAgainstAnyProp;
 
-    switch (expressionType) {
+    switch (getTypeForFilter(expression)) {
       case "function":
         predicateFn = expression;
         break;
@@ -26893,8 +26703,8 @@ function $HttpProvider() {
 
       return $http;
 
-      function createShortMethods(names) {
-        forEach(arguments, (name) => {
+      function createShortMethods(...names) {
+        names.forEach((name) => {
           $http[name] = function (url, config) {
             return $http(
               extend({}, config || {}, {
@@ -26906,8 +26716,8 @@ function $HttpProvider() {
         });
       }
 
-      function createShortMethodsWithData(name) {
-        forEach(arguments, (name) => {
+      function createShortMethodsWithData(...names) {
+        names.forEach((name) => {
           $http[name] = function (url, data, config) {
             return $http(
               extend({}, config || {}, {
@@ -27491,35 +27301,15 @@ const $parseMinErr = minErr("$parse");
 
 const objectValueOf = {}.constructor.prototype.valueOf;
 
-// Sandboxing AngularJS Expressions
-// ------------------------------
-// AngularJS expressions are no longer sandboxed. So it is now even easier to access arbitrary JS code by
-// various means such as obtaining a reference to native JS functions like the Function constructor.
-//
-// As an example, consider the following AngularJS expression:
-//
-//   {}.toString.constructor('alert("evil JS code")')
-//
-// It is important to realize that if you create an expression from a string that contains user provided
-// content then it is possible that your application contains a security vulnerability to an XSS style attack.
-//
-// See https://docs.angularjs.org/guide/security
-
+/**
+ * Converts parameter to  strings property name for use  as keys in an object.
+ * Any non-string object, including a number, is typecasted into a string via the toString method.
+ * {@link https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors#Property_names}
+ *
+ * @param {!any} name
+ * @returns {string}
+ */
 function getStringValue(name) {
-  // Property names must be strings. This means that non-string objects cannot be used
-  // as keys in an object. Any non-string object, including a number, is typecasted
-  // into a string via the toString method.
-  // -- MDN, https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors#Property_names
-  //
-  // So, to ensure that we are checking the same `name` that JavaScript would use, we cast it
-  // to a string. It's not always possible. If `name` is an object and its `toString` method is
-  // 'broken' (doesn't return a string, isn't a function, etc.), an error will be thrown:
-  //
-  // TypeError: Cannot convert object to primitive value
-  //
-  // For performance reasons, we don't catch this error here and allow it to propagate up the call
-  // stack. Note that you'll get the same error in JavaScript if you try to access a property using
-  // such a 'broken' object as a key.
   return `${name}`;
 }
 
@@ -27642,8 +27432,8 @@ Lexer.prototype = {
       : this.isValidIdentifierContinue(ch);
   },
 
-  isValidIdentifierContinue(ch, cp) {
-    return this.isValidIdentifierStart(ch, cp) || this.isNumber(ch);
+  isValidIdentifierContinue(ch) {
+    return this.isValidIdentifierStart(ch) || this.isNumber(ch);
   },
 
   codePointAt(ch) {
@@ -27781,30 +27571,33 @@ Lexer.prototype = {
   },
 };
 
+/**
+ * @typedef {("Program"|"ExpressionStatement"|"AssignmentExpression"|"ConditionalExpression"|"LogicalExpression"|"BinaryExpression"|"UnaryExpression"|"CallExpression"|"MemberExpression"|"Identifier"|"Literal"|"ArrayExpression"|"Property"|"ObjectExpression"|"ThisExpression"|"LocalsExpression"|"NGValueParameter")} ASTType
+ */
+const ASTType = {
+  Program: "Program",
+  ExpressionStatement: "ExpressionStatement",
+  AssignmentExpression: "AssignmentExpression",
+  ConditionalExpression: "ConditionalExpression",
+  LogicalExpression: "LogicalExpression",
+  BinaryExpression: "BinaryExpression",
+  UnaryExpression: "UnaryExpression",
+  CallExpression: "CallExpression",
+  MemberExpression: "MemberExpression",
+  Identifier: "Identifier",
+  Literal: "Literal",
+  ArrayExpression: "ArrayExpression",
+  Property: "Property",
+  ObjectExpression: "ObjectExpression",
+  ThisExpression: "ThisExpression",
+  LocalsExpression: "LocalsExpression",
+  NGValueParameter: "NGValueParameter",
+};
+
 function AST(lexer, options) {
   this.lexer = lexer;
   this.options = options;
 }
-
-AST.Program = "Program";
-AST.ExpressionStatement = "ExpressionStatement";
-AST.AssignmentExpression = "AssignmentExpression";
-AST.ConditionalExpression = "ConditionalExpression";
-AST.LogicalExpression = "LogicalExpression";
-AST.BinaryExpression = "BinaryExpression";
-AST.UnaryExpression = "UnaryExpression";
-AST.CallExpression = "CallExpression";
-AST.MemberExpression = "MemberExpression";
-AST.Identifier = "Identifier";
-AST.Literal = "Literal";
-AST.ArrayExpression = "ArrayExpression";
-AST.Property = "Property";
-AST.ObjectExpression = "ObjectExpression";
-AST.ThisExpression = "ThisExpression";
-AST.LocalsExpression = "LocalsExpression";
-
-// Internal use only
-AST.NGValueParameter = "NGValueParameter";
 
 AST.prototype = {
   ast(text) {
@@ -27822,18 +27615,22 @@ AST.prototype = {
 
   program() {
     const body = [];
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
+    let hasMore = true;
+    while (hasMore) {
       if (this.tokens.length > 0 && !this.peek("}", ")", ";", "]"))
         body.push(this.expressionStatement());
       if (!this.expect(";")) {
-        return { type: AST.Program, body };
+        hasMore = false;
       }
     }
+    return { type: ASTType.Program, body };
   },
 
   expressionStatement() {
-    return { type: AST.ExpressionStatement, expression: this.filterChain() };
+    return {
+      type: ASTType.ExpressionStatement,
+      expression: this.filterChain(),
+    };
   },
 
   filterChain() {
@@ -27856,7 +27653,7 @@ AST.prototype = {
       }
 
       result = {
-        type: AST.AssignmentExpression,
+        type: ASTType.AssignmentExpression,
         left: result,
         right: this.assignment(),
         operator: "=",
@@ -27874,7 +27671,7 @@ AST.prototype = {
       if (this.consume(":")) {
         consequent = this.expression();
         return {
-          type: AST.ConditionalExpression,
+          type: ASTType.ConditionalExpression,
           test,
           alternate,
           consequent,
@@ -27888,7 +27685,7 @@ AST.prototype = {
     let left = this.logicalAND();
     while (this.expect("||")) {
       left = {
-        type: AST.LogicalExpression,
+        type: ASTType.LogicalExpression,
         operator: "||",
         left,
         right: this.logicalAND(),
@@ -27901,7 +27698,7 @@ AST.prototype = {
     let left = this.equality();
     while (this.expect("&&")) {
       left = {
-        type: AST.LogicalExpression,
+        type: ASTType.LogicalExpression,
         operator: "&&",
         left,
         right: this.equality(),
@@ -27915,7 +27712,7 @@ AST.prototype = {
     let token;
     while ((token = this.expect("==", "!=", "===", "!=="))) {
       left = {
-        type: AST.BinaryExpression,
+        type: ASTType.BinaryExpression,
         operator: token.text,
         left,
         right: this.relational(),
@@ -27929,7 +27726,7 @@ AST.prototype = {
     let token;
     while ((token = this.expect("<", ">", "<=", ">="))) {
       left = {
-        type: AST.BinaryExpression,
+        type: ASTType.BinaryExpression,
         operator: token.text,
         left,
         right: this.additive(),
@@ -27943,7 +27740,7 @@ AST.prototype = {
     let token;
     while ((token = this.expect("+", "-"))) {
       left = {
-        type: AST.BinaryExpression,
+        type: ASTType.BinaryExpression,
         operator: token.text,
         left,
         right: this.multiplicative(),
@@ -27957,7 +27754,7 @@ AST.prototype = {
     let token;
     while ((token = this.expect("*", "/", "%"))) {
       left = {
-        type: AST.BinaryExpression,
+        type: ASTType.BinaryExpression,
         operator: token.text,
         left,
         right: this.unary(),
@@ -27970,7 +27767,7 @@ AST.prototype = {
     let token;
     if ((token = this.expect("+", "-", "!"))) {
       return {
-        type: AST.UnaryExpression,
+        type: ASTType.UnaryExpression,
         operator: token.text,
         prefix: true,
         argument: this.unary(),
@@ -28002,7 +27799,7 @@ AST.prototype = {
       )
     ) {
       primary = {
-        type: AST.Literal,
+        type: ASTType.Literal,
         value: this.options.literals[this.consume().text],
       };
     } else if (this.peek().identifier) {
@@ -28017,14 +27814,14 @@ AST.prototype = {
     while ((next = this.expect("(", "[", "."))) {
       if (next.text === "(") {
         primary = {
-          type: AST.CallExpression,
+          type: ASTType.CallExpression,
           callee: primary,
           arguments: this.parseArguments(),
         };
         this.consume(")");
       } else if (next.text === "[") {
         primary = {
-          type: AST.MemberExpression,
+          type: ASTType.MemberExpression,
           object: primary,
           property: this.expression(),
           computed: true,
@@ -28032,7 +27829,7 @@ AST.prototype = {
         this.consume("]");
       } else if (next.text === ".") {
         primary = {
-          type: AST.MemberExpression,
+          type: ASTType.MemberExpression,
           object: primary,
           property: this.identifier(),
           computed: false,
@@ -28047,7 +27844,7 @@ AST.prototype = {
   filter(baseExpression) {
     const args = [baseExpression];
     const result = {
-      type: AST.CallExpression,
+      type: ASTType.CallExpression,
       callee: this.identifier(),
       arguments: args,
       filter: true,
@@ -28075,12 +27872,12 @@ AST.prototype = {
     if (!token.identifier) {
       this.throwError("is not a valid identifier", token);
     }
-    return { type: AST.Identifier, name: token.text };
+    return { type: ASTType.Identifier, name: token.text };
   },
 
   constant() {
     // TODO check that it is a constant
-    return { type: AST.Literal, value: this.consume().value };
+    return { type: ASTType.Literal, value: this.consume().value };
   },
 
   arrayDeclaration() {
@@ -28096,7 +27893,7 @@ AST.prototype = {
     }
     this.consume("]");
 
-    return { type: AST.ArrayExpression, elements };
+    return { type: ASTType.ArrayExpression, elements };
   },
 
   object() {
@@ -28108,7 +27905,7 @@ AST.prototype = {
           // Support trailing commas per ES5.1.
           break;
         }
-        property = { type: AST.Property, kind: "init" };
+        property = { type: ASTType.Property, kind: "init" };
         if (this.peek().constant) {
           property.key = this.constant();
           property.computed = false;
@@ -28138,7 +27935,7 @@ AST.prototype = {
     }
     this.consume("}");
 
-    return { type: AST.ObjectExpression, properties };
+    return { type: ASTType.ObjectExpression, properties };
   },
 
   throwError(msg, token) {
@@ -28211,8 +28008,8 @@ AST.prototype = {
   },
 
   selfReferential: {
-    this: { type: AST.ThisExpression },
-    $locals: { type: AST.LocalsExpression },
+    this: { type: ASTType.ThisExpression },
+    $locals: { type: ASTType.LocalsExpression },
   },
 };
 
@@ -28238,22 +28035,22 @@ const PURITY_RELATIVE = 2;
 function isPure(node, parentIsPure) {
   switch (node.type) {
     // Computed members might invoke a stateful toString()
-    case AST.MemberExpression:
+    case ASTType.MemberExpression:
       if (node.computed) {
         return false;
       }
       break;
 
     // Unary always convert to primative
-    case AST.UnaryExpression:
+    case ASTType.UnaryExpression:
       return PURITY_ABSOLUTE;
 
     // The binary + operator can invoke a stateful toString().
-    case AST.BinaryExpression:
+    case ASTType.BinaryExpression:
       return node.operator !== "+" ? PURITY_ABSOLUTE : false;
 
     // Functions / filters probably read state from within objects
-    case AST.CallExpression:
+    case ASTType.CallExpression:
       return false;
   }
 
@@ -28268,7 +28065,7 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
   const astIsPure = (ast.isPure = isPure(ast, parentIsPure));
 
   switch (ast.type) {
-    case AST.Program:
+    case ASTType.Program:
       allConstants = true;
       forEach(ast.body, (expr) => {
         findConstantAndWatchExpressions(expr.expression, $filter, astIsPure);
@@ -28276,28 +28073,28 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
       });
       ast.constant = allConstants;
       break;
-    case AST.Literal:
+    case ASTType.Literal:
       ast.constant = true;
       ast.toWatch = [];
       break;
-    case AST.UnaryExpression:
+    case ASTType.UnaryExpression:
       findConstantAndWatchExpressions(ast.argument, $filter, astIsPure);
       ast.constant = ast.argument.constant;
       ast.toWatch = ast.argument.toWatch;
       break;
-    case AST.BinaryExpression:
+    case ASTType.BinaryExpression:
       findConstantAndWatchExpressions(ast.left, $filter, astIsPure);
       findConstantAndWatchExpressions(ast.right, $filter, astIsPure);
       ast.constant = ast.left.constant && ast.right.constant;
       ast.toWatch = ast.left.toWatch.concat(ast.right.toWatch);
       break;
-    case AST.LogicalExpression:
+    case ASTType.LogicalExpression:
       findConstantAndWatchExpressions(ast.left, $filter, astIsPure);
       findConstantAndWatchExpressions(ast.right, $filter, astIsPure);
       ast.constant = ast.left.constant && ast.right.constant;
       ast.toWatch = ast.constant ? [] : [ast];
       break;
-    case AST.ConditionalExpression:
+    case ASTType.ConditionalExpression:
       findConstantAndWatchExpressions(ast.test, $filter, astIsPure);
       findConstantAndWatchExpressions(ast.alternate, $filter, astIsPure);
       findConstantAndWatchExpressions(ast.consequent, $filter, astIsPure);
@@ -28305,11 +28102,11 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
         ast.test.constant && ast.alternate.constant && ast.consequent.constant;
       ast.toWatch = ast.constant ? [] : [ast];
       break;
-    case AST.Identifier:
+    case ASTType.Identifier:
       ast.constant = false;
       ast.toWatch = [ast];
       break;
-    case AST.MemberExpression:
+    case ASTType.MemberExpression:
       findConstantAndWatchExpressions(ast.object, $filter, astIsPure);
       if (ast.computed) {
         findConstantAndWatchExpressions(ast.property, $filter, astIsPure);
@@ -28318,7 +28115,7 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
         ast.object.constant && (!ast.computed || ast.property.constant);
       ast.toWatch = ast.constant ? [] : [ast];
       break;
-    case AST.CallExpression:
+    case ASTType.CallExpression:
       isStatelessFilter = ast.filter
         ? isStateless($filter, ast.callee.name)
         : false;
@@ -28332,13 +28129,13 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
       ast.constant = allConstants;
       ast.toWatch = isStatelessFilter ? argsToWatch : [ast];
       break;
-    case AST.AssignmentExpression:
+    case ASTType.AssignmentExpression:
       findConstantAndWatchExpressions(ast.left, $filter, astIsPure);
       findConstantAndWatchExpressions(ast.right, $filter, astIsPure);
       ast.constant = ast.left.constant && ast.right.constant;
       ast.toWatch = [ast];
       break;
-    case AST.ArrayExpression:
+    case ASTType.ArrayExpression:
       allConstants = true;
       argsToWatch = [];
       forEach(ast.elements, (expr) => {
@@ -28349,7 +28146,7 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
       ast.constant = allConstants;
       ast.toWatch = argsToWatch;
       break;
-    case AST.ObjectExpression:
+    case ASTType.ObjectExpression:
       allConstants = true;
       argsToWatch = [];
       forEach(ast.properties, (property) => {
@@ -28370,11 +28167,11 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
       ast.constant = allConstants;
       ast.toWatch = argsToWatch;
       break;
-    case AST.ThisExpression:
+    case ASTType.ThisExpression:
       ast.constant = false;
       ast.toWatch = [];
       break;
-    case AST.LocalsExpression:
+    case ASTType.LocalsExpression:
       ast.constant = false;
       ast.toWatch = [];
       break;
@@ -28390,15 +28187,17 @@ function getInputs(body) {
 }
 
 function isAssignable(ast) {
-  return ast.type === AST.Identifier || ast.type === AST.MemberExpression;
+  return (
+    ast.type === ASTType.Identifier || ast.type === ASTType.MemberExpression
+  );
 }
 
 function assignableAST(ast) {
   if (ast.body.length === 1 && isAssignable(ast.body[0].expression)) {
     return {
-      type: AST.AssignmentExpression,
+      type: ASTType.AssignmentExpression,
       left: ast.body[0].expression,
-      right: { type: AST.NGValueParameter },
+      right: { type: ASTType.NGValueParameter },
       operator: "=",
     };
   }
@@ -28408,9 +28207,9 @@ function isLiteral(ast) {
   return (
     ast.body.length === 0 ||
     (ast.body.length === 1 &&
-      (ast.body[0].expression.type === AST.Literal ||
-        ast.body[0].expression.type === AST.ArrayExpression ||
-        ast.body[0].expression.type === AST.ObjectExpression))
+      (ast.body[0].expression.type === ASTType.Literal ||
+        ast.body[0].expression.type === ASTType.ArrayExpression ||
+        ast.body[0].expression.type === ASTType.ObjectExpression))
   );
 }
 
@@ -28458,15 +28257,10 @@ ASTCompiler.prototype = {
     this.state.computing = "fn";
     this.stage = "main";
     this.recurse(ast);
-    const fnString =
-      // The build and minification steps remove the string "use strict" from the code, but this is done using a regex.
-      // This is a workaround for this until we do a better job at only removing the prefix only when we should.
-      `"${this.USE} ${
-        this.STRICT
-      }";\n${this.filterPrefix()}let fn=${this.generateFunction(
-        "fn",
-        "s,l,a,i",
-      )}${extra}${this.watchFns()}return fn;`;
+    const fnString = `\n${this.filterPrefix()}let fn=${this.generateFunction(
+      "fn",
+      "s,l,a,i",
+    )}${extra}${this.watchFns()}return fn;`;
 
     // eslint-disable-next-line no-new-func
     const fn = new Function(
@@ -28479,10 +28273,6 @@ ASTCompiler.prototype = {
     this.state = this.stage = undefined;
     return fn;
   },
-
-  USE: "use",
-
-  STRICT: "strict",
 
   watchFns() {
     const result = [];
@@ -28544,7 +28334,7 @@ ASTCompiler.prototype = {
       return;
     }
     switch (ast.type) {
-      case AST.Program:
+      case ASTType.Program:
         forEach(ast.body, (expression, pos) => {
           self.recurse(expression.expression, undefined, undefined, (expr) => {
             right = expr;
@@ -28556,12 +28346,12 @@ ASTCompiler.prototype = {
           }
         });
         break;
-      case AST.Literal:
+      case ASTType.Literal:
         expression = this.escape(ast.value);
         this.assign(intoId, expression);
         recursionFn(intoId || expression);
         break;
-      case AST.UnaryExpression:
+      case ASTType.UnaryExpression:
         this.recurse(ast.argument, undefined, undefined, (expr) => {
           right = expr;
         });
@@ -28569,7 +28359,7 @@ ASTCompiler.prototype = {
         this.assign(intoId, expression);
         recursionFn(expression);
         break;
-      case AST.BinaryExpression:
+      case ASTType.BinaryExpression:
         this.recurse(ast.left, undefined, undefined, (expr) => {
           left = expr;
         });
@@ -28587,7 +28377,7 @@ ASTCompiler.prototype = {
         this.assign(intoId, expression);
         recursionFn(expression);
         break;
-      case AST.LogicalExpression:
+      case ASTType.LogicalExpression:
         intoId = intoId || this.nextId();
         self.recurse(ast.left, intoId);
         self.if_(
@@ -28596,7 +28386,7 @@ ASTCompiler.prototype = {
         );
         recursionFn(intoId);
         break;
-      case AST.ConditionalExpression:
+      case ASTType.ConditionalExpression:
         intoId = intoId || this.nextId();
         self.recurse(ast.test, intoId);
         self.if_(
@@ -28606,7 +28396,7 @@ ASTCompiler.prototype = {
         );
         recursionFn(intoId);
         break;
-      case AST.Identifier:
+      case ASTType.Identifier:
         intoId = intoId || this.nextId();
         if (nameId) {
           nameId.context =
@@ -28638,7 +28428,7 @@ ASTCompiler.prototype = {
         );
         recursionFn(intoId);
         break;
-      case AST.MemberExpression:
+      case ASTType.MemberExpression:
         left = (nameId && (nameId.context = this.nextId())) || this.nextId();
         intoId = intoId || this.nextId();
         self.recurse(
@@ -28694,7 +28484,7 @@ ASTCompiler.prototype = {
           !!create,
         );
         break;
-      case AST.CallExpression:
+      case ASTType.CallExpression:
         intoId = intoId || this.nextId();
         if (ast.filter) {
           right = self.filter(ast.callee.name);
@@ -28744,7 +28534,7 @@ ASTCompiler.prototype = {
           });
         }
         break;
-      case AST.AssignmentExpression:
+      case ASTType.AssignmentExpression:
         right = this.nextId();
         left = {};
         this.recurse(
@@ -28765,7 +28555,7 @@ ASTCompiler.prototype = {
           1,
         );
         break;
-      case AST.ArrayExpression:
+      case ASTType.ArrayExpression:
         args = [];
         forEach(ast.elements, (expr) => {
           self.recurse(
@@ -28781,7 +28571,7 @@ ASTCompiler.prototype = {
         this.assign(intoId, expression);
         recursionFn(intoId || expression);
         break;
-      case AST.ObjectExpression:
+      case ASTType.ObjectExpression:
         args = [];
         computed = false;
         forEach(ast.properties, (property) => {
@@ -28798,7 +28588,7 @@ ASTCompiler.prototype = {
               self.recurse(property.key, left);
             } else {
               left =
-                property.key.type === AST.Identifier
+                property.key.type === ASTType.Identifier
                   ? property.key.name
                   : `${property.key.value}`;
             }
@@ -28815,7 +28605,7 @@ ASTCompiler.prototype = {
               (expr) => {
                 args.push(
                   `${self.escape(
-                    property.key.type === AST.Identifier
+                    property.key.type === ASTType.Identifier
                       ? property.key.name
                       : `${property.key.value}`,
                   )}:${expr}`,
@@ -28828,15 +28618,15 @@ ASTCompiler.prototype = {
         }
         recursionFn(intoId || expression);
         break;
-      case AST.ThisExpression:
+      case ASTType.ThisExpression:
         this.assign(intoId, "s");
         recursionFn(intoId || "s");
         break;
-      case AST.LocalsExpression:
+      case ASTType.LocalsExpression:
         this.assign(intoId, "l");
         recursionFn(intoId || "l");
         break;
-      case AST.NGValueParameter:
+      case ASTType.NGValueParameter:
         this.assign(intoId, "v");
         recursionFn(intoId || "v");
         break;
@@ -29039,29 +28829,29 @@ ASTInterpreter.prototype = {
       return this.inputs(ast.input, ast.watchId);
     }
     switch (ast.type) {
-      case AST.Literal:
+      case ASTType.Literal:
         return this.value(ast.value, context);
-      case AST.UnaryExpression:
+      case ASTType.UnaryExpression:
         right = this.recurse(ast.argument);
         return this[`unary${ast.operator}`](right, context);
-      case AST.BinaryExpression:
+      case ASTType.BinaryExpression:
         left = this.recurse(ast.left);
         right = this.recurse(ast.right);
         return this[`binary${ast.operator}`](left, right, context);
-      case AST.LogicalExpression:
+      case ASTType.LogicalExpression:
         left = this.recurse(ast.left);
         right = this.recurse(ast.right);
         return this[`binary${ast.operator}`](left, right, context);
-      case AST.ConditionalExpression:
+      case ASTType.ConditionalExpression:
         return this["ternary?:"](
           this.recurse(ast.test),
           this.recurse(ast.alternate),
           this.recurse(ast.consequent),
           context,
         );
-      case AST.Identifier:
+      case ASTType.Identifier:
         return self.identifier(ast.name, context, create);
-      case AST.MemberExpression:
+      case ASTType.MemberExpression:
         left = this.recurse(ast.object, false, !!create);
         if (!ast.computed) {
           right = ast.property.name;
@@ -29070,7 +28860,7 @@ ASTInterpreter.prototype = {
         return ast.computed
           ? this.computedMember(left, right, context, create)
           : this.nonComputedMember(left, right, context, create);
-      case AST.CallExpression:
+      case ASTType.CallExpression:
         args = [];
         forEach(ast.arguments, (expr) => {
           args.push(self.recurse(expr));
@@ -29100,7 +28890,7 @@ ASTInterpreter.prototype = {
               }
               return context ? { value } : value;
             };
-      case AST.AssignmentExpression:
+      case ASTType.AssignmentExpression:
         left = this.recurse(ast.left, true, 1);
         right = this.recurse(ast.right);
         return function (scope, locals, assign, inputs) {
@@ -29109,7 +28899,7 @@ ASTInterpreter.prototype = {
           lhs.context[lhs.name] = rhs;
           return context ? { value: rhs } : rhs;
         };
-      case AST.ArrayExpression:
+      case ASTType.ArrayExpression:
         args = [];
         forEach(ast.elements, (expr) => {
           args.push(self.recurse(expr));
@@ -29121,7 +28911,7 @@ ASTInterpreter.prototype = {
           }
           return context ? { value } : value;
         };
-      case AST.ObjectExpression:
+      case ASTType.ObjectExpression:
         args = [];
         forEach(ast.properties, (property) => {
           if (property.computed) {
@@ -29133,7 +28923,7 @@ ASTInterpreter.prototype = {
           } else {
             args.push({
               key:
-                property.key.type === AST.Identifier
+                property.key.type === ASTType.Identifier
                   ? property.key.name
                   : `${property.key.value}`,
               computed: false,
@@ -29157,15 +28947,15 @@ ASTInterpreter.prototype = {
           }
           return context ? { value } : value;
         };
-      case AST.ThisExpression:
+      case ASTType.ThisExpression:
         return function (scope) {
           return context ? { value: scope } : scope;
         };
-      case AST.LocalsExpression:
+      case ASTType.LocalsExpression:
         return function (scope, locals) {
           return context ? { value: locals } : locals;
         };
-      case AST.NGValueParameter:
+      case ASTType.NGValueParameter:
         return function (scope, locals, assign) {
           return context ? { value: assign } : assign;
         };
@@ -29258,7 +29048,6 @@ ASTInterpreter.prototype = {
   },
   "binary==": function (left, right, context) {
     return function (scope, locals, assign, inputs) {
-      // eslint-disable-next-line eqeqeq
       const arg =
         left(scope, locals, assign, inputs) ==
         right(scope, locals, assign, inputs);
@@ -29267,7 +29056,6 @@ ASTInterpreter.prototype = {
   },
   "binary!=": function (left, right, context) {
     return function (scope, locals, assign, inputs) {
-      // eslint-disable-next-line eqeqeq
       const arg =
         left(scope, locals, assign, inputs) !=
         right(scope, locals, assign, inputs);
@@ -29336,7 +29124,7 @@ ASTInterpreter.prototype = {
     };
   },
   identifier(name, context, create) {
-    return function (scope, locals, assign, inputs) {
+    return function (scope, locals) {
       const base = locals && name in locals ? locals : scope;
       if (create && create !== 1 && base && base[name] == null) {
         base[name] = {};
@@ -31643,7 +31431,8 @@ function $timeout($rootScope, $browser, $q, $$q, $exceptionHandler) {
       );
     }
 
-    if (!deferreds.hasOwnProperty(promise.$$timeoutId)) return false;
+    if (!Object.prototype.hasOwnProperty.call(deferreds, promise.$$timeoutId))
+      return false;
     const id = promise.$$timeoutId;
     const deferred = deferreds[id];
 
@@ -31959,7 +31748,7 @@ function mergeAnimationDetails(element, oldAnimation, newAnimation) {
   const classes = resolveElementClasses(element.attr("class"), toAdd, toRemove);
 
   if (newOptions.preparationClasses) {
-    target.preparationClasses = concatWithSpace$1(
+    target.preparationClasses = concatWithSpace(
       newOptions.preparationClasses,
       target.preparationClasses,
     );
@@ -32068,13 +31857,13 @@ function applyGeneratedPreparationClasses(
     classes = pendClasses(event, EVENT_CLASS_PREFIX, true);
   }
   if (options.addClass) {
-    classes = concatWithSpace$1(
+    classes = concatWithSpace(
       classes,
       pendClasses(options.addClass, ADD_CLASS_SUFFIX),
     );
   }
   if (options.removeClass) {
-    classes = concatWithSpace$1(
+    classes = concatWithSpace(
       classes,
       pendClasses(options.removeClass, REMOVE_CLASS_SUFFIX),
     );
@@ -32109,7 +31898,7 @@ function applyInlineStyle(node, styleTuple) {
   node.style[prop] = value;
 }
 
-function concatWithSpace$1(a, b) {
+function concatWithSpace(a, b) {
   if (!a) return b;
   if (!b) return a;
   return `${a} ${b}`;
@@ -32944,13 +32733,13 @@ const $$AnimateQueueProvider = [
     }
 
     rules.join.push(
-      (newAnimation, currentAnimation) =>
+      (newAnimation) =>
         // if the new animation is class-based then we can just tack that on
         !newAnimation.structural && hasAnimationClasses(newAnimation),
     );
 
     rules.skip.push(
-      (newAnimation, currentAnimation) =>
+      (newAnimation) =>
         // there is no need to animate anything if no classes are being added and
         // there is no structural animation that will be triggered
         !newAnimation.structural && !hasAnimationClasses(newAnimation),
@@ -33610,7 +33399,7 @@ const $$AnimateQueueProvider = [
          * c) the element is not a child of the body
          * d) the element is not a child of the $rootElement
          */
-        function areAnimationsAllowed(node, parentNode, event) {
+        function areAnimationsAllowed(node, parentNode) {
           const bodyNode = $document[0].body;
           const rootNode = getDomNode($rootElement);
 
@@ -34074,8 +33863,7 @@ function registerRestorableStyles(backup, node, properties) {
 }
 
 const $AnimateCssProvider = [
-  "$animateProvider",
-  function ($animateProvider) {
+  function () {
     this.$get = [
       "$$AnimateRunner",
       "$timeout",
@@ -34207,7 +33995,7 @@ const $AnimateCssProvider = [
           // we should stick to using that
           let options = initialOptions || {};
           if (!options.$$prepared) {
-            options = prepareAnimationOptions(copy(options));
+            options = prepareAnimationOptions(structuredClone(options));
           }
 
           const restoreStyles = {};
@@ -34324,7 +34112,7 @@ const $AnimateCssProvider = [
           }
 
           if (!options.$$skipPreparationClasses) {
-            jqLite.addClass(element, preparationClasses);
+            element[0].classList.add(preparationClasses);
           }
 
           let applyOnlyDuration;
@@ -34431,7 +34219,7 @@ const $AnimateCssProvider = [
           );
 
           if (options.delay != null) {
-            let delayStyle;
+            var delayStyle;
             if (typeof options.delay !== "boolean") {
               delayStyle = parseFloat(options.delay);
               // number in options.delay means we have to recalculate the delay for the closing timeout
@@ -37009,7 +36797,7 @@ function initMessageModule() {
      * </ng-messages>
      * ```
      *
-     * @param {expression} ngMessage|when a string value corresponding to the message key.
+     * @param {string} ngMessage|when a string value corresponding to the message key.
      */
     .directive("ngMessage", ngMessageDirectiveFactory())
 
@@ -37039,7 +36827,7 @@ function initMessageModule() {
      *
      * {@link module:ngMessages Click here} to learn more about `ngMessages` and `ngMessage`.
      *
-     * @param {expression} ngMessageExp|whenExp an expression value corresponding to the message key.
+     * @param {string} ngMessageExp|whenExp an expression value corresponding to the message key.
      */
     .directive("ngMessageExp", ngMessageDirectiveFactory())
 

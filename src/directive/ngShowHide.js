@@ -85,7 +85,7 @@ const NG_HIDE_IN_PROGRESS_CLASS = "ng-hide-animate";
  * to block during animation states - ngAnimate will automatically handle the style toggling for you.
  *
  * @element ANY
- * @param {expression} ngShow If the {@link guide/expression expression} is truthy/falsy then the
+ * @param {string} ngShow If the {@link guide/expression expression} is truthy/falsy then the
  *                            element is shown/hidden respectively.
  *
  * @example
@@ -215,7 +215,7 @@ export const ngShowDirective = [
  * to block during animation states - ngAnimate will automatically handle the style toggling for you.
  *
  * @element ANY
- * @param {expression} ngHide If the {@link guide/expression expression} is truthy/falsy then the
+ * @param {string} ngHide If the {@link guide/expression expression} is truthy/falsy then the
  *                            element is hidden/shown respectively.
  *
  * @knownIssue

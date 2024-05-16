@@ -100,7 +100,7 @@ export function createEventDirective(
  * @description
  * The `ngDblclick` directive allows you to specify custom behavior on a dblclick event.
  *
- * @param {expression} ngDblclick {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngDblclick {@link guide/expression Expression} to evaluate upon
  * a dblclick. (The Event object is available as `$event`)
  *
  * @example
@@ -124,7 +124,7 @@ export function createEventDirective(
  * @description
  * The ngMousedown directive allows you to specify custom behavior on mousedown event.
  *
- * @param {expression} ngMousedown {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngMousedown {@link guide/expression Expression} to evaluate upon
  * mousedown. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -148,7 +148,7 @@ export function createEventDirective(
  * @description
  * Specify custom behavior on mouseup event.
  *
- * @param {expression} ngMouseup {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngMouseup {@link guide/expression Expression} to evaluate upon
  * mouseup. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -172,7 +172,7 @@ export function createEventDirective(
  * @description
  * Specify custom behavior on mouseover event.
  *
- * @param {expression} ngMouseover {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngMouseover {@link guide/expression Expression} to evaluate upon
  * mouseover. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -196,7 +196,7 @@ export function createEventDirective(
  * @description
  * Specify custom behavior on mouseenter event.
  *
- * @param {expression} ngMouseenter {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngMouseenter {@link guide/expression Expression} to evaluate upon
  * mouseenter. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -220,7 +220,7 @@ export function createEventDirective(
  * @description
  * Specify custom behavior on mouseleave event.
  *
- * @param {expression} ngMouseleave {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngMouseleave {@link guide/expression Expression} to evaluate upon
  * mouseleave. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -244,7 +244,7 @@ export function createEventDirective(
  * @description
  * Specify custom behavior on mousemove event.
  *
- * @param {expression} ngMousemove {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngMousemove {@link guide/expression Expression} to evaluate upon
  * mousemove. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -268,7 +268,7 @@ export function createEventDirective(
  * @description
  * Specify custom behavior on keydown event.
  *
- * @param {expression} ngKeydown {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngKeydown {@link guide/expression Expression} to evaluate upon
  * keydown. (Event object is available as `$event` and can be interrogated for keyCode, altKey, etc.)
  *
  * @example
@@ -290,7 +290,7 @@ export function createEventDirective(
  * @description
  * Specify custom behavior on keyup event.
  *
- * @param {expression} ngKeyup {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngKeyup {@link guide/expression Expression} to evaluate upon
  * keyup. (Event object is available as `$event` and can be interrogated for keyCode, altKey, etc.)
  *
  * @example
@@ -316,7 +316,7 @@ export function createEventDirective(
  * @description
  * Specify custom behavior on keypress event.
  *
- * @param {expression} ngKeypress {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngKeypress {@link guide/expression Expression} to evaluate upon
  * keypress. ({@link guide/expression#-event- Event object is available as `$event`}
  * and can be interrogated for keyCode, altKey, etc.)
  *
@@ -350,7 +350,7 @@ export function createEventDirective(
  * for a detailed discussion of when `ngSubmit` may be triggered.
  * </div>
  *
- * @param {expression} ngSubmit {@link guide/expression Expression} to eval.
+ * @param {string} ngSubmit {@link guide/expression Expression} to eval.
  * ({@link guide/expression#-event- Event object is available as `$event`})
  *
  */
@@ -369,7 +369,7 @@ export function createEventDirective(
  * AngularJS executes the expression using `scope.$evalAsync` if the event is fired
  * during an `$apply` to ensure a consistent state.
  *
- * @param {expression} ngFocus {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngFocus {@link guide/expression Expression} to evaluate upon
  * focus. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -394,7 +394,7 @@ export function createEventDirective(
  * AngularJS executes the expression using `scope.$evalAsync` if the event is fired
  * during an `$apply` to ensure a consistent state.
  *
- * @param {expression} ngBlur {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngBlur {@link guide/expression Expression} to evaluate upon
  * blur. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -411,7 +411,7 @@ export function createEventDirective(
  * @description
  * Specify custom behavior on copy event.
  *
- * @param {expression} ngCopy {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngCopy {@link guide/expression Expression} to evaluate upon
  * copy. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -433,7 +433,7 @@ export function createEventDirective(
  * @description
  * Specify custom behavior on cut event.
  *
- * @param {expression} ngCut {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngCut {@link guide/expression Expression} to evaluate upon
  * cut. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example
@@ -455,7 +455,7 @@ export function createEventDirective(
  * @description
  * Specify custom behavior on paste event.
  *
- * @param {expression} ngPaste {@link guide/expression Expression} to evaluate upon
+ * @param {string} ngPaste {@link guide/expression Expression} to evaluate upon
  * paste. ({@link guide/expression#-event- Event object is available as `$event`})
  *
  * @example

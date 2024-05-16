@@ -1,5 +1,4 @@
 import { forEach } from "../core/utils";
-import { ngDirective } from "./directives";
 import { getBlockNodes } from "../jqLite";
 
 /**
@@ -131,37 +130,49 @@ export const ngSwitchDirective = [
   }),
 ];
 
-export const ngSwitchWhenDirective = ngDirective({
-  transclude: "element",
-  priority: 1200,
-  require: "^ngSwitch",
-  multiElement: true,
-  link(scope, element, attrs, ctrl, $transclude) {
-    const cases = attrs.ngSwitchWhen
-      .split(attrs.ngSwitchWhenSeparator)
-      .sort()
-      .filter(
-        // Filter duplicate cases
-        (element, index, array) => array[index - 1] !== element,
-      );
+/**
+ * @returns {angular.IDirective}
+ */
+export function ngSwitchWhenDirective() {
+  return {
+    transclude: "element",
+    priority: 1200,
+    restrict: "AC",
+    require: "^ngSwitch",
+    multiElement: true,
+    link(scope, element, attrs, ctrl, $transclude) {
+      const cases = attrs.ngSwitchWhen
+        .split(attrs.ngSwitchWhenSeparator)
+        .sort()
+        .filter(
+          // Filter duplicate cases
+          (element, index, array) => array[index - 1] !== element,
+        );
 
-    forEach(cases, (whenCase) => {
-      ctrl.cases[`!${whenCase}`] = ctrl.cases[`!${whenCase}`] || [];
-      ctrl.cases[`!${whenCase}`].push({
-        transclude: $transclude,
-        element,
+      cases.forEach((whenCase) => {
+        ctrl.cases[`!${whenCase}`] = ctrl.cases[`!${whenCase}`] || [];
+        ctrl.cases[`!${whenCase}`].push({
+          transclude: $transclude,
+          element,
+        });
       });
-    });
-  },
-});
+    },
+  };
+}
 
-export const ngSwitchDefaultDirective = ngDirective({
-  transclude: "element",
-  priority: 1200,
-  require: "^ngSwitch",
-  multiElement: true,
-  link(scope, element, attr, ctrl, $transclude) {
-    ctrl.cases["?"] = ctrl.cases["?"] || [];
-    ctrl.cases["?"].push({ transclude: $transclude, element });
-  },
-});
+/**
+ * @returns {angular.IDirective}
+ */
+export function ngSwitchDefaultDirective() {
+  return {
+    restrict: "AC",
+    transclude: "element",
+    priority: 1200,
+    require: "^ngSwitch",
+    multiElement: true,
+    link(_scope, element, _attr, ctrl, $transclude) {
+      ctrl.cases["?"] = ctrl.cases["?"] || [];
+      ctrl.cases["?"].push({ transclude: $transclude, element });
+    },
+  };
+}

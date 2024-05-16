@@ -1013,8 +1013,11 @@ export function createInjector(modulesToLoad, strictDi) {
     }
 
     function has(name) {
-      const hasProvider = providerCache.hasOwnProperty(name + providerSuffix);
-      const hasCache = cache.hasOwnProperty(name);
+      const hasProvider = Object.prototype.hasOwnProperty.call(
+        providerCache,
+        name + providerSuffix,
+      );
+      const hasCache = Object.prototype.hasOwnProperty.call(cache, name);
       return hasProvider || hasCache;
     }
 

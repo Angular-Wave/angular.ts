@@ -9,41 +9,21 @@ import {
   isString,
   lowercase,
   isNumber,
-} from "./utils";
+} from "../utils";
 
 const $parseMinErr = minErr("$parse");
 
 const objectValueOf = {}.constructor.prototype.valueOf;
 
-// Sandboxing AngularJS Expressions
-// ------------------------------
-// AngularJS expressions are no longer sandboxed. So it is now even easier to access arbitrary JS code by
-// various means such as obtaining a reference to native JS functions like the Function constructor.
-//
-// As an example, consider the following AngularJS expression:
-//
-//   {}.toString.constructor('alert("evil JS code")')
-//
-// It is important to realize that if you create an expression from a string that contains user provided
-// content then it is possible that your application contains a security vulnerability to an XSS style attack.
-//
-// See https://docs.angularjs.org/guide/security
-
+/**
+ * Converts parameter to  strings property name for use  as keys in an object.
+ * Any non-string object, including a number, is typecasted into a string via the toString method.
+ * {@link https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors#Property_names}
+ *
+ * @param {!any} name
+ * @returns {string}
+ */
 function getStringValue(name) {
-  // Property names must be strings. This means that non-string objects cannot be used
-  // as keys in an object. Any non-string object, including a number, is typecasted
-  // into a string via the toString method.
-  // -- MDN, https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors#Property_names
-  //
-  // So, to ensure that we are checking the same `name` that JavaScript would use, we cast it
-  // to a string. It's not always possible. If `name` is an object and its `toString` method is
-  // 'broken' (doesn't return a string, isn't a function, etc.), an error will be thrown:
-  //
-  // TypeError: Cannot convert object to primitive value
-  //
-  // For performance reasons, we don't catch this error here and allow it to propagate up the call
-  // stack. Note that you'll get the same error in JavaScript if you try to access a property using
-  // such a 'broken' object as a key.
   return `${name}`;
 }
 
@@ -166,8 +146,8 @@ Lexer.prototype = {
       : this.isValidIdentifierContinue(ch);
   },
 
-  isValidIdentifierContinue(ch, cp) {
-    return this.isValidIdentifierStart(ch, cp) || this.isNumber(ch);
+  isValidIdentifierContinue(ch) {
+    return this.isValidIdentifierStart(ch) || this.isNumber(ch);
   },
 
   codePointAt(ch) {
@@ -305,30 +285,33 @@ Lexer.prototype = {
   },
 };
 
+/**
+ * @typedef {("Program"|"ExpressionStatement"|"AssignmentExpression"|"ConditionalExpression"|"LogicalExpression"|"BinaryExpression"|"UnaryExpression"|"CallExpression"|"MemberExpression"|"Identifier"|"Literal"|"ArrayExpression"|"Property"|"ObjectExpression"|"ThisExpression"|"LocalsExpression"|"NGValueParameter")} ASTType
+ */
+const ASTType = {
+  Program: "Program",
+  ExpressionStatement: "ExpressionStatement",
+  AssignmentExpression: "AssignmentExpression",
+  ConditionalExpression: "ConditionalExpression",
+  LogicalExpression: "LogicalExpression",
+  BinaryExpression: "BinaryExpression",
+  UnaryExpression: "UnaryExpression",
+  CallExpression: "CallExpression",
+  MemberExpression: "MemberExpression",
+  Identifier: "Identifier",
+  Literal: "Literal",
+  ArrayExpression: "ArrayExpression",
+  Property: "Property",
+  ObjectExpression: "ObjectExpression",
+  ThisExpression: "ThisExpression",
+  LocalsExpression: "LocalsExpression",
+  NGValueParameter: "NGValueParameter",
+};
+
 export function AST(lexer, options) {
   this.lexer = lexer;
   this.options = options;
 }
-
-AST.Program = "Program";
-AST.ExpressionStatement = "ExpressionStatement";
-AST.AssignmentExpression = "AssignmentExpression";
-AST.ConditionalExpression = "ConditionalExpression";
-AST.LogicalExpression = "LogicalExpression";
-AST.BinaryExpression = "BinaryExpression";
-AST.UnaryExpression = "UnaryExpression";
-AST.CallExpression = "CallExpression";
-AST.MemberExpression = "MemberExpression";
-AST.Identifier = "Identifier";
-AST.Literal = "Literal";
-AST.ArrayExpression = "ArrayExpression";
-AST.Property = "Property";
-AST.ObjectExpression = "ObjectExpression";
-AST.ThisExpression = "ThisExpression";
-AST.LocalsExpression = "LocalsExpression";
-
-// Internal use only
-AST.NGValueParameter = "NGValueParameter";
 
 AST.prototype = {
   ast(text) {
@@ -346,18 +329,22 @@ AST.prototype = {
 
   program() {
     const body = [];
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
+    let hasMore = true;
+    while (hasMore) {
       if (this.tokens.length > 0 && !this.peek("}", ")", ";", "]"))
         body.push(this.expressionStatement());
       if (!this.expect(";")) {
-        return { type: AST.Program, body };
+        hasMore = false;
       }
     }
+    return { type: ASTType.Program, body };
   },
 
   expressionStatement() {
-    return { type: AST.ExpressionStatement, expression: this.filterChain() };
+    return {
+      type: ASTType.ExpressionStatement,
+      expression: this.filterChain(),
+    };
   },
 
   filterChain() {
@@ -380,7 +367,7 @@ AST.prototype = {
       }
 
       result = {
-        type: AST.AssignmentExpression,
+        type: ASTType.AssignmentExpression,
         left: result,
         right: this.assignment(),
         operator: "=",
@@ -398,7 +385,7 @@ AST.prototype = {
       if (this.consume(":")) {
         consequent = this.expression();
         return {
-          type: AST.ConditionalExpression,
+          type: ASTType.ConditionalExpression,
           test,
           alternate,
           consequent,
@@ -412,7 +399,7 @@ AST.prototype = {
     let left = this.logicalAND();
     while (this.expect("||")) {
       left = {
-        type: AST.LogicalExpression,
+        type: ASTType.LogicalExpression,
         operator: "||",
         left,
         right: this.logicalAND(),
@@ -425,7 +412,7 @@ AST.prototype = {
     let left = this.equality();
     while (this.expect("&&")) {
       left = {
-        type: AST.LogicalExpression,
+        type: ASTType.LogicalExpression,
         operator: "&&",
         left,
         right: this.equality(),
@@ -439,7 +426,7 @@ AST.prototype = {
     let token;
     while ((token = this.expect("==", "!=", "===", "!=="))) {
       left = {
-        type: AST.BinaryExpression,
+        type: ASTType.BinaryExpression,
         operator: token.text,
         left,
         right: this.relational(),
@@ -453,7 +440,7 @@ AST.prototype = {
     let token;
     while ((token = this.expect("<", ">", "<=", ">="))) {
       left = {
-        type: AST.BinaryExpression,
+        type: ASTType.BinaryExpression,
         operator: token.text,
         left,
         right: this.additive(),
@@ -467,7 +454,7 @@ AST.prototype = {
     let token;
     while ((token = this.expect("+", "-"))) {
       left = {
-        type: AST.BinaryExpression,
+        type: ASTType.BinaryExpression,
         operator: token.text,
         left,
         right: this.multiplicative(),
@@ -481,7 +468,7 @@ AST.prototype = {
     let token;
     while ((token = this.expect("*", "/", "%"))) {
       left = {
-        type: AST.BinaryExpression,
+        type: ASTType.BinaryExpression,
         operator: token.text,
         left,
         right: this.unary(),
@@ -494,7 +481,7 @@ AST.prototype = {
     let token;
     if ((token = this.expect("+", "-", "!"))) {
       return {
-        type: AST.UnaryExpression,
+        type: ASTType.UnaryExpression,
         operator: token.text,
         prefix: true,
         argument: this.unary(),
@@ -526,7 +513,7 @@ AST.prototype = {
       )
     ) {
       primary = {
-        type: AST.Literal,
+        type: ASTType.Literal,
         value: this.options.literals[this.consume().text],
       };
     } else if (this.peek().identifier) {
@@ -541,14 +528,14 @@ AST.prototype = {
     while ((next = this.expect("(", "[", "."))) {
       if (next.text === "(") {
         primary = {
-          type: AST.CallExpression,
+          type: ASTType.CallExpression,
           callee: primary,
           arguments: this.parseArguments(),
         };
         this.consume(")");
       } else if (next.text === "[") {
         primary = {
-          type: AST.MemberExpression,
+          type: ASTType.MemberExpression,
           object: primary,
           property: this.expression(),
           computed: true,
@@ -556,7 +543,7 @@ AST.prototype = {
         this.consume("]");
       } else if (next.text === ".") {
         primary = {
-          type: AST.MemberExpression,
+          type: ASTType.MemberExpression,
           object: primary,
           property: this.identifier(),
           computed: false,
@@ -571,7 +558,7 @@ AST.prototype = {
   filter(baseExpression) {
     const args = [baseExpression];
     const result = {
-      type: AST.CallExpression,
+      type: ASTType.CallExpression,
       callee: this.identifier(),
       arguments: args,
       filter: true,
@@ -599,12 +586,12 @@ AST.prototype = {
     if (!token.identifier) {
       this.throwError("is not a valid identifier", token);
     }
-    return { type: AST.Identifier, name: token.text };
+    return { type: ASTType.Identifier, name: token.text };
   },
 
   constant() {
     // TODO check that it is a constant
-    return { type: AST.Literal, value: this.consume().value };
+    return { type: ASTType.Literal, value: this.consume().value };
   },
 
   arrayDeclaration() {
@@ -620,7 +607,7 @@ AST.prototype = {
     }
     this.consume("]");
 
-    return { type: AST.ArrayExpression, elements };
+    return { type: ASTType.ArrayExpression, elements };
   },
 
   object() {
@@ -632,7 +619,7 @@ AST.prototype = {
           // Support trailing commas per ES5.1.
           break;
         }
-        property = { type: AST.Property, kind: "init" };
+        property = { type: ASTType.Property, kind: "init" };
         if (this.peek().constant) {
           property.key = this.constant();
           property.computed = false;
@@ -662,7 +649,7 @@ AST.prototype = {
     }
     this.consume("}");
 
-    return { type: AST.ObjectExpression, properties };
+    return { type: ASTType.ObjectExpression, properties };
   },
 
   throwError(msg, token) {
@@ -735,8 +722,8 @@ AST.prototype = {
   },
 
   selfReferential: {
-    this: { type: AST.ThisExpression },
-    $locals: { type: AST.LocalsExpression },
+    this: { type: ASTType.ThisExpression },
+    $locals: { type: ASTType.LocalsExpression },
   },
 };
 
@@ -762,22 +749,22 @@ const PURITY_RELATIVE = 2;
 function isPure(node, parentIsPure) {
   switch (node.type) {
     // Computed members might invoke a stateful toString()
-    case AST.MemberExpression:
+    case ASTType.MemberExpression:
       if (node.computed) {
         return false;
       }
       break;
 
     // Unary always convert to primative
-    case AST.UnaryExpression:
+    case ASTType.UnaryExpression:
       return PURITY_ABSOLUTE;
 
     // The binary + operator can invoke a stateful toString().
-    case AST.BinaryExpression:
+    case ASTType.BinaryExpression:
       return node.operator !== "+" ? PURITY_ABSOLUTE : false;
 
     // Functions / filters probably read state from within objects
-    case AST.CallExpression:
+    case ASTType.CallExpression:
       return false;
   }
 
@@ -792,7 +779,7 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
   const astIsPure = (ast.isPure = isPure(ast, parentIsPure));
 
   switch (ast.type) {
-    case AST.Program:
+    case ASTType.Program:
       allConstants = true;
       forEach(ast.body, (expr) => {
         findConstantAndWatchExpressions(expr.expression, $filter, astIsPure);
@@ -800,28 +787,28 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
       });
       ast.constant = allConstants;
       break;
-    case AST.Literal:
+    case ASTType.Literal:
       ast.constant = true;
       ast.toWatch = [];
       break;
-    case AST.UnaryExpression:
+    case ASTType.UnaryExpression:
       findConstantAndWatchExpressions(ast.argument, $filter, astIsPure);
       ast.constant = ast.argument.constant;
       ast.toWatch = ast.argument.toWatch;
       break;
-    case AST.BinaryExpression:
+    case ASTType.BinaryExpression:
       findConstantAndWatchExpressions(ast.left, $filter, astIsPure);
       findConstantAndWatchExpressions(ast.right, $filter, astIsPure);
       ast.constant = ast.left.constant && ast.right.constant;
       ast.toWatch = ast.left.toWatch.concat(ast.right.toWatch);
       break;
-    case AST.LogicalExpression:
+    case ASTType.LogicalExpression:
       findConstantAndWatchExpressions(ast.left, $filter, astIsPure);
       findConstantAndWatchExpressions(ast.right, $filter, astIsPure);
       ast.constant = ast.left.constant && ast.right.constant;
       ast.toWatch = ast.constant ? [] : [ast];
       break;
-    case AST.ConditionalExpression:
+    case ASTType.ConditionalExpression:
       findConstantAndWatchExpressions(ast.test, $filter, astIsPure);
       findConstantAndWatchExpressions(ast.alternate, $filter, astIsPure);
       findConstantAndWatchExpressions(ast.consequent, $filter, astIsPure);
@@ -829,11 +816,11 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
         ast.test.constant && ast.alternate.constant && ast.consequent.constant;
       ast.toWatch = ast.constant ? [] : [ast];
       break;
-    case AST.Identifier:
+    case ASTType.Identifier:
       ast.constant = false;
       ast.toWatch = [ast];
       break;
-    case AST.MemberExpression:
+    case ASTType.MemberExpression:
       findConstantAndWatchExpressions(ast.object, $filter, astIsPure);
       if (ast.computed) {
         findConstantAndWatchExpressions(ast.property, $filter, astIsPure);
@@ -842,7 +829,7 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
         ast.object.constant && (!ast.computed || ast.property.constant);
       ast.toWatch = ast.constant ? [] : [ast];
       break;
-    case AST.CallExpression:
+    case ASTType.CallExpression:
       isStatelessFilter = ast.filter
         ? isStateless($filter, ast.callee.name)
         : false;
@@ -856,13 +843,13 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
       ast.constant = allConstants;
       ast.toWatch = isStatelessFilter ? argsToWatch : [ast];
       break;
-    case AST.AssignmentExpression:
+    case ASTType.AssignmentExpression:
       findConstantAndWatchExpressions(ast.left, $filter, astIsPure);
       findConstantAndWatchExpressions(ast.right, $filter, astIsPure);
       ast.constant = ast.left.constant && ast.right.constant;
       ast.toWatch = [ast];
       break;
-    case AST.ArrayExpression:
+    case ASTType.ArrayExpression:
       allConstants = true;
       argsToWatch = [];
       forEach(ast.elements, (expr) => {
@@ -873,7 +860,7 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
       ast.constant = allConstants;
       ast.toWatch = argsToWatch;
       break;
-    case AST.ObjectExpression:
+    case ASTType.ObjectExpression:
       allConstants = true;
       argsToWatch = [];
       forEach(ast.properties, (property) => {
@@ -894,11 +881,11 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
       ast.constant = allConstants;
       ast.toWatch = argsToWatch;
       break;
-    case AST.ThisExpression:
+    case ASTType.ThisExpression:
       ast.constant = false;
       ast.toWatch = [];
       break;
-    case AST.LocalsExpression:
+    case ASTType.LocalsExpression:
       ast.constant = false;
       ast.toWatch = [];
       break;
@@ -914,15 +901,17 @@ function getInputs(body) {
 }
 
 function isAssignable(ast) {
-  return ast.type === AST.Identifier || ast.type === AST.MemberExpression;
+  return (
+    ast.type === ASTType.Identifier || ast.type === ASTType.MemberExpression
+  );
 }
 
 function assignableAST(ast) {
   if (ast.body.length === 1 && isAssignable(ast.body[0].expression)) {
     return {
-      type: AST.AssignmentExpression,
+      type: ASTType.AssignmentExpression,
       left: ast.body[0].expression,
-      right: { type: AST.NGValueParameter },
+      right: { type: ASTType.NGValueParameter },
       operator: "=",
     };
   }
@@ -932,9 +921,9 @@ function isLiteral(ast) {
   return (
     ast.body.length === 0 ||
     (ast.body.length === 1 &&
-      (ast.body[0].expression.type === AST.Literal ||
-        ast.body[0].expression.type === AST.ArrayExpression ||
-        ast.body[0].expression.type === AST.ObjectExpression))
+      (ast.body[0].expression.type === ASTType.Literal ||
+        ast.body[0].expression.type === ASTType.ArrayExpression ||
+        ast.body[0].expression.type === ASTType.ObjectExpression))
   );
 }
 
@@ -982,15 +971,10 @@ ASTCompiler.prototype = {
     this.state.computing = "fn";
     this.stage = "main";
     this.recurse(ast);
-    const fnString =
-      // The build and minification steps remove the string "use strict" from the code, but this is done using a regex.
-      // This is a workaround for this until we do a better job at only removing the prefix only when we should.
-      `"${this.USE} ${
-        this.STRICT
-      }";\n${this.filterPrefix()}let fn=${this.generateFunction(
-        "fn",
-        "s,l,a,i",
-      )}${extra}${this.watchFns()}return fn;`;
+    const fnString = `\n${this.filterPrefix()}let fn=${this.generateFunction(
+      "fn",
+      "s,l,a,i",
+    )}${extra}${this.watchFns()}return fn;`;
 
     // eslint-disable-next-line no-new-func
     const fn = new Function(
@@ -1003,10 +987,6 @@ ASTCompiler.prototype = {
     this.state = this.stage = undefined;
     return fn;
   },
-
-  USE: "use",
-
-  STRICT: "strict",
 
   watchFns() {
     const result = [];
@@ -1068,7 +1048,7 @@ ASTCompiler.prototype = {
       return;
     }
     switch (ast.type) {
-      case AST.Program:
+      case ASTType.Program:
         forEach(ast.body, (expression, pos) => {
           self.recurse(expression.expression, undefined, undefined, (expr) => {
             right = expr;
@@ -1080,12 +1060,12 @@ ASTCompiler.prototype = {
           }
         });
         break;
-      case AST.Literal:
+      case ASTType.Literal:
         expression = this.escape(ast.value);
         this.assign(intoId, expression);
         recursionFn(intoId || expression);
         break;
-      case AST.UnaryExpression:
+      case ASTType.UnaryExpression:
         this.recurse(ast.argument, undefined, undefined, (expr) => {
           right = expr;
         });
@@ -1093,7 +1073,7 @@ ASTCompiler.prototype = {
         this.assign(intoId, expression);
         recursionFn(expression);
         break;
-      case AST.BinaryExpression:
+      case ASTType.BinaryExpression:
         this.recurse(ast.left, undefined, undefined, (expr) => {
           left = expr;
         });
@@ -1111,7 +1091,7 @@ ASTCompiler.prototype = {
         this.assign(intoId, expression);
         recursionFn(expression);
         break;
-      case AST.LogicalExpression:
+      case ASTType.LogicalExpression:
         intoId = intoId || this.nextId();
         self.recurse(ast.left, intoId);
         self.if_(
@@ -1120,7 +1100,7 @@ ASTCompiler.prototype = {
         );
         recursionFn(intoId);
         break;
-      case AST.ConditionalExpression:
+      case ASTType.ConditionalExpression:
         intoId = intoId || this.nextId();
         self.recurse(ast.test, intoId);
         self.if_(
@@ -1130,7 +1110,7 @@ ASTCompiler.prototype = {
         );
         recursionFn(intoId);
         break;
-      case AST.Identifier:
+      case ASTType.Identifier:
         intoId = intoId || this.nextId();
         if (nameId) {
           nameId.context =
@@ -1162,7 +1142,7 @@ ASTCompiler.prototype = {
         );
         recursionFn(intoId);
         break;
-      case AST.MemberExpression:
+      case ASTType.MemberExpression:
         left = (nameId && (nameId.context = this.nextId())) || this.nextId();
         intoId = intoId || this.nextId();
         self.recurse(
@@ -1218,7 +1198,7 @@ ASTCompiler.prototype = {
           !!create,
         );
         break;
-      case AST.CallExpression:
+      case ASTType.CallExpression:
         intoId = intoId || this.nextId();
         if (ast.filter) {
           right = self.filter(ast.callee.name);
@@ -1268,7 +1248,7 @@ ASTCompiler.prototype = {
           });
         }
         break;
-      case AST.AssignmentExpression:
+      case ASTType.AssignmentExpression:
         right = this.nextId();
         left = {};
         this.recurse(
@@ -1289,7 +1269,7 @@ ASTCompiler.prototype = {
           1,
         );
         break;
-      case AST.ArrayExpression:
+      case ASTType.ArrayExpression:
         args = [];
         forEach(ast.elements, (expr) => {
           self.recurse(
@@ -1305,7 +1285,7 @@ ASTCompiler.prototype = {
         this.assign(intoId, expression);
         recursionFn(intoId || expression);
         break;
-      case AST.ObjectExpression:
+      case ASTType.ObjectExpression:
         args = [];
         computed = false;
         forEach(ast.properties, (property) => {
@@ -1322,7 +1302,7 @@ ASTCompiler.prototype = {
               self.recurse(property.key, left);
             } else {
               left =
-                property.key.type === AST.Identifier
+                property.key.type === ASTType.Identifier
                   ? property.key.name
                   : `${property.key.value}`;
             }
@@ -1339,7 +1319,7 @@ ASTCompiler.prototype = {
               (expr) => {
                 args.push(
                   `${self.escape(
-                    property.key.type === AST.Identifier
+                    property.key.type === ASTType.Identifier
                       ? property.key.name
                       : `${property.key.value}`,
                   )}:${expr}`,
@@ -1352,15 +1332,15 @@ ASTCompiler.prototype = {
         }
         recursionFn(intoId || expression);
         break;
-      case AST.ThisExpression:
+      case ASTType.ThisExpression:
         this.assign(intoId, "s");
         recursionFn(intoId || "s");
         break;
-      case AST.LocalsExpression:
+      case ASTType.LocalsExpression:
         this.assign(intoId, "l");
         recursionFn(intoId || "l");
         break;
-      case AST.NGValueParameter:
+      case ASTType.NGValueParameter:
         this.assign(intoId, "v");
         recursionFn(intoId || "v");
         break;
@@ -1563,29 +1543,29 @@ ASTInterpreter.prototype = {
       return this.inputs(ast.input, ast.watchId);
     }
     switch (ast.type) {
-      case AST.Literal:
+      case ASTType.Literal:
         return this.value(ast.value, context);
-      case AST.UnaryExpression:
+      case ASTType.UnaryExpression:
         right = this.recurse(ast.argument);
         return this[`unary${ast.operator}`](right, context);
-      case AST.BinaryExpression:
+      case ASTType.BinaryExpression:
         left = this.recurse(ast.left);
         right = this.recurse(ast.right);
         return this[`binary${ast.operator}`](left, right, context);
-      case AST.LogicalExpression:
+      case ASTType.LogicalExpression:
         left = this.recurse(ast.left);
         right = this.recurse(ast.right);
         return this[`binary${ast.operator}`](left, right, context);
-      case AST.ConditionalExpression:
+      case ASTType.ConditionalExpression:
         return this["ternary?:"](
           this.recurse(ast.test),
           this.recurse(ast.alternate),
           this.recurse(ast.consequent),
           context,
         );
-      case AST.Identifier:
+      case ASTType.Identifier:
         return self.identifier(ast.name, context, create);
-      case AST.MemberExpression:
+      case ASTType.MemberExpression:
         left = this.recurse(ast.object, false, !!create);
         if (!ast.computed) {
           right = ast.property.name;
@@ -1594,7 +1574,7 @@ ASTInterpreter.prototype = {
         return ast.computed
           ? this.computedMember(left, right, context, create)
           : this.nonComputedMember(left, right, context, create);
-      case AST.CallExpression:
+      case ASTType.CallExpression:
         args = [];
         forEach(ast.arguments, (expr) => {
           args.push(self.recurse(expr));
@@ -1624,7 +1604,7 @@ ASTInterpreter.prototype = {
               }
               return context ? { value } : value;
             };
-      case AST.AssignmentExpression:
+      case ASTType.AssignmentExpression:
         left = this.recurse(ast.left, true, 1);
         right = this.recurse(ast.right);
         return function (scope, locals, assign, inputs) {
@@ -1633,7 +1613,7 @@ ASTInterpreter.prototype = {
           lhs.context[lhs.name] = rhs;
           return context ? { value: rhs } : rhs;
         };
-      case AST.ArrayExpression:
+      case ASTType.ArrayExpression:
         args = [];
         forEach(ast.elements, (expr) => {
           args.push(self.recurse(expr));
@@ -1645,7 +1625,7 @@ ASTInterpreter.prototype = {
           }
           return context ? { value } : value;
         };
-      case AST.ObjectExpression:
+      case ASTType.ObjectExpression:
         args = [];
         forEach(ast.properties, (property) => {
           if (property.computed) {
@@ -1657,7 +1637,7 @@ ASTInterpreter.prototype = {
           } else {
             args.push({
               key:
-                property.key.type === AST.Identifier
+                property.key.type === ASTType.Identifier
                   ? property.key.name
                   : `${property.key.value}`,
               computed: false,
@@ -1681,15 +1661,15 @@ ASTInterpreter.prototype = {
           }
           return context ? { value } : value;
         };
-      case AST.ThisExpression:
+      case ASTType.ThisExpression:
         return function (scope) {
           return context ? { value: scope } : scope;
         };
-      case AST.LocalsExpression:
+      case ASTType.LocalsExpression:
         return function (scope, locals) {
           return context ? { value: locals } : locals;
         };
-      case AST.NGValueParameter:
+      case ASTType.NGValueParameter:
         return function (scope, locals, assign) {
           return context ? { value: assign } : assign;
         };
@@ -1782,7 +1762,6 @@ ASTInterpreter.prototype = {
   },
   "binary==": function (left, right, context) {
     return function (scope, locals, assign, inputs) {
-      // eslint-disable-next-line eqeqeq
       const arg =
         left(scope, locals, assign, inputs) ==
         right(scope, locals, assign, inputs);
@@ -1791,7 +1770,6 @@ ASTInterpreter.prototype = {
   },
   "binary!=": function (left, right, context) {
     return function (scope, locals, assign, inputs) {
-      // eslint-disable-next-line eqeqeq
       const arg =
         left(scope, locals, assign, inputs) !=
         right(scope, locals, assign, inputs);
@@ -1860,7 +1838,7 @@ ASTInterpreter.prototype = {
     };
   },
   identifier(name, context, create) {
-    return function (scope, locals, assign, inputs) {
+    return function (scope, locals) {
       const base = locals && name in locals ? locals : scope;
       if (create && create !== 1 && base && base[name] == null) {
         base[name] = {};
@@ -1999,7 +1977,6 @@ function getValueOf(value) {
  *
  */
 
-const cache = new Map();
 export const literals = {
   true: true,
   false: false,

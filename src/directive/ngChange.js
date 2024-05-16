@@ -23,7 +23,7 @@ import { valueFn } from "../core/utils";
  * Note, this directive requires `ngModel` to be present.
  *
  * @element ANY
- * @param {expression} ngChange {@link guide/expression Expression} to evaluate upon change
+ * @param {string} ngChange {@link guide/expression Expression} to evaluate upon change
  * in input value.
  *
  */

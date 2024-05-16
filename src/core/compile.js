@@ -4159,7 +4159,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         switch (type) {
           case "svg":
           case "math":
-            const wrapper = window.document.createElement("div");
+            var wrapper = window.document.createElement("div");
             wrapper.innerHTML = `<${type}>${template}</${type}>`;
             return wrapper.childNodes[0].childNodes;
           default:

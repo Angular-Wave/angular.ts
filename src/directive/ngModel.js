@@ -1110,7 +1110,7 @@ addSetValidityMethod({
  * @name ngModel
  * @restrict A
  * @priority 1
- * @param {expression} ngModel assignable {@link guide/expression Expression} to bind to.
+ * @param {string} ngModel assignable {@link guide/expression Expression} to bind to.
  *
  * @description
  * The `ngModel` directive binds an `input`,`select`, `textarea` (or custom form control) to a

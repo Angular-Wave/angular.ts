@@ -10057,7 +10057,7 @@ describe("$compile", () => {
             scope: {
               attr: "@",
               attrAlias: "@attr",
-              $attrAlias: "@$attr$",
+              $attrAlias: "@$attr$", // TODO DISALLOW THIS AS INVALID ATTRIBUTE
               ref: "=",
               refAlias: "= ref",
               $refAlias: "= $ref$",

@@ -84,13 +84,13 @@ export const $$AnimateQueueProvider = [
     }
 
     rules.join.push(
-      (newAnimation, currentAnimation) =>
+      (newAnimation) =>
         // if the new animation is class-based then we can just tack that on
         !newAnimation.structural && hasAnimationClasses(newAnimation),
     );
 
     rules.skip.push(
-      (newAnimation, currentAnimation) =>
+      (newAnimation) =>
         // there is no need to animate anything if no classes are being added and
         // there is no structural animation that will be triggered
         !newAnimation.structural && !hasAnimationClasses(newAnimation),
@@ -750,7 +750,7 @@ export const $$AnimateQueueProvider = [
          * c) the element is not a child of the body
          * d) the element is not a child of the $rootElement
          */
-        function areAnimationsAllowed(node, parentNode, event) {
+        function areAnimationsAllowed(node, parentNode) {
           const bodyNode = $document[0].body;
           const rootNode = getDomNode($rootElement);
 

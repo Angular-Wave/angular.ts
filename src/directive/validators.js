@@ -245,7 +245,7 @@ export const maxlengthDirective = [
  * @name ngMinlength
  * @restrict A
  *
- * @param {expression} ngMinlength AngularJS expression that must evaluate to a `Number` or `String`
+ * @param {string} ngMinlength AngularJS expression that must evaluate to a `Number` or `String`
  *                                 parsable into a `Number`. Used as value for the `minlength`
  *                                 {@link ngModel.NgModelController#$validators validator}.
  *

@@ -19,7 +19,7 @@ import {
   ngClassEvenDirective,
   ngClassOddDirective,
 } from "./directive/ngClass";
-import { ngCloakDirective } from "./directive/ngCloak";
+import { ngCloakDirective } from "./directive/cloak";
 import { ngControllerDirective } from "./directive/ngController";
 import { ngHideDirective, ngShowDirective } from "./directive/ngShowHide";
 import { ngIfDirective } from "./directive/ngIf";
@@ -27,11 +27,11 @@ import {
   ngIncludeDirective,
   ngIncludeFillContentDirective,
 } from "./directive/ngInclude";
-import { ngInitDirective } from "./directive/ngInit";
-import { ngNonBindableDirective } from "./directive/ngNonBindable";
+import { ngInitDirective } from "./directive/init";
+import { ngNonBindableDirective } from "./directive/non-bindable";
 import { ngRefDirective } from "./directive/ngRef";
 import { ngRepeatDirective } from "./directive/ngRepeat";
-import { ngStyleDirective } from "./directive/ngStyle";
+import { ngStyleDirective } from "./directive/style";
 import {
   ngSwitchDirective,
   ngSwitchWhenDirective,
@@ -40,7 +40,7 @@ import {
 import { ngOptionsDirective } from "./directive/ngOptions";
 import { ngTranscludeDirective } from "./directive/ngTransclude";
 import { ngModelDirective } from "./directive/ngModel";
-import { ngListDirective } from "./directive/ngList";
+import { ngListDirective } from "./directive/list";
 import { ngChangeDirective } from "./directive/ngChange";
 import {
   maxlengthDirective,
@@ -90,7 +90,7 @@ import {
 } from "./services/httpBackend";
 import { $LocationProvider } from "./core/location";
 import { $LogProvider } from "./services/log";
-import { $ParseProvider } from "./core/parse";
+import { $ParseProvider } from "./core/parser/parse";
 import { $RootScopeProvider } from "./core/rootScope";
 import { $QProvider, $$QProvider } from "./core/q";
 import { $SceProvider, $SceDelegateProvider } from "./core/sce";

@@ -925,7 +925,7 @@ export function setupModuleLoader(window) {
       let info = {};
 
       assertNotHasOwnProperty(name, "module");
-      if (requires && modules.hasOwnProperty(name)) {
+      if (requires && Object.prototype.hasOwnProperty.call(modules, name)) {
         modules[name] = null;
       }
       return ensure(modules, name, () => {

@@ -98,7 +98,7 @@ export const REGEX_STRING_REGEXP = /^\/(.+)\/([a-z]*)$/;
  * A special directive is necessary because we cannot use interpolation inside the `disabled`
  * attribute. See the {@link guide/interpolation interpolation guide} for more info.
  *
- * @param {expression} ngDisabled If the {@link guide/expression expression} is truthy,
+ * @param {string} ngDisabled If the {@link guide/expression expression} is truthy,
  *     then the `disabled` attribute will be set on the element
  */
 
@@ -118,7 +118,7 @@ export const REGEX_STRING_REGEXP = /^\/(.+)\/([a-z]*)$/;
  * attribute. See the {@link guide/interpolation interpolation guide} for more info.
  *
  * @element INPUT
- * @param {expression} ngChecked If the {@link guide/expression expression} is truthy,
+ * @param {string} ngChecked If the {@link guide/expression expression} is truthy,
  *     then the `checked` attribute will be set on the element
  */
 
@@ -133,7 +133,7 @@ export const REGEX_STRING_REGEXP = /^\/(.+)\/([a-z]*)$/;
  * A special directive is necessary because we cannot use interpolation inside the `readonly`
  * attribute. See the {@link guide/interpolation interpolation guide} for more info.
  * @element INPUT
- * @param {expression} ngReadonly If the {@link guide/expression expression} is truthy,
+ * @param {string} ngReadonly If the {@link guide/expression expression} is truthy,
  *     then special attribute "readonly" will be set on the element
  */
 
@@ -157,7 +157,7 @@ export const REGEX_STRING_REGEXP = /^\/(.+)\/([a-z]*)$/;
  *   selected options.
  * </div>
  * @element OPTION
- * @param {expression} ngSelected If the {@link guide/expression expression} is truthy,
+ * @param {string} ngSelected If the {@link guide/expression expression} is truthy,
  *     then special attribute "selected" will be set on the element
  */
 
@@ -180,7 +180,7 @@ export const REGEX_STRING_REGEXP = /^\/(.+)\/([a-z]*)$/;
  * recommended to use {@link ng.ngShow} and {@link ng.ngHide} instead.
  *
  * @element DETAILS
- * @param {expression} ngOpen If the {@link guide/expression expression} is truthy,
+ * @param {string} ngOpen If the {@link guide/expression expression} is truthy,
  *     then special attribute "open" will be set on the element
  */
 

@@ -966,7 +966,6 @@ describe("jqLite", () => {
 
       comment.addClass("whatever");
       comment.hasClass("whatever");
-      comment.toggleClass("whatever");
       comment.removeClass("whatever");
     });
 
@@ -1060,78 +1059,6 @@ describe("jqLite", () => {
 
         jqA.addClass("bar foo baz");
         expect(a.className).toBe("foo bar baz");
-      });
-    });
-
-    describe("toggleClass", () => {
-      it("should allow toggling of class", () => {
-        const selector = jqLite([a, b]);
-        expect(selector.toggleClass("abc")).toEqual(selector);
-        expect(jqLite(a).hasClass("abc")).toEqual(true);
-        expect(jqLite(b).hasClass("abc")).toEqual(true);
-
-        expect(selector.toggleClass("abc")).toEqual(selector);
-        expect(jqLite(a).hasClass("abc")).toEqual(false);
-        expect(jqLite(b).hasClass("abc")).toEqual(false);
-
-        expect(selector.toggleClass("abc"), true).toEqual(selector);
-        expect(jqLite(a).hasClass("abc")).toEqual(true);
-        expect(jqLite(b).hasClass("abc")).toEqual(true);
-
-        expect(selector.toggleClass("abc"), false).toEqual(selector);
-        expect(jqLite(a).hasClass("abc")).toEqual(false);
-        expect(jqLite(b).hasClass("abc")).toEqual(false);
-      });
-
-      it("should allow toggling multiple classes without a condition", () => {
-        const selector = jqLite([a, b]);
-        expect(selector.toggleClass("abc cde")).toBe(selector);
-        expect(jqLite(a).hasClass("abc")).toBe(true);
-        expect(jqLite(a).hasClass("cde")).toBe(true);
-        expect(jqLite(b).hasClass("abc")).toBe(true);
-        expect(jqLite(b).hasClass("cde")).toBe(true);
-
-        expect(selector.toggleClass("abc cde")).toBe(selector);
-        expect(jqLite(a).hasClass("abc")).toBe(false);
-        expect(jqLite(a).hasClass("cde")).toBe(false);
-        expect(jqLite(b).hasClass("abc")).toBe(false);
-        expect(jqLite(b).hasClass("cde")).toBe(false);
-
-        expect(selector.toggleClass("abc")).toBe(selector);
-        expect(selector.toggleClass("abc cde")).toBe(selector);
-        expect(jqLite(a).hasClass("abc")).toBe(false);
-        expect(jqLite(a).hasClass("cde")).toBe(true);
-        expect(jqLite(b).hasClass("abc")).toBe(false);
-        expect(jqLite(b).hasClass("cde")).toBe(true);
-
-        expect(selector.toggleClass("abc cde")).toBe(selector);
-        expect(jqLite(a).hasClass("abc")).toBe(true);
-        expect(jqLite(a).hasClass("cde")).toBe(false);
-        expect(jqLite(b).hasClass("abc")).toBe(true);
-        expect(jqLite(b).hasClass("cde")).toBe(false);
-      });
-
-      it("should allow toggling multiple classes with a condition", () => {
-        const selector = jqLite([a, b]);
-        selector.addClass("abc");
-        expect(selector.toggleClass("abc cde", true)).toBe(selector);
-        expect(jqLite(a).hasClass("abc")).toBe(true);
-        expect(jqLite(a).hasClass("cde")).toBe(true);
-        expect(jqLite(b).hasClass("abc")).toBe(true);
-        expect(jqLite(b).hasClass("cde")).toBe(true);
-
-        selector.removeClass("abc");
-        expect(selector.toggleClass("abc cde", false)).toBe(selector);
-        expect(jqLite(a).hasClass("abc")).toBe(false);
-        expect(jqLite(a).hasClass("cde")).toBe(false);
-        expect(jqLite(b).hasClass("abc")).toBe(false);
-        expect(jqLite(b).hasClass("cde")).toBe(false);
-      });
-
-      it("should not break for null / undefined selectors", () => {
-        const selector = jqLite([a, b]);
-        expect(selector.toggleClass(null)).toBe(selector);
-        expect(selector.toggleClass(undefined)).toBe(selector);
       });
     });
 
@@ -2299,24 +2226,6 @@ describe("jqLite", () => {
       fragment.appendChild(child[0]);
       expect(child[0].parentNode).toBe(fragment);
       expect(child.parent().length).toBe(0);
-    });
-  });
-
-  describe("next", () => {
-    it("should return next sibling", () => {
-      const element = jqLite("<div><b>b</b><i>i</i></div>");
-      const b = element.find("b");
-      const i = element.find("i");
-      expect(b.next()).toJqEqual([i]);
-    });
-
-    it("should ignore non-element siblings", () => {
-      const element = jqLite(
-        "<div><b>b</b>TextNode<!-- comment node --><i>i</i></div>",
-      );
-      const b = element.find("b");
-      const i = element.find("i");
-      expect(b.next()).toJqEqual([i]);
     });
   });
 
