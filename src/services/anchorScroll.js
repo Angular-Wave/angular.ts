@@ -16,6 +16,12 @@ export function AnchorScrollProvider() {
   this.$get = [
     "$location",
     "$rootScope",
+    /**
+     *
+     * @param {angular.IRootScopeService} $location
+     * @param {*} $rootScope
+     * @returns
+     */
     function ($location, $rootScope) {
       const { document } = window;
 

@@ -13,6 +13,10 @@ import {
 } from "./utils";
 
 /**
+ * @typedef {"$apply" | "$digest"} ScopePhase
+ */
+
+/**
  * @ngdoc provider
  * @name $rootScopeProvider
  * @description
@@ -162,7 +166,7 @@ export function getQueues() {
 /**
  * @param { * } parse
  * @param {import('../services/browser').Browser} browser
- * @param {import('./exceptionHandler').ExceptionHandler} exceptionHandler
+ * @param {Function} exceptionHandler
  */
 export function initialize(parse, browser, exceptionHandler) {
   $parse = parse;
@@ -171,7 +175,7 @@ export function initialize(parse, browser, exceptionHandler) {
 }
 
 /**
- * @type {angular.IRootScopeService}
+ * @type {angular.IScope}
  */
 class Scope {
   constructor() {
@@ -186,6 +190,9 @@ class Scope {
      */
     this.$parent = null;
 
+    /**
+     * @type {Scope}
+     */
     this.$root = this;
 
     this.$$watchers = null;
@@ -388,7 +395,7 @@ class Scope {
  *     comparing for reference equality.
  * @returns {function()} Returns a deregistration function for this listener.
  */
-  $watch(watchExp, listener, objectEquality, prettyPrintExpression) {
+  $watch(watchExp, listener, objectEquality) {
     const get = $parse(watchExp);
     const fn = isFunction(listener) ? listener : () => {};
 
@@ -401,7 +408,7 @@ class Scope {
       fn,
       last: initWatchVal,
       get,
-      exp: prettyPrintExpression || watchExp,
+      exp: watchExp,
       eq: !!objectEquality,
     };
 
@@ -897,6 +904,10 @@ class Scope {
     $browser.$$checkUrlChange();
   }
 
+  /**
+   *
+   * @param {ScopePhase} phase
+   */
   beginPhase(phase) {
     if (this.$root.$$phase) {
       throw $rootScopeMinErr(

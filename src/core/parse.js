@@ -48,12 +48,11 @@ function getStringValue(name) {
 }
 
 const OPERATORS = createMap();
-forEach(
-  "+ - * / % === !== == != < > <= >= && || ! = |".split(" "),
-  (operator) => {
-    OPERATORS[operator] = true;
-  },
-);
+
+"+ - * / % === !== == != < > <= >= && || ! = |"
+  .split(" ")
+  .forEach((operator) => (OPERATORS[operator] = true));
+
 const ESCAPE = {
   n: "\n",
   f: "\f",
@@ -306,10 +305,10 @@ Lexer.prototype = {
   },
 };
 
-export const AST = function AST(lexer, options) {
+export function AST(lexer, options) {
   this.lexer = lexer;
   this.options = options;
-};
+}
 
 AST.Program = "Program";
 AST.ExpressionStatement = "ExpressionStatement";
@@ -347,6 +346,7 @@ AST.prototype = {
 
   program() {
     const body = [];
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       if (this.tokens.length > 0 && !this.peek("}", ")", ";", "]"))
         body.push(this.expressionStatement());
@@ -1370,7 +1370,7 @@ ASTCompiler.prototype = {
   getHasOwnProperty(element, property) {
     const key = `${element}.${property}`;
     const { own } = this.current();
-    if (!own.hasOwnProperty(key)) {
+    if (!Object.prototype.hasOwnProperty.call(own, key)) {
       own[key] = this.nextId(
         false,
         `${element}&&(${this.escape(property)} in ${element})`,
@@ -1386,7 +1386,7 @@ ASTCompiler.prototype = {
   },
 
   filter(filterName) {
-    if (!this.state.filters.hasOwnProperty(filterName)) {
+    if (!Object.prototype.hasOwnProperty.call(this.state.filters, filterName)) {
       this.state.filters[filterName] = this.nextId(true);
     }
     return this.state.filters[filterName];
@@ -2154,7 +2154,6 @@ export function $ParseProvider() {
         listener,
         objectEquality,
         parsedExpression,
-        prettyPrintExpression,
       ) {
         var inputExpressions = parsedExpression.inputs;
         var lastResult;
@@ -2181,7 +2180,6 @@ export function $ParseProvider() {
             },
             listener,
             objectEquality,
-            prettyPrintExpression,
           );
         }
 
@@ -2225,7 +2223,6 @@ export function $ParseProvider() {
           },
           listener,
           objectEquality,
-          prettyPrintExpression,
         );
       }
 
@@ -2234,7 +2231,6 @@ export function $ParseProvider() {
         listener,
         objectEquality,
         parsedExpression,
-        prettyPrintExpression,
       ) {
         var isDone = parsedExpression.literal ? isAllDefined : isDefined;
         var unwatch, lastValue;
@@ -2253,12 +2249,7 @@ export function $ParseProvider() {
         // Allow other delegates to run on this wrapped expression
         addWatchDelegate(oneTimeWatch);
 
-        unwatch = scope.$watch(
-          oneTimeWatch,
-          listener,
-          objectEquality,
-          prettyPrintExpression,
-        );
+        unwatch = scope.$watch(oneTimeWatch, listener, objectEquality);
 
         return unwatch;
 
@@ -2422,7 +2413,6 @@ export function inputsWatchDelegate(
   listener,
   objectEquality,
   parsedExpression,
-  prettyPrintExpression,
 ) {
   let inputExpressions = parsedExpression.inputs;
   let lastResult;
@@ -2450,7 +2440,6 @@ export function inputsWatchDelegate(
       },
       listener,
       objectEquality,
-      prettyPrintExpression,
     );
   }
 
@@ -2495,7 +2484,6 @@ export function inputsWatchDelegate(
     },
     listener,
     objectEquality,
-    prettyPrintExpression,
   );
 }
 
@@ -2504,7 +2492,6 @@ export function oneTimeWatchDelegate(
   listener,
   objectEquality,
   parsedExpression,
-  prettyPrintExpression,
 ) {
   const isDone = parsedExpression.literal ? isAllDefined : isDefined;
 
@@ -2540,12 +2527,7 @@ export function oneTimeWatchDelegate(
     return post(lastValue);
   }
 
-  unwatch = scope.$watch(
-    oneTimeWatch,
-    listener,
-    objectEquality,
-    prettyPrintExpression,
-  );
+  unwatch = scope.$watch(oneTimeWatch, listener, objectEquality);
 
   return unwatch;
 }

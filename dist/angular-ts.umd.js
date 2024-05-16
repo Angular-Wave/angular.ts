@@ -319,7 +319,7 @@
 
   // eslint-disable-next-line camelcase
   function snakeCase(name, separator) {
-    const modseparator = separator || "_";
+    const modseparator = separator ;
     return name.replace(
       /[A-Z]/g,
       (letter, pos) => (pos ? modseparator : "") + letter.toLowerCase(),
@@ -807,17 +807,13 @@
     if (!path) return obj;
     const keys = path.split(".");
     let key;
-    let lastInstance = obj;
     const len = keys.length;
 
     for (let i = 0; i < len; i++) {
       key = keys[i];
       if (obj) {
-        obj = (lastInstance = obj)[key];
+        obj = (obj)[key];
       }
-    }
-    if (!bindFnToScope && isFunction(obj)) {
-      return bind(lastInstance, obj);
     }
     return obj;
   }
@@ -1001,7 +997,7 @@
   }
 
   function convertTimezoneToLocal(date, timezone, reverse) {
-    const doReverse = reverse ? -1 : 1;
+    const doReverse = 1;
     const dateTimezoneOffset = date.getTimezoneOffset();
     const timezoneOffset = timezoneToOffset(timezone, dateTimezoneOffset);
     return addDateMinutes(
@@ -4881,7 +4877,6 @@
 
   const CNTRL_REG = /^(\S+)(\s+as\s+([\w$]+))?$/;
   function identifierForController(controller, ident) {
-    if (ident && isString(ident)) return ident;
     if (isString(controller)) {
       const match = CNTRL_REG.exec(controller);
       if (match) return match[3];
@@ -4991,7 +4986,7 @@
               constructor,
             )
               ? controllers[constructor]
-              : getter(locals.$scope, constructor, true);
+              : getter(locals.$scope, constructor);
 
             if (!expression) {
               throw $controllerMinErr(
@@ -20212,6 +20207,12 @@
     this.$get = [
       "$location",
       "$rootScope",
+      /**
+       *
+       * @param {angular.IRootScopeService} $location
+       * @param {*} $rootScope
+       * @returns
+       */
       function ($location, $rootScope) {
         const { document } = window;
 
@@ -27526,12 +27527,11 @@
   }
 
   const OPERATORS = createMap();
-  forEach(
-    "+ - * / % === !== == != < > <= >= && || ! = |".split(" "),
-    (operator) => {
-      OPERATORS[operator] = true;
-    },
-  );
+
+  "+ - * / % === !== == != < > <= >= && || ! = |"
+    .split(" ")
+    .forEach((operator) => (OPERATORS[operator] = true));
+
   const ESCAPE = {
     n: "\n",
     f: "\f",
@@ -27784,10 +27784,10 @@
     },
   };
 
-  const AST = function AST(lexer, options) {
+  function AST(lexer, options) {
     this.lexer = lexer;
     this.options = options;
-  };
+  }
 
   AST.Program = "Program";
   AST.ExpressionStatement = "ExpressionStatement";
@@ -27825,6 +27825,7 @@
 
     program() {
       const body = [];
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         if (this.tokens.length > 0 && !this.peek("}", ")", ";", "]"))
           body.push(this.expressionStatement());
@@ -28848,7 +28849,7 @@
     getHasOwnProperty(element, property) {
       const key = `${element}.${property}`;
       const { own } = this.current();
-      if (!own.hasOwnProperty(key)) {
+      if (!Object.prototype.hasOwnProperty.call(own, key)) {
         own[key] = this.nextId(
           false,
           `${element}&&(${this.escape(property)} in ${element})`,
@@ -28864,7 +28865,7 @@
     },
 
     filter(filterName) {
-      if (!this.state.filters.hasOwnProperty(filterName)) {
+      if (!Object.prototype.hasOwnProperty.call(this.state.filters, filterName)) {
         this.state.filters[filterName] = this.nextId(true);
       }
       return this.state.filters[filterName];
@@ -29582,7 +29583,6 @@
           listener,
           objectEquality,
           parsedExpression,
-          prettyPrintExpression,
         ) {
           var inputExpressions = parsedExpression.inputs;
           var lastResult;
@@ -29609,7 +29609,6 @@
               },
               listener,
               objectEquality,
-              prettyPrintExpression,
             );
           }
 
@@ -29653,7 +29652,6 @@
             },
             listener,
             objectEquality,
-            prettyPrintExpression,
           );
         }
 
@@ -29662,7 +29660,6 @@
           listener,
           objectEquality,
           parsedExpression,
-          prettyPrintExpression,
         ) {
           var isDone = parsedExpression.literal ? isAllDefined : isDefined;
           var unwatch, lastValue;
@@ -29681,12 +29678,7 @@
           // Allow other delegates to run on this wrapped expression
           addWatchDelegate(oneTimeWatch);
 
-          unwatch = scope.$watch(
-            oneTimeWatch,
-            listener,
-            objectEquality,
-            prettyPrintExpression,
-          );
+          unwatch = scope.$watch(oneTimeWatch, listener, objectEquality);
 
           return unwatch;
 
@@ -29817,6 +29809,10 @@
   }
 
   /**
+   * @typedef {"$apply" | "$digest"} ScopePhase
+   */
+
+  /**
    * @ngdoc provider
    * @name $rootScopeProvider
    * @description
@@ -29931,7 +29927,7 @@
   }
 
   /**
-   * @type {angular.IRootScopeService}
+   * @type {angular.IScope}
    */
   class Scope {
     constructor() {
@@ -29946,6 +29942,9 @@
        */
       this.$parent = null;
 
+      /**
+       * @type {Scope}
+       */
       this.$root = this;
 
       this.$$watchers = null;
@@ -30148,7 +30147,7 @@
    *     comparing for reference equality.
    * @returns {function()} Returns a deregistration function for this listener.
    */
-    $watch(watchExp, listener, objectEquality, prettyPrintExpression) {
+    $watch(watchExp, listener, objectEquality) {
       const get = $parse(watchExp);
       const fn = isFunction(listener) ? listener : () => {};
 
@@ -30161,7 +30160,7 @@
         fn,
         last: initWatchVal,
         get,
-        exp: prettyPrintExpression || watchExp,
+        exp: watchExp,
         eq: !!objectEquality,
       };
 
@@ -30657,6 +30656,10 @@
       $browser.$$checkUrlChange();
     }
 
+    /**
+     *
+     * @param {ScopePhase} phase
+     */
     beginPhase(phase) {
       if (this.$root.$$phase) {
         throw $rootScopeMinErr(
@@ -31818,7 +31821,7 @@
         "areq",
         "Argument '{0}' is {1}",
         name || "?",
-        reason || "required",
+        reason ,
       );
     }
     return arg;

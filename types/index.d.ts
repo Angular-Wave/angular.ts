@@ -355,7 +355,7 @@ declare namespace angular {
      * $rootScope - $rootScopeProvider - service in module ng
      * see https://docs.angularjs.org/api/ng/type/$rootScope.Scope and https://docs.angularjs.org/api/ng/service/$rootScope
      */
-    interface IRootScopeService {
+    interface IScope {
         $apply(): any;
         $apply(exp: string): any;
         $apply(exp: (scope: IScope) => any): any;
@@ -512,17 +512,16 @@ declare namespace angular {
         ): () => void;
 
         $parent: IScope;
-        $root: IRootScopeService;
+        $root: IScope;
         $id: number;
 
         // Hidden members
         $$isolateBindings: any;
         $$phase: any;
+        $$destroyed: boolean;
     }
 
-    interface IScope extends IRootScopeService {
-      $$destroyed: boolean;
-    }
+    interface IRootScopeService extends IScope {}
 
     /**
      * $scope for ngRepeat directive.

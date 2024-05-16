@@ -314,7 +314,7 @@ function trim(value) {
 
 // eslint-disable-next-line camelcase
 function snakeCase(name, separator) {
-  const modseparator = separator || "_";
+  const modseparator = separator ;
   return name.replace(
     /[A-Z]/g,
     (letter, pos) => (pos ? modseparator : "") + letter.toLowerCase(),
@@ -802,17 +802,13 @@ function getter(obj, path, bindFnToScope) {
   if (!path) return obj;
   const keys = path.split(".");
   let key;
-  let lastInstance = obj;
   const len = keys.length;
 
   for (let i = 0; i < len; i++) {
     key = keys[i];
     if (obj) {
-      obj = (lastInstance = obj)[key];
+      obj = (obj)[key];
     }
-  }
-  if (!bindFnToScope && isFunction(obj)) {
-    return bind(lastInstance, obj);
   }
   return obj;
 }
@@ -996,7 +992,7 @@ function addDateMinutes(date, minutes) {
 }
 
 function convertTimezoneToLocal(date, timezone, reverse) {
-  const doReverse = reverse ? -1 : 1;
+  const doReverse = 1;
   const dateTimezoneOffset = date.getTimezoneOffset();
   const timezoneOffset = timezoneToOffset(timezone, dateTimezoneOffset);
   return addDateMinutes(
@@ -4876,7 +4872,6 @@ const $controllerMinErr = minErr("$controller");
 
 const CNTRL_REG = /^(\S+)(\s+as\s+([\w$]+))?$/;
 function identifierForController(controller, ident) {
-  if (ident && isString(ident)) return ident;
   if (isString(controller)) {
     const match = CNTRL_REG.exec(controller);
     if (match) return match[3];
@@ -4986,7 +4981,7 @@ function $ControllerProvider() {
             constructor,
           )
             ? controllers[constructor]
-            : getter(locals.$scope, constructor, true);
+            : getter(locals.$scope, constructor);
 
           if (!expression) {
             throw $controllerMinErr(
@@ -20207,6 +20202,12 @@ function AnchorScrollProvider() {
   this.$get = [
     "$location",
     "$rootScope",
+    /**
+     *
+     * @param {angular.IRootScopeService} $location
+     * @param {*} $rootScope
+     * @returns
+     */
     function ($location, $rootScope) {
       const { document } = window;
 
@@ -27521,12 +27522,11 @@ function getStringValue(name) {
 }
 
 const OPERATORS = createMap();
-forEach(
-  "+ - * / % === !== == != < > <= >= && || ! = |".split(" "),
-  (operator) => {
-    OPERATORS[operator] = true;
-  },
-);
+
+"+ - * / % === !== == != < > <= >= && || ! = |"
+  .split(" ")
+  .forEach((operator) => (OPERATORS[operator] = true));
+
 const ESCAPE = {
   n: "\n",
   f: "\f",
@@ -27779,10 +27779,10 @@ Lexer.prototype = {
   },
 };
 
-const AST = function AST(lexer, options) {
+function AST(lexer, options) {
   this.lexer = lexer;
   this.options = options;
-};
+}
 
 AST.Program = "Program";
 AST.ExpressionStatement = "ExpressionStatement";
@@ -27820,6 +27820,7 @@ AST.prototype = {
 
   program() {
     const body = [];
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       if (this.tokens.length > 0 && !this.peek("}", ")", ";", "]"))
         body.push(this.expressionStatement());
@@ -28843,7 +28844,7 @@ ASTCompiler.prototype = {
   getHasOwnProperty(element, property) {
     const key = `${element}.${property}`;
     const { own } = this.current();
-    if (!own.hasOwnProperty(key)) {
+    if (!Object.prototype.hasOwnProperty.call(own, key)) {
       own[key] = this.nextId(
         false,
         `${element}&&(${this.escape(property)} in ${element})`,
@@ -28859,7 +28860,7 @@ ASTCompiler.prototype = {
   },
 
   filter(filterName) {
-    if (!this.state.filters.hasOwnProperty(filterName)) {
+    if (!Object.prototype.hasOwnProperty.call(this.state.filters, filterName)) {
       this.state.filters[filterName] = this.nextId(true);
     }
     return this.state.filters[filterName];
@@ -29577,7 +29578,6 @@ function $ParseProvider() {
         listener,
         objectEquality,
         parsedExpression,
-        prettyPrintExpression,
       ) {
         var inputExpressions = parsedExpression.inputs;
         var lastResult;
@@ -29604,7 +29604,6 @@ function $ParseProvider() {
             },
             listener,
             objectEquality,
-            prettyPrintExpression,
           );
         }
 
@@ -29648,7 +29647,6 @@ function $ParseProvider() {
           },
           listener,
           objectEquality,
-          prettyPrintExpression,
         );
       }
 
@@ -29657,7 +29655,6 @@ function $ParseProvider() {
         listener,
         objectEquality,
         parsedExpression,
-        prettyPrintExpression,
       ) {
         var isDone = parsedExpression.literal ? isAllDefined : isDefined;
         var unwatch, lastValue;
@@ -29676,12 +29673,7 @@ function $ParseProvider() {
         // Allow other delegates to run on this wrapped expression
         addWatchDelegate(oneTimeWatch);
 
-        unwatch = scope.$watch(
-          oneTimeWatch,
-          listener,
-          objectEquality,
-          prettyPrintExpression,
-        );
+        unwatch = scope.$watch(oneTimeWatch, listener, objectEquality);
 
         return unwatch;
 
@@ -29812,6 +29804,10 @@ function $ParseProvider() {
 }
 
 /**
+ * @typedef {"$apply" | "$digest"} ScopePhase
+ */
+
+/**
  * @ngdoc provider
  * @name $rootScopeProvider
  * @description
@@ -29926,7 +29922,7 @@ function $RootScopeProvider() {
 }
 
 /**
- * @type {angular.IRootScopeService}
+ * @type {angular.IScope}
  */
 class Scope {
   constructor() {
@@ -29941,6 +29937,9 @@ class Scope {
      */
     this.$parent = null;
 
+    /**
+     * @type {Scope}
+     */
     this.$root = this;
 
     this.$$watchers = null;
@@ -30143,7 +30142,7 @@ class Scope {
  *     comparing for reference equality.
  * @returns {function()} Returns a deregistration function for this listener.
  */
-  $watch(watchExp, listener, objectEquality, prettyPrintExpression) {
+  $watch(watchExp, listener, objectEquality) {
     const get = $parse(watchExp);
     const fn = isFunction(listener) ? listener : () => {};
 
@@ -30156,7 +30155,7 @@ class Scope {
       fn,
       last: initWatchVal,
       get,
-      exp: prettyPrintExpression || watchExp,
+      exp: watchExp,
       eq: !!objectEquality,
     };
 
@@ -30652,6 +30651,10 @@ class Scope {
     $browser.$$checkUrlChange();
   }
 
+  /**
+   *
+   * @param {ScopePhase} phase
+   */
   beginPhase(phase) {
     if (this.$root.$$phase) {
       throw $rootScopeMinErr(
@@ -31813,7 +31816,7 @@ function assertArg(arg, name, reason) {
       "areq",
       "Argument '{0}' is {1}",
       name || "?",
-      reason || "required",
+      reason ,
     );
   }
   return arg;
