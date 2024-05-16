@@ -7,8 +7,8 @@ Building upon the monumental effort of the [Angular Team](https://docs.angularjs
 this project aims to preserve, modernise, and expand the original [AngularJS](https://github.com/angular/angular.js) 
 framework to what it could or should have been. While building on the core features of the original, AngularTS is not 
 a drop-in replacement or an LTS version. Nor does it aim to be an Angular 2 of sorts, as there are sufficient number 
-of alternatives in that space. Rather, AngularTS takes the three core battle-tested pillars of the original -- a string-interpolation engine, 
-dependency injection, two-way data-binding -- and adopts them to [Modern Web](https://modern-web.dev/) principles for rapid, fun, and reliable
+of alternatives in that space. Rather, AngularTS takes the three core battle-tested pillars of the original &ndash;  a string-interpolation engine, 
+dependency injection, two-way data-binding &ndash;  and adopts them to [Modern Web](https://modern-web.dev/) principles for rapid, fun, and reliable
 web-development.
 
 AngularTS lets you write client-side web applications as if you had a smarter browser.  It lets you
