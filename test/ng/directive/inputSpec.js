@@ -5,8 +5,8 @@ import {
   EMAIL_REGEXP,
   ISO_DATE_REGEXP,
   URL_REGEXP,
-} from "../../../src/ng/directive/input";
-import { forEach } from "../../../src/ng/utils";
+} from "../../../src/directive/input";
+import { forEach } from "../../../src/core/utils";
 
 describe("input", () => {
   let $compile;

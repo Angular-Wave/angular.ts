@@ -1,4 +1,4 @@
-import { minErr, isDefined, toDebugString } from "../src/ng/utils";
+import { minErr, isDefined, toDebugString } from "../src/core/utils";
 import { errorHandlingConfig } from "../src/loader";
 
 describe("errors", () => {

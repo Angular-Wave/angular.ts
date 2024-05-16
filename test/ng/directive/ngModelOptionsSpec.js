@@ -1,8 +1,8 @@
-import { defaultModelOptions } from "../../../src/ng/directive/ngModelOptions";
+import { defaultModelOptions } from "../../../src/directive/ngModelOptions";
 import { dealoc, jqLite } from "../../../src/jqLite";
 import { publishExternalAPI } from "../../../src/public";
 import { createInjector } from "../../../src/injector";
-import { valueFn } from "../../../src/ng/utils";
+import { valueFn } from "../../../src/core/utils";
 import { Angular } from "../../../src/loader";
 
 function changeGivenInputTo(inputElm, val) {

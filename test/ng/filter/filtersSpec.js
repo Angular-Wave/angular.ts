@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../../src/public";
 import { createInjector } from "../../../src/injector";
-import { toJson } from "../../../src/ng/utils";
+import { toJson } from "../../../src/core/utils";
 
 describe("filters", () => {
   let filter;

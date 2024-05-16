@@ -1,7 +1,7 @@
 import { publishExternalAPI } from "../../../src/public";
 import { createInjector } from "../../../src/injector";
 import { dealoc, jqLite } from "../../../src/jqLite";
-import { valueFn, isDefined } from "../../../src/ng/utils";
+import { valueFn, isDefined } from "../../../src/core/utils";
 
 describe("a", () => {
   let element;

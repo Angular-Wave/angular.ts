@@ -1,4 +1,4 @@
-import { AST, Lexer } from "../../src/ng/parse";
+import { AST, Lexer } from "../../src/core/parse";
 import {
   forEach,
   isFunction,
@@ -7,7 +7,7 @@ import {
   valueFn,
   extend,
   identity,
-} from "../../src/ng/utils";
+} from "../../src/core/utils";
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
 

@@ -14,7 +14,7 @@ import {
   reverseParams,
   isObject,
   isDefined,
-} from "./ng/utils";
+} from "./core/utils";
 
 /**
  * @ngdoc function

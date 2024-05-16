@@ -1,5 +1,5 @@
 import { createInjector } from "../../src/injector";
-import { isObject, isArray } from "../../src/ng/utils";
+import { isObject, isArray } from "../../src/core/utils";
 import { publishExternalAPI } from "../../src/public";
 
 export function getLastAjaxRequest() {

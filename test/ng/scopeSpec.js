@@ -1,5 +1,5 @@
-import { getQueues } from "../../src/ng/rootScope";
-import { extend, sliceArgs } from "../../src/ng/utils";
+import { getQueues } from "../../src/core/rootScope";
+import { extend, sliceArgs } from "../../src/core/utils";
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
 

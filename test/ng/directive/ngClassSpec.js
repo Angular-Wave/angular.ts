@@ -1,7 +1,7 @@
 import { dealoc, jqLite } from "../../../src/jqLite";
 import { publishExternalAPI } from "../../../src/public";
 import { createInjector } from "../../../src/injector";
-import { valueFn } from "../../../src/ng/utils";
+import { valueFn } from "../../../src/core/utils";
 
 describe("ngClass", () => {
   let element;

@@ -1,98 +1,107 @@
-import { $CompileProvider } from "./ng/compile";
+import { $CompileProvider } from "./core/compile";
 import { $$jqLiteProvider } from "./jqLite";
-import { htmlAnchorDirective } from "./ng/directive/a";
+import { htmlAnchorDirective } from "./directive/a";
 import {
   inputDirective,
   ngValueDirective,
   hiddenInputBrowserCacheDirective,
-} from "./ng/directive/input";
-import { formDirective, ngFormDirective } from "./ng/directive/form";
-import { scriptDirective } from "./ng/directive/script";
-import { selectDirective, optionDirective } from "./ng/directive/select";
+} from "./directive/input";
+import { formDirective, ngFormDirective } from "./directive/form";
+import { scriptDirective } from "./directive/script";
+import { selectDirective, optionDirective } from "./directive/select";
 import {
   ngBindDirective,
   ngBindHtmlDirective,
   ngBindTemplateDirective,
-} from "./ng/directive/ngBind";
+} from "./directive/ngBind";
 import {
   ngClassDirective,
   ngClassEvenDirective,
   ngClassOddDirective,
-} from "./ng/directive/ngClass";
-import { ngCloakDirective } from "./ng/directive/ngCloak";
-import { ngControllerDirective } from "./ng/directive/ngController";
-import { ngHideDirective, ngShowDirective } from "./ng/directive/ngShowHide";
-import { ngIfDirective } from "./ng/directive/ngIf";
+} from "./directive/ngClass";
+import { ngCloakDirective } from "./directive/ngCloak";
+import { ngControllerDirective } from "./directive/ngController";
+import { ngHideDirective, ngShowDirective } from "./directive/ngShowHide";
+import { ngIfDirective } from "./directive/ngIf";
 import {
   ngIncludeDirective,
   ngIncludeFillContentDirective,
-} from "./ng/directive/ngInclude";
-import { ngInitDirective } from "./ng/directive/ngInit";
-import { ngNonBindableDirective } from "./ng/directive/ngNonBindable";
-import { ngRefDirective } from "./ng/directive/ngRef";
-import { ngRepeatDirective } from "./ng/directive/ngRepeat";
-import { ngStyleDirective } from "./ng/directive/ngStyle";
+} from "./directive/ngInclude";
+import { ngInitDirective } from "./directive/ngInit";
+import { ngNonBindableDirective } from "./directive/ngNonBindable";
+import { ngRefDirective } from "./directive/ngRef";
+import { ngRepeatDirective } from "./directive/ngRepeat";
+import { ngStyleDirective } from "./directive/ngStyle";
 import {
   ngSwitchDirective,
   ngSwitchWhenDirective,
   ngSwitchDefaultDirective,
-} from "./ng/directive/ngSwitch";
-import { ngOptionsDirective } from "./ng/directive/ngOptions";
-import { ngTranscludeDirective } from "./ng/directive/ngTransclude";
-import { ngModelDirective } from "./ng/directive/ngModel";
-import { ngListDirective } from "./ng/directive/ngList";
-import { ngChangeDirective } from "./ng/directive/ngChange";
+} from "./directive/ngSwitch";
+import { ngOptionsDirective } from "./directive/ngOptions";
+import { ngTranscludeDirective } from "./directive/ngTransclude";
+import { ngModelDirective } from "./directive/ngModel";
+import { ngListDirective } from "./directive/ngList";
+import { ngChangeDirective } from "./directive/ngChange";
 import {
   maxlengthDirective,
   minlengthDirective,
   patternDirective,
   requiredDirective,
-} from "./ng/directive/validators";
-import { ngModelOptionsDirective } from "./ng/directive/ngModelOptions";
-import { ngAttributeAliasDirectives } from "./ng/directive/attrs";
-import { ngEventDirectives } from "./ng/directive/ngEventDirs";
-import { AnchorScrollProvider } from "./ng/anchorScroll";
+} from "./directive/validators";
+import { ngModelOptionsDirective } from "./directive/ngModelOptions";
+import { ngAttributeAliasDirectives } from "./directive/attrs";
+import { ngEventDirectives } from "./directive/ngEventDirs";
+import { AnchorScrollProvider } from "./services/anchorScroll";
 import {
   AnimateProvider,
   CoreAnimateJsProvider,
   CoreAnimateQueueProvider,
-} from "./ng/animate";
-import { BrowserProvider } from "./ng/browser";
-import { CoreAnimateCssProvider } from "./ng/animateCss";
-import { CookieReaderProvider } from "./ng/cookieReader";
+} from "./core/animate";
+import { BrowserProvider } from "./services/browser";
+import { CoreAnimateCssProvider } from "./core/animateCss";
+import { CookieReaderProvider } from "./services/cookieReader";
 import {
   AnimateAsyncRunFactoryProvider,
   AnimateRunnerFactoryProvider,
-} from "./ng/animateRunner";
-import { CacheFactoryProvider, TemplateCacheProvider } from "./ng/cacheFactory";
-import { $ControllerProvider } from "./ng/controller";
-import { $DocumentProvider, $$IsDocumentHiddenProvider } from "./ng/document";
-import { $ExceptionHandlerProvider } from "./ng/exceptionHandler";
-import { $FilterProvider } from "./ng/filter";
-import { $IntervalProvider } from "./ng/interval";
-import { $InterpolateProvider } from "./ng/interpolate";
-import { $$IntervalFactoryProvider } from "./ng/intervalFactory";
-import { $$ForceReflowProvider } from "./ng/forceReflow";
+} from "./core/animateRunner";
+import {
+  CacheFactoryProvider,
+  TemplateCacheProvider,
+} from "./services/cacheFactory";
+import { $ControllerProvider } from "./core/controller";
+import {
+  $DocumentProvider,
+  $$IsDocumentHiddenProvider,
+} from "./services/document";
+import { $ExceptionHandlerProvider } from "./core/exceptionHandler";
+import { $FilterProvider } from "./core/filter";
+import { $IntervalProvider } from "./core/interval";
+import { $InterpolateProvider } from "./core/interpolate";
+import { $$IntervalFactoryProvider } from "./core/intervalFactory";
+import { $$ForceReflowProvider } from "./core/forceReflow";
 import {
   $HttpProvider,
   $HttpParamSerializerProvider,
   $HttpParamSerializerJQLikeProvider,
-} from "./ng/http";
-import { $HttpBackendProvider, $xhrFactoryProvider } from "./ng/httpBackend";
-import { $LocationProvider } from "./ng/location";
-import { $LogProvider } from "./ng/log";
-import { $ParseProvider } from "./ng/parse";
-import { $RootScopeProvider } from "./ng/rootScope";
-import { $QProvider, $$QProvider } from "./ng/q";
-import { $SceProvider, $SceDelegateProvider } from "./ng/sce";
-import { $$TaskTrackerFactoryProvider } from "./ng/taskTrackerFactory";
-import { TemplateRequestProvider } from "./ng/templateRequest";
-import { $TimeoutProvider } from "./ng/timeout";
-import { SanitizeUriProvider } from "./ng/sanitizeUri";
+} from "./services/http";
+import {
+  $HttpBackendProvider,
+  $xhrFactoryProvider,
+} from "./services/httpBackend";
+import { $LocationProvider } from "./core/location";
+import { $LogProvider } from "./services/log";
+import { $ParseProvider } from "./core/parse";
+import { $RootScopeProvider } from "./core/rootScope";
+import { $QProvider, $$QProvider } from "./core/q";
+import { $SceProvider, $SceDelegateProvider } from "./core/sce";
+import { $$TaskTrackerFactoryProvider } from "./core/taskTrackerFactory";
+import { TemplateRequestProvider } from "./services/templateRequest";
+import { $TimeoutProvider } from "./core/timeout";
+import { SanitizeUriProvider } from "./core/sanitizeUri";
 import { setupModuleLoader } from "./loader";
-import { initAnimateModule } from "./ngAnimate/module";
-import { initMessageModule } from "./ngMessages/messages";
-import { initAriaModule } from "./ngAria/aria";
+import { initAnimateModule } from "./animations/module";
+import { initMessageModule } from "./exts/messages";
+import { initAriaModule } from "./exts/aria";
 
 export function publishExternalAPI() {
   const module = setupModuleLoader(window);

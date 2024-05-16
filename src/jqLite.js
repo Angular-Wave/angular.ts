@@ -14,7 +14,7 @@ import {
   nodeName_,
   shallowCopy,
   trim,
-} from "./ng/utils";
+} from "./core/utils";
 
 /**
  * @ngdoc function

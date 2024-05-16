@@ -3,7 +3,7 @@ import {
   LocationHashbangUrl,
   $LocationProvider,
   LocationHashbangInHtml5Url,
-} from "../../src/ng/location";
+} from "../../src/core/location";
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
 

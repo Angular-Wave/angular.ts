@@ -6437,7 +6437,6 @@
    *
    */
 
-
   /*
    * A collection of directives that allows creation of custom event handlers that are defined as
    * AngularJS expressions and are compiled and executed within the current scope.
@@ -11655,9 +11654,6 @@
     };
   }
 
-  /* eslint-disable no-use-before-define */
-
-
   const nullFormCtrl = {
     $addControl: () => {},
     $getControls: valueFn([]),
@@ -12875,7 +12871,6 @@
     });
   }
 
-  /* eslint-disable no-use-before-define */
   const ngModelMinErr = minErr("ngModel");
 
   /**
@@ -14214,9 +14209,6 @@
       },
     }),
   ];
-
-  /* eslint-disable no-unused-vars */
-  /* eslint-disable no-use-before-define */
 
   // Regex code was initially obtained from SO prior to modification: https://stackoverflow.com/questions/3143070/javascript-regex-iso-datetime#answer-3143231
   const ISO_DATE_REGEXP =
@@ -16775,13 +16767,6 @@
     },
   ];
 
-  /* exported
-    ngClassDirective,
-    ngClassEvenDirective,
-    ngClassOddDirective
-  */
-
-
   function classDirective(name, selector) {
     // eslint-disable-next-line no-param-reassign
     name = `ngClass${name}`;
@@ -17029,8 +17014,6 @@
    *
    */
   const ngClassEvenDirective = classDirective("Even", 1);
-
-  /* eslint-disable no-param-reassign */
 
   function ngDirective(directive) {
     if (isFunction(directive)) {
@@ -20342,7 +20325,6 @@
   }
 
   const $animateMinErr = minErr("$animate");
-  const ELEMENT_NODE$1 = 1;
   const NG_ANIMATE_CLASSNAME$1 = "ng-animate";
 
   function mergeClasses(a, b) {
@@ -20358,7 +20340,7 @@
     const { length } = element;
     for (let i = 0; i < length; i++) {
       const elm = element[i];
-      if (elm.nodeType === ELEMENT_NODE$1) {
+      if (elm.nodeType === Node.ELEMENT_NODE) {
         return elm;
       }
     }
@@ -22245,8 +22227,6 @@
     ];
   }
 
-  /* eslint-disable no-use-before-define */
-
   // This variable should be used *only* inside the cacheState function.
   let lastCachedState = null;
 
@@ -23419,8 +23399,6 @@
   //     $log.error.apply($log, arguments);
   //   };
   // }
-
-  /* eslint-disable no-use-before-define */
 
   /**
    * @ngdoc filter
@@ -31694,7 +31672,7 @@
   /**
    *
    * @description
-   * Private service to sanitize uris for links and images. Used by $compile and $sanitize.
+   * Private service to sanitize uris for links and images. Used by $compile.
    */
   function SanitizeUriProvider() {
     let aHrefSanitizationTrustedUrlList = /^\s*(https?|s?ftp|mailto|tel|file):/;

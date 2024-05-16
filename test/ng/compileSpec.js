@@ -9,8 +9,8 @@ import {
   nodeName_,
   extend,
   isArray,
-} from "../../src/ng/utils";
-import { countChildScopes, countWatchers } from "../../src/ng/rootScope";
+} from "../../src/core/utils";
+import { countChildScopes, countWatchers } from "../../src/core/rootScope";
 
 function isUnknownElement(el) {
   return !!el.toString().match(/Unknown/);

@@ -1,7 +1,7 @@
 import { createInjector } from "../../src/injector";
 
 import { publishExternalAPI } from "../../src/public";
-import { adjustMatcher } from "../../src/ng/sce";
+import { adjustMatcher } from "../../src/core/sce";
 
 describe("SCE", () => {
   let $sce, $rootScope;

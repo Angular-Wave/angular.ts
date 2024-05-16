@@ -8,7 +8,7 @@ import {
   equals,
   isString,
   isFunction,
-} from "../../../src/ng/utils";
+} from "../../../src/core/utils";
 import { browserTrigger } from "../../utils";
 
 describe("ngOptions", () => {

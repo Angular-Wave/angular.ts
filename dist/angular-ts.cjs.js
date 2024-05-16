@@ -6434,7 +6434,6 @@ function $SceProvider() {
  *
  */
 
-
 /*
  * A collection of directives that allows creation of custom event handlers that are defined as
  * AngularJS expressions and are compiled and executed within the current scope.
@@ -11652,9 +11651,6 @@ function htmlAnchorDirective() {
   };
 }
 
-/* eslint-disable no-use-before-define */
-
-
 const nullFormCtrl = {
   $addControl: () => {},
   $getControls: valueFn([]),
@@ -12872,7 +12868,6 @@ function defaults(dst, src) {
   });
 }
 
-/* eslint-disable no-use-before-define */
 const ngModelMinErr = minErr("ngModel");
 
 /**
@@ -14211,9 +14206,6 @@ const ngModelDirective = [
     },
   }),
 ];
-
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-use-before-define */
 
 // Regex code was initially obtained from SO prior to modification: https://stackoverflow.com/questions/3143070/javascript-regex-iso-datetime#answer-3143231
 const ISO_DATE_REGEXP =
@@ -16772,13 +16764,6 @@ const ngBindHtmlDirective = [
   },
 ];
 
-/* exported
-  ngClassDirective,
-  ngClassEvenDirective,
-  ngClassOddDirective
-*/
-
-
 function classDirective(name, selector) {
   // eslint-disable-next-line no-param-reassign
   name = `ngClass${name}`;
@@ -17026,8 +17011,6 @@ const ngClassOddDirective = classDirective("Odd", 0);
  *
  */
 const ngClassEvenDirective = classDirective("Even", 1);
-
-/* eslint-disable no-param-reassign */
 
 function ngDirective(directive) {
   if (isFunction(directive)) {
@@ -20339,7 +20322,6 @@ function AnchorScrollProvider() {
 }
 
 const $animateMinErr = minErr("$animate");
-const ELEMENT_NODE$1 = 1;
 const NG_ANIMATE_CLASSNAME$1 = "ng-animate";
 
 function mergeClasses(a, b) {
@@ -20355,7 +20337,7 @@ function extractElementNode$1(element) {
   const { length } = element;
   for (let i = 0; i < length; i++) {
     const elm = element[i];
-    if (elm.nodeType === ELEMENT_NODE$1) {
+    if (elm.nodeType === Node.ELEMENT_NODE) {
       return elm;
     }
   }
@@ -22242,8 +22224,6 @@ function $LocationProvider() {
   ];
 }
 
-/* eslint-disable no-use-before-define */
-
 // This variable should be used *only* inside the cacheState function.
 let lastCachedState = null;
 
@@ -23416,8 +23396,6 @@ function $ExceptionHandlerProvider() {
 //     $log.error.apply($log, arguments);
 //   };
 // }
-
-/* eslint-disable no-use-before-define */
 
 /**
  * @ngdoc filter
@@ -31691,7 +31669,7 @@ function $TimeoutProvider() {
 /**
  *
  * @description
- * Private service to sanitize uris for links and images. Used by $compile and $sanitize.
+ * Private service to sanitize uris for links and images. Used by $compile.
  */
 function SanitizeUriProvider() {
   let aHrefSanitizationTrustedUrlList = /^\s*(https?|s?ftp|mailto|tel|file):/;

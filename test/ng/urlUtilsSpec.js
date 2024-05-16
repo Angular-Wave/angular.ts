@@ -3,7 +3,7 @@ import {
   urlIsSameOrigin,
   urlIsSameOriginAsBaseUrl,
   urlIsAllowedOriginFactory,
-} from "../../src/ng/urlUtils";
+} from "../../src/core/urlUtils";
 
 let $document = window.document;
 

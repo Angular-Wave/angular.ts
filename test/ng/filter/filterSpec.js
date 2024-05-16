@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../../src/public";
 import { createInjector } from "../../../src/injector";
-import { createMap, isString, includes } from "../../../src/ng/utils";
+import { createMap, isString, includes } from "../../../src/core/utils";
 import { jqLite } from "../../../src/jqLite";
 
 describe("Filter: filter", () => {

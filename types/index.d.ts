@@ -520,7 +520,9 @@ declare namespace angular {
         $$phase: any;
     }
 
-    interface IScope extends IRootScopeService {}
+    interface IScope extends IRootScopeService {
+      $$destroyed: boolean;
+    }
 
     /**
      * $scope for ngRepeat directive.

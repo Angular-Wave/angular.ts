@@ -1,4 +1,4 @@
-import { SanitizeUriProvider } from "../../src/ng/sanitizeUri";
+import { SanitizeUriProvider } from "../../src/core/sanitizeUri";
 
 describe("sanitizeUri", () => {
   let sanitizeHref;

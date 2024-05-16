@@ -1,7 +1,7 @@
 import { setupModuleLoader } from "../src/loader";
 import { createInjector } from "../src/injector";
 import { publishExternalAPI } from "../src/public";
-import { valueFn, extend } from "../src/ng/utils";
+import { valueFn, extend } from "../src/core/utils";
 
 describe("injector.modules", () => {
   beforeEach(() => {

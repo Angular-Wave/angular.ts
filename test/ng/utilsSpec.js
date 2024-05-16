@@ -1,4 +1,4 @@
-import { hashKey } from "../../src/ng/utils";
+import { hashKey } from "../../src/core/utils";
 
 describe("api", () => {
   describe("hashKey()", () => {

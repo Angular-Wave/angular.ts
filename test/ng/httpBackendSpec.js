@@ -1,6 +1,6 @@
 import { createInjector } from "../../src/injector";
 import { publishExternalAPI } from "../../src/public";
-import { createHttpBackend } from "../../src/ng/httpBackend";
+import { createHttpBackend } from "../../src/services/httpBackend";
 import sinon from "sinon";
 
 describe("$httpBackend", () => {

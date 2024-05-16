@@ -23,7 +23,7 @@ import {
   isBoolean,
   isValidObjectMaxDepth,
   minErrConfig,
-} from "./ng/utils";
+} from "./core/utils";
 import { jqLite, startingTag } from "./jqLite";
 import { createInjector } from "./injector";
 

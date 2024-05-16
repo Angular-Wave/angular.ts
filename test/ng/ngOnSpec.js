@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
-import { valueFn } from "../../src/ng/utils";
+import { valueFn } from "../../src/core/utils";
 
 describe("ngOn* event binding", () => {
   let $rootScope, module, injector, $compile;

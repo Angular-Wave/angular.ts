@@ -1,5 +1,5 @@
 import { dealoc, jqLite } from "../../../src/jqLite";
-import { forEach, valueFn } from "../../../src/ng/utils";
+import { forEach, valueFn } from "../../../src/core/utils";
 import { publishExternalAPI } from "../../../src/public";
 import { createInjector } from "../../../src/injector";
 import { Angular } from "../../../src/loader";

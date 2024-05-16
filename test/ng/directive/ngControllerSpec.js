@@ -1,7 +1,7 @@
 import { publishExternalAPI } from "../../../src/public";
 import { createInjector } from "../../../src/injector";
 import { dealoc, jqLite } from "../../../src/jqLite";
-import { bind } from "../../../src/ng/utils";
+import { bind } from "../../../src/core/utils";
 import { Angular } from "../../../src/loader";
 
 describe("ngController", () => {

@@ -2,7 +2,7 @@ import { dealoc, jqLite } from "../../../src/jqLite";
 import { Angular } from "../../../src/loader";
 import { createInjector } from "../../../src/injector";
 import { publishExternalAPI } from "../../../src/public";
-import { valueFn } from "../../../src/ng/utils";
+import { valueFn } from "../../../src/core/utils";
 
 describe("ngInclude", () => {
   describe("basic", () => {

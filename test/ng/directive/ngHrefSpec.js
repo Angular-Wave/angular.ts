@@ -1,7 +1,7 @@
 import { publishExternalAPI } from "../../../src/public";
 import { createInjector } from "../../../src/injector";
 import { dealoc } from "../../../src/jqLite";
-import { isDefined } from "../../../src/ng/utils";
+import { isDefined } from "../../../src/core/utils";
 
 describe("ngHref", () => {
   let $rootScope;
