@@ -2,7 +2,7 @@ import { publishExternalAPI } from "../../../src/public";
 import { createInjector } from "../../../src/injector";
 import { dealoc, jqLite } from "../../../src/jqLite";
 
-describe("ngStyle", () => {
+describe("ng-style", () => {
   let $scope;
   let $compile;
   let element;

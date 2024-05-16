@@ -7,14 +7,17 @@ export function ngStyleDirective() {
     link: (scope, element, attr) => {
       scope.$watchCollection(attr.ngStyle, (newStyles, oldStyles) => {
         if (oldStyles) {
-          Object.keys(oldStyles).forEach((key) => {
-            element[0].style[key] = "";
-          });
+          const oldKeys = Object.keys(oldStyles);
+          for (let i = 0, length = oldKeys.length; i < length; i++) {
+            element[0].style[oldKeys[i]] = "";
+          }
         }
         if (newStyles) {
-          Object.entries(newStyles).forEach(([key, value]) => {
+          const newEntries = Object.entries(newStyles);
+          for (let i = 0, length = newEntries.length; i < length; i++) {
+            const [key, value] = newEntries[i];
             element[0].style[key] = value;
-          });
+          }
         }
       });
     },
