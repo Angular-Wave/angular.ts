@@ -448,14 +448,6 @@ interface JQLite {
     prop(propertyName: string, func: (index: number, oldPropertyValue: any) => any): this;
 
     /**
-     * Specify a function to execute when the DOM is fully loaded.
-     *
-     * @param handler A function to execute after the DOM is ready.
-     * @see {@link https://api.jquery.com/ready/}
-     */
-    ready(handler: (jQueryAlias?: JQLiteStatic) => any): this;
-
-    /**
      * Remove the set of matched elements from the DOM.
      *
      * @param selector A selector expression that filters the set of matched elements to be removed.

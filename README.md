@@ -1,4 +1,6 @@
 AngularJS [![CircleCI](https://circleci.com/gh/angular/angular.js/tree/master.svg?style=shield)](https://circleci.com/gh/angular/workflows/angular.js/tree/master)
+
+![Build status](https://github.com/Angular-Wave/angular.ts/actions/workflows/playwright.yml/badge.svg)
 =========
 
 AngularJS lets you write client-side web applications as if you had a smarter browser.  It lets you
