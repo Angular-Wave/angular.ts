@@ -913,7 +913,7 @@ export function createDateParser(regexp, mapping) {
 
 const MONTH_INPUT_FORMAT = /\b\d{4}-(0[1-9]|1[0-2])\b/;
 
-export function createDateInputType(type, regexp, parseDate, format) {
+export function createDateInputType(type, regexp, parseDate) {
   return function dynamicDateInputType(
     scope,
     element,
@@ -925,8 +925,6 @@ export function createDateInputType(type, regexp, parseDate, format) {
   ) {
     badInputChecker(scope, element, attr, ctrl, type);
     baseInputType(scope, element, attr, ctrl, $browser);
-    // important: datetimelocal === "date-timelocal" attribute
-    const isTimeType = type === "time" || type === "datetimelocal";
     let previousDate;
     let previousTimezone;
 
@@ -1707,7 +1705,7 @@ export function hiddenInputBrowserCacheDirective() {
       }
 
       return {
-        pre(scope, element, attr, ctrls) {
+        pre(scope, element) {
           const node = element[0];
 
           // Support: Edge

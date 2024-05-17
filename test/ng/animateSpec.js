@@ -353,7 +353,7 @@ describe("$animate", () => {
       $animate.enter(element2, $rootElement, null, { addClass: "valid-name" });
       $rootScope.$digest();
 
-      expect(element2.hasClass("valid-name")).toBeTruthy();
+      expect(element2[0].classList.contains(ist.contains("valid-name")).toBeTruthy();
     };
   });
 

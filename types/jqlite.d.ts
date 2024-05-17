@@ -203,14 +203,6 @@ interface JQLite {
     find(obj: JQLite): this;
 
     /**
-     * Determine whether any of the matched elements are assigned the given class.
-     *
-     * @param className The class name to search for.
-     * @see {@link https://api.jquery.com/hasClass/}
-     */
-    hasClass(className: string): boolean;
-
-    /**
      * Get the HTML contents of the first element in the set of matched elements.
      * @see {@link https://api.jquery.com/html/#html}
      */

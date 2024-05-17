@@ -354,8 +354,8 @@ describe("Binder", () => {
 
     const d1 = jqLite(element[0].childNodes[1]);
     const d2 = jqLite(element[0].childNodes[3]);
-    expect(d1.hasClass("o")).toBeTruthy();
-    expect(d2.hasClass("e")).toBeTruthy();
+    expect(d1[0].classList.contains("o")).toBeTruthy();
+    expect(d2[0].classList.contains("e")).toBeTruthy();
     // expect(element).toBe(
     //   "<div>" +
     //     "<!-- ngRepeat: i in [0,1] -->" +

@@ -250,8 +250,7 @@ forEach(["src", "srcset", "href"], (attrName) => {
     function ($sce) {
       return {
         priority: 99, // it needs to run after the attributes are interpolated
-        link(scope, element, attr) {
-          let propName = attrName;
+        link(_scope, element, attr) {
           let name = attrName;
 
           if (
@@ -260,7 +259,6 @@ forEach(["src", "srcset", "href"], (attrName) => {
           ) {
             name = "xlinkHref";
             attr.$attr[name] = "xlink:href";
-            propName = null;
           }
 
           // We need to sanitize the url at least once, in case it is a constant

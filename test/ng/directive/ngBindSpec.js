@@ -32,7 +32,7 @@ describe("ngBind*", () => {
       expect(element.text()).toEqual("");
       $rootScope.a = "misko";
       $rootScope.$digest();
-      expect(element.hasClass("ng-binding")).toEqual(true);
+      expect(element[0].classList.contains("ng-binding")).toEqual(true);
       expect(element.text()).toEqual("misko");
     });
 
@@ -156,7 +156,7 @@ describe("ngBind*", () => {
       );
       $rootScope.name = "Misko";
       $rootScope.$digest();
-      expect(element.hasClass("ng-binding")).toEqual(true);
+      expect(element[0].classList.contains("ng-binding")).toEqual(true);
       expect(element.text()).toEqual("Hello Misko!");
     });
 
@@ -167,7 +167,7 @@ describe("ngBind*", () => {
       $rootScope.name = "Misko";
       expect($rootScope.$$watchers.length).toEqual(2);
       $rootScope.$digest();
-      expect(element.hasClass("ng-binding")).toEqual(true);
+      expect(element[0].classList.contains("ng-binding")).toEqual(true);
       expect(element.text()).toEqual(" Misko!");
       expect($rootScope.$$watchers.length).toEqual(1);
       $rootScope.hello = "Hello";

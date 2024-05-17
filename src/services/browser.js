@@ -1,7 +1,7 @@
 import { jqLite } from "../jqLite";
 import { urlResolve } from "../core/urlUtils";
 import { forEach, isUndefined, equals } from "../core/utils";
-import { stripHash } from "../core/location";
+
 
 // This variable should be used *only* inside the cacheState function.
 let lastCachedState = null;
@@ -112,8 +112,8 @@ export function Browser($log, $$taskTrackerFactory) {
       if (lastBrowserUrl === url && sameState) {
         return self;
       }
-      const sameBase =
-        lastBrowserUrl && stripHash(lastBrowserUrl) === stripHash(url);
+      // const sameBase =
+      //   lastBrowserUrl && stripHash(lastBrowserUrl) === stripHash(url);
       lastBrowserUrl = url;
       lastHistoryState = state;
       // Don't use history API if only the hash changed
@@ -298,7 +298,7 @@ export function Browser($log, $$taskTrackerFactory) {
    *                    canceled.
    */
   self.defer.cancel = function (deferId) {
-    if (pendingDeferIds.hasOwnProperty(deferId)) {
+    if (Object.prototype.hasOwnProperty.call(pendingDeferIds, deferId)) {
       const taskType = pendingDeferIds[deferId];
       delete pendingDeferIds[deferId];
       clearTimeout(deferId);

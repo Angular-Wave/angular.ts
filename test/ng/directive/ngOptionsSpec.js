@@ -2599,7 +2599,7 @@ describe("ngOptions", () => {
 
       // check blank option is first and is compiled
       option = element.find("option").eq(0);
-      expect(option.hasClass("coyote")).toBeTruthy();
+      expect(option[0].classList.contains("coyote")).toBeTruthy();
       expect(option.attr("id")).toBe("road-runner");
       expect(option.attr("custom-attr")).toBe("custom-attr");
     });

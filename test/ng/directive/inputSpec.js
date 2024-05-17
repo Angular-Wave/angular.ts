@@ -249,10 +249,10 @@ describe("input", () => {
 
         inputElm[0].setAttribute("value", "");
         inputElm[0].dispatchEvent(new Event("change"));
-        expect(inputElm.hasClass("ng-valid")).toBe(false);
-        expect(inputElm.hasClass("ng-invalid")).toBe(false);
-        expect(inputElm.hasClass("ng-pristine")).toBe(false);
-        expect(inputElm.hasClass("ng-dirty")).toBe(false);
+        expect(inputElm[0].classList.contains("ng-valid")).toBe(false);
+        expect(inputElm[0].classList.contains("ng-invalid")).toBe(false);
+        expect(inputElm[0].classList.contains("ng-pristine")).toBe(false);
+        expect(inputElm[0].classList.contains("ng-dirty")).toBe(false);
       });
 
       it("should report error on assignment error", () => {
@@ -3636,10 +3636,10 @@ describe("input", () => {
 
         inputElm[0].value = "";
         inputElm[0].dispatchEvent(new Event("change"));
-        expect(inputElm.hasClass("ng-valid")).toBe(false);
-        expect(inputElm.hasClass("ng-invalid")).toBe(false);
-        expect(inputElm.hasClass("ng-pristine")).toBe(false);
-        expect(inputElm.hasClass("ng-dirty")).toBe(false);
+        expect(inputElm[0].classList.contains("ng-valid")).toBe(false);
+        expect(inputElm[0].classList.contains("ng-invalid")).toBe(false);
+        expect(inputElm[0].classList.contains("ng-pristine")).toBe(false);
+        expect(inputElm[0].classList.contains("ng-dirty")).toBe(false);
       });
     });
 

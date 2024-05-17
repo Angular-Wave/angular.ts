@@ -345,15 +345,15 @@ describe("ngMessages", () => {
       $rootScope.col = {};
     });
 
-    expect(element.hasClass("ng-active")).toBe(false);
-    expect(element.hasClass("ng-inactive")).toBe(true);
+    expect(element[0].classList.contains("ng-active")).toBe(false);
+    expect(element[0].classList.contains("ng-inactive")).toBe(true);
 
     $rootScope.$apply(() => {
       $rootScope.col = { ready: true };
     });
 
-    expect(element.hasClass("ng-active")).toBe(true);
-    expect(element.hasClass("ng-inactive")).toBe(false);
+    expect(element[0].classList.contains("ng-active")).toBe(true);
+    expect(element[0].classList.contains("ng-inactive")).toBe(false);
   });
 
   it("should automatically re-render the messages when other directives dynamically change them", () => {

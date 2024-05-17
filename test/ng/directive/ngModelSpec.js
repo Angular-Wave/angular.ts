@@ -1495,28 +1495,28 @@ describe("ngModel", () => {
       expect(element[0].classList.contains("ng-valid")).toBeTrue();
       expect(element[0].classList.contains("ng-pristine")).toBeTrue();
       expect(element[0].classList.contains("ng-touched")).toBeFalse();
-      expect(element.hasClass("ng-valid-email")).toBe(true);
-      expect(element.hasClass("ng-invalid-email")).toBe(false);
+      expect(element[0].classList.contains("ng-valid-email")).toBe(true);
+      expect(element[0].classList.contains("ng-invalid-email")).toBe(false);
 
       $rootScope.$apply("value = 'invalid-email'");
       expect(element[0].classList.contains("ng-invalid")).toBeTrue();
       expect(element[0].classList.contains("ng-pristine")).toBeTrue();
-      expect(element.hasClass("ng-valid-email")).toBe(false);
-      expect(element.hasClass("ng-invalid-email")).toBe(true);
+      expect(element[0].classList.contains("ng-valid-email")).toBe(false);
+      expect(element[0].classList.contains("ng-invalid-email")).toBe(true);
 
       element.val("invalid-again");
       browserTrigger(element, "change");
       expect(element[0].classList.contains("ng-invalid")).toBeTrue();
       expect(element[0].classList.contains("ng-dirty")).toBeTrue();
-      expect(element.hasClass("ng-valid-email")).toBe(false);
-      expect(element.hasClass("ng-invalid-email")).toBe(true);
+      expect(element[0].classList.contains("ng-valid-email")).toBe(false);
+      expect(element[0].classList.contains("ng-invalid-email")).toBe(true);
 
       element.val("vojta@google.com");
       browserTrigger(element, "change");
       expect(element[0].classList.contains("ng-valid")).toBeTrue();
       expect(element[0].classList.contains("ng-dirty")).toBeTrue();
-      expect(element.hasClass("ng-valid-email")).toBe(true);
-      expect(element.hasClass("ng-invalid-email")).toBe(false);
+      expect(element[0].classList.contains("ng-valid-email")).toBe(true);
+      expect(element[0].classList.contains("ng-invalid-email")).toBe(false);
 
       browserTrigger(element, "blur");
 

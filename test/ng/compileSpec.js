@@ -1195,7 +1195,7 @@ describe("$compile", () => {
         function (element, attrs) {
           attrs.$addClass("some-class");
           $rootScope.$digest();
-          expect(element.hasClass("some-class")).toBe(true);
+          expect(element[0].classList.contains("some-class")).toBe(true);
         },
       );
     });
@@ -1207,7 +1207,7 @@ describe("$compile", () => {
         function (element, attrs) {
           attrs.$removeClass("some-class");
           $rootScope.$digest();
-          expect(element.hasClass("some-class")).toBe(false);
+          expect(element[0].classList.contains("some-class")).toBe(false);
         },
       );
     });
@@ -1219,10 +1219,10 @@ describe("$compile", () => {
         function (element, attrs) {
           attrs.$updateClass("one two three", "one three four");
           $rootScope.$digest();
-          expect(element.hasClass("one")).toBe(true);
-          expect(element.hasClass("two")).toBe(true);
-          expect(element.hasClass("three")).toBe(true);
-          expect(element.hasClass("four")).toBe(false);
+          expect(element[0].classList.contains("one")).toBe(true);
+          expect(element[0].classList.contains("two")).toBe(true);
+          expect(element[0].classList.contains("three")).toBe(true);
+          expect(element[0].classList.contains("four")).toBe(false);
         },
       );
     });
@@ -1482,7 +1482,7 @@ describe("$compile", () => {
     reloadModules();
     var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
-    expect(el.hasClass("ng-scope")).toBe(true);
+    expect(el[0].classList.contains("ng-scope")).toBe(true);
     expect(el.data("$scope")).toBe(givenScope);
   });
 
@@ -1600,8 +1600,8 @@ describe("$compile", () => {
     reloadModules();
     var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
-    expect(el.hasClass("ng-isolate-scope")).toBe(true);
-    expect(el.hasClass("ng-scope")).toBe(true);
+    expect(el[0].classList.contains("ng-isolate-scope")).toBe(true);
+    expect(el[0].classList.contains("ng-scope")).toBe(true);
     expect(el.isolateScope()).toBe(givenScope);
   });
 
@@ -3923,7 +3923,7 @@ describe("$compile", () => {
       var el = $("<div>My expression: {{myExpr}}</div>");
       $compile(el)($rootScope);
 
-      expect(el.hasClass("ng-binding")).toBe(true);
+      expect(el[0].classList.contains("ng-binding")).toBe(true);
     });
 
     it("adds binding data to text node parents", () => {
@@ -5655,8 +5655,8 @@ describe("$compile", () => {
           '<div><div replace class="medium-log" style="height: 20px" ></div><div>',
         )($rootScope);
         const div = element.find("div");
-        expect(div.hasClass("medium-log")).toBe(true);
-        expect(div.hasClass("log")).toBe(true);
+        expect(div[0].classList.contains("medium-log")).toBe(true);
+        expect(div[0].classList.contains("log")).toBe(true);
         expect(div.css("width")).toBe("10px");
         expect(div.css("height")).toBe("20px");
         expect(div.attr("replace")).toEqual("");
@@ -5669,8 +5669,8 @@ describe("$compile", () => {
           '<div><div nomerge class="medium-log" id="myid"></div><div>',
         )($rootScope);
         const div = element.find("div");
-        expect(div.hasClass("medium-log")).toBe(true);
-        expect(div.hasClass("log")).toBe(true);
+        expect(div[0].classList.contains("medium-log")).toBe(true);
+        expect(div[0].classList.contains("log")).toBe(true);
         expect(div.attr("id")).toEqual("myid");
       });
 
@@ -5691,7 +5691,7 @@ describe("$compile", () => {
           $rootScope,
         );
         const div = element.find("div");
-        expect(div.hasClass("log")).toBe(true);
+        expect(div[0].classList.contains("log")).toBe(true);
         expect(div.attr("class")).toBe("log");
       });
 
@@ -5741,7 +5741,7 @@ describe("$compile", () => {
           $rootScope,
         );
         $rootScope.$digest();
-        expect(element.hasClass("class_2")).toBeTrue();
+        expect(element[0].classList.contains("class_2")).toBeTrue();
       });
 
       it("should merge interpolated css class", () => {
@@ -5754,10 +5754,10 @@ describe("$compile", () => {
           $rootScope.cls = "two";
         });
 
-        expect(element.hasClass("one")).toBeTrue();
-        expect(element.hasClass("two")).toBeTrue(); // interpolated
-        expect(element.hasClass("three")).toBeTrue();
-        expect(element.hasClass("log")).toBeTrue(); // merged from replace directive template
+        expect(element[0].classList.contains("one")).toBeTrue();
+        expect(element[0].classList.contains("two")).toBeTrue(); // interpolated
+        expect(element[0].classList.contains("three")).toBeTrue();
+        expect(element[0].classList.contains("log")).toBeTrue(); // merged from replace directive template
       });
 
       it("should merge interpolated css class with ngRepeat", () => {
@@ -5773,10 +5773,10 @@ describe("$compile", () => {
         });
 
         const child = element.find("div").eq(0);
-        expect(child.hasClass("one")).toBeTrue();
-        expect(child.hasClass("two")).toBeTrue(); // interpolated
-        expect(child.hasClass("three")).toBeTrue();
-        expect(child.hasClass("log")).toBeTrue(); // merged from replace directive template
+        expect(child[0].classList.contains("one")).toBeTrue();
+        expect(child[0].classList.contains("two")).toBeTrue(); // interpolated
+        expect(child[0].classList.contains("three")).toBeTrue();
+        expect(child[0].classList.contains("log")).toBeTrue(); // merged from replace directive template
       });
 
       it("should interpolate the values once per digest", () => {
@@ -6548,8 +6548,8 @@ describe("$compile", () => {
           node.addClass("clonefn-class");
         });
         $rootScope.$digest();
-        expect(element.hasClass("template-class")).toBeTrue();
-        expect(element.hasClass("clonefn-class")).toBeTrue();
+        expect(element[0].classList.contains("template-class")).toBeTrue();
+        expect(element[0].classList.contains("clonefn-class")).toBeTrue();
       });
 
       describe("delay compile / linking functions until after template is resolved", () => {
@@ -7274,7 +7274,9 @@ describe("$compile", () => {
           $rootScope,
         );
         expect(log.length).toEqual(2);
-        expect(element.find("span").hasClass("ng-scope")).toBe(true);
+        expect(element.find("span")[0].classList.contains("ng-scope")).toBe(
+          true,
+        );
       });
 
       it("should allow creation of new isolated scopes for directives", () => {
@@ -8068,7 +8070,7 @@ describe("$compile", () => {
             $templateCache = _$templateCache_;
           });
           element = $compile("<div>{{1+2}}</div>")($rootScope);
-          expect(element.hasClass("ng-binding")).toBe(false);
+          expect(element[0].classList.contains("ng-binding")).toBe(false);
           expect(element.data("$binding")).toBeUndefined();
         });
 
@@ -8085,7 +8087,7 @@ describe("$compile", () => {
           });
 
           element = $compile("<div>{{1+2}}</div>")($rootScope);
-          expect(element.hasClass("ng-binding")).toBe(true);
+          expect(element[0].classList.contains("ng-binding")).toBe(true);
           expect(element.data("$binding")).toEqual(["1+2"]);
         });
       });
@@ -8474,7 +8476,9 @@ describe("$compile", () => {
                 const html = '<div class="{{interpolateMe}}"></div>';
                 element = $compile(html)($rootScope);
                 $rootScope.$apply();
-                expect(element.hasClass("interpolated")).toBeTrue();
+                expect(
+                  element[0].classList.contains("interpolated"),
+                ).toBeTrue();
               });
             },
           );
@@ -17784,7 +17788,7 @@ describe("$compile", () => {
 
   //     $rootScope.$digest();
 
-  //     expect(element.hasClass("fire")).toBe(true);
+  //     expect(element[0].classList.contains("fire")).toBe(true);
 
   //     $rootScope.val1 = "ice";
   //     $rootScope.val2 = "rice";
@@ -17794,9 +17798,9 @@ describe("$compile", () => {
   //     expect(data.event).toBe("addClass");
   //     expect(data.args[1]).toBe("ice rice");
 
-  //     expect(element.hasClass("ice")).toBe(true);
-  //     expect(element.hasClass("rice")).toBe(true);
-  //     expect(element.hasClass("fire")).toBe(true);
+  //     expect(element[0].classList.contains("ice")).toBe(true);
+  //     expect(element[0].classList.contains("rice")).toBe(true);
+  //     expect(element[0].classList.contains("fire")).toBe(true);
 
   //     $rootScope.val2 = "dice";
   //     $rootScope.$digest();
@@ -17809,9 +17813,9 @@ describe("$compile", () => {
   //     expect(data.event).toBe("removeClass");
   //     expect(data.args[1]).toBe("rice");
 
-  //     expect(element.hasClass("ice")).toBe(true);
-  //     expect(element.hasClass("dice")).toBe(true);
-  //     expect(element.hasClass("fire")).toBe(true);
+  //     expect(element[0].classList.contains("ice")).toBe(true);
+  //     expect(element[0].classList.contains("dice")).toBe(true);
+  //     expect(element[0].classList.contains("fire")).toBe(true);
 
   //     $rootScope.val1 = "";
   //     $rootScope.val2 = "";
@@ -17821,9 +17825,9 @@ describe("$compile", () => {
   //     expect(data.event).toBe("removeClass");
   //     expect(data.args[1]).toBe("ice dice");
 
-  //     expect(element.hasClass("ice")).toBe(false);
-  //     expect(element.hasClass("dice")).toBe(false);
-  //     expect(element.hasClass("fire")).toBe(true);
+  //     expect(element[0].classList.contains("ice")).toBe(false);
+  //     expect(element[0].classList.contains("dice")).toBe(false);
+  //     expect(element[0].classList.contains(ist.contains("fire")).toBe(true);
   //   });
   // });
 

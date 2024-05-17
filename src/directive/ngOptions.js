@@ -408,9 +408,7 @@ export const ngOptionsDirective = [
       const listFragment = $document[0].createDocumentFragment();
 
       // Overwrite the implementation. ngOptions doesn't use hashes
-      selectCtrl.generateUnknownOptionValue = function (val) {
-        return "?";
-      };
+      selectCtrl.generateUnknownOptionValue = () => "?";
 
       // Update the controller methods for multiple selectable options
       if (!multiple) {

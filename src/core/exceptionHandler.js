@@ -45,7 +45,7 @@ export function $ExceptionHandlerProvider() {
   this.$get = [
     "$log",
     function ($log) {
-      return function (exception, cause) {
+      return function () {
         $log.error.apply($log, arguments);
       };
     },

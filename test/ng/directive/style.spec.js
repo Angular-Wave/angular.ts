@@ -28,7 +28,7 @@ describe("ng-style", () => {
   it("should silently ignore undefined style", () => {
     element = $compile('<div ng-style="myStyle"></div>')($scope);
     $scope.$digest();
-    expect(element.hasClass("ng-exception")).toBeFalsy();
+    expect(element[0].classList.contains("ng-exception")).toBeFalsy();
   });
 
   it("should not deep watch objects", () => {

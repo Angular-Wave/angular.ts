@@ -954,48 +954,19 @@ describe("jqLite", () => {
       const svg = jqLite("<svg><rect></rect></svg>");
       const rect = svg.children();
 
-      expect(rect.hasClass("foo-class")).toBe(false);
+      expect(rect[0].classList.contains("foo-class")).toBe(false);
       rect.addClass("foo-class");
-      expect(rect.hasClass("foo-class")).toBe(true);
+      expect(rect[0].classList.contains("foo-class")).toBe(true);
       rect.removeClass("foo-class");
-      expect(rect.hasClass("foo-class")).toBe(false);
-    });
-
-    it("should ignore comment elements", () => {
-      const comment = jqLite(window.document.createComment("something"));
-
-      comment.addClass("whatever");
-      comment.hasClass("whatever");
-      comment.removeClass("whatever");
-    });
-
-    describe("hasClass", () => {
-      it("should check class", () => {
-        const selector = jqLite([a, b]);
-        expect(selector.hasClass("abc")).toEqual(false);
-      });
-
-      it("should make sure that partial class is not checked as a subset", () => {
-        const selector = jqLite([a, b]);
-        selector.addClass("a");
-        selector.addClass("b");
-        selector.addClass("c");
-        expect(selector.addClass("abc")).toEqual(selector);
-        expect(selector.removeClass("abc")).toEqual(selector);
-        expect(jqLite(a).hasClass("abc")).toEqual(false);
-        expect(jqLite(b).hasClass("abc")).toEqual(false);
-        expect(jqLite(a).hasClass("a")).toEqual(true);
-        expect(jqLite(a).hasClass("b")).toEqual(true);
-        expect(jqLite(a).hasClass("c")).toEqual(true);
-      });
+      expect(rect[0].classList.contains("foo-class")).toBe(false);
     });
 
     describe("addClass", () => {
       it("should allow adding of class", () => {
         const selector = jqLite([a, b]);
         expect(selector.addClass("abc")).toEqual(selector);
-        expect(jqLite(a).hasClass("abc")).toEqual(true);
-        expect(jqLite(b).hasClass("abc")).toEqual(true);
+        expect(jqLite(a)[0].classList.contains("abc")).toEqual(true);
+        expect(jqLite(b)[0].classList.contains("abc")).toEqual(true);
       });
 
       it("should ignore falsy values", () => {
@@ -1067,19 +1038,19 @@ describe("jqLite", () => {
         const selector = jqLite([a, b]);
         expect(selector.addClass("abc")).toEqual(selector);
         expect(selector.removeClass("abc")).toEqual(selector);
-        expect(jqLite(a).hasClass("abc")).toEqual(false);
-        expect(jqLite(b).hasClass("abc")).toEqual(false);
+        expect(jqLite(a)[0].classList.contains("abc")).toEqual(false);
+        expect(jqLite(b)[0].classList.contains("abc")).toEqual(false);
       });
 
       it("should correctly remove middle class", () => {
         const element = jqLite('<div class="foo bar baz"></div>');
-        expect(element.hasClass("bar")).toBe(true);
+        expect(element[0].classList.contains("bar")).toBe(true);
 
         element.removeClass("bar");
 
-        expect(element.hasClass("foo")).toBe(true);
-        expect(element.hasClass("bar")).toBe(false);
-        expect(element.hasClass("baz")).toBe(true);
+        expect(element[0].classList.contains("foo")).toBe(true);
+        expect(element[0].classList.contains("bar")).toBe(false);
+        expect(element[0].classList.contains("baz")).toBe(true);
       });
 
       it("should remove multiple classes specified as one string", () => {

@@ -293,7 +293,7 @@ export function LocationHashbangUrl(appBase, appBaseNoFile, hashPrefix) {
     return appBase + (url ? hashPrefix + url : "");
   };
 
-  this.$$parseLinkUrl = function (url, relHref) {
+  this.$$parseLinkUrl = function (url) {
     if (stripHash(appBase) === stripHash(url)) {
       this.$$parse(url);
       return true;

@@ -739,12 +739,16 @@ describe("form", () => {
       expect(child.$error.required).toEqual([input]);
       expect(child.$$success.maxlength).toEqual([input]);
 
-      expect(doc.hasClass("ng-invalid")).toBe(true);
-      expect(doc.hasClass("ng-invalid-required")).toBe(true);
-      expect(doc.hasClass("ng-valid-maxlength")).toBe(true);
-      expect(doc.find("div").hasClass("ng-invalid")).toBe(true);
-      expect(doc.find("div").hasClass("ng-invalid-required")).toBe(true);
-      expect(doc.find("div").hasClass("ng-valid-maxlength")).toBe(true);
+      expect(doc[0].classList.contains("ng-invalid")).toBe(true);
+      expect(doc[0].classList.contains("ng-invalid-required")).toBe(true);
+      expect(doc[0].classList.contains("ng-valid-maxlength")).toBe(true);
+      expect(doc.find("div")[0].classList.contains("ng-invalid")).toBe(true);
+      expect(doc.find("div")[0].classList.contains("ng-invalid-required")).toBe(
+        true,
+      );
+      expect(doc.find("div")[0].classList.contains("ng-valid-maxlength")).toBe(
+        true,
+      );
 
       // remove child input
       scope.$apply("inputPresent = false");
@@ -755,17 +759,25 @@ describe("form", () => {
       expect(child.$error.required).toBeFalsy();
       expect(child.$$success.maxlength).toBeFalsy();
 
-      expect(doc.hasClass("ng-valid")).toBe(true);
-      expect(doc.hasClass("ng-valid-required")).toBe(false);
-      expect(doc.hasClass("ng-invalid-required")).toBe(false);
-      expect(doc.hasClass("ng-valid-maxlength")).toBe(false);
-      expect(doc.hasClass("ng-invalid-maxlength")).toBe(false);
+      expect(doc[0].classList.contains("ng-valid")).toBe(true);
+      expect(doc[0].classList.contains("ng-valid-required")).toBe(false);
+      expect(doc[0].classList.contains("ng-invalid-required")).toBe(false);
+      expect(doc[0].classList.contains("ng-valid-maxlength")).toBe(false);
+      expect(doc[0].classList.contains("ng-invalid-maxlength")).toBe(false);
 
-      expect(doc.find("div").hasClass("ng-valid")).toBe(true);
-      expect(doc.find("div").hasClass("ng-valid-required")).toBe(false);
-      expect(doc.find("div").hasClass("ng-invalid-required")).toBe(false);
-      expect(doc.find("div").hasClass("ng-valid-maxlength")).toBe(false);
-      expect(doc.find("div").hasClass("ng-invalid-maxlength")).toBe(false);
+      expect(doc.find("div")[0].classList.contains("ng-valid")).toBe(true);
+      expect(doc.find("div")[0].classList.contains("ng-valid-required")).toBe(
+        false,
+      );
+      expect(doc.find("div")[0].classList.contains("ng-invalid-required")).toBe(
+        false,
+      );
+      expect(doc.find("div")[0].classList.contains("ng-valid-maxlength")).toBe(
+        false,
+      );
+      expect(
+        doc.find("div")[0].classList.contains("ng-invalid-maxlength"),
+      ).toBe(false);
     });
 
     it("should deregister a input that is $pending when it is removed from DOM", () => {
@@ -791,8 +803,8 @@ describe("form", () => {
       expect(parent.$pending.fake).toEqual([child]);
       expect(child.$pending.fake).toEqual([input]);
 
-      expect(doc.hasClass("ng-pending")).toBe(true);
-      expect(doc.find("div").hasClass("ng-pending")).toBe(true);
+      expect(doc[0].classList.contains("ng-pending")).toBe(true);
+      expect(doc.find("div")[0].classList.contains("ng-pending")).toBe(true);
 
       // remove child input
       scope.$apply("inputPresent = false");
@@ -800,8 +812,8 @@ describe("form", () => {
       expect(parent.$pending).toBeUndefined();
       expect(child.$pending).toBeUndefined();
 
-      expect(doc.hasClass("ng-pending")).toBe(false);
-      expect(doc.find("div").hasClass("ng-pending")).toBe(false);
+      expect(doc[0].classList.contains("ng-pending")).toBe(false);
+      expect(doc.find("div")[0].classList.contains("ng-pending")).toBe(false);
     });
 
     it("should leave the parent form invalid when deregister a removed input", () => {
@@ -1010,40 +1022,40 @@ describe("form", () => {
       control.$setValidity("error", false);
       scope.$digest();
       expect(doc[0].classList.contains("ng-invalid")).toBeTrue();
-      expect(doc.hasClass("ng-valid-error")).toBe(false);
-      expect(doc.hasClass("ng-invalid-error")).toBe(true);
+      expect(doc[0].classList.contains("ng-valid-error")).toBe(false);
+      expect(doc[0].classList.contains("ng-invalid-error")).toBe(true);
 
       control.$setValidity("another", false);
       scope.$digest();
-      expect(doc.hasClass("ng-valid-error")).toBe(false);
-      expect(doc.hasClass("ng-invalid-error")).toBe(true);
-      expect(doc.hasClass("ng-valid-another")).toBe(false);
-      expect(doc.hasClass("ng-invalid-another")).toBe(true);
+      expect(doc[0].classList.contains("ng-valid-error")).toBe(false);
+      expect(doc[0].classList.contains("ng-invalid-error")).toBe(true);
+      expect(doc[0].classList.contains("ng-valid-another")).toBe(false);
+      expect(doc[0].classList.contains("ng-invalid-another")).toBe(true);
 
       control.$setValidity("error", true);
       scope.$digest();
       expect(doc[0].classList.contains("ng-invalid")).toBeTrue();
-      expect(doc.hasClass("ng-valid-error")).toBe(true);
-      expect(doc.hasClass("ng-invalid-error")).toBe(false);
-      expect(doc.hasClass("ng-valid-another")).toBe(false);
-      expect(doc.hasClass("ng-invalid-another")).toBe(true);
+      expect(doc[0].classList.contains("ng-valid-error")).toBe(true);
+      expect(doc[0].classList.contains("ng-invalid-error")).toBe(false);
+      expect(doc[0].classList.contains("ng-valid-another")).toBe(false);
+      expect(doc[0].classList.contains("ng-invalid-another")).toBe(true);
 
       control.$setValidity("another", true);
       scope.$digest();
       expect(doc[0].classList.contains("ng-valid")).toBeTrue();
-      expect(doc.hasClass("ng-valid-error")).toBe(true);
-      expect(doc.hasClass("ng-invalid-error")).toBe(false);
-      expect(doc.hasClass("ng-valid-another")).toBe(true);
-      expect(doc.hasClass("ng-invalid-another")).toBe(false);
+      expect(doc[0].classList.contains("ng-valid-error")).toBe(true);
+      expect(doc[0].classList.contains("ng-invalid-error")).toBe(false);
+      expect(doc[0].classList.contains("ng-valid-another")).toBe(true);
+      expect(doc[0].classList.contains("ng-invalid-another")).toBe(false);
 
       // validators are skipped, e.g. because of a parser error
       control.$setValidity("error", null);
       control.$setValidity("another", null);
       scope.$digest();
-      expect(doc.hasClass("ng-valid-error")).toBe(false);
-      expect(doc.hasClass("ng-invalid-error")).toBe(false);
-      expect(doc.hasClass("ng-valid-another")).toBe(false);
-      expect(doc.hasClass("ng-invalid-another")).toBe(false);
+      expect(doc[0].classList.contains("ng-valid-error")).toBe(false);
+      expect(doc[0].classList.contains("ng-invalid-error")).toBe(false);
+      expect(doc[0].classList.contains("ng-valid-another")).toBe(false);
+      expect(doc[0].classList.contains("ng-invalid-another")).toBe(false);
     });
 
     it("should have ng-pristine/ng-dirty css class", () => {
