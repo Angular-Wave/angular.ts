@@ -631,8 +631,6 @@ declare namespace angular {
         (name: "number"): IFilterNumber;
         (name: "date"): IFilterDate;
         (name: "json"): IFilterJson;
-        (name: "lowercase"): IFilterLowercase;
-        (name: "uppercase"): IFilterUppercase;
         (name: "limitTo"): IFilterLimitTo;
         (name: "orderBy"): IFilterOrderBy;
         /**

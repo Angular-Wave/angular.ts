@@ -154,6 +154,7 @@ function roundNumber(parsedNumber, fractionSize, minFrac, maxFrac) {
  * @param  {[type]} fractionSize The size of the fractional part of the number
  * @return {string}              The number formatted as a string
  */
+
 export function formatNumber(
   number,
   pattern,
@@ -226,20 +227,7 @@ export function formatNumber(
 }
 
 /**
- * @ngdoc filter
- * @name json
- * @kind function
- *
- * @description
- *   Allows you to convert a JavaScript object into JSON string.
- *
- *   This filter is mostly useful for debugging. When using the double curly {{value}} notation
- *   the binding is automatically converted to JSON.
- *
- * @param {*} object Any JavaScript object (including arrays and primitive types) to filter.
- * @param {number=} spacing The number of spaces to use per indentation, defaults to 2.
- * @returns {string} JSON string.
- *
+ * @returns {angular.IFilterJson}
  */
 export function jsonFilter() {
   return function (object, spacing) {

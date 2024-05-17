@@ -10,6 +10,9 @@ import {
   equals,
 } from "../core/utils";
 
+/**
+ * @returns {angular.IFilterFilter}
+ */
 export function filterFilter() {
   return function (array, expression, comparator, anyPropertyKey) {
     if (!isArrayLike(array)) {

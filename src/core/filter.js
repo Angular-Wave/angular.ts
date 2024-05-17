@@ -1,8 +1,8 @@
 import { forEach, isObject } from "./utils";
-import { filterFilter } from "../filter/filter";
-import { jsonFilter } from "../filter/filters";
-import { limitToFilter } from "../filter/limitTo";
-import { orderByFilter } from "../filter/orderBy";
+import { filterFilter } from "../filters/filter";
+import { jsonFilter } from "../filters/filters";
+import { limitToFilter } from "../filters/limit-to";
+import { orderByFilter } from "../filters/order-by";
 
 /**
  * @ngdoc provider
