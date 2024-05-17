@@ -345,16 +345,16 @@ describe("$animate", () => {
   });
 
   it("should not break postDigest for subsequent elements if addClass contains non-valid CSS class names", () => {
-    () => {
-      const element1 = jqLite("<div></div>");
-      const element2 = jqLite("<div></div>");
+    const element1 = jqLite("<div></div>");
+    const element2 = jqLite("<div></div>");
 
-      $animate.enter(element1, $rootElement, null, { addClass: " " });
-      $animate.enter(element2, $rootElement, null, { addClass: "valid-name" });
-      $rootScope.$digest();
+    $animate.enter(element1, $rootElement, null, { addClass: " " });
+    $animate.enter(element2, $rootElement, null, { addClass: "valid-name" });
+    $rootScope.$digest();
 
-      expect(element2[0].classList.contains(ist.contains("valid-name")).toBeTruthy();
-    };
+    expect(
+      element2[0].classList.contains(ist.contains("valid-name")),
+    ).toBeTruthy();
   });
 
   it("should not issue a call to removeClass if the provided class value is not a string or array", () => {

@@ -1366,13 +1366,11 @@ function directiveNormalize(name) {
  * - [`clone()`](http://api.jquery.com/clone/)
  * - [`contents()`](http://api.jquery.com/contents/)
  * - [`css()`](http://api.jquery.com/css/) - Only retrieves inline-styles, does not call `getComputedStyle()`.
- *   As a setter, does not convert numbers to strings or append 'px', and also does not have automatic property prefixing.
  * - [`data()`](http://api.jquery.com/data/)
  * - [`detach()`](http://api.jquery.com/detach/)
  * - [`empty()`](http://api.jquery.com/empty/)
  * - [`eq()`](http://api.jquery.com/eq/)
  * - [`find()`](http://api.jquery.com/find/) - Limited to lookups by tag name
- * - [`hasClass()`](http://api.jquery.com/hasClass/)
  * - [`html()`](http://api.jquery.com/html/)
  * - [`on()`](http://api.jquery.com/on/) - Does not support namespaces, selectors or eventData
  * - [`off()`](http://api.jquery.com/off/) - Does not support namespaces, selectors or event object as parameter
@@ -1380,9 +1378,7 @@ function directiveNormalize(name) {
  * - [`parent()`](http://api.jquery.com/parent/) - Does not support selectors
  * - [`prepend()`](http://api.jquery.com/prepend/)
  * - [`prop()`](http://api.jquery.com/prop/)
- * - [`ready()`](http://api.jquery.com/ready/) (_deprecated_, use `angular.element(callback)` instead of `angular.element(document).ready(callback)`)
  * - [`remove()`](http://api.jquery.com/remove/)
- * - [`removeAttr()`](http://api.jquery.com/removeAttr/) - Does not support multiple attributes
  * - [`removeClass()`](http://api.jquery.com/removeClass/) - Does not support a function as first argument
  * - [`removeData()`](http://api.jquery.com/removeData/)
  * - [`replaceWith()`](http://api.jquery.com/replaceWith/)
@@ -1421,18 +1417,17 @@ function directiveNormalize(name) {
  * @returns {Object} jQuery object.
  */
 
-JQLite.expando = "ng339";
+JQLite.cache = {};
 
-const jqCache = (JQLite.cache = {});
+const EXPANDO = "ngId";
 let jqId = 1;
 
-/*
+/**
  * !!! This is an undocumented "private" function !!!
+ * @param {JQLite|Element} node
+ * @returns
  */
-JQLite._data = function (node) {
-  // jQuery always returns an object on cache miss
-  return this.cache[node[this.expando]] || {};
-};
+JQLite._data = (node) => JQLite.cache[node[EXPANDO]] || {};
 
 function jqNextId() {
   return ++jqId;
@@ -1514,7 +1509,7 @@ function jqLiteAcceptsData(node) {
 }
 
 function jqLiteHasData(node) {
-  for (const key in jqCache[node.ng339]) {
+  for (const key in JQLite.cache[node[EXPANDO]]) {
     return true;
   }
   return false;
@@ -1643,15 +1638,15 @@ function isEmptyObject(obj) {
 }
 
 function removeIfEmptyData(element) {
-  const expandoId = element.ng339;
-  const expandoStore = expandoId && jqCache[expandoId];
+  const expandoId = element[EXPANDO];
+  const expandoStore = expandoId && JQLite.cache[expandoId];
 
   const events = expandoStore && expandoStore.events;
   const data = expandoStore && expandoStore.data;
 
   if ((!data || isEmptyObject(data)) && (!events || isEmptyObject(events))) {
-    delete jqCache[expandoId];
-    element.ng339 = undefined; // don't delete DOM expandos. IE and Chrome don't like it
+    delete JQLite.cache[expandoId];
+    element[EXPANDO] = undefined; // don't delete DOM expandos. IE and Chrome don't like it
   }
 }
 
@@ -1699,8 +1694,8 @@ function jqLiteOff(element, type, fn, unsupported) {
 }
 
 function jqLiteRemoveData(element, name) {
-  const expandoId = element.ng339;
-  const expandoStore = expandoId && jqCache[expandoId];
+  const expandoId = element[EXPANDO];
+  const expandoStore = expandoId && JQLite.cache[expandoId];
 
   if (expandoStore) {
     if (name) {
@@ -1714,12 +1709,12 @@ function jqLiteRemoveData(element, name) {
 }
 
 function jqLiteExpandoStore(element, createIfNecessary) {
-  let expandoId = element.ng339;
-  let expandoStore = expandoId && jqCache[expandoId];
+  let expandoId = element[EXPANDO];
+  let expandoStore = expandoId && JQLite.cache[expandoId];
 
   if (createIfNecessary && !expandoStore) {
-    element.ng339 = expandoId = jqNextId();
-    expandoStore = jqCache[expandoId] = {
+    element[EXPANDO] = expandoId = jqNextId();
+    expandoStore = JQLite.cache[expandoId] = {
       events: {},
       data: {},
       handle: undefined,
@@ -2007,10 +2002,6 @@ forEach(
 
     injector(element) {
       return jqLiteInheritedData(element, "$injector");
-    },
-
-    removeAttr(element, name) {
-      element.removeAttribute(name);
     },
 
     hasClass: jqLiteHasClass,
@@ -3583,6 +3574,11 @@ const moduleCache = {};
  */
 class Angular {
   constructor() {
+    /**
+     * @type {Object} proxy to Node cache
+     */
+    this.cache = JQLite.cache;
+
     this.element = undefined;
     this.version = {
       full: "",
@@ -8894,7 +8890,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
           if (writeAttr !== false) {
             if (value === null || isUndefined(value)) {
-              this.$$element.removeAttr(attrName);
+              this.$$element[0].removeAttribute(attrName);
             } else if (SIMPLE_ATTR_NAME.test(attrName)) {
               // jQuery skips special boolean attrs treatment in XML nodes for
               // historical reasons and hence AngularJS cannot freely call
@@ -8902,7 +8898,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
               // in XHTML, call `removeAttr` in such cases instead.
               // See https://github.com/jquery/jquery/issues/4249
               if (booleanKey && value === false) {
-                this.$$element.removeAttr(attrName);
+                this.$$element[0].removeAttribute(attrName);
               } else {
                 this.$$element.attr(attrName, value);
               }
@@ -15069,7 +15065,7 @@ function createDateParser(regexp, mapping) {
 
 const MONTH_INPUT_FORMAT = /\b\d{4}-(0[1-9]|1[0-2])\b/;
 
-function createDateInputType(type, regexp, parseDate, format) {
+function createDateInputType(type, regexp, parseDate) {
   return function dynamicDateInputType(
     scope,
     element,
@@ -15851,7 +15847,7 @@ function hiddenInputBrowserCacheDirective() {
       }
 
       return {
-        pre(scope, element, attr, ctrls) {
+        pre(scope, element) {
           const node = element[0];
 
           // Support: Edge
@@ -18437,14 +18433,17 @@ function ngStyleDirective() {
     link: (scope, element, attr) => {
       scope.$watchCollection(attr.ngStyle, (newStyles, oldStyles) => {
         if (oldStyles) {
-          Object.keys(oldStyles).forEach((key) => {
-            element[0].style[key] = "";
-          });
+          const oldKeys = Object.keys(oldStyles);
+          for (let i = 0, length = oldKeys.length; i < length; i++) {
+            element[0].style[oldKeys[i]] = "";
+          }
         }
         if (newStyles) {
-          Object.entries(newStyles).forEach(([key, value]) => {
+          const newEntries = Object.entries(newStyles);
+          for (let i = 0, length = newEntries.length; i < length; i++) {
+            const [key, value] = newEntries[i];
             element[0].style[key] = value;
-          });
+          }
         }
       });
     },
@@ -19025,9 +19024,7 @@ const ngOptionsDirective = [
       const listFragment = $document[0].createDocumentFragment();
 
       // Overwrite the implementation. ngOptions doesn't use hashes
-      selectCtrl.generateUnknownOptionValue = function (val) {
-        return "?";
-      };
+      selectCtrl.generateUnknownOptionValue = () => "?";
 
       // Update the controller methods for multiple selectable options
       if (!multiple) {
@@ -19722,7 +19719,7 @@ forEach(["src", "srcset", "href"], (attrName) => {
     function ($sce) {
       return {
         priority: 99, // it needs to run after the attributes are interpolated
-        link(scope, element, attr) {
+        link(_scope, element, attr) {
           let name = attrName;
 
           if (
@@ -21035,1075 +21032,6 @@ const AnimateProvider = [
   },
 ];
 
-const PATH_MATCH = /^([^?#]*)(\?([^#]*))?(#(.*))?$/;
-const DEFAULT_PORTS = { http: 80, https: 443, ftp: 21 };
-const $locationMinErr = minErr("$location");
-
-/**
- * Encode path using encodeUriSegment, ignoring forward slashes
- *
- * @param {string} path Path to encode
- * @returns {string}
- */
-function encodePath(path) {
-  const segments = path.split("/");
-  let i = segments.length;
-
-  while (i--) {
-    // decode forward slashes to prevent them from being double encoded
-    segments[i] = encodeUriSegment(segments[i].replace(/%2F/g, "/"));
-  }
-
-  return segments.join("/");
-}
-
-function decodePath(path, html5Mode) {
-  const segments = path.split("/");
-  let i = segments.length;
-
-  while (i--) {
-    segments[i] = decodeURIComponent(segments[i]);
-    if (html5Mode) {
-      // encode forward slashes to prevent them from being mistaken for path separators
-      segments[i] = segments[i].replace(/\//g, "%2F");
-    }
-  }
-
-  return segments.join("/");
-}
-
-function normalizePath(pathValue, searchValue, hashValue) {
-  const search = toKeyValue(searchValue);
-  const hash = hashValue ? `#${encodeUriSegment(hashValue)}` : "";
-  const path = encodePath(pathValue);
-
-  return path + (search ? `?${search}` : "") + hash;
-}
-
-function parseAbsoluteUrl(absoluteUrl, locationObj) {
-  const parsedUrl = urlResolve(absoluteUrl);
-
-  locationObj.$$protocol = parsedUrl.protocol;
-  locationObj.$$host = parsedUrl.hostname;
-  locationObj.$$port =
-    toInt(parsedUrl.port) || DEFAULT_PORTS[parsedUrl.protocol] || null;
-}
-
-const DOUBLE_SLASH_REGEX = /^\s*[\\/]{2,}/;
-function parseAppUrl(url, locationObj, html5Mode) {
-  if (DOUBLE_SLASH_REGEX.test(url)) {
-    throw $locationMinErr("badpath", 'Invalid url "{0}".', url);
-  }
-
-  const prefixed = url.charAt(0) !== "/";
-  if (prefixed) {
-    url = `/${url}`;
-  }
-  const match = urlResolve(url);
-  const path =
-    prefixed && match.pathname.charAt(0) === "/"
-      ? match.pathname.substring(1)
-      : match.pathname;
-  locationObj.$$path = decodePath(path, html5Mode);
-  locationObj.$$search = parseKeyValue(match.search);
-  locationObj.$$hash = decodeURIComponent(match.hash);
-
-  // make sure path starts with '/';
-  if (locationObj.$$path && locationObj.$$path.charAt(0) !== "/") {
-    locationObj.$$path = `/${locationObj.$$path}`;
-  }
-}
-
-function startsWith(str, search) {
-  return str.slice(0, search.length) === search;
-}
-
-/**
- *
- * @param {string} base
- * @param {string} url
- * @returns {string} returns text from `url` after `base` or `undefined` if it does not begin with
- *                   the expected string.
- */
-function stripBaseUrl(base, url) {
-  if (startsWith(url, base)) {
-    return url.substr(base.length);
-  }
-}
-
-function stripHash(url) {
-  const index = url.indexOf("#");
-  return index === -1 ? url : url.substr(0, index);
-}
-
-function stripFile(url) {
-  return url.substr(0, stripHash(url).lastIndexOf("/") + 1);
-}
-
-/* return the server only (scheme://host:port) */
-function serverBase(url) {
-  return url.substring(0, url.indexOf("/", url.indexOf("//") + 2));
-}
-
-/**
- * LocationHtml5Url represents a URL
- * This object is exposed as $location service when HTML5 mode is enabled and supported
- *
- * @constructor
- * @param {string} appBase application base URL
- * @param {string} appBaseNoFile application base URL stripped of any filename
- * @param {string} basePrefix URL path prefix
- */
-function LocationHtml5Url(appBase, appBaseNoFile, basePrefix) {
-  this.$$html5 = true;
-  basePrefix = basePrefix || "";
-  parseAbsoluteUrl(appBase, this);
-
-  /**
-   * Parse given HTML5 (regular) URL string into properties
-   * @param {string} url HTML5 URL
-   * @private
-   */
-  this.$$parse = function (url) {
-    const pathUrl = stripBaseUrl(appBaseNoFile, url);
-    if (!isString(pathUrl)) {
-      throw $locationMinErr(
-        "ipthprfx",
-        'Invalid url "{0}", missing path prefix "{1}".',
-        url,
-        appBaseNoFile,
-      );
-    }
-
-    parseAppUrl(pathUrl, this, true);
-
-    if (!this.$$path) {
-      this.$$path = "/";
-    }
-
-    this.$$compose();
-  };
-
-  this.$$normalizeUrl = function (url) {
-    return appBaseNoFile + url.substr(1); // first char is always '/'
-  };
-
-  this.$$parseLinkUrl = function (url, relHref) {
-    if (relHref && relHref[0] === "#") {
-      // special case for links to hash fragments:
-      // keep the old url and only replace the hash fragment
-      this.hash(relHref.slice(1));
-      return true;
-    }
-    let appUrl;
-    let prevAppUrl;
-    let rewrittenUrl;
-
-    if (isDefined((appUrl = stripBaseUrl(appBase, url)))) {
-      prevAppUrl = appUrl;
-      if (
-        basePrefix &&
-        isDefined((appUrl = stripBaseUrl(basePrefix, appUrl)))
-      ) {
-        rewrittenUrl = appBaseNoFile + (stripBaseUrl("/", appUrl) || appUrl);
-      } else {
-        rewrittenUrl = appBase + prevAppUrl;
-      }
-    } else if (isDefined((appUrl = stripBaseUrl(appBaseNoFile, url)))) {
-      rewrittenUrl = appBaseNoFile + appUrl;
-    } else if (appBaseNoFile === `${url}/`) {
-      rewrittenUrl = appBaseNoFile;
-    }
-    if (rewrittenUrl) {
-      this.$$parse(rewrittenUrl);
-    }
-    return !!rewrittenUrl;
-  };
-}
-
-/**
- * LocationHashbangUrl represents URL
- * This object is exposed as $location service when developer doesn't opt into html5 mode.
- * It also serves as the base class for html5 mode fallback on legacy browsers.
- *
- * @constructor
- * @param {string} appBase application base URL
- * @param {string} appBaseNoFile application base URL stripped of any filename
- * @param {string} hashPrefix hashbang prefix
- */
-function LocationHashbangUrl(appBase, appBaseNoFile, hashPrefix) {
-  parseAbsoluteUrl(appBase, this);
-
-  /**
-   * Parse given hashbang URL into properties
-   * @param {string} url Hashbang URL
-   * @private
-   */
-  this.$$parse = function (url) {
-    const withoutBaseUrl =
-      stripBaseUrl(appBase, url) || stripBaseUrl(appBaseNoFile, url);
-    let withoutHashUrl;
-
-    if (!isUndefined(withoutBaseUrl) && withoutBaseUrl.charAt(0) === "#") {
-      // The rest of the URL starts with a hash so we have
-      // got either a hashbang path or a plain hash fragment
-      withoutHashUrl = stripBaseUrl(hashPrefix, withoutBaseUrl);
-      if (isUndefined(withoutHashUrl)) {
-        // There was no hashbang prefix so we just have a hash fragment
-        withoutHashUrl = withoutBaseUrl;
-      }
-    } else {
-      // There was no hashbang path nor hash fragment:
-      // If we are in HTML5 mode we use what is left as the path;
-      // Otherwise we ignore what is left
-      if (this.$$html5) {
-        withoutHashUrl = withoutBaseUrl;
-      } else {
-        withoutHashUrl = "";
-        if (isUndefined(withoutBaseUrl)) {
-          appBase = url;
-          /** @type {?} */ (this).replace();
-        }
-      }
-    }
-
-    parseAppUrl(withoutHashUrl, this, false);
-
-    this.$$path = removeWindowsDriveName(this.$$path, withoutHashUrl, appBase);
-
-    this.$$compose();
-
-    /*
-     * In Windows, on an anchor node on documents loaded from
-     * the filesystem, the browser will return a pathname
-     * prefixed with the drive name ('/C:/path') when a
-     * pathname without a drive is set:
-     *  * a.setAttribute('href', '/foo')
-     *   * a.pathname === '/C:/foo' //true
-     *
-     * Inside of AngularJS, we're always using pathnames that
-     * do not include drive names for routing.
-     */
-    function removeWindowsDriveName(path, url, base) {
-      /*
-      Matches paths for file protocol on windows,
-      such as /C:/foo/bar, and captures only /foo/bar.
-      */
-      const windowsFilePathExp = /^\/[A-Z]:(\/.*)/;
-
-      let firstPathSegmentMatch;
-
-      // Get the relative path from the input URL.
-      if (startsWith(url, base)) {
-        url = url.replace(base, "");
-      }
-
-      // The input URL intentionally contains a first path segment that ends with a colon.
-      if (windowsFilePathExp.exec(url)) {
-        return path;
-      }
-
-      firstPathSegmentMatch = windowsFilePathExp.exec(path);
-      return firstPathSegmentMatch ? firstPathSegmentMatch[1] : path;
-    }
-  };
-
-  this.$$normalizeUrl = function (url) {
-    return appBase + (url ? hashPrefix + url : "");
-  };
-
-  this.$$parseLinkUrl = function (url, relHref) {
-    if (stripHash(appBase) === stripHash(url)) {
-      this.$$parse(url);
-      return true;
-    }
-    return false;
-  };
-}
-
-/**
- * LocationHashbangUrl represents URL
- * This object is exposed as $location service when html5 history api is enabled but the browser
- * does not support it.
- *
- * @constructor
- * @param {string} appBase application base URL
- * @param {string} appBaseNoFile application base URL stripped of any filename
- * @param {string} hashPrefix hashbang prefix
- */
-function LocationHashbangInHtml5Url(appBase, appBaseNoFile, hashPrefix) {
-  this.$$html5 = true;
-  LocationHashbangUrl.apply(this, arguments);
-
-  this.$$parseLinkUrl = function (url, relHref) {
-    if (relHref && relHref[0] === "#") {
-      // special case for links to hash fragments:
-      // keep the old url and only replace the hash fragment
-      this.hash(relHref.slice(1));
-      return true;
-    }
-
-    let rewrittenUrl;
-    let appUrl;
-
-    if (appBase === stripHash(url)) {
-      rewrittenUrl = url;
-    } else if ((appUrl = stripBaseUrl(appBaseNoFile, url))) {
-      rewrittenUrl = appBase + hashPrefix + appUrl;
-    } else if (appBaseNoFile === `${url}/`) {
-      rewrittenUrl = appBaseNoFile;
-    }
-    if (rewrittenUrl) {
-      this.$$parse(rewrittenUrl);
-    }
-    return !!rewrittenUrl;
-  };
-
-  this.$$normalizeUrl = function (url) {
-    // include hashPrefix in $$absUrl when $$url is empty so IE9 does not reload page because of removal of '#'
-    return appBase + hashPrefix + url;
-  };
-}
-
-const locationPrototype = {
-  /**
-   * Ensure absolute URL is initialized.
-   * @private
-   */
-  $$absUrl: "",
-
-  /**
-   * Are we in html5 mode?
-   * @private
-   */
-  $$html5: false,
-
-  /**
-   * Has any change been replacing?
-   * @private
-   */
-  $$replace: false,
-
-  /**
-   * Compose url and update `url` and `absUrl` property
-   * @private
-   */
-  $$compose() {
-    this.$$url = normalizePath(this.$$path, this.$$search, this.$$hash);
-    this.$$absUrl = this.$$normalizeUrl(this.$$url);
-    this.$$urlUpdatedByLocation = true;
-  },
-
-  /**
-   * @ngdoc method
-   * @name $location#absUrl
-   *
-   * @description
-   * This method is getter only.
-   *
-   * Return full URL representation with all segments encoded according to rules specified in
-   * [RFC 3986](http://www.ietf.org/rfc/rfc3986.txt).
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let absUrl = $location.absUrl();
-   * // => "http://example.com/#/some/path?foo=bar&baz=xoxo"
-   * ```
-   *
-   * @return {string} full URL
-   */
-  absUrl: locationGetter("$$absUrl"),
-
-  /**
-   * @ngdoc method
-   * @name $location#url
-   *
-   * @description
-   * This method is getter / setter.
-   *
-   * Return URL (e.g. `/path?a=b#hash`) when called without any parameter.
-   *
-   * Change path, search and hash, when called with parameter and return `$location`.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let url = $location.url();
-   * // => "/some/path?foo=bar&baz=xoxo"
-   * ```
-   *
-   * @param {string=} url New URL without base prefix (e.g. `/path?a=b#hash`)
-   * @return {string} url
-   */
-  url(url) {
-    if (isUndefined(url)) {
-      return this.$$url;
-    }
-
-    const match = PATH_MATCH.exec(url);
-    if (match[1] || url === "") this.path(decodeURIComponent(match[1]));
-    if (match[2] || match[1] || url === "") this.search(match[3] || "");
-    this.hash(match[5] || "");
-
-    return this;
-  },
-
-  /**
-   * @ngdoc method
-   * @name $location#protocol
-   *
-   * @description
-   * This method is getter only.
-   *
-   * Return protocol of current URL.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let protocol = $location.protocol();
-   * // => "http"
-   * ```
-   *
-   * @return {string} protocol of current URL
-   */
-  protocol: locationGetter("$$protocol"),
-
-  /**
-   * @ngdoc method
-   * @name $location#host
-   *
-   * @description
-   * This method is getter only.
-   *
-   * Return host of current URL.
-   *
-   * Note: compared to the non-AngularJS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let host = $location.host();
-   * // => "example.com"
-   *
-   * // given URL http://user:password@example.com:8080/#/some/path?foo=bar&baz=xoxo
-   * host = $location.host();
-   * // => "example.com"
-   * host = location.host;
-   * // => "example.com:8080"
-   * ```
-   *
-   * @return {string} host of current URL.
-   */
-  host: locationGetter("$$host"),
-
-  /**
-   * @ngdoc method
-   * @name $location#port
-   *
-   * @description
-   * This method is getter only.
-   *
-   * Return port of current URL.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let port = $location.port();
-   * // => 80
-   * ```
-   *
-   * @return {Number} port
-   */
-  port: locationGetter("$$port"),
-
-  /**
-   * @ngdoc method
-   * @name $location#path
-   *
-   * @description
-   * This method is getter / setter.
-   *
-   * Return path of current URL when called without any parameter.
-   *
-   * Change path when called with parameter and return `$location`.
-   *
-   * Note: Path should always begin with forward slash (/), this method will add the forward slash
-   * if it is missing.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let path = $location.path();
-   * // => "/some/path"
-   * ```
-   *
-   * @param {(string|number)=} path New path
-   * @return {(string|object)} path if called with no parameters, or `$location` if called with a parameter
-   */
-  path: locationGetterSetter("$$path", (path) => {
-    path = path !== null ? path.toString() : "";
-    return path.charAt(0) === "/" ? path : `/${path}`;
-  }),
-
-  /**
-   * @ngdoc method
-   * @name $location#search
-   *
-   * @description
-   * This method is getter / setter.
-   *
-   * Return search part (as object) of current URL when called without any parameter.
-   *
-   * Change search part when called with parameter and return `$location`.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let searchObject = $location.search();
-   * // => {foo: 'bar', baz: 'xoxo'}
-   *
-   * // set foo to 'yipee'
-   * $location.search('foo', 'yipee');
-   * // $location.search() => {foo: 'yipee', baz: 'xoxo'}
-   * ```
-   *
-   * @param {string|Object.<string>|Object.<Array.<string>>} search New search params - string or
-   * hash object.
-   *
-   * When called with a single argument the method acts as a setter, setting the `search` component
-   * of `$location` to the specified value.
-   *
-   * If the argument is a hash object containing an array of values, these values will be encoded
-   * as duplicate search parameters in the URL.
-   *
-   * @param {(string|Number|Array<string>|boolean)=} paramValue If `search` is a string or number, then `paramValue`
-   * will override only a single search property.
-   *
-   * If `paramValue` is an array, it will override the property of the `search` component of
-   * `$location` specified via the first argument.
-   *
-   * If `paramValue` is `null`, the property specified via the first argument will be deleted.
-   *
-   * If `paramValue` is `true`, the property specified via the first argument will be added with no
-   * value nor trailing equal sign.
-   *
-   * @return {Object} If called with no arguments returns the parsed `search` object. If called with
-   * one or more arguments returns `$location` object itself.
-   */
-  search(search, paramValue) {
-    switch (arguments.length) {
-      case 0:
-        return this.$$search;
-      case 1:
-        if (isString(search) || isNumber(search)) {
-          search = search.toString();
-          this.$$search = parseKeyValue(search);
-        } else if (isObject(search)) {
-          search = structuredClone(search, {});
-          // remove object undefined or null properties
-          forEach(search, (value, key) => {
-            if (value == null) delete search[key];
-          });
-
-          this.$$search = search;
-        } else {
-          throw $locationMinErr(
-            "isrcharg",
-            "The first argument of the `$location#search()` call must be a string or an object.",
-          );
-        }
-        break;
-      default:
-        if (isUndefined(paramValue) || paramValue === null) {
-          delete this.$$search[search];
-        } else {
-          this.$$search[search] = paramValue;
-        }
-    }
-
-    this.$$compose();
-    return this;
-  },
-
-  /**
-   * @ngdoc method
-   * @name $location#hash
-   *
-   * @description
-   * This method is getter / setter.
-   *
-   * Returns the hash fragment when called without any parameters.
-   *
-   * Changes the hash fragment when called with a parameter and returns `$location`.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo#hashValue
-   * let hash = $location.hash();
-   * // => "hashValue"
-   * ```
-   *
-   * @param {(string|number)=} hash New hash fragment
-   * @return {string} hash
-   */
-  hash: locationGetterSetter("$$hash", (hash) =>
-    hash !== null ? hash.toString() : "",
-  ),
-
-  /**
-   * @ngdoc method
-   * @name $location#replace
-   *
-   * @description
-   * If called, all changes to $location during the current `$digest` will replace the current history
-   * record, instead of adding a new one.
-   */
-  replace() {
-    this.$$replace = true;
-    return this;
-  },
-};
-
-forEach(
-  [LocationHashbangInHtml5Url, LocationHashbangUrl, LocationHtml5Url],
-  (Location) => {
-    Location.prototype = Object.create(locationPrototype);
-
-    /**
-     * @ngdoc method
-     * @name $location#state
-     *
-     * @description
-     * This method is getter / setter.
-     *
-     * Return the history state object when called without any parameter.
-     *
-     * Change the history state object when called with one parameter and return `$location`.
-     * The state object is later passed to `pushState` or `replaceState`.
-     *
-     * NOTE: This method is supported only in HTML5 mode and only in browsers supporting
-     * the HTML5 History API (i.e. methods `pushState` and `replaceState`). If you need to support
-     * older browsers (like IE9 or Android < 4.0), don't use this method.
-     *
-     * @param {object=} state State object for pushState or replaceState
-     * @return {object} state
-     */
-    Location.prototype.state = function (state) {
-      if (!arguments.length) {
-        return this.$$state;
-      }
-
-      if (Location !== LocationHtml5Url || !this.$$html5) {
-        throw $locationMinErr(
-          "nostate",
-          "History API state support is available only " +
-            "in HTML5 mode and only in browsers supporting HTML5 History API",
-        );
-      }
-      // The user might modify `stateObject` after invoking `$location.state(stateObject)`
-      // but we're changing the $$state reference to $browser.state() during the $digest
-      // so the modification window is narrow.
-      this.$$state = isUndefined(state) ? null : state;
-      this.$$urlUpdatedByLocation = true;
-
-      return this;
-    };
-  },
-);
-
-function locationGetter(property) {
-  return function () {
-    return this[property];
-  };
-}
-
-function locationGetterSetter(property, preprocess) {
-  return function (value) {
-    if (isUndefined(value)) {
-      return this[property];
-    }
-
-    this[property] = preprocess(value);
-    this.$$compose();
-
-    return this;
-  };
-}
-
-/**
- * @ngdoc service
- * @name $location
- *
- * @requires $rootElement
- *
- * @description
- * The $location service parses the URL in the browser address bar (based on the
- * [window.location](https://developer.mozilla.org/en/window.location)) and makes the URL
- * available to your application. Changes to the URL in the address bar are reflected into
- * $location service and changes to $location are reflected into the browser address bar.
- *
- * **The $location service:**
- *
- * - Exposes the current URL in the browser address bar, so you can
- *   - Watch and observe the URL.
- *   - Change the URL.
- * - Synchronizes the URL with the browser when the user
- *   - Changes the address bar.
- *   - Clicks the back or forward button (or clicks a History link).
- *   - Clicks on a link.
- * - Represents the URL object as a set of methods (protocol, host, port, path, search, hash).
- *
- * For more information see {@link guide/$location Developer Guide: Using $location}
- */
-
-/**
- * @ngdoc provider
- * @name $locationProvider
- *
- *
- * @description
- * Use the `$locationProvider` to configure how the application deep linking paths are stored.
- */
-function $LocationProvider() {
-  let hashPrefix = "!";
-  const html5Mode = {
-    enabled: false,
-    requireBase: true,
-    rewriteLinks: true,
-  };
-
-  /**
-   * @ngdoc method
-   * @name $locationProvider#hashPrefix
-   * @description
-   * The default value for the prefix is `'!'`.
-   * @param {string=} prefix Prefix for hash part (containing path and search)
-   * @returns {*} current value if used as getter or itself (chaining) if used as setter
-   */
-  this.hashPrefix = function (prefix) {
-    if (isDefined(prefix)) {
-      hashPrefix = prefix;
-      return this;
-    }
-    return hashPrefix;
-  };
-
-  /**
-   * @ngdoc method
-   * @name $locationProvider#html5Mode
-   * @description
-   * @param {(boolean|Object)=} mode If boolean, sets `html5Mode.enabled` to value.
-   *   If object, sets `enabled`, `requireBase` and `rewriteLinks` to respective values. Supported
-   *   properties:
-   *   - **enabled** – `{boolean}` – (default: false) If true, will rely on `history.pushState` to
-   *     change urls where supported. Will fall back to hash-prefixed paths in browsers that do not
-   *     support `pushState`.
-   *   - **requireBase** - `{boolean}` - (default: `true`) When html5Mode is enabled, specifies
-   *     whether or not a <base> tag is required to be present. If `enabled` and `requireBase` are
-   *     true, and a base tag is not present, an error will be thrown when `$location` is injected.
-   *     See the {@link guide/$location $location guide for more information}
-   *   - **rewriteLinks** - `{boolean|string}` - (default: `true`) When html5Mode is enabled,
-   *     enables/disables URL rewriting for relative links. If set to a string, URL rewriting will
-   *     only happen on links with an attribute that matches the given string. For example, if set
-   *     to `'internal-link'`, then the URL will only be rewritten for `<a internal-link>` links.
-   *     Note that [attribute name normalization](guide/directive#normalization) does not apply
-   *     here, so `'internalLink'` will **not** match `'internal-link'`.
-   *
-   * @returns {Object} html5Mode object if used as getter or itself (chaining) if used as setter
-   */
-  this.html5Mode = function (mode) {
-    if (isBoolean(mode)) {
-      html5Mode.enabled = mode;
-      return this;
-    }
-    if (isObject(mode)) {
-      if (isBoolean(mode.enabled)) {
-        html5Mode.enabled = mode.enabled;
-      }
-
-      if (isBoolean(mode.requireBase)) {
-        html5Mode.requireBase = mode.requireBase;
-      }
-
-      if (isBoolean(mode.rewriteLinks) || isString(mode.rewriteLinks)) {
-        html5Mode.rewriteLinks = mode.rewriteLinks;
-      }
-
-      return this;
-    }
-    return html5Mode;
-  };
-
-  /**
-   * @ngdoc event
-   * @name $location#$locationChangeStart
-   * @eventType broadcast on root scope
-   * @description
-   * Broadcasted before a URL will change.
-   *
-   * This change can be prevented by calling
-   * `preventDefault` method of the event. See {@link ng.$rootScope.Scope#$on} for more
-   * details about event object. Upon successful change
-   * {@link ng.$location#$locationChangeSuccess $locationChangeSuccess} is fired.
-   *
-   * The `newState` and `oldState` parameters may be defined only in HTML5 mode and when
-   * the browser supports the HTML5 History API.
-   *
-   * @param {Object} angularEvent Synthetic event object.
-   * @param {string} newUrl New URL
-   * @param {string=} oldUrl URL that was before it was changed.
-   * @param {string=} newState New history state object
-   * @param {string=} oldState History state object that was before it was changed.
-   */
-
-  /**
-   * @ngdoc event
-   * @name $location#$locationChangeSuccess
-   * @eventType broadcast on root scope
-   * @description
-   * Broadcasted after a URL was changed.
-   *
-   * The `newState` and `oldState` parameters may be defined only in HTML5 mode and when
-   * the browser supports the HTML5 History API.
-   *
-   * @param {Object} angularEvent Synthetic event object.
-   * @param {string} newUrl New URL
-   * @param {string=} oldUrl URL that was before it was changed.
-   * @param {string=} newState New history state object
-   * @param {string=} oldState History state object that was before it was changed.
-   */
-
-  this.$get = [
-    "$rootScope",
-    "$browser",
-    "$rootElement",
-    function ($rootScope, $browser, $rootElement) {
-      let $location;
-      let LocationMode;
-      const baseHref = $browser.baseHref(); // if base[href] is undefined, it defaults to ''
-      const initialUrl = $browser.url();
-      let appBase;
-
-      if (html5Mode.enabled) {
-        if (!baseHref && html5Mode.requireBase) {
-          throw $locationMinErr(
-            "nobase",
-            "$location in HTML5 mode requires a <base> tag to be present!",
-          );
-        }
-        appBase = serverBase(initialUrl) + (baseHref || "/");
-        LocationMode = LocationHtml5Url;
-      } else {
-        appBase = stripHash(initialUrl);
-        LocationMode = LocationHashbangUrl;
-      }
-      const appBaseNoFile = stripFile(appBase);
-
-      $location = new LocationMode(appBase, appBaseNoFile, `#${hashPrefix}`);
-      $location.$$parseLinkUrl(initialUrl, initialUrl);
-
-      $location.$$state = $browser.state();
-
-      const IGNORE_URI_REGEXP = /^\s*(javascript|mailto):/i;
-
-      // Determine if two URLs are equal despite potentially having different encoding/normalizing
-      //  such as $location.absUrl() vs $browser.url()
-      // See https://github.com/angular/angular.js/issues/16592
-      function urlsEqual(a, b) {
-        return a === b || urlResolve(a).href === urlResolve(b).href;
-      }
-
-      function setBrowserUrlWithFallback(url, replace, state) {
-        const oldUrl = $location.url();
-        const oldState = $location.$$state;
-        try {
-          $browser.url(url, replace, state);
-
-          // Make sure $location.state() returns referentially identical (not just deeply equal)
-          // state object; this makes possible quick checking if the state changed in the digest
-          // loop. Checking deep equality would be too expensive.
-          $location.$$state = $browser.state();
-        } catch (e) {
-          // Restore old values if pushState fails
-          $location.url(oldUrl);
-          $location.$$state = oldState;
-
-          throw e;
-        }
-      }
-
-      $rootElement.on("click", (event) => {
-        const { rewriteLinks } = html5Mode;
-        // TODO(vojta): rewrite link when opening in new tab/window (in legacy browser)
-        // currently we open nice url link and redirect then
-
-        if (
-          !rewriteLinks ||
-          event.ctrlKey ||
-          event.metaKey ||
-          event.shiftKey ||
-          event.which === 2 ||
-          event.button === 2
-        )
-          return;
-
-        let elm = jqLite(event.target);
-
-        // traverse the DOM up to find first A tag
-        while (nodeName_(elm[0]) !== "a") {
-          // ignore rewriting if no A tag (reached root element, or no parent - removed from document)
-          if (elm[0] === $rootElement[0] || !(elm = elm.parent())[0]) return;
-        }
-
-        if (isString(rewriteLinks) && isUndefined(elm.attr(rewriteLinks)))
-          return;
-
-        let absHref = elm.prop("href");
-        // get the actual href attribute - see
-        // http://msdn.microsoft.com/en-us/library/ie/dd347148(v=vs.85).aspx
-        const relHref = elm.attr("href") || elm.attr("xlink:href");
-
-        if (
-          isObject(absHref) &&
-          absHref.toString() === "[object SVGAnimatedString]"
-        ) {
-          // SVGAnimatedString.animVal should be identical to SVGAnimatedString.baseVal, unless during
-          // an animation.
-          absHref = urlResolve(absHref.animVal).href;
-        }
-
-        // Ignore when url is started with javascript: or mailto:
-        if (IGNORE_URI_REGEXP.test(absHref)) return;
-
-        if (absHref && !elm.attr("target") && !event.isDefaultPrevented()) {
-          if ($location.$$parseLinkUrl(absHref, relHref)) {
-            // We do a preventDefault for all urls that are part of the AngularJS application,
-            // in html5mode and also without, so that we are able to abort navigation without
-            // getting double entries in the location history.
-            event.preventDefault();
-            // update location manually
-            if ($location.absUrl() !== $browser.url()) {
-              $rootScope.$apply();
-            }
-          }
-        }
-      });
-
-      // rewrite hashbang url <> html5 url
-      if ($location.absUrl() !== initialUrl) {
-        $browser.url($location.absUrl(), true);
-      }
-
-      let initializing = true;
-
-      // update $location when $browser url changes
-      $browser.onUrlChange((newUrl, newState) => {
-        if (!startsWith(newUrl, appBaseNoFile)) {
-          // If we are navigating outside of the app then force a reload
-          window.location.href = newUrl;
-          return;
-        }
-
-        $rootScope.$evalAsync(() => {
-          const oldUrl = $location.absUrl();
-          const oldState = $location.$$state;
-          let defaultPrevented;
-          $location.$$parse(newUrl);
-          $location.$$state = newState;
-
-          defaultPrevented = $rootScope.$broadcast(
-            "$locationChangeStart",
-            newUrl,
-            oldUrl,
-            newState,
-            oldState,
-          ).defaultPrevented;
-
-          // if the location was changed by a `$locationChangeStart` handler then stop
-          // processing this location change
-          if ($location.absUrl() !== newUrl) return;
-
-          if (defaultPrevented) {
-            $location.$$parse(oldUrl);
-            $location.$$state = oldState;
-            setBrowserUrlWithFallback(oldUrl, false, oldState);
-          } else {
-            initializing = false;
-            afterLocationChange(oldUrl, oldState);
-          }
-        });
-        if (!$rootScope.$$phase) $rootScope.$digest();
-      });
-
-      // update browser
-      $rootScope.$watch(() => {
-        if (initializing || $location.$$urlUpdatedByLocation) {
-          $location.$$urlUpdatedByLocation = false;
-
-          const oldUrl = $browser.url();
-          const newUrl = $location.absUrl();
-          const oldState = $browser.state();
-          const currentReplace = $location.$$replace;
-          const urlOrStateChanged =
-            !urlsEqual(oldUrl, newUrl) ||
-            ($location.$$html5 && oldState !== $location.$$state);
-
-          if (initializing || urlOrStateChanged) {
-            initializing = false;
-
-            $rootScope.$evalAsync(() => {
-              const newUrl = $location.absUrl();
-              const { defaultPrevented } = $rootScope.$broadcast(
-                "$locationChangeStart",
-                newUrl,
-                oldUrl,
-                $location.$$state,
-                oldState,
-              );
-
-              // if the location was changed by a `$locationChangeStart` handler then stop
-              // processing this location change
-              if ($location.absUrl() !== newUrl) return;
-
-              if (defaultPrevented) {
-                $location.$$parse(oldUrl);
-                $location.$$state = oldState;
-              } else {
-                if (urlOrStateChanged) {
-                  setBrowserUrlWithFallback(
-                    newUrl,
-                    currentReplace,
-                    oldState === $location.$$state ? null : $location.$$state,
-                  );
-                }
-                afterLocationChange(oldUrl, oldState);
-              }
-            });
-          }
-        }
-
-        $location.$$replace = false;
-
-        // we don't need to return anything because $evalAsync will make the digest loop dirty when
-        // there is a change
-      });
-
-      return $location;
-
-      function afterLocationChange(oldUrl, oldState) {
-        $rootScope.$broadcast(
-          "$locationChangeSuccess",
-          $location.absUrl(),
-          oldUrl,
-          $location.$$state,
-          oldState,
-        );
-      }
-    },
-  ];
-}
-
 // This variable should be used *only* inside the cacheState function.
 let lastCachedState = null;
 
@@ -22208,7 +21136,8 @@ function Browser($log, $$taskTrackerFactory) {
       if (lastBrowserUrl === url && sameState) {
         return self;
       }
-      lastBrowserUrl && stripHash(lastBrowserUrl) === stripHash(url);
+      // const sameBase =
+      //   lastBrowserUrl && stripHash(lastBrowserUrl) === stripHash(url);
       lastBrowserUrl = url;
       lastHistoryState = state;
       // Don't use history API if only the hash changed
@@ -22393,7 +21322,7 @@ function Browser($log, $$taskTrackerFactory) {
    *                    canceled.
    */
   self.defer.cancel = function (deferId) {
-    if (pendingDeferIds.hasOwnProperty(deferId)) {
+    if (Object.prototype.hasOwnProperty.call(pendingDeferIds, deferId)) {
       const taskType = pendingDeferIds[deferId];
       delete pendingDeferIds[deferId];
       clearTimeout(deferId);
@@ -23260,7 +22189,7 @@ function $ExceptionHandlerProvider() {
   this.$get = [
     "$log",
     function ($log) {
-      return function (exception, cause) {
+      return function () {
         $log.error.apply($log, arguments);
       };
     },
@@ -23277,6 +22206,9 @@ function $ExceptionHandlerProvider() {
 //   };
 // }
 
+/**
+ * @returns {angular.IFilterFilter}
+ */
 function filterFilter() {
   return function (array, expression, comparator, anyPropertyKey) {
     if (!isArrayLike(array)) {
@@ -23471,20 +22403,7 @@ function getTypeForFilter(val) {
 }
 
 /**
- * @ngdoc filter
- * @name json
- * @kind function
- *
- * @description
- *   Allows you to convert a JavaScript object into JSON string.
- *
- *   This filter is mostly useful for debugging. When using the double curly {{value}} notation
- *   the binding is automatically converted to JSON.
- *
- * @param {*} object Any JavaScript object (including arrays and primitive types) to filter.
- * @param {number=} spacing The number of spaces to use per indentation, defaults to 2.
- * @returns {string} JSON string.
- *
+ * @returns {angular.IFilterJson}
  */
 function jsonFilter() {
   return function (object, spacing) {
@@ -23496,27 +22415,7 @@ function jsonFilter() {
 }
 
 /**
- * @ngdoc filter
- * @name limitTo
- * @kind function
- *
- * @description
- * Creates a new array or string containing only a specified number of elements. The elements are
- * taken from either the beginning or the end of the source array, string or number, as specified by
- * the value and sign (positive or negative) of `limit`. Other array-like objects are also supported
- * (e.g. array subclasses, NodeLists, jqLite/jQuery collections etc). If a number is used as input,
- * it is converted to a string.
- *
- * @param {Array|ArrayLike|string|number} input - Array/array-like, string or number to be limited.
- * @param {string|number} limit - The length of the returned array or string. If the `limit` number
- *     is positive, `limit` number of items from the beginning of the source array/string are copied.
- *     If the number is negative, `limit` number  of items from the end of the source array/string
- *     are copied. The `limit` will be trimmed if it exceeds `array.length`. If `limit` is undefined,
- *     the input will be returned unchanged.
- * @param {(string|number)=} begin - Index at which to begin limitation. As a negative index,
- *     `begin` indicates an offset from the end of `input`. Defaults to `0`.
- * @returns {Array|string} A new sub-array or substring of length `limit` or less if the input had
- *     less than `limit` elements.
+ * @returns {angular.IFilterLimitTo}
  */
 function limitToFilter() {
   return function (input, limit, begin) {
@@ -23551,133 +22450,13 @@ function sliceFn(input, begin, end) {
   return [].slice.call(input, begin, end);
 }
 
+orderByFilter.$inject = ["$parse"];
+
 /**
  *
- * @description
- * Returns an array containing the items from the specified `collection`, ordered by a `comparator`
- * function based on the values computed using the `expression` predicate.
- *
- * For example, `[{id: 'foo'}, {id: 'bar'}] | orderBy:'id'` would result in
- * `[{id: 'bar'}, {id: 'foo'}]`.
- *
- * The `collection` can be an Array or array-like object (e.g. NodeList, jQuery object, TypedArray,
- * String, etc).
- *
- * The `expression` can be a single predicate, or a list of predicates each serving as a tie-breaker
- * for the preceding one. The `expression` is evaluated against each item and the output is used
- * for comparing with other items.
- *
- * You can change the sorting order by setting `reverse` to `true`. By default, items are sorted in
- * ascending order.
- *
- * The comparison is done using the `comparator` function. If none is specified, a default, built-in
- * comparator is used (see below for details - in a nutshell, it compares numbers numerically and
- * strings alphabetically).
- *
- * ### Under the hood
- *
- * Ordering the specified `collection` happens in two phases:
- *
- * 1. All items are passed through the predicate (or predicates), and the returned values are saved
- *    along with their type (`string`, `number` etc). For example, an item `{label: 'foo'}`, passed
- *    through a predicate that extracts the value of the `label` property, would be transformed to:
- *    ```
- *    {
- *      value: 'foo',
- *      type: 'string',
- *      index: ...
- *    }
- *    ```
- *    **Note:** `null` values use `'null'` as their type.
- * 2. The comparator function is used to sort the items, based on the derived values, types and
- *    indices.
- *
- * If you use a custom comparator, it will be called with pairs of objects of the form
- * `{value: ..., type: '...', index: ...}` and is expected to return `0` if the objects are equal
- * (as far as the comparator is concerned), `-1` if the 1st one should be ranked higher than the
- * second, or `1` otherwise.
- *
- * In order to ensure that the sorting will be deterministic across platforms, if none of the
- * specified predicates can distinguish between two items, `orderBy` will automatically introduce a
- * dummy predicate that returns the item's index as `value`.
- * (If you are using a custom comparator, make sure it can handle this predicate as well.)
- *
- * If a custom comparator still can't distinguish between two items, then they will be sorted based
- * on their index using the built-in comparator.
- *
- * Finally, in an attempt to simplify things, if a predicate returns an object as the extracted
- * value for an item, `orderBy` will try to convert that object to a primitive value, before passing
- * it to the comparator. The following rules govern the conversion:
- *
- * 1. If the object has a `valueOf()` method that returns a primitive, its return value will be
- *    used instead.<br />
- *    (If the object has a `valueOf()` method that returns another object, then the returned object
- *    will be used in subsequent steps.)
- * 2. If the object has a custom `toString()` method (i.e. not the one inherited from `Object`) that
- *    returns a primitive, its return value will be used instead.<br />
- *    (If the object has a `toString()` method that returns another object, then the returned object
- *    will be used in subsequent steps.)
- * 3. No conversion; the object itself is used.
- *
- * ### The default comparator
- *
- * The default, built-in comparator should be sufficient for most usecases. In short, it compares
- * numbers numerically, strings alphabetically (and case-insensitively), for objects falls back to
- * using their index in the original collection, sorts values of different types by type and puts
- * `undefined` and `null` values at the end of the sorted list.
- *
- * More specifically, it follows these steps to determine the relative order of items:
- *
- * 1. If the compared values are of different types:
- *    - If one of the values is undefined, consider it "greater than" the other.
- *    - Else if one of the values is null, consider it "greater than" the other.
- *    - Else compare the types themselves alphabetically.
- * 2. If both values are of type `string`, compare them alphabetically in a case- and
- *    locale-insensitive way.
- * 3. If both values are objects, compare their indices instead.
- * 4. Otherwise, return:
- *    -  `0`, if the values are equal (by strict equality comparison, i.e. using `===`).
- *    - `-1`, if the 1st value is "less than" the 2nd value (compared using the `<` operator).
- *    -  `1`, otherwise.
- *
- * **Note:** If you notice numbers not being sorted as expected, make sure they are actually being
- *           saved as numbers and not strings.
- * **Note:** For the purpose of sorting, `null` and `undefined` are considered "greater than"
- *           any other value (with undefined "greater than" null). This effectively means that `null`
- *           and `undefined` values end up at the end of a list sorted in ascending order.
- * **Note:** `null` values use `'null'` as their type to be able to distinguish them from objects.
- *
- * @param {Array|ArrayLike} collection - The collection (array or array-like object) to sort.
- * @param {(Function|string|Array.<Function|string>)=} expression - A predicate (or list of
- *    predicates) to be used by the comparator to determine the order of elements.
- *
- *    Can be one of:
- *
- *    - `Function`: A getter function. This function will be called with each item as argument and
- *      the return value will be used for sorting.
- *    - `string`: An AngularJS expression. This expression will be evaluated against each item and the
- *      result will be used for sorting. For example, use `'label'` to sort by a property called
- *      `label` or `'label.substring(0, 3)'` to sort by the first 3 characters of the `label`
- *      property.<br />
- *      (The result of a constant expression is interpreted as a property name to be used for
- *      comparison. For example, use `'"special name"'` (note the extra pair of quotes) to sort by a
- *      property called `special name`.)<br />
- *      An expression can be optionally prefixed with `+` or `-` to control the sorting direction,
- *      ascending or descending. For example, `'+label'` or `'-label'`. If no property is provided,
- *      (e.g. `'+'` or `'-'`), the collection element itself is used in comparisons.
- *    - `Array`: An array of function and/or string predicates. If a predicate cannot determine the
- *      relative order of two items, the next predicate is used as a tie-breaker.
- *
- * **Note:** If the predicate is missing or empty then it defaults to `'+'`.
- *
- * @param {boolean=} reverse - If `true`, reverse the sorting order.
- * @param {(Function)=} comparator - The comparator function used to determine the relative order of
- *    value pairs. If omitted, the built-in comparator will be used.
- *
- * @returns {Array} - The sorted array.
- *
+ * @param {angular.IFilterOrderBy} $parse
+ * @returns
  */
-orderByFilter.$inject = ["$parse"];
 function orderByFilter($parse) {
   return function (array, sortPredicate, reverseOrder, compareFn) {
     if (array == null) return array;
@@ -27135,6 +25914,1075 @@ function createHttpBackend($browser, createXhr, $browserDefer) {
   };
 }
 
+const PATH_MATCH = /^([^?#]*)(\?([^#]*))?(#(.*))?$/;
+const DEFAULT_PORTS = { http: 80, https: 443, ftp: 21 };
+const $locationMinErr = minErr("$location");
+
+/**
+ * Encode path using encodeUriSegment, ignoring forward slashes
+ *
+ * @param {string} path Path to encode
+ * @returns {string}
+ */
+function encodePath(path) {
+  const segments = path.split("/");
+  let i = segments.length;
+
+  while (i--) {
+    // decode forward slashes to prevent them from being double encoded
+    segments[i] = encodeUriSegment(segments[i].replace(/%2F/g, "/"));
+  }
+
+  return segments.join("/");
+}
+
+function decodePath(path, html5Mode) {
+  const segments = path.split("/");
+  let i = segments.length;
+
+  while (i--) {
+    segments[i] = decodeURIComponent(segments[i]);
+    if (html5Mode) {
+      // encode forward slashes to prevent them from being mistaken for path separators
+      segments[i] = segments[i].replace(/\//g, "%2F");
+    }
+  }
+
+  return segments.join("/");
+}
+
+function normalizePath(pathValue, searchValue, hashValue) {
+  const search = toKeyValue(searchValue);
+  const hash = hashValue ? `#${encodeUriSegment(hashValue)}` : "";
+  const path = encodePath(pathValue);
+
+  return path + (search ? `?${search}` : "") + hash;
+}
+
+function parseAbsoluteUrl(absoluteUrl, locationObj) {
+  const parsedUrl = urlResolve(absoluteUrl);
+
+  locationObj.$$protocol = parsedUrl.protocol;
+  locationObj.$$host = parsedUrl.hostname;
+  locationObj.$$port =
+    toInt(parsedUrl.port) || DEFAULT_PORTS[parsedUrl.protocol] || null;
+}
+
+const DOUBLE_SLASH_REGEX = /^\s*[\\/]{2,}/;
+function parseAppUrl(url, locationObj, html5Mode) {
+  if (DOUBLE_SLASH_REGEX.test(url)) {
+    throw $locationMinErr("badpath", 'Invalid url "{0}".', url);
+  }
+
+  const prefixed = url.charAt(0) !== "/";
+  if (prefixed) {
+    url = `/${url}`;
+  }
+  const match = urlResolve(url);
+  const path =
+    prefixed && match.pathname.charAt(0) === "/"
+      ? match.pathname.substring(1)
+      : match.pathname;
+  locationObj.$$path = decodePath(path, html5Mode);
+  locationObj.$$search = parseKeyValue(match.search);
+  locationObj.$$hash = decodeURIComponent(match.hash);
+
+  // make sure path starts with '/';
+  if (locationObj.$$path && locationObj.$$path.charAt(0) !== "/") {
+    locationObj.$$path = `/${locationObj.$$path}`;
+  }
+}
+
+function startsWith(str, search) {
+  return str.slice(0, search.length) === search;
+}
+
+/**
+ *
+ * @param {string} base
+ * @param {string} url
+ * @returns {string} returns text from `url` after `base` or `undefined` if it does not begin with
+ *                   the expected string.
+ */
+function stripBaseUrl(base, url) {
+  if (startsWith(url, base)) {
+    return url.substr(base.length);
+  }
+}
+
+function stripHash(url) {
+  const index = url.indexOf("#");
+  return index === -1 ? url : url.substr(0, index);
+}
+
+function stripFile(url) {
+  return url.substr(0, stripHash(url).lastIndexOf("/") + 1);
+}
+
+/* return the server only (scheme://host:port) */
+function serverBase(url) {
+  return url.substring(0, url.indexOf("/", url.indexOf("//") + 2));
+}
+
+/**
+ * LocationHtml5Url represents a URL
+ * This object is exposed as $location service when HTML5 mode is enabled and supported
+ *
+ * @constructor
+ * @param {string} appBase application base URL
+ * @param {string} appBaseNoFile application base URL stripped of any filename
+ * @param {string} basePrefix URL path prefix
+ */
+function LocationHtml5Url(appBase, appBaseNoFile, basePrefix) {
+  this.$$html5 = true;
+  basePrefix = basePrefix || "";
+  parseAbsoluteUrl(appBase, this);
+
+  /**
+   * Parse given HTML5 (regular) URL string into properties
+   * @param {string} url HTML5 URL
+   * @private
+   */
+  this.$$parse = function (url) {
+    const pathUrl = stripBaseUrl(appBaseNoFile, url);
+    if (!isString(pathUrl)) {
+      throw $locationMinErr(
+        "ipthprfx",
+        'Invalid url "{0}", missing path prefix "{1}".',
+        url,
+        appBaseNoFile,
+      );
+    }
+
+    parseAppUrl(pathUrl, this, true);
+
+    if (!this.$$path) {
+      this.$$path = "/";
+    }
+
+    this.$$compose();
+  };
+
+  this.$$normalizeUrl = function (url) {
+    return appBaseNoFile + url.substr(1); // first char is always '/'
+  };
+
+  this.$$parseLinkUrl = function (url, relHref) {
+    if (relHref && relHref[0] === "#") {
+      // special case for links to hash fragments:
+      // keep the old url and only replace the hash fragment
+      this.hash(relHref.slice(1));
+      return true;
+    }
+    let appUrl;
+    let prevAppUrl;
+    let rewrittenUrl;
+
+    if (isDefined((appUrl = stripBaseUrl(appBase, url)))) {
+      prevAppUrl = appUrl;
+      if (
+        basePrefix &&
+        isDefined((appUrl = stripBaseUrl(basePrefix, appUrl)))
+      ) {
+        rewrittenUrl = appBaseNoFile + (stripBaseUrl("/", appUrl) || appUrl);
+      } else {
+        rewrittenUrl = appBase + prevAppUrl;
+      }
+    } else if (isDefined((appUrl = stripBaseUrl(appBaseNoFile, url)))) {
+      rewrittenUrl = appBaseNoFile + appUrl;
+    } else if (appBaseNoFile === `${url}/`) {
+      rewrittenUrl = appBaseNoFile;
+    }
+    if (rewrittenUrl) {
+      this.$$parse(rewrittenUrl);
+    }
+    return !!rewrittenUrl;
+  };
+}
+
+/**
+ * LocationHashbangUrl represents URL
+ * This object is exposed as $location service when developer doesn't opt into html5 mode.
+ * It also serves as the base class for html5 mode fallback on legacy browsers.
+ *
+ * @constructor
+ * @param {string} appBase application base URL
+ * @param {string} appBaseNoFile application base URL stripped of any filename
+ * @param {string} hashPrefix hashbang prefix
+ */
+function LocationHashbangUrl(appBase, appBaseNoFile, hashPrefix) {
+  parseAbsoluteUrl(appBase, this);
+
+  /**
+   * Parse given hashbang URL into properties
+   * @param {string} url Hashbang URL
+   * @private
+   */
+  this.$$parse = function (url) {
+    const withoutBaseUrl =
+      stripBaseUrl(appBase, url) || stripBaseUrl(appBaseNoFile, url);
+    let withoutHashUrl;
+
+    if (!isUndefined(withoutBaseUrl) && withoutBaseUrl.charAt(0) === "#") {
+      // The rest of the URL starts with a hash so we have
+      // got either a hashbang path or a plain hash fragment
+      withoutHashUrl = stripBaseUrl(hashPrefix, withoutBaseUrl);
+      if (isUndefined(withoutHashUrl)) {
+        // There was no hashbang prefix so we just have a hash fragment
+        withoutHashUrl = withoutBaseUrl;
+      }
+    } else {
+      // There was no hashbang path nor hash fragment:
+      // If we are in HTML5 mode we use what is left as the path;
+      // Otherwise we ignore what is left
+      if (this.$$html5) {
+        withoutHashUrl = withoutBaseUrl;
+      } else {
+        withoutHashUrl = "";
+        if (isUndefined(withoutBaseUrl)) {
+          appBase = url;
+          /** @type {?} */ (this).replace();
+        }
+      }
+    }
+
+    parseAppUrl(withoutHashUrl, this, false);
+
+    this.$$path = removeWindowsDriveName(this.$$path, withoutHashUrl, appBase);
+
+    this.$$compose();
+
+    /*
+     * In Windows, on an anchor node on documents loaded from
+     * the filesystem, the browser will return a pathname
+     * prefixed with the drive name ('/C:/path') when a
+     * pathname without a drive is set:
+     *  * a.setAttribute('href', '/foo')
+     *   * a.pathname === '/C:/foo' //true
+     *
+     * Inside of AngularJS, we're always using pathnames that
+     * do not include drive names for routing.
+     */
+    function removeWindowsDriveName(path, url, base) {
+      /*
+      Matches paths for file protocol on windows,
+      such as /C:/foo/bar, and captures only /foo/bar.
+      */
+      const windowsFilePathExp = /^\/[A-Z]:(\/.*)/;
+
+      let firstPathSegmentMatch;
+
+      // Get the relative path from the input URL.
+      if (startsWith(url, base)) {
+        url = url.replace(base, "");
+      }
+
+      // The input URL intentionally contains a first path segment that ends with a colon.
+      if (windowsFilePathExp.exec(url)) {
+        return path;
+      }
+
+      firstPathSegmentMatch = windowsFilePathExp.exec(path);
+      return firstPathSegmentMatch ? firstPathSegmentMatch[1] : path;
+    }
+  };
+
+  this.$$normalizeUrl = function (url) {
+    return appBase + (url ? hashPrefix + url : "");
+  };
+
+  this.$$parseLinkUrl = function (url) {
+    if (stripHash(appBase) === stripHash(url)) {
+      this.$$parse(url);
+      return true;
+    }
+    return false;
+  };
+}
+
+/**
+ * LocationHashbangUrl represents URL
+ * This object is exposed as $location service when html5 history api is enabled but the browser
+ * does not support it.
+ *
+ * @constructor
+ * @param {string} appBase application base URL
+ * @param {string} appBaseNoFile application base URL stripped of any filename
+ * @param {string} hashPrefix hashbang prefix
+ */
+function LocationHashbangInHtml5Url(appBase, appBaseNoFile, hashPrefix) {
+  this.$$html5 = true;
+  LocationHashbangUrl.apply(this, arguments);
+
+  this.$$parseLinkUrl = function (url, relHref) {
+    if (relHref && relHref[0] === "#") {
+      // special case for links to hash fragments:
+      // keep the old url and only replace the hash fragment
+      this.hash(relHref.slice(1));
+      return true;
+    }
+
+    let rewrittenUrl;
+    let appUrl;
+
+    if (appBase === stripHash(url)) {
+      rewrittenUrl = url;
+    } else if ((appUrl = stripBaseUrl(appBaseNoFile, url))) {
+      rewrittenUrl = appBase + hashPrefix + appUrl;
+    } else if (appBaseNoFile === `${url}/`) {
+      rewrittenUrl = appBaseNoFile;
+    }
+    if (rewrittenUrl) {
+      this.$$parse(rewrittenUrl);
+    }
+    return !!rewrittenUrl;
+  };
+
+  this.$$normalizeUrl = function (url) {
+    // include hashPrefix in $$absUrl when $$url is empty so IE9 does not reload page because of removal of '#'
+    return appBase + hashPrefix + url;
+  };
+}
+
+const locationPrototype = {
+  /**
+   * Ensure absolute URL is initialized.
+   * @private
+   */
+  $$absUrl: "",
+
+  /**
+   * Are we in html5 mode?
+   * @private
+   */
+  $$html5: false,
+
+  /**
+   * Has any change been replacing?
+   * @private
+   */
+  $$replace: false,
+
+  /**
+   * Compose url and update `url` and `absUrl` property
+   * @private
+   */
+  $$compose() {
+    this.$$url = normalizePath(this.$$path, this.$$search, this.$$hash);
+    this.$$absUrl = this.$$normalizeUrl(this.$$url);
+    this.$$urlUpdatedByLocation = true;
+  },
+
+  /**
+   * @ngdoc method
+   * @name $location#absUrl
+   *
+   * @description
+   * This method is getter only.
+   *
+   * Return full URL representation with all segments encoded according to rules specified in
+   * [RFC 3986](http://www.ietf.org/rfc/rfc3986.txt).
+   *
+   *
+   * ```js
+   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
+   * let absUrl = $location.absUrl();
+   * // => "http://example.com/#/some/path?foo=bar&baz=xoxo"
+   * ```
+   *
+   * @return {string} full URL
+   */
+  absUrl: locationGetter("$$absUrl"),
+
+  /**
+   * @ngdoc method
+   * @name $location#url
+   *
+   * @description
+   * This method is getter / setter.
+   *
+   * Return URL (e.g. `/path?a=b#hash`) when called without any parameter.
+   *
+   * Change path, search and hash, when called with parameter and return `$location`.
+   *
+   *
+   * ```js
+   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
+   * let url = $location.url();
+   * // => "/some/path?foo=bar&baz=xoxo"
+   * ```
+   *
+   * @param {string=} url New URL without base prefix (e.g. `/path?a=b#hash`)
+   * @return {string} url
+   */
+  url(url) {
+    if (isUndefined(url)) {
+      return this.$$url;
+    }
+
+    const match = PATH_MATCH.exec(url);
+    if (match[1] || url === "") this.path(decodeURIComponent(match[1]));
+    if (match[2] || match[1] || url === "") this.search(match[3] || "");
+    this.hash(match[5] || "");
+
+    return this;
+  },
+
+  /**
+   * @ngdoc method
+   * @name $location#protocol
+   *
+   * @description
+   * This method is getter only.
+   *
+   * Return protocol of current URL.
+   *
+   *
+   * ```js
+   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
+   * let protocol = $location.protocol();
+   * // => "http"
+   * ```
+   *
+   * @return {string} protocol of current URL
+   */
+  protocol: locationGetter("$$protocol"),
+
+  /**
+   * @ngdoc method
+   * @name $location#host
+   *
+   * @description
+   * This method is getter only.
+   *
+   * Return host of current URL.
+   *
+   * Note: compared to the non-AngularJS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
+   *
+   *
+   * ```js
+   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
+   * let host = $location.host();
+   * // => "example.com"
+   *
+   * // given URL http://user:password@example.com:8080/#/some/path?foo=bar&baz=xoxo
+   * host = $location.host();
+   * // => "example.com"
+   * host = location.host;
+   * // => "example.com:8080"
+   * ```
+   *
+   * @return {string} host of current URL.
+   */
+  host: locationGetter("$$host"),
+
+  /**
+   * @ngdoc method
+   * @name $location#port
+   *
+   * @description
+   * This method is getter only.
+   *
+   * Return port of current URL.
+   *
+   *
+   * ```js
+   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
+   * let port = $location.port();
+   * // => 80
+   * ```
+   *
+   * @return {Number} port
+   */
+  port: locationGetter("$$port"),
+
+  /**
+   * @ngdoc method
+   * @name $location#path
+   *
+   * @description
+   * This method is getter / setter.
+   *
+   * Return path of current URL when called without any parameter.
+   *
+   * Change path when called with parameter and return `$location`.
+   *
+   * Note: Path should always begin with forward slash (/), this method will add the forward slash
+   * if it is missing.
+   *
+   *
+   * ```js
+   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
+   * let path = $location.path();
+   * // => "/some/path"
+   * ```
+   *
+   * @param {(string|number)=} path New path
+   * @return {(string|object)} path if called with no parameters, or `$location` if called with a parameter
+   */
+  path: locationGetterSetter("$$path", (path) => {
+    path = path !== null ? path.toString() : "";
+    return path.charAt(0) === "/" ? path : `/${path}`;
+  }),
+
+  /**
+   * @ngdoc method
+   * @name $location#search
+   *
+   * @description
+   * This method is getter / setter.
+   *
+   * Return search part (as object) of current URL when called without any parameter.
+   *
+   * Change search part when called with parameter and return `$location`.
+   *
+   *
+   * ```js
+   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
+   * let searchObject = $location.search();
+   * // => {foo: 'bar', baz: 'xoxo'}
+   *
+   * // set foo to 'yipee'
+   * $location.search('foo', 'yipee');
+   * // $location.search() => {foo: 'yipee', baz: 'xoxo'}
+   * ```
+   *
+   * @param {string|Object.<string>|Object.<Array.<string>>} search New search params - string or
+   * hash object.
+   *
+   * When called with a single argument the method acts as a setter, setting the `search` component
+   * of `$location` to the specified value.
+   *
+   * If the argument is a hash object containing an array of values, these values will be encoded
+   * as duplicate search parameters in the URL.
+   *
+   * @param {(string|Number|Array<string>|boolean)=} paramValue If `search` is a string or number, then `paramValue`
+   * will override only a single search property.
+   *
+   * If `paramValue` is an array, it will override the property of the `search` component of
+   * `$location` specified via the first argument.
+   *
+   * If `paramValue` is `null`, the property specified via the first argument will be deleted.
+   *
+   * If `paramValue` is `true`, the property specified via the first argument will be added with no
+   * value nor trailing equal sign.
+   *
+   * @return {Object} If called with no arguments returns the parsed `search` object. If called with
+   * one or more arguments returns `$location` object itself.
+   */
+  search(search, paramValue) {
+    switch (arguments.length) {
+      case 0:
+        return this.$$search;
+      case 1:
+        if (isString(search) || isNumber(search)) {
+          search = search.toString();
+          this.$$search = parseKeyValue(search);
+        } else if (isObject(search)) {
+          search = structuredClone(search, {});
+          // remove object undefined or null properties
+          forEach(search, (value, key) => {
+            if (value == null) delete search[key];
+          });
+
+          this.$$search = search;
+        } else {
+          throw $locationMinErr(
+            "isrcharg",
+            "The first argument of the `$location#search()` call must be a string or an object.",
+          );
+        }
+        break;
+      default:
+        if (isUndefined(paramValue) || paramValue === null) {
+          delete this.$$search[search];
+        } else {
+          this.$$search[search] = paramValue;
+        }
+    }
+
+    this.$$compose();
+    return this;
+  },
+
+  /**
+   * @ngdoc method
+   * @name $location#hash
+   *
+   * @description
+   * This method is getter / setter.
+   *
+   * Returns the hash fragment when called without any parameters.
+   *
+   * Changes the hash fragment when called with a parameter and returns `$location`.
+   *
+   *
+   * ```js
+   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo#hashValue
+   * let hash = $location.hash();
+   * // => "hashValue"
+   * ```
+   *
+   * @param {(string|number)=} hash New hash fragment
+   * @return {string} hash
+   */
+  hash: locationGetterSetter("$$hash", (hash) =>
+    hash !== null ? hash.toString() : "",
+  ),
+
+  /**
+   * @ngdoc method
+   * @name $location#replace
+   *
+   * @description
+   * If called, all changes to $location during the current `$digest` will replace the current history
+   * record, instead of adding a new one.
+   */
+  replace() {
+    this.$$replace = true;
+    return this;
+  },
+};
+
+forEach(
+  [LocationHashbangInHtml5Url, LocationHashbangUrl, LocationHtml5Url],
+  (Location) => {
+    Location.prototype = Object.create(locationPrototype);
+
+    /**
+     * @ngdoc method
+     * @name $location#state
+     *
+     * @description
+     * This method is getter / setter.
+     *
+     * Return the history state object when called without any parameter.
+     *
+     * Change the history state object when called with one parameter and return `$location`.
+     * The state object is later passed to `pushState` or `replaceState`.
+     *
+     * NOTE: This method is supported only in HTML5 mode and only in browsers supporting
+     * the HTML5 History API (i.e. methods `pushState` and `replaceState`). If you need to support
+     * older browsers (like IE9 or Android < 4.0), don't use this method.
+     *
+     * @param {object=} state State object for pushState or replaceState
+     * @return {object} state
+     */
+    Location.prototype.state = function (state) {
+      if (!arguments.length) {
+        return this.$$state;
+      }
+
+      if (Location !== LocationHtml5Url || !this.$$html5) {
+        throw $locationMinErr(
+          "nostate",
+          "History API state support is available only " +
+            "in HTML5 mode and only in browsers supporting HTML5 History API",
+        );
+      }
+      // The user might modify `stateObject` after invoking `$location.state(stateObject)`
+      // but we're changing the $$state reference to $browser.state() during the $digest
+      // so the modification window is narrow.
+      this.$$state = isUndefined(state) ? null : state;
+      this.$$urlUpdatedByLocation = true;
+
+      return this;
+    };
+  },
+);
+
+function locationGetter(property) {
+  return function () {
+    return this[property];
+  };
+}
+
+function locationGetterSetter(property, preprocess) {
+  return function (value) {
+    if (isUndefined(value)) {
+      return this[property];
+    }
+
+    this[property] = preprocess(value);
+    this.$$compose();
+
+    return this;
+  };
+}
+
+/**
+ * @ngdoc service
+ * @name $location
+ *
+ * @requires $rootElement
+ *
+ * @description
+ * The $location service parses the URL in the browser address bar (based on the
+ * [window.location](https://developer.mozilla.org/en/window.location)) and makes the URL
+ * available to your application. Changes to the URL in the address bar are reflected into
+ * $location service and changes to $location are reflected into the browser address bar.
+ *
+ * **The $location service:**
+ *
+ * - Exposes the current URL in the browser address bar, so you can
+ *   - Watch and observe the URL.
+ *   - Change the URL.
+ * - Synchronizes the URL with the browser when the user
+ *   - Changes the address bar.
+ *   - Clicks the back or forward button (or clicks a History link).
+ *   - Clicks on a link.
+ * - Represents the URL object as a set of methods (protocol, host, port, path, search, hash).
+ *
+ * For more information see {@link guide/$location Developer Guide: Using $location}
+ */
+
+/**
+ * @ngdoc provider
+ * @name $locationProvider
+ *
+ *
+ * @description
+ * Use the `$locationProvider` to configure how the application deep linking paths are stored.
+ */
+function $LocationProvider() {
+  let hashPrefix = "!";
+  const html5Mode = {
+    enabled: false,
+    requireBase: true,
+    rewriteLinks: true,
+  };
+
+  /**
+   * @ngdoc method
+   * @name $locationProvider#hashPrefix
+   * @description
+   * The default value for the prefix is `'!'`.
+   * @param {string=} prefix Prefix for hash part (containing path and search)
+   * @returns {*} current value if used as getter or itself (chaining) if used as setter
+   */
+  this.hashPrefix = function (prefix) {
+    if (isDefined(prefix)) {
+      hashPrefix = prefix;
+      return this;
+    }
+    return hashPrefix;
+  };
+
+  /**
+   * @ngdoc method
+   * @name $locationProvider#html5Mode
+   * @description
+   * @param {(boolean|Object)=} mode If boolean, sets `html5Mode.enabled` to value.
+   *   If object, sets `enabled`, `requireBase` and `rewriteLinks` to respective values. Supported
+   *   properties:
+   *   - **enabled** – `{boolean}` – (default: false) If true, will rely on `history.pushState` to
+   *     change urls where supported. Will fall back to hash-prefixed paths in browsers that do not
+   *     support `pushState`.
+   *   - **requireBase** - `{boolean}` - (default: `true`) When html5Mode is enabled, specifies
+   *     whether or not a <base> tag is required to be present. If `enabled` and `requireBase` are
+   *     true, and a base tag is not present, an error will be thrown when `$location` is injected.
+   *     See the {@link guide/$location $location guide for more information}
+   *   - **rewriteLinks** - `{boolean|string}` - (default: `true`) When html5Mode is enabled,
+   *     enables/disables URL rewriting for relative links. If set to a string, URL rewriting will
+   *     only happen on links with an attribute that matches the given string. For example, if set
+   *     to `'internal-link'`, then the URL will only be rewritten for `<a internal-link>` links.
+   *     Note that [attribute name normalization](guide/directive#normalization) does not apply
+   *     here, so `'internalLink'` will **not** match `'internal-link'`.
+   *
+   * @returns {Object} html5Mode object if used as getter or itself (chaining) if used as setter
+   */
+  this.html5Mode = function (mode) {
+    if (isBoolean(mode)) {
+      html5Mode.enabled = mode;
+      return this;
+    }
+    if (isObject(mode)) {
+      if (isBoolean(mode.enabled)) {
+        html5Mode.enabled = mode.enabled;
+      }
+
+      if (isBoolean(mode.requireBase)) {
+        html5Mode.requireBase = mode.requireBase;
+      }
+
+      if (isBoolean(mode.rewriteLinks) || isString(mode.rewriteLinks)) {
+        html5Mode.rewriteLinks = mode.rewriteLinks;
+      }
+
+      return this;
+    }
+    return html5Mode;
+  };
+
+  /**
+   * @ngdoc event
+   * @name $location#$locationChangeStart
+   * @eventType broadcast on root scope
+   * @description
+   * Broadcasted before a URL will change.
+   *
+   * This change can be prevented by calling
+   * `preventDefault` method of the event. See {@link ng.$rootScope.Scope#$on} for more
+   * details about event object. Upon successful change
+   * {@link ng.$location#$locationChangeSuccess $locationChangeSuccess} is fired.
+   *
+   * The `newState` and `oldState` parameters may be defined only in HTML5 mode and when
+   * the browser supports the HTML5 History API.
+   *
+   * @param {Object} angularEvent Synthetic event object.
+   * @param {string} newUrl New URL
+   * @param {string=} oldUrl URL that was before it was changed.
+   * @param {string=} newState New history state object
+   * @param {string=} oldState History state object that was before it was changed.
+   */
+
+  /**
+   * @ngdoc event
+   * @name $location#$locationChangeSuccess
+   * @eventType broadcast on root scope
+   * @description
+   * Broadcasted after a URL was changed.
+   *
+   * The `newState` and `oldState` parameters may be defined only in HTML5 mode and when
+   * the browser supports the HTML5 History API.
+   *
+   * @param {Object} angularEvent Synthetic event object.
+   * @param {string} newUrl New URL
+   * @param {string=} oldUrl URL that was before it was changed.
+   * @param {string=} newState New history state object
+   * @param {string=} oldState History state object that was before it was changed.
+   */
+
+  this.$get = [
+    "$rootScope",
+    "$browser",
+    "$rootElement",
+    function ($rootScope, $browser, $rootElement) {
+      let $location;
+      let LocationMode;
+      const baseHref = $browser.baseHref(); // if base[href] is undefined, it defaults to ''
+      const initialUrl = $browser.url();
+      let appBase;
+
+      if (html5Mode.enabled) {
+        if (!baseHref && html5Mode.requireBase) {
+          throw $locationMinErr(
+            "nobase",
+            "$location in HTML5 mode requires a <base> tag to be present!",
+          );
+        }
+        appBase = serverBase(initialUrl) + (baseHref || "/");
+        LocationMode = LocationHtml5Url;
+      } else {
+        appBase = stripHash(initialUrl);
+        LocationMode = LocationHashbangUrl;
+      }
+      const appBaseNoFile = stripFile(appBase);
+
+      $location = new LocationMode(appBase, appBaseNoFile, `#${hashPrefix}`);
+      $location.$$parseLinkUrl(initialUrl, initialUrl);
+
+      $location.$$state = $browser.state();
+
+      const IGNORE_URI_REGEXP = /^\s*(javascript|mailto):/i;
+
+      // Determine if two URLs are equal despite potentially having different encoding/normalizing
+      //  such as $location.absUrl() vs $browser.url()
+      // See https://github.com/angular/angular.js/issues/16592
+      function urlsEqual(a, b) {
+        return a === b || urlResolve(a).href === urlResolve(b).href;
+      }
+
+      function setBrowserUrlWithFallback(url, replace, state) {
+        const oldUrl = $location.url();
+        const oldState = $location.$$state;
+        try {
+          $browser.url(url, replace, state);
+
+          // Make sure $location.state() returns referentially identical (not just deeply equal)
+          // state object; this makes possible quick checking if the state changed in the digest
+          // loop. Checking deep equality would be too expensive.
+          $location.$$state = $browser.state();
+        } catch (e) {
+          // Restore old values if pushState fails
+          $location.url(oldUrl);
+          $location.$$state = oldState;
+
+          throw e;
+        }
+      }
+
+      $rootElement.on("click", (event) => {
+        const { rewriteLinks } = html5Mode;
+        // TODO(vojta): rewrite link when opening in new tab/window (in legacy browser)
+        // currently we open nice url link and redirect then
+
+        if (
+          !rewriteLinks ||
+          event.ctrlKey ||
+          event.metaKey ||
+          event.shiftKey ||
+          event.which === 2 ||
+          event.button === 2
+        )
+          return;
+
+        let elm = jqLite(event.target);
+
+        // traverse the DOM up to find first A tag
+        while (nodeName_(elm[0]) !== "a") {
+          // ignore rewriting if no A tag (reached root element, or no parent - removed from document)
+          if (elm[0] === $rootElement[0] || !(elm = elm.parent())[0]) return;
+        }
+
+        if (isString(rewriteLinks) && isUndefined(elm.attr(rewriteLinks)))
+          return;
+
+        let absHref = elm.prop("href");
+        // get the actual href attribute - see
+        // http://msdn.microsoft.com/en-us/library/ie/dd347148(v=vs.85).aspx
+        const relHref = elm.attr("href") || elm.attr("xlink:href");
+
+        if (
+          isObject(absHref) &&
+          absHref.toString() === "[object SVGAnimatedString]"
+        ) {
+          // SVGAnimatedString.animVal should be identical to SVGAnimatedString.baseVal, unless during
+          // an animation.
+          absHref = urlResolve(absHref.animVal).href;
+        }
+
+        // Ignore when url is started with javascript: or mailto:
+        if (IGNORE_URI_REGEXP.test(absHref)) return;
+
+        if (absHref && !elm.attr("target") && !event.isDefaultPrevented()) {
+          if ($location.$$parseLinkUrl(absHref, relHref)) {
+            // We do a preventDefault for all urls that are part of the AngularJS application,
+            // in html5mode and also without, so that we are able to abort navigation without
+            // getting double entries in the location history.
+            event.preventDefault();
+            // update location manually
+            if ($location.absUrl() !== $browser.url()) {
+              $rootScope.$apply();
+            }
+          }
+        }
+      });
+
+      // rewrite hashbang url <> html5 url
+      if ($location.absUrl() !== initialUrl) {
+        $browser.url($location.absUrl(), true);
+      }
+
+      let initializing = true;
+
+      // update $location when $browser url changes
+      $browser.onUrlChange((newUrl, newState) => {
+        if (!startsWith(newUrl, appBaseNoFile)) {
+          // If we are navigating outside of the app then force a reload
+          window.location.href = newUrl;
+          return;
+        }
+
+        $rootScope.$evalAsync(() => {
+          const oldUrl = $location.absUrl();
+          const oldState = $location.$$state;
+          let defaultPrevented;
+          $location.$$parse(newUrl);
+          $location.$$state = newState;
+
+          defaultPrevented = $rootScope.$broadcast(
+            "$locationChangeStart",
+            newUrl,
+            oldUrl,
+            newState,
+            oldState,
+          ).defaultPrevented;
+
+          // if the location was changed by a `$locationChangeStart` handler then stop
+          // processing this location change
+          if ($location.absUrl() !== newUrl) return;
+
+          if (defaultPrevented) {
+            $location.$$parse(oldUrl);
+            $location.$$state = oldState;
+            setBrowserUrlWithFallback(oldUrl, false, oldState);
+          } else {
+            initializing = false;
+            afterLocationChange(oldUrl, oldState);
+          }
+        });
+        if (!$rootScope.$$phase) $rootScope.$digest();
+      });
+
+      // update browser
+      $rootScope.$watch(() => {
+        if (initializing || $location.$$urlUpdatedByLocation) {
+          $location.$$urlUpdatedByLocation = false;
+
+          const oldUrl = $browser.url();
+          const newUrl = $location.absUrl();
+          const oldState = $browser.state();
+          const currentReplace = $location.$$replace;
+          const urlOrStateChanged =
+            !urlsEqual(oldUrl, newUrl) ||
+            ($location.$$html5 && oldState !== $location.$$state);
+
+          if (initializing || urlOrStateChanged) {
+            initializing = false;
+
+            $rootScope.$evalAsync(() => {
+              const newUrl = $location.absUrl();
+              const { defaultPrevented } = $rootScope.$broadcast(
+                "$locationChangeStart",
+                newUrl,
+                oldUrl,
+                $location.$$state,
+                oldState,
+              );
+
+              // if the location was changed by a `$locationChangeStart` handler then stop
+              // processing this location change
+              if ($location.absUrl() !== newUrl) return;
+
+              if (defaultPrevented) {
+                $location.$$parse(oldUrl);
+                $location.$$state = oldState;
+              } else {
+                if (urlOrStateChanged) {
+                  setBrowserUrlWithFallback(
+                    newUrl,
+                    currentReplace,
+                    oldState === $location.$$state ? null : $location.$$state,
+                  );
+                }
+                afterLocationChange(oldUrl, oldState);
+              }
+            });
+          }
+        }
+
+        $location.$$replace = false;
+
+        // we don't need to return anything because $evalAsync will make the digest loop dirty when
+        // there is a change
+      });
+
+      return $location;
+
+      function afterLocationChange(oldUrl, oldState) {
+        $rootScope.$broadcast(
+          "$locationChangeSuccess",
+          $location.absUrl(),
+          oldUrl,
+          $location.$$state,
+          oldState,
+        );
+      }
+    },
+  ];
+}
+
 /**
  * @ngdoc service
  * @name $log
@@ -29229,8 +29077,8 @@ function getValueOf(value) {
  *  service.
  */
 function $ParseProvider() {
-  var cache = createMap();
-  var literals = {
+  const cache = createMap();
+  const literals = {
     true: true,
     false: false,
     null: null,

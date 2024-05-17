@@ -770,7 +770,8 @@ describe("jqLite", () => {
       expect(jqLite(selector).attr("prop")).toEqual("new value");
       expect(jqLite(b).attr("prop")).toEqual("new value 2");
 
-      selector.removeAttr("prop");
+      selector[0].removeAttribute("prop");
+      selector[1].removeAttribute("prop");
       expect(jqLite(a).attr("prop")).toBeFalsy();
       expect(jqLite(b).attr("prop")).toBeFalsy();
     });

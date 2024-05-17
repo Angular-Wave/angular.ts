@@ -135,7 +135,7 @@ describe("ngShow / ngHide", () => {
 //   afterEach(() => {
 //     dealoc(body);
 //     dealoc(element);
-//     body.removeAttr("ng-animation-running");
+//     body[0].removeAttribute("ng-animation-running");
 //   });
 
 //   beforeEach(module("ngAnimateMock"));

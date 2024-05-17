@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
-import { dealoc, jqLite } from "../../src/jqLite";
+import { dealoc, JQLite } from "../../src/jqLite";
 import {
   forEach,
   isFunction,
@@ -44,7 +44,7 @@ function getChildScopes(scope) {
 }
 
 describe("$compile", () => {
-  const $ = jqLite;
+  const $ = JQLite;
   let $rootScope,
     myModule,
     module,
@@ -5048,7 +5048,7 @@ describe("$compile", () => {
     });
 
     it("should handle transcluded svg elements", () => {
-      element = jqLite(
+      element = JQLite(
         "<div><svg-container>" +
           '<circle cx="4" cy="4" r="2"></circle>' +
           "</svg-container></div>",
@@ -5062,7 +5062,7 @@ describe("$compile", () => {
     });
 
     it("should handle custom svg elements inside svg tag", () => {
-      element = jqLite(
+      element = JQLite(
         '<div><svg width="300" height="300">' +
           "<svg-circle></svg-circle>" +
           "</svg></div>",
@@ -5075,7 +5075,7 @@ describe("$compile", () => {
     });
 
     it("should handle transcluded custom svg elements", () => {
-      element = jqLite(
+      element = JQLite(
         "<div><svg-container>" +
           "<svg-circle></svg-circle>" +
           "</svg-container></div>",
@@ -5100,7 +5100,7 @@ describe("$compile", () => {
       "</svg>";
 
     it("should handle foreignObject", () => {
-      element = jqLite(
+      element = JQLite(
         `<div>${
           // By hand (for reference)
           HAND_WRITTEN_SVG
@@ -5128,7 +5128,7 @@ describe("$compile", () => {
     });
 
     it("should handle custom svg containers that transclude to foreignObject that transclude html", () => {
-      element = jqLite(
+      element = JQLite(
         `<div>${
           // By hand (for reference)
           HAND_WRITTEN_SVG
@@ -5156,7 +5156,7 @@ describe("$compile", () => {
     });
 
     it("should handle directives with templates that manually add the transclude further down", () => {
-      element = jqLite(
+      element = JQLite(
         "<div><svg-custom-transclude-container>" +
           '<circle cx="2" cy="2" r="1"></circle></svg-custom-transclude-container>' +
           "</div>",
@@ -5211,14 +5211,14 @@ describe("$compile", () => {
     });
 
     it("should not wrap root text nodes in spans", () => {
-      element = jqLite("<div>   <div>A</div>\n  <div>B</div>C\t\n  </div>");
+      element = JQLite("<div>   <div>A</div>\n  <div>B</div>C\t\n  </div>");
       $compile(element.contents())($rootScope);
       const spans = element.find("span");
       expect(spans.length).toEqual(0);
     });
 
     it("should be able to compile text nodes at the root", () => {
-      element = jqLite("<div>Name: {{name}}<br />\nColor: {{color}}</div>");
+      element = JQLite("<div>Name: {{name}}<br />\nColor: {{color}}</div>");
       $rootScope.name = "Lucas";
       $rootScope.color = "blue";
       $compile(element.contents())($rootScope);
@@ -5230,36 +5230,36 @@ describe("$compile", () => {
       // We compile the contents of element (i.e. not element itself)
       // Then delete these contents and check the cache has been reset to zero
       // Clear cache
-      Object.keys(jqLite.cache).forEach((key) => delete jqLite.cache[key]);
+      Object.keys(JQLite.cache).forEach((key) => delete JQLite.cache[key]);
       window.angular.module("test1", ["ng"]);
       createInjector(["test1"]).invoke(($compile) => {
-        expect(Object.keys(jqLite.cache).length).toEqual(1);
+        expect(Object.keys(JQLite.cache).length).toEqual(1);
         // First with only elements at the top level
-        element = jqLite("<div><div></div></div>");
+        element = JQLite("<div><div></div></div>");
         $compile(element.contents())($rootScope);
-        expect(Object.keys(jqLite.cache).length).toEqual(2);
+        expect(Object.keys(JQLite.cache).length).toEqual(2);
         element.empty();
-        expect(Object.keys(jqLite.cache).length).toEqual(1);
+        expect(Object.keys(JQLite.cache).length).toEqual(1);
 
         // Next with non-empty text nodes at the top level
         // (in this case the compiler will wrap them in a <span>)
-        element = jqLite("<div>xxx</div>");
+        element = JQLite("<div>xxx</div>");
         $compile(element.contents())($rootScope);
         element.empty();
-        expect(Object.keys(jqLite.cache).length).toEqual(1);
+        expect(Object.keys(JQLite.cache).length).toEqual(1);
 
         // Next with comment nodes at the top level
-        element = jqLite("<div><!-- comment --></div>");
+        element = JQLite("<div><!-- comment --></div>");
         $compile(element.contents())($rootScope);
         element.empty();
-        expect(Object.keys(jqLite.cache).length).toEqual(1);
+        expect(Object.keys(JQLite.cache).length).toEqual(1);
 
         // Finally with empty text nodes at the top level
-        element = jqLite("<div>   \n<div></div>   </div>");
+        element = JQLite("<div>   \n<div></div>   </div>");
         $compile(element.contents())($rootScope);
-        expect(Object.keys(jqLite.cache).length).toEqual(2);
+        expect(Object.keys(JQLite.cache).length).toEqual(2);
         element.empty();
-        expect(Object.keys(jqLite.cache).length).toEqual(1);
+        expect(Object.keys(JQLite.cache).length).toEqual(1);
       });
     });
 
@@ -5268,7 +5268,7 @@ describe("$compile", () => {
       // the plugin's context rather than the usual DOM apis are exposed on this element, so
       // childNodes might not exist.
 
-      element = jqLite("<div>{{1+2}}</div>");
+      element = JQLite("<div>{{1+2}}</div>");
 
       try {
         element[0].childNodes[1] = {
@@ -5288,7 +5288,7 @@ describe("$compile", () => {
     });
 
     it('should detect anchor elements with the string "SVG" in the `href` attribute as an anchor', () => {
-      element = jqLite(
+      element = JQLite(
         '<div><a href="/ID_SVG_ID">' +
           '<span ng-if="true">Should render</span>' +
           "</a></div>",
@@ -5310,7 +5310,7 @@ describe("$compile", () => {
         }),
       );
       reloadModules();
-      element = jqLite("<div><div after>A</div></div>");
+      element = JQLite("<div><div after>A</div></div>");
       $compile(element)($rootScope);
       expect(element.text()).toBe("AB");
     });
@@ -5326,7 +5326,7 @@ describe("$compile", () => {
       );
 
       reloadModules();
-      element = jqLite(
+      element = JQLite(
         '<div><div ng-repeat="i in [1,2]"><div after>A</div></div></div>',
       );
       $compile(element)($rootScope);
@@ -5344,7 +5344,7 @@ describe("$compile", () => {
         }),
       );
       reloadModules();
-      element = jqLite("<div><div remove-node></div><div>{{test}}</div></div>");
+      element = JQLite("<div><div remove-node></div><div>{{test}}</div></div>");
       $rootScope.test = "Hello";
       $compile(element)($rootScope);
       $rootScope.$digest();
@@ -6718,7 +6718,7 @@ describe("$compile", () => {
             "mock/hello",
             "<span>3==<span ng-transclude></span></span>",
           );
-          element = jqLite('<b class="hello">{{1+2}}</b>');
+          element = JQLite('<b class="hello">{{1+2}}</b>');
           $compile(element)($rootScope);
           $rootScope.$digest();
           expect(element.text()).toEqual("3==3");
@@ -6735,7 +6735,7 @@ describe("$compile", () => {
               "mock/hello",
               "<span>i=<span ng-transclude></span>;</span>",
             );
-            element = jqLite(
+            element = JQLite(
               `<div><b class=hello ng-repeat="i in [${is}]">{{i}}</b></div>`,
             );
             $compile(element)($rootScope);
@@ -6743,10 +6743,10 @@ describe("$compile", () => {
             expect(element.text()).toEqual(`i=${is.join(";i=")};`);
           }
 
-          it("should work with another library patching jqLite/jQuery.cleanData after Angular", () => {
+          it("should work with another library patching JQLite/jQuery.cleanData after Angular", () => {
             let cleanedCount = 0;
-            const currentCleanData = jqLite.cleanData;
-            jqLite.cleanData = function (elems) {
+            const currentCleanData = JQLite.cleanData;
+            JQLite.cleanData = function (elems) {
               cleanedCount += elems.length;
               // Don't return the output and explicitly pass only the first parameter
               // so that we're sure we're not relying on either of them. jQuery UI patch
@@ -6761,7 +6761,7 @@ describe("$compile", () => {
             expect(cleanedCount).toBe(is.length + 1);
 
             // Restore the previous cleanData.
-            jqLite.cleanData = currentCleanData;
+            JQLite.cleanData = currentCleanData;
           });
         });
 
@@ -8225,7 +8225,7 @@ describe("$compile", () => {
         observer.observe(document.body, { childList: true, subtree: true });
 
         // Run the actual test
-        const base = jqLite('<div>&mdash; {{ "This doesn\'t." }}</div>');
+        const base = JQLite('<div>&mdash; {{ "This doesn\'t." }}</div>');
         element = $compile(base)($rootScope);
         $rootScope.$digest();
         expect(element.text()).toBe("— This doesn't.");
@@ -8240,7 +8240,7 @@ describe("$compile", () => {
         div.appendChild(document.createTextNode("2{{ value }}"));
         div.appendChild(document.createTextNode("3{{ value }}"));
 
-        element = jqLite(div.childNodes);
+        element = JQLite(div.childNodes);
         $compile(element)($rootScope);
         $rootScope.$apply("value = 0");
 
@@ -8588,7 +8588,7 @@ describe("$compile", () => {
       });
 
       it("should not store linkingFns for () => {} branches", () => {
-        element = jqLite('<div name="{{a}}"><span>ignore</span></div>');
+        element = JQLite('<div name="{{a}}"><span>ignore</span></div>');
         const linkingFn = $compile(element);
         // Now prune the branches with no directives
         element.find("span").remove();
@@ -8891,7 +8891,7 @@ describe("$compile", () => {
             attr.$set("disabled", "value");
             expect(element.attr("disabled")).toEqual("disabled");
 
-            element.removeAttr("disabled");
+            element[0].removeAttribute("disabled");
 
             attr.$set("dISaBlEd", "VaLuE");
             expect(element.attr("disabled")).toEqual("disabled");
@@ -8900,24 +8900,24 @@ describe("$compile", () => {
           it("should call removeAttr for boolean attrs when value is `false`", () => {
             attr.$set("disabled", "value");
 
-            spyOn(jqLite.prototype, "attr").and.callThrough();
-            spyOn(jqLite.prototype, "removeAttr").and.callThrough();
+            spyOn(JQLite.prototype, "attr").and.callThrough();
+            spyOn(element[0], "removeAttribute").and.callThrough();
 
             attr.$set("disabled", false);
 
             expect(element.attr).not.toHaveBeenCalled();
-            expect(element.removeAttr).toHaveBeenCalledWith("disabled");
+            expect(element[0].removeAttribute).toHaveBeenCalledWith("disabled");
             expect(element.attr("disabled")).toEqual(undefined);
 
             attr.$set("disabled", "value");
 
             element.attr.calls.reset();
-            element.removeAttr.calls.reset();
+            element[0].removeAttribute.calls.reset();
 
             attr.$set("dISaBlEd", false);
 
             expect(element.attr).not.toHaveBeenCalled();
-            expect(element.removeAttr).toHaveBeenCalledWith("disabled");
+            expect(element[0].removeAttribute).toHaveBeenCalledWith("disabled");
             expect(element.attr("disabled")).toEqual(undefined);
           });
 
@@ -13784,9 +13784,9 @@ describe("$compile", () => {
           $rootScope.$apply();
           expect(element.text()).toEqual("W:isoT:root;");
           expect(
-            jqLite(jqLite(element.find("li")[1]).contents()[0]).text(),
+            JQLite(JQLite(element.find("li")[1]).contents()[0]).text(),
           ).toEqual("T:root");
-          expect(jqLite(element.find("span")[0]).text()).toEqual(";");
+          expect(JQLite(element.find("span")[0]).text()).toEqual(";");
         });
 
         it("should transclude transcluded content", () => {
@@ -14058,28 +14058,28 @@ describe("$compile", () => {
         });
 
         it('should not leak if two "element" transclusions are on the same element', () => {
-          const cacheSize = Object.keys(jqLite.cache).length;
+          const cacheSize = Object.keys(JQLite.cache).length;
 
           element = $compile(
             '<div><div ng-repeat="x in xs" ng-if="x==1">{{x}}</div></div>',
           )($rootScope);
-          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 1);
+          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 1);
 
           $rootScope.$apply("xs = [0,1]");
-          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 2);
+          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 2);
 
           $rootScope.$apply("xs = [0]");
-          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 1);
+          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 1);
 
           $rootScope.$apply("xs = []");
-          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 1);
+          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 1);
 
           element.remove();
-          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 0);
+          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 0);
         });
 
         it('should not leak if two "element" transclusions are on the same element', () => {
-          const cacheSize = Object.keys(jqLite.cache).length;
+          const cacheSize = Object.keys(JQLite.cache).length;
           element = $compile(
             '<div><div ng-repeat="x in xs" ng-if="val">{{x}}</div></div>',
           )($rootScope);
@@ -14087,20 +14087,20 @@ describe("$compile", () => {
           $rootScope.$apply("xs = [0,1]");
           // At this point we have a bunch of comment placeholders but no real transcluded elements
           // So the cache only contains the root element's data
-          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 1);
+          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 1);
 
           $rootScope.$apply("val = true");
           // Now we have two concrete transcluded elements plus some comments so two more cache items
-          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 3);
+          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 3);
 
           $rootScope.$apply("val = false");
           // Once again we only have comments so no transcluded elements and the cache is back to just
           // the root element
-          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 1);
+          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 1);
 
           element.remove();
           // Now we've even removed the root element along with its cache
-          expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 0);
+          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 0);
         });
 
         // it("should not leak when continuing the compilation of elements on a scope that was destroyed", () => {
@@ -14125,7 +14125,7 @@ describe("$compile", () => {
         //       link: linkFn,
         //     }));
         //   initInjector("test1");
-        //   const cacheSize = Object.keys(jqLite.cache).length;
+        //   const cacheSize = Object.keys(JQLite.cache).length;
         //   $templateCache.put("red.html", "<p>red</p>");
         //   const template = $compile(
         //     '<div ng-controller="Leak">' +
@@ -14140,7 +14140,7 @@ describe("$compile", () => {
         //   $rootScope.$digest();
 
         //   expect(linkFn).toHaveBeenCalled();
-        //   expect(Object.keys(jqLite.cache).length).toEqual(cacheSize + 2);
+        //   expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 2);
 
         //   $templateCache.removeAll();
         //   const destroyedScope = $rootScope.$new();
@@ -14171,7 +14171,7 @@ describe("$compile", () => {
             firstRepeatedElem = element.children(".ng-scope").eq(0);
 
             expect(firstRepeatedElem.data("$scope")).toBeDefined();
-            privateData = jqLite._data(firstRepeatedElem[0]);
+            privateData = JQLite._data(firstRepeatedElem[0]);
             expect(privateData.events).toBeDefined();
 
             expect(privateData.events.click).toBeDefined();
@@ -14187,7 +14187,7 @@ describe("$compile", () => {
 
             expect(destroyCount).toBe(2);
             expect(firstRepeatedElem.data("$scope")).not.toBeDefined();
-            privateData = jqLite._data(firstRepeatedElem[0]);
+            privateData = JQLite._data(firstRepeatedElem[0]);
             expect(privateData && privateData.events).not.toBeDefined();
           }
 
@@ -14210,8 +14210,8 @@ describe("$compile", () => {
             $rootScope,
           );
           $rootScope.$apply();
-          expect(jqLite(element.find("span")[0]).text()).toEqual("I:");
-          expect(jqLite(element.find("span")[1]).text()).toEqual("T:true");
+          expect(JQLite(element.find("span")[0]).text()).toEqual("I:");
+          expect(JQLite(element.find("span")[1]).text()).toEqual("T:true");
         });
 
         it("should clear contents of the ng-transclude element before appending transcluded content if transcluded content exists", () => {
@@ -14246,7 +14246,7 @@ describe("$compile", () => {
             template: "<div ng-transclude>fallback content</div>",
           }));
           initInjector("test1");
-          element = jqLite("<div trans></div>");
+          element = JQLite("<div trans></div>");
           const linkfn = $compile(element);
           expect(element.html()).toEqual('<div ng-transclude=""></div>');
           linkfn($rootScope);
@@ -14738,7 +14738,7 @@ describe("$compile", () => {
             }),
           );
           initInjector("test1");
-          element = jqLite("<div transclude></div>");
+          element = JQLite("<div transclude></div>");
           element[0].appendChild(document.createTextNode("1{{ value }}"));
           element[0].appendChild(document.createTextNode("2{{ value }}"));
           element[0].appendChild(document.createTextNode("3{{ value }}"));
@@ -15076,23 +15076,23 @@ describe("$compile", () => {
 
           it("should not leak memory with nested transclusion", () => {
             let size;
-            const initialSize = Object.keys(jqLite.cache).length;
+            const initialSize = Object.keys(JQLite.cache).length;
 
-            element = jqLite(
+            element = JQLite(
               '<div><ul><li ng-repeat="n in nums">{{n}} => <i ng-if="0 === n%2">Even</i><i ng-if="1 === n%2">Odd</i></li></ul></div>',
             );
             $compile(element)($rootScope.$new());
 
             $rootScope.nums = [0, 1, 2];
             $rootScope.$apply();
-            size = Object.keys(jqLite.cache).length;
+            size = Object.keys(JQLite.cache).length;
 
             $rootScope.nums = [3, 4, 5];
             $rootScope.$apply();
-            expect(Object.keys(jqLite.cache).length).toEqual(size);
+            expect(Object.keys(JQLite.cache).length).toEqual(size);
 
             element.remove();
-            expect(Object.keys(jqLite.cache).length).toEqual(initialSize);
+            expect(Object.keys(JQLite.cache).length).toEqual(initialSize);
           });
         });
 
@@ -15187,7 +15187,7 @@ describe("$compile", () => {
                 scope: {},
                 link: function link(scope, element, attrs) {
                   const foo = element[0].querySelector(".foo");
-                  scope.children = jqLite(foo).children().length;
+                  scope.children = JQLite(foo).children().length;
                 },
                 template:
                   "<div>" +
@@ -15381,7 +15381,7 @@ describe("$compile", () => {
           }),
         );
         initInjector("test1");
-        const element = jqLite(
+        const element = JQLite(
           "<div>before<div transclude></div>after</div>",
         ).contents();
         expect(element.length).toEqual(3);
@@ -16252,7 +16252,7 @@ describe("$compile", () => {
         }),
       );
       initInjector("test1");
-      element = jqLite("<div transclude></div>");
+      element = JQLite("<div transclude></div>");
       element[0].appendChild(document.createTextNode("1{{ value }}"));
       element[0].appendChild(document.createTextNode("2{{ value }}"));
       element[0].appendChild(document.createTextNode("3{{ value }}"));
@@ -17496,7 +17496,7 @@ describe("$compile", () => {
           "<div></div>",
       )($rootScope);
       $rootScope.$digest();
-      element = jqLite(element[0].parentNode.childNodes); // reset because repeater is top level.
+      element = JQLite(element[0].parentNode.childNodes); // reset because repeater is top level.
       expect(element.text()).toEqual("1A1B;2A2B;");
     });
 
@@ -17522,7 +17522,7 @@ describe("$compile", () => {
           "<div></div>",
       )($rootScope);
       $rootScope.$digest();
-      element = jqLite(element[0].parentNode.childNodes); // reset because repeater is top level.
+      element = JQLite(element[0].parentNode.childNodes); // reset because repeater is top level.
       expect(element.text()).toEqual("1A..1B;2A..2B;");
     });
 
@@ -17537,7 +17537,7 @@ describe("$compile", () => {
           "<div></div>",
       )($rootScope);
       $rootScope.$digest();
-      element = jqLite(element[0].parentNode.childNodes); // reset because repeater is top level.
+      element = JQLite(element[0].parentNode.childNodes); // reset because repeater is top level.
       expect(element.text()).toEqual("1(2-23-3)1;2(2-23-3)2;");
     });
 
@@ -17783,7 +17783,7 @@ describe("$compile", () => {
 
   //   it("should automatically fire the addClass and removeClass animation hooks", () => {
   //     let data;
-  //     const element = jqLite('<div class="{{val1}} {{val2}} fire"></div>');
+  //     const element = JQLite('<div class="{{val1}} {{val2}} fire"></div>');
   //     $compile(element)($rootScope);
 
   //     $rootScope.$digest();
@@ -17881,11 +17881,11 @@ describe("$compile", () => {
     }
 
     function testCompileLinkDataCleanup(template) {
-      const toCompile = jqLite(template);
+      const toCompile = JQLite(template);
 
       const preCompiledChildren = getAll(toCompile);
       forEach(preCompiledChildren, (element, i) => {
-        jqLite.data(element, "foo", `template#${i}`);
+        JQLite.data(element, "foo", `template#${i}`);
       });
 
       const linkedElements = $compile(toCompile)($rootScope);
@@ -17893,10 +17893,10 @@ describe("$compile", () => {
       linkedElements.remove();
 
       forEach(preCompiledChildren, (element, i) => {
-        expect(jqLite.hasData(element)).toBe(false, `template#${i}`);
+        expect(JQLite.hasData(element)).toBe(false, `template#${i}`);
       });
       forEach(getAll(linkedElements), (element, i) => {
-        expect(jqLite.hasData(element)).toBe(false, `linked#${i}`);
+        expect(JQLite.hasData(element)).toBe(false, `linked#${i}`);
       });
     }
 

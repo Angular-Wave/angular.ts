@@ -64,7 +64,6 @@ import {
  * - [`prepend()`](http://api.jquery.com/prepend/)
  * - [`prop()`](http://api.jquery.com/prop/)
  * - [`remove()`](http://api.jquery.com/remove/)
- * - [`removeAttr()`](http://api.jquery.com/removeAttr/) - Does not support multiple attributes
  * - [`removeClass()`](http://api.jquery.com/removeClass/) - Does not support a function as first argument
  * - [`removeData()`](http://api.jquery.com/removeData/)
  * - [`replaceWith()`](http://api.jquery.com/replaceWith/)
@@ -103,18 +102,17 @@ import {
  * @returns {Object} jQuery object.
  */
 
-JQLite.expando = "ng339";
+JQLite.cache = {};
 
-const jqCache = (JQLite.cache = {});
+const EXPANDO = "ngId";
 let jqId = 1;
 
-/*
+/**
  * !!! This is an undocumented "private" function !!!
+ * @param {JQLite|Element} node
+ * @returns
  */
-JQLite._data = function (node) {
-  // jQuery always returns an object on cache miss
-  return this.cache[node[this.expando]] || {};
-};
+JQLite._data = (node) => JQLite.cache[node[EXPANDO]] || {};
 
 function jqNextId() {
   return ++jqId;
@@ -196,7 +194,7 @@ function jqLiteAcceptsData(node) {
 }
 
 function jqLiteHasData(node) {
-  for (const key in jqCache[node.ng339]) {
+  for (const key in JQLite.cache[node[EXPANDO]]) {
     return true;
   }
   return false;
@@ -325,15 +323,15 @@ function isEmptyObject(obj) {
 }
 
 function removeIfEmptyData(element) {
-  const expandoId = element.ng339;
-  const expandoStore = expandoId && jqCache[expandoId];
+  const expandoId = element[EXPANDO];
+  const expandoStore = expandoId && JQLite.cache[expandoId];
 
   const events = expandoStore && expandoStore.events;
   const data = expandoStore && expandoStore.data;
 
   if ((!data || isEmptyObject(data)) && (!events || isEmptyObject(events))) {
-    delete jqCache[expandoId];
-    element.ng339 = undefined; // don't delete DOM expandos. IE and Chrome don't like it
+    delete JQLite.cache[expandoId];
+    element[EXPANDO] = undefined; // don't delete DOM expandos. IE and Chrome don't like it
   }
 }
 
@@ -381,8 +379,8 @@ function jqLiteOff(element, type, fn, unsupported) {
 }
 
 function jqLiteRemoveData(element, name) {
-  const expandoId = element.ng339;
-  const expandoStore = expandoId && jqCache[expandoId];
+  const expandoId = element[EXPANDO];
+  const expandoStore = expandoId && JQLite.cache[expandoId];
 
   if (expandoStore) {
     if (name) {
@@ -396,12 +394,12 @@ function jqLiteRemoveData(element, name) {
 }
 
 function jqLiteExpandoStore(element, createIfNecessary) {
-  let expandoId = element.ng339;
-  let expandoStore = expandoId && jqCache[expandoId];
+  let expandoId = element[EXPANDO];
+  let expandoStore = expandoId && JQLite.cache[expandoId];
 
   if (createIfNecessary && !expandoStore) {
-    element.ng339 = expandoId = jqNextId();
-    expandoStore = jqCache[expandoId] = {
+    element[EXPANDO] = expandoId = jqNextId();
+    expandoStore = JQLite.cache[expandoId] = {
       events: {},
       data: {},
       handle: undefined,
@@ -689,10 +687,6 @@ forEach(
 
     injector(element) {
       return jqLiteInheritedData(element, "$injector");
-    },
-
-    removeAttr(element, name) {
-      element.removeAttribute(name);
     },
 
     hasClass: jqLiteHasClass,

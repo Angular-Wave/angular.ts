@@ -1994,8 +1994,8 @@ export const literals = {
  *  service.
  */
 export function $ParseProvider() {
-  var cache = createMap();
-  var literals = {
+  const cache = createMap();
+  const literals = {
     true: true,
     false: false,
     null: null,

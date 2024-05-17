@@ -6,6 +6,11 @@ import { IAngularBootstrapConfig, IErrorHandlingConfig, IModule, Injectable, aut
 
 ///////////////////////////////////////////////////////////////////////////
 interface IAngularStatic {
+    /**
+     * Internal cache
+     */
+    cache: Object;
+
     bind(context: any, fn: Function, ...args: any[]): Function;
 
     /**
@@ -25,11 +30,9 @@ interface IAngularStatic {
     ): auto.IInjectorService;
 
     /**
-     * Wraps a raw DOM element or HTML string as a jQuery element.
-     *
-     * If jQuery is available, angular.element is an alias for the jQuery function. If jQuery is not available, angular.element delegates to Angular's built-in subset of jQuery, called "jQuery lite" or "jqLite."
+     * Wraps a raw DOM element or HTML string in JQLite.
      */
-    element: JQueryStatic;
+    element: JQLite;
     /**
      * Configure several aspects of error handling in AngularJS if used as a setter
      * or return the current configuration if used as a getter

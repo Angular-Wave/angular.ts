@@ -24,7 +24,7 @@ import {
   isValidObjectMaxDepth,
   minErrConfig,
 } from "./core/utils";
-import { jqLite, startingTag } from "./jqLite";
+import { JQLite, jqLite, startingTag } from "./jqLite";
 import { createInjector } from "./injector";
 
 /**
@@ -51,6 +51,11 @@ const moduleCache = {};
  */
 export class Angular {
   constructor() {
+    /**
+     * @type {Object} proxy to Node cache
+     */
+    this.cache = JQLite.cache;
+
     this.element = undefined;
     this.version = {
       full: "",

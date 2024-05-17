@@ -29,7 +29,7 @@ describe("ngSwitch", () => {
         '<div ng-switch-when="true">true:{{name}}</div>' +
         "</div>",
     )($scope);
-    expect(element.html()).toEqual(
+    expect(element[0].innerHTML).toEqual(
       "<!-- ngSwitchWhen: 1 --><!-- ngSwitchWhen: 2 --><!-- ngSwitchWhen: true -->",
     );
     $scope.select = 1;
@@ -58,7 +58,7 @@ describe("ngSwitch", () => {
         '<li ng-switch-when="true">true:{{name}}</li>' +
         "</ul>",
     )($scope);
-    expect(element.html()).toEqual(
+    expect(element[0].innerHTML).toEqual(
       "<!-- ngSwitchWhen: 1 -->" +
         "<!-- ngSwitchWhen: 1 -->" +
         "<!-- ngSwitchWhen: 2 -->" +
@@ -495,7 +495,7 @@ describe("ngSwitch", () => {
 //   let $rootElement;
 
 //   function html(content) {
-//     $rootElement.html(content);
+//     $rootElement[0].innerHTML = content;
 //     element = $rootElement.children().eq(0);
 //     return element;
 //   }
