@@ -369,7 +369,7 @@ export const $AnimateCssProvider = [
         $$rAFScheduler,
         $$animateQueue,
       ) {
-        const applyAnimationClasses = applyAnimationClassesFactory(jqLite);
+        const applyAnimationClasses = applyAnimationClassesFactory();
 
         function computeCachedCssStyles(
           node,

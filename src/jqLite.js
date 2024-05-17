@@ -52,7 +52,6 @@ import {
  * - [`contents()`](http://api.jquery.com/contents/)
  * - [`css()`](http://api.jquery.com/css/) - Only retrieves inline-styles, does not call `getComputedStyle()`.
  * - [`data()`](http://api.jquery.com/data/)
- * - [`detach()`](http://api.jquery.com/detach/)
  * - [`empty()`](http://api.jquery.com/empty/)
  * - [`eq()`](http://api.jquery.com/eq/)
  * - [`find()`](http://api.jquery.com/find/) - Limited to lookups by tag name
@@ -179,18 +178,20 @@ export function jqLiteIsTextNode(html) {
 
 /**
  *
- * @param {Node} node
+ * @param {Element} node
  * @returns {boolean}
  */
-function jqLiteAcceptsData(node) {
+function elementAcceptsData(node) {
   // The window object can accept data but has no nodeType
   // Otherwise we are only interested in elements (1) and documents (9)
-  const nodeType = node.nodeType;
-  return (
-    nodeType === Node.ELEMENT_NODE ||
-    !nodeType ||
-    nodeType === Node.DOCUMENT_NODE
-  );
+  switch (node.nodeType) {
+    case Node.ELEMENT_NODE:
+    case Node.DOCUMENT_NODE:
+    case undefined:
+      return true;
+    default:
+      return false;
+  }
 }
 
 function jqLiteHasData(node) {
@@ -305,7 +306,7 @@ export function jqLiteClone(element) {
 
 export function dealoc(element, onlyDescendants) {
   if (!element) return;
-  if (!onlyDescendants && jqLiteAcceptsData(element))
+  if (!onlyDescendants && elementAcceptsData(element))
     jqLiteCleanData([element]);
 
   if (element.querySelectorAll) {
@@ -410,7 +411,7 @@ function jqLiteExpandoStore(element, createIfNecessary) {
 }
 
 function jqLiteData(element, key, value) {
-  if (jqLiteAcceptsData(element)) {
+  if (elementAcceptsData(element)) {
     let prop;
 
     const isSimpleSetter = isDefined(value);
@@ -922,7 +923,6 @@ function specialMouseHandlerWrapper(target, event, handler) {
 forEach(
   {
     removeData: jqLiteRemoveData,
-
     on: function jqLiteOn(element, type, fn, unsupported) {
       if (isDefined(unsupported))
         throw jqLiteMinErr(
@@ -931,7 +931,7 @@ forEach(
         );
 
       // Do not add event handlers to non-elements because they will not be cleaned up.
-      if (!jqLiteAcceptsData(element)) {
+      if (!elementAcceptsData(element)) {
         return;
       }
 
@@ -1153,26 +1153,6 @@ forEach(
     };
   },
 );
-
-// Provider for private $$jqLite service
-export function $$jqLiteProvider() {
-  this.$get = function $$jqLite() {
-    return extend(JQLite, {
-      hasClass(node, classes) {
-        if (node.attr) node = node[0];
-        return jqLiteHasClass(node, classes);
-      },
-      addClass(node, classes) {
-        if (node.attr) node = node[0];
-        return jqLiteAddClass(node, classes);
-      },
-      removeClass(node, classes) {
-        if (node.attr) node = node[0];
-        return jqLiteRemoveClass(node, classes);
-      },
-    });
-  };
-}
 
 /**
  *

@@ -10,7 +10,6 @@ import {
   extend,
 } from "../core/utils";
 import {
-  ELEMENT_NODE,
   NG_ANIMATE_CHILDREN_DATA,
   applyAnimationClassesFactory,
   applyAnimationStyles,
@@ -240,7 +239,7 @@ export const $$AnimateQueueProvider = [
               return classNameFilter.test(className);
             };
 
-        const applyAnimationClasses = applyAnimationClassesFactory(jqLite);
+        const applyAnimationClasses = applyAnimationClassesFactory();
 
         function normalizeAnimationDetails(element, animation) {
           return mergeAnimationDetails(element, animation, {});
@@ -550,7 +549,6 @@ export const $$AnimateQueueProvider = [
                   normalizeAnimationDetails(element, newAnimation);
                 } else {
                   applyGeneratedPreparationClasses(
-                    jqLite,
                     element,
                     isStructural ? event : null,
                     options,
@@ -772,7 +770,7 @@ export const $$AnimateQueueProvider = [
               rootNodeDetected = parentNode === rootNode;
             }
 
-            if (parentNode.nodeType !== ELEMENT_NODE) {
+            if (parentNode.nodeType !== Node.ELEMENT_NODE) {
               // no point in inspecting the #document element
               break;
             }

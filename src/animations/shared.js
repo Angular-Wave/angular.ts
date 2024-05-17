@@ -1,9 +1,6 @@
 import { forEach, isArray, isString, minErr, extend } from "../core/utils";
 import { jqLite } from "../jqLite";
 
-export const ELEMENT_NODE = 1;
-export const COMMENT_NODE = 8;
-
 export const ADD_CLASS_SUFFIX = "-add";
 export const REMOVE_CLASS_SUFFIX = "-remove";
 export const EVENT_CLASS_PREFIX = "ng-";
@@ -134,7 +131,7 @@ export function stripCommentsFromElement(element) {
         // there is no point of stripping anything if the element
         // is the only element within the jqLite wrapper.
         // (it's important that we retain the element instance.)
-        if (element[0].nodeType === ELEMENT_NODE) {
+        if (element[0].nodeType === Node.ELEMENT_NODE) {
           return element;
         }
         break;
@@ -144,7 +141,7 @@ export function stripCommentsFromElement(element) {
     }
   }
 
-  if (element.nodeType === ELEMENT_NODE) {
+  if (element.nodeType === Node.ELEMENT_NODE) {
     return jqLite(element);
   }
 }
@@ -153,32 +150,20 @@ export function extractElementNode(element) {
   if (!element[0]) return element;
   for (let i = 0; i < element.length; i++) {
     const elm = element[i];
-    if (elm.nodeType === ELEMENT_NODE) {
+    if (elm.nodeType === Node.ELEMENT_NODE) {
       return elm;
     }
   }
 }
 
-export function $$addClass($$jqLite, element, className) {
-  forEach(element, (elm) => {
-    $$jqLite.addClass(elm, className);
-  });
-}
-
-export function $$removeClass($$jqLite, element, className) {
-  forEach(element, (elm) => {
-    $$jqLite.removeClass(elm, className);
-  });
-}
-
-export function applyAnimationClassesFactory($$jqLite) {
+export function applyAnimationClassesFactory() {
   return function (element, options) {
     if (options.addClass) {
-      $$addClass($$jqLite, element, options.addClass);
+      element[0].classList.add(options.addClass);
       options.addClass = null;
     }
     if (options.removeClass) {
-      $$removeClass($$jqLite, element, options.removeClass);
+      element[0].classList.remove(options.removeClass);
       options.removeClass = null;
     }
   };
@@ -324,12 +309,7 @@ export function getDomNode(element) {
   return element instanceof jqLite ? element[0] : element;
 }
 
-export function applyGeneratedPreparationClasses(
-  $$jqLite,
-  element,
-  event,
-  options,
-) {
+export function applyGeneratedPreparationClasses(element, event, options) {
   let classes = "";
   if (event) {
     classes = pendClasses(event, EVENT_CLASS_PREFIX, true);

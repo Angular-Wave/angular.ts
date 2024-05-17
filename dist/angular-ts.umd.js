@@ -1372,7 +1372,6 @@
    * - [`contents()`](http://api.jquery.com/contents/)
    * - [`css()`](http://api.jquery.com/css/) - Only retrieves inline-styles, does not call `getComputedStyle()`.
    * - [`data()`](http://api.jquery.com/data/)
-   * - [`detach()`](http://api.jquery.com/detach/)
    * - [`empty()`](http://api.jquery.com/empty/)
    * - [`eq()`](http://api.jquery.com/eq/)
    * - [`find()`](http://api.jquery.com/find/) - Limited to lookups by tag name
@@ -1499,18 +1498,20 @@
 
   /**
    *
-   * @param {Node} node
+   * @param {Element} node
    * @returns {boolean}
    */
-  function jqLiteAcceptsData(node) {
+  function elementAcceptsData(node) {
     // The window object can accept data but has no nodeType
     // Otherwise we are only interested in elements (1) and documents (9)
-    const nodeType = node.nodeType;
-    return (
-      nodeType === Node.ELEMENT_NODE ||
-      !nodeType ||
-      nodeType === Node.DOCUMENT_NODE
-    );
+    switch (node.nodeType) {
+      case Node.ELEMENT_NODE:
+      case Node.DOCUMENT_NODE:
+      case undefined:
+        return true;
+      default:
+        return false;
+    }
   }
 
   function jqLiteHasData(node) {
@@ -1625,7 +1626,7 @@
 
   function dealoc(element, onlyDescendants) {
     if (!element) return;
-    if (!onlyDescendants && jqLiteAcceptsData(element))
+    if (!onlyDescendants && elementAcceptsData(element))
       jqLiteCleanData([element]);
 
     if (element.querySelectorAll) {
@@ -1730,7 +1731,7 @@
   }
 
   function jqLiteData(element, key, value) {
-    if (jqLiteAcceptsData(element)) {
+    if (elementAcceptsData(element)) {
       let prop;
 
       const isSimpleSetter = isDefined(value);
@@ -2242,7 +2243,6 @@
   forEach(
     {
       removeData: jqLiteRemoveData,
-
       on: function jqLiteOn(element, type, fn, unsupported) {
         if (isDefined(unsupported))
           throw jqLiteMinErr(
@@ -2251,7 +2251,7 @@
           );
 
         // Do not add event handlers to non-elements because they will not be cleaned up.
-        if (!jqLiteAcceptsData(element)) {
+        if (!elementAcceptsData(element)) {
           return;
         }
 
@@ -2473,26 +2473,6 @@
       };
     },
   );
-
-  // Provider for private $$jqLite service
-  function $$jqLiteProvider() {
-    this.$get = function $$jqLite() {
-      return extend(JQLite, {
-        hasClass(node, classes) {
-          if (node.attr) node = node[0];
-          return jqLiteHasClass(node, classes);
-        },
-        addClass(node, classes) {
-          if (node.attr) node = node[0];
-          return jqLiteAddClass(node, classes);
-        },
-        removeClass(node, classes) {
-          if (node.attr) node = node[0];
-          return jqLiteRemoveClass(node, classes);
-        },
-      });
-    };
-  }
 
   /**
    *
@@ -31392,8 +31372,6 @@
     };
   }
 
-  const ELEMENT_NODE = 1;
-
   const ADD_CLASS_SUFFIX = "-add";
   const REMOVE_CLASS_SUFFIX = "-remove";
   const EVENT_CLASS_PREFIX = "ng-";
@@ -31507,7 +31485,7 @@
           // there is no point of stripping anything if the element
           // is the only element within the jqLite wrapper.
           // (it's important that we retain the element instance.)
-          if (element[0].nodeType === ELEMENT_NODE) {
+          if (element[0].nodeType === Node.ELEMENT_NODE) {
             return element;
           }
           break;
@@ -31517,7 +31495,7 @@
       }
     }
 
-    if (element.nodeType === ELEMENT_NODE) {
+    if (element.nodeType === Node.ELEMENT_NODE) {
       return jqLite(element);
     }
   }
@@ -31526,32 +31504,20 @@
     if (!element[0]) return element;
     for (let i = 0; i < element.length; i++) {
       const elm = element[i];
-      if (elm.nodeType === ELEMENT_NODE) {
+      if (elm.nodeType === Node.ELEMENT_NODE) {
         return elm;
       }
     }
   }
 
-  function $$addClass($$jqLite, element, className) {
-    forEach(element, (elm) => {
-      $$jqLite.addClass(elm, className);
-    });
-  }
-
-  function $$removeClass($$jqLite, element, className) {
-    forEach(element, (elm) => {
-      $$jqLite.removeClass(elm, className);
-    });
-  }
-
-  function applyAnimationClassesFactory($$jqLite) {
+  function applyAnimationClassesFactory() {
     return function (element, options) {
       if (options.addClass) {
-        $$addClass($$jqLite, element, options.addClass);
+        element[0].classList.add(options.addClass);
         options.addClass = null;
       }
       if (options.removeClass) {
-        $$removeClass($$jqLite, element, options.removeClass);
+        element[0].classList.remove(options.removeClass);
         options.removeClass = null;
       }
     };
@@ -31697,12 +31663,7 @@
     return element instanceof jqLite ? element[0] : element;
   }
 
-  function applyGeneratedPreparationClasses(
-    $$jqLite,
-    element,
-    event,
-    options,
-  ) {
+  function applyGeneratedPreparationClasses(element, event, options) {
     let classes = "";
     if (event) {
       classes = pendClasses(event, EVENT_CLASS_PREFIX, true);
@@ -31894,7 +31855,7 @@
           $$animateCache,
         ) {
           const animationQueue = [];
-          const applyAnimationClasses = applyAnimationClassesFactory(jqLite);
+          const applyAnimationClasses = applyAnimationClassesFactory();
 
           function sortAnimations(animations) {
             const tree = { children: [] };
@@ -32740,7 +32701,7 @@
                 return classNameFilter.test(className);
               };
 
-          const applyAnimationClasses = applyAnimationClassesFactory(jqLite);
+          const applyAnimationClasses = applyAnimationClassesFactory();
 
           function normalizeAnimationDetails(element, animation) {
             return mergeAnimationDetails(element, animation, {});
@@ -33050,7 +33011,6 @@
                     normalizeAnimationDetails(element, newAnimation);
                   } else {
                     applyGeneratedPreparationClasses(
-                      jqLite,
                       element,
                       isStructural ? event : null,
                       options,
@@ -33272,7 +33232,7 @@
                 rootNodeDetected = parentNode === rootNode;
               }
 
-              if (parentNode.nodeType !== ELEMENT_NODE) {
+              if (parentNode.nodeType !== Node.ELEMENT_NODE) {
                 // no point in inspecting the #document element
                 break;
               }
@@ -33730,7 +33690,7 @@
           $$rAFScheduler,
           $$animateQueue,
         ) {
-          const applyAnimationClasses = applyAnimationClassesFactory(jqLite);
+          const applyAnimationClasses = applyAnimationClassesFactory();
 
           function computeCachedCssStyles(
             node,
@@ -34786,7 +34746,7 @@
         "$injector",
         "$$AnimateRunner",
         function ($injector, $$AnimateRunner) {
-          const applyAnimationClasses = applyAnimationClassesFactory(jqLite);
+          const applyAnimationClasses = applyAnimationClassesFactory();
           // $animateJs(element, 'enter');
           return function (element, event, classes, options) {
             let animationClosed = false;
@@ -37457,7 +37417,6 @@
             $location: $LocationProvider,
             $log: $LogProvider,
             $parse: $ParseProvider,
-            $$jqLite: $$jqLiteProvider,
             $rootScope: $RootScopeProvider,
             $q: $QProvider,
             $$q: $$QProvider,

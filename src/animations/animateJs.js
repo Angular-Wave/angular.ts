@@ -1,4 +1,3 @@
-import { jqLite } from "../jqLite";
 import { forEach, isArray, isObject, isFunction } from "../core/utils";
 import {
   applyAnimationClassesFactory,
@@ -17,7 +16,7 @@ export const $$AnimateJsProvider = [
       "$injector",
       "$$AnimateRunner",
       function ($injector, $$AnimateRunner) {
-        const applyAnimationClasses = applyAnimationClassesFactory(jqLite);
+        const applyAnimationClasses = applyAnimationClassesFactory();
         // $animateJs(element, 'enter');
         return function (element, event, classes, options) {
           let animationClosed = false;

@@ -45,7 +45,7 @@ export const $$AnimationProvider = [
         $$animateCache,
       ) {
         const animationQueue = [];
-        const applyAnimationClasses = applyAnimationClassesFactory(jqLite);
+        const applyAnimationClasses = applyAnimationClassesFactory();
 
         function sortAnimations(animations) {
           const tree = { children: [] };

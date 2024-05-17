@@ -1,5 +1,4 @@
 import { $CompileProvider } from "./core/compile";
-import { $$jqLiteProvider } from "./jqLite";
 import { htmlAnchorDirective } from "./directive/a";
 import {
   inputDirective,
@@ -195,7 +194,6 @@ export function publishExternalAPI() {
           $location: $LocationProvider,
           $log: $LogProvider,
           $parse: $ParseProvider,
-          $$jqLite: $$jqLiteProvider,
           $rootScope: $RootScopeProvider,
           $q: $QProvider,
           $$q: $$QProvider,
