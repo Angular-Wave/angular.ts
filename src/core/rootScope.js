@@ -764,6 +764,9 @@ class Scope {
     let dirty;
     let ttl = TTL;
     let next;
+    /**
+     * @type {angular.IScope}
+     */
     let current;
     const target = $$asyncQueue.length ? this.$root : this;
     const watchLog = [];

@@ -15,6 +15,7 @@ import {
   shallowCopy,
   trim,
 } from "./core/utils";
+import { CACHE } from "./core/cache";
 
 /**
  * @ngdoc function
@@ -101,7 +102,7 @@ import {
  * @returns {Object} jQuery object.
  */
 
-JQLite.cache = {};
+JQLite.cache = CACHE;
 
 const EXPANDO = "ngId";
 let jqId = 1;
@@ -111,7 +112,7 @@ let jqId = 1;
  * @param {JQLite|Element} node
  * @returns
  */
-JQLite._data = (node) => JQLite.cache[node[EXPANDO]] || {};
+JQLite._data = (node) => JQLite.cache.get(node[EXPANDO]) || {};
 
 function jqNextId() {
   return ++jqId;
@@ -195,7 +196,7 @@ function elementAcceptsData(node) {
 }
 
 function jqLiteHasData(node) {
-  for (const key in JQLite.cache[node[EXPANDO]]) {
+  for (const key in JQLite.cache.get(node[EXPANDO])) {
     return true;
   }
   return false;
@@ -323,15 +324,18 @@ function isEmptyObject(obj) {
   return true;
 }
 
+/**
+ * If `ExpandoStore.data` and `ExpandoStore.events` are empty,
+ * then delete element's `ExpandoStore` and set its `ExpandoId`
+ * to undefined.
+ * @param {Element} element
+ */
 function removeIfEmptyData(element) {
   const expandoId = element[EXPANDO];
-  const expandoStore = expandoId && JQLite.cache[expandoId];
-
-  const events = expandoStore && expandoStore.events;
-  const data = expandoStore && expandoStore.data;
+  const { events, data } = JQLite.cache.get(expandoId);
 
   if ((!data || isEmptyObject(data)) && (!events || isEmptyObject(events))) {
-    delete JQLite.cache[expandoId];
+    JQLite.cache.delete(expandoId);
     element[EXPANDO] = undefined; // don't delete DOM expandos. IE and Chrome don't like it
   }
 }
@@ -379,9 +383,16 @@ function jqLiteOff(element, type, fn, unsupported) {
   removeIfEmptyData(element);
 }
 
+/**
+ * Removes expando data from this element. If key is provided, only
+ * its field is removed. If data is empty, also removes `ExpandoStore`
+ * from cache.
+ * @param {Element} element
+ * @param {string} [name] - key of field to remove
+ */
 function jqLiteRemoveData(element, name) {
   const expandoId = element[EXPANDO];
-  const expandoStore = expandoId && JQLite.cache[expandoId];
+  const expandoStore = expandoId && JQLite.cache.get(expandoId);
 
   if (expandoStore) {
     if (name) {
@@ -394,17 +405,24 @@ function jqLiteRemoveData(element, name) {
   }
 }
 
-function jqLiteExpandoStore(element, createIfNecessary) {
+/**
+ *
+ * @param {Element} element
+ * @param {boolean} createIfNecessary
+ * @returns {import("./core/cache").ExpandoStore}
+ */
+function jqLiteExpandoStore(element, createIfNecessary = false) {
   let expandoId = element[EXPANDO];
-  let expandoStore = expandoId && JQLite.cache[expandoId];
+  let expandoStore = expandoId && JQLite.cache.get(expandoId);
 
   if (createIfNecessary && !expandoStore) {
     element[EXPANDO] = expandoId = jqNextId();
-    expandoStore = JQLite.cache[expandoId] = {
+    expandoStore = {
       events: {},
       data: {},
-      handle: undefined,
+      handle: null,
     };
+    JQLite.cache.set(expandoId, expandoStore);
   }
 
   return expandoStore;
@@ -1155,7 +1173,7 @@ forEach(
 );
 
 /**
- *
+ * @param {JQLite} element
  * @returns {string} Returns the string representation of the element.
  */
 export function startingTag(element) {

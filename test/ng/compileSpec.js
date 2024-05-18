@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
-import { dealoc, JQLite } from "../../src/jqLite";
+import { dealoc, jqLite, JQLite } from "../../src/jqLite";
 import {
   forEach,
   isFunction,
@@ -5230,36 +5230,36 @@ describe("$compile", () => {
       // We compile the contents of element (i.e. not element itself)
       // Then delete these contents and check the cache has been reset to zero
       // Clear cache
-      Object.keys(JQLite.cache).forEach((key) => delete JQLite.cache[key]);
+      JQLite.cache.clear();
       window.angular.module("test1", ["ng"]);
       createInjector(["test1"]).invoke(($compile) => {
-        expect(Object.keys(JQLite.cache).length).toEqual(1);
+        expect(JQLite.cache.size).toEqual(1);
         // First with only elements at the top level
         element = JQLite("<div><div></div></div>");
         $compile(element.contents())($rootScope);
-        expect(Object.keys(JQLite.cache).length).toEqual(2);
+        expect(JQLite.cache.size).toEqual(2);
         element.empty();
-        expect(Object.keys(JQLite.cache).length).toEqual(1);
+        expect(JQLite.cache.size).toEqual(1);
 
         // Next with non-empty text nodes at the top level
         // (in this case the compiler will wrap them in a <span>)
         element = JQLite("<div>xxx</div>");
         $compile(element.contents())($rootScope);
         element.empty();
-        expect(Object.keys(JQLite.cache).length).toEqual(1);
+        expect(JQLite.cache.size).toEqual(1);
 
         // Next with comment nodes at the top level
         element = JQLite("<div><!-- comment --></div>");
         $compile(element.contents())($rootScope);
         element.empty();
-        expect(Object.keys(JQLite.cache).length).toEqual(1);
+        expect(JQLite.cache.size).toEqual(1);
 
         // Finally with empty text nodes at the top level
         element = JQLite("<div>   \n<div></div>   </div>");
         $compile(element.contents())($rootScope);
-        expect(Object.keys(JQLite.cache).length).toEqual(2);
+        expect(JQLite.cache.size).toEqual(2);
         element.empty();
-        expect(Object.keys(JQLite.cache).length).toEqual(1);
+        expect(JQLite.cache.size).toEqual(1);
       });
     });
 
@@ -14058,28 +14058,28 @@ describe("$compile", () => {
         });
 
         it('should not leak if two "element" transclusions are on the same element', () => {
-          const cacheSize = Object.keys(JQLite.cache).length;
+          const cacheSize = JQLite.cache.size;
 
           element = $compile(
             '<div><div ng-repeat="x in xs" ng-if="x==1">{{x}}</div></div>',
           )($rootScope);
-          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 1);
+          expect(JQLite.cache.size).toEqual(cacheSize + 1);
 
           $rootScope.$apply("xs = [0,1]");
-          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 2);
+          expect(JQLite.cache.size).toEqual(cacheSize + 2);
 
           $rootScope.$apply("xs = [0]");
-          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 1);
+          expect(JQLite.cache.size).toEqual(cacheSize + 1);
 
           $rootScope.$apply("xs = []");
-          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 1);
+          expect(JQLite.cache.size).toEqual(cacheSize + 1);
 
           element.remove();
-          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 0);
+          expect(JQLite.cache.size).toEqual(cacheSize + 0);
         });
 
         it('should not leak if two "element" transclusions are on the same element', () => {
-          const cacheSize = Object.keys(JQLite.cache).length;
+          const cacheSize = JQLite.cache.size;
           element = $compile(
             '<div><div ng-repeat="x in xs" ng-if="val">{{x}}</div></div>',
           )($rootScope);
@@ -14087,20 +14087,20 @@ describe("$compile", () => {
           $rootScope.$apply("xs = [0,1]");
           // At this point we have a bunch of comment placeholders but no real transcluded elements
           // So the cache only contains the root element's data
-          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 1);
+          expect(JQLite.cache.size).toEqual(cacheSize + 1);
 
           $rootScope.$apply("val = true");
           // Now we have two concrete transcluded elements plus some comments so two more cache items
-          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 3);
+          expect(JQLite.cache.size).toEqual(cacheSize + 3);
 
           $rootScope.$apply("val = false");
           // Once again we only have comments so no transcluded elements and the cache is back to just
           // the root element
-          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 1);
+          expect(JQLite.cache.size).toEqual(cacheSize + 1);
 
           element.remove();
           // Now we've even removed the root element along with its cache
-          expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 0);
+          expect(JQLite.cache.size).toEqual(cacheSize + 0);
         });
 
         // it("should not leak when continuing the compilation of elements on a scope that was destroyed", () => {
@@ -14125,7 +14125,7 @@ describe("$compile", () => {
         //       link: linkFn,
         //     }));
         //   initInjector("test1");
-        //   const cacheSize = Object.keys(JQLite.cache).length;
+        //   const cacheSize = JQLite.cache.size;
         //   $templateCache.put("red.html", "<p>red</p>");
         //   const template = $compile(
         //     '<div ng-controller="Leak">' +
@@ -14140,7 +14140,7 @@ describe("$compile", () => {
         //   $rootScope.$digest();
 
         //   expect(linkFn).toHaveBeenCalled();
-        //   expect(Object.keys(JQLite.cache).length).toEqual(cacheSize + 2);
+        //   expect(JQLite.cache.size).toEqual(cacheSize + 2);
 
         //   $templateCache.removeAll();
         //   const destroyedScope = $rootScope.$new();
@@ -15076,7 +15076,7 @@ describe("$compile", () => {
 
           it("should not leak memory with nested transclusion", () => {
             let size;
-            const initialSize = Object.keys(JQLite.cache).length;
+            const initialSize = JQLite.cache.size;
 
             element = JQLite(
               '<div><ul><li ng-repeat="n in nums">{{n}} => <i ng-if="0 === n%2">Even</i><i ng-if="1 === n%2">Odd</i></li></ul></div>',
@@ -15085,14 +15085,14 @@ describe("$compile", () => {
 
             $rootScope.nums = [0, 1, 2];
             $rootScope.$apply();
-            size = Object.keys(JQLite.cache).length;
+            size = JQLite.cache.size;
 
             $rootScope.nums = [3, 4, 5];
             $rootScope.$apply();
-            expect(Object.keys(JQLite.cache).length).toEqual(size);
+            expect(JQLite.cache.size).toEqual(size);
 
             element.remove();
-            expect(Object.keys(JQLite.cache).length).toEqual(initialSize);
+            expect(JQLite.cache.size).toEqual(initialSize);
           });
         });
 

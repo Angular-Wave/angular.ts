@@ -26,6 +26,7 @@ import {
 } from "./core/utils";
 import { JQLite, jqLite, startingTag } from "./jqLite";
 import { createInjector } from "./injector";
+import { CACHE } from "./core/cache";
 
 /**
  * @ngdoc module
@@ -51,11 +52,7 @@ const moduleCache = {};
  */
 export class Angular {
   constructor() {
-    /**
-     * @type {Object} proxy to Node cache
-     */
-    this.cache = JQLite.cache;
-
+    this.cache = CACHE;
     this.element = undefined;
     this.version = {
       full: "",

@@ -7,9 +7,9 @@ import { IAngularBootstrapConfig, IErrorHandlingConfig, IModule, Injectable, aut
 ///////////////////////////////////////////////////////////////////////////
 interface IAngularStatic {
     /**
-     * Internal cache
+     * Expando cache for adding properties to DOM nodes.
      */
-    cache: Object;
+    cache: Map<number, any>;
 
     bind(context: any, fn: Function, ...args: any[]): Function;
 

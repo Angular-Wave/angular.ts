@@ -1337,6 +1337,52 @@
   }
 
   /**
+   * @typedef {Object} ExpandoStore
+   *
+   * @property {!Object<string, any>} data
+   * @property {!Object} events
+   * @property {?Function} handle
+   *
+   */
+
+  /**
+   * Expando cache for adding properties to DOM nodes with JavaScript.
+   * This used to be an Object in JQLite decorator, but swapped out for a Map
+   * for performance reasons and convenience methods. A proxy is available for
+   * additional logic handling.
+   *
+   * @type {Map<number, ExpandoStore>}
+   */
+  const CACHE = new Proxy(new Map(), {
+    get(target, prop, receiver) {
+      if (prop === "size") {
+        return target.size;
+      }
+      if (typeof target[prop] === "function") {
+        return function (...args) {
+          return target[prop].apply(target, args);
+        };
+      }
+      return Reflect.get(target, prop, receiver);
+    },
+    set(target, prop, value, receiver) {
+      return Reflect.set(target, prop, value, receiver);
+    },
+    deleteProperty(target, prop) {
+      return Reflect.deleteProperty(target, prop);
+    },
+    has(target, prop) {
+      return Reflect.has(target, prop);
+    },
+    ownKeys(target) {
+      return Reflect.ownKeys(target);
+    },
+    getOwnPropertyDescriptor(target, prop) {
+      return Reflect.getOwnPropertyDescriptor(target, prop);
+    },
+  });
+
+  /**
    * @ngdoc function
    * @name angular.element
    * @module ng
@@ -1421,7 +1467,7 @@
    * @returns {Object} jQuery object.
    */
 
-  JQLite.cache = {};
+  JQLite.cache = CACHE;
 
   const EXPANDO = "ngId";
   let jqId = 1;
@@ -1431,7 +1477,7 @@
    * @param {JQLite|Element} node
    * @returns
    */
-  JQLite._data = (node) => JQLite.cache[node[EXPANDO]] || {};
+  JQLite._data = (node) => JQLite.cache.get(node[EXPANDO]) || {};
 
   function jqNextId() {
     return ++jqId;
@@ -1515,7 +1561,7 @@
   }
 
   function jqLiteHasData(node) {
-    for (const key in JQLite.cache[node[EXPANDO]]) {
+    for (const key in JQLite.cache.get(node[EXPANDO])) {
       return true;
     }
     return false;
@@ -1643,15 +1689,18 @@
     return true;
   }
 
+  /**
+   * If `ExpandoStore.data` and `ExpandoStore.events` are empty,
+   * then delete element's `ExpandoStore` and set its `ExpandoId`
+   * to undefined.
+   * @param {Element} element
+   */
   function removeIfEmptyData(element) {
     const expandoId = element[EXPANDO];
-    const expandoStore = expandoId && JQLite.cache[expandoId];
-
-    const events = expandoStore && expandoStore.events;
-    const data = expandoStore && expandoStore.data;
+    const { events, data } = JQLite.cache.get(expandoId);
 
     if ((!data || isEmptyObject(data)) && (!events || isEmptyObject(events))) {
-      delete JQLite.cache[expandoId];
+      JQLite.cache.delete(expandoId);
       element[EXPANDO] = undefined; // don't delete DOM expandos. IE and Chrome don't like it
     }
   }
@@ -1699,9 +1748,16 @@
     removeIfEmptyData(element);
   }
 
+  /**
+   * Removes expando data from this element. If key is provided, only
+   * its field is removed. If data is empty, also removes `ExpandoStore`
+   * from cache.
+   * @param {Element} element
+   * @param {string} [name] - key of field to remove
+   */
   function jqLiteRemoveData(element, name) {
     const expandoId = element[EXPANDO];
-    const expandoStore = expandoId && JQLite.cache[expandoId];
+    const expandoStore = expandoId && JQLite.cache.get(expandoId);
 
     if (expandoStore) {
       if (name) {
@@ -1714,17 +1770,24 @@
     }
   }
 
-  function jqLiteExpandoStore(element, createIfNecessary) {
+  /**
+   *
+   * @param {Element} element
+   * @param {boolean} createIfNecessary
+   * @returns {import("./core/cache").ExpandoStore}
+   */
+  function jqLiteExpandoStore(element, createIfNecessary = false) {
     let expandoId = element[EXPANDO];
-    let expandoStore = expandoId && JQLite.cache[expandoId];
+    let expandoStore = expandoId && JQLite.cache.get(expandoId);
 
     if (createIfNecessary && !expandoStore) {
       element[EXPANDO] = expandoId = jqNextId();
-      expandoStore = JQLite.cache[expandoId] = {
+      expandoStore = {
         events: {},
         data: {},
-        handle: undefined,
+        handle: null,
       };
+      JQLite.cache.set(expandoId, expandoStore);
     }
 
     return expandoStore;
@@ -2475,7 +2538,7 @@
   );
 
   /**
-   *
+   * @param {JQLite} element
    * @returns {string} Returns the string representation of the element.
    */
   function startingTag(element) {
@@ -3559,11 +3622,7 @@
    */
   class Angular {
     constructor() {
-      /**
-       * @type {Object} proxy to Node cache
-       */
-      this.cache = JQLite.cache;
-
+      this.cache = CACHE;
       this.element = undefined;
       this.version = {
         full: "",
@@ -11720,7 +11779,7 @@
      * a form that uses `ng-model-options` to pend updates.
      */
     $rollbackViewValue() {
-      forEach(this.$$controls, (control) => {
+      this.$$controls.forEach((control) => {
         control.$rollbackViewValue();
       });
     },
@@ -11737,7 +11796,7 @@
      * usually handles calling this in response to input events.
      */
     $commitViewValue() {
-      forEach(this.$$controls, (control) => {
+      this.$$controls.forEach((control) => {
         control.$commitViewValue();
       });
     },
@@ -11903,7 +11962,7 @@
       this.$dirty = false;
       this.$pristine = true;
       this.$submitted = false;
-      forEach(this.$$controls, (control) => {
+      this.$$controls.forEach((control) => {
         control.$setPristine();
       });
     },
@@ -11922,7 +11981,7 @@
      * back to its pristine state.
      */
     $setUntouched() {
-      forEach(this.$$controls, (control) => {
+      this.$$controls.forEach((control) => {
         control.$setUntouched();
       });
     },
@@ -11946,7 +12005,7 @@
     $$setSubmitted() {
       this.$$animate.addClass(this.$$element, SUBMITTED_CLASS);
       this.$submitted = true;
-      forEach(this.$$controls, (control) => {
+      this.$$controls.forEach((control) => {
         if (control.$$setSubmitted) {
           control.$$setSubmitted();
         }
@@ -16554,8 +16613,8 @@
     ($compile) => {
       return {
         restrict: "AC",
-        compile: (templateElement) => {
-          $compile.$$addBindingClass(templateElement);
+        compile: () => {
+          //        $compile.$$addBindingClass(templateElement);
           return (scope, element, attr) => {
             $compile.$$addBindingInfo(element, attr.ngBind);
             element = element[0];
@@ -30132,6 +30191,9 @@
       let dirty;
       let ttl = TTL;
       let next;
+      /**
+       * @type {angular.IScope}
+       */
       let current;
       const target = $$asyncQueue.length ? this.$root : this;
       const watchLog = [];

@@ -130,7 +130,7 @@ FormController.prototype = {
    * a form that uses `ng-model-options` to pend updates.
    */
   $rollbackViewValue() {
-    forEach(this.$$controls, (control) => {
+    this.$$controls.forEach((control) => {
       control.$rollbackViewValue();
     });
   },
@@ -147,7 +147,7 @@ FormController.prototype = {
    * usually handles calling this in response to input events.
    */
   $commitViewValue() {
-    forEach(this.$$controls, (control) => {
+    this.$$controls.forEach((control) => {
       control.$commitViewValue();
     });
   },
@@ -313,7 +313,7 @@ FormController.prototype = {
     this.$dirty = false;
     this.$pristine = true;
     this.$submitted = false;
-    forEach(this.$$controls, (control) => {
+    this.$$controls.forEach((control) => {
       control.$setPristine();
     });
   },
@@ -332,7 +332,7 @@ FormController.prototype = {
    * back to its pristine state.
    */
   $setUntouched() {
-    forEach(this.$$controls, (control) => {
+    this.$$controls.forEach((control) => {
       control.$setUntouched();
     });
   },
@@ -356,7 +356,7 @@ FormController.prototype = {
   $$setSubmitted() {
     this.$$animate.addClass(this.$$element, SUBMITTED_CLASS);
     this.$submitted = true;
-    forEach(this.$$controls, (control) => {
+    this.$$controls.forEach((control) => {
       if (control.$$setSubmitted) {
         control.$$setSubmitted();
       }

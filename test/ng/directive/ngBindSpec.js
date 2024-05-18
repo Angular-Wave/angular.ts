@@ -32,7 +32,6 @@ describe("ngBind*", () => {
       expect(element.text()).toEqual("");
       $rootScope.a = "misko";
       $rootScope.$digest();
-      expect(element[0].classList.contains("ng-binding")).toEqual(true);
       expect(element.text()).toEqual("misko");
     });
 

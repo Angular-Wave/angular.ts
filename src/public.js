@@ -12,7 +12,7 @@ import {
   ngBindDirective,
   ngBindHtmlDirective,
   ngBindTemplateDirective,
-} from "./directive/ngBind";
+} from "./directive/bind";
 import {
   ngClassDirective,
   ngClassEvenDirective,
