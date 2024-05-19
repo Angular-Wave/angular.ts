@@ -8436,7 +8436,6 @@
      * Call this method to enable/disable various debug runtime information in the compiler such as adding
      * binding information and a reference to the current scope on to DOM elements.
      * If enabled, the compiler will add the following to DOM elements that have been bound to the scope
-     * * `$binding` data property containing an array of the binding expressions
      * * Data properties used by the {@link angular.element#methods `scope()`/`isolateScope()` methods} to return
      *   the element's scope.
      * * Placeholder comments will contain information about what directive and binding caused the placeholder.
@@ -9033,20 +9032,6 @@
               };
         const NG_PREFIX_BINDING = /^ng(Attr|Prop|On)([A-Z].*)$/;
         const MULTI_ELEMENT_DIR_RE = /^(.+)Start$/;
-
-        compile.$$addBindingInfo = debugInfoEnabled
-          ? function $$addBindingInfo($element, binding) {
-              let bindings = $element.data("$binding") || [];
-
-              if (isArray(binding)) {
-                bindings = bindings.concat(binding);
-              } else {
-                bindings.push(binding);
-              }
-
-              $element.data("$binding", bindings);
-            }
-          : () => {};
 
         compile.$$addScopeInfo = debugInfoEnabled
           ? function $$addScopeInfo($element, scope, isolated, noTemplate) {
@@ -10968,8 +10953,6 @@
                 // we don't have a parent and thus need to add the class during linking fn.
 
                 return function textInterpolateLinkFn(scope, node) {
-                  const parent = node.parent();
-                  compile.$$addBindingInfo(parent, interpolateFn.expressions);
                   scope.$watch(interpolateFn, (value) => {
                     node[0].nodeValue = value;
                   });
