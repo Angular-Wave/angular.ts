@@ -936,10 +936,10 @@ describe("ngRepeat", () => {
       expect(element.text()).toBe("1|2|");
 
       expect(element[0].children[0].outerHTML).toBe(
-        '<div ng-repeat="i in items" rr="" class="ng-binding ng-scope">1|</div>',
+        '<div ng-repeat="i in items" rr="" class="ng-scope">1|</div>',
       );
       expect(element[0].children[1].outerHTML).toBe(
-        '<div ng-repeat="i in items" rr="" class="ng-binding ng-scope">2|</div>',
+        '<div ng-repeat="i in items" rr="" class="ng-scope">2|</div>',
       );
     });
 
@@ -961,10 +961,10 @@ describe("ngRepeat", () => {
       scope.$apply();
       expect(element.text()).toBe("1|2|");
       expect(element[0].children[0].outerHTML).toBe(
-        '<div ng-repeat="i in items" rr="" class="ng-binding ng-scope">1|</div>',
+        '<div ng-repeat="i in items" rr="" class="ng-scope">1|</div>',
       );
       expect(element[0].children[1].outerHTML).toBe(
-        '<div ng-repeat="i in items" rr="" class="ng-binding ng-scope">2|</div>',
+        '<div ng-repeat="i in items" rr="" class="ng-scope">2|</div>',
       );
     });
 

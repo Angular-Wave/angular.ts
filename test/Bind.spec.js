@@ -414,7 +414,7 @@ describe("ng-bind", () => {
     $rootScope.$apply();
 
     expect(element[0].outerHTML).toBe(
-      `<pre class="ng-binding ng-scope">Hello World!</pre>`,
+      `<pre class="ng-scope">Hello World!</pre>`,
     );
   });
 

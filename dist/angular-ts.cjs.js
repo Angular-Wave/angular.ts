@@ -8433,7 +8433,6 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
    * Call this method to enable/disable various debug runtime information in the compiler such as adding
    * binding information and a reference to the current scope on to DOM elements.
    * If enabled, the compiler will add the following to DOM elements that have been bound to the scope
-   * * `ng-binding` CSS class
    * * `ng-scope` and `ng-isolated-scope` CSS classes
    * * `$binding` data property containing an array of the binding expressions
    * * Data properties used by the {@link angular.element#methods `scope()`/`isolateScope()` methods} to return
@@ -9044,12 +9043,6 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             }
 
             $element.data("$binding", bindings);
-          }
-        : () => {};
-
-      compile.$$addBindingClass = debugInfoEnabled
-        ? function $$addBindingClass($element) {
-            safeAddClass($element, "ng-binding");
           }
         : () => {};
 
@@ -10978,18 +10971,12 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
         if (interpolateFn) {
           directives.push({
             priority: 0,
-            compile: function textInterpolateCompileFn(templateNode) {
-              const templateNodeParent = templateNode.parent();
-              const hasCompileParent = !!templateNodeParent.length;
-
+            compile: function textInterpolateCompileFn() {
               // When transcluding a template that has bindings in the root
               // we don't have a parent and thus need to add the class during linking fn.
-              if (hasCompileParent)
-                compile.$$addBindingClass(templateNodeParent);
 
               return function textInterpolateLinkFn(scope, node) {
                 const parent = node.parent();
-                if (!hasCompileParent) compile.$$addBindingClass(parent);
                 compile.$$addBindingInfo(parent, interpolateFn.expressions);
                 scope.$watch(interpolateFn, (value) => {
                   node[0].nodeValue = value;

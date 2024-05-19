@@ -3917,15 +3917,6 @@ describe("$compile", () => {
       expect(el.html()).toEqual("My expression: Hello");
     });
 
-    it("adds binding class to text node parents", () => {
-      registerDirectives({});
-      reloadModules();
-      var el = $("<div>My expression: {{myExpr}}</div>");
-      $compile(el)($rootScope);
-
-      expect(el[0].classList.contains("ng-binding")).toBe(true);
-    });
-
     it("adds binding data to text node parents", () => {
       registerDirectives({});
       reloadModules();
@@ -6308,7 +6299,7 @@ describe("$compile", () => {
 
         setTimeout(() => {
           expect(element[0].outerHTML).toEqual(
-            '<div class="ng-scope"><b class="hello"><span class="ng-binding">Hello, Elvis!</span></b></div>',
+            '<div class="ng-scope"><b class="hello"><span>Hello, Elvis!</span></b></div>',
           );
           done();
         }, 100);
@@ -6322,7 +6313,7 @@ describe("$compile", () => {
         $rootScope.$digest();
 
         expect(element[0].outerHTML).toBe(
-          '<div class="ng-scope"><span class="i-hello ng-binding">Hello, Elvis!</span></div>',
+          '<div class="ng-scope"><span class="i-hello">Hello, Elvis!</span></div>',
         );
       });
 
@@ -6334,7 +6325,7 @@ describe("$compile", () => {
         $rootScope.$digest();
 
         expect(element[0].outerHTML).toEqual(
-          '<div class="ng-scope"><b class="hello"><span replace="" class="ng-binding">Hello, Elvis!</span></b></div>',
+          '<div class="ng-scope"><b class="hello"><span replace="">Hello, Elvis!</span></b></div>',
         );
       });
 
@@ -6345,7 +6336,7 @@ describe("$compile", () => {
         $rootScope.$digest();
 
         expect(element[0].outerHTML).toEqual(
-          '<span replace="" class="ng-binding ng-scope">Hello, Elvis!</span>',
+          '<span replace="" class="ng-scope">Hello, Elvis!</span>',
         );
       });
 
@@ -8074,22 +8065,23 @@ describe("$compile", () => {
           expect(element.data("$binding")).toBeUndefined();
         });
 
-        it("should occur if `debugInfoEnabled` is true", () => {
-          createInjector([
-            "test1",
-            ($compileProvider) => {
-              $compileProvider.debugInfoEnabled(true);
-            },
-          ]).invoke((_$compile_, _$rootScope_, _$templateCache_) => {
-            $compile = _$compile_;
-            $rootScope = _$rootScope_;
-            $templateCache = _$templateCache_;
-          });
+        // TODO figure out debug strat
+        // it("should occur if `debugInfoEnabled` is true", () => {
+        //   createInjector([
+        //     "test1",
+        //     ($compileProvider) => {
+        //       $compileProvider.debugInfoEnabled(true);
+        //     },
+        //   ]).invoke((_$compile_, _$rootScope_, _$templateCache_) => {
+        //     $compile = _$compile_;
+        //     $rootScope = _$rootScope_;
+        //     $templateCache = _$templateCache_;
+        //   });
 
-          element = $compile("<div>{{1+2}}</div>")($rootScope);
-          expect(element[0].classList.contains("ng-binding")).toBe(true);
-          expect(element.data("$binding")).toEqual(["1+2"]);
-        });
+        //   element = $compile("<div>{{1+2}}</div>")($rootScope);
+        //   expect(element[0].classList.contains("ng-binding")).toBe(true);
+        //   expect(element.data("$binding")).toEqual(["1+2"]);
+        // });
       });
 
       it("should observe interpolated attrs", () => {
@@ -8205,7 +8197,7 @@ describe("$compile", () => {
           element[0].outerHTML.replace(' selected="selected"', ""),
         ).toEqual(
           '<select ng:model="x" class="ng-pristine ng-untouched ng-valid ng-scope ng-empty">' +
-            '<option value="" class="ng-binding">Greet !</option>' +
+            '<option value="">Greet !</option>' +
             "</select>",
         );
         $rootScope.name = "Misko";
@@ -8214,7 +8206,7 @@ describe("$compile", () => {
           element[0].outerHTML.replace(' selected="selected"', ""),
         ).toEqual(
           '<select ng:model="x" class="ng-pristine ng-untouched ng-valid ng-scope ng-empty">' +
-            '<option value="" class="ng-binding">Greet Misko!</option>' +
+            '<option value="">Greet Misko!</option>' +
             "</select>",
         );
       });
