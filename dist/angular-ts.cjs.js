@@ -19058,7 +19058,7 @@ const ngOptionsDirective = [
               });
             }
           };
-        } 
+        }
       }
 
       // We will re-render the option elements if the option values or labels change
@@ -30666,7 +30666,7 @@ class Scope {
    * @param {...*} args Optional one or more arguments which will be passed onto the event listeners.
    * @return {Object} Event object (see {@link ng.$rootScope.Scope#$on}).
    */
-  $emit(name, args) {
+  $emit(name, ...args) {
     const empty = [];
     let namedListeners;
     let scope = this;
@@ -30682,7 +30682,7 @@ class Scope {
       },
       defaultPrevented: false,
     };
-    const listenerArgs = concat([event], arguments, 1);
+    const listenerArgs = concat([event], [event].concat(args), 1);
     let i;
     let length;
 
@@ -30738,7 +30738,7 @@ class Scope {
    * @param {...*} args Optional one or more arguments which will be passed onto the event listeners.
    * @return {Object} Event object, see {@link ng.$rootScope.Scope#$on}
    */
-  $broadcast(name, args) {
+  $broadcast(name, ...args) {
     const target = this;
     let current = target;
 
@@ -30754,7 +30754,7 @@ class Scope {
 
     if (!target.$$listenerCount[name]) return event;
 
-    const listenerArgs = concat([event], arguments, 1);
+    const listenerArgs = concat([event], [event].concat(args), 1);
     let listeners;
     let i;
     let length;

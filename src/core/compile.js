@@ -1,5 +1,4 @@
 import {
-  JQLite,
   jqLite,
   getBooleanAttrName,
   getAliasedAttrName,

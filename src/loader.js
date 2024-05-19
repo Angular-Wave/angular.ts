@@ -24,7 +24,7 @@ import {
   isValidObjectMaxDepth,
   minErrConfig,
 } from "./core/utils";
-import { JQLite, jqLite, startingTag } from "./jqLite";
+import { jqLite, startingTag } from "./jqLite";
 import { createInjector } from "./injector";
 import { CACHE } from "./core/cache";
 

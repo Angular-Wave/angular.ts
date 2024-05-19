@@ -487,7 +487,7 @@ interface JQLite {
      * @param func A function that returns content with which to replace the set of matched elements.
      * @see {@link https://api.jquery.com/replaceWith/#replaceWith-function}
      */
-    replaceWith(func: () => Element | JQuery): this;
+    replaceWith(func: () => Element): this;
 
     /**
      * Get the combined text contents of each element in the set of matched elements, including their descendants.

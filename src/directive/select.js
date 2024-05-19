@@ -2,7 +2,6 @@ import { jqLite } from "../jqLite";
 import {
   assertNotHasOwnProperty,
   equals,
-  forEach,
   hashKey,
   includes,
   isDefined,
