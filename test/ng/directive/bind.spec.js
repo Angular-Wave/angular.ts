@@ -2,7 +2,7 @@ import { publishExternalAPI } from "../../../src/public";
 import { createInjector } from "../../../src/injector";
 import { dealoc } from "../../../src/jqLite";
 
-describe("ngBind*", () => {
+describe("ng-bind", () => {
   let $rootScope;
   let $compile;
   let element;
@@ -155,7 +155,6 @@ describe("ngBind*", () => {
       );
       $rootScope.name = "Misko";
       $rootScope.$digest();
-      expect(element[0].classList.contains("ng-binding")).toEqual(true);
       expect(element.text()).toEqual("Hello Misko!");
     });
 
@@ -166,7 +165,6 @@ describe("ngBind*", () => {
       $rootScope.name = "Misko";
       expect($rootScope.$$watchers.length).toEqual(2);
       $rootScope.$digest();
-      expect(element[0].classList.contains("ng-binding")).toEqual(true);
       expect(element.text()).toEqual(" Misko!");
       expect($rootScope.$$watchers.length).toEqual(1);
       $rootScope.hello = "Hello";

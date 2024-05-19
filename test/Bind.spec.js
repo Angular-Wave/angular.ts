@@ -3,7 +3,7 @@ import { publishExternalAPI } from "../src/public";
 import { createInjector } from "../src/injector";
 import { browserTrigger } from "./utils";
 
-describe("Binder", () => {
+describe("ng-bind", () => {
   let element,
     $injector,
     $rootScope,
