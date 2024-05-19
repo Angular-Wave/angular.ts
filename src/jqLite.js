@@ -49,7 +49,6 @@ import { CACHE } from "./core/cache";
  * - [`attr()`](http://api.jquery.com/attr/) - Does not support functions as parameters
  * - [`bind()`](http://api.jquery.com/bind/) (_deprecated_, use [`on()`](http://api.jquery.com/on/)) - Does not support namespaces, selectors or eventData
  * - [`children()`](http://api.jquery.com/children/) - Does not support selectors
- * - [`css()`](http://api.jquery.com/css/) - Only retrieves inline-styles, does not call `getComputedStyle()`.
  * - [`data()`](http://api.jquery.com/data/)
  * - [`empty()`](http://api.jquery.com/empty/)
  * - [`eq()`](http://api.jquery.com/eq/)
@@ -655,16 +654,6 @@ forEach(
 
     injector(element) {
       return jqLiteInheritedData(element, "$injector");
-    },
-
-    css(element, name, value) {
-      name = kebabToCamel(name);
-
-      if (isDefined(value)) {
-        element.style[name] = value;
-      } else {
-        return element.style[name];
-      }
     },
 
     attr(element, name, value) {

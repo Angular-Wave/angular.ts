@@ -88,44 +88,6 @@ interface JQLite {
     children(): this;
 
     /**
-     * Get the children of each element in the set of matched elements, including text and comment nodes.
-     * @see {@link https://api.jquery.com/contents/}
-     */
-    contents(): this;
-
-    /**
-     * Get the value of style properties for the first element in the set of matched elements.
-     *
-     * @param propertyName A CSS property.
-     * @see {@link https://api.jquery.com/css/#css-propertyName}
-     */
-    css(propertyName: string): string;
-    /**
-     * Get the value of style properties for the first element in the set of matched elements.
-     * Results in an object of property-value pairs.
-     *
-     * @param propertyNames An array of one or more CSS properties.
-     * @see {@link https://api.jquery.com/css/#css-propertyNames}
-     */
-    css(propertyNames: string[]): any;
-    /**
-     * Set one or more CSS properties for the set of matched elements.
-     *
-     * @param propertyName A CSS property name.
-     * @param value A value to set for the property.
-     * @see {@link https://api.jquery.com/css/#css-propertyName-value}
-     */
-    css(propertyName: string, value: string | number): this;
-    /**
-     * Set one or more CSS properties for the set of matched elements.
-     *
-     * @param propertyName A CSS property name.
-     * @param value A function returning the value to set. this is the current element. Receives the index position of the element in the set and the old value as arguments.
-     * @see {@link https://api.jquery.com/css/#css-propertyName-function}
-     */
-    css(propertyName: string, value: (index: number, value: string) => string | number): this;
-
-    /**
      * Store arbitrary data associated with the matched elements.
      *
      * @param key A string naming the piece of data to set.

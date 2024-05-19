@@ -32,7 +32,7 @@ export function CoreAnimateCssProvider() {
         }
 
         if (options.from) {
-          element.css(options.from);
+          //element.css(options.from);
           options.from = null;
         }
 
@@ -64,7 +64,7 @@ export function CoreAnimateCssProvider() {
             options.removeClass = null;
           }
           if (options.to) {
-            element.css(options.to);
+            //element.css(options.to);
             options.to = null;
           }
         }

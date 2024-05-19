@@ -5627,8 +5627,8 @@ describe("$compile", () => {
         const div = element.find("div");
         expect(div[0].classList.contains("medium-log")).toBe(true);
         expect(div[0].classList.contains("log")).toBe(true);
-        expect(div.css("width")).toBe("10px");
-        expect(div.css("height")).toBe("20px");
+        expect(div[0].style.width).toBe("10px");
+        expect(div[0].style.height).toBe("20px");
         expect(div.attr("replace")).toEqual("");
         expect(div.attr("high-log")).toEqual("");
       });

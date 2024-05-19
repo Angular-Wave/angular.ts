@@ -88,10 +88,10 @@ export function CoreAnimateQueueProvider() {
 
           options = options || {};
           if (options.from) {
-            element.css(options.from);
+            //element.css(options.from);
           }
           if (options.to) {
-            element.css(options.to);
+            //element.css(options.to);
           }
 
           if (options.addClass || options.removeClass) {

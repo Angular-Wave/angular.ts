@@ -1420,7 +1420,6 @@ const CACHE = new Proxy(new Map(), {
  * - [`attr()`](http://api.jquery.com/attr/) - Does not support functions as parameters
  * - [`bind()`](http://api.jquery.com/bind/) (_deprecated_, use [`on()`](http://api.jquery.com/on/)) - Does not support namespaces, selectors or eventData
  * - [`children()`](http://api.jquery.com/children/) - Does not support selectors
- * - [`css()`](http://api.jquery.com/css/) - Only retrieves inline-styles, does not call `getComputedStyle()`.
  * - [`data()`](http://api.jquery.com/data/)
  * - [`empty()`](http://api.jquery.com/empty/)
  * - [`eq()`](http://api.jquery.com/eq/)
@@ -2026,16 +2025,6 @@ forEach(
 
     injector(element) {
       return jqLiteInheritedData(element, "$injector");
-    },
-
-    css(element, name, value) {
-      name = kebabToCamel(name);
-
-      if (isDefined(value)) {
-        element.style[name] = value;
-      } else {
-        return element.style[name];
-      }
     },
 
     attr(element, name, value) {
@@ -20109,12 +20098,8 @@ function CoreAnimateQueueProvider() {
           }
 
           options = options || {};
-          if (options.from) {
-            element.css(options.from);
-          }
-          if (options.to) {
-            element.css(options.to);
-          }
+          if (options.from) ;
+          if (options.to) ;
 
           if (options.addClass || options.removeClass) {
             // eslint-disable-next-line no-use-before-define
@@ -21213,7 +21198,7 @@ function CoreAnimateCssProvider() {
         }
 
         if (options.from) {
-          element.css(options.from);
+          //element.css(options.from);
           options.from = null;
         }
 
@@ -21245,7 +21230,7 @@ function CoreAnimateCssProvider() {
             options.removeClass = null;
           }
           if (options.to) {
-            element.css(options.to);
+            //element.css(options.to);
             options.to = null;
           }
         }
@@ -31398,14 +31383,14 @@ function applyAnimationStyles(element, options) {
 
 function applyAnimationFromStyles(element, options) {
   if (options.from) {
-    element.css(options.from);
+    //element.css(options.from);
     options.from = null;
   }
 }
 
 function applyAnimationToStyles(element, options) {
   if (options.to) {
-    element.css(options.to);
+    //element.css(options.to);
     options.to = null;
   }
 }

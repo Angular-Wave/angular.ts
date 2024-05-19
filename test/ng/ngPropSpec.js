@@ -799,7 +799,7 @@ describe("ngProp*", () => {
       $rootScope.style = $sce.trustAsCss("margin-left: 10px");
       $rootScope.$digest();
 
-      expect(element.css("margin-left")).toEqual("10px");
+      expect(element[0].style["margin-left"]).toEqual("10px");
     });
   });
 });

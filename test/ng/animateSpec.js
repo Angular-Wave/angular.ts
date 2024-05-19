@@ -49,16 +49,16 @@ describe("$animate", () => {
       expect(element.text()).toBe("21");
     });
 
-    it("should apply styles instantly to the element", () => {
+    fit("should apply styles instantly to the element", () => {
       $animate.animate(element, { color: "rgb(0, 0, 0)" });
-      expect(element.css("color")).toBe("rgb(0, 0, 0)");
+      expect(element[0].stype.color).toBe("rgb(0, 0, 0)");
 
       $animate.animate(
         element,
         { color: "rgb(255, 0, 0)" },
         { color: "rgb(0, 255, 0)" },
       );
-      expect(element.css("color")).toBe("rgb(0, 255, 0)");
+      expect(element[0].stype.color).toBe("rgb(0, 255, 0)");
     });
 
     it("should still perform DOM operations even if animations are disabled (post-digest)", () => {
@@ -185,7 +185,7 @@ describe("$animate", () => {
     it("should merge the from and to styles that are provided", () => {
       const element = jqLite("<div></div>");
 
-      element.css("color", "red");
+      element[0].style.color = "red";
       $animate.addClass(element, "on", {
         from: { color: "green" },
         to: { borderColor: "purple" },

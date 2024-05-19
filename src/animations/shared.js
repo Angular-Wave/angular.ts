@@ -190,14 +190,14 @@ export function applyAnimationStyles(element, options) {
 
 export function applyAnimationFromStyles(element, options) {
   if (options.from) {
-    element.css(options.from);
+    //element.css(options.from);
     options.from = null;
   }
 }
 
 export function applyAnimationToStyles(element, options) {
   if (options.to) {
-    element.css(options.to);
+    //element.css(options.to);
     options.to = null;
   }
 }
