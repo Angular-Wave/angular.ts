@@ -2350,10 +2350,6 @@
         return children;
       },
 
-      contents(element) {
-        return element.contentDocument || element.childNodes || [];
-      },
-
       append(element, node) {
         const { nodeType } = element;
         if (

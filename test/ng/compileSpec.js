@@ -5023,7 +5023,7 @@ describe("$compile", () => {
           '<circle cx="4" cy="4" r="2"></circle>' +
           "</svg-container></div>",
       );
-      $compile(element.contents())($rootScope);
+      $compile(element[0].childNodes)($rootScope);
       document.body.appendChild(element[0]);
 
       const circle = element.find("circle");
@@ -5037,7 +5037,7 @@ describe("$compile", () => {
           "<svg-circle></svg-circle>" +
           "</svg></div>",
       );
-      $compile(element.contents())($rootScope);
+      $compile(element[0].childNodes)($rootScope);
       document.body.appendChild(element[0]);
 
       const circle = element.find("circle");
@@ -5050,7 +5050,7 @@ describe("$compile", () => {
           "<svg-circle></svg-circle>" +
           "</svg-container></div>",
       );
-      $compile(element.contents())($rootScope);
+      $compile(element[0].childNodes)($rootScope);
       document.body.appendChild(element[0]);
 
       const circle = element.find("circle");
@@ -5082,7 +5082,7 @@ describe("$compile", () => {
           `</svg-container>` +
           `</div>`,
       );
-      $compile(element.contents())($rootScope);
+      $compile(element[0].childNodes)($rootScope);
       document.body.appendChild(element[0]);
 
       const referenceElem = element.find("div")[0];
@@ -5110,7 +5110,7 @@ describe("$compile", () => {
           `</svg-container>` +
           `</div>`,
       );
-      $compile(element.contents())($rootScope);
+      $compile(element[0].childNodes)($rootScope);
       document.body.appendChild(element[0]);
 
       const referenceElem = element.find("div")[0];
@@ -5131,7 +5131,7 @@ describe("$compile", () => {
           '<circle cx="2" cy="2" r="1"></circle></svg-custom-transclude-container>' +
           "</div>",
       );
-      $compile(element.contents())($rootScope);
+      $compile(element[0].childNodes)($rootScope);
       document.body.appendChild(element[0]);
 
       const circle = element.find("circle");
@@ -5182,7 +5182,7 @@ describe("$compile", () => {
 
     it("should not wrap root text nodes in spans", () => {
       element = JQLite("<div>   <div>A</div>\n  <div>B</div>C\t\n  </div>");
-      $compile(element.contents())($rootScope);
+      $compile(element[0].childNodes)($rootScope);
       const spans = element.find("span");
       expect(spans.length).toEqual(0);
     });
@@ -5191,7 +5191,7 @@ describe("$compile", () => {
       element = JQLite("<div>Name: {{name}}<br />\nColor: {{color}}</div>");
       $rootScope.name = "Lucas";
       $rootScope.color = "blue";
-      $compile(element.contents())($rootScope);
+      $compile(element[0].childNodes)($rootScope);
       $rootScope.$digest();
       expect(element.text()).toEqual("Name: Lucas\nColor: blue");
     });
@@ -5206,7 +5206,7 @@ describe("$compile", () => {
         expect(JQLite.cache.size).toEqual(1);
         // First with only elements at the top level
         element = JQLite("<div><div></div></div>");
-        $compile(element.contents())($rootScope);
+        $compile(element[0].childNodes)($rootScope);
         expect(JQLite.cache.size).toEqual(2);
         element.empty();
         expect(JQLite.cache.size).toEqual(1);
@@ -5214,19 +5214,19 @@ describe("$compile", () => {
         // Next with non-empty text nodes at the top level
         // (in this case the compiler will wrap them in a <span>)
         element = JQLite("<div>xxx</div>");
-        $compile(element.contents())($rootScope);
+        $compile(element[0].childNodes)($rootScope);
         element.empty();
         expect(JQLite.cache.size).toEqual(1);
 
         // Next with comment nodes at the top level
         element = JQLite("<div><!-- comment --></div>");
-        $compile(element.contents())($rootScope);
+        $compile(element[0].childNodes)($rootScope);
         element.empty();
         expect(JQLite.cache.size).toEqual(1);
 
         // Finally with empty text nodes at the top level
         element = JQLite("<div>   \n<div></div>   </div>");
-        $compile(element.contents())($rootScope);
+        $compile(element[0].childNodes)($rootScope);
         expect(JQLite.cache.size).toEqual(2);
         element.empty();
         expect(JQLite.cache.size).toEqual(1);
@@ -5264,7 +5264,7 @@ describe("$compile", () => {
           "</a></div>",
       );
 
-      $compile(element.contents())($rootScope);
+      $compile(element[0].childNodes)($rootScope);
       $rootScope.$digest();
       document.body.appendChild(element[0]);
       expect(element.find("span").text()).toContain("Should render");
@@ -13750,7 +13750,7 @@ describe("$compile", () => {
           $rootScope.$apply();
           expect(element.text()).toEqual("W:isoT:root;");
           expect(
-            JQLite(JQLite(element.find("li")[1]).contents()[0]).text(),
+            JQLite(JQLite(element.find("li")[1])[0].childNodes[0]).text(),
           ).toEqual("T:root");
           expect(JQLite(element.find("span")[0]).text()).toEqual(";");
         });
@@ -14725,7 +14725,7 @@ describe("$compile", () => {
             module
               .directive("lazyCompile", ($compile) => ({
                 compile(tElement, tAttrs) {
-                  const content = tElement.contents();
+                  const content = JQLite(tElement[0].childNodes);
                   tElement.empty();
                   return function (scope, element, attrs, ctrls, transcludeFn) {
                     element.append(content);
@@ -15348,8 +15348,8 @@ describe("$compile", () => {
         );
         initInjector("test1");
         const element = JQLite(
-          "<div>before<div transclude></div>after</div>",
-        ).contents();
+          JQLite("<div>before<div transclude></div>after</div>")[0].childNodes,
+        );
         expect(element.length).toEqual(3);
         expect(nodeName_(element[1])).toBe("div");
         $compile(element)($rootScope);

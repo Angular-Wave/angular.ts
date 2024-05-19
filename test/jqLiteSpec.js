@@ -1995,7 +1995,7 @@ describe("jqLite", () => {
       expect(root.children().length).toBe(1);
     });
     it("should not append anything if parent node is not of type element or docfrag", () => {
-      const root = jqLite("<p>some text node</p>").contents();
+      const root = jqLite(jqLite("<p>some text node</p>")[0].childNodes);
       expect(root.append("<p>foo</p>")).toBe(root);
       expect(root.children().length).toBe(0);
     });
