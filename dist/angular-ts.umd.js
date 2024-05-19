@@ -15,6 +15,15 @@
   const PREFIX_REGEXP = /^((?:x|data)[:\-_])/i;
   const SPECIAL_CHARS_REGEXP = /[:\-_]+(.)/g;
 
+  const ALIASED_ATTR = {
+    ngMinlength: "minlength",
+    ngMaxlength: "maxlength",
+    ngMin: "min",
+    ngMax: "max",
+    ngPattern: "pattern",
+    ngStep: "step",
+  };
+
   const ngMinErr$2 = minErr("ng");
 
   /**
@@ -1818,15 +1827,6 @@
     }
   }
 
-  function jqLiteHasClass(element, selector) {
-    if (!element.getAttribute) return false;
-    return (
-      ` ${element.getAttribute("class") || ""} `
-        .replace(/[\n\t]/g, " ")
-        .indexOf(` ${selector} `) > -1
-    );
-  }
-
   function jqLiteRemoveClass(element, cssClasses) {
     if (cssClasses && element.setAttribute) {
       const existingClasses = ` ${element.getAttribute("class") || ""} `.replace(
@@ -1980,27 +1980,17 @@
   // value on get.
   /// ///////////////////////////////////////
   const BOOLEAN_ATTR = {};
-  forEach(
-    "multiple,selected,checked,disabled,readOnly,required,open".split(","),
-    (value) => {
+  "multiple,selected,checked,disabled,readOnly,required,open"
+    .split(",")
+    .forEach((value) => {
       BOOLEAN_ATTR[lowercase(value)] = value;
-    },
-  );
+    });
   const BOOLEAN_ELEMENTS = {};
-  forEach(
-    "input,select,option,textarea,button,form,details".split(","),
-    (value) => {
+  "input,select,option,textarea,button,form,details"
+    .split(",")
+    .forEach((value) => {
       BOOLEAN_ELEMENTS[value] = true;
-    },
-  );
-  const ALIASED_ATTR = {
-    ngMinlength: "minlength",
-    ngMaxlength: "maxlength",
-    ngMin: "min",
-    ngMax: "max",
-    ngPattern: "pattern",
-    ngStep: "step",
-  };
+    });
 
   function getBooleanAttrName(element, name) {
     // check dom last since we will most likely fail on name
@@ -2008,10 +1998,6 @@
 
     // booleanAttr is here twice to minimize DOM access
     return booleanAttr && BOOLEAN_ELEMENTS[nodeName_(element)] && booleanAttr;
-  }
-
-  function getAliasedAttrName(name) {
-    return ALIASED_ATTR[name];
   }
 
   function jqLiteCleanData(nodes) {
@@ -2066,8 +2052,6 @@
       injector(element) {
         return jqLiteInheritedData(element, "$injector");
       },
-
-      hasClass: jqLiteHasClass,
 
       css(element, name, value) {
         name = kebabToCamel(name);
@@ -2179,7 +2163,7 @@
         if (
           fn !== jqLiteEmpty &&
           isUndefined(
-            fn.length === 2 && fn !== jqLiteHasClass && fn !== jqLiteController
+            fn.length === 2 && fn !== jqLiteController
               ? arg1
               : arg2,
           )
@@ -8892,7 +8876,7 @@
 
             const node = this.$$element[0];
             const booleanKey = getBooleanAttrName(node, key);
-            const aliasedKey = getAliasedAttrName(key);
+            const aliasedKey = ALIASED_ATTR[key];
             let observer = key;
             let nodeName;
 
@@ -11371,7 +11355,7 @@
                     );
                   };
                 lastValue = destination[scopeName] = parentGet(scope);
-                const parentValueWatch = function parentValueWatch(parentValue) {
+                var parentValueWatch = function parentValueWatch(parentValue) {
                   if (!compare(parentValue, destination[scopeName])) {
                     // we are out of sync and need to copy
                     if (!compare(parentValue, lastValue)) {
@@ -11402,7 +11386,7 @@
                 break;
 
               case "<":
-                if (!hasOwnProperty.call(attrs, attrName)) {
+                if (!Object.hasOwnProperty.call(attrs, attrName)) {
                   if (optional) break;
                   strictBindingsCheck(attrName, directive.name);
                   attrs[attrName] = undefined;
@@ -11410,9 +11394,9 @@
                 if (optional && !attrs[attrName]) break;
 
                 parentGet = $parse(attrs[attrName]);
-                const isLiteral = parentGet.literal;
+                var isLiteral = parentGet.literal;
 
-                const initialValue = (destination[scopeName] = parentGet(scope));
+                var initialValue = (destination[scopeName] = parentGet(scope));
                 initialChanges[scopeName] = new SimpleChange(
                   _UNINITIALIZED_VALUE,
                   destination[scopeName],
@@ -12220,7 +12204,7 @@
   function setupValidity(instance) {
     instance.$$classCache = {};
     instance.$$classCache[INVALID_CLASS] = !(instance.$$classCache[VALID_CLASS] =
-      instance.$$element.hasClass(VALID_CLASS));
+      instance.$$element[0].classList.contains(VALID_CLASS));
   }
 
   function addSetValidityMethod(context) {
@@ -32068,7 +32052,7 @@
 
               const usedIndicesLookup = {};
               const anchorGroups = {};
-              forEach(refLookup, (operations, key) => {
+              Object.values(refLookup).forEach((operations) => {
                 const { from } = operations;
                 const { to } = operations;
 

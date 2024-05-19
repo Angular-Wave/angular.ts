@@ -453,15 +453,6 @@ function jqLiteData(element, key, value) {
   }
 }
 
-function jqLiteHasClass(element, selector) {
-  if (!element.getAttribute) return false;
-  return (
-    ` ${element.getAttribute("class") || ""} `
-      .replace(/[\n\t]/g, " ")
-      .indexOf(` ${selector} `) > -1
-  );
-}
-
 export function jqLiteRemoveClass(element, cssClasses) {
   if (cssClasses && element.setAttribute) {
     const existingClasses = ` ${element.getAttribute("class") || ""} `.replace(
@@ -688,8 +679,6 @@ forEach(
       return jqLiteInheritedData(element, "$injector");
     },
 
-    hasClass: jqLiteHasClass,
-
     css(element, name, value) {
       name = kebabToCamel(name);
 
@@ -800,7 +789,7 @@ forEach(
       if (
         fn !== jqLiteEmpty &&
         isUndefined(
-          fn.length === 2 && fn !== jqLiteHasClass && fn !== jqLiteController
+          fn.length === 2 && fn !== jqLiteController
             ? arg1
             : arg2,
         )

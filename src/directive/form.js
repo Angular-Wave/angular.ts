@@ -615,7 +615,7 @@ export const ngFormDirective = formDirectiveFactory(true);
 export function setupValidity(instance) {
   instance.$$classCache = {};
   instance.$$classCache[INVALID_CLASS] = !(instance.$$classCache[VALID_CLASS] =
-    instance.$$element.hasClass(VALID_CLASS));
+    instance.$$element[0].classList.contains(VALID_CLASS));
 }
 
 export function addSetValidityMethod(context) {
