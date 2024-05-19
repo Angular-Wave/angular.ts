@@ -455,7 +455,7 @@ export function baseExtend(dst, objs, deep) {
         } else if (src.nodeName) {
           dst[key] = src.cloneNode(true);
         } else if (isElement(src)) {
-          dst[key] = src.clone();
+          dst[key] = src[0].cloneNode(true);
         } else if (key !== "__proto__") {
           if (!isObject(dst[key])) dst[key] = isArray(src) ? [] : {};
           baseExtend(dst[key], [src], true);

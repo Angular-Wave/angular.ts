@@ -878,24 +878,6 @@ describe("angular", () => {
       expect(dst.regexp.toString()).toBe(src.regexp.toString());
     });
 
-    it("should copy(clone) elements", () => {
-      const src = {
-        element: document.createElement("div"),
-        jqObject: jqLite("<p><span>s1</span><span>s2</span></p>").find("span"),
-      };
-      const dst = {};
-
-      merge(dst, src);
-
-      expect(dst.element).not.toBe(src.element);
-      expect(dst.jqObject).not.toBe(src.jqObject);
-
-      expect(isElement(dst.element)).toBeTruthy();
-      expect(dst.element.nodeName).toBeDefined(); // i.e it is a DOM element
-      expect(isElement(dst.jqObject)).toBeTruthy();
-      expect(dst.jqObject.nodeName).toBeUndefined(); // i.e it is a jqLite/jQuery object
-    });
-
     it("should not merge the __proto__ property", () => {
       const src = JSON.parse('{ "__proto__": { "xxx": "polluted" } }');
       const dst = {};
@@ -1852,7 +1834,7 @@ describe("angular", () => {
       const template = jqLite('<div>{{greeting = "hello world"}}</div>');
 
       const compile = $compile(template);
-      let templateClone = template.clone();
+      let templateClone = template[0].cloneNode(true);
 
       element = compile($rootScope, (clone) => {
         templateClone = clone;

@@ -96,15 +96,6 @@ interface JQLite {
     children(): this;
 
     /**
-     * Create a deep copy of the set of matched elements.
-     *
-     * @param withDataAndEvents A Boolean indicating whether event handlers and data should be copied along with the elements. The default value is false.
-     * @param deepWithDataAndEvents A Boolean indicating whether event handlers and data for all children of the cloned element should be copied. By default its value matches the first argument's value (which defaults to false).
-     * @see {@link https://api.jquery.com/clone/}
-     */
-    clone(withDataAndEvents?: boolean, deepWithDataAndEvents?: boolean): this;
-
-    /**
      * Get the children of each element in the set of matched elements, including text and comment nodes.
      * @see {@link https://api.jquery.com/contents/}
      */

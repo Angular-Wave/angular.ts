@@ -448,7 +448,7 @@
           } else if (src.nodeName) {
             dst[key] = src.cloneNode(true);
           } else if (isElement(src)) {
-            dst[key] = src.clone();
+            dst[key] = src[0].cloneNode(true);
           } else if (key !== "__proto__") {
             if (!isObject(dst[key])) dst[key] = isArray(src) ? [] : {};
             baseExtend(dst[key], [src], true);
@@ -1414,7 +1414,6 @@
    * - [`attr()`](http://api.jquery.com/attr/) - Does not support functions as parameters
    * - [`bind()`](http://api.jquery.com/bind/) (_deprecated_, use [`on()`](http://api.jquery.com/on/)) - Does not support namespaces, selectors or eventData
    * - [`children()`](http://api.jquery.com/children/) - Does not support selectors
-   * - [`clone()`](http://api.jquery.com/clone/)
    * - [`contents()`](http://api.jquery.com/contents/)
    * - [`css()`](http://api.jquery.com/css/) - Only retrieves inline-styles, does not call `getComputedStyle()`.
    * - [`data()`](http://api.jquery.com/data/)
@@ -1664,10 +1663,6 @@
     }
   }
   var jqLite = JQLite;
-
-  function jqLiteClone(element) {
-    return element.cloneNode(true);
-  }
 
   function dealoc(element, onlyDescendants) {
     if (!element) return;
@@ -2464,8 +2459,6 @@
         return [];
       },
 
-      clone: jqLiteClone,
-
       triggerHandler(element, event, extraParameters) {
         let dummyEvent;
         let eventFnsCopy;
@@ -2538,11 +2531,12 @@
   );
 
   /**
-   * @param {JQLite} element
+   * @param {string} elementStr
    * @returns {string} Returns the string representation of the element.
    */
-  function startingTag(element) {
-    element = jqLite(element).clone().empty();
+  function startingTag(elementStr) {
+    const clone = jqLite(elementStr)[0].cloneNode(true);
+    const element = jqLite(clone).empty();
     var elemHtml = jqLite("<div></div>").append(element).html();
     try {
       return element[0].nodeType === Node.TEXT_NODE
@@ -9164,9 +9158,11 @@
                 ),
               );
             } else if (cloneConnectFn) {
-              // important!!: we must call our jqLite.clone() since the jQuery one is trying to be smart
-              // and sometimes changes the structure of the DOM.
-              $linkNode = JQLite.prototype.clone.call($compileNodes);
+              $linkNode = jqLite(
+                Array.from($compileNodes).map((element) =>
+                  element.cloneNode(true),
+                ),
+              );
             } else {
               $linkNode = $compileNodes;
             }
@@ -9942,7 +9938,8 @@
                 const slots = createMap();
 
                 if (!isObject(directiveValue)) {
-                  $template = jqLite(jqLiteClone(compileNode)).contents();
+                  const clone = compileNode.cloneNode(true);
+                  $template = jqLite(clone).contents();
                 } else {
                   // We have transclusion slots,
                   // collect them up, compile them and store their transclusion functions
@@ -10884,7 +10881,7 @@
                     )
                   ) {
                     // it was cloned therefore we have to clone as well.
-                    linkNode = jqLiteClone(compileNode);
+                    linkNode = compileNode.cloneNode(true);
                   }
                   replaceWith(
                     linkRootElement,

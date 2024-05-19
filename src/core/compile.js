@@ -3,7 +3,6 @@ import {
   jqLite,
   getBooleanAttrName,
   getAliasedAttrName,
-  jqLiteClone,
   jqLiteIsTextNode,
   startingTag,
 } from "../jqLite";
@@ -2309,9 +2308,11 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               ),
             );
           } else if (cloneConnectFn) {
-            // important!!: we must call our jqLite.clone() since the jQuery one is trying to be smart
-            // and sometimes changes the structure of the DOM.
-            $linkNode = JQLite.prototype.clone.call($compileNodes);
+            $linkNode = jqLite(
+              Array.from($compileNodes).map((element) =>
+                element.cloneNode(true),
+              ),
+            );
           } else {
             $linkNode = $compileNodes;
           }
@@ -3090,7 +3091,8 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               const slots = createMap();
 
               if (!isObject(directiveValue)) {
-                $template = jqLite(jqLiteClone(compileNode)).contents();
+                const clone = compileNode.cloneNode(true);
+                $template = jqLite(clone).contents();
               } else {
                 // We have transclusion slots,
                 // collect them up, compile them and store their transclusion functions
@@ -4032,7 +4034,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                   )
                 ) {
                   // it was cloned therefore we have to clone as well.
-                  linkNode = jqLiteClone(compileNode);
+                  linkNode = compileNode.cloneNode(true);
                 }
                 replaceWith(
                   linkRootElement,

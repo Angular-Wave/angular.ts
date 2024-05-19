@@ -49,7 +49,6 @@ import { CACHE } from "./core/cache";
  * - [`attr()`](http://api.jquery.com/attr/) - Does not support functions as parameters
  * - [`bind()`](http://api.jquery.com/bind/) (_deprecated_, use [`on()`](http://api.jquery.com/on/)) - Does not support namespaces, selectors or eventData
  * - [`children()`](http://api.jquery.com/children/) - Does not support selectors
- * - [`clone()`](http://api.jquery.com/clone/)
  * - [`contents()`](http://api.jquery.com/contents/)
  * - [`css()`](http://api.jquery.com/css/) - Only retrieves inline-styles, does not call `getComputedStyle()`.
  * - [`data()`](http://api.jquery.com/data/)
@@ -299,10 +298,6 @@ export function JQLite(element) {
   }
 }
 export var jqLite = JQLite;
-
-export function jqLiteClone(element) {
-  return element.cloneNode(true);
-}
 
 export function dealoc(element, onlyDescendants) {
   if (!element) return;
@@ -1099,8 +1094,6 @@ forEach(
       return [];
     },
 
-    clone: jqLiteClone,
-
     triggerHandler(element, event, extraParameters) {
       let dummyEvent;
       let eventFnsCopy;
@@ -1173,11 +1166,12 @@ forEach(
 );
 
 /**
- * @param {JQLite} element
+ * @param {string} elementStr
  * @returns {string} Returns the string representation of the element.
  */
-export function startingTag(element) {
-  element = jqLite(element).clone().empty();
+export function startingTag(elementStr) {
+  const clone = jqLite(elementStr)[0].cloneNode(true);
+  const element = jqLite(clone).empty();
   var elemHtml = jqLite("<div></div>").append(element).html();
   try {
     return element[0].nodeType === Node.TEXT_NODE
