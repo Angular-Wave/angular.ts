@@ -182,7 +182,7 @@ describe("ngIf", () => {
       $scope.value = true;
       makeIf("value");
       expect(element.children().length).toBe(1);
-      jqLite(element.children()[0]).removeClass("my-class");
+      element.children()[0].classList.remove("my-class");
       expect(element.children()[0].className).not.toContain("my-class");
       $scope.$apply("value = false");
       expect(element.children().length).toBe(0);

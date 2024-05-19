@@ -1429,7 +1429,6 @@ const CACHE = new Proxy(new Map(), {
  * - [`prepend()`](http://api.jquery.com/prepend/)
  * - [`prop()`](http://api.jquery.com/prop/)
  * - [`remove()`](http://api.jquery.com/remove/)
- * - [`removeClass()`](http://api.jquery.com/removeClass/) - Does not support a function as first argument
  * - [`removeData()`](http://api.jquery.com/removeData/)
  * - [`replaceWith()`](http://api.jquery.com/replaceWith/)
  * - [`text()`](http://api.jquery.com/text/)
@@ -1816,25 +1815,6 @@ function jqLiteData(element, key, value) {
       for (prop in key) {
         data[kebabToCamel(prop)] = key[prop];
       }
-    }
-  }
-}
-
-function jqLiteRemoveClass(element, cssClasses) {
-  if (cssClasses && element.setAttribute) {
-    const existingClasses = ` ${element.getAttribute("class") || ""} `.replace(
-      /[\n\t]/g,
-      " ",
-    );
-    let newClasses = existingClasses;
-
-    forEach(cssClasses.split(" "), (cssClass) => {
-      cssClass = trim(cssClass);
-      newClasses = newClasses.replace(` ${cssClass} `, " ");
-    });
-
-    if (newClasses !== existingClasses) {
-      element.setAttribute("class", trim(newClasses));
     }
   }
 }
@@ -2380,15 +2360,6 @@ forEach(
       }
     },
 
-    // addClass: function (element, cssClasses) {
-    //   const classList = element.classList;
-    //   const classesToAdd = cssClasses.split(" ").map((cls) => cls.trim());
-
-    //   classesToAdd.forEach((cssClass) => {
-    //     classList.add(cssClass);
-    //   });
-    // },
-    removeClass: jqLiteRemoveClass,
     parent(element) {
       const parent = element.parentNode;
       return parent && parent.nodeType !== Node.DOCUMENT_FRAGMENT_NODE
@@ -20155,7 +20126,7 @@ function CoreAnimateQueueProvider() {
 
             forEach(element, function (elm) {
               if (toRemove) {
-                jqLiteRemoveClass(elm, toRemove);
+                toRemove.split(" ").forEach((css) => elm.classList.remove(css));
               }
               if (toAdd) {
                 elm.className += ` ${toAdd}`;
@@ -21224,7 +21195,7 @@ function CoreAnimateCssProvider() {
             options.addClass = null;
           }
           if (options.removeClass) {
-            element.removeClass(options.removeClass);
+            element[0].classList.remove(options.removeClass);
             options.removeClass = null;
           }
           if (options.to) {
@@ -31525,11 +31496,15 @@ function applyGeneratedPreparationClasses(element, event, options) {
 
 function clearGeneratedClasses(element, options) {
   if (options.preparationClasses) {
-    element.removeClass(options.preparationClasses);
+    options.preparationClasses
+      .split(" ")
+      .forEach((cls) => element[0].classList.remove(cls));
     options.preparationClasses = null;
   }
   if (options.activeClasses) {
-    element.removeClass(options.activeClasses);
+    options.activeClasses
+      .split(" ")
+      .forEach((cls) => element[0].classList.remove(cls));
     options.activeClasses = null;
   }
 }
@@ -32104,7 +32079,7 @@ const $$AnimationProvider = [
             element.className += ` ${tempClasses}`;
             let prepareClassName = element.data(PREPARE_CLASSES_KEY);
             if (prepareClassName) {
-              jqLite.removeClass(element, prepareClassName);
+              element[0].classList.remove(prepareClassName);
               prepareClassName = null;
             }
           }
@@ -32139,7 +32114,9 @@ const $$AnimationProvider = [
             options.domOperation();
 
             if (tempClasses) {
-              jqLite.removeClass(element, tempClasses);
+              tempClasses
+                .split(" ")
+                .forEach((cls) => element[0].classList.remove(cls));
             }
 
             runner.complete(!rejected);
@@ -33589,7 +33566,7 @@ const $AnimateCssProvider = [
                 0,
               );
 
-              jqLite.removeClass(node, staggerClassName);
+              node.classList.remove(staggerClassName);
 
               $$animateCache.put(staggerCacheKey, stagger, true);
             }
@@ -33959,11 +33936,15 @@ const $AnimateCssProvider = [
             animationPaused = false;
 
             if (preparationClasses && !options.$$skipPreparationClasses) {
-              jqLite.removeClass(element, preparationClasses);
+              preparationClasses
+                .split(" ")
+                .forEach((cls) => element.classList.remove(cls));
             }
 
             if (activeClasses) {
-              jqLite.removeClass(element, activeClasses);
+              activeClasses
+                .split(" ")
+                .forEach((cls) => element.classList.remove(cls));
             }
 
             blockKeyframeAnimations(node, false);

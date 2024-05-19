@@ -432,7 +432,7 @@ export const $AnimateCssProvider = [
                 0,
               );
 
-              jqLite.removeClass(node, staggerClassName);
+              node.classList.remove(staggerClassName);
 
               $$animateCache.put(staggerCacheKey, stagger, true);
             }
@@ -806,11 +806,15 @@ export const $AnimateCssProvider = [
             animationPaused = false;
 
             if (preparationClasses && !options.$$skipPreparationClasses) {
-              jqLite.removeClass(element, preparationClasses);
+              preparationClasses
+                .split(" ")
+                .forEach((cls) => element.classList.remove(cls));
             }
 
             if (activeClasses) {
-              jqLite.removeClass(element, activeClasses);
+              activeClasses
+                .split(" ")
+                .forEach((cls) => element.classList.remove(cls));
             }
 
             blockKeyframeAnimations(node, false);

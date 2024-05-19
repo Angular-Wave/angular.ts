@@ -334,11 +334,15 @@ export function applyGeneratedPreparationClasses(element, event, options) {
 
 export function clearGeneratedClasses(element, options) {
   if (options.preparationClasses) {
-    element.removeClass(options.preparationClasses);
+    options.preparationClasses
+      .split(" ")
+      .forEach((cls) => element[0].classList.remove(cls));
     options.preparationClasses = null;
   }
   if (options.activeClasses) {
-    element.removeClass(options.activeClasses);
+    options.activeClasses
+      .split(" ")
+      .forEach((cls) => element[0].classList.remove(cls));
     options.activeClasses = null;
   }
 }

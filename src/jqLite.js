@@ -60,7 +60,6 @@ import { CACHE } from "./core/cache";
  * - [`prepend()`](http://api.jquery.com/prepend/)
  * - [`prop()`](http://api.jquery.com/prop/)
  * - [`remove()`](http://api.jquery.com/remove/)
- * - [`removeClass()`](http://api.jquery.com/removeClass/) - Does not support a function as first argument
  * - [`removeData()`](http://api.jquery.com/removeData/)
  * - [`replaceWith()`](http://api.jquery.com/replaceWith/)
  * - [`text()`](http://api.jquery.com/text/)
@@ -447,25 +446,6 @@ function jqLiteData(element, key, value) {
       for (prop in key) {
         data[kebabToCamel(prop)] = key[prop];
       }
-    }
-  }
-}
-
-export function jqLiteRemoveClass(element, cssClasses) {
-  if (cssClasses && element.setAttribute) {
-    const existingClasses = ` ${element.getAttribute("class") || ""} `.replace(
-      /[\n\t]/g,
-      " ",
-    );
-    let newClasses = existingClasses;
-
-    forEach(cssClasses.split(" "), (cssClass) => {
-      cssClass = trim(cssClass);
-      newClasses = newClasses.replace(` ${cssClass} `, " ");
-    });
-
-    if (newClasses !== existingClasses) {
-      element.setAttribute("class", trim(newClasses));
     }
   }
 }
@@ -1011,15 +991,6 @@ forEach(
       }
     },
 
-    // addClass: function (element, cssClasses) {
-    //   const classList = element.classList;
-    //   const classesToAdd = cssClasses.split(" ").map((cls) => cls.trim());
-
-    //   classesToAdd.forEach((cssClass) => {
-    //     classList.add(cssClass);
-    //   });
-    // },
-    removeClass: jqLiteRemoveClass,
     parent(element) {
       const parent = element.parentNode;
       return parent && parent.nodeType !== Node.DOCUMENT_FRAGMENT_NODE

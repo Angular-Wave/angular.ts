@@ -401,14 +401,6 @@ interface JQLite {
     removeAttr(attributeName: string): this;
 
     /**
-     * Remove a single class, multiple classes, or all classes from each element in the set of matched elements.
-     *
-     * @param className One or more space-separated classes to be removed from the class attribute of each matched element.
-     * @see {@link https://api.jquery.com/removeClass/#removeClass-className}
-     */
-    removeClass(className?: string): this;
-
-    /**
      * Remove a previously-stored piece of data.
      *
      * @param name A string naming the piece of data to delete or space-separated string naming the pieces of data to delete.

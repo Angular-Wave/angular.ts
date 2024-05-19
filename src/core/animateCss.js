@@ -60,7 +60,7 @@ export function CoreAnimateCssProvider() {
             options.addClass = null;
           }
           if (options.removeClass) {
-            element.removeClass(options.removeClass);
+            element[0].classList.remove(options.removeClass);
             options.removeClass = null;
           }
           if (options.to) {

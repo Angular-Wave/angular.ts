@@ -457,7 +457,7 @@ export const $$AnimationProvider = [
             element.className += ` ${tempClasses}`;
             let prepareClassName = element.data(PREPARE_CLASSES_KEY);
             if (prepareClassName) {
-              jqLite.removeClass(element, prepareClassName);
+              element[0].classList.remove(prepareClassName);
               prepareClassName = null;
             }
           }
@@ -492,7 +492,9 @@ export const $$AnimationProvider = [
             options.domOperation();
 
             if (tempClasses) {
-              jqLite.removeClass(element, tempClasses);
+              tempClasses
+                .split(" ")
+                .forEach((cls) => element[0].classList.remove(cls));
             }
 
             runner.complete(!rejected);
