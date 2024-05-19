@@ -1137,7 +1137,6 @@ describe("jqLite", () => {
 
     it("should return text only for element or text nodes", () => {
       expect(jqLite("<div>foo</div>").text()).toBe("foo");
-      expect(jqLite("<div>foo</div>").contents().eq(0).text()).toBe("foo");
       expect(jqLite(window.document.createComment("foo")).text()).toBe("");
     });
   });
@@ -1976,33 +1975,6 @@ describe("jqLite", () => {
       const div = root.find("div");
       const span = root.find("span");
       expect(root.children()).toJqEqual([div, span]);
-    });
-  });
-
-  describe("contents", () => {
-    it("should select all types child nodes", () => {
-      const root = jqLite(
-        "<div><!-- some comment -->before-<div></div>after-<span></span></div>",
-      );
-      const contents = root.contents();
-      expect(contents.length).toEqual(5);
-      expect(contents[0].data).toEqual(" some comment ");
-      expect(contents[1].data).toEqual("before-");
-    });
-
-    it("should select all types iframe contents", () => {
-      const iframe_ = document.createElement("iframe");
-      document.body.appendChild(iframe_);
-      let doc = iframe_.contentDocument || iframe_.contentWindow.document;
-      doc.body.innerHTML = "\n<span>Text</span>\n";
-
-      const contents = jqLite(iframe_).contents();
-      expect(contents[0]).toBeTruthy();
-      expect(contents.length).toBe(1);
-      expect(contents.prop("nodeType")).toBe(9);
-      expect(contents[0].body).toBeTruthy();
-      expect(jqLite(contents[0].body).contents().length).toBe(3);
-      iframe_.parentNode.removeChild(iframe_);
     });
   });
 

@@ -15,9 +15,9 @@ describe("$animate", () => {
 
     it("should add element at the start of enter animation", () => {
       const child = $compile("<div></div>")($rootScope);
-      expect(element.contents().length).toBe(0);
+      expect(element[0].childNodes.length).toBe(0);
       $animate.enter(child, element);
-      expect(element.contents().length).toBe(1);
+      expect(element[0].childNodes.length).toBe(1);
     });
 
     it("should enter the element to the start of the parent container", () => {
@@ -34,9 +34,9 @@ describe("$animate", () => {
     it("should remove the element at the end of leave animation", () => {
       const child = $compile("<div></div>")($rootScope);
       element.append(child);
-      expect(element.contents().length).toBe(1);
+      expect(element[0].childNodes.length).toBe(1);
       $animate.leave(child);
-      expect(element.contents().length).toBe(0);
+      expect(element[0].childNodes.length).toBe(0);
     });
 
     it("should reorder the move animation", () => {

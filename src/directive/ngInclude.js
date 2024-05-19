@@ -211,7 +211,7 @@ export const ngIncludeFillContentDirective = [
       }
 
       $element.html(ctrl.template);
-      $compile($element.contents())(scope);
+      $compile($element[0].childNodes)(scope);
     },
   }),
 ];

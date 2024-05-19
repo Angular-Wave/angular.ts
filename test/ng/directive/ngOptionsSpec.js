@@ -185,7 +185,7 @@ describe("ngOptions", () => {
           .directive("oCompileContents", () => ({
             link(scope, element) {
               linkLog.push("linkCompileContents");
-              $compile(element.contents())(scope);
+              $compile(jqLite(element[0].childNodes))(scope);
             },
           }))
 

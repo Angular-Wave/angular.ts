@@ -30,7 +30,7 @@ export const ngTranscludeDirective = [
       restrict: "EAC",
       compile: function ngTranscludeCompile(tElement) {
         // Remove and cache any original content to act as a fallback
-        const fallbackLinkFn = $compile(tElement.contents());
+        const fallbackLinkFn = $compile(tElement[0].childNodes);
         tElement.empty();
 
         return function ngTranscludePostLink(

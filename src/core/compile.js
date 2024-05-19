@@ -3053,8 +3053,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               const slots = createMap();
 
               if (!isObject(directiveValue)) {
-                const clone = compileNode.cloneNode(true);
-                $template = jqLite(clone).contents();
+                $template = compileNode.cloneNode(true).childNodes;
               } else {
                 // We have transclusion slots,
                 // collect them up, compile them and store their transclusion functions
@@ -3084,7 +3083,8 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                 });
 
                 // Add the matching elements into their slot
-                forEach($compileNode.contents(), (node) => {
+
+                forEach(jqLite($compileNode[0].childNodes), (node) => {
                   const slotName = slotMap[directiveNormalize(nodeName_(node))];
                   if (slotName) {
                     filledSlots[slotName] = true;

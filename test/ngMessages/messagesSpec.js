@@ -1044,7 +1044,7 @@ describe("ngMessages", () => {
 
       expect(element.text()).toBe("");
       expect(element.children().length).toBe(0);
-      expect(element.contents().length).toBe(2);
+      expect(element[0].childNodes.length).toBe(2);
     });
   });
 
