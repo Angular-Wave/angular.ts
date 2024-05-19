@@ -523,7 +523,7 @@ const formDirectiveFactory = function (isNgForm) {
         controller: FormController,
         compile: function ngFormCompile(formElement, attr) {
           // Setup initial state of the control
-          formElement.addClass(PRISTINE_CLASS).addClass(VALID_CLASS);
+          formElement[0].classList.add(PRISTINE_CLASS, VALID_CLASS);
 
           const nameAttr = attr.name
             ? "name"

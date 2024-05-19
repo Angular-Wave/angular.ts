@@ -1843,27 +1843,6 @@ function jqLiteRemoveClass(element, cssClasses) {
   }
 }
 
-function jqLiteAddClass(element, cssClasses) {
-  if (cssClasses && element.setAttribute) {
-    const existingClasses = ` ${element.getAttribute("class") || ""} `.replace(
-      /[\n\t]/g,
-      " ",
-    );
-    let newClasses = existingClasses;
-
-    forEach(cssClasses.split(" "), (cssClass) => {
-      cssClass = trim(cssClass);
-      if (newClasses.indexOf(` ${cssClass} `) === -1) {
-        newClasses += `${cssClass} `;
-      }
-    });
-
-    if (newClasses !== existingClasses) {
-      element.setAttribute("class", trim(newClasses));
-    }
-  }
-}
-
 function jqLiteAddNodes(root, elements) {
   // THIS CODE IS VERY HOT. Don't make changes without benchmarking.
 
@@ -2159,11 +2138,7 @@ forEach(
       // jqLiteEmpty takes no arguments but is a setter.
       if (
         fn !== jqLiteEmpty &&
-        isUndefined(
-          fn.length === 2 && fn !== jqLiteController
-            ? arg1
-            : arg2,
-        )
+        isUndefined(fn.length === 2 && fn !== jqLiteController ? arg1 : arg2)
       ) {
         if (isObject(arg1)) {
           // we are a write, but the object properties are the key/values
@@ -2423,7 +2398,14 @@ forEach(
       }
     },
 
-    addClass: jqLiteAddClass,
+    // addClass: function (element, cssClasses) {
+    //   const classList = element.classList;
+    //   const classesToAdd = cssClasses.split(" ").map((cls) => cls.trim());
+
+    //   classesToAdd.forEach((cssClass) => {
+    //     classList.add(cssClass);
+    //   });
+    // },
     removeClass: jqLiteRemoveClass,
     parent(element) {
       const parent = element.parentNode;
@@ -8994,7 +8976,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       function safeAddClass($element, className) {
         try {
-          $element.addClass(className);
+          $element[0].classList.add(className);
         } catch (e) {
           // ignore, since it means that we are trying to set class on
           // SVG element, where class name is read-only.
@@ -12109,7 +12091,7 @@ const formDirectiveFactory = function (isNgForm) {
         controller: FormController,
         compile: function ngFormCompile(formElement, attr) {
           // Setup initial state of the control
-          formElement.addClass(PRISTINE_CLASS).addClass(VALID_CLASS);
+          formElement[0].classList.add(PRISTINE_CLASS, VALID_CLASS);
 
           const nameAttr = attr.name
             ? "name"
@@ -14105,10 +14087,7 @@ const ngModelDirective = [
     priority: 1,
     compile: function ngModelCompile(element) {
       // Setup initial state of the control
-      element
-        .addClass(PRISTINE_CLASS)
-        .addClass(UNTOUCHED_CLASS)
-        .addClass(VALID_CLASS);
+      element[0].classList.add(PRISTINE_CLASS, UNTOUCHED_CLASS, VALID_CLASS);
 
       return {
         pre: function ngModelPreLink(scope, element, attr, ctrls) {
@@ -20197,11 +20176,11 @@ function CoreAnimateQueueProvider() {
             });
 
             forEach(element, function (elm) {
-              if (toAdd) {
-                jqLiteAddClass(elm, toAdd);
-              }
               if (toRemove) {
                 jqLiteRemoveClass(elm, toRemove);
+              }
+              if (toAdd) {
+                elm.className += ` ${toAdd}`;
               }
             });
             postDigestQueue.delete(element);
@@ -21263,7 +21242,7 @@ function CoreAnimateCssProvider() {
 
         function applyAnimationContents() {
           if (options.addClass) {
-            element.addClass(options.addClass);
+            element[0].classList.add(options.addClass);
             options.addClass = null;
           }
           if (options.removeClass) {
@@ -31562,7 +31541,7 @@ function applyGeneratedPreparationClasses(element, event, options) {
   }
   if (classes.length) {
     options.preparationClasses = classes;
-    element.addClass(classes);
+    element[0].className += ` ${classes}`;
   }
 }
 
@@ -32144,8 +32123,7 @@ const $$AnimationProvider = [
           function beforeStart() {
             tempClasses =
               (tempClasses ? `${tempClasses} ` : "") + NG_ANIMATE_CLASSNAME;
-            jqLite.addClass(element, tempClasses);
-
+            element.className += ` ${tempClasses}`;
             let prepareClassName = element.data(PREPARE_CLASSES_KEY);
             if (prepareClassName) {
               jqLite.removeClass(element, prepareClassName);
@@ -33620,8 +33598,7 @@ const $AnimateCssProvider = [
             if (!stagger) {
               const staggerClassName = pendClasses(className, "-stagger");
 
-              jqLite.addClass(node, staggerClassName);
-
+              node.className += ` ${staggerClassName}`;
               stagger = computeCssStyles(window, node);
 
               // force the conversion of a null value to zero incase not set
@@ -34199,8 +34176,7 @@ const $AnimateCssProvider = [
               });
 
               applyAnimationClasses(element, options);
-              jqLite.addClass(element, activeClasses);
-
+              element.className += ` ${activeClasses}`;
               if (flags.recalculateTimingStyles) {
                 fullClassName = `${node.getAttribute("class")} ${preparationClasses}`;
                 cacheKey = $$animateCache.cacheKey(

@@ -1305,10 +1305,7 @@ export const ngModelDirective = [
     priority: 1,
     compile: function ngModelCompile(element) {
       // Setup initial state of the control
-      element
-        .addClass(PRISTINE_CLASS)
-        .addClass(UNTOUCHED_CLASS)
-        .addClass(VALID_CLASS);
+      element[0].classList.add(PRISTINE_CLASS, UNTOUCHED_CLASS, VALID_CLASS);
 
       return {
         pre: function ngModelPreLink(scope, element, attr, ctrls) {

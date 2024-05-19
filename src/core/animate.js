@@ -8,7 +8,7 @@ import {
   minErr,
   extend,
 } from "./utils";
-import { jqLite, jqLiteAddClass, jqLiteRemoveClass } from "../jqLite";
+import { jqLite, jqLiteRemoveClass } from "../jqLite";
 
 const $animateMinErr = minErr("$animate");
 const NG_ANIMATE_CLASSNAME = "ng-animate";
@@ -149,11 +149,11 @@ export function CoreAnimateQueueProvider() {
             });
 
             forEach(element, function (elm) {
-              if (toAdd) {
-                jqLiteAddClass(elm, toAdd);
-              }
               if (toRemove) {
                 jqLiteRemoveClass(elm, toRemove);
+              }
+              if (toAdd) {
+                elm.className += ` ${toAdd}`;
               }
             });
             postDigestQueue.delete(element);

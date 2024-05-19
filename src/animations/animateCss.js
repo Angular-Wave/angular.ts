@@ -419,8 +419,7 @@ export const $AnimateCssProvider = [
             if (!stagger) {
               const staggerClassName = pendClasses(className, "-stagger");
 
-              jqLite.addClass(node, staggerClassName);
-
+              node.className += ` ${staggerClassName}`;
               stagger = computeCssStyles(window, node, properties);
 
               // force the conversion of a null value to zero incase not set
@@ -1002,8 +1001,7 @@ export const $AnimateCssProvider = [
               });
 
               applyAnimationClasses(element, options);
-              jqLite.addClass(element, activeClasses);
-
+              element.className += ` ${activeClasses}`;
               if (flags.recalculateTimingStyles) {
                 fullClassName = `${node.getAttribute("class")} ${preparationClasses}`;
                 cacheKey = $$animateCache.cacheKey(

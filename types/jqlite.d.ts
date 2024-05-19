@@ -2,14 +2,6 @@ interface JQLite {
     [index: number]: HTMLElement;
 
     /**
-     * Adds the specified class(es) to each of the set of matched elements.
-     *
-     * @param className One or more space-separated classes to be added to the class attribute of each matched element.
-     * @see {@link https://api.jquery.com/addClass/#addClass-className}
-     */
-    addClass(className: string): this;
-
-    /**
      * Insert content, specified by the parameter, after each element in the set of matched elements.
      *
      * @param content1 HTML string, DOM element, DocumentFragment, array of elements, or jQuery object to insert after each element in the set of matched elements.
@@ -23,7 +15,7 @@ interface JQLite {
      * @param func A function that returns an HTML string, DOM element(s), or jQuery object to insert after each element in the set of matched elements. Receives the index position of the element in the set as an argument. Within the function, this refers to the current element in the set.
      * @see {@link https://api.jquery.com/after/#after-function}
      */
-    after(func: (index: number, html: string) => string | Element | JQuery): this;
+    after(func: (index: number, html: string) => string | Element): this;
 
     /**
      * Insert content, specified by the parameter, to the end of each element in the set of matched elements.
@@ -39,7 +31,7 @@ interface JQLite {
      * @param func A function that returns an HTML string, DOM element(s), or jQuery object to insert at the end of each element in the set of matched elements. Receives the index position of the element in the set and the old HTML value of the element as arguments. Within the function, this refers to the current element in the set.
      * @see {@link https://api.jquery.com/append/#append-function}
      */
-    append(func: (index: number, html: string) => string | Element | JQuery): this;
+    append(func: (index: number, html: string) => string | Element): this;
 
     /**
      * Get the value of an attribute for the first element in the set of matched elements.

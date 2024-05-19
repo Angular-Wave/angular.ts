@@ -965,7 +965,7 @@ describe("jqLite", () => {
     describe("removeClass", () => {
       it("should allow removal of class", () => {
         const selector = jqLite([a, b]);
-        expect(selector.addClass("abc")).toEqual(selector);
+        selector[0].classList.add("abc");
         expect(selector.removeClass("abc")).toEqual(selector);
         expect(jqLite(a)[0].classList.contains("abc")).toEqual(false);
         expect(jqLite(b)[0].classList.contains("abc")).toEqual(false);

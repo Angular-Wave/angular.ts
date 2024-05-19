@@ -372,7 +372,7 @@ describe("$animate", () => {
       $rootScope.$digest();
       expect(spy).not.toHaveBeenCalled();
 
-      element.addClass("fatias");
+      element[0].classList.add("fatias");
       $animate.enter(element, parent, null, { removeClass: "fatias" });
       $rootScope.$digest();
       expect(spy).toHaveBeenCalled();

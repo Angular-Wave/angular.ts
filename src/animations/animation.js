@@ -454,8 +454,7 @@ export const $$AnimationProvider = [
           function beforeStart() {
             tempClasses =
               (tempClasses ? `${tempClasses} ` : "") + NG_ANIMATE_CLASSNAME;
-            jqLite.addClass(element, tempClasses);
-
+            element.className += ` ${tempClasses}`;
             let prepareClassName = element.data(PREPARE_CLASSES_KEY);
             if (prepareClassName) {
               jqLite.removeClass(element, prepareClassName);

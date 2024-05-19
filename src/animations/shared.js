@@ -328,7 +328,7 @@ export function applyGeneratedPreparationClasses(element, event, options) {
   }
   if (classes.length) {
     options.preparationClasses = classes;
-    element.addClass(classes);
+    element[0].className += ` ${classes}`;
   }
 }
 

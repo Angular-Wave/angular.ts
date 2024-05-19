@@ -472,27 +472,6 @@ export function jqLiteRemoveClass(element, cssClasses) {
   }
 }
 
-export function jqLiteAddClass(element, cssClasses) {
-  if (cssClasses && element.setAttribute) {
-    const existingClasses = ` ${element.getAttribute("class") || ""} `.replace(
-      /[\n\t]/g,
-      " ",
-    );
-    let newClasses = existingClasses;
-
-    forEach(cssClasses.split(" "), (cssClass) => {
-      cssClass = trim(cssClass);
-      if (newClasses.indexOf(` ${cssClass} `) === -1) {
-        newClasses += `${cssClass} `;
-      }
-    });
-
-    if (newClasses !== existingClasses) {
-      element.setAttribute("class", trim(newClasses));
-    }
-  }
-}
-
 function jqLiteAddNodes(root, elements) {
   // THIS CODE IS VERY HOT. Don't make changes without benchmarking.
 
@@ -788,11 +767,7 @@ forEach(
       // jqLiteEmpty takes no arguments but is a setter.
       if (
         fn !== jqLiteEmpty &&
-        isUndefined(
-          fn.length === 2 && fn !== jqLiteController
-            ? arg1
-            : arg2,
-        )
+        isUndefined(fn.length === 2 && fn !== jqLiteController ? arg1 : arg2)
       ) {
         if (isObject(arg1)) {
           // we are a write, but the object properties are the key/values
@@ -1052,7 +1027,14 @@ forEach(
       }
     },
 
-    addClass: jqLiteAddClass,
+    // addClass: function (element, cssClasses) {
+    //   const classList = element.classList;
+    //   const classesToAdd = cssClasses.split(" ").map((cls) => cls.trim());
+
+    //   classesToAdd.forEach((cssClass) => {
+    //     classList.add(cssClass);
+    //   });
+    // },
     removeClass: jqLiteRemoveClass,
     parent(element) {
       const parent = element.parentNode;

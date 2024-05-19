@@ -56,7 +56,7 @@ export function CoreAnimateCssProvider() {
 
         function applyAnimationContents() {
           if (options.addClass) {
-            element.addClass(options.addClass);
+            element[0].classList.add(options.addClass);
             options.addClass = null;
           }
           if (options.removeClass) {
