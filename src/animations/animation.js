@@ -359,7 +359,7 @@ export const $$AnimationProvider = [
 
             const usedIndicesLookup = {};
             const anchorGroups = {};
-            forEach(refLookup, (operations, key) => {
+            Object.values(refLookup).forEach((operations) => {
               const { from } = operations;
               const { to } = operations;
 

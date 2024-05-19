@@ -615,27 +615,17 @@ JQLite.prototype = {
 // value on get.
 /// ///////////////////////////////////////
 export const BOOLEAN_ATTR = {};
-forEach(
-  "multiple,selected,checked,disabled,readOnly,required,open".split(","),
-  (value) => {
+"multiple,selected,checked,disabled,readOnly,required,open"
+  .split(",")
+  .forEach((value) => {
     BOOLEAN_ATTR[lowercase(value)] = value;
-  },
-);
+  });
 const BOOLEAN_ELEMENTS = {};
-forEach(
-  "input,select,option,textarea,button,form,details".split(","),
-  (value) => {
+"input,select,option,textarea,button,form,details"
+  .split(",")
+  .forEach((value) => {
     BOOLEAN_ELEMENTS[value] = true;
-  },
-);
-export const ALIASED_ATTR = {
-  ngMinlength: "minlength",
-  ngMaxlength: "maxlength",
-  ngMin: "min",
-  ngMax: "max",
-  ngPattern: "pattern",
-  ngStep: "step",
-};
+  });
 
 export function getBooleanAttrName(element, name) {
   // check dom last since we will most likely fail on name
@@ -643,10 +633,6 @@ export function getBooleanAttrName(element, name) {
 
   // booleanAttr is here twice to minimize DOM access
   return booleanAttr && BOOLEAN_ELEMENTS[nodeName_(element)] && booleanAttr;
-}
-
-export function getAliasedAttrName(name) {
-  return ALIASED_ATTR[name];
 }
 
 export function jqLiteCleanData(nodes) {

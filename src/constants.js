@@ -9,3 +9,12 @@ export const NOT_EMPTY_CLASS = "ng-not-empty";
 
 export const PREFIX_REGEXP = /^((?:x|data)[:\-_])/i;
 export const SPECIAL_CHARS_REGEXP = /[:\-_]+(.)/g;
+
+export const ALIASED_ATTR = {
+  ngMinlength: "minlength",
+  ngMaxlength: "maxlength",
+  ngMin: "min",
+  ngMax: "max",
+  ngPattern: "pattern",
+  ngStep: "step",
+};

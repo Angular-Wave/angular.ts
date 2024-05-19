@@ -1,7 +1,6 @@
 import {
   jqLite,
   getBooleanAttrName,
-  getAliasedAttrName,
   jqLiteIsTextNode,
   startingTag,
 } from "../jqLite";
@@ -39,7 +38,7 @@ import {
 } from "./utils";
 
 import { SCE_CONTEXTS } from "./sce";
-import { PREFIX_REGEXP } from "../constants";
+import { PREFIX_REGEXP, ALIASED_ATTR } from "../constants";
 import { createEventDirective } from "../directive/ngEventDirs";
 
 /* ! VARIABLE/FUNCTION NAMING CONVENTIONS THAT APPLY TO THIS FILE!
@@ -2041,7 +2040,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
           const node = this.$$element[0];
           const booleanKey = getBooleanAttrName(node, key);
-          const aliasedKey = getAliasedAttrName(key);
+          const aliasedKey = ALIASED_ATTR[key];
           let observer = key;
           let nodeName;
 
@@ -2350,9 +2349,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         previousCompileContext,
       ) {
         const linkFns = [];
-        // `nodeList` can be either an element's `.childNodes` (live NodeList)
-        // or a jqLite/jQuery collection or an array
-        const notLiveList = isArray(nodeList) || nodeList instanceof jqLite;
         let attrs;
         let directives;
         var nodeLinkFn;
@@ -4523,7 +4519,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                   );
                 };
               lastValue = destination[scopeName] = parentGet(scope);
-              const parentValueWatch = function parentValueWatch(parentValue) {
+              var parentValueWatch = function parentValueWatch(parentValue) {
                 if (!compare(parentValue, destination[scopeName])) {
                   // we are out of sync and need to copy
                   if (!compare(parentValue, lastValue)) {
@@ -4554,7 +4550,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               break;
 
             case "<":
-              if (!hasOwnProperty.call(attrs, attrName)) {
+              if (!Object.hasOwnProperty.call(attrs, attrName)) {
                 if (optional) break;
                 strictBindingsCheck(attrName, directive.name);
                 attrs[attrName] = undefined;
@@ -4562,9 +4558,9 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               if (optional && !attrs[attrName]) break;
 
               parentGet = $parse(attrs[attrName]);
-              const isLiteral = parentGet.literal;
+              var isLiteral = parentGet.literal;
 
-              const initialValue = (destination[scopeName] = parentGet(scope));
+              var initialValue = (destination[scopeName] = parentGet(scope));
               initialChanges[scopeName] = new SimpleChange(
                 _UNINITIALIZED_VALUE,
                 destination[scopeName],

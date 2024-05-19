@@ -40,6 +40,7 @@ declare namespace angular {
     }
 
     interface IAngularBootstrapConfig {
+        debugInfoEnabled: boolean;
         strictDi?: boolean | undefined;
     }
 
