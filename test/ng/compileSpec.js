@@ -1482,7 +1482,6 @@ describe("$compile", () => {
     reloadModules();
     var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
-    expect(el[0].classList.contains("ng-scope")).toBe(true);
     expect(el.data("$scope")).toBe(givenScope);
   });
 
@@ -1600,8 +1599,6 @@ describe("$compile", () => {
     reloadModules();
     var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
-    expect(el[0].classList.contains("ng-isolate-scope")).toBe(true);
-    expect(el[0].classList.contains("ng-scope")).toBe(true);
     expect(el.isolateScope()).toBe(givenScope);
   });
 
@@ -6222,23 +6219,23 @@ describe("$compile", () => {
           $rootScope,
         );
         expect(element[0].outerHTML).toEqual(
-          '<div class="crossDomainTemplate ng-scope"></div>',
+          '<div class="crossDomainTemplate"></div>',
         );
         $rootScope.$digest();
         expect(element[0].outerHTML).toEqual(
-          '<div class="crossDomainTemplate ng-scope"><span>example.com/cached-version</span></div>',
+          '<div class="crossDomainTemplate"><span>example.com/cached-version</span></div>',
         );
       });
 
       it("should load cross domain templates when trusted", (done) => {
         element = $compile('<div class="trustedTemplate"></div>')($rootScope);
         expect(element[0].outerHTML).toEqual(
-          '<div class="trustedTemplate ng-scope"></div>',
+          '<div class="trustedTemplate"></div>',
         );
         $rootScope.$digest();
         setTimeout(() => {
           expect(element[0].outerHTML).toEqual(
-            '<div class="trustedTemplate ng-scope">Hello</div>',
+            '<div class="trustedTemplate">Hello</div>',
           );
           done();
         }, 100);
@@ -6250,18 +6247,18 @@ describe("$compile", () => {
           '<div><b class="hello">ignore</b><b class="cau">ignore</b></div>',
         )($rootScope);
         expect(element[0].outerHTML).toEqual(
-          '<div class="ng-scope"><b class="hello"></b><b class="cau"></b></div>',
+          '<div><b class="hello"></b><b class="cau"></b></div>',
         );
 
         $rootScope.$digest();
 
         expect(element[0].outerHTML).toEqual(
-          '<div class="ng-scope"><b class="hello"></b><b class="cau"><span>Cau!</span></b></div>',
+          '<div><b class="hello"></b><b class="cau"><span>Cau!</span></b></div>',
         );
 
         setTimeout(() => {
           expect(element[0].outerHTML).toEqual(
-            `<div class="ng-scope"><b class="hello">Hello</b><b class="cau"><span>Cau!</span></b></div>`,
+            `<div><b class="hello">Hello</b><b class="cau"><span>Cau!</span></b></div>`,
           );
           done();
         }, 100);
@@ -6273,18 +6270,18 @@ describe("$compile", () => {
           "<div><b class=i-hello>ignore</b><b class=i-cau>ignore</b></div>",
         )($rootScope);
         expect(element[0].outerHTML).toEqual(
-          '<div class="ng-scope"><b class="i-hello"></b><b class="i-cau"></b></div>',
+          '<div><b class="i-hello"></b><b class="i-cau"></b></div>',
         );
 
         $rootScope.$digest();
 
         expect(element[0].outerHTML).toBe(
-          '<div class="ng-scope"><b class="i-hello"></b><span class="i-cau">Cau!</span></div>',
+          '<div><b class="i-hello"></b><span class="i-cau">Cau!</span></div>',
         );
 
         setTimeout(() => {
           expect(element[0].outerHTML).toBe(
-            '<div class="ng-scope"><div class="i-hello">Hello</div><span class="i-cau">Cau!</span></div>',
+            '<div><div class="i-hello">Hello</div><span class="i-cau">Cau!</span></div>',
           );
           done();
         }, 100);
@@ -6299,7 +6296,7 @@ describe("$compile", () => {
 
         setTimeout(() => {
           expect(element[0].outerHTML).toEqual(
-            '<div class="ng-scope"><b class="hello"><span>Hello, Elvis!</span></b></div>',
+            '<div><b class="hello"><span>Hello, Elvis!</span></b></div>',
           );
           done();
         }, 100);
@@ -6313,7 +6310,7 @@ describe("$compile", () => {
         $rootScope.$digest();
 
         expect(element[0].outerHTML).toBe(
-          '<div class="ng-scope"><span class="i-hello">Hello, Elvis!</span></div>',
+          '<div><span class="i-hello">Hello, Elvis!</span></div>',
         );
       });
 
@@ -6325,7 +6322,7 @@ describe("$compile", () => {
         $rootScope.$digest();
 
         expect(element[0].outerHTML).toEqual(
-          '<div class="ng-scope"><b class="hello"><span replace="">Hello, Elvis!</span></b></div>',
+          '<div><b class="hello"><span replace="">Hello, Elvis!</span></b></div>',
         );
       });
 
@@ -6336,7 +6333,7 @@ describe("$compile", () => {
         $rootScope.$digest();
 
         expect(element[0].outerHTML).toEqual(
-          '<span replace="" class="ng-scope">Hello, Elvis!</span>',
+          '<span replace="">Hello, Elvis!</span>',
         );
       });
 
@@ -6475,9 +6472,7 @@ describe("$compile", () => {
         element = $compile('<div><b class="401">content</b></div>')($rootScope);
         setTimeout(() => {
           expect(errors.length).toBe(2);
-          expect(element[0].outerHTML).toBe(
-            '<div class="ng-scope"><b class="401"></b></div>',
-          );
+          expect(element[0].outerHTML).toBe('<div><b class="401"></b></div>');
           done();
         }, 1000);
       });
@@ -7265,9 +7260,6 @@ describe("$compile", () => {
           $rootScope,
         );
         expect(log.length).toEqual(2);
-        expect(element.find("span")[0].classList.contains("ng-scope")).toBe(
-          true,
-        );
       });
 
       it("should allow creation of new isolated scopes for directives", () => {
@@ -8196,7 +8188,7 @@ describe("$compile", () => {
         expect(
           element[0].outerHTML.replace(' selected="selected"', ""),
         ).toEqual(
-          '<select ng:model="x" class="ng-pristine ng-untouched ng-valid ng-scope ng-empty">' +
+          '<select ng:model="x" class="ng-pristine ng-untouched ng-valid ng-empty">' +
             '<option value="">Greet !</option>' +
             "</select>",
         );
@@ -8205,7 +8197,7 @@ describe("$compile", () => {
         expect(
           element[0].outerHTML.replace(' selected="selected"', ""),
         ).toEqual(
-          '<select ng:model="x" class="ng-pristine ng-untouched ng-valid ng-scope ng-empty">' +
+          '<select ng:model="x" class="ng-pristine ng-untouched ng-valid ng-empty">' +
             '<option value="">Greet Misko!</option>' +
             "</select>",
         );
@@ -14299,7 +14291,7 @@ describe("$compile", () => {
           element = $compile("<div trans></div>")($rootScope);
           $rootScope.$apply();
           expect(element.html()).toEqual(
-            '<div ng-transclude=""><inner class="ng-scope">old stuff! </inner></div>',
+            '<div ng-transclude=""><inner>old stuff! </inner></div>',
           );
           expect(linkSpy).toHaveBeenCalled();
         });
@@ -14321,7 +14313,7 @@ describe("$compile", () => {
           element = $compile("<div trans>\n  \n</div>")($rootScope);
           $rootScope.$apply();
           expect(element.html()).toEqual(
-            '<div ng-transclude=""><inner class="ng-scope">old stuff! </inner></div>',
+            '<div ng-transclude=""><inner>old stuff! </inner></div>',
           );
           expect(linkSpy).toHaveBeenCalled();
         });
@@ -14369,7 +14361,7 @@ describe("$compile", () => {
           element = $compile("<div trans></div>")($rootScope);
           $rootScope.$apply();
           expect(element.html()).toEqual(
-            '<div ng-transclude="optionalSlot"><inner class="ng-scope">old stuff! </inner></div>',
+            '<div ng-transclude="optionalSlot"><inner>old stuff! </inner></div>',
           );
           expect(linkSpy).toHaveBeenCalled();
         });
@@ -17544,19 +17536,19 @@ describe("$compile", () => {
 
       // At this point we should have something like:
       //
-      // <div class="ng-scope">
+      // <div>
       //
       //   <!-- ngIf: val0 -->
       //
-      //   <div ng-if-start="val0" class="ng-scope">
+      //   <div ng-if-start="val0">
       //     <!-- ngIf: val1 -->
-      //     <span ng-if="val1" class="ng-scope"></span>
+      //     <span ng-if="val1"></span>
       //     <!-- end ngIf: val1 -->
       //   </div>
       //
-      //   <div ng-if-end="" class="ng-scope">
+      //   <div ng-if-end="">
       //     <!-- ngIf: val2 -->
-      //     <span ng-if="val2" class="ng-scope"></span>
+      //     <span ng-if="val2"></span>
       //     <!-- end ngIf: val2 -->
       //   </div>
       //
@@ -17577,14 +17569,14 @@ describe("$compile", () => {
 
       // Now we should have something like:
       //
-      // <div class="ng-scope">
+      // <div>
       //   <!-- ngIf: val0 -->
-      //   <div ng-if-start="val0" class="ng-scope">
+      //   <div ng-if-start="val0">
       //     <!-- ngIf: val1 -->
       //   </div>
-      //   <div ng-if-end="" class="ng-scope">
+      //   <div ng-if-end="">
       //     <!-- ngIf: val2 -->
-      //     <span ng-if="val2" class="ng-scope"></span>
+      //     <span ng-if="val2"></span>
       //     <!-- end ngIf: val2 -->
       //   </div>
       //   <!-- end ngIf: val0 -->
@@ -17598,7 +17590,7 @@ describe("$compile", () => {
 
       // Now we should have something like:
       //
-      // <div class="ng-scope">
+      // <div>
       //   <!-- ngIf: val0 -->
       // </div>
 
@@ -17616,7 +17608,7 @@ describe("$compile", () => {
       )($rootScope);
 
       // To begin with there is (almost) nothing:
-      // <div class="ng-scope">
+      // <div>
       //   <!-- ngRepeat: val in val0 -->
       // </div>
 
@@ -17627,16 +17619,16 @@ describe("$compile", () => {
 
       // At this point we have:
       //
-      // <div class="ng-scope">
+      // <div>
       //
       //   <!-- ngRepeat: val in val0 -->
       //   <!-- ngIf: val1 -->
-      //   <div ng-repeat-start="val in val0" class="ng-scope">
+      //   <div ng-repeat-start="val in val0">
       //   </div>
       //   <!-- end ngIf: val1 -->
       //
       //   <!-- ngIf: val2 -->
-      //   <div ng-repeat-end="" class="ng-scope">
+      //   <div ng-repeat-end="">
       //   </div>
       //   <!-- end ngIf: val2 -->
       //   <!-- end ngRepeat: val in val0 -->
@@ -17658,13 +17650,13 @@ describe("$compile", () => {
 
       // At this point we should have:
       //
-      // <div class="ng-scope">
+      // <div>
       //   <!-- ngRepeat: val in val0 -->
       //
       //   <!-- ngIf: val1 -->
       //
       //   <!-- ngIf: val2 -->
-      //   <div ng-repeat-end="" ng-if="val2" class="ng-scope"></div>
+      //   <div ng-repeat-end="" ng-if="val2"></div>
       //   <!-- end ngIf: val2 -->
       //
       //   <!-- end ngRepeat: val in val0 -->
@@ -17679,7 +17671,7 @@ describe("$compile", () => {
 
       // We are mostly back to where we started
       //
-      // <div class="ng-scope">
+      // <div>
       //   <!-- ngRepeat: val in val0 -->
       //   <!-- ngIf: val1 -->
       //   <!-- ngIf: val2 -->

@@ -202,7 +202,7 @@ describe("ngClass", () => {
     $rootScope.$digest();
     $rootScope.dynCls = "foo";
     $rootScope.$digest();
-    expect(element[0].className).toBe("ui-panel ui-selected ng-scope foo");
+    expect(element[0].className).toBe("ui-panel ui-selected foo");
   });
 
   it("should not add duplicate classes", () => {
@@ -211,7 +211,7 @@ describe("ngClass", () => {
     );
     $rootScope.dynCls = "panel";
     $rootScope.$digest();
-    expect(element[0].className).toBe("panel bar ng-scope");
+    expect(element[0].className).toBe("panel bar");
   });
 
   it("should remove classes even if it was specified via class attribute", () => {
@@ -222,7 +222,7 @@ describe("ngClass", () => {
     $rootScope.$digest();
     $rootScope.dynCls = "window";
     $rootScope.$digest();
-    expect(element[0].className).toBe("bar ng-scope window");
+    expect(element[0].className).toBe("bar window");
   });
 
   it("should remove classes even if they were added by another code", () => {
@@ -232,14 +232,12 @@ describe("ngClass", () => {
     element[0].classList.add("foo");
     $rootScope.dynCls = "";
     $rootScope.$digest();
-    expect(element[0].className).toBe("ng-scope");
   });
 
   it("should convert undefined and null values to an empty string", () => {
     element = $compile('<div ng-class="dynCls"></div>')($rootScope);
     $rootScope.dynCls = [undefined, null];
     $rootScope.$digest();
-    expect(element[0].className).toBe("ng-scope");
   });
 
   it("should ngClass odd/even", () => {

@@ -8436,7 +8436,6 @@
      * Call this method to enable/disable various debug runtime information in the compiler such as adding
      * binding information and a reference to the current scope on to DOM elements.
      * If enabled, the compiler will add the following to DOM elements that have been bound to the scope
-     * * `ng-scope` and `ng-isolated-scope` CSS classes
      * * `$binding` data property containing an array of the binding expressions
      * * Data properties used by the {@link angular.element#methods `scope()`/`isolateScope()` methods} to return
      *   the element's scope.
@@ -9060,12 +9059,6 @@
             }
           : () => {};
 
-        compile.$$addScopeClass = debugInfoEnabled
-          ? function $$addScopeClass($element, isolated) {
-              safeAddClass($element, isolated ? "ng-isolate-scope" : "ng-scope");
-            }
-          : () => {};
-
         compile.$$createComment = function (directiveName, comment) {
           let content = "";
           if (debugInfoEnabled) {
@@ -9099,7 +9092,7 @@
             ignoreDirective,
             previousCompileContext,
           );
-          compile.$$addScopeClass($compileNodes);
+
           let namespace = null;
           return function publicLinkFn(scope, cloneConnectFn, options) {
             if (!$compileNodes) {
@@ -9258,10 +9251,6 @@
               );
             } else {
               nodeLinkFn = null;
-            }
-
-            if (nodeLinkFn && nodeLinkFn.scope) {
-              compile.$$addScopeClass(attrs.$$element);
             }
 
             childLinkFn =
@@ -10272,7 +10261,7 @@
                       newIsolateScopeDirective.$$originalDirective)
                 ),
               );
-              compile.$$addScopeClass($element, true);
+
               isolateScope.$$isolateBindings =
                 newIsolateScopeDirective.$$isolateBindings;
               scopeBindingInfo = initializeDirectiveBindings(
@@ -19059,7 +19048,6 @@
               if (optionEl.val() === "") {
                 selectCtrl.hasEmptyOption = true;
                 selectCtrl.emptyOption = optionEl;
-                selectCtrl.emptyOption.removeClass("ng-scope");
                 // This ensures the new empty option is selected if previously no option was selected
                 ngModelCtrl.$render();
 
@@ -19073,11 +19061,7 @@
                 });
               }
             };
-          } else {
-            // remove the class, which is added automatically because we recompile the element and it
-            // becomes the compilation root
-            selectCtrl.emptyOption.removeClass("ng-scope");
-          }
+          } 
         }
 
         // We will re-render the option elements if the option values or labels change

@@ -531,7 +531,6 @@ export const ngOptionsDirective = [
             if (optionEl.val() === "") {
               selectCtrl.hasEmptyOption = true;
               selectCtrl.emptyOption = optionEl;
-              selectCtrl.emptyOption.removeClass("ng-scope");
               // This ensures the new empty option is selected if previously no option was selected
               ngModelCtrl.$render();
 
@@ -545,10 +544,6 @@ export const ngOptionsDirective = [
               });
             }
           };
-        } else {
-          // remove the class, which is added automatically because we recompile the element and it
-          // becomes the compilation root
-          selectCtrl.emptyOption.removeClass("ng-scope");
         }
       }
 

@@ -1586,7 +1586,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    * Call this method to enable/disable various debug runtime information in the compiler such as adding
    * binding information and a reference to the current scope on to DOM elements.
    * If enabled, the compiler will add the following to DOM elements that have been bound to the scope
-   * * `ng-scope` and `ng-isolated-scope` CSS classes
    * * `$binding` data property containing an array of the binding expressions
    * * Data properties used by the {@link angular.element#methods `scope()`/`isolateScope()` methods} to return
    *   the element's scope.
@@ -2210,12 +2209,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           }
         : () => {};
 
-      compile.$$addScopeClass = debugInfoEnabled
-        ? function $$addScopeClass($element, isolated) {
-            safeAddClass($element, isolated ? "ng-isolate-scope" : "ng-scope");
-          }
-        : () => {};
-
       compile.$$createComment = function (directiveName, comment) {
         let content = "";
         if (debugInfoEnabled) {
@@ -2249,7 +2242,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           ignoreDirective,
           previousCompileContext,
         );
-        compile.$$addScopeClass($compileNodes);
+
         let namespace = null;
         return function publicLinkFn(scope, cloneConnectFn, options) {
           if (!$compileNodes) {
@@ -2411,10 +2404,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             );
           } else {
             nodeLinkFn = null;
-          }
-
-          if (nodeLinkFn && nodeLinkFn.scope) {
-            compile.$$addScopeClass(attrs.$$element);
           }
 
           childLinkFn =
@@ -3425,7 +3414,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                     newIsolateScopeDirective.$$originalDirective)
               ),
             );
-            compile.$$addScopeClass($element, true);
+
             isolateScope.$$isolateBindings =
               newIsolateScopeDirective.$$isolateBindings;
             scopeBindingInfo = initializeDirectiveBindings(
