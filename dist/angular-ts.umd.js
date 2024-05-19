@@ -1423,7 +1423,6 @@
    * - [`attr()`](http://api.jquery.com/attr/) - Does not support functions as parameters
    * - [`bind()`](http://api.jquery.com/bind/) (_deprecated_, use [`on()`](http://api.jquery.com/on/)) - Does not support namespaces, selectors or eventData
    * - [`children()`](http://api.jquery.com/children/) - Does not support selectors
-   * - [`contents()`](http://api.jquery.com/contents/)
    * - [`css()`](http://api.jquery.com/css/) - Only retrieves inline-styles, does not call `getComputedStyle()`.
    * - [`data()`](http://api.jquery.com/data/)
    * - [`empty()`](http://api.jquery.com/empty/)
@@ -9871,8 +9870,7 @@
                 const slots = createMap();
 
                 if (!isObject(directiveValue)) {
-                  const clone = compileNode.cloneNode(true);
-                  $template = jqLite(clone).contents();
+                  $template = compileNode.cloneNode(true).childNodes;
                 } else {
                   // We have transclusion slots,
                   // collect them up, compile them and store their transclusion functions
@@ -9902,7 +9900,8 @@
                   });
 
                   // Add the matching elements into their slot
-                  forEach($compileNode.contents(), (node) => {
+
+                  forEach(jqLite($compileNode[0].childNodes), (node) => {
                     const slotName = slotMap[directiveNormalize(nodeName_(node))];
                     if (slotName) {
                       filledSlots[slotName] = true;
@@ -17507,7 +17506,7 @@
         }
 
         $element.html(ctrl.template);
-        $compile($element.contents())(scope);
+        $compile($element[0].childNodes)(scope);
       },
     }),
   ];
@@ -19163,7 +19162,7 @@
         restrict: "EAC",
         compile: function ngTranscludeCompile(tElement) {
           // Remove and cache any original content to act as a fallback
-          const fallbackLinkFn = $compile(tElement.contents());
+          const fallbackLinkFn = $compile(tElement[0].childNodes);
           tElement.empty();
 
           return function ngTranscludePostLink(
