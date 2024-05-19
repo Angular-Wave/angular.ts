@@ -55,7 +55,6 @@ import { CACHE } from "./core/cache";
  * - [`data()`](http://api.jquery.com/data/)
  * - [`empty()`](http://api.jquery.com/empty/)
  * - [`eq()`](http://api.jquery.com/eq/)
- * - [`find()`](http://api.jquery.com/find/) - Limited to lookups by tag name
  * - [`html()`](http://api.jquery.com/html/)
  * - [`on()`](http://api.jquery.com/on/) - Does not support namespaces, selectors or eventData
  * - [`off()`](http://api.jquery.com/off/) - Does not support namespaces, selectors or event object as parameter
@@ -1092,6 +1091,7 @@ forEach(
         : null;
     },
 
+    // TODO: remove after migrating tests away from jqLite
     find(element, selector) {
       if (element.getElementsByTagName) {
         return element.getElementsByTagName(selector);

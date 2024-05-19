@@ -57,7 +57,9 @@ export function Browser($log, $$taskTrackerFactory) {
   let cachedState;
   let lastHistoryState;
   let lastBrowserUrl = location.href;
-  const baseElement = jqLite(document).find("base");
+  const baseElement = jqLite(
+    Array.from(window.document.getElementsByTagName("base")),
+  );
   let pendingLocation = null;
   const getCurrentState = function getCurrentState() {
     return history.state;

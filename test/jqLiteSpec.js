@@ -956,82 +956,10 @@ describe("jqLite", () => {
       const rect = svg.children();
 
       expect(rect[0].classList.contains("foo-class")).toBe(false);
-      rect.addClass("foo-class");
+      rect[0].classList.add("foo-class");
       expect(rect[0].classList.contains("foo-class")).toBe(true);
       rect.removeClass("foo-class");
       expect(rect[0].classList.contains("foo-class")).toBe(false);
-    });
-
-    describe("addClass", () => {
-      it("should allow adding of class", () => {
-        const selector = jqLite([a, b]);
-        expect(selector.addClass("abc")).toEqual(selector);
-        expect(jqLite(a)[0].classList.contains("abc")).toEqual(true);
-        expect(jqLite(b)[0].classList.contains("abc")).toEqual(true);
-      });
-
-      it("should ignore falsy values", () => {
-        const jqA = jqLite(a);
-        expect(jqA[0].className).toBe("");
-
-        jqA.addClass(undefined);
-        expect(jqA[0].className).toBe("");
-
-        jqA.addClass(null);
-        expect(jqA[0].className).toBe("");
-
-        jqA.addClass(false);
-        expect(jqA[0].className).toBe("");
-      });
-
-      it("should allow multiple classes to be added in a single string", () => {
-        const jqA = jqLite(a);
-        expect(a.className).toBe("");
-
-        jqA.addClass("foo bar baz");
-        expect(a.className).toBe("foo bar baz");
-      });
-
-      it("should only get/set the attribute once when multiple classes added", () => {
-        const fakeElement = {
-          nodeType: 1,
-          setAttribute: jasmine.createSpy(),
-          getAttribute: jasmine.createSpy().and.returnValue(""),
-        };
-        const jqA = jqLite(fakeElement);
-
-        jqA.addClass("foo bar baz");
-        expect(fakeElement.getAttribute).toHaveBeenCalledOnceWith("class");
-        expect(fakeElement.setAttribute).toHaveBeenCalledOnceWith(
-          "class",
-          "foo bar baz",
-        );
-      });
-
-      it("should not set the attribute when classes not changed", () => {
-        const fakeElement = {
-          nodeType: 1,
-          setAttribute: jasmine.createSpy(),
-          getAttribute: jasmine.createSpy().and.returnValue("foo bar"),
-        };
-        const jqA = jqLite(fakeElement);
-
-        jqA.addClass("foo");
-        expect(fakeElement.getAttribute).toHaveBeenCalledOnceWith("class");
-        expect(fakeElement.setAttribute).not.toHaveBeenCalled();
-      });
-
-      it("should not add duplicate classes", () => {
-        const jqA = jqLite(a);
-        expect(a.className).toBe("");
-
-        a.className = "foo";
-        jqA.addClass("foo");
-        expect(a.className).toBe("foo");
-
-        jqA.addClass("bar foo baz");
-        expect(a.className).toBe("foo bar baz");
-      });
     });
 
     describe("removeClass", () => {

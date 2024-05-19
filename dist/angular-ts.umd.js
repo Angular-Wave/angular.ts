@@ -1420,7 +1420,6 @@
    * - [`data()`](http://api.jquery.com/data/)
    * - [`empty()`](http://api.jquery.com/empty/)
    * - [`eq()`](http://api.jquery.com/eq/)
-   * - [`find()`](http://api.jquery.com/find/) - Limited to lookups by tag name
    * - [`html()`](http://api.jquery.com/html/)
    * - [`on()`](http://api.jquery.com/on/) - Does not support namespaces, selectors or eventData
    * - [`off()`](http://api.jquery.com/off/) - Does not support namespaces, selectors or event object as parameter
@@ -2457,6 +2456,7 @@
           : null;
       },
 
+      // TODO: remove after migrating tests away from jqLite
       find(element, selector) {
         if (element.getElementsByTagName) {
           return element.getElementsByTagName(selector);
@@ -16484,39 +16484,43 @@
         // Read value now needs to check each option to see if it is selected
         selectCtrl.readValue = function readMultipleValue() {
           const array = [];
-          forEach(element.find("option"), (option) => {
-            if (option.selected && !option.disabled) {
-              const val = option.value;
-              array.push(
-                val in selectCtrl.selectValueMap
-                  ? selectCtrl.selectValueMap[val]
-                  : val,
-              );
-            }
-          });
+          Array.from(element[0].getElementsByTagName("option")).forEach(
+            (option) => {
+              if (option.selected && !option.disabled) {
+                const val = option.value;
+                array.push(
+                  val in selectCtrl.selectValueMap
+                    ? selectCtrl.selectValueMap[val]
+                    : val,
+                );
+              }
+            },
+          );
           return array;
         };
 
         // Write value now needs to set the selected property of each matching option
         selectCtrl.writeValue = function writeMultipleValue(value) {
-          forEach(element.find("option"), (option) => {
-            const shouldBeSelected =
-              !!value &&
-              (includes(value, option.value) ||
-                includes(value, selectCtrl.selectValueMap[option.value]));
-            const currentlySelected = option.selected;
+          Array.from(element[0].getElementsByTagName("option")).forEach(
+            (option) => {
+              const shouldBeSelected =
+                !!value &&
+                (includes(value, option.value) ||
+                  includes(value, selectCtrl.selectValueMap[option.value]));
+              const currentlySelected = option.selected;
 
-            // Support: IE 9-11 only, Edge 12-15+
-            // In IE and Edge adding options to the selection via shift+click/UP/DOWN
-            // will de-select already selected options if "selected" on those options was set
-            // more than once (i.e. when the options were already selected)
-            // So we only modify the selected property if necessary.
-            // Note: this behavior cannot be replicated via unit tests because it only shows in the
-            // actual user interface.
-            if (shouldBeSelected !== currentlySelected) {
-              setOptionSelectedStatus(jqLite(option), shouldBeSelected);
-            }
-          });
+              // Support: IE 9-11 only, Edge 12-15+
+              // In IE and Edge adding options to the selection via shift+click/UP/DOWN
+              // will de-select already selected options if "selected" on those options was set
+              // more than once (i.e. when the options were already selected)
+              // So we only modify the selected property if necessary.
+              // Note: this behavior cannot be replicated via unit tests because it only shows in the
+              // actual user interface.
+              if (shouldBeSelected !== currentlySelected) {
+                setOptionSelectedStatus(jqLite(option), shouldBeSelected);
+              }
+            },
+          );
         };
 
         // we have to do it on each watch since ngModel watches reference, but
@@ -21006,7 +21010,9 @@
     let cachedState;
     let lastHistoryState;
     let lastBrowserUrl = location.href;
-    const baseElement = jqLite(document).find("base");
+    const baseElement = jqLite(
+      Array.from(window.document.getElementsByTagName("base")),
+    );
     let pendingLocation = null;
     const getCurrentState = function getCurrentState() {
       return history.state;

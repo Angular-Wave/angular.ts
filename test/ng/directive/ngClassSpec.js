@@ -170,7 +170,7 @@ describe("ngClass", () => {
     expect(element[0].classList.contains("existing")).toBe(true);
 
     // add extra class, change model and eval
-    element.addClass("newClass");
+    element[0].classList.add("newClass");
     $rootScope.dynClass = "B";
     $rootScope.$digest();
 
@@ -186,7 +186,7 @@ describe("ngClass", () => {
     expect(element[0].classList.contains("A")).toBe(true);
 
     // add extra class, change model and eval
-    element.addClass("newClass");
+    element[0].classList.add("newClass");
     $rootScope.dynClass = "B";
     $rootScope.$digest();
 
@@ -229,7 +229,7 @@ describe("ngClass", () => {
     element = $compile('<div ng-class="dynCls"></div>')($rootScope);
     $rootScope.dynCls = "foo";
     $rootScope.$digest();
-    element.addClass("foo");
+    element[0].classList.add("foo");
     $rootScope.dynCls = "";
     $rootScope.$digest();
     expect(element[0].className).toBe("ng-scope");

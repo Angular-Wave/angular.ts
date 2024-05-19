@@ -6545,7 +6545,7 @@ describe("$compile", () => {
 
         $templateCache.put("test.html", '<p class="template-class">Hello</p>');
         element = $compile("<div test></div>")($rootScope, (node) => {
-          node.addClass("clonefn-class");
+          node[0].classList.add("clonefn-class");
         });
         $rootScope.$digest();
         expect(element[0].classList.contains("template-class")).toBeTrue();
