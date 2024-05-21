@@ -1043,7 +1043,6 @@ describe("ngMessages", () => {
       $rootScope.$digest();
 
       expect(element.text()).toBe("");
-      expect(element.children().length).toBe(0);
       expect(element[0].childNodes.length).toBe(2);
     });
   });

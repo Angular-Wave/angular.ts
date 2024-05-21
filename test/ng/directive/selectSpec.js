@@ -1752,7 +1752,7 @@ describe("select", () => {
           scope.$digest();
 
           expect(
-            Object.values(element.children())
+            Object.values(element[0].childNodes)
               .map((x) => x.value)
               .join(""),
           ).toBe(

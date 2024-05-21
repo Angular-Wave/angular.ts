@@ -1515,7 +1515,6 @@ function snakeToCamel(name) {
 }
 
 const SINGLE_TAG_REGEXP = /^<([\w-]+)\s*\/?>(?:<\/\1>|)$/;
-const HTML_REGEXP = /<|&#?\w+;/;
 const TAG_NAME_REGEXP = /<([\w:-]+)/;
 
 // Table parts need to be wrapped with `<table>` or they're
@@ -1537,8 +1536,13 @@ wrapMap.tbody =
     wrapMap.thead;
 wrapMap.th = wrapMap.td;
 
-function jqLiteIsTextNode(html) {
-  return !HTML_REGEXP.test(html);
+/**
+ * Checks if the string contains HTML tags or entities.
+ * @param {string} html
+ * @returns {boolean}
+ */
+function isTextNode(html) {
+  return !/<|&#?\w+;/.test(html);
 }
 
 /**
@@ -1575,7 +1579,7 @@ function jqLiteBuildFragment(html, context) {
   let nodes = [];
   let i;
 
-  if (jqLiteIsTextNode(html)) {
+  if (isTextNode(html)) {
     // Convert non-html into a text node
     nodes.push(context.createTextNode(html));
   } else {
@@ -1675,15 +1679,6 @@ function dealoc(element, onlyDescendants) {
   }
 }
 
-function isEmptyObject(obj) {
-  let name;
-
-  for (name in obj) {
-    return false;
-  }
-  return true;
-}
-
 /**
  * If `ExpandoStore.data` and `ExpandoStore.events` are empty,
  * then delete element's `ExpandoStore` and set its `ExpandoId`
@@ -1694,7 +1689,10 @@ function removeIfEmptyData(element) {
   const expandoId = element[EXPANDO];
   const { events, data } = JQLite.cache.get(expandoId);
 
-  if ((!data || isEmptyObject(data)) && (!events || isEmptyObject(events))) {
+  if (
+    (!data || !Object.keys(data).length) &&
+    (!events || !Object.keys(events).length)
+  ) {
     JQLite.cache.delete(expandoId);
     element[EXPANDO] = undefined; // don't delete DOM expandos. IE and Chrome don't like it
   }
@@ -2305,13 +2303,9 @@ forEach(
     },
 
     children(element) {
-      const children = [];
-      forEach(element.childNodes, (element) => {
-        if (element.nodeType === Node.ELEMENT_NODE) {
-          children.push(element);
-        }
-      });
-      return children;
+      return Array.from(element.childNodes).filter(
+        (child) => child.nodeType === Node.ELEMENT_NODE,
+      );
     },
 
     append(element, node) {
@@ -9925,7 +9919,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
             if (directive.replace) {
               replaceDirective = directive;
-              if (jqLiteIsTextNode(directiveValue)) {
+              if (isTextNode(directiveValue)) {
                 $template = [];
               } else {
                 $template = removeComments(
@@ -10681,7 +10675,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             content = denormalizeTemplate(content);
 
             if (origAsyncDirective.replace) {
-              if (jqLiteIsTextNode(content)) {
+              if (isTextNode(content)) {
                 $template = [];
               } else {
                 $template = removeComments(
@@ -18787,16 +18781,14 @@ const ngOptionsDirective = [
       const ngModelCtrl = ctrls[1];
       const { multiple } = attr;
 
+      const children = selectElement.childNodes;
+
       // The emptyOption allows the application developer to provide their own custom "empty"
       // option when the viewValue does not match any of the option values.
-      for (
-        let i = 0, children = selectElement.children(), ii = children.length;
-        i < ii;
-        i++
-      ) {
+      for (let i = 0, ii = children.length; i < ii; i++) {
         if (children[i].value === "") {
           selectCtrl.hasEmptyOption = true;
-          selectCtrl.emptyOption = children.eq(i);
+          selectCtrl.emptyOption = children[i];
           break;
         }
       }

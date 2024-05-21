@@ -1,9 +1,4 @@
-import {
-  jqLite,
-  getBooleanAttrName,
-  jqLiteIsTextNode,
-  startingTag,
-} from "../jqLite";
+import { jqLite, getBooleanAttrName, isTextNode, startingTag } from "../jqLite";
 import { identifierForController } from "./controller";
 import {
   minErr,
@@ -3157,7 +3152,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
             if (directive.replace) {
               replaceDirective = directive;
-              if (jqLiteIsTextNode(directiveValue)) {
+              if (isTextNode(directiveValue)) {
                 $template = [];
               } else {
                 $template = removeComments(
@@ -3913,7 +3908,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             content = denormalizeTemplate(content);
 
             if (origAsyncDirective.replace) {
-              if (jqLiteIsTextNode(content)) {
+              if (isTextNode(content)) {
                 $template = [];
               } else {
                 $template = removeComments(

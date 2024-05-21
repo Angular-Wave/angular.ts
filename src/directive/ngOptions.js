@@ -374,16 +374,14 @@ export const ngOptionsDirective = [
       const ngModelCtrl = ctrls[1];
       const { multiple } = attr;
 
+      const children = selectElement.childNodes;
+
       // The emptyOption allows the application developer to provide their own custom "empty"
       // option when the viewValue does not match any of the option values.
-      for (
-        let i = 0, children = selectElement.children(), ii = children.length;
-        i < ii;
-        i++
-      ) {
+      for (let i = 0, ii = children.length; i < ii; i++) {
         if (children[i].value === "") {
           selectCtrl.hasEmptyOption = true;
-          selectCtrl.emptyOption = children.eq(i);
+          selectCtrl.emptyOption = children[i];
           break;
         }
       }
