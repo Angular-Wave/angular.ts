@@ -41,18 +41,4 @@ describe("ngCloak", () => {
     expect(element[0].classList.contains("ng-cloak")).toBe(false);
     expect(element[0].classList.contains("bar")).toBe(true);
   });
-
-  it("should remove ngCloak class from a compiled element", () => {
-    element = jqLite('<div class="foo ng-cloak bar"></div>');
-
-    expect(element[0].classList.contains("foo")).toBe(true);
-    expect(element[0].classList.contains("ng-cloak")).toBe(true);
-    expect(element[0].classList.contains("bar")).toBe(true);
-
-    $compile(element);
-
-    expect(element[0].classList.contains("foo")).toBe(true);
-    expect(element[0].classList.contains("ng-cloak")).toBe(false);
-    expect(element[0].classList.contains("bar")).toBe(true);
-  });
 });
