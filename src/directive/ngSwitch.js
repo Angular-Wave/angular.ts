@@ -137,7 +137,7 @@ export function ngSwitchWhenDirective() {
   return {
     transclude: "element",
     priority: 1200,
-    restrict: "AC",
+    restrict: "EA",
     require: "^ngSwitch",
     multiElement: true,
     link(scope, element, attrs, ctrl, $transclude) {
@@ -165,7 +165,7 @@ export function ngSwitchWhenDirective() {
  */
 export function ngSwitchDefaultDirective() {
   return {
-    restrict: "AC",
+    restrict: "EA",
     transclude: "element",
     priority: 1200,
     require: "^ngSwitch",

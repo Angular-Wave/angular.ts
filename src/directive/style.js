@@ -3,7 +3,7 @@
  */
 export function ngStyleDirective() {
   return {
-    restrict: "AC",
+    restrict: "EA",
     link: (scope, element, attr) => {
       scope.$watchCollection(attr.ngStyle, (newStyles, oldStyles) => {
         if (oldStyles) {

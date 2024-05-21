@@ -4,7 +4,7 @@
  */
 export function ngNonBindableDirective() {
   return {
-    restrict: "AC",
+    restrict: "EA",
     terminal: true,
     priority: 1000,
   };

@@ -16087,7 +16087,7 @@ const optionDirective = [
  */
 function ngBindDirective() {
   return {
-    restrict: "AC",
+    restrict: "EA",
     link: (scope, element, attr) => {
       scope.$watch(attr.ngBind, (value) => {
         element[0].textContent = stringify(value);
@@ -16101,7 +16101,7 @@ function ngBindDirective() {
  */
 function ngBindTemplateDirective() {
   return {
-    restrict: "AC",
+    restrict: "EA",
     link: (_scope, element, attr) => {
       attr.$observe("ngBindTemplate", (value) => {
         element[0].textContent = isUndefined(value) ? "" : value;
@@ -16140,7 +16140,7 @@ function classDirective(name, selector) {
   return [
     "$parse",
     ($parse) => ({
-      restrict: "AC",
+      restrict: "EA",
       link(scope, element, attr) {
         let classCounts = element.data("$classCounts");
         let oldModulo = true;
@@ -16385,7 +16385,7 @@ const ngClassEvenDirective = classDirective("Even", 1);
  */
 function ngCloakDirective() {
   return {
-    restrict: "AC",
+    restrict: "EA",
     compile(element, attr) {
       attr.$set("ngCloak", undefined);
       element[0].classList.remove("ng-cloak");
@@ -17085,7 +17085,7 @@ function ngInitDirective() {
  */
 function ngNonBindableDirective() {
   return {
-    restrict: "AC",
+    restrict: "EA",
     terminal: true,
     priority: 1000,
   };
@@ -17827,7 +17827,7 @@ const ngRepeatDirective = [
  */
 function ngStyleDirective() {
   return {
-    restrict: "AC",
+    restrict: "EA",
     link: (scope, element, attr) => {
       scope.$watchCollection(attr.ngStyle, (newStyles, oldStyles) => {
         if (oldStyles) {
@@ -17984,7 +17984,7 @@ function ngSwitchWhenDirective() {
   return {
     transclude: "element",
     priority: 1200,
-    restrict: "AC",
+    restrict: "EA",
     require: "^ngSwitch",
     multiElement: true,
     link(scope, element, attrs, ctrl, $transclude) {
@@ -18012,7 +18012,7 @@ function ngSwitchWhenDirective() {
  */
 function ngSwitchDefaultDirective() {
   return {
-    restrict: "AC",
+    restrict: "EA",
     transclude: "element",
     priority: 1200,
     require: "^ngSwitch",

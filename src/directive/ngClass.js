@@ -8,7 +8,7 @@ function classDirective(name, selector) {
   return [
     "$parse",
     ($parse) => ({
-      restrict: "AC",
+      restrict: "EA",
       link(scope, element, attr) {
         let classCounts = element.data("$classCounts");
         let oldModulo = true;

@@ -229,7 +229,7 @@ describe("$compile", () => {
   it("compiles element directives from a single element", () => {
     myModule.directive("myDirective", () => {
       return {
-        restrict: "AC",
+        restrict: "EA",
         compile: function (element) {
           element.data("hasCompiled", true);
         },
@@ -246,7 +246,7 @@ describe("$compile", () => {
     var idx = 1;
     myModule.directive("myDirective", () => {
       return {
-        restrict: "AC",
+        restrict: "EA",
         compile: function (element) {
           element.data("idx", idx++);
         },
@@ -263,7 +263,7 @@ describe("$compile", () => {
     var idx = 1;
     myModule.directive("myDirective", () => {
       return {
-        restrict: "AC",
+        restrict: "EA",
         compile: function (element) {
           element.data("dir", idx++);
         },
@@ -281,7 +281,7 @@ describe("$compile", () => {
     var idx = 1;
     myModule.directive("myDir", () => {
       return {
-        restrict: "AC",
+        restrict: "EA",
         compile: function (element) {
           element.data("dir", idx++);
         },
@@ -302,7 +302,7 @@ describe("$compile", () => {
         () => {
           myModule.directive("myDirective", () => {
             return {
-              restrict: "AC",
+              restrict: "EA",
               compile: function (element) {
                 element.data("hasCompiled", true);
               },
@@ -328,7 +328,7 @@ describe("$compile", () => {
   it("compiles attribute directives", () => {
     myModule.directive("myDirective", () => {
       return {
-        restrict: "AC",
+        restrict: "EA",
         compile: function (element) {
           element.data("hasCompiled", true);
         },
@@ -344,7 +344,7 @@ describe("$compile", () => {
   it("compiles attribute directives with prefixes", () => {
     myModule.directive("myDirective", () => {
       return {
-        restrict: "AC",
+        restrict: "EA",
         compile: function (element) {
           element.data("hasCompiled", true);
         },
@@ -360,7 +360,7 @@ describe("$compile", () => {
     myModule
       .directive("myDirective", () => {
         return {
-          restrict: "AC",
+          restrict: "EA",
           compile: function (element) {
             element.data("hasCompiled", true);
           },
@@ -368,7 +368,7 @@ describe("$compile", () => {
       })
       .directive("mySecondDirective", () => {
         return {
-          restrict: "AC",
+          restrict: "EA",
           compile: function (element) {
             element.data("secondCompiled", true);
           },
@@ -385,7 +385,7 @@ describe("$compile", () => {
     myModule
       .directive("myDirective", () => {
         return {
-          restrict: "AC",
+          restrict: "EA",
           compile: function (element) {
             element.data("hasCompiled", true);
           },
@@ -393,7 +393,7 @@ describe("$compile", () => {
       })
       .directive("mySecondDirective", () => {
         return {
-          restrict: "AC",
+          restrict: "EA",
           compile: function (element) {
             element.data("secondCompiled", true);
           },
@@ -410,7 +410,7 @@ describe("$compile", () => {
   it("compiles attribute directives with ng-attr prefix", () => {
     myModule.directive("myDirective", () => {
       return {
-        restrict: "AC",
+        restrict: "EA",
         compile: function (element) {
           element.data("hasCompiled", true);
         },
@@ -425,7 +425,7 @@ describe("$compile", () => {
   it("compiles attribute directives with data:ng-attr prefix", () => {
     myModule.directive("myDirective", () => {
       return {
-        restrict: "AC",
+        restrict: "EA",
         compile: function (element) {
           element.data("hasCompiled", true);
         },
@@ -440,7 +440,7 @@ describe("$compile", () => {
   it("compiles class directives", () => {
     myModule.directive("myDirective", () => {
       return {
-        restrict: "AC",
+        restrict: "EA",
         compile: function (element) {
           element.data("hasCompiled", true);
         },
@@ -456,7 +456,7 @@ describe("$compile", () => {
     myModule
       .directive("myDirective", () => {
         return {
-          restrict: "AC",
+          restrict: "EA",
           compile: function (element) {
             element.data("hasCompiled", true);
           },
@@ -464,7 +464,7 @@ describe("$compile", () => {
       })
       .directive("mySecondDirective", () => {
         return {
-          restrict: "AC",
+          restrict: "EA",
           compile: function (element) {
             element.data("secondCompiled", true);
           },
@@ -482,7 +482,7 @@ describe("$compile", () => {
   it("compiles class directives with prefixes", () => {
     myModule.directive("myDirective", () => {
       return {
-        restrict: "AC",
+        restrict: "EA",
         compile: function (element) {
           element.data("hasCompiled", true);
         },
@@ -498,7 +498,7 @@ describe("$compile", () => {
     var hasCompiled;
     myModule.directive("myDirective", () => {
       return {
-        restrict: "AC",
+        restrict: "EA",
         compile: () => {
           hasCompiled = true;
         },
@@ -877,7 +877,7 @@ describe("$compile", () => {
       var givenAttrs;
       registerDirectives(dirName, () => {
         return {
-          restrict: "AC",
+          restrict: "EA",
           compile: function (element, attrs) {
             givenAttrs = attrs;
           },
@@ -8249,7 +8249,7 @@ describe("$compile", () => {
         collected = false;
         module = window.angular.module("test1", ["ng"]);
         module.directive("testCollect", () => ({
-          restrict: "AC",
+          restrict: "EA",
           link() {
             collected = true;
           },
@@ -8288,7 +8288,7 @@ describe("$compile", () => {
                 collected = false;
                 module = window.angular.module("test1", ["ng"]);
                 module.directive("testCollect", () => ({
-                  restrict: "AC",
+                  restrict: "EA",
                   link() {
                     collected = true;
                   },

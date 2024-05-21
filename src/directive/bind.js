@@ -5,7 +5,7 @@ import { isUndefined, stringify } from "../core/utils";
  */
 export function ngBindDirective() {
   return {
-    restrict: "AC",
+    restrict: "EA",
     link: (scope, element, attr) => {
       scope.$watch(attr.ngBind, (value) => {
         element[0].textContent = stringify(value);
@@ -19,7 +19,7 @@ export function ngBindDirective() {
  */
 export function ngBindTemplateDirective() {
   return {
-    restrict: "AC",
+    restrict: "EA",
     link: (_scope, element, attr) => {
       attr.$observe("ngBindTemplate", (value) => {
         element[0].textContent = isUndefined(value) ? "" : value;
