@@ -437,84 +437,11 @@ describe("$compile", () => {
     expect(el.data("hasCompiled")).toBe(true);
   });
 
-  it("compiles class directives", () => {
-    myModule.directive("myDirective", () => {
-      return {
-        restrict: "EA",
-        compile: function (element) {
-          element.data("hasCompiled", true);
-        },
-      };
-    });
-    reloadModules();
-    var el = $('<div class="my-directive"></div>');
-    $compile(el);
-    expect(el.data("hasCompiled")).toBe(true);
-  });
-
-  it("compiles several class directives in an element", () => {
-    myModule
-      .directive("myDirective", () => {
-        return {
-          restrict: "EA",
-          compile: function (element) {
-            element.data("hasCompiled", true);
-          },
-        };
-      })
-      .directive("mySecondDirective", () => {
-        return {
-          restrict: "EA",
-          compile: function (element) {
-            element.data("secondCompiled", true);
-          },
-        };
-      });
-    reloadModules();
-    var el = $(
-      '<div class="my-directive my-second-directive unrelated-class"></div>',
-    );
-    $compile(el);
-    expect(el.data("hasCompiled")).toBe(true);
-    expect(el.data("secondCompiled")).toBe(true);
-  });
-
-  it("compiles class directives with prefixes", () => {
-    myModule.directive("myDirective", () => {
-      return {
-        restrict: "EA",
-        compile: function (element) {
-          element.data("hasCompiled", true);
-        },
-      };
-    });
-    reloadModules();
-    var el = $('<div class="x-my-directive"></div>');
-    $compile(el);
-    expect(el.data("hasCompiled")).toBe(true);
-  });
-
-  it("compiles comment directives", () => {
-    var hasCompiled;
-    myModule.directive("myDirective", () => {
-      return {
-        restrict: "EA",
-        compile: () => {
-          hasCompiled = true;
-        },
-      };
-    });
-    reloadModules();
-    $compile("<!-- directive: my-directive -->");
-    expect(hasCompiled).toBe(true);
-  });
-
   forEach(
     {
-      E: { element: true, attribute: false, class: false, comment: false },
-      A: { element: false, attribute: true, class: false, comment: false },
-      EA: { element: true, attribute: true, class: false, comment: false },
-      AC: { element: false, attribute: true, class: true, comment: false },
+      E: { element: true, attribute: false },
+      A: { element: false, attribute: true },
+      EA: { element: true, attribute: true },
     },
     function (expected, restrict) {
       describe("restricted to " + restrict, () => {
@@ -1131,53 +1058,12 @@ describe("$compile", () => {
       );
     });
 
-    it("adds an attribute from a class directive", () => {
-      registerAndCompile(
-        "myDirective",
-        '<div class="my-directive"></div>',
-        function (element, attrs) {
-          expect(attrs.hasOwnProperty("myDirective")).toBe(true);
-        },
-      );
-    });
-
     it("does not add attribute from class without a directive", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive class="some-class"></my-directive>',
         function (element, attrs) {
           expect(attrs.hasOwnProperty("someClass")).toBe(false);
-        },
-      );
-    });
-
-    it("supports values for class directive attributes", () => {
-      registerAndCompile(
-        "myDirective",
-        '<div class="my-directive: my attribute value"></div>',
-        function (element, attrs) {
-          expect(attrs.myDirective).toEqual("my attribute value");
-        },
-      );
-    });
-
-    it("terminates class directive attribute value at semicolon", () => {
-      registerAndCompile(
-        "myDirective",
-        '<div class="my-directive: my attribute value; some-other-class"></div>',
-        function (element, attrs) {
-          expect(attrs.myDirective).toEqual("my attribute value");
-        },
-      );
-    });
-
-    it("adds an attribute with a value from a comment directive", () => {
-      registerAndCompile(
-        "myDirective",
-        "<!-- directive: my-directive and the attribute value -->",
-        function (element, attrs) {
-          expect(attrs.hasOwnProperty("myDirective")).toBe(true);
-          expect(attrs.myDirective).toEqual("and the attribute value");
         },
       );
     });
@@ -8260,17 +8146,6 @@ describe("$compile", () => {
         });
       });
 
-      it("should collect comment directives by default", () => {
-        const html = "<!-- directive: test-collect -->";
-        element = $compile(`<div>${html}</div>`)($rootScope);
-        expect(collected).toBe(true);
-      });
-
-      it("should collect css class directives by default", () => {
-        element = $compile('<div class="test-collect"></div>')($rootScope);
-        expect(collected).toBe(true);
-      });
-
       forEach(
         [
           { commentEnabled: true, cssEnabled: true },
@@ -8307,19 +8182,6 @@ describe("$compile", () => {
                   $compile = _$compile_;
                   $rootScope = _$rootScope_;
                 });
-              });
-
-              it("should handle comment directives appropriately", () => {
-                const html = "<!-- directive: test-collect -->";
-                element = $compile(`<div>${html}</div>`)($rootScope);
-                expect(collected).toBe(config.commentEnabled);
-              });
-
-              it("should handle css directives appropriately", () => {
-                element = $compile('<div class="test-collect"></div>')(
-                  $rootScope,
-                );
-                expect(collected).toBe(config.cssEnabled);
               });
 
               it("should not prevent to compile entity directives", () => {
