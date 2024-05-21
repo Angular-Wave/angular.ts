@@ -513,12 +513,8 @@ describe("$compile", () => {
     {
       E: { element: true, attribute: false, class: false, comment: false },
       A: { element: false, attribute: true, class: false, comment: false },
-      C: { element: false, attribute: false, class: true, comment: false },
-      M: { element: false, attribute: false, class: false, comment: true },
       EA: { element: true, attribute: true, class: false, comment: false },
       AC: { element: false, attribute: true, class: true, comment: false },
-      EAM: { element: true, attribute: true, class: false, comment: true },
-      EACM: { element: true, attribute: true, class: true, comment: true },
     },
     function (expected, restrict) {
       describe("restricted to " + restrict, () => {
@@ -526,8 +522,6 @@ describe("$compile", () => {
           {
             element: "<my-directive></my-directive>",
             attribute: "<div my-directive></div>",
-            class: '<div class="my-directive"></div>',
-            comment: "<!-- directive: my-directive -->",
           },
           function (dom, type) {
             it(
@@ -5400,17 +5394,14 @@ describe("$compile", () => {
 
     describe("restrict", () => {
       it("should allow restriction of availability", () => {
-        forEach(
-          { div: "E", attr: "A", clazz: "C", comment: "M", all: "EACM" },
-          (restrict, name) => {
-            myModule.directive(name, () => ({
-              restrict,
-              compile: valueFn((scope, element, attr) => {
-                log.push(name);
-              }),
-            }));
-          },
-        );
+        forEach({ div: "E", attr: "A", all: "EA" }, (restrict, name) => {
+          myModule.directive(name, () => ({
+            restrict,
+            compile: valueFn((scope, element, attr) => {
+              log.push(name);
+            }),
+          }));
+        });
 
         reloadModules();
         dealoc($compile('<span div class="div"></span>')($rootScope));
@@ -5428,21 +5419,7 @@ describe("$compile", () => {
         dealoc($compile("<clazz clazz></clazz>")($rootScope));
         expect(log[2]).toBeUndefined();
 
-        dealoc($compile('<span class="clazz"></span>')($rootScope));
-        expect(log[2]).toEqual("clazz");
-
-        dealoc($compile("<!-- directive: comment -->")($rootScope));
-        expect(log[3]).toEqual("comment");
-
-        dealoc(
-          $compile('<all class="all" all><!-- directive: all --></all>')(
-            $rootScope,
-          ),
-        );
-        expect(log[4]).toEqual("all");
-        expect(log[5]).toEqual("all");
-        expect(log[6]).toEqual("all");
-        expect(log[7]).toEqual("all");
+        dealoc($compile('<all class="all" all></all>')($rootScope));
       });
 
       it("should use EA rule as the default", () => {
@@ -5673,18 +5650,6 @@ describe("$compile", () => {
         const div = element.find("div");
         expect(div.attr("class")).toBe("myLog log");
         expect(attrs.class).toBe("myLog log");
-      });
-
-      it("should prevent multiple templates per element", () => {
-        reloadModules();
-        try {
-          $compile('<div><span replace class="replace"></span></div>');
-          this.fail(new Error("should have thrown Multiple directives error"));
-        } catch (e) {
-          expect(e.message).toMatch(
-            /Multiple directives .* asking for template/,
-          );
-        }
       });
 
       it("should play nice with repeater when replacing", () => {
@@ -6457,42 +6422,6 @@ describe("$compile", () => {
           expect(element[0].outerHTML).toBe('<div><b class="401"></b></div>');
           done();
         }, 1000);
-      });
-
-      it("should prevent multiple templates per element", (done) => {
-        myModule
-          .decorator("$exceptionHandler", () => {
-            return (exception, cause) => {
-              errors.push(exception.message);
-            };
-          })
-          .directive(
-            "sync",
-            valueFn({
-              restrict: "C",
-              template: "<span></span>",
-            }),
-          )
-          .directive(
-            "async",
-            valueFn({
-              restrict: "C",
-              templateUrl: "mock/template.html",
-            }),
-          );
-
-        createInjector(["myModule"]).invoke((_$compile_, _$rootScope_) => {
-          $compile = _$compile_;
-          $rootScope = _$rootScope_;
-        });
-
-        $compile('<div><div class="sync async"></div></div>')($rootScope);
-
-        setTimeout(() => {
-          expect(errors.length).toBe(1);
-          expect(errors[0].match(/multidir/)).toBeTruthy();
-          done();
-        }, 100);
       });
 
       it("should copy classes from pre-template node into linked element", () => {
@@ -7337,32 +7266,6 @@ describe("$compile", () => {
         $compile('<div class="tiscope-a; scope-b"></div>')($rootScope);
         $rootScope.$digest();
         expect(log[0].match(/multidir/)).toBeTruthy();
-      });
-
-      it("should not allow more than one isolate scope creation per element regardless of directive priority", () => {
-        module
-          .decorator("$exceptionHandler", () => {
-            return (exception) => {
-              throw new Error(exception.message);
-            };
-          })
-          .directive("highPriorityScope", () => ({
-            restrict: "C",
-            priority: 1,
-            scope: true,
-            link() {},
-          }));
-
-        createInjector(["test1"]).invoke(
-          (_$compile_, _$rootScope_, _$templateCache_) => {
-            $compile = _$compile_;
-            $rootScope = _$rootScope_;
-            $templateCache = _$templateCache_;
-          },
-        );
-        expect(() => {
-          $compile('<div class="iscope-a; high-priority-scope"></div>');
-        }).toThrowError(/multidir/);
       });
 
       it("should create new scope even at the root of the template", () => {

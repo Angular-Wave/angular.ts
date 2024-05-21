@@ -34,7 +34,7 @@ import {
 
 import { SCE_CONTEXTS } from "./sce";
 import { PREFIX_REGEXP, ALIASED_ATTR } from "../constants";
-import { createEventDirective } from "../directive/ngEventDirs";
+import { createEventDirective } from "../directive/events";
 
 /* ! VARIABLE/FUNCTION NAMING CONVENTIONS THAT APPLY TO THIS FILE!
  *
@@ -1283,7 +1283,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
   }
 
   function getDirectiveRestrict(restrict, name) {
-    if (restrict && !(isString(restrict) && /[EACM]/.test(restrict))) {
+    if (restrict && !(isString(restrict) && /[EA]/.test(restrict))) {
       throw $compileMinErr(
         "badrestrict",
         "Restrict property '{0}' of directive '{1}' is invalid",

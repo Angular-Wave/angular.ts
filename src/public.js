@@ -40,7 +40,7 @@ import { ngOptionsDirective } from "./directive/ngOptions";
 import { ngTranscludeDirective } from "./directive/ngTransclude";
 import { ngModelDirective } from "./directive/ngModel";
 import { ngListDirective } from "./directive/list";
-import { ngChangeDirective } from "./directive/ngChange";
+import { ngChangeDirective } from "./directive/change";
 import {
   maxlengthDirective,
   minlengthDirective,
@@ -49,7 +49,7 @@ import {
 } from "./directive/validators";
 import { ngModelOptionsDirective } from "./directive/ngModelOptions";
 import { ngAttributeAliasDirectives } from "./directive/attrs";
-import { ngEventDirectives } from "./directive/ngEventDirs";
+import { ngEventDirectives } from "./directive/events";
 import { AnchorScrollProvider } from "./services/anchorScroll";
 import {
   AnimateProvider,
