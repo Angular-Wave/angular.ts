@@ -1,5 +1,4 @@
 import { createInjector } from "../../../src/injector";
-import { jqLite, dealoc } from "../../../src/jqLite";
 import { publishExternalAPI } from "../../../src/public";
 
 describe("ngRef", () => {
