@@ -77,7 +77,6 @@ import { $FilterProvider } from "./core/filter";
 import { $IntervalProvider } from "./core/interval";
 import { $InterpolateProvider } from "./core/interpolate";
 import { $$IntervalFactoryProvider } from "./core/intervalFactory";
-import { $$ForceReflowProvider } from "./core/forceReflow";
 import {
   $HttpProvider,
   $HttpParamSerializerProvider,
@@ -182,7 +181,6 @@ export function publishExternalAPI() {
           $$isDocumentHidden: $$IsDocumentHiddenProvider,
           $exceptionHandler: $ExceptionHandlerProvider,
           $filter: $FilterProvider,
-          $$forceReflow: $$ForceReflowProvider,
           $interpolate: $InterpolateProvider,
           $interval: $IntervalProvider,
           $$intervalFactory: $$IntervalFactoryProvider,

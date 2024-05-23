@@ -2,7 +2,7 @@ import { publishExternalAPI } from "../../../src/public";
 import { createInjector } from "../../../src/injector";
 import { dealoc, jqLite } from "../../../src/jqLite";
 import { forEach, hashKey, equals, isNumberNaN } from "../../../src/core/utils";
-import { browserTrigger } from "../../utils";
+import { browserTrigger } from "../../test-utils";
 
 describe("select", () => {
   let scope;

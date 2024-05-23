@@ -1,7 +1,7 @@
 import { jqLite, dealoc } from "../src/jqLite";
 import { publishExternalAPI } from "../src/public";
 import { createInjector } from "../src/injector";
-import { browserTrigger } from "./utils";
+import { browserTrigger } from "./test-utils";
 
 describe("binding", () => {
   let element,

@@ -3,7 +3,7 @@ import { angularInit } from "../src/loader";
 import { createInjector } from "../src/injector";
 import { publishExternalAPI } from "../src/public";
 import { equals, forEach } from "../src/core/utils";
-import { browserTrigger } from "./utils";
+import { browserTrigger } from "./test-utils";
 
 describe("jqLite", () => {
   let scope;

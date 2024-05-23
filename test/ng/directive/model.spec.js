@@ -3,7 +3,7 @@ import { publishExternalAPI } from "../../../src/public";
 import { createInjector } from "../../../src/injector";
 import { NgModelController } from "../../../src/directive/ngModel";
 import { isDefined, valueFn, isObject } from "../../../src/core/utils";
-import { browserTrigger } from "../../utils";
+import { browserTrigger } from "../../test-utils";
 
 import { Angular } from "../../../src/loader";
 

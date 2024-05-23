@@ -9,7 +9,7 @@ import {
   isString,
   isFunction,
 } from "../../../src/core/utils";
-import { browserTrigger } from "../../utils";
+import { browserTrigger } from "../../test-utils";
 
 describe("ngOptions", () => {
   let scope;
