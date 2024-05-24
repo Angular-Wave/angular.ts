@@ -930,7 +930,7 @@ describe("$compile", () => {
         "<input my-directive>",
         function (element, attrs) {
           attrs.$set("disabled", true);
-          expect(element.prop("disabled")).toBe(true);
+          expect(element[0]["disabled"]).toBe(true);
         },
       );
     });
@@ -941,7 +941,7 @@ describe("$compile", () => {
         "<input my-directive>",
         function (element, attrs) {
           attrs.$set("disabled", true, false);
-          expect(element.prop("disabled")).toBe(true);
+          expect(element[0]["disabled"]).toBe(true);
         },
       );
     });
@@ -16421,7 +16421,7 @@ describe("$compile", () => {
         '<svg><a xlink:href="" ng-href="{{ testUrl }}"></a></svg>',
       )($rootScope);
       $rootScope.$apply();
-      expect(element.find("a").prop("href").baseVal).toBe(
+      expect(element.find("a")[0].href.baseVal).toBe(
         "https://clean.example.org",
       );
       expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);
@@ -17083,15 +17083,15 @@ describe("$compile", () => {
 
       $rootScope.bar = "untrusted:test1";
       $rootScope.$apply();
-      expect(element.prop("foo")).toBe("unsafe:untrusted:test1");
+      expect(element[0].foo).toBe("unsafe:untrusted:test1");
 
       $rootScope.bar = $sce.trustAsCss("untrusted:test2");
       $rootScope.$apply();
-      expect(element.prop("foo")).toBe("unsafe:untrusted:test2");
+      expect(element[0].foo).toBe("unsafe:untrusted:test2");
 
       $rootScope.bar = $sce.trustAsMediaUrl("untrusted:test3");
       $rootScope.$apply();
-      expect(element.prop("foo")).toBe("untrusted:test3");
+      expect(element[0].foo).toBe("untrusted:test3");
     });
 
     it("should enforce the specified sce type for properties added for all elements (*)", () => {
@@ -17108,15 +17108,15 @@ describe("$compile", () => {
 
       $rootScope.bar = "untrusted:test1";
       $rootScope.$apply();
-      expect(element.prop("foo")).toBe("unsafe:untrusted:test1");
+      expect(element[0].foo).toBe("unsafe:untrusted:test1");
 
       $rootScope.bar = $sce.trustAsCss("untrusted:test2");
       $rootScope.$apply();
-      expect(element.prop("foo")).toBe("unsafe:untrusted:test2");
+      expect(element[0].foo).toBe("unsafe:untrusted:test2");
 
       $rootScope.bar = $sce.trustAsMediaUrl("untrusted:test3");
       $rootScope.$apply();
-      expect(element.prop("foo")).toBe("untrusted:test3");
+      expect(element[0].foo).toBe("untrusted:test3");
     });
 
     it("should enforce the specific sce type when both an element specific and generic exist", () => {
@@ -17134,15 +17134,15 @@ describe("$compile", () => {
 
       $rootScope.bar = "untrusted:test1";
       $rootScope.$apply();
-      expect(element.prop("foo")).toBe("unsafe:untrusted:test1");
+      expect(element[0].foo).toBe("unsafe:untrusted:test1");
 
       $rootScope.bar = $sce.trustAsCss("untrusted:test2");
       $rootScope.$apply();
-      expect(element.prop("foo")).toBe("unsafe:untrusted:test2");
+      expect(element[0].foo).toBe("unsafe:untrusted:test2");
 
       $rootScope.bar = $sce.trustAsMediaUrl("untrusted:test3");
       $rootScope.$apply();
-      expect(element.prop("foo")).toBe("untrusted:test3");
+      expect(element[0].foo).toBe("untrusted:test3");
     });
   });
 

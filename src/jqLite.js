@@ -42,12 +42,10 @@ import { CACHE } from "./core/cache";
  * ## AngularJS's jqLite
  * jqLite provides only the following jQuery methods:
  *
- * - [`addClass()`](http://api.jquery.com/addClass/) - Does not support a function as first argument
  * - [`after()`](http://api.jquery.com/after/)
  * - [`append()`](http://api.jquery.com/append/) - Contrary to jQuery, this doesn't clone elements
  *   so will not work correctly when invoked on a jqLite object containing more than one DOM node
  * - [`attr()`](http://api.jquery.com/attr/) - Does not support functions as parameters
- * - [`bind()`](http://api.jquery.com/bind/) (_deprecated_, use [`on()`](http://api.jquery.com/on/)) - Does not support namespaces, selectors or eventData
  * - [`children()`](http://api.jquery.com/children/) - Does not support selectors
  * - [`data()`](http://api.jquery.com/data/)
  * - [`empty()`](http://api.jquery.com/empty/)
@@ -58,7 +56,6 @@ import { CACHE } from "./core/cache";
  * - [`one()`](http://api.jquery.com/one/) - Does not support namespaces or selectors
  * - [`parent()`](http://api.jquery.com/parent/) - Does not support selectors
  * - [`prepend()`](http://api.jquery.com/prepend/)
- * - [`prop()`](http://api.jquery.com/prop/)
  * - [`remove()`](http://api.jquery.com/remove/)
  * - [`removeData()`](http://api.jquery.com/removeData/)
  * - [`replaceWith()`](http://api.jquery.com/replaceWith/)
@@ -669,15 +666,6 @@ forEach(
         return ret === null ? undefined : ret;
       }
     },
-
-    prop(element, name, value) {
-      if (isDefined(value)) {
-        element[name] = value;
-      } else {
-        return element[name];
-      }
-    },
-
     text: (function () {
       getText.$dv = "";
       return getText;

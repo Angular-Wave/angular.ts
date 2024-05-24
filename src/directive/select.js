@@ -11,7 +11,7 @@ import {
 const noopNgModelController = { $setViewValue: () => {}, $render: () => {} };
 
 function setOptionSelectedStatus(optionEl, value) {
-  optionEl.prop("selected", value);
+  optionEl[0].selected = value;
   /**
    * When unselecting an option, setting the property to null / false should be enough
    * However, screenreaders might react to the selected attribute instead, see
@@ -278,7 +278,7 @@ var SelectController = [
 
         optionAttrs.$observe("value", (newVal) => {
           let removal;
-          const previouslySelected = optionElement.prop("selected");
+          const previouslySelected = optionElement[0].selected;
 
           if (isDefined(hashedVal)) {
             self.removeOption(oldVal);
@@ -306,7 +306,7 @@ var SelectController = [
           self.readValue();
 
           let removal;
-          const previouslySelected = optionElement.prop("selected");
+          const previouslySelected = optionElement[0].selected;
 
           if (isDefined(oldVal)) {
             self.removeOption(oldVal);
@@ -323,7 +323,7 @@ var SelectController = [
         // The text content is interpolated
         optionScope.$watch(interpolateTextFn, (newVal, oldVal) => {
           optionAttrs.$set("value", newVal);
-          const previouslySelected = optionElement.prop("selected");
+          const previouslySelected = optionElement[0].selected;
           if (oldVal !== newVal) {
             self.removeOption(oldVal);
           }
@@ -342,7 +342,7 @@ var SelectController = [
         // Since model updates will also select disabled options (like ngOptions),
         // we only have to handle options becoming disabled, not enabled
 
-        if (newVal === "true" || (newVal && optionElement.prop("selected"))) {
+        if (newVal === "true" || (newVal && optionElement[0].selected)) {
           if (self.multiple) {
             scheduleViewValueUpdate(true);
           } else {

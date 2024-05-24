@@ -919,37 +919,6 @@ describe("jqLite", () => {
     });
   });
 
-  describe("prop", () => {
-    it("should read element property", () => {
-      const elm = jqLite('<div class="foo">a</div>');
-      expect(elm.prop("className")).toBe("foo");
-    });
-
-    it("should set element property to a value", () => {
-      const elm = jqLite('<div class="foo">a</div>');
-      elm.prop("className", "bar");
-      expect(elm[0].className).toBe("bar");
-      expect(elm.prop("className")).toBe("bar");
-    });
-
-    it("should set boolean element property", () => {
-      const elm = jqLite('<input type="checkbox">');
-      expect(elm.prop("checked")).toBe(false);
-
-      elm.prop("checked", true);
-      expect(elm.prop("checked")).toBe(true);
-
-      elm.prop("checked", "");
-      expect(elm.prop("checked")).toBe(false);
-
-      elm.prop("checked", "lala");
-      expect(elm.prop("checked")).toBe(true);
-
-      elm.prop("checked", null);
-      expect(elm.prop("checked")).toBe(false);
-    });
-  });
-
   describe("text", () => {
     it('should return `""` on empty', () => {
       expect(jqLite().length).toEqual(0);

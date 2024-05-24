@@ -20,7 +20,7 @@ export function htmlAnchorDirective() {
 
           // SVGAElement does not use the href attribute, but rather the 'xlinkHref' attribute.
           const href =
-            toString.call(element.prop("href")) === "[object SVGAnimatedString]"
+            toString.call(element[0].href) === "[object SVGAnimatedString]"
               ? "xlink:href"
               : "href";
           element.on("click", (event) => {

@@ -942,7 +942,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           let nodeName;
 
           if (booleanKey) {
-            this.$$element.prop(key, value);
+            this.$$element[0][key] = value;
             attrName = booleanKey;
           } else if (aliasedKey) {
             this[aliasedKey] = value;

@@ -256,7 +256,7 @@ forEach(["src", "srcset", "href"], (attrName) => {
 
           if (
             attrName === "href" &&
-            toString.call(element.prop("href")) === "[object SVGAnimatedString]"
+            toString.call(element[0].href) === "[object SVGAnimatedString]"
           ) {
             name = "xlinkHref";
             attr.$attr[name] = "xlink:href";

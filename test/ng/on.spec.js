@@ -129,7 +129,7 @@ describe("ngOn* event binding", () => {
     $rootScope.$digest();
     element.triggerHandler("asdf");
     expect(cb).toHaveBeenCalled();
-    expect(element.prop("asdf")).toBe(123);
+    expect(element[0].asdf).toBe(123);
   });
 
   it("should use the full ng-on-* attribute name in $attr mappings", () => {

@@ -1102,7 +1102,7 @@ export function badInputChecker(scope, element, attr, ctrl, parserName) {
 
   if (nativeValidation) {
     ctrl.$parsers.push((value) => {
-      const validity = element.prop(VALIDITY_STATE_PROPERTY) || {};
+      const validity = element[0][VALIDITY_STATE_PROPERTY] || {};
       if (validity.badInput || validity.typeMismatch) {
         ctrl.$$parserName = parserName;
         return undefined;
@@ -1759,7 +1759,7 @@ export function ngValueDirective() {
     // Support: IE9 only
     // In IE9 values are converted to string (e.g. `input.value = null` results in `input.value === 'null'`).
     const propValue = isDefined(value) ? value : null;
-    element.prop("value", propValue);
+    element[0]["value"] = propValue;
     attr.$set("value", value);
   }
 

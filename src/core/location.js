@@ -940,7 +940,7 @@ export function $LocationProvider() {
         if (isString(rewriteLinks) && isUndefined(elm.attr(rewriteLinks)))
           return;
 
-        let absHref = elm.prop("href");
+        let absHref = elm[0].href;
         // get the actual href attribute - see
         // http://msdn.microsoft.com/en-us/library/ie/dd347148(v=vs.85).aspx
         const relHref = elm.attr("href") || elm.attr("xlink:href");
