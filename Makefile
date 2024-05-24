@@ -15,7 +15,7 @@ lint:
 
 check:
 	@echo "Typechecking Js"
-	./node_modules/.bin/tsc
+	./node_modules/.bin/tsc 
 
 serve:
 	@npm run serve

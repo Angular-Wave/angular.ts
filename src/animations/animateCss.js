@@ -1,4 +1,3 @@
-import { jqLite } from "../jqLite";
 import { forEach, isDefined, isArray } from "../core/utils";
 import {
   TRANSITION_DURATION_PROP,
