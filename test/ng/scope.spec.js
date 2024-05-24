@@ -1,4 +1,4 @@
-import { getQueues } from "../../src/core/rootScope";
+import { getQueues } from "../../src/core/root-scope";
 import { extend, sliceArgs } from "../../src/core/utils";
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";

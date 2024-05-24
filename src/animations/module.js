@@ -1,13 +1,13 @@
-import { $$AnimateChildrenDirective } from "./animateChildrenDirective";
+import { $$AnimateChildrenDirective } from "./animate-children-directive";
 import { $$AnimationProvider } from "./animation";
-import { $$rAFSchedulerFactory } from "./rafScheduler";
-import { ngAnimateSwapDirective } from "./ngAnimateSwap";
-import { $$AnimateQueueProvider } from "./animateQueue";
-import { $$AnimateCacheProvider } from "./animateCache";
-import { $AnimateCssProvider } from "./animateCss";
-import { $$AnimateCssDriverProvider } from "./animateCssDriver";
-import { $$AnimateJsProvider } from "./animateJs";
-import { $$AnimateJsDriverProvider } from "./animateJsDriver";
+import { $$rAFSchedulerFactory } from "./raf-scheduler";
+import { ngAnimateSwapDirective } from "./animate-swap";
+import { $$AnimateQueueProvider } from "./animate-queue";
+import { $$AnimateCacheProvider } from "./animate-cache";
+import { $AnimateCssProvider } from "./animate-css";
+import { $$AnimateCssDriverProvider } from "./animate-css-driver";
+import { $$AnimateJsProvider } from "./animate-js";
+import { $$AnimateJsDriverProvider } from "./animate-js-driver";
 
 /**
  * @ngdoc module

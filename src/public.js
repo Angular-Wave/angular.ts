@@ -17,28 +17,28 @@ import {
   ngClassDirective,
   ngClassEvenDirective,
   ngClassOddDirective,
-} from "./directive/ngClass";
+} from "./directive/class";
 import { ngCloakDirective } from "./directive/cloak";
-import { ngControllerDirective } from "./directive/ngController";
-import { ngHideDirective, ngShowDirective } from "./directive/ngShowHide";
-import { ngIfDirective } from "./directive/ngIf";
+import { ngControllerDirective } from "./directive/controller";
+import { ngHideDirective, ngShowDirective } from "./directive/show-hide";
+import { ngIfDirective } from "./directive/if";
 import {
   ngIncludeDirective,
   ngIncludeFillContentDirective,
-} from "./directive/ngInclude";
+} from "./directive/include";
 import { ngInitDirective } from "./directive/init";
 import { ngNonBindableDirective } from "./directive/non-bindable";
-import { ngRefDirective } from "./directive/ngRef";
-import { ngRepeatDirective } from "./directive/ngRepeat";
+import { ngRefDirective } from "./directive/ref";
+import { ngRepeatDirective } from "./directive/repeat";
 import { ngStyleDirective } from "./directive/style";
 import {
   ngSwitchDirective,
   ngSwitchWhenDirective,
   ngSwitchDefaultDirective,
-} from "./directive/ngSwitch";
-import { ngOptionsDirective } from "./directive/ngOptions";
-import { ngTranscludeDirective } from "./directive/ngTransclude";
-import { ngModelDirective } from "./directive/ngModel";
+} from "./directive/switch";
+import { ngOptionsDirective } from "./directive/options";
+import { ngTranscludeDirective } from "./directive/transclude";
+import { ngModelDirective } from "./directive/model";
 import { ngListDirective } from "./directive/list";
 import { ngChangeDirective } from "./directive/change";
 import {
@@ -47,36 +47,36 @@ import {
   patternDirective,
   requiredDirective,
 } from "./directive/validators";
-import { ngModelOptionsDirective } from "./directive/ngModelOptions";
+import { ngModelOptionsDirective } from "./directive/model-options";
 import { ngAttributeAliasDirectives } from "./directive/attrs";
 import { ngEventDirectives } from "./directive/events";
-import { AnchorScrollProvider } from "./services/anchorScroll";
+import { AnchorScrollProvider } from "./services/anchor-scroll";
 import {
   AnimateProvider,
   CoreAnimateJsProvider,
   CoreAnimateQueueProvider,
 } from "./core/animate";
 import { BrowserProvider } from "./services/browser";
-import { CoreAnimateCssProvider } from "./core/animateCss";
-import { CookieReaderProvider } from "./services/cookieReader";
+import { CoreAnimateCssProvider } from "./core/animate-css";
+import { CookieReaderProvider } from "./services/cookie-reader";
 import {
   AnimateAsyncRunFactoryProvider,
   AnimateRunnerFactoryProvider,
-} from "./core/animateRunner";
+} from "./core/animate-runner";
 import {
   CacheFactoryProvider,
   TemplateCacheProvider,
-} from "./services/cacheFactory";
+} from "./services/cache-factory";
 import { $ControllerProvider } from "./core/controller";
 import {
   $DocumentProvider,
   $$IsDocumentHiddenProvider,
 } from "./services/document";
-import { $ExceptionHandlerProvider } from "./core/exceptionHandler";
+import { $ExceptionHandlerProvider } from "./core/exception-handler";
 import { $FilterProvider } from "./core/filter";
 import { $IntervalProvider } from "./core/interval";
 import { $InterpolateProvider } from "./core/interpolate";
-import { $$IntervalFactoryProvider } from "./core/intervalFactory";
+import { $$IntervalFactoryProvider } from "./core/interval-factory";
 import {
   $HttpProvider,
   $HttpParamSerializerProvider,
@@ -85,17 +85,17 @@ import {
 import {
   $HttpBackendProvider,
   $xhrFactoryProvider,
-} from "./services/httpBackend";
+} from "./services/http-backend";
 import { $LocationProvider } from "./core/location";
 import { $LogProvider } from "./services/log";
 import { $ParseProvider } from "./core/parser/parse";
-import { $RootScopeProvider } from "./core/rootScope";
+import { $RootScopeProvider } from "./core/root-scope";
 import { $QProvider, $$QProvider } from "./core/q";
 import { $SceProvider, $SceDelegateProvider } from "./core/sce";
-import { $$TaskTrackerFactoryProvider } from "./core/taskTrackerFactory";
-import { TemplateRequestProvider } from "./services/templateRequest";
+import { $$TaskTrackerFactoryProvider } from "./core/task-tracker-factory";
+import { TemplateRequestProvider } from "./services/template-request";
 import { $TimeoutProvider } from "./core/timeout";
-import { SanitizeUriProvider } from "./core/sanitizeUri";
+import { SanitizeUriProvider } from "./core/sanitize-uri";
 import { setupModuleLoader } from "./loader";
 import { initAnimateModule } from "./animations/module";
 import { initMessageModule } from "./exts/messages";

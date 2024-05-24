@@ -17,7 +17,7 @@ import {
   isFunction,
 } from "../core/utils";
 import { addSetValidityMethod, nullFormCtrl, setupValidity } from "./form";
-import { defaultModelOptions } from "./ngModelOptions";
+import { defaultModelOptions } from "./model-options";
 import { startingTag } from "../jqLite";
 export const ngModelMinErr = minErr("ngModel");
 

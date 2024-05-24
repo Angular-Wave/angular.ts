@@ -10,7 +10,7 @@ import {
   extend,
   isArray,
 } from "../../src/core/utils";
-import { countChildScopes, countWatchers } from "../../src/core/rootScope";
+import { countChildScopes, countWatchers } from "../../src/core/root-scope";
 
 function isUnknownElement(el) {
   return !!el.toString().match(/Unknown/);

@@ -1,7 +1,7 @@
 import { jqLite, dealoc } from "../../../src/jqLite";
 import { publishExternalAPI } from "../../../src/public";
 import { createInjector } from "../../../src/injector";
-import { NgModelController } from "../../../src/directive/ngModel";
+import { NgModelController } from "../../../src/directive/model";
 import { isDefined, valueFn, isObject } from "../../../src/core/utils";
 import { browserTrigger } from "../../test-utils";
 

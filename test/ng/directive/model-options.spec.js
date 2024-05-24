@@ -1,4 +1,4 @@
-import { defaultModelOptions } from "../../../src/directive/ngModelOptions";
+import { defaultModelOptions } from "../../../src/directive/model-options";
 import { dealoc, jqLite } from "../../../src/jqLite";
 import { publishExternalAPI } from "../../../src/public";
 import { createInjector } from "../../../src/injector";
