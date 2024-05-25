@@ -1,7 +1,7 @@
 {
   "name": "@angular-wave/angular.ts",
   "license": "MIT",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "main": "dist/angular-ts.cjs.js",
   "module": "dist/angular-ts.esm.js",
@@ -40,8 +40,5 @@
     "sinon": "latest",
     "typescript": "latest",
     "vite": "latest"
-  },
-  "dependencies": {
-   
   }
 }
