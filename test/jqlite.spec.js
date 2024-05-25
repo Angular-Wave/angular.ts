@@ -548,13 +548,13 @@ describe("jqLite", () => {
     });
 
     it("should not add to the cache if the node is a comment or text node", () => {
-      const initial = Object.keys(jqLite.cache).length;
+      const initial = CACHE.size;
       const nodes = jqLite("<!-- some comment --> and some text");
-      expect(Object.keys(jqLite.cache).length).toEqual(initial);
+      expect(CACHE.size).toEqual(initial);
       nodes.data("someKey");
-      expect(Object.keys(jqLite.cache).length).toEqual(initial);
+      expect(CACHE.size).toEqual(initial);
       nodes.data("someKey", "someValue");
-      expect(Object.keys(jqLite.cache).length).toEqual(initial);
+      expect(CACHE.size).toEqual(initial);
     });
 
     it("should provide the non-wrapped data calls", () => {
