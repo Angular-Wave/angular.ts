@@ -13903,7 +13903,7 @@ describe("$compile", () => {
             firstRepeatedElem = element.children(".ng-scope").eq(0);
 
             expect(firstRepeatedElem.data("$scope")).toBeDefined();
-            privateData = JQLite._data(firstRepeatedElem[0]);
+            privateData = CACHE.get(firstRepeatedElem[0]);
             expect(privateData.events).toBeDefined();
 
             expect(privateData.events.click).toBeDefined();
@@ -13919,7 +13919,7 @@ describe("$compile", () => {
 
             expect(destroyCount).toBe(2);
             expect(firstRepeatedElem.data("$scope")).not.toBeDefined();
-            privateData = JQLite._data(firstRepeatedElem[0]);
+            privateData = CACHE.get(firstRepeatedElem[0]);
             expect(privateData && privateData.events).not.toBeDefined();
           }
 

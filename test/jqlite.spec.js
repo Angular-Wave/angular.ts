@@ -228,18 +228,6 @@ describe("jqLite", () => {
     });
   });
 
-  describe("_data", () => {
-    it("should provide access to the events present on the element", () => {
-      const element = jqLite("<i>foo</i>");
-      // TODO: REMOVE angular becomes TESTED
-      angular.element = jqLite;
-      expect(angular.element._data(element[0]).events).toBeUndefined();
-
-      element.on("click", () => {});
-      expect(angular.element._data(element[0]).events.click).toBeDefined();
-    });
-  });
-
   describe("inheritedData", () => {
     it("should retrieve data attached to the current element", () => {
       const element = jqLite("<i>foo</i>");
@@ -541,7 +529,7 @@ describe("jqLite", () => {
 
     it("should not break on cleanData(), if element has no data", () => {
       const selected = jqLite([a, b, c]);
-      spyOn(jqLite, "_data").and.returnValue(undefined);
+      spyOn(CACHE, "get").and.returnValue(undefined);
       expect(() => {
         jqLite.cleanData(selected);
       }).not.toThrow();

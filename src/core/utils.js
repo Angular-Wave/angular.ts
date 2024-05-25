@@ -617,6 +617,14 @@ export function includes(array, obj) {
   return Array.prototype.indexOf.call(array, obj) !== -1;
 }
 
+/**
+ * Removes the first occurrence of a specified value from an array.
+ *
+ * @template T
+ * @param {Array<T>} array - The array from which to remove the value.
+ * @param {T} value - The value to remove.
+ * @returns {number} - The index of the removed value, or -1 if the value was not found.
+ */
 export function arrayRemove(array, value) {
   const index = array.indexOf(value);
   if (index >= 0) {

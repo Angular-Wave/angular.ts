@@ -94,16 +94,7 @@ import { CACHE, EXPANDO } from "./core/cache";
  * @returns {Object} jQuery object.
  */
 
-JQLite.cache = CACHE;
-
 let jqId = 1;
-
-/**
- * !!! This is an undocumented "private" function !!!
- * @param {JQLite|Element} node
- * @returns
- */
-JQLite._data = (node) => JQLite.cache.get(node[EXPANDO]) || {};
 
 function jqNextId() {
   return ++jqId;
@@ -289,6 +280,11 @@ export function JQLite(element) {
 }
 export var jqLite = JQLite;
 
+/**
+ * @param {Element} element
+ * @param {boolean} [onlyDescendants]
+ * @returns {void}
+ */
 export function dealoc(element, onlyDescendants) {
   if (!element) return;
   if (!onlyDescendants && elementAcceptsData(element))
@@ -307,13 +303,13 @@ export function dealoc(element, onlyDescendants) {
  */
 function removeIfEmptyData(element) {
   const expandoId = element[EXPANDO];
-  const { events, data } = JQLite.cache.get(expandoId);
+  const { events, data } = CACHE.get(expandoId);
 
   if (
     (!data || !Object.keys(data).length) &&
     (!events || !Object.keys(events).length)
   ) {
-    JQLite.cache.delete(expandoId);
+    CACHE.delete(expandoId);
     element[EXPANDO] = undefined; // don't delete DOM expandos. IE and Chrome don't like it
   }
 }
@@ -341,8 +337,8 @@ function jqLiteOff(element, type, fn, unsupported) {
   } else {
     const removeHandler = function (type) {
       const listenerFns = events[type];
-      if (isDefined(fn)) {
-        arrayRemove(listenerFns || [], fn);
+      if (isDefined(fn) && isArray(listenerFns)) {
+        arrayRemove(listenerFns, fn);
       }
       if (!(isDefined(fn) && listenerFns && listenerFns.length > 0)) {
         element.removeEventListener(type, handle);
@@ -370,7 +366,7 @@ function jqLiteOff(element, type, fn, unsupported) {
  */
 function jqLiteRemoveData(element, name) {
   const expandoId = element[EXPANDO];
-  const expandoStore = expandoId && JQLite.cache.get(expandoId);
+  const expandoStore = expandoId && CACHE.get(expandoId);
 
   if (expandoStore) {
     if (name) {
@@ -391,7 +387,7 @@ function jqLiteRemoveData(element, name) {
  */
 function jqLiteExpandoStore(element, createIfNecessary = false) {
   let expandoId = element[EXPANDO];
-  let expandoStore = expandoId && JQLite.cache.get(expandoId);
+  let expandoStore = expandoId && CACHE.get(expandoId);
 
   if (createIfNecessary && !expandoStore) {
     element[EXPANDO] = expandoId = jqNextId();
@@ -400,7 +396,7 @@ function jqLiteExpandoStore(element, createIfNecessary = false) {
       data: {},
       handle: null,
     };
-    JQLite.cache.set(expandoId, expandoStore);
+    CACHE.set(expandoId, expandoStore);
   }
 
   return expandoStore;
@@ -417,15 +413,12 @@ function jqLiteData(element, key, value) {
     const data = expandoStore && expandoStore.data;
 
     if (isSimpleSetter) {
-      // data('key', value)
       data[kebabToCamel(key)] = value;
     } else {
       if (massGetter) {
-        // data()
         return data;
       }
       if (isSimpleGetter) {
-        // data('key')
         // don't force creation of expandoStore if it doesn't exist yet
         return data && data[kebabToCamel(key)];
       }
@@ -572,7 +565,7 @@ export function getBooleanAttrName(element, name) {
 
 export function jqLiteCleanData(nodes) {
   for (let i = 0, ii = nodes.length; i < ii; i++) {
-    var events = (jqLite._data(nodes[i]) || {}).events;
+    var events = (CACHE.get(nodes[i][EXPANDO]) || {}).events;
     if (events && events.$destroy) {
       jqLite(nodes[i]).triggerHandler("$destroy");
     }
@@ -707,8 +700,6 @@ forEach(
       let key;
       const nodeCount = this.length;
 
-      // jqLiteHasClass has only two arguments, but is a getter-only fn, so we need to special-case it
-      // in a way that survives minification.
       // jqLiteEmpty takes no arguments but is a setter.
       if (
         fn !== jqLiteEmpty &&
@@ -718,7 +709,6 @@ forEach(
           // we are a write, but the object properties are the key/values
           for (i = 0; i < nodeCount; i++) {
             if (fn === jqLiteData) {
-              // data() takes the whole object in jQuery
               fn(this[i], arg1);
             } else {
               for (key in arg1) {

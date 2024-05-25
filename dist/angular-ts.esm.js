@@ -614,6 +614,14 @@ function includes(array, obj) {
   return Array.prototype.indexOf.call(array, obj) !== -1;
 }
 
+/**
+ * Removes the first occurrence of a specified value from an array.
+ *
+ * @template T
+ * @param {Array<T>} array - The array from which to remove the value.
+ * @param {T} value - The value to remove.
+ * @returns {number} - The index of the removed value, or -1 if the value was not found.
+ */
 function arrayRemove(array, value) {
   const index = array.indexOf(value);
   if (index >= 0) {
@@ -1465,16 +1473,7 @@ const CACHE = new Proxy(new Map(), {
  * @returns {Object} jQuery object.
  */
 
-JQLite.cache = CACHE;
-
 let jqId = 1;
-
-/**
- * !!! This is an undocumented "private" function !!!
- * @param {JQLite|Element} node
- * @returns
- */
-JQLite._data = (node) => JQLite.cache.get(node[EXPANDO]) || {};
 
 function jqNextId() {
   return ++jqId;
@@ -1660,6 +1659,11 @@ function JQLite(element) {
 }
 var jqLite = JQLite;
 
+/**
+ * @param {Element} element
+ * @param {boolean} [onlyDescendants]
+ * @returns {void}
+ */
 function dealoc(element, onlyDescendants) {
   if (!element) return;
   if (!onlyDescendants && elementAcceptsData(element))
@@ -1678,13 +1682,13 @@ function dealoc(element, onlyDescendants) {
  */
 function removeIfEmptyData(element) {
   const expandoId = element[EXPANDO];
-  const { events, data } = JQLite.cache.get(expandoId);
+  const { events, data } = CACHE.get(expandoId);
 
   if (
     (!data || !Object.keys(data).length) &&
     (!events || !Object.keys(events).length)
   ) {
-    JQLite.cache.delete(expandoId);
+    CACHE.delete(expandoId);
     element[EXPANDO] = undefined; // don't delete DOM expandos. IE and Chrome don't like it
   }
 }
@@ -1712,8 +1716,8 @@ function jqLiteOff(element, type, fn, unsupported) {
   } else {
     const removeHandler = function (type) {
       const listenerFns = events[type];
-      if (isDefined(fn)) {
-        arrayRemove(listenerFns || [], fn);
+      if (isDefined(fn) && isArray(listenerFns)) {
+        arrayRemove(listenerFns, fn);
       }
       if (!(isDefined(fn) && listenerFns && listenerFns.length > 0)) {
         element.removeEventListener(type, handle);
@@ -1741,7 +1745,7 @@ function jqLiteOff(element, type, fn, unsupported) {
  */
 function jqLiteRemoveData(element, name) {
   const expandoId = element[EXPANDO];
-  const expandoStore = expandoId && JQLite.cache.get(expandoId);
+  const expandoStore = expandoId && CACHE.get(expandoId);
 
   if (expandoStore) {
     if (name) {
@@ -1762,7 +1766,7 @@ function jqLiteRemoveData(element, name) {
  */
 function jqLiteExpandoStore(element, createIfNecessary = false) {
   let expandoId = element[EXPANDO];
-  let expandoStore = expandoId && JQLite.cache.get(expandoId);
+  let expandoStore = expandoId && CACHE.get(expandoId);
 
   if (createIfNecessary && !expandoStore) {
     element[EXPANDO] = expandoId = jqNextId();
@@ -1771,7 +1775,7 @@ function jqLiteExpandoStore(element, createIfNecessary = false) {
       data: {},
       handle: null,
     };
-    JQLite.cache.set(expandoId, expandoStore);
+    CACHE.set(expandoId, expandoStore);
   }
 
   return expandoStore;
@@ -1788,15 +1792,12 @@ function jqLiteData(element, key, value) {
     const data = expandoStore && expandoStore.data;
 
     if (isSimpleSetter) {
-      // data('key', value)
       data[kebabToCamel(key)] = value;
     } else {
       if (massGetter) {
-        // data()
         return data;
       }
       if (isSimpleGetter) {
-        // data('key')
         // don't force creation of expandoStore if it doesn't exist yet
         return data && data[kebabToCamel(key)];
       }
@@ -1943,7 +1944,7 @@ function getBooleanAttrName(element, name) {
 
 function jqLiteCleanData(nodes) {
   for (let i = 0, ii = nodes.length; i < ii; i++) {
-    var events = (jqLite._data(nodes[i]) || {}).events;
+    var events = (CACHE.get(nodes[i][EXPANDO]) || {}).events;
     if (events && events.$destroy) {
       jqLite(nodes[i]).triggerHandler("$destroy");
     }
@@ -2078,8 +2079,6 @@ forEach(
       let key;
       const nodeCount = this.length;
 
-      // jqLiteHasClass has only two arguments, but is a getter-only fn, so we need to special-case it
-      // in a way that survives minification.
       // jqLiteEmpty takes no arguments but is a setter.
       if (
         fn !== jqLiteEmpty &&
@@ -2089,7 +2088,6 @@ forEach(
           // we are a write, but the object properties are the key/values
           for (i = 0; i < nodeCount; i++) {
             if (fn === jqLiteData) {
-              // data() takes the whole object in jQuery
               fn(this[i], arg1);
             } else {
               for (key in arg1) {
@@ -16732,66 +16730,6 @@ function ngStyleDirective() {
   };
 }
 
-/**
- * @ngdoc directive
- * @name ngSwitch
- * @restrict EA
- *
- * @description
- * The `ngSwitch` directive is used to conditionally swap DOM structure on your template based on a scope expression.
- * Elements within `ngSwitch` but without `ngSwitchWhen` or `ngSwitchDefault` directives will be preserved at the location
- * as specified in the template.
- *
- * The directive itself works similar to ngInclude, however, instead of downloading template code (or loading it
- * from the template cache), `ngSwitch` simply chooses one of the nested elements and makes it visible based on which element
- * matches the value obtained from the evaluated expression. In other words, you define a container element
- * (where you place the directive), place an expression on the **`on="..."` attribute**
- * (or the **`ng-switch="..."` attribute**), define any inner elements inside of the directive and place
- * a when attribute per element. The when attribute is used to inform ngSwitch which element to display when the on
- * expression is evaluated. If a matching expression is not found via a when attribute then an element with the default
- * attribute is displayed.
- *
- * <div class="alert alert-info">
- * Be aware that the attribute values to match against cannot be expressions. They are interpreted
- * as literal string values to match against.
- * For example, **`ng-switch-when="someVal"`** will match against the string `"someVal"` not against the
- * value of the expression `$scope.someVal`.
- * </div>
-
- * @animations
- * | Animation                        | Occurs                              |
- * |----------------------------------|-------------------------------------|
- * | {@link ng.$animate#enter enter}  | after the ngSwitch contents change and the matched child element is placed inside the container |
- * | {@link ng.$animate#leave leave}  | after the ngSwitch contents change and just before the former contents are removed from the DOM |
- *
- * @usage
- *
- * ```
- * <ANY ng-switch="expression">
- *   <ANY ng-switch-when="matchValue1">...</ANY>
- *   <ANY ng-switch-when="matchValue2">...</ANY>
- *   <ANY ng-switch-default>...</ANY>
- * </ANY>
- * ```
- *
- *
- * @scope
- * @priority 1200
- * @param {*} ngSwitch|on expression to match against <code>ng-switch-when</code>.
- * On child elements add:
- *
- * * `ngSwitchWhen`: the case statement to match against. If match then this
- *   case will be displayed. If the same match appears multiple times, all the
- *   elements will be displayed. It is possible to associate multiple values to
- *   the same `ngSwitchWhen` by defining the optional attribute
- *   `ngSwitchWhenSeparator`. The separator will be used to split the value of
- *   the `ngSwitchWhen` attribute into multiple tokens, and the element will show
- *   if any of the `ngSwitch` evaluates to any of these tokens.
- * * `ngSwitchDefault`: the default case when no other case match. If there
- *   are multiple default cases, all of them will be displayed when no other
- *   case match.
- *
- */
 const ngSwitchDirective = [
   "$animate",
   "$compile",
@@ -16801,11 +16739,13 @@ const ngSwitchDirective = [
     // asks for $scope to fool the BC controller module
     controller: [
       "$scope",
-      function NgSwitchController() {
-        this.cases = {};
+      class {
+        constructor() {
+          this.cases = {};
+        }
       },
     ],
-    link(scope, element, attr, ngSwitchController) {
+    link(scope, _element, attr, ngSwitchController) {
       const watchExpr = attr.ngSwitch || attr.on;
       let selectedTranscludes = [];
       const selectedElements = [];
