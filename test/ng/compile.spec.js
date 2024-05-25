@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
-import { dealoc, jqLite, JQLite } from "../../src/jqLite";
+import { dealoc, JQLite } from "../../src/jqLite";
 import {
   forEach,
   isFunction,
@@ -11,6 +11,7 @@ import {
   isArray,
 } from "../../src/core/utils";
 import { countChildScopes, countWatchers } from "../../src/core/root-scope";
+import { CACHE, EXPANDO } from "../../src/core/cache";
 
 function isUnknownElement(el) {
   return !!el.toString().match(/Unknown/);
@@ -17624,10 +17625,10 @@ describe("$compile", () => {
       linkedElements.remove();
 
       forEach(preCompiledChildren, (element, i) => {
-        expect(JQLite.hasData(element)).toBe(false, `template#${i}`);
+        expect(CACHE.has(element[EXPANDO])).toBe(false, `template#${i}`);
       });
       forEach(getAll(linkedElements), (element, i) => {
-        expect(JQLite.hasData(element)).toBe(false, `linked#${i}`);
+        expect(CACHE.has(element[EXPANDO])).toBe(false, `linked#${i}`);
       });
     }
 

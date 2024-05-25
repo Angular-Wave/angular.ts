@@ -1351,6 +1351,8 @@ function directiveNormalize(name) {
  *
  */
 
+const EXPANDO = "ngId";
+
 /**
  * Expando cache for adding properties to DOM nodes with JavaScript.
  * This used to be an Object in JQLite decorator, but swapped out for a Map
@@ -1467,7 +1469,6 @@ const CACHE = new Proxy(new Map(), {
 
 JQLite.cache = CACHE;
 
-const EXPANDO = "ngId";
 let jqId = 1;
 
 /**
@@ -1560,13 +1561,6 @@ function elementAcceptsData(node) {
     default:
       return false;
   }
-}
-
-function jqLiteHasData(node) {
-  for (const key in JQLite.cache.get(node[EXPANDO])) {
-    return true;
-  }
-  return false;
 }
 
 function jqLiteBuildFragment(html, context) {
@@ -1964,7 +1958,6 @@ forEach(
   {
     data: jqLiteData,
     removeData: jqLiteRemoveData,
-    hasData: jqLiteHasData,
     cleanData: jqLiteCleanData,
   },
   (fn, name) => {
@@ -9641,7 +9634,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           fragment.appendChild(elementsToRemove[i]);
         }
 
-        if (jqLite.hasData(firstElementToRemove)) {
+        if (CACHE.has(firstElementToRemove[EXPANDO])) {
           // Copy over user data (that includes AngularJS's $scope etc.). Don't copy private
           // data here because there's no public interface in jQuery to do that and copying over
           // event listeners (which is the main use of private data) wouldn't work anyway.

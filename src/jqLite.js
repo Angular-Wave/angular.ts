@@ -15,7 +15,7 @@ import {
   shallowCopy,
   trim,
 } from "./core/utils";
-import { CACHE } from "./core/cache";
+import { CACHE, EXPANDO } from "./core/cache";
 
 /**
  * @ngdoc function
@@ -96,7 +96,6 @@ import { CACHE } from "./core/cache";
 
 JQLite.cache = CACHE;
 
-const EXPANDO = "ngId";
 let jqId = 1;
 
 /**
@@ -189,13 +188,6 @@ function elementAcceptsData(node) {
     default:
       return false;
   }
-}
-
-function jqLiteHasData(node) {
-  for (const key in JQLite.cache.get(node[EXPANDO])) {
-    return true;
-  }
-  return false;
 }
 
 export function jqLiteBuildFragment(html, context) {
@@ -593,7 +585,6 @@ forEach(
   {
     data: jqLiteData,
     removeData: jqLiteRemoveData,
-    hasData: jqLiteHasData,
     cleanData: jqLiteCleanData,
   },
   (fn, name) => {

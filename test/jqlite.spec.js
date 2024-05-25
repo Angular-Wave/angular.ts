@@ -4,6 +4,7 @@ import { createInjector } from "../src/injector";
 import { publishExternalAPI } from "../src/public";
 import { equals, forEach } from "../src/core/utils";
 import { browserTrigger } from "./test-utils";
+import { CACHE, EXPANDO } from "../src/core/cache";
 
 describe("jqLite", () => {
   let scope;
@@ -572,13 +573,13 @@ describe("jqLite", () => {
       const node = document.createElement("div");
       document.body.appendChild(node);
 
-      expect(jqLite.hasData(node)).toBe(false);
+      expect(CACHE.has(node[EXPANDO])).toBe(false);
       expect(jqLite.data(node, "foo")).toBeUndefined();
-      expect(jqLite.hasData(node)).toBe(false);
+      expect(CACHE.has(node[EXPANDO])).toBe(false);
 
       jqLite.data(node, "foo", "bar");
 
-      expect(jqLite.hasData(node)).toBe(true);
+      expect(CACHE.has(node[EXPANDO])).toBe(true);
       expect(jqLite.data(node, "foo")).toBe("bar");
       expect(jqLite(node).data("foo")).toBe("bar");
 
@@ -593,7 +594,7 @@ describe("jqLite", () => {
       expect(jqLite.data(node, "bar")).toBeUndefined();
 
       jqLite(node).remove();
-      expect(jqLite.hasData(node)).toBe(false);
+      expect(CACHE.has(node[EXPANDO])).toBe(false);
     });
 
     it("should emit $destroy event if element removed via remove()", function () {

@@ -35,6 +35,7 @@ import {
 import { SCE_CONTEXTS } from "./sce";
 import { PREFIX_REGEXP, ALIASED_ATTR } from "../constants";
 import { createEventDirective } from "../directive/events";
+import { CACHE, EXPANDO } from "./cache";
 
 const $compileMinErr = minErr("$compile");
 
@@ -3277,7 +3278,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           fragment.appendChild(elementsToRemove[i]);
         }
 
-        if (jqLite.hasData(firstElementToRemove)) {
+        if (CACHE.has(firstElementToRemove[EXPANDO])) {
           // Copy over user data (that includes AngularJS's $scope etc.). Don't copy private
           // data here because there's no public interface in jQuery to do that and copying over
           // event listeners (which is the main use of private data) wouldn't work anyway.

@@ -39,12 +39,14 @@
 - ```
 
   ```
+
 - Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source of
 - script in the following Content Security Policy directive: "default-src 'self'". Note that
 - 'script-src' was not explicitly set, so 'default-src' is used as a fallback.
 - ```
 
   ```
+
 -
 - This error is harmless but annoying. To prevent the error from showing up, put the `ngCsp`
 - directive on an element of the HTML document that appears before the `<script>` tag that loads
