@@ -1,7 +1,7 @@
 {
   "name": "@angular-wave/angular.ts",
   "license": "MIT",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "type": "module",
   "main": "dist/angular-ts.cjs.js",
   "module": "dist/angular-ts.esm.js",
@@ -24,6 +24,7 @@
     "@playwright/test": "^1.44.0",
     "@rollup/plugin-commonjs": "latest",
     "@rollup/plugin-node-resolve": "latest",
+    "@rollup/plugin-terser": "^0.4.4",
     "@types/jasmine": "latest",
     "@types/node": "latest",
     "eslint": "latest",
