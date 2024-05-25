@@ -310,7 +310,7 @@ function removeIfEmptyData(element) {
     (!events || !Object.keys(events).length)
   ) {
     CACHE.delete(expandoId);
-    element[EXPANDO] = undefined; // don't delete DOM expandos. IE and Chrome don't like it
+    element[EXPANDO] = undefined; // don't delete DOM expandos. Chrome don't like it
   }
 }
 

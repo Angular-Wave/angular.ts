@@ -940,7 +940,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           const booleanKey = getBooleanAttrName(node, key);
           const aliasedKey = ALIASED_ATTR[key];
           let observer = key;
-          let nodeName;
 
           if (booleanKey) {
             this.$$element[0][key] = value;
@@ -962,7 +961,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             }
           }
 
-          nodeName = nodeName_(this.$$element);
+          let nodeName = this.$$element[0].nodeName.toLowerCase();
 
           // Sanitize img[srcset] values.
           if (nodeName === "img" && key === "srcset") {
@@ -1461,7 +1460,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
         switch (nodeType) {
           case Node.ELEMENT_NODE /* Element */:
-            nodeName = nodeName_(node);
+            nodeName = node.nodeName.toLowerCase();
 
             // use the node name: <directive>
             addDirective(

@@ -1,7 +1,7 @@
 {
   "name": "@angular-wave/angular.ts",
   "license": "MIT",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "type": "module",
   "main": "dist/angular-ts.cjs.js",
   "module": "dist/angular-ts.esm.js",

@@ -28,20 +28,6 @@ import { jqLite, startingTag } from "./jqLite";
 import { createInjector } from "./injector";
 import { CACHE } from "./core/cache";
 
-/**
- * @ngdoc module
- * @name ng
-
- * @installation
- * @description
- *
- * The ng module is loaded by default when an AngularJS application is started. The module itself
- * contains the essential components for an AngularJS application to function. The table below
- * lists a high level breakdown of each of the services/factories, filters, directives and testing
- * components available within this core module.
- *
- */
-
 const ngMinErr = minErr("ng");
 
 /** @type {Object.<string, angular.IModule>} */
@@ -131,7 +117,7 @@ export class Angular {
  * </html>
  * ```
  *
- * @param {string | Element | JQuery | Document} element DOM element which is the root of AngularJS application.
+ * @param {string | Element | Document} element DOM element which is the root of AngularJS application.
  * @param {Array<string | Function | any[]>=} modules an array of modules to load into the application.
  *     Each item in the array should be the name of a predefined module or a (DI annotated)
  *     function that will be invoked by the injector as a `config` block.
