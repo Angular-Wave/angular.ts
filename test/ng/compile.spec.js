@@ -89,7 +89,7 @@ describe("$compile", () => {
   function registerDefaultDirectives() {
     return registerDirectives({
       log: () => ({
-        restrict: "CAM",
+        restrict: "A",
         priority: 0,
         compile: valueFn((scope, element, attrs) => {
           log.push(attrs.log || "LOG");
@@ -97,7 +97,7 @@ describe("$compile", () => {
       }),
 
       highLog: () => ({
-        restrict: "CAM",
+        restrict: "A",
         priority: 3,
         compile: valueFn((scope, element, attrs) => {
           log.push(attrs.highLog || "HIGH");
@@ -105,7 +105,7 @@ describe("$compile", () => {
       }),
 
       mediumLog: () => ({
-        restrict: "CAM",
+        restrict: "A",
         priority: 2,
         compile: valueFn((scope, element, attrs) => {
           log.push(attrs.mediumLog || "MEDIUM");
@@ -113,7 +113,7 @@ describe("$compile", () => {
       }),
 
       greet: () => ({
-        restrict: "CAM",
+        restrict: "A",
         priority: 10,
         compile: valueFn((scope, element, attrs) => {
           element.text(`Hello ${attrs.greet}`);
@@ -732,21 +732,12 @@ describe("$compile", () => {
       expect(element.text()).toEqual("0hello2angular4");
     });
 
-    it("should allow directives in classes", () => {
-      reloadModules();
-      element = $compile('<div class="greet: angular; log:123;"></div>')(
-        $rootScope,
-      );
-      expect(element.html()).toEqual("Hello angular");
-      expect(log[0]).toEqual("123");
-    });
-
     it("should allow directives in SVG element classes", () => {
       reloadModules();
       if (!window.SVGElement) return;
-      element = $compile(
-        '<svg><text class="greet: angular; log:123;"></text></svg>',
-      )($rootScope);
+      element = $compile('<svg><text greet="angular" log="123"></text></svg>')(
+        $rootScope,
+      );
       const text = element.children().eq(0);
       // In old Safari, SVG elements don't have innerHTML, so element.html() won't work
       // (https://bugs.webkit.org/show_bug.cgi?id=136903)
@@ -769,7 +760,7 @@ describe("$compile", () => {
       myModule.directive("log", ($rootScope, $injector) => {
         injectableInjector = $injector;
         return {
-          restrict: "CA",
+          restrict: "A",
           compile(element, templateAttr) {
             expect(typeof templateAttr.$normalize).toBe("function");
             expect(typeof templateAttr.$set).toBe("function");
@@ -791,7 +782,7 @@ describe("$compile", () => {
 
       reloadModules();
       element = $compile(
-        '<div class="log" exp="abc" aa="A" x-Bb="B" daTa-cC="C">unlinked</div>',
+        '<div log exp="abc" aa="A" x-Bb="B" daTa-cC="C">unlinked</div>',
       )($rootScope);
 
       expect(element.text()).toEqual("worked");
@@ -4675,31 +4666,9 @@ describe("$compile", () => {
       ]);
     });
 
-    it("should allow commentDirectivesEnabled to be configured", () => {
-      createInjector([
-        "ng",
-        ($compileProvider) => {
-          expect($compileProvider.commentDirectivesEnabled()).toBe(true); // the default
-          $compileProvider.commentDirectivesEnabled(false);
-          expect($compileProvider.commentDirectivesEnabled()).toBe(false);
-        },
-      ]);
-    });
-
-    it("should allow cssClassDirectivesEnabled to be configured", () => {
-      createInjector([
-        "ng",
-        ($compileProvider) => {
-          expect($compileProvider.cssClassDirectivesEnabled()).toBe(true); // the default
-          $compileProvider.cssClassDirectivesEnabled(false);
-          expect($compileProvider.cssClassDirectivesEnabled()).toBe(false);
-        },
-      ]);
-    });
-
     it("should register a directive", () => {
       myModule.directive("div", () => ({
-        restrict: "ECA",
+        restrict: "EA",
         link(scope, element) {
           log = "OK";
           element.text("SUCCESS");
@@ -4714,14 +4683,14 @@ describe("$compile", () => {
     it("should allow registration of multiple directives with same name", () => {
       myModule
         .directive("div", () => ({
-          restrict: "ECA",
+          restrict: "EA",
           link: {
             pre: () => log.push("pre1"),
             post: () => log.push("post1"),
           },
         }))
         .directive("div", () => ({
-          restrict: "ECA",
+          restrict: "EA",
           link: {
             pre: () => log.push("pre2"),
             post: () => log.push("post2"),
@@ -5272,7 +5241,7 @@ describe("$compile", () => {
         reloadModules();
 
         element = $compile(
-          '<div high-log medium-stop log class="medium-log"><a set="FAIL">OK</a></div>',
+          '<div high-log medium-stop log medium-log><a set="FAIL">OK</a></div>',
         )($rootScope);
         expect(element.text()).toEqual("OK");
         expect(log).toEqual(["MEDIUM", "HIGH"]);
@@ -5334,7 +5303,7 @@ describe("$compile", () => {
           .directive(
             "replace",
             valueFn({
-              restrict: "CAM",
+              restrict: "A",
               replace: true,
               template:
                 '<div class="log" style="width: 10px" high-log>Replace!</div>',
@@ -5347,7 +5316,7 @@ describe("$compile", () => {
           .directive(
             "nomerge",
             valueFn({
-              restrict: "CAM",
+              restrict: "A",
               replace: true,
               template: '<div class="log" id="myid" high-log>No Merge!</div>',
               compile(element, attr) {
@@ -5359,7 +5328,7 @@ describe("$compile", () => {
           .directive(
             "append",
             valueFn({
-              restrict: "CAM",
+              restrict: "A",
               template:
                 '<div class="log" style="width: 10px" high-log>Append!</div>',
               compile(element, attr) {
@@ -5873,7 +5842,7 @@ describe("$compile", () => {
           .directive(
             "hello",
             valueFn({
-              restrict: "CAM",
+              restrict: "A",
               templateUrl: "mock/hello",
               transclude: true,
             }),
@@ -5881,7 +5850,7 @@ describe("$compile", () => {
           .directive(
             "401",
             valueFn({
-              restrict: "CAM",
+              restrict: "A",
               templateUrl: "mock/401",
               transclude: true,
             }),
@@ -5889,19 +5858,19 @@ describe("$compile", () => {
           .directive(
             "cau",
             valueFn({
-              restrict: "CAM",
+              restrict: "A",
               templateUrl: "mock/divexpr",
             }),
           )
           .directive(
             "crossDomainTemplate",
             valueFn({
-              restrict: "CAM",
+              restrict: "A",
               templateUrl: "http://example.com/should-not-load.html",
             }),
           )
           .directive("trustedTemplate", () => ({
-            restrict: "CAM",
+            restrict: "A",
             templateUrl() {
               return $sce.trustAsResourceUrl("http://localhost:3000/hello");
             },
@@ -5909,7 +5878,7 @@ describe("$compile", () => {
           .directive(
             "cError",
             valueFn({
-              restrict: "CAM",
+              restrict: "A",
               templateUrl: "mock/empty",
               compile() {
                 throw new Error("cError");
@@ -5919,7 +5888,7 @@ describe("$compile", () => {
           .directive(
             "lError",
             valueFn({
-              restrict: "CAM",
+              restrict: "A",
               templateUrl: "mock/empty",
               compile() {
                 throw new Error("lError");
@@ -5929,7 +5898,7 @@ describe("$compile", () => {
           .directive(
             "iHello",
             valueFn({
-              restrict: "CAM",
+              restrict: "A",
               replace: true,
               templateUrl: "mock/div",
             }),
@@ -5937,7 +5906,7 @@ describe("$compile", () => {
           .directive(
             "iCau",
             valueFn({
-              restrict: "CAM",
+              restrict: "A",
               replace: true,
               templateUrl: "mock/divexpr",
             }),
@@ -5945,7 +5914,7 @@ describe("$compile", () => {
           .directive(
             "iCError",
             valueFn({
-              restrict: "CAM",
+              restrict: "A",
               replace: true,
               templateUrl: "error.html",
               compile() {
@@ -5956,7 +5925,7 @@ describe("$compile", () => {
           .directive(
             "iLError",
             valueFn({
-              restrict: "CAM",
+              restrict: "A",
               replace: true,
               templateUrl: "error.html",
               compile() {
@@ -6040,7 +6009,7 @@ describe("$compile", () => {
 
       it("should not load cross domain templates by default", () => {
         expect(() => {
-          $compile('<div class="crossDomainTemplate"></div>')($rootScope);
+          $compile("<div cross-domain-template></div>")($rootScope);
         }).toThrowError(/insecurl/);
       });
 
@@ -6049,27 +6018,23 @@ describe("$compile", () => {
           "http://example.com/should-not-load.html",
           "<span>example.com/cached-version</span>",
         );
-        element = $compile('<div class="crossDomainTemplate"></div>')(
-          $rootScope,
-        );
+        element = $compile("<div cross-domain-template></div>")($rootScope);
         expect(element[0].outerHTML).toEqual(
-          '<div class="crossDomainTemplate"></div>',
+          '<div cross-domain-template=""></div>',
         );
         $rootScope.$digest();
         expect(element[0].outerHTML).toEqual(
-          '<div class="crossDomainTemplate"><span>example.com/cached-version</span></div>',
+          '<div cross-domain-template=""><span>example.com/cached-version</span></div>',
         );
       });
 
       it("should load cross domain templates when trusted", (done) => {
-        element = $compile('<div class="trustedTemplate"></div>')($rootScope);
-        expect(element[0].outerHTML).toEqual(
-          '<div class="trustedTemplate"></div>',
-        );
+        element = $compile("<div trusted-template></div>")($rootScope);
+        expect(element[0].outerHTML).toEqual('<div trusted-template=""></div>');
         $rootScope.$digest();
         setTimeout(() => {
           expect(element[0].outerHTML).toEqual(
-            '<div class="trustedTemplate">Hello</div>',
+            '<div trusted-template="">Hello</div>',
           );
           done();
         }, 100);
@@ -6077,22 +6042,22 @@ describe("$compile", () => {
 
       it("should append template via $http and cache it in $templateCache", (done) => {
         $templateCache.put("mock/divexpr", "<span>Cau!</span>");
-        element = $compile(
-          '<div><b class="hello">ignore</b><b class="cau">ignore</b></div>',
-        )($rootScope);
+        element = $compile("<div><b hello>ignore</b><b cau>ignore</b></div>")(
+          $rootScope,
+        );
         expect(element[0].outerHTML).toEqual(
-          '<div><b class="hello"></b><b class="cau"></b></div>',
+          '<div><b hello=""></b><b cau=""></b></div>',
         );
 
         $rootScope.$digest();
 
         expect(element[0].outerHTML).toEqual(
-          '<div><b class="hello"></b><b class="cau"><span>Cau!</span></b></div>',
+          '<div><b hello=""></b><b cau=""><span>Cau!</span></b></div>',
         );
 
         setTimeout(() => {
           expect(element[0].outerHTML).toEqual(
-            `<div><b class="hello">Hello</b><b class="cau"><span>Cau!</span></b></div>`,
+            `<div><b hello="">Hello</b><b cau=""><span>Cau!</span></b></div>`,
           );
           done();
         }, 100);
@@ -6101,21 +6066,21 @@ describe("$compile", () => {
       it("should inline template via $http and cache it in $templateCache", (done) => {
         $templateCache.put("mock/divexpr", "<span>Cau!</span>");
         element = $compile(
-          "<div><b class=i-hello>ignore</b><b class=i-cau>ignore</b></div>",
+          "<div><b i-hello>ignore</b><b i-cau>ignore</b></div>",
         )($rootScope);
         expect(element[0].outerHTML).toEqual(
-          '<div><b class="i-hello"></b><b class="i-cau"></b></div>',
+          '<div><b i-hello=""></b><b i-cau=""></b></div>',
         );
 
         $rootScope.$digest();
 
         expect(element[0].outerHTML).toBe(
-          '<div><b class="i-hello"></b><span class="i-cau">Cau!</span></div>',
+          '<div><b i-hello=""></b><span i-cau="">Cau!</span></div>',
         );
 
         setTimeout(() => {
           expect(element[0].outerHTML).toBe(
-            '<div><div class="i-hello">Hello</div><span class="i-cau">Cau!</span></div>',
+            '<div><div i-hello="">Hello</div><span i-cau="">Cau!</span></div>',
           );
           done();
         }, 100);
@@ -6124,13 +6089,13 @@ describe("$compile", () => {
       it("should compile, link and flush the template append", (done) => {
         $templateCache.put("mock/hello", "<span>Hello, {{name}}!</span>");
         $rootScope.name = "Elvis";
-        element = $compile('<div><b class="hello"></b></div>')($rootScope);
+        element = $compile('<div><b hello=""></b></div>')($rootScope);
 
         $rootScope.$digest();
 
         setTimeout(() => {
           expect(element[0].outerHTML).toEqual(
-            '<div><b class="hello"><span>Hello, Elvis!</span></b></div>',
+            '<div><b hello=""><span>Hello, Elvis!</span></b></div>',
           );
           done();
         }, 100);
@@ -6139,24 +6104,24 @@ describe("$compile", () => {
       it("should compile, link and flush the template inline", () => {
         $templateCache.put("mock/div", "<span>Hello, {{name}}!</span>");
         $rootScope.name = "Elvis";
-        element = $compile("<div><b class=i-hello></b></div>")($rootScope);
+        element = $compile("<div><b i-hello></b></div>")($rootScope);
 
         $rootScope.$digest();
 
         expect(element[0].outerHTML).toBe(
-          '<div><span class="i-hello">Hello, Elvis!</span></div>',
+          '<div><span i-hello="">Hello, Elvis!</span></div>',
         );
       });
 
       it("should compile template when replacing element in another template", () => {
         $templateCache.put("mock/hello", "<div replace></div>");
         $rootScope.name = "Elvis";
-        element = $compile('<div><b class="hello"></b></div>')($rootScope);
+        element = $compile('<div><b hello=""></b></div>')($rootScope);
 
         $rootScope.$digest();
 
         expect(element[0].outerHTML).toEqual(
-          '<div><b class="hello"><span replace="">Hello, Elvis!</span></b></div>',
+          '<div><b hello=""><span replace="">Hello, Elvis!</span></b></div>',
         );
       });
 
@@ -6177,10 +6142,10 @@ describe("$compile", () => {
         $rootScope.name = "Elvis";
         const template = $compile(
           "<div>" +
-            '<b class="hello"></b>' +
-            '<b class="cau"></b>' +
-            "<b class=c-error></b>" +
-            "<b class=l-error></b>" +
+            "<b hello></b>" +
+            "<b cau></b>" +
+            "<b c-error></b>" +
+            "<b l-error></b>" +
             "</div>",
         );
         let e1;
@@ -6208,7 +6173,7 @@ describe("$compile", () => {
 
       it("should resolve widgets after cloning in append mode without $templateCache", (done) => {
         $rootScope.expr = "Elvis";
-        const template = $compile('<div class="cau"></div>');
+        const template = $compile("<div cau></div>");
         let e1;
         let e2;
 
@@ -6233,10 +6198,10 @@ describe("$compile", () => {
         $rootScope.name = "Elvis";
         const template = $compile(
           "<div>" +
-            "<b class=i-hello></b>" +
-            "<b class=i-cau></b>" +
-            "<b class=i-c-error></b>" +
-            "<b class=i-l-error></b>" +
+            "<b i-hello></b>" +
+            "<b i-cau></b>" +
+            "<b i-c-error></b>" +
+            "<b i-l-error></b>" +
             "</div>",
         );
         let e1;
@@ -6260,7 +6225,7 @@ describe("$compile", () => {
 
       it("should resolve widgets after cloning in inline mode without $templateCache", (done) => {
         $rootScope.expr = "Elvis";
-        const template = $compile('<div class="i-cau"></div>');
+        const template = $compile('<div i-cau=""></div>');
         let e1;
         let e2;
 
@@ -6283,7 +6248,7 @@ describe("$compile", () => {
       it("should be implicitly terminal and not compile placeholder content in append", () => {
         // we can't compile the contents because that would result in a memory leak
         $templateCache.put("mock/hello", "Hello!");
-        element = $compile('<div><b class="hello"><div log></div></b></div>')(
+        element = $compile('<div><b hello=""><div log></div></b></div>')(
           $rootScope,
         );
 
@@ -6294,7 +6259,7 @@ describe("$compile", () => {
         // we can't compile the contents because that would result in a memory leak
 
         $templateCache.put("mock/hello", "Hello!");
-        element = $compile("<div><b class=i-hello><div log></div></b></div>")(
+        element = $compile("<div><b i-hello><div log></div></b></div>")(
           $rootScope,
         );
 
@@ -6303,10 +6268,10 @@ describe("$compile", () => {
 
       // TODO: Figure out why the test fails twice
       it("should throw an error and clear element content if the template fails to load", (done) => {
-        element = $compile('<div><b class="401">content</b></div>')($rootScope);
+        element = $compile("<div><b 401>content</b></div>")($rootScope);
         setTimeout(() => {
           expect(errors.length).toBe(2);
-          expect(element[0].outerHTML).toBe('<div><b class="401"></b></div>');
+          expect(element[0].outerHTML).toBe('<div><b 401=""></b></div>');
           done();
         }, 1000);
       });
@@ -6343,7 +6308,7 @@ describe("$compile", () => {
           module = angular.module("test1", ["ng"]).directive(
             "hello",
             valueFn({
-              restrict: "CAM",
+              restrict: "A",
               templateUrl: "mock/hello",
               transclude: true,
             }),
@@ -6502,7 +6467,7 @@ describe("$compile", () => {
             "mock/hello",
             "<span>3==<span ng-transclude></span></span>",
           );
-          element = JQLite('<b class="hello">{{1+2}}</b>');
+          element = JQLite('<b hello="">{{1+2}}</b>');
           $compile(element)($rootScope);
           $rootScope.$digest();
           expect(element.text()).toEqual("3==3");
@@ -6520,7 +6485,7 @@ describe("$compile", () => {
               "<span>i=<span ng-transclude></span>;</span>",
             );
             element = JQLite(
-              `<div><b class=hello ng-repeat="i in [${is}]">{{i}}</b></div>`,
+              `<div><b hello ng-repeat="i in [${is}]">{{i}}</b></div>`,
             );
             $compile(element)($rootScope);
             $rootScope.$digest();
@@ -6913,7 +6878,7 @@ describe("$compile", () => {
         ["", "a", "b"].forEach((name) => {
           module.directive(`scope${name.toUpperCase()}`, () => ({
             scope: true,
-            restrict: "CA",
+            restrict: "A",
             compile() {
               return {
                 pre(scope, element) {
@@ -6925,7 +6890,7 @@ describe("$compile", () => {
           }));
           module.directive(`iscope${name.toUpperCase()}`, () => ({
             scope: {},
-            restrict: "CA",
+            restrict: "A",
             compile() {
               return function (scope, element) {
                 iscope = scope;
@@ -6936,7 +6901,7 @@ describe("$compile", () => {
           }));
           module.directive(`tscope${name.toUpperCase()}`, () => ({
             scope: true,
-            restrict: "CA",
+            restrict: "A",
             templateUrl: "tscope.html",
             compile() {
               return function (scope, element) {
@@ -6947,7 +6912,7 @@ describe("$compile", () => {
           }));
           module.directive(`stscope${name.toUpperCase()}`, () => ({
             scope: true,
-            restrict: "CA",
+            restrict: "A",
             template: "<span></span>",
             compile() {
               return function (scope, element) {
@@ -6959,7 +6924,7 @@ describe("$compile", () => {
           module.directive(`trscope${name.toUpperCase()}`, () => ({
             scope: true,
             replace: true,
-            restrict: "CA",
+            restrict: "A",
             templateUrl: "trscope.html",
             compile() {
               return function (scope, element) {
@@ -6970,7 +6935,7 @@ describe("$compile", () => {
           }));
           module.directive(`tiscope${name.toUpperCase()}`, () => ({
             scope: {},
-            restrict: "CA",
+            restrict: "A",
             templateUrl: "tiscope.html",
             compile() {
               return function (scope, element) {
@@ -6982,7 +6947,7 @@ describe("$compile", () => {
           }));
           module.directive(`stiscope${name.toUpperCase()}`, () => ({
             scope: {},
-            restrict: "CA",
+            restrict: "A",
             template: "<span></span>",
             compile() {
               return function (scope, element) {
@@ -6994,7 +6959,7 @@ describe("$compile", () => {
           }));
         });
         module.directive("log", () => ({
-          restrict: "CA",
+          restrict: "A",
           link: {
             pre(scope) {
               log.push(
@@ -7125,12 +7090,12 @@ describe("$compile", () => {
       it("should correctly create the scope hierarchy", () => {
         element = $compile(
           "<div>" + // 1
-            "<b class=scope>" + // 2
-            "<b class=scope><b class=log></b></b>" + // 3
-            "<b class=log></b>" +
+            "<b scope>" + // 2
+            "<b scope><b log></b></b>" + // 3
+            "<b log></b>" +
             "</b>" +
-            "<b class=scope>" + // 4
-            "<b class=log></b>" +
+            "<b scope>" + // 4
+            "<b log></b>" +
             "</b>" +
             "</div>",
         )($rootScope);
@@ -7138,19 +7103,19 @@ describe("$compile", () => {
       });
 
       it("should allow more than one new scope directives per element, but directives should share the scope", () => {
-        element = $compile('<div class="scope-a; scope-b"></div>')($rootScope);
+        element = $compile("<div scope-a scope-b></div>")($rootScope);
         expect(log.length).toEqual(2);
       });
 
       it("should not allow more than one isolate scope creation per element", () => {
         expect(() => {
-          $compile('<div class="iscope-a; scope-b"></div>')($rootScope);
+          $compile("<div iscope-a scope-b></div>")($rootScope);
         }).toThrowError(/multidir/);
       });
 
       it("should not allow more than one isolate/new scope creation per element regardless of `templateUrl`", () => {
         $templateCache.put("tiscope.html", "<div>Hello, world !</div>");
-        $compile('<div class="tiscope-a; scope-b"></div>')($rootScope);
+        $compile("<div tiscope-a scope-b></div>")($rootScope);
         $rootScope.$digest();
         expect(log[0].match(/multidir/)).toBeTruthy();
       });
@@ -7573,7 +7538,7 @@ describe("$compile", () => {
       //         .module("fakeIsoledScopeModule", [])
       //         .directive("fakeScope", () => ({
       //           scope: true,
-      //           restrict: "CA",
+      //           restrict: "A",
       //           compile() {
       //             return {
       //               pre(scope, element) {
@@ -7585,7 +7550,7 @@ describe("$compile", () => {
       //         }))
       //         .directive("fakeIScope", () => ({
       //           scope: {},
-      //           restrict: "CA",
+      //           restrict: "A",
       //           compile() {
       //             return function (scope, element) {
       //               iscope = scope;
@@ -7599,7 +7564,7 @@ describe("$compile", () => {
       //         module("fakeIsoledScopeModule", () => {
       //           directive("anonymModuleScopeDirective", () => ({
       //             scope: true,
-      //             restrict: "CA",
+      //             restrict: "A",
       //             compile() {
       //               return {
       //                 pre(scope, element) {
@@ -8128,169 +8093,6 @@ describe("$compile", () => {
       });
     });
 
-    describe("collector", () => {
-      let module;
-      let collected;
-      beforeEach(() => {
-        log = [];
-        collected = false;
-        module = window.angular.module("test1", ["ng"]);
-        module.directive("testCollect", () => ({
-          restrict: "EA",
-          link() {
-            collected = true;
-          },
-        }));
-        createInjector(["test1"]).invoke((_$compile_, _$rootScope_) => {
-          $compile = _$compile_;
-          $rootScope = _$rootScope_;
-        });
-      });
-
-      forEach(
-        [
-          { commentEnabled: true, cssEnabled: true },
-          { commentEnabled: true, cssEnabled: false },
-          { commentEnabled: false, cssEnabled: true },
-          { commentEnabled: false, cssEnabled: false },
-        ],
-        (config) => {
-          describe(
-            `commentDirectivesEnabled(${config.commentEnabled}) ` +
-              `cssClassDirectivesEnabled(${config.cssEnabled})`,
-            () => {
-              let collected = false;
-              beforeEach(() => {
-                collected = false;
-                module = window.angular.module("test1", ["ng"]);
-                module.directive("testCollect", () => ({
-                  restrict: "EA",
-                  link() {
-                    collected = true;
-                  },
-                }));
-                createInjector([
-                  "test1",
-                  ($compileProvider) => {
-                    $compileProvider.commentDirectivesEnabled(
-                      config.commentEnabled,
-                    );
-                    $compileProvider.cssClassDirectivesEnabled(
-                      config.cssEnabled,
-                    );
-                  },
-                ]).invoke((_$compile_, _$rootScope_) => {
-                  $compile = _$compile_;
-                  $rootScope = _$rootScope_;
-                });
-              });
-
-              it("should not prevent to compile entity directives", () => {
-                element = $compile("<test-collect></test-collect>")($rootScope);
-                expect(collected).toBe(true);
-              });
-
-              it("should not prevent to compile attribute directives", () => {
-                element = $compile("<span test-collect></span>")($rootScope);
-                expect(collected).toBe(true);
-              });
-
-              it("should not prevent to compile interpolated expressions", () => {
-                element = $compile('<span>{{"text "+"interpolated"}}</span>')(
-                  $rootScope,
-                );
-                $rootScope.$apply();
-                expect(element.text()).toBe("text interpolated");
-              });
-
-              it("should interpolate expressions inside class attribute", () => {
-                $rootScope.interpolateMe = "interpolated";
-                const html = '<div class="{{interpolateMe}}"></div>';
-                element = $compile(html)($rootScope);
-                $rootScope.$apply();
-                expect(
-                  element[0].classList.contains("interpolated"),
-                ).toBeTrue();
-              });
-            },
-          );
-        },
-      );
-
-      it("should configure comment directives true by default", () => {
-        createInjector([
-          "ng",
-          ($compileProvider) => {
-            const commentDirectivesEnabled =
-              $compileProvider.commentDirectivesEnabled();
-            expect(commentDirectivesEnabled).toBe(true);
-          },
-        ]);
-      });
-
-      it("should return self when setting commentDirectivesEnabled", () => {
-        createInjector([
-          "ng",
-          ($compileProvider) => {
-            const self = $compileProvider.commentDirectivesEnabled(true);
-            expect(self).toBe($compileProvider);
-          },
-        ]);
-      });
-
-      it("should cache commentDirectivesEnabled value when configure ends", () => {
-        let $compileProvider;
-        createInjector([
-          "ng",
-          (_$compileProvider_) => {
-            $compileProvider = _$compileProvider_;
-            $compileProvider.commentDirectivesEnabled(false);
-          },
-        ]).invoke(($compile, $rootScope) => {
-          $compileProvider.commentDirectivesEnabled(true);
-          const html = "<!-- directive: test-collect -->";
-          element = $compile(`<div>${html}</div>`)($rootScope);
-          expect(collected).toBe(false);
-        });
-      });
-
-      it("should configure css class directives true by default", () => {
-        createInjector([
-          "ng",
-          ($compileProvider) => {
-            const cssClassDirectivesEnabled =
-              $compileProvider.cssClassDirectivesEnabled();
-            expect(cssClassDirectivesEnabled).toBe(true);
-          },
-        ]);
-      });
-
-      it("should return self when setting cssClassDirectivesEnabled", () => {
-        createInjector([
-          "ng",
-          ($compileProvider) => {
-            const self = $compileProvider.cssClassDirectivesEnabled(true);
-            expect(self).toBe($compileProvider);
-          },
-        ]);
-      });
-
-      it("should cache cssClassDirectivesEnabled value when configure ends", () => {
-        let $compileProvider;
-        createInjector([
-          "ng",
-          (_$compileProvider_) => {
-            $compileProvider = _$compileProvider_;
-            $compileProvider.cssClassDirectivesEnabled(false);
-          },
-        ]).invoke(($compile, $rootScope) => {
-          $compileProvider.cssClassDirectivesEnabled(true);
-          element = $compile('<div class="test-collect"></div>')($rootScope);
-          expect(collected).toBe(false);
-        });
-      });
-    });
-
     describe("link phase", () => {
       let module, log;
       beforeEach(() => {
@@ -8298,7 +8100,7 @@ describe("$compile", () => {
         module = window.angular.module("test1", ["ng"]);
         ["a", "b", "c"].forEach((name) => {
           module.directive(name, () => ({
-            restrict: "ECA",
+            restrict: "EA",
             compile() {
               log.push(`t${name.toUpperCase()}`);
               return {
@@ -8415,7 +8217,7 @@ describe("$compile", () => {
           let value;
           module.directive({
             input: valueFn({
-              restrict: "ECA",
+              restrict: "EA",
               link(scope, element, attr) {
                 value = attr.required;
               },
@@ -8435,7 +8237,7 @@ describe("$compile", () => {
           let value;
           module.directive({
             div: valueFn({
-              restrict: "ECA",
+              restrict: "EA",
               link(scope, element, attr) {
                 value = attr.required;
               },
@@ -8571,7 +8373,7 @@ describe("$compile", () => {
               module.directive(
                 tag,
                 valueFn({
-                  restrict: "ECA",
+                  restrict: "EA",
                   link(scope, element, attr) {
                     scope.attr = attr;
                   },
@@ -15126,7 +14928,7 @@ describe("$compile", () => {
       it("should terminate compilation only for element transclusion", () => {
         module
           .directive("log", () => ({
-            restrict: "CAM",
+            restrict: "A",
             priority: 0,
             compile: valueFn((scope, element, attrs) => {
               log.push(attrs.log || "LOG");

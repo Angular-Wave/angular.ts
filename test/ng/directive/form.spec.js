@@ -325,7 +325,7 @@ describe("form", () => {
     it("should trigger update on form submit with nested forms", () => {
       const form = $compile(
         '<form name="test" ng-model-options="{ updateOn: \'submit\' }" >' +
-          '<div class="ng-form" name="child">' +
+          '<div ng-form name="child">' +
           '<input type="text" ng-model="name" />' +
           "</div>" +
           "</form>",
@@ -387,7 +387,7 @@ describe("form", () => {
     it("should trigger rollback on form controls with nested forms", () => {
       const form = $compile(
         '<form name="test" ng-model-options="{ updateOn: \'submit\' }" >' +
-          '<div class="ng-form" name="child">' +
+          '<div ng-form name="child">' +
           '<input type="text" ng-model="name" />' +
           "</div>" +
           '<button ng-click="test.$rollbackViewValue()" />' +
@@ -669,7 +669,7 @@ describe("form", () => {
     it("should deregister a child form when its DOM is removed", function () {
       doc = jqLite(
         '<form name="parent">' +
-          '<div class="ng-form" name="child">' +
+          '<div ng-form name="child">' +
           '<input ng:model="modelA" name="inputA" required>' +
           "</div>" +
           "</form>",
@@ -693,7 +693,7 @@ describe("form", () => {
     it("should deregister a child form whose name is an expression when its DOM is removed", () => {
       doc = jqLite(
         '<form name="parent">' +
-          '<div class="ng-form" name="child.form">' +
+          '<div ng-form name="child.form">' +
           '<input ng:model="modelA" name="inputA" required>' +
           "</div>" +
           "</form>",
@@ -717,7 +717,7 @@ describe("form", () => {
     it("should deregister a input when it is removed from DOM", () => {
       doc = jqLite(
         '<form name="parent">' +
-          '<div class="ng-form" name="child">' +
+          '<div ng-form name="child">' +
           '<input ng-if="inputPresent" ng-model="modelA" name="inputA" required maxlength="10">' +
           "</div>" +
           "</form>",
@@ -783,7 +783,7 @@ describe("form", () => {
     it("should deregister a input that is $pending when it is removed from DOM", () => {
       doc = jqLite(
         '<form name="parent">' +
-          '<div class="ng-form" name="child">' +
+          '<div ng-form name="child">' +
           '<input ng-if="inputPresent" ng-model="modelA" name="inputA">' +
           "</div>" +
           "</form>",
@@ -819,7 +819,7 @@ describe("form", () => {
     it("should leave the parent form invalid when deregister a removed input", () => {
       doc = jqLite(
         '<form name="parent">' +
-          '<div class="ng-form" name="child">' +
+          '<div ng-form name="child">' +
           '<input ng-if="inputPresent" ng-model="modelA" name="inputA" required>' +
           '<input ng-model="modelB" name="inputB" required>' +
           "</div>" +
@@ -1227,7 +1227,7 @@ describe("form", () => {
     it("should trigger setUntouched on form controls with nested forms", () => {
       const form = $compile(
         '<form name="myForm">' +
-          '<div class="ng-form" name="childForm">' +
+          '<div ng-form name="childForm">' +
           '<input name="alias" type="text" ng-model="name" />' +
           "</div>" +
           "</form>",

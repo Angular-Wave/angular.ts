@@ -121,7 +121,7 @@
 -
 - ### Life-cycle hooks
 - Directive controllers can provide the following methods that are called by AngularJS at points in the life-cycle of the
-- directive:
+- directive.The following hooks can be defined on the controller prototype or added to the controller inside its constructor:
 - - `$onInit()` - Called on each controller after all the controllers on an element have been constructed and
 - had their bindings initialized (and before the pre &amp; post linking functions for the directives on
 - this element). This is a good place to put initialization code for your controller.
@@ -136,6 +136,8 @@
 - could be useful if you wish to perform a deep equality check, or to check a Date object, changes to which would not
 - be detected by AngularJS's change detector and thus not trigger `$onChanges`. This hook is invoked with no arguments;
 - if detecting changes, you must store the previous value(s) for comparison to the current values.
+- Changes to the model inside `$doCheck` will trigger new turns of the digest loop, which will cause the changes to be
+- propagated throughout the application.
 - - `$onDestroy()` - Called on a controller when its containing scope is destroyed. Use this hook for releasing
 - external resources, watches and event handlers. Note that components have their `$onDestroy()` hooks called in
 - the same order as the `$scope.$broadcast` events are triggered, which is top down. This means that parent
@@ -145,21 +147,7 @@
 - Note that child elements that contain `templateUrl` directives will not have been compiled and linked since
 - they are waiting for their template to load asynchronously and their own compilation and linking has been
 - suspended until that occurs.
--
-- #### Comparison with life-cycle hooks in the new Angular
-- The new Angular also uses life-cycle hooks for its components. While the AngularJS life-cycle hooks are similar there are
-- some differences that you should be aware of, especially when it comes to moving your code from AngularJS to Angular:
--
-- - AngularJS hooks are prefixed with `$`, such as `$onInit`. Angular hooks are prefixed with `ng`, such as `ngOnInit`.
-- - AngularJS hooks can be defined on the controller prototype or added to the controller inside its constructor.
-- In Angular you can only define hooks on the prototype of the Component class.
-- - Due to the differences in change-detection, you may get many more calls to `$doCheck` in AngularJS than you would to
-- `ngDoCheck` in Angular.
-- - Changes to the model inside `$doCheck` will trigger new turns of the digest loop, which will cause the changes to be
-- propagated throughout the application.
-- Angular does not allow the `ngDoCheck` hook to trigger a change outside of the component. It will either throw an
-- error or do nothing depending upon the state of `enableProdMode()`.
--
+
 - #### Life-cycle hook examples
 -
 - This example shows how you can check for mutations to a Date object even though the identity of the object
@@ -1016,6 +1004,7 @@
 - Result: <span ng-class="{'something': something} {'else': else}" ng-show="!condition otherCondition"></span>
 - ```
 
+  ``
   ```
 
 -
@@ -1190,3 +1179,49 @@
 - `myEvent` must be written as `ng-on-my_event="expression"`.
 -
 - \*/
+
+/\*\*
+
+- @ngdoc type
+- @name $compile.directive.Attributes
+-
+- @description
+- A shared object between directive compile / linking functions which contains normalized DOM
+- element attributes. The values reflect current binding state `{{ }}`. The normalization is
+- needed since all of these are treated as equivalent in AngularJS:
+-
+- ```
+
+  ```
+
+- <span ng:bind="a" ng-bind="a" data-ng-bind="a" x-ng-bind="a">
+- ```
+  */
+  ```
+
+/\*\*
+
+- @ngdoc property
+- @name $compile.directive.Attributes#$attr
+-
+- @description
+- A map of DOM element attribute names to the normalized name. This is
+- needed to do reverse lookup from normalized name back to actual name.
+  \*/
+
+/\*\*
+
+- @ngdoc method
+- @name $compile.directive.Attributes#$set
+- @kind function
+-
+- @description
+- Set DOM element attribute value.
+-
+-
+- @param {string} str1 Normalized element attribute name of the property to modify. The name is
+-          reverse-translated using the {@link ng.$compile.directive.Attributes#$attr $attr}
+-          property to the original name.
+- @param {string} str2 Value to set the attribute to. The value can be an interpolated string.
+- @returns {string}
+  \*/

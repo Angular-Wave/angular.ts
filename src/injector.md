@@ -20,6 +20,7 @@
 - ```js
 
   ```
+
 - // create an injector
 - var $injector = angular.injector(['ng']);
 -
@@ -32,6 +33,7 @@
 - ```
 
   ```
+
 -
 - Sometimes you want to get access to the injector of a currently running AngularJS app
 - from outside AngularJS. Perhaps, you want to inject and compile some markup after the
@@ -48,6 +50,7 @@
 - ```js
 
   ```
+
 - var $div = $('<div ng-controller="MyCtrl">{{content.label}}</div>');
 - $(document.body).append($div);
 -
@@ -87,6 +90,7 @@
 - ```js
 
   ```
+
 - var $injector = angular.injector();
 - expect($injector.get('$injector')).toBe($injector);
 - expect($injector.invoke(function($injector) {
@@ -95,6 +99,7 @@
 - ```
 
   ```
+
 -
 - ## Injection Function Annotation
 -
@@ -104,6 +109,7 @@
 - ```js
 
   ```
+
 - // inferred (only works if code not minified/obfuscated)
 - $injector.invoke(function(serviceA){});
 -
@@ -117,6 +123,7 @@
 - ```
 
   ```
+
 -
 - ### Inference
 -
@@ -150,10 +157,12 @@
 - ```
 
   ```
+
 - var info = $injector.modules['ngAnimate'].info();
 - ```
 
   ```
+
 -
 - \*\*Do not use this property to attempt to modify the modules after the application
 - has been bootstrapped.\*\*
@@ -234,6 +243,7 @@
 - ```js
 
   ```
+
 - // Given
 - function MyController($scope, $route) {
 -     // ...
@@ -244,6 +254,7 @@
 - ```
 
   ```
+
 -
 - You can disallow this method by using strict injection mode.
 -
@@ -257,6 +268,7 @@
 - ```js
 
   ```
+
 - // Given
 - var MyController = function(obfuscatedScope, obfuscatedRoute) {
 -     // ...
@@ -269,6 +281,7 @@
 - ```
 
   ```
+
 -
 - #### The array notation
 -
@@ -279,6 +292,7 @@
 - ```js
 
   ```
+
 - // We wish to write this (not minification / obfuscation safe)
 - injector.invoke(function($compile, $rootScope) {
 -     // ...
@@ -303,6 +317,7 @@
 - ```
 
   ```
+
 -
 - @param {Function|Array.<string|Function>} fn Function for which dependent service names need to
 - be retrieved as described above.
@@ -338,6 +353,7 @@
 - ```javascript
 
   ```
+
 - app.factory('loadModule', function($injector) {
 - return function loadModule(moduleName, bundleUrl) {
 -     return getScript(bundleUrl).then(function() { $injector.loadNewModules([moduleName]); });
@@ -346,6 +362,7 @@
 - ```
 
   ```
+
 -
 - @param {Array<String|Function|Array>=} mods an array of modules to load into the application.
 -     Each item in the array should be the name of a predefined module or a (DI annotated)
@@ -421,7 +438,7 @@
 - but the injected provider must have been defined before the one that requires it.
 -
 - @param {string} name The name of the instance. NOTE: the provider will be available under `name +
-                     'Provider'` key.
+             'Provider'` key.
 - @param {(Object|function())} provider If the provider is:
 -
 - - `Object`: then it should have a `$get` method. The `$get` method will be invoked using
@@ -439,6 +456,7 @@
 - ```js
 
   ```
+
 - // Define the eventTracker provider
 - function EventTrackerProvider() {
 - var trackingUrl = '/track';
@@ -521,6 +539,7 @@
 - ```js
 
   ```
+
 - $provide.factory('ping', ['$http', function($http) {
 -     return function ping() {
 -       return $http.send('/ping');
@@ -529,10 +548,12 @@
 - ```
 
   ```
+
 - You would then inject and use this service like this:
 - ```js
 
   ```
+
 - someModule.controller('Ctrl', ['ping', function(ping) {
 -     ping();
 - }]);
@@ -557,6 +578,7 @@
 - ```
 
   ```
+
 - {
 - $get: function() {
 -     return $injector.instantiate(constructor);
@@ -565,6 +587,7 @@
 - ```
 
   ```
+
 -
 -
 - You should use {@link auto.$provide#service $provide.service(class)} if you define your service
@@ -581,6 +604,7 @@
 - ```js
 
   ```
+
 - var Ping = function($http) {
 -     this.$http = $http;
 - };
@@ -594,10 +618,12 @@
 - ```
 
   ```
+
 - You would then inject and use this service like this:
 - ```js
 
   ```
+
 - someModule.controller('Ctrl', ['ping', function(ping) {
 -     ping.send();
 - }]);
@@ -629,6 +655,7 @@
 - ```js
 
   ```
+
 - $provide.value('ADMIN_USER', 'admin');
 -
 - $provide.value('RoleLookup', { admin: 0, writer: 1, reader: 2 });
@@ -663,6 +690,7 @@
 - ```js
 
   ```
+
 - $provide.constant('SHARD_HEIGHT', 306);
 -
 - $provide.constant('MY_COLOURS', ['red', 'blue', 'grey']);
@@ -702,6 +730,7 @@
 - ```js
 
   ```
+
 - $provide.decorator('$log', ['$delegate', function($delegate) {
 -     $delegate.warn = $delegate.error;
 -     return $delegate;

@@ -5,7 +5,6 @@ import {
 } from "./urlUtils";
 import {
   forEach,
-  isDefined,
   isFunction,
   isRegExp,
   isString,
@@ -86,16 +85,6 @@ export function adjustMatcher(matcher) {
     "imatcher",
     'Matchers may only be "self", string patterns or RegExp objects',
   );
-}
-
-function adjustMatchers(matchers) {
-  const adjustedMatchers = [];
-  if (isDefined(matchers)) {
-    forEach(matchers, (matcher) => {
-      adjustedMatchers.push(adjustMatcher(matcher));
-    });
-  }
-  return adjustedMatchers;
 }
 
 /**
@@ -222,7 +211,7 @@ export function $SceDelegateProvider() {
    */
   this.trustedResourceUrlList = function (value) {
     if (arguments.length) {
-      trustedResourceUrlList = adjustMatchers(value);
+      trustedResourceUrlList = value.map((v) => adjustMatcher(v));
     }
     return trustedResourceUrlList;
   };
@@ -254,7 +243,7 @@ export function $SceDelegateProvider() {
    */
   this.bannedResourceUrlList = function (value) {
     if (arguments.length) {
-      bannedResourceUrlList = adjustMatchers(value);
+      bannedResourceUrlList = value.map((v) => adjustMatcher(v));
     }
     return bannedResourceUrlList;
   };

@@ -49,13 +49,11 @@ let config = { TTL: 10 };
  *
  * @description
  */
-// eslint-disable-next-line no-use-before-define
 $CompileProvider.$inject = ["$provide", "$$sanitizeUriProvider"];
 
 export function $CompileProvider($provide, $$sanitizeUriProvider) {
   const hasDirectives = {};
   const Suffix = "Directive";
-  const COMMENT_DIRECTIVE_REGEXP = /^\s*directive:\s*([\w-]+)\s+(.*)$/;
   const CLASS_DIRECTIVE_REGEXP = /(([\w-]+)(?::([^;]+))?;?)/;
   const ALL_OR_NOTHING_ATTRS = {
     ngSrc: true,
@@ -558,62 +556,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
     return config.TTL;
   };
 
-  let commentDirectivesEnabledConfig = true;
-  /**
-   * @ngdoc method
-   * @name $compileProvider#commentDirectivesEnabled
-   * @description
-   *
-   * It indicates to the compiler
-   * whether or not directives on comments should be compiled.
-   * Defaults to `true`.
-   *
-   * Calling this function with false disables the compilation of directives
-   * on comments for the whole application.
-   * This results in a compilation performance gain,
-   * as the compiler doesn't have to check comments when looking for directives.
-   * This should however only be used if you are sure that no comment directives are used in
-   * the application (including any 3rd party directives).
-   *
-   * @param {boolean} enabled `false` if the compiler may ignore directives on comments
-   * @returns {boolean|object} the current value (or `this` if called as a setter for chaining)
-   */
-  this.commentDirectivesEnabled = function (value) {
-    if (arguments.length) {
-      commentDirectivesEnabledConfig = value;
-      return this;
-    }
-    return commentDirectivesEnabledConfig;
-  };
-
-  let cssClassDirectivesEnabledConfig = true;
-  /**
-   * @ngdoc method
-   * @name $compileProvider#cssClassDirectivesEnabled
-   * @description
-   *
-   * It indicates to the compiler
-   * whether or not directives on element classes should be compiled.
-   * Defaults to `true`.
-   *
-   * Calling this function with false disables the compilation of directives
-   * on element classes for the whole application.
-   * This results in a compilation performance gain,
-   * as the compiler doesn't have to check element classes when looking for directives.
-   * This should however only be used if you are sure that no class directives are used in
-   * the application (including any 3rd party directives).
-   *
-   * @param {boolean} enabled `false` if the compiler may ignore directives on element classes
-   * @returns {boolean|object} the current value (or `this` if called as a setter for chaining)
-   */
-  this.cssClassDirectivesEnabled = function (value) {
-    if (arguments.length) {
-      cssClassDirectivesEnabledConfig = value;
-      return this;
-    }
-    return cssClassDirectivesEnabledConfig;
-  };
-
   /**
    * The security context of DOM Properties.
    * @private
@@ -736,9 +678,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
     ) {
       const SIMPLE_ATTR_NAME = /^\w/;
       const specialAttrHolder = window.document.createElement("div");
-
-      const commentDirectivesEnabled = commentDirectivesEnabledConfig;
-      const cssClassDirectivesEnabled = cssClassDirectivesEnabledConfig;
 
       // The onChanges hooks should all be run together in a single digest
       // When changes occur, the call to trigger their hooks will be added to this queue
@@ -1574,75 +1513,16 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               node.setAttribute("autocomplete", "off");
             }
 
-            // use class as directive
-            if (!cssClassDirectivesEnabled) break;
-            // TODO: migrate to classList
-            className = node.className;
-            if (isObject(className)) {
-              // Maybe SVGAnimatedString
-              className = className.animVal;
-            }
-            if (isString(className) && className !== "") {
-              while ((match = CLASS_DIRECTIVE_REGEXP.exec(className))) {
-                nName = directiveNormalize(match[2]);
-                if (
-                  addDirective(
-                    directives,
-                    nName,
-                    "C",
-                    maxPriority,
-                    ignoreDirective,
-                  )
-                ) {
-                  attrs[nName] = trim(match[3]);
-                }
-                className = className.substr(match.index + match[0].length);
-              }
-            }
             break;
           case Node.TEXT_NODE:
             addTextInterpolateDirective(directives, node.nodeValue);
             break;
-          case Node.COMMENT_NODE:
-            if (!commentDirectivesEnabled) break;
-            collectCommentDirectives(
-              node,
-              directives,
-              attrs,
-              maxPriority,
-              ignoreDirective,
-            );
+          default:
             break;
         }
 
         directives.sort(byPriority);
         return directives;
-      }
-
-      function collectCommentDirectives(
-        node,
-        directives,
-        attrs,
-        maxPriority,
-        ignoreDirective,
-      ) {
-        // function created because of performance, try/catch disables
-        // the optimization of the whole function #14848
-        try {
-          const match = COMMENT_DIRECTIVE_REGEXP.exec(node.nodeValue);
-          if (match) {
-            const nName = directiveNormalize(match[1]);
-            if (
-              addDirective(directives, nName, "M", maxPriority, ignoreDirective)
-            ) {
-              attrs[nName] = trim(match[2]);
-            }
-          }
-        } catch (e) {
-          // turns out that under some circumstances IE9 throws errors when one attempts to read
-          // comment's node value.
-          // Just ignore it and continue. (Can't seem to reproduce in test case.)
-        }
       }
 
       /**
@@ -3548,51 +3428,19 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
   ];
 }
 
-function SimpleChange(previous, current) {
-  this.previousValue = previous;
-  this.currentValue = current;
+class SimpleChange {
+  constructor(previous, current) {
+    this.previousValue = previous;
+    this.currentValue = current;
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  isFirstChange() {
+    return this.previousValue === _UNINITIALIZED_VALUE;
+  }
 }
-SimpleChange.prototype.isFirstChange = function () {
-  return this.previousValue === _UNINITIALIZED_VALUE;
-};
-
-/**
- * @ngdoc type
- * @name $compile.directive.Attributes
- *
- * @description
- * A shared object between directive compile / linking functions which contains normalized DOM
- * element attributes. The values reflect current binding state `{{ }}`. The normalization is
- * needed since all of these are treated as equivalent in AngularJS:
- *
- * ```
- *    <span ng:bind="a" ng-bind="a" data-ng-bind="a" x-ng-bind="a">
- * ```
- */
-
-/**
- * @ngdoc property
- * @name $compile.directive.Attributes#$attr
- *
- * @description
- * A map of DOM element attribute names to the normalized name. This is
- * needed to do reverse lookup from normalized name back to actual name.
- */
-
-/**
- * @ngdoc method
- * @name $compile.directive.Attributes#$set
- * @kind function
- *
- * @description
- * Set DOM element attribute value.
- *
- *
- * @param {string} name Normalized element attribute name of the property to modify. The name is
- *          reverse-translated using the {@link ng.$compile.directive.Attributes#$attr $attr}
- *          property to the original name.
- * @param {string} value Value to set the attribute to. The value can be an interpolated string.
- */
 
 function tokenDifference(str1, str2) {
   let values = "";

@@ -827,7 +827,7 @@ describe("ngMessages", () => {
 
     //       // with the 2nd item gone and the values changed
     //       // we should see both 1 and 3 changed
-    //       expect(element.text().trim()).toBe("CA");
+    //       expect(element.text().trim()).toBe("A");
 
     //       $rootScope.$apply(() => {
     //         // add the value for the 2nd item back

@@ -18,6 +18,7 @@
 - ```js
 
   ```
+
 - // Filter registration
 - function MyModule($provide, $filterProvider) {
 -     // create a service to demonstrate injection (not always needed)
@@ -39,6 +40,7 @@
 - ```
 
   ```
+
 -
 - The filter function is registered with the `$injector` under the filter name suffix with
 - `Filter`.
@@ -46,6 +48,7 @@
 - ```js
 
   ```
+
 - it('should be the same instance', inject(
 -     function($filterProvider) {
 -       $filterProvider.register('reverse', function(){
@@ -58,6 +61,7 @@
 - ```
 
   ```
+
 -
 -
 - For more information about how AngularJS filters work, and how to create your own filters, see
@@ -81,31 +85,33 @@
 - ```html
 
   ```
+
 - {{ expression [| filter_name[:parameter_value] ... ] }}
 - ```
 
   ```
+
 -
 - @param {String} name Name of the filter function to retrieve
 - @return {Function} the filter function
 - @example
-<example name="$filter" module="filterExample">
-<file name="index.html">
-<div ng-controller="MainCtrl">
-<h3>{{ originalText }}</h3>
-<h3>{{ filteredText }}</h3>
-</div>
-</file>
+  <example name="$filter" module="filterExample">
+  <file name="index.html">
+  <div ng-controller="MainCtrl">
+  <h3>{{ originalText }}</h3>
+  <h3>{{ filteredText }}</h3>
+  </div>
+  </file>
 
-   <file name="script.js">
-    angular.module('filterExample', [])
-    .controller('MainCtrl', function($scope, $filter) {
-      $scope.originalText = 'hello';
-      $scope.filteredText = $filter('uppercase')($scope.originalText);
-    });
-   </file>
- </example>
-*/
+     <file name="script.js">
+      angular.module('filterExample', [])
+      .controller('MainCtrl', function($scope, $filter) {
+        $scope.originalText = 'hello';
+        $scope.filteredText = $filter('uppercase')($scope.originalText);
+      });
+     </file>
+   </example>
+  */
 
 /\*\*
 
