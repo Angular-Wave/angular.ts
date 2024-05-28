@@ -616,33 +616,17 @@ export function initMessageModule() {
             const src = attrs.ngMessagesInclude || attrs.src;
             $templateRequest(src).then((html) => {
               if ($scope.$$destroyed) return;
-
               if (isString(html) && !html.trim()) {
                 // Empty template - nothing to compile
-                replaceElementWithMarker(element, src);
               } else {
                 // Non-empty template - compile and link
                 $compile(html)($scope, (contents) => {
                   element.after(contents);
-                  replaceElementWithMarker(element, src);
                 });
               }
             });
           },
         };
-
-        // Helpers
-        function replaceElementWithMarker(element, src) {
-          // A comment marker is placed for debugging purposes
-          const comment = $compile.$$createComment
-            ? $compile.$$createComment("ngMessagesInclude", src)
-            : $document[0].createComment(` ngMessagesInclude: ${src} `);
-          const marker = jqLite(comment);
-          element.after(marker);
-
-          // Don't pollute the DOM anymore by keeping an empty directive element
-          element.remove();
-        }
       },
     ])
 

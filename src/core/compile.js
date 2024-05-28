@@ -998,10 +998,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           }
         : () => {};
 
-      compile.$$createComment = function (directiveName, comment) {
-        return window.document.createComment("");
-      };
-
       return compile;
 
       //= ===============================
@@ -1763,10 +1759,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               terminalPriority = directive.priority;
               $template = $compileNode;
               $compileNode = templateAttrs.$$element = jqLite(
-                compile.$$createComment(
-                  directiveName,
-                  templateAttrs[directiveName],
-                ),
+                document.createComment(""),
               );
               compileNode = $compileNode[0];
               replaceWith(jqCollection, sliceArgs($template), compileNode);
