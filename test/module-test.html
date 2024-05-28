@@ -10,6 +10,10 @@
       <input type="text" ng-model="yourName" placeholder="Enter a name here" />
       <hr />
       <h1>Hello {{yourName}}!</h1>
+
+      <ul ng-repeat="i in yourName.split('')">
+        <li>{{ i }}</li>
+      </ul>
     </div>
   </body>
 </html>

@@ -999,12 +999,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         : () => {};
 
       compile.$$createComment = function (directiveName, comment) {
-        let content = "";
-        if (debugInfoEnabled) {
-          content = ` ${directiveName || ""}: `;
-          if (comment) content += `${comment} `;
-        }
-        return window.document.createComment(content);
+        return window.document.createComment("");
       };
 
       return compile;

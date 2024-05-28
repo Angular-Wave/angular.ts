@@ -133,11 +133,11 @@ describe("binding", () => {
     $rootScope.$apply();
     expect(form[0].outerHTML).toBe(
       "<ul>" +
-        "<!-- ngRepeat: item in model.items -->" +
+        "<!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">A</li>' +
-        "<!-- end ngRepeat: item in model.items -->" +
+        "<!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">B</li>' +
-        "<!-- end ngRepeat: item in model.items -->" +
+        "<!---->" +
         "</ul>",
     );
 
@@ -145,13 +145,13 @@ describe("binding", () => {
     $rootScope.$apply();
     expect(form[0].outerHTML).toBe(
       "<ul>" +
-        "<!-- ngRepeat: item in model.items -->" +
+        "<!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">C</li>' +
-        "<!-- end ngRepeat: item in model.items -->" +
+        "<!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">A</li>' +
-        "<!-- end ngRepeat: item in model.items -->" +
+        "<!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">B</li>' +
-        "<!-- end ngRepeat: item in model.items -->" +
+        "<!---->" +
         "</ul>",
     );
 
@@ -159,11 +159,11 @@ describe("binding", () => {
     $rootScope.$apply();
     expect(form[0].outerHTML).toBe(
       "<ul>" +
-        "<!-- ngRepeat: item in model.items -->" +
+        "<!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">A</li>' +
-        "<!-- end ngRepeat: item in model.items -->" +
+        "<!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">B</li>' +
-        "<!-- end ngRepeat: item in model.items -->" +
+        "<!---->" +
         "</ul>",
     );
 
@@ -182,9 +182,9 @@ describe("binding", () => {
     $rootScope.$apply();
     expect(element[0].outerHTML).toBe(
       "<ul>" +
-        "<!-- ngRepeat: item in model.items -->" +
+        "<!---->" +
         '<li ng-repeat="item in model.items"><span ng-bind="item.a">A</span></li>' +
-        "<!-- end ngRepeat: item in model.items -->" +
+        "<!---->" +
         "</ul>",
     );
   });
@@ -257,19 +257,19 @@ describe("binding", () => {
 
     expect(element[0].outerHTML).toBe(
       `<div>` +
-        `<!-- ngRepeat: m in model -->` +
+        `<!---->` +
         `<div ng-repeat="m in model" name="a">` +
-        `<!-- ngRepeat: i in m.item -->` +
-        `<ul name="a1" ng-repeat="i in m.item"></ul><!-- end ngRepeat: i in m.item -->` +
-        `<ul name="a2" ng-repeat="i in m.item"></ul><!-- end ngRepeat: i in m.item -->` +
-        `</div><!-- end ngRepeat: m in model -->` +
+        `<!---->` +
+        `<ul name="a1" ng-repeat="i in m.item"></ul><!---->` +
+        `<ul name="a2" ng-repeat="i in m.item"></ul><!---->` +
+        `</div><!---->` +
         `<div ng-repeat="m in model" name="b">` +
-        `<!-- ngRepeat: i in m.item -->` +
+        `<!---->` +
         `<ul name="b1" ng-repeat="i in m.item"></ul>` +
-        `<!-- end ngRepeat: i in m.item -->` +
+        `<!---->` +
         `<ul name="b2" ng-repeat="i in m.item"></ul>` +
-        `<!-- end ngRepeat: i in m.item --></div>` +
-        `<!-- end ngRepeat: m in model --></div>`,
+        `<!----></div>` +
+        `<!----></div>`,
     );
   });
 
@@ -475,11 +475,11 @@ describe("binding", () => {
     $rootScope.$apply();
     expect(element[0].outerHTML).toBe(
       "<ul>" +
-        "<!-- ngRepeat: (k,v) in {a:0,b:1} -->" +
+        "<!---->" +
         '<li ng-repeat="(k,v) in {a:0,b:1}" ng-bind="k + v">a0</li>' +
-        "<!-- end ngRepeat: (k,v) in {a:0,b:1} -->" +
+        "<!---->" +
         '<li ng-repeat="(k,v) in {a:0,b:1}" ng-bind="k + v">b1</li>' +
-        "<!-- end ngRepeat: (k,v) in {a:0,b:1} -->" +
+        "<!---->" +
         "</ul>",
     );
   });

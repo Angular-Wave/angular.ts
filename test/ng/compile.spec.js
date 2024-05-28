@@ -3576,7 +3576,7 @@ describe("$compile", () => {
 
       $compile(el);
 
-      expect(el[0].innerHTML).toEqual("<!-- myTranscluder: -->");
+      expect(el[0].innerHTML).toEqual("<!---->");
     });
 
     it("includes directive attribute value in comment", () => {
@@ -3590,7 +3590,7 @@ describe("$compile", () => {
 
       $compile(el);
 
-      expect(el[0].innerHTML).toEqual("<!-- myTranscluder: 42 -->");
+      expect(el[0].innerHTML).toEqual("<!---->");
     });
 
     it("calls directive compile and link with comment", () => {
@@ -17676,28 +17676,6 @@ describe("$compile", () => {
           controllerAs: "vm",
         }),
       );
-    });
-  });
-
-  describe("$$createComment", () => {
-    it("should create empty comments if `debugInfoEnabled` is false", () => {
-      module.config(($compileProvider) => {
-        $compileProvider.debugInfoEnabled(false);
-      });
-      initInjector("test1");
-
-      const comment = $compile.$$createComment("foo", "bar");
-      expect(comment.data).toBe("");
-    });
-
-    it("should create descriptive comments if `debugInfoEnabled` is true", () => {
-      module.config(($compileProvider) => {
-        $compileProvider.debugInfoEnabled(true);
-      });
-
-      initInjector("test1");
-      const comment = $compile.$$createComment("foo", "bar");
-      expect(comment.data).toBe(" foo: bar ");
     });
   });
 });

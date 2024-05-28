@@ -346,8 +346,7 @@ import { getBlockNodes } from "../jqLite";
 export const ngRepeatDirective = [
   "$parse",
   "$animate",
-  "$compile",
-  ($parse, $animate, $compile) => {
+  ($parse, $animate) => {
     const NG_REMOVED = "$$NG_REMOVED";
     const ngRepeatMinErr = minErr("ngRepeat");
 
@@ -395,10 +394,7 @@ export const ngRepeatDirective = [
       $$tlb: true,
       compile: function ngRepeatCompile($element, $attr) {
         const expression = $attr.ngRepeat;
-        const ngRepeatEndComment = $compile.$$createComment(
-          "end ngRepeat",
-          expression,
-        );
+        const ngRepeatEndComment = document.createComment("");
 
         let match = expression.match(
           /^\s*([\s\S]+?)\s+in\s+([\s\S]+?)(?:\s+as\s+([\s\S]+?))?(?:\s+track\s+by\s+([\s\S]+?))?\s*$/,

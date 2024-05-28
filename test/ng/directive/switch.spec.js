@@ -29,9 +29,7 @@ describe("ngSwitch", () => {
         '<div ng-switch-when="true">true:{{name}}</div>' +
         "</div>",
     )($scope);
-    expect(element[0].innerHTML).toEqual(
-      "<!-- ngSwitchWhen: 1 --><!-- ngSwitchWhen: 2 --><!-- ngSwitchWhen: true -->",
-    );
+    expect(element[0].innerHTML).toEqual("<!----><!----><!---->");
     $scope.select = 1;
     $scope.$apply();
     expect(element.text()).toEqual("first:");
@@ -58,12 +56,7 @@ describe("ngSwitch", () => {
         '<li ng-switch-when="true">true:{{name}}</li>' +
         "</ul>",
     )($scope);
-    expect(element[0].innerHTML).toEqual(
-      "<!-- ngSwitchWhen: 1 -->" +
-        "<!-- ngSwitchWhen: 1 -->" +
-        "<!-- ngSwitchWhen: 2 -->" +
-        "<!-- ngSwitchWhen: true -->",
-    );
+    expect(element[0].innerHTML).toEqual("<!----><!----><!----><!---->");
     $scope.select = 1;
     $scope.$apply();
     expect(element.text()).toEqual("first:, first too:");

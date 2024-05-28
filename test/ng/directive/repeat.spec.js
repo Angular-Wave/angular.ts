@@ -1076,43 +1076,6 @@ describe("ngRepeat", () => {
       }, 300);
     });
 
-    it("should add separator comments after each item", () => {
-      const check = function () {
-        const children = element.find("div");
-        expect(children.length).toBe(3);
-
-        // Note: COMMENT_NODE === 8
-        expect(children[0].nextSibling.nodeType).toBe(8);
-        expect(children[0].nextSibling.nodeValue).toBe(
-          " end ngRepeat: val in values ",
-        );
-        expect(children[1].nextSibling.nodeType).toBe(8);
-        expect(children[1].nextSibling.nodeValue).toBe(
-          " end ngRepeat: val in values ",
-        );
-        expect(children[2].nextSibling.nodeType).toBe(8);
-        expect(children[2].nextSibling.nodeValue).toBe(
-          " end ngRepeat: val in values ",
-        );
-      };
-
-      scope.values = [1, 2, 3];
-
-      element = $compile(
-        "<div>" +
-          '<div ng-repeat="val in values">val:{{val}};</div>' +
-          "</div>",
-      )(scope);
-
-      scope.$digest();
-      check();
-
-      scope.values.shift();
-      scope.values.push(4);
-      scope.$digest();
-      check();
-    });
-
     it("should remove whole block even if the number of elements inside it changes", () => {
       scope.values = [1, 2, 3];
 

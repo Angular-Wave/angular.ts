@@ -577,9 +577,7 @@ describe("ngMessages", () => {
       $rootScope.$digest(); // The next digest triggers the error
 
       // Make sure removing the element triggers the deregistration in ngMessages
-      expect(trim(deregisterSpy.calls.mostRecent().args[0].nodeValue)).toBe(
-        "ngMessage: a",
-      );
+      expect(trim(deregisterSpy.calls.mostRecent().args[0].nodeValue)).toBe("");
       expect(messageChildren(element).length).toBe(0);
     });
 
@@ -619,7 +617,7 @@ describe("ngMessages", () => {
 
         // Make sure removing the element triggers the deregistration in ngMessages
         expect(trim(deregisterSpy.calls.mostRecent().args[0].nodeValue)).toBe(
-          "ngMessage: b",
+          "",
         );
         expect(messageChildren(element).length).toBe(1);
         expect(trim(element.text())).toEqual("A");
