@@ -438,7 +438,7 @@
 - but the injected provider must have been defined before the one that requires it.
 -
 - @param {string} name The name of the instance. NOTE: the provider will be available under `name +
-             'Provider'` key.
+           'Provider'` key.
 - @param {(Object|function())} provider If the provider is:
 -
 - - `Object`: then it should have a `$get` method. The `$get` method will be invoked using

@@ -39,9 +39,8 @@ import { CACHE, EXPANDO } from "./cache";
 
 const $compileMinErr = minErr("$compile");
 
-function UNINITIALIZED_VALUE() {}
-const _UNINITIALIZED_VALUE = new UNINITIALIZED_VALUE();
-let config = { TTL: 10 };
+const _UNINITIALIZED_VALUE = new Object();
+let TTL = 10;
 
 /**
  * @ngdoc provider
@@ -54,7 +53,6 @@ $CompileProvider.$inject = ["$provide", "$$sanitizeUriProvider"];
 export function $CompileProvider($provide, $$sanitizeUriProvider) {
   const hasDirectives = {};
   const Suffix = "Directive";
-  const CLASS_DIRECTIVE_REGEXP = /(([\w-]+)(?::([^;]+))?;?)/;
   const ALL_OR_NOTHING_ATTRS = {
     ngSrc: true,
     ngSrcset: true,
@@ -529,34 +527,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
   };
 
   /**
-   * @ngdoc method
-   * @name $compileProvider#onChangesTtl
-   * @description
-   *
-   * Sets the number of times `$onChanges` hooks can trigger new changes before giving up and
-   * assuming that the model is unstable.
-   *
-   * The current default is 10 iterations.
-   *
-   * In complex applications it's possible that dependencies between `$onChanges` hooks and bindings will result
-   * in several iterations of calls to these hooks. However if an application needs more than the default 10
-   * iterations to stabilize then you should investigate what is causing the model to continuously change during
-   * the `$onChanges` hook execution.
-   *
-   * Increasing the TTL could have performance implications, so you should not change it without proper justification.
-   *
-   * @param {number} limit The number of `$onChanges` hook iterations.
-   * @returns {number|object} the current limit (or `this` if called as a setter for chaining)
-   */
-  this.onChangesTtl = function (value) {
-    if (arguments.length) {
-      config.TTL = value;
-      return this;
-    }
-    return config.TTL;
-  };
-
-  /**
    * The security context of DOM Properties.
    * @private
    */
@@ -686,13 +656,13 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
       // This function is called in a $$postDigest to trigger all the onChanges hooks in a single digest
       function flushOnChangesQueue() {
         try {
-          if (!--config.TTL) {
+          if (!--TTL) {
             // We have hit the TTL limit so reset everything
             onChangesQueue = undefined;
             throw $compileMinErr(
               "infchng",
               "{0} $onChanges() iterations reached. Aborting!\n",
-              config.TTL,
+              TTL,
             );
           }
           // We must run this hook in an apply since the $$postDigest runs outside apply
@@ -708,7 +678,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             onChangesQueue = undefined;
           });
         } finally {
-          config.TTL++;
+          TTL++;
         }
       }
 
@@ -1268,8 +1238,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           if (nodeLinkFnFound) {
             // copy nodeList so that if a nodeLinkFn removes or adds an element at this DOM level our
             // offsets don't get screwed up
-            const nodeListLength = nodeList.length;
-            stableNodeList = new Array(nodeListLength);
+            stableNodeList = new Array(nodeList.length);
 
             // create a sparse array by only copying the elements which have a linkFn
             for (i = 0; i < linkFns.length; i += 3) {
@@ -1393,9 +1362,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
       ) {
         const { nodeType } = node;
         const attrsMap = attrs.$attr;
-        let match;
         let nodeName;
-        let className;
 
         switch (nodeType) {
           case Node.ELEMENT_NODE /* Element */:

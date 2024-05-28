@@ -4541,50 +4541,6 @@ describe("$compile", () => {
       expect($rootScope.valueOne).toBe(51);
       expect($rootScope.valueTwo).toBe(51);
     });
-
-    it("allows configuring $onChanges TTL", () => {
-      let compileProvider;
-      window.angular.module("myModule", [
-        function ($compileProvider) {
-          expect($compileProvider.onChangesTtl()).toBe(10);
-          $compileProvider.onChangesTtl(50);
-          compileProvider = $compileProvider;
-          expect($compileProvider.onChangesTtl()).toBe(50);
-          $compileProvider.component("myComponent", {
-            bindings: {
-              input: "<",
-              increment: "=",
-            },
-            controller: function () {
-              this.$onChanges = function () {
-                if (this.increment) {
-                  this.increment = this.increment + 1;
-                }
-              };
-            },
-          });
-        },
-      ]);
-      reloadModules();
-      var watchSpy = jasmine.createSpy();
-      $rootScope.$watch(watchSpy);
-
-      var el = $(
-        "<div>" +
-          '<my-component input="valueOne" increment="valueTwo"></my-component>' +
-          '<my-component input="valueTwo" increment="valueOne"></my-component>' +
-          "</div>",
-      );
-      $compile(el)($rootScope);
-      $rootScope.$apply();
-
-      $rootScope.valueOne = 42;
-      $rootScope.valueTwo = 42;
-      $rootScope.$apply();
-      expect($rootScope.valueOne).toBe(91);
-      expect($rootScope.valueTwo).toBe(91);
-      compileProvider.onChangesTtl(10);
-    });
   });
 
   describe("configuration", () => {
@@ -4650,18 +4606,6 @@ describe("$compile", () => {
           expect($compileProvider.strictComponentBindingsEnabled()).toBe(false); // the default
           $compileProvider.strictComponentBindingsEnabled(true);
           expect($compileProvider.strictComponentBindingsEnabled()).toBe(true);
-        },
-      ]);
-    });
-
-    it("should allow onChangesTtl to be configured", () => {
-      createInjector([
-        "ng",
-        ($compileProvider) => {
-          expect($compileProvider.onChangesTtl()).toBe(10); // the default
-          $compileProvider.onChangesTtl(2);
-          expect($compileProvider.onChangesTtl()).toBe(2);
-          $compileProvider.onChangesTtl(10);
         },
       ]);
     });
