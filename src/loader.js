@@ -644,10 +644,6 @@ export class Angular {
     window.name = `NG_ENABLE_DEBUG_INFO!${window.name}`;
     window.location.reload();
   }
-
-  UNSAFE_restoreLegacyJqLiteXHTMLReplacement() {
-    throw new Error("Legacy function kept for TS purposes.");
-  }
 }
 
 /// //////////////////////////////////////////////

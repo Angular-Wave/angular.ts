@@ -1684,62 +1684,6 @@ describe("jqLite", () => {
     });
   });
 
-  describe("one", () => {
-    it("should only fire the callback once", () => {
-      const element = jqLite(a);
-      const spy = jasmine.createSpy("click");
-
-      element.one("click", spy);
-      browserTrigger(element, "click");
-      expect(spy).toHaveBeenCalled();
-
-      browserTrigger(element, "click");
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it("should deregister when off is called", () => {
-      const element = jqLite(a);
-      const spy = jasmine.createSpy("click");
-
-      element.one("click", spy);
-      element.off("click", spy);
-
-      browserTrigger(element, "click");
-      expect(spy).not.toHaveBeenCalled();
-    });
-
-    it("should return the same event object just as on() does", () => {
-      const element = jqLite(a);
-      let eventA;
-      let eventB;
-      element.on("click", (event) => {
-        eventA = event;
-      });
-      element.one("click", (event) => {
-        eventB = event;
-      });
-
-      browserTrigger(element, "click");
-      expect(eventA).toEqual(eventB);
-    });
-
-    it("should not remove other event handlers of the same type after execution", () => {
-      const element = jqLite(a);
-      const calls = [];
-      element.one("click", (event) => {
-        calls.push("one");
-      });
-      element.on("click", (event) => {
-        calls.push("on");
-      });
-
-      browserTrigger(element, "click");
-      browserTrigger(element, "click");
-
-      expect(calls).toEqual(["one", "on", "on"]);
-    });
-  });
-
   describe("replaceWith", () => {
     it("should replaceWith", () => {
       const root = jqLite("<div>").html("before-<div></div>after");

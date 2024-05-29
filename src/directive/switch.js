@@ -3,8 +3,7 @@ import { getBlockNodes } from "../jqLite";
 
 export const ngSwitchDirective = [
   "$animate",
-  "$compile",
-  ($animate, $compile) => ({
+  ($animate) => ({
     require: "ngSwitch",
 
     // asks for $scope to fool the BC controller module

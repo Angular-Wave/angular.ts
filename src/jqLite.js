@@ -271,11 +271,12 @@ export function JQLite(element) {
   }
 
   if (argIsString) {
-    jqLiteAddNodes(this, jqLiteParseHTML(element));
+    const parsed = jqLiteParseHTML(element);
+    addNodes(this, parsed);
   } else if (isFunction(element)) {
     jqLiteReady(element);
   } else {
-    jqLiteAddNodes(this, element);
+    addNodes(this, element);
   }
 }
 export var jqLite = JQLite;
@@ -430,7 +431,13 @@ function jqLiteData(element, key, value) {
   }
 }
 
-function jqLiteAddNodes(root, elements) {
+/**
+ * Adds nodes or elements to the root array-like object.
+ *
+ * @param {Array} root - The array-like object to which elements will be added.
+ * @param {(Node|Array|NodeList|Object)} elements - The elements to add to the root. This can be a single DOM node, an array-like object (such as an Array or NodeList), or any other object.
+ */
+function addNodes(root, elements) {
   // THIS CODE IS VERY HOT. Don't make changes without benchmarking.
 
   if (elements) {
@@ -875,19 +882,6 @@ forEach(
 
     off: jqLiteOff,
 
-    one(element, type, fn) {
-      element = jqLite(element);
-
-      // add the listener twice so that when it is called
-      // you can remove the original function and still be
-      // able to call element.off(ev, fn) normally
-      element.on(type, function onFn() {
-        element.off(type, fn);
-        element.off(type, onFn);
-      });
-      element.on(type, fn);
-    },
-
     replaceWith(element, replaceNode) {
       let index;
       const parent = element.parentNode;
@@ -1032,7 +1026,7 @@ forEach(
             value = jqLite(value);
           }
         } else {
-          jqLiteAddNodes(value, fn(this[i], arg1, arg2, arg3));
+          addNodes(value, fn(this[i], arg1, arg2, arg3));
         }
       }
       return isDefined(value) ? value : this;

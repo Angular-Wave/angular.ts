@@ -12137,7 +12137,7 @@ describe("$compile", () => {
             if (element.parent().length) {
               expect(expectedController).toBeDefined();
               expect(controller).toBe(expectedController);
-              expect(controller.foo).toBe("bar");
+              expect(controller.foo).toEqual("bar");
               log.push("done");
             }
           },
@@ -13625,7 +13625,6 @@ describe("$compile", () => {
         //   destroyedScope.$destroy();
         //   const clone = template(destroyedScope, () => {});
         //   $rootScope.$digest();
-        //   debugger
         //   // expect(linkFn).not.toHaveBeenCalled();
         //   // clone.remove();
         // });

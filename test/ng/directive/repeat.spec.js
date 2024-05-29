@@ -144,7 +144,6 @@ describe("ngRepeat", () => {
 
     scope.items = collection;
     scope.$digest();
-    debugger;
     expect(element.find("li").length).toEqual(3);
     expect(element.text()).toEqual("x;y;z;");
   });

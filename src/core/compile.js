@@ -37,6 +37,11 @@ import { PREFIX_REGEXP, ALIASED_ATTR } from "../constants";
 import { createEventDirective } from "../directive/events";
 import { CACHE, EXPANDO } from "./cache";
 
+/**
+ * Function that aggregates all linking fns for a compilation root (nodeList)
+ * @typedef {Function} CompositeLinkFn
+ */
+
 const $compileMinErr = minErr("$compile");
 
 const _UNINITIALIZED_VALUE = new Object();
@@ -207,7 +212,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    *    are the factories.
    * @param {Function|Array} directiveFactory An injectable directive factory function. See the
    *    {@link guide/directive directive guide} and the {@link $compile compile API} for more info.
-   * @returns {ng.$compileProvider} Self for chaining.
+   * @returns {ng.ICompileProvider} Self for chaining.
    */
   this.directive = function registerDirective(name, directiveFactory) {
     assertArg(name, "name");
@@ -250,7 +255,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
       }
       hasDirectives[name].push(directiveFactory);
     } else {
-      forEach(name, reverseParams(registerDirective));
+      Object.entries(name).forEach(([k, v]) => registerDirective(k, v));
     }
     return this;
   };
@@ -425,7 +430,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
    *
    * @param {RegExp=} regexp New regexp to trust urls with.
-   * @returns {RegExp|ng.$compileProvider} Current RegExp if called without value or self for
+   * @returns {RegExp|ng.ICompileProvider} Current RegExp if called without value or self for
    *    chaining otherwise.
    */
   this.aHrefSanitizationTrustedUrlList = function (regexp) {
@@ -453,7 +458,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
    *
    * @param {RegExp=} regexp New regexp to trust urls with.
-   * @returns {RegExp|ng.$compileProvider} Current RegExp if called without value or self for
+   * @returns {RegExp|ng.ICompileProvider} Current RegExp if called without value or self for
    *    chaining otherwise.
    */
   this.imgSrcSanitizationTrustedUrlList = function (regexp) {
@@ -737,25 +742,20 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         return result;
       }
 
-      function Attributes(element, attributesToCopy) {
-        if (attributesToCopy) {
-          const keys = Object.keys(attributesToCopy);
-          let i;
-          let l;
-          let key;
-
-          for (i = 0, l = keys.length; i < l; i++) {
-            key = keys[i];
-            this[key] = attributesToCopy[key];
+      class Attributes {
+        constructor(element, attributesToCopy) {
+          if (attributesToCopy) {
+            const keys = Object.keys(attributesToCopy);
+            for (let i = 0, l = keys.length; i < l; i++) {
+              const key = keys[i];
+              this[key] = attributesToCopy[key];
+            }
+          } else {
+            this.$attr = {};
           }
-        } else {
-          this.$attr = {};
+          this.$$element = element;
         }
 
-        this.$$element = element;
-      }
-
-      Attributes.prototype = {
         /**
          * @ngdoc method
          * @name $compile.directive.Attributes#$normalize
@@ -771,7 +771,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
          *
          * @param {string} name Name to normalize
          */
-        $normalize: directiveNormalize,
+        $normalize = directiveNormalize;
 
         /**
          * @ngdoc method
@@ -788,7 +788,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           if (classVal && classVal.length > 0) {
             $animate.addClass(this.$$element, classVal);
           }
-        },
+        }
 
         /**
          * @ngdoc method
@@ -805,7 +805,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           if (classVal && classVal.length > 0) {
             $animate.removeClass(this.$$element, classVal);
           }
-        },
+        }
 
         /**
          * @ngdoc method
@@ -829,7 +829,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           if (toRemove && toRemove.length) {
             $animate.removeClass(this.$$element, toRemove);
           }
-        },
+        }
 
         /**
          * Set a normalized attribute on the element in a way such that all directives
@@ -880,6 +880,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           if (writeAttr !== false) {
             if (value === null || isUndefined(value)) {
               this.$$element[0].removeAttribute(attrName);
+              //
             } else if (SIMPLE_ATTR_NAME.test(attrName)) {
               // jQuery skips special boolean attrs treatment in XML nodes for
               // historical reasons and hence AngularJS cannot freely call
@@ -907,9 +908,9 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               }
             });
           }
-        },
+        }
 
-        /**
+      /**
        * @ngdoc method
        * @name $compile.directive.Attributes#$observe
        * @kind function
@@ -929,28 +930,27 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
        * @returns {function()} Returns a deregistration function for this observer.
        */
         $observe(key, fn) {
-          const attrs = this;
           const $$observers =
-            attrs.$$observers || (attrs.$$observers = createMap());
+            this.$$observers || (this.$$observers = createMap());
           const listeners = $$observers[key] || ($$observers[key] = []);
 
           listeners.push(fn);
           $rootScope.$evalAsync(() => {
             if (
               !listeners.$$inter &&
-              Object.prototype.hasOwnProperty.call(attrs, key) &&
-              !isUndefined(attrs[key])
+              Object.prototype.hasOwnProperty.call(this, key) &&
+              !isUndefined(this[key])
             ) {
               // no one registered attribute interpolation function, so lets call it manually
-              fn(attrs[key]);
+              fn(this[key]);
             }
           });
 
           return function () {
             arrayRemove(listeners, fn);
           };
-        },
-      };
+        }
+      }
 
       function setSpecialAttr(element, attrName, value) {
         // Attributes names that do not start with letters (such as `(click)`) cannot be set using `setAttribute`
@@ -963,15 +963,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         attributes.removeNamedItem(attribute.name);
         attribute.value = value;
         element.attributes.setNamedItem(attribute);
-      }
-
-      function safeAddClass($element, className) {
-        try {
-          $element[0].classList.add(className);
-        } catch (e) {
-          // ignore, since it means that we are trying to set class on
-          // SVG element, where class name is read-only.
-        }
       }
 
       const startSymbol = $interpolate.startSymbol();
@@ -988,7 +979,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
       const MULTI_ELEMENT_DIR_RE = /^(.+)Start$/;
 
       compile.$$addScopeInfo = debugInfoEnabled
-        ? function $$addScopeInfo($element, scope, isolated, noTemplate) {
+        ? ($element, scope, isolated, noTemplate) => {
             const dataName = isolated
               ? noTemplate
                 ? "$isolateScopeNoTemplate"
@@ -1002,6 +993,15 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       //= ===============================
 
+      /**
+       *
+       * @param {string|NodeList} $compileNodes
+       * @param {*} transcludeFn
+       * @param {*} maxPriority
+       * @param {*} ignoreDirective
+       * @param {*} previousCompileContext
+       * @returns
+       */
       function compile(
         $compileNodes,
         transcludeFn,
@@ -1012,8 +1012,13 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         if (!($compileNodes instanceof jqLite)) {
           // jquery always rewraps, whereas we need to preserve the original selector so that we can
           // modify it.
+
           $compileNodes = jqLite($compileNodes);
         }
+
+        /**
+         * @type {CompositeLinkFn}
+         */
         let compositeLinkFn = compileNodes(
           $compileNodes,
           transcludeFn,
@@ -1129,7 +1134,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
        * function, which is the a linking function for the node.
        *
        * @param {NodeList} nodeList an array of nodes or NodeList to compile
-       * @param {function(angular.Scope, cloneAttachFn=)} transcludeFn A linking function, where the
+       * @param {function(ng.IScope, cloneAttachFn=)} transcludeFn A linking function, where the
        *        scope argument is auto-generated to the new child of the transcluded parent scope.
        * @param {Element=} $rootElement If the nodeList is the root of the compilation tree then
        *        the rootElement must be set the jqLite collection of the compile root. This is
@@ -1338,7 +1343,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
        * Looks for directives on the given node and adds them to the directive collection which is
        * sorted.
        *
-       * @param node Node to search.
+       * @param {Element} node Node to search.
        * @param directives An array to which the directives are added to. This array is sorted before
        *        the function returns.
        * @param attrs The shared attrs object which is used to populate the normalized attributes.
@@ -1486,9 +1491,9 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
       /**
        * Given a node with a directive-start it collects all of the siblings until it finds
        * directive-end.
-       * @param node
-       * @param attrStart
-       * @param attrEnd
+       * @param {Element} node
+       * @param {string} attrStart
+       * @param {string} attrEnd
        * @returns {*}
        */
       function groupScan(node, attrStart, attrEnd) {
@@ -1509,7 +1514,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               if (node.hasAttribute(attrEnd)) depth--;
             }
             nodes.push(node);
-            node = node.nextSibling;
+            node = /** @type {Element} */ (node.nextSibling);
           } while (depth > 0);
         } else {
           nodes.push(node);
@@ -2483,8 +2488,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
        *
        *   * `E`: element name
        *   * `A': attribute
-       *   * `C`: class
-       *   * `M`: comment
        * @returns {boolean} true if directive was added.
        */
       function addDirective(
@@ -2737,7 +2740,14 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                 );
 
                 // Copy in CSS classes from original node
-                safeAddClass(jqLite(linkNode), oldClasses);
+                try {
+                  if (oldClasses !== "") {
+                    linkNode.classList.add(oldClasses);
+                  }
+                } catch (e) {
+                  // ignore, since it means that we are trying to set class on
+                  // SVG element, where class name is read-only.
+                }
               }
               if (afterTemplateNodeLinkFn.transcludeOnThisElement) {
                 childBoundTranscludeFn = createBoundTranscludeFn(

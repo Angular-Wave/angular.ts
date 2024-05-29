@@ -57,30 +57,6 @@ interface JQLite {
     attr(attributes: Object): this;
 
     /**
-     * Attach a handler to an event for the elements.
-     *
-     * @param eventType A string containing one or more DOM event types, such as "click" or "submit," or custom event names.
-     * @param handler A function to execute each time the event is triggered.
-     * @see {@link https://api.jquery.com/bind/#bind-eventType-eventData-handler}
-     */
-    bind(eventType: string, handler: (eventObject: JQueryEventObject) => any): this;
-    /**
-     * Attach a handler to an event for the elements.
-     *
-     * @param eventType A string containing one or more DOM event types, such as "click" or "submit," or custom event names.
-     * @param preventBubble Setting the third argument to false will attach a function that prevents the default action from occurring and stops the event from bubbling. The default is true.
-     * @see {@link https://api.jquery.com/bind/#bind-eventType-eventData-preventBubble}
-     */
-    bind(eventType: string, preventBubble: boolean): this;
-    /**
-     * Attach a handler to an event for the elements.
-     *
-     * @param events An object containing one or more DOM event types and functions to execute for them.
-     * @see {@link https://api.jquery.com/bind/#bind-events}
-     */
-    bind(events: any): this;
-
-    /**
      * Get the children of each element in the set of matched elements, optionally filtered by a selector.
      *
      * @see {@link https://api.jquery.com/children/}
@@ -275,60 +251,6 @@ interface JQLite {
      * @see {@link https://api.jquery.com/off/#off-events-selector}
      */
     off(events: { [key: string]: any }, selector?: string): this;
-
-    /**
-     * Attach a handler to an event for the elements. The handler is executed at most once per element per event type.
-     *
-     * @param events A string containing one or more JavaScript event types, such as "click" or "submit," or custom event names.
-     * @param handler A function to execute at the time the event is triggered.
-     * @see {@link https://api.jquery.com/one/#one-events-data-handler}
-     */
-    one(events: string, handler: (eventObject: JQueryEventObject) => any): this;
-    /**
-     * Attach a handler to an event for the elements. The handler is executed at most once per element per event type.
-     *
-     * @param events A string containing one or more JavaScript event types, such as "click" or "submit," or custom event names.
-     * @param data An object containing data that will be passed to the event handler.
-     * @param handler A function to execute at the time the event is triggered.
-     * @see {@link https://api.jquery.com/one/#one-events-data-handler}
-     */
-    one(events: string, data: Object, handler: (eventObject: JQueryEventObject) => any): this;
-    /**
-     * Attach a handler to an event for the elements. The handler is executed at most once per element per event type.
-     *
-     * @param events One or more space-separated event types and optional namespaces, such as "click" or "keydown.myPlugin".
-     * @param selector A selector string to filter the descendants of the selected elements that trigger the event. If the selector is null or omitted, the event is always triggered when it reaches the selected element.
-     * @param handler A function to execute when the event is triggered. The value false is also allowed as a shorthand for a function that simply does return false.
-     * @see {@link https://api.jquery.com/one/#one-events-selector-data-handler}
-     */
-    one(events: string, selector: string, handler: (eventObject: JQueryEventObject) => any): this;
-    /**
-     * Attach a handler to an event for the elements. The handler is executed at most once per element per event type.
-     *
-     * @param events One or more space-separated event types and optional namespaces, such as "click" or "keydown.myPlugin".
-     * @param selector A selector string to filter the descendants of the selected elements that trigger the event. If the selector is null or omitted, the event is always triggered when it reaches the selected element.
-     * @param data Data to be passed to the handler in event.data when an event is triggered.
-     * @param handler A function to execute when the event is triggered. The value false is also allowed as a shorthand for a function that simply does return false.
-     * @see {@link https://api.jquery.com/one/#one-events-selector-data-handler}
-     */
-    one(events: string, selector: string, data: any, handler: (eventObject: JQueryEventObject) => any): this;
-    /**
-     * Attach a handler to an event for the elements. The handler is executed at most once per element per event type.
-     *
-     * @param events An object in which the string keys represent one or more space-separated event types and optional namespaces, and the values represent a handler function to be called for the event(s).
-     * @param selector A selector string to filter the descendants of the selected elements that will call the handler. If the selector is null or omitted, the handler is always called when it reaches the selected element.
-     * @param data Data to be passed to the handler in event.data when an event occurs.
-     * @see {@link https://api.jquery.com/one/#one-events-selector-data}
-     */
-    one(events: { [key: string]: any }, selector?: string, data?: any): this;
-    /**
-     * Attach a handler to an event for the elements. The handler is executed at most once per element per event type.
-     *
-     * @param events An object in which the string keys represent one or more space-separated event types and optional namespaces, and the values represent a handler function to be called for the event(s).
-     * @param data Data to be passed to the handler in event.data when an event occurs.
-     * @see {@link https://api.jquery.com/one/#one-events-selector-data}
-     */
-    one(events: { [key: string]: any }, data?: any): this;
 
     /**
      * Get the parent of each element in the current set of matched elements, optionally filtered by a selector.

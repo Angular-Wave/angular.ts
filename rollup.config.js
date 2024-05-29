@@ -15,7 +15,7 @@ export default [
     plugins: [resolve(), commonjs(), terser()],
   },
 
-  // CommonJS (for Node) and ES module (for bundlers) build.
+  // ES module (for bundlers) build.
   // (We could have three entries in the configuration array
   // instead of two, but it's quicker to generate multiple
   // builds from a single configuration where possible, using
@@ -24,10 +24,7 @@ export default [
   {
     input: 'src/index.js',
     external: ['ms'],
-    output: [
-      { file: pkg.main, format: 'cjs' },
-      { file: pkg.module, format: 'es' },
-    ],
+    output: { file: pkg.module, format: 'es' },
     plugins: [terser()],
   },
 ];

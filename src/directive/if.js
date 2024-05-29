@@ -80,8 +80,7 @@ import { getBlockNodes } from "../jqLite";
  */
 export const ngIfDirective = [
   "$animate",
-  "$compile",
-  ($animate, $compile) => ({
+  ($animate) => ({
     multiElement: true,
     transclude: "element",
     priority: 600,
