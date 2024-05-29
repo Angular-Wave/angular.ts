@@ -281,6 +281,8 @@ export function JQLite(element) {
 }
 export var jqLite = JQLite;
 
+jqLite.CACHE = CACHE;
+
 /**
  * @param {Element} element
  * @param {boolean} [onlyDescendants]
@@ -827,7 +829,7 @@ function specialMouseHandlerWrapper(target, event, handler) {
 forEach(
   {
     removeData: jqLiteRemoveData,
-    on: function jqLiteOn(element, type, fn, unsupported) {
+    on: (element, type, fn, unsupported) => {
       if (isDefined(unsupported))
         throw jqLiteMinErr(
           "onargs",

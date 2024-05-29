@@ -987,7 +987,7 @@ describe("form", () => {
       });
 
       const { parent } = scope;
-      const { child } = doc.find("input").scope();
+      const child = parent.child;
       const input = child.text;
 
       expect(parent).toBeDefined();

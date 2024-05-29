@@ -910,7 +910,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           }
         }
 
-      /**
+        /**
        * @ngdoc method
        * @name $compile.directive.Attributes#$observe
        * @kind function
@@ -1047,9 +1047,11 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           }
 
           options = options || {};
-          let { parentBoundTranscludeFn } = options;
-          const { transcludeControllers } = options;
-          const { futureParentElement } = options;
+          let {
+            transcludeControllers,
+            parentBoundTranscludeFn,
+            futureParentElement,
+          } = options;
 
           // When `parentBoundTranscludeFn` is passed, it is a
           // `controllersBoundTransclude` function (it was previously passed
@@ -1096,9 +1098,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               );
             }
           }
-
-          compile.$$addScopeInfo($linkNode, scope);
-
           if (cloneConnectFn) cloneConnectFn($linkNode, scope);
           if (compositeLinkFn)
             compositeLinkFn(

@@ -24,7 +24,7 @@ export default [
   {
     input: 'src/index.js',
     external: ['ms'],
-    output: { file: pkg.module, format: 'es' },
+    output: { file: pkg.main, format: 'es' },
     plugins: [terser()],
   },
 ];

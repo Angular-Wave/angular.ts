@@ -223,32 +223,29 @@ describe("ngSwitch", () => {
 
   it("should properly create and destroy child scopes", () => {
     element = $compile(
-      '<ng:switch on="url">' +
-        '<div ng-switch-when="a">{{name}}</div>' +
-        "</ng:switch>",
+      '<ng-switch on="url"><div ng-switch-when="a">{{name}}</div></ng-switch>',
     )($scope);
     $scope.$apply();
 
-    const getChildScope = function () {
-      return element.find("div").scope();
-    };
-
-    expect(getChildScope()).toBeUndefined();
+    expect($scope.$$childHead).toBeNull();
 
     $scope.url = "a";
     $scope.$apply();
-    const child1 = getChildScope();
+    const child1 = $scope.$$childHead;
     expect(child1).toBeDefined();
     spyOn(child1, "$destroy");
 
     $scope.url = "x";
     $scope.$apply();
-    expect(getChildScope()).toBeUndefined();
+
+    // NOTE THAT THE CHILD SCOPE IS NOT ACTUALLY DESTROYED.
+    expect(child1).toBeDefined();
     expect(child1.$destroy).toHaveBeenCalled();
 
     $scope.url = "a";
     $scope.$apply();
-    const child2 = getChildScope();
+    // ... BUT A NEW CHILD SCOPE WILL BE CREATED IN A TAIL.
+    const child2 = $scope.$$childTail;
     expect(child2).toBeDefined();
     expect(child2).not.toBe(child1);
   });

@@ -1044,7 +1044,7 @@ class Scope {
    * Application code can register a `$destroy` event handler that will give it a chance to
    * perform any necessary cleanup.
    *
-   * Note that, in AngularJS, there is also a `$destroy` jQuery event, which can be used to
+   * Note that, in AngularJS, there is also a `$destroy` event, which can be used to
    * clean up DOM bindings before an element is removed from the DOM.
    */
   $destroy() {
