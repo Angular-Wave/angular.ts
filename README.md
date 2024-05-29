@@ -2,29 +2,22 @@ AngularTS ![Build status](https://github.com/Angular-Wave/angular.ts/actions/wor
 
 Building upon the monumental effort of the [Angular Team](https://docs.angularjs.org/misc/version-support-status) at Google, 
 this project preserves, modernises, and expands the original [AngularJS](https://github.com/angular/angular.js) 
-framework to what it could or should have been. While building on the core features of the original, AngularTS is not 
+framework. While building on the core features of the original, AngularTS is not 
 a drop-in replacement or an LTS version. It has no relation to [Angular](https://angular.io) and makes no efforts to be compatible with it.
 AngularTS is "AngularJS: The Good Parts". It takes the three core pillars of the original &ndash;  a string-interpolation engine, 
-dependency injection, two-way data-binding &ndash; and adopts them to [Modern Web](https://modern-web.dev/) principles of being as close to Web standards as possible. The result is a buildless, progressive, and battle-tested JS framework, that make web-development great again.
+dependency injection, two-way data-binding &ndash; and adopts them to [Modern Web](https://modern-web.dev/) principles of being as 
+close to Web standards as possible. The result is a buildless, progressive, and battle-tested JS framework that makes web-development great again.
 
-AngularTS lets you write client-side web applications as if you had a smarter browser.  It lets you
-use good old HTML (or HAML, Jade/Pug and friends!) as your template language and lets you extend HTML’s
-syntax to express your application’s components clearly and succinctly.  It automatically
+AngularTS lets you write server-rendered web applications for desktop and mobile, without leaving the comfort of your tech-stack. 
+It lets you use good old HTML as your template language and lets you extend HTML’s
+syntax to express your application’s components clearly and succinctly. It automatically
 synchronizes data from your UI (view) with your JavaScript objects (model) through 2-way data
-binding. To help you structure your application better and make it easy to test, AngularJS teaches
+binding. To help you structure your application better and make it easy to test, AngularTS teaches
 the browser how to do dependency injection and inversion of control.
 
 It also helps with server-side communication, taming async callbacks with promises and deferred objects,
 and it makes client-side navigation and deep linking with hashbang urls or HTML5 pushState a
-piece of cake. Best of all? It makes development fun!
-
---------------------
-
-**AngularJS support has officially ended as of January 2022.
-[See what ending support means](https://docs.angularjs.org/misc/version-support-status)
-and [read the end of life announcement](https://goo.gle/angularjs-end-of-life).**
-
-**Visit [angular.io](https://angular.io) for the actively supported Angular.**
+piece of cake. 
 
 --------------------
 
