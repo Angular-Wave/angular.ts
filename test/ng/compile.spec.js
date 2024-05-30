@@ -1342,7 +1342,7 @@ describe("$compile", () => {
     expect(givenScope.$parent).toBe($rootScope);
   });
 
-  it("adds scope class and data for element with new scope", () => {
+  it("adds new scope", () => {
     var givenScope;
     registerDirectives("myDirective", () => {
       return {
@@ -1355,7 +1355,7 @@ describe("$compile", () => {
     reloadModules();
     var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
-    expect(el.data("$scope")).toBe(givenScope);
+    expect($rootScope.$$childHead).toBe(givenScope);
   });
 
   it("creates an isolate scope when requested", () => {
@@ -1459,7 +1459,7 @@ describe("$compile", () => {
     }).toThrowError();
   });
 
-  it("adds isolate scope class and data for element with isolated scope", () => {
+  it("adds isolated scope", () => {
     var givenScope;
     registerDirectives("myDirective", () => {
       return {
@@ -1472,7 +1472,7 @@ describe("$compile", () => {
     reloadModules();
     var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
-    expect(el.isolateScope()).toBe(givenScope);
+    expect($rootScope.$$childHead).toBe(givenScope);
   });
 
   it("allows observing attribute to the isolate scope", () => {
@@ -6830,7 +6830,6 @@ describe("$compile", () => {
               return {
                 pre(scope, element) {
                   log.push(scope.$id);
-                  expect(element.data("$scope")).toBe(scope);
                 },
               };
             },
@@ -6842,7 +6841,6 @@ describe("$compile", () => {
               return function (scope, element) {
                 iscope = scope;
                 log.push(scope.$id);
-                expect(element.data("$isolateScopeNoTemplate")).toBe(scope);
               };
             },
           }));
@@ -6853,7 +6851,6 @@ describe("$compile", () => {
             compile() {
               return function (scope, element) {
                 log.push(scope.$id);
-                expect(element.data("$scope")).toBe(scope);
               };
             },
           }));
@@ -6864,7 +6861,6 @@ describe("$compile", () => {
             compile() {
               return function (scope, element) {
                 log.push(scope.$id);
-                expect(element.data("$scope")).toBe(scope);
               };
             },
           }));
@@ -6876,7 +6872,6 @@ describe("$compile", () => {
             compile() {
               return function (scope, element) {
                 log.push(scope.$id);
-                expect(element.data("$scope")).toBe(scope);
               };
             },
           }));
@@ -6888,7 +6883,6 @@ describe("$compile", () => {
               return function (scope, element) {
                 iscope = scope;
                 log.push(scope.$id);
-                expect(element.data("$isolateScope")).toBe(scope);
               };
             },
           }));
@@ -6900,7 +6894,6 @@ describe("$compile", () => {
               return function (scope, element) {
                 iscope = scope;
                 log.push(scope.$id);
-                expect(element.data("$isolateScope")).toBe(scope);
               };
             },
           }));
@@ -6993,7 +6986,6 @@ describe("$compile", () => {
         $rootScope.name = "Jozo";
         $rootScope.$apply();
         expect(element.text().match(/Jozo/)).toBeTruthy();
-        expect(element.find("span").scope().$id).toBeDefined();
       });
 
       it("should allow creation of new scopes for replace directives with templates", () => {
@@ -7007,7 +6999,6 @@ describe("$compile", () => {
         $rootScope.name = "Jozo";
         $rootScope.$apply();
         expect(element.text().match(/Jozo/)).toBeTruthy();
-        expect(element.find("a").scope().$id).toBeDefined();
       });
 
       it("should allow creation of new scopes for replace directives with templates in a repeater", () => {
@@ -7020,8 +7011,6 @@ describe("$compile", () => {
         $rootScope.name = "Jozo";
         $rootScope.$apply();
         expect(element.text()).toBe("Jozo|Jozo|Jozo|");
-        expect(element.find("p").scope().$id).toBeDefined();
-        expect(element.find("a").scope().$id).toBeDefined();
       });
 
       it("should allow creation of new isolated scopes for directives with templates", () => {
@@ -7081,24 +7070,24 @@ describe("$compile", () => {
         describe("with new scope directives", () => {
           it("should return the new scope at the directive element", () => {
             element = $compile("<div scope></div>")($rootScope);
-            expect(element.scope().$parent).toBe($rootScope);
+            expect($rootScope.$$childHead.$parent).toBe($rootScope);
           });
 
           it("should return the new scope for children in the original template", () => {
             element = $compile("<div scope><a></a></div>")($rootScope);
-            expect(element.find("a").scope().$parent).toBe($rootScope);
+            expect($rootScope.$$childHead.$parent).toBe($rootScope);
           });
 
           it("should return the new scope for children in the directive template", () => {
             $templateCache.put("tscope.html", "<a></a>");
             element = $compile("<div tscope></div>")($rootScope);
             $rootScope.$digest();
-            expect(element.find("a").scope().$parent).toBe($rootScope);
+            expect($rootScope.$$childHead.$parent).toBe($rootScope);
           });
 
           it("should return the new scope for children in the directive sync template", () => {
             element = $compile("<div stscope></div>")($rootScope);
-            expect(element.find("span").scope().$parent).toBe($rootScope);
+            expect($rootScope.$$childHead.$parent).toBe($rootScope);
           });
         });
 
@@ -7119,16 +7108,14 @@ describe("$compile", () => {
           it("should return the isolate scope for children in directive template", () => {
             $templateCache.put("tiscope.html", "<a></a>");
             element = $compile("<div tiscope></div>")($rootScope);
-            expect(element.isolateScope()).toBeUndefined(); // this is the current behavior, not desired feature
+            expect($rootScope.$$childHead).toBeDefined(); // ??? this is the current behavior, not desired feature
             $rootScope.$digest();
-            expect(element.find("a").scope()).toBe(element.isolateScope());
-            expect(element.isolateScope()).not.toBe($rootScope);
+            expect($rootScope.$$childHead).not.toBe($rootScope);
           });
 
           it("should return the isolate scope for children in directive sync template", () => {
             element = $compile("<div stiscope></div>")($rootScope);
-            expect(element.find("span").scope()).toBe(element.isolateScope());
-            expect(element.isolateScope()).not.toBe($rootScope);
+            expect($rootScope.$$childHead).not.toBe($rootScope);
           });
 
           it('should handle "=" bindings with same method names in Object.prototype correctly when not present', () => {
@@ -7139,8 +7126,7 @@ describe("$compile", () => {
             };
 
             expect(func).not.toThrow();
-            const scope = element.isolateScope();
-            expect(element.find("span").scope()).toBe(scope);
+            const scope = $rootScope.$$childHead;
             expect(scope).not.toBe($rootScope);
 
             // Not shadowed because optional
@@ -7162,8 +7148,7 @@ describe("$compile", () => {
             };
 
             expect(func).not.toThrow();
-            const scope = element.isolateScope();
-            expect(element.find("span").scope()).toBe(scope);
+            const scope = $rootScope.$$childHead;
             expect(scope).not.toBe($rootScope);
             expect(scope.constructor).toBe("constructor");
             expect(scope.hasOwnProperty("constructor")).toBe(true);
@@ -7333,8 +7318,7 @@ describe("$compile", () => {
           };
 
           expect(func).not.toThrow();
-          const scope = element.isolateScope();
-          expect(element.find("span").scope()).toBe(scope);
+          const scope = $rootScope.$$childHead;
           expect(scope).not.toBe($rootScope);
 
           // Does not shadow value because optional
@@ -7354,10 +7338,10 @@ describe("$compile", () => {
           };
 
           expect(func).not.toThrow();
-          expect(element.find("span").scope()).toBe(element.isolateScope());
-          expect(element.isolateScope()).not.toBe($rootScope);
-          expect(element.isolateScope().constructor).toBe("constructor");
-          expect(element.isolateScope().valueOf).toBe("valueOf");
+          const scope = $rootScope.$$childHead;
+          expect(scope).not.toBe($rootScope);
+          expect(scope.constructor).toBe("constructor");
+          expect(scope.valueOf).toBe("valueOf");
         });
 
         it('should handle "&" bindings with same method names in Object.prototype correctly when not present', () => {
@@ -7368,12 +7352,10 @@ describe("$compile", () => {
           };
 
           expect(func).not.toThrow();
-          expect(element.find("span").scope()).toBe(element.isolateScope());
-          expect(element.isolateScope()).not.toBe($rootScope);
-          expect(element.isolateScope().constructor).toBe(
-            $rootScope.constructor,
-          );
-          expect(element.isolateScope().valueOf()).toBeUndefined();
+          const scope = $rootScope.$$childHead;
+          expect(scope).not.toBe($rootScope);
+          expect(scope.constructor).toBe($rootScope.constructor);
+          expect(scope.valueOf()).toBeUndefined();
         });
 
         it('should handle "&" bindings with same method names in Object.prototype correctly when present', () => {
@@ -7390,10 +7372,10 @@ describe("$compile", () => {
           };
 
           expect(func).not.toThrow();
-          expect(element.find("span").scope()).toBe(element.isolateScope());
-          expect(element.isolateScope()).not.toBe($rootScope);
-          expect(element.isolateScope().constructor()).toBe("constructor");
-          expect(element.isolateScope().valueOf()).toBe("valueOf");
+          const scope = $rootScope.$$childHead;
+          expect(scope).not.toBe($rootScope);
+          expect(scope.constructor()).toBe("constructor");
+          expect(scope.valueOf()).toBe("valueOf");
         });
 
         it("should handle @ bindings on BOOLEAN attributes", () => {
@@ -8883,7 +8865,7 @@ describe("$compile", () => {
             }),
           });
 
-          element.isolateScope().$ctrl.prop1 = 2;
+          $rootScope.$$childHead.$ctrl.prop1 = 2;
           $rootScope.$apply("val = 2");
           expect(log.pop()).toEqual({
             prop1: jasmine.objectContaining({
@@ -9647,7 +9629,7 @@ describe("$compile", () => {
         element = $compile('<div my-component reference="num"></div>')(
           $rootScope,
         );
-        const isolateScope = element.isolateScope();
+        const isolateScope = $rootScope.$$childHead;
         expect(isolateScope.reference).toBeNaN();
 
         isolateScope.$apply((scope) => {
@@ -9661,7 +9643,7 @@ describe("$compile", () => {
         element = $compile('<div my-component reference="num"></div>')(
           $rootScope,
         );
-        const isolateScope = element.isolateScope();
+        const isolateScope = $rootScope.$$childHead;
         expect(isolateScope.reference).toBeNaN();
 
         $rootScope.$apply((scope) => {
@@ -9697,7 +9679,7 @@ describe("$compile", () => {
               'to-string="value = !value"></div>',
           )($rootScope);
         }).not.toThrow();
-        const isolateScope = element.isolateScope();
+        const isolateScope = $rootScope.$$childHead;
 
         expect(typeof isolateScope.constructor).toBe("string");
         expect(isArray(isolateScope.watch)).toBe(true);
@@ -9730,13 +9712,13 @@ describe("$compile", () => {
 
       it("should not initialize scope value if optional expression binding is not passed", () => {
         element = $compile("<div my-component></div>")($rootScope);
-        const isolateScope = element.isolateScope();
+        const isolateScope = $rootScope.$$childHead;
         expect(isolateScope.optExpr).toBeUndefined();
       });
 
       it("should not initialize scope value if optional expression binding with Object.prototype name is not passed", () => {
         element = $compile("<div my-component></div>")($rootScope);
-        const isolateScope = element.isolateScope();
+        const isolateScope = $rootScope.$$childHead;
         expect(isolateScope.constructor).toBe($rootScope.constructor);
       });
 
@@ -9744,7 +9726,7 @@ describe("$compile", () => {
         element = $compile(
           "<div my-component opt-expr=\"value = 'did!'\"></div>",
         )($rootScope);
-        const isolateScope = element.isolateScope();
+        const isolateScope = $rootScope.$$childHead;
         expect(typeof isolateScope.optExpr).toBe("function");
         expect(isolateScope.optExpr()).toBe("did!");
         expect($rootScope.value).toBe("did!");
@@ -9754,7 +9736,7 @@ describe("$compile", () => {
         element = $compile(
           "<div my-component constructor=\"value = 'did!'\"></div>",
         )($rootScope);
-        const isolateScope = element.isolateScope();
+        const isolateScope = $rootScope.$$childHead;
         expect(typeof isolateScope.constructor).toBe("function");
         expect(isolateScope.constructor()).toBe("did!");
         expect($rootScope.value).toBe("did!");
@@ -9782,7 +9764,7 @@ describe("$compile", () => {
         });
 
         element = $compile("<div test-dir></div>")($rootScope);
-        const scope = element.isolateScope();
+        const scope = $rootScope.$$childHead;
         expect(scope.ctrl.getProp()).toBe("default");
 
         $rootScope.$digest();
@@ -9811,7 +9793,7 @@ describe("$compile", () => {
         });
 
         element = $compile("<div test-dir></div>")($rootScope);
-        const scope = element.isolateScope();
+        const scope = $rootScope.$$childHead;
         expect(scope.ctrl.getProp()).toBe("default");
         $rootScope.$digest();
         expect(scope.ctrl.getProp()).toBe("default");
@@ -10687,7 +10669,7 @@ describe("$compile", () => {
               $rootScope,
             );
 
-            const isolateScope = element.isolateScope();
+            const isolateScope = $rootScope.$$childHead;
             expect(isolateScope.owRef).toBeNaN();
 
             $rootScope.num = 64;
@@ -11868,7 +11850,7 @@ describe("$compile", () => {
         element = $compile("<div foo-dir>")($rootScope);
         $rootScope.$digest();
         expect(controllerCalled).toBe(true);
-        const childScope = element.children().scope();
+        const childScope = $rootScope.$$childHead;
         expect(childScope).not.toBe($rootScope);
         expect(childScope.theCtrl).toBe(myCtrl);
       });
@@ -11926,7 +11908,7 @@ describe("$compile", () => {
         )($rootScope);
         $rootScope.$digest();
         expect(controllerCalled).toBe(true);
-        const childScope = element.children().scope();
+        const childScope = $rootScope.$$childHead;
         expect(childScope).not.toBe($rootScope);
         expect(childScope.theCtrl).not.toBe(myCtrl);
         expect(childScope.theCtrl.constructor).toBe(MyCtrl);
@@ -11986,7 +11968,7 @@ describe("$compile", () => {
         )($rootScope);
         $rootScope.$digest();
         expect(controllerCalled).toBe(true);
-        const childScope = element.children().scope();
+        const childScope = $rootScope.$$childHead;
         expect(childScope).not.toBe($rootScope);
         expect(childScope.theCtrl).not.toBe(myCtrl);
         expect(childScope.theCtrl.constructor).toBe(MyCtrl);
@@ -12017,7 +11999,7 @@ describe("$compile", () => {
           );
           initInjector("test1");
           element = $compile("<div test-dir></div>")($rootScope);
-          const scope = element.scope();
+          const scope = $rootScope.$$childHead;
           expect(scope.ctrl.getProp()).toBe("default");
 
           $rootScope.$digest();
@@ -12047,7 +12029,7 @@ describe("$compile", () => {
           );
           initInjector("test1");
           element = $compile("<div test-dir></div>")($rootScope);
-          const scope = element.isolateScope();
+          const scope = $rootScope.$$childHead;
           expect(scope.ctrl.getProp()).toBe("default");
 
           $rootScope.$digest();
@@ -12638,7 +12620,7 @@ describe("$compile", () => {
 
         element = element.children().eq(0);
         expect(element[0].checked).toBe(false);
-        element.isolateScope().model = true;
+        $rootScope.$$childHead.model = true;
         $rootScope.$digest();
         expect(element[0].checked).toBe(true);
       });

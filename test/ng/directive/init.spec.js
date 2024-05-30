@@ -62,7 +62,7 @@ describe("ngInit", () => {
       )($rootScope);
       $rootScope.$digest();
       expect($rootScope.test).toBeUndefined();
-      expect(element.children("div").scope().test).toEqual(123);
+      expect($rootScope.$$childHead.test).toEqual(123);
     });
   });
 });

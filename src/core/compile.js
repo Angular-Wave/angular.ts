@@ -977,18 +977,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             };
       const NG_PREFIX_BINDING = /^ng(Attr|Prop|On)([A-Z].*)$/;
       const MULTI_ELEMENT_DIR_RE = /^(.+)Start$/;
-
-      compile.$$addScopeInfo = debugInfoEnabled
-        ? ($element, scope, isolated, noTemplate) => {
-            const dataName = isolated
-              ? noTemplate
-                ? "$isolateScopeNoTemplate"
-                : "$isolateScope"
-              : "$scope";
-            $element.data(dataName, scope);
-          }
-        : () => {};
-
       return compile;
 
       //= ===============================
@@ -1252,7 +1240,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             if (nodeLinkFn) {
               if (nodeLinkFn.scope) {
                 childScope = scope.$new();
-                compile.$$addScopeInfo(jqLite(node), childScope);
               } else {
                 childScope = scope;
               }
@@ -2118,19 +2105,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           }
 
           if (newIsolateScopeDirective) {
-            // Initialize isolate scope bindings for new isolate scope directive.
-            compile.$$addScopeInfo(
-              $element,
-              isolateScope,
-              true,
-              !(
-                templateDirective &&
-                (templateDirective === newIsolateScopeDirective ||
-                  templateDirective ===
-                    newIsolateScopeDirective.$$originalDirective)
-              ),
-            );
-
             isolateScope.$$isolateBindings =
               newIsolateScopeDirective.$$isolateBindings;
             scopeBindingInfo = initializeDirectiveBindings(
