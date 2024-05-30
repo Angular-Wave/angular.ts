@@ -86,7 +86,8 @@ export class StateObject {
       .concat(Object.values(this.params))
       .filter(
         (param) =>
-          !opts.matchingKeys || opts.matchingKeys.hasOwnProperty(param.id),
+          !opts.matchingKeys ||
+          Object.prototype.hasOwnProperty.call(opts.matchingKeys, param.id),
       );
   }
   /**

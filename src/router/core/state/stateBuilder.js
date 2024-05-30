@@ -291,7 +291,7 @@ export class StateBuilder {
       return null;
     }
     for (const key in builders) {
-      if (!builders.hasOwnProperty(key)) continue;
+      if (!Object.prototype.hasOwnProperty.call(builders, key)) continue;
       const chain = builders[key].reduce(
         (parentFn, step) => (_state) => step(_state, parentFn),
         noop,

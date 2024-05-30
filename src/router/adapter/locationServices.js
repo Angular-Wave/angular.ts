@@ -32,7 +32,6 @@ export class Ng1LocationServices {
             .replace(/(~~|~2F)/g, (m) => ({ "~~": "~", "~2F": "/" })[m])
         : x;
   }
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   dispose() {}
   constructor($locationProvider) {
     // .onChange() registry
@@ -48,7 +47,7 @@ export class Ng1LocationServices {
   html5Mode() {
     let html5Mode = this.$locationProvider.html5Mode();
     html5Mode = isObject(html5Mode) ? html5Mode.enabled : html5Mode;
-    return html5Mode && this.$sniffer.history;
+    return html5Mode && typeof history !== "undefined";
   }
   baseHref() {
     return (
@@ -63,11 +62,10 @@ export class Ng1LocationServices {
     if (state) this.$location.state(state);
     return this.$location.url();
   }
-  _runtimeServices($rootScope, $location, $sniffer, $browser, $window) {
+  _runtimeServices($rootScope, $location, $browser) {
     this.$location = $location;
-    this.$sniffer = $sniffer;
     this.$browser = $browser;
-    this.$window = $window;
+    this.$window = window;
     // Bind $locationChangeSuccess to the listeners registered in LocationService.onChange
     $rootScope.$on("$locationChangeSuccess", (evt) =>
       this._urlListeners.forEach((fn) => fn(evt)),

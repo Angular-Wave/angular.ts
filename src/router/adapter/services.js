@@ -21,7 +21,6 @@ import {
 import { StateProvider } from "./stateProvider";
 import { getStateHookBuilder } from "./statebuilders/onEnterExitRetain";
 import { Ng1LocationServices } from "./locationServices";
-import { UrlRouterProvider } from "./urlRouterProvider";
 
 export let router = null;
 $uiRouterProvider.$inject = ["$locationProvider"];
@@ -52,15 +51,9 @@ export function $uiRouterProvider($locationProvider) {
   // backwards compat: also expose router instance as $uiRouterProvider.router
   router["router"] = router;
   router["$get"] = $get;
-  $get.$inject = ["$location", "$browser", "$window", "$sniffer", "$rootScope"];
-  function $get($location, $browser, $window, $sniffer, $rootScope) {
-    ng1LocationService._runtimeServices(
-      $rootScope,
-      $location,
-      $sniffer,
-      $browser,
-      $window,
-    );
+  $get.$inject = ["$location", "$browser", "$rootScope"];
+  function $get($location, $browser, $rootScope) {
+    ng1LocationService._runtimeServices($rootScope, $location, $browser);
     delete router["router"];
     delete router["$get"];
     return router;
@@ -69,7 +62,7 @@ export function $uiRouterProvider($locationProvider) {
 }
 export const getProviderFor = (serviceName) => [
   "$uiRouterProvider",
-  ($urp) => {
+  function UrlServiceProvider($urp) {
     const service = $urp.router[serviceName];
     service["$get"] = () => service;
     return service;
@@ -103,13 +96,14 @@ export function runBlock($injector, $q, $uiRouter) {
         )),
     );
 }
-// $urlRouter service and $urlRouterProvider
-export const getUrlRouterProvider = (uiRouter) =>
-  (uiRouter.urlRouterProvider = new UrlRouterProvider(uiRouter));
+
 // $state service and $stateProvider
 // $urlRouter service and $urlRouterProvider
-export const getStateProvider = () =>
-  extend(router.stateProvider, { $get: () => router.stateService });
+export function getStateProvider() {
+  debugger;
+  return extend(router.stateProvider, { $get: () => router.stateService });
+}
+
 watchDigests.$inject = ["$rootScope"];
 export function watchDigests($rootScope) {
   $rootScope.$watch(function () {

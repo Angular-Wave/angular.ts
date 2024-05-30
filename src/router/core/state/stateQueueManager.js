@@ -19,7 +19,7 @@ export class StateQueueManager {
     const name = state.name;
     if (!isString(name)) throw new Error("State must have a valid name");
     if (
-      this.states.hasOwnProperty(name) ||
+      Object.prototype.hasOwnProperty.call(this.states, name) ||
       inArray(queue.map(prop("name")), name)
     )
       throw new Error(`State '${name}' is already defined`);
