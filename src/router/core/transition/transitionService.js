@@ -26,7 +26,7 @@ import { registerLazyLoadHook } from "../hooks/lazyLoad";
 import { TransitionEventType } from "./transitionEventType";
 import { TransitionHook } from "./transitionHook";
 import { isDefined } from "../common/predicates";
-import { removeFrom, values, createProxyFunctions } from "../common/common";
+import { removeFrom, createProxyFunctions } from "../common/common";
 import { val } from "../common/hof";
 import { registerIgnoredTransitionHook } from "../hooks/ignoredTransition";
 import { registerInvalidTransitionHook } from "../hooks/invalidTransition";
@@ -148,7 +148,7 @@ export class TransitionService {
    * @internal
    */
   dispose(router) {
-    values(this._registeredHooks).forEach((hooksArray) =>
+    Object.values(this._registeredHooks).forEach((hooksArray) =>
       hooksArray.forEach((hook) => {
         hook._deregistered = true;
         removeFrom(hooksArray, hook);

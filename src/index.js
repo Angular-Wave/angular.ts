@@ -5,6 +5,7 @@ import { publishExternalAPI } from "./public";
  * @type {angular.IAngularStatic}
  */
 window.angular = new Angular();
+console.log(window.angular);
 
 publishExternalAPI();
 

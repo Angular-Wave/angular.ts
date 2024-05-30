@@ -1,5 +1,4 @@
 import { isString } from "../common/predicates";
-import { values } from "../common/common";
 import { safeConsole } from "../common/safeConsole";
 export class StateMatcher {
   constructor(_states) {
@@ -22,7 +21,7 @@ export class StateMatcher {
     ) {
       return state;
     } else if (isStr && matchGlob) {
-      const _states = values(this._states);
+      const _states = Object.values(this._states);
       const matches = _states.filter(
         (_state) =>
           _state.__stateObjectCache.nameGlob &&

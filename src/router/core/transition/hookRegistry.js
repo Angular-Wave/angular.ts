@@ -1,11 +1,4 @@
-import {
-  extend,
-  removeFrom,
-  tail,
-  values,
-  identity,
-  mapObj,
-} from "../common/common";
+import { extend, removeFrom, tail, identity, mapObj } from "../common/common";
 import { isString, isFunction } from "../common/predicates";
 import { Glob } from "../common/glob";
 import {
@@ -125,7 +118,7 @@ export class RegisteredHook {
       this._getDefaultMatchCriteria(),
       this.matchCriteria,
     );
-    const paths = values(this.tranSvc._pluginapi._getPathTypes());
+    const paths = Object.values(this.tranSvc._pluginapi._getPathTypes());
     return paths.reduce((mn, pathtype) => {
       // STATE scope criteria matches against every node in the path.
       // TRANSITION scope criteria matches against only the last node in the path
@@ -149,7 +142,7 @@ export class RegisteredHook {
   matches(treeChanges, transition) {
     const matches = this._getMatchingNodes(treeChanges, transition);
     // Check if all the criteria matched the TreeChanges object
-    const allMatched = values(matches).every(identity);
+    const allMatched = Object.values(matches).every(identity);
     return allMatched ? matches : null;
   }
   deregister() {

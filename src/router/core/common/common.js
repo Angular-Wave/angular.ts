@@ -226,17 +226,7 @@ export function map(collection, callback, target) {
   forEach(collection, (item, i) => (target[i] = callback(item, i)));
   return target;
 }
-/**
- * Given an object, return its enumerable property values
- *
- * @example
- * ```
- *
- * let foo = { a: 1, b: 2, c: 3 }
- * let vals = values(foo); // [ 1, 2, 3 ]
- * ```
- */
-export const values = (obj) => Object.keys(obj).map((key) => obj[key]);
+
 /**
  * Reduce function that returns true if all of the values are truthy.
  *

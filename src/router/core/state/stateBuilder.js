@@ -7,7 +7,6 @@ import {
   noop,
   omit,
   tail,
-  values,
   copy,
 } from "../common/common";
 import { isArray, isDefined, isFunction, isString } from "../common/predicates";
@@ -75,7 +74,7 @@ const getParamsBuilder = (paramFactory) =>
       paramFactory.fromConfig(id, null, state.self);
     const urlParams =
       (state.url && state.url.parameters({ inherit: false })) || [];
-    const nonUrlParams = values(
+    const nonUrlParams = Object.values(
       mapObj(
         omit(state.params || {}, urlParams.map(prop("id"))),
         makeConfigParam,

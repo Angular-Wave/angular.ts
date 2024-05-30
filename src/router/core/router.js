@@ -5,7 +5,7 @@ import { ViewService } from "./view/view";
 import { StateRegistry } from "./state/stateRegistry";
 import { StateService } from "./state/stateService";
 import { UIRouterGlobals } from "./globals";
-import { values, removeFrom } from "./common/common";
+import { removeFrom } from "./common/common";
 import { isFunction } from "./common/predicates";
 import { UrlService } from "./url/urlService";
 import { trace } from "./common/trace";
@@ -196,6 +196,8 @@ export class UIRouter {
     return (this._plugins[pluginInstance.name] = pluginInstance);
   }
   getPlugin(pluginName) {
-    return pluginName ? this._plugins[pluginName] : values(this._plugins);
+    return pluginName
+      ? this._plugins[pluginName]
+      : Object.values(this._plugins);
   }
 }

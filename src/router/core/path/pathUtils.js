@@ -5,7 +5,6 @@ import {
   omit,
   tail,
   mergeR,
-  values,
   unnestR,
   inArray,
   arrayTuples,
@@ -55,7 +54,7 @@ export class PathUtils {
     path
       .filter((node) => inArray(states, node.state))
       .forEach((node) => {
-        const viewDecls = values(node.state.views || {});
+        const viewDecls = Object.values(node.state.views || {});
         const subPath = PathUtils.subPath(path, (n) => n === node);
         const viewConfigs = viewDecls.map((view) =>
           $view.createViewConfig(subPath, view),

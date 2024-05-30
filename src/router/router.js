@@ -45,8 +45,8 @@ export function initRouter() {
   mod_main.factory("$view", () => router.viewService);
   mod_main.service("$trace", () => trace);
   mod_main.run(watchDigests);
-  mod_util.run(["$urlMatcherFactory", function ($urlMatcherFactory) {}]);
-  mod_state.run(["$state", function ($state) {}]);
-  mod_rtr.run(["$urlRouter", function ($urlRouter) {}]);
+  mod_util.run(["$urlMatcherFactory", () => {}]);
+  mod_state.run(["$state", () => {}]);
+  mod_rtr.run(["$urlRouter", () => {}]);
   mod_init.run(runBlock);
 }

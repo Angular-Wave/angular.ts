@@ -1,4 +1,4 @@
-import { defaults, values, find, inherit } from "../common/common";
+import { defaults, find, inherit } from "../common/common";
 import { propEq } from "../common/hof";
 import { Glob } from "../common/glob";
 import { isObject, isFunction } from "../common/predicates";
@@ -83,7 +83,7 @@ export class StateObject {
     const inherited =
       (opts.inherit && this.parent && this.parent.parameters()) || [];
     return inherited
-      .concat(values(this.params))
+      .concat(Object.values(this.params))
       .filter(
         (param) =>
           !opts.matchingKeys || opts.matchingKeys.hasOwnProperty(param.id),
@@ -99,7 +99,7 @@ export class StateObject {
   parameter(id, opts = {}) {
     return (
       (this.url && this.url.parameter(id, opts)) ||
-      find(values(this.params), propEq("id", id)) ||
+      find(Object.values(this.params), propEq("id", id)) ||
       (opts.inherit && this.parent && this.parent.parameter(id))
     );
   }
