@@ -1,0 +1,333 @@
+import {
+  applyPairs,
+  extend,
+  identity,
+  inherit,
+  mapObj,
+  noop,
+  omit,
+  tail,
+  values,
+  copy,
+} from "../common/common";
+import { isArray, isDefined, isFunction, isString } from "../common/predicates";
+import { stringify } from "../common/strings";
+import { is, pattern, pipe, prop, val } from "../common/hof";
+import { Resolvable } from "../resolve/resolvable";
+import { services } from "../common/coreservices";
+const parseUrl = (url) => {
+  if (!isString(url)) return false;
+  const root = url.charAt(0) === "^";
+  return { val: root ? url.substring(1) : url, root };
+};
+function nameBuilder(state) {
+  return state.name;
+}
+function selfBuilder(state) {
+  state.self.$$state = () => state;
+  return state.self;
+}
+function dataBuilder(state) {
+  if (state.parent && state.parent.data) {
+    state.data = state.self.data = inherit(state.parent.data, state.data);
+  }
+  return state.data;
+}
+const getUrlBuilder = ($urlMatcherFactoryProvider, root) =>
+  function urlBuilder(stateObject) {
+    let stateDec = stateObject.self;
+    // For future states, i.e., states whose name ends with `.**`,
+    // match anything that starts with the url prefix
+    if (
+      stateDec &&
+      stateDec.url &&
+      stateDec.name &&
+      stateDec.name.match(/\.\*\*$/)
+    ) {
+      const newStateDec = {};
+      copy(stateDec, newStateDec);
+      newStateDec.url += "{remainder:any}"; // match any path (.*)
+      stateDec = newStateDec;
+    }
+    const parent = stateObject.parent;
+    const parsed = parseUrl(stateDec.url);
+    const url = !parsed
+      ? stateDec.url
+      : $urlMatcherFactoryProvider.compile(parsed.val, { state: stateDec });
+    if (!url) return null;
+    if (!$urlMatcherFactoryProvider.isMatcher(url))
+      throw new Error(`Invalid url '${url}' in state '${stateObject}'`);
+    return parsed && parsed.root
+      ? url
+      : ((parent && parent.navigable) || root()).url.append(url);
+  };
+const getNavigableBuilder = (isRoot) =>
+  function navigableBuilder(state) {
+    return !isRoot(state) && state.url
+      ? state
+      : state.parent
+        ? state.parent.navigable
+        : null;
+  };
+const getParamsBuilder = (paramFactory) =>
+  function paramsBuilder(state) {
+    const makeConfigParam = (config, id) =>
+      paramFactory.fromConfig(id, null, state.self);
+    const urlParams =
+      (state.url && state.url.parameters({ inherit: false })) || [];
+    const nonUrlParams = values(
+      mapObj(
+        omit(state.params || {}, urlParams.map(prop("id"))),
+        makeConfigParam,
+      ),
+    );
+    return urlParams
+      .concat(nonUrlParams)
+      .map((p) => [p.id, p])
+      .reduce(applyPairs, {});
+  };
+function pathBuilder(state) {
+  return state.parent ? state.parent.path.concat(state) : /*root*/ [state];
+}
+function includesBuilder(state) {
+  const includes = state.parent ? extend({}, state.parent.includes) : {};
+  includes[state.name] = true;
+  return includes;
+}
+/**
+ * This is a [[StateBuilder.builder]] function for the `resolve:` block on a [[StateDeclaration]].
+ *
+ * When the [[StateBuilder]] builds a [[StateObject]] object from a raw [[StateDeclaration]], this builder
+ * validates the `resolve` property and converts it to a [[Resolvable]] array.
+ *
+ * resolve: input value can be:
+ *
+ * {
+ *   // analyzed but not injected
+ *   myFooResolve: function() { return "myFooData"; },
+ *
+ *   // function.toString() parsed, "DependencyName" dep as string (not min-safe)
+ *   myBarResolve: function(DependencyName) { return DependencyName.fetchSomethingAsPromise() },
+ *
+ *   // Array split; "DependencyName" dep as string
+ *   myBazResolve: [ "DependencyName", function(dep) { return dep.fetchSomethingAsPromise() },
+ *
+ *   // Array split; DependencyType dep as token (compared using ===)
+ *   myQuxResolve: [ DependencyType, function(dep) { return dep.fetchSometingAsPromise() },
+ *
+ *   // val.$inject used as deps
+ *   // where:
+ *   //     corgeResolve.$inject = ["DependencyName"];
+ *   //     function corgeResolve(dep) { dep.fetchSometingAsPromise() }
+ *   // then "DependencyName" dep as string
+ *   myCorgeResolve: corgeResolve,
+ *
+ *  // inject service by name
+ *  // When a string is found, desugar creating a resolve that injects the named service
+ *   myGraultResolve: "SomeService"
+ * }
+ *
+ * or:
+ *
+ * [
+ *   new Resolvable("myFooResolve", function() { return "myFooData" }),
+ *   new Resolvable("myBarResolve", function(dep) { return dep.fetchSomethingAsPromise() }, [ "DependencyName" ]),
+ *   { provide: "myBazResolve", useFactory: function(dep) { dep.fetchSomethingAsPromise() }, deps: [ "DependencyName" ] }
+ * ]
+ */
+export function resolvablesBuilder(state) {
+  /** convert resolve: {} and resolvePolicy: {} objects to an array of tuples */
+  const objects2Tuples = (resolveObj, resolvePolicies) =>
+    Object.keys(resolveObj || {}).map((token) => ({
+      token,
+      val: resolveObj[token],
+      deps: undefined,
+      policy: resolvePolicies[token],
+    }));
+  /** fetch DI annotations from a function or ng1-style array */
+  const annotate = (fn) => {
+    const $injector = services.$injector;
+    // ng1 doesn't have an $injector until runtime.
+    // If the $injector doesn't exist, use "deferred" literal as a
+    // marker indicating they should be annotated when runtime starts
+    return (
+      fn["$inject"] ||
+      ($injector && $injector.annotate(fn, $injector.strictDi)) ||
+      "deferred"
+    );
+  };
+  /** true if the object has both `token` and `resolveFn`, and is probably a [[ResolveLiteral]] */
+  const isResolveLiteral = (obj) => !!(obj.token && obj.resolveFn);
+  /** true if the object looks like a provide literal, or a ng2 Provider */
+  const isLikeNg2Provider = (obj) =>
+    !!(
+      (obj.provide || obj.token) &&
+      (obj.useValue || obj.useFactory || obj.useExisting || obj.useClass)
+    );
+  /** true if the object looks like a tuple from obj2Tuples */
+  const isTupleFromObj = (obj) =>
+    !!(
+      obj &&
+      obj.val &&
+      (isString(obj.val) || isArray(obj.val) || isFunction(obj.val))
+    );
+  /** extracts the token from a Provider or provide literal */
+  const getToken = (p) => p.provide || p.token;
+  // prettier-ignore: Given a literal resolve or provider object, returns a Resolvable
+  const literal2Resolvable = pattern([
+    [
+      prop("resolveFn"),
+      (p) => new Resolvable(getToken(p), p.resolveFn, p.deps, p.policy),
+    ],
+    [
+      prop("useFactory"),
+      (p) =>
+        new Resolvable(
+          getToken(p),
+          p.useFactory,
+          p.deps || p.dependencies,
+          p.policy,
+        ),
+    ],
+    [
+      prop("useClass"),
+      (p) => new Resolvable(getToken(p), () => new p.useClass(), [], p.policy),
+    ],
+    [
+      prop("useValue"),
+      (p) =>
+        new Resolvable(getToken(p), () => p.useValue, [], p.policy, p.useValue),
+    ],
+    [
+      prop("useExisting"),
+      (p) => new Resolvable(getToken(p), identity, [p.useExisting], p.policy),
+    ],
+  ]);
+  // prettier-ignore
+  const tuple2Resolvable = pattern([
+        [pipe(prop('val'), isString), (tuple) => new Resolvable(tuple.token, identity, [tuple.val], tuple.policy)],
+        [pipe(prop('val'), isArray), (tuple) => new Resolvable(tuple.token, tail(tuple.val), tuple.val.slice(0, -1), tuple.policy)],
+        [pipe(prop('val'), isFunction), (tuple) => new Resolvable(tuple.token, tuple.val, annotate(tuple.val), tuple.policy)],
+    ]);
+  // prettier-ignore
+  const item2Resolvable = pattern([
+        [is(Resolvable), (r) => r],
+        [isResolveLiteral, literal2Resolvable],
+        [isLikeNg2Provider, literal2Resolvable],
+        [isTupleFromObj, tuple2Resolvable],
+        [val(true), (obj) => { throw new Error('Invalid resolve value: ' + stringify(obj)); },],
+    ]);
+  // If resolveBlock is already an array, use it as-is.
+  // Otherwise, assume it's an object and convert to an Array of tuples
+  const decl = state.resolve;
+  const items = isArray(decl)
+    ? decl
+    : objects2Tuples(decl, state.resolvePolicy || {});
+  return items.map(item2Resolvable);
+}
+/**
+ * A internal global service
+ *
+ * StateBuilder is a factory for the internal [[StateObject]] objects.
+ *
+ * When you register a state with the [[StateRegistry]], you register a plain old javascript object which
+ * conforms to the [[StateDeclaration]] interface.  This factory takes that object and builds the corresponding
+ * [[StateObject]] object, which has an API and is used internally.
+ *
+ * Custom properties or API may be added to the internal [[StateObject]] object by registering a decorator function
+ * using the [[builder]] method.
+ */
+export class StateBuilder {
+  constructor(matcher, urlMatcherFactory) {
+    this.matcher = matcher;
+    const self = this;
+    const root = () => matcher.find("");
+    const isRoot = (state) => state.name === "";
+    function parentBuilder(state) {
+      if (isRoot(state)) return null;
+      return matcher.find(self.parentName(state)) || root();
+    }
+    this.builders = {
+      name: [nameBuilder],
+      self: [selfBuilder],
+      parent: [parentBuilder],
+      data: [dataBuilder],
+      // Build a URLMatcher if necessary, either via a relative or absolute URL
+      url: [getUrlBuilder(urlMatcherFactory, root)],
+      // Keep track of the closest ancestor state that has a URL (i.e. is navigable)
+      navigable: [getNavigableBuilder(isRoot)],
+      params: [getParamsBuilder(urlMatcherFactory.paramFactory)],
+      // Each framework-specific ui-router implementation should define its own `views` builder
+      // e.g., src/ng1/statebuilders/views.ts
+      views: [],
+      // Keep a full path from the root down to this state as this is needed for state activation.
+      path: [pathBuilder],
+      // Speed up $state.includes() as it's used a lot
+      includes: [includesBuilder],
+      resolvables: [resolvablesBuilder],
+    };
+  }
+  builder(name, fn) {
+    const builders = this.builders;
+    const array = builders[name] || [];
+    // Backwards compat: if only one builder exists, return it, else return whole arary.
+    if (isString(name) && !isDefined(fn))
+      return array.length > 1 ? array : array[0];
+    if (!isString(name) || !isFunction(fn)) return;
+    builders[name] = array;
+    builders[name].push(fn);
+    return () => builders[name].splice(builders[name].indexOf(fn, 1)) && null;
+  }
+  /**
+   * Builds all of the properties on an essentially blank State object, returning a State object which has all its
+   * properties and API built.
+   *
+   * @param state an uninitialized State object
+   * @returns the built State object
+   */
+  build(state) {
+    const { matcher, builders } = this;
+    const parent = this.parentName(state);
+    if (parent && !matcher.find(parent, undefined, false)) {
+      return null;
+    }
+    for (const key in builders) {
+      if (!builders.hasOwnProperty(key)) continue;
+      const chain = builders[key].reduce(
+        (parentFn, step) => (_state) => step(_state, parentFn),
+        noop,
+      );
+      state[key] = chain(state);
+    }
+    return state;
+  }
+  parentName(state) {
+    // name = 'foo.bar.baz.**'
+    const name = state.name || "";
+    // segments = ['foo', 'bar', 'baz', '.**']
+    const segments = name.split(".");
+    // segments = ['foo', 'bar', 'baz']
+    const lastSegment = segments.pop();
+    // segments = ['foo', 'bar'] (ignore .** segment for future states)
+    if (lastSegment === "**") segments.pop();
+    if (segments.length) {
+      if (state.parent) {
+        throw new Error(
+          `States that specify the 'parent:' property should not have a '.' in their name (${name})`,
+        );
+      }
+      // 'foo.bar'
+      return segments.join(".");
+    }
+    if (!state.parent) return "";
+    return isString(state.parent) ? state.parent : state.parent.name;
+  }
+  name(state) {
+    const name = state.name;
+    if (name.indexOf(".") !== -1 || !state.parent) return name;
+    const parentName = isString(state.parent)
+      ? state.parent
+      : state.parent.name;
+    return parentName ? parentName + "." + name : name;
+  }
+}

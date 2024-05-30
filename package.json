@@ -40,5 +40,8 @@
     "sinon": "latest",
     "typescript": "latest",
     "vite": "latest"
+  },
+  "dependencies": {
+  
   }
 }

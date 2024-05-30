@@ -100,6 +100,7 @@ import { setupModuleLoader } from "./loader";
 import { initAnimateModule } from "./animations/module";
 import { initMessageModule } from "./exts/messages";
 import { initAriaModule } from "./exts/aria";
+import { initRouter } from "./router/router";
 
 export function publishExternalAPI() {
   const module = setupModuleLoader(window);
@@ -210,6 +211,7 @@ export function publishExternalAPI() {
   initAnimateModule();
   initMessageModule();
   initAriaModule();
+  initRouter();
 
   return ng;
 }

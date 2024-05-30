@@ -1,0 +1,115 @@
+import { stripLastPathElement } from "../common/strings";
+import { UrlRuleFactory } from "./urlRule";
+function appendBasePath(url, isHtml5, absolute, baseHref) {
+  if (baseHref === "/") return url;
+  if (isHtml5) return stripLastPathElement(baseHref) + url;
+  if (absolute) return baseHref.slice(1) + url;
+  return url;
+}
+/**
+ * Updates URL and responds to URL changes
+ *
+ * ### Deprecation warning:
+ * This class is now considered to be an internal API
+ * Use the [[UrlService]] instead.
+ * For configuring URL rules, use the [[UrlRules]] which can be found as [[UrlService.rules]].
+ */
+export class UrlRouter {
+  /** @internal */
+  constructor(/** @internal */ router) {
+    this.router = router;
+    // Delegate these calls to [[UrlService]]
+    /** @deprecated use [[UrlService.sync]]*/
+    this.sync = (evt) => this.router.urlService.sync(evt);
+    /** @deprecated use [[UrlService.listen]]*/
+    this.listen = (enabled) => this.router.urlService.listen(enabled);
+    /** @deprecated use [[UrlService.deferIntercept]]*/
+    this.deferIntercept = (defer) =>
+      this.router.urlService.deferIntercept(defer);
+    /** @deprecated use [[UrlService.match]]*/
+    this.match = (urlParts) => this.router.urlService.match(urlParts);
+    // Delegate these calls to [[UrlRules]]
+    /** @deprecated use [[UrlRules.initial]]*/
+    this.initial = (handler) => this.router.urlService.rules.initial(handler);
+    /** @deprecated use [[UrlRules.otherwise]]*/
+    this.otherwise = (handler) =>
+      this.router.urlService.rules.otherwise(handler);
+    /** @deprecated use [[UrlRules.removeRule]]*/
+    this.removeRule = (rule) => this.router.urlService.rules.removeRule(rule);
+    /** @deprecated use [[UrlRules.rule]]*/
+    this.rule = (rule) => this.router.urlService.rules.rule(rule);
+    /** @deprecated use [[UrlRules.rules]]*/
+    this.rules = () => this.router.urlService.rules.rules();
+    /** @deprecated use [[UrlRules.sort]]*/
+    this.sort = (compareFn) => this.router.urlService.rules.sort(compareFn);
+    /** @deprecated use [[UrlRules.when]]*/
+    this.when = (matcher, handler, options) =>
+      this.router.urlService.rules.when(matcher, handler, options);
+    this.urlRuleFactory = new UrlRuleFactory(router);
+  }
+  /** Internal API. */
+  update(read) {
+    const $url = this.router.locationService;
+    if (read) {
+      this.location = $url.url();
+      return;
+    }
+    if ($url.url() === this.location) return;
+    $url.url(this.location, true);
+  }
+  /**
+   * Internal API.
+   *
+   * Pushes a new location to the browser history.
+   *
+   * @internal
+   * @param urlMatcher
+   * @param params
+   * @param options
+   */
+  push(urlMatcher, params, options) {
+    const replace = options && !!options.replace;
+    this.router.urlService.url(urlMatcher.format(params || {}), replace);
+  }
+  /**
+   * Builds and returns a URL with interpolated parameters
+   *
+   * #### Example:
+   * ```js
+   * matcher = $umf.compile("/about/:person");
+   * params = { person: "bob" };
+   * $bob = $urlRouter.href(matcher, params);
+   * // $bob == "/about/bob";
+   * ```
+   *
+   * @param urlMatcher The [[UrlMatcher]] object which is used as the template of the URL to generate.
+   * @param params An object of parameter values to fill the matcher's required parameters.
+   * @param options Options object. The options are:
+   *
+   * - **`absolute`** - {boolean=false},  If true will generate an absolute url, e.g. "http://www.example.com/fullurl".
+   *
+   * @returns Returns the fully compiled URL, or `null` if `params` fail validation against `urlMatcher`
+   */
+  href(urlMatcher, params, options) {
+    let url = urlMatcher.format(params);
+    if (url == null) return null;
+    options = options || { absolute: false };
+    const cfg = this.router.urlService.config;
+    const isHtml5 = cfg.html5Mode();
+    if (!isHtml5 && url !== null) {
+      url = "#" + cfg.hashPrefix() + url;
+    }
+    url = appendBasePath(url, isHtml5, options.absolute, cfg.baseHref());
+    if (!options.absolute || !url) {
+      return url;
+    }
+    const slash = !isHtml5 && url ? "/" : "";
+    const cfgPort = cfg.port();
+    const port = cfgPort === 80 || cfgPort === 443 ? "" : ":" + cfgPort;
+    return [cfg.protocol(), "://", cfg.host(), port, slash, url].join("");
+  }
+  /** @deprecated use [[UrlService.interceptDeferred]]*/
+  get interceptDeferred() {
+    return this.router.urlService.interceptDeferred;
+  }
+}
