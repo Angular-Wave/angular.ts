@@ -8,6 +8,14 @@ import {
 } from "./adapter/services";
 import { TemplateFactory } from "./adapter/templateFactory";
 import { trace } from "./core/common/trace";
+import { $ViewScrollProvider } from "./adapter/viewScroll";
+import { $IsStateFilter, $IncludedByStateFilter } from "./adapter/stateFilters";
+import {
+  uiSrefActiveDirective,
+  uiStateDirective,
+  uiSrefDirective,
+} from "./adapter/directives/stateDirectives";
+import { uiView, $ViewDirectiveFill } from "./adapter/directives/viewDirective";
 
 export function initRouter() {
   window.angular.module("ui.router.angular1", []);
@@ -35,16 +43,26 @@ export function initRouter() {
   mod_util.provider("$templateFactory", function () {
     return new TemplateFactory();
   });
-  mod_state.provider("$stateRegistry", getProviderFor("stateRegistry"));
-  mod_state.provider("$uiRouterGlobals", getProviderFor("globals"));
-  mod_state.provider("$transitions", getProviderFor("transitionService"));
-  mod_state.provider("$state", ["$uiRouterProvider", getStateProvider]);
-  mod_state.factory("$stateParams", [
-    "$uiRouter",
-    function StateParamse($uiRouter) {
-      return $uiRouter.globals.params;
-    },
-  ]);
+  mod_state
+    .provider("$stateRegistry", getProviderFor("stateRegistry"))
+    .provider("$uiRouterGlobals", getProviderFor("globals"))
+    .provider("$transitions", getProviderFor("transitionService"))
+    .provider("$state", ["$uiRouterProvider", getStateProvider])
+    .provider("$uiViewScroll", $ViewScrollProvider)
+    .factory("$stateParams", [
+      "$uiRouter",
+      function StateParamse($uiRouter) {
+        return $uiRouter.globals.params;
+      },
+    ])
+    .filter("isState", $IsStateFilter)
+    .filter("includedByState", $IncludedByStateFilter)
+    .directive("uiSref", uiSrefDirective)
+    .directive("uiSrefActive", uiSrefActiveDirective)
+    .directive("uiSrefActiveEq", uiSrefActiveDirective)
+    .directive("uiState", uiStateDirective)
+    .directive("uiView", uiView)
+    .directive("uiView", $ViewDirectiveFill);
   mod_main.factory("$view", function View() {
     return router.viewService;
   });

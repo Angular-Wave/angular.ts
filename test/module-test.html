@@ -1,23 +1,26 @@
 <!doctype html>
 <html>
   <head>
+    <script></script>
+    <script type="module" src="../src/index.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        window.angular.module("test", ["ui.router"]);
+        var myApp = window.angular.module("test", ["ui.router"]);
+        myApp.config(function ($stateProvider) {
+          var helloState = {
+            name: "hello",
+            url: "/",
+            template: "<h3>hello world!</h3>",
+          };
+
+          $stateProvider.state(helloState);
+        });
       });
     </script>
-    <script type="module" src="../src/index.js"></script>
   </head>
   <body ng-app="test">
-    <div ng-init='list = [{ name: "x" }, { name: "y" }, { name: "z" }]'>
-      <label>Name:</label>
-      <input type="text" ng-model="yourName" placeholder="Enter a name here" />
-      <hr />
-      <h1>Hello {{yourName}}!</h1>
-
-      <ul ng-repeat="i in list">
-        <li>{{ i.name }}</li>
-      </ul>
-    </div>
+    {{ 2 + 2 }}
+    <a ui-sref="hello" ui-sref-active="active">Hello</a>
+    <ui-view></ui-view>
   </body>
 </html>

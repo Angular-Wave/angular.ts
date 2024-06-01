@@ -100,7 +100,6 @@ export function runBlock($injector, $q, $uiRouter) {
 // $state service and $stateProvider
 // $urlRouter service and $urlRouterProvider
 export function getStateProvider() {
-  debugger;
   return extend(router.stateProvider, { $get: () => router.stateService });
 }
 

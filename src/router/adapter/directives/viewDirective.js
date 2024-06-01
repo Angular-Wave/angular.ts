@@ -1,21 +1,13 @@
-/** @publicapi @module directives */ /** */
-import {
-  extend,
-  filter,
-  isDefined,
-  isFunction,
-  isString,
-  kebobString,
-  noop,
-  parse,
-  ResolveContext,
-  tail,
-  trace,
-  unnestR,
-} from "../../core/index";
-
+import { extend, filter, tail, unnestR } from "../../core/common/common";
+import { isDefined, isFunction, isString } from "../../core/common/predicates";
+import { kebobString } from "../../core/common/strings";
+import { noop } from "../../core/common/common";
+import { parse } from "../../core/common/hof";
+import { ResolveContext } from "../../core/resolve/resolveContext";
+import { trace } from "../../core/common/trace";
 import { getLocals } from "../services";
 import { Ng1ViewConfig } from "../statebuilders/views";
+import { jqLite } from "../../../jqLite";
 /**
  * `ui-view`: A viewport directive which is filled in by a view from the active state.
  *
@@ -141,9 +133,7 @@ import { Ng1ViewConfig } from "../statebuilders/views";
  * });
  * ```
  */
-export let uiView;
-// eslint-disable-next-line prefer-const
-uiView = [
+export let uiView = [
   "$view",
   "$animate",
   "$uiViewScroll",
@@ -153,18 +143,18 @@ uiView = [
     function getRenderer() {
       return {
         enter: function (element, target, cb) {
-          if (angular.version.minor > 2) {
-            $animate.enter(element, null, target).then(cb);
-          } else {
-            $animate.enter(element, null, target, cb);
-          }
+          // if (angular.version.minor > 2) {
+          //$animate.enter(element, null, target).then(cb);
+          // } else {
+          $animate.enter(element, null, target, cb);
+          // }
         },
         leave: function (element, cb) {
-          if (angular.version.minor > 2) {
-            $animate.leave(element).then(cb);
-          } else {
-            $animate.leave(element, cb);
-          }
+          // if (angular.version.minor > 2) {
+          //$animate.leave(element).then(cb);
+          // } else {
+          $animate.leave(element, cb);
+          // }
         },
       };
     }
@@ -324,8 +314,13 @@ $ViewDirectiveFill.$inject = [
   "$view",
   "$q",
 ];
-/** @hidden */
-function $ViewDirectiveFill($compile, $controller, $transitions, $view, $q) {
+export function $ViewDirectiveFill(
+  $compile,
+  $controller,
+  $transitions,
+  $view,
+  $q,
+) {
   const getControllerAs = parse("viewDecl.controllerAs");
   const getResolveAs = parse("viewDecl.resolveAs");
   return {
@@ -338,14 +333,18 @@ function $ViewDirectiveFill($compile, $controller, $transitions, $view, $q) {
         const data = $element.data("$uiView");
         if (!data) {
           $element.html(initial);
-          $compile($element.contents())(scope);
+          $compile($element[0].contentDocument || $element[0].childNodes)(
+            scope,
+          );
           return;
         }
         const cfg = data.$cfg || { viewDecl: {}, getTemplate: noop };
         const resolveCtx = cfg.path && new ResolveContext(cfg.path);
         $element.html(cfg.getTemplate($element, resolveCtx) || initial);
         trace.traceUIViewFill(data.$uiView, $element.html());
-        const link = $compile($element.contents());
+        const link = $compile(
+          $element[0].contentDocument || $element[0].childNodes,
+        );
         const controller = cfg.controller;
         const controllerAs = getControllerAs(cfg);
         const resolveAs = getResolveAs(cfg);
@@ -386,7 +385,7 @@ function $ViewDirectiveFill($compile, $controller, $transitions, $view, $q) {
               .filter((el) => el && el.tagName && tagRegexp.exec(el.tagName));
             return (
               directiveEl &&
-              angular.element(directiveEl).data(`$${cfg.component}Controller`)
+              jqLite(directiveEl).data(`$${cfg.component}Controller`)
             );
           };
           const deregisterWatch = scope.$watch(
@@ -410,8 +409,6 @@ function $ViewDirectiveFill($compile, $controller, $transitions, $view, $q) {
   };
 }
 /** @hidden */
-const hasComponentImpl =
-  typeof angular.module("ui.router")["component"] === "function";
 /** @hidden incrementing id */
 let _uiCanExitId = 0;
 /** @hidden TODO: move these callbacks to $view and/or `/hooks/components.ts` or something */
@@ -425,10 +422,7 @@ function registerControllerCallbacks(
   // Call $onInit() ASAP
   if (
     isFunction(controllerInstance.$onInit) &&
-    !(
-      (cfg.viewDecl.component || cfg.viewDecl.componentProvider) &&
-      hasComponentImpl
-    )
+    !(cfg.viewDecl.component || cfg.viewDecl.componentProvider)
   ) {
     controllerInstance.$onInit();
   }
@@ -508,7 +502,3 @@ function registerControllerCallbacks(
     );
   }
 }
-window.angular
-  .module("ui.router.state")
-  .directive("uiView", uiView)
-  .directive("uiView", $ViewDirectiveFill);

@@ -11,7 +11,7 @@
  * ```
  */
 $IsStateFilter.$inject = ["$state"];
-function $IsStateFilter($state) {
+export function $IsStateFilter($state) {
   const isFilter = function (state, params, options) {
     return $state.is(state, params, options);
   };
@@ -29,15 +29,10 @@ function $IsStateFilter($state) {
  * ```
  */
 $IncludedByStateFilter.$inject = ["$state"];
-function $IncludedByStateFilter($state) {
+export function $IncludedByStateFilter($state) {
   const includesFilter = function (state, params, options) {
     return $state.includes(state, params, options);
   };
   includesFilter.$stateful = true;
   return includesFilter;
 }
-window.angular
-  .module("ui.router.state")
-  .filter("isState", $IsStateFilter)
-  .filter("includedByState", $IncludedByStateFilter);
-export { $IsStateFilter, $IncludedByStateFilter };

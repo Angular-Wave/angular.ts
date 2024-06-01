@@ -1,4 +1,4 @@
-import { defaults, find, inherit } from "../common/common";
+import { defaults, find } from "../common/common";
 import { propEq } from "../common/hof";
 import { Glob } from "../common/glob";
 import { isObject, isFunction } from "../common/predicates";
@@ -25,7 +25,7 @@ export class StateObject {
     stateDecl = StateObject.isStateClass(stateDecl)
       ? new stateDecl()
       : stateDecl;
-    const state = inherit(inherit(stateDecl, StateObject.prototype));
+    const state = Object.setPrototypeOf(stateDecl, StateObject.prototype);
     stateDecl.$$state = () => state;
     state.self = stateDecl;
     state.__stateObjectCache = {
@@ -33,7 +33,7 @@ export class StateObject {
     };
     return state;
   }
-  /** @deprecated use State.create() */
+  // /** @deprecated use State.create() */
   constructor(config) {
     return StateObject.create(config || {});
   }

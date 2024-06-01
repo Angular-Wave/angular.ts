@@ -103,7 +103,6 @@ describe("ngIf", () => {
 
     it("should destroy the child scope every time the expression evaluates to false", () => {
       $scope.value = true;
-      debugger;
       element.append($compile('<div ng-if="value"></div>')($scope));
       $scope.$apply();
 

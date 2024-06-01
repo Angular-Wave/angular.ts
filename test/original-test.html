@@ -1,21 +1,33 @@
 <!doctype html>
 <html>
   <head>
-    <script src="../legacy/build/angular.js"></script>
-  </head>
-  <body>
-    Test:
-    <my-component></my-component>
-    {{ 2 + 2 }}
-  </body>
+    <script src="../legacy/angular.js"></script>
+    <script src="//unpkg.com/@uirouter/angularjs/release/angular-ui-router.min.js"></script>
+    <script>
+      var myApp = angular.module("helloworld", ["ui.router"]);
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      window.angular.module("myModule", []).component("myComponent", {
-        template: "<div>ME</div>",
+      myApp.config(function ($stateProvider) {
+        var helloState = {
+          name: "hello",
+          url: "/",
+          template: "<h3>hello world!</h3>",
+        };
+
+        var aboutState = {
+          name: "about",
+          url: "/about",
+          template: "<h3>Its the UI-Router hello world app!</h3>",
+        };
+
+        $stateProvider.state(helloState);
+        $stateProvider.state(aboutState);
       });
-      window.angular.bootstrap(document, ["myModule"]);
-      //angularInit(document, window.angular.bootstrap);
-    });
-  </script>
+    </script>
+  </head>
+  <body ng-app="helloworld">
+    <a ui-sref="hello" ui-sref-active="active">Hello</a>
+    {{ 2 + 2}}
+    <ui-view></ui-view>
+    {{ 2 + 2}}
+  </body>
 </html>

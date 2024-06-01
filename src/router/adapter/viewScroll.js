@@ -1,7 +1,4 @@
-/** @publicapi @module ng1 */ /** */
-
-/** @hidden */
-function $ViewScrollProvider() {
+export function $ViewScrollProvider() {
   let useAnchorScroll = false;
   this.useAnchorScroll = function () {
     useAnchorScroll = true;
@@ -25,7 +22,3 @@ function $ViewScrollProvider() {
     },
   ];
 }
-
-window.angular
-  .module("ui.router.state")
-  .provider("$uiViewScroll", $ViewScrollProvider);

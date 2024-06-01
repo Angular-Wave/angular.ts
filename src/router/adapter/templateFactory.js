@@ -154,7 +154,7 @@ export class TemplateFactory {
   makeComponentTemplate(uiView, context, component, bindings) {
     bindings = bindings || {};
     // Bind once prefix
-    const prefix = angular.version.minor >= 3 ? "::" : "";
+    const prefix = "::"; //angular.version.minor >= 3 ? "::" : "";
     // Convert to kebob name. Add x- prefix if the string starts with `x-` or `data-`
     const kebob = (camelCase) => {
       const kebobed = kebobString(camelCase);

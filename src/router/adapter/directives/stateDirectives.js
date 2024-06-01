@@ -4,23 +4,21 @@
  * These are the directives included in UI-Router for Angular 1.
  * These directives are used in templates to create viewports and link/navigate to states.
  *
- * @preferred @publicapi @module directives
- */ /** */
+ */
 import {
   extend,
   forEach,
   tail,
-  isString,
-  isObject,
-  isArray,
-  parse,
   noop,
   unnestR,
   identity,
   uniqR,
   inArray,
   removeFrom,
-} from "../../core/index";
+} from "../../core/common/common";
+import { isString, isObject, isArray } from "../../core/common/predicates";
+
+import { parse } from "../../core/common/hof";
 /** @hidden */
 function parseStateRef(ref) {
   const paramsOnly = ref.match(/^\s*({[^}]*})\s*$/);
@@ -52,12 +50,12 @@ function processedDef($state, $element, def) {
 function getTypeInfo(el) {
   // SVGAElement does not use the href attribute, but rather the 'xlinkHref' attribute.
   const isSvg =
-    Object.prototype.toString.call(el.prop("href")) ===
+    Object.prototype.toString.call(el[0].getAttribute("href")) ===
     "[object SVGAnimatedString]";
   const isForm = el[0].nodeName === "FORM";
   return {
     attr: isForm ? "action" : isSvg ? "xlink:href" : "href",
-    isAnchor: el.prop("tagName").toUpperCase() === "A",
+    isAnchor: el[0].nodeName === "A",
     clickable: !isForm,
   };
 }
@@ -252,8 +250,7 @@ function bindEvents(element, scope, hookFn, uiStateOpts) {
  * - Unlike the parameter values expression, the state name is not `$watch`ed (for performance reasons).
  * If you need to dynamically update the state being linked to, use the fully dynamic [[uiState]] directive.
  */
-let uiSrefDirective;
-uiSrefDirective = [
+export let uiSrefDirective = [
   "$uiRouter",
   "$timeout",
   function $StateRefDirective($uiRouter, $timeout) {
@@ -390,8 +387,7 @@ uiSrefDirective = [
  * - A middle-click, right-click, or ctrl-click is handled (natively) by the browser to open the href in a new window, for example.
  * ```
  */
-let uiStateDirective;
-uiStateDirective = [
+export let uiStateDirective = [
   "$uiRouter",
   "$timeout",
   function $StateRefDynamicDirective($uiRouter, $timeout) {
@@ -540,8 +536,7 @@ uiStateDirective = [
  *
  * - Multiple classes may be specified in a space-separated format: `ui-sref-active='class1 class2 class3'`
  */
-let uiSrefActiveDirective;
-uiSrefActiveDirective = [
+export let uiSrefActiveDirective = [
   "$state",
   "$stateParams",
   "$interpolate",
@@ -675,9 +670,11 @@ uiSrefActiveDirective = [
               (cls) => !inArray(addClasses, cls),
             );
             $scope.$evalAsync(() => {
-              addClasses.forEach((className) => $element.addClass(className));
+              addClasses.forEach((className) =>
+                $element[0].classList.add(className),
+              );
               removeClasses.forEach((className) =>
-                $element.removeClass(className),
+                $element[0].classList.remove(className),
               );
             });
           }
@@ -687,9 +684,3 @@ uiSrefActiveDirective = [
     };
   },
 ];
-window.angular
-  .module("ui.router.state")
-  .directive("uiSref", uiSrefDirective)
-  .directive("uiSrefActive", uiSrefActiveDirective)
-  .directive("uiSrefActiveEq", uiSrefActiveDirective)
-  .directive("uiState", uiStateDirective);
