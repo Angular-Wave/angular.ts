@@ -1,7 +1,6 @@
 import {
   createProxyFunctions,
   defaults,
-  extend,
   inArray,
   noop,
   removeFrom,
@@ -338,7 +337,7 @@ export class StateService {
     const globals = router.globals;
     options = defaults(options, defaultTransOpts);
     const getCurrent = () => globals.transition;
-    options = extend(options, { current: getCurrent });
+    options = Object.assign(options, { current: getCurrent });
     const ref = this.target(to, toParams, options);
     const currentPath = this.getCurrentPath();
     if (!ref.exists()) return this._handleInvalidTargetState(currentPath, ref);
@@ -391,7 +390,7 @@ export class StateService {
       .catch(rejectedTransitionHandler(transition));
     silenceUncaughtInPromise(transitionToPromise); // issue #2676
     // Return a promise for the transition, which also has the transition object on it.
-    return extend(transitionToPromise, { transition });
+    return Object.assign(transitionToPromise, { transition });
   }
   /**
    * Checks if the current state *is* the provided state

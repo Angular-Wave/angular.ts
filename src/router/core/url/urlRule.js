@@ -1,6 +1,6 @@
 import { UrlMatcher } from "./urlMatcher";
 import { isString, isDefined, isFunction } from "../common/predicates";
-import { identity, extend } from "../common/common";
+import { identity } from "../common/common";
 import { is, or, pattern } from "../common/hof";
 import { StateObject } from "../state/stateObject";
 /**
@@ -95,7 +95,7 @@ export class UrlRuleFactory {
       return matched.length / optional.length;
     }
     const details = { urlMatcher, matchPriority, type: "URLMATCHER" };
-    return extend(new BaseUrlRule(matchUrlParamters, _handler), details);
+    return Object.assign(new BaseUrlRule(matchUrlParamters, _handler), details);
   }
   /**
    * A UrlRule which matches a state by its url
@@ -130,7 +130,7 @@ export class UrlRuleFactory {
       }
     };
     const details = { state, type: "STATE" };
-    return extend(this.fromUrlMatcher(state.url, handler), details);
+    return Object.assign(this.fromUrlMatcher(state.url, handler), details);
   }
   /**
    * A UrlRule which matches based on a regular expression
@@ -181,7 +181,10 @@ export class UrlRuleFactory {
     const _handler = isString(handler) ? redirectUrlTo : handler;
     const matchParamsFromRegexp = (url) => regexp.exec(url.path);
     const details = { regexp, type: "REGEXP" };
-    return extend(new BaseUrlRule(matchParamsFromRegexp, _handler), details);
+    return Object.assign(
+      new BaseUrlRule(matchParamsFromRegexp, _handler),
+      details,
+    );
   }
 }
 UrlRuleFactory.isUrlRule = (obj) =>

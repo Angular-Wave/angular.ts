@@ -10,7 +10,7 @@
  */
 import { services } from "../core/common/coreservices";
 import { applyPairs, unnestR } from "../core/common/common";
-import { isString, extend } from "../../core/utils";
+import { isString } from "../../core/utils";
 import { trace } from "../core/common/trace";
 import { UIRouter } from "../core/router";
 import {
@@ -100,7 +100,9 @@ export function runBlock($injector, $q, $uiRouter) {
 // $state service and $stateProvider
 // $urlRouter service and $urlRouterProvider
 export function getStateProvider() {
-  return extend(router.stateProvider, { $get: () => router.stateService });
+  return Object.assign(router.stateProvider, {
+    $get: () => router.stateService,
+  });
 }
 
 watchDigests.$inject = ["$rootScope"];

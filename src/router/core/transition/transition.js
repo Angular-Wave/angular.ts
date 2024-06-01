@@ -4,7 +4,6 @@ import { stringify } from "../common/strings";
 import {
   map,
   find,
-  extend,
   mergeR,
   tail,
   omit,
@@ -118,7 +117,10 @@ export class Transition {
       throw new Error(targetState.error());
     }
     // current() is assumed to come from targetState.options, but provide a naive implementation otherwise.
-    this._options = extend({ current: val(this) }, targetState.options());
+    this._options = Object.assign(
+      { current: val(this) },
+      targetState.options(),
+    );
     this.$id = router.transitionService._transitionCount++;
     const toPath = PathUtils.buildToPath(fromPath, targetState);
     this._treeChanges = PathUtils.treeChanges(
@@ -496,7 +498,7 @@ export class Transition {
     ) {
       redirectOpts.location = "replace";
     }
-    const newOptions = extend(
+    const newOptions = Object.assign(
       {},
       this.options(),
       targetState.options(),

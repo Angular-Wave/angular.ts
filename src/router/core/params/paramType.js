@@ -1,4 +1,4 @@
-import { extend, filter, map } from "../common/common";
+import { filter, map } from "../common/common";
 import { isArray, isDefined } from "../common/predicates";
 /**
  * An internal class which implements [[ParamTypeDefinition]].
@@ -34,7 +34,7 @@ export class ParamType {
     this.pattern = /.*/;
     /** @inheritdoc */
     this.inherit = true;
-    extend(this, def);
+    Object.assign(this, def);
   }
   // consider these four methods to be "abstract methods" that should be overridden
   /** @inheritdoc */
@@ -127,7 +127,7 @@ function ArrayType(type, mode) {
     const wrapperFn = name === "equals" ? arrayEqualsHandler : arrayHandler;
     this[name] = wrapperFn(paramTypeFn);
   });
-  extend(this, {
+  Object.assign(this, {
     dynamic: type.dynamic,
     name: type.name,
     pattern: type.pattern,

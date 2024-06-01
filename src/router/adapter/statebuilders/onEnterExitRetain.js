@@ -1,7 +1,6 @@
 /** @publicapi @module ng1 */ /** */
 import { getLocals } from "../services";
 import { services } from "../../core/common/coreservices";
-import { extend } from "../../../core/utils";
 import { ResolveContext } from "../../core/resolve/resolveContext";
 
 /**
@@ -20,7 +19,7 @@ export const getStateHookBuilder = (hookName) =>
     function decoratedNg1Hook(trans, state) {
       const resolveContext = new ResolveContext(trans.treeChanges(pathname));
       const subContext = resolveContext.subContext(state.$$state());
-      const locals = extend(getLocals(subContext), {
+      const locals = Object.assign(getLocals(subContext), {
         $state$: state,
         $transition$: trans,
       });

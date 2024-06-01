@@ -1,6 +1,5 @@
 import {
   applyPairs,
-  extend,
   identity,
   inherit,
   mapObj,
@@ -89,7 +88,7 @@ function pathBuilder(state) {
   return state.parent ? state.parent.path.concat(state) : /*root*/ [state];
 }
 function includesBuilder(state) {
-  const includes = state.parent ? extend({}, state.parent.includes) : {};
+  const includes = state.parent ? Object.assign({}, state.parent.includes) : {};
   includes[state.name] = true;
   return includes;
 }

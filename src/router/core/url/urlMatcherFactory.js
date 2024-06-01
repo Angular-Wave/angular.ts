@@ -1,10 +1,4 @@
-import {
-  extend,
-  forEach,
-  isDefined,
-  isFunction,
-  isObject,
-} from "../../../core/utils";
+import { forEach, isDefined, isFunction, isObject } from "../../../core/utils";
 import { UrlMatcher } from "./urlMatcher";
 import { DefType, Param } from "../params/param";
 
@@ -93,7 +87,7 @@ export class UrlMatcherFactory {
       pattern,
       urlConfig.paramTypes,
       this.paramFactory,
-      extend(globalConfig, config),
+      Object.assign(globalConfig, config),
     );
   }
   /**

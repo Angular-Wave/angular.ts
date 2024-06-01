@@ -1,5 +1,4 @@
 import {
-  extend,
   find,
   pick,
   omit,
@@ -76,7 +75,7 @@ export class PathUtils {
   static inheritParams(fromPath, toPath, toKeys = []) {
     function nodeParamVals(path, state) {
       const node = find(path, propEq("state", state));
-      return extend({}, node && node.paramValues);
+      return Object.assign({}, node && node.paramValues);
     }
     const noInherit = fromPath
       .map((node) => node.paramSchema)
@@ -89,7 +88,7 @@ export class PathUtils {
      */
     function makeInheritedParamsNode(toNode) {
       // All param values for the node (may include default key/vals, when key was not found in toParams)
-      let toParamVals = extend({}, toNode && toNode.paramValues);
+      let toParamVals = Object.assign({}, toNode && toNode.paramValues);
       // limited to only those keys found in toParams
       const incomingParamVals = pick(toParamVals, toKeys);
       toParamVals = omit(toParamVals, toKeys);
@@ -98,7 +97,7 @@ export class PathUtils {
         noInherit,
       );
       // extend toParamVals with any fromParamVals, then override any of those those with incomingParamVals
-      const ownParamVals = extend(
+      const ownParamVals = Object.assign(
         toParamVals,
         fromParamVals,
         incomingParamVals,
@@ -196,4 +195,4 @@ PathUtils.nonDynamicParams = (node) =>
   node.state.parameters({ inherit: false }).filter((param) => !param.dynamic);
 /** Gets the raw parameter values from a path */
 PathUtils.paramValues = (path) =>
-  path.reduce((acc, node) => extend(acc, node.paramValues), {});
+  path.reduce((acc, node) => Object.assign(acc, node.paramValues), {});

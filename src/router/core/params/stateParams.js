@@ -1,7 +1,7 @@
-import { extend, ancestors } from "../common/common";
+import { ancestors } from "../common/common";
 export class StateParams {
   constructor(params = {}) {
-    extend(this, params);
+    Object.assign(this, params);
   }
   /**
    * Merges a set of parameters with all parameters inherited between the common parents of the
@@ -30,6 +30,6 @@ export class StateParams {
         inherited[parentParamsKeys[j]] = this[parentParamsKeys[j]];
       }
     }
-    return extend({}, inherited, newParams);
+    return Object.assign({}, inherited, newParams);
   }
 }

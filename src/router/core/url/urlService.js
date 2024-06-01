@@ -1,4 +1,4 @@
-import { extend, isString } from "../../../core/utils";
+import { isString } from "../../../core/utils";
 import { is, pattern } from "../common/hof";
 import { UrlRules } from "./urlRules";
 import { UrlConfig } from "./urlConfig";
@@ -243,7 +243,7 @@ export class UrlService {
    * Return the result as a [[MatchResult]].
    */
   match(url) {
-    url = extend({ path: "", search: {}, hash: "" }, url);
+    url = Object.assign({ path: "", search: {}, hash: "" }, url);
     const rules = this.rules.rules();
     // Checks a single rule. Returns { rule: rule, match: match, weight: weight } if it matched, or undefined
     const checkRule = (rule) => {

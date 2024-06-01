@@ -6,7 +6,6 @@
  *
  */
 import {
-  extend,
   forEach,
   tail,
   noop,
@@ -39,7 +38,7 @@ function stateContext(el) {
 /** @hidden */
 function processedDef($state, $element, def) {
   const uiState = def.uiState || $state.current.name;
-  const uiStateOpts = extend(
+  const uiStateOpts = Object.assign(
     defaultOpts($element, $state),
     def.uiStateOpts || {},
   );
@@ -283,12 +282,12 @@ export let uiSrefDirective = [
           scope.$watch(
             ref.paramExpr,
             function (val) {
-              rawDef.uiStateParams = extend({}, val);
+              rawDef.uiStateParams = Object.assign({}, val);
               update();
             },
             true,
           );
-          rawDef.uiStateParams = extend({}, scope.$eval(ref.paramExpr));
+          rawDef.uiStateParams = Object.assign({}, scope.$eval(ref.paramExpr));
         }
         update();
         scope.$on("$destroy", $uiRouter.stateRegistry.onStatesChanged(update));

@@ -1,4 +1,4 @@
-import { extend, applyPairs, find } from "../common/common";
+import { applyPairs, find } from "../common/common";
 import { propEq } from "../common/hof";
 import { Param } from "../params/param";
 /**
@@ -14,7 +14,7 @@ export class PathNode {
       const node = stateOrNode;
       this.state = node.state;
       this.paramSchema = node.paramSchema.slice();
-      this.paramValues = extend({}, node.paramValues);
+      this.paramValues = Object.assign({}, node.paramValues);
       this.resolvables = node.resolvables.slice();
       this.views = node.views && node.views.slice();
     } else {

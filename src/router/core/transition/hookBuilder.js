@@ -1,4 +1,4 @@
-import { extend, assertPredicate, unnestR, identity } from "../common/common";
+import { assertPredicate, unnestR, identity } from "../common/common";
 import { isArray } from "../common/predicates";
 import { TransitionHookPhase, TransitionHookScope } from "./interface";
 import { TransitionHook } from "./transitionHook";
@@ -57,7 +57,7 @@ export class HookBuilder {
       const matchingNodes = matches[hookType.criteriaMatchPath.name];
       // Return an array of HookTuples
       return matchingNodes.map((node) => {
-        const _options = extend(
+        const _options = Object.assign(
           {
             bind: hook.bind,
             traceData: { hookType: hookType.name, context: node },

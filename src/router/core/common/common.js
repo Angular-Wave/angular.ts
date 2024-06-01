@@ -13,12 +13,10 @@ export const root =
   (typeof self === "object" && self.self === self && self) ||
   (typeof global === "object" && global.global === global && global) ||
   this;
-const angular = root.angular || {};
-export const fromJson = angular.fromJson || JSON.parse.bind(JSON);
-export const toJson = angular.toJson || JSON.stringify.bind(JSON);
-export const forEach = angular.forEach || _forEach;
-export const extend = Object.assign || _extend;
-export const equals = angular.equals || _equals;
+export const fromJson = JSON.parse.bind(JSON);
+export const toJson = JSON.stringify.bind(JSON);
+export const forEach = _forEach;
+export const equals = _equals;
 export function identity(x) {
   return x;
 }
@@ -102,7 +100,7 @@ export function createProxyFunctions(
  * prototypal inheritance helper.
  * Creates a new object which has `parent` object as its prototype, and then copies the properties from `extra` onto it
  */
-export const inherit = (parent, extra) => extend(Object.create(parent), extra);
+export const inherit = (parent, extra) => Object.setPrototypeOf(parent, extra);
 /** Given an array, returns true if the object is found in the array, (using indexOf) */
 export const inArray = curry(_inArray);
 export function _inArray(array, obj) {
@@ -135,11 +133,11 @@ export const deregAll = (functions) =>
  * Earlier objects in the defaultsList take precedence when applying defaults.
  */
 export function defaults(opts, ...defaultsList) {
-  const defaultVals = extend({}, ...defaultsList.reverse());
-  return extend(defaultVals, pick(opts || {}, Object.keys(defaultVals)));
+  const defaultVals = Object.assign({}, ...defaultsList.reverse());
+  return Object.assign(defaultVals, pick(opts || {}, Object.keys(defaultVals)));
 }
 /** Reduce function that merges each element of the list into a single object, using extend */
-export const mergeR = (memo, item) => extend(memo, item);
+export const mergeR = (memo, item) => Object.assign(memo, item);
 /**
  * Finds the common ancestor path between two states.
  *
@@ -441,24 +439,14 @@ export function tail(arr) {
 export function copy(src, dest) {
   if (dest) Object.keys(dest).forEach((key) => delete dest[key]);
   if (!dest) dest = {};
-  return extend(dest, src);
+  return Object.assign(dest, src);
 }
 /** Naive forEach implementation works with Objects or Arrays */
 function _forEach(obj, cb, _this) {
   if (isArray(obj)) return obj.forEach(cb, _this);
   Object.keys(obj).forEach((key) => cb(obj[key], key));
 }
-export function _extend(toObj) {
-  for (let i = 1; i < arguments.length; i++) {
-    const obj = arguments[i];
-    if (!obj) continue;
-    const keys = Object.keys(obj);
-    for (let j = 0; j < keys.length; j++) {
-      toObj[keys[j]] = obj[keys[j]];
-    }
-  }
-  return toObj;
-}
+
 function _equals(o1, o2) {
   if (o1 === o2) return true;
   if (o1 === null || o2 === null) return false;

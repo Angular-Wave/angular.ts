@@ -1,5 +1,4 @@
-"use strict";
-import { extend, silentRejection } from "../common/common";
+import { silentRejection } from "../common/common";
 import { stringify } from "../common/strings";
 import { is } from "../common/hof";
 /** An enum for Transition Rejection reasons */
@@ -117,6 +116,6 @@ export class Rejection {
     return `Transition Rejection($id: ${$id} type: ${type}, message: ${message}, detail: ${detail})`;
   }
   toPromise() {
-    return extend(silentRejection(this), { _transitionRejection: this });
+    return Object.assign(silentRejection(this), { _transitionRejection: this });
   }
 }

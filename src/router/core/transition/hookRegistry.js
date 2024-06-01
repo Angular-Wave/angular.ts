@@ -1,4 +1,4 @@
-import { extend, removeFrom, tail, identity, mapObj } from "../common/common";
+import { removeFrom, tail, identity, mapObj } from "../common/common";
 import { isString, isFunction } from "../common/predicates";
 import { Glob } from "../common/glob";
 import {
@@ -114,7 +114,7 @@ export class RegisteredHook {
    * ```
    */
   _getMatchingNodes(treeChanges, transition) {
-    const criteria = extend(
+    const criteria = Object.assign(
       this._getDefaultMatchCriteria(),
       this.matchCriteria,
     );

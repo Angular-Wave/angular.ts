@@ -1,4 +1,4 @@
-import { extend, identity } from "../../../core/utils";
+import { identity } from "../../../core/utils";
 import { services } from "../common/coreservices";
 import { trace } from "../common/trace";
 import { stringify } from "../common/strings";
@@ -26,7 +26,7 @@ export class Resolvable {
     this.resolved = false;
     this.promise = undefined;
     if (arg1 instanceof Resolvable) {
-      extend(this, arg1);
+      Object.assign(this, arg1);
     } else if (isFunction(resolveFn)) {
       if (isNullOrUndefined(arg1))
         throw new Error("new Resolvable(): token argument is required");

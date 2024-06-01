@@ -1,4 +1,4 @@
-import { extend, filter, tail, unnestR } from "../../core/common/common";
+import { filter, tail, unnestR } from "../../core/common/common";
 import { isDefined, isFunction, isString } from "../../core/common/predicates";
 import { kebobString } from "../../core/common/strings";
 import { noop } from "../../core/common/common";
@@ -353,7 +353,7 @@ export function $ViewDirectiveFill(
         if (controller) {
           const controllerInstance = $controller(
             controller,
-            extend({}, locals, { $scope: scope, $element: $element }),
+            Object.assign({}, locals, { $scope: scope, $element: $element }),
           );
           if (controllerAs) {
             scope[controllerAs] = controllerInstance;

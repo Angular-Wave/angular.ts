@@ -1,6 +1,5 @@
 import { isObject, isString } from "../common/predicates";
 import { stringify } from "../common/strings";
-import { extend } from "../common/common";
 /**
  * Encapsulate the target (destination) state/params/options of a [[Transition]].
  *
@@ -49,8 +48,8 @@ export class TargetState {
     this._stateRegistry = _stateRegistry;
     this._identifier = _identifier;
     this._identifier = _identifier;
-    this._params = extend({}, _params || {});
-    this._options = extend({}, _options || {});
+    this._params = Object.assign({}, _params || {});
+    this._options = Object.assign({}, _options || {});
     this._definition = _stateRegistry.matcher.find(
       _identifier,
       this._options.relative,
@@ -124,7 +123,9 @@ export class TargetState {
    *                When true the parameter values will be used instead of the current values.
    */
   withParams(params, replace = false) {
-    const newParams = replace ? params : extend({}, this._params, params);
+    const newParams = replace
+      ? params
+      : Object.assign({}, this._params, params);
     return new TargetState(
       this._stateRegistry,
       this._identifier,
@@ -140,7 +141,9 @@ export class TargetState {
    *                When true the options will be used instead of the current options.
    */
   withOptions(options, replace = false) {
-    const newOpts = replace ? options : extend({}, this._options, options);
+    const newOpts = replace
+      ? options
+      : Object.assign({}, this._options, options);
     return new TargetState(
       this._stateRegistry,
       this._identifier,

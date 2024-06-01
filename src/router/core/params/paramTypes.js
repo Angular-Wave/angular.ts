@@ -5,7 +5,6 @@ import {
   equals,
   inherit,
   map,
-  extend,
   pick,
 } from "../common/common";
 import { isDefined, isNullOrUndefined } from "../common/predicates";
@@ -52,7 +51,7 @@ export class ParamTypes {
     ]);
     // Register default types. Store them in the prototype of this.types.
     const makeType = (definition, name) =>
-      new ParamType(extend({ name }, definition));
+      new ParamType(Object.assign({ name }, definition));
     this.types = inherit(map(this.defaultTypes, makeType), {});
   }
   dispose() {
@@ -65,9 +64,9 @@ export class ParamTypes {
    */
   type(name, definition, definitionFn) {
     if (!isDefined(definition)) return this.types[name];
-    if (this.types.hasOwnProperty(name))
+    if (Object.prototype.hasOwnProperty.call(this.types, name))
       throw new Error(`A type named '${name}' has already been defined.`);
-    this.types[name] = new ParamType(extend({ name }, definition));
+    this.types[name] = new ParamType(Object.assign({ name }, definition));
     if (definitionFn) {
       this.typeQueue.push({ name, def: definitionFn });
       if (!this.enqueue) this._flushTypeQueue();
@@ -79,7 +78,7 @@ export class ParamTypes {
       const type = this.typeQueue.shift();
       if (type.pattern)
         throw new Error("You cannot override a type's .pattern at runtime.");
-      extend(this.types[type.name], services.$injector.invoke(type.def));
+      Object.assign(this.types[type.name], services.$injector.invoke(type.def));
     }
   }
 }
@@ -94,10 +93,10 @@ function initDefaultTypes() {
       // tslint:disable-next-line:triple-equals
       equals: (a, b) => a == b, // allow coersion for null/undefined/""
     };
-    return extend({}, defaultTypeBase, def);
+    return Object.assign({}, defaultTypeBase, def);
   };
   // Default Parameter Type Definitions
-  extend(ParamTypes.prototype, {
+  Object.assign(ParamTypes.prototype, {
     string: makeDefaultType({}),
     path: makeDefaultType({
       pattern: /[^/]*/,

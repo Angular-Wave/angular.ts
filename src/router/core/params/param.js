@@ -1,4 +1,4 @@
-import { extend, filter, map, allTrueR, find } from "../common/common";
+import { filter, map, allTrueR, find } from "../common/common";
 import { prop } from "../common/hof";
 import {
   isInjectable,
@@ -29,7 +29,7 @@ function getParamDeclaration(paramName, location, state) {
   const paramConfig = unwrapShorthand(
     state && state.params && state.params[paramName],
   );
-  return extend(defaultConfig, paramConfig);
+  return Object.assign(defaultConfig, paramConfig);
 }
 function unwrapShorthand(cfg) {
   cfg = isShorthand(cfg) ? { value: cfg } : cfg;
@@ -38,7 +38,7 @@ function unwrapShorthand(cfg) {
     return cfg.value;
   }
   const $$fn = isInjectable(cfg.value) ? cfg.value : getStaticDefaultValue;
-  return extend(cfg, { $$fn });
+  return Object.assign(cfg, { $$fn });
 }
 function getType(cfg, urlType, location, id, paramTypes) {
   if (cfg.type && urlType && urlType.name !== "string")
@@ -157,9 +157,9 @@ export class Param {
         array: location === DefType.SEARCH ? "auto" : false,
       };
       const arrayParamNomenclature = id.match(/\[\]$/) ? { array: true } : {};
-      return extend(arrayDefaults, arrayParamNomenclature, config).array;
+      return Object.assign(arrayDefaults, arrayParamNomenclature, config).array;
     }
-    extend(this, {
+    Object.assign(this, {
       id,
       type,
       location,

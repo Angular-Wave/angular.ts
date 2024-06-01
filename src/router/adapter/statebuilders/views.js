@@ -1,5 +1,4 @@
-/** @publicapi @module ng1 */ /** */
-import { pick, forEach, tail, extend } from "../../core/common/common";
+import { pick, forEach, tail } from "../../core/common/common";
 import { isArray, isDefined, isString } from "../../../core/utils";
 import { isInjectable } from "../../core/common/predicates";
 import { services } from "../../core/common/coreservices";
@@ -69,7 +68,7 @@ export function ng1ViewsBuilder(state) {
     // Account for views: { header: "headerComponent" }
     if (isString(config)) config = { component: config };
     // Make a shallow copy of the config object
-    config = extend({}, config);
+    config = Object.assign({}, config);
     // Do not allow a view to mix props for component-style view with props for template/controller-style view
     if (hasAnyKey(compKeys, config) && hasAnyKey(nonCompKeys, config)) {
       throw new Error(
@@ -114,7 +113,7 @@ export class Ng1ViewConfig {
     const $q = services.$q;
     const context = new ResolveContext(this.path);
     const params = this.path.reduce(
-      (acc, node) => extend(acc, node.paramValues),
+      (acc, node) => Object.assign(acc, node.paramValues),
       {},
     );
     const promises = {
@@ -126,7 +125,7 @@ export class Ng1ViewConfig {
     return $q.all(promises).then((results) => {
       trace.traceViewServiceEvent("Loaded", this);
       this.controller = results.controller;
-      extend(this, results.template); // Either { template: "tpl" } or { component: "cmpName" }
+      Object.assign(this, results.template); // Either { template: "tpl" } or { component: "cmpName" }
       return this;
     });
   }
