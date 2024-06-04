@@ -29,7 +29,7 @@ import {
   simpleCompare,
   isError,
   directiveNormalize,
-} from "./utils";
+} from "../shared/utils";
 
 import { SCE_CONTEXTS } from "./sce";
 import { PREFIX_REGEXP, ALIASED_ATTR } from "../constants";

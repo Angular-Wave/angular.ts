@@ -23,7 +23,7 @@ import {
   nextUid,
   nodeName_,
   snakeCase,
-} from "../src/core/utils";
+} from "../src/shared/utils";
 import { dealoc, jqLite, startingTag } from "../src/jqLite";
 import { Angular, angularInit } from "../src/loader";
 import { publishExternalAPI } from "../src/public";

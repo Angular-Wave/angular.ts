@@ -7,7 +7,7 @@ import {
   lowercase,
   hasCustomToString,
   equals,
-} from "../core/utils";
+} from "../shared/utils";
 
 /**
  * @returns {angular.IFilterFilter}

@@ -1,4 +1,4 @@
-import { equals, applyPairs, removeFrom, inArray, find } from "../../common";
+import { equals, applyPairs, removeFrom, inArray, find } from "../../../shared/common";
 import { curry, prop } from "../common/hof";
 import { isString } from "../common/predicates";
 import { trace } from "../common/trace";

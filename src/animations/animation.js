@@ -1,5 +1,5 @@
 import { jqLite } from "../jqLite";
-import { forEach, mergeClasses } from "../core/utils";
+import { forEach, mergeClasses } from "../shared/utils";
 import {
   NG_ANIMATE_CLASSNAME,
   PREPARE_CLASS_SUFFIX,

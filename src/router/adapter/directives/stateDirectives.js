@@ -14,7 +14,7 @@ import {
   uniqR,
   inArray,
   removeFrom,
-} from "../../common";
+} from "../../../shared/common";
 import { isString, isObject } from "../../core/common/predicates";
 
 import { parse } from "../../core/common/hof";

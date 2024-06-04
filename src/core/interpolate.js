@@ -5,7 +5,7 @@ import {
   stringify,
   valueFn,
   extend,
-} from "./utils";
+} from "../shared/utils";
 
 const $interpolateMinErr = minErr("$interpolate");
 $interpolateMinErr.throwNoconcat = function (text) {

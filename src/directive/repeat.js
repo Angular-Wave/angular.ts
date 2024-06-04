@@ -4,7 +4,7 @@ import {
   hashKey,
   createMap,
   isArrayLike,
-} from "../core/utils";
+} from "../shared/utils";
 import { getBlockNodes } from "../jqLite";
 
 const ngRepeatEndComment = document.createComment("");

@@ -22,7 +22,7 @@ import {
   isBoolean,
   isValidObjectMaxDepth,
   minErrConfig,
-} from "./core/utils";
+} from "./shared/utils";
 import { jqLite, startingTag } from "./jqLite";
 import { createInjector } from "./injector";
 import { CACHE } from "./core/cache";

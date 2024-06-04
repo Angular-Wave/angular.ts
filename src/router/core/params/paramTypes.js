@@ -6,7 +6,7 @@ import {
   inherit,
   map,
   pick,
-} from "../../common";
+} from "../../../shared/common";
 import { isDefined, isNullOrUndefined } from "../common/predicates";
 import { is } from "../common/hof";
 import { services } from "../common/coreservices";

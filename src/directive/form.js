@@ -8,7 +8,7 @@ import {
   forEach,
   extend,
   isUndefined,
-} from "../core/utils";
+} from "../shared/utils";
 import {
   PRISTINE_CLASS,
   DIRTY_CLASS,

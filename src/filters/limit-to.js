@@ -4,7 +4,7 @@ import {
   isNumberNaN,
   isString,
   toInt,
-} from "../core/utils";
+} from "../shared/utils";
 
 /**
  * @returns {angular.IFilterLimitTo}

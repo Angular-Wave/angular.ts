@@ -1,4 +1,4 @@
-import { forEach, isUndefined, trim } from "../core/utils";
+import { forEach, isUndefined, trim } from "../shared/utils";
 
 /**
  * @returns {angular.IDirective}

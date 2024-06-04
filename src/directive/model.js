@@ -15,7 +15,7 @@ import {
   isPromiseLike,
   isUndefined,
   isFunction,
-} from "../core/utils";
+} from "../shared/utils";
 import { addSetValidityMethod, nullFormCtrl, setupValidity } from "./form";
 import { defaultModelOptions } from "./model-options";
 import { startingTag } from "../jqLite";

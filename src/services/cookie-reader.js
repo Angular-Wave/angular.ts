@@ -1,4 +1,4 @@
-import { isUndefined } from "../core/utils";
+import { isUndefined } from "../shared/utils";
 
 /**
  * @name $$cookieReader

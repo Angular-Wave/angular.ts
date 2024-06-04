@@ -9,7 +9,7 @@ import {
   unnestR,
   arrayTuples,
   defaults,
-} from "../../common";
+} from "../../../shared/common";
 import { prop, propEq } from "../common/hof";
 import { isString, isDefined } from "../common/predicates";
 import { Param, DefType } from "../params/param";

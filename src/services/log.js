@@ -1,4 +1,4 @@
-import { isError } from "../core/utils";
+import { isError } from "../shared/utils";
 
 /**
  * @ngdoc provider

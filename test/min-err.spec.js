@@ -1,4 +1,4 @@
-import { minErr, isDefined, toDebugString } from "../src/core/utils";
+import { minErr, isDefined, toDebugString } from "../src/shared/utils";
 import { errorHandlingConfig } from "../src/loader";
 
 describe("errors", () => {

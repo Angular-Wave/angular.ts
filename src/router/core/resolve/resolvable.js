@@ -1,4 +1,4 @@
-import { identity } from "../../../core/utils";
+import { identity } from "../../../shared/utils";
 import { services } from "../common/coreservices";
 import { trace } from "../common/trace";
 import { stringify } from "../common/strings";

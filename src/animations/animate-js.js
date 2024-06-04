@@ -1,4 +1,4 @@
-import { forEach, isObject, isFunction } from "../core/utils";
+import { forEach, isObject, isFunction } from "../shared/utils";
 import {
   applyAnimationClassesFactory,
   applyAnimationStyles,

@@ -15,7 +15,7 @@ import {
   isUndefined,
 } from "./predicates";
 import { Rejection } from "../transition/rejectFactory";
-import { identity, pushR, tail } from "../../common";
+import { identity, pushR, tail } from "../../../shared/common";
 import { pattern, val } from "./hof";
 /**
  * Returns a string shortened to a maximum length

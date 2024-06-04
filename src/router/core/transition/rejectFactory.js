@@ -1,4 +1,4 @@
-import { silentRejection } from "../../common";
+import { silentRejection } from "../../../shared/common";
 import { stringify } from "../common/strings";
 import { is } from "../common/hof";
 /** An enum for Transition Rejection reasons */

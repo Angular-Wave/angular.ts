@@ -1,4 +1,4 @@
-import { isDefined } from "../core/utils";
+import { isDefined } from "../shared/utils";
 import { jqLiteBuildFragment } from "../jqLite";
 /**
  * @ngdoc directive

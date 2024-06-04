@@ -1,4 +1,4 @@
-import { copy } from "../../common";
+import { copy } from "../../../shared/common";
 /**
  * A [[TransitionHookFn]] which updates global UI-Router state
  *

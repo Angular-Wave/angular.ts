@@ -6,7 +6,7 @@ import {
   isString,
   minErr,
   identity,
-} from "../core/utils";
+} from "../shared/utils";
 
 orderByFilter.$inject = ["$parse"];
 

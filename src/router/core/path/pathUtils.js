@@ -7,7 +7,7 @@ import {
   unnestR,
   inArray,
   arrayTuples,
-} from "../../common";
+} from "../../../shared/common";
 import { prop, propEq } from "../common/hof";
 import { TargetState } from "../state/targetState";
 import { PathNode } from "./pathNode";

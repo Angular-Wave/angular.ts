@@ -1,4 +1,4 @@
-import { forEach, isObject } from "./utils";
+import { forEach, isObject } from "../shared/utils";
 import { filterFilter } from "../filters/filter";
 import { jsonFilter } from "../filters/filters";
 import { limitToFilter } from "../filters/limit-to";

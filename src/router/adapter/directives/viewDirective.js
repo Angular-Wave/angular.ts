@@ -1,7 +1,7 @@
-import { filter, tail, unnestR } from "../../common";
+import { filter, tail, unnestR } from "../../../shared/common";
 import { isDefined, isFunction, isString } from "../../core/common/predicates";
 import { kebobString } from "../../core/common/strings";
-import { noop } from "../../common";
+import { noop } from "../../../shared/common";
 import { parse } from "../../core/common/hof";
 import { ResolveContext } from "../../core/resolve/resolveContext";
 import { trace } from "../../core/common/trace";

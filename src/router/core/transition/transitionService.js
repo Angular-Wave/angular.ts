@@ -26,7 +26,7 @@ import { registerLazyLoadHook } from "../hooks/lazyLoad";
 import { TransitionEventType } from "./transitionEventType";
 import { TransitionHook } from "./transitionHook";
 import { isDefined } from "../common/predicates";
-import { removeFrom, createProxyFunctions } from "../../common";
+import { removeFrom, createProxyFunctions } from "../../../shared/common";
 import { val } from "../common/hof";
 import { registerIgnoredTransitionHook } from "../hooks/ignoredTransition";
 import { registerInvalidTransitionHook } from "../hooks/invalidTransition";

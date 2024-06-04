@@ -1,4 +1,4 @@
-import { isString } from "../core/utils";
+import { isString } from "../shared/utils";
 import { NG_ANIMATE_CHILDREN_DATA } from "./shared";
 
 /**

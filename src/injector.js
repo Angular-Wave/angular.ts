@@ -13,7 +13,7 @@ import {
   reverseParams,
   isObject,
   isDefined,
-} from "./core/utils";
+} from "./shared/utils";
 
 var ARROW_ARG = /^([^(]+?)=>/;
 var FN_ARGS = /^[^(]*\(\s*([^)]*)\)/m;

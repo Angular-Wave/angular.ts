@@ -6,7 +6,7 @@ import {
   includes,
   isDefined,
   shallowCopy,
-} from "../core/utils";
+} from "../shared/utils";
 
 const noopNgModelController = { $setViewValue: () => {}, $render: () => {} };
 

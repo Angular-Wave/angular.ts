@@ -1,4 +1,4 @@
-import { valueFn } from "./utils";
+import { valueFn } from "../shared/utils";
 
 /**
  * ! This is a private undocumented service !

@@ -1,4 +1,4 @@
-import { isUndefined, stringify } from "../core/utils";
+import { isUndefined, stringify } from "../shared/utils";
 
 /**
  * @returns {angular.IDirective}

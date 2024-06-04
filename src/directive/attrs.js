@@ -1,5 +1,5 @@
 import { BOOLEAN_ATTR } from "../jqLite";
-import { forEach, directiveNormalize } from "../core/utils";
+import { forEach, directiveNormalize } from "../shared/utils";
 import { ALIASED_ATTR } from "../constants";
 
 /**

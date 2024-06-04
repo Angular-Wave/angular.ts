@@ -1,4 +1,4 @@
-import { directiveNormalize } from "../core/utils";
+import { directiveNormalize } from "../shared/utils";
 
 /*
  * A collection of directives that allows creation of custom event handlers that are defined as

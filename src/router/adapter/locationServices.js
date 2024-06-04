@@ -1,7 +1,7 @@
 /** @publicapi @module ng1 */ /** */
-import { isDefined, isObject } from "../../core/utils";
+import { isDefined, isObject } from "../../shared/utils";
 import { val } from "../core/common/hof";
-import { createProxyFunctions, removeFrom } from "../common";
+import { createProxyFunctions, removeFrom } from "../../shared/common";
 /**
  * Implements UI-Router LocationServices and LocationConfig using Angular 1's $location service
  * @internalapi

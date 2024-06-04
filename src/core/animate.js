@@ -6,7 +6,7 @@ import {
   isString,
   minErr,
   extend,
-} from "./utils";
+} from "../shared/utils";
 import { jqLite } from "../jqLite";
 
 const $animateMinErr = minErr("$animate");

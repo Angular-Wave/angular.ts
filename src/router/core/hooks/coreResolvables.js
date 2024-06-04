@@ -1,7 +1,7 @@
 import { Transition } from "../transition/transition";
 import { UIRouter } from "../router";
 import { Resolvable } from "../resolve/resolvable";
-import { inArray, uniqR, unnestR } from "../../common";
+import { inArray, uniqR, unnestR } from "../../../shared/common";
 function addCoreResolvables(trans) {
   trans.addResolvable(Resolvable.fromData(UIRouter, trans.router), "");
   trans.addResolvable(Resolvable.fromData(Transition, trans), "");

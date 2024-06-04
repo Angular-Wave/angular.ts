@@ -1,4 +1,4 @@
-import { filter, map } from "../../common";
+import { filter, map } from "../../../shared/common";
 import { isDefined } from "../common/predicates";
 /**
  * An internal class which implements [[ParamTypeDefinition]].

@@ -2,7 +2,7 @@ import { TargetState } from "../state/targetState";
 import { UrlMatcher } from "./urlMatcher";
 import { is, val } from "../common/hof";
 import { isDefined, isFunction, isString } from "../common/predicates";
-import { removeFrom } from "../../common";
+import { removeFrom } from "../../../shared/common";
 import { UrlRuleFactory } from "./urlRule";
 const prioritySort = (a, b) => (b.priority || 0) - (a.priority || 0);
 const typeSort = (a, b) => {

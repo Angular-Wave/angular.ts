@@ -1,4 +1,4 @@
-import { noop } from "../../common";
+import { noop } from "../../../shared/common";
 import { services } from "../common/coreservices";
 /**
  * A [[TransitionHookFn]] which waits for the views to load

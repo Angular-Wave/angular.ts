@@ -1,4 +1,4 @@
-import { isString } from "../../../core/utils";
+import { isString } from "../../../shared/utils";
 import { is, pattern } from "../common/hof";
 import { UrlRules } from "./urlRules";
 import { UrlConfig } from "./urlConfig";

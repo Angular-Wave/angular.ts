@@ -1,5 +1,5 @@
 import { createInjector } from "../../src/injector";
-import { forEach } from "../../src/core/utils";
+import { forEach } from "../../src/shared/utils";
 import { publishExternalAPI } from "../../src/public";
 
 describe("ngBindHtml", () => {

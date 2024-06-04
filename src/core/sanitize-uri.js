@@ -1,4 +1,4 @@
-import { isDefined } from "./utils";
+import { isDefined } from "../shared/utils";
 import { urlResolve } from "./urlUtils";
 
 /**

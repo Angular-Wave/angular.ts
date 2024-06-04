@@ -1,4 +1,4 @@
-import { filter, map, allTrueR, find } from "../../common";
+import { filter, map, allTrueR, find } from "../../../shared/common";
 import { prop } from "../common/hof";
 import {
   isInjectable,

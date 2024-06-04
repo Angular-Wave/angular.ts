@@ -1,4 +1,4 @@
-import { isNumber, isString, isUndefined, toJson } from "../core/utils";
+import { isNumber, isString, isUndefined, toJson } from "../shared/utils";
 
 const MAX_DIGITS = 22;
 const DECIMAL_SEP = ".";

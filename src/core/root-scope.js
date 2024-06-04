@@ -10,7 +10,7 @@ import {
   isNumberNaN,
   arrayRemove,
   equals,
-} from "./utils";
+} from "../shared/utils";
 
 /**
  * @typedef {"$apply" | "$digest"} ScopePhase

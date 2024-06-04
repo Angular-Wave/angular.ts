@@ -1,4 +1,4 @@
-import { find, tail, uniqR, unnestR, inArray } from "../../common";
+import { find, tail, uniqR, unnestR, inArray } from "../../../shared/common";
 import { propEq, not } from "../common/hof";
 import { trace } from "../common/trace";
 import { services } from "../common/coreservices";
@@ -6,7 +6,7 @@ import { resolvePolicies } from "./interface";
 import { Resolvable } from "./resolvable";
 import { PathUtils } from "../path/pathUtils";
 import { stringify } from "../common/strings";
-import { isUndefined } from "../../../core/utils";
+import { isUndefined } from "../../../shared/utils";
 
 const whens = resolvePolicies.when;
 const ALL_WHENS = [whens.EAGER, whens.LAZY];

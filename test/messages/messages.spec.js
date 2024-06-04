@@ -1,7 +1,7 @@
 import { createInjector } from "../../src/injector";
 import { countWatchers } from "../../src/core/root-scope";
 import { publishExternalAPI } from "../../src/public";
-import { isString } from "../../src/core/utils";
+import { isString } from "../../src/shared/utils";
 import { jqLite } from "../../src/jqLite";
 
 describe("ngMessages", () => {

@@ -13,7 +13,7 @@ import {
   nodeName_,
   shallowCopy,
   trim,
-} from "./core/utils";
+} from "./shared/utils";
 import { CACHE, EXPANDO } from "./core/cache";
 
 /**

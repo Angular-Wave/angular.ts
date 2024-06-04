@@ -1,4 +1,4 @@
-import { assertPredicate, unnestR, identity } from "../../common";
+import { assertPredicate, unnestR, identity } from "../../../shared/common";
 import { TransitionHookPhase, TransitionHookScope } from "./interface";
 import { TransitionHook } from "./transitionHook";
 /**

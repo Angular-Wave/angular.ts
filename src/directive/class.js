@@ -1,4 +1,4 @@
-import { createMap, forEach, isObject, isString } from "../core/utils";
+import { createMap, forEach, isObject, isString } from "../shared/utils";
 
 function classDirective(name, selector) {
   // eslint-disable-next-line no-param-reassign

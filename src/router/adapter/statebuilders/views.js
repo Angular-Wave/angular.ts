@@ -1,5 +1,5 @@
-import { pick, forEach, tail } from "../../common";
-import { isDefined, isString } from "../../../core/utils";
+import { pick, forEach, tail } from "../../../shared/common";
+import { isDefined, isString } from "../../../shared/utils";
 import { isInjectable } from "../../core/common/predicates";
 import { services } from "../../core/common/coreservices";
 import { trace } from "../../core/common/trace";

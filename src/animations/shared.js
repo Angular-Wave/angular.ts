@@ -1,4 +1,4 @@
-import { forEach, isString, minErr, extend } from "../core/utils";
+import { forEach, isString, minErr, extend } from "../shared/utils";
 import { jqLite } from "../jqLite";
 
 export const ADD_CLASS_SUFFIX = "-add";

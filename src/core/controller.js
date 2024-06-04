@@ -7,7 +7,7 @@ import {
   isString,
   getter,
   isFunction,
-} from "./utils";
+} from "../shared/utils";
 
 const $controllerMinErr = minErr("$controller");
 

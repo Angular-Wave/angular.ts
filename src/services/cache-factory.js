@@ -1,4 +1,4 @@
-import { createMap, extend, forEach, isUndefined, minErr } from "../core/utils";
+import { createMap, extend, forEach, isUndefined, minErr } from "../shared/utils";
 
 /**
  * @ngdoc service

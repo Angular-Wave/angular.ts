@@ -1,4 +1,4 @@
-import { forEach, isString } from "../core/utils";
+import { forEach, isString } from "../shared/utils";
 
 export function initMessageModule() {
   window.angular

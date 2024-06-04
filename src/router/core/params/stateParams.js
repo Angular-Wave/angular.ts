@@ -1,4 +1,4 @@
-import { ancestors } from "../../common";
+import { ancestors } from "../../../shared/common";
 export class StateParams {
   constructor(params = {}) {
     Object.assign(this, params);

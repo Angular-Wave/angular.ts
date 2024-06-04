@@ -9,8 +9,8 @@
  * @preferred @publicapi @module ng1
  */
 import { services } from "../core/common/coreservices";
-import { applyPairs, unnestR } from "../common";
-import { isString } from "../../core/utils";
+import { applyPairs, unnestR } from "../../shared/common";
+import { isString } from "../../shared/utils";
 import { trace } from "../core/common/trace";
 import { UIRouter } from "../core/router";
 import {

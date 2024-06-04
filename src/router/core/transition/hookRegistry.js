@@ -1,4 +1,4 @@
-import { removeFrom, tail, identity, mapObj } from "../../common";
+import { removeFrom, tail, identity, mapObj } from "../../../shared/common";
 import { isString, isFunction } from "../common/predicates";
 import { Glob } from "../common/glob";
 import {

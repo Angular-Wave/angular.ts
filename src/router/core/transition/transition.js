@@ -13,7 +13,7 @@ import {
   anyTrueR,
   flattenR,
   uniqR,
-} from "../../common";
+} from "../../../shared/common";
 import { isObject, isUndefined } from "../common/predicates";
 import { prop, propEq, val, not, is } from "../common/hof";
 import { TransitionHookPhase } from "./interface"; // has or is using

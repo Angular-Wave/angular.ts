@@ -12,7 +12,7 @@ import {
   lowercase,
   minErr,
   shallowCopy,
-} from "./utils";
+} from "../shared/utils";
 
 import { snakeToCamel } from "../jqLite";
 

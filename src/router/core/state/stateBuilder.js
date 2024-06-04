@@ -3,11 +3,10 @@ import {
   identity,
   inherit,
   mapObj,
-  noop,
   omit,
   tail,
   copy,
-} from "../../common";
+} from "../../../shared/common";
 import { isDefined, isFunction, isString } from "../common/predicates";
 import { stringify } from "../common/strings";
 import { is, pattern, pipe, prop, val } from "../common/hof";
@@ -204,7 +203,7 @@ export function resolvablesBuilder(state) {
   // prettier-ignore
   const tuple2Resolvable = pattern([
         [pipe(prop('val'), isString), (tuple) => new Resolvable(tuple.token, identity, [tuple.val], tuple.policy)],
-        [pipe(prop('val'), isArray), (tuple) => new Resolvable(tuple.token, tail(tuple.val), tuple.val.slice(0, -1), tuple.policy)],
+        [pipe(prop('val'), Array.isArray), (tuple) => new Resolvable(tuple.token, tail(tuple.val), tuple.val.slice(0, -1), tuple.policy)],
         [pipe(prop('val'), isFunction), (tuple) => new Resolvable(tuple.token, tuple.val, annotate(tuple.val), tuple.policy)],
     ]);
   // prettier-ignore
@@ -293,7 +292,7 @@ export class StateBuilder {
       if (!Object.prototype.hasOwnProperty.call(builders, key)) continue;
       const chain = builders[key].reduce(
         (parentFn, step) => (_state) => step(_state, parentFn),
-        noop,
+        () => {},
       );
       state[key] = chain(state);
     }

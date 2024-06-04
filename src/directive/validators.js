@@ -4,7 +4,7 @@ import {
   toInt,
   minErr,
   isUndefined,
-} from "../core/utils";
+} from "../shared/utils";
 import { REGEX_STRING_REGEXP } from "./attrs";
 import { startingTag } from "../jqLite";
 

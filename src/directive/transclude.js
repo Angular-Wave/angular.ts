@@ -1,4 +1,4 @@
-import { minErr } from "../core/utils";
+import { minErr } from "../shared/utils";
 import { startingTag } from "../jqLite";
 
 /**

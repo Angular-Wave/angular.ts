@@ -4,7 +4,7 @@ import {
   isNumber,
   isString,
   nodeName_,
-} from "../core/utils";
+} from "../shared/utils";
 
 export function AnchorScrollProvider() {
   let autoScrollingEnabled = true;

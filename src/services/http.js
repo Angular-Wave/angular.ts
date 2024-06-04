@@ -22,7 +22,7 @@ import {
   extend,
   uppercase,
   isPromiseLike,
-} from "../core/utils";
+} from "../shared/utils";
 
 const APPLICATION_JSON = "application/json";
 const CONTENT_TYPE_APPLICATION_JSON = {

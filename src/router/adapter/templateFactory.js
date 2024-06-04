@@ -1,7 +1,11 @@
 /** @publicapi @module view */ /** */
-import { isDefined, isFunction, isObject } from "../core/common/predicates";
+import {
+  isDefined,
+  isFunction,
+  isObject,
+} from "../core/common/predicates";
 import { services } from "../core/common/coreservices";
-import { tail, unnestR } from "../common";
+import { tail, unnestR } from "../../shared/common";
 import { Resolvable } from "../core/resolve/resolvable";
 import { kebobString } from "../core/common/strings";
 

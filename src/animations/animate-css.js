@@ -1,4 +1,4 @@
-import { forEach, isDefined } from "../core/utils";
+import { forEach, isDefined } from "../shared/utils";
 import {
   TRANSITION_DURATION_PROP,
   TRANSITION_DELAY_PROP,

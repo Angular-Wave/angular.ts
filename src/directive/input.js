@@ -14,7 +14,7 @@ import {
   timezoneToOffset,
   nextUid,
   equals,
-} from "../core/utils";
+} from "../shared/utils";
 import { ngModelMinErr } from "./model";
 
 // Regex code was initially obtained from SO prior to modification: https://stackoverflow.com/questions/3143070/javascript-regex-iso-datetime#answer-3143231

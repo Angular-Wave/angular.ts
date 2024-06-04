@@ -9,7 +9,7 @@ import {
   isString,
   lowercase,
   isNumber,
-} from "../utils";
+} from "../../shared/utils";
 
 const $parseMinErr = minErr("$parse");
 

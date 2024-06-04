@@ -5,7 +5,7 @@ import { ViewService } from "./view/view";
 import { StateRegistry } from "./state/stateRegistry";
 import { StateService } from "./state/stateService";
 import { UIRouterGlobals } from "./globals";
-import { removeFrom } from "../common";
+import { removeFrom } from "../../shared/common";
 import { isFunction } from "./common/predicates";
 import { UrlService } from "./url/urlService";
 import { trace } from "./common/trace";

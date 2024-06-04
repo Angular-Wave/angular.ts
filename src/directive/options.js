@@ -7,7 +7,7 @@ import {
   isArrayLike,
   isDefined,
   minErr,
-} from "../core/utils";
+} from "../shared/utils";
 
 const ngOptionsMinErr = minErr("ngOptions");
 

@@ -1,4 +1,4 @@
-import { forEach } from "../core/utils";
+import { forEach } from "../shared/utils";
 
 export const $$AnimateJsDriverProvider = [
   "$$animationProvider",

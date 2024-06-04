@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { extend, forEach, isDefined, trim } from "../core/utils";
+import { extend, forEach, isDefined, trim } from "../shared/utils";
 
 /* exported defaultModelOptions */
 export let defaultModelOptions;

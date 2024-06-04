@@ -1,5 +1,5 @@
 import { defaultHttpResponseTransform } from "./http";
-import { extend, isString, isUndefined, minErr } from "../core/utils";
+import { extend, isString, isUndefined, minErr } from "../shared/utils";
 
 var $templateRequestMinErr = minErr("$templateRequest");
 
