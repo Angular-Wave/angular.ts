@@ -14,8 +14,8 @@ import {
   uniqR,
   inArray,
   removeFrom,
-} from "../../core/common/common";
-import { isString, isObject, isArray } from "../../core/common/predicates";
+} from "../../common";
+import { isString, isObject } from "../../core/common/predicates";
 
 import { parse } from "../../core/common/hof";
 /** @hidden */
@@ -102,7 +102,7 @@ function bindEvents(element, scope, hookFn, uiStateOpts) {
   if (uiStateOpts) {
     events = uiStateOpts.events;
   }
-  if (!isArray(events)) {
+  if (!Array.isArray(events)) {
     events = ["click"];
   }
   const on = element.on ? "on" : "bind";
@@ -621,7 +621,7 @@ export let uiSrefActiveDirective = [
                 if (isString(stateOrName)) {
                   // If state is string, just add it.
                   addStateForClass(stateOrName, activeClass);
-                } else if (isArray(stateOrName)) {
+                } else if (Array.isArray(stateOrName)) {
                   // If state is an array, iterate over it and add each array item individually.
                   forEach(stateOrName, function (stateOrName) {
                     addStateForClass(stateOrName, activeClass);

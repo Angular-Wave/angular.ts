@@ -1,4 +1,4 @@
-import { applyPairs, find } from "../common/common";
+import { applyPairs, find } from "../../common";
 import { propEq } from "../common/hof";
 import { Param } from "../params/param";
 /**

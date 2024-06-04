@@ -1,12 +1,7 @@
 /** @publicapi @module view */ /** */
-import {
-  isArray,
-  isDefined,
-  isFunction,
-  isObject,
-} from "../core/common/predicates";
+import { isDefined, isFunction, isObject } from "../core/common/predicates";
 import { services } from "../core/common/coreservices";
-import { tail, unnestR } from "../core/common/common";
+import { tail, unnestR } from "../common";
 import { Resolvable } from "../core/resolve/resolvable";
 import { kebobString } from "../core/common/strings";
 
@@ -120,7 +115,7 @@ export class TemplateFactory {
    */
   fromProvider(provider, params, context) {
     const deps = services.$injector.annotate(provider);
-    const providerFn = isArray(provider) ? tail(provider) : provider;
+    const providerFn = Array.isArray(provider) ? tail(provider) : provider;
     const resolvable = new Resolvable("", providerFn, deps);
     return resolvable.get(context);
   }
@@ -133,7 +128,7 @@ export class TemplateFactory {
    */
   fromComponentProvider(provider, params, context) {
     const deps = services.$injector.annotate(provider);
-    const providerFn = isArray(provider) ? tail(provider) : provider;
+    const providerFn = Array.isArray(provider) ? tail(provider) : provider;
     const resolvable = new Resolvable("", providerFn, deps);
     return resolvable.get(context);
   }
@@ -181,7 +176,7 @@ export class TemplateFactory {
         const fn = res && res.data;
         const args = (fn && services.$injector.annotate(fn)) || [];
         // account for array style injection, i.e., ['foo', function(foo) {}]
-        const arrayIdxStr = isArray(fn) ? `[${fn.length - 1}]` : "";
+        const arrayIdxStr = Array.isArray(fn) ? `[${fn.length - 1}]` : "";
         return `${attrName}='$resolve.${resolveName}${arrayIdxStr}(${args.join(",")})'`;
       }
       // some-attr="::$resolve.someResolveName"
@@ -213,6 +208,6 @@ const scopeBindings = (bindingsObj) =>
     // [ 'input', [ '=foo', '=', 'foo' ] ]
     .map((key) => [key, /^([=<@&])[?]?(.*)/.exec(bindingsObj[key])])
     // skip malformed values
-    .filter((tuple) => isDefined(tuple) && isArray(tuple[1]))
+    .filter((tuple) => isDefined(tuple) && Array.isArray(tuple[1]))
     // { name: ('foo' || 'input'), type: '=' }
     .map((tuple) => ({ name: tuple[1][2] || tuple[0], type: tuple[1][1] }));

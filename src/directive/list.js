@@ -1,4 +1,4 @@
-import { forEach, isArray, isUndefined, trim } from "../core/utils";
+import { forEach, isUndefined, trim } from "../core/utils";
 
 /**
  * @returns {angular.IDirective}
@@ -30,7 +30,7 @@ export function ngListDirective() {
 
       ctrl.$parsers.push(parse);
       ctrl.$formatters.push((value) => {
-        if (isArray(value)) {
+        if (Array.isArray(value)) {
           return value.join(ngList);
         }
 

@@ -1,4 +1,4 @@
-import { pushTo } from "./common";
+import { pushTo } from "../../common";
 export class Queue {
   constructor(_items = [], _limit = null) {
     this._items = _items;

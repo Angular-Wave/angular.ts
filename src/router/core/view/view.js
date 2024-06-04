@@ -1,12 +1,6 @@
-import {
-  equals,
-  applyPairs,
-  removeFrom,
-  inArray,
-  find,
-} from "../common/common";
+import { equals, applyPairs, removeFrom, inArray, find } from "../../common";
 import { curry, prop } from "../common/hof";
-import { isString, isArray } from "../common/predicates";
+import { isString } from "../common/predicates";
 import { trace } from "../common/trace";
 /**
  * The View service
@@ -105,7 +99,7 @@ export class ViewService {
         "ViewService: No view config factory registered for type " + decl.$type,
       );
     const cfgs = cfgFactory(path, decl);
-    return isArray(cfgs) ? cfgs : [cfgs];
+    return Array.isArray(cfgs) ? cfgs : [cfgs];
   }
   /**
    * Deactivates a ViewConfig.

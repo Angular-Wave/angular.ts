@@ -4,7 +4,6 @@ import {
   forEach,
   hashKey,
   includes,
-  isArray,
   isArrayLike,
   isDefined,
   minErr,
@@ -498,7 +497,7 @@ export const ngOptionsDirective = [
         if (ngOptions.trackBy) {
           scope.$watchCollection(
             () => {
-              if (isArray(ngModelCtrl.$viewValue)) {
+              if (Array.isArray(ngModelCtrl.$viewValue)) {
                 return ngModelCtrl.$viewValue.map((value) =>
                   ngOptions.getTrackByValue(value),
                 );

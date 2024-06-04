@@ -1,4 +1,4 @@
-import { forEach, isArray, isString, minErr, extend } from "../core/utils";
+import { forEach, isString, minErr, extend } from "../core/utils";
 import { jqLite } from "../jqLite";
 
 export const ADD_CLASS_SUFFIX = "-add";
@@ -83,8 +83,8 @@ export function mergeClasses(a, b) {
   if (!a && !b) return "";
   if (!a) return b;
   if (!b) return a;
-  if (isArray(a)) a = a.join(" ");
-  if (isArray(b)) b = b.join(" ");
+  if (Array.isArray(a)) a = a.join(" ");
+  if (Array.isArray(b)) b = b.join(" ");
   return `${a} ${b}`;
 }
 
@@ -100,7 +100,7 @@ export function packageStyles(options) {
 export function pendClasses(classes, fix, isPrefix) {
   let className = "";
   // eslint-disable-next-line no-nested-ternary
-  classes = isArray(classes)
+  classes = Array.isArray(classes)
     ? classes
     : classes && isString(classes) && classes.length
       ? classes.split(/\s+/)

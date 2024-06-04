@@ -7,8 +7,8 @@ import {
   omit,
   tail,
   copy,
-} from "../common/common";
-import { isArray, isDefined, isFunction, isString } from "../common/predicates";
+} from "../../common";
+import { isDefined, isFunction, isString } from "../common/predicates";
 import { stringify } from "../common/strings";
 import { is, pattern, pipe, prop, val } from "../common/hof";
 import { Resolvable } from "../resolve/resolvable";
@@ -167,7 +167,7 @@ export function resolvablesBuilder(state) {
     !!(
       obj &&
       obj.val &&
-      (isString(obj.val) || isArray(obj.val) || isFunction(obj.val))
+      (isString(obj.val) || Array.isArray(obj.val) || isFunction(obj.val))
     );
   /** extracts the token from a Provider or provide literal */
   const getToken = (p) => p.provide || p.token;
@@ -218,7 +218,7 @@ export function resolvablesBuilder(state) {
   // If resolveBlock is already an array, use it as-is.
   // Otherwise, assume it's an object and convert to an Array of tuples
   const decl = state.resolve;
-  const items = isArray(decl)
+  const items = Array.isArray(decl)
     ? decl
     : objects2Tuples(decl, state.resolvePolicy || {});
   return items.map(item2Resolvable);

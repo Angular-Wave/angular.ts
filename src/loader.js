@@ -7,7 +7,6 @@ import {
   isObject,
   ngAttrPrefixes,
   isDefined,
-  isArray,
   isDate,
   isElement,
   isNumber,
@@ -57,7 +56,6 @@ export class Angular {
     this.fromJson = fromJson;
     this.toJson = toJson;
     this.identity = identity;
-    this.isArray = isArray;
     this.isDate = isDate;
     this.isDefined = isDefined;
     this.isElement = isElement;

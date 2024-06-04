@@ -1,4 +1,4 @@
-import { noop } from "../common/common";
+import { noop } from "../../common";
 import { ResolveContext } from "../resolve/resolveContext";
 import { val } from "../common/hof";
 export const RESOLVE_HOOK_PRIORITY = 1000;

@@ -3,7 +3,6 @@ import {
   isUndefined,
   forEach,
   isObject,
-  isArray,
   isString,
   isElement,
   isDefined,
@@ -413,7 +412,7 @@ export const $$AnimateQueueProvider = [
           // this is used to trigger callbacks in postDigest mode
           const runInNextPostDigestOrNow = postDigestTaskFactory();
 
-          if (isArray(options.addClass)) {
+          if (Array.isArray(options.addClass)) {
             options.addClass = options.addClass.join(" ");
           }
 
@@ -421,7 +420,7 @@ export const $$AnimateQueueProvider = [
             options.addClass = null;
           }
 
-          if (isArray(options.removeClass)) {
+          if (Array.isArray(options.removeClass)) {
             options.removeClass = options.removeClass.join(" ");
           }
 

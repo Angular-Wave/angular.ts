@@ -1,4 +1,4 @@
-import { forEach, isDefined, isArray } from "../core/utils";
+import { forEach, isDefined } from "../core/utils";
 import {
   TRANSITION_DURATION_PROP,
   TRANSITION_DELAY_PROP,
@@ -520,7 +520,7 @@ export const $AnimateCssProvider = [
           }
 
           const method =
-            options.event && isArray(options.event)
+            options.event && Array.isArray(options.event)
               ? options.event.join(" ")
               : options.event;
 

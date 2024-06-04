@@ -1,7 +1,6 @@
 import {
   createMap,
   forEach,
-  isArray,
   isFunction,
   isObject,
   isString,
@@ -17,8 +16,8 @@ function mergeClasses(a, b) {
   if (!a && !b) return "";
   if (!a) return b;
   if (!b) return a;
-  if (isArray(a)) a = a.join(" ");
-  if (isArray(b)) b = b.join(" ");
+  if (Array.isArray(a)) a = a.join(" ");
+  if (Array.isArray(b)) b = b.join(" ");
   return `${a} ${b}`;
 }
 
@@ -117,7 +116,7 @@ export function CoreAnimateQueueProvider() {
         if (classes) {
           classes = isString(classes)
             ? classes.split(" ")
-            : isArray(classes)
+            : Array.isArray(classes)
               ? classes
               : [];
           forEach(classes, (className) => {

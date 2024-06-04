@@ -17,7 +17,6 @@ export const isFunction = tis("function");
 export const isNumber = tis("number");
 export const isString = tis("string");
 export const isObject = (x) => x !== null && typeof x === "object";
-export const isArray = Array.isArray;
 export const isDate = (x) => toStr.call(x) === "[object Date]";
 export const isRegExp = (x) => toStr.call(x) === "[object RegExp]";
 /**
@@ -27,7 +26,7 @@ export const isRegExp = (x) => toStr.call(x) === "[object RegExp]";
  * where all the elements in the array are Strings, except the last one, which is a Function
  */
 export function isInjectable(val) {
-  if (isArray(val) && val.length) {
+  if (Array.isArray(val) && val.length) {
     const head = val.slice(0, -1),
       tail = val.slice(-1);
     return !(

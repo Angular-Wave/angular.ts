@@ -9,7 +9,7 @@
  * @preferred @publicapi @module ng1
  */
 import { services } from "../core/common/coreservices";
-import { applyPairs, unnestR } from "../core/common/common";
+import { applyPairs, unnestR } from "../common";
 import { isString } from "../../core/utils";
 import { trace } from "../core/common/trace";
 import { UIRouter } from "../core/router";
@@ -19,8 +19,8 @@ import {
 } from "./statebuilders/views";
 
 import { StateProvider } from "./stateProvider";
-import { getStateHookBuilder } from "./statebuilders/onEnterExitRetain";
 import { Ng1LocationServices } from "./locationServices";
+import { ResolveContext } from "../core/resolve/resolveContext";
 
 export let router = null;
 $uiRouterProvider.$inject = ["$locationProvider"];
@@ -76,7 +76,7 @@ export function runBlock($injector, $q, $uiRouter) {
   // https://github.com/angular-ui/ui-router/issues/3678
   if (!Object.prototype.hasOwnProperty.call($injector, "strictDi")) {
     try {
-      $injector.invoke(function (checkStrictDi) {});
+      $injector.invoke(() => {});
     } catch (error) {
       $injector.strictDi = !!/strict mode/.exec(error && error.toString());
     }
@@ -125,3 +125,28 @@ export const getLocals = (ctx) => {
   });
   return tuples.reduce(applyPairs, {});
 };
+
+/**
+ * This is a [[StateBuilder.builder]] function for angular1 `onEnter`, `onExit`,
+ * `onRetain` callback hooks on a [[Ng1StateDeclaration]].
+ *
+ * When the [[StateBuilder]] builds a [[StateObject]] object from a raw [[StateDeclaration]], this builder
+ * ensures that those hooks are injectable for @uirouter/angularjs (ng1).
+ *
+ * @internalapi
+ */
+const getStateHookBuilder = (hookName) =>
+  function stateHookBuilder(stateObject) {
+    const hook = stateObject[hookName];
+    const pathname = hookName === "onExit" ? "from" : "to";
+    function decoratedNg1Hook(trans, state) {
+      const resolveContext = new ResolveContext(trans.treeChanges(pathname));
+      const subContext = resolveContext.subContext(state.$$state());
+      const locals = Object.assign(getLocals(subContext), {
+        $state$: state,
+        $transition$: trans,
+      });
+      return services.$injector.invoke(hook, this, locals);
+    }
+    return hook ? decoratedNg1Hook : undefined;
+  };

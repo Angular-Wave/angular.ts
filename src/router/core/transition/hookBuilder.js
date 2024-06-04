@@ -1,5 +1,4 @@
-import { assertPredicate, unnestR, identity } from "../common/common";
-import { isArray } from "../common/predicates";
+import { assertPredicate, unnestR, identity } from "../../common";
 import { TransitionHookPhase, TransitionHookScope } from "./interface";
 import { TransitionHook } from "./transitionHook";
 /**
@@ -103,7 +102,9 @@ export class HookBuilder {
       : [this.transition, $transitions];
     return registries
       .map((reg) => reg.getHooks(hookType.name)) // Get named hooks from registries
-      .filter(assertPredicate(isArray, `broken event named: ${hookType.name}`)) // Sanity check
+      .filter(
+        assertPredicate(Array.isArray, `broken event named: ${hookType.name}`),
+      ) // Sanity check
       .reduce(unnestR, []) // Un-nest RegisteredHook[][] to RegisteredHook[] array
       .filter((hook) => hook.matches(treeChanges, transition)); // Only those satisfying matchCriteria
   }

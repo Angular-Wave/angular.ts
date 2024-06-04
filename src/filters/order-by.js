@@ -1,6 +1,5 @@
 import {
   hasCustomToString,
-  isArray,
   isFunction,
   isObject,
   isArrayLike,
@@ -27,7 +26,7 @@ export function orderByFilter($parse) {
       );
     }
 
-    if (!isArray(sortPredicate)) {
+    if (!Array.isArray(sortPredicate)) {
       sortPredicate = [sortPredicate];
     }
     if (sortPredicate.length === 0) {

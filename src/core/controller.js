@@ -3,7 +3,6 @@ import {
   assertNotHasOwnProperty,
   minErr,
   extend,
-  isArray,
   isObject,
   isString,
   getter,
@@ -149,7 +148,9 @@ export function $ControllerProvider() {
           // publicly.
           // Object creation: http://jsperf.com/create-constructor/2
           const controllerPrototype = (
-            isArray(expression) ? expression[expression.length - 1] : expression
+            Array.isArray(expression)
+              ? expression[expression.length - 1]
+              : expression
           ).prototype;
           instance = Object.create(controllerPrototype || null);
 

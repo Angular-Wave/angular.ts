@@ -1,4 +1,4 @@
-import { forEach, isArray, isObject, isFunction } from "../core/utils";
+import { forEach, isObject, isFunction } from "../core/utils";
 import {
   applyAnimationClassesFactory,
   applyAnimationStyles,
@@ -347,7 +347,7 @@ export const $$AnimateJsProvider = [
         };
 
         function lookupAnimations(classes) {
-          classes = isArray(classes) ? classes : classes.split(" ");
+          classes = Array.isArray(classes) ? classes : classes.split(" ");
           const matches = [];
           const flagMap = {};
           for (let i = 0; i < classes.length; i++) {

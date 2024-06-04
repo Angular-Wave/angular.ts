@@ -4,7 +4,6 @@ import {
   concat,
   extend,
   forEach,
-  isArray,
   isDefined,
   isFunction,
   isObject,
@@ -340,7 +339,7 @@ function jqLiteOff(element, type, fn, unsupported) {
   } else {
     const removeHandler = function (type) {
       const listenerFns = events[type];
-      if (isDefined(fn) && isArray(listenerFns)) {
+      if (isDefined(fn) && Array.isArray(listenerFns)) {
         arrayRemove(listenerFns, fn);
       }
       if (!(isDefined(fn) && listenerFns && listenerFns.length > 0)) {
@@ -473,7 +472,7 @@ function jqLiteInheritedData(element, name, value) {
   if (element.nodeType === Node.DOCUMENT_NODE) {
     element = element.documentElement;
   }
-  const names = isArray(name) ? name : [name];
+  const names = Array.isArray(name) ? name : [name];
 
   while (element) {
     for (let i = 0, ii = names.length; i < ii; i++) {

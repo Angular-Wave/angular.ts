@@ -1,4 +1,4 @@
-import { find, tail, uniqR, unnestR, inArray } from "../common/common";
+import { find, tail, uniqR, unnestR, inArray } from "../../common";
 import { propEq, not } from "../common/hof";
 import { trace } from "../common/trace";
 import { services } from "../common/coreservices";

@@ -8,7 +8,6 @@ import {
   isElement,
   nodeName_,
   extend,
-  isArray,
 } from "../../src/core/utils";
 import { countChildScopes, countWatchers } from "../../src/core/root-scope";
 import { CACHE, EXPANDO } from "../../src/core/cache";
@@ -9682,7 +9681,7 @@ describe("$compile", () => {
         const isolateScope = $rootScope.$$childHead;
 
         expect(typeof isolateScope.constructor).toBe("string");
-        expect(isArray(isolateScope.watch)).toBe(true);
+        expect(Array.isArray(isolateScope.watch)).toBe(true);
         expect(typeof isolateScope.toString).toBe("function");
         expect($rootScope.value).toBeUndefined();
         isolateScope.toString();

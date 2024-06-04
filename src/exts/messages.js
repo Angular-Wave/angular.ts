@@ -1,4 +1,4 @@
-import { forEach, isArray, isString } from "../core/utils";
+import { forEach, isString } from "../core/utils";
 
 export function initMessageModule() {
   window.angular
@@ -274,7 +274,7 @@ export function initMessageModule() {
 
               const assignRecords = function (items) {
                 records = items
-                  ? isArray(items)
+                  ? Array.isArray(items)
                     ? items
                     : items.split(/[\s,]+/)
                   : null;
@@ -351,7 +351,7 @@ export function initMessageModule() {
 
     function contains(collection, key) {
       if (collection) {
-        return isArray(collection)
+        return Array.isArray(collection)
           ? collection.indexOf(key) >= 0
           : Object.prototype.hasOwnProperty.call(collection, key);
       }

@@ -54,7 +54,7 @@ export function isArrayLike(obj) {
   // arrays, strings and jQuery/jqLite objects are array like
   // * we have to check the existence of jqLite first as this method is called
   //   via the forEach method when constructing the jqLite object in the first place
-  if (isArray(obj) || isString(obj)) return true;
+  if (Array.isArray(obj) || obj instanceof Array || isString(obj)) return true;
 
   // Support: iOS 8.2 (not reproducible in simulator)
   // "length" in obj used to prevent JIT error (gh-11508)
@@ -169,21 +169,6 @@ export function isNumber(value) {
  */
 export function isDate(value) {
   return toString.call(value) === "[object Date]";
-}
-
-/**
- * @module angular
- * @function isArray
- * @function
- *
- * @description
- * Determines if a reference is an `Array`.
- *
- * @param {*} arr Reference to check.
- * @returns {boolean} True if `value` is an `Array`.
- */
-export function isArray(arr) {
-  return Array.isArray(arr) || arr instanceof Array;
 }
 
 /**
@@ -380,7 +365,7 @@ export function forEach(obj, iterator, context) {
           iterator.call(context, obj[key], key, obj);
         }
       }
-    } else if (isArray(obj) || isArrayLike(obj)) {
+    } else if (Array.isArray(obj) || isArrayLike(obj)) {
       const isPrimitive = typeof obj !== "object";
       for (key = 0, length = obj.length; key < length; key++) {
         if (isPrimitive || key in obj) {
@@ -457,7 +442,7 @@ export function baseExtend(dst, objs, deep) {
         } else if (isElement(src)) {
           dst[key] = src[0].cloneNode(true);
         } else if (key !== "__proto__") {
-          if (!isObject(dst[key])) dst[key] = isArray(src) ? [] : {};
+          if (!isObject(dst[key])) dst[key] = Array.isArray(src) ? [] : {};
           baseExtend(dst[key], [src], true);
         }
       } else {
@@ -711,8 +696,8 @@ export function equals(o1, o2) {
   let key;
   let keySet;
   if (t1 === t2 && t1 === "object") {
-    if (isArray(o1)) {
-      if (!isArray(o2)) return false;
+    if (Array.isArray(o1)) {
+      if (!Array.isArray(o2)) return false;
       if ((length = o1.length) === o2.length) {
         for (key = 0; key < length; key++) {
           if (!equals(o1[key], o2[key])) return false;
@@ -731,7 +716,7 @@ export function equals(o1, o2) {
         isScope(o2) ||
         isWindow(o1) ||
         isWindow(o2) ||
-        isArray(o2) ||
+        Array.isArray(o2) ||
         isDate(o2) ||
         isRegExp(o2)
       )
@@ -864,7 +849,7 @@ export function stringify(value) {
       value = `${value}`;
       break;
     default:
-      if (hasCustomToString(value) && !isArray(value) && !isDate(value)) {
+      if (hasCustomToString(value) && !Array.isArray(value) && !isDate(value)) {
         value = value.toString();
       } else {
         value = toJson(value);
@@ -1048,7 +1033,7 @@ export function parseKeyValue(keyValue) {
         val = isDefined(val) ? tryDecodeURIComponent(val) : true;
         if (!Object.hasOwnProperty.call(obj, key)) {
           obj[key] = val;
-        } else if (isArray(obj[key])) {
+        } else if (Array.isArray(obj[key])) {
           obj[key].push(val);
         } else {
           obj[key] = [obj[key], val];
@@ -1062,7 +1047,7 @@ export function parseKeyValue(keyValue) {
 export function toKeyValue(obj) {
   const parts = [];
   forEach(obj, (value, key) => {
-    if (isArray(value)) {
+    if (Array.isArray(value)) {
       forEach(value, (arrayValue) => {
         parts.push(
           encodeUriQuery(key, true) +
@@ -1153,7 +1138,7 @@ export function getNgAttribute(element, ngAttr) {
  * Assumes that there are no proto properties for objects.
  */
 export function shallowCopy(src, dst) {
-  if (isArray(src)) {
+  if (Array.isArray(src)) {
     dst = dst || [];
 
     for (let i = 0, ii = src.length; i < ii; i++) {
@@ -1188,7 +1173,7 @@ export function assertArg(arg, name, reason) {
 }
 
 export function assertArgFn(arg, name, acceptArrayAnnotation) {
-  if (acceptArrayAnnotation && isArray(arg)) {
+  if (acceptArrayAnnotation && Array.isArray(arg)) {
     arg = arg[arg.length - 1];
   }
 
@@ -1338,8 +1323,8 @@ export function mergeClasses(a, b) {
   if (!a && !b) return "";
   if (!a) return b;
   if (!b) return a;
-  if (isArray(a)) a = a.join(" ");
-  if (isArray(b)) b = b.join(" ");
+  if (Array.isArray(a)) a = a.join(" ");
+  if (Array.isArray(b)) b = b.join(" ");
   return a + " " + b;
 }
 

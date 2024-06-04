@@ -1,4 +1,4 @@
-import { inArray } from "../common/common";
+import { inArray } from "../../common";
 import { prop } from "../common/hof";
 import { isString } from "../common/predicates";
 import { StateObject } from "./stateObject";

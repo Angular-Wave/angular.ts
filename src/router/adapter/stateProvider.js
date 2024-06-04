@@ -1,7 +1,7 @@
 /** @publicapi @module ng1 */ /** */
 
 import { val } from "../core/common/hof";
-import { createProxyFunctions } from "../core/common/common";
+import { createProxyFunctions } from "../common";
 import { isObject } from "../../core/utils";
 /**
  * The Angular 1 `StateProvider`

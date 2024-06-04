@@ -2,9 +2,10 @@
 <html>
   <head>
     <script src="../legacy/angular.js"></script>
-    <script src="//unpkg.com/@uirouter/angularjs/release/angular-ui-router.min.js"></script>
+
+    <script src="//unpkg.com/@uirouter/angularjs/release/angular-ui-router.js"></script>
     <script>
-      var myApp = angular.module("helloworld", ["ui.router"]);
+      var myApp = angular.module("test", ["ui.router"]);
 
       myApp.config(function ($stateProvider) {
         var helloState = {
@@ -24,9 +25,8 @@
       });
     </script>
   </head>
-  <body ng-app="helloworld">
+  <body ng-app="test">
     <a ui-sref="hello" ui-sref-active="active">Hello</a>
-    {{ 2 + 2}}
     <ui-view></ui-view>
     {{ 2 + 2}}
   </body>

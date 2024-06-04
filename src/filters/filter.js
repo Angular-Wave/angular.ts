@@ -5,7 +5,6 @@ import {
   isUndefined,
   isObject,
   lowercase,
-  isArray,
   hasCustomToString,
   equals,
 } from "../core/utils";
@@ -135,7 +134,7 @@ function deepCompare(
       matchAgainstAnyProp,
     );
   }
-  if (isArray(actual)) {
+  if (Array.isArray(actual)) {
     // In case `actual` is an array, consider it a match
     // if ANY of it's items matches `expected`
     return actual.some((item) =>

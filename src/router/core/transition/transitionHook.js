@@ -1,5 +1,5 @@
 import { TransitionHookPhase } from "./interface";
-import { defaults, noop, silentRejection } from "../common/common";
+import { defaults, noop, silentRejection } from "../../common";
 import { fnToString, maxLength } from "../common/strings";
 import { isPromise } from "../common/predicates";
 import { is, parse } from "../common/hof";

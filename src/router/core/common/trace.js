@@ -35,7 +35,6 @@
 import { parse } from "../common/hof";
 import { isNumber } from "../common/predicates";
 import { stringify, functionToString, maxLength, padString } from "./strings";
-import { safeConsole } from "./safeConsole";
 function uiViewString(uiview) {
   if (!uiview) return "ui-view (defunct)";
   const state = uiview.creationContext
@@ -119,12 +118,12 @@ export class Trace {
   /** @internal called by ui-router code */
   traceTransitionStart(trans) {
     if (!this.enabled(Category.TRANSITION)) return;
-    safeConsole.log(`${transLbl(trans)}: Started  -> ${stringify(trans)}`);
+    console.log(`${transLbl(trans)}: Started  -> ${stringify(trans)}`);
   }
   /** @internal called by ui-router code */
   traceTransitionIgnored(trans) {
     if (!this.enabled(Category.TRANSITION)) return;
-    safeConsole.log(`${transLbl(trans)}: Ignored  <> ${stringify(trans)}`);
+    console.log(`${transLbl(trans)}: Ignored  <> ${stringify(trans)}`);
   }
   /** @internal called by ui-router code */
   traceHookInvocation(step, trans, options) {
@@ -135,47 +134,47 @@ export class Trace {
         parse("traceData.context")(options) ||
         "unknown",
       name = functionToString(step.registeredHook.callback);
-    safeConsole.log(
+    console.log(
       `${transLbl(trans)}:   Hook -> ${event} context: ${context}, ${maxLength(200, name)}`,
     );
   }
   /** @internal called by ui-router code */
   traceHookResult(hookResult, trans, transitionOptions) {
     if (!this.enabled(Category.HOOK)) return;
-    safeConsole.log(
+    console.log(
       `${transLbl(trans)}:   <- Hook returned: ${maxLength(200, stringify(hookResult))}`,
     );
   }
   /** @internal called by ui-router code */
   traceResolvePath(path, when, trans) {
     if (!this.enabled(Category.RESOLVE)) return;
-    safeConsole.log(`${transLbl(trans)}:         Resolving ${path} (${when})`);
+    console.log(`${transLbl(trans)}:         Resolving ${path} (${when})`);
   }
   /** @internal called by ui-router code */
   traceResolvableResolved(resolvable, trans) {
     if (!this.enabled(Category.RESOLVE)) return;
-    safeConsole.log(
+    console.log(
       `${transLbl(trans)}:               <- Resolved  ${resolvable} to: ${maxLength(200, stringify(resolvable.data))}`,
     );
   }
   /** @internal called by ui-router code */
   traceError(reason, trans) {
     if (!this.enabled(Category.TRANSITION)) return;
-    safeConsole.log(
+    console.log(
       `${transLbl(trans)}: <- Rejected ${stringify(trans)}, reason: ${reason}`,
     );
   }
   /** @internal called by ui-router code */
   traceSuccess(finalState, trans) {
     if (!this.enabled(Category.TRANSITION)) return;
-    safeConsole.log(
+    console.log(
       `${transLbl(trans)}: <- Success  ${stringify(trans)}, final state: ${finalState.name}`,
     );
   }
   /** @internal called by ui-router code */
   traceUIViewEvent(event, viewData, extra = "") {
     if (!this.enabled(Category.UIVIEW)) return;
-    safeConsole.log(
+    console.log(
       `ui-view: ${padString(30, event)} ${uiViewString(viewData)}${extra}`,
     );
   }
@@ -207,17 +206,17 @@ export class Trace {
         return { [uivheader]: uiv, [cfgheader]: cfg };
       })
       .sort((a, b) => (a[uivheader] || "").localeCompare(b[uivheader] || ""));
-    safeConsole.table(mapping);
+    console.table(mapping);
   }
   /** @internal called by ui-router code */
   traceViewServiceEvent(event, viewConfig) {
     if (!this.enabled(Category.VIEWCONFIG)) return;
-    safeConsole.log(`VIEWCONFIG: ${event} ${viewConfigString(viewConfig)}`);
+    console.log(`VIEWCONFIG: ${event} ${viewConfigString(viewConfig)}`);
   }
   /** @internal called by ui-router code */
   traceViewServiceUIViewEvent(event, viewData) {
     if (!this.enabled(Category.VIEWCONFIG)) return;
-    safeConsole.log(`VIEWCONFIG: ${event} ${uiViewString(viewData)}`);
+    console.log(`VIEWCONFIG: ${event} ${uiViewString(viewData)}`);
   }
 }
 /**

@@ -9,9 +9,9 @@ import {
   unnestR,
   arrayTuples,
   defaults,
-} from "../common/common";
+} from "../../common";
 import { prop, propEq } from "../common/hof";
-import { isArray, isString, isDefined } from "../common/predicates";
+import { isString, isDefined } from "../common/predicates";
 import { Param, DefType } from "../params/param";
 import { joinNeighborsR, splitOnDelim } from "../common/strings";
 function quoteRegExp(str, param) {
@@ -317,7 +317,7 @@ export class UrlMatcher {
   _getDecodedParamValue(value, param) {
     if (isDefined(value)) {
       if (this.config.decodeParams && !param.type.raw) {
-        if (isArray(value)) {
+        if (Array.isArray(value)) {
           value = value.map((paramValue) => decodeURIComponent(paramValue));
         } else {
           value = decodeURIComponent(value);
@@ -515,7 +515,7 @@ export class UrlMatcher {
       if (squash !== false) return acc; // ?
       if (encoded == null) return acc;
       // If this parameter value is an array, encode the value using encodeDashes
-      if (isArray(encoded))
+      if (Array.isArray(encoded))
         return acc + map(encoded, UrlMatcher.encodeDashes).join("-");
       // If the parameter type is "raw", then do not encodeURIComponent
       if (param.raw) return acc + encoded;
@@ -528,7 +528,7 @@ export class UrlMatcher {
       .map((paramDetails) => {
         let { param, squash, encoded, isDefaultValue } = paramDetails;
         if (encoded == null || (isDefaultValue && squash !== false)) return;
-        if (!isArray(encoded)) encoded = [encoded];
+        if (!Array.isArray(encoded)) encoded = [encoded];
         if (encoded.length === 0) return;
         if (!param.raw) encoded = map(encoded, encodeURIComponent);
         return encoded.map((val) => `${param.id}=${val}`);

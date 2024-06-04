@@ -1,5 +1,4 @@
 import { isString } from "../common/predicates";
-import { safeConsole } from "../common/safeConsole";
 export class StateMatcher {
   constructor(_states) {
     this._states = _states;
@@ -28,7 +27,7 @@ export class StateMatcher {
           _state.__stateObjectCache.nameGlob.matches(name),
       );
       if (matches.length > 1) {
-        safeConsole.error(
+        console.error(
           `stateMatcher.find: Found multiple matches for ${name} using glob: `,
           matches.map((match) => match.name),
         );

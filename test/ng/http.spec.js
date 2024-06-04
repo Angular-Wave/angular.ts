@@ -1,5 +1,5 @@
 import { createInjector } from "../../src/injector";
-import { isObject, isArray } from "../../src/core/utils";
+import { isObject } from "../../src/core/utils";
 import { publishExternalAPI } from "../../src/public";
 
 export function getLastAjaxRequest() {
@@ -543,7 +543,7 @@ describe("$http", function () {
     });
     $rootScope.$apply();
 
-    expect(isArray(response.data)).toBe(true);
+    expect(Array.isArray(response.data)).toBe(true);
     expect(response.data).toEqual([1, 2, 3]);
   });
 

@@ -1,6 +1,6 @@
 import { UrlMatcher } from "./urlMatcher";
 import { isString, isDefined, isFunction } from "../common/predicates";
-import { identity } from "../common/common";
+import { identity } from "../../common";
 import { is, or, pattern } from "../common/hof";
 import { StateObject } from "../state/stateObject";
 /**

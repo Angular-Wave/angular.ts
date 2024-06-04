@@ -1,4 +1,4 @@
-import { createMap, forEach, isArray, isObject, isString } from "../core/utils";
+import { createMap, forEach, isObject, isString } from "../core/utils";
 
 function classDirective(name, selector) {
   // eslint-disable-next-line no-param-reassign
@@ -124,7 +124,7 @@ function classDirective(name, selector) {
 
     let classString = classValue;
 
-    if (isArray(classValue)) {
+    if (Array.isArray(classValue)) {
       classString = classValue.map(toClassString).join(" ");
     } else if (isObject(classValue)) {
       classString = Object.keys(classValue)

@@ -6,9 +6,14 @@
  * @packageDocumentation
  * @preferred
  */
-import { isFunction, isString, isArray, isRegExp, isDate } from "./predicates";
-import { all, any, prop, curry, not } from "./hof";
-import { services } from "./coreservices";
+import {
+  isFunction,
+  isString,
+  isRegExp,
+  isDate,
+} from "./core/common/predicates";
+import { all, any, prop, curry, not } from "./core/common/hof";
+import { services } from "./core/common/coreservices";
 export const root =
   (typeof self === "object" && self.self === self && self) ||
   (typeof global === "object" && global.global === global && global) ||
@@ -199,7 +204,7 @@ export function pluck(collection, propName) {
 }
 /** Filters an Array or an Object's properties based on a predicate */
 export function filter(collection, callback) {
-  const arr = isArray(collection),
+  const arr = Array.isArray(collection),
     result = arr ? [] : {};
   const accept = arr ? (x) => result.push(x) : (x, key) => (result[key] = x);
   forEach(collection, function (item, i) {
@@ -220,7 +225,7 @@ export function find(collection, callback) {
 export let mapObj = map;
 /** Maps an array or object properties using a callback function */
 export function map(collection, callback, target) {
-  target = target || (isArray(collection) ? [] : {});
+  target = target || (Array.isArray(collection) ? [] : {});
   forEach(collection, (item, i) => (target[i] = callback(item, i)));
   return target;
 }
@@ -274,7 +279,9 @@ export const unnestR = (memo, elem) => memo.concat(elem);
  * ```
  */
 export const flattenR = (memo, elem) =>
-  isArray(elem) ? memo.concat(elem.reduce(flattenR, [])) : pushR(memo, elem);
+  Array.isArray(elem)
+    ? memo.concat(elem.reduce(flattenR, []))
+    : pushR(memo, elem);
 /**
  * Reduce function that pushes an object to an array, then returns the array.
  * Mostly just for [[flattenR]] and [[uniqR]]
@@ -424,7 +431,7 @@ export function arrayTuples(...args) {
  */
 export function applyPairs(memo, keyValTuple) {
   let key, value;
-  if (isArray(keyValTuple)) [key, value] = keyValTuple;
+  if (Array.isArray(keyValTuple)) [key, value] = keyValTuple;
   if (!isString(key)) throw new Error("invalid parameters to applyPairs");
   memo[key] = value;
   return memo;
@@ -443,7 +450,7 @@ export function copy(src, dest) {
 }
 /** Naive forEach implementation works with Objects or Arrays */
 function _forEach(obj, cb, _this) {
-  if (isArray(obj)) return obj.forEach(cb, _this);
+  if (Array.isArray(obj)) return obj.forEach(cb, _this);
   Object.keys(obj).forEach((key) => cb(obj[key], key));
 }
 
@@ -455,11 +462,11 @@ function _equals(o1, o2) {
     t2 = typeof o2;
   if (t1 !== t2 || t1 !== "object") return false;
   const tup = [o1, o2];
-  if (all(isArray)(tup)) return _arraysEq(o1, o2);
+  if (all(Array.isArray)(tup)) return _arraysEq(o1, o2);
   if (all(isDate)(tup)) return o1.getTime() === o2.getTime();
   if (all(isRegExp)(tup)) return o1.toString() === o2.toString();
   if (all(isFunction)(tup)) return true; // meh
-  const predicates = [isFunction, isArray, isDate, isRegExp];
+  const predicates = [isFunction, Array.isArray, isDate, isRegExp];
   if (predicates.map(any).reduce((b, fn) => b || !!fn(tup), false))
     return false;
   const keys = {};

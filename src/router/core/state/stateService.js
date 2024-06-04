@@ -6,7 +6,7 @@ import {
   removeFrom,
   silenceUncaughtInPromise,
   silentRejection,
-} from "../common/common";
+} from "../../common";
 import { isDefined, isObject, isString } from "../common/predicates";
 import { Queue } from "../common/queue";
 import { services } from "../common/coreservices";

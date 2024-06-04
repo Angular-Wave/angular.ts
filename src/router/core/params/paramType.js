@@ -1,5 +1,5 @@
-import { filter, map } from "../common/common";
-import { isArray, isDefined } from "../common/predicates";
+import { filter, map } from "../../common";
+import { isDefined } from "../common/predicates";
 /**
  * An internal class which implements [[ParamTypeDefinition]].
  *
@@ -86,7 +86,7 @@ export class ParamType {
 function ArrayType(type, mode) {
   // Wrap non-array value as array
   function arrayWrap(val) {
-    return isArray(val) ? val : isDefined(val) ? [val] : [];
+    return Array.isArray(val) ? val : isDefined(val) ? [val] : [];
   }
   // Unwrap array value for "auto" mode. Return undefined for empty array.
   function arrayUnwrap(val) {
@@ -102,7 +102,7 @@ function ArrayType(type, mode) {
   // Wraps type (.is/.encode/.decode) functions to operate on each value of an array
   function arrayHandler(callback, allTruthyMode) {
     return function handleArray(val) {
-      if (isArray(val) && val.length === 0) return val;
+      if (Array.isArray(val) && val.length === 0) return val;
       const arr = arrayWrap(val);
       const result = map(arr, callback);
       return allTruthyMode === true

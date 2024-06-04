@@ -7,7 +7,6 @@ import {
   createMap,
   forEach,
   identity,
-  isArray,
   isDefined,
   isFunction,
   isObject,
@@ -175,7 +174,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
     const require =
       directive.require || (directive.controller && directive.name);
 
-    if (!isArray(require) && isObject(require)) {
+    if (!Array.isArray(require) && isObject(require)) {
       forEach(require, (value, key) => {
         const match = value.match(REQUIRE_PREFIX_REGEXP);
         const name = value.substring(match[0].length);
@@ -357,7 +356,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
     function factory($injector) {
       function makeInjectable(fn) {
-        if (isFunction(fn) || isArray(fn)) {
+        if (isFunction(fn) || Array.isArray(fn)) {
           return function (tElement, tAttrs) {
             return $injector.invoke(fn, this, {
               $element: tElement,
@@ -2144,7 +2143,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             const { require } = controllerDirective;
             if (
               controllerDirective.bindToController &&
-              !isArray(require) &&
+              !Array.isArray(require) &&
               isObject(require)
             ) {
               extend(
@@ -2364,7 +2363,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               directiveName,
             );
           }
-        } else if (isArray(require)) {
+        } else if (Array.isArray(require)) {
           value = [];
           for (let i = 0, ii = require.length; i < ii; i++) {
             value[i] = getControllers(

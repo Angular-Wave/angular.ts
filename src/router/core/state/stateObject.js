@@ -1,4 +1,4 @@
-import { defaults, find } from "../common/common";
+import { defaults, find } from "../../common";
 import { propEq } from "../common/hof";
 import { Glob } from "../common/glob";
 import { isObject, isFunction } from "../common/predicates";

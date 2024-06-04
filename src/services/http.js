@@ -7,7 +7,6 @@ import {
   forEachSorted,
   isUndefined,
   isFunction,
-  isArray,
   forEach,
   encodeUriQuery,
   isString,
@@ -67,7 +66,7 @@ export function $HttpParamSerializerProvider() {
       const parts = [];
       forEachSorted(params, (value, key) => {
         if (value === null || isUndefined(value) || isFunction(value)) return;
-        if (isArray(value)) {
+        if (Array.isArray(value)) {
           forEach(value, (v) => {
             parts.push(
               `${encodeUriQuery(key)}=${encodeUriQuery(serializeValue(v))}`,
@@ -138,7 +137,7 @@ export function $HttpParamSerializerJQLikeProvider() {
       return parts.join("&");
 
       function serialize(toSerialize, prefix, topLevel) {
-        if (isArray(toSerialize)) {
+        if (Array.isArray(toSerialize)) {
           forEach(toSerialize, (value, index) => {
             serialize(value, `${prefix}[${isObject(value) ? index : ""}]`);
           });
@@ -1380,7 +1379,7 @@ export function $HttpProvider() {
               );
             } else {
               // serving from cache
-              if (isArray(cachedResp)) {
+              if (Array.isArray(cachedResp)) {
                 resolvePromise(
                   cachedResp[1],
                   cachedResp[0],

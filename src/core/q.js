@@ -218,7 +218,6 @@
 
 import {
   forEach,
-  isArray,
   minErr,
   extend,
   isUndefined,
@@ -649,7 +648,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
   function all(promises) {
     const result = new Promise();
     let counter = 0;
-    const results = isArray(promises) ? [] : {};
+    const results = Array.isArray(promises) ? [] : {};
 
     forEach(promises, (promise, key) => {
       counter++;

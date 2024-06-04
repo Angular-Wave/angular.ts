@@ -6,7 +6,6 @@
  * @packageDocumentation
  */
 import {
-  isArray,
   isFunction,
   isInjectable,
   isNull,
@@ -16,7 +15,7 @@ import {
   isUndefined,
 } from "./predicates";
 import { Rejection } from "../transition/rejectFactory";
-import { identity, pushR, tail } from "./common";
+import { identity, pushR, tail } from "../../common";
 import { pattern, val } from "./hof";
 /**
  * Returns a string shortened to a maximum length
@@ -60,7 +59,7 @@ export function functionToString(fn) {
   return toStr;
 }
 export function fnToString(fn) {
-  const _fn = isArray(fn) ? fn.slice(-1)[0] : fn;
+  const _fn = Array.isArray(fn) ? fn.slice(-1)[0] : fn;
   return (_fn && _fn.toString()) || "undefined";
 }
 export function stringify(o) {
@@ -68,7 +67,7 @@ export function stringify(o) {
   const isRejection = Rejection.isRejectionPromise;
   const hasToString = (obj) =>
     isObject(obj) &&
-    !isArray(obj) &&
+    !Array.isArray(obj) &&
     obj.constructor !== Object &&
     isFunction(obj.toString);
   const stringifyPattern = pattern([

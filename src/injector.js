@@ -2,7 +2,6 @@ import {
   assertArgFn,
   minErr,
   forEach,
-  isArray,
   isFunction,
   isString,
   createMap,
@@ -69,7 +68,7 @@ function annotate(fn, strictDi, name) {
       }
       fn.$inject = $inject;
     }
-  } else if (isArray(fn)) {
+  } else if (Array.isArray(fn)) {
     last = fn.length - 1;
     assertArgFn(fn[last], "fn");
     $inject = fn.slice(0, last);
@@ -163,7 +162,7 @@ export function createInjector(modulesToLoad, strictDi) {
 
   function provider(name, provider_) {
     assertNotHasOwnProperty(name, "service");
-    if (isFunction(provider_) || isArray(provider_)) {
+    if (isFunction(provider_) || Array.isArray(provider_)) {
       provider_ = providerInjector.instantiate(provider_);
     }
     if (!provider_.$get) {
@@ -232,7 +231,7 @@ export function createInjector(modulesToLoad, strictDi) {
   ////////////////////////////////////
   function loadModules(modulesToLoad) {
     assertArg(
-      isUndefined(modulesToLoad) || isArray(modulesToLoad),
+      isUndefined(modulesToLoad) || Array.isArray(modulesToLoad),
       "modulesToLoad",
       "not an array",
     );
@@ -263,13 +262,13 @@ export function createInjector(modulesToLoad, strictDi) {
           runInvokeQueue(moduleFn._configBlocks);
         } else if (isFunction(module)) {
           runBlocks.push(providerInjector.invoke(module));
-        } else if (isArray(module)) {
+        } else if (Array.isArray(module)) {
           runBlocks.push(providerInjector.invoke(module));
         } else {
           assertArgFn(module, "module");
         }
       } catch (e) {
-        if (isArray(module)) {
+        if (Array.isArray(module)) {
           module = module[module.length - 1];
         }
         if (e.message && e.stack && e.stack.indexOf(e.message) === -1) {
@@ -359,7 +358,7 @@ export function createInjector(modulesToLoad, strictDi) {
       }
 
       const args = injectionArgs(fn, locals, serviceName);
-      if (isArray(fn)) {
+      if (Array.isArray(fn)) {
         fn = fn[fn.length - 1];
       }
 
@@ -375,7 +374,7 @@ export function createInjector(modulesToLoad, strictDi) {
     function instantiate(Type, locals, serviceName) {
       // Check if Type is annotated and use just the given function at n-1 as parameter
       // e.g. someModule.factory('greeter', ['$window', function(renamed$window) {}]);
-      const ctor = isArray(Type) ? Type[Type.length - 1] : Type;
+      const ctor = Array.isArray(Type) ? Type[Type.length - 1] : Type;
       const args = injectionArgs(Type, locals, serviceName);
       // Empty object at position 0 is ignored for invocation with `new`, but required.
       args.unshift(null);

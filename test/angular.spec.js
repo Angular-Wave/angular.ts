@@ -14,7 +14,6 @@ import {
   toKeyValue,
   parseKeyValue,
   isError,
-  isArray,
   isArrayLike,
   encodeUriSegment,
   encodeUriQuery,
@@ -1201,35 +1200,6 @@ describe("angular", () => {
       expect(toKeyValue({ key: [323, "value", true, 1234] })).toEqual(
         "key=323&key=value&key&key=1234",
       );
-    });
-  });
-
-  describe("isArray", () => {
-    it("should return true if passed an `Array`", () => {
-      expect(isArray([])).toBe(true);
-    });
-
-    it("should return true if passed an `Array` from a different window context", () => {
-      const iframe = document.createElement("iframe");
-      document.body.appendChild(iframe); // No `contentWindow` if not attached to the DOM.
-      const arr = new iframe.contentWindow.Array();
-      document.body.removeChild(iframe); // Clean up.
-
-      expect(arr instanceof Array).toBe(false);
-      expect(isArray(arr)).toBe(true);
-    });
-
-    it("should return true if passed an object prototypically inherited from `Array`", () => {
-      function FooArray() {}
-      FooArray.prototype = [];
-
-      expect(isArray(new FooArray())).toBe(true);
-    });
-
-    it("should return false if passed non-array objects", () => {
-      expect(isArray(document.body.childNodes)).toBe(false);
-      expect(isArray({ length: 0 })).toBe(false);
-      expect(isArray({ length: 2, 0: "one", 1: "two" })).toBe(false);
     });
   });
 

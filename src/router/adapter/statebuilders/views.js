@@ -1,5 +1,5 @@
-import { pick, forEach, tail } from "../../core/common/common";
-import { isArray, isDefined, isString } from "../../../core/utils";
+import { pick, forEach, tail } from "../../common";
+import { isDefined, isString } from "../../../core/utils";
 import { isInjectable } from "../../core/common/predicates";
 import { services } from "../../core/common/coreservices";
 import { trace } from "../../core/common/trace";
@@ -138,7 +138,7 @@ export class Ng1ViewConfig {
     const provider = this.viewDecl.controllerProvider;
     if (!isInjectable(provider)) return this.viewDecl.controller;
     const deps = services.$injector.annotate(provider);
-    const providerFn = isArray(provider) ? tail(provider) : provider;
+    const providerFn = Array.isArray(provider) ? tail(provider) : provider;
     const resolvable = new Resolvable("", providerFn, deps);
     return resolvable.get(context);
   }

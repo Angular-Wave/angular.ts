@@ -1,10 +1,9 @@
-import { filter, map, allTrueR, find } from "../common/common";
+import { filter, map, allTrueR, find } from "../../common";
 import { prop } from "../common/hof";
 import {
   isInjectable,
   isDefined,
   isString,
-  isArray,
   isUndefined,
 } from "../common/predicates";
 import { services } from "../common/coreservices";
@@ -79,7 +78,7 @@ function getReplace(config, arrayMode, isOptional, squash) {
     { from: "", to: isOptional || arrayMode ? undefined : "" },
     { from: null, to: isOptional || arrayMode ? undefined : "" },
   ];
-  const replace = isArray(config.replace) ? config.replace : [];
+  const replace = Array.isArray(config.replace) ? config.replace : [];
   if (isString(squash)) replace.push({ from: squash, to: undefined });
   const configuredKeys = map(replace, prop("from"));
   return filter(
