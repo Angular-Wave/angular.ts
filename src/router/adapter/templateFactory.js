@@ -1,6 +1,5 @@
 /** @publicapi @module view */ /** */
-import { isFunction, isObject } from "../../shared/predicates";
-import { isDefined } from "../../shared/utils";
+import { isDefined, isFunction, isObject } from "../../shared/utils";
 import { services } from "../core/common/coreservices";
 import { tail, unnestR } from "../../shared/common";
 import { Resolvable } from "../core/resolve/resolvable";
@@ -11,7 +10,6 @@ import { kebobString } from "../core/common/strings";
  */
 export class TemplateFactory {
   constructor() {
-    /** @hidden */ this._useHttp = true; // TODO investigate
     /** @hidden */ this.$get = [
       "$http",
       "$templateCache",
@@ -27,10 +25,7 @@ export class TemplateFactory {
       },
     ];
   }
-  /** @hidden */
-  useHttpService(value) {
-    this._useHttp = value;
-  }
+
   /**
    * Creates a template from a configuration object.
    *

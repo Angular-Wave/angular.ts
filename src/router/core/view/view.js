@@ -6,7 +6,7 @@ import {
   find,
 } from "../../../shared/common";
 import { curry, prop } from "../common/hof";
-import { isString } from "../../../shared/predicates";
+import { isString } from "../../../shared/utils";
 import { trace } from "../common/trace";
 /**
  * The View service

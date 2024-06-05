@@ -1,6 +1,6 @@
 import { inArray } from "../../../shared/common";
 import { prop } from "../common/hof";
-import { isString } from "../../../shared/predicates";
+import { isString } from "../../../shared/utils";
 import { StateObject } from "./stateObject";
 export class StateQueueManager {
   constructor(router, states, builder, listeners) {

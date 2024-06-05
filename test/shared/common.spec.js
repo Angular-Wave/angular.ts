@@ -1,6 +1,6 @@
 import { defaults, filter, map, mapObj, pick } from "../../src/shared/common";
 import { is, eq, not, pattern, val } from "../../src/router/core/common/hof";
-import { isInjectable } from "../../src/router/core/common/predicates";
+import { isInjectable } from "../../src/shared/predicates";
 import { Queue } from "../../src/router/core/common/queue";
 
 describe("common", function () {

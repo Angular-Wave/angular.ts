@@ -1,7 +1,7 @@
 import { filter, map, allTrueR, find } from "../../../shared/common";
 import { prop } from "../common/hof";
-import { isInjectable, isString } from "../../../shared/predicates";
-import { isDefined, isUndefined } from "../../../shared/utils";
+import { isInjectable } from "../../../shared/predicates";
+import { isDefined, isUndefined, isString } from "../../../shared/utils";
 import { services } from "../common/coreservices";
 import { ParamType } from "./paramType";
 const hasOwn = Object.prototype.hasOwnProperty;

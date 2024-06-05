@@ -1,8 +1,7 @@
-import { identity } from "../../../shared/utils";
+import { identity, isFunction, isObject } from "../../../shared/utils";
 import { services } from "../common/coreservices";
 import { trace } from "../common/trace";
 import { stringify } from "../common/strings";
-import { isFunction, isObject } from "../../../shared/predicates";
 import { isNullOrUndefined } from "../../../shared/predicates";
 // TODO: explicitly make this user configurable
 export let defaultResolvePolicy = {
@@ -44,7 +43,8 @@ export class Resolvable {
     } else if (
       isObject(arg1) &&
       arg1.token &&
-      (arg1.hasOwnProperty("resolveFn") || arg1.hasOwnProperty("data"))
+      (Object.prototype.hasOwnProperty.call(arg1, "resolveFn") ||
+        Object.prototype.hasOwnProperty.call(arg1, "data"))
     ) {
       const literal = arg1;
       return new Resolvable(

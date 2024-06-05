@@ -11,8 +11,7 @@ import {
   defaults,
 } from "../../../shared/common";
 import { prop, propEq } from "../common/hof";
-import { isString } from "../../../shared/predicates";
-import { isDefined } from "../../../shared/utils";
+import { isDefined, isString } from "../../../shared/utils";
 import { Param, DefType } from "../params/param";
 import { joinNeighborsR, splitOnDelim } from "../common/strings";
 function quoteRegExp(str, param) {

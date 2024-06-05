@@ -1,7 +1,7 @@
 import { defaults, find } from "../../../shared/common";
 import { propEq } from "../common/hof";
 import { Glob } from "../common/glob";
-import { isObject, isFunction } from "../../../shared/predicates";
+import { isFunction, isObject } from "../../../shared/utils";
 /**
  * Internal representation of a UI-Router state.
  *

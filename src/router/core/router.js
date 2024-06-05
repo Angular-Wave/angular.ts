@@ -6,7 +6,7 @@ import { StateRegistry } from "./state/stateRegistry";
 import { StateService } from "./state/stateService";
 import { UIRouterGlobals } from "./globals";
 import { removeFrom } from "../../shared/common";
-import { isFunction } from "../../shared/predicates";
+import { isFunction } from "../../shared/utils";
 import { UrlService } from "./url/urlService";
 import { trace } from "./common/trace";
 import { makeStub } from "./common/coreservices";

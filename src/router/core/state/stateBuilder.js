@@ -7,8 +7,7 @@ import {
   tail,
   copy,
 } from "../../../shared/common";
-import { isFunction, isString } from "../../../shared/predicates";
-import { isDefined } from "../../../shared/utils";
+import { isDefined, isFunction, isString } from "../../../shared/utils";
 import { stringify } from "../common/strings";
 import { is, pattern, pipe, prop, val } from "../common/hof";
 import { Resolvable } from "../resolve/resolvable";

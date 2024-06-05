@@ -6,7 +6,7 @@
  * @packageDocumentation
  * @preferred
  */
-import { isFunction, isString, isDate } from "./predicates";
+import { isDate, isFunction, isRegExp, isString } from "./utils";
 import { all, any, prop, curry, not } from "../router/core/common/hof";
 import { services } from "../router/core/common/coreservices";
 export const root =
@@ -100,11 +100,27 @@ export function createProxyFunctions(
  * prototypal inheritance helper.
  * Creates a new object which has `parent` object as its prototype, and then copies the properties from `extra` onto it
  */
-export const inherit = (parent, extra) => Object.setPrototypeOf(parent, extra);
-/** Given an array, returns true if the object is found in the array, (using indexOf) */
+
+/**
+ * prototypal inheritance helper.
+ * Creates a new object which has `parent` object as its prototype, and then copies the properties from `extra` onto it.
+ *
+ * @param {Object} parent - The object to be used as the prototype.
+ * @param {Object} [extra] - The object containing additional properties to be copied.
+ * @returns {Object} - A new object with `parent` as its prototype and properties from `extra`.
+ */
+export function inherit(parent, extra) {
+  const newObj = Object.create(parent);
+  if (extra) {
+    Object.assign(newObj, extra);
+  }
+  return newObj;
+}
+
+/** Given an array, returns true if the object is found in the array, (using includes) */
 export const inArray = curry(_inArray);
 export function _inArray(array, obj) {
-  return array.indexOf(obj) !== -1;
+  return array.includes(obj);
 }
 /**
  * Given an array, and an item, if the item is found in the array, it removes it (in-place).

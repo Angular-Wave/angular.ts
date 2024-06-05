@@ -5,15 +5,13 @@
  *
  * @packageDocumentation
  */
+import { isInjectable, isNull, isPromise } from "../../../shared/predicates";
 import {
+  isUndefined,
   isFunction,
-  isInjectable,
-  isNull,
-  isObject,
-  isPromise,
   isString,
-} from "../../../shared/predicates";
-import { isUndefined } from "../../../shared/utils";
+  isObject,
+} from "../../../shared/utils";
 import { Rejection } from "../transition/rejectFactory";
 import { identity, pushR, tail } from "../../../shared/common";
 import { pattern, val } from "./hof";

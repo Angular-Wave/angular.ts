@@ -7,8 +7,7 @@ import {
   silenceUncaughtInPromise,
   silentRejection,
 } from "../../../shared/common";
-import { isObject, isString } from "../../../shared/predicates";
-import { isDefined } from "../../../shared/utils";
+import { isDefined, isObject, isString } from "../../../shared/utils";
 import { Queue } from "../common/queue";
 import { services } from "../common/coreservices";
 import { PathUtils } from "../path/pathUtils";

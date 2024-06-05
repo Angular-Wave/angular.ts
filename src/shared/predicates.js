@@ -7,15 +7,9 @@
  * @packageDocumentation
  */
 import { and, not, pipe, prop, or } from "../router/core/common/hof";
-import { isUndefined } from "./utils";
-const tis = (t) => (x) => typeof x === t;
+import { isFunction, isObject, isString, isUndefined } from "./utils";
 export const isNull = (o) => o === null;
 export const isNullOrUndefined = or(isNull, isUndefined);
-export const isFunction = tis("function");
-export const isNumber = tis("number");
-export const isString = tis("string");
-export const isObject = (x) => x !== null && typeof x === "object";
-export const isDate = (x) => toString.call(x) === "[object Date]";
 /**
  * Predicate which checks if a value is injectable
  *

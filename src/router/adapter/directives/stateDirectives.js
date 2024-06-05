@@ -15,7 +15,7 @@ import {
   inArray,
   removeFrom,
 } from "../../../shared/common";
-import { isString, isObject } from "../../../shared/predicates";
+import { isString, isObject } from "../../../shared/utils";
 
 import { parse } from "../../core/common/hof";
 /** @hidden */
