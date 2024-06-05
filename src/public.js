@@ -100,7 +100,7 @@ import { setupModuleLoader } from "./loader";
 import { initAnimateModule } from "./animations/module";
 import { initMessageModule } from "./exts/messages";
 import { initAriaModule } from "./exts/aria";
-import { initRouter } from "./router/router";
+import { initRouter } from "./router/index";
 
 export function publishExternalAPI() {
   const module = setupModuleLoader(window);

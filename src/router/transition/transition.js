@@ -1,0 +1,741 @@
+import { trace } from "../common/trace";
+import { services } from "../common/coreservices";
+import { stringify } from "../../shared/strings";
+import {
+  map,
+  find,
+  mergeR,
+  tail,
+  omit,
+  arrayTuples,
+  unnestR,
+  identity,
+  anyTrueR,
+  flattenR,
+  uniqR,
+} from "../../shared/common";
+import { isUndefined, isObject } from "../../shared/utils";
+import { prop, propEq, val, not, is } from "../common/hof";
+import { TransitionHookPhase } from "./interface"; // has or is using
+import { TransitionHook } from "./transitionHook";
+import { matchState, makeEvent } from "./hookRegistry";
+import { HookBuilder } from "./hookBuilder";
+import { PathUtils } from "../path/pathUtils";
+import { Param } from "../params/param";
+import { Resolvable } from "../resolve/resolvable";
+import { ResolveContext } from "../resolve/resolveContext";
+import { Rejection } from "./rejectFactory";
+/** @internal */
+const stateSelf = prop("self");
+/**
+ * Represents a transition between two states.
+ *
+ * When navigating to a state, we are transitioning **from** the current state **to** the new state.
+ *
+ * This object contains all contextual information about the to/from states, parameters, resolves.
+ * It has information about all states being entered and exited as a result of the transition.
+ */
+export class Transition {
+  /** @internal */
+  onBefore(criteria, callback, options) {
+    return;
+  }
+  /** @inheritdoc */
+  onStart(criteria, callback, options) {
+    return;
+  }
+  /** @inheritdoc */
+  onExit(criteria, callback, options) {
+    return;
+  }
+  /** @inheritdoc */
+  onRetain(criteria, callback, options) {
+    return;
+  }
+  /** @inheritdoc */
+  onEnter(criteria, callback, options) {
+    return;
+  }
+  /** @inheritdoc */
+  onFinish(criteria, callback, options) {
+    return;
+  }
+  /** @inheritdoc */
+  onSuccess(criteria, callback, options) {
+    return;
+  }
+  /** @inheritdoc */
+  onError(criteria, callback, options) {
+    return;
+  }
+  /** @internal
+   * Creates the transition-level hook registration functions
+   * (which can then be used to register hooks)
+   */
+  createTransitionHookRegFns() {
+    this.router.transitionService._pluginapi
+      ._getEvents()
+      .filter((type) => type.hookPhase !== TransitionHookPhase.CREATE)
+      .forEach((type) => makeEvent(this, this.router.transitionService, type));
+  }
+  /** @internal */
+  getHooks(hookName) {
+    return this._registeredHooks[hookName];
+  }
+  /**
+   * Creates a new Transition object.
+   *
+   * If the target state is not valid, an error is thrown.
+   *
+   * @internal
+   *
+   * @param fromPath The path of [[PathNode]]s from which the transition is leaving.  The last node in the `fromPath`
+   *        encapsulates the "from state".
+   * @param targetState The target state and parameters being transitioned to (also, the transition options)
+   * @param router The [[UIRouter]] instance
+   * @internal
+   */
+  constructor(fromPath, targetState, router) {
+    /** @internal */
+    this._deferred = services.$q.defer();
+    /**
+     * This promise is resolved or rejected based on the outcome of the Transition.
+     *
+     * When the transition is successful, the promise is resolved
+     * When the transition is unsuccessful, the promise is rejected with the [[Rejection]] or javascript error
+     */
+    this.promise = this._deferred.promise;
+    /** @internal Holds the hook registration functions such as those passed to Transition.onStart() */
+    this._registeredHooks = {};
+    /** @internal */
+    this._hookBuilder = new HookBuilder(this);
+    /** Checks if this transition is currently active/running. */
+    this.isActive = () => this.router.globals.transition === this;
+    this.router = router;
+    this._targetState = targetState;
+    if (!targetState.valid()) {
+      throw new Error(targetState.error());
+    }
+    // current() is assumed to come from targetState.options, but provide a naive implementation otherwise.
+    this._options = Object.assign(
+      { current: val(this) },
+      targetState.options(),
+    );
+    this.$id = router.transitionService._transitionCount++;
+    const toPath = PathUtils.buildToPath(fromPath, targetState);
+    this._treeChanges = PathUtils.treeChanges(
+      fromPath,
+      toPath,
+      this._options.reloadState,
+    );
+    this.createTransitionHookRegFns();
+    const onCreateHooks = this._hookBuilder.buildHooksForPhase(
+      TransitionHookPhase.CREATE,
+    );
+    TransitionHook.invokeHooks(onCreateHooks, () => null);
+    this.applyViewConfigs(router);
+  }
+  applyViewConfigs(router) {
+    const enteringStates = this._treeChanges.entering.map((node) => node.state);
+    PathUtils.applyViewConfigs(
+      router.transitionService.$view,
+      this._treeChanges.to,
+      enteringStates,
+    );
+  }
+  /**
+   * @internal
+   * @returns the internal from [State] object
+   */
+  $from() {
+    return tail(this._treeChanges.from).state;
+  }
+  /**
+   * @internal
+   * @returns the internal to [State] object
+   */
+  $to() {
+    return tail(this._treeChanges.to).state;
+  }
+  /**
+   * Returns the "from state"
+   *
+   * Returns the state that the transition is coming *from*.
+   *
+   * @returns The state declaration object for the Transition's ("from state").
+   */
+  from() {
+    return this.$from().self;
+  }
+  /**
+   * Returns the "to state"
+   *
+   * Returns the state that the transition is going *to*.
+   *
+   * @returns The state declaration object for the Transition's target state ("to state").
+   */
+  to() {
+    return this.$to().self;
+  }
+  /**
+   * Gets the Target State
+   *
+   * A transition's [[TargetState]] encapsulates the [[to]] state, the [[params]], and the [[options]] as a single object.
+   *
+   * @returns the [[TargetState]] of this Transition
+   */
+  targetState() {
+    return this._targetState;
+  }
+  /**
+   * Determines whether two transitions are equivalent.
+   * @deprecated
+   */
+  is(compare) {
+    if (compare instanceof Transition) {
+      // TODO: Also compare parameters
+      return this.is({ to: compare.$to().name, from: compare.$from().name });
+    }
+    return !(
+      (compare.to && !matchState(this.$to(), compare.to, this)) ||
+      (compare.from && !matchState(this.$from(), compare.from, this))
+    );
+  }
+  params(pathname = "to") {
+    return Object.freeze(
+      this._treeChanges[pathname].map(prop("paramValues")).reduce(mergeR, {}),
+    );
+  }
+  paramsChanged() {
+    const fromParams = this.params("from");
+    const toParams = this.params("to");
+    // All the parameters declared on both the "to" and "from" paths
+    const allParamDescriptors = []
+      .concat(this._treeChanges.to)
+      .concat(this._treeChanges.from)
+      .map((pathNode) => pathNode.paramSchema)
+      .reduce(flattenR, [])
+      .reduce(uniqR, []);
+    const changedParamDescriptors = Param.changed(
+      allParamDescriptors,
+      fromParams,
+      toParams,
+    );
+    return changedParamDescriptors.reduce((changedValues, descriptor) => {
+      changedValues[descriptor.id] = toParams[descriptor.id];
+      return changedValues;
+    }, {});
+  }
+  /**
+   * Creates a [[UIInjector]] Dependency Injector
+   *
+   * Returns a Dependency Injector for the Transition's target state (to state).
+   * The injector provides resolve values which the target state has access to.
+   *
+   * The `UIInjector` can also provide values from the native root/global injector (ng1/ng2).
+   *
+   * #### Example:
+   * ```js
+   * .onEnter({ entering: 'myState' }, trans => {
+   *   var myResolveValue = trans.injector().get('myResolve');
+   *   // Inject a global service from the global/native injector (if it exists)
+   *   var MyService = trans.injector().get('MyService');
+   * })
+   * ```
+   *
+   * In some cases (such as `onBefore`), you may need access to some resolve data but it has not yet been fetched.
+   * You can use [[UIInjector.getAsync]] to get a promise for the data.
+   * #### Example:
+   * ```js
+   * .onBefore({}, trans => {
+   *   return trans.injector().getAsync('myResolve').then(myResolveValue =>
+   *     return myResolveValue !== 'ABORT';
+   *   });
+   * });
+   * ```
+   *
+   * If a `state` is provided, the injector that is returned will be limited to resolve values that the provided state has access to.
+   * This can be useful if both a parent state `foo` and a child state `foo.bar` have both defined a resolve such as `data`.
+   * #### Example:
+   * ```js
+   * .onEnter({ to: 'foo.bar' }, trans => {
+   *   // returns result of `foo` state's `myResolve` resolve
+   *   // even though `foo.bar` also has a `myResolve` resolve
+   *   var fooData = trans.injector('foo').get('myResolve');
+   * });
+   * ```
+   *
+   * If you need resolve data from the exiting states, pass `'from'` as `pathName`.
+   * The resolve data from the `from` path will be returned.
+   * #### Example:
+   * ```js
+   * .onExit({ exiting: 'foo.bar' }, trans => {
+   *   // Gets the resolve value of `myResolve` from the state being exited
+   *   var fooData = trans.injector(null, 'from').get('myResolve');
+   * });
+   * ```
+   *
+   *
+   * @param state Limits the resolves provided to only the resolves the provided state has access to.
+   * @param pathName Default: `'to'`: Chooses the path for which to create the injector. Use this to access resolves for `exiting` states.
+   *
+   * @returns a [[UIInjector]]
+   */
+  injector(state, pathName = "to") {
+    let path = this._treeChanges[pathName];
+    if (state)
+      path = PathUtils.subPath(
+        path,
+        (node) => node.state === state || node.state.name === state,
+      );
+    return new ResolveContext(path).injector();
+  }
+  /**
+   * Gets all available resolve tokens (keys)
+   *
+   * This method can be used in conjunction with [[injector]] to inspect the resolve values
+   * available to the Transition.
+   *
+   * This returns all the tokens defined on [[StateDeclaration.resolve]] blocks, for the states
+   * in the Transition's [[TreeChanges.to]] path.
+   *
+   * #### Example:
+   * This example logs all resolve values
+   * ```js
+   * let tokens = trans.getResolveTokens();
+   * tokens.forEach(token => console.log(token + " = " + trans.injector().get(token)));
+   * ```
+   *
+   * #### Example:
+   * This example creates promises for each resolve value.
+   * This triggers fetches of resolves (if any have not yet been fetched).
+   * When all promises have all settled, it logs the resolve values.
+   * ```js
+   * let tokens = trans.getResolveTokens();
+   * let promise = tokens.map(token => trans.injector().getAsync(token));
+   * Promise.all(promises).then(values => console.log("Resolved values: " + values));
+   * ```
+   *
+   * Note: Angular 1 users whould use `$q.all()`
+   *
+   * @param pathname resolve context's path name (e.g., `to` or `from`)
+   *
+   * @returns an array of resolve tokens (keys)
+   */
+  getResolveTokens(pathname = "to") {
+    return new ResolveContext(this._treeChanges[pathname]).getTokens();
+  }
+  /**
+   * Dynamically adds a new [[Resolvable]] (i.e., [[StateDeclaration.resolve]]) to this transition.
+   *
+   * Allows a transition hook to dynamically add a Resolvable to this Transition.
+   *
+   * Use the [[Transition.injector]] to retrieve the resolved data in subsequent hooks ([[UIInjector.get]]).
+   *
+   * If a `state` argument is provided, the Resolvable is processed when that state is being entered.
+   * If no `state` is provided then the root state is used.
+   * If the given `state` has already been entered, the Resolvable is processed when any child state is entered.
+   * If no child states will be entered, the Resolvable is processed during the `onFinish` phase of the Transition.
+   *
+   * The `state` argument also scopes the resolved data.
+   * The resolved data is available from the injector for that `state` and any children states.
+   *
+   * #### Example:
+   * ```js
+   * transitionService.onBefore({}, transition => {
+   *   transition.addResolvable({
+   *     token: 'myResolve',
+   *     deps: ['MyService'],
+   *     resolveFn: myService => myService.getData()
+   *   });
+   * });
+   * ```
+   *
+   * @param resolvable a [[ResolvableLiteral]] object (or a [[Resolvable]])
+   * @param state the state in the "to path" which should receive the new resolve (otherwise, the root state)
+   */
+  addResolvable(resolvable, state = "") {
+    resolvable = is(Resolvable)(resolvable)
+      ? resolvable
+      : new Resolvable(resolvable);
+    const stateName = typeof state === "string" ? state : state.name;
+    const topath = this._treeChanges.to;
+    const targetNode = find(topath, (node) => node.state.name === stateName);
+    const resolveContext = new ResolveContext(topath);
+    resolveContext.addResolvables([resolvable], targetNode.state);
+  }
+  /**
+   * Gets the transition from which this transition was redirected.
+   *
+   * If the current transition is a redirect, this method returns the transition that was redirected.
+   *
+   * #### Example:
+   * ```js
+   * let transitionA = $state.go('A').transition
+   * transitionA.onStart({}, () => $state.target('B'));
+   * $transitions.onSuccess({ to: 'B' }, (trans) => {
+   *   trans.to().name === 'B'; // true
+   *   trans.redirectedFrom() === transitionA; // true
+   * });
+   * ```
+   *
+   * @returns The previous Transition, or null if this Transition is not the result of a redirection
+   */
+  redirectedFrom() {
+    return this._options.redirectedFrom || null;
+  }
+  /**
+   * Gets the original transition in a redirect chain
+   *
+   * A transition might belong to a long chain of multiple redirects.
+   * This method walks the [[redirectedFrom]] chain back to the original (first) transition in the chain.
+   *
+   * #### Example:
+   * ```js
+   * // states
+   * registry.register({ name: 'A', redirectTo: 'B' });
+   * registry.register({ name: 'B', redirectTo: 'C' });
+   * registry.register({ name: 'C', redirectTo: 'D' });
+   * registry.register({ name: 'D' });
+   *
+   * let transitionA = $state.go('A').transition
+   *
+   * $transitions.onSuccess({ to: 'D' }, (trans) => {
+   *   trans.to().name === 'D'; // true
+   *   trans.redirectedFrom().to().name === 'C'; // true
+   *   trans.originalTransition() === transitionA; // true
+   *   trans.originalTransition().to().name === 'A'; // true
+   * });
+   * ```
+   *
+   * @returns The original Transition that started a redirect chain
+   */
+  originalTransition() {
+    const rf = this.redirectedFrom();
+    return (rf && rf.originalTransition()) || this;
+  }
+  /**
+   * Get the transition options
+   *
+   * @returns the options for this Transition.
+   */
+  options() {
+    return this._options;
+  }
+  /**
+   * Gets the states being entered.
+   *
+   * @returns an array of states that will be entered during this transition.
+   */
+  entering() {
+    return map(this._treeChanges.entering, prop("state")).map(stateSelf);
+  }
+  /**
+   * Gets the states being exited.
+   *
+   * @returns an array of states that will be exited during this transition.
+   */
+  exiting() {
+    return map(this._treeChanges.exiting, prop("state"))
+      .map(stateSelf)
+      .reverse();
+  }
+  /**
+   * Gets the states being retained.
+   *
+   * @returns an array of states that are already entered from a previous Transition, that will not be
+   *    exited during this Transition
+   */
+  retained() {
+    return map(this._treeChanges.retained, prop("state")).map(stateSelf);
+  }
+  /**
+   * Get the [[ViewConfig]]s associated with this Transition
+   *
+   * Each state can define one or more views (template/controller), which are encapsulated as `ViewConfig` objects.
+   * This method fetches the `ViewConfigs` for a given path in the Transition (e.g., "to" or "entering").
+   *
+   * @param pathname the name of the path to fetch views for:
+   *   (`'to'`, `'from'`, `'entering'`, `'exiting'`, `'retained'`)
+   * @param state If provided, only returns the `ViewConfig`s for a single state in the path
+   *
+   * @returns a list of ViewConfig objects for the given path.
+   */
+  views(pathname = "entering", state) {
+    let path = this._treeChanges[pathname];
+    path = !state ? path : path.filter(propEq("state", state));
+    return path.map(prop("views")).filter(identity).reduce(unnestR, []);
+  }
+  treeChanges(pathname) {
+    return pathname ? this._treeChanges[pathname] : this._treeChanges;
+  }
+  /**
+   * Creates a new transition that is a redirection of the current one.
+   *
+   * This transition can be returned from a [[TransitionService]] hook to
+   * redirect a transition to a new state and/or set of parameters.
+   *
+   * @internal
+   *
+   * @returns Returns a new [[Transition]] instance.
+   */
+  redirect(targetState) {
+    let redirects = 1,
+      trans = this;
+    // tslint:disable-next-line:no-conditional-assignment
+    while ((trans = trans.redirectedFrom()) != null) {
+      if (++redirects > 20)
+        throw new Error(`Too many consecutive Transition redirects (20+)`);
+    }
+    const redirectOpts = { redirectedFrom: this, source: "redirect" };
+    // If the original transition was caused by URL sync, then use { location: 'replace' }
+    // on the new transition (unless the target state explicitly specifies location: false).
+    // This causes the original url to be replaced with the url for the redirect target
+    // so the original url disappears from the browser history.
+    if (
+      this.options().source === "url" &&
+      targetState.options().location !== false
+    ) {
+      redirectOpts.location = "replace";
+    }
+    const newOptions = Object.assign(
+      {},
+      this.options(),
+      targetState.options(),
+      redirectOpts,
+    );
+    targetState = targetState.withOptions(newOptions, true);
+    const newTransition = this.router.transitionService.create(
+      this._treeChanges.from,
+      targetState,
+    );
+    const originalEnteringNodes = this._treeChanges.entering;
+    const redirectEnteringNodes = newTransition._treeChanges.entering;
+    // --- Re-use resolve data from original transition ---
+    // When redirecting from a parent state to a child state where the parent parameter values haven't changed
+    // (because of the redirect), the resolves fetched by the original transition are still valid in the
+    // redirected transition.
+    //
+    // This allows you to define a redirect on a parent state which depends on an async resolve value.
+    // You can wait for the resolve, then redirect to a child state based on the result.
+    // The redirected transition does not have to re-fetch the resolve.
+    // ---------------------------------------------------------
+    const nodeIsReloading = (reloadState) => (node) => {
+      return reloadState && node.state.includes[reloadState.name];
+    };
+    // Find any "entering" nodes in the redirect path that match the original path and aren't being reloaded
+    const matchingEnteringNodes = PathUtils.matching(
+      redirectEnteringNodes,
+      originalEnteringNodes,
+      PathUtils.nonDynamicParams,
+    ).filter(not(nodeIsReloading(targetState.options().reloadState)));
+    // Use the existing (possibly pre-resolved) resolvables for the matching entering nodes.
+    matchingEnteringNodes.forEach((node, idx) => {
+      node.resolvables = originalEnteringNodes[idx].resolvables;
+    });
+    return newTransition;
+  }
+  /** @internal If a transition doesn't exit/enter any states, returns any [[Param]] whose value changed */
+  _changedParams() {
+    const tc = this._treeChanges;
+    /** Return undefined if it's not a "dynamic" transition, for the following reasons */
+    // If user explicitly wants a reload
+    if (this._options.reload) return undefined;
+    // If any states are exiting or entering
+    if (tc.exiting.length || tc.entering.length) return undefined;
+    // If to/from path lengths differ
+    if (tc.to.length !== tc.from.length) return undefined;
+    // If the to/from paths are different
+    const pathsDiffer = arrayTuples(tc.to, tc.from)
+      .map((tuple) => tuple[0].state !== tuple[1].state)
+      .reduce(anyTrueR, false);
+    if (pathsDiffer) return undefined;
+    // Find any parameter values that differ
+    const nodeSchemas = tc.to.map((node) => node.paramSchema);
+    const [toValues, fromValues] = [tc.to, tc.from].map((path) =>
+      path.map((x) => x.paramValues),
+    );
+    const tuples = arrayTuples(nodeSchemas, toValues, fromValues);
+    return tuples
+      .map(([schema, toVals, fromVals]) =>
+        Param.changed(schema, toVals, fromVals),
+      )
+      .reduce(unnestR, []);
+  }
+  /**
+   * Returns true if the transition is dynamic.
+   *
+   * A transition is dynamic if no states are entered nor exited, but at least one dynamic parameter has changed.
+   *
+   * @returns true if the Transition is dynamic
+   */
+  dynamic() {
+    const changes = this._changedParams();
+    return !changes
+      ? false
+      : changes.map((x) => x.dynamic).reduce(anyTrueR, false);
+  }
+  /**
+   * Returns true if the transition is ignored.
+   *
+   * A transition is ignored if no states are entered nor exited, and no parameter values have changed.
+   *
+   * @returns true if the Transition is ignored.
+   */
+  ignored() {
+    return !!this._ignoredReason();
+  }
+  /** @internal */
+  _ignoredReason() {
+    const pending = this.router.globals.transition;
+    const reloadState = this._options.reloadState;
+    const same = (pathA, pathB) => {
+      if (pathA.length !== pathB.length) return false;
+      const matching = PathUtils.matching(pathA, pathB);
+      return (
+        pathA.length ===
+        matching.filter(
+          (node) => !reloadState || !node.state.includes[reloadState.name],
+        ).length
+      );
+    };
+    const newTC = this.treeChanges();
+    const pendTC = pending && pending.treeChanges();
+    if (
+      pendTC &&
+      same(pendTC.to, newTC.to) &&
+      same(pendTC.exiting, newTC.exiting)
+    )
+      return "SameAsPending";
+    if (
+      newTC.exiting.length === 0 &&
+      newTC.entering.length === 0 &&
+      same(newTC.from, newTC.to)
+    )
+      return "SameAsCurrent";
+  }
+  /**
+   * Runs the transition
+   *
+   * This method is generally called from the [[StateService.transitionTo]]
+   *
+   * @internal
+   *
+   * @returns a promise for a successful transition.
+   */
+  run() {
+    const runAllHooks = TransitionHook.runAllHooks;
+    // Gets transition hooks array for the given phase
+    const getHooksFor = (phase) => this._hookBuilder.buildHooksForPhase(phase);
+    // When the chain is complete, then resolve or reject the deferred
+    const transitionSuccess = () => {
+      trace.traceSuccess(this.$to(), this);
+      this.success = true;
+      this._deferred.resolve(this.to());
+      runAllHooks(getHooksFor(TransitionHookPhase.SUCCESS));
+    };
+    const transitionError = (reason) => {
+      trace.traceError(reason, this);
+      this.success = false;
+      this._deferred.reject(reason);
+      this._error = reason;
+      runAllHooks(getHooksFor(TransitionHookPhase.ERROR));
+    };
+    const runTransition = () => {
+      // Wait to build the RUN hook chain until the BEFORE hooks are done
+      // This allows a BEFORE hook to dynamically add additional RUN hooks via the Transition object.
+      const allRunHooks = getHooksFor(TransitionHookPhase.RUN);
+      const done = () => services.$q.when(undefined);
+      return TransitionHook.invokeHooks(allRunHooks, done);
+    };
+    const startTransition = () => {
+      const globals = this.router.globals;
+      globals.lastStartedTransitionId = this.$id;
+      globals.transition = this;
+      globals.transitionHistory.enqueue(this);
+      trace.traceTransitionStart(this);
+      return services.$q.when(undefined);
+    };
+    const allBeforeHooks = getHooksFor(TransitionHookPhase.BEFORE);
+    TransitionHook.invokeHooks(allBeforeHooks, startTransition)
+      .then(runTransition)
+      .then(transitionSuccess, transitionError);
+    return this.promise;
+  }
+  /**
+   * Checks if the Transition is valid
+   *
+   * @returns true if the Transition is valid
+   */
+  valid() {
+    return !this.error() || this.success !== undefined;
+  }
+  /**
+   * Aborts this transition
+   *
+   * Imperative API to abort a Transition.
+   * This only applies to Transitions that are not yet complete.
+   */
+  abort() {
+    // Do not set flag if the transition is already complete
+    if (isUndefined(this.success)) {
+      this._aborted = true;
+    }
+  }
+  /**
+   * The Transition error reason.
+   *
+   * If the transition is invalid (and could not be run), returns the reason the transition is invalid.
+   * If the transition was valid and ran, but was not successful, returns the reason the transition failed.
+   *
+   * @returns a transition rejection explaining why the transition is invalid, or the reason the transition failed.
+   */
+  error() {
+    const state = this.$to();
+    if (state.self.abstract) {
+      return Rejection.invalid(
+        `Cannot transition to abstract state '${state.name}'`,
+      );
+    }
+    const paramDefs = state.parameters();
+    const values = this.params();
+    const invalidParams = paramDefs.filter(
+      (param) => !param.validates(values[param.id]),
+    );
+    if (invalidParams.length) {
+      const invalidValues = invalidParams
+        .map((param) => `[${param.id}:${stringify(values[param.id])}]`)
+        .join(", ");
+      const detail = `The following parameter values are not valid for state '${state.name}': ${invalidValues}`;
+      return Rejection.invalid(detail);
+    }
+    if (this.success === false) return this._error;
+  }
+  /**
+   * A string representation of the Transition
+   *
+   * @returns A string representation of the Transition
+   */
+  toString() {
+    const fromStateOrName = this.from();
+    const toStateOrName = this.to();
+    const avoidEmptyHash = (params) =>
+      params["#"] !== null && params["#"] !== undefined
+        ? params
+        : omit(params, ["#"]);
+    // (X) means the to state is invalid.
+    const id = this.$id,
+      from = isObject(fromStateOrName) ? fromStateOrName.name : fromStateOrName,
+      fromParams = stringify(
+        avoidEmptyHash(
+          this._treeChanges.from.map(prop("paramValues")).reduce(mergeR, {}),
+        ),
+      ),
+      toValid = this.valid() ? "" : "(X) ",
+      to = isObject(toStateOrName) ? toStateOrName.name : toStateOrName,
+      toParams = stringify(avoidEmptyHash(this.params()));
+    return `Transition#${id}( '${from}'${fromParams} -> ${toValid}'${to}'${toParams} )`;
+  }
+}
+/** @internal */
+Transition.diToken = Transition;

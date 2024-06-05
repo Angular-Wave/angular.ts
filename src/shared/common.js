@@ -7,8 +7,8 @@
  * @preferred
  */
 import { isDate, isFunction, isRegExp, isString } from "./utils";
-import { all, any, prop, curry, not } from "../router/core/common/hof";
-import { services } from "../router/core/common/coreservices";
+import { all, any, prop, curry, not } from "../router/common/hof";
+import { services } from "../router/common/coreservices";
 export const root =
   (typeof self === "object" && self.self === self && self) ||
   (typeof global === "object" && global.global === global && global) ||

@@ -6,7 +6,7 @@
  *
  * @packageDocumentation
  */
-import { and, not, pipe, prop, or } from "../router/core/common/hof";
+import { and, not, pipe, prop, or } from "../router/common/hof";
 import { isFunction, isObject, isString, isUndefined } from "./utils";
 export const isNull = (o) => o === null;
 export const isNullOrUndefined = or(isNull, isUndefined);
