@@ -1,5 +1,5 @@
 import { removeFrom, tail, identity, mapObj } from "../../../shared/common";
-import { isString, isFunction } from "../common/predicates";
+import { isString, isFunction } from "../../../shared/predicates";
 import { Glob } from "../common/glob";
 import {
   // has or is using

@@ -1,5 +1,6 @@
 import { filter, tail, unnestR } from "../../../shared/common";
-import { isDefined, isFunction, isString } from "../../core/common/predicates";
+import { isFunction, isString } from "../../../shared/predicates";
+import { isDefined } from "../../../shared/utils";
 import { kebobString } from "../../core/common/strings";
 import { noop } from "../../../shared/common";
 import { parse } from "../../core/common/hof";

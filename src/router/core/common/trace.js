@@ -33,7 +33,7 @@
  * @packageDocumentation
  */
 import { parse } from "../common/hof";
-import { isNumber } from "../common/predicates";
+import { isNumber } from "../../../shared/predicates";
 import { stringify, functionToString, maxLength, padString } from "./strings";
 function uiViewString(uiview) {
   if (!uiview) return "ui-view (defunct)";

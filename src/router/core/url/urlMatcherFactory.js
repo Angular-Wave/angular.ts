@@ -1,4 +1,9 @@
-import { forEach, isDefined, isFunction, isObject } from "../../../shared/utils";
+import {
+  forEach,
+  isDefined,
+  isFunction,
+  isObject,
+} from "../../../shared/utils";
 import { UrlMatcher } from "./urlMatcher";
 import { DefType, Param } from "../params/param";
 

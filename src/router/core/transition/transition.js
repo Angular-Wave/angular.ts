@@ -14,7 +14,8 @@ import {
   flattenR,
   uniqR,
 } from "../../../shared/common";
-import { isObject, isUndefined } from "../common/predicates";
+import { isObject } from "../../../shared/predicates";
+import { isUndefined } from "../../../shared/utils";
 import { prop, propEq, val, not, is } from "../common/hof";
 import { TransitionHookPhase } from "./interface"; // has or is using
 import { TransitionHook } from "./transitionHook";

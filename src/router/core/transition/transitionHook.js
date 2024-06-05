@@ -1,7 +1,7 @@
 import { TransitionHookPhase } from "./interface";
 import { defaults, noop, silentRejection } from "../../../shared/common";
 import { fnToString, maxLength } from "../common/strings";
-import { isPromise } from "../common/predicates";
+import { isPromise } from "../../../shared/predicates";
 import { is, parse } from "../common/hof";
 import { trace } from "../common/trace";
 import { services } from "../common/coreservices";

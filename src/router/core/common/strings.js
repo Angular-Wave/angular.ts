@@ -12,8 +12,8 @@ import {
   isObject,
   isPromise,
   isString,
-  isUndefined,
-} from "./predicates";
+} from "../../../shared/predicates";
+import { isUndefined } from "../../../shared/utils";
 import { Rejection } from "../transition/rejectFactory";
 import { identity, pushR, tail } from "../../../shared/common";
 import { pattern, val } from "./hof";

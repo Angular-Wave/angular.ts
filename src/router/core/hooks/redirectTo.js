@@ -1,4 +1,4 @@
-import { isString, isFunction } from "../common/predicates";
+import { isString, isFunction } from "../../../shared/predicates";
 import { services } from "../common/coreservices";
 import { TargetState } from "../state/targetState";
 /**

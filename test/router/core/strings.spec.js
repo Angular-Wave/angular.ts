@@ -1,4 +1,4 @@
-import { stripLastPathElement } from "../../src/router/core/common/strings";
+import { stripLastPathElement } from "../../../src/router/core/common/strings";
 
 describe("string functions:", () => {
   describe("stripLastPathElement", () => {

@@ -7,7 +7,8 @@ import {
   map,
   pick,
 } from "../../../shared/common";
-import { isDefined, isNullOrUndefined } from "../common/predicates";
+import { isNullOrUndefined } from "../../../shared/predicates";
+import { isDefined } from "../../../shared/utils";
 import { is } from "../common/hof";
 import { services } from "../common/coreservices";
 import { ParamType } from "./paramType";

@@ -1,4 +1,4 @@
-import { isString } from "../common/predicates";
+import { isString } from "../../../shared/predicates";
 export class StateMatcher {
   constructor(_states) {
     this._states = _states;

@@ -1,4 +1,4 @@
-import { isObject, isString } from "../common/predicates";
+import { isObject, isString } from "../../../shared/predicates";
 import { stringify } from "../common/strings";
 /**
  * Encapsulate the target (destination) state/params/options of a [[Transition]].

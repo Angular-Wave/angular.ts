@@ -2,8 +2,8 @@ import { identity } from "../../../shared/utils";
 import { services } from "../common/coreservices";
 import { trace } from "../common/trace";
 import { stringify } from "../common/strings";
-import { isFunction, isObject } from "../common/predicates";
-import { isNullOrUndefined } from "../common/predicates";
+import { isFunction, isObject } from "../../../shared/predicates";
+import { isNullOrUndefined } from "../../../shared/predicates";
 // TODO: explicitly make this user configurable
 export let defaultResolvePolicy = {
   when: "LAZY",

@@ -6,12 +6,7 @@
  * @packageDocumentation
  * @preferred
  */
-import {
-  isFunction,
-  isString,
-  isRegExp,
-  isDate,
-} from "../router/core/common/predicates";
+import { isFunction, isString, isDate } from "./predicates";
 import { all, any, prop, curry, not } from "../router/core/common/hof";
 import { services } from "../router/core/common/coreservices";
 export const root =

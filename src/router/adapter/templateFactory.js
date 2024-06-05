@@ -1,9 +1,6 @@
 /** @publicapi @module view */ /** */
-import {
-  isDefined,
-  isFunction,
-  isObject,
-} from "../core/common/predicates";
+import { isFunction, isObject } from "../../shared/predicates";
+import { isDefined } from "../../shared/utils";
 import { services } from "../core/common/coreservices";
 import { tail, unnestR } from "../../shared/common";
 import { Resolvable } from "../core/resolve/resolvable";

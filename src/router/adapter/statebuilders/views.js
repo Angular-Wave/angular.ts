@@ -1,6 +1,6 @@
 import { pick, forEach, tail } from "../../../shared/common";
 import { isDefined, isString } from "../../../shared/utils";
-import { isInjectable } from "../../core/common/predicates";
+import { isInjectable } from "../../../shared/predicates";
 import { services } from "../../core/common/coreservices";
 import { trace } from "../../core/common/trace";
 import { ViewService } from "../../core/view/view";
