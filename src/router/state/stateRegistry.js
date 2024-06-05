@@ -9,11 +9,10 @@ import { propEq } from "../common/hof";
  * This API is found at `router.stateRegistry` ([[UIRouter.stateRegistry]])
  */
 export class StateRegistry {
-  /** @internal */
   constructor(router) {
     this.router = router;
     this.states = {};
-    /** @internal */
+
     this.listeners = [];
     this.matcher = new StateMatcher(this.states);
     this.builder = new StateBuilder(this.matcher, router.urlMatcherFactory);
@@ -25,7 +24,7 @@ export class StateRegistry {
     );
     this._registerRoot();
   }
-  /** @internal */
+
   _registerRoot() {
     const rootStateDef = {
       name: "",
@@ -39,7 +38,7 @@ export class StateRegistry {
     const _root = (this._root = this.stateQueue.register(rootStateDef));
     _root.navigable = null;
   }
-  /** @internal */
+
   dispose() {
     this.stateQueue.dispose();
     this.listeners = [];
@@ -108,7 +107,7 @@ export class StateRegistry {
   register(stateDefinition) {
     return this.stateQueue.register(stateDefinition);
   }
-  /** @internal */
+
   _deregisterTree(state) {
     const all = this.get().map((s) => s.$$state());
     const getChildren = (states) => {

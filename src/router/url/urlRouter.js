@@ -15,8 +15,7 @@ function appendBasePath(url, isHtml5, absolute, baseHref) {
  * For configuring URL rules, use the [[UrlRules]] which can be found as [[UrlService.rules]].
  */
 export class UrlRouter {
-  /** @internal */
-  constructor(/** @internal */ router) {
+  constructor(router) {
     this.router = router;
     // Delegate these calls to [[UrlService]]
     /** @deprecated use [[UrlService.sync]]*/

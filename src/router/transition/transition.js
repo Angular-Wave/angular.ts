@@ -25,7 +25,7 @@ import { Param } from "../params/param";
 import { Resolvable } from "../resolve/resolvable";
 import { ResolveContext } from "../resolve/resolveContext";
 import { Rejection } from "./rejectFactory";
-/** @internal */
+
 const stateSelf = prop("self");
 /**
  * Represents a transition between two states.
@@ -36,7 +36,6 @@ const stateSelf = prop("self");
  * It has information about all states being entered and exited as a result of the transition.
  */
 export class Transition {
-  /** @internal */
   onBefore(criteria, callback, options) {
     return;
   }
@@ -78,7 +77,7 @@ export class Transition {
       .filter((type) => type.hookPhase !== TransitionHookPhase.CREATE)
       .forEach((type) => makeEvent(this, this.router.transitionService, type));
   }
-  /** @internal */
+
   getHooks(hookName) {
     return this._registeredHooks[hookName];
   }
@@ -96,7 +95,6 @@ export class Transition {
    * @internal
    */
   constructor(fromPath, targetState, router) {
-    /** @internal */
     this._deferred = services.$q.defer();
     /**
      * This promise is resolved or rejected based on the outcome of the Transition.
@@ -107,7 +105,7 @@ export class Transition {
     this.promise = this._deferred.promise;
     /** @internal Holds the hook registration functions such as those passed to Transition.onStart() */
     this._registeredHooks = {};
-    /** @internal */
+
     this._hookBuilder = new HookBuilder(this);
     /** Checks if this transition is currently active/running. */
     this.isActive = () => this.router.globals.transition === this;
@@ -585,7 +583,7 @@ export class Transition {
   ignored() {
     return !!this._ignoredReason();
   }
-  /** @internal */
+
   _ignoredReason() {
     const pending = this.router.globals.transition;
     const reloadState = this._options.reloadState;
@@ -737,5 +735,5 @@ export class Transition {
     return `Transition#${id}( '${from}'${fromParams} -> ${toValid}'${to}'${toParams} )`;
   }
 }
-/** @internal */
+
 Transition.diToken = Transition;

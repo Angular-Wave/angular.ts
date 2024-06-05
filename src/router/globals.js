@@ -14,11 +14,11 @@ export class UIRouterGlobals {
      * The parameter values from the latest successful transition
      */
     this.params = new StateParams();
-    /** @internal */
+
     this.lastStartedTransitionId = -1;
-    /** @internal */
+
     this.transitionHistory = new Queue([], 1);
-    /** @internal */
+
     this.successfulTransitions = new Queue([], 1);
   }
   dispose() {

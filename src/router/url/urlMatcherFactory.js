@@ -42,7 +42,7 @@ export class ParamFactory {
  */
 export class UrlMatcherFactory {
   // TODO: move implementations to UrlConfig (urlService.config)
-  constructor(/** @internal */ router) {
+  constructor(router) {
     this.router = router;
     /** Creates a new [[Param]] for a given location (DefType) */
     this.paramFactory = new ParamFactory(this.router);
@@ -107,7 +107,7 @@ export class UrlMatcherFactory {
     });
     return result;
   }
-  /** @internal */
+
   $get() {
     const urlConfig = this.router.urlService.config;
     urlConfig.paramTypes.enqueue = false;

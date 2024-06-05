@@ -69,14 +69,13 @@ export class ViewService {
     }
     return { uiViewName, uiViewContextAnchor };
   }
-  /** @internal */
-  constructor(/** @internal */ router) {
+
+  constructor(router) {
     this.router = router;
-    /** @internal */ this._uiViews = [];
-    /** @internal */ this._viewConfigs = [];
-    /** @internal */ this._viewConfigFactories = {};
-    /** @internal */ this._listeners = [];
-    /** @internal */
+    this._uiViews = [];
+    this._viewConfigs = [];
+    this._viewConfigFactories = {};
+    this._listeners = [];
     this._pluginapi = {
       _rootViewContext: this._rootViewContext.bind(this),
       _viewConfigFactory: this._viewConfigFactory.bind(this),
@@ -90,11 +89,11 @@ export class ViewService {
       },
     };
   }
-  /** @internal */
+
   _rootViewContext(context) {
     return (this._rootContext = context || this._rootContext);
   }
-  /** @internal */
+
   _viewConfigFactory(viewType, factory) {
     this._viewConfigFactories[viewType] = factory;
   }

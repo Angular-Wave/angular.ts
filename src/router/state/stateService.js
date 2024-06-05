@@ -58,12 +58,12 @@ export class StateService {
   get $current() {
     return this.router.globals.$current;
   }
-  /** @internal */
-  constructor(/** @internal */ router) {
+
+  constructor(router) {
     this.router = router;
-    /** @internal */
+
     this.invalidCallbacks = [];
-    /** @internal */
+
     this._defaultErrorHandler = function $defaultErrorHandler($error$) {
       if ($error$ instanceof Error && $error$.stack) {
         console.error($error$);
@@ -87,7 +87,7 @@ export class StateService {
       boundFns,
     );
   }
-  /** @internal */
+
   dispose() {
     this.defaultErrorHandler(noop);
     this.invalidCallbacks = [];
@@ -302,7 +302,7 @@ export class StateService {
       options,
     );
   }
-  /** @internal */
+
   getCurrentPath() {
     const globals = this.router.globals;
     const latestSuccess = globals.successfulTransitions.peekTail();

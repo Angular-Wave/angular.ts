@@ -42,7 +42,7 @@ var RejectType;
   RejectType[(RejectType["ERROR"] = 6)] = "ERROR";
 })(RejectType || (RejectType = {}));
 export { RejectType };
-/** @internal */
+
 let id = 0;
 export class Rejection {
   /** Returns true if the obj is a rejected promise created from the `asPromise` factory */
@@ -100,7 +100,6 @@ export class Rejection {
     return is(Rejection)(detail) ? detail : Rejection.errored(detail);
   }
   constructor(type, message, detail) {
-    /** @internal */
     this.$id = id++;
     this.type = type;
     this.message = message;

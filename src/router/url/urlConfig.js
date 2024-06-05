@@ -14,14 +14,14 @@ import { isDefined, isString } from "../../shared/utils";
  * This API is found at `router.urlService.config` (see: [[UIRouter.urlService]], [[URLService.config]])
  */
 export class UrlConfig {
-  /** @internal */ constructor(/** @internal */ router) {
+  constructor(router) {
     this.router = router;
-    /** @internal */ this.paramTypes = new ParamTypes();
-    /** @internal */ this._decodeParams = true;
-    /** @internal */ this._isCaseInsensitive = false;
-    /** @internal */ this._isStrictMode = true;
-    /** @internal */ this._defaultSquashPolicy = false;
-    /** @internal */ this.dispose = () => this.paramTypes.dispose();
+    this.paramTypes = new ParamTypes();
+    this._decodeParams = true;
+    this._isCaseInsensitive = false;
+    this._isStrictMode = true;
+    this._defaultSquashPolicy = false;
+    this.dispose = () => this.paramTypes.dispose();
     // Delegate these calls to the current LocationConfig implementation
     /**
      * Gets the base Href, e.g., `http://localhost/approot/`

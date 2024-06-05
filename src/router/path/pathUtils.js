@@ -190,9 +190,15 @@ export class PathUtils {
     const elementIdx = path.indexOf(node);
     return elementIdx === -1 ? undefined : path.slice(0, elementIdx + 1);
   }
+
+  static nonDynamicParams(node) {
+    return node.state
+      .parameters({ inherit: false })
+      .filter((param) => !param.dynamic);
+  }
+
+  /** Gets the raw parameter values from a path */
+  static paramValues(path) {
+    return path.reduce((acc, node) => Object.assign(acc, node.paramValues), {});
+  }
 }
-PathUtils.nonDynamicParams = (node) =>
-  node.state.parameters({ inherit: false }).filter((param) => !param.dynamic);
-/** Gets the raw parameter values from a path */
-PathUtils.paramValues = (path) =>
-  path.reduce((acc, node) => Object.assign(acc, node.paramValues), {});

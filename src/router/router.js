@@ -59,9 +59,9 @@ export class UIRouter {
   ) {
     this.locationService = locationService;
     this.locationConfig = locationConfig;
-    /** @internal */ this.$id = _routerInstance++;
-    /** @internal */ this._disposed = false;
-    /** @internal */ this._disposables = [];
+    this.$id = _routerInstance++;
+    this._disposed = false;
+    this._disposables = [];
     /** Enable/disable tracing to the javascript console */
     this.trace = trace;
     /** Provides services related to ui-view synchronization */

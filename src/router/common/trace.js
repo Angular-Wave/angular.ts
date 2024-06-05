@@ -84,13 +84,11 @@ const transLbl = (trans) => `Transition #${_tid(trans)}-${_rid(trans)}`;
  * Prints UI-Router Transition trace information to the console.
  */
 export class Trace {
-  /** @internal */
   constructor() {
-    /** @internal */
     this._enabled = {};
     this.approximateDigests = 0;
   }
-  /** @internal */
+
   _set(enabled, categories) {
     if (!categories.length) {
       categories = Object.keys(Category)

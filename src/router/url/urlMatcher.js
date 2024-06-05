@@ -94,7 +94,6 @@ const defaultConfig = {
  *
  */
 export class UrlMatcher {
-  /** @internal */
   static encodeDashes(str) {
     // Replace dashes with encoded "\-"
     return encodeURIComponent(str).replace(
@@ -185,15 +184,14 @@ export class UrlMatcher {
    * @param config  A [[UrlMatcherCompileConfig]] configuration object
    */
   constructor(pattern, paramTypes, paramFactory, config) {
-    /** @internal */
     this._cache = { path: [this] };
-    /** @internal */
+
     this._children = [];
-    /** @internal */
+
     this._params = [];
-    /** @internal */
+
     this._segments = [];
-    /** @internal */
+
     this._compiled = [];
     this.config = config = defaults(config, defaultConfig);
     this.pattern = pattern;
@@ -306,7 +304,7 @@ export class UrlMatcher {
     };
     return url;
   }
-  /** @internal */
+
   isRoot() {
     return this._cache.path[0] === this;
   }
@@ -544,5 +542,5 @@ export class UrlMatcher {
     );
   }
 }
-/** @internal */
+
 UrlMatcher.nameValidator = /^\w+([-.]+\w+)*(?:\[\])?$/;

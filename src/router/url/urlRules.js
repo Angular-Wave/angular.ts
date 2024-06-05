@@ -65,15 +65,14 @@ function getHandlerFn(handler) {
  * This API is found at `router.urlService.rules` (see: [[UIRouter.urlService]], [[URLService.rules]])
  */
 export class UrlRules {
-  /** @internal */
-  constructor(/** @internal */ router) {
+  constructor(router) {
     this.router = router;
-    /** @internal */ this._sortFn = defaultRuleSortFn;
-    /** @internal */ this._rules = [];
-    /** @internal */ this._id = 0;
+    this._sortFn = defaultRuleSortFn;
+    this._rules = [];
+    this._id = 0;
     this.urlRuleFactory = new UrlRuleFactory(router);
   }
-  /** @internal */
+
   dispose(router) {
     this._rules = [];
     delete this._otherwiseFn;
@@ -266,11 +265,11 @@ export class UrlRules {
     this._rules = sorted;
     this._sorted = true;
   }
-  /** @internal */
+
   ensureSorted() {
     this._sorted || this.sort();
   }
-  /** @internal */
+
   stableSort(arr, compareFn) {
     const arrOfWrapper = arr.map((elem, idx) => ({ elem, idx }));
     arrOfWrapper.sort((wrapperA, wrapperB) => {

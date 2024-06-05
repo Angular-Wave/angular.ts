@@ -2,11 +2,21 @@ import { find, tail, uniqR, unnestR, inArray } from "../../shared/common";
 import { propEq, not } from "../common/hof";
 import { trace } from "../common/trace";
 import { services } from "../common/coreservices";
-import { resolvePolicies } from "./interface";
 import { Resolvable } from "./resolvable";
 import { PathUtils } from "../path/pathUtils";
 import { stringify } from "../../shared/strings";
 import { isUndefined } from "../../shared/utils";
+
+export let resolvePolicies = {
+  when: {
+    LAZY: "LAZY",
+    EAGER: "EAGER",
+  },
+  async: {
+    WAIT: "WAIT",
+    NOWAIT: "NOWAIT",
+  },
+};
 
 const whens = resolvePolicies.when;
 const ALL_WHENS = [whens.EAGER, whens.LAZY];
@@ -179,7 +189,7 @@ export class ResolveContext {
     return resolvable.deps.map(getDependency);
   }
 }
-/** @internal */
+
 class UIInjectorImpl {
   constructor(context) {
     this.context = context;

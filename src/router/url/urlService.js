@@ -7,10 +7,9 @@ import { TargetState } from "../state/targetState";
  * API for URL management
  */
 export class UrlService {
-  /** @internal */
-  constructor(/** @internal */ router) {
+  constructor(router) {
     this.router = router;
-    /** @internal */ this.interceptDeferred = false;
+    this.interceptDeferred = false;
     /**
      * The nested [[UrlRules]] API for managing URL rules and rewrites
      *
@@ -120,7 +119,7 @@ export class UrlService {
     this.onChange = (callback) =>
       this.router.locationService.onChange(callback);
   }
-  /** @internal */
+
   dispose() {
     this.listen(false);
     this.rules.dispose();

@@ -60,9 +60,7 @@ export let defaultTransOpts = {
  * This API is located at `router.transitionService` ([[UIRouter.transitionService]])
  */
 export class TransitionService {
-  /** @internal */
   constructor(_router) {
-    /** @internal */
     this._transitionCount = 0;
     /** The transition hook types, such as `onEnter`, `onStart`, etc */
     this._eventTypes = [];
@@ -169,7 +167,7 @@ export class TransitionService {
   create(fromPath, targetState) {
     return new Transition(fromPath, targetState, this._router);
   }
-  /** @internal */
+
   _defineCoreEvents() {
     const Phase = TransitionHookPhase;
     const TH = TransitionHook;
@@ -214,7 +212,7 @@ export class TransitionService {
       SYNCHRONOUS,
     );
   }
-  /** @internal */
+
   _defineCorePaths() {
     const { STATE, TRANSITION } = TransitionHookScope;
     this._definePathType("to", TRANSITION);
@@ -223,7 +221,7 @@ export class TransitionService {
     this._definePathType("retained", STATE);
     this._definePathType("entering", STATE);
   }
-  /** @internal */
+
   _defineEvent(
     name,
     hookPhase,
@@ -247,7 +245,7 @@ export class TransitionService {
     this._eventTypes.push(eventType);
     makeEvent(this, this, eventType);
   }
-  /** @internal */
+
   _getEvents(phase) {
     const transitionHookTypes = isDefined(phase)
       ? this._eventTypes.filter((type) => type.hookPhase === phase)
@@ -273,16 +271,15 @@ export class TransitionService {
   _definePathType(name, hookScope) {
     this._criteriaPaths[name] = { name, scope: hookScope };
   }
-  /** @internal */
-  // tslint:disable-next-line
+
   _getPathTypes() {
     return this._criteriaPaths;
   }
-  /** @internal */
+
   getHooks(hookName) {
     return this._registeredHooks[hookName];
   }
-  /** @internal */
+
   _registerCoreTransitionHooks() {
     const fns = this._deregisterHookFns;
     fns.addCoreResolves = registerAddCoreResolvables(this);

@@ -57,11 +57,14 @@ const lazyLoadHook = (transition) => {
     .map((state) => lazyLoadState(transition, state));
   return services.$q.all(promises).then(retryTransition);
 };
-export const registerLazyLoadHook = (transitionService) =>
-  transitionService.onBefore(
+
+export function registerLazyLoadHook(transitionService) {
+  return transitionService.onBefore(
     { entering: (state) => !!state.lazyLoad },
     lazyLoadHook,
   );
+}
+
 /**
  * Invokes a state's lazy load function
  *
