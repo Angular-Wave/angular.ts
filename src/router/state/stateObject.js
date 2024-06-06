@@ -1,5 +1,5 @@
 import { defaults, find } from "../../shared/common";
-import { propEq } from "../common/hof";
+import { propEq } from "../../shared/hof";
 import { Glob } from "../common/glob";
 import { isFunction, isObject } from "../../shared/utils";
 /**

@@ -10,7 +10,7 @@ import {
   arrayTuples,
   defaults,
 } from "../../shared/common";
-import { prop, propEq } from "../common/hof";
+import { prop, propEq } from "../../shared/hof";
 import { isDefined, isString } from "../../shared/utils";
 import { Param, DefType } from "../params/param";
 import { joinNeighborsR, splitOnDelim } from "../../shared/strings";

@@ -9,7 +9,7 @@ import {
 } from "../../shared/common";
 import { isNullOrUndefined } from "../../shared/predicates";
 import { isDefined } from "../../shared/utils";
-import { is } from "../common/hof";
+import { is } from "../../shared/hof";
 import { services } from "../common/coreservices";
 import { ParamType } from "./paramType";
 /**

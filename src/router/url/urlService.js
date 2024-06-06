@@ -1,5 +1,5 @@
 import { isString } from "../../shared/utils";
-import { is, pattern } from "../common/hof";
+import { is, pattern } from "../../shared/hof";
 import { UrlRules } from "./urlRules";
 import { UrlConfig } from "./urlConfig";
 import { TargetState } from "../state/targetState";
@@ -7,7 +7,14 @@ import { TargetState } from "../state/targetState";
  * API for URL management
  */
 export class UrlService {
+  /**
+   *
+   * @param {import('../router').UIRouter} router
+   */
   constructor(router) {
+    /**
+     * @type {import('../router').UIRouter}
+     */
     this.router = router;
     this.interceptDeferred = false;
     /**

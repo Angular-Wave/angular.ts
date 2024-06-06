@@ -7,7 +7,7 @@
  * @preferred
  */
 import { isDate, isFunction, isRegExp, isString } from "./utils";
-import { all, any, prop, curry, not } from "../router/common/hof";
+import { all, any, prop, curry, not } from "./hof";
 import { services } from "../router/common/coreservices";
 export const root =
   (typeof self === "object" && self.self === self && self) ||
@@ -133,10 +133,11 @@ export function _removeFrom(array, obj) {
   return array;
 }
 /** pushes a values to an array and returns the value */
-export const pushTo = curry(_pushTo);
-export function _pushTo(arr, val) {
-  return arr.push(val), val;
-}
+export const pushTo = curry((arr, val) => {
+  arr.push(val);
+  return val;
+});
+
 /** Given an array of (deregistration) functions, calls all functions and removes each one from the source array */
 export const deregAll = (functions) =>
   functions.slice().forEach((fn) => {

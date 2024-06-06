@@ -1,12 +1,24 @@
-/** @publicapi @module ng1 */ /** */
 import { isDefined, isObject } from "../shared/utils";
-import { val } from "./common/hof";
+import { val } from "../shared/hof";
 import { createProxyFunctions, removeFrom } from "../shared/common";
+
 /**
  * Implements UI-Router LocationServices and LocationConfig using Angular 1's $location service
  * @internalapi
  */
 export class Ng1LocationServices {
+  /**
+   *
+   * @param {angular.ILocationProvider} $locationProvider
+   */
+  constructor($locationProvider) {
+    // .onChange() registry
+    this._urlListeners = [];
+    /** @type {angular.ILocationProvider} */ this.$locationProvider =
+      $locationProvider;
+    const _lp = val($locationProvider);
+    createProxyFunctions(_lp, this, _lp, ["hashPrefix"]);
+  }
   /**
    * Applys ng1-specific path parameter encoding
    *
@@ -33,13 +45,7 @@ export class Ng1LocationServices {
         : x;
   }
   dispose() {}
-  constructor($locationProvider) {
-    // .onChange() registry
-    this._urlListeners = [];
-    this.$locationProvider = $locationProvider;
-    const _lp = val($locationProvider);
-    createProxyFunctions(_lp, this, _lp, ["hashPrefix"]);
-  }
+
   onChange(callback) {
     this._urlListeners.push(callback);
     return () => removeFrom(this._urlListeners)(callback);
@@ -62,8 +68,9 @@ export class Ng1LocationServices {
     if (state) this.$location.state(state);
     return this.$location.url();
   }
+
   _runtimeServices($rootScope, $location, $browser) {
-    this.$location = $location;
+    /** @type {angular.ILocationService} */ this.$location = $location;
     this.$browser = $browser;
     this.$window = window;
     // Bind $locationChangeSuccess to the listeners registered in LocationService.onChange

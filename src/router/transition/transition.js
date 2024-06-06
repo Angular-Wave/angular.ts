@@ -15,7 +15,7 @@ import {
   uniqR,
 } from "../../shared/common";
 import { isUndefined, isObject } from "../../shared/utils";
-import { prop, propEq, val, not, is } from "../common/hof";
+import { prop, propEq, val, not, is } from "../../shared/hof";
 import { TransitionHookPhase } from "./interface"; // has or is using
 import { TransitionHook } from "./transitionHook";
 import { matchState, makeEvent } from "./hookRegistry";
@@ -91,7 +91,7 @@ export class Transition {
    * @param fromPath The path of [[PathNode]]s from which the transition is leaving.  The last node in the `fromPath`
    *        encapsulates the "from state".
    * @param targetState The target state and parameters being transitioned to (also, the transition options)
-   * @param router The [[UIRouter]] instance
+   * @param {import('../router').UIRouter} router The [[UIRouter]] instance
    * @internal
    */
   constructor(fromPath, targetState, router) {

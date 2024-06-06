@@ -1,5 +1,5 @@
 import { applyPairs, find } from "../../shared/common";
-import { propEq } from "../common/hof";
+import { propEq } from "../../shared/hof";
 import { Param } from "../params/param";
 /**
  * A node in a [[TreeChanges]] path

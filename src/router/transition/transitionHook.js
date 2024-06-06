@@ -2,7 +2,7 @@ import { TransitionHookPhase } from "./interface";
 import { defaults, noop, silentRejection } from "../../shared/common";
 import { fnToString, maxLength } from "../../shared/strings";
 import { isPromise } from "../../shared/predicates";
-import { is, parse } from "../common/hof";
+import { is, parse } from "../../shared/hof";
 import { trace } from "../common/trace";
 import { services } from "../common/coreservices";
 import { Rejection } from "./rejectFactory";

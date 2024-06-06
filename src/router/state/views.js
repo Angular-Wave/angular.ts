@@ -7,7 +7,6 @@ import { ViewService } from "../view/view";
 import { ResolveContext } from "../resolve/resolveContext";
 import { Resolvable } from "../resolve/resolvable";
 
-/** @internalapi */
 export function getNg1ViewConfigFactory() {
   let templateFactory = null;
   return (path, view) => {
@@ -16,7 +15,7 @@ export function getNg1ViewConfigFactory() {
     return [new Ng1ViewConfig(path, view, templateFactory)];
   };
 }
-/** @internalapi */
+
 const hasAnyKey = (keys, obj) =>
   keys.reduce((acc, key) => acc || isDefined(obj[key]), false);
 /**
@@ -28,7 +27,6 @@ const hasAnyKey = (keys, obj) =>
  * If no `views: {}` property exists on the [[StateDeclaration]], then it creates the `views` object
  * and applies the state-level configuration to a view named `$default`.
  *
- * @internalapi
  */
 export function ng1ViewsBuilder(state) {
   // Do not process root state
@@ -89,15 +87,19 @@ export function ng1ViewsBuilder(state) {
   });
   return views;
 }
-/** @hidden */
+
+/**
+ * @type {Number}
+ */
 let id = 0;
-/** @internalapi */
+
 export class Ng1ViewConfig {
   constructor(path, viewDecl, factory) {
     this.path = path;
     this.viewDecl = viewDecl;
     this.factory = factory;
-    this.$id = id++;
+
+    /** @type {Number} */ this.$id = id++;
     this.loaded = false;
     this.getTemplate = (uiView, context) =>
       this.component

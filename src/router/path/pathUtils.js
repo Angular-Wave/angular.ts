@@ -8,7 +8,7 @@ import {
   inArray,
   arrayTuples,
 } from "../../shared/common";
-import { prop, propEq } from "../common/hof";
+import { prop, propEq } from "../../shared/hof";
 import { TargetState } from "../state/targetState";
 import { PathNode } from "./pathNode";
 /**

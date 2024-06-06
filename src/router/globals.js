@@ -12,13 +12,23 @@ export class UIRouterGlobals {
      * Current parameter values
      *
      * The parameter values from the latest successful transition
+     * @type {StateParams}
      */
     this.params = new StateParams();
 
+    /**
+     * @type {Number}
+     */
     this.lastStartedTransitionId = -1;
 
+    /**
+     * @type {Queue}
+     */
     this.transitionHistory = new Queue([], 1);
 
+    /**
+     * @type {Queue}
+     */
     this.successfulTransitions = new Queue([], 1);
   }
   dispose() {

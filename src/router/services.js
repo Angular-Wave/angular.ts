@@ -13,10 +13,7 @@ import { applyPairs, unnestR } from "../shared/common";
 import { isString } from "../shared/utils";
 import { trace } from "./common/trace";
 import { UIRouter } from "./router";
-import {
-  ng1ViewsBuilder,
-  getNg1ViewConfigFactory,
-} from "./statebuilders/views";
+import { ng1ViewsBuilder, getNg1ViewConfigFactory } from "./state/views";
 
 import { StateProvider } from "./stateProvider";
 import { Ng1LocationServices } from "./locationServices";
@@ -26,8 +23,9 @@ export let router = null;
 $routerProvider.$inject = ["$locationProvider"];
 /** This angular 1 provider instantiates a Router and exposes its services via the angular injector */
 export function $routerProvider($locationProvider) {
+  const ng1LocationService = new Ng1LocationServices($locationProvider);
   // Create a new instance of the Router when the $routerProvider is initialized
-  router = this.router = new UIRouter();
+  router = this.router = new UIRouter(ng1LocationService);
   router.stateProvider = new StateProvider(
     router.stateRegistry,
     router.stateService,
@@ -43,10 +41,7 @@ export function $routerProvider($locationProvider) {
   );
   // Disable decoding of params by UrlMatcherFactory because $location already handles this
   router.urlService.config._decodeParams = false;
-  const ng1LocationService =
-    (router.locationService =
-    router.locationConfig =
-      new Ng1LocationServices($locationProvider));
+
   Ng1LocationServices.monkeyPatchPathParameterType(router);
   // backwards compat: also expose router instance as $routerProvider.router
   router["router"] = router;
@@ -54,8 +49,6 @@ export function $routerProvider($locationProvider) {
   $get.$inject = ["$location", "$browser", "$rootScope"];
   function $get($location, $browser, $rootScope) {
     ng1LocationService._runtimeServices($rootScope, $location, $browser);
-    delete router["router"];
-    delete router["$get"];
     return router;
   }
   return router;

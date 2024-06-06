@@ -5,7 +5,7 @@ import {
   inArray,
   find,
 } from "../../shared/common";
-import { curry, prop } from "../common/hof";
+import { curry, prop } from "../../shared/hof";
 import { isString } from "../../shared/utils";
 import { trace } from "../common/trace";
 /**
@@ -25,6 +25,32 @@ import { trace } from "../common/trace";
  *
  */
 export class ViewService {
+  /**
+   * @param {import('../router').UIRouter} router
+   */
+  constructor(router) {
+    /**
+     * @type {import('../router').UIRouter}
+     */
+    this.router = router;
+    this._uiViews = [];
+    this._viewConfigs = [];
+    this._viewConfigFactories = {};
+    this._listeners = [];
+    this._pluginapi = {
+      _rootViewContext: this._rootViewContext.bind(this),
+      _viewConfigFactory: this._viewConfigFactory.bind(this),
+      _registeredUIView: (id) =>
+        find(this._uiViews, (view) => `${this.router.$id}.${view.id}` === id),
+      _registeredUIViews: () => this._uiViews,
+      _activeViewConfigs: () => this._viewConfigs,
+      _onSync: (listener) => {
+        this._listeners.push(listener);
+        return () => removeFrom(this._listeners, listener);
+      },
+    };
+  }
+
   /**
    * Normalizes a view's name from a state.views configuration block.
    *
@@ -68,26 +94,6 @@ export class ViewService {
       uiViewContextAnchor = context.name;
     }
     return { uiViewName, uiViewContextAnchor };
-  }
-
-  constructor(router) {
-    this.router = router;
-    this._uiViews = [];
-    this._viewConfigs = [];
-    this._viewConfigFactories = {};
-    this._listeners = [];
-    this._pluginapi = {
-      _rootViewContext: this._rootViewContext.bind(this),
-      _viewConfigFactory: this._viewConfigFactory.bind(this),
-      _registeredUIView: (id) =>
-        find(this._uiViews, (view) => `${this.router.$id}.${view.id}` === id),
-      _registeredUIViews: () => this._uiViews,
-      _activeViewConfigs: () => this._viewConfigs,
-      _onSync: (listener) => {
-        this._listeners.push(listener);
-        return () => removeFrom(this._listeners, listener);
-      },
-    };
   }
 
   _rootViewContext(context) {

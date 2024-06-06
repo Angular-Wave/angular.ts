@@ -27,7 +27,7 @@ import { TransitionEventType } from "./transitionEventType";
 import { TransitionHook } from "./transitionHook";
 import { isDefined } from "../../shared/utils";
 import { removeFrom, createProxyFunctions } from "../../shared/common";
-import { val } from "../common/hof";
+import { val } from "../../shared/hof";
 import { registerIgnoredTransitionHook } from "../hooks/ignoredTransition";
 import { registerInvalidTransitionHook } from "../hooks/invalidTransition";
 /**
@@ -60,6 +60,9 @@ export let defaultTransOpts = {
  * This API is located at `router.transitionService` ([[UIRouter.transitionService]])
  */
 export class TransitionService {
+  /**
+   * @param {import('../router').UIRouter} _router
+   */
   constructor(_router) {
     this._transitionCount = 0;
     /** The transition hook types, such as `onEnter`, `onStart`, etc */

@@ -3,6 +3,10 @@ import { UrlMatcher } from "./urlMatcher";
 import { DefType, Param } from "../params/param";
 
 export class ParamFactory {
+  constructor(router) {
+    this.router = router;
+  }
+
   fromConfig(id, type, state) {
     return new Param(
       id,
@@ -29,9 +33,6 @@ export class ParamFactory {
       this.router.urlService.config,
       state,
     );
-  }
-  constructor(router) {
-    this.router = router;
   }
 }
 /**

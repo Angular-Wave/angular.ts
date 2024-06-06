@@ -9,39 +9,16 @@ import { removeFrom } from "../shared/common";
 import { isFunction } from "../shared/utils";
 import { UrlService } from "./url/urlService";
 import { trace } from "./common/trace";
-import { makeStub } from "./common/coreservices";
 
-/** @internal
+/**
+ * Router id tracker
  * @type {number}
  */
-let _routerInstance = 0;
-
-/** @internal
- * @type {(keyof LocationServices)[]}
- */
-const locSvcFns = ["url", "path", "search", "hash", "onChange"];
-/** @internal
- * @type {(keyof LocationConfig)[]}
- */
-const locCfgFns = [
-  "port",
-  "protocol",
-  "host",
-  "baseHref",
-  "html5Mode",
-  "hashPrefix",
-];
-/** @internal
- * @type {any}
- */
-const locationServiceStub = makeStub("LocationServices", locSvcFns);
-/** @internal
- * @type {any}
- */
-const locationConfigStub = makeStub("LocationConfig", locCfgFns);
+let routerId = 0;
 
 /**
  * An instance of UI-Router.
+ * @class
  *
  * This object contains references to service APIs which define your application's routing behavior.
  */
@@ -49,26 +26,23 @@ export class UIRouter {
   /**
    * Creates a new `UIRouter` object
    *
-   * @param locationService a [[LocationServices]] implementation
-   * @param locationConfig a [[LocationConfig]] implementation
-   * @internal
+   * @param {import('./locationServices').Ng1LocationServices} locationService
    */
-  constructor(
-    locationService = locationServiceStub,
-    locationConfig = locationConfigStub,
-  ) {
+  constructor(locationService) {
+    /**
+     * @type {import('./locationServices').Ng1LocationServices}
+     */
     this.locationService = locationService;
-    this.locationConfig = locationConfig;
-    this.$id = _routerInstance++;
-    this._disposed = false;
+    /**  @type {number} */ this.$id = routerId++;
+    /**  @type {boolean} */ this._disposed = false;
     this._disposables = [];
     /** Enable/disable tracing to the javascript console */
     this.trace = trace;
     /** Provides services related to ui-view synchronization */
     this.viewService = new ViewService(this);
-    /** An object that contains global router state, such as the current state and params */
+    /** @type {UIRouterGlobals} An object that contains global router state, such as the current state and params */
     this.globals = new UIRouterGlobals();
-    /** A service that exposes global Transition Hooks */
+    /** @type {TransitionService}  A service that exposes global Transition Hooks */
     this.transitionService = new TransitionService(this);
     /**
      * Deprecated for public use. Use [[urlService]] instead.
@@ -97,7 +71,6 @@ export class UIRouter {
     this.disposable(this.transitionService);
     this.disposable(this.urlService);
     this.disposable(locationService);
-    this.disposable(locationConfig);
   }
 
   /**

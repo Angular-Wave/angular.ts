@@ -9,7 +9,7 @@ import { isInjectable, isNull, isPromise } from "./predicates";
 import { isUndefined, isFunction, isString, isObject } from "./utils";
 import { Rejection } from "../router/transition/rejectFactory";
 import { identity, pushR, tail } from "./common";
-import { pattern, val } from "../router/common/hof";
+import { pattern, val } from "./hof";
 /**
  * Returns a string shortened to a maximum length
  *

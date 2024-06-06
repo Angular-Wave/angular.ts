@@ -18,32 +18,19 @@ import {
 import { uiView, $ViewDirectiveFill } from "./directives/viewDirective";
 
 export function initRouter() {
-  window.angular.module("ui.router.angular1", []);
-  const mod_init = window.angular.module("ui.router.init", ["ng"]);
-  const mod_util = window.angular.module("ui.router.util", ["ui.router.init"]);
-  const mod_state = window.angular.module("ui.router.state", [
-    "ui.router.util",
-    "ui.router.angular1",
-  ]);
-
-  const mod_main = window.angular.module("ui.router", [
-    "ui.router.init",
-    "ui.router.state",
-    "ui.router.angular1",
-  ]);
-
-  mod_init.provider("$router", $routerProvider);
-  mod_util.provider("$urlService", getProviderFor("urlService"));
-  mod_util.provider("$urlMatcherFactory", [
-    "$routerProvider",
-    function RouterProvide() {
-      return router.urlMatcherFactory;
-    },
-  ]);
-  mod_util.provider("$templateFactory", function () {
-    return new TemplateFactory();
-  });
-  mod_state
+  window.angular
+    .module("ui.router", ["ng"])
+    .provider("$router", $routerProvider)
+    .provider("$urlService", getProviderFor("urlService"))
+    .provider("$urlMatcherFactory", [
+      "$routerProvider",
+      function RouterProvide() {
+        return router.urlMatcherFactory;
+      },
+    ])
+    .provider("$templateFactory", function () {
+      return new TemplateFactory();
+    })
     .provider("$stateRegistry", getProviderFor("stateRegistry"))
     .provider("$routerGlobals", getProviderFor("globals"))
     .provider("$transitions", getProviderFor("transitionService"))
@@ -55,6 +42,10 @@ export function initRouter() {
         return $router.globals.params;
       },
     ])
+    .factory("$view", function () {
+      return router.viewService;
+    })
+    .value("$trace", trace)
     .filter("isState", $IsStateFilter)
     .filter("includedByState", $IncludedByStateFilter)
     .directive("uiSref", uiSrefDirective)
@@ -62,15 +53,8 @@ export function initRouter() {
     .directive("uiSrefActiveEq", uiSrefActiveDirective)
     .directive("uiState", uiStateDirective)
     .directive("uiView", uiView)
-    .directive("uiView", $ViewDirectiveFill);
-  mod_main.factory("$view", function View() {
-    return router.viewService;
-  });
-  mod_main.service("$trace", function Trace() {
-    return trace;
-  });
-  mod_main.run(watchDigests);
-  mod_util.run(["$urlMatcherFactory", function MatcherFac() {}]);
-  mod_state.run(["$state", function State() {}]);
-  mod_init.run(runBlock);
+    .directive("uiView", $ViewDirectiveFill)
+
+    .run(watchDigests)
+    .run(runBlock);
 }

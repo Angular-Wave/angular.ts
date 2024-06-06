@@ -15,35 +15,12 @@ function appendBasePath(url, isHtml5, absolute, baseHref) {
  * For configuring URL rules, use the [[UrlRules]] which can be found as [[UrlService.rules]].
  */
 export class UrlRouter {
+  /**
+   *
+   * @param {import('../router').UIRouter} router
+   */
   constructor(router) {
     this.router = router;
-    // Delegate these calls to [[UrlService]]
-    /** @deprecated use [[UrlService.sync]]*/
-    this.sync = (evt) => this.router.urlService.sync(evt);
-    /** @deprecated use [[UrlService.listen]]*/
-    this.listen = (enabled) => this.router.urlService.listen(enabled);
-    /** @deprecated use [[UrlService.deferIntercept]]*/
-    this.deferIntercept = (defer) =>
-      this.router.urlService.deferIntercept(defer);
-    /** @deprecated use [[UrlService.match]]*/
-    this.match = (urlParts) => this.router.urlService.match(urlParts);
-    // Delegate these calls to [[UrlRules]]
-    /** @deprecated use [[UrlRules.initial]]*/
-    this.initial = (handler) => this.router.urlService.rules.initial(handler);
-    /** @deprecated use [[UrlRules.otherwise]]*/
-    this.otherwise = (handler) =>
-      this.router.urlService.rules.otherwise(handler);
-    /** @deprecated use [[UrlRules.removeRule]]*/
-    this.removeRule = (rule) => this.router.urlService.rules.removeRule(rule);
-    /** @deprecated use [[UrlRules.rule]]*/
-    this.rule = (rule) => this.router.urlService.rules.rule(rule);
-    /** @deprecated use [[UrlRules.rules]]*/
-    this.rules = () => this.router.urlService.rules.rules();
-    /** @deprecated use [[UrlRules.sort]]*/
-    this.sort = (compareFn) => this.router.urlService.rules.sort(compareFn);
-    /** @deprecated use [[UrlRules.when]]*/
-    this.when = (matcher, handler, options) =>
-      this.router.urlService.rules.when(matcher, handler, options);
     this.urlRuleFactory = new UrlRuleFactory(router);
   }
   /** Internal API. */

@@ -17,7 +17,7 @@ import {
 } from "../../shared/common";
 import { isString, isObject } from "../../shared/utils";
 
-import { parse } from "../common/hof";
+import { parse } from "../../shared/hof";
 /** @hidden */
 function parseStateRef(ref) {
   const paramsOnly = ref.match(/^\s*({[^}]*})\s*$/);

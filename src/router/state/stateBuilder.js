@@ -9,7 +9,7 @@ import {
 } from "../../shared/common";
 import { isDefined, isFunction, isString } from "../../shared/utils";
 import { stringify } from "../../shared/strings";
-import { is, pattern, pipe, prop, val } from "../common/hof";
+import { is, pattern, pipe, prop, val } from "../../shared/hof";
 import { Resolvable } from "../resolve/resolvable";
 import { services } from "../common/coreservices";
 const parseUrl = (url) => {

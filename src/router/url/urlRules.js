@@ -1,6 +1,6 @@
 import { TargetState } from "../state/targetState";
 import { UrlMatcher } from "./urlMatcher";
-import { is, val } from "../common/hof";
+import { is, val } from "../../shared/hof";
 import { isDefined, isFunction, isString } from "../../shared/utils";
 import { removeFrom } from "../../shared/common";
 import { UrlRuleFactory } from "./urlRule";

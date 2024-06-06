@@ -1,6 +1,6 @@
 import { silentRejection } from "../../shared/common";
 import { stringify } from "../../shared/strings";
-import { is } from "../common/hof";
+import { is } from "../../shared/hof";
 /** An enum for Transition Rejection reasons */
 var RejectType;
 (function (RejectType) {

@@ -1,5 +1,5 @@
 import { inArray } from "../../shared/common";
-import { prop } from "../common/hof";
+import { prop } from "../../shared/hof";
 import { isString } from "../../shared/utils";
 import { StateObject } from "./stateObject";
 export class StateQueueManager {

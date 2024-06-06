@@ -2,7 +2,7 @@ import { StateMatcher } from "./stateMatcher";
 import { StateBuilder } from "./stateBuilder";
 import { StateQueueManager } from "./stateQueueManager";
 import { removeFrom } from "../../shared/common";
-import { propEq } from "../common/hof";
+import { propEq } from "../../shared/hof";
 /**
  * A registry for all of the application's [[StateDeclaration]]s
  *

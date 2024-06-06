@@ -1,6 +1,6 @@
 import { noop } from "../../shared/common";
 import { ResolveContext } from "../resolve/resolveContext";
-import { val } from "../common/hof";
+import { val } from "../../shared/hof";
 export const RESOLVE_HOOK_PRIORITY = 1000;
 /**
  * A [[TransitionHookFn]] which resolves all EAGER Resolvables in the To Path

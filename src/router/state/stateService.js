@@ -19,7 +19,7 @@ import { Param } from "../params/param";
 import { Glob } from "../common/glob";
 import { ResolveContext } from "../resolve/resolveContext";
 import { lazyLoadState } from "../hooks/lazyLoad";
-import { not, val } from "../common/hof";
+import { not, val } from "../../shared/hof";
 /**
  * Provides services related to ui-router states.
  *

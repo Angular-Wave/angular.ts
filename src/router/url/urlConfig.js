@@ -14,12 +14,21 @@ import { isDefined, isString } from "../../shared/utils";
  * This API is found at `router.urlService.config` (see: [[UIRouter.urlService]], [[URLService.config]])
  */
 export class UrlConfig {
+  /**
+   * @param {import('../router').UIRouter} router
+   */
   constructor(router) {
+    /** @type {import('../router').UIRouter} */
     this.router = router;
+    /** @type {ParamTypes} */
     this.paramTypes = new ParamTypes();
+    /** @type {boolean} */
     this._decodeParams = true;
+    /** @type {boolean} */
     this._isCaseInsensitive = false;
+    /** @type {boolean} */
     this._isStrictMode = true;
+    /** @type {boolean} */
     this._defaultSquashPolicy = false;
     this.dispose = () => this.paramTypes.dispose();
     // Delegate these calls to the current LocationConfig implementation
@@ -28,7 +37,7 @@ export class UrlConfig {
      *
      * @return the application's base href
      */
-    this.baseHref = () => this.router.locationConfig.baseHref();
+    this.baseHref = () => this.router.locationService.baseHref();
     /**
      * Gets or sets the hashPrefix
      *
@@ -39,31 +48,31 @@ export class UrlConfig {
      * @return the hash prefix
      */
     this.hashPrefix = (newprefix) =>
-      this.router.locationConfig.hashPrefix(newprefix);
+      this.router.locationService.$locationProvider.hashPrefix(newprefix);
     /**
      * Gets the host, e.g., `localhost`
      *
-     * @return the protocol
+     * @return {string} the protocol
      */
-    this.host = () => this.router.locationConfig.host();
+    this.host = () => this.router.locationService.$location.host();
     /**
      * Returns true when running in pushstate mode
      *
-     * @return true when running in html5 mode (pushstate mode).
+     * @return {boolean} true when running in html5 mode (pushstate mode).
      */
-    this.html5Mode = () => this.router.locationConfig.html5Mode();
+    this.html5Mode = () => this.router.locationService.html5Mode();
     /**
      * Gets the port, e.g., `80`
      *
-     * @return the port number
+     * @return {number} the port number
      */
-    this.port = () => this.router.locationConfig.port();
+    this.port = () => this.router.locationService.$location.port();
     /**
      * Gets the protocol, e.g., `http`
      *
-     * @return the protocol
+     * @return {string} the protocol
      */
-    this.protocol = () => this.router.locationConfig.protocol();
+    this.protocol = () => this.router.locationService.$location.protocol();
   }
   /**
    * Defines whether URL matching should be case sensitive (the default behavior), or not.

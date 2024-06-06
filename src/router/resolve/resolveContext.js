@@ -1,5 +1,5 @@
 import { find, tail, uniqR, unnestR, inArray } from "../../shared/common";
-import { propEq, not } from "../common/hof";
+import { propEq, not } from "../../shared/hof";
 import { trace } from "../common/trace";
 import { services } from "../common/coreservices";
 import { Resolvable } from "./resolvable";
