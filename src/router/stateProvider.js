@@ -2,7 +2,18 @@
 
 import { val } from "../shared/hof";
 import { createProxyFunctions } from "../shared/common";
-import { isObject } from "../shared/utils";
+import { minErr } from "../shared/utils";
+
+const err = minErr("$stateProvider");
+const validKeys = [
+  "name",
+  "url",
+  "resolve",
+  "template",
+  "templateUrl",
+  "controller",
+];
+
 /**
  * The Angular 1 `StateProvider`
  *
@@ -117,13 +128,29 @@ export class StateProvider {
   decorator(name, func) {
     return this.stateRegistry.decorator(name, func) || this;
   }
-  state(name, definition) {
-    if (isObject(name)) {
-      definition = name;
-    } else {
-      definition.name = name;
+
+  /**
+   *
+   * @param {angular.Ng1StateDeclaration} definition
+   * @returns {StateProvider}
+   */
+  state(definition) {
+    debugger;
+    if (!definition.name) {
+      throw err("stateinvalid", `'name' required`);
     }
-    this.stateRegistry.register(definition);
+
+    const hasInvalidKeys = Object.keys(definition).some(
+      (key) => !validKeys.includes(key),
+    );
+    if (hasInvalidKeys) {
+      throw err("stateinvalid", `Invalid key: ${hasInvalidKeys[0]}`);
+    }
+    try {
+      this.stateRegistry.register(definition);
+    } catch (e) {
+      throw err("stateinvalid", e.message);
+    }
     return this;
   }
   /**
