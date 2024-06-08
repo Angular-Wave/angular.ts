@@ -516,9 +516,7 @@ _ {@link module:ngMessages Click here} to learn more about`ngMessages`and`ngMess
 _ {@link module:ngMessages Click here} to learn more about`ngMessages`and`ngMessage`.
     \_
     _ @param {string} ngMessageExp|whenExp an expression value corresponding to the message key.
-    _/
-                         
-                                                                                                                                                                                                       # ngMessageDefault Directive
+    _/ # ngMessageDefault Directive
 
 **@name ngMessageDefault**
 **@restrict AE**

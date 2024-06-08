@@ -88,6 +88,8 @@ export function runBlock($injector, $q, $router) {
           $injector.strictDi,
         )),
     );
+  // TODO: Is this the best place for this?
+  $router.urlService.listen();
 }
 
 // $state service and $stateProvider

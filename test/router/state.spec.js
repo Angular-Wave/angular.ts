@@ -3,7 +3,7 @@ import { Angular } from "../../src/loader";
 import { publishExternalAPI } from "../../src/public";
 import { isFunction } from "../../src/shared/utils";
 
-fdescribe("$state", () => {
+describe("$state", () => {
   let $uiRouter,
     $injector,
     locationProvider,
