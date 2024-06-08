@@ -1,4 +1,4 @@
-import { dealoc } from "../../src/jqLite";
+import { dealoc, jqLite } from "../../src/jqLite";
 import { Angular } from "../../src/loader";
 import { publishExternalAPI } from "../../src/public";
 import { isFunction } from "../../src/shared/utils";
@@ -102,20 +102,23 @@ describe("$state", () => {
     };
   }
 
-  window.angular = new Angular();
-  publishExternalAPI();
-
   afterEach(() => {
     dealoc(document.getElementById("dummy"));
   });
 
   describe("provider", () => {
     beforeEach(() => {
+      dealoc(document.getElementById("dummy"));
+      jqLite.CACHE.clear(); // some tests are polluting the cache
+      window.angular = new Angular();
+      publishExternalAPI();
       module = window.angular.module("defaultModule", ["ui.router"]);
       module.config((_$stateProvider_, _$provide_) => {
         $stateProvider = _$stateProvider_;
       });
-      angular.bootstrap(document.getElementById("dummy"), ["defaultModule"]);
+      window.angular.bootstrap(document.getElementById("dummy"), [
+        "defaultModule",
+      ]);
     });
 
     afterEach(() => {
@@ -155,6 +158,9 @@ describe("$state", () => {
     let $rootScope, $state, $stateParams, $transitions, $q, $location;
 
     beforeEach(() => {
+      dealoc(document.getElementById("dummy"));
+      window.angular = new Angular();
+      publishExternalAPI();
       module = window.angular.module("defaultModule", ["ui.router"]);
       module.config((_$stateProvider_, _$provide_) => {
         $stateProvider = _$stateProvider_;
@@ -313,7 +319,8 @@ describe("$state", () => {
 
         $provide.value("AppInjectable", AppInjectable);
       });
-      $injector = angular.bootstrap(document.getElementById("dummy"), [
+      debugger;
+      $injector = window.angular.bootstrap(document.getElementById("dummy"), [
         "defaultModule",
       ]);
 
@@ -336,6 +343,10 @@ describe("$state", () => {
           $compile = _$compile_;
         },
       );
+    });
+
+    afterEach(() => {
+      dealoc(document.getElementById("dummy"));
     });
 
     it("returns a promise for the target state", () => {
