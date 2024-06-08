@@ -1260,7 +1260,6 @@ export function minErr(module) {
         message += `${paramPrefix}p${i}=${encodeURIComponent(templateArgs[i])}`;
       }
     }
-
     return new Error(message);
   };
 }

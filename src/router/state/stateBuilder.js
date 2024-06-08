@@ -84,7 +84,11 @@ const getParamsBuilder = (paramFactory) =>
       .reduce(applyPairs, {});
   };
 function pathBuilder(state) {
-  return state.parent ? state.parent.path.concat(state) : /*root*/ [state];
+  if (state.parent && !state.abstract) {
+    return state.parent.path.concat(state);
+  } else {
+    return [state];
+  }
 }
 function includesBuilder(state) {
   const includes = state.parent ? Object.assign({}, state.parent.includes) : {};
@@ -298,6 +302,7 @@ export class StateBuilder {
     }
     return state;
   }
+
   parentName(state) {
     // name = 'foo.bar.baz.**'
     const name = state.name || "";

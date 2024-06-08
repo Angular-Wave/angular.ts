@@ -6,12 +6,29 @@ import { minErr } from "../shared/utils";
 
 const err = minErr("$stateProvider");
 const validKeys = [
-  "name",
-  "url",
-  "resolve",
-  "template",
-  "templateUrl",
+  "$$state",
+  "__stateObjectCache",
   "controller",
+  "controllerProvider",
+  "data",
+  "includes",
+  "name",
+  "navigable",
+  "onEnter",
+  "onExit",
+  "onRetain",
+  "params",
+  "parent",
+  "path",
+  "reloadOnSearch",
+  "resolve",
+  "resolvables",
+  "self",
+  "template",
+  "templateProvider",
+  "templateUrl",
+  "url",
+  "views",
 ];
 
 /**
@@ -135,16 +152,15 @@ export class StateProvider {
    * @returns {StateProvider}
    */
   state(definition) {
-    debugger;
     if (!definition.name) {
       throw err("stateinvalid", `'name' required`);
     }
 
-    const hasInvalidKeys = Object.keys(definition).some(
+    const hasInvalidKeys = Object.keys(definition).filter(
       (key) => !validKeys.includes(key),
     );
-    if (hasInvalidKeys) {
-      throw err("stateinvalid", `Invalid key: ${hasInvalidKeys[0]}`);
+    if (hasInvalidKeys.length) {
+      throw err("stateinvalid", `Invalid key(s): ${hasInvalidKeys.join(", ")}`);
     }
     try {
       this.stateRegistry.register(definition);

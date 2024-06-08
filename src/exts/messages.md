@@ -517,34 +517,33 @@ _ {@link module:ngMessages Click here} to learn more about`ngMessages`and`ngMess
     \_
     _ @param {string} ngMessageExp|whenExp an expression value corresponding to the message key.
     _/
+                         
+                                                                                                                                                                                                       # ngMessageDefault Directive
 
-                                                                                                                                                                                                                                                                                            /**
-                                                                                                                                                                                                                                                                                            * @ngdoc directive
-                                                                                                                                                                                                                                                                                            * @name ngMessageDefault
-                                                                                                                                                                                                                                                                                            * @restrict AE
-                                                                                                                                                                                                                                                                                            * @scope
-                                                                                                                                                                                                                                                                                            *
-                                                                                                                                                                                                                                                                                            * @description
-                                                                                                                                                                                                                                                                                            * `ngMessageDefault` is a directive with the purpose to show and hide a default message for
-                                                                                                                                                                                                                                                                                            * {@link directive:ngMessages}, when none of provided messages matches.
-                                                                                                                                                                                                                                                                                            *
-                                                                                                                                                                                                                                                                                            * More information about using `ngMessageDefault` can be found in the
-                                                                                                                                                                                                                                                                                            * {@link module:ngMessages `ngMessages` module documentation}.
-                                                                                                                                                                                                                                                                                            *
-                                                                                                                                                                                                                                                                                            * @usage
-                                                                                                                                                                                                                                                                                            * ```html
-                                                                                                                                                                                                                                                                                            * <!-- using attribute directives -->
-                                                                                                                                                                                                                                                                                            * <ANY ng-messages="expression" role="alert">
-                                                                                                                                                                                                                                                                                            *   <ANY ng-message="stringValue">...</ANY>
-                                                                                                                                                                                                                                                                                            *   <ANY ng-message="stringValue1, stringValue2, ...">...</ANY>
-                                                                                                                                                                                                                                                                                            *   <ANY ng-message-default>...</ANY>
-                                                                                                                                                                                                                                                                                            * </ANY>
-                                                                                                                                                                                                                                                                                            *
-                                                                                                                                                                                                                                                                                            * <!-- or by using element directives -->
-                                                                                                                                                                                                                                                                                            * <ng-messages for="expression" role="alert">
-                                                                                                                                                                                                                                                                                            *   <ng-message when="stringValue">...</ng-message>
-                                                                                                                                                                                                                                                                                            *   <ng-message when="stringValue1, stringValue2, ...">...</ng-message>
-                                                                                                                                                                                                                                                                                            *   <ng-message-default>...</ng-message-default>
-                                                                                                                                                                                                                                                                                            * </ng-messages>
-                                                                                                                                                                                                                                                                                            *
-                                                                                                                                                                                                                                                                                            */
+**@name ngMessageDefault**
+**@restrict AE**
+**@scope**
+
+## Description
+
+`ngMessageDefault` is a directive with the purpose to show and hide a default message for [`ngMessages`](#), when none of the provided messages matches.
+
+More information about using `ngMessageDefault` can be found in the [`ngMessages` module documentation](#).
+
+## Usage
+
+```html
+<!-- using attribute directives -->
+<ANY ng-messages="expression" role="alert">
+  <ANY ng-message="stringValue">...</ANY>
+  <ANY ng-message="stringValue1, stringValue2, ...">...</ANY>
+  <ANY ng-message-default>...</ANY>
+</ANY>
+
+<!-- or by using element directives -->
+<ng-messages for="expression" role="alert">
+  <ng-message when="stringValue">...</ng-message>
+  <ng-message when="stringValue1, stringValue2, ...">...</ng-message>
+  <ng-message-default>...</ng-message-default>
+</ng-messages>
+```

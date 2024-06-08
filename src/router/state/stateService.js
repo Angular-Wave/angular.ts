@@ -66,14 +66,11 @@ export class StateService {
 
     this._defaultErrorHandler = function $defaultErrorHandler($error$) {
       if ($error$ instanceof Error && $error$.stack) {
-        console.error($error$);
-        console.error($error$.stack);
+        throw $error$;
       } else if ($error$ instanceof Rejection) {
-        console.error($error$.toString());
-        if ($error$.detail && $error$.detail.stack)
-          console.error($error$.detail.stack);
+        throw new Error($error$.toString());
       } else {
-        console.error($error$);
+        throw new Error($error$);
       }
     };
     const getters = ["current", "$current", "params", "transition"];

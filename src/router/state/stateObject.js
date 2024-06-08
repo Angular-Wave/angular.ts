@@ -22,10 +22,12 @@ export class StateObject {
    * @returns {StateObject} an internal State object
    */
   static create(stateDecl) {
-    stateDecl = StateObject.isStateClass(stateDecl)
+    const state = StateObject.isStateClass(stateDecl)
       ? new stateDecl()
-      : stateDecl;
-    const state = Object.setPrototypeOf(stateDecl, StateObject.prototype);
+      : Object.setPrototypeOf(
+          Object.assign({}, stateDecl),
+          StateObject.prototype,
+        );
     stateDecl.$$state = () => state;
     state.self = stateDecl;
     state.__stateObjectCache = {
