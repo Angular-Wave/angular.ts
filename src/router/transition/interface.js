@@ -1,14 +1,14 @@
-var TransitionHookPhase;
-(function (TransitionHookPhase) {
-  TransitionHookPhase[(TransitionHookPhase["CREATE"] = 0)] = "CREATE";
-  TransitionHookPhase[(TransitionHookPhase["BEFORE"] = 1)] = "BEFORE";
-  TransitionHookPhase[(TransitionHookPhase["RUN"] = 2)] = "RUN";
-  TransitionHookPhase[(TransitionHookPhase["SUCCESS"] = 3)] = "SUCCESS";
-  TransitionHookPhase[(TransitionHookPhase["ERROR"] = 4)] = "ERROR";
-})(TransitionHookPhase || (TransitionHookPhase = {}));
-var TransitionHookScope;
-(function (TransitionHookScope) {
-  TransitionHookScope[(TransitionHookScope["TRANSITION"] = 0)] = "TRANSITION";
-  TransitionHookScope[(TransitionHookScope["STATE"] = 1)] = "STATE";
-})(TransitionHookScope || (TransitionHookScope = {}));
-export { TransitionHookPhase, TransitionHookScope };
+/** An object for Transition Hook Phases */
+export const TransitionHookPhase = {
+  CREATE: 0,
+  BEFORE: 1,
+  RUN: 2,
+  SUCCESS: 3,
+  ERROR: 4,
+};
+
+/** An object for Transition Hook Scopes */
+export const TransitionHookScope = {
+  TRANSITION: 0,
+  STATE: 1,
+};

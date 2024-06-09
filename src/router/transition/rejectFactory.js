@@ -1,47 +1,56 @@
 import { silentRejection } from "../../shared/common";
 import { stringify } from "../../shared/strings";
 import { is } from "../../shared/hof";
-/** An enum for Transition Rejection reasons */
-var RejectType;
-(function (RejectType) {
+
+/**
+ * An object for Transition Rejection reasons.
+ * @enum {number}
+ */
+export const RejectType = {
   /**
    * A new transition superseded this one.
    *
    * While this transition was running, a new transition started.
-   * This transition is cancelled because it was superseded by new transition.
+   * This transition is cancelled because it was superseded by a new transition.
+   * @type {number}
    */
-  RejectType[(RejectType["SUPERSEDED"] = 2)] = "SUPERSEDED";
+  SUPERSEDED: 2,
+
   /**
-   * The transition was aborted
+   * The transition was aborted.
    *
-   * The transition was aborted by a hook which returned `false`
+   * The transition was aborted by a hook which returned `false`.
+   * @type {number}
    */
-  RejectType[(RejectType["ABORTED"] = 3)] = "ABORTED";
+  ABORTED: 3,
+
   /**
-   * The transition was invalid
+   * The transition was invalid.
    *
-   * The transition was never started because it was invalid
+   * The transition was never started because it was invalid.
+   * @type {number}
    */
-  RejectType[(RejectType["INVALID"] = 4)] = "INVALID";
+  INVALID: 4,
+
   /**
-   * The transition was ignored
+   * The transition was ignored.
    *
    * The transition was ignored because it would have no effect.
-   *
    * Either:
-   *
-   * - The transition is targeting the current state and parameter values
+   * - The transition is targeting the current state and parameter values.
    * - The transition is targeting the same state and parameter values as the currently running transition.
+   * @type {number}
    */
-  RejectType[(RejectType["IGNORED"] = 5)] = "IGNORED";
+  IGNORED: 5,
+
   /**
    * The transition errored.
    *
-   * This generally means a hook threw an error or returned a rejected promise
+   * This generally means a hook threw an error or returned a rejected promise.
+   * @type {number}
    */
-  RejectType[(RejectType["ERROR"] = 6)] = "ERROR";
-})(RejectType || (RejectType = {}));
-export { RejectType };
+  ERROR: 6,
+};
 
 let id = 0;
 export class Rejection {
