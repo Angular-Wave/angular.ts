@@ -44,6 +44,7 @@ import { CACHE, EXPANDO } from "./cache";
 const $compileMinErr = minErr("$compile");
 
 const _UNINITIALIZED_VALUE = new Object();
+const EXCLUDED_DIRECTIVES = ["ngIf", "ngRepeat"];
 let TTL = 10;
 
 /**
@@ -1692,7 +1693,8 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             !didScanForMultipleTransclusion &&
             ((directive.replace &&
               (directive.templateUrl || directive.template)) ||
-              (directive.transclude && !directive.$$tlb))
+              (directive.transclude &&
+                !EXCLUDED_DIRECTIVES.includes(directive.name)))
           ) {
             let candidateDirective;
 
@@ -1702,7 +1704,8 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
             ) {
               if (
-                (candidateDirective.transclude && !candidateDirective.$$tlb) ||
+                (candidateDirective.transclude &&
+                  !EXCLUDED_DIRECTIVES.includes(candidateDirective.name)) ||
                 (candidateDirective.replace &&
                   (candidateDirective.templateUrl ||
                     candidateDirective.template))
@@ -1734,7 +1737,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             // Special case ngIf and ngRepeat so that we don't complain about duplicate transclusion.
             // This option should only be used by directives that know how to safely handle element transclusion,
             // where the transcluded nodes are added or replaced after linking.
-            if (!directive.$$tlb) {
+            if (!EXCLUDED_DIRECTIVES.includes(directive.name)) {
               assertNoDuplicate(
                 "transclusion",
                 nonTlbTranscludeDirective,

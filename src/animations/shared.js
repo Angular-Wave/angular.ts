@@ -35,7 +35,6 @@ if (
   TRANSITIONEND_EVENT = "webkitTransitionEnd transitionend";
 } else {
   TRANSITION_PROP = "transition";
-  // eslint-disable-next-line no-unused-vars
   TRANSITIONEND_EVENT = "transitionend";
 }
 
@@ -43,13 +42,11 @@ if (
   window.onanimationend === undefined &&
   window.onwebkitanimationend !== undefined
 ) {
-  // eslint-disable-next-line no-unused-vars
   CSS_PREFIX = "-webkit-";
   ANIMATION_PROP = "WebkitAnimation";
   ANIMATIONEND_EVENT = "webkitAnimationEnd animationend";
 } else {
   ANIMATION_PROP = "animation";
-  // eslint-disable-next-line no-unused-vars
   ANIMATIONEND_EVENT = "animationend";
 }
 
@@ -365,14 +362,3 @@ export function concatWithSpace(a, b) {
   if (!b) return a;
   return `${a} ${b}`;
 }
-
-export const helpers = {
-  blockTransitions(node, duration) {
-    // we use a negative delay value since it performs blocking
-    // yet it doesn't kill any existing transitions running on the
-    // same element which makes this safe for class-based animations
-    const value = duration ? `-${duration}s` : "";
-    applyInlineStyle(node, [TRANSITION_DELAY_PROP, value]);
-    return [TRANSITION_DELAY_PROP, value];
-  },
-};

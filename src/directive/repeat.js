@@ -57,7 +57,6 @@ export const ngRepeatDirective = [
       transclude: "element",
       priority: 1000,
       terminal: true,
-      $$tlb: true,
       compile: function ngRepeatCompile($element, $attr) {
         const expression = $attr.ngRepeat;
 
