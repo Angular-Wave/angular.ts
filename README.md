@@ -6,9 +6,9 @@ Building upon the monumental effort of the [Angular Team](https://docs.angularjs
 this project preserves, modernises and expands the original [AngularJS](https://github.com/angular/angular.js) 
 framework. While building on the core features of the original, AngularTS is not 
 a drop-in replacement or an LTS version. It has no relation to [Angular](https://angular.io) and makes no efforts to be compatible with it.
-AngularTS is "AngularJS: The Good Parts". It takes the three core pillars of the original &ndash;  a string-interpolation engine, 
-dependency injection, two-way data-binding &ndash; and adopts them to [Modern Web](https://modern-web.dev/) principles of being as 
-close to Web standards as possible. The result is a buildless, progressive and battle-tested JS framework that makes web-development great again.
+AngularTS is "AngularJS: The Good Parts". It takes the three core pillars of the original &ndash; a string-interpolation engine, 
+dependency injection, two-way data-binding &ndash; and adopts them for [Modern Web](https://modern-web.dev/). 
+The result is a buildless, progressive and battle-tested JS framework that stays as close to Web standards as possible. 
 
 AngularTS lets you write server-rendered web applications for desktop and mobile, without leaving the comfort of your tech-stack. 
 It lets you use good old HTML as your template language and lets you extend HTML’s

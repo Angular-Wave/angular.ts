@@ -487,7 +487,7 @@ export function $SceDelegateProvider() {
           );
         } else if (type === SCE_CONTEXTS.HTML) {
           // htmlSanitizer throws its own error when no sanitizer is available.
-          return htmlSanitizer(maybeTrusted);
+          return htmlSanitizer();
         }
         // Default error when the $sce service has no way to make the input safe.
         throw $sceMinErr(

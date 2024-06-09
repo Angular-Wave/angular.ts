@@ -1,5 +1,4 @@
 import { $CompileProvider } from "./core/compile";
-import { htmlAnchorDirective } from "./directive/a";
 import {
   inputDirective,
   ngValueDirective,
@@ -117,7 +116,6 @@ export function publishExternalAPI() {
         $provide
           .provider("$compile", $CompileProvider)
           .directive({
-            a: htmlAnchorDirective,
             input: inputDirective,
             textarea: inputDirective,
             form: formDirective,

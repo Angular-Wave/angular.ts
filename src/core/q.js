@@ -328,7 +328,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
   }
 
   function Deferred() {
-    const promise = (this.promise = new Promise());
+    const promise = (this.promise = new QPromise());
     // Non prototype methods necessary to support unbound execution :/
     this.resolve = function (val) {
       resolvePromise(promise, val);
@@ -341,11 +341,11 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
     };
   }
 
-  function Promise() {
+  function QPromise() {
     this.$$state = { status: 0 };
   }
 
-  extend(Promise.prototype, {
+  extend(QPromise.prototype, {
     then(onFulfilled, onRejected, progressBack) {
       if (
         isUndefined(onFulfilled) &&
@@ -354,7 +354,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
       ) {
         return this;
       }
-      const result = new Promise();
+      const result = new QPromise();
 
       this.$$state.pending = this.$$state.pending || [];
       this.$$state.pending.push([
@@ -572,7 +572,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
    * @returns {Promise} Returns a promise that was already resolved as rejected with the `reason`.
    */
   function reject(reason) {
-    const result = new Promise();
+    const result = new QPromise();
     rejectPromise(result, reason);
     return result;
   }
@@ -608,7 +608,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
    */
 
   function when(value, callback, errback, progressBack) {
-    const result = new Promise();
+    const result = new QPromise();
     resolvePromise(result, value);
     return result.then(callback, errback, progressBack);
   }
@@ -646,7 +646,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
    */
 
   function all(promises) {
-    const result = new Promise();
+    const result = new QPromise();
     let counter = 0;
     const results = Array.isArray(promises) ? [] : {};
 
@@ -699,7 +699,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
       throw $qMinErr("norslvr", "Expected resolverFn, got '{0}'", resolver);
     }
 
-    const promise = new Promise();
+    const promise = new QPromise();
 
     function resolveFn(value) {
       resolvePromise(promise, value);
@@ -716,7 +716,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
 
   // Let's make the instanceof operator work for promises, so that
   // `new $q(fn) instanceof $q` would evaluate to true.
-  $Q.prototype = Promise.prototype;
+  $Q.prototype = QPromise.prototype;
 
   $Q.defer = defer;
   $Q.reject = reject;
