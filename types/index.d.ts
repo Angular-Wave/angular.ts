@@ -1,7 +1,7 @@
 /// <reference path="jqlite.d.ts" />
 import { IAngularStatic as AngularStatic } from "./angular";
 
-
+export * from "./router"
 // Support for painless dependency injection
 declare global {
     interface Function {
