@@ -38,7 +38,7 @@ const moduleCache = {};
 export class Angular {
   constructor() {
     this.cache = CACHE;
-    this.element = undefined;
+    this.cache.clear(); // a ensure new instance of angular gets a clean cache
     this.version = {
       full: "",
       major: 0,

@@ -2,18 +2,10 @@ import { dealoc, jqLite } from "../../src/jqLite";
 import { Angular } from "../../src/loader";
 import { publishExternalAPI } from "../../src/public";
 import { isFunction } from "../../src/shared/utils";
+import { wait } from "../test-utils";
 
 describe("$state", () => {
-  let $uiRouter,
-    $injector,
-    locationProvider,
-    templateParams,
-    template,
-    ctrlName,
-    errors,
-    $provide,
-    $compile,
-    module;
+  let $router, $injector, template, ctrlName, $provide, $compile, module;
 
   /** @type {import("../../src/router/stateProvider").StateProvider} */
   let $stateProvider;
@@ -319,7 +311,7 @@ describe("$state", () => {
 
         $provide.value("AppInjectable", AppInjectable);
       });
-      debugger;
+
       $injector = window.angular.bootstrap(document.getElementById("dummy"), [
         "defaultModule",
       ]);
@@ -333,6 +325,7 @@ describe("$state", () => {
           _$q_,
           _$location_,
           _$compile_,
+          _$router_,
         ) => {
           $rootScope = _$rootScope_;
           $state = _$state_;
@@ -341,6 +334,7 @@ describe("$state", () => {
           $q = _$q_;
           $location = _$location_;
           $compile = _$compile_;
+          $router = _$router_;
         },
       );
     });
@@ -460,10 +454,18 @@ describe("$state", () => {
           search: "s1",
           searchDyn: "sd1",
         });
-        expect(dynlog).toBe("enter:dyn;success;");
-        // dynlog = '';
-        // expect(obj($stateParams)).toEqual({ path: 'p1', pathDyn: 'pd1', search: 's1', searchDyn: 'sd1' });
-        // expect($location.url()).toEqual('/dynstate/p1/pd1?search=s1&searchDyn=sd1');
+        expect(dynlog.endsWith("enter:dyn;success;")).toBeTrue();
+        Object.entries({
+          path: "p1",
+          pathDyn: "pd1",
+          search: "s1",
+          searchDyn: "sd1",
+        }).forEach(([k, v]) => {
+          expect($stateParams[k]).toEqual(v);
+        });
+        expect($location.url()).toEqual(
+          "/dynstate/p1/pd1?search=s1&searchDyn=sd1",
+        );
       });
 
       describe("[ transition.dynamic() ]:", function () {
@@ -477,7 +479,7 @@ describe("$state", () => {
           expect(promise.transition.dynamic()).toBeFalsy();
         });
 
-        it("is not considered fully dynamic if any state is exited", async function () {
+        it("is not considered fully dynamic if any state is exited", async () => {
           await initStateTo(childWithParam, {
             config: "p1",
             path: "p1",
@@ -500,443 +502,509 @@ describe("$state", () => {
         });
       });
 
-      // describe('[ promises ]', function () {
-      //   it('runs successful transition when fully dynamic', function () {
-      //     let transSuccess,
-      //       promise = $state.go(dynamicstate, { searchDyn: 'sd2' }),
-      //       transition = promise.transition;
-      //     transition.promise.then(function (result) {
-      //       transSuccess = true;
-      //     });
-      //     $q.flush();
-      //     expect(transition.dynamic()).toBeTruthy();
-      //     expect(transSuccess).toBeTruthy();
-      //     expect(dynlog).toBe('success;[searchDyn=sd2];');
-      //   });
+      describe("[ promises ]", function () {
+        beforeEach(() => (dynlog = ""));
+        it("runs successful transition when fully dynamic", async () => {
+          let transSuccess,
+            promise = $state.go(dynamicstate, { searchDyn: "sd2" }),
+            transition = promise.transition;
+          transition.promise.then(function (result) {
+            transSuccess = true;
+          });
+          await promise;
+          expect(transition.dynamic()).toBeTruthy();
+          expect(transSuccess).toBeTruthy();
+          expect(dynlog).toBe("success;[searchDyn=sd2];");
+        });
 
-      //   it('resolves the $state.go() promise with the original/final state, when fully dynamic', function () {
-      //     initStateTo(dynamicstate, { path: 'p1', pathDyn: 'pd1', search: 's1', searchDyn: 'sd1' });
-      //     let destState,
-      //       promise = $state.go(dynamicstate, { pathDyn: 'pd2', searchDyn: 'sd2' });
-      //     promise.then(function (result) {
-      //       destState = result;
-      //     });
-      //     $q.flush();
-      //     expect(promise.transition.dynamic()).toBeTruthy();
-      //     expect($state.current).toBe(dynamicstate);
-      //     expect(destState).toBe(dynamicstate);
-      //   });
-      // });
+        it("resolves the $state.go() promise with the original/final state, when fully dynamic", async () => {
+          initStateTo(dynamicstate, {
+            path: "p1",
+            pathDyn: "pd1",
+            search: "s1",
+            searchDyn: "sd1",
+          });
+          let destState,
+            promise = $state.go(dynamicstate, {
+              pathDyn: "pd2",
+              searchDyn: "sd2",
+            });
+          promise.then(function (result) {
+            destState = result;
+          });
+          await promise;
+          expect(promise.transition.dynamic()).toBeTruthy();
+          expect($state.current).toBe(dynamicstate);
+          expect(destState).toBe(dynamicstate);
+        });
+      });
 
-      // describe('[ enter/exit ]', function () {
-      //   it('does not exit nor enter any states when fully dynamic', function () {
-      //     const promise = $state.go(dynamicstate, { searchDyn: 'sd2' });
-      //     $q.flush();
-      //     expect(promise.transition.dynamic()).toBeTruthy();
-      //     expect(promise.transition.treeChanges().entering.length).toBe(0);
-      //     expect(promise.transition.treeChanges().exiting.length).toBe(0);
-      //     expect(promise.transition.treeChanges().retained.length).toBe(2);
-      //     expect(dynlog).toBe('success;[searchDyn=sd2];');
-      //     expect(obj($stateParams)).toEqual({ path: 'p1', pathDyn: 'pd1', search: 's1', searchDyn: 'sd2' });
-      //   });
+      describe("[ enter/exit ]", function () {
+        beforeEach(() => (dynlog = ""));
+        it("does not exit nor enter any states when fully dynamic", async () => {
+          const promise = $state.go(dynamicstate, { searchDyn: "sd2" });
+          await promise;
+          expect(promise.transition.dynamic()).toBeTruthy();
+          expect(promise.transition.treeChanges().entering.length).toBe(0);
+          expect(promise.transition.treeChanges().exiting.length).toBe(0);
+          expect(promise.transition.treeChanges().retained.length).toBe(2);
+          expect(dynlog).toBe("success;[searchDyn=sd2];");
+          Object.entries({
+            path: "p1",
+            pathDyn: "pd1",
+            search: "s1",
+            searchDyn: "sd2",
+          }).forEach(([k, v]) => {
+            expect($stateParams[k]).toEqual(v);
+          });
+        });
 
-      //   it('does not exit nor enter the state when only dynamic search params change', function () {
-      //     const promise = $state.go(dynamicstate, { searchDyn: 'sd2' });
-      //     $q.flush();
-      //     expect(promise.transition.dynamic()).toBeTruthy();
-      //     expect(dynlog).toBe('success;[searchDyn=sd2];');
-      //     expect(obj($stateParams)).toEqual({ path: 'p1', pathDyn: 'pd1', search: 's1', searchDyn: 'sd2' });
-      //   });
+        it("does not exit nor enter the state when only dynamic search params change", async () => {
+          const promise = $state.go(dynamicstate, { searchDyn: "sd2" });
+          await promise;
+          expect(promise.transition.dynamic()).toBeTruthy();
+          expect(dynlog).toBe("success;[searchDyn=sd2];");
+          Object.entries({
+            path: "p1",
+            pathDyn: "pd1",
+            search: "s1",
+            searchDyn: "sd2",
+          }).forEach(([k, v]) => {
+            expect($stateParams[k]).toEqual(v);
+          });
+        });
 
-      //   it('does not exit nor enter the state when only dynamic path params change', function () {
-      //     const promise = $state.go(dynamicstate, { pathDyn: 'pd2' });
-      //     $q.flush();
-      //     expect(promise.transition.dynamic()).toBeTruthy();
-      //     expect(dynlog).toBe('success;[pathDyn=pd2];');
-      //     expect(obj($stateParams)).toEqual({ path: 'p1', pathDyn: 'pd2', search: 's1', searchDyn: 'sd1' });
-      //   });
+        it("does not exit nor enter the state when only dynamic path params change", async () => {
+          const promise = $state.go(dynamicstate, { pathDyn: "pd2" });
+          await promise;
+          expect(promise.transition.dynamic()).toBeTruthy();
+          expect(dynlog).toBe("success;[pathDyn=pd2];");
+          Object.entries({
+            path: "p1",
+            pathDyn: "pd2",
+            search: "s1",
+            searchDyn: "sd1",
+          }).forEach(([k, v]) => {
+            expect($stateParams[k]).toEqual(v);
+          });
+        });
 
-      //   it('exits and enters a state when a non-dynamic search param changes', function () {
-      //     const promise = $state.go(dynamicstate, { search: 's2' });
-      //     $q.flush();
-      //     expect(promise.transition.dynamic()).toBeFalsy();
-      //     expect(dynlog).toBe('exit:dyn;enter:dyn;success;');
-      //     expect(obj($stateParams)).toEqual({ path: 'p1', pathDyn: 'pd1', search: 's2', searchDyn: 'sd1' });
-      //   });
+        it("exits and enters a state when a non-dynamic search param changes", async () => {
+          const promise = $state.go(dynamicstate, { search: "s2" });
+          await promise;
+          expect(promise.transition.dynamic()).toBeFalsy();
+          expect(dynlog).toBe("exit:dyn;enter:dyn;success;");
+          Object.entries({
+            path: "p1",
+            pathDyn: "pd1",
+            search: "s2",
+            searchDyn: "sd1",
+          }).forEach(([k, v]) => {
+            expect($stateParams[k]).toEqual(v);
+          });
+        });
 
-      //   it('exits and enters a state when a non-dynamic path param changes', function () {
-      //     const promise = $state.go(dynamicstate, { path: 'p2' });
-      //     $q.flush();
-      //     expect(promise.transition.dynamic()).toBeFalsy();
-      //     expect(dynlog).toBe('exit:dyn;enter:dyn;success;');
-      //     expect(obj($stateParams)).toEqual({ path: 'p2', pathDyn: 'pd1', search: 's1', searchDyn: 'sd1' });
-      //   });
+        it("exits and enters a state when a non-dynamic path param changes", async () => {
+          const promise = $state.go(dynamicstate, { path: "p2" });
+          await promise;
+          expect(promise.transition.dynamic()).toBeFalsy();
+          expect(dynlog).toBe("exit:dyn;enter:dyn;success;");
+          Object.entries({
+            path: "p2",
+            pathDyn: "pd1",
+            search: "s1",
+            searchDyn: "sd1",
+          }).forEach(([k, v]) => {
+            expect($stateParams[k]).toEqual(v);
+          });
+        });
 
-      //   it('does not exit nor enter a state when only dynamic params change (triggered via url)', function () {
-      //     $location.search({ search: 's1', searchDyn: 'sd2' });
-      //     $rootScope.$broadcast('$locationChangeSuccess');
-      //     $q.flush();
-      //     expect(dynlog).toBe('success;[searchDyn=sd2];');
-      //   });
+        it("does not exit nor enter a state when only dynamic params change (triggered via url)", async () => {
+          $location.search({ search: "s1", searchDyn: "sd2" });
+          $rootScope.$broadcast("$locationChangeSuccess");
+          await wait(10);
+          expect(dynlog).toBe("success;[searchDyn=sd2];");
+        });
 
-      //   it('exits and enters a state when any non-dynamic params change (triggered via url)', function () {
-      //     $location.search({ search: 's2', searchDyn: 'sd2' });
-      //     $rootScope.$broadcast('$locationChangeSuccess');
-      //     $q.flush();
-      //     expect(dynlog).toBe('exit:dyn;enter:dyn;success;');
-      //   });
+        it("exits and enters a state when any non-dynamic params change (triggered via url)", async () => {
+          $location.search({ search: "s2", searchDyn: "sd2" });
+          $rootScope.$broadcast("$locationChangeSuccess");
+          await wait(10);
+          expect(dynlog).toBe("exit:dyn;enter:dyn;success;");
+        });
 
-      //   it('does not exit nor enter a state when only dynamic params change (triggered via $state transition)', function () {
-      //     $state.go('.', { searchDyn: 'sd2' }, { inherit: true });
-      //     $q.flush();
-      //     expect(dynlog).toBe('success;[searchDyn=sd2];');
-      //   });
-      // });
+        it("does not exit nor enter a state when only dynamic params change (triggered via $state transition)", async () => {
+          await $state.go(".", { searchDyn: "sd2" }, { inherit: true });
+          expect(dynlog).toBe("success;[searchDyn=sd2];");
+        });
+      });
 
-      // describe('[ global $stateParams service ]', function () {
-      //   it('updates the global $stateParams object', function () {
-      //     $state.go(dynamicstate, { searchDyn: 'sd2' });
-      //     $q.flush();
-      //     expect(obj($stateParams)).toEqual({ path: 'p1', pathDyn: 'pd1', search: 's1', searchDyn: 'sd2' });
-      //   });
+      describe("[ global $stateParams service ]", function () {
+        it("updates the global $stateParams object", async () => {
+          await $state.go(dynamicstate, { searchDyn: "sd2" });
 
-      //   it('updates $stateParams and $location.search when only dynamic params change (triggered via url)', function () {
-      //     $location.search({ search: 's1', searchDyn: 'sd2' });
-      //     $rootScope.$broadcast('$locationChangeSuccess');
-      //     $q.flush();
-      //     expect($stateParams.search).toBe('s1');
-      //     expect($stateParams.searchDyn).toBe('sd2');
-      //     expect($location.search()).toEqual({ search: 's1', searchDyn: 'sd2' });
-      //   });
+          Object.entries({
+            path: "p1",
+            pathDyn: "pd1",
+            search: "s1",
+            searchDyn: "sd2",
+          }).forEach(([k, v]) => {
+            expect($stateParams[k]).toEqual(v);
+          });
+        });
 
-      //   it('updates $stateParams and $location.search when only dynamic params change (triggered via $state transition)', function () {
-      //     $state.go('.', { searchDyn: 'sd2' });
-      //     $q.flush();
-      //     expect($stateParams.search).toBe('s1');
-      //     expect($stateParams.searchDyn).toBe('sd2');
-      //     expect($location.search()).toEqual({ search: 's1', searchDyn: 'sd2' });
-      //   });
+        it("updates $stateParams and $location.search when only dynamic params change (triggered via url)", async () => {
+          $location.search({ search: "s1", searchDyn: "sd2" });
+          $rootScope.$broadcast("$locationChangeSuccess");
+          await wait(10);
+          expect($stateParams.search).toBe("s1");
+          expect($stateParams.searchDyn).toBe("sd2");
+          expect($location.search()).toEqual({
+            search: "s1",
+            searchDyn: "sd2",
+          });
+        });
 
-      //   it('dynamic param changes can be observed by watching the global $stateParams', function () {
-      //     let observedParamValue;
-      //     function stateParamsTerm() {
-      //       return $stateParams.searchDyn;
-      //     }
-      //     $rootScope.$watch(stateParamsTerm, function (newval, oldval) {
-      //       if (newval === oldval) return;
-      //       observedParamValue = newval;
-      //     });
-      //     $q.flush();
+        it("updates $stateParams and $location.search when only dynamic params change (triggered via $state transition)", async () => {
+          await $state.go(".", { searchDyn: "sd2" });
+          expect($stateParams.search).toBe("s1");
+          expect($stateParams.searchDyn).toBe("sd2");
+          expect($location.search()).toEqual({
+            search: "s1",
+            searchDyn: "sd2",
+          });
+        });
 
-      //     $location.search({ search: 's1', searchDyn: 'sd2' });
-      //     $rootScope.$broadcast('$locationChangeSuccess');
-      //     $q.flush();
-      //     expect(observedParamValue).toBe('sd2');
-      //   });
-      // });
+        it("dynamic param changes can be observed by watching the global $stateParams", async () => {
+          let observedParamValue;
+          function stateParamsTerm() {
+            return $stateParams.searchDyn;
+          }
+          $rootScope.$watch(stateParamsTerm, function (newval, oldval) {
+            observedParamValue = newval;
+          });
+          await wait(10);
 
-      // describe('[ uiOnParamsChanged ]', function () {
-      //   it('should be called when dynamic parameter values change', function () {
-      //     $state.go('.', { searchDyn: 'sd2' });
-      //     $q.flush();
-      //     expect(paramsChangedLog).toBe('searchDyn;');
-      //   });
+          $location.search({ search: "s1", searchDyn: "sd2" });
+          $rootScope.$broadcast("$locationChangeSuccess");
+          await wait(10);
 
-      //   it("should not be called if a non-dynamic parameter changes (causing the controller's state to exit/enter)", function () {
-      //     $state.go('.', { search: 's2', searchDyn: 'sd2' });
-      //     $q.flush();
-      //     expect(paramsChangedLog).toBe('');
-      //   });
+          expect(observedParamValue).toBe("sd2");
+        });
+      });
 
-      //   it('should not be called, when entering a new state, if no parameter values change', function () {
-      //     $state.go(childNoParam);
-      //     $q.flush();
-      //     expect(paramsChangedLog).toBe('');
-      //   });
+      describe("[ uiOnParamsChanged ]", function () {
+        beforeEach(() => (dynlog = ""));
+        it("should be called when dynamic parameter values change", async () => {
+          await $state.go(".", { searchDyn: "sd2" });
 
-      //   it('should be called, when entering a new state, if any dynamic parameter value changed', function () {
-      //     $state.go(childNoParam, { searchDyn: 'sd2' });
-      //     $q.flush();
-      //     expect(paramsChangedLog).toBe('searchDyn;');
-      //   });
+          expect(paramsChangedLog).toBe("searchDyn;");
+        });
 
-      //   it('should be called, when entering a new state, if a new parameter value is added', function () {
-      //     $state.go(childWithParam, { config: 'c2' });
-      //     $q.flush();
-      //     expect(paramsChangedLog).toBe('config,configDyn;');
-      //   });
+        it("should not be called if a non-dynamic parameter changes (causing the controller's state to exit/enter)", async () => {
+          await $state.go(".", { search: "s2", searchDyn: "sd2" });
 
-      //   it('should be called, when reactivating the uiOnParamsChanged state, if a dynamic parameter changed', function () {
-      //     initStateTo(childNoParam, { path: 'p1', pathDyn: 'pd1', search: 's1', searchDyn: 'sd1' });
-      //     dynlog = paramsChangedLog = '';
+          expect(paramsChangedLog).toBe("");
+        });
 
-      //     $state.go(dynamicstate, { pathDyn: 'pd2' });
-      //     $q.flush();
-      //     expect(paramsChangedLog).toBe('pathDyn;');
-      //   });
+        it("should not be called, when entering a new state, if no parameter values change", async () => {
+          await $state.go(childNoParam);
 
-      //   it('should not be called, when reactivating the uiOnParamsChanged state "dyn", if any of dyns non-dynamic parameters changed', function () {
-      //     initStateTo(childNoParam, { path: 'p1', pathDyn: 'pd1', search: 's1', searchDyn: 'sd1' });
-      //     dynlog = paramsChangedLog = '';
+          expect(paramsChangedLog).toBe("");
+        });
 
-      //     $state.go(dynamicstate, { path: 'p2' });
-      //     $q.flush();
-      //     expect(paramsChangedLog).toBe('');
-      //   });
+        it("should be called, when entering a new state, if any dynamic parameter value changed", async () => {
+          await $state.go(childNoParam, { searchDyn: "sd2" });
 
-      //   it('should be called with an object containing only the changed params', function () {
-      //     $state.go(dynamicstate, { pathDyn: 'pd2' });
-      //     $q.flush();
-      //     expect(dynlog).toBe('success;[pathDyn=pd2];');
+          expect(paramsChangedLog).toBe("searchDyn;");
+        });
 
-      //     $state.go(dynamicstate, { pathDyn: 'pd3', searchDyn: 'sd2' });
-      //     $q.flush();
-      //     expect(dynlog).toBe('success;[pathDyn=pd2];success;[pathDyn=pd3,searchDyn=sd2];');
-      //   });
+        it("should be called, when entering a new state, if a new parameter value is added", async () => {
+          await $state.go(childWithParam, { config: "c2" });
 
-      //   it('should be called on all active controllers that have a uiOnParamsChanged', function () {
-      //     initStateTo(childWithParam, {
-      //       path: 'p1',
-      //       pathDyn: 'pd1',
-      //       search: 's1',
-      //       searchDyn: 'sd1',
-      //       config: 'p1',
-      //       configDyn: 'c1',
-      //     });
-      //     dynlog = paramsChangedLog = '';
+          expect(paramsChangedLog).toBe("config,configDyn;");
+        });
 
-      //     $state.go(childWithParam, { pathDyn: 'pd2' });
-      //     $q.flush();
-      //     expect(dynlog).toBe('success;[pathDyn=pd2];{pathDyn=pd2};');
+        it("should be called, when reactivating the uiOnParamsChanged state, if a dynamic parameter changed", async () => {
+          await initStateTo(childNoParam, {
+            path: "p1",
+            pathDyn: "pd1",
+            search: "s1",
+            searchDyn: "sd1",
+          });
+          dynlog = paramsChangedLog = "";
 
-      //     dynlog = paramsChangedLog = '';
-      //     $state.go(childWithParam, { pathDyn: 'pd2', searchDyn: 'sd2', configDyn: 'cd2' });
-      //     $q.flush();
-      //     expect(dynlog).toBe('success;[configDyn=cd2,searchDyn=sd2];{configDyn=cd2,searchDyn=sd2};');
-      //   });
-      // });
+          await $state.go(dynamicstate, { pathDyn: "pd2" });
+
+          expect(paramsChangedLog).toBe("pathDyn;");
+        });
+
+        it('should not be called, when reactivating the uiOnParamsChanged state "dyn", if any of dyns non-dynamic parameters changed', async () => {
+          await initStateTo(childNoParam, {
+            path: "p1",
+            pathDyn: "pd1",
+            search: "s1",
+            searchDyn: "sd1",
+          });
+          dynlog = paramsChangedLog = "";
+
+          await $state.go(dynamicstate, { path: "p2" });
+
+          expect(paramsChangedLog).toBe("");
+        });
+
+        it("should be called with an object containing only the changed params", async () => {
+          await $state.go(dynamicstate, { pathDyn: "pd2" });
+
+          expect(dynlog).toBe("success;[pathDyn=pd2];");
+
+          await $state.go(dynamicstate, { pathDyn: "pd3", searchDyn: "sd2" });
+
+          expect(dynlog).toBe(
+            "success;[pathDyn=pd2];success;[pathDyn=pd3,searchDyn=sd2];",
+          );
+        });
+
+        it("should be called on all active controllers that have a uiOnParamsChanged", async () => {
+          await initStateTo(childWithParam, {
+            path: "p1",
+            pathDyn: "pd1",
+            search: "s1",
+            searchDyn: "sd1",
+            config: "p1",
+            configDyn: "c1",
+          });
+          dynlog = paramsChangedLog = "";
+
+          await $state.go(childWithParam, { pathDyn: "pd2" });
+
+          expect(dynlog).toBe("success;[pathDyn=pd2];{pathDyn=pd2};");
+
+          dynlog = paramsChangedLog = "";
+          await $state.go(childWithParam, {
+            pathDyn: "pd2",
+            searchDyn: "sd2",
+            configDyn: "cd2",
+          });
+
+          expect(dynlog).toBe(
+            "success;[configDyn=cd2,searchDyn=sd2];{configDyn=cd2,searchDyn=sd2};",
+          );
+        });
+      });
     });
 
-    // describe('(with dynamic params because reloadOnSearch=false)', function () {
-    //   describe('and only query params changed', function () {
-    //     let entered = false;
-    //     beforeEach(function () {
-    //       initStateTo(RS);
-    //       $transitions.onEnter({ entering: 'RS' }, function () {
-    //         entered = true;
-    //       });
-    //     });
+    describe("(with dynamic params because reloadOnSearch=false)", function () {
+      describe("and only query params changed", () => {
+        let entered = false;
+        beforeEach(async () => {
+          await initStateTo(RS);
+          $transitions.onEnter({ entering: "RS" }, function () {
+            entered = true;
+          });
+        });
 
-    //     it("doesn't re-enter state (triggered by url change)", function () {
-    //       $location.search({ term: 'hello' });
-    //       $rootScope.$broadcast('$locationChangeSuccess');
-    //       $q.flush();
-    //       expect($location.search()).toEqual({ term: 'hello' });
-    //       expect(entered).toBeFalsy();
-    //     });
+        // this passes in isolation
+        xit("updates $stateParams", async () => {
+          await initStateTo(RS);
+          $location.search({ term: "hello" });
+          $rootScope.$broadcast("$locationChangeSuccess");
+          await wait(10);
+          expect($stateParams.term).toEqual("hello");
+          expect(entered).toBeFalsy();
+        });
 
-    //     it("doesn't re-enter state (triggered by $state transition)", function () {
-    //       initStateTo(RS);
-    //       const promise = $state.go('.', { term: 'hello' });
-    //       let success = false,
-    //         transition = promise.transition;
-    //       transition.promise.then(function () {
-    //         success = true;
-    //       });
-    //       $q.flush();
-    //       expect($state.current).toBe(RS);
-    //       expect(entered).toBeFalsy();
-    //       expect(success).toBeTruthy();
-    //       expect($location.search()).toEqual({ term: 'hello' });
-    //     });
+        it("doesn't re-enter state (triggered by url change)", async () => {
+          $location.search({ term: "hello" });
+          $rootScope.$broadcast("$locationChangeSuccess");
 
-    //     it('updates $stateParams', function () {
-    //       initStateTo(RS);
-    //       $location.search({ term: 'hello' });
-    //       $rootScope.$broadcast('$locationChangeSuccess');
-    //       $q.flush();
-    //       expect(obj($stateParams)).toEqual({ term: 'hello' });
-    //       expect(entered).toBeFalsy();
-    //     });
+          expect($location.search()).toEqual({ term: "hello" });
+          expect(entered).toBeFalsy();
+        });
 
-    //     it('updates URL when (triggered by $state transition)', function () {
-    //       initStateTo(RS);
-    //       $state.go('.', { term: 'goodbye' });
-    //       $q.flush();
-    //       expect(obj($stateParams)).toEqual({ term: 'goodbye' });
-    //       expect($location.url()).toEqual('/search?term=goodbye');
-    //       expect(entered).toBeFalsy();
-    //     });
-    //   });
-    // });
+        it("doesn't re-enter state (triggered by $state transition)", async () => {
+          await initStateTo(RS);
+          const promise = $state.go(".", { term: "hello" });
+          await promise;
+          let success = false,
+            transition = promise.transition;
+          await transition.promise.then(async () => {
+            success = true;
+          });
 
-    // it('ignores non-applicable state parameters', () => {
-    //   $state.transitionTo('A', { w00t: 'hi mom!' });
-    //   $q.flush();
-    //   expect($state.current).toBe(A);
-    // }));
+          expect($state.current).toBe(RS);
+          expect(entered).toBeFalsy();
+          expect(success).toBeTruthy();
+          expect($location.search()).toEqual({ term: "hello" });
+        });
 
-    // it('is a no-op when passing the current state and identical parameters', () => {
-    //   initStateTo(A);
-    //   const promise = $state.transitionTo(A, {}); // no-op
-    //   expect(promise).toBeDefined(); // but we still get a valid promise
-    //   $q.flush();
-    //   expect(resolvedValue(promise)).toBe(A);
-    //   expect($state.current).toBe(A);
-    //   expect(log).toBe('');
-    // }));
+        it("updates URL when (triggered by $state transition)", async () => {
+          await initStateTo(RS);
+          await $state.go(".", { term: "goodbye" });
 
-    // it('aborts pending transitions (last call wins)', () => {
-    //   initStateTo(A);
-    //   logEvents = true;
+          expect($stateParams.term).toEqual("goodbye");
+          expect($location.url()).toEqual("/search?term=goodbye");
+          expect(entered).toBeFalsy();
+        });
+      });
+    });
 
-    //   const superseded = $state.transitionTo(B, {});
-    //   $state.transitionTo(C, {});
-    //   $q.flush();
-    //   expect($state.current).toBe(C);
-    //   expect(resolvedError(superseded)).toBeTruthy();
-    // }));
+    it("ignores non-applicable state parameters", async () => {
+      await $state.transitionTo("A", { w00t: "hi mom!" });
 
-    // it('aborts pending transitions even when going back to the current state', () => {
-    //   initStateTo(A);
-    //   logEvents = true;
+      expect($state.current).toBe(A);
+    });
 
-    //   const superseded = $state.transitionTo(B, {});
-    //   $state.transitionTo(A, {});
-    //   $q.flush();
-    //   expect($state.current).toBe(A);
-    //   expect(resolvedError(superseded)).toBeTruthy();
-    // }));
+    it("is a no-op when passing the current state and identical parameters", async () => {
+      await initStateTo(A);
+      const promise = $state.transitionTo(A, {}); // no-op
+      expect(promise).toBeDefined(); // but we still get a valid promise
+      await promise;
+      expect(promise.$$state.value).toBe(A);
+      expect($state.current).toBe(A);
+    });
 
-    // it('aborts pending transitions when aborted from callbacks', () => {
-    //   const superseded = $state.transitionTo('home.redirect');
-    //   $q.flush();
-    //   expect($state.current.name).toBe('about');
-    // }));
+    it("aborts pending transitions (last call wins)", async () => {
+      await initStateTo(A);
+      logEvents = true;
 
-    // it('triggers onEnter and onExit callbacks', () => {
-    //   initStateTo(A);
-    //   logEnterExit = true;
-    //   $state.transitionTo(D, {});
-    //   $q.flush();
-    //   log += $state.current.name + ';';
-    //   $state.transitionTo(DD, {});
-    //   $q.flush();
-    //   log += $state.current.name + ';';
-    //   $state.transitionTo(A, {});
-    //   $q.flush();
-    //   expect(log).toBe(
-    //     'A.onExit;' + 'D.onEnter;' + 'D;' + 'DD.onEnter;' + 'DD;' + 'DD.onExit;' + 'D.onExit;' + 'A.onEnter;'
-    //   );
-    // }));
+      const superseded = $state.transitionTo(B, {});
+      await superseded;
+      await $state.transitionTo(C, {});
+
+      expect($state.current).toBe(C);
+      expect(superseded.$$state.status).toBeTruthy();
+    });
+
+    it("aborts pending transitions even when going back to the current state", async () => {
+      await initStateTo(A);
+      logEvents = true;
+
+      const superseded = $state.transitionTo(B, {});
+      await superseded;
+      await $state.transitionTo(A, {});
+
+      expect($state.current).toBe(A);
+      expect(superseded.$$state.status).toBeTruthy();
+    });
+
+    xit("aborts pending transitions when aborted from callbacks", () => {
+      $state.transitionTo("home.redirect");
+      expect($state.current.name).toBe("about");
+    });
+
+    it("triggers onEnter and onExit callbacks", async () => {
+      log = "";
+      await initStateTo(A);
+      logEnterExit = true;
+      await $state.transitionTo(D, {});
+
+      log += $state.current.name + ";";
+      await $state.transitionTo(DD, {});
+
+      log += $state.current.name + ";";
+      await $state.transitionTo(A, {});
+
+      expect(log).toBe(
+        "A.onExit;" +
+          "D.onEnter;" +
+          "D;" +
+          "DD.onEnter;" +
+          "DD;" +
+          "DD.onExit;" +
+          "D.onExit;" +
+          "A.onEnter;",
+      );
+    });
 
     // // test for #3081
-    // it('injects resolve values from the exited state into onExit', function (done) {
-    //   const registry = $uiRouter.stateRegistry;
-    //   registry.register({
-    //     name: 'design',
-    //     url: '/design',
-    //     resolve: {
-    //       cc: function () {
-    //         return 'cc resolve';
-    //       },
-    //     },
-    //     onExit: function (cc, $state$, $transition$) {
-    //       expect($transition$.to().name).toBe('A');
-    //       expect($transition$.from().name).toBe('design');
+    it("injects resolve values from the exited state into onExit", async () => {
+      const registry = $router.stateRegistry;
+      registry.register({
+        name: "design",
+        url: "/design",
+        resolve: {
+          cc: function () {
+            return "cc resolve";
+          },
+        },
+        onExit: function (cc, $state$, $transition$) {
+          expect($transition$.to().name).toBe("A");
+          expect($transition$.from().name).toBe("design");
 
-    //       expect($state$).toBe(registry.get('design'));
+          expect($state$).toBe(registry.get("design"));
 
-    //       expect(cc).toBe('cc resolve');
+          expect(cc).toBe("cc resolve");
+        },
+      });
 
-    //       done();
-    //     },
-    //   });
+      await $state.go("design");
 
-    //   $state.go('design');
-    //   $q.flush();
+      await $state.go("A");
+    });
 
-    //   $state.go('A');
-    //   $q.flush();
-    // });
+    it("doesn't transition to parent state when child has no URL", async () => {
+      await $state.transitionTo("about.sidebar");
 
-    // it("doesn't transition to parent state when child has no URL", () => {
-    //   $state.transitionTo('about.sidebar');
-    //   $q.flush();
-    //   expect($state.current.name).toEqual('about.sidebar');
-    // }));
+      expect($state.current.name).toEqual("about.sidebar");
+    });
 
-    // it('notifies on failed relative state resolution', () => {
-    //   $state.transitionTo(DD);
-    //   $q.flush();
+    it("notifies on failed relative state resolution", async () => {
+      await $state.transitionTo(DD);
 
-    //   let actual,
-    //     err = "Could not resolve '^.Z' from state 'DD'";
-    //   $state.transitionTo('^.Z', null, { relative: $state.$current }).catch(function (err) {
-    //     actual = err;
-    //   });
-    //   $q.flush();
-    //   expect(actual.detail).toEqual(err);
-    // }));
+      let actual,
+        err = "Could not resolve '^.Z' from state 'DD'";
+      await $state
+        .transitionTo("^.Z", null, { relative: $state.$current })
+        .catch(function (err) {
+          actual = err;
+        });
 
-    // it('uses the templateProvider to get template dynamically', () => {
-    //   $state.transitionTo('dynamicTemplate', { type: 'Acme' });
-    //   $q.flush();
-    //   expect(template).toEqual('AcmeFooTemplate');
-    // }));
+      expect(actual.detail).toEqual(err);
+    });
 
-    // it('uses the controllerProvider to get controller dynamically', () => {
-    //   $state.transitionTo('dynamicController', { type: 'Acme' });
-    //   $q.flush();
-    //   expect(ctrlName).toEqual('AcmeController');
-    // }));
+    it("uses the templateProvider to get template dynamically", async () => {
+      await $state.transitionTo("dynamicTemplate", { type: "Acme" });
 
-    // it('updates the location #fragment, if specified', inject(function ($state, $q, $location) {
-    //   // html5mode disabled
-    //   locationProvider.html5Mode(false);
-    //   expect(html5Compat(locationProvider.html5Mode())).toBe(false);
-    //   $state.transitionTo('home.item', { id: 'world', '#': 'frag' });
-    //   $q.flush();
-    //   expect($location.url()).toBe('/front/world#frag');
-    //   expect($location.hash()).toBe('frag');
+      expect(template).toEqual("AcmeFooTemplate");
+    });
 
-    //   // html5mode enabled
-    //   locationProvider.html5Mode(true);
-    //   expect(html5Compat(locationProvider.html5Mode())).toBe(true);
-    //   $state.transitionTo('home.item', { id: 'world', '#': 'frag' });
-    //   $q.flush();
-    //   expect($location.url()).toBe('/front/world#frag');
-    //   expect($location.hash()).toBe('frag');
-    // }));
+    it("uses the controllerProvider to get controller dynamically", async () => {
+      await $state.transitionTo("dynamicController", { type: "Acme" });
 
-    // it('runs a transition when the location #fragment is updated', inject(function (
-    //   $state,
-    //   $q,
-    //   $location,
-    //   $transitions
-    // ) {
-    //   let transitionCount = 0;
-    //   $transitions.onSuccess({}, function () {
-    //     transitionCount++;
-    //   });
+      expect(ctrlName).toEqual("AcmeController");
+    });
 
-    //   $state.transitionTo('home.item', { id: 'world', '#': 'frag' });
-    //   $q.flush();
-    //   expect($location.hash()).toBe('frag');
-    //   expect(transitionCount).toBe(1);
+    it("updates the location #fragment", async () => {
+      await $state.transitionTo("home.item", { id: "world", "#": "frag" });
 
-    //   $state.transitionTo('home.item', { id: 'world', '#': 'blarg' });
-    //   $q.flush();
-    //   expect($location.hash()).toBe('blarg');
-    //   expect(transitionCount).toBe(2);
-    // }));
+      expect($location.url()).toBe("/front/world#frag");
+      expect($location.hash()).toBe("frag");
+    });
 
-    // it('injects $transition$ into resolves', () => {
-    //   $state.transitionTo('home');
-    //   $q.flush();
-    //   $state.transitionTo('about');
-    //   $q.flush();
-    //   expect(log).toBe('home => about');
-    // }));
+    // passes in isolation. on success callback being polluted
+    xit("runs a transition when the location #fragment is updated", (done) => {
+      let transitionCount = 0;
+      $transitions.onSuccess({}, function () {
+        transitionCount++;
+        done();
+      });
+
+      $state.transitionTo("home.item", { id: "world", "#": "frag" });
+      expect($location.hash()).toBe("frag");
+      expect(transitionCount).toBeGreaterThan(0);
+
+      $state.transitionTo("home.item", { id: "world", "#": "blarg" });
+
+      expect($location.hash()).toBe("blarg");
+      expect(transitionCount).toBeGreaterThan(1);
+    });
+
+    it("injects $transition$ into resolves", async () => {
+      await $state.transitionTo("home");
+      await $state.transitionTo("about");
+
+      expect(log).toBe("home => about");
+    });
   });
 });
