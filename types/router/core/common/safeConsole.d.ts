@@ -1,5 +1,5 @@
 export declare const safeConsole: {
-    log: any;
-    error: any;
-    table: any;
+  log: any;
+  error: any;
+  table: any;
 };

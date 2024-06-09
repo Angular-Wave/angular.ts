@@ -2,7 +2,6 @@ import {
   createProxyFunctions,
   defaults,
   inArray,
-  noop,
   removeFrom,
   silenceUncaughtInPromise,
   silentRejection,
@@ -86,7 +85,7 @@ export class StateService {
   }
 
   dispose() {
-    this.defaultErrorHandler(noop);
+    this.defaultErrorHandler(() => {});
     this.invalidCallbacks = [];
   }
   /**

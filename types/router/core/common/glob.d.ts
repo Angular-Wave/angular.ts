@@ -48,13 +48,13 @@
  * @packageDocumentation
  */
 export declare class Glob {
-    text: string;
-    glob: Array<string>;
-    regexp: RegExp;
-    /** Returns true if the string has glob-like characters in it */
-    static is(text: string): boolean;
-    /** Returns a glob from the string, or null if the string isn't Glob-like */
-    static fromString(text: string): Glob;
-    constructor(text: string);
-    matches(name: string): boolean;
+  text: string;
+  glob: Array<string>;
+  regexp: RegExp;
+  /** Returns true if the string has glob-like characters in it */
+  static is(text: string): boolean;
+  /** Returns a glob from the string, or null if the string isn't Glob-like */
+  static fromString(text: string): Glob;
+  constructor(text: string);
+  matches(name: string): boolean;
 }

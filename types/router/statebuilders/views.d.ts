@@ -1,7 +1,14 @@
 /** @publicapi @module ng1 */ /** */
-import { StateObject, ViewConfig, ViewConfigFactory, PathNode, ResolveContext, IInjectable } from './core';
-import { Ng1ViewDeclaration } from '../interface';
-import { TemplateFactory } from '../templateFactory';
+import {
+  StateObject,
+  ViewConfig,
+  ViewConfigFactory,
+  PathNode,
+  ResolveContext,
+  IInjectable,
+} from "./core";
+import { Ng1ViewDeclaration } from "../interface";
+import { TemplateFactory } from "../templateFactory";
 /** @internalapi */
 export declare function getNg1ViewConfigFactory(): ViewConfigFactory;
 /**
@@ -16,26 +23,32 @@ export declare function getNg1ViewConfigFactory(): ViewConfigFactory;
  * @internalapi
  */
 export declare function ng1ViewsBuilder(state: StateObject): {
-    [key: string]: Ng1ViewDeclaration;
+  [key: string]: Ng1ViewDeclaration;
 };
 /** @internalapi */
 export declare class Ng1ViewConfig implements ViewConfig {
-    path: PathNode[];
-    viewDecl: Ng1ViewDeclaration;
-    factory: TemplateFactory;
-    $id: number;
-    loaded: boolean;
-    controller: Function;
-    template: string;
-    component: string;
-    locals: any;
-    constructor(path: PathNode[], viewDecl: Ng1ViewDeclaration, factory: TemplateFactory);
-    load(): Promise<this>;
-    getTemplate: (uiView: any, context: ResolveContext) => string;
-    /**
-     * Gets the controller for a view configuration.
-     *
-     * @returns {Function|Promise.<Function>} Returns a controller, or a promise that resolves to a controller.
-     */
-    getController(context: ResolveContext): IInjectable | string | Promise<IInjectable | string>;
+  path: PathNode[];
+  viewDecl: Ng1ViewDeclaration;
+  factory: TemplateFactory;
+  $id: number;
+  loaded: boolean;
+  controller: Function;
+  template: string;
+  component: string;
+  locals: any;
+  constructor(
+    path: PathNode[],
+    viewDecl: Ng1ViewDeclaration,
+    factory: TemplateFactory,
+  );
+  load(): Promise<this>;
+  getTemplate: (uiView: any, context: ResolveContext) => string;
+  /**
+   * Gets the controller for a view configuration.
+   *
+   * @returns {Function|Promise.<Function>} Returns a controller, or a promise that resolves to a controller.
+   */
+  getController(
+    context: ResolveContext,
+  ): IInjectable | string | Promise<IInjectable | string>;
 }

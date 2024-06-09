@@ -20,7 +20,6 @@ export const equals = _equals;
 export function identity(x) {
   return x;
 }
-export function noop() {}
 /**
  * Builds proxy functions on the `to` object which pass through to the `from` object.
  *

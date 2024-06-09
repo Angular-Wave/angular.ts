@@ -1,7 +1,7 @@
 import { filter, tail, unnestR } from "../../shared/common";
 import { isDefined, isFunction, isString } from "../../shared/utils";
 import { kebobString } from "../../shared/strings";
-import { noop } from "../../shared/common";
+
 import { parse } from "../../shared/hof";
 import { ResolveContext } from "../resolve/resolveContext";
 import { trace } from "../common/trace";
@@ -338,7 +338,7 @@ export function $ViewDirectiveFill(
           );
           return;
         }
-        const cfg = data.$cfg || { viewDecl: {}, getTemplate: noop };
+        const cfg = data.$cfg || { viewDecl: {}, getTemplate: () => {} };
         const resolveCtx = cfg.path && new ResolveContext(cfg.path);
         $element.html(cfg.getTemplate($element, resolveCtx) || initial);
         trace.traceUIViewFill(data.$uiView, $element.html());

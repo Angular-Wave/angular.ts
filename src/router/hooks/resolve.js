@@ -1,4 +1,3 @@
-import { noop } from "../../shared/common";
 import { ResolveContext } from "../resolve/resolveContext";
 import { val } from "../../shared/hof";
 export const RESOLVE_HOOK_PRIORITY = 1000;
@@ -14,7 +13,7 @@ export const RESOLVE_HOOK_PRIORITY = 1000;
 const eagerResolvePath = (trans) =>
   new ResolveContext(trans.treeChanges().to)
     .resolvePath("EAGER", trans)
-    .then(noop);
+    .then(() => {});
 export const registerEagerResolvePath = (transitionService) =>
   transitionService.onStart({}, eagerResolvePath, {
     priority: RESOLVE_HOOK_PRIORITY,
@@ -32,7 +31,7 @@ const lazyResolveState = (trans, state) =>
   new ResolveContext(trans.treeChanges().to)
     .subContext(state.$$state())
     .resolvePath("LAZY", trans)
-    .then(noop);
+    .then(() => {});
 export const registerLazyResolveState = (transitionService) =>
   transitionService.onEnter({ entering: val(true) }, lazyResolveState, {
     priority: RESOLVE_HOOK_PRIORITY,
@@ -50,7 +49,7 @@ export const registerLazyResolveState = (transitionService) =>
 const resolveRemaining = (trans) =>
   new ResolveContext(trans.treeChanges().to)
     .resolvePath("LAZY", trans)
-    .then(noop);
+    .then(() => {});
 export const registerResolveRemaining = (transitionService) =>
   transitionService.onFinish({}, resolveRemaining, {
     priority: RESOLVE_HOOK_PRIORITY,

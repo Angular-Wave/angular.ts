@@ -1,4 +1,3 @@
-import { noop } from "../../shared/common";
 import { services } from "../common/coreservices";
 /**
  * A [[TransitionHookFn]] which waits for the views to load
@@ -12,7 +11,9 @@ const loadEnteringViews = (transition) => {
   const $q = services.$q;
   const enteringViews = transition.views("entering");
   if (!enteringViews.length) return;
-  return $q.all(enteringViews.map((view) => $q.when(view.load()))).then(noop);
+  return $q
+    .all(enteringViews.map((view) => $q.when(view.load())))
+    .then(() => {});
 };
 export const registerLoadEnteringViews = (transitionService) =>
   transitionService.onFinish({}, loadEnteringViews);

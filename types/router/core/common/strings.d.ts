@@ -5,7 +5,7 @@
  *
  * @packageDocumentation
  */
-import { IInjectable } from './common';
+import { IInjectable } from "./common";
 /**
  * Returns a string shortened to a maximum length
  *
@@ -31,7 +31,9 @@ export declare function functionToString(fn: Function): any;
 export declare function fnToString(fn: IInjectable): any;
 export declare function stringify(o: any): string;
 /** Returns a function that splits a string on a character or substring */
-export declare const beforeAfterSubstr: (char: string) => (str: string) => string[];
+export declare const beforeAfterSubstr: (
+  char: string,
+) => (str: string) => string[];
 export declare const hostRegex: RegExp;
 export declare const stripLastPathElement: (str: string) => string;
 export declare const splitHash: (str: string) => string[];

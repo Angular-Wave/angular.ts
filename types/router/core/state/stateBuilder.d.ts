@@ -1,7 +1,7 @@
-import { StateObject } from './stateObject';
-import { StateMatcher } from './stateMatcher';
-import { UrlMatcherFactory } from '../url/urlMatcherFactory';
-import { Resolvable } from '../resolve/resolvable';
+import { StateObject } from "./stateObject";
+import { StateMatcher } from "./stateMatcher";
+import { UrlMatcherFactory } from "../url/urlMatcherFactory";
+import { Resolvable } from "../resolve/resolvable";
 /**
  * A function that builds the final value for a specific field on a [[StateObject]].
  *
@@ -12,7 +12,10 @@ import { Resolvable } from '../resolve/resolvable';
  * @param state the _partially built_ [[StateObject]]. The [[StateDeclaration]] can be inspected via [[StateObject.self]]
  * @param parent the previous builder function in the series.
  */
-export declare type BuilderFunction = (state: StateObject, parent?: BuilderFunction) => any;
+export declare type BuilderFunction = (
+  state: StateObject,
+  parent?: BuilderFunction,
+) => any;
 /**
  * This is a [[StateBuilder.builder]] function for the `resolve:` block on a [[StateDeclaration]].
  *
@@ -68,37 +71,37 @@ export declare function resolvablesBuilder(state: StateObject): Resolvable[];
  * using the [[builder]] method.
  */
 export declare class StateBuilder {
-    private matcher;
-    /** An object that contains all the BuilderFunctions registered, key'd by the name of the State property they build */
-    private builders;
-    constructor(matcher: StateMatcher, urlMatcherFactory: UrlMatcherFactory);
-    /**
-     * Registers a [[BuilderFunction]] for a specific [[StateObject]] property (e.g., `parent`, `url`, or `path`).
-     * More than one BuilderFunction can be registered for a given property.
-     *
-     * The BuilderFunction(s) will be used to define the property on any subsequently built [[StateObject]] objects.
-     *
-     * @param property The name of the State property being registered for.
-     * @param fn The BuilderFunction which will be used to build the State property
-     * @returns a function which deregisters the BuilderFunction
-     */
-    builder(property: string, fn: BuilderFunction): Function;
-    /**
-     * Gets the registered builder functions for a given property of [[StateObject]].
-     *
-     * @param property The name of the State property being registered for.
-     * @returns the registered builder(s).
-     *          note: for backwards compatibility, this may be a single builder or an array of builders
-     */
-    builder(property: string): BuilderFunction | BuilderFunction[];
-    /**
-     * Builds all of the properties on an essentially blank State object, returning a State object which has all its
-     * properties and API built.
-     *
-     * @param state an uninitialized State object
-     * @returns the built State object
-     */
-    build(state: StateObject): StateObject;
-    parentName(state: StateObject): string;
-    name(state: StateObject): string;
+  private matcher;
+  /** An object that contains all the BuilderFunctions registered, key'd by the name of the State property they build */
+  private builders;
+  constructor(matcher: StateMatcher, urlMatcherFactory: UrlMatcherFactory);
+  /**
+   * Registers a [[BuilderFunction]] for a specific [[StateObject]] property (e.g., `parent`, `url`, or `path`).
+   * More than one BuilderFunction can be registered for a given property.
+   *
+   * The BuilderFunction(s) will be used to define the property on any subsequently built [[StateObject]] objects.
+   *
+   * @param property The name of the State property being registered for.
+   * @param fn The BuilderFunction which will be used to build the State property
+   * @returns a function which deregisters the BuilderFunction
+   */
+  builder(property: string, fn: BuilderFunction): Function;
+  /**
+   * Gets the registered builder functions for a given property of [[StateObject]].
+   *
+   * @param property The name of the State property being registered for.
+   * @returns the registered builder(s).
+   *          note: for backwards compatibility, this may be a single builder or an array of builders
+   */
+  builder(property: string): BuilderFunction | BuilderFunction[];
+  /**
+   * Builds all of the properties on an essentially blank State object, returning a State object which has all its
+   * properties and API built.
+   *
+   * @param state an uninitialized State object
+   * @returns the built State object
+   */
+  build(state: StateObject): StateObject;
+  parentName(state: StateObject): string;
+  name(state: StateObject): string;
 }

@@ -1,5 +1,5 @@
 import { TransitionHookPhase } from "./interface";
-import { defaults, noop, silentRejection } from "../../shared/common";
+import { defaults, silentRejection } from "../../shared/common";
 import { fnToString, maxLength } from "../../shared/strings";
 import { isPromise } from "../../shared/predicates";
 import { is, parse } from "../../shared/hof";
@@ -8,7 +8,7 @@ import { services } from "../common/coreservices";
 import { Rejection } from "./rejectFactory";
 import { TargetState } from "../state/targetState";
 const defaultOptions = {
-  current: noop,
+  current: () => {},
   transition: null,
   traceData: {},
   bind: null,
@@ -193,7 +193,7 @@ TransitionHook.LOG_REJECTED_RESULT = (hook) => (result) => {
  * Each HookType chooses a GetErrorHandler (See: [[TransitionService._defineCoreEvents]])
  */
 TransitionHook.LOG_ERROR = (hook) => (error) => hook.logError(error);
-TransitionHook.REJECT_ERROR = (hook) => (error) => silentRejection(error);
-TransitionHook.THROW_ERROR = (hook) => (error) => {
+TransitionHook.REJECT_ERROR = () => (error) => silentRejection(error);
+TransitionHook.THROW_ERROR = () => (error) => {
   throw error;
 };

@@ -1,4 +1,4 @@
-import { StateObject } from '../state/stateObject';
+import { StateObject } from "../state/stateObject";
 export declare const root: any;
 export declare const fromJson: any;
 export declare const toJson: any;
@@ -6,10 +6,9 @@ export declare const forEach: any;
 export declare const extend: typeof _extend;
 export declare const equals: any;
 export declare function identity(x: any): any;
-export declare function noop(): any;
 export declare type Mapper<X, T> = (x: X, key?: string | number) => T;
 export interface TypedMap<T> {
-    [key: string]: T;
+  [key: string]: T;
 }
 export declare type Predicate<X> = (x?: X) => boolean;
 export declare type PredicateBinary<X, Y> = (x?: X, y?: Y) => boolean;
@@ -40,7 +39,7 @@ export declare type PredicateBinary<X, Y> = (x?: X, y?: Y) => boolean;
  */
 export declare type IInjectable = Function | any[];
 export interface Obj extends Object {
-    [key: string]: any;
+  [key: string]: any;
 }
 /**
  * Builds proxy functions on the `to` object which pass through to the `from` object.
@@ -98,7 +97,13 @@ export interface Obj extends Object {
  * @param fnNames The function names which will be bound (Defaults to all the functions found on the 'from' object)
  * @param latebind If true, the binding of the function is delayed until the first time it's invoked
  */
-export declare function createProxyFunctions(source: Function, target: Obj, bind: Function, fnNames?: string[], latebind?: boolean): Obj;
+export declare function createProxyFunctions(
+  source: Function,
+  target: Obj,
+  bind: Function,
+  fnNames?: string[],
+  latebind?: boolean,
+): Obj;
 /**
  * prototypal inheritance helper.
  * Creates a new object which has `parent` object as its prototype, and then copies the properties from `extra` onto it
@@ -136,7 +141,10 @@ export declare const mergeR: (memo: Obj, item: Obj) => any;
  * @param {Object} second The second state.
  * @return {Array} Returns an array of state names in descending order, not including the root.
  */
-export declare function ancestors(first: StateObject, second: StateObject): StateObject[];
+export declare function ancestors(
+  first: StateObject,
+  second: StateObject,
+): StateObject[];
 /**
  * Return a copy of the object only containing the whitelisted properties.
  *
@@ -165,31 +173,55 @@ export declare function omit(obj: Obj, propNames: string[]): Obj;
 /** Given an array of objects, maps each element to a named property of the element. */
 export declare function pluck<T>(collection: Obj[], propName: string): T[];
 /** Given an object, maps each property of the object to a named property of the property. */
-export declare function pluck(collection: {
+export declare function pluck(
+  collection: {
     [key: string]: any;
-}, propName: string): {
-    [key: string]: any;
+  },
+  propName: string,
+): {
+  [key: string]: any;
 };
 /** Given an array of objects, returns a new array containing only the elements which passed the callback predicate */
-export declare function filter<T>(collection: T[], callback: (t: T, key?: number) => boolean): T[];
+export declare function filter<T>(
+  collection: T[],
+  callback: (t: T, key?: number) => boolean,
+): T[];
 /** Given an object, returns a new object with only those properties that passed the callback predicate */
-export declare function filter<T>(collection: TypedMap<T>, callback: (t: T, key?: string) => boolean): TypedMap<T>;
+export declare function filter<T>(
+  collection: TypedMap<T>,
+  callback: (t: T, key?: string) => boolean,
+): TypedMap<T>;
 /** Given an object, return the first property of that object which passed the callback predicate */
-export declare function find<T>(collection: TypedMap<T>, callback: Predicate<T>): T;
+export declare function find<T>(
+  collection: TypedMap<T>,
+  callback: Predicate<T>,
+): T;
 /** Given an array of objects, returns the first object which passed the callback predicate */
 export declare function find<T>(collection: T[], callback: Predicate<T>): T;
 /** Given an object, returns a new object, where each property is transformed by the callback function */
-export declare let mapObj: <T, U>(collection: {
+export declare let mapObj: <T, U>(
+  collection: {
     [key: string]: T;
-}, callback: Mapper<T, U>, target?: typeof collection) => {
-    [key: string]: U;
+  },
+  callback: Mapper<T, U>,
+  target?: typeof collection,
+) => {
+  [key: string]: U;
 };
 /** Given an array, returns a new array, where each element is transformed by the callback function */
-export declare function map<T, U>(collection: T[], callback: Mapper<T, U>, target?: typeof collection): U[];
-export declare function map<T, U>(collection: {
+export declare function map<T, U>(
+  collection: T[],
+  callback: Mapper<T, U>,
+  target?: typeof collection,
+): U[];
+export declare function map<T, U>(
+  collection: {
     [key: string]: T;
-}, callback: Mapper<T, U>, target?: typeof collection): {
-    [key: string]: U;
+  },
+  callback: Mapper<T, U>,
+  target?: typeof collection,
+): {
+  [key: string]: U;
 };
 /**
  * Given an object, return its enumerable property values
@@ -293,7 +325,10 @@ export declare const flatten: (arr: any[]) => any;
  * oneString.filter(assertPredicate(isNumber, "Not all numbers")); // throws Error(""Not all numbers"");
  * ```
  */
-export declare const assertPredicate: <T>(predicate: Predicate<T>, errMsg: string | Function) => Predicate<T>;
+export declare const assertPredicate: <T>(
+  predicate: Predicate<T>,
+  errMsg: string | Function,
+) => Predicate<T>;
 /**
  * Given a .map function, builds a .map function which throws an error if any mapped elements do not pass a truthyness test.
  * @example
@@ -310,8 +345,14 @@ export declare const assertPredicate: <T>(predicate: Predicate<T>, errMsg: strin
  * // throws Error("Key not found")
  * ```
  */
-export declare const assertMap: <T, U>(mapFn: (t: T) => U, errMsg: string | Function) => (t: T) => U;
-export declare function assertFn(predicateOrMap: Function, errMsg?: string | Function): any;
+export declare const assertMap: <T, U>(
+  mapFn: (t: T) => U,
+  errMsg: string | Function,
+) => (t: T) => U;
+export declare function assertFn(
+  predicateOrMap: Function,
+  errMsg?: string | Function,
+): any;
 /**
  * Like _.pairs: Given an object, returns an array of key/value pairs
  *
@@ -357,7 +398,10 @@ export declare function arrayTuples(...args: any[]): any[];
  * // pairsToObj == { fookey: "fooval", barkey: "barval" }
  * ```
  */
-export declare function applyPairs(memo: TypedMap<any>, keyValTuple: any[]): TypedMap<any>;
+export declare function applyPairs(
+  memo: TypedMap<any>,
+  keyValTuple: any[],
+): TypedMap<any>;
 /** Get the last element of an array */
 export declare function tail<T>(arr: T[]): T;
 /**
@@ -366,5 +410,7 @@ export declare function tail<T>(arr: T[]): T;
 export declare function copy(src: Obj, dest?: Obj): any;
 /** Like Object.assign() */
 export declare function _extend(toObj: Obj, ...fromObjs: Obj[]): any;
-export declare const silenceUncaughtInPromise: (promise: Promise<any>) => Promise<any>;
+export declare const silenceUncaughtInPromise: (
+  promise: Promise<any>,
+) => Promise<any>;
 export declare const silentRejection: (error: any) => Promise<any>;

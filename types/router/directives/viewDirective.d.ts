@@ -1,19 +1,20 @@
 /** @publicapi @module directives */ /** */
-import { ActiveUIView } from './core';
-import { Ng1ViewConfig } from '../statebuilders/views';
-import { ng1_directive } from './stateDirectives';
+import { IDirective } from "../..";
+import { ActiveUIView } from "../core";
+import { Ng1ViewConfig } from "../statebuilders/views";
+
 /** @hidden */
 export declare type UIViewData = {
-    $cfg: Ng1ViewConfig;
-    $uiView: ActiveUIView;
+  $cfg: Ng1ViewConfig;
+  $uiView: ActiveUIView;
 };
 /** @hidden */
 export declare type UIViewAnimData = {
-    $animEnter: Promise<any>;
-    $animLeave: Promise<any>;
-    $$animLeave: {
-        resolve: () => any;
-    };
+  $animEnter: Promise<any>;
+  $animLeave: Promise<any>;
+  $$animLeave: {
+    resolve: () => any;
+  };
 };
 /**
  * `ui-view`: A viewport directive which is filled in by a view from the active state.
@@ -140,4 +141,4 @@ export declare type UIViewAnimData = {
  * });
  * ```
  */
-export declare let uiView: ng1_directive;
+export declare let uiView: IDirective;

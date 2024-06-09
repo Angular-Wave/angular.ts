@@ -1,4 +1,4 @@
-import { Predicate } from './common';
+import { Predicate } from "./common";
 export declare const isUndefined: (x: any) => boolean;
 export declare const isDefined: Predicate<any>;
 export declare const isNull: (o: any) => boolean;

@@ -8,7 +8,6 @@
 import {
   forEach,
   tail,
-  noop,
   unnestR,
   identity,
   uniqR,
@@ -400,7 +399,7 @@ export let uiStateDirective = [
         const getDef = () => processedDef($state, element, rawDef);
         const inputAttrs = ["uiState", "uiStateParams", "uiStateOpts"];
         const watchDeregFns = inputAttrs.reduce(
-          (acc, attr) => ((acc[attr] = noop), acc),
+          (acc, attr) => ((acc[attr] = () => {}), acc),
           {},
         );
         function update() {
@@ -579,7 +578,7 @@ export let uiSrefActiveDirective = [
             return deregister;
           };
           function updateAfterTransition(trans) {
-            trans.promise.then(update, noop);
+            trans.promise.then(update, () => {});
           }
           $scope.$on("$destroy", setupEventListeners());
           if ($router.globals.transition) {

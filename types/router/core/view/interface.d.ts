@@ -1,25 +1,25 @@
-import { _ViewDeclaration } from '../state/interface';
-import { PathNode } from '../path/pathNode';
+import { _ViewDeclaration } from "../state/interface";
+import { PathNode } from "../path/pathNode";
 /** The context ref can be anything that has a `name` and a `parent` reference to another IContextRef */
 export interface ViewContext {
-    name: string;
-    parent: ViewContext;
+  name: string;
+  parent: ViewContext;
 }
 export interface ActiveUIView {
-    /** type of framework, e.g., "ng1" or "ng2" */
-    $type: string;
-    /** An auto-incremented id */
-    id: number;
-    /** The ui-view short name */
-    name: string;
-    /** The ui-view's fully qualified name */
-    fqn: string;
-    /** The ViewConfig that is currently loaded into the ui-view */
-    config: ViewConfig;
-    /** The state context in which the ui-view tag was created. */
-    creationContext: ViewContext;
-    /** A callback that should apply a ViewConfig (or clear the ui-view, if config is undefined) */
-    configUpdated: (config: ViewConfig) => void;
+  /** type of framework, e.g., "ng1" or "ng2" */
+  $type: string;
+  /** An auto-incremented id */
+  id: number;
+  /** The ui-view short name */
+  name: string;
+  /** The ui-view's fully qualified name */
+  fqn: string;
+  /** The ViewConfig that is currently loaded into the ui-view */
+  config: ViewConfig;
+  /** The state context in which the ui-view tag was created. */
+  creationContext: ViewContext;
+  /** A callback that should apply a ViewConfig (or clear the ui-view, if config is undefined) */
+  configUpdated: (config: ViewConfig) => void;
 }
 /**
  * This interface represents a [[_ViewDeclaration]] that is bound to a [[PathNode]].
@@ -35,12 +35,12 @@ export interface ActiveUIView {
  * the `uiViewName` address.
  */
 export interface ViewConfig {
-    $id: number;
-    /** The normalized view declaration from [[State.views]] */
-    viewDecl: _ViewDeclaration;
-    /** The node the ViewConfig is bound to */
-    path: PathNode[];
-    loaded: boolean;
-    /** Fetches templates, runs dynamic (controller|template)Provider code, lazy loads Components, etc */
-    load(): Promise<ViewConfig>;
+  $id: number;
+  /** The normalized view declaration from [[State.views]] */
+  viewDecl: _ViewDeclaration;
+  /** The node the ViewConfig is bound to */
+  path: PathNode[];
+  loaded: boolean;
+  /** Fetches templates, runs dynamic (controller|template)Provider code, lazy loads Components, etc */
+  load(): Promise<ViewConfig>;
 }

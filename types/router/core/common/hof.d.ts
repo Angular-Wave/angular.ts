@@ -5,7 +5,7 @@
  *
  * @packageDocumentation
  */
-import { Predicate } from './common';
+import { Predicate } from "./common";
 /**
  * Returns a new function for [Partial Application](https://en.wikipedia.org/wiki/Partial_application) of the original function.
  *
@@ -95,12 +95,18 @@ export declare const not: (fn: Predicate<any>) => Predicate<any>;
  * Given two functions that return truthy or falsey values, returns a function that returns truthy
  * if both functions return truthy for the given arguments
  */
-export declare function and(fn1: Predicate<any>, fn2: Predicate<any>): Predicate<any>;
+export declare function and(
+  fn1: Predicate<any>,
+  fn2: Predicate<any>,
+): Predicate<any>;
 /**
  * Given two functions that return truthy or falsey values, returns a function that returns truthy
  * if at least one of the functions returns truthy for the given arguments
  */
-export declare function or(fn1: Predicate<any>, fn2: Predicate<any>): Predicate<any>;
+export declare function or(
+  fn1: Predicate<any>,
+  fn2: Predicate<any>,
+): Predicate<any>;
 /**
  * Check if all the elements of an array match a predicate function
  *
@@ -110,7 +116,9 @@ export declare function or(fn1: Predicate<any>, fn2: Predicate<any>): Predicate<
 export declare const all: (fn1: Predicate<any>) => (arr: any[]) => boolean;
 export declare const any: (fn1: Predicate<any>) => (arr: any[]) => boolean;
 /** Given a class, returns a Predicate function that returns true if the object is of that class */
-export declare const is: <T>(ctor: new (...args: any[]) => T) => (obj: any) => obj is T;
+export declare const is: <T>(
+  ctor: new (...args: any[]) => T,
+) => (obj: any) => obj is T;
 /** Given a value, returns a Predicate function that returns true if another value is === equal to the original value */
 export declare const eq: (comp: any) => Predicate<any>;
 /** Given a value, returns a function which returns the value */
