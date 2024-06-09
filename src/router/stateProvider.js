@@ -6,6 +6,8 @@ import { minErr } from "../shared/utils";
 
 const err = minErr("$stateProvider");
 const validKeys = [
+  "$$state",
+  "__stateObjectCache",
   "controller",
   "controllerProvider",
   "component",
