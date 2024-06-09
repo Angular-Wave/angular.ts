@@ -199,7 +199,7 @@ export class BaseUrlRule {
   constructor(match, handler) {
     this.match = match;
     this.type = "RAW";
-    this.matchPriority = (match) => 0 - this.$id;
+    this.matchPriority = () => 0 - this.$id;
     this.handler = handler || identity;
   }
 }

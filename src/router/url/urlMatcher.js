@@ -347,11 +347,10 @@ export class UrlMatcher {
    * @param path    The URL path to match, e.g. `$location.path()`.
    * @param search  URL search parameters, e.g. `$location.search()`.
    * @param hash    URL hash e.g. `$location.hash()`.
-   * @param options
    *
    * @returns The captured parameter values.
    */
-  exec(path, search = {}, hash, options = {}) {
+  exec(path, search = {}, hash) {
     const match = memoizeTo(this._cache, "pattern", () => {
       return new RegExp(
         [

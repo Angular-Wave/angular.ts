@@ -378,7 +378,7 @@ export const $AnimateCssProvider = [
           let timings = $$animateCache.get(cacheKey);
 
           if (!timings) {
-            timings = computeCssStyles(window, node, properties);
+            timings = computeCssStyles(node, properties);
             if (timings.animationIterationCount === "infinite") {
               timings.animationIterationCount = 1;
             }
@@ -417,7 +417,7 @@ export const $AnimateCssProvider = [
               const staggerClassName = pendClasses(className, "-stagger");
 
               node.className += ` ${staggerClassName}`;
-              stagger = computeCssStyles(window, node, properties);
+              stagger = computeCssStyles(node, properties);
 
               // force the conversion of a null value to zero incase not set
               stagger.animationDuration = Math.max(
@@ -654,7 +654,7 @@ export const $AnimateCssProvider = [
           // that if there is no transition defined then nothing will happen and this will also allow
           // other transitions to be stacked on top of each other without any chopping them out.
           if (isFirst && !options.skipBlocking) {
-            helpers.blockTransitions(node, SAFE_FAST_FORWARD_DURATION_VALUE);
+            blockTransitions(node, SAFE_FAST_FORWARD_DURATION_VALUE);
           }
 
           let timings = computeTimings(
@@ -765,7 +765,7 @@ export const $AnimateCssProvider = [
           if (flags.blockTransition || flags.blockKeyframeAnimation) {
             applyBlocking(maxDuration);
           } else if (!options.skipBlocking) {
-            helpers.blockTransitions(node, false);
+            blockTransitions(node, false);
           }
 
           // TODO(matsko): for 1.5 change this code to have an animator object for better debugging
@@ -823,7 +823,7 @@ export const $AnimateCssProvider = [
             }
 
             blockKeyframeAnimations(node, false);
-            helpers.blockTransitions(node, false);
+            blockTransitions(node, false);
 
             forEach(temporaryStyles, (entry) => {
               // There is only one way to remove inline style properties entirely from elements.
@@ -874,7 +874,7 @@ export const $AnimateCssProvider = [
 
           function applyBlocking(duration) {
             if (flags.blockTransition) {
-              helpers.blockTransitions(node, duration);
+              blockTransitions(node, duration);
             }
 
             if (flags.blockKeyframeAnimation) {
@@ -1136,3 +1136,12 @@ export const $AnimateCssProvider = [
     ];
   },
 ];
+
+function blockTransitions(node, duration) {
+  // we use a negative delay value since it performs blocking
+  // yet it doesn't kill any existing transitions running on the
+  // same element which makes this safe for class-based animations
+  const value = duration ? `-${duration}s` : "";
+  applyInlineStyle(node, [TRANSITION_DELAY_PROP, value]);
+  return [TRANSITION_DELAY_PROP, value];
+}

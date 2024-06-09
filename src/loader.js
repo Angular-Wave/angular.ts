@@ -65,7 +65,6 @@ export class Angular {
     this.isString = isString;
     this.isUndefined = isUndefined;
     this.merge = merge;
-    this.noop = () => {};
     this.errorHandlingConfig = errorHandlingConfig;
   }
 

@@ -193,8 +193,8 @@ export const $$AnimateCssDriverProvider = [
         }
 
         function prepareFromToAnchorAnimation(from, to, classes, anchors) {
-          const fromAnimation = prepareRegularAnimation(from, function () {});
-          const toAnimation = prepareRegularAnimation(to, function () {});
+          const fromAnimation = prepareRegularAnimation(from);
+          const toAnimation = prepareRegularAnimation(to);
 
           const anchorAnimations = [];
           forEach(anchors, (anchor) => {

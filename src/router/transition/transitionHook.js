@@ -127,7 +127,7 @@ export class TransitionHook {
       // Wait for the promise, then reprocess with the resulting value
       return result.then((val) => this.handleHookResult(val));
     }
-    trace.traceHookResult(result, this.transition, this.options);
+    trace.traceHookResult(result, this.transition);
     // Hook returned false
     if (result === false) {
       // Abort this Transition

@@ -73,7 +73,7 @@ export class UrlRules {
     this.urlRuleFactory = new UrlRuleFactory(router);
   }
 
-  dispose(router) {
+  dispose() {
     this._rules = [];
     delete this._otherwiseFn;
   }

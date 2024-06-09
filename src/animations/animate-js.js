@@ -150,7 +150,7 @@ export const $$AnimateJsProvider = [
               return runner;
 
               function onComplete(success) {
-                close(success);
+                close();
                 runner.complete(success);
               }
 

@@ -470,7 +470,7 @@ export const $$AnimateQueueProvider = [
             (!hasExistingAnimation ||
               existingAnimation.state !== PRE_DIGEST_STATE)
           ) {
-            skipAnimations = !areAnimationsAllowed(node, parentNode, event);
+            skipAnimations = !areAnimationsAllowed(node, parentNode);
           }
 
           if (skipAnimations) {

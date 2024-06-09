@@ -142,7 +142,7 @@ export class Trace {
     );
   }
   /** @internal called by ui-router code */
-  traceHookResult(hookResult, trans, transitionOptions) {
+  traceHookResult(hookResult, trans) {
     if (!this.enabled(Category.HOOK)) return;
     console.log(
       `${transLbl(trans)}:   <- Hook returned: ${maxLength(200, stringify(hookResult))}`,
