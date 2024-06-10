@@ -6,21 +6,53 @@
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         var myApp = window.angular.module("test", ["ui.router"]);
-        myApp.config(function ($stateProvider) {
-          var helloState = {
-            name: "hello",
-            url: "/",
-            template: "<h3>hello world!</h3>",
-          };
-
-          $stateProvider.state(helloState);
-        });
+        myApp
+          .config(function ($stateProvider) {
+            $stateProvider
+              .state({ name: "top", url: "" })
+              .state({ name: "other", url: "/other/:id", template: "other" })
+              .state({
+                name: "other.detail",
+                url: "/detail",
+                template: "detail",
+              })
+              .state({
+                name: "contacts",
+                url: "/contacts",
+                template:
+                  '<a ui-sref=".item({ id: 5 })" class="item">Person</a> <ui-view></ui-view>',
+              })
+              .state({
+                name: "contacts.item",
+                url: "/{id:int}",
+                template:
+                  '<a ui-sref=".detail" class="item-detail">Detail</a> | <a ui-sref="^" class="item-parent">Parent</a> | <ui-view></ui-view>',
+              })
+              .state({
+                name: "contacts.item.detail",
+                url: "/{id}",
+                template:
+                  '<div class="title">Detail</div> | <a ui-sref="^" class="item-parent2">Item</a>',
+              });
+          })
+          .controller(
+            "TestController",
+            class {
+              constructor($q) {
+                const defer = $q.defer();
+                this.contact = defer.promise;
+                this.test = 1;
+                defer.resolve({ id: 6 });
+              }
+            },
+          );
       });
     </script>
   </head>
   <body ng-app="test">
-    {{ 2 + 2 }}
-    <a ui-sref="hello" ui-sref-active="active">Hello</a>
-    <ui-view></ui-view>
+    <div ng-controller="TestController as $ctrl">
+      {{$ctrl.test}}
+      <a ui-sref="contacts.item.detail({ id: contact.id })">Details</a>
+    </div>
   </body>
 </html>

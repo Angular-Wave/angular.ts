@@ -62,16 +62,15 @@ function clickHook(el, $state, $timeout, type, getDef) {
   return function (e) {
     const button = e.which || e.button,
       target = getDef();
-    if (
-      !(
-        button > 1 ||
-        e.ctrlKey ||
-        e.metaKey ||
-        e.shiftKey ||
-        e.altKey ||
-        el.attr("target")
-      )
-    ) {
+
+    let res =
+      button > 1 ||
+      e.ctrlKey ||
+      e.metaKey ||
+      e.shiftKey ||
+      e.altKey ||
+      el.attr("target");
+    if (!res) {
       // HACK: This is to allow ng-clicks to be processed before the transition is initiated:
       const transition = $timeout(function () {
         if (!el.attr("disabled")) {
@@ -84,6 +83,10 @@ function clickHook(el, $state, $timeout, type, getDef) {
       e.preventDefault = function () {
         if (ignorePreventDefaultCount-- <= 0) $timeout.cancel(transition);
       };
+    } else {
+      // ignored
+      e.preventDefault();
+      e.stopImmediatePropagation();
     }
   };
 }
@@ -256,7 +259,7 @@ export let uiSrefDirective = [
     return {
       restrict: "A",
       require: ["?^uiSrefActive", "?^uiSrefActiveEq"],
-      link: function (scope, element, attrs, uiSrefActive) {
+      link: (scope, element, attrs, uiSrefActive) => {
         const type = getTypeInfo(element);
         const active = uiSrefActive[1] || uiSrefActive[0];
         let unlinkInfoFn = null;
