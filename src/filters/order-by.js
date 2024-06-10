@@ -12,7 +12,7 @@ orderByFilter.$inject = ["$parse"];
 
 /**
  *
- * @param {angular.IFilterOrderBy} $parse
+ * @param {angular.IParseService} $parse
  * @returns
  */
 export function orderByFilter($parse) {
@@ -90,12 +90,12 @@ export function orderByFilter($parse) {
           predicate = predicate.substring(1);
         }
         if (predicate !== "") {
-          get = $parse(predicate);
-          if (get.constant) {
-            const key = get();
-            get = function (value) {
-              return value[key];
-            };
+          let parsed = $parse(predicate);
+          if (parsed.constant) {
+            const key = parsed();
+            get = (value) => value[key];
+          } else {
+            get = parsed;
           }
         }
       }
@@ -130,7 +130,7 @@ export function orderByFilter($parse) {
   }
 
   function getPredicateValue(value, index) {
-    let type = typeof value;
+    /** @type {String} */ let type = typeof value;
     if (value === null) {
       type = "null";
     } else if (type === "object") {

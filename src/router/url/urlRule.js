@@ -20,6 +20,13 @@ export class UrlRuleFactory {
   compile(str) {
     return this.router.urlMatcherFactory.compile(str);
   }
+
+  /**
+   *
+   * @param {*} what
+   * @param {*} handler
+   * @returns {BaseUrlRule}
+   */
   create(what, handler) {
     const { isState, isStateDeclaration } = StateObject;
     const makeRule = pattern([
@@ -193,12 +200,13 @@ UrlRuleFactory.isUrlRule = (obj) =>
  * A base rule which calls `match`
  *
  * The value from the `match` function is passed through to the `handler`.
- * @internal
+ * @type {angular.BaseUrlRule}
  */
 export class BaseUrlRule {
   constructor(match, handler) {
     this.match = match;
     this.type = "RAW";
+    this.$id = -1;
     this.matchPriority = () => 0 - this.$id;
     this.handler = handler || identity;
   }
