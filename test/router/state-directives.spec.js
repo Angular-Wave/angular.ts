@@ -3,7 +3,7 @@ import { Angular } from "../../src/loader";
 import { publishExternalAPI } from "../../src/public";
 import { browserTrigger, wait } from "../test-utils";
 
-describe("uiStateRef", function () {
+describe("uiStateRef", () => {
   window.location.hash = "#!";
   let el,
     el2,
@@ -60,7 +60,7 @@ describe("uiStateRef", function () {
 
   afterEach(() => (window.location.hash = "#!"));
 
-  describe("links with promises", function () {
+  describe("links with promises", () => {
     it("should update the href when promises on parameters change before scope is applied", async () => {
       const defer = $q.defer();
       el = jqLite(
@@ -92,16 +92,16 @@ describe("uiStateRef", function () {
     scope.$digest();
   }
 
-  describe("links", function () {
+  describe("links", () => {
     beforeEach(() => buildDOM());
     afterEach(() => (window.location.hash = ""));
 
-    it("should generate the correct href", function () {
+    it("should generate the correct href", () => {
       expect(el.attr("href")).toBe("#/contacts/5");
       expect(el2.attr("href")).toBe("#");
     });
 
-    it("should update the href when parameters change", function () {
+    it("should update the href when parameters change", () => {
       expect(el.attr("href")).toBe("#/contacts/5");
       scope.contact.id = 6;
       scope.$apply();
@@ -256,19 +256,19 @@ describe("uiStateRef", function () {
   });
 
   // TODO: Since this is HTML5 mode, we would want to test this with actual backend
-  // describe('links in html5 mode', function () {
-  //   beforeEach(function () {
+  // describe('links in html5 mode', () => {
+  //   beforeEach(() => {
   //     _locationProvider.html5Mode(true);
   //   });
 
   //   beforeEach(inject(buildDOM));
 
-  //   it('should generate the correct href', function () {
+  //   it('should generate the correct href', () => {
   //     expect(el.attr('href')).toBe('/contacts/5');
   //     expect(el2.attr('href')).toBe('');
   //   });
 
-  //   it('should update the href when parameters change', function () {
+  //   it('should update the href when parameters change', () => {
   //     expect(el.attr('href')).toBe('/contacts/5');
   //     scope.contact.id = 6;
   //     scope.$apply();
@@ -288,7 +288,7 @@ describe("uiStateRef", function () {
   //   });
   // });
 
-  describe("links with dynamic state definitions", function () {
+  describe("links with dynamic state definitions", () => {
     let template;
 
     beforeEach(() => {
@@ -301,11 +301,11 @@ describe("uiStateRef", function () {
       scope.$digest();
     });
 
-    it("sets the correct initial href", function () {
+    it("sets the correct initial href", () => {
       expect(jqLite(template[0]).attr("href")).toBe("#/contacts");
     });
 
-    it("updates to the new href", function () {
+    it("updates to the new href", () => {
       expect(jqLite(template[0]).attr("href")).toBe("#/contacts");
 
       scope.state = "contacts.item";
@@ -353,7 +353,7 @@ describe("uiStateRef", function () {
       expect(template[0].className).not.toContain("activeeq");
     });
 
-    it("updates to a new href when it points to a new state", function () {
+    it("updates to a new href when it points to a new state", () => {
       expect(jqLite(template[0]).attr("href")).toBe("#/contacts");
       scope.state = "other";
       scope.params = { id: "123" };
@@ -396,21 +396,21 @@ describe("uiStateRef", function () {
       expect($state.params.id).toEqual("ghi");
     });
 
-    it("retains the old href if the new points to a non-state", function () {
+    it("retains the old href if the new points to a non-state", () => {
       expect(jqLite(template[0]).attr("href")).toBe("#/contacts");
       scope.state = "nostate";
       scope.$digest();
       expect(jqLite(template[0]).attr("href")).toBe("#/contacts");
     });
 
-    it("accepts param overrides", function () {
+    it("accepts param overrides", () => {
       scope.state = "contacts.item";
       scope.params = { id: 10 };
       scope.$digest();
       expect(jqLite(template[0]).attr("href")).toBe("#/contacts/10");
     });
 
-    it("accepts param overrides", function () {
+    it("accepts param overrides", () => {
       scope.state = "contacts.item";
       scope.params = { id: 10 };
       scope.$digest();
@@ -421,7 +421,7 @@ describe("uiStateRef", function () {
       expect(jqLite(template[0]).attr("href")).toBe("#/contacts/22");
     });
 
-    it("watches attributes", function () {
+    it("watches attributes", () => {
       el = jqLite(
         '<a ui-state="{{exprvar}}" ui-state-params="params">state</a>',
       );
@@ -439,7 +439,7 @@ describe("uiStateRef", function () {
       expect(jqLite(template[0]).attr("href")).toBe("#/other/10");
     });
 
-    it("allows one-time-binding on ng1.3+", function () {
+    it("allows one-time-binding on ng1.3+", () => {
       el = jqLite('<a ui-state="::state" ui-state-params="::params">state</a>');
 
       scope.state = "contacts.item";
@@ -475,229 +475,246 @@ describe("uiStateRef", function () {
       expect(transitionOptions.absolute).toBeUndefined();
     });
 
-    //   describe('option event', function () {
-    //     it('should bind click event by default', inject(function ($compile, $state, $timeout) {
-    //       expect($state.current.name).toBe('top');
+    describe("option event", () => {
+      beforeEach(() => (window.location.hash = ""));
+      it("should bind click event by default", async () => {
+        expect($state.current.name).toBe("top");
 
-    //       el = jqLite('<a ui-state="state"></a>');
+        el = jqLite('<a ui-state="state"></a>');
 
-    //       scope.state = 'contacts';
-    //       $compile(el)(scope);
-    //       scope.$digest();
+        scope.state = "contacts";
+        $compile(el)(scope);
+        scope.$digest();
 
-    //       triggerClick(el);
-    //       $timeout.flush();
+        browserTrigger(el, "click");
+        await wait(10);
 
-    //       expect($state.current.name).toBe('contacts');
-    //     });
+        expect($state.current.name).toBe("contacts");
+      });
 
-    //     it('should bind single HTML events', inject(function ($compile, $state, $timeout) {
-    //       expect($state.current.name).toEqual('top');
+      it("should bind single HTML events", async () => {
+        expect($state.current.name).toEqual("top");
 
-    //       el = jqLite('<input type="text" ui-state="state" ui-state-opts="{ events: [\'change\'] }">');
+        el = jqLite(
+          '<input type="text" ui-state="state" ui-state-opts="{ events: [\'change\'] }">',
+        );
 
-    //       scope.state = 'contacts';
-    //       $compile(el)(scope);
-    //       scope.$digest();
+        scope.state = "contacts";
+        $compile(el)(scope);
+        scope.$digest();
 
-    //       triggerHTMLEvent('change');
-    //       $timeout.flush();
+        browserTrigger(el, "change");
+        await wait(10);
 
-    //       expect($state.current.name).toEqual('contacts');
-    //     });
+        expect($state.current.name).toEqual("contacts");
+      });
 
-    //     it('should bind multiple HTML events', inject(function ($compile, $state, $timeout) {
-    //       expect($state.current.name).toEqual('top');
+      it("should bind multiple HTML events", async () => {
+        expect($state.current.name).toEqual("top");
 
-    //       el = jqLite('<input type="text" ui-state="state" ui-state-opts="{ events: [\'change\', \'blur\'] }">');
+        el = jqLite(
+          '<input type="text" ui-state="state" ui-state-opts="{ events: [\'change\', \'blur\'] }">',
+        );
 
-    //       scope.state = 'contacts';
-    //       $compile(el)(scope);
-    //       scope.$digest();
+        scope.state = "contacts";
+        $compile(el)(scope);
+        scope.$digest();
 
-    //       triggerHTMLEvent('change');
-    //       $timeout.flush();
-    //       expect($state.current.name).toEqual('contacts');
+        browserTrigger(el, "change");
+        await wait(10);
+        expect($state.current.name).toEqual("contacts");
 
-    //       $state.go('top');
-    //       scope.$digest();
+        $state.go("top");
+        scope.$digest();
 
-    //       expect($state.current.name).toEqual('top');
+        expect($state.current.name).toEqual("top");
 
-    //       triggerHTMLEvent('blur');
-    //       $timeout.flush();
-    //       expect($state.current.name).toEqual('contacts');
-    //     });
+        browserTrigger(el, "blur");
+        await wait(10);
 
-    //     it('should bind multiple Mouse events', inject(function ($compile, $state, $timeout) {
-    //       expect($state.current.name).toEqual('top');
+        expect($state.current.name).toEqual("contacts");
+      });
 
-    //       el = jqLite('<a ui-state="state" ui-state-opts="{ events: [\'mouseover\', \'mousedown\'] }">');
+      it("should bind multiple Mouse events", async () => {
+        expect($state.current.name).toEqual("top");
 
-    //       scope.state = 'contacts';
-    //       $compile(el)(scope);
-    //       scope.$digest();
+        el = jqLite(
+          "<a ui-state=\"state\" ui-state-opts=\"{ events: ['mouseover', 'mousedown'] }\">",
+        );
 
-    //       triggerMouseEvent('mouseover');
-    //       $timeout.flush();
-    //       expect($state.current.name).toEqual('contacts');
+        scope.state = "contacts";
+        $compile(el)(scope);
+        scope.$digest();
 
-    //       $state.go('top');
-    //       scope.$digest();
+        browserTrigger(el, "mouseover");
+        await wait(10);
+        expect($state.current.name).toEqual("contacts");
 
-    //       expect($state.current.name).toEqual('top');
+        $state.go("top");
+        scope.$digest();
 
-    //       triggerMouseEvent('mousedown');
-    //       $timeout.flush();
-    //       expect($state.current.name).toEqual('contacts');
-    //     });
-    //   });
+        expect($state.current.name).toEqual("top");
+
+        browserTrigger(el, "mousedown");
+        await wait(10);
+        expect($state.current.name).toEqual("contacts");
+      });
+    });
   });
 
-  // describe('forms', function () {
-  //   let el, scope;
+  describe("forms", () => {
+    let el, scope;
 
-  //   beforeEach(inject(function ($rootScope, $compile) {
-  //     el = angular.element('<form ui-sref="contacts.item.detail({ id: contact.id })"></form>');
-  //     scope = $rootScope;
-  //     scope.contact = { id: 5 };
-  //     scope.$apply();
+    beforeEach(() => {
+      el = jqLite(
+        '<form ui-sref="contacts.item.detail({ id: contact.id })"></form>',
+      );
+      scope = $rootScope;
+      scope.contact = { id: 5 };
+      scope.$apply();
 
-  //     $compile(el)(scope);
-  //     scope.$digest();
-  //   });
+      $compile(el)(scope);
+      scope.$digest();
+    });
 
-  //   it('should generate the correct action', function () {
-  //     expect(el.attr('action')).toBe('#/contacts/5');
-  //   });
-  // });
+    it("should generate the correct action", () => {
+      expect(el.attr("action")).toBe("#/contacts/5");
+    });
+  });
 
-  // describe('relative transitions', function () {
-  //   beforeEach(inject(function ($rootScope, $compile, $state) {
-  //     $state.transitionTo('contacts.item', { id: 5 });
-  //     el = angular.element('<a ui-sref=".detail">Details</a>');
-  //     scope = $rootScope;
-  //     scope.$apply();
+  describe("relative transitions", () => {
+    beforeEach(() => {
+      $state.transitionTo("contacts.item", { id: 5 });
+      el = jqLite('<a ui-sref=".detail">Details</a>');
+      scope = $rootScope;
+      scope.$apply();
 
-  //     $compile(el)(scope);
-  //     template = $compile(angular.element('<div><ui-view></ui-view><div>'))(scope);
-  //     scope.$digest();
-  //   });
+      $compile(el)(scope);
+      template = $compile(jqLite("<div><ui-view></ui-view><div>"))(scope);
+      scope.$digest();
+    });
 
-  //   it('should work', inject(function ($state, $stateParams, $q, $timeout) {
-  //     triggerClick(el);
-  //     $timeout.flush();
-  //     $q.flush();
+    it("should work", async () => {
+      browserTrigger(el, "click");
+      await wait(10);
 
-  //     expect($state.$current.name).toBe('contacts.item.detail');
-  //     expect(obj($state.params)).toEqual({ id: 5 });
-  //   });
+      expect($state.$current.name).toBe("contacts.item.detail");
+      expect($state.params.id).toEqual(5);
+    });
 
-  //   it('should resolve states from parent uiView', inject(function ($state, $stateParams, $q, $timeout) {
-  //     $state.transitionTo('contacts');
-  //     $q.flush();
+    it("should resolve states from parent uiView", async () => {
+      $state.transitionTo("contacts");
 
-  //     const parentToChild = angular.element(template[0].querySelector('a.item'));
-  //     triggerClick(parentToChild);
-  //     $timeout.flush();
-  //     $q.flush();
-  //     expect($state.$current.name).toBe('contacts.item');
+      const parentToChild = jqLite(template[0].querySelector("a.item"));
+      browserTrigger(parentToChild, "click");
+      await wait(10);
 
-  //     const childToGrandchild = angular.element(template[0].querySelector('a.item-detail'));
-  //     const childToParent = angular.element(template[0].querySelector('a.item-parent'));
+      expect($state.$current.name).toBe("contacts.item");
 
-  //     triggerClick(childToGrandchild);
-  //     $timeout.flush();
-  //     $q.flush();
+      const childToGrandchild = jqLite(
+        template[0].querySelector("a.item-detail"),
+      );
+      const childToParent = jqLite(template[0].querySelector("a.item-parent"));
 
-  //     const grandchildToParent = angular.element(template[0].querySelector('a.item-parent2'));
-  //     expect($state.$current.name).toBe('contacts.item.detail');
+      browserTrigger(childToGrandchild, "click");
+      await wait(10);
 
-  //     triggerClick(grandchildToParent);
-  //     $timeout.flush();
-  //     $q.flush();
-  //     expect($state.$current.name).toBe('contacts.item');
+      const grandchildToParent = jqLite(
+        template[0].querySelector("a.item-parent2"),
+      );
+      expect($state.$current.name).toBe("contacts.item.detail");
 
-  //     $state.transitionTo('contacts.item.detail', { id: 3 });
-  //     triggerClick(childToParent);
-  //     $timeout.flush();
-  //     $q.flush();
-  //     expect($state.$current.name).toBe('contacts');
-  //   });
-  // });
+      browserTrigger(grandchildToParent, "click");
+      await wait(10);
 
-  // describe('option event', function () {
-  //   it('should bind click event by default', inject(function ($rootScope, $compile, $state, $timeout) {
-  //     el = angular.element('<a ui-sref="contacts"></a>');
-  //     $compile(el)($rootScope);
-  //     $rootScope.$digest();
+      expect($state.$current.name).toBe("contacts.item");
 
-  //     expect($state.current.name).toEqual('top');
+      $state.transitionTo("contacts.item.detail", { id: 3 });
+      browserTrigger(childToParent, "click");
+      await wait(10);
+      expect($state.$current.name).toBe("contacts");
+    });
+  });
 
-  //     triggerClick(el);
-  //     $timeout.flush();
+  describe("option event", () => {
+    beforeEach(() => (window.location.hash = ""));
+    it("should bind click event by default", async () => {
+      el = jqLite('<a ui-sref="contacts"></a>');
+      $compile(el)($rootScope);
+      $rootScope.$digest();
 
-  //     expect($state.current.name).toEqual('contacts');
-  //   });
+      expect($state.current.name).toEqual("top");
 
-  //   it('should bind single HTML events', inject(function ($rootScope, $compile, $state, $timeout) {
-  //     el = angular.element('<input type="text" ui-sref="contacts" ui-sref-opts="{ events: [\'change\'] }">');
-  //     $compile(el)($rootScope);
-  //     $rootScope.$digest();
+      browserTrigger(el, "click");
+      await wait(10);
 
-  //     expect($state.current.name).toEqual('top');
+      expect($state.current.name).toEqual("contacts");
+    });
 
-  //     triggerHTMLEvent('change');
-  //     $timeout.flush();
+    it("should bind single HTML events", async () => {
+      el = jqLite(
+        '<input type="text" ui-sref="contacts" ui-sref-opts="{ events: [\'change\'] }">',
+      );
+      $compile(el)($rootScope);
+      $rootScope.$digest();
 
-  //     expect($state.current.name).toEqual('contacts');
-  //   });
+      expect($state.current.name).toEqual("top");
 
-  //   it('should bind multiple HTML events', inject(function ($rootScope, $compile, $state, $timeout) {
-  //     el = angular.element('<input type="text" ui-sref="contacts" ui-sref-opts="{ events: [\'change\', \'blur\'] }">');
-  //     $compile(el)($rootScope);
-  //     $rootScope.$digest();
+      browserTrigger(el, "change");
+      await wait(10);
 
-  //     expect($state.current.name).toEqual('top');
+      expect($state.current.name).toEqual("contacts");
+    });
 
-  //     triggerHTMLEvent('change');
-  //     $timeout.flush();
-  //     expect($state.current.name).toEqual('contacts');
+    it("should bind multiple HTML events", async () => {
+      el = jqLite(
+        '<input type="text" ui-sref="contacts" ui-sref-opts="{ events: [\'change\', \'blur\'] }">',
+      );
+      $compile(el)($rootScope);
+      $rootScope.$digest();
 
-  //     $state.go('top');
-  //     $rootScope.$digest();
+      expect($state.current.name).toEqual("top");
 
-  //     expect($state.current.name).toEqual('top');
+      browserTrigger(el, "change");
+      await wait(10);
+      expect($state.current.name).toEqual("contacts");
 
-  //     triggerHTMLEvent('blur');
-  //     $timeout.flush();
-  //     expect($state.current.name).toEqual('contacts');
-  //   });
+      $state.go("top");
+      $rootScope.$digest();
 
-  //   it('should bind multiple Mouse events', inject(function ($rootScope, $compile, $state, $timeout) {
-  //     el = angular.element('<a ui-sref="contacts" ui-sref-opts="{ events: [\'mouseover\', \'mousedown\'] }">');
-  //     $compile(el)($rootScope);
-  //     $rootScope.$digest();
+      expect($state.current.name).toEqual("top");
 
-  //     expect($state.current.name).toEqual('top');
+      browserTrigger(el, "blur");
+      await wait(10);
+      expect($state.current.name).toEqual("contacts");
+    });
 
-  //     triggerMouseEvent('mouseover');
-  //     $timeout.flush();
-  //     expect($state.current.name).toEqual('contacts');
+    it("should bind multiple Mouse events", async () => {
+      el = jqLite(
+        "<a ui-sref=\"contacts\" ui-sref-opts=\"{ events: ['mouseover', 'mousedown'] }\">",
+      );
+      $compile(el)($rootScope);
+      $rootScope.$digest();
 
-  //     $state.go('top');
-  //     $rootScope.$digest();
+      expect($state.current.name).toEqual("top");
 
-  //     expect($state.current.name).toEqual('top');
+      browserTrigger(el, "mouseover");
+      await wait(10);
+      expect($state.current.name).toEqual("contacts");
 
-  //     triggerMouseEvent('mousedown');
-  //     $timeout.flush();
-  //     expect($state.current.name).toEqual('contacts');
-  //   });
-  // });
+      $state.go("top");
+      $rootScope.$digest();
+
+      expect($state.current.name).toEqual("top");
+
+      browserTrigger(el, "mousedown");
+      await wait(10);
+      expect($state.current.name).toEqual("contacts");
+    });
+  });
 });
 
-// describe('uiSrefActive', function () {
+// describe('uiSrefActive', () => {
 //   let el, template, scope, document, _stateProvider;
 
 //   beforeEach(module('ui.router'));
@@ -735,9 +752,9 @@ describe("uiStateRef", function () {
 
 //   beforeEach(inject(function ($document, $timeout) {
 //     document = $document[0];
-//     timeoutFlush = function () {
+//     timeoutFlush = () => {
 //       try {
-//         $timeout.flush();
+//         await wait(10);
 //       } catch (e) {
 //         // Angular 1.0.8 throws 'No deferred tasks to be flushed' if there is nothing in queue.
 //         // Behave as Angular >=1.1.5 and do nothing in such case.
@@ -746,89 +763,89 @@ describe("uiStateRef", function () {
 //   });
 
 //   it('should update class for sibling uiSref', inject(function ($rootScope, $q, $compile, $state) {
-//     el = angular.element(
+//     el = jqLite(
 //       '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active="active">Contacts</a><a ui-sref="contacts.item({ id: 2 })" ui-sref-active="active">Contacts</a></div>'
 //     );
 //     template = $compile(el)($rootScope);
 //     $rootScope.$digest();
 
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBeFalsy();
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
 //     $state.transitionTo('contacts.item', { id: 1 });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBe('active');
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
 
 //     $state.transitionTo('contacts.item', { id: 2 });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBeFalsy();
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
 //   });
 
 //   it("should match state's parameters", inject(function ($rootScope, $q, $compile, $state) {
-//     el = angular.element(
+//     el = jqLite(
 //       '<div><a ui-sref="contacts.item.detail({ foo: \'bar\' })" ui-sref-active="active">Contacts</a></div>'
 //     );
 //     template = $compile(el)($rootScope);
 //     $rootScope.$digest();
 
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBeFalsy();
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
 //     $state.transitionTo('contacts.item.detail', { id: 5, foo: 'bar' });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBe('active');
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
 
 //     $state.transitionTo('contacts.item.detail', { id: 5, foo: 'baz' });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBeFalsy();
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
 //   });
 
 //   // Test for #2696
 //   it('should compare using typed parameters', inject(function ($rootScope, $q, $compile, $state) {
-//     el = angular.element('<div><a ui-sref="arrayparam({ foo: [1,2,3] })" ui-sref-active="active">foo 123</a></div>');
+//     el = jqLite('<div><a ui-sref="arrayparam({ foo: [1,2,3] })" ui-sref-active="active">foo 123</a></div>');
 //     template = $compile(el)($rootScope);
 //     $rootScope.$digest();
 
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBeFalsy();
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
 
 //     $state.transitionTo('arrayparam', { foo: [1, 2, 3] });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBe('active');
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
 
 //     $state.transitionTo('arrayparam', { foo: [1, 2, 3], bar: 'asdf' });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBe('active');
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
 
 //     $state.transitionTo('arrayparam', { foo: [1, 2] });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBeFalsy();
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
 //   });
 
 //   // Test for #3154
 //   it('should compare ui-sref-active-eq using typed parameters', inject(function ($rootScope, $q, $compile, $state) {
-//     el = angular.element('<div><a ui-sref="arrayparam({ foo: [1,2,3] })" ui-sref-active-eq="active">foo 123</a></div>');
+//     el = jqLite('<div><a ui-sref="arrayparam({ foo: [1,2,3] })" ui-sref-active-eq="active">foo 123</a></div>');
 //     template = $compile(el)($rootScope);
 //     $rootScope.$digest();
 
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBeFalsy();
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
 
 //     $state.transitionTo('arrayparam', { foo: [1, 2, 3] });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBe('active');
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
 
 //     $state.transitionTo('arrayparam', { foo: [1, 2, 3], bar: 'asdf' });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBe('active');
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
 
 //     $state.transitionTo('arrayparam', { foo: [1, 2] });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBeFalsy();
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
 //   });
 
 //   it('should update in response to ui-sref param expression changes', inject(function (
@@ -837,23 +854,23 @@ describe("uiStateRef", function () {
 //     $compile,
 //     $state
 //   ) {
-//     el = angular.element(
+//     el = jqLite(
 //       '<div><a ui-sref="contacts.item.detail({ foo: fooId })" ui-sref-active="active">Contacts</a></div>'
 //     );
 //     template = $compile(el)($rootScope);
 //     $rootScope.fooId = 'bar';
 //     $rootScope.$digest();
 
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBeFalsy();
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
 //     $state.transitionTo('contacts.item.detail', { id: 5, foo: 'bar' });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBe('active');
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
 
 //     $rootScope.fooId = 'baz';
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBeFalsy();
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
 //   });
 
 //   it('should match on child states', inject(function ($rootScope, $q, $compile, $state) {
@@ -861,7 +878,7 @@ describe("uiStateRef", function () {
 //       $rootScope
 //     );
 //     $rootScope.$digest();
-//     const a = angular.element(template[0].getElementsByTagName('a')[0]);
+//     const a = jqLite(template[0].getElementsByTagName('a')[0]);
 
 //     $state.transitionTo('contacts.item.edit', { id: 1 });
 //     $q.flush();
@@ -881,7 +898,7 @@ describe("uiStateRef", function () {
 //       $rootScope
 //     );
 //     $rootScope.$digest();
-//     const a = angular.element(template[0].getElementsByTagName('a')[0]);
+//     const a = jqLite(template[0].getElementsByTagName('a')[0]);
 
 //     $state.transitionTo('contacts.item', { id: 1 });
 //     $q.flush();
@@ -905,7 +922,7 @@ describe("uiStateRef", function () {
 //       '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active="active" ui-sref-active-eq="active-eq">Contacts</a></div>'
 //     )($rootScope);
 //     $rootScope.$digest();
-//     const a = angular.element(template[0].getElementsByTagName('a')[0]);
+//     const a = jqLite(template[0].getElementsByTagName('a')[0]);
 
 //     $state.transitionTo('contacts.item', { id: 1 });
 //     $q.flush();
@@ -921,48 +938,48 @@ describe("uiStateRef", function () {
 //   });
 
 //   it('should resolve relative state refs', inject(function ($rootScope, $q, $compile, $state) {
-//     el = angular.element('<section><div ui-view></div></section>');
+//     el = jqLite('<section><div ui-view></div></section>');
 //     template = $compile(el)($rootScope);
 //     $rootScope.$digest();
 
 //     $state.transitionTo('contacts');
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBe('ng-scope');
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('ng-scope');
 
 //     $state.transitionTo('contacts.item', { id: 6 });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBe('ng-scope active');
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('ng-scope active');
 
 //     $state.transitionTo('contacts.item', { id: 5 });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBe('ng-scope');
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('ng-scope');
 //   });
 
 //   it('should match on any child state refs', inject(function ($rootScope, $q, $compile, $state) {
-//     el = angular.element(
+//     el = jqLite(
 //       '<div ui-sref-active="active"><a ui-sref="contacts.item({ id: 1 })">Contacts</a><a ui-sref="contacts.item({ id: 2 })">Contacts</a></div>'
 //     );
 //     template = $compile(el)($rootScope);
 //     $rootScope.$digest();
 
-//     expect(angular.element(template[0]).attr('class')).toBe('ng-scope');
+//     expect(jqLite(template[0]).attr('class')).toBe('ng-scope');
 
 //     $state.transitionTo('contacts.item', { id: 1 });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0]).attr('class')).toBe('ng-scope active');
+//     expect(jqLite(template[0]).attr('class')).toBe('ng-scope active');
 
 //     $state.transitionTo('contacts.item', { id: 2 });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0]).attr('class')).toBe('ng-scope active');
+//     expect(jqLite(template[0]).attr('class')).toBe('ng-scope active');
 //   });
 
 //   it('should match fuzzy on lazy loaded states', inject(function ($rootScope, $q, $compile, $state) {
-//     el = angular.element('<div><a ui-sref="contacts.lazy" ui-sref-active="active">Lazy Contact</a></div>');
+//     el = jqLite('<div><a ui-sref="contacts.lazy" ui-sref-active="active">Lazy Contact</a></div>');
 //     template = $compile(el)($rootScope);
 //     $q.flush();
 
@@ -976,16 +993,16 @@ describe("uiStateRef", function () {
 //     $state.transitionTo('contacts.item', { id: 1 });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBeFalsy();
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
 
 //     $state.transitionTo('contacts.lazy');
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBe('active');
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
 //   });
 
 //   it('should match exactly on lazy loaded states', inject(function ($transitions, $rootScope, $q, $compile, $state) {
-//     el = angular.element('<div><a ui-sref="contacts.lazy" ui-sref-active-eq="active">Lazy Contact</a></div>');
+//     el = jqLite('<div><a ui-sref="contacts.lazy" ui-sref-active-eq="active">Lazy Contact</a></div>');
 //     template = $compile(el)($rootScope);
 //     $q.flush();
 
@@ -999,12 +1016,12 @@ describe("uiStateRef", function () {
 //     $state.transitionTo('contacts.item', { id: 1 });
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBeFalsy();
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
 
 //     $state.transitionTo('contacts.lazy');
 //     $q.flush();
 //     timeoutFlush();
-//     expect(angular.element(template[0].querySelector('a')).attr('class')).toBe('active');
+//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
 //   });
 
 //   it('should allow multiple classes to be supplied', inject(function ($rootScope, $q, $compile, $state) {
@@ -1012,7 +1029,7 @@ describe("uiStateRef", function () {
 //       '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active="active also-active">Contacts</a></div>'
 //     )($rootScope);
 //     $rootScope.$digest();
-//     const a = angular.element(template[0].getElementsByTagName('a')[0]);
+//     const a = jqLite(template[0].getElementsByTagName('a')[0]);
 
 //     $state.transitionTo('contacts.item.edit', { id: 1 });
 //     $q.flush();
@@ -1023,8 +1040,8 @@ describe("uiStateRef", function () {
 //   it('should not match fuzzy on lazy loaded future states', inject(function ($rootScope, $compile, $q, $state) {
 //     _stateProvider.state({name: 'contacts.lazy.**', {
 //       url: '/lazy',
-//       lazyLoad: function () {
-//         return $q.when().then(function () {
+//       lazyLoad: () => {
+//         return $q.when().then(() => {
 //           _stateProvider
 //             .state({name: 'contacts.lazy', {
 //               abstract: true,
@@ -1050,7 +1067,7 @@ describe("uiStateRef", function () {
 //     expect(template.eq(1).hasClass('active')).toBeFalsy();
 //   });
 
-//   describe('ng-{class,style} interface', function () {
+//   describe('ng-{class,style} interface', () => {
 //     it('should match on abstract states that are included by the current state', inject(function (
 //       $rootScope,
 //       $compile,
@@ -1120,8 +1137,8 @@ describe("uiStateRef", function () {
 //     it('should not match fuzzy on lazy loaded future states', inject(function ($rootScope, $compile, $q, $state) {
 //       _stateProvider.state({name: 'contacts.lazy.**', {
 //         url: '/lazy',
-//         lazyLoad: function () {
-//           return $q.when().then(function () {
+//         lazyLoad: () => {
+//           return $q.when().then(() => {
 //             _stateProvider
 //               .state({name: 'contacts.lazy', {
 //                 abstract: true,
@@ -1148,7 +1165,7 @@ describe("uiStateRef", function () {
 //     });
 //   });
 
-//   describe('ng-{class,style} interface, and handle values as arrays', function () {
+//   describe('ng-{class,style} interface, and handle values as arrays', () => {
 //     it('should match on abstract states that are included by the current state', inject(function (
 //       $rootScope,
 //       $compile,
