@@ -281,7 +281,7 @@ describe("uiStateRef", () => {
 
   //     triggerClick(el2);
   //     timeoutFlush();
-  //     $q.flush();
+  //     await wait(10);
 
   //     expect($state.current.name).toEqual('top');
   //     expect(obj($stateParams)).toEqual({});
@@ -714,508 +714,469 @@ describe("uiStateRef", () => {
   });
 });
 
-// describe('uiSrefActive', () => {
-//   let el, template, scope, document, _stateProvider;
+fdescribe("uiSrefActive", () => {
+  window.location.hash = "#!";
+  let el,
+    el2,
+    template,
+    scope,
+    _locationProvider,
+    $rootScope,
+    $compile,
+    $q,
+    $injector,
+    $timeout,
+    $state,
+    $stateParams,
+    _stateProvider;
 
-//   beforeEach(module('ui.router'));
+  beforeEach(() => {
+    window.location.hash = "#!";
+    window.angular = new Angular();
+    publishExternalAPI();
+    let module = window.angular.module("defaultModule", ["ui.router"]);
+    module.config(function ($stateProvider) {
+      _stateProvider = $stateProvider;
+      $stateProvider
+        .state({ name: "top", url: "" })
+        .state({
+          name: "contacts",
+          url: "/contacts",
+          views: {
+            $default: {
+              template:
+                '<a ui-sref=".item({ id: 6 })" ui-sref-active="active">Contacts</a>',
+            },
+          },
+        })
+        .state({ name: "contacts.item", url: "/:id" })
+        .state({ name: "contacts.item.detail", url: "/detail/:foo" })
+        .state({ name: "contacts.item.edit", url: "/edit" })
+        .state({
+          name: "admin",
+          url: "/admin",
+          abstract: true,
+          template: "<ui-view/>",
+        })
+        .state({ name: "admin.roles", url: "/roles?page" })
+        .state({
+          name: "arrayparam",
+          url: "/arrayparam?{foo:int}&bar",
+          template: "<div></div>",
+        });
+    });
+    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      "defaultModule",
+    ]);
+    $q = $injector.get("$q");
+    $rootScope = $injector.get("$rootScope");
+    $compile = $injector.get("$compile");
+    $timeout = $injector.get("$timeout");
+    $state = $injector.get("$state");
+    $stateParams = $injector.get("$stateParams");
+  });
 
-//   beforeEach(
-//     module(function ($stateProvider) {
-//       _stateProvider = $stateProvider;
-//       $stateProvider
-//         .state({name: 'top', url: '',
-//         })
-//         .state({name: 'contacts', url: '/contacts',
-//           views: {
-//             $default: {
-//               template: '<a ui-sref=".item({ id: 6 })" ui-sref-active="active">Contacts</a>',
-//             },
-//           },
-//         })
-//         .state({name: 'contacts.item', url: '/:id',
-//         })
-//         .state({name: 'contacts.item.detail', url: '/detail/:foo',
-//         })
-//         .state({name: 'contacts.item.edit', url: '/edit',
-//         })
-//         .state({name: 'admin', url: '/admin',
-//           abstract: true,
-//           template: '<ui-view/>',
-//         })
-//         .state({name: 'admin.roles', url: '/roles?page',
-//         })
-//         .state({name: 'arrayparam', url: '/arrayparam?{foo:int}&bar',
-//           template: '<div></div>',
-//         });
-//     })
-//   );
+  it("should update class for sibling uiSref", async () => {
+    el = jqLite(
+      '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active="active">Contacts</a><a ui-sref="contacts.item({ id: 2 })" ui-sref-active="active">Contacts</a></div>',
+    );
+    template = $compile(el)($rootScope);
+    $rootScope.$digest();
 
-//   beforeEach(inject(function ($document, $timeout) {
-//     document = $document[0];
-//     timeoutFlush = () => {
-//       try {
-//         await wait(10);
-//       } catch (e) {
-//         // Angular 1.0.8 throws 'No deferred tasks to be flushed' if there is nothing in queue.
-//         // Behave as Angular >=1.1.5 and do nothing in such case.
-//       }
-//     };
-//   });
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+    $state.transitionTo("contacts.item", { id: 1 });
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
-//   it('should update class for sibling uiSref', inject(function ($rootScope, $q, $compile, $state) {
-//     el = jqLite(
-//       '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active="active">Contacts</a><a ui-sref="contacts.item({ id: 2 })" ui-sref-active="active">Contacts</a></div>'
-//     );
-//     template = $compile(el)($rootScope);
-//     $rootScope.$digest();
+    $state.transitionTo("contacts.item", { id: 2 });
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+  });
 
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
-//     $state.transitionTo('contacts.item', { id: 1 });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
+  it("should match state's parameters", async () => {
+    el = jqLite(
+      '<div><a ui-sref="contacts.item.detail({ foo: \'bar\' })" ui-sref-active="active">Contacts</a></div>',
+    );
+    template = $compile(el)($rootScope);
+    $rootScope.$digest();
 
-//     $state.transitionTo('contacts.item', { id: 2 });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
-//   });
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+    $state.transitionTo("contacts.item.detail", { id: 5, foo: "bar" });
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
-//   it("should match state's parameters", inject(function ($rootScope, $q, $compile, $state) {
-//     el = jqLite(
-//       '<div><a ui-sref="contacts.item.detail({ foo: \'bar\' })" ui-sref-active="active">Contacts</a></div>'
-//     );
-//     template = $compile(el)($rootScope);
-//     $rootScope.$digest();
+    $state.transitionTo("contacts.item.detail", { id: 5, foo: "baz" });
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+  });
 
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
-//     $state.transitionTo('contacts.item.detail', { id: 5, foo: 'bar' });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
+  // Test for #2696
+  it("should compare using typed parameters", async () => {
+    el = jqLite(
+      '<div><a ui-sref="arrayparam({ foo: [1,2,3] })" ui-sref-active="active">foo 123</a></div>',
+    );
+    template = $compile(el)($rootScope);
+    $rootScope.$digest();
 
-//     $state.transitionTo('contacts.item.detail', { id: 5, foo: 'baz' });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
-//   });
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
 
-//   // Test for #2696
-//   it('should compare using typed parameters', inject(function ($rootScope, $q, $compile, $state) {
-//     el = jqLite('<div><a ui-sref="arrayparam({ foo: [1,2,3] })" ui-sref-active="active">foo 123</a></div>');
-//     template = $compile(el)($rootScope);
-//     $rootScope.$digest();
+    $state.transitionTo("arrayparam", { foo: [1, 2, 3] });
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
+    $state.transitionTo("arrayparam", { foo: [1, 2, 3], bar: "asdf" });
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
-//     $state.transitionTo('arrayparam', { foo: [1, 2, 3] });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
+    $state.transitionTo("arrayparam", { foo: [1, 2] });
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+  });
 
-//     $state.transitionTo('arrayparam', { foo: [1, 2, 3], bar: 'asdf' });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
+  // Test for #3154
+  it("should compare ui-sref-active-eq using typed parameters", async () => {
+    el = jqLite(
+      '<div><a ui-sref="arrayparam({ foo: [1,2,3] })" ui-sref-active-eq="active">foo 123</a></div>',
+    );
+    template = $compile(el)($rootScope);
+    $rootScope.$digest();
 
-//     $state.transitionTo('arrayparam', { foo: [1, 2] });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
-//   });
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
 
-//   // Test for #3154
-//   it('should compare ui-sref-active-eq using typed parameters', inject(function ($rootScope, $q, $compile, $state) {
-//     el = jqLite('<div><a ui-sref="arrayparam({ foo: [1,2,3] })" ui-sref-active-eq="active">foo 123</a></div>');
-//     template = $compile(el)($rootScope);
-//     $rootScope.$digest();
+    $state.transitionTo("arrayparam", { foo: [1, 2, 3] });
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
+    $state.transitionTo("arrayparam", { foo: [1, 2, 3], bar: "asdf" });
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
-//     $state.transitionTo('arrayparam', { foo: [1, 2, 3] });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
+    $state.transitionTo("arrayparam", { foo: [1, 2] });
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+  });
 
-//     $state.transitionTo('arrayparam', { foo: [1, 2, 3], bar: 'asdf' });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
+  it("should update in response to ui-sref param expression changes", async () => {
+    el = jqLite(
+      '<div><a ui-sref="contacts.item.detail({ foo: fooId })" ui-sref-active="active">Contacts</a></div>',
+    );
+    template = $compile(el)($rootScope);
+    $rootScope.fooId = "bar";
+    $rootScope.$digest();
 
-//     $state.transitionTo('arrayparam', { foo: [1, 2] });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
-//   });
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+    $state.transitionTo("contacts.item.detail", { id: 5, foo: "bar" });
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
-//   it('should update in response to ui-sref param expression changes', inject(function (
-//     $rootScope,
-//     $q,
-//     $compile,
-//     $state
-//   ) {
-//     el = jqLite(
-//       '<div><a ui-sref="contacts.item.detail({ foo: fooId })" ui-sref-active="active">Contacts</a></div>'
-//     );
-//     template = $compile(el)($rootScope);
-//     $rootScope.fooId = 'bar';
-//     $rootScope.$digest();
+    $rootScope.fooId = "baz";
+    $rootScope.$digest();
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+  });
 
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
-//     $state.transitionTo('contacts.item.detail', { id: 5, foo: 'bar' });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
+  it("should match on child states", async () => {
+    template = $compile(
+      '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active="active">Contacts</a></div>',
+    )($rootScope);
+    $rootScope.$digest();
+    const a = jqLite(template[0].getElementsByTagName("a")[0]);
 
-//     $rootScope.fooId = 'baz';
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
-//   });
+    $state.transitionTo("contacts.item.edit", { id: 1 });
+    await wait(10);
+    expect($state.params.id).toBe("1");
+    expect(a.attr("class")).toMatch(/active/);
 
-//   it('should match on child states', inject(function ($rootScope, $q, $compile, $state) {
-//     template = $compile('<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active="active">Contacts</a></div>')(
-//       $rootScope
-//     );
-//     $rootScope.$digest();
-//     const a = jqLite(template[0].getElementsByTagName('a')[0]);
+    $state.transitionTo("contacts.item.edit", { id: 4 });
+    await wait(10);
+    expect($state.params.id).toBe("4");
+    expect(a.attr("class")).not.toMatch(/active/);
+  });
 
-//     $state.transitionTo('contacts.item.edit', { id: 1 });
-//     $q.flush();
-//     timeoutFlush();
-//     expect($state.params.id).toBe('1');
-//     expect(a.attr('class')).toMatch(/active/);
+  it("should NOT match on child states when active-equals is used", async () => {
+    template = $compile(
+      '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active-eq="active">Contacts</a></div>',
+    )($rootScope);
+    $rootScope.$digest();
+    const a = jqLite(template[0].getElementsByTagName("a")[0]);
 
-//     $state.transitionTo('contacts.item.edit', { id: 4 });
-//     $q.flush();
-//     timeoutFlush();
-//     expect($state.params.id).toBe('4');
-//     expect(a.attr('class')).not.toMatch(/active/);
-//   });
+    $state.transitionTo("contacts.item", { id: 1 });
+    await wait(10);
+    expect(a.attr("class")).toMatch(/active/);
 
-//   it('should NOT match on child states when active-equals is used', inject(function ($rootScope, $q, $compile, $state) {
-//     template = $compile('<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active-eq="active">Contacts</a></div>')(
-//       $rootScope
-//     );
-//     $rootScope.$digest();
-//     const a = jqLite(template[0].getElementsByTagName('a')[0]);
+    $state.transitionTo("contacts.item.edit", { id: 1 });
+    await wait(10);
+    expect(a.attr("class")).not.toMatch(/active/);
+  });
 
-//     $state.transitionTo('contacts.item', { id: 1 });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(a.attr('class')).toMatch(/active/);
+  it("should match on child states when active-equals and active-equals-eq is used", async () => {
+    template = $compile(
+      '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active="active" ui-sref-active-eq="active-eq">Contacts</a></div>',
+    )($rootScope);
+    $rootScope.$digest();
+    const a = jqLite(template[0].getElementsByTagName("a")[0]);
 
-//     $state.transitionTo('contacts.item.edit', { id: 1 });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(a.attr('class')).not.toMatch(/active/);
-//   });
+    $state.transitionTo("contacts.item", { id: 1 });
+    await wait(10);
+    expect(a.attr("class")).toMatch(/active/);
+    expect(a.attr("class")).toMatch(/active-eq/);
 
-//   it('should match on child states when active-equals and active-equals-eq is used', inject(function (
-//     $rootScope,
-//     $q,
-//     $compile,
-//     $state,
-//     $timeout
-//   ) {
-//     template = $compile(
-//       '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active="active" ui-sref-active-eq="active-eq">Contacts</a></div>'
-//     )($rootScope);
-//     $rootScope.$digest();
-//     const a = jqLite(template[0].getElementsByTagName('a')[0]);
+    $state.transitionTo("contacts.item.edit", { id: 1 });
+    await wait(10);
+    expect(a.attr("class")).toMatch(/active/);
+    expect(a.attr("class")).not.toMatch(/active-eq/);
+  });
 
-//     $state.transitionTo('contacts.item', { id: 1 });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(a.attr('class')).toMatch(/active/);
-//     expect(a.attr('class')).toMatch(/active-eq/);
+  it("should resolve relative state refs", async () => {
+    el = jqLite("<section><div ui-view></div></section>");
+    template = $compile(el)($rootScope);
+    $rootScope.$digest();
 
-//     $state.transitionTo('contacts.item.edit', { id: 1 });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(a.attr('class')).toMatch(/active/);
-//     expect(a.attr('class')).not.toMatch(/active-eq/);
-//   });
+    $state.transitionTo("contacts");
+    await wait(10);
+    expect(
+      jqLite(template[0].querySelector("a")).attr("class"),
+    ).toBeUndefined();
 
-//   it('should resolve relative state refs', inject(function ($rootScope, $q, $compile, $state) {
-//     el = jqLite('<section><div ui-view></div></section>');
-//     template = $compile(el)($rootScope);
-//     $rootScope.$digest();
+    $state.transitionTo("contacts.item", { id: 6 });
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
-//     $state.transitionTo('contacts');
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('ng-scope');
+    $state.transitionTo("contacts.item", { id: 5 });
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("");
+  });
 
-//     $state.transitionTo('contacts.item', { id: 6 });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('ng-scope active');
+  it("should match on any child state refs", async () => {
+    el = jqLite(
+      '<div ui-sref-active="active"><a ui-sref="contacts.item({ id: 1 })">Contacts</a><a ui-sref="contacts.item({ id: 2 })">Contacts</a></div>',
+    );
+    template = $compile(el)($rootScope);
+    $rootScope.$digest();
 
-//     $state.transitionTo('contacts.item', { id: 5 });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('ng-scope');
-//   });
+    expect(jqLite(template[0]).attr("class")).toBeUndefined();
 
-//   it('should match on any child state refs', inject(function ($rootScope, $q, $compile, $state) {
-//     el = jqLite(
-//       '<div ui-sref-active="active"><a ui-sref="contacts.item({ id: 1 })">Contacts</a><a ui-sref="contacts.item({ id: 2 })">Contacts</a></div>'
-//     );
-//     template = $compile(el)($rootScope);
-//     $rootScope.$digest();
+    $state.transitionTo("contacts.item", { id: 1 });
+    await wait(10);
+    expect(jqLite(template[0]).attr("class")).toBe("active");
 
-//     expect(jqLite(template[0]).attr('class')).toBe('ng-scope');
+    $state.transitionTo("contacts.item", { id: 2 });
+    await wait(10);
+    expect(jqLite(template[0]).attr("class")).toBe("active");
+  });
 
-//     $state.transitionTo('contacts.item', { id: 1 });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0]).attr('class')).toBe('ng-scope active');
+  it("should match fuzzy on lazy loaded states", async () => {
+    el = jqLite(
+      '<div><a ui-sref="contacts.lazy" ui-sref-active="active">Lazy Contact</a></div>',
+    );
+    template = $compile(el)($rootScope);
+    await wait(10);
 
-//     $state.transitionTo('contacts.item', { id: 2 });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0]).attr('class')).toBe('ng-scope active');
-//   });
+    _stateProvider.onInvalid(function ($to$) {
+      if ($to$.name() === "contacts.lazy") {
+        _stateProvider.state({ name: "contacts.lazy" });
+        return $to$;
+      }
+    });
 
-//   it('should match fuzzy on lazy loaded states', inject(function ($rootScope, $q, $compile, $state) {
-//     el = jqLite('<div><a ui-sref="contacts.lazy" ui-sref-active="active">Lazy Contact</a></div>');
-//     template = $compile(el)($rootScope);
-//     $q.flush();
+    $state.transitionTo("contacts.item", { id: 1 });
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
 
-//     _stateProvider.onInvalid(function ($to$) {
-//       if ($to$.name() === 'contacts.lazy') {
-//         _stateProvider.state({name: 'contacts.lazy', {});
-//         return $to$;
-//       }
-//     });
+    $state.transitionTo("contacts.lazy");
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
+  });
 
-//     $state.transitionTo('contacts.item', { id: 1 });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
+  it("should match exactly on lazy loaded states", async () => {
+    el = jqLite(
+      '<div><a ui-sref="contacts.lazy" ui-sref-active-eq="active">Lazy Contact</a></div>',
+    );
+    template = $compile(el)($rootScope);
+    await wait(10);
 
-//     $state.transitionTo('contacts.lazy');
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
-//   });
+    _stateProvider.onInvalid(function ($to$) {
+      if ($to$.name() === "contacts.lazy") {
+        _stateProvider.state({ name: "contacts.lazy" });
+        return $to$;
+      }
+    });
 
-//   it('should match exactly on lazy loaded states', inject(function ($transitions, $rootScope, $q, $compile, $state) {
-//     el = jqLite('<div><a ui-sref="contacts.lazy" ui-sref-active-eq="active">Lazy Contact</a></div>');
-//     template = $compile(el)($rootScope);
-//     $q.flush();
+    $state.transitionTo("contacts.item", { id: 1 });
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
 
-//     _stateProvider.onInvalid(function ($to$) {
-//       if ($to$.name() === 'contacts.lazy') {
-//         _stateProvider.state({name: 'contacts.lazy', {});
-//         return $to$;
-//       }
-//     });
+    $state.transitionTo("contacts.lazy");
+    await wait(10);
+    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
+  });
 
-//     $state.transitionTo('contacts.item', { id: 1 });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBeFalsy();
+  it("should allow multiple classes to be supplied", async () => {
+    template = $compile(
+      '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active="active also-active">Contacts</a></div>',
+    )($rootScope);
+    $rootScope.$digest();
+    const a = jqLite(template[0].getElementsByTagName("a")[0]);
 
-//     $state.transitionTo('contacts.lazy');
-//     $q.flush();
-//     timeoutFlush();
-//     expect(jqLite(template[0].querySelector('a')).attr('class')).toBe('active');
-//   });
+    $state.transitionTo("contacts.item.edit", { id: 1 });
+    await wait(10);
+    expect(a.attr("class")).toMatch(/active also-active/);
+  });
 
-//   it('should allow multiple classes to be supplied', inject(function ($rootScope, $q, $compile, $state) {
-//     template = $compile(
-//       '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active="active also-active">Contacts</a></div>'
-//     )($rootScope);
-//     $rootScope.$digest();
-//     const a = jqLite(template[0].getElementsByTagName('a')[0]);
+  // TODO does not work
+  xit("should not match fuzzy on lazy loaded future states", async () => {
+    _stateProvider.state({
+      name: "contacts.lazy.**",
+      url: "/lazy",
+      lazyLoad: () => {
+        return $q.when().then(() => {
+          _stateProvider
+            .state({ name: "contacts.lazy", abstract: true, url: "/lazy" })
+            .state({ name: "contacts.lazy.s1", url: "/s1" })
+            .state({ name: "contacts.lazy.s2", url: "/s2" });
+        });
+      },
+    });
+    template = $compile(
+      '<div ui-sref-active="active"><a ui-sref="contacts.lazy.s1">Lazy</a></div><div ui-sref-active="active"><a ui-sref="contacts.lazy.s2"></a></div>',
+    )($rootScope);
+    $rootScope.$digest();
+    $state.transitionTo("contacts.lazy.s1");
+    await wait(10);
 
-//     $state.transitionTo('contacts.item.edit', { id: 1 });
-//     $q.flush();
-//     timeoutFlush();
-//     expect(a.attr('class')).toMatch(/active also-active/);
-//   });
+    expect(template.eq(0)[0].hasClass("active")).toBeTruthy();
+    //expect(template.eq(1).hasClass("active")).toBeFalsy();
+  });
 
-//   it('should not match fuzzy on lazy loaded future states', inject(function ($rootScope, $compile, $q, $state) {
-//     _stateProvider.state({name: 'contacts.lazy.**', {
-//       url: '/lazy',
-//       lazyLoad: () => {
-//         return $q.when().then(() => {
-//           _stateProvider
-//             .state({name: 'contacts.lazy', {
-//               abstract: true,
-//               url: '/lazy',
-//             })
-//             .state({name: 'contacts.lazy.s1', {
-//               url: '/s1',
-//             })
-//             .state({name: 'contacts.lazy.s2', {
-//               url: '/s2',
-//             });
-//         });
-//       },
-//     });
-//     template = $compile(
-//       '<div ui-sref-active="active"><a ui-sref="contacts.lazy.s1">Lazy</a></div><div ui-sref-active="active"><a ui-sref="contacts.lazy.s2"></a></div>'
-//     )($rootScope);
-//     $rootScope.$digest();
-//     $state.transitionTo('contacts.lazy.s1');
-//     $q.flush();
-//     timeoutFlush();
-//     expect(template.eq(0).hasClass('active')).toBeTruthy();
-//     expect(template.eq(1).hasClass('active')).toBeFalsy();
-//   });
+  // TODO investigate why transitions error out
+  xdescribe("ng-{class,style} interface", () => {
+    it("should match on abstract states that are included by the current state", async () => {
+      el = $compile(
+        '<div ui-sref-active="{active: \'admin.*\'}"><a ui-sref-active="active" ui-sref="admin.roles">Roles</a></div>',
+      )($rootScope);
+      $state.transitionTo("admin.roles");
+      await wait(10);
+      const abstractParent = el[0];
+      expect(abstractParent.className).toMatch(/active/);
+      const child = el[0].querySelector("a");
+      expect(child.className).toMatch(/active/);
+    });
 
-//   describe('ng-{class,style} interface', () => {
-//     it('should match on abstract states that are included by the current state', inject(function (
-//       $rootScope,
-//       $compile,
-//       $state,
-//       $q
-//     ) {
-//       el = $compile(
-//         '<div ui-sref-active="{active: \'admin.*\'}"><a ui-sref-active="active" ui-sref="admin.roles">Roles</a></div>'
-//       )($rootScope);
-//       $state.transitionTo('admin.roles');
-//       $q.flush();
-//       timeoutFlush();
-//       const abstractParent = el[0];
-//       expect(abstractParent.className).toMatch(/active/);
-//       const child = el[0].querySelector('a');
-//       expect(child.className).toMatch(/active/);
-//     });
+    it("should match on state parameters", async () => {
+      el = $compile(
+        "<div ui-sref-active=\"{active: 'admin.roles({page: 1})'}\"></div>",
+      )($rootScope);
+      $state.transitionTo("admin.roles", { page: 1 });
+      await wait(10);
+      expect(el[0].className).toMatch(/active/);
+    });
 
-//     it('should match on state parameters',  async () => {
-//       el = $compile('<div ui-sref-active="{active: \'admin.roles({page: 1})\'}"></div>')($rootScope);
-//       $state.transitionTo('admin.roles', { page: 1 });
-//       $q.flush();
-//       timeoutFlush();
-//       expect(el[0].className).toMatch(/active/);
-//     });
+    it("should shadow the state provided by ui-sref", async () => {
+      el = $compile(
+        '<div ui-sref-active="{active: \'admin.roles({page: 1})\'}"><a ui-sref="admin.roles"></a></div>',
+      )($rootScope);
+      $state.transitionTo("admin.roles");
+      await wait(10);
+      expect(el[0].className).not.toMatch(/active/);
+      $state.transitionTo("admin.roles", { page: 1 });
+      await wait(10);
+      expect(el[0].className).toMatch(/active/);
+    });
 
-//     it('should shadow the state provided by ui-sref',  async () => {
-//       el = $compile('<div ui-sref-active="{active: \'admin.roles({page: 1})\'}"><a ui-sref="admin.roles"></a></div>')(
-//         $rootScope
-//       );
-//       $state.transitionTo('admin.roles');
-//       $q.flush();
-//       timeoutFlush();
-//       expect(el[0].className).not.toMatch(/active/);
-//       $state.transitionTo('admin.roles', { page: 1 });
-//       $q.flush();
-//       timeoutFlush();
-//       expect(el[0].className).toMatch(/active/);
-//     });
+    it("should support multiple <className, stateOrName> pairs", async () => {
+      el = $compile(
+        "<div ui-sref-active=\"{contacts: 'contacts.**', admin: 'admin.roles({page: 1})'}\"></div>",
+      )($rootScope);
+      $state.transitionTo("contacts");
+      await wait(10);
+      expect(el[0].className).toMatch(/contacts/);
+      expect(el[0].className).not.toMatch(/admin/);
+      $state.transitionTo("admin.roles", { page: 1 });
+      await wait(10);
+      expect(el[0].className).toMatch(/admin/);
+      expect(el[0].className).not.toMatch(/contacts/);
+    });
 
-//     it('should support multiple <className, stateOrName> pairs',  async () => {
-//       el = $compile("<div ui-sref-active=\"{contacts: 'contacts.**', admin: 'admin.roles({page: 1})'}\"></div>")(
-//         $rootScope
-//       );
-//       $state.transitionTo('contacts');
-//       $q.flush();
-//       timeoutFlush();
-//       expect(el[0].className).toMatch(/contacts/);
-//       expect(el[0].className).not.toMatch(/admin/);
-//       $state.transitionTo('admin.roles', { page: 1 });
-//       $q.flush();
-//       timeoutFlush();
-//       expect(el[0].className).toMatch(/admin/);
-//       expect(el[0].className).not.toMatch(/contacts/);
-//     });
+    it("should update the active classes when compiled", async () => {
+      $state.transitionTo("admin.roles");
+      await wait(10);
+      el = $compile("<div ui-sref-active=\"{active: 'admin.roles'}\"/>")(
+        $rootScope,
+      );
+      $rootScope.$digest();
+      timeoutFlush();
+      expect(el.hasClass("active")).toBeTruthy();
+    });
 
-//     it('should update the active classes when compiled', inject(function ($compile, $rootScope, $document, $state, $q) {
-//       $state.transitionTo('admin.roles');
-//       $q.flush();
-//       timeoutFlush();
-//       el = $compile('<div ui-sref-active="{active: \'admin.roles\'}"/>')($rootScope);
-//       $rootScope.$digest();
-//       timeoutFlush();
-//       expect(el.hasClass('active')).toBeTruthy();
-//     });
+    it("should not match fuzzy on lazy loaded future states", async () => {
+      _stateProvider.state({
+        name: "contacts.lazy.**",
+        url: "/lazy",
+        lazyLoad: () => {
+          return $q.when().then(() => {
+            _stateProvider
+              .state({ name: "contacts.lazy", abstract: true, url: "/lazy" })
+              .state({ name: "contacts.lazy.s1", url: "/s1" })
+              .state({ name: "contacts.lazy.s2", url: "/s2" });
+          });
+        },
+      });
+      template = $compile(
+        '<div ui-sref-active="{ active: \'contacts.lazy.s1\' }"><a ui-sref="contacts.lazy.s1">Lazy</a></div><div ui-sref-active="{ active: \'contacts.lazy.s2\' }"></div>',
+      )($rootScope);
+      $rootScope.$digest();
+      $state.transitionTo("contacts.lazy.s1");
+      await wait(10);
+      expect(template.eq(0).hasClass("active")).toBeTruthy();
+      expect(template.eq(1).hasClass("active")).toBeFalsy();
+    });
+  });
 
-//     it('should not match fuzzy on lazy loaded future states', inject(function ($rootScope, $compile, $q, $state) {
-//       _stateProvider.state({name: 'contacts.lazy.**', {
-//         url: '/lazy',
-//         lazyLoad: () => {
-//           return $q.when().then(() => {
-//             _stateProvider
-//               .state({name: 'contacts.lazy', {
-//                 abstract: true,
-//                 url: '/lazy',
-//               })
-//               .state({name: 'contacts.lazy.s1', {
-//                 url: '/s1',
-//               })
-//               .state({name: 'contacts.lazy.s2', {
-//                 url: '/s2',
-//               });
-//           });
-//         },
-//       });
-//       template = $compile(
-//         '<div ui-sref-active="{ active: \'contacts.lazy.s1\' }"><a ui-sref="contacts.lazy.s1">Lazy</a></div><div ui-sref-active="{ active: \'contacts.lazy.s2\' }"></div>'
-//       )($rootScope);
-//       $rootScope.$digest();
-//       $state.transitionTo('contacts.lazy.s1');
-//       $q.flush();
-//       timeoutFlush();
-//       expect(template.eq(0).hasClass('active')).toBeTruthy();
-//       expect(template.eq(1).hasClass('active')).toBeFalsy();
-//     });
-//   });
+  xdescribe("ng-{class,style} interface, and handle values as arrays", () => {
+    it("should match on abstract states that are included by the current state", async () => {
+      el = $compile(
+        '<div ui-sref-active="{active: [\'randomState.**\', \'admin.roles\']}"><a ui-sref-active="active" ui-sref="admin.roles">Roles</a></div>',
+      )($rootScope);
+      $state.transitionTo("admin.roles");
+      await wait(10);
+      const abstractParent = el[0];
+      expect(abstractParent.className).toMatch(/active/);
+      const child = el[0].querySelector("a");
+      expect(child.className).toMatch(/active/);
+    });
 
-//   describe('ng-{class,style} interface, and handle values as arrays', () => {
-//     it('should match on abstract states that are included by the current state', inject(function (
-//       $rootScope,
-//       $compile,
-//       $state,
-//       $q
-//     ) {
-//       el = $compile(
-//         '<div ui-sref-active="{active: [\'randomState.**\', \'admin.roles\']}"><a ui-sref-active="active" ui-sref="admin.roles">Roles</a></div>'
-//       )($rootScope);
-//       $state.transitionTo('admin.roles');
-//       $q.flush();
-//       timeoutFlush();
-//       const abstractParent = el[0];
-//       expect(abstractParent.className).toMatch(/active/);
-//       const child = el[0].querySelector('a');
-//       expect(child.className).toMatch(/active/);
-//     });
+    it("should match on state parameters", async () => {
+      el = $compile(
+        "<div ui-sref-active=\"{active: ['admin.roles({page: 1})']}\"></div>",
+      )($rootScope);
+      $state.transitionTo("admin.roles", { page: 1 });
+      await wait(10);
+      expect(el[0].className).toMatch(/active/);
+    });
 
-//     it('should match on state parameters',  async () => {
-//       el = $compile('<div ui-sref-active="{active: [\'admin.roles({page: 1})\']}"></div>')($rootScope);
-//       $state.transitionTo('admin.roles', { page: 1 });
-//       $q.flush();
-//       timeoutFlush();
-//       expect(el[0].className).toMatch(/active/);
-//     });
+    it("should support multiple <className, stateOrName> pairs", async () => {
+      el = $compile(
+        "<div ui-sref-active=\"{contacts: ['contacts.item', 'contacts.item.detail'], admin: 'admin.roles({page: 1})'}\"></div>",
+      )($rootScope);
+      $state.transitionTo("contacts.item.detail", { id: 1, foo: "bar" });
+      await wait(10);
+      expect(el[0].className).toMatch(/contacts/);
+      expect(el[0].className).not.toMatch(/admin/);
+      $state.transitionTo("admin.roles", { page: 1 });
+      await wait(10);
+      expect(el[0].className).toMatch(/admin/);
+      expect(el[0].className).not.toMatch(/contacts/);
+    });
 
-//     it('should support multiple <className, stateOrName> pairs',  async () => {
-//       el = $compile(
-//         "<div ui-sref-active=\"{contacts: ['contacts.item', 'contacts.item.detail'], admin: 'admin.roles({page: 1})'}\"></div>"
-//       )($rootScope);
-//       $state.transitionTo('contacts.item.detail', { id: 1, foo: 'bar' });
-//       $q.flush();
-//       timeoutFlush();
-//       expect(el[0].className).toMatch(/contacts/);
-//       expect(el[0].className).not.toMatch(/admin/);
-//       $state.transitionTo('admin.roles', { page: 1 });
-//       $q.flush();
-//       timeoutFlush();
-//       expect(el[0].className).toMatch(/admin/);
-//       expect(el[0].className).not.toMatch(/contacts/);
-//     });
-
-//     it('should update the active classes when compiled', inject(function ($compile, $rootScope, $document, $state, $q) {
-//       $state.transitionTo('admin.roles');
-//       $q.flush();
-//       timeoutFlush();
-//       el = $compile("<div ui-sref-active=\"{active: ['admin.roles', 'admin.someOtherState']}\"/>")($rootScope);
-//       $rootScope.$digest();
-//       timeoutFlush();
-//       expect(el.hasClass('active')).toBeTruthy();
-//     });
-//   });
-// });
+    it("should update the active classes when compiled", async () => {
+      $state.transitionTo("admin.roles");
+      await wait(10);
+      el = $compile(
+        "<div ui-sref-active=\"{active: ['admin.roles', 'admin.someOtherState']}\"/>",
+      )($rootScope);
+      $rootScope.$digest();
+      timeoutFlush();
+      expect(el.hasClass("active")).toBeTruthy();
+    });
+  });
+});

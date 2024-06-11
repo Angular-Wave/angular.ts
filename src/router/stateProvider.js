@@ -8,11 +8,13 @@ const err = minErr("$stateProvider");
 const validKeys = [
   "$$state",
   "__stateObjectCache",
+  "abstract",
   "controller",
   "controllerProvider",
   "component",
   "data",
   "includes",
+  "lazyLoad",
   "name",
   "navigable",
   "onEnter",

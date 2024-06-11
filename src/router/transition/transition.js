@@ -358,7 +358,11 @@ export class Transition {
       : new Resolvable(resolvable);
     const stateName = typeof state === "string" ? state : state.name;
     const topath = this._treeChanges.to;
-    const targetNode = find(topath, (node) => node.state.name === stateName);
+    const targetNode = find(topath, (node) => {
+      return node.state.name === stateName;
+    });
+    console.assert(targetNode, `targetNode not found ${stateName}`);
+
     const resolveContext = new ResolveContext(topath);
     resolveContext.addResolvables([resolvable], targetNode.state);
   }
