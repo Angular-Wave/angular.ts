@@ -4,6 +4,7 @@ import { publishExternalAPI } from "../../src/public";
 import { browserTrigger, wait } from "../test-utils";
 
 describe("uiStateRef", function () {
+  window.location.hash = "#!";
   let el,
     el2,
     template,
@@ -77,6 +78,7 @@ describe("uiStateRef", function () {
   });
 
   function buildDOM() {
+    window.location.hash = "#";
     el = jqLite(
       '<a ui-sref="contacts.item.detail({ id: contact.id })">Details</a>',
     );
@@ -151,6 +153,7 @@ describe("uiStateRef", function () {
       expect($stateParams.id).toBeUndefined();
     });
 
+    // TODO investigate further why this fails
     xit("should not transition states when alt-clicked", async () => {
       expect($state.current.name).toEqual("");
 
@@ -186,70 +189,73 @@ describe("uiStateRef", function () {
     });
 
     // // Test for #1031
-    // it('should allow passing params to current state',  async () => {
-    //   $state.go('other', { id: 'abc' });
-    //   $rootScope.$index = 'def';
-    //   $rootScope.$digest();
+    it("should allow passing params to current state", async () => {
+      $state.go("other", { id: "abc" });
+      $rootScope.$index = "def";
+      $rootScope.$digest();
 
-    //   el = jqLite('<a ui-sref="{id: $index}">Details</a>');
-    //   $compile(el)($rootScope);
-    //   $rootScope.$digest();
+      el = jqLite('<a ui-sref="{id: $index}">Details</a>');
+      $compile(el)($rootScope);
+      $rootScope.$digest();
 
-    //   expect($state.current.name).toBe('other');
-    //   expect($state.params).toEqual(expect.objectContaining({ id: 'abc' });
-    //   expect(el.attr('href')).toBe('#/other/def');
+      expect($state.current.name).toBe("other");
+      expect($state.params.id).toEqual("abc");
+      expect(el.attr("href")).toBe("#/other/def");
 
-    //   triggerClick(el);
-    //   timeoutFlush();
-    //   $q.flush();
+      browserTrigger(el, "click");
+      await wait(100);
+      expect($state.current.name).toBe("other");
+      expect($state.params.id).toEqual("def");
 
-    //   expect($state.current.name).toBe('other');
-    //   expect($state.params).toEqual(expect.objectContaining({ id: 'def' });
+      $rootScope.$index = "ghi";
+      $state.go("other.detail");
+      $rootScope.$digest();
 
-    //   $rootScope.$index = 'ghi';
-    //   $state.go('other.detail');
-    //   $rootScope.$digest();
+      expect($state.current.name).toBe("other.detail");
+      expect($state.params.id).toEqual("def");
 
-    //   expect($state.current.name).toBe('other.detail');
-    //   expect($state.params).toEqual(expect.objectContaining({ id: 'def' });
+      expect(el.attr("href")).toBe("#/other/ghi/detail");
 
-    //   expect(el.attr('href')).toBe('#/other/ghi/detail');
+      browserTrigger(el, "click");
+      await wait(100);
+      expect($state.current.name).toBe("other.detail");
+      expect($state.params.id).toEqual("ghi");
+    });
 
-    //   triggerClick(el);
-    //   timeoutFlush();
-    //   $q.flush();
+    it("should allow multi-line attribute values when passing params to current state", async () => {
+      $state.go("contacts.item.detail", { id: "123" });
+      $rootScope.$digest();
 
-    //   expect($state.current.name).toBe('other.detail');
-    //   expect($state.params).toEqual(expect.objectContaining({ id: 'ghi' });
-    // });
+      el = jqLite('<a ui-sref="{\n\tid: $index\n}">Details</a>');
+      $rootScope.$index = 3;
+      $rootScope.$apply();
 
-    // it('should allow multi-line attribute values when passing params to current state',  async () => {
-    //   $state.go('contacts.item.detail', { id: '123' });
-    //   $rootScope.$digest();
+      $compile(el)($rootScope);
+      $rootScope.$digest();
+      expect(el.attr("href")).toBe("#/contacts/3");
+    });
 
-    //   el = jqLite('<a ui-sref="{\n\tid: $index\n}">Details</a>');
-    //   $rootScope.$index = 3;
-    //   $rootScope.$apply();
+    it("should take an object as a parameter and update properly on digest churns", async () => {
+      el = jqLite(
+        '<div><a ui-sref="contacts.item.detail(urlParams)">Contacts</a></div>',
+      );
+      template = $compile(el)($rootScope);
 
-    //   $compile(el)($rootScope);
-    //   $rootScope.$digest();
-    //   expect(el.attr('href')).toBe('#/contacts/3');
-    // });
+      $rootScope.urlParams = { id: 1 };
+      $rootScope.$digest();
+      expect(jqLite(template[0].querySelector("a")).attr("href")).toBe(
+        "#/contacts/1",
+      );
 
-    // it('should take an object as a parameter and update properly on digest churns',  async () => {
-    //   el = jqLite('<div><a ui-sref="contacts.item.detail(urlParams)">Contacts</a></div>');
-    //   template = $compile(el)($rootScope);
-
-    //   $rootScope.urlParams = { id: 1 };
-    //   $rootScope.$digest();
-    //   expect(jqLite(template[0].querySelector('a')).attr('href')).toBe('#/contacts/1');
-
-    //   $rootScope.urlParams.id = 2;
-    //   $rootScope.$digest();
-    //   expect(jqLite(template[0].querySelector('a')).attr('href')).toBe('#/contacts/2');
-    // });
+      $rootScope.urlParams.id = 2;
+      $rootScope.$digest();
+      expect(jqLite(template[0].querySelector("a")).attr("href")).toBe(
+        "#/contacts/2",
+      );
+    });
   });
 
+  // TODO: Since this is HTML5 mode, we would want to test this with actual backend
   // describe('links in html5 mode', function () {
   //   beforeEach(function () {
   //     _locationProvider.html5Mode(true);
@@ -282,281 +288,271 @@ describe("uiStateRef", function () {
   //   });
   // });
 
-  // describe('links with dynamic state definitions', function () {
-  //   let template, $state;
+  describe("links with dynamic state definitions", function () {
+    let template;
 
-  //   beforeEach(inject(function ($rootScope, $compile, _$state_) {
-  //     $state = _$state_;
-  //     el = jqLite(
-  //       '<a ui-sref-active="active" ui-sref-active-eq="activeeq" ui-state="state" ui-state-params="params">state</a>'
-  //     );
-  //     scope = $rootScope;
-  //     angular.extend(scope, { state: 'contacts', params: {} });
-  //     template = $compile(el)(scope);
-  //     scope.$digest();
-  //   });
+    beforeEach(() => {
+      el = jqLite(
+        '<a ui-sref-active="active" ui-sref-active-eq="activeeq" ui-state="state" ui-state-params="params">state</a>',
+      );
+      scope = $rootScope;
+      Object.assign(scope, { state: "contacts", params: {} });
+      template = $compile(el)(scope);
+      scope.$digest();
+    });
 
-  //   it('sets the correct initial href', function () {
-  //     expect(jqLite(template[0]).attr('href')).toBe('#/contacts');
-  //   });
+    it("sets the correct initial href", function () {
+      expect(jqLite(template[0]).attr("href")).toBe("#/contacts");
+    });
 
-  //   it('updates to the new href', function () {
-  //     expect(jqLite(template[0]).attr('href')).toBe('#/contacts');
+    it("updates to the new href", function () {
+      expect(jqLite(template[0]).attr("href")).toBe("#/contacts");
 
-  //     scope.state = 'contacts.item';
-  //     scope.params = { id: 5 };
-  //     scope.$digest();
-  //     expect(jqLite(template[0]).attr('href')).toBe('#/contacts/5');
+      scope.state = "contacts.item";
+      scope.params = { id: 5 };
+      scope.$digest();
+      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/5");
 
-  //     scope.params.id = 25;
-  //     scope.$digest();
-  //     expect(jqLite(template[0]).attr('href')).toBe('#/contacts/25');
-  //   });
+      scope.params.id = 25;
+      scope.$digest();
+      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/25");
+    });
 
-  //   it('updates a linked ui-sref-active', inject(function ($timeout) {
-  //     function tick() {
-  //       scope.$digest();
-  //       try {
-  //         $timeout.flush();
-  //       } catch (error) {}
-  //     }
-  //     expect(template[0].className).not.toContain('active');
-  //     expect(template[0].className).not.toContain('activeeq');
+    it("updates a linked ui-sref-active", async () => {
+      expect(template[0].className).not.toContain("active");
+      expect(template[0].className).not.toContain("activeeq");
 
-  //     $state.go('contacts');
-  //     tick();
-  //     expect(template[0].className).toContain('active activeeq');
+      $state.go("contacts");
+      scope.$digest();
+      await wait(10);
+      expect(template[0].className).toContain("active activeeq");
 
-  //     scope.state = 'contacts.item';
-  //     scope.params = { id: 5 };
-  //     tick();
-  //     expect(template[0].className).not.toContain('active');
-  //     expect(template[0].className).not.toContain('activeeq');
+      scope.state = "contacts.item";
+      scope.params = { id: 5 };
+      scope.$digest();
+      await wait(10);
+      expect(template[0].className).not.toContain("active");
+      expect(template[0].className).not.toContain("activeeq");
 
-  //     $state.go('contacts.item', { id: -5 });
-  //     tick();
-  //     expect(template[0].className).not.toContain('active');
-  //     expect(template[0].className).not.toContain('activeeq');
+      $state.go("contacts.item", { id: -5 });
+      scope.$digest();
+      await wait(10);
+      expect(template[0].className).not.toContain("active");
+      expect(template[0].className).not.toContain("activeeq");
 
-  //     $state.go('contacts.item', { id: 5 });
-  //     tick();
-  //     expect(template[0].className).toContain('active activeeq');
+      $state.go("contacts.item", { id: 5 });
+      scope.$digest();
+      await wait(10);
+      expect(template[0].className).toContain("active activeeq");
 
-  //     scope.state = 'contacts';
-  //     scope.params = {};
-  //     tick();
-  //     expect(template[0].className).toContain('active');
-  //     expect(template[0].className).not.toContain('activeeq');
-  //   });
+      scope.state = "contacts";
+      scope.params = {};
+      scope.$digest();
+      await wait(10);
+      expect(template[0].className).toContain("active");
+      expect(template[0].className).not.toContain("activeeq");
+    });
 
-  //   it('updates to a new href when it points to a new state', function () {
-  //     expect(jqLite(template[0]).attr('href')).toBe('#/contacts');
-  //     scope.state = 'other';
-  //     scope.params = { id: '123' };
-  //     scope.$digest();
-  //     expect(jqLite(template[0]).attr('href')).toBe('#/other/123');
-  //   });
+    it("updates to a new href when it points to a new state", function () {
+      expect(jqLite(template[0]).attr("href")).toBe("#/contacts");
+      scope.state = "other";
+      scope.params = { id: "123" };
+      scope.$digest();
+      expect(jqLite(template[0]).attr("href")).toBe("#/other/123");
+    });
 
-  //   // Test for #1031
-  //   it('should allow passing params to current state using empty ui-state', inject(function (
-  //     $compile,
-  //     $rootScope,
-  //     $state,
-  //     $q
-  //   ) {
-  //     $state.go('other', { id: 'abc' });
-  //     $rootScope.$index = 'def';
-  //     $rootScope.$digest();
+    it("should allow passing params to current state using empty ui-state", async () => {
+      $state.go("other", { id: "abc" });
+      $rootScope.$index = "def";
+      $rootScope.$digest();
 
-  //     el = jqLite('<a ui-state="" ui-state-params="{id: $index}">Details</a>');
-  //     $compile(el)($rootScope);
-  //     $rootScope.$digest();
+      el = jqLite('<a ui-state="" ui-state-params="{id: $index}">Details</a>');
+      $compile(el)($rootScope);
+      $rootScope.$digest();
 
-  //     expect($state.current.name).toBe('other');
-  //     expect($state.params).toEqual(expect.objectContaining({ id: 'abc' });
-  //     expect(el.attr('href')).toBe('#/other/def');
+      expect($state.current.name).toBe("other");
+      expect($state.params.id).toEqual("abc");
+      expect(el.attr("href")).toBe("#/other/def");
 
-  //     triggerClick(el);
-  //     timeoutFlush();
-  //     $q.flush();
+      browserTrigger(el, "click");
+      await wait(10);
 
-  //     expect($state.current.name).toBe('other');
-  //     expect($state.params).toEqual(expect.objectContaining({ id: 'def' });
+      expect($state.current.name).toBe("other");
+      expect($state.params.id).toEqual("def");
 
-  //     $rootScope.$index = 'ghi';
-  //     $state.go('other.detail');
-  //     $rootScope.$digest();
+      $rootScope.$index = "ghi";
+      $state.go("other.detail");
+      $rootScope.$digest();
 
-  //     expect($state.current.name).toBe('other.detail');
-  //     expect($state.params).toEqual(expect.objectContaining({ id: 'def' });
+      expect($state.current.name).toBe("other.detail");
+      expect($state.params.id).toEqual("def");
 
-  //     expect(el.attr('href')).toBe('#/other/ghi/detail');
+      expect(el.attr("href")).toBe("#/other/ghi/detail");
 
-  //     triggerClick(el);
-  //     timeoutFlush();
-  //     $q.flush();
+      browserTrigger(el, "click");
+      await wait(10);
 
-  //     expect($state.current.name).toBe('other.detail');
-  //     expect($state.params).toEqual(expect.objectContaining({ id: 'ghi' });
-  //   });
+      expect($state.current.name).toBe("other.detail");
+      expect($state.params.id).toEqual("ghi");
+    });
 
-  //   it('retains the old href if the new points to a non-state', function () {
-  //     expect(jqLite(template[0]).attr('href')).toBe('#/contacts');
-  //     scope.state = 'nostate';
-  //     scope.$digest();
-  //     expect(jqLite(template[0]).attr('href')).toBe('#/contacts');
-  //   });
+    it("retains the old href if the new points to a non-state", function () {
+      expect(jqLite(template[0]).attr("href")).toBe("#/contacts");
+      scope.state = "nostate";
+      scope.$digest();
+      expect(jqLite(template[0]).attr("href")).toBe("#/contacts");
+    });
 
-  //   it('accepts param overrides', inject(function ($compile) {
-  //     scope.state = 'contacts.item';
-  //     scope.params = { id: 10 };
-  //     scope.$digest();
-  //     expect(jqLite(template[0]).attr('href')).toBe('#/contacts/10');
-  //   });
+    it("accepts param overrides", function () {
+      scope.state = "contacts.item";
+      scope.params = { id: 10 };
+      scope.$digest();
+      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/10");
+    });
 
-  //   it('accepts param overrides', inject(function ($compile) {
-  //     scope.state = 'contacts.item';
-  //     scope.params = { id: 10 };
-  //     scope.$digest();
-  //     expect(jqLite(template[0]).attr('href')).toBe('#/contacts/10');
+    it("accepts param overrides", function () {
+      scope.state = "contacts.item";
+      scope.params = { id: 10 };
+      scope.$digest();
+      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/10");
 
-  //     scope.params.id = 22;
-  //     scope.$digest();
-  //     expect(jqLite(template[0]).attr('href')).toBe('#/contacts/22');
-  //   });
+      scope.params.id = 22;
+      scope.$digest();
+      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/22");
+    });
 
-  //   it('watches attributes', inject(function ($compile) {
-  //     el = jqLite('<a ui-state="{{exprvar}}" ui-state-params="params">state</a>');
-  //     template = $compile(el)(scope);
+    it("watches attributes", function () {
+      el = jqLite(
+        '<a ui-state="{{exprvar}}" ui-state-params="params">state</a>',
+      );
+      template = $compile(el)(scope);
 
-  //     scope.exprvar = 'state1';
-  //     scope.state1 = 'contacts.item';
-  //     scope.state2 = 'other';
-  //     scope.params = { id: 10 };
-  //     scope.$digest();
-  //     expect(jqLite(template[0]).attr('href')).toBe('#/contacts/10');
+      scope.exprvar = "state1";
+      scope.state1 = "contacts.item";
+      scope.state2 = "other";
+      scope.params = { id: 10 };
+      scope.$digest();
+      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/10");
 
-  //     scope.exprvar = 'state2';
-  //     scope.$digest();
-  //     expect(jqLite(template[0]).attr('href')).toBe('#/other/10');
-  //   });
+      scope.exprvar = "state2";
+      scope.$digest();
+      expect(jqLite(template[0]).attr("href")).toBe("#/other/10");
+    });
 
-  //   if (angular.version.minor >= 3) {
-  //     it('allows one-time-binding on ng1.3+', inject(function ($compile) {
-  //       el = jqLite('<a ui-state="::state" ui-state-params="::params">state</a>');
+    it("allows one-time-binding on ng1.3+", function () {
+      el = jqLite('<a ui-state="::state" ui-state-params="::params">state</a>');
 
-  //       scope.state = 'contacts.item';
-  //       scope.params = { id: 10 };
-  //       template = $compile(el)(scope);
-  //       scope.$digest();
-  //       expect(jqLite(template[0]).attr('href')).toBe('#/contacts/10');
+      scope.state = "contacts.item";
+      scope.params = { id: 10 };
+      template = $compile(el)(scope);
+      scope.$digest();
+      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/10");
 
-  //       scope.state = 'other';
-  //       scope.params = { id: 22 };
+      scope.state = "other";
+      scope.params = { id: 22 };
 
-  //       scope.$digest();
-  //       expect(jqLite(template[0]).attr('href')).toBe('#/contacts/10');
-  //     });
-  //   }
+      scope.$digest();
+      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/10");
+    });
 
-  //   it('accepts option overrides', inject(function ($compile, $timeout, $state) {
-  //     let transitionOptions;
+    it("accepts option overrides", async () => {
+      let transitionOptions;
 
-  //     el = jqLite('<a ui-state="state" ui-state-opts="opts">state</a>');
-  //     scope.state = 'contacts';
-  //     scope.opts = { reload: true };
-  //     template = $compile(el)(scope);
-  //     scope.$digest();
+      el = jqLite('<a ui-state="state" ui-state-opts="opts">state</a>');
+      scope.state = "contacts";
+      scope.opts = { reload: true };
+      template = $compile(el)(scope);
+      scope.$digest();
 
-  //     spyOn($state, 'go').and.callFake(function (state, params, options) {
-  //       transitionOptions = options;
-  //     });
+      spyOn($state, "go").and.callFake(function (state, params, options) {
+        transitionOptions = options;
+      });
 
-  //     triggerClick(template);
-  //     $timeout.flush();
+      browserTrigger(template, "click");
+      await wait(10);
 
-  //     expect(transitionOptions.reload).toEqual(true);
-  //     expect(transitionOptions.absolute).toBeUndefined();
-  //   });
+      expect(transitionOptions.reload).toEqual(true);
+      expect(transitionOptions.absolute).toBeUndefined();
+    });
 
-  //   describe('option event', function () {
-  //     it('should bind click event by default', inject(function ($compile, $state, $timeout) {
-  //       expect($state.current.name).toBe('top');
+    //   describe('option event', function () {
+    //     it('should bind click event by default', inject(function ($compile, $state, $timeout) {
+    //       expect($state.current.name).toBe('top');
 
-  //       el = jqLite('<a ui-state="state"></a>');
+    //       el = jqLite('<a ui-state="state"></a>');
 
-  //       scope.state = 'contacts';
-  //       $compile(el)(scope);
-  //       scope.$digest();
+    //       scope.state = 'contacts';
+    //       $compile(el)(scope);
+    //       scope.$digest();
 
-  //       triggerClick(el);
-  //       $timeout.flush();
+    //       triggerClick(el);
+    //       $timeout.flush();
 
-  //       expect($state.current.name).toBe('contacts');
-  //     });
+    //       expect($state.current.name).toBe('contacts');
+    //     });
 
-  //     it('should bind single HTML events', inject(function ($compile, $state, $timeout) {
-  //       expect($state.current.name).toEqual('top');
+    //     it('should bind single HTML events', inject(function ($compile, $state, $timeout) {
+    //       expect($state.current.name).toEqual('top');
 
-  //       el = jqLite('<input type="text" ui-state="state" ui-state-opts="{ events: [\'change\'] }">');
+    //       el = jqLite('<input type="text" ui-state="state" ui-state-opts="{ events: [\'change\'] }">');
 
-  //       scope.state = 'contacts';
-  //       $compile(el)(scope);
-  //       scope.$digest();
+    //       scope.state = 'contacts';
+    //       $compile(el)(scope);
+    //       scope.$digest();
 
-  //       triggerHTMLEvent('change');
-  //       $timeout.flush();
+    //       triggerHTMLEvent('change');
+    //       $timeout.flush();
 
-  //       expect($state.current.name).toEqual('contacts');
-  //     });
+    //       expect($state.current.name).toEqual('contacts');
+    //     });
 
-  //     it('should bind multiple HTML events', inject(function ($compile, $state, $timeout) {
-  //       expect($state.current.name).toEqual('top');
+    //     it('should bind multiple HTML events', inject(function ($compile, $state, $timeout) {
+    //       expect($state.current.name).toEqual('top');
 
-  //       el = jqLite('<input type="text" ui-state="state" ui-state-opts="{ events: [\'change\', \'blur\'] }">');
+    //       el = jqLite('<input type="text" ui-state="state" ui-state-opts="{ events: [\'change\', \'blur\'] }">');
 
-  //       scope.state = 'contacts';
-  //       $compile(el)(scope);
-  //       scope.$digest();
+    //       scope.state = 'contacts';
+    //       $compile(el)(scope);
+    //       scope.$digest();
 
-  //       triggerHTMLEvent('change');
-  //       $timeout.flush();
-  //       expect($state.current.name).toEqual('contacts');
+    //       triggerHTMLEvent('change');
+    //       $timeout.flush();
+    //       expect($state.current.name).toEqual('contacts');
 
-  //       $state.go('top');
-  //       scope.$digest();
+    //       $state.go('top');
+    //       scope.$digest();
 
-  //       expect($state.current.name).toEqual('top');
+    //       expect($state.current.name).toEqual('top');
 
-  //       triggerHTMLEvent('blur');
-  //       $timeout.flush();
-  //       expect($state.current.name).toEqual('contacts');
-  //     });
+    //       triggerHTMLEvent('blur');
+    //       $timeout.flush();
+    //       expect($state.current.name).toEqual('contacts');
+    //     });
 
-  //     it('should bind multiple Mouse events', inject(function ($compile, $state, $timeout) {
-  //       expect($state.current.name).toEqual('top');
+    //     it('should bind multiple Mouse events', inject(function ($compile, $state, $timeout) {
+    //       expect($state.current.name).toEqual('top');
 
-  //       el = jqLite('<a ui-state="state" ui-state-opts="{ events: [\'mouseover\', \'mousedown\'] }">');
+    //       el = jqLite('<a ui-state="state" ui-state-opts="{ events: [\'mouseover\', \'mousedown\'] }">');
 
-  //       scope.state = 'contacts';
-  //       $compile(el)(scope);
-  //       scope.$digest();
+    //       scope.state = 'contacts';
+    //       $compile(el)(scope);
+    //       scope.$digest();
 
-  //       triggerMouseEvent('mouseover');
-  //       $timeout.flush();
-  //       expect($state.current.name).toEqual('contacts');
+    //       triggerMouseEvent('mouseover');
+    //       $timeout.flush();
+    //       expect($state.current.name).toEqual('contacts');
 
-  //       $state.go('top');
-  //       scope.$digest();
+    //       $state.go('top');
+    //       scope.$digest();
 
-  //       expect($state.current.name).toEqual('top');
+    //       expect($state.current.name).toEqual('top');
 
-  //       triggerMouseEvent('mousedown');
-  //       $timeout.flush();
-  //       expect($state.current.name).toEqual('contacts');
-  //     });
-  //   });
-  // });
+    //       triggerMouseEvent('mousedown');
+    //       $timeout.flush();
+    //       expect($state.current.name).toEqual('contacts');
+    //     });
+    //   });
+  });
 
   // describe('forms', function () {
   //   let el, scope;
