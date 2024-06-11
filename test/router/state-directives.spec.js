@@ -714,7 +714,7 @@ describe("uiStateRef", () => {
   });
 });
 
-fdescribe("uiSrefActive", () => {
+describe("uiSrefActive", () => {
   window.location.hash = "#!";
   let el,
     el2,
