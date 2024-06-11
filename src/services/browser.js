@@ -5,18 +5,11 @@ import { forEach, isUndefined, equals } from "../shared/utils";
 // This variable should be used *only* inside the cacheState function.
 let lastCachedState = null;
 
-export function getHash(url) {
-  const index = url.indexOf("#");
-  return index === -1 ? "" : url.substr(index);
-}
-
 export function trimEmptyHash(url) {
   return url.replace(/#$/, "");
 }
 
 /**
- *
- *
  * @name $browser
  * @requires $log
  * @description
@@ -32,8 +25,6 @@ export function trimEmptyHash(url) {
  */
 export function Browser($log, $$taskTrackerFactory) {
   const self = this;
-  let { location } = window;
-  let { history } = window;
   const { setTimeout } = window;
   const { clearTimeout } = window;
   const pendingDeferIds = {};
@@ -56,10 +47,8 @@ export function Browser($log, $$taskTrackerFactory) {
 
   let cachedState;
   let lastHistoryState;
-  let lastBrowserUrl = location.href;
-  const baseElement = jqLite(
-    Array.from(window.document.getElementsByTagName("base")),
-  );
+  let lastBrowserUrl = window.location.href;
+  const baseElement = jqLite(Array.from(document.getElementsByTagName("base")));
   let pendingLocation = null;
   const getCurrentState = function getCurrentState() {
     return history.state;
@@ -96,10 +85,6 @@ export function Browser($log, $$taskTrackerFactory) {
       state = null;
     }
 
-    // Android Browser BFCache causes location, history reference to become stale.
-    if (location !== window.location) location = window.location;
-    if (history !== window.history) history = window.history;
-
     // setter
     if (url) {
       const sameState = lastHistoryState === state;
@@ -129,7 +114,7 @@ export function Browser($log, $$taskTrackerFactory) {
     // - pendingLocation is needed as browsers don't allow to read out
     //   the new location.href if a reload happened or if there is a bug like in iOS 9 (see
     //   https://openradar.appspot.com/22186109).
-    return trimEmptyHash(pendingLocation || location.href);
+    return trimEmptyHash(pendingLocation || window.location.href);
   };
 
   /**
