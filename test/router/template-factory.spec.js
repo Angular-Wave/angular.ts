@@ -77,7 +77,6 @@ describe("templateFactory", () => {
 
     it("does not restrict URL loading", function () {
       expect(() => {
-        debugger;
         $templateFactory.fromUrl("http://evil.com/views/view.html");
       }).not.toThrowError();
 

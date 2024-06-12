@@ -19,7 +19,6 @@ describe("router services", () => {
         $transitionsProvider,
         $stateProvider,
       ) => {
-        debugger;
         $routerProvider = _$routerProvider_;
         expect($routerProvider["router"]).toBe($routerProvider);
         providers = {

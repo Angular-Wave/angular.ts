@@ -23,6 +23,7 @@ const validKeys = [
   "params",
   "parent",
   "path",
+  "redirectTo",
   "reloadOnSearch",
   "resolve",
   "resolvables",

@@ -1,245 +1,215 @@
+import { dealoc } from "../../src/jqLite";
+import { Angular } from "../../src/loader";
+import { publishExternalAPI } from "../../src/public";
+import { wait } from "../test-utils";
+
 describe("view hooks", () => {
   let app,
-    ctrl,
     $state,
     $q,
     $timeout,
     log = "";
+  class ctrl {
+    constructor() {
+      this.data = "DATA";
+    }
+  }
+
   const component = {
     bindings: { cmpdata: "<" },
     template: "{{$ctrl.cmpdata}}",
   };
 
-  const directive = {
-    restrict: "E",
-    scope: { cmpdata: "=" },
-    bindToController: true,
-    controller: function () {},
-    controllerAs: "$ctrl",
-    template: "{{$ctrl.cmpdata}}",
-  };
-
   beforeEach(() => {
-    app = angular.module("viewhooks", []);
+    dealoc(document.getElementById("dummy"));
+    window.angular = new Angular();
+    publishExternalAPI();
+    app = window.angular
+      .module("defaultModule", ["ui.router"])
+      .config(($stateProvider) => {
+        $stateProvider.state({ name: "foo", url: "/foo", component: "foo" });
+        $stateProvider.state({ name: "bar", url: "/bar", component: "bar" });
+        $stateProvider.state({ name: "baz", url: "/baz", component: "baz" });
+        $stateProvider.state({ name: "redirect", redirectTo: "baz" });
+      })
+      .component(
+        "foo",
+        Object.assign({}, Object.assign(component, { controller: ctrl })),
+      )
+      .component("bar", Object.assign({}, component))
+      .component("baz", Object.assign({}, component));
+
+    let $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      "defaultModule",
+    ]);
+
+    $injector.invoke((_$state_, _$q_, _$timeout_, $compile, $rootScope) => {
+      $state = _$state_;
+      $q = _$q_;
+      $timeout = _$timeout_;
+      $compile("<div><ui-view></ui-view></div>")($rootScope.$new());
+    });
   });
-
-  beforeEach(
-    angular["mock"].module(($stateProvider) => {
-      ctrl = function controller() {
-        this.data = "DATA";
-      };
-
-      if (angular.version.minor >= 5) {
-        app.component(
-          "foo",
-          angular.extend({}, component, { controller: ctrl }),
-        );
-        app.component("bar", angular.extend({}, component));
-        app.component("baz", angular.extend({}, component));
-      } else if (angular.version.minor >= 2) {
-        app.directive("foo", () =>
-          angular.extend({}, directive, { controller: ctrl }),
-        );
-        app.directive("bar", () => angular.extend({}, directive));
-        app.directive("baz", () => angular.extend({}, directive));
-      }
-
-      $stateProvider.state({ name: "foo", url: "/foo", component: "foo" });
-      $stateProvider.state({ name: "bar", url: "/bar", component: "bar" });
-      $stateProvider.state({ name: "baz", url: "/baz", component: "baz" });
-      $stateProvider.state({ name: "redirect", redirectTo: "baz" });
-    }),
-  );
-
-  beforeEach(angular["mock"].module("viewhooks", "ui.router"));
-
-  beforeEach(inject((_$state_, _$q_, _$timeout_, $compile, $rootScope) => {
-    $state = _$state_;
-    $q = _$q_;
-    $timeout = _$timeout_;
-    $compile("<div><ui-view></ui-view></div>")($rootScope.$new());
-  }));
 
   describe("uiCanExit", () => {
     beforeEach(() => {
       log = "";
     });
 
-    const initial = () => {
+    const initial = async () => {
       $state.go("foo");
-      $q.flush();
-      $timeout.flush();
+      await wait(10);
       expect(log).toBe("");
       expect($state.current.name).toBe("foo");
     };
 
-    it("can cancel a transition that would exit the view's state by returning false", () => {
+    it("can cancel a transition that would exit the view's state by returning false", async () => {
       $state.defaultErrorHandler(function () {});
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";
         return false;
       };
-      initial();
-
+      await initial();
       $state.go("bar");
-      $q.flush();
-      $timeout.flush();
       expect(log).toBe("canexit;");
       expect($state.current.name).toBe("foo");
     });
 
-    it("can allow the transition by returning true", () => {
+    it("can allow the transition by returning true", async () => {
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";
         return true;
       };
-      initial();
+      await initial();
 
       $state.go("bar");
-      $q.flush();
-      $timeout.flush();
+      await wait(10);
       expect(log).toBe("canexit;");
       expect($state.current.name).toBe("bar");
     });
 
-    it("can allow the transition by returning nothing", () => {
+    it("can allow the transition by returning nothing", async () => {
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";
       };
-      initial();
+      await initial();
 
       $state.go("bar");
-      $q.flush();
-      $timeout.flush();
+      await wait(10);
       expect(log).toBe("canexit;");
       expect($state.current.name).toBe("bar");
     });
 
-    it("can redirect the transition", () => {
+    it("can redirect the transition", async () => {
       ctrl.prototype.uiCanExit = function (trans) {
         log += "canexit;";
         return trans.router.stateService.target("baz");
       };
-      initial();
+      await initial();
 
       $state.go("bar");
-      $q.flush();
-      $timeout.flush();
+      await wait(10);
       expect(log).toBe("canexit;");
       expect($state.current.name).toBe("baz");
     });
 
-    it("can cancel the transition by returning a rejected promise", inject((
-      $q,
-      $state,
-    ) => {
+    it("can cancel the transition by returning a rejected promise", async () => {
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";
         return $q.reject("nope");
       };
-      initial();
+      await initial();
 
       $state.defaultErrorHandler(function () {});
       $state.go("bar");
-      $q.flush();
-      $timeout.flush();
+      await wait(10);
       expect(log).toBe("canexit;");
       expect($state.current.name).toBe("foo");
-    }));
+    });
 
-    it("can wait for a promise and then reject the transition", inject((
-      $timeout,
-    ) => {
+    it("can wait for a promise and then reject the transition", async () => {
       $state.defaultErrorHandler(function () {});
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";
         return $timeout(() => {
           log += "delay;";
           return false;
-        }, 1000);
+        }, 1);
       };
-      initial();
+      await initial();
 
       $state.go("bar");
-      $q.flush();
-      $timeout.flush();
+      await wait(10);
       expect(log).toBe("canexit;delay;");
       expect($state.current.name).toBe("foo");
-    }));
+    });
 
-    it("can wait for a promise and then allow the transition", inject((
-      $timeout,
-    ) => {
+    it("can wait for a promise and then allow the transition", async () => {
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";
         return $timeout(() => {
           log += "delay;";
-        }, 1000);
+        }, 1);
       };
-      initial();
+      await initial();
 
       $state.go("bar");
-      $q.flush();
-      $timeout.flush();
+      await wait(10);
       expect(log).toBe("canexit;delay;");
       expect($state.current.name).toBe("bar");
-    }));
+    });
 
-    it("has 'this' bound to the controller", () => {
+    it("has 'this' bound to the controller", async () => {
       ctrl.prototype.uiCanExit = function () {
         log += this.data;
       };
-      initial();
+      await initial();
 
       $state.go("bar");
-      $q.flush();
-      $timeout.flush();
+      await wait(10);
       expect(log).toBe("DATA");
       expect($state.current.name).toBe("bar");
     });
 
-    it("receives the new Transition as the first argument", () => {
+    it("receives the new Transition as the first argument", async () => {
       const _state = $state;
       ctrl.prototype.uiCanExit = function (trans) {
         log += "canexit;";
         expect(typeof trans.treeChanges).toBe("function");
         expect(trans.injector().get("$state")).toBe(_state);
       };
-      initial();
+      await initial();
 
       $state.go("bar");
-      $q.flush();
-      $timeout.flush();
+      await wait(10);
       expect(log).toBe("canexit;");
       expect($state.current.name).toBe("bar");
     });
 
     // Test for https://github.com/angular-ui/ui-router/issues/3308
-    it("should trigger once when answered truthy even if redirected", () => {
+    it("should trigger once when answered truthy even if redirected", async () => {
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";
         return true;
       };
-      initial();
+      await initial();
 
       $state.go("redirect");
-      $q.flush();
-      $timeout.flush();
+      await wait(10);
       expect(log).toBe("canexit;");
       expect($state.current.name).toBe("baz");
     });
 
     // Test for https://github.com/angular-ui/ui-router/issues/3308
-    it("should trigger only once if returns a redirect", () => {
+    it("should trigger only once if returns a redirect", async () => {
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";
         return $state.target("bar");
       };
-      initial();
+      await initial();
 
       $state.go("redirect");
-      $q.flush();
-      $timeout.flush();
+      await wait(10);
       expect(log).toBe("canexit;");
       expect($state.current.name).toBe("bar");
     });
