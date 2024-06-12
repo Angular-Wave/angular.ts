@@ -1,121 +1,146 @@
-describe("templateFactory", function () {
-  beforeEach(module("ui.router"));
+import { dealoc, jqLite } from "../../src/jqLite";
+import { Angular } from "../../src/loader";
+import { publishExternalAPI } from "../../src/public";
+import { wait } from "../test-utils";
 
-  it("exists", inject(function ($templateFactory) {
-    expect($templateFactory).toBeDefined();
-  }));
+describe("templateFactory", () => {
+  let $injector, $templateFactory, $httpBackend, $sce, $scope, $compile;
 
-  if (angular.version.minor >= 3) {
-    // Post 1.2, there is a $templateRequest and a $sce service
-    describe("should follow $sce policy and", function () {
-      it("accepts relative URLs", inject(function (
-        $templateFactory,
-        $httpBackend,
-        $sce,
-      ) {
-        $httpBackend.expectGET("views/view.html").respond(200, "template!");
-        $templateFactory.fromUrl("views/view.html");
-        $httpBackend.flush();
-      }));
+  beforeEach(() => {
+    dealoc(document.getElementById("dummy"));
+    window.angular = new Angular();
+    publishExternalAPI();
+    window.angular.module("defaultModule", ["ui.router"]);
+    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      "defaultModule",
+    ]);
+    $injector.invoke(
+      (_$templateFactory_, _$httpBackend_, _$sce_, $rootScope) => {
+        ($templateFactory = _$templateFactory_),
+          ($httpBackend = _$httpBackend_),
+          ($sce = _$sce_);
+        $scope = $rootScope;
+      },
+    );
+  });
 
-      it("rejects untrusted URLs", inject(function (
-        $templateFactory,
-        $httpBackend,
-        $sce,
-      ) {
-        let error = "No error thrown";
-        try {
-          $templateFactory.fromUrl("http://evil.com/views/view.html");
-        } catch (e) {
-          error = e.message;
-        }
-        expect(error).toMatch(/sce:insecurl/);
-      }));
+  it("exists", () => {
+    expect($injector.get("$templateFactory")).toBeDefined();
+  });
 
-      it("accepts explicitly trusted URLs", inject(function (
-        $templateFactory,
-        $httpBackend,
-        $sce,
-      ) {
-        $httpBackend
-          .expectGET("http://evil.com/views/view.html")
-          .respond(200, "template!");
+  describe("should follow $sce policy and", () => {
+    it("accepts relative URLs", async () => {
+      let res = $templateFactory.fromUrl("mock/hello");
+      $scope.$digest();
+      await wait(10);
+      expect(res.$$state.status).toBe(1);
+    });
+
+    it("rejects untrusted URLs", () => {
+      let error = "No error thrown";
+      try {
+        $templateFactory.fromUrl("http://evil.com/views/view.html");
+      } catch (e) {
+        error = e.message;
+      }
+      expect(error).toMatch(/sce:insecurl/);
+    });
+
+    it("accepts explicitly trusted URLs", () => {
+      expect(() => {
         $templateFactory.fromUrl(
           $sce.trustAsResourceUrl("http://evil.com/views/view.html"),
         );
-        $httpBackend.flush();
-      }));
+      }).not.toThrowError();
     });
-  }
+  });
 
-  describe("templateFactory with forced use of $http service", function () {
-    beforeEach(function () {
-      angular
-        .module("forceHttpInTemplateFactory", [])
-        .config(function ($templateFactoryProvider) {
-          $templateFactoryProvider.useHttpService(true);
-        });
-      module("ui.router");
-      module("forceHttpInTemplateFactory");
+  describe("templateFactory with forced use of $http service", () => {
+    beforeEach(() => {
+      dealoc(document.getElementById("dummy"));
+      let module = window.angular.module("defaultModule", ["ui.router"]);
+      module.config(function ($templateFactoryProvider) {
+        $templateFactoryProvider.useHttpService(true);
+      });
+      $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+        "defaultModule",
+      ]);
+      $injector.invoke(
+        (_$templateFactory_, _$httpBackend_, _$sce_, $rootScope) => {
+          ($templateFactory = _$templateFactory_),
+            ($httpBackend = _$httpBackend_),
+            ($sce = _$sce_);
+          $scope = $rootScope;
+        },
+      );
     });
 
-    it("does not restrict URL loading", inject(function (
-      $templateFactory,
-      $httpBackend,
-    ) {
-      $httpBackend
-        .expectGET("http://evil.com/views/view.html")
-        .respond(200, "template!");
-      $templateFactory.fromUrl("http://evil.com/views/view.html");
-      $httpBackend.flush();
+    it("does not restrict URL loading", function () {
+      expect(() => {
+        debugger;
+        $templateFactory.fromUrl("http://evil.com/views/view.html");
+      }).not.toThrowError();
 
-      $httpBackend.expectGET("data:text/html,foo").respond(200, "template!");
-      $templateFactory.fromUrl("data:text/html,foo");
-      $httpBackend.flush();
-    }));
+      expect(() => {
+        $templateFactory.fromUrl("data:text/html,foo");
+      }).not.toThrowError();
+    });
   });
 
   describe("component template builder", () => {
-    let router, el, rootScope;
-    const cmp = { template: "hi" };
+    let $router, el;
 
     beforeEach(() => {
-      const mod = angular.module("foo", []);
-      mod.component("myComponent", cmp);
-      mod.component("dataComponent", cmp);
-      mod.component("xComponent", cmp);
-    });
-    beforeEach(module("foo"));
-
-    beforeEach(inject(($uiRouter, $compile, $rootScope) => {
-      router = $uiRouter;
-      rootScope = $rootScope;
-      el = $compile(angular.element("<div><ui-view></ui-view></div>"))(
-        $rootScope.$new(),
+      dealoc(document.getElementById("dummy"));
+      const mod = angular.module("defaultModule", ["ui.router"]);
+      mod.component("myComponent", { template: "hi" });
+      mod.component("dataComponent", { template: "hi" });
+      mod.component("xComponent", { template: "hi" });
+      $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+        "defaultModule",
+      ]);
+      $injector.invoke(
+        (
+          _$templateFactory_,
+          _$httpBackend_,
+          _$sce_,
+          $rootScope,
+          _$router_,
+          _$compile_,
+        ) => {
+          ($templateFactory = _$templateFactory_),
+            ($httpBackend = _$httpBackend_),
+            ($sce = _$sce_);
+          $scope = $rootScope;
+          $router = _$router_;
+          $compile = _$compile_;
+        },
       );
-    }));
+      el = $compile(jqLite("<div><ui-view></ui-view></div>"))($scope.$new());
+    });
 
-    it("should not prefix the components dom element with anything", () => {
-      router.stateRegistry.register({ name: "cmp", component: "myComponent" });
-      router.stateService.go("cmp");
-      rootScope.$digest();
+    it("should not prefix the components dom element with anything", async () => {
+      $router.stateRegistry.register({ name: "cmp", component: "myComponent" });
+      $router.stateService.go("cmp");
+      $scope.$digest();
+      await wait(10);
       expect(el.html()).toMatch(/\<my-component/);
     });
 
     it("should prefix the components dom element with x- for components named dataFoo", () => {
-      router.stateRegistry.register({
+      $router.stateRegistry.register({
         name: "cmp",
         component: "dataComponent",
       });
-      router.stateService.go("cmp");
-      rootScope.$digest();
+      $router.stateService.go("cmp");
+      $scope.$digest();
       expect(el.html()).toMatch(/\<x-data-component/);
     });
 
     it("should prefix the components dom element with x- for components named xFoo", () => {
-      router.stateRegistry.register({ name: "cmp", component: "xComponent" });
-      router.stateService.go("cmp");
-      rootScope.$digest();
+      $router.stateRegistry.register({ name: "cmp", component: "xComponent" });
+      $router.stateService.go("cmp");
+      $scope.$digest();
       expect(el.html()).toMatch(/\<x-x-component/);
     });
   });

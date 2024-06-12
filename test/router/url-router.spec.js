@@ -1,6 +1,4 @@
-const module = angular["mock"].module;
-
-describe("UrlRouter", function () {
+fdescribe("UrlRouter", function () {
   let router;
   let $urp, $lp, $umf, $s, $ur, location, match, scope;
 

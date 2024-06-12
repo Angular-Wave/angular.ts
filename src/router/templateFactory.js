@@ -10,20 +10,26 @@ import { kebobString } from "../shared/strings";
  */
 export class TemplateFactory {
   constructor() {
-    /** @hidden */ this.$get = [
+    this._useHttp = false;
+    this.$get = [
       "$http",
       "$templateCache",
-      "$injector",
-      ($http, $templateCache, $injector) => {
-        this.$templateRequest =
-          $injector.has &&
-          $injector.has("$templateRequest") &&
-          $injector.get("$templateRequest");
+      "$templateRequest",
+      ($http, $templateCache, $templateRequest) => {
+        this.$templateRequest = $templateRequest;
         this.$http = $http;
         this.$templateCache = $templateCache;
         return this;
       },
     ];
+  }
+
+  /**
+   * Forces the provider to use $http service directly
+   * @param {boolean} value
+   */
+  useHttpService(value) {
+    this._useHttp = value;
   }
 
   /**

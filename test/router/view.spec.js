@@ -1,28 +1,74 @@
-describe("view", function () {
+import { dealoc } from "../../src/jqLite";
+import { Angular } from "../../src/loader";
+import { publishExternalAPI } from "../../src/public";
+import { curry } from "../../src/shared/hof";
+import { StateMatcher } from "../../src/router/state/stateMatcher";
+import { StateBuilder } from "../../src/router/state/stateBuilder";
+import { StateObject } from "../../src/router/state/stateObject";
+import { ViewService } from "../../src/router/view/view";
+import {
+  ng1ViewsBuilder,
+  getNg1ViewConfigFactory,
+} from "../../src/router/state/views";
+import { PathNode } from "../../src/router/path/pathNode";
+import { PathUtils } from "../../src/router/path/pathUtils";
+import { tail } from "../../src/shared/common";
+import { wait } from "../test-utils";
+
+describe("view", () => {
   let scope,
     $compile,
     $injector,
     elem,
     $controllerProvider,
-    $urlMatcherFactoryProvider;
+    $urlMatcherFactoryProvider,
+    $view,
+    $q;
   let root, states;
 
-  beforeEach(
-    angular.mock.module(
-      "ui.router",
-      function (
-        _$provide_,
-        _$controllerProvider_,
-        _$urlMatcherFactoryProvider_,
-      ) {
-        _$provide_.factory("foo", function () {
-          return "Foo";
-        });
-        $controllerProvider = _$controllerProvider_;
-        $urlMatcherFactoryProvider = _$urlMatcherFactoryProvider_;
-      },
-    ),
-  );
+  beforeEach(() => {
+    dealoc(document.getElementById("dummy"));
+    window.angular = new Angular();
+    publishExternalAPI();
+
+    window.angular
+      .module("defaultModule", ["ui.router"])
+      .config(
+        function (
+          _$provide_,
+          _$controllerProvider_,
+          _$urlMatcherFactoryProvider_,
+        ) {
+          _$provide_.factory("foo", () => {
+            return "Foo";
+          });
+          $controllerProvider = _$controllerProvider_;
+          $urlMatcherFactoryProvider = _$urlMatcherFactoryProvider_;
+        },
+      );
+    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      "defaultModule",
+    ]);
+
+    $injector.invoke(($rootScope, _$compile_, _$injector_, _$view_, _$q_) => {
+      scope = $rootScope.$new();
+      $compile = _$compile_;
+      $injector = _$injector_;
+      elem = angular.element("<div>");
+
+      states = {};
+      const matcher = new StateMatcher(states);
+      const stateBuilder = new StateBuilder(
+        matcher,
+        $urlMatcherFactoryProvider,
+      );
+      stateBuilder.builder("views", ng1ViewsBuilder);
+      register = registerState(states, stateBuilder);
+      root = register({ name: "" });
+      $q = _$q_;
+      $view = _$view_;
+    });
+  });
 
   let register;
   const registerState = curry(function (_states, stateBuilder, config) {
@@ -31,21 +77,7 @@ describe("view", function () {
     return (_states[built.name] = built);
   });
 
-  beforeEach(inject(function ($rootScope, _$compile_, _$injector_) {
-    scope = $rootScope.$new();
-    $compile = _$compile_;
-    $injector = _$injector_;
-    elem = angular.element("<div>");
-
-    states = {};
-    const matcher = new StateMatcher(states);
-    const stateBuilder = new StateBuilder(matcher, $urlMatcherFactoryProvider);
-    stateBuilder.builder("views", ng1ViewsBuilder);
-    register = registerState(states, stateBuilder);
-    root = register({ name: "" });
-  }));
-
-  describe("controller handling", function () {
+  describe("controller handling", () => {
     let state, path, ctrlExpression;
     beforeEach(() => {
       ctrlExpression = null;
@@ -72,20 +104,14 @@ describe("view", function () {
       PathUtils.applyViewConfigs($view, path, _states);
     });
 
-    it("uses the controllerProvider to get controller dynamically", inject(function (
-      $view,
-      $q,
-    ) {
-      $controllerProvider.register(
-        "AcmeFooController",
-        function ($scope, foo) {},
-      );
+    it("uses the controllerProvider to get controller dynamically", async () => {
+      $controllerProvider.register("AcmeFooController", () => {});
       elem.append($compile("<div><ui-view></ui-view></div>")(scope));
 
       const view = tail(path).views[0];
       view.load();
-      $q.flush();
+      await wait(10);
       expect(ctrlExpression).toEqual("FooController as foo");
-    }));
+    });
   });
 });
