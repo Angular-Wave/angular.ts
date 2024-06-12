@@ -5,11 +5,13 @@ import { createProxyFunctions } from "../shared/common";
 import { minErr } from "../shared/utils";
 
 const err = minErr("$stateProvider");
+// Right now this is a collection of all the properties we encounter in tests
 const validKeys = [
   "$$state",
   "__stateObjectCache",
   "abstract",
   "controller",
+  "controllerAs",
   "controllerProvider",
   "component",
   "data",
@@ -26,6 +28,7 @@ const validKeys = [
   "redirectTo",
   "reloadOnSearch",
   "resolve",
+  "resolveAs",
   "resolvables",
   "self",
   "template",

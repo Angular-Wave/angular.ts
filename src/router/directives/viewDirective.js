@@ -143,18 +143,10 @@ export let uiView = [
     function getRenderer() {
       return {
         enter: function (element, target, cb) {
-          // if (angular.version.minor > 2) {
-          //$animate.enter(element, null, target).then(cb);
-          // } else {
-          $animate.enter(element, null, target, cb);
-          // }
+          $animate.enter(element, null, target).then(cb);
         },
         leave: function (element, cb) {
-          // if (angular.version.minor > 2) {
-          //$animate.leave(element).then(cb);
-          // } else {
-          $animate.leave(element, cb);
-          // }
+          $animate.leave(element).then(cb);
         },
       };
     }
@@ -273,7 +265,7 @@ export let uiView = [
             const cloned = $transclude(newScope, function (clone) {
               clone.data("$uiViewAnim", $uiViewAnim);
               clone.data("$uiView", $uiViewData);
-              renderer.enter(clone, $element, function onUIViewEnter() {
+              renderer.enter(clone, $element, function () {
                 animEnter.resolve();
                 if (currentScope)
                   currentScope.$emit("$viewContentAnimationEnded");
