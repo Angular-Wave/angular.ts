@@ -386,7 +386,7 @@ describe("uiView", () => {
       _scope = $scope;
     }
 
-    const _state = {
+    let _state = {
       name: "resolve",
       resolve: {
         user: function () {
@@ -396,6 +396,27 @@ describe("uiView", () => {
         },
       },
     };
+
+    it("should put the resolved data on the controllerAs", async () => {
+      const state = Object.assign(_state, {
+        template: "{{$ctrl.$resolve.user}}",
+        controllerAs: "$ctrl",
+        controller: function ($scope) {
+          _scope = $scope;
+        },
+      });
+      $stateProvider.state(state);
+      elem.append($compile("<div><ui-view></ui-view></div>")(scope));
+
+      await $state.transitionTo("resolve");
+      await wait(100);
+
+      expect(elem.text()).toBe("joeschmoe");
+      expect(_scope.$resolve).toBeDefined();
+      expect(_scope.$ctrl).toBeDefined();
+      expect(_scope.$ctrl.$resolve).toBeDefined();
+      expect(_scope.$ctrl.$resolve.user).toBe("joeschmoe");
+    });
 
     it("should provide the resolved data on the $scope", async () => {
       const state = Object.assign(_state, {
@@ -416,7 +437,7 @@ describe("uiView", () => {
 
     // Test for #2626
     it("should provide the resolved data on the $scope even if there is no controller", async () => {
-      const state = angular.extend({}, _state, {
+      const state = Object.assign(_state, {
         template: "{{$resolve.user}}",
       });
       $stateProvider.state(state);
@@ -430,7 +451,7 @@ describe("uiView", () => {
     });
 
     it("should put the resolved data on the resolveAs variable", async () => {
-      const state = angular.extend({}, _state, {
+      const state = Object.assign(_state, {
         template: "{{$$$resolve.user}}",
         resolveAs: "$$$resolve",
         controller: controller,
@@ -446,25 +467,6 @@ describe("uiView", () => {
       expect(_scope.$$$resolve.user).toBe("joeschmoe");
     });
 
-    it("should put the resolved data on the controllerAs", async () => {
-      const state = angular.extend({}, _state, {
-        template: "{{$ctrl.$resolve.user}}",
-        controllerAs: "$ctrl",
-        controller: controller,
-      });
-      $stateProvider.state(state);
-      elem.append($compile("<div><ui-view></ui-view></div>")(scope));
-
-      await $state.transitionTo("resolve");
-      await wait(10);
-
-      expect(elem.text()).toBe("joeschmoe");
-      expect(_scope.$resolve).toBeDefined();
-      expect(_scope.$ctrl).toBeDefined();
-      expect(_scope.$ctrl.$resolve).toBeDefined();
-      expect(_scope.$ctrl.$resolve.user).toBe("joeschmoe");
-    });
-
     it("should not allow both view-level resolveAs and state-level resolveAs on the same state", async () => {
       const views = {
         $default: {
@@ -473,7 +475,7 @@ describe("uiView", () => {
           resolveAs: "$$$resolve",
         },
       };
-      const state = angular.extend({}, _state, {
+      const state = Object.assign(_state, {
         resolveAs: "foo",
         views: views,
       });
@@ -1069,954 +1071,943 @@ describe("uiView controllers or onEnter handlers", () => {
   });
 });
 
-// fdescribe("angular 1.5+ style .component()", () => {
-//   let el, app, scope, log, svcs, $stateProvider;
-
-//   beforeEach(() => {
-//     app = angular.module("foo", []);
-
-//     app.directive("ng12Directive", () => {
-//       return {
-//         restrict: "E",
-//         scope: { data: "=" },
-//         templateUrl: "/comp_tpl.html",
-//         controller: function ($scope) {
-//           this.data = $scope.data;
-//         },
-//         controllerAs: "$ctrl",
-//       };
-//     }).directive("ng13Directive", () => {
-//       return {
-//         scope: { data: "=" },
-//         templateUrl: "/comp_tpl.html",
-//         controller: () => {
-//           this.$onInit = () => {
-//             log += "onInit;";
-//           };
-//         },
-//         bindToController: true,
-//         controllerAs: "$ctrl",
-//       };
-//     }).directive("ng12DynamicDirective", () => {
-//       return {
-//         restrict: "E",
-//         template: "dynamic directive",
-//       };
-//     })
-//     .component("ngComponent", {
-//         bindings: { data: "<", data2: "<" },
-//         templateUrl: "/comp_tpl.html",
-//         controller: () => {
-//           this.$onInit = () => {
-//             log += "onInit;";
-//           };
-//         },
-//       }).component("header", {
-//         bindings: { status: "<" },
-//         template: "#{{ $ctrl.status }}#",
-//       }).component("bindingTypes", {
-//         bindings: { oneway: "<oneway", twoway: "=", attribute: "@attr" },
-//         template:
-//           "-{{ $ctrl.oneway }},{{ $ctrl.twoway }},{{ $ctrl.attribute }}-",
-//       }).component("optionalBindingTypes", {
-//         bindings: { oneway: "<?oneway", twoway: "=?", attribute: "@?attr" },
-//         template:
-//           "-{{ $ctrl.oneway }},{{ $ctrl.twoway }},{{ $ctrl.attribute }}-",
-//       }).component("eventComponent", {
-//         bindings: { evt: "&" },
-//         template: "eventCmp",
-//       }).component("mydataComponent", {
-//         bindings: { dataUser: "<" },
-//         template: "-{{ $ctrl.dataUser }}-",
-//       }).component("dataComponent", {
-//         template: "DataComponent",
-//       }).component("parentCallbackComponent", {
-//         controller: function ($rootScope) {
-//           this.handleEvent = function (foo, bar) {
-//             $rootScope.log.push(foo);
-//             $rootScope.log.push(bar);
-//           };
-//         },
-//         template: `
-//           <h1>parentCmp</h1>
-//           <ui-view on-event="$ctrl.handleEvent(foo, bar)"></ui-view>
-//           `,
-//       });
-
-//       app.component("childEventComponent", {
-//         bindings: { onEvent: "&" },
-//         template: `
-//           <h1>childCmp</h1>
-//           <button id="eventbtn" ng-click="$ctrl.onEvent({ foo: 123, bar: 456 })">Button</button>
-//           `,
-//       });
-
-//       app.component("dynamicComponent", {
-//         template: "dynamicComponent {{ $ctrl.param }}",
-//         controller: () => {
-//           this.uiOnParamsChanged = function (params) {
-//             this.param = params.param;
-//           };
-//         },
-//       });
-
-//   });
-
-//   beforeEach(
-//     module(function (_$stateProvider_) {
-//       $stateProvider = _$stateProvider_;
-//     }),
-//   );
-
-//   () => {
-//     $rootScope,
-//     _$httpBackend_,
-//     _$compile_,
-//     _$state_,
-//     _$q_,
-//   ) {
-//     svcs = {
-//       $httpBackend: _$httpBackend_,
-//       $compile: _$compile_,
-//       $state: _$state_,
-//       $q: _$q_,
-//     };
-//     scope = $rootScope.$new();
-//     log = "";
-//     el = jqLite("<div><ui-view></ui-view></div>");
-//     svcs.$compile(el)(scope);
-//   }
-
-//   describe("routing using component templates", () => {
-//     beforeEach(() => {
-//       $stateProvider.state("cmp_tpl", {
-//         url: "/cmp_tpl",
-//         templateUrl: "/state_tpl.html",
-//         controller: () => {},
-//         resolve: {
-//           data: () => {
-//             return "DATA!";
-//           },
-//         },
-//       });
-//     });
-
-//     it("should work with directives which themselves have templateUrls", () => {
-//       const $state = svcs.$state,
-//         $httpBackend = svcs.$httpBackend,
-//         $q = svcs.$q;
-
-//       $httpBackend
-//         .expectGET("/state_tpl.html")
-//         .respond('x<ng12-directive data="$resolve.data"></ng12-directive>x');
-//       $httpBackend.expectGET("/comp_tpl.html").respond("-{{ $ctrl.data }}-");
-
-//       $state.transitionTo("cmp_tpl");
-//       await wait(10);
-
-//       // Template has not yet been fetched
-//       let directiveEl = el[0].querySelector("div ui-view ng12-directive");
-//       expect(directiveEl).toBeNull();
-//       expect($state.current.name).toBe("");
-
-//       // Fetch templates
-//       $httpBackend.flush();
-//       directiveEl = el[0].querySelector("div ui-view ng12-directive");
-//       expect(directiveEl).toBeDefined();
-//       expect($state.current.name).toBe("cmp_tpl");
-
-//       expect(
-//         jqLite(directiveEl).data("$ng12DirectiveController"),
-//       ).toBeDefined();
-//       expect(el.text()).toBe("x-DATA!-x");
-//     });
-
-//     if (angular.version.minor >= 3) {
-//       it("should work with ng 1.3+ bindToController directives", () => {
-//         const $state = svcs.$state,
-//           $httpBackend = svcs.$httpBackend,
-//           $q = svcs.$q;
-
-//         $httpBackend
-//           .expectGET("/state_tpl.html")
-//           .respond('x<ng13-directive data="$resolve.data"></ng13-directive>x');
-//         $httpBackend.expectGET("/comp_tpl.html").respond("-{{ $ctrl.data }}-");
-
-//         $state.transitionTo("cmp_tpl");
-//         await wait(10);
-//         $httpBackend.flush();
-
-//         const directiveEl = el[0].querySelector("div ui-view ng13-directive");
-//         expect(directiveEl).toBeDefined();
-//         expect($state.current.name).toBe("cmp_tpl");
-
-//         expect(
-//           jqLite(directiveEl).data("$ng13DirectiveController"),
-//         ).toBeDefined();
-//         expect(el.text()).toBe("x-DATA!-x");
-//       });
-//     }
-
-//     if (angular.version.minor >= 5) {
-//       it("should work with ng 1.5+ .component()s", () => {
-//         const $state = svcs.$state,
-//           $httpBackend = svcs.$httpBackend,
-//           $q = svcs.$q;
-
-//         $httpBackend
-//           .expectGET("/state_tpl.html")
-//           .respond('x<ng-component data="$resolve.data"></ng-component>x');
-//         $httpBackend.expectGET("/comp_tpl.html").respond("-{{ $ctrl.data }}-");
-
-//         $state.transitionTo("cmp_tpl");
-//         await wait(10);
-//         $httpBackend.flush();
-
-//         const directiveEl = el[0].querySelector("div ui-view ng-component");
-//         expect(directiveEl).toBeDefined();
-//         expect($state.current.name).toBe("cmp_tpl");
-
-//         expect(
-//           jqLite(directiveEl).data("$ngComponentController"),
-//         ).toBeDefined();
-//         expect(el.text()).toBe("x-DATA!-x");
-//       });
-//     }
-//   });
-
-//   describe("+ component: declaration", () => {
-//     it("should disallow controller/template configuration", () => {
-//       const stateDef = {
-//         url: "/route2cmp",
-//         component: "ng12Directive",
-//         resolve: {
-//           data: () => {
-//             return "DATA!";
-//           },
-//         },
-//       };
-
-//       expect(() => {
-//         $stateProvider.state(
-//           "route2cmp",
-//           extend({ template: "fail" }, stateDef),
-//         );
-//       }).toThrow();
-//       expect(() => {
-//         $stateProvider.state(
-//           "route2cmp",
-//           extend({ templateUrl: "fail.html" }, stateDef),
-//         );
-//       }).toThrow();
-//       expect(() => {
-//         $stateProvider.state(
-//           "route2cmp",
-//           extend({ templateProvider: () => {} }, stateDef),
-//         );
-//       }).toThrow();
-//       expect(() => {
-//         $stateProvider.state(
-//           "route2cmp",
-//           extend({ controllerAs: "fail" }, stateDef),
-//         );
-//       }).toThrow();
-//       expect(() => {
-//         $stateProvider.state(
-//           "route2cmp",
-//           extend({ controller: "FailCtrl" }, stateDef),
-//         );
-//       }).toThrow();
-//       expect(() => {
-//         $stateProvider.state(
-//           "route2cmp",
-//           extend({ controllerProvider: () => {} }, stateDef),
-//         );
-//       }).toThrow();
-
-//       expect(() => {
-//         $stateProvider.state("route2cmp", stateDef);
-//       }).not.toThrow();
-//     });
-
-//     it("should work with angular 1.2+ directives", () => {
-//       $stateProvider.state("route2cmp", {
-//         url: "/route2cmp",
-//         component: "ng12Directive",
-//         resolve: {
-//           data: () => {
-//             return "DATA!";
-//           },
-//         },
-//       });
-
-//       const $state = svcs.$state,
-//         $httpBackend = svcs.$httpBackend,
-//         $q = svcs.$q;
-
-//       $httpBackend.expectGET("/comp_tpl.html").respond("-{{ $ctrl.data }}-");
-//       $state.transitionTo("route2cmp");
-//       await wait(10);
-//       $httpBackend.flush();
-
-//       const directiveEl = el[0].querySelector("div ui-view ng12-directive");
-//       expect(directiveEl).toBeDefined();
-//       expect($state.current.name).toBe("route2cmp");
-//       expect(el.text()).toBe("-DATA!-");
-//     });
-
-//     if (angular.version.minor >= 3) {
-//       it("should work with angular 1.3+ bindToComponent directives", () => {
-//         $stateProvider.state("route2cmp", {
-//           url: "/route2cmp",
-//           component: "ng13Directive",
-//           resolve: {
-//             data: () => {
-//               return "DATA!";
-//             },
-//           },
-//         });
-
-//         const $state = svcs.$state,
-//           $httpBackend = svcs.$httpBackend,
-//           $q = svcs.$q;
-
-//         $httpBackend.expectGET("/comp_tpl.html").respond("-{{ $ctrl.data }}-");
-//         $state.transitionTo("route2cmp");
-//         await wait(10);
-//         $httpBackend.flush();
-
-//         const directiveEl = el[0].querySelector("div ui-view ng13-directive");
-//         expect(directiveEl).toBeDefined();
-//         expect($state.current.name).toBe("route2cmp");
-//         expect(el.text()).toBe("-DATA!-");
-//       });
-
-//       it("should call $onInit() once", () => {
-//         $stateProvider.state("route2cmp", {
-//           url: "/route2cmp",
-//           component: "ng13Directive",
-//           resolve: {
-//             data: () => {
-//               return "DATA!";
-//             },
-//           },
-//         });
-
-//         const $state = svcs.$state,
-//           $httpBackend = svcs.$httpBackend,
-//           $q = svcs.$q;
-
-//         $httpBackend.expectGET("/comp_tpl.html").respond("-{{ $ctrl.data }}-");
-//         $state.transitionTo("route2cmp");
-//         await wait(10);
-//         $httpBackend.flush();
-
-//         expect(log).toBe("onInit;");
-//       });
-//     }
-
-//     if (angular.version.minor >= 5) {
-//       it("should work with angular 1.5+ .component()s", () => {
-//         $stateProvider.state("route2cmp", {
-//           url: "/route2cmp",
-//           component: "ngComponent",
-//           resolve: {
-//             data: () => {
-//               return "DATA!";
-//             },
-//           },
-//         });
-
-//         const $state = svcs.$state,
-//           $httpBackend = svcs.$httpBackend,
-//           $q = svcs.$q;
-
-//         $httpBackend.expectGET("/comp_tpl.html").respond("-{{ $ctrl.data }}-");
-//         $state.transitionTo("route2cmp");
-//         await wait(10);
-//         $httpBackend.flush();
-
-//         const directiveEl = el[0].querySelector("div ui-view ng-component");
-//         expect(directiveEl).toBeDefined();
-//         expect($state.current.name).toBe("route2cmp");
-//         expect(el.text()).toBe("-DATA!-");
-//       });
-
-//       it("should only call $onInit() once", () => {
-//         $stateProvider.state("route2cmp", {
-//           component: "ngComponent",
-//           resolve: {
-//             data: () => {
-//               return "DATA!";
-//             },
-//           },
-//         });
-
-//         const $state = svcs.$state,
-//           $httpBackend = svcs.$httpBackend,
-//           $q = svcs.$q;
-
-//         $httpBackend.expectGET("/comp_tpl.html").respond("-{{ $ctrl.data }}-");
-//         $state.transitionTo("route2cmp");
-//         await wait(10);
-//         $httpBackend.flush();
-
-//         expect(log).toBe("onInit;");
-//       });
-
-//       it("should only call $onInit() once with componentProvider", () => {
-//         $stateProvider.state("route2cmp", {
-//           componentProvider: () => "ngComponent",
-//           resolve: {
-//             data: () => {
-//               return "DATA!";
-//             },
-//           },
-//         });
-
-//         const $state = svcs.$state,
-//           $httpBackend = svcs.$httpBackend,
-//           $q = svcs.$q;
-
-//         $httpBackend.expectGET("/comp_tpl.html").respond("-{{ $ctrl.data }}-");
-//         $state.transitionTo("route2cmp");
-//         await wait(10);
-//         $httpBackend.flush();
-
-//         expect(log).toBe("onInit;");
-//       });
-
-//       it('should supply resolve data to "<", "=", "@" bindings', () => {
-//         $stateProvider.state("bindingtypes", {
-//           component: "bindingTypes",
-//           resolve: {
-//             oneway: () => {
-//               return "ONEWAY";
-//             },
-//             twoway: () => {
-//               return "TWOWAY";
-//             },
-//             attribute: () => {
-//               return "ATTRIBUTE";
-//             },
-//           },
-//           bindings: { attr: "attribute" },
-//         });
-
-//         const $state = svcs.$state,
-//           $httpBackend = svcs.$httpBackend,
-//           $q = svcs.$q;
-
-//         $state.transitionTo("bindingtypes");
-//         await wait(10);
-
-//         expect(el.text()).toBe("-ONEWAY,TWOWAY,ATTRIBUTE-");
-//       });
-
-//       it('should supply resolve data to optional "<?", "=?", "@?" bindings', () => {
-//         $stateProvider.state("optionalbindingtypes", {
-//           component: "optionalBindingTypes",
-//           resolve: {
-//             oneway: () => {
-//               return "ONEWAY";
-//             },
-//             twoway: () => {
-//               return "TWOWAY";
-//             },
-//             attribute: () => {
-//               return "ATTRIBUTE";
-//             },
-//           },
-//           bindings: { attr: "attribute" },
-//         });
-
-//         const $state = svcs.$state,
-//           $httpBackend = svcs.$httpBackend,
-//           $q = svcs.$q;
-
-//         $state.transitionTo("optionalbindingtypes");
-//         await wait(10);
-
-//         expect(el.text()).toBe("-ONEWAY,TWOWAY,ATTRIBUTE-");
-//       });
-
-//       // Test for #3099
-//       it('should not throw when routing to a component with output "&" binding', () => {
-//         $stateProvider.state("nothrow", {
-//           component: "eventComponent",
-//         });
-
-//         const $state = svcs.$state,
-//           $q = svcs.$q;
-//         $state.transitionTo("nothrow");
-//         await wait(10);
-
-//         expect(el.text()).toBe("eventCmp");
-//       });
-
-//       // Test for #3276
-//       it('should route to a component that is prefixed with "data"', () => {
-//         $stateProvider.state("data", {
-//           component: "dataComponent",
-//         });
-
-//         const $state = svcs.$state,
-//           $q = svcs.$q;
-//         $state.transitionTo("data");
-//         await wait(10);
-
-//         expect(el.text()).toBe("DataComponent");
-//       });
-
-//       // Test for #3276
-//       it('should bind a resolve that is prefixed with "data"', () => {
-//         $stateProvider.state("data", {
-//           component: "mydataComponent",
-//           resolve: { dataUser: () => "user" },
-//         });
-
-//         const $state = svcs.$state,
-//           $q = svcs.$q;
-//         $state.transitionTo("data");
-//         await wait(10);
-
-//         expect(el.text()).toBe("-user-");
-//       });
-
-//       // Test for #3239
-//       it("should pass any bindings (wired from a parent component template via the ui-view) through to the child", async () => {
-//         const $state = svcs.$state,
-//           $q = svcs.$q;
-
-//         $stateProvider.state("parent", {
-//           template:
-//             '<ui-view oneway="data1w" twoway="data2w" attr="attrval"></ui-view>',
-//           controller: function ($scope) {
-//             $scope.data1w = "1w";
-//             $scope.data2w = "2w";
-//           },
-//         });
-
-//         $stateProvider.state("parent.child", {
-//           component: "bindingTypes",
-//         });
-
-//         $state.transitionTo("parent.child");
-//         await wait(10);
-//         expect(el.text()).toEqual("-1w,2w,attrval-");
-//       });
-
-//       // Test for #3239
-//       it("should prefer ui-view bindings over resolve data", async () => {
-//         const $state = svcs.$state,
-//           $q = svcs.$q;
-
-//         $stateProvider.state("parent", {
-//           template:
-//             '<ui-view oneway="data1w" twoway="data2w" attr="attrval"></ui-view>',
-//           resolve: {
-//             oneway: () => "asfasfd",
-//             twoway: () => "asfasfd",
-//             attr: () => "asfasfd",
-//           },
-//           controller: function ($scope) {
-//             $scope.data1w = "1w";
-//             $scope.data2w = "2w";
-//           },
-//         });
-
-//         $stateProvider.state("parent.child", {
-//           component: "bindingTypes",
-//         });
-
-//         $state.transitionTo("parent.child");
-//         await wait(10);
-//         expect(el.text()).toEqual("-1w,2w,attrval-");
-//       });
-
-//       // Test for #3239
-//       it("should prefer ui-view bindings over resolve data unless a bindings exists", async () => {
-//         const $state = svcs.$state,
-//           $q = svcs.$q;
-
-//         $stateProvider.state("parent", {
-//           template:
-//             '<ui-view oneway="data1w" twoway="data2w" attr="attrval"></ui-view>',
-//           resolve: {
-//             oneway: () => "asfasfd",
-//             twoway: () => "asfasfd",
-//             attr: () => "asfasfd",
-//           },
-//           controller: function ($scope) {
-//             $scope.data1w = "1w";
-//             $scope.data2w = "2w";
-//           },
-//         });
-
-//         $stateProvider.state("parent.child", {
-//           component: "bindingTypes",
-//           bindings: { oneway: "oneway" },
-//         });
-
-//         $state.transitionTo("parent.child");
-//         await wait(10);
-//         expect(el.text()).toEqual("-asfasfd,2w,attrval-");
-//       });
-
-//       // Test for #3239
-//       it("should pass & bindings (wired from a parent component via the ui-view) through to the child", async () => {
-//         const $state = svcs.$state,
-//           $q = svcs.$q;
-//         $rootScope.log = [];
-
-//         $stateProvider.state("parent", {
-//           component: "parentCallbackComponent",
-//         });
-
-//         $stateProvider.state("parent.child", {
-//           component: "childEventComponent",
-//         });
-
-//         $state.transitionTo("parent.child");
-//         await wait(10);
-//         expect($rootScope.log).toEqual([]);
-//         expect(
-//           el
-//             .text()
-//             .split(/\s+/)
-//             .filter((x) => x),
-//         ).toEqual(["parentCmp", "childCmp", "Button"]);
-
-//         // - Click button
-//         // - ng-click handler calls $ctrl.onEvent({ foo: 123, bar: 456 })
-//         // - on-event is bound to $ctrl.handleEvent(foo, bar) on parentCallbackComponent
-//         // - handleEvent pushes param values to the log
-//         el.find("button")[0].click();
-//         expect($rootScope.log).toEqual([123, 456]);
-//       });
-
-//       // Test for #3111
-//       it("should bind & bindings to a resolve that returns a function", async () => {
-//         const $state = svcs.$state,
-//           $q = svcs.$q,
-//           log = [];
-
-//         $stateProvider.state("resolve", {
-//           component: "childEventComponent",
-//           resolve: {
-//             onEvent: () => (foo, bar) => {
-//               log.push(foo);
-//               log.push(bar);
-//             },
-//           },
-//         });
-
-//         $state.transitionTo("resolve");
-//         await wait(10);
-//         expect(log).toEqual([]);
-//         el.find("button")[0].click();
-//         expect(log).toEqual([123, 456]);
-//       });
-
-//       // Test for #3111
-//       it("should bind & bindings to a resolve that returns an array-style function", async () => {
-//         const $state = svcs.$state,
-//           $q = svcs.$q,
-//           log = [];
-
-//         $stateProvider.state("resolve", {
-//           component: "childEventComponent",
-//           resolve: {
-//             onEvent: () => [
-//               "foo",
-//               "bar",
-//               (foo, bar) => {
-//                 log.push(foo);
-//                 log.push(bar);
-//               },
-//             ],
-//           },
-//         });
-
-//         $state.transitionTo("resolve");
-//         await wait(10);
-//         expect(log).toEqual([]);
-//         el.find("button")[0].click();
-//         expect(log).toEqual([123, 456]);
-//       });
-//     }
-//   });
-
-//   if (angular.version.minor >= 5) {
-//     describe("+ named views with component: declaration", () => {
-//       let stateDef;
-//       beforeEach(() => {
-//         stateDef = {
-//           url: "/route2cmp",
-//           views: {
-//             header: { component: "header" },
-//             content: { component: "ngComponent" },
-//           },
-//           resolve: {
-//             status: () => {
-//               return "awesome";
-//             },
-//             data: () => {
-//               return "DATA!";
-//             },
-//           },
-//         };
-
-//         el = jqLite(
-//           '<div><div ui-view="header"></div><div ui-view="content"</div>',
-//         );
-//         svcs.$compile(el)(scope);
-//       });
-
-//       it("should disallow controller/template configuration in the view", () => {
-//         expect(() => {
-//           $stateProvider.state("route2cmp", stateDef);
-//         }).not.toThrow();
-//         expect(() => {
-//           const state = extend({}, stateDef);
-//           state.views.header.template = "fails";
-//           $stateProvider.state("route2cmp", state);
-//         }).toThrow();
-//       });
-
-//       it("should render components as views", () => {
-//         $stateProvider.state("route2cmp", stateDef);
-//         const $state = svcs.$state,
-//           $httpBackend = svcs.$httpBackend,
-//           $q = svcs.$q;
-
-//         $httpBackend.expectGET("/comp_tpl.html").respond("-{{ $ctrl.data }}-");
-//         $state.transitionTo("route2cmp");
-//         await wait(10);
-//         $httpBackend.flush();
-
-//         const header = el[0].querySelector("[ui-view=header]");
-//         const content = el[0].querySelector("[ui-view=content]");
-
-//         expect(header.textContent).toBe("#awesome#");
-//         expect(content.textContent).toBe("-DATA!-");
-//       });
-
-//       it("should allow a component view declaration to use a string as a shorthand", () => {
-//         stateDef = {
-//           url: "/route2cmp",
-//           views: { header: "header", content: "ngComponent" },
-//           resolve: {
-//             status: () => {
-//               return "awesome";
-//             },
-//             data: () => {
-//               return "DATA!";
-//             },
-//           },
-//         };
-//         $stateProvider.state("route2cmp", stateDef);
-//         const $state = svcs.$state,
-//           $httpBackend = svcs.$httpBackend,
-//           $q = svcs.$q;
-
-//         $httpBackend.expectGET("/comp_tpl.html").respond("-{{ $ctrl.data }}-");
-//         $state.transitionTo("route2cmp");
-//         await wait(10);
-//         $httpBackend.flush();
-
-//         const header = el[0].querySelector("[ui-view=header]");
-//         const content = el[0].querySelector("[ui-view=content]");
-
-//         expect(header.textContent).toBe("#awesome#");
-//         expect(content.textContent).toBe("-DATA!-");
-//       });
-
-//       // Test for https://github.com/angular-ui/ui-router/issues/3353
-//       it("should allow different states to reuse view declaration", () => {
-//         const views = {
-//           header: { component: "header" },
-//           content: { component: "ngComponent" },
-//         };
-
-//         const stateDef1 = { name: "def1", url: "/def1", views: views };
-//         const stateDef2 = { name: "def2", url: "/def2", views: views };
-
-//         $stateProvider.state(stateDef1);
-//         $stateProvider.state(stateDef2);
-//       });
-//     });
-//   }
-
-//   describe("+ bindings: declaration", () => {
-//     it("should provide the named component binding with data from the named resolve", () => {
-//       $stateProvider.state("route2cmp", {
-//         url: "/route2cmp",
-//         component: "ng12Directive",
-//         bindings: { data: "foo" },
-//         resolve: {
-//           foo: () => {
-//             return "DATA!";
-//           },
-//         },
-//       });
-
-//       const $state = svcs.$state,
-//         $httpBackend = svcs.$httpBackend,
-//         $q = svcs.$q;
-
-//       $httpBackend.expectGET("/comp_tpl.html").respond("-{{ $ctrl.data }}-");
-//       $state.transitionTo("route2cmp");
-//       await wait(10);
-//       $httpBackend.flush();
-
-//       const directiveEl = el[0].querySelector("div ui-view ng12-directive");
-//       expect(directiveEl).toBeDefined();
-//       expect($state.current.name).toBe("route2cmp");
-//       expect(el.text()).toBe("-DATA!-");
-//     });
-
-//     if (angular.version.minor >= 5) {
-//       it("should provide default bindings for any component bindings omitted in the state.bindings map", () => {
-//         $stateProvider.state("route2cmp", {
-//           url: "/route2cmp",
-//           component: "ngComponent",
-//           bindings: { data: "foo" },
-//           resolve: {
-//             foo: () => {
-//               return "DATA!";
-//             },
-//             data2: () => {
-//               return "DATA2!";
-//             },
-//           },
-//         });
-
-//         const $state = svcs.$state,
-//           $httpBackend = svcs.$httpBackend,
-//           $q = svcs.$q;
-
-//         $httpBackend
-//           .expectGET("/comp_tpl.html")
-//           .respond("-{{ $ctrl.data }}.{{ $ctrl.data2 }}-");
-//         $state.transitionTo("route2cmp");
-//         await wait(10);
-//         $httpBackend.flush();
-
-//         const directiveEl = el[0].querySelector("div ui-view ng-component");
-//         expect(directiveEl).toBeDefined();
-//         expect($state.current.name).toBe("route2cmp");
-//         expect(el.text()).toBe("-DATA!.DATA2!-");
-//       });
-//     }
-//   });
-
-//   describe("componentProvider", () => {
-//     it("should work with angular 1.2+ directives", () => {
-//       $stateProvider.state("ng12-dynamic-directive", {
-//         url: "/ng12dynamicDirective/:type",
-//         componentProvider: [
-//           "$stateParams",
-//           function ($stateParams) {
-//             return $stateParams.type;
-//           },
-//         ],
-//       });
-
-//       const $state = svcs.$state,
-//         $q = svcs.$q;
-
-//       $state.transitionTo("ng12-dynamic-directive", {
-//         type: "ng12DynamicDirective",
-//       });
-//       await wait(10);
-
-//       const directiveEl = el[0].querySelector(
-//         "div ui-view ng12-dynamic-directive",
-//       );
-//       expect(directiveEl).toBeDefined();
-//       expect($state.current.name).toBe("ng12-dynamic-directive");
-//       expect(el.text()).toBe("dynamic directive");
-//     });
-
-//     if (angular.version.minor >= 5) {
-//       it("should load correct component when using componentProvider", () => {
-//         $stateProvider.state("dynamicComponent", {
-//           url: "/dynamicComponent/:type",
-//           componentProvider: [
-//             "$stateParams",
-//             function ($stateParams) {
-//               return $stateParams.type;
-//             },
-//           ],
-//         });
-
-//         const $state = svcs.$state,
-//           $httpBackend = svcs.$httpBackend,
-//           $q = svcs.$q;
-
-//         $state.transitionTo("dynamicComponent", { type: "dynamicComponent" });
-//         await wait(10);
-
-//         const directiveEl = el[0].querySelector(
-//           "div ui-view dynamic-component",
-//         );
-//         expect(directiveEl).toBeDefined();
-//         expect($state.current.name).toBe("dynamicComponent");
-//         expect(el.text().trim()).toBe("dynamicComponent");
-//       });
-//     }
-//   });
-
-//   if (angular.version.minor >= 5) {
-//     describe("uiOnParamsChanged()", () => {
-//       let param;
-
-//       beforeEach(inject(($rootScope, $compile) => {
-//         param = null;
-
-//         $stateProvider.state("dynamic", {
-//           url: "/dynamic/:param",
-//           component: "dynamicComponent",
-//           params: { param: { dynamic: true } },
-//         });
-
-//         $stateProvider.state("dynamic2", {
-//           url: "/dynamic2/:param",
-//           componentProvider: () => "dynamicComponent",
-//           params: { param: { dynamic: true } },
-//         });
-//       });
-
-//       it("should not be called on the initial transition", () => {
-//         const $state = svcs.$state,
-//           $q = svcs.$q;
-//         $state.go("dynamic", { param: "abc" });
-//         await wait(10);
-//         expect(el.text().trim()).toBe("dynamicComponent");
-//       });
-
-//       it("should be called when dynamic parameters change", () => {
-//         const $state = svcs.$state,
-//           $q = svcs.$q;
-//         $state.go("dynamic", { param: "abc" });
-//         await wait(10);
-//         $state.go("dynamic", { param: "def" });
-//         await wait(10);
-
-//         expect(el.text().trim()).toBe("dynamicComponent def");
-//       });
-
-//       it("should work with componentProvider", () => {
-//         const $state = svcs.$state,
-//           $q = svcs.$q;
-//         $state.go("dynamic2", { param: "abc" });
-//         await wait(10);
-//         $state.go("dynamic2", { param: "def" });
-//         await wait(10);
-
-//         expect(el.text().trim()).toBe("dynamicComponent def");
-//       });
-//     });
-//   }
-// });
+describe("angular 1.5+ style .component()", () => {
+  let el, app, scope, log, svcs, $stateProvider, $templateCache, $rootScope;
+
+  beforeEach(() => {
+    dealoc(document.getElementById("dummy"));
+    window.angular = new Angular();
+    publishExternalAPI();
+    window.angular
+      .module("defaultModule", ["ui.router"])
+      .directive("ng12Directive", () => {
+        return {
+          restrict: "E",
+          scope: { data: "=" },
+          templateUrl: "/comp_tpl.html",
+          controller: function ($scope) {
+            this.data = $scope.data;
+          },
+          controllerAs: "$ctrl",
+        };
+      })
+      .directive("ng13Directive", () => {
+        return {
+          scope: { data: "=" },
+          templateUrl: "/comp_tpl.html",
+          controller: function () {
+            this.$onInit = function () {
+              log += "onInit;";
+            };
+          },
+          bindToController: true,
+          controllerAs: "$ctrl",
+        };
+      })
+      .directive("ng12DynamicDirective", () => {
+        return {
+          restrict: "E",
+          template: "dynamic directive",
+        };
+      })
+      .component("ngComponent", {
+        bindings: { data: "<", data2: "<" },
+        templateUrl: "/comp_tpl.html",
+        controller: function () {
+          this.$onInit = function () {
+            log += "onInit;";
+          };
+        },
+      })
+      .component("header", {
+        bindings: { status: "<" },
+        template: "#{{ $ctrl.status }}#",
+      })
+      .component("bindingTypes", {
+        bindings: { oneway: "<oneway", twoway: "=", attribute: "@attr" },
+        template:
+          "-{{ $ctrl.oneway }},{{ $ctrl.twoway }},{{ $ctrl.attribute }}-",
+      })
+      .component("optionalBindingTypes", {
+        bindings: { oneway: "<?oneway", twoway: "=?", attribute: "@?attr" },
+        template:
+          "-{{ $ctrl.oneway }},{{ $ctrl.twoway }},{{ $ctrl.attribute }}-",
+      })
+      .component("eventComponent", {
+        bindings: { evt: "&" },
+        template: "eventCmp",
+      })
+      .component("mydataComponent", {
+        bindings: { dataUser: "<" },
+        template: "-{{ $ctrl.dataUser }}-",
+      })
+      .component("dataComponent", {
+        template: "DataComponent",
+      })
+      .component("parentCallbackComponent", {
+        controller: function ($rootScope) {
+          this.handleEvent = function (foo, bar) {
+            $rootScope.log.push(foo);
+            $rootScope.log.push(bar);
+          };
+        },
+        template: `
+        <h1>parentCmp</h1>
+        <ui-view on-event="$ctrl.handleEvent(foo, bar)"></ui-view>
+        `,
+      })
+      .component("childEventComponent", {
+        bindings: { onEvent: "&" },
+        template: `
+        <h1>childCmp</h1>
+        <button id="eventbtn" ng-click="$ctrl.onEvent({ foo: 123, bar: 456 })">Button</button>
+        `,
+      })
+      .component("dynamicComponent", {
+        template: "dynamicComponent {{ $ctrl.param }}",
+        controller: function () {
+          this.uiOnParamsChanged = function (params) {
+            this.param = params.param;
+          };
+        },
+      })
+      .config(function (_$stateProvider_) {
+        $stateProvider = _$stateProvider_;
+      });
+
+    let $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      "defaultModule",
+    ]);
+
+    $injector.invoke(
+      (
+        _$rootScope_,
+        _$httpBackend_,
+        _$compile_,
+        _$state_,
+        _$q_,
+        _$templateCache_,
+      ) => {
+        svcs = {
+          $httpBackend: _$httpBackend_,
+          $compile: _$compile_,
+          $state: _$state_,
+          $q: _$q_,
+        };
+        $rootScope = _$rootScope_;
+        scope = $rootScope.$new();
+        log = "";
+        el = jqLite("<div><ui-view></ui-view></div>");
+        svcs.$compile(el)(scope);
+        $templateCache = _$templateCache_;
+      },
+    );
+  });
+
+  describe("routing using component templates", () => {
+    beforeEach(() => {
+      $stateProvider.state({
+        name: "cmp_tpl",
+        url: "/cmp_tpl",
+        templateUrl: "/state_tpl.html",
+        controller: function () {},
+        resolve: {
+          data: function () {
+            return "DATA!";
+          },
+        },
+      });
+    });
+
+    it("should work with directives which themselves have templateUrls", async () => {
+      const $state = svcs.$state;
+
+      $templateCache.put(
+        "/state_tpl.html",
+        'x<ng12-directive data="$resolve.data"></ng12-directive>x',
+      );
+      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+
+      await $state.transitionTo("cmp_tpl");
+
+      expect($state.current.name).toBe("cmp_tpl");
+      expect(el[0].querySelector("ui-view").innerHTML).toEqual(
+        'x<ng12-directive data="$resolve.data">-DATA!-</ng12-directive>x',
+      );
+    });
+
+    it("should work with bindToController directives", async () => {
+      const $state = svcs.$state;
+
+      $templateCache.put(
+        "/state_tpl.html",
+        'x<ng13-directive data="$resolve.data"></ng13-directive>x',
+      );
+      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+
+      await $state.transitionTo("cmp_tpl");
+      await wait(10);
+
+      expect($state.current.name).toBe("cmp_tpl");
+      expect(el[0].querySelector("ui-view").innerHTML).toEqual(
+        'x<ng13-directive data="$resolve.data">-DATA!-</ng13-directive>x',
+      );
+    });
+
+    it("should work with .component()s", async () => {
+      const $state = svcs.$state;
+
+      $templateCache.put(
+        "/state_tpl.html",
+        'x<ng-component data="$resolve.data"></ng-component>x',
+      );
+      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+
+      $state.transitionTo("cmp_tpl");
+      await wait(10);
+
+      expect($state.current.name).toBe("cmp_tpl");
+      expect(el[0].querySelector("ui-view").innerHTML).toEqual(
+        'x<ng-component data="$resolve.data">-DATA!-</ng-component>x',
+      );
+    });
+  });
+
+  describe("+ component: declaration", () => {
+    it("should disallow controller/template configuration", () => {
+      const stateDef = {
+        name: "route2cmp",
+        url: "/route2cmp",
+        component: "ng12Directive",
+        resolve: {
+          data: function () {
+            return "DATA!";
+          },
+        },
+      };
+
+      expect(() => {
+        $stateProvider.state(
+          Object.assign({ name: "route2cmp", template: "fail" }, stateDef),
+        );
+      }).toThrow();
+      expect(() => {
+        $stateProvider.state(
+          Object.assign(
+            { name: "route2cmp", templateUrl: "fail.html" },
+            stateDef,
+          ),
+        );
+      }).toThrow();
+      expect(() => {
+        $stateProvider.state(
+          Object.assign(
+            { name: "route2cmp", templateProvider: () => {} },
+            stateDef,
+          ),
+        );
+      }).toThrow();
+      expect(() => {
+        $stateProvider.state(
+          Object.assign({ name: "route2cmp", controllerAs: "fail" }, stateDef),
+        );
+      }).toThrow();
+      expect(() => {
+        $stateProvider.state(
+          Object.assign(
+            { name: "route2cmp", controller: "FailCtrl" },
+            stateDef,
+          ),
+        );
+      }).toThrow();
+      expect(() => {
+        $stateProvider.state(
+          Object.assign(
+            { name: "route2cmp", controllerProvider: function () {} },
+            stateDef,
+          ),
+        );
+      }).toThrow();
+
+      expect(() => {
+        $stateProvider.state(stateDef);
+      }).not.toThrow();
+    });
+
+    it("should work with angular 1.2+ directives", async () => {
+      $stateProvider.state({
+        name: "route2cmp",
+        url: "/route2cmp",
+        component: "ng12Directive",
+        resolve: {
+          data: () => {
+            return "DATA!";
+          },
+        },
+      });
+
+      const $state = svcs.$state;
+
+      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $state.transitionTo("route2cmp");
+      await wait(10);
+
+      const directiveEl = el[0].querySelector("div ui-view ng12-directive");
+      expect(directiveEl).toBeDefined();
+      expect($state.current.name).toBe("route2cmp");
+      expect(el.text()).toBe("-DATA!-");
+    });
+
+    it("should work with angular 1.3+ bindToComponent directives", async () => {
+      $stateProvider.state({
+        name: "route2cmp",
+        url: "/route2cmp",
+        component: "ng13Directive",
+        resolve: {
+          data: () => {
+            return "DATA!";
+          },
+        },
+      });
+
+      const $state = svcs.$state,
+        $httpBackend = svcs.$httpBackend,
+        $q = svcs.$q;
+
+      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $state.transitionTo("route2cmp");
+      await wait(10);
+
+      const directiveEl = el[0].querySelector("div ui-view ng13-directive");
+      expect(directiveEl).toBeDefined();
+      expect($state.current.name).toBe("route2cmp");
+      expect(el.text()).toBe("-DATA!-");
+    });
+
+    it("should call $onInit() once", async () => {
+      $stateProvider.state({
+        name: "route2cmp",
+        url: "/route2cmp",
+        component: "ng13Directive",
+        resolve: {
+          data: () => {
+            return "DATA!";
+          },
+        },
+      });
+
+      const $state = svcs.$state;
+
+      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $state.transitionTo("route2cmp");
+      await wait(10);
+
+      expect(log).toBe("onInit;");
+    });
+
+    it("should work with angular 1.5+ .component()s", async () => {
+      $stateProvider.state({
+        name: "route2cmp",
+        url: "/route2cmp",
+        component: "ngComponent",
+        resolve: {
+          data: () => {
+            return "DATA!";
+          },
+        },
+      });
+
+      const $state = svcs.$state,
+        $httpBackend = svcs.$httpBackend,
+        $q = svcs.$q;
+
+      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $state.transitionTo("route2cmp");
+      await wait(10);
+
+      const directiveEl = el[0].querySelector("div ui-view ng-component");
+      expect(directiveEl).toBeDefined();
+      expect($state.current.name).toBe("route2cmp");
+      expect(el.text()).toBe("-DATA!-");
+    });
+
+    it("should only call $onInit() once", async () => {
+      $stateProvider.state({
+        name: "route2cmp",
+        component: "ngComponent",
+        resolve: {
+          data: () => {
+            return "DATA!";
+          },
+        },
+      });
+
+      const $state = svcs.$state,
+        $httpBackend = svcs.$httpBackend,
+        $q = svcs.$q;
+
+      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $state.transitionTo("route2cmp");
+      await wait(10);
+
+      expect(log).toBe("onInit;");
+    });
+
+    it("should only call $onInit() once with componentProvider", async () => {
+      $stateProvider.state({
+        name: "route2cmp",
+        componentProvider: () => "ngComponent",
+        resolve: {
+          data: () => {
+            return "DATA!";
+          },
+        },
+      });
+
+      const $state = svcs.$state,
+        $httpBackend = svcs.$httpBackend,
+        $q = svcs.$q;
+
+      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $state.transitionTo("route2cmp");
+      await wait(10);
+
+      expect(log).toBe("onInit;");
+    });
+
+    it('should supply resolve data to "<", "=", "@" bindings', async () => {
+      $stateProvider.state({
+        name: "bindingtypes",
+        component: "bindingTypes",
+        resolve: {
+          oneway: () => {
+            return "ONEWAY";
+          },
+          twoway: () => {
+            return "TWOWAY";
+          },
+          attribute: () => {
+            return "ATTRIBUTE";
+          },
+        },
+        bindings: { attr: "attribute" },
+      });
+
+      const $state = svcs.$state,
+        $httpBackend = svcs.$httpBackend,
+        $q = svcs.$q;
+
+      $state.transitionTo("bindingtypes");
+      await wait(10);
+
+      expect(el.text()).toBe("-ONEWAY,TWOWAY,ATTRIBUTE-");
+    });
+
+    it('should supply resolve data to optional "<?", "=?", "@?" bindings', async () => {
+      $stateProvider.state({
+        name: "optionalbindingtypes",
+        component: "optionalBindingTypes",
+        resolve: {
+          oneway: () => {
+            return "ONEWAY";
+          },
+          twoway: () => {
+            return "TWOWAY";
+          },
+          attribute: () => {
+            return "ATTRIBUTE";
+          },
+        },
+        bindings: { attr: "attribute" },
+      });
+
+      const $state = svcs.$state;
+
+      $state.transitionTo("optionalbindingtypes");
+      await wait(10);
+
+      expect(el.text()).toBe("-ONEWAY,TWOWAY,ATTRIBUTE-");
+    });
+
+    // Test for #3099
+    it('should not throw when routing to a component with output "&" binding', async () => {
+      $stateProvider.state({
+        name: "nothrow",
+        component: "eventComponent",
+      });
+
+      const $state = svcs.$state;
+      $state.transitionTo("nothrow");
+      await wait(10);
+
+      expect(el.text()).toBe("eventCmp");
+    });
+
+    // Test for #3276
+    it('should route to a component that is prefixed with "data"', async () => {
+      $stateProvider.state({
+        name: "data",
+        component: "dataComponent",
+      });
+
+      const $state = svcs.$state,
+        $q = svcs.$q;
+      $state.transitionTo("data");
+      await wait(10);
+
+      expect(el.text()).toBe("DataComponent");
+    });
+
+    // Test for #3276
+    it('should bind a resolve that is prefixed with "data"', async () => {
+      $stateProvider.state({
+        name: "data",
+        component: "mydataComponent",
+        resolve: { dataUser: () => "user" },
+      });
+
+      const $state = svcs.$state,
+        $q = svcs.$q;
+      $state.transitionTo("data");
+      await wait(10);
+
+      expect(el.text()).toBe("-user-");
+    });
+
+    // Test for #3239
+    it("should pass any bindings (wired from a parent component template via the ui-view) through to the child", async () => {
+      const $state = svcs.$state,
+        $q = svcs.$q;
+
+      $stateProvider.state({
+        name: "parent",
+        template:
+          '<ui-view oneway="data1w" twoway="data2w" attr="attrval"></ui-view>',
+        controller: function ($scope) {
+          $scope.data1w = "1w";
+          $scope.data2w = "2w";
+        },
+      });
+
+      $stateProvider.state({
+        name: "parent.child",
+        component: "bindingTypes",
+      });
+
+      $state.transitionTo("parent.child");
+      await wait(10);
+      expect(el.text()).toEqual("-1w,2w,attrval-");
+    });
+
+    // Test for #3239
+    it("should prefer ui-view bindings over resolve data", async () => {
+      const $state = svcs.$state,
+        $q = svcs.$q;
+
+      $stateProvider.state({
+        name: "parent",
+        template:
+          '<ui-view oneway="data1w" twoway="data2w" attr="attrval"></ui-view>',
+        resolve: {
+          oneway: () => "asfasfd",
+          twoway: () => "asfasfd",
+          attr: () => "asfasfd",
+        },
+        controller: function ($scope) {
+          $scope.data1w = "1w";
+          $scope.data2w = "2w";
+        },
+      });
+
+      $stateProvider.state({
+        name: "parent.child",
+        component: "bindingTypes",
+      });
+
+      $state.transitionTo("parent.child");
+      await wait(10);
+      expect(el.text()).toEqual("-1w,2w,attrval-");
+    });
+
+    // Test for #3239
+    it("should prefer ui-view bindings over resolve data unless a bindings exists", async () => {
+      const $state = svcs.$state,
+        $q = svcs.$q;
+
+      $stateProvider.state({
+        name: "parent",
+        template:
+          '<ui-view oneway="data1w" twoway="data2w" attr="attrval"></ui-view>',
+        resolve: {
+          oneway: () => "asfasfd",
+          twoway: () => "asfasfd",
+          attr: () => "asfasfd",
+        },
+        controller: function ($scope) {
+          $scope.data1w = "1w";
+          $scope.data2w = "2w";
+        },
+      });
+
+      $stateProvider.state({
+        name: "parent.child",
+        component: "bindingTypes",
+        bindings: { oneway: "oneway" },
+      });
+
+      $state.transitionTo("parent.child");
+      await wait(10);
+      expect(el.text()).toEqual("-asfasfd,2w,attrval-");
+    });
+
+    // Test for #3239
+    it("should pass & bindings (wired from a parent component via the ui-view) through to the child", async () => {
+      const $state = svcs.$state,
+        $q = svcs.$q;
+      $rootScope.log = [];
+
+      $stateProvider.state({
+        name: "parent",
+        component: "parentCallbackComponent",
+      });
+
+      $stateProvider.state({
+        name: "parent.child",
+        component: "childEventComponent",
+      });
+
+      $state.transitionTo("parent.child");
+      await wait(10);
+      expect($rootScope.log).toEqual([]);
+      expect(
+        el
+          .text()
+          .split(/\s+/)
+          .filter((x) => x),
+      ).toEqual(["parentCmp", "childCmp", "Button"]);
+
+      // - Click button
+      // - ng-click handler calls $ctrl.onEvent({ foo: 123, bar: 456 })
+      // - on-event is bound to $ctrl.handleEvent(foo, bar) on parentCallbackComponent
+      // - handleEvent pushes param values to the log
+      el.find("button")[0].click();
+      expect($rootScope.log).toEqual([123, 456]);
+    });
+
+    // Test for #3111
+    it("should bind & bindings to a resolve that returns a function", async () => {
+      const $state = svcs.$state,
+        $q = svcs.$q,
+        log = [];
+
+      $stateProvider.state({
+        name: "resolve",
+        component: "childEventComponent",
+        resolve: {
+          onEvent: () => (foo, bar) => {
+            log.push(foo);
+            log.push(bar);
+          },
+        },
+      });
+
+      $state.transitionTo("resolve");
+      await wait(10);
+      expect(log).toEqual([]);
+      el.find("button")[0].click();
+      expect(log).toEqual([123, 456]);
+    });
+
+    // Test for #3111
+    it("should bind & bindings to a resolve that returns an array-style function", async () => {
+      const $state = svcs.$state,
+        $q = svcs.$q,
+        log = [];
+
+      $stateProvider.state({
+        name: "resolve",
+        component: "childEventComponent",
+        resolve: {
+          onEvent: () => [
+            "foo",
+            "bar",
+            (foo, bar) => {
+              log.push(foo);
+              log.push(bar);
+            },
+          ],
+        },
+      });
+
+      $state.transitionTo("resolve");
+      await wait(10);
+      expect(log).toEqual([]);
+      el.find("button")[0].click();
+      expect(log).toEqual([123, 456]);
+    });
+  });
+
+  describe("+ named views with component: declaration", () => {
+    let stateDef;
+    beforeEach(() => {
+      stateDef = {
+        name: "route2cmp",
+        url: "/route2cmp",
+        views: {
+          header: { component: "header" },
+          content: { component: "ngComponent" },
+        },
+        resolve: {
+          status: () => {
+            return "awesome";
+          },
+          data: () => {
+            return "DATA!";
+          },
+        },
+      };
+
+      el = jqLite(
+        '<div><div ui-view="header"></div><div ui-view="content"</div>',
+      );
+      svcs.$compile(el)(scope);
+    });
+
+    it("should disallow controller/template configuration in the view", () => {
+      expect(() => {
+        $stateProvider.state(stateDef);
+      }).not.toThrow();
+      expect(() => {
+        const state = Object.assign({}, stateDef);
+        state.views.header.template = "fails";
+        $stateProvider.state(state);
+      }).toThrow();
+    });
+
+    it("should render components as views", async () => {
+      $stateProvider.state(stateDef);
+      const $state = svcs.$state;
+
+      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $state.transitionTo("route2cmp");
+      await wait(10);
+
+      const header = el[0].querySelector("[ui-view=header]");
+      const content = el[0].querySelector("[ui-view=content]");
+
+      expect(header.textContent).toBe("#awesome#");
+      expect(content.textContent).toBe("-DATA!-");
+    });
+
+    it("should allow a component view declaration to use a string as a shorthand", async () => {
+      stateDef = {
+        name: "route2cmp",
+        url: "/route2cmp",
+        views: { header: "header", content: "ngComponent" },
+        resolve: {
+          status: () => {
+            return "awesome";
+          },
+          data: () => {
+            return "DATA!";
+          },
+        },
+      };
+      $stateProvider.state(stateDef);
+      const $state = svcs.$state,
+        $httpBackend = svcs.$httpBackend,
+        $q = svcs.$q;
+
+      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $state.transitionTo("route2cmp");
+      await wait(10);
+
+      const header = el[0].querySelector("[ui-view=header]");
+      const content = el[0].querySelector("[ui-view=content]");
+
+      expect(header.textContent).toBe("#awesome#");
+      expect(content.textContent).toBe("-DATA!-");
+    });
+
+    // Test for https://github.com/angular-ui/ui-router/issues/3353
+    it("should allow different states to reuse view declaration", () => {
+      const views = {
+        header: { component: "header" },
+        content: { component: "ngComponent" },
+      };
+
+      const stateDef1 = { name: "def1", url: "/def1", views: views };
+      const stateDef2 = { name: "def2", url: "/def2", views: views };
+
+      $stateProvider.state(stateDef1);
+      $stateProvider.state(stateDef2);
+    });
+  });
+
+  describe("+ bindings: declaration", () => {
+    it("should provide the named component binding with data from the named resolve", async () => {
+      $stateProvider.state({
+        name: "route2cmp",
+        url: "/route2cmp",
+        component: "ng12Directive",
+        bindings: { data: "foo" },
+        resolve: {
+          foo: () => {
+            return "DATA!";
+          },
+        },
+      });
+
+      const $state = svcs.$state;
+
+      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $state.transitionTo("route2cmp");
+      await wait(10);
+
+      const directiveEl = el[0].querySelector("div ui-view ng12-directive");
+      expect(directiveEl).toBeDefined();
+      expect($state.current.name).toBe("route2cmp");
+      expect(el.text()).toBe("-DATA!-");
+    });
+
+    it("should provide default bindings for any component bindings omitted in the state.bindings map", async () => {
+      $stateProvider.state({
+        name: "route2cmp",
+        url: "/route2cmp",
+        component: "ngComponent",
+        bindings: { data: "foo" },
+        resolve: {
+          foo: () => {
+            return "DATA!";
+          },
+          data2: () => {
+            return "DATA2!";
+          },
+        },
+      });
+
+      const $state = svcs.$state,
+        $httpBackend = svcs.$httpBackend,
+        $q = svcs.$q;
+
+      $templateCache.put(
+        "/comp_tpl.html",
+        "-{{ $ctrl.data }}.{{ $ctrl.data2 }}-",
+      );
+      $state.transitionTo("route2cmp");
+      await wait(10);
+
+      const directiveEl = el[0].querySelector("div ui-view ng-component");
+      expect(directiveEl).toBeDefined();
+      expect($state.current.name).toBe("route2cmp");
+      expect(el.text()).toBe("-DATA!.DATA2!-");
+    });
+  });
+
+  describe("componentProvider", () => {
+    it("should work with angular 1.2+ directives", async () => {
+      $stateProvider.state({
+        name: "ng12-dynamic-directive",
+        url: "/ng12dynamicDirective/:type",
+        componentProvider: [
+          "$stateParams",
+          function ($stateParams) {
+            return $stateParams.type;
+          },
+        ],
+      });
+
+      const $state = svcs.$state,
+        $q = svcs.$q;
+
+      $state.transitionTo("ng12-dynamic-directive", {
+        type: "ng12DynamicDirective",
+      });
+      await wait(10);
+
+      const directiveEl = el[0].querySelector(
+        "div ui-view ng12-dynamic-directive",
+      );
+      expect(directiveEl).toBeDefined();
+      expect($state.current.name).toBe("ng12-dynamic-directive");
+      expect(el.text()).toBe("dynamic directive");
+    });
+
+    // TODO Invalid transition
+    xit("should load correct component when using componentProvider", async () => {
+      $stateProvider.state({
+        name: "dynamicComponent",
+        url: "/dynamicComponent/:type",
+        componentProvider: [
+          "$stateParams",
+          function ($stateParams) {
+            return $stateParams.type;
+          },
+        ],
+      });
+
+      const $state = svcs.$state;
+
+      await $state.transitionTo({
+        name: "dynamicComponent",
+        type: "dynamicComponent",
+      });
+      await wait(10);
+
+      const directiveEl = el[0].querySelector("div ui-view dynamic-component");
+      expect(directiveEl).toBeDefined();
+      expect($state.current.name).toBe("dynamicComponent");
+      expect(el.text().trim()).toBe("dynamicComponent");
+    });
+  });
+
+  describe("uiOnParamsChanged()", () => {
+    let param;
+
+    beforeEach(() => {
+      param = null;
+
+      $stateProvider.state({
+        name: "dynamic",
+        url: "/dynamic/:param",
+        component: "dynamicComponent",
+        params: { param: { dynamic: true } },
+      });
+
+      $stateProvider.state({
+        name: "dynamic2",
+        url: "/dynamic2/:param",
+        componentProvider: () => "dynamicComponent",
+        params: { param: { dynamic: true } },
+      });
+    });
+
+    it("should not be called on the initial transition", async () => {
+      const $state = svcs.$state;
+      $state.go("dynamic", { param: "abc" });
+      await wait(10);
+      expect(el.text().trim()).toBe("dynamicComponent");
+    });
+
+    it("should be called when dynamic parameters change", async () => {
+      const $state = svcs.$state;
+      $state.go("dynamic", { param: "abc" });
+      await wait(10);
+      $state.go("dynamic", { param: "def" });
+      await wait(10);
+
+      expect(el.text().trim()).toBe("dynamicComponent def");
+    });
+
+    it("should work with componentProvider", async () => {
+      const $state = svcs.$state,
+        $q = svcs.$q;
+      $state.go("dynamic2", { param: "abc" });
+      await wait(10);
+      $state.go("dynamic2", { param: "def" });
+      await wait(10);
+
+      expect(el.text().trim()).toBe("dynamicComponent def");
+    });
+  });
+});
