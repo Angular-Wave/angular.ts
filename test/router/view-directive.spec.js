@@ -916,57 +916,70 @@ describe("UiView", () => {
   });
 });
 
-// fdescribe("uiView transclusion", () => {
-//   let scope, $compile, elem;
+describe("uiView transclusion", () => {
+  let scope, $compile, elem, $injector, $rootScope, $state;
 
-//   beforeEach(() => {
-//     const app = angular.module("foo", []);
+  beforeEach(() => {
+    dealoc(document.getElementById("dummy"));
+    window.angular = new Angular();
+    publishExternalAPI();
+    window.angular
+      .module("defaultModule", ["ui.router"])
+      .directive("scopeObserver", () => {
+        return {
+          restrict: "E",
+          link: function (scope) {
+            scope.$emit("directiveCreated");
+            scope.$on("$destroy", () => {
+              scope.$emit("directiveDestroyed");
+            });
+          },
+        };
+      })
+      .config(function ($stateProvider) {
+        $stateProvider
+          .state({
+            name: "a",
+            template: "<ui-view><scope-observer></scope-observer></ui-view>",
+          })
+          .state({ name: "a.b", template: "anything" });
+      });
+    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      "defaultModule",
+    ]);
 
-//     app.directive("scopeObserver", () => {
-//       return {
-//         restrict: "E",
-//         link: function (scope) {
-//           scope.$emit("directiveCreated");
-//           scope.$on("$destroy", () => {
-//             scope.$emit("directiveDestroyed");
-//           });
-//         },
-//       };
-//     });
-//   });
+    $injector.invoke(
+      (
+        _$state_,
+        _$q_,
+        _$timeout_,
+        _$rootScope_,
+        _$compile_,
+        _$uiViewScroll_,
+      ) => {
+        $rootScope = _$rootScope_;
+        scope = $rootScope.$new();
+        $compile = _$compile_;
+        $state = _$state_;
+        elem = jqLite("<div>");
+      },
+    );
+  });
 
-//   beforeEach(module("ui.router", "foo"));
-
-//   beforeEach(
-//     module(function ($stateProvider) {
-//       $stateProvider
-//         .state("a", {
-//           template: "<ui-view><scope-observer></scope-observer></ui-view>",
-//         })
-//         .state("a.b", { template: "anything" });
-//     }),
-//   );
-
-//   beforeEach(inject(function ($rootScope, _$compile_) {
-//     scope = $rootScope.$new();
-//     $compile = _$compile_;
-//     elem = jqLite("<div>");
-//   });
-
-//   it("should not link the initial view and leave its scope undestroyed when a subview is activated", async ( ) => {
-//     let aliveCount = 0;
-//     scope.$on("directiveCreated", () => {
-//       aliveCount++;
-//     });
-//     scope.$on("directiveDestroyed", () => {
-//       aliveCount--;
-//     });
-//     elem.append($compile("<div><ui-view></ui-view></div>")(scope));
-//     $state.transitionTo("a.b");
-//     await wait(10);
-//     expect(aliveCount).toBe(0);
-//   });
-// });
+  it("should not link the initial view and leave its scope undestroyed when a subview is activated", async () => {
+    let aliveCount = 0;
+    scope.$on("directiveCreated", () => {
+      aliveCount++;
+    });
+    scope.$on("directiveDestroyed", () => {
+      aliveCount--;
+    });
+    elem.append($compile("<div><ui-view></ui-view></div>")(scope));
+    $state.transitionTo("a.b");
+    await wait(10);
+    expect(aliveCount).toBe(0);
+  });
+});
 
 // fdescribe("uiView controllers or onEnter handlers", () => {
 //   let el, template, scope, document, count;
