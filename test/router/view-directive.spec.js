@@ -981,74 +981,93 @@ describe("uiView transclusion", () => {
   });
 });
 
-// fdescribe("uiView controllers or onEnter handlers", () => {
-//   let el, template, scope, document, count;
+describe("uiView controllers or onEnter handlers", () => {
+  let el, template, scope, count, $rootScope, $compile, $state, elem;
 
-//   beforeEach(module("ui.router"));
+  beforeEach(() => {
+    dealoc(document.getElementById("dummy"));
+    window.angular = new Angular();
+    publishExternalAPI();
+    window.angular
+      .module("defaultModule", ["ui.router"])
+      .config(function ($stateProvider) {
+        count = 0;
+        $stateProvider
+          .state({
+            name: "aside",
+            url: "/aside",
+            template: '<div class="aside"></div>',
+          })
+          .state({
+            name: "A",
+            url: "/A",
+            template: '<div class="A" ui-view="fwd"></div>',
+          })
+          .state({
+            name: "A.fwd",
+            url: "/fwd",
+            views: {
+              fwd: {
+                template: '<div class="fwd" ui-view>',
+                controller: function ($state) {
+                  if (count++ < 20 && $state.current.name == "A.fwd")
+                    $state.go(".nest");
+                },
+              },
+            },
+          })
+          .state({
+            name: "A.fwd.nest",
+            url: "/nest",
+            template: '<div class="nest"></div>',
+          });
+      });
 
-//   beforeEach(
-//     module(function ($stateProvider) {
-//       count = 0;
-//       $stateProvider
-//         .state("aside", {
-//           url: "/aside",
-//           template: '<div class="aside"></div>',
-//         })
-//         .state("A", {
-//           url: "/A",
-//           template: '<div class="A" ui-view="fwd"></div>',
-//         })
-//         .state("A.fwd", {
-//           url: "/fwd",
-//           views: {
-//             fwd: {
-//               template: '<div class="fwd" ui-view>',
-//               controller: function ($state) {
-//                 if (count++ < 20 && $state.current.name == "A.fwd")
-//                   $state.go(".nest");
-//               },
-//             },
-//           },
-//         })
-//         .state("A.fwd.nest", {
-//           url: "/nest",
-//           template: '<div class="nest"></div>',
-//         });
-//     }),
-//   );
+    let $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      "defaultModule",
+    ]);
 
-//   beforeEach(inject(function ($document) {
-//     document = $document[0];
-//   });
+    $injector.invoke(
+      (
+        _$state_,
+        _$q_,
+        _$timeout_,
+        _$rootScope_,
+        _$compile_,
+        _$uiViewScroll_,
+      ) => {
+        $rootScope = _$rootScope_;
+        scope = $rootScope.$new();
+        $compile = _$compile_;
+        $state = _$state_;
+        elem = jqLite("<div>");
+      },
+    );
+  });
 
-//   it("should not go into an infinite loop when controller uses $state.go", inject(function (
-//     $rootScope,
-//     $q,
-//     $compile,
-//     $state,
-//   ) {
-//     el = jqLite("<div><ui-view></ui-view></div>");
-//     template = $compile(el)($rootScope);
-//     $rootScope.$digest();
+  it("should not go into an infinite loop when controller uses $state.go", async () => {
+    el = jqLite("<div><ui-view></ui-view></div>");
+    template = $compile(el)($rootScope);
+    $rootScope.$digest();
 
-//     $state.transitionTo("aside");
-//     await wait(10);
-//     expect(template[0].querySelector(".aside")).toBeDefined();
-//     expect(template[0].querySelector(".fwd")).toBeNull();
+    await $state.transitionTo("aside");
+    await wait(10);
+    expect(template[0].querySelector(".aside")).toBeDefined();
+    expect(template[0].querySelector(".fwd")).toBeNull();
 
-//     $state.transitionTo("A");
-//     await wait(10);
-//     expect(template[0].querySelector(".A")).not.toBeNull();
-//     expect(template[0].querySelector(".fwd")).toBeNull();
+    await $state.transitionTo("A");
+    await wait(10);
+    expect(template[0].querySelector(".A")).not.toBeNull();
+    expect(template[0].querySelector(".fwd")).toBeNull();
 
-//     $state.transitionTo("A.fwd");
-//     await wait(10);
-//     expect(template[0].querySelector(".A")).not.toBeNull();
-//     expect(template[0].querySelector(".fwd")).not.toBeNull();
-//     expect(template[0].querySelector(".nest")).not.toBeNull();
-//     expect(count).toBe(1);
-//   });
-// });
+    await $state.transitionTo("A.fwd");
+    await wait(10);
+    expect(template[0].querySelector(".A")).not.toBeNull();
+    expect(template[0].querySelector(".fwd")).not.toBeNull();
+    expect(template[0].querySelector(".nest")).not.toBeNull();
+    expect(count).toBe(1);
+  });
+});
 
 // fdescribe("angular 1.5+ style .component()", () => {
 //   let el, app, scope, log, svcs, $stateProvider;
@@ -1056,7 +1075,6 @@ describe("uiView transclusion", () => {
 //   beforeEach(() => {
 //     app = angular.module("foo", []);
 
-//     // ng 1.2 directive (manually bindToController)
 //     app.directive("ng12Directive", () => {
 //       return {
 //         restrict: "E",
@@ -1067,10 +1085,7 @@ describe("uiView transclusion", () => {
 //         },
 //         controllerAs: "$ctrl",
 //       };
-//     });
-
-//     // ng 1.3-1.4 directive with bindToController
-//     app.directive("ng13Directive", () => {
+//     }).directive("ng13Directive", () => {
 //       return {
 //         scope: { data: "=" },
 //         templateUrl: "/comp_tpl.html",
@@ -1082,18 +1097,13 @@ describe("uiView transclusion", () => {
 //         bindToController: true,
 //         controllerAs: "$ctrl",
 //       };
-//     });
-
-//     app.directive("ng12DynamicDirective", () => {
+//     }).directive("ng12DynamicDirective", () => {
 //       return {
 //         restrict: "E",
 //         template: "dynamic directive",
 //       };
-//     });
-
-//     // ng 1.5+ component
-//     if (angular.version.minor >= 5) {
-//       app.component("ngComponent", {
+//     })
+//     .component("ngComponent", {
 //         bindings: { data: "<", data2: "<" },
 //         templateUrl: "/comp_tpl.html",
 //         controller: () => {
@@ -1101,40 +1111,26 @@ describe("uiView transclusion", () => {
 //             log += "onInit;";
 //           };
 //         },
-//       });
-
-//       app.component("header", {
+//       }).component("header", {
 //         bindings: { status: "<" },
 //         template: "#{{ $ctrl.status }}#",
-//       });
-
-//       app.component("bindingTypes", {
+//       }).component("bindingTypes", {
 //         bindings: { oneway: "<oneway", twoway: "=", attribute: "@attr" },
 //         template:
 //           "-{{ $ctrl.oneway }},{{ $ctrl.twoway }},{{ $ctrl.attribute }}-",
-//       });
-
-//       app.component("optionalBindingTypes", {
+//       }).component("optionalBindingTypes", {
 //         bindings: { oneway: "<?oneway", twoway: "=?", attribute: "@?attr" },
 //         template:
 //           "-{{ $ctrl.oneway }},{{ $ctrl.twoway }},{{ $ctrl.attribute }}-",
-//       });
-
-//       app.component("eventComponent", {
+//       }).component("eventComponent", {
 //         bindings: { evt: "&" },
 //         template: "eventCmp",
-//       });
-
-//       app.component("mydataComponent", {
+//       }).component("mydataComponent", {
 //         bindings: { dataUser: "<" },
 //         template: "-{{ $ctrl.dataUser }}-",
-//       });
-
-//       app.component("dataComponent", {
+//       }).component("dataComponent", {
 //         template: "DataComponent",
-//       });
-
-//       app.component("parentCallbackComponent", {
+//       }).component("parentCallbackComponent", {
 //         controller: function ($rootScope) {
 //           this.handleEvent = function (foo, bar) {
 //             $rootScope.log.push(foo);
@@ -1163,17 +1159,16 @@ describe("uiView transclusion", () => {
 //           };
 //         },
 //       });
-//     }
+
 //   });
 
-//   beforeEach(module("ui.router", "foo"));
 //   beforeEach(
 //     module(function (_$stateProvider_) {
 //       $stateProvider = _$stateProvider_;
 //     }),
 //   );
 
-//   beforeEach(inject(function (
+//   () => {
 //     $rootScope,
 //     _$httpBackend_,
 //     _$compile_,
@@ -1190,7 +1185,7 @@ describe("uiView transclusion", () => {
 //     log = "";
 //     el = jqLite("<div><ui-view></ui-view></div>");
 //     svcs.$compile(el)(scope);
-//   });
+//   }
 
 //   describe("routing using component templates", () => {
 //     beforeEach(() => {
@@ -1589,9 +1584,7 @@ describe("uiView transclusion", () => {
 //       });
 
 //       // Test for #3239
-//       it("should pass any bindings (wired from a parent component template via the ui-view) through to the child", inject(function (
-//         $rootScope,
-//       ) {
+//       it("should pass any bindings (wired from a parent component template via the ui-view) through to the child", async () => {
 //         const $state = svcs.$state,
 //           $q = svcs.$q;
 
@@ -1614,9 +1607,7 @@ describe("uiView transclusion", () => {
 //       });
 
 //       // Test for #3239
-//       it("should prefer ui-view bindings over resolve data", inject(function (
-//         $rootScope,
-//       ) {
+//       it("should prefer ui-view bindings over resolve data", async () => {
 //         const $state = svcs.$state,
 //           $q = svcs.$q;
 
@@ -1644,9 +1635,7 @@ describe("uiView transclusion", () => {
 //       });
 
 //       // Test for #3239
-//       it("should prefer ui-view bindings over resolve data unless a bindings exists", inject(function (
-//         $rootScope,
-//       ) {
+//       it("should prefer ui-view bindings over resolve data unless a bindings exists", async () => {
 //         const $state = svcs.$state,
 //           $q = svcs.$q;
 
@@ -1675,9 +1664,7 @@ describe("uiView transclusion", () => {
 //       });
 
 //       // Test for #3239
-//       it("should pass & bindings (wired from a parent component via the ui-view) through to the child", inject(function (
-//         $rootScope,
-//       ) {
+//       it("should pass & bindings (wired from a parent component via the ui-view) through to the child", async () => {
 //         const $state = svcs.$state,
 //           $q = svcs.$q;
 //         $rootScope.log = [];
@@ -1709,9 +1696,7 @@ describe("uiView transclusion", () => {
 //       });
 
 //       // Test for #3111
-//       it("should bind & bindings to a resolve that returns a function", inject(function (
-//         $rootScope,
-//       ) {
+//       it("should bind & bindings to a resolve that returns a function", async () => {
 //         const $state = svcs.$state,
 //           $q = svcs.$q,
 //           log = [];
@@ -1734,9 +1719,7 @@ describe("uiView transclusion", () => {
 //       });
 
 //       // Test for #3111
-//       it("should bind & bindings to a resolve that returns an array-style function", inject(function (
-//         $rootScope,
-//       ) {
+//       it("should bind & bindings to a resolve that returns an array-style function", async () => {
 //         const $state = svcs.$state,
 //           $q = svcs.$q,
 //           log = [];
