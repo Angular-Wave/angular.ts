@@ -1,4 +1,4 @@
-import { ParamTypes } from "../params/paramTypes";
+import { ParamTypes } from "../params/param-types";
 import { isDefined, isString } from "../../shared/utils";
 /**
  * An API to customize the URL behavior and retrieve URL configuration

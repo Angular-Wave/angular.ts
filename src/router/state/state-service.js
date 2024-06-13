@@ -9,15 +9,15 @@ import {
 import { isDefined, isObject, isString } from "../../shared/utils";
 import { Queue } from "../common/queue";
 import { services } from "../common/coreservices";
-import { PathUtils } from "../path/pathUtils";
-import { PathNode } from "../path/pathNode";
-import { defaultTransOpts } from "../transition/transitionService";
-import { Rejection, RejectType } from "../transition/rejectFactory";
-import { TargetState } from "./targetState";
+import { PathUtils } from "../path/path-utils";
+import { PathNode } from "../path/path-node";
+import { defaultTransOpts } from "../transition/transition-service";
+import { Rejection, RejectType } from "../transition/reject-factory";
+import { TargetState } from "./target-state";
 import { Param } from "../params/param";
 import { Glob } from "../common/glob";
-import { ResolveContext } from "../resolve/resolveContext";
-import { lazyLoadState } from "../hooks/lazyLoad";
+import { ResolveContext } from "../resolve/resolve-context";
+import { lazyLoadState } from "../hooks/lazy-load";
 import { not, val } from "../../shared/hof";
 /**
  * Provides services related to ui-router states.

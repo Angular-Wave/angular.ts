@@ -1,16 +1,16 @@
 import { TransitionHookScope, TransitionHookPhase } from "./interface";
 import { Transition } from "./transition";
-import { makeEvent } from "./hookRegistry";
+import { makeEvent } from "./hook-registry";
 import {
   registerAddCoreResolvables,
   treeChangesCleanup,
-} from "../hooks/coreResolvables";
-import { registerRedirectToHook } from "../hooks/redirectTo";
+} from "../hooks/core-resolvables";
+import { registerRedirectToHook } from "../hooks/redirect-to";
 import {
   registerOnExitHook,
   registerOnRetainHook,
   registerOnEnterHook,
-} from "../hooks/onEnterExitRetain";
+} from "../hooks/on-enter-exit-retain";
 import {
   registerEagerResolvePath,
   registerLazyResolveState,
@@ -20,16 +20,16 @@ import {
   registerLoadEnteringViews,
   registerActivateViews,
 } from "../hooks/views";
-import { registerUpdateGlobalState } from "../hooks/updateGlobals";
+import { registerUpdateGlobalState } from "../hooks/update-globals";
 import { registerUpdateUrl } from "../hooks/url";
-import { registerLazyLoadHook } from "../hooks/lazyLoad";
-import { TransitionEventType } from "./transitionEventType";
-import { TransitionHook } from "./transitionHook";
+import { registerLazyLoadHook } from "../hooks/lazy-load";
+import { TransitionEventType } from "./transition-event-type";
+import { TransitionHook } from "./transition-hook";
 import { isDefined } from "../../shared/utils";
 import { removeFrom, createProxyFunctions } from "../../shared/common";
 import { val } from "../../shared/hof";
-import { registerIgnoredTransitionHook } from "../hooks/ignoredTransition";
-import { registerInvalidTransitionHook } from "../hooks/invalidTransition";
+import { registerIgnoredTransitionHook } from "../hooks/ignored-transition";
+import { registerInvalidTransitionHook } from "../hooks/invalid-transition";
 /**
  * The default [[Transition]] options.
  *

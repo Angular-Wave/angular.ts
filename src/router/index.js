@@ -6,16 +6,16 @@ import {
   runBlock,
   watchDigests,
 } from "./services";
-import { TemplateFactory } from "./templateFactory";
+import { TemplateFactory } from "./template-factory";
 import { trace } from "./common/trace";
-import { $ViewScrollProvider } from "./viewScroll";
-import { $IsStateFilter, $IncludedByStateFilter } from "./stateFilters";
+import { $ViewScrollProvider } from "./view-scroll";
+import { $IsStateFilter, $IncludedByStateFilter } from "./state-filters";
 import {
   uiSrefActiveDirective,
   uiStateDirective,
   uiSrefDirective,
-} from "./directives/stateDirectives";
-import { uiView, $ViewDirectiveFill } from "./directives/viewDirective";
+} from "./directives/state-directives";
+import { uiView, $ViewDirectiveFill } from "./directives/view-directive";
 
 export function initRouter() {
   window.angular

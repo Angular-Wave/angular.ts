@@ -3,7 +3,7 @@ import { prop } from "../../shared/hof";
 import { isInjectable } from "../../shared/predicates";
 import { isDefined, isUndefined, isString } from "../../shared/utils";
 import { services } from "../common/coreservices";
-import { ParamType } from "./paramType";
+import { ParamType } from "./param-type";
 const hasOwn = Object.prototype.hasOwnProperty;
 const isShorthand = (cfg) =>
   ["value", "type", "squash", "array", "dynamic"].filter(hasOwn.bind(cfg || {}))

@@ -1,13 +1,13 @@
-import { UrlMatcherFactory } from "./url/urlMatcherFactory";
-import { UrlRouter } from "./url/urlRouter";
-import { TransitionService } from "./transition/transitionService";
+import { UrlMatcherFactory } from "./url/url-matcher-factory";
+import { UrlRouter } from "./url/url-router";
+import { TransitionService } from "./transition/transition-service";
 import { ViewService } from "./view/view";
-import { StateRegistry } from "./state/stateRegistry";
-import { StateService } from "./state/stateService";
+import { StateRegistry } from "./state/state-registry";
+import { StateService } from "./state/state-service";
 import { UIRouterGlobals } from "./globals";
 import { removeFrom } from "../shared/common";
 import { isFunction } from "../shared/utils";
-import { UrlService } from "./url/urlService";
+import { UrlService } from "./url/url-service";
 import { trace } from "./common/trace";
 
 /**

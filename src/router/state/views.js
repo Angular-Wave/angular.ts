@@ -4,7 +4,7 @@ import { isInjectable } from "../../shared/predicates";
 import { services } from "../common/coreservices";
 import { trace } from "../common/trace";
 import { ViewService } from "../view/view";
-import { ResolveContext } from "../resolve/resolveContext";
+import { ResolveContext } from "../resolve/resolve-context";
 import { Resolvable } from "../resolve/resolvable";
 
 export function getNg1ViewConfigFactory() {

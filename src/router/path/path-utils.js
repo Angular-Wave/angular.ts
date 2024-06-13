@@ -9,8 +9,8 @@ import {
   arrayTuples,
 } from "../../shared/common";
 import { prop, propEq } from "../../shared/hof";
-import { TargetState } from "../state/targetState";
-import { PathNode } from "./pathNode";
+import { TargetState } from "../state/target-state";
+import { PathNode } from "./path-node";
 /**
  * This class contains functions which convert TargetStates, Nodes and paths from one type to another.
  */

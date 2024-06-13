@@ -1,6 +1,6 @@
-import { StateMatcher } from "./stateMatcher";
-import { StateBuilder } from "./stateBuilder";
-import { StateQueueManager } from "./stateQueueManager";
+import { StateMatcher } from "./state-matcher";
+import { StateBuilder } from "./state-builder";
+import { StateQueueManager } from "./state-queue-manager";
 import { removeFrom } from "../../shared/common";
 import { propEq } from "../../shared/hof";
 /**

@@ -1,7 +1,8 @@
 import { inArray } from "../../shared/common";
 import { prop } from "../../shared/hof";
 import { isString } from "../../shared/utils";
-import { StateObject } from "./stateObject";
+import { StateObject } from "./state-object";
+
 export class StateQueueManager {
   constructor(router, states, builder, listeners) {
     this.router = router;

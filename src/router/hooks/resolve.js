@@ -1,4 +1,4 @@
-import { ResolveContext } from "../resolve/resolveContext";
+import { ResolveContext } from "../resolve/resolve-context";
 import { val } from "../../shared/hof";
 export const RESOLVE_HOOK_PRIORITY = 1000;
 /**

@@ -1,4 +1,4 @@
-import { StateParams } from "./params/stateParams";
+import { StateParams } from "./params/state-params";
 import { Queue } from "./common/queue";
 /**
  * Global router state

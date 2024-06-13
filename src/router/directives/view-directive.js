@@ -3,7 +3,7 @@ import { isDefined, isFunction, isString } from "../../shared/utils";
 import { kebobString } from "../../shared/strings";
 
 import { parse } from "../../shared/hof";
-import { ResolveContext } from "../resolve/resolveContext";
+import { ResolveContext } from "../resolve/resolve-context";
 import { trace } from "../common/trace";
 import { getLocals } from "../services";
 import { Ng1ViewConfig } from "../state/views";

@@ -3,7 +3,7 @@ import { propEq, not } from "../../shared/hof";
 import { trace } from "../common/trace";
 import { services } from "../common/coreservices";
 import { Resolvable } from "./resolvable";
-import { PathUtils } from "../path/pathUtils";
+import { PathUtils } from "../path/path-utils";
 import { stringify } from "../../shared/strings";
 import { isUndefined } from "../../shared/utils";
 

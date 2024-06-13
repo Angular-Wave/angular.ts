@@ -1,9 +1,9 @@
-import { TargetState } from "../state/targetState";
-import { UrlMatcher } from "./urlMatcher";
+import { TargetState } from "../state/target-state";
+import { UrlMatcher } from "./url-matcher";
 import { is, val } from "../../shared/hof";
 import { isDefined, isFunction, isString } from "../../shared/utils";
 import { removeFrom } from "../../shared/common";
-import { UrlRuleFactory } from "./urlRule";
+import { UrlRuleFactory } from "./url-rule";
 const prioritySort = (a, b) => (b.priority || 0) - (a.priority || 0);
 const typeSort = (a, b) => {
   const weights = { STATE: 4, URLMATCHER: 4, REGEXP: 3, RAW: 2, OTHER: 1 };

@@ -1,6 +1,6 @@
 import { isString, isFunction } from "../../shared/utils";
 import { services } from "../common/coreservices";
-import { TargetState } from "../state/targetState";
+import { TargetState } from "../state/target-state";
 /**
  * A [[TransitionHookFn]] that redirects to a different state or params
  *

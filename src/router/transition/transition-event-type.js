@@ -1,4 +1,4 @@
-import { TransitionHook } from "./transitionHook";
+import { TransitionHook } from "./transition-hook";
 /**
  * This class defines a type of hook, such as `onBefore` or `onEnter`.
  * Plugins can define custom hook types, such as sticky states does for `onInactive`.

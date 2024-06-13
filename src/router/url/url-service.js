@@ -1,8 +1,8 @@
 import { isString } from "../../shared/utils";
 import { is, pattern } from "../../shared/hof";
-import { UrlRules } from "./urlRules";
-import { UrlConfig } from "./urlConfig";
-import { TargetState } from "../state/targetState";
+import { UrlRules } from "./url-rules";
+import { UrlConfig } from "./url-config";
+import { TargetState } from "../state/target-state";
 /**
  * API for URL management
  */

@@ -1,8 +1,8 @@
-import { UrlMatcher } from "./urlMatcher";
+import { UrlMatcher } from "./url-matcher";
 import { isString, isFunction, isDefined } from "../../shared/utils";
 import { identity } from "../../shared/common";
 import { is, or, pattern } from "../../shared/hof";
-import { StateObject } from "../state/stateObject";
+import { StateObject } from "../state/state-object";
 /**
  * Creates a [[UrlRule]]
  *

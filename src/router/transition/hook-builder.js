@@ -1,6 +1,6 @@
 import { assertPredicate, unnestR, identity } from "../../shared/common";
 import { TransitionHookPhase, TransitionHookScope } from "./interface";
-import { TransitionHook } from "./transitionHook";
+import { TransitionHook } from "./transition-hook";
 /**
  * This class returns applicable TransitionHooks for a specific Transition instance.
  *

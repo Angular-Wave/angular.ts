@@ -1,4 +1,3 @@
-/** @publicapi @module ng1 */ /** */
 import {
   StateObject,
   ViewConfig,
@@ -6,7 +5,7 @@ import {
   PathNode,
   ResolveContext,
   IInjectable,
-} from "./core";
+} from "../core";
 import { Ng1ViewDeclaration } from "../interface";
 import { TemplateFactory } from "../templateFactory";
 /** @internalapi */

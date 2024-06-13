@@ -11,7 +11,7 @@ import { isNullOrUndefined } from "../../shared/predicates";
 import { isDefined } from "../../shared/utils";
 import { is } from "../../shared/hof";
 import { services } from "../common/coreservices";
-import { ParamType } from "./paramType";
+import { ParamType } from "./param-type";
 /**
  * A registry for parameter types.
  *

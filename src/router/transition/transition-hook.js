@@ -5,8 +5,8 @@ import { isPromise } from "../../shared/predicates";
 import { is, parse } from "../../shared/hof";
 import { trace } from "../common/trace";
 import { services } from "../common/coreservices";
-import { Rejection } from "./rejectFactory";
-import { TargetState } from "../state/targetState";
+import { Rejection } from "./reject-factory";
+import { TargetState } from "../state/target-state";
 const defaultOptions = {
   current: () => {},
   transition: null,

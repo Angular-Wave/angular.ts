@@ -1,5 +1,5 @@
 import { forEach, isDefined, isFunction, isObject } from "../../shared/utils";
-import { UrlMatcher } from "./urlMatcher";
+import { UrlMatcher } from "./url-matcher";
 import { DefType, Param } from "../params/param";
 
 export class ParamFactory {

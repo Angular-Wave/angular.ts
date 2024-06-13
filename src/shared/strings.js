@@ -7,7 +7,7 @@
  */
 import { isInjectable, isNull, isPromise } from "./predicates";
 import { isUndefined, isFunction, isString, isObject } from "./utils";
-import { Rejection } from "../router/transition/rejectFactory";
+import { Rejection } from "../router/transition/reject-factory";
 import { identity, pushR, tail } from "./common";
 import { pattern, val } from "./hof";
 /**

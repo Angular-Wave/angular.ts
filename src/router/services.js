@@ -15,9 +15,9 @@ import { trace } from "./common/trace";
 import { UIRouter } from "./router";
 import { ng1ViewsBuilder, getNg1ViewConfigFactory } from "./state/views";
 
-import { StateProvider } from "./stateProvider";
-import { Ng1LocationServices } from "./locationServices";
-import { ResolveContext } from "./resolve/resolveContext";
+import { StateProvider } from "./state-provider";
+import { Ng1LocationServices } from "./location-services";
+import { ResolveContext } from "./resolve/resolve-context";
 
 export let router = null;
 $routerProvider.$inject = ["$locationProvider"];

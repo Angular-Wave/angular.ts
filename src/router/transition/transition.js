@@ -17,14 +17,14 @@ import {
 import { isUndefined, isObject } from "../../shared/utils";
 import { prop, propEq, val, not, is } from "../../shared/hof";
 import { TransitionHookPhase } from "./interface"; // has or is using
-import { TransitionHook } from "./transitionHook";
-import { matchState, makeEvent } from "./hookRegistry";
-import { HookBuilder } from "./hookBuilder";
-import { PathUtils } from "../path/pathUtils";
+import { TransitionHook } from "./transition-hook";
+import { matchState, makeEvent } from "./hook-registry";
+import { HookBuilder } from "./hook-builder";
+import { PathUtils } from "../path/path-utils";
 import { Param } from "../params/param";
 import { Resolvable } from "../resolve/resolvable";
-import { ResolveContext } from "../resolve/resolveContext";
-import { Rejection } from "./rejectFactory";
+import { ResolveContext } from "../resolve/resolve-context";
+import { Rejection } from "./reject-factory";
 
 const stateSelf = prop("self");
 /**
