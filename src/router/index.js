@@ -36,7 +36,7 @@ export function initRouter() {
     .provider("$uiViewScroll", $ViewScrollProvider)
     .factory("$stateParams", [
       "$router",
-      function StateParamse($router) {
+      function ($router) {
         return $router.globals.params;
       },
     ])

@@ -19,6 +19,7 @@ import { StateProvider } from "./state-provider";
 import { Ng1LocationServices } from "./location-services";
 import { ResolveContext } from "./resolve/resolve-context";
 
+/** @type {angular.UIRouter}} */
 export let router = null;
 $routerProvider.$inject = ["$locationProvider"];
 /** This angular 1 provider instantiates a Router and exposes its services via the angular injector */
@@ -42,7 +43,27 @@ export function $routerProvider($locationProvider) {
   // Disable decoding of params by UrlMatcherFactory because $location already handles this
   router.urlService.config._decodeParams = false;
 
-  Ng1LocationServices.monkeyPatchPathParameterType(router);
+  /**
+   * Applys ng1-specific path parameter encoding
+   *
+   * The Angular 1 `$location` service is a bit weird.
+   * It doesn't allow slashes to be encoded/decoded bi-directionally.
+   *
+   * See the writeup at https://github.com/angular-ui/ui-router/issues/2598
+   *
+   * This code patches the `path` parameter type so it encoded/decodes slashes as ~2F
+   *
+   */
+  const pathType = router.urlMatcherFactory.type("path");
+  pathType.encode = (x) =>
+    x != null
+      ? x.toString().replace(/(~|\/)/g, (m) => ({ "~": "~~", "/": "~2F" })[m])
+      : x;
+  pathType.decode = (x) =>
+    x != null
+      ? x.toString().replace(/(~~|~2F)/g, (m) => ({ "~~": "~", "~2F": "/" })[m])
+      : x;
+
   // backwards compat: also expose router instance as $routerProvider.router
   router["router"] = router;
   router["$get"] = $get;

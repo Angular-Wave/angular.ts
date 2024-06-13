@@ -59,6 +59,7 @@ export class StateService {
   }
 
   constructor(router) {
+    /** @private */
     this.router = router;
 
     this.invalidCallbacks = [];

@@ -66,7 +66,6 @@ function getHandlerFn(handler) {
  */
 export class UrlRules {
   constructor(router) {
-    this.router = router;
     this._sortFn = defaultRuleSortFn;
     this._rules = [];
     this._id = 0;

@@ -3,8 +3,6 @@
  *
  * These functions are exported, but are subject to change without notice.
  *
- * @packageDocumentation
- * @preferred
  */
 import { isDate, isFunction, isRegExp, isString } from "./utils";
 import { all, any, prop, curry, not } from "./hof";

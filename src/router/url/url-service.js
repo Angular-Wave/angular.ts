@@ -16,17 +16,21 @@ export class UrlService {
      * @type {import('../router').UIRouter}
      */
     this.router = router;
+
+    /** @type {boolean} */
     this.interceptDeferred = false;
     /**
      * The nested [[UrlRules]] API for managing URL rules and rewrites
      *
      * See: [[UrlRules]] for details
+     * @type {UrlRules}
      */
     this.rules = new UrlRules(this.router);
     /**
      * The nested [[UrlConfig]] API to configure the URL and retrieve URL information
      *
      * See: [[UrlConfig]] for details
+     * @type {UrlConfig}
      */
     this.config = new UrlConfig(this.router);
     // Delegate these calls to the current LocationServices implementation

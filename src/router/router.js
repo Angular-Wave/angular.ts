@@ -102,7 +102,9 @@ export class UIRouter {
       try {
         typeof d.dispose === "function" && d.dispose(this);
         removeFrom(this._disposables, d);
-      } catch (ignored) {}
+      } catch (ignored) {
+        /* empty */
+      }
     });
   }
 
