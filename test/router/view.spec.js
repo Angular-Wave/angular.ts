@@ -2,16 +2,16 @@ import { dealoc } from "../../src/jqLite";
 import { Angular } from "../../src/loader";
 import { publishExternalAPI } from "../../src/public";
 import { curry } from "../../src/shared/hof";
-import { StateMatcher } from "../../src/router/state/stateMatcher";
-import { StateBuilder } from "../../src/router/state/stateBuilder";
-import { StateObject } from "../../src/router/state/stateObject";
+import { StateMatcher } from "../../src/router/state/state-matcher";
+import { StateBuilder } from "../../src/router/state/state-builder";
+import { StateObject } from "../../src/router/state/state-object";
 import { ViewService } from "../../src/router/view/view";
 import {
   ng1ViewsBuilder,
   getNg1ViewConfigFactory,
 } from "../../src/router/state/views";
-import { PathNode } from "../../src/router/path/pathNode";
-import { PathUtils } from "../../src/router/path/pathUtils";
+import { PathNode } from "../../src/router/path/path-node";
+import { PathUtils } from "../../src/router/path/path-utils";
 import { tail } from "../../src/shared/common";
 import { wait } from "../test-utils";
 
