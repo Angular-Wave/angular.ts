@@ -26,11 +26,11 @@ export class UIRouter {
   /**
    * Creates a new `UIRouter` object
    *
-   * @param {import('./locationServices').Ng1LocationServices} locationService
+   * @param {import('./location-services').Ng1LocationServices} locationService
    */
   constructor(locationService) {
     /**
-     * @type {import('./locationServices').Ng1LocationServices}
+     * @type {import('./location-services').Ng1LocationServices}
      */
     this.locationService = locationService;
     /**  @type {number} */ this.$id = routerId++;

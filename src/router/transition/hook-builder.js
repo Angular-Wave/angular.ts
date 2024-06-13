@@ -1,4 +1,4 @@
-import { assertPredicate, unnestR, identity } from "../../shared/common";
+import { assertPredicate, unnestR } from "../../shared/common";
 import { TransitionHookPhase, TransitionHookScope } from "./interface";
 import { TransitionHook } from "./transition-hook";
 /**
@@ -24,7 +24,7 @@ export class HookBuilder {
       ._getEvents(phase)
       .map((type) => this.buildHooks(type))
       .reduce(unnestR, [])
-      .filter(identity);
+      .filter(Boolean);
   }
   /**
    * Returns an array of newly built TransitionHook objects.

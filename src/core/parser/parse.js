@@ -2,7 +2,6 @@ import {
   createMap,
   csp,
   forEach,
-  identity,
   isDefined,
   isFunction,
   minErr,
@@ -2213,7 +2212,7 @@ export function $ParseProvider() {
         var unwatch, lastValue;
 
         var exp = parsedExpression.$$intercepted || parsedExpression;
-        var post = parsedExpression.$$interceptor || identity;
+        var post = parsedExpression.$$interceptor || ((x) => x);
 
         var useInputs = parsedExpression.inputs && !exp.inputs;
 
@@ -2476,7 +2475,7 @@ export function oneTimeWatchDelegate(
   let lastValue;
 
   const exp = parsedExpression.$$intercepted || parsedExpression;
-  const post = parsedExpression.$$interceptor || identity;
+  const post = parsedExpression.$$interceptor || ((x) => x);
 
   const useInputs = parsedExpression.inputs && !exp.inputs;
 

@@ -6,7 +6,6 @@ import {
   assertNotHasOwnProperty,
   createMap,
   forEach,
-  identity,
   isDefined,
   isFunction,
   isObject,
@@ -969,7 +968,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
       const endSymbol = $interpolate.endSymbol();
       const denormalizeTemplate =
         startSymbol === "{{" && endSymbol === "}}"
-          ? identity
+          ? (x) => x
           : function denormalizeTemplate(template) {
               return template
                 .replace(/\{\{/g, startSymbol)
@@ -2902,7 +2901,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         const nodeName = nodeName_(node);
         const trustedContext = getTrustedPropContext(nodeName, propName);
 
-        let sanitizer = identity;
+        let sanitizer = (x) => x;
         // Sanitize img[srcset] + source[srcset] values.
         if (
           propName === "srcset" &&

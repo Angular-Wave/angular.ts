@@ -1,7 +1,6 @@
 import {
   map,
   inherit,
-  identity,
   unnest,
   tail,
   find,
@@ -530,7 +529,6 @@ export class UrlMatcher {
         if (!param.raw) encoded = map(encoded, encodeURIComponent);
         return encoded.map((val) => `${param.id}=${val}`);
       })
-      .filter(identity)
       .reduce(unnestR, [])
       .join("&");
     // Concat the pathstring with the queryString (if exists) and the hashString (if exists)

@@ -112,7 +112,7 @@ export const trimHashVal = (str) => (str ? str.replace(/^#/, "") : "");
  */
 export function splitOnDelim(delim) {
   const re = new RegExp("(" + delim + ")", "g");
-  return (str) => str.split(re).filter(identity);
+  return (str) => str.split(re).filter(Boolean);
 }
 /**
  * Reduce fn that joins neighboring strings

@@ -1,7 +1,6 @@
 import {
   fromJson,
   toJson,
-  identity,
   equals,
   inherit,
   map,
@@ -153,8 +152,8 @@ function initDefaultTypes() {
     }),
     // does not encode/decode
     any: makeDefaultType({
-      encode: identity,
-      decode: identity,
+      encode: (x) => x,
+      decode: (x) => x,
       is: () => true,
       equals: equals,
     }),

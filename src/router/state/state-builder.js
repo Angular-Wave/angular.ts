@@ -1,6 +1,5 @@
 import {
   applyPairs,
-  identity,
   inherit,
   mapObj,
   omit,
@@ -201,12 +200,12 @@ export function resolvablesBuilder(state) {
     ],
     [
       prop("useExisting"),
-      (p) => new Resolvable(getToken(p), identity, [p.useExisting], p.policy),
+      (p) => new Resolvable(getToken(p), (x) => x, [p.useExisting], p.policy),
     ],
   ]);
   // prettier-ignore
   const tuple2Resolvable = pattern([
-        [pipe(prop('val'), isString), (tuple) => new Resolvable(tuple.token, identity, [tuple.val], tuple.policy)],
+        [pipe(prop('val'), isString), (tuple) => new Resolvable(tuple.token, ((x) => x), [tuple.val], tuple.policy)],
         [pipe(prop('val'), Array.isArray), (tuple) => new Resolvable(tuple.token, tail(tuple.val), tuple.val.slice(0, -1), tuple.policy)],
         [pipe(prop('val'), isFunction), (tuple) => new Resolvable(tuple.token, tuple.val, annotate(tuple.val), tuple.policy)],
     ]);

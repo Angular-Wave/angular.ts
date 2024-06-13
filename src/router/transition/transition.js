@@ -9,7 +9,6 @@ import {
   omit,
   arrayTuples,
   unnestR,
-  identity,
   anyTrueR,
   flattenR,
   uniqR,
@@ -466,7 +465,7 @@ export class Transition {
   views(pathname = "entering", state) {
     let path = this._treeChanges[pathname];
     path = !state ? path : path.filter(propEq("state", state));
-    return path.map(prop("views")).filter(identity).reduce(unnestR, []);
+    return path.map(prop("views")).reduce(unnestR, []);
   }
   treeChanges(pathname) {
     return pathname ? this._treeChanges[pathname] : this._treeChanges;

@@ -28,9 +28,7 @@ export function initRouter() {
         return router.urlMatcherFactory;
       },
     ])
-    .provider("$templateFactory", function () {
-      return new TemplateFactory();
-    })
+    .provider("$templateFactory", TemplateFactory)
     .provider("$stateRegistry", getProviderFor("stateRegistry"))
     .provider("$routerGlobals", getProviderFor("globals"))
     .provider("$transitions", getProviderFor("transitionService"))

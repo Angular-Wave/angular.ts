@@ -1,6 +1,5 @@
 import { UrlMatcher } from "./url-matcher";
 import { isString, isFunction, isDefined } from "../../shared/utils";
-import { identity } from "../../shared/common";
 import { is, or, pattern } from "../../shared/hof";
 import { StateObject } from "../state/state-object";
 /**
@@ -17,6 +16,7 @@ export class UrlRuleFactory {
   constructor(router) {
     this.router = router;
   }
+
   compile(str) {
     return this.router.urlMatcherFactory.compile(str);
   }
@@ -208,6 +208,6 @@ export class BaseUrlRule {
     this.type = "RAW";
     this.$id = -1;
     this.matchPriority = () => 0 - this.$id;
-    this.handler = handler || identity;
+    this.handler = handler || ((x) => x);
   }
 }

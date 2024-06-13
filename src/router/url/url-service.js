@@ -74,11 +74,11 @@ export class UrlService {
      * locationServices.url("/some/path?query=value#anchor", true);
      * ```
      *
-     * @param newurl The new value for the URL.
+     * @param {string} newurl The new value for the URL.
      *               This url should reflect only the new internal [[path]], [[search]], and [[hash]] values.
      *               It should not include the protocol, site, port, or base path of an absolute HREF.
-     * @param replace When true, replaces the current history entry (instead of appending it) with this new url
-     * @param state The history's state object, i.e., pushState (if the LocationServices implementation supports it)
+     * @param {boolean} replace When true, replaces the current history entry (instead of appending it) with this new url
+     * @param {any} state The history's state object, i.e., pushState (if the LocationServices implementation supports it)
      *
      * @return the url (after potentially being processed)
      */

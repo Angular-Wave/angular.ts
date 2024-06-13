@@ -1,4 +1,4 @@
-import { identity, isFunction, isObject } from "../../shared/utils";
+import { isFunction, isObject } from "../../shared/utils";
 import { services } from "../common/coreservices";
 import { trace } from "../common/trace";
 import { stringify } from "../../shared/strings";
@@ -87,7 +87,7 @@ export class Resolvable {
     const node = resolveContext.findNode(this);
     const state = node && node.state;
     const asyncPolicy = this.getPolicy(state).async;
-    const customAsyncPolicy = isFunction(asyncPolicy) ? asyncPolicy : identity;
+    const customAsyncPolicy = isFunction(asyncPolicy) ? asyncPolicy : (x) => x;
     // After the final value has been resolved, update the state of the Resolvable
     const applyResolvedValue = (resolvedValue) => {
       this.data = resolvedValue;

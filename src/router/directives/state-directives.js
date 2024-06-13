@@ -9,7 +9,6 @@ import {
   forEach,
   tail,
   unnestR,
-  identity,
   uniqR,
   inArray,
   removeFrom,
@@ -642,7 +641,7 @@ export let uiSrefActiveDirective = [
           }
           // Update route state
           function update() {
-            const splitClasses = (str) => str.split(/\s/).filter(identity);
+            const splitClasses = (str) => str.split(/\s/).filter(Boolean);
             const getClasses = (stateList) =>
               stateList
                 .map((x) => x.activeClass)

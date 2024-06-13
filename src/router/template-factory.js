@@ -1,4 +1,3 @@
-/** @publicapi @module view */ /** */
 import { isDefined, isFunction, isObject } from "../shared/utils";
 import { services } from "./common/coreservices";
 import { tail, unnestR } from "../shared/common";
@@ -6,23 +5,43 @@ import { Resolvable } from "./resolve/resolvable";
 import { kebobString } from "../shared/strings";
 
 /**
+ * @typedef BindingTuple
+ * @property {string} name
+ * @property {string} type
+ */
+
+/**
  * Service which manages loading of templates from a ViewConfig.
  */
 export class TemplateFactory {
   constructor() {
+    /** @type {boolean} */
     this._useHttp = false;
-    this.$get = [
-      "$http",
-      "$templateCache",
-      "$templateRequest",
-      ($http, $templateCache, $templateRequest) => {
-        this.$templateRequest = $templateRequest;
-        this.$http = $http;
-        this.$templateCache = $templateCache;
-        return this;
-      },
-    ];
   }
+
+  $get = [
+    "$http",
+    "$templateCache",
+    "$templateRequest",
+    "$q",
+    "$injector",
+    /**
+     * @param {angular.IHttpService} $http
+     * @param {angular.ITemplateCacheService} $templateCache
+     * @param {angular.ITemplateRequestService} $templateRequest
+     * @param {angular.IQService} $q
+     * @param {angular.auto.IInjectorService} $injector
+     * @returns
+     */
+    ($http, $templateCache, $templateRequest, $q, $injector) => {
+      this.$templateRequest = $templateRequest;
+      this.$http = $http;
+      this.$templateCache = $templateCache;
+      this.$q = $q;
+      this.$injector = $injector;
+      return this;
+    },
+  ];
 
   /**
    * Forces the provider to use $http service directly
@@ -39,8 +58,9 @@ export class TemplateFactory {
    * The following properties are search in the specified order, and the first one
    * that is defined is used to create the template:
    *
-   * @param params  Parameters to pass to the template function.
-   * @param context The resolve context associated with the template's view
+   * @param {angular.Ng1ViewDeclaration} config
+   * @param {any} params  Parameters to pass to the template function.
+   * @param {angular.ResolveContext} context The resolve context associated with the template's view
    *
    * @return {string|object}  The template html as a string, or a promise for
    * that string,or `null` if no template is configured.
@@ -48,34 +68,43 @@ export class TemplateFactory {
   fromConfig(config, params, context) {
     const defaultTemplate = "<ui-view></ui-view>";
     const asTemplate = (result) =>
-      services.$q.when(result).then((str) => ({ template: str }));
+      this.$q.when(result).then((str) => ({ template: str }));
     const asComponent = (result) =>
-      services.$q.when(result).then((str) => ({ component: str }));
-    return isDefined(config.template)
-      ? asTemplate(this.fromString(config.template, params))
-      : isDefined(config.templateUrl)
-        ? asTemplate(this.fromUrl(config.templateUrl, params))
-        : isDefined(config.templateProvider)
-          ? asTemplate(
-              this.fromProvider(config.templateProvider, params, context),
-            )
-          : isDefined(config.component)
-            ? asComponent(config.component)
-            : isDefined(config.componentProvider)
-              ? asComponent(
-                  this.fromComponentProvider(
-                    config.componentProvider,
-                    params,
-                    context,
-                  ),
-                )
-              : asTemplate(defaultTemplate);
+      this.$q.when(result).then((str) => ({ component: str }));
+
+    const getConfigType = (config) => {
+      if (isDefined(config.template)) return "template";
+      if (isDefined(config.templateUrl)) return "templateUrl";
+      if (isDefined(config.templateProvider)) return "templateProvider";
+      if (isDefined(config.component)) return "component";
+      if (isDefined(config.componentProvider)) return "componentProvider";
+      return "default";
+    };
+
+    switch (getConfigType(config)) {
+      case "template":
+        return asTemplate(this.fromString(config.template, params));
+      case "templateUrl":
+        return asTemplate(this.fromUrl(config.templateUrl, params));
+      case "templateProvider":
+        return asTemplate(
+          this.fromProvider(config.templateProvider, params, context),
+        );
+      case "component":
+        return asComponent(config.component);
+      case "componentProvider":
+        return asComponent(
+          this.fromComponentProvider(config.componentProvider, params, context),
+        );
+      default:
+        return asTemplate(defaultTemplate);
+    }
   }
   /**
    * Creates a template from a string or a function returning a string.
    *
-   * @param template html template as a string or function that returns an html template as a string.
-   * @param params Parameters to pass to the template function.
+   * @param {string | Function} template html template as a string or function that returns an html template as a string.
+   * @param {angular.RawParams} [params] Parameters to pass to the template function.
    *
    * @return {string|object} The template html as a string, or a promise for that
    * string.
@@ -110,13 +139,14 @@ export class TemplateFactory {
   /**
    * Creates a template by invoking an injectable provider function.
    *
-   * @param provider Function to invoke via `locals`
+   * @param {angular.IInjectable} provider Function to invoke via `locals`
    * @param {Function} injectFn a function used to invoke the template provider
+   * @param {angular.ResolveContext} context
    * @return {string|Promise.<string>} The template html as a string, or a promise
    * for that string.
    */
   fromProvider(provider, params, context) {
-    const deps = services.$injector.annotate(provider);
+    const deps = this.$injector.annotate(provider);
     const providerFn = Array.isArray(provider) ? tail(provider) : provider;
     const resolvable = new Resolvable("", providerFn, deps);
     return resolvable.get(context);
@@ -124,12 +154,12 @@ export class TemplateFactory {
   /**
    * Creates a component's template by invoking an injectable provider function.
    *
-   * @param provider Function to invoke via `locals`
+   * @param {angular.IInjectable} provider Function to invoke via `locals`
    * @param {Function} injectFn a function used to invoke the template provider
    * @return {string} The template html as a string: "<component-name input1='::$resolve.foo'></component-name>".
    */
   fromComponentProvider(provider, params, context) {
-    const deps = services.$injector.annotate(provider);
+    const deps = this.$injector.annotate(provider);
     const providerFn = Array.isArray(provider) ? tail(provider) : provider;
     const resolvable = new Resolvable("", providerFn, deps);
     return resolvable.get(context);
@@ -142,10 +172,10 @@ export class TemplateFactory {
    * It analyses the component's bindings, then constructs a template that instantiates the component.
    * The template wires input and output bindings to resolves or from the parent component.
    *
-   * @param uiView {object} The parent ui-view (for binding outputs to callbacks)
-   * @param context The ResolveContext (for binding outputs to callbacks returned from resolves)
-   * @param component {string} Component's name in camel case.
-   * @param bindings An object defining the component's bindings: {foo: '<'}
+   * @param {angular.IAugmentedJQuery} uiView {object} The parent ui-view (for binding outputs to callbacks)
+   * @param {angular.ResolveContext} context The ResolveContext (for binding outputs to callbacks returned from resolves)
+   * @param {string} component {string} Component's name in camel case.
+   * @param {any} [bindings] An object defining the component's bindings: {foo: '<'}
    * @return {string} The template as a string: "<component-name input1='::$resolve.foo'></component-name>".
    */
   makeComponentTemplate(uiView, context, component, bindings) {
@@ -157,7 +187,8 @@ export class TemplateFactory {
       const kebobed = kebobString(camelCase);
       return /^(x|data)-/.exec(kebobed) ? `x-${kebobed}` : kebobed;
     };
-    const attributeTpl = (input) => {
+
+    const attributeTpl = /** @param {BindingTuple} input*/ (input) => {
       const { name, type } = input;
       const attrName = kebob(name);
       // If the ui-view has an attribute which matches a binding on the routed component
@@ -176,7 +207,7 @@ export class TemplateFactory {
       if (type === "&") {
         const res = context.getResolvable(resolveName);
         const fn = res && res.data;
-        const args = (fn && services.$injector.annotate(fn)) || [];
+        const args = (fn && this.$injector.annotate(fn)) || [];
         // account for array style injection, i.e., ['foo', function(foo) {}]
         const arrayIdxStr = Array.isArray(fn) ? `[${fn.length - 1}]` : "";
         return `${attrName}='$resolve.${resolveName}${arrayIdxStr}(${args.join(",")})'`;
@@ -189,7 +220,12 @@ export class TemplateFactory {
     return `<${kebobName} ${attrs}></${kebobName}>`;
   }
 }
-// Gets all the directive(s)' inputs ('@', '=', and '<') and outputs ('&')
+
+/**
+ * Gets all the directive(s)' inputs ('@', '=', and '<') and outputs ('&')
+ * @param {string} name
+ * @returns
+ */
 function getComponentBindings(name) {
   const cmpDefs = services.$injector.get(name + "Directive"); // could be multiple
   if (!cmpDefs || !cmpDefs.length)
