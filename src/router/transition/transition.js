@@ -35,38 +35,7 @@ const stateSelf = prop("self");
  * It has information about all states being entered and exited as a result of the transition.
  */
 export class Transition {
-  onBefore(criteria, callback, options) {
-    return;
-  }
-  /** @inheritdoc */
-  onStart(criteria, callback, options) {
-    return;
-  }
-  /** @inheritdoc */
-  onExit(criteria, callback, options) {
-    return;
-  }
-  /** @inheritdoc */
-  onRetain(criteria, callback, options) {
-    return;
-  }
-  /** @inheritdoc */
-  onEnter(criteria, callback, options) {
-    return;
-  }
-  /** @inheritdoc */
-  onFinish(criteria, callback, options) {
-    return;
-  }
-  /** @inheritdoc */
-  onSuccess(criteria, callback, options) {
-    return;
-  }
-  /** @inheritdoc */
-  onError(criteria, callback, options) {
-    return;
-  }
-  /** @internal
+  /**
    * Creates the transition-level hook registration functions
    * (which can then be used to register hooks)
    */

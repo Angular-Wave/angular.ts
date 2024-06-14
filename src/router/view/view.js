@@ -29,10 +29,6 @@ export class ViewService {
    * @param {import('../router').UIRouter} router
    */
   constructor(router) {
-    /**
-     * @type {import('../router').UIRouter}
-     */
-    this.router = router;
     this._uiViews = [];
     this._viewConfigs = [];
     this._viewConfigFactories = {};
@@ -41,7 +37,7 @@ export class ViewService {
       _rootViewContext: this._rootViewContext.bind(this),
       _viewConfigFactory: this._viewConfigFactory.bind(this),
       _registeredUIView: (id) =>
-        find(this._uiViews, (view) => `${this.router.$id}.${view.id}` === id),
+        find(this._uiViews, (view) => `${router.$id}.${view.id}` === id),
       _registeredUIViews: () => this._uiViews,
       _activeViewConfigs: () => this._viewConfigs,
       _onSync: (listener) => {
