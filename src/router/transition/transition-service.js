@@ -109,46 +109,12 @@ export class TransitionService {
    * @param options the registration options
    * @returns a function which deregisters the hook.
    */
-  onCreate(criteria, callback, options) {
-    return;
-  }
-  /** @inheritdoc */
-  onBefore(criteria, callback, options) {
-    return;
-  }
-  /** @inheritdoc */
-  onStart(criteria, callback, options) {
-    return;
-  }
-  /** @inheritdoc */
-  onExit(criteria, callback, options) {
-    return;
-  }
-  /** @inheritdoc */
-  onRetain(criteria, callback, options) {
-    return;
-  }
-  /** @inheritdoc */
-  onEnter(criteria, callback, options) {
-    return;
-  }
-  /** @inheritdoc */
-  onFinish(criteria, callback, options) {
-    return;
-  }
-  /** @inheritdoc */
-  onSuccess(criteria, callback, options) {
-    return;
-  }
-  /** @inheritdoc */
-  onError(criteria, callback, options) {
-    return;
-  }
+
   /**
    * dispose
    * @internal
    */
-  dispose(router) {
+  dispose() {
     Object.values(this._registeredHooks).forEach((hooksArray) =>
       hooksArray.forEach((hook) => {
         hook._deregistered = true;

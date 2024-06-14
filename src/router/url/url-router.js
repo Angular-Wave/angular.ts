@@ -84,8 +84,4 @@ export class UrlRouter {
     const port = cfgPort === 80 || cfgPort === 443 ? "" : ":" + cfgPort;
     return [cfg.protocol(), "://", cfg.host(), port, slash, url].join("");
   }
-  /** @deprecated use [[UrlService.interceptDeferred]]*/
-  get interceptDeferred() {
-    return this.router.urlService.interceptDeferred;
-  }
 }
