@@ -422,7 +422,7 @@ describe("$compile", () => {
     expect(el.data("hasCompiled")).toBe(true);
   });
 
-  it("compiles attribute directives with data:ng-attr prefix", () => {
+  it("compiles attribute directives with ng-attr prefix", () => {
     myModule.directive("myDirective", () => {
       return {
         restrict: "EA",
@@ -432,7 +432,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = $("<div data:ng-attr-my-directive></div>");
+    var el = $("<div ng-attr-my-directive></div>");
     $compile(el);
     expect(el.data("hasCompiled")).toBe(true);
   });
@@ -16579,11 +16579,11 @@ describe("$compile", () => {
       expect(element.attr("href")).toBe("test/test");
     });
 
-    it("should work if they are prefixed with x- or data- and different prefixes", () => {
+    it("should work if they are prefixed with or data- and different prefixes", () => {
       $rootScope.name = "Misko";
       element = $compile(
-        '<span data-ng-attr-test2="{{name}}" x-ng-attr-test3="{{name}}" data-ng:attr-test4="{{name}}" ' +
-          'x_ng-attr-test5="{{name}}" data:ng-attr-test6="{{name}}"></span>',
+        '<span data-ng-attr-test2="{{name}}" ng-attr-test3="{{name}}" data-ng:attr-test4="{{name}}" ' +
+          'ng-attr-test5="{{name}}" ng-attr-test6="{{name}}"></span>',
       )($rootScope);
       expect(element.attr("test2")).toBeUndefined();
       expect(element.attr("test3")).toBeUndefined();
@@ -16661,7 +16661,7 @@ describe("$compile", () => {
       it("should work if they are prefixed with x- or data-", () => {
         $rootScope.name = "JamieMason";
         element = $compile(
-          '<span data-ng-attr-dash-test2="{{name}}" x-ng-attr-dash-test3="{{name}}" data-ng:attr-dash-test4="{{name}}"></span>',
+          '<span data-ng-attr-dash-test2="{{name}}" ng-attr-dash-test3="{{name}}" data-ng:attr-dash-test4="{{name}}"></span>',
         )($rootScope);
         expect(element.attr("dash-test2")).toBeUndefined();
         expect(element.attr("dash-test3")).toBeUndefined();
@@ -16880,7 +16880,7 @@ describe("$compile", () => {
       $rootScope.scale = 1;
       element = $compile(
         '<svg data-ng-attr-view_box="{{dimensions}}">' +
-          '<filter x-ng-attr-filter_units="{{number}}">' +
+          '<filter ng-attr-filter_units="{{number}}">' +
           '<feDiffuseLighting data-ng:attr_surface_scale="{{scale}}">' +
           "</feDiffuseLighting>" +
           '<feSpecularLighting x-ng:attr_surface_scale="{{scale}}">' +
@@ -17213,8 +17213,8 @@ describe("$compile", () => {
         "<div>" +
           '<span data-ng-show-start="show"></span>' +
           "<span data-ng-show-end></span>" +
-          '<span x-ng-show-start="show"></span>' +
-          "<span x-ng-show-end></span>" +
+          '<span ng-show-start="show"></span>' +
+          "<span ng-show-end></span>" +
           "</div>",
       )($rootScope);
       $rootScope.$digest();

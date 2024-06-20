@@ -16615,7 +16615,7 @@ docs. The biggest improvements and changes are listed below.
 
   - `<ng:include src="someSrc"></ng:include>`
   - `<ng-include src="someSrc"></ng-include>`
-  - `<x-ng-include src="someSrc"></x-ng-include>`
+  - `<ng-include src="someSrc"></ng-include>`
   - `<div ng:include src="someSrc"></div>`
   - `<div ng-include src="someSrc"></div>`
   - `<div data-ng-include src="someSrc"></div>`

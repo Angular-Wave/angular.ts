@@ -79,8 +79,8 @@ describe("ngOn* event binding", () => {
   it("should work if they are prefixed with x- or data- and different prefixes", () => {
     const cb = ($rootScope.cb = jasmine.createSpy("ng-on cb"));
     const element = $compile(
-      '<span data-ng-on-test2="cb(2)" x-ng-on-test3="cb(3)" data-ng:on-test4="cb(4)" ' +
-        'x_ng-on-test5="cb(5)" data:ng-on-test6="cb(6)"></span>',
+      '<span data-ng-on-test2="cb(2)" ng-on-test3="cb(3)" data-ng:on-test4="cb(4)" ' +
+        'ng-on-test5="cb(5)" ng-on-test6="cb(6)"></span>',
     )($rootScope);
 
     element.triggerHandler("test2");

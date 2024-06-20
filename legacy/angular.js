@@ -1629,7 +1629,7 @@ function encodeUriQuery(val, pctEncodeSpaces) {
              replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
 }
 
-var ngAttrPrefixes = ['ng-', 'data-ng-', 'ng:', 'x-ng-'];
+var ngAttrPrefixes = ['ng-', 'data-ng-', 'ng:', 'ng-'];
 
 function getNgAttribute(element, ngAttr) {
   var attr, i, ii = ngAttrPrefixes.length;
@@ -8136,7 +8136,7 @@ function $TemplateCacheProvider() {
  * `link()` or `compile()` functions. It has a variety of uses.
  *
  * * *Accessing normalized attribute names:* Directives like `ngBind` can be expressed in many ways:
- *   `ng:bind`, `data-ng-bind`, or `x-ng-bind`. The attributes object allows for normalized access
+ *   `ng:bind`, `data-ng-bind`, or `ng-bind`. The attributes object allows for normalized access
  *   to the attributes.
  *
  * * *Directive inter-communication:* All directives share the same instance of the attributes
@@ -11591,7 +11591,7 @@ function directiveNormalize(name) {
  * needed since all of these are treated as equivalent in AngularJS:
  *
  * ```
- *    <span ng:bind="a" ng-bind="a" data-ng-bind="a" x-ng-bind="a">
+ *    <span ng:bind="a" ng-bind="a" data-ng-bind="a" ng-bind="a">
  * ```
  */
 
@@ -28570,7 +28570,7 @@ var ngClassEvenDirective = classDirective('Even', 1);
  * For CSP mode please add `angular-csp.css` to your html file (see {@link ng.directive:ngCsp ngCsp}).
  *
  * ```css
- * [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+ * [ng\:cloak], [ng-cloak], [data-ng-cloak], [ng-cloak], .ng-cloak, .ng-cloak {
  *   display: none !important;
  * }
  * ```
@@ -33702,7 +33702,7 @@ var ngRefDirective = ['$parse', function($parse) {
  * ```
  *
  * The custom start and end points for ngRepeat also support all other HTML directive syntax flavors provided in AngularJS (such
- * as **data-ng-repeat-start**, **x-ng-repeat-start** and **ng:repeat-start**).
+ * as **data-ng-repeat-start**, **ng-repeat-start** and **ng:repeat-start**).
  *
  * @animations
  * | Animation                        | Occurs                              |
@@ -36597,4 +36597,4 @@ $provide.value("$locale", {
 
 })(window);
 
-!window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend(window.angular.element('<style>').text('@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}'));
+!window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend(window.angular.element('<style>').text('@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[ng-cloak],.ng-cloak,.ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}'));

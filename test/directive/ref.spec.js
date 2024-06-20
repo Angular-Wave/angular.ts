@@ -111,7 +111,7 @@ describe("ngRef", () => {
     //   });
 
     //   it("should work with x-non-normalized attribute name", () => {
-    //     $compile('<my-component x-ng-ref="myComponent2"></my-component>')(
+    //     $compile('<my-component ng-ref="myComponent2"></my-component>')(
     //       $rootScope,
     //     );
     //     expect($rootScope.myComponent2).toBe(myComponentController);

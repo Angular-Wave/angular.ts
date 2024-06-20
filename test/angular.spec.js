@@ -1609,15 +1609,15 @@ describe("angular", () => {
 
     it("should look for ngApp directive using querySelectorAll", () => {
       window.angular.module("ABC", []);
-      const appElement = jqLite('<div x-ng-app="ABC"></div>')[0];
-      element.querySelector["[x-ng-app]"] = appElement;
+      const appElement = jqLite('<div ng-app="ABC"></div>')[0];
+      element.querySelector["[ng-app]"] = appElement;
       angularInit(element);
       expect(bootstrapSpy).toHaveBeenCalled();
     });
 
     it("should bootstrap anonymously", () => {
-      const appElement = jqLite("<div x-ng-app></div>")[0];
-      element.querySelector["[x-ng-app]"] = appElement;
+      const appElement = jqLite("<div ng-app></div>")[0];
+      element.querySelector["[ng-app]"] = appElement;
       angularInit(element);
       expect(bootstrapSpy).toHaveBeenCalled();
     });

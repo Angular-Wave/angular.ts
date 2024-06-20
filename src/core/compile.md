@@ -830,7 +830,7 @@
 - `link()` or `compile()` functions. It has a variety of uses.
 -
 - - _Accessing normalized attribute names:_ Directives like `ngBind` can be expressed in many ways:
-- `ng:bind`, `data-ng-bind`, or `x-ng-bind`. The attributes object allows for normalized access
+- `ng:bind`, `data-ng-bind`, or `ng-bind`. The attributes object allows for normalized access
 - to the attributes.
 -
 - - _Directive inter-communication:_ All directives share the same instance of the attributes
@@ -1194,7 +1194,7 @@
 
   ```
 
-- <span ng:bind="a" ng-bind="a" data-ng-bind="a" x-ng-bind="a">
+- <span ng:bind="a" ng-bind="a" data-ng-bind="a" ng-bind="a">
 - ```
   */
   ```

@@ -16,9 +16,9 @@ The directive can be applied to the `<body>` element, but the preferred usage is
 [ng\:cloak],
 [ng-cloak],
 [data-ng-cloak],
-[x-ng-cloak],
+[ng-cloak],
 .ng-cloak,
-.x-ng-cloak {
+.ng-cloak {
   display: none !important;
 }
 ```

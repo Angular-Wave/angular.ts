@@ -1117,7 +1117,7 @@ export function encodeUriQuery(val, pctEncodeSpaces) {
     .replace(/%20/g, pctEncodeSpaces ? "%20" : "+");
 }
 
-export const ngAttrPrefixes = ["ng-", "data-ng-", "ng:", "x-ng-"];
+export const ngAttrPrefixes = ["ng-", "data-ng-"];
 
 export function getNgAttribute(element, ngAttr) {
   let attr;

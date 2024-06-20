@@ -278,7 +278,7 @@
 
 -
 - The custom start and end points for ngRepeat also support all other HTML directive syntax flavors provided in AngularJS (such
-- as **data-ng-repeat-start**, **x-ng-repeat-start** and **ng:repeat-start**).
+- as **data-ng-repeat-start**, **ng-repeat-start** and **ng:repeat-start**).
 -
 - @animations
 - | Animation | Occurs |

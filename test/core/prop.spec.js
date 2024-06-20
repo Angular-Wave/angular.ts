@@ -139,8 +139,8 @@ describe("ngProp*", () => {
   it("should work if they are prefixed with x- or data- and different prefixes", () => {
     $rootScope.name = "Misko";
     const element = $compile(
-      '<span data-ng-prop-test2="name" x-ng-prop-test3="name" data-ng:prop-test4="name" ' +
-        'x_ng-prop-test5="name" data:ng-prop-test6="name"></span>',
+      '<span data-ng-prop-test2="name" ng-prop-test3="name" data-ng:prop-test4="name" ' +
+        'ng-prop-test5="name" ng-prop-test6="name"></span>',
     )($rootScope);
     expect(element[0].test2).toBe("Misko");
     expect(element[0].test3).toBe("Misko");
