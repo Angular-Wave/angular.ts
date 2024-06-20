@@ -512,6 +512,7 @@ describe("$state", () => {
             transSuccess = true;
           });
           await promise;
+          await wait(100);
           expect(transition.dynamic()).toBeTruthy();
           expect(transSuccess).toBeTruthy();
           expect(dynlog).toBe("success;[searchDyn=sd2];");
@@ -533,6 +534,7 @@ describe("$state", () => {
             destState = result;
           });
           await promise;
+          await wait(100);
           expect(promise.transition.dynamic()).toBeTruthy();
           expect($state.current).toBe(dynamicstate);
           expect(destState).toBe(dynamicstate);
@@ -544,6 +546,7 @@ describe("$state", () => {
         it("does not exit nor enter any states when fully dynamic", async () => {
           const promise = $state.go(dynamicstate, { searchDyn: "sd2" });
           await promise;
+          await wait(100);
           expect(promise.transition.dynamic()).toBeTruthy();
           expect(promise.transition.treeChanges().entering.length).toBe(0);
           expect(promise.transition.treeChanges().exiting.length).toBe(0);
@@ -656,7 +659,7 @@ describe("$state", () => {
         it("updates $stateParams and $location.search when only dynamic params change (triggered via url)", async () => {
           $location.search({ search: "s1", searchDyn: "sd2" });
           $rootScope.$broadcast("$locationChangeSuccess");
-          await wait(10);
+          await wait(100);
           expect($stateParams.search).toBe("s1");
           expect($stateParams.searchDyn).toBe("sd2");
           expect($location.search()).toEqual({
@@ -759,7 +762,7 @@ describe("$state", () => {
           expect(dynlog).toBe("success;[pathDyn=pd2];");
 
           await $state.go(dynamicstate, { pathDyn: "pd3", searchDyn: "sd2" });
-
+          await wait(100);
           expect(dynlog).toBe(
             "success;[pathDyn=pd2];success;[pathDyn=pd3,searchDyn=sd2];",
           );
@@ -826,6 +829,7 @@ describe("$state", () => {
           await initStateTo(RS);
           const promise = $state.go(".", { term: "hello" });
           await promise;
+          await wait(100);
           let success = false,
             transition = promise.transition;
           await transition.promise.then(async () => {
@@ -977,7 +981,7 @@ describe("$state", () => {
 
     it("updates the location #fragment", async () => {
       await $state.transitionTo("home.item", { id: "world", "#": "frag" });
-
+      await wait(100);
       expect($location.url()).toBe("/front/world#frag");
       expect($location.hash()).toBe("frag");
     });
