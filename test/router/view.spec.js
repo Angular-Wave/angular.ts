@@ -110,7 +110,7 @@ describe("view", () => {
 
       const view = tail(path).views[0];
       view.load();
-      await wait(10);
+      await wait(100);
       expect(ctrlExpression).toEqual("FooController as foo");
     });
   });

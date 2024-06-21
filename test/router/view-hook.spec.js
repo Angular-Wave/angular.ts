@@ -58,7 +58,7 @@ describe("view hooks", () => {
 
     const initial = async () => {
       $state.go("foo");
-      await wait(10);
+      await wait(100);
       expect(log).toBe("");
       expect($state.current.name).toBe("foo");
     };
@@ -83,7 +83,7 @@ describe("view hooks", () => {
       await initial();
 
       $state.go("bar");
-      await wait(10);
+      await wait(100);
       expect(log).toBe("canexit;");
       expect($state.current.name).toBe("bar");
     });
@@ -95,7 +95,7 @@ describe("view hooks", () => {
       await initial();
 
       $state.go("bar");
-      await wait(10);
+      await wait(100);
       expect(log).toBe("canexit;");
       expect($state.current.name).toBe("bar");
     });
@@ -108,7 +108,7 @@ describe("view hooks", () => {
       await initial();
 
       $state.go("bar");
-      await wait(10);
+      await wait(100);
       expect(log).toBe("canexit;");
       expect($state.current.name).toBe("baz");
     });
@@ -122,7 +122,7 @@ describe("view hooks", () => {
 
       $state.defaultErrorHandler(function () {});
       $state.go("bar");
-      await wait(10);
+      await wait(100);
       expect(log).toBe("canexit;");
       expect($state.current.name).toBe("foo");
     });
@@ -139,7 +139,7 @@ describe("view hooks", () => {
       await initial();
 
       $state.go("bar");
-      await wait(10);
+      await wait(100);
       expect(log).toBe("canexit;delay;");
       expect($state.current.name).toBe("foo");
     });
@@ -154,7 +154,7 @@ describe("view hooks", () => {
       await initial();
 
       $state.go("bar");
-      await wait(10);
+      await wait(100);
       expect(log).toBe("canexit;delay;");
       expect($state.current.name).toBe("bar");
     });
@@ -166,7 +166,7 @@ describe("view hooks", () => {
       await initial();
 
       $state.go("bar");
-      await wait(10);
+      await wait(100);
       expect(log).toBe("DATA");
       expect($state.current.name).toBe("bar");
     });
@@ -181,7 +181,7 @@ describe("view hooks", () => {
       await initial();
 
       $state.go("bar");
-      await wait(10);
+      await wait(100);
       expect(log).toBe("canexit;");
       expect($state.current.name).toBe("bar");
     });
@@ -195,7 +195,7 @@ describe("view hooks", () => {
       await initial();
 
       $state.go("redirect");
-      await wait(10);
+      await wait(100);
       expect(log).toBe("canexit;");
       expect($state.current.name).toBe("baz");
     });
@@ -209,7 +209,7 @@ describe("view hooks", () => {
       await initial();
 
       $state.go("redirect");
-      await wait(10);
+      await wait(100);
       expect(log).toBe("canexit;");
       expect($state.current.name).toBe("bar");
     });

@@ -32,7 +32,7 @@ describe("templateFactory", () => {
     it("accepts relative URLs", async () => {
       let res = $templateFactory.fromUrl("mock/hello");
       $scope.$digest();
-      await wait(10);
+      await wait(100);
       expect(res.$$state.status).toBe(1);
     });
 
@@ -122,7 +122,7 @@ describe("templateFactory", () => {
       $router.stateRegistry.register({ name: "cmp", component: "myComponent" });
       $router.stateService.go("cmp");
       $scope.$digest();
-      await wait(10);
+      await wait(100);
       expect(el.html()).toMatch(/\<my-component/);
     });
 

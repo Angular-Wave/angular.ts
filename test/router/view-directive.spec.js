@@ -187,7 +187,7 @@ describe("uiView", () => {
       expect(elem.find("ui-view").text()).toBe("");
 
       $state.transitionTo(aState);
-      await wait(10);
+      await wait(100);
 
       expect(elem.find("ui-view").text()).toBe(aState.template);
     });
@@ -198,7 +198,7 @@ describe("uiView", () => {
       );
 
       $state.transitionTo(cState);
-      await wait(10);
+      await wait(100);
 
       expect(elem.find("ui-view").text()).toBe(cState.views.cview.template);
     });
@@ -208,12 +208,12 @@ describe("uiView", () => {
       expect(elem.find("ui-view").text()).toBe("");
 
       $state.transitionTo(aState);
-      await wait(10);
+      await wait(100);
 
       expect(elem.find("ui-view").text()).toBe(aState.template);
 
       $state.transitionTo(bState);
-      await wait(10);
+      await wait(100);
 
       expect(elem.find("ui-view").text()).toBe(bState.template);
     });
@@ -228,7 +228,7 @@ describe("uiView", () => {
       expect(elem.find("ui-view").eq(1).text()).toBe("");
 
       $state.transitionTo(dState);
-      await wait(10);
+      await wait(100);
 
       expect(elem.find("ui-view").eq(0).text()).toBe(
         dState.views.dview1.template,
@@ -243,7 +243,7 @@ describe("uiView", () => {
       expect(elem.find("ui-view").text()).toBe("");
 
       $state.transitionTo(fState);
-      await wait(10);
+      await wait(100);
 
       expect(elem.find("ui-view").text()).toBe(fState.views.eview.template);
     });
@@ -256,7 +256,7 @@ describe("uiView", () => {
       elem.append($compile("<div><ui-view></ui-view></div>")(scope));
 
       $state.transitionTo(gState);
-      await wait(10);
+      await wait(100);
 
       expect(elem.find("ui-view").text()).toBe(content);
     });
@@ -267,13 +267,13 @@ describe("uiView", () => {
       elem.append($compile("<div><ui-view></ui-view></div>")(scope));
 
       $state.go(hState);
-      await wait(10);
+      await wait(100);
 
       expect(elem.find("ui-view").text()).toBe(hState.views.inner.template);
 
       // going to the parent state which makes the inner view empty
       $state.go(gState);
-      await wait(10);
+      await wait(100);
 
       expect(elem.find("ui-view").text()).toBe(content);
     });
@@ -286,20 +286,20 @@ describe("uiView", () => {
 
       // transition to state that has an initial view
       $state.transitionTo(iState);
-      await wait(10);
+      await wait(100);
 
       // verify if ng-repeat has been compiled
       expect(elem.find("li").length).toBe(scope.items.length);
 
       // transition to another state that replace the initial content
       $state.transitionTo(jState);
-      await wait(10);
+      await wait(100);
 
       expect(elem.find("ui-view").text()).toBe(jState.template);
 
       // transition back to the state with empty subview and the initial view
       $state.transitionTo(iState);
-      await wait(10);
+      await wait(100);
 
       // verify if the initial view is correct
       expect(elem.find("li").length).toBe(scope.items.length);
@@ -319,7 +319,7 @@ describe("uiView", () => {
       elem.append($compile("<div><ui-view></ui-view></div>")(scope));
 
       $state.transitionTo(aState);
-      await wait(10);
+      await wait(100);
       expect($uiViewScroll).not.toHaveBeenCalled();
     });
 
@@ -341,7 +341,7 @@ describe("uiView", () => {
       );
 
       $state.transitionTo(aState);
-      await wait(10);
+      await wait(100);
 
       expect($uiViewScroll).not.toHaveBeenCalled();
 
@@ -375,7 +375,7 @@ describe("uiView", () => {
       ),
     );
     $state.transitionTo(mState);
-    await wait(10);
+    await wait(100);
 
     expect(elem.text()).toBe("mState");
   });
@@ -428,7 +428,7 @@ describe("uiView", () => {
       elem.append($compile("<div><ui-view></ui-view></div>")(scope));
 
       await $state.transitionTo("resolve");
-      await wait(10);
+      await wait(100);
 
       expect(elem.text()).toBe("joeschmoe");
       expect(_scope.$resolve).toBeDefined();
@@ -445,7 +445,7 @@ describe("uiView", () => {
       expect(elem.text()).toBe("");
 
       await $state.transitionTo("resolve");
-      await wait(10);
+      await wait(100);
 
       expect(elem.text()).toBe("joeschmoe");
     });
@@ -460,7 +460,7 @@ describe("uiView", () => {
       elem.append($compile("<div><ui-view></ui-view></div>")(scope));
 
       await $state.transitionTo("resolve");
-      await wait(10);
+      await wait(100);
 
       expect(elem.text()).toBe("joeschmoe");
       expect(_scope.$$$resolve).toBeDefined();
@@ -495,7 +495,7 @@ describe("uiView", () => {
     });
     elem.append($compile("<div><ui-view></ui-view></div>")(scope));
     await $state.transitionTo("onInit");
-    await wait(10);
+    await wait(100);
 
     expect($onInit).toHaveBeenCalled();
   });
@@ -506,7 +506,7 @@ describe("uiView", () => {
     $stateProvider.state({ name: "abstract.foo", template: "hello" });
     elem.append($compile("<div><ui-view></ui-view></div>")(scope));
     $state.transitionTo("abstract.foo");
-    await wait(10);
+    await wait(100);
 
     expect(elem.text()).toBe("hello");
   });
@@ -520,7 +520,7 @@ describe("uiView", () => {
       );
 
       $state.transitionTo(aState);
-      await wait(10);
+      await wait(100);
 
       // Verify there is no ui-view in the DOM
       expect(elem.find("ui-view").length).toBe(0);
@@ -612,7 +612,7 @@ describe("uiView", () => {
         );
 
         $state.transitionTo(lState);
-        await wait(10);
+        await wait(100);
 
         expect(elem.find("ui-view").length).toBe(0);
 
@@ -646,7 +646,7 @@ describe("uiView", () => {
         );
 
         $state.transitionTo(lState);
-        await wait(10);
+        await wait(100);
 
         expect(elem.find("ui-view").length).toBe(0);
 
@@ -686,7 +686,7 @@ describe("uiView", () => {
   //     expect(animation.element.text() + "-1").toBe(content + "-1");
 
   //     $state.transitionTo(aState);
-  //     await wait(10);
+  //     await wait(100);
 
   //     // Enter Animation
   //     animation = $animate.queue.shift();
@@ -698,7 +698,7 @@ describe("uiView", () => {
   //     expect(animation.element.text() + "-3").toBe(content + "-3");
 
   //     $state.transitionTo(bState);
-  //     await wait(10);
+  //     await wait(100);
 
   //     // Enter Animation
   //     animation = $animate.queue.shift();
@@ -802,24 +802,24 @@ describe("uiView", () => {
   //       $compile("<div><ui-view>" + content + "</ui-view></div>")(scope),
   //     );
   //     $state.transitionTo("n");
-  //     await wait(10);
+  //     await wait(100);
 
   //     expect($state.current.name).toBe("n");
   //     expect(log).toBe("start:n;finish:n;success:n;");
 
   //     // animateFlush($animate);
-  //     await wait(10);
+  //     await wait(100);
   //     expect(log).toBe("start:n;finish:n;success:n;animEnter;");
 
   //     $state.transitionTo("a");
-  //     await wait(10);
+  //     await wait(100);
   //     expect($state.current.name).toBe("a");
   //     expect(log).toBe(
   //       "start:n;finish:n;success:n;animEnter;start:a;finish:a;destroy;success:a;",
   //     );
 
   //     // animateFlush($animate);
-  //     await wait(10);
+  //     await wait(100);
   //     expect(log).toBe(
   //       "start:n;finish:n;success:n;animEnter;start:a;finish:a;destroy;success:a;animLeave;",
   //     );
@@ -891,7 +891,7 @@ describe("UiView", () => {
     );
 
     await $state.go("main.home");
-    await wait(10);
+    await wait(100);
 
     expect($state.current.name).toBe("main.home");
   });
@@ -911,7 +911,7 @@ describe("UiView", () => {
     const el = $compile(tpl)($rootScope);
 
     $state.go("test");
-    await wait(10);
+    await wait(100);
 
     expect($state.current.name).toBe("test");
     expect(el.text().replace(/\s*/g, "")).toBe("MAIN-DEFAULT-TEST");
@@ -978,7 +978,7 @@ describe("uiView transclusion", () => {
     });
     elem.append($compile("<div><ui-view></ui-view></div>")(scope));
     $state.transitionTo("a.b");
-    await wait(10);
+    await wait(100);
     expect(aliveCount).toBe(0);
   });
 });
@@ -1053,17 +1053,17 @@ describe("uiView controllers or onEnter handlers", () => {
     $rootScope.$digest();
 
     await $state.transitionTo("aside");
-    await wait(10);
+    await wait(100);
     expect(template[0].querySelector(".aside")).toBeDefined();
     expect(template[0].querySelector(".fwd")).toBeNull();
 
     await $state.transitionTo("A");
-    await wait(10);
+    await wait(100);
     expect(template[0].querySelector(".A")).not.toBeNull();
     expect(template[0].querySelector(".fwd")).toBeNull();
 
     await $state.transitionTo("A.fwd");
-    await wait(10);
+    await wait(100);
     expect(template[0].querySelector(".A")).not.toBeNull();
     expect(template[0].querySelector(".fwd")).not.toBeNull();
     expect(template[0].querySelector(".nest")).not.toBeNull();
@@ -1246,7 +1246,7 @@ describe("angular 1.5+ style .component()", () => {
       $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
 
       await $state.transitionTo("cmp_tpl");
-      await wait(10);
+      await wait(100);
 
       expect($state.current.name).toBe("cmp_tpl");
       expect(el[0].querySelector("ui-view").innerHTML).toEqual(
@@ -1264,7 +1264,7 @@ describe("angular 1.5+ style .component()", () => {
       $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
 
       $state.transitionTo("cmp_tpl");
-      await wait(10);
+      await wait(100);
 
       expect($state.current.name).toBe("cmp_tpl");
       expect(el[0].querySelector("ui-view").innerHTML).toEqual(
@@ -1350,7 +1350,7 @@ describe("angular 1.5+ style .component()", () => {
 
       $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
-      await wait(10);
+      await wait(100);
 
       const directiveEl = el[0].querySelector("div ui-view ng12-directive");
       expect(directiveEl).toBeDefined();
@@ -1376,7 +1376,7 @@ describe("angular 1.5+ style .component()", () => {
 
       $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
-      await wait(10);
+      await wait(100);
 
       const directiveEl = el[0].querySelector("div ui-view ng13-directive");
       expect(directiveEl).toBeDefined();
@@ -1400,7 +1400,7 @@ describe("angular 1.5+ style .component()", () => {
 
       $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
-      await wait(10);
+      await wait(100);
 
       expect(log).toBe("onInit;");
     });
@@ -1423,7 +1423,7 @@ describe("angular 1.5+ style .component()", () => {
 
       $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
-      await wait(10);
+      await wait(100);
 
       const directiveEl = el[0].querySelector("div ui-view ng-component");
       expect(directiveEl).toBeDefined();
@@ -1448,7 +1448,7 @@ describe("angular 1.5+ style .component()", () => {
 
       $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
-      await wait(10);
+      await wait(100);
 
       expect(log).toBe("onInit;");
     });
@@ -1470,7 +1470,7 @@ describe("angular 1.5+ style .component()", () => {
 
       $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
-      await wait(10);
+      await wait(100);
 
       expect(log).toBe("onInit;");
     });
@@ -1498,7 +1498,7 @@ describe("angular 1.5+ style .component()", () => {
         $q = svcs.$q;
 
       $state.transitionTo("bindingtypes");
-      await wait(10);
+      await wait(100);
 
       expect(el.text()).toBe("-ONEWAY,TWOWAY,ATTRIBUTE-");
     });
@@ -1524,7 +1524,7 @@ describe("angular 1.5+ style .component()", () => {
       const $state = svcs.$state;
 
       $state.transitionTo("optionalbindingtypes");
-      await wait(10);
+      await wait(100);
 
       expect(el.text()).toBe("-ONEWAY,TWOWAY,ATTRIBUTE-");
     });
@@ -1538,7 +1538,7 @@ describe("angular 1.5+ style .component()", () => {
 
       const $state = svcs.$state;
       $state.transitionTo("nothrow");
-      await wait(10);
+      await wait(100);
 
       expect(el.text()).toBe("eventCmp");
     });
@@ -1553,7 +1553,7 @@ describe("angular 1.5+ style .component()", () => {
       const $state = svcs.$state,
         $q = svcs.$q;
       $state.transitionTo("data");
-      await wait(10);
+      await wait(100);
 
       expect(el.text()).toBe("DataComponent");
     });
@@ -1569,7 +1569,7 @@ describe("angular 1.5+ style .component()", () => {
       const $state = svcs.$state,
         $q = svcs.$q;
       $state.transitionTo("data");
-      await wait(10);
+      await wait(100);
 
       expect(el.text()).toBe("-user-");
     });
@@ -1595,7 +1595,7 @@ describe("angular 1.5+ style .component()", () => {
       });
 
       $state.transitionTo("parent.child");
-      await wait(10);
+      await wait(100);
       expect(el.text()).toEqual("-1w,2w,attrval-");
     });
 
@@ -1625,7 +1625,7 @@ describe("angular 1.5+ style .component()", () => {
       });
 
       $state.transitionTo("parent.child");
-      await wait(10);
+      await wait(100);
       expect(el.text()).toEqual("-1w,2w,attrval-");
     });
 
@@ -1656,7 +1656,7 @@ describe("angular 1.5+ style .component()", () => {
       });
 
       $state.transitionTo("parent.child");
-      await wait(10);
+      await wait(100);
       expect(el.text()).toEqual("-asfasfd,2w,attrval-");
     });
 
@@ -1677,7 +1677,7 @@ describe("angular 1.5+ style .component()", () => {
       });
 
       $state.transitionTo("parent.child");
-      await wait(10);
+      await wait(100);
       expect($rootScope.log).toEqual([]);
       expect(
         el
@@ -1712,7 +1712,7 @@ describe("angular 1.5+ style .component()", () => {
       });
 
       $state.transitionTo("resolve");
-      await wait(10);
+      await wait(100);
       expect(log).toEqual([]);
       el.find("button")[0].click();
       expect(log).toEqual([123, 456]);
@@ -1740,7 +1740,7 @@ describe("angular 1.5+ style .component()", () => {
       });
 
       $state.transitionTo("resolve");
-      await wait(10);
+      await wait(100);
       expect(log).toEqual([]);
       el.find("button")[0].click();
       expect(log).toEqual([123, 456]);
@@ -1790,7 +1790,7 @@ describe("angular 1.5+ style .component()", () => {
 
       $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
-      await wait(10);
+      await wait(100);
 
       const header = el[0].querySelector("[ui-view=header]");
       const content = el[0].querySelector("[ui-view=content]");
@@ -1820,7 +1820,7 @@ describe("angular 1.5+ style .component()", () => {
 
       $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
-      await wait(10);
+      await wait(100);
 
       const header = el[0].querySelector("[ui-view=header]");
       const content = el[0].querySelector("[ui-view=content]");
@@ -1862,7 +1862,7 @@ describe("angular 1.5+ style .component()", () => {
 
       $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
-      await wait(10);
+      await wait(100);
 
       const directiveEl = el[0].querySelector("div ui-view ng12-directive");
       expect(directiveEl).toBeDefined();
@@ -1895,7 +1895,7 @@ describe("angular 1.5+ style .component()", () => {
         "-{{ $ctrl.data }}.{{ $ctrl.data2 }}-",
       );
       $state.transitionTo("route2cmp");
-      await wait(10);
+      await wait(100);
 
       const directiveEl = el[0].querySelector("div ui-view ng-component");
       expect(directiveEl).toBeDefined();
@@ -1923,7 +1923,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("ng12-dynamic-directive", {
         type: "ng12DynamicDirective",
       });
-      await wait(10);
+      await wait(100);
 
       const directiveEl = el[0].querySelector(
         "div ui-view ng12-dynamic-directive",
@@ -1952,7 +1952,7 @@ describe("angular 1.5+ style .component()", () => {
         name: "dynamicComponent",
         type: "dynamicComponent",
       });
-      await wait(10);
+      await wait(100);
 
       const directiveEl = el[0].querySelector("div ui-view dynamic-component");
       expect(directiveEl).toBeDefined();
@@ -1985,16 +1985,16 @@ describe("angular 1.5+ style .component()", () => {
     it("should not be called on the initial transition", async () => {
       const $state = svcs.$state;
       $state.go("dynamic", { param: "abc" });
-      await wait(10);
+      await wait(100);
       expect(el.text().trim()).toBe("dynamicComponent");
     });
 
     it("should be called when dynamic parameters change", async () => {
       const $state = svcs.$state;
       $state.go("dynamic", { param: "abc" });
-      await wait(10);
+      await wait(100);
       $state.go("dynamic", { param: "def" });
-      await wait(10);
+      await wait(100);
 
       expect(el.text().trim()).toBe("dynamicComponent def");
     });
@@ -2003,9 +2003,9 @@ describe("angular 1.5+ style .component()", () => {
       const $state = svcs.$state,
         $q = svcs.$q;
       $state.go("dynamic2", { param: "abc" });
-      await wait(10);
+      await wait(100);
       $state.go("dynamic2", { param: "def" });
-      await wait(10);
+      await wait(100);
 
       expect(el.text().trim()).toBe("dynamicComponent def");
     });

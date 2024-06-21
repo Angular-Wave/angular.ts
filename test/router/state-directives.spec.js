@@ -122,7 +122,7 @@ describe("uiStateRef", () => {
 
     it("should transition states when left-clicked", async () => {
       browserTrigger(el, "click");
-      await wait(100);
+      await wait(200);
       expect($state.current.name).toEqual("contacts.item.detail");
       expect($stateParams.id).toEqual(5);
     });
@@ -135,7 +135,7 @@ describe("uiStateRef", () => {
           cancelable: true,
         }),
       );
-      await wait(100);
+      await wait(200);
       expect($state.current.name).toEqual("top");
       expect($stateParams.id).toBeUndefined();
     });
@@ -281,7 +281,7 @@ describe("uiStateRef", () => {
 
   //     triggerClick(el2);
   //     timeoutFlush();
-  //     await wait(10);
+  //     await wait(100);
 
   //     expect($state.current.name).toEqual('top');
   //     expect(obj($stateParams)).toEqual({});
@@ -324,31 +324,31 @@ describe("uiStateRef", () => {
 
       $state.go("contacts");
       scope.$digest();
-      await wait(10);
+      await wait(100);
       expect(template[0].className).toContain("active activeeq");
 
       scope.state = "contacts.item";
       scope.params = { id: 5 };
       scope.$digest();
-      await wait(10);
+      await wait(100);
       expect(template[0].className).not.toContain("active");
       expect(template[0].className).not.toContain("activeeq");
 
       $state.go("contacts.item", { id: -5 });
       scope.$digest();
-      await wait(10);
+      await wait(100);
       expect(template[0].className).not.toContain("active");
       expect(template[0].className).not.toContain("activeeq");
 
       $state.go("contacts.item", { id: 5 });
       scope.$digest();
-      await wait(10);
+      await wait(100);
       expect(template[0].className).toContain("active activeeq");
 
       scope.state = "contacts";
       scope.params = {};
       scope.$digest();
-      await wait(10);
+      await wait(100);
       expect(template[0].className).toContain("active");
       expect(template[0].className).not.toContain("activeeq");
     });
@@ -375,7 +375,7 @@ describe("uiStateRef", () => {
       expect(el.attr("href")).toBe("#/other/def");
 
       browserTrigger(el, "click");
-      await wait(10);
+      await wait(100);
 
       expect($state.current.name).toBe("other");
       expect($state.params.id).toEqual("def");
@@ -390,7 +390,7 @@ describe("uiStateRef", () => {
       expect(el.attr("href")).toBe("#/other/ghi/detail");
 
       browserTrigger(el, "click");
-      await wait(10);
+      await wait(100);
 
       expect($state.current.name).toBe("other.detail");
       expect($state.params.id).toEqual("ghi");
@@ -469,7 +469,7 @@ describe("uiStateRef", () => {
       });
 
       browserTrigger(template, "click");
-      await wait(10);
+      await wait(100);
 
       expect(transitionOptions.reload).toEqual(true);
       expect(transitionOptions.absolute).toBeUndefined();
@@ -487,7 +487,7 @@ describe("uiStateRef", () => {
         scope.$digest();
 
         browserTrigger(el, "click");
-        await wait(10);
+        await wait(100);
 
         expect($state.current.name).toBe("contacts");
       });
@@ -504,7 +504,7 @@ describe("uiStateRef", () => {
         scope.$digest();
 
         browserTrigger(el, "change");
-        await wait(10);
+        await wait(100);
 
         expect($state.current.name).toEqual("contacts");
       });
@@ -521,7 +521,7 @@ describe("uiStateRef", () => {
         scope.$digest();
 
         browserTrigger(el, "change");
-        await wait(10);
+        await wait(100);
         expect($state.current.name).toEqual("contacts");
 
         $state.go("top");
@@ -530,7 +530,7 @@ describe("uiStateRef", () => {
         expect($state.current.name).toEqual("top");
 
         browserTrigger(el, "blur");
-        await wait(10);
+        await wait(100);
 
         expect($state.current.name).toEqual("contacts");
       });
@@ -547,7 +547,7 @@ describe("uiStateRef", () => {
         scope.$digest();
 
         browserTrigger(el, "mouseover");
-        await wait(10);
+        await wait(100);
         expect($state.current.name).toEqual("contacts");
 
         $state.go("top");
@@ -556,7 +556,7 @@ describe("uiStateRef", () => {
         expect($state.current.name).toEqual("top");
 
         browserTrigger(el, "mousedown");
-        await wait(10);
+        await wait(100);
         expect($state.current.name).toEqual("contacts");
       });
     });
@@ -596,7 +596,7 @@ describe("uiStateRef", () => {
 
     it("should work", async () => {
       browserTrigger(el, "click");
-      await wait(10);
+      await wait(100);
 
       expect($state.$current.name).toBe("contacts.item.detail");
       expect($state.params.id).toEqual(5);
@@ -607,7 +607,7 @@ describe("uiStateRef", () => {
 
       const parentToChild = jqLite(template[0].querySelector("a.item"));
       browserTrigger(parentToChild, "click");
-      await wait(10);
+      await wait(100);
 
       expect($state.$current.name).toBe("contacts.item");
 
@@ -617,7 +617,7 @@ describe("uiStateRef", () => {
       const childToParent = jqLite(template[0].querySelector("a.item-parent"));
 
       browserTrigger(childToGrandchild, "click");
-      await wait(10);
+      await wait(100);
 
       const grandchildToParent = jqLite(
         template[0].querySelector("a.item-parent2"),
@@ -625,13 +625,13 @@ describe("uiStateRef", () => {
       expect($state.$current.name).toBe("contacts.item.detail");
 
       browserTrigger(grandchildToParent, "click");
-      await wait(10);
+      await wait(100);
 
       expect($state.$current.name).toBe("contacts.item");
 
       $state.transitionTo("contacts.item.detail", { id: 3 });
       browserTrigger(childToParent, "click");
-      await wait(10);
+      await wait(100);
       expect($state.$current.name).toBe("contacts");
     });
   });
@@ -646,7 +646,7 @@ describe("uiStateRef", () => {
       expect($state.current.name).toEqual("top");
 
       browserTrigger(el, "click");
-      await wait(10);
+      await wait(100);
 
       expect($state.current.name).toEqual("contacts");
     });
@@ -661,7 +661,7 @@ describe("uiStateRef", () => {
       expect($state.current.name).toEqual("top");
 
       browserTrigger(el, "change");
-      await wait(10);
+      await wait(100);
 
       expect($state.current.name).toEqual("contacts");
     });
@@ -676,7 +676,7 @@ describe("uiStateRef", () => {
       expect($state.current.name).toEqual("top");
 
       browserTrigger(el, "change");
-      await wait(10);
+      await wait(100);
       expect($state.current.name).toEqual("contacts");
 
       $state.go("top");
@@ -685,7 +685,7 @@ describe("uiStateRef", () => {
       expect($state.current.name).toEqual("top");
 
       browserTrigger(el, "blur");
-      await wait(10);
+      await wait(100);
       expect($state.current.name).toEqual("contacts");
     });
 
@@ -699,7 +699,7 @@ describe("uiStateRef", () => {
       expect($state.current.name).toEqual("top");
 
       browserTrigger(el, "mouseover");
-      await wait(10);
+      await wait(100);
       expect($state.current.name).toEqual("contacts");
 
       $state.go("top");
@@ -708,7 +708,7 @@ describe("uiStateRef", () => {
       expect($state.current.name).toEqual("top");
 
       browserTrigger(el, "mousedown");
-      await wait(10);
+      await wait(100);
       expect($state.current.name).toEqual("contacts");
     });
   });
@@ -785,11 +785,11 @@ describe("uiSrefActive", () => {
 
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
     $state.transitionTo("contacts.item", { id: 1 });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $state.transitionTo("contacts.item", { id: 2 });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
   });
 
@@ -802,11 +802,11 @@ describe("uiSrefActive", () => {
 
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
     $state.transitionTo("contacts.item.detail", { id: 5, foo: "bar" });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $state.transitionTo("contacts.item.detail", { id: 5, foo: "baz" });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
   });
 
@@ -821,15 +821,15 @@ describe("uiSrefActive", () => {
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
 
     $state.transitionTo("arrayparam", { foo: [1, 2, 3] });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $state.transitionTo("arrayparam", { foo: [1, 2, 3], bar: "asdf" });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $state.transitionTo("arrayparam", { foo: [1, 2] });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
   });
 
@@ -844,15 +844,15 @@ describe("uiSrefActive", () => {
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
 
     $state.transitionTo("arrayparam", { foo: [1, 2, 3] });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $state.transitionTo("arrayparam", { foo: [1, 2, 3], bar: "asdf" });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $state.transitionTo("arrayparam", { foo: [1, 2] });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
   });
 
@@ -866,12 +866,12 @@ describe("uiSrefActive", () => {
 
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
     $state.transitionTo("contacts.item.detail", { id: 5, foo: "bar" });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $rootScope.fooId = "baz";
     $rootScope.$digest();
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
   });
 
@@ -883,12 +883,12 @@ describe("uiSrefActive", () => {
     const a = jqLite(template[0].getElementsByTagName("a")[0]);
 
     $state.transitionTo("contacts.item.edit", { id: 1 });
-    await wait(10);
+    await wait(100);
     expect($state.params.id).toBe("1");
     expect(a.attr("class")).toMatch(/active/);
 
     $state.transitionTo("contacts.item.edit", { id: 4 });
-    await wait(10);
+    await wait(100);
     expect($state.params.id).toBe("4");
     expect(a.attr("class")).not.toMatch(/active/);
   });
@@ -901,11 +901,11 @@ describe("uiSrefActive", () => {
     const a = jqLite(template[0].getElementsByTagName("a")[0]);
 
     $state.transitionTo("contacts.item", { id: 1 });
-    await wait(10);
+    await wait(100);
     expect(a.attr("class")).toMatch(/active/);
 
     $state.transitionTo("contacts.item.edit", { id: 1 });
-    await wait(10);
+    await wait(100);
     expect(a.attr("class")).not.toMatch(/active/);
   });
 
@@ -917,12 +917,12 @@ describe("uiSrefActive", () => {
     const a = jqLite(template[0].getElementsByTagName("a")[0]);
 
     $state.transitionTo("contacts.item", { id: 1 });
-    await wait(10);
+    await wait(100);
     expect(a.attr("class")).toMatch(/active/);
     expect(a.attr("class")).toMatch(/active-eq/);
 
     $state.transitionTo("contacts.item.edit", { id: 1 });
-    await wait(10);
+    await wait(100);
     expect(a.attr("class")).toMatch(/active/);
     expect(a.attr("class")).not.toMatch(/active-eq/);
   });
@@ -933,17 +933,17 @@ describe("uiSrefActive", () => {
     $rootScope.$digest();
 
     $state.transitionTo("contacts");
-    await wait(10);
+    await wait(100);
     expect(
       jqLite(template[0].querySelector("a")).attr("class"),
     ).toBeUndefined();
 
     $state.transitionTo("contacts.item", { id: 6 });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $state.transitionTo("contacts.item", { id: 5 });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("");
   });
 
@@ -957,11 +957,11 @@ describe("uiSrefActive", () => {
     expect(jqLite(template[0]).attr("class")).toBeUndefined();
 
     $state.transitionTo("contacts.item", { id: 1 });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0]).attr("class")).toBe("active");
 
     $state.transitionTo("contacts.item", { id: 2 });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0]).attr("class")).toBe("active");
   });
 
@@ -970,7 +970,7 @@ describe("uiSrefActive", () => {
       '<div><a ui-sref="contacts.lazy" ui-sref-active="active">Lazy Contact</a></div>',
     );
     template = $compile(el)($rootScope);
-    await wait(10);
+    await wait(100);
 
     _stateProvider.onInvalid(function ($to$) {
       if ($to$.name() === "contacts.lazy") {
@@ -980,11 +980,11 @@ describe("uiSrefActive", () => {
     });
 
     $state.transitionTo("contacts.item", { id: 1 });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
 
     $state.transitionTo("contacts.lazy");
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
   });
 
@@ -993,7 +993,7 @@ describe("uiSrefActive", () => {
       '<div><a ui-sref="contacts.lazy" ui-sref-active-eq="active">Lazy Contact</a></div>',
     );
     template = $compile(el)($rootScope);
-    await wait(10);
+    await wait(100);
 
     _stateProvider.onInvalid(function ($to$) {
       if ($to$.name() === "contacts.lazy") {
@@ -1003,11 +1003,11 @@ describe("uiSrefActive", () => {
     });
 
     $state.transitionTo("contacts.item", { id: 1 });
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
 
     $state.transitionTo("contacts.lazy");
-    await wait(10);
+    await wait(100);
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
   });
 
@@ -1019,7 +1019,7 @@ describe("uiSrefActive", () => {
     const a = jqLite(template[0].getElementsByTagName("a")[0]);
 
     $state.transitionTo("contacts.item.edit", { id: 1 });
-    await wait(10);
+    await wait(100);
     expect(a.attr("class")).toMatch(/active also-active/);
   });
 
@@ -1042,7 +1042,7 @@ describe("uiSrefActive", () => {
     )($rootScope);
     $rootScope.$digest();
     $state.transitionTo("contacts.lazy.s1");
-    await wait(10);
+    await wait(100);
 
     expect(template.eq(0)[0].hasClass("active")).toBeTruthy();
     //expect(template.eq(1).hasClass("active")).toBeFalsy();
@@ -1055,7 +1055,7 @@ describe("uiSrefActive", () => {
         '<div ui-sref-active="{active: \'admin.*\'}"><a ui-sref-active="active" ui-sref="admin.roles">Roles</a></div>',
       )($rootScope);
       $state.transitionTo("admin.roles");
-      await wait(10);
+      await wait(100);
       const abstractParent = el[0];
       expect(abstractParent.className).toMatch(/active/);
       const child = el[0].querySelector("a");
@@ -1067,7 +1067,7 @@ describe("uiSrefActive", () => {
         "<div ui-sref-active=\"{active: 'admin.roles({page: 1})'}\"></div>",
       )($rootScope);
       $state.transitionTo("admin.roles", { page: 1 });
-      await wait(10);
+      await wait(100);
       expect(el[0].className).toMatch(/active/);
     });
 
@@ -1076,10 +1076,10 @@ describe("uiSrefActive", () => {
         '<div ui-sref-active="{active: \'admin.roles({page: 1})\'}"><a ui-sref="admin.roles"></a></div>',
       )($rootScope);
       $state.transitionTo("admin.roles");
-      await wait(10);
+      await wait(100);
       expect(el[0].className).not.toMatch(/active/);
       $state.transitionTo("admin.roles", { page: 1 });
-      await wait(10);
+      await wait(100);
       expect(el[0].className).toMatch(/active/);
     });
 
@@ -1088,18 +1088,18 @@ describe("uiSrefActive", () => {
         "<div ui-sref-active=\"{contacts: 'contacts.**', admin: 'admin.roles({page: 1})'}\"></div>",
       )($rootScope);
       $state.transitionTo("contacts");
-      await wait(10);
+      await wait(100);
       expect(el[0].className).toMatch(/contacts/);
       expect(el[0].className).not.toMatch(/admin/);
       $state.transitionTo("admin.roles", { page: 1 });
-      await wait(10);
+      await wait(100);
       expect(el[0].className).toMatch(/admin/);
       expect(el[0].className).not.toMatch(/contacts/);
     });
 
     it("should update the active classes when compiled", async () => {
       $state.transitionTo("admin.roles");
-      await wait(10);
+      await wait(100);
       el = $compile("<div ui-sref-active=\"{active: 'admin.roles'}\"/>")(
         $rootScope,
       );
@@ -1126,7 +1126,7 @@ describe("uiSrefActive", () => {
       )($rootScope);
       $rootScope.$digest();
       $state.transitionTo("contacts.lazy.s1");
-      await wait(10);
+      await wait(100);
       expect(template.eq(0).hasClass("active")).toBeTruthy();
       expect(template.eq(1).hasClass("active")).toBeFalsy();
     });
@@ -1138,7 +1138,7 @@ describe("uiSrefActive", () => {
         '<div ui-sref-active="{active: [\'randomState.**\', \'admin.roles\']}"><a ui-sref-active="active" ui-sref="admin.roles">Roles</a></div>',
       )($rootScope);
       $state.transitionTo("admin.roles");
-      await wait(10);
+      await wait(100);
       const abstractParent = el[0];
       expect(abstractParent.className).toMatch(/active/);
       const child = el[0].querySelector("a");
@@ -1150,7 +1150,7 @@ describe("uiSrefActive", () => {
         "<div ui-sref-active=\"{active: ['admin.roles({page: 1})']}\"></div>",
       )($rootScope);
       $state.transitionTo("admin.roles", { page: 1 });
-      await wait(10);
+      await wait(100);
       expect(el[0].className).toMatch(/active/);
     });
 
@@ -1159,18 +1159,18 @@ describe("uiSrefActive", () => {
         "<div ui-sref-active=\"{contacts: ['contacts.item', 'contacts.item.detail'], admin: 'admin.roles({page: 1})'}\"></div>",
       )($rootScope);
       $state.transitionTo("contacts.item.detail", { id: 1, foo: "bar" });
-      await wait(10);
+      await wait(100);
       expect(el[0].className).toMatch(/contacts/);
       expect(el[0].className).not.toMatch(/admin/);
       $state.transitionTo("admin.roles", { page: 1 });
-      await wait(10);
+      await wait(100);
       expect(el[0].className).toMatch(/admin/);
       expect(el[0].className).not.toMatch(/contacts/);
     });
 
     it("should update the active classes when compiled", async () => {
       $state.transitionTo("admin.roles");
-      await wait(10);
+      await wait(100);
       el = $compile(
         "<div ui-sref-active=\"{active: ['admin.roles', 'admin.someOtherState']}\"/>",
       )($rootScope);

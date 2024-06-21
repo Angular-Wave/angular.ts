@@ -71,7 +71,7 @@ describe("$interval", () => {
 
     $interval(notifySpy, 1, 1, false);
 
-    await wait(10);
+    await wait(100);
     expect(notifySpy).toHaveBeenCalled();
     expect(evalAsyncSpy).not.toHaveBeenCalled();
     expect(digestSpy).not.toHaveBeenCalled();

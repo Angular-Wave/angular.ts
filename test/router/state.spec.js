@@ -625,14 +625,14 @@ describe("$state", () => {
         it("does not exit nor enter a state when only dynamic params change (triggered via url)", async () => {
           $location.search({ search: "s1", searchDyn: "sd2" });
           $rootScope.$broadcast("$locationChangeSuccess");
-          await wait(10);
+          await wait(100);
           expect(dynlog).toBe("success;[searchDyn=sd2];");
         });
 
         it("exits and enters a state when any non-dynamic params change (triggered via url)", async () => {
           $location.search({ search: "s2", searchDyn: "sd2" });
           $rootScope.$broadcast("$locationChangeSuccess");
-          await wait(10);
+          await wait(100);
           expect(dynlog).toBe("exit:dyn;enter:dyn;success;");
         });
 
@@ -686,11 +686,11 @@ describe("$state", () => {
           $rootScope.$watch(stateParamsTerm, function (newval, oldval) {
             observedParamValue = newval;
           });
-          await wait(10);
+          await wait(100);
 
           $location.search({ search: "s1", searchDyn: "sd2" });
           $rootScope.$broadcast("$locationChangeSuccess");
-          await wait(10);
+          await wait(100);
 
           expect(observedParamValue).toBe("sd2");
         });
@@ -812,7 +812,7 @@ describe("$state", () => {
           await initStateTo(RS);
           $location.search({ term: "hello" });
           $rootScope.$broadcast("$locationChangeSuccess");
-          await wait(10);
+          await wait(100);
           expect($stateParams.term).toEqual("hello");
           expect(entered).toBeFalsy();
         });

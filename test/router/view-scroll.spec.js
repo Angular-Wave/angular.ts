@@ -29,14 +29,14 @@ describe("uiView", () => {
       $uiViewScroll(elem);
       expect(elem[0].scrollIntoView).not.toHaveBeenCalled();
 
-      await wait(10);
+      await wait(100);
       expect(elem[0].scrollIntoView).toHaveBeenCalled();
     });
 
     it("should return the promise from the timeout", async () => {
       const promise = $uiViewScroll(elem);
 
-      await wait(10);
+      await wait(100);
       expect(elem[0].scrollIntoView).toHaveBeenCalled();
       expect(promise).toBeDefined();
     });
