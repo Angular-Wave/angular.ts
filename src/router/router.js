@@ -38,11 +38,7 @@ export class UIRouter {
     this.globals = new UIRouterGlobals();
     /** @type {TransitionService}  A service that exposes global Transition Hooks */
     this.transitionService = new TransitionService(this);
-    /**
-     * Deprecated for public use. Use [[urlService]] instead.
-     * @deprecated Use [[urlService]] instead
-     */
-    this.urlMatcherFactory = new UrlMatcherFactory(this);
+
     /**
      * Deprecated for public use. Use [[urlService]] instead.
      * @deprecated Use [[urlService]] instead
@@ -50,6 +46,11 @@ export class UIRouter {
     this.urlRouter = new UrlRouter(this);
     /** Provides services related to the URL */
     this.urlService = new UrlService(this, $locationProvider);
+    /**
+     * Deprecated for public use. Use [[urlService]] instead.
+     * @deprecated Use [[urlService]] instead
+     */
+    this.urlMatcherFactory = new UrlMatcherFactory(this.urlService.config);
     /** Provides a registry for states, and related registration services */
     this.stateRegistry = new StateRegistry(this);
     /** Provides services related to states */

@@ -1,40 +1,7 @@
 import { forEach, isDefined, isFunction, isObject } from "../../shared/utils";
 import { UrlMatcher } from "./url-matcher";
-import { DefType, Param } from "../params/param";
+import { ParamFactory } from "../params/param-factory";
 
-export class ParamFactory {
-  constructor(router) {
-    this.router = router;
-  }
-
-  fromConfig(id, type, state) {
-    return new Param(
-      id,
-      type,
-      DefType.CONFIG,
-      this.router.urlService.config,
-      state,
-    );
-  }
-  fromPath(id, type, state) {
-    return new Param(
-      id,
-      type,
-      DefType.PATH,
-      this.router.urlService.config,
-      state,
-    );
-  }
-  fromSearch(id, type, state) {
-    return new Param(
-      id,
-      type,
-      DefType.SEARCH,
-      this.router.urlService.config,
-      state,
-    );
-  }
-}
 /**
  * Factory for [[UrlMatcher]] instances.
  *
@@ -43,28 +10,20 @@ export class ParamFactory {
  */
 export class UrlMatcherFactory {
   // TODO: move implementations to UrlConfig (urlService.config)
-  constructor(router) {
-    this.router = router;
+  constructor(urlServiceConfig) {
+    this.urlServiceConfig = urlServiceConfig;
     /** Creates a new [[Param]] for a given location (DefType) */
-    this.paramFactory = new ParamFactory(this.router);
-    // TODO: Check if removal of this will break anything, then remove these
-    this.UrlMatcher = UrlMatcher;
-    this.Param = Param;
+    this.paramFactory = new ParamFactory(urlServiceConfig);
     /** @deprecated use [[UrlConfig.caseInsensitive]] */
-    this.caseInsensitive = (value) =>
-      this.router.urlService.config.caseInsensitive(value);
+    this.caseInsensitive = (value) => urlServiceConfig.caseInsensitive(value);
     /** @deprecated use [[UrlConfig.defaultSquashPolicy]] */
     this.defaultSquashPolicy = (value) =>
-      this.router.urlService.config.defaultSquashPolicy(value);
+      urlServiceConfig.defaultSquashPolicy(value);
     /** @deprecated use [[UrlConfig.strictMode]] */
-    this.strictMode = (value) =>
-      this.router.urlService.config.strictMode(value);
+    this.strictMode = (value) => urlServiceConfig.strictMode(value);
     /** @deprecated use [[UrlConfig.type]] */
     this.type = (name, definition, definitionFn) => {
-      return (
-        this.router.urlService.config.type(name, definition, definitionFn) ||
-        this
-      );
+      return urlServiceConfig.type(name, definition, definitionFn) || this;
     };
   }
   /**
@@ -75,7 +34,7 @@ export class UrlMatcherFactory {
    * @returns The UrlMatcher.
    */
   compile(pattern, config) {
-    const urlConfig = this.router.urlService.config;
+    const urlConfig = this.urlServiceConfig;
     // backward-compatible support for config.params -> config.state.params
     const params = config && !config.state && config.params;
     config = params ? Object.assign({ state: { params } }, config) : config;
@@ -110,7 +69,7 @@ export class UrlMatcherFactory {
   }
 
   $get() {
-    const urlConfig = this.router.urlService.config;
+    const urlConfig = this.urlServiceConfig;
     urlConfig.paramTypes.enqueue = false;
     urlConfig.paramTypes._flushTypeQueue();
     return this;
