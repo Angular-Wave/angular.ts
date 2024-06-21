@@ -39,11 +39,6 @@ export class StateRegistry {
     _root.navigable = null;
   }
 
-  dispose() {
-    this.stateQueue.dispose();
-    this.listeners = [];
-    this.get().forEach((state) => this.get(state) && this.deregister(state));
-  }
   /**
    * Listen for a State Registry events
    *

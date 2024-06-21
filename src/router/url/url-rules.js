@@ -72,10 +72,6 @@ export class UrlRules {
     this.urlRuleFactory = new UrlRuleFactory(router);
   }
 
-  dispose() {
-    this._rules = [];
-    delete this._otherwiseFn;
-  }
   /**
    * Defines the initial state, path, or behavior to use when the app starts.
    *

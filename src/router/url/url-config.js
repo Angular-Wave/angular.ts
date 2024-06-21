@@ -30,7 +30,7 @@ export class UrlConfig {
     this._isStrictMode = true;
     /** @type {boolean} */
     this._defaultSquashPolicy = false;
-    this.dispose = () => this.paramTypes.dispose();
+
     // Delegate these calls to the current LocationConfig implementation
     /**
      * Gets the base Href, e.g., `http://localhost/approot/`

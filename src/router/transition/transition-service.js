@@ -111,18 +111,6 @@ export class TransitionService {
    */
 
   /**
-   * dispose
-   * @internal
-   */
-  dispose() {
-    Object.values(this._registeredHooks).forEach((hooksArray) =>
-      hooksArray.forEach((hook) => {
-        hook._deregistered = true;
-        removeFrom(hooksArray, hook);
-      }),
-    );
-  }
-  /**
    * Creates a new [[Transition]] object
    *
    * This is a factory function for creating new Transition objects.

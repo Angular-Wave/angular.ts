@@ -85,10 +85,6 @@ export class StateService {
     );
   }
 
-  dispose() {
-    this.defaultErrorHandler(() => {});
-    this.invalidCallbacks = [];
-  }
   /**
    * Handler for when [[transitionTo]] is called with an invalid state.
    *

@@ -142,16 +142,9 @@ export class TransitionHook {
   }
   /**
    * Return a Rejection promise if the transition is no longer current due
-   * to a stopped router (disposed), or a new transition has started and superseded this one.
+   * a new transition has started and superseded this one.
    */
   getNotCurrentRejection() {
-    const router = this.transition.router;
-    // The router is stopped
-    if (router._disposed) {
-      return Rejection.aborted(
-        `UIRouter instance #${router.$id} has been stopped (disposed)`,
-      ).toPromise();
-    }
     if (this.transition._aborted) {
       return Rejection.aborted().toPromise();
     }

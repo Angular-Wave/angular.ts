@@ -11,9 +11,6 @@ export class StateQueueManager {
     this.listeners = listeners;
     this.queue = [];
   }
-  dispose() {
-    this.queue = [];
-  }
   register(stateDecl) {
     const queue = this.queue;
     const state = StateObject.create(stateDecl);

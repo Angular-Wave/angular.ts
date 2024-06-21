@@ -34,8 +34,7 @@ export class UIRouter {
      */
     this.locationService = locationService;
     /**  @type {number} */ this.$id = routerId++;
-    /**  @type {boolean} */ this._disposed = false;
-    this._disposables = [];
+
     /** Enable/disable tracing to the javascript console */
     this.trace = trace;
     /** Provides services related to ui-view synchronization */
@@ -65,47 +64,6 @@ export class UIRouter {
     this.viewService._pluginapi._rootViewContext(this.stateRegistry.root());
     this.globals.$current = this.stateRegistry.root();
     this.globals.current = this.globals.$current.self;
-    this.disposable(this.globals);
-    this.disposable(this.stateService);
-    this.disposable(this.stateRegistry);
-    this.disposable(this.transitionService);
-    this.disposable(this.urlService);
-    this.disposable(locationService);
-  }
-
-  /**
-   * Registers an object to be notified when the router is disposed
-   * @param {Disposable} disposable
-   * @returns {void}
-   */
-  disposable(disposable) {
-    this._disposables.push(disposable);
-  }
-  /**
-   * Disposes this router instance
-   *
-   * When called, clears resources retained by the router by calling `dispose(this)` on all
-   * registered [[disposable]] objects.
-   *
-   * Or, if a `disposable` object is provided, calls `dispose(this)` on that object only.
-   *
-   * @internal
-   * @param disposable (optional) the disposable to dispose
-   */
-  dispose(disposable) {
-    if (disposable && isFunction(disposable.dispose)) {
-      disposable.dispose(this);
-      return undefined;
-    }
-    this._disposed = true;
-    this._disposables.slice().forEach((d) => {
-      try {
-        typeof d.dispose === "function" && d.dispose(this);
-        removeFrom(this._disposables, d);
-      } catch (ignored) {
-        /* empty */
-      }
-    });
   }
 
   /**
@@ -167,7 +125,6 @@ export class UIRouter {
       throw new Error(
         "Required property `name` missing on plugin: " + pluginInstance,
       );
-    this._disposables.push(pluginInstance);
     return (this._plugins[pluginInstance.name] = pluginInstance);
   }
   getPlugin(pluginName) {

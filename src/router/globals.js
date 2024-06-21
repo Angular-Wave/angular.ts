@@ -31,9 +31,4 @@ export class UIRouterGlobals {
      */
     this.successfulTransitions = new Queue([], 1);
   }
-  dispose() {
-    this.transitionHistory.clear();
-    this.successfulTransitions.clear();
-    this.transition = null;
-  }
 }

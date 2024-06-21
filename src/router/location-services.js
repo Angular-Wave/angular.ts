@@ -20,8 +20,6 @@ export class Ng1LocationServices {
     createProxyFunctions(_lp, this, _lp, ["hashPrefix"]);
   }
 
-  dispose() {}
-
   onChange(callback) {
     this._urlListeners.push(callback);
     return () => removeFrom(this._urlListeners)(callback);

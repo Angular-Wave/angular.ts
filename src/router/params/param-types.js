@@ -54,9 +54,6 @@ export class ParamTypes {
       new ParamType(Object.assign({ name }, definition));
     this.types = inherit(map(this.defaultTypes, makeType), {});
   }
-  dispose() {
-    this.types = {};
-  }
   /**
    * Registers a parameter type
    *

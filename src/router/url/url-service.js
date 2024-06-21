@@ -131,10 +131,6 @@ export class UrlService {
       this.router.locationService.onChange(callback);
   }
 
-  dispose() {
-    this.listen(false);
-    this.rules.dispose();
-  }
   /**
    * Gets the current URL parts
    *
