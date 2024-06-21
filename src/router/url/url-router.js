@@ -71,17 +71,29 @@ export class UrlRouter {
     if (url == null) return null;
     options = options || { absolute: false };
     const cfg = this.router.urlService.config;
-    const isHtml5 = cfg.html5Mode();
+    const isHtml5 = this.router.urlService.html5Mode();
     if (!isHtml5 && url !== null) {
-      url = "#" + cfg.hashPrefix() + url;
+      url = "#" + this.router.$locationProvider.hashPrefix() + url;
     }
-    url = appendBasePath(url, isHtml5, options.absolute, cfg.baseHref());
+    url = appendBasePath(
+      url,
+      isHtml5,
+      options.absolute,
+      this.router.urlService.baseHref(),
+    );
     if (!options.absolute || !url) {
       return url;
     }
     const slash = !isHtml5 && url ? "/" : "";
-    const cfgPort = cfg.port();
+    const cfgPort = this.router.urlService.$location.port();
     const port = cfgPort === 80 || cfgPort === 443 ? "" : ":" + cfgPort;
-    return [cfg.protocol(), "://", cfg.host(), port, slash, url].join("");
+    return [
+      cfg.protocol(),
+      "://",
+      this.router.urlService.$location.host(),
+      port,
+      slash,
+      url,
+    ].join("");
   }
 }
