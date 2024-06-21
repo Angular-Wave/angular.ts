@@ -37,7 +37,7 @@ export class UrlConfig {
      *
      * @return the application's base href
      */
-    this.baseHref = () => this.router.locationService.baseHref();
+    this.baseHref = () => this.router.urlService.baseHref();
     /**
      * Gets or sets the hashPrefix
      *
@@ -48,31 +48,31 @@ export class UrlConfig {
      * @return the hash prefix
      */
     this.hashPrefix = (newprefix) =>
-      this.router.locationService.$locationProvider.hashPrefix(newprefix);
+      this.router.$locationProvider.hashPrefix(newprefix);
     /**
      * Gets the host, e.g., `localhost`
      *
      * @return {string} the protocol
      */
-    this.host = () => this.router.locationService.$location.host();
+    this.host = () => this.router.urlService.$location.host();
     /**
      * Returns true when running in pushstate mode
      *
      * @return {boolean} true when running in html5 mode (pushstate mode).
      */
-    this.html5Mode = () => this.router.locationService.html5Mode();
+    this.html5Mode = () => this.router.urlService.html5Mode();
     /**
      * Gets the port, e.g., `80`
      *
      * @return {number} the port number
      */
-    this.port = () => this.router.locationService.$location.port();
+    this.port = () => this.router.urlService.$location.port();
     /**
      * Gets the protocol, e.g., `http`
      *
      * @return {string} the protocol
      */
-    this.protocol = () => this.router.locationService.$location.protocol();
+    this.protocol = () => this.router.urlService.$location.protocol();
   }
   /**
    * Defines whether URL matching should be case sensitive (the default behavior), or not.

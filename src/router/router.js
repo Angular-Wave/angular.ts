@@ -5,8 +5,6 @@ import { ViewService } from "./view/view";
 import { StateRegistry } from "./state/state-registry";
 import { StateService } from "./state/state-service";
 import { UIRouterGlobals } from "./globals";
-import { removeFrom } from "../shared/common";
-import { isFunction } from "../shared/utils";
 import { UrlService } from "./url/url-service";
 import { trace } from "./common/trace";
 
@@ -26,17 +24,14 @@ export class UIRouter {
   /**
    * Creates a new `UIRouter` object
    *
-   * @param {import('./location-services').Ng1LocationServices} locationService
+   * @param {angular.ILocationProvider} $locationProvider
    */
-  constructor(locationService) {
-    /**
-     * @type {import('./location-services').Ng1LocationServices}
-     */
-    this.locationService = locationService;
+  constructor($locationProvider) {
     /**  @type {number} */ this.$id = routerId++;
 
     /** Enable/disable tracing to the javascript console */
     this.trace = trace;
+    this.$locationProvider = $locationProvider;
     /** Provides services related to ui-view synchronization */
     this.viewService = new ViewService(this);
     /** @type {UIRouterGlobals} An object that contains global router state, such as the current state and params */
@@ -54,7 +49,7 @@ export class UIRouter {
      */
     this.urlRouter = new UrlRouter(this);
     /** Provides services related to the URL */
-    this.urlService = new UrlService(this);
+    this.urlService = new UrlService(this, $locationProvider);
     /** Provides a registry for states, and related registration services */
     this.stateRegistry = new StateRegistry(this);
     /** Provides services related to states */

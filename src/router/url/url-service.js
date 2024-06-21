@@ -1,8 +1,9 @@
-import { isString } from "../../shared/utils";
+import { isDefined, isObject, isString } from "../../shared/utils";
 import { is, pattern } from "../../shared/hof";
 import { UrlRules } from "./url-rules";
 import { UrlConfig } from "./url-config";
 import { TargetState } from "../state/target-state";
+import { removeFrom } from "../../shared/common";
 /**
  * API for URL management
  */
@@ -10,12 +11,15 @@ export class UrlService {
   /**
    *
    * @param {import('../router').UIRouter} router
+   * @param {angular.ILocationProvider} $locationProvider
    */
-  constructor(router) {
+  constructor(router, $locationProvider) {
     /**
      * @type {import('../router').UIRouter}
      */
     this.router = router;
+
+    this.$locationProvider = $locationProvider;
 
     /** @type {boolean} */
     this.interceptDeferred = false;
@@ -33,61 +37,7 @@ export class UrlService {
      * @type {UrlConfig}
      */
     this.config = new UrlConfig(this.router);
-    // Delegate these calls to the current LocationServices implementation
-    /**
-     * Gets the current url, or updates the url
-     *
-     * ### Getting the current URL
-     *
-     * When no arguments are passed, returns the current URL.
-     * The URL is normalized using the internal [[path]]/[[search]]/[[hash]] values.
-     *
-     * For example, the URL may be stored in the hash ([[HashLocationServices]]) or
-     * have a base HREF prepended ([[PushStateLocationServices]]).
-     *
-     * The raw URL in the browser might be:
-     *
-     * ```
-     * http://mysite.com/somepath/index.html#/internal/path/123?param1=foo#anchor
-     * ```
-     *
-     * or
-     *
-     * ```
-     * http://mysite.com/basepath/internal/path/123?param1=foo#anchor
-     * ```
-     *
-     * then this method returns:
-     *
-     * ```
-     * /internal/path/123?param1=foo#anchor
-     * ```
-     *
-     *
-     * #### Example:
-     * ```js
-     * locationServices.url(); // "/some/path?query=value#anchor"
-     * ```
-     *
-     * ### Updating the URL
-     *
-     * When `newurl` arguments is provided, changes the URL to reflect `newurl`
-     *
-     * #### Example:
-     * ```js
-     * locationServices.url("/some/path?query=value#anchor", true);
-     * ```
-     *
-     * @param {string} newurl The new value for the URL.
-     *               This url should reflect only the new internal [[path]], [[search]], and [[hash]] values.
-     *               It should not include the protocol, site, port, or base path of an absolute HREF.
-     * @param {boolean} replace When true, replaces the current history entry (instead of appending it) with this new url
-     * @param {any} state The history's state object, i.e., pushState (if the LocationServices implementation supports it)
-     *
-     * @return the url (after potentially being processed)
-     */
-    this.url = (newurl, replace, state) =>
-      this.router.locationService.url(newurl, replace, state);
+
     /**
      * Gets the path part of the current url
      *
@@ -95,7 +45,7 @@ export class UrlService {
      *
      * @return the path portion of the url
      */
-    this.path = () => this.router.locationService.path();
+    this.path = () => this.$location.path();
     /**
      * Gets the search part of the current url as an object
      *
@@ -103,7 +53,7 @@ export class UrlService {
      *
      * @return the search (query) portion of the url, as an object
      */
-    this.search = () => this.router.locationService.search();
+    this.search = () => this.$location.search();
     /**
      * Gets the hash part of the current url
      *
@@ -111,24 +61,101 @@ export class UrlService {
      *
      * @return the hash (anchor) portion of the url
      */
-    this.hash = () => this.router.locationService.hash();
-    /**
-     * @internal
-     *
-     * Registers a low level url change handler
-     *
-     * Note: Because this is a low level handler, it's not recommended for general use.
-     *
-     * #### Example:
-     * ```js
-     * let deregisterFn = locationServices.onChange((evt) => console.log("url change", evt));
-     * ```
-     *
-     * @param callback a function that will be called when the url is changing
-     * @return a function that de-registers the callback
-     */
-    this.onChange = (callback) =>
-      this.router.locationService.onChange(callback);
+    this.hash = () => this.$location.hash();
+
+    this._urlListeners = [];
+  }
+
+  html5Mode() {
+    let html5Mode = this.$locationProvider.html5Mode();
+    html5Mode = isObject(html5Mode) ? html5Mode.enabled : html5Mode;
+    return html5Mode && typeof history !== "undefined";
+  }
+
+  baseHref() {
+    return (
+      this._baseHref ||
+      (this._baseHref = this.$browser.baseHref() || window.location.pathname)
+    );
+  }
+
+  /**
+   * Gets the current url, or updates the url
+   *
+   * ### Getting the current URL
+   *
+   * When no arguments are passed, returns the current URL.
+   * The URL is normalized using the internal [[path]]/[[search]]/[[hash]] values.
+   *
+   * For example, the URL may be stored in the hash ([[HashLocationServices]]) or
+   * have a base HREF prepended ([[PushStateLocationServices]]).
+   *
+   * The raw URL in the browser might be:
+   *
+   * ```
+   * http://mysite.com/somepath/index.html#/internal/path/123?param1=foo#anchor
+   * ```
+   *
+   * or
+   *
+   * ```
+   * http://mysite.com/basepath/internal/path/123?param1=foo#anchor
+   * ```
+   *
+   * then this method returns:
+   *
+   * ```
+   * /internal/path/123?param1=foo#anchor
+   * ```
+   *
+   *
+   * #### Example:
+   * ```js
+   * locationServices.url(); // "/some/path?query=value#anchor"
+   * ```
+   *
+   * ### Updating the URL
+   *
+   * When `newurl` arguments is provided, changes the URL to reflect `newurl`
+   *
+   * #### Example:
+   * ```js
+   * locationServices.url("/some/path?query=value#anchor", true);
+   * ```
+   *
+   * @param {string} newUrl The new value for the URL.
+   *               This url should reflect only the new internal [[path]], [[search]], and [[hash]] values.
+   *               It should not include the protocol, site, port, or base path of an absolute HREF.
+   * @param {boolean} replace When true, replaces the current history entry (instead of appending it) with this new url
+   * @param {any} state The history's state object, i.e., pushState (if the LocationServices implementation supports it)
+   *
+   * @return the url (after potentially being processed)
+   */
+  url(newUrl, replace = false, state) {
+    if (isDefined(newUrl)) this.$location.url(newUrl);
+    if (replace) this.$location.replace();
+    if (state) this.$location.state(state);
+    return this.$location.url();
+  }
+
+  /**
+   * @internal
+   *
+   * Registers a low level url change handler
+   *
+   * Note: Because this is a low level handler, it's not recommended for general use.
+   *
+   * #### Example:
+   * ```js
+   * let deregisterFn = locationServices.onChange((evt) => console.log("url change", evt));
+   * ```
+   *
+   * @param callback a function that will be called when the url is changing
+   * @return a function that de-registers the callback
+   */
+  onChange(callback) {
+    this._urlListeners.push(callback);
+    return () => removeFrom(this._urlListeners)(callback);
   }
 
   /**
@@ -270,5 +297,15 @@ export class UrlService {
         !best || (current && current.weight > best.weight) ? current : best;
     }
     return best;
+  }
+
+  _runtimeServices($rootScope, $location, $browser) {
+    /** @type {angular.ILocationService} */
+    this.$location = $location;
+    this.$browser = $browser;
+    // Bind $locationChangeSuccess to the listeners registered in LocationService.onChange
+    $rootScope.$on("$locationChangeSuccess", (evt) =>
+      this._urlListeners.forEach((fn) => fn(evt)),
+    );
   }
 }

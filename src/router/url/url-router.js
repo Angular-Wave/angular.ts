@@ -25,7 +25,7 @@ export class UrlRouter {
   }
   /** Internal API. */
   update(read) {
-    const $url = this.router.locationService;
+    const $url = this.router.urlService;
     if (read) {
       this.location = $url.url();
       return;
