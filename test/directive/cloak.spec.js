@@ -1,5 +1,4 @@
 import { dealoc, jqLite } from "../../src/jqLite";
-import { setupModuleLoader } from "../../src/loader";
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
 
@@ -10,7 +9,6 @@ describe("ngCloak", () => {
   let injector;
 
   beforeEach(() => {
-    setupModuleLoader(window);
     publishExternalAPI();
     injector = createInjector(["ng"]);
     $compile = injector.get("$compile");

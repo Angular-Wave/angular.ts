@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
-import { jqLite } from "../../src/jqLite";
+import { dealoc, jqLite } from "../../src/jqLite";
 import {
   EMAIL_REGEXP,
   ISO_DATE_REGEXP,
@@ -11,10 +11,11 @@ import { forEach } from "../../src/shared/utils";
 describe("input", () => {
   let $compile;
   let scope;
+  let inputElm
 
   beforeEach(() => {
     publishExternalAPI().decorator("$exceptionHandler", function () {
-      return (exception, cause) => {
+      return (exception) => {
         throw new Error(exception.message);
       };
     });
@@ -24,8 +25,12 @@ describe("input", () => {
     });
   });
 
+  afterEach(() => {
+    dealoc(inputElm)
+  })
+
   it("should bind to a model", () => {
-    const inputElm = $compile(
+    inputElm = $compile(
       '<input type="text" ng-model="name" name="alias" ng-change="change()" />',
     )(scope);
 
@@ -35,7 +40,7 @@ describe("input", () => {
   });
 
   it('should update the model on "blur" event', () => {
-    const inputElm = $compile(
+    inputElm = $compile(
       '<input type="text" ng-model="name" name="alias" ng-change="change()" />',
     )(scope);
     inputElm[0].setAttribute("value", "adam");
@@ -71,7 +76,7 @@ describe("input", () => {
     it('should not update the model between "compositionstart" and "compositionend"', () => {
       //$sniffer.android = false;
 
-      const inputElm = $compile(
+      inputElm = $compile(
         '<input type="text" ng-model="name" name="alias"" />',
       )(scope);
       inputElm[0].setAttribute("value", "a");
@@ -90,7 +95,7 @@ describe("input", () => {
   describe("interpolated names", () => {
     it("should interpolate input names", () => {
       scope.nameID = "47";
-      const inputElm = $compile(
+      inputElm = $compile(
         '<form name="form"><input type="text" ng-model="name" name="name{{nameID}}" /></form>',
       )(scope);
       expect(scope.form.name47.$pristine).toBeTruthy();
@@ -101,7 +106,7 @@ describe("input", () => {
 
     it("should rename form controls in form when interpolated name changes", () => {
       scope.nameID = "A";
-      const inputElm = $compile(
+      inputElm = $compile(
         '<form name="form"><input type="text" ng-model="name" name="name{{nameID}}" /></form>',
       )(scope);
       expect(scope.form.nameA.$name).toBe("nameA");
@@ -115,7 +120,7 @@ describe("input", () => {
 
     it("should rename form controls in null form when interpolated name changes", () => {
       scope.nameID = "A";
-      const inputElm = $compile(
+      inputElm = $compile(
         '<input type="text" ng-model="name" name="name{{nameID}}" />',
       )(scope);
       const model = inputElm.controller("ngModel");
@@ -132,7 +137,7 @@ describe("input", () => {
 
     beforeEach(() => {
       assertBrowserSupportsChangeEvent = function (inputEventSupported) {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="text" ng-model="name" name="alias" />',
         )(scope);
 
@@ -157,7 +162,7 @@ describe("input", () => {
 
     describe('"keydown", "paste", "cut" and "drop" events', () => {
       it('should update the model on "paste" event if the input value changes', () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="text" ng-model="name" name="alias" ng-change="change()" />',
         )(scope);
 
@@ -170,7 +175,7 @@ describe("input", () => {
       });
 
       it('should update the model on "drop" event if the input value changes', () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="text" ng-model="name" name="alias" ng-change="change()" />',
         )(scope);
 
@@ -183,7 +188,7 @@ describe("input", () => {
       });
 
       it('should update the model on "cut" event', () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="text" ng-model="name" name="alias" ng-change="change()" />',
         )(scope);
 
@@ -193,7 +198,7 @@ describe("input", () => {
       });
 
       it("should cancel the delayed dirty if a change occurs", () => {
-        const inputElm = $compile('<input type="text" ng-model="name" />')(
+        inputElm = $compile('<input type="text" ng-model="name" />')(
           scope,
         );
         const ctrl = inputElm.controller("ngModel");
@@ -213,7 +218,7 @@ describe("input", () => {
 
       describe("ngTrim", () => {
         it("should update the model and trim the value", () => {
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="text" ng-model="name" name="alias" ng-change="change()" />',
           )(scope);
 
@@ -223,7 +228,7 @@ describe("input", () => {
         });
 
         it("should update the model and not trim the value", () => {
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="text" ng-model="name" name="alias" ng-trim="false" />',
           )(scope);
 
@@ -234,7 +239,7 @@ describe("input", () => {
       });
 
       it("should allow complex reference binding", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="text" ng-model="obj[\'abc\'].name"/>',
         )(scope);
 
@@ -243,7 +248,7 @@ describe("input", () => {
       });
 
       it("should ignore input without ngModel directive", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="text" name="whatever" required />',
         )(scope);
 
@@ -257,14 +262,14 @@ describe("input", () => {
 
       it("should report error on assignment error", () => {
         expect(() => {
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="text" ng-model="throw \'\'">',
           )(scope);
         }).toThrowError(/Syntax Error/);
       });
 
       it("should render as blank if null", () => {
-        const inputElm = $compile('<input type="text" ng-model="age" />')(
+        inputElm = $compile('<input type="text" ng-model="age" />')(
           scope,
         );
 
@@ -275,7 +280,7 @@ describe("input", () => {
       });
 
       it("should render 0 even if it is a number", () => {
-        const inputElm = $compile('<input type="text" ng-model="value" />')(
+        inputElm = $compile('<input type="text" ng-model="value" />')(
           scope,
         );
         scope.$apply("value = 0");
@@ -284,7 +289,7 @@ describe("input", () => {
       });
 
       it("should render the $viewValue when $modelValue is empty", () => {
-        const inputElm = $compile('<input type="text" ng-model="value" />')(
+        inputElm = $compile('<input type="text" ng-model="value" />')(
           scope,
         );
 
@@ -305,7 +310,7 @@ describe("input", () => {
     describe("month", () => {
       // IN ANGULAR.JS month types were converted to Date object. This is not standard behavior
       it("should allow a String object in format 'YYYY-MM'", () => {
-        const inputElm = $compile('<input type="month" ng-model="january"/>')(
+        inputElm = $compile('<input type="month" ng-model="january"/>')(
           scope,
         );
 
@@ -317,7 +322,7 @@ describe("input", () => {
       });
 
       it("should throw if the model is a Date object", () => {
-        const inputElm = $compile('<input type="month" ng-model="march"/>')(
+        inputElm = $compile('<input type="month" ng-model="march"/>')(
           scope,
         );
 
@@ -329,7 +334,7 @@ describe("input", () => {
       });
 
       it("should throw if the model is a Invalid string", () => {
-        const inputElm = $compile('<input type="month" ng-model="march"/>')(
+        inputElm = $compile('<input type="month" ng-model="march"/>')(
           scope,
         );
 
@@ -341,7 +346,7 @@ describe("input", () => {
       });
 
       it("should not change the model if the input is an invalid month string", () => {
-        const inputElm = $compile('<input type="month" ng-model="value"/>')(
+        inputElm = $compile('<input type="month" ng-model="value"/>')(
           scope,
         );
 
@@ -358,7 +363,7 @@ describe("input", () => {
       });
 
       it("should render as blank if null", () => {
-        const inputElm = $compile('<input type="month" ng-model="test" />')(
+        inputElm = $compile('<input type="month" ng-model="test" />')(
           scope,
         );
 
@@ -369,7 +374,7 @@ describe("input", () => {
       });
 
       it("should come up blank when no value specified", () => {
-        const inputElm = $compile('<input type="month" ng-model="test" />')(
+        inputElm = $compile('<input type="month" ng-model="test" />')(
           scope,
         );
 
@@ -382,7 +387,7 @@ describe("input", () => {
       });
 
       it("should parse empty string to null", () => {
-        const inputElm = $compile('<input type="month" ng-model="test" />')(
+        inputElm = $compile('<input type="month" ng-model="test" />')(
           scope,
         );
 
@@ -393,7 +398,7 @@ describe("input", () => {
       });
 
       it("should set scope to a string value", () => {
-        const inputElm = $compile('<input type="month" ng-model="value" />')(
+        inputElm = $compile('<input type="month" ng-model="value" />')(
           scope,
         );
 
@@ -515,7 +520,7 @@ describe("input", () => {
 
     describe("week", () => {
       it("should throw if model is a Date object", () => {
-        const inputElm = $compile('<input type="week" ng-model="secondWeek"/>')(
+        inputElm = $compile('<input type="week" ng-model="secondWeek"/>')(
           scope,
         );
 
@@ -527,7 +532,7 @@ describe("input", () => {
       });
 
       it("should set the view if the model is a valid String object", () => {
-        const inputElm = $compile('<input type="week" ng-model="secondWeek"/>')(
+        inputElm = $compile('<input type="week" ng-model="secondWeek"/>')(
           scope,
         );
 
@@ -539,7 +544,7 @@ describe("input", () => {
       });
 
       it("should set scope to a string value", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="week" ng-model="secondWeek" />',
         )(scope);
 
@@ -556,7 +561,7 @@ describe("input", () => {
       });
 
       it("should set the model undefined if the input is an invalid week string", () => {
-        const inputElm = $compile('<input type="week" ng-model="secondWeek"/>')(
+        inputElm = $compile('<input type="week" ng-model="secondWeek"/>')(
           scope,
         );
 
@@ -574,7 +579,7 @@ describe("input", () => {
       });
 
       it("should render as blank if null", () => {
-        const inputElm = $compile('<input type="week" ng-model="test" />')(
+        inputElm = $compile('<input type="week" ng-model="test" />')(
           scope,
         );
 
@@ -585,7 +590,7 @@ describe("input", () => {
       });
 
       it("should come up blank when no value specified", () => {
-        const inputElm = $compile('<input type="week" ng-model="test" />')(
+        inputElm = $compile('<input type="week" ng-model="test" />')(
           scope,
         );
 
@@ -598,7 +603,7 @@ describe("input", () => {
       });
 
       it("should parse empty string to null", () => {
-        const inputElm = $compile('<input type="week" ng-model="test" />')(
+        inputElm = $compile('<input type="week" ng-model="test" />')(
           scope,
         );
 
@@ -722,7 +727,7 @@ describe("input", () => {
 
     describe("datetime-local", () => {
       it("should throw if model is a Date object", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="datetime-local" ng-model="lunchtime"/>',
         )(scope);
 
@@ -734,7 +739,7 @@ describe("input", () => {
       });
 
       it("should set the view if the model if a valid String.", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="datetime-local" ng-model="halfSecondToNextYear"/>',
         )(scope);
 
@@ -746,7 +751,7 @@ describe("input", () => {
       });
 
       it("should bind to the model if a valid String.", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="datetime-local" ng-model="halfSecondToNextYear"/>',
         )(scope);
 
@@ -758,7 +763,7 @@ describe("input", () => {
       });
 
       it("should set the model null if the view is invalid", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="datetime-local" ng-model="breakMe"/>',
         )(scope);
 
@@ -777,7 +782,7 @@ describe("input", () => {
       });
 
       it("should render as blank if null", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="datetime-local" ng-model="test" />',
         )(scope);
 
@@ -788,7 +793,7 @@ describe("input", () => {
       });
 
       it("should come up blank when no value specified", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="datetime-local" ng-model="test" />',
         )(scope);
 
@@ -801,7 +806,7 @@ describe("input", () => {
       });
 
       it("should parse empty string to null", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="datetime-local" ng-model="test" />',
         )(scope);
 
@@ -933,7 +938,7 @@ describe("input", () => {
 
       it("should validate even if max value changes on-the-fly", () => {
         scope.max = "2013-01-01T01:02:00";
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="datetime-local" ng-model="value" name="alias" max="{{max}}" />',
         )(scope);
 
@@ -953,7 +958,7 @@ describe("input", () => {
 
       it("should validate even if min value changes on-the-fly", () => {
         scope.min = "2013-01-01T01:02:00";
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="datetime-local" ng-model="value" name="alias" min="{{min}}" />',
         )(scope);
 
@@ -973,7 +978,7 @@ describe("input", () => {
 
       it("should validate even if ng-max value changes on-the-fly", () => {
         scope.max = "2013-01-01T01:02:00";
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="datetime-local" ng-model="value" name="alias" ng-max="max" />',
         )(scope);
 
@@ -993,7 +998,7 @@ describe("input", () => {
 
       it("should validate even if ng-min value changes on-the-fly", () => {
         scope.min = "2013-01-01T01:02:00";
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="datetime-local" ng-model="value" name="alias" ng-min="min" />',
         )(scope);
 
@@ -1014,7 +1019,7 @@ describe("input", () => {
 
     describe("time", () => {
       it("should throw if model is a Date object", () => {
-        const inputElm = $compile('<input type="time" ng-model="lunchtime"/>')(
+        inputElm = $compile('<input type="time" ng-model="lunchtime"/>')(
           scope,
         );
         expect(() => {
@@ -1025,7 +1030,7 @@ describe("input", () => {
       });
 
       it("should set the view if the model is a valid String object.", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="time" ng-model="threeFortyOnePm"/>',
         )(scope);
 
@@ -1037,7 +1042,7 @@ describe("input", () => {
       });
 
       it("should bind to mode if a valid String object.", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="time" ng-model="threeFortyOnePm"/>',
         )(scope);
 
@@ -1049,7 +1054,7 @@ describe("input", () => {
       });
 
       it("should set the model to null if the view is invalid", () => {
-        const inputElm = $compile('<input type="time" ng-model="breakMe"/>')(
+        inputElm = $compile('<input type="time" ng-model="breakMe"/>')(
           scope,
         );
 
@@ -1066,7 +1071,7 @@ describe("input", () => {
       });
 
       it("should set blank if null", () => {
-        const inputElm = $compile('<input type="time" ng-model="test" />')(
+        inputElm = $compile('<input type="time" ng-model="test" />')(
           scope,
         );
 
@@ -1077,7 +1082,7 @@ describe("input", () => {
       });
 
       it("should set blank when no value specified", () => {
-        const inputElm = $compile('<input type="time" ng-model="test" />')(
+        inputElm = $compile('<input type="time" ng-model="test" />')(
           scope,
         );
 
@@ -1090,7 +1095,7 @@ describe("input", () => {
       });
 
       it("should parse empty string to null", () => {
-        const inputElm = $compile('<input type="time" ng-model="test" />')(
+        inputElm = $compile('<input type="time" ng-model="test" />')(
           scope,
         );
 
@@ -1104,7 +1109,7 @@ describe("input", () => {
       });
 
       it("should allow to specify the milliseconds", () => {
-        const inputElm = $compile('<input type="time" ng-model="value"" />')(
+        inputElm = $compile('<input type="time" ng-model="value"" />')(
           scope,
         );
 
@@ -1114,7 +1119,7 @@ describe("input", () => {
       });
 
       it("should allow to specify single digit milliseconds", () => {
-        const inputElm = $compile('<input type="time" ng-model="value"" />')(
+        inputElm = $compile('<input type="time" ng-model="value"" />')(
           scope,
         );
 
@@ -1124,7 +1129,7 @@ describe("input", () => {
       });
 
       it("should allow to specify the seconds", () => {
-        const inputElm = $compile('<input type="time" ng-model="value"" />')(
+        inputElm = $compile('<input type="time" ng-model="value"" />')(
           scope,
         );
 
@@ -1223,7 +1228,7 @@ describe("input", () => {
 
       it("should validate even if max value changes on-the-fly", () => {
         scope.max = "04:02:00";
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="time" ng-model="value" name="alias" max="{{max}}" />',
         )(scope);
 
@@ -1239,7 +1244,7 @@ describe("input", () => {
 
       it("should validate even if min value changes on-the-fly", () => {
         scope.min = "08:45:00";
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="time" ng-model="value" name="alias" min="{{min}}" />',
         )(scope);
 
@@ -1255,7 +1260,7 @@ describe("input", () => {
 
       it("should validate even if ng-max value changes on-the-fly", () => {
         scope.max = "04:02:00";
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="time" ng-model="value" name="alias" ng-max="max" />',
         )(scope);
 
@@ -1271,7 +1276,7 @@ describe("input", () => {
 
       it("should validate even if ng-min value changes on-the-fly", () => {
         scope.min = "08:45:00";
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="time" ng-model="value" name="alias" ng-min="min" />',
         )(scope);
 
@@ -1288,7 +1293,7 @@ describe("input", () => {
 
     describe("date", () => {
       it("should throw if model is a Date object.", () => {
-        const inputElm = $compile('<input type="date" ng-model="birthday"/>')(
+        inputElm = $compile('<input type="date" ng-model="birthday"/>')(
           scope,
         );
 
@@ -1300,7 +1305,7 @@ describe("input", () => {
       });
 
       it("should set the view  when the model is an valid String", () => {
-        const inputElm = $compile('<input type="date" ng-model="val"/>')(scope);
+        inputElm = $compile('<input type="date" ng-model="val"/>')(scope);
 
         scope.$apply(() => {
           scope.val = "1977-10-22";
@@ -1310,7 +1315,7 @@ describe("input", () => {
       });
 
       it("should bind to scope when the model is an valid String", () => {
-        const inputElm = $compile('<input type="date" ng-model="val"/>')(scope);
+        inputElm = $compile('<input type="date" ng-model="val"/>')(scope);
 
         inputElm[0].value = "1977-10-22";
         inputElm[0].dispatchEvent(new Event("change"));
@@ -1319,7 +1324,7 @@ describe("input", () => {
       });
 
       it("should set the model to null if the view is invalid", () => {
-        const inputElm = $compile('<input type="date" ng-model="arrMatey"/>')(
+        inputElm = $compile('<input type="date" ng-model="arrMatey"/>')(
           scope,
         );
 
@@ -1337,7 +1342,7 @@ describe("input", () => {
       });
 
       it("should render as blank if null", () => {
-        const inputElm = $compile('<input type="date" ng-model="test" />')(
+        inputElm = $compile('<input type="date" ng-model="test" />')(
           scope,
         );
 
@@ -1348,7 +1353,7 @@ describe("input", () => {
       });
 
       it("should come up blank when no value specified", () => {
-        const inputElm = $compile('<input type="date" ng-model="test" />')(
+        inputElm = $compile('<input type="date" ng-model="test" />')(
           scope,
         );
 
@@ -1361,7 +1366,7 @@ describe("input", () => {
       });
 
       it("should parse empty string to null", () => {
-        const inputElm = $compile('<input type="date" ng-model="test" />')(
+        inputElm = $compile('<input type="date" ng-model="test" />')(
           scope,
         );
 
@@ -1379,7 +1384,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="date" ng-model="value" name="alias" min="2000-01-01" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
           inputElm[0].value = "1999-12-31";
           inputElm[0].dispatchEvent(new Event("change"));
           expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
@@ -1391,7 +1396,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="date" ng-model="value" name="alias" min="2000-01-01" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
           inputElm[0].value = "2000-01-01";
           inputElm[0].dispatchEvent(new Event("change"));
           expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
@@ -1403,7 +1408,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input name="alias" ng-model="value" type="date" min >',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
 
           scope.value = "2000-01-01";
           scope.$digest();
@@ -1417,7 +1422,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="date" ng-model="value" name="alias" max="2019-01-01" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
 
           inputElm[0].value = "2019-12-31";
           inputElm[0].dispatchEvent(new Event("change"));
@@ -1430,7 +1435,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="date" ng-model="value" name="alias" max="2019-01-01" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
 
           inputElm[0].value = "2000-01-01";
           inputElm[0].dispatchEvent(new Event("change"));
@@ -1465,7 +1470,7 @@ describe("input", () => {
 
       it("should validate even if max value changes on-the-fly", () => {
         scope.max = "2013-01-01";
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="date" ng-model="value" name="alias" max="{{max}}" />',
         )(scope);
 
@@ -1486,7 +1491,7 @@ describe("input", () => {
 
       it("should validate even if min value changes on-the-fly", () => {
         scope.min = "2013-01-01";
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="date" ng-model="value" name="alias" min="{{min}}" />',
         )(scope);
 
@@ -1507,7 +1512,7 @@ describe("input", () => {
 
       it("should validate even if ng-max value changes on-the-fly", () => {
         scope.max = "2013-01-01";
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="date" ng-model="value" name="alias" ng-max="max" />',
         )(scope);
 
@@ -1528,7 +1533,7 @@ describe("input", () => {
 
       it("should validate even if ng-min value changes on-the-fly", () => {
         scope.min = "2013-01-01";
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="date" ng-model="value" name="alias" ng-min="min" />',
         )(scope);
 
@@ -1549,7 +1554,7 @@ describe("input", () => {
 
       it("should allow Date objects as valid ng-max values", () => {
         scope.max = new Date(2012, 1, 1, 1, 2, 0);
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="date" ng-model="value" name="alias" ng-max="max" />',
         )(scope);
 
@@ -1570,7 +1575,7 @@ describe("input", () => {
 
       it("should allow Date objects as valid ng-min values", () => {
         scope.min = new Date(2013, 1, 1, 1, 2, 0);
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="date" ng-model="value" name="alias" ng-min="min" />',
         )(scope);
 
@@ -1712,7 +1717,7 @@ describe("input", () => {
       };
 
       it("should reset the model if view is invalid", () => {
-        const inputElm = $compile('<input type="number" ng-model="age"/>')(
+        inputElm = $compile('<input type="number" ng-model="age"/>')(
           scope,
         );
 
@@ -1728,7 +1733,7 @@ describe("input", () => {
       });
 
       it("should render as blank if null", () => {
-        const inputElm = $compile('<input type="number" ng-model="age" />')(
+        inputElm = $compile('<input type="number" ng-model="age" />')(
           scope,
         );
 
@@ -1739,7 +1744,7 @@ describe("input", () => {
       });
 
       it("should come up blank when no value specified", () => {
-        const inputElm = $compile('<input type="number" ng-model="age" />')(
+        inputElm = $compile('<input type="number" ng-model="age" />')(
           scope,
         );
 
@@ -1752,7 +1757,7 @@ describe("input", () => {
       });
 
       it("should parse empty string to null", () => {
-        const inputElm = $compile('<input type="number" ng-model="age" />')(
+        inputElm = $compile('<input type="number" ng-model="age" />')(
           scope,
         );
 
@@ -1766,7 +1771,7 @@ describe("input", () => {
       });
 
       it("should only invalidate the model if suffering from bad input when the data is parsed", () => {
-        const inputElm = $compile('<input type="number" ng-model="age" />')(
+        inputElm = $compile('<input type="number" ng-model="age" />')(
           scope,
         );
 
@@ -1781,7 +1786,7 @@ describe("input", () => {
       });
 
       it("should validate number if transition from bad input to empty string", () => {
-        const inputElm = $compile('<input type="number" ng-model="age" />')(
+        inputElm = $compile('<input type="number" ng-model="age" />')(
           scope,
         );
         inputElm[0].value = "10a";
@@ -1794,7 +1799,7 @@ describe("input", () => {
       });
 
       it("should validate with undefined viewValue when $validate() called", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<form name="form"><input type="number" name="alias" ng-model="value" /></form>',
         )(scope);
 
@@ -1816,7 +1821,7 @@ describe("input", () => {
         const formElm = $compile(
           '<form name="form"><input type="number" name="alias" ng-model="value" /></form>',
         )(scope);
-        const inputElm = formElm.find("input");
+        inputElm = formElm.find("input");
 
         // #.###e+##
         scope.form.alias.$setViewValue("1.23214124123412412e+26");
@@ -1880,7 +1885,7 @@ describe("input", () => {
       });
 
       it("should bind to scope if input is valid", () => {
-        const inputElm = $compile('<input type="number" ng-model="age"/>')(
+        inputElm = $compile('<input type="number" ng-model="age"/>')(
           scope,
         );
         const ctrl = inputElm.controller("ngModel");
@@ -1916,7 +1921,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="number" ng-model="value" name="alias" min="10" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
 
           inputElm[0].value = "1";
           inputElm[0].dispatchEvent(new Event("change"));
@@ -1936,7 +1941,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="number" ng-model-options="{allowInvalid: true}" ng-model="value" name="alias" min="10" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
           const ngModelCtrl = inputElm.controller("ngModel");
           ngModelCtrl.$parsers.push(subtract);
 
@@ -1958,7 +1963,7 @@ describe("input", () => {
 
         it("should validate even if min value changes on-the-fly", () => {
           scope.min = undefined;
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="number" ng-model="value" name="alias" min="{{min}}" />',
           )(scope);
           expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
@@ -1994,7 +1999,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="number" ng-model="value" name="alias" ng-min="50" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
 
           inputElm[0].value = "1";
           inputElm[0].dispatchEvent(new Event("change"));
@@ -2013,7 +2018,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="number" ng-model="value" name="alias" ng-min="10" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
           const ngModelCtrl = inputElm.controller("ngModel");
           ngModelCtrl.$parsers.push(subtract);
 
@@ -2035,7 +2040,7 @@ describe("input", () => {
 
         it("should validate even if the ngMin value changes on-the-fly", () => {
           scope.min = undefined;
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="number" ng-model="value" name="alias" ng-min="min" />',
           )(scope);
           expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
@@ -2071,7 +2076,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="number" ng-model="value" name="alias" max="10" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
 
           inputElm[0].value = "20";
           inputElm[0].dispatchEvent(new Event("change"));
@@ -2091,7 +2096,7 @@ describe("input", () => {
             '<form name="form"><input type="number"' +
               'ng-model-options="{allowInvalid: true}" ng-model="value" name="alias" max="10" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
           const ngModelCtrl = inputElm.controller("ngModel");
           ngModelCtrl.$parsers.push(add);
 
@@ -2113,7 +2118,7 @@ describe("input", () => {
 
         it("should validate even if max value changes on-the-fly", () => {
           scope.max = undefined;
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="number" ng-model="value" name="alias" max="{{max}}" />',
           )(scope);
           expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
@@ -2149,7 +2154,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="number" ng-model="value" name="alias" ng-max="5" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
 
           inputElm[0].value = "20";
           inputElm[0].dispatchEvent(new Event("change"));
@@ -2169,7 +2174,7 @@ describe("input", () => {
             '<form name="form"><input type="number"' +
               'ng-model-options="{allowInvalid: true}" ng-model="value" name="alias" ng-max="10" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
           const ngModelCtrl = inputElm.controller("ngModel");
           ngModelCtrl.$parsers.push(add);
 
@@ -2191,7 +2196,7 @@ describe("input", () => {
 
         it("should validate even if the ngMax value changes on-the-fly", () => {
           scope.max = undefined;
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="number" ng-model="value" name="alias" ng-max="max" />',
           )(scope);
           expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
@@ -2235,7 +2240,7 @@ describe("input", () => {
               const formElm = $compile(
                 `<form name="form"><input type="number" ng-model="value" name="alias" ${attrHtml} /></form>`,
               )(scope);
-              const inputElm = formElm.find("input");
+              inputElm = formElm.find("input");
               scope.$digest();
               expect(inputElm.val()).toBe("20");
               expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
@@ -2268,7 +2273,7 @@ describe("input", () => {
               const formElm = $compile(
                 `<form name="form"><input type="number" ng-model="value" name="alias" ${attrHtml} /></form>`,
               )(scope);
-              const inputElm = formElm.find("input");
+              inputElm = formElm.find("input");
               inputElm[0].value = "10";
               inputElm[0].dispatchEvent(new Event("change"));
               expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
@@ -2314,7 +2319,7 @@ describe("input", () => {
               scope.min = 5;
               scope.step = 10;
               scope.value = 10;
-              const inputElm = $compile(
+              inputElm = $compile(
                 `<input type="number" ng-model="value" min="{{min}}" ${attrHtml} />`,
               )(scope);
               const ngModel = inputElm.controller("ngModel");
@@ -2370,7 +2375,7 @@ describe("input", () => {
 
             it("should correctly validate even in cases where the JS floating point arithmetic fails", () => {
               scope.step = 0.1;
-              const inputElm = $compile(
+              inputElm = $compile(
                 `<input type="number" ng-model="value" ${attrHtml} />`,
               )(scope);
               const ngModel = inputElm.controller("ngModel");
@@ -2419,7 +2424,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="number" ng-model="value" name="alias" required /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
 
           inputElm[0].value = "0";
           inputElm[0].dispatchEvent(new Event("change"));
@@ -2432,7 +2437,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="number" ng-model="value" name="alias" required /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
           scope.$apply("value = 0");
 
           expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
@@ -2444,7 +2449,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><div ng-model="value" name="alias" required></form>',
           )(scope);
-          const inputElm = formElm.find("div");
+          inputElm = formElm.find("div");
 
           scope.$apply("value = ''");
 
@@ -2453,7 +2458,7 @@ describe("input", () => {
         });
 
         it("should not invalidate number if ng-required=false and viewValue has not been committed", () => {
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="number" ng-model="value" name="alias" ng-required="required">',
           )(scope);
 
@@ -2469,7 +2474,7 @@ describe("input", () => {
             const formElm = $compile(
               '<form name="form"><input type="number" ng-model="value" name="numberInput" ng-required="true" /></form>',
             )(scope);
-            const inputElm = formElm.find("input");
+            inputElm = formElm.find("input");
 
             inputElm[0].value = "0";
             inputElm[0].dispatchEvent(new Event("change"));
@@ -2482,7 +2487,7 @@ describe("input", () => {
             const formElm = $compile(
               '<form name="form"><input type="number" ng-model="value" name="numberInput" ng-required="true" /></form>',
             )(scope);
-            const inputElm = formElm.find("input");
+            inputElm = formElm.find("input");
 
             scope.$apply("value = 0");
 
@@ -2495,7 +2500,7 @@ describe("input", () => {
             const formElm = $compile(
               '<form name="form"><div ng-model="value" name="numberInput" ng-required="true"></form>',
             )(scope);
-            const inputElm = formElm.find("div");
+            inputElm = formElm.find("div");
 
             scope.$apply("value = ''");
 
@@ -2507,7 +2512,7 @@ describe("input", () => {
             const formElm = $compile(
               '<form name="form"><input type="number" ng-model="value" name="numberInput" ng-required="ngRequiredExpr" /></form>',
             )(scope);
-            const inputElm = formElm.find("input");
+            inputElm = formElm.find("input");
 
             scope.$apply("ngRequiredExpr = true");
 
@@ -2528,7 +2533,7 @@ describe("input", () => {
             const formElm = $compile(
               '<form name="form"><input type="number" ng-model="value" name="numberInput" ng-required="false" /></form>',
             )(scope);
-            const inputElm = formElm.find("input");
+            inputElm = formElm.find("input");
 
             expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
             expect(scope.value).toBeUndefined();
@@ -2540,7 +2545,7 @@ describe("input", () => {
             const formElm = $compile(
               '<form name="form"><input type="number" ng-model="value" name="numberInput" ng-required="false" /></form>',
             )(scope);
-            const inputElm = formElm.find("input");
+            inputElm = formElm.find("input");
 
             inputElm[0].value = "42";
             inputElm[0].dispatchEvent(new Event("change"));
@@ -2553,7 +2558,7 @@ describe("input", () => {
             const formElm = $compile(
               '<form name="form"><div ng-model="value" name="numberInput" ng-required="false"><form>',
             )(scope);
-            const inputElm = formElm.find("div");
+            inputElm = formElm.find("div");
 
             scope.$apply("value = ''");
 
@@ -2565,7 +2570,7 @@ describe("input", () => {
             const formElm = $compile(
               '<form name="form"><input type="number" ng-model="value" name="numberInput" ng-required="ngRequiredExpr" /><form>',
             )(scope);
-            const inputElm = formElm.find("input");
+            inputElm = formElm.find("input");
 
             scope.$apply("ngRequiredExpr = false");
 
@@ -2584,7 +2589,7 @@ describe("input", () => {
 
       describe("minlength", () => {
         it("should invalidate values that are shorter than the given minlength", () => {
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="number" ng-model="value" ng-minlength="3" />',
           )(scope);
 
@@ -2601,7 +2606,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="number" name="input" ng-model="value" minlength="{{ min }}" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
           scope.$apply(() => {
             scope.min = 10;
           });
@@ -2622,7 +2627,7 @@ describe("input", () => {
 
       describe("maxlength", () => {
         it("should invalidate values that are longer than the given maxlength", () => {
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="number" ng-model="value" ng-maxlength="5" />',
           )(scope);
 
@@ -2639,7 +2644,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="number" name="input" ng-model="value" maxlength="{{ max }}" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
           scope.$apply(() => {
             scope.max = 1;
           });
@@ -2664,7 +2669,7 @@ describe("input", () => {
       const supportsRange = rangeTestEl[0].type === "range";
 
       it("should render as 50 if null", () => {
-        const inputElm = $compile('<input type="range" ng-model="age" />')(
+        inputElm = $compile('<input type="range" ng-model="age" />')(
           scope,
         );
 
@@ -2678,7 +2683,7 @@ describe("input", () => {
       });
 
       it("should set model to 50 when no value specified and default min/max", () => {
-        const inputElm = $compile('<input type="range" ng-model="age" />')(
+        inputElm = $compile('<input type="range" ng-model="age" />')(
           scope,
         );
 
@@ -2690,7 +2695,7 @@ describe("input", () => {
       });
 
       it("should parse non-number values to 50 when default min/max", () => {
-        const inputElm = $compile('<input type="range" ng-model="age" />')(
+        inputElm = $compile('<input type="range" ng-model="age" />')(
           scope,
         );
 
@@ -2704,7 +2709,7 @@ describe("input", () => {
       });
 
       it("should parse the input value to a Number", () => {
-        const inputElm = $compile('<input type="range" ng-model="age" />')(
+        inputElm = $compile('<input type="range" ng-model="age" />')(
           scope,
         );
 
@@ -2716,7 +2721,7 @@ describe("input", () => {
       it("should only invalidate the model if suffering from bad input when the data is parsed", () => {
         scope.age = 60;
 
-        const inputElm = $compile('<input type="range" ng-model="age" />')(
+        inputElm = $compile('<input type="range" ng-model="age" />')(
           scope,
         );
 
@@ -2732,7 +2737,7 @@ describe("input", () => {
       it("should throw if the model value is not a number", () => {
         expect(() => {
           scope.value = "one";
-          const inputElm = $compile('<input type="range" ng-model="value" />')(
+          inputElm = $compile('<input type="range" ng-model="value" />')(
             scope,
           );
           scope.$digest();
@@ -2746,7 +2751,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="range" ng-model="value" name="alias" min="{{min}}" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
           scope.$digest();
 
           expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
@@ -2760,7 +2765,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="range" ng-model="value" name="alias" min="10" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
 
           inputElm[0].value = "5";
           inputElm[0].dispatchEvent(new Event("change"));
@@ -2778,7 +2783,7 @@ describe("input", () => {
         it("should set the model to the min val if it is less than the min val", () => {
           scope.value = -10;
           // Default min is 0
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="range" ng-model="value" name="alias" min="{{min}}" />',
           )(scope);
           scope.$digest();
@@ -2796,7 +2801,7 @@ describe("input", () => {
 
         it("should adjust the element and model value when the min value changes on-the-fly", () => {
           scope.min = 10;
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="range" ng-model="value" name="alias" min="{{min}}" />',
           )(scope);
           scope.$digest();
@@ -2839,7 +2844,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="range" ng-model="value" name="alias" max="{{max}}" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
           scope.$digest();
           expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
           expect(inputElm.val()).toBe("130");
@@ -2851,7 +2856,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="range" ng-model="value" name="alias" max="10" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
 
           inputElm[0].value = "20";
           inputElm[0].dispatchEvent(new Event("change"));
@@ -2869,7 +2874,7 @@ describe("input", () => {
         it("should set the model to the max val if it is greater than the max val", () => {
           scope.value = 110;
           // Default max is 100
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="range" ng-model="value" name="alias" max="{{max}}" />',
           )(scope);
           scope.$digest();
@@ -2886,7 +2891,7 @@ describe("input", () => {
 
         it("should adjust the element and model value if the max value changes on-the-fly", () => {
           scope.max = 10;
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="range" ng-model="value" name="alias" max="{{max}}" />',
           )(scope);
           scope.$digest();
@@ -2924,7 +2929,7 @@ describe("input", () => {
         it("should set the correct initial value when min and max are specified", () => {
           scope.max = 80;
           scope.min = 40;
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="range" ng-model="value" name="alias" max="{{max}}" min="{{min}}" />',
           )(scope);
           scope.$digest();
@@ -2935,7 +2940,7 @@ describe("input", () => {
 
         it("should set element and model value to min if max is less than min", () => {
           scope.min = 40;
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="range" ng-model="value" name="alias" max="{{max}}" min="{{min}}" />',
           )(scope);
           scope.$digest();
@@ -2959,7 +2964,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="range" ng-model="value" name="alias" step="5" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
 
           inputElm[0].value = "5";
           inputElm[0].dispatchEvent(new Event("change"));
@@ -2996,7 +3001,7 @@ describe("input", () => {
           const formElm = $compile(
             '<form name="form"><input type="range" ng-model="value" name="alias" step="5" /></form>',
           )(scope);
-          const inputElm = formElm.find("input");
+          inputElm = formElm.find("input");
 
           scope.$apply("value = 10");
           expect(inputElm.val()).toBe("10");
@@ -3038,7 +3043,7 @@ describe("input", () => {
             '<input type="email" ng-model="email" name="alias" />' +
             "</form>",
         )(scope);
-        const inputElm = formElm.find("input");
+        inputElm = formElm.find("input");
 
         const widget = scope.form.alias;
         inputElm[0].value = "vojta@google.com";
@@ -3212,7 +3217,7 @@ describe("input", () => {
             '<input type="url" ng-model="url" name="alias" />',
           +"</form>",
         )(scope);
-        const inputElm = formElm.find("input");
+        inputElm = formElm.find("input");
 
         const widget = scope.form.alias;
 
@@ -3352,7 +3357,7 @@ describe("input", () => {
     describe("radio", () => {
       ["click", "change"].forEach((event) => {
         it("should update the model on $prop event", () => {
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="radio" ng-model="color" value="white" />' +
               '<input type="radio" ng-model="color" value="red" />' +
               '<input type="radio" ng-model="color" value="blue" />',
@@ -3376,7 +3381,7 @@ describe("input", () => {
       });
 
       it("should treat the value as a string when evaluating checked-ness", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="radio" ng-model="model" value="0" />',
         )(scope);
 
@@ -3389,7 +3394,7 @@ describe("input", () => {
 
       it("should allow {{expr}} as value", () => {
         scope.some = 11;
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="radio" ng-model="value" value="{{some}}" />' +
             '<input type="radio" ng-model="value" value="{{other}}" />',
         )(scope);
@@ -3415,7 +3420,7 @@ describe("input", () => {
 
       it("should allow the use of ngTrim", () => {
         scope.some = 11;
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="radio" ng-model="value" value="opt1" />' +
             '<input type="radio" ng-model="value" value="  opt2  " />' +
             '<input type="radio" ng-model="value" ng-trim="false" value="  opt3  " />' +
@@ -3467,7 +3472,7 @@ describe("input", () => {
 
     describe("checkbox", () => {
       it("should ignore checkbox without ngModel directive", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="checkbox" name="whatever" required />',
         )(scope);
 
@@ -3481,7 +3486,7 @@ describe("input", () => {
 
       ["click", "change"].forEach((event) => {
         it("should update the model on $prop event", () => {
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="checkbox" ng-model="checkbox" />',
           )(scope);
 
@@ -3501,7 +3506,7 @@ describe("input", () => {
       });
 
       it("should format booleans", () => {
-        const inputElm = $compile('<input type="checkbox" ng-model="name" />')(
+        inputElm = $compile('<input type="checkbox" ng-model="name" />')(
           scope,
         );
 
@@ -3513,7 +3518,7 @@ describe("input", () => {
       });
 
       it('should support type="checkbox" with non-standard capitalization', () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="checkBox" ng-model="checkbox" />',
         )(scope);
 
@@ -3527,7 +3532,7 @@ describe("input", () => {
       });
 
       it("should allow custom enumeration", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="checkbox" ng-model="name" ng-true-value="\'y\'" ' +
             "ng-false-value=\"'n'\">",
         )(scope);
@@ -3552,7 +3557,7 @@ describe("input", () => {
 
       it("should throw if ngTrueValue is present and not a constant expression", () => {
         expect(() => {
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="checkbox" ng-model="value" ng-true-value="yes" />',
           )(scope);
         }).toThrowError(/constexpr/);
@@ -3560,7 +3565,7 @@ describe("input", () => {
 
       it("should throw if ngFalseValue is present and not a constant expression", () => {
         expect(() => {
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="checkbox" ng-model="value" ng-false-value="no" />',
           )(scope);
         }).toThrowError(/constexpr/);
@@ -3568,14 +3573,14 @@ describe("input", () => {
 
       it("should not throw if ngTrueValue or ngFalseValue are not present", () => {
         expect(() => {
-          const inputElm = $compile(
+          inputElm = $compile(
             '<input type="checkbox" ng-model="value" />',
           )(scope);
         }).not.toThrow();
       });
 
       it("should be required if false", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="checkbox" ng-model="value" required />',
         )(scope);
 
@@ -3598,7 +3603,7 @@ describe("input", () => {
         )(scope);
         scope.$digest();
 
-        const inputElm = formElm.find("input");
+        inputElm = formElm.find("input");
 
         expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
         expect(scope.form.cb.$error.required).toBe(true);
@@ -3613,7 +3618,7 @@ describe("input", () => {
 
     describe("textarea", () => {
       it("should process textarea", () => {
-        const inputElm = $compile('<textarea ng-model="name"></textarea>')(
+        inputElm = $compile('<textarea ng-model="name"></textarea>')(
           scope,
         );
 
@@ -3630,7 +3635,7 @@ describe("input", () => {
       });
 
       it("should ignore textarea without ngModel directive", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<textarea name="whatever" required></textarea>',
         )(scope);
 
@@ -3645,7 +3650,7 @@ describe("input", () => {
 
     describe("ngValue", () => {
       it('should update the dom "value" property and attribute', () => {
-        const inputElm = $compile('<input type="submit" ng-value="value">')(
+        inputElm = $compile('<input type="submit" ng-value="value">')(
           scope,
         );
 
@@ -3656,7 +3661,7 @@ describe("input", () => {
       });
 
       it('should clear the "dom" value property and attribute when the value is undefined', () => {
-        const inputElm = $compile('<input type="text" ng-value="value">')(
+        inputElm = $compile('<input type="text" ng-value="value">')(
           scope,
         );
 
@@ -3702,7 +3707,7 @@ describe("input", () => {
       // );
 
       it("should evaluate and set constant expressions", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="radio" ng-model="selected" ng-value="true">' +
             '<input type="radio" ng-model="selected" ng-value="false">' +
             '<input type="radio" ng-model="selected" ng-value="1">',
@@ -3723,7 +3728,7 @@ describe("input", () => {
 
       it("should use strict comparison between model and value", () => {
         scope.selected = false;
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="radio" ng-model="selected" ng-value="false">' +
             '<input type="radio" ng-model="selected" ng-value="\'\'">' +
             '<input type="radio" ng-model="selected" ng-value="0">',
@@ -3735,7 +3740,7 @@ describe("input", () => {
       });
 
       it("should watch the expression", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="radio" ng-model="selected" ng-value="value">',
         )(scope);
 
@@ -3755,7 +3760,7 @@ describe("input", () => {
       });
 
       it("should work inside ngRepeat", () => {
-        const inputElms = $compile(
+        inputElm = $compile(
           '<div><input type="radio" ng-repeat="i in items" ng-model="$parent.selected" ng-value="i.id"></div>',
         )(scope);
 
@@ -3766,11 +3771,11 @@ describe("input", () => {
 
         scope.$digest();
 
-        expect(inputElms[0].children[0].checked).toBe(true);
-        expect(inputElms[0].children[1].checked).toBe(false);
+        expect(inputElm[0].children[0].checked).toBe(true);
+        expect(inputElm[0].children[1].checked).toBe(false);
 
-        inputElms[0].children[1].click();
-        inputElms[0].children[1].dispatchEvent(new Event("change"));
+        inputElm[0].children[1].click();
+        inputElm[0].children[1].dispatchEvent(new Event("change"));
 
         expect(scope.selected).toBe(2);
       });
@@ -3779,7 +3784,7 @@ describe("input", () => {
     describe("password", () => {
       // Under no circumstances should input[type=password] trim inputs
       it("should not trim if ngTrim is unspecified", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="password" ng-model="password">',
         )(scope);
 
@@ -3789,7 +3794,7 @@ describe("input", () => {
       });
 
       it("should not trim if ngTrim !== false", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="password" ng-model="password" ng-trim="true">',
         )(scope);
         inputElm[0].value = " - - untrimmed - - ";
@@ -3798,7 +3803,7 @@ describe("input", () => {
       });
 
       it("should not trim if ngTrim === false", () => {
-        const inputElm = $compile(
+        inputElm = $compile(
           '<input type="password" ng-model="password" ng-trim="false">',
         )(scope);
         inputElm[0].value = " - - untrimmed - - ";

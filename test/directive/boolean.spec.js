@@ -1,8 +1,9 @@
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
+import { dealoc } from "../../src/jqLite";
 
 describe("boolean attr directives", () => {
-  let element, $rootScope, $compile, $document, $rootElement;
+  let element, $rootScope, $compile, $rootElement;
 
   beforeEach(() => {
     publishExternalAPI();
@@ -19,7 +20,7 @@ describe("boolean attr directives", () => {
   });
 
   afterEach(() => {
-    //  dealoc(element);
+    dealoc(element)
   });
 
   it("should properly evaluate 0 as false", () => {
