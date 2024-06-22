@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
-import { dealoc } from "../../src/jqLite";
+import { dealoc, jqLite } from "../../src/jqLite";
 
 describe("validators", () => {
   let $rootScope;

@@ -64,6 +64,7 @@ describe("ngController", () => {
 
   afterEach(() => {
     dealoc(element);
+    jqLite.CACHE.clear();
   });
 
   it("should instantiate controller and bind methods", () => {

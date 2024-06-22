@@ -1,6 +1,6 @@
 import { createInjector } from "../../src/injector";
 import { publishExternalAPI } from "../../src/public";
-import { dealoc } from "../../src/jqLite";
+import { dealoc, jqLite } from "../../src/jqLite";
 
 describe("$aria", () => {
   let scope;
@@ -17,6 +17,7 @@ describe("$aria", () => {
 
   afterEach(() => {
     dealoc(element);
+    jqLite.CACHE.clear();
   });
 
   describe("with `ngAriaDisable`", () => {

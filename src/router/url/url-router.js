@@ -19,9 +19,9 @@ export class UrlRouter {
    *
    * @param {import('../router').UIRouter} router
    */
-  constructor(router) {
+  constructor(router, urlRuleFactory) {
     this.router = router;
-    this.urlRuleFactory = new UrlRuleFactory(router);
+    this.urlRuleFactory = urlRuleFactory;
   }
   /** Internal API. */
   update(read) {

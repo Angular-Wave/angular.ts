@@ -65,11 +65,11 @@ function getHandlerFn(handler) {
  * This API is found at `router.urlService.rules` (see: [[UIRouter.urlService]], [[URLService.rules]])
  */
 export class UrlRules {
-  constructor(router) {
+  constructor(router, urlRuleFactory) {
     this._sortFn = defaultRuleSortFn;
     this._rules = [];
     this._id = 0;
-    this.urlRuleFactory = new UrlRuleFactory(router);
+    this.urlRuleFactory = urlRuleFactory;
   }
 
   /**

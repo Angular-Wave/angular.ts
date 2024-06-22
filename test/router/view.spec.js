@@ -1,4 +1,4 @@
-import { dealoc } from "../../src/jqLite";
+import { dealoc, jqLite } from "../../src/jqLite";
 import { Angular } from "../../src/loader";
 import { publishExternalAPI } from "../../src/public";
 import { curry } from "../../src/shared/hof";

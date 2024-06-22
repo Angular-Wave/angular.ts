@@ -17,6 +17,7 @@ describe("ngCloak", () => {
 
   afterEach(() => {
     dealoc(element);
+    jqLite.CACHE.clear();
   });
 
   it("should get removed when an element is compiled", () => {

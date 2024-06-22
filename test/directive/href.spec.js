@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
-import { dealoc } from "../../src/jqLite";
+import { dealoc, jqLite } from "../../src/jqLite";
 import { isDefined } from "../../src/shared/utils";
 
 describe("ngHref", () => {
@@ -22,6 +22,7 @@ describe("ngHref", () => {
 
   afterEach(() => {
     dealoc(element);
+    jqLite.CACHE.clear();
   });
 
   it("should interpolate the expression and bind to href", () => {

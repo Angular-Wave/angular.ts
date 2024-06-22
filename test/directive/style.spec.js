@@ -17,6 +17,7 @@ describe("ng-style", () => {
 
   afterEach(() => {
     dealoc(element);
+    jqLite.CACHE.clear();
   });
 
   it("should set", () => {

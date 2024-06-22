@@ -17,6 +17,7 @@ describe("ngShow / ngHide", () => {
 
   afterEach(() => {
     dealoc(element);
+    jqLite.CACHE.clear();
   });
 
   describe("ngShow", () => {

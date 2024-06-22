@@ -52,6 +52,7 @@ describe("ngModel", () => {
 
   afterEach(() => {
     dealoc(element);
+    jqLite.CACHE.clear();
   });
 
   describe("NgModelController", () => {

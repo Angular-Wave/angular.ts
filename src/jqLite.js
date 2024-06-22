@@ -295,7 +295,6 @@ export function dealoc(element, onlyDescendants) {
   if (element.querySelectorAll) {
     jqLiteCleanData(element.querySelectorAll("*"));
   }
-  CACHE.clear()
 }
 
 /**

@@ -13,12 +13,10 @@ import { StateObject } from "../state/state-object";
  * - [[StateObject]]
  */
 export class UrlRuleFactory {
-  constructor(router) {
-    this.router = router;
-  }
-
-  compile(str) {
-    return this.router.urlMatcherFactory.compile(str);
+  constructor(urlMatcherFactory, stateService, routerGlobals) {
+    this.urlMatcherFactory = urlMatcherFactory;
+    this.stateService = stateService;
+    this.routerGlobals = routerGlobals;
   }
 
   /**
@@ -30,11 +28,11 @@ export class UrlRuleFactory {
   create(what, handler) {
     const { isState, isStateDeclaration } = StateObject;
     const makeRule = pattern([
-      [isString, (_what) => makeRule(this.compile(_what))],
+      [isString, (_what) => makeRule(this.urlMatcherFactory.compile(_what))],
       [is(UrlMatcher), (_what) => this.fromUrlMatcher(_what, handler)],
       [
         or(isState, isStateDeclaration),
-        (_what) => this.fromState(_what, this.router),
+        (_what) => this.fromState(_what, this.stateService, this.routerGlobals),
       ],
       [is(RegExp), (_what) => this.fromRegExp(_what, handler)],
       [isFunction, (_what) => new BaseUrlRule(_what, handler)],
@@ -81,8 +79,7 @@ export class UrlRuleFactory {
    */
   fromUrlMatcher(urlMatcher, handler) {
     let _handler = handler;
-    if (isString(handler))
-      handler = this.router.urlMatcherFactory.compile(handler);
+    if (isString(handler)) handler = this.urlMatcherFactory.compile(handler);
     if (is(UrlMatcher)(handler)) _handler = (match) => handler.format(match);
     function matchUrlParamters(url) {
       const params = urlMatcher.exec(url.path, url.search, url.hash);
@@ -115,7 +112,7 @@ export class UrlRuleFactory {
    * // Starts a transition to 'foo' with params: { fooId: '123', barId: '456' }
    * ```
    */
-  fromState(stateOrDecl, router) {
+  fromState(stateOrDecl, stateService, globals) {
     const state = StateObject.isStateDeclaration(stateOrDecl)
       ? stateOrDecl.$$state()
       : stateOrDecl;
@@ -127,8 +124,7 @@ export class UrlRuleFactory {
      * and the new URL are already identical
      */
     const handler = (match) => {
-      const $state = router.stateService;
-      const globals = router.globals;
+      const $state = stateService;
       if (
         $state.href(state, match) !==
         $state.href(globals.current, globals.params)

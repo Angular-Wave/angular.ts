@@ -1,4 +1,4 @@
-import { dealoc } from "../../src/jqLite";
+import { dealoc, jqLite } from "../../src/jqLite";
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
 
@@ -18,6 +18,7 @@ describe("ngList", () => {
 
   afterEach(() => {
     dealoc(element);
+    jqLite.CACHE.clear();
   });
 
   function changeInputValue(val) {

@@ -13,7 +13,7 @@ export class UrlService {
    * @param {import('../router').UIRouter} router
    * @param {angular.ILocationProvider} $locationProvider
    */
-  constructor(router, $locationProvider) {
+  constructor(router, $locationProvider, urlRuleFactory) {
     /**
      * @type {import('../router').UIRouter}
      */
@@ -29,7 +29,7 @@ export class UrlService {
      * See: [[UrlRules]] for details
      * @type {UrlRules}
      */
-    this.rules = new UrlRules(this.router);
+    this.rules = new UrlRules(this.router, urlRuleFactory);
     /**
      * The nested [[UrlConfig]] API to configure the URL and retrieve URL information
      *

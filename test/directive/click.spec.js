@@ -1,4 +1,4 @@
-import { dealoc } from "../../src/jqLite";
+import { dealoc, jqLite } from "../../src/jqLite";
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
 
@@ -17,6 +17,7 @@ describe("ngClick", () => {
 
   afterEach(() => {
     dealoc(element);
+    jqLite.CACHE.clear();
   });
 
   it("should get called on a click", () => {

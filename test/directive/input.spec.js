@@ -11,7 +11,7 @@ import { forEach } from "../../src/shared/utils";
 describe("input", () => {
   let $compile;
   let scope;
-  let inputElm
+  let inputElm;
 
   beforeEach(() => {
     publishExternalAPI().decorator("$exceptionHandler", function () {
@@ -26,8 +26,8 @@ describe("input", () => {
   });
 
   afterEach(() => {
-    dealoc(inputElm)
-  })
+    dealoc(inputElm);
+  });
 
   it("should bind to a model", () => {
     inputElm = $compile(
@@ -198,9 +198,7 @@ describe("input", () => {
       });
 
       it("should cancel the delayed dirty if a change occurs", () => {
-        inputElm = $compile('<input type="text" ng-model="name" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="text" ng-model="name" />')(scope);
         const ctrl = inputElm.controller("ngModel");
 
         inputElm[0].dispatchEvent(
@@ -248,9 +246,9 @@ describe("input", () => {
       });
 
       it("should ignore input without ngModel directive", () => {
-        inputElm = $compile(
-          '<input type="text" name="whatever" required />',
-        )(scope);
+        inputElm = $compile('<input type="text" name="whatever" required />')(
+          scope,
+        );
 
         inputElm[0].setAttribute("value", "");
         inputElm[0].dispatchEvent(new Event("change"));
@@ -262,16 +260,14 @@ describe("input", () => {
 
       it("should report error on assignment error", () => {
         expect(() => {
-          inputElm = $compile(
-            '<input type="text" ng-model="throw \'\'">',
-          )(scope);
+          inputElm = $compile('<input type="text" ng-model="throw \'\'">')(
+            scope,
+          );
         }).toThrowError(/Syntax Error/);
       });
 
       it("should render as blank if null", () => {
-        inputElm = $compile('<input type="text" ng-model="age" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="text" ng-model="age" />')(scope);
 
         scope.$apply("age = null");
 
@@ -280,18 +276,14 @@ describe("input", () => {
       });
 
       it("should render 0 even if it is a number", () => {
-        inputElm = $compile('<input type="text" ng-model="value" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="text" ng-model="value" />')(scope);
         scope.$apply("value = 0");
 
         expect(inputElm.val()).toBe("0");
       });
 
       it("should render the $viewValue when $modelValue is empty", () => {
-        inputElm = $compile('<input type="text" ng-model="value" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="text" ng-model="value" />')(scope);
 
         const ctrl = inputElm.controller("ngModel");
 
@@ -310,9 +302,7 @@ describe("input", () => {
     describe("month", () => {
       // IN ANGULAR.JS month types were converted to Date object. This is not standard behavior
       it("should allow a String object in format 'YYYY-MM'", () => {
-        inputElm = $compile('<input type="month" ng-model="january"/>')(
-          scope,
-        );
+        inputElm = $compile('<input type="month" ng-model="january"/>')(scope);
 
         scope.$apply(() => {
           scope.january = "2013-01";
@@ -322,9 +312,7 @@ describe("input", () => {
       });
 
       it("should throw if the model is a Date object", () => {
-        inputElm = $compile('<input type="month" ng-model="march"/>')(
-          scope,
-        );
+        inputElm = $compile('<input type="month" ng-model="march"/>')(scope);
 
         expect(() => {
           scope.$apply(() => {
@@ -334,9 +322,7 @@ describe("input", () => {
       });
 
       it("should throw if the model is a Invalid string", () => {
-        inputElm = $compile('<input type="month" ng-model="march"/>')(
-          scope,
-        );
+        inputElm = $compile('<input type="month" ng-model="march"/>')(scope);
 
         expect(() => {
           scope.$apply(() => {
@@ -346,9 +332,7 @@ describe("input", () => {
       });
 
       it("should not change the model if the input is an invalid month string", () => {
-        inputElm = $compile('<input type="month" ng-model="value"/>')(
-          scope,
-        );
+        inputElm = $compile('<input type="month" ng-model="value"/>')(scope);
 
         scope.$apply(() => {
           scope.value = "2013-01";
@@ -363,9 +347,7 @@ describe("input", () => {
       });
 
       it("should render as blank if null", () => {
-        inputElm = $compile('<input type="month" ng-model="test" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="month" ng-model="test" />')(scope);
 
         scope.$apply("test = null");
 
@@ -374,9 +356,7 @@ describe("input", () => {
       });
 
       it("should come up blank when no value specified", () => {
-        inputElm = $compile('<input type="month" ng-model="test" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="month" ng-model="test" />')(scope);
 
         expect(inputElm.val()).toBe("");
 
@@ -387,9 +367,7 @@ describe("input", () => {
       });
 
       it("should parse empty string to null", () => {
-        inputElm = $compile('<input type="month" ng-model="test" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="month" ng-model="test" />')(scope);
 
         inputElm[0].setAttribute("value", "");
         inputElm[0].dispatchEvent(new Event("change"));
@@ -398,9 +376,7 @@ describe("input", () => {
       });
 
       it("should set scope to a string value", () => {
-        inputElm = $compile('<input type="month" ng-model="value" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="month" ng-model="value" />')(scope);
 
         inputElm[0].setAttribute("value", "2013-07");
         inputElm[0].dispatchEvent(new Event("change"));
@@ -544,9 +520,9 @@ describe("input", () => {
       });
 
       it("should set scope to a string value", () => {
-        inputElm = $compile(
-          '<input type="week" ng-model="secondWeek" />',
-        )(scope);
+        inputElm = $compile('<input type="week" ng-model="secondWeek" />')(
+          scope,
+        );
 
         scope.$apply(() => {
           scope.secondWeek = "2013-W02";
@@ -579,9 +555,7 @@ describe("input", () => {
       });
 
       it("should render as blank if null", () => {
-        inputElm = $compile('<input type="week" ng-model="test" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="week" ng-model="test" />')(scope);
 
         scope.$apply("test = null");
 
@@ -590,9 +564,7 @@ describe("input", () => {
       });
 
       it("should come up blank when no value specified", () => {
-        inputElm = $compile('<input type="week" ng-model="test" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="week" ng-model="test" />')(scope);
 
         expect(inputElm.val()).toBe("");
 
@@ -603,9 +575,7 @@ describe("input", () => {
       });
 
       it("should parse empty string to null", () => {
-        inputElm = $compile('<input type="week" ng-model="test" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="week" ng-model="test" />')(scope);
 
         scope.$apply(() => {
           scope.test = "2013-W02";
@@ -782,9 +752,9 @@ describe("input", () => {
       });
 
       it("should render as blank if null", () => {
-        inputElm = $compile(
-          '<input type="datetime-local" ng-model="test" />',
-        )(scope);
+        inputElm = $compile('<input type="datetime-local" ng-model="test" />')(
+          scope,
+        );
 
         scope.$apply("test = null");
 
@@ -793,9 +763,9 @@ describe("input", () => {
       });
 
       it("should come up blank when no value specified", () => {
-        inputElm = $compile(
-          '<input type="datetime-local" ng-model="test" />',
-        )(scope);
+        inputElm = $compile('<input type="datetime-local" ng-model="test" />')(
+          scope,
+        );
 
         expect(inputElm.val()).toBe("");
 
@@ -806,9 +776,9 @@ describe("input", () => {
       });
 
       it("should parse empty string to null", () => {
-        inputElm = $compile(
-          '<input type="datetime-local" ng-model="test" />',
-        )(scope);
+        inputElm = $compile('<input type="datetime-local" ng-model="test" />')(
+          scope,
+        );
 
         scope.$apply(() => {
           scope.test = "2013-12-16T11:30";
@@ -1019,9 +989,7 @@ describe("input", () => {
 
     describe("time", () => {
       it("should throw if model is a Date object", () => {
-        inputElm = $compile('<input type="time" ng-model="lunchtime"/>')(
-          scope,
-        );
+        inputElm = $compile('<input type="time" ng-model="lunchtime"/>')(scope);
         expect(() => {
           scope.$apply(() => {
             scope.lunchtime = new Date(1970, 0, 1, 15, 41, 0, 500);
@@ -1030,9 +998,9 @@ describe("input", () => {
       });
 
       it("should set the view if the model is a valid String object.", () => {
-        inputElm = $compile(
-          '<input type="time" ng-model="threeFortyOnePm"/>',
-        )(scope);
+        inputElm = $compile('<input type="time" ng-model="threeFortyOnePm"/>')(
+          scope,
+        );
 
         scope.$apply(() => {
           scope.threeFortyOnePm = "15:41:00.500";
@@ -1042,9 +1010,9 @@ describe("input", () => {
       });
 
       it("should bind to mode if a valid String object.", () => {
-        inputElm = $compile(
-          '<input type="time" ng-model="threeFortyOnePm"/>',
-        )(scope);
+        inputElm = $compile('<input type="time" ng-model="threeFortyOnePm"/>')(
+          scope,
+        );
 
         inputElm[0].value = "15:41:00.500";
         inputElm[0].dispatchEvent(new Event("change"));
@@ -1054,9 +1022,7 @@ describe("input", () => {
       });
 
       it("should set the model to null if the view is invalid", () => {
-        inputElm = $compile('<input type="time" ng-model="breakMe"/>')(
-          scope,
-        );
+        inputElm = $compile('<input type="time" ng-model="breakMe"/>')(scope);
 
         scope.$apply(() => {
           scope.breakMe = "16:25:00.000";
@@ -1071,9 +1037,7 @@ describe("input", () => {
       });
 
       it("should set blank if null", () => {
-        inputElm = $compile('<input type="time" ng-model="test" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="time" ng-model="test" />')(scope);
 
         scope.$apply("test = null");
 
@@ -1082,9 +1046,7 @@ describe("input", () => {
       });
 
       it("should set blank when no value specified", () => {
-        inputElm = $compile('<input type="time" ng-model="test" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="time" ng-model="test" />')(scope);
 
         expect(inputElm.val()).toBe("");
 
@@ -1095,9 +1057,7 @@ describe("input", () => {
       });
 
       it("should parse empty string to null", () => {
-        inputElm = $compile('<input type="time" ng-model="test" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="time" ng-model="test" />')(scope);
 
         scope.$apply(() => {
           scope.test = "16:25:00";
@@ -1109,9 +1069,7 @@ describe("input", () => {
       });
 
       it("should allow to specify the milliseconds", () => {
-        inputElm = $compile('<input type="time" ng-model="value"" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="time" ng-model="value"" />')(scope);
 
         inputElm[0].value = "01:02:03.500";
         inputElm[0].dispatchEvent(new Event("change"));
@@ -1119,9 +1077,7 @@ describe("input", () => {
       });
 
       it("should allow to specify single digit milliseconds", () => {
-        inputElm = $compile('<input type="time" ng-model="value"" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="time" ng-model="value"" />')(scope);
 
         inputElm[0].value = "01:02:03.4";
         inputElm[0].dispatchEvent(new Event("change"));
@@ -1129,9 +1085,7 @@ describe("input", () => {
       });
 
       it("should allow to specify the seconds", () => {
-        inputElm = $compile('<input type="time" ng-model="value"" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="time" ng-model="value"" />')(scope);
 
         inputElm[0].value = "01:02:03";
         inputElm[0].dispatchEvent(new Event("change"));
@@ -1293,9 +1247,7 @@ describe("input", () => {
 
     describe("date", () => {
       it("should throw if model is a Date object.", () => {
-        inputElm = $compile('<input type="date" ng-model="birthday"/>')(
-          scope,
-        );
+        inputElm = $compile('<input type="date" ng-model="birthday"/>')(scope);
 
         expect(() => {
           scope.$apply(() => {
@@ -1324,9 +1276,7 @@ describe("input", () => {
       });
 
       it("should set the model to null if the view is invalid", () => {
-        inputElm = $compile('<input type="date" ng-model="arrMatey"/>')(
-          scope,
-        );
+        inputElm = $compile('<input type="date" ng-model="arrMatey"/>')(scope);
 
         scope.$apply(() => {
           scope.arrMatey = "2014-09-14";
@@ -1342,9 +1292,7 @@ describe("input", () => {
       });
 
       it("should render as blank if null", () => {
-        inputElm = $compile('<input type="date" ng-model="test" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="date" ng-model="test" />')(scope);
 
         scope.$apply("test = null");
 
@@ -1353,9 +1301,7 @@ describe("input", () => {
       });
 
       it("should come up blank when no value specified", () => {
-        inputElm = $compile('<input type="date" ng-model="test" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="date" ng-model="test" />')(scope);
 
         expect(inputElm.val()).toBe("");
 
@@ -1366,9 +1312,7 @@ describe("input", () => {
       });
 
       it("should parse empty string to null", () => {
-        inputElm = $compile('<input type="date" ng-model="test" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="date" ng-model="test" />')(scope);
 
         scope.$apply(() => {
           scope.test = "2014-09-14";
@@ -1717,9 +1661,7 @@ describe("input", () => {
       };
 
       it("should reset the model if view is invalid", () => {
-        inputElm = $compile('<input type="number" ng-model="age"/>')(
-          scope,
-        );
+        inputElm = $compile('<input type="number" ng-model="age"/>')(scope);
 
         scope.$apply("age = 123");
         expect(inputElm.val()).toBe("123");
@@ -1733,9 +1675,7 @@ describe("input", () => {
       });
 
       it("should render as blank if null", () => {
-        inputElm = $compile('<input type="number" ng-model="age" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="number" ng-model="age" />')(scope);
 
         scope.$apply("age = null");
 
@@ -1744,9 +1684,7 @@ describe("input", () => {
       });
 
       it("should come up blank when no value specified", () => {
-        inputElm = $compile('<input type="number" ng-model="age" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="number" ng-model="age" />')(scope);
 
         expect(inputElm.val()).toBe("");
 
@@ -1757,9 +1695,7 @@ describe("input", () => {
       });
 
       it("should parse empty string to null", () => {
-        inputElm = $compile('<input type="number" ng-model="age" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="number" ng-model="age" />')(scope);
 
         scope.$apply("age = 10");
 
@@ -1771,9 +1707,7 @@ describe("input", () => {
       });
 
       it("should only invalidate the model if suffering from bad input when the data is parsed", () => {
-        inputElm = $compile('<input type="number" ng-model="age" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="number" ng-model="age" />')(scope);
 
         expect(scope.age).toBeUndefined();
         expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
@@ -1786,9 +1720,7 @@ describe("input", () => {
       });
 
       it("should validate number if transition from bad input to empty string", () => {
-        inputElm = $compile('<input type="number" ng-model="age" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="number" ng-model="age" />')(scope);
         inputElm[0].value = "10a";
         inputElm[0].dispatchEvent(new Event("change"));
 
@@ -1885,9 +1817,7 @@ describe("input", () => {
       });
 
       it("should bind to scope if input is valid", () => {
-        inputElm = $compile('<input type="number" ng-model="age"/>')(
-          scope,
-        );
+        inputElm = $compile('<input type="number" ng-model="age"/>')(scope);
         const ctrl = inputElm.controller("ngModel");
 
         let previousParserFail = false;
@@ -2669,9 +2599,7 @@ describe("input", () => {
       const supportsRange = rangeTestEl[0].type === "range";
 
       it("should render as 50 if null", () => {
-        inputElm = $compile('<input type="range" ng-model="age" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="range" ng-model="age" />')(scope);
 
         inputElm[0].value = "25";
         inputElm[0].dispatchEvent(new Event("change"));
@@ -2683,9 +2611,7 @@ describe("input", () => {
       });
 
       it("should set model to 50 when no value specified and default min/max", () => {
-        inputElm = $compile('<input type="range" ng-model="age" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="range" ng-model="age" />')(scope);
 
         expect(inputElm.val()).toBe("50");
 
@@ -2695,9 +2621,7 @@ describe("input", () => {
       });
 
       it("should parse non-number values to 50 when default min/max", () => {
-        inputElm = $compile('<input type="range" ng-model="age" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="range" ng-model="age" />')(scope);
 
         scope.$apply("age = 10");
         expect(inputElm.val()).toBe("10");
@@ -2709,9 +2633,7 @@ describe("input", () => {
       });
 
       it("should parse the input value to a Number", () => {
-        inputElm = $compile('<input type="range" ng-model="age" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="range" ng-model="age" />')(scope);
 
         inputElm[0].value = "75";
         inputElm[0].dispatchEvent(new Event("change"));
@@ -2721,9 +2643,7 @@ describe("input", () => {
       it("should only invalidate the model if suffering from bad input when the data is parsed", () => {
         scope.age = 60;
 
-        inputElm = $compile('<input type="range" ng-model="age" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="range" ng-model="age" />')(scope);
 
         expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
 
@@ -2737,9 +2657,7 @@ describe("input", () => {
       it("should throw if the model value is not a number", () => {
         expect(() => {
           scope.value = "one";
-          inputElm = $compile('<input type="range" ng-model="value" />')(
-            scope,
-          );
+          inputElm = $compile('<input type="range" ng-model="value" />')(scope);
           scope.$digest();
         }).toThrowError(/numfmt/);
       });
@@ -3486,9 +3404,9 @@ describe("input", () => {
 
       ["click", "change"].forEach((event) => {
         it("should update the model on $prop event", () => {
-          inputElm = $compile(
-            '<input type="checkbox" ng-model="checkbox" />',
-          )(scope);
+          inputElm = $compile('<input type="checkbox" ng-model="checkbox" />')(
+            scope,
+          );
 
           expect(inputElm[0].checked).toBe(false);
 
@@ -3506,9 +3424,7 @@ describe("input", () => {
       });
 
       it("should format booleans", () => {
-        inputElm = $compile('<input type="checkbox" ng-model="name" />')(
-          scope,
-        );
+        inputElm = $compile('<input type="checkbox" ng-model="name" />')(scope);
 
         scope.$apply("name = false");
         expect(inputElm[0].checked).toBe(false);
@@ -3518,9 +3434,9 @@ describe("input", () => {
       });
 
       it('should support type="checkbox" with non-standard capitalization', () => {
-        inputElm = $compile(
-          '<input type="checkBox" ng-model="checkbox" />',
-        )(scope);
+        inputElm = $compile('<input type="checkBox" ng-model="checkbox" />')(
+          scope,
+        );
 
         inputElm[0].click();
         inputElm[0].dispatchEvent(new Event("change"));
@@ -3573,9 +3489,9 @@ describe("input", () => {
 
       it("should not throw if ngTrueValue or ngFalseValue are not present", () => {
         expect(() => {
-          inputElm = $compile(
-            '<input type="checkbox" ng-model="value" />',
-          )(scope);
+          inputElm = $compile('<input type="checkbox" ng-model="value" />')(
+            scope,
+          );
         }).not.toThrow();
       });
 
@@ -3618,9 +3534,7 @@ describe("input", () => {
 
     describe("textarea", () => {
       it("should process textarea", () => {
-        inputElm = $compile('<textarea ng-model="name"></textarea>')(
-          scope,
-        );
+        inputElm = $compile('<textarea ng-model="name"></textarea>')(scope);
 
         scope.$apply("name = 'Adam'");
         expect(inputElm.val()).toEqual("Adam");
@@ -3635,9 +3549,9 @@ describe("input", () => {
       });
 
       it("should ignore textarea without ngModel directive", () => {
-        inputElm = $compile(
-          '<textarea name="whatever" required></textarea>',
-        )(scope);
+        inputElm = $compile('<textarea name="whatever" required></textarea>')(
+          scope,
+        );
 
         inputElm[0].value = "";
         inputElm[0].dispatchEvent(new Event("change"));
@@ -3650,9 +3564,7 @@ describe("input", () => {
 
     describe("ngValue", () => {
       it('should update the dom "value" property and attribute', () => {
-        inputElm = $compile('<input type="submit" ng-value="value">')(
-          scope,
-        );
+        inputElm = $compile('<input type="submit" ng-value="value">')(scope);
 
         scope.$apply("value = 'something'");
 
@@ -3661,9 +3573,7 @@ describe("input", () => {
       });
 
       it('should clear the "dom" value property and attribute when the value is undefined', () => {
-        inputElm = $compile('<input type="text" ng-value="value">')(
-          scope,
-        );
+        inputElm = $compile('<input type="text" ng-value="value">')(scope);
 
         scope.$apply('value = "something"');
 
@@ -3784,9 +3694,9 @@ describe("input", () => {
     describe("password", () => {
       // Under no circumstances should input[type=password] trim inputs
       it("should not trim if ngTrim is unspecified", () => {
-        inputElm = $compile(
-          '<input type="password" ng-model="password">',
-        )(scope);
+        inputElm = $compile('<input type="password" ng-model="password">')(
+          scope,
+        );
 
         inputElm[0].value = " - - untrimmed - - ";
         inputElm[0].dispatchEvent(new Event("change"));

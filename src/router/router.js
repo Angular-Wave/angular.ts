@@ -7,6 +7,7 @@ import { StateService } from "./state/state-service";
 import { UIRouterGlobals } from "./globals";
 import { UrlService } from "./url/url-service";
 import { trace } from "./common/trace";
+import { UrlRuleFactory } from "./url/url-rule";
 
 /**
  * Router id tracker
@@ -38,23 +39,30 @@ export class UIRouter {
     this.globals = new UIRouterGlobals();
     /** @type {TransitionService}  A service that exposes global Transition Hooks */
     this.transitionService = new TransitionService(this);
-
-    /**
-     * Deprecated for public use. Use [[urlService]] instead.
-     * @deprecated Use [[urlService]] instead
-     */
-    this.urlRouter = new UrlRouter(this);
+    /** Provides services related to states */
+    this.stateService = new StateService(this);
     /** Provides services related to the URL */
-    this.urlService = new UrlService(this, $locationProvider);
+    let urlRuleFactory = new UrlRuleFactory(
+      this.urlMatcherFactory,
+      this.stateService,
+      this.globals,
+    );
+    this.urlService = new UrlService(this, $locationProvider, urlRuleFactory);
     /**
      * Deprecated for public use. Use [[urlService]] instead.
      * @deprecated Use [[urlService]] instead
      */
     this.urlMatcherFactory = new UrlMatcherFactory(this.urlService.config);
+
+    /**
+     * Deprecated for public use. Use [[urlService]] instead.
+     * @deprecated Use [[urlService]] instead
+     */
+    this.urlRouter = new UrlRouter(this, urlRuleFactory);
+
     /** Provides a registry for states, and related registration services */
     this.stateRegistry = new StateRegistry(this);
-    /** Provides services related to states */
-    this.stateService = new StateService(this);
+
     /** @internal plugin instances are registered here */
     this._plugins = {};
     this.viewService._pluginapi._rootViewContext(this.stateRegistry.root());

@@ -21,6 +21,7 @@ describe("scriptDirective", () => {
 
   afterEach(() => {
     dealoc(element);
+    jqLite.CACHE.clear();
   });
 
   it("should populate $templateCache with contents of a ng-template script element", () => {

@@ -1,4 +1,4 @@
-import { dealoc } from "../../src/jqLite";
+import { dealoc, jqLite } from "../../src/jqLite";
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
 
@@ -21,6 +21,7 @@ describe("ngNonBindable", () => {
 
   afterEach(() => {
     dealoc(element);
+    jqLite.CACHE.clear();
   });
 
   it("should prevent compilation of the owning element and its children", () => {
