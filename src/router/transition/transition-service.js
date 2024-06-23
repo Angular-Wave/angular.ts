@@ -26,7 +26,7 @@ import { registerLazyLoadHook } from "../hooks/lazy-load";
 import { TransitionEventType } from "./transition-event-type";
 import { TransitionHook } from "./transition-hook";
 import { isDefined } from "../../shared/utils";
-import { removeFrom, createProxyFunctions } from "../../shared/common";
+import { createProxyFunctions } from "../../shared/common";
 import { val } from "../../shared/hof";
 import { registerIgnoredTransitionHook } from "../hooks/ignored-transition";
 import { registerInvalidTransitionHook } from "../hooks/invalid-transition";
@@ -63,7 +63,7 @@ export class TransitionService {
   /**
    * @param {import('../router').UIRouter} _router
    */
-  constructor(_router) {
+  constructor(router, globals, viewService) {
     this._transitionCount = 0;
     /** The transition hook types, such as `onEnter`, `onStart`, etc */
     this._eventTypes = [];
@@ -71,8 +71,8 @@ export class TransitionService {
     this._registeredHooks = {};
     /** The  paths on a criteria object */
     this._criteriaPaths = {};
-    this._router = _router;
-    this.$view = _router.viewService;
+    this.router = router;
+    this.$view = viewService;
     this._deregisterHookFns = {};
     this._pluginapi = createProxyFunctions(val(this), {}, val(this), [
       "_definePathType",
@@ -84,7 +84,7 @@ export class TransitionService {
     this._defineCorePaths();
     this._defineCoreEvents();
     this._registerCoreTransitionHooks();
-    _router.globals.successfulTransitions.onEvict(treeChangesCleanup);
+    globals.successfulTransitions.onEvict(treeChangesCleanup);
   }
   /**
    * Registers a [[TransitionHookFn]], called *while a transition is being constructed*.
@@ -122,7 +122,13 @@ export class TransitionService {
    * @returns a Transition
    */
   create(fromPath, targetState) {
-    return new Transition(fromPath, targetState, this._router);
+    return new Transition(
+      fromPath,
+      targetState,
+      this.router,
+      this,
+      this.router.globals,
+    );
   }
 
   _defineCoreEvents() {

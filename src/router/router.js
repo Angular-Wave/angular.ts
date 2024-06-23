@@ -28,17 +28,22 @@ export class UIRouter {
    * @param {angular.ILocationProvider} $locationProvider
    */
   constructor($locationProvider) {
-    /**  @type {number} */ this.$id = routerId++;
+    /**  @type {number} */
+    this.$id = routerId++;
 
     /** Enable/disable tracing to the javascript console */
     this.trace = trace;
     this.$locationProvider = $locationProvider;
     /** Provides services related to ui-view synchronization */
-    this.viewService = new ViewService(this);
+    this.viewService = new ViewService(routerId);
     /** @type {UIRouterGlobals} An object that contains global router state, such as the current state and params */
     this.globals = new UIRouterGlobals();
     /** @type {TransitionService}  A service that exposes global Transition Hooks */
-    this.transitionService = new TransitionService(this);
+    this.transitionService = new TransitionService(
+      this,
+      this.globals,
+      this.viewService,
+    );
     /** Provides services related to states */
     this.stateService = new StateService(this);
     /** Provides services related to the URL */

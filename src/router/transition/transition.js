@@ -36,20 +36,6 @@ const stateSelf = prop("self");
  */
 export class Transition {
   /**
-   * Creates the transition-level hook registration functions
-   * (which can then be used to register hooks)
-   */
-  createTransitionHookRegFns() {
-    this.router.transitionService._pluginapi
-      ._getEvents()
-      .filter((type) => type.hookPhase !== TransitionHookPhase.CREATE)
-      .forEach((type) => makeEvent(this, this.router.transitionService, type));
-  }
-
-  getHooks(hookName) {
-    return this._registeredHooks[hookName];
-  }
-  /**
    * Creates a new Transition object.
    *
    * If the target state is not valid, an error is thrown.
@@ -62,7 +48,10 @@ export class Transition {
    * @param {import('../router').UIRouter} router The [[UIRouter]] instance
    * @internal
    */
-  constructor(fromPath, targetState, router) {
+  constructor(fromPath, targetState, router, transitionService, globals) {
+    this.router = router;
+    this.globals = globals;
+    this.transitionService = transitionService;
     this._deferred = services.$q.defer();
     /**
      * This promise is resolved or rejected based on the outcome of the Transition.
@@ -76,8 +65,7 @@ export class Transition {
 
     this._hookBuilder = new HookBuilder(this);
     /** Checks if this transition is currently active/running. */
-    this.isActive = () => this.router.globals.transition === this;
-    this.router = router;
+    this.isActive = () => this.globals.transition === this;
     this._targetState = targetState;
     if (!targetState.valid()) {
       throw new Error(targetState.error());
@@ -87,7 +75,7 @@ export class Transition {
       { current: val(this) },
       targetState.options(),
     );
-    this.$id = router.transitionService._transitionCount++;
+    this.$id = transitionService._transitionCount++;
     const toPath = PathUtils.buildToPath(fromPath, targetState);
     this._treeChanges = PathUtils.treeChanges(
       fromPath,
@@ -99,12 +87,28 @@ export class Transition {
       TransitionHookPhase.CREATE,
     );
     TransitionHook.invokeHooks(onCreateHooks, () => null);
-    this.applyViewConfigs(router);
+    this.applyViewConfigs();
   }
-  applyViewConfigs(router) {
+
+  /**
+   * Creates the transition-level hook registration functions
+   * (which can then be used to register hooks)
+   */
+  createTransitionHookRegFns() {
+    this.transitionService._pluginapi
+      ._getEvents()
+      .filter((type) => type.hookPhase !== TransitionHookPhase.CREATE)
+      .forEach((type) => makeEvent(this, this.transitionService, type));
+  }
+
+  getHooks(hookName) {
+    return this._registeredHooks[hookName];
+  }
+
+  applyViewConfigs() {
     const enteringStates = this._treeChanges.entering.map((node) => node.state);
     PathUtils.applyViewConfigs(
-      router.transitionService.$view,
+      this.transitionService.$view,
       this._treeChanges.to,
       enteringStates,
     );
@@ -475,7 +479,7 @@ export class Transition {
       redirectOpts,
     );
     targetState = targetState.withOptions(newOptions, true);
-    const newTransition = this.router.transitionService.create(
+    const newTransition = this.transitionService.create(
       this._treeChanges.from,
       targetState,
     );
@@ -557,7 +561,7 @@ export class Transition {
   }
 
   _ignoredReason() {
-    const pending = this.router.globals.transition;
+    const pending = this.globals.transition;
     const reloadState = this._options.reloadState;
     const same = (pathA, pathB) => {
       if (pathA.length !== pathB.length) return false;
@@ -619,7 +623,7 @@ export class Transition {
       return TransitionHook.invokeHooks(allRunHooks, done);
     };
     const startTransition = () => {
-      const globals = this.router.globals;
+      const globals = this.globals;
       globals.lastStartedTransitionId = this.$id;
       globals.transition = this;
       globals.transitionHistory.enqueue(this);

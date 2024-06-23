@@ -196,6 +196,9 @@ export class UrlService {
       search: this.search(),
       hash: this.hash(),
     };
+    /**
+     * @type {angular.MatchResult}
+     */
     const best = this.match(url);
     const applyResult = pattern([
       [isString, (newurl) => this.url(newurl, true)],
@@ -275,6 +278,7 @@ export class UrlService {
    *
    * Given a URL (as a [[UrlParts]] object), check all rules and determine the best matching rule.
    * Return the result as a [[MatchResult]].
+   * @returns {angular.MatchResult}
    */
   match(url) {
     url = Object.assign({ path: "", search: {}, hash: "" }, url);

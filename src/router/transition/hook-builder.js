@@ -19,7 +19,7 @@ export class HookBuilder {
     this.transition = transition;
   }
   buildHooksForPhase(phase) {
-    const $transitions = this.transition.router.transitionService;
+    const $transitions = this.transition.transitionService;
     return $transitions._pluginapi
       ._getEvents(phase)
       .map((type) => this.buildHooks(type))
@@ -96,7 +96,7 @@ export class HookBuilder {
   getMatchingHooks(hookType, treeChanges, transition) {
     const isCreate = hookType.hookPhase === TransitionHookPhase.CREATE;
     // Instance and Global hook registries
-    const $transitions = this.transition.router.transitionService;
+    const $transitions = this.transition.transitionService;
     const registries = isCreate
       ? [$transitions]
       : [this.transition, $transitions];

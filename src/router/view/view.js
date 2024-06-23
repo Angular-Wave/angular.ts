@@ -26,9 +26,9 @@ import { trace } from "../common/trace";
  */
 export class ViewService {
   /**
-   * @param {import('../router').UIRouter} router
+   * @param {number} $id
    */
-  constructor(router) {
+  constructor($id) {
     this._uiViews = [];
     this._viewConfigs = [];
     this._viewConfigFactories = {};
@@ -37,7 +37,7 @@ export class ViewService {
       _rootViewContext: this._rootViewContext.bind(this),
       _viewConfigFactory: this._viewConfigFactory.bind(this),
       _registeredUIView: (id) =>
-        find(this._uiViews, (view) => `${router.$id}.${view.id}` === id),
+        find(this._uiViews, (view) => `${$id}.${view.id}` === id),
       _registeredUIViews: () => this._uiViews,
       _activeViewConfigs: () => this._viewConfigs,
       _onSync: (listener) => {
