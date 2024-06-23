@@ -1,5 +1,5 @@
 import { stripLastPathElement } from "../../shared/strings";
-import { UrlRuleFactory } from "./url-rule";
+
 function appendBasePath(url, isHtml5, absolute, baseHref) {
   if (baseHref === "/") return url;
   if (isHtml5) return stripLastPathElement(baseHref) + url;

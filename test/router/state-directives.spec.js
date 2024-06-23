@@ -3,7 +3,7 @@ import { Angular } from "../../src/loader";
 import { publishExternalAPI } from "../../src/public";
 import { browserTrigger, wait } from "../test-utils";
 
-fdescribe("uiStateRef", () => {
+describe("uiStateRef", () => {
   window.location.hash = "#!";
   let el,
     el2,

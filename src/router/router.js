@@ -47,7 +47,12 @@ export class UIRouter {
       this.stateService,
       this.globals,
     );
-    this.urlService = new UrlService(this, $locationProvider, urlRuleFactory);
+    this.urlService = new UrlService(
+      this,
+      $locationProvider,
+      urlRuleFactory,
+      this.stateService,
+    );
     /**
      * Deprecated for public use. Use [[urlService]] instead.
      * @deprecated Use [[urlService]] instead

@@ -13,11 +13,13 @@ export class UrlService {
    * @param {import('../router').UIRouter} router
    * @param {angular.ILocationProvider} $locationProvider
    */
-  constructor(router, $locationProvider, urlRuleFactory) {
+  constructor(router, $locationProvider, urlRuleFactory, stateService) {
     /**
      * @type {import('../router').UIRouter}
      */
     this.router = router;
+
+    this.stateService = stateService;
 
     this.$locationProvider = $locationProvider;
 
@@ -29,7 +31,7 @@ export class UrlService {
      * See: [[UrlRules]] for details
      * @type {UrlRules}
      */
-    this.rules = new UrlRules(this.router, urlRuleFactory);
+    this.rules = new UrlRules(urlRuleFactory);
     /**
      * The nested [[UrlConfig]] API to configure the URL and retrieve URL information
      *
@@ -188,15 +190,15 @@ export class UrlService {
    */
   sync(evt) {
     if (evt && evt.defaultPrevented) return;
-    const { urlService, stateService } = this.router;
+    const stateService = this.stateService;
     const url = {
-      path: urlService.path(),
-      search: urlService.search(),
-      hash: urlService.hash(),
+      path: this.path(),
+      search: this.search(),
+      hash: this.hash(),
     };
     const best = this.match(url);
     const applyResult = pattern([
-      [isString, (newurl) => urlService.url(newurl, true)],
+      [isString, (newurl) => this.url(newurl, true)],
       [
         TargetState.isDef,
         (def) => stateService.go(def.state, def.params, def.options),
@@ -237,8 +239,7 @@ export class UrlService {
       delete this._stopListeningFn;
     } else {
       return (this._stopListeningFn =
-        this._stopListeningFn ||
-        this.router.urlService.onChange((evt) => this.sync(evt)));
+        this._stopListeningFn || this.onChange((evt) => this.sync(evt)));
     }
   }
   /**
