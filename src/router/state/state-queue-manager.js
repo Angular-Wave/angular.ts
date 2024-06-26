@@ -4,8 +4,9 @@ import { isString } from "../../shared/utils";
 import { StateObject } from "./state-object";
 
 export class StateQueueManager {
-  constructor(router, states, builder, listeners) {
+  constructor(router, urlServiceRules, states, builder, listeners) {
     this.router = router;
+    this.urlServiceRules = urlServiceRules;
     this.states = states;
     this.builder = builder;
     this.listeners = listeners;
@@ -81,7 +82,7 @@ export class StateQueueManager {
   }
   attachRoute(state) {
     if (state.abstract || !state.url) return;
-    const rulesApi = this.router.urlService.rules;
+    const rulesApi = this.urlServiceRules;
     rulesApi.rule(rulesApi.urlRuleFactory.create(state));
   }
 }

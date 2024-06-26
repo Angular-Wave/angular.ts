@@ -9,15 +9,16 @@ import { propEq } from "../../shared/hof";
  * This API is found at `router.stateRegistry` ([[UIRouter.stateRegistry]])
  */
 export class StateRegistry {
-  constructor(router) {
+  constructor(router, urlMatcherFactory, urlServiceRules) {
     this.router = router;
     this.states = {};
 
     this.listeners = [];
     this.matcher = new StateMatcher(this.states);
-    this.builder = new StateBuilder(this.matcher, router.urlMatcherFactory);
+    this.builder = new StateBuilder(this.matcher, urlMatcherFactory);
     this.stateQueue = new StateQueueManager(
       router,
+      urlServiceRules,
       this.states,
       this.builder,
       this.listeners,

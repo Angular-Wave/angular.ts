@@ -17,7 +17,11 @@ const updateUrl = (transition) => {
     $state.$current.navigable
   ) {
     const urlOptions = { replace: options.location === "replace" };
-    $urlRouter.push($state.$current.navigable.url, $state.params, urlOptions);
+    $urlRouter.push(
+      $state.$current.navigable.url,
+      $state.router.globals.params,
+      urlOptions,
+    );
   }
   $urlRouter.update(true);
 };

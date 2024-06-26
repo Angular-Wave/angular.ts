@@ -77,7 +77,7 @@ export function compose() {
  * let piped = pipe(f,g,h);
  * then, piped is: h(g(f(x)))
  */
-export function pipe(...funcs) {
+export function pipe() {
   return compose.apply(null, [].slice.call(arguments).reverse());
 }
 /**

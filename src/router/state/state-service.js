@@ -26,14 +26,6 @@ import { not, val } from "../../shared/hof";
  */
 export class StateService {
   /**
-   * The [[Transition]] currently in progress (or null)
-   *
-   * @deprecated This is a passthrough through to [[UIRouterGlobals.transition]]
-   */
-  get transition() {
-    return this.router.globals.transition;
-  }
-  /**
    * The latest successful state parameters
    *
    * @deprecated This is a passthrough through to [[UIRouterGlobals.params]]
@@ -217,11 +209,15 @@ export class StateService {
    * @returns A promise representing the state of the new transition. See [[StateService.go]]
    */
   reload(reloadState) {
-    return this.transitionTo(this.current, this.params, {
-      reload: isDefined(reloadState) ? reloadState : true,
-      inherit: false,
-      notify: false,
-    });
+    return this.transitionTo(
+      this.router.globals.current,
+      this.router.globals.params,
+      {
+        reload: isDefined(reloadState) ? reloadState : true,
+        inherit: false,
+        notify: false,
+      },
+    );
   }
   /**
    * Transition to a different state and/or parameters
@@ -426,7 +422,11 @@ export class StateService {
     if (this.$current !== state) return false;
     if (!params) return true;
     const schema = state.parameters({ inherit: true, matchingKeys: params });
-    return Param.equals(schema, Param.values(schema, params), this.params);
+    return Param.equals(
+      schema,
+      Param.values(schema, params),
+      this.router.globals.params,
+    );
   }
   /**
    * Checks if the current state *includes* the provided state
@@ -482,7 +482,11 @@ export class StateService {
     if (!isDefined(include[state.name])) return false;
     if (!params) return true;
     const schema = state.parameters({ inherit: true, matchingKeys: params });
-    return Param.equals(schema, Param.values(schema, params), this.params);
+    return Param.equals(
+      schema,
+      Param.values(schema, params),
+      this.router.globals.params,
+    );
   }
   /**
    * Generates a URL for a state and parameters
@@ -515,7 +519,11 @@ export class StateService {
     );
     if (!isDefined(state)) return null;
     if (options.inherit)
-      params = this.params.$inherit(params, this.$current, state);
+      params = this.router.globals.params.$inherit(
+        params,
+        this.$current,
+        state,
+      );
     const nav = state && options.lossy ? state.navigable : state;
     if (!nav || nav.url === undefined || nav.url === null) {
       return null;

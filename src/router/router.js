@@ -71,7 +71,11 @@ export class UIRouter {
     this.urlRouter = new UrlRouter(this, urlRuleFactory);
 
     /** Provides a registry for states, and related registration services */
-    this.stateRegistry = new StateRegistry(this);
+    this.stateRegistry = new StateRegistry(
+      this,
+      this.urlMatcherFactory,
+      this.urlService.rules,
+    );
 
     /** @internal plugin instances are registered here */
     this._plugins = {};
