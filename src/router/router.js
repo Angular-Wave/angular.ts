@@ -76,7 +76,6 @@ export class UIRouter {
 
     /** Provides a registry for states, and related registration services */
     this.stateRegistry = new StateRegistry(
-      this,
       this.urlMatcherFactory,
       this.urlService.rules,
     );

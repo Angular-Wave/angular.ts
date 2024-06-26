@@ -4,8 +4,8 @@ import { isString } from "../../shared/utils";
 import { StateObject } from "./state-object";
 
 export class StateQueueManager {
-  constructor(router, urlServiceRules, states, builder, listeners) {
-    this.router = router;
+  constructor(stateRegistry, urlServiceRules, states, builder, listeners) {
+    this.stateRegistry = stateRegistry;
     this.urlServiceRules = urlServiceRules;
     this.states = states;
     this.builder = builder;
@@ -56,7 +56,7 @@ export class StateQueueManager {
         const existingFutureState = getState(name + ".**");
         if (existingFutureState) {
           // Remove future state of the same name
-          this.router.stateRegistry.deregister(existingFutureState);
+          this.stateRegistry.deregister(existingFutureState);
         }
         states[name] = state;
         this.attachRoute(state);

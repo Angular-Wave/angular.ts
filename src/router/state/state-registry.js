@@ -9,15 +9,15 @@ import { propEq } from "../../shared/hof";
  * This API is found at `router.stateRegistry` ([[UIRouter.stateRegistry]])
  */
 export class StateRegistry {
-  constructor(router, urlMatcherFactory, urlServiceRules) {
-    this.router = router;
+  constructor(urlMatcherFactory, urlServiceRules) {
     this.states = {};
+    this.urlServiceRules = urlServiceRules;
 
     this.listeners = [];
     this.matcher = new StateMatcher(this.states);
     this.builder = new StateBuilder(this.matcher, urlMatcherFactory);
     this.stateQueue = new StateQueueManager(
-      router,
+      this,
       urlServiceRules,
       this.states,
       this.builder,
@@ -115,7 +115,7 @@ export class StateRegistry {
     const children = getChildren([state]);
     const deregistered = [state].concat(children).reverse();
     deregistered.forEach((_state) => {
-      const rulesApi = this.router.urlService.rules;
+      const rulesApi = this.urlServiceRules;
       // Remove URL rule
       rulesApi
         .rules()
@@ -148,12 +148,14 @@ export class StateRegistry {
     );
     return deregisteredStates;
   }
+
   get(stateOrName, base) {
     if (arguments.length === 0)
       return Object.keys(this.states).map((name) => this.states[name].self);
     const found = this.matcher.find(stateOrName, base);
     return (found && found.self) || null;
   }
+
   /**
    * Registers a [[BuilderFunction]] for a specific [[StateObject]] property (e.g., `parent`, `url`, or `path`).
    * More than one BuilderFunction can be registered for a given property.
