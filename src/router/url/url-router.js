@@ -15,6 +15,9 @@ function appendBasePath(url, isHtml5, absolute, baseHref) {
  * For configuring URL rules, use the [[UrlRules]] which can be found as [[UrlService.rules]].
  */
 export class UrlRouter {
+  /**
+   * @param {angular.UrlService} urlService
+   */
   constructor(urlService, urlRuleFactory, $locationProvider) {
     this.urlService = urlService;
     this.urlRuleFactory = urlRuleFactory;

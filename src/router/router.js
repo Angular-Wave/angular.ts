@@ -50,7 +50,7 @@ export class UIRouter {
 
     /** @type {StateService} Provides services related to states */
     this.stateService = new StateService(
-      this,
+      this, // access to StateRegistry and UrlRouter
       this.globals,
       this.transitionService,
     );
@@ -65,7 +65,6 @@ export class UIRouter {
      * @type {angular.UrlService}
      */
     this.urlService = new UrlService(
-      this,
       $locationProvider,
       urlRuleFactory,
       this.stateService,

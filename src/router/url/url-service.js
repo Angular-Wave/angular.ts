@@ -4,21 +4,15 @@ import { UrlRules } from "./url-rules";
 import { UrlConfig } from "./url-config";
 import { TargetState } from "../state/target-state";
 import { removeFrom } from "../../shared/common";
+
 /**
  * API for URL management
  */
 export class UrlService {
   /**
-   *
-   * @param {import('../router').UIRouter} router
    * @param {angular.ILocationProvider} $locationProvider
    */
-  constructor(router, $locationProvider, urlRuleFactory, stateService) {
-    /**
-     * @type {import('../router').UIRouter}
-     */
-    this.router = router;
-
+  constructor($locationProvider, urlRuleFactory, stateService) {
     this.stateService = stateService;
 
     this.$locationProvider = $locationProvider;
@@ -212,7 +206,8 @@ export class UrlService {
           stateService.go(target.state(), target.params(), target.options()),
       ],
     ]);
-    applyResult(best && best.rule.handler(best.match, url, this.router));
+
+    applyResult(best && best.rule.handler(best.match, url));
   }
   /**
    * Starts or stops listening for URL changes
@@ -284,8 +279,12 @@ export class UrlService {
     url = Object.assign({ path: "", search: {}, hash: "" }, url);
     const rules = this.rules.rules();
     // Checks a single rule. Returns { rule: rule, match: match, weight: weight } if it matched, or undefined
+    /**
+     *
+     * @param {import("./url-rule").BaseUrlRule} rule
+     */
     const checkRule = (rule) => {
-      const match = rule.match(url, this.router);
+      const match = rule.match(url);
       return match && { match, rule, weight: rule.matchPriority(match) };
     };
     // The rules are pre-sorted.
