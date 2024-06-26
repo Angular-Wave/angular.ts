@@ -61,7 +61,7 @@ export let defaultTransOpts = {
  */
 export class TransitionService {
   /**
-   * @param {import('../router').UIRouter} _router
+   * @param {import('../router').UIRouter} router
    */
   constructor(router, globals, viewService) {
     this._transitionCount = 0;

@@ -45,7 +45,7 @@ export class UIRouter {
       this.viewService,
     );
     /** Provides services related to states */
-    this.stateService = new StateService(this);
+    this.stateService = new StateService(this, this.globals);
     /** Provides services related to the URL */
     let urlRuleFactory = new UrlRuleFactory(
       this.urlMatcherFactory,

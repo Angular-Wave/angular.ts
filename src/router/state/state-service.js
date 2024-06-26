@@ -31,7 +31,7 @@ export class StateService {
    * @deprecated This is a passthrough through to [[UIRouterGlobals.params]]
    */
   get params() {
-    return this.router.globals.params;
+    return this.globals.params;
   }
   /**
    * The current [[StateDeclaration]]
@@ -39,7 +39,7 @@ export class StateService {
    * @deprecated This is a passthrough through to [[UIRouterGlobals.current]]
    */
   get current() {
-    return this.router.globals.current;
+    return this.globals.current;
   }
   /**
    * The current [[StateObject]] (an internal API)
@@ -47,13 +47,12 @@ export class StateService {
    * @deprecated This is a passthrough through to [[UIRouterGlobals.$current]]
    */
   get $current() {
-    return this.router.globals.$current;
+    return this.globals.$current;
   }
 
-  constructor(router) {
-    /** @private */
+  constructor(router, globals) {
     this.router = router;
-
+    this.globals = globals;
     this.invalidCallbacks = [];
 
     this._defaultErrorHandler = function $defaultErrorHandler($error$) {
