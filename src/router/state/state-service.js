@@ -50,9 +50,11 @@ export class StateService {
     return this.globals.$current;
   }
 
-  constructor(router, globals) {
+  // Needs access to urlRouter, stateRegistry
+  constructor(router, globals, transitionService) {
     this.router = router;
     this.globals = globals;
+    this.transitionService = transitionService;
     this.invalidCallbacks = [];
 
     this._defaultErrorHandler = function $defaultErrorHandler($error$) {
@@ -92,7 +94,7 @@ export class StateService {
       this.router.stateRegistry,
       fromPath,
     );
-    const globals = this.router.globals;
+    const globals = this.globals;
     const latestThing = () => globals.transitionHistory.peekTail();
     const latest = latestThing();
     const callbackQueue = new Queue(this.invalidCallbacks.slice());
@@ -208,15 +210,11 @@ export class StateService {
    * @returns A promise representing the state of the new transition. See [[StateService.go]]
    */
   reload(reloadState) {
-    return this.transitionTo(
-      this.router.globals.current,
-      this.router.globals.params,
-      {
-        reload: isDefined(reloadState) ? reloadState : true,
-        inherit: false,
-        notify: false,
-      },
-    );
+    return this.transitionTo(this.globals.current, this.globals.params, {
+      reload: isDefined(reloadState) ? reloadState : true,
+      inherit: false,
+      notify: false,
+    });
   }
   /**
    * Transition to a different state and/or parameters
@@ -292,7 +290,7 @@ export class StateService {
   }
 
   getCurrentPath() {
-    const globals = this.router.globals;
+    const globals = this.globals;
     const latestSuccess = globals.successfulTransitions.peekTail();
     const rootPath = () => [new PathNode(this.router.stateRegistry.root())];
     return latestSuccess ? latestSuccess.treeChanges().to : rootPath();
@@ -321,10 +319,8 @@ export class StateService {
    * @returns A promise representing the state of the new transition. See [[go]]
    */
   transitionTo(to, toParams = {}, options = {}) {
-    const router = this.router;
-    const globals = router.globals;
     options = defaults(options, defaultTransOpts);
-    const getCurrent = () => globals.transition;
+    const getCurrent = () => this.globals.transition;
     options = Object.assign(options, { current: getCurrent });
     const ref = this.target(to, toParams, options);
     const currentPath = this.getCurrentPath();
@@ -346,11 +342,11 @@ export class StateService {
      */
     const rejectedTransitionHandler = (trans) => (error) => {
       if (error instanceof Rejection) {
-        const isLatest = router.globals.lastStartedTransitionId <= trans.$id;
+        const isLatest = this.globals.lastStartedTransitionId <= trans.$id;
         if (error.type === RejectType.IGNORED) {
-          isLatest && router.urlRouter.update();
+          isLatest && this.router.urlRouter.update();
           // Consider ignored `Transition.run()` as a successful `transitionTo`
-          return services.$q.when(globals.current);
+          return services.$q.when(this.globals.current);
         }
         const detail = error.detail;
         if (
@@ -364,7 +360,7 @@ export class StateService {
           return redirect.run().catch(rejectedTransitionHandler(redirect));
         }
         if (error.type === RejectType.ABORTED) {
-          isLatest && router.urlRouter.update();
+          isLatest && this.router.urlRouter.update();
           return services.$q.reject(error);
         }
       }
@@ -372,7 +368,7 @@ export class StateService {
       errorHandler(error);
       return services.$q.reject(error);
     };
-    const transition = this.router.transitionService.create(currentPath, ref);
+    const transition = this.transitionService.create(currentPath, ref);
     const transitionToPromise = transition
       .run()
       .catch(rejectedTransitionHandler(transition));
@@ -424,7 +420,7 @@ export class StateService {
     return Param.equals(
       schema,
       Param.values(schema, params),
-      this.router.globals.params,
+      this.globals.params,
     );
   }
   /**
@@ -484,7 +480,7 @@ export class StateService {
     return Param.equals(
       schema,
       Param.values(schema, params),
-      this.router.globals.params,
+      this.globals.params,
     );
   }
   /**
@@ -518,11 +514,7 @@ export class StateService {
     );
     if (!isDefined(state)) return null;
     if (options.inherit)
-      params = this.router.globals.params.$inherit(
-        params,
-        this.$current,
-        state,
-      );
+      params = this.globals.params.$inherit(params, this.$current, state);
     const nav = state && options.lossy ? state.navigable : state;
     if (!nav || nav.url === undefined || nav.url === null) {
       return null;
@@ -585,7 +577,7 @@ export class StateService {
       currentPath,
     );
     transition =
-      transition || this.router.transitionService.create(currentPath, target);
+      transition || this.transitionService.create(currentPath, target);
     return lazyLoadState(transition, state);
   }
 }

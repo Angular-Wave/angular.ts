@@ -14,12 +14,7 @@ import { isDefined, isString } from "../../shared/utils";
  * This API is found at `router.urlService.config` (see: [[UIRouter.urlService]], [[URLService.config]])
  */
 export class UrlConfig {
-  /**
-   * @param {import('../router').UIRouter} router
-   */
-  constructor(router) {
-    /** @type {import('../router').UIRouter} */
-    this.router = router;
+  constructor() {
     /** @type {ParamTypes} */
     this.paramTypes = new ParamTypes();
     /** @type {boolean} */

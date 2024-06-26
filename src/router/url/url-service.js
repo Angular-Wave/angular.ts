@@ -38,7 +38,7 @@ export class UrlService {
      * See: [[UrlConfig]] for details
      * @type {UrlConfig}
      */
-    this.config = new UrlConfig(this.router);
+    this.config = new UrlConfig();
 
     /**
      * Gets the path part of the current url
