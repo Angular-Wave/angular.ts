@@ -3,14 +3,12 @@ import { StateDeclaration } from "./state/interface";
 import { StateObject } from "./state/stateObject";
 import { Transition } from "./transition/transition";
 import { Queue } from "./common/queue";
-import { Disposable } from "./interface";
-/**
  * Global router state
  *
  * This is where we hold the global mutable state such as current state, current
  * params, current transition, etc.
  */
-export declare class UIRouterGlobals implements Disposable {
+export declare class UIRouterGlobals {
   /**
    * Current parameter values
    *
@@ -41,5 +39,4 @@ export declare class UIRouterGlobals implements Disposable {
   transitionHistory: Queue<Transition>;
   /** @internal */
   successfulTransitions: Queue<Transition>;
-  dispose(): void;
 }

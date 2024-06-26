@@ -5,7 +5,6 @@
  * @packageDocumentation
  */
 import { IInjectable, Obj } from "./common";
-import { Disposable } from "../interface";
 import { UrlConfig, UrlService } from "../url";
 export declare const makeStub: <T>(service: string, methods: (keyof T)[]) => T;
 declare const services: CoreServices;
@@ -46,7 +45,7 @@ export interface CoreServices {
  * - [[HashLocationService]]
  * - [[MemoryLocationService]]
  */
-export interface LocationServices extends Disposable {
+export interface LocationServices {
   /** See: [[UrlService.url]] */ url: UrlService["url"];
   /** See: [[UrlService.path]] */ path: UrlService["path"];
   /** See: [[UrlService.search]] */ search: UrlService["search"];
@@ -67,7 +66,7 @@ export interface LocationServices extends Disposable {
  * - [[BrowserLocationConfig]]
  * - [[MemoryLocationConfig]]
  */
-export interface LocationConfig extends Disposable {
+export interface LocationConfig {
   /** See: [[UrlConfig.port]] */ port: UrlConfig["port"];
   /** See: [[UrlConfig.protocol]] */ protocol: UrlConfig["protocol"];
   /** See: [[UrlConfig.host]] */ host: UrlConfig["host"];

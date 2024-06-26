@@ -20,7 +20,6 @@ import { ViewService } from "../view/view";
 import { UIRouter } from "../router";
 import { TransitionEventType } from "./transitionEventType";
 import { GetResultHandler, GetErrorHandler } from "./transitionHook";
-import { Disposable } from "../interface";
 /**
  * The default [[Transition]] options.
  *
@@ -82,7 +81,7 @@ export interface TransitionServicePluginAPI {
  *
  * This API is located at `router.transitionService` ([[UIRouter.transitionService]])
  */
-export declare class TransitionService implements IHookRegistry, Disposable {
+export declare class TransitionService implements IHookRegistry {
   /** @internal */
   _transitionCount: number;
   /** @internal */

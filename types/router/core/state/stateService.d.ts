@@ -53,8 +53,7 @@ export declare class StateService {
   $current: StateObject;
   /** @internal */
   constructor(/** @internal */ router: UIRouter);
-  /** @internal */
-  dispose(): void;
+
   /**
    * Handler for when [[transitionTo]] is called with an invalid state.
    *

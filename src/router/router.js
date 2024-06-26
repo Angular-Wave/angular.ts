@@ -34,17 +34,21 @@ export class UIRouter {
     /** Enable/disable tracing to the javascript console */
     this.trace = trace;
     this.$locationProvider = $locationProvider;
+
     /** Provides services related to ui-view synchronization */
     this.viewService = new ViewService(routerId);
+
     /** @type {UIRouterGlobals} An object that contains global router state, such as the current state and params */
     this.globals = new UIRouterGlobals();
+
     /** @type {TransitionService}  A service that exposes global Transition Hooks */
     this.transitionService = new TransitionService(
       this,
       this.globals,
       this.viewService,
     );
-    /** Provides services related to states */
+
+    /** @type {StateService} Provides services related to states */
     this.stateService = new StateService(
       this,
       this.globals,
@@ -56,6 +60,10 @@ export class UIRouter {
       this.stateService,
       this.globals,
     );
+
+    /**
+     * @type {angular.UrlService}
+     */
     this.urlService = new UrlService(
       this,
       $locationProvider,
@@ -72,7 +80,11 @@ export class UIRouter {
      * Deprecated for public use. Use [[urlService]] instead.
      * @deprecated Use [[urlService]] instead
      */
-    this.urlRouter = new UrlRouter(this, urlRuleFactory);
+    this.urlRouter = new UrlRouter(
+      this.urlService,
+      urlRuleFactory,
+      $locationProvider,
+    );
 
     /** Provides a registry for states, and related registration services */
     this.stateRegistry = new StateRegistry(

@@ -35,7 +35,6 @@ export declare class Ng1LocationServices
    * @param router
    */
   static monkeyPatchPathParameterType(router: UIRouter): void;
-  dispose(): void;
   constructor($locationProvider: ILocationProvider);
   onChange(callback: Function): () => Function[];
   html5Mode(): any;

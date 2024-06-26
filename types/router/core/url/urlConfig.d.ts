@@ -1,4 +1,3 @@
-import { Disposable } from "../interface";
 import { UIRouter } from "../router";
 import { ParamTypeDefinition, ParamTypes } from "../params";
 /**
@@ -14,7 +13,7 @@ import { ParamTypeDefinition, ParamTypes } from "../params";
  *
  * This API is found at `router.urlService.config` (see: [[UIRouter.urlService]], [[URLService.config]])
  */
-export declare class UrlConfig implements Disposable {
+export declare class UrlConfig {
   private router;
   /** @internal */ paramTypes: ParamTypes;
   /** @internal */ _decodeParams: boolean;

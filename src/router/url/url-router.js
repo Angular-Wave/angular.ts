@@ -15,17 +15,14 @@ function appendBasePath(url, isHtml5, absolute, baseHref) {
  * For configuring URL rules, use the [[UrlRules]] which can be found as [[UrlService.rules]].
  */
 export class UrlRouter {
-  /**
-   *
-   * @param {import('../router').UIRouter} router
-   */
-  constructor(router, urlRuleFactory) {
-    this.router = router;
+  constructor(urlService, urlRuleFactory, $locationProvider) {
+    this.urlService = urlService;
     this.urlRuleFactory = urlRuleFactory;
+    this.$locationProvider = $locationProvider;
   }
-  /** Internal API. */
+
   update(read) {
-    const $url = this.router.urlService;
+    const $url = this.urlService;
     if (read) {
       this.location = $url.url();
       return;
@@ -34,8 +31,6 @@ export class UrlRouter {
     $url.url(this.location, true);
   }
   /**
-   * Internal API.
-   *
    * Pushes a new location to the browser history.
    *
    * @internal
@@ -45,7 +40,7 @@ export class UrlRouter {
    */
   push(urlMatcher, params, options) {
     const replace = options && !!options.replace;
-    this.router.urlService.url(urlMatcher.format(params || {}), replace);
+    this.urlService.url(urlMatcher.format(params || {}), replace);
   }
   /**
    * Builds and returns a URL with interpolated parameters
@@ -70,27 +65,27 @@ export class UrlRouter {
     let url = urlMatcher.format(params);
     if (url == null) return null;
     options = options || { absolute: false };
-    const cfg = this.router.urlService.config;
-    const isHtml5 = this.router.urlService.html5Mode();
+    const cfg = this.urlService.config;
+    const isHtml5 = this.urlService.html5Mode();
     if (!isHtml5 && url !== null) {
-      url = "#" + this.router.$locationProvider.hashPrefix() + url;
+      url = "#" + this.$locationProvider.hashPrefix() + url;
     }
     url = appendBasePath(
       url,
       isHtml5,
       options.absolute,
-      this.router.urlService.baseHref(),
+      this.urlService.baseHref(),
     );
     if (!options.absolute || !url) {
       return url;
     }
     const slash = !isHtml5 && url ? "/" : "";
-    const cfgPort = this.router.urlService.$location.port();
+    const cfgPort = this.urlService.$location.port();
     const port = cfgPort === 80 || cfgPort === 443 ? "" : ":" + cfgPort;
     return [
       cfg.protocol(),
       "://",
-      this.router.urlService.$location.host(),
+      this.urlService.$location.host(),
       port,
       slash,
       url,

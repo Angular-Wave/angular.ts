@@ -5,7 +5,7 @@ import { ViewService } from "./view/view";
 import { StateRegistry } from "./state/stateRegistry";
 import { StateService } from "./state/stateService";
 import { UIRouterGlobals } from "./globals";
-import { UIRouterPlugin, Disposable } from "./interface";
+import { UIRouterPlugin } from "./interface";
 import { UrlService } from "./url/urlService";
 import { LocationServices, LocationConfig } from "./common/coreservices";
 import { Trace } from "./common/trace";
@@ -46,8 +46,7 @@ export declare class UIRouter {
   stateService: StateService;
   /** @internal plugin instances are registered here */
   private _plugins;
-  /** Registers an object to be notified when the router is disposed */
-  disposable(disposable: Disposable): void;
+
   /**
    * Disposes this router instance
    *

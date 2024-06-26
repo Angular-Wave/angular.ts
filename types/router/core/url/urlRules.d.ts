@@ -1,5 +1,4 @@
 import { UIRouter } from "../router";
-import { Disposable } from "../interface";
 import { UrlRule, UrlRuleHandlerFn } from "./interface";
 import { TargetState, TargetStateDef } from "../state";
 import { UrlMatcher } from "./urlMatcher";
@@ -14,7 +13,7 @@ import { UrlRuleFactory } from "./urlRule";
  *
  * This API is found at `router.urlService.rules` (see: [[UIRouter.urlService]], [[URLService.rules]])
  */
-export declare class UrlRules implements Disposable {
+export declare class UrlRules {
   private router;
   /** used to create [[UrlRule]] objects for common cases */
   urlRuleFactory: UrlRuleFactory;

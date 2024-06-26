@@ -24,8 +24,7 @@ export declare class UrlService implements LocationServices, UrlSyncApi {
   config: UrlConfig;
   /** @internal */
   constructor(/** @internal */ router: UIRouter);
-  /** @internal */
-  dispose(): void;
+
   /**
    * Gets the current URL parts
    *

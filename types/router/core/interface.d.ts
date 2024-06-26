@@ -89,16 +89,10 @@ export interface UIInjector {
   getNative(token: any): any;
   getNative<T>(token: any): T;
 }
-export interface UIRouterPlugin extends Disposable {
+export interface UIRouterPlugin {
   name: string;
 }
-export declare abstract class UIRouterPluginBase
-  implements UIRouterPlugin, Disposable
-{
+export declare abstract class UIRouterPluginBase implements UIRouterPlugin {
   abstract name: string;
   dispose(router: UIRouter): void;
-}
-export interface Disposable {
-  /** Instructs the Disposable to clean up any resources */
-  dispose(router?: UIRouter): any;
 }

@@ -37,8 +37,6 @@ export declare class StateRegistry {
   constructor(router: UIRouter);
   /** @internal */
   private _registerRoot;
-  /** @internal */
-  dispose(): void;
   /**
    * Listen for a State Registry events
    *

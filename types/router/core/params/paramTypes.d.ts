@@ -179,7 +179,6 @@ export declare class ParamTypes {
   typeQueue: any[];
   private defaultTypes;
   constructor();
-  dispose(): void;
   /**
    * Registers a parameter type
    *
