@@ -12,7 +12,7 @@ import { copy } from "../../shared/common";
  * [[StateService.transition]], [[StateService.current]], [[StateService.params]]
  */
 const updateGlobalState = (trans) => {
-  const globals = trans.router.globals;
+  const globals = trans.globals;
   const transitionSuccessful = () => {
     globals.successfulTransitions.enqueue(trans);
     globals.$current = trans.$to();
