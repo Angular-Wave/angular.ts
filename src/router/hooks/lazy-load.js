@@ -23,45 +23,46 @@ import { services } from "../common/coreservices";
  *
  * See [[StateDeclaration.lazyLoad]]
  */
-const lazyLoadHook = (transition) => {
-  const router = transition.router;
-  function retryTransition() {
-    if (transition.originalTransition().options().source !== "url") {
-      // The original transition was not triggered via url sync
-      // The lazy state should be loaded now, so re-try the original transition
-      const orig = transition.targetState();
-      return router.stateService.target(
-        orig.identifier(),
-        orig.params(),
-        orig.options(),
-      );
-    }
-    // The original transition was triggered via url sync
-    // Run the URL rules and find the best match
-    const $url = router.urlService;
-    const result = $url.match($url.parts());
-    const rule = result && result.rule;
-    // If the best match is a state, redirect the transition (instead
-    // of calling sync() which supersedes the current transition)
-    if (rule && rule.type === "STATE") {
-      const state = rule.state;
-      const params = result.match;
-      return router.stateService.target(state, params, transition.options());
-    }
-    // No matching state found, so let .sync() choose the best non-state match/otherwise
-    router.urlService.sync();
-  }
-  const promises = transition
-    .entering()
-    .filter((state) => !!state.$$state().lazyLoad)
-    .map((state) => lazyLoadState(transition, state));
-  return services.$q.all(promises).then(retryTransition);
-};
-
-export function registerLazyLoadHook(transitionService) {
+export function registerLazyLoadHook(
+  transitionService,
+  stateService,
+  urlService,
+  stateRegistry,
+) {
   return transitionService.onBefore(
     { entering: (state) => !!state.lazyLoad },
-    lazyLoadHook,
+    (transition) => {
+      function retryTransition() {
+        if (transition.originalTransition().options().source !== "url") {
+          // The original transition was not triggered via url sync
+          // The lazy state should be loaded now, so re-try the original transition
+          const orig = transition.targetState();
+          return stateService.target(
+            orig.identifier(),
+            orig.params(),
+            orig.options(),
+          );
+        }
+        // The original transition was triggered via url sync
+        // Run the URL rules and find the best match
+        const result = urlService.match(urlService.parts());
+        const rule = result && result.rule;
+        // If the best match is a state, redirect the transition (instead
+        // of calling sync() which supersedes the current transition)
+        if (rule && rule.type === "STATE") {
+          const state = rule.state;
+          const params = result.match;
+          return stateService.target(state, params, transition.options());
+        }
+        // No matching state found, so let .sync() choose the best non-state match/otherwise
+        urlService.sync();
+      }
+      const promises = transition
+        .entering()
+        .filter((state) => !!state.$$state().lazyLoad)
+        .map((state) => lazyLoadState(transition, state, stateRegistry));
+      return services.$q.all(promises).then(retryTransition);
+    },
   );
 }
 
@@ -72,7 +73,7 @@ export function registerLazyLoadHook(transitionService) {
  * @param state the state to lazy load
  * @returns A promise for the lazy load result
  */
-export function lazyLoadState(transition, state) {
+export function lazyLoadState(transition, state, stateRegistry) {
   const lazyLoadFn = state.$$state().lazyLoad;
   // Store/get the lazy load promise on/from the hookfn so it doesn't get re-invoked
   let promise = lazyLoadFn["_promise"];
@@ -95,9 +96,7 @@ export function lazyLoadState(transition, state) {
   /** Register any lazy loaded state definitions */
   function updateStateRegistry(result) {
     if (result && Array.isArray(result.states)) {
-      result.states.forEach((_state) =>
-        transition.router.stateRegistry.register(_state),
-      );
+      result.states.forEach((_state) => stateRegistry.register(_state));
     }
     return result;
   }

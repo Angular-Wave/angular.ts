@@ -1,18 +1,19 @@
 import { Transition } from "../transition/transition";
-import { UIRouter } from "../router";
 import { Resolvable } from "../resolve/resolvable";
 import { inArray, uniqR, unnestR } from "../../shared/common";
-function addCoreResolvables(trans) {
-  trans.addResolvable(Resolvable.fromData(UIRouter, trans.router), "");
-  trans.addResolvable(Resolvable.fromData(Transition, trans), "");
-  trans.addResolvable(Resolvable.fromData("$transition$", trans), "");
-  trans.addResolvable(Resolvable.fromData("$stateParams", trans.params()), "");
-  trans.entering().forEach((state) => {
-    trans.addResolvable(Resolvable.fromData("$state$", state), state);
-  });
-}
+
 export function registerAddCoreResolvables(transitionService) {
-  transitionService.onCreate({}, addCoreResolvables);
+  transitionService.onCreate({}, function addCoreResolvables(trans) {
+    trans.addResolvable(Resolvable.fromData(Transition, trans), "");
+    trans.addResolvable(Resolvable.fromData("$transition$", trans), "");
+    trans.addResolvable(
+      Resolvable.fromData("$stateParams", trans.params()),
+      "",
+    );
+    trans.entering().forEach((state) => {
+      trans.addResolvable(Resolvable.fromData("$state$", state), state);
+    });
+  });
 }
 
 const TRANSITION_TOKENS = ["$transition$", Transition];

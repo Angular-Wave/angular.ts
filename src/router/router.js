@@ -8,6 +8,9 @@ import { UIRouterGlobals } from "./globals";
 import { UrlService } from "./url/url-service";
 import { trace } from "./common/trace";
 import { UrlRuleFactory } from "./url/url-rule";
+import { registerLazyLoadHook } from "./hooks/lazy-load";
+import { registerUpdateUrl } from "./hooks/url";
+import { registerActivateViews } from "./hooks/views";
 
 /**
  * Router id tracker
@@ -69,6 +72,7 @@ export class UIRouter {
       urlRuleFactory,
       this.stateService,
     );
+
     /**
      * Deprecated for public use. Use [[urlService]] instead.
      * @deprecated Use [[urlService]] instead
@@ -90,6 +94,24 @@ export class UIRouter {
       this.urlMatcherFactory,
       this.urlService.rules,
     );
+
+    // Lazy load state trees
+    this.transitionService._deregisterHookFns.lazyLoad = registerLazyLoadHook(
+      this.transitionService,
+      this.stateService,
+      this.urlService,
+      this.stateRegistry,
+    );
+
+    // After globals.current is updated at priority: 10000
+    this.transitionService._deregisterHookFns.updateUrl = registerUpdateUrl(
+      this.transitionService,
+      this.stateService,
+      this.urlRouter,
+    );
+
+    this.transitionService._deregisterHookFns.activateViews =
+      registerActivateViews(this.transitionService, this.viewService);
 
     /** @internal plugin instances are registered here */
     this._plugins = {};

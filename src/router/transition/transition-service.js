@@ -16,12 +16,9 @@ import {
   registerLazyResolveState,
   registerResolveRemaining,
 } from "../hooks/resolve";
-import {
-  registerLoadEnteringViews,
-  registerActivateViews,
-} from "../hooks/views";
+import { registerLoadEnteringViews } from "../hooks/views";
 import { registerUpdateGlobalState } from "../hooks/update-globals";
-import { registerUpdateUrl } from "../hooks/url";
+
 import { registerLazyLoadHook } from "../hooks/lazy-load";
 import { TransitionEventType } from "./transition-event-type";
 import { TransitionHook } from "./transition-hook";
@@ -72,6 +69,7 @@ export class TransitionService {
     /** The  paths on a criteria object */
     this._criteriaPaths = {};
     this.router = router;
+    this.globals = globals;
     this.$view = viewService;
     this._deregisterHookFns = {};
     this._pluginapi = createProxyFunctions(val(this), {}, val(this), [
@@ -127,7 +125,7 @@ export class TransitionService {
       targetState,
       this.router,
       this,
-      this.router.globals,
+      this.globals,
     );
   }
 
@@ -260,11 +258,9 @@ export class TransitionService {
     fns.resolveAll = registerResolveRemaining(this);
     // Wire up the View management hooks
     fns.loadViews = registerLoadEnteringViews(this);
-    fns.activateViews = registerActivateViews(this);
+
     // Updates global state after a transition
     fns.updateGlobals = registerUpdateGlobalState(this);
-    // After globals.current is updated at priority: 10000
-    fns.updateUrl = registerUpdateUrl(this);
     // Lazy load state trees
     fns.lazyLoad = registerLazyLoadHook(this);
   }

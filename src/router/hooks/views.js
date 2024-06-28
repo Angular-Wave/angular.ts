@@ -17,24 +17,25 @@ const loadEnteringViews = (transition) => {
 };
 export const registerLoadEnteringViews = (transitionService) =>
   transitionService.onFinish({}, loadEnteringViews);
-/**
- * A [[TransitionHookFn]] which activates the new views when a transition is successful.
- *
- * Registered using `transitionService.onSuccess({}, activateViews);`
- *
- * After a transition is complete, this hook deactivates the old views from the previous state,
- * and activates the new views from the destination state.
- *
- * See [[ViewService]]
- */
-const activateViews = (transition) => {
-  const enteringViews = transition.views("entering");
-  const exitingViews = transition.views("exiting");
-  if (!enteringViews.length && !exitingViews.length) return;
-  const $view = transition.router.viewService;
-  exitingViews.forEach((vc) => $view.deactivateViewConfig(vc));
-  enteringViews.forEach((vc) => $view.activateViewConfig(vc));
-  $view.sync();
-};
-export const registerActivateViews = (transitionService) =>
+
+export const registerActivateViews = (transitionService, viewService) => {
+  /**
+   * A [[TransitionHookFn]] which activates the new views when a transition is successful.
+   *
+   * Registered using `transitionService.onSuccess({}, activateViews);`
+   *
+   * After a transition is complete, this hook deactivates the old views from the previous state,
+   * and activates the new views from the destination state.
+   *
+   * See [[ViewService]]
+   */
+  const activateViews = (transition) => {
+    const enteringViews = transition.views("entering");
+    const exitingViews = transition.views("exiting");
+    if (!enteringViews.length && !exitingViews.length) return;
+    exitingViews.forEach((vc) => viewService.deactivateViewConfig(vc));
+    enteringViews.forEach((vc) => viewService.activateViewConfig(vc));
+    viewService.sync();
+  };
   transitionService.onSuccess({}, activateViews);
+};
