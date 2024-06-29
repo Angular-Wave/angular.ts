@@ -51,7 +51,6 @@ describe("PubSub", function () {
     expect(pubsub.getCount("bar")).toBe(2);
 
     expect(pubsub.unsubscribe("foo", foo1)).toBe(true);
-    debugger;
     expect(pubsub.getCount("foo")).toBe(1);
     expect(pubsub.getCount("bar")).toBe(2);
 

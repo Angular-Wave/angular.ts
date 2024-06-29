@@ -2,8 +2,7 @@ AngularTS
 
 ![Build status](https://github.com/Angular-Wave/angular.ts/actions/workflows/playwright.yml/badge.svg)
 
-Building upon the monumental effort of the [Angular Team](https://docs.angularjs.org/misc/version-support-status) at Google, 
-this project preserves, modernises and expands the original [AngularJS](https://github.com/angular/angular.js) 
+This project preserves, modernises and expands the original [AngularJS](https://github.com/angular/angular.js) 
 framework. While building on the core features of the original, AngularTS is not 
 a drop-in replacement or an LTS version. It has no relation to [Angular](https://angular.io) and makes no efforts to be compatible with it.
 AngularTS is "AngularJS: The Good Parts". It takes the three core pillars of the original &ndash; a string-interpolation engine, 

@@ -5,7 +5,6 @@ import {
   registerAddCoreResolvables,
   treeChangesCleanup,
 } from "../hooks/core-resolvables";
-import { registerRedirectToHook } from "../hooks/redirect-to";
 import {
   registerOnExitHook,
   registerOnRetainHook,
@@ -120,13 +119,7 @@ export class TransitionService {
    * @returns a Transition
    */
   create(fromPath, targetState) {
-    return new Transition(
-      fromPath,
-      targetState,
-      this.router,
-      this,
-      this.globals,
-    );
+    return new Transition(fromPath, targetState, this, this.globals);
   }
 
   _defineCoreEvents() {

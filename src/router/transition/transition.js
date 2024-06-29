@@ -45,11 +45,10 @@ export class Transition {
    * @param fromPath The path of [[PathNode]]s from which the transition is leaving.  The last node in the `fromPath`
    *        encapsulates the "from state".
    * @param targetState The target state and parameters being transitioned to (also, the transition options)
-   * @param {import('../router').UIRouter} router The [[UIRouter]] instance
+   * @param {import('../transition/transition-service').TransitionService} transitionService The [[TransitionService]] instance
    * @internal
    */
-  constructor(fromPath, targetState, router, transitionService, globals) {
-    this.router = router;
+  constructor(fromPath, targetState, transitionService, globals) {
     this.globals = globals;
     this.transitionService = transitionService;
     this._deferred = services.$q.defer();

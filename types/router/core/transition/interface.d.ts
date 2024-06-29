@@ -327,7 +327,7 @@ export interface IHookRegistry {
    * ```js
    * // ng2
    * transitionService.onBefore({ to: 'home' }, (trans: Transition) =>
-   *     trans.router.stateService.target("home.dashboard"));
+   *     stateService.target("home.dashboard"));
    * ```
    *
    * #### Data Driven Default Substate
@@ -354,7 +354,7 @@ export interface IHookRegistry {
    *
    * $transitions.onBefore(criteria, function(trans: Transition) {
    *   var substate = trans.to().defaultSubstate;
-   *   return trans.router.stateService.target(substate);
+   *   return stateService.target(substate);
    * });
    * ```
    *
@@ -429,7 +429,7 @@ export interface IHookRegistry {
    * ```js
    * // ng1
    * $transitions.onStart( { to: 'auth.**' }, function(trans) {
-   *   var $state = trans.router.stateService;
+   *   var $state = stateService;
    *   var MyAuthService = trans.injector().get('MyAuthService');
    *
    *   // If the user is not authenticated

@@ -103,7 +103,7 @@ describe("view hooks", () => {
     it("can redirect the transition", async () => {
       ctrl.prototype.uiCanExit = function (trans) {
         log += "canexit;";
-        return trans.router.stateService.target("baz");
+        return $state.target("baz");
       };
       await initial();
 
