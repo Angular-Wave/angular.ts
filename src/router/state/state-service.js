@@ -53,8 +53,10 @@ export class StateService {
   }
 
   // Needs access to urlRouter, stateRegistry
-  constructor(router, globals, transitionService) {
-    this.router = router;
+  constructor(globals, transitionService) {
+    this.stateRegistry = undefined;
+    this.urlRouter = undefined;
+    this.urlService = undefined;
     this.globals = globals;
     this.transitionService = transitionService;
     this.invalidCallbacks = [];
@@ -96,10 +98,7 @@ export class StateService {
    * @internal
    */
   _handleInvalidTargetState(fromPath, toState) {
-    const fromState = PathUtils.makeTargetState(
-      this.router.stateRegistry,
-      fromPath,
-    );
+    const fromState = PathUtils.makeTargetState(this.stateRegistry, fromPath);
     const globals = this.globals;
     const latestThing = () => globals.transitionHistory.peekTail();
     const latest = latestThing();
@@ -278,7 +277,7 @@ export class StateService {
     // If we're reloading, find the state object to reload from
     if (isObject(options.reload) && !options.reload.name)
       throw new Error("Invalid reload state object");
-    const reg = this.router.stateRegistry;
+    const reg = this.stateRegistry;
     options.reloadState =
       options.reload === true
         ? reg.root()
@@ -287,18 +286,13 @@ export class StateService {
       throw new Error(
         `No such reload state '${isString(options.reload) ? options.reload : options.reload.name}'`,
       );
-    return new TargetState(
-      this.router.stateRegistry,
-      identifier,
-      params,
-      options,
-    );
+    return new TargetState(this.stateRegistry, identifier, params, options);
   }
 
   getCurrentPath() {
     const globals = this.globals;
     const latestSuccess = globals.successfulTransitions.peekTail();
-    const rootPath = () => [new PathNode(this.router.stateRegistry.root())];
+    const rootPath = () => [new PathNode(this.stateRegistry.root())];
     return latestSuccess ? latestSuccess.treeChanges().to : rootPath();
   }
   /**
@@ -415,7 +409,7 @@ export class StateService {
    */
   is(stateOrName, params, options) {
     options = defaults(options, { relative: this.$current });
-    const state = this.router.stateRegistry.matcher.find(
+    const state = this.stateRegistry.matcher.find(
       stateOrName,
       options.relative,
     );
@@ -474,7 +468,7 @@ export class StateService {
       if (!glob.matches(this.$current.name)) return false;
       stateOrName = this.$current.name;
     }
-    const state = this.router.stateRegistry.matcher.find(
+    const state = this.stateRegistry.matcher.find(
         stateOrName,
         options.relative,
       ),
@@ -514,7 +508,7 @@ export class StateService {
     };
     options = defaults(options, defaultHrefOpts);
     params = params || {};
-    const state = this.router.stateRegistry.matcher.find(
+    const state = this.stateRegistry.matcher.find(
       stateOrName,
       options.relative,
     );
@@ -525,7 +519,7 @@ export class StateService {
     if (!nav || nav.url === undefined || nav.url === null) {
       return null;
     }
-    return this.router.urlRouter.href(nav.url, params, {
+    return this.urlRouter.href(nav.url, params, {
       absolute: options.absolute,
     });
   }
@@ -557,7 +551,7 @@ export class StateService {
     return (this._defaultErrorHandler = handler || this._defaultErrorHandler);
   }
   get(stateOrName, base) {
-    const reg = this.router.stateRegistry;
+    const reg = this.stateRegistry;
     if (arguments.length === 0) return reg.get();
     return reg.get(stateOrName, base || this.$current);
   }
@@ -578,10 +572,7 @@ export class StateService {
     if (!state || !state.lazyLoad)
       throw new Error("Can not lazy load " + stateOrName);
     const currentPath = this.getCurrentPath();
-    const target = PathUtils.makeTargetState(
-      this.router.stateRegistry,
-      currentPath,
-    );
+    const target = PathUtils.makeTargetState(this.stateRegistry, currentPath);
     transition =
       transition || this.transitionService.create(currentPath, target);
     return lazyLoadState(transition, state);

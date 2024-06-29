@@ -52,11 +52,8 @@ export class UIRouter {
     );
 
     /** @type {StateService} Provides services related to states */
-    this.stateService = new StateService(
-      this, // access to StateRegistry and UrlRouter
-      this.globals,
-      this.transitionService,
-    );
+    this.stateService = new StateService(this.globals, this.transitionService);
+
     /** Provides services related to the URL */
     let urlRuleFactory = new UrlRuleFactory(
       this.urlMatcherFactory,
@@ -94,6 +91,11 @@ export class UIRouter {
       this.urlMatcherFactory,
       this.urlService.rules,
     );
+
+    // Manual wiring ideally we would want to do this at runtime
+    this.stateService.stateRegistry = this.stateRegistry;
+    this.stateService.urlRouter = this.urlRouter;
+    this.stateService.urlService = this.urlService; // <-- NOTE: circular dependency
 
     // Lazy load state trees
     this.transitionService._deregisterHookFns.lazyLoad = registerLazyLoadHook(
