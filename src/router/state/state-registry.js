@@ -3,19 +3,29 @@ import { StateBuilder } from "./state-builder";
 import { StateQueueManager } from "./state-queue-manager";
 import { removeFrom } from "../../shared/common";
 import { propEq } from "../../shared/hof";
+import { ResolveContext } from "../resolve/resolve-context";
+import { getLocals } from "../services";
+import { ng1ViewsBuilder } from "./views";
 /**
  * A registry for all of the application's [[StateDeclaration]]s
  *
- * This API is found at `router.stateRegistry` ([[UIRouter.stateRegistry]])
+ * This API is found at `$stateRegistry` ([[UIRouter.stateRegistry]])
  */
 export class StateRegistry {
   constructor(urlMatcherFactory, urlServiceRules) {
     this.states = {};
     this.urlServiceRules = urlServiceRules;
-
+    this.$injector = undefined;
     this.listeners = [];
     this.matcher = new StateMatcher(this.states);
     this.builder = new StateBuilder(this.matcher, urlMatcherFactory);
+    // Apply ng1 specific StateBuilder code for `views`, `resolve`, and `onExit/Retain/Enter` properties
+    // TODO we can probably move this inside buildr
+    this.builder.builder("views", ng1ViewsBuilder);
+    this.builder.builder("onExit", this.getStateHookBuilder("onExit"));
+    this.builder.builder("onRetain", this.getStateHookBuilder("onRetain"));
+    this.builder.builder("onEnter", this.getStateHookBuilder("onEnter"));
+
     this.stateQueue = new StateQueueManager(
       this,
       urlServiceRules,
@@ -24,6 +34,41 @@ export class StateRegistry {
       this.listeners,
     );
     this._registerRoot();
+  }
+
+  /**
+   * @param {angular.$InjectorLike} $injector
+   */
+  init($injector) {
+    this.$injector = $injector;
+    this.builder.$injector = $injector;
+  }
+
+  /**
+   * This is a [[StateBuilder.builder]] function for angular1 `onEnter`, `onExit`,
+   * `onRetain` callback hooks on a [[Ng1StateDeclaration]].
+   *
+   * When the [[StateBuilder]] builds a [[StateObject]] object from a raw [[StateDeclaration]], this builder
+   * ensures that those hooks are injectable for @uirouter/angularjs (ng1).
+   *
+   * @internalapi
+   */
+  getStateHookBuilder(hookName) {
+    let that = this;
+    return function stateHookBuilder(stateObject) {
+      const hook = stateObject[hookName];
+      const pathname = hookName === "onExit" ? "from" : "to";
+      function decoratedNg1Hook(trans, state) {
+        const resolveContext = new ResolveContext(trans.treeChanges(pathname));
+        const subContext = resolveContext.subContext(state.$$state());
+        const locals = Object.assign(getLocals(subContext), {
+          $state$: state,
+          $transition$: trans,
+        });
+        return that.$injector.invoke(hook, this, locals);
+      }
+      return hook ? decoratedNg1Hook : undefined;
+    };
   }
 
   _registerRoot() {
@@ -169,4 +214,12 @@ export class StateRegistry {
   decorator(property, builderFunction) {
     return this.builder.builder(property, builderFunction);
   }
+
+  $get = [
+    "$injector",
+    function ($injector) {
+      this.init($injector);
+      return this;
+    },
+  ];
 }

@@ -29,11 +29,6 @@ export function $routerProvider($locationProvider) {
     router.stateRegistry,
     router.stateService,
   );
-  // Apply ng1 specific StateBuilder code for `views`, `resolve`, and `onExit/Retain/Enter` properties
-  router.stateRegistry.decorator("views", ng1ViewsBuilder);
-  router.stateRegistry.decorator("onExit", getStateHookBuilder("onExit"));
-  router.stateRegistry.decorator("onRetain", getStateHookBuilder("onRetain"));
-  router.stateRegistry.decorator("onEnter", getStateHookBuilder("onEnter"));
   router.viewService._pluginapi._viewConfigFactory(
     "ng1",
     getNg1ViewConfigFactory(),
@@ -65,8 +60,9 @@ export function $routerProvider($locationProvider) {
   // backwards compat: also expose router instance as $routerProvider.router
   router["router"] = router;
   router["$get"] = $get;
-  $get.$inject = ["$location", "$browser", "$rootScope"];
-  function $get($location, $browser, $rootScope) {
+  $get.$inject = ["$location", "$browser", "$rootScope", "$injector"];
+  function $get($location, $browser, $rootScope, $injector) {
+    router.stateRegistry.init($injector);
     router.urlService._runtimeServices($rootScope, $location, $browser);
     return router;
   }

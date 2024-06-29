@@ -604,7 +604,7 @@ describe("uiStateRef", () => {
 
     it("should resolve states from parent uiView", async () => {
       $state.transitionTo("contacts");
-
+      await wait(100);
       const parentToChild = jqLite(template[0].querySelector("a.item"));
       browserTrigger(parentToChild, "click");
       await wait(100);

@@ -240,6 +240,7 @@ export function resolvablesBuilder(state) {
 export class StateBuilder {
   constructor(matcher, urlMatcherFactory) {
     this.matcher = matcher;
+    this.$injector = undefined;
     const self = this;
     const root = () => matcher.find("");
     const isRoot = (state) => state.name === "";

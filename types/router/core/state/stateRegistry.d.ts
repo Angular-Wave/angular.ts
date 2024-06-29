@@ -23,6 +23,7 @@ export declare type StateRegistryListener = (
  * This API is found at `router.stateRegistry` ([[UIRouter.stateRegistry]])
  */
 export declare class StateRegistry {
+  init($injector: any): void;
   private router;
   private _root;
   private states;
