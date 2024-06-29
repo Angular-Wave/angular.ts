@@ -385,17 +385,19 @@ describe("uiView", () => {
     function controller($scope) {
       _scope = $scope;
     }
-
-    let _state = {
-      name: "resolve",
-      resolve: {
-        user: function () {
-          return $timeout(() => {
-            return "joeschmoe";
-          }, 100);
+    let _state;
+    beforeEach(() => {
+      _state = {
+        name: "resolve",
+        resolve: {
+          user: function () {
+            return $timeout(() => {
+              return "joeschmoe";
+            }, 100);
+          },
         },
-      },
-    };
+      };
+    });
 
     it("should put the resolved data on the controllerAs", async () => {
       const state = Object.assign(_state, {
