@@ -21,7 +21,7 @@ export class PubSub {
      *
      * @private {number}
      */
-    this.key_ = 1;
+    this.key = 1;
 
     /**
      * Array of subscription keys pending removal once publishing is done.
@@ -29,7 +29,7 @@ export class PubSub {
      * @private {!Array<number>}
      * @const
      */
-    this.pendingKeys_ = [];
+    this.pendingKeys = [];
 
     /**
      * Lock to prevent the removal of subscriptions during publishing. Incremented
@@ -37,7 +37,7 @@ export class PubSub {
      *
      * @private {number}
      */
-    this.publishDepth_ = 0;
+    this.publishDepth = 0;
 
     /**
      * Sparse array of subscriptions. Each subscription is represented by a tuple
@@ -57,14 +57,14 @@ export class PubSub {
      * @private {!Array<?>}
      * @const
      */
-    this.subscriptions_ = [];
+    this.subscriptions = [];
 
     /**
      * Map of topics to arrays of subscription keys.
      *
      * @private {!Object<!Array<number>>}
      */
-    this.topics_ = {};
+    this.topics = {};
 
     /**
      * @private @const {boolean}
@@ -88,18 +88,18 @@ export class PubSub {
    * @return {number} Subscription key.
    */
   subscribe(topic, fn, opt_context = null) {
-    let keys = this.topics_[topic];
+    let keys = this.topics[topic];
     if (!keys) {
       // First subscription to this topic; initialize subscription key array.
-      keys = this.topics_[topic] = [];
+      keys = this.topics[topic] = [];
     }
 
     // Push the tuple representing the subscription onto the subscription array.
-    const key = this.key_;
-    this.subscriptions_[key] = topic;
-    this.subscriptions_[key + 1] = fn;
-    this.subscriptions_[key + 2] = opt_context;
-    this.key_ = key + 3;
+    const key = this.key;
+    this.subscriptions[key] = topic;
+    this.subscriptions[key + 1] = fn;
+    this.subscriptions[key + 2] = opt_context;
+    this.key = key + 3;
 
     // Push the subscription key onto the list of subscriptions for the topic.
     keys.push(key);
@@ -169,9 +169,9 @@ export class PubSub {
    * @return {boolean} Whether a matching subscription was removed.
    */
   unsubscribe(topic, fn, opt_context = null) {
-    const keys = this.topics_[topic];
+    const keys = this.topics[topic];
     if (keys) {
-      const subscriptions = this.subscriptions_;
+      const subscriptions = this.subscriptions;
       const key = keys.find(
         (k) =>
           subscriptions[k + 1] === fn && subscriptions[k + 2] === opt_context,
@@ -194,22 +194,22 @@ export class PubSub {
    * @return {boolean} Whether a matching subscription was removed.
    */
   unsubscribeByKey(key) {
-    const topic = this.subscriptions_[key];
+    const topic = this.subscriptions[key];
     if (topic) {
-      let keys = this.topics_[topic];
+      let keys = this.topics[topic];
 
-      if (this.publishDepth_ !== 0) {
+      if (this.publishDepth !== 0) {
         // Defer removal until after publishing is complete, but replace the
         // function with a no-op so it isn't called.
-        this.pendingKeys_.push(key);
-        this.subscriptions_[key + 1] = () => {};
+        this.pendingKeys.push(key);
+        this.subscriptions[key + 1] = () => {};
       } else {
         if (keys) {
-          this.topics_[topic] = keys.filter((k) => k !== key);
+          this.topics[topic] = keys.filter((k) => k !== key);
         }
-        delete this.subscriptions_[key];
-        delete this.subscriptions_[key + 1];
-        delete this.subscriptions_[key + 2];
+        delete this.subscriptions[key];
+        delete this.subscriptions[key + 1];
+        delete this.subscriptions[key + 2];
       }
     }
 
@@ -230,7 +230,7 @@ export class PubSub {
    * @return {boolean} Whether any subscriptions were called.
    */
   publish(topic, ...var_args) {
-    const keys = this.topics_[topic];
+    const keys = this.topics[topic];
     if (keys) {
       const args = var_args;
 
@@ -240,13 +240,13 @@ export class PubSub {
         for (let i = 0; i < keys.length; i++) {
           const key = keys[i];
           PubSub.runAsync_(
-            this.subscriptions_[key + 1],
-            this.subscriptions_[key + 2],
+            this.subscriptions[key + 1],
+            this.subscriptions[key + 2],
             args,
           );
         }
       } else {
-        this.publishDepth_++;
+        this.publishDepth++;
 
         try {
           for (
@@ -255,17 +255,17 @@ export class PubSub {
             i++
           ) {
             const key = keys[i];
-            this.subscriptions_[key + 1].apply(
-              this.subscriptions_[key + 2],
+            this.subscriptions[key + 1].apply(
+              this.subscriptions[key + 2],
               args,
             );
           }
         } finally {
-          this.publishDepth_--;
+          this.publishDepth--;
 
-          if (this.pendingKeys_.length > 0 && this.publishDepth_ === 0) {
+          if (this.pendingKeys.length > 0 && this.publishDepth === 0) {
             let pendingKey;
-            while ((pendingKey = this.pendingKeys_.pop())) {
+            while ((pendingKey = this.pendingKeys.pop())) {
               this.unsubscribeByKey(pendingKey);
             }
           }
@@ -284,14 +284,14 @@ export class PubSub {
    */
   clear(opt_topic) {
     if (opt_topic) {
-      const keys = this.topics_[opt_topic];
+      const keys = this.topics[opt_topic];
       if (keys) {
         keys.forEach(this.unsubscribeByKey, this);
-        delete this.topics_[opt_topic];
+        delete this.topics[opt_topic];
       }
     } else {
-      this.subscriptions_.length = 0;
-      this.topics_ = {};
+      this.subscriptions.length = 0;
+      this.topics = {};
     }
   }
 
@@ -303,12 +303,12 @@ export class PubSub {
    */
   getCount(opt_topic) {
     if (opt_topic) {
-      const keys = this.topics_[opt_topic];
+      const keys = this.topics[opt_topic];
       return keys ? keys.length : 0;
     }
 
     let count = 0;
-    for (const topic in this.topics_) {
+    for (const topic in this.topics) {
       count += this.getCount(topic);
     }
 
@@ -321,7 +321,7 @@ export class PubSub {
 
   dispose() {
     this.clear();
-    this.pendingKeys_.length = 0;
+    this.pendingKeys.length = 0;
     this.disposed = true;
   }
 }
