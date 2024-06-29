@@ -376,6 +376,7 @@ describe("$state", () => {
       let dynamicstate, childWithParam, childNoParam;
 
       beforeEach(async () => {
+        window.location.hash = "#!";
         dynlog = paramsChangedLog = "";
         dynamicstate = {
           name: "dyn",
@@ -438,16 +439,20 @@ describe("$state", () => {
         $stateProvider.state(childNoParam);
 
         $transitions.onEnter({}, function (trans, state) {
+          console.log("enter");
           dynlog += "enter:" + state.name + ";";
         });
         $transitions.onExit({}, function (trans, state) {
+          console.log("exit");
           dynlog += "exit:" + state.name + ";";
         });
         $transitions.onSuccess({}, function () {
+          console.log("success");
           dynlog += "success;";
         });
 
         $compile("<div><ui-view></ui-view></div>")($rootScope.$new());
+        await wait(100);
         await initStateTo(dynamicstate, {
           path: "p1",
           pathDyn: "pd1",
@@ -519,7 +524,7 @@ describe("$state", () => {
         });
 
         it("resolves the $state.go() promise with the original/final state, when fully dynamic", async () => {
-          initStateTo(dynamicstate, {
+          await initStateTo(dynamicstate, {
             path: "p1",
             pathDyn: "pd1",
             search: "s1",
@@ -828,8 +833,6 @@ describe("$state", () => {
         it("doesn't re-enter state (triggered by $state transition)", async () => {
           await initStateTo(RS);
           const promise = $state.go(".", { term: "hello" });
-          await promise;
-          await wait(100);
           let success = false,
             transition = promise.transition;
           await transition.promise.then(async () => {
@@ -892,8 +895,8 @@ describe("$state", () => {
       expect(superseded.$$state.status).toBeTruthy();
     });
 
-    xit("aborts pending transitions when aborted from callbacks", () => {
-      $state.transitionTo("home.redirect");
+    xit("aborts pending transitions when aborted from callbacks", async () => {
+      await $state.transitionTo("home.redirect");
       expect($state.current.name).toBe("about");
     });
 
@@ -981,7 +984,6 @@ describe("$state", () => {
 
     it("updates the location #fragment", async () => {
       await $state.transitionTo("home.item", { id: "world", "#": "frag" });
-      await wait(100);
       expect($location.url()).toBe("/front/world#frag");
       expect($location.hash()).toBe("frag");
     });

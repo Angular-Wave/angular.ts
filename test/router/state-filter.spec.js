@@ -5,14 +5,16 @@ describe("router filters", function () {
   let module, $parse, $state, $q, $rootScope, $location;
 
   beforeEach(() => {
+    window.location.hash = "";
     window.angular = new Angular();
     publishExternalAPI();
   });
 
-  afterEach(() => (window.location.hash = "#!"));
+  afterEach(() => (window.location.hash = ""));
 
   describe("isState filter", () => {
     beforeEach(() => {
+      window.location.hash = "";
       module = window.angular.module("defaultModule", ["ui.router"]);
       module.config(function ($stateProvider) {
         $stateProvider

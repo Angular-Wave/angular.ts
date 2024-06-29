@@ -362,13 +362,12 @@ describe("uiStateRef", () => {
     });
 
     it("should allow passing params to current state using empty ui-state", async () => {
-      $state.go("other", { id: "abc" });
+      await $state.go("other", { id: "abc" });
       $rootScope.$index = "def";
       $rootScope.$digest();
 
       el = jqLite('<a ui-state="" ui-state-params="{id: $index}">Details</a>');
       $compile(el)($rootScope);
-      $rootScope.$digest();
 
       expect($state.current.name).toBe("other");
       expect($state.params.id).toEqual("abc");
@@ -381,7 +380,7 @@ describe("uiStateRef", () => {
       expect($state.params.id).toEqual("def");
 
       $rootScope.$index = "ghi";
-      $state.go("other.detail");
+      await $state.go("other.detail");
       $rootScope.$digest();
 
       expect($state.current.name).toBe("other.detail");
@@ -484,8 +483,6 @@ describe("uiStateRef", () => {
 
         scope.state = "contacts";
         $compile(el)(scope);
-        scope.$digest();
-
         browserTrigger(el, "click");
         await wait(100);
 
@@ -641,7 +638,6 @@ describe("uiStateRef", () => {
     it("should bind click event by default", async () => {
       el = jqLite('<a ui-sref="contacts"></a>');
       $compile(el)($rootScope);
-      $rootScope.$digest();
 
       expect($state.current.name).toEqual("top");
 
@@ -656,8 +652,6 @@ describe("uiStateRef", () => {
         '<input type="text" ui-sref="contacts" ui-sref-opts="{ events: [\'change\'] }">',
       );
       $compile(el)($rootScope);
-      $rootScope.$digest();
-
       expect($state.current.name).toEqual("top");
 
       browserTrigger(el, "change");
@@ -671,7 +665,6 @@ describe("uiStateRef", () => {
         '<input type="text" ui-sref="contacts" ui-sref-opts="{ events: [\'change\', \'blur\'] }">',
       );
       $compile(el)($rootScope);
-      $rootScope.$digest();
 
       expect($state.current.name).toEqual("top");
 
@@ -679,7 +672,7 @@ describe("uiStateRef", () => {
       await wait(100);
       expect($state.current.name).toEqual("contacts");
 
-      $state.go("top");
+      await $state.go("top");
       $rootScope.$digest();
 
       expect($state.current.name).toEqual("top");
@@ -694,7 +687,6 @@ describe("uiStateRef", () => {
         "<a ui-sref=\"contacts\" ui-sref-opts=\"{ events: ['mouseover', 'mousedown'] }\">",
       );
       $compile(el)($rootScope);
-      $rootScope.$digest();
 
       expect($state.current.name).toEqual("top");
 
@@ -702,7 +694,7 @@ describe("uiStateRef", () => {
       await wait(100);
       expect($state.current.name).toEqual("contacts");
 
-      $state.go("top");
+      await $state.go("top");
       $rootScope.$digest();
 
       expect($state.current.name).toEqual("top");
