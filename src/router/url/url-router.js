@@ -1,3 +1,4 @@
+import { EventBus } from "../../core/pubsub";
 import { stripLastPathElement } from "../../shared/strings";
 
 function appendBasePath(url, isHtml5, absolute, baseHref) {
@@ -22,6 +23,9 @@ export class UrlRouter {
     this.urlService = urlService;
     this.urlRuleFactory = urlRuleFactory;
     this.$locationProvider = $locationProvider;
+    EventBus.subscribe("$urlRouter:update", () => {
+      this.update();
+    });
   }
 
   update(read) {

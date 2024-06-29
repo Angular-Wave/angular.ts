@@ -311,4 +311,77 @@ describe("PubSub", function () {
       }, 0);
     }, 0);
   });
+
+  describe("publish", () => {
+    let context, fooCalled, barCalled, SOME_TOPIC;
+
+    beforeEach(function () {
+      context = {};
+      fooCalled = false;
+      barCalled = false;
+      SOME_TOPIC = "someTopic";
+    });
+
+    function foo(record) {
+      fooCalled = true;
+      expect(record.x).toBe("x");
+      expect(record.y).toBe("y");
+    }
+
+    function bar(record) {
+      barCalled = true;
+      expect(this).toBe(context);
+      expect(record.x).toBe("x");
+      expect(record.y).toBe("y");
+    }
+
+    it("should call subscribed functions on publish", function () {
+      pubsub.subscribe(SOME_TOPIC, foo);
+      pubsub.subscribe(SOME_TOPIC, bar, context);
+
+      expect(pubsub.publish(SOME_TOPIC, { x: "x", y: "y" })).toBe(true);
+      expect(fooCalled).toBe(true, "foo() must have been called");
+      expect(barCalled).toBe(true, "bar() must have been called");
+    });
+
+    it("should not call unsubscribed functions on publish", function () {
+      pubsub.subscribe(SOME_TOPIC, foo);
+      pubsub.subscribe(SOME_TOPIC, bar, context);
+
+      pubsub.publish(SOME_TOPIC, { x: "x", y: "y" });
+      fooCalled = false;
+      barCalled = false;
+      expect(pubsub.unsubscribe(SOME_TOPIC, foo)).toBe(true);
+
+      expect(pubsub.publish(SOME_TOPIC, { x: "x", y: "y" })).toBe(true);
+      expect(fooCalled).toBe(false, "foo() must not have been called");
+      expect(barCalled).toBe(true, "bar() must have been called");
+    });
+
+    it("should only call functions subscribed to the correct topic", function () {
+      pubsub.subscribe(SOME_TOPIC, bar, context);
+      pubsub.subscribe("differentTopic", foo);
+
+      pubsub.publish(SOME_TOPIC, { x: "x", y: "y" });
+      fooCalled = false;
+      barCalled = false;
+
+      expect(pubsub.publish(SOME_TOPIC, { x: "x", y: "y" })).toBe(true);
+      expect(fooCalled).toBe(false, "foo() must not have been called");
+      expect(barCalled).toBe(true, "bar() must have been called");
+    });
+
+    it("should trigger functions if not arguments are provided", function () {
+      let called = false;
+      pubsub.subscribe(SOME_TOPIC, () => {
+        called = true;
+        0;
+      });
+
+      pubsub.publish(SOME_TOPIC);
+
+      expect(pubsub.publish(SOME_TOPIC)).toBe(true);
+      expect(called).toBeTrue();
+    });
+  });
 });

@@ -47,7 +47,6 @@ export class UIRouter {
 
     /** @type {TransitionService}  A service that exposes global Transition Hooks */
     this.transitionService = new TransitionService(
-      this,
       this.globals,
       this.viewService,
     );

@@ -350,7 +350,7 @@ export class StateService {
       if (error instanceof Rejection) {
         const isLatest = this.globals.lastStartedTransitionId <= trans.$id;
         if (error.type === RejectType.IGNORED) {
-          isLatest && this.router.urlRouter.update();
+          isLatest && EventBus.publish("urlRouter.update");
           // Consider ignored `Transition.run()` as a successful `transitionTo`
           return services.$q.when(this.globals.current);
         }
@@ -366,7 +366,7 @@ export class StateService {
           return redirect.run().catch(rejectedTransitionHandler(redirect));
         }
         if (error.type === RejectType.ABORTED) {
-          isLatest && this.router.urlRouter.update();
+          isLatest && EventBus.publish("urlRouter.update");
           return services.$q.reject(error);
         }
       }

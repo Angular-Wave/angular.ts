@@ -57,9 +57,9 @@ export let defaultTransOpts = {
  */
 export class TransitionService {
   /**
-   * @param {import('../router').UIRouter} router
+   * @param {import('../globals').UIRouterGlobals} globals
    */
-  constructor(router, globals, viewService) {
+  constructor(globals, viewService) {
     this._transitionCount = 0;
     /** The transition hook types, such as `onEnter`, `onStart`, etc */
     this._eventTypes = [];
@@ -67,7 +67,6 @@ export class TransitionService {
     this._registeredHooks = {};
     /** The  paths on a criteria object */
     this._criteriaPaths = {};
-    this.router = router;
     this.globals = globals;
     this.$view = viewService;
     this._deregisterHookFns = {};
