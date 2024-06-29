@@ -19,6 +19,8 @@ import { Glob } from "../common/glob";
 import { ResolveContext } from "../resolve/resolve-context";
 import { lazyLoadState } from "../hooks/lazy-load";
 import { not, val } from "../../shared/hof";
+import { EventBus } from "../../core/pubsub";
+
 /**
  * Provides services related to ui-router states.
  *
@@ -75,6 +77,10 @@ export class StateService {
       this,
       val(this),
       boundFns,
+    );
+
+    EventBus.subscribe("$stateService:defaultErrorHandler", (err) =>
+      this.defaultErrorHandler()(err),
     );
   }
 

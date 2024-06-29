@@ -246,8 +246,7 @@ export class TransitionService {
     fns.addCoreResolves = registerAddCoreResolvables(this);
     fns.ignored = registerIgnoredTransitionHook(this);
     fns.invalid = registerInvalidTransitionHook(this);
-    // Wire up redirectTo hook
-    fns.redirectTo = registerRedirectToHook(this);
+
     // Wire up onExit/Retain/Enter state hooks
     fns.onExit = registerOnExitHook(this);
     fns.onRetain = registerOnRetainHook(this);

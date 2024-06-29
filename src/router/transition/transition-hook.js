@@ -7,6 +7,7 @@ import { trace } from "../common/trace";
 import { services } from "../common/coreservices";
 import { Rejection } from "./reject-factory";
 import { TargetState } from "../state/target-state";
+import { EventBus } from "../../core/pubsub";
 const defaultOptions = {
   current: () => {},
   transition: null,
@@ -79,7 +80,7 @@ export class TransitionHook {
     this.type = registeredHook.eventType;
   }
   logError(err) {
-    this.transition.router.stateService.defaultErrorHandler()(err);
+    EventBus.publish("$stateService:defaultErrorHandler", err);
   }
   invokeHook() {
     const hook = this.registeredHook;

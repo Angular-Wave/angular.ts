@@ -11,6 +11,7 @@ import { UrlRuleFactory } from "./url/url-rule";
 import { registerLazyLoadHook } from "./hooks/lazy-load";
 import { registerUpdateUrl } from "./hooks/url";
 import { registerActivateViews } from "./hooks/views";
+import { registerRedirectToHook } from "./hooks/redirect-to";
 
 /**
  * Router id tracker
@@ -109,6 +110,10 @@ export class UIRouter {
       this.stateService,
       this.urlRouter,
     );
+
+    // Wire up redirectTo hook
+    this.transitionService._deregisterHookFns.redirectTo =
+      registerRedirectToHook(this.transitionService, this.stateService);
 
     this.transitionService._deregisterHookFns.activateViews =
       registerActivateViews(this.transitionService, this.viewService);
