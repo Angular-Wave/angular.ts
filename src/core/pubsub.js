@@ -1,4 +1,4 @@
-class PubSub {
+export class PubSub {
   /**
    * Topic-based publish/subscribe channel.  Maintains a map of topics to
    * subscriptions.  When a message is published to a topic, all functions
@@ -13,6 +13,8 @@ class PubSub {
    *     new code.  See notes on the publish() method.
    */
   constructor(opt_async = false) {
+    this.disposed = false;
+
     /**
      * The next available subscription key.  Internally, this is an index into the
      * sparse array of subscriptions.
@@ -203,7 +205,7 @@ class PubSub {
         this.subscriptions_[key + 1] = () => {};
       } else {
         if (keys) {
-          keys = keys.filter((k) => k !== key);
+          this.topics_[topic] = keys.filter((k) => k !== key);
         }
         delete this.subscriptions_[key];
         delete this.subscriptions_[key + 1];
@@ -313,11 +315,14 @@ class PubSub {
     return count;
   }
 
-  /** @override */
-  disposeInternal() {
-    super.disposeInternal();
+  isDisposed() {
+    return this.disposed;
+  }
+
+  dispose() {
     this.clear();
     this.pendingKeys_.length = 0;
+    this.disposed = true;
   }
 }
 
