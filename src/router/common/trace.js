@@ -40,7 +40,7 @@ import {
   maxLength,
   padString,
 } from "../../shared/strings";
-function uiViewString(uiview) {
+function ngViewString(uiview) {
   if (!uiview) return "ui-view (defunct)";
   const state = uiview.creationContext
     ? uiview.creationContext.name || "(root)"
@@ -50,7 +50,7 @@ function uiViewString(uiview) {
 const viewConfigString = (viewConfig) => {
   const view = viewConfig.viewDecl;
   const state = view.$context.name || "(root)";
-  return `[View#${viewConfig.$id} from '${state}' state]: target ui-view: '${view.$uiViewName}@${view.$uiViewContextAnchor}'`;
+  return `[View#${viewConfig.$id} from '${state}' state]: target ui-view: '${view.$ngViewName}@${view.$ngViewContextAnchor}'`;
 };
 function normalizedCat(input) {
   return isNumber(input) ? Category[input] : Category[Category[input]];
@@ -178,7 +178,7 @@ export class Trace {
   traceUIViewEvent(event, viewData, extra = "") {
     if (!this.enabled(Category.UIVIEW)) return;
     console.log(
-      `ui-view: ${padString(30, event)} ${uiViewString(viewData)}${extra}`,
+      `ui-view: ${padString(30, event)} ${ngViewString(viewData)}${extra}`,
     );
   }
   /** @internal called by ui-router code */
@@ -201,8 +201,8 @@ export class Trace {
     const uivheader = "uiview component fqn";
     const cfgheader = "view config state (view name)";
     const mapping = pairs
-      .map(({ uiView, viewConfig }) => {
-        const uiv = uiView && uiView.fqn;
+      .map(({ ngView, viewConfig }) => {
+        const uiv = ngView && ngView.fqn;
         const cfg =
           viewConfig &&
           `${viewConfig.viewDecl.$context.name}: (${viewConfig.viewDecl.$name})`;
@@ -219,7 +219,7 @@ export class Trace {
   /** @internal called by ui-router code */
   traceViewServiceUIViewEvent(event, viewData) {
     if (!this.enabled(Category.VIEWCONFIG)) return;
-    console.log(`VIEWCONFIG: ${event} ${uiViewString(viewData)}`);
+    console.log(`VIEWCONFIG: ${event} ${ngViewString(viewData)}`);
   }
 }
 /**

@@ -19,7 +19,7 @@ import { jqLite } from "../../jqLite";
  *   The ui-view can be targeted in a View using the name ([[Ng1StateDeclaration.views]]).
  *
  * - `autoscroll`: an expression. When it evaluates to true, the `ui-view` will be scrolled into view when it is activated.
- *   Uses [[$uiViewScroll]] to do the scrolling.
+ *   Uses [[$ngViewScroll]] to do the scrolling.
  *
  * - `onload`: Expression to evaluate whenever the view updates.
  *
@@ -133,13 +133,13 @@ import { jqLite } from "../../jqLite";
  * });
  * ```
  */
-export let uiView = [
+export let ngView = [
   "$view",
   "$animate",
-  "$uiViewScroll",
+  "$ngViewScroll",
   "$interpolate",
   "$q",
-  function $ViewDirective($view, $animate, $uiViewScroll, $interpolate, $q) {
+  function $ViewDirective($view, $animate, $ngViewScroll, $interpolate, $q) {
     function getRenderer() {
       return {
         enter: function (element, target, cb) {
@@ -155,7 +155,7 @@ export let uiView = [
     }
     const rootData = {
       $cfg: { viewDecl: { $context: $view._pluginapi._rootViewContext() } },
-      $uiView: {},
+      $ngView: {},
     };
     const directive = {
       count: 0,
@@ -168,7 +168,7 @@ export let uiView = [
           const onloadExp = attrs["onload"] || "",
             autoScrollExp = attrs["autoscroll"],
             renderer = getRenderer(),
-            inherited = $element.inheritedData("$uiView") || rootData,
+            inherited = $element.inheritedData("$ngView") || rootData,
             name =
               $interpolate(attrs["ngView"] || attrs["name"] || "")(scope) ||
               "$default";
@@ -177,8 +177,8 @@ export let uiView = [
             $type: "ng1",
             id: directive.count++, // Global sequential ID for ui-view tags added to DOM
             name: name, // ui-view name (<div ui-view="name"></div>
-            fqn: inherited.$uiView.fqn
-              ? inherited.$uiView.fqn + "." + name
+            fqn: inherited.$ngView.fqn
+              ? inherited.$ngView.fqn + "." + name
               : name, // fully qualified name, describes location in DOM
             config: null, // The ViewConfig loaded (from a state.views definition)
             configUpdated: configUpdatedCallback, // Called when the matching ViewConfig changes
@@ -189,7 +189,7 @@ export let uiView = [
               );
               // Allow <ui-view name="foo"><ui-view name="bar"></ui-view></ui-view>
               // See https://github.com/angular-ui/ui-router/issues/3355
-              const fromParentTag = parse("$uiView.creationContext")(inherited);
+              const fromParentTag = parse("$ngView.creationContext")(inherited);
               return fromParentTagConfig || fromParentTag;
             },
           };
@@ -204,7 +204,7 @@ export let uiView = [
             viewConfig = config;
             updateView(config);
           }
-          $element.data("$uiView", { $uiView: activeUIView });
+          $element.data("$ngView", { $ngView: activeUIView });
           updateView();
           const unregister = $view.registerUIView(activeUIView);
           scope.$on("$destroy", function () {
@@ -215,7 +215,7 @@ export let uiView = [
             if (previousEl) {
               trace.traceUIViewEvent(
                 "Removing (previous) el",
-                previousEl.data("$uiView"),
+                previousEl.data("$ngView"),
               );
               previousEl.remove();
               previousEl = null;
@@ -226,7 +226,7 @@ export let uiView = [
               currentScope = null;
             }
             if (currentEl) {
-              const _viewData = currentEl.data("$uiViewAnim");
+              const _viewData = currentEl.data("$ngViewAnim");
               trace.traceUIViewEvent("Animate out", _viewData);
               renderer.leave(currentEl, function () {
                 _viewData.$$animLeave.resolve();
@@ -240,11 +240,11 @@ export let uiView = [
             const newScope = scope.$new();
             const animEnter = $q.defer(),
               animLeave = $q.defer();
-            const $uiViewData = {
+            const $ngViewData = {
               $cfg: config,
-              $uiView: activeUIView,
+              $ngView: activeUIView,
             };
-            const $uiViewAnim = {
+            const $ngViewAnim = {
               $animEnter: animEnter.promise,
               $animLeave: animLeave.promise,
               $$animLeave: animLeave,
@@ -263,8 +263,8 @@ export let uiView = [
              */
             newScope.$emit("$viewContentLoading", name);
             const cloned = $transclude(newScope, function (clone) {
-              clone.data("$uiViewAnim", $uiViewAnim);
-              clone.data("$uiView", $uiViewData);
+              clone.data("$ngViewAnim", $ngViewAnim);
+              clone.data("$ngView", $ngViewData);
               renderer.enter(clone, $element, function () {
                 animEnter.resolve();
                 if (currentScope)
@@ -273,7 +273,7 @@ export let uiView = [
                   (isDefined(autoScrollExp) && !autoScrollExp) ||
                   scope.$eval(autoScrollExp)
                 ) {
-                  $uiViewScroll(clone);
+                  $ngViewScroll(clone);
                 }
               });
               cleanupLastView();
@@ -322,7 +322,7 @@ export function $ViewDirectiveFill(
       const initial = tElement.html();
       tElement.empty();
       return function (scope, $element) {
-        const data = $element.data("$uiView");
+        const data = $element.data("$ngView");
         if (!data) {
           $element.html(initial);
           $compile($element[0].contentDocument || $element[0].childNodes)(
@@ -333,7 +333,7 @@ export function $ViewDirectiveFill(
         const cfg = data.$cfg || { viewDecl: {}, getTemplate: () => {} };
         const resolveCtx = cfg.path && new ResolveContext(cfg.path);
         $element.html(cfg.getTemplate($element, resolveCtx) || initial);
-        trace.traceUIViewFill(data.$uiView, $element.html());
+        trace.traceUIViewFill(data.$ngView, $element.html());
         const link = $compile(
           $element[0].contentDocument || $element[0].childNodes,
         );

@@ -42,20 +42,20 @@ export interface _ViewDeclaration {
   /**
    * The normalized address for the `ui-view` which this ViewConfig targets.
    *
-   * A ViewConfig targets a `ui-view` in the DOM (relative to the `uiViewContextAnchor`) which has
+   * A ViewConfig targets a `ui-view` in the DOM (relative to the `ngViewContextAnchor`) which has
    * a specific name.
    * @example `header` or `$default`
    *
-   * The `uiViewName` can also target a _nested view_ by providing a dot-notation address
+   * The `ngViewName` can also target a _nested view_ by providing a dot-notation address
    * @example `foo.bar` or `foo.$default.bar`
    */
-  $uiViewName?: string;
+  $ngViewName?: string;
   /**
-   * The normalized context anchor (state name) for the `uiViewName`
+   * The normalized context anchor (state name) for the `ngViewName`
    *
-   * When targeting a `ui-view`, the `uiViewName` address is anchored to a context name (state name).
+   * When targeting a `ui-view`, the `ngViewName` address is anchored to a context name (state name).
    */
-  $uiViewContextAnchor?: string;
+  $ngViewContextAnchor?: string;
   /**
    * A type identifier for the View
    *

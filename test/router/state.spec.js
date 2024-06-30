@@ -104,7 +104,7 @@ describe("$state", () => {
       jqLite.CACHE.clear(); // some tests are polluting the cache
       window.angular = new Angular();
       publishExternalAPI();
-      module = window.angular.module("defaultModule", ["ui.router"]);
+      module = window.angular.module("defaultModule", ["ng.router"]);
       module.config((_$stateProvider_, _$provide_) => {
         $stateProvider = _$stateProvider_;
       });
@@ -153,7 +153,7 @@ describe("$state", () => {
       dealoc(document.getElementById("dummy"));
       window.angular = new Angular();
       publishExternalAPI();
-      module = window.angular.module("defaultModule", ["ui.router"]);
+      module = window.angular.module("defaultModule", ["ng.router"]);
       module.config((_$stateProvider_, _$provide_) => {
         $stateProvider = _$stateProvider_;
         $provide = _$provide_;

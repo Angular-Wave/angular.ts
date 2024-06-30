@@ -81,8 +81,8 @@ export function ng1ViewsBuilder(state) {
       config.$context,
       config.$name,
     );
-    config.$uiViewName = normalized.uiViewName;
-    config.$uiViewContextAnchor = normalized.uiViewContextAnchor;
+    config.$ngViewName = normalized.ngViewName;
+    config.$ngViewContextAnchor = normalized.ngViewContextAnchor;
     views[name] = config;
   });
   return views;
@@ -101,10 +101,10 @@ export class Ng1ViewConfig {
 
     /** @type {Number} */ this.$id = id++;
     this.loaded = false;
-    this.getTemplate = (uiView, context) =>
+    this.getTemplate = (ngView, context) =>
       this.component
         ? this.factory.makeComponentTemplate(
-            uiView,
+            ngView,
             context,
             this.component,
             this.viewDecl.bindings,

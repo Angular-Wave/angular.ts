@@ -9,7 +9,7 @@ describe("router services", () => {
   beforeEach(() => {
     window.angular = new Angular();
     publishExternalAPI();
-    let module = window.angular.module("defaultModule", ["ui.router"]);
+    let module = window.angular.module("defaultModule", ["ng.router"]);
     module.config(
       (
         _$routerProvider_,

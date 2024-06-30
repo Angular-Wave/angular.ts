@@ -10,14 +10,14 @@ export declare type ViewConfigFactory = (
 export interface ViewServicePluginAPI {
   _rootViewContext(context?: ViewContext): ViewContext;
   _viewConfigFactory(viewType: string, factory: ViewConfigFactory): any;
-  /** @param id router.$id + "." + uiView.id */
+  /** @param id router.$id + "." + ngView.id */
   _registeredUIView(id: string): ActiveUIView;
   _registeredUIViews(): ActiveUIView[];
   _activeViewConfigs(): ViewConfig[];
   _onSync(listener: ViewSyncListener): Function;
 }
 export interface ViewTuple {
-  uiView: ActiveUIView;
+  ngView: ActiveUIView;
   viewConfig: ViewConfig;
 }
 export interface ViewSyncListener {
@@ -41,7 +41,7 @@ export interface ViewSyncListener {
  */
 export declare class ViewService {
   private router;
-  /** @internal */ private _uiViews;
+  /** @internal */ private _ngViews;
   /** @internal */ private _viewConfigs;
   /** @internal */ private _rootContext;
   /** @internal */ private _viewConfigFactories;
@@ -81,7 +81,7 @@ export declare class ViewService {
    *   </ui-view>
    * </ui-view>
    *
-   * uiViews: [
+   * ngViews: [
    *  { fqn: "$default",                  creationContext: { name: "" } },
    *  { fqn: "$default.foo",              creationContext: { name: "A" } },
    *  { fqn: "$default.foo.$default",     creationContext: { name: "A.B" } }
@@ -90,10 +90,10 @@ export declare class ViewService {
    *
    * These four view configs all match the ui-view with the fqn: "$default.foo.$default.bar":
    *
-   * - ViewConfig1: { uiViewName: "bar",                       uiViewContextAnchor: "A.B.C" }
-   * - ViewConfig2: { uiViewName: "$default.bar",              uiViewContextAnchor: "A.B" }
-   * - ViewConfig3: { uiViewName: "foo.$default.bar",          uiViewContextAnchor: "A" }
-   * - ViewConfig4: { uiViewName: "$default.foo.$default.bar", uiViewContextAnchor: "" }
+   * - ViewConfig1: { ngViewName: "bar",                       ngViewContextAnchor: "A.B.C" }
+   * - ViewConfig2: { ngViewName: "$default.bar",              ngViewContextAnchor: "A.B" }
+   * - ViewConfig3: { ngViewName: "foo.$default.bar",          ngViewContextAnchor: "A" }
+   * - ViewConfig4: { ngViewName: "$default.foo.$default.bar", ngViewContextAnchor: "" }
    *
    * Using ViewConfig3 as an example, it matches the ui-view with fqn "$default.foo.$default.bar" because:
    * - The ViewConfig's segmented target name is: [ "foo", "$default", "bar" ]
@@ -106,26 +106,26 @@ export declare class ViewService {
    * @internal
    */
   static matches: (
-    uiViewsByFqn: TypedMap<ActiveUIView>,
-    uiView: ActiveUIView,
+    ngViewsByFqn: TypedMap<ActiveUIView>,
+    ngView: ActiveUIView,
   ) => (viewConfig: ViewConfig) => boolean;
   /**
    * Normalizes a view's name from a state.views configuration block.
    *
    * This should be used by a framework implementation to calculate the values for
-   * [[_ViewDeclaration.$uiViewName]] and [[_ViewDeclaration.$uiViewContextAnchor]].
+   * [[_ViewDeclaration.$ngViewName]] and [[_ViewDeclaration.$ngViewContextAnchor]].
    *
    * @param context the context object (state declaration) that the view belongs to
    * @param rawViewName the name of the view, as declared in the [[StateDeclaration.views]]
    *
-   * @returns the normalized uiViewName and uiViewContextAnchor that the view targets
+   * @returns the normalized ngViewName and ngViewContextAnchor that the view targets
    */
   static normalizeUIViewTarget(
     context: ViewContext,
     rawViewName?: string,
   ): {
-    uiViewName: string;
-    uiViewContextAnchor: string;
+    ngViewName: string;
+    ngViewContextAnchor: string;
   };
   /** @internal */
   constructor(/** @internal */ router: UIRouter);
@@ -157,10 +157,10 @@ export declare class ViewService {
    * Note: There is no corresponding `deregisterUIView`.
    *       A `ui-view` should hang on to the return value of `registerUIView` and invoke it to deregister itself.
    *
-   * @param uiView The metadata for a UIView
+   * @param ngView The metadata for a UIView
    * @return a de-registration function used when the view is destroyed.
    */
-  registerUIView(uiView: ActiveUIView): () => void;
+  registerUIView(ngView: ActiveUIView): () => void;
   /**
    * Returns the list of views currently available on the page, by fully-qualified name.
    *

@@ -32,7 +32,7 @@ describe("view", () => {
     publishExternalAPI();
 
     window.angular
-      .module("defaultModule", ["ui.router"])
+      .module("defaultModule", ["ng.router"])
       .config(
         function (
           _$provide_,

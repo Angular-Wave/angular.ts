@@ -29,7 +29,7 @@ export class ViewService {
    * @param {number} $id
    */
   constructor($id) {
-    this._uiViews = [];
+    this._ngViews = [];
     this._viewConfigs = [];
     this._viewConfigFactories = {};
     this._listeners = [];
@@ -37,8 +37,8 @@ export class ViewService {
       _rootViewContext: this._rootViewContext.bind(this),
       _viewConfigFactory: this._viewConfigFactory.bind(this),
       _registeredUIView: (id) =>
-        find(this._uiViews, (view) => `${$id}.${view.id}` === id),
-      _registeredUIViews: () => this._uiViews,
+        find(this._ngViews, (view) => `${$id}.${view.id}` === id),
+      _registeredUIViews: () => this._ngViews,
       _activeViewConfigs: () => this._viewConfigs,
       _onSync: (listener) => {
         this._listeners.push(listener);
@@ -51,45 +51,45 @@ export class ViewService {
    * Normalizes a view's name from a state.views configuration block.
    *
    * This should be used by a framework implementation to calculate the values for
-   * [[_ViewDeclaration.$uiViewName]] and [[_ViewDeclaration.$uiViewContextAnchor]].
+   * [[_ViewDeclaration.$ngViewName]] and [[_ViewDeclaration.$ngViewContextAnchor]].
    *
    * @param context the context object (state declaration) that the view belongs to
    * @param rawViewName the name of the view, as declared in the [[StateDeclaration.views]]
    *
-   * @returns the normalized uiViewName and uiViewContextAnchor that the view targets
+   * @returns the normalized ngViewName and ngViewContextAnchor that the view targets
    */
   static normalizeUIViewTarget(context, rawViewName = "") {
     // TODO: Validate incoming view name with a regexp to allow:
     // ex: "view.name@foo.bar" , "^.^.view.name" , "view.name@^.^" , "" ,
     // "@" , "$default@^" , "!$default.$default" , "!foo.bar"
     const viewAtContext = rawViewName.split("@");
-    let uiViewName = viewAtContext[0] || "$default"; // default to unnamed view
-    let uiViewContextAnchor = isString(viewAtContext[1])
+    let ngViewName = viewAtContext[0] || "$default"; // default to unnamed view
+    let ngViewContextAnchor = isString(viewAtContext[1])
       ? viewAtContext[1]
       : "^"; // default to parent context
     // Handle relative view-name sugar syntax.
     // Matches rawViewName "^.^.^.foo.bar" into array: ["^.^.^.foo.bar", "^.^.^", "foo.bar"],
-    const relativeViewNameSugar = /^(\^(?:\.\^)*)\.(.*$)/.exec(uiViewName);
+    const relativeViewNameSugar = /^(\^(?:\.\^)*)\.(.*$)/.exec(ngViewName);
     if (relativeViewNameSugar) {
       // Clobbers existing contextAnchor (rawViewName validation will fix this)
-      uiViewContextAnchor = relativeViewNameSugar[1]; // set anchor to "^.^.^"
-      uiViewName = relativeViewNameSugar[2]; // set view-name to "foo.bar"
+      ngViewContextAnchor = relativeViewNameSugar[1]; // set anchor to "^.^.^"
+      ngViewName = relativeViewNameSugar[2]; // set view-name to "foo.bar"
     }
-    if (uiViewName.charAt(0) === "!") {
-      uiViewName = uiViewName.substr(1);
-      uiViewContextAnchor = ""; // target absolutely from root
+    if (ngViewName.charAt(0) === "!") {
+      ngViewName = ngViewName.substr(1);
+      ngViewContextAnchor = ""; // target absolutely from root
     }
     // handle parent relative targeting "^.^.^"
     const relativeMatch = /^(\^(?:\.\^)*)$/;
-    if (relativeMatch.exec(uiViewContextAnchor)) {
-      const anchorState = uiViewContextAnchor
+    if (relativeMatch.exec(ngViewContextAnchor)) {
+      const anchorState = ngViewContextAnchor
         .split(".")
         .reduce((anchor, x) => anchor.parent, context);
-      uiViewContextAnchor = anchorState.name;
-    } else if (uiViewContextAnchor === ".") {
-      uiViewContextAnchor = context.name;
+      ngViewContextAnchor = anchorState.name;
+    } else if (ngViewContextAnchor === ".") {
+      ngViewContextAnchor = context.name;
     }
-    return { uiViewName, uiViewContextAnchor };
+    return { ngViewName, ngViewContextAnchor };
   }
 
   _rootViewContext(context) {
@@ -125,18 +125,18 @@ export class ViewService {
     this._viewConfigs.push(viewConfig);
   }
   sync() {
-    const uiViewsByFqn = this._uiViews
+    const ngViewsByFqn = this._ngViews
       .map((uiv) => [uiv.fqn, uiv])
       .reduce(applyPairs, {});
-    // Return a weighted depth value for a uiView.
+    // Return a weighted depth value for a ngView.
     // The depth is the nesting depth of ui-views (based on FQN; times 10,000)
-    // plus the depth of the state that is populating the uiView
-    function uiViewDepth(uiView) {
+    // plus the depth of the state that is populating the ngView
+    function ngViewDepth(ngView) {
       const stateDepth = (context) =>
         context && context.parent ? stateDepth(context.parent) + 1 : 1;
       return (
-        uiView.fqn.split(".").length * 10000 +
-        stateDepth(uiView.creationContext)
+        ngView.fqn.split(".").length * 10000 +
+        stateDepth(ngView.creationContext)
       );
     }
     // Return the ViewConfig's context's depth in the context tree.
@@ -151,34 +151,34 @@ export class ViewService {
       (depthFn, posNeg, left, right) =>
         posNeg * (depthFn(left) - depthFn(right)),
     );
-    const matchingConfigPair = (uiView) => {
+    const matchingConfigPair = (ngView) => {
       const matchingConfigs = this._viewConfigs.filter(
-        ViewService.matches(uiViewsByFqn, uiView),
+        ViewService.matches(ngViewsByFqn, ngView),
       );
       if (matchingConfigs.length > 1) {
         // This is OK.  Child states can target a ui-view that the parent state also targets (the child wins)
         // Sort by depth and return the match from the deepest child
-        // console.log(`Multiple matching view configs for ${uiView.fqn}`, matchingConfigs);
+        // console.log(`Multiple matching view configs for ${ngView.fqn}`, matchingConfigs);
         matchingConfigs.sort(depthCompare(viewConfigDepth, -1)); // descending
       }
-      return { uiView, viewConfig: matchingConfigs[0] };
+      return { ngView, viewConfig: matchingConfigs[0] };
     };
     const configureUIView = (tuple) => {
       // If a parent ui-view is reconfigured, it could destroy child ui-views.
-      // Before configuring a child ui-view, make sure it's still in the active uiViews array.
-      if (this._uiViews.indexOf(tuple.uiView) !== -1)
-        tuple.uiView.configUpdated(tuple.viewConfig);
+      // Before configuring a child ui-view, make sure it's still in the active ngViews array.
+      if (this._ngViews.indexOf(tuple.ngView) !== -1)
+        tuple.ngView.configUpdated(tuple.viewConfig);
     };
     // Sort views by FQN and state depth. Process uiviews nearest the root first.
-    const uiViewTuples = this._uiViews
-      .sort(depthCompare(uiViewDepth, 1))
+    const ngViewTuples = this._ngViews
+      .sort(depthCompare(ngViewDepth, 1))
       .map(matchingConfigPair);
-    const matchedViewConfigs = uiViewTuples.map((tuple) => tuple.viewConfig);
+    const matchedViewConfigs = ngViewTuples.map((tuple) => tuple.viewConfig);
     const unmatchedConfigTuples = this._viewConfigs
       .filter((config) => !inArray(matchedViewConfigs, config))
-      .map((viewConfig) => ({ uiView: undefined, viewConfig }));
-    uiViewTuples.forEach(configureUIView);
-    const allTuples = uiViewTuples.concat(unmatchedConfigTuples);
+      .map((viewConfig) => ({ ngView: undefined, viewConfig }));
+    ngViewTuples.forEach(configureUIView);
+    const allTuples = ngViewTuples.concat(unmatchedConfigTuples);
     this._listeners.forEach((cb) => cb(allTuples));
     trace.traceViewSync(allTuples);
   }
@@ -194,29 +194,29 @@ export class ViewService {
    * Note: There is no corresponding `deregisterUIView`.
    *       A `ui-view` should hang on to the return value of `registerUIView` and invoke it to deregister itself.
    *
-   * @param uiView The metadata for a UIView
+   * @param ngView The metadata for a UIView
    * @return a de-registration function used when the view is destroyed.
    */
-  registerUIView(uiView) {
-    trace.traceViewServiceUIViewEvent("-> Registering", uiView);
-    const uiViews = this._uiViews;
+  registerUIView(ngView) {
+    trace.traceViewServiceUIViewEvent("-> Registering", ngView);
+    const ngViews = this._ngViews;
     const fqnAndTypeMatches = (uiv) =>
-      uiv.fqn === uiView.fqn && uiv.$type === uiView.$type;
-    if (uiViews.filter(fqnAndTypeMatches).length)
-      trace.traceViewServiceUIViewEvent("!!!! duplicate uiView named:", uiView);
-    uiViews.push(uiView);
+      uiv.fqn === ngView.fqn && uiv.$type === ngView.$type;
+    if (ngViews.filter(fqnAndTypeMatches).length)
+      trace.traceViewServiceUIViewEvent("!!!! duplicate ngView named:", ngView);
+    ngViews.push(ngView);
     this.sync();
     return () => {
-      const idx = uiViews.indexOf(uiView);
+      const idx = ngViews.indexOf(ngView);
       if (idx === -1) {
         trace.traceViewServiceUIViewEvent(
-          "Tried removing non-registered uiView",
-          uiView,
+          "Tried removing non-registered ngView",
+          ngView,
         );
         return;
       }
-      trace.traceViewServiceUIViewEvent("<- Deregistering", uiView);
-      removeFrom(uiViews)(uiView);
+      trace.traceViewServiceUIViewEvent("<- Deregistering", ngView);
+      removeFrom(ngViews)(ngView);
     };
   }
   /**
@@ -225,7 +225,7 @@ export class ViewService {
    * @return {Array} Returns an array of fully-qualified view names.
    */
   available() {
-    return this._uiViews.map(prop("fqn"));
+    return this._ngViews.map(prop("fqn"));
   }
   /**
    * Returns the list of views on the page containing loaded content.
@@ -233,7 +233,7 @@ export class ViewService {
    * @return {Array} Returns an array of fully-qualified view names.
    */
   active() {
-    return this._uiViews.filter(prop("$config")).map(prop("name"));
+    return this._ngViews.filter(prop("$config")).map(prop("name"));
   }
 }
 /**
@@ -269,7 +269,7 @@ export class ViewService {
  *   </ui-view>
  * </ui-view>
  *
- * uiViews: [
+ * ngViews: [
  *  { fqn: "$default",                  creationContext: { name: "" } },
  *  { fqn: "$default.foo",              creationContext: { name: "A" } },
  *  { fqn: "$default.foo.$default",     creationContext: { name: "A.B" } }
@@ -278,10 +278,10 @@ export class ViewService {
  *
  * These four view configs all match the ui-view with the fqn: "$default.foo.$default.bar":
  *
- * - ViewConfig1: { uiViewName: "bar",                       uiViewContextAnchor: "A.B.C" }
- * - ViewConfig2: { uiViewName: "$default.bar",              uiViewContextAnchor: "A.B" }
- * - ViewConfig3: { uiViewName: "foo.$default.bar",          uiViewContextAnchor: "A" }
- * - ViewConfig4: { uiViewName: "$default.foo.$default.bar", uiViewContextAnchor: "" }
+ * - ViewConfig1: { ngViewName: "bar",                       ngViewContextAnchor: "A.B.C" }
+ * - ViewConfig2: { ngViewName: "$default.bar",              ngViewContextAnchor: "A.B" }
+ * - ViewConfig3: { ngViewName: "foo.$default.bar",          ngViewContextAnchor: "A" }
+ * - ViewConfig4: { ngViewName: "$default.foo.$default.bar", ngViewContextAnchor: "" }
  *
  * Using ViewConfig3 as an example, it matches the ui-view with fqn "$default.foo.$default.bar" because:
  * - The ViewConfig's segmented target name is: [ "foo", "$default", "bar" ]
@@ -293,13 +293,13 @@ export class ViewService {
  *
  * @internal
  */
-ViewService.matches = (uiViewsByFqn, uiView) => (viewConfig) => {
+ViewService.matches = (ngViewsByFqn, ngView) => (viewConfig) => {
   // Don't supply an ng1 ui-view with an ng2 ViewConfig, etc
-  if (uiView.$type !== viewConfig.viewDecl.$type) return false;
-  // Split names apart from both viewConfig and uiView into segments
+  if (ngView.$type !== viewConfig.viewDecl.$type) return false;
+  // Split names apart from both viewConfig and ngView into segments
   const vc = viewConfig.viewDecl;
-  const vcSegments = vc.$uiViewName.split(".");
-  const uivSegments = uiView.fqn.split(".");
+  const vcSegments = vc.$ngViewName.split(".");
+  const uivSegments = ngView.fqn.split(".");
   // Check if the tails of the segment arrays match. ex, these arrays' tails match:
   // vc: ["foo", "bar"], uiv fqn: ["$default", "foo", "bar"]
   if (!equals(vcSegments, uivSegments.slice(0 - vcSegments.length)))
@@ -308,6 +308,6 @@ ViewService.matches = (uiViewsByFqn, uiView) => (viewConfig) => {
   // ["$default", "foo"].join(".") == "$default.foo", does the ui-view $default.foo context match?
   const negOffset = 1 - vcSegments.length || undefined;
   const fqnToFirstSegment = uivSegments.slice(0, negOffset).join(".");
-  const uiViewContext = uiViewsByFqn[fqnToFirstSegment].creationContext;
-  return vc.$uiViewContextAnchor === (uiViewContext && uiViewContext.name);
+  const ngViewContext = ngViewsByFqn[fqnToFirstSegment].creationContext;
+  return vc.$ngViewContextAnchor === (ngViewContext && ngViewContext.name);
 };

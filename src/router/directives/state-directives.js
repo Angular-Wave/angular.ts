@@ -29,19 +29,19 @@ function parseStateRef(ref) {
 }
 /** @hidden */
 function stateContext(el) {
-  const $uiView = el.parent().inheritedData("$uiView");
-  const path = parse("$cfg.path")($uiView);
+  const $ngView = el.parent().inheritedData("$ngView");
+  const path = parse("$cfg.path")($ngView);
   return path ? tail(path).state.name : undefined;
 }
 /** @hidden */
 function processedDef($state, $element, def) {
-  const uiState = def.uiState || $state.current.name;
-  const uiStateOpts = Object.assign(
+  const ngState = def.ngState || $state.current.name;
+  const ngStateOpts = Object.assign(
     defaultOpts($element, $state),
-    def.uiStateOpts || {},
+    def.ngStateOpts || {},
   );
-  const href = $state.href(uiState, def.uiStateParams, uiStateOpts);
-  return { uiState, uiStateParams: def.uiStateParams, uiStateOpts, href };
+  const href = $state.href(ngState, def.ngStateParams, ngStateOpts);
+  return { ngState, ngStateParams: def.ngStateParams, ngStateOpts, href };
 }
 /** @hidden */
 function getTypeInfo(el) {
@@ -73,7 +73,7 @@ function clickHook(el, $state, $timeout, type, getDef) {
       // HACK: This is to allow ng-clicks to be processed before the transition is initiated:
       const transition = $timeout(function () {
         if (!el.attr("disabled")) {
-          $state.go(target.uiState, target.uiStateParams, target.uiStateOpts);
+          $state.go(target.ngState, target.ngStateParams, target.ngStateOpts);
         }
       });
       e.preventDefault();
@@ -98,10 +98,10 @@ function defaultOpts(el, $state) {
   };
 }
 /** @hidden */
-function bindEvents(element, scope, hookFn, uiStateOpts) {
+function bindEvents(element, scope, hookFn, ngStateOpts) {
   let events;
-  if (uiStateOpts) {
-    events = uiStateOpts.events;
+  if (ngStateOpts) {
+    events = ngStateOpts.events;
   }
   if (!Array.isArray(events)) {
     events = ["click"];
@@ -196,7 +196,7 @@ function bindEvents(element, scope, hookFn, uiStateOpts) {
  * ```
  *
  * ### Highlighting the active link
- * This directive can be used in conjunction with [[uiSrefActive]] to highlight the active link.
+ * This directive can be used in conjunction with [[ngSrefActive]] to highlight the active link.
  *
  * ### Examples
  * If you have the following template:
@@ -248,34 +248,34 @@ function bindEvents(element, scope, hookFn, uiStateOpts) {
  * - A middle-click, right-click, or ctrl-click is handled (natively) by the browser to open the href in a new window, for example.
  *
  * - Unlike the parameter values expression, the state name is not `$watch`ed (for performance reasons).
- * If you need to dynamically update the state being linked to, use the fully dynamic [[uiState]] directive.
+ * If you need to dynamically update the state being linked to, use the fully dynamic [[ngState]] directive.
  */
-export let uiSrefDirective = [
+export let ngSrefDirective = [
   "$router",
   "$timeout",
   function $StateRefDirective($router, $timeout) {
     const $state = $router.stateService;
     return {
       restrict: "A",
-      require: ["?^uiSrefActive", "?^uiSrefActiveEq"],
-      link: (scope, element, attrs, uiSrefActive) => {
+      require: ["?^ngSrefActive", "?^ngSrefActiveEq"],
+      link: (scope, element, attrs, ngSrefActive) => {
         const type = getTypeInfo(element);
-        const active = uiSrefActive[1] || uiSrefActive[0];
+        const active = ngSrefActive[1] || ngSrefActive[0];
         let unlinkInfoFn = null;
         const rawDef = {};
         const getDef = () => processedDef($state, element, rawDef);
-        const ref = parseStateRef(attrs.uiSref);
-        rawDef.uiState = ref.state;
-        rawDef.uiStateOpts = attrs.uiSrefOpts
-          ? scope.$eval(attrs.uiSrefOpts)
+        const ref = parseStateRef(attrs.ngSref);
+        rawDef.ngState = ref.state;
+        rawDef.ngStateOpts = attrs.ngSrefOpts
+          ? scope.$eval(attrs.ngSrefOpts)
           : {};
         function update() {
           const def = getDef();
           if (unlinkInfoFn) unlinkInfoFn();
           if (active)
             unlinkInfoFn = active.$$addStateInfo(
-              def.uiState,
-              def.uiStateParams,
+              def.ngState,
+              def.ngStateParams,
             );
           if (def.href != null) attrs.$set(type.attr, def.href);
         }
@@ -283,123 +283,123 @@ export let uiSrefDirective = [
           scope.$watch(
             ref.paramExpr,
             function (val) {
-              rawDef.uiStateParams = Object.assign({}, val);
+              rawDef.ngStateParams = Object.assign({}, val);
               update();
             },
             true,
           );
-          rawDef.uiStateParams = Object.assign({}, scope.$eval(ref.paramExpr));
+          rawDef.ngStateParams = Object.assign({}, scope.$eval(ref.paramExpr));
         }
         update();
         scope.$on("$destroy", $router.stateRegistry.onStatesChanged(update));
         scope.$on("$destroy", $router.transitionService.onSuccess({}, update));
         if (!type.clickable) return;
         const hookFn = clickHook(element, $state, $timeout, type, getDef);
-        bindEvents(element, scope, hookFn, rawDef.uiStateOpts);
+        bindEvents(element, scope, hookFn, rawDef.ngStateOpts);
       },
     };
   },
 ];
 /**
- * `ui-state`: A fully dynamic directive for linking to a state
+ * `ng-state`: A fully dynamic directive for linking to a state
  *
  * A directive which links to a state (and optionally, parameters).
  * When clicked, this directive activates the linked state with the supplied parameter values.
  *
- * **This directive is very similar to [[uiSref]], but it `$observe`s and `$watch`es/evaluates all its inputs.**
+ * **This directive is very similar to [[ngSref]], but it `$observe`s and `$watch`es/evaluates all its inputs.**
  *
  * A directive which links to a state (and optionally, parameters).
  * When clicked, this directive activates the linked state with the supplied parameter values.
  *
  * ### Linked State
- * The attribute value of `ui-state` is an expression which is `$watch`ed and evaluated as the state to link to.
+ * The attribute value of `ng-state` is an expression which is `$watch`ed and evaluated as the state to link to.
  * **This is in contrast with `ui-sref`, which takes a state name as a string literal.**
  *
  * #### Example:
  * Create a list of links.
  * ```html
  * <li ng-repeat="link in navlinks">
- *   <a ui-state="link.state">{{ link.displayName }}</a>
+ *   <a ng-state="link.state">{{ link.displayName }}</a>
  * </li>
  * ```
  *
  * ### Relative Links
- * If the expression evaluates to a relative path, it is processed like [[uiSref]].
+ * If the expression evaluates to a relative path, it is processed like [[ngSref]].
  * You just need to be aware that the path is relative to the state that *created* the link.
- * This allows a state to create relative `ui-state` which always targets the same destination.
+ * This allows a state to create relative `ng-state` which always targets the same destination.
  *
  * ### hrefs
  * If the linked state has a URL, the directive will automatically generate and
  * update the `href` attribute (using the [[StateService.href]]  method).
  *
  * ### Parameter Values
- * In addition to the state name expression, a `ui-state` can include parameter values which are applied when activating the state.
- * Param values should be provided using the `ui-state-params` attribute.
- * The `ui-state-params` attribute value is `$watch`ed and evaluated as an expression.
+ * In addition to the state name expression, a `ng-state` can include parameter values which are applied when activating the state.
+ * Param values should be provided using the `ng-state-params` attribute.
+ * The `ng-state-params` attribute value is `$watch`ed and evaluated as an expression.
  *
  * #### Example:
  * This example renders a list of links with param values.
  * The state's `userId` parameter value comes from each user's `user.id` property.
  * ```html
  * <li ng-repeat="link in navlinks">
- *   <a ui-state="link.state" ui-state-params="link.params">{{ link.displayName }}</a>
+ *   <a ng-state="link.state" ng-state-params="link.params">{{ link.displayName }}</a>
  * </li>
  * ```
  *
  * ### Transition Options
- * You can specify [[TransitionOptions]] to pass to [[StateService.go]] by using the `ui-state-opts` attribute.
+ * You can specify [[TransitionOptions]] to pass to [[StateService.go]] by using the `ng-state-opts` attribute.
  * Options are restricted to `location`, `inherit`, and `reload`.
- * The value of the `ui-state-opts` is `$watch`ed and evaluated as an expression.
+ * The value of the `ng-state-opts` is `$watch`ed and evaluated as an expression.
  *
  * #### Example:
  * ```html
- * <a ui-state="returnto.state" ui-state-opts="{ reload: true }">Home</a>
+ * <a ng-state="returnto.state" ng-state-opts="{ reload: true }">Home</a>
  * ```
  *
  * ### Other DOM Events
  *
  * You can also customize which DOM events to respond to (instead of `click`) by
- * providing an `events` array in the `ui-state-opts` attribute.
+ * providing an `events` array in the `ng-state-opts` attribute.
  *
  * #### Example:
  * ```html
- * <input type="text" ui-state="contacts" ui-state-opts="{ events: ['change', 'blur'] }">
+ * <input type="text" ng-state="contacts" ng-state-opts="{ events: ['change', 'blur'] }">
  * ```
  *
  * ### Highlighting the active link
- * This directive can be used in conjunction with [[uiSrefActive]] to highlight the active link.
+ * This directive can be used in conjunction with [[ngSrefActive]] to highlight the active link.
  *
  * ### Notes
  *
- * - You can use `ui-params` to change **only the parameter values** by omitting the state name and supplying only `ui-state-params`.
- *   However, it might be simpler to use [[uiSref]] parameter-only links.
+ * - You can use `ui-params` to change **only the parameter values** by omitting the state name and supplying only `ng-state-params`.
+ *   However, it might be simpler to use [[ngSref]] parameter-only links.
  *
  * #### Example:
  * Sets the `lang` parameter to `en` and remains on the same state.
  *
  * ```html
- * <a ui-state="" ui-state-params="{ lang: 'en' }">English</a>
+ * <a ng-state="" ng-state-params="{ lang: 'en' }">English</a>
  * ```
  *
  * - A middle-click, right-click, or ctrl-click is handled (natively) by the browser to open the href in a new window, for example.
  * ```
  */
-export let uiStateDirective = [
+export let ngStateDirective = [
   "$router",
   "$timeout",
   function $StateRefDynamicDirective($router, $timeout) {
     const $state = $router.stateService;
     return {
       restrict: "A",
-      require: ["?^uiSrefActive", "?^uiSrefActiveEq"],
-      link: function (scope, element, attrs, uiSrefActive) {
+      require: ["?^ngSrefActive", "?^ngSrefActiveEq"],
+      link: function (scope, element, attrs, ngSrefActive) {
         const type = getTypeInfo(element);
-        const active = uiSrefActive[1] || uiSrefActive[0];
+        const active = ngSrefActive[1] || ngSrefActive[0];
         let unlinkInfoFn = null;
         let hookFn;
         const rawDef = {};
         const getDef = () => processedDef($state, element, rawDef);
-        const inputAttrs = ["uiState", "uiStateParams", "uiStateOpts"];
+        const inputAttrs = ["ngState", "ngStateParams", "ngStateOpts"];
         const watchDeregFns = inputAttrs.reduce(
           (acc, attr) => ((acc[attr] = () => {}), acc),
           {},
@@ -409,8 +409,8 @@ export let uiStateDirective = [
           if (unlinkInfoFn) unlinkInfoFn();
           if (active)
             unlinkInfoFn = active.$$addStateInfo(
-              def.uiState,
-              def.uiStateParams,
+              def.ngState,
+              def.ngStateParams,
             );
           if (def.href != null) attrs.$set(type.attr, def.href);
         }
@@ -433,7 +433,7 @@ export let uiStateDirective = [
         scope.$on("$destroy", $router.transitionService.onSuccess({}, update));
         if (!type.clickable) return;
         hookFn = clickHook(element, $state, $timeout, type, getDef);
-        bindEvents(element, scope, hookFn, rawDef.uiStateOpts);
+        bindEvents(element, scope, hookFn, rawDef.ngStateOpts);
       },
     };
   },
@@ -441,26 +441,26 @@ export let uiStateDirective = [
 /**
  * `ui-sref-active` and `ui-sref-active-eq`: A directive that adds a CSS class when a `ui-sref` is active
  *
- * A directive working alongside [[uiSref]] and [[uiState]] to add classes to an element when the
+ * A directive working alongside [[ngSref]] and [[ngState]] to add classes to an element when the
  * related directive's state is active (and remove them when it is inactive).
  *
  * The primary use-case is to highlight the active link in navigation menus,
  * distinguishing it from the inactive menu items.
  *
- * ### Linking to a `ui-sref` or `ui-state`
- * `ui-sref-active` can live on the same element as `ui-sref`/`ui-state`, or it can be on a parent element.
- * If a `ui-sref-active` is a parent to more than one `ui-sref`/`ui-state`, it will apply the CSS class when **any of the links are active**.
+ * ### Linking to a `ui-sref` or `ng-state`
+ * `ui-sref-active` can live on the same element as `ui-sref`/`ng-state`, or it can be on a parent element.
+ * If a `ui-sref-active` is a parent to more than one `ui-sref`/`ng-state`, it will apply the CSS class when **any of the links are active**.
  *
  * ### Matching
  *
- * The `ui-sref-active` directive applies the CSS class when the `ui-sref`/`ui-state`'s target state **or any child state is active**.
+ * The `ui-sref-active` directive applies the CSS class when the `ui-sref`/`ng-state`'s target state **or any child state is active**.
  * This is a "fuzzy match" which uses [[StateService.includes]].
  *
- * The `ui-sref-active-eq` directive applies the CSS class when the `ui-sref`/`ui-state`'s target state is directly active (not when child states are active).
+ * The `ui-sref-active-eq` directive applies the CSS class when the `ui-sref`/`ng-state`'s target state is directly active (not when child states are active).
  * This is an "exact match" which uses [[StateService.is]].
  *
  * ### Parameter values
- * If the `ui-sref`/`ui-state` includes parameter values, the current parameter values must match the link's values for the link to be highlighted.
+ * If the `ui-sref`/`ng-state` includes parameter values, the current parameter values must match the link's values for the link to be highlighted.
  * This allows a list of links to the same state with different parameters to be rendered, and the correct one highlighted.
  *
  * #### Example:
@@ -530,7 +530,7 @@ export let uiStateDirective = [
  *
  * - Multiple classes may be specified in a space-separated format: `ui-sref-active='class1 class2 class3'`
  */
-export let uiSrefActiveDirective = [
+export let ngSrefActiveDirective = [
   "$state",
   "$stateParams",
   "$interpolate",
@@ -550,32 +550,32 @@ export let uiSrefActiveDirective = [
         function ($scope, $element, $attrs) {
           let states = [];
           let activeEqClass;
-          let uiSrefActive;
+          let ngSrefActive;
           // There probably isn't much point in $observing this
-          // uiSrefActive and uiSrefActiveEq share the same directive object with some
+          // ngSrefActive and ngSrefActiveEq share the same directive object with some
           // slight difference in logic routing
           activeEqClass = $interpolate(
-            $attrs.uiSrefActiveEq || "",
+            $attrs.ngSrefActiveEq || "",
             false,
           )($scope);
           try {
-            uiSrefActive = $scope.$eval($attrs.uiSrefActive);
+            ngSrefActive = $scope.$eval($attrs.ngSrefActive);
           } catch (e) {
-            // Do nothing. uiSrefActive is not a valid expression.
+            // Do nothing. ngSrefActive is not a valid expression.
             // Fall back to using $interpolate below
           }
-          uiSrefActive =
-            uiSrefActive ||
-            $interpolate($attrs.uiSrefActive || "", false)($scope);
-          setStatesFromDefinitionObject(uiSrefActive);
-          // Allow uiSref to communicate with uiSrefActive[Equals]
+          ngSrefActive =
+            ngSrefActive ||
+            $interpolate($attrs.ngSrefActive || "", false)($scope);
+          setStatesFromDefinitionObject(ngSrefActive);
+          // Allow ngSref to communicate with ngSrefActive[Equals]
           this.$$addStateInfo = function (newState, newParams) {
             // we already got an explicit state provided by ui-sref-active, so we
             // shadow the one that comes from ui-sref
-            if (isObject(uiSrefActive) && states.length > 0) {
+            if (isObject(ngSrefActive) && states.length > 0) {
               return;
             }
-            const deregister = addState(newState, newParams, uiSrefActive);
+            const deregister = addState(newState, newParams, ngSrefActive);
             update();
             return deregister;
           };
@@ -604,7 +604,7 @@ export let uiSrefActiveDirective = [
             };
           }
           function handleStatesChanged() {
-            setStatesFromDefinitionObject(uiSrefActive);
+            setStatesFromDefinitionObject(ngSrefActive);
           }
           function setStatesFromDefinitionObject(statesDefinition) {
             if (isObject(statesDefinition)) {

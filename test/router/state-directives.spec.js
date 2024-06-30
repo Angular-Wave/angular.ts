@@ -3,7 +3,7 @@ import { Angular } from "../../src/loader";
 import { publishExternalAPI } from "../../src/public";
 import { browserTrigger, wait } from "../test-utils";
 
-describe("uiStateRef", () => {
+describe("ngStateRef", () => {
   window.location.hash = "";
   let el,
     el2,
@@ -21,7 +21,7 @@ describe("uiStateRef", () => {
   beforeEach(() => {
     window.angular = new Angular();
     publishExternalAPI();
-    let module = window.angular.module("defaultModule", ["ui.router"]);
+    let module = window.angular.module("defaultModule", ["ng.router"]);
     module.config(($stateProvider, $locationProvider) => {
       _locationProvider = $locationProvider;
       $locationProvider.hashPrefix("");
@@ -33,18 +33,18 @@ describe("uiStateRef", () => {
           name: "contacts",
           url: "/contacts",
           template:
-            '<a ui-sref=".item({ id: 5 })" class="item">Person</a> <ng-view></ng-view>',
+            '<a ng-sref=".item({ id: 5 })" class="item">Person</a> <ng-view></ng-view>',
         })
         .state({
           name: "contacts.item",
           url: "/{id:int}",
           template:
-            '<a ui-sref=".detail" class="item-detail">Detail</a> | <a ui-sref="^" class="item-parent">Parent</a> | <ng-view></ng-view>',
+            '<a ng-sref=".detail" class="item-detail">Detail</a> | <a ng-sref="^" class="item-parent">Parent</a> | <ng-view></ng-view>',
         })
         .state({
           name: "contacts.item.detail",
           template:
-            '<div class="title">Detail</div> | <a ui-sref="^" class="item-parent2">Item</a>',
+            '<div class="title">Detail</div> | <a ng-sref="^" class="item-parent2">Item</a>',
         });
     });
     $injector = window.angular.bootstrap(document.getElementById("dummy"), [
@@ -64,7 +64,7 @@ describe("uiStateRef", () => {
     it("should update the href when promises on parameters change before scope is applied", async () => {
       const defer = $q.defer();
       el = jqLite(
-        '<a ui-sref="contacts.item.detail({ id: contact.id })">Details</a>',
+        '<a ng-sref="contacts.item.detail({ id: contact.id })">Details</a>',
       );
       defer.promise.then((val) => {
         $rootScope.contact = val;
@@ -80,9 +80,9 @@ describe("uiStateRef", () => {
   function buildDOM() {
     window.location.hash = "#";
     el = jqLite(
-      '<a ui-sref="contacts.item.detail({ id: contact.id })">Details</a>',
+      '<a ng-sref="contacts.item.detail({ id: contact.id })">Details</a>',
     );
-    el2 = jqLite('<a ui-sref="top">Top</a>');
+    el2 = jqLite('<a ng-sref="top">Top</a>');
     scope = $rootScope;
     scope.contact = { id: 5 };
     scope.$apply();
@@ -110,7 +110,7 @@ describe("uiStateRef", () => {
 
     it("should allow multi-line attribute values", async () => {
       el = jqLite(
-        '<a ui-sref="contacts.item.detail({\n\tid: $index\n})">Details</a>',
+        '<a ng-sref="contacts.item.detail({\n\tid: $index\n})">Details</a>',
       );
       $rootScope.$index = 3;
       $rootScope.$apply();
@@ -194,7 +194,7 @@ describe("uiStateRef", () => {
       $rootScope.$index = "def";
       $rootScope.$digest();
 
-      el = jqLite('<a ui-sref="{id: $index}">Details</a>');
+      el = jqLite('<a ng-sref="{id: $index}">Details</a>');
       $compile(el)($rootScope);
       $rootScope.$digest();
 
@@ -226,7 +226,7 @@ describe("uiStateRef", () => {
       $state.go("contacts.item.detail", { id: "123" });
       $rootScope.$digest();
 
-      el = jqLite('<a ui-sref="{\n\tid: $index\n}">Details</a>');
+      el = jqLite('<a ng-sref="{\n\tid: $index\n}">Details</a>');
       $rootScope.$index = 3;
       $rootScope.$apply();
 
@@ -237,7 +237,7 @@ describe("uiStateRef", () => {
 
     it("should take an object as a parameter and update properly on digest churns", async () => {
       el = jqLite(
-        '<div><a ui-sref="contacts.item.detail(urlParams)">Contacts</a></div>',
+        '<div><a ng-sref="contacts.item.detail(urlParams)">Contacts</a></div>',
       );
       template = $compile(el)($rootScope);
 
@@ -293,7 +293,7 @@ describe("uiStateRef", () => {
 
     beforeEach(() => {
       el = jqLite(
-        '<a ui-sref-active="active" ui-sref-active-eq="activeeq" ui-state="state" ui-state-params="params">state</a>',
+        '<a ng-sref-active="active" ng-sref-active-eq="activeeq" ng-state="state" ng-state-params="params">state</a>',
       );
       scope = $rootScope;
       Object.assign(scope, { state: "contacts", params: {} });
@@ -318,7 +318,7 @@ describe("uiStateRef", () => {
       expect(jqLite(template[0]).attr("href")).toBe("#/contacts/25");
     });
 
-    it("updates a linked ui-sref-active", async () => {
+    it("updates a linked ng-sref-active", async () => {
       expect(template[0].className).not.toContain("active");
       expect(template[0].className).not.toContain("activeeq");
 
@@ -361,12 +361,12 @@ describe("uiStateRef", () => {
       expect(jqLite(template[0]).attr("href")).toBe("#/other/123");
     });
 
-    it("should allow passing params to current state using empty ui-state", async () => {
+    it("should allow passing params to current state using empty ng-state", async () => {
       await $state.go("other", { id: "abc" });
       $rootScope.$index = "def";
       $rootScope.$digest();
 
-      el = jqLite('<a ui-state="" ui-state-params="{id: $index}">Details</a>');
+      el = jqLite('<a ng-state="" ng-state-params="{id: $index}">Details</a>');
       $compile(el)($rootScope);
 
       expect($state.current.name).toBe("other");
@@ -422,7 +422,7 @@ describe("uiStateRef", () => {
 
     it("watches attributes", () => {
       el = jqLite(
-        '<a ui-state="{{exprvar}}" ui-state-params="params">state</a>',
+        '<a ng-state="{{exprvar}}" ng-state-params="params">state</a>',
       );
       template = $compile(el)(scope);
 
@@ -439,7 +439,7 @@ describe("uiStateRef", () => {
     });
 
     it("allows one-time-binding on ng1.3+", () => {
-      el = jqLite('<a ui-state="::state" ui-state-params="::params">state</a>');
+      el = jqLite('<a ng-state="::state" ng-state-params="::params">state</a>');
 
       scope.state = "contacts.item";
       scope.params = { id: 10 };
@@ -457,7 +457,7 @@ describe("uiStateRef", () => {
     it("accepts option overrides", async () => {
       let transitionOptions;
 
-      el = jqLite('<a ui-state="state" ui-state-opts="opts">state</a>');
+      el = jqLite('<a ng-state="state" ng-state-opts="opts">state</a>');
       scope.state = "contacts";
       scope.opts = { reload: true };
       template = $compile(el)(scope);
@@ -479,7 +479,7 @@ describe("uiStateRef", () => {
       it("should bind click event by default", async () => {
         expect($state.current.name).toBe("top");
 
-        el = jqLite('<a ui-state="state"></a>');
+        el = jqLite('<a ng-state="state"></a>');
 
         scope.state = "contacts";
         $compile(el)(scope);
@@ -493,7 +493,7 @@ describe("uiStateRef", () => {
         expect($state.current.name).toEqual("top");
 
         el = jqLite(
-          '<input type="text" ui-state="state" ui-state-opts="{ events: [\'change\'] }">',
+          '<input type="text" ng-state="state" ng-state-opts="{ events: [\'change\'] }">',
         );
 
         scope.state = "contacts";
@@ -510,7 +510,7 @@ describe("uiStateRef", () => {
         expect($state.current.name).toEqual("top");
 
         el = jqLite(
-          '<input type="text" ui-state="state" ui-state-opts="{ events: [\'change\', \'blur\'] }">',
+          '<input type="text" ng-state="state" ng-state-opts="{ events: [\'change\', \'blur\'] }">',
         );
 
         scope.state = "contacts";
@@ -536,7 +536,7 @@ describe("uiStateRef", () => {
         expect($state.current.name).toEqual("top");
 
         el = jqLite(
-          "<a ui-state=\"state\" ui-state-opts=\"{ events: ['mouseover', 'mousedown'] }\">",
+          "<a ng-state=\"state\" ng-state-opts=\"{ events: ['mouseover', 'mousedown'] }\">",
         );
 
         scope.state = "contacts";
@@ -564,7 +564,7 @@ describe("uiStateRef", () => {
 
     beforeEach(() => {
       el = jqLite(
-        '<form ui-sref="contacts.item.detail({ id: contact.id })"></form>',
+        '<form ng-sref="contacts.item.detail({ id: contact.id })"></form>',
       );
       scope = $rootScope;
       scope.contact = { id: 5 };
@@ -582,7 +582,7 @@ describe("uiStateRef", () => {
   describe("relative transitions", () => {
     beforeEach(() => {
       $state.transitionTo("contacts.item", { id: 5 });
-      el = jqLite('<a ui-sref=".detail">Details</a>');
+      el = jqLite('<a ng-sref=".detail">Details</a>');
       scope = $rootScope;
       scope.$apply();
 
@@ -599,7 +599,7 @@ describe("uiStateRef", () => {
       expect($state.params.id).toEqual(5);
     });
 
-    it("should resolve states from parent uiView", async () => {
+    it("should resolve states from parent ngView", async () => {
       $state.transitionTo("contacts");
       await wait(100);
       const parentToChild = jqLite(template[0].querySelector("a.item"));
@@ -636,7 +636,7 @@ describe("uiStateRef", () => {
   describe("option event", () => {
     beforeEach(() => (window.location.hash = ""));
     it("should bind click event by default", async () => {
-      el = jqLite('<a ui-sref="contacts"></a>');
+      el = jqLite('<a ng-sref="contacts"></a>');
       $compile(el)($rootScope);
 
       expect($state.current.name).toEqual("top");
@@ -649,7 +649,7 @@ describe("uiStateRef", () => {
 
     it("should bind single HTML events", async () => {
       el = jqLite(
-        '<input type="text" ui-sref="contacts" ui-sref-opts="{ events: [\'change\'] }">',
+        '<input type="text" ng-sref="contacts" ng-sref-opts="{ events: [\'change\'] }">',
       );
       $compile(el)($rootScope);
       expect($state.current.name).toEqual("top");
@@ -662,7 +662,7 @@ describe("uiStateRef", () => {
 
     it("should bind multiple HTML events", async () => {
       el = jqLite(
-        '<input type="text" ui-sref="contacts" ui-sref-opts="{ events: [\'change\', \'blur\'] }">',
+        '<input type="text" ng-sref="contacts" ng-sref-opts="{ events: [\'change\', \'blur\'] }">',
       );
       $compile(el)($rootScope);
 
@@ -684,7 +684,7 @@ describe("uiStateRef", () => {
 
     it("should bind multiple Mouse events", async () => {
       el = jqLite(
-        "<a ui-sref=\"contacts\" ui-sref-opts=\"{ events: ['mouseover', 'mousedown'] }\">",
+        "<a ng-sref=\"contacts\" ng-sref-opts=\"{ events: ['mouseover', 'mousedown'] }\">",
       );
       $compile(el)($rootScope);
 
@@ -706,7 +706,7 @@ describe("uiStateRef", () => {
   });
 });
 
-describe("uiSrefActive", () => {
+describe("ngSrefActive", () => {
   window.location.hash = "";
   let el,
     el2,
@@ -726,7 +726,7 @@ describe("uiSrefActive", () => {
     window.location.hash = "";
     window.angular = new Angular();
     publishExternalAPI();
-    let module = window.angular.module("defaultModule", ["ui.router"]);
+    let module = window.angular.module("defaultModule", ["ng.router"]);
     module.config(function ($stateProvider) {
       _stateProvider = $stateProvider;
       $stateProvider
@@ -737,7 +737,7 @@ describe("uiSrefActive", () => {
           views: {
             $default: {
               template:
-                '<a ui-sref=".item({ id: 6 })" ui-sref-active="active">Contacts</a>',
+                '<a ng-sref=".item({ id: 6 })" ng-sref-active="active">Contacts</a>',
             },
           },
         })
@@ -768,9 +768,9 @@ describe("uiSrefActive", () => {
     $stateParams = $injector.get("$stateParams");
   });
 
-  it("should update class for sibling uiSref", async () => {
+  it("should update class for sibling ngSref", async () => {
     el = jqLite(
-      '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active="active">Contacts</a><a ui-sref="contacts.item({ id: 2 })" ui-sref-active="active">Contacts</a></div>',
+      '<div><a ng-sref="contacts.item({ id: 1 })" ng-sref-active="active">Contacts</a><a ng-sref="contacts.item({ id: 2 })" ng-sref-active="active">Contacts</a></div>',
     );
     template = $compile(el)($rootScope);
     $rootScope.$digest();
@@ -787,7 +787,7 @@ describe("uiSrefActive", () => {
 
   it("should match state's parameters", async () => {
     el = jqLite(
-      '<div><a ui-sref="contacts.item.detail({ foo: \'bar\' })" ui-sref-active="active">Contacts</a></div>',
+      '<div><a ng-sref="contacts.item.detail({ foo: \'bar\' })" ng-sref-active="active">Contacts</a></div>',
     );
     template = $compile(el)($rootScope);
     $rootScope.$digest();
@@ -805,7 +805,7 @@ describe("uiSrefActive", () => {
   // Test for #2696
   it("should compare using typed parameters", async () => {
     el = jqLite(
-      '<div><a ui-sref="arrayparam({ foo: [1,2,3] })" ui-sref-active="active">foo 123</a></div>',
+      '<div><a ng-sref="arrayparam({ foo: [1,2,3] })" ng-sref-active="active">foo 123</a></div>',
     );
     template = $compile(el)($rootScope);
     $rootScope.$digest();
@@ -826,9 +826,9 @@ describe("uiSrefActive", () => {
   });
 
   // Test for #3154
-  it("should compare ui-sref-active-eq using typed parameters", async () => {
+  it("should compare ng-sref-active-eq using typed parameters", async () => {
     el = jqLite(
-      '<div><a ui-sref="arrayparam({ foo: [1,2,3] })" ui-sref-active-eq="active">foo 123</a></div>',
+      '<div><a ng-sref="arrayparam({ foo: [1,2,3] })" ng-sref-active-eq="active">foo 123</a></div>',
     );
     template = $compile(el)($rootScope);
     $rootScope.$digest();
@@ -848,9 +848,9 @@ describe("uiSrefActive", () => {
     expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
   });
 
-  it("should update in response to ui-sref param expression changes", async () => {
+  it("should update in response to ng-sref param expression changes", async () => {
     el = jqLite(
-      '<div><a ui-sref="contacts.item.detail({ foo: fooId })" ui-sref-active="active">Contacts</a></div>',
+      '<div><a ng-sref="contacts.item.detail({ foo: fooId })" ng-sref-active="active">Contacts</a></div>',
     );
     template = $compile(el)($rootScope);
     $rootScope.fooId = "bar";
@@ -869,7 +869,7 @@ describe("uiSrefActive", () => {
 
   it("should match on child states", async () => {
     template = $compile(
-      '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active="active">Contacts</a></div>',
+      '<div><a ng-sref="contacts.item({ id: 1 })" ng-sref-active="active">Contacts</a></div>',
     )($rootScope);
     $rootScope.$digest();
     const a = jqLite(template[0].getElementsByTagName("a")[0]);
@@ -887,7 +887,7 @@ describe("uiSrefActive", () => {
 
   it("should NOT match on child states when active-equals is used", async () => {
     template = $compile(
-      '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active-eq="active">Contacts</a></div>',
+      '<div><a ng-sref="contacts.item({ id: 1 })" ng-sref-active-eq="active">Contacts</a></div>',
     )($rootScope);
     $rootScope.$digest();
     const a = jqLite(template[0].getElementsByTagName("a")[0]);
@@ -903,7 +903,7 @@ describe("uiSrefActive", () => {
 
   it("should match on child states when active-equals and active-equals-eq is used", async () => {
     template = $compile(
-      '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active="active" ui-sref-active-eq="active-eq">Contacts</a></div>',
+      '<div><a ng-sref="contacts.item({ id: 1 })" ng-sref-active="active" ng-sref-active-eq="active-eq">Contacts</a></div>',
     )($rootScope);
     $rootScope.$digest();
     const a = jqLite(template[0].getElementsByTagName("a")[0]);
@@ -941,7 +941,7 @@ describe("uiSrefActive", () => {
 
   it("should match on any child state refs", async () => {
     el = jqLite(
-      '<div ui-sref-active="active"><a ui-sref="contacts.item({ id: 1 })">Contacts</a><a ui-sref="contacts.item({ id: 2 })">Contacts</a></div>',
+      '<div ng-sref-active="active"><a ng-sref="contacts.item({ id: 1 })">Contacts</a><a ng-sref="contacts.item({ id: 2 })">Contacts</a></div>',
     );
     template = $compile(el)($rootScope);
     $rootScope.$digest();
@@ -959,7 +959,7 @@ describe("uiSrefActive", () => {
 
   it("should match fuzzy on lazy loaded states", async () => {
     el = jqLite(
-      '<div><a ui-sref="contacts.lazy" ui-sref-active="active">Lazy Contact</a></div>',
+      '<div><a ng-sref="contacts.lazy" ng-sref-active="active">Lazy Contact</a></div>',
     );
     template = $compile(el)($rootScope);
     await wait(100);
@@ -982,7 +982,7 @@ describe("uiSrefActive", () => {
 
   it("should match exactly on lazy loaded states", async () => {
     el = jqLite(
-      '<div><a ui-sref="contacts.lazy" ui-sref-active-eq="active">Lazy Contact</a></div>',
+      '<div><a ng-sref="contacts.lazy" ng-sref-active-eq="active">Lazy Contact</a></div>',
     );
     template = $compile(el)($rootScope);
     await wait(100);
@@ -1005,7 +1005,7 @@ describe("uiSrefActive", () => {
 
   it("should allow multiple classes to be supplied", async () => {
     template = $compile(
-      '<div><a ui-sref="contacts.item({ id: 1 })" ui-sref-active="active also-active">Contacts</a></div>',
+      '<div><a ng-sref="contacts.item({ id: 1 })" ng-sref-active="active also-active">Contacts</a></div>',
     )($rootScope);
     $rootScope.$digest();
     const a = jqLite(template[0].getElementsByTagName("a")[0]);
@@ -1030,7 +1030,7 @@ describe("uiSrefActive", () => {
       },
     });
     template = $compile(
-      '<div ui-sref-active="active"><a ui-sref="contacts.lazy.s1">Lazy</a></div><div ui-sref-active="active"><a ui-sref="contacts.lazy.s2"></a></div>',
+      '<div ng-sref-active="active"><a ng-sref="contacts.lazy.s1">Lazy</a></div><div ng-sref-active="active"><a ng-sref="contacts.lazy.s2"></a></div>',
     )($rootScope);
     $rootScope.$digest();
     $state.transitionTo("contacts.lazy.s1");
@@ -1044,7 +1044,7 @@ describe("uiSrefActive", () => {
   xdescribe("ng-{class,style} interface", () => {
     it("should match on abstract states that are included by the current state", async () => {
       el = $compile(
-        '<div ui-sref-active="{active: \'admin.*\'}"><a ui-sref-active="active" ui-sref="admin.roles">Roles</a></div>',
+        '<div ng-sref-active="{active: \'admin.*\'}"><a ng-sref-active="active" ng-sref="admin.roles">Roles</a></div>',
       )($rootScope);
       $state.transitionTo("admin.roles");
       await wait(100);
@@ -1056,16 +1056,16 @@ describe("uiSrefActive", () => {
 
     it("should match on state parameters", async () => {
       el = $compile(
-        "<div ui-sref-active=\"{active: 'admin.roles({page: 1})'}\"></div>",
+        "<div ng-sref-active=\"{active: 'admin.roles({page: 1})'}\"></div>",
       )($rootScope);
       $state.transitionTo("admin.roles", { page: 1 });
       await wait(100);
       expect(el[0].className).toMatch(/active/);
     });
 
-    it("should shadow the state provided by ui-sref", async () => {
+    it("should shadow the state provided by ng-sref", async () => {
       el = $compile(
-        '<div ui-sref-active="{active: \'admin.roles({page: 1})\'}"><a ui-sref="admin.roles"></a></div>',
+        '<div ng-sref-active="{active: \'admin.roles({page: 1})\'}"><a ng-sref="admin.roles"></a></div>',
       )($rootScope);
       $state.transitionTo("admin.roles");
       await wait(100);
@@ -1077,7 +1077,7 @@ describe("uiSrefActive", () => {
 
     it("should support multiple <className, stateOrName> pairs", async () => {
       el = $compile(
-        "<div ui-sref-active=\"{contacts: 'contacts.**', admin: 'admin.roles({page: 1})'}\"></div>",
+        "<div ng-sref-active=\"{contacts: 'contacts.**', admin: 'admin.roles({page: 1})'}\"></div>",
       )($rootScope);
       $state.transitionTo("contacts");
       await wait(100);
@@ -1092,7 +1092,7 @@ describe("uiSrefActive", () => {
     it("should update the active classes when compiled", async () => {
       $state.transitionTo("admin.roles");
       await wait(100);
-      el = $compile("<div ui-sref-active=\"{active: 'admin.roles'}\"/>")(
+      el = $compile("<div ng-sref-active=\"{active: 'admin.roles'}\"/>")(
         $rootScope,
       );
       $rootScope.$digest();
@@ -1114,7 +1114,7 @@ describe("uiSrefActive", () => {
         },
       });
       template = $compile(
-        '<div ui-sref-active="{ active: \'contacts.lazy.s1\' }"><a ui-sref="contacts.lazy.s1">Lazy</a></div><div ui-sref-active="{ active: \'contacts.lazy.s2\' }"></div>',
+        '<div ng-sref-active="{ active: \'contacts.lazy.s1\' }"><a ng-sref="contacts.lazy.s1">Lazy</a></div><div ng-sref-active="{ active: \'contacts.lazy.s2\' }"></div>',
       )($rootScope);
       $rootScope.$digest();
       $state.transitionTo("contacts.lazy.s1");
@@ -1127,7 +1127,7 @@ describe("uiSrefActive", () => {
   xdescribe("ng-{class,style} interface, and handle values as arrays", () => {
     it("should match on abstract states that are included by the current state", async () => {
       el = $compile(
-        '<div ui-sref-active="{active: [\'randomState.**\', \'admin.roles\']}"><a ui-sref-active="active" ui-sref="admin.roles">Roles</a></div>',
+        '<div ng-sref-active="{active: [\'randomState.**\', \'admin.roles\']}"><a ng-sref-active="active" ng-sref="admin.roles">Roles</a></div>',
       )($rootScope);
       $state.transitionTo("admin.roles");
       await wait(100);
@@ -1139,7 +1139,7 @@ describe("uiSrefActive", () => {
 
     it("should match on state parameters", async () => {
       el = $compile(
-        "<div ui-sref-active=\"{active: ['admin.roles({page: 1})']}\"></div>",
+        "<div ng-sref-active=\"{active: ['admin.roles({page: 1})']}\"></div>",
       )($rootScope);
       $state.transitionTo("admin.roles", { page: 1 });
       await wait(100);
@@ -1148,7 +1148,7 @@ describe("uiSrefActive", () => {
 
     it("should support multiple <className, stateOrName> pairs", async () => {
       el = $compile(
-        "<div ui-sref-active=\"{contacts: ['contacts.item', 'contacts.item.detail'], admin: 'admin.roles({page: 1})'}\"></div>",
+        "<div ng-sref-active=\"{contacts: ['contacts.item', 'contacts.item.detail'], admin: 'admin.roles({page: 1})'}\"></div>",
       )($rootScope);
       $state.transitionTo("contacts.item.detail", { id: 1, foo: "bar" });
       await wait(100);
@@ -1164,7 +1164,7 @@ describe("uiSrefActive", () => {
       $state.transitionTo("admin.roles");
       await wait(100);
       el = $compile(
-        "<div ui-sref-active=\"{active: ['admin.roles', 'admin.someOtherState']}\"/>",
+        "<div ng-sref-active=\"{active: ['admin.roles', 'admin.someOtherState']}\"/>",
       )($rootScope);
       $rootScope.$digest();
       timeoutFlush();

@@ -9,7 +9,7 @@ import { RegisteredHook } from "./hookRegistry";
  * The TransitionOptions object can be used to change the behavior of a transition.
  *
  * It is passed as the third argument to [[StateService.go]], [[StateService.transitionTo]].
- * It can also be used with a `uiSref`.
+ * It can also be used with a `ngSref`.
  */
 export interface TransitionOptions {
   /**

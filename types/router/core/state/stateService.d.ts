@@ -99,7 +99,7 @@ export declare class StateService {
    *
    * #### Example:
    * ```js
-   * let app angular.module('app', ['ui.router']);
+   * let app angular.module('app', ['ng.router']);
    *
    * app.controller('ctrl', function ($scope, $state) {
    *   $scope.reload = function(){
@@ -123,7 +123,7 @@ export declare class StateService {
    * ```js
    * //assuming app application consists of 3 states: 'contacts', 'contacts.detail', 'contacts.detail.item'
    * //and current state is 'contacts.detail.item'
-   * let app angular.module('app', ['ui.router']);
+   * let app angular.module('app', ['ng.router']);
    *
    * app.controller('ctrl', function ($scope, $state) {
    *   $scope.reload = function(){
@@ -149,7 +149,7 @@ export declare class StateService {
    *
    * #### Example:
    * ```js
-   * let app = angular.module('app', ['ui.router']);
+   * let app = angular.module('app', ['ng.router']);
    *
    * app.controller('ctrl', function ($scope, $state) {
    *   $scope.changeState = function () {
@@ -202,7 +202,7 @@ export declare class StateService {
    *
    * #### Example:
    * ```js
-   * let app = angular.module('app', ['ui.router']);
+   * let app = angular.module('app', ['ng.router']);
    *
    * app.controller('ctrl', function ($scope, $state) {
    *   $scope.changeState = function () {

@@ -89,14 +89,14 @@ export declare class TemplateFactory implements TemplateFactoryProvider {
    * It analyses the component's bindings, then constructs a template that instantiates the component.
    * The template wires input and output bindings to resolves or from the parent component.
    *
-   * @param uiView {object} The parent ui-view (for binding outputs to callbacks)
+   * @param ngView {object} The parent ui-view (for binding outputs to callbacks)
    * @param context The ResolveContext (for binding outputs to callbacks returned from resolves)
    * @param component {string} Component's name in camel case.
    * @param bindings An object defining the component's bindings: {foo: '<'}
    * @return {string} The template as a string: "<component-name input1='::$resolve.foo'></component-name>".
    */
   makeComponentTemplate(
-    uiView: IAugmentedJQuery,
+    ngView: IAugmentedJQuery,
     context: ResolveContext,
     component: string,
     bindings?: any,

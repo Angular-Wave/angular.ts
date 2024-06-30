@@ -195,7 +195,7 @@ let $stateRegistryProvider;
  * This angular service exposes the [[UIViewScrollProvider]] singleton and is
  * used to disable UI-Router's scroll behavior.
  */
-let $uiViewScrollProvider;
+let $ngViewScrollProvider;
 /**
  * The View Scroll function
  *
@@ -207,9 +207,9 @@ let $uiViewScrollProvider;
  * If you prefer to rely on `$anchorScroll` to scroll the view to the anchor,
  * this can be enabled by calling [[UIViewScrollProvider.useAnchorScroll]].
  *
- * Note: this function is used by the [[directives.uiView]] when the `autoscroll` expression evaluates to true.
+ * Note: this function is used by the [[directives.ngView]] when the `autoscroll` expression evaluates to true.
  */
-let $uiViewScroll;
+let $ngViewScroll;
 /**
  * The StateProvider
  *

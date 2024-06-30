@@ -31,8 +31,8 @@ export interface ActiveUIView {
  * with the `ViewConfig`.  The `ui-view` then loads itself using the information found in the `ViewConfig`.
  *
  * A `ViewConfig` if matched with a `ui-view` by finding all `ui-view`s which were created in the
- * context named by the `uiViewContextAnchor`, and finding the `ui-view` or child `ui-view` that matches
- * the `uiViewName` address.
+ * context named by the `ngViewContextAnchor`, and finding the `ui-view` or child `ui-view` that matches
+ * the `ngViewName` address.
  */
 export interface ViewConfig {
   $id: number;

@@ -5,7 +5,7 @@
 
     <script src="//unpkg.com/@uirouter/angularjs/release/angular-ui-router.js"></script>
     <script>
-      var myApp = angular.module("test", ["ui.router"]);
+      var myApp = angular.module("test", ["ng.router"]);
 
       myApp.config(function ($stateProvider) {
         var helloState = {
@@ -26,7 +26,7 @@
     </script>
   </head>
   <body ng-app="test">
-    <a ui-sref="hello" ui-sref-active="active">Hello</a>
+    <a ng-sref="hello" ng-sref-active="active">Hello</a>
     <ng-view></ng-view>
     {{ 2 + 2}}
   </body>

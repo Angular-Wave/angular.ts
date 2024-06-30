@@ -56,7 +56,7 @@ export declare class StateProvider {
    * - **parent** `{object}` - returns the parent state object.
    * - **data** `{object}` - returns state data, including any inherited data that is not
    *   overridden by own values (if any).
-   * - **url** `{object}` - returns a {@link ui.router.util.type:UrlMatcher UrlMatcher}
+   * - **url** `{object}` - returns a {@link ng.router.util.type:UrlMatcher UrlMatcher}
    *   or `null`.
    * - **navigable** `{object}` - returns closest ancestor state that has a URL (aka is
    *   navigable).
@@ -127,7 +127,7 @@ export declare class StateProvider {
    * <a id='template'></a>
    *
    * - **`template`** - {string|function=} - html template as a string or a function that returns
-   *   an html template as a string which should be used by the uiView directives. This property
+   *   an html template as a string which should be used by the ngView directives. This property
    *   takes precedence over templateUrl.
    *
    *   If `template` is a function, it will be called with the following parameters:
@@ -138,7 +138,7 @@ export declare class StateProvider {
    * <a id='templateUrl'></a>
    *
    * - **`templateUrl`** - {string|function=} - path or function that returns a path to an html
-   *   template that should be used by uiView.
+   *   template that should be used by ngView.
    *
    *   If `templateUrl` is a function, it will be called with the following parameters:
    *

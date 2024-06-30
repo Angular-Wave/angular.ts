@@ -22,7 +22,7 @@ describe("ngView", () => {
     $state,
     $q,
     $timeout,
-    $uiViewScroll;
+    $ngViewScroll;
 
   const aState = {
       name: "a",
@@ -119,7 +119,7 @@ describe("ngView", () => {
       name: "n",
       template: "nState",
       controller: function ($scope, $element) {
-        const data = $element.data("$uiViewAnim");
+        const data = $element.data("$ngViewAnim");
         $scope.$on("$destroy", () => {
           log += "destroy;";
         });
@@ -138,10 +138,10 @@ describe("ngView", () => {
     publishExternalAPI();
     log = "";
     app = window.angular
-      .module("defaultModule", ["ui.router"])
+      .module("defaultModule", ["ng.router"])
       .config(($provide, _$stateProvider_) => {
-        $provide.decorator("$uiViewScroll", () => {
-          return jasmine.createSpy("$uiViewScroll");
+        $provide.decorator("$ngViewScroll", () => {
+          return jasmine.createSpy("$ngViewScroll");
         });
 
         _$stateProvider_
@@ -168,14 +168,14 @@ describe("ngView", () => {
     ]);
 
     $injector.invoke(
-      (_$state_, _$q_, _$timeout_, $rootScope, _$compile_, _$uiViewScroll_) => {
+      (_$state_, _$q_, _$timeout_, $rootScope, _$compile_, _$ngViewScroll_) => {
         scope = $rootScope.$new();
         $compile = _$compile_;
         $state = _$state_;
         $q = _$q_;
         $timeout = _$timeout_;
         elem = jqLite("<div>");
-        $uiViewScroll = _$uiViewScroll_;
+        $ngViewScroll = _$ngViewScroll_;
       },
     );
   });
@@ -320,7 +320,7 @@ describe("ngView", () => {
 
       $state.transitionTo(aState);
       await wait(100);
-      expect($uiViewScroll).not.toHaveBeenCalled();
+      expect($ngViewScroll).not.toHaveBeenCalled();
     });
 
     it("should autoscroll when expression is missing", async () => {
@@ -330,7 +330,7 @@ describe("ngView", () => {
 
       // animateFlush($animate);
 
-      expect($uiViewScroll).toHaveBeenCalledWith(elem.find("ng-view"));
+      expect($ngViewScroll).toHaveBeenCalledWith(elem.find("ng-view"));
     });
 
     it("should autoscroll based on expression", async () => {
@@ -343,7 +343,7 @@ describe("ngView", () => {
       $state.transitionTo(aState);
       await wait(100);
 
-      expect($uiViewScroll).not.toHaveBeenCalled();
+      expect($ngViewScroll).not.toHaveBeenCalled();
 
       scope.doScroll = true;
       $state.transitionTo(bState);
@@ -351,14 +351,14 @@ describe("ngView", () => {
 
       let target,
         index = -1,
-        uiViews = elem.find("ng-view");
+        ngViews = elem.find("ng-view");
 
-      while (index++ < uiViews.length) {
-        const uiView = jqLite(uiViews[index]);
-        if (uiView.text() === bState.template) target = uiView;
+      while (index++ < ngViews.length) {
+        const ngView = jqLite(ngViews[index]);
+        if (ngView.text() === bState.template) target = ngView;
       }
 
-      expect($uiViewScroll).toHaveBeenCalledWith(target);
+      expect($ngViewScroll).toHaveBeenCalledWith(target);
     });
   });
 
@@ -573,7 +573,7 @@ describe("ngView", () => {
     });
 
     describe("working with ngRepeat", () => {
-      it("should have correct number of uiViews", async () => {
+      it("should have correct number of ngViews", async () => {
         elem.append(
           $compile(
             '<div><ng-view ng-repeat="view in views" name="{{view}}"></ng-view></div>',
@@ -622,20 +622,20 @@ describe("ngView", () => {
 
         scope.$digest();
 
-        let uiViews = elem.find("ng-view");
+        let ngViews = elem.find("ng-view");
 
-        expect(uiViews.eq(0).text()).toBe(lState.views.view1.template);
-        expect(uiViews.eq(1).text()).toBe(lState.views.view2.template);
-        expect(uiViews.eq(2).length).toBe(0);
+        expect(ngViews.eq(0).text()).toBe(lState.views.view1.template);
+        expect(ngViews.eq(1).text()).toBe(lState.views.view2.template);
+        expect(ngViews.eq(2).length).toBe(0);
 
         scope.views.push("view3");
         scope.$digest();
 
-        uiViews = elem.find("ng-view");
+        ngViews = elem.find("ng-view");
 
-        expect(uiViews.eq(0).text()).toBe(lState.views.view1.template);
-        expect(uiViews.eq(1).text()).toBe(lState.views.view2.template);
-        expect(uiViews.eq(2).text()).toBe(lState.views.view3.template);
+        expect(ngViews.eq(0).text()).toBe(lState.views.view1.template);
+        expect(ngViews.eq(1).text()).toBe(lState.views.view2.template);
+        expect(ngViews.eq(2).text()).toBe(lState.views.view3.template);
       });
 
       it("should interpolate ng-view names", async () => {
@@ -656,20 +656,20 @@ describe("ngView", () => {
 
         scope.$digest();
 
-        let uiViews = elem.find("ng-view");
+        let ngViews = elem.find("ng-view");
 
-        expect(uiViews.eq(0).text()).toBe(lState.views.view1.template);
-        expect(uiViews.eq(1).text()).toBe(lState.views.view2.template);
-        expect(uiViews.eq(2).length).toBe(0);
+        expect(ngViews.eq(0).text()).toBe(lState.views.view1.template);
+        expect(ngViews.eq(1).text()).toBe(lState.views.view2.template);
+        expect(ngViews.eq(2).length).toBe(0);
 
         scope.views.push("view3");
         scope.$digest();
 
-        uiViews = elem.find("ng-view");
+        ngViews = elem.find("ng-view");
 
-        expect(uiViews.eq(0).text()).toBe(lState.views.view1.template);
-        expect(uiViews.eq(1).text()).toBe(lState.views.view2.template);
-        expect(uiViews.eq(2).text()).toBe(lState.views.view3.template);
+        expect(ngViews.eq(0).text()).toBe(lState.views.view1.template);
+        expect(ngViews.eq(1).text()).toBe(lState.views.view2.template);
+        expect(ngViews.eq(2).text()).toBe(lState.views.view3.template);
       });
     });
   });
@@ -766,12 +766,12 @@ describe("ngView", () => {
   //     scope.shouldShow = true;
   //     scope.$digest();
 
-  //     // $ViewDirective enter animation - Basically it's just the <!-- uiView --> comment
+  //     // $ViewDirective enter animation - Basically it's just the <!-- ngView --> comment
   //     animation = $animate.queue.shift();
   //     expect(animation.event).toBe("enter");
   //     expect(animation.element.text()).toBe("");
 
-  //     // $ViewDirectiveFill enter animation - The second uiView directive that files in the content
+  //     // $ViewDirectiveFill enter animation - The second ngView directive that files in the content
   //     animation = $animate.queue.shift();
   //     expect(animation.event).toBe("enter");
   //     expect(animation.element.text()).toBe(content);
@@ -779,7 +779,7 @@ describe("ngView", () => {
   //     scope.shouldShow = false;
   //     scope.$digest();
 
-  //     // uiView leave animation
+  //     // ngView leave animation
   //     animation = $animate.queue.shift();
   //     expect(animation.event).toBe("leave");
   //     expect(animation.element.text()).toBe(content);
@@ -841,7 +841,7 @@ describe("UiView", () => {
     $q,
     $timeout,
     $rootScope,
-    $uiViewScroll;
+    $ngViewScroll;
 
   beforeEach(() => {
     dealoc(document.getElementById("dummy"));
@@ -849,7 +849,7 @@ describe("UiView", () => {
     publishExternalAPI();
     log = "";
     app = window.angular
-      .module("defaultModule", ["ui.router"])
+      .module("defaultModule", ["ng.router"])
       .config((_$stateProvider_) => {
         $stateProvider = _$stateProvider_;
         $stateProvider
@@ -872,7 +872,7 @@ describe("UiView", () => {
         _$timeout_,
         _$rootScope_,
         _$compile_,
-        _$uiViewScroll_,
+        _$ngViewScroll_,
       ) => {
         $rootScope = _$rootScope_;
         scope = $rootScope.$new();
@@ -881,7 +881,7 @@ describe("UiView", () => {
         $q = _$q_;
         $timeout = _$timeout_;
         elem = jqLite("<div>");
-        $uiViewScroll = _$uiViewScroll_;
+        $ngViewScroll = _$ngViewScroll_;
       },
     );
   });
@@ -920,7 +920,7 @@ describe("UiView", () => {
   });
 });
 
-describe("uiView transclusion", () => {
+describe("ngView transclusion", () => {
   let scope, $compile, elem, $injector, $rootScope, $state;
 
   beforeEach(() => {
@@ -928,7 +928,7 @@ describe("uiView transclusion", () => {
     window.angular = new Angular();
     publishExternalAPI();
     window.angular
-      .module("defaultModule", ["ui.router"])
+      .module("defaultModule", ["ng.router"])
       .directive("scopeObserver", () => {
         return {
           restrict: "E",
@@ -959,7 +959,7 @@ describe("uiView transclusion", () => {
         _$timeout_,
         _$rootScope_,
         _$compile_,
-        _$uiViewScroll_,
+        _$ngViewScroll_,
       ) => {
         $rootScope = _$rootScope_;
         scope = $rootScope.$new();
@@ -985,7 +985,7 @@ describe("uiView transclusion", () => {
   });
 });
 
-describe("uiView controllers or onEnter handlers", () => {
+describe("ngView controllers or onEnter handlers", () => {
   let el, template, scope, count, $rootScope, $compile, $state, elem;
 
   beforeEach(() => {
@@ -993,7 +993,7 @@ describe("uiView controllers or onEnter handlers", () => {
     window.angular = new Angular();
     publishExternalAPI();
     window.angular
-      .module("defaultModule", ["ui.router"])
+      .module("defaultModule", ["ng.router"])
       .config(function ($stateProvider) {
         count = 0;
         $stateProvider
@@ -1038,7 +1038,7 @@ describe("uiView controllers or onEnter handlers", () => {
         _$timeout_,
         _$rootScope_,
         _$compile_,
-        _$uiViewScroll_,
+        _$ngViewScroll_,
       ) => {
         $rootScope = _$rootScope_;
         scope = $rootScope.$new();
@@ -1081,7 +1081,7 @@ describe("angular 1.5+ style .component()", () => {
     window.angular = new Angular();
     publishExternalAPI();
     window.angular
-      .module("defaultModule", ["ui.router"])
+      .module("defaultModule", ["ng.router"])
       .directive("ng12Directive", () => {
         return {
           restrict: "E",

@@ -251,7 +251,7 @@ export interface Ng1ViewDeclaration extends _ViewDeclaration {
    * A property of [[Ng1StateDeclaration]] or [[Ng1ViewDeclaration]]:
    *
    * The controller function, or the name of a registered controller.  The controller function will be used
-   * to control the contents of the [[directives.uiView]] directive.
+   * to control the contents of the [[directives.ngView]] directive.
    *
    * If specified as a string, controllerAs can be declared here, i.e., "FooController as foo" instead of in
    * a separate [[controllerAs]] property.
@@ -310,7 +310,7 @@ export interface Ng1ViewDeclaration extends _ViewDeclaration {
    * A property of [[Ng1StateDeclaration]] or [[Ng1ViewDeclaration]]:
    *
    * HTML template as a string, or a function which returns an html template as a string.
-   * This template will be used to render the corresponding [[directives.uiView]] directive.
+   * This template will be used to render the corresponding [[directives.ngView]] directive.
    *
    * This property takes precedence over templateUrl.
    *
@@ -335,7 +335,7 @@ export interface Ng1ViewDeclaration extends _ViewDeclaration {
    * A property of [[Ng1StateDeclaration]] or [[Ng1ViewDeclaration]]:
    *
    * A path or a function that returns a path to an html template.
-   * The template will be fetched and used to render the corresponding [[directives.uiView]] directive.
+   * The template will be fetched and used to render the corresponding [[directives.ngView]] directive.
    *
    * If `templateUrl` is a function, it will be called with the Transition parameters as the first argument.
    *
@@ -358,7 +358,7 @@ export interface Ng1ViewDeclaration extends _ViewDeclaration {
    * A property of [[Ng1StateDeclaration]] or [[Ng1ViewDeclaration]]:
    *
    * Injected function which returns the HTML template.
-   * The template will be used to render the corresponding [[directives.uiView]] directive.
+   * The template will be used to render the corresponding [[directives.ngView]] directive.
    *
    * #### Example:
    * ```js

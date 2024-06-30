@@ -25,7 +25,7 @@ describe("view hooks", () => {
     window.angular = new Angular();
     publishExternalAPI();
     app = window.angular
-      .module("defaultModule", ["ui.router"])
+      .module("defaultModule", ["ng.router"])
       .config(($stateProvider) => {
         $stateProvider.state({ name: "foo", url: "/foo", component: "foo" });
         $stateProvider.state({ name: "bar", url: "/bar", component: "bar" });

@@ -6,7 +6,7 @@ import { Ng1ViewConfig } from "../statebuilders/views";
 /** @hidden */
 export declare type UIViewData = {
   $cfg: Ng1ViewConfig;
-  $uiView: ActiveUIView;
+  $ngView: ActiveUIView;
 };
 /** @hidden */
 export declare type UIViewAnimData = {
@@ -27,7 +27,7 @@ export declare type UIViewAnimData = {
  *   The ui-view can be targeted in a View using the name ([[Ng1StateDeclaration.views]]).
  *
  * - `autoscroll`: an expression. When it evaluates to true, the `ui-view` will be scrolled into view when it is activated.
- *   Uses [[$uiViewScroll]] to do the scrolling.
+ *   Uses [[$ngViewScroll]] to do the scrolling.
  *
  * - `onload`: Expression to evaluate whenever the view updates.
  *
@@ -141,4 +141,4 @@ export declare type UIViewAnimData = {
  * });
  * ```
  */
-export declare let uiView: IDirective;
+export declare let ngView: IDirective;

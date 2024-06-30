@@ -11,15 +11,15 @@ import { trace } from "./common/trace";
 import { $ViewScrollProvider } from "./view-scroll";
 import { $IsStateFilter, $IncludedByStateFilter } from "./state-filters";
 import {
-  uiSrefActiveDirective,
-  uiStateDirective,
-  uiSrefDirective,
+  ngSrefActiveDirective,
+  ngStateDirective,
+  ngSrefDirective,
 } from "./directives/state-directives";
-import { uiView, $ViewDirectiveFill } from "./directives/view-directive";
+import { ngView, $ViewDirectiveFill } from "./directives/view-directive";
 
 export function initRouter() {
   window.angular
-    .module("ui.router", ["ng"])
+    .module("ng.router", ["ng"])
     .provider("$router", $routerProvider)
     .provider("$urlService", getProviderFor("urlService"))
     .provider("$urlMatcherFactory", [
@@ -33,7 +33,7 @@ export function initRouter() {
     .provider("$routerGlobals", getProviderFor("globals"))
     .provider("$transitions", getProviderFor("transitionService"))
     .provider("$state", ["$routerProvider", getStateProvider])
-    .provider("$uiViewScroll", $ViewScrollProvider)
+    .provider("$ngViewScroll", $ViewScrollProvider)
     .factory("$stateParams", [
       "$router",
       function ($router) {
@@ -46,11 +46,11 @@ export function initRouter() {
     .value("$trace", trace)
     .filter("isState", $IsStateFilter)
     .filter("includedByState", $IncludedByStateFilter)
-    .directive("uiSref", uiSrefDirective)
-    .directive("uiSrefActive", uiSrefActiveDirective)
-    .directive("uiSrefActiveEq", uiSrefActiveDirective)
-    .directive("uiState", uiStateDirective)
-    .directive("ngView", uiView)
+    .directive("ngSref", ngSrefDirective)
+    .directive("ngSrefActive", ngSrefActiveDirective)
+    .directive("ngSrefActiveEq", ngSrefActiveDirective)
+    .directive("ngState", ngStateDirective)
+    .directive("ngView", ngView)
     .directive("ngView", $ViewDirectiveFill)
 
     .run(watchDigests)

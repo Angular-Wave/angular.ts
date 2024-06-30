@@ -14,7 +14,7 @@ describe("UrlMatcher", () => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
     publishExternalAPI();
-    window.angular.module("defaultModule", ["ui.router"]);
+    window.angular.module("defaultModule", ["ng.router"]);
     $injector = window.angular.bootstrap(document.getElementById("dummy"), [
       "defaultModule",
     ]);
@@ -716,7 +716,7 @@ describe("UrlMatcher", () => {
 //   describe(".type()", ( ) => {
 //     let $umf;
 //     beforeEach(
-//       module("ui.router.util", function ($urlMatcherFactoryProvider) {
+//       module("ng.router.util", function ($urlMatcherFactoryProvider) {
 //         $umf = $urlMatcherFactoryProvider;
 //         $urlMatcherFactoryProvider.type("myType", {}, ( ) => {
 //           return {

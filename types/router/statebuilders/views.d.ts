@@ -41,7 +41,7 @@ export declare class Ng1ViewConfig implements ViewConfig {
     factory: TemplateFactory,
   );
   load(): Promise<this>;
-  getTemplate: (uiView: any, context: ResolveContext) => string;
+  getTemplate: (ngView: any, context: ResolveContext) => string;
   /**
    * Gets the controller for a view configuration.
    *

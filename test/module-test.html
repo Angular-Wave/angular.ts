@@ -5,7 +5,7 @@
     <script type="module" src="../src/index.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        var myApp = window.angular.module("test", ["ui.router"]);
+        var myApp = window.angular.module("test", ["ng.router"]);
         myApp
           .config(function ($stateProvider) {
             $stateProvider
@@ -20,19 +20,19 @@
                 name: "contacts",
                 url: "/contacts",
                 template:
-                  '<a ui-sref=".item({ id: 5 })" class="item">Person</a> <ng-view></ng-view>',
+                  '<a ng-sref=".item({ id: 5 })" class="item">Person</a> <ng-view></ng-view>',
               })
               .state({
                 name: "contacts.item",
                 url: "/{id:int}",
                 template:
-                  '<a ui-sref=".detail" class="item-detail">Detail</a> | <a ui-sref="^" class="item-parent">Parent</a> | <ng-view></ng-view>',
+                  '<a ng-sref=".detail" class="item-detail">Detail</a> | <a ng-sref="^" class="item-parent">Parent</a> | <ng-view></ng-view>',
               })
               .state({
                 name: "contacts.item.detail",
                 url: "/{id}",
                 template:
-                  '<div class="title">Detail</div> | <a ui-sref="^" class="item-parent2">Item</a>',
+                  '<div class="title">Detail</div> | <a ng-sref="^" class="item-parent2">Item</a>',
               });
           })
           .controller(
@@ -52,7 +52,7 @@
   <body ng-app="test">
     <div ng-controller="TestController as $ctrl">
       {{$ctrl.test}}
-      <a ui-sref="contacts.item.detail({ id: contact.id })">Details</a>
+      <a ng-sref="contacts.item.detail({ id: contact.id })">Details</a>
     </div>
   </body>
 </html>

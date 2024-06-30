@@ -172,13 +172,13 @@ export class TemplateFactory {
    * It analyses the component's bindings, then constructs a template that instantiates the component.
    * The template wires input and output bindings to resolves or from the parent component.
    *
-   * @param {angular.IAugmentedJQuery} uiView {object} The parent ui-view (for binding outputs to callbacks)
+   * @param {angular.IAugmentedJQuery} ngView {object} The parent ui-view (for binding outputs to callbacks)
    * @param {angular.ResolveContext} context The ResolveContext (for binding outputs to callbacks returned from resolves)
    * @param {string} component {string} Component's name in camel case.
    * @param {any} [bindings] An object defining the component's bindings: {foo: '<'}
    * @return {string} The template as a string: "<component-name input1='::$resolve.foo'></component-name>".
    */
-  makeComponentTemplate(uiView, context, component, bindings) {
+  makeComponentTemplate(ngView, context, component, bindings) {
     bindings = bindings || {};
     // Bind once prefix
     const prefix = "::"; //angular.version.minor >= 3 ? "::" : "";
@@ -194,8 +194,8 @@ export class TemplateFactory {
       // If the ui-view has an attribute which matches a binding on the routed component
       // then pass that attribute through to the routed component template.
       // Prefer ui-view wired mappings to resolve data, unless the resolve was explicitly bound using `bindings:`
-      if (uiView.attr(attrName) && !bindings[name])
-        return `${attrName}='${uiView.attr(attrName)}'`;
+      if (ngView.attr(attrName) && !bindings[name])
+        return `${attrName}='${ngView.attr(attrName)}'`;
       const resolveName = bindings[name] || name;
       // Pre-evaluate the expression for "@" bindings by enclosing in {{ }}
       // some-attr="{{ ::$resolve.someResolveName }}"
