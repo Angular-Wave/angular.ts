@@ -428,7 +428,7 @@ export interface StateDeclaration {
    *
    * Note: `redirectTo` is processed as an `onStart` hook, before `LAZY` resolves.
    * If your redirect function relies on resolve data, get the [[Transition.injector]] and get a
-   * promise for the resolve data using [[UIInjector.getAsync]].
+   * promise for the resolve data using [[NGInjector.getAsync]].
    *
    * #### Example:
    * ```js

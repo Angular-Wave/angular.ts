@@ -11,12 +11,12 @@ import { StateObject } from "./stateObject";
 import { TargetState } from "./targetState";
 import { RawParams } from "../params/interface";
 import { Router } from "../router";
-import { UIInjector } from "../interface";
+import { NGInjector } from "../interface";
 import { StateParams } from "../params/stateParams";
 export declare type OnInvalidCallback = (
   toState?: TargetState,
   fromState?: TargetState,
-  injector?: UIInjector,
+  injector?: NGInjector,
 ) => HookResult;
 /**
  * Provides services related to ui-router states.

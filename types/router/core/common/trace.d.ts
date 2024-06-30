@@ -1,6 +1,6 @@
 import { Transition } from "../transition/transition";
 import { ViewTuple } from "../view";
-import { ActiveUIView, ViewConfig, ViewContext } from "../view/interface";
+import { ActiveNGView, ViewConfig, ViewContext } from "../view/interface";
 import { Resolvable } from "../resolve/resolvable";
 import { PathNode } from "../path/pathNode";
 import { PolicyWhen } from "../resolve/interface";
@@ -24,7 +24,7 @@ declare enum Category {
   RESOLVE = 0,
   TRANSITION = 1,
   HOOK = 2,
-  UIVIEW = 3,
+  NGVIEW = 3,
   VIEWCONFIG = 4,
 }
 export { Category };
@@ -101,17 +101,17 @@ export declare class Trace {
   /** @internal called by ui-router code */
   traceSuccess(finalState: StateObject, trans: Transition): void;
   /** @internal called by ui-router code */
-  traceUIViewEvent(event: string, viewData: ActiveUIView, extra?: string): void;
+  traceNGViewEvent(event: string, viewData: ActiveNGView, extra?: string): void;
   /** @internal called by ui-router code */
-  traceUIViewConfigUpdated(viewData: ActiveUIView, context: ViewContext): void;
+  traceNGViewConfigUpdated(viewData: ActiveNGView, context: ViewContext): void;
   /** @internal called by ui-router code */
-  traceUIViewFill(viewData: ActiveUIView, html: string): void;
+  traceNGViewFill(viewData: ActiveNGView, html: string): void;
   /** @internal called by ui-router code */
   traceViewSync(pairs: ViewTuple[]): void;
   /** @internal called by ui-router code */
   traceViewServiceEvent(event: string, viewConfig: ViewConfig): void;
   /** @internal called by ui-router code */
-  traceViewServiceUIViewEvent(event: string, viewData: ActiveUIView): void;
+  traceViewServiceNGViewEvent(event: string, viewData: ActiveNGView): void;
 }
 /**
  * The [[Trace]] singleton

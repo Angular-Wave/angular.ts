@@ -3,6 +3,7 @@ import { StateDeclaration } from "./state/interface";
 import { StateObject } from "./state/stateObject";
 import { Transition } from "./transition/transition";
 import { Queue } from "./common/queue";
+/**
  * Global router state
  *
  * This is where we hold the global mutable state such as current state, current

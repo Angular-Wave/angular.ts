@@ -12,9 +12,9 @@ import { Ng1StateDeclaration } from "./interface";
  * The `$stateProvider` works similar to Angular's v1 router, but it focuses purely
  * on state.
  *
- * A state corresponds to a "place" in the application in terms of the overall UI and
+ * A state corresponds to a "place" in the application in terms of the overall NG and
  * navigation. A state describes (via the controller / template / view properties) what
- * the UI looks like and does at that place.
+ * the NG looks like and does at that place.
  *
  * States often have things in common, and the primary way of factoring out these
  * commonalities in this model is via the state hierarchy, i.e. parent/child states aka

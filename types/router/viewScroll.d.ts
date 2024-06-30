@@ -1,4 +1,4 @@
-export interface UIViewScrollProvider {
+export interface NGViewScrollProvider {
   /**
    * Uses standard anchorScroll behavior
    *

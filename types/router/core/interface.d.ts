@@ -3,7 +3,7 @@ import { Router } from "./router";
  * An interface for getting values from dependency injection.
  *
  * This is primarily used to get resolve values for a given token.
- * An instance of the `UIInjector` can be retrieved from the current transition using [[Transition.injector]].
+ * An instance of the `NGInjector` can be retrieved from the current transition using [[Transition.injector]].
  *
  * ---
  *
@@ -13,7 +13,7 @@ import { Router } from "./router";
  * In Angular 2, the native injector might be the root Injector,
  * or it might be a lazy loaded `NgModule` injector scoped to a lazy load state tree.
  */
-export interface UIInjector {
+export interface NGInjector {
   /**
    * Gets a value from the injector.
    *
@@ -88,11 +88,4 @@ export interface UIInjector {
    */
   getNative(token: any): any;
   getNative<T>(token: any): T;
-}
-export interface RouterPlugin {
-  name: string;
-}
-export declare abstract class RouterPluginBase implements RouterPlugin {
-  abstract name: string;
-  dispose(router: Router): void;
 }

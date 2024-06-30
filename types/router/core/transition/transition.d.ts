@@ -16,7 +16,7 @@ import { TargetState } from "../state/targetState";
 import { Resolvable } from "../resolve/resolvable";
 import { ViewConfig } from "../view/interface";
 import { Router } from "../router";
-import { UIInjector } from "../interface";
+import { NGInjector } from "../interface";
 import { ResolvableLiteral } from "../resolve/interface";
 import { Rejection } from "./rejectFactory";
 /**
@@ -283,12 +283,12 @@ export declare class Transition implements IHookRegistry {
   };
   paramsChanged<T>(): T;
   /**
-   * Creates a [[UIInjector]] Dependency Injector
+   * Creates a [[NGInjector]] Dependency Injector
    *
    * Returns a Dependency Injector for the Transition's target state (to state).
    * The injector provides resolve values which the target state has access to.
    *
-   * The `UIInjector` can also provide values from the native root/global injector (ng1/ng2).
+   * The `NGInjector` can also provide values from the native root/global injector (ng1/ng2).
    *
    * #### Example:
    * ```js
@@ -300,7 +300,7 @@ export declare class Transition implements IHookRegistry {
    * ```
    *
    * In some cases (such as `onBefore`), you may need access to some resolve data but it has not yet been fetched.
-   * You can use [[UIInjector.getAsync]] to get a promise for the data.
+   * You can use [[NGInjector.getAsync]] to get a promise for the data.
    * #### Example:
    * ```js
    * .onBefore({}, trans => {
@@ -335,9 +335,9 @@ export declare class Transition implements IHookRegistry {
    * @param state Limits the resolves provided to only the resolves the provided state has access to.
    * @param pathName Default: `'to'`: Chooses the path for which to create the injector. Use this to access resolves for `exiting` states.
    *
-   * @returns a [[UIInjector]]
+   * @returns a [[NGInjector]]
    */
-  injector(state?: StateOrName, pathName?: string): UIInjector;
+  injector(state?: StateOrName, pathName?: string): NGInjector;
   /**
    * Gets all available resolve tokens (keys)
    *
@@ -376,7 +376,7 @@ export declare class Transition implements IHookRegistry {
    *
    * Allows a transition hook to dynamically add a Resolvable to this Transition.
    *
-   * Use the [[Transition.injector]] to retrieve the resolved data in subsequent hooks ([[UIInjector.get]]).
+   * Use the [[Transition.injector]] to retrieve the resolved data in subsequent hooks ([[NGInjector.get]]).
    *
    * If a `state` argument is provided, the Resolvable is processed when that state is being entered.
    * If no `state` is provided then the root state is used.

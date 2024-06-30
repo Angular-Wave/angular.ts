@@ -1,6 +1,6 @@
 import { TypedMap } from "../common/common";
 import { PathNode } from "../path/pathNode";
-import { ActiveUIView, ViewContext, ViewConfig } from "./interface";
+import { ActiveNGView, ViewContext, ViewConfig } from "./interface";
 import { _ViewDeclaration } from "../state/interface";
 import { Router } from "../router";
 export declare type ViewConfigFactory = (
@@ -11,13 +11,13 @@ export interface ViewServicePluginAPI {
   _rootViewContext(context?: ViewContext): ViewContext;
   _viewConfigFactory(viewType: string, factory: ViewConfigFactory): any;
   /** @param id router.$id + "." + ngView.id */
-  _registeredUIView(id: string): ActiveUIView;
-  _registeredUIViews(): ActiveUIView[];
+  _registeredNGView(id: string): ActiveNGView;
+  _registeredNGViews(): ActiveNGView[];
   _activeViewConfigs(): ViewConfig[];
   _onSync(listener: ViewSyncListener): Function;
 }
 export interface ViewTuple {
-  ngView: ActiveUIView;
+  ngView: ActiveNGView;
   viewConfig: ViewConfig;
 }
 export interface ViewSyncListener {
@@ -33,9 +33,9 @@ export interface ViewSyncListener {
  *   The views from exited states are deactivated via [[deactivateViewConfig]].
  *   (See: the [[registerActivateViews]] Transition Hook)
  *
- * - As `ui-view` components pop in and out of existence, they register themselves using [[registerUIView]].
+ * - As `ui-view` components pop in and out of existence, they register themselves using [[registerNGView]].
  *
- * - When the [[sync]] function is called, the registered `ui-view`(s) ([[ActiveUIView]])
+ * - When the [[sync]] function is called, the registered `ui-view`(s) ([[ActiveNGView]])
  * are configured with the matching [[ViewConfig]](s)
  *
  */
@@ -106,8 +106,8 @@ export declare class ViewService {
    * @internal
    */
   static matches: (
-    ngViewsByFqn: TypedMap<ActiveUIView>,
-    ngView: ActiveUIView,
+    ngViewsByFqn: TypedMap<ActiveNGView>,
+    ngView: ActiveNGView,
   ) => (viewConfig: ViewConfig) => boolean;
   /**
    * Normalizes a view's name from a state.views configuration block.
@@ -120,7 +120,7 @@ export declare class ViewService {
    *
    * @returns the normalized ngViewName and ngViewContextAnchor that the view targets
    */
-  static normalizeUIViewTarget(
+  static normalizeNGViewTarget(
     context: ViewContext,
     rawViewName?: string,
   ): {
@@ -154,13 +154,13 @@ export declare class ViewService {
    * Note: the `ui-view` component uses the `ViewConfig` to determine what view should be loaded inside the `ui-view`,
    * and what the view's state context is.
    *
-   * Note: There is no corresponding `deregisterUIView`.
-   *       A `ui-view` should hang on to the return value of `registerUIView` and invoke it to deregister itself.
+   * Note: There is no corresponding `deregisterNGView`.
+   *       A `ui-view` should hang on to the return value of `registerNGView` and invoke it to deregister itself.
    *
-   * @param ngView The metadata for a UIView
+   * @param ngView The metadata for a NGView
    * @return a de-registration function used when the view is destroyed.
    */
-  registerUIView(ngView: ActiveUIView): () => void;
+  registerNGView(ngView: ActiveNGView): () => void;
   /**
    * Returns the list of views currently available on the page, by fully-qualified name.
    *

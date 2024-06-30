@@ -245,7 +245,7 @@ export interface ParamDeclaration {
    * Normally, if a parameter value changes, the state which declared that the parameter will be reloaded (entered/exited).
    * When a parameter is `dynamic`, a transition still occurs, but it does not cause the state to exit/enter.
    *
-   * This can be useful to build UI where the component updates itself when the param values change.
+   * This can be useful to build NG where the component updates itself when the param values change.
    * A common scenario where this is useful is searching/paging/sorting.
    *
    * ---

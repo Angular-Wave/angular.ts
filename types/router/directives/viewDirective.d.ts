@@ -1,15 +1,15 @@
 /** @publicapi @module directives */ /** */
 import { IDirective } from "../..";
-import { ActiveUIView } from "../core";
+import { ActiveNGView } from "../core";
 import { Ng1ViewConfig } from "../statebuilders/views";
 
 /** @hidden */
-export declare type UIViewData = {
+export declare type NGViewData = {
   $cfg: Ng1ViewConfig;
-  $ngView: ActiveUIView;
+  $ngView: ActiveNGView;
 };
 /** @hidden */
-export declare type UIViewAnimData = {
+export declare type NGViewAnimData = {
   $animEnter: Promise<any>;
   $animLeave: Promise<any>;
   $$animLeave: {

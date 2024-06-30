@@ -3,7 +3,7 @@ import { PathNode } from "../path/pathNode";
 import { Resolvable } from "./resolvable";
 import { StateObject } from "../state/stateObject";
 import { Transition } from "../transition/transition";
-import { UIInjector } from "../interface";
+import { NGInjector } from "../interface";
 export declare const NATIVE_INJECTOR_TOKEN: string;
 /**
  * Encapsulates Dependency Injection for a path of nodes
@@ -17,7 +17,7 @@ export declare const NATIVE_INJECTOR_TOKEN: string;
  */
 export declare class ResolveContext {
   private _path;
-  _injector: UIInjector;
+  _injector: NGInjector;
   constructor(_path: PathNode[]);
   /** Gets all the tokens found in the resolve context, de-duplicated */
   getTokens(): any[];
@@ -86,7 +86,7 @@ export declare class ResolveContext {
       value: any;
     }[]
   >;
-  injector(): UIInjector;
+  injector(): NGInjector;
   findNode(resolvable: Resolvable): PathNode;
   /**
    * Gets the async dependencies of a Resolvable

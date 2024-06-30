@@ -5,7 +5,6 @@ import { ViewService } from "./view/view";
 import { StateRegistry } from "./state/stateRegistry";
 import { StateService } from "./state/stateService";
 import { RouterGlobals } from "./globals";
-import { RouterPlugin } from "./interface";
 import { UrlService } from "./url/urlService";
 import { LocationServices, LocationConfig } from "./common/coreservices";
 import { Trace } from "./common/trace";
@@ -55,5 +54,4 @@ export declare class Router {
     locationService?: LocationServices,
     locationConfig?: LocationConfig,
   );
-
 }

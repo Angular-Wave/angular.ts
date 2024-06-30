@@ -5,7 +5,7 @@ export interface ViewContext {
   name: string;
   parent: ViewContext;
 }
-export interface ActiveUIView {
+export interface ActiveNGView {
   /** type of framework, e.g., "ng1" or "ng2" */
   $type: string;
   /** An auto-incremented id */
