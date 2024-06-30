@@ -278,7 +278,7 @@ describe("$state", () => {
           .state({
             name: "logA",
             url: "/logA",
-            template: "<div> <div ui-view/></div>",
+            template: "<div> <div ng-view/></div>",
             controller: function () {
               log += "logA;";
             },
@@ -288,7 +288,7 @@ describe("$state", () => {
             url: "/logB",
             views: {
               $default: {
-                template: "<div> <div ui-view/></div>",
+                template: "<div> <div ng-view/></div>",
                 controller: function () {
                   log += "logB;";
                 },
@@ -300,7 +300,7 @@ describe("$state", () => {
             url: "/logC",
             views: {
               $default: {
-                template: "<div> <div ui-view/></div>",
+                template: "<div> <div ng-view/></div>",
                 controller: function () {
                   log += "logC;";
                 },
@@ -385,7 +385,7 @@ describe("$state", () => {
             pathDyn: { dynamic: true },
             searchDyn: { dynamic: true },
           },
-          template: "dyn state. <div ui-view></div>",
+          template: "dyn state. <div ng-view></div>",
           controller: function () {
             this.uiOnParamsChanged = function (updatedParams) {
               const paramNames = Object.keys(updatedParams).sort();
@@ -451,7 +451,7 @@ describe("$state", () => {
           dynlog += "success;";
         });
 
-        $compile("<div><ui-view></ui-view></div>")($rootScope.$new());
+        $compile("<div><ng-view></ng-view></div>")($rootScope.$new());
         await wait(100);
         await initStateTo(dynamicstate, {
           path: "p1",

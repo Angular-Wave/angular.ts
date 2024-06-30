@@ -106,7 +106,7 @@ describe("view", () => {
 
     it("uses the controllerProvider to get controller dynamically", async () => {
       $controllerProvider.register("AcmeFooController", () => {});
-      elem.append($compile("<div><ui-view></ui-view></div>")(scope));
+      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
 
       const view = tail(path).views[0];
       view.load();

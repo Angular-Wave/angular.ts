@@ -3,7 +3,7 @@ import { Angular } from "../../src/loader";
 import { publishExternalAPI } from "../../src/public";
 import { wait } from "../test-utils";
 
-describe("uiView", () => {
+describe("ngView", () => {
   describe("scrollIntoView", () => {
     let elem, $anchorScroll, $uiViewScroll, $timeout;
 

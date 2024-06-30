@@ -170,7 +170,7 @@ export let uiView = [
             renderer = getRenderer(),
             inherited = $element.inheritedData("$uiView") || rootData,
             name =
-              $interpolate(attrs["uiView"] || attrs["name"] || "")(scope) ||
+              $interpolate(attrs["ngView"] || attrs["name"] || "")(scope) ||
               "$default";
           let previousEl, currentEl, currentScope, viewConfig;
           const activeUIView = {

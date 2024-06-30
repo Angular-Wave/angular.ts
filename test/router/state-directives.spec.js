@@ -33,13 +33,13 @@ describe("uiStateRef", () => {
           name: "contacts",
           url: "/contacts",
           template:
-            '<a ui-sref=".item({ id: 5 })" class="item">Person</a> <ui-view></ui-view>',
+            '<a ui-sref=".item({ id: 5 })" class="item">Person</a> <ng-view></ng-view>',
         })
         .state({
           name: "contacts.item",
           url: "/{id:int}",
           template:
-            '<a ui-sref=".detail" class="item-detail">Detail</a> | <a ui-sref="^" class="item-parent">Parent</a> | <ui-view></ui-view>',
+            '<a ui-sref=".detail" class="item-detail">Detail</a> | <a ui-sref="^" class="item-parent">Parent</a> | <ng-view></ng-view>',
         })
         .state({
           name: "contacts.item.detail",
@@ -587,7 +587,7 @@ describe("uiStateRef", () => {
       scope.$apply();
 
       $compile(el)(scope);
-      template = $compile(jqLite("<div><ui-view></ui-view><div>"))(scope);
+      template = $compile(jqLite("<div><ng-view></ng-view><div>"))(scope);
       scope.$digest();
     });
 
@@ -748,7 +748,7 @@ describe("uiSrefActive", () => {
           name: "admin",
           url: "/admin",
           abstract: true,
-          template: "<ui-view/>",
+          template: "<ng-view/>",
         })
         .state({ name: "admin.roles", url: "/roles?page" })
         .state({
@@ -920,7 +920,7 @@ describe("uiSrefActive", () => {
   });
 
   it("should resolve relative state refs", async () => {
-    el = jqLite("<section><div ui-view></div></section>");
+    el = jqLite("<section><div ng-view></div></section>");
     template = $compile(el)($rootScope);
     $rootScope.$digest();
 

@@ -20,13 +20,13 @@
                 name: "contacts",
                 url: "/contacts",
                 template:
-                  '<a ui-sref=".item({ id: 5 })" class="item">Person</a> <ui-view></ui-view>',
+                  '<a ui-sref=".item({ id: 5 })" class="item">Person</a> <ng-view></ng-view>',
               })
               .state({
                 name: "contacts.item",
                 url: "/{id:int}",
                 template:
-                  '<a ui-sref=".detail" class="item-detail">Detail</a> | <a ui-sref="^" class="item-parent">Parent</a> | <ui-view></ui-view>',
+                  '<a ui-sref=".detail" class="item-detail">Detail</a> | <a ui-sref="^" class="item-parent">Parent</a> | <ng-view></ng-view>',
               })
               .state({
                 name: "contacts.item.detail",

@@ -47,7 +47,7 @@ describe("view hooks", () => {
       $state = _$state_;
       $q = _$q_;
       $timeout = _$timeout_;
-      $compile("<div><ui-view></ui-view></div>")($rootScope.$new());
+      $compile("<div><ng-view></ng-view></div>")($rootScope.$new());
     });
   });
 

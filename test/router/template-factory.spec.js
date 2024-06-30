@@ -115,7 +115,7 @@ describe("templateFactory", () => {
           $compile = _$compile_;
         },
       );
-      el = $compile(jqLite("<div><ui-view></ui-view></div>"))($scope.$new());
+      el = $compile(jqLite("<div><ng-view></ng-view></div>"))($scope.$new());
     });
 
     it("should not prefix the components dom element with anything", async () => {

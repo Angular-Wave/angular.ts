@@ -50,8 +50,8 @@ export function initRouter() {
     .directive("uiSrefActive", uiSrefActiveDirective)
     .directive("uiSrefActiveEq", uiSrefActiveDirective)
     .directive("uiState", uiStateDirective)
-    .directive("uiView", uiView)
-    .directive("uiView", $ViewDirectiveFill)
+    .directive("ngView", uiView)
+    .directive("ngView", $ViewDirectiveFill)
 
     .run(watchDigests)
     .run(runBlock);
