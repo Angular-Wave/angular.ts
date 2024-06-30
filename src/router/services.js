@@ -13,7 +13,7 @@ import { applyPairs, unnestR } from "../shared/common";
 import { isString } from "../shared/utils";
 import { trace } from "./common/trace";
 import { UIRouter } from "./router";
-import { ng1ViewsBuilder, getNg1ViewConfigFactory } from "./state/views";
+import { getNg1ViewConfigFactory } from "./state/views";
 
 import { StateProvider } from "./state-provider";
 import { ResolveContext } from "./resolve/resolve-context";

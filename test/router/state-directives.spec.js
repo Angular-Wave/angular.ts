@@ -4,7 +4,7 @@ import { publishExternalAPI } from "../../src/public";
 import { browserTrigger, wait } from "../test-utils";
 
 describe("uiStateRef", () => {
-  window.location.hash = "#!";
+  window.location.hash = "";
   let el,
     el2,
     template,
@@ -58,7 +58,7 @@ describe("uiStateRef", () => {
     $stateParams = $injector.get("$stateParams");
   });
 
-  afterEach(() => (window.location.hash = "#!"));
+  afterEach(() => (window.location.hash = ""));
 
   describe("links with promises", () => {
     it("should update the href when promises on parameters change before scope is applied", async () => {
@@ -707,7 +707,7 @@ describe("uiStateRef", () => {
 });
 
 describe("uiSrefActive", () => {
-  window.location.hash = "#!";
+  window.location.hash = "";
   let el,
     el2,
     template,
@@ -723,7 +723,7 @@ describe("uiSrefActive", () => {
     _stateProvider;
 
   beforeEach(() => {
-    window.location.hash = "#!";
+    window.location.hash = "";
     window.angular = new Angular();
     publishExternalAPI();
     let module = window.angular.module("defaultModule", ["ui.router"]);

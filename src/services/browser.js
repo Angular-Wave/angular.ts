@@ -102,11 +102,7 @@ export function Browser($log, $$taskTrackerFactory) {
       //   lastBrowserUrl && stripHash(lastBrowserUrl) === stripHash(url);
       lastBrowserUrl = url;
       lastHistoryState = state;
-      // Don't use history API if only the hash changed
-      // due to a bug in IE10/IE11 which leads
-      // to not firing a `hashchange` nor `popstate` event
-      // in some cases (see #9143).
-      history[replace ? "replaceState" : "pushState"](state, "", url);
+      history.pushState(state, "", url);
       cacheState();
       return self;
       // getter

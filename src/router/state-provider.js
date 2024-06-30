@@ -1,5 +1,3 @@
-/** @publicapi @module ng1 */ /** */
-
 import { val } from "../shared/hof";
 import { createProxyFunctions } from "../shared/common";
 import { minErr } from "../shared/utils";

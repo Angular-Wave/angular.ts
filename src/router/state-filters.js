@@ -1,5 +1,3 @@
-/** @publicapi @module ng1 */ /** */
-
 /**
  * `isState` Filter: truthy if the current state is the parameter
  *

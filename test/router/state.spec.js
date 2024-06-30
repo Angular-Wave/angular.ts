@@ -376,7 +376,7 @@ describe("$state", () => {
       let dynamicstate, childWithParam, childNoParam;
 
       beforeEach(async () => {
-        window.location.hash = "#!";
+        window.location.hash = "";
         dynlog = paramsChangedLog = "";
         dynamicstate = {
           name: "dyn",

@@ -109,7 +109,7 @@ describe("router filters", function () {
       );
     });
 
-    afterEach(() => (window.location.hash = "#!"));
+    afterEach(() => (window.location.hash = ""));
 
     it("should return true if the current state exactly matches the input state", async () => {
       await $state.go("a");
