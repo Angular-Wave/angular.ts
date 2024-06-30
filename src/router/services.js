@@ -13,7 +13,6 @@ import { applyPairs, unnestR } from "../shared/common";
 import { isString } from "../shared/utils";
 import { trace } from "./common/trace";
 import { UIRouter } from "./router";
-import { getNg1ViewConfigFactory } from "./state/views";
 import { StateProvider } from "./state-provider";
 
 /** @type {angular.UIRouter}} */
@@ -27,12 +26,6 @@ export function $routerProvider($locationProvider) {
     router.stateRegistry,
     router.stateService,
   );
-  router.viewService._pluginapi._viewConfigFactory(
-    "ng1",
-    getNg1ViewConfigFactory(),
-  );
-  // Disable decoding of params by UrlMatcherFactory because $location already handles this
-  router.urlService.config._decodeParams = false;
 
   /**
    * Applys ng1-specific path parameter encoding

@@ -39,7 +39,6 @@ const defaultConfig = {
   state: { params: {} },
   strict: true,
   caseInsensitive: true,
-  decodeParams: true,
 };
 /**
  * Matches URLs against patterns.
@@ -313,13 +312,6 @@ export class UrlMatcher {
   }
   _getDecodedParamValue(value, param) {
     if (isDefined(value)) {
-      if (this.config.decodeParams && !param.type.raw) {
-        if (Array.isArray(value)) {
-          value = value.map((paramValue) => decodeURIComponent(paramValue));
-        } else {
-          value = decodeURIComponent(value);
-        }
-      }
       value = param.type.decode(value);
     }
     return param.value(value);

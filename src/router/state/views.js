@@ -11,7 +11,7 @@ export function getNg1ViewConfigFactory() {
   let templateFactory = null;
   return (path, view) => {
     templateFactory =
-      templateFactory || services.$injector.get("$templateFactory");
+      templateFactory || services.$injector.get("$templateFactory"); // TODO: remove static injector
     return [new Ng1ViewConfig(path, view, templateFactory)];
   };
 }

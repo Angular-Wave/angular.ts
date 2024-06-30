@@ -18,8 +18,6 @@ export class UrlConfig {
     /** @type {ParamTypes} */
     this.paramTypes = new ParamTypes();
     /** @type {boolean} */
-    this._decodeParams = true;
-    /** @type {boolean} */
     this._isCaseInsensitive = false;
     /** @type {boolean} */
     this._isStrictMode = true;

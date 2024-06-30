@@ -41,7 +41,6 @@ export class UrlMatcherFactory {
     const globalConfig = {
       strict: urlConfig._isStrictMode,
       caseInsensitive: urlConfig._isCaseInsensitive,
-      decodeParams: urlConfig._decodeParams,
     };
     return new UrlMatcher(
       pattern,

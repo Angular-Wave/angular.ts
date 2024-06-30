@@ -8,6 +8,7 @@ import {
 import { curry, prop } from "../../shared/hof";
 import { isString } from "../../shared/utils";
 import { trace } from "../common/trace";
+import { getNg1ViewConfigFactory } from "../state/views";
 /**
  * The View service
  *
@@ -45,6 +46,7 @@ export class ViewService {
         return () => removeFrom(this._listeners, listener);
       },
     };
+    this._pluginapi._viewConfigFactory("ng1", getNg1ViewConfigFactory());
   }
 
   /**
