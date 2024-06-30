@@ -1,7 +1,7 @@
 export const registerUpdateUrl = (
   transitionService,
   stateService,
-  urlRouter,
+  urlService,
 ) => {
   /**
    * A [[TransitionHookFn]] which updates the URL after a successful transition
@@ -11,7 +11,7 @@ export const registerUpdateUrl = (
   const updateUrl = (transition) => {
     const options = transition.options();
     const $state = stateService;
-    const $urlRouter = urlRouter;
+
     // Dont update the url in these situations:
     // The transition was triggered by a URL sync (options.source === 'url')
     // The user doesn't want the url to update (options.location === false)
@@ -22,13 +22,13 @@ export const registerUpdateUrl = (
       $state.$current.navigable
     ) {
       const urlOptions = { replace: options.location === "replace" };
-      $urlRouter.push(
+      urlService.push(
         $state.$current.navigable.url,
         $state.globals.params,
         urlOptions,
       );
     }
-    $urlRouter.update(true);
+    urlService.update(true);
   };
   transitionService.onSuccess({}, updateUrl, { priority: 9999 });
 };

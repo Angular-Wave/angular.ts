@@ -4,6 +4,8 @@ import { UrlRules } from "./url-rules";
 import { UrlConfig } from "./url-config";
 import { TargetState } from "../state/target-state";
 import { removeFrom } from "../../shared/common";
+import { EventBus } from "../../core/pubsub";
+import { stripLastPathElement } from "../../shared/strings";
 
 /**
  * API for URL management
@@ -16,6 +18,8 @@ export class UrlService {
     this.stateService = stateService;
 
     this.$locationProvider = $locationProvider;
+    this.$location = undefined;
+    this.$browser = undefined;
 
     /** @type {boolean} */
     this.interceptDeferred = false;
@@ -60,6 +64,9 @@ export class UrlService {
     this.hash = () => this.$location.hash();
 
     this._urlListeners = [];
+    EventBus.subscribe("$urlService:update", () => {
+      this.update();
+    });
   }
 
   html5Mode() {
@@ -312,4 +319,80 @@ export class UrlService {
       this._urlListeners.forEach((fn) => fn(evt)),
     );
   }
+
+  update(read) {
+    if (read) {
+      this.location = this.url();
+      return;
+    }
+    if (this.url() === this.location) return;
+    this.url(this.location, true);
+  }
+
+  /**
+   * Internal API.
+   *
+   * Pushes a new location to the browser history.
+   *
+   * @internal
+   * @param urlMatcher
+   * @param params
+   * @param options
+   */
+  push(urlMatcher, params, options) {
+    const replace = options && !!options.replace;
+    this.url(urlMatcher.format(params || {}), replace);
+  }
+
+  /**
+   * Builds and returns a URL with interpolated parameters
+   *
+   * #### Example:
+   * ```js
+   * matcher = $umf.compile("/about/:person");
+   * params = { person: "bob" };
+   * $bob = $urlService.href(matcher, params);
+   * // $bob == "/about/bob";
+   * ```
+   *
+   * @param urlMatcher The [[UrlMatcher]] object which is used as the template of the URL to generate.
+   * @param params An object of parameter values to fill the matcher's required parameters.
+   * @param options Options object. The options are:
+   *
+   * - **`absolute`** - {boolean=false},  If true will generate an absolute url, e.g. "http://www.example.com/fullurl".
+   *
+   * @returns Returns the fully compiled URL, or `null` if `params` fail validation against `urlMatcher`
+   */
+  href(urlMatcher, params, options) {
+    let url = urlMatcher.format(params);
+    if (url == null) return null;
+    options = options || { absolute: false };
+    const cfg = this.config;
+    const isHtml5 = this.html5Mode();
+    if (!isHtml5 && url !== null) {
+      url = "#" + this.$locationProvider.hashPrefix() + url;
+    }
+    url = appendBasePath(url, isHtml5, options.absolute, this.baseHref());
+    if (!options.absolute || !url) {
+      return url;
+    }
+    const slash = !isHtml5 && url ? "/" : "";
+    const cfgPort = this.$location.port();
+    const port = cfgPort === 80 || cfgPort === 443 ? "" : ":" + cfgPort;
+    return [
+      cfg.protocol(),
+      "://",
+      this.$location.host(),
+      port,
+      slash,
+      url,
+    ].join("");
+  }
+}
+
+function appendBasePath(url, isHtml5, absolute, baseHref) {
+  if (baseHref === "/") return url;
+  if (isHtml5) return stripLastPathElement(baseHref) + url;
+  if (absolute) return baseHref.slice(1) + url;
+  return url;
 }

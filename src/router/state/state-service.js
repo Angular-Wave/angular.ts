@@ -52,10 +52,9 @@ export class StateService {
     return this.globals.$current;
   }
 
-  // Needs access to urlRouter, stateRegistry
+  // Needs access to urlService, stateRegistry
   constructor(globals, transitionService) {
     this.stateRegistry = undefined;
-    this.urlRouter = undefined;
     this.urlService = undefined;
     this.globals = globals;
     this.transitionService = transitionService;
@@ -344,7 +343,7 @@ export class StateService {
       if (error instanceof Rejection) {
         const isLatest = this.globals.lastStartedTransitionId <= trans.$id;
         if (error.type === RejectType.IGNORED) {
-          isLatest && EventBus.publish("urlRouter.update");
+          isLatest && this.urlService.update();
           // Consider ignored `Transition.run()` as a successful `transitionTo`
           return services.$q.when(this.globals.current);
         }
@@ -360,7 +359,7 @@ export class StateService {
           return redirect.run().catch(rejectedTransitionHandler(redirect));
         }
         if (error.type === RejectType.ABORTED) {
-          isLatest && EventBus.publish("urlRouter.update");
+          isLatest && this.urlService.update();
           return services.$q.reject(error);
         }
       }
@@ -519,7 +518,7 @@ export class StateService {
     if (!nav || nav.url === undefined || nav.url === null) {
       return null;
     }
-    return this.urlRouter.href(nav.url, params, {
+    return this.urlService.href(nav.url, params, {
       absolute: options.absolute,
     });
   }

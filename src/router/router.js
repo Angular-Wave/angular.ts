@@ -1,5 +1,4 @@
 import { UrlMatcherFactory } from "./url/url-matcher-factory";
-import { UrlRouter } from "./url/url-router";
 import { TransitionService } from "./transition/transition-service";
 import { ViewService } from "./view/view";
 import { StateRegistry } from "./state/state-registry";
@@ -76,16 +75,6 @@ export class UIRouter {
      */
     this.urlMatcherFactory = new UrlMatcherFactory(this.urlService.config);
 
-    /**
-     * Deprecated for public use. Use [[urlService]] instead.
-     * @deprecated Use [[urlService]] instead
-     */
-    this.urlRouter = new UrlRouter(
-      this.urlService,
-      urlRuleFactory,
-      $locationProvider,
-    );
-
     /** Provides a registry for states, and related registration services */
     this.stateRegistry = new StateRegistry(
       this.urlMatcherFactory,
@@ -94,7 +83,6 @@ export class UIRouter {
 
     // Manual wiring ideally we would want to do this at runtime
     this.stateService.stateRegistry = this.stateRegistry;
-    this.stateService.urlRouter = this.urlRouter;
     this.stateService.urlService = this.urlService; // <-- NOTE: circular dependency
 
     // Lazy load state trees
@@ -109,7 +97,7 @@ export class UIRouter {
     this.transitionService._deregisterHookFns.updateUrl = registerUpdateUrl(
       this.transitionService,
       this.stateService,
-      this.urlRouter,
+      this.urlService,
     );
 
     // Wire up redirectTo hook

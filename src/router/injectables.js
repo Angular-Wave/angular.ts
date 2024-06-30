@@ -259,30 +259,7 @@ let $urlServiceProvider;
  * ##### Note: This service can also be injected during the config phase as [[$urlServiceProvider]].
  */
 let $urlService;
-/**
- * The URL Router Provider
- *
- * ### Deprecation warning: This object is now considered internal. Use [[$urlServiceProvider]] instead.
- *
- * The [[UrlRouter]] singleton as a **Provider Object** (injectable during config time).
- *
- * #### Note: This object is also exposed as [[$urlRouter]] for injection during runtime.
- *
- * @deprecated
- */
-let $urlRouterProvider;
-/**
- * The Url Router
- *
- * ### Deprecation warning: This object is now considered internal. Use [[$urlService]] instead.
- *
- * The [[UrlRouter]] singleton as a **Service Object** (injectable during runtime).
- *
- * #### Note: This object is also exposed as [[$urlRouterProvider]] for injection during angular config time.
- *
- * @deprecated
- */
-let $urlRouter;
+
 /**
  * The URL Matcher Factory
  *

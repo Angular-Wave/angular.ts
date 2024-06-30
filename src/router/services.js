@@ -99,7 +99,6 @@ export function runBlock($injector, $q, $router) {
 }
 
 // $state service and $stateProvider
-// $urlRouter service and $urlRouterProvider
 export function getStateProvider() {
   return Object.assign(router.stateProvider, {
     $get: () => router.stateService,
