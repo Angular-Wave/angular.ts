@@ -98,7 +98,10 @@ export function $ControllerProvider() {
         //   param `ident` --- An optional label which overrides the label parsed from the controller
         //                     expression, if any.
         let instance;
+
+        /** @type { RegExpMatchArray | null} */
         let match;
+
         let constructor;
         let identifier;
         later = later === true;
