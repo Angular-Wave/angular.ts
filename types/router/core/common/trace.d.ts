@@ -29,7 +29,7 @@ declare enum Category {
 }
 export { Category };
 /**
- * Prints UI-Router Transition trace information to the console.
+ * Prints Router Transition trace information to the console.
  */
 export declare class Trace {
   /** @internal */

@@ -1,5 +1,5 @@
 /**
- * Random utility functions used in the UI-Router code
+ * Random utility functions used in the ng-router code
  *
  * These functions are exported, but are subject to change without notice.
  *

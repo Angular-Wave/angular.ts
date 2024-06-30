@@ -1,4 +1,4 @@
-import { UIRouter } from "../router";
+import { Router } from "../router";
 import { LocationServices } from "../common";
 import { MatchResult, UrlParts, UrlSyncApi } from "./interface";
 import { UrlRules } from "./urlRules";
@@ -23,7 +23,7 @@ export declare class UrlService implements LocationServices, UrlSyncApi {
    */
   config: UrlConfig;
   /** @internal */
-  constructor(/** @internal */ router: UIRouter);
+  constructor(/** @internal */ router: Router);
 
   /**
    * Gets the current URL parts
@@ -56,9 +56,9 @@ export declare class UrlService implements LocationServices, UrlSyncApi {
    * Starts or stops listening for URL changes
    *
    * Call this sometime after calling [[deferIntercept]] to start monitoring the url.
-   * This causes UI-Router to start listening for changes to the URL, if it wasn't already listening.
+   * This causes Router to start listening for changes to the URL, if it wasn't already listening.
    *
-   * If called with `false`, UI-Router will stop listening (call listen(true) to start listening again).
+   * If called with `false`, Router will stop listening (call listen(true) to start listening again).
    *
    * #### Example:
    * ```js
@@ -78,15 +78,15 @@ export declare class UrlService implements LocationServices, UrlSyncApi {
   /**
    * Disables monitoring of the URL.
    *
-   * Call this method before UI-Router has bootstrapped.
-   * It will stop UI-Router from performing the initial url sync.
+   * Call this method before Router has bootstrapped.
+   * It will stop Router from performing the initial url sync.
    *
    * This can be useful to perform some asynchronous initialization before the router starts.
-   * Once the initialization is complete, call [[listen]] to tell UI-Router to start watching and synchronizing the URL.
+   * Once the initialization is complete, call [[listen]] to tell Router to start watching and synchronizing the URL.
    *
    * #### Example:
    * ```js
-   * // Prevent UI-Router from automatically intercepting URL changes when it starts;
+   * // Prevent Router from automatically intercepting URL changes when it starts;
    * urlService.deferIntercept();
    *
    * fetch('/states.json').then(resp => resp.json()).then(data => {

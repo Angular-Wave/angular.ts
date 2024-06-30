@@ -12,7 +12,7 @@ import { TargetState } from "./targetState";
 import { Transition } from "../transition/transition";
 import { Glob } from "../common/glob";
 /**
- * Internal representation of a UI-Router state.
+ * Internal representation of a Router state.
  *
  * Instances of this class are created when a [[StateDeclaration]] is registered with the [[StateRegistry]].
  *

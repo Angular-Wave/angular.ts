@@ -10,7 +10,7 @@ import {
 import { StateObject } from "./stateObject";
 import { TargetState } from "./targetState";
 import { RawParams } from "../params/interface";
-import { UIRouter } from "../router";
+import { Router } from "../router";
 import { UIInjector } from "../interface";
 import { StateParams } from "../params/stateParams";
 export declare type OnInvalidCallback = (
@@ -21,7 +21,7 @@ export declare type OnInvalidCallback = (
 /**
  * Provides services related to ui-router states.
  *
- * This API is located at `router.stateService` ([[UIRouter.stateService]])
+ * This API is located at `router.stateService` ([[Router.stateService]])
  */
 export declare class StateService {
   private router;
@@ -30,29 +30,29 @@ export declare class StateService {
   /**
    * The [[Transition]] currently in progress (or null)
    *
-   * @deprecated This is a passthrough through to [[UIRouterGlobals.transition]]
+   * @deprecated This is a passthrough through to [[RouterGlobals.transition]]
    */
   transition: Transition;
   /**
    * The latest successful state parameters
    *
-   * @deprecated This is a passthrough through to [[UIRouterGlobals.params]]
+   * @deprecated This is a passthrough through to [[RouterGlobals.params]]
    */
   params: StateParams;
   /**
    * The current [[StateDeclaration]]
    *
-   * @deprecated This is a passthrough through to [[UIRouterGlobals.current]]
+   * @deprecated This is a passthrough through to [[RouterGlobals.current]]
    */
   current: StateDeclaration;
   /**
    * The current [[StateObject]] (an internal API)
    *
-   * @deprecated This is a passthrough through to [[UIRouterGlobals.$current]]
+   * @deprecated This is a passthrough through to [[RouterGlobals.$current]]
    */
   $current: StateObject;
   /** @internal */
-  constructor(/** @internal */ router: UIRouter);
+  constructor(/** @internal */ router: Router);
 
   /**
    * Handler for when [[transitionTo]] is called with an invalid state.

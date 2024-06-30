@@ -15,7 +15,7 @@ import { StateObject } from "../state/stateObject";
 import { TargetState } from "../state/targetState";
 import { Resolvable } from "../resolve/resolvable";
 import { ViewConfig } from "../view/interface";
-import { UIRouter } from "../router";
+import { Router } from "../router";
 import { UIInjector } from "../interface";
 import { ResolvableLiteral } from "../resolve/interface";
 import { Rejection } from "./rejectFactory";
@@ -37,11 +37,11 @@ export declare class Transition implements IHookRegistry {
    */
   $id: number;
   /**
-   * A reference to the [[UIRouter]] instance
+   * A reference to the [[Router]] instance
    *
    * This reference can be used to access the router services, such as the [[StateService]]
    */
-  router: UIRouter;
+  router: Router;
   /** @internal */
   private _deferred;
   /**
@@ -139,10 +139,10 @@ export declare class Transition implements IHookRegistry {
    * @param fromPath The path of [[PathNode]]s from which the transition is leaving.  The last node in the `fromPath`
    *        encapsulates the "from state".
    * @param targetState The target state and parameters being transitioned to (also, the transition options)
-   * @param router The [[UIRouter]] instance
+   * @param router The [[Router]] instance
    * @internal
    */
-  constructor(fromPath: PathNode[], targetState: TargetState, router: UIRouter);
+  constructor(fromPath: PathNode[], targetState: TargetState, router: Router);
   private applyViewConfigs;
   /**
    * @internal

@@ -3,7 +3,7 @@ import { propEq } from "../../shared/hof";
 import { Glob } from "../common/glob";
 import { isFunction, isObject } from "../../shared/utils";
 /**
- * Internal representation of a UI-Router state.
+ * Internal representation of a ng-router state.
  *
  * Instances of this class are created when a [[StateDeclaration]] is registered with the [[StateRegistry]].
  *

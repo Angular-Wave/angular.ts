@@ -372,14 +372,14 @@ export interface Ng1ViewDeclaration extends _ViewDeclaration {
 /**
  * The shape of a controller for a view (and/or component), defining the controller callbacks.
  *
- * A view in UI-Router is comprised of either a `component` ([[Ng1ViewDeclaration.component]]) or a combination of a
+ * A view in Router is comprised of either a `component` ([[Ng1ViewDeclaration.component]]) or a combination of a
  * `template` (or `templateProvider`) and a `controller` (or `controllerProvider`).
  *
  * The `controller` object (or the `component`'s controller object) can define component-level controller callbacks,
- * which UI-Router will call at the appropriate times.  These callbacks are similar to Transition Hooks
+ * which Router will call at the appropriate times.  These callbacks are similar to Transition Hooks
  * ([[IHookRegistry]]), but are only called if the view is currently active.
  *
- * This interface defines the UI-Router component callbacks.
+ * This interface defines the Router component callbacks.
  *
  */
 export interface Ng1Controller {
@@ -468,7 +468,7 @@ export interface TemplateFactoryProvider {
   /**
    * Forces $templateFactory to use $http instead of $templateRequest.
    *
-   * UI-Router uses `$templateRequest` by default on angular 1.3+.
+   * Router uses `$templateRequest` by default on angular 1.3+.
    * Use this method to choose to use `$http` instead.
    *
    * ---

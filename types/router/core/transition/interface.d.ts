@@ -103,7 +103,7 @@ export interface TransitionHookOptions {
  *
  * Get a TreeChanges object using [[Transition.treeChanges]]
  *
- * A UI-Router Transition is from one Path in a State Tree to another Path.  For a given Transition,
+ * A Router Transition is from one Path in a State Tree to another Path.  For a given Transition,
  * this object stores the "to" and "from" paths, as well as subsets of those: the "retained",
  * "exiting" and "entering" paths.
  *

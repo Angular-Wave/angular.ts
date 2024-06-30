@@ -20,7 +20,7 @@ import { registerRedirectToHook } from "./hooks/redirect-to";
 let routerId = 0;
 
 /**
- * An instance of UI-Router.
+ * An instance of ng-router.
  * @class
  *
  * This object contains references to service APIs which define your application's routing behavior.

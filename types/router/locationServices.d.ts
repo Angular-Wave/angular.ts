@@ -1,8 +1,8 @@
 /** @publicapi @module ng1 */ /** */
-import { LocationConfig, LocationServices, UIRouter } from "./core";
+import { LocationConfig, LocationServices, Router } from "./core";
 import { ILocationService, ILocationProvider, IWindowService } from "../index";
 /**
- * Implements UI-Router LocationServices and LocationConfig using Angular 1's $location service
+ * Implements Router LocationServices and LocationConfig using Angular 1's $location service
  * @internalapi
  */
 export declare class Ng1LocationServices
@@ -34,7 +34,7 @@ export declare class Ng1LocationServices
    *
    * @param router
    */
-  static monkeyPatchPathParameterType(router: UIRouter): void;
+  static monkeyPatchPathParameterType(router: Router): void;
   constructor($locationProvider: ILocationProvider);
   onChange(callback: Function): () => Function[];
   html5Mode(): any;

@@ -1,4 +1,4 @@
-import { UIRouter } from "../router";
+import { Router } from "../router";
 import { ParamTypeDefinition, ParamTypes } from "../params";
 /**
  * An API to customize the URL behavior and retrieve URL configuration
@@ -11,7 +11,7 @@ import { ParamTypeDefinition, ParamTypes } from "../params";
  * This information can be used to build absolute URLs, such as
  * `https://example.com:443/basepath/state/substate?param1=a#hashvalue`;
  *
- * This API is found at `router.urlService.config` (see: [[UIRouter.urlService]], [[URLService.config]])
+ * This API is found at `router.urlService.config` (see: [[Router.urlService]], [[URLService.config]])
  */
 export declare class UrlConfig {
   private router;
@@ -20,7 +20,7 @@ export declare class UrlConfig {
   /** @internal */ _isCaseInsensitive: boolean;
   /** @internal */ _isStrictMode: boolean;
   /** @internal */ _defaultSquashPolicy: boolean | string;
-  /** @internal */ constructor(/** @internal */ router: UIRouter);
+  /** @internal */ constructor(/** @internal */ router: Router);
   /** @internal */ dispose: () => void;
   /**
    * Gets the base Href, e.g., `http://localhost/approot/`

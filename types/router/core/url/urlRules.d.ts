@@ -1,4 +1,4 @@
-import { UIRouter } from "../router";
+import { Router } from "../router";
 import { UrlRule, UrlRuleHandlerFn } from "./interface";
 import { TargetState, TargetStateDef } from "../state";
 import { UrlMatcher } from "./urlMatcher";
@@ -11,7 +11,7 @@ import { UrlRuleFactory } from "./urlRule";
  *
  * The most commonly used methods are [[otherwise]] and [[when]].
  *
- * This API is found at `router.urlService.rules` (see: [[UIRouter.urlService]], [[URLService.rules]])
+ * This API is found at `router.urlService.rules` (see: [[Router.urlService]], [[URLService.rules]])
  */
 export declare class UrlRules {
   private router;
@@ -23,9 +23,9 @@ export declare class UrlRules {
   /** @internal */ private _rules;
   /** @internal */ private _id;
   /** @internal */
-  constructor(/** @internal */ router: UIRouter);
+  constructor(/** @internal */ router: Router);
   /** @internal */
-  dispose(router?: UIRouter): void;
+  dispose(router?: Router): void;
   /**
    * Defines the initial state, path, or behavior to use when the app starts.
    *
@@ -86,7 +86,7 @@ export declare class UrlRules {
    * .otherwise({ state: 'home', params: { dashboard: 'default' } });
    * ```
    *
-   * - If `handler` is a function, the function receives the current url ([[UrlParts]]) and the [[UIRouter]] object.
+   * - If `handler` is a function, the function receives the current url ([[UrlParts]]) and the [[Router]] object.
    *   The function can perform actions, and/or return a value.
    *
    * #### Example:
@@ -220,7 +220,7 @@ export declare class UrlRules {
    *
    * ---
    *
-   * When the handler is a function, it receives the matched value, the current URL, and the `UIRouter` object (See [[UrlRuleHandlerFn]]).
+   * When the handler is a function, it receives the matched value, the current URL, and the `Router` object (See [[UrlRuleHandlerFn]]).
    * The "matched value" differs based on the `matcher`.
    * For [[UrlMatcher]]s, it will be the matched state params.
    * For `RegExp`, it will be the match array from `regexp.exec()`.

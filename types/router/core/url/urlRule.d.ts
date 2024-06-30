@@ -1,6 +1,6 @@
 import { StateDeclaration } from "../state";
 import { UrlMatcher } from "./urlMatcher";
-import { UIRouter } from "../router";
+import { Router } from "../router";
 import { StateObject } from "../state/stateObject";
 import {
   UrlRule,
@@ -22,9 +22,9 @@ import {
  * - [[StateObject]]
  */
 export declare class UrlRuleFactory {
-  router: UIRouter;
+  router: Router;
   static isUrlRule: (obj: any) => boolean;
-  constructor(router: UIRouter);
+  constructor(router: Router);
   compile(str: string): UrlMatcher;
   create(
     what:
@@ -47,7 +47,7 @@ export declare class UrlRuleFactory {
    *
    * - matched parameter values ([[RawParams]] from [[UrlMatcher.exec]])
    * - url: the current Url ([[UrlParts]])
-   * - router: the router object ([[UIRouter]])
+   * - router: the router object ([[Router]])
    *
    * #### Example:
    * ```js
@@ -89,7 +89,7 @@ export declare class UrlRuleFactory {
    */
   fromState(
     stateOrDecl: StateObject | StateDeclaration,
-    router: UIRouter,
+    router: Router,
   ): StateRule;
   /**
    * A UrlRule which matches based on a regular expression
@@ -102,7 +102,7 @@ export declare class UrlRuleFactory {
    *
    * - regexp match array (from `regexp`)
    * - url: the current Url ([[UrlParts]])
-   * - router: the router object ([[UIRouter]])
+   * - router: the router object ([[Router]])
    *
    * #### Example:
    * ```js

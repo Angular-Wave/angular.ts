@@ -1,6 +1,6 @@
 import { copy } from "../../shared/common";
 /**
- * A [[TransitionHookFn]] which updates global UI-Router state
+ * A [[TransitionHookFn]] which updates global ng-router state
  *
  * Registered using `transitionService.onBefore({}, updateGlobalState);`
  *

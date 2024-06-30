@@ -53,7 +53,7 @@ export interface ParamDeclaration {
    * Specifies the default value for this parameter.
    * This implicitly sets this parameter as optional.
    *
-   * When UI-Router routes to a state and no value is specified for this parameter in the URL or transition,
+   * When Router routes to a state and no value is specified for this parameter in the URL or transition,
    * the default value will be used instead.
    * If value is a function, it will be injected and invoked, and the return value used.
    *
@@ -373,7 +373,7 @@ export interface Replace {
  * - some internal string representation
  *
  * Typed parameter definitions control how parameter values are encoded (to the URL) and decoded (from the URL).
- * UI-Router always provides the decoded parameter values to the user (from methods such as [[Transition.params]])).
+ * Router always provides the decoded parameter values to the user (from methods such as [[Transition.params]])).
  *
  * For example, if a state has a url of `/foo/{fooId:int}` (the `fooId` parameter is of the `int` ParamType)
  * and if the browser is at `/foo/123`, then the 123 is parsed as an integer:

@@ -2,7 +2,7 @@ import { _StateDeclaration } from "./interface";
 import { StateObject } from "./stateObject";
 import { StateBuilder } from "./stateBuilder";
 import { StateRegistryListener } from "./stateRegistry";
-import { UIRouter } from "../router";
+import { Router } from "../router";
 export declare class StateQueueManager {
   private router;
   states: {
@@ -12,7 +12,7 @@ export declare class StateQueueManager {
   listeners: StateRegistryListener[];
   queue: StateObject[];
   constructor(
-    router: UIRouter,
+    router: Router,
     states: {
       [key: string]: StateObject;
     },

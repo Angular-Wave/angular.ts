@@ -31,7 +31,7 @@ export declare type ResolveTypes =
  * Base interface for declaring a view
  *
  * This interface defines the basic data that a normalized view declaration will have on it.
- * Each implementation of UI-Router (for a specific framework) should define its own extension of this interface.
+ * Each implementation of Router (for a specific framework) should define its own extension of this interface.
  * Add any additional fields that the framework requires to that interface.
  */
 export interface _ViewDeclaration {
@@ -86,7 +86,7 @@ export declare type RedirectToResult =
 /**
  * The StateDeclaration object is used to define a state or nested state.
  *
- * Note: Each implementation of UI-Router (for a specific framework)
+ * Note: Each implementation of Router (for a specific framework)
  * extends this interface as necessary.
  *
  * #### Example:
@@ -203,7 +203,7 @@ export interface StateDeclaration {
    * - Each key (string) is the name of the dependency.
    * - Each value (function) is an injectable function which returns the dependency, or a promise for the dependency.
    *
-   * This style is based on AngularJS injectable functions, but can be used with any UI-Router implementation.
+   * This style is based on AngularJS injectable functions, but can be used with any Router implementation.
    * If your code will be minified, the function should be ["annotated" in the AngularJS manner](https://docs.angularjs.org/guide/di#dependency-annotation).
    *
    * #### AngularJS Example:
@@ -257,7 +257,7 @@ export interface StateDeclaration {
    *
    * #### Special injectable tokens
    *
-   * - `UIRouter`: The [[UIRouter]] instance which has references to all the UI-Router services.
+   * - `Router`: The [[Router]] instance which has references to all the Router services.
    * - `Transition`: The current [[Transition]] object; information and API about the current transition, such as
    *    "to" and "from" State Parameters and transition options.
    * - `'$transition$'`: A string alias for the `Transition` injectable
@@ -595,7 +595,7 @@ export interface StateDeclaration {
    *   It matches any state name that starts with the `name` (including child states that are not yet loaded).
    * - A `url` prefix.
    *   A future state's `url` property acts as a wildcard.
-   *   UI-Router matches all paths that begin with the `url`.
+   *   Router matches all paths that begin with the `url`.
    *   It effectively appends `.*` to the internal regular expression.
    *   When the prefix matches, the future state will begin loading.
    * - A `lazyLoad` function.

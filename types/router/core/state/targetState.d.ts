@@ -25,7 +25,7 @@ import { RawParams } from "../params";
  * 3) and transition options
  * 4) the registered state object (the [[StateDeclaration]])
  *
- * Many UI-Router APIs such as [[StateService.go]] take a [[StateOrName]] argument which can
+ * Many Router APIs such as [[StateService.go]] take a [[StateOrName]] argument which can
  * either be a *state object* (a [[StateDeclaration]] or [[StateObject]]) or a *state name* (a string).
  * The `TargetState` class normalizes those options.
  *

@@ -1,7 +1,7 @@
 /**
  * # Angular 1 Directives
  *
- * These are the directives included in UI-Router for Angular 1.
+ * These are the directives included in ng-router for Angular 1.
  * These directives are used in templates to create viewports and link/navigate to states.
  *
  */

@@ -17,7 +17,7 @@ import { RegisteredHook } from "./hookRegistry";
 import { TargetState } from "../state/targetState";
 import { PathNode } from "../path/pathNode";
 import { ViewService } from "../view/view";
-import { UIRouter } from "../router";
+import { Router } from "../router";
 import { TransitionEventType } from "./transitionEventType";
 import { GetResultHandler, GetErrorHandler } from "./transitionHook";
 /**
@@ -77,9 +77,9 @@ export interface TransitionServicePluginAPI {
  * - It allows the default transition error handler to be set.
  * - It also has a factory function for creating new [[Transition]] objects, (used internally by the [[StateService]]).
  *
- * At bootstrap, [[UIRouter]] creates a single instance (singleton) of this class.
+ * At bootstrap, [[Router]] creates a single instance (singleton) of this class.
  *
- * This API is located at `router.transitionService` ([[UIRouter.transitionService]])
+ * This API is located at `router.transitionService` ([[Router.transitionService]])
  */
 export declare class TransitionService implements IHookRegistry {
   /** @internal */
@@ -119,7 +119,7 @@ export declare class TransitionService implements IHookRegistry {
     lazyLoad: Function;
   };
   /** @internal */
-  constructor(_router: UIRouter);
+  constructor(_router: Router);
   /**
    * Registers a [[TransitionHookFn]], called *while a transition is being constructed*.
    *
@@ -200,7 +200,7 @@ export declare class TransitionService implements IHookRegistry {
    * dispose
    * @internal
    */
-  dispose(router: UIRouter): void;
+  dispose(router: Router): void;
   /**
    * Creates a new [[Transition]] object
    *

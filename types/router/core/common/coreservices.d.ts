@@ -39,7 +39,7 @@ export interface CoreServices {
  * Implementors should pass these through to the underlying URL mechanism.
  * The underlying URL mechanism might be browser APIs, framework APIs, or some 3rd party URL management library.
  *
- * UI-Router Core includes three basic implementations:
+ * Router Core includes three basic implementations:
  *
  * - [[PushStateLocationService]]
  * - [[HashLocationService]]
@@ -61,7 +61,7 @@ export interface LocationServices {
  * Implementors should pass these through to the underlying URL APIs.
  * The underlying URL mechanism might be browser APIs, framework APIs, or some 3rd party URL management library.
  *
- * UI-Router Core includes two basic implementations:
+ * Router Core includes two basic implementations:
  *
  * - [[BrowserLocationConfig]]
  * - [[MemoryLocationConfig]]

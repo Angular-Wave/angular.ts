@@ -2,7 +2,7 @@ import { IRootScopeService } from "../";
 import { ResolveContext, TypedMap } from "./core";
 import { StateProvider } from "./stateProvider";
 declare module "./core/lib/router" {
-  interface UIRouter {
+  interface Router {
     /** @hidden */
     stateProvider: StateProvider;
   }

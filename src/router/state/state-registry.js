@@ -125,7 +125,7 @@ export class StateRegistry {
    * Gets the implicit root state
    *
    * Gets the root of the state tree.
-   * The root state is implicitly created by UI-Router.
+   * The root state is implicitly created by ng-router.
    * Note: this returns the internal [[StateObject]] representation, not a [[StateDeclaration]]
    *
    * @return the root [[StateObject]]

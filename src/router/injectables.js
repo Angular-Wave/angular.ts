@@ -61,7 +61,7 @@
  */
 let $stateParams;
 /**
- * Global UI-Router variables
+ * Global ng-router variables
  *
  * The router global state as a **Service Object** (injectable during runtime).
  *
@@ -69,23 +69,23 @@ let $stateParams;
  */
 let $routerGlobals;
 /**
- * The UI-Router instance
+ * The ng-router instance
  *
  * The [[UIRouter]] singleton (the router instance) as a **Service Object** (injectable during runtime).
  *
- * This object is the UI-Router singleton instance, created by angular dependency injection during application bootstrap.
- * It has references to the other UI-Router services
+ * This object is the ng-router singleton instance, created by angular dependency injection during application bootstrap.
+ * It has references to the other ng-router services
  *
  * #### Note: This object is also exposed as [[$routerProvider]] for injection during angular config time.
  */
 let $router;
 /**
- * The UI-Router instance
+ * The ng-router instance
  *
  * The [[UIRouter]] singleton (the router instance) as a **Provider Object** (injectable during config phase).
  *
- * This object is the UI-Router singleton instance, created by angular dependency injection during application bootstrap.
- * It has references to the other UI-Router services
+ * This object is the ng-router singleton instance, created by angular dependency injection during application bootstrap.
+ * It has references to the other ng-router services
  *
  * #### Note: This object is also exposed as [[$router]] for injection during runtime.
  */
@@ -193,7 +193,7 @@ let $stateRegistryProvider;
  * The [[UIViewScrollProvider]] as a **Provider Object** (injectable during config time).
  *
  * This angular service exposes the [[UIViewScrollProvider]] singleton and is
- * used to disable UI-Router's scroll behavior.
+ * used to disable ng-router's scroll behavior.
  */
 let $ngViewScrollProvider;
 /**

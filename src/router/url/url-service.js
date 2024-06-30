@@ -213,9 +213,9 @@ export class UrlService {
    * Starts or stops listening for URL changes
    *
    * Call this sometime after calling [[deferIntercept]] to start monitoring the url.
-   * This causes UI-Router to start listening for changes to the URL, if it wasn't already listening.
+   * This causes ng-router to start listening for changes to the URL, if it wasn't already listening.
    *
-   * If called with `false`, UI-Router will stop listening (call listen(true) to start listening again).
+   * If called with `false`, ng-router will stop listening (call listen(true) to start listening again).
    *
    * #### Example:
    * ```js
@@ -243,15 +243,15 @@ export class UrlService {
   /**
    * Disables monitoring of the URL.
    *
-   * Call this method before UI-Router has bootstrapped.
-   * It will stop UI-Router from performing the initial url sync.
+   * Call this method before ng-router has bootstrapped.
+   * It will stop ng-router from performing the initial url sync.
    *
    * This can be useful to perform some asynchronous initialization before the router starts.
-   * Once the initialization is complete, call [[listen]] to tell UI-Router to start watching and synchronizing the URL.
+   * Once the initialization is complete, call [[listen]] to tell ng-router to start watching and synchronizing the URL.
    *
    * #### Example:
    * ```js
-   * // Prevent UI-Router from automatically intercepting URL changes when it starts;
+   * // Prevent ng-router from automatically intercepting URL changes when it starts;
    * urlService.deferIntercept();
    *
    * fetch('/states.json').then(resp => resp.json()).then(data => {

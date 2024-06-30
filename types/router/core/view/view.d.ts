@@ -2,7 +2,7 @@ import { TypedMap } from "../common/common";
 import { PathNode } from "../path/pathNode";
 import { ActiveUIView, ViewContext, ViewConfig } from "./interface";
 import { _ViewDeclaration } from "../state/interface";
-import { UIRouter } from "../router";
+import { Router } from "../router";
 export declare type ViewConfigFactory = (
   path: PathNode[],
   decl: _ViewDeclaration,
@@ -128,7 +128,7 @@ export declare class ViewService {
     ngViewContextAnchor: string;
   };
   /** @internal */
-  constructor(/** @internal */ router: UIRouter);
+  constructor(/** @internal */ router: Router);
   /** @internal */
   private _rootViewContext;
   /** @internal */

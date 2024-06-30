@@ -1,8 +1,8 @@
 /**
  * # Angular 1 types
  *
- * UI-Router core provides various Typescript types which you can use for code completion and validating parameter values, etc.
- * The customizations to the core types for Angular UI-Router are documented here.
+ * ng-router core provides various Typescript types which you can use for code completion and validating parameter values, etc.
+ * The customizations to the core types for ng-router are documented here.
  *
  * The optional [[$resolve]] service is also documented here.
  *
@@ -14,9 +14,7 @@ import { isString } from "../shared/utils";
 import { trace } from "./common/trace";
 import { UIRouter } from "./router";
 import { getNg1ViewConfigFactory } from "./state/views";
-
 import { StateProvider } from "./state-provider";
-import { ResolveContext } from "./resolve/resolve-context";
 
 /** @type {angular.UIRouter}} */
 export let router = null;
@@ -135,28 +133,3 @@ export const getLocals = (ctx) => {
   });
   return tuples.reduce(applyPairs, {});
 };
-
-/**
- * This is a [[StateBuilder.builder]] function for angular1 `onEnter`, `onExit`,
- * `onRetain` callback hooks on a [[Ng1StateDeclaration]].
- *
- * When the [[StateBuilder]] builds a [[StateObject]] object from a raw [[StateDeclaration]], this builder
- * ensures that those hooks are injectable for @uirouter/angularjs (ng1).
- *
- * @internalapi
- */
-const getStateHookBuilder = (hookName) =>
-  function stateHookBuilder(stateObject) {
-    const hook = stateObject[hookName];
-    const pathname = hookName === "onExit" ? "from" : "to";
-    function decoratedNg1Hook(trans, state) {
-      const resolveContext = new ResolveContext(trans.treeChanges(pathname));
-      const subContext = resolveContext.subContext(state.$$state());
-      const locals = Object.assign(getLocals(subContext), {
-        $state$: state,
-        $transition$: trans,
-      });
-      return services.$injector.invoke(hook, this, locals);
-    }
-    return hook ? decoratedNg1Hook : undefined;
-  };

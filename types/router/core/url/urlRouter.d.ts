@@ -1,6 +1,6 @@
 import { UrlMatcher } from "./urlMatcher";
 import { RawParams } from "../params";
-import { UIRouter } from "../router";
+import { Router } from "../router";
 import { UrlRuleFactory } from "./urlRule";
 import { MatchResult, UrlParts, UrlRule, UrlRuleHandlerFn } from "./interface";
 import { TargetState, TargetStateDef } from "../state";
@@ -18,7 +18,7 @@ export declare class UrlRouter {
   urlRuleFactory: UrlRuleFactory;
   /** @internal */ private location;
   /** @internal */
-  constructor(/** @internal */ router: UIRouter);
+  constructor(/** @internal */ router: Router);
   /** Internal API. */
   update(read?: boolean): void;
   /**

@@ -81,7 +81,7 @@ const _tid = parse("$id");
 const _rid = parse("router.$id");
 const transLbl = (trans) => `Transition #${_tid(trans)}-${_rid(trans)}`;
 /**
- * Prints UI-Router Transition trace information to the console.
+ * Prints ng-router Transition trace information to the console.
  */
 export class Trace {
   constructor() {

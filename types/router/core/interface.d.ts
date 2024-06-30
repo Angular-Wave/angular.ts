@@ -1,4 +1,4 @@
-import { UIRouter } from "./router";
+import { Router } from "./router";
 /**
  * An interface for getting values from dependency injection.
  *
@@ -89,10 +89,10 @@ export interface UIInjector {
   getNative(token: any): any;
   getNative<T>(token: any): T;
 }
-export interface UIRouterPlugin {
+export interface RouterPlugin {
   name: string;
 }
-export declare abstract class UIRouterPluginBase implements UIRouterPlugin {
+export declare abstract class RouterPluginBase implements RouterPlugin {
   abstract name: string;
-  dispose(router: UIRouter): void;
+  dispose(router: Router): void;
 }

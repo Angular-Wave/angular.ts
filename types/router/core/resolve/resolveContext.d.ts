@@ -8,7 +8,7 @@ export declare const NATIVE_INJECTOR_TOKEN: string;
 /**
  * Encapsulates Dependency Injection for a path of nodes
  *
- * UI-Router states are organized as a tree.
+ * Router states are organized as a tree.
  * A nested state has a path of ancestors to the root of the tree.
  * When a state is being activated, each element in the path is wrapped as a [[PathNode]].
  * A `PathNode` is a stateful object that holds things like parameters and resolvables for the state being activated.

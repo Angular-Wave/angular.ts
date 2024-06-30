@@ -9,7 +9,7 @@
  * @preferred
  */
 import { LocationConfig } from "../common";
-import { UIRouter } from "../router";
+import { Router } from "../router";
 import {
   StateDeclaration,
   StateObject,
@@ -83,7 +83,7 @@ export interface MatchResult {
  * @return the matched value, either truthy or falsey
  */
 export interface UrlRuleMatchFn {
-  (url?: UrlParts, router?: UIRouter): any;
+  (url?: UrlParts, router?: Router): any;
 }
 /**
  * Handler invoked when a rule is matched
@@ -98,7 +98,7 @@ export interface UrlRuleHandlerFn {
   (
     matchValue?: any,
     url?: UrlParts,
-    router?: UIRouter,
+    router?: Router,
   ): string | TargetState | TargetStateDef | void;
 }
 /** @internal */

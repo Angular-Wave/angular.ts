@@ -4,7 +4,7 @@ import { StateQueueManager } from "./stateQueueManager";
 import { StateDeclaration, _StateDeclaration } from "./interface";
 import { BuilderFunction } from "./stateBuilder";
 import { StateOrName } from "./interface";
-import { UIRouter } from "../router";
+import { Router } from "../router";
 /**
  * The signature for the callback function provided to [[StateRegistry.onStatesChanged]].
  *
@@ -20,7 +20,7 @@ export declare type StateRegistryListener = (
 /**
  * A registry for all of the application's [[StateDeclaration]]s
  *
- * This API is found at `router.stateRegistry` ([[UIRouter.stateRegistry]])
+ * This API is found at `router.stateRegistry` ([[Router.stateRegistry]])
  */
 export declare class StateRegistry {
   init($injector: any): void;
@@ -35,7 +35,7 @@ export declare class StateRegistry {
   /** @internal */
   listeners: StateRegistryListener[];
   /** @internal */
-  constructor(router: UIRouter);
+  constructor(router: Router);
   /** @internal */
   private _registerRoot;
   /**
@@ -73,7 +73,7 @@ export declare class StateRegistry {
    * Gets the implicit root state
    *
    * Gets the root of the state tree.
-   * The root state is implicitly created by UI-Router.
+   * The root state is implicitly created by Router.
    * Note: this returns the internal [[StateObject]] representation, not a [[StateDeclaration]]
    *
    * @return the root [[StateObject]]

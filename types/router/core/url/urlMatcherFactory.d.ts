@@ -2,13 +2,13 @@ import { UrlMatcher } from "./urlMatcher";
 import { Param, ParamType, ParamTypeDefinition } from "../params";
 import { UrlMatcherCompileConfig } from "./interface";
 import { StateDeclaration } from "../state";
-import { UIRouter } from "../router";
+import { Router } from "../router";
 export declare class ParamFactory {
   private router;
   fromConfig(id: string, type: ParamType, state: StateDeclaration): Param;
   fromPath(id: string, type: ParamType, state: StateDeclaration): Param;
   fromSearch(id: string, type: ParamType, state: StateDeclaration): Param;
-  constructor(router: UIRouter);
+  constructor(router: Router);
 }
 /**
  * Factory for [[UrlMatcher]] instances.
@@ -22,7 +22,7 @@ export declare class UrlMatcherFactory {
   paramFactory: ParamFactory;
   UrlMatcher: typeof UrlMatcher;
   Param: typeof Param;
-  constructor(/** @internal */ router: UIRouter);
+  constructor(/** @internal */ router: Router);
   /**
    * Creates a [[UrlMatcher]] for the specified pattern.
    *
