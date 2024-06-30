@@ -118,78 +118,8 @@ export class UIRouter {
 
     this.transitionService._deregisterHookFns.activateViews =
       registerActivateViews(this.transitionService, this.viewService);
-
-    /** @internal plugin instances are registered here */
-    this._plugins = {};
     this.viewService._pluginapi._rootViewContext(this.stateRegistry.root());
     this.globals.$current = this.stateRegistry.root();
     this.globals.current = this.globals.$current.self;
-  }
-
-  /**
-   * Adds a plugin to UI-Router
-   *
-   * This method adds a UI-Router Plugin.
-   * A plugin can enhance or change UI-Router behavior using any public API.
-   *
-   * #### Example:
-   * ```js
-   * import { MyCoolPlugin } from "ui-router-cool-plugin";
-   *
-   * var plugin = router.addPlugin(MyCoolPlugin);
-   * ```
-   *
-   * ### Plugin authoring
-   *
-   * A plugin is simply a class (or constructor function) which accepts a [[UIRouter]] instance and (optionally) an options object.
-   *
-   * The plugin can implement its functionality using any of the public APIs of [[UIRouter]].
-   * For example, it may configure router options or add a Transition Hook.
-   *
-   * The plugin can then be published as a separate module.
-   *
-   * #### Example:
-   * ```js
-   * export class MyAuthPlugin implements UIRouterPlugin {
-   *   constructor(router: UIRouter, options: any) {
-   *     this.name = "MyAuthPlugin";
-   *     let $transitions = router.transitionService;
-   *     let $state = router.stateService;
-   *
-   *     let authCriteria = {
-   *       to: (state) => state.data && state.data.requiresAuth
-   *     };
-   *
-   *     function authHook(transition: Transition) {
-   *       let authService = transition.injector().get('AuthService');
-   *       if (!authService.isAuthenticated()) {
-   *         return $state.target('login');
-   *       }
-   *     }
-   *
-   *     $transitions.onStart(authCriteria, authHook);
-   *   }
-   * }
-   * ```
-   *
-   * @param plugin one of:
-   *        - a plugin class which implements [[UIRouterPlugin]]
-   *        - a constructor function for a [[UIRouterPlugin]] which accepts a [[UIRouter]] instance
-   *        - a factory function which accepts a [[UIRouter]] instance and returns a [[UIRouterPlugin]] instance
-   * @param options options to pass to the plugin class/factory
-   * @returns the registered plugin instance
-   */
-  plugin(plugin, options = {}) {
-    const pluginInstance = new plugin(this, options);
-    if (!pluginInstance.name)
-      throw new Error(
-        "Required property `name` missing on plugin: " + pluginInstance,
-      );
-    return (this._plugins[pluginInstance.name] = pluginInstance);
-  }
-  getPlugin(pluginName) {
-    return pluginName
-      ? this._plugins[pluginName]
-      : Object.values(this._plugins);
   }
 }
