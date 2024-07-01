@@ -5,7 +5,6 @@ import { map, find } from "../../src/shared/common";
 
 describe("UrlMatcher", () => {
   let router;
-  let $umf;
   let $url;
   let $injector;
   let $location;
@@ -19,57 +18,54 @@ describe("UrlMatcher", () => {
       "defaultModule",
     ]);
 
-    $injector.invoke(
-      ($router, $urlMatcherFactory, $urlService, _$location_) => {
-        router = $router;
-        $umf = $urlMatcherFactory;
-        $url = $urlService;
-        $location = _$location_;
-      },
-    );
+    $injector.invoke(($router, $urlService, _$location_) => {
+      router = $router;
+      $url = $urlService;
+      $location = _$location_;
+    });
   });
 
   describe("provider", () => {
     it("should factory matchers with correct configuration", () => {
-      $umf.caseInsensitive(false);
-      expect($umf.compile("/hello").exec("/HELLO")).toBeNull();
+      $url.config.caseInsensitive(false);
+      expect($url.compile("/hello").exec("/HELLO")).toBeNull();
 
-      $umf.caseInsensitive(true);
-      expect($umf.compile("/hello").exec("/HELLO")).toEqual({});
+      $url.config.caseInsensitive(true);
+      expect($url.compile("/hello").exec("/HELLO")).toEqual({});
 
-      $umf.strictMode(true);
-      expect($umf.compile("/hello").exec("/hello/")).toBeNull();
+      $url.config.strictMode(true);
+      expect($url.compile("/hello").exec("/hello/")).toBeNull();
 
-      $umf.strictMode(false);
-      expect($umf.compile("/hello").exec("/hello/")).toEqual({});
+      $url.config.strictMode(false);
+      expect($url.compile("/hello").exec("/hello/")).toEqual({});
     });
 
     it("should correctly validate UrlMatcher interface", () => {
-      let m = $umf.compile("/");
-      expect($umf.isMatcher(m)).toBe(true);
+      let m = $url.compile("/");
+      expect($url.isMatcher(m)).toBe(true);
     });
   });
 
   it("should match static URLs", () => {
-    expect($umf.compile("/hello/world").exec("/hello/world")).toEqual({});
+    expect($url.compile("/hello/world").exec("/hello/world")).toEqual({});
   });
 
   it("should match static case insensitive URLs", () => {
     expect(
-      $umf
+      $url
         .compile("/hello/world", { caseInsensitive: true })
         .exec("/heLLo/World"),
     ).toEqual({});
   });
 
   it("should match against the entire path", () => {
-    const matcher = $umf.compile("/hello/world", { strict: true });
+    const matcher = $url.compile("/hello/world", { strict: true });
     expect(matcher.exec("/hello/world/")).toBeNull();
     expect(matcher.exec("/hello/world/suffix")).toBeNull();
   });
 
   it("should parse parameter placeholders", () => {
-    const matcher = $umf.compile(
+    const matcher = $url.compile(
       "/users/:id/details/{type}/{repeat:[0-9]+}?from&to",
     );
     expect(matcher.parameters().map((x) => x.id)).toEqual([
@@ -82,14 +78,14 @@ describe("UrlMatcher", () => {
   });
 
   it("should encode and decode duplicate query string values as array", () => {
-    const matcher = $umf.compile("/?foo"),
+    const matcher = $url.compile("/?foo"),
       array = { foo: ["bar", "baz"] };
     expect(matcher.exec("/", array)).toEqual(array);
     expect(matcher.format(array)).toBe("/?foo=bar&foo=baz");
   });
 
   it("should encode and decode slashes in parameter values as ~2F", () => {
-    const matcher1 = $umf.compile("/:foo");
+    const matcher1 = $url.compile("/:foo");
 
     expect(matcher1.format({ foo: "/" })).toBe("/~2F");
     expect(matcher1.format({ foo: "//" })).toBe("/~2F~2F");
@@ -103,7 +99,7 @@ describe("UrlMatcher", () => {
     expect(matcher1.exec("/123~2F").foo).toBe("123/");
 
     // param :foo should match between two slashes
-    const matcher2 = $umf.compile("/:foo/");
+    const matcher2 = $url.compile("/:foo/");
 
     expect(matcher2.exec("/")).not.toBeTruthy();
     expect(matcher2.exec("//")).toBeTruthy();
@@ -115,7 +111,7 @@ describe("UrlMatcher", () => {
   });
 
   it("should encode and decode tildes in parameter values as ~~", () => {
-    const matcher1 = $umf.compile("/:foo");
+    const matcher1 = $url.compile("/:foo");
 
     expect(matcher1.format({ foo: "abc" })).toBe("/abc");
     expect(matcher1.format({ foo: "~abc" })).toBe("/~~abc");
@@ -128,7 +124,7 @@ describe("UrlMatcher", () => {
 
   describe("snake-case parameters", () => {
     it("should match if properly formatted", () => {
-      const matcher = $umf.compile(
+      const matcher = $url.compile(
         "/users/?from&to&snake-case&snake-case-triple",
       );
       expect(matcher.parameters().map((x) => x.id)).toEqual([
@@ -143,20 +139,20 @@ describe("UrlMatcher", () => {
       let err =
         "Invalid parameter name '-snake' in pattern '/users/?from&to&-snake'";
       expect(() => {
-        $umf.compile("/users/?from&to&-snake");
+        $url.compile("/users/?from&to&-snake");
       }).toThrowError(err);
 
       err =
         "Invalid parameter name 'snake-' in pattern '/users/?from&to&snake-'";
       expect(() => {
-        $umf.compile("/users/?from&to&snake-");
+        $url.compile("/users/?from&to&snake-");
       }).toThrowError(err);
     });
   });
 
   describe("parameters containing periods", () => {
     it("should match if properly formatted", () => {
-      const matcher = $umf.compile(
+      const matcher = $url.compile(
         "/users/?from&to&with.periods&with.periods.also",
       );
       const params = matcher.parameters().map(function (p) {
@@ -176,21 +172,21 @@ describe("UrlMatcher", () => {
         "Invalid parameter name '.periods' in pattern '/users/?from&to&.periods'",
       );
       expect(() => {
-        $umf.compile("/users/?from&to&.periods");
+        $url.compile("/users/?from&to&.periods");
       }).toThrow(err);
 
       err = new Error(
         "Invalid parameter name 'periods.' in pattern '/users/?from&to&periods.'",
       );
       expect(() => {
-        $umf.compile("/users/?from&to&periods.");
+        $url.compile("/users/?from&to&periods.");
       }).toThrow(err);
     });
   });
 
   describe(".exec()", () => {
     it("should capture parameter values", () => {
-      const m = $umf.compile(
+      const m = $url.compile(
         "/users/:id/details/{type}/{repeat:[0-9]+}?from&to",
         { strict: false },
       );
@@ -204,13 +200,13 @@ describe("UrlMatcher", () => {
     });
 
     it("should capture catch-all parameters", () => {
-      const m = $umf.compile("/document/*path");
+      const m = $url.compile("/document/*path");
       expect(m.exec("/document/a/b/c", {})).toEqual({ path: "a/b/c" });
       expect(m.exec("/document/", {})).toEqual({ path: "" });
     });
 
     it("should use the optional regexp with curly brace placeholders", () => {
-      const m = $umf.compile(
+      const m = $url.compile(
         "/users/:id/details/{type}/{repeat:[0-9]+}?from&to",
       );
       expect(
@@ -219,26 +215,26 @@ describe("UrlMatcher", () => {
     });
 
     it("should not use optional regexp for '/'", () => {
-      const m = $umf.compile("/{language:(?:fr|en|de)}");
+      const m = $url.compile("/{language:(?:fr|en|de)}");
       expect(m.exec("/", {})).toBeNull();
     });
 
     it("should work with empty default value", () => {
-      const m = $umf.compile("/foo/:str", {
+      const m = $url.compile("/foo/:str", {
         state: { params: { str: { value: "" } } },
       });
       expect(m.exec("/foo/", {})).toEqual({ str: "" });
     });
 
     it("should work with empty default value for regex", () => {
-      const m = $umf.compile("/foo/{param:(?:foo|bar|)}", {
+      const m = $url.compile("/foo/{param:(?:foo|bar|)}", {
         state: { params: { param: { value: "" } } },
       });
       expect(m.exec("/foo/", {})).toEqual({ param: "" });
     });
 
     it("should treat the URL as already decoded and does not decode it further", () => {
-      expect($umf.compile("/users/:id").exec("/users/100%25", {})).toEqual({
+      expect($url.compile("/users/:id").exec("/users/100%25", {})).toEqual({
         id: "100%25",
       });
     });
@@ -252,7 +248,7 @@ describe("UrlMatcher", () => {
       };
 
       angular.forEach(shouldPass, function (url, route) {
-        expect($umf.compile(route).exec(url, {})).toEqual({
+        expect($url.compile(route).exec(url, {})).toEqual({
           childParam: "childParam",
           matchedParam: "someword",
         });
@@ -269,7 +265,7 @@ describe("UrlMatcher", () => {
 
       angular.forEach(shouldThrow, function (url, route) {
         expect(() => {
-          $umf.compile(route).exec(url, {});
+          $url.compile(route).exec(url, {});
         }).toThrowError("Unbalanced capture group in route '" + route + "'");
       });
 
@@ -282,7 +278,7 @@ describe("UrlMatcher", () => {
 
       angular.forEach(shouldPass, function (url, route) {
         expect(() => {
-          $umf.compile(route).exec(url, {});
+          $url.compile(route).exec(url, {});
         }).not.toThrow();
       });
     });
@@ -290,7 +286,7 @@ describe("UrlMatcher", () => {
 
   describe(".format()", () => {
     it("should reconstitute the URL", () => {
-      const m = $umf.compile("/users/:id/details/{type}/{repeat:[0-9]+}?from"),
+      const m = $url.compile("/users/:id/details/{type}/{repeat:[0-9]+}?from"),
         params = {
           id: "123",
           type: "default",
@@ -305,13 +301,13 @@ describe("UrlMatcher", () => {
     });
 
     it("should encode URL parameters", () => {
-      expect($umf.compile("/users/:id").format({ id: "100%" })).toEqual(
+      expect($url.compile("/users/:id").format({ id: "100%" })).toEqual(
         "/users/100%25",
       );
     });
 
     it("encodes URL parameters with hashes", () => {
-      const m = $umf.compile("/users/:id#:section");
+      const m = $url.compile("/users/:id#:section");
       expect(m.format({ id: "bob", section: "contact-details" })).toEqual(
         "/users/bob#contact-details",
       );
@@ -321,16 +317,16 @@ describe("UrlMatcher", () => {
       const config = {
           state: { params: { id: { squash: true, value: "123" } } },
         },
-        m = $umf.compile("/users/:id", config),
+        m = $url.compile("/users/:id", config),
         params = { id: "123" };
 
       expect(m.format(params)).toEqual("/users");
     });
 
     it("should format query parameters from parent, child, grandchild matchers", () => {
-      const m = $umf.compile("/parent?qParent");
-      const m2 = m.append($umf.compile("/child?qChild"));
-      const m3 = m2.append($umf.compile("/grandchild?qGrandchild"));
+      const m = $url.compile("/parent?qParent");
+      const m2 = m.append($url.compile("/child?qChild"));
+      const m3 = m2.append($url.compile("/grandchild?qGrandchild"));
 
       const params = {
         qParent: "parent",
@@ -348,9 +344,9 @@ describe("UrlMatcher", () => {
 
   describe(".append()", () => {
     it("should append matchers", () => {
-      const matcher = $umf
+      const matcher = $url
         .compile("/users/:id/details/{type}?from")
-        .append($umf.compile("/{repeat:[0-9]+}?to"));
+        .append($url.compile("/{repeat:[0-9]+}?to"));
       const params = matcher.parameters();
       expect(params.map((x) => x.id)).toEqual([
         "id",
@@ -362,37 +358,37 @@ describe("UrlMatcher", () => {
     });
 
     it("should return a new matcher", () => {
-      const base = $umf.compile("/users/:id/details/{type}?from");
-      const matcher = base.append($umf.compile("/{repeat:[0-9]+}?to"));
+      const base = $url.compile("/users/:id/details/{type}?from");
+      const matcher = base.append($url.compile("/{repeat:[0-9]+}?to"));
       expect(matcher).not.toBe(base);
     });
 
-    it("should respect $urlMatcherFactoryProvider.strictMode", () => {
-      let m = $umf.compile("/");
-      $umf.strictMode(false);
-      m = m.append($umf.compile("foo"));
+    it("should respect $urlServiceProvider.strictMode", () => {
+      let m = $url.compile("/");
+      $url.config.strictMode(false);
+      m = m.append($url.compile("foo"));
       expect(m.exec("/foo")).toEqual({});
       expect(m.exec("/foo/")).toEqual({});
     });
 
-    it("should respect $urlMatcherFactoryProvider.caseInsensitive", () => {
-      let m = $umf.compile("/");
-      $umf.caseInsensitive(true);
-      m = m.append($umf.compile("foo"));
+    it("should respect $urlServiceProvider.caseInsensitive", () => {
+      let m = $url.compile("/");
+      $url.caseInsensitive(true);
+      m = m.append($url.compile("foo"));
       expect(m.exec("/foo")).toEqual({});
       expect(m.exec("/FOO")).toEqual({});
     });
 
-    it("should respect $urlMatcherFactoryProvider.caseInsensitive when validating regex params", () => {
-      let m = $umf.compile("/");
-      $umf.caseInsensitive(true);
-      m = m.append($umf.compile("foo/{param:bar}"));
+    it("should respect $urlServiceProvider.caseInsensitive when validating regex params", () => {
+      let m = $url.compile("/");
+      $url.config.caseInsensitive(true);
+      m = m.append($url.compile("foo/{param:bar}"));
       expect(m.validates({ param: "BAR" })).toEqual(true);
     });
 
     it("should generate/match params in the proper order", () => {
-      let m = $umf.compile("/foo?queryparam");
-      m = m.append($umf.compile("/bar/:pathparam"));
+      let m = $url.compile("/foo?queryparam");
+      m = m.append($url.compile("/bar/:pathparam"));
       expect(m.exec("/foo/bar/pathval", { queryparam: "queryval" })).toEqual({
         pathparam: "pathval",
         queryparam: "queryval",
@@ -402,14 +398,14 @@ describe("UrlMatcher", () => {
 
   describe("multivalue-query-parameters", () => {
     it("should handle .is() for an array of values", () => {
-      const m = $umf.compile("/foo?{param1:int}"),
+      const m = $url.compile("/foo?{param1:int}"),
         param = m.parameter("param1");
       expect(param.type.is([1, 2, 3])).toBe(true);
       expect(param.type.is([1, "2", 3])).toBe(false);
     });
 
     it("should handle .equals() for two arrays of values", () => {
-      const m = $umf.compile("/foo?{param1:int}&{param2:date}"),
+      const m = $url.compile("/foo?{param1:int}&{param2:date}"),
         param1 = m.parameter("param1"),
         param2 = m.parameter("param2");
 
@@ -430,7 +426,7 @@ describe("UrlMatcher", () => {
     });
 
     it("should conditionally be wrapped in an array by default", () => {
-      const m = $umf.compile("/foo?param1");
+      const m = $url.compile("/foo?param1");
 
       // empty array [] is treated like "undefined"
       expect(m.format({ param1: undefined })).toBe("/foo");
@@ -472,7 +468,7 @@ describe("UrlMatcher", () => {
     });
 
     it("should be wrapped in an array if array: true", () => {
-      const m = $umf.compile("/foo?param1", {
+      const m = $url.compile("/foo?param1", {
         state: { params: { param1: { array: true } } },
       });
 
@@ -516,7 +512,7 @@ describe("UrlMatcher", () => {
     });
 
     it("should be wrapped in an array if paramname looks like param[]", () => {
-      const m = $umf.compile("/foo?param1[]");
+      const m = $url.compile("/foo?param1[]");
       expect(m.exec("/foo")).toEqual({ "param1[]": undefined });
 
       $url.url("/foo?param1[]=bar");
@@ -539,7 +535,7 @@ describe("UrlMatcher", () => {
 
     // Test for issue #2222
     it("should return default value, if query param is missing.", () => {
-      const m = $umf.compile("/state?param1&param2&param3&param5", {
+      const m = $url.compile("/state?param1&param2&param3&param5", {
         state: {
           params: {
             param1: "value1",
@@ -577,7 +573,7 @@ describe("UrlMatcher", () => {
     });
 
     it("should not be wrapped by ui-router into an array if array: false", () => {
-      const m = $umf.compile("/foo?param1", {
+      const m = $url.compile("/foo?param1", {
         state: { params: { param1: { array: false } } },
       });
       expect(m.exec("/foo")).toEqual({ param1: undefined });
@@ -601,7 +597,7 @@ describe("UrlMatcher", () => {
 
   describe("multivalue-path-parameters", () => {
     it("should behave as a single-value by default", () => {
-      const m = $umf.compile("/foo/:param1");
+      const m = $url.compile("/foo/:param1");
 
       expect(m.exec("/foo/")).toEqual({ param1: "" });
 
@@ -611,7 +607,7 @@ describe("UrlMatcher", () => {
     });
 
     it("should be split on - in url and wrapped in an array if array: true", () => {
-      const m = $umf.compile("/foo/:param1", {
+      const m = $url.compile("/foo/:param1", {
         state: { params: { param1: { array: true } } },
       });
 
@@ -626,7 +622,7 @@ describe("UrlMatcher", () => {
     });
 
     it("should behave similar to multi-value query params", () => {
-      const m = $umf.compile("/foo/:param1[]");
+      const m = $url.compile("/foo/:param1[]");
 
       // empty array [] is treated like "undefined"
       expect(m.format({ "param1[]": undefined })).toBe("/foo/");
@@ -662,7 +658,7 @@ describe("UrlMatcher", () => {
     });
 
     it("should be split on - in url and wrapped in an array if paramname looks like param[]", () => {
-      const m = $umf.compile("/foo/:param1[]");
+      const m = $url.compile("/foo/:param1[]");
 
       expect(m.exec("/foo/")).toEqual({ "param1[]": undefined });
       expect(m.exec("/foo/bar")).toEqual({ "param1[]": ["bar"] });
@@ -674,7 +670,7 @@ describe("UrlMatcher", () => {
     });
 
     it("should allow path param arrays with '-' in the values", () => {
-      const m = $umf.compile("/foo/:param1[]");
+      const m = $url.compile("/foo/:param1[]");
 
       expect(m.exec("/foo/")).toEqual({ "param1[]": undefined });
       expect(m.exec("/foo/bar\\-")).toEqual({ "param1[]": ["bar-"] });
@@ -714,11 +710,11 @@ describe("UrlMatcher", () => {
 
 // describe("urlMatcherFactoryProvider", ( ) => {
 //   describe(".type()", ( ) => {
-//     let $umf;
+//     let $url;
 //     beforeEach(
-//       module("ng.router.util", function ($urlMatcherFactoryProvider) {
-//         $umf = $urlMatcherFactoryProvider;
-//         $urlMatcherFactoryProvider.type("myType", {}, ( ) => {
+//       module("ng.router.util", function ($urlServiceProvider) {
+//         $url = $urlServiceProvider;
+//         $urlServiceProvider.type("myType", {}, ( ) => {
 //           return {
 //             decode: ( ) => {
 //               return { status: "decoded" };
@@ -732,7 +728,7 @@ describe("UrlMatcher", () => {
 //     it("should handle arrays properly with config-time custom type definitions", function (
 //       $stateParams,
 //     ) {
-//       const m = $umf.compile("/test?{foo:myType}");
+//       const m = $url.compile("/test?{foo:myType}");
 //       expect(m.exec("/test", { foo: "1" })).toEqual({
 //         foo: { status: "decoded" },
 //       });
@@ -749,21 +745,21 @@ describe("UrlMatcher", () => {
 // });
 
 // describe("urlMatcherFactory", ( ) => {
-//   let $umf;
+//   let $url;
 //   let $url;
 
 //   beforeEach(function ($urlMatcherFactory, $urlService) {
-//     $umf = $urlMatcherFactory;
+//     $url = $urlMatcherFactory;
 //     $url = $urlService;
 //   });
 
 //   it("compiles patterns", ( ) => {
-//     const matcher = $umf.compile("/hello/world");
+//     const matcher = $url.compile("/hello/world");
 //     expect(matcher instanceof UrlMatcher).toBe(true);
 //   });
 
 //   it("recognizes matchers", ( ) => {
-//     expect($umf.isMatcher($umf.compile("/"))).toBe(true);
+//     expect($url.isMatcher($url.compile("/"))).toBe(true);
 
 //     const custom = {
 //       format: angular.noop,
@@ -775,49 +771,49 @@ describe("UrlMatcher", () => {
 //       parameter: angular.noop,
 //       _getDecodedParamValue: angular.noop,
 //     };
-//     expect($umf.isMatcher(custom)).toBe(true);
+//     expect($url.isMatcher(custom)).toBe(true);
 //   });
 
 //   it("should handle case sensitive URL by default", ( ) => {
-//     expect($umf.compile("/hello/world").exec("/heLLo/WORLD")).toBeNull();
+//     expect($url.compile("/hello/world").exec("/heLLo/WORLD")).toBeNull();
 //   });
 
 //   it("should handle case insensitive URL", ( ) => {
-//     $umf.caseInsensitive(true);
-//     expect($umf.compile("/hello/world").exec("/heLLo/WORLD")).toEqual({});
+//     $url.caseInsensitive(true);
+//     expect($url.compile("/hello/world").exec("/heLLo/WORLD")).toEqual({});
 //   });
 
 //   describe("typed parameters", ( ) => {
 //     it("should accept object definitions", ( ) => {
 //       const type = { encode: ( ) => {}, decode: ( ) => {} };
-//       $umf.type("myType1", type);
-//       expect($umf.type("myType1").encode).toBe(type.encode);
+//       $url.type("myType1", type);
+//       expect($url.type("myType1").encode).toBe(type.encode);
 //     });
 
 //     it("should reject duplicate definitions", ( ) => {
-//       $umf.type("myType2", { encode: ( ) => {}, decode: ( ) => {} });
+//       $url.type("myType2", { encode: ( ) => {}, decode: ( ) => {} });
 //       expect(( ) => {
-//         $umf.type("myType2", {});
+//         $url.type("myType2", {});
 //       }).toThrowError("A type named 'myType2' has already been defined.");
 //     });
 
 //     it("should accept injected function definitions", function (
 //       $stateParams,
 //     ) {
-//       $umf.type("myType3", {}, function ($stateParams) {
+//       $url.type("myType3", {}, function ($stateParams) {
 //         return {
 //           decode: ( ) => {
 //             return $stateParams;
 //           },
 //         };
 //       });
-//       expect($umf.type("myType3").decode()).toBe($stateParams);
+//       expect($url.type("myType3").decode()).toBe($stateParams);
 //     });
 
 //     it("should accept annotated function definitions", function (
 //       $stateParams,
 //     ) {
-//       $umf.type("myAnnotatedType", {}, [
+//       $url.type("myAnnotatedType", {}, [
 //         "$stateParams",
 //         function (s) {
 //           return {
@@ -827,11 +823,11 @@ describe("UrlMatcher", () => {
 //           };
 //         },
 //       ]);
-//       expect($umf.type("myAnnotatedType").decode()).toBe($stateParams);
+//       expect($url.type("myAnnotatedType").decode()).toBe($stateParams);
 //     });
 
 //     it("should match built-in types", ( ) => {
-//       const m = $umf.compile("/{foo:int}/{flag:bool}");
+//       const m = $url.compile("/{foo:int}/{flag:bool}");
 //       expect(m.exec("/1138/1")).toEqual({ foo: 1138, flag: true });
 //       expect(m.format({ foo: 5, flag: true })).toBe("/5/1");
 
@@ -840,13 +836,13 @@ describe("UrlMatcher", () => {
 //     });
 
 //     it("should match built-in types with spaces", ( ) => {
-//       const m = $umf.compile("/{foo: int}/{flag:  bool}");
+//       const m = $url.compile("/{foo: int}/{flag:  bool}");
 //       expect(m.exec("/1138/1")).toEqual({ foo: 1138, flag: true });
 //       expect(m.format({ foo: 5, flag: true })).toBe("/5/1");
 //     });
 
 //     it("should match types named only in params", ( ) => {
-//       const m = $umf.compile("/{foo}/{flag}", {
+//       const m = $url.compile("/{foo}/{flag}", {
 //         state: {
 //           params: {
 //             foo: { type: "int" },
@@ -860,7 +856,7 @@ describe("UrlMatcher", () => {
 
 //     it("should throw an error if a param type is declared twice", ( ) => {
 //       expect(( ) => {
-//         $umf.compile("/{foo:int}", {
+//         $url.compile("/{foo:int}", {
 //           state: {
 //             params: {
 //               foo: { type: "int" },
@@ -871,7 +867,7 @@ describe("UrlMatcher", () => {
 //     });
 
 //     it("should encode/decode dates", ( ) => {
-//       const m = $umf.compile("/calendar/{date:date}"),
+//       const m = $url.compile("/calendar/{date:date}"),
 //         result = m.exec("/calendar/2014-03-26");
 //       const date = new Date(2014, 2, 26);
 
@@ -881,7 +877,7 @@ describe("UrlMatcher", () => {
 //     });
 
 //     it("should encode/decode arbitrary objects to json", ( ) => {
-//       const m = $umf.compile("/state/{param1:json}/{param2:json}");
+//       const m = $url.compile("/state/{param1:json}/{param2:json}");
 
 //       const params = {
 //         param1: { foo: "huh", count: 3 },
@@ -898,7 +894,7 @@ describe("UrlMatcher", () => {
 //     });
 
 //     it("should not match invalid typed parameter values", ( ) => {
-//       const m = $umf.compile("/users/{id:int}");
+//       const m = $url.compile("/users/{id:int}");
 
 //       expect(m.exec("/users/1138").id).toBe(1138);
 //       expect(m.exec("/users/alpha")).toBeNull();
@@ -908,7 +904,7 @@ describe("UrlMatcher", () => {
 //     });
 
 //     it("should automatically handle multiple search param values", ( ) => {
-//       const m = $umf.compile("/foo/{fooid:int}?{bar:int}");
+//       const m = $url.compile("/foo/{fooid:int}?{bar:int}");
 
 //       $url.url("/foo/5?bar=1");
 //       expect(m.exec($url.path(), $url.search())).toEqual({ fooid: 5, bar: 1 });
@@ -929,7 +925,7 @@ describe("UrlMatcher", () => {
 //     });
 
 //     it("should allow custom types to handle multiple search param values manually", ( ) => {
-//       $umf.type("custArray", {
+//       $url.type("custArray", {
 //         encode: function (array) {
 //           return array.join("-");
 //         },
@@ -940,7 +936,7 @@ describe("UrlMatcher", () => {
 //         is: Array.isArray,
 //       });
 
-//       const m = $umf.compile("/foo?{bar:custArray}", {
+//       const m = $url.compile("/foo?{bar:custArray}", {
 //         state: { params: { bar: { array: false } } },
 //       });
 
@@ -960,7 +956,7 @@ describe("UrlMatcher", () => {
 
 //   describe("optional parameters", ( ) => {
 //     it("should match with or without values", ( ) => {
-//       const m = $umf.compile("/users/{id:int}", {
+//       const m = $url.compile("/users/{id:int}", {
 //         state: {
 //           params: { id: { value: null, squash: true } },
 //         },
@@ -972,7 +968,7 @@ describe("UrlMatcher", () => {
 //     });
 
 //     it("should correctly match multiple", ( ) => {
-//       const m = $umf.compile("/users/{id:int}/{state:[A-Z]+}", {
+//       const m = $url.compile("/users/{id:int}/{state:[A-Z]+}", {
 //         state: {
 //           params: {
 //             id: { value: null, squash: true },
@@ -994,7 +990,7 @@ describe("UrlMatcher", () => {
 //     });
 
 //     it("should correctly format with or without values", ( ) => {
-//       const m = $umf.compile("/users/{id:int}", {
+//       const m = $url.compile("/users/{id:int}", {
 //         state: {
 //           params: { id: { value: null } },
 //         },
@@ -1004,7 +1000,7 @@ describe("UrlMatcher", () => {
 //     });
 
 //     it("should correctly format multiple", ( ) => {
-//       const m = $umf.compile("/users/{id:int}/{state:[A-Z]+}", {
+//       const m = $url.compile("/users/{id:int}/{state:[A-Z]+}", {
 //         state: {
 //           params: {
 //             id: { value: null, squash: true },
@@ -1020,7 +1016,7 @@ describe("UrlMatcher", () => {
 //     });
 
 //     it("should match in between static segments", ( ) => {
-//       const m = $umf.compile("/users/{user:int}/photos", {
+//       const m = $url.compile("/users/{user:int}/photos", {
 //         state: {
 //           params: { user: { value: 5, squash: true } },
 //         },
@@ -1032,7 +1028,7 @@ describe("UrlMatcher", () => {
 //     });
 
 //     it("should correctly format with an optional followed by a required parameter", ( ) => {
-//       const m = $umf.compile("/home/:user/gallery/photos/:photo", {
+//       const m = $url.compile("/home/:user/gallery/photos/:photo", {
 //         state: {
 //           params: {
 //             user: { value: null, squash: true },
@@ -1048,7 +1044,7 @@ describe("UrlMatcher", () => {
 
 //     describe("default values", ( ) => {
 //       it("should populate if not supplied in URL", ( ) => {
-//         const m = $umf.compile("/users/{id:int}/{test}", {
+//         const m = $url.compile("/users/{id:int}/{test}", {
 //           state: {
 //             params: {
 //               id: { value: 0, squash: true },
@@ -1064,7 +1060,7 @@ describe("UrlMatcher", () => {
 //       });
 
 //       it("should populate even if the regexp requires 1 or more chars", ( ) => {
-//         const m = $umf.compile(
+//         const m = $url.compile(
 //           "/record/{appId}/{recordId:[0-9a-fA-F]{10,24}}",
 //           {
 //             state: {
@@ -1079,7 +1075,7 @@ describe("UrlMatcher", () => {
 //       });
 
 //       it("should allow shorthand definitions", ( ) => {
-//         const m = $umf.compile("/foo/:foo", {
+//         const m = $url.compile("/foo/:foo", {
 //           state: {
 //             params: { foo: "bar" },
 //           },
@@ -1089,7 +1085,7 @@ describe("UrlMatcher", () => {
 
 //       it("should populate query params", ( ) => {
 //         const defaults = { order: "name", limit: 25, page: 1 };
-//         const m = $umf.compile("/foo?order&{limit:int}&{page:int}", {
+//         const m = $url.compile("/foo?order&{limit:int}&{page:int}", {
 //           state: {
 //             params: defaults,
 //           },
@@ -1101,21 +1097,21 @@ describe("UrlMatcher", () => {
 //         function barFn() {
 //           return "Value from bar()";
 //         }
-//         let m = $umf.compile("/foo/:bar", {
+//         let m = $url.compile("/foo/:bar", {
 //           state: {
 //             params: { bar: barFn },
 //           },
 //         });
 //         expect(m.exec("/foo/").bar).toBe("Value from bar()");
 
-//         m = $umf.compile("/foo/:bar", {
+//         m = $url.compile("/foo/:bar", {
 //           state: {
 //             params: { bar: { value: barFn, squash: true } },
 //           },
 //         });
 //         expect(m.exec("/foo").bar).toBe("Value from bar()");
 
-//         m = $umf.compile("/foo?bar", {
+//         m = $url.compile("/foo?bar", {
 //           state: {
 //             params: { bar: barFn },
 //           },
@@ -1124,7 +1120,7 @@ describe("UrlMatcher", () => {
 //       });
 
 //       it("should allow injectable functions", function ($stateParams) {
-//         const m = $umf.compile("/users/{user:json}", {
+//         const m = $url.compile("/users/{user:json}", {
 //           state: {
 //             params: {
 //               user: function ($stateParams) {
@@ -1140,7 +1136,7 @@ describe("UrlMatcher", () => {
 //       });
 
 //       xit("should match when used as prefix", ( ) => {
-//         const m = $umf.compile("/{lang:[a-z]{2}}/foo", {
+//         const m = $url.compile("/{lang:[a-z]{2}}/foo", {
 //           state: {
 //             params: { lang: "de" },
 //           },
@@ -1152,7 +1148,7 @@ describe("UrlMatcher", () => {
 //       describe("squash policy", ( ) => {
 //         const Session = { username: "loggedinuser" };
 //         function getMatcher(squash) {
-//           return $umf.compile(
+//           return $url.compile(
 //             "/user/:userid/gallery/:galleryid/photo/:photoid",
 //             {
 //               state: {
@@ -1285,18 +1281,18 @@ describe("UrlMatcher", () => {
 
 //   describe("strict matching", ( ) => {
 //     it("should match with or without trailing slash", ( ) => {
-//       const m = $umf.compile("/users", { strict: false });
+//       const m = $url.compile("/users", { strict: false });
 //       expect(m.exec("/users")).toEqual({});
 //       expect(m.exec("/users/")).toEqual({});
 //     });
 
 //     it("should not match multiple trailing slashes", ( ) => {
-//       const m = $umf.compile("/users", { strict: false });
+//       const m = $url.compile("/users", { strict: false });
 //       expect(m.exec("/users//")).toBeNull();
 //     });
 
 //     it("should match when defined with parameters", ( ) => {
-//       const m = $umf.compile("/users/{name}", {
+//       const m = $url.compile("/users/{name}", {
 //         strict: false,
 //         state: {
 //           params: {

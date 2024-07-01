@@ -21,7 +21,7 @@ describe("view", () => {
     $injector,
     elem,
     $controllerProvider,
-    $urlMatcherFactoryProvider,
+    $urlServiceProvider,
     $view,
     $q;
   let root, states;
@@ -34,16 +34,12 @@ describe("view", () => {
     window.angular
       .module("defaultModule", ["ng.router"])
       .config(
-        function (
-          _$provide_,
-          _$controllerProvider_,
-          _$urlMatcherFactoryProvider_,
-        ) {
+        function (_$provide_, _$controllerProvider_, _$urlServiceProvider_) {
           _$provide_.factory("foo", () => {
             return "Foo";
           });
           $controllerProvider = _$controllerProvider_;
-          $urlMatcherFactoryProvider = _$urlMatcherFactoryProvider_;
+          $urlServiceProvider = _$urlServiceProvider_;
         },
       );
     $injector = window.angular.bootstrap(document.getElementById("dummy"), [
@@ -58,10 +54,7 @@ describe("view", () => {
 
       states = {};
       const matcher = new StateMatcher(states);
-      const stateBuilder = new StateBuilder(
-        matcher,
-        $urlMatcherFactoryProvider,
-      );
+      const stateBuilder = new StateBuilder(matcher, $urlServiceProvider);
       stateBuilder.builder("views", ng1ViewsBuilder);
       register = registerState(states, stateBuilder);
       root = register({ name: "" });

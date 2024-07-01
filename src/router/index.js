@@ -22,12 +22,6 @@ export function initRouter() {
     .module("ng.router", ["ng"])
     .provider("$router", $routerProvider)
     .provider("$urlService", getProviderFor("urlService"))
-    .provider("$urlMatcherFactory", [
-      "$routerProvider",
-      function RouterProvide() {
-        return router.urlMatcherFactory;
-      },
-    ])
     .provider("$templateFactory", TemplateFactory)
     .provider("$stateRegistry", getProviderFor("stateRegistry"))
     .provider("$routerGlobals", getProviderFor("globals"))

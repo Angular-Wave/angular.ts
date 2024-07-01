@@ -23,7 +23,32 @@ export class UrlConfig {
     this._isStrictMode = true;
     /** @type {boolean} */
     this._defaultSquashPolicy = false;
+    /**
+     * Applys ng1-specific path parameter encoding
+     *
+     * The Angular 1 `$location` service is a bit weird.
+     * It doesn't allow slashes to be encoded/decoded bi-directionally.
+     *
+     * See the writeup at https://github.com/angular-ui/ui-router/issues/2598
+     *
+     * This code patches the `path` parameter type so it encoded/decodes slashes as ~2F
+     *
+     */
+    const pathType = this.type("path");
+    pathType.encode = (x) =>
+      x != null
+        ? x.toString().replace(/(~|\/)/g, (m) => ({ "~": "~~", "/": "~2F" })[m])
+        : x;
+    pathType.decode = (x) =>
+      x != null
+        ? x
+            .toString()
+            .replace(/(~~|~2F)/g, (m) => ({ "~~": "~", "~2F": "/" })[m])
+        : x;
+    this.paramTypes.enqueue = false;
+    this.paramTypes._flushTypeQueue();
   }
+
   /**
    * Defines whether URL matching should be case sensitive (the default behavior), or not.
    *

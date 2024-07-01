@@ -14,7 +14,7 @@ export declare class ParamFactory {
  * Factory for [[UrlMatcher]] instances.
  *
  * The factory is available to ng1 services as
- * `$urlMatcherFactory` or ng1 providers as `$urlMatcherFactoryProvider`.
+ * `$urlMatcherFactory` or ng1 providers as `$urlServiceProvider`.
  */
 export declare class UrlMatcherFactory {
   private router;

@@ -1,4 +1,3 @@
-import { UrlMatcherFactory } from "./url/url-matcher-factory";
 import { TransitionService } from "./transition/transition-service";
 import { ViewService } from "./view/view";
 import { StateRegistry } from "./state/state-registry";
@@ -69,17 +68,8 @@ export class UIRouter {
       this.stateService,
     );
 
-    /**
-     * Deprecated for public use. Use [[urlService]] instead.
-     * @deprecated Use [[urlService]] instead
-     */
-    this.urlMatcherFactory = new UrlMatcherFactory(this.urlService.config);
-
     /** Provides a registry for states, and related registration services */
-    this.stateRegistry = new StateRegistry(
-      this.urlMatcherFactory,
-      this.urlService.rules,
-    );
+    this.stateRegistry = new StateRegistry(this.urlService);
 
     // Manual wiring ideally we would want to do this at runtime
     this.stateService.stateRegistry = this.stateRegistry;

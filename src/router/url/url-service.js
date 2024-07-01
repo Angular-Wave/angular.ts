@@ -1,11 +1,18 @@
-import { isDefined, isObject, isString } from "../../shared/utils";
+import {
+  forEach,
+  isFunction,
+  isDefined,
+  isObject,
+  isString,
+} from "../../shared/utils";
 import { is, pattern } from "../../shared/hof";
 import { UrlRules } from "./url-rules";
 import { UrlConfig } from "./url-config";
 import { TargetState } from "../state/target-state";
 import { removeFrom } from "../../shared/common";
-import { EventBus } from "../../core/pubsub";
 import { stripLastPathElement } from "../../shared/strings";
+import { UrlMatcher } from "./url-matcher";
+import { ParamFactory } from "../params/param-factory";
 
 /**
  * API for URL management
@@ -16,7 +23,6 @@ export class UrlService {
    */
   constructor($locationProvider, urlRuleFactory, stateService) {
     this.stateService = stateService;
-
     this.$locationProvider = $locationProvider;
     this.$location = undefined;
     this.$browser = undefined;
@@ -37,6 +43,9 @@ export class UrlService {
      * @type {UrlConfig}
      */
     this.config = new UrlConfig();
+
+    /** Creates a new [[Param]] for a given location (DefType) */
+    this.paramFactory = new ParamFactory(this.config);
 
     /**
      * Gets the path part of the current url
@@ -64,9 +73,6 @@ export class UrlService {
     this.hash = () => this.$location.hash();
 
     this._urlListeners = [];
-    EventBus.subscribe("$urlService:update", () => {
-      this.update();
-    });
   }
 
   html5Mode() {
@@ -367,7 +373,6 @@ export class UrlService {
     let url = urlMatcher.format(params);
     if (url == null) return null;
     options = options || { absolute: false };
-    const cfg = this.config;
     const isHtml5 = this.html5Mode();
     if (!isHtml5 && url !== null) {
       url = "#" + this.$locationProvider.hashPrefix() + url;
@@ -380,13 +385,55 @@ export class UrlService {
     const cfgPort = this.$location.port();
     const port = cfgPort === 80 || cfgPort === 443 ? "" : ":" + cfgPort;
     return [
-      cfg.protocol(),
+      this.$location.protocol(),
       "://",
       this.$location.host(),
       port,
       slash,
       url,
     ].join("");
+  }
+
+  /**
+   * Creates a [[UrlMatcher]] for the specified pattern.
+   *
+   * @param pattern  The URL pattern.
+   * @param config  The config object hash.
+   * @returns The UrlMatcher.
+   */
+  compile(pattern, config) {
+    const urlConfig = this.config;
+    // backward-compatible support for config.params -> config.state.params
+    const params = config && !config.state && config.params;
+    config = params ? Object.assign({ state: { params } }, config) : config;
+    const globalConfig = {
+      strict: urlConfig._isStrictMode,
+      caseInsensitive: urlConfig._isCaseInsensitive,
+    };
+    return new UrlMatcher(
+      pattern,
+      urlConfig.paramTypes,
+      this.paramFactory,
+      Object.assign(globalConfig, config),
+    );
+  }
+
+  /**
+   * Returns true if the specified object is a [[UrlMatcher]], or false otherwise.
+   *
+   * @param object  The object to perform the type check against.
+   * @returns `true` if the object matches the `UrlMatcher` interface, by
+   *          implementing all the same methods.
+   */
+  isMatcher(object) {
+    // TODO: typeof?
+    if (!isObject(object)) return false;
+    let result = true;
+    forEach(UrlMatcher.prototype, (val, name) => {
+      if (isFunction(val))
+        result = result && isDefined(object[name]) && isFunction(object[name]);
+    });
+    return result;
   }
 }
 

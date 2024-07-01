@@ -26,7 +26,7 @@ export function $routerProvider($locationProvider) {
     router.stateRegistry,
     router.stateService,
   );
-  
+
   // backwards compat: also expose router instance as $routerProvider.router
   router["router"] = router;
   router["$get"] = $get;

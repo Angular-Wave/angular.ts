@@ -495,6 +495,6 @@ function _arraysEq(a1, a2) {
 }
 // issue #2676
 export const silenceUncaughtInPromise = (promise) =>
-  promise.catch((e) => 0) && promise;
+  promise.catch(() => 0) && promise;
 export const silentRejection = (error) =>
   silenceUncaughtInPromise(services.$q.reject(error));

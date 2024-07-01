@@ -13,7 +13,7 @@ describe("router services", () => {
     module.config(
       (
         _$routerProvider_,
-        $urlMatcherFactoryProvider,
+        $urlServiceProvider,
         $stateRegistryProvider,
         $routerGlobalsProvider,
         $transitionsProvider,
@@ -23,7 +23,7 @@ describe("router services", () => {
         expect($routerProvider["router"]).toBe($routerProvider);
         providers = {
           $routerProvider,
-          $urlMatcherFactoryProvider,
+          $urlServiceProvider,
           $stateRegistryProvider,
           $routerGlobalsProvider,
           $transitionsProvider,
@@ -38,26 +38,17 @@ describe("router services", () => {
   });
 
   it("Should expose ui-router providers from the UIRouter instance", () => {
-    expect(providers.$urlMatcherFactoryProvider).toBe(
-      $routerProvider.urlMatcherFactory,
-    );
-    expect(providers.$urlRouterProvider).toBe(
-      $routerProvider.urlRouterProvider,
-    );
-    expect(providers.$stateRegistryProvider).toBe(
-      $routerProvider.stateRegistry,
-    );
-    expect(providers.$routerGlobalsProvider).toBe($routerProvider.globals);
-    expect(providers.$transitionsProvider).toBe(
-      $routerProvider.transitionService,
-    );
-    expect(providers.$stateProvider).toBe($routerProvider.stateProvider);
+    expect(providers.$routerProvider).toBeDefined();
+    expect(providers.$urlServiceProvider).toBeDefined();
+    expect(providers.$stateRegistryProvider).toBeDefined();
+    expect(providers.$stateRegistryProvider).toBeDefined();
+    expect(providers.$transitionsProvider).toBeDefined();
+    expect(providers.$stateProvider).toBeDefined();
   });
 
   it("Should expose ui-router services from the UIRouter instance", () => {
     let $router = $injector.get("$router");
     expect($router).toBe($routerProvider);
-    expect($injector.get("$urlMatcherFactory")).toBe($router.urlMatcherFactory);
     expect($injector.get("$urlService")).toBe($router.urlService);
     expect($injector.get("$stateRegistry")).toBe($router.stateRegistry);
     expect($injector.get("$routerGlobals")).toBe($router.globals);

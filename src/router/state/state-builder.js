@@ -29,7 +29,7 @@ function dataBuilder(state) {
   }
   return state.data;
 }
-const getUrlBuilder = ($urlMatcherFactoryProvider, root) =>
+const getUrlBuilder = ($urlService, root) =>
   function urlBuilder(stateObject) {
     let stateDec = stateObject.self;
     // For future states, i.e., states whose name ends with `.**`,
@@ -49,9 +49,9 @@ const getUrlBuilder = ($urlMatcherFactoryProvider, root) =>
     const parsed = parseUrl(stateDec.url);
     const url = !parsed
       ? stateDec.url
-      : $urlMatcherFactoryProvider.compile(parsed.val, { state: stateDec });
+      : $urlService.compile(parsed.val, { state: stateDec });
     if (!url) return null;
-    if (!$urlMatcherFactoryProvider.isMatcher(url))
+    if (!$urlService.isMatcher(url))
       throw new Error(`Invalid url '${url}' in state '${stateObject}'`);
     return parsed && parsed.root
       ? url
@@ -238,7 +238,7 @@ export function resolvablesBuilder(state) {
  * using the [[builder]] method.
  */
 export class StateBuilder {
-  constructor(matcher, urlMatcherFactory) {
+  constructor(matcher, urlService) {
     this.matcher = matcher;
     this.$injector = undefined;
     const self = this;
@@ -254,10 +254,11 @@ export class StateBuilder {
       parent: [parentBuilder],
       data: [dataBuilder],
       // Build a URLMatcher if necessary, either via a relative or absolute URL
-      url: [getUrlBuilder(urlMatcherFactory, root)],
+      url: [getUrlBuilder(urlService, root)],
       // Keep track of the closest ancestor state that has a URL (i.e. is navigable)
       navigable: [getNavigableBuilder(isRoot)],
-      params: [getParamsBuilder(urlMatcherFactory.paramFactory)],
+      // TODO
+      params: [getParamsBuilder(urlService.paramFactory)],
       // Each framework-specific ui-router implementation should define its own `views` builder
       // e.g., src/ng1/statebuilders/views.ts
       views: [],

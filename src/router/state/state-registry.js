@@ -12,13 +12,14 @@ import { ng1ViewsBuilder } from "./views";
  * This API is found at `$stateRegistry` ([[UIRouter.stateRegistry]])
  */
 export class StateRegistry {
-  constructor(urlMatcherFactory, urlServiceRules) {
+  constructor(urlService) {
     this.states = {};
-    this.urlServiceRules = urlServiceRules;
+    this.urlService = urlService;
+    this.urlServiceRules = urlService.rules;
     this.$injector = undefined;
     this.listeners = [];
     this.matcher = new StateMatcher(this.states);
-    this.builder = new StateBuilder(this.matcher, urlMatcherFactory);
+    this.builder = new StateBuilder(this.matcher, urlService);
     // Apply ng1 specific StateBuilder code for `views`, `resolve`, and `onExit/Retain/Enter` properties
     // TODO we can probably move this inside buildr
     this.builder.builder("views", ng1ViewsBuilder);
@@ -28,7 +29,7 @@ export class StateRegistry {
 
     this.stateQueue = new StateQueueManager(
       this,
-      urlServiceRules,
+      this.urlServiceRules,
       this.states,
       this.builder,
       this.listeners,

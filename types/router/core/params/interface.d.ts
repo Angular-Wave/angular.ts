@@ -395,7 +395,7 @@ export interface Replace {
  * @example
  * ```
  *
- * $urlMatcherFactoryProvider.type('intarray', {
+ * $urlServiceProvider.type('intarray', {
  *   // Take an array of ints [1,2,3] and return a string "1-2-3"
  *   encode: (array) => array.join("-"),
  *
@@ -432,7 +432,7 @@ export interface Replace {
  *
  * var list = ['John', 'Paul', 'George', 'Ringo'];
  *
- * $urlMatcherFactoryProvider.type('listItem', {
+ * $urlServiceProvider.type('listItem', {
  *   encode: function(item) {
  *     // Represent the list item in the URL using its corresponding index
  *     return list.indexOf(item);

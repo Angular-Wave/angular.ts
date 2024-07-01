@@ -86,7 +86,7 @@ export class ViewService {
     if (relativeMatch.exec(ngViewContextAnchor)) {
       const anchorState = ngViewContextAnchor
         .split(".")
-        .reduce((anchor, x) => anchor.parent, context);
+        .reduce((anchor) => anchor.parent, context);
       ngViewContextAnchor = anchorState.name;
     } else if (ngViewContextAnchor === ".") {
       ngViewContextAnchor = context.name;
