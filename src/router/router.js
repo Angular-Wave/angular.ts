@@ -10,6 +10,7 @@ import { registerLazyLoadHook } from "./hooks/lazy-load";
 import { registerUpdateUrl } from "./hooks/url";
 import { registerActivateViews } from "./hooks/views";
 import { registerRedirectToHook } from "./hooks/redirect-to";
+import { StateProvider } from "./state-provider";
 
 /**
  * Router id tracker
@@ -99,5 +100,10 @@ export class UIRouter {
     this.viewService._pluginapi._rootViewContext(this.stateRegistry.root());
     this.globals.$current = this.stateRegistry.root();
     this.globals.current = this.globals.$current.self;
+
+    this.stateProvider = new StateProvider(
+      this.stateRegistry,
+      this.stateService,
+    );
   }
 }

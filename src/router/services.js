@@ -12,7 +12,6 @@ import { services } from "./common/coreservices";
 import { unnestR } from "../shared/common";
 import { trace } from "./common/trace";
 import { UIRouter } from "./router";
-import { StateProvider } from "./state-provider";
 
 /** @type {angular.UIRouter}} */
 export let router = null;
@@ -21,11 +20,6 @@ $routerProvider.$inject = ["$locationProvider"];
 export function $routerProvider($locationProvider) {
   // Create a new instance of the Router when the $routerProvider is initialized
   router = this.router = new UIRouter($locationProvider);
-  router.stateProvider = new StateProvider(
-    router.stateRegistry,
-    router.stateService,
-  );
-
   // backwards compat: also expose router instance as $routerProvider.router
   router["router"] = router;
   router["$get"] = $get;
@@ -46,8 +40,8 @@ export const getProviderFor = (serviceName) => [
   },
 ];
 // This effectively calls $get() on `$routerProvider` to trigger init (when ng enters runtime)
-runBlock.$inject = ["$injector", "$q", "$router"];
-export function runBlock($injector, $q, $router) {
+runBlock.$inject = ["$injector", "$q", "$router", "$stateRegistry", "$urlService"];
+export function runBlock($injector, $q, $router, $stateRegistry, $urlService) {
   services.$injector = $injector;
   services.$q = $q;
   // https://github.com/angular-ui/ui-router/issues/3678
@@ -60,7 +54,7 @@ export function runBlock($injector, $q, $router) {
   }
   // The $injector is now available.
   // Find any resolvables that had dependency annotation deferred
-  $router.stateRegistry
+  $stateRegistry
     .get()
     .map((x) => x.$$state().resolvables)
     .reduce(unnestR, [])
@@ -72,8 +66,8 @@ export function runBlock($injector, $q, $router) {
           $injector.strictDi,
         )),
     );
-  // TODO: Is this the best place for this?
-  $router.urlService.listen();
+  // Start listening for url changes
+  $urlService.listen();
 }
 
 // $state service and $stateProvider
