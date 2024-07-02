@@ -7,7 +7,6 @@
  */
 import { isInjectable, isNull, isPromise } from "./predicates";
 import { isUndefined, isFunction, isString, isObject } from "./utils";
-import { Rejection } from "../router/transition/reject-factory";
 import { identity, pushR, tail } from "./common";
 import { pattern, val } from "./hof";
 /**
@@ -57,7 +56,13 @@ export function fnToString(fn) {
 }
 export function stringify(o) {
   const seen = [];
-  const isRejection = Rejection.isRejectionPromise;
+  const isRejection = (obj) => {
+    return (
+      obj &&
+      typeof obj.then === "function" &&
+      obj.constructor.name == "Rejection"
+    );
+  };
   const hasToString = (obj) =>
     isObject(obj) &&
     !Array.isArray(obj) &&

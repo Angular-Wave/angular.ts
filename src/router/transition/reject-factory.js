@@ -54,14 +54,6 @@ export const RejectType = {
 
 let id = 0;
 export class Rejection {
-  /** Returns true if the obj is a rejected promise created from the `asPromise` factory */
-  static isRejectionPromise(obj) {
-    return (
-      obj &&
-      typeof obj.then === "function" &&
-      is(Rejection)(obj._transitionRejection)
-    );
-  }
   /** Returns a Rejection due to transition superseded */
   static superseded(detail, options) {
     const message =
