@@ -40,7 +40,13 @@ export const getProviderFor = (serviceName) => [
   },
 ];
 // This effectively calls $get() on `$routerProvider` to trigger init (when ng enters runtime)
-runBlock.$inject = ["$injector", "$q", "$router", "$stateRegistry", "$urlService"];
+runBlock.$inject = [
+  "$injector",
+  "$q",
+  "$router",
+  "$stateRegistry",
+  "$urlService",
+];
 export function runBlock($injector, $q, $router, $stateRegistry, $urlService) {
   services.$injector = $injector;
   services.$q = $q;

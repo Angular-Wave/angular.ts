@@ -1,4 +1,4 @@
-import { dealoc, jqLite } from "../../src/jqLite";
+import { dealoc } from "../../src/jqLite";
 import { Angular } from "../../src/loader";
 import { publishExternalAPI } from "../../src/public";
 import { map, find } from "../../src/shared/common";
@@ -373,7 +373,7 @@ describe("UrlMatcher", () => {
 
     it("should respect $urlServiceProvider.caseInsensitive", () => {
       let m = $url.compile("/");
-      $url.caseInsensitive(true);
+      $url.config.caseInsensitive(true);
       m = m.append($url.compile("foo"));
       expect(m.exec("/foo")).toEqual({});
       expect(m.exec("/FOO")).toEqual({});
@@ -779,7 +779,7 @@ describe("UrlMatcher", () => {
 //   });
 
 //   it("should handle case insensitive URL", ( ) => {
-//     $url.caseInsensitive(true);
+//     $url.config.caseInsensitive(true);
 //     expect($url.compile("/hello/world").exec("/heLLo/WORLD")).toEqual({});
 //   });
 
