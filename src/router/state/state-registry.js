@@ -1,11 +1,11 @@
 import { StateMatcher } from "./state-matcher";
 import { StateBuilder } from "./state-builder";
 import { StateQueueManager } from "./state-queue-manager";
-import { removeFrom } from "../../shared/common";
+import { applyPairs, removeFrom } from "../../shared/common";
 import { propEq } from "../../shared/hof";
 import { ResolveContext } from "../resolve/resolve-context";
-import { getLocals } from "../services";
 import { ng1ViewsBuilder } from "./views";
+import { isString } from "../../shared/utils";
 /**
  * A registry for all of the application's [[StateDeclaration]]s
  *
@@ -224,3 +224,16 @@ export class StateRegistry {
     },
   ];
 }
+
+export const getLocals = (ctx) => {
+  const tokens = ctx.getTokens().filter(isString);
+  const tuples = tokens.map((key) => {
+    const resolvable = ctx.getResolvable(key);
+    const waitPolicy = ctx.getPolicy(resolvable).async;
+    return [
+      key,
+      waitPolicy === "NOWAIT" ? resolvable.promise : resolvable.data,
+    ];
+  });
+  return tuples.reduce(applyPairs, {});
+};

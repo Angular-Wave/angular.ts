@@ -1,13 +1,12 @@
 import { filter, tail, unnestR } from "../../shared/common";
 import { isDefined, isFunction, isString } from "../../shared/utils";
 import { kebobString } from "../../shared/strings";
-
 import { parse } from "../../shared/hof";
 import { ResolveContext } from "../resolve/resolve-context";
 import { trace } from "../common/trace";
-import { getLocals } from "../services";
 import { Ng1ViewConfig } from "../state/views";
 import { jqLite } from "../../jqLite";
+import { getLocals } from "../state/state-registry";
 /**
  * `ui-view`: A viewport directive which is filled in by a view from the active state.
  *

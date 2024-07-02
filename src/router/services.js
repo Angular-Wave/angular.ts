@@ -9,8 +9,7 @@
  * @preferred @publicapi @module ng1
  */
 import { services } from "./common/coreservices";
-import { applyPairs, unnestR } from "../shared/common";
-import { isString } from "../shared/utils";
+import { unnestR } from "../shared/common";
 import { trace } from "./common/trace";
 import { UIRouter } from "./router";
 import { StateProvider } from "./state-provider";
@@ -90,17 +89,3 @@ export function watchDigests($rootScope) {
     trace.approximateDigests++;
   });
 }
-
-/** @hidden TODO: find a place to move this */
-export const getLocals = (ctx) => {
-  const tokens = ctx.getTokens().filter(isString);
-  const tuples = tokens.map((key) => {
-    const resolvable = ctx.getResolvable(key);
-    const waitPolicy = ctx.getPolicy(resolvable).async;
-    return [
-      key,
-      waitPolicy === "NOWAIT" ? resolvable.promise : resolvable.data,
-    ];
-  });
-  return tuples.reduce(applyPairs, {});
-};
