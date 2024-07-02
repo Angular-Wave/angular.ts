@@ -3,7 +3,6 @@ import { isDefined, isString } from "../../shared/utils";
 import { isInjectable } from "../../shared/predicates";
 import { services } from "../common/coreservices";
 import { trace } from "../common/trace";
-import { ViewService } from "../view/view";
 import { ResolveContext } from "../resolve/resolve-context";
 import { Resolvable } from "../resolve/resolvable";
 
@@ -77,7 +76,7 @@ export function ng1ViewsBuilder(state) {
     config.$type = "ng1";
     config.$context = state;
     config.$name = name;
-    const normalized = ViewService.normalizeUIViewTarget(
+    const normalized = Ng1ViewConfig.normalizeUIViewTarget(
       config.$context,
       config.$name,
     );
@@ -143,5 +142,50 @@ export class Ng1ViewConfig {
     const providerFn = Array.isArray(provider) ? tail(provider) : provider;
     const resolvable = new Resolvable("", providerFn, deps);
     return resolvable.get(context);
+  }
+
+  /**
+   * Normalizes a view's name from a state.views configuration block.
+   *
+   * This should be used by a framework implementation to calculate the values for
+   * [[_ViewDeclaration.$ngViewName]] and [[_ViewDeclaration.$ngViewContextAnchor]].
+   *
+   * @param context the context object (state declaration) that the view belongs to
+   * @param rawViewName the name of the view, as declared in the [[StateDeclaration.views]]
+   *
+   * @returns the normalized ngViewName and ngViewContextAnchor that the view targets
+   */
+  static normalizeUIViewTarget(context, rawViewName = "") {
+    // TODO: Validate incoming view name with a regexp to allow:
+    // ex: "view.name@foo.bar" , "^.^.view.name" , "view.name@^.^" , "" ,
+    // "@" , "$default@^" , "!$default.$default" , "!foo.bar"
+    const viewAtContext = rawViewName.split("@");
+    let ngViewName = viewAtContext[0] || "$default"; // default to unnamed view
+    let ngViewContextAnchor = isString(viewAtContext[1])
+      ? viewAtContext[1]
+      : "^"; // default to parent context
+    // Handle relative view-name sugar syntax.
+    // Matches rawViewName "^.^.^.foo.bar" into array: ["^.^.^.foo.bar", "^.^.^", "foo.bar"],
+    const relativeViewNameSugar = /^(\^(?:\.\^)*)\.(.*$)/.exec(ngViewName);
+    if (relativeViewNameSugar) {
+      // Clobbers existing contextAnchor (rawViewName validation will fix this)
+      ngViewContextAnchor = relativeViewNameSugar[1]; // set anchor to "^.^.^"
+      ngViewName = relativeViewNameSugar[2]; // set view-name to "foo.bar"
+    }
+    if (ngViewName.charAt(0) === "!") {
+      ngViewName = ngViewName.substr(1);
+      ngViewContextAnchor = ""; // target absolutely from root
+    }
+    // handle parent relative targeting "^.^.^"
+    const relativeMatch = /^(\^(?:\.\^)*)$/;
+    if (relativeMatch.exec(ngViewContextAnchor)) {
+      const anchorState = ngViewContextAnchor
+        .split(".")
+        .reduce((anchor) => anchor.parent, context);
+      ngViewContextAnchor = anchorState.name;
+    } else if (ngViewContextAnchor === ".") {
+      ngViewContextAnchor = context.name;
+    }
+    return { ngViewName, ngViewContextAnchor };
   }
 }
