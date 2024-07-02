@@ -5,7 +5,6 @@ import { StateService } from "./state/state-service";
 import { UIRouterGlobals } from "./globals";
 import { UrlService } from "./url/url-service";
 import { trace } from "./common/trace";
-import { UrlRuleFactory } from "./url/url-rule";
 import { registerLazyLoadHook } from "./hooks/lazy-load";
 import { registerUpdateUrl } from "./hooks/url";
 import { registerActivateViews } from "./hooks/views";
@@ -53,20 +52,13 @@ export class UIRouter {
     /** @type {StateService} Provides services related to states */
     this.stateService = new StateService(this.globals, this.transitionService);
 
-    /** Provides services related to the URL */
-    let urlRuleFactory = new UrlRuleFactory(
-      this.urlMatcherFactory,
-      this.stateService,
-      this.globals,
-    );
-
     /**
      * @type {angular.UrlService}
      */
     this.urlService = new UrlService(
       $locationProvider,
-      urlRuleFactory,
       this.stateService,
+      this.globals,
     );
 
     /** Provides a registry for states, and related registration services */

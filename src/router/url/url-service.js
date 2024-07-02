@@ -13,6 +13,7 @@ import { removeFrom } from "../../shared/common";
 import { stripLastPathElement } from "../../shared/strings";
 import { UrlMatcher } from "./url-matcher";
 import { ParamFactory } from "../params/param-factory";
+import { UrlRuleFactory } from "./url-rule";
 
 /**
  * API for URL management
@@ -21,7 +22,7 @@ export class UrlService {
   /**
    * @param {angular.ILocationProvider} $locationProvider
    */
-  constructor($locationProvider, urlRuleFactory, stateService) {
+  constructor($locationProvider, stateService, globals) {
     this.stateService = stateService;
     this.$locationProvider = $locationProvider;
     this.$location = undefined;
@@ -29,13 +30,17 @@ export class UrlService {
 
     /** @type {boolean} */
     this.interceptDeferred = false;
+
+    /** Provides services related to the URL */
+    this.urlRuleFactory = new UrlRuleFactory(this, this.stateService, globals);
+
     /**
      * The nested [[UrlRules]] API for managing URL rules and rewrites
      *
      * See: [[UrlRules]] for details
      * @type {UrlRules}
      */
-    this.rules = new UrlRules(urlRuleFactory);
+    this.rules = new UrlRules(this.urlRuleFactory);
     /**
      * The nested [[UrlConfig]] API to configure the URL and retrieve URL information
      *

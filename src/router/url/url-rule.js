@@ -13,8 +13,8 @@ import { StateObject } from "../state/state-object";
  * - [[StateObject]]
  */
 export class UrlRuleFactory {
-  constructor(urlMatcherFactory, stateService, routerGlobals) {
-    this.urlMatcherFactory = urlMatcherFactory;
+  constructor(urlService, stateService, routerGlobals) {
+    this.urlService = urlService;
     this.stateService = stateService;
     this.routerGlobals = routerGlobals;
   }
@@ -28,7 +28,7 @@ export class UrlRuleFactory {
   create(what, handler) {
     const { isState, isStateDeclaration } = StateObject;
     const makeRule = pattern([
-      [isString, (_what) => makeRule(this.urlMatcherFactory.compile(_what))],
+      [isString, (_what) => makeRule(this.urlService.compile(_what))],
       [is(UrlMatcher), (_what) => this.fromUrlMatcher(_what, handler)],
       [
         or(isState, isStateDeclaration),
@@ -79,7 +79,7 @@ export class UrlRuleFactory {
    */
   fromUrlMatcher(urlMatcher, handler) {
     let _handler = handler;
-    if (isString(handler)) handler = this.urlMatcherFactory.compile(handler);
+    if (isString(handler)) handler = this.urlService.compile(handler);
     if (is(UrlMatcher)(handler)) _handler = (match) => handler.format(match);
     function matchUrlParamters(url) {
       const params = urlMatcher.exec(url.path, url.search, url.hash);
