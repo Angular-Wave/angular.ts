@@ -87,7 +87,7 @@ describe("templateFactory", () => {
   });
 
   describe("component template builder", () => {
-    let $router, el;
+    let el;
 
     beforeEach(() => {
       dealoc(document.getElementById("dummy"));
@@ -104,7 +104,7 @@ describe("templateFactory", () => {
           _$httpBackend_,
           _$sce_,
           $rootScope,
-          _$router_,
+
           _$compile_,
         ) => {
           ($templateFactory = _$templateFactory_),

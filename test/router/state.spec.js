@@ -5,7 +5,7 @@ import { isFunction } from "../../src/shared/utils";
 import { wait } from "../test-utils";
 
 describe("$state", () => {
-  let $router, $injector, template, ctrlName, $provide, $compile, module;
+  let $injector, template, ctrlName, $provide, $compile, module;
 
   /** @type {import("../../src/router/stateProvider").StateProvider} */
   let $stateProvider;
@@ -325,7 +325,6 @@ describe("$state", () => {
           _$q_,
           _$location_,
           _$compile_,
-          _$router_,
         ) => {
           $rootScope = _$rootScope_;
           $state = _$state_;

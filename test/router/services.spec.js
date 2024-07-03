@@ -3,7 +3,6 @@ import { publishExternalAPI } from "../../src/public";
 
 describe("router services", () => {
   let providers;
-  let $routerProvider;
   let $injector;
 
   beforeEach(() => {
@@ -12,17 +11,13 @@ describe("router services", () => {
     let module = window.angular.module("defaultModule", ["ng.router"]);
     module.config(
       (
-        _$routerProvider_,
         $urlServiceProvider,
         $stateRegistryProvider,
         $routerGlobalsProvider,
         $transitionsProvider,
         $stateProvider,
       ) => {
-        $routerProvider = _$routerProvider_;
-        expect($routerProvider["router"]).toBe($routerProvider);
         providers = {
-          $routerProvider,
           $urlServiceProvider,
           $stateRegistryProvider,
           $routerGlobalsProvider,
@@ -38,7 +33,6 @@ describe("router services", () => {
   });
 
   it("Should expose ui-router providers from the UIRouter instance", () => {
-    expect(providers.$routerProvider).toBeDefined();
     expect(providers.$urlServiceProvider).toBeDefined();
     expect(providers.$stateRegistryProvider).toBeDefined();
     expect(providers.$stateRegistryProvider).toBeDefined();
@@ -47,15 +41,13 @@ describe("router services", () => {
   });
 
   it("Should expose ui-router services from the UIRouter instance", () => {
-    let $router = $injector.get("$router");
-    expect($router).toBe($routerProvider);
-    expect($injector.get("$urlService")).toBe($router.urlService);
-    expect($injector.get("$stateRegistry")).toBe($router.stateRegistry);
-    expect($injector.get("$routerGlobals")).toBe($router.globals);
-    expect($injector.get("$transitions")).toBe($router.transitionService);
-    expect($injector.get("$state")).toBe($router.stateService);
-    expect($injector.get("$stateParams")).toBe($router.globals.params);
-    expect($injector.get("$view")).toBe($router.viewService);
+    expect($injector.get("$urlService")).toBeDefined();
+    expect($injector.get("$stateRegistry")).toBeDefined();
+    expect($injector.get("$routerGlobals")).toBeDefined();
+    expect($injector.get("$transitions")).toBeDefined();
+    expect($injector.get("$state")).toBeDefined();
+    expect($injector.get("$stateParams")).toBeDefined();
+    expect($injector.get("$view")).toBeDefined();
     expect($injector.get("$trace")).toBeDefined();
   });
 });

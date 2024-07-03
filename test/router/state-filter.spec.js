@@ -36,7 +36,6 @@ describe("router filters", function () {
           _$q_,
           _$location_,
           _$compile_,
-          _$router_,
         ) => {
           $parse = _$parse_;
           $state = _$state_;
@@ -98,7 +97,6 @@ describe("router filters", function () {
           _$q_,
           _$location_,
           _$compile_,
-          _$router_,
         ) => {
           $parse = _$parse_;
           $state = _$state_;

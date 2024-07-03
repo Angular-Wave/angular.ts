@@ -20,7 +20,6 @@ import { TransitionService } from "./transition/transition-service";
 export function initRouter() {
   window.angular
     .module("ng.router", ["ng"])
-    //.provider("$router", $routerProvider)
     .provider("$urlConfig", UrlConfigProvider)
     .provider("$routerGlobals", UIRouterGlobals)
     .provider("$view", ViewService)

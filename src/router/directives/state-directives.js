@@ -392,10 +392,16 @@ export let ngSrefDirective = [
  * ```
  */
 export let ngStateDirective = [
-  "$router",
+  "$state",
   "$timeout",
-  function $StateRefDynamicDirective($router, $timeout) {
-    const $state = $router.stateService;
+  "$stateRegistry",
+  "$transitions",
+  function $StateRefDynamicDirective(
+    $state,
+    $timeout,
+    $stateRegistry,
+    $transitions,
+  ) {
     return {
       restrict: "A",
       require: ["?^ngSrefActive", "?^ngSrefActiveEq"],
@@ -436,8 +442,8 @@ export let ngStateDirective = [
           });
         });
         update();
-        scope.$on("$destroy", $router.stateRegistry.onStatesChanged(update));
-        scope.$on("$destroy", $router.transitionService.onSuccess({}, update));
+        scope.$on("$destroy", $stateRegistry.onStatesChanged(update));
+        scope.$on("$destroy", $transitions.onSuccess({}, update));
         if (!type.clickable) return;
         hookFn = clickHook(element, $state, $timeout, type, getDef);
         bindEvents(element, scope, hookFn, rawDef.ngStateOpts);
@@ -539,14 +545,16 @@ export let ngStateDirective = [
  */
 export let ngSrefActiveDirective = [
   "$state",
-  "$stateParams",
+  "$routerGlobals",
   "$interpolate",
-  "$router",
+  "$stateRegistry",
+  "$transitions",
   function $StateRefActiveDirective(
     $state,
-    $stateParams,
+    $routerGlobals,
     $interpolate,
-    $router,
+    $stateRegistry,
+    $transitions,
   ) {
     return {
       restrict: "A",
@@ -590,13 +598,13 @@ export let ngSrefActiveDirective = [
             trans.promise.then(update, () => {});
           }
           $scope.$on("$destroy", setupEventListeners());
-          if ($router.globals.transition) {
-            updateAfterTransition($router.globals.transition);
+          if ($routerGlobals.transition) {
+            updateAfterTransition($routerGlobals.transition);
           }
           function setupEventListeners() {
             const deregisterStatesChangedListener =
-              $router.stateRegistry.onStatesChanged(handleStatesChanged);
-            const deregisterOnStartListener = $router.transitionService.onStart(
+              $stateRegistry.onStatesChanged(handleStatesChanged);
+            const deregisterOnStartListener = $transitions.onStart(
               {},
               updateAfterTransition,
             );
