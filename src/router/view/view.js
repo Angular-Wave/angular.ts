@@ -25,10 +25,7 @@ import { getNg1ViewConfigFactory } from "../state/views";
  *
  */
 export class ViewService {
-  /**
-   * @param {number} $id
-   */
-  constructor($id) {
+  constructor() {
     this._ngViews = [];
     this._viewConfigs = [];
     this._viewConfigFactories = {};
@@ -37,7 +34,7 @@ export class ViewService {
       _rootViewContext: this._rootViewContext.bind(this),
       _viewConfigFactory: this._viewConfigFactory.bind(this),
       _registeredUIView: (id) =>
-        find(this._ngViews, (view) => `${$id}.${view.id}` === id),
+        find(this._ngViews, (view) => `${view.id}` === id),
       _registeredUIViews: () => this._ngViews,
       _activeViewConfigs: () => this._viewConfigs,
       _onSync: (listener) => {
@@ -47,6 +44,8 @@ export class ViewService {
     };
     this._pluginapi._viewConfigFactory("ng1", getNg1ViewConfigFactory());
   }
+
+  $get = [() => this];
 
   _rootViewContext(context) {
     return (this._rootContext = context || this._rootContext);

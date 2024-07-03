@@ -7,7 +7,6 @@ import {
 } from "../../shared/utils";
 import { is, pattern } from "../../shared/hof";
 import { UrlRules } from "./url-rules";
-import { UrlConfig } from "./url-config";
 import { TargetState } from "../state/target-state";
 import { removeFrom } from "../../shared/common";
 import { stripLastPathElement } from "../../shared/strings";
@@ -19,12 +18,21 @@ import { UrlRuleFactory } from "./url-rule";
  * API for URL management
  */
 export class UrlService {
+  static $inject = [
+    "$locationProvider",
+    "$stateProvider",
+    "$routerGlobalsProvider",
+    "$urlConfigProvider",
+  ];
+
   /**
    * @param {angular.ILocationProvider} $locationProvider
    */
-  constructor($locationProvider, stateService, globals) {
+  constructor($locationProvider, stateService, globals, urlConfigProvider) {
     this.stateService = stateService;
+    this.stateService.urlService = this; // circular wiring
     this.$locationProvider = $locationProvider;
+
     this.$location = undefined;
     this.$browser = undefined;
 
@@ -45,9 +53,9 @@ export class UrlService {
      * The nested [[UrlConfig]] API to configure the URL and retrieve URL information
      *
      * See: [[UrlConfig]] for details
-     * @type {UrlConfig}
+     * @type {angular.UrlConfig}
      */
-    this.config = new UrlConfig();
+    this.config = urlConfigProvider;
 
     /** Creates a new [[Param]] for a given location (DefType) */
     this.paramFactory = new ParamFactory(this.config);
@@ -79,6 +87,16 @@ export class UrlService {
 
     this._urlListeners = [];
   }
+
+  $get = [
+    "$location",
+    "$browser",
+    ($location, $browser) => {
+      this.$location = $location;
+      this.$browser = $browser;
+      return this;
+    },
+  ];
 
   html5Mode() {
     let html5Mode = this.$locationProvider.html5Mode();

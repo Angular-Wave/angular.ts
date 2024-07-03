@@ -13,7 +13,7 @@ import { isDefined, isString } from "../../shared/utils";
  *
  * This API is found at `router.urlService.config` (see: [[UIRouter.urlService]], [[URLService.config]])
  */
-export class UrlConfig {
+export class UrlConfigProvider {
   constructor() {
     /** @type {ParamTypes} */
     this.paramTypes = new ParamTypes();
@@ -48,6 +48,12 @@ export class UrlConfig {
     this.paramTypes.enqueue = false;
     this.paramTypes._flushTypeQueue();
   }
+
+  $get = [
+    function () {
+      return this;
+    },
+  ];
 
   /**
    * Defines whether URL matching should be case sensitive (the default behavior), or not.

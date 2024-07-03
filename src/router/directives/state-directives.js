@@ -251,10 +251,17 @@ function bindEvents(element, scope, hookFn, ngStateOpts) {
  * If you need to dynamically update the state being linked to, use the fully dynamic [[ngState]] directive.
  */
 export let ngSrefDirective = [
-  "$router",
+  "$state",
   "$timeout",
-  function $StateRefDirective($router, $timeout) {
-    const $state = $router.stateService;
+  "$stateRegistry",
+  "$transitions",
+  function $StateRefDirective(
+    $stateService,
+    $timeout,
+    $stateRegistry,
+    $transitions,
+  ) {
+    const $state = $stateService;
     return {
       restrict: "A",
       require: ["?^ngSrefActive", "?^ngSrefActiveEq"],
@@ -291,8 +298,8 @@ export let ngSrefDirective = [
           rawDef.ngStateParams = Object.assign({}, scope.$eval(ref.paramExpr));
         }
         update();
-        scope.$on("$destroy", $router.stateRegistry.onStatesChanged(update));
-        scope.$on("$destroy", $router.transitionService.onSuccess({}, update));
+        scope.$on("$destroy", $stateRegistry.onStatesChanged(update));
+        scope.$on("$destroy", $transitions.onSuccess({}, update));
         if (!type.clickable) return;
         const hookFn = clickHook(element, $state, $timeout, type, getDef);
         bindEvents(element, scope, hookFn, rawDef.ngStateOpts);

@@ -15,7 +15,10 @@ import {
   registerLazyResolveState,
   registerResolveRemaining,
 } from "../hooks/resolve";
-import { registerLoadEnteringViews } from "../hooks/views";
+import {
+  registerActivateViews,
+  registerLoadEnteringViews,
+} from "../hooks/views";
 import { registerUpdateGlobalState } from "../hooks/update-globals";
 
 import { registerLazyLoadHook } from "../hooks/lazy-load";
@@ -26,6 +29,8 @@ import { createProxyFunctions } from "../../shared/common";
 import { val } from "../../shared/hof";
 import { registerIgnoredTransitionHook } from "../hooks/ignored-transition";
 import { registerInvalidTransitionHook } from "../hooks/invalid-transition";
+import { registerRedirectToHook } from "../hooks/redirect-to";
+import { registerUpdateUrl } from "../hooks/url";
 /**
  * The default [[Transition]] options.
  *
@@ -56,6 +61,8 @@ export let defaultTransOpts = {
  * This API is located at `router.transitionService` ([[UIRouter.transitionService]])
  */
 export class TransitionService {
+  static $inject = ["$routerGlobalsProvider", "$viewProvider"];
+
   /**
    * @param {import('../globals').UIRouterGlobals} globals
    */
@@ -82,6 +89,41 @@ export class TransitionService {
     this._registerCoreTransitionHooks();
     globals.successfulTransitions.onEvict(treeChangesCleanup);
   }
+
+  $get = [
+    "$state",
+    "$urlService",
+    "$stateRegistry",
+    "$view",
+    (stateService, urlService, stateRegistry, viewService) => {
+      // Lazy load state trees
+      this._deregisterHookFns.lazyLoad = registerLazyLoadHook(
+        this,
+        stateService,
+        urlService,
+        stateRegistry,
+      );
+
+      // After globals.current is updated at priority: 10000
+      this._deregisterHookFns.updateUrl = registerUpdateUrl(
+        this,
+        stateService,
+        urlService,
+      );
+
+      // Wire up redirectTo hook
+      this._deregisterHookFns.redirectTo = registerRedirectToHook(
+        this,
+        stateService,
+      );
+
+      this._deregisterHookFns.activateViews = registerActivateViews(
+        this,
+        viewService,
+      );
+      return this;
+    },
+  ];
   /**
    * Registers a [[TransitionHookFn]], called *while a transition is being constructed*.
    *

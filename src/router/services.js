@@ -11,43 +11,9 @@
 import { services } from "./common/coreservices";
 import { unnestR } from "../shared/common";
 import { trace } from "./common/trace";
-import { UIRouter } from "./router";
 
-/** @type {angular.UIRouter}} */
-export let router = null;
-$routerProvider.$inject = ["$locationProvider"];
-/** This angular 1 provider instantiates a Router and exposes its services via the angular injector */
-export function $routerProvider($locationProvider) {
-  // Create a new instance of the Router when the $routerProvider is initialized
-  router = this.router = new UIRouter($locationProvider);
-  // backwards compat: also expose router instance as $routerProvider.router
-  router["router"] = router;
-  router["$get"] = $get;
-  $get.$inject = ["$location", "$browser", "$rootScope", "$injector"];
-  function $get($location, $browser, $rootScope, $injector) {
-    router.stateRegistry.init($injector);
-    router.urlService._runtimeServices($rootScope, $location, $browser);
-    return router;
-  }
-  return router;
-}
-export const getProviderFor = (serviceName) => [
-  "$routerProvider",
-  function UrlServiceProvider($urp) {
-    const service = $urp.router[serviceName];
-    service["$get"] = () => service;
-    return service;
-  },
-];
-// This effectively calls $get() on `$routerProvider` to trigger init (when ng enters runtime)
-runBlock.$inject = [
-  "$injector",
-  "$q",
-  "$router",
-  "$stateRegistry",
-  "$urlService",
-];
-export function runBlock($injector, $q, $router, $stateRegistry, $urlService) {
+runBlock.$inject = ["$injector", "$q", "$stateRegistry", "$urlService"];
+export function runBlock($injector, $q, $stateRegistry, $urlService) {
   services.$injector = $injector;
   services.$q = $q;
   // https://github.com/angular-ui/ui-router/issues/3678
@@ -74,13 +40,6 @@ export function runBlock($injector, $q, $router, $stateRegistry, $urlService) {
     );
   // Start listening for url changes
   $urlService.listen();
-}
-
-// $state service and $stateProvider
-export function getStateProvider() {
-  return Object.assign(router.stateProvider, {
-    $get: () => router.stateService,
-  });
 }
 
 watchDigests.$inject = ["$rootScope"];

@@ -31,4 +31,6 @@ export class UIRouterGlobals {
      */
     this.successfulTransitions = new Queue([], 1);
   }
+
+  $get = [() => this];
 }

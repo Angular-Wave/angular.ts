@@ -12,8 +12,15 @@ import { isString } from "../../shared/utils";
  * This API is found at `$stateRegistry` ([[UIRouter.stateRegistry]])
  */
 export class StateRegistry {
-  constructor(urlService) {
+  static $inject = [
+    "$urlServiceProvider",
+    "$stateProvider",
+    "$routerGlobalsProvider",
+    "$viewProvider",
+  ];
+  constructor(urlService, stateService, globals, viewService) {
     this.states = {};
+    stateService.stateRegistry = this; // <- circular wiring
     this.urlService = urlService;
     this.urlServiceRules = urlService.rules;
     this.$injector = undefined;
@@ -35,15 +42,20 @@ export class StateRegistry {
       this.listeners,
     );
     this._registerRoot();
+
+    viewService._pluginapi._rootViewContext(this.root());
+    globals.$current = this.root();
+    globals.current = globals.$current.self;
   }
 
-  /**
-   * @param {angular.$InjectorLike} $injector
-   */
-  init($injector) {
-    this.$injector = $injector;
-    this.builder.$injector = $injector;
-  }
+  $get = [
+    "$injector",
+    ($injector) => {
+      this.$injector = $injector;
+      this.builder.$injector = $injector;
+      return this;
+    },
+  ];
 
   /**
    * This is a [[StateBuilder.builder]] function for angular1 `onEnter`, `onExit`,
@@ -215,14 +227,6 @@ export class StateRegistry {
   decorator(property, builderFunction) {
     return this.builder.builder(property, builderFunction);
   }
-
-  $get = [
-    "$injector",
-    function ($injector) {
-      this.init($injector);
-      return this;
-    },
-  ];
 }
 
 export const getLocals = (ctx) => {
