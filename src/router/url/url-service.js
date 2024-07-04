@@ -91,9 +91,13 @@ export class UrlService {
   $get = [
     "$location",
     "$browser",
-    ($location, $browser) => {
+    "$rootScope",
+    ($location, $browser, $rootScope) => {
       this.$location = $location;
       this.$browser = $browser;
+      $rootScope.$on("$locationChangeSuccess", (evt) =>
+        this._urlListeners.forEach((fn) => fn(evt)),
+      );
       return this;
     },
   ];
@@ -337,16 +341,6 @@ export class UrlService {
         !best || (current && current.weight > best.weight) ? current : best;
     }
     return best;
-  }
-
-  _runtimeServices($rootScope, $location, $browser) {
-    /** @type {angular.ILocationService} */
-    this.$location = $location;
-    this.$browser = $browser;
-    // Bind $locationChangeSuccess to the listeners registered in LocationService.onChange
-    $rootScope.$on("$locationChangeSuccess", (evt) =>
-      this._urlListeners.forEach((fn) => fn(evt)),
-    );
   }
 
   update(read) {

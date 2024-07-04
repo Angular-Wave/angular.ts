@@ -4,7 +4,6 @@ import { publishExternalAPI } from "../../src/public";
 import { map, find } from "../../src/shared/common";
 
 describe("UrlMatcher", () => {
-  let router;
   let $url;
   let $injector;
   let $location;
@@ -18,8 +17,7 @@ describe("UrlMatcher", () => {
       "defaultModule",
     ]);
 
-    $injector.invoke(($router, $urlService, _$location_) => {
-      router = $router;
+    $injector.invoke(($urlService, _$location_) => {
       $url = $urlService;
       $location = _$location_;
     });

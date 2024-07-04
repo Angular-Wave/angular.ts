@@ -27,7 +27,7 @@ export function initRouter() {
     .provider("$transitions", TransitionService)
     /** @type {StateService} Provides services related to states */
     .provider("$state", StateService)
-    .provider("$uiViewScroll", $ViewScrollProvider)
+    .provider("$ngViewScroll", $ViewScrollProvider)
     .provider("$templateFactory", TemplateFactory)
     .provider("$urlService", UrlService)
     /** Provides a registry for states, and related registration services */

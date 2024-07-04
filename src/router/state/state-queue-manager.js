@@ -32,7 +32,8 @@ export class StateQueueManager {
       orphans = [], // states that don't yet have a parent registered
       previousQueueLength = {}; // keep track of how long the queue when an orphan was first encountered
     const getState = (name) =>
-      this.states.hasOwnProperty(name) && this.states[name];
+      Object.prototype.hasOwnProperty.call(this.states, name) &&
+      this.states[name];
     const notifyListeners = () => {
       if (registered.length) {
         this.listeners.forEach((listener) =>

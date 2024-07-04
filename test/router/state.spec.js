@@ -5,7 +5,7 @@ import { isFunction } from "../../src/shared/utils";
 import { wait } from "../test-utils";
 
 describe("$state", () => {
-  let $injector, template, ctrlName, $provide, $compile, module;
+  let $injector, template, ctrlName, $provide, $compile, module, $stateRegistry;
 
   /** @type {import("../../src/router/stateProvider").StateProvider} */
   let $stateProvider;
@@ -325,6 +325,7 @@ describe("$state", () => {
           _$q_,
           _$location_,
           _$compile_,
+          _$stateRegistry_,
         ) => {
           $rootScope = _$rootScope_;
           $state = _$state_;
@@ -333,7 +334,7 @@ describe("$state", () => {
           $q = _$q_;
           $location = _$location_;
           $compile = _$compile_;
-          $router = _$router_;
+          $stateRegistry = _$stateRegistry_;
         },
       );
     });
@@ -925,7 +926,7 @@ describe("$state", () => {
 
     // // test for #3081
     it("injects resolve values from the exited state into onExit", async () => {
-      const registry = $router.stateRegistry;
+      const registry = $stateRegistry;
       registry.register({
         name: "design",
         url: "/design",

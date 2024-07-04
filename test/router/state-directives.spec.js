@@ -601,7 +601,7 @@ describe("ngStateRef", () => {
 
     it("should resolve states from parent ngView", async () => {
       $state.transitionTo("contacts");
-      await wait(100);
+      await wait(500);
       const parentToChild = jqLite(template[0].querySelector("a.item"));
       browserTrigger(parentToChild, "click");
       await wait(100);

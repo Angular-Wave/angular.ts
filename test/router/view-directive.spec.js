@@ -218,7 +218,7 @@ describe("ngView", () => {
       expect(elem.find("ng-view").text()).toBe(bState.template);
     });
 
-    it("should handle NOT nested ui-views", async () => {
+    it("should handle NOT nested ng-views", async () => {
       elem.append(
         $compile(
           '<div><ng-view name="dview1" class="dview1"></ng-view><ng-view name="dview2" class="dview2"></ng-view></div>',
@@ -238,7 +238,7 @@ describe("ngView", () => {
       );
     });
 
-    it("should handle nested ui-views (testing two levels deep)", async () => {
+    it("should handle nested ng-views (testing two levels deep)", async () => {
       $compile(elem.append("<div><ng-view></ng-view></div>"))(scope);
       expect(elem.find("ng-view").text()).toBe("");
 
@@ -580,29 +580,29 @@ describe("ngView", () => {
           )(scope),
         );
 
-        // Should be no ui-views in DOM
+        // Should be no ng-views in DOM
         expect(elem.find("ng-view").length).toBe(0);
 
         // Lets add 3
         scope.views = ["view1", "view2", "view3"];
         scope.$digest();
 
-        // Should be 3 ui-views in the DOM
+        // Should be 3 ng-views in the DOM
         expect(elem.find("ng-view").length).toBe(scope.views.length);
 
         // Lets add one more - yay two-way binding
         scope.views.push("view4");
         scope.$digest();
 
-        // Should have 4 ui-views
+        // Should have 4 ng-views
         expect(elem.find("ng-view").length).toBe(scope.views.length);
 
-        // Lets remove 2 ui-views from the DOM
+        // Lets remove 2 ng-views from the DOM
         scope.views.pop();
         scope.views.pop();
         scope.$digest();
 
-        // Should have 2 ui-views
+        // Should have 2 ng-views
         expect(elem.find("ng-view").length).toBe(scope.views.length);
       });
 

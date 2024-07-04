@@ -33,8 +33,11 @@ export class ViewService {
     this._pluginapi = {
       _rootViewContext: this._rootViewContext.bind(this),
       _viewConfigFactory: this._viewConfigFactory.bind(this),
-      _registeredUIView: (id) =>
-        find(this._ngViews, (view) => `${view.id}` === id),
+      _registeredUIView: (id) => {
+        const res = find(this._ngViews, (view) => view.id === id);
+        return res;
+      },
+
       _registeredUIViews: () => this._ngViews,
       _activeViewConfigs: () => this._viewConfigs,
       _onSync: (listener) => {

@@ -4,7 +4,14 @@ import { publishExternalAPI } from "../../src/public";
 import { wait } from "../test-utils";
 
 describe("templateFactory", () => {
-  let $injector, $templateFactory, $httpBackend, $sce, $scope, $compile;
+  let $injector,
+    $templateFactory,
+    $httpBackend,
+    $sce,
+    $scope,
+    $compile,
+    $stateRegistry,
+    $stateService;
 
   beforeEach(() => {
     dealoc(document.getElementById("dummy"));
@@ -104,14 +111,16 @@ describe("templateFactory", () => {
           _$httpBackend_,
           _$sce_,
           $rootScope,
-
+          _$stateRegistry_,
+          _$state_,
           _$compile_,
         ) => {
           ($templateFactory = _$templateFactory_),
             ($httpBackend = _$httpBackend_),
             ($sce = _$sce_);
           $scope = $rootScope;
-          $router = _$router_;
+          $stateRegistry = _$stateRegistry_;
+          $stateService = _$state_;
           $compile = _$compile_;
         },
       );
@@ -119,26 +128,26 @@ describe("templateFactory", () => {
     });
 
     it("should not prefix the components dom element with anything", async () => {
-      $router.stateRegistry.register({ name: "cmp", component: "myComponent" });
-      $router.stateService.go("cmp");
+      $stateRegistry.register({ name: "cmp", component: "myComponent" });
+      $stateService.go("cmp");
       $scope.$digest();
       await wait(100);
       expect(el.html()).toMatch(/\<my-component/);
     });
 
     it("should prefix the components dom element with x- for components named dataFoo", () => {
-      $router.stateRegistry.register({
+      $stateRegistry.register({
         name: "cmp",
         component: "dataComponent",
       });
-      $router.stateService.go("cmp");
+      $stateService.go("cmp");
       $scope.$digest();
       expect(el.html()).toMatch(/\<x-data-component/);
     });
 
     it("should prefix the components dom element with x- for components named xFoo", () => {
-      $router.stateRegistry.register({ name: "cmp", component: "xComponent" });
-      $router.stateService.go("cmp");
+      $stateRegistry.register({ name: "cmp", component: "xComponent" });
+      $stateService.go("cmp");
       $scope.$digest();
       expect(el.html()).toMatch(/\<x-x-component/);
     });
