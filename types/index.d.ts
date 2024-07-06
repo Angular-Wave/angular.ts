@@ -104,7 +104,7 @@ declare namespace angular {
      * @param directiveFactory An injectable directive factory function.
      */
     directive<
-      TScope extends IScope = IScope,
+      TScope extends Scope = Scope,
       TElement extends JQLite = JQLite,
       TAttributes extends IAttributes = IAttributes,
       TController extends IDirectiveController = IController,
@@ -115,7 +115,7 @@ declare namespace angular {
       >,
     ): IModule;
     directive<
-      TScope extends IScope = IScope,
+      TScope extends Scope = Scope,
       TElement extends JQLite = JQLite,
       TAttributes extends IAttributes = IAttributes,
       TController extends IDirectiveController = IController,
@@ -380,14 +380,29 @@ declare namespace angular {
    * $rootScope - $rootScopeProvider - service in module ng
    * see https://docs.angularjs.org/api/ng/type/$rootScope.Scope and https://docs.angularjs.org/api/ng/service/$rootScope
    */
-  interface IScope {
+  class Scope {
+    $id: number;
+    $parent: Scope | null;
+    $root: Scope | null;
+
+    private $$nextSibling: Scope | null;
+    private $$childHead: Scope | null;
+    private $$childTail: Scope | null;
+    private $$watchersCount: number;
+    private $$suspended: boolean;
+
+    // Hidden members
+    $$isolateBindings: any;
+    $$phase: any;
+    $$destroyed: boolean;
+
     $apply(): any;
-    $apply(exp: string): any;
-    $apply(exp: (scope: IScope) => any): any;
+    $apply(expr: string): any;
+    $apply(expr: (scope: Scope) => any): any;
 
     $applyAsync(): any;
     $applyAsync(exp: string): any;
-    $applyAsync(exp: (scope: IScope) => any): any;
+    $applyAsync(exp: (scope: Scope) => any): any;
 
     /**
      * Dispatches an event name downwards to all child scopes (and their children) notifying the registered $rootScope.Scope listeners.
@@ -486,14 +501,14 @@ declare namespace angular {
 
     $eval(): any;
     $eval(expression: string, locals?: Object): any;
-    $eval(expression: (scope: IScope) => any, locals?: Object): any;
+    $eval(expression: (scope: Scope) => any, locals?: Object): any;
 
     $evalAsync(): void;
     $evalAsync(expression: string, locals?: Object): void;
-    $evalAsync(expression: (scope: IScope) => void, locals?: Object): void;
+    $evalAsync(expression: (scope: Scope) => void, locals?: Object): void;
 
     // Defaults to false by the implementation checking strategy
-    $new(isolate?: boolean, parent?: IScope): IScope;
+    $new(isolate?: boolean, parent?: Scope): Scope;
 
     /**
      * Listens on events of a given type. See $emit for discussion of event life cycle.
@@ -515,55 +530,46 @@ declare namespace angular {
     ): () => void;
     $watch<T>(
       watchExpression: string,
-      listener?: (newValue: T, oldValue: T, scope: IScope) => any,
+      listener?: (newValue: T, oldValue: T, scope: Scope) => any,
       objectEquality?: boolean,
     ): () => void;
     $watch(
-      watchExpression: (scope: IScope) => any,
+      watchExpression: (scope: Scope) => any,
       listener?: string,
       objectEquality?: boolean,
     ): () => void;
     $watch<T>(
-      watchExpression: (scope: IScope) => T,
-      listener?: (newValue: T, oldValue: T, scope: IScope) => any,
+      watchExpression: (scope: Scope) => T,
+      listener?: (newValue: T, oldValue: T, scope: Scope) => any,
       objectEquality?: boolean,
     ): () => void;
 
     $watchCollection<T>(
       watchExpression: string,
-      listener: (newValue: T, oldValue: T, scope: IScope) => any,
+      listener: (newValue: T, oldValue: T, scope: Scope) => any,
     ): () => void;
     $watchCollection<T>(
-      watchExpression: (scope: IScope) => T,
-      listener: (newValue: T, oldValue: T, scope: IScope) => any,
+      watchExpression: (scope: Scope) => T,
+      listener: (newValue: T, oldValue: T, scope: Scope) => any,
     ): () => void;
 
     $watchGroup(
       watchExpressions: any[],
-      listener: (newValue: any, oldValue: any, scope: IScope) => any,
+      listener: (newValue: any, oldValue: any, scope: Scope) => any,
     ): () => void;
     $watchGroup(
-      watchExpressions: Array<{ (scope: IScope): any }>,
-      listener: (newValue: any, oldValue: any, scope: IScope) => any,
+      watchExpressions: Array<{ (scope: Scope): any }>,
+      listener: (newValue: any, oldValue: any, scope: Scope) => any,
     ): () => void;
-
-    $parent: IScope;
-    $root: IScope;
-    $id: number;
-
-    // Hidden members
-    $$isolateBindings: any;
-    $$phase: any;
-    $$destroyed: boolean;
   }
 
-  interface IRootScopeService extends IScope {}
+  interface IRootScopeService extends Scope {}
 
   /**
    * $scope for ngRepeat directive.
    * see https://docs.angularjs.org/api/ng/directive/ngRepeat
    */
-  interface IRepeatScope extends IScope {
+  interface IRepeatScope extends Scope {
     /**
      * iterator offset of the repeated element (0..length-1).
      */
@@ -599,11 +605,11 @@ declare namespace angular {
     /**
      * the scope on which the event was $emit-ed or $broadcast-ed.
      */
-    targetScope: IScope;
+    targetScope: Scope;
     /**
      * the scope that is currently handling the event. Once the event propagates through the scope hierarchy, this property is set to null.
      */
-    currentScope: IScope;
+    currentScope: Scope;
     /**
      * name of the event.
      */
@@ -913,8 +919,8 @@ declare namespace angular {
   ///////////////////////////////////////////////////////////////////////////
   interface IParseService {
     (
-      expression: string,
-      interceptorFn?: (value: any, scope: IScope, locals: any) => any,
+      expression: string | ((scope: Scope) => any),
+      interceptorFn?: (value: any, scope: Scope, locals: any) => any,
       expensiveChecks?: boolean,
     ): ICompiledExpression;
   }
@@ -1457,7 +1463,7 @@ declare namespace angular {
 
   interface ICompileProvider extends IServiceProvider {
     directive<
-      TScope extends IScope = IScope,
+      TScope extends Scope = Scope,
       TElement extends JQLite = JQLite,
       TAttributes extends IAttributes = IAttributes,
       TController extends IDirectiveController = IController,
@@ -1468,7 +1474,7 @@ declare namespace angular {
       >,
     ): ICompileProvider;
     directive<
-      TScope extends IScope = IScope,
+      TScope extends Scope = Scope,
       TElement extends JQLite = JQLite,
       TAttributes extends IAttributes = IAttributes,
       TController extends IDirectiveController = IController,
@@ -1543,13 +1549,13 @@ declare namespace angular {
 
   interface ICloneAttachFunction {
     // Let's hint but not force cloneAttachFn's signature
-    (clonedElement?: JQLite, scope?: IScope): any;
+    (clonedElement?: JQLite, scope?: Scope): any;
   }
 
   // This corresponds to the "publicLinkFn" returned by $compile.
   interface ITemplateLinkingFunction {
     (
-      scope: IScope,
+      scope: Scope,
       cloneAttachFn?: ICloneAttachFunction,
       options?: ITemplateLinkingFunctionOptions,
     ): JQLite;
@@ -1573,7 +1579,7 @@ declare namespace angular {
   interface ITranscludeFunction {
     // If the scope is provided, then the cloneAttachFn must be as well.
     (
-      scope: IScope,
+      scope: Scope,
       cloneAttachFn: ICloneAttachFunction,
       futureParentElement?: JQLite,
       slotName?: string,
@@ -1601,7 +1607,7 @@ declare namespace angular {
    * The minimal local definitions required by $controller(ctrl, locals) calls.
    */
   interface IControllerLocals {
-    $scope: ng.IScope;
+    $scope: ng.Scope;
     $element: JQLite;
   }
 
@@ -2268,7 +2274,7 @@ declare namespace angular {
     | { [key: string]: IController };
 
   interface IDirectiveFactory<
-    TScope extends IScope = IScope,
+    TScope extends Scope = Scope,
     TElement extends JQLite = JQLite,
     TAttributes extends IAttributes = IAttributes,
     TController extends IDirectiveController = IController,
@@ -2281,7 +2287,7 @@ declare namespace angular {
   }
 
   interface IDirectiveLinkFn<
-    TScope extends IScope = IScope,
+    TScope extends Scope = Scope,
     TElement extends JQLite = JQLite,
     TAttributes extends IAttributes = IAttributes,
     TController extends IDirectiveController = IController,
@@ -2296,7 +2302,7 @@ declare namespace angular {
   }
 
   interface IDirectivePrePost<
-    TScope extends IScope = IScope,
+    TScope extends Scope = Scope,
     TElement extends JQLite = JQLite,
     TAttributes extends IAttributes = IAttributes,
     TController extends IDirectiveController = IController,
@@ -2310,7 +2316,7 @@ declare namespace angular {
   }
 
   interface IDirectiveCompileFn<
-    TScope extends IScope = IScope,
+    TScope extends Scope = Scope,
     TElement extends JQLite = JQLite,
     TAttributes extends IAttributes = IAttributes,
     TController extends IDirectiveController = IController,
@@ -2332,7 +2338,7 @@ declare namespace angular {
   }
 
   interface IDirective<
-    TScope extends IScope = IScope,
+    TScope extends Scope = Scope,
     TElement extends JQLite = JQLite,
     TAttributes extends IAttributes = IAttributes,
     TController extends IDirectiveController = IController,

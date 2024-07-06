@@ -22,6 +22,13 @@ export const ScopePhase = {
 };
 
 /**
+ * @typedef {Object} AsyncQueueTask
+ * @property {Scope} scope
+ * @property {Function} fn
+ * @property {Object} locals
+ */
+
+/**
  *
  * The default number of `$digest` iterations the scope should attempt to execute before giving up and
  * assuming that the model is unstable. In complex applications it's possible that the dependencies between `$watch`s will result in
@@ -34,6 +41,8 @@ export const ScopePhase = {
 export const TTL = 10;
 
 const $rootScopeMinErr = minErr("$rootScope");
+
+/** @type {AsyncQueueTask[]} */
 const $$asyncQueue = [];
 const $$postDigestQueue = [];
 const $$applyAsyncQueue = [];
@@ -122,9 +131,9 @@ export function getQueues() {
   };
 }
 
-/**
- * @type {angular.IScope}
- */
+// /**
+//  * @type {angular.Scope}
+//  */
 class Scope {
   constructor() {
     /**
@@ -136,35 +145,63 @@ class Scope {
     this.$$phase = ScopePhase.NONE;
 
     /**
-     * @type {?angular.IScope} Reference to the parent scope.
+     * @type {?Scope} Reference to the parent scope.
      */
     this.$parent = null;
 
     /**
-     * @type {?angular.IScope}
+     * @type {?Scope}
      */
     this.$root = this;
 
-    this.$$watchers = null;
+    /** @type {Array} */
+    this.$$watchers = [];
+
+    /**
+     * @type {?Scope}
+     */
     this.$$nextSibling = null;
+
+    /**
+     * @type {?Scope}
+     */
     this.$$prevSibling = null;
+
+    /**
+     * @type {?Scope}
+     */
     this.$$childHead = null;
+
+    /**
+     * @type {?Scope}
+     */
     this.$$childTail = null;
+
+    /** @type {boolean} */
     this.$$destroyed = false;
+
+    // TODO use maps
+    /** @type {boolean} */
     this.$$suspended = false;
+
+    // TODO use maps
+    /** @type {object} */
     this.$$listeners = {};
+
+    /** @type {object} */
     this.$$listenerCount = {};
+
+    /** @type {number} */
     this.$$watchersCount = 0;
     this.$$isolateBindings = null;
 
     /**
-     * @type {Scope}
+     * @type {?Scope}
      */
     this.$$ChildScope = null;
   }
 
   /**
-   * @description
    * Creates a new child {@link Scope}.
    *
    * The parent scope will propagate the {@link ng.$rootScope.Scope#$digest $digest()} event.
@@ -179,24 +216,25 @@ class Scope {
    *         When creating widgets, it is useful for the widget to not accidentally read parent
    *         state.
    *
-   * @param {?angular.IScope} [parent=this] The {@link ng.$rootScope.Scope `Scope`} that will be the `$parent`
+   * @param {?Scope} [parent=this] The {@link ng.$rootScope.Scope `Scope`} that will be the `$parent`
    *                              of the newly created scope. Defaults to `this` scope if not provided.
    *                              This is used when creating a transclude scope to correctly place it
    *                              in the scope hierarchy while maintaining the correct prototypical
    *                              inheritance.
    *
-   * @returns {angular.IScope} The newly created child scope.
+   * @returns {Scope} The newly created child scope.
    *
    */
   $new(isolate, parent) {
+    /** @type {Scope} */
     let child;
     if (isolate) {
       child = new Scope();
-      child.$root = this.$root;
+      child.$root = rootScope;
     } else {
       child = Object.create(this);
       child.$id = nextUid();
-      child.$$watchers = null;
+      child.$$watchers = [];
       child.$$nextSibling = null;
       child.$$childHead = null;
       child.$$childTail = null;
@@ -206,6 +244,7 @@ class Scope {
       child.$$ChildScope = null;
       child.$$suspended = false;
     }
+
     child.$parent = parent || this;
     child.$$prevSibling = child.$parent.$$childTail;
     if (child.$parent.$$childHead) {
@@ -365,7 +404,6 @@ class Scope {
     lastDirtyWatch = null;
 
     if (!array) {
-      array = scope.$$watchers = [];
       array.$$digestWatchIndex = -1;
     }
     // we use unshift since we use a while loop in $digest for speed.
@@ -715,7 +753,7 @@ class Scope {
     let ttl = TTL;
     let next;
     /**
-     * @type {angular.IScope}
+     * @type {Scope}
      */
     let current;
     const target = $$asyncQueue.length ? this.$root : this;
@@ -1072,7 +1110,7 @@ class Scope {
      expect(scope.$eval(function(scope){ return scope.a + scope.b; })).toEqual(3);
  * ```
  *
- * @param {(string|function())=} expr An AngularJS expression to be executed.
+ * @param {string|function(Scope): any} [expr] An AngularJS expression to be executed.
  *
  *    - `string`: execute using the rules as defined in  {@link guide/expression expression}.
  *    - `function(scope)`: execute the function with the current `scope` parameter.
@@ -1180,7 +1218,7 @@ class Scope {
  *    expression was executed using the {@link ng.$rootScope.Scope#$digest $digest()} method.
  *
  *
- * @param {(string|function())=} expr An AngularJS expression to be executed.
+ * @param {string|function(Scope): any} [expr] An AngularJS expression to be executed.
  *
  *    - `string`: execute using the rules as defined in {@link guide/expression expression}.
  *    - `function(scope)`: execute the function with current `scope` parameter.
