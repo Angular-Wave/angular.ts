@@ -1,3 +1,4 @@
+import { ScopePhase } from "../core/root-scope";
 import { urlIsAllowedOriginFactory } from "../core/urlUtils";
 import {
   minErr,
