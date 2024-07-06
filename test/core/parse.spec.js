@@ -3486,6 +3486,19 @@ describe("parser", () => {
   });
 
   describe("with primitive input", () => {
+    beforeEach(() => {
+      createInjector([
+        "ng",
+        function ($filterProvider) {
+          filterProvider = $filterProvider;
+        },
+      ]).invoke((_$rootScope_, _$parse_) => {
+        scope = _$rootScope_;
+        $parse = _$parse_;
+      });
+      logs = [];
+    });
+
     it("should not be reevaluated when passed literals", () => {
       let filterCalls = 0;
       filterProvider.register(
