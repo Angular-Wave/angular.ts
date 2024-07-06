@@ -13,39 +13,20 @@ import {
 } from "../shared/utils";
 
 /**
- * @typedef {"$apply" | "$digest"} ScopePhase
+ * @typedef {"$apply" | "$digest"} ScopePhase - current sync phase
  */
 
 /**
- * @ngdoc provider
- * @name $rootScopeProvider
- * @description
  *
- * Provider for the $rootScope service.
+ * The default number of `$digest` iterations the scope should attempt to execute before giving up and
+ * assuming that the model is unstable. In complex applications it's possible that the dependencies between `$watch`s will result in
+ * several digest iterations.
+ *
+ * @typedef {number} TTL The number of digest iterations
+ *
+ * @type {TTL}
  */
-
-/**
- * @ngdoc method
- * @name $rootScopeProvider#digestTtl
- * @description
- *
- * Sets the number of `$digest` iterations the scope should attempt to execute before giving up and
- * assuming that the model is unstable.
- *
- * The current default is 10 iterations.
- *
- * In complex applications it's possible that the dependencies between `$watch`s will result in
- * several digest iterations. However if an application needs more than the default 10 digest
- * iterations for its model to stabilize then you should investigate what is causing the model to
- * continuously change during the digest.
- *
- * Increasing the TTL could have performance implications, so you should not change it without
- * proper justification.
- *
- * @param {number} limit The number of digest iterations.
- */
-
-let TTL = 10;
+export const TTL = 10;
 
 const $rootScopeMinErr = minErr("$rootScope");
 const $$asyncQueue = [];
@@ -54,78 +35,41 @@ const $$applyAsyncQueue = [];
 let postDigestQueuePosition = 0;
 let lastDirtyWatch = null;
 let applyAsyncId = null;
+
+/** Services required by each scope instance */
+/** @type {angular.IParseService} */
 let $parse;
+/** @type {import('../services/browser').Browser} */
 let $browser;
+/** @type {angular.IExceptionHandlerService} */
 let $exceptionHandler;
 
 /**
- * @ngdoc service
- * @name $rootScope
- *
- * @description
- *
+ * Provider responsible for instantiating the initial scope, aka - root scope.
  * Every application has a single root {@link ng.$rootScope.Scope scope}.
  * All other scopes are descendant scopes of the root scope. Scopes provide separation
  * between the model and the view, via a mechanism for watching the model for changes.
  * They also provide event emission/broadcast and subscription facility. See the
  * {@link guide/scope developer guide on scopes}.
+ *
+ * The provider also injects runtime services to make them available to all scopes.
+ *
  */
-export function $RootScopeProvider() {
-  this.digestTtl = function (value) {
-    if (arguments.length) {
-      TTL = value;
-    }
-    return TTL;
-  };
-
-  this.$get = [
+export class $RootScopeProvider {
+  $get = [
     "$exceptionHandler",
     "$parse",
     "$browser",
+    /**
+     * @param {angular.IParseService} parse
+     * @param {import('../services/browser').Browser} browser
+     * @param {angular.IExceptionHandlerService} exceptionHandler
+     */
     function (exceptionHandler, parse, browser) {
       $exceptionHandler = exceptionHandler;
       $parse = parse;
       $browser = browser;
-      /**
-     * @ngdoc type
-     * @name $rootScope.Scope
-     *
-     * @description
-     * A root scope can be retrieved using the {@link ng.$rootScope $rootScope} key from the
-     * {@link auto.$injector $injector}. Child scopes are created using the
-     * {@link ng.$rootScope.Scope#$new $new()} method. (Most scopes are created automatically when
-     * compiled HTML template is executed.) See also the {@link guide/scope Scopes guide} for
-     * an in-depth introduction and usage examples.
-     *
-     *
-     * ## Inheritance
-     * A scope can inherit from a parent scope, as in this example:
-     * ```js
-         let parent = $rootScope;
-         let child = parent.$new();
-
-         parent.salutation = "Hello";
-         expect(child.salutation).toEqual('Hello');
-
-         child.salutation = "Welcome";
-         expect(child.salutation).toEqual('Welcome');
-         expect(parent.salutation).toEqual('Hello');
-     * ```
-     *
-     *
-     *
-     * @param {Object.<string, function()>=} providers Map of service factory which need to be
-     *                                       provided for the current scope. Defaults to {@link ng}.
-     * @param {Object.<string, *>=} instanceCache Provides pre-instantiated services which should
-     *                              append/override services provided by `providers`. This is handy
-     *                              when unit-testing and having the need to override a default
-     *                              service.
-     * @returns {Object} Newly created scope.
-     *
-     */
-
-      const $rootScope = new Scope();
-      return $rootScope;
+      return new Scope();
     },
   ];
 }
@@ -161,17 +105,6 @@ export function getQueues() {
     postDigestQueue: $$postDigestQueue,
     applyAsyncQueue: $$applyAsyncQueue,
   };
-}
-
-/**
- * @param { * } parse
- * @param {import('../services/browser').Browser} browser
- * @param {Function} exceptionHandler
- */
-export function initialize(parse, browser, exceptionHandler) {
-  $parse = parse;
-  $browser = browser;
-  $exceptionHandler = exceptionHandler;
 }
 
 /**

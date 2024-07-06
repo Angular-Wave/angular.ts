@@ -1,5 +1,6 @@
 import { jqLite, getBooleanAttrName, isTextNode, startingTag } from "../jqLite";
 import { identifierForController } from "./controller";
+import { TTL } from "./root-scope";
 import {
   minErr,
   assertArg,
@@ -44,7 +45,6 @@ const $compileMinErr = minErr("$compile");
 
 const _UNINITIALIZED_VALUE = new Object();
 const EXCLUDED_DIRECTIVES = ["ngIf", "ngRepeat"];
-let TTL = 10;
 
 /**
  * @ngdoc provider
@@ -659,14 +659,15 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       // This function is called in a $$postDigest to trigger all the onChanges hooks in a single digest
       function flushOnChangesQueue() {
+        let ttl = TTL;
         try {
-          if (!--TTL) {
+          if (!--ttl) {
             // We have hit the TTL limit so reset everything
             onChangesQueue = undefined;
             throw $compileMinErr(
               "infchng",
               "{0} $onChanges() iterations reached. Aborting!\n",
-              TTL,
+              ttl,
             );
           }
           // We must run this hook in an apply since the $$postDigest runs outside apply
@@ -682,7 +683,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             onChangesQueue = undefined;
           });
         } finally {
-          TTL++;
+          ttl++;
         }
       }
 

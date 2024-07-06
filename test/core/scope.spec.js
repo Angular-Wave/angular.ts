@@ -3404,39 +3404,4 @@ describe("Scope", function () {
       // </docs>
     });
   });
-
-  describe("TTL configurability", () => {
-    it("allows configuring a shorter TTL", () => {
-      const injector = createInjector([
-        "ng",
-        function ($rootScopeProvider) {
-          $rootScopeProvider.digestTtl(2);
-        },
-      ]);
-      const scope = injector.get("$rootScope");
-      scope.counterA = 0;
-      scope.counterB = 0;
-      scope.$watch(
-        (scope) => {
-          return scope.counterA;
-        },
-        (newValue, oldValue, scope) => {
-          if (scope.counterB < 10) {
-            scope.counterB++;
-          }
-        },
-      );
-      scope.$watch(
-        (scope) => {
-          return scope.counterB;
-        },
-        (newValue, oldValue, scope) => {
-          scope.counterA++;
-        },
-      );
-      expect(() => {
-        scope.$digest();
-      }).toThrow();
-    });
-  });
 });
