@@ -13,8 +13,13 @@ import {
 } from "../shared/utils";
 
 /**
- * @typedef {"$apply" | "$digest"} ScopePhase - current sync phase
+ * @enum {number}
  */
+export const ScopePhase = {
+  NONE: 0,
+  APPLY: 1,
+  DIGEST: 2,
+};
 
 /**
  *
@@ -45,6 +50,11 @@ let $browser;
 let $exceptionHandler;
 
 /**
+ * @type {Scope}
+ */
+let rootScope;
+
+/**
  * Provider responsible for instantiating the initial scope, aka - root scope.
  * Every application has a single root {@link ng.$rootScope.Scope scope}.
  * All other scopes are descendant scopes of the root scope. Scopes provide separation
@@ -56,6 +66,10 @@ let $exceptionHandler;
  *
  */
 export class $RootScopeProvider {
+  constructor() {
+    rootScope = new Scope();
+  }
+
   $get = [
     "$exceptionHandler",
     "$parse",
@@ -64,12 +78,13 @@ export class $RootScopeProvider {
      * @param {angular.IParseService} parse
      * @param {import('../services/browser').Browser} browser
      * @param {angular.IExceptionHandlerService} exceptionHandler
+     * @returns {Scope} root scope
      */
     function (exceptionHandler, parse, browser) {
       $exceptionHandler = exceptionHandler;
       $parse = parse;
       $browser = browser;
-      return new Scope();
+      return rootScope;
     },
   ];
 }
@@ -116,15 +131,17 @@ class Scope {
      * @type {number} Unique scope ID (monotonically increasing) useful for debugging.
      */
     this.$id = nextUid();
-    this.$$phase = null;
+
+    /** @type {ScopePhase} */
+    this.$$phase = ScopePhase.NONE;
 
     /**
-     * @type {?Scope} Reference to the parent scope.
+     * @type {?angular.IScope} Reference to the parent scope.
      */
     this.$parent = null;
 
     /**
-     * @type {Scope}
+     * @type {?angular.IScope}
      */
     this.$root = this;
 
@@ -706,7 +723,7 @@ class Scope {
     let logIdx;
     let asyncTask;
 
-    this.beginPhase("$digest");
+    this.beginPhase(ScopePhase.DIGEST);
     // Check for changes to browser url that happened in sync before the call to $digest
     // TODO Implement browser
     $browser.$$checkUrlChange();
@@ -845,10 +862,10 @@ class Scope {
    * @param {ScopePhase} phase
    */
   beginPhase(phase) {
-    if (this.$root.$$phase) {
+    if (this.$root.$$phase !== ScopePhase.NONE) {
       throw $rootScopeMinErr(
         "inprog",
-        "{0} already in progress",
+        "digest already in progress",
         this.$root.$$phase,
       );
     }
@@ -1101,7 +1118,7 @@ class Scope {
     // if we are outside of an $digest loop and this is the first time we are scheduling async
     // task also schedule async auto-flush
     let id;
-    if (!this.$root.$$phase && !$$asyncQueue.length) {
+    if (this.$root.$$phase === ScopePhase.NONE && !$$asyncQueue.length) {
       id = $browser.defer(
         () => {
           if ($$asyncQueue.length) {
@@ -1172,7 +1189,7 @@ class Scope {
  */
   $apply(expr) {
     try {
-      this.beginPhase("$apply");
+      this.beginPhase(ScopePhase.APPLY);
       try {
         return this.$eval(expr);
       } finally {
@@ -1192,7 +1209,7 @@ class Scope {
   }
 
   clearPhase() {
-    this.$root.$$phase = null;
+    this.$root.$$phase = ScopePhase.NONE;
   }
 
   /**

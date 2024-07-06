@@ -6,7 +6,6 @@ import {
   isFunction,
   minErr,
   isString,
-  lowercase,
   isNumber,
 } from "../../shared/utils";
 
@@ -191,7 +190,7 @@ Lexer.prototype = {
     let number = "";
     const start = this.index;
     while (this.index < this.text.length) {
-      const ch = lowercase(this.text.charAt(this.index));
+      const ch = this.text.charAt(this.index).toLowerCase();
       if (ch === "." || this.isNumber(ch)) {
         number += ch;
       } else {

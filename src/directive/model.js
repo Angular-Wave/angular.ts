@@ -19,6 +19,8 @@ import {
 import { addSetValidityMethod, nullFormCtrl, setupValidity } from "./form";
 import { defaultModelOptions } from "./model-options";
 import { startingTag } from "../jqLite";
+import { ScopePhase } from "../core/root-scope";
+
 export const ngModelMinErr = minErr("ngModel");
 
 /**
@@ -839,7 +841,7 @@ NgModelController.prototype = {
       this.$$pendingDebounce = this.$$timeout(() => {
         that.$commitViewValue();
       }, debounceDelay);
-    } else if (this.$$rootScope.$$phase) {
+    } else if (this.$$rootScope.$$phase !== ScopePhase.NONE) {
       this.$commitViewValue();
     } else {
       this.$$scope.$apply(() => {
@@ -1343,7 +1345,7 @@ export const ngModelDirective = [
           element.on("blur", () => {
             if (modelCtrl.$touched) return;
 
-            if ($rootScope.$$phase) {
+            if ($rootScope.$$phase !== ScopePhase.NONE) {
               scope.$evalAsync(setTouched);
             } else {
               scope.$apply(setTouched);

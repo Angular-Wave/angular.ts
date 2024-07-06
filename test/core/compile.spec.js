@@ -10121,7 +10121,7 @@ describe("$compile", () => {
           }).toThrowError(/nonassign/);
           expect(componentScope.ref).toBe("hello world");
           // reset since the exception was rethrown which prevented phase clearing
-          $rootScope.$$phase = null;
+          $rootScope.$$phase = 0;
 
           $rootScope.name = "misko";
           $rootScope.$apply();
@@ -10139,7 +10139,7 @@ describe("$compile", () => {
           }).toThrowError(/nonassign/);
           expect(componentScope.ref).toBeUndefined();
 
-          $rootScope.$$phase = null; // reset since the exception was rethrown which prevented phase clearing
+          $rootScope.$$phase = 0; // reset since the exception was rethrown which prevented phase clearing
           $rootScope.$apply();
           expect(componentScope.ref).toBeUndefined();
         });

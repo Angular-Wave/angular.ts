@@ -535,7 +535,7 @@ describe("Scope", function () {
         $rootScope.$digest();
       }).toThrow();
 
-      expect($rootScope.$$phase).toBeNull();
+      expect($rootScope.$$phase).toBe(0);
     });
 
     it("should prevent infinite recursion and print watcher function name or body", () => {
@@ -2532,7 +2532,7 @@ describe("Scope", function () {
 
       expect(logs[0]).toBeDefined();
 
-      expect($rootScope.$$phase).toBeNull();
+      expect($rootScope.$$phase).toBe(0);
     });
 
     describe("exceptions", () => {

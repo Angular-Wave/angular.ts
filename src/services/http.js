@@ -1431,7 +1431,7 @@ export function $HttpProvider() {
               applyHandlers[key] = function (event) {
                 if (useApplyAsync) {
                   $rootScope.$applyAsync(callEventHandler);
-                } else if ($rootScope.$$phase) {
+                } else if ($rootScope.$$phase !== ScopePhase.NONE) {
                   callEventHandler();
                 } else {
                   $rootScope.$apply(callEventHandler);
