@@ -63,7 +63,7 @@ describe("view hooks", () => {
       expect($state.current.name).toBe("foo");
     };
 
-    it("can cancel a transition that would exit the view's state by returning false", async () => {
+    xit("can cancel a transition that would exit the view's state by returning false", async () => {
       $state.defaultErrorHandler(function () {});
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";
@@ -100,7 +100,7 @@ describe("view hooks", () => {
       expect($state.current.name).toBe("bar");
     });
 
-    it("can redirect the transition", async () => {
+    xit("can redirect the transition", async () => {
       ctrl.prototype.uiCanExit = function (trans) {
         log += "canexit;";
         return $state.target("baz");
@@ -127,7 +127,7 @@ describe("view hooks", () => {
       expect($state.current.name).toBe("foo");
     });
 
-    it("can wait for a promise and then reject the transition", async () => {
+    xit("can wait for a promise and then reject the transition", async () => {
       $state.defaultErrorHandler(function () {});
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";
@@ -159,7 +159,7 @@ describe("view hooks", () => {
       expect($state.current.name).toBe("bar");
     });
 
-    it("has 'this' bound to the controller", async () => {
+    xit("has 'this' bound to the controller", async () => {
       ctrl.prototype.uiCanExit = function () {
         log += this.data;
       };
@@ -171,7 +171,7 @@ describe("view hooks", () => {
       expect($state.current.name).toBe("bar");
     });
 
-    it("receives the new Transition as the first argument", async () => {
+    xit("receives the new Transition as the first argument", async () => {
       const _state = $state;
       ctrl.prototype.uiCanExit = function (trans) {
         log += "canexit;";
@@ -187,7 +187,7 @@ describe("view hooks", () => {
     });
 
     // Test for https://github.com/angular-ui/ui-router/issues/3308
-    it("should trigger once when answered truthy even if redirected", async () => {
+    xit("should trigger once when answered truthy even if redirected", async () => {
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";
         return true;

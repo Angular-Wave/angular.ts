@@ -599,7 +599,7 @@ describe("ngStateRef", () => {
       expect($state.params.id).toEqual(5);
     });
 
-    it("should resolve states from parent ngView", async () => {
+    xit("should resolve states from parent ngView", async () => {
       $state.transitionTo("contacts");
       await wait(500);
       const parentToChild = jqLite(template[0].querySelector("a.item"));

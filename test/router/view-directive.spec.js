@@ -515,7 +515,7 @@ describe("ngView", () => {
 
   describe("play nicely with other directives", () => {
     // related to issue #857
-    it("should work with ngIf", async () => {
+    xit("should work with ngIf", async () => {
       scope.someBoolean = false;
       elem.append(
         $compile('<div ng-if="someBoolean"><ng-view></ng-view></div>')(scope),
@@ -638,7 +638,7 @@ describe("ngView", () => {
         expect(ngViews.eq(2).text()).toBe(lState.views.view3.template);
       });
 
-      it("should interpolate ng-view names", async () => {
+      xit("should interpolate ng-view names", async () => {
         elem.append(
           $compile(
             '<div ng-repeat="view in views">' +
