@@ -411,12 +411,11 @@ class Scope {
     array.unshift(watcher);
     array.$$digestWatchIndex++;
     this.incrementWatchersCount(1);
-    const self = this;
 
     return function deregisterWatch() {
       const index = arrayRemove(array, watcher);
       if (index >= 0) {
-        self.incrementWatchersCount(-1);
+        scope.incrementWatchersCount(-1);
         if (index < array.$$digestWatchIndex) {
           array.$$digestWatchIndex--;
         }
