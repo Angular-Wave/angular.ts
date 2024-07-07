@@ -123,9 +123,9 @@ export class $RootScopeProvider {
  * to construct.
  */
 
-// /**
-//  * @type {angular.Scope}
-//  */
+/**
+ * @type {angular.Scope}
+ */
 class Scope {
   constructor() {
     /**
@@ -142,11 +142,13 @@ class Scope {
     this.$parent = null;
 
     /**
-     * @type {?Scope}
+     * @type {?angular.Scope}
      */
     this.$root = this;
 
-    /** @type {Array} */
+    /** 
+     * @type {[]} 
+     */
     this.$$watchers = [];
 
     /**
@@ -369,7 +371,7 @@ class Scope {
  *
  *
  *
- * @param {(function|string)} watchExpression Expression that is evaluated on each
+ * @param {string | ((scope: Scope) => any)} watchExp Expression that is evaluated on each
  *    {@link ng.$rootScope.Scope#$digest $digest} cycle. A change in the return value triggers
  *    a call to the `listener`.
  *
@@ -895,7 +897,7 @@ class Scope {
   }
 
   /**
-   *
+   * @private
    * @param {ScopePhase} phase
    */
   beginPhase(phase) {
@@ -1177,6 +1179,9 @@ class Scope {
     return id;
   }
 
+  /**
+   * @private
+   */
   $$postDigest(fn) {
     $$postDigestQueue.push(fn);
   }

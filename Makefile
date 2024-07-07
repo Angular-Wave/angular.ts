@@ -17,6 +17,10 @@ check:
 	@echo "Typechecking Js"
 	./node_modules/.bin/tsc 
 
+types:
+	@echo "Generating *.d.ts"
+	@npx -p typescript tsc src/**/*.js --declaration --allowJs --emitDeclarationOnly --outDir types
+
 serve:
 	@npm run serve
 

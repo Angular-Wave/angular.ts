@@ -1,15 +1,9 @@
-import { IRootScopeService } from "../";
-import { ResolveContext, TypedMap } from "./core";
-import { StateProvider } from "./stateProvider";
-declare module "./core/lib/router" {
-  interface Router {
-    /** @hidden */
-    stateProvider: StateProvider;
-  }
+export function runBlock($injector: any, $q: any, $stateRegistry: any, $urlService: any): void;
+export namespace runBlock {
+    let $inject: string[];
 }
-export declare function watchDigests($rootScope: IRootScopeService): void;
-export declare namespace watchDigests {
-  var $inject: string[];
+export function watchDigests($rootScope: any): void;
+export namespace watchDigests {
+    let $inject_1: string[];
+    export { $inject_1 as $inject };
 }
-/** @hidden TODO: find a place to move this */
-export declare const getLocals: (ctx: ResolveContext) => TypedMap<any>;

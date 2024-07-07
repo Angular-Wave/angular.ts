@@ -389,18 +389,18 @@ declare namespace angular {
     $$isolateBindings: any;
     $$phase: any;
 
-    private $$watches: Array<any>;
-    private $$nextSibling: Scope | null;
-    private $$prevSibling: Scope | null;
-    private $$childHead: Scope | null;
-    private $$childTail: Scope | null;
-    private $$ChildScope: Scope | null;
-    private $$watchersCount: number;
-    private $$digestWatchIndex: number;
-    private $$suspended: boolean;
+    $$watchers?: any[];
+    $$nextSibling: Scope | null;
+    $$prevSibling: Scope | null;
+    $$childHead: Scope | null;
+    $$childTail: Scope | null;
+    $$ChildScope: Scope | null;
+    $$watchersCount: number;
+    $$digestWatchIndex: number;
+    $$suspended: boolean;
 
-    private $$listeners: Object;
-    private $$listenerCount: Object;
+    $$listeners: Object;
+    $$listenerCount: Object;
 
     $apply(): any;
     $apply(expr: string): any;
@@ -421,6 +421,11 @@ declare namespace angular {
      * @param args Optional one or more arguments which will be passed onto the event listeners.
      */
     $broadcast(name: string, ...args: any[]): IAngularEvent;
+    private beginPhase(number): void;
+    private clearPhase(): void;
+    private $$postDigest(): void;
+    private incrementWatchersCount(number): void;
+    private decrementListenerCount(number, string): void;
     $destroy(): void;
     $digest(): void;
 

@@ -1,0 +1,2 @@
+Keep these for reference only but TODO(Remove in future). 
+Instead of decorating existing implementation with *.d.ts definitions, AngularTS uses JSDoc types as the source of truth for generating *.d.ts files.
