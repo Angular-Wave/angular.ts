@@ -43,9 +43,9 @@ export const TTL = 10;
 const $rootScopeMinErr = minErr("$rootScope");
 
 /** @type {AsyncQueueTask[]} */
-const $$asyncQueue = [];
-const $$postDigestQueue = [];
-const $$applyAsyncQueue = [];
+export const $$asyncQueue = [];
+export const $$postDigestQueue = [];
+export const $$applyAsyncQueue = [];
 let postDigestQueuePosition = 0;
 let lastDirtyWatch = null;
 let applyAsyncId = null;
@@ -122,14 +122,6 @@ export class $RootScopeProvider {
  * in the same way as watch. Watch requires return of the initialization function which is expensive
  * to construct.
  */
-
-export function getQueues() {
-  return {
-    asyncQueue: $$asyncQueue,
-    postDigestQueue: $$postDigestQueue,
-    applyAsyncQueue: $$applyAsyncQueue,
-  };
-}
 
 // /**
 //  * @type {angular.Scope}
@@ -377,13 +369,13 @@ class Scope {
  *
  *
  *
- * @param {(function()|string)} watchExpression Expression that is evaluated on each
+ * @param {(function|string)} watchExpression Expression that is evaluated on each
  *    {@link ng.$rootScope.Scope#$digest $digest} cycle. A change in the return value triggers
  *    a call to the `listener`.
  *
  *    - `string`: Evaluated as {@link guide/expression expression}
  *    - `function(scope)`: called with current `scope` as a parameter.
- * @param {function(newVal, oldVal, scope)} listener Callback called whenever the value
+ * @param {(newVal: any, oldVal: any, scope: angular.Scope) => any} listener Callback called whenever the value
  *    of `watchExpression` changes.
  *
  *    - `newVal` contains the current value of the `watchExpression`
@@ -1016,7 +1008,7 @@ class Scope {
    * @description
    * Broadcasted when a scope and its children are being destroyed.
    *
-   * Note that, in AngularJS, there is also a `$destroy` jQuery event, which can be used to
+   * Note that, in AngularTS, there is also a `$destroy` jQuery event, which can be used to
    * clean up DOM bindings before an element is removed from the DOM.
    */
 
@@ -1039,13 +1031,12 @@ class Scope {
    * Application code can register a `$destroy` event handler that will give it a chance to
    * perform any necessary cleanup.
    *
-   * Note that, in AngularJS, there is also a `$destroy` event, which can be used to
+   * Note that, in AngularTS, there is also a `$destroy` event, which can be used to
    * clean up DOM bindings before an element is removed from the DOM.
    */
   $destroy() {
     // We can't destroy a scope that has been already destroyed.
     if (this.$$destroyed) return;
-    const parent = this.$parent;
 
     this.$broadcast("$destroy");
     this.$$destroyed = true;
@@ -1062,10 +1053,12 @@ class Scope {
 
     // sever all the references to parent scopes (after this cleanup, the current scope should
     // not be retained by any of our references and should be eligible for garbage collection)
-    if (parent && parent.$$childHead === this)
-      parent.$$childHead = this.$$nextSibling;
-    if (parent && parent.$$childTail === this)
-      parent.$$childTail = this.$$prevSibling;
+    if (this.$parent) {
+      if (this.$parent.$$childHead === this)
+        this.$parent.$$childHead = this.$$nextSibling;
+      if (this.$parent.$$childTail === this)
+        this.$parent.$$childTail = this.$$prevSibling;
+    }
     if (this.$$prevSibling)
       this.$$prevSibling.$$nextSibling = this.$$nextSibling;
     if (this.$$nextSibling)
@@ -1104,12 +1097,12 @@ class Scope {
  *
  * @description
  * Executes the `expression` on the current scope and returns the result. Any exceptions in
- * the expression are propagated (uncaught). This is useful when evaluating AngularJS
+ * the expression are propagated (uncaught). This is useful when evaluating AngularTS
  * expressions.
  *
  * @example
  * ```js
-     let scope = ng.$rootScope.Scope();
+     let scope = new Scope();
      scope.a = 1;
      scope.b = 2;
 
@@ -1117,7 +1110,7 @@ class Scope {
      expect(scope.$eval(function(scope){ return scope.a + scope.b; })).toEqual(3);
  * ```
  *
- * @param {string|function(Scope): any} [expr] An AngularJS expression to be executed.
+ * @param {string|function(Scope): any} [expr] An AngularTS expression to be executed.
  *
  *    - `string`: execute using the rules as defined in  {@link guide/expression expression}.
  *    - `function(scope)`: execute the function with the current `scope` parameter.
@@ -1152,7 +1145,7 @@ class Scope {
    * will be scheduled. However, it is encouraged to always call code that changes the model
    * from within an `$apply` call. That includes code evaluated via `$evalAsync`.
    *
-   * @param {(string|function())=} expr An AngularJS expression to be executed.
+   * @param {(string|function())=} expr An AngularTS expression to be executed.
    *
    *    - `string`: execute using the rules as defined in {@link guide/expression expression}.
    *    - `function(scope)`: execute the function with the current `scope` parameter.
@@ -1194,9 +1187,9 @@ class Scope {
  * @kind function
  *
  * @description
- * `$apply()` is used to execute an expression in AngularJS from outside of the AngularJS
+ * `$apply()` is used to execute an expression in AngularTS from outside of the AngularTS
  * framework. (For example from browser DOM events, setTimeout, XHR or third party libraries).
- * Because we are calling into the AngularJS framework we need to perform proper scope life
+ * Because we are calling into the AngularTS framework we need to perform proper scope life
  * cycle of {@link ng.$exceptionHandler exception handling},
  * {@link ng.$rootScope.Scope#$digest executing watches}.
  *
@@ -1225,7 +1218,7 @@ class Scope {
  *    expression was executed using the {@link ng.$rootScope.Scope#$digest $digest()} method.
  *
  *
- * @param {string|function(Scope): any} [expr] An AngularJS expression to be executed.
+ * @param {string|function(Scope): any} [expr] An AngularTS expression to be executed.
  *
  *    - `string`: execute using the rules as defined in {@link guide/expression expression}.
  *    - `function(scope)`: execute the function with current `scope` parameter.
@@ -1269,7 +1262,7 @@ class Scope {
    * This can be used to queue up multiple expressions which need to be evaluated in the same
    * digest.
    *
-   * @param {(string|function())=} expr An AngularJS expression to be executed.
+   * @param {(string|function())=} expr An AngularTS expression to be executed.
    *
    *    - `string`: execute using the rules as defined in {@link guide/expression expression}.
    *    - `function(scope)`: execute the function with current `scope` parameter.

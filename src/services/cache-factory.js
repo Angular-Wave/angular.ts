@@ -1,10 +1,4 @@
-import {
-  createMap,
-  extend,
-  forEach,
-  isUndefined,
-  minErr,
-} from "../shared/utils";
+import { extend, forEach, isUndefined, minErr } from "../shared/utils";
 
 /**
  * @ngdoc service
@@ -104,9 +98,9 @@ export function CacheFactoryProvider() {
 
       let size = 0;
       let stats = extend({}, options, { id: cacheId });
-      let data = createMap();
+      let data = Object.create(null);
       const capacity = (options && options.capacity) || Number.MAX_VALUE;
-      let lruHash = createMap();
+      let lruHash = Object.create(null);
       let freshEnd = null;
       let staleEnd = null;
 
@@ -247,9 +241,9 @@ export function CacheFactoryProvider() {
          * Clears the cache object of any entries.
          */
         removeAll() {
-          data = createMap();
+          data = Object.create(null);
           size = 0;
-          lruHash = createMap();
+          lruHash = Object.create(null);
           freshEnd = staleEnd = null;
         },
 

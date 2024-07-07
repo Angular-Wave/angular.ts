@@ -12,7 +12,6 @@ import {
   encodeUriQuery,
   isString,
   fromJson,
-  createMap,
   lowercase,
   trim,
   isFile,
@@ -210,7 +209,7 @@ function isJsonLike(str) {
  * @returns {Object} Parsed headers as key value object
  */
 function parseHeaders(headers) {
-  const parsed = createMap();
+  const parsed = Object.create(null);
   let i;
 
   function fillInParsed(key, val) {

@@ -4,7 +4,6 @@ import {
   forEach,
   isFunction,
   isString,
-  createMap,
   isBoolean,
   isUndefined,
   assertArg,
@@ -130,7 +129,7 @@ export function createInjector(modulesToLoad, strictDi) {
     $get: valueFn(protoInstanceInjector),
   };
   let instanceInjector = protoInstanceInjector;
-  instanceInjector.modules = providerInjector.modules = createMap();
+  instanceInjector.modules = providerInjector.modules = Object.create(null);
   var runBlocks = loadModules(modulesToLoad);
   instanceInjector = protoInstanceInjector.get("$injector");
   instanceInjector.strictDi = strictDi;

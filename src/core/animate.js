@@ -1,5 +1,4 @@
 import {
-  createMap,
   forEach,
   isFunction,
   isObject,
@@ -36,9 +35,9 @@ function splitClasses(classes) {
     classes = classes.split(" ");
   }
 
-  // Use createMap() to prevent class assumptions involving property names in
+  // Use Object.create(null) to prevent class assumptions involving property names in
   // Object.prototype
-  const obj = createMap();
+  const obj = Object.create(null);
   forEach(classes, (klass) => {
     // sometimes the split leaves empty string values
     // incase extra spaces were applied to the options

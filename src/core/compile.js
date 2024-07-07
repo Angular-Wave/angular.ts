@@ -5,7 +5,6 @@ import {
   minErr,
   assertArg,
   assertNotHasOwnProperty,
-  createMap,
   forEach,
   isDefined,
   isFunction,
@@ -69,12 +68,12 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
   // The assumption is that future DOM event attribute names will begin with
   // 'on' and be composed of only English letters.
   const EVENT_HANDLER_ATTR_REGEXP = /^(on[a-z]+|formaction)$/;
-  const bindingCache = createMap();
+  const bindingCache = Object.create(null);
 
   function parseIsolateBindings(scope, directiveName, isController) {
     const LOCAL_REGEXP = /^([@&]|[=<](\*?))(\??)\s*([\w$]*)$/;
 
-    const bindings = createMap();
+    const bindings = Object.create(null);
 
     forEach(scope, (definition, scopeName) => {
       definition = definition.trim();
@@ -534,7 +533,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    * The security context of DOM Properties.
    * @private
    */
-  const PROP_CONTEXTS = createMap();
+  const PROP_CONTEXTS = Object.create(null);
 
   /**
    * @ngdoc method
@@ -931,7 +930,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
        */
         $observe(key, fn) {
           const $$observers =
-            this.$$observers || (this.$$observers = createMap());
+            this.$$observers || (this.$$observers = Object.create(null));
           const listeners = $$observers[key] || ($$observers[key] = []);
 
           listeners.push(fn);
@@ -1309,7 +1308,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
         // We need  to attach the transclusion slots onto the `boundTranscludeFn`
         // so that they are available inside the `controllersBoundTransclude` function
-        const boundSlots = (boundTranscludeFn.$$slots = createMap());
+        const boundSlots = (boundTranscludeFn.$$slots = Object.create(null));
         for (const slotName in transcludeFn.$$slots) {
           if (transcludeFn.$$slots[slotName]) {
             boundSlots[slotName] = createBoundTranscludeFn(
@@ -1719,7 +1718,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           }
 
           if (!directive.templateUrl && directive.controller) {
-            controllerDirectives = controllerDirectives || createMap();
+            controllerDirectives = controllerDirectives || Object.create(null);
             assertNoDuplicate(
               `'${directiveName}' controller`,
               controllerDirectives[directiveName],
@@ -1775,7 +1774,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                 },
               );
             } else {
-              const slots = createMap();
+              const slots = Object.create(null);
 
               if (!isObject(directiveValue)) {
                 $template = compileNode.cloneNode(true).childNodes;
@@ -1784,8 +1783,8 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                 // collect them up, compile them and store their transclusion functions
                 $template = window.document.createDocumentFragment();
 
-                const slotMap = createMap();
-                const filledSlots = createMap();
+                const slotMap = Object.create(null);
+                const filledSlots = Object.create(null);
 
                 // Parse the element selectors
                 forEach(directiveValue, (elementSelector, slotName) => {
@@ -2400,7 +2399,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         scope,
         newIsolateScopeDirective,
       ) {
-        const elementControllers = createMap();
+        const elementControllers = Object.create(null);
         for (const controllerKey in controllerDirectives) {
           const directive = controllerDirectives[controllerKey];
           const locals = {
@@ -2993,7 +2992,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             return {
               pre: function attrInterpolatePreLinkFn(scope, element, attr) {
                 const $$observers =
-                  attr.$$observers || (attr.$$observers = createMap());
+                  attr.$$observers || (attr.$$observers = Object.create(null));
 
                 // If the attribute has changed since last $interpolate()ed
                 const newValue = attr[name];

@@ -1,5 +1,4 @@
 import {
-  createMap,
   csp,
   forEach,
   isDefined,
@@ -25,7 +24,7 @@ function getStringValue(name) {
   return `${name}`;
 }
 
-const OPERATORS = createMap();
+const OPERATORS = Object.create(null);
 
 "+ - * / % === !== == != < > <= >= && || ! = |"
   .split(" ")
@@ -1992,7 +1991,7 @@ export const literals = {
  *  service.
  */
 export function $ParseProvider() {
-  const cache = createMap();
+  const cache = Object.create(null);
   const literals = {
     true: true,
     false: false,

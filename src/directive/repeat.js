@@ -1,10 +1,4 @@
-import {
-  forEach,
-  minErr,
-  hashKey,
-  createMap,
-  isArrayLike,
-} from "../shared/utils";
+import { forEach, minErr, hashKey, isArrayLike } from "../shared/utils";
 import { getBlockNodes } from "../jqLite";
 
 const ngRepeatEndComment = document.createComment("");
@@ -135,7 +129,7 @@ export const ngRepeatDirective = [
           //
           // We are using no-proto object so that we don't need to guard against inherited props via
           // hasOwnProperty.
-          let lastBlockMap = createMap();
+          let lastBlockMap = Object.create(null);
 
           // watch props
           //watch props
@@ -147,7 +141,7 @@ export const ngRepeatDirective = [
               nextNode,
               // Same as lastBlockMap but it has the current state. It will become the
               // lastBlockMap on the next iteration.
-              nextBlockMap = createMap(),
+              nextBlockMap = Object.create(null),
               collectionLength,
               key,
               value, // key/value of iteration

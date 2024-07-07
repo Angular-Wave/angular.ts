@@ -1,4 +1,4 @@
-import { createMap, forEach, isObject, isString } from "../shared/utils";
+import { forEach, isObject, isString } from "../shared/utils";
 
 function classDirective(name, selector) {
   // eslint-disable-next-line no-param-reassign
@@ -15,9 +15,9 @@ function classDirective(name, selector) {
         let oldClassString;
 
         if (!classCounts) {
-          // Use createMap() to prevent class assumptions involving property
+          // Use Object.create(null) to prevent class assumptions involving property
           // names in Object.prototype
-          classCounts = createMap();
+          classCounts = Object.create(null);
           element.data("$classCounts", classCounts);
         }
 

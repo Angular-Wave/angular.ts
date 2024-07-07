@@ -1,4 +1,4 @@
-import { getQueues } from "../../src/core/root-scope";
+import { $$asyncQueue } from "../../src/core/root-scope";
 import { extend, sliceArgs } from "../../src/shared/utils";
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
@@ -2380,7 +2380,7 @@ describe("Scope", function () {
       $rootScope.$evalAsync("rootExpression");
       childScope.$evalAsync("childExpression");
       isolateScope.$evalAsync("isolateExpression");
-      expect(getQueues().asyncQueue).toEqual([
+      expect($$asyncQueue).toEqual([
         {
           scope: $rootScope,
           fn: $parse("rootExpression"),

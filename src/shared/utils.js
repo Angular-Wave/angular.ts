@@ -375,7 +375,7 @@ export function forEach(obj, iterator, context) {
     } else if (obj.forEach && obj.forEach !== forEach) {
       obj.forEach(iterator, context, obj);
     } else if (isBlankObject(obj)) {
-      // createMap() fast path --- Safe to avoid hasOwnProperty check because prototype chain is empty
+      // Object.create(null) fast path --- Safe to avoid hasOwnProperty check because prototype chain is empty
       for (key in obj) {
         iterator.call(context, obj[key], key, obj);
       }
@@ -721,7 +721,7 @@ export function equals(o1, o2) {
         isRegExp(o2)
       )
         return false;
-      keySet = createMap();
+      keySet = Object.create(null);
       for (key in o1) {
         if (key.charAt(0) === "$" || isFunction(o1[key])) continue;
         if (!equals(o1[key], o2[key])) return false;
@@ -820,21 +820,6 @@ export function getter(obj, path, bindFnToScope) {
     return bind(lastInstance, obj);
   }
   return obj;
-}
-
-/**
- * Creates a new object without a prototype. This object is useful for lookup without having to
- * guard against prototypically inherited properties via hasOwnProperty.
- *
- * Related micro-benchmarks:
- * - http://jsperf.com/object-create2
- * - http://jsperf.com/proto-map-lookup/2
- * - http://jsperf.com/for-in-vs-object-keys2
- *
- * @returns {Object}
- */
-export function createMap() {
-  return Object.create(null);
 }
 
 export function stringify(value) {

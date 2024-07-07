@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../src/public";
 import { createInjector } from "../../src/injector";
-import { createMap, isString, includes } from "../../src/shared/utils";
+import { isString, includes } from "../../src/shared/utils";
 import { jqLite } from "../../src/jqLite";
 
 describe("Filter: filter", () => {
@@ -437,7 +437,12 @@ describe("Filter: filter", () => {
     // eslint-disable-next-line no-extend-native
     Object.prototype.someProp = "oo";
 
-    const items = [createMap(), createMap(), createMap(), createMap()];
+    const items = [
+      Object.create(null),
+      Object.create(null),
+      Object.create(null),
+      Object.create(null),
+    ];
     items[0].someProp = "hello";
     items[1].someProp = "goodbye";
     items[2].someProp = "kittens";
