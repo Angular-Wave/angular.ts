@@ -389,6 +389,7 @@ declare namespace angular {
     private $$childHead: Scope | null;
     private $$childTail: Scope | null;
     private $$watchersCount: number;
+    private $$digestWatchIndex: number;
     private $$suspended: boolean;
 
     // Hidden members

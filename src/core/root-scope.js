@@ -158,6 +158,11 @@ class Scope {
     this.$$watchers = [];
 
     /**
+     * @type {number}
+     */
+    this.$$digestWatchIndex = -1;
+
+    /**
      * @type {?Scope}
      */
     this.$$nextSibling = null;
@@ -391,8 +396,7 @@ class Scope {
     if (get.$$watchDelegate) {
       return get.$$watchDelegate(this, fn, objectEquality, get, watchExp);
     }
-    const scope = this;
-    let array = scope.$$watchers;
+
     const watcher = {
       fn,
       last: initWatchVal,
@@ -403,21 +407,21 @@ class Scope {
 
     lastDirtyWatch = null;
 
-    if (!array) {
-      array.$$digestWatchIndex = -1;
+    if (this.$$watchers.length == 0) {
+      this.$$digestWatchIndex = -1;
     }
     // we use unshift since we use a while loop in $digest for speed.
     // the while loop reads in reverse order.
-    array.unshift(watcher);
-    array.$$digestWatchIndex++;
+    this.$$watchers.unshift(watcher);
+    this.$$digestWatchIndex++;
     this.incrementWatchersCount(1);
 
-    return function deregisterWatch() {
-      const index = arrayRemove(array, watcher);
+    return () => {
+      const index = arrayRemove(this.$$watchers, watcher);
       if (index >= 0) {
-        scope.incrementWatchersCount(-1);
-        if (index < array.$$digestWatchIndex) {
-          array.$$digestWatchIndex--;
+        this.incrementWatchersCount(-1);
+        if (index < this.$$digestWatchIndex) {
+          this.$$digestWatchIndex--;
         }
       }
       lastDirtyWatch = null;
@@ -802,10 +806,10 @@ class Scope {
         // "traverse the scopes" loop
         if ((watchers = !current.$$suspended && current.$$watchers)) {
           // process our watches
-          watchers.$$digestWatchIndex = watchers.length;
-          while (watchers.$$digestWatchIndex--) {
+          current.$$digestWatchIndex = watchers.length;
+          while (current.$$digestWatchIndex--) {
             try {
-              watch = watchers[watchers.$$digestWatchIndex];
+              watch = watchers[current.$$digestWatchIndex];
               // Most common watches are on primitives, in which case we can short
               // circuit it with === operator, only when === fails do we use .equals
               if (watch) {
