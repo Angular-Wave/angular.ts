@@ -1,4 +1,3 @@
-/** @publicapi @module ng1 */ /** */
 import { Obj } from "../core";
 /** @hidden */
 export declare const resolveFactory: () => {

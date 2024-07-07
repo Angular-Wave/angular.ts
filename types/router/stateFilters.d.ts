@@ -1,4 +1,3 @@
-/** @publicapi @module ng1 */ /** */
 import { StateService } from "./core";
 declare function $IsStateFilter($state: StateService): any;
 declare namespace $IsStateFilter {

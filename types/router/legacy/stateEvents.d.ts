@@ -1,4 +1,5 @@
-import { IAngularEvent } from "angular";
+import { IAngularEvent } from "../..";
+
 /**
  * An event broadcast on `$rootScope` when the state transition **begins**.
  *

@@ -1,4 +1,3 @@
-/** @publicapi @module ng1 */ /** */
 import {
   StateDeclaration,
   _ViewDeclaration,

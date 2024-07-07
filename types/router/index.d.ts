@@ -1,6 +1,5 @@
 /**
  * Main entry point for angular 1.x build
- * @publicapi @module ng1
  */ /** */
 export * from "./interface";
 export * from "./services";

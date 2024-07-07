@@ -1,4 +1,3 @@
-/** @publicapi @module ng1 */ /** */
 import { StateObject, TransitionStateHookFn } from "../core";
 /**
  * This is a [[StateBuilder.builder]] function for angular1 `onEnter`, `onExit`,
