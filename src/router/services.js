@@ -6,7 +6,6 @@
  *
  * The optional [[$resolve]] service is also documented here.
  *
- * @preferred @publicapi @module ng1
  */
 import { services } from "./common/coreservices";
 import { unnestR } from "../shared/common";

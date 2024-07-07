@@ -266,9 +266,13 @@ class Scope {
     // when the parent scope is destroyed.
     // The listener needs to be added after the parent is set
     if (isolate || parent !== this) {
-      child.$on("$destroy", ($event) => {
-        $event.currentScope.$$destroyed = true;
-      });
+      child.$on(
+        "$destroy",
+        /** @param {angular.IAngularEvent} $event */
+        ($event) => {
+          $event.currentScope.$$destroyed = true;
+        },
+      );
     }
     return child;
   }
@@ -772,7 +776,7 @@ class Scope {
     if (this === this.$root && applyAsyncId !== null) {
       // If this is the root scope, and $applyAsync has scheduled a deferred $apply(), then
       // cancel the scheduled $apply and flush the queue of expressions to be evaluated.
-      $browser.defer.cancel(applyAsyncId);
+      $browser.cancel(applyAsyncId);
       flushApplyAsync();
       applyAsyncId = null;
     }
@@ -1302,7 +1306,7 @@ class Scope {
    *   - `defaultPrevented` - `{boolean}`: true if `preventDefault` was called.
    *
    * @param {string} name Event name to listen on.
-   * @param {function(event, ...args)} listener Function to call when the event is emitted.
+   * @param {function(angular.IAngularEvent): any} listener Function to call when the event is emitted.
    * @returns {function()} Returns a deregistration function for this listener.
    */
   $on(name, listener) {

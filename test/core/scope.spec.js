@@ -2630,7 +2630,7 @@ describe("Scope", function () {
       const scope = $rootScope.$new();
       let id = scope.$applyAsync('x = "CODE ORANGE"');
 
-      $browser.defer.cancel(id);
+      $browser.cancel(id);
       setTimeout(() => {
         expect(scope.x).toBe("CODE ORANGE");
         expect($rootScope.x).toBeUndefined();
@@ -2644,8 +2644,8 @@ describe("Scope", function () {
       let id1 = $rootScope.$applyAsync('x.push("expr1")');
       let id2 = $rootScope.$applyAsync('x.push("expr2")');
 
-      $browser.defer.cancel(id1);
-      $browser.defer.cancel(id2);
+      $browser.cancel(id1);
+      $browser.cancel(id2);
       setTimeout(() => {
         expect($rootScope.x).toEqual(["expr1", "expr2"]);
       });
@@ -2660,7 +2660,7 @@ describe("Scope", function () {
         expect($browser.deferredFns.length).toBe(0);
       });
 
-      $browser.defer.cancel(id);
+      $browser.cancel(id);
       setTimeout(() => {
         expect($rootScope.x).toEqual(["expr1", "expr2"]);
       });
@@ -2672,7 +2672,7 @@ describe("Scope", function () {
         throw "OOPS";
       });
 
-      $browser.defer.cancel(id);
+      $browser.cancel(id);
       expect(logs).toEqual([]);
       setTimeout(() => expect(logs[0]).toEqual("OOPS"));
     });
@@ -2683,14 +2683,14 @@ describe("Scope", function () {
       });
       let id2 = $rootScope.$applyAsync('x = "All good!"');
 
-      $browser.defer.cancel(id);
-      $browser.defer.cancel(id2);
+      $browser.cancel(id);
+      $browser.cancel(id2);
       setTimeout(() => expect($rootScope.x).toBe("All good!"));
       expect($rootScope.x).toBeUndefined();
     });
 
     it("should be cancelled if a $rootScope digest occurs before the next tick", () => {
-      const cancel = spyOn($browser.defer, "cancel").and.callThrough();
+      const cancel = spyOn($browser, "cancel").and.callThrough();
       const expression = jasmine.createSpy("expr");
 
       $rootScope.$applyAsync(expression);

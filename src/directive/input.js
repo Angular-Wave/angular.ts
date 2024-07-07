@@ -727,7 +727,7 @@ function baseInputType(scope, element, attr, ctrl, $browser) {
 
   let listener = function (ev) {
     if (timeout) {
-      $browser.defer.cancel(timeout);
+      $browser.cancel(timeout);
       timeout = null;
     }
     if (composing) return;

@@ -103,7 +103,7 @@ export function $timeout($rootScope, $browser, $q, $$q, $exceptionHandler) {
     deferred.reject("canceled");
     delete deferreds[id];
 
-    return $browser.defer.cancel(id);
+    return $browser.cancel(id);
   };
 
   return timeout;

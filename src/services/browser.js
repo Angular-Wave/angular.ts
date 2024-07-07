@@ -243,7 +243,7 @@ export function Browser($log, $$taskTrackerFactory) {
    * @param {function()} fn A function, who's execution should be deferred.
    * @param {number=} [delay=0] Number of milliseconds to defer the function execution.
    * @param {string=} [taskType=DEFAULT_TASK_TYPE] The type of task that is deferred.
-   * @returns {*} DeferId that can be used to cancel the task via `$browser.defer.cancel()`.
+   * @returns {*} DeferId that can be used to cancel the task via `$browser.cancel()`.
    *
    * @description
    * Executes a fn asynchronously via `setTimeout(fn, delay)`.
@@ -270,7 +270,7 @@ export function Browser($log, $$taskTrackerFactory) {
   };
 
   /**
-   * @name $browser#defer.cancel
+   * @name $browser#cancel
    *
    * @description
    * Cancels a deferred task identified with `deferId`.
@@ -279,7 +279,7 @@ export function Browser($log, $$taskTrackerFactory) {
    * @returns {boolean} Returns `true` if the task hasn't executed yet and was successfully
    *                    canceled.
    */
-  self.defer.cancel = function (deferId) {
+  self.cancel = function (deferId) {
     if (Object.prototype.hasOwnProperty.call(pendingDeferIds, deferId)) {
       const taskType = pendingDeferIds[deferId];
       delete pendingDeferIds[deferId];

@@ -325,7 +325,7 @@ describe("$timeout", () => {
     });
 
     it("should forget references to relevant deferred", () => {
-      // $browser.defer.cancel is only called on cancel if the deferred object is still referenced
+      // $browser.cancel is only called on cancel if the deferred object is still referenced
       const cancelSpy = spyOn($browser.defer, "cancel").and.callThrough();
 
       const promise = $timeout(() => {}, 0, false);

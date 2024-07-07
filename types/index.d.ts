@@ -16,6 +16,7 @@ export as namespace ng;
 export = angular;
 
 import ng = angular;
+import { Obj } from "./router";
 
 ///////////////////////////////////////////////////////////////////////////////
 // ng module (angular.js)
@@ -384,18 +385,22 @@ declare namespace angular {
     $id: number;
     $parent: Scope | null;
     $root: Scope | null;
+    $$destroyed: boolean;
+    $$isolateBindings: any;
+    $$phase: any;
 
+    private $$watches: Array<any>;
     private $$nextSibling: Scope | null;
+    private $$prevSibling: Scope | null;
     private $$childHead: Scope | null;
     private $$childTail: Scope | null;
+    private $$ChildScope: Scope | null;
     private $$watchersCount: number;
     private $$digestWatchIndex: number;
     private $$suspended: boolean;
 
-    // Hidden members
-    $$isolateBindings: any;
-    $$phase: any;
-    $$destroyed: boolean;
+    private $$listeners: Object;
+    private $$listenerCount: Object;
 
     $apply(): any;
     $apply(expr: string): any;
