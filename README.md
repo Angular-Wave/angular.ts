@@ -20,6 +20,10 @@ It also helps with server-side communication, taming async callbacks with promis
 and it makes client-side navigation and deep linking with hashbang urls or HTML5 pushState a
 piece of cake. 
 
+Current state
+--------------------
+AngularJS is a large codebase that evolved in its own ecosystem over a long period of time. This resulted in multiple layers of legacy dependencies spread across multiple modules. Current focus is to remove these layers one by one and updating documentation to the reflect these changes. Until then, feel free to rely on old documentation or raise a PR if you have a problem migrating.
+
 --------------------
 
 * Web site: https://angularjs.org
