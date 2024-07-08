@@ -74,7 +74,9 @@ export function urlIsSameOriginAsBaseUrl(requestUrl: string | object): boolean;
  * @returns {Function} - A function that receives a URL (string or parsed URL object) and returns
  *     whether it is of an allowed origin.
  */
-export function urlIsAllowedOriginFactory(trustedOriginUrls: string[]): Function;
+export function urlIsAllowedOriginFactory(
+  trustedOriginUrls: string[],
+): Function;
 /**
  * Determine if two URLs share the same origin.
  *
@@ -85,7 +87,10 @@ export function urlIsAllowedOriginFactory(trustedOriginUrls: string[]): Function
  *
  * @returns {boolean} - True if both URLs have the same origin, and false otherwise.
  */
-export function urlsAreSameOrigin(url1: string | any, url2: string | object): boolean;
+export function urlsAreSameOrigin(
+  url1: string | any,
+  url2: string | object,
+): boolean;
 /**
  * Returns the current document base URL.
  * @returns {string}

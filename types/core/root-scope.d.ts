@@ -17,9 +17,9 @@ export function countWatchers(scope: Scope): number;
 export function countChildScopes(scope: Scope): number;
 export type ScopePhase = number;
 export namespace ScopePhase {
-    let NONE: number;
-    let APPLY: number;
-    let DIGEST: number;
+  let NONE: number;
+  let APPLY: number;
+  let DIGEST: number;
 }
 /**
  * The number of digest iterations
@@ -58,12 +58,19 @@ export const $$applyAsyncQueue: any[];
  *
  */
 export class $RootScopeProvider {
-    $get: (string | ((exceptionHandler: angular.IExceptionHandlerService, parse: angular.IParseService, browser: import('../services/browser').Browser) => Scope))[];
+  $get: (
+    | string
+    | ((
+        exceptionHandler: angular.IExceptionHandlerService,
+        parse: angular.IParseService,
+        browser: import("../services/browser").Browser,
+      ) => Scope)
+  )[];
 }
 export type AsyncQueueTask = {
-    scope: Scope;
-    fn: Function;
-    locals: any;
+  scope: Scope;
+  fn: Function;
+  locals: any;
 };
 /**
  * DESIGN NOTES
@@ -93,85 +100,85 @@ export type AsyncQueueTask = {
  * @type {angular.Scope}
  */
 declare class Scope {
-    /**
-     * @type {number} Unique scope ID (monotonically increasing) useful for debugging.
-     */
-    $id: number;
-    /** @type {ScopePhase} */
-    $$phase: ScopePhase;
-    /**
-     * @type {?Scope} Reference to the parent scope.
-     */
-    $parent: Scope | null;
-    /**
-     * @type {?angular.Scope}
-     */
-    $root: angular.Scope;
-    /**
-     * @type {[]}
-     */
-    $$watchers: [];
-    /**
-     * @type {number}
-     */
-    $$digestWatchIndex: number;
-    /**
-     * @type {?Scope}
-     */
-    $$nextSibling: Scope | null;
-    /**
-     * @type {?Scope}
-     */
-    $$prevSibling: Scope | null;
-    /**
-     * @type {?Scope}
-     */
-    $$childHead: Scope | null;
-    /**
-     * @type {?Scope}
-     */
-    $$childTail: Scope | null;
-    /** @type {boolean} */
-    $$destroyed: boolean;
-    /** @type {boolean} */
-    $$suspended: boolean;
-    /** @type {object} */
-    $$listeners: object;
-    /** @type {object} */
-    $$listenerCount: object;
-    /** @type {number} */
-    $$watchersCount: number;
-    $$isolateBindings: any;
-    /**
-     * @type {?Scope}
-     */
-    $$ChildScope: Scope | null;
-    /**
-     * Creates a new child {@link Scope}.
-     *
-     * The parent scope will propagate the {@link ng.$rootScope.Scope#$digest $digest()} event.
-     * The scope can be removed from the scope hierarchy using {@link ng.$rootScope.Scope#$destroy $destroy()}.
-     *
-     * {@link ng.$rootScope.Scope#$destroy $destroy()} must be called on a scope when it is
-     * desired for the scope and its child scopes to be permanently detached from the parent and
-     * thus stop participating in model change detection and listener notification by invoking.
-     *
-     * @param {?boolean} isolate If true, then the scope does not prototypically inherit from the
-     *         parent scope. The scope is isolated, as it can not see parent scope properties.
-     *         When creating widgets, it is useful for the widget to not accidentally read parent
-     *         state.
-     *
-     * @param {?Scope} [parent=this] The {@link ng.$rootScope.Scope `Scope`} that will be the `$parent`
-     *                              of the newly created scope. Defaults to `this` scope if not provided.
-     *                              This is used when creating a transclude scope to correctly place it
-     *                              in the scope hierarchy while maintaining the correct prototypical
-     *                              inheritance.
-     *
-     * @returns {Scope} The newly created child scope.
-     *
-     */
-    $new(isolate: boolean | null, parent?: Scope | null): Scope;
-    /**
+  /**
+   * @type {number} Unique scope ID (monotonically increasing) useful for debugging.
+   */
+  $id: number;
+  /** @type {ScopePhase} */
+  $$phase: ScopePhase;
+  /**
+   * @type {?Scope} Reference to the parent scope.
+   */
+  $parent: Scope | null;
+  /**
+   * @type {?angular.Scope}
+   */
+  $root: angular.Scope;
+  /**
+   * @type {[]}
+   */
+  $$watchers: [];
+  /**
+   * @type {number}
+   */
+  $$digestWatchIndex: number;
+  /**
+   * @type {?Scope}
+   */
+  $$nextSibling: Scope | null;
+  /**
+   * @type {?Scope}
+   */
+  $$prevSibling: Scope | null;
+  /**
+   * @type {?Scope}
+   */
+  $$childHead: Scope | null;
+  /**
+   * @type {?Scope}
+   */
+  $$childTail: Scope | null;
+  /** @type {boolean} */
+  $$destroyed: boolean;
+  /** @type {boolean} */
+  $$suspended: boolean;
+  /** @type {object} */
+  $$listeners: object;
+  /** @type {object} */
+  $$listenerCount: object;
+  /** @type {number} */
+  $$watchersCount: number;
+  $$isolateBindings: any;
+  /**
+   * @type {?Scope}
+   */
+  $$ChildScope: Scope | null;
+  /**
+   * Creates a new child {@link Scope}.
+   *
+   * The parent scope will propagate the {@link ng.$rootScope.Scope#$digest $digest()} event.
+   * The scope can be removed from the scope hierarchy using {@link ng.$rootScope.Scope#$destroy $destroy()}.
+   *
+   * {@link ng.$rootScope.Scope#$destroy $destroy()} must be called on a scope when it is
+   * desired for the scope and its child scopes to be permanently detached from the parent and
+   * thus stop participating in model change detection and listener notification by invoking.
+   *
+   * @param {?boolean} isolate If true, then the scope does not prototypically inherit from the
+   *         parent scope. The scope is isolated, as it can not see parent scope properties.
+   *         When creating widgets, it is useful for the widget to not accidentally read parent
+   *         state.
+   *
+   * @param {?Scope} [parent=this] The {@link ng.$rootScope.Scope `Scope`} that will be the `$parent`
+   *                              of the newly created scope. Defaults to `this` scope if not provided.
+   *                              This is used when creating a transclude scope to correctly place it
+   *                              in the scope hierarchy while maintaining the correct prototypical
+   *                              inheritance.
+   *
+   * @returns {Scope} The newly created child scope.
+   *
+   */
+  $new(isolate: boolean | null, parent?: Scope | null): Scope;
+  /**
    * @ngdoc method
    * @name $rootScope.Scope#$watch
    * @kind function
@@ -287,69 +294,79 @@ declare class Scope {
    *     comparing for reference equality.
    * @returns {function()} Returns a deregistration function for this listener.
    */
-    $watch(watchExp: string | ((scope: Scope) => any), listener: (newVal: any, oldVal: any, scope: angular.Scope) => any, objectEquality?: boolean | undefined): () => any;
-    /**
-     * @ngdoc method
-     * @name $rootScope.Scope#$watchGroup
-     * @kind function
-     *
-     * @description
-     * A variant of {@link ng.$rootScope.Scope#$watch $watch()} where it watches an array of `watchExpressions`.
-     * If any one expression in the collection changes the `listener` is executed.
-     *
-     * - The items in the `watchExpressions` array are observed via the standard `$watch` operation. Their return
-     *   values are examined for changes on every call to `$digest`.
-     * - The `listener` is called whenever any expression in the `watchExpressions` array changes.
-     *
-     * @param {Array.<string|Function(scope)>} watchExpressions Array of expressions that will be individually
-     * watched using {@link ng.$rootScope.Scope#$watch $watch()}
-     *
-     * @param {function(newValues, oldValues, scope)} listener Callback called whenever the return value of any
-     *    expression in `watchExpressions` changes
-     *    The `newValues` array contains the current values of the `watchExpressions`, with the indexes matching
-     *    those of `watchExpression`
-     *    and the `oldValues` array contains the previous values of the `watchExpressions`, with the indexes matching
-     *    those of `watchExpression`
-     *    The `scope` refers to the current scope.
-     * @returns {function()} Returns a de-registration function for all listeners.
-     */
-    $watchGroup(watchExpressions: any, listener: (arg0: any[], arg1: any[], arg2: scope) => any): () => any;
-    /**
-     * @ngdoc method
-     * @name $rootScope.Scope#$watchCollection
-     * @kind function
-     *
-     * @description
-     * Shallow watches the properties of an object and fires whenever any of the properties change
-     * (for arrays, this implies watching the array items; for object maps, this implies watching
-     * the properties). If a change is detected, the `listener` callback is fired.
-     *
-     * - The `obj` collection is observed via standard $watch operation and is examined on every
-     *   call to $digest() to see if any items have been added, removed, or moved.
-     * - The `listener` is called whenever anything within the `obj` has changed. Examples include
-     *   adding, removing, and moving items belonging to an object or array.
-     *
-     *
-     *
-     *
-     * @param {string|function(scope)} obj Evaluated as {@link guide/expression expression}. The
-     *    expression value should evaluate to an object or an array which is observed on each
-     *    {@link ng.$rootScope.Scope#$digest $digest} cycle. Any shallow change within the
-     *    collection will trigger a call to the `listener`.
-     *
-     * @param {function(newCollection, oldCollection, scope)} listener a callback function called
-     *    when a change is detected.
-     *    - The `newCollection` object is the newly modified data obtained from the `obj` expression
-     *    - The `oldCollection` object is a copy of the former collection data.
-     *      Due to performance considerations, the`oldCollection` value is computed only if the
-     *      `listener` function declares two or more arguments.
-     *    - The `scope` argument refers to the current scope.
-     *
-     * @returns {function()} Returns a de-registration function for this listener. When the
-     *    de-registration function is executed, the internal watch operation is terminated.
-     */
-    $watchCollection(obj: string | ((arg0: scope) => any), listener: (arg0: newCollection, arg1: oldCollection, arg2: scope) => any): () => any;
-    /**
+  $watch(
+    watchExp: string | ((scope: Scope) => any),
+    listener: (newVal: any, oldVal: any, scope: angular.Scope) => any,
+    objectEquality?: boolean | undefined,
+  ): () => any;
+  /**
+   * @ngdoc method
+   * @name $rootScope.Scope#$watchGroup
+   * @kind function
+   *
+   * @description
+   * A variant of {@link ng.$rootScope.Scope#$watch $watch()} where it watches an array of `watchExpressions`.
+   * If any one expression in the collection changes the `listener` is executed.
+   *
+   * - The items in the `watchExpressions` array are observed via the standard `$watch` operation. Their return
+   *   values are examined for changes on every call to `$digest`.
+   * - The `listener` is called whenever any expression in the `watchExpressions` array changes.
+   *
+   * @param {Array.<string|Function(scope)>} watchExpressions Array of expressions that will be individually
+   * watched using {@link ng.$rootScope.Scope#$watch $watch()}
+   *
+   * @param {function(newValues, oldValues, scope)} listener Callback called whenever the return value of any
+   *    expression in `watchExpressions` changes
+   *    The `newValues` array contains the current values of the `watchExpressions`, with the indexes matching
+   *    those of `watchExpression`
+   *    and the `oldValues` array contains the previous values of the `watchExpressions`, with the indexes matching
+   *    those of `watchExpression`
+   *    The `scope` refers to the current scope.
+   * @returns {function()} Returns a de-registration function for all listeners.
+   */
+  $watchGroup(
+    watchExpressions: any,
+    listener: (arg0: any[], arg1: any[], arg2: scope) => any,
+  ): () => any;
+  /**
+   * @ngdoc method
+   * @name $rootScope.Scope#$watchCollection
+   * @kind function
+   *
+   * @description
+   * Shallow watches the properties of an object and fires whenever any of the properties change
+   * (for arrays, this implies watching the array items; for object maps, this implies watching
+   * the properties). If a change is detected, the `listener` callback is fired.
+   *
+   * - The `obj` collection is observed via standard $watch operation and is examined on every
+   *   call to $digest() to see if any items have been added, removed, or moved.
+   * - The `listener` is called whenever anything within the `obj` has changed. Examples include
+   *   adding, removing, and moving items belonging to an object or array.
+   *
+   *
+   *
+   *
+   * @param {string|function(scope)} obj Evaluated as {@link guide/expression expression}. The
+   *    expression value should evaluate to an object or an array which is observed on each
+   *    {@link ng.$rootScope.Scope#$digest $digest} cycle. Any shallow change within the
+   *    collection will trigger a call to the `listener`.
+   *
+   * @param {function(newCollection, oldCollection, scope)} listener a callback function called
+   *    when a change is detected.
+   *    - The `newCollection` object is the newly modified data obtained from the `obj` expression
+   *    - The `oldCollection` object is a copy of the former collection data.
+   *      Due to performance considerations, the`oldCollection` value is computed only if the
+   *      `listener` function declares two or more arguments.
+   *    - The `scope` argument refers to the current scope.
+   *
+   * @returns {function()} Returns a de-registration function for this listener. When the
+   *    de-registration function is executed, the internal watch operation is terminated.
+   */
+  $watchCollection(
+    obj: string | ((arg0: scope) => any),
+    listener: (arg0: newCollection, arg1: oldCollection, arg2: scope) => any,
+  ): () => any;
+  /**
    * @ngdoc method
    * @name $rootScope.Scope#$digest
    * @kind function
@@ -400,128 +417,128 @@ declare class Scope {
    * ```
    *
    */
-    $digest(): void;
-    /**
-     * @private
-     * @param {ScopePhase} phase
-     */
-    private beginPhase;
-    /**
-     * @ngdoc method
-     * @name $rootScope.Scope#$suspend
-     * @kind function
-     *
-     * @description
-     * Suspend watchers of this scope subtree so that they will not be invoked during digest.
-     *
-     * This can be used to optimize your application when you know that running those watchers
-     * is redundant.
-     *
-     * **Warning**
-     *
-     * Suspending scopes from the digest cycle can have unwanted and difficult to debug results.
-     * Only use this approach if you are confident that you know what you are doing and have
-     * ample tests to ensure that bindings get updated as you expect.
-     *
-     * Some of the things to consider are:
-     *
-     * * Any external event on a directive/component will not trigger a digest while the hosting
-     *   scope is suspended - even if the event handler calls `$apply()` or `$rootScope.$digest()`.
-     * * Transcluded content exists on a scope that inherits from outside a directive but exists
-     *   as a child of the directive's containing scope. If the containing scope is suspended the
-     *   transcluded scope will also be suspended, even if the scope from which the transcluded
-     *   scope inherits is not suspended.
-     * * Multiple directives trying to manage the suspended status of a scope can confuse each other:
-     *    * A call to `$suspend()` on an already suspended scope is a no-op.
-     *    * A call to `$resume()` on a non-suspended scope is a no-op.
-     *    * If two directives suspend a scope, then one of them resumes the scope, the scope will no
-     *      longer be suspended. This could result in the other directive believing a scope to be
-     *      suspended when it is not.
-     * * If a parent scope is suspended then all its descendants will be also excluded from future
-     *   digests whether or not they have been suspended themselves. Note that this also applies to
-     *   isolate child scopes.
-     * * Calling `$digest()` directly on a descendant of a suspended scope will still run the watchers
-     *   for that scope and its descendants. When digesting we only check whether the current scope is
-     *   locally suspended, rather than checking whether it has a suspended ancestor.
-     * * Calling `$resume()` on a scope that has a suspended ancestor will not cause the scope to be
-     *   included in future digests until all its ancestors have been resumed.
-     * * Resolved promises, e.g. from explicit `$q` deferreds and `$http` calls, trigger `$apply()`
-     *   against the `$rootScope` and so will still trigger a global digest even if the promise was
-     *   initiated by a component that lives on a suspended scope.
-     */
-    $suspend(): void;
-    /**
-     * @ngdoc method
-     * @name $rootScope.Scope#$isSuspended
-     * @kind function
-     *
-     * @description
-     * Call this method to determine if this scope has been explicitly suspended. It will not
-     * tell you whether an ancestor has been suspended.
-     * To determine if this scope will be excluded from a digest triggered at the $rootScope,
-     * for example, you must check all its ancestors:
-     *
-     * ```
-     * function isExcludedFromDigest(scope) {
-     *   while(scope) {
-     *     if (scope.$isSuspended()) return true;
-     *     scope = scope.$parent;
-     *   }
-     *   return false;
-     * ```
-     *
-     * Be aware that a scope may not be included in digests if it has a suspended ancestor,
-     * even if `$isSuspended()` returns false.
-     *
-     * @returns true if the current scope has been suspended.
-     */
-    $isSuspended(): boolean;
-    /**
-     * @ngdoc method
-     * @name $rootScope.Scope#$resume
-     * @kind function
-     *
-     * @description
-     * Resume watchers of this scope subtree in case it was suspended.
-     *
-     * See {@link $rootScope.Scope#$suspend} for information about the dangers of using this approach.
-     */
-    $resume(): void;
-    /**
-     * @ngdoc event
-     * @name $rootScope.Scope#$destroy
-     * @eventType broadcast on scope being destroyed
-     *
-     * @description
-     * Broadcasted when a scope and its children are being destroyed.
-     *
-     * Note that, in AngularTS, there is also a `$destroy` jQuery event, which can be used to
-     * clean up DOM bindings before an element is removed from the DOM.
-     */
-    /**
-     * @ngdoc method
-     * @name $rootScope.Scope#$destroy
-     * @kind function
-     *
-     * @description
-     * Removes the current scope (and all of its children) from the parent scope. Removal implies
-     * that calls to {@link ng.$rootScope.Scope#$digest $digest()} will no longer
-     * propagate to the current scope and its children. Removal also implies that the current
-     * scope is eligible for garbage collection.
-     *
-     * The `$destroy()` is usually used by directives such as
-     * {@link ng.directive:ngRepeat ngRepeat} for managing the
-     * unrolling of the loop.
-     *
-     * Just before a scope is destroyed, a `$destroy` event is broadcasted on this scope.
-     * Application code can register a `$destroy` event handler that will give it a chance to
-     * perform any necessary cleanup.
-     *
-     * Note that, in AngularTS, there is also a `$destroy` event, which can be used to
-     * clean up DOM bindings before an element is removed from the DOM.
-     */
-    $destroy(): void;
-    /**
+  $digest(): void;
+  /**
+   * @private
+   * @param {ScopePhase} phase
+   */
+  private beginPhase;
+  /**
+   * @ngdoc method
+   * @name $rootScope.Scope#$suspend
+   * @kind function
+   *
+   * @description
+   * Suspend watchers of this scope subtree so that they will not be invoked during digest.
+   *
+   * This can be used to optimize your application when you know that running those watchers
+   * is redundant.
+   *
+   * **Warning**
+   *
+   * Suspending scopes from the digest cycle can have unwanted and difficult to debug results.
+   * Only use this approach if you are confident that you know what you are doing and have
+   * ample tests to ensure that bindings get updated as you expect.
+   *
+   * Some of the things to consider are:
+   *
+   * * Any external event on a directive/component will not trigger a digest while the hosting
+   *   scope is suspended - even if the event handler calls `$apply()` or `$rootScope.$digest()`.
+   * * Transcluded content exists on a scope that inherits from outside a directive but exists
+   *   as a child of the directive's containing scope. If the containing scope is suspended the
+   *   transcluded scope will also be suspended, even if the scope from which the transcluded
+   *   scope inherits is not suspended.
+   * * Multiple directives trying to manage the suspended status of a scope can confuse each other:
+   *    * A call to `$suspend()` on an already suspended scope is a no-op.
+   *    * A call to `$resume()` on a non-suspended scope is a no-op.
+   *    * If two directives suspend a scope, then one of them resumes the scope, the scope will no
+   *      longer be suspended. This could result in the other directive believing a scope to be
+   *      suspended when it is not.
+   * * If a parent scope is suspended then all its descendants will be also excluded from future
+   *   digests whether or not they have been suspended themselves. Note that this also applies to
+   *   isolate child scopes.
+   * * Calling `$digest()` directly on a descendant of a suspended scope will still run the watchers
+   *   for that scope and its descendants. When digesting we only check whether the current scope is
+   *   locally suspended, rather than checking whether it has a suspended ancestor.
+   * * Calling `$resume()` on a scope that has a suspended ancestor will not cause the scope to be
+   *   included in future digests until all its ancestors have been resumed.
+   * * Resolved promises, e.g. from explicit `$q` deferreds and `$http` calls, trigger `$apply()`
+   *   against the `$rootScope` and so will still trigger a global digest even if the promise was
+   *   initiated by a component that lives on a suspended scope.
+   */
+  $suspend(): void;
+  /**
+   * @ngdoc method
+   * @name $rootScope.Scope#$isSuspended
+   * @kind function
+   *
+   * @description
+   * Call this method to determine if this scope has been explicitly suspended. It will not
+   * tell you whether an ancestor has been suspended.
+   * To determine if this scope will be excluded from a digest triggered at the $rootScope,
+   * for example, you must check all its ancestors:
+   *
+   * ```
+   * function isExcludedFromDigest(scope) {
+   *   while(scope) {
+   *     if (scope.$isSuspended()) return true;
+   *     scope = scope.$parent;
+   *   }
+   *   return false;
+   * ```
+   *
+   * Be aware that a scope may not be included in digests if it has a suspended ancestor,
+   * even if `$isSuspended()` returns false.
+   *
+   * @returns true if the current scope has been suspended.
+   */
+  $isSuspended(): boolean;
+  /**
+   * @ngdoc method
+   * @name $rootScope.Scope#$resume
+   * @kind function
+   *
+   * @description
+   * Resume watchers of this scope subtree in case it was suspended.
+   *
+   * See {@link $rootScope.Scope#$suspend} for information about the dangers of using this approach.
+   */
+  $resume(): void;
+  /**
+   * @ngdoc event
+   * @name $rootScope.Scope#$destroy
+   * @eventType broadcast on scope being destroyed
+   *
+   * @description
+   * Broadcasted when a scope and its children are being destroyed.
+   *
+   * Note that, in AngularTS, there is also a `$destroy` jQuery event, which can be used to
+   * clean up DOM bindings before an element is removed from the DOM.
+   */
+  /**
+   * @ngdoc method
+   * @name $rootScope.Scope#$destroy
+   * @kind function
+   *
+   * @description
+   * Removes the current scope (and all of its children) from the parent scope. Removal implies
+   * that calls to {@link ng.$rootScope.Scope#$digest $digest()} will no longer
+   * propagate to the current scope and its children. Removal also implies that the current
+   * scope is eligible for garbage collection.
+   *
+   * The `$destroy()` is usually used by directives such as
+   * {@link ng.directive:ngRepeat ngRepeat} for managing the
+   * unrolling of the loop.
+   *
+   * Just before a scope is destroyed, a `$destroy` event is broadcasted on this scope.
+   * Application code can register a `$destroy` event handler that will give it a chance to
+   * perform any necessary cleanup.
+   *
+   * Note that, in AngularTS, there is also a `$destroy` event, which can be used to
+   * clean up DOM bindings before an element is removed from the DOM.
+   */
+  $destroy(): void;
+  /**
    * @ngdoc method
    * @name $rootScope.Scope#$apply
    * @kind function
@@ -565,81 +582,84 @@ declare class Scope {
    *
    * @returns {*} The result of evaluating the expression.
    */
-    $apply(expr?: string | ((arg0: Scope) => any)): any;
-    /**
-     * @ngdoc method
-     * @name $rootScope.Scope#$evalAsync
-     * @kind function
-     *
-     * @description
-     * Executes the expression on the current scope at a later point in time.
-     *
-     * The `$evalAsync` makes no guarantees as to when the `expression` will be executed, only
-     * that:
-     *
-     *   - it will execute after the function that scheduled the evaluation (preferably before DOM
-     *     rendering).
-     *   - at least one {@link ng.$rootScope.Scope#$digest $digest cycle} will be performed after
-     *     `expression` execution.
-     *
-     * Any exceptions from the execution of the expression are forwarded to the
-     * {@link ng.$exceptionHandler $exceptionHandler} service.
-     *
-     * __Note:__ if this function is called outside of a `$digest` cycle, a new `$digest` cycle
-     * will be scheduled. However, it is encouraged to always call code that changes the model
-     * from within an `$apply` call. That includes code evaluated via `$evalAsync`.
-     *
-     * @param {(string|function())=} expr An AngularTS expression to be executed.
-     *
-     *    - `string`: execute using the rules as defined in {@link guide/expression expression}.
-     *    - `function(scope)`: execute the function with the current `scope` parameter.
-     *
-     * @param {(object)=} locals Local variables object, useful for overriding values in scope.
-     */
-    $evalAsync(expr?: (string | (() => any)) | undefined, locals?: (object) | undefined): any;
-    /**
-     * @ngdoc method
-     * @name $rootScope.Scope#$applyAsync
-     * @kind function
-     *
-     * @description
-     * Schedule the invocation of $apply to occur at a later time. The actual time difference
-     * varies across browsers, but is typically around ~10 milliseconds.
-     *
-     * This can be used to queue up multiple expressions which need to be evaluated in the same
-     * digest.
-     *
-     * @param {(string|function())=} expr An AngularTS expression to be executed.
-     *
-     *    - `string`: execute using the rules as defined in {@link guide/expression expression}.
-     *    - `function(scope)`: execute the function with current `scope` parameter.
-     */
-    $applyAsync(expr?: (string | (() => any)) | undefined): void;
-    /**
-     * @description
-     * Listens on events of a given type. See {@link ng.$rootScope.Scope#$emit $emit} for
-     * discussion of event life cycle.
-     *
-     * The event listener function format is: `function(event, args...)`. The `event` object
-     * passed into the listener has the following attributes:
-     *
-     *   - `targetScope` - `{Scope}`: the scope on which the event was `$emit`-ed or
-     *     `$broadcast`-ed.
-     *   - `currentScope` - `{Scope}`: the scope that is currently handling the event. Once the
-     *     event propagates through the scope hierarchy, this property is set to null.
-     *   - `name` - `{string}`: name of the event.
-     *   - `stopPropagation` - `{function=}`: calling `stopPropagation` function will cancel
-     *     further event propagation (available only for events that were `$emit`-ed).
-     *   - `preventDefault` - `{function}`: calling `preventDefault` sets `defaultPrevented` flag
-     *     to true.
-     *   - `defaultPrevented` - `{boolean}`: true if `preventDefault` was called.
-     *
-     * @param {string} name Event name to listen on.
-     * @param {function(angular.IAngularEvent): any} listener Function to call when the event is emitted.
-     * @returns {function()} Returns a deregistration function for this listener.
-     */
-    $on(name: string, listener: (arg0: angular.IAngularEvent) => any): () => any;
-    /**
+  $apply(expr?: string | ((arg0: Scope) => any)): any;
+  /**
+   * @ngdoc method
+   * @name $rootScope.Scope#$evalAsync
+   * @kind function
+   *
+   * @description
+   * Executes the expression on the current scope at a later point in time.
+   *
+   * The `$evalAsync` makes no guarantees as to when the `expression` will be executed, only
+   * that:
+   *
+   *   - it will execute after the function that scheduled the evaluation (preferably before DOM
+   *     rendering).
+   *   - at least one {@link ng.$rootScope.Scope#$digest $digest cycle} will be performed after
+   *     `expression` execution.
+   *
+   * Any exceptions from the execution of the expression are forwarded to the
+   * {@link ng.$exceptionHandler $exceptionHandler} service.
+   *
+   * __Note:__ if this function is called outside of a `$digest` cycle, a new `$digest` cycle
+   * will be scheduled. However, it is encouraged to always call code that changes the model
+   * from within an `$apply` call. That includes code evaluated via `$evalAsync`.
+   *
+   * @param {(string|function())=} expr An AngularTS expression to be executed.
+   *
+   *    - `string`: execute using the rules as defined in {@link guide/expression expression}.
+   *    - `function(scope)`: execute the function with the current `scope` parameter.
+   *
+   * @param {(object)=} locals Local variables object, useful for overriding values in scope.
+   */
+  $evalAsync(
+    expr?: (string | (() => any)) | undefined,
+    locals?: object | undefined,
+  ): any;
+  /**
+   * @ngdoc method
+   * @name $rootScope.Scope#$applyAsync
+   * @kind function
+   *
+   * @description
+   * Schedule the invocation of $apply to occur at a later time. The actual time difference
+   * varies across browsers, but is typically around ~10 milliseconds.
+   *
+   * This can be used to queue up multiple expressions which need to be evaluated in the same
+   * digest.
+   *
+   * @param {(string|function())=} expr An AngularTS expression to be executed.
+   *
+   *    - `string`: execute using the rules as defined in {@link guide/expression expression}.
+   *    - `function(scope)`: execute the function with current `scope` parameter.
+   */
+  $applyAsync(expr?: (string | (() => any)) | undefined): void;
+  /**
+   * @description
+   * Listens on events of a given type. See {@link ng.$rootScope.Scope#$emit $emit} for
+   * discussion of event life cycle.
+   *
+   * The event listener function format is: `function(event, args...)`. The `event` object
+   * passed into the listener has the following attributes:
+   *
+   *   - `targetScope` - `{Scope}`: the scope on which the event was `$emit`-ed or
+   *     `$broadcast`-ed.
+   *   - `currentScope` - `{Scope}`: the scope that is currently handling the event. Once the
+   *     event propagates through the scope hierarchy, this property is set to null.
+   *   - `name` - `{string}`: name of the event.
+   *   - `stopPropagation` - `{function=}`: calling `stopPropagation` function will cancel
+   *     further event propagation (available only for events that were `$emit`-ed).
+   *   - `preventDefault` - `{function}`: calling `preventDefault` sets `defaultPrevented` flag
+   *     to true.
+   *   - `defaultPrevented` - `{boolean}`: true if `preventDefault` was called.
+   *
+   * @param {string} name Event name to listen on.
+   * @param {function(angular.IAngularEvent): any} listener Function to call when the event is emitted.
+   * @returns {function()} Returns a deregistration function for this listener.
+   */
+  $on(name: string, listener: (arg0: angular.IAngularEvent) => any): () => any;
+  /**
    * @ngdoc method
    * @name $rootScope.Scope#$eval
    * @kind function
@@ -667,65 +687,68 @@ declare class Scope {
    * @param {(object)=} locals Local variables object, useful for overriding values in scope.
    * @returns {*} The result of evaluating the expression.
    */
-    $eval(expr?: string | ((arg0: Scope) => any), locals?: (object) | undefined): any;
-    /**
-     * @private
-     */
-    private $$postDigest;
-    clearPhase(): void;
-    /**
-     * @param {number} count
-     */
-    incrementWatchersCount(count: number): void;
-    /**
-     * @param {number} count
-     * @param {string} name
-     */
-    decrementListenerCount(count: number, name: string): void;
-    /**
-     * @ngdoc method
-     * @name $rootScope.Scope#$emit
-     * @kind function
-     *
-     * @description
-     * Dispatches an event `name` upwards through the scope hierarchy notifying the
-     * registered {@link ng.$rootScope.Scope#$on} listeners.
-     *
-     * The event life cycle starts at the scope on which `$emit` was called. All
-     * {@link ng.$rootScope.Scope#$on listeners} listening for `name` event on this scope get
-     * notified. Afterwards, the event traverses upwards toward the root scope and calls all
-     * registered listeners along the way. The event will stop propagating if one of the listeners
-     * cancels it.
-     *
-     * Any exception emitted from the {@link ng.$rootScope.Scope#$on listeners} will be passed
-     * onto the {@link ng.$exceptionHandler $exceptionHandler} service.
-     *
-     * @param {string} name Event name to emit.
-     * @param {...*} args Optional one or more arguments which will be passed onto the event listeners.
-     * @return {Object} Event object (see {@link ng.$rootScope.Scope#$on}).
-     */
-    $emit(name: string, ...args: any[]): any;
-    /**
-     * @ngdoc method
-     * @name $rootScope.Scope#$broadcast
-     * @kind function
-     *
-     * @description
-     * Dispatches an event `name` downwards to all child scopes (and their children) notifying the
-     * registered {@link ng.$rootScope.Scope#$on} listeners.
-     *
-     * The event life cycle starts at the scope on which `$broadcast` was called. All
-     * {@link ng.$rootScope.Scope#$on listeners} listening for `name` event on this scope get
-     * notified. Afterwards, the event propagates to all direct and indirect scopes of the current
-     * scope and calls all registered listeners along the way. The event cannot be canceled.
-     *
-     * Any exception emitted from the {@link ng.$rootScope.Scope#$on listeners} will be passed
-     * onto the {@link ng.$exceptionHandler $exceptionHandler} service.
-     *
-     * @param {string} name Event name to broadcast.
-     * @param {...*} args Optional one or more arguments which will be passed onto the event listeners.
-     * @return {Object} Event object, see {@link ng.$rootScope.Scope#$on}
-     */
-    $broadcast(name: string, ...args: any[]): any;
+  $eval(
+    expr?: string | ((arg0: Scope) => any),
+    locals?: object | undefined,
+  ): any;
+  /**
+   * @private
+   */
+  private $$postDigest;
+  clearPhase(): void;
+  /**
+   * @param {number} count
+   */
+  incrementWatchersCount(count: number): void;
+  /**
+   * @param {number} count
+   * @param {string} name
+   */
+  decrementListenerCount(count: number, name: string): void;
+  /**
+   * @ngdoc method
+   * @name $rootScope.Scope#$emit
+   * @kind function
+   *
+   * @description
+   * Dispatches an event `name` upwards through the scope hierarchy notifying the
+   * registered {@link ng.$rootScope.Scope#$on} listeners.
+   *
+   * The event life cycle starts at the scope on which `$emit` was called. All
+   * {@link ng.$rootScope.Scope#$on listeners} listening for `name` event on this scope get
+   * notified. Afterwards, the event traverses upwards toward the root scope and calls all
+   * registered listeners along the way. The event will stop propagating if one of the listeners
+   * cancels it.
+   *
+   * Any exception emitted from the {@link ng.$rootScope.Scope#$on listeners} will be passed
+   * onto the {@link ng.$exceptionHandler $exceptionHandler} service.
+   *
+   * @param {string} name Event name to emit.
+   * @param {...*} args Optional one or more arguments which will be passed onto the event listeners.
+   * @return {Object} Event object (see {@link ng.$rootScope.Scope#$on}).
+   */
+  $emit(name: string, ...args: any[]): any;
+  /**
+   * @ngdoc method
+   * @name $rootScope.Scope#$broadcast
+   * @kind function
+   *
+   * @description
+   * Dispatches an event `name` downwards to all child scopes (and their children) notifying the
+   * registered {@link ng.$rootScope.Scope#$on} listeners.
+   *
+   * The event life cycle starts at the scope on which `$broadcast` was called. All
+   * {@link ng.$rootScope.Scope#$on listeners} listening for `name` event on this scope get
+   * notified. Afterwards, the event propagates to all direct and indirect scopes of the current
+   * scope and calls all registered listeners along the way. The event cannot be canceled.
+   *
+   * Any exception emitted from the {@link ng.$rootScope.Scope#$on listeners} will be passed
+   * onto the {@link ng.$exceptionHandler $exceptionHandler} service.
+   *
+   * @param {string} name Event name to broadcast.
+   * @param {...*} args Optional one or more arguments which will be passed onto the event listeners.
+   * @return {Object} Event object, see {@link ng.$rootScope.Scope#$on}
+   */
+  $broadcast(name: string, ...args: any[]): any;
 }
 export {};

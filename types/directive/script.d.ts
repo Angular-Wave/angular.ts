@@ -13,8 +13,11 @@
  * @param {string} type Must be set to `'text/ng-template'`.
  * @param {string} id Cache name of the template.
  */
-export const scriptDirective: (string | (($templateCache: any) => {
-    restrict: string;
-    terminal: boolean;
-    compile(element: any, attr: any): void;
-}))[];
+export const scriptDirective: (
+  | string
+  | (($templateCache: any) => {
+      restrict: string;
+      terminal: boolean;
+      compile(element: any, attr: any): void;
+    })
+)[];

@@ -1,19 +1,61 @@
 export function weekParser(isoWeek: any, existingDate: any): any;
-export function createDateParser(regexp: any, mapping: any): (iso: any, previousDate: any) => any;
-export function createDateInputType(type: any, regexp: any, parseDate: any): (scope: any, element: any, attr: any, ctrl: any, $browser: any, $filter: any, $parse: any) => void;
-export function badInputChecker(scope: any, element: any, attr: any, ctrl: any, parserName: any): void;
+export function createDateParser(
+  regexp: any,
+  mapping: any,
+): (iso: any, previousDate: any) => any;
+export function createDateInputType(
+  type: any,
+  regexp: any,
+  parseDate: any,
+): (
+  scope: any,
+  element: any,
+  attr: any,
+  ctrl: any,
+  $browser: any,
+  $filter: any,
+  $parse: any,
+) => void;
+export function badInputChecker(
+  scope: any,
+  element: any,
+  attr: any,
+  ctrl: any,
+  parserName: any,
+): void;
 export function numberFormatterParser(ctrl: any): void;
 export function isNumberInteger(num: any): boolean;
 export function countDecimals(num: any): number;
-export function isValidForStep(viewValue: any, stepBase: any, step: any): boolean;
-export function numberInputType(scope: any, element: any, attr: any, ctrl: any, $browser: any, $filter: any, $parse: any): void;
-export function rangeInputType(scope: any, element: any, attr: any, ctrl: any, $browser: any): void;
+export function isValidForStep(
+  viewValue: any,
+  stepBase: any,
+  step: any,
+): boolean;
+export function numberInputType(
+  scope: any,
+  element: any,
+  attr: any,
+  ctrl: any,
+  $browser: any,
+  $filter: any,
+  $parse: any,
+): void;
+export function rangeInputType(
+  scope: any,
+  element: any,
+  attr: any,
+  ctrl: any,
+  $browser: any,
+): void;
 export function hiddenInputBrowserCacheDirective(): {
-    restrict: string;
-    priority: number;
-    compile(_: any, attr: any): {
-        pre(scope: any, element: any): void;
-    };
+  restrict: string;
+  priority: number;
+  compile(
+    _: any,
+    attr: any,
+  ): {
+    pre(scope: any, element: any): void;
+  };
 };
 /**
  * @ngdoc directive
@@ -38,9 +80,9 @@ export function hiddenInputBrowserCacheDirective(): {
  *
  */
 export function ngValueDirective(): {
-    restrict: string;
-    priority: number;
-    compile(tpl: any, tplAttr: any): (scope: any, elm: any, attr: any) => void;
+  restrict: string;
+  priority: number;
+  compile(tpl: any, tplAttr: any): (scope: any, elm: any, attr: any) => void;
 };
 export const ISO_DATE_REGEXP: RegExp;
 export const URL_REGEXP: RegExp;
@@ -134,10 +176,17 @@ export const VALIDITY_STATE_PROPERTY: "validity";
  *    input.
  *
  */
-export const inputDirective: (string | (($browser: any, $filter: any, $parse: any) => {
-    restrict: string;
-    require: string[];
-    link: {
+export const inputDirective: (
+  | string
+  | ((
+      $browser: any,
+      $filter: any,
+      $parse: any,
+    ) => {
+      restrict: string;
+      require: string[];
+      link: {
         pre(scope: any, element: any, attr: any, ctrls: any): void;
-    };
-}))[];
+      };
+    })
+)[];

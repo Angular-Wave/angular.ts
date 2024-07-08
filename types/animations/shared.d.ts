@@ -1,25 +1,40 @@
 export function assertArg(arg: any, name: any, reason: any): any;
 export function mergeClasses(a: any, b: any): any;
 export function packageStyles(options: any): {
-    to: any;
-    from: any;
+  to: any;
+  from: any;
 };
 export function pendClasses(classes: any, fix: any, isPrefix: any): string;
 export function removeFromArray(arr: any, val: any): void;
 export function stripCommentsFromElement(element: any): any;
 export function extractElementNode(element: any): any;
-export function applyAnimationClassesFactory(): (element: any, options: any) => void;
+export function applyAnimationClassesFactory(): (
+  element: any,
+  options: any,
+) => void;
 export function prepareAnimationOptions(options: any): any;
 export function applyAnimationStyles(element: any, options: any): void;
 export function applyAnimationFromStyles(element: any, options: any): void;
 export function applyAnimationToStyles(element: any, options: any): void;
-export function mergeAnimationDetails(element: any, oldAnimation: any, newAnimation: any): any;
-export function resolveElementClasses(existing: any, toAdd: any, toRemove: any): {
-    addClass: string;
-    removeClass: string;
+export function mergeAnimationDetails(
+  element: any,
+  oldAnimation: any,
+  newAnimation: any,
+): any;
+export function resolveElementClasses(
+  existing: any,
+  toAdd: any,
+  toRemove: any,
+): {
+  addClass: string;
+  removeClass: string;
 };
 export function getDomNode(element: any): any;
-export function applyGeneratedPreparationClasses(element: any, event: any, options: any): void;
+export function applyGeneratedPreparationClasses(
+  element: any,
+  event: any,
+  options: any,
+): void;
 export function clearGeneratedClasses(element: any, options: any): void;
 export function blockKeyframeAnimations(node: any, applyBlock: any): string[];
 export function applyInlineStyle(node: any, styleTuple: any): void;

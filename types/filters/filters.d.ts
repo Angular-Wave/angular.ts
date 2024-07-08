@@ -16,7 +16,9 @@
  * @param  {[type]} fractionSize The size of the fractional part of the number
  * @return {string}              The number formatted as a string
  */
-export function formatNumber(number: number, pattern: {
+export function formatNumber(
+  number: number,
+  pattern: {
     minFrac;
     maxFrac;
     gSize;
@@ -25,7 +27,11 @@ export function formatNumber(number: number, pattern: {
     posPre;
     negSuf;
     posSuf;
-}, groupSep: string, decimalSep: string, fractionSize: [type]): string;
+  },
+  groupSep: string,
+  decimalSep: string,
+  fractionSize: [type],
+): string;
 /**
  * @returns {angular.IFilterJson}
  */

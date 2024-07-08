@@ -1,5 +1,5 @@
 export const $$rAFSchedulerFactory: (() => {
-    (tasks: any): void;
-    queue: any[];
-    waitUntilQuiet(fn: any): void;
+  (tasks: any): void;
+  queue: any[];
+  waitUntilQuiet(fn: any): void;
 })[];

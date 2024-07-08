@@ -19,17 +19,17 @@ export function isTextNode(html: string): boolean;
 export function jqLiteBuildFragment(html: any, context: any): any;
 export function JQLite(element: any): any;
 export class JQLite {
-    constructor(element: any);
-    ready: typeof jqLiteReady;
-    toString(): string;
-    eq(index: any): any;
-    length: number;
-    push: (...items: undefined[]) => number;
-    sort: (compareFn?: (a: undefined, b: undefined) => number) => undefined[];
-    splice: {
-        (start: number, deleteCount?: number): undefined[];
-        (start: number, deleteCount: number, ...items: undefined[]): undefined[];
-    };
+  constructor(element: any);
+  ready: typeof jqLiteReady;
+  toString(): string;
+  eq(index: any): any;
+  length: number;
+  push: (...items: undefined[]) => number;
+  sort: (compareFn?: (a: undefined, b: undefined) => number) => undefined[];
+  splice: {
+    (start: number, deleteCount?: number): undefined[];
+    (start: number, deleteCount: number, ...items: undefined[]): undefined[];
+  };
 }
 /**
  * @param {Element} element
