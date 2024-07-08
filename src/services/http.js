@@ -273,7 +273,7 @@ function headersGetter(headers) {
  * @param {*} data Data to transform.
  * @param {function(string=)} headers HTTP headers getter fn.
  * @param {number} status HTTP status code of the response.
- * @param {(Function|Array.<Function>)} fns Function or an array of functions.
+ * @param {Function|Array<Function>} fns Function or an array of functions.
  * @returns {*} Transformed data.
  */
 function transformData(data, headers, status, fns) {

@@ -146,8 +146,8 @@ class Scope {
      */
     this.$root = this;
 
-    /** 
-     * @type {[]} 
+    /**
+     * @type {[]}
      */
     this.$$watchers = [];
 

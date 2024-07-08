@@ -57,9 +57,7 @@ export const ngSwitchDirective = [
             selectedTransclude.transclude((caseElement, selectedScope) => {
               selectedScopes.push(selectedScope);
               const anchor = selectedTransclude.element;
-              caseElement[caseElement.length++] = document.createComment("");
               const block = { clone: caseElement };
-
               selectedElements.push(block);
               $animate.enter(caseElement, anchor.parent(), anchor);
             });

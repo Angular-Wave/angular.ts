@@ -1,8 +1,6 @@
 import { forEach, minErr, hashKey, isArrayLike } from "../shared/utils";
 import { getBlockNodes } from "../jqLite";
 
-const ngRepeatEndComment = document.createComment("");
-
 export const ngRepeatDirective = [
   "$parse",
   "$animate",
@@ -272,10 +270,8 @@ export const ngRepeatDirective = [
                 // new item which we don't know about
                 $transclude((clone, scope) => {
                   block.scope = scope;
-                  const endNode = ngRepeatEndComment.cloneNode(false);
-                  clone[clone.length++] = endNode;
                   $animate.enter(clone, null, previousNode);
-                  previousNode = endNode;
+                  previousNode = clone;
                   // Note: We only need the first/last node of the cloned nodes.
                   // However, we need to keep the reference to the jqlite wrapper as it might be changed later
                   // by a directive with templateUrl when its template arrives.
