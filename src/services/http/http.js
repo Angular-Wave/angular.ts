@@ -1,5 +1,5 @@
-import { ScopePhase } from "../core/scope/scope";
-import { urlIsAllowedOriginFactory } from "../core/url-utils/url-utils";
+import { ScopePhase } from "../../core/scope/scope";
+import { urlIsAllowedOriginFactory } from "../../core/url-utils/url-utils";
 import {
   minErr,
   isObject,
@@ -22,7 +22,7 @@ import {
   extend,
   uppercase,
   isPromiseLike,
-} from "../shared/utils";
+} from "../../shared/utils";
 
 const APPLICATION_JSON = "application/json";
 const CONTENT_TYPE_APPLICATION_JSON = {

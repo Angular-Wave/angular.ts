@@ -1,4 +1,4 @@
-import { SanitizeUriProvider } from "../../src/core/sanitize-uri";
+import { SanitizeUriProvider } from "../../core/sanitize-uri";
 
 describe("sanitizeUri", () => {
   let sanitizeHref;

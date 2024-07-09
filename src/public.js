@@ -83,11 +83,11 @@ import {
   $HttpProvider,
   $HttpParamSerializerProvider,
   $HttpParamSerializerJQLikeProvider,
-} from "./services/http";
+} from "./services/http/http";
 import {
   $HttpBackendProvider,
   $xhrFactoryProvider,
-} from "./services/http-backend";
+} from "./services/http-backend/http-backend";
 import { $LocationProvider } from "./core/location/location";
 import { $LogProvider } from "./services/log";
 import { $ParseProvider } from "./core/parser/parse";

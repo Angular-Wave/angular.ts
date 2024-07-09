@@ -1,7 +1,7 @@
-import { publishExternalAPI } from "../../src/public";
-import { createInjector } from "../../src/injector";
-import { jqLite } from "../../src/jqLite";
-import { valueFn } from "../../src/shared/utils";
+import { publishExternalAPI } from "../../public";
+import { createInjector } from "../../injector";
+import { jqLite } from "../../jqLite";
+import { valueFn } from "../../shared/utils";
 
 describe("ngProp*", () => {
   let $compile, $rootScope, compileProvider, $sce;

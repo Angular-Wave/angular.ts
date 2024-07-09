@@ -3,7 +3,7 @@ import {
   urlIsSameOrigin,
   urlIsSameOriginAsBaseUrl,
   urlIsAllowedOriginFactory,
-} from "../../src/core/urlUtils";
+} from "../../core/urlUtils";
 
 let $document = window.document;
 

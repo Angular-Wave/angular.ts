@@ -1,4 +1,4 @@
-import { AST, Lexer } from "../../src/core/parser/parse";
+import { AST, Lexer } from "../../core/parser/parse";
 import {
   forEach,
   isFunction,
@@ -7,9 +7,9 @@ import {
   valueFn,
   extend,
   identity,
-} from "../../src/shared/utils";
-import { publishExternalAPI } from "../../src/public";
-import { createInjector } from "../../src/injector";
+} from "../../shared/utils";
+import { publishExternalAPI } from "../../public";
+import { createInjector } from "../../injector";
 
 describe("parser", () => {
   let $rootScope;

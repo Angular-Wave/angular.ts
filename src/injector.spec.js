@@ -1,7 +1,7 @@
-import { setupModuleLoader } from "../src/loader";
-import { createInjector } from "../src/injector";
-import { publishExternalAPI } from "../src/public";
-import { valueFn, extend } from "../src/shared/utils";
+import { setupModuleLoader } from "../loader";
+import { createInjector } from "../injector";
+import { publishExternalAPI } from "../public";
+import { valueFn, extend } from "../shared/utils";
 
 describe("injector.modules", () => {
   beforeEach(() => {

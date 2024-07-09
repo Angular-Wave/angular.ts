@@ -3,9 +3,9 @@ import {
   LocationHashbangUrl,
   $LocationProvider,
   LocationHashbangInHtml5Url,
-} from "../../src/core/location";
-import { publishExternalAPI } from "../../src/public";
-import { createInjector } from "../../src/injector";
+} from "../../core/location";
+import { publishExternalAPI } from "../../public";
+import { createInjector } from "../../injector";
 
 describe("$location", () => {
   let module;

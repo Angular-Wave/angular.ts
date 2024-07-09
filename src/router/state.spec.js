@@ -1,13 +1,13 @@
-import { dealoc, jqLite } from "../../src/jqLite";
-import { Angular } from "../../src/loader";
-import { publishExternalAPI } from "../../src/public";
-import { isFunction } from "../../src/shared/utils";
+import { dealoc, jqLite } from "../../jqLite";
+import { Angular } from "../../loader";
+import { publishExternalAPI } from "../../public";
+import { isFunction } from "../../shared/utils";
 import { wait } from "../test-utils";
 
 describe("$state", () => {
   let $injector, template, ctrlName, $provide, $compile, module, $stateRegistry;
 
-  /** @type {import("../../src/router/stateProvider").StateProvider} */
+  /** @type {import("../../router/stateProvider").StateProvider} */
   let $stateProvider;
 
   function $get(what) {

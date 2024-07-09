@@ -1,7 +1,7 @@
-import { $$asyncQueue } from "../../src/core/root-scope";
-import { extend, sliceArgs } from "../../src/shared/utils";
-import { publishExternalAPI } from "../../src/public";
-import { createInjector } from "../../src/injector";
+import { $$asyncQueue } from "../../core/root-scope";
+import { extend, sliceArgs } from "../../shared/utils";
+import { publishExternalAPI } from "../../public";
+import { createInjector } from "../../injector";
 
 describe("Scope", function () {
   let $rootScope;

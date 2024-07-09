@@ -1,6 +1,6 @@
-import { publishExternalAPI } from "../../src/public";
-import { createInjector } from "../../src/injector";
-import { jqLite } from "../../src/jqLite";
+import { publishExternalAPI } from "../../public";
+import { createInjector } from "../../injector";
+import { jqLite } from "../../jqLite";
 
 describe("Filter: limitTo", () => {
   let items;

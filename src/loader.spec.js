@@ -1,5 +1,5 @@
-import { setupModuleLoader } from "../src/loader";
-import { createInjector } from "../src/injector";
+import { setupModuleLoader } from "../loader";
+import { createInjector } from "../injector";
 
 describe("module loader", () => {
   beforeEach(() => {

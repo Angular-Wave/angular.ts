@@ -1,5 +1,5 @@
-import { publishExternalAPI } from "../../src/public";
-import { createInjector } from "../../src/injector";
+import { publishExternalAPI } from "../../public";
+import { createInjector } from "../../injector";
 import { wait } from "../test-utils";
 
 describe("$timeout", () => {

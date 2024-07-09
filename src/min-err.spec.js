@@ -1,5 +1,5 @@
-import { minErr, isDefined, toDebugString } from "../src/shared/utils";
-import { errorHandlingConfig } from "../src/loader";
+import { minErr, isDefined, toDebugString } from "../shared/utils";
+import { errorHandlingConfig } from "../loader";
 
 describe("errors", () => {
   afterEach(() => {});

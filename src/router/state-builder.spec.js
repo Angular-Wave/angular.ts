@@ -1,4 +1,4 @@
-import { StateBuilder } from "../../src/router/state/stateBuilder";
+import { StateBuilder } from "../../router/state/stateBuilder";
 
 describe("Ng1 StateBuilder", function () {
   const parent = { name: "" };

@@ -1,10 +1,10 @@
-import { urlResolve } from "../core/url-utils/url-utils";
+import { urlResolve } from "../../core/url-utils/url-utils";
 import {
   forEach,
   isDefined,
   isPromiseLike,
   isUndefined,
-} from "../shared/utils";
+} from "../../shared/utils";
 
 /**
  * @ngdoc service

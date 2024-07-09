@@ -1,5 +1,5 @@
-import { createInjector } from "../../src/injector";
-import { publishExternalAPI } from "../../src/public";
+import { createInjector } from "../../injector";
+import { publishExternalAPI } from "../../public";
 
 describe("$interpolate", () => {
   let $interpolate, $injector, $rootScope, $sce;

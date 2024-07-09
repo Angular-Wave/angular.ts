@@ -1,5 +1,5 @@
-import { Angular } from "../../src/loader";
-import { publishExternalAPI } from "../../src/public";
+import { Angular } from "../../loader";
+import { publishExternalAPI } from "../../public";
 
 describe("router filters", function () {
   let module, $parse, $state, $q, $rootScope, $location;

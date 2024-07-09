@@ -1,6 +1,6 @@
-import { createInjector } from "../../src/injector";
-import { setupModuleLoader } from "../../src/loader";
-import { publishExternalAPI } from "../../src/public";
+import { createInjector } from "../../injector";
+import { setupModuleLoader } from "../../loader";
+import { publishExternalAPI } from "../../public";
 
 /**
   http://wiki.commonjs.org/wiki/Promises

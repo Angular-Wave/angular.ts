@@ -1,6 +1,6 @@
-import { createInjector } from "../../src/injector";
-import { forEach } from "../../src/shared/utils";
-import { publishExternalAPI } from "../../src/public";
+import { createInjector } from "../../injector";
+import { forEach } from "../../shared/utils";
+import { publishExternalAPI } from "../../public";
 
 describe("ngBindHtml", () => {
   let $rootScope, $compile;

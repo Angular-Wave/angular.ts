@@ -1,6 +1,6 @@
-import { jqLite, dealoc } from "../src/jqLite";
-import { publishExternalAPI } from "../src/public";
-import { createInjector } from "../src/injector";
+import { jqLite, dealoc } from "../jqLite";
+import { publishExternalAPI } from "../public";
+import { createInjector } from "../injector";
 import { browserTrigger } from "./test-utils";
 
 describe("binding", () => {

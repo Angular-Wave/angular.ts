@@ -1,6 +1,6 @@
-import { jqLite } from "../../src/jqLite";
-import { Angular } from "../../src/loader";
-import { publishExternalAPI } from "../../src/public";
+import { jqLite } from "../../jqLite";
+import { Angular } from "../../loader";
+import { publishExternalAPI } from "../../public";
 import { browserTrigger, wait } from "../test-utils";
 
 describe("ngStateRef", () => {

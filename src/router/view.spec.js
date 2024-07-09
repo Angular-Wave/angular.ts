@@ -1,18 +1,18 @@
-import { dealoc, jqLite } from "../../src/jqLite";
-import { Angular } from "../../src/loader";
-import { publishExternalAPI } from "../../src/public";
-import { curry } from "../../src/shared/hof";
-import { StateMatcher } from "../../src/router/state/state-matcher";
-import { StateBuilder } from "../../src/router/state/state-builder";
-import { StateObject } from "../../src/router/state/state-object";
-import { ViewService } from "../../src/router/view/view";
+import { dealoc, jqLite } from "../../jqLite";
+import { Angular } from "../../loader";
+import { publishExternalAPI } from "../../public";
+import { curry } from "../../shared/hof";
+import { StateMatcher } from "../../router/state/state-matcher";
+import { StateBuilder } from "../../router/state/state-builder";
+import { StateObject } from "../../router/state/state-object";
+import { ViewService } from "../../router/view/view";
 import {
   ng1ViewsBuilder,
   getNg1ViewConfigFactory,
-} from "../../src/router/state/views";
-import { PathNode } from "../../src/router/path/path-node";
-import { PathUtils } from "../../src/router/path/path-utils";
-import { tail } from "../../src/shared/common";
+} from "../../router/state/views";
+import { PathNode } from "../../router/path/path-node";
+import { PathUtils } from "../../router/path/path-utils";
+import { tail } from "../../shared/common";
 import { wait } from "../test-utils";
 
 describe("view", () => {

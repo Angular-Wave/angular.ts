@@ -1,6 +1,6 @@
-import { jqLite, dealoc } from "../../src/jqLite";
-import { Angular } from "../../src/loader";
-import { publishExternalAPI } from "../../src/public";
+import { jqLite, dealoc } from "../../jqLite";
+import { Angular } from "../../loader";
+import { publishExternalAPI } from "../../public";
 
 describe("$rootElement", () => {
   let angular = new Angular();

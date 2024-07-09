@@ -1,4 +1,4 @@
-import { curry } from "../../src/shared/hof";
+import { curry } from "../../shared/hof";
 
 describe("curry", () => {
   let original;

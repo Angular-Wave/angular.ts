@@ -1,7 +1,7 @@
-import { dealoc } from "../../src/jqLite";
-import { Angular } from "../../src/loader";
-import { publishExternalAPI } from "../../src/public";
-import { map, find } from "../../src/shared/common";
+import { dealoc } from "../../jqLite";
+import { Angular } from "../../loader";
+import { publishExternalAPI } from "../../public";
+import { map, find } from "../../shared/common";
 
 describe("UrlMatcher", () => {
   let $url;

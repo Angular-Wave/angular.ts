@@ -1,6 +1,6 @@
-import { createInjector } from "../../src/injector";
-import { isObject } from "../../src/shared/utils";
-import { publishExternalAPI } from "../../src/public";
+import { createInjector } from "../../injector";
+import { isObject } from "../../shared/utils";
+import { publishExternalAPI } from "../../public";
 
 export function getLastAjaxRequest() {
   let ajaxEntries = performance
