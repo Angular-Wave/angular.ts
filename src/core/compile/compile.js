@@ -34,11 +34,12 @@ import {
   isError,
   directiveNormalize,
 } from "../../shared/utils";
-
 import { SCE_CONTEXTS } from "../sce/sce";
 import { PREFIX_REGEXP, ALIASED_ATTR } from "../../shared/constants";
 import { createEventDirective } from "../../directive/events/events";
 import { CACHE, EXPANDO } from "../cache/cache";
+
+let ttl = TTL;
 
 /**
  * Function that aggregates all linking fns for a compilation root (nodeList)
@@ -663,7 +664,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       // This function is called in a $$postDigest to trigger all the onChanges hooks in a single digest
       function flushOnChangesQueue() {
-        let ttl = TTL;
         try {
           if (!--ttl) {
             // We have hit the TTL limit so reset everything
