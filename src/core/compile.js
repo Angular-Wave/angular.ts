@@ -32,7 +32,7 @@ import {
 
 import { SCE_CONTEXTS } from "./sce";
 import { PREFIX_REGEXP, ALIASED_ATTR } from "../constants";
-import { createEventDirective } from "../directive/events";
+import { createEventDirective } from "../directive/events/events";
 import { CACHE, EXPANDO } from "./cache";
 
 /**

@@ -3,30 +3,33 @@ import {
   inputDirective,
   ngValueDirective,
   hiddenInputBrowserCacheDirective,
-} from "./directive/input";
-import { formDirective, ngFormDirective } from "./directive/form";
+} from "./directive/input/input";
+import { formDirective, ngFormDirective } from "./directive/form/form";
 import { scriptDirective } from "./directive/script";
-import { selectDirective, optionDirective } from "./directive/select";
+import { selectDirective, optionDirective } from "./directive/select/select";
 import {
   ngBindDirective,
   ngBindHtmlDirective,
   ngBindTemplateDirective,
-} from "./directive/bind";
+} from "./directive/bind/bind";
 import {
   ngClassDirective,
   ngClassEvenDirective,
   ngClassOddDirective,
-} from "./directive/class";
-import { ngCloakDirective } from "./directive/cloak";
-import { ngControllerDirective } from "./directive/controller";
-import { ngHideDirective, ngShowDirective } from "./directive/show-hide";
+} from "./directive/class/class";
+import { ngCloakDirective } from "./directive/cloak/cloak";
+import { ngControllerDirective } from "./directive/controller/controller";
+import {
+  ngHideDirective,
+  ngShowDirective,
+} from "./directive/show-hide/show-hide";
 import { ngIfDirective } from "./directive/if/if";
 import {
   ngIncludeDirective,
   ngIncludeFillContentDirective,
-} from "./directive/include";
-import { ngInitDirective } from "./directive/init";
-import { ngNonBindableDirective } from "./directive/non-bindable";
+} from "./directive/include/include";
+import { ngInitDirective } from "./directive/init/init";
+import { ngNonBindableDirective } from "./directive/non-bindable/non-bindable";
 import { ngRefDirective } from "./directive/ref";
 import { ngRepeatDirective } from "./directive/repeat";
 import { ngStyleDirective } from "./directive/style";
@@ -37,18 +40,18 @@ import {
 } from "./directive/switch";
 import { ngOptionsDirective } from "./directive/options";
 import { ngTranscludeDirective } from "./directive/transclude";
-import { ngModelDirective } from "./directive/model";
-import { ngListDirective } from "./directive/list";
-import { ngChangeDirective } from "./directive/change";
+import { ngModelDirective } from "./directive/model/model";
+import { ngListDirective } from "./directive/list/list";
+import { ngChangeDirective } from "./directive/change/change";
 import {
   maxlengthDirective,
   minlengthDirective,
   patternDirective,
   requiredDirective,
 } from "./directive/validators";
-import { ngModelOptionsDirective } from "./directive/model-options";
-import { ngAttributeAliasDirectives } from "./directive/attrs";
-import { ngEventDirectives } from "./directive/events";
+import { ngModelOptionsDirective } from "./directive/model-options/model-options";
+import { ngAttributeAliasDirectives } from "./directive/attrs/attrs";
+import { ngEventDirectives } from "./directive/events/events";
 import { AnchorScrollProvider } from "./services/anchor-scroll";
 import {
   AnimateProvider,

@@ -5,7 +5,7 @@ import {
   minErr,
   isUndefined,
 } from "../shared/utils";
-import { REGEX_STRING_REGEXP } from "./attrs";
+import { REGEX_STRING_REGEXP } from "./attrs/attrs";
 import { startingTag } from "../jqLite";
 
 /**
