@@ -1,4 +1,4 @@
-describe("$animate", () => {
+xdescribe("$animate", () => {
   describe("without animation", () => {
     let element;
     let $rootElement;

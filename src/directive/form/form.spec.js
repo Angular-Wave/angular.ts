@@ -1,7 +1,7 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
 import { dealoc, jqLite } from "../../jqLite";
-import { FormController } from "../../directive/form";
+import { FormController } from "../../directive/form/form";
 import { Angular } from "../../loader";
 
 describe("form", () => {

@@ -1,6 +1,6 @@
-import { publishExternalAPI } from "../../src/public";
-import { createInjector } from "../../src/injector";
-import { dealoc, JQLite } from "../../src/jqLite";
+import { publishExternalAPI } from "../../public";
+import { createInjector } from "../../injector";
+import { dealoc, JQLite } from "../../jqLite";
 import {
   forEach,
   isFunction,
@@ -8,9 +8,9 @@ import {
   isElement,
   nodeName_,
   extend,
-} from "../../src/shared/utils";
-import { countChildScopes, countWatchers } from "../../src/core/root-scope";
-import { CACHE, EXPANDO } from "../../src/core/cache";
+} from "../../shared/utils";
+import { countChildScopes, countWatchers } from "../../core/scope/scope";
+import { CACHE, EXPANDO } from "../../core/cache/cache";
 
 function isUnknownElement(el) {
   return !!el.toString().match(/Unknown/);
