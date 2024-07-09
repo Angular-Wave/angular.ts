@@ -1,4 +1,4 @@
-import { forEach } from "../shared/utils";
+import { forEach } from "../../shared/utils";
 
 export function AnimateAsyncRunFactoryProvider() {
   this.$get = [

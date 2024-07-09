@@ -1,6 +1,6 @@
-import { jqLite, getBooleanAttrName, isTextNode, startingTag } from "../jqLite";
-import { identifierForController } from "./controller";
-import { TTL } from "./root-scope";
+import { jqLite, getBooleanAttrName, isTextNode, startingTag } from "../../jqLite";
+import { identifierForController } from "../controller/controller";
+import { TTL } from "../scope/scope";
 import {
   minErr,
   assertArg,
@@ -28,12 +28,12 @@ import {
   simpleCompare,
   isError,
   directiveNormalize,
-} from "../shared/utils";
+} from "../../shared/utils";
 
-import { SCE_CONTEXTS } from "./sce";
-import { PREFIX_REGEXP, ALIASED_ATTR } from "../constants";
-import { createEventDirective } from "../directive/events/events";
-import { CACHE, EXPANDO } from "./cache";
+import { SCE_CONTEXTS } from "../sce/sce";
+import { PREFIX_REGEXP, ALIASED_ATTR } from "../../constants";
+import { createEventDirective } from "../../directive/events/events";
+import { CACHE, EXPANDO } from "../cache/cache";
 
 /**
  * Function that aggregates all linking fns for a compilation root (nodeList)

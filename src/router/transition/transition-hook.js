@@ -7,7 +7,7 @@ import { trace } from "../common/trace";
 import { services } from "../common/coreservices";
 import { Rejection } from "./reject-factory";
 import { TargetState } from "../state/target-state";
-import { EventBus } from "../../core/pubsub";
+import { EventBus } from "../../core/pubsub/pubsub";
 const defaultOptions = {
   current: () => {},
   transition: null,

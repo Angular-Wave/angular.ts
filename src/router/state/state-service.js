@@ -19,7 +19,7 @@ import { Glob } from "../common/glob";
 import { ResolveContext } from "../resolve/resolve-context";
 import { lazyLoadState } from "../hooks/lazy-load";
 import { not, val } from "../../shared/hof";
-import { EventBus } from "../../core/pubsub";
+import { EventBus } from "../../core/pubsub/pubsub";
 
 const err = minErr("$stateProvider");
 // Right now this is a collection of all the properties we encounter in tests

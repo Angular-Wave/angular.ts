@@ -23,7 +23,7 @@ import {
 } from "../form/form";
 import { defaultModelOptions } from "../model-options/model-options";
 import { startingTag } from "../../jqLite";
-import { ScopePhase } from "../../core/root-scope";
+import { ScopePhase } from "../../core/scope/scope";
 
 export const ngModelMinErr = minErr("ngModel");
 

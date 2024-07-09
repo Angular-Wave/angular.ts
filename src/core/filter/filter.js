@@ -1,8 +1,8 @@
-import { forEach, isObject } from "../shared/utils";
-import { filterFilter } from "../filters/filter";
-import { jsonFilter } from "../filters/filters";
-import { limitToFilter } from "../filters/limit-to";
-import { orderByFilter } from "../filters/order-by";
+import { forEach, isObject } from "../../shared/utils";
+import { filterFilter } from "../../filters/filter";
+import { jsonFilter } from "../../filters/filters";
+import { limitToFilter } from "../../filters/limit-to";
+import { orderByFilter } from "../../filters/order-by";
 
 $FilterProvider.$inject = ["$provide"];
 export function $FilterProvider($provide) {

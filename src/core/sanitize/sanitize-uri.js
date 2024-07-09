@@ -1,5 +1,5 @@
-import { isDefined } from "../shared/utils";
-import { urlResolve } from "./urlUtils";
+import { isDefined } from "../../shared/utils";
+import { urlResolve } from "../url-utils/url-utils";
 
 /**
  *

@@ -1,4 +1,4 @@
-import { $CompileProvider } from "./core/compile";
+import { $CompileProvider } from "./core/compile/compile";
 import {
   inputDirective,
   ngValueDirective,
@@ -57,28 +57,28 @@ import {
   AnimateProvider,
   CoreAnimateJsProvider,
   CoreAnimateQueueProvider,
-} from "./core/animate";
+} from "./core/animate/animate";
 import { BrowserProvider } from "./services/browser";
-import { CoreAnimateCssProvider } from "./core/animate-css";
+import { CoreAnimateCssProvider } from "./core/animate/animate-css";
 import { CookieReaderProvider } from "./services/cookie-reader";
 import {
   AnimateAsyncRunFactoryProvider,
   AnimateRunnerFactoryProvider,
-} from "./core/animate-runner";
+} from "./core/animate/animate-runner";
 import {
   CacheFactoryProvider,
   TemplateCacheProvider,
 } from "./services/cache-factory";
-import { $ControllerProvider } from "./core/controller";
+import { $ControllerProvider } from "./core/controller/controller";
 import {
   $DocumentProvider,
   $$IsDocumentHiddenProvider,
 } from "./services/document";
 import { $ExceptionHandlerProvider } from "./core/exception-handler";
-import { $FilterProvider } from "./core/filter";
-import { $IntervalProvider } from "./core/interval";
-import { $InterpolateProvider } from "./core/interpolate";
-import { $$IntervalFactoryProvider } from "./core/interval-factory";
+import { $FilterProvider } from "./core/filter/filter";
+import { $IntervalProvider } from "./core/interval/interval";
+import { $InterpolateProvider } from "./core/interpolate/interpolate";
+import { $$IntervalFactoryProvider } from "./core/interval/interval-factory";
 import {
   $HttpProvider,
   $HttpParamSerializerProvider,
@@ -88,16 +88,16 @@ import {
   $HttpBackendProvider,
   $xhrFactoryProvider,
 } from "./services/http-backend";
-import { $LocationProvider } from "./core/location";
+import { $LocationProvider } from "./core/location/location";
 import { $LogProvider } from "./services/log";
 import { $ParseProvider } from "./core/parser/parse";
-import { $RootScopeProvider } from "./core/root-scope";
-import { $QProvider, $$QProvider } from "./core/q";
-import { $SceProvider, $SceDelegateProvider } from "./core/sce";
+import { $RootScopeProvider } from "./core/scope/scope";
+import { $QProvider, $$QProvider } from "./core/q/q";
+import { $SceProvider, $SceDelegateProvider } from "./core/sce/sce";
 import { $$TaskTrackerFactoryProvider } from "./core/task-tracker-factory";
 import { TemplateRequestProvider } from "./services/template-request";
-import { $TimeoutProvider } from "./core/timeout";
-import { SanitizeUriProvider } from "./core/sanitize-uri";
+import { $TimeoutProvider } from "./core/timeout/timeout";
+import { SanitizeUriProvider } from "./core/sanitize/sanitize-uri";
 import { setupModuleLoader } from "./loader";
 import { initAnimateModule } from "./animations/module";
 import { initMessageModule } from "./exts/messages";

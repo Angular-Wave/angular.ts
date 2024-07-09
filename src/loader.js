@@ -25,7 +25,7 @@ import {
 } from "./shared/utils";
 import { jqLite, startingTag } from "./jqLite";
 import { createInjector } from "./injector";
-import { CACHE } from "./core/cache";
+import { CACHE } from "./core/cache/cache";
 
 const ngMinErr = minErr("ng");
 

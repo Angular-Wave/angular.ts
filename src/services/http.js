@@ -1,5 +1,5 @@
-import { ScopePhase } from "../core/root-scope";
-import { urlIsAllowedOriginFactory } from "../core/urlUtils";
+import { ScopePhase } from "../core/scope/scope";
+import { urlIsAllowedOriginFactory } from "../core/url-utils/url-utils";
 import {
   minErr,
   isObject,

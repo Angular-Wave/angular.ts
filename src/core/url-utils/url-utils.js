@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 
-import { isString } from "../shared/utils";
+import { isString } from "../../shared/utils";
 
 // service.
 const urlParsingNode = window.document.createElement("a");

@@ -1,5 +1,5 @@
 import { jqLite } from "../jqLite";
-import { urlResolve } from "../core/urlUtils";
+import { urlResolve } from "../core/url-utils/url-utils";
 import { forEach, isUndefined, equals } from "../shared/utils";
 
 // This variable should be used *only* inside the cacheState function.

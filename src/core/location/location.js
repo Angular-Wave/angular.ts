@@ -1,5 +1,5 @@
-import { jqLite } from "../jqLite";
-import { urlResolve } from "./urlUtils";
+import { jqLite } from "../../jqLite";
+import { urlResolve } from "../url-utils/url-utils";
 import {
   encodeUriSegment,
   forEach,
@@ -13,8 +13,8 @@ import {
   parseKeyValue,
   toInt,
   toKeyValue,
-} from "../shared/utils";
-import { ScopePhase } from "./root-scope";
+} from "../../shared/utils";
+import { ScopePhase } from "../scope/scope";
 
 export const PATH_MATCH = /^([^?#]*)(\?([^#]*))?(#(.*))?$/;
 const DEFAULT_PORTS = { http: 80, https: 443, ftp: 21 };

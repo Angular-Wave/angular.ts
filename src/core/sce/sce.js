@@ -2,7 +2,7 @@ import {
   urlIsSameOrigin,
   urlIsSameOriginAsBaseUrl,
   urlResolve,
-} from "./urlUtils";
+} from "./../url-utils/url-utils";
 import {
   forEach,
   isFunction,
@@ -12,9 +12,9 @@ import {
   lowercase,
   minErr,
   shallowCopy,
-} from "../shared/utils";
+} from "../../shared/utils";
 
-import { snakeToCamel } from "../jqLite";
+import { snakeToCamel } from "../../jqLite";
 
 const $sceMinErr = minErr("$sce");
 

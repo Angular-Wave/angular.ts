@@ -1,4 +1,4 @@
-import { urlResolve } from "../core/urlUtils";
+import { urlResolve } from "../core/url-utils/url-utils";
 import {
   forEach,
   isDefined,

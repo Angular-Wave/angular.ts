@@ -227,7 +227,7 @@ import {
   isError,
   toDebugString,
   isPromiseLike,
-} from "../shared/utils";
+} from "../../shared/utils";
 
 /**
  * @ngdoc provider

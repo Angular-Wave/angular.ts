@@ -1,5 +1,5 @@
-import { markQExceptionHandled } from "./q";
-import { minErr } from "../shared/utils";
+import { markQExceptionHandled } from "../q/q";
+import { minErr } from "../../shared/utils";
 
 const $intervalMinErr = minErr("$interval");
 

@@ -10,7 +10,7 @@ import {
   isNumberNaN,
   arrayRemove,
   equals,
-} from "../shared/utils";
+} from "../../shared/utils";
 
 /**
  * @enum {number}
