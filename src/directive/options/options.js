@@ -1,4 +1,4 @@
-import { jqLite, jqLiteRemove, startingTag } from "../jqLite";
+import { jqLite, jqLiteRemove, startingTag } from "../../jqLite";
 import {
   equals,
   forEach,
@@ -7,7 +7,7 @@ import {
   isArrayLike,
   isDefined,
   minErr,
-} from "../shared/utils";
+} from "../../shared/utils";
 
 const ngOptionsMinErr = minErr("ngOptions");
 

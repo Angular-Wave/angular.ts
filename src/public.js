@@ -5,7 +5,7 @@ import {
   hiddenInputBrowserCacheDirective,
 } from "./directive/input/input";
 import { formDirective, ngFormDirective } from "./directive/form/form";
-import { scriptDirective } from "./directive/script";
+import { scriptDirective } from "./directive/script/script";
 import { selectDirective, optionDirective } from "./directive/select/select";
 import {
   ngBindDirective,
@@ -30,16 +30,16 @@ import {
 } from "./directive/include/include";
 import { ngInitDirective } from "./directive/init/init";
 import { ngNonBindableDirective } from "./directive/non-bindable/non-bindable";
-import { ngRefDirective } from "./directive/ref";
-import { ngRepeatDirective } from "./directive/repeat";
-import { ngStyleDirective } from "./directive/style";
+import { ngRefDirective } from "./directive/ref/ref";
+import { ngRepeatDirective } from "./directive/repeat/repeat";
+import { ngStyleDirective } from "./directive/style/style";
 import {
   ngSwitchDirective,
   ngSwitchWhenDirective,
   ngSwitchDefaultDirective,
-} from "./directive/switch";
-import { ngOptionsDirective } from "./directive/options";
-import { ngTranscludeDirective } from "./directive/transclude";
+} from "./directive/switch/switch";
+import { ngOptionsDirective } from "./directive/options/options";
+import { ngTranscludeDirective } from "./directive/transclude/transclude";
 import { ngModelDirective } from "./directive/model/model";
 import { ngListDirective } from "./directive/list/list";
 import { ngChangeDirective } from "./directive/change/change";
@@ -48,7 +48,7 @@ import {
   minlengthDirective,
   patternDirective,
   requiredDirective,
-} from "./directive/validators";
+} from "./directive/validators/validators";
 import { ngModelOptionsDirective } from "./directive/model-options/model-options";
 import { ngAttributeAliasDirectives } from "./directive/attrs/attrs";
 import { ngEventDirectives } from "./directive/events/events";

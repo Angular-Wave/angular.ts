@@ -4,9 +4,9 @@ import {
   toInt,
   minErr,
   isUndefined,
-} from "../shared/utils";
-import { REGEX_STRING_REGEXP } from "./attrs/attrs";
-import { startingTag } from "../jqLite";
+} from "../../shared/utils";
+import { REGEX_STRING_REGEXP } from "./../attrs/attrs";
+import { startingTag } from "../../jqLite";
 
 /**
  * @ngdoc directive

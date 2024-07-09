@@ -1,5 +1,5 @@
-import { forEach, minErr, hashKey, isArrayLike } from "../shared/utils";
-import { getBlockNodes } from "../jqLite";
+import { forEach, minErr, hashKey, isArrayLike } from "../../shared/utils";
+import { getBlockNodes } from "../../jqLite";
 
 export const ngRepeatDirective = [
   "$parse",
