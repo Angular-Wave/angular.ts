@@ -247,7 +247,7 @@ describe("ngClass", () => {
     )($rootScope);
     $rootScope.$digest();
     const e1 = jqLite(element[0].childNodes[1]);
-    const e2 = jqLite(element[0].childNodes[3]);
+    const e2 = jqLite(element[0].childNodes[2]);
     expect(e1[0].classList.contains("existing")).toBeTruthy();
     expect(e1[0].classList.contains("odd")).toBeTruthy();
     expect(e2[0].classList.contains("existing")).toBeTruthy();
@@ -262,8 +262,9 @@ describe("ngClass", () => {
         "<ul>",
     )($rootScope);
     $rootScope.$apply();
+    debugger;
     const e1 = jqLite(element[0].childNodes[1]);
-    const e2 = jqLite(element[0].childNodes[3]);
+    const e2 = jqLite(element[0].childNodes[2]);
 
     expect(e1[0].classList.contains("plainClass")).toBeTruthy();
     expect(e1[0].classList.contains("odd")).toBeTruthy();
@@ -325,7 +326,7 @@ describe("ngClass", () => {
     )($rootScope);
     $rootScope.$apply();
     const e1 = jqLite(element[0].childNodes[1]);
-    const e2 = jqLite(element[0].childNodes[3]);
+    const e2 = jqLite(element[0].childNodes[2]);
 
     expect(e1[0].classList.contains("A")).toBeTruthy();
     expect(e1[0].classList.contains("B")).toBeTruthy();
@@ -439,7 +440,7 @@ describe("ngClass", () => {
     $rootScope.$digest();
 
     const e1 = jqLite(element[0].childNodes[1]);
-    const e4 = jqLite(element[0].childNodes[7]);
+    const e4 = jqLite(element[0].childNodes[4]);
 
     expect(e1[0].classList.contains("odd")).toBeTruthy();
     expect(e1[0].classList.contains("even")).toBeFalsy();
@@ -462,7 +463,7 @@ describe("ngClass", () => {
     $rootScope.$digest();
 
     const e1 = jqLite(element[0].childNodes[1]);
-    const e2 = jqLite(element[0].childNodes[3]);
+    const e2 = jqLite(element[0].childNodes[2]);
 
     expect(e1[0].classList.contains("odd")).toBeTruthy();
     expect(e1[0].classList.contains("even")).toBeFalsy();
@@ -485,7 +486,7 @@ describe("ngClass", () => {
     $rootScope.$digest();
 
     const e1 = jqLite(element[0].childNodes[1]);
-    const e2 = jqLite(element[0].childNodes[3]);
+    const e2 = jqLite(element[0].childNodes[2]);
 
     expect(e1[0].classList.contains("odd")).toBeTruthy();
     expect(e1[0].classList.contains("even")).toBeFalsy();

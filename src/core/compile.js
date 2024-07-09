@@ -1750,9 +1750,11 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               hasElementTranscludeDirective = true;
               terminalPriority = directive.priority;
               $template = $compileNode;
+              $compileNode = templateAttrs.$$element = jqLite(
+                document.createComment(""),
+              );
               compileNode = $compileNode[0];
-              let sliceArg = sliceArgs($template);
-              replaceWith(jqCollection, sliceArg, compileNode);
+              replaceWith(jqCollection, sliceArgs($template), compileNode);
 
               childTranscludeFn = compilationGenerator(
                 mightHaveMultipleTransclusionError,
