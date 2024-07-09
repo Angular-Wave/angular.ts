@@ -20,7 +20,7 @@ import {
 import { ngCloakDirective } from "./directive/cloak";
 import { ngControllerDirective } from "./directive/controller";
 import { ngHideDirective, ngShowDirective } from "./directive/show-hide";
-import { ngIfDirective } from "./directive/if";
+import { ngIfDirective } from "./directive/if/if";
 import {
   ngIncludeDirective,
   ngIncludeFillContentDirective,

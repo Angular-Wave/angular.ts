@@ -1,8 +1,8 @@
-import { dealoc, jqLite } from "../../src/jqLite";
-import { forEach, valueFn } from "../../src/shared/utils";
-import { publishExternalAPI } from "../../src/public";
-import { createInjector } from "../../src/injector";
-import { Angular } from "../../src/loader";
+import { dealoc, jqLite } from "../../jqLite";
+import { forEach, valueFn } from "../../shared/utils";
+import { publishExternalAPI } from "../../public";
+import { createInjector } from "../../injector";
+import { Angular } from "../../loader";
 
 describe("ngIf", () => {
   describe("basic", () => {

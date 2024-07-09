@@ -25,5 +25,5 @@ module.exports = {
     "no-multy-assign": "off",
     "no-param-reassign": "off"
   },
-  ignorePatterns: ["test/**"],
+  ignorePatterns: ["**/*.spec.js"],
 };
