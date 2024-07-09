@@ -14,6 +14,7 @@ import {
   toInt,
   toKeyValue,
 } from "../shared/utils";
+import { ScopePhase } from "./root-scope";
 
 export const PATH_MATCH = /^([^?#]*)(\?([^#]*))?(#(.*))?$/;
 const DEFAULT_PORTS = { http: 80, https: 443, ftp: 21 };
