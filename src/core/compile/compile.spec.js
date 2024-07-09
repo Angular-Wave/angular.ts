@@ -2620,7 +2620,7 @@ describe("$compile", () => {
       registerDirectives({
         myDirective: () => {
           return {
-            templateUrl: "/my_directive.html",
+            templateUrl: "/public/my_directive.html",
             compile: compileSpy,
           };
         },
@@ -2646,7 +2646,7 @@ describe("$compile", () => {
     it("populates element with template", (done) => {
       registerDirectives({
         myDirective: () => {
-          return { templateUrl: "/my_directive.html" };
+          return { templateUrl: "/public/my_directive.html" };
         },
       });
       reloadModules();
@@ -2664,7 +2664,7 @@ describe("$compile", () => {
       registerDirectives({
         myDirective: () => {
           return {
-            templateUrl: "/my_directive.html",
+            templateUrl: "/public/my_directive.html",
             compile: compileSpy,
           };
         },
@@ -2684,7 +2684,7 @@ describe("$compile", () => {
       var otherCompileSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
-          return { templateUrl: "/my_directive.html" };
+          return { templateUrl: "/public/my_directive.html" };
         },
         myOtherDirective: () => {
           return { compile: otherCompileSpy };
@@ -2706,7 +2706,7 @@ describe("$compile", () => {
       var otherCompileSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
-          return { templateUrl: "/my_other_directive.html" };
+          return { templateUrl: "/public/my_other_directive.html" };
         },
         myOtherDirective: () => {
           return { compile: otherCompileSpy };
@@ -2727,7 +2727,7 @@ describe("$compile", () => {
     it("supports functions as values", () => {
       var templateUrlSpy = jasmine
         .createSpy()
-        .and.returnValue("/my_directive.html");
+        .and.returnValue("/public/my_directive.html");
       registerDirectives({
         myDirective: () => {
           return {
@@ -2750,7 +2750,7 @@ describe("$compile", () => {
           return { template: "<div></div>" };
         },
         myOtherDirective: () => {
-          return { templateUrl: "/my_other_directive.html" };
+          return { templateUrl: "/public/my_other_directive.html" };
         },
       });
       reloadModules();
@@ -2763,7 +2763,7 @@ describe("$compile", () => {
     it("does not allow template directive after templateUrl directive", (done) => {
       registerDirectives({
         myDirective: () => {
-          return { templateUrl: "/my_directive.html" };
+          return { templateUrl: "/public/my_directive.html" };
         },
         myOtherDirective: () => {
           return { template: "<div></div>" };
@@ -2785,7 +2785,7 @@ describe("$compile", () => {
       registerDirectives({
         myDirective: () => {
           return {
-            templateUrl: "/my_directive.html",
+            templateUrl: "/public/my_directive.html",
             link: linkSpy,
           };
         },
@@ -2807,11 +2807,11 @@ describe("$compile", () => {
       }, 10);
     });
 
-    fit("links child elements when public link function is invoked", (done) => {
+    it("links child elements when public link function is invoked", (done) => {
       var linkSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
-          return { templateUrl: "/my_other_directive.html" };
+          return { templateUrl: "/public/my_other_directive.html" };
         },
         myOtherDirective: () => {
           return { link: linkSpy };
@@ -2838,7 +2838,7 @@ describe("$compile", () => {
       registerDirectives({
         myDirective: () => {
           return {
-            templateUrl: "/my_directive.html",
+            templateUrl: "/public/my_directive.html",
             link: linkSpy,
           };
         },
@@ -2922,7 +2922,7 @@ describe("$compile", () => {
           return {
             scope: { val: "=myDirective" },
             link: linkSpy,
-            templateUrl: "/my_directive.html",
+            templateUrl: "/public/my_directive.html",
           };
         },
       });
@@ -2946,7 +2946,7 @@ describe("$compile", () => {
         myDirective: () => {
           return {
             scope: { val: "=myDirective" },
-            templateUrl: "/my_child_directive.html",
+            templateUrl: "/public/my_child_directive.html",
           };
         },
         myChildDirective: () => {
@@ -2980,7 +2980,7 @@ describe("$compile", () => {
         },
         myOtherDirective: () => {
           return {
-            templateUrl: "/my_directive.html",
+            templateUrl: "/public/my_directive.html",
             controller: function MyOtherDirectiveController() {
               myOtherDirectiveControllerInstantiated = true;
             },
@@ -3008,7 +3008,7 @@ describe("$compile", () => {
         myTranscluder: () => {
           return {
             transclude: true,
-            templateUrl: "/my_directive.html",
+            templateUrl: "/public/my_directive.html",
             link: function (scope, element, attrs, ctrl, transclude) {
               element[0].firstChild.append(transclude());
             },
@@ -3034,7 +3034,7 @@ describe("$compile", () => {
           return {
             priority: 1,
             transclude: true,
-            templateUrl: "/my_directive.html",
+            templateUrl: "/public/my_directive.html",
           };
         },
         mySecondTranscluder: () => {
@@ -5789,7 +5789,7 @@ describe("$compile", () => {
             "hello",
             valueFn({
               restrict: "A",
-              templateUrl: "mock/hello",
+              templateUrl: "/mock/hello",
               transclude: true,
             }),
           )
@@ -5797,7 +5797,7 @@ describe("$compile", () => {
             "401",
             valueFn({
               restrict: "A",
-              templateUrl: "mock/401",
+              templateUrl: "/mock/401",
               transclude: true,
             }),
           )
@@ -5805,7 +5805,7 @@ describe("$compile", () => {
             "cau",
             valueFn({
               restrict: "A",
-              templateUrl: "mock/divexpr",
+              templateUrl: "/mock/divexpr",
             }),
           )
           .directive(
@@ -5825,7 +5825,7 @@ describe("$compile", () => {
             "cError",
             valueFn({
               restrict: "A",
-              templateUrl: "mock/empty",
+              templateUrl: "/mock/empty",
               compile() {
                 throw new Error("cError");
               },
@@ -5835,7 +5835,7 @@ describe("$compile", () => {
             "lError",
             valueFn({
               restrict: "A",
-              templateUrl: "mock/empty",
+              templateUrl: "/mock/empty",
               compile() {
                 throw new Error("lError");
               },
@@ -5846,7 +5846,7 @@ describe("$compile", () => {
             valueFn({
               restrict: "A",
               replace: true,
-              templateUrl: "mock/div",
+              templateUrl: "/mock/div",
             }),
           )
           .directive(
@@ -5854,7 +5854,7 @@ describe("$compile", () => {
             valueFn({
               restrict: "A",
               replace: true,
-              templateUrl: "mock/divexpr",
+              templateUrl: "/mock/divexpr",
             }),
           )
           .directive(
@@ -5987,7 +5987,7 @@ describe("$compile", () => {
       });
 
       it("should append template via $http and cache it in $templateCache", (done) => {
-        $templateCache.put("mock/divexpr", "<span>Cau!</span>");
+        $templateCache.put("/mock/divexpr", "<span>Cau!</span>");
         element = $compile("<div><b hello>ignore</b><b cau>ignore</b></div>")(
           $rootScope,
         );
@@ -6010,7 +6010,7 @@ describe("$compile", () => {
       });
 
       it("should inline template via $http and cache it in $templateCache", (done) => {
-        $templateCache.put("mock/divexpr", "<span>Cau!</span>");
+        $templateCache.put("/mock/divexpr", "<span>Cau!</span>");
         element = $compile(
           "<div><b i-hello>ignore</b><b i-cau>ignore</b></div>",
         )($rootScope);
@@ -6033,7 +6033,7 @@ describe("$compile", () => {
       });
 
       it("should compile, link and flush the template append", (done) => {
-        $templateCache.put("mock/hello", "<span>Hello, {{name}}!</span>");
+        $templateCache.put("/mock/hello", "<span>Hello, {{name}}!</span>");
         $rootScope.name = "Elvis";
         element = $compile('<div><b hello=""></b></div>')($rootScope);
 
@@ -6048,7 +6048,7 @@ describe("$compile", () => {
       });
 
       it("should compile, link and flush the template inline", () => {
-        $templateCache.put("mock/div", "<span>Hello, {{name}}!</span>");
+        $templateCache.put("/mock/div", "<span>Hello, {{name}}!</span>");
         $rootScope.name = "Elvis";
         element = $compile("<div><b i-hello></b></div>")($rootScope);
 
@@ -6060,7 +6060,7 @@ describe("$compile", () => {
       });
 
       it("should compile template when replacing element in another template", () => {
-        $templateCache.put("mock/hello", "<div replace></div>");
+        $templateCache.put("/mock/hello", "<div replace></div>");
         $rootScope.name = "Elvis";
         element = $compile('<div><b hello=""></b></div>')($rootScope);
 
@@ -6083,7 +6083,7 @@ describe("$compile", () => {
       });
 
       it("should resolve widgets after cloning in append mode", (done) => {
-        $templateCache.put("mock/divexpr", "<span>{{name}}</span>");
+        $templateCache.put("/mock/divexpr", "<span>{{name}}</span>");
         $rootScope.greeting = "Hello";
         $rootScope.name = "Elvis";
         const template = $compile(
@@ -6139,7 +6139,7 @@ describe("$compile", () => {
       });
 
       it("should resolve widgets after cloning in inline mode", (done) => {
-        $templateCache.put("mock/divexpr", "<span>{{name}}</span>");
+        $templateCache.put("/mock/divexpr", "<span>{{name}}</span>");
         $rootScope.greeting = "Hello";
         $rootScope.name = "Elvis";
         const template = $compile(
@@ -6193,7 +6193,7 @@ describe("$compile", () => {
 
       it("should be implicitly terminal and not compile placeholder content in append", () => {
         // we can't compile the contents because that would result in a memory leak
-        $templateCache.put("mock/hello", "Hello!");
+        $templateCache.put("/mock/hello", "Hello!");
         element = $compile('<div><b hello=""><div log></div></b></div>')(
           $rootScope,
         );
@@ -6204,7 +6204,7 @@ describe("$compile", () => {
       it("should be implicitly terminal and not compile placeholder content in inline", () => {
         // we can't compile the contents because that would result in a memory leak
 
-        $templateCache.put("mock/hello", "Hello!");
+        $templateCache.put("/mock/hello", "Hello!");
         element = $compile("<div><b i-hello><div log></div></b></div>")(
           $rootScope,
         );
@@ -6255,7 +6255,7 @@ describe("$compile", () => {
             "hello",
             valueFn({
               restrict: "A",
-              templateUrl: "mock/hello",
+              templateUrl: "/mock/hello",
               transclude: true,
             }),
           );
@@ -6410,7 +6410,7 @@ describe("$compile", () => {
 
         it("should work when directive is on the root element", () => {
           $templateCache.put(
-            "mock/hello",
+            "/mock/hello",
             "<span>3==<span ng-transclude></span></span>",
           );
           element = JQLite('<b hello="">{{1+2}}</b>');
@@ -6427,7 +6427,7 @@ describe("$compile", () => {
 
           function runTest() {
             $templateCache.put(
-              "mock/hello",
+              "/mock/hello",
               "<span>i=<span ng-transclude></span>;</span>",
             );
             element = JQLite(
@@ -13054,11 +13054,11 @@ describe("$compile", () => {
           scope: {
             myFoo: "=",
           },
-          templateUrl: "mock/hello",
+          templateUrl: "/mock/hello",
           controller: Ctrl,
         }));
         initInjector("test1");
-        $templateCache.put("mock/hello", "<p>Hello</p>");
+        $templateCache.put("/mock/hello", "<p>Hello</p>");
         $rootScope.foo = "bar";
 
         element = $compile('<div my-directive my-foo="foo"></div>')($rootScope);
@@ -13130,7 +13130,7 @@ describe("$compile", () => {
 
         module.directive("myDirective", () => ({
           scope: true,
-          templateUrl: "mock/hello",
+          templateUrl: "/mock/hello",
           controller: Ctrl,
           compile() {
             return {
@@ -13140,7 +13140,7 @@ describe("$compile", () => {
           },
         }));
         initInjector("test1");
-        $templateCache.put("mock/hello", "<p>Hello</p>");
+        $templateCache.put("/mock/hello", "<p>Hello</p>");
 
         element = $compile("<div my-directive></div>")($rootScope);
         $rootScope.$apply();
