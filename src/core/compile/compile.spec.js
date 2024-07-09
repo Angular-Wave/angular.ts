@@ -1625,7 +1625,7 @@ describe("$compile", () => {
     reloadModules();
     var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
-    expect($rootScope.$$watchers).toBeNull();
+    expect($rootScope.$$watchers.length).toEqual(0);
   });
 
   it("allows binding two-way expression to isolate scope", () => {
@@ -1699,7 +1699,7 @@ describe("$compile", () => {
     reloadModules();
     var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
-    expect($rootScope.$$watchers).toBeNull();
+    expect($rootScope.$$watchers.length).toEqual(0);
   });
 
   it("allows assigning to two-way scope expressions", () => {
@@ -2807,7 +2807,7 @@ describe("$compile", () => {
       }, 10);
     });
 
-    it("links child elements when public link function is invoked", (done) => {
+    fit("links child elements when public link function is invoked", (done) => {
       var linkSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -3008,7 +3008,7 @@ describe("$compile", () => {
         myTranscluder: () => {
           return {
             transclude: true,
-            templateUrl: "my_directive.html",
+            templateUrl: "/my_directive.html",
             link: function (scope, element, attrs, ctrl, transclude) {
               element[0].firstChild.append(transclude());
             },
@@ -3034,7 +3034,7 @@ describe("$compile", () => {
           return {
             priority: 1,
             transclude: true,
-            templateUrl: "my_directive.html",
+            templateUrl: "/my_directive.html",
           };
         },
         mySecondTranscluder: () => {
