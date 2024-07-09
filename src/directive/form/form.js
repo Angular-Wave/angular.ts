@@ -14,7 +14,7 @@ import {
   DIRTY_CLASS,
   VALID_CLASS,
   INVALID_CLASS,
-} from "../../constants";
+} from "../../shared/constants";
 
 export const nullFormCtrl = {
   $addControl: () => {},

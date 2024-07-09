@@ -6,7 +6,7 @@ import {
   TOUCHED_CLASS,
   UNTOUCHED_CLASS,
   VALID_CLASS,
-} from "../../constants";
+} from "../../shared/constants";
 import {
   minErr,
   forEach,

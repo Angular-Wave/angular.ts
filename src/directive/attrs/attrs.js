@@ -1,6 +1,6 @@
 import { BOOLEAN_ATTR } from "../../jqLite";
 import { forEach, directiveNormalize } from "../../shared/utils";
-import { ALIASED_ATTR } from "../../constants";
+import { ALIASED_ATTR } from "../../shared/constants";
 
 /**
  * @ngdoc directive

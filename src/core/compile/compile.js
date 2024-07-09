@@ -1,4 +1,9 @@
-import { jqLite, getBooleanAttrName, isTextNode, startingTag } from "../../jqLite";
+import {
+  jqLite,
+  getBooleanAttrName,
+  isTextNode,
+  startingTag,
+} from "../../jqLite";
 import { identifierForController } from "../controller/controller";
 import { TTL } from "../scope/scope";
 import {
@@ -31,7 +36,7 @@ import {
 } from "../../shared/utils";
 
 import { SCE_CONTEXTS } from "../sce/sce";
-import { PREFIX_REGEXP, ALIASED_ATTR } from "../../constants";
+import { PREFIX_REGEXP, ALIASED_ATTR } from "../../shared/constants";
 import { createEventDirective } from "../../directive/events/events";
 import { CACHE, EXPANDO } from "../cache/cache";
 
