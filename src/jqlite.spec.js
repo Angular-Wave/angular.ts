@@ -1,10 +1,10 @@
-import { jqLite, JQLite, dealoc, kebabToCamel } from "../jqLite";
-import { angularInit } from "../loader";
-import { createInjector } from "../injector";
-import { publishExternalAPI } from "../public";
-import { equals, forEach } from "../shared/utils";
-import { browserTrigger } from "./test-utils";
-import { CACHE, EXPANDO } from "../core/cache";
+import { jqLite, JQLite, dealoc, kebabToCamel } from "./jqLite";
+import { angularInit } from "./loader";
+import { createInjector } from "./injector";
+import { publishExternalAPI } from "./public";
+import { equals, forEach } from "./shared/utils";
+import { browserTrigger } from "./shared/test-utils";
+import { CACHE, EXPANDO } from "./core/cache/cache";
 
 describe("jqLite", () => {
   let scope;

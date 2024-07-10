@@ -1,4 +1,4 @@
-import { stripLastPathElement } from "../../shared/strings";
+import { stripLastPathElement } from "./strings";
 
 describe("string functions:", () => {
   describe("stripLastPathElement", () => {
