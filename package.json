@@ -15,7 +15,7 @@
   "scripts": {
     "serve": "npm-run-all --parallel dev express",
     "dev": "vite",
-    "express": "node --watch ./testutils/express.js",
+    "express": "node --watch ./utils/express.js",
     "build": "vite build",
     "playwright": "./node_modules/.bin/playwright test"
   },
