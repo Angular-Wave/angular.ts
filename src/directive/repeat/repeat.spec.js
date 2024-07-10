@@ -1056,7 +1056,7 @@ describe("ngRepeat", () => {
 
     it("should work when combined with an ASYNC template that loads after the first digest", (done) => {
       $compileProvider.directive("test", () => ({
-        templateUrl: "test.html",
+        templateUrl: "/public/test.html",
       }));
       element = jqLite('<div><div ng-repeat="i in items" test></div></div>');
       $compile(element)(scope);
@@ -1290,7 +1290,7 @@ describe("ngRepeat", () => {
       publishExternalAPI();
 
       element = jqLite(
-        '<div><div ng-repeat="i in [1,2]" ng-include="\'/test.html\'"></div></div>',
+        '<div><div ng-repeat="i in [1,2]" ng-include="\'/public/test.html\'"></div></div>',
       );
       const injector = window.angular.bootstrap(element);
       scope = injector.get("$rootScope");
@@ -1346,7 +1346,6 @@ describe("ngRepeat", () => {
 
       scope.$digest();
       expect(element.find("div").length).toBe(6);
-
       scope.values.shift();
       scope.values.push(4);
 
@@ -1374,7 +1373,7 @@ describe("ngRepeat", () => {
           "test",
           valueFn({
             require: "^template",
-            link(scope, el, attr, ctrl) {
+            link(_scope, _el, _attr, ctrl) {
               controller = ctrl;
             },
           }),

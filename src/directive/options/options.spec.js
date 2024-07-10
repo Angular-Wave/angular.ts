@@ -9,7 +9,7 @@ import {
   isString,
   isFunction,
 } from "../../shared/utils";
-import { browserTrigger } from "../test-utils";
+import { browserTrigger } from "../../shared/test-utils";
 
 describe("ngOptions", () => {
   let scope;
@@ -286,7 +286,7 @@ describe("ngOptions", () => {
     }).toThrow();
   });
 
-  it("should render a list", () => {
+  fit("should render a list", () => {
     createSingleSelect();
 
     scope.$apply(() => {

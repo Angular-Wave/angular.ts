@@ -193,7 +193,7 @@ describe("ngIf", () => {
 
     it("should work when combined with an ASYNC template that loads after the first digest", (done) => {
       $compileProvider.directive("test", () => ({
-        templateUrl: "/test.html",
+        templateUrl: "/public/test.html",
       }));
       element.append('<div ng-if="show" test></div>');
       $compile(element)($rootScope);
