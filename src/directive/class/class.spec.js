@@ -246,7 +246,6 @@ describe("ngClass", () => {
       '<ul><li ng-repeat="i in [0,1]" class="existing" ng-class-odd="\'odd\'" ng-class-even="\'even\'"></li><ul>',
     )($rootScope);
     $rootScope.$digest();
-    debugger
     const e1 = jqLite(element[0].childNodes[1]);
     const e2 = jqLite(element[0].childNodes[3]);
     expect(e1[0].classList.contains("existing")).toBeTruthy();
