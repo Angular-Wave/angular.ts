@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
-import { dealoc, JQLite } from "../../jqLite";
+import { dealoc, JQLite } from "../../jqlite";
 import {
   forEach,
   isFunction,

@@ -1,5 +1,5 @@
 import { forEach } from "../../shared/utils";
-import { getBlockNodes } from "../../jqLite";
+import { getBlockNodes } from "../../jqlite";
 
 export const ngSwitchDirective = [
   "$animate",

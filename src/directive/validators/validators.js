@@ -6,7 +6,7 @@ import {
   isUndefined,
 } from "../../shared/utils";
 import { REGEX_STRING_REGEXP } from "./../attrs/attrs";
-import { startingTag } from "../../jqLite";
+import { startingTag } from "../../jqlite";
 
 /**
  * @ngdoc directive

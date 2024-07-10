@@ -1,5 +1,5 @@
 import { createInjector } from "../../injector";
-import { jqLite, dealoc } from "../../jqLite";
+import { jqLite, dealoc } from "../../jqlite";
 import { publishExternalAPI } from "../../public";
 import {
   forEach,

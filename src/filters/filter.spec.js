@@ -1,7 +1,7 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
 import { isString, includes } from "../../shared/utils";
-import { jqLite } from "../../jqLite";
+import { jqLite } from "../../jqlite";
 
 describe("Filter: filter", () => {
   let filter;

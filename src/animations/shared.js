@@ -1,5 +1,5 @@
 import { forEach, isString, minErr, extend } from "../shared/utils";
-import { jqLite } from "../jqLite";
+import { jqLite } from "../jqlite";
 
 export const ADD_CLASS_SUFFIX = "-add";
 export const REMOVE_CLASS_SUFFIX = "-remove";

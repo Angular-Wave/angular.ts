@@ -1,4 +1,4 @@
-import { jqLite } from "../jqLite";
+import { jqLite } from "../jqlite";
 import { forEach, isString } from "../shared/utils";
 import { concatWithSpace, getDomNode } from "./shared";
 

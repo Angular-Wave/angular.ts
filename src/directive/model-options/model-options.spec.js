@@ -1,5 +1,5 @@
 import { defaultModelOptions } from "../../directive/model-options/model-options";
-import { dealoc, jqLite } from "../../jqLite";
+import { dealoc, jqLite } from "../../jqlite";
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
 import { valueFn } from "../../shared/utils";

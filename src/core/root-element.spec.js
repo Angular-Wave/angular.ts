@@ -1,4 +1,4 @@
-import { jqLite, dealoc } from "../../jqLite";
+import { jqLite, dealoc } from "../../jqlite";
 import { Angular } from "../../loader";
 import { publishExternalAPI } from "../../public";
 

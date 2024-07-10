@@ -1,4 +1,4 @@
-import { jqLite, jqLiteRemove, startingTag } from "../../jqLite";
+import { jqLite, jqLiteRemove, startingTag } from "../../jqlite";
 import {
   equals,
   forEach,

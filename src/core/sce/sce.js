@@ -14,7 +14,7 @@ import {
   shallowCopy,
 } from "../../shared/utils";
 
-import { snakeToCamel } from "../../jqLite";
+import { snakeToCamel } from "../../jqlite";
 
 const $sceMinErr = minErr("$sce");
 

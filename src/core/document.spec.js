@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
-import { jqLite } from "../../jqLite";
+import { jqLite } from "../../jqlite";
 
 describe("$document", () => {
   let $document, $httpBackend, $http, $$isDocumentHidden;

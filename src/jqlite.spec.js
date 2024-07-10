@@ -1,4 +1,4 @@
-import { jqLite, JQLite, dealoc, kebabToCamel } from "./jqLite";
+import { jqLite, JQLite, dealoc, kebabToCamel } from "./jqlite";
 import { angularInit } from "./loader";
 import { createInjector } from "./injector";
 import { publishExternalAPI } from "./public";
