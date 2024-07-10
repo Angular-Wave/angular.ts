@@ -100,8 +100,8 @@ import { $TimeoutProvider } from "./core/timeout/timeout";
 import { SanitizeUriProvider } from "./core/sanitize/sanitize-uri";
 import { setupModuleLoader } from "./loader";
 import { initAnimateModule } from "./animations/module";
-import { initMessageModule } from "./exts/messages";
-import { initAriaModule } from "./exts/aria";
+import { initMessageModule } from "./exts/messages/messages";
+import { initAriaModule } from "./exts/aria/aria";
 import { initRouter } from "./router/index";
 
 export function publishExternalAPI() {

@@ -17,6 +17,8 @@ export const ngIfDirective = [
           if (!childScope) {
             $transclude((clone, newScope) => {
               childScope = newScope;
+              // TODO removing this breaks messages test
+              clone[clone.length++] = document.createComment("");
               // Note: We only need the first/last node of the cloned nodes.
               // However, we need to keep the reference to the jqlite wrapper as it might be changed later
               // by a directive with templateUrl when its template arrives.

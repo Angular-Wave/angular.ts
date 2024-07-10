@@ -23,11 +23,11 @@ import {
   nextUid,
   nodeName_,
   snakeCase,
-} from "../shared/utils";
-import { dealoc, jqLite, startingTag } from "../shared/jqlite/jqlite";
-import { Angular, angularInit } from "../loader";
-import { publishExternalAPI } from "../public";
-import { createInjector } from "../injector";
+} from "./shared/utils";
+import { dealoc, jqLite, startingTag } from "./shared/jqlite/jqlite";
+import { Angular, angularInit } from "./loader";
+import { publishExternalAPI } from "./public";
+import { createInjector } from "./injector";
 
 describe("angular", () => {
   let element, document, module, injector, $rootScope, $compile;

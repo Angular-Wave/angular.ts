@@ -1,5 +1,5 @@
 import { createInjector } from "../../injector";
-import { countWatchers } from "../../core/root-scope";
+import { countWatchers } from "../../core/scope/scope";
 import { publishExternalAPI } from "../../public";
 import { isString } from "../../shared/utils";
 import { jqLite } from "../../shared/jqlite/jqlite";
