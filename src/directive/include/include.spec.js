@@ -35,7 +35,7 @@ describe("ngInclude", () => {
 
     it("should trust and use literal urls", (done) => {
       const element = jqLite(
-        "<div><div ng-include=\"'/test.html'\"></div></div>",
+        "<div><div ng-include=\"'/public/test.html'\"></div></div>",
       );
       const injector = angular.bootstrap(element);
       $rootScope = injector.get("$rootScope");
