@@ -11,6 +11,7 @@ import {
 } from "../../shared/utils";
 import { countChildScopes, countWatchers } from "../../core/scope/scope";
 import { CACHE, EXPANDO } from "../../core/cache/cache";
+import { wait } from "../../shared/test-utils";
 
 function isUnknownElement(el) {
   return !!el.toString().match(/Unknown/);
@@ -6117,7 +6118,7 @@ describe("$compile", () => {
         }, 100);
       });
 
-      it("should resolve widgets after cloning in append mode without $templateCache", (done) => {
+      it("should resolve widgets after cloning in append mode without $templateCache", async () => {
         $rootScope.expr = "Elvis";
         const template = $compile("<div cau></div>");
         let e1;
@@ -6126,19 +6127,17 @@ describe("$compile", () => {
         e1 = template($rootScope.$new(), () => {}); // clone
         expect(e1.text()).toEqual("");
 
-        setTimeout(() => {
-          e2 = template($rootScope.$new(), () => {}); // clone
-          $rootScope.$digest();
-          expect(e1.text()).toEqual("Elvis");
-          expect(e2.text()).toEqual("Elvis");
+        await wait(100);
+        e2 = template($rootScope.$new(), () => {}); // clone
+        $rootScope.$digest();
+        expect(e1.text()).toEqual("Elvis");
+        expect(e2.text()).toEqual("Elvis");
 
-          dealoc(e1);
-          dealoc(e2);
-          done();
-        }, 100);
+        dealoc(e1);
+        dealoc(e2);
       });
 
-      it("should resolve widgets after cloning in inline mode", (done) => {
+      it("should resolve widgets after cloning in inline mode", async () => {
         $templateCache.put("/mock/divexpr", "<span>{{name}}</span>");
         $rootScope.greeting = "Hello";
         $rootScope.name = "Elvis";
@@ -6156,17 +6155,15 @@ describe("$compile", () => {
         e1 = template($rootScope.$new(), () => {}); // clone
         expect(e1.text()).toEqual("");
 
-        setTimeout(() => {
-          e2 = template($rootScope.$new(), () => {}); // clone
-          $rootScope.$digest();
-          expect(e1.text()).toEqual("HelloElvis");
-          expect(e2.text()).toEqual("HelloElvis");
+        await wait(100);
+        e2 = template($rootScope.$new(), () => {}); // clone
+        $rootScope.$digest();
+        expect(e1.text()).toEqual("HelloElvis");
+        expect(e2.text()).toEqual("HelloElvis");
 
-          expect(errors.length).toEqual(2);
-          dealoc(e1);
-          dealoc(e2);
-          done();
-        }, 100);
+        expect(errors.length).toEqual(2);
+        dealoc(e1);
+        dealoc(e2);
       });
 
       it("should resolve widgets after cloning in inline mode without $templateCache", (done) => {

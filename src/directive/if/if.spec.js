@@ -3,6 +3,7 @@ import { forEach, valueFn } from "../../shared/utils";
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
 import { Angular } from "../../loader";
+import { wait } from "../../shared/test-utils";
 
 describe("ngIf", () => {
   describe("basic", () => {
@@ -151,7 +152,7 @@ describe("ngIf", () => {
       setTimeout(() => {
         expect(element.text()).toBe("Hello");
         done();
-      }, 100);
+      }, 300);
     });
 
     it("should work with multiple elements", () => {
@@ -191,7 +192,7 @@ describe("ngIf", () => {
       expect(element.children()[0].className).toContain("my-class");
     });
 
-    it("should work when combined with an ASYNC template that loads after the first digest", (done) => {
+    it("should work when combined with an ASYNC template that loads after the first digest", async () => {
       $compileProvider.directive("test", () => ({
         templateUrl: "/public/test.html",
       }));
@@ -200,14 +201,13 @@ describe("ngIf", () => {
       $rootScope.show = true;
       expect(element.text()).toBe("");
       $rootScope.$apply();
-      setTimeout(() => {
-        expect(element.text()).toBe("hello");
-        $rootScope.show = false;
-        $rootScope.$apply();
-        expect(element.children().length).toBe(0);
-        expect(element.text()).toBe("");
-        done();
-      }, 100);
+
+      expect(element.text()).toBe("");
+      await wait(100);
+      expect(element.text()).toBe("hello");
+      $rootScope.show = false;
+      $rootScope.$apply();
+      expect(element.children().length).toBe(0);
       expect(element.text()).toBe("");
     });
 

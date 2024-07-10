@@ -3,6 +3,7 @@ import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { publishExternalAPI } from "../../public";
 import { valueFn } from "../../shared/utils";
+import { wait } from "../../shared/test-utils";
 
 describe("ngInclude", () => {
   describe("basic", () => {
@@ -47,7 +48,7 @@ describe("ngInclude", () => {
       }, 200);
     });
 
-    it("should trust and use trusted urls", (done) => {
+    it("should trust and use trusted urls", async () => {
       const element = jqLite('<div><div ng-include="fooUrl">test</div></div>');
       const injector = angular.bootstrap(element);
       let $sce = injector.get("$sce");
@@ -56,16 +57,13 @@ describe("ngInclude", () => {
         "http://localhost:4000/mock/hello",
       );
       $rootScope.$digest();
-
-      setTimeout(() => {
-        expect(element.text()).toEqual("Hello");
-        dealoc($rootScope);
-        done();
-      }, 200);
+      await wait(100);
+      expect(element.text()).toEqual("Hello");
+      dealoc($rootScope);
     });
 
-    it("should include an external file", (done) => {
-      element = jqLite('<div><ng:include src="url"></ng:include></div>');
+    it("should include an external file", async () => {
+      element = jqLite('<div><ng-include src="url"></ng-include></div>');
       const body = jqLite(document.getElementById("dummy"));
       body.append(element);
       const injector = angular.bootstrap(element);
@@ -75,12 +73,9 @@ describe("ngInclude", () => {
       $rootScope.name = "misko";
       $rootScope.url = "myUrl";
       $rootScope.$digest();
-      setTimeout(() => {
-        expect(body.text()).toEqual("misko");
-        body.empty();
-        dealoc($rootScope);
-        done();
-      }, 200);
+      expect(body.text()).toEqual("misko");
+      body.empty();
+      dealoc($rootScope);
     });
 
     it('should support ng-include="src" syntax', (done) => {
@@ -270,28 +265,24 @@ describe("ngInclude", () => {
       }, 400);
     });
 
-    it("should do xhr request and cache it", (done) => {
+    it("should do xhr request and cache it", async () => {
       window.angular.module("myModule", []);
       element = jqLite('<div><ng:include src="url"></ng:include></div>');
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       $rootScope.url = "/mock/hello";
       $rootScope.$digest();
+      await wait(100);
 
-      setTimeout(() => {
-        expect(element.text()).toEqual("Hello");
-        $rootScope.url = null;
-        $rootScope.$digest();
-      }, 100);
-
-      setTimeout(() => {
-        expect(element.text()).toEqual("");
-        $rootScope.url = "/mock/hello";
-        $rootScope.$digest();
-        // No request being made
-        expect(element.text()).toEqual("Hello");
-        done();
-      }, 200);
+      expect(element.text()).toEqual("Hello");
+      $rootScope.url = null;
+      $rootScope.$digest();
+      await wait(100);
+      expect(element.text()).toEqual("");
+      $rootScope.url = "/mock/hello";
+      $rootScope.$digest();
+      // No request being made
+      expect(element.text()).toEqual("Hello");
     });
 
     it("should clear content when error during xhr request", () => {
@@ -345,7 +336,7 @@ describe("ngInclude", () => {
       }, 200);
     });
 
-    it("should not break attribute bindings on the same element", (done) => {
+    it("should not break attribute bindings on the same element", async () => {
       window.angular.module("myModule", []);
       element = jqLite(
         '<div><span foo="#/{{hrefUrl}}" ng:include="includeUrl"></span></div>',
@@ -356,28 +347,25 @@ describe("ngInclude", () => {
       $rootScope.includeUrl = "/mock/hello";
       $rootScope.$digest();
 
-      setTimeout(() => {
-        expect(element.text()).toBe("Hello");
-        expect(element.find("span").attr("foo")).toBe("#/fooUrl1");
+      await wait(100);
+      expect(element.text()).toBe("Hello");
+      expect(element.find("span").attr("foo")).toBe("#/fooUrl1");
 
-        $rootScope.hrefUrl = "fooUrl2";
-        $rootScope.$digest();
+      $rootScope.hrefUrl = "fooUrl2";
+      $rootScope.$digest();
 
-        expect(element.text()).toBe("Hello");
-        expect(element.find("span").attr("foo")).toBe("#/fooUrl2");
+      expect(element.text()).toBe("Hello");
+      expect(element.find("span").attr("foo")).toBe("#/fooUrl2");
 
-        $rootScope.includeUrl = "/mock/hello2";
-        $rootScope.$digest();
-      }, 100);
+      $rootScope.includeUrl = "/mock/hello2";
+      $rootScope.$digest();
 
-      setTimeout(() => {
-        expect(element.text()).toBe("Hello2");
-        expect(element.find("span").attr("foo")).toBe("#/fooUrl2");
-        done();
-      }, 200);
+      await wait(100);
+      expect(element.text()).toBe("Hello2");
+      expect(element.find("span").attr("foo")).toBe("#/fooUrl2");
     });
 
-    it("should construct SVG template elements with correct namespace", (done) => {
+    it("should construct SVG template elements with correct namespace", async () => {
       window.angular.module("myModule", []).directive(
         "test",
         valueFn({
@@ -390,16 +378,14 @@ describe("ngInclude", () => {
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       $rootScope.$digest();
-      setTimeout(() => {
-        const child = element.find("rect");
-        expect(child.length).toBe(2);
-        //   // eslint-disable-next-line no-undef
-        expect(child[0] instanceof SVGRectElement).toBe(true);
-        done();
-      }, 200);
+      await wait(100);
+      const child = element.find("rect");
+      expect(child.length).toBe(2);
+      //   // eslint-disable-next-line no-undef
+      expect(child[0] instanceof SVGRectElement).toBe(true);
     });
 
-    it("should compile only the template content of an SVG template", (done) => {
+    it("should compile only the template content of an SVG template", async () => {
       window.angular.module("myModule", []).directive(
         "test",
         valueFn({
@@ -412,10 +398,8 @@ describe("ngInclude", () => {
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       $rootScope.$digest();
-      setTimeout(() => {
-        expect(element.find("a").length).toBe(0);
-        done();
-      }, 200);
+      await wait(200);
+      expect(element.find("a").length).toBe(0);
     });
 
     it("should not compile template if original scope is destroyed", (done) => {
@@ -672,7 +656,7 @@ describe("ngInclude", () => {
         }, 100);
       });
 
-      it("should add the content to the element before compiling it", (done) => {
+      it("should add the content to the element before compiling it", async () => {
         let root;
         window.angular.module("myModule", []).directive("test", () => ({
           link(scope, el) {
@@ -683,11 +667,8 @@ describe("ngInclude", () => {
         const injector = angular.bootstrap(element, ["myModule"]);
         $rootScope = injector.get("$rootScope");
         $rootScope.$apply();
-
-        setTimeout(() => {
-          expect(root[0]).toBe(element[0]);
-          done();
-        }, 100);
+        await wait(100);
+        expect(root[0]).toBe(element[0]);
       });
     });
 
