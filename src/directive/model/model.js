@@ -22,7 +22,7 @@ import {
   setupValidity,
 } from "../form/form";
 import { defaultModelOptions } from "../model-options/model-options";
-import { startingTag } from "../../jqlite";
+import { startingTag } from "../../shared/jqlite/jqlite";
 import { ScopePhase } from "../../core/scope/scope";
 
 export const ngModelMinErr = minErr("ngModel");

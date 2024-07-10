@@ -1,4 +1,4 @@
-import { jqLite, dealoc } from "../../jqlite";
+import { jqLite, dealoc } from "../../shared/jqlite/jqlite";
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
 import { NgModelController } from "./model";

@@ -1,4 +1,4 @@
-import { dealoc } from "../../jqlite";
+import { dealoc } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
 import { publishExternalAPI } from "../../public";
 import { map, find } from "../../shared/common";

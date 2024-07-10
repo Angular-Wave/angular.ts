@@ -1,5 +1,5 @@
 import { createInjector } from "../../injector";
-import { dealoc } from "../../jqlite";
+import { dealoc } from "../../shared/jqlite/jqlite";
 import { publishExternalAPI } from "../../public";
 
 describe("ngChange", () => {

@@ -24,7 +24,7 @@ import {
   nodeName_,
   snakeCase,
 } from "../shared/utils";
-import { dealoc, jqLite, startingTag } from "../jqlite";
+import { dealoc, jqLite, startingTag } from "../shared/jqlite/jqlite";
 import { Angular, angularInit } from "../loader";
 import { publishExternalAPI } from "../public";
 import { createInjector } from "../injector";
@@ -1482,7 +1482,7 @@ describe("angular", () => {
         testForEachSpec(2, "12");
       });
 
-      it("should follow the ES spec when called with jQuery/jqlite", () => {
+      it("should follow the ES spec when called with jQuery/shared/jqlite/jqlite", () => {
         testForEachSpec(2, jqLite("<span>a</span><span>b</span>"));
       });
 

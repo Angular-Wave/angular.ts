@@ -6,7 +6,7 @@ import {
   minErr,
   extend,
 } from "../../shared/utils";
-import { jqLite } from "../../jqlite";
+import { jqLite } from "../../shared/jqlite/jqlite";
 
 const $animateMinErr = minErr("$animate");
 const NG_ANIMATE_CLASSNAME = "ng-animate";

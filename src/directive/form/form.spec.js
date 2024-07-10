@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
-import { dealoc, jqLite } from "../../jqlite";
+import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
 import { FormController } from "../../directive/form/form";
 import { Angular } from "../../loader";
 

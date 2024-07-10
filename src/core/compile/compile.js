@@ -3,7 +3,7 @@ import {
   getBooleanAttrName,
   isTextNode,
   startingTag,
-} from "../../jqlite";
+} from "../../shared/jqlite/jqlite";
 import { identifierForController } from "../controller/controller";
 import { TTL } from "../scope/scope";
 import {

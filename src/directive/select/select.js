@@ -1,4 +1,4 @@
-import { jqLite } from "../../jqlite";
+import { jqLite } from "../../shared/jqlite/jqlite";
 import {
   assertNotHasOwnProperty,
   equals,

@@ -1,4 +1,4 @@
-import { jqLite } from "../../jqlite";
+import { jqLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
 import { publishExternalAPI } from "../../public";
 import { browserTrigger, wait } from "../test-utils";

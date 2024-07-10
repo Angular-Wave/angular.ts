@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
-import { dealoc, jqLite } from "../../jqlite";
+import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
 import { forEach, hashKey, equals, isNumberNaN } from "../../shared/utils";
 import { browserTrigger } from "../../shared/test-utils";
 

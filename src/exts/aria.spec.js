@@ -1,6 +1,6 @@
 import { createInjector } from "../../injector";
 import { publishExternalAPI } from "../../public";
-import { dealoc, jqLite } from "../../jqlite";
+import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
 
 describe("$aria", () => {
   let scope;

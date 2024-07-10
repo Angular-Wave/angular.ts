@@ -13,8 +13,8 @@ import {
   nodeName_,
   shallowCopy,
   trim,
-} from "./shared/utils";
-import { CACHE, EXPANDO } from "./core/cache/cache";
+} from "../../shared/utils";
+import { CACHE, EXPANDO } from "../../core/cache/cache";
 
 /**
  * @ngdoc function

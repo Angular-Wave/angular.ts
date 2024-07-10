@@ -1,4 +1,4 @@
-import { getBlockNodes } from "../../jqlite";
+import { getBlockNodes } from "../../shared/jqlite/jqlite";
 
 export const ngIfDirective = [
   "$animate",

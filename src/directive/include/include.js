@@ -1,5 +1,5 @@
 import { isDefined } from "../../shared/utils";
-import { jqLiteBuildFragment } from "../../jqlite";
+import { jqLiteBuildFragment } from "../../shared/jqlite/jqlite";
 
 export const ngIncludeDirective = [
   "$templateRequest",

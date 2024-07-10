@@ -1,5 +1,5 @@
 import { minErr } from "../../shared/utils";
-import { startingTag } from "../../jqlite";
+import { startingTag } from "../../shared/jqlite/jqlite";
 
 /**
  * @ngdoc directive
