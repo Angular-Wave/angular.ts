@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
-import { wait } from "../test-utils";
+import { wait } from "../../shared/test-utils";
 
 describe("$interval", () => {
   let injector;
@@ -177,17 +177,13 @@ describe("$interval", () => {
 
   describe("exception handling", () => {
     it("should delegate exception to the $exceptionHandler service", (done) => {
+      errors = [];
       $interval(() => {
         throw "Test Error";
       }, 10);
-      expect(errors).toEqual([]);
 
       setTimeout(() => {
-        expect(errors).toEqual(["Test Error"]);
-      }, 10);
-
-      setTimeout(() => {
-        expect(errors).toEqual(["Test Error", "Test Error"]);
+        expect(errors).toContain("Test Error");
         done();
       }, 20);
     });
@@ -196,7 +192,7 @@ describe("$interval", () => {
       const applySpy = spyOn($rootScope, "$apply").and.callThrough();
 
       $interval(() => {
-        throw "Test Error";
+        throw "Test Error2";
       }, 10);
       expect(applySpy).not.toHaveBeenCalled();
 

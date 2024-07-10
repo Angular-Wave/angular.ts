@@ -6,6 +6,7 @@ const $intervalMinErr = minErr("$interval");
 export function $IntervalProvider() {
   this.$get = [
     "$$intervalFactory",
+    // TODO Add type
     function ($$intervalFactory) {
       const intervals = {};
       const setIntervalFn = function (tick, delay, deferred) {

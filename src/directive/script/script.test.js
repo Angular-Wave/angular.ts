@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-const TEST_URL = "#src/directive/script/script.spec.js";
+const TEST_URL = "src/directive/script/script.html";
 
 test("unit tests contain no errors", async ({ page }) => {
   await page.goto(TEST_URL);

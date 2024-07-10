@@ -1,11 +1,7 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
 import { dealoc, jqLite } from "../../jqLite";
-import {
-  EMAIL_REGEXP,
-  ISO_DATE_REGEXP,
-  URL_REGEXP,
-} from "../../directive/input";
+import { EMAIL_REGEXP, ISO_DATE_REGEXP, URL_REGEXP } from "./input";
 import { forEach } from "../../shared/utils";
 
 describe("input", () => {

@@ -6,6 +6,7 @@ export function $$IntervalFactoryProvider() {
     "$q",
     "$$q",
     "$rootScope",
+    // TODO Add types
     function ($browser, $q, $$q, $rootScope) {
       return function intervalFactory(setIntervalFn, clearIntervalFn) {
         return function intervalFn(fn, delay, count, invokeApply) {
