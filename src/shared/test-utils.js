@@ -1,4 +1,4 @@
-import { jqLite } from "../shared/jqlite/jqlite";
+import { jqLite } from "./jqlite/jqlite";
 
 /**
  * @param {HTMLElement} element
@@ -16,5 +16,5 @@ export function browserTrigger(element, event) {
  * @returns
  */
 export function wait(t) {
-  return new Promise((resolve, _) => setTimeout(resolve, t));
+  return new Promise((resolve) => setTimeout(resolve, t));
 }

@@ -1,4 +1,4 @@
-import { hashKey } from "../../shared/utils";
+import { hashKey } from "./utils";
 
 describe("api", () => {
   describe("hashKey()", () => {
