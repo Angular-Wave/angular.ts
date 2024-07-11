@@ -207,7 +207,7 @@ export function publishExternalAPI() {
         });
       },
     ],
-  ).info({ angularVersion: '"NG_VERSION_FULL"' });
+  ).info({ angularVersion: "[VI]{version}[/VI]" }); // Gets injected by rollup plugin
 
   initAnimateModule();
   initMessageModule();

@@ -2,8 +2,8 @@
 
 setup:
 	@npm i
-	@npm install --global rollup
-
+	@npx playwright install
+	
 build:
 	./node_modules/.bin/rollup -c
 

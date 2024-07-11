@@ -2,6 +2,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import pkg from './package.json' assert { type: 'json' };
 import terser from '@rollup/plugin-terser';
+import versionInjector from 'rollup-plugin-version-injector';
 
 export default [
   // browser-friendly UMD build
@@ -25,6 +26,9 @@ export default [
     input: 'src/index.js',
     external: ['ms'],
     output: { file: pkg.main, format: 'es' },
-    plugins: [terser()],
+    plugins: [
+      terser(),
+      versionInjector()
+    ],
   },
 ];
