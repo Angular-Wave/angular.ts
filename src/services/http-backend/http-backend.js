@@ -201,7 +201,7 @@ export function createHttpBackend($browser, createXhr, $browserDefer) {
     ) {
       // cancel timeout and subsequent timeout promise resolution
       if (isDefined(timeoutId)) {
-        $browserDefer.cancel(timeoutId);
+        $browser.cancel(timeoutId);
       }
       xhr = null;
 

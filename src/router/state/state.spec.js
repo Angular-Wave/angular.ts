@@ -2,7 +2,7 @@ import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
 import { publishExternalAPI } from "../../public";
 import { isFunction } from "../../shared/utils";
-import { wait } from "../test-utils";
+import { wait } from "../../shared/test-utils";
 
 describe("$state", () => {
   let $injector, template, ctrlName, $provide, $compile, module, $stateRegistry;

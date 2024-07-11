@@ -13,7 +13,7 @@ import {
 import { PathNode } from "../../router/path/path-node";
 import { PathUtils } from "../../router/path/path-utils";
 import { tail } from "../../shared/common";
-import { wait } from "../test-utils";
+import { wait } from "../../shared/test-utils";
 
 describe("view", () => {
   let scope,

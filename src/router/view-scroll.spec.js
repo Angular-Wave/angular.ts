@@ -1,7 +1,7 @@
-import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
-import { Angular } from "../../loader";
-import { publishExternalAPI } from "../../public";
-import { wait } from "../test-utils";
+import { dealoc } from "../shared/jqlite/jqlite";
+import { Angular } from "../loader";
+import { publishExternalAPI } from "../public";
+import { wait } from "../shared/test-utils";
 
 describe("ngView", () => {
   describe("scrollIntoView", () => {
