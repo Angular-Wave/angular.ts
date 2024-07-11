@@ -1,5 +1,1 @@
-export function registerUpdateUrl(
-  transitionService: any,
-  stateService: any,
-  urlService: any,
-): void;
+export function registerUpdateUrl(transitionService: any, stateService: any, urlService: any): void;

@@ -53,33 +53,33 @@ export function resolvablesBuilder(state: any): any[];
  * using the [[builder]] method.
  */
 export class StateBuilder {
-  constructor(matcher: any, urlService: any);
-  matcher: any;
-  $injector: any;
-  builders: {
-    name: (typeof nameBuilder)[];
-    self: (typeof selfBuilder)[];
-    parent: ((state: any) => any)[];
-    data: (typeof dataBuilder)[];
-    url: ((stateObject: any) => any)[];
-    navigable: ((state: any) => any)[];
-    params: ((state: any) => any)[];
-    views: any[];
-    path: (typeof pathBuilder)[];
-    includes: (typeof includesBuilder)[];
-    resolvables: (typeof resolvablesBuilder)[];
-  };
-  builder(name: any, fn: any): any;
-  /**
-   * Builds all of the properties on an essentially blank State object, returning a State object which has all its
-   * properties and API built.
-   *
-   * @param state an uninitialized State object
-   * @returns the built State object
-   */
-  build(state: any): any;
-  parentName(state: any): any;
-  name(state: any): any;
+    constructor(matcher: any, urlService: any);
+    matcher: any;
+    $injector: any;
+    builders: {
+        name: (typeof nameBuilder)[];
+        self: (typeof selfBuilder)[];
+        parent: ((state: any) => any)[];
+        data: (typeof dataBuilder)[];
+        url: ((stateObject: any) => any)[];
+        navigable: ((state: any) => any)[];
+        params: ((state: any) => any)[];
+        views: any[];
+        path: (typeof pathBuilder)[];
+        includes: (typeof includesBuilder)[];
+        resolvables: (typeof resolvablesBuilder)[];
+    };
+    builder(name: any, fn: any): any;
+    /**
+     * Builds all of the properties on an essentially blank State object, returning a State object which has all its
+     * properties and API built.
+     *
+     * @param state an uninitialized State object
+     * @returns the built State object
+     */
+    build(state: any): any;
+    parentName(state: any): any;
+    name(state: any): any;
 }
 declare function nameBuilder(state: any): any;
 declare function selfBuilder(state: any): any;

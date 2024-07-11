@@ -25,7 +25,7 @@
  */
 export function $DocumentProvider(): void;
 export class $DocumentProvider {
-  $get: (() => any)[];
+    $get: (() => any)[];
 }
 /**
  * @private
@@ -34,5 +34,5 @@ s * Listens for document visibility change and makes the current status accessib
  */
 export function $$IsDocumentHiddenProvider(): void;
 export class $$IsDocumentHiddenProvider {
-  $get: (string | (($document: any, $rootScope: any) => () => any))[];
+    $get: (string | (($document: any, $rootScope: any) => () => any))[];
 }

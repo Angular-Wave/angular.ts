@@ -29,7 +29,7 @@ import { CACHE } from "./core/cache/cache";
 
 const ngMinErr = minErr("ng");
 
-/** @type {Object.<string, angular.IModule>} */
+/** @type {Object.<string, import('./index.js').angular.Module>} */
 const moduleCache = {};
 
 /**

@@ -53,7 +53,7 @@ let applyAsyncId = null;
 /** Services required by each scope instance */
 /** @type {angular.IParseService} */
 let $parse;
-/** @type {import('../services/browser').Browser} */
+/** @type {import('../../services/browser').Browser} */
 let $browser;
 /** @type {angular.IExceptionHandlerService} */
 let $exceptionHandler;
@@ -123,10 +123,7 @@ export class $RootScopeProvider {
  * to construct.
  */
 
-/**
- * @type {angular.Scope}
- */
-class Scope {
+export class Scope {
   constructor() {
     /**
      * @type {number} Unique scope ID (monotonically increasing) useful for debugging.
@@ -142,7 +139,7 @@ class Scope {
     this.$parent = null;
 
     /**
-     * @type {?angular.Scope}
+     * @type {?Scope}
      */
     this.$root = this;
 
@@ -377,7 +374,7 @@ class Scope {
  *
  *    - `string`: Evaluated as {@link guide/expression expression}
  *    - `function(scope)`: called with current `scope` as a parameter.
- * @param {(newVal: any, oldVal: any, scope: angular.Scope) => any} listener Callback called whenever the value
+ * @param {(newVal: any, oldVal: any, scope: Scope) => any} listener Callback called whenever the value
  *    of `watchExpression` changes.
  *
  *    - `newVal` contains the current value of the `watchExpression`

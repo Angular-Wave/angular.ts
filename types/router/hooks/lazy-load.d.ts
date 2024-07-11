@@ -22,12 +22,7 @@
  *
  * See [[StateDeclaration.lazyLoad]]
  */
-export function registerLazyLoadHook(
-  transitionService: any,
-  stateService: any,
-  urlService: any,
-  stateRegistry: any,
-): any;
+export function registerLazyLoadHook(transitionService: any, stateService: any, urlService: any, stateRegistry: any): any;
 /**
  * Invokes a state's lazy load function
  *
@@ -35,8 +30,4 @@ export function registerLazyLoadHook(
  * @param state the state to lazy load
  * @returns A promise for the lazy load result
  */
-export function lazyLoadState(
-  transition: any,
-  state: any,
-  stateRegistry: any,
-): any;
+export function lazyLoadState(transition: any, state: any, stateRegistry: any): any;

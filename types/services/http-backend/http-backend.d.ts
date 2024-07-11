@@ -22,7 +22,7 @@
  */
 export function $xhrFactoryProvider(): void;
 export class $xhrFactoryProvider {
-  $get: () => () => XMLHttpRequest;
+    $get: () => () => XMLHttpRequest;
 }
 /**
  * @ngdoc service
@@ -41,38 +41,6 @@ export class $xhrFactoryProvider {
  */
 export function $HttpBackendProvider(): void;
 export class $HttpBackendProvider {
-  $get: (
-    | string
-    | ((
-        $browser: any,
-        $xhrFactory: any,
-      ) => (
-        method: any,
-        url: any,
-        post: any,
-        callback: any,
-        headers: any,
-        timeout: any,
-        withCredentials: any,
-        responseType: any,
-        eventHandlers: any,
-        uploadEventHandlers: any,
-      ) => void)
-  )[];
+    $get: (string | (($browser: any, $xhrFactory: any) => (method: any, url: any, post: any, callback: any, headers: any, timeout: any, withCredentials: any, responseType: any, eventHandlers: any, uploadEventHandlers: any) => void))[];
 }
-export function createHttpBackend(
-  $browser: any,
-  createXhr: any,
-  $browserDefer: any,
-): (
-  method: any,
-  url: any,
-  post: any,
-  callback: any,
-  headers: any,
-  timeout: any,
-  withCredentials: any,
-  responseType: any,
-  eventHandlers: any,
-  uploadEventHandlers: any,
-) => void;
+export function createHttpBackend($browser: any, createXhr: any, $browserDefer: any): (method: any, url: any, post: any, callback: any, headers: any, timeout: any, withCredentials: any, responseType: any, eventHandlers: any, uploadEventHandlers: any) => void;

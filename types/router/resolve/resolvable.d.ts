@@ -1,6 +1,6 @@
 export namespace defaultResolvePolicy {
-  let when: string;
-  let async: string;
+    let when: string;
+    let async: string;
 }
 /**
  * The basic building block for the resolve system.
@@ -15,36 +15,36 @@ export namespace defaultResolvePolicy {
  * parameter to those fns.
  */
 export class Resolvable {
-  constructor(arg1: any, resolveFn: any, deps: any, policy: any, data: any);
-  resolved: boolean;
-  promise: any;
-  token: any;
-  policy: any;
-  resolveFn: any;
-  deps: any;
-  data: any;
-  getPolicy(state: any): {
-    when: any;
-    async: any;
-  };
-  /**
-   * Asynchronously resolve this Resolvable's data
-   *
-   * Given a ResolveContext that this Resolvable is found in:
-   * Wait for this Resolvable's dependencies, then invoke this Resolvable's function
-   * and update the Resolvable's state
-   */
-  resolve(resolveContext: any, trans: any): any;
-  /**
-   * Gets a promise for this Resolvable's data.
-   *
-   * Fetches the data and returns a promise.
-   * Returns the existing promise if it has already been fetched once.
-   */
-  get(resolveContext: any, trans: any): any;
-  toString(): string;
-  clone(): Resolvable;
+    constructor(arg1: any, resolveFn: any, deps: any, policy: any, data: any);
+    resolved: boolean;
+    promise: any;
+    token: any;
+    policy: any;
+    resolveFn: any;
+    deps: any;
+    data: any;
+    getPolicy(state: any): {
+        when: any;
+        async: any;
+    };
+    /**
+     * Asynchronously resolve this Resolvable's data
+     *
+     * Given a ResolveContext that this Resolvable is found in:
+     * Wait for this Resolvable's dependencies, then invoke this Resolvable's function
+     * and update the Resolvable's state
+     */
+    resolve(resolveContext: any, trans: any): any;
+    /**
+     * Gets a promise for this Resolvable's data.
+     *
+     * Fetches the data and returns a promise.
+     * Returns the existing promise if it has already been fetched once.
+     */
+    get(resolveContext: any, trans: any): any;
+    toString(): string;
+    clone(): Resolvable;
 }
 export namespace Resolvable {
-  function fromData(token: any, data: any): Resolvable;
+    function fromData(token: any, data: any): Resolvable;
 }

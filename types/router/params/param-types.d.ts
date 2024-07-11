@@ -22,15 +22,15 @@
  * ```
  */
 export class ParamTypes {
-  enqueue: boolean;
-  typeQueue: any[];
-  defaultTypes: {};
-  types: any;
-  /**
-   * Registers a parameter type
-   *
-   * End users should call [[UrlMatcherFactory.type]], which delegates to this method.
-   */
-  type(name: any, definition: any, definitionFn: any): any;
-  _flushTypeQueue(): void;
+    enqueue: boolean;
+    typeQueue: any[];
+    defaultTypes: {};
+    types: any;
+    /**
+     * Registers a parameter type
+     *
+     * End users should call [[UrlMatcherFactory.type]], which delegates to this method.
+     */
+    type(name: any, definition: any, definitionFn: any): any;
+    _flushTypeQueue(): void;
 }

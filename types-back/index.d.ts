@@ -9,13 +9,6 @@ declare global {
   }
 }
 
-export as namespace angular;
-export as namespace ng;
-
-// Support AMD require
-export = angular;
-
-import ng = angular;
 import { Obj } from "./router";
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -178,53 +171,6 @@ declare namespace angular {
     // Properties
     name: string;
     requires: string[];
-  }
-
-  ///////////////////////////////////////////////////////////////////////////
-  // Attributes
-  // see http://docs.angularjs.org/api/ng/type/$compile.directive.Attributes
-  ///////////////////////////////////////////////////////////////////////////
-  interface IAttributes {
-    /**
-     * this is necessary to be able to access the scoped attributes. it's not very elegant
-     * because you have to use attrs['foo'] instead of attrs.foo but I don't know of a better way
-     * this should really be limited to return string but it creates this problem: http://stackoverflow.com/q/17201854/165656
-     */
-    [name: string]: any;
-
-    /**
-     * Converts an attribute name (e.g. dash/colon/underscore-delimited string, optionally prefixed with x- or data-) to its normalized, camelCase form.
-     *
-     * Also there is special case for Moz prefix starting with upper case letter.
-     *
-     * For further information check out the guide on @see https://docs.angularjs.org/guide/directive#matching-directives
-     */
-    $normalize(name: string): string;
-
-    /**
-     * Adds and removes the appropriate CSS class values to the element based on the difference between
-     * the new and old CSS class values (specified as newClasses and oldClasses).
-     */
-    $updateClass(newClasses: string, oldClasses: string): void;
-
-    /**
-     * Set DOM element attribute value.
-     */
-    $set(key: string, value: any): void;
-
-    /**
-     * Observes an interpolated attribute.
-     * The observer function will be invoked once during the next $digest
-     * following compilation. The observer is then invoked whenever the
-     * interpolated value changes.
-     */
-    $observe<T>(name: string, fn: (value?: T) => any): Function;
-
-    /**
-     * A map of DOM element attribute names to the normalized name. This is needed
-     * to do reverse lookup from normalized name back to actual name.
-     */
-    $attr: Object;
   }
 
   /**
@@ -2134,59 +2080,6 @@ declare namespace angular {
     require?: { [controller: string]: string } | undefined;
   }
 
-  type IControllerConstructor =
-    | (new (...args: any[]) => IController) // Instead of classes, plain functions are often used as controller constructors, especially in examples.
-    | ((...args: any[]) => void | IController);
-
-  /**
-   * Directive controllers have a well-defined lifecycle. Each controller can implement "lifecycle hooks". These are methods that
-   * will be called by Angular at certain points in the life cycle of the directive.
-   * https://docs.angularjs.org/api/ng/service/$compile#life-cycle-hooks
-   * https://docs.angularjs.org/guide/component
-   */
-  interface IController {
-    /**
-     * Called on each controller after all the controllers on an element have been constructed and had their bindings
-     * initialized (and before the pre & post linking functions for the directives on this element). This is a good
-     * place to put initialization code for your controller.
-     */
-    $onInit?(): void;
-    /**
-     * Called on each turn of the digest cycle. Provides an opportunity to detect and act on changes.
-     * Any actions that you wish to take in response to the changes that you detect must be invoked from this hook;
-     * implementing this has no effect on when `$onChanges` is called. For example, this hook could be useful if you wish
-     * to perform a deep equality check, or to check a `Dat`e object, changes to which would not be detected by Angular's
-     * change detector and thus not trigger `$onChanges`. This hook is invoked with no arguments; if detecting changes,
-     * you must store the previous value(s) for comparison to the current values.
-     */
-    $doCheck?(): void;
-    /**
-     * Called whenever one-way bindings are updated. The onChangesObj is a hash whose keys are the names of the bound
-     * properties that have changed, and the values are an {@link IChangesObject} object  of the form
-     * { currentValue, previousValue, isFirstChange() }. Use this hook to trigger updates within a component such as
-     * cloning the bound value to prevent accidental mutation of the outer value.
-     */
-    $onChanges?(onChangesObj: IOnChangesObject): void;
-    /**
-     * Called on a controller when its containing scope is destroyed. Use this hook for releasing external resources,
-     * watches and event handlers.
-     */
-    $onDestroy?(): void;
-    /**
-     * Called after this controller's element and its children have been linked. Similar to the post-link function this
-     * hook can be used to set up DOM event handlers and do direct DOM manipulation. Note that child elements that contain
-     * templateUrl directives will not have been compiled and linked since they are waiting for their template to load
-     * asynchronously and their own compilation and linking has been suspended until that occurs. This hook can be considered
-     * analogous to the ngAfterViewInit and ngAfterContentInit hooks in Angular 2. Since the compilation process is rather
-     * different in Angular 1 there is no direct mapping and care should be taken when upgrading.
-     */
-    $postLink?(): void;
-
-    // IController implementations frequently do not implement any of its methods.
-    // A string indexer indicates to TypeScript not to issue a weak type error in this case.
-    [s: string]: any;
-  }
-
   /**
    * Interface for the $onInit lifecycle hook
    * https://docs.angularjs.org/api/ng/service/$compile#life-cycle-hooks
@@ -2258,26 +2151,12 @@ declare namespace angular {
     $postLink(): void;
   }
 
-  interface IOnChangesObject {
-    [property: string]: IChangesObject<any>;
-  }
-
-  interface IChangesObject<T> {
-    currentValue: T;
-    previousValue: T;
-    isFirstChange(): boolean;
-  }
-
   ///////////////////////////////////////////////////////////////////////////
   // Directive
   // see http://docs.angularjs.org/api/ng/provider/$compileProvider#directive
   // and http://docs.angularjs.org/guide/directive
   ///////////////////////////////////////////////////////////////////////////
 
-  type IDirectiveController =
-    | IController
-    | IController[]
-    | { [key: string]: IController };
 
   interface IDirectiveFactory<
     TScope extends Scope = Scope,
@@ -2292,20 +2171,7 @@ declare namespace angular {
       | IDirectiveLinkFn<TScope, TElement, TAttributes, TController>;
   }
 
-  interface IDirectiveLinkFn<
-    TScope extends Scope = Scope,
-    TElement extends JQLite = JQLite,
-    TAttributes extends IAttributes = IAttributes,
-    TController extends IDirectiveController = IController,
-  > {
-    (
-      scope: TScope,
-      instanceElement: TElement,
-      instanceAttributes: TAttributes,
-      controller?: TController,
-      transclude?: ITranscludeFunction,
-    ): void;
-  }
+ 
 
   interface IDirectivePrePost<
     TScope extends Scope = Scope,
@@ -2320,74 +2186,7 @@ declare namespace angular {
       | IDirectiveLinkFn<TScope, TElement, TAttributes, TController>
       | undefined;
   }
-
-  interface IDirectiveCompileFn<
-    TScope extends Scope = Scope,
-    TElement extends JQLite = JQLite,
-    TAttributes extends IAttributes = IAttributes,
-    TController extends IDirectiveController = IController,
-  > {
-    (
-      templateElement: TElement,
-      templateAttributes: TAttributes,
-      /**
-       * @deprecated
-       * Note: The transclude function that is passed to the compile function is deprecated,
-       * as it e.g. does not know about the right outer scope. Please use the transclude function
-       * that is passed to the link function instead.
-       */
-      transclude: ITranscludeFunction,
-    ):
-      | void
-      | IDirectiveLinkFn<TScope, TElement, TAttributes, TController>
-      | IDirectivePrePost<TScope, TElement, TAttributes, TController>;
-  }
-
-  interface IDirective<
-    TScope extends Scope = Scope,
-    TElement extends JQLite = JQLite,
-    TAttributes extends IAttributes = IAttributes,
-    TController extends IDirectiveController = IController,
-  > {
-    compile?:
-      | IDirectiveCompileFn<TScope, TElement, TAttributes, TController>
-      | undefined;
-    controller?: string | Injectable<IControllerConstructor> | undefined;
-    controllerAs?: string | undefined;
-    /**
-     * Deprecation warning: although bindings for non-ES6 class controllers are currently bound to this before
-     * the controller constructor is called, this use is now deprecated. Please place initialization code that
-     * relies upon bindings inside a $onInit method on the controller, instead.
-     */
-    bindToController?:
-      | boolean
-      | { [boundProperty: string]: string }
-      | undefined;
-    link?:
-      | IDirectiveLinkFn<TScope, TElement, TAttributes, TController>
-      | IDirectivePrePost<TScope, TElement, TAttributes, TController>
-      | undefined;
-    multiElement?: boolean | undefined;
-    priority?: number | undefined;
-    /**
-     * @deprecated
-     */
-    replace?: boolean | undefined;
-    require?: string | string[] | { [controller: string]: string } | undefined;
-    restrict?: string | undefined;
-    scope?: boolean | { [boundProperty: string]: string } | undefined;
-    template?:
-      | string
-      | ((tElement: TElement, tAttrs: TAttributes) => string)
-      | undefined;
-    templateNamespace?: string | undefined;
-    templateUrl?:
-      | string
-      | ((tElement: TElement, tAttrs: TAttributes) => string)
-      | undefined;
-    terminal?: boolean | undefined;
-    transclude?: boolean | "element" | { [slot: string]: string } | undefined;
-  }
+  
 
   /**
    * These interfaces are kept for compatibility with older versions of these type definitions.

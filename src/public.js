@@ -104,6 +104,10 @@ import { initMessageModule } from "./exts/messages/messages";
 import { initAriaModule } from "./exts/aria/aria";
 import { initRouter } from "./router/index";
 
+/**
+ * Initializes `ng`, `animate`, `message`, `aria` and `router` modules.
+ * @returns {import('./index').angular.Module} `ng`module
+ */
 export function publishExternalAPI() {
   const module = setupModuleLoader(window);
   const ng = module(
@@ -207,12 +211,13 @@ export function publishExternalAPI() {
         });
       },
     ],
-  ).info({ angularVersion: "[VI]{version}[/VI]" }); // Gets injected by rollup plugin
+  )
+    // Gets injected by rollup plugin
+    .info({ angularVersion: "[VI]{version}[/VI]" });
 
   initAnimateModule();
   initMessageModule();
   initAriaModule();
   initRouter();
-
   return ng;
 }

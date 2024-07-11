@@ -1,4 +1,1 @@
-export function registerRedirectToHook(
-  transitionService: any,
-  stateService: any,
-): void;
+export function registerRedirectToHook(transitionService: any, stateService: any): void;

@@ -76,9 +76,6 @@
     </file>
   </example>
  */
-export const $$AnimateChildrenDirective: (
-  | string
-  | (($interpolate: any) => {
-      link(scope: any, element: any, attrs: any): void;
-    })
-)[];
+export const $$AnimateChildrenDirective: (string | (($interpolate: any) => {
+    link(scope: any, element: any, attrs: any): void;
+}))[];

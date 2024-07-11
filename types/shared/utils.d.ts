@@ -224,20 +224,14 @@ export function snakeCase(name: any, separator: any): any;
  * @param {Object=} context Object to become context (`this`) for the iterator function.
  * @returns {Object|Array} Reference to `obj`.
  */
-export function forEach(
-  obj: any | any[],
-  iterator: Function,
-  context?: any | undefined,
-): any | any[];
+export function forEach(obj: any | any[], iterator: Function, context?: any | undefined): any | any[];
 export function forEachSorted(obj: any, iterator: any, context: any): string[];
 /**
  * when using forEach the params are value, key, but it is often useful to have key, value.
  * @param {function(string, *)} iteratorFn
  * @returns {function(*, string)}
  */
-export function reverseParams(
-  iteratorFn: (arg0: string, arg1: any) => any,
-): (arg0: any, arg1: string) => any;
+export function reverseParams(iteratorFn: (arg0: string, arg1: any) => any): (arg0: any, arg1: string) => any;
 /**
  * Set or clear the hashkey for an object.
  * @param obj object
@@ -500,10 +494,7 @@ export function bind(context: any, fn: any, ...args: any[]): Function;
  *
  * See https://github.com/angular/angular.js/pull/14221 for more information.
  */
-export function toJson(
-  obj: any | any[] | Date | string | number | boolean,
-  pretty?: boolean | number,
-): string | undefined;
+export function toJson(obj: any | any[] | Date | string | number | boolean, pretty?: boolean | number): string | undefined;
 /**
  * @module angular
  * @function fromJson
@@ -517,18 +508,14 @@ export function toJson(
 export function fromJson(json: string): any | any[] | string | number;
 export function timezoneToOffset(timezone: any, fallback: any): any;
 export function addDateMinutes(date: any, minutes: any): Date;
-export function convertTimezoneToLocal(
-  date: any,
-  timezone: any,
-  reverse: any,
-): Date;
+export function convertTimezoneToLocal(date: any, timezone: any, reverse: any): Date;
 /**
  * Parses an escaped url query string into key-value pairs.
  * @param {string} keyValue
  * @returns {Object.<string,boolean|Array>}
  */
 export function parseKeyValue(keyValue: string): {
-  [x: string]: boolean | any[];
+    [x: string]: boolean | any[];
 };
 export function toKeyValue(obj: any): string;
 /**
@@ -573,11 +560,7 @@ export function shallowCopy(src: any, dst: any): any;
  * throw error if the argument is falsy.
  */
 export function assertArg(arg: any, name: any, reason: any): any;
-export function assertArgFn(
-  arg: any,
-  name: any,
-  acceptArrayAnnotation: any,
-): any;
+export function assertArgFn(arg: any, name: any, acceptArrayAnnotation: any): any;
 export function minErr(module: any): (...args: any[]) => Error;
 export function toDebugString(obj: any): any;
 /**

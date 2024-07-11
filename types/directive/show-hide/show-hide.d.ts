@@ -109,14 +109,11 @@
  * - Use `ng-class="{'ng-hide': expression}` instead of instead of {@link ngShow} / {@link ngHide}.
  * - Define an animation on the affected elements.
  */
-export const ngShowDirective: (
-  | string
-  | (($animate: any) => {
-      restrict: string;
-      multiElement: boolean;
-      link(scope: any, element: any, attr: any): void;
-    })
-)[];
+export const ngShowDirective: (string | (($animate: any) => {
+    restrict: string;
+    multiElement: boolean;
+    link(scope: any, element: any, attr: any): void;
+}))[];
 /**
  * @ngdoc directive
  * @name ngHide
@@ -224,11 +221,8 @@ export const ngShowDirective: (
  * - Use `ng-class="{'ng-hide': expression}` instead of instead of {@link ngShow} / {@link ngHide}.
  * - Define an animation on the affected elements.
  */
-export const ngHideDirective: (
-  | string
-  | (($animate: any) => {
-      restrict: string;
-      multiElement: boolean;
-      link(scope: any, element: any, attr: any): void;
-    })
-)[];
+export const ngHideDirective: (string | (($animate: any) => {
+    restrict: string;
+    multiElement: boolean;
+    link(scope: any, element: any, attr: any): void;
+}))[];

@@ -85,19 +85,10 @@
  *  </file>
  * </example>
  */
-export const ngAnimateSwapDirective: (
-  | string
-  | (($animate: any) => {
-      restrict: string;
-      transclude: string;
-      terminal: boolean;
-      priority: number;
-      link(
-        scope: any,
-        $element: any,
-        attrs: any,
-        ctrl: any,
-        $transclude: any,
-      ): void;
-    })
-)[];
+export const ngAnimateSwapDirective: (string | (($animate: any) => {
+    restrict: string;
+    transclude: string;
+    terminal: boolean;
+    priority: number;
+    link(scope: any, $element: any, attrs: any, ctrl: any, $transclude: any): void;
+}))[];

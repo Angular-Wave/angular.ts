@@ -46,7 +46,7 @@
  * @param fn
  * @returns {*|function(): (*|any)}
  */
-export function curry(fn: any): any | (() => any | any);
+export function curry(fn: any): any | (() => (any | any));
 /**
  * Given a varargs list of functions, returns a function that composes the argument functions, right-to-left
  * given: f(x), g(x), h(x)

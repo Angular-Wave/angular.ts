@@ -53,13 +53,10 @@
  *   element.
  *
  */
-export const ngClassDirective: (
-  | string
-  | (($parse: any) => {
-      restrict: string;
-      link(scope: any, element: any, attr: any): void;
-    })
-)[];
+export const ngClassDirective: (string | (($parse: any) => {
+    restrict: string;
+    link(scope: any, element: any, attr: any): void;
+}))[];
 /**
  * @ngdoc directive
  * @name ngClassOdd
@@ -85,13 +82,10 @@ export const ngClassDirective: (
  *
  *
  */
-export const ngClassOddDirective: (
-  | string
-  | (($parse: any) => {
-      restrict: string;
-      link(scope: any, element: any, attr: any): void;
-    })
-)[];
+export const ngClassOddDirective: (string | (($parse: any) => {
+    restrict: string;
+    link(scope: any, element: any, attr: any): void;
+}))[];
 /**
  * @ngdoc directive
  * @name ngClassEven
@@ -116,10 +110,7 @@ export const ngClassOddDirective: (
  *   result of the evaluation can be a string representing space delimited class names or an array.
  *
  */
-export const ngClassEvenDirective: (
-  | string
-  | (($parse: any) => {
-      restrict: string;
-      link(scope: any, element: any, attr: any): void;
-    })
-)[];
+export const ngClassEvenDirective: (string | (($parse: any) => {
+    restrict: string;
+    link(scope: any, element: any, attr: any): void;
+}))[];

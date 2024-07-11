@@ -1,4 +1,4 @@
 export namespace services {
-  let $q: any;
-  let $injector: any;
+    let $q: any;
+    let $injector: any;
 }

@@ -1,147 +1,127 @@
-export function NgModelController(
-  $scope: any,
-  $exceptionHandler: any,
-  $attr: any,
-  $element: any,
-  $parse: any,
-  $animate: any,
-  $timeout: any,
-  $q: any,
-  $interpolate: any,
-): void;
+export function NgModelController($scope: any, $exceptionHandler: any, $attr: any, $element: any, $parse: any, $animate: any, $timeout: any, $q: any, $interpolate: any): void;
 export class NgModelController {
-  constructor(
-    $scope: any,
-    $exceptionHandler: any,
-    $attr: any,
-    $element: any,
-    $parse: any,
-    $animate: any,
-    $timeout: any,
-    $q: any,
-    $interpolate: any,
-  );
-  $viewValue: number;
-  $modelValue: number;
-  $$rawModelValue: any;
-  $validators: {};
-  $asyncValidators: {};
-  $parsers: any[];
-  $formatters: any[];
-  $viewChangeListeners: any[];
-  $untouched: boolean;
-  $touched: boolean;
-  $pristine: boolean;
-  $dirty: boolean;
-  $valid: boolean;
-  $invalid: boolean;
-  $error: {};
-  $$success: {};
-  $pending: any;
-  $name: any;
-  $$parentForm: {
-    $addControl: () => void;
-    $getControls: () => any;
-    $$renameControl: (control: any, name: any) => void;
-    $removeControl: () => void;
-    $setValidity: () => void;
-    $setDirty: () => void;
-    $setPristine: () => void;
-    $setSubmitted: () => void;
-    $$setSubmitted: () => void;
-  };
-  $options: any;
-  $$updateEvents: string;
-  $$updateEventHandler: any;
-  $$parsedNgModel: any;
-  $$parsedNgModelAssign: any;
-  $$ngModelGet: any;
-  $$ngModelSet: any;
-  $$pendingDebounce: any;
-  $$parserValid: boolean;
-  $$parserName: string;
-  $$currentValidationRunId: number;
-  $$scope: any;
-  $$rootScope: any;
-  $$attr: any;
-  $$element: any;
-  $$animate: any;
-  $$timeout: any;
-  $$parse: any;
-  $$q: any;
-  $$exceptionHandler: any;
-  $$initGetterSetters(): void;
-  $render: () => void;
-  /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$isEmpty
-   *
-   * @description
-   * This is called when we need to determine if the value of an input is empty.
-   *
-   * For instance, the required directive does this to work out if the input has data or not.
-   *
-   * The default `$isEmpty` function checks whether the value is `undefined`, `''`, `null` or `NaN`.
-   *
-   * You can override this for input directives whose concept of being empty is different from the
-   * default. The `checkboxInputType` directive does this because in its case a value of `false`
-   * implies empty.
-   *
-   * @param {*} value The value of the input to check for emptiness.
-   * @returns {boolean} True if `value` is "empty".
-   */
-  $isEmpty(value: any): boolean;
-  $$updateEmptyClasses(value: any): void;
-  /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$setPristine
-   *
-   * @description
-   * Sets the control to its pristine state.
-   *
-   * This method can be called to remove the `ng-dirty` class and set the control to its pristine
-   * state (`ng-pristine` class). A model is considered to be pristine when the control
-   * has not been changed from when first compiled.
-   */
-  $setPristine(): void;
-  /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$setDirty
-   *
-   * @description
-   * Sets the control to its dirty state.
-   *
-   * This method can be called to remove the `ng-pristine` class and set the control to its dirty
-   * state (`ng-dirty` class). A model is considered to be dirty when the control has been changed
-   * from when first compiled.
-   */
-  $setDirty(): void;
-  /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$setUntouched
-   *
-   * @description
-   * Sets the control to its untouched state.
-   *
-   * This method can be called to remove the `ng-touched` class and set the control to its
-   * untouched state (`ng-untouched` class). Upon compilation, a model is set as untouched
-   * by default, however this function can be used to restore that state if the model has
-   * already been touched by the user.
-   */
-  $setUntouched(): void;
-  /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$setTouched
-   *
-   * @description
-   * Sets the control to its touched state.
-   *
-   * This method can be called to remove the `ng-untouched` class and set the control to its
-   * touched state (`ng-touched` class). A model is considered to be touched when the user has
-   * first focused the control element and then shifted focus away from the control (blur event).
-   */
-  $setTouched(): void;
-  /**
+    constructor($scope: any, $exceptionHandler: any, $attr: any, $element: any, $parse: any, $animate: any, $timeout: any, $q: any, $interpolate: any);
+    $viewValue: number;
+    $modelValue: number;
+    $$rawModelValue: any;
+    $validators: {};
+    $asyncValidators: {};
+    $parsers: any[];
+    $formatters: any[];
+    $viewChangeListeners: any[];
+    $untouched: boolean;
+    $touched: boolean;
+    $pristine: boolean;
+    $dirty: boolean;
+    $valid: boolean;
+    $invalid: boolean;
+    $error: {};
+    $$success: {};
+    $pending: any;
+    $name: any;
+    $$parentForm: {
+        $addControl: () => void;
+        $getControls: () => any;
+        $$renameControl: (control: any, name: any) => void;
+        $removeControl: () => void;
+        $setValidity: () => void;
+        $setDirty: () => void;
+        $setPristine: () => void;
+        $setSubmitted: () => void;
+        $$setSubmitted: () => void;
+    };
+    $options: any;
+    $$updateEvents: string;
+    $$updateEventHandler: any;
+    $$parsedNgModel: any;
+    $$parsedNgModelAssign: any;
+    $$ngModelGet: any;
+    $$ngModelSet: any;
+    $$pendingDebounce: any;
+    $$parserValid: boolean;
+    $$parserName: string;
+    $$currentValidationRunId: number;
+    $$scope: any;
+    $$rootScope: any;
+    $$attr: any;
+    $$element: any;
+    $$animate: any;
+    $$timeout: any;
+    $$parse: any;
+    $$q: any;
+    $$exceptionHandler: any;
+    $$initGetterSetters(): void;
+    $render: () => void;
+    /**
+     * @ngdoc method
+     * @name ngModel.NgModelController#$isEmpty
+     *
+     * @description
+     * This is called when we need to determine if the value of an input is empty.
+     *
+     * For instance, the required directive does this to work out if the input has data or not.
+     *
+     * The default `$isEmpty` function checks whether the value is `undefined`, `''`, `null` or `NaN`.
+     *
+     * You can override this for input directives whose concept of being empty is different from the
+     * default. The `checkboxInputType` directive does this because in its case a value of `false`
+     * implies empty.
+     *
+     * @param {*} value The value of the input to check for emptiness.
+     * @returns {boolean} True if `value` is "empty".
+     */
+    $isEmpty(value: any): boolean;
+    $$updateEmptyClasses(value: any): void;
+    /**
+     * @ngdoc method
+     * @name ngModel.NgModelController#$setPristine
+     *
+     * @description
+     * Sets the control to its pristine state.
+     *
+     * This method can be called to remove the `ng-dirty` class and set the control to its pristine
+     * state (`ng-pristine` class). A model is considered to be pristine when the control
+     * has not been changed from when first compiled.
+     */
+    $setPristine(): void;
+    /**
+     * @ngdoc method
+     * @name ngModel.NgModelController#$setDirty
+     *
+     * @description
+     * Sets the control to its dirty state.
+     *
+     * This method can be called to remove the `ng-pristine` class and set the control to its dirty
+     * state (`ng-dirty` class). A model is considered to be dirty when the control has been changed
+     * from when first compiled.
+     */
+    $setDirty(): void;
+    /**
+     * @ngdoc method
+     * @name ngModel.NgModelController#$setUntouched
+     *
+     * @description
+     * Sets the control to its untouched state.
+     *
+     * This method can be called to remove the `ng-touched` class and set the control to its
+     * untouched state (`ng-untouched` class). Upon compilation, a model is set as untouched
+     * by default, however this function can be used to restore that state if the model has
+     * already been touched by the user.
+     */
+    $setUntouched(): void;
+    /**
+     * @ngdoc method
+     * @name ngModel.NgModelController#$setTouched
+     *
+     * @description
+     * Sets the control to its touched state.
+     *
+     * This method can be called to remove the `ng-untouched` class and set the control to its
+     * touched state (`ng-touched` class). A model is considered to be touched when the user has
+     * first focused the control element and then shifted focus away from the control (blur event).
+     */
+    $setTouched(): void;
+    /**
      * @ngdoc method
      * @name ngModel.NgModelController#$rollbackViewValue
      *
@@ -230,120 +210,120 @@ export class NgModelController {
           </file>
      * </example>
      */
-  $rollbackViewValue(): void;
-  /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$validate
-   *
-   * @description
-   * Runs each of the registered validators (first synchronous validators and then
-   * asynchronous validators).
-   * If the validity changes to invalid, the model will be set to `undefined`,
-   * unless {@link ngModelOptions `ngModelOptions.allowInvalid`} is `true`.
-   * If the validity changes to valid, it will set the model to the last available valid
-   * `$modelValue`, i.e. either the last parsed value or the last value set from the scope.
-   */
-  $validate(): void;
-  $$runValidators(modelValue: any, viewValue: any, doneCallback: any): void;
-  /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$commitViewValue
-   *
-   * @description
-   * Commit a pending update to the `$modelValue`.
-   *
-   * Updates may be pending by a debounced event or because the input is waiting for a some future
-   * event defined in `ng-model-options`. this method is rarely needed as `NgModelController`
-   * usually handles calling this in response to input events.
-   */
-  $commitViewValue(): void;
-  $$lastCommittedViewValue: any;
-  $$parseAndValidate(): void;
-  $$writeModelToScope(): void;
-  /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$setViewValue
-   *
-   * @description
-   * Update the view value.
-   *
-   * This method should be called when a control wants to change the view value; typically,
-   * this is done from within a DOM event handler. For example, the {@link ng.directive:input input}
-   * directive calls it when the value of the input changes and {@link ng.directive:select select}
-   * calls it when an option is selected.
-   *
-   * When `$setViewValue` is called, the new `value` will be staged for committing through the `$parsers`
-   * and `$validators` pipelines. If there are no special {@link ngModelOptions} specified then the staged
-   * value is sent directly for processing through the `$parsers` pipeline. After this, the `$validators` and
-   * `$asyncValidators` are called and the value is applied to `$modelValue`.
-   * Finally, the value is set to the **expression** specified in the `ng-model` attribute and
-   * all the registered change listeners, in the `$viewChangeListeners` list are called.
-   *
-   * In case the {@link ng.directive:ngModelOptions ngModelOptions} directive is used with `updateOn`
-   * and the `default` trigger is not listed, all those actions will remain pending until one of the
-   * `updateOn` events is triggered on the DOM element.
-   * All these actions will be debounced if the {@link ng.directive:ngModelOptions ngModelOptions}
-   * directive is used with a custom debounce for this particular event.
-   * Note that a `$digest` is only triggered once the `updateOn` events are fired, or if `debounce`
-   * is specified, once the timer runs out.
-   *
-   * When used with standard inputs, the view value will always be a string (which is in some cases
-   * parsed into another type, such as a `Date` object for `input[date]`.)
-   * However, custom controls might also pass objects to this method. In this case, we should make
-   * a copy of the object before passing it to `$setViewValue`. This is because `ngModel` does not
-   * perform a deep watch of objects, it only looks for a change of identity. If you only change
-   * the property of the object then ngModel will not realize that the object has changed and
-   * will not invoke the `$parsers` and `$validators` pipelines. For this reason, you should
-   * not change properties of the copy once it has been passed to `$setViewValue`.
-   * Otherwise you may cause the model value on the scope to change incorrectly.
-   *
-   * <div class="alert alert-info">
-   * In any case, the value passed to the method should always reflect the current value
-   * of the control. For example, if you are calling `$setViewValue` for an input element,
-   * you should pass the input DOM value. Otherwise, the control and the scope model become
-   * out of sync. It's also important to note that `$setViewValue` does not call `$render` or change
-   * the control's DOM value in any way. If we want to change the control's DOM value
-   * programmatically, we should update the `ngModel` scope expression. Its new value will be
-   * picked up by the model controller, which will run it through the `$formatters`, `$render` it
-   * to update the DOM, and finally call `$validate` on it.
-   * </div>
-   *
-   * @param {*} value value from the view.
-   * @param {string} trigger Event that triggered the update.
-   */
-  $setViewValue(value: any, trigger: string): void;
-  $$debounceViewValueCommit(trigger: any): void;
-  /**
-   * @ngdoc method
-   *
-   * @name ngModel.NgModelController#$overrideModelOptions
-   *
-   * @description
-   *
-   * Override the current model options settings programmatically.
-   *
-   * The previous `ModelOptions` value will not be modified. Instead, a
-   * new `ModelOptions` object will inherit from the previous one overriding
-   * or inheriting settings that are defined in the given parameter.
-   *
-   * See {@link ngModelOptions} for information about what options can be specified
-   * and how model option inheritance works.
-   *
-   * <div class="alert alert-warning">
-   * **Note:** this function only affects the options set on the `ngModelController`,
-   * and not the options on the {@link ngModelOptions} directive from which they might have been
-   * obtained initially.
-   * </div>
-   *
-   * <div class="alert alert-danger">
-   * **Note:** it is not possible to override the `getterSetter` option.
-   * </div>
-   *
-   * @param {Object} options a hash of settings to override the previous options
-   *
-   */
-  $overrideModelOptions(options: any): void;
-  /**
+    $rollbackViewValue(): void;
+    /**
+     * @ngdoc method
+     * @name ngModel.NgModelController#$validate
+     *
+     * @description
+     * Runs each of the registered validators (first synchronous validators and then
+     * asynchronous validators).
+     * If the validity changes to invalid, the model will be set to `undefined`,
+     * unless {@link ngModelOptions `ngModelOptions.allowInvalid`} is `true`.
+     * If the validity changes to valid, it will set the model to the last available valid
+     * `$modelValue`, i.e. either the last parsed value or the last value set from the scope.
+     */
+    $validate(): void;
+    $$runValidators(modelValue: any, viewValue: any, doneCallback: any): void;
+    /**
+     * @ngdoc method
+     * @name ngModel.NgModelController#$commitViewValue
+     *
+     * @description
+     * Commit a pending update to the `$modelValue`.
+     *
+     * Updates may be pending by a debounced event or because the input is waiting for a some future
+     * event defined in `ng-model-options`. this method is rarely needed as `NgModelController`
+     * usually handles calling this in response to input events.
+     */
+    $commitViewValue(): void;
+    $$lastCommittedViewValue: any;
+    $$parseAndValidate(): void;
+    $$writeModelToScope(): void;
+    /**
+     * @ngdoc method
+     * @name ngModel.NgModelController#$setViewValue
+     *
+     * @description
+     * Update the view value.
+     *
+     * This method should be called when a control wants to change the view value; typically,
+     * this is done from within a DOM event handler. For example, the {@link ng.directive:input input}
+     * directive calls it when the value of the input changes and {@link ng.directive:select select}
+     * calls it when an option is selected.
+     *
+     * When `$setViewValue` is called, the new `value` will be staged for committing through the `$parsers`
+     * and `$validators` pipelines. If there are no special {@link ngModelOptions} specified then the staged
+     * value is sent directly for processing through the `$parsers` pipeline. After this, the `$validators` and
+     * `$asyncValidators` are called and the value is applied to `$modelValue`.
+     * Finally, the value is set to the **expression** specified in the `ng-model` attribute and
+     * all the registered change listeners, in the `$viewChangeListeners` list are called.
+     *
+     * In case the {@link ng.directive:ngModelOptions ngModelOptions} directive is used with `updateOn`
+     * and the `default` trigger is not listed, all those actions will remain pending until one of the
+     * `updateOn` events is triggered on the DOM element.
+     * All these actions will be debounced if the {@link ng.directive:ngModelOptions ngModelOptions}
+     * directive is used with a custom debounce for this particular event.
+     * Note that a `$digest` is only triggered once the `updateOn` events are fired, or if `debounce`
+     * is specified, once the timer runs out.
+     *
+     * When used with standard inputs, the view value will always be a string (which is in some cases
+     * parsed into another type, such as a `Date` object for `input[date]`.)
+     * However, custom controls might also pass objects to this method. In this case, we should make
+     * a copy of the object before passing it to `$setViewValue`. This is because `ngModel` does not
+     * perform a deep watch of objects, it only looks for a change of identity. If you only change
+     * the property of the object then ngModel will not realize that the object has changed and
+     * will not invoke the `$parsers` and `$validators` pipelines. For this reason, you should
+     * not change properties of the copy once it has been passed to `$setViewValue`.
+     * Otherwise you may cause the model value on the scope to change incorrectly.
+     *
+     * <div class="alert alert-info">
+     * In any case, the value passed to the method should always reflect the current value
+     * of the control. For example, if you are calling `$setViewValue` for an input element,
+     * you should pass the input DOM value. Otherwise, the control and the scope model become
+     * out of sync. It's also important to note that `$setViewValue` does not call `$render` or change
+     * the control's DOM value in any way. If we want to change the control's DOM value
+     * programmatically, we should update the `ngModel` scope expression. Its new value will be
+     * picked up by the model controller, which will run it through the `$formatters`, `$render` it
+     * to update the DOM, and finally call `$validate` on it.
+     * </div>
+     *
+     * @param {*} value value from the view.
+     * @param {string} trigger Event that triggered the update.
+     */
+    $setViewValue(value: any, trigger: string): void;
+    $$debounceViewValueCommit(trigger: any): void;
+    /**
+     * @ngdoc method
+     *
+     * @name ngModel.NgModelController#$overrideModelOptions
+     *
+     * @description
+     *
+     * Override the current model options settings programmatically.
+     *
+     * The previous `ModelOptions` value will not be modified. Instead, a
+     * new `ModelOptions` object will inherit from the previous one overriding
+     * or inheriting settings that are defined in the given parameter.
+     *
+     * See {@link ngModelOptions} for information about what options can be specified
+     * and how model option inheritance works.
+     *
+     * <div class="alert alert-warning">
+     * **Note:** this function only affects the options set on the `ngModelController`,
+     * and not the options on the {@link ngModelOptions} directive from which they might have been
+     * obtained initially.
+     * </div>
+     *
+     * <div class="alert alert-danger">
+     * **Note:** it is not possible to override the `getterSetter` option.
+     * </div>
+     *
+     * @param {Object} options a hash of settings to override the previous options
+     *
+     */
+    $overrideModelOptions(options: any): void;
+    /**
      * @ngdoc method
      *
      * @name  ngModel.NgModelController#$processModelValue
@@ -454,19 +434,19 @@ export class NgModelController {
      * </example>
      *
      */
-  $processModelValue(): void;
-  /**
-   * This method is called internally to run the $formatters on the $modelValue
-   */
-  $$format(): number;
-  /**
-   * This method is called internally when the bound scope value changes.
-   */
-  $$setModelValue(modelValue: any): void;
-  $$setUpdateOnEvents(): void;
+    $processModelValue(): void;
+    /**
+     * This method is called internally to run the $formatters on the $modelValue
+     */
+    $$format(): number;
+    /**
+     * This method is called internally when the bound scope value changes.
+     */
+    $$setModelValue(modelValue: any): void;
+    $$setUpdateOnEvents(): void;
 }
 export namespace NgModelController {
-  let $inject: string[];
+    let $inject: string[];
 }
 export const ngModelMinErr: (...args: any[]) => Error;
 /**
@@ -657,16 +637,13 @@ export const ngModelMinErr: (...args: any[]) => Error;
      </file>
  * </example>
  */
-export const ngModelDirective: (
-  | string
-  | (($rootScope: any) => {
-      restrict: string;
-      require: string[];
-      controller: typeof NgModelController;
-      priority: number;
-      compile: (element: any) => {
+export const ngModelDirective: (string | (($rootScope: any) => {
+    restrict: string;
+    require: string[];
+    controller: typeof NgModelController;
+    priority: number;
+    compile: (element: any) => {
         pre: (scope: any, element: any, attr: any, ctrls: any) => void;
         post: (scope: any, element: any, attr: any, ctrls: any) => void;
-      };
-    })
-)[];
+    };
+}))[];

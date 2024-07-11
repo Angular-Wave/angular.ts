@@ -9,9 +9,9 @@
  */
 export function $$CookieReader($document: any): any;
 export namespace $$CookieReader {
-  let $inject: string[];
+    let $inject: string[];
 }
 export function CookieReaderProvider(): void;
 export class CookieReaderProvider {
-  $get: typeof $$CookieReader;
+    $get: typeof $$CookieReader;
 }

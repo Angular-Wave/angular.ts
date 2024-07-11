@@ -17,43 +17,28 @@
  */
 export function $InterpolateProvider(): void;
 export class $InterpolateProvider {
-  /**
-   * @ngdoc method
-   * @name $interpolateProvider#startSymbol
-   * @description
-   * Symbol to denote start of expression in the interpolated string. Defaults to `{{`.
-   *
-   * @param {string=} value new value to set the starting symbol to.
-   * @returns {string|self} Returns the symbol when used as getter and self if used as setter.
-   */
-  startSymbol: (
-    value?: string | undefined,
-  ) => string | (Window & typeof globalThis);
-  /**
-   * @ngdoc method
-   * @name $interpolateProvider#endSymbol
-   * @description
-   * Symbol to denote the end of expression in the interpolated string. Defaults to `}}`.
-   *
-   * @param {string=} value new value to set the ending symbol to.
-   * @returns {string|self} Returns the symbol when used as getter and self if used as setter.
-   */
-  endSymbol: (
-    value?: string | undefined,
-  ) => string | (Window & typeof globalThis);
-  $get: (
-    | string
-    | ((
-        $parse: any,
-        $exceptionHandler: any,
-        $sce: any,
-      ) => {
-        (
-          text: string,
-          mustHaveExpression?: boolean | undefined,
-          trustedContext?: string | undefined,
-          allOrNothing?: boolean | undefined,
-        ): (arg0: context) => any;
+    /**
+     * @ngdoc method
+     * @name $interpolateProvider#startSymbol
+     * @description
+     * Symbol to denote start of expression in the interpolated string. Defaults to `{{`.
+     *
+     * @param {string=} value new value to set the starting symbol to.
+     * @returns {string|self} Returns the symbol when used as getter and self if used as setter.
+     */
+    startSymbol: (value?: string | undefined) => string | (Window & typeof globalThis);
+    /**
+     * @ngdoc method
+     * @name $interpolateProvider#endSymbol
+     * @description
+     * Symbol to denote the end of expression in the interpolated string. Defaults to `}}`.
+     *
+     * @param {string=} value new value to set the ending symbol to.
+     * @returns {string|self} Returns the symbol when used as getter and self if used as setter.
+     */
+    endSymbol: (value?: string | undefined) => string | (Window & typeof globalThis);
+    $get: (string | (($parse: any, $exceptionHandler: any, $sce: any) => {
+        (text: string, mustHaveExpression?: boolean | undefined, trustedContext?: string | undefined, allOrNothing?: boolean | undefined): (arg0: context) => any;
         /**
          * @ngdoc method
          * @name $interpolate#startSymbol
@@ -78,6 +63,5 @@ export class $InterpolateProvider {
          * @returns {string} end symbol.
          */
         endSymbol(): string;
-      })
-  )[];
+    }))[];
 }

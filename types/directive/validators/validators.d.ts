@@ -25,14 +25,11 @@
  * custom controls, `$isEmpty()` can be overwritten to account for a $viewValue that is not string-based.
  *
  */
-export const requiredDirective: (
-  | string
-  | (($parse: any) => {
-      restrict: string;
-      require: string;
-      link(scope: any, elm: any, attr: any, ctrl: any): void;
-    })
-)[];
+export const requiredDirective: (string | (($parse: any) => {
+    restrict: string;
+    require: string;
+    link(scope: any, elm: any, attr: any, ctrl: any): void;
+}))[];
 /**
  * @ngdoc directive
  * @name ngPattern
@@ -76,17 +73,11 @@ export const requiredDirective: (
  * </ol>
  * </div>
  */
-export const patternDirective: (
-  | string
-  | (($parse: any) => {
-      restrict: string;
-      require: string;
-      compile: (
-        tElm: any,
-        tAttr: any,
-      ) => (scope: any, elm: any, attr: any, ctrl: any) => void;
-    })
-)[];
+export const patternDirective: (string | (($parse: any) => {
+    restrict: string;
+    require: string;
+    compile: (tElm: any, tAttr: any) => (scope: any, elm: any, attr: any, ctrl: any) => void;
+}))[];
 /**
  * @ngdoc directive
  * @name ngMaxlength
@@ -121,14 +112,11 @@ export const patternDirective: (
  * </div>
  *
  */
-export const maxlengthDirective: (
-  | string
-  | (($parse: any) => {
-      restrict: string;
-      require: string;
-      link(scope: any, elm: any, attr: any, ctrl: any): void;
-    })
-)[];
+export const maxlengthDirective: (string | (($parse: any) => {
+    restrict: string;
+    require: string;
+    link(scope: any, elm: any, attr: any, ctrl: any): void;
+}))[];
 /**
  * @ngdoc directive
  * @name ngMinlength
@@ -163,11 +151,8 @@ export const maxlengthDirective: (
  * </div>
  *
  */
-export const minlengthDirective: (
-  | string
-  | (($parse: any) => {
-      restrict: string;
-      require: string;
-      link(scope: any, elm: any, attr: any, ctrl: any): void;
-    })
-)[];
+export const minlengthDirective: (string | (($parse: any) => {
+    restrict: string;
+    require: string;
+    link(scope: any, elm: any, attr: any, ctrl: any): void;
+}))[];

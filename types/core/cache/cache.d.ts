@@ -17,9 +17,9 @@ export const EXPANDO: "ngId";
  */
 export const CACHE: Map<number, ExpandoStore>;
 export type ExpandoStore = {
-  data: {
-    [x: string]: any;
-  };
-  events: any;
-  handle: Function | null;
+    data: {
+        [x: string]: any;
+    };
+    events: any;
+    handle: Function | null;
 };
