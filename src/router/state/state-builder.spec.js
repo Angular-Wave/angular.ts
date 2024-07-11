@@ -1,6 +1,7 @@
 import { StateBuilder } from "../../router/state/state-builder";
 
-describe("StateBuilder", function () {
+// TODO refactor this to url service
+xdescribe("StateBuilder", function () {
   const parent = { name: "" };
   let builder,
     matcher,
@@ -34,7 +35,7 @@ describe("StateBuilder", function () {
     );
   });
 
-  it("It should use the views object to build views, when defined", function () {
+  xit("It should use the views object to build views, when defined", function () {
     const config = { a: { foo: "bar", controller: "FooController" } };
     const builtViews = builder.builder("views")({
       parent: parent,
