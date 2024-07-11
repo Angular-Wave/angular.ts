@@ -1014,7 +1014,7 @@ export function $LocationProvider() {
             afterLocationChange(oldUrl, oldState);
           }
         });
-        if ($rootScope.$$phase !== ScopePhase.NONE) $rootScope.$digest();
+        if ($rootScope.$$phase === ScopePhase.NONE) $rootScope.$digest();
       });
 
       // update browser
