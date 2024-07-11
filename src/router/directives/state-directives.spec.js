@@ -1,7 +1,7 @@
 import { jqLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
 import { publishExternalAPI } from "../../public";
-import { browserTrigger, wait } from "../test-utils";
+import { browserTrigger, wait } from "../../shared/test-utils";
 
 describe("ngStateRef", () => {
   window.location.hash = "";
@@ -19,6 +19,7 @@ describe("ngStateRef", () => {
     $stateParams;
 
   beforeEach(() => {
+    window.location.hash = "";
     window.angular = new Angular();
     publishExternalAPI();
     let module = window.angular.module("defaultModule", ["ng.router"]);

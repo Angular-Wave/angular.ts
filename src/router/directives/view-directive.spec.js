@@ -9,9 +9,10 @@
 import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
 import { publishExternalAPI } from "../../public";
-import { wait } from "../test-utils";
+import { wait } from "../../shared/test-utils";
 
 describe("ngView", () => {
+  window.location.hash = "";
   let $stateProvider,
     scope,
     $compile,
