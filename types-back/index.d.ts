@@ -2173,19 +2173,6 @@ declare namespace angular {
 
  
 
-  interface IDirectivePrePost<
-    TScope extends Scope = Scope,
-    TElement extends JQLite = JQLite,
-    TAttributes extends IAttributes = IAttributes,
-    TController extends IDirectiveController = IController,
-  > {
-    pre?:
-      | IDirectiveLinkFn<TScope, TElement, TAttributes, TController>
-      | undefined;
-    post?:
-      | IDirectiveLinkFn<TScope, TElement, TAttributes, TController>
-      | undefined;
-  }
   
 
   /**
