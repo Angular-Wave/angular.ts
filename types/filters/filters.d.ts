@@ -19,14 +19,14 @@
 export function formatNumber(
   number: number,
   pattern: {
-    minFrac;
-    maxFrac;
-    gSize;
-    lgSize;
-    negPre;
-    posPre;
-    negSuf;
-    posSuf;
+    minFrac: any;
+    maxFrac: any;
+    gSize: any;
+    lgSize: any;
+    negPre: any;
+    posPre: any;
+    negSuf: any;
+    posSuf: any;
   },
   groupSep: string,
   decimalSep: string,

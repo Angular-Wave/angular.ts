@@ -33,7 +33,15 @@ const ngMinErr = minErr("ng");
 const moduleCache = {};
 
 /**
- * @type {ng.IAngularStatic}
+ * Configuration option for AngularTS bootstrap process.
+ *
+ * @typedef {Object} AngularBootstrapConfig
+ * @property {boolean} debugInfoEnabled - Indicates whether debug information should be enabled. Setting this to `false` can improve performance but will disable some debugging features.
+ * @property {boolean} [strictDi] - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.
+ */
+
+/**
+ * @class
  */
 export class Angular {
   constructor() {
@@ -119,7 +127,7 @@ export class Angular {
  *     Each item in the array should be the name of a predefined module or a (DI annotated)
  *     function that will be invoked by the injector as a `config` block.
  *     See: {@link angular.module modules}
- * @param {angular.IAngularBootstrapConfig} config an object for defining configuration options for the application. The
+ * @param {AngularBootstrapConfig} [config] an object for defining configuration options for the application. The
  *     following keys are supported:
  *
  * * `strictDi` - disable automatic function annotation for the application. This is meant to
@@ -129,11 +137,10 @@ export class Angular {
  */
   bootstrap(element, modules, config) {
     // eslint-disable-next-line no-param-reassign
-    if (!isObject(config)) config = {};
-    const defaultConfig = {
+    config = config || {
+      debugInfoEnabled: false,
       strictDi: false,
     };
-    config = extend(defaultConfig, config);
     this.doBootstrap = function () {
       // @ts-ignore
       element = jqLite(element);

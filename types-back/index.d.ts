@@ -39,11 +39,6 @@ declare namespace angular {
     $get: any;
   }
 
-  interface IAngularBootstrapConfig {
-    debugInfoEnabled: boolean;
-    strictDi?: boolean | undefined;
-  }
-
   ///////////////////////////////////////////////////////////////////////////
   // Module
   // see http://docs.angularjs.org/api/angular.Module

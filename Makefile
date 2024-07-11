@@ -1,4 +1,4 @@
-.PHONY: build test
+.PHONY: build test types
 
 setup:
 	@npm i
@@ -18,8 +18,9 @@ check:
 	./node_modules/.bin/tsc 
 
 types:
+	@rm -rf types
 	@echo "Generating *.d.ts"
-	@npx -p typescript tsc src/**/*.js --declaration --allowJs --emitDeclarationOnly --outDir types
+	@npx -p typescript tsc --project tsconfig.types.json
 
 serve:
 	@npm run serve

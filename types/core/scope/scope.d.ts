@@ -63,7 +63,7 @@ export class $RootScopeProvider {
     | ((
         exceptionHandler: angular.IExceptionHandlerService,
         parse: angular.IParseService,
-        browser: import("../services/browser").Browser,
+        browser: any,
       ) => Scope)
   )[];
 }
@@ -113,7 +113,7 @@ declare class Scope {
   /**
    * @type {?angular.Scope}
    */
-  $root: angular.Scope;
+  $root: angular.Scope | null;
   /**
    * @type {[]}
    */

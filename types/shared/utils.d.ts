@@ -360,7 +360,7 @@ export function includes(array: any, obj: any): boolean;
  * @param {T} value - The value to remove.
  * @returns {number} - The index of the removed value, or -1 if the value was not found.
  */
-export function arrayRemove<T>(array: T[], value: T): number;
+export function arrayRemove<T>(array: Array<T>, value: T): number;
 export function simpleCompare(a: any, b: any): boolean;
 /**
  * @module angular
