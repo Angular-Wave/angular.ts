@@ -1,4 +1,10 @@
-export function trimEmptyHash(url: any): any;
+/**
+ * Removes a trailing hash ('#') from the given URL if it exists.
+ *
+ * @param {string} url
+ * @returns {string}
+ */
+export function trimEmptyHash(url: string): string;
 /**
  * @name $browser
  * @requires $log
@@ -10,9 +16,9 @@ export function trimEmptyHash(url: any): any;
  *
  */
 /**
- * @param {object} $log window.console or an object with the same interface.
+ * @param {import('../services/log').angular.LogService} $log window.console or an object with the same interface.
  */
-export function Browser($log: object, $$taskTrackerFactory: any): void;
+export function Browser($log: import("../services/log").angular.LogService, $$taskTrackerFactory: any): void;
 export class Browser {
     /**
      * @name $browser
@@ -25,9 +31,9 @@ export class Browser {
      *
      */
     /**
-     * @param {object} $log window.console or an object with the same interface.
+     * @param {import('../services/log').angular.LogService} $log window.console or an object with the same interface.
      */
-    constructor($log: object, $$taskTrackerFactory: any);
+    constructor($log: import("../services/log").angular.LogService, $$taskTrackerFactory: any);
     $$completeOutstandingRequest: any;
     $$incOutstandingRequestCount: any;
     notifyWhenNoOutstandingRequests: any;
@@ -52,7 +58,7 @@ export class Browser {
      * @param {boolean=} replace Should new url replace current history record?
      * @param {object=} state State object to use with `pushState`/`replaceState`
      */
-    url: (url: string, replace?: boolean | undefined, state?: object | undefined) => any;
+    url: (url: string, replace?: boolean | undefined, state?: object | undefined) => string | this;
     /**
      * @name $browser#state
      *
@@ -138,5 +144,5 @@ export class Browser {
 }
 export function BrowserProvider(): void;
 export class BrowserProvider {
-    $get: (string | (($log: any, $$taskTrackerFactory: any) => Browser))[];
+    $get: (string | (($log: import("../services/log").angular.LogService, $$taskTrackerFactory: any) => Browser))[];
 }

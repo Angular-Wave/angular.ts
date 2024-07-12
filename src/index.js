@@ -147,7 +147,6 @@ import { publishExternalAPI } from "./public";
  * @typedef {angular.DirectiveController} TController
  */
 
-
 /**
  * @typedef {angular.Controller | angular.Controller[] | { [key: string]: angular.Controller }} angular.DirectiveController
  * @description Represents a directive controller, which can be:
@@ -159,13 +158,13 @@ import { publishExternalAPI } from "./public";
 /**
  * @template [S=import('./core/scope/scope').Scope]
  * @template {TScope} S - The type of the directive's scope.
- * 
+ *
  * @template [T=import('./shared/jqlite/jqlite').JQLite]
  * @template {TElement} T - The type of the directive's element.
- * 
+ *
  * @template [A=angular.Attributes]
  * @template {TAttributes} A - The type of the directive's attributes.
- * 
+ *
  * @template [C=angular.Controller]
  * @template {TController} C - The type of the directive's controller.
  */
@@ -188,7 +187,7 @@ import { publishExternalAPI } from "./public";
 
 /**
  * Link function for an AngularJS directive.
- * 
+ *
  * @template TScope
  * @template TElement
  * @template TAttributes
@@ -204,11 +203,10 @@ import { publishExternalAPI } from "./public";
 
 /**
  * @callback angular.CloneAttachFunction
- * @param {JQLite} [clonedElement] 
+ * @param {JQLite} [clonedElement]
  * @param {Scope} [scope] // Let's hint but not force cloneAttachFn's signature
  * @returns {any}
  */
-
 
 /**
  * This corresponds to $transclude passed to controllers and to the transclude function passed to link functions.
@@ -217,7 +215,7 @@ import { publishExternalAPI } from "./public";
  *
  * @typedef {Object} angular.TranscludeFunction
  * @property {function(TScope, angular.CloneAttachFunction, JQLite=, string=): JQLite} transcludeWithScope
- * @property {function(ICloneAttachFunction=, JQLite=, string=): JQLite} transcludeWithoutScope
+ * @property {function(angular.CloneAttachFunction=, JQLite=, string=): JQLite} transcludeWithoutScope
  * @property {function(string): boolean} isSlotFilled - Returns true if the specified slot contains content (i.e., one or more DOM nodes)
  */
 
@@ -226,7 +224,7 @@ import { publishExternalAPI } from "./public";
  */
 
 /**
- * @typedef {function(ICloneAttachFunction=, JQLite=, string=): JQLite} transcludeWithoutScope
+ * @typedef {function(angular.CloneAttachFunction=, JQLite=, string=): JQLite} transcludeWithoutScope
  */
 
 /**
@@ -252,7 +250,7 @@ import { publishExternalAPI } from "./public";
  * @template TAttributes - The type of the directive's attributes.
  * @template TController - The type of the directive's controller.
  *
- * @typedef {Object} IDirective
+ * @typedef {Object} angular.Directive
  * @property {angular.DirectiveCompileFn<S, T, A, C> | undefined} [compile]
  * Compile function for the directive.
  * @property {string | angular.Injectable<angular.ControllerConstructor> | undefined} [controller]
@@ -293,8 +291,44 @@ import { publishExternalAPI } from "./public";
  * @template TAttributes - The type of the directive's attributes.
  * @template TController - The type of the directive's controller.
  *
- * @typedef {(...args: any[]) => IDirective<S, T, A, C> | angular.DirectiveLinkFn<S, T, A, C>} IDirectiveFactory
+ * @typedef {(...args: any[]) => angular.Directive<S, T, A, C> | angular.DirectiveLinkFn<S, T, A, C>} angular.DirectiveFactory
  */
+
+/**
+ * @typedef {Function} angular.FilterFunction
+ * @property {boolean|undefined} [$stateful] By default, filters are only run once the input value changes. By marking the filter as `$stateful`, the filter will be run on every `$digest` to update the output. **This is strongly discouraged.** See https://docs.angularjs.org/guide/filter#stateful-filters
+ */
+
+/**
+ * @typedef {Function} angular.FilterFactory
+ * @returns {angular.FilterFunction}
+ */
+
+/**
+ * Interface for a service provider class.
+ * @typedef {Object} angular.ServiceProviderClass
+ * @property {Function} constructor - The constructor for the service provider.
+ * @param {...any} args - The arguments for the constructor.
+ * @returns {angular.ServiceProvider}
+ */
+
+/**
+ * Interface for a service provider factory function.
+ * @typedef {Function} angular.ServiceProviderFactory
+ * @param {...any} args - The arguments for the factory function.
+ * @returns {angular.ServiceProvider}
+ */
+
+/**
+ * Interface for a service provider.
+ * @typedef {Object} angular.ServiceProvider
+ * @property {*} $get - The $get property that represents a service instance or a factory function.
+ */
+
+/** @type {angular.ServiceProvider} */
+export const ServiceProvider = {
+  $get: undefined,
+};
 
 /**
  * @typedef {Object} angular.Module
@@ -315,21 +349,21 @@ import { publishExternalAPI } from "./public";
  *   Register a controller with the $controller service.
  * @property {function({ [name: string]: angular.Injectable<angular.ControllerConstructor>> }): angular.Module} controller
  *   Register multiple controllers.
- * @property {function<S, T, A, C>(string, angular.Injectable<IDirectiveFactory<S, T, A, C>>): angular.Module} directive
+ * @property {function<S, T, A, C>(string, angular.Injectable<angular.DirectiveFactory<S, T, A, C>>): angular.Module} directive
  *   Register a directive with the compiler.
- * @property {function<S, T, A, C>(Object.<string, angular.Injectable<IDirectiveFactory<S, T, A, C>>>): angular.Module} directive
+ * @property {function<S, T, A, C>(Object.<string, angular.Injectable<angular.DirectiveFactory<S, T, A, C>>>): angular.Module} directive
  *   Register multiple directives.
  * @property {function(string, angular.Injectable<Function>): angular.Module} factory
  *   Register a service factory with the $injector.
  * @property {function(Object.<string, angular.Injectable<Function>>): angular.Module} factory
  *   Register multiple service factories.
- * @property {function(string, angular.Injectable<FilterFactory>): angular.Module} filter
+ * @property {function(string, angular.Injectable<angular.FilterFactory>): angular.Module} filter
  *   Register a filter service.
- * @property {function(Object.<string, angular.Injectable<FilterFactory>>): angular.Module} filter
+ * @property {function(Object.<string, angular.Injectable<angular.FilterFactory>>): angular.Module} filter
  *   Register multiple filter services.
- * @property {function(string, IServiceProviderFactory): angular.Module} provider
+ * @property {function(string, angular.ServiceProviderFactory): angular.Module} provider
  *   Register a provider service factory.
- * @property {function(string, IServiceProviderClass): angular.Module} provider
+ * @property {function(string, angular.ServiceProviderClass): angular.Module} provider
  *   Register a provider service constructor.
  * @property {function(string, any[]): angular.Module} provider
  *   Register a provider service with inline annotated constructor.
@@ -349,6 +383,83 @@ import { publishExternalAPI } from "./public";
  *   The name of the AngularJS module.
  * @property {string[]} requires
  *   Array of module names that this module depends on.
+ */
+
+/**
+ * @typedef {Object} angular.FormController
+ * @property {boolean} $pristine - True if the form has not been modified.
+ * @property {boolean} $dirty - True if the form has been modified.
+ * @property {boolean} $valid - True if the form is valid.
+ * @property {boolean} $invalid - True if the form is invalid.
+ * @property {boolean} $submitted - True if the form has been submitted.
+ * @property {Object.<string, Array.<angular.NgModelController|angular.FormController>>} $error - An object containing arrays of controls with validation errors keyed by validation error keys.
+ * @property {string|undefined} [$name] - The name of the form.
+ * @property {Object.<string, Array.<angular.NgModelController|angular.FormController>>|undefined} [$pending] - An object containing arrays of controls that are pending validation, keyed by validation error keys.
+ * @property {function(angular.NgModelController|angular.FormController): void} $addControl - Adds a control to the form.
+ * @property {function(): ReadonlyArray.<angular.NgModelController|angular.FormController>} $getControls - Returns an array of all controls in the form.
+ * @property {function(angular.NgModelController|angular.FormController): void} $removeControl - Removes a control from the form.
+ * @property {function(string, boolean, angular.NgModelController|angular.FormController): void} $setValidity - Sets the validity of a control in the form.
+ * @property {function(): void} $setDirty - Marks the form as dirty.
+ * @property {function(): void} $setPristine - Marks the form as pristine.
+ * @property {function(): void} $commitViewValue - Commits the view value of all controls in the form.
+ * @property {function(): void} $rollbackViewValue - Rolls back the view value of all controls in the form.
+ * @property {function(): void} $setSubmitted - Marks the form as submitted.
+ * @property {function(): void} $setUntouched - Marks the form controls as untouched.
+ * @property {function(string): any} [name] - An indexer for additional properties.
+ */
+
+/**
+ * @typedef {Object} angular.NgModelController
+ * @property {function(): void} $render - Renders the view value.
+ * @property {function(string, boolean): void} $setValidity - Sets the validity state.
+ * @property {function(any, string=): void} $setViewValue - Sets the view value.
+ * @property {function(): void} $setPristine - Marks the control as pristine.
+ * @property {function(): void} $setDirty - Marks the control as dirty.
+ * @property {function(): void} $validate - Validates the control.
+ * @property {function(): void} $setTouched - Marks the control as touched.
+ * @property {function(): void} $setUntouched - Marks the control as untouched.
+ * @property {function(): void} $rollbackViewValue - Rolls back the view value.
+ * @property {function(): void} $commitViewValue - Commits the view value.
+ * @property {function(): void} $processModelValue - Processes the model value.
+ * @property {function(any): boolean} $isEmpty - Checks if the value is empty.
+ * @property {function(angular.NgModelOptions): void} $overrideModelOptions - Overrides model options.
+ * @property {*} $viewValue - The current view value.
+ * @property {*} $modelValue - The current model value.
+ * @property {Array.<function(any, any): boolean>} $parsers - Array of parsers.
+ * @property {Array.<function(any): any>} $formatters - Array of formatters.
+ * @property {Array.<function(): any>} $viewChangeListeners - Array of view change listeners.
+ * @property {Object.<string, boolean>} $error - Validation errors.
+ * @property {string|undefined} [$name] - The name of the control.
+ * @property {boolean} $touched - True if the control has been touched.
+ * @property {boolean} $untouched - True if the control has not been touched.
+ * @property {Object.<string, function(any, any): boolean>} $validators - Synchronous validators.
+ * @property {Object.<string, function(any, any): angular.Promise<any>>} $asyncValidators - Asynchronous validators.
+ * @property {Object.<string, boolean>|undefined} [$pending] - Pending validation.
+ * @property {boolean} $pristine - True if the control is pristine.
+ * @property {boolean} $dirty - True if the control is dirty.
+ * @property {boolean} $valid - True if the control is valid.
+ * @property {boolean} $invalid - True if the control is invalid.
+ */
+
+/**
+ * @typedef {Object} angular.NgModelOptions
+ * @property {string|undefined} [updateOn] - The event to update on.
+ * @property {number|Object.<string, number>|undefined} [debounce] - The debounce delay.
+ * @property {boolean|undefined} [allowInvalid] - Allows invalid models.
+ * @property {boolean|undefined} [getterSetter] - Indicates if getter/setter syntax is allowed.
+ * @property {string|undefined} [timezone] - The timezone.
+ * @property {string|undefined} [timeSecondsFormat] - The format for seconds in time and datetime-local inputs.
+ * @property {boolean|undefined} [timeStripZeroSeconds] - Indicates if zero seconds should be stripped.
+ */
+
+/**
+ * @typedef {Object.<string, function(any, any): boolean>} IModelValidators
+ * @property {function(any, any): boolean} [index] - Validator function for each index.
+ */
+
+/**
+ * @typedef {Object.<string, function(any, any): IPromise<any>>} IAsyncModelValidators
+ * @property {function(any, any): IPromise<any>} [index] - Async validator function for each index.
  */
 
 /**

@@ -840,29 +840,8 @@ declare namespace angular {
     shortTime: string;
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  // LogService
-  // see http://docs.angularjs.org/api/ng/service/$log
-  // see http://docs.angularjs.org/api/ng/provider/$logProvider
-  ///////////////////////////////////////////////////////////////////////////
-  interface ILogService {
-    debug: ILogCall;
-    error: ILogCall;
-    info: ILogCall;
-    log: ILogCall;
-    warn: ILogCall;
-  }
 
-  interface ILogProvider extends IServiceProvider {
-    debugEnabled(): boolean;
-    debugEnabled(enabled: boolean): ILogProvider;
-  }
-
-  // We define this as separate interface so we can reopen it later for
-  // the ngMock module.
-  interface ILogCall {
-    (...args: any[]): void;
-  }
+ 
 
   ///////////////////////////////////////////////////////////////////////////
   // ParseService

@@ -6,8 +6,6 @@ import { wait } from "../../shared/test-utils";
 
 describe("$state", () => {
   let $injector, template, ctrlName, $provide, $compile, module, $stateRegistry;
-
-  /** @type {import("../../router/stateProvider").StateProvider} */
   let $stateProvider;
 
   function $get(what) {

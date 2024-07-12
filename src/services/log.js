@@ -1,9 +1,45 @@
 import { isError } from "../shared/utils";
 
+///////////////////////////////////////////////////////////////////////////
+// LogService
+// see http://docs.angularjs.org/api/ng/service/$log
+// see http://docs.angularjs.org/api/ng/provider/$logProvider
+///////////////////////////////////////////////////////////////////////////
+
 /**
- * @ngdoc provider
+ * @typedef {(...args: any[]) => void} LogCall
+ * A function that accepts any number of arguments and returns void.
+ */
+
+/**
+ * @typedef {Object} angular.LogService
+ * @property {LogCall} debug - Function to log debug messages.
+ * @property {LogCall} error - Function to log error messages.
+ * @property {LogCall} info - Function to log info messages.
+ * @property {LogCall} log - Function to log general messages.
+ * @property {LogCall} warn - Function to log warning messages.
+ */
+
+/**
+ * @type {angular.LogService}
+ */
+export let LogService = {
+  debug: undefined,
+  error: undefined,
+  info: undefined,
+  log: undefined,
+  warn: undefined,
+} 
+
+/**
+ * @typedef {import('../index').ServiceProvider} angular.LogProvider
+ * @property {function(): boolean} debugEnabled - Function to get the current debug state.
+ * @property {function(boolean): angular.LogProvider} debugEnabled - Function to enable or disable debug.
+ */
+
+/**
  * @name $logProvider
- * @type {ng.ILogProvider}
+ * @type {angular.LogProvider}
  *
  * @description
  * Use the `$logProvider` to configure how the application logs messages
@@ -14,7 +50,6 @@ export class $LogProvider {
   }
 
   /**
-   * @ngdoc method
    * @name $logProvider#debugEnabled
    * @description
    * @param {boolean=} flag enable or disable debug level messages
@@ -48,12 +83,12 @@ export class $LogProvider {
 
     return (...args) => {
       const formattedArgs = args.map((arg) => this.formatError(arg));
-      return logFn.apply(console, formattedArgs);
+    return logFn.apply(console, formattedArgs);
     };
   }
 
   $get() {
-    return {
+    LogService = {
       /**
        * @ngdoc method
        * @name $log#log
@@ -106,5 +141,6 @@ export class $LogProvider {
         };
       })(),
     };
+    return LogService;
   }
 }

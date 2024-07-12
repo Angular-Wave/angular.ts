@@ -1,7 +1,27 @@
 /**
- * @ngdoc provider
+ * @typedef {(...args: any[]) => void} LogCall
+ * A function that accepts any number of arguments and returns void.
+ */
+/**
+ * @typedef {Object} angular.LogService
+ * @property {LogCall} debug - Function to log debug messages.
+ * @property {LogCall} error - Function to log error messages.
+ * @property {LogCall} info - Function to log info messages.
+ * @property {LogCall} log - Function to log general messages.
+ * @property {LogCall} warn - Function to log warning messages.
+ */
+/**
+ * @type {angular.LogService}
+ */
+export let LogService: angular.LogService;
+/**
+ * @typedef {import('../index').ServiceProvider} angular.LogProvider
+ * @property {function(): boolean} debugEnabled - Function to get the current debug state.
+ * @property {function(boolean): angular.LogProvider} debugEnabled - Function to enable or disable debug.
+ */
+/**
  * @name $logProvider
- * @type {ng.ILogProvider}
+ * @type {angular.LogProvider}
  *
  * @description
  * Use the `$logProvider` to configure how the application logs messages
@@ -9,7 +29,6 @@
 export class $LogProvider {
     debug: boolean;
     /**
-     * @ngdoc method
      * @name $logProvider#debugEnabled
      * @description
      * @param {boolean=} flag enable or disable debug level messages
@@ -18,46 +37,34 @@ export class $LogProvider {
     debugEnabled(flag?: boolean | undefined): any;
     formatError(arg: any): any;
     consoleLog(type: any): (...args: any[]) => any;
-    $get(): {
+    $get(): angular.LogService;
+}
+/**
+ * A function that accepts any number of arguments and returns void.
+ */
+export type LogCall = (...args: any[]) => void;
+export namespace angular {
+    type LogService = {
         /**
-         * @ngdoc method
-         * @name $log#log
-         *
-         * @description
-         * Write a log message
+         * - Function to log debug messages.
          */
-        log: (...args: any[]) => any;
+        debug: LogCall;
         /**
-         * @ngdoc method
-         * @name $log#info
-         *
-         * @description
-         * Write an information message
+         * - Function to log error messages.
          */
-        info: (...args: any[]) => any;
+        error: LogCall;
         /**
-         * @ngdoc method
-         * @name $log#warn
-         *
-         * @description
-         * Write a warning message
+         * - Function to log info messages.
          */
-        warn: (...args: any[]) => any;
+        info: LogCall;
         /**
-         * @ngdoc method
-         * @name $log#error
-         *
-         * @description
-         * Write an error message
+         * - Function to log general messages.
          */
-        error: (...args: any[]) => any;
+        log: LogCall;
         /**
-         * @ngdoc method
-         * @name $log#debug
-         *
-         * @description
-         * Write a debug message
+         * - Function to log warning messages.
          */
-        debug: (...args: any[]) => void;
+        warn: LogCall;
     };
+    type LogProvider = any;
 }

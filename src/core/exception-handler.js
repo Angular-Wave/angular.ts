@@ -44,6 +44,10 @@
 export function $ExceptionHandlerProvider() {
   this.$get = [
     "$log",
+    /**
+     * @param {import('../services/log').angular.LogService} $log 
+     * @returns 
+     */
     function ($log) {
       return function () {
         $log.error.apply($log, arguments);
@@ -51,13 +55,3 @@ export function $ExceptionHandlerProvider() {
     },
   ];
 }
-
-// let $log;
-
-// export function ExceptionHandler(log) {
-//   $log = log || window.console;
-
-//   return function(exception, cause) {
-//     $log.error.apply($log, arguments);
-//   };
-// }

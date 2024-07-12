@@ -52,7 +52,7 @@ export class Angular {
   constructor() {
     CACHE.clear(); // a ensure new instance of angular gets a clean cache
 
-    /** @type {import("./core/cache/cache").DomCache} */
+    /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
     this.cache = CACHE;
 
     /** @type {string} */

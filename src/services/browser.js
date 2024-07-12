@@ -5,6 +5,12 @@ import { forEach, isUndefined, equals } from "../shared/utils";
 // This variable should be used *only* inside the cacheState function.
 let lastCachedState = null;
 
+/**
+ * Removes a trailing hash ('#') from the given URL if it exists.
+ *
+ * @param {string} url
+ * @returns {string}
+ */
 export function trimEmptyHash(url) {
   return url.replace(/#$/, "");
 }
@@ -21,7 +27,7 @@ export function trimEmptyHash(url) {
  */
 
 /**
- * @param {object} $log window.console or an object with the same interface.
+ * @param {import('../services/log').angular.LogService} $log window.console or an object with the same interface.
  */
 export function Browser($log, $$taskTrackerFactory) {
   const self = this;
@@ -295,6 +301,12 @@ export function BrowserProvider() {
   this.$get = [
     "$log",
     "$$taskTrackerFactory",
+    /**
+     * 
+     * @param {import('../services/log').angular.LogService} $log 
+     * @param {*} $$taskTrackerFactory 
+     * @returns 
+     */
     function ($log, $$taskTrackerFactory) {
       return new Browser($log, $$taskTrackerFactory);
     },

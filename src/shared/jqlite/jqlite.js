@@ -382,10 +382,13 @@ function jqLiteRemoveData(element, name) {
 }
 
 /**
+ * Stores data associated with an element inside the expando property of the DOM element.
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Glossary/Expando MDN Glossary: Expando}
  *
  * @param {Element} element
- * @param {boolean} createIfNecessary
- * @returns {import("./core/cache").ExpandoStore}
+ * @param {boolean} [createIfNecessary=false]
+ * @returns {import("../../core/cache/cache").ExpandoStore}
  */
 function jqLiteExpandoStore(element, createIfNecessary = false) {
   let expandoId = element[EXPANDO];

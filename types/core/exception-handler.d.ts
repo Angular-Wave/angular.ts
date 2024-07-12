@@ -42,5 +42,5 @@
  */
 export function $ExceptionHandlerProvider(): void;
 export class $ExceptionHandlerProvider {
-    $get: (string | (($log: any) => (...args: any[]) => void))[];
+    $get: (string | (($log: import("../services/log").angular.LogService) => (...args: any[]) => void))[];
 }
