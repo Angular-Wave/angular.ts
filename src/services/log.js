@@ -8,16 +8,15 @@ import { isError } from "../shared/utils";
 
 /**
  * @typedef {(...args: any[]) => void} LogCall
- * A function that accepts any number of arguments and returns void.
  */
 
 /**
  * @typedef {Object} angular.LogService
- * @property {LogCall} debug - Function to log debug messages.
- * @property {LogCall} error - Function to log error messages.
- * @property {LogCall} info - Function to log info messages.
- * @property {LogCall} log - Function to log general messages.
- * @property {LogCall} warn - Function to log warning messages.
+ * @property {LogCall} debug - Log a debug message
+ * @property {LogCall} error - Log a error message
+ * @property {LogCall} info - Log a info message
+ * @property {LogCall} log - Log a general message
+ * @property {LogCall} warn - Log a warning message
  */
 
 /**
@@ -89,49 +88,10 @@ export class $LogProvider {
 
   $get() {
     LogService = {
-      /**
-       * @ngdoc method
-       * @name $log#log
-       *
-       * @description
-       * Write a log message
-       */
       log: this.consoleLog("log"),
-
-      /**
-       * @ngdoc method
-       * @name $log#info
-       *
-       * @description
-       * Write an information message
-       */
       info: this.consoleLog("info"),
-
-      /**
-       * @ngdoc method
-       * @name $log#warn
-       *
-       * @description
-       * Write a warning message
-       */
       warn: this.consoleLog("warn"),
-
-      /**
-       * @ngdoc method
-       * @name $log#error
-       *
-       * @description
-       * Write an error message
-       */
       error: this.consoleLog("error"),
-
-      /**
-       * @ngdoc method
-       * @name $log#debug
-       *
-       * @description
-       * Write a debug message
-       */
       debug: (() => {
         const fn = this.consoleLog("debug");
         return (...args) => {
