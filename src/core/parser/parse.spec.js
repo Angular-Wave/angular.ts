@@ -1,4 +1,4 @@
-import { AST, Lexer } from "../../core/parser/parse";
+import { AST, Lexer } from "./parse";
 import {
   forEach,
   isFunction,

@@ -1,4 +1,4 @@
-import { PubSub } from "../../core/pubsub";
+import { PubSub } from "./pubsub";
 
 describe("PubSub", function () {
   let pubsub;

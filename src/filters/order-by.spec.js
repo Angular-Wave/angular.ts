@@ -1,5 +1,5 @@
-import { publishExternalAPI } from "../../public";
-import { createInjector } from "../../injector";
+import { publishExternalAPI } from "../public";
+import { createInjector } from "../injector";
 
 describe("Filter: orderBy", () => {
   let orderBy;

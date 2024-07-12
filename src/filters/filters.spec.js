@@ -1,6 +1,6 @@
-import { publishExternalAPI } from "../../public";
-import { createInjector } from "../../injector";
-import { toJson } from "../../shared/utils";
+import { publishExternalAPI } from "../public";
+import { createInjector } from "../injector";
+import { toJson } from "../shared/utils";
 
 describe("filters", () => {
   let filter;
