@@ -3,7 +3,7 @@ import {
   urlIsSameOrigin,
   urlIsSameOriginAsBaseUrl,
   urlIsAllowedOriginFactory,
-} from "./urlUtils";
+} from "./url-utils";
 
 let $document = window.document;
 
@@ -18,7 +18,9 @@ describe("urlUtils", () => {
     });
 
     it("should normalize a relative url", () => {
-      expect(urlResolve("foo").href).toMatch(/^https?:\/\/[^/]+\/foo$/);
+      expect(urlResolve("/src/core/url-utils/foo").href).toEqual(
+        "http://localhost:4000/src/core/url-utils/foo",
+      );
     });
 
     it("should parse relative URL into component pieces", () => {
