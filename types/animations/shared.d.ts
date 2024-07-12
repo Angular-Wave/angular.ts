@@ -47,4 +47,4 @@ export const ANIMATION_DELAY_PROP: string;
 export const ANIMATION_DURATION_PROP: string;
 export const TRANSITION_DELAY_PROP: string;
 export const TRANSITION_DURATION_PROP: string;
-export const ngMinErr: (...args: any[]) => Error;
+export const ngMinErr: (arg0: string, arg1: string, ...arg2: any[]) => Error;

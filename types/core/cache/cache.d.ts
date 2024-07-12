@@ -6,6 +6,9 @@
  * @property {?Function} handle
  *
  */
+/**
+ * @typedef {Map<number, ExpandoStore>} DomCache
+ */
 export const EXPANDO: "ngId";
 /**
  * Expando cache for adding properties to DOM nodes with JavaScript.
@@ -13,9 +16,10 @@ export const EXPANDO: "ngId";
  * for performance reasons and convenience methods. A proxy is available for
  * additional logic handling.
  *
- * @type {Map<number, ExpandoStore>}
+ * @type {DomCache}
+ *
  */
-export const CACHE: Map<number, ExpandoStore>;
+export const CACHE: DomCache;
 export type ExpandoStore = {
     data: {
         [x: string]: any;
@@ -23,3 +27,4 @@ export type ExpandoStore = {
     events: any;
     handle: Function | null;
 };
+export type DomCache = Map<number, ExpandoStore>;

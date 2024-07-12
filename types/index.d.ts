@@ -1,6 +1,6 @@
 export namespace angular {
     type BootstrapConfig = any;
-    type Injectable<T> = Function | Array<string | Function>;
+    type Injectable<T_1> = Function | Array<string | Function>;
     type ComponentOptions = any;
     type ControllerConstructor = Function;
     type OnChangesObject = any;
@@ -9,14 +9,17 @@ export namespace angular {
     type Attributes = {
         [x: string]: any;
     };
+    type DirectiveController = angular.Controller | angular.Controller[] | {
+        [key: string]: angular.Controller;
+    };
     /**
      * Compile function for an AngularJS directive.
      */
-    type DirectiveCompileFn<TScope, TElement, TAttributes, TController> = (templateElement: TElement, templateAttributes: TAttributes, transclude: ITranscludeFunction) => any;
+    type DirectiveCompileFn<S_1 extends TScope, T_1 extends TElement, A_1 extends TAttributes, C_1 extends unknown> = (templateElement: TElement, templateAttributes: TAttributes, transclude: angular.TranscludeFunction) => any;
     /**
      * Link function for an AngularJS directive.
      */
-    type DirectiveLinkFn<TScope, TElement, TAttributes, TController> = (scope: TScope, instanceElement: TElement, instanceAttributes: TAttributes, controller?: TController, transclude?: ITranscludeFunction) => void;
+    type DirectiveLinkFn<TScope, TElement, TAttributes, TController> = (scope: TScope, instanceElement: TElement, instanceAttributes: TAttributes, controller?: TController, transclude?: angular.TranscludeFunction) => void;
     /**
      * Represents the pre and post linking functions of a directive.
      */
@@ -35,9 +38,7 @@ export namespace angular {
 export type TScope = import("./core/scope/scope").Scope;
 export type TElement = import("./shared/jqlite/jqlite").JQLite;
 export type TAttributes = angular.Attributes;
-export type IDirectiveController = angular.Controller | angular.Controller[] | {
-    [key: string]: angular.Controller;
-};
+export type TController = angular.DirectiveController;
 /**
  * Directive definition object.
  */

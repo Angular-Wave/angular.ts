@@ -561,28 +561,6 @@ export function shallowCopy(src: any, dst: any): any;
  */
 export function assertArg(arg: any, name: any, reason: any): any;
 export function assertArgFn(arg: any, name: any, acceptArrayAnnotation: any): any;
-export function minErr(module: any): (...args: any[]) => Error;
-export function toDebugString(obj: any): any;
-/**
- * Computes a hash of an 'obj'.
- * Hash of a:
- *  string is string
- *  number is number as string
- *  object is either result of calling $$hashKey function on the object or uniquely generated id,
- *         that is also assigned to the $$hashKey property of the object.
- *
- * @param {*} obj
- * @returns {string} hash string such that the same input will have the same hash string.
- *         The resulting string key is in 'type:hashKey' format.
- */
-export function hashKey(obj: any): string;
-export function mergeClasses(a: any, b: any): any;
-/**
- * Converts all accepted directives format into proper directive name.
- * @param name Name to normalize
- */
-export function directiveNormalize(name: any): any;
-export const ngAttrPrefixes: string[];
 /**
  * @description
  *
@@ -610,4 +588,26 @@ export const ngAttrPrefixes: string[];
  * @param {string} module The namespace to use for the new minErr instance.
  * @returns {function(string, string, ...*): Error} minErr instance
  */
+export function minErr(module: string): (arg0: string, arg1: string, ...args: any[]) => Error;
+export function toDebugString(obj: any): any;
+/**
+ * Computes a hash of an 'obj'.
+ * Hash of a:
+ *  string is string
+ *  number is number as string
+ *  object is either result of calling $$hashKey function on the object or uniquely generated id,
+ *         that is also assigned to the $$hashKey property of the object.
+ *
+ * @param {*} obj
+ * @returns {string} hash string such that the same input will have the same hash string.
+ *         The resulting string key is in 'type:hashKey' format.
+ */
+export function hashKey(obj: any): string;
+export function mergeClasses(a: any, b: any): any;
+/**
+ * Converts all accepted directives format into proper directive name.
+ * @param name Name to normalize
+ */
+export function directiveNormalize(name: any): any;
+export const ngAttrPrefixes: string[];
 export const minErrConfig: {};

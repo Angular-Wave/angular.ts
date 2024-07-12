@@ -448,7 +448,7 @@ export class NgModelController {
 export namespace NgModelController {
     let $inject: string[];
 }
-export const ngModelMinErr: (...args: any[]) => Error;
+export const ngModelMinErr: (arg0: string, arg1: string, ...arg2: any[]) => Error;
 /**
  * @ngdoc directive
  * @name ngModel

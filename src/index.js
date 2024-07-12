@@ -144,45 +144,89 @@ import { publishExternalAPI } from "./public";
  */
 
 /**
- * @typedef {angular.Controller | angular.Controller[] | { [key: string]: angular.Controller }} IDirectiveController
+ * @typedef {angular.DirectiveController} TController
+ */
+
+
+/**
+ * @typedef {angular.Controller | angular.Controller[] | { [key: string]: angular.Controller }} angular.DirectiveController
  * @description Represents a directive controller, which can be:
  * - A single instance of {@link angular.Controller}
  * - An array of {@link angular.Controller}
- * - An object where keys are string identifiers and values are {@link IController}
+ * - An object where keys are string identifiers and values are {@link angular.Controller}
+ */
+
+/**
+ * @template [S=import('./core/scope/scope').Scope]
+ * @template {TScope} S - The type of the directive's scope.
+ * 
+ * @template [T=import('./shared/jqlite/jqlite').JQLite]
+ * @template {TElement} T - The type of the directive's element.
+ * 
+ * @template [A=angular.Attributes]
+ * @template {TAttributes} A - The type of the directive's attributes.
+ * 
+ * @template [C=angular.Controller]
+ * @template {TController} C - The type of the directive's controller.
  */
 
 /**
  * Compile function for an AngularJS directive.
  *
- * @template TScope - The type of the directive's scope.
- * @template TElement - The type of the directive's element.
- * @template TAttributes - The type of the directive's attributes.
- * @template TController - The type of the directive's controller.
- *
+ * @template TScope
+ * @template TElement
+ * @template TAttributes
+ * @template TController
  * @callback angular.DirectiveCompileFn
  * @param {TElement} templateElement - The template element.
  * @param {TAttributes} templateAttributes - The template attributes.
- * @param {ITranscludeFunction} transclude - @deprecated The transclude function. Note: The transclude function that is passed to the compile function is deprecated,
+ * @param {angular.TranscludeFunction} transclude - @deprecated The transclude function. Note: The transclude function that is passed to the compile function is deprecated,
  * as it e.g. does not know about the right outer scope. Please use the transclude function
  * that is passed to the link function instead.
- * @returns {void | angular.DirectiveLinkFn<TScope, TElement, TAttributes, TController> | angular.DirectivePrePost<TScope, TElement, TAttributes, TController>} Returns void, angular.DirectiveLinkFn, or  angular.DirectivePrePost.
+ * @returns {void | angular.DirectiveLinkFn<S, T, A, C> | angular.DirectivePrePost<S, T, A, C>} Returns void, angular.DirectiveLinkFn, or  angular.DirectivePrePost.
  */
 
 /**
  * Link function for an AngularJS directive.
- *
- * @template TScope - The type of the directive's scope.
- * @template TElement - The type of the directive's element.
- * @template TAttributes - The type of the directive's attributes.
- * @template TController - The type of the directive's controller.
- *
+ * 
+ * @template TScope
+ * @template TElement
+ * @template TAttributes
+ * @template TController
  * @callback angular.DirectiveLinkFn
- * @param {TScope} scope - The scope instance for the directive.
- * @param {TElement} instanceElement - The jqLite-wrapped element that this directive matches.
- * @param {TAttributes} instanceAttributes - The normalized attributes for the element.
- * @param {TController} [controller] - The directive's required controller(s) instance(s) or its name(s).
- * @param {ITranscludeFunction} [transclude] - A transclude linking function pre-bound to the correct transclusion scope.
+ * @param {TScope} scope
+ * @param {TElement} instanceElement
+ * @param {TAttributes} instanceAttributes
+ * @param {TController} [controller]
+ * @param {angular.TranscludeFunction} [transclude]
  * @returns {void}
+ */
+
+/**
+ * @callback angular.CloneAttachFunction
+ * @param {JQLite} [clonedElement] 
+ * @param {Scope} [scope] // Let's hint but not force cloneAttachFn's signature
+ * @returns {any}
+ */
+
+
+/**
+ * This corresponds to $transclude passed to controllers and to the transclude function passed to link functions.
+ * https://docs.angularjs.org/api/ng/service/$compile#-controller-
+ * http://teropa.info/blog/2015/06/09/transclusion.html
+ *
+ * @typedef {Object} angular.TranscludeFunction
+ * @property {function(TScope, angular.CloneAttachFunction, JQLite=, string=): JQLite} transcludeWithScope
+ * @property {function(ICloneAttachFunction=, JQLite=, string=): JQLite} transcludeWithoutScope
+ * @property {function(string): boolean} isSlotFilled - Returns true if the specified slot contains content (i.e., one or more DOM nodes)
+ */
+
+/**
+ * @typedef {function(TScope, angular.CloneAttachFunction, JQLite=, string=): JQLite} transcludeWithScope
+ */
+
+/**
+ * @typedef {function(ICloneAttachFunction=, JQLite=, string=): JQLite} transcludeWithoutScope
  */
 
 /**
@@ -194,9 +238,9 @@ import { publishExternalAPI } from "./public";
  * @template TController The type of controller associated with the directive.
  *
  * @typedef {Object} angular.DirectivePrePost
- * @property {angular.DirectiveLinkFn<TScope, TElement, TAttributes, TController> | undefined} [pre]
+ * @property {angular.DirectiveLinkFn<S, T, A, C> | undefined} [pre]
  *   The pre-linking function of the directive.
- * @property {angular.DirectiveLinkFn<TScope, TElement, TAttributes, TController> | undefined} [post]
+ * @property {angular.DirectiveLinkFn<S, T, A, C> | undefined} [post]
  *   The post-linking function of the directive.
  */
 
@@ -209,7 +253,7 @@ import { publishExternalAPI } from "./public";
  * @template TController - The type of the directive's controller.
  *
  * @typedef {Object} IDirective
- * @property {angular.DirectiveCompileFn<TScope, TElement, TAttributes, TController> | undefined} [compile]
+ * @property {angular.DirectiveCompileFn<S, T, A, C> | undefined} [compile]
  * Compile function for the directive.
  * @property {string | angular.Injectable<angular.ControllerConstructor> | undefined} [controller]
  * Controller constructor or name.
@@ -217,7 +261,7 @@ import { publishExternalAPI } from "./public";
  * Controller alias.
  * @property {boolean | { [boundProperty: string]: string } | undefined} [bindToController]
  * Bindings to controller.
- * @property {angular.DirectiveLinkFn<TScope, TElement, TAttributes, TController> |  angular.DirectivePrePost<TScope, TElement, TAttributes, TController> | undefined} [link]
+ * @property {angular.DirectiveLinkFn<S, T, A, C> |  angular.DirectivePrePost<S, T, A, C> | undefined} [link]
  * Link function.
  * @property {boolean | undefined} [multiElement]
  * Multi-element directive flag.
@@ -249,7 +293,7 @@ import { publishExternalAPI } from "./public";
  * @template TAttributes - The type of the directive's attributes.
  * @template TController - The type of the directive's controller.
  *
- * @typedef {(...args: any[]) => IDirective<TScope, TElement, TAttributes, TController> | angular.DirectiveLinkFn<TScope, TElement, TAttributes, TController>} IDirectiveFactory
+ * @typedef {(...args: any[]) => IDirective<S, T, A, C> | angular.DirectiveLinkFn<S, T, A, C>} IDirectiveFactory
  */
 
 /**
@@ -271,9 +315,9 @@ import { publishExternalAPI } from "./public";
  *   Register a controller with the $controller service.
  * @property {function({ [name: string]: angular.Injectable<angular.ControllerConstructor>> }): angular.Module} controller
  *   Register multiple controllers.
- * @property {function<TScope, TElement, TAttributes, TController>(string, angular.Injectable<IDirectiveFactory<TScope, TElement, TAttributes, TController>>): angular.Module} directive
+ * @property {function<S, T, A, C>(string, angular.Injectable<IDirectiveFactory<S, T, A, C>>): angular.Module} directive
  *   Register a directive with the compiler.
- * @property {function<TScope, TElement, TAttributes, TController>(Object.<string, angular.Injectable<IDirectiveFactory<TScope, TElement, TAttributes, TController>>>): angular.Module} directive
+ * @property {function<S, T, A, C>(Object.<string, angular.Injectable<IDirectiveFactory<S, T, A, C>>>): angular.Module} directive
  *   Register multiple directives.
  * @property {function(string, angular.Injectable<Function>): angular.Module} factory
  *   Register a service factory with the $injector.
