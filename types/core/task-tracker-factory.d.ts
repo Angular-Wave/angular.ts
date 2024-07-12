@@ -1,3 +1,7 @@
+export function $$TaskTrackerFactoryProvider(): void;
+export class $$TaskTrackerFactoryProvider {
+    $get: (string | ((log: import("../services/log").angular.LogService) => TaskTracker))[];
+}
 /**
  * ! This is a private undocumented service !
  *
@@ -7,19 +11,22 @@
  *
  * A `TaskTracker` can keep track of pending tasks (grouped by type) and can notify interested
  * parties when all pending tasks (or tasks of a specific type) have been completed.
- *
- * @param {$log} log - A logger instance (such as `$log`). Used to log error during callback
- *     execution.
- *
- *
+ * @param {import('../services/log').angular.LogService} log
  */
-export function $$TaskTrackerFactoryProvider(): void;
-export class $$TaskTrackerFactoryProvider {
-    $get: () => any;
-}
-export function TaskTracker(log: any): void;
+export function TaskTracker(log: import("../services/log").angular.LogService): void;
 export class TaskTracker {
-    constructor(log: any);
+    /**
+     * ! This is a private undocumented service !
+     *
+     * @name $$taskTrackerFactory
+     * @description
+     * A function to create `TaskTracker` instances.
+     *
+     * A `TaskTracker` can keep track of pending tasks (grouped by type) and can notify interested
+     * parties when all pending tasks (or tasks of a specific type) have been completed.
+     * @param {import('../services/log').angular.LogService} log
+     */
+    constructor(log: import("../services/log").angular.LogService);
     ALL_TASKS_TYPE: string;
     DEFAULT_TASK_TYPE: string;
     /**

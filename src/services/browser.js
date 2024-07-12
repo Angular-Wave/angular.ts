@@ -17,7 +17,6 @@ export function trimEmptyHash(url) {
 
 /**
  * @name $browser
- * @requires $log
  * @description
  * This object has two goals:
  *
@@ -27,14 +26,13 @@ export function trimEmptyHash(url) {
  */
 
 /**
- * @param {import('../services/log').angular.LogService} $log window.console or an object with the same interface.
+ * @param {import('../core/task-tracker-factory').TaskTracker} taskTracker
  */
-export function Browser($log, $$taskTrackerFactory) {
+export function Browser(taskTracker) {
   const self = this;
   const { setTimeout } = window;
   const { clearTimeout } = window;
   const pendingDeferIds = {};
-  const taskTracker = $$taskTrackerFactory($log);
 
   /// ///////////////////////////////////////////////////////////
   // Task-tracking API
@@ -79,7 +77,7 @@ export function Browser($log, $$taskTrackerFactory) {
    * NOTE: this api is intended for use only by the `$location` service. Please use the
    * {@link ng.$location $location service} to change url.
    *
-   * @param {string} url New url (when used as setter)
+   * @param {string=} url New url (when used as setter)
    * @param {boolean=} replace Should new url replace current history record?
    * @param {object=} state State object to use with `pushState`/`replaceState`
    */
@@ -163,7 +161,7 @@ export function Browser($log, $$taskTrackerFactory) {
       return;
     }
 
-    lastBrowserUrl = self.url();
+    lastBrowserUrl = /** @type {string} */ (self.url());
     lastHistoryState = cachedState;
     forEach(urlChangeListeners, (listener) => {
       listener(self.url(), cachedState);
@@ -188,7 +186,7 @@ export function Browser($log, $$taskTrackerFactory) {
    * NOTE: this api is intended for use only by the $location service. Please use the
    * {@link ng.$location $location service} to monitor url changes in AngularJS apps.
    *
-   * @param {function(string)} listener Listener function to be called when url changes.
+   * @param {function(string):any} callback Listener function to be called when url changes.
    * @return {function(string)} Returns the registered listener fn - handy if the fn is anonymous.
    */
   self.onUrlChange = function (callback) {
@@ -246,7 +244,7 @@ export function Browser($log, $$taskTrackerFactory) {
 
   /**
    * @name $browser#defer
-   * @param {function()} fn A function, who's execution should be deferred.
+   * @param {function():any} fn A function, who's execution should be deferred.
    * @param {number=} [delay=0] Number of milliseconds to defer the function execution.
    * @param {string=} [taskType=DEFAULT_TASK_TYPE] The type of task that is deferred.
    * @returns {*} DeferId that can be used to cancel the task via `$browser.cancel()`.
@@ -297,18 +295,30 @@ export function Browser($log, $$taskTrackerFactory) {
   };
 }
 
+/**
+ * @typedef {import('../index').angular.ServiceProvider} angular.BrowserProvider
+ * @description
+ * This object has two goals:
+ *
+ * - hide all the global state in the browser caused by the window object
+ * - abstract away all the browser specific features and inconsistencies
+ *
+ * Remove this in the future
+ */
+
+/**
+ * @constructor
+ * @this {angular.BrowserProvider}
+ */
 export function BrowserProvider() {
   this.$get = [
-    "$log",
     "$$taskTrackerFactory",
     /**
-     *
-     * @param {import('../services/log').angular.LogService} $log
-     * @param {*} $$taskTrackerFactory
+     * @param {import('../core/task-tracker-factory').TaskTracker} $$taskTrackerFactory
      * @returns
      */
-    function ($log, $$taskTrackerFactory) {
-      return new Browser($log, $$taskTrackerFactory);
+    function ($$taskTrackerFactory) {
+      return new Browser($$taskTrackerFactory);
     },
   ];
 }

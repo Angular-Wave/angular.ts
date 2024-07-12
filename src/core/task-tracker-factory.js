@@ -1,4 +1,11 @@
-import { valueFn } from "../shared/utils";
+export function $$TaskTrackerFactoryProvider() {
+  // eslint-disable-next-line no-use-before-define
+  this.$get = [
+    "$log",
+    /** @param {import('../services/log').angular.LogService} log */
+    (log) => new TaskTracker(log),
+  ];
+}
 
 /**
  * ! This is a private undocumented service !
@@ -9,17 +16,8 @@ import { valueFn } from "../shared/utils";
  *
  * A `TaskTracker` can keep track of pending tasks (grouped by type) and can notify interested
  * parties when all pending tasks (or tasks of a specific type) have been completed.
- *
- * @param {$log} log - A logger instance (such as `$log`). Used to log error during callback
- *     execution.
- *
- *
+ * @param {import('../services/log').angular.LogService} log
  */
-export function $$TaskTrackerFactoryProvider() {
-  // eslint-disable-next-line no-use-before-define
-  this.$get = valueFn((log) => new TaskTracker(log));
-}
-
 export function TaskTracker(log) {
   const self = this;
   const taskCounts = {};
