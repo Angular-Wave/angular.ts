@@ -1174,6 +1174,8 @@ export function assertArgFn(arg, name, acceptArrayAnnotation) {
   return arg;
 }
 
+export const minErrConfig = {};
+
 /**
  * @description
  *
@@ -1201,21 +1203,16 @@ export function assertArgFn(arg, name, acceptArrayAnnotation) {
  * @param {string} module The namespace to use for the new minErr instance.
  * @returns {function(string, string, ...*): Error} minErr instance
  */
-
-export const minErrConfig = {};
-
 export function minErr(module) {
   const url = 'https://errors.angularjs.org/"NG_VERSION_FULL"/';
   const regex = `${url.replace(".", "\\.")}[\\s\\S]*`;
   const errRegExp = new RegExp(regex, "g");
 
-  return function () {
-    const code = arguments[0];
-    const template = arguments[1];
+  return function (...args) {
+    const code = args[0];
+    const template = args[1];
     let message = `[${module ? `${module}:` : ""}${code}] `;
-    const templateArgs = sliceArgs(arguments, 2).map((arg) =>
-      toDebugString(arg),
-    );
+    const templateArgs = sliceArgs(args, 2).map((arg) => toDebugString(arg));
     let paramPrefix;
     let i;
 

@@ -27,6 +27,11 @@ import { jqLite, startingTag } from "./shared/jqlite/jqlite";
 import { createInjector } from "./injector";
 import { CACHE } from "./core/cache/cache";
 
+/**
+ * @type {string} `version` from `package.json`, injected by Rollup plugin
+ */
+export const VERSION = "[VI]{version}[/VI]";
+
 const ngMinErr = minErr("ng");
 
 /** @type {Object.<string, import('./index.js').angular.Module>} */
@@ -45,34 +50,67 @@ const moduleCache = {};
  */
 export class Angular {
   constructor() {
+    CACHE.clear(); // a ensure new instance of angular gets a clean cache
+
+    /** @type {import("./core/cache/cache").DomCache} */
     this.cache = CACHE;
-    this.cache.clear(); // a ensure new instance of angular gets a clean cache
-    this.version = {
-      full: "",
-      major: 0,
-      minor: 0,
-      dot: 0,
-      codeName: "",
-    };
+
+    /** @type {string} */
+    this.version = VERSION;
 
     // Utility methods kept for backwards purposes
+    /** @type {bind} */
     this.bind = bind;
+
+    /** @type {equals} */
     this.equals = equals;
+
+    /** @type {import('./shared/jqlite/jqlite').JQLite} */
     this.element = jqLite;
+
+    /** @type {extend} */
     this.extend = extend;
+
+    /** @type {forEach} */
     this.forEach = forEach;
+
+    /** @type {fromJson} */
     this.fromJson = fromJson;
+
+    /** @type {toJson} */
     this.toJson = toJson;
+
+    /** @type {identity} */
     this.identity = identity;
+
+    /** @type {isDate} */
     this.isDate = isDate;
+
+    /** @type {isDefined} */
     this.isDefined = isDefined;
+
+    /** @type {isElement} */
     this.isElement = isElement;
+
+    /** @type {isFunction} */
     this.isFunction = isFunction;
+
+    /** @type {isNumber} */
     this.isNumber = isNumber;
+
+    /** @type {isObject} */
     this.isObject = isObject;
+
+    /** @type {isString} */
     this.isString = isString;
+
+    /** @type {isUndefined} */
     this.isUndefined = isUndefined;
+
+    /** @type {merge} */
     this.merge = merge;
+
+    /** @type {errorHandlingConfig} */
     this.errorHandlingConfig = errorHandlingConfig;
   }
 

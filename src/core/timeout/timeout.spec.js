@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
-import { wait } from "../test-utils";
+import { wait } from "../../shared/test-utils";
 
 describe("$timeout", () => {
   let injector;
@@ -326,7 +326,7 @@ describe("$timeout", () => {
 
     it("should forget references to relevant deferred", () => {
       // $browser.cancel is only called on cancel if the deferred object is still referenced
-      const cancelSpy = spyOn($browser.defer, "cancel").and.callThrough();
+      const cancelSpy = spyOn($browser, "cancel").and.callThrough();
 
       const promise = $timeout(() => {}, 0, false);
 

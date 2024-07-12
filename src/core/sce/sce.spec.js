@@ -1,7 +1,7 @@
 import { createInjector } from "../../injector";
 
 import { publishExternalAPI } from "../../public";
-import { adjustMatcher } from "../../core/sce";
+import { adjustMatcher } from "./sce";
 
 describe("SCE", () => {
   let $sce, $rootScope;
@@ -175,6 +175,7 @@ describe("SCE", () => {
   });
 
   describe("$sce.parseAs", () => {
+    publishExternalAPI();
     beforeEach(function () {
       createInjector(["ng"]).invoke((_$sce_, _$rootScope_) => {
         $sce = _$sce_;

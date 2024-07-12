@@ -1,4 +1,4 @@
-import { $$asyncQueue } from "../../core/root-scope";
+import { $$asyncQueue } from "./scope";
 import { extend, sliceArgs } from "../../shared/utils";
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";

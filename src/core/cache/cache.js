@@ -7,6 +7,10 @@
  *
  */
 
+/**
+ * @typedef {Map<number, ExpandoStore>} DomCache
+ */
+
 export const EXPANDO = "ngId";
 
 /**
@@ -15,7 +19,8 @@ export const EXPANDO = "ngId";
  * for performance reasons and convenience methods. A proxy is available for
  * additional logic handling.
  *
- * @type {Map<number, ExpandoStore>}
+ * @type {DomCache}
+ *
  */
 export const CACHE = new Proxy(new Map(), {
   get(target, prop, receiver) {

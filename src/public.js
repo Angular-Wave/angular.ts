@@ -103,6 +103,7 @@ import { initAnimateModule } from "./animations/module";
 import { initMessageModule } from "./exts/messages/messages";
 import { initAriaModule } from "./exts/aria/aria";
 import { initRouter } from "./router/index";
+import { VERSION } from "./loader";
 
 /**
  * Initializes `ng`, `animate`, `message`, `aria` and `router` modules.
@@ -211,9 +212,7 @@ export function publishExternalAPI() {
         });
       },
     ],
-  )
-    // Gets injected by rollup plugin
-    .info({ angularVersion: "[VI]{version}[/VI]" });
+  ).info({ angularVersion: VERSION });
 
   initAnimateModule();
   initMessageModule();

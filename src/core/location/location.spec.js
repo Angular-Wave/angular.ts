@@ -3,7 +3,7 @@ import {
   LocationHashbangUrl,
   $LocationProvider,
   LocationHashbangInHtml5Url,
-} from "../../core/location";
+} from "./location";
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
 
