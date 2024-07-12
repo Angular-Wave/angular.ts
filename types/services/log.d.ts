@@ -1,14 +1,13 @@
 /**
  * @typedef {(...args: any[]) => void} LogCall
- * A function that accepts any number of arguments and returns void.
  */
 /**
  * @typedef {Object} angular.LogService
- * @property {LogCall} debug - Function to log debug messages.
- * @property {LogCall} error - Function to log error messages.
- * @property {LogCall} info - Function to log info messages.
- * @property {LogCall} log - Function to log general messages.
- * @property {LogCall} warn - Function to log warning messages.
+ * @property {LogCall} debug - Log a debug messages
+ * @property {LogCall} error - Log a error message
+ * @property {LogCall} info - Log a info message
+ * @property {LogCall} log - Log a general message
+ * @property {LogCall} warn - Log a warning message
  */
 /**
  * @type {angular.LogService}
@@ -39,30 +38,27 @@ export class $LogProvider {
     consoleLog(type: any): (...args: any[]) => any;
     $get(): angular.LogService;
 }
-/**
- * A function that accepts any number of arguments and returns void.
- */
 export type LogCall = (...args: any[]) => void;
 export namespace angular {
     type LogService = {
         /**
-         * - Function to log debug messages.
+         * - Log a debug messages
          */
         debug: LogCall;
         /**
-         * - Function to log error messages.
+         * - Log a error message
          */
         error: LogCall;
         /**
-         * - Function to log info messages.
+         * - Log a info message
          */
         info: LogCall;
         /**
-         * - Function to log general messages.
+         * - Log a general message
          */
         log: LogCall;
         /**
-         * - Function to log warning messages.
+         * - Log a warning message
          */
         warn: LogCall;
     };

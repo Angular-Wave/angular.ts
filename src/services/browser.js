@@ -302,10 +302,10 @@ export function BrowserProvider() {
     "$log",
     "$$taskTrackerFactory",
     /**
-     * 
-     * @param {import('../services/log').angular.LogService} $log 
-     * @param {*} $$taskTrackerFactory 
-     * @returns 
+     *
+     * @param {import('../services/log').angular.LogService} $log
+     * @param {*} $$taskTrackerFactory
+     * @returns
      */
     function ($log, $$taskTrackerFactory) {
       return new Browser($log, $$taskTrackerFactory);

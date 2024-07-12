@@ -792,58 +792,6 @@ declare namespace angular {
   }
 
   ///////////////////////////////////////////////////////////////////////////
-  // LocaleService
-  // see http://docs.angularjs.org/api/ng/service/$locale
-  ///////////////////////////////////////////////////////////////////////////
-  interface ILocaleService {
-    id: string;
-
-    // These are not documented
-    // Check angular's i18n files for exemples
-    NUMBER_FORMATS: ILocaleNumberFormatDescriptor;
-    DATETIME_FORMATS: ILocaleDateTimeFormatDescriptor;
-    pluralCat(num: any): string;
-  }
-
-  interface ILocaleNumberFormatDescriptor {
-    DECIMAL_SEP: string;
-    GROUP_SEP: string;
-    PATTERNS: ILocaleNumberPatternDescriptor[];
-    CURRENCY_SYM: string;
-  }
-
-  interface ILocaleNumberPatternDescriptor {
-    minInt: number;
-    minFrac: number;
-    maxFrac: number;
-    posPre: string;
-    posSuf: string;
-    negPre: string;
-    negSuf: string;
-    gSize: number;
-    lgSize: number;
-  }
-
-  interface ILocaleDateTimeFormatDescriptor {
-    MONTH: string[];
-    SHORTMONTH: string[];
-    DAY: string[];
-    SHORTDAY: string[];
-    AMPMS: string[];
-    medium: string;
-    short: string;
-    fullDate: string;
-    longDate: string;
-    mediumDate: string;
-    shortDate: string;
-    mediumTime: string;
-    shortTime: string;
-  }
-
-
- 
-
-  ///////////////////////////////////////////////////////////////////////////
   // ParseService
   // see http://docs.angularjs.org/api/ng/service/$parse
   // see http://docs.angularjs.org/api/ng/provider/$parseProvider
@@ -2194,9 +2142,8 @@ declare namespace angular {
       get(name: "$httpParamSerializerJQLike"): IHttpParamSerializer;
       get(name: "$interpolate"): IInterpolateService;
       get(name: "$interval"): IIntervalService;
-      get(name: "$locale"): ILocaleService;
       get(name: "$location"): ILocationService;
-      get(name: "$log"): ILogService;
+      get(name: "$log"): LogService;
       get(name: "$parse"): IParseService;
       get(name: "$q"): IQService;
       get(name: "$rootElement"): IRootElementService;

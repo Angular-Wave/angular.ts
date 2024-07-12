@@ -12,7 +12,7 @@ import { isError } from "../shared/utils";
 
 /**
  * @typedef {Object} angular.LogService
- * @property {LogCall} debug - Log a debug message
+ * @property {LogCall} debug - Log a debug messages
  * @property {LogCall} error - Log a error message
  * @property {LogCall} info - Log a info message
  * @property {LogCall} log - Log a general message
@@ -28,7 +28,7 @@ export let LogService = {
   info: undefined,
   log: undefined,
   warn: undefined,
-} 
+};
 
 /**
  * @typedef {import('../index').ServiceProvider} angular.LogProvider
@@ -82,7 +82,7 @@ export class $LogProvider {
 
     return (...args) => {
       const formattedArgs = args.map((arg) => this.formatError(arg));
-    return logFn.apply(console, formattedArgs);
+      return logFn.apply(console, formattedArgs);
     };
   }
 
