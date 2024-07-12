@@ -1,10 +1,7 @@
 import { jqLite } from "../shared/jqlite/jqlite";
 
 /**
- * @ngdoc service
- * @name $document
- * 
- *
+ * @typedef {import('../index').angular.ServiceProvider} angular.DocumentProvider
  * @description
  * A {@link angular.element jQuery or jqLite} wrapper for the browser's `window.document` object.
  *
@@ -25,25 +22,31 @@ import { jqLite } from "../shared/jqlite/jqlite";
      </file>
    </example>
  */
+
+/**
+ * @constructor
+ * @this {angular.DocumentProvider}
+ */
 export function $DocumentProvider() {
-  this.$get = [
-    function () {
-      return jqLite(window.document);
-    },
-  ];
+  this.$get = () => jqLite(window.document);
 }
 
 /**
  * @private
  *
-s * Listens for document visibility change and makes the current status accessible.
+ * Listens for document visibility change and makes the current status accessible.
  */
 export function $$IsDocumentHiddenProvider() {
   this.$get = [
     "$document",
     "$rootScope",
+    /**
+     * @param {import("../shared/jqlite/jqlite").JQLite} $document
+     * @param {import("../core/scope/scope").Scope} $rootScope
+     * @returns
+     */
     function ($document, $rootScope) {
-      const doc = $document[0];
+      const doc = /** @type {typeof window.document} */ ($document[0]);
       let hidden = doc && doc.hidden;
 
       $document.on("visibilitychange", changeListener);

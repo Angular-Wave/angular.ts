@@ -1,8 +1,5 @@
 /**
- * @ngdoc service
- * @name $document
- *
- *
+ * @typedef {import('../index').angular.ServiceProvider} angular.DocumentProvider
  * @description
  * A {@link angular.element jQuery or jqLite} wrapper for the browser's `window.document` object.
  *
@@ -23,16 +20,23 @@
      </file>
    </example>
  */
-export function $DocumentProvider(): void;
+/**
+ * @constructor
+ * @this {angular.DocumentProvider}
+ */
+export function $DocumentProvider(this: import("../index").angular.ServiceProvider): void;
 export class $DocumentProvider {
-    $get: (() => any)[];
+    $get: () => any;
 }
 /**
  * @private
  *
-s * Listens for document visibility change and makes the current status accessible.
+ * Listens for document visibility change and makes the current status accessible.
  */
 export function $$IsDocumentHiddenProvider(): void;
 export class $$IsDocumentHiddenProvider {
-    $get: (string | (($document: any, $rootScope: any) => () => any))[];
+    $get: (string | (($document: import("../shared/jqlite/jqlite").JQLite, $rootScope: import("../core/scope/scope").Scope) => () => boolean))[];
+}
+export namespace angular {
+    type DocumentProvider = import("../index").angular.ServiceProvider;
 }
