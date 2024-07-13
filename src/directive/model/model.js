@@ -189,7 +189,7 @@ NgModelController.$inject = [
 /**
  *
  * @param {*} $scope
- * @param {import('../../core/exception-handler').angular.ErrorHandler} $exceptionHandler
+ * @param {import('../../core/exception-handler').ErrorHandler} $exceptionHandler
  * @param {*} $attr
  * @param {*} $element
  * @param {*} $parse

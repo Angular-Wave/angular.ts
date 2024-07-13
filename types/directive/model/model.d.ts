@@ -1,7 +1,7 @@
 /**
  *
  * @param {*} $scope
- * @param {import('../../core/exception-handler').angular.ErrorHandler} $exceptionHandler
+ * @param {import('../../core/exception-handler').ErrorHandler} $exceptionHandler
  * @param {*} $attr
  * @param {*} $element
  * @param {*} $parse
@@ -10,12 +10,12 @@
  * @param {*} $q
  * @param {*} $interpolate
  */
-export function NgModelController($scope: any, $exceptionHandler: import("../../core/exception-handler").angular.ErrorHandler, $attr: any, $element: any, $parse: any, $animate: any, $timeout: any, $q: any, $interpolate: any): void;
+export function NgModelController($scope: any, $exceptionHandler: import("../../core/exception-handler").ErrorHandler, $attr: any, $element: any, $parse: any, $animate: any, $timeout: any, $q: any, $interpolate: any): void;
 export class NgModelController {
     /**
      *
      * @param {*} $scope
-     * @param {import('../../core/exception-handler').angular.ErrorHandler} $exceptionHandler
+     * @param {import('../../core/exception-handler').ErrorHandler} $exceptionHandler
      * @param {*} $attr
      * @param {*} $element
      * @param {*} $parse
@@ -24,7 +24,7 @@ export class NgModelController {
      * @param {*} $q
      * @param {*} $interpolate
      */
-    constructor($scope: any, $exceptionHandler: import("../../core/exception-handler").angular.ErrorHandler, $attr: any, $element: any, $parse: any, $animate: any, $timeout: any, $q: any, $interpolate: any);
+    constructor($scope: any, $exceptionHandler: import("../../core/exception-handler").ErrorHandler, $attr: any, $element: any, $parse: any, $animate: any, $timeout: any, $q: any, $interpolate: any);
     $viewValue: number;
     $modelValue: number;
     $$rawModelValue: any;
@@ -73,7 +73,7 @@ export class NgModelController {
     $$timeout: any;
     $$parse: any;
     $$q: any;
-    $$exceptionHandler: import("../../core/exception-handler").angular.ErrorHandler;
+    $$exceptionHandler: import("../../core/exception-handler").ErrorHandler;
     $$initGetterSetters(): void;
     $render: () => void;
     /**

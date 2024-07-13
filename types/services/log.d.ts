@@ -14,7 +14,7 @@
  */
 export let LogService: angular.LogService;
 /**
- * @typedef {import('../types').angular.ServiceProvider} angular.LogProvider
+ * @typedef {import('../types').ServiceProvider} angular.LogProvider
  * @property {function(): boolean} debugEnabled - Function to get the current debug state.
  * @property {function(boolean): angular.LogProvider} debugEnabled - Function to enable or disable debug.
  */
@@ -62,5 +62,5 @@ export namespace angular {
          */
         warn: LogCall;
     };
-    type LogProvider = import("../types").angular.ServiceProvider;
+    type LogProvider = import("../types").ServiceProvider;
 }

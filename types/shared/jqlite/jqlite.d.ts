@@ -50,9 +50,9 @@ export class JQLite {
     controller(name?: string): any;
     /**
      * Return instance of injector attached to element
-     * @returns {import('../../types').angular.InjectorService}
+     * @returns {import('../../types').InjectorService}
      */
-    injector(): import("../../types").angular.InjectorService;
+    injector(): import("../../types").InjectorService;
     /**
      * Adds an event listener to each element in the JQLite collection.
      *

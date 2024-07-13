@@ -74,7 +74,7 @@ export function TemplateRequestProvider() {
     "$sce",
     /**
      *
-     * @param {import('../core/exception-handler').angular.ErrorHandler} $exceptionHandler
+     * @param {import('../core/exception-handler').ErrorHandler} $exceptionHandler
      * @param {*} $templateCache
      * @param {*} $http
      * @param {*} $q

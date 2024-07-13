@@ -107,7 +107,7 @@ import { VERSION } from "./loader";
 
 /**
  * Initializes `ng`, `animate`, `message`, `aria` and `router` modules.
- * @returns {import('./index').angular.Module} `ng`module
+ * @returns {import('./index').Module} `ng`module
  */
 export function publishExternalAPI() {
   const module = setupModuleLoader(window);

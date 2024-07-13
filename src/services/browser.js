@@ -291,7 +291,7 @@ export function Browser(taskTracker) {
 }
 
 /**
- * @typedef {import('../types').angular.ServiceProvider} angular.BrowserProvider
+ * @typedef {import('../types').ServiceProvider} angular.BrowserProvider
  * @description
  * This object has two goals:
  *

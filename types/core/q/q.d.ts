@@ -7,7 +7,7 @@
  */
 export function $QProvider(): void;
 export class $QProvider {
-    $get: (string | (($rootScope: any, $exceptionHandler: import("../exception-handler").angular.ErrorHandler) => any))[];
+    $get: (string | (($rootScope: any, $exceptionHandler: import("../exception-handler").ErrorHandler) => any))[];
     /**
      * @ngdoc method
      * @name $qProvider#errorOnUnhandledRejections

@@ -55,7 +55,7 @@ let applyAsyncId = null;
 let $parse;
 /** @type {import('../../services/browser').Browser} */
 let $browser;
-/**@type {import('../exception-handler').angular.ErrorHandler} */
+/**@type {import('../exception-handler').ErrorHandler} */
 let $exceptionHandler;
 
 /**

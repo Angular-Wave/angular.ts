@@ -2,7 +2,7 @@ export function $$TaskTrackerFactoryProvider() {
   // eslint-disable-next-line no-use-before-define
   this.$get = [
     "$log",
-    /** @param {import('../services/log').angular.LogService} log */
+    /** @param {import('../services/log').LogService} log */
     (log) => new TaskTracker(log),
   ];
 }
@@ -16,7 +16,7 @@ export function $$TaskTrackerFactoryProvider() {
  *
  * A `TaskTracker` can keep track of pending tasks (grouped by type) and can notify interested
  * parties when all pending tasks (or tasks of a specific type) have been completed.
- * @param {import('../services/log').angular.LogService} log
+ * @param {import('../services/log').LogService} log
  */
 export function TaskTracker(log) {
   const self = this;

@@ -271,7 +271,7 @@ export function $QProvider() {
     /**
      *
      * @param {*} $rootScope
-     * @param {import('../exception-handler').angular.ErrorHandler} $exceptionHandler
+     * @param {import('../exception-handler').ErrorHandler} $exceptionHandler
      * @returns
      */
     function ($rootScope, $exceptionHandler) {

@@ -234,7 +234,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           /**
            *
            * @param {*} $injector
-           * @param {import('../exception-handler').angular.ErrorHandler} $exceptionHandler
+           * @param {import('../exception-handler').ErrorHandler} $exceptionHandler
            * @returns
            */
           function ($injector, $exceptionHandler) {

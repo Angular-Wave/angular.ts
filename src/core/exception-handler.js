@@ -35,14 +35,14 @@
  */
 
 /**
- * @typedef {import('../types').angular.ServiceProvider} angular.ExceptionHandlerProvider
+ * @typedef {import('../types').ServiceProvider} ExceptionHandlerProvider
  */
 
-/** @type {import('../services/log').angular.LogService} */
+/** @type {import('../services/log').LogService} */
 let log;
 
 /**
- * @callback angular.ErrorHandler
+ * @callback ErrorHandler
  * @param {Error} exception - Exception associated with the error.
  * @param {string} [cause] - Optional information about the context in which the error was thrown.
  * @returns {void}
@@ -53,14 +53,14 @@ export const errorHandler = (exception, cause) => {
 
 /**
  * @constructor
- * @this {angular.ExceptionHandlerProvider}
+ * @this {ExceptionHandlerProvider}
  */
 export function $ExceptionHandlerProvider() {
   this.$get = [
     "$log",
     /**
-     * @param {import('../services/log').angular.LogService} $log
-     * @returns {angular.ErrorHandler}
+     * @param {import('../services/log').LogService} $log
+     * @returns {ErrorHandler}
      */
     function ($log) {
       log = $log;

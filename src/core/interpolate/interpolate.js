@@ -89,7 +89,7 @@ export function $InterpolateProvider() {
     /**
      *
      * @param {*} $parse
-     * @param {import('../exception-handler').angular.ErrorHandler} $exceptionHandler
+     * @param {import('../exception-handler').ErrorHandler} $exceptionHandler
      * @param {*} $sce
      * @returns
      */

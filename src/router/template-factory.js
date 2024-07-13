@@ -139,7 +139,7 @@ export class TemplateFactory {
   /**
    * Creates a template by invoking an injectable provider function.
    *
-   * @param {import('../types').angular.Injectable<any>} provider Function to invoke via `locals`
+   * @param {import('../types').Injectable<any>} provider Function to invoke via `locals`
    * @param {Function} injectFn a function used to invoke the template provider
    * @param {angular.ResolveContext} context
    * @return {string|Promise.<string>} The template html as a string, or a promise
@@ -154,7 +154,7 @@ export class TemplateFactory {
   /**
    * Creates a component's template by invoking an injectable provider function.
    *
-   * @param {import('../types').angular.Injectable<any>} provider Function to invoke via `locals`
+   * @param {import('../types').Injectable<any>} provider Function to invoke via `locals`
    * @param {Function} injectFn a function used to invoke the template provider
    * @return {string} The template html as a string: "<component-name input1='::$resolve.foo'></component-name>".
    */

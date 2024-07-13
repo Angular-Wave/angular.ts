@@ -1,29 +1,29 @@
 /**
- * @typedef {Object} angular.BootstrapConfig
+ * @typedef {Object} BootstrapConfig
  * @description Configuration option for AngularTS bootstrap process.
  * @property {boolean} debugInfoEnabled - Indicates whether debug information should be enabled. Setting this to `false` can improve performance but will disable some debugging features.
  * @property {boolean} [strictDi] - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.
  */
 
 /**
- * @typedef {Function|Array<string|Function>} angular.Injectable
+ * @typedef {Function|Array<string|Function>} Injectable
  * @description Represents a type that can be injected, either as a function or an array of strings/functions.
  * @template T
  */
 
 /**
- * @typedef {Object} angular.ComponentOptions
+ * @typedef {Object} ComponentOptions
  * @description Component definition object (a simplified directive definition object)
- * @property {string |angular.Injectable<angular.ControllerConstructor>> | undefined} [controller]
+ * @property {string |Injectable<ControllerConstructor>> | undefined} [controller]
  *   Controller constructor function or name of a registered controller.
  *   Use array form for dependencies (necessary with strictDi).
  * @property {string | undefined} [controllerAs]
  *   Identifier name for the controller published to its scope (default: '$ctrl').
- * @property {string |angular.Injectable<(...args: any[]) => string> | undefined} [template]
+ * @property {string |Injectable<(...args: any[]) => string> | undefined} [template]
  *   HTML template string or function returning an HTML template.
  *   If a function, injects $element and $attrs.
  *   Use array form for dependencies (necessary with strictDi).
- * @property {string |angular.Injectable<(...args: any[]) => string> | undefined} [templateUrl]
+ * @property {string |Injectable<(...args: any[]) => string> | undefined} [templateUrl]
  *   Path or function returning a path to an HTML template.
  *   If a function, injects $element and $attrs.
  *   Use array form for dependencies (necessary with strictDi).
@@ -39,21 +39,21 @@
  */
 
 /**
- * @typedef {Function} angular.ControllerConstructor
+ * @typedef {Function} ControllerConstructor
  * @description Controller constructor type for AngularJS. Note: Instead of classes, plain functions are often used as controller constructors, especially in examples.
  * @param {...any} args Arguments passed to the controller constructor.
- * @returns {void | angular.Controller} Returns nothing or an instance of IController.
+ * @returns {void | Controller} Returns nothing or an instance of IController.
  */
 
 /**
- * @typedef {Object} angular.OnChangesObject
+ * @typedef {Object} OnChangesObject
  * @description Object representing changes in one-way bound properties.
  * Keys are the names of the bound properties that have changed, and values are instances of IChangesObject.
- * @property {angular.ChangesObject<any>} property - Represents a changed property.
+ * @property {ChangesObject<any>} property - Represents a changed property.
  */
 
 /**
- * @typedef {Object} angular.ChangesObject
+ * @typedef {Object} ChangesObject
  * @description Object representing changes in a property.
  * @property {*} currentValue - Current value of the property.
  * @property {*} previousValue - Previous value of the property.
@@ -61,7 +61,7 @@
  */
 
 /**
- * @typedef {Object} angular.Controller
+ * @typedef {Object} Controller
  * @description Interface representing the lifecycle hooks for AngularJS directive controllers.
  * @see {@link https://docs.angularjs.org/api/ng/service/$compile#life-cycle-hooks}
  * @see {@link https://docs.angularjs.org/guide/component}
@@ -79,7 +79,7 @@
  * change detector and thus not trigger `$onChanges`. This hook is invoked with no arguments; if detecting changes,
  * you must store the previous value(s) for comparison to the current values.
  *
- * @property {function(angular.OnChangesObject): void} [$onChanges]
+ * @property {function(OnChangesObject): void} [$onChanges]
  * Called whenever one-way bindings are updated. The onChangesObj is a hash whose keys are the names of the bound
  * properties that have changed, and the values are an {@link IChangesObject} object  of the form
  * { currentValue, previousValue, isFirstChange() }. Use this hook to trigger updates within a component such as
@@ -103,7 +103,7 @@
  */
 
 /**
- * @typedef {Object.<string, any>} angular.Attributes
+ * @typedef {Object.<string, any>} Attributes
  *
  * @property {(name: string) => string} $normalize
  * Converts an attribute name (e.g. dash/colon/underscore-delimited string, optionally prefixed with x- or data-) to its normalized, camelCase form.
@@ -137,19 +137,19 @@
  */
 
 /**
- * @typedef {angular.Attributes} TAttributes
+ * @typedef {Attributes} TAttributes
  */
 
 /**
- * @typedef {angular.DirectiveController} TController
+ * @typedef {DirectiveController} TController
  */
 
 /**
- * @typedef {angular.Controller | angular.Controller[] | { [key: string]: angular.Controller }} angular.DirectiveController
+ * @typedef {Controller | Controller[] | { [key: string]: Controller }} DirectiveController
  * @description Represents a directive controller, which can be:
- * - A single instance of {@link angular.Controller}
- * - An array of {@link angular.Controller}
- * - An object where keys are string identifiers and values are {@link angular.Controller}
+ * - A single instance of {@link Controller}
+ * - An array of {@link Controller}
+ * - An object where keys are string identifiers and values are {@link Controller}
  */
 
 /**
@@ -159,10 +159,10 @@
  * @template [T=import('./shared/jqlite/jqlite').JQLite]
  * @template {TElement} T - The type of the directive's element.
  *
- * @template [A=angular.Attributes]
+ * @template [A=Attributes]
  * @template {TAttributes} A - The type of the directive's attributes.
  *
- * @template [C=angular.Controller]
+ * @template [C=Controller]
  * @template {TController} C - The type of the directive's controller.
  */
 
@@ -173,13 +173,13 @@
  * @template TElement
  * @template TAttributes
  * @template TController
- * @callback angular.DirectiveCompileFn
+ * @callback DirectiveCompileFn
  * @param {TElement} templateElement - The template element.
  * @param {TAttributes} templateAttributes - The template attributes.
- * @param {angular.TranscludeFunction} transclude - @deprecated The transclude function. Note: The transclude function that is passed to the compile function is deprecated,
+ * @param {TranscludeFunction} transclude - @deprecated The transclude function. Note: The transclude function that is passed to the compile function is deprecated,
  * as it e.g. does not know about the right outer scope. Please use the transclude function
  * that is passed to the link function instead.
- * @returns {void | angular.DirectiveLinkFn<S, T, A, C> | angular.DirectivePrePost<S, T, A, C>} Returns void, angular.DirectiveLinkFn, or  angular.DirectivePrePost.
+ * @returns {void | DirectiveLinkFn<S, T, A, C> | DirectivePrePost<S, T, A, C>} Returns void, DirectiveLinkFn, or  DirectivePrePost.
  */
 
 /**
@@ -189,17 +189,17 @@
  * @template TElement
  * @template TAttributes
  * @template TController
- * @callback angular.DirectiveLinkFn
+ * @callback DirectiveLinkFn
  * @param {TScope} scope
  * @param {TElement} instanceElement
  * @param {TAttributes} instanceAttributes
  * @param {TController} [controller]
- * @param {angular.TranscludeFunction} [transclude]
+ * @param {TranscludeFunction} [transclude]
  * @returns {void}
  */
 
 /**
- * @callback angular.CloneAttachFunction
+ * @callback CloneAttachFunction
  * @param {JQLite} [clonedElement]
  * @param {Scope} [scope] // Let's hint but not force cloneAttachFn's signature
  * @returns {any}
@@ -210,18 +210,18 @@
  * https://docs.angularjs.org/api/ng/service/$compile#-controller-
  * http://teropa.info/blog/2015/06/09/transclusion.html
  *
- * @typedef {Object} angular.TranscludeFunction
- * @property {function(TScope, angular.CloneAttachFunction, JQLite=, string=): JQLite} transcludeWithScope
- * @property {function(angular.CloneAttachFunction=, JQLite=, string=): JQLite} transcludeWithoutScope
+ * @typedef {Object} TranscludeFunction
+ * @property {function(TScope, CloneAttachFunction, JQLite=, string=): JQLite} transcludeWithScope
+ * @property {function(CloneAttachFunction=, JQLite=, string=): JQLite} transcludeWithoutScope
  * @property {function(string): boolean} isSlotFilled - Returns true if the specified slot contains content (i.e., one or more DOM nodes)
  */
 
 /**
- * @typedef {function(TScope, angular.CloneAttachFunction, JQLite=, string=): JQLite} transcludeWithScope
+ * @typedef {function(TScope, CloneAttachFunction, JQLite=, string=): JQLite} transcludeWithScope
  */
 
 /**
- * @typedef {function(angular.CloneAttachFunction=, JQLite=, string=): JQLite} transcludeWithoutScope
+ * @typedef {function(CloneAttachFunction=, JQLite=, string=): JQLite} transcludeWithoutScope
  */
 
 /**
@@ -232,10 +232,10 @@
  * @template TAttributes The type of attributes of the directive.
  * @template TController The type of controller associated with the directive.
  *
- * @typedef {Object} angular.DirectivePrePost
- * @property {angular.DirectiveLinkFn<S, T, A, C> | undefined} [pre]
+ * @typedef {Object} DirectivePrePost
+ * @property {DirectiveLinkFn<S, T, A, C> | undefined} [pre]
  *   The pre-linking function of the directive.
- * @property {angular.DirectiveLinkFn<S, T, A, C> | undefined} [post]
+ * @property {DirectiveLinkFn<S, T, A, C> | undefined} [post]
  *   The post-linking function of the directive.
  */
 
@@ -247,16 +247,16 @@
  * @template TAttributes - The type of the directive's attributes.
  * @template TController - The type of the directive's controller.
  *
- * @typedef {Object} angular.Directive
- * @property {angular.DirectiveCompileFn<S, T, A, C> | undefined} [compile]
+ * @typedef {Object} Directive
+ * @property {DirectiveCompileFn<S, T, A, C> | undefined} [compile]
  * Compile function for the directive.
- * @property {string | angular.Injectable<angular.ControllerConstructor> | undefined} [controller]
+ * @property {string | Injectable<ControllerConstructor> | undefined} [controller]
  * Controller constructor or name.
  * @property {string | undefined} [controllerAs]
  * Controller alias.
  * @property {boolean | { [boundProperty: string]: string } | undefined} [bindToController]
  * Bindings to controller.
- * @property {angular.DirectiveLinkFn<S, T, A, C> |  angular.DirectivePrePost<S, T, A, C> | undefined} [link]
+ * @property {DirectiveLinkFn<S, T, A, C> |  DirectivePrePost<S, T, A, C> | undefined} [link]
  * Link function.
  * @property {boolean | undefined} [multiElement]
  * Multi-element directive flag.
@@ -288,88 +288,88 @@
  * @template TAttributes - The type of the directive's attributes.
  * @template TController - The type of the directive's controller.
  *
- * @typedef {(...args: any[]) => angular.Directive<S, T, A, C> | angular.DirectiveLinkFn<S, T, A, C>} angular.DirectiveFactory
+ * @typedef {(...args: any[]) => Directive<S, T, A, C> | DirectiveLinkFn<S, T, A, C>} DirectiveFactory
  */
 
 /**
- * @typedef {Function} angular.FilterFunction
+ * @typedef {Function} FilterFunction
  * @property {boolean|undefined} [$stateful] By default, filters are only run once the input value changes. By marking the filter as `$stateful`, the filter will be run on every `$digest` to update the output. **This is strongly discouraged.** See https://docs.angularjs.org/guide/filter#stateful-filters
  */
 
 /**
- * @typedef {Function} angular.FilterFactory
- * @returns {angular.FilterFunction}
+ * @typedef {Function} FilterFactory
+ * @returns {FilterFunction}
  */
 
 /**
  * Interface for a service provider class.
- * @typedef {Object} angular.ServiceProviderClass
+ * @typedef {Object} ServiceProviderClass
  * @property {Function} constructor - The constructor for the service provider.
  * @param {...any} args - The arguments for the constructor.
- * @returns {angular.ServiceProvider}
+ * @returns {ServiceProvider}
  */
 
 /**
  * Interface for a service provider factory function.
- * @typedef {Function} angular.ServiceProviderFactory
+ * @typedef {Function} ServiceProviderFactory
  * @param {...any} args - The arguments for the factory function.
- * @returns {angular.ServiceProvider}
+ * @returns {ServiceProvider}
  */
 
 /**
  * Interface for a service provider.
- * @typedef {Object} angular.ServiceProvider
+ * @typedef {Object} ServiceProvider
  * @property {*} $get - The $get property that represents a service instance or a factory function.
  */
 
 /**
- * @typedef {Object} angular.Module
+ * @typedef {Object} Module
  * @description AngularJS module interface for registering components, services, providers, etc.
- * @property {function(string, angular.ComponentOptions): angular.Module} component
+ * @property {function(string, ComponentOptions): Module} component
  *   Use this method to register a component.
- * @property {function({ [componentName: string]: angular.ComponentOptions }): angular.Module} component
+ * @property {function({ [componentName: string]: ComponentOptions }): Module} component
  *   Use this method to register multiple components.
- * @property {function(Function): angular.Module} config
+ * @property {function(Function): Module} config
  *   Use this method to register work which needs to be performed on module loading.
- * @property {function(any[]): angular.Module} config
+ * @property {function(any[]): Module} config
  *   Use this method to register work which needs to be performed on module loading.
- * @property {function<T>(string, T): angular.Module} constant
+ * @property {function<T>(string, T): Module} constant
  *   Register a constant service with the $injector.
- * @property {function(Object): angular.Module} constant
+ * @property {function(Object): Module} constant
  *   Register multiple constant services.
- * @property {function(string, angular.Injectable<angular.ControllerConstructor>): angular.Module} controller
+ * @property {function(string, Injectable<ControllerConstructor>): Module} controller
  *   Register a controller with the $controller service.
- * @property {function({ [name: string]: angular.Injectable<angular.ControllerConstructor>> }): angular.Module} controller
+ * @property {function({ [name: string]: Injectable<ControllerConstructor>> }): Module} controller
  *   Register multiple controllers.
- * @property {function<S, T, A, C>(string, angular.Injectable<angular.DirectiveFactory<S, T, A, C>>): angular.Module} directive
+ * @property {function<S, T, A, C>(string, Injectable<DirectiveFactory<S, T, A, C>>): Module} directive
  *   Register a directive with the compiler.
- * @property {function<S, T, A, C>(Object.<string, angular.Injectable<angular.DirectiveFactory<S, T, A, C>>>): angular.Module} directive
+ * @property {function<S, T, A, C>(Object.<string, Injectable<DirectiveFactory<S, T, A, C>>>): Module} directive
  *   Register multiple directives.
- * @property {function(string, angular.Injectable<Function>): angular.Module} factory
+ * @property {function(string, Injectable<Function>): Module} factory
  *   Register a service factory with the $injector.
- * @property {function(Object.<string, angular.Injectable<Function>>): angular.Module} factory
+ * @property {function(Object.<string, Injectable<Function>>): Module} factory
  *   Register multiple service factories.
- * @property {function(string, angular.Injectable<angular.FilterFactory>): angular.Module} filter
+ * @property {function(string, Injectable<FilterFactory>): Module} filter
  *   Register a filter service.
- * @property {function(Object.<string, angular.Injectable<angular.FilterFactory>>): angular.Module} filter
+ * @property {function(Object.<string, Injectable<FilterFactory>>): Module} filter
  *   Register multiple filter services.
- * @property {function(string, angular.ServiceProviderFactory): angular.Module} provider
+ * @property {function(string, ServiceProviderFactory): Module} provider
  *   Register a provider service factory.
- * @property {function(string, angular.ServiceProviderClass): angular.Module} provider
+ * @property {function(string, ServiceProviderClass): Module} provider
  *   Register a provider service constructor.
- * @property {function(string, any[]): angular.Module} provider
+ * @property {function(string, any[]): Module} provider
  *   Register a provider service with inline annotated constructor.
- * @property {function(angular.Injectable<Function>): angular.Module} run
+ * @property {function(Injectable<Function>): Module} run
  *   Register code to be run during module loading.
- * @property {function(string, angular.Injectable<Function>): angular.Module} service
+ * @property {function(string, Injectable<Function>): Module} service
  *   Register a service constructor.
- * @property {function(Object.<string, angular.Injectable<Function>>): angular.Module} service
+ * @property {function(Object.<string, Injectable<Function>>): Module} service
  *   Register multiple service constructors.
- * @property {function<T>(string, T): angular.Module} value
+ * @property {function<T>(string, T): Module} value
  *   Register a value service with the $injector.
- * @property {function(Object): angular.Module} value
+ * @property {function(Object): Module} value
  *   Register multiple value services.
- * @property {function(string, angular.Injectable<Function>): angular.Module} decorator
+ * @property {function(string, Injectable<Function>): Module} decorator
  *   Register a service decorator with the $injector.
  * @property {string} name
  *   The name of the AngularJS module.
@@ -378,19 +378,19 @@
  */
 
 /**
- * @typedef {Object} angular.FormController
+ * @typedef {Object} FormController
  * @property {boolean} $pristine - True if the form has not been modified.
  * @property {boolean} $dirty - True if the form has been modified.
  * @property {boolean} $valid - True if the form is valid.
  * @property {boolean} $invalid - True if the form is invalid.
  * @property {boolean} $submitted - True if the form has been submitted.
- * @property {Object.<string, Array.<angular.NgModelController|angular.FormController>>} $error - An object containing arrays of controls with validation errors keyed by validation error keys.
+ * @property {Object.<string, Array.<NgModelController|FormController>>} $error - An object containing arrays of controls with validation errors keyed by validation error keys.
  * @property {string|undefined} [$name] - The name of the form.
- * @property {Object.<string, Array.<angular.NgModelController|angular.FormController>>|undefined} [$pending] - An object containing arrays of controls that are pending validation, keyed by validation error keys.
- * @property {function(angular.NgModelController|angular.FormController): void} $addControl - Adds a control to the form.
- * @property {function(): ReadonlyArray.<angular.NgModelController|angular.FormController>} $getControls - Returns an array of all controls in the form.
- * @property {function(angular.NgModelController|angular.FormController): void} $removeControl - Removes a control from the form.
- * @property {function(string, boolean, angular.NgModelController|angular.FormController): void} $setValidity - Sets the validity of a control in the form.
+ * @property {Object.<string, Array.<NgModelController|FormController>>|undefined} [$pending] - An object containing arrays of controls that are pending validation, keyed by validation error keys.
+ * @property {function(NgModelController|FormController): void} $addControl - Adds a control to the form.
+ * @property {function(): ReadonlyArray.<NgModelController|FormController>} $getControls - Returns an array of all controls in the form.
+ * @property {function(NgModelController|FormController): void} $removeControl - Removes a control from the form.
+ * @property {function(string, boolean, NgModelController|FormController): void} $setValidity - Sets the validity of a control in the form.
  * @property {function(): void} $setDirty - Marks the form as dirty.
  * @property {function(): void} $setPristine - Marks the form as pristine.
  * @property {function(): void} $commitViewValue - Commits the view value of all controls in the form.
@@ -401,7 +401,7 @@
  */
 
 /**
- * @typedef {Object} angular.NgModelController
+ * @typedef {Object} NgModelController
  * @property {function(): void} $render - Renders the view value.
  * @property {function(string, boolean): void} $setValidity - Sets the validity state.
  * @property {function(any, string=): void} $setViewValue - Sets the view value.
@@ -414,7 +414,7 @@
  * @property {function(): void} $commitViewValue - Commits the view value.
  * @property {function(): void} $processModelValue - Processes the model value.
  * @property {function(any): boolean} $isEmpty - Checks if the value is empty.
- * @property {function(angular.NgModelOptions): void} $overrideModelOptions - Overrides model options.
+ * @property {function(NgModelOptions): void} $overrideModelOptions - Overrides model options.
  * @property {*} $viewValue - The current view value.
  * @property {*} $modelValue - The current model value.
  * @property {Array.<function(any, any): boolean>} $parsers - Array of parsers.
@@ -425,7 +425,7 @@
  * @property {boolean} $touched - True if the control has been touched.
  * @property {boolean} $untouched - True if the control has not been touched.
  * @property {Object.<string, function(any, any): boolean>} $validators - Synchronous validators.
- * @property {Object.<string, function(any, any): angular.Promise<any>>} $asyncValidators - Asynchronous validators.
+ * @property {Object.<string, function(any, any): Promise<any>>} $asyncValidators - Asynchronous validators.
  * @property {Object.<string, boolean>|undefined} [$pending] - Pending validation.
  * @property {boolean} $pristine - True if the control is pristine.
  * @property {boolean} $dirty - True if the control is dirty.
@@ -434,7 +434,7 @@
  */
 
 /**
- * @typedef {Object} angular.NgModelOptions
+ * @typedef {Object} NgModelOptions
  * @property {string|undefined} [updateOn] - The event to update on.
  * @property {number|Object.<string, number>|undefined} [debounce] - The debounce delay.
  * @property {boolean|undefined} [allowInvalid] - Allows invalid models.
@@ -450,19 +450,19 @@
  */
 
 /**
- * @typedef {Object.<string, function(any, any): angular.Promise<any>>} IAsyncModelValidators
+ * @typedef {Object.<string, function(any, any): Promise<any>>} IAsyncModelValidators
  * @property {function(any, any): IPromise<any>} [index] - Async validator function for each index.
  */
 
 /**
- * @typedef {Object} angular.InjectorService
+ * @typedef {Object} InjectorService
  * @property {function(Function, boolean=): string[]} annotate Annotate a function or an array of inline annotations.
  * @property {function(any[]): string[]} annotate Annotate an inline annotated function.
  * @property {function(string, string=): T} get Get a service by name.
  * @property {function(new (...args: any[]): T, any=): T} instantiate Instantiate a type constructor with optional locals.
- * @property {function(angular.Injectable<Function | ((...args: any[]) => T)>, any=, any=): T} invoke Invoke a function with optional context and locals.
- * @property {function(Array<angular.Module | string | angular.Injectable<(...args: any[]) => void>>): void} loadNewModules Add and load new modules to the injector.
- * @property {Object.<string, angular.Module>} modules A map of all the modules loaded into the injector.
+ * @property {function(Injectable<Function | ((...args: any[]) => T)>, any=, any=): T} invoke Invoke a function with optional context and locals.
+ * @property {function(Array<Module | string | Injectable<(...args: any[]) => void>>): void} loadNewModules Add and load new modules to the injector.
+ * @property {Object.<string, Module>} modules A map of all the modules loaded into the injector.
  * @property {boolean} strictDi Indicates if strict dependency injection is enforced.
  */
 

@@ -27,7 +27,7 @@ const forceAsyncEvents = {
        *
        * @param {*} $parse
        * @param {*} $rootScope
-       * @param {import('../../core/exception-handler').angular.ErrorHandler} $exceptionHandler
+       * @param {import('../../core/exception-handler').ErrorHandler} $exceptionHandler
        * @returns
        */
       ($parse, $rootScope, $exceptionHandler) => {

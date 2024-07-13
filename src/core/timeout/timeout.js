@@ -9,7 +9,7 @@ const $timeoutMinErr = minErr("$timeout");
  * @param {*} $browser
  * @param {*} $q
  * @param {*} $$q
- * @param {import('../exception-handler').angular.ErrorHandler} $exceptionHandler
+ * @param {import('../exception-handler').ErrorHandler} $exceptionHandler
  * @returns
  */
 export function $timeout($rootScope, $browser, $q, $$q, $exceptionHandler) {

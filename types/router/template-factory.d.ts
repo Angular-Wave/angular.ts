@@ -58,21 +58,21 @@ export class TemplateFactory {
     /**
      * Creates a template by invoking an injectable provider function.
      *
-     * @param {import('../types').angular.Injectable<any>} provider Function to invoke via `locals`
+     * @param {import('../types').Injectable<any>} provider Function to invoke via `locals`
      * @param {Function} injectFn a function used to invoke the template provider
      * @param {angular.ResolveContext} context
      * @return {string|Promise.<string>} The template html as a string, or a promise
      * for that string.
      */
-    fromProvider(provider: import("../types").angular.Injectable<any>, params: any, context: angular.ResolveContext): string | Promise<string>;
+    fromProvider(provider: import("../types").Injectable<any>, params: any, context: angular.ResolveContext): string | Promise<string>;
     /**
      * Creates a component's template by invoking an injectable provider function.
      *
-     * @param {import('../types').angular.Injectable<any>} provider Function to invoke via `locals`
+     * @param {import('../types').Injectable<any>} provider Function to invoke via `locals`
      * @param {Function} injectFn a function used to invoke the template provider
      * @return {string} The template html as a string: "<component-name input1='::$resolve.foo'></component-name>".
      */
-    fromComponentProvider(provider: import("../types").angular.Injectable<any>, params: any, context: any): string;
+    fromComponentProvider(provider: import("../types").Injectable<any>, params: any, context: any): string;
     /**
      * Creates a template from a component's name
      *

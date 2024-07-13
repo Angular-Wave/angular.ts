@@ -614,7 +614,7 @@ JQLite.prototype.controller = function (name) {
 
 /**
  * Return instance of injector attached to element
- * @returns {import('../../types').angular.InjectorService}
+ * @returns {import('../../types').InjectorService}
  */
 JQLite.prototype.injector = function () {
   return JQLiteInheritedData(this[0], "$injector");

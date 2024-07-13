@@ -34,7 +34,7 @@ export const VERSION = "[VI]{version}[/VI]";
 
 const ngMinErr = minErr("ng");
 
-/** @type {Object.<string, import('./index.js').angular.Module>} */
+/** @type {Object.<string, import('./index.js').Module>} */
 const moduleCache = {};
 
 /**
