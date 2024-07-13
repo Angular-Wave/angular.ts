@@ -1,5 +1,6 @@
 import {
   JQLite,
+  cleanElementData,
   getBooleanAttrName,
   isTextNode,
   startingTag,
@@ -3119,7 +3120,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
         // Cleanup any data/listeners on the elements and children.
         // This includes invoking the $destroy event on any elements with listeners.
-        JQLite.cleanData(fragment.querySelectorAll("*"));
+        cleanElementData(fragment.querySelectorAll("*"));
 
         // Update the JQLite collection to only contain the `newNode`
         for (i = 1; i < removeCount; i++) {

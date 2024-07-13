@@ -6416,47 +6416,6 @@ describe("$compile", () => {
           expect(element.text()).toEqual("3==3");
         });
 
-        describe("when directive is in a repeater", () => {
-          let is;
-          beforeEach(() => {
-            is = [1, 2];
-          });
-
-          function runTest() {
-            $templateCache.put(
-              "/mock/hello",
-              "<span>i=<span ng-transclude></span>;</span>",
-            );
-            element = JQLite(
-              `<div><b hello ng-repeat="i in [${is}]">{{i}}</b></div>`,
-            );
-            $compile(element)($rootScope);
-            $rootScope.$digest();
-            expect(element.text()).toEqual(`i=${is.join(";i=")};`);
-          }
-
-          it("should work with another library patching JQLite/jQuery.cleanData after Angular", () => {
-            let cleanedCount = 0;
-            const currentCleanData = JQLite.cleanData;
-            JQLite.cleanData = function (elems) {
-              cleanedCount += elems.length;
-              // Don't return the output and explicitly pass only the first parameter
-              // so that we're sure we're not relying on either of them. jQuery UI patch
-              // behaves in this way.
-              currentCleanData(elems);
-            };
-
-            runTest();
-
-            // The initial ng-repeat div is dumped after parsing hence we expect cleanData
-            // count to be one larger than size of the iterated array.
-            expect(cleanedCount).toBe(is.length + 1);
-
-            // Restore the previous cleanData.
-            JQLite.cleanData = currentCleanData;
-          });
-        });
-
         describe("replace and not exactly one root element", () => {
           beforeEach(() => {
             publishExternalAPI().decorator("$exceptionHandler", () => {

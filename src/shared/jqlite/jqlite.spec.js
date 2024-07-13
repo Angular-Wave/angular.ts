@@ -1,4 +1,4 @@
-import { JQLite, dealoc, kebabToCamel } from "./jqlite";
+import { JQLite, dealoc, kebabToCamel, cleanElementData } from "./jqlite";
 import { angularInit } from "../../loader";
 import { createInjector } from "../../injector";
 import { publishExternalAPI } from "../../public";
@@ -474,61 +474,63 @@ describe("jqLite", () => {
       expect(elm.data("key2")).toBe("value2");
     });
 
-    it("should remove user data on cleanData()", () => {
-      const selected = JQLite([a, b, c]);
+    describe("cleanElementData helper", () => {
+      it("should remove user data on cleanElementData()", () => {
+        const selected = JQLite([a, b, c]);
 
-      selected.data("prop", "value");
-      JQLite(b).data("prop", "new value");
+        selected.data("prop", "value");
+        JQLite(b).data("prop", "new value");
 
-      JQLite.cleanData(selected);
+        cleanElementData(selected);
 
-      expect(JQLite(a).data("prop")).toBeUndefined();
-      expect(JQLite(b).data("prop")).toBeUndefined();
-      expect(JQLite(c).data("prop")).toBeUndefined();
-    });
-
-    it("should remove event handlers on cleanData()", () => {
-      const selected = JQLite([a, b, c]);
-
-      let log = "";
-      const elm = JQLite(b);
-      elm.on("click", () => {
-        log += "click;";
-      });
-      JQLite.cleanData(selected);
-
-      browserTrigger(b, "click");
-      expect(log).toBe("");
-    });
-
-    it("should remove user data & event handlers on cleanData()", () => {
-      const selected = JQLite([a, b, c]);
-
-      let log = "";
-      const elm = JQLite(b);
-      elm.on("click", () => {
-        log += "click;";
+        expect(JQLite(a).data("prop")).toBeUndefined();
+        expect(JQLite(b).data("prop")).toBeUndefined();
+        expect(JQLite(c).data("prop")).toBeUndefined();
       });
 
-      selected.data("prop", "value");
-      JQLite(a).data("prop", "new value");
+      it("should remove event handlers on cleanElementData()", () => {
+        const selected = JQLite([a, b, c]);
 
-      JQLite.cleanData(selected);
+        let log = "";
+        const elm = JQLite(b);
+        elm.on("click", () => {
+          log += "click;";
+        });
+        cleanElementData(selected);
 
-      browserTrigger(b, "click");
-      expect(log).toBe("");
+        browserTrigger(b, "click");
+        expect(log).toBe("");
+      });
 
-      expect(JQLite(a).data("prop")).toBeUndefined();
-      expect(JQLite(b).data("prop")).toBeUndefined();
-      expect(JQLite(c).data("prop")).toBeUndefined();
-    });
+      it("should remove user data & event handlers on cleanElementData()", () => {
+        const selected = JQLite([a, b, c]);
 
-    it("should not break on cleanData(), if element has no data", () => {
-      const selected = JQLite([a, b, c]);
-      spyOn(CACHE, "get").and.returnValue(undefined);
-      expect(() => {
-        JQLite.cleanData(selected);
-      }).not.toThrow();
+        let log = "";
+        const elm = JQLite(b);
+        elm.on("click", () => {
+          log += "click;";
+        });
+
+        selected.data("prop", "value");
+        JQLite(a).data("prop", "new value");
+
+        cleanElementData(selected);
+
+        browserTrigger(b, "click");
+        expect(log).toBe("");
+
+        expect(JQLite(a).data("prop")).toBeUndefined();
+        expect(JQLite(b).data("prop")).toBeUndefined();
+        expect(JQLite(c).data("prop")).toBeUndefined();
+      });
+
+      it("should not break on cleanElementData(), if element has no data", () => {
+        const selected = JQLite([a, b, c]);
+        spyOn(CACHE, "get").and.returnValue(undefined);
+        expect(() => {
+          cleanElementData(selected);
+        }).not.toThrow();
+      });
     });
 
     it("should add and remove data on SVGs", () => {

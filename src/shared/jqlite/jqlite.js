@@ -236,6 +236,9 @@ function parseHtml(html) {
 }
 
 /**
+ * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
+ * and execution of chain functions.
+ *
  * @param {string|Element|Document|Window|JQLite|ArrayLike<Element>|(() => void)} element
  * @returns {JQLite}
  */
@@ -279,10 +282,10 @@ export function JQLite(element) {
 export function dealoc(element, onlyDescendants) {
   if (!element) return;
   if (!onlyDescendants && elementAcceptsData(element))
-    JQLiteCleanData([element]);
+    cleanElementData([element]);
 
   if (element.querySelectorAll) {
-    JQLiteCleanData(element.querySelectorAll("*"));
+    cleanElementData(element.querySelectorAll("*"));
   }
 }
 
@@ -566,12 +569,11 @@ JQLite.prototype.scope = function () {
   );
 };
 
-
 /**
  * Returns the isolate `$scope` of the element.
  * @returns {import("../../core/scope/scope").Scope}
  */
-JQLite.prototype.isolateScope = function() {
+JQLite.prototype.isolateScope = function () {
   return (
     getOrSetCacheData(this[0], "$isolateScope") ||
     getOrSetCacheData(this[0], "$isolateScopeNoTemplate")
@@ -583,15 +585,15 @@ JQLite.prototype.isolateScope = function() {
  * @param {string} [name] - Controller name
  * @returns {any}
  */
-JQLite.prototype.controller = function(name) {
-  return JQLiteController(this[0], name) 
+JQLite.prototype.controller = function (name) {
+  return JQLiteController(this[0], name);
 };
 
 /**
  * Return instance of injector attached to element
  * @returns {import('../../types').angular.InjectorService}
  */
-JQLite.prototype.injector = function() {
+JQLite.prototype.injector = function () {
   return JQLiteInheritedData(this[0], "$injector");
 };
 
@@ -616,7 +618,12 @@ export function getBooleanAttrName(element, name) {
   return booleanAttr && BOOLEAN_ELEMENTS[nodeName_(element)] && booleanAttr;
 }
 
-export function JQLiteCleanData(nodes) {
+/**
+ * Takes an array of elements, calls any `$destroy` event handlers, removes any data in cache, and finally removes any
+ * listeners.
+ * @param {NodeListOf<Element>} nodes
+ */
+export function cleanElementData(nodes) {
   for (let i = 0, ii = nodes.length; i < ii; i++) {
     var events = (CACHE.get(nodes[i][EXPANDO]) || {}).events;
     if (events && events.$destroy) {
@@ -636,7 +643,6 @@ forEach(
   {
     data: getOrSetCacheData,
     removeData: removeElementData,
-    cleanData: JQLiteCleanData,
   },
   (fn, name) => {
     JQLite[name] = fn;
@@ -647,8 +653,6 @@ forEach(
   {
     data: getOrSetCacheData,
     inheritedData: JQLiteInheritedData,
-
-
     attr(element, name, value) {
       let ret;
       const { nodeType } = element;

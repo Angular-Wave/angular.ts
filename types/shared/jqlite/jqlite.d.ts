@@ -22,12 +22,18 @@ export function isTextNode(html: string): boolean;
  */
 export function buildFragment(html: string): DocumentFragment;
 /**
+ * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
+ * and execution of chain functions.
+ *
  * @param {string|Element|Document|Window|JQLite|ArrayLike<Element>|(() => void)} element
  * @returns {JQLite}
  */
 export function JQLite(element: string | Element | Document | Window | JQLite | ArrayLike<Element> | (() => void)): JQLite;
 export class JQLite {
     /**
+     * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
+     * and execution of chain functions.
+     *
      * @param {string|Element|Document|Window|JQLite|ArrayLike<Element>|(() => void)} element
      * @returns {JQLite}
      */
@@ -83,7 +89,12 @@ export function removeElementData(element: Element, name?: string): void;
  */
 export function removeElement(element: Element, keepData?: boolean): void;
 export function getBooleanAttrName(element: any, name: any): any;
-export function JQLiteCleanData(nodes: any): void;
+/**
+ * Takes an array of elements, calls any `$destroy` event handlers, removes any data in cache, and finally removes any
+ * listeners.
+ * @param {NodeListOf<Element>} nodes
+ */
+export function cleanElementData(nodes: NodeListOf<Element>): void;
 /**
  * @param {string} elementStr
  * @returns {string} Returns the string representation of the element.

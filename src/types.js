@@ -10,5 +10,4 @@
  * @property {boolean} strictDi Indicates if strict dependency injection is enforced.
  */
 
-
-export {}
+export {};
