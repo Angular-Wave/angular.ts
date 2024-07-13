@@ -179,23 +179,25 @@ function elementAcceptsData(node) {
   }
 }
 
-export function JQLiteBuildFragment(html, context) {
+/**
+ * @param {string} html
+ * @returns {DocumentFragment}
+ */
+export function buildFragment(html) {
   let tmp;
   let tag;
   let wrap;
-  let finalHtml;
-  const fragment = context.createDocumentFragment();
+  let tempFragment = document.createDocumentFragment();
   let nodes = [];
   let i;
 
   if (isTextNode(html)) {
     // Convert non-html into a text node
-    nodes.push(context.createTextNode(html));
+    nodes.push(document.createTextNode(html));
   } else {
     // Convert html into DOM nodes
-    tmp = fragment.appendChild(context.createElement("div"));
+    tmp = tempFragment.appendChild(document.createElement("div"));
     tag = (TAG_NAME_REGEXP.exec(html) || ["", ""])[1].toLowerCase();
-    finalHtml = html;
 
     wrap = wrapMap[tag] || [];
 
@@ -205,54 +207,54 @@ export function JQLiteBuildFragment(html, context) {
       tmp.appendChild(window.document.createElement(wrap[i]));
       tmp = tmp.firstChild;
     }
-
-    tmp.innerHTML = finalHtml;
+    tmp.innerHTML = html;
 
     nodes = concat(nodes, tmp.childNodes);
 
-    tmp = fragment.firstChild;
+    tmp = tempFragment.firstChild;
     tmp.textContent = "";
   }
 
-  // Remove wrapper from fragment
-  fragment.textContent = "";
-  fragment.innerHTML = ""; // Clear inner HTML
-  forEach(nodes, (node) => {
-    fragment.appendChild(node);
-  });
-
+  let fragment = document.createDocumentFragment();
+  fragment.append(...nodes);
   return fragment;
 }
 
-function JQLiteParseHTML(html, context) {
-  context = context || window.document;
-  let parsed;
-
-  if ((parsed = SINGLE_TAG_REGEXP.exec(html))) {
-    return [context.createElement(parsed[1])];
+/**
+ * @param {string} html
+ * @returns {NodeListOf<ChildNode> | HTMLElement[]}
+ */
+function parseHtml(html) {
+  let regEx = SINGLE_TAG_REGEXP.exec(html);
+  if (regEx) {
+    return [document.createElement(regEx[1])];
   }
-
-  if ((parsed = JQLiteBuildFragment(html, context))) {
-    return parsed.childNodes;
+  let fragment = buildFragment(html);
+  if (fragment) {
+    return fragment.childNodes;
   }
 
   return [];
 }
 
-/// //////////////////////////////////////////
+/**
+ * @param {string|Element|Document|Window|JQLite|ArrayLike<Element>|(() => void)} element
+ * @returns {JQLite}
+ */
 export function JQLite(element) {
   if (element instanceof JQLite) {
     return element;
   }
 
-  let argIsString;
+  let argIsString = false;
 
   if (isString(element)) {
-    element = trim(element);
+    element = /** @type {string} */ (element).trim();
     argIsString = true;
   }
+
   if (!(this instanceof JQLite)) {
-    if (argIsString && element.charAt(0) !== "<") {
+    if (argIsString && /** @type {string} */ (element).charAt(0) !== "<") {
       throw JQLiteMinErr(
         "nosel",
         "Looking up elements via selectors is not supported by JQLite! See: http://docs.angularjs.org/api/angular.element",
@@ -262,7 +264,7 @@ export function JQLite(element) {
   }
 
   if (argIsString) {
-    const parsed = JQLiteParseHTML(element);
+    const parsed = parseHtml(/** @type {string} */ (element));
     addNodes(this, parsed);
   } else if (isFunction(element)) {
     JQLiteReady(element);

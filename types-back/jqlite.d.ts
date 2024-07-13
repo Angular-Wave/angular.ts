@@ -479,16 +479,3 @@ interface JQLite {
   inheritedData(obj: { [key: string]: any }): this;
   inheritedData(key?: string): any;
 }
-
-interface JQueryStatic {
-  (
-    element:
-      | string
-      | Element
-      | Document
-      | Window
-      | JQLite
-      | ArrayLike<Element>
-      | (() => void),
-  ): JQLite;
-}

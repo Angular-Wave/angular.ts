@@ -1,5 +1,5 @@
 import { isDefined } from "../../shared/utils";
-import { JQLiteBuildFragment } from "../../shared/jqlite/jqlite";
+import { buildFragment } from "../../shared/jqlite/jqlite";
 
 export const ngIncludeDirective = [
   "$templateRequest",
@@ -11,12 +11,12 @@ export const ngIncludeDirective = [
     terminal: true,
     transclude: "element",
     controller: () => {},
-    compile(element, attr) {
+    compile(_element, attr) {
       const srcExp = attr.ngInclude || attr.src;
       const onloadExp = attr.onload || "";
       const autoScrollExp = attr.autoscroll;
 
-      return (scope, $element, $attr, ctrl, $transclude) => {
+      return (scope, $element, _$attr, ctrl, $transclude) => {
         let changeCounter = 0;
         let currentScope;
         let previousElement;
@@ -110,15 +110,13 @@ export const ngIncludeFillContentDirective = [
     restrict: "ECA",
     priority: -400,
     require: "ngInclude",
-    link(scope, $element, $attr, ctrl) {
+    link(scope, $element, _$attr, ctrl) {
       if (toString.call($element[0]).match(/SVG/)) {
         // WebKit: https://bugs.webkit.org/show_bug.cgi?id=135698 --- SVG elements do not
         // support innerHTML, so detect this here and try to generate the contents
         // specially.
         $element.empty();
-        $compile(
-          JQLiteBuildFragment(ctrl.template, window.document).childNodes,
-        )(
+        $compile(buildFragment(ctrl.template).childNodes)(
           scope,
           (clone) => {
             $element.append(clone);
