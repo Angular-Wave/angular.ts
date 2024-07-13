@@ -35,7 +35,7 @@
  */
 
 /**
- * @typedef {import('../index').angular.ServiceProvider} angular.ExceptionHandlerProvider
+ * @typedef {import('../types').angular.ServiceProvider} angular.ExceptionHandlerProvider
  */
 
 /** @type {import('../services/log').angular.LogService} */

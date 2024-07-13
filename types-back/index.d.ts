@@ -27,11 +27,6 @@ declare namespace angular {
     (...args: any[]): IServiceProvider;
   }
 
-  // All service providers extend this interface
-  interface IServiceProvider {
-    $get: any;
-  }
-
   ///////////////////////////////////////////////////////////////////////////
   // Module
   // see http://docs.angularjs.org/api/angular.Module

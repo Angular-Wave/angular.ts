@@ -1,5 +1,5 @@
 /**
- * @typedef {import('../index').angular.ServiceProvider} angular.DocumentProvider
+ * @typedef {import('../types').angular.ServiceProvider} angular.DocumentProvider
  * @description
  * A {@link angular.element jQuery or JQLite} wrapper for the browser's `window.document` object.
  *
@@ -24,7 +24,7 @@
  * @constructor
  * @this {angular.DocumentProvider}
  */
-export function $DocumentProvider(this: import("../index").angular.ServiceProvider): void;
+export function $DocumentProvider(this: import("../types").angular.ServiceProvider): void;
 export class $DocumentProvider {
     $get: () => JQLite;
 }
@@ -38,6 +38,6 @@ export class $$IsDocumentHiddenProvider {
     $get: (string | (($document: import("../shared/jqlite/jqlite").JQLite, $rootScope: import("../core/scope/scope").Scope) => () => boolean))[];
 }
 export namespace angular {
-    type DocumentProvider = import("../index").angular.ServiceProvider;
+    type DocumentProvider = import("../types").angular.ServiceProvider;
 }
 import { JQLite } from "../shared/jqlite/jqlite";

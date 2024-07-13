@@ -149,7 +149,7 @@ export class Browser {
     cancel: (deferId: number) => boolean;
 }
 /**
- * @typedef {import('../index').angular.ServiceProvider} angular.BrowserProvider
+ * @typedef {import('../types').angular.ServiceProvider} angular.BrowserProvider
  * @description
  * This object has two goals:
  *
@@ -162,11 +162,11 @@ export class Browser {
  * @constructor
  * @this {angular.BrowserProvider}
  */
-export function BrowserProvider(this: import("../index").angular.ServiceProvider): void;
+export function BrowserProvider(this: import("../types").angular.ServiceProvider): void;
 export class BrowserProvider {
     $get: (string | (($$taskTrackerFactory: import("../core/task-tracker-factory").TaskTracker) => Browser))[];
 }
 export type UrlChangeListener = (arg0: string, arg1: string | null) => any;
 export namespace angular {
-    type BrowserProvider = import("../index").angular.ServiceProvider;
+    type BrowserProvider = import("../types").angular.ServiceProvider;
 }

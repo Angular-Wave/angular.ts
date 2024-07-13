@@ -31,7 +31,7 @@ export let LogService = {
 };
 
 /**
- * @typedef {import('../index').ServiceProvider} angular.LogProvider
+ * @typedef {import('../types').angular.ServiceProvider} angular.LogProvider
  * @property {function(): boolean} debugEnabled - Function to get the current debug state.
  * @property {function(boolean): angular.LogProvider} debugEnabled - Function to enable or disable debug.
  */

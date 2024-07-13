@@ -1,7 +1,7 @@
 import { JQLite } from "../shared/jqlite/jqlite";
 
 /**
- * @typedef {import('../index').angular.ServiceProvider} angular.DocumentProvider
+ * @typedef {import('../types').angular.ServiceProvider} angular.DocumentProvider
  * @description
  * A {@link angular.element jQuery or JQLite} wrapper for the browser's `window.document` object.
  *
