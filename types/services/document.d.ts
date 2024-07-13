@@ -26,7 +26,7 @@
  */
 export function $DocumentProvider(this: import("../index").angular.ServiceProvider): void;
 export class $DocumentProvider {
-    $get: () => any;
+    $get: () => JQLite;
 }
 /**
  * @private
@@ -40,3 +40,4 @@ export class $$IsDocumentHiddenProvider {
 export namespace angular {
     type DocumentProvider = import("../index").angular.ServiceProvider;
 }
+import { JQLite } from "../shared/jqlite/jqlite";

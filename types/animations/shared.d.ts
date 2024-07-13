@@ -6,7 +6,7 @@ export function packageStyles(options: any): {
 };
 export function pendClasses(classes: any, fix: any, isPrefix: any): string;
 export function removeFromArray(arr: any, val: any): void;
-export function stripCommentsFromElement(element: any): any;
+export function stripCommentsFromElement(element: any): JQLite;
 export function extractElementNode(element: any): any;
 export function applyAnimationClassesFactory(): (element: any, options: any) => void;
 export function prepareAnimationOptions(options: any): any;
@@ -48,3 +48,4 @@ export const ANIMATION_DURATION_PROP: string;
 export const TRANSITION_DELAY_PROP: string;
 export const TRANSITION_DURATION_PROP: string;
 export const ngMinErr: (arg0: string, arg1: string, ...arg2: any[]) => Error;
+import { JQLite } from "../shared/jqlite/jqlite";

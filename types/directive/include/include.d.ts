@@ -4,11 +4,11 @@ export const ngIncludeDirective: (string | (($templateRequest: any, $anchorScrol
     terminal: boolean;
     transclude: string;
     controller: () => void;
-    compile(element: any, attr: any): (scope: any, $element: any, $attr: any, ctrl: any, $transclude: any) => void;
+    compile(_element: any, attr: any): (scope: any, $element: any, _$attr: any, ctrl: any, $transclude: any) => void;
 }))[];
 export const ngIncludeFillContentDirective: (string | (($compile: any) => {
     restrict: string;
     priority: number;
     require: string;
-    link(scope: any, $element: any, $attr: any, ctrl: any): void;
+    link(scope: any, $element: any, _$attr: any, ctrl: any): void;
 }))[];

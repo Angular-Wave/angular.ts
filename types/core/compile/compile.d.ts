@@ -162,7 +162,7 @@ export class $CompileProvider {
      * @returns {object} `this` for chaining
      */
     addPropertySecurityContext: (elementName: string, propertyName: string, ctx: string) => object;
-    $get: (string | (($injector: any, $interpolate: any, $exceptionHandler: any, $templateRequest: any, $parse: any, $controller: any, $rootScope: any, $sce: any, $animate: any) => ($compileNodes: string | NodeList, transcludeFn: any, maxPriority: any, ignoreDirective: any, previousCompileContext: any) => (scope: any, cloneConnectFn: any, options: any) => any))[];
+    $get: (string | (($injector: any, $interpolate: any, $exceptionHandler: any, $templateRequest: any, $parse: any, $controller: any, $rootScope: any, $sce: any, $animate: any) => ($compileNodes: string | NodeList, transcludeFn: any, maxPriority: any, ignoreDirective: any, previousCompileContext: any) => (scope: any, cloneConnectFn: any, options: any) => string | NodeList | JQLite))[];
 }
 export namespace $CompileProvider {
     let $inject: string[];
@@ -171,3 +171,4 @@ export namespace $CompileProvider {
  * Function that aggregates all linking fns for a compilation root (nodeList)
  */
 export type CompositeLinkFn = Function;
+import { JQLite } from "../../shared/jqlite/jqlite";

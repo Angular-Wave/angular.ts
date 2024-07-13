@@ -219,13 +219,17 @@ function parseHeaders(headers) {
   }
 
   if (isString(headers)) {
-    forEach(headers.split("\n"), (line) => {
-      i = line.indexOf(":");
-      fillInParsed(
-        lowercase(trim(line.substr(0, i))),
-        trim(line.substr(i + 1)),
-      );
-    });
+    forEach(
+      headers.split("\n"),
+      /** @param {string} line */
+      (line) => {
+        i = line.indexOf(":");
+        fillInParsed(
+          line.substring(0, i).trim().toLowerCase(),
+          trim(line.substring(i + 1)),
+        );
+      },
+    );
   } else if (isObject(headers)) {
     forEach(headers, (headerVal, headerKey) => {
       fillInParsed(lowercase(headerKey), trim(headerVal));

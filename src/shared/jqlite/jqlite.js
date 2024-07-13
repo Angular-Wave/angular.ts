@@ -12,7 +12,6 @@ import {
   lowercase,
   nodeName_,
   shallowCopy,
-  trim,
 } from "../../shared/utils";
 import { CACHE, EXPANDO } from "../../core/cache/cache";
 
@@ -50,7 +49,6 @@ import { CACHE, EXPANDO } from "../../core/cache/cache";
  * - [`html()`](http://api.jquery.com/html/)
  * - [`on()`](http://api.jquery.com/on/) - Does not support namespaces, selectors or eventData
  * - [`off()`](http://api.jquery.com/off/) - Does not support namespaces, selectors or event object as parameter
- * - [`one()`](http://api.jquery.com/one/) - Does not support namespaces or selectors
  * - [`parent()`](http://api.jquery.com/parent/) - Does not support selectors
  * - [`prepend()`](http://api.jquery.com/prepend/)
  * - [`remove()`](http://api.jquery.com/remove/)
@@ -155,7 +153,7 @@ wrapMap.th = wrapMap.td;
 /**
  * Checks if the string contains HTML tags or entities.
  * @param {string} html
- * @returns {boolean}
+ * @returns {boolean} True if the string is plain text, false if it contains HTML tags or entities.
  */
 export function isTextNode(html) {
   return !/<|&#?\w+;/.test(html);
@@ -267,7 +265,7 @@ export function JQLite(element) {
     const parsed = parseHtml(/** @type {string} */ (element));
     addNodes(this, parsed);
   } else if (isFunction(element)) {
-    JQLiteReady(element);
+    onReady(/** @type {Function} */ (element));
   } else {
     addNodes(this, element);
   }
@@ -495,24 +493,21 @@ export function JQLiteRemove(element, keepData) {
   if (parent) parent.removeChild(element);
 }
 
-function JQLiteReady(fn) {
+/**
+ * Executea a function on `DOMContentLoaded`
+ * @param {Function} fn
+ */
+function onReady(fn) {
   function trigger() {
     window.document.removeEventListener("DOMContentLoaded", trigger);
-    window.removeEventListener("load", trigger);
     fn();
   }
-
   // check if document is already loaded
   if (window.document.readyState === "complete") {
     window.setTimeout(fn);
   } else {
-    // We can not use JQLite since we are not done loading and jQuery could be loaded later.
-
-    // Works for modern browsers and IE9
+    // We can not use JQLite since we are not done loading.
     window.document.addEventListener("DOMContentLoaded", trigger);
-
-    // Fallback to window.onload for others
-    window.addEventListener("load", trigger);
   }
 }
 
@@ -520,7 +515,6 @@ function JQLiteReady(fn) {
 // Functions which are declared directly.
 /// ///////////////////////////////////////
 JQLite.prototype = {
-  ready: JQLiteReady,
   toString() {
     const value = [];
     forEach(this, (e) => {
@@ -534,9 +528,6 @@ JQLite.prototype = {
   },
 
   length: 0,
-  push: [].push,
-  sort: [].sort,
-  splice: [].splice,
 };
 
 /// ///////////////////////////////////////
@@ -824,13 +815,7 @@ function specialMouseHandlerWrapper(target, event, handler) {
 forEach(
   {
     removeData: JQLiteRemoveData,
-    on: (element, type, fn, unsupported) => {
-      if (isDefined(unsupported))
-        throw JQLiteMinErr(
-          "onargs",
-          "jqLite#on() does not support the `selector` or `eventData` parameters",
-        );
-
+    on: (element, type, fn) => {
       // Do not add event handlers to non-elements because they will not be cleaned up.
       if (!elementAcceptsData(element)) {
         return;
@@ -1055,7 +1040,7 @@ export function startingTag(elementStr) {
 /**
  * Return the DOM siblings between the first and last node in the given array.
  * @param {Array} nodes An array-like object
- * @returns {Array} the inputted object or a JQLite collection containing the nodes
+ * @returns {JQLite} the inputted object or a JQLite collection containing the nodes
  */
 export function getBlockNodes(nodes) {
   // TODO(perf): update `nodes` instead of creating a new object?
@@ -1067,11 +1052,11 @@ export function getBlockNodes(nodes) {
     if (blockNodes || nodes[i] !== node) {
       if (!blockNodes) {
         // use element to avoid circular dependency
-        blockNodes = JQLite(Array.prototype.slice.call(nodes, 0, i));
+        blockNodes = Array.prototype.slice.call(nodes, 0, i);
       }
       blockNodes.push(node);
     }
   }
 
-  return blockNodes || nodes;
+  return JQLite(blockNodes || nodes);
 }

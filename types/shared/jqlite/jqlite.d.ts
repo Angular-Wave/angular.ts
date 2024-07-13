@@ -13,23 +13,28 @@ export function snakeToCamel(name: string): string;
 /**
  * Checks if the string contains HTML tags or entities.
  * @param {string} html
- * @returns {boolean}
+ * @returns {boolean} True if the string is plain text, false if it contains HTML tags or entities.
  */
 export function isTextNode(html: string): boolean;
-export function JQLiteBuildFragment(html: any, context: any): any;
-export function JQLite(element: any): any;
+/**
+ * @param {string} html
+ * @returns {DocumentFragment}
+ */
+export function buildFragment(html: string): DocumentFragment;
+/**
+ * @param {string|Element|Document|Window|JQLite|ArrayLike<Element>|(() => void)} element
+ * @returns {JQLite}
+ */
+export function JQLite(element: string | Element | Document | Window | JQLite | ArrayLike<Element> | (() => void)): JQLite;
 export class JQLite {
-    constructor(element: any);
-    ready: typeof JQLiteReady;
+    /**
+     * @param {string|Element|Document|Window|JQLite|ArrayLike<Element>|(() => void)} element
+     * @returns {JQLite}
+     */
+    constructor(element: string | Element | Document | Window | JQLite | ArrayLike<Element> | (() => void));
     toString(): string;
-    eq(index: any): any;
+    eq(index: any): JQLite;
     length: number;
-    push: (...items: undefined[]) => number;
-    sort: (compareFn?: (a: undefined, b: undefined) => number) => undefined[];
-    splice: {
-        (start: number, deleteCount?: number): undefined[];
-        (start: number, deleteCount: number, ...items: undefined[]): undefined[];
-    };
 }
 /**
  * @param {Element} element
@@ -48,9 +53,7 @@ export function startingTag(elementStr: string): string;
 /**
  * Return the DOM siblings between the first and last node in the given array.
  * @param {Array} nodes An array-like object
- * @returns {Array} the inputted object or a JQLite collection containing the nodes
+ * @returns {JQLite} the inputted object or a JQLite collection containing the nodes
  */
-export function getBlockNodes(nodes: any[]): any[];
+export function getBlockNodes(nodes: any[]): JQLite;
 export const BOOLEAN_ATTR: {};
-declare function JQLiteReady(fn: any): void;
-export {};

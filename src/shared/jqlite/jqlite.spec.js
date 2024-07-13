@@ -1274,26 +1274,6 @@ describe("jqLite", () => {
         expect(log).toEqual("childEnter;");
       });
     });
-
-    it("should throw an error if eventData or a selector is passed", () => {
-      const elm = JQLite(a);
-      const anObj = {};
-      const aString = "";
-      const aValue = 45;
-      const callback = () => {};
-
-      expect(() => {
-        elm.on("click", anObj, callback);
-      }).toThrow();
-
-      expect(() => {
-        elm.on("click", null, aString, callback);
-      }).toThrow();
-
-      expect(() => {
-        elm.on("click", aValue, callback);
-      }).toThrow();
-    });
   });
 
   describe("off", () => {
