@@ -444,14 +444,7 @@ interface JQLite {
   // $destroy
   controller(name?: string): any;
   injector(): ng.auto.IInjectorService;
-  /**
-   * Returns the `$scope` of the element.
-   *
-   * **IMPORTANT**: Requires `debugInfoEnabled` to be true.
-   *
-   * See https://docs.angularjs.org/guide/production#disabling-debug-data for more information.
-   */
-  scope<T extends ng.IScope>(): T;
+
   /**
    * Returns the `$scope` of the element.
    *

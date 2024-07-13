@@ -396,7 +396,7 @@ function getExpando(element, createIfNecessary = false) {
   return expandoStore;
 }
 
-function JQLiteData(element, key, value) {
+function getOrSetCacheData(element, key, value) {
   if (elementAcceptsData(element)) {
     let prop;
 
@@ -468,7 +468,8 @@ function JQLiteInheritedData(element, name, value) {
 
   while (element) {
     for (let i = 0, ii = names.length; i < ii; i++) {
-      if (isDefined((value = JQLiteData(element, names[i])))) return value;
+      if (isDefined((value = getOrSetCacheData(element, names[i]))))
+        return value;
     }
 
     // If dealing with a document fragment node with a host element, and no parent, use the host
@@ -477,13 +478,6 @@ function JQLiteInheritedData(element, name, value) {
     element =
       element.parentNode ||
       (element.nodeType === Node.DOCUMENT_FRAGMENT_NODE && element.host);
-  }
-}
-
-function JQLiteEmpty(element) {
-  dealoc(element, true);
-  while (element.firstChild) {
-    element.removeChild(element.firstChild);
   }
 }
 
@@ -543,18 +537,35 @@ JQLite.prototype.empty = function () {
   for (let i = 0; i < this.length; i++) {
     const element = this[i];
     dealoc(element, true);
-    while (element.firstChild) {
-      element.removeChild(element.firstChild);
+    // we may run into situation where we empty a transcluded node
+    if (
+      [
+        Node.ELEMENT_NODE,
+        Node.DOCUMENT_NODE,
+        Node.DOCUMENT_FRAGMENT_NODE,
+      ].includes(element.nodeType)
+    ) {
+      element.replaceChildren();
     }
   }
   return this;
 };
 
-/// ///////////////////////////////////////
-// Functions iterating getter/setters.
-// these functions return self on setter and
-// value on get.
-/// ///////////////////////////////////////
+/**
+ * Returns the `$scope` of the element.
+ * @returns {import("../../core/scope/scope").Scope}
+ */
+JQLite.prototype.scope = function () {
+  // Can't use JQLiteData here directly so we stay compatible with jQuery!
+  return (
+    getOrSetCacheData(this[0], "$scope") ||
+    JQLiteInheritedData(this[0].parentNode || this[0], [
+      "$isolateScope",
+      "$scope",
+    ])
+  );
+};
+
 export const BOOLEAN_ATTR = {};
 "multiple,selected,checked,disabled,readOnly,required,open"
   .split(",")
@@ -587,9 +598,14 @@ export function JQLiteCleanData(nodes) {
   }
 }
 
+/// ///////////////////////////////////////
+// Functions iterating getter/setters.
+// these functions return self on setter and
+// value on get.
+/// ///////////////////////////////////////
 forEach(
   {
-    data: JQLiteData,
+    data: getOrSetCacheData,
     removeData: removeElementData,
     cleanData: JQLiteCleanData,
   },
@@ -600,23 +616,14 @@ forEach(
 
 forEach(
   {
-    data: JQLiteData,
+    data: getOrSetCacheData,
     inheritedData: JQLiteInheritedData,
-    scope(element) {
-      // Can't use JQLiteData here directly so we stay compatible with jQuery!
-      return (
-        JQLiteData(element, "$scope") ||
-        JQLiteInheritedData(element.parentNode || element, [
-          "$isolateScope",
-          "$scope",
-        ])
-      );
-    },
+
     isolateScope(element) {
       // Can't use JQLiteData here directly so we stay compatible with jQuery!
       return (
-        JQLiteData(element, "$isolateScope") ||
-        JQLiteData(element, "$isolateScopeNoTemplate")
+        getOrSetCacheData(element, "$isolateScope") ||
+        getOrSetCacheData(element, "$isolateScopeNoTemplate")
       );
     },
     controller: JQLiteController,
@@ -711,7 +718,7 @@ forEach(
         if (isObject(arg1)) {
           // we are a write, but the object properties are the key/values
           for (i = 0; i < nodeCount; i++) {
-            if (fn === JQLiteData) {
+            if (fn === getOrSetCacheData) {
               fn(this[i], arg1);
             } else {
               for (key in arg1) {

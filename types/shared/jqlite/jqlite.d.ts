@@ -37,6 +37,11 @@ export class JQLite {
      * @returns {JQLite} The current instance of JQLite.
      */
     empty(): JQLite;
+    /**
+     * Returns the `$scope` of the element.
+     * @returns {import("../../core/scope/scope").Scope}
+     */
+    scope(): import("../../core/scope/scope").Scope;
     toString(): string;
     eq(index: any): JQLite;
     length: number;
