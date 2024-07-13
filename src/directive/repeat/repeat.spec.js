@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
-import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { forEach, valueFn } from "../../shared/utils";
 import { Angular } from "../../loader";
 
@@ -637,13 +637,13 @@ describe("ngRepeat", () => {
     });
 
     it("should error on wrong parsing of ngRepeat", () => {
-      element = jqLite('<ul><li ng-repeat="i dont parse"></li></ul>');
+      element = JQLite('<ul><li ng-repeat="i dont parse"></li></ul>');
       $compile(element)(scope);
       expect(logs.shift().message).toMatch(/i dont parse/);
     });
 
     it("should throw error when left-hand-side of ngRepeat can't be parsed", () => {
-      element = jqLite('<ul><li ng-repeat="i dont parse in foo"></li></ul>');
+      element = JQLite('<ul><li ng-repeat="i dont parse in foo"></li></ul>');
       $compile(element)(scope);
       expect(logs.shift().message).toMatch(/i dont parse/);
     });
@@ -926,7 +926,7 @@ describe("ngRepeat", () => {
         replace: true,
         template: '<div ng-repeat="i in items">{{i}}|</div>',
       }));
-      element = jqLite("<div><span rr>{{i}}|</span></div>");
+      element = JQLite("<div><span rr>{{i}}|</span></div>");
       $compile(element)(scope);
       scope.$apply();
       expect(element.text()).toBe("");
@@ -952,7 +952,7 @@ describe("ngRepeat", () => {
 
       $templateCache.put("rr.html", '<div ng-repeat="i in items">{{i}}|</div>');
 
-      element = jqLite("<div><span rr>{{i}}|</span></div>");
+      element = JQLite("<div><span rr>{{i}}|</span></div>");
       $compile(element)(scope);
       scope.$apply();
       expect(element.text()).toBe("");
@@ -973,7 +973,7 @@ describe("ngRepeat", () => {
         replace: true,
         template: '<span ng-repeat="i in items">{{log(i)}}</span>',
       }));
-      element = jqLite("<span replace-me-with-repeater></span>");
+      element = JQLite("<span replace-me-with-repeater></span>");
       $compile(element)(scope);
       expect(element.text()).toBe("");
       const scopeLog = [];
@@ -998,7 +998,7 @@ describe("ngRepeat", () => {
         "replace-me-with-repeater.html",
         '<div ng-repeat="i in items">{{log(i)}}</div>',
       );
-      element = jqLite(
+      element = JQLite(
         "<span>-</span><span replace-me-with-repeater></span><span>-</span>",
       );
       $compile(element)(scope);
@@ -1058,7 +1058,7 @@ describe("ngRepeat", () => {
       $compileProvider.directive("test", () => ({
         templateUrl: "/public/test.html",
       }));
-      element = jqLite('<div><div ng-repeat="i in items" test></div></div>');
+      element = JQLite('<div><div ng-repeat="i in items" test></div></div>');
       $compile(element)(scope);
       scope.items = [1];
       scope.$apply();
@@ -1093,7 +1093,7 @@ describe("ngRepeat", () => {
       expect(ends.length).toBe(3);
 
       // insert an extra element inside the second block
-      const extra = jqLite("<strong></strong>")[0];
+      const extra = JQLite("<strong></strong>")[0];
       element[0].insertBefore(extra, ends[1]);
 
       scope.values.splice(1, 1);
@@ -1122,7 +1122,7 @@ describe("ngRepeat", () => {
       expect(ends.length).toBe(3);
 
       // insert an extra element inside the third block
-      const extra = jqLite("<strong></strong>")[0];
+      const extra = JQLite("<strong></strong>")[0];
       element[0].insertBefore(extra, ends[2]);
 
       // move the third block to the beginning
@@ -1289,7 +1289,7 @@ describe("ngRepeat", () => {
       window.angular = new Angular();
       publishExternalAPI();
 
-      element = jqLite(
+      element = JQLite(
         '<div><div ng-repeat="i in [1,2]" ng-include="\'/public/test.html\'"></div></div>',
       );
       const injector = window.angular.bootstrap(element);
@@ -1467,7 +1467,7 @@ describe("ngRepeat", () => {
 //         // we need to run animation on attached elements;
 //         function (_$rootElement_) {
 //           $rootElement = _$rootElement_;
-//           body = jqLite(window.document.body);
+//           body = JQLite(window.document.body);
 //           body.append($rootElement);
 //         },
 //     ),

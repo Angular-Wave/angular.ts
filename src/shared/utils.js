@@ -52,8 +52,8 @@ export function isArrayLike(obj) {
   if (obj == null || isWindow(obj)) return false;
 
   // arrays, strings and jQuery/jqLite objects are array like
-  // * we have to check the existence of jqLite first as this method is called
-  //   via the forEach method when constructing the jqLite object in the first place
+  // * we have to check the existence of JQLite first as this method is called
+  //   via the forEach method when constructing the JQLite object in the first place
   if (Array.isArray(obj) || obj instanceof Array || isString(obj)) return true;
 
   // Support: iOS 8.2 (not reproducible in simulator)

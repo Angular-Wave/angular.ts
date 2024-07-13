@@ -16,11 +16,11 @@ export function snakeToCamel(name: string): string;
  * @returns {boolean}
  */
 export function isTextNode(html: string): boolean;
-export function jqLiteBuildFragment(html: any, context: any): any;
+export function JQLiteBuildFragment(html: any, context: any): any;
 export function JQLite(element: any): any;
 export class JQLite {
     constructor(element: any);
-    ready: typeof jqLiteReady;
+    ready: typeof JQLiteReady;
     toString(): string;
     eq(index: any): any;
     length: number;
@@ -37,9 +37,9 @@ export class JQLite {
  * @returns {void}
  */
 export function dealoc(element: Element, onlyDescendants?: boolean): void;
-export function jqLiteRemove(element: any, keepData: any): void;
+export function JQLiteRemove(element: any, keepData: any): void;
 export function getBooleanAttrName(element: any, name: any): any;
-export function jqLiteCleanData(nodes: any): void;
+export function JQLiteCleanData(nodes: any): void;
 /**
  * @param {string} elementStr
  * @returns {string} Returns the string representation of the element.
@@ -48,10 +48,9 @@ export function startingTag(elementStr: string): string;
 /**
  * Return the DOM siblings between the first and last node in the given array.
  * @param {Array} nodes An array-like object
- * @returns {Array} the inputted object or a jqLite collection containing the nodes
+ * @returns {Array} the inputted object or a JQLite collection containing the nodes
  */
 export function getBlockNodes(nodes: any[]): any[];
-export const jqLite: typeof JQLite;
 export const BOOLEAN_ATTR: {};
-declare function jqLiteReady(fn: any): void;
+declare function JQLiteReady(fn: any): void;
 export {};

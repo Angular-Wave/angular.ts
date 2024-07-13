@@ -1,4 +1,4 @@
-import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
 
@@ -20,14 +20,14 @@ describe("ngCloak", () => {
   });
 
   it("should get removed when an element is compiled", () => {
-    element = jqLite("<div ng-cloak></div>");
+    element = JQLite("<div ng-cloak></div>");
     expect(element.attr("ng-cloak")).toBe("");
     $compile(element);
     expect(element.attr("ng-cloak")).toBeUndefined();
   });
 
   it("should remove ngCloak class from a compiled element with attribute", () => {
-    element = jqLite('<div ng-cloak class="foo ng-cloak bar"></div>');
+    element = JQLite('<div ng-cloak class="foo ng-cloak bar"></div>');
 
     expect(element[0].classList.contains("foo")).toBe(true);
     expect(element[0].classList.contains("ng-cloak")).toBe(true);

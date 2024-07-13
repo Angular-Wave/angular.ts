@@ -23,7 +23,7 @@ import {
   isValidObjectMaxDepth,
   minErrConfig,
 } from "./shared/utils";
-import { jqLite, startingTag } from "./shared/jqlite/jqlite";
+import { JQLite, startingTag } from "./shared/jqlite/jqlite";
 import { createInjector } from "./injector";
 import { CACHE } from "./core/cache/cache";
 
@@ -66,7 +66,7 @@ export class Angular {
     this.equals = equals;
 
     /** @type {import('./shared/jqlite/jqlite').JQLite} */
-    this.element = jqLite;
+    this.element = JQLite;
 
     /** @type {extend} */
     this.extend = extend;
@@ -181,7 +181,7 @@ export class Angular {
     };
     this.doBootstrap = function () {
       // @ts-ignore
-      element = jqLite(element);
+      element = JQLite(element);
 
       if (element.injector()) {
         const tag =

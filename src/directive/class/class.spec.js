@@ -1,4 +1,4 @@
-import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
 import { valueFn } from "../../shared/utils";
@@ -245,8 +245,8 @@ describe("ngClass", () => {
       '<ul><li ng-repeat="i in [0,1]" class="existing" ng-class-odd="\'odd\'" ng-class-even="\'even\'"></li><ul>',
     )($rootScope);
     $rootScope.$digest();
-    const e1 = jqLite(element[0].childNodes[1]);
-    const e2 = jqLite(element[0].childNodes[3]);
+    const e1 = JQLite(element[0].childNodes[1]);
+    const e2 = JQLite(element[0].childNodes[3]);
     expect(e1[0].classList.contains("existing")).toBeTruthy();
     expect(e1[0].classList.contains("odd")).toBeTruthy();
     expect(e2[0].classList.contains("existing")).toBeTruthy();
@@ -261,8 +261,8 @@ describe("ngClass", () => {
         "<ul>",
     )($rootScope);
     $rootScope.$apply();
-    const e1 = jqLite(element[0].childNodes[1]);
-    const e2 = jqLite(element[0].childNodes[3]);
+    const e1 = JQLite(element[0].childNodes[1]);
+    const e2 = JQLite(element[0].childNodes[3]);
 
     expect(e1[0].classList.contains("plainClass")).toBeTruthy();
     expect(e1[0].classList.contains("odd")).toBeTruthy();
@@ -323,8 +323,8 @@ describe("ngClass", () => {
         "<ul>",
     )($rootScope);
     $rootScope.$apply();
-    const e1 = jqLite(element[0].childNodes[1]);
-    const e2 = jqLite(element[0].childNodes[3]);
+    const e1 = JQLite(element[0].childNodes[1]);
+    const e2 = JQLite(element[0].childNodes[3]);
 
     expect(e1[0].classList.contains("A")).toBeTruthy();
     expect(e1[0].classList.contains("B")).toBeTruthy();
@@ -437,8 +437,8 @@ describe("ngClass", () => {
     $rootScope.items.unshift("a");
     $rootScope.$digest();
 
-    const e1 = jqLite(element[0].childNodes[1]);
-    const e4 = jqLite(element[0].childNodes[3]);
+    const e1 = JQLite(element[0].childNodes[1]);
+    const e4 = JQLite(element[0].childNodes[3]);
 
     expect(e1[0].classList.contains("odd")).toBeTruthy();
     expect(e1[0].classList.contains("even")).toBeFalsy();
@@ -460,8 +460,8 @@ describe("ngClass", () => {
     $rootScope.items = ["a", "a"];
     $rootScope.$digest();
 
-    const e1 = jqLite(element[0].childNodes[1]);
-    const e2 = jqLite(element[0].childNodes[3]);
+    const e1 = JQLite(element[0].childNodes[1]);
+    const e2 = JQLite(element[0].childNodes[3]);
 
     expect(e1[0].classList.contains("odd")).toBeTruthy();
     expect(e1[0].classList.contains("even")).toBeFalsy();
@@ -483,8 +483,8 @@ describe("ngClass", () => {
     $rootScope.items = ["b", "a"];
     $rootScope.$digest();
 
-    const e1 = jqLite(element[0].childNodes[1]);
-    const e2 = jqLite(element[0].childNodes[3]);
+    const e1 = JQLite(element[0].childNodes[1]);
+    const e2 = JQLite(element[0].childNodes[3]);
 
     expect(e1[0].classList.contains("odd")).toBeTruthy();
     expect(e1[0].classList.contains("even")).toBeFalsy();
@@ -734,7 +734,7 @@ describe("ngClass", () => {
 //     module("ngAnimateMock");
 //     inject(($compile, $rootScope, $animate, $timeout) => {
 //       element = angular.element('<div ng-class="val"></div>');
-//       const body = jqLite(window.document.body);
+//       const body = JQLite(window.document.body);
 //       body.append(element);
 //       $compile(element)($rootScope);
 
@@ -783,7 +783,7 @@ describe("ngClass", () => {
 
 //         $rootScope.val = "crazy";
 //         element = angular.element('<div ng-class="val"></div>');
-//         jqLite($document[0].body).append($rootElement);
+//         JQLite($document[0].body).append($rootElement);
 
 //         $compile(element)($rootScope);
 

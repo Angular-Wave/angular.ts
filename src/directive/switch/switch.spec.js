@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
-import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 
 describe("ngSwitch", () => {
   let $scope;
@@ -496,7 +496,7 @@ describe("ngSwitch", () => {
 //         // we need to run animation on attached elements;
 //         function (_$rootElement_) {
 //           $rootElement = _$rootElement_;
-//           body = jqLite(window.document.body);
+//           body = JQLite(window.document.body);
 //           body.append($rootElement);
 //         },
 //     ),

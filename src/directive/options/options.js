@@ -1,4 +1,4 @@
-import { jqLite, jqLiteRemove, startingTag } from "../../shared/jqlite/jqlite";
+import { JQLite, JQLiteRemove, startingTag } from "../../shared/jqlite/jqlite";
 import {
   equals,
   forEach,
@@ -363,7 +363,7 @@ export const ngOptionsDirective = [
     }
 
     // Support: IE 9 only
-    // We can't just jqLite('<option>') since jqLite is not smart enough
+    // We can't just JQLite('<option>') since JQLite is not smart enough
     // to create it in <select> and IE barfs otherwise.
     const optionTemplate = window.document.createElement("option");
     const optGroupTemplate = window.document.createElement("optgroup");
@@ -392,7 +392,7 @@ export const ngOptionsDirective = [
 
       const providedEmptyOption = !!selectCtrl.emptyOption;
 
-      const unknownOption = jqLite(optionTemplate.cloneNode(false));
+      const unknownOption = JQLite(optionTemplate.cloneNode(false));
       unknownOption.val("?");
 
       let options;
@@ -594,9 +594,9 @@ export const ngOptionsDirective = [
           for (let i = options.items.length - 1; i >= 0; i--) {
             const option = options.items[i];
             if (isDefined(option.group)) {
-              jqLiteRemove(option.element.parentNode);
+              JQLiteRemove(option.element.parentNode);
             } else {
-              jqLiteRemove(option.element);
+              JQLiteRemove(option.element);
             }
           }
         }

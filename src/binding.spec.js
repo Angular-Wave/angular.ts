@@ -1,4 +1,4 @@
-import { jqLite, dealoc } from "./shared/jqlite/jqlite";
+import { JQLite, dealoc } from "./shared/jqlite/jqlite";
 import { publishExternalAPI } from "./public";
 import { createInjector } from "./injector";
 import { browserTrigger } from "./shared/test-utils";
@@ -13,7 +13,7 @@ describe("binding", () => {
     errors = [];
 
   function childNode(element, index) {
-    return jqLite(element[0].childNodes[index]);
+    return JQLite(element[0].childNodes[index]);
   }
 
   beforeEach(function () {
@@ -30,7 +30,7 @@ describe("binding", () => {
     $document = $injector.get("$document");
     this.compileToHtml = function (content) {
       let html;
-      content = jqLite(content);
+      content = JQLite(content);
       $compile(content)($rootScope);
       html = content[0].outerHTML;
       return html;
@@ -352,8 +352,8 @@ describe("binding", () => {
     )($rootScope);
     $rootScope.$apply();
 
-    const d1 = jqLite(element[0].childNodes[1]);
-    const d2 = jqLite(element[0].childNodes[3]);
+    const d1 = JQLite(element[0].childNodes[1]);
+    const d2 = JQLite(element[0].childNodes[3]);
     expect(d1[0].classList.contains("o")).toBeTruthy();
     expect(d2[0].classList.contains("e")).toBeTruthy();
     // expect(element).toBe(
@@ -448,8 +448,8 @@ describe("binding", () => {
         '<input type="radio" ng-model="sex" value="male">' +
         "</div>",
     )($rootScope);
-    const female = jqLite(element[0].childNodes[0]);
-    const male = jqLite(element[0].childNodes[1]);
+    const female = JQLite(element[0].childNodes[0]);
+    const male = JQLite(element[0].childNodes[1]);
 
     female[0].click();
     browserTrigger(female, "change");

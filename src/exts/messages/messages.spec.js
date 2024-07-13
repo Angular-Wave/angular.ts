@@ -2,7 +2,7 @@ import { createInjector } from "../../injector";
 import { countWatchers } from "../../core/scope/scope";
 import { publishExternalAPI } from "../../public";
 import { isString } from "../../shared/utils";
-import { jqLite } from "../../shared/jqlite/jqlite";
+import { JQLite } from "../../shared/jqlite/jqlite";
 
 describe("ngMessages", () => {
   let $rootScope, $compile, $templateCache;
@@ -481,7 +481,7 @@ describe("ngMessages", () => {
     $rootScope.$digest();
 
     // Simulate the animation completing on the node
-    // jqLite(nodeToRemove).remove();
+    // JQLite(nodeToRemove).remove();
 
     // We should not get another call to `leave`
     //expect($animate.leave).not.toHaveBeenCalled();
@@ -573,7 +573,7 @@ describe("ngMessages", () => {
       const deregisterSpy = spyOn(ctrl, "deregister").and.callThrough();
 
       const nodeA = element[0].querySelector('[ng-message="a"]');
-      jqLite(nodeA).remove();
+      JQLite(nodeA).remove();
       $rootScope.$digest(); // The next digest triggers the error
 
       // Make sure removing the element triggers the deregistration in ngMessages
@@ -612,7 +612,7 @@ describe("ngMessages", () => {
         const deregisterSpy = spyOn(ctrl, "deregister").and.callThrough();
 
         const nodeB = element[0].querySelector('[ng-message="b"]');
-        jqLite(nodeB).remove();
+        JQLite(nodeB).remove();
         $rootScope.$digest(); // The next digest triggers the error
 
         // Make sure removing the element triggers the deregistration in ngMessages
@@ -1016,7 +1016,7 @@ describe("ngMessages", () => {
     //   const deregisterSpy = spyOn(ctrl, "deregister").and.callThrough();
 
     //   const nodeB = element[0].querySelector('[ng-message="b"]');
-    //   jqLite(nodeB).remove();
+    //   JQLite(nodeB).remove();
 
     //   // Make sure removing the element triggers the deregistration in ngMessages
     //   expect(trim(deregisterSpy.calls.mostRecent().args[0].nodeValue)).toBe(

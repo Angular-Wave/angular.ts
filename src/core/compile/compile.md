@@ -5,7 +5,7 @@
 -
 - - "node" - DOM Node
 - - "element" - DOM Element or Node
-- - "$node" or "$element" - jqLite-wrapped node or element
+- - "$node" or "$element" - JQLite-wrapped node or element
 -
 -
 - Compiler related stuff:
@@ -728,7 +728,7 @@
 - </div>
 -
 - If you want to manually control the insertion and removal of the transcluded content in your directive
-- then you must use this transclude function. When you call a transclude function it returns a jqLite/JQuery
+- then you must use this transclude function. When you call a transclude function it returns a JQLite/JQuery
 - object that contains the compiled DOM, which is linked to the correct transclusion scope.
 -
 - When you call a transclusion function you can pass in a **clone attach function**. This function accepts

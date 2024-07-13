@@ -1,5 +1,5 @@
 import {
-  jqLite,
+  JQLite,
   getBooleanAttrName,
   isTextNode,
   startingTag,
@@ -1007,11 +1007,11 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         ignoreDirective,
         previousCompileContext,
       ) {
-        if (!($compileNodes instanceof jqLite)) {
+        if (!($compileNodes instanceof JQLite)) {
           // jquery always rewraps, whereas we need to preserve the original selector so that we can
           // modify it.
 
-          $compileNodes = jqLite($compileNodes);
+          $compileNodes = JQLite($compileNodes);
         }
 
         /**
@@ -1072,14 +1072,14 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             // might change, so we need to recreate the namespace adapted compileNodes
             // for call to the link function.
             // Note: This will already clone the nodes...
-            $linkNode = jqLite(
+            $linkNode = JQLite(
               wrapTemplate(
                 namespace,
-                jqLite("<div></div>").append($compileNodes).html(),
+                JQLite("<div></div>").append($compileNodes).html(),
               ),
             );
           } else if (cloneConnectFn) {
-            $linkNode = jqLite(
+            $linkNode = JQLite(
               Array.from($compileNodes).map((element) =>
                 element.cloneNode(true),
               ),
@@ -1134,8 +1134,8 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {function(ng.IScope, cloneAttachFn=)} transcludeFn A linking function, where the
        *        scope argument is auto-generated to the new child of the transcluded parent scope.
        * @param {Element=} $rootElement If the nodeList is the root of the compilation tree then
-       *        the rootElement must be set the jqLite collection of the compile root. This is
-       *        needed so that the jqLite collection items can be replaced with widgets.
+       *        the rootElement must be set the JQLite collection of the compile root. This is
+       *        needed so that the JQLite collection items can be replaced with widgets.
        * @param {number=} maxPriority Max directive priority.
        * @returns {Function} A composite linking function of all of the matched directives or null.
        */
@@ -1516,7 +1516,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           nodes.push(node);
         }
 
-        return jqLite(nodes);
+        return JQLite(nodes);
       }
 
       /**
@@ -1601,7 +1601,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
        *                                                  scope argument is auto-generated to the new
        *                                                  child of the transcluded parent scope.
        * @param {JQLite} jqCollection If we are working on the root of the compile tree then this
-       *                              argument has the root jqLite array so that we can replace nodes
+       *                              argument has the root JQLite array so that we can replace nodes
        *                              on it.
        * @param {Object=} originalReplaceDirective An optional directive that will be ignored when
        *                                           compiling the transclusion.
@@ -1633,7 +1633,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         let hasTranscludeDirective = false;
         let hasTemplate = false;
         let { hasElementTranscludeDirective } = previousCompileContext;
-        let $compileNode = (templateAttrs.$$element = jqLite(compileNode));
+        let $compileNode = (templateAttrs.$$element = JQLite(compileNode));
         let directive;
         let directiveName;
         let $template;
@@ -1761,7 +1761,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               hasElementTranscludeDirective = true;
               terminalPriority = directive.priority;
               $template = $compileNode;
-              $compileNode = templateAttrs.$$element = jqLite(
+              $compileNode = templateAttrs.$$element = JQLite(
                 document.createComment(""),
               );
               compileNode = $compileNode[0];
@@ -1819,7 +1819,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
                 // Add the matching elements into their slot
 
-                forEach(jqLite($compileNode[0].childNodes), (node) => {
+                forEach(JQLite($compileNode[0].childNodes), (node) => {
                   const slotName = slotMap[directiveNormalize(nodeName_(node))];
                   if (slotName) {
                     filledSlots[slotName] = true;
@@ -1846,7 +1846,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                 for (const slotName in slots) {
                   if (slots[slotName]) {
                     // Only define a transclusion function if the slot was filled
-                    const slotCompileNodes = jqLite(slots[slotName].childNodes);
+                    const slotCompileNodes = JQLite(slots[slotName].childNodes);
                     slots[slotName] = compilationGenerator(
                       mightHaveMultipleTransclusionError,
                       slotCompileNodes,
@@ -1855,7 +1855,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                   }
                 }
 
-                $template = jqLite($template.childNodes);
+                $template = JQLite($template.childNodes);
               }
 
               $compileNode.empty(); // clear contents
@@ -2082,7 +2082,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             attrs = templateAttrs;
             $element = templateAttrs.$$element;
           } else {
-            $element = jqLite(linkNode);
+            $element = JQLite(linkNode);
             attrs = new Attributes($element, templateAttrs);
           }
 
@@ -2720,7 +2720,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                 }
                 replaceWith(
                   linkRootElement,
-                  jqLite(beforeTemplateLinkNode),
+                  JQLite(beforeTemplateLinkNode),
                   linkNode,
                 );
 
@@ -3050,12 +3050,12 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
       }
 
       /**
-       * This is a special jqLite.replaceWith, which can replace items which
-       * have no parents, provided that the containing jqLite collection is provided.
+       * This is a special JQLite.replaceWith, which can replace items which
+       * have no parents, provided that the containing JQLite collection is provided.
        *
        * @param {JQLite} $rootElement The root of the compile tree. Used so that we can replace nodes
        *                               in the root of the tree.
-       * @param {JQLite} elementsToRemove The jqLite element which we are going to replace. We keep
+       * @param {JQLite} elementsToRemove The JQLite element which we are going to replace. We keep
        *                                  the shell, but replace its DOM node reference.
        * @param {Node} newNode The new DOM node.
        */
@@ -3111,17 +3111,17 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           // Copy over user data (that includes AngularJS's $scope etc.). Don't copy private
           // data here because there's no public interface in jQuery to do that and copying over
           // event listeners (which is the main use of private data) wouldn't work anyway.
-          jqLite.data(newNode, jqLite.data(firstElementToRemove));
+          JQLite.data(newNode, JQLite.data(firstElementToRemove));
 
           // Remove $destroy event listeners from `firstElementToRemove`
-          jqLite(firstElementToRemove).off("$destroy");
+          JQLite(firstElementToRemove).off("$destroy");
         }
 
         // Cleanup any data/listeners on the elements and children.
         // This includes invoking the $destroy event on any elements with listeners.
-        jqLite.cleanData(fragment.querySelectorAll("*"));
+        JQLite.cleanData(fragment.querySelectorAll("*"));
 
-        // Update the jqLite collection to only contain the `newNode`
+        // Update the JQLite collection to only contain the `newNode`
         for (i = 1; i < removeCount; i++) {
           delete elementsToRemove[i];
         }
@@ -3408,7 +3408,7 @@ function tokenDifference(str1, str2) {
 }
 
 function removeComments(jqNodes) {
-  jqNodes = jqLite(jqNodes);
+  jqNodes = JQLite(jqNodes);
   let i = jqNodes.length;
 
   if (i <= 1) {

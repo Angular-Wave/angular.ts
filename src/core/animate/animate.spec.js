@@ -22,10 +22,10 @@ xdescribe("$animate", () => {
 
     it("should enter the element to the start of the parent container", () => {
       for (let i = 0; i < 5; i++) {
-        element.append(jqLite(`<div> ${i}</div>`));
+        element.append(JQLite(`<div> ${i}</div>`));
       }
 
-      const child = jqLite("<div>first</div>");
+      const child = JQLite("<div>first</div>");
       $animate.enter(child, element);
 
       expect(element.text()).toEqual("first 0 1 2 3 4");
@@ -70,9 +70,9 @@ xdescribe("$animate", () => {
     });
 
     it("should run each method and return a promise", () => {
-      const element = jqLite("<div></div>");
-      const move = jqLite("<div></div>");
-      const parent = jqLite($document[0].body);
+      const element = JQLite("<div></div>");
+      const move = JQLite("<div></div>");
+      const parent = JQLite($document[0].body);
       parent.append(move);
 
       expect($animate.enter(element, parent)).toBeAPromise();
@@ -95,7 +95,7 @@ xdescribe("$animate", () => {
 
     it("should add and remove classes on SVG elements", () => {
       if (!window.SVGElement) return;
-      const svg = jqLite("<svg><rect></rect></svg>");
+      const svg = JQLite("<svg><rect></rect></svg>");
       const rect = svg.children();
       $animate.enabled(false);
       expect(rect).toBeShown();
@@ -137,9 +137,9 @@ xdescribe("$animate", () => {
     });
 
     it("should apply and retain inline styles on the element that is animated", () => {
-      const element = jqLite("<div></div>");
-      const parent = jqLite("<div></div>");
-      const other = jqLite("<div></div>");
+      const element = JQLite("<div></div>");
+      const parent = JQLite("<div></div>");
+      const other = JQLite("<div></div>");
       parent.append(other);
       $animate.enabled(true);
 
@@ -183,7 +183,7 @@ xdescribe("$animate", () => {
     });
 
     it("should merge the from and to styles that are provided", () => {
-      const element = jqLite("<div></div>");
+      const element = JQLite("<div></div>");
 
       element[0].style.color = "red";
       $animate.addClass(element, "on", {
@@ -198,7 +198,7 @@ xdescribe("$animate", () => {
     });
 
     it("should avoid cancelling out add/remove when the element already contains the class", () => {
-      const element = jqLite('<div class="ng-hide"></div>');
+      const element = JQLite('<div class="ng-hide"></div>');
 
       $animate.addClass(element, "ng-hide");
       $animate.removeClass(element, "ng-hide");
@@ -208,7 +208,7 @@ xdescribe("$animate", () => {
     });
 
     it("should avoid cancelling out remove/add if the element does not contain the class", () => {
-      const element = jqLite("<div></div>");
+      const element = JQLite("<div></div>");
 
       $animate.removeClass(element, "ng-hide");
       $animate.addClass(element, "ng-hide");
@@ -219,7 +219,7 @@ xdescribe("$animate", () => {
 
     ["enter", "move"].forEach((method) => {
       it('should accept an unwrapped "parent" element for the $prop event', () => {
-        const element = jqLite("<div></div>");
+        const element = JQLite("<div></div>");
         const parent = $document[0].createElement("div");
         $rootElement.append(parent);
 
@@ -230,7 +230,7 @@ xdescribe("$animate", () => {
 
     ["enter", "move"].forEach((method) => {
       it('should accept an unwrapped "after" element for the $prop event', () => {
-        const element = jqLite("<div></div>");
+        const element = JQLite("<div></div>");
         const after = $document[0].createElement("div");
         $rootElement.append(after);
 
@@ -257,8 +257,8 @@ xdescribe("$animate", () => {
           });
         });
 
-        const element = jqLite("<div></div>");
-        const parent2 = jqLite("<div></div>");
+        const element = JQLite("<div></div>");
+        const parent2 = JQLite("<div></div>");
         const parent = $rootElement;
         parent.append(parent2);
 
@@ -327,7 +327,7 @@ xdescribe("$animate", () => {
     () => {
       const spy = spyOn(window, "jqLiteAddClass").and.callThrough();
 
-      const element = jqLite("<div></div>");
+      const element = JQLite("<div></div>");
       const parent = $rootElement;
 
       $animate.enter(element, parent, null, { addClass: () => {} });
@@ -345,8 +345,8 @@ xdescribe("$animate", () => {
   });
 
   it("should not break postDigest for subsequent elements if addClass contains non-valid CSS class names", () => {
-    const element1 = jqLite("<div></div>");
-    const element2 = jqLite("<div></div>");
+    const element1 = JQLite("<div></div>");
+    const element2 = JQLite("<div></div>");
 
     $animate.enter(element1, $rootElement, null, { addClass: " " });
     $animate.enter(element2, $rootElement, null, { addClass: "valid-name" });
@@ -361,7 +361,7 @@ xdescribe("$animate", () => {
     () => {
       const spy = spyOn(window, "jqLiteRemoveClass").and.callThrough();
 
-      const element = jqLite("<div></div>");
+      const element = JQLite("<div></div>");
       const parent = $rootElement;
 
       $animate.enter(element, parent, null, { removeClass: () => {} });
@@ -380,7 +380,7 @@ xdescribe("$animate", () => {
   });
 
   it("should not alter the provided options input in any way throughout the animation", () => {
-    const element = jqLite("<div></div>");
+    const element = JQLite("<div></div>");
     const parent = $rootElement;
 
     const initialOptions = {
@@ -418,7 +418,7 @@ xdescribe("$animate", () => {
 
     function setupClassManipulationLogger(log) {
       () => {
-        const _addClass = jqLiteAddClass;
+        const _addClass = JQLiteAddClass;
         addClass = spyOn(window, "jqLiteAddClass").and.callFake(
           (element, classes) => {
             let names = classes;
@@ -429,7 +429,7 @@ xdescribe("$animate", () => {
           },
         );
 
-        const _removeClass = jqLiteRemoveClass;
+        const _removeClass = JQLiteRemoveClass;
         removeClass = spyOn(window, "jqLiteRemoveClass").and.callFake(
           (element, classes) => {
             let names = classes;
@@ -444,7 +444,7 @@ xdescribe("$animate", () => {
 
     it("should defer class manipulation until end of digest", () => {
       setupClassManipulationLogger(log);
-      element = jqLite("<p>test</p>");
+      element = JQLite("<p>test</p>");
 
       $rootScope.$apply(() => {
         $animate.addClass(element, "test-class1");
@@ -472,7 +472,7 @@ xdescribe("$animate", () => {
 
     it("should defer class manipulation until postDigest when outside of digest", () => {
       setupClassManipulationLogger(log);
-      element = jqLite('<p class="test-class4">test</p>');
+      element = JQLite('<p class="test-class4">test</p>');
 
       $animate.addClass(element, "test-class1");
       $animate.removeClass(element, "test-class1");
@@ -494,7 +494,7 @@ xdescribe("$animate", () => {
     });
 
     it("should perform class manipulation in expected order at end of digest", () => {
-      element = jqLite('<p class="test-class3">test</p>');
+      element = JQLite('<p class="test-class3">test</p>');
 
       setupClassManipulationLogger(log);
 
@@ -509,7 +509,7 @@ xdescribe("$animate", () => {
     });
 
     it("should return a promise which is resolved on a different turn", () => {
-      element = jqLite('<p class="test2">test</p>');
+      element = JQLite('<p class="test2">test</p>');
 
       $animate.addClass(element, "test1").then(log.fn("addClass(test1)"));
       $animate.removeClass(element, "test2").then(log.fn("removeClass(test2)"));
@@ -521,7 +521,7 @@ xdescribe("$animate", () => {
       expect(log).toEqual(["addClass(test1)", "removeClass(test2)"]);
 
       log.reset();
-      element = jqLite('<p class="test4">test</p>');
+      element = JQLite('<p class="test4">test</p>');
 
       $rootScope.$apply(() => {
         $animate.addClass(element, "test3").then(log.fn("addClass(test3)"));
@@ -538,7 +538,7 @@ xdescribe("$animate", () => {
     it("should defer class manipulation until end of digest for SVG", () => {
       if (!window.SVGElement) return;
       setupClassManipulationSpies();
-      element = jqLite("<svg><g></g></svg>");
+      element = JQLite("<svg><g></g></svg>");
       const target = element.children().eq(0);
 
       $rootScope.$apply(() => {
@@ -564,7 +564,7 @@ xdescribe("$animate", () => {
     it("should defer class manipulation until postDigest when outside of digest for SVG", () => {
       if (!window.SVGElement) return;
       setupClassManipulationLogger(log);
-      element = jqLite('<svg><g class="test-class4"></g></svg>');
+      element = JQLite('<svg><g class="test-class4"></g></svg>');
       const target = element.children().eq(0);
 
       $animate.addClass(target, "test-class1");
@@ -588,7 +588,7 @@ xdescribe("$animate", () => {
 
     it("should perform class manipulation in expected order at end of digest for SVG", () => {
       if (!window.SVGElement) return;
-      element = jqLite('<svg><g class="test-class3"></g></svg>');
+      element = JQLite('<svg><g class="test-class3"></g></svg>');
       const target = element.children().eq(0);
 
       setupClassManipulationLogger(log);

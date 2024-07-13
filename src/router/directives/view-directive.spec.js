@@ -6,7 +6,7 @@
 //   }
 // }
 
-import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
 import { publishExternalAPI } from "../../public";
 import { wait } from "../../shared/test-utils";
@@ -175,7 +175,7 @@ describe("ngView", () => {
         $state = _$state_;
         $q = _$q_;
         $timeout = _$timeout_;
-        elem = jqLite("<div>");
+        elem = JQLite("<div>");
         $ngViewScroll = _$ngViewScroll_;
       },
     );
@@ -355,7 +355,7 @@ describe("ngView", () => {
         ngViews = elem.find("ng-view");
 
       while (index++ < ngViews.length) {
-        const ngView = jqLite(ngViews[index]);
+        const ngView = JQLite(ngViews[index]);
         if (ngView.text() === bState.template) target = ngView;
       }
 
@@ -881,7 +881,7 @@ describe("UiView", () => {
         $state = _$state_;
         $q = _$q_;
         $timeout = _$timeout_;
-        elem = jqLite("<div>");
+        elem = JQLite("<div>");
         $ngViewScroll = _$ngViewScroll_;
       },
     );
@@ -966,7 +966,7 @@ describe("ngView transclusion", () => {
         scope = $rootScope.$new();
         $compile = _$compile_;
         $state = _$state_;
-        elem = jqLite("<div>");
+        elem = JQLite("<div>");
       },
     );
   });
@@ -1045,13 +1045,13 @@ describe("ngView controllers or onEnter handlers", () => {
         scope = $rootScope.$new();
         $compile = _$compile_;
         $state = _$state_;
-        elem = jqLite("<div>");
+        elem = JQLite("<div>");
       },
     );
   });
 
   it("should not go into an infinite loop when controller uses $state.go", async () => {
-    el = jqLite("<div><ng-view></ng-view></div>");
+    el = JQLite("<div><ng-view></ng-view></div>");
     template = $compile(el)($rootScope);
     $rootScope.$digest();
 
@@ -1200,7 +1200,7 @@ describe("angular 1.5+ style .component()", () => {
         $rootScope = _$rootScope_;
         scope = $rootScope.$new();
         log = "";
-        el = jqLite("<div><ng-view></ng-view></div>");
+        el = JQLite("<div><ng-view></ng-view></div>");
         svcs.$compile(el)(scope);
         $templateCache = _$templateCache_;
       },
@@ -1770,7 +1770,7 @@ describe("angular 1.5+ style .component()", () => {
         },
       };
 
-      el = jqLite(
+      el = JQLite(
         '<div><div ng-view="header"></div><div ng-view="content"</div>',
       );
       svcs.$compile(el)(scope);

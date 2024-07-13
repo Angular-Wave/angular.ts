@@ -25,7 +25,7 @@
  * ```
  *
  * <hr />
- * Note, that code executed in event-listeners (even those registered using jqLite's `on`/`bind`
+ * Note, that code executed in event-listeners (even those registered using JQLite's `on`/`bind`
  * methods) does not delegate exceptions to the {@link angular.ErrorHandler }
  * (unless executed during a digest).
  *

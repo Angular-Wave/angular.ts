@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
-import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 
 describe("scriptDirective", () => {
   let $rootScope;
@@ -35,7 +35,7 @@ describe("scriptDirective", () => {
   });
 
   it("should not compile scripts", () => {
-    const doc = jqLite("<div></div>");
+    const doc = JQLite("<div></div>");
     // jQuery is too smart and removes script tags
     doc[0].innerHTML =
       "foo" +

@@ -1,4 +1,4 @@
-import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { forEach, valueFn } from "../../shared/utils";
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
@@ -138,7 +138,7 @@ describe("ngIf", () => {
     });
 
     it("should play nice with ngInclude on the same element", (done) => {
-      element = jqLite(
+      element = JQLite(
         `<div><div ng-if="value=='first'" ng-include="'/mock/hello'"></div></div>`,
       );
 

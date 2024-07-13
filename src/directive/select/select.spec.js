@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
-import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { forEach, hashKey, equals, isNumberNaN } from "../../shared/utils";
 import { browserTrigger } from "../../shared/test-utils";
 
@@ -16,7 +16,7 @@ describe("select", () => {
   const optionAttributesList = [];
 
   function compile(html) {
-    formElement = jqLite(`<form name="form">${html}</form>`);
+    formElement = JQLite(`<form name="form">${html}</form>`);
     element = formElement.find("select");
     $compile(formElement)(scope);
     ngModelCtrl = element.controller("ngModel");
@@ -357,7 +357,7 @@ describe("select", () => {
       scope.mySelect = "B";
       scope.$apply();
 
-      const select = jqLite(
+      const select = JQLite(
         '<select ng-model="mySelect">' +
           '<optgroup label="first">' +
           '<option value="A">A</option>' +
@@ -381,7 +381,7 @@ describe("select", () => {
       scope.mySelect = "B";
       scope.$apply();
 
-      const select = jqLite(
+      const select = JQLite(
         '<select spy-on-write-value ng-model="mySelect">' +
           '<optgroup label="first">' +
           '<option value="A">A</option>' +
@@ -1781,7 +1781,7 @@ describe("select", () => {
 
           forEach(element.find("option"), (option) => {
             // browserTrigger can't produce click + ctrl, so set selection manually
-            jqLite(option)[0].selected = true;
+            JQLite(option)[0].selected = true;
           });
 
           browserTrigger(element, "change");

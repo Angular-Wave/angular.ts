@@ -1,4 +1,4 @@
-import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
 import { Angular } from "../../loader";
@@ -30,7 +30,7 @@ describe("ngInit", () => {
   });
 
   it("should be evaluated before ngInclude", (done) => {
-    element = jqLite(
+    element = JQLite(
       '<div><div ng-include="template" ' +
         "ng-init=\"template='template2.tpl'\"></div></div>",
     );

@@ -1,7 +1,7 @@
 import { publishExternalAPI } from "../public";
 import { createInjector } from "../injector";
 import { isString, includes } from "../shared/utils";
-import { jqLite } from "../shared/jqlite/jqlite";
+import { JQLite } from "../shared/jqlite/jqlite";
 
 describe("Filter: filter", () => {
   let filter;
@@ -491,7 +491,7 @@ describe("Filter: filter", () => {
       { name: "Brad" },
     );
 
-    const nodeList = jqLite(
+    const nodeList = JQLite(
       "<p><span>Misko</span><span>Igor</span><span>Brad</span></p>",
     )[0].childNodes;
     function nodeFilterPredicate(node) {

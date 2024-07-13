@@ -1,4 +1,4 @@
-import { dealoc, jqLite } from "../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../shared/jqlite/jqlite";
 import { Angular } from "../loader";
 import { publishExternalAPI } from "../public";
 import { wait } from "../shared/test-utils";
@@ -124,7 +124,7 @@ describe("templateFactory", () => {
           $compile = _$compile_;
         },
       );
-      el = $compile(jqLite("<div><ng-view></ng-view></div>"))($scope.$new());
+      el = $compile(JQLite("<div><ng-view></ng-view></div>"))($scope.$new());
     });
 
     it("should not prefix the components dom element with anything", async () => {

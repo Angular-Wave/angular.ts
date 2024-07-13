@@ -1,7 +1,7 @@
 /**
  * @typedef {import('../index').angular.ServiceProvider} angular.DocumentProvider
  * @description
- * A {@link angular.element jQuery or jqLite} wrapper for the browser's `window.document` object.
+ * A {@link angular.element jQuery or JQLite} wrapper for the browser's `window.document` object.
  *
  * @example
    <example module="documentExample" name="document">

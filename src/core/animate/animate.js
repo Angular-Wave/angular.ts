@@ -6,7 +6,7 @@ import {
   minErr,
   extend,
 } from "../../shared/utils";
-import { jqLite } from "../../shared/jqlite/jqlite";
+import { JQLite } from "../../shared/jqlite/jqlite";
 
 const $animateMinErr = minErr("$animate");
 const NG_ANIMATE_CLASSNAME = "ng-animate";
@@ -620,8 +620,8 @@ export const AnimateProvider = [
            * @return {Runner} the animation runner
            */
           enter(element, parent, after, options) {
-            parent = parent && jqLite(parent);
-            after = after && jqLite(after);
+            parent = parent && JQLite(parent);
+            after = after && JQLite(after);
             parent = parent || after.parent();
             domInsert(element, parent, after);
             return $$animateQueue.push(
@@ -656,8 +656,8 @@ export const AnimateProvider = [
            * @return {Runner} the animation runner
            */
           move(element, parent, after, options) {
-            parent = parent && jqLite(parent);
-            after = after && jqLite(after);
+            parent = parent && JQLite(parent);
+            after = after && JQLite(after);
             parent = parent || after.parent();
             domInsert(element, parent, after);
             return $$animateQueue.push(

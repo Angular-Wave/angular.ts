@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
-import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { bind } from "../../shared/utils";
 import { Angular } from "../../loader";
 
@@ -126,7 +126,7 @@ describe("ngController", () => {
   });
 
   it("should work with ngInclude on the same element", (done) => {
-    element = jqLite(
+    element = JQLite(
       '<div><div ng-controller="Greeter" ng-include="\'/mock/interpolation\'"></div></div>',
     );
     window.angular
@@ -149,7 +149,7 @@ describe("ngController", () => {
   it("should only instantiate the controller once with ngInclude on the same element", () => {
     let count = 0;
 
-    element = jqLite(
+    element = JQLite(
       '<div><div ng-controller="Count" ng-include="\'/mock/interpolation\'"></div></div>',
     );
     window.angular
@@ -174,7 +174,7 @@ describe("ngController", () => {
   it("when ngInclude is on the same element, the content included content should get a child scope of the controller", () => {
     let controllerScope;
 
-    element = jqLite(
+    element = JQLite(
       '<div><div ng-controller="ExposeScope" ng-include="\'/mock/scopeinit\'"></div></div>',
     );
 

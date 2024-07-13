@@ -1,4 +1,4 @@
-import { jqLite } from "../shared/jqlite/jqlite";
+import { JQLite } from "../shared/jqlite/jqlite";
 import { urlResolve } from "../core/url-utils/url-utils";
 import { isUndefined, equals } from "../shared/utils";
 
@@ -58,7 +58,7 @@ export function Browser(taskTracker) {
   let cachedState;
   let lastHistoryState;
   let lastBrowserUrl = window.location.href;
-  const baseElement = jqLite(Array.from(document.getElementsByTagName("base")));
+  const baseElement = JQLite(Array.from(document.getElementsByTagName("base")));
 
   cacheState();
 
@@ -192,9 +192,9 @@ export function Browser(taskTracker) {
       // changed by push/replaceState
 
       // html5 history api - popstate event
-      jqLite(window).on("popstate", cacheStateAndFireUrlChange);
+      JQLite(window).on("popstate", cacheStateAndFireUrlChange);
       // hashchange event
-      jqLite(window).on("hashchange", cacheStateAndFireUrlChange);
+      JQLite(window).on("hashchange", cacheStateAndFireUrlChange);
 
       urlChangeInit = true;
     }
@@ -209,7 +209,7 @@ export function Browser(taskTracker) {
    * NOTE: this api is intended for use only by $rootScope.
    */
   self.$$applicationDestroyed = function () {
-    jqLite(window).off("hashchange popstate", cacheStateAndFireUrlChange);
+    JQLite(window).off("hashchange popstate", cacheStateAndFireUrlChange);
   };
 
   /**

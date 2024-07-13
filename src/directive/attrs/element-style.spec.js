@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
-import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 
 describe("style", () => {
   let $rootScope;
@@ -20,7 +20,7 @@ describe("style", () => {
   });
 
   it("should compile style element without binding", () => {
-    element = jqLite(
+    element = JQLite(
       '<style type="text/css">.header{font-size:1.5em; h3{font-size:1.5em}}</style>',
     );
     $compile(element)($rootScope);
@@ -32,7 +32,7 @@ describe("style", () => {
   });
 
   it("should compile style element with one simple bind", () => {
-    element = jqLite(
+    element = JQLite(
       '<style type="text/css">.some-container{ width: {{elementWidth}}px; }</style>',
     );
     $compile(element)($rootScope);
@@ -48,7 +48,7 @@ describe("style", () => {
   });
 
   it("should compile style element with one bind", () => {
-    element = jqLite(
+    element = JQLite(
       '<style type="text/css">.header{ h3 { font-size: {{fontSize}}em }}</style>',
     );
     $compile(element)($rootScope);
@@ -64,7 +64,7 @@ describe("style", () => {
   });
 
   it("should compile style element with two binds", () => {
-    element = jqLite(
+    element = JQLite(
       '<style type="text/css">.header{ h3 { font-size: {{fontSize}}{{unit}} }}</style>',
     );
     $compile(element)($rootScope);
@@ -81,7 +81,7 @@ describe("style", () => {
   });
 
   it("should compile content of element with style attr", () => {
-    element = jqLite('<div style="some">{{bind}}</div>');
+    element = JQLite('<div style="some">{{bind}}</div>');
     $compile(element)($rootScope);
     $rootScope.$apply(() => {
       $rootScope.bind = "value";

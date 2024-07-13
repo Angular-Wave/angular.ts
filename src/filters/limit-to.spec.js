@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../public";
 import { createInjector } from "../injector";
-import { jqLite } from "../shared/jqlite/jqlite";
+import { JQLite } from "../shared/jqlite/jqlite";
 
 describe("Filter: limitTo", () => {
   let items;
@@ -240,7 +240,7 @@ describe("Filter: limitTo", () => {
       { name: "Brad" },
     );
 
-    const nodeList = jqLite(
+    const nodeList = JQLite(
       "<p><span>Misko</span><span>Igor</span><span>Brad</span></p>",
     )[0].childNodes;
 

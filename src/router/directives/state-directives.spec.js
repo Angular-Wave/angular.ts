@@ -1,4 +1,4 @@
-import { jqLite } from "../../shared/jqlite/jqlite";
+import { JQLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
 import { publishExternalAPI } from "../../public";
 import { browserTrigger, wait } from "../../shared/test-utils";
@@ -64,7 +64,7 @@ describe("ngStateRef", () => {
   describe("links with promises", () => {
     it("should update the href when promises on parameters change before scope is applied", async () => {
       const defer = $q.defer();
-      el = jqLite(
+      el = JQLite(
         '<a ng-sref="contacts.item.detail({ id: contact.id })">Details</a>',
       );
       defer.promise.then((val) => {
@@ -80,10 +80,10 @@ describe("ngStateRef", () => {
 
   function buildDOM() {
     window.location.hash = "#";
-    el = jqLite(
+    el = JQLite(
       '<a ng-sref="contacts.item.detail({ id: contact.id })">Details</a>',
     );
-    el2 = jqLite('<a ng-sref="top">Top</a>');
+    el2 = JQLite('<a ng-sref="top">Top</a>');
     scope = $rootScope;
     scope.contact = { id: 5 };
     scope.$apply();
@@ -110,7 +110,7 @@ describe("ngStateRef", () => {
     });
 
     it("should allow multi-line attribute values", async () => {
-      el = jqLite(
+      el = JQLite(
         '<a ng-sref="contacts.item.detail({\n\tid: $index\n})">Details</a>',
       );
       $rootScope.$index = 3;
@@ -129,7 +129,7 @@ describe("ngStateRef", () => {
     });
 
     it("should not transition states when ctrl-clicked", async () => {
-      jqLite(el)[0].dispatchEvent(
+      JQLite(el)[0].dispatchEvent(
         new MouseEvent("click", {
           ctrlKey: true,
           bubbles: true,
@@ -143,13 +143,13 @@ describe("ngStateRef", () => {
 
     // TODO investigate further why this fails
     xit("should not transition states when meta-clicked", async () => {
-      jqLite(el)[0].dispatchEvent(new MouseEvent("click", { metaKey: true }));
+      JQLite(el)[0].dispatchEvent(new MouseEvent("click", { metaKey: true }));
       expect($state.current.name).toEqual("");
       expect($stateParams.id).toBeUndefined();
     });
 
     it("should not transition states when shift-clicked", async () => {
-      jqLite(el)[0].dispatchEvent(new MouseEvent("click", { shiftKey: true }));
+      JQLite(el)[0].dispatchEvent(new MouseEvent("click", { shiftKey: true }));
       expect($state.current.name).toEqual("top");
       expect($stateParams.id).toBeUndefined();
     });
@@ -158,7 +158,7 @@ describe("ngStateRef", () => {
     xit("should not transition states when alt-clicked", async () => {
       expect($state.current.name).toEqual("");
 
-      jqLite(el)[0].dispatchEvent(new MouseEvent("click", { altKey: true }));
+      JQLite(el)[0].dispatchEvent(new MouseEvent("click", { altKey: true }));
       expect($state.current.name).toEqual("top");
       expect($stateParams.id).toBeUndefined();
     });
@@ -166,7 +166,7 @@ describe("ngStateRef", () => {
     it("should not transition states when alt-clicked", async () => {
       expect($state.current.name).toEqual("top");
 
-      jqLite(el)[0].dispatchEvent(new MouseEvent("click", { button: 1 }));
+      JQLite(el)[0].dispatchEvent(new MouseEvent("click", { button: 1 }));
       expect($state.current.name).toEqual("top");
       expect($stateParams.id).toBeUndefined();
     });
@@ -195,7 +195,7 @@ describe("ngStateRef", () => {
       $rootScope.$index = "def";
       $rootScope.$digest();
 
-      el = jqLite('<a ng-sref="{id: $index}">Details</a>');
+      el = JQLite('<a ng-sref="{id: $index}">Details</a>');
       $compile(el)($rootScope);
       $rootScope.$digest();
 
@@ -227,7 +227,7 @@ describe("ngStateRef", () => {
       $state.go("contacts.item.detail", { id: "123" });
       $rootScope.$digest();
 
-      el = jqLite('<a ng-sref="{\n\tid: $index\n}">Details</a>');
+      el = JQLite('<a ng-sref="{\n\tid: $index\n}">Details</a>');
       $rootScope.$index = 3;
       $rootScope.$apply();
 
@@ -237,20 +237,20 @@ describe("ngStateRef", () => {
     });
 
     it("should take an object as a parameter and update properly on digest churns", async () => {
-      el = jqLite(
+      el = JQLite(
         '<div><a ng-sref="contacts.item.detail(urlParams)">Contacts</a></div>',
       );
       template = $compile(el)($rootScope);
 
       $rootScope.urlParams = { id: 1 };
       $rootScope.$digest();
-      expect(jqLite(template[0].querySelector("a")).attr("href")).toBe(
+      expect(JQLite(template[0].querySelector("a")).attr("href")).toBe(
         "#/contacts/1",
       );
 
       $rootScope.urlParams.id = 2;
       $rootScope.$digest();
-      expect(jqLite(template[0].querySelector("a")).attr("href")).toBe(
+      expect(JQLite(template[0].querySelector("a")).attr("href")).toBe(
         "#/contacts/2",
       );
     });
@@ -293,7 +293,7 @@ describe("ngStateRef", () => {
     let template;
 
     beforeEach(() => {
-      el = jqLite(
+      el = JQLite(
         '<a ng-sref-active="active" ng-sref-active-eq="activeeq" ng-state="state" ng-state-params="params">state</a>',
       );
       scope = $rootScope;
@@ -303,20 +303,20 @@ describe("ngStateRef", () => {
     });
 
     it("sets the correct initial href", () => {
-      expect(jqLite(template[0]).attr("href")).toBe("#/contacts");
+      expect(JQLite(template[0]).attr("href")).toBe("#/contacts");
     });
 
     it("updates to the new href", () => {
-      expect(jqLite(template[0]).attr("href")).toBe("#/contacts");
+      expect(JQLite(template[0]).attr("href")).toBe("#/contacts");
 
       scope.state = "contacts.item";
       scope.params = { id: 5 };
       scope.$digest();
-      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/5");
+      expect(JQLite(template[0]).attr("href")).toBe("#/contacts/5");
 
       scope.params.id = 25;
       scope.$digest();
-      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/25");
+      expect(JQLite(template[0]).attr("href")).toBe("#/contacts/25");
     });
 
     it("updates a linked ng-sref-active", async () => {
@@ -355,11 +355,11 @@ describe("ngStateRef", () => {
     });
 
     it("updates to a new href when it points to a new state", () => {
-      expect(jqLite(template[0]).attr("href")).toBe("#/contacts");
+      expect(JQLite(template[0]).attr("href")).toBe("#/contacts");
       scope.state = "other";
       scope.params = { id: "123" };
       scope.$digest();
-      expect(jqLite(template[0]).attr("href")).toBe("#/other/123");
+      expect(JQLite(template[0]).attr("href")).toBe("#/other/123");
     });
 
     it("should allow passing params to current state using empty ng-state", async () => {
@@ -367,7 +367,7 @@ describe("ngStateRef", () => {
       $rootScope.$index = "def";
       $rootScope.$digest();
 
-      el = jqLite('<a ng-state="" ng-state-params="{id: $index}">Details</a>');
+      el = JQLite('<a ng-state="" ng-state-params="{id: $index}">Details</a>');
       $compile(el)($rootScope);
 
       expect($state.current.name).toBe("other");
@@ -397,32 +397,32 @@ describe("ngStateRef", () => {
     });
 
     it("retains the old href if the new points to a non-state", () => {
-      expect(jqLite(template[0]).attr("href")).toBe("#/contacts");
+      expect(JQLite(template[0]).attr("href")).toBe("#/contacts");
       scope.state = "nostate";
       scope.$digest();
-      expect(jqLite(template[0]).attr("href")).toBe("#/contacts");
+      expect(JQLite(template[0]).attr("href")).toBe("#/contacts");
     });
 
     it("accepts param overrides", () => {
       scope.state = "contacts.item";
       scope.params = { id: 10 };
       scope.$digest();
-      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/10");
+      expect(JQLite(template[0]).attr("href")).toBe("#/contacts/10");
     });
 
     it("accepts param overrides", () => {
       scope.state = "contacts.item";
       scope.params = { id: 10 };
       scope.$digest();
-      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/10");
+      expect(JQLite(template[0]).attr("href")).toBe("#/contacts/10");
 
       scope.params.id = 22;
       scope.$digest();
-      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/22");
+      expect(JQLite(template[0]).attr("href")).toBe("#/contacts/22");
     });
 
     it("watches attributes", () => {
-      el = jqLite(
+      el = JQLite(
         '<a ng-state="{{exprvar}}" ng-state-params="params">state</a>',
       );
       template = $compile(el)(scope);
@@ -432,33 +432,33 @@ describe("ngStateRef", () => {
       scope.state2 = "other";
       scope.params = { id: 10 };
       scope.$digest();
-      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/10");
+      expect(JQLite(template[0]).attr("href")).toBe("#/contacts/10");
 
       scope.exprvar = "state2";
       scope.$digest();
-      expect(jqLite(template[0]).attr("href")).toBe("#/other/10");
+      expect(JQLite(template[0]).attr("href")).toBe("#/other/10");
     });
 
     it("allows one-time-binding on ng1.3+", () => {
-      el = jqLite('<a ng-state="::state" ng-state-params="::params">state</a>');
+      el = JQLite('<a ng-state="::state" ng-state-params="::params">state</a>');
 
       scope.state = "contacts.item";
       scope.params = { id: 10 };
       template = $compile(el)(scope);
       scope.$digest();
-      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/10");
+      expect(JQLite(template[0]).attr("href")).toBe("#/contacts/10");
 
       scope.state = "other";
       scope.params = { id: 22 };
 
       scope.$digest();
-      expect(jqLite(template[0]).attr("href")).toBe("#/contacts/10");
+      expect(JQLite(template[0]).attr("href")).toBe("#/contacts/10");
     });
 
     it("accepts option overrides", async () => {
       let transitionOptions;
 
-      el = jqLite('<a ng-state="state" ng-state-opts="opts">state</a>');
+      el = JQLite('<a ng-state="state" ng-state-opts="opts">state</a>');
       scope.state = "contacts";
       scope.opts = { reload: true };
       template = $compile(el)(scope);
@@ -480,7 +480,7 @@ describe("ngStateRef", () => {
       it("should bind click event by default", async () => {
         expect($state.current.name).toBe("top");
 
-        el = jqLite('<a ng-state="state"></a>');
+        el = JQLite('<a ng-state="state"></a>');
 
         scope.state = "contacts";
         $compile(el)(scope);
@@ -493,7 +493,7 @@ describe("ngStateRef", () => {
       it("should bind single HTML events", async () => {
         expect($state.current.name).toEqual("top");
 
-        el = jqLite(
+        el = JQLite(
           '<input type="text" ng-state="state" ng-state-opts="{ events: [\'change\'] }">',
         );
 
@@ -510,7 +510,7 @@ describe("ngStateRef", () => {
       it("should bind multiple HTML events", async () => {
         expect($state.current.name).toEqual("top");
 
-        el = jqLite(
+        el = JQLite(
           '<input type="text" ng-state="state" ng-state-opts="{ events: [\'change\', \'blur\'] }">',
         );
 
@@ -536,7 +536,7 @@ describe("ngStateRef", () => {
       it("should bind multiple Mouse events", async () => {
         expect($state.current.name).toEqual("top");
 
-        el = jqLite(
+        el = JQLite(
           "<a ng-state=\"state\" ng-state-opts=\"{ events: ['mouseover', 'mousedown'] }\">",
         );
 
@@ -564,7 +564,7 @@ describe("ngStateRef", () => {
     let el, scope;
 
     beforeEach(() => {
-      el = jqLite(
+      el = JQLite(
         '<form ng-sref="contacts.item.detail({ id: contact.id })"></form>',
       );
       scope = $rootScope;
@@ -583,12 +583,12 @@ describe("ngStateRef", () => {
   describe("relative transitions", () => {
     beforeEach(() => {
       $state.transitionTo("contacts.item", { id: 5 });
-      el = jqLite('<a ng-sref=".detail">Details</a>');
+      el = JQLite('<a ng-sref=".detail">Details</a>');
       scope = $rootScope;
       scope.$apply();
 
       $compile(el)(scope);
-      template = $compile(jqLite("<div><ng-view></ng-view><div>"))(scope);
+      template = $compile(JQLite("<div><ng-view></ng-view><div>"))(scope);
       scope.$digest();
     });
 
@@ -603,21 +603,21 @@ describe("ngStateRef", () => {
     xit("should resolve states from parent ngView", async () => {
       $state.transitionTo("contacts");
       await wait(500);
-      const parentToChild = jqLite(template[0].querySelector("a.item"));
+      const parentToChild = JQLite(template[0].querySelector("a.item"));
       browserTrigger(parentToChild, "click");
       await wait(100);
 
       expect($state.$current.name).toBe("contacts.item");
 
-      const childToGrandchild = jqLite(
+      const childToGrandchild = JQLite(
         template[0].querySelector("a.item-detail"),
       );
-      const childToParent = jqLite(template[0].querySelector("a.item-parent"));
+      const childToParent = JQLite(template[0].querySelector("a.item-parent"));
 
       browserTrigger(childToGrandchild, "click");
       await wait(100);
 
-      const grandchildToParent = jqLite(
+      const grandchildToParent = JQLite(
         template[0].querySelector("a.item-parent2"),
       );
       expect($state.$current.name).toBe("contacts.item.detail");
@@ -637,7 +637,7 @@ describe("ngStateRef", () => {
   describe("option event", () => {
     beforeEach(() => (window.location.hash = ""));
     it("should bind click event by default", async () => {
-      el = jqLite('<a ng-sref="contacts"></a>');
+      el = JQLite('<a ng-sref="contacts"></a>');
       $compile(el)($rootScope);
 
       expect($state.current.name).toEqual("top");
@@ -649,7 +649,7 @@ describe("ngStateRef", () => {
     });
 
     it("should bind single HTML events", async () => {
-      el = jqLite(
+      el = JQLite(
         '<input type="text" ng-sref="contacts" ng-sref-opts="{ events: [\'change\'] }">',
       );
       $compile(el)($rootScope);
@@ -662,7 +662,7 @@ describe("ngStateRef", () => {
     });
 
     it("should bind multiple HTML events", async () => {
-      el = jqLite(
+      el = JQLite(
         '<input type="text" ng-sref="contacts" ng-sref-opts="{ events: [\'change\', \'blur\'] }">',
       );
       $compile(el)($rootScope);
@@ -684,7 +684,7 @@ describe("ngStateRef", () => {
     });
 
     it("should bind multiple Mouse events", async () => {
-      el = jqLite(
+      el = JQLite(
         "<a ng-sref=\"contacts\" ng-sref-opts=\"{ events: ['mouseover', 'mousedown'] }\">",
       );
       $compile(el)($rootScope);
@@ -770,102 +770,102 @@ describe("ngSrefActive", () => {
   });
 
   it("should update class for sibling ngSref", async () => {
-    el = jqLite(
+    el = JQLite(
       '<div><a ng-sref="contacts.item({ id: 1 })" ng-sref-active="active">Contacts</a><a ng-sref="contacts.item({ id: 2 })" ng-sref-active="active">Contacts</a></div>',
     );
     template = $compile(el)($rootScope);
     $rootScope.$digest();
 
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
     $state.transitionTo("contacts.item", { id: 1 });
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $state.transitionTo("contacts.item", { id: 2 });
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
   });
 
   it("should match state's parameters", async () => {
-    el = jqLite(
+    el = JQLite(
       '<div><a ng-sref="contacts.item.detail({ foo: \'bar\' })" ng-sref-active="active">Contacts</a></div>',
     );
     template = $compile(el)($rootScope);
     $rootScope.$digest();
 
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
     $state.transitionTo("contacts.item.detail", { id: 5, foo: "bar" });
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $state.transitionTo("contacts.item.detail", { id: 5, foo: "baz" });
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
   });
 
   // Test for #2696
   it("should compare using typed parameters", async () => {
-    el = jqLite(
+    el = JQLite(
       '<div><a ng-sref="arrayparam({ foo: [1,2,3] })" ng-sref-active="active">foo 123</a></div>',
     );
     template = $compile(el)($rootScope);
     $rootScope.$digest();
 
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
 
     $state.transitionTo("arrayparam", { foo: [1, 2, 3] });
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $state.transitionTo("arrayparam", { foo: [1, 2, 3], bar: "asdf" });
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $state.transitionTo("arrayparam", { foo: [1, 2] });
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
   });
 
   // Test for #3154
   it("should compare ng-sref-active-eq using typed parameters", async () => {
-    el = jqLite(
+    el = JQLite(
       '<div><a ng-sref="arrayparam({ foo: [1,2,3] })" ng-sref-active-eq="active">foo 123</a></div>',
     );
     template = $compile(el)($rootScope);
     $rootScope.$digest();
 
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
 
     $state.transitionTo("arrayparam", { foo: [1, 2, 3] });
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $state.transitionTo("arrayparam", { foo: [1, 2, 3], bar: "asdf" });
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $state.transitionTo("arrayparam", { foo: [1, 2] });
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
   });
 
   it("should update in response to ng-sref param expression changes", async () => {
-    el = jqLite(
+    el = JQLite(
       '<div><a ng-sref="contacts.item.detail({ foo: fooId })" ng-sref-active="active">Contacts</a></div>',
     );
     template = $compile(el)($rootScope);
     $rootScope.fooId = "bar";
     $rootScope.$digest();
 
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
     $state.transitionTo("contacts.item.detail", { id: 5, foo: "bar" });
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $rootScope.fooId = "baz";
     $rootScope.$digest();
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
   });
 
   it("should match on child states", async () => {
@@ -873,7 +873,7 @@ describe("ngSrefActive", () => {
       '<div><a ng-sref="contacts.item({ id: 1 })" ng-sref-active="active">Contacts</a></div>',
     )($rootScope);
     $rootScope.$digest();
-    const a = jqLite(template[0].getElementsByTagName("a")[0]);
+    const a = JQLite(template[0].getElementsByTagName("a")[0]);
 
     $state.transitionTo("contacts.item.edit", { id: 1 });
     await wait(100);
@@ -891,7 +891,7 @@ describe("ngSrefActive", () => {
       '<div><a ng-sref="contacts.item({ id: 1 })" ng-sref-active-eq="active">Contacts</a></div>',
     )($rootScope);
     $rootScope.$digest();
-    const a = jqLite(template[0].getElementsByTagName("a")[0]);
+    const a = JQLite(template[0].getElementsByTagName("a")[0]);
 
     $state.transitionTo("contacts.item", { id: 1 });
     await wait(100);
@@ -907,7 +907,7 @@ describe("ngSrefActive", () => {
       '<div><a ng-sref="contacts.item({ id: 1 })" ng-sref-active="active" ng-sref-active-eq="active-eq">Contacts</a></div>',
     )($rootScope);
     $rootScope.$digest();
-    const a = jqLite(template[0].getElementsByTagName("a")[0]);
+    const a = JQLite(template[0].getElementsByTagName("a")[0]);
 
     $state.transitionTo("contacts.item", { id: 1 });
     await wait(100);
@@ -921,45 +921,45 @@ describe("ngSrefActive", () => {
   });
 
   it("should resolve relative state refs", async () => {
-    el = jqLite("<section><div ng-view></div></section>");
+    el = JQLite("<section><div ng-view></div></section>");
     template = $compile(el)($rootScope);
     $rootScope.$digest();
 
     $state.transitionTo("contacts");
     await wait(100);
     expect(
-      jqLite(template[0].querySelector("a")).attr("class"),
+      JQLite(template[0].querySelector("a")).attr("class"),
     ).toBeUndefined();
 
     $state.transitionTo("contacts.item", { id: 6 });
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBe("active");
 
     $state.transitionTo("contacts.item", { id: 5 });
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("");
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBe("");
   });
 
   it("should match on any child state refs", async () => {
-    el = jqLite(
+    el = JQLite(
       '<div ng-sref-active="active"><a ng-sref="contacts.item({ id: 1 })">Contacts</a><a ng-sref="contacts.item({ id: 2 })">Contacts</a></div>',
     );
     template = $compile(el)($rootScope);
     $rootScope.$digest();
 
-    expect(jqLite(template[0]).attr("class")).toBeUndefined();
+    expect(JQLite(template[0]).attr("class")).toBeUndefined();
 
     $state.transitionTo("contacts.item", { id: 1 });
     await wait(100);
-    expect(jqLite(template[0]).attr("class")).toBe("active");
+    expect(JQLite(template[0]).attr("class")).toBe("active");
 
     $state.transitionTo("contacts.item", { id: 2 });
     await wait(100);
-    expect(jqLite(template[0]).attr("class")).toBe("active");
+    expect(JQLite(template[0]).attr("class")).toBe("active");
   });
 
   it("should match fuzzy on lazy loaded states", async () => {
-    el = jqLite(
+    el = JQLite(
       '<div><a ng-sref="contacts.lazy" ng-sref-active="active">Lazy Contact</a></div>',
     );
     template = $compile(el)($rootScope);
@@ -974,15 +974,15 @@ describe("ngSrefActive", () => {
 
     $state.transitionTo("contacts.item", { id: 1 });
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
 
     $state.transitionTo("contacts.lazy");
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBe("active");
   });
 
   it("should match exactly on lazy loaded states", async () => {
-    el = jqLite(
+    el = JQLite(
       '<div><a ng-sref="contacts.lazy" ng-sref-active-eq="active">Lazy Contact</a></div>',
     );
     template = $compile(el)($rootScope);
@@ -997,11 +997,11 @@ describe("ngSrefActive", () => {
 
     $state.transitionTo("contacts.item", { id: 1 });
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBeFalsy();
 
     $state.transitionTo("contacts.lazy");
     await wait(100);
-    expect(jqLite(template[0].querySelector("a")).attr("class")).toBe("active");
+    expect(JQLite(template[0].querySelector("a")).attr("class")).toBe("active");
   });
 
   it("should allow multiple classes to be supplied", async () => {
@@ -1009,7 +1009,7 @@ describe("ngSrefActive", () => {
       '<div><a ng-sref="contacts.item({ id: 1 })" ng-sref-active="active also-active">Contacts</a></div>',
     )($rootScope);
     $rootScope.$digest();
-    const a = jqLite(template[0].getElementsByTagName("a")[0]);
+    const a = JQLite(template[0].getElementsByTagName("a")[0]);
 
     $state.transitionTo("contacts.item.edit", { id: 1 });
     await wait(100);

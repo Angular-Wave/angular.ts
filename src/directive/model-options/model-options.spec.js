@@ -1,5 +1,5 @@
 import { defaultModelOptions } from "../../directive/model-options/model-options";
-import { dealoc, jqLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
 import { valueFn } from "../../shared/utils";
@@ -439,7 +439,7 @@ describe("ngModelOptions", () => {
         //   )($rootScope);
 
         //   $rootScope.$apply("color = 'white'");
-        //   browserTrigger(jqLite(inputElm[2]), "click");
+        //   browserTrigger(JQLite(inputElm[2]), "click");
         //   expect($rootScope.color).toBe("blue");
         // });
 
@@ -996,7 +996,7 @@ describe("ngModelOptions", () => {
       });
 
       it("should get initialized in time for `ngModel` on the original element", () => {
-        inputElm = jqLite('<foo ng-model="value"></foo>');
+        inputElm = JQLite('<foo ng-model="value"></foo>');
         const injector = angular.bootstrap(inputElm, ["myModule"]);
         $rootScope = injector.get("$rootScope");
         const ngModelCtrl = inputElm.controller("ngModel");

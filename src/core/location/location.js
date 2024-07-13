@@ -1,4 +1,4 @@
-import { jqLite } from "../../shared/jqlite/jqlite";
+import { JQLite } from "../../shared/jqlite/jqlite";
 import { urlResolve } from "../url-utils/url-utils";
 import {
   encodeUriSegment,
@@ -929,7 +929,7 @@ export function $LocationProvider() {
         )
           return;
 
-        let elm = jqLite(event.target);
+        let elm = JQLite(event.target);
 
         // traverse the DOM up to find first A tag
         while (elm[0].nodeName.toLowerCase() !== "a") {

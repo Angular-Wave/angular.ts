@@ -5,7 +5,7 @@ import { parse } from "../../shared/hof";
 import { ResolveContext } from "../resolve/resolve-context";
 import { trace } from "../common/trace";
 import { Ng1ViewConfig } from "../state/views";
-import { jqLite } from "../../shared/jqlite/jqlite";
+import { JQLite } from "../../shared/jqlite/jqlite";
 import { getLocals } from "../state/state-registry";
 /**
  * `ui-view`: A viewport directive which is filled in by a view from the active state.
@@ -376,7 +376,7 @@ export function $ViewDirectiveFill(
               .filter((el) => el && el.tagName && tagRegexp.exec(el.tagName));
             return (
               directiveEl &&
-              jqLite(directiveEl).data(`$${cfg.component}Controller`)
+              JQLite(directiveEl).data(`$${cfg.component}Controller`)
             );
           };
           const deregisterWatch = scope.$watch(

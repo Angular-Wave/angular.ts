@@ -1,4 +1,4 @@
-import { jqLite } from "../shared/jqlite/jqlite";
+import { JQLite } from "../shared/jqlite/jqlite";
 import { forEach, isString } from "../shared/utils";
 import { concatWithSpace, getDomNode } from "./shared";
 
@@ -33,7 +33,7 @@ export const $$AnimateCssDriverProvider = [
         const bodyNode = $document[0].body;
         const rootNode = getDomNode($rootElement);
 
-        const rootBodyElement = jqLite(
+        const rootBodyElement = JQLite(
           // this is to avoid using something that exists outside of the body
           // we also special case the doc fragment case because our unit test code
           // appends the $rootElement to the body after the app has been bootstrapped
@@ -65,7 +65,7 @@ export const $$AnimateCssDriverProvider = [
         }
 
         function prepareAnchoredAnimation(classes, outAnchor, inAnchor) {
-          const clone = jqLite(getDomNode(outAnchor).cloneNode(true));
+          const clone = JQLite(getDomNode(outAnchor).cloneNode(true));
           const startingClasses = filterCssClasses(getClassVal(clone));
 
           outAnchor.addClass(NG_ANIMATE_SHIM_CLASS_NAME);

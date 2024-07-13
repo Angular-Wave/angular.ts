@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../public";
 import { createInjector } from "../injector";
-import { jqLite } from "../shared/jqlite/jqlite";
+import { JQLite } from "../shared/jqlite/jqlite";
 
 describe("$document", () => {
   let $document, $httpBackend, $http, $$isDocumentHidden;
@@ -15,7 +15,7 @@ describe("$document", () => {
   });
 
   it("should inject $document", () => {
-    expect($document).toEqual(jqLite(window.document));
+    expect($document).toEqual(JQLite(window.document));
   });
 });
 

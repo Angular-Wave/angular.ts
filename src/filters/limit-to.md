@@ -2,7 +2,7 @@
 
 ## Description
 
-Creates a new array or string containing only a specified number of elements. The elements are taken from either the beginning or the end of the source array, string, or number, as specified by the value and sign (positive or negative) of `limit`. Other array-like objects are also supported (e.g., array subclasses, NodeLists, jqLite/jQuery collections, etc.). If a number is used as input, it is converted to a string.
+Creates a new array or string containing only a specified number of elements. The elements are taken from either the beginning or the end of the source array, string, or number, as specified by the value and sign (positive or negative) of `limit`. Other array-like objects are also supported (e.g., array subclasses, NodeLists, JQLite/jQuery collections, etc.). If a number is used as input, it is converted to a string.
 
 ## Parameters
 

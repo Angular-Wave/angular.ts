@@ -1,4 +1,4 @@
-import { jqLite } from "../shared/jqlite/jqlite";
+import { JQLite } from "../shared/jqlite/jqlite";
 import {
   isUndefined,
   forEach,
@@ -299,7 +299,7 @@ export const $$AnimateQueueProvider = [
             });
 
             // Remove the callback when the element is removed from the DOM
-            jqLite(container).on("$destroy", () => {
+            JQLite(container).on("$destroy", () => {
               const animationDetails = activeAnimationsLookup.get(node);
 
               if (!animationDetails) {
@@ -377,7 +377,7 @@ export const $$AnimateQueueProvider = [
                   if (!disabledElementsLookup.has(node)) {
                     // The element is added to the map for the first time.
                     // Create a listener to remove it on `$destroy` (to avoid memory leak).
-                    jqLite(element).on(
+                    JQLite(element).on(
                       "$destroy",
                       removeFromDisabledElementsLookup,
                     );
@@ -437,7 +437,7 @@ export const $$AnimateQueueProvider = [
           }
 
           // If animations are hard-disabled for the whole application there is no need to continue.
-          // There are also situations where a directive issues an animation for a jqLite wrapper that
+          // There are also situations where a directive issues an animation for a JQLite wrapper that
           // contains only comment nodes. In this case, there is no way we can perform an animation.
           if (
             !animationsEnabled ||
@@ -757,7 +757,7 @@ export const $$AnimateQueueProvider = [
           let elementDisabled = disabledElementsLookup.get(node);
           let animateChildren;
 
-          let parentHost = jqLite.data(node, NG_ANIMATE_PIN_DATA);
+          let parentHost = JQLite.data(node, NG_ANIMATE_PIN_DATA);
           if (parentHost) {
             parentNode = getDomNode(parentHost);
           }
@@ -794,7 +794,7 @@ export const $$AnimateQueueProvider = [
             }
 
             if (isUndefined(animateChildren) || animateChildren === true) {
-              const value = jqLite.data(parentNode, NG_ANIMATE_CHILDREN_DATA);
+              const value = JQLite.data(parentNode, NG_ANIMATE_CHILDREN_DATA);
               if (isDefined(value)) {
                 animateChildren = value;
               }
@@ -817,7 +817,7 @@ export const $$AnimateQueueProvider = [
 
             if (!rootNodeDetected) {
               // If `rootNode` is not detected, check if `parentNode` is pinned to another element
-              parentHost = jqLite.data(parentNode, NG_ANIMATE_PIN_DATA);
+              parentHost = JQLite.data(parentNode, NG_ANIMATE_PIN_DATA);
               if (parentHost) {
                 // The pin target element becomes the next parent element
                 parentNode = getDomNode(parentHost);

@@ -24,7 +24,7 @@ import {
   nodeName_,
   snakeCase,
 } from "./shared/utils";
-import { dealoc, jqLite, startingTag } from "./shared/jqlite/jqlite";
+import { dealoc, JQLite, startingTag } from "./shared/jqlite/jqlite";
 import { Angular, angularInit } from "./loader";
 import { publishExternalAPI } from "./public";
 import { createInjector } from "./injector";
@@ -783,7 +783,7 @@ describe("angular", () => {
     it("should copy elements by reference", () => {
       const src = {
         element: document.createElement("div"),
-        jqObject: jqLite("<p><span>s1</span><span>s2</span></p>").find("span"),
+        jqObject: JQLite("<p><span>s1</span><span>s2</span></p>").find("span"),
       };
       const dst = {};
 
@@ -1292,7 +1292,7 @@ describe("angular", () => {
     });
 
     it("should handle JQLite and jQuery objects like arrays", () => {
-      let jqObject = jqLite("<p><span>s1</span><span>s2</span></p>").find(
+      let jqObject = JQLite("<p><span>s1</span><span>s2</span></p>").find(
         "span",
       );
       let log = [];
@@ -1303,7 +1303,7 @@ describe("angular", () => {
       expect(log).toEqual(["0:s1", "1:s2"]);
 
       log = [];
-      jqObject = jqLite("<pane></pane>");
+      jqObject = JQLite("<pane></pane>");
       forEach(jqObject.children(), (value, key) => {
         log.push(`${key}:${value.innerHTML}`);
       });
@@ -1311,7 +1311,7 @@ describe("angular", () => {
     });
 
     it("should handle NodeList objects like arrays", () => {
-      const nodeList = jqLite(
+      const nodeList = JQLite(
         "<p><span>a</span><span>b</span><span>c</span></p>",
       )[0].childNodes;
       const log = [];
@@ -1482,20 +1482,20 @@ describe("angular", () => {
       });
 
       it("should follow the ES spec when called with jQuery/shared/jqlite/jqlite", () => {
-        testForEachSpec(2, jqLite("<span>a</span><span>b</span>"));
+        testForEachSpec(2, JQLite("<span>a</span><span>b</span>"));
       });
 
       it("should follow the ES spec when called with childNodes NodeList", () => {
         testForEachSpec(
           2,
-          jqLite("<p><span>a</span><span>b</span></p>")[0].childNodes,
+          JQLite("<p><span>a</span><span>b</span></p>")[0].childNodes,
         );
       });
 
       it("should follow the ES spec when called with getElementsByTagName HTMLCollection", () => {
         testForEachSpec(
           2,
-          jqLite("<p><span>a</span><span>b</span></p>")[0].getElementsByTagName(
+          JQLite("<p><span>a</span><span>b</span></p>")[0].getElementsByTagName(
             "*",
           ),
         );
@@ -1504,7 +1504,7 @@ describe("angular", () => {
       it("should follow the ES spec when called with querySelectorAll HTMLCollection", () => {
         testForEachSpec(
           2,
-          jqLite("<p><span>a</span><span>b</span></p>")[0].querySelectorAll(
+          JQLite("<p><span>a</span><span>b</span></p>")[0].querySelectorAll(
             "*",
           ),
         );
@@ -1601,7 +1601,7 @@ describe("angular", () => {
 
     it("should look for ngApp directive as attr", () => {
       window.angular.module("ABC", []);
-      const appElement = jqLite('<div ng-app="ABC"></div>')[0];
+      const appElement = JQLite('<div ng-app="ABC"></div>')[0];
 
       angularInit(appElement);
       expect(bootstrapSpy).toHaveBeenCalled();
@@ -1609,34 +1609,34 @@ describe("angular", () => {
 
     it("should look for ngApp directive using querySelectorAll", () => {
       window.angular.module("ABC", []);
-      const appElement = jqLite('<div ng-app="ABC"></div>')[0];
+      const appElement = JQLite('<div ng-app="ABC"></div>')[0];
       element.querySelector["[ng-app]"] = appElement;
       angularInit(element);
       expect(bootstrapSpy).toHaveBeenCalled();
     });
 
     it("should bootstrap anonymously", () => {
-      const appElement = jqLite("<div ng-app></div>")[0];
+      const appElement = JQLite("<div ng-app></div>")[0];
       element.querySelector["[ng-app]"] = appElement;
       angularInit(element);
       expect(bootstrapSpy).toHaveBeenCalled();
     });
 
     it("should bootstrap if the annotation is on the root element", () => {
-      const appElement = jqLite('<div ng-app=""></div>')[0];
+      const appElement = JQLite('<div ng-app=""></div>')[0];
       angularInit(appElement);
       expect(bootstrapSpy).toHaveBeenCalled();
     });
 
     it("should complain if app module cannot be found", () => {
-      const appElement = jqLite('<div ng-app="doesntexist"></div>')[0];
+      const appElement = JQLite('<div ng-app="doesntexist"></div>')[0];
       expect(() => {
         angularInit(appElement);
       }).toThrowError(/modulerr/);
     });
 
     it("should complain if an element has already been bootstrapped", () => {
-      const element = jqLite("<div>bootstrap me!</div>");
+      const element = JQLite("<div>bootstrap me!</div>");
       angular.bootstrap(element);
 
       expect(() => {
@@ -1656,8 +1656,8 @@ describe("angular", () => {
     });
 
     it("should bootstrap in strict mode when ng-strict-di attribute is specified", () => {
-      const appElement = jqLite('<div ng-app="" ng-strict-di></div>');
-      angularInit(jqLite("<div></div>").append(appElement[0])[0]);
+      const appElement = JQLite('<div ng-app="" ng-strict-di></div>');
+      angularInit(JQLite("<div></div>").append(appElement[0])[0]);
       expect(bootstrapSpy).toHaveBeenCalled();
       expect(bootstrapSpy.calls.mostRecent().args[2].strictDi).toBe(true);
 
@@ -1801,7 +1801,7 @@ describe("angular", () => {
     });
 
     it("should link to new node and given scope", () => {
-      const template = jqLite('<div>{{greeting = "hello world"}}</div>');
+      const template = JQLite('<div>{{greeting = "hello world"}}</div>');
 
       const compile = $compile(template);
       let templateClone = template[0].cloneNode(true);
@@ -1818,7 +1818,7 @@ describe("angular", () => {
     });
 
     it("should link to cloned node and create scope", () => {
-      const template = jqLite('<div>{{greeting = "hello world"}}</div>');
+      const template = JQLite('<div>{{greeting = "hello world"}}</div>');
       element = $compile(template)($rootScope, () => {});
       $rootScope.$digest();
       expect(template.text()).toEqual('{{greeting = "hello world"}}');
@@ -1829,7 +1829,7 @@ describe("angular", () => {
 
   describe("nodeName_", () => {
     it('should correctly detect node name with "namespace" when xmlns is defined', () => {
-      const div = jqLite(
+      const div = JQLite(
         '<div xmlns:ngtest="http://angularjs.org/">' +
           '<ngtest:foo ngtest:attr="bar"></ngtest:foo>' +
           "</div>",
@@ -1839,7 +1839,7 @@ describe("angular", () => {
     });
 
     it('should correctly detect node name with "namespace" when xmlns is NOT defined', () => {
-      const div = jqLite(
+      const div = JQLite(
         '<div xmlns:ngtest="http://angularjs.org/">' +
           '<ngtest:foo ngtest:attr="bar"></ng-test>' +
           "</div>",
@@ -1882,7 +1882,7 @@ describe("angular", () => {
     });
 
     it("should bootstrap app", () => {
-      const element = jqLite("<div>{{1+2}}</div>");
+      const element = JQLite("<div>{{1+2}}</div>");
       const injector = angular.bootstrap(element);
       expect(injector).toBeDefined();
       expect(element.injector()).toBe(injector);
@@ -1890,7 +1890,7 @@ describe("angular", () => {
     });
 
     it("should complain if app module can't be found", () => {
-      const element = jqLite("<div>{{1+2}}</div>");
+      const element = JQLite("<div>{{1+2}}</div>");
 
       expect(() => {
         angular.bootstrap(element, ["doesntexist"]);
@@ -1906,7 +1906,7 @@ describe("angular", () => {
 
       beforeEach(() => {
         window.name = "";
-        element = jqLite("<div>{{1+2}}</div>");
+        element = JQLite("<div>{{1+2}}</div>");
       });
 
       afterEach(() => {
@@ -1946,7 +1946,7 @@ describe("angular", () => {
       });
 
       it("should load extra modules", () => {
-        element = jqLite("<div>{{1+2}}</div>");
+        element = JQLite("<div>{{1+2}}</div>");
         window.name = "NG_DEFER_BOOTSTRAP!";
 
         const bootstrapping = jasmine.createSpy("bootstrapping");

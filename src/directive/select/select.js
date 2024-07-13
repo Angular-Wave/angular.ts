@@ -1,4 +1,4 @@
-import { jqLite } from "../../shared/jqlite/jqlite";
+import { JQLite } from "../../shared/jqlite/jqlite";
 import {
   assertNotHasOwnProperty,
   equals,
@@ -50,9 +50,9 @@ var SelectController = [
     // option is '? XXX ?' where XXX is the hashKey of the value that is not known.
     //
     // Support: IE 9 only
-    // We can't just jqLite('<option>') since jqLite is not smart enough
+    // We can't just JQLite('<option>') since JQLite is not smart enough
     // to create it in <select> and IE barfs otherwise.
-    self.unknownOption = jqLite(window.document.createElement("option"));
+    self.unknownOption = JQLite(window.document.createElement("option"));
 
     // The empty option is an option with the value '' that the application developer can
     // provide inside the select. It is always selectable and indicates that a "null" selection has
@@ -128,7 +128,7 @@ var SelectController = [
       const currentlySelectedOption =
         $element[0].options[$element[0].selectedIndex];
       if (currentlySelectedOption)
-        setOptionSelectedStatus(jqLite(currentlySelectedOption), false);
+        setOptionSelectedStatus(JQLite(currentlySelectedOption), false);
 
       if (self.hasOption(value)) {
         self.removeUnknownOption();
@@ -138,7 +138,7 @@ var SelectController = [
 
         // Set selected attribute and property on selected option for screen readers
         const selectedOption = $element[0].options[$element[0].selectedIndex];
-        setOptionSelectedStatus(jqLite(selectedOption), true);
+        setOptionSelectedStatus(JQLite(selectedOption), true);
       } else {
         self.selectUnknownOrEmptyOption(value);
       }
@@ -526,7 +526,7 @@ export const selectDirective = function () {
             // Note: this behavior cannot be replicated via unit tests because it only shows in the
             // actual user interface.
             if (shouldBeSelected !== currentlySelected) {
-              setOptionSelectedStatus(jqLite(option), shouldBeSelected);
+              setOptionSelectedStatus(JQLite(option), shouldBeSelected);
             }
           },
         );

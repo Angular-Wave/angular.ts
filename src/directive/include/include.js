@@ -1,5 +1,5 @@
 import { isDefined } from "../../shared/utils";
-import { jqLiteBuildFragment } from "../../shared/jqlite/jqlite";
+import { JQLiteBuildFragment } from "../../shared/jqlite/jqlite";
 
 export const ngIncludeDirective = [
   "$templateRequest",
@@ -117,7 +117,7 @@ export const ngIncludeFillContentDirective = [
         // specially.
         $element.empty();
         $compile(
-          jqLiteBuildFragment(ctrl.template, window.document).childNodes,
+          JQLiteBuildFragment(ctrl.template, window.document).childNodes,
         )(
           scope,
           (clone) => {
