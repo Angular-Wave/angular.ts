@@ -586,9 +586,9 @@ export function assertArgFn(arg: any, name: any, acceptArrayAnnotation: any): an
  * should all be static strings, not variables or general expressions.
  *
  * @param {string} module The namespace to use for the new minErr instance.
- * @returns {function(string, string, ...*): Error} minErr instance
+ * @returns {function(string, ...*): Error} minErr instance
  */
-export function minErr(module: string): (arg0: string, arg1: string, ...args: any[]) => Error;
+export function minErr(module: string): (arg0: string, ...args: any[]) => Error;
 export function toDebugString(obj: any): any;
 /**
  * Computes a hash of an 'obj'.

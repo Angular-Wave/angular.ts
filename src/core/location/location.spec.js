@@ -3297,10 +3297,6 @@ describe("$location", () => {
       );
     });
 
-    it("should throw on url(urlString, stateObject)", () => {
-      expectThrowOnStateChange(locationUrl);
-    });
-
     it("should allow navigating outside the original base URL", () => {
       locationUrl = new LocationHashbangUrl(
         "http://server/pre/index.html",

@@ -245,7 +245,7 @@
  * @property {boolean | undefined} [multiElement]
  * Multi-element directive flag.
  * @property {number | undefined} [priority]
- * Skip all directives on element 
+ * Skip all directives on element
  * @property {boolean | undefined} [terminal]
  * Directive priority.
  * @property {boolean | undefined} [replace]
