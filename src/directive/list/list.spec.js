@@ -18,7 +18,6 @@ describe("ngList", () => {
 
   afterEach(() => {
     dealoc(element);
-    jqLite.CACHE.clear();
   });
 
   function changeInputValue(val) {

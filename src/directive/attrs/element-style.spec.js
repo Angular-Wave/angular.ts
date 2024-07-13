@@ -17,7 +17,6 @@ describe("style", () => {
 
   afterEach(() => {
     dealoc(element);
-    jqLite.CACHE.clear();
   });
 
   it("should compile style element without binding", () => {

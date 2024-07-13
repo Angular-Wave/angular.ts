@@ -24,7 +24,6 @@ describe("ng-bind", () => {
 
   afterEach(() => {
     dealoc(element);
-    jqLite.CACHE.clear();
   });
 
   describe("ngBind", () => {

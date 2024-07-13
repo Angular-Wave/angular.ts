@@ -22,7 +22,6 @@ describe("ngHref", () => {
 
   afterEach(() => {
     dealoc(element);
-    jqLite.CACHE.clear();
   });
 
   it("should interpolate the expression and bind to href", () => {

@@ -17,7 +17,6 @@ describe("ngClick", () => {
 
   afterEach(() => {
     dealoc(element);
-    jqLite.CACHE.clear();
   });
 
   it("should get called on a click", () => {

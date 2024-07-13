@@ -18,7 +18,6 @@ describe("ngClass", () => {
 
   afterEach(() => {
     dealoc(element);
-    jqLite.CACHE.clear();
   });
 
   it("should add new and remove old classes dynamically", () => {

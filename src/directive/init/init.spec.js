@@ -22,7 +22,6 @@ describe("ngInit", () => {
 
   afterEach(() => {
     dealoc(element);
-    jqLite.CACHE.clear();
   });
 
   it("should init model", () => {

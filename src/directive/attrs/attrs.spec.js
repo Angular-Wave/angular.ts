@@ -17,7 +17,6 @@ describe("ngSrcset", () => {
 
   afterEach(() => {
     dealoc(element);
-    jqLite.CACHE.clear();
   });
 
   it("should not result empty string in img srcset", () => {

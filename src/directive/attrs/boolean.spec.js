@@ -21,7 +21,6 @@ describe("boolean attr directives", () => {
 
   afterEach(() => {
     dealoc(element);
-    jqLite.CACHE.clear();
   });
 
   it("should properly evaluate 0 as false", () => {

@@ -273,8 +273,6 @@ export function JQLite(element) {
 
 export var jqLite = JQLite;
 
-jqLite.CACHE = CACHE;
-
 /**
  * @param {Element} element
  * @param {boolean} [onlyDescendants]

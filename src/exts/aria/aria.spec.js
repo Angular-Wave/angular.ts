@@ -17,7 +17,6 @@ describe("$aria", () => {
 
   afterEach(() => {
     dealoc(element);
-    jqLite.CACHE.clear();
   });
 
   describe("with `ngAriaDisable`", () => {

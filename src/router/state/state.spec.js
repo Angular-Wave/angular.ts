@@ -99,7 +99,7 @@ describe("$state", () => {
   describe("provider", () => {
     beforeEach(() => {
       dealoc(document.getElementById("dummy"));
-      jqLite.CACHE.clear(); // some tests are polluting the cache
+      // some tests are polluting the cache
       window.angular = new Angular();
       publishExternalAPI();
       module = window.angular.module("defaultModule", ["ng.router"]);

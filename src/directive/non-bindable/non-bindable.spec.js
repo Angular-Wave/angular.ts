@@ -21,7 +21,6 @@ describe("ngNonBindable", () => {
 
   afterEach(() => {
     dealoc(element);
-    jqLite.CACHE.clear();
   });
 
   it("should prevent compilation of the owning element and its children", () => {

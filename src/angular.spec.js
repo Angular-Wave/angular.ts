@@ -48,7 +48,6 @@ describe("angular", () => {
 
   afterEach(() => {
     dealoc(element);
-    jqLite.CACHE.clear();
   });
 
   describe("case", () => {

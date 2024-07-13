@@ -17,7 +17,6 @@ describe("ngSrc", () => {
 
   afterEach(() => {
     dealoc(element);
-    jqLite.CACHE.clear();
   });
 
   describe("img[ng-src]", () => {

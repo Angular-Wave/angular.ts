@@ -19,7 +19,6 @@ describe("ngSwitch", () => {
 
   afterEach(() => {
     dealoc(element);
-    jqLite.CACHE.clear();
   });
 
   it("should switch on value change", () => {
