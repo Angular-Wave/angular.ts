@@ -312,7 +312,7 @@ function JQLiteOff(element, type, fn, unsupported) {
       "jqLite#off() does not support the `selector` argument",
     );
 
-  const expandoStore = JQLiteExpandoStore(element);
+  const expandoStore = getExpando(element);
   const events = expandoStore && expandoStore.events;
   const handle = expandoStore && expandoStore.handle;
 
@@ -355,7 +355,7 @@ function JQLiteOff(element, type, fn, unsupported) {
  * @param {Element} element
  * @param {string} [name] - key of field to remove
  */
-function JQLiteRemoveData(element, name) {
+export function removeElementData(element, name) {
   const expandoId = element[EXPANDO];
   const expandoStore = expandoId && CACHE.get(expandoId);
 
@@ -379,7 +379,7 @@ function JQLiteRemoveData(element, name) {
  * @param {boolean} [createIfNecessary=false]
  * @returns {import("../../core/cache/cache").ExpandoStore}
  */
-function JQLiteExpandoStore(element, createIfNecessary = false) {
+function getExpando(element, createIfNecessary = false) {
   let expandoId = element[EXPANDO];
   let expandoStore = expandoId && CACHE.get(expandoId);
 
@@ -403,7 +403,7 @@ function JQLiteData(element, key, value) {
     const isSimpleSetter = isDefined(value);
     const isSimpleGetter = !isSimpleSetter && key && !isObject(key);
     const massGetter = !key;
-    const expandoStore = JQLiteExpandoStore(element, !isSimpleGetter);
+    const expandoStore = getExpando(element, !isSimpleGetter);
     const data = expandoStore && expandoStore.data;
 
     if (isSimpleSetter) {
@@ -487,7 +487,12 @@ function JQLiteEmpty(element) {
   }
 }
 
-export function JQLiteRemove(element, keepData) {
+/**
+ *
+ * @param {Element} element
+ * @param {boolean} keepData
+ */
+export function removeElement(element, keepData = false) {
   if (!keepData) dealoc(element);
   const parent = element.parentNode;
   if (parent) parent.removeChild(element);
@@ -530,6 +535,21 @@ JQLite.prototype = {
   length: 0,
 };
 
+/**
+ * Remove all child nodes of the set of matched elements from the DOM and clears CACHE data, associated with the node.
+ * @returns {JQLite} The current instance of JQLite.
+ */
+JQLite.prototype.empty = function () {
+  for (let i = 0; i < this.length; i++) {
+    const element = this[i];
+    dealoc(element, true);
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+  }
+  return this;
+};
+
 /// ///////////////////////////////////////
 // Functions iterating getter/setters.
 // these functions return self on setter and
@@ -562,7 +582,7 @@ export function JQLiteCleanData(nodes) {
     if (events && events.$destroy) {
       JQLite(nodes[i]).triggerHandler("$destroy");
     }
-    JQLiteRemoveData(nodes[i]);
+    removeElementData(nodes[i]);
     JQLiteOff(nodes[i]);
   }
 }
@@ -570,7 +590,7 @@ export function JQLiteCleanData(nodes) {
 forEach(
   {
     data: JQLiteData,
-    removeData: JQLiteRemoveData,
+    removeData: removeElementData,
     cleanData: JQLiteCleanData,
   },
   (fn, name) => {
@@ -582,7 +602,6 @@ forEach(
   {
     data: JQLiteData,
     inheritedData: JQLiteInheritedData,
-
     scope(element) {
       // Can't use JQLiteData here directly so we stay compatible with jQuery!
       return (
@@ -593,7 +612,6 @@ forEach(
         ])
       );
     },
-
     isolateScope(element) {
       // Can't use JQLiteData here directly so we stay compatible with jQuery!
       return (
@@ -601,13 +619,10 @@ forEach(
         JQLiteData(element, "$isolateScopeNoTemplate")
       );
     },
-
     controller: JQLiteController,
-
     injector(element) {
       return JQLiteInheritedData(element, "$injector");
     },
-
     attr(element, name, value) {
       let ret;
       const { nodeType } = element;
@@ -657,7 +672,6 @@ forEach(
         element.textContent = value;
       }
     })(),
-
     val(element, value) {
       if (isUndefined(value)) {
         if (element.multiple && nodeName_(element) === "select") {
@@ -673,7 +687,6 @@ forEach(
       }
       element.value = value;
     },
-
     html(element, value) {
       if (isUndefined(value)) {
         return element.innerHTML;
@@ -681,8 +694,6 @@ forEach(
       dealoc(element, true);
       element.innerHTML = value;
     },
-
-    empty: JQLiteEmpty,
   },
   (fn, name) => {
     /**
@@ -695,7 +706,6 @@ forEach(
 
       // JQLiteEmpty takes no arguments but is a setter.
       if (
-        fn !== JQLiteEmpty &&
         isUndefined(fn.length === 2 && fn !== JQLiteController ? arg1 : arg2)
       ) {
         if (isObject(arg1)) {
@@ -814,19 +824,17 @@ function specialMouseHandlerWrapper(target, event, handler) {
 /// ///////////////////////////////////////
 forEach(
   {
-    removeData: JQLiteRemoveData,
+    removeData: removeElementData,
     on: (element, type, fn) => {
       // Do not add event handlers to non-elements because they will not be cleaned up.
       if (!elementAcceptsData(element)) {
         return;
       }
 
-      const expandoStore = JQLiteExpandoStore(element, true);
-      const { events } = expandoStore;
-      let { handle } = expandoStore;
+      const expandoStore = getExpando(element, true);
 
-      if (!handle) {
-        handle = expandoStore.handle = createEventHandler(element, events);
+      if (!expandoStore.handle) {
+        expandoStore.handle = createEventHandler(element, expandoStore.events);
       }
 
       // http://jsperf.com/string-indexof-vs-split
@@ -838,13 +846,13 @@ forEach(
         specialHandlerWrapper,
         noEventListener,
       ) {
-        let eventFns = events[type];
+        let eventFns = expandoStore.events[type];
 
         if (!eventFns) {
-          eventFns = events[type] = [];
+          eventFns = expandoStore.events[type] = [];
           eventFns.specialHandlerWrapper = specialHandlerWrapper;
           if (type !== "$destroy" && !noEventListener) {
-            element.addEventListener(type, handle);
+            element.addEventListener(type, expandoStore.handle);
           }
         }
 
@@ -909,10 +917,10 @@ forEach(
       }
     },
 
-    remove: JQLiteRemove,
+    remove: removeElement,
 
     detach(element) {
-      JQLiteRemove(element, true);
+      removeElement(element, true);
     },
 
     after(element, newElement) {
@@ -950,7 +958,7 @@ forEach(
       let eventFnsCopy;
       let handlerArgs;
       const eventName = event.type || event;
-      const expandoStore = JQLiteExpandoStore(element);
+      const expandoStore = getExpando(element);
       const events = expandoStore && expandoStore.events;
       const eventFns = events && events[eventName];
 

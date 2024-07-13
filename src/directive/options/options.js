@@ -1,4 +1,4 @@
-import { JQLite, JQLiteRemove, startingTag } from "../../shared/jqlite/jqlite";
+import { JQLite, removeElement, startingTag } from "../../shared/jqlite/jqlite";
 import {
   equals,
   forEach,
@@ -594,9 +594,9 @@ export const ngOptionsDirective = [
           for (let i = options.items.length - 1; i >= 0; i--) {
             const option = options.items[i];
             if (isDefined(option.group)) {
-              JQLiteRemove(option.element.parentNode);
+              removeElement(option.element.parentNode);
             } else {
-              JQLiteRemove(option.element);
+              removeElement(option.element);
             }
           }
         }

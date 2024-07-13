@@ -6,7 +6,11 @@ export function packageStyles(options: any): {
 };
 export function pendClasses(classes: any, fix: any, isPrefix: any): string;
 export function removeFromArray(arr: any, val: any): void;
-export function stripCommentsFromElement(element: any): JQLite;
+export function stripCommentsFromElement(element: any): JQLite | {
+    toString(): string;
+    eq(index: any): JQLite;
+    length: number;
+};
 export function extractElementNode(element: any): any;
 export function applyAnimationClassesFactory(): (element: any, options: any) => void;
 export function prepareAnimationOptions(options: any): any;

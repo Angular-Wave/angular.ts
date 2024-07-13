@@ -32,6 +32,11 @@ export class JQLite {
      * @returns {JQLite}
      */
     constructor(element: string | Element | Document | Window | JQLite | ArrayLike<Element> | (() => void));
+    /**
+     * Remove all child nodes of the set of matched elements from the DOM and clears CACHE data, associated with the node.
+     * @returns {JQLite} The current instance of JQLite.
+     */
+    empty(): JQLite;
     toString(): string;
     eq(index: any): JQLite;
     length: number;
@@ -42,7 +47,20 @@ export class JQLite {
  * @returns {void}
  */
 export function dealoc(element: Element, onlyDescendants?: boolean): void;
-export function JQLiteRemove(element: any, keepData: any): void;
+/**
+ * Removes expando data from this element. If key is provided, only
+ * its field is removed. If data is empty, also removes `ExpandoStore`
+ * from cache.
+ * @param {Element} element
+ * @param {string} [name] - key of field to remove
+ */
+export function removeElementData(element: Element, name?: string): void;
+/**
+ *
+ * @param {Element} element
+ * @param {boolean} keepData
+ */
+export function removeElement(element: Element, keepData?: boolean): void;
 export function getBooleanAttrName(element: any, name: any): any;
 export function JQLiteCleanData(nodes: any): void;
 /**

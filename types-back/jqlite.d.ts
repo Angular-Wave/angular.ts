@@ -105,13 +105,7 @@ interface JQLite {
    */
   detach(selector?: string): this;
 
-  /**
-   * Remove all child nodes of the set of matched elements from the DOM.
-   * @see {@link https://api.jquery.com/empty/}
-   */
-  empty(): this;
-
-  /**
+ /**
    * Reduce the set of matched elements to the one at the specified index.
    *
    * @param index An integer indicating the 0-based position of the element. OR An integer indicating the position of the element, counting backwards from the last element in the set.
@@ -148,13 +142,6 @@ interface JQLite {
    * @see {@link https://api.jquery.com/html/#html-function}
    */
   html(func: (index: number, oldhtml: string) => string): this;
-
-  /**
-   * Get the immediately following sibling of each element in the set of matched elements. If a selector is provided, it retrieves the next sibling only if it matches that selector.
-   *
-   * @see {@link https://api.jquery.com/next/}
-   */
-  next(): this;
 
   /**
    * Attach an event handler function for one or more events to the selected elements.
@@ -451,7 +438,6 @@ interface JQLite {
    */
   wrap(wrappingElement: JQLite | Element | string): this;
 
-  // Undocumented
   length: number;
 
   // TODO: events, how to define?
