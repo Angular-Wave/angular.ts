@@ -1,4 +1,11 @@
-import { JQLite, dealoc, kebabToCamel, cleanElementData } from "./jqlite";
+import {
+  JQLite,
+  dealoc,
+  kebabToCamel,
+  cleanElementData,
+  getOrSetCacheData,
+  removeElementData,
+} from "./jqlite";
 import { angularInit } from "../../loader";
 import { createInjector } from "../../injector";
 import { publishExternalAPI } from "../../public";
@@ -555,32 +562,35 @@ describe("jqLite", () => {
       expect(CACHE.size).toEqual(initial);
     });
 
-    it("should provide the non-wrapped data calls", () => {
-      const node = document.createElement("div");
-      document.body.appendChild(node);
+    describe("removeElementData/getOrSetCacheData helpers", () => {
+      it("should provide the non-wrapped data calls", () => {
+        const node = document.createElement("div");
+        document.body.appendChild(node);
 
-      expect(CACHE.has(node[EXPANDO])).toBe(false);
-      expect(JQLite.data(node, "foo")).toBeUndefined();
-      expect(CACHE.has(node[EXPANDO])).toBe(false);
+        expect(CACHE.has(node[EXPANDO])).toBe(false);
+        debugger;
+        expect(getOrSetCacheData(node, "foo")).toBeUndefined();
+        expect(CACHE.has(node[EXPANDO])).toBe(false);
 
-      JQLite.data(node, "foo", "bar");
+        getOrSetCacheData(node, "foo", "bar");
 
-      expect(CACHE.has(node[EXPANDO])).toBe(true);
-      expect(JQLite.data(node, "foo")).toBe("bar");
-      expect(JQLite(node).data("foo")).toBe("bar");
+        expect(CACHE.has(node[EXPANDO])).toBe(true);
+        expect(getOrSetCacheData(node, "foo")).toBe("bar");
+        expect(JQLite(node).data("foo")).toBe("bar");
 
-      expect(JQLite.data(node)).toBe(JQLite(node).data());
+        expect(getOrSetCacheData(node)).toBe(JQLite(node).data());
 
-      JQLite.removeData(node, "foo");
-      expect(JQLite.data(node, "foo")).toBeUndefined();
+        removeElementData(node, "foo");
+        expect(getOrSetCacheData(node, "foo")).toBeUndefined();
 
-      JQLite.data(node, "bar", "baz");
-      JQLite.removeData(node);
-      JQLite.removeData(node);
-      expect(JQLite.data(node, "bar")).toBeUndefined();
+        getOrSetCacheData(node, "bar", "baz");
+        removeElementData(node);
+        removeElementData(node);
+        expect(getOrSetCacheData(node, "bar")).toBeUndefined();
 
-      JQLite(node).remove();
-      expect(CACHE.has(node[EXPANDO])).toBe(false);
+        JQLite(node).remove();
+        expect(CACHE.has(node[EXPANDO])).toBe(false);
+      });
     });
 
     it("should emit $destroy event if element removed via remove()", function () {

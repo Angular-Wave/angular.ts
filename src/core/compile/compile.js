@@ -2,6 +2,7 @@ import {
   JQLite,
   cleanElementData,
   getBooleanAttrName,
+  getOrSetCacheData,
   isTextNode,
   startingTag,
 } from "../../shared/jqlite/jqlite";
@@ -3112,7 +3113,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           // Copy over user data (that includes AngularJS's $scope etc.). Don't copy private
           // data here because there's no public interface in jQuery to do that and copying over
           // event listeners (which is the main use of private data) wouldn't work anyway.
-          JQLite.data(newNode, JQLite.data(firstElementToRemove));
+          getOrSetCacheData(newNode, getOrSetCacheData(firstElementToRemove));
 
           // Remove $destroy event listeners from `firstElementToRemove`
           JQLite(firstElementToRemove).off("$destroy");

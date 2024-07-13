@@ -11,17 +11,6 @@ export function kebabToCamel(name: string): string;
  */
 export function snakeToCamel(name: string): string;
 /**
- * Checks if the string contains HTML tags or entities.
- * @param {string} html
- * @returns {boolean} True if the string is plain text, false if it contains HTML tags or entities.
- */
-export function isTextNode(html: string): boolean;
-/**
- * @param {string} html
- * @returns {DocumentFragment}
- */
-export function buildFragment(html: string): DocumentFragment;
-/**
  * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
  * and execution of chain functions.
  *
@@ -69,12 +58,6 @@ export class JQLite {
     length: number;
 }
 /**
- * @param {Element} element
- * @param {boolean} [onlyDescendants]
- * @returns {void}
- */
-export function dealoc(element: Element, onlyDescendants?: boolean): void;
-/**
  * Removes expando data from this element. If key is provided, only
  * its field is removed. If data is empty, also removes `ExpandoStore`
  * from cache.
@@ -82,6 +65,32 @@ export function dealoc(element: Element, onlyDescendants?: boolean): void;
  * @param {string} [name] - key of field to remove
  */
 export function removeElementData(element: Element, name?: string): void;
+/**
+ * Checks if the string contains HTML tags or entities.
+ * @param {string} html
+ * @returns {boolean} True if the string is plain text, false if it contains HTML tags or entities.
+ */
+export function isTextNode(html: string): boolean;
+/**
+ * @param {string} html
+ * @returns {DocumentFragment}
+ */
+export function buildFragment(html: string): DocumentFragment;
+/**
+ * @param {Element} element
+ * @param {boolean} [onlyDescendants]
+ * @returns {void}
+ */
+export function dealoc(element: Element, onlyDescendants?: boolean): void;
+/**
+ * Gets or sets cache data for a given element.
+ *
+ * @param {Element} element - The DOM element to get or set data on.
+ * @param {string|Object} key - The key (as a string) to get/set or an object for mass-setting.
+ * @param {*} [value] - The value to set. If not provided, the function acts as a getter.
+ * @returns {*} - The retrieved data if acting as a getter. Otherwise, returns undefined.
+ */
+export function getOrSetCacheData(element: Element, key: string | any, value?: any): any;
 /**
  *
  * @param {Element} element

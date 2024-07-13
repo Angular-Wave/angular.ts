@@ -1,4 +1,4 @@
-import { JQLite } from "../shared/jqlite/jqlite";
+import { getOrSetCacheData, JQLite } from "../shared/jqlite/jqlite";
 import {
   isUndefined,
   forEach,
@@ -757,7 +757,7 @@ export const $$AnimateQueueProvider = [
           let elementDisabled = disabledElementsLookup.get(node);
           let animateChildren;
 
-          let parentHost = JQLite.data(node, NG_ANIMATE_PIN_DATA);
+          let parentHost = getOrSetCacheData(node, NG_ANIMATE_PIN_DATA);
           if (parentHost) {
             parentNode = getDomNode(parentHost);
           }
@@ -794,7 +794,10 @@ export const $$AnimateQueueProvider = [
             }
 
             if (isUndefined(animateChildren) || animateChildren === true) {
-              const value = JQLite.data(parentNode, NG_ANIMATE_CHILDREN_DATA);
+              const value = getOrSetCacheData(
+                parentNode,
+                NG_ANIMATE_CHILDREN_DATA,
+              );
               if (isDefined(value)) {
                 animateChildren = value;
               }
@@ -817,7 +820,7 @@ export const $$AnimateQueueProvider = [
 
             if (!rootNodeDetected) {
               // If `rootNode` is not detected, check if `parentNode` is pinned to another element
-              parentHost = JQLite.data(parentNode, NG_ANIMATE_PIN_DATA);
+              parentHost = getOrSetCacheData(parentNode, NG_ANIMATE_PIN_DATA);
               if (parentHost) {
                 // The pin target element becomes the next parent element
                 parentNode = getDomNode(parentHost);

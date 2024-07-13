@@ -150,90 +150,18 @@ wrapMap.tbody =
     wrapMap.thead;
 wrapMap.th = wrapMap.td;
 
-/**
- * Checks if the string contains HTML tags or entities.
- * @param {string} html
- * @returns {boolean} True if the string is plain text, false if it contains HTML tags or entities.
- */
-export function isTextNode(html) {
-  return !/<|&#?\w+;/.test(html);
-}
-
-/**
- *
- * @param {Element} node
- * @returns {boolean}
- */
-function elementAcceptsData(node) {
-  // The window object can accept data but has no nodeType
-  // Otherwise we are only interested in elements (1) and documents (9)
-  switch (node.nodeType) {
-    case Node.ELEMENT_NODE:
-    case Node.DOCUMENT_NODE:
-    case undefined:
-      return true;
-    default:
-      return false;
-  }
-}
-
-/**
- * @param {string} html
- * @returns {DocumentFragment}
- */
-export function buildFragment(html) {
-  let tmp;
-  let tag;
-  let wrap;
-  let tempFragment = document.createDocumentFragment();
-  let nodes = [];
-  let i;
-
-  if (isTextNode(html)) {
-    // Convert non-html into a text node
-    nodes.push(document.createTextNode(html));
-  } else {
-    // Convert html into DOM nodes
-    tmp = tempFragment.appendChild(document.createElement("div"));
-    tag = (TAG_NAME_REGEXP.exec(html) || ["", ""])[1].toLowerCase();
-
-    wrap = wrapMap[tag] || [];
-
-    // Create wrappers & descend into them
-    i = wrap.length;
-    while (--i > -1) {
-      tmp.appendChild(window.document.createElement(wrap[i]));
-      tmp = tmp.firstChild;
-    }
-    tmp.innerHTML = html;
-
-    nodes = concat(nodes, tmp.childNodes);
-
-    tmp = tempFragment.firstChild;
-    tmp.textContent = "";
-  }
-
-  let fragment = document.createDocumentFragment();
-  fragment.append(...nodes);
-  return fragment;
-}
-
-/**
- * @param {string} html
- * @returns {NodeListOf<ChildNode> | HTMLElement[]}
- */
-function parseHtml(html) {
-  let regEx = SINGLE_TAG_REGEXP.exec(html);
-  if (regEx) {
-    return [document.createElement(regEx[1])];
-  }
-  let fragment = buildFragment(html);
-  if (fragment) {
-    return fragment.childNodes;
-  }
-
-  return [];
-}
+export const BOOLEAN_ATTR = {};
+"multiple,selected,checked,disabled,readOnly,required,open"
+  .split(",")
+  .forEach((value) => {
+    BOOLEAN_ATTR[lowercase(value)] = value;
+  });
+const BOOLEAN_ELEMENTS = {};
+"input,select,option,textarea,button,form,details"
+  .split(",")
+  .forEach((value) => {
+    BOOLEAN_ELEMENTS[value] = true;
+  });
 
 /**
  * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
@@ -271,40 +199,6 @@ export function JQLite(element) {
     onReady(/** @type {Function} */ (element));
   } else {
     addNodes(this, element);
-  }
-}
-
-/**
- * @param {Element} element
- * @param {boolean} [onlyDescendants]
- * @returns {void}
- */
-export function dealoc(element, onlyDescendants) {
-  if (!element) return;
-  if (!onlyDescendants && elementAcceptsData(element))
-    cleanElementData([element]);
-
-  if (element.querySelectorAll) {
-    cleanElementData(element.querySelectorAll("*"));
-  }
-}
-
-/**
- * If `ExpandoStore.data` and `ExpandoStore.events` are empty,
- * then delete element's `ExpandoStore` and set its `ExpandoId`
- * to undefined.
- * @param {Element} element
- */
-function removeIfEmptyData(element) {
-  const expandoId = element[EXPANDO];
-  const { events, data } = CACHE.get(expandoId);
-
-  if (
-    (!data || !Object.keys(data).length) &&
-    (!events || !Object.keys(events).length)
-  ) {
-    CACHE.delete(expandoId);
-    element[EXPANDO] = undefined; // don't delete DOM expandos. Chrome don't like it
   }
 }
 
@@ -399,7 +293,134 @@ function getExpando(element, createIfNecessary = false) {
   return expandoStore;
 }
 
-function getOrSetCacheData(element, key, value) {
+/**
+ * Checks if the string contains HTML tags or entities.
+ * @param {string} html
+ * @returns {boolean} True if the string is plain text, false if it contains HTML tags or entities.
+ */
+export function isTextNode(html) {
+  return !/<|&#?\w+;/.test(html);
+}
+
+/**
+ * Check if element can accept expando data
+ * @param {Element} node
+ * @returns {boolean}
+ */
+function elementAcceptsData(node) {
+  // The window object can accept data but has no nodeType
+  // Otherwise we are only interested in elements (1) and documents (9)
+  switch (node.nodeType) {
+    case Node.ELEMENT_NODE:
+    case Node.DOCUMENT_NODE:
+    case undefined: // window.object
+      return true;
+    default:
+      return false;
+  }
+}
+
+/**
+ * @param {string} html
+ * @returns {DocumentFragment}
+ */
+export function buildFragment(html) {
+  let tmp;
+  let tag;
+  let wrap;
+  let tempFragment = document.createDocumentFragment();
+  let nodes = [];
+  let i;
+
+  if (isTextNode(html)) {
+    // Convert non-html into a text node
+    nodes.push(document.createTextNode(html));
+  } else {
+    // Convert html into DOM nodes
+    tmp = tempFragment.appendChild(document.createElement("div"));
+    tag = (TAG_NAME_REGEXP.exec(html) || ["", ""])[1].toLowerCase();
+
+    wrap = wrapMap[tag] || [];
+
+    // Create wrappers & descend into them
+    i = wrap.length;
+    while (--i > -1) {
+      tmp.appendChild(window.document.createElement(wrap[i]));
+      tmp = tmp.firstChild;
+    }
+    tmp.innerHTML = html;
+
+    nodes = concat(nodes, tmp.childNodes);
+
+    tmp = tempFragment.firstChild;
+    tmp.textContent = "";
+  }
+
+  let fragment = document.createDocumentFragment();
+  fragment.append(...nodes);
+  return fragment;
+}
+
+/**
+ * @param {string} html
+ * @returns {NodeListOf<ChildNode> | HTMLElement[]}
+ */
+function parseHtml(html) {
+  let regEx = SINGLE_TAG_REGEXP.exec(html);
+  if (regEx) {
+    return [document.createElement(regEx[1])];
+  }
+  let fragment = buildFragment(html);
+  if (fragment) {
+    return fragment.childNodes;
+  }
+
+  return [];
+}
+
+/**
+ * @param {Element} element
+ * @param {boolean} [onlyDescendants]
+ * @returns {void}
+ */
+export function dealoc(element, onlyDescendants) {
+  if (!element) return;
+  if (!onlyDescendants && elementAcceptsData(element))
+    cleanElementData([element]);
+
+  if (element.querySelectorAll) {
+    cleanElementData(element.querySelectorAll("*"));
+  }
+}
+
+/**
+ * If `ExpandoStore.data` and `ExpandoStore.events` are empty,
+ * then delete element's `ExpandoStore` and set its `ExpandoId`
+ * to undefined.
+ * @param {Element} element
+ */
+function removeIfEmptyData(element) {
+  const expandoId = element[EXPANDO];
+  const { events, data } = CACHE.get(expandoId);
+
+  if (
+    (!data || !Object.keys(data).length) &&
+    (!events || !Object.keys(events).length)
+  ) {
+    CACHE.delete(expandoId);
+    element[EXPANDO] = undefined; // don't delete DOM expandos. Chrome don't like it
+  }
+}
+
+/**
+ * Gets or sets cache data for a given element.
+ *
+ * @param {Element} element - The DOM element to get or set data on.
+ * @param {string|Object} key - The key (as a string) to get/set or an object for mass-setting.
+ * @param {*} [value] - The value to set. If not provided, the function acts as a getter.
+ * @returns {*} - The retrieved data if acting as a getter. Otherwise, returns undefined.
+ */
+export function getOrSetCacheData(element, key, value) {
   if (elementAcceptsData(element)) {
     let prop;
 
@@ -424,6 +445,8 @@ function getOrSetCacheData(element, key, value) {
         data[kebabToCamel(prop)] = key[prop];
       }
     }
+  } else {
+    // TODO: check should occur perhaps prior at compilation level that this is a valid element
   }
 }
 
@@ -597,19 +620,6 @@ JQLite.prototype.injector = function () {
   return JQLiteInheritedData(this[0], "$injector");
 };
 
-export const BOOLEAN_ATTR = {};
-"multiple,selected,checked,disabled,readOnly,required,open"
-  .split(",")
-  .forEach((value) => {
-    BOOLEAN_ATTR[lowercase(value)] = value;
-  });
-const BOOLEAN_ELEMENTS = {};
-"input,select,option,textarea,button,form,details"
-  .split(",")
-  .forEach((value) => {
-    BOOLEAN_ELEMENTS[value] = true;
-  });
-
 export function getBooleanAttrName(element, name) {
   // check dom last since we will most likely fail on name
   const booleanAttr = BOOLEAN_ATTR[name.toLowerCase()];
@@ -639,16 +649,6 @@ export function cleanElementData(nodes) {
 // these functions return self on setter and
 // value on get.
 /// ///////////////////////////////////////
-forEach(
-  {
-    data: getOrSetCacheData,
-    removeData: removeElementData,
-  },
-  (fn, name) => {
-    JQLite[name] = fn;
-  },
-);
-
 forEach(
   {
     data: getOrSetCacheData,
@@ -772,80 +772,6 @@ forEach(
     };
   },
 );
-
-function createEventHandler(element, events) {
-  const eventHandler = function (event, type) {
-    // jQuery specific api
-    event.isDefaultPrevented = function () {
-      return event.defaultPrevented;
-    };
-
-    let eventFns = events[type || event.type];
-    const eventFnsLength = eventFns ? eventFns.length : 0;
-
-    if (!eventFnsLength) return;
-
-    if (isUndefined(event.immediatePropagationStopped)) {
-      const originalStopImmediatePropagation = event.stopImmediatePropagation;
-      event.stopImmediatePropagation = function () {
-        event.immediatePropagationStopped = true;
-
-        if (event.stopPropagation) {
-          event.stopPropagation();
-        }
-
-        if (originalStopImmediatePropagation) {
-          originalStopImmediatePropagation.call(event);
-        }
-      };
-    }
-
-    event.isImmediatePropagationStopped = function () {
-      return event.immediatePropagationStopped === true;
-    };
-
-    // Some events have special handlers that wrap the real handler
-    const handlerWrapper =
-      eventFns.specialHandlerWrapper || defaultHandlerWrapper;
-
-    // Copy event handlers in case event handlers array is modified during execution.
-    if (eventFnsLength > 1) {
-      eventFns = shallowCopy(eventFns);
-    }
-
-    for (let i = 0; i < eventFnsLength; i++) {
-      if (!event.isImmediatePropagationStopped()) {
-        handlerWrapper(element, event, eventFns[i]);
-      }
-    }
-  };
-
-  // TODO: this is a hack for angularMocks/clearDataCache that makes it possible to deregister all
-  //       events on `element`
-  eventHandler.elem = element;
-  return eventHandler;
-}
-
-function defaultHandlerWrapper(element, event, handler) {
-  handler.call(element, event);
-}
-
-/**
- * @param {Node} target
- * @param {*} event
- * @param {*} handler
- */
-function specialMouseHandlerWrapper(target, event, handler) {
-  // Refer to jQuery's implementation of mouseenter & mouseleave
-  // Read about mouseenter and mouseleave:
-  // http://www.quirksmode.org/js/events_mouse.html#link8
-  const related = event.relatedTarget;
-  // For mousenter/leave call the handler if related is outside the target.
-  // NB: No relatedTarget if the mouse left/entered the browser window
-  if (!related || (related !== target && !target.contains(related))) {
-    handler.call(target, event);
-  }
-}
 
 /// ///////////////////////////////////////
 // Functions iterating traversal.
@@ -1049,6 +975,80 @@ forEach(
     };
   },
 );
+
+function createEventHandler(element, events) {
+  const eventHandler = function (event, type) {
+    // jQuery specific api
+    event.isDefaultPrevented = function () {
+      return event.defaultPrevented;
+    };
+
+    let eventFns = events[type || event.type];
+    const eventFnsLength = eventFns ? eventFns.length : 0;
+
+    if (!eventFnsLength) return;
+
+    if (isUndefined(event.immediatePropagationStopped)) {
+      const originalStopImmediatePropagation = event.stopImmediatePropagation;
+      event.stopImmediatePropagation = function () {
+        event.immediatePropagationStopped = true;
+
+        if (event.stopPropagation) {
+          event.stopPropagation();
+        }
+
+        if (originalStopImmediatePropagation) {
+          originalStopImmediatePropagation.call(event);
+        }
+      };
+    }
+
+    event.isImmediatePropagationStopped = function () {
+      return event.immediatePropagationStopped === true;
+    };
+
+    // Some events have special handlers that wrap the real handler
+    const handlerWrapper =
+      eventFns.specialHandlerWrapper || defaultHandlerWrapper;
+
+    // Copy event handlers in case event handlers array is modified during execution.
+    if (eventFnsLength > 1) {
+      eventFns = shallowCopy(eventFns);
+    }
+
+    for (let i = 0; i < eventFnsLength; i++) {
+      if (!event.isImmediatePropagationStopped()) {
+        handlerWrapper(element, event, eventFns[i]);
+      }
+    }
+  };
+
+  // TODO: this is a hack for angularMocks/clearDataCache that makes it possible to deregister all
+  //       events on `element`
+  eventHandler.elem = element;
+  return eventHandler;
+}
+
+function defaultHandlerWrapper(element, event, handler) {
+  handler.call(element, event);
+}
+
+/**
+ * @param {Node} target
+ * @param {*} event
+ * @param {*} handler
+ */
+function specialMouseHandlerWrapper(target, event, handler) {
+  // Refer to jQuery's implementation of mouseenter & mouseleave
+  // Read about mouseenter and mouseleave:
+  // http://www.quirksmode.org/js/events_mouse.html#link8
+  const related = event.relatedTarget;
+  // For mousenter/leave call the handler if related is outside the target.
+  // NB: No relatedTarget if the mouse left/entered the browser window
+  if (!related || (related !== target && !target.contains(related))) {
+    handler.call(target, event);
+  }
+}
 
 /**
  * @param {string} elementStr

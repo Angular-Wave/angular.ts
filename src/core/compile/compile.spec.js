@@ -1,6 +1,6 @@
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite, getOrSetCacheData } from "../../shared/jqlite/jqlite";
 import {
   forEach,
   isFunction,
@@ -17290,7 +17290,7 @@ describe("$compile", () => {
 
       const preCompiledChildren = getAll(toCompile);
       forEach(preCompiledChildren, (element, i) => {
-        JQLite.data(element, "foo", `template#${i}`);
+        getOrSetCacheData(element, "foo", `template#${i}`);
       });
 
       const linkedElements = $compile(toCompile)($rootScope);
