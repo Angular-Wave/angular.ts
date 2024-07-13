@@ -1,10 +1,12 @@
 .PHONY: build test types
 
 setup:
+	@rm -r ./node_modules/
 	@npm i
 	@npx playwright install
 	
 build:
+	@rm -r ./dist
 	./node_modules/.bin/rollup -c
 
 pretty:

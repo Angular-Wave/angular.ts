@@ -4,6 +4,11 @@ import pkg from './package.json' assert { type: 'json' };
 import terser from '@rollup/plugin-terser';
 import versionInjector from 'rollup-plugin-version-injector';
 
+const SHARED_PLUGINS = [
+  terser(), 
+  versionInjector()
+]
+
 export default [
   // browser-friendly UMD build
   {
@@ -13,7 +18,10 @@ export default [
       file: pkg.browser,
       format: 'umd',
     },
-    plugins: [resolve(), commonjs(), terser()],
+    plugins: [
+      resolve(), 
+      commonjs()
+    ].concat(SHARED_PLUGINS)
   },
 
   // ES module (for bundlers) build.
@@ -26,9 +34,6 @@ export default [
     input: 'src/index.js',
     external: ['ms'],
     output: { file: pkg.main, format: 'es' },
-    plugins: [
-      terser(),
-      versionInjector()
-    ],
+    plugins: SHARED_PLUGINS,
   },
 ];
