@@ -185,6 +185,19 @@ NgModelController.$inject = [
   "$q",
   "$interpolate",
 ];
+
+/**
+ *
+ * @param {*} $scope
+ * @param {import('../../core/exception-handler').angular.ErrorHandler} $exceptionHandler
+ * @param {*} $attr
+ * @param {*} $element
+ * @param {*} $parse
+ * @param {*} $animate
+ * @param {*} $timeout
+ * @param {*} $q
+ * @param {*} $interpolate
+ */
 export function NgModelController(
   $scope,
   $exceptionHandler,

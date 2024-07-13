@@ -1,6 +1,30 @@
-export function NgModelController($scope: any, $exceptionHandler: any, $attr: any, $element: any, $parse: any, $animate: any, $timeout: any, $q: any, $interpolate: any): void;
+/**
+ *
+ * @param {*} $scope
+ * @param {import('../../core/exception-handler').angular.ErrorHandler} $exceptionHandler
+ * @param {*} $attr
+ * @param {*} $element
+ * @param {*} $parse
+ * @param {*} $animate
+ * @param {*} $timeout
+ * @param {*} $q
+ * @param {*} $interpolate
+ */
+export function NgModelController($scope: any, $exceptionHandler: import("../../core/exception-handler").angular.ErrorHandler, $attr: any, $element: any, $parse: any, $animate: any, $timeout: any, $q: any, $interpolate: any): void;
 export class NgModelController {
-    constructor($scope: any, $exceptionHandler: any, $attr: any, $element: any, $parse: any, $animate: any, $timeout: any, $q: any, $interpolate: any);
+    /**
+     *
+     * @param {*} $scope
+     * @param {import('../../core/exception-handler').angular.ErrorHandler} $exceptionHandler
+     * @param {*} $attr
+     * @param {*} $element
+     * @param {*} $parse
+     * @param {*} $animate
+     * @param {*} $timeout
+     * @param {*} $q
+     * @param {*} $interpolate
+     */
+    constructor($scope: any, $exceptionHandler: import("../../core/exception-handler").angular.ErrorHandler, $attr: any, $element: any, $parse: any, $animate: any, $timeout: any, $q: any, $interpolate: any);
     $viewValue: number;
     $modelValue: number;
     $$rawModelValue: any;
@@ -49,7 +73,7 @@ export class NgModelController {
     $$timeout: any;
     $$parse: any;
     $$q: any;
-    $$exceptionHandler: any;
+    $$exceptionHandler: import("../../core/exception-handler").angular.ErrorHandler;
     $$initGetterSetters(): void;
     $render: () => void;
     /**

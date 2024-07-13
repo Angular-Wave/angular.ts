@@ -53,7 +53,7 @@ export class TemplateRequestProvider {
      *
      * @property {number} totalPendingRequests total amount of pending template requests being downloaded.
      */
-    $get: (string | (($exceptionHandler: any, $templateCache: any, $http: any, $q: any, $sce: any) => {
+    $get: (string | (($exceptionHandler: import("../core/exception-handler").angular.ErrorHandler, $templateCache: any, $http: any, $q: any, $sce: any) => {
         (tpl: any, ignoreRequestError: any): any;
         totalPendingRequests: number;
     }))[];

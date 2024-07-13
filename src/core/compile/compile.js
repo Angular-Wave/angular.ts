@@ -229,6 +229,12 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         $provide.factory(name + Suffix, [
           "$injector",
           "$exceptionHandler",
+          /**
+           *
+           * @param {*} $injector
+           * @param {import('../exception-handler').angular.ErrorHandler} $exceptionHandler
+           * @returns
+           */
           function ($injector, $exceptionHandler) {
             const directives = [];
             forEach(hasDirectives[name], (directiveFactory, index) => {

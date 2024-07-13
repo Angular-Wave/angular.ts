@@ -1,9 +1,5 @@
-/* eslint-disable no-use-before-define */
 /**
- * @ngdoc service
  * @name $exceptionHandler
- * @requires ng.$log
- *
  *
  * @description
  * Any uncaught exception in AngularJS expressions is delegated to this service.
@@ -30,28 +26,45 @@
  *
  * <hr />
  * Note, that code executed in event-listeners (even those registered using jqLite's `on`/`bind`
- * methods) does not delegate exceptions to the {@link ng.$exceptionHandler $exceptionHandler}
+ * methods) does not delegate exceptions to the {@link angular.ErrorHandler }
  * (unless executed during a digest).
  *
  * If you wish, you can manually delegate exceptions, e.g.
  * `try { ... } catch(e) { $exceptionHandler(e); }`
  *
- * @param {Error} exception Exception associated with the error.
- * @param {string=} cause Optional information about the context in which
- *       the error was thrown.
- *
+ */
+
+/**
+ * @typedef {import('../index').angular.ServiceProvider} angular.ExceptionHandlerProvider
+ */
+
+/** @type {import('../services/log').angular.LogService} */
+let log;
+
+/**
+ * @callback angular.ErrorHandler
+ * @param {Error} exception - Exception associated with the error.
+ * @param {string} [cause] - Optional information about the context in which the error was thrown.
+ * @returns {void}
+ */
+export const errorHandler = (exception, cause) => {
+  log.error(exception, cause);
+};
+
+/**
+ * @constructor
+ * @this {angular.ExceptionHandlerProvider}
  */
 export function $ExceptionHandlerProvider() {
   this.$get = [
     "$log",
     /**
      * @param {import('../services/log').angular.LogService} $log
-     * @returns
+     * @returns {angular.ErrorHandler}
      */
     function ($log) {
-      return function () {
-        $log.error.apply($log, arguments);
-      };
+      log = $log;
+      return errorHandler;
     },
   ];
 }

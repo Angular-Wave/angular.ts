@@ -23,6 +23,13 @@ const forceAsyncEvents = {
       "$parse",
       "$rootScope",
       "$exceptionHandler",
+      /**
+       *
+       * @param {*} $parse
+       * @param {*} $rootScope
+       * @param {import('../../core/exception-handler').angular.ErrorHandler} $exceptionHandler
+       * @returns
+       */
       ($parse, $rootScope, $exceptionHandler) => {
         return createEventDirective(
           $parse,

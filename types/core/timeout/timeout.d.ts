@@ -1,4 +1,13 @@
-export function $timeout($rootScope: any, $browser: any, $q: any, $$q: any, $exceptionHandler: any): {
+/**
+ *
+ * @param {*} $rootScope
+ * @param {*} $browser
+ * @param {*} $q
+ * @param {*} $$q
+ * @param {import('../exception-handler').angular.ErrorHandler} $exceptionHandler
+ * @returns
+ */
+export function $timeout($rootScope: any, $browser: any, $q: any, $$q: any, $exceptionHandler: import("../exception-handler").angular.ErrorHandler): {
     (fn?: (() => any) | undefined, delay?: number | undefined, invokeApply?: boolean | undefined, ...args: any[]): Promise<any>;
     /**
      * @ngdoc method

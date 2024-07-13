@@ -37,7 +37,7 @@ export class $InterpolateProvider {
      * @returns {string|self} Returns the symbol when used as getter and self if used as setter.
      */
     endSymbol: (value?: string | undefined) => string | (Window & typeof globalThis);
-    $get: (string | (($parse: any, $exceptionHandler: any, $sce: any) => {
+    $get: (string | (($parse: any, $exceptionHandler: import("../exception-handler").angular.ErrorHandler, $sce: any) => {
         (text: string, mustHaveExpression?: boolean | undefined, trustedContext?: string | undefined, allOrNothing?: boolean | undefined): (arg0: context) => any;
         /**
          * @ngdoc method

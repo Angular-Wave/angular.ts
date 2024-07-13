@@ -268,6 +268,12 @@ export function $QProvider() {
   this.$get = [
     "$rootScope",
     "$exceptionHandler",
+    /**
+     *
+     * @param {*} $rootScope
+     * @param {import('../exception-handler').angular.ErrorHandler} $exceptionHandler
+     * @returns
+     */
     function ($rootScope, $exceptionHandler) {
       return qFactory(
         (callback) => {

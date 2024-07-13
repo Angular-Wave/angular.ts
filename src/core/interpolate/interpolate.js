@@ -86,6 +86,13 @@ export function $InterpolateProvider() {
     "$parse",
     "$exceptionHandler",
     "$sce",
+    /**
+     *
+     * @param {*} $parse
+     * @param {import('../exception-handler').angular.ErrorHandler} $exceptionHandler
+     * @param {*} $sce
+     * @returns
+     */
     function ($parse, $exceptionHandler, $sce) {
       const startSymbolLength = startSymbol.length;
       const endSymbolLength = endSymbol.length;

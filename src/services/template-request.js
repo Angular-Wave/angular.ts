@@ -72,6 +72,15 @@ export function TemplateRequestProvider() {
     "$http",
     "$q",
     "$sce",
+    /**
+     *
+     * @param {import('../core/exception-handler').angular.ErrorHandler} $exceptionHandler
+     * @param {*} $templateCache
+     * @param {*} $http
+     * @param {*} $q
+     * @param {*} $sce
+     * @returns
+     */
     function ($exceptionHandler, $templateCache, $http, $q, $sce) {
       function handleRequestFn(tpl, ignoreRequestError) {
         handleRequestFn.totalPendingRequests++;
