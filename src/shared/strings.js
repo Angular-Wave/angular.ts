@@ -7,7 +7,7 @@
  */
 import { isInjectable, isNull, isPromise } from "./predicates";
 import { isUndefined, isFunction, isString, isObject } from "./utils";
-import { identity, pushR, tail } from "./common";
+import { pushR, tail } from "./common";
 import { pattern, val } from "./hof";
 /**
  * Returns a string shortened to a maximum length
@@ -75,7 +75,7 @@ export function stringify(o) {
     [isRejection, (x) => x._transitionRejection.toString()],
     [hasToString, (x) => x.toString()],
     [isInjectable, functionToString],
-    [val(true), identity],
+    [val(true), (x) => x],
   ]);
   function format(value) {
     if (isObject(value)) {

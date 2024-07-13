@@ -15,9 +15,6 @@ export const fromJson = JSON.parse.bind(JSON);
 export const toJson = JSON.stringify.bind(JSON);
 export const forEach = _forEach;
 export const equals = _equals;
-export function identity(x) {
-  return x;
-}
 /**
  * Builds proxy functions on the `to` object which pass through to the `from` object.
  *

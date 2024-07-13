@@ -1,4 +1,4 @@
-import { removeFrom, tail, identity, mapObj } from "../../shared/common";
+import { removeFrom, tail, mapObj } from "../../shared/common";
 import { isString, isFunction } from "../../shared/utils";
 import { Glob } from "../common/glob";
 import { TransitionHookScope } from "./interface";
@@ -139,7 +139,7 @@ export class RegisteredHook {
   matches(treeChanges, transition) {
     const matches = this._getMatchingNodes(treeChanges, transition);
     // Check if all the criteria matched the TreeChanges object
-    const allMatched = Object.values(matches).every(identity);
+    const allMatched = Object.values(matches).every((x) => x);
     return allMatched ? matches : null;
   }
   deregister() {
