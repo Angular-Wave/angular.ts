@@ -53,6 +53,14 @@ export class JQLite {
      * @returns {import('../../types').angular.InjectorService}
      */
     injector(): import("../../types").angular.InjectorService;
+    /**
+     * Adds an event listener to each element in the JQLite collection.
+     *
+     * @param {string} type - The event type(s) to listen for. Multiple event types can be specified, separated by a space.
+     * @param {Function} fn - The function to execute when the event is triggered.
+     * @returns {JQLite} The JQLite collection for chaining.
+     */
+    on(type: string, fn: Function): JQLite;
     toString(): string;
     eq(index: any): JQLite;
     length: number;

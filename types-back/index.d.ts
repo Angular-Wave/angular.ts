@@ -136,7 +136,7 @@ declare namespace angular {
     /**
      * Run blocks are the closest thing in Angular to the main method. A run block is the code which needs to run to kickstart the application. It is executed after all of the service have been configured and the injector has been created. Run blocks typically contain code which is hard to unit-test, and for this reason should be declared in isolated modules, so that they can be ignored in the unit-tests.
      */
-    run(initializationFunction: Injectable<Function>): IModule;
+    run(initializationFuncti  Injectable<Function>): IModule;
     /**
      * Register a service constructor, which will be invoked with new to create the service instance. This is short for registering a service where its provider's $get property is a factory function that returns an instance instantiated by the injector from the service constructor function.
      *

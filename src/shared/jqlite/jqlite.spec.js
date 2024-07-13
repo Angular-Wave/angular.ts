@@ -568,7 +568,6 @@ describe("jqLite", () => {
         document.body.appendChild(node);
 
         expect(CACHE.has(node[EXPANDO])).toBe(false);
-        debugger;
         expect(getOrSetCacheData(node, "foo")).toBeUndefined();
         expect(CACHE.has(node[EXPANDO])).toBe(false);
 

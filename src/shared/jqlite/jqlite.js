@@ -620,6 +620,57 @@ JQLite.prototype.injector = function () {
   return JQLiteInheritedData(this[0], "$injector");
 };
 
+/**
+ * Adds an event listener to each element in the JQLite collection.
+ *
+ * @param {string} type - The event type(s) to listen for. Multiple event types can be specified, separated by a space.
+ * @param {Function} fn - The function to execute when the event is triggered.
+ * @returns {JQLite} The JQLite collection for chaining.
+ */
+JQLite.prototype.on = function (type, fn) {
+  // Do not add event handlers to non-elements because they will not be cleaned up.
+  for (let i = 0, ii = this.length; i < ii; i++) {
+    const element = this[i];
+    if (!elementAcceptsData(element)) {
+      return;
+    }
+
+    const expandoStore = getExpando(element, true);
+
+    if (!expandoStore.handle) {
+      expandoStore.handle = createEventHandler(element, expandoStore.events);
+    }
+    // http://jsperf.com/string-indexof-vs-split
+    const types = type.indexOf(" ") >= 0 ? type.split(" ") : [type];
+    let j = types.length;
+
+    const addHandler = function (type, specialHandlerWrapper, noEventListener) {
+      let eventFns = expandoStore.events[type];
+
+      if (!eventFns) {
+        eventFns = expandoStore.events[type] = [];
+        eventFns.specialHandlerWrapper = specialHandlerWrapper;
+        if (type !== "$destroy" && !noEventListener) {
+          element.addEventListener(type, expandoStore.handle);
+        }
+      }
+
+      eventFns.push(fn);
+    };
+
+    while (j--) {
+      type = types[j];
+      if (MOUSE_EVENT_MAP[type]) {
+        addHandler(MOUSE_EVENT_MAP[type], specialMouseHandlerWrapper);
+        addHandler(type, undefined, true);
+      } else {
+        addHandler(type);
+      }
+    }
+  }
+  return this;
+};
+
 export function getBooleanAttrName(element, name) {
   // check dom last since we will most likely fail on name
   const booleanAttr = BOOLEAN_ATTR[name.toLowerCase()];
@@ -781,50 +832,7 @@ forEach(
 forEach(
   {
     removeData: removeElementData,
-    on: (element, type, fn) => {
-      // Do not add event handlers to non-elements because they will not be cleaned up.
-      if (!elementAcceptsData(element)) {
-        return;
-      }
 
-      const expandoStore = getExpando(element, true);
-
-      if (!expandoStore.handle) {
-        expandoStore.handle = createEventHandler(element, expandoStore.events);
-      }
-
-      // http://jsperf.com/string-indexof-vs-split
-      const types = type.indexOf(" ") >= 0 ? type.split(" ") : [type];
-      let i = types.length;
-
-      const addHandler = function (
-        type,
-        specialHandlerWrapper,
-        noEventListener,
-      ) {
-        let eventFns = expandoStore.events[type];
-
-        if (!eventFns) {
-          eventFns = expandoStore.events[type] = [];
-          eventFns.specialHandlerWrapper = specialHandlerWrapper;
-          if (type !== "$destroy" && !noEventListener) {
-            element.addEventListener(type, expandoStore.handle);
-          }
-        }
-
-        eventFns.push(fn);
-      };
-
-      while (i--) {
-        type = types[i];
-        if (MOUSE_EVENT_MAP[type]) {
-          addHandler(MOUSE_EVENT_MAP[type], specialMouseHandlerWrapper);
-          addHandler(type, undefined, true);
-        } else {
-          addHandler(type);
-        }
-      }
-    },
     off: JQLiteOff,
     replaceWith(element, replaceNode) {
       let index;
