@@ -169,26 +169,18 @@
 /**
  * Compile function for an AngularJS directive.
  *
- * @template TScope
- * @template TElement
- * @template TAttributes
- * @template TController
  * @callback DirectiveCompileFn
  * @param {TElement} templateElement - The template element.
  * @param {TAttributes} templateAttributes - The template attributes.
  * @param {TranscludeFunction} transclude - @deprecated The transclude function. Note: The transclude function that is passed to the compile function is deprecated,
  * as it e.g. does not know about the right outer scope. Please use the transclude function
  * that is passed to the link function instead.
- * @returns {void | DirectiveLinkFn<S, T, A, C> | DirectivePrePost<S, T, A, C>} Returns void, DirectiveLinkFn, or  DirectivePrePost.
+ * @returns {void | DirectiveLinkFn | DirectivePrePost} Returns void, DirectiveLinkFn, or  DirectivePrePost.
  */
 
 /**
  * Link function for an AngularJS directive.
  *
- * @template TScope
- * @template TElement
- * @template TAttributes
- * @template TController
  * @callback DirectiveLinkFn
  * @param {TScope} scope
  * @param {TElement} instanceElement
@@ -211,44 +203,36 @@
  * http://teropa.info/blog/2015/06/09/transclusion.html
  *
  * @typedef {Object} TranscludeFunction
- * @property {function(TScope, CloneAttachFunction, JQLite=, string=): JQLite} transcludeWithScope
- * @property {function(CloneAttachFunction=, JQLite=, string=): JQLite} transcludeWithoutScope
+ * @property {function(TScope, CloneAttachFunction, JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithScope
+ * @property {function(CloneAttachFunction=, JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithoutScope
  * @property {function(string): boolean} isSlotFilled - Returns true if the specified slot contains content (i.e., one or more DOM nodes)
  */
 
 /**
- * @typedef {function(TScope, CloneAttachFunction, JQLite=, string=): JQLite} transcludeWithScope
+ * @typedef {function(TScope, CloneAttachFunction, JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithScope
  */
 
 /**
- * @typedef {function(CloneAttachFunction=, JQLite=, string=): JQLite} transcludeWithoutScope
+ * @typedef {function(CloneAttachFunction=, JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithoutScope
  */
 
 /**
  * Represents the pre and post linking functions of a directive.
  *
- * @template TScope The type of scope associated with the directive.
- * @template TElement The type of element that the directive matches.
- * @template TAttributes The type of attributes of the directive.
- * @template TController The type of controller associated with the directive.
  *
  * @typedef {Object} DirectivePrePost
- * @property {DirectiveLinkFn<S, T, A, C> | undefined} [pre]
+ * @property {DirectiveLinkFn | undefined} [pre]
  *   The pre-linking function of the directive.
- * @property {DirectiveLinkFn<S, T, A, C> | undefined} [post]
+ * @property {DirectiveLinkFn | undefined} [post]
  *   The post-linking function of the directive.
  */
 
 /**
  * Directive definition object.
  *
- * @template TScope - The type of the directive's scope.
- * @template TElement - The type of the directive's element.
- * @template TAttributes - The type of the directive's attributes.
- * @template TController - The type of the directive's controller.
  *
  * @typedef {Object} Directive
- * @property {DirectiveCompileFn<S, T, A, C> | undefined} [compile]
+ * @property {DirectiveCompileFn | undefined} [compile]
  * Compile function for the directive.
  * @property {string | Injectable<ControllerConstructor> | undefined} [controller]
  * Controller constructor or name.
@@ -256,11 +240,13 @@
  * Controller alias.
  * @property {boolean | { [boundProperty: string]: string } | undefined} [bindToController]
  * Bindings to controller.
- * @property {DirectiveLinkFn<S, T, A, C> |  DirectivePrePost<S, T, A, C> | undefined} [link]
+ * @property {DirectiveLinkFn |  DirectivePrePost | undefined} [link]
  * Link function.
  * @property {boolean | undefined} [multiElement]
  * Multi-element directive flag.
  * @property {number | undefined} [priority]
+ * Skip all directives on element 
+ * @property {boolean | undefined} [terminal]
  * Directive priority.
  * @property {boolean | undefined} [replace]
  * Deprecated: Replace flag.
@@ -283,12 +269,8 @@
 /**
  * Factory function for creating directives.
  *
- * @template TScope - The type of the directive's scope.
- * @template TElement - The type of the directive's element.
- * @template TAttributes - The type of the directive's attributes.
- * @template TController - The type of the directive's controller.
  *
- * @typedef {(...args: any[]) => Directive<S, T, A, C> | DirectiveLinkFn<S, T, A, C>} DirectiveFactory
+ * @typedef {(...args: any[]) => Directive | DirectiveLinkFn} DirectiveFactory
  */
 
 /**
@@ -323,6 +305,7 @@
  */
 
 /**
+ *
  * @typedef {Object} Module
  * @description AngularJS module interface for registering components, services, providers, etc.
  * @property {function(string, ComponentOptions): Module} component
@@ -341,9 +324,9 @@
  *   Register a controller with the $controller service.
  * @property {function({ [name: string]: Injectable<ControllerConstructor>> }): Module} controller
  *   Register multiple controllers.
- * @property {function<S, T, A, C>(string, Injectable<DirectiveFactory<S, T, A, C>>): Module} directive
+ * @property {function(string, Injectable<DirectiveFactory>): Module} directive
  *   Register a directive with the compiler.
- * @property {function<S, T, A, C>(Object.<string, Injectable<DirectiveFactory<S, T, A, C>>>): Module} directive
+ * @property {function(Object.<string, Injectable<DirectiveFactory>>): Module} directive
  *   Register multiple directives.
  * @property {function(string, Injectable<Function>): Module} factory
  *   Register a service factory with the $injector.
@@ -445,25 +428,24 @@
  */
 
 /**
- * @typedef {Object.<string, function(any, any): boolean>} IModelValidators
+ * @typedef {Object.<string, function(any, any): boolean>} ModelValidators
  * @property {function(any, any): boolean} [index] - Validator function for each index.
  */
 
 /**
- * @typedef {Object.<string, function(any, any): Promise<any>>} IAsyncModelValidators
+ * @typedef {Object.<string, function(any, any): Promise<any>>} AsyncModelValidators
  * @property {function(any, any): IPromise<any>} [index] - Async validator function for each index.
  */
 
 /**
  * @typedef {Object} InjectorService
- * @property {function(Function, boolean=): string[]} annotate Annotate a function or an array of inline annotations.
- * @property {function(any[]): string[]} annotate Annotate an inline annotated function.
- * @property {function(string, string=): T} get Get a service by name.
- * @property {function(new (...args: any[]): T, any=): T} instantiate Instantiate a type constructor with optional locals.
- * @property {function(Injectable<Function | ((...args: any[]) => T)>, any=, any=): T} invoke Invoke a function with optional context and locals.
- * @property {function(Array<Module | string | Injectable<(...args: any[]) => void>>): void} loadNewModules Add and load new modules to the injector.
- * @property {Object.<string, Module>} modules A map of all the modules loaded into the injector.
- * @property {boolean} strictDi Indicates if strict dependency injection is enforced.
+ * @property {function(Function, boolean=): string[]} annotate - Annotate a function or an array of inline annotations.
+ * @property {function(string, string=): any} get - Get a service by name.
+ * @property {function(Function, any?): any} instantiate - Instantiate a type constructor with optional locals.
+ * @property {function(Injectable<Function | ((...args: any[]) => any)>, any=, any=): any} invoke - Invoke a function with optional context and locals.
+ * @property {function(Array<Module | string | Injectable<(...args: any[]) => void>>): void} loadNewModules - Add and load new modules to the injector.
+ * @property {Object.<string, Module>} modules - A map of all the modules loaded into the injector.
+ * @property {boolean} strictDi - Indicates if strict dependency injection is enforced.
  */
 
 export {};

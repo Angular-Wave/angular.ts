@@ -1,5 +1,5 @@
 /**
- * @returns {angular.IDirective}
+ * @returns {import('../../types').Directive}
  */
 export function ngInitDirective() {
   return {

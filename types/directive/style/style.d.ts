@@ -1,4 +1,4 @@
 /**
- * @returns {angular.IDirective}
+ * @returns {import('../../types').Directive}
  */
-export function ngStyleDirective(): angular.IDirective;
+export function ngStyleDirective(): import("../../types").Directive;

@@ -18,11 +18,11 @@ export type DirectiveController = Controller | Controller[] | {
 /**
  * Compile function for an AngularJS directive.
  */
-export type DirectiveCompileFn<TScope, TElement, TAttributes, TController> = (templateElement: TElement, templateAttributes: TAttributes, transclude: TranscludeFunction) => any;
+export type DirectiveCompileFn = (templateElement: TElement, templateAttributes: TAttributes, transclude: TranscludeFunction) => any;
 /**
  * Link function for an AngularJS directive.
  */
-export type DirectiveLinkFn<TScope, TElement, TAttributes, TController> = (scope: TScope, instanceElement: TElement, instanceAttributes: TAttributes, controller?: TController, transclude?: TranscludeFunction) => void;
+export type DirectiveLinkFn = (scope: TScope, instanceElement: TElement, instanceAttributes: TAttributes, controller?: TController, transclude?: TranscludeFunction) => void;
 export type CloneAttachFunction = (clonedElement?: JQLite, scope?: Scope) => any;
 /**
  * This corresponds to $transclude passed to controllers and to the transclude function passed to link functions.
@@ -30,36 +30,36 @@ export type CloneAttachFunction = (clonedElement?: JQLite, scope?: Scope) => any
  * http://teropa.info/blog/2015/06/09/transclusion.html
  */
 export type TranscludeFunction = {
-    transcludeWithScope: (arg0: TScope, arg1: CloneAttachFunction, arg2: JQLite | undefined, arg3: string | undefined) => JQLite;
-    transcludeWithoutScope: (arg0: CloneAttachFunction | undefined, arg1: JQLite | undefined, arg2: string | undefined) => JQLite;
+    transcludeWithScope: (arg0: TScope, arg1: CloneAttachFunction, arg2: JQLite | undefined, arg3: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
+    transcludeWithoutScope: (arg0: CloneAttachFunction | undefined, arg1: JQLite | undefined, arg2: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
     /**
      * - Returns true if the specified slot contains content (i.e., one or more DOM nodes)
      */
     isSlotFilled: (arg0: string) => boolean;
 };
-export type transcludeWithScope = (arg0: TScope, arg1: CloneAttachFunction, arg2: JQLite | undefined, arg3: string | undefined) => JQLite;
-export type transcludeWithoutScope = (arg0: CloneAttachFunction | undefined, arg1: JQLite | undefined, arg2: string | undefined) => JQLite;
+export type transcludeWithScope = (arg0: TScope, arg1: CloneAttachFunction, arg2: JQLite | undefined, arg3: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
+export type transcludeWithoutScope = (arg0: CloneAttachFunction | undefined, arg1: JQLite | undefined, arg2: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
 /**
  * Represents the pre and post linking functions of a directive.
  */
-export type DirectivePrePost<TScope, TElement, TAttributes, TController> = {
+export type DirectivePrePost = {
     /**
      * The pre-linking function of the directive.
      */
-    pre?: DirectiveLinkFn<S, T, A, C> | undefined;
+    pre?: DirectiveLinkFn | undefined;
     /**
      * The post-linking function of the directive.
      */
-    post?: DirectiveLinkFn<S, T, A, C> | undefined;
+    post?: DirectiveLinkFn | undefined;
 };
 /**
  * Directive definition object.
  */
-export type Directive<TScope, TElement, TAttributes, TController> = {
+export type Directive = {
     /**
      * Compile function for the directive.
      */
-    compile?: DirectiveCompileFn<S, T, A, C> | undefined;
+    compile?: DirectiveCompileFn | undefined;
     /**
      * Controller constructor or name.
      */
@@ -77,15 +77,19 @@ export type Directive<TScope, TElement, TAttributes, TController> = {
     /**
      * Link function.
      */
-    link?: DirectiveLinkFn<S, T, A, C> | DirectivePrePost<S, T, A, C> | undefined;
+    link?: DirectiveLinkFn | DirectivePrePost | undefined;
     /**
      * Multi-element directive flag.
      */
     multiElement?: boolean | undefined;
     /**
-     * Directive priority.
+     * Skip all directives on element
      */
     priority?: number | undefined;
+    /**
+     * Directive priority.
+     */
+    terminal?: boolean | undefined;
     /**
      * Deprecated: Replace flag.
      */
@@ -128,7 +132,7 @@ export type Directive<TScope, TElement, TAttributes, TController> = {
 /**
  * Factory function for creating directives.
  */
-export type DirectiveFactory<TScope, TElement, TAttributes, TController> = (...args: any[]) => Directive<S, T, A, C> | DirectiveLinkFn<S, T, A, C>;
+export type DirectiveFactory = (...args: any[]) => Directive | DirectiveLinkFn;
 export type FilterFunction = Function;
 export type FilterFactory = Function;
 /**
@@ -394,41 +398,41 @@ export type NgModelOptions = {
      */
     timeStripZeroSeconds?: boolean | undefined;
 };
-export type IModelValidators = {
+export type ModelValidators = {
     [x: string]: (arg0: any, arg1: any) => boolean;
 };
-export type IAsyncModelValidators = {
+export type AsyncModelValidators = {
     [x: string]: (arg0: any, arg1: any) => Promise<any>;
 };
 export type InjectorService = {
     /**
-     * Annotate a function or an array of inline annotations.
+     * - Annotate a function or an array of inline annotations.
      */
     annotate: (arg0: Function, arg1: boolean | undefined) => string[];
     /**
-     * Get a service by name.
+     * - Get a service by name.
      */
-    get: (arg0: string, arg1: string | undefined) => T;
+    get: (arg0: string, arg1: string | undefined) => any;
     /**
-     * , any=): T} instantiate Instantiate a type constructor with optional locals.
+     * - Instantiate a type constructor with optional locals.
      */
-    "": new () => (...args: any[]) => any;
+    instantiate: (arg0: Function, arg1: any | null) => any;
     /**
-     * Invoke a function with optional context and locals.
+     * - Invoke a function with optional context and locals.
      */
-    invoke: (arg0: Injectable<Function | ((...args: any[]) => T)>, arg1: any | undefined, arg2: any | undefined) => T;
+    invoke: (arg0: Injectable<Function | ((...args: any[]) => any)>, arg1: any | undefined, arg2: any | undefined) => any;
     /**
-     * Add and load new modules to the injector.
+     * - Add and load new modules to the injector.
      */
     loadNewModules: (arg0: Array<Module | string | Injectable<(...args: any[]) => void>>) => void;
     /**
-     * A map of all the modules loaded into the injector.
+     * - A map of all the modules loaded into the injector.
      */
     modules: {
         [x: string]: Module;
     };
     /**
-     * Indicates if strict dependency injection is enforced.
+     * - Indicates if strict dependency injection is enforced.
      */
     strictDi: boolean;
 };

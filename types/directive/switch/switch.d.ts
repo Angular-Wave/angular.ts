@@ -1,11 +1,11 @@
 /**
- * @returns {angular.IDirective}
+ * @returns {import('../../types').Directive}
  */
-export function ngSwitchWhenDirective(): angular.IDirective;
+export function ngSwitchWhenDirective(): import("../../types").Directive;
 /**
- * @returns {angular.IDirective}
+ * @returns {import('../../types').Directive}
  */
-export function ngSwitchDefaultDirective(): angular.IDirective;
+export function ngSwitchDefaultDirective(): import("../../types").Directive;
 export const ngSwitchDirective: (string | (($animate: any) => {
     require: string;
     controller: (string | {

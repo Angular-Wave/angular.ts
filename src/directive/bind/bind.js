@@ -1,7 +1,7 @@
 import { isUndefined, stringify } from "../../shared/utils";
 
 /**
- * @returns {angular.IDirective}
+ * @returns {import('../../types').Directive}
  */
 export function ngBindDirective() {
   return {
@@ -15,7 +15,7 @@ export function ngBindDirective() {
 }
 
 /**
- * @returns {angular.IDirective}
+ * @returns {import('../../types').Directive}
  */
 export function ngBindTemplateDirective() {
   return {

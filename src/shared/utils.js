@@ -1201,7 +1201,7 @@ export const minErrConfig = {};
  * should all be static strings, not variables or general expressions.
  *
  * @param {string} module The namespace to use for the new minErr instance.
- * @returns {function(string, string, ...*): Error} minErr instance
+ * @returns {function(string, ...*): Error} minErr instance
  */
 export function minErr(module) {
   const url = 'https://errors.angularjs.org/"NG_VERSION_FULL"/';

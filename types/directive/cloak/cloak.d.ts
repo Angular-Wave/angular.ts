@@ -1,4 +1,4 @@
 /**
- * @returns {angular.IDirective}
+ * @returns {import('../../types').Directive}
  */
-export function ngCloakDirective(): angular.IDirective;
+export function ngCloakDirective(): import("../../types").Directive;

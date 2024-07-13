@@ -1,7 +1,7 @@
 import { forEach, isUndefined, trim } from "../../shared/utils";
 
 /**
- * @returns {angular.IDirective}
+ * @returns {import('../../types').Directive}
  */
 export function ngListDirective() {
   return {

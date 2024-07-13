@@ -1,11 +1,11 @@
 /**
- * @returns {angular.IDirective}
+ * @returns {import('../../types').Directive}
  */
-export function ngBindDirective(): angular.IDirective;
+export function ngBindDirective(): import("../../types").Directive;
 /**
- * @returns {angular.IDirective}
+ * @returns {import('../../types').Directive}
  */
-export function ngBindTemplateDirective(): angular.IDirective;
+export function ngBindTemplateDirective(): import("../../types").Directive;
 /**
  * TODO: add type
  */
