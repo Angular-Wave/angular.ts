@@ -440,11 +440,6 @@ interface JQLite {
 
   length: number;
 
-  // TODO: events, how to define?
-  // $destroy
-  controller(name?: string): any;
-  injector(): ng.auto.IInjectorService;
-
   /**
    * Returns the `$scope` of the element.
    *

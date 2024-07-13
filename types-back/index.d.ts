@@ -2121,62 +2121,6 @@ declare namespace angular {
   // AUTO module (angular.js)
   ///////////////////////////////////////////////////////////////////////////
   namespace auto {
-    ///////////////////////////////////////////////////////////////////////
-    // InjectorService
-    // see http://docs.angularjs.org/api/AUTO.$injector
-    ///////////////////////////////////////////////////////////////////////
-    interface IInjectorService {
-      annotate(fn: Function, strictDi?: boolean): string[];
-      annotate(inlineAnnotatedFunction: any[]): string[];
-      get<T>(name: string, caller?: string): T;
-      get(name: "$anchorScroll"): IAnchorScrollService;
-      get(name: "$cacheFactory"): ICacheFactoryService;
-      get(name: "$compile"): ICompileService;
-      get(name: "$controller"): IControllerService;
-      get(name: "$document"): IDocumentService;
-      get(name: "$exceptionHandler"): IExceptionHandlerService;
-      get(name: "$filter"): IFilterService;
-      get(name: "$http"): IHttpService;
-      get(name: "$httpBackend"): IHttpBackendService;
-      get(name: "$httpParamSerializer"): IHttpParamSerializer;
-      get(name: "$httpParamSerializerJQLike"): IHttpParamSerializer;
-      get(name: "$interpolate"): IInterpolateService;
-      get(name: "$interval"): IIntervalService;
-      get(name: "$location"): ILocationService;
-      get(name: "$log"): LogService;
-      get(name: "$parse"): IParseService;
-      get(name: "$q"): IQService;
-      get(name: "$rootElement"): IRootElementService;
-      get(name: "$rootScope"): IRootScopeService;
-      get(name: "$sce"): ISCEService;
-      get(name: "$sceDelegate"): ISCEDelegateService;
-      get(name: "$templateCache"): ITemplateCacheService;
-      get(name: "$templateRequest"): ITemplateRequestService;
-      get(name: "$timeout"): ITimeoutService;
-      get(name: "$window"): IWindowService;
-      get<T>(name: "$xhrFactory"): IXhrFactory<T>;
-      has(name: string): boolean;
-      instantiate<T>(
-        typeConstructor: { new (...args: any[]): T },
-        locals?: any,
-      ): T;
-      invoke<T = any>(
-        func: Injectable<Function | ((...args: any[]) => T)>,
-        context?: any,
-        locals?: any,
-      ): T;
-      /**
-       * Add the specified modules to the current injector.
-       * This method will add each of the injectables to the injector and execute all of the config and run blocks for each module passed to the method.
-       * @param modules A module, module name or annotated injection function.
-       */
-      loadNewModules(
-        modules: Array<IModule | string | Injectable<(...args: any[]) => void>>,
-      ): void;
-      /** An object map of all the modules that have been loaded into the injector. */
-      modules: { [moduleName: string]: IModule };
-      strictDi: boolean;
-    }
 
     ///////////////////////////////////////////////////////////////////////
     // ProvideService

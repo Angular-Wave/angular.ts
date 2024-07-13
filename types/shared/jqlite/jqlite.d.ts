@@ -42,6 +42,22 @@ export class JQLite {
      * @returns {import("../../core/scope/scope").Scope}
      */
     scope(): import("../../core/scope/scope").Scope;
+    /**
+     * Returns the isolate `$scope` of the element.
+     * @returns {import("../../core/scope/scope").Scope}
+     */
+    isolateScope(): import("../../core/scope/scope").Scope;
+    /**
+     * Return instance of controller attached to element
+     * @param {string} [name] - Controller name
+     * @returns {any}
+     */
+    controller(name?: string): any;
+    /**
+     * Return instance of injector attached to element
+     * @returns {import('../../types').angular.InjectorService}
+     */
+    injector(): import("../../types").angular.InjectorService;
     toString(): string;
     eq(index: any): JQLite;
     length: number;

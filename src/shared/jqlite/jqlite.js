@@ -566,6 +566,35 @@ JQLite.prototype.scope = function () {
   );
 };
 
+
+/**
+ * Returns the isolate `$scope` of the element.
+ * @returns {import("../../core/scope/scope").Scope}
+ */
+JQLite.prototype.isolateScope = function() {
+  return (
+    getOrSetCacheData(this[0], "$isolateScope") ||
+    getOrSetCacheData(this[0], "$isolateScopeNoTemplate")
+  );
+};
+
+/**
+ * Return instance of controller attached to element
+ * @param {string} [name] - Controller name
+ * @returns {any}
+ */
+JQLite.prototype.controller = function(name) {
+  return JQLiteController(this[0], name) 
+};
+
+/**
+ * Return instance of injector attached to element
+ * @returns {import('../../types').angular.InjectorService}
+ */
+JQLite.prototype.injector = function() {
+  return JQLiteInheritedData(this[0], "$injector");
+};
+
 export const BOOLEAN_ATTR = {};
 "multiple,selected,checked,disabled,readOnly,required,open"
   .split(",")
@@ -619,17 +648,7 @@ forEach(
     data: getOrSetCacheData,
     inheritedData: JQLiteInheritedData,
 
-    isolateScope(element) {
-      // Can't use JQLiteData here directly so we stay compatible with jQuery!
-      return (
-        getOrSetCacheData(element, "$isolateScope") ||
-        getOrSetCacheData(element, "$isolateScopeNoTemplate")
-      );
-    },
-    controller: JQLiteController,
-    injector(element) {
-      return JQLiteInheritedData(element, "$injector");
-    },
+
     attr(element, name, value) {
       let ret;
       const { nodeType } = element;
@@ -876,9 +895,7 @@ forEach(
         }
       }
     },
-
     off: JQLiteOff,
-
     replaceWith(element, replaceNode) {
       let index;
       const parent = element.parentNode;
@@ -892,13 +909,11 @@ forEach(
         index = node;
       });
     },
-
     children(element) {
       return Array.from(element.childNodes).filter(
         (child) => child.nodeType === Node.ELEMENT_NODE,
       );
     },
-
     append(element, node) {
       const { nodeType } = element;
       if (
