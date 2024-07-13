@@ -1,4 +1,3 @@
-export function identity(x: any): any;
 /**
  * Builds proxy functions on the `to` object which pass through to the `from` object.
  *

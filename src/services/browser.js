@@ -1,6 +1,6 @@
 import { jqLite } from "../shared/jqlite/jqlite";
 import { urlResolve } from "../core/url-utils/url-utils";
-import { forEach, isUndefined, equals } from "../shared/utils";
+import { isUndefined, equals } from "../shared/utils";
 
 // This variable should be used *only* inside the cacheState function.
 let lastCachedState = null;
@@ -16,12 +16,17 @@ export function trimEmptyHash(url) {
 }
 
 /**
+ * @typedef {function(string, string|null): any} UrlChangeListener
+ */
+
+/**
  * @name $browser
  * @description
  * This object has two goals:
  *
  * - hide all the global state in the browser caused by the window object
  * - abstract away all the browser specific features and inconsistencies
+ *
  *
  */
 
@@ -30,9 +35,10 @@ export function trimEmptyHash(url) {
  */
 export function Browser(taskTracker) {
   const self = this;
-  const { setTimeout } = window;
-  const { clearTimeout } = window;
   const pendingDeferIds = {};
+  /** @type {Array<UrlChangeListener>} */
+  const urlChangeListeners = [];
+  let urlChangeInit = false;
 
   /// ///////////////////////////////////////////////////////////
   // Task-tracking API
@@ -53,10 +59,6 @@ export function Browser(taskTracker) {
   let lastHistoryState;
   let lastBrowserUrl = window.location.href;
   const baseElement = jqLite(Array.from(document.getElementsByTagName("base")));
-  let pendingLocation = null;
-  const getCurrentState = function getCurrentState() {
-    return history.state;
-  };
 
   cacheState();
 
@@ -91,15 +93,13 @@ export function Browser(taskTracker) {
 
     // setter
     if (url) {
-      const sameState = lastHistoryState === state;
-
       // Normalize the inputted URL
       url = urlResolve(url).href;
 
       // Don't change anything if previous and current URLs and states match. This also prevents
       // IE<10 from getting into redirect loop when in LocationHashbangInHtml5Url mode.
       // See https://github.com/angular/angular.js/commit/ffb2701
-      if (lastBrowserUrl === url && sameState) {
+      if (lastBrowserUrl === url && lastHistoryState === state) {
         return self;
       }
       // const sameBase =
@@ -114,7 +114,7 @@ export function Browser(taskTracker) {
     // - pendingLocation is needed as browsers don't allow to read out
     //   the new location.href if a reload happened or if there is a bug like in iOS 9 (see
     //   https://openradar.appspot.com/22186109).
-    return trimEmptyHash(pendingLocation || window.location.href);
+    return trimEmptyHash(window.location.href);
   };
 
   /**
@@ -131,17 +131,13 @@ export function Browser(taskTracker) {
     return cachedState;
   };
 
-  const urlChangeListeners = [];
-  let urlChangeInit = false;
-
   function cacheStateAndFireUrlChange() {
-    pendingLocation = null;
     fireStateOrUrlChange();
   }
 
   function cacheState() {
     // This should be the only place in $browser where `history.state` is read.
-    cachedState = getCurrentState();
+    cachedState = history.state;
     cachedState = isUndefined(cachedState) ? null : cachedState;
 
     // Prevent callbacks fo fire twice if both hashchange & popstate were fired.
@@ -160,11 +156,10 @@ export function Browser(taskTracker) {
     if (lastBrowserUrl === self.url() && prevLastHistoryState === cachedState) {
       return;
     }
-
     lastBrowserUrl = /** @type {string} */ (self.url());
     lastHistoryState = cachedState;
-    forEach(urlChangeListeners, (listener) => {
-      listener(self.url(), cachedState);
+    urlChangeListeners.forEach((listener) => {
+      listener(trimEmptyHash(window.location.href), cachedState);
     });
   }
 
@@ -186,8 +181,8 @@ export function Browser(taskTracker) {
    * NOTE: this api is intended for use only by the $location service. Please use the
    * {@link ng.$location $location service} to monitor url changes in AngularJS apps.
    *
-   * @param {function(string):any} callback Listener function to be called when url changes.
-   * @return {function(string)} Returns the registered listener fn - handy if the fn is anonymous.
+   * @param {UrlChangeListener} callback Listener function to be called when url changes.
+   * @return {UrlChangeListener} Returns the registered listener fn - handy if the fn is anonymous.
    */
   self.onUrlChange = function (callback) {
     // TODO(vojta): refactor to use node's syntax for events
@@ -264,7 +259,7 @@ export function Browser(taskTracker) {
     taskType = taskType || taskTracker.DEFAULT_TASK_TYPE;
 
     taskTracker.incTaskCount(taskType);
-    timeoutId = setTimeout(() => {
+    timeoutId = window.setTimeout(() => {
       delete pendingDeferIds[timeoutId];
       taskTracker.completeTask(fn, taskType);
     }, delay);
@@ -279,7 +274,7 @@ export function Browser(taskTracker) {
    * @description
    * Cancels a deferred task identified with `deferId`.
    *
-   * @param {*} deferId Token returned by the `$browser.defer` function.
+   * @param {number} deferId Token returned by the `$browser.defer` function.
    * @returns {boolean} Returns `true` if the task hasn't executed yet and was successfully
    *                    canceled.
    */
@@ -287,7 +282,7 @@ export function Browser(taskTracker) {
     if (Object.prototype.hasOwnProperty.call(pendingDeferIds, deferId)) {
       const taskType = pendingDeferIds[deferId];
       delete pendingDeferIds[deferId];
-      clearTimeout(deferId);
+      window.clearTimeout(deferId);
       taskTracker.completeTask(() => {}, taskType);
       return true;
     }

@@ -17,7 +17,6 @@ import {
 import { CACHE, EXPANDO } from "../../core/cache/cache";
 
 /**
- * @ngdoc function
  * @name angular.element
  * @module ng
  * @kind function
@@ -29,7 +28,6 @@ import { CACHE, EXPANDO } from "../../core/cache/cache";
  * jqLite is a tiny, API-compatible subset of jQuery that allows
  * AngularJS to manipulate the DOM in a cross-browser compatible way. jqLite implements only the most
  * commonly needed functionality with the goal of having a very small footprint.
- *
  *
  * <div class="alert alert-info">**Note:** All element references in AngularJS are always wrapped with
  * jqLite (such as the element argument in a directive's compile / link function). They are never raw DOM references.</div>
@@ -93,6 +91,7 @@ import { CACHE, EXPANDO } from "../../core/cache/cache";
  * @returns {Object} jQuery object.
  */
 
+/** @type {number} */
 let jqId = 1;
 
 function jqNextId() {
@@ -240,13 +239,6 @@ function jqLiteParseHTML(html, context) {
   return [];
 }
 
-// IE9-11 has no method "contains" in SVG element and in Node.prototype. Bug #10259.
-const jqLiteContains =
-  window.Node.prototype.contains ||
-  function (arg) {
-    return !!(this.compareDocumentPosition(arg) & 16);
-  };
-
 /// //////////////////////////////////////////
 export function JQLite(element) {
   if (element instanceof JQLite) {
@@ -278,6 +270,7 @@ export function JQLite(element) {
     addNodes(this, element);
   }
 }
+
 export var jqLite = JQLite;
 
 jqLite.CACHE = CACHE;
@@ -808,6 +801,11 @@ function defaultHandlerWrapper(element, event, handler) {
   handler.call(element, event);
 }
 
+/**
+ * @param {Node} target
+ * @param {*} event
+ * @param {*} handler
+ */
 function specialMouseHandlerWrapper(target, event, handler) {
   // Refer to jQuery's implementation of mouseenter & mouseleave
   // Read about mouseenter and mouseleave:
@@ -815,10 +813,7 @@ function specialMouseHandlerWrapper(target, event, handler) {
   const related = event.relatedTarget;
   // For mousenter/leave call the handler if related is outside the target.
   // NB: No relatedTarget if the mouse left/entered the browser window
-  if (
-    !related ||
-    (related !== target && !jqLiteContains.call(target, related))
-  ) {
+  if (!related || (related !== target && !target.contains(related))) {
     handler.call(target, event);
   }
 }

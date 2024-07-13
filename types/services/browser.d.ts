@@ -6,12 +6,16 @@
  */
 export function trimEmptyHash(url: string): string;
 /**
+ * @typedef {function(string, string|null): any} UrlChangeListener
+ */
+/**
  * @name $browser
  * @description
  * This object has two goals:
  *
  * - hide all the global state in the browser caused by the window object
  * - abstract away all the browser specific features and inconsistencies
+ *
  *
  */
 /**
@@ -20,12 +24,16 @@ export function trimEmptyHash(url: string): string;
 export function Browser(taskTracker: import("../core/task-tracker-factory").TaskTracker): void;
 export class Browser {
     /**
+     * @typedef {function(string, string|null): any} UrlChangeListener
+     */
+    /**
      * @name $browser
      * @description
      * This object has two goals:
      *
      * - hide all the global state in the browser caused by the window object
      * - abstract away all the browser specific features and inconsistencies
+     *
      *
      */
     /**
@@ -86,10 +94,10 @@ export class Browser {
      * NOTE: this api is intended for use only by the $location service. Please use the
      * {@link ng.$location $location service} to monitor url changes in AngularJS apps.
      *
-     * @param {function(string):any} callback Listener function to be called when url changes.
-     * @return {function(string)} Returns the registered listener fn - handy if the fn is anonymous.
+     * @param {UrlChangeListener} callback Listener function to be called when url changes.
+     * @return {UrlChangeListener} Returns the registered listener fn - handy if the fn is anonymous.
      */
-    onUrlChange: (callback: (arg0: string) => any) => (arg0: string) => any;
+    onUrlChange: (callback: UrlChangeListener) => UrlChangeListener;
     /**
      * Remove popstate and hashchange handler from window.
      *
@@ -134,11 +142,11 @@ export class Browser {
      * @description
      * Cancels a deferred task identified with `deferId`.
      *
-     * @param {*} deferId Token returned by the `$browser.defer` function.
+     * @param {number} deferId Token returned by the `$browser.defer` function.
      * @returns {boolean} Returns `true` if the task hasn't executed yet and was successfully
      *                    canceled.
      */
-    cancel: (deferId: any) => boolean;
+    cancel: (deferId: number) => boolean;
 }
 /**
  * @typedef {import('../index').angular.ServiceProvider} angular.BrowserProvider
@@ -158,6 +166,7 @@ export function BrowserProvider(this: import("../index").angular.ServiceProvider
 export class BrowserProvider {
     $get: (string | (($$taskTrackerFactory: import("../core/task-tracker-factory").TaskTracker) => Browser))[];
 }
+export type UrlChangeListener = (arg0: string, arg1: string | null) => any;
 export namespace angular {
     type BrowserProvider = import("../index").angular.ServiceProvider;
 }
