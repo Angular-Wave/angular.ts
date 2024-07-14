@@ -471,14 +471,11 @@
 -
 -
 - #### `restrict`
-- String of subset of `EACM` which restricts the directive to a specific directive
+- String of subset of `EA` which restricts the directive to a specific directive
 - declaration style. If omitted, the defaults (elements and attributes) are used.
 -
 - - `E` - Element name (default): `<my-directive></my-directive>`
-- - `A` - Attribute (default): `<div my-directive="exp"></div>`
-- - `C` - Class: `<div class="my-directive: exp;"></div>`
-- - `M` - Comment: `<!-- directive: my-directive exp -->`
--
+- - `A` - Attribute (default): `<div my-directive="exp"></div>`-
 -
 - #### `templateNamespace`
 - String representing the document type used by the markup in the template.

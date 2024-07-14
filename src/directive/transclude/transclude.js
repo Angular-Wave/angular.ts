@@ -4,7 +4,7 @@ import { startingTag } from "../../shared/jqlite/jqlite";
 /**
  * @ngdoc directive
  * @name ngTransclude
- * @restrict EAC
+ * @restrict EA
  *
  * @description
  * Directive that marks the insertion point for the transcluded DOM of the nearest parent directive that uses transclusion.
@@ -27,7 +27,7 @@ export const ngTranscludeDirective = [
   "$compile",
   function ($compile) {
     return {
-      restrict: "EAC",
+      restrict: "EA",
       compile: function ngTranscludeCompile(tElement) {
         // Remove and cache any original content to act as a fallback
         const fallbackLinkFn = $compile(tElement[0].childNodes);

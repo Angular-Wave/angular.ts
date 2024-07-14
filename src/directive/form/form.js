@@ -416,7 +416,7 @@ addSetValidityMethod({
 /**
  * @ngdoc directive
  * @name ngForm
- * @restrict EAC
+ * @restrict EA
  *
  * @description
  * Helper directive that makes it possible to create control groups inside a
@@ -518,7 +518,7 @@ const formDirectiveFactory = function (isNgForm) {
     function ($timeout, $parse) {
       const formDirective = {
         name: "form",
-        restrict: isNgForm ? "EAC" : "E",
+        restrict: isNgForm ? "EA" : "E",
         require: ["form", "^^?form"], // first is the form's own ctrl, second is an optional parent form
         controller: FormController,
         compile: function ngFormCompile(formElement, attr) {
