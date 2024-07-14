@@ -151,7 +151,7 @@ function roundNumber(parsedNumber, fractionSize, minFrac, maxFrac) {
  *         }} pattern
  * @param  {string} groupSep     The string to separate groups of number (e.g. `,`)
  * @param  {string} decimalSep   The string to act as the decimal separator (e.g. `.`)
- * @param  {[type]} fractionSize The size of the fractional part of the number
+ * @param  {any} fractionSize     The size of the fractional part of the number
  * @return {string}              The number formatted as a string
  */
 

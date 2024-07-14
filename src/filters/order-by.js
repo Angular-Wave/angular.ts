@@ -10,11 +10,6 @@ import {
 
 orderByFilter.$inject = ["$parse"];
 
-/**
- *
- * @param {angular.IParseService} $parse
- * @returns
- */
 export function orderByFilter($parse) {
   return function (array, sortPredicate, reverseOrder, compareFn) {
     if (array == null) return array;

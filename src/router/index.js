@@ -18,7 +18,7 @@ import { UIRouterGlobals } from "./globals";
 import { TransitionService } from "./transition/transition-service";
 
 export function initRouter() {
-  window.angular
+  window["angular"]
     .module("ng.router", ["ng"])
     .provider("$urlConfig", UrlConfigProvider)
     .provider("$routerGlobals", UIRouterGlobals)

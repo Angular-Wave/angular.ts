@@ -760,7 +760,7 @@ import { $$AnimateJsDriverProvider } from "./animate-js-driver";
  * Click here {@link ng.$animate to learn more about animations with `$animate`}.
  */
 export function initAnimateModule() {
-  window.angular
+  window["angular"]
     .module("ngAnimate", [])
     .directive("ngAnimateSwap", ngAnimateSwapDirective)
 

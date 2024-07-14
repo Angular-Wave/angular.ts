@@ -249,7 +249,7 @@ export function createInjector(modulesToLoad, strictDi) {
 
       try {
         if (isString(module)) {
-          moduleFn = window.angular.module(module);
+          moduleFn = window["angular"].module(module);
           instanceInjector.modules[module] = moduleFn;
           runBlocks = runBlocks
             .concat(loadModules(moduleFn.requires))

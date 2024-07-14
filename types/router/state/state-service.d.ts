@@ -127,11 +127,17 @@ export class StateService {
      */
     state(definition: angular.Ng1StateDeclaration): this;
     /**
-     * Registers an invalid state handler
+     * Handler for when [[transitionTo]] is called with an invalid state.
      *
-     * This is a passthrough to [[StateService.onInvalid]] for ng1.
+     * Invokes the [[onInvalid]] callbacks, in natural order.
+     * Each callback's return value is checked in sequence until one of them returns an instance of TargetState.
+     * The results of the callbacks are wrapped in $q.when(), so the callbacks may return promises.
+     *
+     * If a callback returns an TargetState, then it is used as arguments to $state.transitionTo() and the result returned.
+     *
+     * @internal
      */
-    onInvalid(callback: any): any;
+    _handleInvalidTargetState(fromPath: any, toState: any): any;
     /**
      * Registers an Invalid State handler
      *
@@ -157,18 +163,6 @@ export class StateService {
      * @returns a function which deregisters the callback
      */
     onInvalid(callback: Function): any;
-    /**
-     * Handler for when [[transitionTo]] is called with an invalid state.
-     *
-     * Invokes the [[onInvalid]] callbacks, in natural order.
-     * Each callback's return value is checked in sequence until one of them returns an instance of TargetState.
-     * The results of the callbacks are wrapped in $q.when(), so the callbacks may return promises.
-     *
-     * If a callback returns an TargetState, then it is used as arguments to $state.transitionTo() and the result returned.
-     *
-     * @internal
-     */
-    _handleInvalidTargetState(fromPath: any, toState: any): any;
     /**
      * Reloads the current state
      *

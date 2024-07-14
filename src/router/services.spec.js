@@ -6,9 +6,9 @@ describe("router services", () => {
   let $injector;
 
   beforeEach(() => {
-    window.angular = new Angular();
+    window["angular"] = new Angular();
     publishExternalAPI();
-    let module = window.angular.module("defaultModule", ["ng.router"]);
+    let module = window["angular"].module("defaultModule", ["ng.router"]);
     module.config(
       (
         $urlServiceProvider,
@@ -27,7 +27,7 @@ describe("router services", () => {
       },
     );
 
-    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    $injector = window["angular"].bootstrap(document.getElementById("dummy"), [
       "defaultModule",
     ]);
   });

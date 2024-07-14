@@ -33,11 +33,11 @@ export class ParamType {
     /** @inheritdoc */
     inherit: boolean;
     /** @inheritdoc */
-    is(val: any, key: any): boolean;
+    is(): boolean;
     /** @inheritdoc */
-    encode(val: any, key: any): any;
+    encode(val: any): any;
     /** @inheritdoc */
-    decode(val: any, key: any): any;
+    decode(val: any): any;
     /** @inheritdoc */
     equals(a: any, b: any): boolean;
     $subPattern(): string;

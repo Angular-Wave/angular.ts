@@ -867,7 +867,7 @@ export function angularInit(element) {
     // }
     config.strictDi = getNgAttribute(appElement, "strict-di") !== null;
     //TODO maybe angular should be initialized here?
-    window.angular.bootstrap(appElement, module ? [module] : [], config);
+    window["angular"].bootstrap(appElement, module ? [module] : [], config);
   }
 }
 
