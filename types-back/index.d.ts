@@ -254,27 +254,6 @@ declare namespace angular {
     $invalid: boolean;
   }
 
-  // Allows tuning how model updates are done.
-  // https://docs.angularjs.org/api/ng/directive/ngModelOptions
-  interface INgModelOptions {
-    updateOn?: string | undefined;
-    debounce?: number | { [key: string]: number } | undefined;
-    allowInvalid?: boolean | undefined;
-    getterSetter?: boolean | undefined;
-    timezone?: string | undefined;
-    /**
-     * Defines if the time and datetime-local types should show seconds and milliseconds.
-     * The option follows the format string of date filter.
-     * By default, the options is undefined which is equal to 'ss.sss' (seconds and milliseconds)
-     */
-    timeSecondsFormat?: string | undefined;
-    /**
-     * Defines if the time and datetime-local types should strip the seconds and milliseconds
-     * from the formatted value if they are zero. This option is applied after `timeSecondsFormat`
-     */
-    timeStripZeroSeconds?: boolean | undefined;
-  }
-
   interface IModelValidators {
     /**
      * viewValue is any because it can be an object that is called in the view like $viewValue.name:$viewValue.subName

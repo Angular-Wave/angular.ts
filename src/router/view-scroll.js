@@ -11,7 +11,7 @@ export function $ViewScrollProvider() {
         return $anchorScroll;
       }
       /**
-       * @param {JQLite} $element
+       * @param {import('../shared/jqlite/jqlite').JQLite} $element
        */
       return function ($element) {
         return $timeout(

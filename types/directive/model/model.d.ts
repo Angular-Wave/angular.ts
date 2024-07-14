@@ -54,7 +54,13 @@ export class NgModelController {
         $setSubmitted: () => void;
         $$setSubmitted: () => void;
     };
-    $options: any;
+    $options: {
+        $$options: import("../model-options/model-options").ModelOptionsConfig;
+        getOption(name: string): string | boolean | number | {
+            [x: string]: number;
+        };
+        createChild(options: ModelOptionsConfig): any;
+    };
     $$updateEvents: string;
     $$updateEventHandler: any;
     $$parsedNgModel: any;
