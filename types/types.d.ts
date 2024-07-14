@@ -30,14 +30,14 @@ export type CloneAttachFunction = (clonedElement?: import("./shared/jqlite/jqlit
  * http://teropa.info/blog/2015/06/09/transclusion.html
  */
 export type TranscludeFunction = {
-    transcludeWithScope: (arg0: TScope, arg1: CloneAttachFunction, arg2: JQLite | undefined, arg3: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
-    transcludeWithoutScope: (arg0: CloneAttachFunction | undefined, arg1: JQLite | undefined, arg2: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
+    transcludeWithScope: (arg0: TScope, arg1: CloneAttachFunction, arg2: import("./shared/jqlite/jqlite").JQLite | undefined, arg3: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
+    transcludeWithoutScope: (arg0: CloneAttachFunction | undefined, arg1: import("./shared/jqlite/jqlite").JQLite | undefined, arg2: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
     /**
      * - Returns true if the specified slot contains content (i.e., one or more DOM nodes)
      */
     isSlotFilled: (arg0: string) => boolean;
 };
-export type transcludeWithScope = (arg0: TScope, arg1: CloneAttachFunction, arg2: JQLite | undefined, arg3: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
+export type transcludeWithScope = (arg0: TScope, arg1: CloneAttachFunction, arg2: import("./shared/jqlite/jqlite").JQLite | undefined, arg3: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
 export type transcludeWithoutScope = (arg0: CloneAttachFunction | undefined, arg1: JQLite | undefined, arg2: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
 /**
  * Represents the pre and post linking functions of a directive.

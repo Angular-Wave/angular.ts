@@ -27,6 +27,6 @@ export function formatNumber(number: number, pattern: {
     posSuf: any;
 }, groupSep: string, decimalSep: string, fractionSize: any): string;
 /**
- * @returns {angular.IFilterJson}
+ * @returns {function(Object, number?): Object}
  */
-export function jsonFilter(): angular.IFilterJson;
+export function jsonFilter(): (arg0: any, arg1: number | null) => any;

@@ -227,7 +227,7 @@ export function formatNumber(
 }
 
 /**
- * @returns {angular.IFilterJson}
+ * @returns {function(Object, number?): Object}
  */
 export function jsonFilter() {
   return function (object, spacing) {

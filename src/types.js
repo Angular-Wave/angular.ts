@@ -203,13 +203,13 @@
  * http://teropa.info/blog/2015/06/09/transclusion.html
  *
  * @typedef {Object} TranscludeFunction
- * @property {function(TScope, CloneAttachFunction, JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithScope
- * @property {function(CloneAttachFunction=, JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithoutScope
+ * @property {function(TScope, CloneAttachFunction, import('./shared/jqlite/jqlite').JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithScope
+ * @property {function(CloneAttachFunction=, import('./shared/jqlite/jqlite').JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithoutScope
  * @property {function(string): boolean} isSlotFilled - Returns true if the specified slot contains content (i.e., one or more DOM nodes)
  */
 
 /**
- * @typedef {function(TScope, CloneAttachFunction, JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithScope
+ * @typedef {function(TScope, CloneAttachFunction, import('./shared/jqlite/jqlite').JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithScope
  */
 
 /**
