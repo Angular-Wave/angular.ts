@@ -31,7 +31,7 @@ AngularJS is a large codebase that evolved in its own ecosystem over a long peri
 #### Install
 
 ```bash
-$ npm i npm i @angular-wave/angular.ts
+$ npm i @angular-wave/angular.ts
 
 ```
 or
@@ -45,9 +45,9 @@ or
 Initialize your app
 
 ```html
-    <div ng-app ng-init="x='world'">
-        Hello  {{ x }}
-    </div>
+<div ng-app ng-init="x='world'">
+    Hello  {{ x }}
+</div>
 ```
 
 New docs website is coming!
