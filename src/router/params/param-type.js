@@ -38,15 +38,15 @@ export class ParamType {
   }
   // consider these four methods to be "abstract methods" that should be overridden
   /** @inheritdoc */
-  is(val, key) {
+  is() {
     return true;
   }
   /** @inheritdoc */
-  encode(val, key) {
+  encode(val) {
     return val;
   }
   /** @inheritdoc */
-  decode(val, key) {
+  decode(val) {
     return val;
   }
   /** @inheritdoc */

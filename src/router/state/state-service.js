@@ -244,14 +244,6 @@ export class StateService {
     }
     return this;
   }
-  /**
-   * Registers an invalid state handler
-   *
-   * This is a passthrough to [[StateService.onInvalid]] for ng1.
-   */
-  onInvalid(callback) {
-    return this.onInvalid(callback);
-  }
 
   /**
    * Handler for when [[transitionTo]] is called with an invalid state.
