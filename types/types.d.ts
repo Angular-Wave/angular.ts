@@ -23,7 +23,7 @@ export type DirectiveCompileFn = (templateElement: TElement, templateAttributes:
  * Link function for an AngularJS directive.
  */
 export type DirectiveLinkFn = (scope: TScope, instanceElement: TElement, instanceAttributes: TAttributes, controller?: TController, transclude?: TranscludeFunction) => void;
-export type CloneAttachFunction = (clonedElement?: JQLite, scope?: Scope) => any;
+export type CloneAttachFunction = (clonedElement?: import("./shared/jqlite/jqlite").JQLite, scope?: Scope) => any;
 /**
  * This corresponds to $transclude passed to controllers and to the transclude function passed to link functions.
  * https://docs.angularjs.org/api/ng/service/$compile#-controller-

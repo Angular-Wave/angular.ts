@@ -1,5 +1,5 @@
 /**
  * Initializes `ng`, `animate`, `message`, `aria` and `router` modules.
- * @returns {import('./index').Module} `ng`module
+ * @returns {import('./types').Module} `ng`module
  */
-export function publishExternalAPI(): import("./index").Module;
+export function publishExternalAPI(): import("./types").Module;

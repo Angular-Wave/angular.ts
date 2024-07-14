@@ -192,7 +192,7 @@
 
 /**
  * @callback CloneAttachFunction
- * @param {JQLite} [clonedElement]
+ * @param {import('./shared/jqlite/jqlite').JQLite} [clonedElement]
  * @param {Scope} [scope] // Let's hint but not force cloneAttachFn's signature
  * @returns {any}
  */

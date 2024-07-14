@@ -34,7 +34,7 @@ export const VERSION = "[VI]{version}[/VI]";
 
 const ngMinErr = minErr("ng");
 
-/** @type {Object.<string, import('./index.js').Module>} */
+/** @type {Object.<string, import('./types').Module>} */
 const moduleCache = {};
 
 /**
@@ -65,7 +65,7 @@ export class Angular {
     /** @type {equals} */
     this.equals = equals;
 
-    /** @type {import('./shared/jqlite/jqlite').JQLite} */
+    /** @type {typeof import('./shared/jqlite/jqlite').JQLite} */
     this.element = JQLite;
 
     /** @type {extend} */
@@ -283,8 +283,8 @@ export class Angular {
    * All modules (AngularJS core or 3rd party) that should be available to an application must be
    * registered using this mechanism.
    *
-   * Passing one argument retrieves an existing {@link angular.IModule},
-   * whereas passing more than one argument creates a new {@link angular.IModule}
+   * Passing one argument retrieves an existing {@link import('./types').Module},
+   * whereas passing more than one argument creates a new {@link import('./types').Module}
    *
    *
    * # Module
@@ -320,8 +320,8 @@ export class Angular {
    * @param {!Array.<string>=} requires If specified then new module is being created. If
    *        unspecified then the module is being retrieved for further configuration.
    * @param {Function=} configFn Optional configuration function for the module. Same as
-   *        {@link angular.IModule#config Module#config()}.
-   * @returns {angular.IModule} new module with the {@link angular.IModule} api.
+   *        {@link import('./types').Module#config Module#config()}.
+   * @returns {import('./types').Module} new module with the {@link import('./types').Module} api.
    */
   module(name, requires, configFn) {
     const $injectorMinErr = minErr("$injector");
@@ -360,7 +360,7 @@ export class Angular {
       // eslint-disable-next-line no-use-before-define
       const config = invokeLater("$injector", "invoke", "push", configBlocks);
 
-      /** @type {angular.IModule} */
+      /** @type {import('./types').Module} */
       const moduleInstance = {
         // Private state
 
@@ -370,11 +370,11 @@ export class Angular {
 
         /**
          * @ngdoc method
-         * @name angular.IModule#info
+         * @name import('./types').Module#info
          * @module ng
          *
          * @param {Object=} value Information about the module
-         * @returns {Object|angular.IModule} The current info object for this module if called as a getter,
+         * @returns {Object|import('./types').Module} The current info object for this module if called as a getter,
          *                          or `this` if called as a setter.
          *
          * @description
@@ -414,7 +414,7 @@ export class Angular {
 
         /**
          * @ngdoc property
-         * @name angular.IModule#requires
+         * @name import('./types').Module#requires
          * @module ng
          *
          * @description
@@ -425,7 +425,7 @@ export class Angular {
 
         /**
          * @ngdoc property
-         * @name angular.IModule#name
+         * @name import('./types').Module#name
          * @module ng
          *
          * @description
@@ -435,7 +435,7 @@ export class Angular {
 
         /**
          * @ngdoc method
-         * @name angular.IModule#provider
+         * @name import('./types').Module#provider
          * @module ng
          * @param {string} name service name
          * @param {Function} providerType Construction function for creating new instance of the
@@ -447,7 +447,7 @@ export class Angular {
 
         /**
          * @ngdoc method
-         * @name angular.IModule#factory
+         * @name import('./types').Module#factory
          * @module ng
          * @param {string} name service name
          * @param {Function} providerFunction Function for creating new instance of the service.
@@ -458,7 +458,7 @@ export class Angular {
 
         /**
          * @ngdoc method
-         * @name angular.IModule#service
+         * @name import('./types').Module#service
          * @module ng
          * @param {string} name service name
          * @param {Function} constructor A constructor function that will be instantiated.
@@ -469,7 +469,7 @@ export class Angular {
 
         /**
          * @ngdoc method
-         * @name angular.IModule#value
+         * @name import('./types').Module#value
          * @module ng
          * @param {string} name service name
          * @param {*} object Service instance object.
@@ -480,7 +480,7 @@ export class Angular {
 
         /**
          * @ngdoc method
-         * @name angular.IModule#constant
+         * @name import('./types').Module#constant
          * @module ng
          * @param {string} name constant name
          * @param {*} object Constant value.
@@ -492,7 +492,7 @@ export class Angular {
 
         /**
          * @ngdoc method
-         * @name angular.IModule#decorator
+         * @name import('./types').Module#decorator
          * @module ng
          * @param {string} name The name of the service to decorate.
          * @param {Function} decorFn This function will be invoked when the service needs to be
@@ -508,7 +508,7 @@ export class Angular {
 
         /**
          * @ngdoc method
-         * @name angular.IModule#animation
+         * @name import('./types').Module#animation
          * @module ng
          * @param {string} name animation name
          * @param {Function} animationFactory Factory function for creating new instance of an
@@ -542,7 +542,7 @@ export class Angular {
 
         /**
          * @ngdoc method
-         * @name angular.IModule#filter
+         * @name import('./types').Module#filter
          * @module ng
          * @param {string} name Filter name - this must be a valid AngularJS expression identifier
          * @param {Function} filterFactory Factory function for creating new instance of filter.
@@ -560,7 +560,7 @@ export class Angular {
 
         /**
          * @ngdoc method
-         * @name angular.IModule#controller
+         * @name import('./types').Module#controller
          * @module ng
          * @param {string|Object} name Controller name, or an object map of controllers where the
          *    keys are the names and the values are the constructors.
@@ -575,7 +575,7 @@ export class Angular {
 
         /**
          * @ngdoc method
-         * @name angular.IModule#directive
+         * @name import('./types').Module#directive
          * @module ng
          * @param {string|Object} name Directive name, or an object map of directives where the
          *    keys are the names and the values are the factories.
@@ -588,7 +588,7 @@ export class Angular {
 
         /**
          * @ngdoc method
-         * @name angular.IModule#component
+         * @name import('./types').Module#component
          * @module ng
          * @param {string|Object} name Name of the component in camelCase (i.e. `myComp` which will match `<my-comp>`),
          *    or an object map of components where the keys are the names and the values are the component definition objects.
@@ -602,17 +602,17 @@ export class Angular {
 
         /**
          * @ngdoc method
-         * @name angular.IModule#config
+         * @name import('./types').Module#config
          * @module ng
          * @param {Function} configFn Execute this function on module load. Useful for service
          *    configuration.
          * @description
          * Use this method to configure services by injecting their
-         * {@link angular.IModule#provider `providers`}, e.g. for adding routes to the
+         * {@link import('./types').Module#provider `providers`}, e.g. for adding routes to the
          * {@link ngRoute.$routeProvider $routeProvider}.
          *
-         * Note that you can only inject {@link angular.IModule#provider `providers`} and
-         * {@link angular.IModule#constant `constants`} into this function.
+         * Note that you can only inject {@link import('./types').Module#provider `providers`} and
+         * {@link import('./types').Module#constant `constants`} into this function.
          *
          * For more about how to configure services, see
          * {@link providers#provider-recipe Provider Recipe}.
@@ -621,7 +621,7 @@ export class Angular {
 
         /**
          * @ngdoc method
-         * @name angular.IModule#run
+         * @name import('./types').Module#run
          * @module ng
          * @param {Function} initializationFn Execute this function after injector creation.
          *    Useful for application initialization.
@@ -645,7 +645,7 @@ export class Angular {
        * @param {string} provider
        * @param {string} method
        * @param {String=} insertMethod
-       * @returns {angular.IModule}
+       * @returns {import('./types').Module}
        */
       function invokeLater(provider, method, insertMethod, queue) {
         if (!queue) queue = invokeQueue;
@@ -658,7 +658,7 @@ export class Angular {
       /**
        * @param {string} provider
        * @param {string} method
-       * @returns {angular.IModule}
+       * @returns {import('./types').Module}
        */
       function invokeLaterAndSetModuleName(provider, method, queue) {
         if (!queue) queue = invokeQueue;
@@ -695,7 +695,7 @@ export class Angular {
  * @name ngApp
  *
  * @element ANY
- * @param {angular.IModule} ngApp an optional application
+ * @param {import('./types').Module} ngApp an optional application
  *   {@link angular.module module} name to load.
  * @param {boolean=} ngStrictDi if this attribute is present on the app element, the injector will be
  *   created in "strict-di" mode. This means that the application will fail to invoke functions which
@@ -873,7 +873,7 @@ export function angularInit(element) {
 
 /**
  * @ngdoc type
- * @name angular.IModule
+ * @name import('./types').Module
  * @module ng
  * @description
  *
@@ -893,7 +893,7 @@ export function setupModuleLoader(window) {
   angular.$$minErr = angular.$$minErr || minErr;
 
   return ensure(angular, "module", () => {
-    /** @type {Object.<string, angular.IModule>} */
+    /** @type {Object.<string, import('./types').Module>} */
     const modules = {};
 
     /**
@@ -907,8 +907,8 @@ export function setupModuleLoader(window) {
      * All modules (AngularJS core or 3rd party) that should be available to an application must be
      * registered using this mechanism.
      *
-     * Passing one argument retrieves an existing {@link angular.IModule},
-     * whereas passing more than one argument creates a new {@link angular.IModule}
+     * Passing one argument retrieves an existing {@link import('./types').Module},
+     * whereas passing more than one argument creates a new {@link import('./types').Module}
      *
      *
      * # Module
@@ -944,8 +944,8 @@ export function setupModuleLoader(window) {
      * @param {!Array.<string>=} requires If specified then new module is being created. If
      *        unspecified then the module is being retrieved for further configuration.
      * @param {Function=} configFn Optional configuration function for the module. Same as
-     *        {@link angular.IModule#config Module#config()}.
-     * @returns {angular.IModule} new module with the {@link angular.IModule} api.
+     *        {@link import('./types').Module#config Module#config()}.
+     * @returns {import('./types').Module} new module with the {@link import('./types').Module} api.
      */
     return function module(name, requires, configFn) {
       let info = {};
@@ -977,7 +977,7 @@ export function setupModuleLoader(window) {
         // eslint-disable-next-line no-use-before-define
         const config = invokeLater("$injector", "invoke", "push", configBlocks);
 
-        /** @type {angular.IModule} */
+        /** @type {import('./types').Module} */
         const moduleInstance = {
           // Private state
           _invokeQueue: invokeQueue,
@@ -986,11 +986,11 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc method
-           * @name angular.IModule#info
+           * @name import('./types').Module#info
            * @module ng
            *
            * @param {Object=} info Information about the module
-           * @returns {Object|Module} The current info object for this module if called as a getter,
+           * @returns {Object|import('./types').Module} The current info object for this module if called as a getter,
            *                          or `this` if called as a setter.
            *
            * @description
@@ -1030,7 +1030,7 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc property
-           * @name angular.IModule#requires
+           * @name import('./types').Module#requires
            * @module ng
            *
            * @description
@@ -1041,7 +1041,7 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc property
-           * @name angular.IModule#name
+           * @name import('./types').Module#name
            * @module ng
            *
            * @description
@@ -1051,7 +1051,7 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc method
-           * @name angular.IModule#provider
+           * @name import('./types').Module#provider
            * @module ng
            * @param {string} name service name
            * @param {Function} providerType Construction function for creating new instance of the
@@ -1063,7 +1063,7 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc method
-           * @name angular.IModule#factory
+           * @name import('./types').Module#factory
            * @module ng
            * @param {string} name service name
            * @param {Function} providerFunction Function for creating new instance of the service.
@@ -1074,7 +1074,7 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc method
-           * @name angular.IModule#service
+           * @name import('./types').Module#service
            * @module ng
            * @param {string} name service name
            * @param {Function} constructor A constructor function that will be instantiated.
@@ -1085,7 +1085,7 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc method
-           * @name angular.IModule#value
+           * @name import('./types').Module#value
            * @module ng
            * @param {string} name service name
            * @param {*} object Service instance object.
@@ -1096,7 +1096,7 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc method
-           * @name angular.IModule#constant
+           * @name import('./types').Module#constant
            * @module ng
            * @param {string} name constant name
            * @param {*} object Constant value.
@@ -1108,7 +1108,7 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc method
-           * @name angular.IModule#decorator
+           * @name import('./types').Module#decorator
            * @module ng
            * @param {string} name The name of the service to decorate.
            * @param {Function} decorFn This function will be invoked when the service needs to be
@@ -1124,7 +1124,7 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc method
-           * @name angular.IModule#animation
+           * @name import('./types').Module#animation
            * @module ng
            * @param {string} name animation name
            * @param {Function} animationFactory Factory function for creating new instance of an
@@ -1161,7 +1161,7 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc method
-           * @name angular.IModule#filter
+           * @name import('./types').Module#filter
            * @module ng
            * @param {string} name Filter name - this must be a valid AngularJS expression identifier
            * @param {Function} filterFactory Factory function for creating new instance of filter.
@@ -1179,7 +1179,7 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc method
-           * @name angular.IModule#controller
+           * @name import('./types').Module#controller
            * @module ng
            * @param {string|Object} name Controller name, or an object map of controllers where the
            *    keys are the names and the values are the constructors.
@@ -1194,7 +1194,7 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc method
-           * @name angular.IModule#directive
+           * @name import('./types').Module#directive
            * @module ng
            * @param {string|Object} name Directive name, or an object map of directives where the
            *    keys are the names and the values are the factories.
@@ -1210,7 +1210,7 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc method
-           * @name angular.IModule#component
+           * @name import('./types').Module#component
            * @module ng
            * @param {string|Object} name Name of the component in camelCase (i.e. `myComp` which will match `<my-comp>`),
            *    or an object map of components where the keys are the names and the values are the component definition objects.
@@ -1227,17 +1227,17 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc method
-           * @name angular.IModule#config
+           * @name import('./types').Module#config
            * @module ng
            * @param {Function} configFn Execute this function on module load. Useful for service
            *    configuration.
            * @description
            * Use this method to configure services by injecting their
-           * {@link angular.IModule#provider `providers`}, e.g. for adding routes to the
+           * {@link import('./types').Module#provider `providers`}, e.g. for adding routes to the
            * {@link ngRoute.$routeProvider $routeProvider}.
            *
-           * Note that you can only inject {@link angular.IModule#provider `providers`} and
-           * {@link angular.IModule#constant `constants`} into this function.
+           * Note that you can only inject {@link import('./types').Module#provider `providers`} and
+           * {@link import('./types').Module#constant `constants`} into this function.
            *
            * For more about how to configure services, see
            * {@link providers#provider-recipe Provider Recipe}.
@@ -1246,7 +1246,7 @@ export function setupModuleLoader(window) {
 
           /**
            * @ngdoc method
-           * @name angular.IModule#run
+           * @name import('./types').Module#run
            * @module ng
            * @param {Function} initializationFn Execute this function after injector creation.
            *    Useful for application initialization.
@@ -1270,7 +1270,7 @@ export function setupModuleLoader(window) {
          * @param {string} provider
          * @param {string} method
          * @param {String=} insertMethod
-         * @returns {angular.IModule}
+         * @returns {import('./types').Module}
          */
         function invokeLater(provider, method, insertMethod, queue) {
           if (!queue) queue = invokeQueue;
@@ -1283,7 +1283,7 @@ export function setupModuleLoader(window) {
         /**
          * @param {string} provider
          * @param {string} method
-         * @returns {angular.IModule}
+         * @returns {import('./types').Module}
          */
         function invokeLaterAndSetModuleName(provider, method, queue) {
           if (!queue) queue = invokeQueue;

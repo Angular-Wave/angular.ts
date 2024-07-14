@@ -600,7 +600,6 @@ declare namespace angular {
    * see https://docs.angularjs.org/api/ng/service/$filter
    */
   interface IFilterService {
-    (name: "filter"): IFilterFilter;
     (name: "currency"): IFilterCurrency;
     (name: "number"): IFilterNumber;
     (name: "date"): IFilterDate;
@@ -614,29 +613,6 @@ declare namespace angular {
      * @param name Name of the filter function to retrieve
      */
     <T>(name: string): T;
-  }
-
-  interface IFilterFilter {
-    <T>(
-      array: T[],
-      expression:
-        | string
-        | IFilterFilterPatternObject
-        | IFilterFilterPredicateFunc<T>,
-      comparator?: IFilterFilterComparatorFunc<T> | boolean,
-    ): T[];
-  }
-
-  interface IFilterFilterPatternObject {
-    [name: string]: any;
-  }
-
-  interface IFilterFilterPredicateFunc<T> {
-    (value: T, index: number, array: T[]): boolean;
-  }
-
-  interface IFilterFilterComparatorFunc<T> {
-    (actual: T, expected: T): boolean;
   }
 
   interface IFilterOrderByItem {

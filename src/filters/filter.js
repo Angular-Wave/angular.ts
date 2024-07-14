@@ -10,9 +10,17 @@ import {
 } from "../shared/utils";
 
 /**
- * @returns {angular.IFilterFilter}
+ * @returns {function(Array, string|Object|function(any, number, []):[], function(any, any):boolean|boolean, string?): Array}
  */
 export function filterFilter() {
+  /**
+   * @param {Array} array The source array.
+   * @param {string|Object|function(any, number, []):[]} expression The predicate to be used for selecting items from `array`.
+   * @param {function(any, any):boolean|boolean} [comparator] Comparator which is used in determining if values retrieved using `expression`
+   * (when it is not a function) should be considered a match based on the expected value (from the filter expression) and actual value (from the object in the array).
+   * @param {string} [anyPropertyKey] The special property name that matches against any property.
+   * @return {Array} Filtered array
+   */
   return function (array, expression, comparator, anyPropertyKey) {
     if (!isArrayLike(array)) {
       if (array == null) {
@@ -27,7 +35,8 @@ export function filterFilter() {
 
     anyPropertyKey = anyPropertyKey || "$";
     let predicateFn;
-    let matchAgainstAnyProp;
+
+    let matchAgainstAnyProp = false;
 
     switch (getTypeForFilter(expression)) {
       case "function":
@@ -56,6 +65,7 @@ export function filterFilter() {
 }
 
 // Helper functions for `filterFilter`
+/** @private */
 function createPredicateFn(
   expression,
   comparator,
@@ -114,6 +124,7 @@ function createPredicateFn(
   return predicateFn;
 }
 
+/** @private */
 function deepCompare(
   actual,
   expected,
@@ -201,6 +212,7 @@ function deepCompare(
 }
 
 // Used for easily differentiating between `null` and actual `object`
+/** @private */
 function getTypeForFilter(val) {
   return val === null ? "null" : typeof val;
 }
