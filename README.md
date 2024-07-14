@@ -26,6 +26,33 @@ piece of cake.
 
 AngularJS is a large codebase that evolved in its own ecosystem over a long period of time. This resulted in multiple layers of legacy dependencies spread across multiple modules. Current focus is to remove these layers one by one and updating documentation to the reflect these changes. Until then, feel free to rely on old documentation or raise a PR if you have a problem migrating.
 
+### Getting started
+
+#### Install
+
+```bash
+$ npm i npm i @angular-wave/angular.ts
+
+```
+or
+
+```html
+<script src="
+    https://cdn.jsdelivr.net/npm/@angular-wave/angular.ts/dist/angular-ts.umd.min.js
+"></script>
+```
+
+Initialize your app
+
+```html
+    <div ng-app ng-init="x='world'">
+        Hello  {{ x }}
+    </div>
+```
+
+New docs website is coming!
+
+### Legacy docs
 --------------------
 
 * Web site: https://angularjs.org
