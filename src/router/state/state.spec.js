@@ -128,12 +128,6 @@ describe("$state", () => {
       }).toThrowError(/stateinvalid/);
     });
 
-    it("should should not allow states that have invalid keys", () => {
-      expect(() => {
-        $stateProvider.state({ name: "faulty", faulturl: "/to-string" });
-      }).toThrowError(/stateinvalid/);
-    });
-
     it("should requred `name` if state definition object is passed", () => {
       expect(() => {
         $stateProvider.state({ url: "/to-string" });

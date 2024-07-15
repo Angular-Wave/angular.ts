@@ -261,7 +261,7 @@ JQLite.prototype.injector = function () {
  */
 JQLite.prototype.on = function (type, fn) {
   // Do not add event handlers to non-elements because they will not be cleaned up.
-  for (let i = 0, ii = this.length; i < ii; i++) {
+  for (let i = 0; i < this.length; i++) {
     const element = this[i];
     if (!elementAcceptsData(element)) {
       return;
@@ -311,7 +311,7 @@ JQLite.prototype.on = function (type, fn) {
  * @returns {JQLite}
  */
 JQLite.prototype.off = function (type, fn) {
-  for (let i = 0, ii = this.length; i < ii; i++) {
+  for (let i = 0; i < this.length; i++) {
     const element = this[i];
     const expandoStore = getExpando(element);
     const events = expandoStore && expandoStore.events;
@@ -357,7 +357,7 @@ JQLite.prototype.off = function (type, fn) {
  * @returns {JQLite}
  */
 JQLite.prototype.removeData = function (name) {
-  for (let i = 0, ii = this.length; i < ii; i++) {
+  for (let i = 0; i < this.length; i++) {
     const element = this[i];
     removeElementData(element, name);
   }
@@ -371,7 +371,7 @@ JQLite.prototype.removeData = function (name) {
  * @returns {JQLite|any}
  */
 JQLite.prototype.inheritedData = function (name, value) {
-  for (let i = 0, ii = this.length; i < ii; i++) {
+  for (let i = 0; i < this.length; i++) {
     const element = this[0];
     let res = getInheritedData(element, name, value);
     if (value) {
@@ -396,6 +396,36 @@ JQLite.prototype.html = function (value) {
   dealoc(element, true);
   element.innerHTML = value;
   return this;
+};
+
+/**
+ * Get the combined text contents of each element in the JQLite collection
+ * or set the text contents of all elements.
+ * @param {string} [value]
+ * @returns {JQLite|string}
+ */
+JQLite.prototype.text = function (value) {
+  let res = "";
+  for (let i = 0; i < this.length; i++) {
+    const element = this[i];
+    if (isUndefined(value)) {
+      // read
+      const { nodeType } = element;
+      res +=
+        nodeType === Node.ELEMENT_NODE || nodeType === Node.TEXT_NODE
+          ? element.textContent
+          : "";
+    } else {
+      // write
+      element.textContent = value;
+    }
+  }
+
+  if (isUndefined(value)) {
+    return res;
+  } else {
+    return this;
+  }
 };
 
 /// ///////////////////////////////////////
@@ -441,20 +471,6 @@ forEach(
         return ret === null ? undefined : ret;
       }
     },
-    text: (function () {
-      getText.$dv = "";
-      return getText;
-
-      function getText(element, value) {
-        if (isUndefined(value)) {
-          const { nodeType } = element;
-          return nodeType === Node.ELEMENT_NODE || nodeType === Node.TEXT_NODE
-            ? element.textContent
-            : "";
-        }
-        element.textContent = value;
-      }
-    })(),
     val(element, value) {
       if (isUndefined(value)) {
         if (element.multiple && nodeName_(element) === "select") {

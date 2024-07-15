@@ -76,6 +76,13 @@ export class JQLite {
      * @returns {JQLite|any|undefined}
      */
     html(value: string): JQLite | any | undefined;
+    /**
+     * Get the combined text contents of each element in the JQLite collection
+     * or set the text contents of the matched elements.
+     * @param {string} [value]
+     * @returns {JQLite|string}
+     */
+    text(value?: string): JQLite | string;
     toString(): string;
     eq(index: any): JQLite;
     length: number;
