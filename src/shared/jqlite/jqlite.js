@@ -366,9 +366,9 @@ JQLite.prototype.removeData = function (name) {
 
 /**
  * Gets or sets data on a parent element
- * @param {string} name 
- * @param {any} value 
- * @returns {JQLite|any} 
+ * @param {string} name
+ * @param {any} value
+ * @returns {JQLite|any}
  */
 JQLite.prototype.inheritedData = function (name, value) {
   for (let i = 0, ii = this.length; i < ii; i++) {
@@ -380,6 +380,22 @@ JQLite.prototype.inheritedData = function (name, value) {
       return res;
     }
   }
+};
+
+/**
+ * Gets or sets innerHTML on the first element in JQLite collection
+ * @param {string} value
+ * @returns {JQLite|any|undefined}
+ */
+JQLite.prototype.html = function (value) {
+  const element = this[0];
+  if (!element) return undefined;
+  if (isUndefined(value)) {
+    return element.innerHTML;
+  }
+  dealoc(element, true);
+  element.innerHTML = value;
+  return this;
 };
 
 /// ///////////////////////////////////////
@@ -453,13 +469,6 @@ forEach(
         return element.value;
       }
       element.value = value;
-    },
-    html(element, value) {
-      if (isUndefined(value)) {
-        return element.innerHTML;
-      }
-      dealoc(element, true);
-      element.innerHTML = value;
     },
   },
   (fn, name) => {
