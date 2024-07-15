@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("unitstate-directives tests contain no errors", async ({ page }) => {
+test("unit state-directives tests contain no errors", async ({ page }) => {
   await page.goto("src/router/directives/state-directives.html");
   await page.content();
   await page.waitForTimeout(6000);

@@ -511,7 +511,7 @@ export function extend(dst) {
  * @param {...Object} src Source object(s).
  * @returns {Object} Reference to `dst`.
  */
-export function merge(dst, src) {
+export function merge(dst, ...src) {
   return baseExtend(dst, src, true);
 }
 
