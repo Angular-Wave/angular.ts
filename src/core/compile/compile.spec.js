@@ -6,7 +6,7 @@ import {
   isFunction,
   valueFn,
   isElement,
-  nodeName_,
+  getNodeName,
   extend,
 } from "../../shared/utils";
 import { countChildScopes, countWatchers } from "../../core/scope/scope";
@@ -5603,7 +5603,7 @@ describe("$compile", () => {
         expect(() => {
           element = $compile("<div replace-with-tr></div>")($rootScope);
         }).not.toThrow();
-        expect(nodeName_(element)).toMatch(/tr/i);
+        expect(getNodeName(element)).toMatch(/tr/i);
       });
 
       it("should support templates with root <td> tags", () => {
@@ -5611,7 +5611,7 @@ describe("$compile", () => {
         expect(() => {
           element = $compile("<div replace-with-td></div>")($rootScope);
         }).not.toThrow();
-        expect(nodeName_(element)).toMatch(/td/i);
+        expect(getNodeName(element)).toMatch(/td/i);
       });
 
       it("should support templates with root <th> tags", () => {
@@ -5619,7 +5619,7 @@ describe("$compile", () => {
         expect(() => {
           element = $compile("<div replace-with-th></div>")($rootScope);
         }).not.toThrow();
-        expect(nodeName_(element)).toMatch(/th/i);
+        expect(getNodeName(element)).toMatch(/th/i);
       });
 
       it("should support templates with root <thead> tags", () => {
@@ -5627,7 +5627,7 @@ describe("$compile", () => {
         expect(() => {
           element = $compile("<div replace-with-thead></div>")($rootScope);
         }).not.toThrow();
-        expect(nodeName_(element)).toMatch(/thead/i);
+        expect(getNodeName(element)).toMatch(/thead/i);
       });
 
       it("should support templates with root <tbody> tags", () => {
@@ -5635,7 +5635,7 @@ describe("$compile", () => {
         expect(() => {
           element = $compile("<div replace-with-tbody></div>")($rootScope);
         }).not.toThrow();
-        expect(nodeName_(element)).toMatch(/tbody/i);
+        expect(getNodeName(element)).toMatch(/tbody/i);
       });
 
       it("should support templates with root <tfoot> tags", () => {
@@ -5643,7 +5643,7 @@ describe("$compile", () => {
         expect(() => {
           element = $compile("<div replace-with-tfoot></div>")($rootScope);
         }).not.toThrow();
-        expect(nodeName_(element)).toMatch(/tfoot/i);
+        expect(getNodeName(element)).toMatch(/tfoot/i);
       });
 
       it("should support templates with root <option> tags", () => {
@@ -5651,7 +5651,7 @@ describe("$compile", () => {
         expect(() => {
           element = $compile("<div replace-with-option></div>")($rootScope);
         }).not.toThrow();
-        expect(nodeName_(element)).toMatch(/option/i);
+        expect(getNodeName(element)).toMatch(/option/i);
       });
 
       it("should support templates with root <optgroup> tags", () => {
@@ -5659,7 +5659,7 @@ describe("$compile", () => {
         expect(() => {
           element = $compile("<div replace-with-optgroup></div>")($rootScope);
         }).not.toThrow();
-        expect(nodeName_(element)).toMatch(/optgroup/i);
+        expect(getNodeName(element)).toMatch(/optgroup/i);
       });
 
       it("should support SVG templates using directive.templateNamespace=svg", () => {
@@ -5681,7 +5681,7 @@ describe("$compile", () => {
         )($rootScope);
         const child = element.children().eq(0);
         $rootScope.$digest();
-        expect(nodeName_(child)).toMatch(/a/i);
+        expect(getNodeName(child)).toMatch(/a/i);
         expect(isSVGElement(child[0])).toBe(true);
         expect(child[0].href.baseVal).toBe("/foo/bar");
       });
@@ -5710,7 +5710,7 @@ describe("$compile", () => {
         );
         $rootScope.$digest();
         const child = element.children().eq(0);
-        expect(nodeName_(child)).toMatch(/msup/i);
+        expect(getNodeName(child)).toMatch(/msup/i);
         expect(isUnknownElement(child[0])).toBe(false);
         expect(isHTMLElement(child[0])).toBe(false);
       });
@@ -6566,7 +6566,7 @@ describe("$compile", () => {
           element = $compile("<div replace-with-tr></div>")($rootScope);
         }).not.toThrow();
         $rootScope.$digest();
-        expect(nodeName_(element)).toMatch(/tr/i);
+        expect(getNodeName(element)).toMatch(/tr/i);
       });
 
       it("should support templates with root <td> tags", () => {
@@ -6575,7 +6575,7 @@ describe("$compile", () => {
           element = $compile("<div replace-with-td></div>")($rootScope);
         }).not.toThrow();
         $rootScope.$digest();
-        expect(nodeName_(element)).toMatch(/td/i);
+        expect(getNodeName(element)).toMatch(/td/i);
       });
 
       it("should support templates with root <th> tags", () => {
@@ -6584,7 +6584,7 @@ describe("$compile", () => {
           element = $compile("<div replace-with-th></div>")($rootScope);
         }).not.toThrow();
         $rootScope.$digest();
-        expect(nodeName_(element)).toMatch(/th/i);
+        expect(getNodeName(element)).toMatch(/th/i);
       });
 
       it("should support templates with root <thead> tags", () => {
@@ -6593,7 +6593,7 @@ describe("$compile", () => {
           element = $compile("<div replace-with-thead></div>")($rootScope);
         }).not.toThrow();
         $rootScope.$digest();
-        expect(nodeName_(element)).toMatch(/thead/i);
+        expect(getNodeName(element)).toMatch(/thead/i);
       });
 
       it("should support templates with root <tbody> tags", () => {
@@ -6602,7 +6602,7 @@ describe("$compile", () => {
           element = $compile("<div replace-with-tbody></div>")($rootScope);
         }).not.toThrow();
         $rootScope.$digest();
-        expect(nodeName_(element)).toMatch(/tbody/i);
+        expect(getNodeName(element)).toMatch(/tbody/i);
       });
 
       it("should support templates with root <tfoot> tags", () => {
@@ -6611,7 +6611,7 @@ describe("$compile", () => {
           element = $compile("<div replace-with-tfoot></div>")($rootScope);
         }).not.toThrow();
         $rootScope.$digest();
-        expect(nodeName_(element)).toMatch(/tfoot/i);
+        expect(getNodeName(element)).toMatch(/tfoot/i);
       });
 
       it("should support templates with root <option> tags", () => {
@@ -6620,7 +6620,7 @@ describe("$compile", () => {
           element = $compile("<div replace-with-option></div>")($rootScope);
         }).not.toThrow();
         $rootScope.$digest();
-        expect(nodeName_(element)).toMatch(/option/i);
+        expect(getNodeName(element)).toMatch(/option/i);
       });
 
       it("should support templates with root <optgroup> tags", () => {
@@ -6629,7 +6629,7 @@ describe("$compile", () => {
           element = $compile("<div replace-with-optgroup></div>")($rootScope);
         }).not.toThrow();
         $rootScope.$digest();
-        expect(nodeName_(element)).toMatch(/optgroup/i);
+        expect(getNodeName(element)).toMatch(/optgroup/i);
       });
 
       it("should support SVG templates using directive.templateNamespace=svg", () => {
@@ -6656,7 +6656,7 @@ describe("$compile", () => {
             )($rootScope);
             $rootScope.$digest();
             const child = element.children().eq(0);
-            expect(nodeName_(child)).toMatch(/a/i);
+            expect(getNodeName(child)).toMatch(/a/i);
             expect(isSVGElement(child[0])).toBe(true);
             expect(child[0].href.baseVal).toBe("/foo/bar");
           },
@@ -6692,7 +6692,7 @@ describe("$compile", () => {
             );
             $rootScope.$digest();
             const child = element.children().eq(0);
-            expect(nodeName_(child)).toMatch(/msup/i);
+            expect(getNodeName(child)).toMatch(/msup/i);
             expect(isUnknownElement(child[0])).toBe(false);
             expect(isHTMLElement(child[0])).toBe(false);
           },
@@ -14789,10 +14789,10 @@ describe("$compile", () => {
           JQLite("<div>before<div transclude></div>after</div>")[0].childNodes,
         );
         expect(element.length).toEqual(3);
-        expect(nodeName_(element[1])).toBe("div");
+        expect(getNodeName(element[1])).toBe("div");
         $compile(element)($rootScope);
-        expect(nodeName_(element[1])).toBe("#comment");
-        expect(nodeName_(comment)).toBe("#comment");
+        expect(getNodeName(element[1])).toBe("#comment");
+        expect(getNodeName(comment)).toBe("#comment");
       });
 
       it("should terminate compilation only for element transclusion", () => {
@@ -14973,7 +14973,7 @@ describe("$compile", () => {
           .directive("innerAgain", () => ({
             transclude: true,
             link(scope, element, attr, controllers, transclude) {
-              log.push(`innerAgain:${nodeName_(element)}`);
+              log.push(`innerAgain:${getNodeName(element)}`);
               transclude(scope, (clone) => {
                 element.parent().append(clone);
               });
@@ -14983,13 +14983,13 @@ describe("$compile", () => {
             replace: true,
             templateUrl: "inner.html",
             link(scope, element) {
-              log.push(`inner:${nodeName_(element)}`);
+              log.push(`inner:${getNodeName(element)}`);
             },
           }))
           .directive("outer", () => ({
             transclude: true,
             link(scope, element, attrs, controllers, transclude) {
-              log.push(`outer:${nodeName_(element)}`);
+              log.push(`outer:${getNodeName(element)}`);
               transclude(scope, (clone) => {
                 element.parent().append(clone);
               });

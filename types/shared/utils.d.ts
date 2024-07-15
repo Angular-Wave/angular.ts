@@ -344,7 +344,15 @@ export function hasCustomToString(obj: any): boolean;
  * @returns {boolean} True if `value` is a DOM element (or wrapped jQuery element).
  */
 export function isElement(node: any): boolean;
-export function nodeName_(element: any): string;
+/**
+ * Returns a string appropriate for the type of node.
+ *
+ * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Node/nodeName)
+ *
+ * @param {JQLite|Element} element
+ * @returns
+ */
+export function getNodeName(element: JQLite | Element): string;
 export function includes(array: any, obj: any): boolean;
 /**
  * Removes the first occurrence of a specified value from an array.
@@ -611,3 +619,4 @@ export function mergeClasses(a: any, b: any): any;
 export function directiveNormalize(name: any): any;
 export const ngAttrPrefixes: string[];
 export const minErrConfig: {};
+import { JQLite } from "./jqlite/jqlite";

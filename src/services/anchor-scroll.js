@@ -3,7 +3,7 @@ import {
   isFunction,
   isNumber,
   isString,
-  nodeName_,
+  getNodeName,
 } from "../shared/utils";
 
 export function AnchorScrollProvider() {
@@ -31,7 +31,7 @@ export function AnchorScrollProvider() {
       function getFirstAnchor(list) {
         let result = null;
         Array.prototype.some.call(list, (element) => {
-          if (nodeName_(element) === "a") {
+          if (getNodeName(element) === "a") {
             result = element;
             return true;
           }

@@ -21,7 +21,7 @@ import {
   toJson,
   fromJson,
   nextUid,
-  nodeName_,
+  getNodeName,
   snakeCase,
 } from "./shared/utils";
 import { dealoc, JQLite, startingTag } from "./shared/jqlite/jqlite";
@@ -1827,14 +1827,14 @@ describe("angular", () => {
     });
   });
 
-  describe("nodeName_", () => {
+  describe("getNodeName", () => {
     it('should correctly detect node name with "namespace" when xmlns is defined', () => {
       const div = JQLite(
         '<div xmlns:ngtest="http://angularjs.org/">' +
           '<ngtest:foo ngtest:attr="bar"></ngtest:foo>' +
           "</div>",
       )[0];
-      expect(nodeName_(div.childNodes[0])).toBe("ngtest:foo");
+      expect(getNodeName(div.childNodes[0])).toBe("ngtest:foo");
       expect(div.childNodes[0].getAttribute("ngtest:attr")).toBe("bar");
     });
 
@@ -1844,13 +1844,13 @@ describe("angular", () => {
           '<ngtest:foo ngtest:attr="bar"></ng-test>' +
           "</div>",
       )[0];
-      expect(nodeName_(div.childNodes[0])).toBe("ngtest:foo");
+      expect(getNodeName(div.childNodes[0])).toBe("ngtest:foo");
       expect(div.childNodes[0].getAttribute("ngtest:attr")).toBe("bar");
     });
 
     it("should return undefined for elements without the .nodeName property", () => {
       // some elements, like SVGElementInstance don't have .nodeName property
-      expect(nodeName_({})).toBeUndefined();
+      expect(getNodeName({})).toBeUndefined();
     });
   });
 

@@ -1,4 +1,4 @@
-import { nodeName_, minErr, directiveNormalize } from "../../shared/utils";
+import { getNodeName, minErr, directiveNormalize } from "../../shared/utils";
 
 /**
  * @ngdoc directive
@@ -36,7 +36,7 @@ export const ngRefDirective = [
     restrict: "A",
     compile(tElement, tAttrs) {
       // Get the expected controller name, converts <data-some-thing> into "someThing"
-      const controllerName = directiveNormalize(nodeName_(tElement));
+      const controllerName = directiveNormalize(getNodeName(tElement));
 
       // Get the expression for value binding
       const getter = $parse(tAttrs.ngRef);

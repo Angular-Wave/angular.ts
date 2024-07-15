@@ -1,4 +1,5 @@
 import { PREFIX_REGEXP, SPECIAL_CHARS_REGEXP } from "../shared/constants";
+import { JQLite } from "./jqlite/jqlite";
 
 const ngMinErr = minErr("ng");
 
@@ -594,8 +595,19 @@ export function isElement(node) {
   ); // We have an on and find method part of jQuery API.
 }
 
-export function nodeName_(element) {
-  return lowercase(element.nodeName || (element[0] && element[0].nodeName));
+/**
+ * Returns a string appropriate for the type of node.
+ *
+ * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Node/nodeName)
+ *
+ * @param {JQLite|Element} element
+ * @returns
+ */
+export function getNodeName(element) {
+  return lowercase(
+    /** @type {Element} */ (element).nodeName ||
+      (element[0] && element[0].nodeName),
+  );
 }
 
 export function includes(array, obj) {

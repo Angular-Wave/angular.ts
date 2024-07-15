@@ -26,7 +26,7 @@ import {
   inherit,
   isUndefined,
   arrayRemove,
-  nodeName_,
+  getNodeName,
   bind,
   trim,
   isBoolean,
@@ -1120,7 +1120,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         if (!node) {
           return "html";
         }
-        return nodeName_(node) !== "foreignobject" &&
+        return getNodeName(node) !== "foreignobject" &&
           toString.call(node).match(/SVG/)
           ? "svg"
           : "html";
@@ -1822,7 +1822,8 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                 // Add the matching elements into their slot
 
                 forEach(JQLite($compileNode[0].childNodes), (node) => {
-                  const slotName = slotMap[directiveNormalize(nodeName_(node))];
+                  const slotName =
+                    slotMap[directiveNormalize(getNodeName(node))];
                   if (slotName) {
                     filledSlots[slotName] = true;
                     slots[slotName] =
@@ -2911,7 +2912,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           );
         }
 
-        const nodeName = nodeName_(node);
+        const nodeName = getNodeName(node);
         const trustedContext = getTrustedPropContext(nodeName, propName);
 
         let sanitizer = (x) => x;
@@ -2969,7 +2970,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         name,
         isNgAttr,
       ) {
-        const nodeName = nodeName_(node);
+        const nodeName = getNodeName(node);
         const trustedContext = getTrustedAttrContext(nodeName, name);
         const mustHaveExpression = !isNgAttr;
         const allOrNothing = ALL_OR_NOTHING_ATTRS[name] || isNgAttr;

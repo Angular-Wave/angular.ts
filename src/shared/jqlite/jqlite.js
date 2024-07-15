@@ -10,7 +10,7 @@ import {
   isString,
   isUndefined,
   lowercase,
-  nodeName_,
+  getNodeName,
   shallowCopy,
 } from "../../shared/utils";
 import { CACHE, EXPANDO } from "../../core/cache/cache";
@@ -428,11 +428,34 @@ JQLite.prototype.text = function (value) {
   }
 };
 
-/// ///////////////////////////////////////
-// Functions iterating getter/setters.
-// these functions return self on setter and
-// value on get.
-/// ///////////////////////////////////////
+/**
+ * Gets or sets the values of form elements such as input, select and textarea. This method works only for
+ * a single item in a JQLite collection.
+ * @param {any} value
+ * @returns {JQLite|any}
+ */
+
+JQLite.prototype.val = function (value) {
+  // We can only get or set a value of
+  const element = this[0];
+  if (isUndefined(value)) {
+    // read
+    if (element.multiple && getNodeName(element) === "select") {
+      const result = [];
+      forEach(element.options, (option) => {
+        if (option.selected) {
+          result.push(option.value || option.text);
+        }
+      });
+      return result;
+    }
+    return element.value;
+  } else {
+    // write
+    element.value = value;
+  }
+};
+
 forEach(
   {
     data: getOrSetCacheData,
@@ -473,7 +496,7 @@ forEach(
     },
     val(element, value) {
       if (isUndefined(value)) {
-        if (element.multiple && nodeName_(element) === "select") {
+        if (element.multiple && getNodeName(element) === "select") {
           const result = [];
           forEach(element.options, (option) => {
             if (option.selected) {
@@ -1152,7 +1175,7 @@ export function getBooleanAttrName(element, name) {
   const booleanAttr = BOOLEAN_ATTR[name.toLowerCase()];
 
   // booleanAttr is here twice to minimize DOM access
-  return booleanAttr && BOOLEAN_ELEMENTS[nodeName_(element)] && booleanAttr;
+  return booleanAttr && BOOLEAN_ELEMENTS[getNodeName(element)] && booleanAttr;
 }
 
 /**

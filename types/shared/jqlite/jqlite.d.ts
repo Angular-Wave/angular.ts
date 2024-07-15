@@ -78,11 +78,18 @@ export class JQLite {
     html(value: string): JQLite | any | undefined;
     /**
      * Get the combined text contents of each element in the JQLite collection
-     * or set the text contents of the matched elements.
+     * or set the text contents of all elements.
      * @param {string} [value]
      * @returns {JQLite|string}
      */
     text(value?: string): JQLite | string;
+    /**
+     * Gets or sets the values of form elements such as input, select and textarea. This method works only for
+     * a single item in a JQLite collection.
+     * @param {any} value
+     * @returns {JQLite|any}
+     */
+    val(value: any): JQLite | any;
     toString(): string;
     eq(index: any): JQLite;
     length: number;
