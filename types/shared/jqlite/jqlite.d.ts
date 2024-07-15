@@ -1,16 +1,4 @@
 /**
- * Converts kebab-case to camelCase.
- * @param {string} name Name to normalize
- * @returns {string}
- */
-export function kebabToCamel(name: string): string;
-/**
- * Converts sname to camelCase.
- * @param {string} name
- * @returns {string}
- */
-export function snakeToCamel(name: string): string;
-/**
  * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
  * and execution of chain functions.
  *
@@ -75,10 +63,29 @@ export class JQLite {
      * @returns {JQLite}
      */
     removeData(name: string): JQLite;
+    /**
+     * Gets or sets data on a parent element
+     * @param {string} name
+     * @param {any} value
+     * @returns {JQLite|any}
+     */
+    inheritedData(name: string, value: any): JQLite | any;
     toString(): string;
     eq(index: any): JQLite;
     length: number;
 }
+/**
+ * Converts kebab-case to camelCase.
+ * @param {string} name Name to normalize
+ * @returns {string}
+ */
+export function kebabToCamel(name: string): string;
+/**
+ * Converts sname to camelCase.
+ * @param {string} name
+ * @returns {string}
+ */
+export function snakeToCamel(name: string): string;
 /**
  * Removes expando data from this element. If key is provided, only
  * its field is removed. If data is empty, also removes `ExpandoStore`
