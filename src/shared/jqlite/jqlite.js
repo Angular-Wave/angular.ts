@@ -629,10 +629,11 @@ JQLite.prototype.on = function (type, fn) {
 };
 
 /**
- * Removes an event listener to each element in the JQLite collection.
+ * Removes an event listener to each element in JQLite collection.
  *
  * @param {string} type - The event type(s) to remove listener from
  * @param {Function} fn - The function to remove from event type.
+ * @returns {JQLite}
  */
 JQLite.prototype.off = function (type, fn) {
   for (let i = 0, ii = this.length; i < ii; i++) {
@@ -671,6 +672,19 @@ JQLite.prototype.off = function (type, fn) {
     }
 
     removeIfEmptyData(element);
+  }
+  return this;
+};
+
+/**
+ * Remove data  by name from cache associated with each element in JQLite collection.
+ * @param {string} name - The key of the data associated with element
+ * @returns {JQLite}
+ */
+JQLite.prototype.removeData = function (name) {
+  for (let i = 0, ii = this.length; i < ii; i++) {
+    const element = this[i];
+    removeElementData(element, name);
   }
   return this;
 };
@@ -811,7 +825,6 @@ forEach(
 /// ///////////////////////////////////////
 forEach(
   {
-    removeData: removeElementData,
     replaceWith(element, replaceNode) {
       let index;
       const parent = element.parentNode;
