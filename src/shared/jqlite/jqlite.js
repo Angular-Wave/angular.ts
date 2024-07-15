@@ -955,7 +955,7 @@ function getController(element, name) {
 /**
  *
  * @param {Element} element
- * @param {string} name
+ * @param {string|string[]} name
  * @param {any} [value]
  * @returns
  */
@@ -1142,7 +1142,7 @@ export function getBooleanAttrName(element, name) {
 /**
  * Takes an array of elements, calls any `$destroy` event handlers, removes any data in cache, and finally removes any
  * listeners.
- * @param {NodeListOf<Element>} nodes
+ * @param {NodeListOf<Element>|Element[]} nodes
  */
 export function cleanElementData(nodes) {
   for (let i = 0, ii = nodes.length; i < ii; i++) {

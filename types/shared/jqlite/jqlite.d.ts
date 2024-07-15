@@ -147,7 +147,7 @@ export function getBooleanAttrName(element: any, name: any): any;
 /**
  * Takes an array of elements, calls any `$destroy` event handlers, removes any data in cache, and finally removes any
  * listeners.
- * @param {NodeListOf<Element>} nodes
+ * @param {NodeListOf<Element>|Element[]} nodes
  */
-export function cleanElementData(nodes: NodeListOf<Element>): void;
+export function cleanElementData(nodes: NodeListOf<Element> | Element[]): void;
 export const BOOLEAN_ATTR: {};
