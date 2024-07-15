@@ -511,8 +511,8 @@ export function extend(dst) {
  * @param {...Object} src Source object(s).
  * @returns {Object} Reference to `dst`.
  */
-export function merge(dst) {
-  return baseExtend(dst, Array.prototype.slice.call(arguments, 1), true);
+export function merge(dst, src) {
+  return baseExtend(dst, src, true);
 }
 
 export function toInt(str) {
@@ -1026,7 +1026,7 @@ export function parseKeyValue(keyValue) {
       }
     }
   });
-  return obj;
+  return /** @type {Object.<string,boolean|Array>} */ (obj);
 }
 
 export function toKeyValue(obj) {

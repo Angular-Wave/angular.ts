@@ -193,7 +193,7 @@
 /**
  * @callback CloneAttachFunction
  * @param {import('./shared/jqlite/jqlite').JQLite} [clonedElement]
- * @param {Scope} [scope] // Let's hint but not force cloneAttachFn's signature
+ * @param {import('./core/scope/scope').Scope} [scope] // Let's hint but not force cloneAttachFn's signature
  * @returns {any}
  */
 
@@ -213,7 +213,7 @@
  */
 
 /**
- * @typedef {function(CloneAttachFunction=, JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithoutScope
+ * @typedef {function(CloneAttachFunction=, import('./shared/jqlite/jqlite').JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithoutScope
  */
 
 /**

@@ -1661,14 +1661,6 @@ describe("jqLite", () => {
         },
       );
     });
-
-    it("should throw an error if a selector is passed", () => {
-      const aElem = JQLite(a);
-      aElem.on("click", () => {});
-      expect(() => {
-        aElem.off("click", () => {}, ".test");
-      }).toThrow();
-    });
   });
 
   describe("replaceWith", () => {

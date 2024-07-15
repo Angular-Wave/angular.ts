@@ -61,6 +61,13 @@ export class JQLite {
      * @returns {JQLite} The JQLite collection for chaining.
      */
     on(type: string, fn: Function): JQLite;
+    /**
+     * Removes an event listener to each element in the JQLite collection.
+     *
+     * @param {string} type - The event type(s) to remove listener from
+     * @param {Function} fn - The function to remove from event type.
+     */
+    off(type: string, fn: Function): this;
     toString(): string;
     eq(index: any): JQLite;
     length: number;
@@ -105,13 +112,6 @@ export function getOrSetCacheData(element: Element, key: string | any, value?: a
  * @param {boolean} keepData
  */
 export function removeElement(element: Element, keepData?: boolean): void;
-export function getBooleanAttrName(element: any, name: any): any;
-/**
- * Takes an array of elements, calls any `$destroy` event handlers, removes any data in cache, and finally removes any
- * listeners.
- * @param {NodeListOf<Element>} nodes
- */
-export function cleanElementData(nodes: NodeListOf<Element>): void;
 /**
  * @param {string} elementStr
  * @returns {string} Returns the string representation of the element.
@@ -123,4 +123,11 @@ export function startingTag(elementStr: string): string;
  * @returns {JQLite} the inputted object or a JQLite collection containing the nodes
  */
 export function getBlockNodes(nodes: any[]): JQLite;
+export function getBooleanAttrName(element: any, name: any): any;
+/**
+ * Takes an array of elements, calls any `$destroy` event handlers, removes any data in cache, and finally removes any
+ * listeners.
+ * @param {NodeListOf<Element>} nodes
+ */
+export function cleanElementData(nodes: NodeListOf<Element>): void;
 export const BOOLEAN_ATTR: {};

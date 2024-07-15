@@ -86,7 +86,7 @@ import { CACHE, EXPANDO } from "../../core/cache/cache";
  * https://github.com/angular/angular.js/issues/14251 for more information.
  *
  * @param {string|Element} element HTML string or Element to be wrapped into jQuery.
- * @returns {Object} jQuery object.
+ * @returns {JQLite} jQuery object.
  */
 
 /** @type {number} */
@@ -172,7 +172,7 @@ const BOOLEAN_ELEMENTS = {};
  */
 export function JQLite(element) {
   if (element instanceof JQLite) {
-    return element;
+    return /** @type {JQLite} */ (element);
   }
 
   let argIsString = false;
@@ -200,49 +200,6 @@ export function JQLite(element) {
   } else {
     addNodes(this, element);
   }
-}
-
-function JQLiteOff(element, type, fn, unsupported) {
-  if (isDefined(unsupported))
-    throw JQLiteMinErr(
-      "offargs",
-      "jqLite#off() does not support the `selector` argument",
-    );
-
-  const expandoStore = getExpando(element);
-  const events = expandoStore && expandoStore.events;
-  const handle = expandoStore && expandoStore.handle;
-
-  if (!handle) return; // no listeners registered
-
-  if (!type) {
-    for (type in events) {
-      if (type !== "$destroy") {
-        element.removeEventListener(type, handle);
-      }
-      delete events[type];
-    }
-  } else {
-    const removeHandler = function (type) {
-      const listenerFns = events[type];
-      if (isDefined(fn) && Array.isArray(listenerFns)) {
-        arrayRemove(listenerFns, fn);
-      }
-      if (!(isDefined(fn) && listenerFns && listenerFns.length > 0)) {
-        element.removeEventListener(type, handle);
-        delete events[type];
-      }
-    };
-
-    forEach(type.split(" "), (type) => {
-      removeHandler(type);
-      if (MOUSE_EVENT_MAP[type]) {
-        removeHandler(MOUSE_EVENT_MAP[type]);
-      }
-    });
-  }
-
-  removeIfEmptyData(element);
 }
 
 /**
@@ -671,29 +628,52 @@ JQLite.prototype.on = function (type, fn) {
   return this;
 };
 
-export function getBooleanAttrName(element, name) {
-  // check dom last since we will most likely fail on name
-  const booleanAttr = BOOLEAN_ATTR[name.toLowerCase()];
-
-  // booleanAttr is here twice to minimize DOM access
-  return booleanAttr && BOOLEAN_ELEMENTS[nodeName_(element)] && booleanAttr;
-}
-
 /**
- * Takes an array of elements, calls any `$destroy` event handlers, removes any data in cache, and finally removes any
- * listeners.
- * @param {NodeListOf<Element>} nodes
+ * Removes an event listener to each element in the JQLite collection.
+ *
+ * @param {string} type - The event type(s) to remove listener from
+ * @param {Function} fn - The function to remove from event type.
  */
-export function cleanElementData(nodes) {
-  for (let i = 0, ii = nodes.length; i < ii; i++) {
-    var events = (CACHE.get(nodes[i][EXPANDO]) || {}).events;
-    if (events && events.$destroy) {
-      JQLite(nodes[i]).triggerHandler("$destroy");
+JQLite.prototype.off = function (type, fn) {
+  for (let i = 0, ii = this.length; i < ii; i++) {
+    const element = this[i];
+    const expandoStore = getExpando(element);
+    const events = expandoStore && expandoStore.events;
+    const handle = expandoStore && expandoStore.handle;
+
+    if (!handle) return; // no listeners registered
+
+    if (!type) {
+      for (type in events) {
+        if (type !== "$destroy") {
+          element.removeEventListener(type, handle);
+        }
+        delete events[type];
+      }
+    } else {
+      const removeHandler = function (type) {
+        const listenerFns = events[type];
+        if (isDefined(fn) && Array.isArray(listenerFns)) {
+          arrayRemove(listenerFns, fn);
+        }
+        if (!(isDefined(fn) && listenerFns && listenerFns.length > 0)) {
+          element.removeEventListener(type, handle);
+          delete events[type];
+        }
+      };
+
+      forEach(type.split(" "), (type) => {
+        removeHandler(type);
+        if (MOUSE_EVENT_MAP[type]) {
+          removeHandler(MOUSE_EVENT_MAP[type]);
+        }
+      });
     }
-    removeElementData(nodes[i]);
-    JQLiteOff(nodes[i]);
+
+    removeIfEmptyData(element);
   }
-}
+  return this;
+};
 
 /// ///////////////////////////////////////
 // Functions iterating getter/setters.
@@ -832,8 +812,6 @@ forEach(
 forEach(
   {
     removeData: removeElementData,
-
-    off: JQLiteOff,
     replaceWith(element, replaceNode) {
       let index;
       const parent = element.parentNode;
@@ -1101,4 +1079,28 @@ export function getBlockNodes(nodes) {
   }
 
   return JQLite(blockNodes || nodes);
+}
+
+export function getBooleanAttrName(element, name) {
+  // check dom last since we will most likely fail on name
+  const booleanAttr = BOOLEAN_ATTR[name.toLowerCase()];
+
+  // booleanAttr is here twice to minimize DOM access
+  return booleanAttr && BOOLEAN_ELEMENTS[nodeName_(element)] && booleanAttr;
+}
+
+/**
+ * Takes an array of elements, calls any `$destroy` event handlers, removes any data in cache, and finally removes any
+ * listeners.
+ * @param {NodeListOf<Element>} nodes
+ */
+export function cleanElementData(nodes) {
+  for (let i = 0, ii = nodes.length; i < ii; i++) {
+    var events = (CACHE.get(nodes[i][EXPANDO]) || {}).events;
+    if (events && events.$destroy) {
+      JQLite(nodes[i]).triggerHandler("$destroy");
+    }
+    removeElementData(nodes[i]);
+    JQLite.prototype.off.call(JQLite(nodes[i]));
+  }
 }

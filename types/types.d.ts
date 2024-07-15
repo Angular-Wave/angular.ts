@@ -23,7 +23,7 @@ export type DirectiveCompileFn = (templateElement: TElement, templateAttributes:
  * Link function for an AngularJS directive.
  */
 export type DirectiveLinkFn = (scope: TScope, instanceElement: TElement, instanceAttributes: TAttributes, controller?: TController, transclude?: TranscludeFunction) => void;
-export type CloneAttachFunction = (clonedElement?: import("./shared/jqlite/jqlite").JQLite, scope?: Scope) => any;
+export type CloneAttachFunction = (clonedElement?: import("./shared/jqlite/jqlite").JQLite, scope?: import("./core/scope/scope").Scope) => any;
 /**
  * This corresponds to $transclude passed to controllers and to the transclude function passed to link functions.
  * https://docs.angularjs.org/api/ng/service/$compile#-controller-
@@ -38,7 +38,7 @@ export type TranscludeFunction = {
     isSlotFilled: (arg0: string) => boolean;
 };
 export type transcludeWithScope = (arg0: TScope, arg1: CloneAttachFunction, arg2: import("./shared/jqlite/jqlite").JQLite | undefined, arg3: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
-export type transcludeWithoutScope = (arg0: CloneAttachFunction | undefined, arg1: JQLite | undefined, arg2: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
+export type transcludeWithoutScope = (arg0: CloneAttachFunction | undefined, arg1: import("./shared/jqlite/jqlite").JQLite | undefined, arg2: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
 /**
  * Represents the pre and post linking functions of a directive.
  */

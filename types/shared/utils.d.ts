@@ -292,7 +292,7 @@ export function extend(dst: any, ...args: any[]): any;
  * @param {...Object} src Source object(s).
  * @returns {Object} Reference to `dst`.
  */
-export function merge(dst: any, ...args: any[]): any;
+export function merge(dst: any, src: any[]): any;
 export function toInt(str: any): number;
 export function isNumberNaN(num: any): boolean;
 export function inherit(parent: any, extra: any): any;
