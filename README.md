@@ -24,7 +24,7 @@ piece of cake.
 
 #### Current state
 
-AngularJS is a large codebase that evolved in its own ecosystem over a long period of time. This resulted in multiple layers of legacy dependencies spread across multiple modules. Current focus is to remove these layers one by one and updating documentation to the reflect these changes. Until then, feel free to rely on old documentation or raise a PR if you have a problem migrating.
+AngularJS is a large codebase that evolved in its own ecosystem over a long period of time. This resulted in multiple layers of legacy dependencies spread across multiple modules. Current focus is to remove these layers one by one and incrementally updating internal documentation to the reflect these changes. Until then, feel free to rely on old documentation or raise a PR if you have a problem migrating. Although the core remains well-tested (4k unit/integration tests) and stable, this project is undergoing rapid changes, which means that its stage of development should be qualified as pre-alpha. 
 
 ### Getting started
 

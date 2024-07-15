@@ -70,6 +70,12 @@ export class JQLite {
      * @returns {JQLite|any}
      */
     inheritedData(name: string, value: any): JQLite | any;
+    /**
+     * Gets or sets innerHTML on the first element in JQLite collection
+     * @param {string} value
+     * @returns {JQLite|any|undefined}
+     */
+    html(value: string): JQLite | any | undefined;
     toString(): string;
     eq(index: any): JQLite;
     length: number;
