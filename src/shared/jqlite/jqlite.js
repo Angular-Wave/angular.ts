@@ -453,6 +453,7 @@ JQLite.prototype.val = function (value) {
   } else {
     // write
     element.value = value;
+    return this;
   }
 };
 
@@ -493,21 +494,6 @@ forEach(
         // Normalize non-existing attributes to undefined (as jQuery).
         return ret === null ? undefined : ret;
       }
-    },
-    val(element, value) {
-      if (isUndefined(value)) {
-        if (element.multiple && getNodeName(element) === "select") {
-          const result = [];
-          forEach(element.options, (option) => {
-            if (option.selected) {
-              result.push(option.value || option.text);
-            }
-          });
-          return result;
-        }
-        return element.value;
-      }
-      element.value = value;
     },
   },
   (fn, name) => {

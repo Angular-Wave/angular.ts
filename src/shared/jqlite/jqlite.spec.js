@@ -939,6 +939,7 @@ describe("jqLite", () => {
 
   describe("val", () => {
     it("should read, write value", () => {
+      debugger;
       const input = JQLite('<input type="text"/>');
       expect(input.val("abc")).toEqual(input);
       expect(input[0].value).toEqual("abc");
