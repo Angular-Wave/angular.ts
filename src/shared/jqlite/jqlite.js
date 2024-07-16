@@ -429,31 +429,31 @@ JQLite.prototype.text = function (value) {
 };
 
 /**
- * Gets or sets the values of form elements such as input, select and textarea. This method works only for
- * a single item in a JQLite collection.
+ * Gets or sets the values of form elements such as input, select and textarea in a JQLite collection.
  * @param {any} value
  * @returns {JQLite|any}
  */
-
 JQLite.prototype.val = function (value) {
   // We can only get or set a value of
-  const element = this[0];
-  if (isUndefined(value)) {
-    // read
-    if (element.multiple && getNodeName(element) === "select") {
-      const result = [];
-      forEach(element.options, (option) => {
-        if (option.selected) {
-          result.push(option.value || option.text);
-        }
-      });
-      return result;
+  for (let i = 0; i < this.length; i++) {
+    const element = this[i];
+    if (isUndefined(value)) {
+      // read
+      if (element.multiple && getNodeName(element) === "select") {
+        const result = [];
+        forEach(element.options, (option) => {
+          if (option.selected) {
+            result.push(option.value || option.text);
+          }
+        });
+        return result;
+      }
+      return element.value;
+    } else {
+      // write
+      element.value = value;
+      return this;
     }
-    return element.value;
-  } else {
-    // write
-    element.value = value;
-    return this;
   }
 };
 
