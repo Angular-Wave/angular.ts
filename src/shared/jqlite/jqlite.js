@@ -538,6 +538,47 @@ JQLite.prototype.data = function (key, value) {
   return this;
 };
 
+JQLite.prototype.replaceWith = function (arg1) {
+  let value;
+  let fn = function (element, replaceNode) {
+    let index;
+    const parent = element.parentNode;
+    dealoc(element);
+    forEach(new JQLite(replaceNode), (node) => {
+      if (index) {
+        parent.insertBefore(node, index.nextSibling);
+      } else {
+        parent.replaceChild(node, element);
+      }
+      index = node;
+    });
+  };
+  for (let i = 0; i < this.length; i++) {
+    if (isUndefined(value)) {
+      value = fn(this[i], arg1);
+      if (isDefined(value)) {
+        // any function which returns a value needs to be wrapped
+        value = JQLite(value);
+      }
+    } else {
+      addNodes(value, fn(this[i], arg1));
+    }
+  }
+  return isDefined(value) ? value : this;
+};
+
+JQLite.prototype.children = function () {
+  let value;
+  let fn = (element) =>
+    Array.from(element.childNodes).filter(
+      (child) => child.nodeType === Node.ELEMENT_NODE,
+    );
+  for (let i = 0; i < this.length; i++) {
+    value = JQLite(fn(this[i]));
+  }
+  return isDefined(value) ? value : this;
+};
+
 /// ///////////////////////////////////////
 // Functions iterating traversal.
 // These functions chain results into a single
@@ -545,19 +586,6 @@ JQLite.prototype.data = function (key, value) {
 /// ///////////////////////////////////////
 forEach(
   {
-    replaceWith(element, replaceNode) {
-      let index;
-      const parent = element.parentNode;
-      dealoc(element);
-      forEach(new JQLite(replaceNode), (node) => {
-        if (index) {
-          parent.insertBefore(node, index.nextSibling);
-        } else {
-          parent.replaceChild(node, element);
-        }
-        index = node;
-      });
-    },
     children(element) {
       return Array.from(element.childNodes).filter(
         (child) => child.nodeType === Node.ELEMENT_NODE,
