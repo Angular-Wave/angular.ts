@@ -619,4 +619,3 @@ export function mergeClasses(a: any, b: any): any;
 export function directiveNormalize(name: any): any;
 export const ngAttrPrefixes: string[];
 export const minErrConfig: {};
-import { JQLite } from "./jqlite/jqlite";

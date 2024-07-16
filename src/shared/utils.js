@@ -1,5 +1,4 @@
 import { PREFIX_REGEXP, SPECIAL_CHARS_REGEXP } from "../shared/constants";
-import { JQLite } from "./jqlite/jqlite";
 
 const ngMinErr = minErr("ng");
 
