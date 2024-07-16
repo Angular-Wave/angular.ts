@@ -586,11 +586,6 @@ JQLite.prototype.children = function () {
 /// ///////////////////////////////////////
 forEach(
   {
-    children(element) {
-      return Array.from(element.childNodes).filter(
-        (child) => child.nodeType === Node.ELEMENT_NODE,
-      );
-    },
     append(element, node) {
       const { nodeType } = element;
       if (
