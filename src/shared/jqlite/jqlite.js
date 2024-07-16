@@ -55,7 +55,6 @@ import { CACHE, EXPANDO } from "../../core/cache/cache";
  * - [`removeData()`](http://api.jquery.com/removeData/)
  * - [`replaceWith()`](http://api.jquery.com/replaceWith/)
  * - [`text()`](http://api.jquery.com/text/)
- * - [`triggerHandler()`](http://api.jquery.com/triggerHandler/) - Passes a dummy event object to handlers
  * - [`val()`](http://api.jquery.com/val/)
  *
  * ## jQuery/jqLite Extras
@@ -136,7 +135,7 @@ const BOOLEAN_ELEMENTS = {};
  * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
  * and execution of chain functions.
  *
- * @param {string|Element|Document|Window|JQLite|ArrayLike<Element>|(() => void)} element
+ * @param {string|Element|Comment|Document|Window|JQLite|ArrayLike<Element>|(() => void)} element
  * @returns {JQLite}
  */
 export function JQLite(element) {
@@ -663,98 +662,117 @@ JQLite.prototype.detach = function () {
   return this;
 };
 
-/// ///////////////////////////////////////
-// Functions iterating traversal.
-// These functions chain results into a single
-// selector.
-/// ///////////////////////////////////////
-forEach(
-  {
-    parent(element) {
-      const parent = element.parentNode;
-      return parent && parent.nodeType !== Node.DOCUMENT_FRAGMENT_NODE
-        ? parent
-        : null;
-    },
+JQLite.prototype.parent = function () {
+  let value;
+  let fn = (element) => {
+    const parent = element.parentNode;
+    return parent && parent.nodeType !== Node.DOCUMENT_FRAGMENT_NODE
+      ? parent
+      : null;
+  }
+  for (let i = 0, ii = this.length; i < ii; i++) {
+    if (isUndefined(value)) {
+      value = fn(this[i]);
+      if (isDefined(value)) {
+        value = JQLite(value);
+      }
+    } else {
+      addNodes(value, fn(this[i]));
+    }
+  }
+  return isDefined(value) ? value : this;
+};
 
-    // TODO: remove after migrating tests away from JQLite
-    find(element, selector) {
+JQLite.prototype.find = function (selector) {
+  let value;
+  for (let i = 0, ii = this.length; i < ii; i++) {
+    const element = this[i];
+
+    if (isUndefined(value)) {
       if (element.getElementsByTagName) {
-        return element.getElementsByTagName(selector);
+        value = element.getElementsByTagName(selector);
+      } else {
+        value = [];
       }
-      return [];
-    },
+      if (isDefined(value)) {
+        // any function which returns a value needs to be wrapped
+        value = JQLite(value);
+      }
+    } else {
+      if (element.getElementsByTagName) {
+        addNodes(value, element.getElementsByTagName(selector));
+      }
+    }
+  }
+  return isDefined(value) ? value : this;
+};
 
-    triggerHandler(element, event, extraParameters) {
-      let dummyEvent;
-      let eventFnsCopy;
-      let handlerArgs;
-      const eventName = event.type || event;
-      const expandoStore = getExpando(element);
-      const events = expandoStore && expandoStore.events;
-      const eventFns = events && events[eventName];
+/**
+ * TODO: REMOVE! This function being used ONLY in tests!
+ */
+JQLite.prototype.triggerHandler = function (event, extraParameters) {
+  let value;
+  let fn = function (element, event, extraParameters) {
+    let dummyEvent;
+    let eventFnsCopy;
+    let handlerArgs;
+    const eventName = event.type || event;
+    const expandoStore = getExpando(element);
+    const events = expandoStore && expandoStore.events;
+    const eventFns = events && events[eventName];
 
-      if (eventFns) {
-        // Create a dummy event to pass to the handlers
-        dummyEvent = {
-          preventDefault() {
-            this.defaultPrevented = true;
-          },
-          isDefaultPrevented() {
-            return this.defaultPrevented === true;
-          },
-          stopImmediatePropagation() {
-            this.immediatePropagationStopped = true;
-          },
-          isImmediatePropagationStopped() {
-            return this.immediatePropagationStopped === true;
-          },
-          stopPropagation: () => {},
-          type: eventName,
-          target: element,
-        };
+    if (eventFns) {
+      // Create a dummy event to pass to the handlers
+      dummyEvent = {
+        preventDefault() {
+          this.defaultPrevented = true;
+        },
+        isDefaultPrevented() {
+          return this.defaultPrevented === true;
+        },
+        stopImmediatePropagation() {
+          this.immediatePropagationStopped = true;
+        },
+        isImmediatePropagationStopped() {
+          return this.immediatePropagationStopped === true;
+        },
+        stopPropagation: () => {},
+        type: eventName,
+        target: element,
+      };
 
-        // If a custom event was provided then extend our dummy event with it
-        if (event.type) {
-          dummyEvent = extend(dummyEvent, event);
+      // If a custom event was provided then extend our dummy event with it
+      if (event.type) {
+        dummyEvent = extend(dummyEvent, event);
+      }
+
+      // Copy event handlers in case event handlers array is modified during execution.
+      eventFnsCopy = shallowCopy(eventFns);
+      handlerArgs = extraParameters
+        ? [dummyEvent].concat(extraParameters)
+        : [dummyEvent];
+
+      forEach(eventFnsCopy, (fn) => {
+        if (!dummyEvent.isImmediatePropagationStopped()) {
+          fn.apply(element, handlerArgs);
         }
-
-        // Copy event handlers in case event handlers array is modified during execution.
-        eventFnsCopy = shallowCopy(eventFns);
-        handlerArgs = extraParameters
-          ? [dummyEvent].concat(extraParameters)
-          : [dummyEvent];
-
-        forEach(eventFnsCopy, (fn) => {
-          if (!dummyEvent.isImmediatePropagationStopped()) {
-            fn.apply(element, handlerArgs);
-          }
-        });
+      });
+    }
+  };
+  for (let i = 0, ii = this.length; i < ii; i++) {
+    if (isUndefined(value)) {
+      value = fn(this[i], event, extraParameters);
+      if (isDefined(value)) {
+        // @ts-ignore
+        value = JQLite(value);
       }
-    },
-  },
-  (fn, name) => {
-    /**
-     * chaining functions
-     */
-    JQLite.prototype[name] = function (arg1, arg2, arg3) {
-      let value;
-
-      for (let i = 0, ii = this.length; i < ii; i++) {
-        if (isUndefined(value)) {
-          value = fn(this[i], arg1, arg2, arg3);
-          if (isDefined(value)) {
-            // any function which returns a value needs to be wrapped
-            value = JQLite(value);
-          }
-        } else {
-          addNodes(value, fn(this[i], arg1, arg2, arg3));
-        }
-      }
-      return isDefined(value) ? value : this;
-    };
-  },
-);
+    } else {
+      // @ts-ignore
+      addNodes(value, fn(this[i], event, extraParameters));
+    }
+  }
+  return isDefined(value) ? value : this;
+};
 
 ///////////////////////////////////////////////////////////////////
 ////////////        HELPER FUNCTIONS      /////////////////////////

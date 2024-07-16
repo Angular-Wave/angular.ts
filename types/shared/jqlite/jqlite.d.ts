@@ -2,19 +2,19 @@
  * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
  * and execution of chain functions.
  *
- * @param {string|Element|Document|Window|JQLite|ArrayLike<Element>|(() => void)} element
+ * @param {string|Element|Comment|Document|Window|JQLite|ArrayLike<Element>|(() => void)} element
  * @returns {JQLite}
  */
-export function JQLite(element: string | Element | Document | Window | JQLite | ArrayLike<Element> | (() => void)): JQLite;
+export function JQLite(element: string | Element | Comment | Document | Window | JQLite | ArrayLike<Element> | (() => void)): JQLite;
 export class JQLite {
     /**
      * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
      * and execution of chain functions.
      *
-     * @param {string|Element|Document|Window|JQLite|ArrayLike<Element>|(() => void)} element
+     * @param {string|Element|Comment|Document|Window|JQLite|ArrayLike<Element>|(() => void)} element
      * @returns {JQLite}
      */
-    constructor(element: string | Element | Document | Window | JQLite | ArrayLike<Element> | (() => void));
+    constructor(element: string | Element | Comment | Document | Window | JQLite | ArrayLike<Element> | (() => void));
     /**
      * Remove all child nodes of the set of matched elements from the DOM and clears CACHE data, associated with the node.
      * @returns {JQLite} The current instance of JQLite.
@@ -124,6 +124,12 @@ export class JQLite {
      */
     remove(keepData?: boolean): this;
     detach(): this;
+    parent(): any;
+    find(selector: any): any;
+    /**
+     * TODO: REMOVE! This function being used ONLY in tests!
+     */
+    triggerHandler(event: any, extraParameters: any): void | JQLite;
     toString(): string;
     eq(index: any): JQLite;
     length: number;
