@@ -54,7 +54,7 @@ export const $$AnimateQueueProvider = [
       const keys = classString.split(ONE_SPACE);
       const map = Object.create(null);
 
-      forEach(keys, (key) => {
+      keys.forEach((key) => {
         map[key] = true;
       });
       return map;
@@ -256,7 +256,7 @@ export const $$AnimateQueueProvider = [
           const matches = [];
           const entries = callbackRegistry[event];
           if (entries) {
-            forEach(entries, (entry) => {
+            entries.forEach((entry) => {
               if (contains.call(entry.node, targetNode)) {
                 matches.push(entry.callback);
               } else if (
@@ -694,7 +694,7 @@ export const $$AnimateQueueProvider = [
             runInNextPostDigestOrNow(() => {
               const callbacks = findCallbacks(parentNode, node, event);
               if (callbacks.length) {
-                forEach(callbacks, (callback) => {
+                callbacks.forEach((callback) => {
                   callback(element, phase, data);
                 });
                 cleanupEventListeners(phase, node);

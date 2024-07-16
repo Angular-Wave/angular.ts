@@ -1,4 +1,4 @@
-import { forEach, isObject } from "../../shared/utils";
+import { isObject } from "../../shared/utils";
 import { filterFilter } from "../../filters/filter";
 import { jsonFilter } from "../../filters/filters";
 import { limitToFilter } from "../../filters/limit-to";
@@ -11,7 +11,7 @@ export function $FilterProvider($provide) {
   function register(name, factory) {
     if (isObject(name)) {
       const filters = {};
-      forEach(name, (filter, key) => {
+      Object.entries(name).forEach(([key, filter]) => {
         filters[key] = register(key, filter);
       });
       return filters;

@@ -669,7 +669,7 @@ JQLite.prototype.parent = function () {
     return parent && parent.nodeType !== Node.DOCUMENT_FRAGMENT_NODE
       ? parent
       : null;
-  }
+  };
   for (let i = 0, ii = this.length; i < ii; i++) {
     if (isUndefined(value)) {
       value = fn(this[i]);

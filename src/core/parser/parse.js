@@ -778,7 +778,7 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
   switch (ast.type) {
     case ASTType.Program:
       allConstants = true;
-      forEach(ast.body, (expr) => {
+      /** @type {[any]} */ (ast.body).forEach((expr) => {
         findConstantAndWatchExpressions(expr.expression, $filter, astIsPure);
         allConstants = allConstants && expr.expression.constant;
       });

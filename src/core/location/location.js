@@ -583,7 +583,7 @@ const locationPrototype = {
         } else if (isObject(search)) {
           search = structuredClone(search, {});
           // remove object undefined or null properties
-          forEach(search, (value, key) => {
+          Object.entries(search).forEach(([key, value]) => {
             if (value == null) delete search[key];
           });
 

@@ -137,7 +137,7 @@ export const $$AnimateCssDriverProvider = [
 
             // we iterate directly since safari messes up and doesn't return
             // all the keys for the coords object when iterated
-            forEach(["width", "height", "top", "left"], (key) => {
+            ["width", "height", "top", "left"].forEach((key) => {
               let value = coords[key];
               switch (key) {
                 case "top":
