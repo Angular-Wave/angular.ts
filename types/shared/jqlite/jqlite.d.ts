@@ -103,6 +103,11 @@ export class JQLite {
     data(key: string | any, value?: any): JQLite | any;
     replaceWith(arg1: any): void | JQLite;
     children(): JQLite;
+    /**
+     * @param {string} node
+     * @returns {JQLite}
+     */
+    append(node: string): JQLite;
     toString(): string;
     eq(index: any): JQLite;
     length: number;

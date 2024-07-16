@@ -579,6 +579,30 @@ JQLite.prototype.children = function () {
   return isDefined(value) ? value : this;
 };
 
+/**
+ * @param {string} node
+ * @returns {JQLite}
+ */
+JQLite.prototype.append = function (node) {
+  for (let i = 0; i < this.length; i++) {
+    const element = this[i];
+    const { nodeType } = element;
+    if (
+      nodeType !== Node.ELEMENT_NODE &&
+      nodeType !== Node.DOCUMENT_FRAGMENT_NODE
+    )
+      return this;
+
+    let newNode = new JQLite(node);
+
+    for (let i = 0; i < newNode.length; i++) {
+      const child = newNode[i];
+      element.appendChild(child);
+    }
+  }
+  return this;
+};
+
 /// ///////////////////////////////////////
 // Functions iterating traversal.
 // These functions chain results into a single
@@ -586,22 +610,6 @@ JQLite.prototype.children = function () {
 /// ///////////////////////////////////////
 forEach(
   {
-    append(element, node) {
-      const { nodeType } = element;
-      if (
-        nodeType !== Node.ELEMENT_NODE &&
-        nodeType !== Node.DOCUMENT_FRAGMENT_NODE
-      )
-        return;
-
-      node = new JQLite(node);
-
-      for (let i = 0, ii = node.length; i < ii; i++) {
-        const child = node[i];
-        element.appendChild(child);
-      }
-    },
-
     prepend(element, node) {
       if (element.nodeType === Node.ELEMENT_NODE) {
         const index = element.firstChild;
@@ -616,7 +624,6 @@ forEach(
     detach(element) {
       removeElement(element, true);
     },
-
     after(element, newElement) {
       let index = element;
       const parent = element.parentNode;
@@ -631,7 +638,6 @@ forEach(
         }
       }
     },
-
     parent(element) {
       const parent = element.parentNode;
       return parent && parent.nodeType !== Node.DOCUMENT_FRAGMENT_NODE
