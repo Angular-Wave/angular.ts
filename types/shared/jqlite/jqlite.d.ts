@@ -108,6 +108,22 @@ export class JQLite {
      * @returns {JQLite}
      */
     append(node: string): JQLite;
+    /**
+     * @param {string} node
+     * @returns {JQLite}
+     */
+    prepend(node: string): JQLite;
+    /**
+     * @param {string} newElement
+     * @returns {JQLite}
+     */
+    after(newElement: string): JQLite;
+    /**
+     * @param {boolean} [keepData]
+     * @returns
+     */
+    remove(keepData?: boolean): this;
+    detach(): this;
     toString(): string;
     eq(index: any): JQLite;
     length: number;

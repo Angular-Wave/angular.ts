@@ -603,6 +603,66 @@ JQLite.prototype.append = function (node) {
   return this;
 };
 
+/**
+ * @param {string} node
+ * @returns {JQLite}
+ */
+JQLite.prototype.prepend = function (node) {
+  for (let i = 0; i < this.length; i++) {
+    const element = this[i];
+    if (element.nodeType === Node.ELEMENT_NODE) {
+      const index = element.firstChild;
+      forEach(new JQLite(node), (child) => {
+        element.insertBefore(child, index);
+      });
+    }
+  }
+  return this;
+};
+
+/**
+ * @param {string} newElement
+ * @returns {JQLite}
+ */
+JQLite.prototype.after = function (newElement) {
+  for (let i = 0; i < this.length; i++) {
+    const element = this[i];
+    let index = element;
+    const parent = element.parentNode;
+
+    if (parent) {
+      let el = new JQLite(newElement);
+
+      for (let i = 0, ii = el.length; i < ii; i++) {
+        const node = el[i];
+        parent.insertBefore(node, index.nextSibling);
+        index = node;
+      }
+    }
+  }
+  return this;
+};
+
+/**
+ * @param {boolean} [keepData]
+ * @returns
+ */
+JQLite.prototype.remove = function (keepData = false) {
+  for (let i = 0; i < this.length; i++) {
+    const element = this[i];
+    removeElement(element, keepData);
+  }
+  return this;
+};
+
+JQLite.prototype.detach = function () {
+  for (let i = 0; i < this.length; i++) {
+    const element = this[i];
+    removeElement(element, true);
+  }
+  return this;
+};
+
 /// ///////////////////////////////////////
 // Functions iterating traversal.
 // These functions chain results into a single
@@ -610,34 +670,6 @@ JQLite.prototype.append = function (node) {
 /// ///////////////////////////////////////
 forEach(
   {
-    prepend(element, node) {
-      if (element.nodeType === Node.ELEMENT_NODE) {
-        const index = element.firstChild;
-        forEach(new JQLite(node), (child) => {
-          element.insertBefore(child, index);
-        });
-      }
-    },
-
-    remove: removeElement,
-
-    detach(element) {
-      removeElement(element, true);
-    },
-    after(element, newElement) {
-      let index = element;
-      const parent = element.parentNode;
-
-      if (parent) {
-        newElement = new JQLite(newElement);
-
-        for (let i = 0, ii = newElement.length; i < ii; i++) {
-          const node = newElement[i];
-          parent.insertBefore(node, index.nextSibling);
-          index = node;
-        }
-      }
-    },
     parent(element) {
       const parent = element.parentNode;
       return parent && parent.nodeType !== Node.DOCUMENT_FRAGMENT_NODE
