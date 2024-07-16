@@ -95,6 +95,12 @@ export class JQLite {
      * @returns
      */
     attr(name: string | any, value: any): any;
+    /**
+     * @param {string|any} key - The key (as a string) to get/set or an object for mass-setting.
+     * @param {any} [value] - The value to set. If not provided, the function acts as a getter.
+     * @returns {JQLite|any} - The retrieved data if acting as a getter. Otherwise, returns undefined.
+     */
+    data(key: string | any, value?: any): JQLite | any;
     toString(): string;
     eq(index: any): JQLite;
     length: number;

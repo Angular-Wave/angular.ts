@@ -507,55 +507,36 @@ JQLite.prototype.attr = function (name, value) {
   }
 };
 
-forEach(
-  {
-    data: getOrSetCacheData,
-  },
-  (fn, name) => {
-    /**
-     * Properties: writes return selection, reads return first value
-     */
-    JQLite.prototype[name] = function (arg1, arg2) {
-      let i;
-      let key;
-      const nodeCount = this.length;
-
-      // JQLiteEmpty takes no arguments but is a setter.
-      if (isUndefined(fn.length === 2 && fn !== getController ? arg1 : arg2)) {
-        if (isObject(arg1)) {
-          // we are a write, but the object properties are the key/values
-          for (i = 0; i < nodeCount; i++) {
-            if (fn === getOrSetCacheData) {
-              fn(this[i], arg1);
-            } else {
-              for (key in arg1) {
-                fn(this[i], key, arg1[key]);
-              }
-            }
-          }
-          // return self for chaining
-          return this;
-        }
-        // we are a read, so read the first child.
-        // TODO: do we still need this?
-        let value = fn.$dv;
-        // Only if we have $dv do we iterate over all, otherwise it is just the first element.
-        const jj = isUndefined(value) ? Math.min(nodeCount, 1) : nodeCount;
-        for (let j = 0; j < jj; j++) {
-          const nodeValue = fn(this[j], arg1, arg2);
-          value = value ? value + nodeValue : nodeValue;
-        }
-        return value;
-      }
-      // we are a write, so apply to all children
+/**
+ * @param {string|any} key - The key (as a string) to get/set or an object for mass-setting.
+ * @param {any} [value] - The value to set. If not provided, the function acts as a getter.
+ * @returns {JQLite|any} - The retrieved data if acting as a getter. Otherwise, returns undefined.
+ */
+JQLite.prototype.data = function (key, value) {
+  let i;
+  const nodeCount = this.length;
+  if (isUndefined(value)) {
+    if (isObject(key)) {
+      // we are a write, but the object properties are the key/values
       for (i = 0; i < nodeCount; i++) {
-        fn(this[i], arg1, arg2);
+        getOrSetCacheData(this[i], key);
       }
-      // return self for chaining
       return this;
-    };
-  },
-);
+    }
+    // we are a read, so read the first child.
+    const jj = isUndefined(value) ? Math.min(nodeCount, 1) : nodeCount;
+    for (let j = 0; j < jj; j++) {
+      const nodeValue = getOrSetCacheData(this[j], key, value);
+      value = value ? value + nodeValue : nodeValue;
+    }
+    return value;
+  }
+  // we are a write, so apply to all children
+  for (i = 0; i < nodeCount; i++) {
+    getOrSetCacheData(this[i], key, value);
+  }
+  return this;
+};
 
 /// ///////////////////////////////////////
 // Functions iterating traversal.
