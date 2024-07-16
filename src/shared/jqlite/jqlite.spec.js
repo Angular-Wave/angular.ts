@@ -757,7 +757,6 @@ describe("jqLite", () => {
       expect(selector.attr("prop", "value")).toEqual(selector);
       expect(JQLite(a).attr("prop")).toEqual("value");
       expect(JQLite(b).attr("prop")).toEqual("value");
-
       expect(selector.attr({ prop: "new value" })).toEqual(selector);
       expect(JQLite(a).attr("prop")).toEqual("new value");
       expect(JQLite(b).attr("prop")).toEqual("new value");
@@ -939,7 +938,6 @@ describe("jqLite", () => {
 
   describe("val", () => {
     it("should read, write value", () => {
-      debugger;
       const input = JQLite('<input type="text"/>');
       expect(input.val("abc")).toEqual(input);
       expect(input[0].value).toEqual("abc");

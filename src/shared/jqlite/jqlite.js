@@ -457,44 +457,59 @@ JQLite.prototype.val = function (value) {
   }
 };
 
+/**
+ * @param {string|Object} name
+ * @param {any} value
+ * @returns
+ */
+JQLite.prototype.attr = function (name, value) {
+  for (let i = 0; i < this.length; i++) {
+    const element = this[i];
+    let ret;
+    const { nodeType } = element;
+    if (
+      nodeType === Node.TEXT_NODE ||
+      nodeType === Node.ATTRIBUTE_NODE ||
+      nodeType === Node.COMMENT_NODE ||
+      !element.getAttribute
+    ) {
+      continue;
+    }
+
+    const lowercasedName = lowercase(name);
+    const isBooleanAttr = BOOLEAN_ATTR[lowercasedName];
+
+    if (isObject(name)) {
+      for (let key in name) {
+        element.setAttribute(key, isBooleanAttr ? lowercasedName : name[key]);
+      }
+    } else if (isDefined(value)) {
+      // setter
+
+      if (value === null || (value === false && isBooleanAttr)) {
+        element.removeAttribute(name);
+      } else {
+        element.setAttribute(name, isBooleanAttr ? lowercasedName : value);
+      }
+    } else {
+      // getter
+      ret = element.getAttribute(name);
+      if (isBooleanAttr && ret !== null) {
+        ret = lowercasedName;
+      }
+      // Normalize non-existing attributes to undefined (as jQuery).
+      return ret === null ? undefined : ret;
+    }
+  }
+
+  if (isDefined(value) || isObject(name)) {
+    return this;
+  }
+};
+
 forEach(
   {
     data: getOrSetCacheData,
-    attr(element, name, value) {
-      let ret;
-      const { nodeType } = element;
-      if (
-        nodeType === Node.TEXT_NODE ||
-        nodeType === Node.ATTRIBUTE_NODE ||
-        nodeType === Node.COMMENT_NODE ||
-        !element.getAttribute
-      ) {
-        return;
-      }
-
-      const lowercasedName = lowercase(name);
-      const isBooleanAttr = BOOLEAN_ATTR[lowercasedName];
-
-      if (isDefined(value)) {
-        // setter
-
-        if (value === null || (value === false && isBooleanAttr)) {
-          element.removeAttribute(name);
-        } else {
-          element.setAttribute(name, isBooleanAttr ? lowercasedName : value);
-        }
-      } else {
-        // getter
-
-        ret = element.getAttribute(name);
-
-        if (isBooleanAttr && ret !== null) {
-          ret = lowercasedName;
-        }
-        // Normalize non-existing attributes to undefined (as jQuery).
-        return ret === null ? undefined : ret;
-      }
-    },
   },
   (fn, name) => {
     /**
