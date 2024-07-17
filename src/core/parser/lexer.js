@@ -50,7 +50,7 @@ export class Lexer {
   /**
    * Tokenizes the input text.
    * @param {string} text Input text to lex.
-   * @returns {Array<Object>} Array of tokens.
+   * @returns {Array<Token>} Array of tokens.
    */
   lex(text) {
     this.text = text;
@@ -316,7 +316,12 @@ export class Lexer {
       } else if (ch === "\\") {
         escape = true;
       } else if (ch === quote) {
-        this.tokens.push({ index: start, text: this.text.slice(start, this.index + 1), constant: true, value: string });
+        this.tokens.push({
+          index: start,
+          text: this.text.slice(start, this.index + 1),
+          constant: true,
+          value: string,
+        });
         this.index++; // Skip closing quote
         return;
       } else {

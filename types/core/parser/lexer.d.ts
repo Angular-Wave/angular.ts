@@ -28,9 +28,9 @@ export class Lexer {
     /**
      * Tokenizes the input text.
      * @param {string} text Input text to lex.
-     * @returns {Array<Object>} Array of tokens.
+     * @returns {Array<Token>} Array of tokens.
      */
-    lex(text: string): Array<any>;
+    lex(text: string): Array<Token>;
     text: string;
     index: number;
     /** @type {Array<Token>} */
