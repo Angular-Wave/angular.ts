@@ -1,4 +1,4 @@
-import { ASTType } from "./ast";
+import { ASTType } from "./ast-type";
 import { forEach, isFunction } from "../../shared/utils";
 
 const objectValueOf = {}.constructor.prototype.valueOf;

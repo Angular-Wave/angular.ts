@@ -7,7 +7,7 @@ import {
   plusFn,
 } from "./shared";
 import { forEach, isDefined, isNumber, isString } from "../../shared/utils";
-import { ASTType } from "./ast";
+import { ASTType } from "./ast-type";
 import { $parseMinErr } from "./parse";
 
 export function ASTCompiler($filter) {

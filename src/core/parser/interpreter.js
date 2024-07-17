@@ -6,7 +6,7 @@ import {
   plusFn,
 } from "./shared";
 import { forEach, isDefined } from "../../shared/utils";
-import { ASTType } from "./ast";
+import { ASTType } from "./ast-type";
 
 export function ASTInterpreter($filter) {
   this.$filter = $filter;
