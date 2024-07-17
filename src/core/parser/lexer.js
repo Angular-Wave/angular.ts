@@ -17,18 +17,45 @@ const OPERATORS = new Set(
 );
 
 /**
- * @constructor
+ * @typedef {Object} LexerOptions
+ * @property {boolean} [csp] If true, enable content security policy mode.
+ * @property {(ch: string, codePoint: number) => boolean} [isIdentifierStart] Custom function to determine if a character is a valid identifier start.
+ * @property {(ch: string, codePoint: number) => boolean} [isIdentifierContinue] Custom function to determine if a character is a valid identifier continuation.
  */
-export const Lexer = function Lexer(options) {
-  this.options = options;
-};
 
-Lexer.prototype = {
-  constructor: Lexer,
+/**
+ * Represents a token produced by the lexer.
+ * @typedef {Object} Token
+ * @property {number} index Index of the token.
+ * @property {string} text Text of the token.
+ * @property {boolean} [identifier] Indicates if token is an identifier.
+ * @property {boolean} [constant] Indicates if token is a constant.
+ * @property {string|number} [value] Value of the token if it's a constant.
+ * @property {boolean} [operator] Indicates if token is an operator.
+ */
 
+/**
+ * Represents a lexer that tokenizes input text. The Lexer takes the original expression string and returns an array of tokens parsed from that string.
+ * For example, the string "a + b" would result in tokens for a, +, and b.
+ */
+export class Lexer {
+  /**
+   * Creates an instance of Lexer.
+   * @param {LexerOptions} options Lexer options.
+   */
+  constructor(options) {
+    this.options = options;
+  }
+
+  /**
+   * Tokenizes the input text.
+   * @param {string} text Input text to lex.
+   * @returns {Array<Object>} Array of tokens.
+   */
   lex(text) {
     this.text = text;
     this.index = 0;
+    /** @type {Array<Token>} */
     this.tokens = [];
 
     while (this.index < this.text.length) {
@@ -37,7 +64,7 @@ Lexer.prototype = {
         this.readString(ch);
       } else if (
         this.isNumber(ch) ||
-        (ch === "." && this.isNumber(this.peek()))
+        (ch === "." && this.isNumber(/** @type {string} */ (this.peek())))
       ) {
         this.readNumber();
       } else if (this.isIdentifierStart(this.peekMultichar())) {
@@ -67,23 +94,44 @@ Lexer.prototype = {
       }
     }
     return this.tokens;
-  },
+  }
 
+  /**
+   * Checks if a character is contained in a set of characters.
+   * @param {string} ch Character to check.
+   * @param {string} chars Set of characters.
+   * @returns {boolean} True if character is in the set, false otherwise.
+   */
   is(ch, chars) {
     return chars.indexOf(ch) !== -1;
-  },
+  }
 
+  /**
+   * Peeks at the next character in the text.
+   * @param {number} [i=1] Number of characters to peek.
+   * @returns {string|false} Next character or false if end of text.
+   */
   peek(i) {
     const num = i || 1;
     return this.index + num < this.text.length
       ? this.text.charAt(this.index + num)
       : false;
-  },
+  }
 
+  /**
+   * Checks if a character is a number.
+   * @param {string} ch Character to check.
+   * @returns {boolean} True if character is a number, false otherwise.
+   */
   isNumber(ch) {
     return ch >= "0" && ch <= "9" && typeof ch === "string";
-  },
+  }
 
+  /**
+   * Checks if a character is whitespace.
+   * @param {string} ch Character to check.
+   * @returns {boolean} True if character is whitespace, false otherwise.
+   */
   isWhitespace(ch) {
     // IE treats non-breaking space as \u00A0
     return (
@@ -94,39 +142,52 @@ Lexer.prototype = {
       ch === "\v" ||
       ch === "\u00A0"
     );
-  },
+  }
 
+  /**
+   * Checks if a character is a valid identifier start.
+   * @param {string} ch Character to check.
+   * @returns {boolean} True if character is a valid identifier start, false otherwise.
+   */
   isIdentifierStart(ch) {
     return this.options.isIdentifierStart
       ? this.options.isIdentifierStart(ch, this.codePointAt(ch))
-      : this.isValidIdentifierStart(ch);
-  },
+      : (ch >= "a" && ch <= "z") ||
+          (ch >= "A" && ch <= "Z") ||
+          ch === "_" ||
+          ch === "$";
+  }
 
-  isValidIdentifierStart(ch) {
-    return (
-      (ch >= "a" && ch <= "z") ||
-      (ch >= "A" && ch <= "Z") ||
-      ch === "_" ||
-      ch === "$"
-    );
-  },
-
+  /**
+   * Checks if a character is a valid identifier continuation.
+   * @param {string} ch Character to check.
+   * @returns {boolean} True if character is a valid identifier continuation, false otherwise.
+   */
   isIdentifierContinue(ch) {
     return this.options.isIdentifierContinue
       ? this.options.isIdentifierContinue(ch, this.codePointAt(ch))
-      : this.isValidIdentifierContinue(ch);
-  },
+      : (ch >= "a" && ch <= "z") ||
+          (ch >= "A" && ch <= "Z") ||
+          ch === "_" ||
+          ch === "$" ||
+          (ch >= "0" && ch <= "9");
+  }
 
-  isValidIdentifierContinue(ch) {
-    return this.isValidIdentifierStart(ch) || this.isNumber(ch);
-  },
-
+  /**
+   * Converts a character to its Unicode code point.
+   * @param {string} ch Character to convert.
+   * @returns {number} Unicode code point.
+   */
   codePointAt(ch) {
     if (ch.length === 1) return ch.charCodeAt(0);
 
     return (ch.charCodeAt(0) << 10) + ch.charCodeAt(1) - 0x35fdc00;
-  },
+  }
 
+  /**
+   * Peeks at the next multicharacter sequence in the text.
+   * @returns {string} Next multicharacter sequence.
+   */
   peekMultichar() {
     const ch = this.text.charAt(this.index);
     const peek = this.peek();
@@ -139,12 +200,24 @@ Lexer.prototype = {
       return ch + peek;
     }
     return ch;
-  },
+  }
 
+  /**
+   * Checks if a character is an exponent operator.
+   * @param {string} ch Character to check.
+   * @returns {boolean} True if character is an exponent operator, false otherwise.
+   */
   isExpOperator(ch) {
     return ch === "-" || ch === "+" || this.isNumber(ch);
-  },
+  }
 
+  /**
+   * Throws a lexer error.
+   * @param {string} error Error message.
+   * @param {number} [start] Start index.
+   * @param {number} [end] End index.
+   * @throws {Error} Lexer error.
+   */
   throwError(error, start, end) {
     end = end || this.index;
     const colStr = isDefined(start)
@@ -152,13 +225,13 @@ Lexer.prototype = {
       : ` ${end}`;
     throw $parseMinErr(
       "lexerr",
-      "Lexer Error: {0} at column{1} in expression [{2}].",
-      error,
-      colStr,
-      this.text,
+      `Lexer Error: ${error} at column${colStr} in expression [${this.text}].`,
     );
-  },
+  }
 
+  /**
+   * Reads and tokenizes a number from the text.
+   */
   readNumber() {
     let number = "";
     const start = this.index;
@@ -168,7 +241,7 @@ Lexer.prototype = {
         number += ch;
       } else {
         const peekCh = this.peek();
-        if (ch === "e" && this.isExpOperator(peekCh)) {
+        if (ch === "e" && this.isExpOperator(/** @type {string} */ (peekCh))) {
           number += ch;
         } else if (
           this.isExpOperator(ch) &&
@@ -195,8 +268,11 @@ Lexer.prototype = {
       constant: true,
       value: Number(number),
     });
-  },
+  }
 
+  /**
+   * Reads and tokenizes an identifier from the text.
+   */
   readIdent() {
     const start = this.index;
     this.index += this.peekMultichar().length;
@@ -212,46 +288,53 @@ Lexer.prototype = {
       text: this.text.slice(start, this.index),
       identifier: true,
     });
-  },
+  }
 
+  /**
+   * Reads and tokenizes a string from the text.
+   * @param {string} quote Quote character used for the string.
+   */
   readString(quote) {
     const start = this.index;
-    this.index++;
     let string = "";
-    let rawString = quote;
     let escape = false;
+
+    this.index++; // Skip opening quote
+
     while (this.index < this.text.length) {
-      const ch = this.text.charAt(this.index);
-      rawString += ch;
+      const ch = this.text[this.index];
+
       if (escape) {
         if (ch === "u") {
-          const hex = this.text.substring(this.index + 1, this.index + 5);
-          if (!hex.match(/[\da-f]{4}/i)) {
-            this.throwError(`Invalid unicode escape [\\u${hex}]`);
-          }
-          this.index += 4;
-          string += String.fromCharCode(parseInt(hex, 16));
+          // Handle unicode escapes
+          // Simplified for brevity
+          string += this.handleUnicodeEscape();
         } else {
-          const rep = ESCAPE[ch];
-          string += rep || ch;
+          string += ESCAPE[ch] || ch;
         }
         escape = false;
       } else if (ch === "\\") {
         escape = true;
       } else if (ch === quote) {
-        this.index++;
-        this.tokens.push({
-          index: start,
-          text: rawString,
-          constant: true,
-          value: string,
-        });
+        this.tokens.push({ index: start, text: this.text.slice(start, this.index + 1), constant: true, value: string });
+        this.index++; // Skip closing quote
         return;
       } else {
         string += ch;
       }
+
       this.index++;
     }
+
     this.throwError("Unterminated quote", start);
-  },
-};
+  }
+
+  handleUnicodeEscape() {
+    const hex = this.text.substring(this.index + 1, this.index + 5);
+    if (!hex.match(/[\da-f]{4}/i)) {
+      this.throwError(`Invalid unicode escape [\\u${hex}]`);
+    }
+    this.index += 4; // Move index past the four hexadecimal digits
+    return String.fromCharCode(parseInt(hex, 16));
+  }
+}
