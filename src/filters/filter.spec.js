@@ -434,7 +434,6 @@ describe("Filter: filter", () => {
   });
 
   it("should not be affected by `Object.prototype` when using a string expression", () => {
-    // eslint-disable-next-line no-extend-native
     Object.prototype.someProp = "oo";
 
     const items = [

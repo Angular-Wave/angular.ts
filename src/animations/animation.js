@@ -52,7 +52,7 @@ export function $$AnimationProvider() {
 
         // this is done first beforehand so that the map
         // is filled with a list of the elements that will be animated
-        // eslint-disable-next-line no-plusplus
+
         for (i = 0; i < animations.length; i++) {
           const animation = animations[i];
           lookup.set(

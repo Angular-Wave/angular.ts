@@ -248,7 +248,6 @@ export const $$AnimateQueueProvider = [
         const contains =
           window.Node.prototype.contains ||
           function (arg) {
-            // eslint-disable-next-line no-bitwise
             return this === arg || !!(this.compareDocumentPosition(arg) & 16);
           };
 

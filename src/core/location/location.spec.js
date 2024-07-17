@@ -3233,7 +3233,7 @@ describe("$location", () => {
       expect(
         parseLinkAndReturn(locationUrl, "http://server/pre/#otherPath"),
       ).toEqual("http://server/pre/#/otherPath");
-      // eslint-disable-next-line no-script-url
+
       expect(parseLinkAndReturn(locationUrl, "javascript:void(0)")).toEqual(
         undefined,
       );

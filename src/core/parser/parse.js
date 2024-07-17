@@ -149,7 +149,7 @@ Lexer.prototype = {
 
   codePointAt(ch) {
     if (ch.length === 1) return ch.charCodeAt(0);
-    // eslint-disable-next-line no-bitwise
+
     return (ch.charCodeAt(0) << 10) + ch.charCodeAt(1) - 0x35fdc00;
   },
 
@@ -973,7 +973,6 @@ ASTCompiler.prototype = {
       "s,l,a,i",
     )}${extra}${this.watchFns()}return fn;`;
 
-    // eslint-disable-next-line no-new-func
     const fn = new Function(
       "$filter",
       "getStringValue",
@@ -2116,7 +2115,7 @@ export function $ParseProvider() {
         }
 
         //Primitive or NaN
-        // eslint-disable-next-line no-self-compare
+
         return (
           newValue === oldValueOfValue ||
           (newValue !== newValue && oldValueOfValue !== oldValueOfValue)
@@ -2393,7 +2392,7 @@ export function inputsWatchDelegate(
 
   if (inputExpressions.length === 1) {
     let oldInputValueOf = expressionInputDirtyCheck; // init to something unique so that equals check fails
-    // eslint-disable-next-line prefer-destructuring
+
     inputExpressions = inputExpressions[0];
     return scope.$watch(
       ($scope) => {
@@ -2428,12 +2427,10 @@ export function inputsWatchDelegate(
     (scope) => {
       let changed = false;
 
-      // eslint-disable-next-line no-plusplus
       for (let i = 0, ii = inputExpressions.length; i < ii; i++) {
         const newInputValue = inputExpressions[i](scope);
         if (
           changed ||
-          // eslint-disable-next-line no-cond-assign
           (changed = !expressionInputDirtyCheck(
             newInputValue,
             oldInputValueOfValues[i],
@@ -2541,15 +2538,13 @@ export function expressionInputDirtyCheck(
   }
 
   // Primitive or NaN
-  // eslint-disable-next-line no-self-compare
+
   return (
     newValue === oldValueOfValue ||
-    // eslint-disable-next-line no-self-compare
     (newValue !== newValue && oldValueOfValue !== oldValueOfValue)
   );
 }
 
-// eslint-disable-next-line class-methods-use-this
 export function isAllDefined(value) {
   let allDefined = true;
   forEach(value, (val) => {

@@ -174,7 +174,6 @@ export class Angular {
  * @returns {angular.auto.IInjectorService} Returns the newly created injector for this app.
  */
   bootstrap(element, modules, config) {
-    // eslint-disable-next-line no-param-reassign
     config = config || {
       debugInfoEnabled: false,
       strictDi: false,
@@ -333,7 +332,6 @@ export class Angular {
     }
 
     function ensure(obj, name, factory) {
-      // eslint-disable-next-line no-return-assign, no-param-reassign
       return obj[name] || (obj[name] = factory());
     }
 
@@ -357,7 +355,6 @@ export class Angular {
       /** @type {!Array.<Function>} */
       const runBlocks = [];
 
-      // eslint-disable-next-line no-use-before-define
       const config = invokeLater("$injector", "invoke", "push", configBlocks);
 
       /** @type {import('./types').Module} */
@@ -883,7 +880,6 @@ export function setupModuleLoader(window) {
   const $injectorMinErr = minErr("$injector");
 
   function ensure(obj, name, factory) {
-    // eslint-disable-next-line no-return-assign
     return obj[name] || (obj[name] = factory());
   }
 
@@ -974,7 +970,6 @@ export function setupModuleLoader(window) {
         /** @type {!Array.<Function>} */
         const runBlocks = [];
 
-        // eslint-disable-next-line no-use-before-define
         const config = invokeLater("$injector", "invoke", "push", configBlocks);
 
         /** @type {import('./types').Module} */

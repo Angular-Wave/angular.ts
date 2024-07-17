@@ -244,7 +244,6 @@ FormController.prototype = {
     forEach(
       this.$pending,
       function (value, name) {
-        // eslint-disable-next-line no-invalid-this
         this.$setValidity(name, null, control);
       },
       this,
@@ -252,7 +251,6 @@ FormController.prototype = {
     forEach(
       this.$error,
       function (value, name) {
-        // eslint-disable-next-line no-invalid-this
         this.$setValidity(name, null, control);
       },
       this,
@@ -260,7 +258,6 @@ FormController.prototype = {
     forEach(
       this.$$success,
       function (value, name) {
-        // eslint-disable-next-line no-invalid-this
         this.$setValidity(name, null, control);
       },
       this,

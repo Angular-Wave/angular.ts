@@ -49,7 +49,7 @@ export const ngIncludeDirective = [
               $anchorScroll();
             }
           };
-          // eslint-disable-next-line no-plusplus
+
           const thisChangeId = ++changeCounter;
           if (src) {
             // set the 2nd param to true to ignore the template request error so that the inner

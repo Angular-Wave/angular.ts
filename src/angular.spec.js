@@ -884,9 +884,8 @@ describe("angular", () => {
       merge(dst, src);
 
       if (typeof dst.__proto__ !== "undefined") {
-        // eslint-disable-line
         // Should not overwrite the __proto__ property or pollute the Object prototype
-        expect(dst.__proto__).toBe(Object.prototype); // eslint-disable-line
+        expect(dst.__proto__).toBe(Object.prototype);
       }
       expect({}.xxx).toBeUndefined();
     });

@@ -328,7 +328,6 @@ NgModelController.prototype = {
    * @returns {boolean} True if `value` is "empty".
    */
   $isEmpty(value) {
-    // eslint-disable-next-line no-self-compare
     return (
       isUndefined(value) || value === "" || value === null || value !== value
     );
@@ -771,7 +770,6 @@ NgModelController.prototype = {
         try {
           listener();
         } catch (e) {
-          // eslint-disable-next-line no-invalid-this
           this.$$exceptionHandler(e);
         }
       },
@@ -1082,7 +1080,7 @@ function setupModelWatcher(ctrl) {
     if (
       modelValue !== ctrl.$modelValue &&
       // checks for NaN is needed to allow setting the model to NaN when there's an asyncValidator
-      // eslint-disable-next-line no-self-compare
+
       (ctrl.$modelValue === ctrl.$modelValue || modelValue === modelValue)
     ) {
       ctrl.$$setModelValue(modelValue);

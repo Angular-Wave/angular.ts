@@ -309,7 +309,6 @@ export function trim(value) {
   return isString(value) ? value.trim() : value;
 }
 
-// eslint-disable-next-line camelcase
 export function snakeCase(name, separator) {
   const modseparator = separator || "_";
   return name.replace(
@@ -520,7 +519,6 @@ export function toInt(str) {
 }
 
 export function isNumberNaN(num) {
-  // eslint-disable-next-line no-self-compare
   return Number.isNaN(num);
 }
 
@@ -699,7 +697,7 @@ export function simpleCompare(a, b) {
 export function equals(o1, o2) {
   if (o1 === o2) return true;
   if (o1 === null || o2 === null) return false;
-  // eslint-disable-next-line no-self-compare
+
   if (o1 !== o1 && o2 !== o2) return true; // NaN === NaN
   const t1 = typeof o1;
   const t2 = typeof o2;

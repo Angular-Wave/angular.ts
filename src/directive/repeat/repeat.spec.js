@@ -129,7 +129,6 @@ describe("ngRepeat", () => {
 
   it("should iterate over an array-like class", () => {
     function Collection() {}
-    // eslint-disable-next-line no-array-constructor
     Collection.prototype = new Array();
     Collection.prototype.length = 0;
 
@@ -296,7 +295,6 @@ describe("ngRepeat", () => {
           "</ul>",
       )(scope);
 
-      // eslint-disable-next-line no-extend-native
       Array.prototype.extraProperty = "should be ignored";
       // INIT
       scope.items = [true, true, true];

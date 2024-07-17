@@ -2417,7 +2417,6 @@ describe("$http", function () {
 //         it("should ignore Blob objects", () => {
 //           if (!window.Blob) return;
 
-//           // eslint-disable-next-line no-undef
 //           const blob = new Blob(["blob!"], { type: "text/plain" });
 
 //           $httpBackend.expect("POST", "/url", "[object Blob]").respond("");
@@ -2427,7 +2426,6 @@ describe("$http", function () {
 //         it("should ignore FormData objects", () => {
 //           if (!window.FormData) return;
 
-//           // eslint-disable-next-line no-undef
 //           const formData = new FormData();
 //           formData.append("angular", "is great");
 

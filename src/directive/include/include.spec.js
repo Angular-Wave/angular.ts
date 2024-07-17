@@ -381,7 +381,6 @@ describe("ngInclude", () => {
       await wait(100);
       const child = element.find("rect");
       expect(child.length).toBe(2);
-      //   // eslint-disable-next-line no-undef
       expect(child[0] instanceof SVGRectElement).toBe(true);
     });
 

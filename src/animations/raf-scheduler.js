@@ -24,7 +24,6 @@ export const $$rAFSchedulerFactory = [
       nextTick();
     }
 
-    // eslint-disable-next-line no-multi-assign
     queue = scheduler.queue = [];
 
     /* waitUntilQuiet does two things:

@@ -275,7 +275,7 @@ export function createInjector(modulesToLoad, strictDi) {
           // unlike those of Chrome and IE
           // So if stack doesn't contain message, we create a new string that contains both.
           // Since error.stack is read-only in Safari, I'm overriding e and not e.stack here.
-          // eslint-disable-next-line no-ex-assign
+
           e = `${e.message}\n${e.stack}`;
         }
         throw $injectorMinErr(

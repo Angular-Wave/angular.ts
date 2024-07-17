@@ -1173,7 +1173,6 @@ describe("ngModel", () => {
       });
 
       it("should be possible to extend Object prototype and still be able to do form validation", () => {
-        // eslint-disable-next-line no-extend-native
         Object.prototype.someThing = function () {};
         const element = $compile(
           '<form name="myForm">' +

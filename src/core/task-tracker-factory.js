@@ -1,5 +1,4 @@
 export function $$TaskTrackerFactoryProvider() {
-  // eslint-disable-next-line no-use-before-define
   this.$get = [
     "$log",
     /** @param {import('../services/log').LogService} log */

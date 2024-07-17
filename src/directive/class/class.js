@@ -1,7 +1,6 @@
 import { forEach, isObject, isString } from "../../shared/utils";
 
 function classDirective(name, selector) {
-  // eslint-disable-next-line no-param-reassign
   name = `ngClass${name}`;
   var indexWatchExpression;
 
@@ -24,7 +23,6 @@ function classDirective(name, selector) {
         if (name !== "ngClass") {
           if (!indexWatchExpression) {
             indexWatchExpression = $parse("$index", function moduloTwo($index) {
-              // eslint-disable-next-line no-bitwise
               return $index & 1;
             });
           }

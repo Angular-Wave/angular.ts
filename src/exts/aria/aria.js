@@ -128,7 +128,6 @@ export function initAriaModule() {
 
                 function getRadioReaction() {
                   // Strict comparison would cause a BC
-                  // eslint-disable-next-line eqeqeq
                   elem[0].setAttribute(
                     "aria-checked",
                     (attr.value == ngModel.$viewValue).toString(),

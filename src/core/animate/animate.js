@@ -93,7 +93,6 @@ export function CoreAnimateQueueProvider() {
           }
 
           if (options.addClass || options.removeClass) {
-            // eslint-disable-next-line no-use-before-define
             addRemoveClassesPostDigest(
               element,
               options.addClass,

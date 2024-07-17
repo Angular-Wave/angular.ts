@@ -811,7 +811,6 @@ describe("all", function () {
     });
 
     it("should support the instanceof operator", () => {
-      // eslint-disable-next-line new-cap
       let promise = $q(() => {});
       expect(promise instanceof $q).toBe(true);
       promise = new $q(() => {});

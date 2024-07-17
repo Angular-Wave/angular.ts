@@ -461,21 +461,17 @@ describe("annotate", () => {
 
   describe("es6", () => {
     it("should be possible to annotate shorthand methods", () => {
-      // eslint-disable-next-line no-eval
       expect(annotate(eval("({ fn(x) { return; } })").fn)).toEqual(["x"]);
     });
 
     it("should create $inject for arrow functions", () => {
-      // eslint-disable-next-line no-eval
       expect(annotate(eval("(a, b) => a"))).toEqual(["a", "b"]);
     });
     it("should create $inject for arrow functions with no parenthesis", () => {
-      // eslint-disable-next-line no-eval
       expect(annotate(eval("a => a"))).toEqual(["a"]);
     });
 
     it("should take args before first arrow", () => {
-      // eslint-disable-next-line no-eval
       expect(annotate(eval("a => b => b"))).toEqual(["a"]);
     });
 
@@ -492,7 +488,6 @@ describe("annotate", () => {
         "class/* Test */{}",
         "class /* Test */ {}",
       ].forEach((classDefinition) => {
-        // eslint-disable-next-line no-eval
         const Clazz = eval(`(${classDefinition})`);
         const instance = injector.invoke(Clazz);
 

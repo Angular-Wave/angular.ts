@@ -2366,7 +2366,6 @@ describe("parser", () => {
 
       it("should evaluate negation", () => {
         expect(scope.$eval("!false || true")).toEqual(!false || true);
-        // eslint-disable-next-line eqeqeq
         expect(scope.$eval("!11 == 10")).toEqual(!11 == 10);
         expect(scope.$eval("12/6/2")).toEqual(12 / 6 / 2);
       });

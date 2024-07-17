@@ -606,7 +606,6 @@ export class Scope {
           oldItem = oldValue[i];
           newItem = newValue[i];
 
-          // eslint-disable-next-line no-self-compare
           bothNaN = oldItem !== oldItem && newItem !== newItem;
           if (!bothNaN && oldItem !== newItem) {
             changeDetected++;
@@ -629,7 +628,6 @@ export class Scope {
             oldItem = oldValue[key];
 
             if (key in oldValue) {
-              // eslint-disable-next-line no-self-compare
               bothNaN = oldItem !== oldItem && newItem !== newItem;
               if (!bothNaN && oldItem !== newItem) {
                 changeDetected++;
@@ -1242,7 +1240,7 @@ export class Scope {
         this.$root.$digest();
       } catch (e) {
         $exceptionHandler(e);
-        // eslint-disable-next-line no-unsafe-finally
+
         throw e;
       }
     }

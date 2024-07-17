@@ -96,7 +96,7 @@ export function packageStyles(options) {
 
 export function pendClasses(classes, fix, isPrefix) {
   let className = "";
-  // eslint-disable-next-line no-nested-ternary
+
   classes = Array.isArray(classes)
     ? classes
     : classes && isString(classes) && classes.length

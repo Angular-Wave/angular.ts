@@ -43,7 +43,6 @@ export function $$CookieReader($document) {
       cookieArray = lastCookieString.split("; ");
       lastCookies = {};
 
-      // eslint-disable-next-line no-plusplus
       for (i = 0; i < cookieArray.length; i++) {
         cookie = cookieArray[i];
         index = cookie.indexOf("=");
