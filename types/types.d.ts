@@ -1,5 +1,6 @@
 export type BootstrapConfig = any;
 export type Injectable<T_1> = Function | Array<string | Function>;
+export type CompiledExpression = (arg0: any, arg1: any | undefined) => any;
 export type ComponentOptions = any;
 export type ControllerConstructor = Function;
 export type OnChangesObject = any;

@@ -45,6 +45,10 @@ const $rootScopeMinErr = minErr("$rootScope");
 /** @type {AsyncQueueTask[]} */
 export const $$asyncQueue = [];
 export const $$postDigestQueue = [];
+
+/**
+ * @type {Function[]}
+ */
 export const $$applyAsyncQueue = [];
 let postDigestQueuePosition = 0;
 let lastDirtyWatch = null;
@@ -84,9 +88,9 @@ export class $RootScopeProvider {
     "$parse",
     "$browser",
     /**
+     * @param {import('../exception-handler').ErrorHandler} exceptionHandler
      * @param {angular.IParseService} parse
-     * @param {import('../services/browser').Browser} browser
-     * @param {angular.IExceptionHandlerService} exceptionHandler
+     * @param {import('../../services/browser').Browser} browser
      * @returns {Scope} root scope
      */
     function (exceptionHandler, parse, browser) {
@@ -1236,13 +1240,19 @@ export class Scope {
     } catch (e) {
       $exceptionHandler(e);
     } finally {
-      try {
-        this.$root.$digest();
-      } catch (e) {
-        $exceptionHandler(e);
+      this.retry();
+    }
+  }
 
-        throw e;
-      }
+  /**
+   * @private
+   */
+  retry() {
+    try {
+      this.$root.$digest();
+    } catch (e) {
+      $exceptionHandler(e);
+      throw e;
     }
   }
 

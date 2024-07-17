@@ -228,7 +228,7 @@ export function forEach(obj: any | any[], iterator: Function, context?: any | un
 export function forEachSorted(obj: any, iterator: any, context: any): string[];
 /**
  * when using forEach the params are value, key, but it is often useful to have key, value.
- * @param {function(string, *)} iteratorFn
+ * @param {function(string, *):any} iteratorFn
  * @returns {function(*, string)}
  */
 export function reverseParams(iteratorFn: (arg0: string, arg1: any) => any): (arg0: any, arg1: string) => any;
@@ -257,7 +257,7 @@ export function baseExtend(dst: any, objs: any, deep: any): any;
  * @param {...Object} src Source object(s).
  * @returns {Object} Reference to `dst`.
  */
-export function extend(dst: any, ...args: any[]): any;
+export function extend(dst: any, ...src: any[]): any;
 /**
  * @module angular
  * @function merge
@@ -293,8 +293,21 @@ export function extend(dst: any, ...args: any[]): any;
  * @returns {Object} Reference to `dst`.
  */
 export function merge(dst: any, ...src: any[]): any;
-export function toInt(str: any): number;
+/**
+ * @param {string} str
+ * @returns {number}
+ */
+export function toInt(str: string): number;
+/**
+ * @param {any} num
+ * @returns {boolean}
+ */
 export function isNumberNaN(num: any): boolean;
+/**
+ * @param {Object} parent
+ * @param {Object} extra
+ * @returns {Object}
+ */
 export function inherit(parent: any, extra: any): any;
 /**
  * @module angular
@@ -349,10 +362,10 @@ export function isElement(node: any): boolean;
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Node/nodeName)
  *
- * @param {JQLite|Element} element
+ * @param {import('../shared/jqlite/jqlite').JQLite|Element} element
  * @returns
  */
-export function getNodeName(element: JQLite | Element): string;
+export function getNodeName(element: import("../shared/jqlite/jqlite").JQLite | Element): string;
 export function includes(array: any, obj: any): boolean;
 /**
  * Removes the first occurrence of a specified value from an array.

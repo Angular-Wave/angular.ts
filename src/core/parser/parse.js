@@ -1933,6 +1933,11 @@ function getValueOf(value) {
 
 /// ////////////////////////////////
 
+
+/**
+ * @typedef {function(string|function(import('../scope/scope').Scope):any, function(any, Scope, any):any=, boolean=): import('../../types').CompiledExpression} ParseService
+ */
+
 /**
  * @ngdoc service
  * @name $parse

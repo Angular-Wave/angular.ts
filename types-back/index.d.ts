@@ -782,18 +782,6 @@ declare namespace angular {
     ): void;
   }
 
-  interface ICompiledExpression {
-    (context: any, locals?: any): any;
-
-    literal: boolean;
-    constant: boolean;
-
-    // If value is not provided, undefined is gonna be used since the implementation
-    // does not check the parameter. Let's force a value for consistency. If consumer
-    // whants to undefine it, pass the undefined value explicitly.
-    assign(context: any, value: any): any;
-  }
-
   /**
    * $location - $locationProvider - service in module ng
    * see https://docs.angularjs.org/api/ng/service/$location

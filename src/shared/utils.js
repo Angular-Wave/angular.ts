@@ -398,7 +398,7 @@ export function forEachSorted(obj, iterator, context) {
 
 /**
  * when using forEach the params are value, key, but it is often useful to have key, value.
- * @param {function(string, *)} iteratorFn
+ * @param {function(string, *):any} iteratorFn
  * @returns {function(*, string)}
  */
 export function reverseParams(iteratorFn) {
@@ -472,8 +472,8 @@ export function baseExtend(dst, objs, deep) {
  * @param {...Object} src Source object(s).
  * @returns {Object} Reference to `dst`.
  */
-export function extend(dst) {
-  return baseExtend(dst, [].slice.call(arguments, 1), false);
+export function extend(dst, ...src) {
+  return baseExtend(dst, src, false);
 }
 
 /**
@@ -514,14 +514,27 @@ export function merge(dst, ...src) {
   return baseExtend(dst, src, true);
 }
 
+/**
+ * @param {string} str 
+ * @returns {number}
+ */
 export function toInt(str) {
   return parseInt(str, 10);
 }
 
+/**
+ * @param {any} num 
+ * @returns {boolean}
+ */
 export function isNumberNaN(num) {
   return Number.isNaN(num);
 }
 
+/**
+ * @param {Object} parent 
+ * @param {Object} extra 
+ * @returns {Object}
+ */
 export function inherit(parent, extra) {
   return extend(Object.create(parent), extra);
 }
@@ -597,7 +610,7 @@ export function isElement(node) {
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Node/nodeName)
  *
- * @param {JQLite|Element} element
+ * @param {import('../shared/jqlite/jqlite').JQLite|Element} element
  * @returns
  */
 export function getNodeName(element) {

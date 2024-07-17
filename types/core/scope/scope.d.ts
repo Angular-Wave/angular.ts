@@ -45,7 +45,10 @@ export const TTL: TTL;
 /** @type {AsyncQueueTask[]} */
 export const $$asyncQueue: AsyncQueueTask[];
 export const $$postDigestQueue: any[];
-export const $$applyAsyncQueue: any[];
+/**
+ * @type {Function[]}
+ */
+export const $$applyAsyncQueue: Function[];
 /**
  * Provider responsible for instantiating the initial scope, aka - root scope.
  * Every application has a single root {@link ng.$rootScope.Scope scope}.
@@ -58,7 +61,7 @@ export const $$applyAsyncQueue: any[];
  *
  */
 export class $RootScopeProvider {
-    $get: (string | ((exceptionHandler: angular.IExceptionHandlerService, parse: angular.IParseService, browser: any) => Scope))[];
+    $get: (string | ((exceptionHandler: import("../exception-handler").ErrorHandler, parse: angular.IParseService, browser: import("../../services/browser").Browser) => Scope))[];
 }
 /**
  * DESIGN NOTES
@@ -664,6 +667,10 @@ export class Scope {
      * @private
      */
     private $$postDigest;
+    /**
+     * @private
+     */
+    private retry;
     clearPhase(): void;
     /**
      * @param {number} count
