@@ -1,7 +1,15 @@
-export function AST(lexer: any, options: any): void;
+/**
+ * @param {import('./lexer').Lexer} lexer
+ * @param {*} options
+ */
+export function AST(lexer: import("./lexer").Lexer, options: any): void;
 export class AST {
-    constructor(lexer: any, options: any);
-    lexer: any;
+    /**
+     * @param {import('./lexer').Lexer} lexer
+     * @param {*} options
+     */
+    constructor(lexer: import("./lexer").Lexer, options: any);
+    lexer: import("./lexer").Lexer;
     options: any;
     ast(text: any): {
         type: string;
@@ -11,7 +19,7 @@ export class AST {
         }[];
     };
     text: any;
-    tokens: any;
+    tokens: import("./lexer").Token[];
     program(): {
         type: string;
         body: {
@@ -62,11 +70,11 @@ export class AST {
         }[];
     };
     throwError(msg: any, token: any): never;
-    consume(e1: any): any;
-    peekToken(): any;
-    peek(e1: any, e2: any, e3: any, e4: any): any;
-    peekAhead(i: any, e1: any, e2: any, e3: any, e4: any): any;
-    expect(e1: any, e2: any, e3: any, e4: any): any;
+    consume(e1: any): false | import("./lexer").Token;
+    peekToken(): import("./lexer").Token;
+    peek(e1: any, e2: any, e3: any, e4: any): false | import("./lexer").Token;
+    peekAhead(i: any, e1: any, e2: any, e3: any, e4: any): false | import("./lexer").Token;
+    expect(e1: any, e2: any, e3: any, e4: any): false | import("./lexer").Token;
     selfReferential: {
         this: {
             type: string;

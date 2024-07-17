@@ -24,6 +24,9 @@ types:
 	@echo "Generating *.d.ts"
 	@npx -p typescript tsc --project tsconfig.types.json
 
+jsdoc: 
+	@npm run generate-docs
+
 serve:
 	@npm run serve
 

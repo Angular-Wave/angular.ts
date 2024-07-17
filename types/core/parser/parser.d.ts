@@ -2,7 +2,13 @@
  * @constructor
  */
 export class Parser {
-    constructor(lexer: any, $filter: any, options: any);
+    /**
+     *
+     * @param {import('./lexer').Lexer} lexer
+     * @param {*} $filter
+     * @param {*} options
+     */
+    constructor(lexer: import("./lexer").Lexer, $filter: any, options: any);
     ast: AST;
     astCompiler: ASTInterpreter | ASTCompiler;
     parse(text: any): any;

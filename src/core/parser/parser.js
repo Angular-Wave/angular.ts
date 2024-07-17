@@ -7,6 +7,12 @@ import { ASTCompiler } from "./compiler";
  * @constructor
  */
 export class Parser {
+  /**
+   * 
+   * @param {import('./lexer').Lexer} lexer
+   * @param {*} $filter 
+   * @param {*} options 
+   */
   constructor(lexer, $filter, options) {
     this.ast = new AST(lexer, options);
     this.astCompiler = options.csp

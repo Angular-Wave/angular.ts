@@ -90,7 +90,6 @@ export function $ParseProvider() {
     "$filter",
     function ($filter) {
       var noUnsafeEval = csp().noUnsafeEval;
-      // TODO sep
       var $parseOptions = {
         csp: noUnsafeEval,
         literals: structuredClone(literals),
