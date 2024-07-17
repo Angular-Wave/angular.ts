@@ -12,7 +12,7 @@
  */
 
 /**
- * @typedef {function(any, any=): any} CompiledExpression
+ * @typedef {Object|function(any, any=): any} CompiledExpression
  * @property {boolean} literal - Indicates if the expression is a literal.
  * @property {boolean} constant - Indicates if the expression is constant.
  * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided,

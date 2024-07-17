@@ -1,12 +1,3 @@
-/**
- * @ngdoc provider
- * @name $parseProvider
- *
- *
- * @description
- * `$parseProvider` can be used for configuring the default behavior of the {@link ng.$parse $parse}
- *  service.
- */
 export function $ParseProvider(): void;
 export class $ParseProvider {
     /**
@@ -40,12 +31,12 @@ export class $ParseProvider {
      * Since this function will be called extensively, keep the implementation of these functions fast,
      * as the performance of these functions have a direct impact on the expressions parsing speed.
      *
-     * @param {function=} identifierStart The function that will decide whether the given character is
+     * @param {function(any):boolean=} identifierStart The function that will decide whether the given character is
      *   a valid identifier start character.
-     * @param {function=} identifierContinue The function that will decide whether the given character is
+     * @param {function(any):boolean=} identifierContinue The function that will decide whether the given character is
      *   a valid identifier continue character.
      */
-    setIdentifierFns: (identifierStart?: Function | undefined, identifierContinue?: Function | undefined) => this;
+    setIdentifierFns: (identifierStart?: ((arg0: any) => boolean) | undefined, identifierContinue?: ((arg0: any) => boolean) | undefined) => this;
     $get: (string | (($filter: any) => {
         (exp: any, interceptorFn: any): any;
         $$getAst: (exp: any) => {
@@ -64,8 +55,6 @@ export function chainInterceptors(first: any, second: any): {
     $stateful: any;
     $$pure: any;
 };
-export function expressionInputDirtyCheck(newValue: any, oldValueOfValue: any, compareObjectIdentity: any): boolean;
-export function isAllDefined(value: any): boolean;
 export const $parseMinErr: (arg0: string, ...arg1: any[]) => Error;
 export namespace literals {
     let _true: boolean;
@@ -76,4 +65,4 @@ export namespace literals {
     export { _null as null };
     export let undefined: any;
 }
-export type ParseService = (arg0: string | ((arg0: import("../scope/scope").Scope) => any), arg1: ((arg0: any, arg1: Scope, arg2: any) => any) | undefined, arg2: boolean | undefined) => import("../../types").CompiledExpression;
+export type ParseService = (arg0: string | ((arg0: import("../scope/scope").Scope) => any), arg1: ((arg0: any, arg1: import("../scope/scope").Scope, arg2: any) => any) | undefined, arg2: boolean | undefined) => import("../../types").CompiledExpression;

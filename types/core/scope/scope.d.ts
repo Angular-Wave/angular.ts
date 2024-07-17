@@ -61,7 +61,7 @@ export const $$applyAsyncQueue: Function[];
  *
  */
 export class $RootScopeProvider {
-    $get: (string | ((exceptionHandler: import("../exception-handler").ErrorHandler, parse: angular.IParseService, browser: import("../../services/browser").Browser) => Scope))[];
+    $get: (string | ((exceptionHandler: import("../exception-handler").ErrorHandler, parse: import("../parser/parse").ParseService, browser: import("../../services/browser").Browser) => Scope))[];
 }
 /**
  * DESIGN NOTES
@@ -103,9 +103,9 @@ export class Scope {
      */
     $root: Scope | null;
     /**
-     * @type {[]}
+     * @type {Array<any>}
      */
-    $$watchers: [];
+    $$watchers: Array<any>;
     /**
      * @type {number}
      */
@@ -296,10 +296,10 @@ export class Scope {
      *   values are examined for changes on every call to `$digest`.
      * - The `listener` is called whenever any expression in the `watchExpressions` array changes.
      *
-     * @param {Array.<string|Function(scope)>} watchExpressions Array of expressions that will be individually
+     * @param {Array.<string|((Scope)=>any)>} watchExpressions Array of expressions that will be individually
      * watched using {@link ng.$rootScope.Scope#$watch $watch()}
      *
-     * @param {function(newValues, oldValues, scope)} listener Callback called whenever the return value of any
+     * @param {function(any, any, Scope): any} listener Callback called whenever the return value of any
      *    expression in `watchExpressions` changes
      *    The `newValues` array contains the current values of the `watchExpressions`, with the indexes matching
      *    those of `watchExpression`
@@ -308,7 +308,7 @@ export class Scope {
      *    The `scope` refers to the current scope.
      * @returns {function()} Returns a de-registration function for all listeners.
      */
-    $watchGroup(watchExpressions: any, listener: (arg0: any[], arg1: any[], arg2: scope) => any): () => any;
+    $watchGroup(watchExpressions: Array<string | ((Scope: any) => any)>, listener: (arg0: any, arg1: any, arg2: Scope) => any): () => any;
     /**
      * @ngdoc method
      * @name $rootScope.Scope#$watchCollection
@@ -327,12 +327,12 @@ export class Scope {
      *
      *
      *
-     * @param {string|function(scope)} obj Evaluated as {@link guide/expression expression}. The
+     * @param {string|function(Scope):any} obj Evaluated as {@link guide/expression expression}. The
      *    expression value should evaluate to an object or an array which is observed on each
      *    {@link ng.$rootScope.Scope#$digest $digest} cycle. Any shallow change within the
      *    collection will trigger a call to the `listener`.
      *
-     * @param {function(newCollection, oldCollection, scope)} listener a callback function called
+     * @param {function(any[], any[], Scope):any} listener a callback function called
      *    when a change is detected.
      *    - The `newCollection` object is the newly modified data obtained from the `obj` expression
      *    - The `oldCollection` object is a copy of the former collection data.
@@ -343,7 +343,7 @@ export class Scope {
      * @returns {function()} Returns a de-registration function for this listener. When the
      *    de-registration function is executed, the internal watch operation is terminated.
      */
-    $watchCollection(obj: string | ((arg0: scope) => any), listener: (arg0: newCollection, arg1: oldCollection, arg2: scope) => any): () => any;
+    $watchCollection(obj: string | ((arg0: Scope) => any), listener: (arg0: any[], arg1: any[], arg2: Scope) => any): () => any;
     /**
    * @ngdoc method
    * @name $rootScope.Scope#$digest
@@ -630,10 +630,10 @@ export class Scope {
      *   - `defaultPrevented` - `{boolean}`: true if `preventDefault` was called.
      *
      * @param {string} name Event name to listen on.
-     * @param {function(angular.IAngularEvent): any} listener Function to call when the event is emitted.
+     * @param {function(any): any} listener Function to call when the event is emitted witn angular.IAngularEvent
      * @returns {function()} Returns a deregistration function for this listener.
      */
-    $on(name: string, listener: (arg0: angular.IAngularEvent) => any): () => any;
+    $on(name: string, listener: (arg0: any) => any): () => any;
     /**
    * @ngdoc method
    * @name $rootScope.Scope#$eval

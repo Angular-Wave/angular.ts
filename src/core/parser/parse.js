@@ -14,47 +14,7 @@ export const $parseMinErr = minErr("$parse");
 /// ////////////////////////////////
 
 /**
- * @typedef {function(string|function(import('../scope/scope').Scope):any, function(any, Scope, any):any=, boolean=): import('../../types').CompiledExpression} ParseService
- */
-
-/**
- * @ngdoc service
- * @name $parse
- * @kind function
- *
- * @description
- *
- * Converts AngularJS {@link guide/expression expression} into a function.
- *
- * ```js
- *   let getter = $parse('user.name');
- *   let setter = getter.assign;
- *   let context = {user:{name:'AngularJS'}};
- *   let locals = {user:{name:'local'}};
- *
- *   expect(getter(context)).toEqual('AngularJS');
- *   setter(context, 'newValue');
- *   expect(context.user.name).toEqual('newValue');
- *   expect(getter(context, locals)).toEqual('local');
- * ```
- *
- *
- * @param {string} expression String expression to compile.
- * @returns {function(context, locals)} a function which represents the compiled expression:
- *
- *    * `context` – `{object}` – an object against which any expressions embedded in the strings
- *      are evaluated against (typically a scope object).
- *    * `locals` – `{object=}` – local variables context object, useful for overriding values in
- *      `context`.
- *
- *    The returned function also has the following properties:
- *      * `literal` – `{boolean}` – whether the expression's top-level node is a JavaScript
- *        literal.
- *      * `constant` – `{boolean}` – whether the expression is made entirely of JavaScript
- *        constant literals.
- *      * `assign` – `{?function(context, value)}` – if the expression is assignable, this will be
- *        set to a function to change its value on the given context.
- *
+ * @typedef {function(string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): import('../../types').CompiledExpression} ParseService
  */
 
 export const literals = {
@@ -64,15 +24,6 @@ export const literals = {
   undefined,
 };
 
-/**
- * @ngdoc provider
- * @name $parseProvider
- *
- *
- * @description
- * `$parseProvider` can be used for configuring the default behavior of the {@link ng.$parse $parse}
- *  service.
- */
 export function $ParseProvider() {
   const cache = Object.create(null);
   const literals = {
@@ -81,7 +32,11 @@ export function $ParseProvider() {
     null: null,
     undefined: undefined,
   };
-  var identStart, identContinue;
+  /** @type {function(any):boolean?} */
+  var identStart;
+
+  /** @type {function(any):boolean?} */
+  var identContinue;
 
   /**
    * @ngdoc method
@@ -117,9 +72,9 @@ export function $ParseProvider() {
    * Since this function will be called extensively, keep the implementation of these functions fast,
    * as the performance of these functions have a direct impact on the expressions parsing speed.
    *
-   * @param {function=} identifierStart The function that will decide whether the given character is
+   * @param {function(any):boolean=} identifierStart The function that will decide whether the given character is
    *   a valid identifier start character.
-   * @param {function=} identifierContinue The function that will decide whether the given character is
+   * @param {function(any):boolean=} identifierContinue The function that will decide whether the given character is
    *   a valid identifier continue character.
    */
   this.setIdentifierFns = function (identifierStart, identifierContinue) {
@@ -597,7 +552,8 @@ export function chainInterceptors(first, second) {
   return chainedInterceptor;
 }
 
-export function expressionInputDirtyCheck(
+/** @private */
+function expressionInputDirtyCheck(
   newValue,
   oldValueOfValue,
   compareObjectIdentity,
@@ -629,7 +585,8 @@ export function expressionInputDirtyCheck(
   );
 }
 
-export function isAllDefined(value) {
+/** @private */
+function isAllDefined(value) {
   let allDefined = true;
   forEach(value, (val) => {
     if (!isDefined(val)) allDefined = false;

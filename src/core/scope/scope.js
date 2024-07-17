@@ -55,7 +55,7 @@ let lastDirtyWatch = null;
 let applyAsyncId = null;
 
 /** Services required by each scope instance */
-/** @type {angular.IParseService} */
+/** @type {import('../parser/parse').ParseService} */
 let $parse;
 /** @type {import('../../services/browser').Browser} */
 let $browser;
@@ -89,7 +89,7 @@ export class $RootScopeProvider {
     "$browser",
     /**
      * @param {import('../exception-handler').ErrorHandler} exceptionHandler
-     * @param {angular.IParseService} parse
+     * @param {import('../parser/parse').ParseService} parse
      * @param {import('../../services/browser').Browser} browser
      * @returns {Scope} root scope
      */
@@ -148,7 +148,7 @@ export class Scope {
     this.$root = this;
 
     /**
-     * @type {[]}
+     * @type {Array<any>}
      */
     this.$$watchers = [];
 
@@ -263,7 +263,7 @@ export class Scope {
     if (isolate || parent !== this) {
       child.$on(
         "$destroy",
-        /** @param {angular.IAngularEvent} $event */
+        /** @param {any} $event */ //angular.IAngularEvent
         ($event) => {
           $event.currentScope.$$destroyed = true;
         },
@@ -440,10 +440,10 @@ export class Scope {
    *   values are examined for changes on every call to `$digest`.
    * - The `listener` is called whenever any expression in the `watchExpressions` array changes.
    *
-   * @param {Array.<string|Function(scope)>} watchExpressions Array of expressions that will be individually
+   * @param {Array.<string|((Scope)=>any)>} watchExpressions Array of expressions that will be individually
    * watched using {@link ng.$rootScope.Scope#$watch $watch()}
    *
-   * @param {function(newValues, oldValues, scope)} listener Callback called whenever the return value of any
+   * @param {function(any, any, Scope): any} listener Callback called whenever the return value of any
    *    expression in `watchExpressions` changes
    *    The `newValues` array contains the current values of the `watchExpressions`, with the indexes matching
    *    those of `watchExpression`
@@ -533,12 +533,12 @@ export class Scope {
    *
    *
    *
-   * @param {string|function(scope)} obj Evaluated as {@link guide/expression expression}. The
+   * @param {string|function(Scope):any} obj Evaluated as {@link guide/expression expression}. The
    *    expression value should evaluate to an object or an array which is observed on each
    *    {@link ng.$rootScope.Scope#$digest $digest} cycle. Any shallow change within the
    *    collection will trigger a call to the `listener`.
    *
-   * @param {function(newCollection, oldCollection, scope)} listener a callback function called
+   * @param {function(any[], any[], Scope):any} listener a callback function called
    *    when a change is detected.
    *    - The `newCollection` object is the newly modified data obtained from the `obj` expression
    *    - The `oldCollection` object is a copy of the former collection data.
@@ -1309,7 +1309,7 @@ export class Scope {
    *   - `defaultPrevented` - `{boolean}`: true if `preventDefault` was called.
    *
    * @param {string} name Event name to listen on.
-   * @param {function(angular.IAngularEvent): any} listener Function to call when the event is emitted.
+   * @param {function(any): any} listener Function to call when the event is emitted witn angular.IAngularEvent
    * @returns {function()} Returns a deregistration function for this listener.
    */
   $on(name, listener) {
@@ -1319,6 +1319,7 @@ export class Scope {
     }
     namedListeners.push(listener);
 
+    /** @type {Scope} */
     let current = this;
     do {
       current.$$listenerCount[name] = (current.$$listenerCount[name] ?? 0) + 1;
@@ -1389,6 +1390,7 @@ export class Scope {
   $emit(name, ...args) {
     const empty = [];
     let namedListeners;
+    /** @type {Scope} */
     let scope = this;
     let stopPropagation = false;
     const event = {
@@ -1429,7 +1431,7 @@ export class Scope {
         break;
       }
       // traverse upwards
-      scope = scope.$parent;
+      scope = /** @type {Scope} */ scope.$parent;
     } while (scope);
 
     event.currentScope = null;
@@ -1460,8 +1462,10 @@ export class Scope {
    */
   $broadcast(name, ...args) {
     const target = this;
+    /** @type {Scope} */
     let current = target;
 
+    /** @type {Scope} */
     let next = target;
     const event = {
       name,
