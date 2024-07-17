@@ -515,7 +515,7 @@ export function merge(dst, ...src) {
 }
 
 /**
- * @param {string} str 
+ * @param {string} str
  * @returns {number}
  */
 export function toInt(str) {
@@ -523,7 +523,7 @@ export function toInt(str) {
 }
 
 /**
- * @param {any} num 
+ * @param {any} num
  * @returns {boolean}
  */
 export function isNumberNaN(num) {
@@ -531,8 +531,8 @@ export function isNumberNaN(num) {
 }
 
 /**
- * @param {Object} parent 
- * @param {Object} extra 
+ * @param {Object} parent
+ * @param {Object} extra
  * @returns {Object}
  */
 export function inherit(parent, extra) {

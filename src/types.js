@@ -15,12 +15,11 @@
  * @typedef {function(any, any=): any} CompiledExpression
  * @property {boolean} literal - Indicates if the expression is a literal.
  * @property {boolean} constant - Indicates if the expression is constant.
- * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided, 
+ * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided,
  * undefined is gonna be used since the implementation
- * does not check the parameter. Let's force a value for consistency. If consumer 
+ * does not check the parameter. Let's force a value for consistency. If consumer
  * wants to undefine it, pass the undefined value explicitly.
  */
-
 
 /**
  * @typedef {Object} ComponentOptions
