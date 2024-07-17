@@ -17,8 +17,7 @@ const OPERATORS = new Set(
 );
 
 /**
- * @typedef {Object} LexerOptions
- * @property {boolean} [csp] If true, enable content security policy mode.
+ * @typedef {Object} LexerOptions   
  * @property {(ch: string, codePoint: number) => boolean} [isIdentifierStart] Custom function to determine if a character is a valid identifier start.
  * @property {(ch: string, codePoint: number) => boolean} [isIdentifierContinue] Custom function to determine if a character is a valid identifier continuation.
  */
@@ -44,6 +43,7 @@ export class Lexer {
    * @param {LexerOptions} options Lexer options.
    */
   constructor(options) {
+    /** @type {LexerOptions} */
     this.options = options;
   }
 

@@ -1,6 +1,5 @@
 /**
  * @typedef {Object} LexerOptions
- * @property {boolean} [csp] If true, enable content security policy mode.
  * @property {(ch: string, codePoint: number) => boolean} [isIdentifierStart] Custom function to determine if a character is a valid identifier start.
  * @property {(ch: string, codePoint: number) => boolean} [isIdentifierContinue] Custom function to determine if a character is a valid identifier continuation.
  */
@@ -24,6 +23,7 @@ export class Lexer {
      * @param {LexerOptions} options Lexer options.
      */
     constructor(options: LexerOptions);
+    /** @type {LexerOptions} */
     options: LexerOptions;
     /**
      * Tokenizes the input text.
@@ -113,10 +113,6 @@ export class Lexer {
     handleUnicodeEscape(): string;
 }
 export type LexerOptions = {
-    /**
-     * If true, enable content security policy mode.
-     */
-    csp?: boolean;
     /**
      * Custom function to determine if a character is a valid identifier start.
      */

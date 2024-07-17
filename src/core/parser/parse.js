@@ -17,12 +17,15 @@ export const $parseMinErr = minErr("$parse");
  * @typedef {function(string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): import('../../types').CompiledExpression} ParseService
  */
 
+
+
 export const literals = {
   true: true,
   false: false,
   null: null,
   undefined,
 };
+
 
 export function $ParseProvider() {
   const cache = Object.create(null);
@@ -87,6 +90,7 @@ export function $ParseProvider() {
     "$filter",
     function ($filter) {
       var noUnsafeEval = csp().noUnsafeEval;
+      // TODO sep
       var $parseOptions = {
         csp: noUnsafeEval,
         literals: structuredClone(literals),
@@ -107,7 +111,10 @@ export function $ParseProvider() {
             parsedExpression = cache[cacheKey];
 
             if (!parsedExpression) {
-              var lexer = new Lexer($parseOptions);
+              var lexer = new Lexer({
+                isIdentifierContinue: $parseOptions.isIdentifierContinue,
+                isIdentifierStart: $parseOptions.isIdentifierStart,
+              });
               var parser = new Parser(lexer, $filter, $parseOptions);
               parsedExpression = parser.parse(exp);
 
@@ -584,6 +591,7 @@ function expressionInputDirtyCheck(
     (newValue !== newValue && oldValueOfValue !== oldValueOfValue)
   );
 }
+
 
 /** @private */
 function isAllDefined(value) {
