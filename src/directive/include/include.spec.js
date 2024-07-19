@@ -93,7 +93,7 @@ describe("ngInclude", () => {
     });
 
     it("should NOT use untrusted URL expressions ", () => {
-      element = JQLite('<ng:include src="url"></ng:include>');
+      element = JQLite('<ng-include src="url"></ng-include>');
       const injector = angular.bootstrap(element);
       $rootScope = injector.get("$rootScope");
       $rootScope.url = "http://example.com/myUrl";
@@ -103,7 +103,7 @@ describe("ngInclude", () => {
     });
 
     it("should NOT use mistyped expressions ", () => {
-      element = JQLite('<ng:include src="url"></ng:include>');
+      element = JQLite('<ng-include src="url"></ng-include>');
       const injector = angular.bootstrap(element);
       $rootScope = injector.get("$rootScope");
       $rootScope.name = "chirayu";
@@ -115,7 +115,7 @@ describe("ngInclude", () => {
     });
 
     it("should remove previously included text if a falsy value is bound to src", (done) => {
-      element = JQLite('<div><ng:include src="url"></ng:include></div>');
+      element = JQLite('<div><ng-include src="url"></ng-include></div>');
       const injector = angular.bootstrap(element);
       $rootScope = injector.get("$rootScope");
       $rootScope.expr = "igor";
@@ -142,7 +142,7 @@ describe("ngInclude", () => {
         });
       });
       element = JQLite(
-        '<div><div><ng:include src="url"></ng:include></div></div>',
+        '<div><div><ng-include src="url"></ng-include></div></div>',
       );
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
@@ -165,7 +165,7 @@ describe("ngInclude", () => {
         });
       });
       element = JQLite(
-        '<div><div><ng:include src="url"></ng:include></div></div>',
+        '<div><div><ng-include src="url"></ng-include></div></div>',
       );
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
@@ -189,7 +189,7 @@ describe("ngInclude", () => {
       });
 
       element = JQLite(
-        '<div><div><ng:include src="url"></ng:include></div></div>',
+        '<div><div><ng-include src="url"></ng-include></div></div>',
       );
 
       const injector = angular.bootstrap(element, ["myModule"]);
@@ -207,7 +207,7 @@ describe("ngInclude", () => {
       window.angular.module("myModule", []);
 
       element = JQLite(
-        '<div><div><ng:include src="url" onload="loaded = true"></ng:include></div></div>',
+        '<div><div><ng-include src="url" onload="loaded = true"></ng-include></div></div>',
       );
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
@@ -227,7 +227,7 @@ describe("ngInclude", () => {
     it("should create child scope and destroy old one", (done) => {
       window.angular.module("myModule", []);
 
-      element = JQLite('<div><ng:include src="url"></ng:include></div>');
+      element = JQLite('<div><ng-include src="url"></ng-include></div>');
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       $rootScope.$digest();
@@ -267,7 +267,7 @@ describe("ngInclude", () => {
 
     it("should do xhr request and cache it", async () => {
       window.angular.module("myModule", []);
-      element = JQLite('<div><ng:include src="url"></ng:include></div>');
+      element = JQLite('<div><ng-include src="url"></ng-include></div>');
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       $rootScope.url = "/mock/hello";
@@ -287,7 +287,7 @@ describe("ngInclude", () => {
 
     it("should clear content when error during xhr request", () => {
       window.angular.module("myModule", []);
-      element = JQLite('<div><ng:include src="url">content</ng:include></div>');
+      element = JQLite('<div><ng-include src="url">content</ng-include></div>');
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       $rootScope.url = "/mock/401";
@@ -297,7 +297,7 @@ describe("ngInclude", () => {
 
     it("should be async even if served from cache", (done) => {
       window.angular.module("myModule", []);
-      element = JQLite('<div><ng:include src="url"></ng:include></div>');
+      element = JQLite('<div><ng-include src="url"></ng-include></div>');
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       $rootScope.url = "/mock/hello";
@@ -319,7 +319,7 @@ describe("ngInclude", () => {
     it("should discard pending xhr callbacks if a new template is requested before the current finished loading", (done) => {
       window.angular.module("myModule", []);
       element = JQLite(
-        "<div><ng:include src='templateUrl'></ng:include></div>",
+        "<div><ng-include src='templateUrl'></ng-include></div>",
       );
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
@@ -339,7 +339,7 @@ describe("ngInclude", () => {
     it("should not break attribute bindings on the same element", async () => {
       window.angular.module("myModule", []);
       element = JQLite(
-        '<div><span foo="#/{{hrefUrl}}" ng:include="includeUrl"></span></div>',
+        '<div><span foo="#/{{hrefUrl}}" ng-include="includeUrl"></span></div>',
       );
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
@@ -457,7 +457,7 @@ describe("ngInclude", () => {
           },
         ]);
         element = JQLite(
-          '<div><ng:include src="tpl" autoscroll></ng:include></div>',
+          '<div><ng-include src="tpl" autoscroll></ng-include></div>',
         );
         const injector = angular.bootstrap(element, ["myModule"]);
         $rootScope = injector.get("$rootScope");
@@ -480,7 +480,7 @@ describe("ngInclude", () => {
           },
         ]);
         element = JQLite(
-          '<div><ng:include src="tpl" autoscroll="value"></ng:include></div>',
+          '<div><ng-include src="tpl" autoscroll="value"></ng-include></div>',
         );
         const injector = angular.bootstrap(element, ["myModule"]);
         $rootScope = injector.get("$rootScope");
@@ -506,7 +506,7 @@ describe("ngInclude", () => {
           },
         ]);
 
-        element = JQLite('<div><ng:include src="tpl"></ng:include></div>');
+        element = JQLite('<div><ng-include src="tpl"></ng-include></div>');
         const injector = angular.bootstrap(element, ["myModule"]);
         $rootScope = injector.get("$rootScope");
 
@@ -530,7 +530,7 @@ describe("ngInclude", () => {
         ]);
 
         element = JQLite(
-          '<div><ng:include src="tpl" autoscroll="value"></ng:include></div>',
+          '<div><ng-include src="tpl" autoscroll="value"></ng-include></div>',
         );
         const injector = angular.bootstrap(element, ["myModule"]);
         $rootScope = injector.get("$rootScope");
@@ -558,7 +558,7 @@ describe("ngInclude", () => {
 
       // it('should only call $anchorScroll after the "enter" animation completes', inject(
       //   compileAndLink(
-      //     '<div><ng:include src="tpl" autoscroll></ng:include></div>',
+      //     '<div><ng-include src="tpl" autoscroll></ng-include></div>',
       //   ),
       //   ($rootScope, $animate, $timeout) => {
       //     expect(autoScrollSpy).not.toHaveBeenCalled();

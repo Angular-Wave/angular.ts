@@ -63,7 +63,7 @@ describe("ngOn* event binding", () => {
   it("should work with different prefixes", () => {
     const cb = ($rootScope.cb = jasmine.createSpy("ng-on cb"));
     const element = $compile(
-      '<span ng:on:test="cb(1)" ng-On-test2="cb(2)" ng_On_test3="cb(3)"></span>',
+      '<span ng-on-test="cb(1)" ng-On-test2="cb(2)"></span>',
     )($rootScope);
 
     element.triggerHandler("test");
@@ -71,15 +71,12 @@ describe("ngOn* event binding", () => {
 
     element.triggerHandler("test2");
     expect(cb).toHaveBeenCalledWith(2);
-
-    element.triggerHandler("test3");
-    expect(cb).toHaveBeenCalledWith(3);
   });
 
-  it("should work if they are prefixed with x- or data- and different prefixes", () => {
+  it("should work if they are prefixed with data- and different prefixes", () => {
     const cb = ($rootScope.cb = jasmine.createSpy("ng-on cb"));
     const element = $compile(
-      '<span data-ng-on-test2="cb(2)" ng-on-test3="cb(3)" data-ng:on-test4="cb(4)" ' +
+      '<span data-ng-on-test2="cb(2)" ng-on-test3="cb(3)" data-ng-on-test4="cb(4)" ' +
         'ng-on-test5="cb(5)" ng-on-test6="cb(6)"></span>',
     )($rootScope);
 
@@ -151,7 +148,7 @@ describe("ngOn* event binding", () => {
     $rootScope = injector.get("$rootScope");
     $compile = injector.get("$compile");
     $compile(
-      '<div attr-exposer ng-on-title="cb(1)" ng-on-super-title="cb(2)" ng-on-my-camel_title="cb(3)">',
+      '<div attr-exposer ng-on-title="cb(1)" ng-on-super-title="cb(2)" ng-on-my-camel-title="cb(3)">',
     )($rootScope);
 
     expect(attrs.title).toBeUndefined();
@@ -167,7 +164,7 @@ describe("ngOn* event binding", () => {
     expect(attrs.myCamelTitle).toBeUndefined();
     expect(attrs.$attr.myCamelTitle).toBeUndefined();
     expect(attrs.ngOnMyCamelTitle).toBe("cb(3)");
-    expect(attrs.$attr.ngOnMyCamelTitle).toBe("ng-on-my-camel_title");
+    expect(attrs.$attr.ngOnMyCamelTitle).toBe("ng-on-my-camel-title");
   });
 
   it("should not conflict with (ng-attr-)attribute mappings of the same name", () => {
@@ -204,8 +201,6 @@ describe("ngOn* event binding", () => {
 
     element.triggerHandler("foobar");
     element.triggerHandler("fooBar");
-    element.triggerHandler("foo_bar");
-    element.triggerHandler("foo:bar");
     expect(cb).not.toHaveBeenCalled();
 
     element.triggerHandler("foo-bar");
@@ -219,8 +214,8 @@ describe("ngOn* event binding", () => {
 
     element.triggerHandler("foobar");
     element.triggerHandler("foo-bar");
-    element.triggerHandler("foo_bar");
-    element.triggerHandler("foo:bar");
+    element.triggerHandler("foo-bar");
+    element.triggerHandler("foo-bar");
     expect(cb).not.toHaveBeenCalled();
 
     element.triggerHandler("fooBar");

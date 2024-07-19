@@ -296,8 +296,8 @@ describe("$compile", () => {
     expect(el[0].childNodes[0].childNodes[0]).toBeTruthy();
   });
 
-  ["x", "data"].forEach((prefix) => {
-    [":", "-", "_"].forEach((delim) => {
+  ["data"].forEach((prefix) => {
+    ["-"].forEach((delim) => {
       it(
         "compiles element directives with " + prefix + delim + " prefix",
         () => {
@@ -352,7 +352,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = $("<div x:my-directive></div>");
+    var el = $("<div my-directive></div>");
     $compile(el);
     expect(el.data("hasCompiled")).toBe(true);
   });
@@ -717,7 +717,7 @@ describe("$compile", () => {
     it("should allow multiple directives per element", () => {
       reloadModules();
       var el = $(
-        "<span greet='angular' log='L' x-high-log='H' data-medium-log='M'></span>",
+        "<span greet='angular' log='L' high-log='H' data-medium-log='M'></span>",
       );
       $compile(el)($rootScope);
       expect(el.text()).toEqual("Hello angular");
@@ -782,7 +782,7 @@ describe("$compile", () => {
 
       reloadModules();
       element = $compile(
-        '<div log exp="abc" aa="A" x-Bb="B" daTa-cC="C">unlinked</div>',
+        '<div log exp="abc" aa="A" Bb="B" daTa-cC="C">unlinked</div>',
       )($rootScope);
 
       expect(element.text()).toEqual("worked");
@@ -963,10 +963,10 @@ describe("$compile", () => {
     it("denormalizes attribute by using original attribute name", () => {
       registerAndCompile(
         "myDirective",
-        '<my-directive x-some-attribute="42"></my-directive>',
+        '<my-directive some-attribute="42"></my-directive>',
         function (element, attrs) {
           attrs.$set("someAttribute", 43);
-          expect(element.attr("x-some-attribute")).toEqual("43");
+          expect(element.attr("some-attribute")).toEqual("43");
         },
       );
     });
@@ -985,13 +985,12 @@ describe("$compile", () => {
     it("uses new attribute name after once given", () => {
       registerAndCompile(
         "myDirective",
-        '<my-directive x-some-attribute="42"></my-directive>',
+        '<my-directive some-attribute="42"></my-directive>',
         function (element, attrs) {
           attrs.$set("someAttribute", 43, true, "some-attribute");
           attrs.$set("someAttribute", 44);
 
           expect(element.attr("some-attribute")).toEqual("44");
-          expect(element.attr("x-some-attribute")).toEqual("42");
         },
       );
     });
@@ -4696,9 +4695,9 @@ describe("$compile", () => {
         },
       }));
       reloadModules();
-      $compile("<div _t></div>")($rootScope);
+      $compile("<div t></div>")($rootScope);
       $compile("<div -t></div>")($rootScope);
-      $compile("<div :t></div>")($rootScope);
+      $compile("<div t></div>")($rootScope);
       expect(log.join("; ")).toEqual("pre; post; pre; post; pre; post");
     });
 
@@ -5164,7 +5163,7 @@ describe("$compile", () => {
         registerDefaultDirectives();
         reloadModules();
         element = $compile(
-          '<span log="L" x-high-log="H" data-medium-log="M"></span>',
+          '<span log="L" high-log="H" data-medium-log="M"></span>',
         )($rootScope);
         expect(log.join("; ")).toEqual("L; M; H");
       });
@@ -7791,13 +7790,13 @@ describe("$compile", () => {
 
       it("should translate {{}} in terminal nodes", () => {
         element = $compile(
-          '<select ng:model="x"><option value="">Greet {{name}}!</option></select>',
+          '<select ng-model="x"><option value="">Greet {{name}}!</option></select>',
         )($rootScope);
         $rootScope.$digest();
         expect(
           element[0].outerHTML.replace(' selected="selected"', ""),
         ).toEqual(
-          '<select ng:model="x" class="ng-pristine ng-untouched ng-valid ng-empty">' +
+          '<select ng-model="x" class="ng-pristine ng-untouched ng-valid ng-empty">' +
             '<option value="">Greet !</option>' +
             "</select>",
         );
@@ -7806,7 +7805,7 @@ describe("$compile", () => {
         expect(
           element[0].outerHTML.replace(' selected="selected"', ""),
         ).toEqual(
-          '<select ng:model="x" class="ng-pristine ng-untouched ng-valid ng-empty">' +
+          '<select ng-model="x" class="ng-pristine ng-untouched ng-valid ng-empty">' +
             '<option value="">Greet Misko!</option>' +
             "</select>",
         );
@@ -11138,7 +11137,7 @@ describe("$compile", () => {
 
       it("should eventually expose isolate scope variables on ES6 class controller with controllerAs when bindToController is true", () => {
         var controllerCalled = false;
-
+        // eslint-disable-next-line no-eval
         var Controller = eval(
           "(\n" +
             "class Foo {\n" +
@@ -14256,7 +14255,7 @@ describe("$compile", () => {
           beforeEach(() => {
             module.directive("toggle", () => ({
               transclude: true,
-              template: '<div ng:if="t"><div ng:transclude></div></div>',
+              template: '<div ng-if="t"><div ng-transclude></div></div>',
             }));
             initInjector("test1");
           });
@@ -14264,7 +14263,7 @@ describe("$compile", () => {
           it("should not leak the transclude scope when the transcluded content is an element transclusion directive", () => {
             element = $compile(
               "<div toggle>" +
-                "<div ng:repeat=\"msg in ['msg-1']\">{{ msg }}</div>" +
+                "<div ng-repeat=\"msg in ['msg-1']\">{{ msg }}</div>" +
                 "</div>",
             )($rootScope);
 
@@ -14292,8 +14291,8 @@ describe("$compile", () => {
           it("should not leak the transclude scope when the transcluded content is an multi-element transclusion directive", () => {
             element = $compile(
               "<div toggle>" +
-                "<div ng:repeat-start=\"msg in ['msg-1']\">{{ msg }}</div>" +
-                "<div ng:repeat-end>{{ msg }}</div>" +
+                "<div ng-repeat-start=\"msg in ['msg-1']\">{{ msg }}</div>" +
+                "<div ng-repeat-end>{{ msg }}</div>" +
                 "</div>",
             )($rootScope);
 
@@ -14371,7 +14370,7 @@ describe("$compile", () => {
           it("should mark as destroyed all sub scopes of the scope being destroyed", () => {
             element = $compile(
               "<div toggle>" +
-                "<div ng:repeat=\"msg in ['msg-1']\">{{ msg }}</div>" +
+                "<div ng-repeat=\"msg in ['msg-1']\">{{ msg }}</div>" +
                 "</div>",
             )($rootScope);
 
@@ -15362,7 +15361,7 @@ describe("$compile", () => {
         transclude: {},
         template:
           '<div class="a" ng-transclude="ng-transclude"></div>' +
-          '<div class="b" ng:transclude="ng:transclude"></div>' +
+          '<div class="b" ng-transclude="ng-transclude"></div>' +
           '<div class="c" data-ng-transclude="data-ng-transclude"></div>',
       }));
       initInjector("test1");
@@ -15574,7 +15573,7 @@ describe("$compile", () => {
       element = $compile(
         "<foo>" +
           "<foo-bar>bar1</foo-bar>" +
-          "<foo:bar>bar2</foo:bar>" +
+          "<foo-bar>bar2</foo-bar>" +
           "<moo-kar>baz1</moo-kar>" +
           "<data-moo-kar>baz2</data-moo-kar>" +
           "</foo>",
@@ -16041,7 +16040,7 @@ describe("$compile", () => {
       expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);
     });
 
-    it("should use $$sanitizeUri when working with svg and xlink:href", () => {
+    it("should use $$sanitizeUri when working with svg and xlink-href", () => {
       const $$sanitizeUri = jasmine
         .createSpy("$$sanitizeUri")
         .and.returnValue("https://clean.example.org");
@@ -16054,10 +16053,10 @@ describe("$compile", () => {
       $rootScope.testUrl = "https://bad.example.org";
 
       const elementA = $compile(
-        "<svg><a xlink:href=\"{{ testUrl + 'aTag' }}\"></a></svg>",
+        "<svg><a xlink-href=\"{{ testUrl + 'aTag' }}\"></a></svg>",
       )($rootScope);
       $rootScope.$apply();
-      expect(elementA.find("a").attr("xlink:href")).toBe(
+      expect(elementA.find("a").attr("xlink-href")).toBe(
         "https://clean.example.org",
       );
       expect($$sanitizeUri).toHaveBeenCalledWith(
@@ -16066,10 +16065,10 @@ describe("$compile", () => {
       );
 
       const elementImage = $compile(
-        "<svg><image xlink:href=\"{{ testUrl + 'imageTag' }}\"></image></svg>",
+        "<svg><image xlink-href=\"{{ testUrl + 'imageTag' }}\"></image></svg>",
       )($rootScope);
       $rootScope.$apply();
-      expect(elementImage.find("image").attr("xlink:href")).toBe(
+      expect(elementImage.find("image").attr("xlink-href")).toBe(
         "https://clean.example.org",
       );
       expect($$sanitizeUri).toHaveBeenCalledWith(
@@ -16108,7 +16107,7 @@ describe("$compile", () => {
       });
       initInjector("test1");
       element = $compile(
-        '<svg><whatever xlink:href="{{ testUrl }}"></whatever></svg>',
+        '<svg><whatever xlink-href="{{ testUrl }}"></whatever></svg>',
       )($rootScope);
       $rootScope.testUrl = "https://bad.example.org";
 
@@ -16481,7 +16480,7 @@ describe("$compile", () => {
     it("should work with different prefixes", () => {
       $rootScope.name = "Misko";
       element = $compile(
-        '<span ng:attr:test="{{name}}" ng-Attr-test2="{{name}}" ng_Attr_test3="{{name}}"></span>',
+        '<span ng-attr-test="{{name}}" ng-Attr-test2="{{name}}" ng-Attr-test3="{{name}}"></span>',
       )($rootScope);
       expect(element.attr("test")).toBeUndefined();
       expect(element.attr("test2")).toBeUndefined();
@@ -16535,10 +16534,10 @@ describe("$compile", () => {
       expect(element.attr("href")).toBe("test/test");
     });
 
-    it("should work if they are prefixed with or data- and different prefixes", () => {
+    it("should work if they are prefixed with data- and different prefixes", () => {
       $rootScope.name = "Misko";
       element = $compile(
-        '<span data-ng-attr-test2="{{name}}" ng-attr-test3="{{name}}" data-ng:attr-test4="{{name}}" ' +
+        '<span data-ng-attr-test2="{{name}}" ng-attr-test3="{{name}}" data-ng-attr-test4="{{name}}" ' +
           'ng-attr-test5="{{name}}" ng-attr-test6="{{name}}"></span>',
       )($rootScope);
       expect(element.attr("test2")).toBeUndefined();
@@ -16603,7 +16602,7 @@ describe("$compile", () => {
       it("should work with different prefixes", () => {
         $rootScope.name = "JamieMason";
         element = $compile(
-          '<span ng:attr:dash-test="{{name}}" ng-Attr-dash-test2="{{name}}" ng_Attr_dash-test3="{{name}}"></span>',
+          '<span ng-attr-dash-test="{{name}}" ng-Attr-dash-test2="{{name}}" ng-Attr-dash-test3="{{name}}"></span>',
         )($rootScope);
         expect(element.attr("dash-test")).toBeUndefined();
         expect(element.attr("dash-test2")).toBeUndefined();
@@ -16614,10 +16613,10 @@ describe("$compile", () => {
         expect(element.attr("dash-test3")).toBe("JamieMason");
       });
 
-      it("should work if they are prefixed with x- or data-", () => {
+      it("should work if they are prefixed with  or data-", () => {
         $rootScope.name = "JamieMason";
         element = $compile(
-          '<span data-ng-attr-dash-test2="{{name}}" ng-attr-dash-test3="{{name}}" data-ng:attr-dash-test4="{{name}}"></span>',
+          '<span data-ng-attr-dash-test2="{{name}}" ng-attr-dash-test3="{{name}}" data-ng-attr-dash-test4="{{name}}"></span>',
         )($rootScope);
         expect(element.attr("dash-test2")).toBeUndefined();
         expect(element.attr("dash-test3")).toBeUndefined();
@@ -16822,32 +16821,35 @@ describe("$compile", () => {
   describe("when an attribute has an underscore-separated name", () => {
     it("should work with different prefixes", () => {
       $rootScope.dimensions = "0 0 0 0";
-      element = $compile('<svg ng:attr:view_box="{{dimensions}}"></svg>')(
+      element = $compile('<svg ng-attr-view-box="{{dimensions}}"></svg>')(
         $rootScope,
       );
-      expect(element.attr("viewBox")).toBeUndefined();
+      expect(element.attr("view-box")).toBeUndefined();
       $rootScope.$digest();
-      expect(element.attr("viewBox")).toBe("0 0 0 0");
+      expect(element.attr("view-box")).toBe("0 0 0 0");
     });
 
-    it("should work if they are prefixed with x- or data-", () => {
+    it("should work if they are prefixed with data-", () => {
       $rootScope.dimensions = "0 0 0 0";
       $rootScope.number = 0.42;
       $rootScope.scale = 1;
       element = $compile(
-        '<svg data-ng-attr-view_box="{{dimensions}}">' +
-          '<filter ng-attr-filter_units="{{number}}">' +
-          '<feDiffuseLighting data-ng:attr_surface_scale="{{scale}}">' +
+        '<svg data-ng-attr-view-box="{{dimensions}}">' +
+          '<filter ng-attr-filter-units="{{number}}">' +
+          '<feDiffuseLighting data-ng-attr-surface-scale="{{scale}}">' +
           "</feDiffuseLighting>" +
-          '<feSpecularLighting x-ng:attr_surface_scale="{{scale}}">' +
+          '<feSpecularLighting ng-attr-surface-scale="{{scale}}">' +
           "</feSpecularLighting></filter></svg>",
       )($rootScope);
       expect(element.attr("viewBox")).toBeUndefined();
       $rootScope.$digest();
-      expect(element.attr("viewBox")).toBe("0 0 0 0");
-      expect(element.find("filter").attr("filterUnits")).toBe("0.42");
-      expect(element.find("feDiffuseLighting").attr("surfaceScale")).toBe("1");
-      expect(element.find("feSpecularLighting").attr("surfaceScale")).toBe("1");
+
+      expect(element.attr("view-box")).toBe("0 0 0 0");
+      expect(element.find("filter").attr("filter-units")).toBe("0.42");
+      expect(element.find("feDiffuseLighting").attr("surface-scale")).toBe("1");
+      expect(element.find("feSpecularLighting").attr("surface-scale")).toBe(
+        "1",
+      );
     });
   });
 
@@ -17163,7 +17165,7 @@ describe("$compile", () => {
       }).toThrowError(/uterdir/);
     });
 
-    it("should support data- and x- prefix", () => {
+    it("should support data- prefix", () => {
       $rootScope.show = false;
       element = $compile(
         "<div>" +

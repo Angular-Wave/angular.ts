@@ -119,7 +119,7 @@ describe("ngProp*", () => {
   it("should work with different prefixes", () => {
     $rootScope.name = "Misko";
     const element = $compile(
-      '<span ng:prop:test="name" ng-Prop-test2="name" ng_Prop_test3="name"></span>',
+      '<span ng-prop-test="name" ng-Prop-test2="name" ng-Prop-test3="name"></span>',
     )($rootScope);
     expect(element[0].test).toBe("Misko");
     expect(element[0].test2).toBe("Misko");
@@ -138,7 +138,7 @@ describe("ngProp*", () => {
   it("should work if they are prefixed with x- or data- and different prefixes", () => {
     $rootScope.name = "Misko";
     const element = $compile(
-      '<span data-ng-prop-test2="name" ng-prop-test3="name" data-ng:prop-test4="name" ' +
+      '<span data-ng-prop-test2="name" ng-prop-test3="name" data-ng-prop-test4="name" ' +
         'ng-prop-test5="name" ng-prop-test6="name"></span>',
     )($rootScope);
     expect(element[0].test2).toBe("Misko");
@@ -179,7 +179,7 @@ describe("ngProp*", () => {
       }),
     );
     $compile(
-      '<div attr-exposer ng-prop-title="12" ng-prop-super-title="34" ng-prop-my-camel_title="56">',
+      '<div attr-exposer ng-prop-title="12" ng-prop-super-title="34" ng-prop-my-camel-title="56">',
     )($rootScope);
 
     expect(attrs.title).toBeUndefined();
@@ -195,7 +195,7 @@ describe("ngProp*", () => {
     expect(attrs.myCamelTitle).toBeUndefined();
     expect(attrs.$attr.myCamelTitle).toBeUndefined();
     expect(attrs.ngPropMyCamelTitle).toBe("56");
-    expect(attrs.$attr.ngPropMyCamelTitle).toBe("ng-prop-my-camel_title");
+    expect(attrs.$attr.ngPropMyCamelTitle).toBe("ng-prop-my-camel-title");
   });
 
   it("should not conflict with (ng-attr-)attribute mappings of the same name", () => {
