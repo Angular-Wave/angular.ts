@@ -1,4 +1,4 @@
-import { forEach, isDefined } from "../../shared/utils";
+import { isDefined } from "../../shared/utils";
 import { ASTType } from "./ast-type";
 
 export const PURITY_ABSOLUTE = 1;
@@ -28,16 +28,16 @@ export class ASTInterpreter {
     let inputs;
     if (toWatch) {
       inputs = [];
-      forEach(toWatch, (watch, key) => {
+      for (const [key, watch] of Object.entries(toWatch)) {
         const input = this.recurse(watch);
         input.isPure = watch.isPure;
         watch.input = input;
         inputs.push(input);
         watch.watchId = key;
-      });
+      }
     }
     const expressions = [];
-    forEach(ast.body, (expression) => {
+    ast.body.forEach((expression) => {
       expressions.push(this.recurse(expression.expression));
     });
 
@@ -49,7 +49,7 @@ export class ASTInterpreter {
           ? expressions[0]
           : function (scope, locals) {
               let lastValue;
-              forEach(expressions, (exp) => {
+              expressions.forEach((exp) => {
                 lastValue = exp(scope, locals);
               });
               return lastValue;
@@ -112,7 +112,7 @@ export class ASTInterpreter {
           : this.nonComputedMember(left, right, context, create);
       case ASTType.CallExpression:
         args = [];
-        forEach(ast.arguments, (expr) => {
+        ast.arguments.forEach((expr) => {
           args.push(self.recurse(expr));
         });
         if (ast.filter) right = this.$filter(ast.callee.name);
@@ -151,7 +151,7 @@ export class ASTInterpreter {
         };
       case ASTType.ArrayExpression:
         args = [];
-        forEach(ast.elements, (expr) => {
+        ast.elements.forEach((expr) => {
           args.push(self.recurse(expr));
         });
         return function (scope, locals, assign, inputs) {
@@ -163,7 +163,7 @@ export class ASTInterpreter {
         };
       case ASTType.ObjectExpression:
         args = [];
-        forEach(ast.properties, (property) => {
+        ast.properties.forEach((property) => {
           if (property.computed) {
             args.push({
               key: self.recurse(property.key),
@@ -681,7 +681,7 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
         : false;
       allConstants = isStatelessFilter;
       argsToWatch = [];
-      forEach(ast.arguments, (expr) => {
+      ast.arguments.forEach((expr) => {
         findConstantAndWatchExpressions(expr, $filter, astIsPure);
         allConstants = allConstants && expr.constant;
         argsToWatch.push.apply(argsToWatch, expr.toWatch);
@@ -698,7 +698,7 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
     case ASTType.ArrayExpression:
       allConstants = true;
       argsToWatch = [];
-      forEach(ast.elements, (expr) => {
+      ast.elements.forEach((expr) => {
         findConstantAndWatchExpressions(expr, $filter, astIsPure);
         allConstants = allConstants && expr.constant;
         argsToWatch.push.apply(argsToWatch, expr.toWatch);
@@ -709,7 +709,7 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
     case ASTType.ObjectExpression:
       allConstants = true;
       argsToWatch = [];
-      forEach(ast.properties, (property) => {
+      ast.properties.forEach((property) => {
         findConstantAndWatchExpressions(property.value, $filter, astIsPure);
         allConstants = allConstants && property.value.constant;
         argsToWatch.push.apply(argsToWatch, property.value.toWatch);
