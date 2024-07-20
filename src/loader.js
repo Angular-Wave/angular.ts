@@ -171,14 +171,15 @@ export class Angular {
  * * `strictDi` - disable automatic function annotation for the application. This is meant to
  *   assist in finding bugs which break minified code. Defaults to `false`.
  *
- * @returns {angular.auto.IInjectorService} Returns the newly created injector for this app.
+ * @returns {any} InjectorService - Returns the newly created injector for this app.
  */
   bootstrap(element, modules, config) {
     config = config || {
       debugInfoEnabled: false,
       strictDi: false,
     };
-    this.doBootstrap = function () {
+
+    var doBootstrap = function () {
       // @ts-ignore
       element = JQLite(element);
 
@@ -238,7 +239,7 @@ export class Angular {
     }
 
     if (window && !NG_DEFER_BOOTSTRAP.test(window.name)) {
-      return this.doBootstrap();
+      return doBootstrap();
     }
 
     window.name = window.name.replace(NG_DEFER_BOOTSTRAP, "");
@@ -246,7 +247,7 @@ export class Angular {
       forEach(extraModules, function (module) {
         modules.push(module);
       });
-      return this.doBootstrap();
+      return doBootstrap();
     };
 
     if (isFunction(this.resumeDeferredBootstrap)) {

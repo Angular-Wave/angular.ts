@@ -27,6 +27,7 @@ import { ASTType } from "./ast-type";
  * @property {ASTNode} [property] - The property of a member expression.
  * @property {boolean} [computed] - Indicates if a member expression is computed.
  * @property {string} [operator] - The operator of a binary or logical expression.
+ * @property {boolean} [filter]
  */
 
 /**

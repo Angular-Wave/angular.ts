@@ -22,9 +22,9 @@ export class ASTInterpreter {
      * @param {import("./ast").ASTNode} ast - The AST node.
      * @param {Object} [context] - The context.
      * @param {boolean|number} [create] - The create flag.
-     * @returns {function} The recursive function.
+     * @returns {import("./parse").CompiledExpression} The recursive function.
      */
-    recurse(ast: import("./ast").ASTNode, context?: any, create?: boolean | number): Function;
+    recurse(ast: import("./ast").ASTNode, context?: any, create?: boolean | number): import("./parse").CompiledExpression;
     /**
      * Unary plus operation.
      * @param {function} argument - The argument function.
@@ -181,28 +181,28 @@ export class ASTInterpreter {
      * Returns the value of an identifier.
      * @param {string} name - The identifier name.
      * @param {Object} [context] - The context.
-     * @param {boolean} [create] - Whether to create the identifier if it does not exist.
+     * @param {boolean|1} [create] - Whether to create the identifier if it does not exist.
      * @returns {function} The function returning the identifier value.
      */
-    identifier(name: string, context?: any, create?: boolean): Function;
+    identifier(name: string, context?: any, create?: boolean | 1): Function;
     /**
      * Returns the value of a computed member expression.
      * @param {function} left - The left operand function.
      * @param {function} right - The right operand function.
      * @param {Object} [context] - The context.
-     * @param {boolean} [create] - Whether to create the member if it does not exist.
+     * @param {boolean|1} [create] - Whether to create the member if it does not exist.
      * @returns {function} The function returning the computed member value.
      */
-    computedMember(left: Function, right: Function, context?: any, create?: boolean): Function;
+    computedMember(left: Function, right: Function, context?: any, create?: boolean | 1): Function;
     /**
      * Returns the value of a non-computed member expression.
      * @param {function} left - The left operand function.
      * @param {string} right - The right operand function.
      * @param {Object} [context] - The context.
-     * @param {boolean} [create] - Whether to create the member if it does not exist.
+     * @param {boolean|1} [create] - Whether to create the member if it does not exist.
      * @returns {function} The function returning the non-computed member value.
      */
-    nonComputedMember(left: Function, right: string, context?: any, create?: boolean): Function;
+    nonComputedMember(left: Function, right: string, context?: any, create?: boolean | 1): Function;
     /**
      * Returns the value of an input expression.
      * @param {function} input - The input function.
@@ -211,3 +211,8 @@ export class ASTInterpreter {
      */
     inputs(input: Function, watchId: number): Function;
 }
+export type DecoratedASTNode = import("./ast").ASTNode & {
+    isPure: boolean | number;
+    constant: boolean;
+    toWatch: any[];
+};

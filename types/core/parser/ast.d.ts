@@ -23,6 +23,7 @@
  * @property {ASTNode} [property] - The property of a member expression.
  * @property {boolean} [computed] - Indicates if a member expression is computed.
  * @property {string} [operator] - The operator of a binary or logical expression.
+ * @property {boolean} [filter]
  */
 /**
  * @param {import('./lexer').Lexer} lexer - The lexer instance for tokenizing input
@@ -272,4 +273,5 @@ export type ASTNode = {
      * - The operator of a binary or logical expression.
      */
     operator?: string;
+    filter?: boolean;
 };

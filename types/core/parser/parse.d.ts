@@ -40,13 +40,19 @@ export class $ParseProvider {
 }
 export function constantWatchDelegate(scope: any, listener: any, objectEquality: any, parsedExpression: any): any;
 /**
- * @typedef {function} CompiledExpression
+ * @typedef {Object} CompiledExpressionProps
+ * @property {boolean} literal - Indicates if the expression is a literal.
+ * @property {boolean} constant - Indicates if the expression is constant.
+ * @property {boolean} isPure
+ * @property {boolean} oneTime
+ * @property {any[]} inputs
+ * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided,
+ */
+/**
+ * @typedef {function & CompiledExpressionProps} CompiledExpression
  * @param {import('../scope/scope').Scope} context - An object against which any expressions embedded in the strings are evaluated against (typically a scope object).
  * @param {object} [locals] - local variables context object, useful for overriding values in `context`.
  * @returns {any}
- * @property {boolean} literal - Indicates if the expression is a literal.
- * @property {boolean} constant - Indicates if the expression is constant.
- * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided,
  * undefined is gonna be used since the implementation
  * does not check the parameter. Let's force a value for consistency. If consumer
  * wants to undefine it, pass the undefined value explicitly.
@@ -64,5 +70,22 @@ export namespace literals {
     export { _null as null };
     export let undefined: any;
 }
-export type CompiledExpression = Function;
+export type CompiledExpressionProps = {
+    /**
+     * - Indicates if the expression is a literal.
+     */
+    literal: boolean;
+    /**
+     * - Indicates if the expression is constant.
+     */
+    constant: boolean;
+    isPure: boolean;
+    oneTime: boolean;
+    inputs: any[];
+    /**
+     * - Assigns a value to a context. If value is not provided,
+     */
+    assign: (arg0: any, arg1: any) => any;
+};
+export type CompiledExpression = Function & CompiledExpressionProps;
 export type ParseService = (arg0: string | ((arg0: import("../scope/scope").Scope) => any), arg1: ((arg0: any, arg1: import("../scope/scope").Scope, arg2: any) => any) | undefined, arg2: boolean | undefined) => CompiledExpression;

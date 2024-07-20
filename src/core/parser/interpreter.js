@@ -18,13 +18,15 @@ export class ASTInterpreter {
    * @returns {import("./parse").CompiledExpression}
    */
   compile(ast) {
-    findConstantAndWatchExpressions(ast, this.$filter);
+    let decoratedNode = findConstantAndWatchExpressions(ast, this.$filter);
+    /** @type {import("./ast").ASTNode} */
     let assignable;
+    /** @type {import("./parse").CompiledExpression} */
     let assign;
-    if ((assignable = assignableAST(ast))) {
+    if ((assignable = assignableAST(decoratedNode))) {
       assign = this.recurse(assignable);
     }
-    const toWatch = getInputs(ast.body);
+    const toWatch = getInputs(decoratedNode.body);
     let inputs;
     if (toWatch) {
       inputs = [];
@@ -37,15 +39,15 @@ export class ASTInterpreter {
       }
     }
     const expressions = [];
-    ast.body.forEach((expression) => {
+    decoratedNode.body.forEach((expression) => {
       expressions.push(this.recurse(expression.expression));
     });
 
     /** @type {import("./parse").CompiledExpression} */
     const fn =
-      ast.body.length === 0
+      decoratedNode.body.length === 0
         ? () => {}
-        : ast.body.length === 1
+        : decoratedNode.body.length === 1
           ? expressions[0]
           : function (scope, locals) {
               let lastValue;
@@ -68,7 +70,7 @@ export class ASTInterpreter {
    * @param {import("./ast").ASTNode} ast - The AST node.
    * @param {Object} [context] - The context.
    * @param {boolean|number} [create] - The create flag.
-   * @returns {function} The recursive function.
+   * @returns {import("./parse").CompiledExpression} The recursive function.
    */
   recurse(ast, context, create) {
     let left;
@@ -526,7 +528,7 @@ export class ASTInterpreter {
    * Returns the value of an identifier.
    * @param {string} name - The identifier name.
    * @param {Object} [context] - The context.
-   * @param {boolean} [create] - Whether to create the identifier if it does not exist.
+   * @param {boolean|1} [create] - Whether to create the identifier if it does not exist.
    * @returns {function} The function returning the identifier value.
    */
   identifier(name, context, create) {
@@ -548,7 +550,7 @@ export class ASTInterpreter {
    * @param {function} left - The left operand function.
    * @param {function} right - The right operand function.
    * @param {Object} [context] - The context.
-   * @param {boolean} [create] - Whether to create the member if it does not exist.
+   * @param {boolean|1} [create] - Whether to create the member if it does not exist.
    * @returns {function} The function returning the computed member value.
    */
   computedMember(left, right, context, create) {
@@ -578,7 +580,7 @@ export class ASTInterpreter {
    * @param {function} left - The left operand function.
    * @param {string} right - The right operand function.
    * @param {Object} [context] - The context.
-   * @param {boolean} [create] - Whether to create the member if it does not exist.
+   * @param {boolean|1} [create] - Whether to create the member if it does not exist.
    * @returns {function} The function returning the non-computed member value.
    */
   nonComputedMember(left, right, context, create) {
@@ -612,69 +614,138 @@ export class ASTInterpreter {
 }
 
 /**
+ * @typedef {import("./ast").ASTNode & {
+ *  isPure: boolean|number,
+ *  constant: boolean,
+ *  toWatch: Array,
+ * }} DecoratedASTNode
+ */
+
+/**
  * Decorates AST with constant, toWatch, and isPure properties
  * @param {import("./ast").ASTNode} ast
  * @param {function(any):any} $filter
- * @param {boolean} [parentIsPure]
+ * @param {boolean|1|2} [parentIsPure]
+ * @returns {DecoratedASTNode}
  */
 function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
   let allConstants;
   let argsToWatch;
   let isStatelessFilter;
+  let decoratedNode = /** @type  {DecoratedASTNode} */ (ast);
 
-  const astIsPure = (ast.isPure = isPure(ast, parentIsPure));
+  let decoratedLeft,
+    decoratedRight,
+    decoratedTest,
+    decoratedAlternate,
+    decoratedConsequent,
+    decoratedObject,
+    decoratedProperty,
+    decoratedKey;
+  const astIsPure = (decoratedNode.isPure = isPure(ast, parentIsPure));
 
   switch (ast.type) {
     case ASTType.Program:
       allConstants = true;
-      /** @type {[import("./ast").ASTNode]} */ (ast.body).forEach((expr) => {
-        findConstantAndWatchExpressions(expr.expression, $filter, astIsPure);
-        allConstants = allConstants && expr.expression.constant;
+      decoratedNode.body.forEach((expr) => {
+        let decorated = findConstantAndWatchExpressions(
+          expr.expression,
+          $filter,
+          astIsPure,
+        );
+        allConstants = allConstants && decorated.constant;
       });
-      ast.constant = allConstants;
-      break;
+      decoratedNode.constant = allConstants;
+      return decoratedNode;
     case ASTType.Literal:
-      ast.constant = true;
-      ast.toWatch = [];
-      break;
+      decoratedNode.constant = true;
+      decoratedNode.toWatch = [];
+      return decoratedNode;
     case ASTType.UnaryExpression:
-      findConstantAndWatchExpressions(ast.argument, $filter, astIsPure);
-      ast.constant = ast.argument.constant;
-      ast.toWatch = ast.argument.toWatch;
-      break;
+      var decorated = findConstantAndWatchExpressions(
+        decoratedNode.argument,
+        $filter,
+        astIsPure,
+      );
+      decoratedNode.constant = decorated.constant;
+      decoratedNode.toWatch = decorated.toWatch;
+      return decoratedNode;
     case ASTType.BinaryExpression:
-      findConstantAndWatchExpressions(ast.left, $filter, astIsPure);
-      findConstantAndWatchExpressions(ast.right, $filter, astIsPure);
-      ast.constant = ast.left.constant && ast.right.constant;
-      ast.toWatch = ast.left.toWatch.concat(ast.right.toWatch);
-      break;
+      decoratedLeft = findConstantAndWatchExpressions(
+        decoratedNode.left,
+        $filter,
+        astIsPure,
+      );
+      decoratedRight = findConstantAndWatchExpressions(
+        decoratedNode.right,
+        $filter,
+        astIsPure,
+      );
+      decoratedNode.constant =
+        decoratedLeft.constant && decoratedRight.constant;
+      decoratedNode.toWatch = decoratedLeft.toWatch.concat(
+        decoratedRight.toWatch,
+      );
+      return decoratedNode;
     case ASTType.LogicalExpression:
-      findConstantAndWatchExpressions(ast.left, $filter, astIsPure);
-      findConstantAndWatchExpressions(ast.right, $filter, astIsPure);
-      ast.constant = ast.left.constant && ast.right.constant;
-      ast.toWatch = ast.constant ? [] : [ast];
-      break;
+      decoratedLeft = findConstantAndWatchExpressions(
+        decoratedNode.left,
+        $filter,
+        astIsPure,
+      );
+      decoratedRight = findConstantAndWatchExpressions(
+        decoratedNode.right,
+        $filter,
+        astIsPure,
+      );
+      decoratedNode.constant =
+        decoratedLeft.constant && decoratedRight.constant;
+      decoratedNode.toWatch = decoratedNode.constant ? [] : [ast];
+      return decoratedNode;
     case ASTType.ConditionalExpression:
-      findConstantAndWatchExpressions(ast.test, $filter, astIsPure);
-      findConstantAndWatchExpressions(ast.alternate, $filter, astIsPure);
-      findConstantAndWatchExpressions(ast.consequent, $filter, astIsPure);
-      ast.constant =
-        ast.test.constant && ast.alternate.constant && ast.consequent.constant;
-      ast.toWatch = ast.constant ? [] : [ast];
-      break;
+      decoratedTest = findConstantAndWatchExpressions(
+        ast.test,
+        $filter,
+        astIsPure,
+      );
+      decoratedAlternate = findConstantAndWatchExpressions(
+        ast.alternate,
+        $filter,
+        astIsPure,
+      );
+      decoratedConsequent = findConstantAndWatchExpressions(
+        ast.consequent,
+        $filter,
+        astIsPure,
+      );
+      decoratedNode.constant =
+        decoratedTest.constant &&
+        decoratedAlternate.constant &&
+        decoratedConsequent.constant;
+      decoratedNode.toWatch = decoratedNode.constant ? [] : [ast];
+      return decoratedNode;
     case ASTType.Identifier:
-      ast.constant = false;
-      ast.toWatch = [ast];
-      break;
+      decoratedNode.constant = false;
+      decoratedNode.toWatch = [ast];
+      return decoratedNode;
     case ASTType.MemberExpression:
-      findConstantAndWatchExpressions(ast.object, $filter, astIsPure);
+      decoratedObject = findConstantAndWatchExpressions(
+        ast.object,
+        $filter,
+        astIsPure,
+      );
       if (ast.computed) {
-        findConstantAndWatchExpressions(ast.property, $filter, astIsPure);
+        decoratedProperty = findConstantAndWatchExpressions(
+          ast.property,
+          $filter,
+          astIsPure,
+        );
       }
-      ast.constant =
-        ast.object.constant && (!ast.computed || ast.property.constant);
-      ast.toWatch = ast.constant ? [] : [ast];
-      break;
+      decoratedNode.constant =
+        decoratedObject.constant &&
+        (!decoratedNode.computed || decoratedProperty.constant);
+      decoratedNode.toWatch = decoratedNode.constant ? [] : [ast];
+      return decoratedNode;
     case ASTType.CallExpression:
       isStatelessFilter = ast.filter
         ? isStateless($filter, ast.callee.name)
@@ -682,55 +753,72 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
       allConstants = isStatelessFilter;
       argsToWatch = [];
       ast.arguments.forEach((expr) => {
-        findConstantAndWatchExpressions(expr, $filter, astIsPure);
-        allConstants = allConstants && expr.constant;
-        argsToWatch.push.apply(argsToWatch, expr.toWatch);
+        decorated = findConstantAndWatchExpressions(expr, $filter, astIsPure);
+        allConstants = allConstants && decorated.constant;
+        argsToWatch.push.apply(argsToWatch, decorated.toWatch);
       });
-      ast.constant = allConstants;
-      ast.toWatch = isStatelessFilter ? argsToWatch : [ast];
-      break;
+      decoratedNode.constant = allConstants;
+      decoratedNode.toWatch = isStatelessFilter ? argsToWatch : [decoratedNode];
+      return decoratedNode;
     case ASTType.AssignmentExpression:
-      findConstantAndWatchExpressions(ast.left, $filter, astIsPure);
-      findConstantAndWatchExpressions(ast.right, $filter, astIsPure);
-      ast.constant = ast.left.constant && ast.right.constant;
-      ast.toWatch = [ast];
-      break;
+      decoratedLeft = findConstantAndWatchExpressions(
+        ast.left,
+        $filter,
+        astIsPure,
+      );
+      decoratedRight = findConstantAndWatchExpressions(
+        ast.right,
+        $filter,
+        astIsPure,
+      );
+      decoratedNode.constant =
+        decoratedLeft.constant && decoratedRight.constant;
+      decoratedNode.toWatch = [decoratedNode];
+      return decoratedNode;
     case ASTType.ArrayExpression:
       allConstants = true;
       argsToWatch = [];
       ast.elements.forEach((expr) => {
-        findConstantAndWatchExpressions(expr, $filter, astIsPure);
-        allConstants = allConstants && expr.constant;
-        argsToWatch.push.apply(argsToWatch, expr.toWatch);
+        decorated = findConstantAndWatchExpressions(expr, $filter, astIsPure);
+        allConstants = allConstants && decorated.constant;
+        argsToWatch.push.apply(argsToWatch, decorated.toWatch);
       });
-      ast.constant = allConstants;
-      ast.toWatch = argsToWatch;
-      break;
+      decoratedNode.constant = allConstants;
+      decoratedNode.toWatch = argsToWatch;
+      return decoratedNode;
     case ASTType.ObjectExpression:
       allConstants = true;
       argsToWatch = [];
       ast.properties.forEach((property) => {
-        findConstantAndWatchExpressions(property.value, $filter, astIsPure);
-        allConstants = allConstants && property.value.constant;
-        argsToWatch.push.apply(argsToWatch, property.value.toWatch);
+        decorated = findConstantAndWatchExpressions(
+          property.value,
+          $filter,
+          astIsPure,
+        );
+        allConstants = allConstants && decorated.constant;
+        argsToWatch.push.apply(argsToWatch, decorated.toWatch);
         if (property.computed) {
           // `{[key]: value}` implicitly does `key.toString()` which may be non-pure
-          findConstantAndWatchExpressions(property.key, $filter, false);
-          allConstants = allConstants && property.key.constant;
-          argsToWatch.push.apply(argsToWatch, property.key.toWatch);
+          decoratedKey = findConstantAndWatchExpressions(
+            property.key,
+            $filter,
+            false,
+          );
+          allConstants = allConstants && decoratedKey.constant;
+          argsToWatch.push.apply(argsToWatch, decoratedKey.toWatch);
         }
       });
-      ast.constant = allConstants;
-      ast.toWatch = argsToWatch;
-      break;
+      decoratedNode.constant = allConstants;
+      decoratedNode.toWatch = argsToWatch;
+      return decoratedNode;
     case ASTType.ThisExpression:
-      ast.constant = false;
-      ast.toWatch = [];
-      break;
+      decoratedNode.constant = false;
+      decoratedNode.toWatch = [];
+      return decoratedNode;
     case ASTType.LocalsExpression:
-      ast.constant = false;
-      ast.toWatch = [];
-      break;
+      decoratedNode.constant = false;
+      decoratedNode.toWatch = [];
+      return decoratedNode;
   }
 }
 
@@ -757,15 +845,25 @@ function plusFn(l, r) {
   return l + r;
 }
 
+/**
+ *
+ * @param {import("./ast").ASTNode[]} body
+ * @returns {any}
+ */
 function getInputs(body) {
   if (body.length !== 1) return;
-  const lastExpression = body[0].expression;
+  const lastExpression = /** @type {DecoratedASTNode} */ (body[0].expression);
   const candidate = lastExpression.toWatch;
   if (candidate.length !== 1) return candidate;
   return candidate[0] !== lastExpression ? candidate : undefined;
 }
 
-// Detect nodes which could depend on non-shallow state of objects
+/**
+ * Detect nodes which could depend on non-shallow state of objects
+ * @param {import("./ast").ASTNode} node
+ * @param {boolean|PURITY_ABSOLUTE|PURITY_RELATIVE} parentIsPure
+ * @returns {boolean|PURITY_ABSOLUTE|PURITY_RELATIVE}
+ */
 function isPure(node, parentIsPure) {
   switch (node.type) {
     // Computed members might invoke a stateful toString()
@@ -775,7 +873,7 @@ function isPure(node, parentIsPure) {
       }
       break;
 
-    // Unary always convert to primative
+    // Unary always convert to primitive
     case ASTType.UnaryExpression:
       return PURITY_ABSOLUTE;
 

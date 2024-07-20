@@ -27,7 +27,7 @@ export class Parser {
      * @param {string} exp - Expression to be parsed
      * @returns
      */
-    parse(exp: string): Function;
+    parse(exp: string): import("./parse").CompiledExpression;
     /**
      * @param {string} exp - Expression to be parsed
      * @returns {ParsedAST}
