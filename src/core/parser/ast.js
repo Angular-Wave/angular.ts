@@ -4,7 +4,7 @@ import { ASTType } from "./ast-type";
 
 /**
  * @param {import('./lexer').Lexer} lexer
- * @param {*} options 
+ * @param {*} options
  */
 export function AST(lexer, options) {
   this.lexer = lexer;

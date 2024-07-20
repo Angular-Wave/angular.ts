@@ -17,7 +17,7 @@ const OPERATORS = new Set(
 );
 
 /**
- * @typedef {Object} LexerOptions   
+ * @typedef {Object} LexerOptions
  * @property {(ch: string, codePoint: number) => boolean} [isIdentifierStart] Custom function to determine if a character is a valid identifier start.
  * @property {(ch: string, codePoint: number) => boolean} [isIdentifierContinue] Custom function to determine if a character is a valid identifier continuation.
  */

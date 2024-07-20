@@ -17,15 +17,12 @@ export const $parseMinErr = minErr("$parse");
  * @typedef {function(string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): import('../../types').CompiledExpression} ParseService
  */
 
-
-
 export const literals = {
   true: true,
   false: false,
   null: null,
   undefined,
 };
-
 
 export function $ParseProvider() {
   const cache = Object.create(null);
@@ -590,7 +587,6 @@ function expressionInputDirtyCheck(
     (newValue !== newValue && oldValueOfValue !== oldValueOfValue)
   );
 }
-
 
 /** @private */
 function isAllDefined(value) {
