@@ -66,16 +66,16 @@ export class JQLite {
     /**
      * Gets or sets data on a parent element
      * @param {string} name
-     * @param {any} value
+     * @param {any} [value]
      * @returns {JQLite|any}
      */
-    inheritedData(name: string, value: any): JQLite | any;
+    inheritedData(name: string, value?: any): JQLite | any;
     /**
      * Gets or sets innerHTML on the first element in JQLite collection
-     * @param {string} value
+     * @param {string} [value]
      * @returns {JQLite|any|undefined}
      */
-    html(value: string): JQLite | any | undefined;
+    html(value?: string): JQLite | any | undefined;
     /**
      * Get the combined text contents of each element in the JQLite collection
      * or set the text contents of all elements.

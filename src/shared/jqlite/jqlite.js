@@ -366,7 +366,7 @@ JQLite.prototype.removeData = function (name) {
 /**
  * Gets or sets data on a parent element
  * @param {string} name
- * @param {any} value
+ * @param {any} [value]
  * @returns {JQLite|any}
  */
 JQLite.prototype.inheritedData = function (name, value) {
@@ -383,7 +383,7 @@ JQLite.prototype.inheritedData = function (name, value) {
 
 /**
  * Gets or sets innerHTML on the first element in JQLite collection
- * @param {string} value
+ * @param {string} [value]
  * @returns {JQLite|any|undefined}
  */
 JQLite.prototype.html = function (value) {

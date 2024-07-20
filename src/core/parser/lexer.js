@@ -18,19 +18,19 @@ const OPERATORS = new Set(
 
 /**
  * @typedef {Object} LexerOptions
- * @property {(ch: string, codePoint: number) => boolean} [isIdentifierStart] Custom function to determine if a character is a valid identifier start.
- * @property {(ch: string, codePoint: number) => boolean} [isIdentifierContinue] Custom function to determine if a character is a valid identifier continuation.
+ * @property {(ch: string, codePoint: number) => boolean} [isIdentifierStart] - Custom function to determine if a character is a valid identifier start.
+ * @property {(ch: string, codePoint: number) => boolean} [isIdentifierContinue] - Custom function to determine if a character is a valid identifier continuation.
  */
 
 /**
  * Represents a token produced by the lexer.
  * @typedef {Object} Token
- * @property {number} index Index of the token.
- * @property {string} text Text of the token.
- * @property {boolean} [identifier] Indicates if token is an identifier.
- * @property {boolean} [constant] Indicates if token is a constant.
- * @property {string|number} [value] Value of the token if it's a constant.
- * @property {boolean} [operator] Indicates if token is an operator.
+ * @property {number} index - Index of the token.
+ * @property {string} text - Text of the token.
+ * @property {boolean} [identifier] - Indicates if token is an identifier.
+ * @property {boolean} [constant] - Indicates if token is a constant.
+ * @property {string|number} [value] - Value of the token if it's a constant.
+ * @property {boolean} [operator] - Indicates if token is an operator.
  */
 
 /**
@@ -40,7 +40,7 @@ const OPERATORS = new Set(
 export class Lexer {
   /**
    * Creates an instance of Lexer.
-   * @param {LexerOptions} options Lexer options.
+   * @param {LexerOptions} options - Lexer options.
    */
   constructor(options) {
     /** @type {LexerOptions} */

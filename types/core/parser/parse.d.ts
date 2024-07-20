@@ -39,13 +39,7 @@ export class $ParseProvider {
     setIdentifierFns: (identifierStart?: ((arg0: any) => boolean) | undefined, identifierContinue?: ((arg0: any) => boolean) | undefined) => this;
     $get: (string | (($filter: any) => {
         (exp: any, interceptorFn: any): any;
-        $$getAst: (exp: any) => {
-            type: string;
-            body: {
-                type: string;
-                expression: any;
-            }[];
-        };
+        $$getAst: (exp: any) => import("./ast").ASTNode;
     }))[];
 }
 export function inputsWatchDelegate(scope: any, listener: any, objectEquality: any, parsedExpression: any): any;

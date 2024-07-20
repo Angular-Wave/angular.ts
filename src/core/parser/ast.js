@@ -3,15 +3,54 @@ import { isAssignable } from "./shared";
 import { ASTType } from "./ast-type";
 
 /**
- * @param {import('./lexer').Lexer} lexer
- * @param {*} options
+ * @typedef {Object} ASTNode
+ * @property {string} type - The type of the AST node.
+ * @property {string} [name] - The name of the identifier.
+ * @property {string} [kind] - The kind of the property (e.g., 'init').
+ * @property {*} [value] - The value of the node if it is a literal.
+ * @property {ASTNode[]} [elements] - The elements of an array node.
+ * @property {ASTNode[]} [properties] - The properties of an object node.
+ * @property {ASTNode} [key] - The key of an object property.
+ * @property {ASTNode} [value] - The value of an object property.
+ * @property {ASTNode} [left] - The left-hand side of a binary expression.
+ * @property {ASTNode} [right] - The right-hand side of a binary expression.
+ * @property {ASTNode} [argument] - The argument of a unary expression.
+ * @property {ASTNode} [test] - The test expression of a conditional expression.
+ * @property {ASTNode} [alternate] - The alternate expression of a conditional expression.
+ * @property {ASTNode} [consequent] - The consequent expression of a conditional expression.
+ * @property {ASTNode[]} [body] - The body of a program or block statement.
+ * @property {ASTNode} [expression] - The expression of an expression statement.
+ * @property {ASTNode} [callee] - The callee of a call expression.
+ * @property {ASTNode[]} [arguments] - The arguments of a call expression.
+ * @property {boolean} [prefix] - Indicates if a unary operator is a prefix.
+ * @property {ASTNode} [object] - The object of a member expression.
+ * @property {ASTNode} [property] - The property of a member expression.
+ * @property {boolean} [computed] - Indicates if a member expression is computed.
+ * @property {string} [operator] - The operator of a binary or logical expression.
  */
-export function AST(lexer, options) {
-  this.lexer = lexer;
-  this.options = options;
-}
 
-AST.prototype = {
+/**
+ * @param {import('./lexer').Lexer} lexer - The lexer instance for tokenizing input
+ * @param {import("./parser").ParserOptions} options
+ */
+export class AST {
+  constructor(lexer, options) {
+    /** @type {import('./lexer').Lexer} */
+    this.lexer = lexer;
+
+    /** @type  {import("./parser").ParserOptions} */
+    this.options = options;
+    this.selfReferential = {
+      this: { type: ASTType.ThisExpression },
+      $locals: { type: ASTType.LocalsExpression },
+    };
+  }
+
+  /**
+   * Parses the input text and generates an AST.
+   * @param {string} text - The input text to parse.
+   * @returns {ASTNode} The root node of the AST.
+   */
   ast(text) {
     this.text = text;
     this.tokens = this.lexer.lex(text);
@@ -23,8 +62,12 @@ AST.prototype = {
     }
 
     return value;
-  },
+  }
 
+  /**
+   * Parses a program.
+   * @returns {ASTNode} The program node.
+   */
   program() {
     const body = [];
     let hasMore = true;
@@ -36,27 +79,43 @@ AST.prototype = {
       }
     }
     return { type: ASTType.Program, body };
-  },
+  }
 
+  /**
+   * Parses an expression statement.
+   * @returns {ASTNode} The expression statement node.
+   */
   expressionStatement() {
     return {
       type: ASTType.ExpressionStatement,
       expression: this.filterChain(),
     };
-  },
+  }
 
+  /**
+   * Parses a filter chain.
+   * @returns {ASTNode} The filter chain node.
+   */
   filterChain() {
     let left = this.expression();
     while (this.expect("|")) {
       left = this.filter(left);
     }
     return left;
-  },
+  }
 
+  /**
+   * Parses an expression.
+   * @returns {ASTNode} The expression node.
+   */
   expression() {
     return this.assignment();
-  },
+  }
 
+  /**
+   * Parses an assignment expression.
+   * @returns {ASTNode} The assignment expression node.
+   */
   assignment() {
     let result = this.ternary();
     if (this.expect("=")) {
@@ -72,8 +131,12 @@ AST.prototype = {
       };
     }
     return result;
-  },
+  }
 
+  /**
+   * Parses a ternary expression.
+   * @returns {ASTNode} The ternary expression node.
+   */
   ternary() {
     const test = this.logicalOR();
     let alternate;
@@ -91,8 +154,12 @@ AST.prototype = {
       }
     }
     return test;
-  },
+  }
 
+  /**
+   * Parses a logical OR expression.
+   * @returns {ASTNode} The logical OR expression node.
+   */
   logicalOR() {
     let left = this.logicalAND();
     while (this.expect("||")) {
@@ -104,8 +171,12 @@ AST.prototype = {
       };
     }
     return left;
-  },
+  }
 
+  /**
+   * Parses a logical AND expression.
+   * @returns {ASTNode} The logical AND expression node.
+   */
   logicalAND() {
     let left = this.equality();
     while (this.expect("&&")) {
@@ -117,77 +188,101 @@ AST.prototype = {
       };
     }
     return left;
-  },
+  }
 
+  /**
+   * Parses an equality expression.
+   * @returns {ASTNode} The equality expression node.
+   */
   equality() {
     let left = this.relational();
     let token;
     while ((token = this.expect("==", "!=", "===", "!=="))) {
       left = {
         type: ASTType.BinaryExpression,
-        operator: token.text,
+        operator: /** @type {import("./lexer").Token} */ (token).text,
         left,
         right: this.relational(),
       };
     }
     return left;
-  },
+  }
 
+  /**
+   * Parses a relational expression.
+   * @returns {ASTNode} The relational expression node.
+   */
   relational() {
     let left = this.additive();
     let token;
     while ((token = this.expect("<", ">", "<=", ">="))) {
       left = {
         type: ASTType.BinaryExpression,
-        operator: token.text,
+        operator: /** @type {import("./lexer").Token} */ (token).text,
         left,
         right: this.additive(),
       };
     }
     return left;
-  },
+  }
 
+  /**
+   * Parses an additive expression.
+   * @returns {ASTNode} The additive expression node.
+   */
   additive() {
     let left = this.multiplicative();
     let token;
     while ((token = this.expect("+", "-"))) {
       left = {
         type: ASTType.BinaryExpression,
-        operator: token.text,
+        operator: /** @type {import("./lexer").Token} */ (token).text,
         left,
         right: this.multiplicative(),
       };
     }
     return left;
-  },
+  }
 
+  /**
+   * Parses a multiplicative expression.
+   * @returns {ASTNode} The multiplicative expression node.
+   */
   multiplicative() {
     let left = this.unary();
     let token;
     while ((token = this.expect("*", "/", "%"))) {
       left = {
         type: ASTType.BinaryExpression,
-        operator: token.text,
+        operator: /** @type {import("./lexer").Token} */ (token).text,
         left,
         right: this.unary(),
       };
     }
     return left;
-  },
+  }
 
+  /**
+   * Parses a unary expression.
+   * @returns {ASTNode} The unary expression node.
+   */
   unary() {
     let token;
     if ((token = this.expect("+", "-", "!"))) {
       return {
         type: ASTType.UnaryExpression,
-        operator: token.text,
+        operator: /** @type {import("./lexer").Token} */ (token).text,
         prefix: true,
         argument: this.unary(),
       };
     }
     return this.primary();
-  },
+  }
 
+  /**
+   * Parses a primary expression.
+   * @returns {ASTNode} The primary expression node.
+   */
   primary() {
     let primary;
     if (this.expect("(")) {
@@ -200,38 +295,43 @@ AST.prototype = {
     } else if (
       Object.prototype.hasOwnProperty.call(
         this.selfReferential,
-        this.peek().text,
+        /** @type {import("./lexer").Token} */ (this.peek()).text,
       )
     ) {
       primary = structuredClone(this.selfReferential[this.consume().text]);
     } else if (
       Object.prototype.hasOwnProperty.call(
         this.options.literals,
-        this.peek().text,
+        /** @type {import("./lexer").Token} */ (this.peek()).text,
       )
     ) {
       primary = {
         type: ASTType.Literal,
         value: this.options.literals[this.consume().text],
       };
-    } else if (this.peek().identifier) {
+    } else if (
+      /** @type {import("./lexer").Token} */ (this.peek()).identifier
+    ) {
       primary = this.identifier();
-    } else if (this.peek().constant) {
+    } else if (/** @type {import("./lexer").Token} */ (this.peek()).constant) {
       primary = this.constant();
     } else {
-      this.throwError("not a primary expression", this.peek());
+      this.throwError(
+        "not a primary expression",
+        /** @type {import("./lexer").Token} */ (this.peek()),
+      );
     }
 
     let next;
     while ((next = this.expect("(", "[", "."))) {
-      if (next.text === "(") {
+      if (/** @type {import("./lexer").Token} */ (next).text === "(") {
         primary = {
           type: ASTType.CallExpression,
           callee: primary,
           arguments: this.parseArguments(),
         };
         this.consume(")");
-      } else if (next.text === "[") {
+      } else if (/** @type {import("./lexer").Token} */ (next).text === "[") {
         primary = {
           type: ASTType.MemberExpression,
           object: primary,
@@ -239,7 +339,7 @@ AST.prototype = {
           computed: true,
         };
         this.consume("]");
-      } else if (next.text === ".") {
+      } else if (/** @type {import("./lexer").Token} */ (next).text === ".") {
         primary = {
           type: ASTType.MemberExpression,
           object: primary,
@@ -251,9 +351,15 @@ AST.prototype = {
       }
     }
     return primary;
-  },
+  }
 
+  /**
+   * Parses a filter.
+   * @param {ASTNode} baseExpression - The base expression to apply the filter to.
+   * @returns {ASTNode} The filter node.
+   */
   filter(baseExpression) {
+    /** @type {ASTNode[]} */
     const args = [baseExpression];
     const result = {
       type: ASTType.CallExpression,
@@ -267,9 +373,14 @@ AST.prototype = {
     }
 
     return result;
-  },
+  }
 
+  /**
+   * Parses function arguments.
+   * @returns {ASTNode[]} The arguments array.
+   */
   parseArguments() {
+    /** @type {ASTNode[]} */
     const args = [];
     if (this.peekToken().text !== ")") {
       do {
@@ -277,22 +388,35 @@ AST.prototype = {
       } while (this.expect(","));
     }
     return args;
-  },
+  }
 
+  /**
+   * Parses an identifier.
+   * @returns {ASTNode} The identifier node.
+   */
   identifier() {
     const token = this.consume();
     if (!token.identifier) {
       this.throwError("is not a valid identifier", token);
     }
     return { type: ASTType.Identifier, name: token.text };
-  },
+  }
 
+  /**
+   * Parses a constant.
+   * @returns {ASTNode} The constant node.
+   */
   constant() {
     // TODO check that it is a constant
     return { type: ASTType.Literal, value: this.consume().value };
-  },
+  }
 
+  /**
+   * Parses an array declaration.
+   * @returns {ASTNode} The array declaration node.
+   */
   arrayDeclaration() {
+    /** @type {ASTNode[]} */
     const elements = [];
     if (this.peekToken().text !== "]") {
       do {
@@ -306,10 +430,16 @@ AST.prototype = {
     this.consume("]");
 
     return { type: ASTType.ArrayExpression, elements };
-  },
+  }
 
+  /**
+   * Parses an object.
+   * @returns {ASTNode} The object node.
+   */
   object() {
+    /** @type {ASTNode[]} */
     const properties = [];
+    /** @type {ASTNode} */
     let property;
     if (this.peekToken().text !== "}") {
       do {
@@ -318,12 +448,14 @@ AST.prototype = {
           break;
         }
         property = { type: ASTType.Property, kind: "init" };
-        if (this.peek().constant) {
+        if (/** @type {import("./lexer").Token} */ (this.peek()).constant) {
           property.key = this.constant();
           property.computed = false;
           this.consume(":");
           property.value = this.expression();
-        } else if (this.peek().identifier) {
+        } else if (
+          /** @type {import("./lexer").Token} */ (this.peek()).identifier
+        ) {
           property.key = this.identifier();
           property.computed = false;
           if (this.peek(":")) {
@@ -340,7 +472,10 @@ AST.prototype = {
           this.consume(":");
           property.value = this.expression();
         } else {
-          this.throwError("invalid key", this.peek());
+          this.throwError(
+            "invalid key",
+            /** @type {import("./lexer").Token} */ (this.peek()),
+          );
         }
         properties.push(property);
       } while (this.expect(","));
@@ -348,8 +483,13 @@ AST.prototype = {
     this.consume("}");
 
     return { type: ASTType.ObjectExpression, properties };
-  },
+  }
 
+  /**
+   * Throws a syntax error.
+   * @param {string} msg - The error message.
+   * @param {import("./lexer").Token} [token] - The token that caused the error.
+   */
   throwError(msg, token) {
     throw $parseMinErr(
       "syntax",
@@ -360,8 +500,13 @@ AST.prototype = {
       this.text,
       this.text.substring(token.index),
     );
-  },
+  }
 
+  /**
+   * Consumes a token if it matches the expected type.
+   * @param {string} [e1] - The expected token type.
+   * @returns {import("./lexer").Token} The consumed token.
+   */
   consume(e1) {
     if (this.tokens.length === 0) {
       throw $parseMinErr(
@@ -373,11 +518,19 @@ AST.prototype = {
 
     const token = this.expect(e1);
     if (!token) {
-      this.throwError(`is unexpected, expecting [${e1}]`, this.peek());
+      this.throwError(
+        `is unexpected, expecting [${e1}]`,
+        /** @type {import("./lexer").Token} */ (this.peek()),
+      );
+    } else {
+      return /** @type  {import("./lexer").Token} */ (token);
     }
-    return token;
-  },
+  }
 
+  /**
+   * Returns the next token without consuming it.
+   * @returns {import("./lexer").Token} The next token.
+   */
   peekToken() {
     if (this.tokens.length === 0) {
       throw $parseMinErr(
@@ -387,40 +540,48 @@ AST.prototype = {
       );
     }
     return this.tokens[0];
-  },
+  }
 
-  peek(e1, e2, e3, e4) {
-    return this.peekAhead(0, e1, e2, e3, e4);
-  },
+  /**
+   * Checks if the next token matches any of the expected types.
+   * @param {...string} [expected] - The expected token types.
+   * @returns {import('./lexer').Token|boolean} The next token if it matches, otherwise false.
+   */
+  peek(...expected) {
+    return this.peekAhead(0, ...expected);
+  }
 
-  peekAhead(i, e1, e2, e3, e4) {
+  /**
+   * Checks if the token at the specified index matches any of the expected types.
+   * @param {number} i - The index to check.
+   * @param {...string} [expected] - The expected token types.
+   * @returns {import("./lexer").Token|boolean} The token at the specified index if it matches, otherwise false.
+   */
+  peekAhead(i, ...expected) {
     if (this.tokens.length > i) {
       const token = this.tokens[i];
       const t = token.text;
       if (
-        t === e1 ||
-        t === e2 ||
-        t === e3 ||
-        t === e4 ||
-        (!e1 && !e2 && !e3 && !e4)
+        expected.includes(t) ||
+        (!expected[0] && !expected[1] && !expected[2] && !expected[3])
       ) {
         return token;
       }
     }
     return false;
-  },
+  }
 
-  expect(e1, e2, e3, e4) {
-    const token = this.peek(e1, e2, e3, e4);
+  /**
+   * Consumes the next token if it matches any of the expected types.
+   * @param {...string} [expected] - The expected token types.
+   * @returns {import("./lexer").Token|boolean} The consumed token if it matches, otherwise false.
+   */
+  expect(...expected) {
+    const token = this.peek(...expected);
     if (token) {
       this.tokens.shift();
       return token;
     }
     return false;
-  },
-
-  selfReferential: {
-    this: { type: ASTType.ThisExpression },
-    $locals: { type: ASTType.LocalsExpression },
-  },
-};
+  }
+}

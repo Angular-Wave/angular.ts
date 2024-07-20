@@ -1,17 +1,17 @@
 /**
  * @typedef {Object} LexerOptions
- * @property {(ch: string, codePoint: number) => boolean} [isIdentifierStart] Custom function to determine if a character is a valid identifier start.
- * @property {(ch: string, codePoint: number) => boolean} [isIdentifierContinue] Custom function to determine if a character is a valid identifier continuation.
+ * @property {(ch: string, codePoint: number) => boolean} [isIdentifierStart] - Custom function to determine if a character is a valid identifier start.
+ * @property {(ch: string, codePoint: number) => boolean} [isIdentifierContinue] - Custom function to determine if a character is a valid identifier continuation.
  */
 /**
  * Represents a token produced by the lexer.
  * @typedef {Object} Token
- * @property {number} index Index of the token.
- * @property {string} text Text of the token.
- * @property {boolean} [identifier] Indicates if token is an identifier.
- * @property {boolean} [constant] Indicates if token is a constant.
- * @property {string|number} [value] Value of the token if it's a constant.
- * @property {boolean} [operator] Indicates if token is an operator.
+ * @property {number} index - Index of the token.
+ * @property {string} text - Text of the token.
+ * @property {boolean} [identifier] - Indicates if token is an identifier.
+ * @property {boolean} [constant] - Indicates if token is a constant.
+ * @property {string|number} [value] - Value of the token if it's a constant.
+ * @property {boolean} [operator] - Indicates if token is an operator.
  */
 /**
  * Represents a lexer that tokenizes input text. The Lexer takes the original expression string and returns an array of tokens parsed from that string.
@@ -20,7 +20,7 @@
 export class Lexer {
     /**
      * Creates an instance of Lexer.
-     * @param {LexerOptions} options Lexer options.
+     * @param {LexerOptions} options - Lexer options.
      */
     constructor(options: LexerOptions);
     /** @type {LexerOptions} */
@@ -114,11 +114,11 @@ export class Lexer {
 }
 export type LexerOptions = {
     /**
-     * Custom function to determine if a character is a valid identifier start.
+     * - Custom function to determine if a character is a valid identifier start.
      */
     isIdentifierStart?: (ch: string, codePoint: number) => boolean;
     /**
-     * Custom function to determine if a character is a valid identifier continuation.
+     * - Custom function to determine if a character is a valid identifier continuation.
      */
     isIdentifierContinue?: (ch: string, codePoint: number) => boolean;
 };
@@ -127,27 +127,27 @@ export type LexerOptions = {
  */
 export type Token = {
     /**
-     * Index of the token.
+     * - Index of the token.
      */
     index: number;
     /**
-     * Text of the token.
+     * - Text of the token.
      */
     text: string;
     /**
-     * Indicates if token is an identifier.
+     * - Indicates if token is an identifier.
      */
     identifier?: boolean;
     /**
-     * Indicates if token is a constant.
+     * - Indicates if token is a constant.
      */
     constant?: boolean;
     /**
-     * Value of the token if it's a constant.
+     * - Value of the token if it's a constant.
      */
     value?: string | number;
     /**
-     * Indicates if token is an operator.
+     * - Indicates if token is an operator.
      */
     operator?: boolean;
 };
