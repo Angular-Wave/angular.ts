@@ -1,5 +1,5 @@
 import { $parseMinErr } from "./parse";
-import { isAssignable } from "./shared";
+import { isAssignable } from "./interpreter";
 import { ASTType } from "./ast-type";
 
 /**

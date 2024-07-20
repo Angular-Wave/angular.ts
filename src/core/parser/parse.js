@@ -1,5 +1,5 @@
 import { forEach, isDefined, isFunction, minErr } from "../../shared/utils";
-import { getValueOf, PURITY_RELATIVE } from "./shared";
+import { PURITY_RELATIVE } from "./interpreter";
 import { Lexer } from "./lexer";
 import { Parser } from "./parser";
 
@@ -395,4 +395,10 @@ function isAllDefined(value) {
     if (!isDefined(val)) allDefined = false;
   });
   return allDefined;
+}
+
+function getValueOf(value) {
+  return isFunction(value.valueOf)
+    ? value.valueOf()
+    : {}.constructor.prototype.valueOf.call(value);
 }

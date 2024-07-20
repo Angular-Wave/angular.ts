@@ -22,7 +22,7 @@ const OPERATORS = new Set(
  */
 
 /**
- * Represents a token produced by the lexer.
+ * Represents a token produced by the lexer, which will be used by the AST to construct an abstract syntax tree.
  * @typedef {Object} Token
  * @property {number} index - Index of the token.
  * @property {string} text - Text of the token.
@@ -66,7 +66,10 @@ export class Lexer {
         (ch === "." && this.isNumber(/** @type {string} */ (this.peek())))
       ) {
         this.readNumber();
-      } else if (this.isIdentifierStart(this.peekMultichar())) {
+      } else if (
+        this.isIdentifierStart &&
+        this.isIdentifierStart(this.peekMultichar())
+      ) {
         this.readIdent();
       } else if (this.is(ch, "(){}[].,;:?")) {
         this.tokens.push({ index: this.index, text: ch });
@@ -179,7 +182,6 @@ export class Lexer {
    */
   codePointAt(ch) {
     if (ch.length === 1) return ch.charCodeAt(0);
-
     return (ch.charCodeAt(0) << 10) + ch.charCodeAt(1) - 0x35fdc00;
   }
 
@@ -277,7 +279,7 @@ export class Lexer {
     this.index += this.peekMultichar().length;
     while (this.index < this.text.length) {
       const ch = this.peekMultichar();
-      if (!this.isIdentifierContinue(ch)) {
+      if (this.isIdentifierContinue && !this.isIdentifierContinue(ch)) {
         break;
       }
       this.index += ch.length;

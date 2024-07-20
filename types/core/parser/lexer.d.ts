@@ -4,7 +4,7 @@
  * @property {(ch: string, codePoint: number) => boolean} [isIdentifierContinue] - Custom function to determine if a character is a valid identifier continuation.
  */
 /**
- * Represents a token produced by the lexer.
+ * Represents a token produced by the lexer, which will be used by the AST to construct an abstract syntax tree.
  * @typedef {Object} Token
  * @property {number} index - Index of the token.
  * @property {string} text - Text of the token.
@@ -123,7 +123,7 @@ export type LexerOptions = {
     isIdentifierContinue?: (ch: string, codePoint: number) => boolean;
 };
 /**
- * Represents a token produced by the lexer.
+ * Represents a token produced by the lexer, which will be used by the AST to construct an abstract syntax tree.
  */
 export type Token = {
     /**

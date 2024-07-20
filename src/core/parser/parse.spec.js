@@ -35,7 +35,7 @@ describe("parser", () => {
 
     beforeEach(() => {
       lex = function () {
-        const lexer = new Lexer({ csp: false });
+        const lexer = new Lexer({});
         return lexer.lex.apply(lexer, arguments);
       };
     });
@@ -132,7 +132,6 @@ describe("parser", () => {
       const isIdentifierContinue = jasmine.createSpy("continue");
       isIdentifierStart.and.returnValue(true);
       const lex = new Lexer({
-        csp: false,
         isIdentifierStart,
         isIdentifierContinue,
       });
@@ -155,7 +154,6 @@ describe("parser", () => {
       isIdentifierStart.and.returnValue(true);
       isIdentifierContinue.and.returnValue(true);
       const lex = new Lexer({
-        csp: false,
         isIdentifierStart,
         isIdentifierContinue,
       });
@@ -317,7 +315,7 @@ describe("parser", () => {
     beforeEach(() => {
       /* global AST: false */
       createAst = function () {
-        const lexer = new Lexer({ csp: false });
+        const lexer = new Lexer({});
         const ast = new AST(lexer, {
           csp: false,
           literals: {

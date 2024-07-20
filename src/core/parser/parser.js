@@ -1,5 +1,5 @@
 import { AST } from "./ast";
-import { isLiteral, isConstant } from "./shared";
+import { ASTType } from "./ast-type";
 import { ASTInterpreter } from "./interpreter";
 
 /**
@@ -62,4 +62,18 @@ export class Parser {
       oneTime,
     };
   }
+}
+
+function isLiteral(ast) {
+  return (
+    ast.body.length === 0 ||
+    (ast.body.length === 1 &&
+      (ast.body[0].expression.type === ASTType.Literal ||
+        ast.body[0].expression.type === ASTType.ArrayExpression ||
+        ast.body[0].expression.type === ASTType.ObjectExpression))
+  );
+}
+
+function isConstant(ast) {
+  return ast.constant;
 }

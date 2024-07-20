@@ -27,7 +27,7 @@ export class Parser {
      * @param {string} exp - Expression to be parsed
      * @returns
      */
-    parse(exp: string): any;
+    parse(exp: string): Function;
     /**
      * @param {string} exp - Expression to be parsed
      * @returns {ParsedAST}

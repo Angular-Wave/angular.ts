@@ -1,3 +1,10 @@
+/**
+ * @param {import("./ast").ASTNode} ast
+ * @returns {boolean}
+ */
+export function isAssignable(ast: import("./ast").ASTNode): boolean;
+export const PURITY_ABSOLUTE: 1;
+export const PURITY_RELATIVE: 2;
 export class ASTInterpreter {
     /**
      * @param {function(any):any} $filter
@@ -7,9 +14,9 @@ export class ASTInterpreter {
     /**
      * Compiles the AST into a function.
      * @param {import("./ast").ASTNode} ast - The AST to compile.
-     * @returns
+     * @returns {import("./parse").CompiledExpression}
      */
-    compile(ast: import("./ast").ASTNode): any;
+    compile(ast: import("./ast").ASTNode): import("./parse").CompiledExpression;
     /**
      * Recurses the AST nodes.
      * @param {import("./ast").ASTNode} ast - The AST node.

@@ -12,19 +12,6 @@
  */
 
 /**
- * @typedef {function} CompiledExpression
- * @param {import('./core/scope/scope').Scope} context - An object against which any expressions embedded in the strings are evaluated against (typically a scope object).
- * @param {object} [locals] - local variables context object, useful for overriding values in `context`.
- * @returns {any}
- * @property {boolean} literal - Indicates if the expression is a literal.
- * @property {boolean} constant - Indicates if the expression is constant.
- * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided,
- * undefined is gonna be used since the implementation
- * does not check the parameter. Let's force a value for consistency. If consumer
- * wants to undefine it, pass the undefined value explicitly.
- */
-
-/**
  * @typedef {Object} ComponentOptions
  * @description Component definition object (a simplified directive definition object)
  * @property {string |Injectable<ControllerConstructor>> | undefined} [controller]
