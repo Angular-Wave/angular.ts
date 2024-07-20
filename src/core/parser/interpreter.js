@@ -633,7 +633,6 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
   let argsToWatch;
   let isStatelessFilter;
   let decoratedNode = /** @type  {DecoratedASTNode} */ (ast);
-
   let decoratedLeft,
     decoratedRight,
     decoratedTest,

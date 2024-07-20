@@ -112,6 +112,9 @@ export class Angular {
 
     /** @type {errorHandlingConfig} */
     this.errorHandlingConfig = errorHandlingConfig;
+
+    /** @type {Function} */
+    this.doBootstrap;
   }
 
   /**
@@ -179,7 +182,7 @@ export class Angular {
       strictDi: false,
     };
 
-    var doBootstrap = function () {
+    this.doBootstrap = function () {
       // @ts-ignore
       element = JQLite(element);
 
@@ -239,7 +242,7 @@ export class Angular {
     }
 
     if (window && !NG_DEFER_BOOTSTRAP.test(window.name)) {
-      return doBootstrap();
+      return this.doBootstrap();
     }
 
     window.name = window.name.replace(NG_DEFER_BOOTSTRAP, "");
@@ -247,7 +250,7 @@ export class Angular {
       forEach(extraModules, function (module) {
         modules.push(module);
       });
-      return doBootstrap();
+      return this.doBootstrap();
     };
 
     if (isFunction(this.resumeDeferredBootstrap)) {

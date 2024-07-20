@@ -232,6 +232,8 @@ export class Angular {
     merge: typeof merge;
     /** @type {errorHandlingConfig} */
     errorHandlingConfig: typeof errorHandlingConfig;
+    /** @type {Function} */
+    doBootstrap: Function;
     /**
    * @module angular
    * @function bootstrap
