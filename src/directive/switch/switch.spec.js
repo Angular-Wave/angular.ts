@@ -103,10 +103,10 @@ describe("ngSwitch", () => {
 
   it("should switch on switch-when-default", () => {
     element = $compile(
-      '<ng:switch on="select">' +
-        '<div ng:switch-when="1">one</div>' +
-        "<div ng:switch-default>other</div>" +
-        "</ng:switch>",
+      '<ng-switch on="select">' +
+        '<div ng-switch-when="1">one</div>' +
+        "<div ng-switch-default>other</div>" +
+        "</ng-switch>",
     )($scope);
     $scope.$apply();
     expect(element.text()).toEqual("other");

@@ -523,12 +523,12 @@ describe("form", () => {
   describe("nested forms", () => {
     it("should chain nested forms", () => {
       doc = JQLite(
-        '<ng:form name="parent">' +
-          '<ng:form name="child">' +
-          '<input ng:model="modelA" name="inputA">' +
-          '<input ng:model="modelB" name="inputB">' +
-          "</ng:form>" +
-          "</ng:form>",
+        '<ng-form name="parent">' +
+          '<ng-form name="child">' +
+          '<input ng-model="modelA" name="inputA">' +
+          '<input ng-model="modelB" name="inputB">' +
+          "</ng-form>" +
+          "</ng-form>",
       );
       $compile(doc)(scope);
 
@@ -561,8 +561,8 @@ describe("form", () => {
       doc = JQLite(
         '<ng-form name="parent">' +
           '<ng-form name="child">' +
-          '<input ng:model="modelA" name="inputA">' +
-          '<input ng:model="modelB" name="inputB">' +
+          '<input ng-model="modelA" name="inputA">' +
+          '<input ng-model="modelB" name="inputB">' +
           "</ng-form>" +
           "</ng-form>",
       );
@@ -581,7 +581,7 @@ describe("form", () => {
         '<ng-form name="parent">' +
           '<ng-form name="child">' +
           '<ng-form name="grandchild">' +
-          '<input ng:model="modelA" name="inputA">' +
+          '<input ng-model="modelA" name="inputA">' +
           "</ng-form>" +
           "</ng-form>" +
           "</ng-form>",
@@ -647,8 +647,8 @@ describe("form", () => {
         '<ng-form name="parent">' +
           '<ng-form name="child">' +
           '<ng-form name="grandchild">' +
-          '<input ng:model="modelA" name="inputA">' +
-          '<input ng:model="modelB" name="inputB">' +
+          '<input ng-model="modelA" name="inputA">' +
+          '<input ng-model="modelB" name="inputB">' +
           "</ng-form>" +
           "</ng-form>" +
           "</ng-form>",
@@ -670,7 +670,7 @@ describe("form", () => {
       doc = JQLite(
         '<form name="parent">' +
           '<div ng-form name="child">' +
-          '<input ng:model="modelA" name="inputA" required>' +
+          '<input ng-model="modelA" name="inputA" required>' +
           "</div>" +
           "</form>",
       );
@@ -694,7 +694,7 @@ describe("form", () => {
       doc = JQLite(
         '<form name="parent">' +
           '<div ng-form name="child.form">' +
-          '<input ng:model="modelA" name="inputA" required>' +
+          '<input ng-model="modelA" name="inputA" required>' +
           "</div>" +
           "</form>",
       );
@@ -974,11 +974,11 @@ describe("form", () => {
 
     it("should chain nested forms in repeater", () => {
       doc = JQLite(
-        "<ng:form name=parent>" +
-          '<ng:form ng:repeat="f in forms" name=child>' +
-          "<input type=text ng:model=text name=text>" +
-          "</ng:form>" +
-          "</ng:form>",
+        "<ng-form name=parent>" +
+          '<ng-form ng-repeat="f in forms" name=child>' +
+          "<input type=text ng-model=text name=text>" +
+          "</ng-form>" +
+          "</ng-form>",
       );
       $compile(doc)(scope);
 

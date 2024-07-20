@@ -7,8 +7,9 @@ export const TOUCHED_CLASS = "ng-touched";
 export const EMPTY_CLASS = "ng-empty";
 export const NOT_EMPTY_CLASS = "ng-not-empty";
 
-export const PREFIX_REGEXP = /^((?:x|data)[:\-_])/i;
-export const SPECIAL_CHARS_REGEXP = /[:\-_]+(.)/g;
+// x prefix is being kept for view-directive.spec lines 1550, 565
+export const PREFIX_REGEXP = /^((?:x|data)[-])/i;
+export const SPECIAL_CHARS_REGEXP = /[-]+(.)/g;
 
 export const ALIASED_ATTR = {
   ngMinlength: "minlength",
