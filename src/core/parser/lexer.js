@@ -1,5 +1,4 @@
 import { $parseMinErr } from "./parse";
-
 import { isDefined } from "../../shared/utils";
 
 const ESCAPE = {

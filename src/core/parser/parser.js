@@ -1,7 +1,6 @@
 import { AST } from "./ast";
 import { isLiteral, isConstant } from "./shared";
 import { ASTInterpreter } from "./interpreter";
-import { ASTCompiler } from "./compiler";
 
 /**
  * @typedef {Object} ParsedAST
@@ -11,7 +10,6 @@ import { ASTCompiler } from "./compiler";
 
 /**
  * @typedef {Object} ParserOptions
- * @property {boolean} csp
  * @property {function(string):any} literals
  */
 
@@ -29,10 +27,8 @@ export class Parser {
     /** @type {AST} */
     this.ast = new AST(lexer, options);
 
-    /** @type {ASTInterpreter|ASTCompiler} */
-    this.astCompiler = options.csp
-      ? new ASTInterpreter($filter)
-      : new ASTCompiler($filter);
+    /** @type {ASTInterpreter} */
+    this.astCompiler = new ASTInterpreter($filter);
   }
 
   /**

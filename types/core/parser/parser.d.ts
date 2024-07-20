@@ -5,7 +5,6 @@
  */
 /**
  * @typedef {Object} ParserOptions
- * @property {boolean} csp
  * @property {function(string):any} literals
  */
 /**
@@ -21,8 +20,8 @@ export class Parser {
     constructor(lexer: import("./lexer").Lexer, $filter: (arg0: any) => any, options: ParserOptions);
     /** @type {AST} */
     ast: AST;
-    /** @type {ASTInterpreter|ASTCompiler} */
-    astCompiler: ASTInterpreter | ASTCompiler;
+    /** @type {ASTInterpreter} */
+    astCompiler: ASTInterpreter;
     /**
      *
      * @param {string} exp - Expression to be parsed
@@ -46,9 +45,7 @@ export type ParsedAST = {
     oneTime: boolean;
 };
 export type ParserOptions = {
-    csp: boolean;
     literals: (arg0: string) => any;
 };
 import { AST } from "./ast";
 import { ASTInterpreter } from "./interpreter";
-import { ASTCompiler } from "./compiler";

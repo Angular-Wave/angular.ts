@@ -23,9 +23,6 @@
  * @property {ASTNode} [property] - The property of a member expression.
  * @property {boolean} [computed] - Indicates if a member expression is computed.
  * @property {string} [operator] - The operator of a binary or logical expression.
- * @property {boolean} [constant=false] - Indicates if the node is a constant expression.
- * @property {boolean} [toWatch=true] - Indicates if the node should be watched for changes.
- * @property {boolean} [isPure=false] - Indicates if the node is a pure expression.
  */
 /**
  * @param {import('./lexer').Lexer} lexer - The lexer instance for tokenizing input
@@ -280,16 +277,4 @@ export type ASTNode = {
      * - The operator of a binary or logical expression.
      */
     operator?: string;
-    /**
-     * - Indicates if the node is a constant expression.
-     */
-    constant?: boolean;
-    /**
-     * - Indicates if the node should be watched for changes.
-     */
-    toWatch?: boolean;
-    /**
-     * - Indicates if the node is a pure expression.
-     */
-    isPure?: boolean;
 };

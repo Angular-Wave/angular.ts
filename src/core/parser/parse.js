@@ -1,16 +1,23 @@
-import {
-  csp,
-  forEach,
-  isDefined,
-  isFunction,
-  minErr,
-} from "../../shared/utils";
+import { forEach, isDefined, isFunction, minErr } from "../../shared/utils";
 import { getValueOf, PURITY_RELATIVE } from "./shared";
 import { Lexer } from "./lexer";
 import { Parser } from "./parser";
 
 /**
- * @typedef {function(string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): import('../../types').CompiledExpression} ParseService
+ * @typedef {function} CompiledExpression
+ * @param {import('../scope/scope').Scope} context - An object against which any expressions embedded in the strings are evaluated against (typically a scope object).
+ * @param {object} [locals] - local variables context object, useful for overriding values in `context`.
+ * @returns {any}
+ * @property {boolean} literal - Indicates if the expression is a literal.
+ * @property {boolean} constant - Indicates if the expression is constant.
+ * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided,
+ * undefined is gonna be used since the implementation
+ * does not check the parameter. Let's force a value for consistency. If consumer
+ * wants to undefine it, pass the undefined value explicitly.
+ */
+
+/**
+ * @typedef {function(string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): CompiledExpression} ParseService
  */
 
 export const $parseMinErr = minErr("$parse");
@@ -52,11 +59,6 @@ export function $ParseProvider() {
   };
 
   /**
-   * @ngdoc method
-   * @name $parseProvider#setIdentifierFns
-   *
-   * @description
-   *
    * Allows defining the set of characters that are allowed in AngularJS expressions. The function
    * `identifierStart` will get called to know if a given character is a valid character to be the
    * first character for an identifier. The function `identifierContinue` will get called to know if
@@ -70,10 +72,11 @@ export function $ParseProvider() {
    * Since this function will be called extensively, keep the implementation of these functions fast,
    * as the performance of these functions have a direct impact on the expressions parsing speed.
    *
-   * @param {function(any):boolean=} identifierStart The function that will decide whether the given character is
+   * @param {function(any):boolean} [identifierStart] The function that will decide whether the given character is
    *   a valid identifier start character.
-   * @param {function(any):boolean=} identifierContinue The function that will decide whether the given character is
+   * @param {function(any):boolean} [identifierContinue] The function that will decide whether the given character is
    *   a valid identifier continue character.
+   * @returns {$ParseProvider}
    */
   this.setIdentifierFns = function (identifierStart, identifierContinue) {
     identStart = identifierStart;
@@ -84,9 +87,7 @@ export function $ParseProvider() {
   this.$get = [
     "$filter",
     function ($filter) {
-      var noUnsafeEval = csp().noUnsafeEval;
       var $parseOptions = {
-        csp: noUnsafeEval,
         literals: structuredClone(literals),
         isIdentifierStart: isFunction(identStart) && identStart,
         isIdentifierContinue: isFunction(identContinue) && identContinue,
