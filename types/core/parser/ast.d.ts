@@ -66,11 +66,6 @@ export class AST {
      */
     filterChain(): ASTNode;
     /**
-     * Parses an expression.
-     * @returns {ASTNode} The expression node.
-     */
-    expression(): ASTNode;
-    /**
      * Parses an assignment expression.
      * @returns {ASTNode} The assignment expression node.
      */

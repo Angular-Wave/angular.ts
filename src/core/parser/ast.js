@@ -37,7 +37,6 @@ export class AST {
   constructor(lexer, options) {
     /** @type {import('./lexer').Lexer} */
     this.lexer = lexer;
-
     /** @type  {import("./parser").ParserOptions} */
     this.options = options;
     this.selfReferential = {
@@ -54,13 +53,10 @@ export class AST {
   ast(text) {
     this.text = text;
     this.tokens = this.lexer.lex(text);
-
     const value = this.program();
-
     if (this.tokens.length !== 0) {
       this.throwError("is an unexpected token", this.tokens[0]);
     }
-
     return value;
   }
 
@@ -97,19 +93,11 @@ export class AST {
    * @returns {ASTNode} The filter chain node.
    */
   filterChain() {
-    let left = this.expression();
+    let left = this.assignment();
     while (this.expect("|")) {
       left = this.filter(left);
     }
     return left;
-  }
-
-  /**
-   * Parses an expression.
-   * @returns {ASTNode} The expression node.
-   */
-  expression() {
-    return this.assignment();
   }
 
   /**
@@ -142,9 +130,9 @@ export class AST {
     let alternate;
     let consequent;
     if (this.expect("?")) {
-      alternate = this.expression();
+      alternate = this.assignment();
       if (this.consume(":")) {
-        consequent = this.expression();
+        consequent = this.assignment();
         return {
           type: ASTType.ConditionalExpression,
           test,
@@ -335,7 +323,7 @@ export class AST {
         primary = {
           type: ASTType.MemberExpression,
           object: primary,
-          property: this.expression(),
+          property: this.assignment(),
           computed: true,
         };
         this.consume("]");
@@ -369,7 +357,7 @@ export class AST {
     };
 
     while (this.expect(":")) {
-      args.push(this.expression());
+      args.push(this.assignment());
     }
 
     return result;
@@ -424,7 +412,7 @@ export class AST {
           // Support trailing commas per ES5.1.
           break;
         }
-        elements.push(this.expression());
+        elements.push(this.assignment());
       } while (this.expect(","));
     }
     this.consume("]");
@@ -452,7 +440,7 @@ export class AST {
           property.key = this.constant();
           property.computed = false;
           this.consume(":");
-          property.value = this.expression();
+          property.value = this.assignment();
         } else if (
           /** @type {import("./lexer").Token} */ (this.peek()).identifier
         ) {
@@ -460,17 +448,17 @@ export class AST {
           property.computed = false;
           if (this.peek(":")) {
             this.consume(":");
-            property.value = this.expression();
+            property.value = this.assignment();
           } else {
             property.value = property.key;
           }
         } else if (this.peek("[")) {
           this.consume("[");
-          property.key = this.expression();
+          property.key = this.assignment();
           this.consume("]");
           property.computed = true;
           this.consume(":");
-          property.value = this.expression();
+          property.value = this.assignment();
         } else {
           this.throwError(
             "invalid key",
