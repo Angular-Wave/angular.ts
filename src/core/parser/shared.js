@@ -61,6 +61,12 @@ export function isPure(node, parentIsPure) {
   return undefined === parentIsPure ? PURITY_RELATIVE : parentIsPure;
 }
 
+/**
+ * Decorates ast with constant, toWatch, and isPure properties
+ * @param {import("./ast").ASTNode} ast
+ * @param {function(any):any} $filter
+ * @param {*} parentIsPure
+ */
 export function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
   let allConstants;
   let argsToWatch;
@@ -71,7 +77,7 @@ export function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
   switch (ast.type) {
     case ASTType.Program:
       allConstants = true;
-      /** @type {[any]} */ (ast.body).forEach((expr) => {
+      /** @type {[import("./ast").ASTNode]} */ (ast.body).forEach((expr) => {
         findConstantAndWatchExpressions(expr.expression, $filter, astIsPure);
         allConstants = allConstants && expr.expression.constant;
       });

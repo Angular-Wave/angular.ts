@@ -9,13 +9,11 @@ import { getValueOf, PURITY_RELATIVE } from "./shared";
 import { Lexer } from "./lexer";
 import { Parser } from "./parser";
 
-export const $parseMinErr = minErr("$parse");
-
-/// ////////////////////////////////
-
 /**
  * @typedef {function(string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): import('../../types').CompiledExpression} ParseService
  */
+
+export const $parseMinErr = minErr("$parse");
 
 export const literals = {
   true: true,
@@ -126,211 +124,14 @@ export function $ParseProvider() {
         }
       }
 
+      /**
+       * @param {string} exp
+       * @returns {import("./ast").ASTNode}
+       */
       function $$getAst(exp) {
         var lexer = new Lexer($parseOptions);
         var parser = new Parser(lexer, $filter, $parseOptions);
         return parser.getAst(exp).ast;
-      }
-
-      function expressionInputDirtyCheck(
-        newValue,
-        oldValueOfValue,
-        compareObjectIdentity,
-      ) {
-        if (newValue == null || oldValueOfValue == null) {
-          // null/undefined
-          return newValue === oldValueOfValue;
-        }
-
-        if (typeof newValue === "object") {
-          // attempt to convert the value to a primitive type
-          // TODO(docs): add a note to docs that by implementing valueOf even objects and arrays can
-          //             be cheaply dirty-checked
-          newValue = getValueOf(newValue);
-
-          if (typeof newValue === "object" && !compareObjectIdentity) {
-            // objects/arrays are not supported - deep-watching them would be too expensive
-            return false;
-          }
-
-          // fall-through to the primitive equality check
-        }
-
-        //Primitive or NaN
-
-        return (
-          newValue === oldValueOfValue ||
-          (newValue !== newValue && oldValueOfValue !== oldValueOfValue)
-        );
-      }
-
-      function inputsWatchDelegate(
-        scope,
-        listener,
-        objectEquality,
-        parsedExpression,
-      ) {
-        var inputExpressions = parsedExpression.inputs;
-        var lastResult;
-
-        if (inputExpressions.length === 1) {
-          var oldInputValueOf = expressionInputDirtyCheck; // init to something unique so that equals check fails
-          inputExpressions = inputExpressions[0];
-          return scope.$watch(
-            function expressionInputWatch(scope) {
-              var newInputValue = inputExpressions(scope);
-              if (
-                !expressionInputDirtyCheck(
-                  newInputValue,
-                  oldInputValueOf,
-                  inputExpressions.isPure,
-                )
-              ) {
-                lastResult = parsedExpression(scope, undefined, undefined, [
-                  newInputValue,
-                ]);
-                oldInputValueOf = newInputValue && getValueOf(newInputValue);
-              }
-              return lastResult;
-            },
-            listener,
-            objectEquality,
-          );
-        }
-
-        var oldInputValueOfValues = [];
-        var oldInputValues = [];
-        for (var i = 0, ii = inputExpressions.length; i < ii; i++) {
-          oldInputValueOfValues[i] = expressionInputDirtyCheck; // init to something unique so that equals check fails
-          oldInputValues[i] = null;
-        }
-
-        return scope.$watch(
-          function expressionInputsWatch(scope) {
-            var changed = false;
-
-            for (var i = 0, ii = inputExpressions.length; i < ii; i++) {
-              var newInputValue = inputExpressions[i](scope);
-              if (
-                changed ||
-                (changed = !expressionInputDirtyCheck(
-                  newInputValue,
-                  oldInputValueOfValues[i],
-                  inputExpressions[i].isPure,
-                ))
-              ) {
-                oldInputValues[i] = newInputValue;
-                oldInputValueOfValues[i] =
-                  newInputValue && getValueOf(newInputValue);
-              }
-            }
-
-            if (changed) {
-              lastResult = parsedExpression(
-                scope,
-                undefined,
-                undefined,
-                oldInputValues,
-              );
-            }
-
-            return lastResult;
-          },
-          listener,
-          objectEquality,
-        );
-      }
-
-      function oneTimeWatchDelegate(
-        scope,
-        listener,
-        objectEquality,
-        parsedExpression,
-      ) {
-        var isDone = parsedExpression.literal ? isAllDefined : isDefined;
-        var unwatch, lastValue;
-
-        var exp = parsedExpression.$$intercepted || parsedExpression;
-        var post = parsedExpression.$$interceptor || ((x) => x);
-
-        var useInputs = parsedExpression.inputs && !exp.inputs;
-
-        // Propagate the literal/inputs/constant attributes
-        // ... but not oneTime since we are handling it
-        oneTimeWatch.literal = parsedExpression.literal;
-        oneTimeWatch.constant = parsedExpression.constant;
-        oneTimeWatch.inputs = parsedExpression.inputs;
-
-        // Allow other delegates to run on this wrapped expression
-        addWatchDelegate(oneTimeWatch);
-
-        unwatch = scope.$watch(oneTimeWatch, listener, objectEquality);
-
-        return unwatch;
-
-        function unwatchIfDone() {
-          if (isDone(lastValue)) {
-            unwatch();
-          }
-        }
-
-        function oneTimeWatch(scope, locals, assign, inputs) {
-          lastValue =
-            useInputs && inputs
-              ? inputs[0]
-              : exp(scope, locals, assign, inputs);
-          if (isDone(lastValue)) {
-            scope.$$postDigest(unwatchIfDone);
-          }
-          return post(lastValue);
-        }
-      }
-
-      function isAllDefined(value) {
-        var allDefined = true;
-        forEach(value, function (val) {
-          if (!isDefined(val)) allDefined = false;
-        });
-        return allDefined;
-      }
-
-      function constantWatchDelegate(
-        scope,
-        listener,
-        objectEquality,
-        parsedExpression,
-      ) {
-        var unwatch = scope.$watch(
-          function constantWatch(scope) {
-            unwatch();
-            return parsedExpression(scope);
-          },
-          listener,
-          objectEquality,
-        );
-        return unwatch;
-      }
-
-      function addWatchDelegate(parsedExpression) {
-        if (parsedExpression.constant) {
-          parsedExpression.$$watchDelegate = constantWatchDelegate;
-        } else if (parsedExpression.oneTime) {
-          parsedExpression.$$watchDelegate = oneTimeWatchDelegate;
-        } else if (parsedExpression.inputs) {
-          parsedExpression.$$watchDelegate = inputsWatchDelegate;
-        }
-
-        return parsedExpression;
-      }
-
-      function chainInterceptors(first, second) {
-        function chainedInterceptor(value) {
-          return second(first(value));
-        }
-        chainedInterceptor.$stateful = first.$stateful || second.$stateful;
-        chainedInterceptor.$$pure = first.$$pure && second.$$pure;
-
-        return chainedInterceptor;
       }
 
       function addInterceptor(parsedExpression, interceptorFn) {
@@ -394,16 +195,16 @@ export function $ParseProvider() {
   ];
 }
 
-function constantWatchDelegate(
+export function constantWatchDelegate(
   scope,
   listener,
   objectEquality,
   parsedExpression,
 ) {
   const unwatch = scope.$watch(
-    ($scope) => {
+    () => {
       unwatch();
-      return parsedExpression($scope);
+      return parsedExpression(scope);
     },
     listener,
     objectEquality,
@@ -423,7 +224,7 @@ function addWatchDelegate(parsedExpression) {
   return parsedExpression;
 }
 
-export function inputsWatchDelegate(
+function inputsWatchDelegate(
   scope,
   listener,
   objectEquality,
@@ -500,7 +301,7 @@ export function inputsWatchDelegate(
   );
 }
 
-export function oneTimeWatchDelegate(
+function oneTimeWatchDelegate(
   scope,
   listener,
   objectEquality,
@@ -545,7 +346,7 @@ export function oneTimeWatchDelegate(
   return unwatch;
 }
 
-export function chainInterceptors(first, second) {
+function chainInterceptors(first, second) {
   function chainedInterceptor(value) {
     return second(first(value));
   }
@@ -555,7 +356,6 @@ export function chainInterceptors(first, second) {
   return chainedInterceptor;
 }
 
-/** @private */
 function expressionInputDirtyCheck(
   newValue,
   oldValueOfValue,
@@ -588,7 +388,6 @@ function expressionInputDirtyCheck(
   );
 }
 
-/** @private */
 function isAllDefined(value) {
   let allDefined = true;
   forEach(value, (val) => {

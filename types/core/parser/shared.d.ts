@@ -11,7 +11,13 @@ export function ifDefined(v: any, d: any): any;
 export function plusFn(l: any, r: any): any;
 export function isStateless($filter: any, filterName: any): boolean;
 export function isPure(node: any, parentIsPure: any): any;
-export function findConstantAndWatchExpressions(ast: any, $filter: any, parentIsPure: any): void;
+/**
+ * Decorates ast with constant, toWatch, and isPure properties
+ * @param {import("./ast").ASTNode} ast
+ * @param {function(any):any} $filter
+ * @param {*} parentIsPure
+ */
+export function findConstantAndWatchExpressions(ast: import("./ast").ASTNode, $filter: (arg0: any) => any, parentIsPure: any): void;
 export function getInputs(body: any): any;
 export function isAssignable(ast: any): boolean;
 export function assignableAST(ast: any): {

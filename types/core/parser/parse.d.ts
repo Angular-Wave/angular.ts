@@ -39,16 +39,13 @@ export class $ParseProvider {
     setIdentifierFns: (identifierStart?: ((arg0: any) => boolean) | undefined, identifierContinue?: ((arg0: any) => boolean) | undefined) => this;
     $get: (string | (($filter: any) => {
         (exp: any, interceptorFn: any): any;
-        $$getAst: (exp: any) => import("./ast").ASTNode;
+        $$getAst: (exp: string) => import("./ast").ASTNode;
     }))[];
 }
-export function inputsWatchDelegate(scope: any, listener: any, objectEquality: any, parsedExpression: any): any;
-export function oneTimeWatchDelegate(scope: any, listener: any, objectEquality: any, parsedExpression: any): any;
-export function chainInterceptors(first: any, second: any): {
-    (value: any): any;
-    $stateful: any;
-    $$pure: any;
-};
+export function constantWatchDelegate(scope: any, listener: any, objectEquality: any, parsedExpression: any): any;
+/**
+ * @typedef {function(string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): import('../../types').CompiledExpression} ParseService
+ */
 export const $parseMinErr: (arg0: string, ...arg1: any[]) => Error;
 export namespace literals {
     let _true: boolean;

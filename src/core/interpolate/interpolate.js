@@ -6,6 +6,7 @@ import {
   valueFn,
   extend,
 } from "../../shared/utils";
+import { constantWatchDelegate } from "../parser/parse";
 
 const $interpolateMinErr = minErr("$interpolate");
 $interpolateMinErr.throwNoconcat = function (text) {
@@ -110,24 +111,6 @@ export function $InterpolateProvider() {
         return text
           .replace(escapedStartRegexp, startSymbol)
           .replace(escapedEndRegexp, endSymbol);
-      }
-
-      // TODO: this is the same as the constantWatchDelegate in parse.js
-      function constantWatchDelegate(
-        scope,
-        listener,
-        objectEquality,
-        constantInterp,
-      ) {
-        const unwatch = scope.$watch(
-          (scope) => {
-            unwatch();
-            return constantInterp(scope);
-          },
-          listener,
-          objectEquality,
-        );
-        return unwatch;
       }
 
       /**

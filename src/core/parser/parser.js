@@ -22,7 +22,7 @@ export class Parser {
   /**
    *
    * @param {import('./lexer').Lexer} lexer
-   * @param {*} $filter
+   * @param {function(any):any} $filter
    * @param {ParserOptions} options
    */
   constructor(lexer, $filter, options) {
@@ -50,7 +50,6 @@ export class Parser {
   }
 
   /**
-   * @private
    * @param {string} exp - Expression to be parsed
    * @returns {ParsedAST}
    */

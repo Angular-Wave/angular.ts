@@ -15,10 +15,10 @@ export class Parser {
     /**
      *
      * @param {import('./lexer').Lexer} lexer
-     * @param {*} $filter
+     * @param {function(any):any} $filter
      * @param {ParserOptions} options
      */
-    constructor(lexer: import("./lexer").Lexer, $filter: any, options: ParserOptions);
+    constructor(lexer: import("./lexer").Lexer, $filter: (arg0: any) => any, options: ParserOptions);
     /** @type {AST} */
     ast: AST;
     /** @type {ASTInterpreter|ASTCompiler} */
@@ -30,11 +30,10 @@ export class Parser {
      */
     parse(exp: string): any;
     /**
-     * @private
      * @param {string} exp - Expression to be parsed
      * @returns {ParsedAST}
      */
-    private getAst;
+    getAst(exp: string): ParsedAST;
 }
 export type ParsedAST = {
     /**

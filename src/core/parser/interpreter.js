@@ -8,11 +8,19 @@ import {
 import { forEach, isDefined } from "../../shared/utils";
 import { ASTType } from "./ast-type";
 
-export function ASTInterpreter($filter) {
-  this.$filter = $filter;
-}
+export class ASTInterpreter {
+  /**
+   * @param {function(any):any} $filter
+   */
+  constructor($filter) {
+    this.$filter = $filter;
+  }
 
-ASTInterpreter.prototype = {
+  /**
+   * Compiles the AST into a function.
+   * @param {import("./ast").ASTNode} ast - The AST to compile.
+   * @returns
+   */
   compile(ast) {
     const self = this;
     findConstantAndWatchExpressions(ast, self.$filter);
@@ -37,6 +45,7 @@ ASTInterpreter.prototype = {
     forEach(ast.body, (expression) => {
       expressions.push(self.recurse(expression.expression));
     });
+
     const fn =
       ast.body.length === 0
         ? () => {}
@@ -58,8 +67,15 @@ ASTInterpreter.prototype = {
       fn.inputs = inputs;
     }
     return fn;
-  },
+  }
 
+  /**
+   * Recurses the AST nodes.
+   * @param {import("./ast").ASTNode} ast - The AST node.
+   * @param {Object} [context] - The context.
+   * @param {boolean|number} [create] - The create flag.
+   * @returns {function} The recursive function.
+   */
   recurse(ast, context, create) {
     let left;
     let right;
@@ -200,9 +216,15 @@ ASTInterpreter.prototype = {
           return context ? { value: assign } : assign;
         };
     }
-  },
+  }
 
-  "unary+": function (argument, context) {
+  /**
+   * Unary plus operation.
+   * @param {function} argument - The argument function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The unary plus function.
+   */
+  "unary+"(argument, context) {
     return function (scope, locals, assign, inputs) {
       let arg = argument(scope, locals, assign, inputs);
       if (isDefined(arg)) {
@@ -212,9 +234,15 @@ ASTInterpreter.prototype = {
       }
       return context ? { value: arg } : arg;
     };
-  },
+  }
 
-  "unary-": function (argument, context) {
+  /**
+   * Unary minus operation.
+   * @param {function} argument - The argument function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The unary minus function.
+   */
+  "unary-"(argument, context) {
     return function (scope, locals, assign, inputs) {
       let arg = argument(scope, locals, assign, inputs);
       if (isDefined(arg)) {
@@ -224,146 +252,289 @@ ASTInterpreter.prototype = {
       }
       return context ? { value: arg } : arg;
     };
-  },
-  "unary!": function (argument, context) {
+  }
+
+  /**
+   * Unary negation operation.
+   * @param {function} argument - The argument function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The unary negation function.
+   */
+  "unary!"(argument, context) {
     return function (scope, locals, assign, inputs) {
       const arg = !argument(scope, locals, assign, inputs);
       return context ? { value: arg } : arg;
     };
-  },
-  "binary+": function (left, right, context) {
+  }
+
+  /**
+   * Binary plus operation.
+   * @param {function} left - The left operand function.
+   * @param {function} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The binary plus function.
+   */
+  "binary+"(left, right, context) {
     return function (scope, locals, assign, inputs) {
       const lhs = left(scope, locals, assign, inputs);
       const rhs = right(scope, locals, assign, inputs);
       const arg = plusFn(lhs, rhs);
       return context ? { value: arg } : arg;
     };
-  },
-  "binary-": function (left, right, context) {
+  }
+
+  /**
+   * Binary minus operation.
+   * @param {function} left - The left operand function.
+   * @param {function} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The binary minus function.
+   */
+  "binary-"(left, right, context) {
     return function (scope, locals, assign, inputs) {
       const lhs = left(scope, locals, assign, inputs);
       const rhs = right(scope, locals, assign, inputs);
       const arg = (isDefined(lhs) ? lhs : 0) - (isDefined(rhs) ? rhs : 0);
       return context ? { value: arg } : arg;
     };
-  },
-  "binary*": function (left, right, context) {
+  }
+
+  /**
+   * Binary multiplication operation.
+   * @param {function} left - The left operand function.
+   * @param {function} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The binary multiplication function.
+   */
+  "binary*"(left, right, context) {
     return function (scope, locals, assign, inputs) {
       const arg =
         left(scope, locals, assign, inputs) *
         right(scope, locals, assign, inputs);
       return context ? { value: arg } : arg;
     };
-  },
-  "binary/": function (left, right, context) {
+  }
+
+  "binary/"(left, right, context) {
     return function (scope, locals, assign, inputs) {
       const arg =
         left(scope, locals, assign, inputs) /
         right(scope, locals, assign, inputs);
       return context ? { value: arg } : arg;
     };
-  },
-  "binary%": function (left, right, context) {
+  }
+
+  /**
+   * Binary division operation.
+   * @param {function} left - The left operand function.
+   * @param {function} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The binary division function.
+   */
+  "binary%"(left, right, context) {
     return function (scope, locals, assign, inputs) {
       const arg =
         left(scope, locals, assign, inputs) %
         right(scope, locals, assign, inputs);
       return context ? { value: arg } : arg;
     };
-  },
-  "binary===": function (left, right, context) {
+  }
+
+  /**
+   * Binary strict equality operation.
+   * @param {function} left - The left operand function.
+   * @param {function} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The binary strict equality function.
+   */
+  "binary==="(left, right, context) {
     return function (scope, locals, assign, inputs) {
       const arg =
         left(scope, locals, assign, inputs) ===
         right(scope, locals, assign, inputs);
       return context ? { value: arg } : arg;
     };
-  },
-  "binary!==": function (left, right, context) {
+  }
+
+  /**
+   * Binary strict inequality operation.
+   * @param {function} left - The left operand function.
+   * @param {function} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The binary strict inequality function.
+   */
+  "binary!=="(left, right, context) {
     return function (scope, locals, assign, inputs) {
       const arg =
         left(scope, locals, assign, inputs) !==
         right(scope, locals, assign, inputs);
       return context ? { value: arg } : arg;
     };
-  },
-  "binary==": function (left, right, context) {
+  }
+
+  /**
+   * Binary equality operation.
+   * @param {function} left - The left operand function.
+   * @param {function} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The binary equality function.
+   */
+  "binary=="(left, right, context) {
     return function (scope, locals, assign, inputs) {
       const arg =
         left(scope, locals, assign, inputs) ==
         right(scope, locals, assign, inputs);
       return context ? { value: arg } : arg;
     };
-  },
-  "binary!=": function (left, right, context) {
+  }
+
+  /**
+   * Binary inequality operation.
+   * @param {function} left - The left operand function.
+   * @param {function} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The binary inequality function.
+   */
+  "binary!="(left, right, context) {
     return function (scope, locals, assign, inputs) {
       const arg =
         left(scope, locals, assign, inputs) !=
         right(scope, locals, assign, inputs);
       return context ? { value: arg } : arg;
     };
-  },
-  "binary<": function (left, right, context) {
+  }
+
+  /**
+   * Binary less-than operation.
+   * @param {function} left - The left operand function.
+   * @param {function} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The binary less-than function.
+   */
+  "binary<"(left, right, context) {
     return function (scope, locals, assign, inputs) {
       const arg =
         left(scope, locals, assign, inputs) <
         right(scope, locals, assign, inputs);
       return context ? { value: arg } : arg;
     };
-  },
-  "binary>": function (left, right, context) {
+  }
+
+  /**
+   * Binary greater-than operation.
+   * @param {function} left - The left operand function.
+   * @param {function} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The binary greater-than function.
+   */
+  "binary>"(left, right, context) {
     return function (scope, locals, assign, inputs) {
       const arg =
         left(scope, locals, assign, inputs) >
         right(scope, locals, assign, inputs);
       return context ? { value: arg } : arg;
     };
-  },
-  "binary<=": function (left, right, context) {
+  }
+
+  /**
+   * Binary less-than-or-equal-to operation.
+   * @param {function} left - The left operand function.
+   * @param {function} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The binary less-than-or-equal-to function.
+   */
+  "binary<="(left, right, context) {
     return function (scope, locals, assign, inputs) {
       const arg =
         left(scope, locals, assign, inputs) <=
         right(scope, locals, assign, inputs);
       return context ? { value: arg } : arg;
     };
-  },
-  "binary>=": function (left, right, context) {
+  }
+
+  /**
+   * Binary greater-than-or-equal-to operation.
+   * @param {function} left - The left operand function.
+   * @param {function} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The binary greater-than-or-equal-to function.
+   */
+  "binary>="(left, right, context) {
     return function (scope, locals, assign, inputs) {
       const arg =
         left(scope, locals, assign, inputs) >=
         right(scope, locals, assign, inputs);
       return context ? { value: arg } : arg;
     };
-  },
-  "binary&&": function (left, right, context) {
+  }
+  /**
+   * Binary logical AND operation.
+   * @param {function} left - The left operand function.
+   * @param {function} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The binary logical AND function.
+   */
+  "binary&&"(left, right, context) {
     return function (scope, locals, assign, inputs) {
       const arg =
         left(scope, locals, assign, inputs) &&
         right(scope, locals, assign, inputs);
       return context ? { value: arg } : arg;
     };
-  },
-  "binary||": function (left, right, context) {
+  }
+
+  /**
+   * Binary logical OR operation.
+   * @param {function} left - The left operand function.
+   * @param {function} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The binary logical OR function.
+   */
+  "binary||"(left, right, context) {
     return function (scope, locals, assign, inputs) {
       const arg =
         left(scope, locals, assign, inputs) ||
         right(scope, locals, assign, inputs);
       return context ? { value: arg } : arg;
     };
-  },
-  "ternary?:": function (test, alternate, consequent, context) {
+  }
+
+  /**
+   * Ternary conditional operation.
+   * @param {function} test - The test function.
+   * @param {function} alternate - The alternate function.
+   * @param {function} consequent - The consequent function.
+   * @param {Object} [context] - The context.
+   * @returns {function} The ternary conditional function.
+   */
+  "ternary?:"(test, alternate, consequent, context) {
     return function (scope, locals, assign, inputs) {
       const arg = test(scope, locals, assign, inputs)
         ? alternate(scope, locals, assign, inputs)
         : consequent(scope, locals, assign, inputs);
       return context ? { value: arg } : arg;
     };
-  },
+  }
+
+  /**
+   * Returns the value of a literal.
+   * @param {*} value - The literal value.
+   * @param {Object} [context] - The context.
+   * @returns {function} The function returning the literal value.
+   */
   value(value, context) {
     return function () {
       return context ? { context: undefined, name: undefined, value } : value;
     };
-  },
+  }
+
+  /**
+   * Returns the value of an identifier.
+   * @param {string} name - The identifier name.
+   * @param {Object} [context] - The context.
+   * @param {boolean} [create] - Whether to create the identifier if it does not exist.
+   * @returns {function} The function returning the identifier value.
+   */
   identifier(name, context, create) {
     return function (scope, locals) {
       const base = locals && name in locals ? locals : scope;
@@ -376,7 +547,16 @@ ASTInterpreter.prototype = {
       }
       return value;
     };
-  },
+  }
+
+  /**
+   * Returns the value of a computed member expression.
+   * @param {function} left - The left operand function.
+   * @param {function} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @param {boolean} [create] - Whether to create the member if it does not exist.
+   * @returns {function} The function returning the computed member value.
+   */
   computedMember(left, right, context, create) {
     return function (scope, locals, assign, inputs) {
       const lhs = left(scope, locals, assign, inputs);
@@ -397,7 +577,16 @@ ASTInterpreter.prototype = {
       }
       return value;
     };
-  },
+  }
+
+  /**
+   * Returns the value of a non-computed member expression.
+   * @param {function} left - The left operand function.
+   * @param {string} right - The right operand function.
+   * @param {Object} [context] - The context.
+   * @param {boolean} [create] - Whether to create the member if it does not exist.
+   * @returns {function} The function returning the non-computed member value.
+   */
   nonComputedMember(left, right, context, create) {
     return function (scope, locals, assign, inputs) {
       const lhs = left(scope, locals, assign, inputs);
@@ -412,11 +601,18 @@ ASTInterpreter.prototype = {
       }
       return value;
     };
-  },
+  }
+
+  /**
+   * Returns the value of an input expression.
+   * @param {function} input - The input function.
+   * @param {number} watchId - The watch identifier.
+   * @returns {function} The function returning the input value.
+   */
   inputs(input, watchId) {
     return function (scope, value, locals, inputs) {
       if (inputs) return inputs[watchId];
       return input(scope, value, locals);
     };
-  },
-};
+  }
+}
