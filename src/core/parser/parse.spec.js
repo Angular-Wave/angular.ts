@@ -1762,27 +1762,14 @@ describe("parser", () => {
 
   let filterProvider;
 
-  forEach([true, false], (cspEnabled) => {
-    beforeEach(() => {
-      createInjector([
-        "ng",
-        function ($filterProvider, $parseProvider) {
-          filterProvider = $filterProvider;
-          $parseProvider.addLiteral("Infinity", Infinity);
-          csp().noUnsafeEval = cspEnabled;
-        },
-      ]).invoke((_$rootScope_) => {
-        $rootScope = _$rootScope_;
-      });
-    });
-
-    it(`should allow extending literals with csp ${cspEnabled}`, () => {
-      expect($rootScope.$eval("Infinity")).toEqual(Infinity);
-      expect($rootScope.$eval("-Infinity")).toEqual(-Infinity);
-      expect(() => {
-        $rootScope.$eval("Infinity = 1");
-      }).toThrow();
-      expect($rootScope.$eval("Infinity")).toEqual(Infinity);
+  beforeEach(() => {
+    createInjector([
+      "ng",
+      function ($filterProvider) {
+        filterProvider = $filterProvider;
+      },
+    ]).invoke((_$rootScope_) => {
+      $rootScope = _$rootScope_;
     });
   });
 
@@ -1793,7 +1780,6 @@ describe("parser", () => {
           "ng",
           function ($filterProvider) {
             filterProvider = $filterProvider;
-            csp().noUnsafeEval = cspEnabled;
           },
         ]).invoke((_$rootScope_) => {
           scope = _$rootScope_;

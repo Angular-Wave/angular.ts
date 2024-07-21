@@ -30,16 +30,27 @@ import { ASTType } from "./ast-type";
  * @property {boolean} [filter]
  */
 
+// Keep this exported in case modification is required
+/** @type {Map<string,any>} */
+export const literals = new Map(
+  Object.entries({
+    true: true,
+    false: false,
+    null: null,
+    undefined,
+  }),
+);
+
 /**
- * @param {import('./lexer').Lexer} lexer - The lexer instance for tokenizing input
- * @param {import("./parser").ParserOptions} options
+ * @class
  */
 export class AST {
-  constructor(lexer, options) {
+  /**
+   * @param {import('./lexer').Lexer} lexer - The lexer instance for tokenizing input
+   */
+  constructor(lexer) {
     /** @type {import('./lexer').Lexer} */
     this.lexer = lexer;
-    /** @type  {import("./parser").ParserOptions} */
-    this.options = options;
     this.selfReferential = {
       this: { type: ASTType.ThisExpression },
       $locals: { type: ASTType.LocalsExpression },
@@ -289,14 +300,11 @@ export class AST {
     ) {
       primary = structuredClone(this.selfReferential[this.consume().text]);
     } else if (
-      Object.prototype.hasOwnProperty.call(
-        this.options.literals,
-        /** @type {import("./lexer").Token} */ (this.peek()).text,
-      )
+      literals.has(/** @type {import("./lexer").Token} */ (this.peek()).text)
     ) {
       primary = {
         type: ASTType.Literal,
-        value: this.options.literals[this.consume().text],
+        value: literals.get(this.consume().text),
       };
     } else if (
       /** @type {import("./lexer").Token} */ (this.peek()).identifier

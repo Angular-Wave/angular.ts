@@ -9,11 +9,6 @@ import { ASTInterpreter } from "./interpreter";
  */
 
 /**
- * @typedef {Object} ParserOptions
- * @property {function(string):any} literals
- */
-
-/**
  * @constructor
  */
 export class Parser {
@@ -21,11 +16,10 @@ export class Parser {
    *
    * @param {import('./lexer').Lexer} lexer
    * @param {function(any):any} $filter
-   * @param {ParserOptions} options
    */
-  constructor(lexer, $filter, options) {
+  constructor(lexer, $filter) {
     /** @type {AST} */
-    this.ast = new AST(lexer, options);
+    this.ast = new AST(lexer);
 
     /** @type {ASTInterpreter} */
     this.astCompiler = new ASTInterpreter($filter);

@@ -21,10 +21,10 @@ export class ASTInterpreter {
      * Recurses the AST nodes.
      * @param {import("./ast").ASTNode} ast - The AST node.
      * @param {Object} [context] - The context.
-     * @param {boolean|number} [create] - The create flag.
-     * @returns {import("./parse").CompiledExpression} The recursive function.
+     * @param {boolean|1} [create] - The create flag.
+     * @returns {import("./parse").CompiledExpressionFunction} The recursive function.
      */
-    recurse(ast: import("./ast").ASTNode, context?: any, create?: boolean | number): import("./parse").CompiledExpression;
+    recurse(ast: import("./ast").ASTNode, context?: any, create?: boolean | 1): import("./parse").CompiledExpressionFunction;
     /**
      * Unary plus operation.
      * @param {function} argument - The argument function.
@@ -70,7 +70,7 @@ export class ASTInterpreter {
      * @returns {function} The binary multiplication function.
      */
     "binary*"(left: Function, right: Function, context?: any): Function;
-    "binary/"(left: any, right: any, context: any): (scope: any, locals: any, assign: any, inputs: any) => number | {
+    "binary/"(left: any, right: any, context: any): (scope: any, locals: any, assign: any) => number | {
         value: number;
     };
     /**
@@ -203,13 +203,6 @@ export class ASTInterpreter {
      * @returns {function} The function returning the non-computed member value.
      */
     nonComputedMember(left: Function, right: string, context?: any, create?: boolean | 1): Function;
-    /**
-     * Returns the value of an input expression.
-     * @param {function} input - The input function.
-     * @param {number} watchId - The watch identifier.
-     * @returns {function} The function returning the input value.
-     */
-    inputs(input: Function, watchId: number): Function;
 }
 export type DecoratedASTNode = import("./ast").ASTNode & {
     isPure: boolean | number;

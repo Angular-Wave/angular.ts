@@ -14,13 +14,18 @@ import { Parser } from "./parser";
  */
 
 /**
- * @typedef {function & CompiledExpressionProps} CompiledExpression
+ * @typedef {function } CompiledExpressionFunction
  * @param {import('../scope/scope').Scope} context - An object against which any expressions embedded in the strings are evaluated against (typically a scope object).
  * @param {object} [locals] - local variables context object, useful for overriding values in `context`.
+ * @param {any} [assign]
  * @returns {any}
  * undefined is gonna be used since the implementation
  * does not check the parameter. Let's force a value for consistency. If consumer
  * wants to undefine it, pass the undefined value explicitly.
+ */
+
+/**
+ * @typedef {CompiledExpressionFunction & CompiledExpressionProps} CompiledExpression
  */
 
 /**
@@ -29,41 +34,14 @@ import { Parser } from "./parser";
 
 export const $parseMinErr = minErr("$parse");
 
-export const literals = {
-  true: true,
-  false: false,
-  null: null,
-  undefined,
-};
-
 export function $ParseProvider() {
   const cache = Object.create(null);
-  const literals = {
-    true: true,
-    false: false,
-    null: null,
-    undefined: undefined,
-  };
+
   /** @type {function(any):boolean?} */
   var identStart;
 
   /** @type {function(any):boolean?} */
   var identContinue;
-
-  /**
-   * @ngdoc method
-   * @name $parseProvider#addLiteral
-   * @description
-   *
-   * Configure $parse service to add literal values that will be present as literal at expressions.
-   *
-   * @param {string} literalName Token for the literal value. The literal name value must be a valid literal name.
-   * @param {*} literalValue Value for this literal. All literal values must be primitives or `undefined`.
-   *
-   **/
-  this.addLiteral = function (literalName, literalValue) {
-    literals[literalName] = literalValue;
-  };
 
   /**
    * Allows defining the set of characters that are allowed in AngularJS expressions. The function
@@ -94,8 +72,8 @@ export function $ParseProvider() {
   this.$get = [
     "$filter",
     function ($filter) {
-      var $parseOptions = {
-        literals: structuredClone(literals),
+      /** @type {import("./lexer").LexerOptions} */
+      var $lexerOptions = {
         isIdentifierStart: isFunction(identStart) && identStart,
         isIdentifierContinue: isFunction(identContinue) && identContinue,
       };
@@ -113,11 +91,8 @@ export function $ParseProvider() {
             parsedExpression = cache[cacheKey];
 
             if (!parsedExpression) {
-              var lexer = new Lexer({
-                isIdentifierContinue: $parseOptions.isIdentifierContinue,
-                isIdentifierStart: $parseOptions.isIdentifierStart,
-              });
-              var parser = new Parser(lexer, $filter, $parseOptions);
+              var lexer = new Lexer($lexerOptions);
+              var parser = new Parser(lexer, $filter);
               parsedExpression = parser.parse(exp);
 
               cache[cacheKey] = addWatchDelegate(parsedExpression);
@@ -137,8 +112,8 @@ export function $ParseProvider() {
        * @returns {import("./ast").ASTNode}
        */
       function $$getAst(exp) {
-        var lexer = new Lexer($parseOptions);
-        var parser = new Parser(lexer, $filter, $parseOptions);
+        var lexer = new Lexer($lexerOptions);
+        var parser = new Parser(lexer, $filter);
         return parser.getAst(exp).ast;
       }
 

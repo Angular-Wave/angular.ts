@@ -25,16 +25,18 @@
  * @property {string} [operator] - The operator of a binary or logical expression.
  * @property {boolean} [filter]
  */
+/** @type {Map<string,any>} */
+export const literals: Map<string, any>;
 /**
- * @param {import('./lexer').Lexer} lexer - The lexer instance for tokenizing input
- * @param {import("./parser").ParserOptions} options
+ * @class
  */
 export class AST {
-    constructor(lexer: any, options: any);
+    /**
+     * @param {import('./lexer').Lexer} lexer - The lexer instance for tokenizing input
+     */
+    constructor(lexer: import("./lexer").Lexer);
     /** @type {import('./lexer').Lexer} */
     lexer: import("./lexer").Lexer;
-    /** @type  {import("./parser").ParserOptions} */
-    options: import("./parser").ParserOptions;
     selfReferential: {
         this: {
             type: 15;
