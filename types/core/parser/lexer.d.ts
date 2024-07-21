@@ -99,6 +99,7 @@ export class Lexer {
     throwError(error: string, start?: number, end?: number): void;
     /**
      * Reads and tokenizes a number from the text.
+     * @return {void}
      */
     readNumber(): void;
     /**
@@ -110,6 +111,9 @@ export class Lexer {
      * @param {string} quote Quote character used for the string.
      */
     readString(quote: string): void;
+    /**
+     * @returns {string}
+     */
     handleUnicodeEscape(): string;
 }
 export type LexerOptions = {

@@ -1,5 +1,6 @@
 import { forEach, isString, minErr, extend } from "../shared/utils";
 import { JQLite } from "../shared/jqlite/jqlite";
+import { ASTType } from "../core/parser/ast-type";
 
 export const ADD_CLASS_SUFFIX = "-add";
 export const REMOVE_CLASS_SUFFIX = "-remove";
@@ -51,7 +52,7 @@ if (
 }
 
 export const DURATION_KEY = "Duration";
-export const PROPERTY_KEY = "Property";
+export const PROPERTY_KEY = ASTType.Property;
 export const DELAY_KEY = "Delay";
 export const TIMING_KEY = "TimingFunction";
 export const ANIMATION_ITERATION_COUNT_KEY = "IterationCount";

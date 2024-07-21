@@ -135,14 +135,8 @@ export class Lexer {
    * @returns {boolean} True if character is whitespace, false otherwise.
    */
   isWhitespace(ch) {
-    // IE treats non-breaking space as \u00A0
     return (
-      ch === " " ||
-      ch === "\r" ||
-      ch === "\t" ||
-      ch === "\n" ||
-      ch === "\v" ||
-      ch === "\u00A0"
+      ch === " " || ch === "\r" || ch === "\t" || ch === "\n" || ch === "\v"
     );
   }
 
@@ -232,6 +226,7 @@ export class Lexer {
 
   /**
    * Reads and tokenizes a number from the text.
+   * @return {void}
    */
   readNumber() {
     let number = "";
@@ -335,6 +330,9 @@ export class Lexer {
     this.throwError("Unterminated quote", start);
   }
 
+  /**
+   * @returns {string}
+   */
   handleUnicodeEscape() {
     const hex = this.text.substring(this.index + 1, this.index + 5);
     if (!hex.match(/[\da-f]{4}/i)) {

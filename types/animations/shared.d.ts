@@ -41,7 +41,7 @@ export let TRANSITIONEND_EVENT: any;
 export let ANIMATION_PROP: any;
 export let ANIMATIONEND_EVENT: any;
 export const DURATION_KEY: "Duration";
-export const PROPERTY_KEY: "Property";
+export const PROPERTY_KEY: 13;
 export const DELAY_KEY: "Delay";
 export const TIMING_KEY: "TimingFunction";
 export const ANIMATION_ITERATION_COUNT_KEY: "IterationCount";

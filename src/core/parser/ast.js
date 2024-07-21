@@ -4,7 +4,7 @@ import { ASTType } from "./ast-type";
 
 /**
  * @typedef {Object} ASTNode
- * @property {string} type - The type of the AST node.
+ * @property {number} type - The type of the AST node.
  * @property {string} [name] - The name of the identifier.
  * @property {string} [kind] - The kind of the property (e.g., 'init').
  * @property {*} [value] - The value of the node if it is a literal.

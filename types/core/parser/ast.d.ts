@@ -1,6 +1,6 @@
 /**
  * @typedef {Object} ASTNode
- * @property {string} type - The type of the AST node.
+ * @property {number} type - The type of the AST node.
  * @property {string} [name] - The name of the identifier.
  * @property {string} [kind] - The kind of the property (e.g., 'init').
  * @property {*} [value] - The value of the node if it is a literal.
@@ -37,10 +37,10 @@ export class AST {
     options: import("./parser").ParserOptions;
     selfReferential: {
         this: {
-            type: string;
+            type: 15;
         };
         $locals: {
-            type: string;
+            type: 16;
         };
     };
     /**
@@ -188,7 +188,7 @@ export type ASTNode = {
     /**
      * - The type of the AST node.
      */
-    type: string;
+    type: number;
     /**
      * - The name of the identifier.
      */
