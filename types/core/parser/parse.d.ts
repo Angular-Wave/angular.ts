@@ -1,3 +1,28 @@
+/**
+ * @typedef {Object} CompiledExpressionProps
+ * @property {boolean} literal - Indicates if the expression is a literal.
+ * @property {boolean} constant - Indicates if the expression is constant.
+ * @property {boolean} isPure
+ * @property {boolean} oneTime
+ * @property {any[]} inputs
+ * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided,
+ */
+/**
+ * @typedef {function } CompiledExpressionFunction
+ * @param {import('../scope/scope').Scope} context - An object against which any expressions embedded in the strings are evaluated against (typically a scope object).
+ * @param {object} [locals] - local variables context object, useful for overriding values in `context`.
+ * @param {any} [assign]
+ * @returns {any}
+ * undefined is gonna be used since the implementation
+ * does not check the parameter. Let's force a value for consistency. If consumer
+ * wants to undefine it, pass the undefined value explicitly.
+ */
+/**
+ * @typedef {CompiledExpressionFunction & CompiledExpressionProps} CompiledExpression
+ */
+/**
+ * @typedef {function(string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): CompiledExpression} ParseService
+ */
 export function $ParseProvider(): void;
 export class $ParseProvider {
     /**
@@ -27,32 +52,6 @@ export class $ParseProvider {
     }))[];
 }
 export function constantWatchDelegate(scope: any, listener: any, objectEquality: any, parsedExpression: any): any;
-/**
- * @typedef {Object} CompiledExpressionProps
- * @property {boolean} literal - Indicates if the expression is a literal.
- * @property {boolean} constant - Indicates if the expression is constant.
- * @property {boolean} isPure
- * @property {boolean} oneTime
- * @property {any[]} inputs
- * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided,
- */
-/**
- * @typedef {function } CompiledExpressionFunction
- * @param {import('../scope/scope').Scope} context - An object against which any expressions embedded in the strings are evaluated against (typically a scope object).
- * @param {object} [locals] - local variables context object, useful for overriding values in `context`.
- * @param {any} [assign]
- * @returns {any}
- * undefined is gonna be used since the implementation
- * does not check the parameter. Let's force a value for consistency. If consumer
- * wants to undefine it, pass the undefined value explicitly.
- */
-/**
- * @typedef {CompiledExpressionFunction & CompiledExpressionProps} CompiledExpression
- */
-/**
- * @typedef {function(string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): CompiledExpression} ParseService
- */
-export const $parseMinErr: (arg0: string, ...arg1: any[]) => Error;
 export type CompiledExpressionProps = {
     /**
      * - Indicates if the expression is a literal.
