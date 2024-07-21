@@ -1,4 +1,4 @@
-import { forEach, isDefined, isFunction, minErr } from "../../shared/utils";
+import { forEach, isDefined, isFunction } from "../../shared/utils";
 import { PURITY_RELATIVE } from "./interpreter";
 import { Lexer } from "./lexer";
 import { Parser } from "./parser";
@@ -31,8 +31,6 @@ import { Parser } from "./parser";
 /**
  * @typedef {function(string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): CompiledExpression} ParseService
  */
-
-export const $parseMinErr = minErr("$parse");
 
 export function $ParseProvider() {
   const cache = Object.create(null);

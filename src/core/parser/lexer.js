@@ -1,5 +1,6 @@
-import { $parseMinErr } from "./parse";
-import { isDefined } from "../../shared/utils";
+import { isDefined, minErr } from "../../shared/utils";
+
+const $parseMinErr = minErr("$parse");
 
 const ESCAPE = {
   n: "\n",

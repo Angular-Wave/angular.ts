@@ -1,6 +1,8 @@
-import { $parseMinErr } from "./parse";
 import { isAssignable } from "./interpreter";
 import { ASTType } from "./ast-type";
+import { minErr } from "../../shared/utils";
+
+const $parseMinErr = minErr("$parse");
 
 /**
  * @typedef {Object} ASTNode
