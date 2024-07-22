@@ -4,9 +4,9 @@ import { trace } from "./common/trace";
 import { $ViewScrollProvider } from "./view-scroll";
 import { $IsStateFilter, $IncludedByStateFilter } from "./state-filters";
 import {
-  ngSrefActiveDirective,
-  ngStateDirective,
-  ngSrefDirective,
+  $StateRefDirective,
+  $StateRefDynamicDirective,
+  $StateRefActiveDirective,
 } from "./directives/state-directives";
 import { ngView, $ViewDirectiveFill } from "./directives/view-directive";
 import { UrlConfigProvider } from "./url/url-config";
@@ -42,10 +42,10 @@ export function initRouter() {
     .value("$trace", trace)
     .filter("isState", $IsStateFilter)
     .filter("includedByState", $IncludedByStateFilter)
-    .directive("ngSref", ngSrefDirective)
-    .directive("ngSrefActive", ngSrefActiveDirective)
-    .directive("ngSrefActiveEq", ngSrefActiveDirective)
-    .directive("ngState", ngStateDirective)
+    .directive("ngSref", $StateRefDirective)
+    .directive("ngSrefActive", $StateRefActiveDirective)
+    .directive("ngSrefActiveEq", $StateRefActiveDirective)
+    .directive("ngState", $StateRefDynamicDirective)
     .directive("ngView", ngView)
     .directive("ngView", $ViewDirectiveFill)
 
