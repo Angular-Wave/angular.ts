@@ -137,7 +137,7 @@ function registerRestorableStyles(backup, node, properties) {
   });
 }
 
-export function $AnimateCssProviderfunction() {
+export function $AnimateCssProvider() {
   this.$get = [
     "$$AnimateRunner",
     "$timeout",
