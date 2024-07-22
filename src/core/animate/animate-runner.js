@@ -37,9 +37,8 @@ export function AnimateRunnerFactoryProvider() {
   this.$get = [
     "$q",
     "$$animateAsyncRun",
-    "$$isDocumentHidden",
     "$timeout",
-    function ($q, $$animateAsyncRun, $$isDocumentHidden, $timeout) {
+    function ($q, $$animateAsyncRun, $timeout) {
       const INITIAL_STATE = 0;
       const DONE_PENDING_STATE = 1;
       const DONE_COMPLETE_STATE = 2;
@@ -90,7 +89,7 @@ export function AnimateRunnerFactoryProvider() {
 
         this._doneCallbacks = [];
         this._tick = function (fn) {
-          if ($$isDocumentHidden()) {
+          if (document.hidden) {
             timeoutTick(fn);
           } else {
             rafTick(fn);

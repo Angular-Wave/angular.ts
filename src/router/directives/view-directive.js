@@ -399,10 +399,10 @@ export function $ViewDirectiveFill(
     },
   };
 }
-/** @hidden */
-/** @hidden incrementing id */
+/** @ignore */
+/** @ignore incrementing id */
 let _uiCanExitId = 0;
-/** @hidden TODO: move these callbacks to $view and/or `/hooks/components.ts` or something */
+/** @ignore TODO: move these callbacks to $view and/or `/hooks/components.ts` or something */
 function registerControllerCallbacks(
   $q,
   $transitions,

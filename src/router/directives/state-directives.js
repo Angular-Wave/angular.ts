@@ -16,7 +16,7 @@ import {
 import { isString, isObject } from "../../shared/utils";
 
 import { parse } from "../../shared/hof";
-/** @hidden */
+/** @ignore */
 function parseStateRef(ref) {
   const paramsOnly = ref.match(/^\s*({[^}]*})\s*$/);
   if (paramsOnly) ref = "(" + paramsOnly[1] + ")";
@@ -27,13 +27,13 @@ function parseStateRef(ref) {
     throw new Error("Invalid state ref '" + ref + "'");
   return { state: parsed[1] || null, paramExpr: parsed[3] || null };
 }
-/** @hidden */
+/** @ignore */
 function stateContext(el) {
   const $ngView = el.parent().inheritedData("$ngView");
   const path = parse("$cfg.path")($ngView);
   return path ? tail(path).state.name : undefined;
 }
-/** @hidden */
+/** @ignore */
 function processedDef($state, $element, def) {
   const ngState = def.ngState || $state.current.name;
   const ngStateOpts = Object.assign(
@@ -43,7 +43,7 @@ function processedDef($state, $element, def) {
   const href = $state.href(ngState, def.ngStateParams, ngStateOpts);
   return { ngState, ngStateParams: def.ngStateParams, ngStateOpts, href };
 }
-/** @hidden */
+/** @ignore */
 function getTypeInfo(el) {
   // SVGAElement does not use the href attribute, but rather the 'xlinkHref' attribute.
   const isSvg =
@@ -56,7 +56,7 @@ function getTypeInfo(el) {
     clickable: !isForm,
   };
 }
-/** @hidden */
+/** @ignore */
 function clickHook(el, $state, $timeout, type, getDef) {
   return function (e) {
     const button = e.which || e.button,
@@ -89,7 +89,7 @@ function clickHook(el, $state, $timeout, type, getDef) {
     }
   };
 }
-/** @hidden */
+/** @ignore */
 function defaultOpts(el, $state) {
   return {
     relative: stateContext(el) || $state.$current,
@@ -97,7 +97,7 @@ function defaultOpts(el, $state) {
     source: "sref",
   };
 }
-/** @hidden */
+/** @ignore */
 function bindEvents(element, scope, hookFn, ngStateOpts) {
   let events;
   if (ngStateOpts) {

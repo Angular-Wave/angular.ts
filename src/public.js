@@ -185,7 +185,6 @@ export function publishExternalAPI() {
           $cacheFactory: CacheFactoryProvider,
           $controller: $ControllerProvider,
           $document: $DocumentProvider,
-          $$isDocumentHidden: $$IsDocumentHiddenProvider,
           $exceptionHandler: $ExceptionHandlerProvider,
           $filter: $FilterProvider,
           $interpolate: $InterpolateProvider,

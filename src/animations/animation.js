@@ -9,13 +9,13 @@ import {
   prepareAnimationOptions,
 } from "./shared";
 
+const RUNNER_STORAGE_KEY = "$$animationRunner";
+const PREPARE_CLASSES_KEY = "$$animatePrepareClasses";
+
 export function $$AnimationProvider() {
   const NG_ANIMATE_REF_ATTR = "ng-animate-ref";
 
   const drivers = (this.drivers = []);
-
-  const RUNNER_STORAGE_KEY = "$$animationRunner";
-  const PREPARE_CLASSES_KEY = "$$animatePrepareClasses";
 
   function setRunner(element, runner) {
     element.data(RUNNER_STORAGE_KEY, runner);
