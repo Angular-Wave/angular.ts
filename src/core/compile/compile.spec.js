@@ -4995,37 +4995,36 @@ describe("$compile", () => {
       // We compile the contents of element (i.e. not element itself)
       // Then delete these contents and check the cache has been reset to zero
       // Clear cache
-      // Update: THIS TEST IS IRRELEVANT IF WE DONT POLLUTE THE CACHE
       CACHE.clear();
       window.angular.module("test1", ["ng"]);
       createInjector(["test1"]).invoke(($compile) => {
-        expect(CACHE.size).toEqual(1);
+        expect(CACHE.size).toEqual(0);
         // First with only elements at the top level
         element = JQLite("<div><div></div></div>");
         $compile(element[0].childNodes)($rootScope);
         // expect(CACHE.size).toEqual(2);
         element.empty();
-        expect(CACHE.size).toEqual(1);
+        expect(CACHE.size).toEqual(0);
 
         // Next with non-empty text nodes at the top level
         // (in this case the compiler will wrap them in a <span>)
         element = JQLite("<div>xxx</div>");
         $compile(element[0].childNodes)($rootScope);
         element.empty();
-        expect(CACHE.size).toEqual(1);
+        expect(CACHE.size).toEqual(0);
 
         // Next with comment nodes at the top level
         element = JQLite("<div><!-- comment --></div>");
         $compile(element[0].childNodes)($rootScope);
         element.empty();
-        expect(CACHE.size).toEqual(1);
+        expect(CACHE.size).toEqual(0);
 
         // Finally with empty text nodes at the top level
         element = JQLite("<div>   \n<div></div>   </div>");
         $compile(element[0].childNodes)($rootScope);
         //expect(CACHE.size).toEqual(2);
         element.empty();
-        expect(CACHE.size).toEqual(1);
+        expect(CACHE.size).toEqual(0);
       });
     });
 

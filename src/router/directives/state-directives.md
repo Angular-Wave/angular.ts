@@ -13,10 +13,12 @@
 - ```html
 
   ```
+
 - <a ng-sref="home">Home</a>
 - ```
 
   ```
+
 -
 - ### Relative Links
 - You can also use relative state paths within `ng-sref`, just like a relative path passed to `$state.go()` ([[StateService.go]]).
@@ -28,20 +30,24 @@
 - ```html
 
   ```
+
 - <a ng-sref=".child1">child 1 state</a>
 - <a ng-sref=".child2">child 2 state</a>
 - ```
 
   ```
+
 -
 - This link activates the parent state.
 - ```html
 
   ```
+
 - <a ng-sref="^">Return</a>
 - ```
 
   ```
+
 -
 - ### hrefs
 - If the linked state has a URL, the directive will automatically generate and
@@ -52,10 +58,12 @@
 - ```html
 
   ```
+
 - <a ng-sref="users" href="/users/">Users</a>
 - ```
 
   ```
+
 -
 - ### Parameter Values
 - In addition to the state name, a `ng-sref` can include parameter values which are applied when activating the state.
@@ -68,12 +76,14 @@
 - ```html
 
   ```
+
 - <li ng-repeat="user in users">
 - <a ng-sref="users.detail({ userId: user.id })">{{ user.displayName }}</a>
 - </li>
 - ```
 
   ```
+
 -
 - Note:
 - The parameter values expression is `$watch`ed for updates.
@@ -86,10 +96,12 @@
 - ```html
 
   ```
+
 - <a ng-sref="home" ng-sref-opts="{ reload: true }">Home</a>
 - ```
 
   ```
+
 -
 - ### Other DOM Events
 -
@@ -100,10 +112,12 @@
 - ```html
 
   ```
+
 - <input type="text" ng-sref="contacts" ng-sref-opts="{ events: ['change', 'blur'] }">
 - ```
 
   ```
+
 -
 - ### Highlighting the active link
 - This directive can be used in conjunction with [[ngSrefActive]] to highlight the active link.
@@ -114,6 +128,7 @@
 - ```html
 
   ```
+
 - <a ng-sref="home">Home</a>
 - <a ng-sref="about">About</a>
 - <a ng-sref="{page: 2}">Next page</a>
@@ -126,12 +141,14 @@
 - ```
 
   ```
+
 -
 - Then (assuming the current state is `contacts`) the rendered html including hrefs would be:
 -
 - ```html
 
   ```
+
 - <a href="#/home" ng-sref="home">Home</a>
 - <a href="#/about" ng-sref="about">About</a>
 - <a href="#/contacts?page=2" ng-sref="{page: 2}">Next page</a>
@@ -152,6 +169,7 @@
 - ```
 
   ```
+
 -
 - ### Notes
 -
@@ -162,10 +180,12 @@
 - ```html
 
   ```
+
 - <a ng-sref="{ lang: 'en' }">English</a>
 - ```
 
   ```
+
 -
 - - A middle-click, right-click, or ctrl-click is handled (natively) by the browser to open the href in a new window, for example.
 -
@@ -194,12 +214,14 @@
 - ```html
 
   ```
+
 - <li ng-repeat="link in navlinks">
 - <a ng-state="link.state">{{ link.displayName }}</a>
 - </li>
 - ```
 
   ```
+
 -
 - ### Relative Links
 - If the expression evaluates to a relative path, it is processed like [[ngSref]].
@@ -221,12 +243,14 @@
 - ```html
 
   ```
+
 - <li ng-repeat="link in navlinks">
 - <a ng-state="link.state" ng-state-params="link.params">{{ link.displayName }}</a>
 - </li>
 - ```
 
   ```
+
 -
 - ### Transition Options
 - You can specify [[TransitionOptions]] to pass to [[StateService.go]] by using the `ng-state-opts` attribute.
@@ -237,10 +261,12 @@
 - ```html
 
   ```
+
 - <a ng-state="returnto.state" ng-state-opts="{ reload: true }">Home</a>
 - ```
 
   ```
+
 -
 - ### Other DOM Events
 -
@@ -251,10 +277,12 @@
 - ```html
 
   ```
+
 - <input type="text" ng-state="contacts" ng-state-opts="{ events: ['change', 'blur'] }">
 - ```
 
   ```
+
 -
 - ### Highlighting the active link
 - This directive can be used in conjunction with [[ngSrefActive]] to highlight the active link.
@@ -270,10 +298,12 @@
 - ```html
 
   ```
+
 - <a ng-state="" ng-state-params="{ lang: 'en' }">English</a>
 - ```
 
   ```
+
 -
 - - A middle-click, right-click, or ctrl-click is handled (natively) by the browser to open the href in a new window, for example.
 - ```
@@ -310,12 +340,14 @@
 - ```html
 
   ```
+
 - <li ng-repeat="user in users" ui-sref-active="active">
 - <a ui-sref="user.details({ userId: user.id })">{{ user.lastName }}</a>
 - </li>
 - ```
 
   ```
+
 -
 - ### Examples
 -
@@ -324,6 +356,7 @@
 - ```html
 
   ```
+
 - <ul>
 - <li ui-sref-active="active" class="item">
 -     <a href ui-sref="app.user({user: 'bilbobaggins'})">@bilbobaggins</a>
@@ -332,6 +365,7 @@
 - ```
 
   ```
+
 -
 - When the app state is `app.user` (or any child state),
 - and contains the state parameter "user" with value "bilbobaggins",
@@ -340,6 +374,7 @@
 - ```html
 
   ```
+
 - <ul>
 - <li ui-sref-active="active" class="item active">
 -     <a ui-sref="app.user({user: 'bilbobaggins'})" href="/users/bilbobaggins">@bilbobaggins</a>
@@ -348,6 +383,7 @@
 - ```
 
   ```
+
 -
 - ### Glob mode
 -
@@ -361,12 +397,14 @@
 - ```html
 
   ```
+
 - <div ui-sref-active="{'active': 'admin.**'}">
 - <a ui-sref-active="active" ui-sref="admin.roles">Roles</a>
 - </div>
 - ```
 
   ```
+
 -
 - Arrays are also supported as values in the `ngClass`-like interface.
 - This allows multiple states to add `active` class.
@@ -376,12 +414,14 @@
 - ```html
 
   ```
+
 - <div ui-sref-active="{'active': ['owner.**', 'admin.**']}">
 - <a ui-sref-active="active" ui-sref="admin.roles">Roles</a>
 - </div>
 - ```
 
   ```
+
 -
 - When the current state is "admin.roles" the "active" class will be applied to both the `<div>` and `<a>` elements.
 - It is important to note that the state names/globs passed to `ui-sref-active` override any state provided by a linked `ui-sref`.
