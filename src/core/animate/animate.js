@@ -8,6 +8,7 @@ import {
 } from "../../shared/utils";
 import { JQLite } from "../../shared/jqlite/jqlite";
 import { NG_ANIMATE_CLASSNAME } from "../../animations/shared";
+import { addInlineStyles } from "./helpers";
 
 const $animateMinErr = minErr("$animate");
 
@@ -86,10 +87,10 @@ export function CoreAnimateQueueProvider() {
 
           options = options || {};
           if (options.from) {
-            //element.css(options.from);
+            addInlineStyles(element[0], options.from);
           }
           if (options.to) {
-            //element.css(options.to);
+            addInlineStyles(element[0], options.to);
           }
 
           if (options.addClass || options.removeClass) {
@@ -150,7 +151,7 @@ export function CoreAnimateQueueProvider() {
                 toRemove.split(" ").forEach((css) => elm.classList.remove(css));
               }
               if (toAdd) {
-                elm.className += ` ${toAdd}`;
+                toAdd.split(" ").forEach((css) => elm.classList.add(css));
               }
             });
             postDigestQueue.delete(element);

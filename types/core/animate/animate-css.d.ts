@@ -12,7 +12,7 @@
  */
 export function CoreAnimateCssProvider(): void;
 export class CoreAnimateCssProvider {
-    $get: (string | (($$AnimateRunner: any) => (element: any, initialOptions: any) => {
+    $get: (string | (($$AnimateRunner: any) => (element: import("../../shared/jqlite/jqlite").JQLite, initialOptions: any) => {
         start: () => any;
         end: () => any;
     }))[];

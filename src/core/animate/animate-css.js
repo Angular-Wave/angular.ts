@@ -1,3 +1,5 @@
+import { addInlineStyles } from "./helpers";
+
 /**
  * @ngdoc service
  * @name $animateCss
@@ -14,6 +16,12 @@ export function CoreAnimateCssProvider() {
   this.$get = [
     "$$AnimateRunner",
     ($$AnimateRunner) =>
+      /**
+       *
+       * @param {import("../../shared/jqlite/jqlite").JQLite} element
+       * @param {*} initialOptions
+       * @returns
+       */
       function (element, initialOptions) {
         // all of the animation functions should create
         // a copy of the options data, however, if a
@@ -32,17 +40,16 @@ export function CoreAnimateCssProvider() {
         }
 
         if (options.from) {
-          //element.css(options.from);
+          addInlineStyles(element[0], options.from);
           options.from = null;
         }
 
         let closed;
         const runner = new $$AnimateRunner();
-        return {
-          start: run,
-          end: run,
-        };
 
+        /**
+         * @returns {$$AnimateRunner}
+         */
         function run() {
           requestAnimationFrame(() => {
             applyAnimationContents();
@@ -54,6 +61,9 @@ export function CoreAnimateCssProvider() {
           return runner;
         }
 
+        /**
+         * @returns {void}
+         */
         function applyAnimationContents() {
           if (options.addClass) {
             element[0].classList.add(options.addClass);
@@ -64,10 +74,15 @@ export function CoreAnimateCssProvider() {
             options.removeClass = null;
           }
           if (options.to) {
-            //element.css(options.to);
+            addInlineStyles(element[0], options.to);
             options.to = null;
           }
         }
+
+        return {
+          start: run,
+          end: run,
+        };
       },
   ];
 }

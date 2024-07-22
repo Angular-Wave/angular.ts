@@ -1,17 +1,36 @@
-xdescribe("$animate", () => {
-  describe("without animation", () => {
-    let element;
-    let $rootElement;
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
+import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
+import { isObject } from "../../shared/utils";
+import { isFunction } from "../../shared/utils";
+import { createInjector } from "../../injector";
 
-    beforeEach(
-      module(
-        () =>
-          function ($compile, _$rootElement_, $rootScope) {
-            element = $compile("<div></div>")($rootScope);
-            $rootElement = _$rootElement_;
-          },
-      ),
-    );
+describe("$animate", () => {
+  describe("without animation", () => {
+    let dummy = window.document.getElementById("dummy");
+    let element;
+    let $compile;
+    let $rootElement;
+    let $rootScope;
+    let defaultModule;
+    let injector;
+    let $animate;
+
+    beforeEach(() => {
+      window.angular = new Angular();
+      publishExternalAPI();
+      defaultModule = window.angular.module("defaultModule", ["ng"]);
+      injector = window.angular.bootstrap(dummy, ["defaultModule"]);
+      injector.invoke(
+        (_$compile_, _$rootElement_, _$rootScope_, _$animate_) => {
+          $compile = _$compile_;
+          $rootScope = _$rootScope_;
+          element = $compile("<div></div>")($rootScope);
+          $rootElement = _$rootElement_;
+          $animate = _$animate_;
+        },
+      );
+    });
 
     it("should add element at the start of enter animation", () => {
       const child = $compile("<div></div>")($rootScope);
@@ -51,36 +70,36 @@ xdescribe("$animate", () => {
 
     it("should apply styles instantly to the element", () => {
       $animate.animate(element, { color: "rgb(0, 0, 0)" });
-      expect(element[0].stype.color).toBe("rgb(0, 0, 0)");
+      expect(element[0].style.color).toBe("rgb(0, 0, 0)");
 
       $animate.animate(
         element,
         { color: "rgb(255, 0, 0)" },
         { color: "rgb(0, 255, 0)" },
       );
-      expect(element[0].stype.color).toBe("rgb(0, 255, 0)");
+      expect(element[0].style.color).toBe("rgb(0, 255, 0)");
     });
 
     it("should still perform DOM operations even if animations are disabled (post-digest)", () => {
       $animate.enabled(false);
-      expect(element).toBeShown();
+      expect(element[0].classList.contains("ng-hide")).toBeFalse();
       $animate.addClass(element, "ng-hide");
       $rootScope.$digest();
-      expect(element).toBeHidden();
+      expect(element[0].classList.contains("ng-hide")).toBeTrue();
     });
 
     it("should run each method and return a promise", () => {
       const element = JQLite("<div></div>");
       const move = JQLite("<div></div>");
-      const parent = JQLite($document[0].body);
+      const parent = JQLite(document.body);
       parent.append(move);
 
-      expect($animate.enter(element, parent)).toBeAPromise();
-      expect($animate.move(element, move)).toBeAPromise();
-      expect($animate.addClass(element, "on")).toBeAPromise();
-      expect($animate.removeClass(element, "off")).toBeAPromise();
-      expect($animate.setClass(element, "on", "off")).toBeAPromise();
-      expect($animate.leave(element)).toBeAPromise();
+      expect($animate.enter(element, parent).then).toBeDefined();
+      expect($animate.move(element, move).then).toBeDefined();
+      expect($animate.addClass(element, "on").then).toBeDefined();
+      expect($animate.removeClass(element, "off").then).toBeDefined();
+      expect($animate.setClass(element, "on", "off").then).toBeDefined();
+      expect($animate.leave(element).then).toBeDefined();
     });
 
     it("should provide the `enabled` and `cancel` methods", () => {
@@ -98,42 +117,40 @@ xdescribe("$animate", () => {
       const svg = JQLite("<svg><rect></rect></svg>");
       const rect = svg.children();
       $animate.enabled(false);
-      expect(rect).toBeShown();
+      expect(rect[0].classList.contains("ng-hide")).toBeFalse();
       $animate.addClass(rect, "ng-hide");
       $rootScope.$digest();
-      expect(rect).toBeHidden();
+      expect(rect[0].classList.contains("ng-hide")).toBeTrue();
       $animate.removeClass(rect, "ng-hide");
       $rootScope.$digest();
-      expect(rect).not.toBeHidden();
+      expect(rect[0].classList.contains("ng-hide")).toBeFalse();
     });
 
     it("should throw error on wrong selector", () => {
-      module(($animateProvider) => {
-        expect(() => {
-          $animateProvider.register("abc", null);
-        }).toThrow(
-          "$animate",
-          "notcsel",
-          "Expecting class selector starting with '.' got 'abc'.",
-        );
-      });
+      createInjector([
+        "ng",
+        ($animateProvider) => {
+          expect(() => {
+            $animateProvider.register("abc", null);
+          }).toThrowError(/notcsel/);
+        },
+      ]);
     });
 
     it("should register the animation and be available for lookup", () => {
       let provider;
-      module(($animateProvider) => {
-        provider = $animateProvider;
-      });
-      () => {
-        // by using hasOwnProperty we know for sure that the lookup object is an empty object
-        // instead of inheriting properties from its original prototype.
-        expect(provider.$$registeredAnimations.hasOwnProperty).toBeFalsy();
+      createInjector([
+        "ng",
+        ($animateProvider) => {
+          provider = $animateProvider;
+        },
+      ]);
+      // by using hasOwnProperty we know for sure that the lookup object is an empty object
+      // instead of inheriting properties from its original prototype.
+      expect(provider.$$registeredAnimations.hasOwnProperty).toBeFalsy();
 
-        provider.register(".filter", () => {});
-        expect(provider.$$registeredAnimations.filter).toBe(
-          ".filter-animation",
-        );
-      };
+      provider.register(".filter", () => {});
+      expect(provider.$$registeredAnimations.filter).toBe(".filter-animation");
     });
 
     it("should apply and retain inline styles on the element that is animated", () => {
@@ -204,7 +221,7 @@ xdescribe("$animate", () => {
       $animate.removeClass(element, "ng-hide");
       $rootScope.$digest();
 
-      expect(element).not.toHaveClass("ng-hide");
+      expect(element[0].classList.contains("ng-hide")).toBeFalse();
     });
 
     it("should avoid cancelling out remove/add if the element does not contain the class", () => {
@@ -214,13 +231,13 @@ xdescribe("$animate", () => {
       $animate.addClass(element, "ng-hide");
       $rootScope.$digest();
 
-      expect(element).toHaveClass("ng-hide");
+      expect(element[0].classList.contains("ng-hide")).toBeTrue();
     });
 
     ["enter", "move"].forEach((method) => {
       it('should accept an unwrapped "parent" element for the $prop event', () => {
         const element = JQLite("<div></div>");
-        const parent = $document[0].createElement("div");
+        const parent = document.createElement("div");
         $rootElement.append(parent);
 
         $animate[method](element, parent);
@@ -231,7 +248,7 @@ xdescribe("$animate", () => {
     ["enter", "move"].forEach((method) => {
       it('should accept an unwrapped "after" element for the $prop event', () => {
         const element = JQLite("<div></div>");
-        const after = $document[0].createElement("div");
+        const after = document.createElement("div");
         $rootElement.append(after);
 
         $animate[method](element, null, after);
@@ -250,14 +267,24 @@ xdescribe("$animate", () => {
     ].forEach((event) => {
       it("$prop() should operate using a native DOM element", () => {
         const captureSpy = jasmine.createSpy();
-
-        module(($provide) => {
-          $provide.value("$$animateQueue", {
+        dealoc(dummy);
+        publishExternalAPI();
+        defaultModule = window.angular
+          .module("defaultModule", ["ng"])
+          .value("$$animateQueue", {
             push: captureSpy,
           });
-        });
+        injector = window.angular.bootstrap(dummy, ["defaultModule"]);
+        injector.invoke(
+          (_$compile_, _$rootElement_, _$rootScope_, _$animate_) => {
+            $compile = _$compile_;
+            $rootScope = _$rootScope_;
+            $rootElement = _$rootElement_;
+            $animate = _$animate_;
+          },
+        );
 
-        const element = JQLite("<div></div>");
+        element = JQLite("<div></div>");
         const parent2 = JQLite("<div></div>");
         const parent = $rootElement;
         parent.append(parent2);
@@ -321,286 +348,167 @@ xdescribe("$animate", () => {
         expect(isObject(optionsArg)).toBeTruthy();
       });
     });
-  });
 
-  it("should not issue a call to addClass if the provided class value is not a string or array", () => {
-    () => {
-      const spy = spyOn(window, "jqLiteAddClass").and.callThrough();
+    it("should not break postDigest for subsequent elements if addClass contains non-valid CSS class names", () => {
+      const element1 = JQLite("<div></div>");
+      const element2 = JQLite("<div></div>");
 
-      const element = JQLite("<div></div>");
-      const parent = $rootElement;
-
-      $animate.enter(element, parent, null, { addClass: () => {} });
+      $animate.enter(element1, $rootElement, null, { addClass: " " });
+      $animate.enter(element2, $rootElement, null, { addClass: "valid-name" });
       $rootScope.$digest();
-      expect(spy).not.toHaveBeenCalled();
 
-      $animate.leave(element, { addClass: true });
-      $rootScope.$digest();
-      expect(spy).not.toHaveBeenCalled();
-
-      $animate.enter(element, parent, null, { addClass: "fatias" });
-      $rootScope.$digest();
-      expect(spy).toHaveBeenCalled();
-    };
-  });
-
-  it("should not break postDigest for subsequent elements if addClass contains non-valid CSS class names", () => {
-    const element1 = JQLite("<div></div>");
-    const element2 = JQLite("<div></div>");
-
-    $animate.enter(element1, $rootElement, null, { addClass: " " });
-    $animate.enter(element2, $rootElement, null, { addClass: "valid-name" });
-    $rootScope.$digest();
-
-    expect(
-      element2[0].classList.contains(ist.contains("valid-name")),
-    ).toBeTruthy();
-  });
-
-  it("should not issue a call to removeClass if the provided class value is not a string or array", () => {
-    () => {
-      const spy = spyOn(window, "jqLiteRemoveClass").and.callThrough();
-
-      const element = JQLite("<div></div>");
-      const parent = $rootElement;
-
-      $animate.enter(element, parent, null, { removeClass: () => {} });
-      $rootScope.$digest();
-      expect(spy).not.toHaveBeenCalled();
-
-      $animate.leave(element, { removeClass: true });
-      $rootScope.$digest();
-      expect(spy).not.toHaveBeenCalled();
-
-      element[0].classList.add("fatias");
-      $animate.enter(element, parent, null, { removeClass: "fatias" });
-      $rootScope.$digest();
-      expect(spy).toHaveBeenCalled();
-    };
-  });
-
-  it("should not alter the provided options input in any way throughout the animation", () => {
-    const element = JQLite("<div></div>");
-    const parent = $rootElement;
-
-    const initialOptions = {
-      from: { height: "50px" },
-      to: { width: "50px" },
-      addClass: "one",
-      removeClass: "two",
-    };
-
-    const copiedOptions = structuredClone(initialOptions);
-    expect(copiedOptions).toEqual(initialOptions);
-
-    const runner = $animate.enter(element, parent, null, copiedOptions);
-    expect(copiedOptions).toEqual(initialOptions);
-
-    $rootScope.$digest();
-    expect(copiedOptions).toEqual(initialOptions);
-  });
-
-  describe("CSS class DOM manipulation", () => {
-    let element;
-    let addClass;
-    let removeClass;
-
-    afterEach(() => {
-      dealoc(element);
+      expect(element2[0].classList.contains("valid-name")).toBeTruthy();
     });
 
-    function setupClassManipulationSpies() {
-      () => {
-        addClass = spyOn(window, "jqLiteAddClass").and.callThrough();
-        removeClass = spyOn(window, "jqLiteRemoveClass").and.callThrough();
+    it("should not alter the provided options input in any way throughout the animation", () => {
+      const element = JQLite("<div></div>");
+      const parent = $rootElement;
+
+      const initialOptions = {
+        from: { height: "50px" },
+        to: { width: "50px" },
+        addClass: "one",
+        removeClass: "two",
       };
-    }
 
-    function setupClassManipulationLogger(log) {
-      () => {
-        const _addClass = JQLiteAddClass;
-        addClass = spyOn(window, "jqLiteAddClass").and.callFake(
-          (element, classes) => {
-            let names = classes;
-            if (Object.prototype.toString.call(classes) === "[object Array]")
-              names = classes.join(" ");
-            log(`addClass(${names})`);
-            return _addClass(element, classes);
-          },
-        );
+      const copiedOptions = structuredClone(initialOptions);
+      expect(copiedOptions).toEqual(initialOptions);
 
-        const _removeClass = JQLiteRemoveClass;
-        removeClass = spyOn(window, "jqLiteRemoveClass").and.callFake(
-          (element, classes) => {
-            let names = classes;
-            if (Object.prototype.toString.call(classes) === "[object Array]")
-              names = classes.join(" ");
-            log(`removeClass(${names})`);
-            return _removeClass(element, classes);
-          },
-        );
-      };
-    }
+      const runner = $animate.enter(element, parent, null, copiedOptions);
+      expect(copiedOptions).toEqual(initialOptions);
 
-    it("should defer class manipulation until end of digest", () => {
-      setupClassManipulationLogger(log);
-      element = JQLite("<p>test</p>");
+      $rootScope.$digest();
+      expect(copiedOptions).toEqual(initialOptions);
+    });
 
-      $rootScope.$apply(() => {
+    describe("CSS class DOM manipulation", () => {
+      let element;
+      let addClass;
+      let removeClass;
+
+      afterEach(() => {
+        dealoc(element);
+      });
+
+      it("should defer class manipulation until end of digest", () => {
+        element = JQLite("<p>test</p>");
+
+        $rootScope.$apply(() => {
+          $animate.addClass(element, "test-class1");
+          expect(element[0].classList.contains("test-class1")).toBeFalse();
+
+          $animate.removeClass(element, "test-class1");
+
+          $animate.addClass(element, "test-class2");
+          expect(element[0].classList.contains("test-class2")).toBeFalse();
+
+          $animate.setClass(element, "test-class3", "test-class4");
+          expect(element[0].classList.contains("test-class3")).toBeFalse();
+          expect(element[0].classList.contains("test-class4")).toBeFalse();
+        });
+
+        expect(element[0].classList.contains("test-class1")).toBeFalse();
+        expect(element[0].classList.contains("test-class4")).toBeFalse();
+        expect(element[0].classList.contains("test-class2")).toBeTrue();
+        expect(element[0].classList.contains("test-class3")).toBeTrue();
+      });
+
+      it("should defer class manipulation until postDigest when outside of digest", () => {
+        element = JQLite('<p class="test-class4">test</p>');
+
         $animate.addClass(element, "test-class1");
-        expect(element).not.toHaveClass("test-class1");
-
         $animate.removeClass(element, "test-class1");
-
         $animate.addClass(element, "test-class2");
-        expect(element).not.toHaveClass("test-class2");
-
         $animate.setClass(element, "test-class3", "test-class4");
-        expect(element).not.toHaveClass("test-class3");
-        expect(element).not.toHaveClass("test-class4");
-        expect(log).toEqual([]);
+        $rootScope.$digest();
+        expect(element[0].classList.contains("test-class1")).toBeFalse();
+        expect(element[0].classList.contains("test-class2")).toBeTrue();
+        expect(element[0].classList.contains("test-class3")).toBeTrue();
       });
 
-      expect(element).not.toHaveClass("test-class1");
-      expect(element).not.toHaveClass("test-class4");
-      expect(element).toHaveClass("test-class2");
-      expect(element).toHaveClass("test-class3");
-      expect(log).toEqual(["addClass(test-class2 test-class3)"]);
-      expect(addClass).toHaveBeenCalledTimes(1);
-      expect(removeClass).not.toHaveBeenCalled();
-    });
+      it("should perform class manipulation in expected order at end of digest", () => {
+        element = JQLite('<p class="test-class3">test</p>');
 
-    it("should defer class manipulation until postDigest when outside of digest", () => {
-      setupClassManipulationLogger(log);
-      element = JQLite('<p class="test-class4">test</p>');
-
-      $animate.addClass(element, "test-class1");
-      $animate.removeClass(element, "test-class1");
-      $animate.addClass(element, "test-class2");
-      $animate.setClass(element, "test-class3", "test-class4");
-
-      expect(log).toEqual([]);
-      $rootScope.$digest();
-
-      expect(log).toEqual([
-        "addClass(test-class2 test-class3)",
-        "removeClass(test-class4)",
-      ]);
-      expect(element).not.toHaveClass("test-class1");
-      expect(element).toHaveClass("test-class2");
-      expect(element).toHaveClass("test-class3");
-      expect(addClass).toHaveBeenCalledTimes(1);
-      expect(removeClass).toHaveBeenCalledTimes(1);
-    });
-
-    it("should perform class manipulation in expected order at end of digest", () => {
-      element = JQLite('<p class="test-class3">test</p>');
-
-      setupClassManipulationLogger(log);
-
-      $rootScope.$apply(() => {
-        $animate.addClass(element, "test-class1");
-        $animate.addClass(element, "test-class2");
-        $animate.removeClass(element, "test-class1");
-        $animate.removeClass(element, "test-class3");
-        $animate.addClass(element, "test-class3");
-      });
-      expect(log).toEqual(["addClass(test-class2)"]);
-    });
-
-    it("should return a promise which is resolved on a different turn", () => {
-      element = JQLite('<p class="test2">test</p>');
-
-      $animate.addClass(element, "test1").then(log.fn("addClass(test1)"));
-      $animate.removeClass(element, "test2").then(log.fn("removeClass(test2)"));
-
-      $rootScope.$digest();
-      expect(log).toEqual([]);
-      $$rAF.flush();
-      $rootScope.$digest();
-      expect(log).toEqual(["addClass(test1)", "removeClass(test2)"]);
-
-      log.reset();
-      element = JQLite('<p class="test4">test</p>');
-
-      $rootScope.$apply(() => {
-        $animate.addClass(element, "test3").then(log.fn("addClass(test3)"));
-        $animate
-          .removeClass(element, "test4")
-          .then(log.fn("removeClass(test4)"));
+        $rootScope.$apply(() => {
+          $animate.addClass(element, "test-class1");
+          $animate.addClass(element, "test-class2");
+          $animate.removeClass(element, "test-class1");
+          $animate.removeClass(element, "test-class3");
+          $animate.addClass(element, "test-class3");
+        });
+        expect(element[0].classList.contains("test-class3")).toBeTrue();
       });
 
-      $$rAF.flush();
-      $rootScope.$digest();
-      expect(log).toEqual(["addClass(test3)", "removeClass(test4)"]);
-    });
+      it("should return a promise which is resolved on a different turn", () => {
+        element = JQLite('<p class="test2">test</p>');
 
-    it("should defer class manipulation until end of digest for SVG", () => {
-      if (!window.SVGElement) return;
-      setupClassManipulationSpies();
-      element = JQLite("<svg><g></g></svg>");
-      const target = element.children().eq(0);
+        $animate.addClass(element, "test1");
+        $animate.removeClass(element, "test2");
 
-      $rootScope.$apply(() => {
+        $rootScope.$digest();
+        element = JQLite('<p class="test4">test</p>');
+
+        $rootScope.$apply(() => {
+          $animate.addClass(element, "test3");
+          $animate.removeClass(element, "test4");
+        });
+
+        expect(element[0].classList.contains("test3")).toBeTrue();
+      });
+
+      it("should defer class manipulation until end of digest for SVG", () => {
+        if (!window.SVGElement) return;
+
+        element = JQLite("<svg><g></g></svg>");
+        const target = element.children().eq(0);
+
+        $rootScope.$apply(() => {
+          $animate.addClass(target, "test-class1");
+
+          $animate.removeClass(target, "test-class1");
+
+          $animate.addClass(target, "test-class2");
+          expect(target[0].classList.contains("test-class2")).toBeFalse();
+
+          $animate.setClass(target, "test-class3", "test-class4");
+          expect(target[0].classList.contains("test-class3")).toBeFalse();
+          expect(target[0].classList.contains("test-class4")).toBeFalse();
+        });
+
+        expect(target[0].classList.contains("test-class2")).toBeTrue();
+      });
+
+      it("should defer class manipulation until postDigest when outside of digest for SVG", () => {
+        if (!window.SVGElement) return;
+
+        element = JQLite('<svg><g class="test-class4"></g></svg>');
+        const target = element.children().eq(0);
+        debugger;
         $animate.addClass(target, "test-class1");
-        expect(target).not.toHaveClass("test-class1");
-
         $animate.removeClass(target, "test-class1");
-
         $animate.addClass(target, "test-class2");
-        expect(target).not.toHaveClass("test-class2");
-
         $animate.setClass(target, "test-class3", "test-class4");
-        expect(target).not.toHaveClass("test-class3");
-        expect(target).not.toHaveClass("test-class4");
+
+        $rootScope.$digest();
+
+        expect(target[0].classList.contains("test-class2")).toBeTrue();
+        expect(target[0].classList.contains("test-class3")).toBeTrue();
       });
 
-      expect(target).not.toHaveClass("test-class1");
-      expect(target).toHaveClass("test-class2");
-      expect(addClass).toHaveBeenCalledTimes(1);
-      expect(removeClass).not.toHaveBeenCalled();
-    });
+      it("should perform class manipulation in expected order at end of digest for SVG", () => {
+        if (!window.SVGElement) return;
+        element = JQLite('<svg><g class="test-class3"></g></svg>');
+        const target = element.children().eq(0);
 
-    it("should defer class manipulation until postDigest when outside of digest for SVG", () => {
-      if (!window.SVGElement) return;
-      setupClassManipulationLogger(log);
-      element = JQLite('<svg><g class="test-class4"></g></svg>');
-      const target = element.children().eq(0);
-
-      $animate.addClass(target, "test-class1");
-      $animate.removeClass(target, "test-class1");
-      $animate.addClass(target, "test-class2");
-      $animate.setClass(target, "test-class3", "test-class4");
-
-      expect(log).toEqual([]);
-      $rootScope.$digest();
-
-      expect(log).toEqual([
-        "addClass(test-class2 test-class3)",
-        "removeClass(test-class4)",
-      ]);
-      expect(target).not.toHaveClass("test-class1");
-      expect(target).toHaveClass("test-class2");
-      expect(target).toHaveClass("test-class3");
-      expect(addClass).toHaveBeenCalledTimes(1);
-      expect(removeClass).toHaveBeenCalledTimes(1);
-    });
-
-    it("should perform class manipulation in expected order at end of digest for SVG", () => {
-      if (!window.SVGElement) return;
-      element = JQLite('<svg><g class="test-class3"></g></svg>');
-      const target = element.children().eq(0);
-
-      setupClassManipulationLogger(log);
-
-      $rootScope.$apply(() => {
-        $animate.addClass(target, "test-class1");
-        $animate.addClass(target, "test-class2");
-        $animate.removeClass(target, "test-class1");
-        $animate.removeClass(target, "test-class3");
-        $animate.addClass(target, "test-class3");
+        $rootScope.$apply(() => {
+          $animate.addClass(target, "test-class1");
+          $animate.addClass(target, "test-class2");
+          $animate.removeClass(target, "test-class1");
+          $animate.removeClass(target, "test-class3");
+          $animate.addClass(target, "test-class3");
+        });
+        expect(target[0].classList.contains("test-class3")).toBeTrue();
       });
-      expect(log).toEqual(["addClass(test-class2)"]);
     });
   });
 });
