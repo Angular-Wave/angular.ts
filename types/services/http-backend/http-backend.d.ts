@@ -27,7 +27,6 @@ export class $xhrFactoryProvider {
 /**
  * @ngdoc service
  * @name $httpBackend
- * @requires $document
  * @requires $xhrFactory
  *
  *

@@ -5,8 +5,6 @@ import {
   urlIsAllowedOriginFactory,
 } from "./url-utils";
 
-let $document = window.document;
-
 describe("urlUtils", () => {
   describe("urlResolve", () => {
     it("should returned already parsed URLs unchanged", () => {
@@ -67,7 +65,7 @@ describe("urlUtils", () => {
 
       expectIsSameOrigin("path", true);
 
-      const origin = urlResolve($document.location.href);
+      const origin = urlResolve(window.document.location.href);
       expectIsSameOrigin(`//${origin.host}/path`, true);
 
       // Different domain.

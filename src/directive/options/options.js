@@ -180,9 +180,8 @@ const NG_OPTIONS_REGEXP =
 
 export const ngOptionsDirective = [
   "$compile",
-  "$document",
   "$parse",
-  function ($compile, $document, $parse) {
+  function ($compile, $parse) {
     function parseOptionsExpression(optionsExp, selectElement, scope) {
       const match = optionsExp.match(NG_OPTIONS_REGEXP);
       if (!match) {
@@ -404,7 +403,7 @@ export const ngOptionsDirective = [
       // This stores the newly created options before they are appended to the select.
       // Since the contents are removed from the fragment when it is appended,
       // we only need to create it once.
-      const listFragment = $document[0].createDocumentFragment();
+      const listFragment = document.createDocumentFragment();
 
       // Overwrite the implementation. ngOptions doesn't use hashes
       selectCtrl.generateUnknownOptionValue = () => "?";

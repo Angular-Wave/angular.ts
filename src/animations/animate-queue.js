@@ -146,14 +146,12 @@ export function $$AnimateQueueProvider($animateProvider) {
   this.$get = [
     "$rootScope",
     "$rootElement",
-    "$document",
     "$$animation",
     "$$AnimateRunner",
     "$templateRequest",
     function (
       $rootScope,
       $rootElement,
-      $document,
       $$animation,
       $$AnimateRunner,
       $templateRequest,
@@ -739,7 +737,7 @@ export function $$AnimateQueueProvider($animateProvider) {
        * d) the element is not a child of the $rootElement
        */
       function areAnimationsAllowed(node, parentNode) {
-        const bodyNode = $document[0].body;
+        const bodyNode = document.body;
         const rootNode = getDomNode($rootElement);
 
         let bodyNodeDetected = node === bodyNode || node.nodeName === "HTML";

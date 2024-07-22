@@ -23,9 +23,8 @@ export function $$AnimateCssDriverProvider($$animationProvider) {
     "$animateCss",
     "$$AnimateRunner",
     "$rootElement",
-    "$document",
-    function ($animateCss, $$AnimateRunner, $rootElement, $document) {
-      const bodyNode = $document[0].body;
+    function ($animateCss, $$AnimateRunner, $rootElement) {
+      const bodyNode = document.body;
       const rootNode = getDomNode($rootElement);
 
       const rootBodyElement = JQLite(

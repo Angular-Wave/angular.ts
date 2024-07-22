@@ -2361,7 +2361,7 @@ describe("$location", () => {
   //         $compile,
   //         $browser,
   //         $rootElement,
-  //         $document,
+  //
   //         $location,
   //       ) => {
   //         // we need to do this otherwise we can't simulate events
@@ -2402,7 +2402,7 @@ describe("$location", () => {
   //         $compile,
   //         $browser,
   //         $rootElement,
-  //         $document,
+  //
   //         $location,
   //       ) => {
   //         // we need to do this otherwise we can't simulate events
@@ -2477,7 +2477,7 @@ describe("$location", () => {
   //         $compile,
   //         $browser,
   //         $rootElement,
-  //         $document,
+  //
   //         $location,
   //       ) => {
   //         // make IE happy
@@ -2499,7 +2499,7 @@ describe("$location", () => {
 
   //   // regression https://github.com/angular/angular.js/issues/1058
   //   it("should not throw if element was removed", inject((
-  //     $document,
+  //
   //     $rootElement,
   //     $location,
   //   ) => {
@@ -2532,7 +2532,7 @@ describe("$location", () => {
   //         $compile,
   //         $browser,
   //         $rootElement,
-  //         $document,
+  //
   //         $location,
   //       ) => {
   //         // we need to do this otherwise we can't simulate events
@@ -3440,7 +3440,7 @@ describe("$location", () => {
   //       return win;
   //     };
   //     $browserProvider.$get = function (
-  //       $document,
+  //
   //       $window,
   //       $log,
   //       $sniffer,
@@ -3449,7 +3449,7 @@ describe("$location", () => {
   //       /* global Browser: false */
   //       browser = new Browser(
   //         $window,
-  //         $document,
+  //
   //         $log,
   //         $sniffer,
   //         $$taskTrackerFactory,

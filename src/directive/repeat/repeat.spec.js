@@ -1552,7 +1552,7 @@ describe("ngRepeat", () => {
 //     $compile,
 //     scope,
 //     $animate,
-//     $document,
+//
 //     $sniffer,
 //     $timeout,
 //   ) => {

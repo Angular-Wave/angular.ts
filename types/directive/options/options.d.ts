@@ -1,4 +1,4 @@
-export const ngOptionsDirective: (string | (($compile: any, $document: any, $parse: any) => {
+export const ngOptionsDirective: (string | (($compile: any, $parse: any) => {
     restrict: string;
     terminal: boolean;
     require: string[];

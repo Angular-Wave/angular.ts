@@ -9,7 +9,6 @@ describe("binding", () => {
     $rootScope,
     $compile,
     $exceptionHandler,
-    $document,
     errors = [];
 
   function childNode(element, index) {
@@ -27,7 +26,6 @@ describe("binding", () => {
     $rootScope = $injector.get("$rootScope");
     $compile = $injector.get("$compile");
     $exceptionHandler = $injector.get("$exceptionHandler");
-    $document = $injector.get("$document");
     this.compileToHtml = function (content) {
       let html;
       content = JQLite(content);

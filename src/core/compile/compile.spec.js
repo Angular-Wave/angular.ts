@@ -55,8 +55,7 @@ describe("$compile", () => {
     $compile,
     $templateCache,
     log,
-    $sce,
-    $document;
+    $sce;
 
   beforeEach(() => {
     log = [];
@@ -68,7 +67,6 @@ describe("$compile", () => {
     $rootScope = injector.get("$rootScope");
     $compile = injector.get("$compile");
     $templateCache = injector.get("$templateCache");
-    $document = injector.get("$document");
     $sce = injector.get("$sce");
   });
 
@@ -187,7 +185,6 @@ describe("$compile", () => {
     $rootScope = injector.get("$rootScope");
     $compile = injector.get("$compile");
     $templateCache = injector.get("$templateCache");
-    $document = injector.get("$document");
     $sce = injector.get("$sce");
   }
 
@@ -4971,7 +4968,8 @@ describe("$compile", () => {
   describe("compile phase", () => {
     // NO ELEMENT ATTACHMENTS
     // it("should attach scope to the document node when it is compiled explicitly", () => {
-    //   $compile($document)($rootScope);
+    //   let $document = JQLite(document);
+    //   $document = $compile($document)($rootScope);
     //   expect($document.scope()).toBe($rootScope);
     // });
 

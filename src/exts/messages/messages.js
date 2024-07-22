@@ -223,9 +223,8 @@ export function initMessageModule() {
 
     .directive("ngMessagesInclude", [
       "$templateRequest",
-      "$document",
       "$compile",
-      function ($templateRequest, $document, $compile) {
+      function ($templateRequest, $compile) {
         return {
           restrict: "AE",
           require: "^^ngMessages", // we only require this for validation sake

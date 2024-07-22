@@ -55,7 +55,6 @@ import { ngEventDirectives } from "./directive/events/events";
 import { AnchorScrollProvider } from "./services/anchor-scroll";
 import {
   AnimateProvider,
-  CoreAnimateJsProvider,
   CoreAnimateQueueProvider,
 } from "./core/animate/animate";
 import { BrowserProvider } from "./services/browser";
@@ -70,10 +69,6 @@ import {
   TemplateCacheProvider,
 } from "./services/cache-factory";
 import { $ControllerProvider } from "./core/controller/controller";
-import {
-  $DocumentProvider,
-  $$IsDocumentHiddenProvider,
-} from "./services/document";
 import { $ExceptionHandlerProvider } from "./core/exception-handler";
 import { $FilterProvider } from "./core/filter/filter";
 import { $IntervalProvider } from "./core/interval/interval";
@@ -177,14 +172,12 @@ export function publishExternalAPI() {
           $anchorScroll: AnchorScrollProvider,
           $animate: AnimateProvider,
           $animateCss: CoreAnimateCssProvider,
-          $$animateJs: CoreAnimateJsProvider,
           $$animateQueue: CoreAnimateQueueProvider,
           $$AnimateRunner: AnimateRunnerFactoryProvider,
           $$animateAsyncRun: AnimateAsyncRunFactoryProvider,
           $browser: BrowserProvider,
           $cacheFactory: CacheFactoryProvider,
           $controller: $ControllerProvider,
-          $document: $DocumentProvider,
           $exceptionHandler: $ExceptionHandlerProvider,
           $filter: $FilterProvider,
           $interpolate: $InterpolateProvider,

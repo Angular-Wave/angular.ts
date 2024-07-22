@@ -2049,14 +2049,6 @@ describe("angular", () => {
       expect(toJson({ $few: "v" }, false)).toEqual('{"$few":"v"}');
     });
 
-    it("should not serialize $window object", () => {
-      expect(toJson(window)).toEqual('"$WINDOW"');
-    });
-
-    it("should not serialize $document object", () => {
-      expect(toJson(document)).toEqual('"$DOCUMENT"');
-    });
-
     it("should not serialize scope instances", () => {
       expect(toJson({ key: $rootScope })).toEqual('{"key":"$SCOPE"}');
     });

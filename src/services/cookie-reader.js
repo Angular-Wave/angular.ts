@@ -1,16 +1,14 @@
 import { isUndefined } from "../shared/utils";
 
 /**
- * @name $$cookieReader
- * @requires $document
  *
  * @description
  * This is a private service for reading cookies used by $http and ngCookies
  *
  * @return {Object} a key/value map of the current cookies
  */
-export function $$CookieReader($document) {
-  const rawDocument = $document[0] || {};
+export function $$CookieReader() {
+  const rawDocument = window.document;
   let lastCookies = {};
   let lastCookieString = "";
 
@@ -63,8 +61,6 @@ export function $$CookieReader($document) {
     return lastCookies;
   };
 }
-
-$$CookieReader.$inject = ["$document"];
 
 export function CookieReaderProvider() {
   this.$get = $$CookieReader;
