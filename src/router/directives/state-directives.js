@@ -111,7 +111,7 @@ function bindEvents(element, scope, hookFn, ngStateOpts) {
   });
 }
 
-// TODO: SEPARATE THESE OUT
+// // TODO: SEPARATE THESE OUT
 
 $StateRefDirective.$inject = [
   "$state",
@@ -233,6 +233,16 @@ $StateRefActiveDirective.$inject = [
   "$stateRegistry",
   "$transitions",
 ];
+
+/**
+ *
+ * @param {*} $state
+ * @param {*} $routerGlobals
+ * @param {*} $interpolate
+ * @param {*} $stateRegistry
+ * @param {*} $transitions
+ * @returns {import("../../types").Directive}
+ */
 export function $StateRefActiveDirective(
   $state,
   $routerGlobals,
@@ -242,139 +252,128 @@ export function $StateRefActiveDirective(
 ) {
   return {
     restrict: "A",
-    controller: [
-      "$scope",
-      "$element",
-      "$attrs",
-      function ($scope, $element, $attrs) {
-        let states = [];
-        let activeEqClass;
-        let ngSrefActive;
-        // There probably isn't much point in $observing this
-        // ngSrefActive and ngSrefActiveEq share the same directive object with some
-        // slight difference in logic routing
-        activeEqClass = $interpolate(
-          $attrs.ngSrefActiveEq || "",
-          false,
-        )($scope);
-        try {
-          ngSrefActive = $scope.$eval($attrs.ngSrefActive);
-        } catch (e) {
-          // Do nothing. ngSrefActive is not a valid expression.
-          // Fall back to using $interpolate below
+    controller: function ($scope, $element, $attrs) {
+      let states = [];
+      let activeEqClass;
+      let ngSrefActive;
+      // There probably isn't much point in $observing this
+      // ngSrefActive and ngSrefActiveEq share the same directive object with some
+      // slight difference in logic routing
+      activeEqClass = $interpolate($attrs.ngSrefActiveEq || "", false)($scope);
+      try {
+        ngSrefActive = $scope.$eval($attrs.ngSrefActive);
+      } catch (e) {
+        // Do nothing. ngSrefActive is not a valid expression.
+        // Fall back to using $interpolate below
+      }
+      ngSrefActive =
+        ngSrefActive || $interpolate($attrs.ngSrefActive || "", false)($scope);
+      setStatesFromDefinitionObject(ngSrefActive);
+      // Allow ngSref to communicate with ngSrefActive[Equals]
+      this.$$addStateInfo = function (newState, newParams) {
+        // we already got an explicit state provided by ui-sref-active, so we
+        // shadow the one that comes from ui-sref
+        if (isObject(ngSrefActive) && states.length > 0) {
+          return;
         }
-        ngSrefActive =
-          ngSrefActive ||
-          $interpolate($attrs.ngSrefActive || "", false)($scope);
-        setStatesFromDefinitionObject(ngSrefActive);
-        // Allow ngSref to communicate with ngSrefActive[Equals]
-        this.$$addStateInfo = function (newState, newParams) {
-          // we already got an explicit state provided by ui-sref-active, so we
-          // shadow the one that comes from ui-sref
-          if (isObject(ngSrefActive) && states.length > 0) {
-            return;
-          }
-          const deregister = addState(newState, newParams, ngSrefActive);
-          update();
-          return deregister;
+        const deregister = addState(newState, newParams, ngSrefActive);
+        update();
+        return deregister;
+      };
+      function updateAfterTransition(trans) {
+        trans.promise.then(update, () => {});
+      }
+      $scope.$on("$destroy", setupEventListeners());
+      if ($routerGlobals.transition) {
+        updateAfterTransition($routerGlobals.transition);
+      }
+      function setupEventListeners() {
+        const deregisterStatesChangedListener =
+          $stateRegistry.onStatesChanged(handleStatesChanged);
+        const deregisterOnStartListener = $transitions.onStart(
+          {},
+          updateAfterTransition,
+        );
+        const deregisterStateChangeSuccessListener = $scope.$on(
+          "$stateChangeSuccess",
+          update,
+        );
+        return function cleanUp() {
+          deregisterStatesChangedListener();
+          deregisterOnStartListener();
+          deregisterStateChangeSuccessListener();
         };
-        function updateAfterTransition(trans) {
-          trans.promise.then(update, () => {});
-        }
-        $scope.$on("$destroy", setupEventListeners());
-        if ($routerGlobals.transition) {
-          updateAfterTransition($routerGlobals.transition);
-        }
-        function setupEventListeners() {
-          const deregisterStatesChangedListener =
-            $stateRegistry.onStatesChanged(handleStatesChanged);
-          const deregisterOnStartListener = $transitions.onStart(
-            {},
-            updateAfterTransition,
-          );
-          const deregisterStateChangeSuccessListener = $scope.$on(
-            "$stateChangeSuccess",
-            update,
-          );
-          return function cleanUp() {
-            deregisterStatesChangedListener();
-            deregisterOnStartListener();
-            deregisterStateChangeSuccessListener();
-          };
-        }
-        function handleStatesChanged() {
-          setStatesFromDefinitionObject(ngSrefActive);
-        }
-        function setStatesFromDefinitionObject(statesDefinition) {
-          if (isObject(statesDefinition)) {
-            states = [];
-            forEach(statesDefinition, function (stateOrName, activeClass) {
-              // Helper function to abstract adding state.
-              const addStateForClass = function (stateOrName, activeClass) {
-                const ref = parseStateRef(stateOrName);
-                addState(ref.state, $scope.$eval(ref.paramExpr), activeClass);
-              };
-              if (isString(stateOrName)) {
-                // If state is string, just add it.
+      }
+      function handleStatesChanged() {
+        setStatesFromDefinitionObject(ngSrefActive);
+      }
+      function setStatesFromDefinitionObject(statesDefinition) {
+        if (isObject(statesDefinition)) {
+          states = [];
+          forEach(statesDefinition, function (stateOrName, activeClass) {
+            // Helper function to abstract adding state.
+            const addStateForClass = function (stateOrName, activeClass) {
+              const ref = parseStateRef(stateOrName);
+              addState(ref.state, $scope.$eval(ref.paramExpr), activeClass);
+            };
+            if (isString(stateOrName)) {
+              // If state is string, just add it.
+              addStateForClass(stateOrName, activeClass);
+            } else if (Array.isArray(stateOrName)) {
+              // If state is an array, iterate over it and add each array item individually.
+              forEach(stateOrName, function (stateOrName) {
                 addStateForClass(stateOrName, activeClass);
-              } else if (Array.isArray(stateOrName)) {
-                // If state is an array, iterate over it and add each array item individually.
-                forEach(stateOrName, function (stateOrName) {
-                  addStateForClass(stateOrName, activeClass);
-                });
-              }
-            });
-          }
-        }
-        function addState(stateName, stateParams, activeClass) {
-          const state = $state.get(stateName, stateContext($element));
-          const stateInfo = {
-            state: state || { name: stateName },
-            params: stateParams,
-            activeClass: activeClass,
-          };
-          states.push(stateInfo);
-          return function removeState() {
-            removeFrom(states)(stateInfo);
-          };
-        }
-        // Update route state
-        function update() {
-          const splitClasses = (str) => str.split(/\s/).filter(Boolean);
-          const getClasses = (stateList) =>
-            stateList
-              .map((x) => x.activeClass)
-              .map(splitClasses)
-              .reduce(unnestR, []);
-          const allClasses = getClasses(states)
-            .concat(splitClasses(activeEqClass))
-            .reduce(uniqR, []);
-          const fuzzyClasses = getClasses(
-            states.filter((x) => $state.includes(x.state.name, x.params)),
-          );
-          const exactlyMatchesAny = !!states.filter((x) =>
-            $state.is(x.state.name, x.params),
-          ).length;
-          const exactClasses = exactlyMatchesAny
-            ? splitClasses(activeEqClass)
-            : [];
-          const addClasses = fuzzyClasses
-            .concat(exactClasses)
-            .reduce(uniqR, []);
-          const removeClasses = allClasses.filter(
-            (cls) => !inArray(addClasses, cls),
-          );
-          $scope.$evalAsync(() => {
-            addClasses.forEach((className) =>
-              $element[0].classList.add(className),
-            );
-            removeClasses.forEach((className) =>
-              $element[0].classList.remove(className),
-            );
+              });
+            }
           });
         }
-        update();
-      },
-    ],
+      }
+      function addState(stateName, stateParams, activeClass) {
+        const state = $state.get(stateName, stateContext($element));
+        const stateInfo = {
+          state: state || { name: stateName },
+          params: stateParams,
+          activeClass: activeClass,
+        };
+        states.push(stateInfo);
+        return function removeState() {
+          removeFrom(states)(stateInfo);
+        };
+      }
+      // Update route state
+      function update() {
+        const splitClasses = (str) => str.split(/\s/).filter(Boolean);
+        const getClasses = (stateList) =>
+          stateList
+            .map((x) => x.activeClass)
+            .map(splitClasses)
+            .reduce(unnestR, []);
+        const allClasses = getClasses(states)
+          .concat(splitClasses(activeEqClass))
+          .reduce(uniqR, []);
+        const fuzzyClasses = getClasses(
+          states.filter((x) => $state.includes(x.state.name, x.params)),
+        );
+        const exactlyMatchesAny = !!states.filter((x) =>
+          $state.is(x.state.name, x.params),
+        ).length;
+        const exactClasses = exactlyMatchesAny
+          ? splitClasses(activeEqClass)
+          : [];
+        const addClasses = fuzzyClasses.concat(exactClasses).reduce(uniqR, []);
+        const removeClasses = allClasses.filter(
+          (cls) => !inArray(addClasses, cls),
+        );
+        $scope.$evalAsync(() => {
+          addClasses.forEach((className) =>
+            $element[0].classList.add(className),
+          );
+          removeClasses.forEach((className) =>
+            $element[0].classList.remove(className),
+          );
+        });
+      }
+      update();
+    },
   };
 }

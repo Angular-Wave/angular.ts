@@ -1,375 +1,120 @@
-import {
-  forEach,
-  isFunction,
-  isObject,
-  isString,
-  minErr,
-  extend,
-} from "../../shared/utils";
-import { JQLite } from "../../shared/jqlite/jqlite";
-import { NG_ANIMATE_CLASSNAME } from "../../animations/shared";
-
-const $animateMinErr = minErr("$animate");
-
-function mergeClasses(a, b) {
-  if (!a && !b) return "";
-  if (!a) return b;
-  if (!b) return a;
-  if (Array.isArray(a)) a = a.join(" ");
-  if (Array.isArray(b)) b = b.join(" ");
-  return `${a} ${b}`;
+export function CoreAnimateJsProvider(): void;
+export class CoreAnimateJsProvider {
+    $get: () => void;
 }
-
-function extractElementNode(element) {
-  const { length } = element;
-  for (let i = 0; i < length; i++) {
-    const elm = element[i];
-    if (elm.nodeType === Node.ELEMENT_NODE) {
-      return elm;
-    }
-  }
+export function CoreAnimateQueueProvider(): void;
+export class CoreAnimateQueueProvider {
+    $get: (string | (($$AnimateRunner: any, $rootScope: any) => {
+        enabled: () => void;
+        on: () => void;
+        off: () => void;
+        pin: () => void;
+        push(element: any, event: any, options: any, domOperation: any): any;
+    }))[];
 }
-
-function splitClasses(classes) {
-  if (isString(classes)) {
-    classes = classes.split(" ");
-  }
-
-  // Use Object.create(null) to prevent class assumptions involving property names in
-  // Object.prototype
-  const obj = Object.create(null);
-  forEach(classes, (klass) => {
-    // sometimes the split leaves empty string values
-    // incase extra spaces were applied to the options
-    if (klass.length) {
-      obj[klass] = true;
-    }
-  });
-  return obj;
-}
-
-// if any other type of options value besides an Object value is
-// passed into the $animate.method() animation then this helper code
-// will be run which will ignore it. While this patch is not the
-// greatest solution to this, a lot of existing plugins depend on
-// $animate to either call the callback (< 1.2) or return a promise
-// that can be changed. This helper function ensures that the options
-// are wiped clean incase a callback function is provided.
-function prepareAnimateOptions(options) {
-  return isObject(options) ? options : {};
-}
-
-export function CoreAnimateJsProvider() {
-  this.$get = () => {};
-}
-
-// this is prefixed with Core since it conflicts with
-// the animateQueueProvider defined in ngAnimate/animateQueue.js
-export function CoreAnimateQueueProvider() {
-  const postDigestQueue = new Map();
-  const postDigestElements = [];
-
-  this.$get = [
-    "$$AnimateRunner",
-    "$rootScope",
-    function ($$AnimateRunner, $rootScope) {
-      return {
-        enabled: () => {},
-        on: () => {},
-        off: () => {},
-        pin: () => {},
-
-        push(element, event, options, domOperation) {
-          if (domOperation) {
-            domOperation();
-          }
-
-          options = options || {};
-          if (options.from) {
-            //element.css(options.from);
-          }
-          if (options.to) {
-            //element.css(options.to);
-          }
-
-          if (options.addClass || options.removeClass) {
-            addRemoveClassesPostDigest(
-              element,
-              options.addClass,
-              options.removeClass,
-            );
-          }
-
-          const runner = new $$AnimateRunner();
-
-          // since there are no animations to run the runner needs to be
-          // notified that the animation call is complete.
-          runner.complete();
-          return runner;
-        },
-      };
-
-      function updateData(data, classes, value) {
-        let changed = false;
-        if (classes) {
-          classes = isString(classes)
-            ? classes.split(" ")
-            : Array.isArray(classes)
-              ? classes
-              : [];
-          forEach(classes, (className) => {
-            if (className) {
-              changed = true;
-              data[className] = value;
-            }
-          });
-        }
-        return changed;
-      }
-
-      function handleCSSClassChanges() {
-        forEach(postDigestElements, function (element) {
-          var data = postDigestQueue.get(element);
-          if (data) {
-            var existing = splitClasses(element.attr("class"));
-            var toAdd = "";
-            var toRemove = "";
-            forEach(data, function (status, className) {
-              var hasClass = !!existing[className];
-              if (status !== hasClass) {
-                if (status) {
-                  toAdd += (toAdd.length ? " " : "") + className;
-                } else {
-                  toRemove += (toRemove.length ? " " : "") + className;
-                }
-              }
-            });
-
-            forEach(element, function (elm) {
-              if (toRemove) {
-                toRemove.split(" ").forEach((css) => elm.classList.remove(css));
-              }
-              if (toAdd) {
-                elm.className += ` ${toAdd}`;
-              }
-            });
-            postDigestQueue.delete(element);
-          }
-        });
-        postDigestElements.length = 0;
-      }
-
-      function addRemoveClassesPostDigest(element, add, remove) {
-        const data = postDigestQueue.get(element) || {};
-
-        const classesAdded = updateData(data, add, true);
-        const classesRemoved = updateData(data, remove, false);
-
-        if (classesAdded || classesRemoved) {
-          postDigestQueue.set(element, data);
-          postDigestElements.push(element);
-
-          if (postDigestElements.length === 1) {
-            $rootScope.$$postDigest(handleCSSClassChanges);
-          }
-        }
-      }
-    },
-  ];
-}
-
-AnimateProvider.$inject = ["$provide"];
-export function AnimateProvider($provide) {
-  const provider = this;
-  let classNameFilter = null;
-  let customFilter = null;
-
-  this.$$registeredAnimations = Object.create(null);
-
-  /**
-   * @ngdoc method
-   * @name $animateProvider#register
-   *
-   * @description
-   * Registers a new injectable animation factory function. The factory function produces the
-   * animation object which contains callback functions for each event that is expected to be
-   * animated.
-   *
-   *   * `eventFn`: `function(element, ... , doneFunction, options)`
-   *   The element to animate, the `doneFunction` and the options fed into the animation. Depending
-   *   on the type of animation additional arguments will be injected into the animation function. The
-   *   list below explains the function signatures for the different animation methods:
-   *
-   *   - setClass: function(element, addedClasses, removedClasses, doneFunction, options)
-   *   - addClass: function(element, addedClasses, doneFunction, options)
-   *   - removeClass: function(element, removedClasses, doneFunction, options)
-   *   - enter, leave, move: function(element, doneFunction, options)
-   *   - animate: function(element, fromStyles, toStyles, doneFunction, options)
-   *
-   *   Make sure to trigger the `doneFunction` once the animation is fully complete.
-   *
-   * ```js
-   *   return {
-   *     //enter, leave, move signature
-   *     eventFn : function(element, done, options) {
-   *       //code to run the animation
-   *       //once complete, then run done()
-   *       return function endFunction(wasCancelled) {
-   *         //code to cancel the animation
-   *       }
-   *     }
-   *   }
-   * ```
-   *
-   * @param {string} name The name of the animation (this is what the class-based CSS value will be compared to).
-   * @param {Function} factory The factory function that will be executed to return the animation
-   *                           object.
-   */
-  this.register = function (name, factory) {
-    if (name && name.charAt(0) !== ".") {
-      throw $animateMinErr(
-        "notcsel",
-        "Expecting class selector starting with '.' got '{0}'.",
-        name,
-      );
-    }
-
-    const key = `${name}-animation`;
-    provider.$$registeredAnimations[name.substr(1)] = key;
-    $provide.factory(key, factory);
-  };
-
-  /**
-   * @ngdoc method
-   * @name $animateProvider#customFilter
-   *
-   * @description
-   * Sets and/or returns the custom filter function that is used to "filter" animations, i.e.
-   * determine if an animation is allowed or not. When no filter is specified (the default), no
-   * animation will be blocked. Setting the `customFilter` value will only allow animations for
-   * which the filter function's return value is truthy.
-   *
-   * This allows to easily create arbitrarily complex rules for filtering animations, such as
-   * allowing specific events only, or enabling animations on specific subtrees of the DOM, etc.
-   * Filtering animations can also boost performance for low-powered devices, as well as
-   * applications containing a lot of structural operations.
-   *
-   * <div class="alert alert-success">
-   *   **Best Practice:**
-   *   Keep the filtering function as lean as possible, because it will be called for each DOM
-   *   action (e.g. insertion, removal, class change) performed by "animation-aware" directives.
-   *   See {@link guide/animations#which-directives-support-animations- here} for a list of built-in
-   *   directives that support animations.
-   *   Performing computationally expensive or time-consuming operations on each call of the
-   *   filtering function can make your animations sluggish.
-   * </div>
-   *
-   * **Note:** If present, `customFilter` will be checked before
-   * {@link $animateProvider#classNameFilter classNameFilter}.
-   *
-   * @param {Function=} filterFn - The filter function which will be used to filter all animations.
-   *   If a falsy value is returned, no animation will be performed. The function will be called
-   *   with the following arguments:
-   *   - **node** `{Element}` - The DOM element to be animated.
-   *   - **event** `{String}` - The name of the animation event (e.g. `enter`, `leave`, `addClass`
-   *     etc).
-   *   - **options** `{Object}` - A collection of options/styles used for the animation.
-   * @return {Function} The current filter function or `null` if there is none set.
-   */
-  this.customFilter = function (filterFn) {
-    if (arguments.length === 1) {
-      customFilter = isFunction(filterFn) ? filterFn : null;
-    }
-
-    return customFilter;
-  };
-
-  /**
-   * @ngdoc method
-   * @name $animateProvider#classNameFilter
-   *
-   * @description
-   * Sets and/or returns the CSS class regular expression that is checked when performing
-   * an animation. Upon bootstrap the classNameFilter value is not set at all and will
-   * therefore enable $animate to attempt to perform an animation on any element that is triggered.
-   * When setting the `classNameFilter` value, animations will only be performed on elements
-   * that successfully match the filter expression. This in turn can boost performance
-   * for low-powered devices as well as applications containing a lot of structural operations.
-   *
-   * **Note:** If present, `classNameFilter` will be checked after
-   * {@link $animateProvider#customFilter customFilter}. If `customFilter` is present and returns
-   * false, `classNameFilter` will not be checked.
-   *
-   * @param {RegExp=} expression The className expression which will be checked against all animations
-   * @return {RegExp} The current CSS className expression value. If null then there is no expression value
-   */
-  this.classNameFilter = function (expression) {
-    if (arguments.length === 1) {
-      classNameFilter = expression instanceof RegExp ? expression : null;
-      if (classNameFilter) {
-        const reservedRegex = new RegExp(
-          `[(\\s|\\/)]${NG_ANIMATE_CLASSNAME}[(\\s|\\/)]`,
-        );
-        if (reservedRegex.test(classNameFilter.toString())) {
-          classNameFilter = null;
-          throw $animateMinErr(
-            "nongcls",
-            '$animateProvider.classNameFilter(regex) prohibits accepting a regex value which matches/contains the "{0}" CSS class.',
-            NG_ANIMATE_CLASSNAME,
-          );
-        }
-      }
-    }
-    return classNameFilter;
-  };
-
-  this.$get = [
-    "$$animateQueue",
-    function ($$animateQueue) {
-      function domInsert(element, parentElement, afterElement) {
-        // if for some reason the previous element was removed
-        // from the dom sometime before this code runs then let's
-        // just stick to using the parent element as the anchor
-        if (afterElement) {
-          const afterNode = extractElementNode(afterElement);
-          if (
-            afterNode &&
-            !afterNode.parentNode &&
-            !afterNode.previousElementSibling
-          ) {
-            afterElement = null;
-          }
-        }
-        if (afterElement) {
-          afterElement.after(element);
-        } else {
-          parentElement.prepend(element);
-        }
-      }
-
-      /**
-       * @ngdoc service
-       * @name $animate
-       * @description The $animate service exposes a series of DOM utility methods that provide support
-       * for animation hooks. The default behavior is the application of DOM operations, however,
-       * when an animation is detected (and animations are enabled), $animate will do the heavy lifting
-       * to ensure that animation runs with the triggered DOM operation.
-       *
-       * By default $animate doesn't trigger any animations. This is because the `ngAnimate` module isn't
-       * included and only when it is active then the animation hooks that `$animate` triggers will be
-       * functional. Once active then all structural `ng-` directives will trigger animations as they perform
-       * their DOM-related operations (enter, leave and move). Other directives such as `ngClass`,
-       * `ngShow`, `ngHide` and `ngMessages` also provide support for animations.
-       *
-       * It is recommended that the`$animate` service is always used when executing DOM-related procedures within directives.
-       *
-       * To learn more about enabling animation support, click here to visit the
-       * {@link ngAnimate ngAnimate module page}.
-       */
-      return {
-        // we don't call it directly since non-existant arguments may
-        // be interpreted as null within the sub enabled function
-
+export function AnimateProvider($provide: any): void;
+export class AnimateProvider {
+    constructor($provide: any);
+    $$registeredAnimations: any;
+    /**
+     * @ngdoc method
+     * @name $animateProvider#register
+     *
+     * @description
+     * Registers a new injectable animation factory function. The factory function produces the
+     * animation object which contains callback functions for each event that is expected to be
+     * animated.
+     *
+     *   * `eventFn`: `function(element, ... , doneFunction, options)`
+     *   The element to animate, the `doneFunction` and the options fed into the animation. Depending
+     *   on the type of animation additional arguments will be injected into the animation function. The
+     *   list below explains the function signatures for the different animation methods:
+     *
+     *   - setClass: function(element, addedClasses, removedClasses, doneFunction, options)
+     *   - addClass: function(element, addedClasses, doneFunction, options)
+     *   - removeClass: function(element, removedClasses, doneFunction, options)
+     *   - enter, leave, move: function(element, doneFunction, options)
+     *   - animate: function(element, fromStyles, toStyles, doneFunction, options)
+     *
+     *   Make sure to trigger the `doneFunction` once the animation is fully complete.
+     *
+     * ```js
+     *   return {
+     *     //enter, leave, move signature
+     *     eventFn : function(element, done, options) {
+     *       //code to run the animation
+     *       //once complete, then run done()
+     *       return function endFunction(wasCancelled) {
+     *         //code to cancel the animation
+     *       }
+     *     }
+     *   }
+     * ```
+     *
+     * @param {string} name The name of the animation (this is what the class-based CSS value will be compared to).
+     * @param {Function} factory The factory function that will be executed to return the animation
+     *                           object.
+     */
+    register: (name: string, factory: Function) => void;
+    /**
+     * @ngdoc method
+     * @name $animateProvider#customFilter
+     *
+     * @description
+     * Sets and/or returns the custom filter function that is used to "filter" animations, i.e.
+     * determine if an animation is allowed or not. When no filter is specified (the default), no
+     * animation will be blocked. Setting the `customFilter` value will only allow animations for
+     * which the filter function's return value is truthy.
+     *
+     * This allows to easily create arbitrarily complex rules for filtering animations, such as
+     * allowing specific events only, or enabling animations on specific subtrees of the DOM, etc.
+     * Filtering animations can also boost performance for low-powered devices, as well as
+     * applications containing a lot of structural operations.
+     *
+     * <div class="alert alert-success">
+     *   **Best Practice:**
+     *   Keep the filtering function as lean as possible, because it will be called for each DOM
+     *   action (e.g. insertion, removal, class change) performed by "animation-aware" directives.
+     *   See {@link guide/animations#which-directives-support-animations- here} for a list of built-in
+     *   directives that support animations.
+     *   Performing computationally expensive or time-consuming operations on each call of the
+     *   filtering function can make your animations sluggish.
+     * </div>
+     *
+     * **Note:** If present, `customFilter` will be checked before
+     * {@link $animateProvider#classNameFilter classNameFilter}.
+     *
+     * @param {Function=} filterFn - The filter function which will be used to filter all animations.
+     *   If a falsy value is returned, no animation will be performed. The function will be called
+     *   with the following arguments:
+     *   - **node** `{Element}` - The DOM element to be animated.
+     *   - **event** `{String}` - The name of the animation event (e.g. `enter`, `leave`, `addClass`
+     *     etc).
+     *   - **options** `{Object}` - A collection of options/styles used for the animation.
+     * @return {Function} The current filter function or `null` if there is none set.
+     */
+    customFilter: (filterFn?: Function | undefined, ...args: any[]) => Function;
+    /**
+     * @ngdoc method
+     * @name $animateProvider#classNameFilter
+     *
+     * @description
+     * Sets and/or returns the CSS class regular expression that is checked when performing
+     * an animation. Upon bootstrap the classNameFilter value is not set at all and will
+     * therefore enable $animate to attempt to perform an animation on any element that is triggered.
+     * When setting the `classNameFilter` value, animations will only be performed on elements
+     * that successfully match the filter expression. This in turn can boost performance
+     * for low-powered devices as well as applications containing a lot of structural operations.
+     *
+     * **Note:** If present, `classNameFilter` will be checked after
+     * {@link $animateProvider#customFilter customFilter}. If `customFilter` is present and returns
+     * false, `classNameFilter` will not be checked.
+     *
+     * @param {RegExp=} expression The className expression which will be checked against all animations
+     * @return {RegExp} The current CSS className expression value. If null then there is no expression value
+     */
+    classNameFilter: (expression?: RegExp | undefined, ...args: any[]) => RegExp;
+    $get: (string | (($$animateQueue: any) => {
         /**
          *
          * @ngdoc method
@@ -421,8 +166,7 @@ export function AnimateProvider($provide) {
          * Note that the callback does not trigger a scope digest. Wrap your call into a
          * {@link $rootScope.Scope#$apply scope.$apply} to propagate changes to the scope.
          */
-        on: $$animateQueue.on,
-
+        on: any;
         /**
          *
          * @ngdoc method
@@ -452,8 +196,7 @@ export function AnimateProvider($provide) {
          * @param {Element=} container the container element the event listener was placed on
          * @param {Function=} callback the callback function that was registered as the listener
          */
-        off: $$animateQueue.off,
-
+        off: any;
         /**
          * @ngdoc method
          * @name $animate#pin
@@ -470,8 +213,7 @@ export function AnimateProvider($provide) {
          * @param {Element} element the external element that will be pinned
          * @param {Element} parentElement the host parent element that will be associated with the external element
          */
-        pin: $$animateQueue.pin,
-
+        pin: any;
         /**
          *
          * @ngdoc method
@@ -501,8 +243,7 @@ export function AnimateProvider($provide) {
          *
          * @return {boolean} whether or not animations are enabled
          */
-        enabled: $$animateQueue.enabled,
-
+        enabled: any;
         /**
        * @ngdoc method
        * @name $animate#cancel
@@ -575,12 +316,7 @@ export function AnimateProvider($provide) {
           </file>
         </example>
        */
-        cancel(runner) {
-          if (runner.cancel) {
-            runner.cancel();
-          }
-        },
-
+        cancel(runner: any): void;
         /**
          *
          * @ngdoc method
@@ -605,18 +341,7 @@ export function AnimateProvider($provide) {
          *
          * @return {Runner} the animation runner
          */
-        enter(element, parent, after, options) {
-          parent = parent && JQLite(parent);
-          after = after && JQLite(after);
-          parent = parent || after.parent();
-          domInsert(element, parent, after);
-          return $$animateQueue.push(
-            element,
-            "enter",
-            prepareAnimateOptions(options),
-          );
-        },
-
+        enter(element: Element, parent: Element, after?: Element | undefined, options?: object | undefined): Runner;
         /**
          *
          * @ngdoc method
@@ -641,18 +366,7 @@ export function AnimateProvider($provide) {
          *
          * @return {Runner} the animation runner
          */
-        move(element, parent, after, options) {
-          parent = parent && JQLite(parent);
-          after = after && JQLite(after);
-          parent = parent || after.parent();
-          domInsert(element, parent, after);
-          return $$animateQueue.push(
-            element,
-            "move",
-            prepareAnimateOptions(options),
-          );
-        },
-
+        move(element: Element, parent: Element, after?: Element | undefined, options?: object | undefined): Runner;
         /**
          * @ngdoc method
          * @name $animate#leave
@@ -672,17 +386,7 @@ export function AnimateProvider($provide) {
          *
          * @return {Runner} the animation runner
          */
-        leave(element, options) {
-          return $$animateQueue.push(
-            element,
-            "leave",
-            prepareAnimateOptions(options),
-            () => {
-              element.remove();
-            },
-          );
-        },
-
+        leave(element: Element, options?: object | undefined): Runner;
         /**
          * @ngdoc method
          * @name $animate#addClass
@@ -706,12 +410,7 @@ export function AnimateProvider($provide) {
          *
          * @return {Runner} animationRunner the animation runner
          */
-        addClass(element, className, options) {
-          options = prepareAnimateOptions(options);
-          options.addClass = mergeClasses(options.addclass, className);
-          return $$animateQueue.push(element, "addClass", options);
-        },
-
+        addClass(element: Element, className: string, options?: object | undefined): Runner;
         /**
          * @ngdoc method
          * @name $animate#removeClass
@@ -735,12 +434,7 @@ export function AnimateProvider($provide) {
          *
          * @return {Runner} the animation runner
          */
-        removeClass(element, className, options) {
-          options = prepareAnimateOptions(options);
-          options.removeClass = mergeClasses(options.removeClass, className);
-          return $$animateQueue.push(element, "removeClass", options);
-        },
-
+        removeClass(element: Element, className: string, options?: object | undefined): Runner;
         /**
          * @ngdoc method
          * @name $animate#setClass
@@ -766,13 +460,7 @@ export function AnimateProvider($provide) {
          *
          * @return {Runner} the animation runner
          */
-        setClass(element, add, remove, options) {
-          options = prepareAnimateOptions(options);
-          options.addClass = mergeClasses(options.addClass, add);
-          options.removeClass = mergeClasses(options.removeClass, remove);
-          return $$animateQueue.push(element, "setClass", options);
-        },
-
+        setClass(element: Element, add: string, remove: string, options?: object | undefined): Runner;
         /**
          * @ngdoc method
          * @name $animate#animate
@@ -813,16 +501,9 @@ export function AnimateProvider($provide) {
          *
          * @return {Runner} the animation runner
          */
-        animate(element, from, to, className, options) {
-          options = prepareAnimateOptions(options);
-          options.from = options.from ? extend(options.from, from) : from;
-          options.to = options.to ? extend(options.to, to) : to;
-
-          className = className || "ng-inline-animate";
-          options.tempClasses = mergeClasses(options.tempClasses, className);
-          return $$animateQueue.push(element, "animate", options);
-        },
-      };
-    },
-  ];
+        animate(element: Element, from: object, to: object, className?: string | undefined, options?: object | undefined): Runner;
+    }))[];
+}
+export namespace AnimateProvider {
+    let $inject: string[];
 }
