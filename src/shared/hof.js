@@ -133,7 +133,6 @@ export function or(fn1, fn2) {
  * @returns a function which takes an array and returns true if `fn1` is true for all elements of the array
  */
 export const all = (fn1) => (arr) => arr.reduce((b, x) => b && !!fn1(x), true);
-// tslint:disable-next-line:variable-name
 export const any = (fn1) => (arr) => arr.reduce((b, x) => b || !!fn1(x), false);
 /** Given a class, returns a Predicate function that returns true if the object is of that class */
 export const is = (ctor) => (obj) =>

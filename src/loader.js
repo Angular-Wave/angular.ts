@@ -183,7 +183,6 @@ export class Angular {
     };
 
     this.doBootstrap = function () {
-      // @ts-ignore
       element = JQLite(element);
 
       if (element.injector()) {

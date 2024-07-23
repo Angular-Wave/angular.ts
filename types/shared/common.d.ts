@@ -167,7 +167,6 @@ export function tail(arr: any): any;
  * shallow copy from src to dest
  */
 export function copy(src: any, dest: any): any;
-export const root: typeof globalThis;
 export const fromJson: any;
 export const toJson: any;
 /** Naive forEach implementation works with Objects or Arrays */

@@ -249,7 +249,6 @@ export class UrlMatcher {
     };
     let details;
     let segment;
-    // tslint:disable-next-line:no-conditional-assignment
     while ((matchArray = placeholder.exec(pattern))) {
       details = matchDetails(matchArray, false);
       if (details.segment.indexOf("?") >= 0) break; // we're into the search part
@@ -269,7 +268,6 @@ export class UrlMatcher {
       segment = segment.substring(0, i);
       if (search.length > 0) {
         last = 0;
-        // tslint:disable-next-line:no-conditional-assignment
         while ((matchArray = searchPlaceholder.exec(search))) {
           details = matchDetails(matchArray, true);
           checkParamErrors(details.id);

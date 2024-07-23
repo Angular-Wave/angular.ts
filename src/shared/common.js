@@ -7,10 +7,6 @@
 import { isDate, isFunction, isRegExp, isString } from "./utils";
 import { all, any, prop, curry, not } from "./hof";
 import { services } from "../router/common/coreservices";
-export const root =
-  (typeof self === "object" && self.self === self && self) ||
-  (typeof global === "object" && global.global === global && global) ||
-  this;
 export const fromJson = JSON.parse.bind(JSON);
 export const toJson = JSON.stringify.bind(JSON);
 export const forEach = _forEach;
@@ -158,7 +154,6 @@ export const mergeR = (memo, item) => Object.assign(memo, item);
  */
 export function ancestors(first, second) {
   const path = [];
-  // tslint:disable-next-line:forin
   for (const n in first.path) {
     if (first.path[n] !== second.path[n]) break;
     path.push(first.path[n]);
@@ -476,7 +471,7 @@ function _equals(o1, o2) {
   if (predicates.map(any).reduce((b, fn) => b || !!fn(tup), false))
     return false;
   const keys = {};
-  // tslint:disable-next-line:forin
+
   for (const key in o1) {
     if (!_equals(o1[key], o2[key])) return false;
     keys[key] = true;

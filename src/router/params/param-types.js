@@ -87,7 +87,7 @@ function initDefaultTypes() {
       decode: valToString,
       is: is(String),
       pattern: /.*/,
-      // tslint:disable-next-line:triple-equals
+
       equals: (a, b) => a == b, // allow coersion for null/undefined/""
     };
     return Object.assign({}, defaultTypeBase, def);

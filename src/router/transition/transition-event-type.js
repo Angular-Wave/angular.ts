@@ -4,7 +4,6 @@ import { TransitionHook } from "./transition-hook";
  * Plugins can define custom hook types, such as sticky states does for `onInactive`.
  */
 export class TransitionEventType {
-  /* tslint:disable:no-inferrable-types */
   constructor(
     name,
     hookPhase,

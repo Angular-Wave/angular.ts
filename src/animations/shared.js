@@ -303,6 +303,11 @@ export function resolveElementClasses(existing, toAdd, toRemove) {
   return classes;
 }
 
+/**
+ *
+ * @param {JQLite|Element} element
+ * @returns {Element}
+ */
 export function getDomNode(element) {
   return element instanceof JQLite ? element[0] : element;
 }

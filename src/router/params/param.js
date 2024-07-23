@@ -4,10 +4,12 @@ import { isInjectable } from "../../shared/predicates";
 import { isDefined, isUndefined, isString } from "../../shared/utils";
 import { services } from "../common/coreservices";
 import { ParamType } from "./param-type";
-const hasOwn = Object.prototype.hasOwnProperty;
+
 const isShorthand = (cfg) =>
-  ["value", "type", "squash", "array", "dynamic"].filter(hasOwn.bind(cfg || {}))
-    .length === 0;
+  ["value", "type", "squash", "array", "dynamic"].filter(
+    Object.prototype.hasOwnProperty.bind(cfg || {}),
+  ).length === 0;
+
 var DefType;
 (function (DefType) {
   DefType[(DefType["PATH"] = 0)] = "PATH";
@@ -15,6 +17,7 @@ var DefType;
   DefType[(DefType["CONFIG"] = 2)] = "CONFIG";
 })(DefType || (DefType = {}));
 export { DefType };
+
 function getParamDeclaration(paramName, location, state) {
   const noReloadOnSearch =
     (state.reloadOnSearch === false && location === DefType.SEARCH) ||

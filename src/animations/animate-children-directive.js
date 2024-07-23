@@ -2,6 +2,11 @@ import { isString } from "../shared/utils";
 import { NG_ANIMATE_CHILDREN_DATA } from "./shared";
 
 $$AnimateChildrenDirective.$inject = ["$interpolate"];
+
+/**
+ * @param {*} $interpolate
+ * @returns {import("../types").Directive}
+ */
 export function $$AnimateChildrenDirective($interpolate) {
   return {
     link(scope, element, attrs) {

@@ -41,24 +41,12 @@ export function $$AnimateCssDriverProvider($$animationProvider) {
           ? prepareFromToAnchorAnimation(
               animationDetails.from,
               animationDetails.to,
-              animationDetails.classes,
               animationDetails.anchors,
             )
           : prepareRegularAnimation(animationDetails);
       };
 
-      function filterCssClasses(classes) {
-        // remove all the `ng-` stuff
-        return classes.replace(/\bng-\S+\b/g, "");
-      }
-
-      function getUniqueValues(a, b) {
-        if (isString(a)) a = a.split(" ");
-        if (isString(b)) b = b.split(" ");
-        return a.filter((val) => b.indexOf(val) === -1).join(" ");
-      }
-
-      function prepareAnchoredAnimation(classes, outAnchor, inAnchor) {
+      function prepareAnchoredAnimation(outAnchor, inAnchor) {
         const clone = JQLite(getDomNode(outAnchor).cloneNode(true));
         const startingClasses = filterCssClasses(getClassVal(clone));
 
@@ -186,19 +174,15 @@ export function $$AnimateCssDriverProvider($$animationProvider) {
         }
       }
 
-      function prepareFromToAnchorAnimation(from, to, classes, anchors) {
+      function prepareFromToAnchorAnimation(from, to, anchors) {
         const fromAnimation = prepareRegularAnimation(from);
         const toAnimation = prepareRegularAnimation(to);
 
         const anchorAnimations = [];
-        forEach(anchors, (anchor) => {
+        anchors.forEach((anchor) => {
           const outElement = anchor.out;
           const inElement = anchor.in;
-          const animator = prepareAnchoredAnimation(
-            classes,
-            outElement,
-            inElement,
-          );
+          const animator = prepareAnchoredAnimation(outElement, inElement);
           if (animator) {
             anchorAnimations.push(animator);
           }
@@ -236,7 +220,7 @@ export function $$AnimateCssDriverProvider($$animationProvider) {
             return runner;
 
             function endFn() {
-              forEach(animationRunners, (runner) => {
+              animationRunners.forEach((runner) => {
                 runner.end();
               });
             }
@@ -281,4 +265,15 @@ export function $$AnimateCssDriverProvider($$animationProvider) {
       }
     },
   ];
+}
+
+function filterCssClasses(classes) {
+  // remove all the `ng-` stuff
+  return classes.replace(/\bng-\S+\b/g, "");
+}
+
+function getUniqueValues(a, b) {
+  if (isString(a)) a = a.split(" ");
+  if (isString(b)) b = b.split(" ");
+  return a.filter((val) => b.indexOf(val) === -1).join(" ");
 }

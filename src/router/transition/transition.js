@@ -455,7 +455,6 @@ export class Transition {
   redirect(targetState) {
     let redirects = 1,
       trans = this;
-    // tslint:disable-next-line:no-conditional-assignment
     while ((trans = trans.redirectedFrom()) != null) {
       if (++redirects > 20)
         throw new Error(`Too many consecutive Transition redirects (20+)`);

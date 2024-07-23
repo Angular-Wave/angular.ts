@@ -21,7 +21,6 @@ export let resolvePolicies = {
 const whens = resolvePolicies.when;
 const ALL_WHENS = [whens.EAGER, whens.LAZY];
 const EAGER_WHENS = [whens.EAGER];
-// tslint:disable-next-line:no-inferrable-types
 export const NATIVE_INJECTOR_TOKEN = "Native Injector";
 /**
  * Encapsulates Dependency Injection for a path of nodes

@@ -51,7 +51,6 @@ export class ParamType {
   }
   /** @inheritdoc */
   equals(a, b) {
-    // tslint:disable-next-line:triple-equals
     return a == b;
   }
   $subPattern() {

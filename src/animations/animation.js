@@ -196,7 +196,7 @@ export function $$AnimationProvider() {
 
         $rootScope.$$postDigest(() => {
           const animations = [];
-          forEach(animationQueue, (entry) => {
+          animationQueue.forEach((entry) => {
             // the element was destroyed early on which removed the runner
             // form its storage. This means we can't animate this element
             // at all and it already has been closed due to destruction.
@@ -213,7 +213,7 @@ export function $$AnimationProvider() {
           const groupedAnimations = groupAnimations(animations);
           const toBeSortedAnimations = [];
 
-          forEach(groupedAnimations, (animationEntry) => {
+          groupedAnimations.forEach((animationEntry) => {
             const element = animationEntry.from
               ? animationEntry.from.element
               : animationEntry.element;
@@ -342,7 +342,7 @@ export function $$AnimationProvider() {
             if (anchorNodes.length) {
               const direction = enterOrMove ? "to" : "from";
 
-              forEach(anchorNodes, (anchor) => {
+              anchorNodes.forEach((anchor) => {
                 const key = anchor.getAttribute(NG_ANIMATE_REF_ATTR);
                 refLookup[key] = refLookup[key] || {};
                 refLookup[key][direction] = {

@@ -1,6 +1,8 @@
-export function $$AnimateChildrenDirective($interpolate: any): {
-    link(scope: any, element: any, attrs: any): void;
-};
+/**
+ * @param {*} $interpolate
+ * @returns {import("../types").Directive}
+ */
+export function $$AnimateChildrenDirective($interpolate: any): import("../types").Directive;
 export namespace $$AnimateChildrenDirective {
     let $inject: string[];
 }
