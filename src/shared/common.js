@@ -1,9 +1,3 @@
-/**
- * Random utility functions used in the ng-router code
- *
- * These functions are exported, but are subject to change without notice.
- *
- */
 import { isDate, isFunction, isRegExp, isString } from "./utils";
 import { all, any, prop, curry, not } from "./hof";
 import { services } from "../router/common/coreservices";

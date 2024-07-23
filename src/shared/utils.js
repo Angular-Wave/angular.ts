@@ -69,10 +69,6 @@ export function isArrayLike(obj) {
 }
 
 /**
- * @module angular
- * @function isUndefined
- *
- * @description
  * Determines if a reference is undefined.
  *
  * @param {*} value Reference to check.
@@ -83,10 +79,6 @@ export function isUndefined(value) {
 }
 
 /**
- * @module angular
- * @function isDefined
- *
- * @description
  * Determines if a reference is defined.
  *
  * @param {*} value Reference to check.
@@ -97,10 +89,6 @@ export function isDefined(value) {
 }
 
 /**
- * @module angular
- * @function isObject
- *
- * @description
  * Determines if a reference is an `Object`. Unlike `typeof` in JavaScript, `null`s are not
  * considered to be objects. Note that JavaScript arrays are objects.
  *
@@ -113,7 +101,7 @@ export function isObject(value) {
 }
 
 /**
- * Determine if a value is an object with a null prototype
+ * Determines if a value is an object with a null prototype
  *
  * @returns {boolean} True if `value` is an `Object` with a null prototype
  */
@@ -124,10 +112,6 @@ export function isBlankObject(value) {
 }
 
 /**
- * @module angular
- * @function isString
- *
- * @description
  * Determines if a reference is a `String`.
  *
  * @param {*} value Reference to check.
@@ -138,10 +122,6 @@ export function isString(value) {
 }
 
 /**
- * @module angular
- * @function isNumber
- *
- * @description
  * Determines if a reference is a `Number`.
  *
  * This includes the "special" numbers `NaN`, `+Infinity` and `-Infinity`.
@@ -172,7 +152,6 @@ export function isDate(value) {
 }
 
 /**
- * @description
  * Determines if a reference is an `Error`.
  * Loosely based on https://www.npmjs.com/package/iserror
  *
@@ -194,12 +173,6 @@ export function isError(value) {
 }
 
 /**
- * @module angular
- * @function isFunction
-
- * @function
- *
- * @description
  * Determines if a reference is a `Function`.
  *
  * @param {*} value Reference to check.
@@ -318,10 +291,6 @@ export function snakeCase(name, separator) {
 }
 
 /**
- * @module angular
- * @function forEach
- *
- * @description
  * Invokes the `iterator` function once for each item in `obj` collection, which can be either an
  * object or an array. The `iterator` function is invoked with `iterator(value, key, obj)`, where `value`
  * is the value of an object property or an array element, `key` is the object property key or
@@ -455,12 +424,6 @@ export function baseExtend(dst, objs, deep) {
 }
 
 /**
- * @module angular
- * @function extend
-
- * @function
- *
- * @description
  * Extends the destination object `dst` by copying own enumerable properties from the `src` object(s)
  * to `dst`. You can specify multiple `src` objects. If you want to preserve original objects, you can do so
  * by passing an empty object as the target: `let object = angular.extend({}, object1, object2)`.
@@ -477,12 +440,6 @@ export function extend(dst, ...src) {
 }
 
 /**
- * @module angular
- * @function merge
-
- * @function
- *
- * @description
  * Deeply extends the destination object `dst` by copying own enumerable properties from the `src` object(s)
  * to `dst`. You can specify multiple `src` objects. If you want to preserve original objects, you can do so
  * by passing an empty object as the target: `let object = angular.merge({}, object1, object2)`.
@@ -540,29 +497,6 @@ export function inherit(parent, extra) {
 }
 
 /**
- * @module angular
- * @function identity
-
- * @function
- *
- * @description
- * A function that returns its first argument. This function is useful when writing code in the
- * functional style.
- *
-   ```js
-   function transformer(transformationFn, value) {
-     return (transformationFn || angular.identity)(value);
-   };
-
-   // E.g.
-   function getResult(fn, input) {
-     return (fn || angular.identity)(input);
-   };
-
-   getResult(function(n) { return n * 2; }, 21);   // returns 42
-   getResult(null, 21);                            // returns 21
-   getResult(undefined, 21);                       // returns 21
-   ```
  *
  * @param {*} value to be returned.
  * @returns {*} the value passed in.
@@ -645,12 +579,6 @@ export function simpleCompare(a, b) {
 }
 
 /**
- * @module angular
- * @function equals
-
- * @function
- *
- * @description
  * Determines if two objects or two values are equivalent. Supports value types, regular
  * expressions, arrays and objects.
  *
@@ -883,12 +811,6 @@ export function sliceArgs(args, startIndex) {
 }
 
 /**
- * @module angular
- * @function bind
-
- * @function
- *
- * @description
  * Returns a function which calls function `fn` bound to `self` (`self` becomes the `this` for
  * `fn`). You can supply optional `args` that are prebound to the function. This feature is also
  * known as [partial application](http://en.wikipedia.org/wiki/Partial_application), as
@@ -938,10 +860,6 @@ function toJsonReplacer(key, value) {
 }
 
 /**
- * @module angular
- * @function toJson
- *
- * @description
  * Serializes input into a JSON-formatted string. Properties with leading $$ characters will be
  * stripped since AngularJS uses this notation internally.
  *
@@ -980,10 +898,6 @@ export function toJson(obj, pretty) {
 }
 
 /**
- * @module angular
- * @function fromJson
- *
- * @description
  * Deserializes a JSON string.
  *
  * @param {string} json JSON string to deserialize.
@@ -1199,8 +1113,6 @@ export function assertArgFn(arg, name, acceptArrayAnnotation) {
 export const minErrConfig = {};
 
 /**
- * @description
- *
  * This object provides a utility for producing rich Error messages within
  * AngularJS. It can be called as follows:
  *
