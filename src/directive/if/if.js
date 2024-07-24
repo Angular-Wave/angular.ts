@@ -1,4 +1,6 @@
+import { domInsert } from "../../core/animate/animate";
 import { getBlockNodes } from "../../shared/jqlite/jqlite";
+import { hasAnimate } from "../../shared/utils";
 
 export const ngIfDirective = [
   "$animate",
@@ -9,8 +11,12 @@ export const ngIfDirective = [
     terminal: true,
     restrict: "A",
     link($scope, $element, $attr, _ctrl, $transclude) {
+      /** @type {{clone: import("../../shared/jqlite/jqlite").JQLite }} */
       let block;
+
+      /** @type {import('../../core/scope/scope').Scope} */
       let childScope;
+      /** @type {import("../../shared/jqlite/jqlite").JQLite} */
       let previousElements;
       $scope.$watch($attr.ngIf, (value) => {
         if (value) {
@@ -25,7 +31,11 @@ export const ngIfDirective = [
               block = {
                 clone,
               };
-              $animate.enter(clone, $element.parent(), $element);
+              if (hasAnimate(clone[0])) {
+                $animate.enter(clone, $element.parent(), $element);
+              } else {
+                domInsert(clone, $element.parent(), $element);
+              }
             });
           }
         } else {
@@ -39,9 +49,13 @@ export const ngIfDirective = [
           }
           if (block) {
             previousElements = getBlockNodes(block.clone);
-            $animate.leave(previousElements).done((response) => {
-              if (response !== false) previousElements = null;
-            });
+            if (hasAnimate(previousElements[0])) {
+              $animate.leave(previousElements).done((response) => {
+                if (response !== false) previousElements = null;
+              });
+            } else {
+              previousElements.remove();
+            }
             block = null;
           }
         }

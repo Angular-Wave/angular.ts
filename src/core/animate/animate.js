@@ -185,6 +185,27 @@ export function CoreAnimateQueueProvider() {
   ];
 }
 
+export function domInsert(element, parentElement, afterElement) {
+  // if for some reason the previous element was removed
+  // from the dom sometime before this code runs then let's
+  // just stick to using the parent element as the anchor
+  if (afterElement) {
+    const afterNode = extractElementNode(afterElement);
+    if (
+      afterNode &&
+      !afterNode.parentNode &&
+      !afterNode.previousElementSibling
+    ) {
+      afterElement = null;
+    }
+  }
+  if (afterElement) {
+    afterElement.after(element);
+  } else {
+    parentElement.prepend(element);
+  }
+}
+
 AnimateProvider.$inject = ["$provide"];
 export function AnimateProvider($provide) {
   const provider = this;
@@ -333,27 +354,6 @@ export function AnimateProvider($provide) {
   this.$get = [
     "$$animateQueue",
     function ($$animateQueue) {
-      function domInsert(element, parentElement, afterElement) {
-        // if for some reason the previous element was removed
-        // from the dom sometime before this code runs then let's
-        // just stick to using the parent element as the anchor
-        if (afterElement) {
-          const afterNode = extractElementNode(afterElement);
-          if (
-            afterNode &&
-            !afterNode.parentNode &&
-            !afterNode.previousElementSibling
-          ) {
-            afterElement = null;
-          }
-        }
-        if (afterElement) {
-          afterElement.after(element);
-        } else {
-          parentElement.prepend(element);
-        }
-      }
-
       /**
        * The $animate service exposes a series of DOM utility methods that provide support
        * for animation hooks. The default behavior is the application of DOM operations, however,

@@ -542,5 +542,11 @@ export function mergeClasses(a: any, b: any): any;
  * @param name Name to normalize
  */
 export function directiveNormalize(name: any): any;
+/**
+ * Whether element should be animated
+ * @param {Node} node
+ * @returns {boolean}
+ */
+export function hasAnimate(node: Node): boolean;
 export const ngAttrPrefixes: string[];
 export const minErrConfig: {};

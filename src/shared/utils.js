@@ -1255,3 +1255,15 @@ export function directiveNormalize(name) {
       offset ? letter.toUpperCase() : letter,
     );
 }
+
+/**
+ * Whether element should be animated
+ * @param {Node} node
+ * @returns {boolean}
+ */
+export function hasAnimate(node) {
+  return (
+    node.nodeType === Node.ELEMENT_NODE &&
+    /** @type {HTMLElement} */ (node).dataset.animate === "true"
+  );
+}

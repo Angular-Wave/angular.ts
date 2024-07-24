@@ -8,6 +8,7 @@ export class CoreAnimateQueueProvider {
         push(element: any, event: any, options: any, domOperation: any): any;
     }))[];
 }
+export function domInsert(element: any, parentElement: any, afterElement: any): void;
 export function AnimateProvider($provide: any): void;
 export class AnimateProvider {
     constructor($provide: any);
