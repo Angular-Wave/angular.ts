@@ -778,7 +778,6 @@ export function $AnimateCssProvider() {
 
             element[0].classList.add(activeClasses);
             if (flags.recalculateTimingStyles) {
-              fullClassName = `${node.getAttribute("class")} ${preparationClasses}`;
               cacheKey = $$animateCache.cacheKey(
                 node,
                 method,

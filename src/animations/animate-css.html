@@ -30,6 +30,18 @@
         opacity: 1;
         background-color: red;
       }
+
+      /* The starting CSS styles for the leave animation */
+      .fade.ng-leave {
+        transition: 0.5s linear all;
+        background-color: blue;
+        opacity: 1;
+      }
+
+      /* The finishing CSS styles for the leave animation */
+      .fade.ng-leave.ng-leave-active {
+        opacity: 0;
+      }
     </style>
   </head>
   <body ng-app="test">
