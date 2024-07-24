@@ -50,7 +50,7 @@ export function AnimateRunnerFactoryProvider() {
   ];
 }
 
-class AnimateRunner {
+export class AnimateRunner {
   static chain(chain, callback) {
     let index = 0;
 

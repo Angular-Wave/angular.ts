@@ -483,7 +483,6 @@ describe("$animate", () => {
 
         element = JQLite('<svg><g class="test-class4"></g></svg>');
         const target = element.children().eq(0);
-        debugger;
         $animate.addClass(target, "test-class1");
         $animate.removeClass(target, "test-class1");
         $animate.addClass(target, "test-class2");

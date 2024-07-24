@@ -391,7 +391,7 @@ export function $$AnimateQueueProvider($animateProvider) {
         // we always make a copy of the options since
         // there should never be any side effects on
         // the input data when running `$animateCss`.
-        let options = structuredClone(initialOptions);
+        let options = initialOptions;
 
         let element = stripCommentsFromElement(originalElement);
         const node = getDomNode(element);

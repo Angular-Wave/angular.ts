@@ -23,9 +23,16 @@ export function $$AnimateCssDriverProvider($$animationProvider) {
     "$animateCss",
     "$$AnimateRunner",
     "$rootElement",
+    /**
+     *
+     * @param {*} $animateCss
+     * @param {typeof import('../core/animate/animate-runner').AnimateRunner} $$AnimateRunner
+     * @param {*} $rootElement
+     * @returns
+     */
     function ($animateCss, $$AnimateRunner, $rootElement) {
       const bodyNode = document.body;
-      const rootNode = getDomNode($rootElement);
+      const rootNode = $rootElement[0];
 
       const rootBodyElement = JQLite(
         // this is to avoid using something that exists outside of the body
@@ -229,7 +236,6 @@ export function $$AnimateCssDriverProvider($$animationProvider) {
       }
 
       function prepareRegularAnimation(animationDetails) {
-        const { element } = animationDetails;
         const options = animationDetails.options || {};
 
         if (animationDetails.structural) {
@@ -255,12 +261,13 @@ export function $$AnimateCssDriverProvider($$animationProvider) {
           );
         }
 
-        const animator = $animateCss(element, options);
+        const animator = $animateCss(animationDetails.element, options);
 
         // the driver lookup code inside of $$animation attempts to spawn a
         // driver one by one until a driver returns a.$$willAnimate animator object.
         // $animateCss will always return an object, however, it will pass in
         // a flag as a hint as to whether an animation was detected or not
+
         return animator.$$willAnimate ? animator : null;
       }
     },

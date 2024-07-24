@@ -6,7 +6,7 @@ export function AnimateRunnerFactoryProvider(): void;
 export class AnimateRunnerFactoryProvider {
     $get: (string | ((q: any, animateAsyncRun: any, timeout: any) => typeof AnimateRunner))[];
 }
-declare class AnimateRunner {
+export class AnimateRunner {
     static chain(chain: any, callback: any): void;
     static all(runners: any, callback: any): void;
     constructor(host: any);
@@ -29,4 +29,3 @@ declare class AnimateRunner {
     complete(response: any): void;
     _resolve(response: any): void;
 }
-export {};

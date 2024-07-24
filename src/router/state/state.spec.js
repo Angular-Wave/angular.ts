@@ -431,15 +431,12 @@ describe("$state", () => {
         $stateProvider.state(childNoParam);
 
         $transitions.onEnter({}, function (trans, state) {
-          console.log("enter");
           dynlog += "enter:" + state.name + ";";
         });
         $transitions.onExit({}, function (trans, state) {
-          console.log("exit");
           dynlog += "exit:" + state.name + ";";
         });
         $transitions.onSuccess({}, function () {
-          console.log("success");
           dynlog += "success;";
         });
 

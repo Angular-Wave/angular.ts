@@ -155,7 +155,6 @@ export function $AnimateCssProvider() {
 
       function computeCachedCssStyles(
         node,
-        className,
         cacheKey,
         allowNoDuration,
         properties,
@@ -247,10 +246,9 @@ export function $AnimateCssProvider() {
         });
       }
 
-      function computeTimings(node, className, cacheKey, allowNoDuration) {
+      function computeTimings(node, cacheKey, allowNoDuration) {
         const timings = computeCachedCssStyles(
           node,
-          className,
           cacheKey,
           allowNoDuration,
           DETECT_CSS_PROPERTIES,
@@ -405,6 +403,7 @@ export function $AnimateCssProvider() {
 
           // we set the duration so that it will be picked up by getComputedStyle later
           applyInlineStyle(node, durationStyle);
+
           temporaryStyles.push(durationStyle);
         }
 
@@ -432,12 +431,7 @@ export function $AnimateCssProvider() {
           blockTransitions(node, SAFE_FAST_FORWARD_DURATION_VALUE);
         }
 
-        let timings = computeTimings(
-          node,
-          fullClassName,
-          cacheKey,
-          !isStructural,
-        );
+        let timings = computeTimings(node, cacheKey, !isStructural);
         let relativeDelay = timings.maxDelay;
         maxDelay = Math.max(relativeDelay, 0);
         maxDuration = timings.maxDuration;
@@ -485,7 +479,7 @@ export function $AnimateCssProvider() {
           return closeAndReturnNoopAnimator();
         }
 
-        const activeClasses = pendClasses(
+        var activeClasses = pendClasses(
           preparationClasses,
           ACTIVE_CLASS_SUFFIX,
         );
@@ -585,15 +579,15 @@ export function $AnimateCssProvider() {
           animationPaused = false;
 
           if (preparationClasses && !options.$$skipPreparationClasses) {
-            preparationClasses
-              .split(" ")
-              .forEach((cls) => element.classList.remove(cls));
+            preparationClasses.split(" ").forEach(function (cls) {
+              element[0].classList.remove(cls);
+            });
           }
-
+          activeClasses = pendClasses(preparationClasses, ACTIVE_CLASS_SUFFIX);
           if (activeClasses) {
-            activeClasses
-              .split(" ")
-              .forEach((cls) => element.classList.remove(cls));
+            activeClasses.split(" ").forEach(function (cls) {
+              element[0].classList.remove(cls);
+            });
           }
 
           blockKeyframeAnimations(node, false);
@@ -792,7 +786,7 @@ export function $AnimateCssProvider() {
                 options.removeClass,
               );
 
-              timings = computeTimings(node, fullClassName, cacheKey, false);
+              timings = computeTimings(node, cacheKey, false);
               relativeDelay = timings.maxDelay;
               maxDelay = Math.max(relativeDelay, 0);
               maxDuration = timings.maxDuration;

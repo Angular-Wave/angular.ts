@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>AngularTS Test Runner</title>
+
+    <link rel="shortcut icon" type="image/png" href="/images/favicon.ico" />
+    <!-- <script src="
+    https://cdn.jsdelivr.net/npm/angular@1.8.3/angular.min.js
+    "></script>
+    <script src="
+    https://cdn.jsdelivr.net/npm/angular-animate@1.8.3/angular-animate.min.js
+    "></script>
+    <script>
+     window.angular.module("test", ["ngAnimate"])
+    </script> -->
+
+    <script type="module" src="/src/index.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        window.angular.module("test", ["ngAnimate"]);
+      });
+    </script>
+    <style>
+      /* The starting CSS styles for the enter animation */
+      .fade.ng-enter {
+        transition: 0.5s linear all;
+        opacity: 0;
+      }
+
+      /* The finishing CSS styles for the enter animation */
+      .fade.ng-enter.ng-enter-active {
+        opacity: 1;
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body ng-app="test">
+    <div ng-if="bool" class="fade">Fade me in out</div>
+    <button ng-click="bool=true">Fade In!</button>
+    <button ng-click="bool=false">Fade Out!</button>
+  </body>
+</html>
