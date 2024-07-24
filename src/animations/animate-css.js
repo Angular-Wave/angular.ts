@@ -281,7 +281,6 @@ export function $AnimateCssProvider() {
         }
 
         const temporaryStyles = [];
-        const classes = element.attr("class");
         const styles = packageStyles(options);
         let animationClosed;
         let animationPaused;
