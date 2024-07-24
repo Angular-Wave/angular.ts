@@ -8,7 +8,7 @@ export const ngIfDirective = [
     priority: 600,
     terminal: true,
     restrict: "A",
-    link($scope, $element, $attr, ctrl, $transclude) {
+    link($scope, $element, $attr, _ctrl, $transclude) {
       let block;
       let childScope;
       let previousElements;

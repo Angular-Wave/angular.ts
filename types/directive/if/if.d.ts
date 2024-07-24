@@ -4,5 +4,5 @@ export const ngIfDirective: (string | (($animate: any) => {
     priority: number;
     terminal: boolean;
     restrict: string;
-    link($scope: any, $element: any, $attr: any, ctrl: any, $transclude: any): void;
+    link($scope: any, $element: any, $attr: any, _ctrl: any, $transclude: any): void;
 }))[];

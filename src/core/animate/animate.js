@@ -10,6 +10,16 @@ import { JQLite } from "../../shared/jqlite/jqlite";
 import { NG_ANIMATE_CLASSNAME } from "../../animations/shared";
 import { addInlineStyles } from "./helpers";
 
+/** @typedef {"enter"|"leave"|"move"|"addClass"|"setClass"|"removeClass"} AnimationMethod */
+
+/**
+ * @typedef {Object} AnimationOptions
+ * @property {string} addClass - space-separated CSS classes to add to element
+ * @property {Object} from - CSS properties & values at the beginning of animation. Must have matching `to`
+ * @property {string} removeClass - space-separated CSS classes to remove from element
+ * @property {string} to - CSS properties & values at end of animation. Must have matching `from`
+ */
+
 const $animateMinErr = minErr("$animate");
 
 function mergeClasses(a, b) {
@@ -58,10 +68,6 @@ function splitClasses(classes) {
 // are wiped clean incase a callback function is provided.
 function prepareAnimateOptions(options) {
   return isObject(options) ? options : {};
-}
-
-export function CoreAnimateJsProvider() {
-  this.$get = () => {};
 }
 
 // this is prefixed with Core since it conflicts with
@@ -349,9 +355,7 @@ export function AnimateProvider($provide) {
       }
 
       /**
-       * @ngdoc service
-       * @name $animate
-       * @description The $animate service exposes a series of DOM utility methods that provide support
+       * The $animate service exposes a series of DOM utility methods that provide support
        * for animation hooks. The default behavior is the application of DOM operations, however,
        * when an animation is detected (and animations are enabled), $animate will do the heavy lifting
        * to ensure that animation runs with the triggered DOM operation.
@@ -363,20 +367,11 @@ export function AnimateProvider($provide) {
        * `ngShow`, `ngHide` and `ngMessages` also provide support for animations.
        *
        * It is recommended that the`$animate` service is always used when executing DOM-related procedures within directives.
-       *
-       * To learn more about enabling animation support, click here to visit the
-       * {@link ngAnimate ngAnimate module page}.
        */
       return {
-        // we don't call it directly since non-existant arguments may
-        // be interpreted as null within the sub enabled function
-
         /**
          *
-         * @ngdoc method
-         * @name $animate#on
-         * @kind function
-         * @description Sets up an event listener to fire whenever the animation event (enter, leave, move, etc...)
+         * Sets up an event listener to fire whenever the animation event (enter, leave, move, etc...)
          *    has fired on the given element or among any of its children. Once the listener is fired, the provided callback
          *    is fired with the following params:
          *
@@ -425,11 +420,7 @@ export function AnimateProvider($provide) {
         on: $$animateQueue.on,
 
         /**
-         *
-         * @ngdoc method
-         * @name $animate#off
-         * @kind function
-         * @description Deregisters an event listener based on the event which has been associated with the provided element. This method
+         * Deregisters an event listener based on the event which has been associated with the provided element. This method
          * can be used in three different ways depending on the arguments:
          *
          * ```js
@@ -456,17 +447,14 @@ export function AnimateProvider($provide) {
         off: $$animateQueue.off,
 
         /**
-         * @ngdoc method
-         * @name $animate#pin
-         * @kind function
-         * @description Associates the provided element with a host parent element to allow the element to be animated even if it exists
-         *    outside of the DOM structure of the AngularJS application. By doing so, any animation triggered via `$animate` can be issued on the
-         *    element despite being outside the realm of the application or within another application. Say for example if the application
-         *    was bootstrapped on an element that is somewhere inside of the `<body>` tag, but we wanted to allow for an element to be situated
-         *    as a direct child of `document.body`, then this can be achieved by pinning the element via `$animate.pin(element)`. Keep in mind
-         *    that calling `$animate.pin(element, parentElement)` will not actually insert into the DOM anywhere; it will just create the association.
+         *  Associates the provided element with a host parent element to allow the element to be animated even if it exists
+         *  outside of the DOM structure of the AngularJS application. By doing so, any animation triggered via `$animate` can be issued on the
+         *  element despite being outside the realm of the application or within another application. Say for example if the application
+         *  was bootstrapped on an element that is somewhere inside of the `<body>` tag, but we wanted to allow for an element to be situated
+         *  as a direct child of `document.body`, then this can be achieved by pinning the element via `$animate.pin(element)`. Keep in mind
+         *  that calling `$animate.pin(element, parentElement)` will not actually insert into the DOM anywhere; it will just create the association.
          *
-         *    Note that this feature is only active when the `ngAnimate` module is used.
+         *  Note that this feature is only active when the `ngAnimate` module is used.
          *
          * @param {Element} element the external element that will be pinned
          * @param {Element} parentElement the host parent element that will be associated with the external element
@@ -505,14 +493,11 @@ export function AnimateProvider($provide) {
         enabled: $$animateQueue.enabled,
 
         /**
-       * @ngdoc method
-       * @name $animate#cancel
-       * @kind function
-       * @description Cancels the provided animation and applies the end state of the animation.
+       * Cancels the provided animation and applies the end state of the animation.
        * Note that this does not cancel the underlying operation, e.g. the setting of classes or
        * adding the element to the DOM.
        *
-       * @param {animationRunner} animationRunner An animation runner returned by an $animate function.
+       * @param {import('./animate-runner').AnimateRunner} runner An animation runner returned by an $animate function.
        *
        * @example
         <example module="animationExample" deps="angular-animate.js" animations="true" name="animate-cancel">
@@ -583,28 +568,16 @@ export function AnimateProvider($provide) {
         },
 
         /**
+         * Inserts the element into the DOM either after the `after` element (if provided) or
+         * as the first child within the `parent` element and then triggers an animation.
+         * A promise is returned that will be resolved during the next digest once the animation
+         * has completed.
          *
-         * @ngdoc method
-         * @name $animate#enter
-         * @kind function
-         * @description Inserts the element into the DOM either after the `after` element (if provided) or
-         *   as the first child within the `parent` element and then triggers an animation.
-         *   A promise is returned that will be resolved during the next digest once the animation
-         *   has completed.
-         *
-         * @param {Element} element the element which will be inserted into the DOM
-         * @param {Element} parent the parent element which will append the element as
-         *   a child (so long as the after element is not present)
-         * @param {Element=} after the sibling element after which the element will be appended
-         * @param {object=} options an optional collection of options/styles that will be applied to the element.
-         *   The object can have the following properties:
-         *
-         *   - **addClass** - `{string}` - space-separated CSS classes to add to element
-         *   - **from** - `{Object}` - CSS properties & values at the beginning of animation. Must have matching `to`
-         *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
-         *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
-         *
-         * @return {Runner} the animation runner
+         * @param {JQLite} element - the element which will be inserted into the DOM
+         * @param {JQLite} parent - the parent element which will append the element as a child (so long as the after element is not present)
+         * @param {JQLite} after - after the sibling element after which the element will be appended
+         * @param {AnimationOptions} [options] - an optional collection of options/styles that will be applied to the element.
+         * @returns {import('./animate-runner').AnimateRunner} the animation runner
          */
         enter(element, parent, after, options) {
           parent = parent && JQLite(parent);
@@ -619,28 +592,16 @@ export function AnimateProvider($provide) {
         },
 
         /**
+         * Inserts (moves) the element into its new position in the DOM either after
+         * the `after` element (if provided) or as the first child within the `parent` element
+         * and then triggers an animation. A promise is returned that will be resolved
+         * during the next digest once the animation has completed.
          *
-         * @ngdoc method
-         * @name $animate#move
-         * @kind function
-         * @description Inserts (moves) the element into its new position in the DOM either after
-         *   the `after` element (if provided) or as the first child within the `parent` element
-         *   and then triggers an animation. A promise is returned that will be resolved
-         *   during the next digest once the animation has completed.
-         *
-         * @param {Element} element the element which will be moved into the new DOM position
-         * @param {Element} parent the parent element which will append the element as
-         *   a child (so long as the after element is not present)
-         * @param {Element=} after the sibling element after which the element will be appended
-         * @param {object=} options an optional collection of options/styles that will be applied to the element.
-         *   The object can have the following properties:
-         *
-         *   - **addClass** - `{string}` - space-separated CSS classes to add to element
-         *   - **from** - `{Object}` - CSS properties & values at the beginning of animation. Must have matching `to`
-         *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
-         *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
-         *
-         * @return {Runner} the animation runner
+         * @param {JQLite} element - the element which will be inserted into the DOM
+         * @param {JQLite} parent - the parent element which will append the element as a child (so long as the after element is not present)
+         * @param {JQLite} after - after the sibling element after which the element will be appended
+         * @param {AnimationOptions} [options] - an optional collection of options/styles that will be applied to the element.
+         * @returns {import('./animate-runner').AnimateRunner} the animation runner
          */
         move(element, parent, after, options) {
           parent = parent && JQLite(parent);
@@ -655,23 +616,13 @@ export function AnimateProvider($provide) {
         },
 
         /**
-         * @ngdoc method
-         * @name $animate#leave
-         * @kind function
-         * @description Triggers an animation and then removes the element from the DOM.
+         * Triggers an animation and then removes the element from the DOM.
          * When the function is called a promise is returned that will be resolved during the next
          * digest once the animation has completed.
          *
-         * @param {Element} element the element which will be removed from the DOM
-         * @param {object=} options an optional collection of options/styles that will be applied to the element.
-         *   The object can have the following properties:
-         *
-         *   - **addClass** - `{string}` - space-separated CSS classes to add to element
-         *   - **from** - `{Object}` - CSS properties & values at the beginning of animation. Must have matching `to`
-         *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
-         *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
-         *
-         * @return {Runner} the animation runner
+         * @param {JQLite} element the element which will be removed from the DOM
+         * @param {AnimationOptions} [options] an optional collection of options/styles that will be applied to the element.
+         * @returns {import('./animate-runner').AnimateRunner} the animation runner
          */
         leave(element, options) {
           return $$animateQueue.push(
@@ -685,56 +636,36 @@ export function AnimateProvider($provide) {
         },
 
         /**
-         * @ngdoc method
-         * @name $animate#addClass
-         * @kind function
+         * Triggers an addClass animation surrounding the addition of the provided CSS class(es). Upon
+         * execution, the addClass operation will only be handled after the next digest and it will not trigger an
+         * animation if element already contains the CSS class or if the class is removed at a later step.
+         * Note that class-based animations are treated differently compared to structural animations
+         * (like enter, move and leave) since the CSS classes may be added/removed at different points
+         * depending if CSS or JavaScript animations are used.
          *
-         * @description Triggers an addClass animation surrounding the addition of the provided CSS class(es). Upon
-         *   execution, the addClass operation will only be handled after the next digest and it will not trigger an
-         *   animation if element already contains the CSS class or if the class is removed at a later step.
-         *   Note that class-based animations are treated differently compared to structural animations
-         *   (like enter, move and leave) since the CSS classes may be added/removed at different points
-         *   depending if CSS or JavaScript animations are used.
-         *
-         * @param {Element} element the element which the CSS classes will be applied to
+         * @param {JQLite} element the element which the CSS classes will be applied to
          * @param {string} className the CSS class(es) that will be added (multiple classes are separated via spaces)
-         * @param {object=} options an optional collection of options/styles that will be applied to the element.
-         *   The object can have the following properties:
-         *
-         *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
-         *   - **from** - `{Object}` - CSS properties & values at the beginning of animation. Must have matching `to`
-         *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
-         *
-         * @return {Runner} animationRunner the animation runner
+         * @param {AnimationOptions} [options] an optional collection of options/styles that will be applied to the element.
+         * @return {import('./animate-runner').AnimateRunner}} animationRunner the animation runner
          */
         addClass(element, className, options) {
           options = prepareAnimateOptions(options);
-          options.addClass = mergeClasses(options.addclass, className);
+          options.addClass = mergeClasses(options.addClass, className);
           return $$animateQueue.push(element, "addClass", options);
         },
 
         /**
-         * @ngdoc method
-         * @name $animate#removeClass
-         * @kind function
+         * Triggers a removeClass animation surrounding the removal of the provided CSS class(es). Upon
+         * execution, the removeClass operation will only be handled after the next digest and it will not trigger an
+         * animation if element does not contain the CSS class or if the class is added at a later step.
+         * Note that class-based animations are treated differently compared to structural animations
+         * (like enter, move and leave) since the CSS classes may be added/removed at different points
+         * depending if CSS or JavaScript animations are used.
          *
-         * @description Triggers a removeClass animation surrounding the removal of the provided CSS class(es). Upon
-         *   execution, the removeClass operation will only be handled after the next digest and it will not trigger an
-         *   animation if element does not contain the CSS class or if the class is added at a later step.
-         *   Note that class-based animations are treated differently compared to structural animations
-         *   (like enter, move and leave) since the CSS classes may be added/removed at different points
-         *   depending if CSS or JavaScript animations are used.
-         *
-         * @param {Element} element the element which the CSS classes will be applied to
+         * @param {JQLite} element the element which the CSS classes will be applied to
          * @param {string} className the CSS class(es) that will be removed (multiple classes are separated via spaces)
-         * @param {object=} options an optional collection of options/styles that will be applied to the element.
-         *   The object can have the following properties:
-         *
-         *   - **addClass** - `{string}` - space-separated CSS classes to add to element
-         *   - **from** - `{Object}` - CSS properties & values at the beginning of animation. Must have matching `to`
-         *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
-         *
-         * @return {Runner} the animation runner
+         * @param {AnimationOptions} [options] an optional collection of options/styles that will be applied to the element.         *
+         * @return {import('./animate-runner').AnimateRunner} animationRunner the animation runner
          */
         removeClass(element, className, options) {
           options = prepareAnimateOptions(options);
@@ -743,29 +674,19 @@ export function AnimateProvider($provide) {
         },
 
         /**
-         * @ngdoc method
-         * @name $animate#setClass
-         * @kind function
-         *
-         * @description Performs both the addition and removal of a CSS classes on an element and (during the process)
-         *    triggers an animation surrounding the class addition/removal. Much like `$animate.addClass` and
-         *    `$animate.removeClass`, `setClass` will only evaluate the classes being added/removed once a digest has
-         *    passed. Note that class-based animations are treated differently compared to structural animations
-         *    (like enter, move and leave) since the CSS classes may be added/removed at different points
-         *    depending if CSS or JavaScript animations are used.
+         * Performs both the addition and removal of a CSS classes on an element and (during the process)
+         * triggers an animation surrounding the class addition/removal. Much like `$animate.addClass` and
+         * `$animate.removeClass`, `setClass` will only evaluate the classes being added/removed once a digest has
+         * passed. Note that class-based animations are treated differently compared to structural animations
+         * (like enter, move and leave) since the CSS classes may be added/removed at different points
+         * depending if CSS or JavaScript animations are used.
          *
          * @param {Element} element the element which the CSS classes will be applied to
          * @param {string} add the CSS class(es) that will be added (multiple classes are separated via spaces)
          * @param {string} remove the CSS class(es) that will be removed (multiple classes are separated via spaces)
          * @param {object=} options an optional collection of options/styles that will be applied to the element.
-         *   The object can have the following properties:
          *
-         *   - **addClass** - `{string}` - space-separated CSS classes to add to element
-         *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
-         *   - **from** - `{Object}` - CSS properties & values at the beginning of animation. Must have matching `to`
-         *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
-         *
-         * @return {Runner} the animation runner
+         * @return {import('./animate-runner').AnimateRunner} the animation runner
          */
         setClass(element, add, remove, options) {
           options = prepareAnimateOptions(options);
@@ -775,11 +696,7 @@ export function AnimateProvider($provide) {
         },
 
         /**
-         * @ngdoc method
-         * @name $animate#animate
-         * @kind function
-         *
-         * @description Performs an inline animation on the element which applies the provided to and from CSS styles to the element.
+         * Performs an inline animation on the element which applies the provided to and from CSS styles to the element.
          * If any detected CSS transition, keyframe or JavaScript matches the provided className value, then the animation will take
          * on the provided styles. For example, if a transition animation is set for the given className, then the provided `from` and
          * `to` styles will be applied alongside the given transition. If the CSS style provided in `from` does not have a corresponding
@@ -797,22 +714,7 @@ export function AnimateProvider($provide) {
          *   }
          * });
          * ```
-         *
-         * @param {Element} element the element which the CSS styles will be applied to
-         * @param {object} from the from (starting) CSS styles that will be applied to the element and across the animation.
-         * @param {object} to the to (destination) CSS styles that will be applied to the element and across the animation.
-         * @param {string=} className an optional CSS class that will be applied to the element for the duration of the animation. If
-         *    this value is left as empty then a CSS class of `ng-inline-animate` will be applied to the element.
-         *    (Note that if no animation is detected then this value will not be applied to the element.)
-         * @param {object=} options an optional collection of options/styles that will be applied to the element.
-         *   The object can have the following properties:
-         *
-         *   - **addClass** - `{string}` - space-separated CSS classes to add to element
-         *   - **from** - `{Object}` - CSS properties & values at the beginning of animation. Must have matching `to`
-         *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
-         *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
-         *
-         * @return {Runner} the animation runner
+         *  @return {import('./animate-runner').AnimateRunner} the animation runner
          */
         animate(element, from, to, className, options) {
           options = prepareAnimateOptions(options);
