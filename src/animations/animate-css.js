@@ -341,7 +341,6 @@ export function $AnimateCssProvider() {
         let preparationClasses = [structuralClassName, addRemoveClassName]
           .join(" ")
           .trim();
-        let fullClassName = `${classes} ${preparationClasses}`;
         const hasToStyles = styles.to && Object.keys(styles.to).length > 0;
         const containsKeyframeAnimation =
           (options.keyframeStyle || "").length > 0;
@@ -776,7 +775,8 @@ export function $AnimateCssProvider() {
             });
 
             applyAnimationClasses(element, options);
-            element.className += ` ${activeClasses}`;
+
+            element[0].classList.add(activeClasses);
             if (flags.recalculateTimingStyles) {
               fullClassName = `${node.getAttribute("class")} ${preparationClasses}`;
               cacheKey = $$animateCache.cacheKey(
