@@ -26,8 +26,8 @@ is if an element's class attribute is directly modified after it's compiled, usi
 jQuery's `.addClass()` method, and the element is later removed. When `ngIf` recreates the element
 the added class will be lost because the original compiled state is used to regenerate the element.
 
-Additionally, the `enter` and `leave` animation effects can be enable for the element by
-setting attribute `data-animate` to `true` attribute.
+Additionally, the `enter` and `leave` animation effects can be enabled for the element by
+setting data attribute (`data-*`) or custom attribute `animate` to `true` attribute.
 
 @animations
 | Animation | Occurs |

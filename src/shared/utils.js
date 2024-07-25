@@ -1262,8 +1262,19 @@ export function directiveNormalize(name) {
  * @returns {boolean}
  */
 export function hasAnimate(node) {
+  return hasCustomOrDataAttribute(node, "animate");
+}
+
+/**
+ * @ignore
+ * @param {Node} node
+ * @param {string} attr
+ * @returns {boolean}
+ */
+function hasCustomOrDataAttribute(node, attr) {
+  if (node.nodeType !== Node.ELEMENT_NODE) return false;
+  const element = /** @type {HTMLElement} */ (node);
   return (
-    node.nodeType === Node.ELEMENT_NODE &&
-    /** @type {HTMLElement} */ (node).dataset.animate === "true"
+    element.dataset[attr] === "true" || element.getAttribute(attr) === "true"
   );
 }

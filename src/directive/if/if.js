@@ -2,9 +2,9 @@ import { domInsert } from "../../core/animate/animate";
 import { getBlockNodes } from "../../shared/jqlite/jqlite";
 import { hasAnimate } from "../../shared/utils";
 
-export const ngIfDirective = [
-  "$animate",
-  ($animate) => ({
+ngIfDirective.$inject = ["$animate"];
+export function ngIfDirective($animate) {
+  return {
     multiElement: true,
     transclude: "element",
     priority: 600,
@@ -61,5 +61,5 @@ export const ngIfDirective = [
         }
       });
     },
-  }),
-];
+  };
+}
