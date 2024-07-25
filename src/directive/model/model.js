@@ -15,6 +15,7 @@ import {
   isPromiseLike,
   isUndefined,
   isFunction,
+  hasAnimate,
 } from "../../shared/utils";
 import {
   addSetValidityMethod,
@@ -335,11 +336,21 @@ NgModelController.prototype = {
 
   $$updateEmptyClasses(value) {
     if (this.$isEmpty(value)) {
-      this.$$animate.removeClass(this.$$element, NOT_EMPTY_CLASS);
-      this.$$animate.addClass(this.$$element, EMPTY_CLASS);
+      if (hasAnimate(this.$$element[0])) {
+        this.$$animate.removeClass(this.$$element, NOT_EMPTY_CLASS);
+        this.$$animate.addClass(this.$$element, EMPTY_CLASS);
+      } else {
+        this.$$element[0].classList.remove(NOT_EMPTY_CLASS);
+        this.$$element[0].classList.add(EMPTY_CLASS);
+      }
     } else {
-      this.$$animate.removeClass(this.$$element, EMPTY_CLASS);
-      this.$$animate.addClass(this.$$element, NOT_EMPTY_CLASS);
+      if (hasAnimate(this.$$element[0])) {
+        this.$$animate.removeClass(this.$$element, EMPTY_CLASS);
+        this.$$animate.addClass(this.$$element, NOT_EMPTY_CLASS);
+      } else {
+        this.$$element[0].classList.remove(EMPTY_CLASS);
+        this.$$element[0].classList.add(NOT_EMPTY_CLASS);
+      }
     }
   },
 
@@ -357,8 +368,13 @@ NgModelController.prototype = {
   $setPristine() {
     this.$dirty = false;
     this.$pristine = true;
-    this.$$animate.removeClass(this.$$element, DIRTY_CLASS);
-    this.$$animate.addClass(this.$$element, PRISTINE_CLASS);
+    if (hasAnimate(this.$$element[0])) {
+      this.$$animate.removeClass(this.$$element, EMPTY_CLASS);
+      this.$$animate.addClass(this.$$element, PRISTINE_CLASS);
+    } else {
+      this.$$element[0].classList.remove(EMPTY_CLASS);
+      this.$$element[0].classList.add(PRISTINE_CLASS);
+    }
   },
 
   /**
@@ -375,8 +391,13 @@ NgModelController.prototype = {
   $setDirty() {
     this.$dirty = true;
     this.$pristine = false;
-    this.$$animate.removeClass(this.$$element, PRISTINE_CLASS);
-    this.$$animate.addClass(this.$$element, DIRTY_CLASS);
+    if (hasAnimate(this.$$element[0])) {
+      this.$$animate.removeClass(this.$$element, PRISTINE_CLASS);
+      this.$$animate.addClass(this.$$element, DIRTY_CLASS);
+    } else {
+      this.$$element[0].classList.remove(PRISTINE_CLASS);
+      this.$$element[0].classList.add(DIRTY_CLASS);
+    }
     this.$$parentForm.$setDirty();
   },
 
@@ -395,7 +416,12 @@ NgModelController.prototype = {
   $setUntouched() {
     this.$touched = false;
     this.$untouched = true;
-    this.$$animate.setClass(this.$$element, UNTOUCHED_CLASS, TOUCHED_CLASS);
+    if (hasAnimate(this.$$element[0])) {
+      this.$$animate.setClass(this.$$element, UNTOUCHED_CLASS, TOUCHED_CLASS);
+    } else {
+      this.$$element[0].classList.remove(TOUCHED_CLASS);
+      this.$$element[0].classList.add(UNTOUCHED_CLASS);
+    }
   },
 
   /**
@@ -412,7 +438,12 @@ NgModelController.prototype = {
   $setTouched() {
     this.$touched = true;
     this.$untouched = false;
-    this.$$animate.setClass(this.$$element, TOUCHED_CLASS, UNTOUCHED_CLASS);
+    if (hasAnimate(this.$$element[0])) {
+      this.$$animate.setClass(this.$$element, TOUCHED_CLASS, UNTOUCHED_CLASS);
+    } else {
+      this.$$element[0].classList.remove(UNTOUCHED_CLASS);
+      this.$$element[0].classList.add(TOUCHED_CLASS);
+    }
   },
 
   /**

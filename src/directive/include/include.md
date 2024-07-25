@@ -1,6 +1,5 @@
 /\*\*
 
-- @ngdoc directive
 - @name ngInclude
 - @restrict ECA
 - @scope
@@ -22,7 +21,9 @@
 - policy may further restrict whether the template is successfully loaded.
 - For example, `ngInclude` won't work for cross-domain requests on all browsers and for `file://`
 - access on some browsers.
--
+- The `enter` and `leave` animation effects can be enabled for the element by
+  setting data attribute (`data-*`) or custom attribute `animate` to `true` attribute.
+
 - @animations
 - | Animation | Occurs |
 - |----------------------------------|-------------------------------------|

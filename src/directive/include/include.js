@@ -1,5 +1,7 @@
 import { isDefined } from "../../shared/utils";
 import { buildFragment } from "../../shared/jqlite/jqlite";
+import { hasAnimate } from "../../shared/utils";
+import { domInsert } from "../../core/animate/animate";
 
 export const ngIncludeDirective = [
   "$templateRequest",
@@ -17,6 +19,15 @@ export const ngIncludeDirective = [
       const autoScrollExp = attr.autoscroll;
 
       return (scope, $element, _$attr, ctrl, $transclude) => {
+        function maybeScroll() {
+          if (
+            isDefined(autoScrollExp) &&
+            (!autoScrollExp || scope.$eval(autoScrollExp))
+          ) {
+            $anchorScroll();
+          }
+        }
+
         let changeCounter = 0;
         let currentScope;
         let previousElement;
@@ -31,9 +42,14 @@ export const ngIncludeDirective = [
             currentScope = null;
           }
           if (currentElement) {
-            $animate.leave(currentElement).done((response) => {
-              if (response !== false) previousElement = null;
-            });
+            if (hasAnimate(currentElement[0])) {
+              $animate.leave(currentElement).done((response) => {
+                if (response !== false) previousElement = null;
+              });
+            } else {
+              currentElement.remove();
+            }
+
             previousElement = currentElement;
             currentElement = null;
           }
@@ -41,13 +57,7 @@ export const ngIncludeDirective = [
 
         scope.$watch(srcExp, (src) => {
           const afterAnimation = function (response) {
-            if (
-              response !== false &&
-              isDefined(autoScrollExp) &&
-              (!autoScrollExp || scope.$eval(autoScrollExp))
-            ) {
-              $anchorScroll();
-            }
+            response !== false && maybeScroll();
           };
 
           const thisChangeId = ++changeCounter;
@@ -70,7 +80,12 @@ export const ngIncludeDirective = [
                 // directives to non existing elements.
                 const clone = $transclude(newScope, (clone) => {
                   cleanupLastIncludeContent();
-                  $animate.enter(clone, null, $element).done(afterAnimation);
+                  if (hasAnimate(clone[0])) {
+                    $animate.enter(clone, null, $element).done(afterAnimation);
+                  } else {
+                    domInsert(clone, null, $element);
+                    maybeScroll();
+                  }
                 });
 
                 currentScope = newScope;
