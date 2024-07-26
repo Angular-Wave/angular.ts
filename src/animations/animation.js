@@ -314,7 +314,6 @@ export function $$AnimationProvider() {
               }
             }
           }
-
           $$rAFScheduler(finalAnimations);
         });
 

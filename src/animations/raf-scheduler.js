@@ -1,6 +1,8 @@
 /**
- * @typedef {Object} RafScheduler
+ * @typedef {Function} RafSchedulerFunction
+ * @typedef {Object} RafSchedulerObject
  * @property {Function} waitUntilQuiet - Function to wait until the animation frame is quiet.
+ * @typedef {RafSchedulerObject & RafSchedulerFunction} RafScheduler
  */
 
 /**

@@ -14,7 +14,7 @@ import { Parser } from "./parser";
  */
 
 /**
- * @typedef {function } CompiledExpressionFunction
+ * @typedef {function} CompiledExpressionFunction
  * @param {import('../scope/scope').Scope} context - An object against which any expressions embedded in the strings are evaluated against (typically a scope object).
  * @param {object} [locals] - local variables context object, useful for overriding values in `context`.
  * @param {any} [assign]

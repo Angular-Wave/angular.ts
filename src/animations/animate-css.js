@@ -285,7 +285,7 @@ export function $AnimateCssProvider() {
         }
 
         const restoreStyles = {};
-        const node = getDomNode(element);
+        const node = /** @type {HTMLElement} */ (getDomNode(element));
         if (!node || !node.parentNode || !$$animateQueue.enabled()) {
           return closeAndReturnNoopAnimator();
         }
