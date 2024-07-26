@@ -5,10 +5,25 @@
     <title>AngularTS Test Runner</title>
 
     <link rel="shortcut icon" type="image/png" href="/images/favicon.ico" />
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/angular@1.8.3/angular.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/angular-animate@1.8.3/angular-animate.js"></script>
+    <script>window.angular.module("test", ["ngAnimate"]).directive("svgContainer", () => ({
+      template: "<svg ng-transclude></svg>",
+      replace: true,
+      transclude: true,
+    }));</script> -->
+
     <script type="module" src="/src/index.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        window.angular.module("test", ["ngAnimate"]);
+        window.angular
+          .module("test", ["ngAnimate"])
+          .directive("svgContainer", () => ({
+            template: "<svg ng-transclude></svg>",
+            replace: true,
+            transclude: true,
+          }));
       });
     </script>
 
@@ -49,8 +64,13 @@
     <div ng-if="bool" id="animate" class="fade" animate="true">
       Fade me in out
     </div>
-    <div ng-if="bool" id="no-animate" class="fade">Fade me in out</div>
+    <div ng-if="bool" id="no-animate" class="fade" animate="true">
+      Fade me in out
+    </div>
+
     <button ng-click="bool=true">Fade In!</button>
     <button ng-click="bool=false">Fade Out!</button>
+
+    <svg-container><circle id="circle" ng-if="bool"></circle></svg-container>
   </body>
 </html>
