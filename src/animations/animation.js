@@ -35,6 +35,15 @@ export function $$AnimationProvider() {
     "$$AnimateRunner",
     "$$rAFScheduler",
     "$$animateCache",
+    /**
+     *
+     * @param {*} $rootScope
+     * @param {*} $injector
+     * @param {*} $$AnimateRunner
+     * @param {import("./raf-scheduler").RafScheduler} $$rAFScheduler
+     * @param {*} $$animateCache
+     * @returns
+     */
     function (
       $rootScope,
       $injector,

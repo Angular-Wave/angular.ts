@@ -144,6 +144,16 @@ export function $AnimateCssProvider() {
     "$$animateCache",
     "$$rAFScheduler",
     "$$animateQueue",
+
+    /**
+     *
+     * @param {*} $$AnimateRunner
+     * @param {*} $timeout
+     * @param {*} $$animateCache
+     * @param {import("./raf-scheduler").RafScheduler} $$rAFScheduler
+     * @param {*} $$animateQueue
+     * @returns
+     */
     function (
       $$AnimateRunner,
       $timeout,
