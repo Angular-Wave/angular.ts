@@ -1,8 +1,28 @@
+/**
+ * @typedef {Object} Scheduler
+ * @property {Function} waitUntilQuiet - Function to wait until the animation frame is quiet.
+ * @property {Array<Function>} queue - The queue of tasks to be processed.
+ * @property {Function} scheduler - The function to add tasks to the queue and schedule the next tick.
+ */
+
+/**
+ * Creates a requestAnimationFrame scheduler.
+ * @returns {Scheduler} The scheduler object.
+ */
 export const $$rAFSchedulerFactory = [
   () => {
-    let queue;
-    let cancelFn;
+    /**
+     * @type {Array<Array<Function>>}
+     */
+    let queue = [];
+    /**
+     * @type {number|null}
+     */
+    let cancelFn = null;
 
+    /**
+     * Processes the next tick of the animation frame.
+     */
     function nextTick() {
       if (!queue.length) return;
 
@@ -11,13 +31,18 @@ export const $$rAFSchedulerFactory = [
 
       if (!cancelFn) {
         window.requestAnimationFrame(() => {
-          if (!cancelFn) nextTick();
+          cancelFn = null;
+          nextTick();
         });
       }
     }
 
+    /**
+     * Adds tasks to the queue and schedules the next tick.
+     * @param {Array<Function>} tasks - The tasks to be added to the queue.
+     */
     function scheduler(tasks) {
-      // we make a copy since RAFScheduler mutates the state
+      // Make a copy since RAFScheduler mutates the state
       // of the passed in array variable and this would be difficult
       // to track down on the outside code
       queue = queue.concat(tasks);
@@ -26,16 +51,16 @@ export const $$rAFSchedulerFactory = [
 
     queue = scheduler.queue = [];
 
-    /* waitUntilQuiet does two things:
-     * 1. It will run the FINAL `fn` value only when an uncanceled RAF has passed through
-     * 2. It will delay the next wave of tasks from running until the quiet `fn` has run.
-     *
-     * The motivation here is that animation code can request more time from the scheduler
-     * before the next wave runs. This allows for certain DOM properties such as classes to
-     * be resolved in time for the next animation to run.
+    /**
+     * Waits until the animation frame is quiet before running the provided function.
+     * Cancels any previous animation frame requests.
+     * @param {Function} fn - The function to run when the animation frame is quiet.
      */
     scheduler.waitUntilQuiet = (fn) => {
-      if (cancelFn) cancelFn();
+      if (cancelFn !== null) {
+        window.cancelAnimationFrame(cancelFn);
+        cancelFn = null;
+      }
 
       cancelFn = window.requestAnimationFrame(() => {
         cancelFn = null;
