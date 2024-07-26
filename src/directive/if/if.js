@@ -3,6 +3,12 @@ import { getBlockNodes } from "../../shared/jqlite/jqlite";
 import { hasAnimate } from "../../shared/utils";
 
 ngIfDirective.$inject = ["$animate"];
+/**
+ * 
+ * TODO // Add type for animate service
+ * @param {*}  $animate 
+ * @returns {import("../../types").Directive}
+ */
 export function ngIfDirective($animate) {
   return {
     multiElement: true,
@@ -10,6 +16,9 @@ export function ngIfDirective($animate) {
     priority: 600,
     terminal: true,
     restrict: "A",
+    /**
+     * TODO add type for $transclude service
+     */
     link($scope, $element, $attr, _ctrl, $transclude) {
       /** @type {{clone: import("../../shared/jqlite/jqlite").JQLite }} */
       let block;
