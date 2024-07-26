@@ -1,11 +1,10 @@
-export function ngIfDirective($animate: any): {
-    multiElement: boolean;
-    transclude: string;
-    priority: number;
-    terminal: boolean;
-    restrict: string;
-    link($scope: any, $element: any, $attr: any, _ctrl: any, $transclude: any): void;
-};
+/**
+ *
+ * TODO // Add type for animate service
+ * @param {*}  $animate
+ * @returns {import("../../types").Directive}
+ */
+export function ngIfDirective($animate: any): import("../../types").Directive;
 export namespace ngIfDirective {
     let $inject: string[];
 }

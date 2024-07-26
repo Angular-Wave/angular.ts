@@ -193,10 +193,10 @@ export function removeElement(element: Element, keepData?: boolean): void;
 export function startingTag(elementStr: string): string;
 /**
  * Return the DOM siblings between the first and last node in the given array.
- * @param {Array} nodes An array-like object
+ * @param {JQLite|Array} nodes An array-like object
  * @returns {JQLite} the inputted object or a JQLite collection containing the nodes
  */
-export function getBlockNodes(nodes: any[]): JQLite;
+export function getBlockNodes(nodes: JQLite | any[]): JQLite;
 export function getBooleanAttrName(element: any, name: any): any;
 /**
  * Takes an array of elements, calls any `$destroy` event handlers, removes any data in cache, and finally removes any

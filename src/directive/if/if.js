@@ -4,9 +4,9 @@ import { hasAnimate } from "../../shared/utils";
 
 ngIfDirective.$inject = ["$animate"];
 /**
- * 
+ *
  * TODO // Add type for animate service
- * @param {*}  $animate 
+ * @param {*}  $animate
  * @returns {import("../../types").Directive}
  */
 export function ngIfDirective($animate) {
