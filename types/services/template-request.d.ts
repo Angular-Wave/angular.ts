@@ -1,15 +1,10 @@
 /**
- * @ngdoc provider
- * @name $templateRequestProvider
- * @this
- *
- * @description
  * Used to configure the options passed to the {@link $http} service when making a template request.
  *
  * For example, it can be used for specifying the "Accept" header that is sent to the server, when
  * requesting a template.
  */
-export function TemplateRequestProvider(this: any): void;
+export function TemplateRequestProvider(): void;
 export class TemplateRequestProvider {
     /**
      * @ngdoc method
@@ -21,10 +16,10 @@ export class TemplateRequestProvider {
      * The {@link $templateRequest} will set the `cache` and the `transformResponse` properties of the
      * options if not overridden here.
      *
-     * @param {string=} value new value for the {@link $http} options.
-     * @returns {string|self} Returns the {@link $http} options when used as getter and self if used as setter.
+     * @param {string=} val new value for the {@link $http} options.
+     * @returns {string|TemplateRequestProvider} Returns the {@link $http} options when used as getter and self if used as setter.
      */
-    httpOptions: (val: any) => string | (Window & typeof globalThis);
+    httpOptions: (val?: string | undefined) => string | TemplateRequestProvider;
     /**
      * @ngdoc service
      * @name $templateRequest

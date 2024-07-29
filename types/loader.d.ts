@@ -303,10 +303,6 @@ export class Angular {
      */
     injector(modules: any[], strictDi: boolean | null): angular.auto.IInjectorService;
     /**
-     * @ngdoc function
-     * @name angular.module
-     * @module ng
-     * @description
      *
      * The `angular.module` is a global place for creating, registering and retrieving AngularJS
      * modules.

@@ -26,7 +26,7 @@ export class UrlService {
   ];
 
   /**
-   * @param {angular.ILocationProvider} $locationProvider
+   * @param {import("../../core/location/location").$LocationProvider} $locationProvider
    */
   constructor($locationProvider, stateService, globals, urlConfigProvider) {
     this.stateService = stateService;
@@ -53,7 +53,7 @@ export class UrlService {
      * The nested [[UrlConfig]] API to configure the URL and retrieve URL information
      *
      * See: [[UrlConfig]] for details
-     * @type {angular.UrlConfig}
+     * @type {import("./url-config").UrlConfigProvider}
      */
     this.config = urlConfigProvider;
 
@@ -231,7 +231,7 @@ export class UrlService {
       hash: this.hash(),
     };
     /**
-     * @type {angular.MatchResult}
+     * @type {MatchResult}
      */
     const best = this.match(url);
     const applyResult = pattern([
@@ -313,7 +313,7 @@ export class UrlService {
    *
    * Given a URL (as a [[UrlParts]] object), check all rules and determine the best matching rule.
    * Return the result as a [[MatchResult]].
-   * @returns {angular.MatchResult}
+   * @returns {any}
    */
   match(url) {
     url = Object.assign({ path: "", search: {}, hash: "" }, url);

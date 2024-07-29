@@ -4,11 +4,11 @@
 export class UrlService {
     static $inject: string[];
     /**
-     * @param {angular.ILocationProvider} $locationProvider
+     * @param {import("../../core/location/location").$LocationProvider} $locationProvider
      */
-    constructor($locationProvider: angular.ILocationProvider, stateService: any, globals: any, urlConfigProvider: any);
+    constructor($locationProvider: import("../../core/location/location").$LocationProvider, stateService: any, globals: any, urlConfigProvider: any);
     stateService: any;
-    $locationProvider: angular.ILocationProvider;
+    $locationProvider: import("../../core/location/location").$LocationProvider;
     $location: any;
     $browser: any;
     /** @type {boolean} */
@@ -26,9 +26,9 @@ export class UrlService {
      * The nested [[UrlConfig]] API to configure the URL and retrieve URL information
      *
      * See: [[UrlConfig]] for details
-     * @type {angular.UrlConfig}
+     * @type {import("./url-config").UrlConfigProvider}
      */
-    config: angular.UrlConfig;
+    config: import("./url-config").UrlConfigProvider;
     /** Creates a new [[Param]] for a given location (DefType) */
     paramFactory: ParamFactory;
     /**
@@ -214,9 +214,9 @@ export class UrlService {
      *
      * Given a URL (as a [[UrlParts]] object), check all rules and determine the best matching rule.
      * Return the result as a [[MatchResult]].
-     * @returns {angular.MatchResult}
+     * @returns {any}
      */
-    match(url: any): angular.MatchResult;
+    match(url: any): any;
     update(read: any): void;
     location: any;
     /**
