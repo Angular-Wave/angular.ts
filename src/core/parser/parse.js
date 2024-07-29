@@ -69,6 +69,11 @@ export function $ParseProvider() {
 
   this.$get = [
     "$filter",
+    /**
+     *
+     * @param {(any) => any} $filter
+     * @returns {ParseService}
+     */
     function ($filter) {
       /** @type {import("./lexer").LexerOptions} */
       var $lexerOptions = {

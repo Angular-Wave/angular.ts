@@ -9,6 +9,10 @@
     "type": "git",
     "url": "https://github.com/Angular-Wave/angular.ts.git"
   },
+  "keywords": [
+    "AngularJS",
+    "AngularTS"
+  ],
   "engines": {
     "node": ">=18.18.2"
   },
