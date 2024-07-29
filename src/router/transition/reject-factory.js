@@ -105,6 +105,7 @@ export class Rejection {
     this.type = type;
     this.message = message;
     this.detail = detail;
+    this.redirected = false;
   }
   toString() {
     const detailString = (d) =>

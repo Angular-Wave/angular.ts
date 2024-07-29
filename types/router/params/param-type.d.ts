@@ -32,8 +32,9 @@ export class ParamType {
     pattern: RegExp;
     /** @inheritdoc */
     inherit: boolean;
+    name: any;
     /** @inheritdoc */
-    is(): boolean;
+    is(_val: any): boolean;
     /** @inheritdoc */
     encode(val: any): any;
     /** @inheritdoc */

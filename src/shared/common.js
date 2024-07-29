@@ -345,7 +345,7 @@ export function assertFn(predicateOrMap, errMsg = "assert failure") {
   return (obj) => {
     const result = predicateOrMap(obj);
     if (!result) {
-      throw new Error(isFunction(errMsg) ? errMsg(obj) : errMsg);
+      throw new Error(errMsg);
     }
     return result;
   };

@@ -28,7 +28,7 @@ export function SanitizeUriProvider() {
    * to the DOM it is inactive and potentially malicious code will not be executed.
    *
    * @param {RegExp=} regexp New regexp to trust urls with.
-   * @returns {RegExp|ng.ICompileProvider} Current RegExp if called without value or self for
+   * @returns {RegExp|SanitizeUriProvider} Current RegExp if called without value or self for
    *    chaining otherwise.
    */
   this.aHrefSanitizationTrustedUrlList = function (regexp) {

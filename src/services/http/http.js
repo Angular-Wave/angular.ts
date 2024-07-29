@@ -275,9 +275,9 @@ function headersGetter(headers) {
  * This function is used for both request and response transforming
  *
  * @param {*} data Data to transform.
- * @param {function(string=)} headers HTTP headers getter fn.
+ * @param {function(string=):any} headers HTTP headers getter fn.
  * @param {number} status HTTP status code of the response.
- * @param {Function|Array<Function>} fns Function or an array of functions.
+ * @param {function(...any): any | Array<Function>} fns Function or an array of functions.
  * @returns {*} Transformed data.
  */
 function transformData(data, headers, status, fns) {
@@ -285,9 +285,11 @@ function transformData(data, headers, status, fns) {
     return fns(data, headers, status);
   }
 
-  forEach(fns, (fn) => {
-    data = fn(data, headers, status);
-  });
+  if (Array.isArray(fns)) {
+    /** @type {Array<function(...any): any>} */ (fns).forEach((fn) => {
+      data = fn(data, headers, status);
+    });
+  }
 
   return data;
 }

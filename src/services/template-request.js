@@ -4,11 +4,6 @@ import { extend, isString, isUndefined, minErr } from "../shared/utils";
 var $templateRequestMinErr = minErr("$templateRequest");
 
 /**
- * @ngdoc provider
- * @name $templateRequestProvider
- * @this
- *
- * @description
  * Used to configure the options passed to the {@link $http} service when making a template request.
  *
  * For example, it can be used for specifying the "Accept" header that is sent to the server, when
@@ -27,8 +22,8 @@ export function TemplateRequestProvider() {
    * The {@link $templateRequest} will set the `cache` and the `transformResponse` properties of the
    * options if not overridden here.
    *
-   * @param {string=} value new value for the {@link $http} options.
-   * @returns {string|self} Returns the {@link $http} options when used as getter and self if used as setter.
+   * @param {string=} val new value for the {@link $http} options.
+   * @returns {string|TemplateRequestProvider} Returns the {@link $http} options when used as getter and self if used as setter.
    */
   this.httpOptions = function (val) {
     if (val) {

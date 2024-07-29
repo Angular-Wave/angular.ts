@@ -29,7 +29,7 @@ export type CloneAttachFunction = (clonedElement?: import("./shared/jqlite/jqlit
  * https://docs.angularjs.org/api/ng/service/$compile#-controller-
  * http://teropa.info/blog/2015/06/09/transclusion.html
  */
-export type TranscludeFunction = {
+export type TranscludeFunctionObject = {
     transcludeWithScope: (arg0: TScope, arg1: CloneAttachFunction, arg2: import("./shared/jqlite/jqlite").JQLite | undefined, arg3: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
     transcludeWithoutScope: (arg0: CloneAttachFunction | undefined, arg1: import("./shared/jqlite/jqlite").JQLite | undefined, arg2: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
     /**
@@ -37,6 +37,7 @@ export type TranscludeFunction = {
      */
     isSlotFilled: (arg0: string) => boolean;
 };
+export type TranscludeFunction = (arg0: TScope, arg1: CloneAttachFunction, arg2: import("./shared/jqlite/jqlite").JQLite | undefined, arg3: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
 export type transcludeWithScope = (arg0: TScope, arg1: CloneAttachFunction, arg2: import("./shared/jqlite/jqlite").JQLite | undefined, arg3: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
 export type transcludeWithoutScope = (arg0: CloneAttachFunction | undefined, arg1: import("./shared/jqlite/jqlite").JQLite | undefined, arg2: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
 /**
@@ -128,6 +129,10 @@ export type Directive = {
     transclude?: boolean | "element" | {
         [slot: string]: string;
     } | undefined;
+    /**
+     * Hidden properties added by router
+     */
+    $$addStateInfo?: (...args: any[]) => any;
 };
 /**
  * Factory function for creating directives.

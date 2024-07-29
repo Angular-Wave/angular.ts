@@ -17,7 +17,12 @@ export function ngIfDirective($animate) {
     terminal: true,
     restrict: "A",
     /**
-     * TODO add type for $transclude service
+     *
+     * @param {*} $scope
+     * @param {*} $element
+     * @param {*} $attr
+     * @param {*} _ctrl
+     * @param {*} $transclude
      */
     link($scope, $element, $attr, _ctrl, $transclude) {
       /** @type {{clone: import("../../shared/jqlite/jqlite").JQLite }} */

@@ -35,10 +35,11 @@ export class ParamType {
     /** @inheritdoc */
     this.inherit = true;
     Object.assign(this, def);
+    this.name = undefined;
   }
   // consider these four methods to be "abstract methods" that should be overridden
   /** @inheritdoc */
-  is() {
+  is(_val) {
     return true;
   }
   /** @inheritdoc */

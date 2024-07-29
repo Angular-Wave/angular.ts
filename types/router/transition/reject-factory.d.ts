@@ -37,6 +37,7 @@ export class Rejection {
     type: any;
     message: any;
     detail: any;
+    redirected: boolean;
     toString(): string;
     toPromise(): any;
 }

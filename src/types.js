@@ -202,10 +202,16 @@
  * https://docs.angularjs.org/api/ng/service/$compile#-controller-
  * http://teropa.info/blog/2015/06/09/transclusion.html
  *
- * @typedef {Object} TranscludeFunction
+ * @typedef {Object} TranscludeFunctionObject
  * @property {function(TScope, CloneAttachFunction, import('./shared/jqlite/jqlite').JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithScope
  * @property {function(CloneAttachFunction=, import('./shared/jqlite/jqlite').JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithoutScope
  * @property {function(string): boolean} isSlotFilled - Returns true if the specified slot contains content (i.e., one or more DOM nodes)
+ */
+
+/**
+
+ *
+ * @typedef {function(TScope, CloneAttachFunction, import('./shared/jqlite/jqlite').JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} TranscludeFunction
  */
 
 /**
@@ -264,6 +270,8 @@
  * HTML template URL.
  * @property {boolean | "element" | { [slot: string]: string } | undefined} [transclude]
  * Transclusion options.
+ * @property {function(...any): any} [$$addStateInfo]
+ * Hidden properties added by router
  */
 
 /**

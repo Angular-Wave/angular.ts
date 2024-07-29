@@ -275,10 +275,6 @@ export class Angular {
   }
 
   /**
-   * @ngdoc function
-   * @name angular.module
-   * @module ng
-   * @description
    *
    * The `angular.module` is a global place for creating, registering and retrieving AngularJS
    * modules.
@@ -414,7 +410,7 @@ export class Angular {
 
         /**
          * @ngdoc property
-         * @name import('./types').Module#requires
+         * @type import('./types').Module#requires
          * @module ng
          *
          * @description
