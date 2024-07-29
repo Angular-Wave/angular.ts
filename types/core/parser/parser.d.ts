@@ -20,7 +20,7 @@ export class Parser {
     /**
      *
      * @param {string} exp - Expression to be parsed
-     * @returns
+     * @returns {import("./parse").CompiledExpression}
      */
     parse(exp: string): import("./parse").CompiledExpression;
     /**

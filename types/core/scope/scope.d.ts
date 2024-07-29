@@ -32,6 +32,18 @@ export type TTL = number;
  * @property {Object} locals
  */
 /**
+ * @typedef {function(any, any, Scope): any} WatchListener
+ * Callback function triggered whenever the value of `watchExpression` changes.
+ *
+ * @param {any} newVal - The current value of the `watchExpression`.
+ * @param {any} oldVal - The previous value of the `watchExpression`.
+ * @param {Scope} scope - The current scope in which the `watchExpression` is evaluated.
+ *
+ */
+/**
+ * @typedef {string | ((scope: Scope) => any)} WatchExpression
+ */
+/**
  *
  * The default number of `$digest` iterations the scope should attempt to execute before giving up and
  * assuming that the model is unstable. In complex applications it's possible that the dependencies between `$watch`s will result in
@@ -272,17 +284,12 @@ export class Scope {
    *
    *    - `string`: Evaluated as {@link guide/expression expression}
    *    - `function(scope)`: called with current `scope` as a parameter.
-   * @param {(newVal: any, oldVal: any, scope: Scope) => any} listener Callback called whenever the value
-   *    of `watchExpression` changes.
-   *
-   *    - `newVal` contains the current value of the `watchExpression`
-   *    - `oldVal` contains the previous value of the `watchExpression`
-   *    - `scope` refers to the current scope
+   * @param {WatchListener} listener
    * @param {boolean=} [objectEquality=false] Compare for object equality using {@link angular.equals} instead of
    *     comparing for reference equality.
    * @returns {function()} Returns a deregistration function for this listener.
    */
-    $watch(watchExp: string | ((scope: Scope) => any), listener: (newVal: any, oldVal: any, scope: Scope) => any, objectEquality?: boolean | undefined): () => any;
+    $watch(watchExp: string | ((scope: Scope) => any), listener: WatchListener, objectEquality?: boolean | undefined): () => any;
     /**
      * @ngdoc method
      * @name $rootScope.Scope#$watchGroup
@@ -732,3 +739,8 @@ export type AsyncQueueTask = {
     fn: Function;
     locals: any;
 };
+/**
+ * Callback function triggered whenever the value of `watchExpression` changes.
+ */
+export type WatchListener = (arg0: any, arg1: any, arg2: Scope) => any;
+export type WatchExpression = string | ((scope: Scope) => any);

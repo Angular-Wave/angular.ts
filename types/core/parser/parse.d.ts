@@ -4,6 +4,7 @@
  * @property {boolean} constant - Indicates if the expression is constant.
  * @property {boolean} isPure
  * @property {boolean} oneTime
+ * @property {function(import('../scope/scope').Scope, import('../scope/scope').WatchListener, boolean, CompiledExpression, string | ((scope:  import('../scope/scope').Scope) => any)): any} $$watchDelegate
  * @property {any[]} inputs
  * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided,
  */
@@ -46,10 +47,7 @@ export class $ParseProvider {
      * @returns {$ParseProvider}
      */
     setIdentifierFns: (identifierStart?: (arg0: any) => boolean, identifierContinue?: (arg0: any) => boolean) => $ParseProvider;
-    $get: (string | (($filter: any) => {
-        (exp: any, interceptorFn: any): any;
-        $$getAst: (exp: string) => import("./ast").ASTNode;
-    }))[];
+    $get: (string | (($filter: (any: any) => any) => ParseService))[];
 }
 export function constantWatchDelegate(scope: any, listener: any, objectEquality: any, parsedExpression: any): any;
 export type CompiledExpressionProps = {
@@ -63,6 +61,7 @@ export type CompiledExpressionProps = {
     constant: boolean;
     isPure: boolean;
     oneTime: boolean;
+    $$watchDelegate: (arg0: import("../scope/scope").Scope, arg1: import("../scope/scope").WatchListener, arg2: boolean, arg3: CompiledExpression, arg4: string | ((scope: import("../scope/scope").Scope) => any)) => any;
     inputs: any[];
     /**
      * - Assigns a value to a context. If value is not provided,

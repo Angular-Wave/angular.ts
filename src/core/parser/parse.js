@@ -9,6 +9,7 @@ import { Parser } from "./parser";
  * @property {boolean} constant - Indicates if the expression is constant.
  * @property {boolean} isPure
  * @property {boolean} oneTime
+ * @property {function(import('../scope/scope').Scope, import('../scope/scope').WatchListener, boolean, CompiledExpression, string | ((scope:  import('../scope/scope').Scope) => any)): any} $$watchDelegate
  * @property {any[]} inputs
  * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided,
  */
@@ -198,6 +199,11 @@ export function constantWatchDelegate(
   return unwatch;
 }
 
+/**
+ *
+ * @param {CompiledExpression} parsedExpression
+ * @returns {CompiledExpression}
+ */
 function addWatchDelegate(parsedExpression) {
   if (parsedExpression.constant) {
     parsedExpression.$$watchDelegate = constantWatchDelegate;
@@ -210,6 +216,14 @@ function addWatchDelegate(parsedExpression) {
   return parsedExpression;
 }
 
+/**
+ *
+ * @param {import('../scope/scope').Scope} scope
+ * @param {import('../scope/scope').WatchListener} listener
+ * @param {*} objectEquality
+ * @param {CompiledExpression} parsedExpression
+ * @returns
+ */
 function inputsWatchDelegate(
   scope,
   listener,

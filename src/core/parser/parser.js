@@ -28,7 +28,7 @@ export class Parser {
   /**
    *
    * @param {string} exp - Expression to be parsed
-   * @returns
+   * @returns {import("./parse").CompiledExpression}
    */
   parse(exp) {
     const { ast, oneTime } = this.getAst(exp);

@@ -29,6 +29,20 @@ export const ScopePhase = {
  */
 
 /**
+ * @typedef {function(any, any, Scope): any} WatchListener
+ * Callback function triggered whenever the value of `watchExpression` changes.
+ *
+ * @param {any} newVal - The current value of the `watchExpression`.
+ * @param {any} oldVal - The previous value of the `watchExpression`.
+ * @param {Scope} scope - The current scope in which the `watchExpression` is evaluated.
+ *
+ */
+
+/**
+ * @typedef {string | ((scope: Scope) => any)} WatchExpression
+ */
+
+/**
  *
  * The default number of `$digest` iterations the scope should attempt to execute before giving up and
  * assuming that the model is unstable. In complex applications it's possible that the dependencies between `$watch`s will result in
@@ -378,12 +392,7 @@ export class Scope {
  *
  *    - `string`: Evaluated as {@link guide/expression expression}
  *    - `function(scope)`: called with current `scope` as a parameter.
- * @param {(newVal: any, oldVal: any, scope: Scope) => any} listener Callback called whenever the value
- *    of `watchExpression` changes.
- *
- *    - `newVal` contains the current value of the `watchExpression`
- *    - `oldVal` contains the previous value of the `watchExpression`
- *    - `scope` refers to the current scope
+ * @param {WatchListener} listener
  * @param {boolean=} [objectEquality=false] Compare for object equality using {@link angular.equals} instead of
  *     comparing for reference equality.
  * @returns {function()} Returns a deregistration function for this listener.
@@ -687,7 +696,7 @@ export class Scope {
         }
       }
     }
-
+    // TODO: fix this type signature
     return this.$watch(changeDetector, $watchCollectionAction);
   }
 
@@ -1282,7 +1291,8 @@ export class Scope {
     if (expr) {
       $$applyAsyncQueue.push(() => scope.$eval(expr));
     }
-    expr = $parse(expr);
+    // TODO: investigate 
+    //expr = $parse(expr);
 
     if (applyAsyncId === null) {
       applyAsyncId = $browser.defer(flushApplyAsync, null, "$applyAsync");
