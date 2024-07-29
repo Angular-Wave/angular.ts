@@ -52,7 +52,7 @@ Initialize your app
 </div>
 ```
 
-You can also opt for starter a template at [Angular seed](https://github.com/Angular-Wave/angular-seed), which can serve as a solid starting point 
+You can also opt for a starter template at [Angular seed](https://github.com/Angular-Wave/angular-seed), which can serve as a solid starting point 
 or a source of inspiration for new ideas.
 
 New docs website is coming!
