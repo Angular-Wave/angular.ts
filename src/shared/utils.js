@@ -894,7 +894,7 @@ export function toJson(obj, pretty) {
   if (!isNumber(pretty)) {
     pretty = pretty ? 2 : null;
   }
-  return JSON.stringify(obj, toJsonReplacer, pretty);
+  return JSON.stringify(obj, toJsonReplacer, /** @type {Number} */ (pretty));
 }
 
 /**

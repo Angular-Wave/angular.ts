@@ -97,6 +97,8 @@ export class Ng1ViewConfig {
     this.path = path;
     this.viewDecl = viewDecl;
     this.factory = factory;
+    this.component = undefined;
+    this.template = undefined;
 
     /** @type {Number} */ this.$id = id++;
     this.loaded = false;
@@ -110,6 +112,7 @@ export class Ng1ViewConfig {
           )
         : this.template;
   }
+
   load() {
     const $q = services.$q;
     const context = new ResolveContext(this.path);

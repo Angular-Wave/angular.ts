@@ -18,10 +18,10 @@ export class $QProvider {
      * This feature is enabled by default.
      *
      * @param {boolean=} value Whether to generate an error when a rejected promise is not handled.
-     * @returns {boolean|ng.$qProvider} Current value when called without a new value or self for
+     * @returns {boolean|$QProvider} Current value when called without a new value or self for
      *    chaining otherwise.
      */
-    errorOnUnhandledRejections: (value?: boolean | undefined) => boolean | ng.$qProvider;
+    errorOnUnhandledRejections: (value?: boolean | undefined) => boolean | $QProvider;
 }
 export function $$QProvider(): void;
 export class $$QProvider {

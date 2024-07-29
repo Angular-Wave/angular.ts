@@ -192,11 +192,11 @@ export class UrlRuleFactory {
 }
 UrlRuleFactory.isUrlRule = (obj) =>
   obj && ["type", "match", "handler"].every((key) => isDefined(obj[key]));
+
 /**
  * A base rule which calls `match`
  *
  * The value from the `match` function is passed through to the `handler`.
- * @type {angular.BaseUrlRule}
  */
 export class BaseUrlRule {
   constructor(match, handler) {

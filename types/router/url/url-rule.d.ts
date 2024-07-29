@@ -124,7 +124,6 @@ export namespace UrlRuleFactory {
  * A base rule which calls `match`
  *
  * The value from the `match` function is passed through to the `handler`.
- * @type {angular.BaseUrlRule}
  */
 export class BaseUrlRule {
     constructor(match: any, handler: any);

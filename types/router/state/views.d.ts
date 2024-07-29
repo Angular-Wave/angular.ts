@@ -30,6 +30,8 @@ export class Ng1ViewConfig {
     path: any;
     viewDecl: any;
     factory: any;
+    component: any;
+    template: any;
     /** @type {Number} */ $id: number;
     loaded: boolean;
     getTemplate: (ngView: any, context: any) => any;

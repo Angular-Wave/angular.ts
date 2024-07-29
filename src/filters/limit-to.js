@@ -19,14 +19,17 @@ export function limitToFilter() {
     if (Math.abs(Number(limit)) === Infinity) {
       limit = Number(limit);
     } else {
-      limit = toInt(limit);
+      limit = toInt(/** @type {String} */ (limit));
     }
     if (isNumberNaN(limit)) return input;
 
     if (isNumber(input)) input = input.toString();
     if (!isArrayLike(input)) return input;
 
-    begin = !begin || isNaN(/** @type {any} */ (begin)) ? 0 : toInt(begin);
+    begin =
+      !begin || isNaN(/** @type {any} */ (begin))
+        ? 0
+        : toInt(/** @type {String} */ (begin));
     begin =
       begin < 0 ? Math.max(0, /** @type {[]} */ (input).length + begin) : begin;
 

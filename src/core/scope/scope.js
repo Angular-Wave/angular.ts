@@ -1291,7 +1291,7 @@ export class Scope {
     if (expr) {
       $$applyAsyncQueue.push(() => scope.$eval(expr));
     }
-    // TODO: investigate 
+    // TODO: investigate
     //expr = $parse(expr);
 
     if (applyAsyncId === null) {
