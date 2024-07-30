@@ -172,18 +172,16 @@ export class Angular {
     element: typeof import("./shared/jqlite/jqlite").JQLite;
     /** @type {Function} */
     doBootstrap: Function;
-    /** @type {ErrorHandlingConfig} */
-    minErrConfig: ErrorHandlingConfig;
     /**
      * Configure several aspects of error handling if used as a setter or return the
      * current configuration if used as a getter.
      *
      * Omitted or undefined options will leave the corresponding configuration values unchanged.
      *
-     * @param {ErrorHandlingConfig} [config]
-     * @returns {ErrorHandlingConfig}
+     * @param {import('./shared/utils').ErrorHandlingConfig} [config]
+     * @returns {import('./shared/utils').ErrorHandlingConfig}
      */
-    errorHandlingConfig(config?: ErrorHandlingConfig): ErrorHandlingConfig;
+    errorHandlingConfig(config?: import("./shared/utils").ErrorHandlingConfig): import("./shared/utils").ErrorHandlingConfig;
     /**
    * @module angular
    * @function bootstrap
@@ -312,21 +310,6 @@ export class Angular {
    */
     reloadWithDebugInfo(): void;
 }
-/**
- * Error configuration object. May only contain the options that need to be updated.
- */
-export type ErrorHandlingConfig = {
-    /**
-     * - The max depth for stringifying objects. Setting to a
-     * non-positive or non-numeric value removes the max depth limit. Default: 5.
-     */
-    objectMaxDepth?: number | undefined;
-    /**
-     * - Specifies whether the generated error URL will
-     * contain the parameters of the thrown error. Default: true. When used without argument, it returns the current value.
-     */
-    urlErrorParamsEnabled?: boolean | undefined;
-};
 /**
  * Configuration option for AngularTS bootstrap process.
  */

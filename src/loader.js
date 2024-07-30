@@ -7,8 +7,7 @@ import {
   ngAttrPrefixes,
   isDefined,
   assertNotHasOwnProperty,
-  isBoolean,
-  isValidObjectMaxDepth,
+  errorHandlingConfig,
 } from "./shared/utils";
 import { JQLite, startingTag } from "./shared/jqlite/jqlite";
 import { createInjector } from "./injector";
@@ -18,15 +17,6 @@ import { CACHE } from "./core/cache/cache";
  * @type {string} `version` from `package.json`, injected by Rollup plugin
  */
 export const VERSION = "[VI]{version}[/VI]";
-
-/**
- * @typedef {Object} ErrorHandlingConfig
- * Error configuration object. May only contain the options that need to be updated.
- * @property {number=} objectMaxDepth - The max depth for stringifying objects. Setting to a
- *   non-positive or non-numeric value removes the max depth limit. Default: 5.
- * @property {boolean=} urlErrorParamsEnabled - Specifies whether the generated error URL will
- *   contain the parameters of the thrown error. Default: true. When used without argument, it returns the current value.
- */
 
 const ngMinErr = minErr("ng");
 
@@ -59,12 +49,6 @@ export class Angular {
 
     /** @type {Function} */
     this.doBootstrap;
-
-    /** @type {ErrorHandlingConfig} */
-    this.minErrConfig = {
-      objectMaxDepth: 5,
-      urlErrorParamsEnabled: true,
-    };
   }
 
   /**
@@ -73,26 +57,11 @@ export class Angular {
    *
    * Omitted or undefined options will leave the corresponding configuration values unchanged.
    *
-   * @param {ErrorHandlingConfig} [config]
-   * @returns {ErrorHandlingConfig}
+   * @param {import('./shared/utils').ErrorHandlingConfig} [config]
+   * @returns {import('./shared/utils').ErrorHandlingConfig}
    */
   errorHandlingConfig(config) {
-    if (isObject(config)) {
-      if (isDefined(config.objectMaxDepth)) {
-        this.minErrConfig.objectMaxDepth = isValidObjectMaxDepth(
-          config.objectMaxDepth,
-        )
-          ? config.objectMaxDepth
-          : NaN;
-      }
-      if (
-        isDefined(config.urlErrorParamsEnabled) &&
-        isBoolean(config.urlErrorParamsEnabled)
-      ) {
-        this.minErrConfig.urlErrorParamsEnabled = config.urlErrorParamsEnabled;
-      }
-    }
-    return this.minErrConfig;
+    return errorHandlingConfig(config);
   }
 
   /**

@@ -1,4 +1,3 @@
-import { angular } from "..";
 import { PREFIX_REGEXP, SPECIAL_CHARS_REGEXP } from "../shared/constants";
 
 const ngMinErr = minErr("ng");
@@ -1103,6 +1102,42 @@ export function assertArgFn(arg, name, acceptArrayAnnotation) {
 }
 
 /**
+ * @typedef {Object} ErrorHandlingConfig
+ * Error configuration object. May only contain the options that need to be updated.
+ * @property {number=} objectMaxDepth - The max depth for stringifying objects. Setting to a
+ *   non-positive or non-numeric value removes the max depth limit. Default: 5.
+ * @property {boolean=} urlErrorParamsEnabled - Specifies whether the generated error URL will
+ *   contain the parameters of the thrown error. Default: true. When used without argument, it returns the current value.
+ */
+
+/** @type {ErrorHandlingConfig} */
+const minErrConfig = {
+  objectMaxDepth: 5,
+  urlErrorParamsEnabled: true,
+};
+
+/**
+ * @param {ErrorHandlingConfig} [config]
+ * @returns {ErrorHandlingConfig}
+ */
+export function errorHandlingConfig(config) {
+  if (isObject(config)) {
+    if (isDefined(config.objectMaxDepth)) {
+      minErrConfig.objectMaxDepth = isValidObjectMaxDepth(config.objectMaxDepth)
+        ? config.objectMaxDepth
+        : NaN;
+    }
+    if (
+      isDefined(config.urlErrorParamsEnabled) &&
+      isBoolean(config.urlErrorParamsEnabled)
+    ) {
+      minErrConfig.urlErrorParamsEnabled = config.urlErrorParamsEnabled;
+    }
+  }
+  return minErrConfig;
+}
+
+/**
  * This object provides a utility for producing rich Error messages within
  * AngularJS. It can be called as follows:
  *
@@ -1157,7 +1192,7 @@ export function minErr(module) {
 
     message += `\n${url}${module ? `${module}/` : ""}${code}`;
 
-    if (angular.errorHandlingConfig().urlErrorParamsEnabled) {
+    if (errorHandlingConfig().urlErrorParamsEnabled) {
       for (
         i = 0, paramPrefix = "?";
         i < templateArgs.length;
