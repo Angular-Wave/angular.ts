@@ -150,13 +150,13 @@ export function $$AnimateQueueProvider($animateProvider) {
     "$$AnimateRunner",
     "$templateRequest",
     /**
-     * 
-     * @param {*} $rootScope 
-     * @param {JQLite} $rootElement 
-     * @param {*} $$animation 
-     * @param {*} $$AnimateRunner 
-     * @param {*} $templateRequest 
-     * @returns 
+     *
+     * @param {*} $rootScope
+     * @param {JQLite} $rootElement
+     * @param {*} $$animation
+     * @param {*} $$AnimateRunner
+     * @param {*} $templateRequest
+     * @returns
      */
     function (
       $rootScope,

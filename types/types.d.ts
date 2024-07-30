@@ -429,15 +429,15 @@ export type InjectorService = {
     /**
      * - Add and load new modules to the injector.
      */
-    loadNewModules: (arg0: Array<Module | string | Injectable<(...args: any[]) => void>>) => void;
+    loadNewModules?: (arg0: Array<Module | string | Injectable<(...args: any[]) => void>>) => void;
     /**
      * - A map of all the modules loaded into the injector.
      */
-    modules: {
+    modules?: {
         [x: string]: Module;
     };
     /**
      * - Indicates if strict dependency injection is enforced.
      */
-    strictDi: boolean;
+    strictDi?: boolean;
 };

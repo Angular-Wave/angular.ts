@@ -1,10 +1,10 @@
-export function createInjector(modulesToLoad: any, strictDi: any): {
-    invoke: (fn: any, self: any, locals: any, serviceName: any) => any;
-    instantiate: (Type: any, locals: any, serviceName: any) => any;
-    get: (serviceName: any, caller: any) => any;
-    annotate: typeof annotate;
-    has: (name: any) => any;
-};
+/**
+ *
+ * @param {*} modulesToLoad
+ * @param {*} strictDi
+ * @returns {import("./types").InjectorService}
+ */
+export function createInjector(modulesToLoad: any, strictDi: any): import("./types").InjectorService;
 export namespace createInjector {
     export { annotate as $$annotate };
 }

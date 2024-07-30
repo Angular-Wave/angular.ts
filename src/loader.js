@@ -46,6 +46,9 @@ export class Angular {
     /** @type {typeof import('./shared/jqlite/jqlite').JQLite} */
     this.element = JQLite;
 
+    /** @type {!Array<string|any>} */
+    this.bootsrappedModules = [];
+
     /** @type {Function} */
     this.doBootstrap;
   }
@@ -130,7 +133,10 @@ export class Angular {
         throw ngMinErr("btstrpd", "App already bootstrapped");
       }
 
-      this.bootsrappedModules = modules || [];
+      if (Array.isArray(modules)) {
+        this.bootsrappedModules = modules;
+      }
+
       this.bootsrappedModules.unshift([
         "$provide",
         ($provide) => {
@@ -147,11 +153,11 @@ export class Angular {
         "$compile",
         "$injector",
         /**
-         * 
-         * @param {*} scope 
-         * @param {JQLite} el 
-         * @param {*} compile 
-         * @param {*} $injector 
+         *
+         * @param {*} scope
+         * @param {JQLite} el
+         * @param {*} compile
+         * @param {*} $injector
          */
         function (scope, el, compile, $injector) {
           scope.$apply(() => {

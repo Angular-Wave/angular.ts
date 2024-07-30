@@ -860,11 +860,11 @@ export function $LocationProvider() {
     "$browser",
     "$rootElement",
     /**
-     * 
-     * @param {*} $rootScope 
-     * @param {*} $browser 
-     * @param {JQLite} $rootElement 
-     * @returns 
+     *
+     * @param {*} $rootScope
+     * @param {*} $browser
+     * @param {JQLite} $rootElement
+     * @returns
      */
     function ($rootScope, $browser, $rootElement) {
       let $location;

@@ -79,6 +79,13 @@ function annotate(fn, strictDi, name) {
 
 const providerSuffix = "Provider";
 const INSTANTIATING = {};
+
+/**
+ *
+ * @param {*} modulesToLoad
+ * @param {*} strictDi
+ * @returns {import("./types").InjectorService}
+ */
 export function createInjector(modulesToLoad, strictDi) {
   if (isDefined(strictDi) && !isBoolean(strictDi)) {
     throw $injectorMinErr("strictDi must be boolean");
