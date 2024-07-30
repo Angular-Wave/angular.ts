@@ -150,34 +150,6 @@ export function angularInit(element: any): void;
  */
 export function setupModuleLoader(window: any): any;
 /**
- * @ngdoc function
- * @name angular.errorHandlingConfig
- * @module ng
- * @kind function
- *
- * @description
- * Configure several aspects of error handling in AngularJS if used as a setter or return the
- * current configuration if used as a getter. The following options are supported:
- *
- * - **objectMaxDepth**: The maximum depth to which objects are traversed when stringified for error messages.
- *
- * Omitted or undefined options will leave the corresponding configuration values unchanged.
- *
- * @param {Object=} config - The configuration object. May only contain the options that need to be
- *     updated. Supported keys:
- *
- * * `objectMaxDepth`  **{Number}** - The max depth for stringifying objects. Setting to a
- *   non-positive or non-numeric value, removes the max depth limit.
- *   Default: 5
- *
- * * `urlErrorParamsEnabled`  **{Boolean}** - Specifies whether the generated error url will
- *   contain the parameters of the thrown error. Disabling the parameters can be useful if the
- *   generated error url is very long.
- *
- *   Default: true. When used without argument, it returns the current value.
- */
-export function errorHandlingConfig(config?: any | undefined): {};
-/**
  * @type {string} `version` from `package.json`, injected by Rollup plugin
  */
 export const VERSION: string;
@@ -198,10 +170,20 @@ export class Angular {
     version: string;
     /** @type {typeof import('./shared/jqlite/jqlite').JQLite} */
     element: typeof import("./shared/jqlite/jqlite").JQLite;
-    /** @type {errorHandlingConfig} */
-    errorHandlingConfig: typeof errorHandlingConfig;
     /** @type {Function} */
     doBootstrap: Function;
+    /** @type {ErrorHandlingConfig} */
+    minErrConfig: ErrorHandlingConfig;
+    /**
+     * Configure several aspects of error handling if used as a setter or return the
+     * current configuration if used as a getter.
+     *
+     * Omitted or undefined options will leave the corresponding configuration values unchanged.
+     *
+     * @param {ErrorHandlingConfig} [config]
+     * @returns {ErrorHandlingConfig}
+     */
+    errorHandlingConfig(config?: ErrorHandlingConfig): ErrorHandlingConfig;
     /**
    * @module angular
    * @function bootstrap
@@ -330,6 +312,21 @@ export class Angular {
    */
     reloadWithDebugInfo(): void;
 }
+/**
+ * Error configuration object. May only contain the options that need to be updated.
+ */
+export type ErrorHandlingConfig = {
+    /**
+     * - The max depth for stringifying objects. Setting to a
+     * non-positive or non-numeric value removes the max depth limit. Default: 5.
+     */
+    objectMaxDepth?: number | undefined;
+    /**
+     * - Specifies whether the generated error URL will
+     * contain the parameters of the thrown error. Default: true. When used without argument, it returns the current value.
+     */
+    urlErrorParamsEnabled?: boolean | undefined;
+};
 /**
  * Configuration option for AngularTS bootstrap process.
  */

@@ -543,4 +543,3 @@ export function directiveNormalize(name: any): any;
  */
 export function hasAnimate(node: Node): boolean;
 export const ngAttrPrefixes: string[];
-export const minErrConfig: {};

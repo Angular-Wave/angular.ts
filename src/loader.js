@@ -1,26 +1,14 @@
 import {
   minErr,
-  extend,
   forEach,
   getNgAttribute,
   isFunction,
   isObject,
   ngAttrPrefixes,
   isDefined,
-  isDate,
-  isElement,
-  isNumber,
-  isString,
-  isUndefined,
-  merge,
-  bind,
-  fromJson,
-  toJson,
-  equals,
   assertNotHasOwnProperty,
   isBoolean,
   isValidObjectMaxDepth,
-  minErrConfig,
 } from "./shared/utils";
 import { JQLite, startingTag } from "./shared/jqlite/jqlite";
 import { createInjector } from "./injector";
@@ -30,6 +18,15 @@ import { CACHE } from "./core/cache/cache";
  * @type {string} `version` from `package.json`, injected by Rollup plugin
  */
 export const VERSION = "[VI]{version}[/VI]";
+
+/**
+ * @typedef {Object} ErrorHandlingConfig
+ * Error configuration object. May only contain the options that need to be updated.
+ * @property {number=} objectMaxDepth - The max depth for stringifying objects. Setting to a
+ *   non-positive or non-numeric value removes the max depth limit. Default: 5.
+ * @property {boolean=} urlErrorParamsEnabled - Specifies whether the generated error URL will
+ *   contain the parameters of the thrown error. Default: true. When used without argument, it returns the current value.
+ */
 
 const ngMinErr = minErr("ng");
 
@@ -60,11 +57,42 @@ export class Angular {
     /** @type {typeof import('./shared/jqlite/jqlite').JQLite} */
     this.element = JQLite;
 
-    /** @type {errorHandlingConfig} */
-    this.errorHandlingConfig = errorHandlingConfig;
-
     /** @type {Function} */
     this.doBootstrap;
+
+    /** @type {ErrorHandlingConfig} */
+    this.minErrConfig = {
+      objectMaxDepth: 5,
+      urlErrorParamsEnabled: true,
+    };
+  }
+
+  /**
+   * Configure several aspects of error handling if used as a setter or return the
+   * current configuration if used as a getter.
+   *
+   * Omitted or undefined options will leave the corresponding configuration values unchanged.
+   *
+   * @param {ErrorHandlingConfig} [config]
+   * @returns {ErrorHandlingConfig}
+   */
+  errorHandlingConfig(config) {
+    if (isObject(config)) {
+      if (isDefined(config.objectMaxDepth)) {
+        this.minErrConfig.objectMaxDepth = isValidObjectMaxDepth(
+          config.objectMaxDepth,
+        )
+          ? config.objectMaxDepth
+          : NaN;
+      }
+      if (
+        isDefined(config.urlErrorParamsEnabled) &&
+        isBoolean(config.urlErrorParamsEnabled)
+      ) {
+        this.minErrConfig.urlErrorParamsEnabled = config.urlErrorParamsEnabled;
+      }
+    }
+    return this.minErrConfig;
   }
 
   /**
@@ -575,8 +603,8 @@ export class Angular {
          * Use this method to register work which should be performed when the injector is done
          * loading all modules.
          */
-        run(block) {
-          runBlocks.push(block);
+        run(initializationFn) {
+          runBlocks.push(initializationFn);
           return this;
         },
       };
@@ -1241,48 +1269,4 @@ export function setupModuleLoader(window) {
       });
     };
   });
-}
-
-/**
- * @ngdoc function
- * @name angular.errorHandlingConfig
- * @module ng
- * @kind function
- *
- * @description
- * Configure several aspects of error handling in AngularJS if used as a setter or return the
- * current configuration if used as a getter. The following options are supported:
- *
- * - **objectMaxDepth**: The maximum depth to which objects are traversed when stringified for error messages.
- *
- * Omitted or undefined options will leave the corresponding configuration values unchanged.
- *
- * @param {Object=} config - The configuration object. May only contain the options that need to be
- *     updated. Supported keys:
- *
- * * `objectMaxDepth`  **{Number}** - The max depth for stringifying objects. Setting to a
- *   non-positive or non-numeric value, removes the max depth limit.
- *   Default: 5
- *
- * * `urlErrorParamsEnabled`  **{Boolean}** - Specifies whether the generated error url will
- *   contain the parameters of the thrown error. Disabling the parameters can be useful if the
- *   generated error url is very long.
- *
- *   Default: true. When used without argument, it returns the current value.
- */
-export function errorHandlingConfig(config) {
-  if (isObject(config)) {
-    if (isDefined(config.objectMaxDepth)) {
-      minErrConfig.objectMaxDepth = isValidObjectMaxDepth(config.objectMaxDepth)
-        ? config.objectMaxDepth
-        : NaN;
-    }
-    if (
-      isDefined(config.urlErrorParamsEnabled) &&
-      isBoolean(config.urlErrorParamsEnabled)
-    ) {
-      minErrConfig.urlErrorParamsEnabled = config.urlErrorParamsEnabled;
-    }
-  }
-  return minErrConfig;
 }

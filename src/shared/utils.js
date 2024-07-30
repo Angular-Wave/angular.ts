@@ -1,3 +1,4 @@
+import { angular } from "..";
 import { PREFIX_REGEXP, SPECIAL_CHARS_REGEXP } from "../shared/constants";
 
 const ngMinErr = minErr("ng");
@@ -1101,8 +1102,6 @@ export function assertArgFn(arg, name, acceptArrayAnnotation) {
   return arg;
 }
 
-export const minErrConfig = {};
-
 /**
  * This object provides a utility for producing rich Error messages within
  * AngularJS. It can be called as follows:
@@ -1158,7 +1157,7 @@ export function minErr(module) {
 
     message += `\n${url}${module ? `${module}/` : ""}${code}`;
 
-    if (minErrConfig.urlErrorParamsEnabled) {
+    if (angular.errorHandlingConfig().urlErrorParamsEnabled) {
       for (
         i = 0, paramPrefix = "?";
         i < templateArgs.length;
