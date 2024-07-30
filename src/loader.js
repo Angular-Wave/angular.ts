@@ -740,6 +740,10 @@ export class Angular {
    </file>
  </example>
  */
+
+/**
+ * @param {Element} element
+ */
 export function angularInit(element) {
   let appElement;
   let module;
@@ -767,15 +771,7 @@ export function angularInit(element) {
     }
   });
   if (appElement) {
-    // Angular init is called manually, so why is this check here
-    // if (!confGlobal.isAutoBootstrapAllowed) {
-    //   window.console.error(
-    //     "AngularJS: disabling automatic bootstrap. <script> protocol indicates an extension, document.location.href does not match.",
-    //   );
-    //   return;
-    // }
     config.strictDi = getNgAttribute(appElement, "strict-di") !== null;
-    //TODO maybe angular should be initialized here?
     window["angular"].bootstrap(appElement, module ? [module] : [], config);
   }
 }
@@ -892,7 +888,6 @@ export function setupModuleLoader(window) {
           _runBlocks: runBlocks,
 
           /**
-           * @ngdoc method
            * @name import('./types').Module#info
            * @module ng
            *
@@ -900,7 +895,6 @@ export function setupModuleLoader(window) {
            * @returns {Object|import('./types').Module} The current info object for this module if called as a getter,
            *                          or `this` if called as a setter.
            *
-           * @description
            * Read and write custom information about this module.
            * For example you could put the version of the module in here.
            *
@@ -940,7 +934,6 @@ export function setupModuleLoader(window) {
            * @name import('./types').Module#requires
            * @module ng
            *
-           * @description
            * Holds the list of modules which the injector will load before the current module is
            * loaded.
            */
@@ -951,76 +944,57 @@ export function setupModuleLoader(window) {
            * @name import('./types').Module#name
            * @module ng
            *
-           * @description
            * Name of the module.
            */
           name,
 
           /**
-           * @ngdoc method
            * @name import('./types').Module#provider
-           * @module ng
            * @param {string} name service name
            * @param {Function} providerType Construction function for creating new instance of the
            *                                service.
-           * @description
            * See {@link auto.$provide#provider $provide.provider()}.
            */
           provider: invokeLaterAndSetModuleName("$provide", "provider"),
 
           /**
-           * @ngdoc method
            * @name import('./types').Module#factory
-           * @module ng
            * @param {string} name service name
            * @param {Function} providerFunction Function for creating new instance of the service.
-           * @description
            * See {@link auto.$provide#factory $provide.factory()}.
            */
           factory: invokeLaterAndSetModuleName("$provide", "factory"),
 
           /**
-           * @ngdoc method
            * @name import('./types').Module#service
-           * @module ng
            * @param {string} name service name
            * @param {Function} constructor A constructor function that will be instantiated.
-           * @description
            * See {@link auto.$provide#service $provide.service()}.
            */
           service: invokeLaterAndSetModuleName("$provide", "service"),
 
           /**
-           * @ngdoc method
            * @name import('./types').Module#value
-           * @module ng
            * @param {string} name service name
            * @param {*} object Service instance object.
-           * @description
            * See {@link auto.$provide#value $provide.value()}.
            */
           value: invokeLater("$provide", "value"),
 
           /**
-           * @ngdoc method
            * @name import('./types').Module#constant
-           * @module ng
            * @param {string} name constant name
            * @param {*} object Constant value.
-           * @description
            * Because the constants are fixed, they get applied before other provide methods.
            * See {@link auto.$provide#constant $provide.constant()}.
            */
           constant: invokeLater("$provide", "constant", "unshift"),
 
           /**
-           * @ngdoc method
            * @name import('./types').Module#decorator
-           * @module ng
            * @param {string} name The name of the service to decorate.
            * @param {Function} decorFn This function will be invoked when the service needs to be
            *                           instantiated and should return the decorated service instance.
-           * @description
            * See {@link auto.$provide#decorator $provide.decorator()}.
            */
           decorator: invokeLaterAndSetModuleName(
@@ -1030,13 +1004,10 @@ export function setupModuleLoader(window) {
           ),
 
           /**
-           * @ngdoc method
            * @name import('./types').Module#animation
-           * @module ng
            * @param {string} name animation name
            * @param {Function} animationFactory Factory function for creating new instance of an
            *                                    animation.
-           * @description
            *
            * **NOTE**: animations take effect only if the **ngAnimate** module is loaded.
            *
@@ -1067,12 +1038,9 @@ export function setupModuleLoader(window) {
           ),
 
           /**
-           * @ngdoc method
            * @name import('./types').Module#filter
-           * @module ng
            * @param {string} name Filter name - this must be a valid AngularJS expression identifier
            * @param {Function} filterFactory Factory function for creating new instance of filter.
-           * @description
            * See {@link ng.$filterProvider#register $filterProvider.register()}.
            *
            * <div class="alert alert-warning">
@@ -1085,13 +1053,10 @@ export function setupModuleLoader(window) {
           filter: invokeLaterAndSetModuleName("$filterProvider", "register"),
 
           /**
-           * @ngdoc method
            * @name import('./types').Module#controller
-           * @module ng
            * @param {string|Object} name Controller name, or an object map of controllers where the
            *    keys are the names and the values are the constructors.
            * @param {Function} constructor Controller constructor function.
-           * @description
            * See {@link ng.$controllerProvider#register $controllerProvider.register()}.
            */
           controller: invokeLaterAndSetModuleName(
@@ -1100,14 +1065,11 @@ export function setupModuleLoader(window) {
           ),
 
           /**
-           * @ngdoc method
            * @name import('./types').Module#directive
-           * @module ng
            * @param {string|Object} name Directive name, or an object map of directives where the
            *    keys are the names and the values are the factories.
            * @param {Function} directiveFactory Factory function for creating new instance of
            * directives.
-           * @description
            * See {@link ng.$compileProvider#directive $compileProvider.directive()}.
            */
           directive: invokeLaterAndSetModuleName(
@@ -1116,15 +1078,12 @@ export function setupModuleLoader(window) {
           ),
 
           /**
-           * @ngdoc method
            * @name import('./types').Module#component
-           * @module ng
            * @param {string|Object} name Name of the component in camelCase (i.e. `myComp` which will match `<my-comp>`),
            *    or an object map of components where the keys are the names and the values are the component definition objects.
            * @param {Object} options Component definition object (a simplified
            *    {@link ng.$compile#directive-definition-object directive definition object})
            *
-           * @description
            * See {@link ng.$compileProvider#component $compileProvider.component()}.
            */
           component: invokeLaterAndSetModuleName(
@@ -1133,12 +1092,9 @@ export function setupModuleLoader(window) {
           ),
 
           /**
-           * @ngdoc method
            * @name import('./types').Module#config
-           * @module ng
            * @param {Function} configFn Execute this function on module load. Useful for service
            *    configuration.
-           * @description
            * Use this method to configure services by injecting their
            * {@link import('./types').Module#provider `providers`}, e.g. for adding routes to the
            * {@link ngRoute.$routeProvider $routeProvider}.
@@ -1152,12 +1108,9 @@ export function setupModuleLoader(window) {
           config,
 
           /**
-           * @ngdoc method
            * @name import('./types').Module#run
-           * @module ng
-           * @param {Function} initializationFn Execute this function after injector creation.
+           * @param {Function} block Execute this function after injector creation.
            *    Useful for application initialization.
-           * @description
            * Use this method to register work which should be performed when the injector is done
            * loading all modules.
            */
@@ -1176,7 +1129,8 @@ export function setupModuleLoader(window) {
         /**
          * @param {string} provider
          * @param {string} method
-         * @param {String=} insertMethod
+         * @param {String=} [insertMethod]
+         * @param {Array<any>} [queue]
          * @returns {import('./types').Module}
          */
         function invokeLater(provider, method, insertMethod, queue) {

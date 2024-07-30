@@ -139,7 +139,10 @@
    </file>
  </example>
  */
-export function angularInit(element: any): void;
+/**
+ * @param {Element} element
+ */
+export function angularInit(element: Element): void;
 /**
  * @ngdoc type
  * @name import('./types').Module
