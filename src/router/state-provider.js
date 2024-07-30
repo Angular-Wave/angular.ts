@@ -117,7 +117,7 @@ export class StateProvider {
    *   let result = {},
    *       views = parent(state);
    *
-   *   angular.forEach(views, function (config, name) {
+   *   forEach(views, function (config, name) {
    *     let autoName = (state.name + '.' + name).replace('.', '/');
    *     config.templateUrl = config.templateUrl || '/partials/' + autoName + '.html';
    *     result[name] = config;

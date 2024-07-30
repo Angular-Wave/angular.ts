@@ -16,7 +16,6 @@ import {
   bind,
   fromJson,
   toJson,
-  identity,
   equals,
   assertNotHasOwnProperty,
   isBoolean,
@@ -58,57 +57,8 @@ export class Angular {
     /** @type {string} */
     this.version = VERSION;
 
-    // Utility methods kept for backwards purposes
-    /** @type {bind} */
-    this.bind = bind;
-
-    /** @type {equals} */
-    this.equals = equals;
-
     /** @type {typeof import('./shared/jqlite/jqlite').JQLite} */
     this.element = JQLite;
-
-    /** @type {extend} */
-    this.extend = extend;
-
-    /** @type {forEach} */
-    this.forEach = forEach;
-
-    /** @type {fromJson} */
-    this.fromJson = fromJson;
-
-    /** @type {toJson} */
-    this.toJson = toJson;
-
-    /** @type {identity} */
-    this.identity = identity;
-
-    /** @type {isDate} */
-    this.isDate = isDate;
-
-    /** @type {isDefined} */
-    this.isDefined = isDefined;
-
-    /** @type {isElement} */
-    this.isElement = isElement;
-
-    /** @type {isFunction} */
-    this.isFunction = isFunction;
-
-    /** @type {isNumber} */
-    this.isNumber = isNumber;
-
-    /** @type {isObject} */
-    this.isObject = isObject;
-
-    /** @type {isString} */
-    this.isString = isString;
-
-    /** @type {isUndefined} */
-    this.isUndefined = isUndefined;
-
-    /** @type {merge} */
-    this.merge = merge;
 
     /** @type {errorHandlingConfig} */
     this.errorHandlingConfig = errorHandlingConfig;

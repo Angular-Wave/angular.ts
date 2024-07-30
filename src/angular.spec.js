@@ -2084,8 +2084,8 @@ describe("angular", () => {
         body,
         element,
       ];
-      angular.forEach(tests, (value, idx) => {
-        const result = angular.isElement(value);
+      forEach(tests, (value, idx) => {
+        const result = isElement(value);
         expect(typeof result).toEqual("boolean");
         expect(result).toEqual(expected[idx]);
       });

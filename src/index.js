@@ -4,7 +4,7 @@ import { publishExternalAPI } from "./public";
 /**
  * @type {Angular}
  */
-const angular = new Angular();
+export const angular = new Angular();
 window["angular"] = angular;
 
 publishExternalAPI();

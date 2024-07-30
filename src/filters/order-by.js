@@ -5,7 +5,6 @@ import {
   isArrayLike,
   isString,
   minErr,
-  identity,
 } from "../shared/utils";
 
 orderByFilter.$inject = ["$parse"];
@@ -75,7 +74,7 @@ export function orderByFilter($parse) {
   function processPredicates(sortPredicates) {
     return sortPredicates.map((predicate) => {
       let descending = 1;
-      let get = identity;
+      let get = (x) => x;
 
       if (isFunction(predicate)) {
         get = predicate;

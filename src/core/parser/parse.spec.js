@@ -7,7 +7,6 @@ import {
   csp,
   valueFn,
   extend,
-  identity,
 } from "../../shared/utils";
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
@@ -3673,7 +3672,10 @@ describe("parser", () => {
     });
 
     it("should always be invoked if flagged as $stateful when wrapping one-time with inputs", () => {
-      filterProvider.register("identity", valueFn(identity));
+      filterProvider.register(
+        "identity",
+        valueFn((x) => x),
+      );
 
       let interceptorCalls = 0;
       function interceptor() {
@@ -3799,7 +3801,7 @@ describe("parser", () => {
 
     it("should not affect when a one-time binding becomes stable", () => {
       scope.$watch($parse("::x"));
-      scope.$watch($parse("::x", identity));
+      scope.$watch($parse("::x", (x) => x));
       scope.$watch($parse("::x", () => 1)); // interceptor that returns non-undefined
 
       scope.$digest();
@@ -3812,7 +3814,7 @@ describe("parser", () => {
 
     it("should not affect when a one-time literal binding becomes stable", () => {
       scope.$watch($parse("::[x]"));
-      scope.$watch($parse("::[x]", identity));
+      scope.$watch($parse("::[x]", (x) => x));
       scope.$watch($parse("::[x]", () => 1)); // interceptor that returns non-literal
 
       scope.$digest();
@@ -3846,7 +3848,7 @@ describe("parser", () => {
       scope.$watch(
         $parse(
           $parse("::{x:x, y:y}", (lit) => lit.x),
-          identity,
+          (x) => x,
         ),
         (val) => logs.push(val),
       );

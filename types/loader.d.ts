@@ -196,40 +196,8 @@ export class Angular {
     cache: Map<number, import("./core/cache/cache").ExpandoStore>;
     /** @type {string} */
     version: string;
-    /** @type {bind} */
-    bind: typeof bind;
-    /** @type {equals} */
-    equals: typeof equals;
     /** @type {typeof import('./shared/jqlite/jqlite').JQLite} */
     element: typeof import("./shared/jqlite/jqlite").JQLite;
-    /** @type {extend} */
-    extend: typeof extend;
-    /** @type {forEach} */
-    forEach: typeof forEach;
-    /** @type {fromJson} */
-    fromJson: typeof fromJson;
-    /** @type {toJson} */
-    toJson: typeof toJson;
-    /** @type {identity} */
-    identity: typeof identity;
-    /** @type {isDate} */
-    isDate: typeof isDate;
-    /** @type {isDefined} */
-    isDefined: typeof isDefined;
-    /** @type {isElement} */
-    isElement: typeof isElement;
-    /** @type {isFunction} */
-    isFunction: typeof isFunction;
-    /** @type {isNumber} */
-    isNumber: typeof isNumber;
-    /** @type {isObject} */
-    isObject: typeof isObject;
-    /** @type {isString} */
-    isString: typeof isString;
-    /** @type {isUndefined} */
-    isUndefined: typeof isUndefined;
-    /** @type {merge} */
-    merge: typeof merge;
     /** @type {errorHandlingConfig} */
     errorHandlingConfig: typeof errorHandlingConfig;
     /** @type {Function} */
@@ -375,19 +343,3 @@ export type AngularBootstrapConfig = {
      */
     strictDi?: boolean;
 };
-import { bind } from "./shared/utils";
-import { equals } from "./shared/utils";
-import { extend } from "./shared/utils";
-import { forEach } from "./shared/utils";
-import { fromJson } from "./shared/utils";
-import { toJson } from "./shared/utils";
-import { identity } from "./shared/utils";
-import { isDate } from "./shared/utils";
-import { isDefined } from "./shared/utils";
-import { isElement } from "./shared/utils";
-import { isFunction } from "./shared/utils";
-import { isNumber } from "./shared/utils";
-import { isObject } from "./shared/utils";
-import { isString } from "./shared/utils";
-import { isUndefined } from "./shared/utils";
-import { merge } from "./shared/utils";

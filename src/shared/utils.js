@@ -307,7 +307,7 @@ export function snakeCase(name, separator) {
    ```js
      let values = {name: 'misko', gender: 'male'};
      let log = [];
-     angular.forEach(values, function(value, key) {
+     forEach(values, function(value, key) {
        this.push(key + ': ' + value);
      }, log);
      expect(log).toEqual(['name: misko', 'gender: male']);
@@ -494,15 +494,6 @@ export function isNumberNaN(num) {
  */
 export function inherit(parent, extra) {
   return extend(Object.create(parent), extra);
-}
-
-/**
- *
- * @param {*} value to be returned.
- * @returns {*} the value passed in.
- */
-export function identity(value) {
-  return value;
 }
 
 /**
