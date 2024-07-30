@@ -157,7 +157,6 @@ export const VERSION: string;
  * Configuration option for AngularTS bootstrap process.
  *
  * @typedef {Object} AngularBootstrapConfig
- * @property {boolean} debugInfoEnabled - Indicates whether debug information should be enabled. Setting this to `false` can improve performance but will disable some debugging features.
  * @property {boolean} [strictDi] - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.
  */
 /**
@@ -183,73 +182,69 @@ export class Angular {
      */
     errorHandlingConfig(config?: import("./shared/utils").ErrorHandlingConfig): import("./shared/utils").ErrorHandlingConfig;
     /**
-   * @module angular
-   * @function bootstrap
-  
-   * @description
-   * Use this function to manually start up AngularJS application.
-   *
-   * For more information, see the {@link guide/bootstrap Bootstrap guide}.
-   *
-   * AngularJS will detect if it has been loaded into the browser more than once and only allow the
-   * first loaded script to be bootstrapped and will report a warning to the browser console for
-   * each of the subsequent scripts. This prevents strange results in applications, where otherwise
-   * multiple instances of AngularJS try to work on the DOM.
-   *
-   * <div class="alert alert-warning">
-   * **Note:** Protractor based end-to-end tests cannot use this function to bootstrap manually.
-   * They must use {@link ng.directive:ngApp ngApp}.
-   * </div>
-   *
-   * <div class="alert alert-warning">
-   * **Note:** Do not bootstrap the app on an element with a directive that uses {@link ng.$compile#transclusion transclusion},
-   * such as {@link ng.ngIf `ngIf`}, {@link ng.ngInclude `ngInclude`} and {@link ngRoute.ngView `ngView`}.
-   * Doing this misplaces the app {@link ng.$rootElement `$rootElement`} and the app's {@link auto.$injector injector},
-   * causing animations to stop working and making the injector inaccessible from outside the app.
-   * </div>
-   *
-   * ```html
-   * <!doctype html>
-   * <html>
-   * <body>
-   * <div ng-controller="WelcomeController">
-   *   {{greeting}}
-   * </div>
-   *
-   * <script src="angular.js"></script>
-   * <script>
-   *   let app = angular.module('demo', [])
-   *   .controller('WelcomeController', function($scope) {
-   *       $scope.greeting = 'Welcome!';
-   *   });
-   *   angular.bootstrap(document, ['demo']);
-   * </script>
-   * </body>
-   * </html>
-   * ```
-   *
-   * @param {string | Element | Document} element DOM element which is the root of AngularJS application.
-   * @param {Array<string | Function | any[]>=} modules an array of modules to load into the application.
-   *     Each item in the array should be the name of a predefined module or a (DI annotated)
-   *     function that will be invoked by the injector as a `config` block.
-   *     See: {@link angular.module modules}
-   * @param {AngularBootstrapConfig} [config] an object for defining configuration options for the application. The
-   *     following keys are supported:
-   *
-   * * `strictDi` - disable automatic function annotation for the application. This is meant to
-   *   assist in finding bugs which break minified code. Defaults to `false`.
-   *
-   * @returns {any} InjectorService - Returns the newly created injector for this app.
-   */
-    bootstrap(element: string | Element | Document, modules?: Array<string | Function | any[]> | undefined, config?: AngularBootstrapConfig): any;
+     * Use this function to manually start up AngularJS application.
+     *
+     * For more information, see the {@link guide/bootstrap Bootstrap guide}.
+     *
+     * AngularJS will detect if it has been loaded into the browser more than once and only allow the
+     * first loaded script to be bootstrapped and will report a warning to the browser console for
+     * each of the subsequent scripts. This prevents strange results in applications, where otherwise
+     * multiple instances of AngularJS try to work on the DOM.
+     *
+     * <div class="alert alert-warning">
+     * **Note:** Protractor based end-to-end tests cannot use this function to bootstrap manually.
+     * They must use {@link ng.directive:ngApp ngApp}.
+     * </div>
+     *
+     * <div class="alert alert-warning">
+     * **Note:** Do not bootstrap the app on an element with a directive that uses {@link ng.$compile#transclusion transclusion},
+     * such as {@link ng.ngIf `ngIf`}, {@link ng.ngInclude `ngInclude`} and {@link ngRoute.ngView `ngView`}.
+     * Doing this misplaces the app {@link ng.$rootElement `$rootElement`} and the app's {@link auto.$injector injector},
+     * causing animations to stop working and making the injector inaccessible from outside the app.
+     * </div>
+     *
+     * ```html
+     * <!doctype html>
+     * <html>
+     * <body>
+     * <div ng-controller="WelcomeController">
+     *   {{greeting}}
+     * </div>
+     *
+     * <script src="angular.js"></script>
+     * <script>
+     *   let app = angular.module('demo', [])
+     *   .controller('WelcomeController', function($scope) {
+     *       $scope.greeting = 'Welcome!';
+     *   });
+     *   angular.bootstrap(document, ['demo']);
+     * </script>
+     * </body>
+     * </html>
+     * ```
+     *
+     * @param {string | Element | Document} element DOM element which is the root of AngularJS application.
+     * @param {Array<String|any>} [modules] an array of modules to load into the application.
+     *     Each item in the array should be the name of a predefined module or a (DI annotated)
+     *     function that will be invoked by the injector as a `config` block.
+     *     See: {@link angular.module modules}
+     * @param {AngularBootstrapConfig} [config] an object for defining configuration options for the application. The
+     *     following keys are supported:
+     *
+     * * `strictDi` - disable automatic function annotation for the application. This is meant to
+     *   assist in finding bugs which break minified code. Defaults to `false`.
+     *
+     * @returns {any} InjectorService - Returns the newly created injector for this app.
+     */
+    bootstrap(element: string | Element | Document, modules?: Array<string | any>, config?: AngularBootstrapConfig): any;
     resumeBootstrap(extraModules: any): any;
     /**
      *
      * @param {any[]} modules
      * @param {boolean?} strictDi
-     * @returns {angular.auto.IInjectorService}
+     * @returns {import("./types").InjectorService}
      */
-    injector(modules: any[], strictDi: boolean | null): angular.auto.IInjectorService;
+    injector(modules: any[], strictDi: boolean | null): import("./types").InjectorService;
     /**
      *
      * The `angular.module` is a global place for creating, registering and retrieving AngularJS
@@ -314,10 +309,6 @@ export class Angular {
  * Configuration option for AngularTS bootstrap process.
  */
 export type AngularBootstrapConfig = {
-    /**
-     * - Indicates whether debug information should be enabled. Setting this to `false` can improve performance but will disable some debugging features.
-     */
-    debugInfoEnabled: boolean;
     /**
      * - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.
      */

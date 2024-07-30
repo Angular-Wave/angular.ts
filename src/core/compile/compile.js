@@ -483,39 +483,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
   /**
    * @ngdoc method
-   * @name  $compileProvider#debugInfoEnabled
-   *
-   * @param {boolean=} enabled update the debugInfoEnabled state if provided, otherwise just return the
-   * current debugInfoEnabled state
-   * @returns {*} current value if used as getter or itself (chaining) if used as setter
-   *
-   * @kind function
-   *
-   * @description
-   * Call this method to enable/disable various debug runtime information in the compiler such as adding
-   * binding information and a reference to the current scope on to DOM elements.
-   * If enabled, the compiler will add the following to DOM elements that have been bound to the scope
-   * * Data properties used by the {@link angular.element#methods `scope()`/`isolateScope()` methods} to return
-   *   the element's scope.
-   * * Placeholder comments will contain information about what directive and binding caused the placeholder.
-   *   E.g. `<!-- ngIf: shouldShow() -->`.
-   *
-   * You may want to disable this in production for a significant performance boost. See
-   * {@link guide/production#disabling-debug-data Disabling Debug Data} for more.
-   *
-   * The default value is true.
-   */
-  let debugInfoEnabled = true;
-  this.debugInfoEnabled = function (enabled) {
-    if (isDefined(enabled)) {
-      debugInfoEnabled = enabled;
-      return this;
-    }
-    return debugInfoEnabled;
-  };
-
-  /**
-   * @ngdoc method
    * @name  $compileProvider#strictComponentBindingsEnabled
    *
    * @param {boolean=} enabled update the strictComponentBindingsEnabled state if provided,

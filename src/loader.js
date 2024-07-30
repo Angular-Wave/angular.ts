@@ -9,7 +9,7 @@ import {
   assertNotHasOwnProperty,
   errorHandlingConfig,
 } from "./shared/utils";
-import { JQLite, startingTag } from "./shared/jqlite/jqlite";
+import { JQLite } from "./shared/jqlite/jqlite";
 import { createInjector } from "./injector";
 import { CACHE } from "./core/cache/cache";
 
@@ -27,7 +27,6 @@ const moduleCache = {};
  * Configuration option for AngularTS bootstrap process.
  *
  * @typedef {Object} AngularBootstrapConfig
- * @property {boolean} debugInfoEnabled - Indicates whether debug information should be enabled. Setting this to `false` can improve performance but will disable some debugging features.
  * @property {boolean} [strictDi] - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.
  */
 
@@ -65,101 +64,79 @@ export class Angular {
   }
 
   /**
- * @module angular
- * @function bootstrap
-
- * @description
- * Use this function to manually start up AngularJS application.
- *
- * For more information, see the {@link guide/bootstrap Bootstrap guide}.
- *
- * AngularJS will detect if it has been loaded into the browser more than once and only allow the
- * first loaded script to be bootstrapped and will report a warning to the browser console for
- * each of the subsequent scripts. This prevents strange results in applications, where otherwise
- * multiple instances of AngularJS try to work on the DOM.
- *
- * <div class="alert alert-warning">
- * **Note:** Protractor based end-to-end tests cannot use this function to bootstrap manually.
- * They must use {@link ng.directive:ngApp ngApp}.
- * </div>
- *
- * <div class="alert alert-warning">
- * **Note:** Do not bootstrap the app on an element with a directive that uses {@link ng.$compile#transclusion transclusion},
- * such as {@link ng.ngIf `ngIf`}, {@link ng.ngInclude `ngInclude`} and {@link ngRoute.ngView `ngView`}.
- * Doing this misplaces the app {@link ng.$rootElement `$rootElement`} and the app's {@link auto.$injector injector},
- * causing animations to stop working and making the injector inaccessible from outside the app.
- * </div>
- *
- * ```html
- * <!doctype html>
- * <html>
- * <body>
- * <div ng-controller="WelcomeController">
- *   {{greeting}}
- * </div>
- *
- * <script src="angular.js"></script>
- * <script>
- *   let app = angular.module('demo', [])
- *   .controller('WelcomeController', function($scope) {
- *       $scope.greeting = 'Welcome!';
- *   });
- *   angular.bootstrap(document, ['demo']);
- * </script>
- * </body>
- * </html>
- * ```
- *
- * @param {string | Element | Document} element DOM element which is the root of AngularJS application.
- * @param {Array<string | Function | any[]>=} modules an array of modules to load into the application.
- *     Each item in the array should be the name of a predefined module or a (DI annotated)
- *     function that will be invoked by the injector as a `config` block.
- *     See: {@link angular.module modules}
- * @param {AngularBootstrapConfig} [config] an object for defining configuration options for the application. The
- *     following keys are supported:
- *
- * * `strictDi` - disable automatic function annotation for the application. This is meant to
- *   assist in finding bugs which break minified code. Defaults to `false`.
- *
- * @returns {any} InjectorService - Returns the newly created injector for this app.
- */
+   * Use this function to manually start up AngularJS application.
+   *
+   * For more information, see the {@link guide/bootstrap Bootstrap guide}.
+   *
+   * AngularJS will detect if it has been loaded into the browser more than once and only allow the
+   * first loaded script to be bootstrapped and will report a warning to the browser console for
+   * each of the subsequent scripts. This prevents strange results in applications, where otherwise
+   * multiple instances of AngularJS try to work on the DOM.
+   *
+   * <div class="alert alert-warning">
+   * **Note:** Protractor based end-to-end tests cannot use this function to bootstrap manually.
+   * They must use {@link ng.directive:ngApp ngApp}.
+   * </div>
+   *
+   * <div class="alert alert-warning">
+   * **Note:** Do not bootstrap the app on an element with a directive that uses {@link ng.$compile#transclusion transclusion},
+   * such as {@link ng.ngIf `ngIf`}, {@link ng.ngInclude `ngInclude`} and {@link ngRoute.ngView `ngView`}.
+   * Doing this misplaces the app {@link ng.$rootElement `$rootElement`} and the app's {@link auto.$injector injector},
+   * causing animations to stop working and making the injector inaccessible from outside the app.
+   * </div>
+   *
+   * ```html
+   * <!doctype html>
+   * <html>
+   * <body>
+   * <div ng-controller="WelcomeController">
+   *   {{greeting}}
+   * </div>
+   *
+   * <script src="angular.js"></script>
+   * <script>
+   *   let app = angular.module('demo', [])
+   *   .controller('WelcomeController', function($scope) {
+   *       $scope.greeting = 'Welcome!';
+   *   });
+   *   angular.bootstrap(document, ['demo']);
+   * </script>
+   * </body>
+   * </html>
+   * ```
+   *
+   * @param {string | Element | Document} element DOM element which is the root of AngularJS application.
+   * @param {Array<String|any>} [modules] an array of modules to load into the application.
+   *     Each item in the array should be the name of a predefined module or a (DI annotated)
+   *     function that will be invoked by the injector as a `config` block.
+   *     See: {@link angular.module modules}
+   * @param {AngularBootstrapConfig} [config] an object for defining configuration options for the application. The
+   *     following keys are supported:
+   *
+   * * `strictDi` - disable automatic function annotation for the application. This is meant to
+   *   assist in finding bugs which break minified code. Defaults to `false`.
+   *
+   * @returns {any} InjectorService - Returns the newly created injector for this app.
+   */
   bootstrap(element, modules, config) {
     config = config || {
-      debugInfoEnabled: false,
       strictDi: false,
     };
 
     this.doBootstrap = function () {
-      element = JQLite(element);
+      var jqLite = JQLite(element);
 
-      if (element.injector()) {
-        const tag =
-          element[0] === window.document ? "document" : startingTag(element);
-        // Encode angle brackets to prevent input from being sanitized to empty string #8683.
-        throw ngMinErr(
-          "btstrpd",
-          "App already bootstrapped with this element '{0}'",
-          tag.replace(/</, "&lt;").replace(/>/, "&gt;"),
-        );
+      if (jqLite.injector()) {
+        throw ngMinErr("btstrpd", "App already bootstrapped");
       }
 
       this.bootsrappedModules = modules || [];
       this.bootsrappedModules.unshift([
         "$provide",
         ($provide) => {
-          $provide.value("$rootElement", element);
+          $provide.value("$rootElement", jqLite);
         },
       ]);
-
-      if (config.debugInfoEnabled) {
-        // Pushing so that this overrides `debugInfoEnabled` setting defined in user's `modules`.
-        this.bootsrappedModules.push([
-          "$compileProvider",
-          function ($compileProvider) {
-            $compileProvider.debugInfoEnabled(true);
-          },
-        ]);
-      }
 
       this.bootsrappedModules.unshift("ng");
 
@@ -179,13 +156,7 @@ export class Angular {
       return injector;
     };
 
-    const NG_ENABLE_DEBUG_INFO = /^NG_ENABLE_DEBUG_INFO!/;
     const NG_DEFER_BOOTSTRAP = /^NG_DEFER_BOOTSTRAP!/;
-
-    if (window && NG_ENABLE_DEBUG_INFO.test(window.name)) {
-      config.debugInfoEnabled = true;
-      window.name = window.name.replace(NG_ENABLE_DEBUG_INFO, "");
-    }
 
     if (window && !NG_DEFER_BOOTSTRAP.test(window.name)) {
       return this.doBootstrap();
@@ -193,22 +164,18 @@ export class Angular {
 
     window.name = window.name.replace(NG_DEFER_BOOTSTRAP, "");
     this.resumeBootstrap = function (extraModules) {
-      forEach(extraModules, function (module) {
-        modules.push(module);
-      });
+      if (Array.isArray(extraModules)) {
+        extraModules.forEach((module) => modules.push(module));
+      }
       return this.doBootstrap();
     };
-
-    if (isFunction(this.resumeDeferredBootstrap)) {
-      this.resumeDeferredBootstrap();
-    }
   }
 
   /**
    *
    * @param {any[]} modules
    * @param {boolean?} strictDi
-   * @returns {angular.auto.IInjectorService}
+   * @returns {import("./types").InjectorService}
    */
   injector(modules, strictDi) {
     return createInjector(modules, strictDi);
@@ -411,9 +378,7 @@ export class Angular {
         service: invokeLaterAndSetModuleName("$provide", "service"),
 
         /**
-         * @ngdoc method
          * @name import('./types').Module#value
-         * @module ng
          * @param {string} name service name
          * @param {*} object Service instance object.
          * @description
@@ -588,6 +553,7 @@ export class Angular {
        * @param {string} provider
        * @param {string} method
        * @param {String=} insertMethod
+       * @param {Array<any>} [queue]
        * @returns {import('./types').Module}
        */
       function invokeLater(provider, method, insertMethod, queue) {
@@ -930,7 +896,7 @@ export function setupModuleLoader(window) {
            * @name import('./types').Module#info
            * @module ng
            *
-           * @param {Object=} info Information about the module
+           * @param {Object=} value Information about the module
            * @returns {Object|import('./types').Module} The current info object for this module if called as a getter,
            *                          or `this` if called as a setter.
            *

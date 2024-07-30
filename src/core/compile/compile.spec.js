@@ -4585,17 +4585,6 @@ describe("$compile", () => {
       ]);
     });
 
-    it("should allow debugInfoEnabled to be configured", () => {
-      createInjector([
-        "ng",
-        ($compileProvider) => {
-          expect($compileProvider.debugInfoEnabled()).toBe(true); // the default
-          $compileProvider.debugInfoEnabled(false);
-          expect($compileProvider.debugInfoEnabled()).toBe(false);
-        },
-      ]);
-    });
-
     it("should allow strictComponentBindingsEnabled to be configured", () => {
       createInjector([
         "ng",
@@ -7643,42 +7632,6 @@ describe("$compile", () => {
           expect(element.text()).toEqual("text: angular");
           expect(element.attr("name")).toEqual("attr: angular");
         });
-      });
-
-      describe("decorating with binding info", () => {
-        it("should not occur if `debugInfoEnabled` is false", () => {
-          createInjector([
-            "test1",
-            ($compileProvider) => {
-              $compileProvider.debugInfoEnabled(false);
-            },
-          ]).invoke((_$compile_, _$rootScope_, _$templateCache_) => {
-            $compile = _$compile_;
-            $rootScope = _$rootScope_;
-            $templateCache = _$templateCache_;
-          });
-          element = $compile("<div>{{1+2}}</div>")($rootScope);
-          expect(element[0].classList.contains("ng-binding")).toBe(false);
-          expect(element.data("$binding")).toBeUndefined();
-        });
-
-        // TODO figure out debug strat
-        // it("should occur if `debugInfoEnabled` is true", () => {
-        //   createInjector([
-        //     "test1",
-        //     ($compileProvider) => {
-        //       $compileProvider.debugInfoEnabled(true);
-        //     },
-        //   ]).invoke((_$compile_, _$rootScope_, _$templateCache_) => {
-        //     $compile = _$compile_;
-        //     $rootScope = _$rootScope_;
-        //     $templateCache = _$templateCache_;
-        //   });
-
-        //   element = $compile("<div>{{1+2}}</div>")($rootScope);
-        //   expect(element[0].classList.contains("ng-binding")).toBe(true);
-        //   expect(element.data("$binding")).toEqual(["1+2"]);
-        // });
       });
 
       it("should observe interpolated attrs", () => {

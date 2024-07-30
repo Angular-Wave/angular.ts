@@ -147,7 +147,6 @@ export class $CompileProvider {
      *    chaining otherwise.
      */
     imgSrcSanitizationTrustedUrlList: (regexp?: RegExp | undefined) => RegExp | ng.ICompileProvider;
-    debugInfoEnabled: (enabled: any) => boolean | this;
     strictComponentBindingsEnabled: (enabled: any) => boolean | this;
     /**
      * @ngdoc method

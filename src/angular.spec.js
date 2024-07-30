@@ -1923,15 +1923,6 @@ describe("angular", () => {
         expect(injector).toBeDefined();
       });
 
-      it("should resume deferred bootstrap, if defined", () => {
-        window.name = "NG_DEFER_BOOTSTRAP!";
-
-        angular.resumeDeferredBootstrap = () => {};
-        const spy = spyOn(angular, "resumeDeferredBootstrap");
-        injector = angular.bootstrap(element);
-        expect(spy).toHaveBeenCalled();
-      });
-
       it("should wait for extra modules", () => {
         window.name = "NG_DEFER_BOOTSTRAP!";
         angular.bootstrap(element);

@@ -1,7 +1,6 @@
 /**
  * @typedef {Object} BootstrapConfig
  * @description Configuration option for AngularTS bootstrap process.
- * @property {boolean} debugInfoEnabled - Indicates whether debug information should be enabled. Setting this to `false` can improve performance but will disable some debugging features.
  * @property {boolean} [strictDi] - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.
  */
 
