@@ -27,7 +27,7 @@ export function $$AnimateCssDriverProvider($$animationProvider) {
      *
      * @param {*} $animateCss
      * @param {typeof import('../core/animate/animate-runner').AnimateRunner} $$AnimateRunner
-     * @param {*} $rootElement
+     * @param {JQLite} $rootElement
      * @returns
      */
     function ($animateCss, $$AnimateRunner, $rootElement) {

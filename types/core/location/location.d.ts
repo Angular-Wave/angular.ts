@@ -204,6 +204,7 @@ export class $LocationProvider {
      * @param {string=} newState New history state object
      * @param {string=} oldState History state object that was before it was changed.
      */
-    $get: (string | (($rootScope: any, $browser: any, $rootElement: any) => LocationHtml5Url | LocationHashbangUrl))[];
+    $get: (string | (($rootScope: any, $browser: any, $rootElement: JQLite) => LocationHtml5Url | LocationHashbangUrl))[];
 }
 export const PATH_MATCH: RegExp;
+import { JQLite } from "../../shared/jqlite/jqlite";

@@ -859,6 +859,13 @@ export function $LocationProvider() {
     "$rootScope",
     "$browser",
     "$rootElement",
+    /**
+     * 
+     * @param {*} $rootScope 
+     * @param {*} $browser 
+     * @param {JQLite} $rootElement 
+     * @returns 
+     */
     function ($rootScope, $browser, $rootElement) {
       let $location;
       let LocationMode;

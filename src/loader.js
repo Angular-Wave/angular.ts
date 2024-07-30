@@ -146,7 +146,14 @@ export class Angular {
         "$rootElement",
         "$compile",
         "$injector",
-        function bootstrapApply(scope, el, compile, $injector) {
+        /**
+         * 
+         * @param {*} scope 
+         * @param {JQLite} el 
+         * @param {*} compile 
+         * @param {*} $injector 
+         */
+        function (scope, el, compile, $injector) {
           scope.$apply(() => {
             el.data("$injector", $injector);
             compile(el)(scope);
