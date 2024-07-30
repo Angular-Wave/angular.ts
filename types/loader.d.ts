@@ -140,9 +140,9 @@
  </example>
  */
 /**
- * @param {Element} element
+ * @param {Element|Document} element
  */
-export function angularInit(element: Element): void;
+export function angularInit(element: Element | Document): void;
 /**
  * @ngdoc type
  * @name import('./types').Module
@@ -250,54 +250,6 @@ export class Angular {
      * @returns {import("./types").InjectorService}
      */
     injector(modules: any[], strictDi: boolean | null): import("./types").InjectorService;
-    /**
-     *
-     * The `angular.module` is a global place for creating, registering and retrieving AngularJS
-     * modules.
-     * All modules (AngularJS core or 3rd party) that should be available to an application must be
-     * registered using this mechanism.
-     *
-     * Passing one argument retrieves an existing {@link import('./types').Module},
-     * whereas passing more than one argument creates a new {@link import('./types').Module}
-     *
-     *
-     * # Module
-     *
-     * A module is a collection of services, directives, controllers, filters, and configuration information.
-     * `angular.module` is used to configure the {@link auto.$injector $injector}.
-     *
-     * ```js
-     * // Create a new module
-     * let myModule = angular.module('myModule', []);
-     *
-     * // register a new service
-     * myModule.value('appName', 'MyCoolApp');
-     *
-     * // configure existing services inside initialization blocks.
-     * myModule.config(['$locationProvider', function($locationProvider) {
-     *   // Configure existing providers
-     *   $locationProvider.hashPrefix('!');
-     * }]);
-     * ```
-     *
-     * Then you can create an injector and load your modules like this:
-     *
-     * ```js
-     * let injector = angular.injector(['ng', 'myModule'])
-     * ```
-     *
-     * However it's more likely that you'll just use
-     * {@link ng.directive:ngApp ngApp} or
-     * {@link angular.bootstrap} to simplify this process for you.
-     *
-     * @param {!string} name The name of the module to create or retrieve.
-     * @param {!Array.<string>=} requires If specified then new module is being created. If
-     *        unspecified then the module is being retrieved for further configuration.
-     * @param {Function=} configFn Optional configuration function for the module. Same as
-     *        {@link import('./types').Module#config Module#config()}.
-     * @returns {import('./types').Module} new module with the {@link import('./types').Module} api.
-     */
-    module(name: string, requires?: Array<string> | undefined, configFn?: Function | undefined): import("./types").Module;
     /**
    * @module angular
    * @function reloadWithDebugInfo

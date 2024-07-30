@@ -1,7 +1,7 @@
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
-import { Angular } from "../../loader";
+import { Angular, setupModuleLoader } from "../../loader";
 
 describe("ngInit", () => {
   let element;
@@ -49,7 +49,7 @@ describe("ngInit", () => {
   });
 
   it("should be evaluated after ngController", () => {
-    angular.module("test1", ["ng"]);
+    window.angular.module("test1", ["ng"]);
     createInjector([
       "ng",
       ($controllerProvider) => {
