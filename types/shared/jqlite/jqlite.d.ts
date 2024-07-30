@@ -101,7 +101,7 @@ export class JQLite {
      * @returns {JQLite|any} - The retrieved data if acting as a getter. Otherwise, returns undefined.
      */
     data(key: string | any, value?: any): JQLite | any;
-    replaceWith(arg1: any): void | JQLite;
+    replaceWith(arg1: any): this;
     children(): JQLite;
     /**
      * @param {string} node

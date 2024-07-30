@@ -553,15 +553,7 @@ JQLite.prototype.replaceWith = function (arg1) {
     });
   };
   for (let i = 0; i < this.length; i++) {
-    if (isUndefined(value)) {
-      value = fn(this[i], arg1);
-      if (isDefined(value)) {
-        // any function which returns a value needs to be wrapped
-        value = JQLite(value);
-      }
-    } else {
-      addNodes(value, fn(this[i], arg1));
-    }
+    addNodes(value, fn(this[i], arg1));
   }
   return isDefined(value) ? value : this;
 };
@@ -893,6 +885,7 @@ function elementAcceptsData(node) {
  * @returns {DocumentFragment}
  */
 export function buildFragment(html) {
+  /** @type {HTMLDivElement|ChildNode} */
   let tmp;
   let tag;
   let wrap;
@@ -905,6 +898,7 @@ export function buildFragment(html) {
     nodes.push(document.createTextNode(html));
   } else {
     // Convert html into DOM nodes
+
     tmp = tempFragment.appendChild(document.createElement("div"));
     tag = (TAG_NAME_REGEXP.exec(html) || ["", ""])[1].toLowerCase();
 
@@ -1021,7 +1015,7 @@ export function getOrSetCacheData(element, key, value) {
 /**
  * Adds nodes or elements to the root array-like object.
  *
- * @param {Array} root - The array-like object to which elements will be added.
+ * @param {JQLite} root - The array-like object to which elements will be added.
  * @param {(Node|Array|NodeList|Object)} elements - The elements to add to the root. This can be a single DOM node, an array-like object (such as an Array or NodeList), or any other object.
  */
 function addNodes(root, elements) {
