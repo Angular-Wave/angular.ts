@@ -16,11 +16,6 @@ import {
 import { CACHE, EXPANDO } from "../../core/cache/cache";
 
 /**
- * @name angular.element
- * @module ng
- * @kind function
- *
- * @description
  * Wraps a raw DOM element or HTML string as a [jQuery](http://jquery.com) element. Regardless of the presence of jQuery, `angular.element`
  * delegates to AngularJS's built-in subset of jQuery, called "jQuery lite" or **jqLite**.
  *
@@ -80,12 +75,6 @@ import { CACHE, EXPANDO } from "../../core/cache/cache";
  *   Requires {@link guide/production#disabling-debug-data Debug Data} to be enabled.
  * - `inheritedData()` - same as `data()`, but walks up the DOM until a value is found or the top
  *   parent element is reached.
- *
- * @knownIssue You cannot spy on `angular.element` if you are using Jasmine version 1.x. See
- * https://github.com/angular/angular.js/issues/14251 for more information.
- *
- * @param {string|Element} element HTML string or Element to be wrapped into jQuery.
- * @returns {JQLite} jQuery object.
  */
 
 /** @type {number} */
@@ -135,7 +124,7 @@ const BOOLEAN_ELEMENTS = {};
  * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
  * and execution of chain functions.
  *
- * @param {string|Element|Comment|Document|Window|JQLite|ArrayLike<Element>|(() => void)} element
+ * @param {string|Node|JQLite|ArrayLike<Element>|(() => void)} element
  * @returns {JQLite}
  */
 export function JQLite(element) {
@@ -885,7 +874,7 @@ function elementAcceptsData(node) {
  * @returns {DocumentFragment}
  */
 export function buildFragment(html) {
-  /** @type {HTMLDivElement|ChildNode} */
+  /** @type {HTMLDivElement} */
   let tmp;
   let tag;
   let wrap;
@@ -908,13 +897,13 @@ export function buildFragment(html) {
     i = wrap.length;
     while (--i > -1) {
       tmp.appendChild(window.document.createElement(wrap[i]));
-      tmp = tmp.firstChild;
+      tmp = /** @type {HTMLDivElement} */ (tmp.firstChild);
     }
     tmp.innerHTML = html;
 
     nodes = concat(nodes, tmp.childNodes);
 
-    tmp = tempFragment.firstChild;
+    tmp = /** @type {HTMLDivElement} */ (tempFragment.firstChild);
     tmp.textContent = "";
   }
 
@@ -1048,7 +1037,7 @@ function getController(element, name) {
 
 /**
  *
- * @param {Element} element
+ * @param {Node} element
  * @param {string|string[]} name
  * @param {any} [value]
  * @returns
@@ -1058,13 +1047,20 @@ function getInheritedData(element, name, value) {
   // this makes $(document).scope() possible
   if (element.nodeType === Node.DOCUMENT_NODE) {
     // TODO Fix types
-    element = element.documentElement;
+    element = /** @type {Document} */ (element).documentElement;
   }
   const names = Array.isArray(name) ? name : [name];
 
   while (element) {
     for (let i = 0, ii = names.length; i < ii; i++) {
-      if (isDefined((value = getOrSetCacheData(element, names[i]))))
+      if (
+        isDefined(
+          (value = getOrSetCacheData(
+            /** @type {Element} */ (element),
+            names[i],
+          )),
+        )
+      )
         return value;
     }
 
@@ -1073,7 +1069,8 @@ function getInheritedData(element, name, value) {
     // to lookup parent controllers.
     element =
       element.parentNode ||
-      (element.nodeType === Node.DOCUMENT_FRAGMENT_NODE && element.host);
+      (element.nodeType === Node.DOCUMENT_FRAGMENT_NODE &&
+        /** @type {ShadowRoot} */ (element).host);
   }
 }
 
@@ -1187,7 +1184,7 @@ function specialMouseHandlerWrapper(target, event, handler) {
 export function startingTag(elementStr) {
   const clone = JQLite(elementStr)[0].cloneNode(true);
   const element = JQLite(clone).empty();
-  var elemHtml = JQLite("<div></div>").append(element).html();
+  var elemHtml = JQLite("<div></div>").append(element[0]).html();
   try {
     return element[0].nodeType === Node.TEXT_NODE
       ? lowercase(elemHtml)
