@@ -1,1 +1,1 @@
-export function initRouter(): void;
+export function initRouter(angular: any): void;

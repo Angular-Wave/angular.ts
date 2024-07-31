@@ -1,1 +1,1 @@
-export function initAnimateModule(): void;
+export function initAnimateModule(angular: any): void;

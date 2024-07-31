@@ -2,8 +2,8 @@ import { extend } from "../../shared/utils";
 
 const ARIA_DISABLE_ATTR = "ngAriaDisable";
 
-export function initAriaModule() {
-  window["angular"]
+export function initAriaModule(angular) {
+  angular
     .module("ngAria", ["ng"])
     .provider("$aria", $AriaProvider)
     .directive("ngShow", [

@@ -12,6 +12,7 @@ import {
 import { countChildScopes, countWatchers } from "../../core/scope/scope";
 import { CACHE, EXPANDO } from "../../core/cache/cache";
 import { wait } from "../../shared/test-utils";
+import { Angular } from "../../loader";
 
 function isUnknownElement(el) {
   return !!el.toString().match(/Unknown/);
@@ -59,7 +60,7 @@ describe("$compile", () => {
 
   beforeEach(() => {
     log = [];
-    publishExternalAPI();
+    window.angular = new Angular();
     module = window.angular.module("test1", ["ng"]);
     defaultModule = window.angular.module("defaultModule", ["ng"]);
     myModule = window.angular.module("myModule", ["ng"]);
@@ -6756,50 +6757,53 @@ describe("$compile", () => {
 
       beforeEach(() => {
         log = [];
-        publishExternalAPI().decorator("$exceptionHandler", () => {
-          return (exception, cause) => {
+
+        window.angular = new Angular();
+        module = window.angular.module("test1", ["ng"])
+          .decorator("$exceptionHandler", () => {
+          return (exception) => {
             log.push(exception.message);
           };
         });
-        module = window.angular.module("test1", ["ng"]);
+
         ["", "a", "b"].forEach((name) => {
           module.directive(`scope${name.toUpperCase()}`, () => ({
             scope: true,
             restrict: "A",
             compile() {
               return {
-                pre(scope, element) {
+                pre(scope) {
                   log.push(scope.$id);
                 },
               };
             },
-          }));
-          module.directive(`iscope${name.toUpperCase()}`, () => ({
+          }))
+          .directive(`iscope${name.toUpperCase()}`, () => ({
             scope: {},
             restrict: "A",
             compile() {
-              return function (scope, element) {
+              return function (scope) {
                 iscope = scope;
                 log.push(scope.$id);
               };
             },
-          }));
-          module.directive(`tscope${name.toUpperCase()}`, () => ({
+          }))
+          .directive(`tscope${name.toUpperCase()}`, () => ({
             scope: true,
             restrict: "A",
             templateUrl: "tscope.html",
             compile() {
-              return function (scope, element) {
+              return function (scope) {
                 log.push(scope.$id);
               };
             },
-          }));
-          module.directive(`stscope${name.toUpperCase()}`, () => ({
+          }))
+          .directive(`stscope${name.toUpperCase()}`, () => ({
             scope: true,
             restrict: "A",
             template: "<span></span>",
             compile() {
-              return function (scope, element) {
+              return function (scope) {
                 log.push(scope.$id);
               };
             },
@@ -6810,7 +6814,7 @@ describe("$compile", () => {
             restrict: "A",
             templateUrl: "trscope.html",
             compile() {
-              return function (scope, element) {
+              return function (scope) {
                 log.push(scope.$id);
               };
             },
@@ -6820,7 +6824,7 @@ describe("$compile", () => {
             restrict: "A",
             templateUrl: "tiscope.html",
             compile() {
-              return function (scope, element) {
+              return function (scope) {
                 iscope = scope;
                 log.push(scope.$id);
               };
@@ -6831,7 +6835,7 @@ describe("$compile", () => {
             restrict: "A",
             template: "<span></span>",
             compile() {
-              return function (scope, element) {
+              return function (scope) {
                 iscope = scope;
                 log.push(scope.$id);
               };

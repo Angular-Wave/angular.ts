@@ -17,8 +17,8 @@ import { StateService } from "./state/state-service";
 import { UIRouterGlobals } from "./globals";
 import { TransitionService } from "./transition/transition-service";
 
-export function initRouter() {
-  window["angular"]
+export function initRouter(angular) {
+  angular
     .module("ng.router", ["ng"])
     .provider("$urlConfig", UrlConfigProvider)
     .provider("$routerGlobals", UIRouterGlobals)

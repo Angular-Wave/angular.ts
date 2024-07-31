@@ -1,13 +1,4 @@
 /**
- * @ngdoc type
- * @name import('./types').Module
- * @module ng
- * @description
- *
- * Interface for configuring AngularJS {@link angular.module modules}.
- */
-export function setupModuleLoader(window: any): any;
-/**
  * @type {string} `version` from `package.json`, injected by Rollup plugin
  */
 export const VERSION: string;
@@ -16,9 +7,6 @@ export const VERSION: string;
  *
  * @typedef {Object} AngularBootstrapConfig
  * @property {boolean} [strictDi] - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.
- */
-/**
- * @class
  */
 export class Angular {
     /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
@@ -99,20 +87,57 @@ export class Angular {
      */
     injector(modules: any[], strictDi: boolean | null): import("./types").InjectorService;
     /**
-   * @module angular
-   * @function reloadWithDebugInfo
-  
-   * @description
-   * Use this function to reload the current application with debug information turned on.
-   * This takes precedence over a call to `$compileProvider.debugInfoEnabled(false)`.
-   *
-   * See {@link ng.$compileProvider#debugInfoEnabled} for more.
-   */
-    reloadWithDebugInfo(): void;
-    /**
      * @param {Element|Document} element
      */
     init(element: Element | Document): void;
+    /**
+     *
+     * The `angular.module` is a global place for creating, registering and retrieving AngularJS
+     * modules.
+     * All modules (AngularJS core or 3rd party) that should be available to an application must be
+     * registered using this mechanism.
+     *
+     * Passing one argument retrieves an existing {@link import('./types').Module},
+     * whereas passing more than one argument creates a new {@link import('./types').Module}
+     *
+     *
+     * # Module
+     *
+     * A module is a collection of services, directives, controllers, filters, and configuration information.
+     * `angular.module` is used to configure the {@link auto.$injector $injector}.
+     *
+     * ```js
+     * // Create a new module
+     * let myModule = angular.module('myModule', []);
+     *
+     * // register a new service
+     * myModule.value('appName', 'MyCoolApp');
+     *
+     * // configure existing services inside initialization blocks.
+     * myModule.config(['$locationProvider', function($locationProvider) {
+     *   // Configure existing providers
+     *   $locationProvider.hashPrefix('!');
+     * }]);
+     * ```
+     *
+     * Then you can create an injector and load your modules like this:
+     *
+     * ```js
+     * let injector = angular.injector(['ng', 'myModule'])
+     * ```
+     *
+     * However it's more likely that you'll just use
+     * {@link ng.directive:ngApp ngApp} or
+     * {@link angular.bootstrap} to simplify this process for you.
+     *
+     * @param {!string} name The name of the module to create or retrieve.
+     * @param {!Array.<string>=} requires If specified then new module is being created. If
+     *        unspecified then the module is being retrieved for further configuration.
+     * @param {Function=} configFn Optional configuration function for the module. Same as
+     *        {@link import('./types').Module#config Module#config()}.
+     * @returns {import('./types').Module} new module with the {@link import('./types').Module} api.
+     */
+    module(name: string, requires?: Array<string> | undefined, configFn?: Function | undefined): import("./types").Module;
 }
 /**
  * Configuration option for AngularTS bootstrap process.

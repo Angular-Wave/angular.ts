@@ -1,7 +1,7 @@
 import { forEach, isString } from "../../shared/utils";
 
-export function initMessageModule() {
-  window["angular"]
+export function initMessageModule(angular) {
+  angular
     .module("ngMessages", [])
 
     .directive("ngMessages", [

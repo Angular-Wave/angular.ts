@@ -9,8 +9,8 @@ import { $$AnimateCssDriverProvider } from "./animate-css-driver";
 import { $$AnimateJsProvider } from "./animate-js";
 import { $$AnimateJsDriverProvider } from "./animate-js-driver";
 
-export function initAnimateModule() {
-  window["angular"]
+export function initAnimateModule(angular) {
+  angular
     .module("ngAnimate", [])
     .directive("ngAnimateSwap", ngAnimateSwapDirective)
     .directive("ngAnimateChildren", $$AnimateChildrenDirective)

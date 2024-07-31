@@ -1,1 +1,1 @@
-export function initMessageModule(): void;
+export function initMessageModule(angular: any): void;

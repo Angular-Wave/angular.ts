@@ -1,1 +1,1 @@
-export function initAriaModule(): void;
+export function initAriaModule(angular: any): void;

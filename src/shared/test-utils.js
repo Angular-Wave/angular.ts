@@ -1,7 +1,7 @@
 import { JQLite } from "./jqlite/jqlite";
 
 /**
- * @param {HTMLElement} element
+ * @param {HTMLElement|JQLite} element
  * @param {string} event
  */
 export function browserTrigger(element, event) {
