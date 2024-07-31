@@ -6404,12 +6404,12 @@ describe("$compile", () => {
 
         describe("replace and not exactly one root element", () => {
           beforeEach(() => {
-            publishExternalAPI().decorator("$exceptionHandler", () => {
+            window.angular = new Angular();
+            module = window.angular.module("test1", ["ng"]).decorator("$exceptionHandler", () => {
               return (exception) => {
                 throw new Error(exception.message);
               };
             });
-            module = window.angular.module("test1", ["ng"]);
             module.directive("template", () => ({
               replace: true,
               templateUrl: "template.html",
@@ -6759,55 +6759,57 @@ describe("$compile", () => {
         log = [];
 
         window.angular = new Angular();
-        module = window.angular.module("test1", ["ng"])
+        module = window.angular
+          .module("test1", ["ng"])
           .decorator("$exceptionHandler", () => {
-          return (exception) => {
-            log.push(exception.message);
-          };
-        });
+            return (exception) => {
+              log.push(exception.message);
+            };
+          });
 
         ["", "a", "b"].forEach((name) => {
-          module.directive(`scope${name.toUpperCase()}`, () => ({
-            scope: true,
-            restrict: "A",
-            compile() {
-              return {
-                pre(scope) {
+          module
+            .directive(`scope${name.toUpperCase()}`, () => ({
+              scope: true,
+              restrict: "A",
+              compile() {
+                return {
+                  pre(scope) {
+                    log.push(scope.$id);
+                  },
+                };
+              },
+            }))
+            .directive(`iscope${name.toUpperCase()}`, () => ({
+              scope: {},
+              restrict: "A",
+              compile() {
+                return function (scope) {
+                  iscope = scope;
                   log.push(scope.$id);
-                },
-              };
-            },
-          }))
-          .directive(`iscope${name.toUpperCase()}`, () => ({
-            scope: {},
-            restrict: "A",
-            compile() {
-              return function (scope) {
-                iscope = scope;
-                log.push(scope.$id);
-              };
-            },
-          }))
-          .directive(`tscope${name.toUpperCase()}`, () => ({
-            scope: true,
-            restrict: "A",
-            templateUrl: "tscope.html",
-            compile() {
-              return function (scope) {
-                log.push(scope.$id);
-              };
-            },
-          }))
-          .directive(`stscope${name.toUpperCase()}`, () => ({
-            scope: true,
-            restrict: "A",
-            template: "<span></span>",
-            compile() {
-              return function (scope) {
-                log.push(scope.$id);
-              };
-            },
-          }));
+                };
+              },
+            }))
+            .directive(`tscope${name.toUpperCase()}`, () => ({
+              scope: true,
+              restrict: "A",
+              templateUrl: "tscope.html",
+              compile() {
+                return function (scope) {
+                  log.push(scope.$id);
+                };
+              },
+            }))
+            .directive(`stscope${name.toUpperCase()}`, () => ({
+              scope: true,
+              restrict: "A",
+              template: "<span></span>",
+              compile() {
+                return function (scope) {
+                  log.push(scope.$id);
+                };
+              },
+            }));
           module.directive(`trscope${name.toUpperCase()}`, () => ({
             scope: true,
             replace: true,
