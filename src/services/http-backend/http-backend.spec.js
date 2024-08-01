@@ -1,5 +1,5 @@
 import { createInjector } from "../../injector";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createHttpBackend } from "./http-backend";
 import sinon from "sinon";
 
@@ -9,6 +9,7 @@ describe("$httpBackend", () => {
   let xhr;
   let callback;
   let requests;
+  let angular;
 
   beforeEach(() => {
     xhr = sinon.useFakeXMLHttpRequest();
@@ -16,7 +17,7 @@ describe("$httpBackend", () => {
     xhr.onCreate = function (req) {
       requests.push(req);
     };
-    publishExternalAPI();
+    angular = window.angular = new Angular();
     let $injector = createInjector(["ng"]);
     $browser = $injector.get("$browser");
     xhr = sinon.useFakeXMLHttpRequest();

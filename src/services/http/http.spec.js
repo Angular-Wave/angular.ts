@@ -1,6 +1,6 @@
 import { createInjector } from "../../injector";
 import { isObject } from "../../shared/utils";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 
 export function getLastAjaxRequest() {
   let ajaxEntries = performance
@@ -13,7 +13,7 @@ describe("$http", function () {
   let $http, $injector, $httpBackend, requests, response, $rootScope, $q;
 
   beforeEach(function () {
-    publishExternalAPI();
+    window.angular = new Angular();
     requests = [];
     $injector = createInjector(["ng"]);
     $http = $injector.get("$http");

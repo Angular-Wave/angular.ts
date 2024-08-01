@@ -6,9 +6,8 @@ import {
   getOrSetCacheData,
   removeElementData,
 } from "./jqlite";
-import { angularInit } from "../../loader";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
-import { publishExternalAPI } from "../../public";
 import { equals, forEach } from "../../shared/utils";
 import { browserTrigger } from "../../shared/test-utils";
 import { CACHE, EXPANDO } from "../../core/cache/cache";
@@ -27,7 +26,7 @@ describe("jqLite", () => {
   });
 
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     injector = createInjector(["ng"]);
     scope = injector.get("$rootScope");
     jasmine.addMatchers({
@@ -363,7 +362,7 @@ describe("jqLite", () => {
     it("should retrieve injector attached to the current element or its parent", () => {
       const template = JQLite("<div><span></span></div>");
       const span = template.children().eq(0);
-      const injector = angularInit(template[0]);
+      const injector = window.angular.init(template[0]);
 
       expect(span.injector()).toBe(injector);
       dealoc(template);

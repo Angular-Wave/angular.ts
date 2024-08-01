@@ -1,11 +1,11 @@
 import { createInjector } from "../../injector";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 
 describe("$templateRequest", () => {
-  let module, $rootScope, $templateRequest, $templateCache, $sce;
+  let module, $rootScope, $templateRequest, $templateCache, $sce, angular;
 
   beforeEach(() => {
-    publishExternalAPI();
+    angular = window.angular = new Angular();
     module = angular.module("test", ["ng"]);
     let injector = createInjector(["test"]);
     $rootScope = injector.get("$rootScope");
