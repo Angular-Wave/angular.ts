@@ -4,13 +4,13 @@ import {
   $LocationProvider,
   LocationHashbangInHtml5Url,
 } from "./location";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 
 describe("$location", () => {
   let module;
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     module = window.angular.module("test1", ["ng"]);
   });
 

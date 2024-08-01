@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 
@@ -9,7 +9,7 @@ describe("ngSwitch", () => {
   let $timeout;
 
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     createInjector(["ng"]).invoke(($rootScope, _$compile_, _$timeout_) => {
       $scope = $rootScope.$new();
       $compile = _$compile_;

@@ -1,6 +1,6 @@
 import { createInjector } from "../../injector";
 
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { adjustMatcher } from "./sce";
 
 describe("SCE", () => {
@@ -10,9 +10,10 @@ describe("SCE", () => {
 
   describe("when disabled", () => {
     beforeEach(function () {
-      publishExternalAPI();
+      window.angular = new Angular();
+      window.angular.module("myModule", ["ng"]);
       createInjector([
-        "ng",
+        "myModule",
         function ($sceProvider) {
           $sceProvider.enabled(false);
         },
@@ -34,7 +35,7 @@ describe("SCE", () => {
 
   describe("when enabled", () => {
     beforeEach(function () {
-      publishExternalAPI();
+      window.angular = new Angular();
       createInjector([
         "ng",
         function ($sceProvider) {
@@ -145,7 +146,7 @@ describe("SCE", () => {
 
   describe("replace $sceDelegate", () => {
     it("should override the default $sce.trustAs/valueOf/etc.", () => {
-      publishExternalAPI();
+      window.angular = new Angular();
       createInjector([
         "ng",
         function ($provide) {
@@ -175,7 +176,7 @@ describe("SCE", () => {
   });
 
   describe("$sce.parseAs", () => {
-    publishExternalAPI();
+    window.angular = new Angular();
     beforeEach(function () {
       createInjector(["ng"]).invoke((_$sce_, _$rootScope_) => {
         $sce = _$sce_;

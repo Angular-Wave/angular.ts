@@ -1,6 +1,6 @@
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { curry } from "../../shared/hof";
 import { StateMatcher } from "../../router/state/state-matcher";
 import { StateBuilder } from "../../router/state/state-builder";
@@ -29,7 +29,7 @@ describe("view", () => {
   beforeEach(() => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
-    publishExternalAPI();
+    window.angular = new Angular();
 
     window.angular
       .module("defaultModule", ["ng.router"])

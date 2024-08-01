@@ -1,13 +1,13 @@
 import { createInjector } from "../../injector";
 import { dealoc } from "../../shared/jqlite/jqlite";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 
 describe("ngChange", () => {
   let injector;
   let el;
 
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     injector = createInjector(["ng"]);
   });
 

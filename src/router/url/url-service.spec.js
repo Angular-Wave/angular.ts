@@ -1,6 +1,6 @@
 import { dealoc } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { map, find } from "../../shared/common";
 import { forEach } from "../../shared/utils";
 
@@ -12,7 +12,6 @@ describe("UrlMatcher", () => {
   beforeEach(() => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
-    publishExternalAPI();
     window.angular.module("defaultModule", ["ng.router"]);
     $injector = window.angular.bootstrap(document.getElementById("dummy"), [
       "defaultModule",

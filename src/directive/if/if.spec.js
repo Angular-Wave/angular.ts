@@ -1,8 +1,7 @@
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { forEach, valueFn } from "../../shared/utils";
-import { publishExternalAPI } from "../../public";
-import { createInjector } from "../../injector";
 import { Angular } from "../../loader";
+import { createInjector } from "../../injector";
 import { wait } from "../../shared/test-utils";
 
 describe("ngIf", () => {
@@ -17,7 +16,7 @@ describe("ngIf", () => {
 
     beforeEach(function () {
       angular = new Angular();
-      publishExternalAPI();
+      window.angular = new Angular();
       injector = createInjector([
         "ng",
         function (_$compileProvider_) {

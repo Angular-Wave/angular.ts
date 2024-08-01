@@ -1,6 +1,6 @@
 import { dealoc, JQLite } from "../shared/jqlite/jqlite";
 import { Angular } from "../loader";
-import { publishExternalAPI } from "../public";
+import { Angular } from "../loader";
 import { wait } from "../shared/test-utils";
 
 describe("templateFactory", () => {
@@ -16,7 +16,6 @@ describe("templateFactory", () => {
   beforeEach(() => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
-    publishExternalAPI();
     window.angular.module("defaultModule", ["ng.router"]);
     $injector = window.angular.bootstrap(document.getElementById("dummy"), [
       "defaultModule",

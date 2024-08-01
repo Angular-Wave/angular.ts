@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../public";
+import { Angular } from "../loader";
 import { createInjector } from "../injector";
 import { JQLite } from "../shared/jqlite/jqlite";
 
@@ -10,8 +10,9 @@ describe("Filter: limitTo", () => {
   let limitTo;
 
   beforeEach(() => {
-    publishExternalAPI();
-    var injector = createInjector(["ng"]);
+    window.angular = new Angular();
+    window.angular.module("myModule", ["ng"]);
+    var injector = createInjector(["myModule"]);
     var $filter = injector.get("$filter");
 
     items = ["a", "b", "c", "d", "e", "f", "g", "h"];

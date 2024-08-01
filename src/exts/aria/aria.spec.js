@@ -1,5 +1,5 @@
 import { createInjector } from "../../injector";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 
 describe("$aria", () => {
@@ -8,7 +8,7 @@ describe("$aria", () => {
   let element;
 
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     window.angular.module("test", ["ngAria"]);
     let injector = createInjector(["test"]);
     scope = injector.get("$rootScope");

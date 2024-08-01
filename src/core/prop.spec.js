@@ -1,21 +1,25 @@
-import { publishExternalAPI } from "../public";
+import { Angular } from "../loader";
 import { createInjector } from "../injector";
 import { valueFn } from "../shared/utils";
 
-describe("ngProp*", () => {
+fdescribe("ngProp*", () => {
   let $compile, $rootScope, compileProvider, $sce;
   let logs = [];
 
   beforeEach(() => {
     logs = [];
-    publishExternalAPI().decorator("$exceptionHandler", function () {
-      return (exception) => {
-        logs.push(exception);
-        throw new Error(exception);
-      };
-    });
+    window.angular = new Angular();
+    window.angular
+      .module("myModule", ["ng"])
+      .decorator("$exceptionHandler", function () {
+        return (exception) => {
+          logs.push(exception);
+          throw new Error(exception);
+        };
+      });
+
     let injector = createInjector([
-      "ng",
+      "myModule",
       function ($compileProvider) {
         compileProvider = $compileProvider;
       },
@@ -282,7 +286,7 @@ describe("ngProp*", () => {
         .createSpy("$$sanitizeUri")
         .and.returnValue("someSanitizedUrl");
       createInjector([
-        "ng",
+        "myModule",
         ($provide) => {
           $provide.value("$$sanitizeUri", $$sanitizeUri);
         },
@@ -303,7 +307,7 @@ describe("ngProp*", () => {
         .createSpy("$$sanitizeUri")
         .and.throwError("Should not have been called");
       createInjector([
-        "ng",
+        "myModule",
         ($provide) => {
           $provide.value("$$sanitizeUri", $$sanitizeUri);
         },
@@ -378,7 +382,7 @@ describe("ngProp*", () => {
         .createSpy("$$sanitizeUri")
         .and.returnValue("someSanitizedUrl");
       createInjector([
-        "ng",
+        "myModule",
         ($provide) => {
           $provide.value("$$sanitizeUri", $$sanitizeUri);
         },
@@ -421,11 +425,13 @@ describe("ngProp*", () => {
 
   describe("iframe[src]", () => {
     beforeEach(() => {
-      createInjector(["ng"]).invoke((_$compile_, _$rootScope_, _$sce_) => {
-        $compile = _$compile_;
-        $rootScope = _$rootScope_;
-        $sce = _$sce_;
-      });
+      createInjector(["myModule"]).invoke(
+        (_$compile_, _$rootScope_, _$sce_) => {
+          $compile = _$compile_;
+          $rootScope = _$rootScope_;
+          $sce = _$sce_;
+        },
+      );
     });
 
     it("should pass through src properties for the same domain", () => {
@@ -482,11 +488,13 @@ describe("ngProp*", () => {
 
   describe("base[href]", () => {
     beforeEach(() => {
-      createInjector(["ng"]).invoke((_$compile_, _$rootScope_, _$sce_) => {
-        $compile = _$compile_;
-        $rootScope = _$rootScope_;
-        $sce = _$sce_;
-      });
+      createInjector(["myModule"]).invoke(
+        (_$compile_, _$rootScope_, _$sce_) => {
+          $compile = _$compile_;
+          $rootScope = _$rootScope_;
+          $sce = _$sce_;
+        },
+      );
     });
 
     it("should be a RESOURCE_URL context", () => {
@@ -505,11 +513,13 @@ describe("ngProp*", () => {
 
   describe("form[action]", () => {
     beforeEach(() => {
-      createInjector(["ng"]).invoke((_$compile_, _$rootScope_, _$sce_) => {
-        $compile = _$compile_;
-        $rootScope = _$rootScope_;
-        $sce = _$sce_;
-      });
+      createInjector(["myModule"]).invoke(
+        (_$compile_, _$rootScope_, _$sce_) => {
+          $compile = _$compile_;
+          $rootScope = _$rootScope_;
+          $sce = _$sce_;
+        },
+      );
     });
 
     it("should pass through action property for the same domain", () => {
@@ -566,11 +576,13 @@ describe("ngProp*", () => {
 
   describe("link[href]", () => {
     beforeEach(() => {
-      createInjector(["ng"]).invoke((_$compile_, _$rootScope_, _$sce_) => {
-        $compile = _$compile_;
-        $rootScope = _$rootScope_;
-        $sce = _$sce_;
-      });
+      createInjector(["myModule"]).invoke(
+        (_$compile_, _$rootScope_, _$sce_) => {
+          $compile = _$compile_;
+          $rootScope = _$rootScope_;
+          $sce = _$sce_;
+        },
+      );
     });
 
     it("should reject invalid RESOURCE_URLs", () => {
@@ -606,7 +618,7 @@ describe("ngProp*", () => {
     describe("SCE disabled", () => {
       beforeEach(() => {
         createInjector([
-          "ng",
+          "myModule",
           ($sceProvider) => {
             $sceProvider.enabled(false);
           },
@@ -656,7 +668,7 @@ describe("ngProp*", () => {
     describe("SCE enabled", () => {
       beforeEach(() => {
         createInjector([
-          "ng",
+          "myModule",
           ($sceProvider) => {
             $sceProvider.enabled(true);
           },
@@ -728,7 +740,7 @@ describe("ngProp*", () => {
         }
 
         createInjector([
-          "ng",
+          "myModule",
           ($provide) => {
             $provide.decorator("$sce", ($delegate) => {
               $delegate.trustAsHtml = function (html) {

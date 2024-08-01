@@ -1,6 +1,6 @@
 import { dealoc } from "../shared/jqlite/jqlite";
 import { Angular } from "../loader";
-import { publishExternalAPI } from "../public";
+import { Angular } from "../loader";
 import { wait } from "../shared/test-utils";
 
 describe("view hooks", () => {
@@ -23,7 +23,6 @@ describe("view hooks", () => {
   beforeEach(() => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
-    publishExternalAPI();
     app = window.angular
       .module("defaultModule", ["ng.router"])
       .config(($stateProvider) => {

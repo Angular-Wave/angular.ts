@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { EMAIL_REGEXP, ISO_DATE_REGEXP, URL_REGEXP } from "./input";
@@ -10,12 +10,15 @@ describe("input", () => {
   let inputElm;
 
   beforeEach(() => {
-    publishExternalAPI().decorator("$exceptionHandler", function () {
-      return (exception) => {
-        throw new Error(exception.message);
-      };
-    });
-    createInjector(["ng"]).invoke((_$compile_, $rootScope) => {
+    window.angular = new Angular();
+    window.angular
+      .module("myModule", ["ng"])
+      .decorator("$exceptionHandler", function () {
+        return (exception) => {
+          throw new Error(exception.message);
+        };
+      });
+    createInjector(["myModule"]).invoke((_$compile_, $rootScope) => {
       $compile = _$compile_;
       scope = $rootScope.$new();
     });

@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { dealoc, JQLite, getOrSetCacheData } from "../../shared/jqlite/jqlite";
 import {
@@ -12,7 +12,6 @@ import {
 import { countChildScopes, countWatchers } from "../../core/scope/scope";
 import { CACHE, EXPANDO } from "../../core/cache/cache";
 import { wait } from "../../shared/test-utils";
-import { Angular } from "../../loader";
 
 function isUnknownElement(el) {
   return !!el.toString().match(/Unknown/);

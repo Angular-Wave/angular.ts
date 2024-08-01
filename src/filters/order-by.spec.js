@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../public";
+import { Angular } from "../loader";
 import { createInjector } from "../injector";
 
 describe("Filter: orderBy", () => {
@@ -6,8 +6,9 @@ describe("Filter: orderBy", () => {
   let orderByFilter;
 
   beforeEach(() => {
-    publishExternalAPI();
-    var injector = createInjector(["ng"]);
+    window.angular = new Angular();
+    window.angular.module("myModule", ["ng"]);
+    var injector = createInjector(["myModule"]);
     var $filter = injector.get("$filter");
     orderBy = orderByFilter = $filter("orderBy");
   });
@@ -713,8 +714,9 @@ describe("Filter: orderBy", () => {
     }
 
     beforeEach(() => {
-      publishExternalAPI();
-      var injector = createInjector(["ng"]);
+      window.angular = new Angular();
+      window.angular.module("myModule", ["ng"]);
+      var injector = createInjector(["myModule"]);
       var $filter = injector.get("$filter");
       orderBy = function (collection) {
         const args = Array.prototype.slice.call(arguments, 0);

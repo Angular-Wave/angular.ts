@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { FormController } from "../../directive/form/form";
@@ -1407,7 +1407,7 @@ describe("form", () => {
       doc = JQLite('<form name="myForm"></form>');
       JQLite(dummy).append(doc);
       let angular = new Angular();
-      publishExternalAPI();
+      window.angular = new Angular();
       myModule = window.angular.module("myModule", ["ngAnimate"]);
 
       injector = angular.bootstrap(dummy, ["myModule"]);

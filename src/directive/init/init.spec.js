@@ -1,7 +1,6 @@
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
-import { Angular, setupModuleLoader } from "../../loader";
 
 describe("ngInit", () => {
   let element;
@@ -13,7 +12,7 @@ describe("ngInit", () => {
 
   beforeEach(() => {
     angular = new Angular();
-    publishExternalAPI();
+    window.angular = new Angular();
     injector = createInjector(["ng"]);
     $rootScope = injector.get("$rootScope");
     $compile = injector.get("$compile");

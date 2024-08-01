@@ -1,5 +1,5 @@
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { Angular } from "../../loader";
 import { isObject } from "../../shared/utils";
 import { isFunction } from "../../shared/utils";
@@ -18,7 +18,6 @@ describe("$animate", () => {
 
     beforeEach(() => {
       window.angular = new Angular();
-      publishExternalAPI();
       defaultModule = window.angular.module("defaultModule", ["ng"]);
       injector = window.angular.bootstrap(dummy, ["defaultModule"]);
       injector.invoke(
@@ -268,7 +267,7 @@ describe("$animate", () => {
       it("$prop() should operate using a native DOM element", () => {
         const captureSpy = jasmine.createSpy();
         dealoc(dummy);
-        publishExternalAPI();
+        window.angular = new Angular();
         defaultModule = window.angular
           .module("defaultModule", ["ng"])
           .value("$$animateQueue", {

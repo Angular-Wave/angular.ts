@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { forEach, valueFn } from "../../shared/utils";
@@ -17,15 +17,18 @@ describe("ngRepeat", () => {
   beforeEach(() => {
     delete window.angular;
     logs = [];
-    publishExternalAPI().decorator("$exceptionHandler", function () {
-      return (exception, cause) => {
-        logs.push(exception);
-        console.error(exception, cause);
-      };
-    });
+    window.angular = new Angular();
+    window.angular
+      .module("defaultModule", [])
+      .decorator("$exceptionHandler", function () {
+        return (exception, cause) => {
+          logs.push(exception);
+          console.error(exception, cause);
+        };
+      });
 
     injector = createInjector([
-      "ng",
+      "defaultModule",
       (_$compileProvider_) => {
         $compileProvider = _$compileProvider_;
       },
@@ -1285,7 +1288,6 @@ describe("ngRepeat", () => {
 
     it("should allow mixing ngRepeat with ngInclude", (done) => {
       window.angular = new Angular();
-      publishExternalAPI();
 
       element = JQLite(
         '<div><div ng-repeat="i in [1,2]" ng-include="\'/public/test.html\'"></div></div>',

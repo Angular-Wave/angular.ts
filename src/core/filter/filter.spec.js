@@ -1,9 +1,9 @@
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 
 describe("filter", function () {
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
   });
   it("can be registered and obtained", () => {
     var myFilter = () => {};
@@ -83,7 +83,7 @@ describe("filter", function () {
 
 describe("filter filter", function () {
   beforeEach(function () {
-    publishExternalAPI();
+    window.angular = new Angular();
   });
   it("is available", function () {
     var injector = createInjector(["ng"]);
@@ -97,7 +97,7 @@ describe("$filter", () => {
   let $filter;
 
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     const injector = createInjector([
       "ng",
       function (_$filterProvider_) {

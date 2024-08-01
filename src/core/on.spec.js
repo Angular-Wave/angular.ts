@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../public";
+import { Angular } from "../loader";
 import { createInjector } from "../injector";
 import { valueFn } from "../shared/utils";
 
@@ -6,7 +6,7 @@ describe("ngOn* event binding", () => {
   let $rootScope, module, injector, $compile;
 
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     module = window.angular.module("test1", ["ng"]);
     injector = createInjector(["ng", "test1"]);
     $rootScope = injector.get("$rootScope");

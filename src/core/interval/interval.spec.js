@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { wait } from "../../shared/test-utils";
 
@@ -10,12 +10,15 @@ describe("$interval", () => {
 
   beforeEach(() => {
     errors = [];
-    publishExternalAPI().decorator("$exceptionHandler", () => {
-      return (exception) => {
-        errors.push(exception);
-      };
-    });
-    injector = createInjector(["ng"]);
+    window.angular = new Angular();
+    window.angular
+      .module("myModule", ["ng"])
+      .decorator("$exceptionHandler", () => {
+        return (exception) => {
+          errors.push(exception);
+        };
+      });
+    injector = createInjector(["myModule"]);
 
     $interval = injector.get("$interval");
     $rootScope = injector.get("$rootScope");

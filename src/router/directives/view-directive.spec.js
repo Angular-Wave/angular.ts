@@ -8,7 +8,7 @@
 
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { wait } from "../../shared/test-utils";
 
 describe("ngView", () => {
@@ -136,7 +136,6 @@ describe("ngView", () => {
   beforeEach(() => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
-    publishExternalAPI();
     log = "";
     app = window.angular
       .module("defaultModule", ["ng.router"])
@@ -847,7 +846,6 @@ describe("UiView", () => {
   beforeEach(() => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
-    publishExternalAPI();
     log = "";
     app = window.angular
       .module("defaultModule", ["ng.router"])
@@ -927,7 +925,6 @@ describe("ngView transclusion", () => {
   beforeEach(() => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
-    publishExternalAPI();
     window.angular
       .module("defaultModule", ["ng.router"])
       .directive("scopeObserver", () => {
@@ -992,7 +989,6 @@ describe("ngView controllers or onEnter handlers", () => {
   beforeEach(() => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
-    publishExternalAPI();
     window.angular
       .module("defaultModule", ["ng.router"])
       .config(function ($stateProvider) {
@@ -1080,7 +1076,6 @@ describe("angular 1.5+ style .component()", () => {
   beforeEach(() => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
-    publishExternalAPI();
     window.angular
       .module("defaultModule", ["ng.router"])
       .directive("ng12Directive", () => {

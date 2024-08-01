@@ -1,6 +1,6 @@
 import { $$asyncQueue } from "./scope";
 import { extend, sliceArgs } from "../../shared/utils";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 
 describe("Scope", function () {
@@ -12,14 +12,17 @@ describe("Scope", function () {
   beforeEach(() => {
     logs = [];
     delete window.angular;
-    publishExternalAPI().decorator("$exceptionHandler", function () {
-      return (exception, cause) => {
-        logs.push(exception);
-        console.error(exception, cause);
-      };
-    });
+    window.angular = new Angular();
+    window.angular
+      .module("myModule", ["ng"])
+      .decorator("$exceptionHandler", function () {
+        return (exception, cause) => {
+          logs.push(exception);
+          console.error(exception, cause);
+        };
+      });
 
-    let injector = createInjector(["ng"]);
+    let injector = createInjector(["myModule"]);
     $parse = injector.get("$parse");
     $browser = injector.get("$browser");
 

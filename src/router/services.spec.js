@@ -1,5 +1,5 @@
 import { Angular } from "../loader";
-import { publishExternalAPI } from "../public";
+import { Angular } from "../loader";
 
 describe("router services", () => {
   let providers;
@@ -7,7 +7,6 @@ describe("router services", () => {
 
   beforeEach(() => {
     window["angular"] = new Angular();
-    publishExternalAPI();
     let module = window["angular"].module("defaultModule", ["ng.router"]);
     module.config(
       (

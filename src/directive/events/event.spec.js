@@ -1,7 +1,6 @@
-import { publishExternalAPI } from "../../public";
-import { createInjector } from "../../injector";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
+import { createInjector } from "../../injector";
+import { dealoc } from "../../shared/jqlite/jqlite";
 
 describe("event directives", () => {
   let angular;
@@ -12,16 +11,20 @@ describe("event directives", () => {
   let logs = [];
 
   beforeEach(() => {
-    angular = new Angular();
-    publishExternalAPI().decorator("$exceptionHandler", function () {
-      return (exception, cause) => {
-        logs.push(exception.message);
-      };
-    });
-    injector = createInjector(["ng"]).invoke((_$rootScope_, _$compile_) => {
-      $rootScope = _$rootScope_;
-      $compile = _$compile_;
-    });
+    angular = window.angular = new Angular();
+    window.angular
+      .module("myModule", ["ng"])
+      .decorator("$exceptionHandler", function () {
+        return (exception, cause) => {
+          logs.push(exception.message);
+        };
+      });
+    injector = createInjector(["myModule"]).invoke(
+      (_$rootScope_, _$compile_) => {
+        $rootScope = _$rootScope_;
+        $compile = _$compile_;
+      },
+    );
   });
 
   afterEach(() => {

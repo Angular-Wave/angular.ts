@@ -1,6 +1,6 @@
 import { createInjector } from "../../injector";
 import { JQLite, dealoc } from "../../shared/jqlite/jqlite";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import {
   forEach,
   isBoolean,
@@ -158,13 +158,16 @@ describe("ngOptions", () => {
   });
 
   beforeEach(() => {
-    publishExternalAPI().decorator("$exceptionHandler", function () {
-      return (exception, cause) => {
-        throw new Error(exception.message);
-      };
-    });
+    window.angular = new Angular();
+    window.angular
+      .module("myModule", ["ng"])
+      .decorator("$exceptionHandler", function () {
+        return (exception, cause) => {
+          throw new Error(exception.message);
+        };
+      });
     injector = createInjector([
-      "ng",
+      "myModule",
       ($compileProvider, $provide) => {
         linkLog = [];
 

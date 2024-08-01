@@ -1,11 +1,11 @@
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 
 describe("$cacheFactory", () => {
   let $cacheFactory;
 
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     createInjector(["ng"]).invoke((_$cacheFactory_) => {
       $cacheFactory = _$cacheFactory_;
     });

@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 
 describe("$controller", () => {
@@ -6,7 +6,7 @@ describe("$controller", () => {
   let $controller;
 
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     createInjector([
       "ng",
       function (_$controllerProvider_) {

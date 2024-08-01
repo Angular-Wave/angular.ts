@@ -1,5 +1,5 @@
 import { Lexer } from "./lexer";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 
 describe("lexer", () => {
@@ -8,13 +8,16 @@ describe("lexer", () => {
   let logs = [];
 
   beforeEach(() => {
-    publishExternalAPI().decorator("$exceptionHandler", function () {
-      return (exception, cause) => {
-        logs.push(exception);
-        console.error(exception, cause);
-      };
-    });
-    let injector = createInjector(["ng"]);
+    window.angular = new Angular();
+    window.angular
+      .module("myModule", ["ng"])
+      .decorator("$exceptionHandler", function () {
+        return (exception, cause) => {
+          logs.push(exception);
+          console.error(exception, cause);
+        };
+      });
+    let injector = createInjector(["myModule"]);
     $parse = injector.get("$parse");
     $rootScope = injector.get("$rootScope");
   });

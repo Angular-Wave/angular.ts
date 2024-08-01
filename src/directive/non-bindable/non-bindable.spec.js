@@ -1,5 +1,5 @@
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 
 describe("ngNonBindable", () => {
@@ -9,12 +9,15 @@ describe("ngNonBindable", () => {
   let $compile;
 
   beforeEach(() => {
-    publishExternalAPI().decorator("$exceptionHandler", function () {
-      return (exception, cause) => {
-        throw new Error(exception.message);
-      };
-    });
-    injector = createInjector(["ng"]);
+    window.angular = new Angular();
+    window.angular
+      .module("myModule", ["ng"])
+      .decorator("$exceptionHandler", function () {
+        return (exception, cause) => {
+          throw new Error(exception.message);
+        };
+      });
+    injector = createInjector(["myModule"]);
     $compile = injector.get("$compile");
     $rootScope = injector.get("$rootScope");
   });

@@ -1,5 +1,5 @@
 import { Angular } from "../loader";
-import { publishExternalAPI } from "../public";
+import { Angular } from "../loader";
 
 describe("router filters", function () {
   let module, $parse, $state, $q, $rootScope, $location;
@@ -7,7 +7,6 @@ describe("router filters", function () {
   beforeEach(() => {
     window.location.hash = "";
     window.angular = new Angular();
-    publishExternalAPI();
   });
 
   afterEach(() => (window.location.hash = ""));

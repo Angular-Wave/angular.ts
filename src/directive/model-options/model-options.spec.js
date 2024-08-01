@@ -1,6 +1,6 @@
 import { defaultModelOptions } from "../../directive/model-options/model-options";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { valueFn } from "../../shared/utils";
 import { Angular } from "../../loader";
@@ -984,7 +984,7 @@ describe("ngModelOptions", () => {
 
       beforeEach(() => {
         angular = new Angular();
-        publishExternalAPI();
+        window.angular = new Angular();
         module = window.angular.module("myModule", []).directive(
           "foo",
           valueFn({

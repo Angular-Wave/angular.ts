@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 
@@ -9,8 +9,9 @@ describe("scriptDirective", () => {
   let $templateCache;
 
   beforeEach(() => {
-    publishExternalAPI();
-    createInjector(["ng"]).invoke(
+    window.angular = new Angular();
+    window.angular.module("myModule", ["ng"]);
+    createInjector(["myModule"]).invoke(
       (_$rootScope_, _$compile_, _$templateCache_) => {
         $rootScope = _$rootScope_;
         $compile = _$compile_;

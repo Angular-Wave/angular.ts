@@ -1,8 +1,7 @@
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { bind } from "../../shared/utils";
-import { Angular } from "../../loader";
 
 describe("ngController", () => {
   let angular;
@@ -34,7 +33,7 @@ describe("ngController", () => {
 
   beforeEach(() => {
     angular = new Angular();
-    publishExternalAPI();
+    window.angular = new Angular();
     injector = createInjector([
       "ng",
       ($controllerProvider) => {

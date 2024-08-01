@@ -1,6 +1,6 @@
 import { createInjector } from "../../injector";
 import { countWatchers } from "../../core/scope/scope";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { isString } from "../../shared/utils";
 import { JQLite } from "../../shared/jqlite/jqlite";
 
@@ -8,7 +8,7 @@ describe("ngMessages", () => {
   let $rootScope, $compile, $templateCache;
 
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     window.angular
       .module("app", ["ng", "ngMessages"])
       .directive("messageWrap", () => ({

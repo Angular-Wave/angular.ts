@@ -1,6 +1,6 @@
 import { JQLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { browserTrigger, wait } from "../../shared/test-utils";
 
 describe("ngStateRef", () => {
@@ -21,7 +21,6 @@ describe("ngStateRef", () => {
   beforeEach(() => {
     window.location.hash = "";
     window.angular = new Angular();
-    publishExternalAPI();
     let module = window.angular.module("defaultModule", ["ng.router"]);
     module.config(($stateProvider, $locationProvider) => {
       _locationProvider = $locationProvider;
@@ -726,7 +725,6 @@ describe("ngSrefActive", () => {
   beforeEach(() => {
     window.location.hash = "";
     window.angular = new Angular();
-    publishExternalAPI();
     let module = window.angular.module("defaultModule", ["ng.router"]);
     module.config(function ($stateProvider) {
       _stateProvider = $stateProvider;

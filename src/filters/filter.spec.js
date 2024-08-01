@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../public";
+import { Angular } from "../loader";
 import { createInjector } from "../injector";
 import { isString, includes } from "../shared/utils";
 import { JQLite } from "../shared/jqlite/jqlite";
@@ -7,8 +7,9 @@ describe("Filter: filter", () => {
   let filter;
 
   beforeEach(() => {
-    publishExternalAPI();
-    var injector = createInjector(["ng"]);
+    window.angular = new Angular();
+    window.angular.module("myModule", ["ng"]);
+    var injector = createInjector(["myModule"]);
     filter = injector.get("$filter")("filter");
   });
 

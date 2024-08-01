@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../public";
+import { Angular } from "../loader";
 import { createInjector } from "../injector";
 import { toJson } from "../shared/utils";
 
@@ -6,8 +6,9 @@ describe("filters", () => {
   let filter;
 
   beforeEach(() => {
-    publishExternalAPI();
-    var injector = createInjector(["ng"]);
+    window.angular = new Angular();
+    window.angular.module("myModule", ["ng"]);
+    var injector = createInjector(["myModule"]);
     filter = injector.get("$filter");
   });
 

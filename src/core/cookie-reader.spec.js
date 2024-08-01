@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../public";
+import { Angular } from "../loader";
 import { createInjector } from "../injector";
 
 describe("$$cookieReader", () => {
@@ -27,7 +27,7 @@ describe("$$cookieReader", () => {
       deleteAllCookies();
       expect(document.cookie).toEqual("");
 
-      publishExternalAPI();
+      window.angular = new Angular();
       var injector = createInjector(["ng"]);
       $$cookieReader = injector.get("$$cookieReader");
     });

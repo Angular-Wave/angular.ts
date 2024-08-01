@@ -1,6 +1,6 @@
 import { dealoc } from "../shared/jqlite/jqlite";
 import { Angular } from "../loader";
-import { publishExternalAPI } from "../public";
+import { Angular } from "../loader";
 import { wait } from "../shared/test-utils";
 
 describe("ngView", () => {
@@ -10,7 +10,6 @@ describe("ngView", () => {
     beforeEach(() => {
       dealoc(document.getElementById("dummy"));
       window.angular = new Angular();
-      publishExternalAPI();
       window.angular.module("defaultModule", ["ng.router"]);
       let $injector = window.angular.bootstrap(
         document.getElementById("dummy"),
@@ -48,7 +47,6 @@ describe("ngView", () => {
     beforeEach(() => {
       dealoc(document.getElementById("dummy"));
       window.angular = new Angular();
-      publishExternalAPI();
       let module = window.angular.module("defaultModule", ["ng.router"]);
       module.config(($provide, $ngViewScrollProvider) => {
         $provide.decorator("$anchorScroll", function ($delegate) {

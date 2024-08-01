@@ -1,12 +1,12 @@
 import { createInjector } from "../../injector";
 import { forEach } from "../../shared/utils";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 
 describe("ngBindHtml", () => {
   let $rootScope, $compile;
 
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     createInjector(["ng"]).invoke((_$rootScope_, _$compile_) => {
       $rootScope = _$rootScope_;
       $compile = _$compile_;

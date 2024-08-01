@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 
@@ -8,11 +8,14 @@ describe("ng-style", () => {
   let element;
 
   beforeEach(() => {
-    publishExternalAPI();
-    createInjector(["ng"]).invoke(($rootScope, _$compile_) => {
-      $scope = $rootScope.$new();
-      $compile = _$compile_;
-    });
+    window.angular = new Angular();
+    window.angular.module("myModule", ["ng"]);
+    var injector = createInjector(["myModule"]).invoke(
+      ($rootScope, _$compile_) => {
+        $scope = $rootScope.$new();
+        $compile = _$compile_;
+      },
+    );
   });
 
   afterEach(() => {

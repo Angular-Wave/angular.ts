@@ -1,4 +1,4 @@
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 
@@ -6,7 +6,7 @@ describe("boolean attr directives", () => {
   let element, $rootScope, $compile, $rootElement;
 
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     createInjector([
       "ng",
       ($provide) => {

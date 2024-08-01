@@ -1,6 +1,5 @@
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
+import { dealoc } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
-import { publishExternalAPI } from "../../public";
 import { isFunction } from "../../shared/utils";
 import { wait } from "../../shared/test-utils";
 
@@ -101,7 +100,7 @@ describe("$state", () => {
       dealoc(document.getElementById("dummy"));
       // some tests are polluting the cache
       window.angular = new Angular();
-      publishExternalAPI();
+      window.angular = new Angular();
       module = window.angular.module("defaultModule", ["ng.router"]);
       module.config((_$stateProvider_, _$provide_) => {
         $stateProvider = _$stateProvider_;
@@ -144,7 +143,6 @@ describe("$state", () => {
     beforeEach(() => {
       dealoc(document.getElementById("dummy"));
       window.angular = new Angular();
-      publishExternalAPI();
       module = window.angular.module("defaultModule", ["ng.router"]);
       module.config((_$stateProvider_, _$provide_) => {
         $stateProvider = _$stateProvider_;

@@ -26,7 +26,6 @@ import {
 } from "./shared/utils";
 import { dealoc, JQLite, startingTag } from "./shared/jqlite/jqlite";
 import { Angular } from "./loader";
-import { publishExternalAPI } from "./public";
 import { createInjector } from "./injector";
 
 describe("angular", () => {

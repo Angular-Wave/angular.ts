@@ -1,6 +1,6 @@
 import { createInjector } from "../../injector";
 import { setupModuleLoader } from "../../loader";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 
 /**
   http://wiki.commonjs.org/wiki/Promises
@@ -36,14 +36,14 @@ describe("q", () => {
   let $q, $rootScope, $injector;
 
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     $injector = createInjector(["ng"]);
     $q = $injector.get("$q");
     $rootScope = $injector.get("$rootScope");
   });
 
   it("sets up $q", function () {
-    publishExternalAPI();
+    window.angular = new Angular();
     var injector = createInjector(["ng"]);
     expect(injector.has("$q")).toBe(true);
   });
@@ -645,7 +645,7 @@ describe("all", function () {
   let $q, $rootScope, $injector;
 
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     $injector = createInjector(["ng"]);
     $q = $injector.get("$q");
     $rootScope = $injector.get("$rootScope");
@@ -706,7 +706,7 @@ describe("all", function () {
 
     beforeEach(() => {
       setupModuleLoader(window);
-      publishExternalAPI();
+      window.angular = new Angular();
       $injector = createInjector(["ng"]);
       $q = $injector.get("$q");
       $rootScope = $injector.get("$rootScope");
@@ -741,7 +741,7 @@ describe("all", function () {
 
     beforeEach(() => {
       setupModuleLoader(window);
-      publishExternalAPI();
+      window.angular = new Angular();
       $injector = createInjector(["ng"]);
       $q = $injector.get("$q");
       $$q = $injector.get("$$q");

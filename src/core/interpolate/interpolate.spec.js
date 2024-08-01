@@ -1,11 +1,11 @@
 import { createInjector } from "../../injector";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 
 describe("$interpolate", () => {
   let $interpolate, $injector, $rootScope, $sce;
 
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     $injector = createInjector(["ng"]);
     $interpolate = $injector.get("$interpolate");
     $rootScope = $injector.get("$rootScope");

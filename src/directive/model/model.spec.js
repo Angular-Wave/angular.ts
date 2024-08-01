@@ -1,11 +1,9 @@
 import { JQLite, dealoc } from "../../shared/jqlite/jqlite";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { NgModelController } from "./model";
 import { isDefined, valueFn, isObject } from "../../shared/utils";
 import { browserTrigger } from "../../shared/test-utils";
-
-import { Angular } from "../../loader";
 
 describe("ngModel", () => {
   let ctrl;
@@ -18,12 +16,15 @@ describe("ngModel", () => {
   let $q;
 
   beforeEach(() => {
-    publishExternalAPI().decorator("$exceptionHandler", function () {
-      return (exception, cause) => {
-        throw new Error(exception.message);
-      };
-    });
-    injector = createInjector(["ng"]);
+    window.angular = new Angular();
+    window.angular
+      .module("myModule", ["ng"])
+      .decorator("$exceptionHandler", function () {
+        return (exception, cause) => {
+          throw new Error(exception.message);
+        };
+      });
+    injector = createInjector(["myModule"]);
     $compile = injector.get("$compile");
 
     const attrs = { name: "testAlias", ngModel: "value" };
@@ -1543,8 +1544,7 @@ describe("ngModel", () => {
     let module;
 
     beforeEach(() => {
-      angular = new Angular();
-      publishExternalAPI();
+      window.angular = new Angular();
       module = window.angular
         .module("myModule", [])
         .directive("customFormat", () => ({

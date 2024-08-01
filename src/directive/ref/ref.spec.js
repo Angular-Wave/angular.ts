@@ -1,5 +1,5 @@
 import { createInjector } from "../../injector";
-import { publishExternalAPI } from "../../public";
+import { Angular } from "../../loader";
 
 describe("ngRef", () => {
   beforeEach(() => {

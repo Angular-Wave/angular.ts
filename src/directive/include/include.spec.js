@@ -1,7 +1,6 @@
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
-import { publishExternalAPI } from "../../public";
 import { valueFn } from "../../shared/utils";
 import { wait } from "../../shared/test-utils";
 
@@ -17,14 +16,16 @@ describe("ngInclude", () => {
 
     beforeEach(() => {
       delete window.angular;
-      angular = new Angular();
-      publishExternalAPI().decorator("$exceptionHandler", function () {
-        return (exception, cause) => {
-          throw new Error(exception.message);
-        };
-      });
+      angular = window.angular = new Angular();
+      module = angular
+        .module("myModule", ["ng"])
+        .decorator("$exceptionHandler", function () {
+          return (exception, cause) => {
+            throw new Error(exception.message);
+          };
+        });
       // module = window.angular.module("myModule", []);
-      injector = createInjector(["ng"]);
+      injector = createInjector(["myModule"]);
       $rootScope = injector.get("$rootScope");
       $templateCache = injector.get("$templateCache");
       $compile = injector.get("$compile");
