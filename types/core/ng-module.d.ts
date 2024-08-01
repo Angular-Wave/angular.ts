@@ -1,18 +1,28 @@
-export class Module {
-    constructor(name: any, requires: any, configFn: any);
+export class NgModule {
+    /**
+     *
+     * @param {String} name - Name of the module
+     * @param {Array<String>} requires - List of modules which the injector will load before the current module
+     * @param {Function} [configFn]
+     */
+    constructor(name: string, requires: Array<string>, configFn?: Function);
     /**
      * @type {string}
      * Name of the module.
      */
     name: string;
-    requires: any[];
-    configFn: any;
+    /**
+     * Holds the list of modules which the injector will load before the current module is
+     * loaded.
+     */
+    requires: string[];
+    configFn: Function;
     /** @type {!Array.<Array.<*>>} */
-    invokeQueue: Array<Array<any>>;
+    _invokeQueue: Array<Array<any>>;
     /** @type {!Array.<any>} */
-    configBlocks: Array<any>;
+    _configBlocks: Array<any>;
     /** @type {!Array.<Function>} */
-    runBlocks: Array<Function>;
+    _runBlocks: Array<Function>;
     /** @type {Object} */
     infoState: any;
     /**
@@ -24,16 +34,16 @@ export class Module {
     /**
      * @param {String} name
      * @param {any} object
-     * @returns {Module}
+     * @returns {NgModule}
      */
-    value(name: string, object: any): Module;
+    value(name: string, object: any): NgModule;
     /**
      * @param {String} name
      * @param {any} object
-     * @returns {Module}
+     * @returns {NgModule}
      */
-    constant(name: string, object: any): Module;
-    config(...configFn: any[]): this;
+    constant(name: string, object: any): NgModule;
+    config(configFn: any): this;
     run(block: any): this;
     component(name: any, options: any): this;
     factory(name: any, providerFunction: any): this;

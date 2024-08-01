@@ -13,6 +13,7 @@ import { JQLite } from "./shared/jqlite/jqlite";
 import { createInjector } from "./injector";
 import { CACHE } from "./core/cache/cache";
 import { publishExternalAPI } from "./public";
+import { NgModule } from "./core/ng-module";
 
 /**
  * @type {string} `version` from `package.json`, injected by Rollup plugin
@@ -275,11 +276,9 @@ export class Angular {
    *        unspecified then the module is being retrieved for further configuration.
    * @param {Function=} configFn Optional configuration function for the module. Same as
    *        {@link import('./types').Module#config Module#config()}.
-   * @returns {import('./types').Module} new module with the {@link import('./types').Module} api.
+   * @returns {NgModule} A newly registered module.
    */
   module(name, requires, configFn) {
-    let info = {};
-
     assertNotHasOwnProperty(name, "module");
     if (requires && Object.prototype.hasOwnProperty.call(modules, name)) {
       modules[name] = null;
@@ -288,101 +287,12 @@ export class Angular {
       if (!requires) {
         throw $injectorMinErr(
           "nomod",
-          "Module '{0}' is not available! You either misspelled " +
-            "the module name or forgot to load it. If registering a module ensure that you " +
-            "specify the dependencies as the second argument.",
+          "Module '{0}' is not available. Possibly misspelled or not loaded",
           name,
         );
       }
-
-      /** @type {!Array.<Array.<*>>} */
-      const invokeQueue = [];
-
-      /** @type {!Array.<Function>} */
-      const configBlocks = [];
-
-      /** @type {!Array.<Function>} */
-      const runBlocks = [];
-
-      const config = invokeLater("$injector", "invoke", "push", configBlocks);
-      const moduleInstance = {
-        _invokeQueue: invokeQueue,
-        _configBlocks: configBlocks,
-        _runBlocks: runBlocks,
-        info(value) {
-          if (isDefined(value)) {
-            if (!isObject(value))
-              throw ngMinErr(
-                "aobj",
-                "Argument '{0}' must be an object",
-                "value",
-              );
-            info = value;
-            return this;
-          }
-          return info;
-        },
-        requires,
-        name,
-        provider: invokeLaterAndSetModuleName("$provide", "provider"),
-        factory: invokeLaterAndSetModuleName("$provide", "factory"),
-        service: invokeLaterAndSetModuleName("$provide", "service"),
-        value: invokeLater("$provide", "value"),
-        constant: invokeLater("$provide", "constant", "unshift"),
-        decorator: invokeLaterAndSetModuleName(
-          "$provide",
-          "decorator",
-          configBlocks,
-        ),
-        animation: invokeLaterAndSetModuleName("$animateProvider", "register"),
-        filter: invokeLaterAndSetModuleName("$filterProvider", "register"),
-        controller: invokeLaterAndSetModuleName(
-          "$controllerProvider",
-          "register",
-        ),
-        directive: invokeLaterAndSetModuleName("$compileProvider", "directive"),
-        component: invokeLaterAndSetModuleName("$compileProvider", "component"),
-        config,
-        run(block) {
-          runBlocks.push(block);
-          return this;
-        },
-      };
-
-      if (configFn) {
-        config(configFn);
-      }
+      const moduleInstance = new NgModule(name, requires, configFn);
       return moduleInstance;
-
-      /**
-       * @param {string} provider
-       * @param {string} method
-       * @param {String=} [insertMethod]
-       * @param {Array<any>} [queue]
-       * @returns {import('./types').Module}
-       */
-      function invokeLater(provider, method, insertMethod, queue) {
-        if (!queue) queue = invokeQueue;
-        return function () {
-          queue[insertMethod || "push"]([provider, method, arguments]);
-          return moduleInstance;
-        };
-      }
-
-      /**
-       * @param {string} provider
-       * @param {string} method
-       * @returns {import('./types').Module}
-       */
-      function invokeLaterAndSetModuleName(provider, method, queue) {
-        if (!queue) queue = invokeQueue;
-        return function (recipeName, factoryFunction) {
-          if (factoryFunction && isFunction(factoryFunction))
-            factoryFunction.$$moduleName = name;
-          queue.push([provider, method, arguments]);
-          return moduleInstance;
-        };
-      }
     });
   }
 }

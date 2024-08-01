@@ -1484,9 +1484,7 @@ describe("module", () => {
   it("should error on invalid module name", () => {
     expect(() => {
       createInjector(["IDontExist"], true);
-    }).toThrowError(
-      /\[\$injector:nomod] Module 'IDontExist' is not available! You either misspelled the module name or forgot to load it/,
-    );
+    }).toThrowError(/nomod/);
   });
 
   it("should load dependant modules only once", () => {
