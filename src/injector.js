@@ -84,10 +84,10 @@ const INSTANTIATING = {};
 /**
  *
  * @param {Array<string|any>} modulesToLoad
- * @param {boolean} strictDi
+ * @param {boolean} [strictDi]
  * @returns {import("./types").InjectorService}
  */
-export function createInjector(modulesToLoad, strictDi) {
+export function createInjector(modulesToLoad, strictDi = false) {
   console.assert(Array.isArray(modulesToLoad));
   console.assert(isBoolean(strictDi));
 
