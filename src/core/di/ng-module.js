@@ -1,4 +1,4 @@
-import { isFunction, isDefined, isObject, minErr } from "../shared/utils";
+import { isFunction, isDefined, isObject, minErr } from "../../shared/utils";
 
 const ngMinErr = minErr("ng");
 

@@ -144,4 +144,4 @@ export type AngularBootstrapConfig = {
      */
     strictDi?: boolean;
 };
-import { NgModule } from "./core/ng-module";
+import { NgModule } from "./core/di/ng-module";

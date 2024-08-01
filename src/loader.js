@@ -10,7 +10,7 @@ import { JQLite } from "./shared/jqlite/jqlite";
 import { createInjector } from "./injector";
 import { CACHE } from "./core/cache/cache";
 import { publishExternalAPI } from "./public";
-import { NgModule } from "./core/ng-module";
+import { NgModule } from "./core/di/ng-module";
 import { VERSION } from "./public";
 
 const ngMinErr = minErr("ng");
