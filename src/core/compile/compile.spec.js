@@ -17386,7 +17386,7 @@ describe("$compile", () => {
         $customAnnotation: "XXX",
       });
       initInjector("test1");
-      expect(myModule._invokeQueue.pop().pop()[1]).toEqual(
+      expect(myModule.invokeQueue.pop().pop()[1]).toEqual(
         jasmine.objectContaining({
           $canActivate: "canActivate",
           $routeConfig: "routeConfig",

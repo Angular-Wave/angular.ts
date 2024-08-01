@@ -18,11 +18,11 @@ export class NgModule {
     requires: string[];
     configFn: Function;
     /** @type {!Array.<Array.<*>>} */
-    _invokeQueue: Array<Array<any>>;
+    invokeQueue: Array<Array<any>>;
     /** @type {!Array.<any>} */
-    _configBlocks: Array<any>;
+    configBlocks: Array<any>;
     /** @type {!Array.<Function>} */
-    _runBlocks: Array<Function>;
+    runBlocks: Array<Function>;
     /** @type {Object} */
     infoState: any;
     /**

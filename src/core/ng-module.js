@@ -24,13 +24,13 @@ export class NgModule {
     this.configFn = configFn;
 
     /** @type {!Array.<Array.<*>>} */
-    this._invokeQueue = [];
+    this.invokeQueue = [];
 
     /** @type {!Array.<any>} */
-    this._configBlocks = [];
+    this.configBlocks = [];
 
     /** @type {!Array.<Function>} */
-    this._runBlocks = [];
+    this.runBlocks = [];
 
     /** @type {Object} */
     this.infoState = {};
@@ -61,7 +61,7 @@ export class NgModule {
    * @returns {NgModule}
    */
   value(name, object) {
-    this._invokeQueue.push(["$provide", "value", [name, object]]);
+    this.invokeQueue.push(["$provide", "value", [name, object]]);
     return this;
   }
 
@@ -71,17 +71,17 @@ export class NgModule {
    * @returns {NgModule}
    */
   constant(name, object) {
-    this._invokeQueue.unshift(["$provide", "constant", [name, object]]);
+    this.invokeQueue.unshift(["$provide", "constant", [name, object]]);
     return this;
   }
 
   config(configFn) {
-    this._configBlocks.push(["$injector", "invoke", [configFn]]);
+    this.configBlocks.push(["$injector", "invoke", [configFn]]);
     return this;
   }
 
   run(block) {
-    this._runBlocks.push(block);
+    this.runBlocks.push(block);
     return this;
   }
 
@@ -89,7 +89,7 @@ export class NgModule {
     if (options && isFunction(options)) {
       options.$$moduleName = name;
     }
-    this._invokeQueue.push(["$compileProvider", "component", [name, options]]);
+    this.invokeQueue.push(["$compileProvider", "component", [name, options]]);
     return this;
   }
 
@@ -97,7 +97,7 @@ export class NgModule {
     if (providerFunction && isFunction(providerFunction)) {
       providerFunction.$$moduleName = name;
     }
-    this._invokeQueue.push(["$provide", "factory", [name, providerFunction]]);
+    this.invokeQueue.push(["$provide", "factory", [name, providerFunction]]);
     return this;
   }
 
@@ -105,7 +105,7 @@ export class NgModule {
     if (serviceFunction && isFunction(serviceFunction)) {
       serviceFunction.$$moduleName = name;
     }
-    this._invokeQueue.push(["$provide", "service", [name, serviceFunction]]);
+    this.invokeQueue.push(["$provide", "service", [name, serviceFunction]]);
     return this;
   }
 
@@ -113,7 +113,7 @@ export class NgModule {
     if (providerType && isFunction(providerType)) {
       providerType.$$moduleName = name;
     }
-    this._invokeQueue.push(["$provide", "provider", [name, providerType]]);
+    this.invokeQueue.push(["$provide", "provider", [name, providerType]]);
     return this;
   }
 
@@ -121,7 +121,7 @@ export class NgModule {
     if (decorFn && isFunction(decorFn)) {
       decorFn.$$moduleName = name;
     }
-    this._configBlocks.push(["$provide", "decorator", [name, decorFn]]);
+    this.configBlocks.push(["$provide", "decorator", [name, decorFn]]);
     return this;
   }
 
@@ -129,7 +129,7 @@ export class NgModule {
     if (directiveFactory && isFunction(directiveFactory)) {
       directiveFactory.$$moduleName = name;
     }
-    this._invokeQueue.push([
+    this.invokeQueue.push([
       "$compileProvider",
       "directive",
       [name, directiveFactory],
@@ -141,7 +141,7 @@ export class NgModule {
     if (animationFactory && isFunction(animationFactory)) {
       animationFactory.$$moduleName = name;
     }
-    this._invokeQueue.push([
+    this.invokeQueue.push([
       "$animateProvider",
       "register",
       [name, animationFactory],
@@ -153,7 +153,7 @@ export class NgModule {
     if (filterFn && isFunction(filterFn)) {
       filterFn.$$moduleName = name;
     }
-    this._invokeQueue.push(["$filterProvider", "register", [name, filterFn]]);
+    this.invokeQueue.push(["$filterProvider", "register", [name, filterFn]]);
     return this;
   }
 
@@ -161,7 +161,7 @@ export class NgModule {
     if (ctlFn && isFunction(ctlFn)) {
       ctlFn.$$moduleName = name;
     }
-    this._invokeQueue.push(["$controllerProvider", "register", [name, ctlFn]]);
+    this.invokeQueue.push(["$controllerProvider", "register", [name, ctlFn]]);
     return this;
   }
 }

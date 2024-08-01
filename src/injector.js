@@ -242,7 +242,7 @@ export function createInjector(modulesToLoad, strictDi) {
       "not an array",
     );
     let runBlocks = [];
-    let moduleFn;
+
     forEach(modulesToLoad, (module) => {
       if (loadedModules.get(module)) return;
       loadedModules.set(module, true);
@@ -256,16 +256,14 @@ export function createInjector(modulesToLoad, strictDi) {
 
       try {
         if (isString(module)) {
-          moduleFn = window["angular"].module(module);
+          /** @type {import('./core/ng-module').NgModule} */
+          let moduleFn = window["angular"].module(module);
           instanceInjector.modules[module] = moduleFn;
           runBlocks = runBlocks
             .concat(loadModules(moduleFn.requires))
-            // @ts-ignore
-            .concat(moduleFn._runBlocks);
-          // @ts-ignore
-          runInvokeQueue(moduleFn._invokeQueue);
-          // @ts-ignore
-          runInvokeQueue(moduleFn._configBlocks);
+            .concat(moduleFn.runBlocks);
+          runInvokeQueue(moduleFn.invokeQueue);
+          runInvokeQueue(moduleFn.configBlocks);
         } else if (isFunction(module)) {
           runBlocks.push(providerInjector.invoke(module));
         } else if (Array.isArray(module)) {

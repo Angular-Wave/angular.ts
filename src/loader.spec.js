@@ -81,7 +81,7 @@ describe("module loader", () => {
     ).toBe(myModule);
 
     expect(myModule.requires).toEqual(["other"]);
-    expect(myModule._invokeQueue).toEqual([
+    expect(myModule.invokeQueue).toEqual([
       ["$provide", "constant", jasmine.objectContaining(["abc", 123])],
       ["$provide", "provider", jasmine.objectContaining(["sk", "sv"])],
       ["$provide", "factory", jasmine.objectContaining(["fk", "fv"])],
@@ -96,12 +96,12 @@ describe("module loader", () => {
         jasmine.objectContaining(["ctrl", "ccc"]),
       ],
     ]);
-    expect(myModule._configBlocks).toEqual([
+    expect(myModule.configBlocks).toEqual([
       ["$injector", "invoke", jasmine.objectContaining(["config"])],
       ["$provide", "decorator", jasmine.objectContaining(["dk", "dv"])],
       ["$injector", "invoke", jasmine.objectContaining(["init2"])],
     ]);
-    expect(myModule._runBlocks).toEqual(["runBlock"]);
+    expect(myModule.runBlocks).toEqual(["runBlock"]);
   });
 
   it("should not throw error when `module.decorator` is declared before provider that it decorates", () => {
