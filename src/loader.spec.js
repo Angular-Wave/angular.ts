@@ -1,10 +1,11 @@
-import { setupModuleLoader } from "./loader";
+import { Angular } from "./loader";
 import { createInjector } from "./injector";
 
 describe("module loader", () => {
+  var angular;
   beforeEach(() => {
     delete window.angular;
-    setupModuleLoader(window);
+    angular = window.angular = new Angular();
   });
 
   it("should set up namespace", () => {
@@ -16,8 +17,7 @@ describe("module loader", () => {
     const { angular } = window;
     const { module } = angular;
 
-    setupModuleLoader(window);
-    setupModuleLoader(window);
+    window.angular = new Angular();
     expect(angular).toBe(angular);
     expect(angular.module).toBe(module);
   });
@@ -37,7 +37,7 @@ describe("module loader", () => {
 
   it("throws when trying to get a nonexistent module", () => {
     expect(() => {
-      angular.module("myModule");
+      angular.module("nonexistent");
     }).toThrow();
   });
 
@@ -180,10 +180,6 @@ describe("module loader", () => {
     expect(() => {
       angular.module("hasOwnProperty", []);
     }).toThrow();
-  });
-
-  it("should expose `$$minErr` on the `angular` object", () => {
-    expect(angular.$$minErr).toEqual(jasmine.any(Function));
   });
 
   describe("Module", () => {

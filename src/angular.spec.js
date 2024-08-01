@@ -25,7 +25,7 @@ import {
   snakeCase,
 } from "./shared/utils";
 import { dealoc, JQLite, startingTag } from "./shared/jqlite/jqlite";
-import { Angular, angularInit } from "./loader";
+import { Angular } from "./loader";
 import { publishExternalAPI } from "./public";
 import { createInjector } from "./injector";
 
@@ -34,8 +34,6 @@ describe("angular", () => {
 
   beforeEach(() => {
     window.angular = new Angular();
-    publishExternalAPI();
-    createInjector();
     module = window.angular.module("defaultModule", ["ng"]);
     injector = createInjector(["ng", "defaultModule"]);
     $rootScope = injector.get("$rootScope");
@@ -1572,7 +1570,7 @@ describe("angular", () => {
     });
   });
 
-  describe("angularInit", () => {
+  describe("angular.init", () => {
     let bootstrapSpy;
     let element;
 
@@ -1594,7 +1592,7 @@ describe("angular", () => {
     });
 
     it("should do nothing when not found", () => {
-      angularInit(element);
+      window.angular.init(element);
       expect(bootstrapSpy).not.toHaveBeenCalled();
     });
 
@@ -1602,7 +1600,7 @@ describe("angular", () => {
       window.angular.module("ABC", []);
       const appElement = JQLite('<div ng-app="ABC"></div>')[0];
 
-      angularInit(appElement);
+      window.angular.init(appElement);
       expect(bootstrapSpy).toHaveBeenCalled();
     });
 
@@ -1610,27 +1608,27 @@ describe("angular", () => {
       window.angular.module("ABC", []);
       const appElement = JQLite('<div ng-app="ABC"></div>')[0];
       element.querySelector["[ng-app]"] = appElement;
-      angularInit(element);
+      window.angular.init(element);
       expect(bootstrapSpy).toHaveBeenCalled();
     });
 
     it("should bootstrap anonymously", () => {
       const appElement = JQLite("<div ng-app></div>")[0];
       element.querySelector["[ng-app]"] = appElement;
-      angularInit(element);
+      window.angular.init(element);
       expect(bootstrapSpy).toHaveBeenCalled();
     });
 
     it("should bootstrap if the annotation is on the root element", () => {
       const appElement = JQLite('<div ng-app=""></div>')[0];
-      angularInit(appElement);
+      window.angular.init(appElement);
       expect(bootstrapSpy).toHaveBeenCalled();
     });
 
     it("should complain if app module cannot be found", () => {
       const appElement = JQLite('<div ng-app="doesntexist"></div>')[0];
       expect(() => {
-        angularInit(appElement);
+        window.angular.init(appElement);
       }).toThrowError(/modulerr/);
     });
 
@@ -1656,7 +1654,7 @@ describe("angular", () => {
 
     it("should bootstrap in strict mode when ng-strict-di attribute is specified", () => {
       const appElement = JQLite('<div ng-app="" ng-strict-di></div>');
-      angularInit(JQLite("<div></div>").append(appElement[0])[0]);
+      window.angular.init(JQLite("<div></div>").append(appElement[0])[0]);
       expect(bootstrapSpy).toHaveBeenCalled();
       expect(bootstrapSpy.calls.mostRecent().args[2].strictDi).toBe(true);
 
@@ -1868,14 +1866,12 @@ describe("angular", () => {
   });
 
   describe("bootstrap", () => {
-    let module, injector, $rootScope, $compile;
+    let module, injector, $rootScope, $compile, angular;
 
     beforeEach(() => {
-      window.angular = new Angular();
-      publishExternalAPI();
-      createInjector();
-      module = window.angular.module("defaultModule", ["ng"]);
-      injector = createInjector(["ng", "defaultModule"]);
+      angular = new Angular();
+      module = angular.module("defaultModule", ["ng"]);
+      injector = createInjector(["defaultModule"]);
       $rootScope = injector.get("$rootScope");
       $compile = injector.get("$compile");
     });

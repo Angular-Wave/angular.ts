@@ -1,9 +1,9 @@
-import { publishExternalAPI } from "./public";
 import { createInjector } from "./injector";
+import { Angular } from "./loader";
 
 describe("public", () => {
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
   });
 
   it("sets up the angular object and the module loader", () => {
@@ -21,13 +21,11 @@ describe("public", () => {
   });
 
   it("sets up the $parse service", () => {
-    publishExternalAPI();
     const injector = createInjector(["ng"]);
     expect(injector.has("$parse")).toBe(true);
   });
 
   it("sets up the $rootScope", () => {
-    publishExternalAPI();
     const injector = createInjector(["ng"]);
     expect(injector.has("$rootScope")).toBe(true);
   });

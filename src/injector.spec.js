@@ -1,11 +1,11 @@
-import { setupModuleLoader } from "./loader";
+import { Angular } from "./loader";
 import { createInjector } from "./injector";
 import { publishExternalAPI } from "./public";
 import { valueFn, extend } from "./shared/utils";
 
 describe("injector.modules", () => {
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
   });
 
   it("can be created", () => {
@@ -376,7 +376,7 @@ describe("annotate", () => {
   let annotate;
   let injector;
   beforeEach(() => {
-    setupModuleLoader(window);
+    window.angular = new Angular();
     injector = createInjector([]);
     annotate = injector.annotate;
   });
@@ -672,7 +672,7 @@ describe("annotate", () => {
 });
 
 describe("provider", () => {
-  beforeEach(() => setupModuleLoader(window));
+  beforeEach(() => (window.angular = new Angular()));
 
   it("allows registering a provider and uses its $get", () => {
     const module = angular.module("myModule", []);
@@ -974,7 +974,7 @@ describe("provider", () => {
 });
 
 describe("$provide", () => {
-  beforeEach(() => setupModuleLoader(window));
+  beforeEach(() => (window.angular = new Angular()));
 
   it("should inject providers", () => {
     const module = angular.module("myModule", []);
@@ -1018,7 +1018,7 @@ describe("$provide", () => {
 });
 
 describe("config/run", () => {
-  beforeEach(() => setupModuleLoader(window));
+  beforeEach(() => (window.angular = new Angular()));
 
   it("runs config blocks when the injector is created", () => {
     const module = angular.module("myModule", []);
@@ -1093,7 +1093,7 @@ describe("config/run", () => {
 });
 
 describe("function modules", () => {
-  beforeEach(() => setupModuleLoader(window));
+  beforeEach(() => (window.angular = new Angular()));
 
   it("runs a function module dependency as a config block", () => {
     const functionModule = ($provide) => {
@@ -1141,7 +1141,7 @@ describe("function modules", () => {
 });
 
 describe("factories", () => {
-  beforeEach(() => setupModuleLoader(window));
+  beforeEach(() => (window.angular = new Angular()));
 
   it("allows registering a factory", function () {
     var module = angular.module("myModule", []);
@@ -1201,7 +1201,7 @@ describe("factories", () => {
 });
 
 describe("values", () => {
-  beforeEach(() => setupModuleLoader(window));
+  beforeEach(() => (window.angular = new Angular()));
 
   it("allows registering a value", function () {
     var module = angular.module("myModule", []);
@@ -1228,7 +1228,7 @@ describe("values", () => {
 });
 
 describe("services", () => {
-  beforeEach(() => setupModuleLoader(window));
+  beforeEach(() => (window.angular = new Angular()));
 
   it("allows registering a service", function () {
     var module = angular.module("myModule", []);
@@ -1280,7 +1280,7 @@ describe("services", () => {
 });
 
 describe("decorators", () => {
-  beforeEach(() => setupModuleLoader(window));
+  beforeEach(() => (window.angular = new Angular()));
 
   it("allows changing an instance using a decorator", function () {
     var module = angular.module("myModule", []);
@@ -1331,19 +1331,20 @@ describe("decorators", () => {
 });
 
 describe("controllers", () => {
-  beforeEach(() => setupModuleLoader(window));
+  beforeEach(() => (window.angular = new Angular()));
 
   it("should provide the caller name for controllers", () => {
-    angular.module("myModule", []).controller("myCtrl", (idontexist) => {});
+    window.angular
+      .module("myModule", [])
+      .controller("myCtrl", (idontexist) => {});
     expect(() => {
       createInjector(["myModule"]).get("$controller");
     }).toThrowError(/Unknown provider/);
   });
 
   it("should be able to register a controller from a new module", () => {
-    publishExternalAPI();
     const injector = createInjector(["ng"]);
-    angular
+    window.angular
       .module("a", [])
       .controller("aController", function Controller($scope) {
         $scope.test = "b";
@@ -1358,12 +1359,11 @@ describe("controllers", () => {
 });
 
 describe("filters", () => {
-  beforeEach(() => setupModuleLoader(window));
+  beforeEach(() => (window.angular = new Angular()));
 
   it("should be able to register a filter from a new module", () => {
-    publishExternalAPI();
     const injector = createInjector(["ng"]);
-    angular.module("a", []).filter(
+    window.angular.module("a", []).filter(
       "aFilter",
       () =>
         function (input) {
@@ -1379,12 +1379,12 @@ describe("filters", () => {
 
 describe("directive", () => {
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
   });
 
   it("should be able to register a directive from a new module", () => {
     const injector = createInjector(["ng"]);
-    angular
+    window.angular
       .module("a", [])
       .directive("aDirective", () => ({ template: "test directive" }));
     injector.loadNewModules(["a"]);
@@ -1398,7 +1398,7 @@ describe("directive", () => {
 
   it("should be able to register a directive from a new module", () => {
     const injector = createInjector(["ng"]);
-    angular
+    window.angular
       .module("a", [])
       .directive("aDirective", () => ({ template: "test directive" }));
     injector.loadNewModules(["a"]);
@@ -1413,7 +1413,7 @@ describe("directive", () => {
 
 it("should define module", () => {
   let log = "";
-  const injector = createInjector([
+  createInjector([
     function ($provide) {
       $provide.value("value", "value;");
       $provide.factory("fn", valueFn("function;"));
@@ -1432,7 +1432,7 @@ it("should define module", () => {
 
 describe("module", () => {
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
   });
 
   it("should provide $injector even when no module is requested", () => {
@@ -1770,7 +1770,7 @@ describe("decorator", () => {
 
   beforeEach(() => {
     log = [];
-    publishExternalAPI();
+    window.angular = new Angular();
   });
 
   it("should be called with the original instance", () => {
@@ -2253,7 +2253,7 @@ describe("strict-di injector", () => {
   let module;
   let $injector;
   beforeEach(() => {
-    publishExternalAPI();
+    window.angular = new Angular();
     module = angular.module("test1", []);
     $injector = createInjector(["test1"], true);
   });

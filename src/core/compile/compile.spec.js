@@ -6405,11 +6405,13 @@ describe("$compile", () => {
         describe("replace and not exactly one root element", () => {
           beforeEach(() => {
             window.angular = new Angular();
-            module = window.angular.module("test1", ["ng"]).decorator("$exceptionHandler", () => {
-              return (exception) => {
-                throw new Error(exception.message);
-              };
-            });
+            module = window.angular
+              .module("test1", ["ng"])
+              .decorator("$exceptionHandler", () => {
+                return (exception) => {
+                  throw new Error(exception.message);
+                };
+              });
             module.directive("template", () => ({
               replace: true,
               templateUrl: "template.html",

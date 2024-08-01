@@ -105,14 +105,14 @@ import { VERSION } from "./loader";
  * @returns {import('./types').Module} `ng`module
  */
 export function publishExternalAPI(angular) {
-  console.assert(angular !== undefined, `angular is %s`, angular)
+  console.assert(angular !== undefined, `angular is %s`, angular);
   const ng = angular
     .module(
       "ng",
       [],
       [
         "$provide",
-        function ngModule($provide) {
+        ($provide) => {
           // $$sanitizeUriProvider needs to be before $compileProvider as it is used by it.
           $provide.provider({
             $$sanitizeUri: SanitizeUriProvider,

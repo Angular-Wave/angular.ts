@@ -2,9 +2,11 @@ import { JQLite, dealoc } from "./shared/jqlite/jqlite";
 import { publishExternalAPI } from "./public";
 import { createInjector } from "./injector";
 import { browserTrigger } from "./shared/test-utils";
+import { Angular } from "./loader";
 
 describe("binding", () => {
   let element,
+    myModule,
     $injector,
     $rootScope,
     $compile,
@@ -17,12 +19,14 @@ describe("binding", () => {
 
   beforeEach(function () {
     errors = [];
-    publishExternalAPI().decorator("$exceptionHandler", function () {
+    window.angular = new Angular();
+    myModule = window.angular.module("myModule", ["ng"]);
+    myModule.decorator("$exceptionHandler", function () {
       return (exception, cause) => {
         errors.push(exception.message);
       };
     });
-    $injector = createInjector(["ng"]);
+    $injector = createInjector(["myModule"]);
     $rootScope = $injector.get("$rootScope");
     $compile = $injector.get("$compile");
     $exceptionHandler = $injector.get("$exceptionHandler");

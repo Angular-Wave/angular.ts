@@ -8,9 +8,9 @@ import {
   valueFn,
   extend,
 } from "../../shared/utils";
-import { publishExternalAPI } from "../../public";
 import { createInjector } from "../../injector";
 import { ASTType } from "./ast-type";
+import { Angular } from "../../loader";
 
 describe("parser", () => {
   let $rootScope;
@@ -19,13 +19,16 @@ describe("parser", () => {
   let logs = [];
 
   beforeEach(() => {
-    publishExternalAPI().decorator("$exceptionHandler", function () {
-      return (exception, cause) => {
-        logs.push(exception);
-        console.error(exception, cause);
-      };
-    });
-    let injector = createInjector(["ng"]);
+    window.angular = new Angular();
+    window.angular
+      .module("myModule", ["ng"])
+      .decorator("$exceptionHandler", function () {
+        return (exception, cause) => {
+          logs.push(exception);
+          console.error(exception, cause);
+        };
+      });
+    let injector = createInjector(["myModule"]);
     $parse = injector.get("$parse");
     $rootScope = injector.get("$rootScope");
   });
