@@ -2,10 +2,7 @@ import {
   minErr,
   forEach,
   getNgAttribute,
-  isFunction,
-  isObject,
   ngAttrPrefixes,
-  isDefined,
   assertNotHasOwnProperty,
   errorHandlingConfig,
 } from "./shared/utils";
@@ -14,11 +11,7 @@ import { createInjector } from "./injector";
 import { CACHE } from "./core/cache/cache";
 import { publishExternalAPI } from "./public";
 import { NgModule } from "./core/ng-module";
-
-/**
- * @type {string} `version` from `package.json`, injected by Rollup plugin
- */
-export const VERSION = "[VI]{version}[/VI]";
+import { VERSION } from "./public";
 
 const ngMinErr = minErr("ng");
 const $injectorMinErr = minErr("$injector");

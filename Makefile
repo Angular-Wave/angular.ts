@@ -4,9 +4,13 @@ setup:
 	@rm -r ./node_modules/
 	@npm i
 	@npx playwright install
-	
+
+BUILD_DIR = ./dist		
 build:
-	@rm -r ./dist
+	@if [ -d "$(BUILD_DIR)" ]; then \
+		echo "Removing $(BUILD_DIR)..."; \
+		rm -r "$(BUILD_DIR)"; \
+	fi
 	./node_modules/.bin/rollup -c
 
 pretty:

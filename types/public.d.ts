@@ -4,3 +4,7 @@
  * @returns {import('./types').Module} `ng`module
  */
 export function publishExternalAPI(angular: import("./loader").Angular): import("./types").Module;
+/**
+ * @type {string} `version` from `package.json`, injected by Rollup plugin
+ */
+export const VERSION: string;

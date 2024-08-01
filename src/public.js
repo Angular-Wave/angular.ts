@@ -97,7 +97,11 @@ import { initAnimateModule } from "./animations/module";
 import { initMessageModule } from "./exts/messages/messages";
 import { initAriaModule } from "./exts/aria/aria";
 import { initRouter } from "./router/index";
-import { VERSION } from "./loader";
+
+/**
+ * @type {string} `version` from `package.json`, injected by Rollup plugin
+ */
+export const VERSION = "[VI]{version}[/VI]";
 
 /**
  * Initializes `ng`, `animate`, `message`, `aria` and `router` modules.

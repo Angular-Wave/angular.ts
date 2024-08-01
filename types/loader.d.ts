@@ -1,8 +1,4 @@
 /**
- * @type {string} `version` from `package.json`, injected by Rollup plugin
- */
-export const VERSION: string;
-/**
  * Configuration option for AngularTS bootstrap process.
  *
  * @typedef {Object} AngularBootstrapConfig
@@ -135,9 +131,9 @@ export class Angular {
      *        unspecified then the module is being retrieved for further configuration.
      * @param {Function=} configFn Optional configuration function for the module. Same as
      *        {@link import('./types').Module#config Module#config()}.
-     * @returns {import('./types').Module} new module with the {@link import('./types').Module} api.
+     * @returns {NgModule} A newly registered module.
      */
-    module(name: string, requires?: Array<string> | undefined, configFn?: Function | undefined): import("./types").Module;
+    module(name: string, requires?: Array<string> | undefined, configFn?: Function | undefined): NgModule;
 }
 /**
  * Configuration option for AngularTS bootstrap process.
@@ -148,3 +144,4 @@ export type AngularBootstrapConfig = {
      */
     strictDi?: boolean;
 };
+import { NgModule } from "./core/ng-module";
