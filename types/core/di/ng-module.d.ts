@@ -1,6 +1,18 @@
+export const PROVIDE_LITERAL: "$provide";
+export const INJECTOR_LITERAL: "$injector";
+export const COMPILE_LITERAL: "$compileProvider";
+export const ANIMATION_LITERAL: "$animateProvider";
+export const FILTER_LITERAL: "$filterProvider";
+export const CONTROLLER_LITERAL: "$controllerProvider";
 /**
- * Modules are collections of application configuration information and components:
- * controllers, directives, filters, and etc.
+ * Modules are collections of application configuration information for components:
+ * controllers, directives, filters, etc. They provide recipes for the injector
+ * to do the actual instantiation. A module itself has no behaviour but only state.
+ * A such, it acts as a data structure between the Angular instance and the injector service.
+ *
+ * Since this is an internal structure that is exposed only via the Angular instance,
+ * it contains no validation of the items it receives. It is up to the instantiator on
+ * modules to do the actual validation.
  */
 export class NgModule {
     /**
@@ -21,7 +33,10 @@ export class NgModule {
      */
     requires: string[];
     configFn: Function;
-    /** @type {!Array.<Array.<*>>} */
+    /**
+     * Holds a collection of tasks, required to instantiate an angular component
+     * @type {!Array.<Array.<*>>}
+     */
     invokeQueue: Array<Array<any>>;
     /** @type {!Array.<any>} */
     configBlocks: Array<any>;
@@ -30,7 +45,6 @@ export class NgModule {
     /** @type {Object} */
     infoState: any;
     /**
-     *
      * @param {Object} value
      * @returns
      */
@@ -47,7 +61,12 @@ export class NgModule {
      * @returns {NgModule}
      */
     constant(name: string, object: any): NgModule;
-    config(configFn: any): this;
+    /**
+     *
+     * @param {Function} configFn
+     * @returns {NgModule}
+     */
+    config(configFn: Function): NgModule;
     run(block: any): this;
     component(name: any, options: any): this;
     factory(name: any, providerFunction: any): this;

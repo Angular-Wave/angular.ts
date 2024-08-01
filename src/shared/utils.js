@@ -1070,15 +1070,16 @@ export function shallowCopy(src, dst) {
 }
 
 /**
- * row error if the argument is false
+ * Throw error if the argument is false
  * @param {boolean} argument
+ * @param {string} errorMsg
  */
 export function assert(argument, errorMsg) {
   if (!argument) throw new Error(errorMsg);
 }
 
 /**
- * throw error if the argument is falsy.
+ * Throw error if the argument is falsy.
  */
 export function assertArg(arg, name, reason) {
   if (!arg) {

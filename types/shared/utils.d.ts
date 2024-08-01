@@ -486,12 +486,13 @@ export function getNgAttribute(element: any, ngAttr: any): any;
  */
 export function shallowCopy(src: any, dst: any): any;
 /**
- * row error if the argument is false
+ * Throw error if the argument is false
  * @param {boolean} argument
+ * @param {string} errorMsg
  */
-export function assert(argument: boolean, errorMsg: any): void;
+export function assert(argument: boolean, errorMsg: string): void;
 /**
- * throw error if the argument is falsy.
+ * Throw error if the argument is falsy.
  */
 export function assertArg(arg: any, name: any, reason: any): any;
 export function assertArgFn(arg: any, name: any, acceptArrayAnnotation: any): any;

@@ -16,7 +16,7 @@ import { VERSION } from "./public";
 const ngMinErr = minErr("ng");
 const $injectorMinErr = minErr("$injector");
 
-/** @type {Object.<string, import('./types').Module>} */
+/** @type {Object.<string, NgModule>} */
 const modules = {};
 
 /**

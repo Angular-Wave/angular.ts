@@ -2,16 +2,26 @@ import {
   isFunction,
   isDefined,
   isObject,
-  minErr,
   isString,
   assert,
 } from "../../shared/utils";
 
-const ngMinErr = minErr("ng");
+export const PROVIDE_LITERAL = "$provide";
+export const INJECTOR_LITERAL = "$injector";
+export const COMPILE_LITERAL = "$compileProvider";
+export const ANIMATION_LITERAL = "$animateProvider";
+export const FILTER_LITERAL = "$filterProvider";
+export const CONTROLLER_LITERAL = "$controllerProvider";
 
 /**
- * Modules are collections of application configuration information and components:
- * controllers, directives, filters, and etc.
+ * Modules are collections of application configuration information for components:
+ * controllers, directives, filters, etc. They provide recipes for the injector
+ * to do the actual instantiation. A module itself has no behaviour but only state.
+ * A such, it acts as a data structure between the Angular instance and the injector service.
+ *
+ * Since this is an internal structure that is exposed only via the Angular instance,
+ * it contains no validation of the items it receives. It is up to the instantiator on
+ * modules to do the actual validation.
  */
 export class NgModule {
   /**
@@ -36,7 +46,10 @@ export class NgModule {
 
     this.configFn = configFn;
 
-    /** @type {!Array.<Array.<*>>} */
+    /**
+     * Holds a collection of tasks, required to instantiate an angular component
+     * @type {!Array.<Array.<*>>}
+     */
     this.invokeQueue = [];
 
     /** @type {!Array.<any>} */
@@ -54,14 +67,12 @@ export class NgModule {
   }
 
   /**
-   *
    * @param {Object} value
    * @returns
    */
   info(value) {
     if (isDefined(value)) {
-      if (!isObject(value))
-        throw ngMinErr("aobj", "Argument '{0}' must be an object", "value");
+      assert(isObject(value), "module info value must be an object");
       this.infoState = value;
       return this;
     }
@@ -74,7 +85,7 @@ export class NgModule {
    * @returns {NgModule}
    */
   value(name, object) {
-    this.invokeQueue.push(["$provide", "value", [name, object]]);
+    this.invokeQueue.push([PROVIDE_LITERAL, "value", [name, object]]);
     return this;
   }
 
@@ -84,12 +95,17 @@ export class NgModule {
    * @returns {NgModule}
    */
   constant(name, object) {
-    this.invokeQueue.unshift(["$provide", "constant", [name, object]]);
+    this.invokeQueue.unshift([PROVIDE_LITERAL, "constant", [name, object]]);
     return this;
   }
 
+  /**
+   *
+   * @param {Function} configFn
+   * @returns {NgModule}
+   */
   config(configFn) {
-    this.configBlocks.push(["$injector", "invoke", [configFn]]);
+    this.configBlocks.push([INJECTOR_LITERAL, "invoke", [configFn]]);
     return this;
   }
 
@@ -102,7 +118,7 @@ export class NgModule {
     if (options && isFunction(options)) {
       options.$$moduleName = name;
     }
-    this.invokeQueue.push(["$compileProvider", "component", [name, options]]);
+    this.invokeQueue.push([COMPILE_LITERAL, "component", [name, options]]);
     return this;
   }
 
@@ -110,7 +126,11 @@ export class NgModule {
     if (providerFunction && isFunction(providerFunction)) {
       providerFunction.$$moduleName = name;
     }
-    this.invokeQueue.push(["$provide", "factory", [name, providerFunction]]);
+    this.invokeQueue.push([
+      PROVIDE_LITERAL,
+      "factory",
+      [name, providerFunction],
+    ]);
     return this;
   }
 
@@ -118,7 +138,11 @@ export class NgModule {
     if (serviceFunction && isFunction(serviceFunction)) {
       serviceFunction.$$moduleName = name;
     }
-    this.invokeQueue.push(["$provide", "service", [name, serviceFunction]]);
+    this.invokeQueue.push([
+      PROVIDE_LITERAL,
+      "service",
+      [name, serviceFunction],
+    ]);
     return this;
   }
 
@@ -126,7 +150,7 @@ export class NgModule {
     if (providerType && isFunction(providerType)) {
       providerType.$$moduleName = name;
     }
-    this.invokeQueue.push(["$provide", "provider", [name, providerType]]);
+    this.invokeQueue.push([PROVIDE_LITERAL, "provider", [name, providerType]]);
     return this;
   }
 
@@ -134,7 +158,7 @@ export class NgModule {
     if (decorFn && isFunction(decorFn)) {
       decorFn.$$moduleName = name;
     }
-    this.configBlocks.push(["$provide", "decorator", [name, decorFn]]);
+    this.configBlocks.push([PROVIDE_LITERAL, "decorator", [name, decorFn]]);
     return this;
   }
 
@@ -143,7 +167,7 @@ export class NgModule {
       directiveFactory.$$moduleName = name;
     }
     this.invokeQueue.push([
-      "$compileProvider",
+      COMPILE_LITERAL,
       "directive",
       [name, directiveFactory],
     ]);
@@ -155,7 +179,7 @@ export class NgModule {
       animationFactory.$$moduleName = name;
     }
     this.invokeQueue.push([
-      "$animateProvider",
+      ANIMATION_LITERAL,
       "register",
       [name, animationFactory],
     ]);
@@ -166,7 +190,7 @@ export class NgModule {
     if (filterFn && isFunction(filterFn)) {
       filterFn.$$moduleName = name;
     }
-    this.invokeQueue.push(["$filterProvider", "register", [name, filterFn]]);
+    this.invokeQueue.push([FILTER_LITERAL, "register", [name, filterFn]]);
     return this;
   }
 
@@ -174,7 +198,7 @@ export class NgModule {
     if (ctlFn && isFunction(ctlFn)) {
       ctlFn.$$moduleName = name;
     }
-    this.invokeQueue.push(["$controllerProvider", "register", [name, ctlFn]]);
+    this.invokeQueue.push([CONTROLLER_LITERAL, "register", [name, ctlFn]]);
     return this;
   }
 }

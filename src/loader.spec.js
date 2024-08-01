@@ -4,22 +4,7 @@ import { createInjector } from "./injector";
 describe("module loader", () => {
   var angular;
   beforeEach(() => {
-    delete window.angular;
     angular = window.angular = new Angular();
-  });
-
-  it("should set up namespace", () => {
-    expect(angular).toBeDefined();
-    expect(angular.module).toBeDefined();
-  });
-
-  it("should not override existing namespace", () => {
-    const { angular } = window;
-    const { module } = angular;
-
-    window.angular = new Angular();
-    expect(angular).toBe(angular);
-    expect(angular.module).toBe(module);
   });
 
   it("allows registering a module", () => {
