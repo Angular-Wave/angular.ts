@@ -95,7 +95,7 @@ describe("ngInclude", () => {
 
     it("should NOT use untrusted URL expressions ", () => {
       element = JQLite('<ng-include src="url"></ng-include>');
-      const injector = angular.bootstrap(element);
+      const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       $rootScope.url = "http://example.com/myUrl";
       expect(() => {
@@ -105,7 +105,7 @@ describe("ngInclude", () => {
 
     it("should NOT use mistyped expressions ", () => {
       element = JQLite('<ng-include src="url"></ng-include>');
-      const injector = angular.bootstrap(element);
+      const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       $rootScope.name = "chirayu";
       let $sce = injector.get("$sce");
