@@ -1,3 +1,7 @@
+/**
+ * Modules are collections of application configuration information and components:
+ * controllers, directives, filters, and etc.
+ */
 export class NgModule {
     /**
      *

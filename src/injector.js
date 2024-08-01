@@ -11,8 +11,9 @@ import {
   assertNotHasOwnProperty,
   reverseParams,
   isObject,
-  isDefined,
 } from "./shared/utils";
+
+import { InternalInjector } from "./core/di/internal-injector";
 
 var ARROW_ARG = /^([^(]+?)=>/;
 var FN_ARGS = /^[^(]*\(\s*([^)]*)\)/m;
@@ -82,15 +83,13 @@ const INSTANTIATING = {};
 
 /**
  *
- * @param {*} modulesToLoad
- * @param {*} strictDi
+ * @param {Array<string|any>} modulesToLoad
+ * @param {boolean} strictDi
  * @returns {import("./types").InjectorService}
  */
 export function createInjector(modulesToLoad, strictDi) {
-  if (isDefined(strictDi) && !isBoolean(strictDi)) {
-    throw $injectorMinErr("strictDi must be boolean");
-  }
-  strictDi = !!strictDi;
+  console.assert(Array.isArray(modulesToLoad));
+  console.assert(isBoolean(strictDi));
 
   const path = [];
   const loadedModules = new Map();
@@ -107,7 +106,7 @@ export function createInjector(modulesToLoad, strictDi) {
 
   const providerInjector = (providerCache.$injector = createInternalInjector(
     providerCache,
-    function (serviceName, caller) {
+    function (caller) {
       if (isString(caller)) {
         path.push(caller);
       }
@@ -256,7 +255,7 @@ export function createInjector(modulesToLoad, strictDi) {
 
       try {
         if (isString(module)) {
-          /** @type {import('./core/ng-module').NgModule} */
+          /** @type {import('./core/di/ng-module').NgModule} */
           let moduleFn = window["angular"].module(module);
           instanceInjector.modules[module] = moduleFn;
           runBlocks = runBlocks
@@ -281,7 +280,7 @@ export function createInjector(modulesToLoad, strictDi) {
           // So if stack doesn't contain message, we create a new string that contains both.
           // Since error.stack is read-only in Safari, I'm overriding e and not e.stack here.
 
-          e = `${e.message}\n${e.stack}`;
+          e.message = `${e.message}\n${e.stack}`;
         }
         throw $injectorMinErr(
           "modulerr",

@@ -1,7 +1,18 @@
-import { isFunction, isDefined, isObject, minErr } from "../../shared/utils";
+import {
+  isFunction,
+  isDefined,
+  isObject,
+  minErr,
+  isString,
+  assert,
+} from "../../shared/utils";
 
 const ngMinErr = minErr("ng");
 
+/**
+ * Modules are collections of application configuration information and components:
+ * controllers, directives, filters, and etc.
+ */
 export class NgModule {
   /**
    *
@@ -10,6 +21,8 @@ export class NgModule {
    * @param {Function} [configFn]
    */
   constructor(name, requires, configFn) {
+    assert(isString(name), "name required");
+    assert(Array.isArray(requires), "requires array required");
     /**
      * @type {string}
      * Name of the module.
