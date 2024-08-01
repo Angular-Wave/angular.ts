@@ -2,7 +2,6 @@ import { JQLite, dealoc } from "./shared/jqlite/jqlite";
 import { Angular } from "./loader";
 import { createInjector } from "./injector";
 import { browserTrigger } from "./shared/test-utils";
-import { Angular } from "./loader";
 
 describe("binding", () => {
   let element,

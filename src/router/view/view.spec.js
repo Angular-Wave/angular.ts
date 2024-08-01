@@ -1,6 +1,5 @@
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
-import { Angular } from "../../loader";
 import { curry } from "../../shared/hof";
 import { StateMatcher } from "../../router/state/state-matcher";
 import { StateBuilder } from "../../router/state/state-builder";

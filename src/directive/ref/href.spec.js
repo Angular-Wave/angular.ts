@@ -1,6 +1,6 @@
 import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
+import { dealoc } from "../../shared/jqlite/jqlite";
 import { isDefined } from "../../shared/utils";
 
 describe("ngHref", () => {
@@ -9,12 +9,15 @@ describe("ngHref", () => {
   let element;
 
   beforeEach(() => {
-    publishExternalAPI().decorator("$exceptionHandler", function () {
-      return (exception, cause) => {
-        throw new Error(exception.message);
-      };
-    });
-    createInjector(["ng"]).invoke((_$rootScope_, _$compile_) => {
+    window.angular = new Angular();
+    window.angular
+      .module("myModule", ["ng"])
+      .decorator("$exceptionHandler", function () {
+        return (exception, cause) => {
+          throw new Error(exception.message);
+        };
+      });
+    createInjector(["myModule"]).invoke((_$rootScope_, _$compile_) => {
       $rootScope = _$rootScope_;
       $compile = _$compile_;
     });

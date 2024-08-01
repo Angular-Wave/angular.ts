@@ -1,6 +1,6 @@
 import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
+import { dealoc } from "../../shared/jqlite/jqlite";
 
 describe("validators", () => {
   let $rootScope;
@@ -8,13 +8,16 @@ describe("validators", () => {
   let inputElm;
 
   beforeEach(() => {
-    publishExternalAPI().decorator("$exceptionHandler", function () {
-      return (exception, cause) => {
-        console.error(exception);
-        throw new Error(exception);
-      };
-    });
-    createInjector(["ng"]).invoke((_$compile_, _$rootScope_) => {
+    window.angular = new Angular();
+    window.angular
+      .module("myModule", ["ng"])
+      .decorator("$exceptionHandler", function () {
+        return (exception, cause) => {
+          console.error(exception);
+          throw new Error(exception);
+        };
+      });
+    createInjector(["myModule"]).invoke((_$compile_, _$rootScope_) => {
       $compile = _$compile_;
       $rootScope = _$rootScope_;
     });

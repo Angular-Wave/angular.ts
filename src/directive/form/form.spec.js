@@ -2,7 +2,6 @@ import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { FormController } from "../../directive/form/form";
-import { Angular } from "../../loader";
 
 describe("form", () => {
   let doc;
@@ -12,13 +11,16 @@ describe("form", () => {
   let injector;
 
   beforeEach(() => {
-    publishExternalAPI().decorator("$exceptionHandler", function () {
-      return (exception, cause) => {
-        throw new Error(exception);
-      };
-    });
+    window.angular = new Angular();
+    window.angular
+      .module("myModule", ["ng"])
+      .decorator("$exceptionHandler", function () {
+        return (exception, cause) => {
+          throw new Error(exception);
+        };
+      });
     injector = createInjector([
-      "ng",
+      "myModule",
       ($compileProvider) => {
         $compileProvider.directive("storeModelCtrl", () => ({
           require: "ngModel",

@@ -3,7 +3,6 @@ import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { valueFn } from "../../shared/utils";
-import { Angular } from "../../loader";
 
 function changeGivenInputTo(inputElm, val) {
   inputElm[0].value = val;
@@ -37,12 +36,15 @@ describe("ngModelOptions", () => {
       let injector;
 
       beforeEach(() => {
-        publishExternalAPI().decorator("$exceptionHandler", function () {
-          return (exception, cause) => {
-            throw new Error(exception.message);
-          };
-        });
-        injector = createInjector(["ng"]);
+        window.angular = new Angular();
+        window.angular
+          .module("myModule", ["ng"])
+          .decorator("$exceptionHandler", function () {
+            return (exception, cause) => {
+              throw new Error(exception.message);
+            };
+          });
+        injector = createInjector(["myModule"]);
         $compile = injector.get("$compile");
         $rootScope = injector.get("$rootScope");
         $q = injector.get("$q");

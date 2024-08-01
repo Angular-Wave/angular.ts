@@ -2,7 +2,6 @@ import { Angular } from "../../loader";
 import { createInjector } from "../../injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { forEach, valueFn } from "../../shared/utils";
-import { Angular } from "../../loader";
 
 describe("ngRepeat", () => {
   let element;
@@ -19,7 +18,7 @@ describe("ngRepeat", () => {
     logs = [];
     window.angular = new Angular();
     window.angular
-      .module("defaultModule", [])
+      .module("defaultModule", ["ng"])
       .decorator("$exceptionHandler", function () {
         return (exception, cause) => {
           logs.push(exception);

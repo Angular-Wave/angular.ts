@@ -1,6 +1,5 @@
 import { JQLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
-import { Angular } from "../../loader";
 import { browserTrigger, wait } from "../../shared/test-utils";
 
 describe("ngStateRef", () => {

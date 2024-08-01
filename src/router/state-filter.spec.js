@@ -1,5 +1,4 @@
 import { Angular } from "../loader";
-import { Angular } from "../loader";
 
 describe("router filters", function () {
   let module, $parse, $state, $q, $rootScope, $location;

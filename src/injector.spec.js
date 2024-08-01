@@ -1,6 +1,5 @@
 import { Angular } from "./loader";
 import { createInjector } from "./injector";
-import { Angular } from "./loader";
 import { valueFn, extend } from "./shared/utils";
 
 describe("injector.modules", () => {

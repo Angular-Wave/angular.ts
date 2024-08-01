@@ -1,6 +1,5 @@
 import { dealoc, JQLite } from "../shared/jqlite/jqlite";
 import { Angular } from "../loader";
-import { Angular } from "../loader";
 import { wait } from "../shared/test-utils";
 
 describe("templateFactory", () => {

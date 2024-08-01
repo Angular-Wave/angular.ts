@@ -53,13 +53,16 @@ describe("select", () => {
   }
 
   beforeEach(() => {
-    publishExternalAPI().decorator("$exceptionHandler", function () {
-      return (exception, cause) => {
-        throw new Error(exception);
-      };
-    });
+    window.angular = new Angular();
+    window.angular
+      .module("myModule", ["ng"])
+      .decorator("$exceptionHandler", function () {
+        return (exception, cause) => {
+          throw new Error(exception);
+        };
+      });
     createInjector([
-      "ng",
+      "myModule",
       ($compileProvider) => {
         $compileProvider.directive("spyOnWriteValue", () => ({
           require: "select",
