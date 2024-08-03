@@ -1,7 +1,6 @@
 import {
   assertArgFn,
   minErr,
-  forEach,
   isFunction,
   isString,
   isBoolean,
@@ -19,62 +18,6 @@ const FN_ARG_SPLIT = /,/;
 const FN_ARG = /^\s*(_?)(\S+?)\1\s*$/;
 const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/gm;
 const $injectorMinErr = minErr("$injector");
-
-function stringifyFn(fn) {
-  return Function.prototype.toString.call(fn);
-}
-
-function extractArgs(fn) {
-  var fnText = stringifyFn(fn).replace(STRIP_COMMENTS, ""),
-    args = fnText.match(ARROW_ARG) || fnText.match(FN_ARGS);
-  return args;
-}
-
-function anonFn(fn) {
-  // For anonymous functions, showing at the very least the function signature can help in
-  // debugging.
-  var args = extractArgs(fn);
-  if (args) {
-    return "function(" + (args[1] || "").replace(/[\s\r\n]+/, " ") + ")";
-  }
-  return "fn";
-}
-
-function annotate(fn, strictDi, name) {
-  var $inject, argDecl, last;
-
-  if (typeof fn === "function") {
-    if (!($inject = fn.$inject)) {
-      $inject = [];
-      if (fn.length) {
-        if (strictDi) {
-          if (!isString(name) || !name) {
-            name = fn.name || anonFn(fn);
-          }
-          throw $injectorMinErr(
-            "strictdi",
-            "{0} is not using explicit annotation and cannot be invoked in strict mode",
-            name,
-          );
-        }
-        argDecl = extractArgs(fn);
-        forEach(argDecl[1].split(FN_ARG_SPLIT), function (arg) {
-          arg.replace(FN_ARG, function (all, underscore, name) {
-            $inject.push(name);
-          });
-        });
-      }
-      fn.$inject = $inject;
-    }
-  } else if (Array.isArray(fn)) {
-    last = fn.length - 1;
-    assertArgFn(fn[last], "fn");
-    $inject = fn.slice(0, last);
-  } else {
-    assertArgFn(fn, "fn", true);
-  }
-  return $inject;
-}
 
 const providerSuffix = "Provider";
 const INSTANTIATING = {};
@@ -158,6 +101,10 @@ export function createInjector(modulesToLoad, strictDi = false) {
   // $provider
   ////////////////////////////////////
 
+  /**
+   * @param {function(string, any):any} delegate
+   * @returns
+   */
   function supportObject(delegate) {
     return function (key, value) {
       if (isObject(key)) {
@@ -170,6 +117,12 @@ export function createInjector(modulesToLoad, strictDi = false) {
     };
   }
 
+  /**
+   *
+   * @param {string} name
+   * @param {import('../../types').ServiceProvider} provider
+   * @returns
+   */
   function provider(name, provider) {
     assertNotHasOwnProperty(name, "service");
     if (isFunction(provider) || Array.isArray(provider)) {
@@ -182,11 +135,12 @@ export function createInjector(modulesToLoad, strictDi = false) {
         name,
       );
     }
-    return (providerCache[name + providerSuffix] = provider);
+    providerCache[name + providerSuffix] = provider;
+    return provider;
   }
 
   function enforceReturnValue(name, factory) {
-    return function enforcedReturnValue() {
+    return function () {
       const result = instanceInjector.invoke(factory, this);
       if (isUndefined(result)) {
         throw $injectorMinErr(
@@ -273,7 +227,7 @@ export function createInjector(modulesToLoad, strictDi = false) {
         if (isString(module)) {
           /** @type {import('./ng-module').NgModule} */
           let moduleFn = window["angular"].module(module);
-          instanceInjector.modules[module] = moduleFn;
+          instanceInjector.modules[/** @type {string } */ (module)] = moduleFn;
           runBlocks = runBlocks
             .concat(loadModules(moduleFn.requires))
             .concat(moduleFn.runBlocks);
@@ -362,14 +316,6 @@ export function createInjector(modulesToLoad, strictDi = false) {
       return args;
     }
 
-    function isClass(func) {
-      let result = func.$$ngIsClass;
-      if (!isBoolean(result)) {
-        result = func.$$ngIsClass = /^class\b/.test(stringifyFn(func));
-      }
-      return result;
-    }
-
     function invoke(fn, self, locals, serviceName) {
       if (typeof locals === "string") {
         serviceName = locals;
@@ -381,13 +327,12 @@ export function createInjector(modulesToLoad, strictDi = false) {
         fn = fn[fn.length - 1];
       }
 
-      if (!isClass(fn)) {
-        // http://jsperf.com/angularjs-invoke-apply-vs-switch
-        // #5388
+      if (isClass(fn)) {
+        args.unshift(null);
+        return new (Function.prototype.bind.apply(fn, args))();
+      } else {
         return fn.apply(self, args);
       }
-      args.unshift(null);
-      return new (Function.prototype.bind.apply(fn, args))();
     }
 
     function instantiate(Type, locals, serviceName) {
@@ -400,6 +345,11 @@ export function createInjector(modulesToLoad, strictDi = false) {
       return new (Function.prototype.bind.apply(ctor, args))();
     }
 
+    /**
+     *
+     * @param {String} name
+     * @returns {boolean}
+     */
     function has(name) {
       const hasProvider = Object.prototype.hasOwnProperty.call(
         providerCache,
@@ -420,3 +370,88 @@ export function createInjector(modulesToLoad, strictDi = false) {
 }
 
 createInjector.$$annotate = annotate;
+
+// Helpers
+
+/**
+ * @param {String} fn
+ * @returns {String}
+ */
+function stringifyFn(fn) {
+  return Function.prototype.toString.call(fn);
+}
+
+/**
+ * @param {String} fn
+ * @returns {Array<any>}
+ */
+function extractArgs(fn) {
+  const fnText = stringifyFn(fn).replace(STRIP_COMMENTS, "");
+  const args = fnText.match(ARROW_ARG) || fnText.match(FN_ARGS);
+  return args;
+}
+
+/**
+ * @param {String} fn
+ * @returns {String}
+ */
+function anonFn(fn) {
+  // For anonymous functions, showing at the very least the function signature can help in
+  // debugging.
+  var args = extractArgs(fn);
+  if (args) {
+    return "function(" + (args[1] || "").replace(/[\s\r\n]+/, " ") + ")";
+  }
+  return "fn";
+}
+
+/**
+ * @param {String} func
+ * @returns {boolean}
+ */
+function isClass(func) {
+  return /^class\b/.test(stringifyFn(func));
+}
+
+/**
+ *
+ * @param {import('../../types').AnnotatedFunction} fn
+ * @param {boolean} strictDi
+ * @param {String} name
+ * @returns {Array<string>}
+ */
+function annotate(fn, strictDi, name) {
+  var $inject, argDecl, last;
+
+  if (typeof fn === "function") {
+    if (!($inject = fn.$inject)) {
+      $inject = [];
+      if (fn.length) {
+        if (strictDi) {
+          if (!isString(name) || !name) {
+            name = fn.name || anonFn(fn);
+          }
+          throw $injectorMinErr(
+            "strictdi",
+            "{0} is not using explicit annotation and cannot be invoked in strict mode",
+            name,
+          );
+        }
+        argDecl = extractArgs(fn);
+        argDecl[1].split(FN_ARG_SPLIT).forEach(function (arg) {
+          arg.replace(FN_ARG, function (all, underscore, name) {
+            $inject.push(name);
+          });
+        });
+      }
+      fn.$inject = $inject;
+    }
+  } else if (Array.isArray(fn)) {
+    last = /** @type {Array} */ (fn).length - 1;
+    assertArgFn(fn[last], "fn");
+    $inject = /** @type {Array} */ (fn).slice(0, last);
+  } else {
+    assertArgFn(fn, "fn", true);
+  }
+  return $inject;
+}

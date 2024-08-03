@@ -11,6 +11,15 @@
  */
 
 /**
+ *
+ * @typedef {Object} Annotated
+ * @property {Array<String>} $inject
+ *  *
+ * @typedef {Function & Annotated & Array<any>} AnnotatedFunction
+ *
+ */
+
+/**
  * @typedef {Object} ComponentOptions
  * @description Component definition object (a simplified directive definition object)
  * @property {string |Injectable<ControllerConstructor>> | undefined} [controller]
