@@ -2,7 +2,7 @@ import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
 import { isObject } from "../../shared/utils";
 import { isFunction } from "../../shared/utils";
-import { createInjector } from "../../injector";
+import { createInjector } from "../di/injector";
 
 describe("$animate", () => {
   describe("without animation", () => {

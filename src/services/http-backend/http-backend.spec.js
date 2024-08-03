@@ -1,4 +1,4 @@
-import { createInjector } from "../../injector";
+import { createInjector } from "../../core/di/injector";
 import { Angular } from "../../loader";
 import { createHttpBackend } from "./http-backend";
 import sinon from "sinon";

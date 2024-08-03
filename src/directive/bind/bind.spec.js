@@ -1,6 +1,6 @@
 import { Angular } from "../../loader";
-import { createInjector } from "../../injector";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
+import { createInjector } from "../../core/di/injector";
+import { dealoc } from "../../shared/jqlite/jqlite";
 
 describe("ng-bind", () => {
   let $rootScope;

@@ -1,6 +1,6 @@
 import { JQLite, dealoc } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
-import { createInjector } from "../../injector";
+import { createInjector } from "../../core/di/injector";
 import { NgModelController } from "./model";
 import { isDefined, valueFn, isObject } from "../../shared/utils";
 import { browserTrigger } from "../../shared/test-utils";

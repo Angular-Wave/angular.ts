@@ -7,10 +7,10 @@ import {
   errorHandlingConfig,
 } from "./shared/utils";
 import { JQLite } from "./shared/jqlite/jqlite";
-import { createInjector } from "./injector";
+import { createInjector } from "./core/di/injector";
+import { NgModule } from "./core/di/ng-module";
 import { CACHE } from "./core/cache/cache";
 import { publishExternalAPI } from "./public";
-import { NgModule } from "./core/di/ng-module";
 import { VERSION } from "./public";
 
 const ngMinErr = minErr("ng");

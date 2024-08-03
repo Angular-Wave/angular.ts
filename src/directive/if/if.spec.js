@@ -1,7 +1,7 @@
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { forEach, valueFn } from "../../shared/utils";
 import { Angular } from "../../loader";
-import { createInjector } from "../../injector";
+import { createInjector } from "../../core/di/injector";
 import { wait } from "../../shared/test-utils";
 
 describe("ngIf", () => {

@@ -1,5 +1,5 @@
 import { Angular } from "../../loader";
-import { createInjector } from "../../injector";
+import { createInjector } from "../di/injector";
 import { wait } from "../../shared/test-utils";
 
 describe("$timeout", () => {

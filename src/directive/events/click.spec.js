@@ -1,6 +1,6 @@
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
+import { dealoc } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
-import { createInjector } from "../../injector";
+import { createInjector } from "../../core/di/injector";
 
 describe("ngClick", () => {
   let element;

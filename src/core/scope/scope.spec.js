@@ -1,7 +1,7 @@
 import { $$asyncQueue } from "./scope";
 import { extend, sliceArgs } from "../../shared/utils";
 import { Angular } from "../../loader";
-import { createInjector } from "../../injector";
+import { createInjector } from "../di/injector";
 
 describe("Scope", function () {
   let $rootScope;

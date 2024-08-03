@@ -1,5 +1,4 @@
-import { createInjector } from "../../injector";
-import { setupModuleLoader } from "../../loader";
+import { createInjector } from "../../core/di/injector";
 import { Angular } from "../../loader";
 
 /**
@@ -705,7 +704,6 @@ describe("all", function () {
     let $q, $rootScope, $injector;
 
     beforeEach(() => {
-      setupModuleLoader(window);
       window.angular = new Angular();
       $injector = createInjector(["ng"]);
       $q = $injector.get("$q");
@@ -740,7 +738,6 @@ describe("all", function () {
     let $q, $$q, $rootScope, $injector;
 
     beforeEach(() => {
-      setupModuleLoader(window);
       window.angular = new Angular();
       $injector = createInjector(["ng"]);
       $q = $injector.get("$q");

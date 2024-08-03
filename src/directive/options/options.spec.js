@@ -1,4 +1,4 @@
-import { createInjector } from "../../injector";
+import { createInjector } from "../../core/di/injector";
 import { JQLite, dealoc } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
 import {

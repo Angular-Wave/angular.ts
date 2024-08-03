@@ -1,6 +1,6 @@
-import { Angular } from "./loader";
+import { Angular } from "../../loader";
 import { createInjector } from "./injector";
-import { valueFn, extend } from "./shared/utils";
+import { valueFn, extend } from "../../shared/utils";
 
 describe("injector.modules", () => {
   beforeEach(() => {
@@ -274,7 +274,7 @@ describe("injector.modules", () => {
     expect(injector.invoke(fn)).toBe(3);
   });
 
-  it("invokes an annotated class with dependency injection", () => {
+  it("invokes a class with static property with dependency injection", () => {
     const module = angular.module("myModule", []);
     module.constant("a", 1);
     module.constant("b", 2);
@@ -285,6 +285,20 @@ describe("injector.modules", () => {
         this.c = a + b;
       }
     }
+    expect(injector.invoke(Foo).c).toBe(3);
+  });
+
+  it("invokes an annotated class with dependency injection", () => {
+    const module = angular.module("myModule", []);
+    module.constant("a", 1);
+    module.constant("b", 2);
+    const injector = createInjector(["myModule"]);
+    class Foo {
+      constructor(a, b) {
+        this.c = a + b;
+      }
+    }
+    Foo.$inject = ["a", "b"];
     expect(injector.invoke(Foo).c).toBe(3);
   });
 
@@ -325,7 +339,7 @@ describe("injector.modules", () => {
         return one + this.two;
       },
     };
-    ~expect(injector.invoke(["a", obj.fn], obj)).toBe(3);
+    expect(injector.invoke(["a", obj.fn], obj)).toBe(3);
   });
 
   it("overrides dependencies with locals when invoking", () => {
@@ -392,7 +406,6 @@ describe("annotate", () => {
 
   it("should create $inject", () => {
     const extraParams = () => {};
-    /* eslint-disable space-before-function-paren */
     // keep the multi-line to make sure we can handle it
     function $f_n0 /*
      */(

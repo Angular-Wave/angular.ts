@@ -1,4 +1,4 @@
-import { createInjector } from "../../injector";
+import { createInjector } from "../di/injector";
 
 import { Angular } from "../../loader";
 import { adjustMatcher } from "./sce";

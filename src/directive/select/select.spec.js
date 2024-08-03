@@ -1,5 +1,5 @@
 import { Angular } from "../../loader";
-import { createInjector } from "../../injector";
+import { createInjector } from "../../core/di/injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { forEach, hashKey, equals, isNumberNaN } from "../../shared/utils";
 import { browserTrigger } from "../../shared/test-utils";

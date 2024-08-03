@@ -5,7 +5,7 @@ import {
   LocationHashbangInHtml5Url,
 } from "./location";
 import { Angular } from "../../loader";
-import { createInjector } from "../../injector";
+import { createInjector } from "../../core/di/injector";
 
 describe("$location", () => {
   let module;

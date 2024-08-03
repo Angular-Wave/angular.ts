@@ -1,5 +1,5 @@
 import { Angular } from "../../loader";
-import { createInjector } from "../../injector";
+import { createInjector } from "../di/injector";
 import { dealoc, JQLite, getOrSetCacheData } from "../../shared/jqlite/jqlite";
 import {
   forEach,
@@ -11094,7 +11094,6 @@ describe("$compile", () => {
 
       it("should eventually expose isolate scope variables on ES6 class controller with controllerAs when bindToController is true", () => {
         var controllerCalled = false;
-        // eslint-disable-next-line no-eval
         var Controller = eval(
           "(\n" +
             "class Foo {\n" +

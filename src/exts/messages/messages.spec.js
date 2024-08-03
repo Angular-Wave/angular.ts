@@ -1,4 +1,4 @@
-import { createInjector } from "../../injector";
+import { createInjector } from "../../core/di/injector";
 import { countWatchers } from "../../core/scope/scope";
 import { Angular } from "../../loader";
 import { isString } from "../../shared/utils";

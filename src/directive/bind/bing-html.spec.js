@@ -1,4 +1,4 @@
-import { createInjector } from "../../injector";
+import { createInjector } from "../../core/di/injector";
 import { forEach } from "../../shared/utils";
 import { Angular } from "../../loader";
 

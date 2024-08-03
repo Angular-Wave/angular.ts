@@ -1,5 +1,5 @@
 import { Angular } from "../../loader";
-import { createInjector } from "../../injector";
+import { createInjector } from "../../core/di/injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { EMAIL_REGEXP, ISO_DATE_REGEXP, URL_REGEXP } from "./input";
 import { forEach } from "../../shared/utils";
@@ -3050,7 +3050,6 @@ describe("input", () => {
               "a@xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
             ),
           ).toBe(false);
-          /* eslint-disable max-len */
           expect(
             EMAIL_REGEXP.test(
               "a@xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",

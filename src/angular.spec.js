@@ -26,7 +26,7 @@ import {
 } from "./shared/utils";
 import { dealoc, JQLite, startingTag } from "./shared/jqlite/jqlite";
 import { Angular } from "./loader";
-import { createInjector } from "./injector";
+import { createInjector } from "./core/di/injector";
 
 describe("angular", () => {
   let element, document, module, injector, $rootScope, $compile;
