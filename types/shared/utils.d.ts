@@ -490,7 +490,7 @@ export function shallowCopy(src: any, dst: any): any;
  * @param {boolean} argument
  * @param {string} errorMsg
  */
-export function assert(argument: boolean, errorMsg: string): void;
+export function assert(argument: boolean, errorMsg?: string): void;
 /**
  * Throw error if the argument is falsy.
  */

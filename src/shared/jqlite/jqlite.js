@@ -744,11 +744,9 @@ JQLite.prototype.triggerHandler = function (event, extraParameters) {
     if (isUndefined(value)) {
       value = fn(this[i], event, extraParameters);
       if (isDefined(value)) {
-        // @ts-ignore
         value = JQLite(value);
       }
     } else {
-      // @ts-ignore
       addNodes(value, fn(this[i], event, extraParameters));
     }
   }

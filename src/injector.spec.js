@@ -13,7 +13,7 @@ describe("injector.modules", () => {
   });
 
   it("should have $injector", () => {
-    const $injector = createInjector();
+    const $injector = createInjector([]);
     expect($injector.get("$injector")).toBe($injector);
   });
 

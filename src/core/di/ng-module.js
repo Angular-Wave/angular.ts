@@ -44,15 +44,13 @@ export class NgModule {
      */
     this.requires = requires;
 
-    this.configFn = configFn;
-
     /**
      * Holds a collection of tasks, required to instantiate an angular component
-     * @type {!Array.<Array.<*>>}
+     * @type {!Array<Array<*>>}
      */
     this.invokeQueue = [];
 
-    /** @type {!Array.<any>} */
+    /** @type {!Array<Array<*>>} */
     this.configBlocks = [];
 
     /** @type {!Array.<Function>} */

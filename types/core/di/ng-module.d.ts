@@ -32,14 +32,13 @@ export class NgModule {
      * loaded.
      */
     requires: string[];
-    configFn: Function;
     /**
      * Holds a collection of tasks, required to instantiate an angular component
-     * @type {!Array.<Array.<*>>}
+     * @type {!Array<Array<*>>}
      */
     invokeQueue: Array<Array<any>>;
-    /** @type {!Array.<any>} */
-    configBlocks: Array<any>;
+    /** @type {!Array<Array<*>>} */
+    configBlocks: Array<Array<any>>;
     /** @type {!Array.<Function>} */
     runBlocks: Array<Function>;
     /** @type {Object} */

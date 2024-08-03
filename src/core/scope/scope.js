@@ -1363,7 +1363,6 @@ export class Scope {
    */
   decrementListenerCount(count, name) {
     let self = this;
-    // @ts-ignore
     for (; self; self = self.$parent) {
       if (self.$$listenerCount[name] !== undefined) {
         self.$$listenerCount[name] -= count;
