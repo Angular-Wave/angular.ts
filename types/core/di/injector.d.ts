@@ -8,5 +8,12 @@ export function createInjector(modulesToLoad: Array<string | Function>, strictDi
 export namespace createInjector {
     export { annotate as $$annotate };
 }
-declare function annotate(fn: any, strictDi: any, name: any): any;
+/**
+ *
+ * @param {import('../../types').AnnotatedFunction} fn
+ * @param {boolean} strictDi
+ * @param {String} name
+ * @returns {Array<string>}
+ */
+declare function annotate(fn: import("../../types").AnnotatedFunction, strictDi: boolean, name: string): Array<string>;
 export {};

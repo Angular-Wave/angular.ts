@@ -11,13 +11,14 @@ import {
   isObject,
   assert,
 } from "../../shared/utils";
+import { INJECTOR_LITERAL } from "./ng-module";
 
 const ARROW_ARG = /^([^(]+?)=>/;
 const FN_ARGS = /^[^(]*\(\s*([^)]*)\)/m;
 const FN_ARG_SPLIT = /,/;
 const FN_ARG = /^\s*(_?)(\S+?)\1\s*$/;
 const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/gm;
-const $injectorMinErr = minErr("$injector");
+const $injectorMinErr = minErr(INJECTOR_LITERAL);
 
 const providerSuffix = "Provider";
 const INSTANTIATING = {};
@@ -76,14 +77,14 @@ export function createInjector(modulesToLoad, strictDi = false) {
     },
   );
 
-  providerCache["$injector" + providerSuffix] = {
+  providerCache[INJECTOR_LITERAL + providerSuffix] = {
     $get: valueFn(protoInstanceInjector),
   };
   let instanceInjector = protoInstanceInjector;
   instanceInjector.modules = providerCache.$injector.modules =
     Object.create(null);
   const runBlocks = loadModules(modulesToLoad);
-  instanceInjector = protoInstanceInjector.get("$injector");
+  instanceInjector = protoInstanceInjector.get(INJECTOR_LITERAL);
   instanceInjector.strictDi = strictDi;
   runBlocks.forEach((fn) => {
     if (fn) instanceInjector.invoke(fn);
@@ -161,15 +162,20 @@ export function createInjector(modulesToLoad, strictDi = false) {
 
   function service(name, constructor) {
     return factory(name, [
-      "$injector",
+      INJECTOR_LITERAL,
       function ($injector) {
         return $injector.instantiate(constructor);
       },
     ]);
   }
 
+  /**
+   * @param {String} name
+   * @param {any} val
+   * @returns {import('../../types').ServiceProvider}
+   */
   function value(name, val) {
-    return factory(name, valueFn(val), false);
+    return (providerCache[name + providerSuffix] = { $get: () => val });
   }
 
   function constant(name, value) {
