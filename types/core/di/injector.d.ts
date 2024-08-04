@@ -10,10 +10,10 @@ export namespace createInjector {
 }
 /**
  *
- * @param {import('../../types').AnnotatedFunction} fn
+ * @param {any} fn
  * @param {boolean} strictDi
  * @param {String} name
  * @returns {Array<string>}
  */
-declare function annotate(fn: import("../../types").AnnotatedFunction, strictDi: boolean, name: string): Array<string>;
+declare function annotate(fn: any, strictDi: boolean, name: string): Array<string>;
 export {};

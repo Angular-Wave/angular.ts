@@ -6,7 +6,6 @@ import {
   isBoolean,
   isUndefined,
   assertArg,
-  valueFn,
   assertNotHasOwnProperty,
   isObject,
   assert,
@@ -58,16 +57,15 @@ export function createInjector(modulesToLoad, strictDi = false) {
       throw $injectorMinErr("unpr", "Unknown provider: {0}", path.join(" <- "));
     },
   );
-
   const instanceCache = {};
-
-  let protoInstanceInjector = createInternalInjector(
+  const protoInstanceInjector = createInternalInjector(
     instanceCache,
     (serviceName, caller) => {
       const provider = providerCache.$injector.get(
         serviceName + providerSuffix,
         caller,
       );
+
       return instanceInjector.invoke(
         provider.$get,
         provider,
@@ -77,8 +75,9 @@ export function createInjector(modulesToLoad, strictDi = false) {
     },
   );
 
-  providerCache[INJECTOR_LITERAL + providerSuffix] = {
-    $get: valueFn(protoInstanceInjector),
+  providerCache.$injectorProvider = {
+    // $injectionProvider return instance injector
+    $get: () => protoInstanceInjector,
   };
   let instanceInjector = protoInstanceInjector;
   instanceInjector.modules = providerCache.$injector.modules =
@@ -101,22 +100,6 @@ export function createInjector(modulesToLoad, strictDi = false) {
   ////////////////////////////////////
   // $provider
   ////////////////////////////////////
-
-  /**
-   * @param {function(string, any):any} delegate
-   * @returns
-   */
-  function supportObject(delegate) {
-    return function (key, value) {
-      if (isObject(key)) {
-        Object.entries(key).forEach(([k, v]) => {
-          delegate(k, v);
-        });
-      } else {
-        return delegate(key, value);
-      }
-    };
-  }
 
   /**
    *
@@ -154,18 +137,16 @@ export function createInjector(modulesToLoad, strictDi = false) {
     };
   }
 
-  function factory(name, factoryFn, enforce) {
+  function factory(name, factoryFn) {
     return provider(name, {
-      $get: enforce !== false ? enforceReturnValue(name, factoryFn) : factoryFn,
+      $get: enforceReturnValue(name, factoryFn),
     });
   }
 
   function service(name, constructor) {
     return factory(name, [
       INJECTOR_LITERAL,
-      function ($injector) {
-        return $injector.instantiate(constructor);
-      },
+      ($injector) => $injector.instantiate(constructor),
     ]);
   }
 
@@ -398,20 +379,6 @@ function extractArgs(fn) {
 }
 
 /**
- * @param {String} fn
- * @returns {String}
- */
-function anonFn(fn) {
-  // For anonymous functions, showing at the very least the function signature can help in
-  // debugging.
-  var args = extractArgs(fn);
-  if (args) {
-    return "function(" + (args[1] || "").replace(/[\s\r\n]+/, " ") + ")";
-  }
-  return "fn";
-}
-
-/**
  * @param {String} func
  * @returns {boolean}
  */
@@ -421,7 +388,7 @@ function isClass(func) {
 
 /**
  *
- * @param {import('../../types').AnnotatedFunction} fn
+ * @param {any} fn
  * @param {boolean} strictDi
  * @param {String} name
  * @returns {Array<string>}
@@ -434,16 +401,13 @@ function annotate(fn, strictDi, name) {
       $inject = [];
       if (fn.length) {
         if (strictDi) {
-          if (!isString(name) || !name) {
-            name = fn.name || anonFn(fn);
-          }
           throw $injectorMinErr(
             "strictdi",
             "{0} is not using explicit annotation and cannot be invoked in strict mode",
             name,
           );
         }
-        argDecl = extractArgs(fn);
+        argDecl = extractArgs(/** @type {String} */ (fn));
         argDecl[1].split(FN_ARG_SPLIT).forEach(function (arg) {
           arg.replace(FN_ARG, function (all, underscore, name) {
             $inject.push(name);
@@ -460,4 +424,20 @@ function annotate(fn, strictDi, name) {
     assertArgFn(fn, "fn", true);
   }
   return $inject;
+}
+
+/**
+ * @param {function(string, any):any} delegate
+ * @returns
+ */
+function supportObject(delegate) {
+  return function (key, value) {
+    if (isObject(key)) {
+      Object.entries(key).forEach(([k, v]) => {
+        delegate(k, v);
+      });
+    } else {
+      return delegate(key, value);
+    }
+  };
 }
