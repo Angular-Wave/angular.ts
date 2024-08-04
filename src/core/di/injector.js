@@ -3,7 +3,6 @@ import {
   minErr,
   isFunction,
   isString,
-  isBoolean,
   isUndefined,
   assertArg,
   assertNotHasOwnProperty,
@@ -30,8 +29,7 @@ const INSTANTIATING = {};
  */
 export function createInjector(modulesToLoad, strictDi = false) {
   assert(Array.isArray(modulesToLoad), "modules required");
-  assert(isBoolean(strictDi));
-  /** @type {Array<string>} */
+  /** @type {String[]} Used only for error reporting of circular dependencies*/
   const path = [];
 
   /** @type {Map<String|Function, boolean>} */
@@ -48,15 +46,11 @@ export function createInjector(modulesToLoad, strictDi = false) {
     },
   };
 
-  providerCache.$injector = createInternalInjector(
-    providerCache,
-    function (caller) {
-      if (isString(caller)) {
-        path.push(caller);
-      }
-      throw $injectorMinErr("unpr", "Unknown provider: {0}", path.join(" <- "));
-    },
-  );
+  providerCache.$injector = createInternalInjector(providerCache, (caller) => {
+    path.push(caller);
+    // prevents lookups to providers through get
+    throw $injectorMinErr("unpr", "Unknown provider: {0}", path.join(" <- "));
+  });
   const instanceCache = {};
   const protoInstanceInjector = createInternalInjector(
     instanceCache,
@@ -266,19 +260,18 @@ export function createInjector(modulesToLoad, strictDi = false) {
         }
         return cache[serviceName];
       }
+
+      path.unshift(serviceName);
+      cache[serviceName] = INSTANTIATING;
       try {
-        path.unshift(serviceName);
-        cache[serviceName] = INSTANTIATING;
+        // this goes to line 60
         cache[serviceName] = factory(serviceName, caller);
-        return cache[serviceName];
       } catch (err) {
-        if (cache[serviceName] === INSTANTIATING) {
-          delete cache[serviceName];
-        }
+        // this is for the error handling being thrown by the providerCache multiple times
+        delete cache[serviceName];
         throw err;
-      } finally {
-        path.shift();
       }
+      return cache[serviceName];
     }
 
     function injectionArgs(fn, locals, serviceName) {

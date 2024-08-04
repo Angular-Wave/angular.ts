@@ -17,6 +17,20 @@ describe("injector.modules", () => {
     expect($injector.get("$injector")).toBe($injector);
   });
 
+  it("should have modules property", () => {
+    const $injector = createInjector([]);
+    expect($injector.modules).toEqual({});
+  });
+
+  it("should have methods", () => {
+    const $injector = createInjector([]);
+    expect($injector.annotate).toBeDefined();
+    expect($injector.has).toBeDefined();
+    expect($injector.invoke).toBeDefined();
+    expect($injector.instantiate).toBeDefined();
+    expect($injector.get).toBeDefined();
+  });
+
   it("should have a false strictDi property", () => {
     const injector = createInjector([]);
     expect(injector.strictDi).toBe(false);
@@ -2245,9 +2259,7 @@ describe("protection modes", () => {
   });
 
   it("should prevent instance lookup in module", () => {
-    function instanceLookupInModule(name) {
-      throw new Error("FAIL");
-    }
+    function instanceLookupInModule(name) {}
     expect(() => {
       createInjector([
         function ($provide) {
