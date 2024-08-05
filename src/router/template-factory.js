@@ -3,6 +3,7 @@ import { services } from "./common/coreservices";
 import { tail, unnestR } from "../shared/common";
 import { Resolvable } from "./resolve/resolvable";
 import { kebobString } from "../shared/strings";
+import { annotate } from "../core/di/injector";
 
 /**
  * @typedef BindingTuple
@@ -146,7 +147,7 @@ export class TemplateFactory {
    * for that string.
    */
   fromProvider(provider, params, context) {
-    const deps = this.$injector.annotate(provider);
+    const deps = annotate(provider);
     const providerFn = Array.isArray(provider) ? tail(provider) : provider;
     const resolvable = new Resolvable("", providerFn, deps);
     return resolvable.get(context);
@@ -159,7 +160,7 @@ export class TemplateFactory {
    * @return {string} The template html as a string: "<component-name input1='::$resolve.foo'></component-name>".
    */
   fromComponentProvider(provider, params, context) {
-    const deps = this.$injector.annotate(provider);
+    const deps = annotate(provider);
     const providerFn = Array.isArray(provider) ? tail(provider) : provider;
     const resolvable = new Resolvable("", providerFn, deps);
     return resolvable.get(context);
@@ -207,7 +208,7 @@ export class TemplateFactory {
       if (type === "&") {
         const res = context.getResolvable(resolveName);
         const fn = res && res.data;
-        const args = (fn && this.$injector.annotate(fn)) || [];
+        const args = (fn && annotate(fn)) || [];
         // account for array style injection, i.e., ['foo', function(foo) {}]
         const arrayIdxStr = Array.isArray(fn) ? `[${fn.length - 1}]` : "";
         return `${attrName}='$resolve.${resolveName}${arrayIdxStr}(${args.join(",")})'`;

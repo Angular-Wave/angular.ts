@@ -19,7 +19,7 @@ const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/gm;
 const $injectorMinErr = minErr(INJECTOR_LITERAL);
 
 const providerSuffix = "Provider";
-const INSTANTIATING = {};
+const INSTANTIATING = "INSTANTIATING";
 /** @type {String[]} Used only for error reporting of circular dependencies*/
 const path = [];
 
@@ -192,17 +192,6 @@ export function createInjector(modulesToLoad, strictDi = false) {
       if (loadedModules.get(module)) return;
       loadedModules.set(module, true);
 
-      /**
-       *
-       * @param {Array<Array<any>>} queue
-       */
-      function runInvokeQueue(queue) {
-        queue.forEach((invokeArgs) => {
-          const provider = providerInjector.get(invokeArgs[0]);
-          provider[invokeArgs[1]].apply(provider, invokeArgs[2]);
-        });
-      }
-
       try {
         if (isString(module)) {
           /** @type {import('./ng-module').NgModule} */
@@ -211,8 +200,13 @@ export function createInjector(modulesToLoad, strictDi = false) {
           runBlocks = runBlocks
             .concat(loadModules(moduleFn.requires))
             .concat(moduleFn.runBlocks);
-          runInvokeQueue(moduleFn.invokeQueue);
-          runInvokeQueue(moduleFn.configBlocks);
+
+          moduleFn.invokeQueue
+            .concat(moduleFn.configBlocks)
+            .forEach((invokeArgs) => {
+              const provider = providerInjector.get(invokeArgs[0]);
+              provider[invokeArgs[1]].apply(provider, invokeArgs[2]);
+            });
         } else if (isFunction(module)) {
           runBlocks.push(providerInjector.invoke(module));
         } else if (Array.isArray(module)) {
@@ -342,7 +336,6 @@ export function createInjector(modulesToLoad, strictDi = false) {
       invoke,
       instantiate,
       get,
-      annotate,
       has,
     };
   }
@@ -379,11 +372,11 @@ function isClass(func) {
 /**
  *
  * @param {any} fn
- * @param {boolean} strictDi
- * @param {String} name
+ * @param {boolean} [strictDi]
+ * @param {String} [name]
  * @returns {Array<string>}
  */
-function annotate(fn, strictDi, name) {
+export function annotate(fn, strictDi, name) {
   var $inject, argDecl, last;
 
   if (typeof fn === "function") {

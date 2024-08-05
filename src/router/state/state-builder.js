@@ -11,6 +11,7 @@ import { stringify } from "../../shared/strings";
 import { is, pattern, pipe, prop, val } from "../../shared/hof";
 import { Resolvable } from "../resolve/resolvable";
 import { services } from "../common/coreservices";
+import { annotate } from "../../core/di/injector";
 const parseUrl = (url) => {
   if (!isString(url)) return false;
   const root = url.charAt(0) === "^";
@@ -145,14 +146,14 @@ export function resolvablesBuilder(state) {
       policy: resolvePolicies[token],
     }));
   /** fetch DI annotations from a function or ng1-style array */
-  const annotate = (fn) => {
+  const annotateFn = (fn) => {
     const $injector = services.$injector;
     // ng1 doesn't have an $injector until runtime.
     // If the $injector doesn't exist, use "deferred" literal as a
     // marker indicating they should be annotated when runtime starts
     return (
       fn["$inject"] ||
-      ($injector && $injector.annotate(fn, $injector.strictDi)) ||
+      ($injector && annotate(fn, $injector.strictDi)) ||
       "deferred"
     );
   };
@@ -207,7 +208,7 @@ export function resolvablesBuilder(state) {
   const tuple2Resolvable = pattern([
         [pipe(prop('val'), isString), (tuple) => new Resolvable(tuple.token, ((x) => x), [tuple.val], tuple.policy)],
         [pipe(prop('val'), Array.isArray), (tuple) => new Resolvable(tuple.token, tail(tuple.val), tuple.val.slice(0, -1), tuple.policy)],
-        [pipe(prop('val'), isFunction), (tuple) => new Resolvable(tuple.token, tuple.val, annotate(tuple.val), tuple.policy)],
+        [pipe(prop('val'), isFunction), (tuple) => new Resolvable(tuple.token, tuple.val, annotateFn(tuple.val), tuple.policy)],
     ]);
   // prettier-ignore
   const item2Resolvable = pattern([

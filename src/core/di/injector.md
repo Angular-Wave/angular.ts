@@ -250,7 +250,7 @@
 - }
 -
 - // Then
-- expect(injector.annotate(MyController)).toEqual(['$scope', '$route']);
+- expect(annotate(MyController)).toEqual(['$scope', '$route']);
 - ```
 
   ```
@@ -277,7 +277,7 @@
 - MyController['$inject'] = ['$scope', '$route'];
 -
 - // Then
-- expect(injector.annotate(MyController)).toEqual(['$scope', '$route']);
+- expect(annotate(MyController)).toEqual(['$scope', '$route']);
 - ```
 
   ```
@@ -311,7 +311,7 @@
 - }]);
 -
 - // Therefore
-- expect(injector.annotate(
+- expect(annotate(
 -      ['$compile', '$rootScope', function(obfus_$compile, obfus_$rootScope) {}])
 - ).toEqual(['$compile', '$rootScope']);
 - ```

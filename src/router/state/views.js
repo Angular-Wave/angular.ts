@@ -5,6 +5,7 @@ import { services } from "../common/coreservices";
 import { trace } from "../common/trace";
 import { ResolveContext } from "../resolve/resolve-context";
 import { Resolvable } from "../resolve/resolvable";
+import { annotate } from "../../core/di/injector";
 
 export function getNg1ViewConfigFactory() {
   let templateFactory = null;
@@ -141,7 +142,7 @@ export class Ng1ViewConfig {
   getController(context) {
     const provider = this.viewDecl.controllerProvider;
     if (!isInjectable(provider)) return this.viewDecl.controller;
-    const deps = services.$injector.annotate(provider);
+    const deps = annotate(provider);
     const providerFn = Array.isArray(provider) ? tail(provider) : provider;
     const resolvable = new Resolvable("", providerFn, deps);
     return resolvable.get(context);

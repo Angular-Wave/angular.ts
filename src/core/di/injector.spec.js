@@ -1,5 +1,5 @@
 import { Angular } from "../../loader";
-import { createInjector } from "./injector";
+import { createInjector, annotate } from "./injector";
 import { valueFn, extend } from "../../shared/utils";
 
 describe("injector.modules", () => {
@@ -24,7 +24,6 @@ describe("injector.modules", () => {
 
   it("should have methods", () => {
     const $injector = createInjector([]);
-    expect($injector.annotate).toBeDefined();
     expect($injector.has).toBeDefined();
     expect($injector.invoke).toBeDefined();
     expect($injector.instantiate).toBeDefined();
@@ -400,12 +399,10 @@ describe("injector.modules", () => {
 });
 
 describe("annotate", () => {
-  let annotate;
   let injector;
   beforeEach(() => {
     window.angular = new Angular();
     injector = createInjector([]);
-    annotate = injector.annotate;
   });
 
   it("should return $inject", () => {
@@ -525,43 +522,43 @@ describe("annotate", () => {
     const injector = createInjector([]);
     const fn = () => {};
     fn.$inject = ["a", "b"];
-    expect(injector.annotate(fn)).toEqual(["a", "b"]);
+    expect(annotate(fn)).toEqual(["a", "b"]);
   });
 
   it("returns the array-style annotations of a function", () => {
     const injector = createInjector([]);
     const fn = ["a", "b", () => {}];
-    expect(injector.annotate(fn)).toEqual(["a", "b"]);
+    expect(annotate(fn)).toEqual(["a", "b"]);
   });
 
   it("returns the array-style annotations of a function", () => {
     const injector = createInjector([]);
     const fn = ["a", "b", () => {}];
-    expect(injector.annotate(fn)).toEqual(["a", "b"]);
+    expect(annotate(fn)).toEqual(["a", "b"]);
   });
 
   it("returns annotations parsed from function args when not annotated", () => {
     const injector = createInjector([]);
     const fn = function (a, b) {};
-    expect(injector.annotate(fn)).toEqual(["a", "b"]);
+    expect(annotate(fn)).toEqual(["a", "b"]);
   });
 
   it("returns annotations parsed from arrow args when not annotated", () => {
     const injector = createInjector([]);
     const fn = (a, b) => {};
-    expect(injector.annotate(fn)).toEqual(["a", "b"]);
+    expect(annotate(fn)).toEqual(["a", "b"]);
   });
 
   it("strips comments from argument lists when parsing", () => {
     const injector = createInjector([]);
     const fn = function (a, /*b,*/ c) {};
-    expect(injector.annotate(fn)).toEqual(["a", "c"]);
+    expect(annotate(fn)).toEqual(["a", "c"]);
   });
 
   it("strips several comments from argument lists when parsing", () => {
     const injector = createInjector([]);
     const fn = function (a, /*b,*/ c /*, d*/) {};
-    expect(injector.annotate(fn)).toEqual(["a", "c"]);
+    expect(annotate(fn)).toEqual(["a", "c"]);
   });
 
   it("strips // comments from argument lists when parsing", () => {
@@ -570,19 +567,13 @@ describe("annotate", () => {
       a, //b,
       c,
     ) {};
-    expect(injector.annotate(fn)).toEqual(["a", "c"]);
+    expect(annotate(fn)).toEqual(["a", "c"]);
   });
 
   it("strips surrounding underscores from argument names when parsing", () => {
     const injector = createInjector([]);
     const fn = function (a, _b_, c_, _d, an_argument) {};
-    expect(injector.annotate(fn)).toEqual([
-      "a",
-      "b",
-      "c_",
-      "_d",
-      "an_argument",
-    ]);
+    expect(annotate(fn)).toEqual(["a", "b", "c_", "_d", "an_argument"]);
   });
 
   it("throws when using a non-annotated fn in strict mode", () => {

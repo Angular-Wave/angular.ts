@@ -10,6 +10,7 @@
 import { services } from "./common/coreservices";
 import { unnestR } from "../shared/common";
 import { trace } from "./common/trace";
+import { annotate } from "../core/di/injector";
 
 runBlock.$inject = ["$injector", "$q", "$stateRegistry", "$urlService"];
 export function runBlock($injector, $q, $stateRegistry, $urlService) {
@@ -32,10 +33,7 @@ export function runBlock($injector, $q, $stateRegistry, $urlService) {
     .filter((x) => x.deps === "deferred")
     .forEach(
       (resolvable) =>
-        (resolvable.deps = $injector.annotate(
-          resolvable.resolveFn,
-          $injector.strictDi,
-        )),
+        (resolvable.deps = annotate(resolvable.resolveFn, $injector.strictDi)),
     );
   // Start listening for url changes
   $urlService.listen();
