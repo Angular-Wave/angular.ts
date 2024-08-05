@@ -20,6 +20,8 @@ const $injectorMinErr = minErr(INJECTOR_LITERAL);
 
 const providerSuffix = "Provider";
 const INSTANTIATING = {};
+/** @type {String[]} Used only for error reporting of circular dependencies*/
+const path = [];
 
 /**
  *
@@ -29,8 +31,6 @@ const INSTANTIATING = {};
  */
 export function createInjector(modulesToLoad, strictDi = false) {
   assert(Array.isArray(modulesToLoad), "modules required");
-  /** @type {String[]} Used only for error reporting of circular dependencies*/
-  const path = [];
 
   /** @type {Map<String|Function, boolean>} */
   const loadedModules = new Map(); // Keep track of loaded modules to avoid circular dependencies
@@ -46,16 +46,19 @@ export function createInjector(modulesToLoad, strictDi = false) {
     },
   };
 
-  providerCache.$injector = createInternalInjector(providerCache, (caller) => {
-    path.push(caller);
-    // prevents lookups to providers through get
-    throw $injectorMinErr("unpr", "Unknown provider: {0}", path.join(" <- "));
-  });
+  const providerInjector = (providerCache.$injector = createInternalInjector(
+    providerCache,
+    (caller) => {
+      path.push(caller);
+      // prevents lookups to providers through get
+      throw $injectorMinErr("unpr", "Unknown provider: {0}", path.join(" <- "));
+    },
+  ));
   const instanceCache = {};
   const protoInstanceInjector = createInternalInjector(
     instanceCache,
     (serviceName, caller) => {
-      const provider = providerCache.$injector.get(
+      const provider = providerInjector.get(
         serviceName + providerSuffix,
         caller,
       );
@@ -74,8 +77,7 @@ export function createInjector(modulesToLoad, strictDi = false) {
     $get: () => protoInstanceInjector,
   };
   let instanceInjector = protoInstanceInjector;
-  instanceInjector.modules = providerCache.$injector.modules =
-    Object.create(null);
+  instanceInjector.modules = providerInjector.modules = Object.create(null);
   const runBlocks = loadModules(modulesToLoad);
   instanceInjector = protoInstanceInjector.get(INJECTOR_LITERAL);
   instanceInjector.strictDi = strictDi;
@@ -103,37 +105,36 @@ export function createInjector(modulesToLoad, strictDi = false) {
    */
   function provider(name, provider) {
     assertNotHasOwnProperty(name, "service");
+    let newProvider;
     if (isFunction(provider) || Array.isArray(provider)) {
-      provider = providerCache.$injector.instantiate(provider);
+      newProvider = providerInjector.instantiate(provider);
+    } else {
+      newProvider = provider;
     }
-    if (!provider.$get) {
+    if (!newProvider.$get) {
       throw $injectorMinErr(
         "pget",
         "Provider '{0}' must define $get factory method.",
         name,
       );
     }
-    providerCache[name + providerSuffix] = provider;
-    return provider;
-  }
-
-  function enforceReturnValue(name, factory) {
-    return function () {
-      const result = instanceInjector.invoke(factory, this);
-      if (isUndefined(result)) {
-        throw $injectorMinErr(
-          "undef",
-          "Provider '{0}' must return a value from $get factory method.",
-          name,
-        );
-      }
-      return result;
-    };
+    providerCache[name + providerSuffix] = newProvider;
+    return newProvider;
   }
 
   function factory(name, factoryFn) {
     return provider(name, {
-      $get: enforceReturnValue(name, factoryFn),
+      $get: () => {
+        const result = instanceInjector.invoke(factoryFn, this);
+        if (isUndefined(result)) {
+          throw $injectorMinErr(
+            "undef",
+            "Provider '{0}' must return a value from $get factory method.",
+            name,
+          );
+        }
+        return result;
+      },
     });
   }
 
@@ -160,13 +161,11 @@ export function createInjector(modulesToLoad, strictDi = false) {
   }
 
   function decorator(serviceName, decorFn) {
-    const origProvider = providerCache.$injector.get(
-      serviceName + providerSuffix,
-    );
-    const orig$get = origProvider.$get;
+    const origProvider = providerInjector.get(serviceName + providerSuffix);
+    const origGet = origProvider.$get;
 
     origProvider.$get = function () {
-      const origInstance = instanceInjector.invoke(orig$get, origProvider);
+      const origInstance = instanceInjector.invoke(origGet, origProvider);
       return instanceInjector.invoke(decorFn, null, {
         $delegate: origInstance,
       });
@@ -199,7 +198,7 @@ export function createInjector(modulesToLoad, strictDi = false) {
        */
       function runInvokeQueue(queue) {
         queue.forEach((invokeArgs) => {
-          const provider = providerCache.$injector.get(invokeArgs[0]);
+          const provider = providerInjector.get(invokeArgs[0]);
           provider[invokeArgs[1]].apply(provider, invokeArgs[2]);
         });
       }
@@ -215,9 +214,9 @@ export function createInjector(modulesToLoad, strictDi = false) {
           runInvokeQueue(moduleFn.invokeQueue);
           runInvokeQueue(moduleFn.configBlocks);
         } else if (isFunction(module)) {
-          runBlocks.push(providerCache.$injector.invoke(module));
+          runBlocks.push(providerInjector.invoke(module));
         } else if (Array.isArray(module)) {
-          runBlocks.push(providerCache.$injector.invoke(module));
+          runBlocks.push(providerInjector.invoke(module));
         } else {
           assertArgFn(module, "module");
         }
@@ -348,8 +347,6 @@ export function createInjector(modulesToLoad, strictDi = false) {
     };
   }
 }
-
-createInjector.$$annotate = annotate;
 
 // Helpers
 
