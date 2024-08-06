@@ -38,9 +38,9 @@ export class JQLite {
     controller(name?: string): any;
     /**
      * Return instance of injector attached to element
-     * @returns {import('../../types').InjectorService}
+     * @returns {import('../../core/di/internal-injector').InjectorService}
      */
-    injector(): import("../../types").InjectorService;
+    injector(): import("../../core/di/internal-injector").InjectorService;
     /**
      * Adds an event listener to each element in the JQLite collection.
      *
@@ -129,7 +129,7 @@ export class JQLite {
     /**
      * TODO: REMOVE! This function being used ONLY in tests!
      */
-    triggerHandler(event: any, extraParameters: any): void | JQLite;
+    triggerHandler(event: any, extraParameters: any): this;
     toString(): string;
     eq(index: any): JQLite;
     length: number;

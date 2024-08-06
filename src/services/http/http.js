@@ -23,6 +23,7 @@ import {
   uppercase,
   isPromiseLike,
 } from "../../shared/utils";
+import { getCookies } from "../cookie-reader";
 
 const APPLICATION_JSON = "application/json";
 const CONTENT_TYPE_APPLICATION_JSON = {
@@ -493,7 +494,6 @@ export function $HttpProvider() {
   this.$get = [
     "$browser",
     "$httpBackend",
-    "$$cookieReader",
     "$cacheFactory",
     "$rootScope",
     "$q",
@@ -503,7 +503,6 @@ export function $HttpProvider() {
      *
      * @param {*} $browser
      * @param {*} $httpBackend
-     * @param {*} $$cookieReader
      * @param {*} $cacheFactory
      * @param {*} $rootScope
      * @param {*} $q
@@ -514,7 +513,6 @@ export function $HttpProvider() {
     function (
       $browser,
       $httpBackend,
-      $$cookieReader,
       $cacheFactory,
       $rootScope,
       $q,
@@ -936,7 +934,7 @@ export function $HttpProvider() {
        * same domain or subdomain, we recommend that each application uses a unique cookie name.
        *
        *
-       * @param {object} config Object describing the request to be made and how it should be
+       * @param {object} requestConfig Object describing the request to be made and how it should be
        *    processed. The object has following properties:
        *
        *    - **method** – `{string}` – HTTP method (e.g. 'GET', 'POST', etc)
@@ -1203,13 +1201,9 @@ export function $HttpProvider() {
        */
 
       /**
-       * @ngdoc method
-       * @name $http#delete
-       *
-       * @description
        * Shortcut method to perform `DELETE` request.
        *
-       * @param {string|TrustedObject} url Absolute or relative URL of the resource that is being requested;
+       * @param {string} url Absolute or relative URL of the resource that is being requested;
        *                                   or an object created by a call to `$sce.trustAsResourceUrl(url)`.
        * @param {Object=} config Optional configuration object. See {@link ng.$http#$http-arguments `$http()` arguments}.
        * @returns {HttpPromise}  A Promise that will be resolved or rejected with a response object.
@@ -1217,13 +1211,9 @@ export function $HttpProvider() {
        */
 
       /**
-       * @ngdoc method
-       * @name $http#head
-       *
-       * @description
        * Shortcut method to perform `HEAD` request.
        *
-       * @param {string|TrustedObject} url Absolute or relative URL of the resource that is being requested;
+       * @param {string} url Absolute or relative URL of the resource that is being requested;
        *                                   or an object created by a call to `$sce.trustAsResourceUrl(url)`.
        * @param {Object=} config Optional configuration object. See {@link ng.$http#$http-arguments `$http()` arguments}.
        * @returns {HttpPromise}  A Promise that will be resolved or rejected with a response object.
@@ -1231,10 +1221,6 @@ export function $HttpProvider() {
        */
 
       /**
-       * @ngdoc method
-       * @name $http#jsonp
-       *
-       * @description
        * Shortcut method to perform `JSONP` request.
        *
        * Note that, since JSONP requests are sensitive because the response is given full access to the browser,
@@ -1258,7 +1244,7 @@ export function $HttpProvider() {
        * If you would like to customise where and how the callbacks are stored then try overriding
        * or decorating the {@link $jsonpCallbacks} service.
        *
-       * @param {string|TrustedObject} url Absolute or relative URL of the resource that is being requested;
+       * @param {string} url Absolute or relative URL of the resource that is being requested;
        *                                   or an object created by a call to `$sce.trustAsResourceUrl(url)`.
        * @param {Object=} config Optional configuration object. See {@link ng.$http#$http-arguments `$http()` arguments}.
        * @returns {HttpPromise}  A Promise that will be resolved or rejected with a response object.
@@ -1267,10 +1253,6 @@ export function $HttpProvider() {
       createShortMethods("get", "delete", "head");
 
       /**
-       * @ngdoc method
-       * @name $http#post
-       *
-       * @description
        * Shortcut method to perform `POST` request.
        *
        * @param {string} url Relative or absolute URL specifying the destination of the request
@@ -1281,10 +1263,6 @@ export function $HttpProvider() {
        */
 
       /**
-       * @ngdoc method
-       * @name $http#put
-       *
-       * @description
        * Shortcut method to perform `PUT` request.
        *
        * @param {string} url Relative or absolute URL specifying the destination of the request
@@ -1419,7 +1397,7 @@ export function $HttpProvider() {
         // send the request to the backend
         if (isUndefined(cachedResp)) {
           const xsrfValue = urlIsAllowedOrigin(config.url)
-            ? $$cookieReader()[config.xsrfCookieName || defaults.xsrfCookieName]
+            ? getCookies()[config.xsrfCookieName || defaults.xsrfCookieName]
             : undefined;
           if (xsrfValue) {
             reqHeaders[config.xsrfHeaderName || defaults.xsrfHeaderName] =

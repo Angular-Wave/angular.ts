@@ -13,12 +13,8 @@ export function TemplateRequestProvider() {
   var httpOptions;
 
   /**
-   * @ngdoc method
-   * @name $templateRequestProvider#httpOptions
-   * @description
    * The options to be passed to the {@link $http} service when making the request.
    * You can use this to override options such as the "Accept" header for template requests.
-   *
    * The {@link $templateRequest} will set the `cache` and the `transformResponse` properties of the
    * options if not overridden here.
    *
@@ -34,10 +30,6 @@ export function TemplateRequestProvider() {
   };
 
   /**
-   * @ngdoc service
-   * @name $templateRequest
-   *
-   * @description
    * The `$templateRequest` service runs security checks then downloads the provided template using
    * `$http` and, upon success, stores the contents inside of `$templateCache`. If the HTTP request
    * fails or the response data of the HTTP request is empty, a `$compile` error will be thrown (the
@@ -54,7 +46,7 @@ export function TemplateRequestProvider() {
    * 3rd party modules should use `$templateRequest` if their services or directives are loading
    * templates.
    *
-   * @param {string|TrustedResourceUrl} tpl The HTTP request template URL
+   * @param {string} tpl The HTTP request template URL
    * @param {boolean=} ignoreRequestError Whether or not to ignore the exception when the request fails or the template is empty
    *
    * @return {Promise} a promise for the HTTP response data of the given URL.

@@ -59,7 +59,6 @@ import {
 } from "./core/animate/animate";
 import { BrowserProvider } from "./services/browser";
 import { CoreAnimateCssProvider } from "./core/animate/animate-css";
-import { CookieReaderProvider } from "./services/cookie-reader";
 import {
   AnimateAsyncRunFactoryProvider,
   AnimateRunnerFactoryProvider,
@@ -205,7 +204,6 @@ export function publishExternalAPI(angular) {
             $templateCache: TemplateCacheProvider,
             $templateRequest: TemplateRequestProvider,
             $timeout: $TimeoutProvider,
-            $$cookieReader: CookieReaderProvider,
           });
         },
       ],

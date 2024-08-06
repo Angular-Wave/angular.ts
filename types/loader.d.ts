@@ -129,11 +129,11 @@ export class Angular {
      * @param {string} name The name of the module to create or retrieve.
      * @param {Array.<string>} [requires] If specified then new module is being created. If
      *        unspecified then the module is being retrieved for further configuration.
-     * @param {Function} [configFn] Optional configuration function for the module. Same as
+     * @param {Array<any>|Function} [configFn] Optional configuration function for the module. Same as
      *        {@link import('./types').Module#config Module#config()}.
      * @returns {NgModule} A newly registered module.
      */
-    module(name: string, requires?: Array<string>, configFn?: Function): NgModule;
+    module(name: string, requires?: Array<string>, configFn?: Array<any> | Function): NgModule;
 }
 /**
  * Configuration option for AngularTS bootstrap process.

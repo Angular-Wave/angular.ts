@@ -1,12 +1,4 @@
 /**
- *
- * @description
- * This is a private service for reading cookies used by $http and ngCookies
- *
- * @return {Object} a key/value map of the current cookies
+ * @returns {Object<String, String>} List of all cookies
  */
-export function $$CookieReader(): any;
-export function CookieReaderProvider(): void;
-export class CookieReaderProvider {
-    $get: typeof $$CookieReader;
-}
+export function getCookies(): any;

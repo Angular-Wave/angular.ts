@@ -11,6 +11,7 @@
 - ```js
 
   ```
+
 -
 - let cache = $cacheFactory('cacheId');
 - expect($cacheFactory.get('cacheId')).toBe(cache);
@@ -25,6 +26,7 @@
 - ```
 
   ```
+
 -
 -
 - @example
