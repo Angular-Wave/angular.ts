@@ -316,7 +316,7 @@
 
 /**
  * Interface for a service provider.
- * @typedef {Object} ServiceProvider
+ * @typedef {Object|Function} ServiceProvider
  * @property {*} $get - The $get property that represents a service instance or a factory function.
  */
 

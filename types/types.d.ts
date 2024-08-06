@@ -163,12 +163,7 @@ export type ServiceProviderFactory = Function;
 /**
  * Interface for a service provider.
  */
-export type ServiceProvider = {
-    /**
-     * - The $get property that represents a service instance or a factory function.
-     */
-    $get: any;
-};
+export type ServiceProvider = any | Function;
 export type Module = any;
 export type FormController = {
     /**

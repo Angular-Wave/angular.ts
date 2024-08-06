@@ -162,7 +162,7 @@ export class Browser {
  * @constructor
  * @this {angular.BrowserProvider}
  */
-export function BrowserProvider(this: import("../types").ServiceProvider): void;
+export function BrowserProvider(this: any): void;
 export class BrowserProvider {
     $get: (string | (($$taskTrackerFactory: import("../core/task-tracker-factory").TaskTracker) => Browser))[];
 }

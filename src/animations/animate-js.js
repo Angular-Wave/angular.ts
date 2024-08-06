@@ -14,10 +14,10 @@ export function $$AnimateJsProvider($animateProvider) {
     "$injector",
     "$$AnimateRunner",
     /**
-     * 
-     * @param {import("../core/di/internal-injector").InjectorService} $injector 
-     * @param {*} $$AnimateRunner 
-     * @returns 
+     *
+     * @param {import("../core/di/internal-injector").InjectorService} $injector
+     * @param {*} $$AnimateRunner
+     * @returns
      */
     function ($injector, $$AnimateRunner) {
       const applyAnimationClasses = applyAnimationClassesFactory();

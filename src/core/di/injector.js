@@ -51,22 +51,17 @@ export function createInjector(modulesToLoad, strictDi = false) {
     strictDi,
   ));
 
-  const instanceCache = {};
-  const protoInstanceInjector = new InjectorService(
-    instanceCache,
-    strictDi,
-    providerInjector,
-  );
+  const protoInstanceInjector = new InjectorService(strictDi, providerInjector);
 
   providerCache.$injectorProvider = {
     // $injectionProvider return instance injector
     $get: () => protoInstanceInjector,
   };
+
   let instanceInjector = protoInstanceInjector;
-  instanceInjector.modules = providerInjector.modules = {};
   const runBlocks = loadModules(modulesToLoad);
   instanceInjector = protoInstanceInjector.get(INJECTOR_LITERAL);
-  instanceInjector.strictDi = strictDi;
+
   runBlocks.forEach((fn) => {
     if (fn) instanceInjector.invoke(fn);
   });
@@ -93,7 +88,9 @@ export function createInjector(modulesToLoad, strictDi = false) {
     assertNotHasOwnProperty(name, "service");
     let newProvider;
     if (isFunction(provider) || Array.isArray(provider)) {
-      newProvider = providerInjector.instantiate(provider);
+      newProvider = providerInjector.instantiate(
+        /** @type {Function} */ (provider),
+      );
     } else {
       newProvider = provider;
     }
@@ -142,8 +139,8 @@ export function createInjector(modulesToLoad, strictDi = false) {
 
   function constant(name, value) {
     assertNotHasOwnProperty(name, "constant");
-    providerCache[name] = value;
-    instanceCache[name] = value;
+    providerInjector.cache[name] = value;
+    protoInstanceInjector.cache[name] = value;
   }
 
   function decorator(serviceName, decorFn) {
@@ -178,7 +175,7 @@ export function createInjector(modulesToLoad, strictDi = false) {
       try {
         if (isString(module)) {
           /** @type {import('./ng-module').NgModule} */
-          let moduleFn = window["angular"].module(module);
+          const moduleFn = window["angular"].module(module);
           instanceInjector.modules[/** @type {string } */ (module)] = moduleFn;
           runBlocks = runBlocks
             .concat(loadModules(moduleFn.requires))

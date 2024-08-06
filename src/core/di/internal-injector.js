@@ -9,33 +9,26 @@ const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/gm;
 const $injectorMinErr = minErr(INJECTOR_LITERAL);
 
 const providerSuffix = "Provider";
-const INSTANTIATING = "INSTANTIATING";
+const INSTANTIATING = true;
 
-export class ProviderInjector {
+class AbstractInjector {
   /**
-   *
-   * @param {Object} cache
-   * @param {boolean} strictDi
+   * @param {boolean} strictDi - Indicates if strict dependency injection is enforced.
    */
-  constructor(cache, strictDi) {
-    this.cache = cache;
+  constructor(strictDi) {
+    /**
+     * @type {Object<String, Function>}
+     */
+    this.cache = {};
+    /** @type {boolean} */
     this.strictDi = strictDi;
     this.path = [];
-    this.providerCache = cache;
-    this.modules = undefined;
-  }
-
-  factory(caller) {
-    this.path.push(caller);
-    // prevents lookups to providers through get
-    throw $injectorMinErr(
-      "unpr",
-      "Unknown provider: {0}",
-      this.path.join(" <- "),
-    );
+    /** @type {Object.<string, import("../../types").Module>} */
+    this.modules = {};
   }
 
   /**
+   * Get a service by name.
    *
    * @param {String} serviceName
    * @returns {any}
@@ -65,6 +58,14 @@ export class ProviderInjector {
     return this.cache[serviceName];
   }
 
+  /**
+   * Get the injection arguments for a function.
+   *
+   * @param {Function|Array} fn
+   * @param {Object} locals
+   * @param {String} serviceName
+   * @returns
+   */
   injectionArgs(fn, locals, serviceName) {
     const args = [];
     const $inject = annotate(fn, this.strictDi, serviceName);
@@ -87,33 +88,118 @@ export class ProviderInjector {
     return args;
   }
 
+  /**
+   * Invoke a function with optional context and locals.
+   *
+   * @param {Function|String} fn
+   * @param {*} [self]
+   * @param {Object} [locals]
+   * @param {String} [serviceName]
+   * @returns
+   */
   invoke(fn, self, locals, serviceName) {
     if (typeof locals === "string") {
       serviceName = locals;
       locals = null;
     }
 
-    const args = this.injectionArgs(fn, locals, serviceName);
+    const args = this.injectionArgs(
+      /** @type {Function} */ (fn),
+      locals,
+      serviceName,
+    );
     if (Array.isArray(fn)) {
       fn = fn[fn.length - 1];
     }
 
-    if (isClass(fn)) {
+    if (isClass(/** @type {String} */ (fn))) {
       args.unshift(null);
       return new (Function.prototype.bind.apply(fn, args))();
     } else {
-      return fn.apply(self, args);
+      return /** @type {Function} */ (fn).apply(self, args);
     }
   }
 
-  instantiate(Type, locals, serviceName) {
-    // Check if Type is annotated and use just the given function at n-1 as parameter
+  /**
+   * Instantiate a type constructor with optional locals.
+   * @param {Function|Array} type
+   * @param {*} [locals]
+   * @param {String} [serviceName]
+   */
+  instantiate(type, locals, serviceName) {
+    // Check if type is annotated and use just the given function at n-1 as parameter
     // e.g. someModule.factory('greeter', ['$window', function(renamed$window) {}]);
-    const ctor = Array.isArray(Type) ? Type[Type.length - 1] : Type;
-    const args = this.injectionArgs(Type, locals, serviceName);
+    const ctor = Array.isArray(type) ? type[type.length - 1] : type;
+    const args = this.injectionArgs(type, locals, serviceName);
     // Empty object at position 0 is ignored for invocation with `new`, but required.
     args.unshift(null);
     return new (Function.prototype.bind.apply(ctor, args))();
+  }
+
+  /**
+   * @abstract
+   */
+  loadNewModules() {}
+
+  /**
+   * @abstract
+   * @param {String} _serviceName
+   */
+  factory(_serviceName) {
+    console.error(`Unhandled ${_serviceName}`);
+  }
+}
+
+/**
+ * Injector for providers
+ * @extends AbstractInjector
+ */
+export class ProviderInjector extends AbstractInjector {
+  /**
+   * @param {Object} cache
+   * @param {boolean} strictDi - Indicates if strict dependency injection is enforced.
+   */
+  constructor(cache, strictDi) {
+    super(strictDi);
+    this.cache = cache;
+  }
+
+  /**
+   * Factory method for creating services.
+   * @param {String} caller - The name of the caller requesting the service.
+   * @throws {Error} If the provider is unknown.
+   */
+  factory(caller) {
+    this.path.push(caller);
+    // prevents lookups to providers through get
+    throw $injectorMinErr(
+      "unpr",
+      "Unknown provider: {0}",
+      this.path.join(" <- "),
+    );
+  }
+}
+
+/**
+ * Injector for factories and services
+ * @extends AbstractInjector
+ */
+export class InjectorService extends AbstractInjector {
+  /**
+   *
+   * @param {boolean} strictDi - Indicates if strict dependency injection is enforced.
+   * @param {ProviderInjector} providerInjector
+   */
+  constructor(strictDi, providerInjector) {
+    super(strictDi);
+    this.providerInjector = providerInjector;
+    this.modules = this.providerInjector.modules;
+  }
+
+  factory(serviceName) {
+    const provider = this.providerInjector.get(serviceName + providerSuffix);
+    const res = this.invoke(provider.$get, provider, undefined, serviceName);
+    return res;
   }
 
   /**
@@ -123,45 +209,12 @@ export class ProviderInjector {
    */
   has(name) {
     const hasProvider = Object.prototype.hasOwnProperty.call(
-      this.providerCache,
+      this.providerInjector.cache,
       name + providerSuffix,
     );
     const hasCache = Object.prototype.hasOwnProperty.call(this.cache, name);
     return hasProvider || hasCache;
   }
-}
-
-// /**
-//  * @typedef {Object} LegacyInjectorService
-//  * @property {function(Function, boolean=): string[]} annotate - Annotate a function or an array of inline annotations.
-//  * @property {function(string, string=): any} get - Get a service by name.
-//  * @property {function(Function, any?): any} instantiate - Instantiate a type constructor with optional locals.
-//  * @property {function(import("../../types").Injectable<Function | ((...args: any[]) => any)>, any=, any=): any} invoke - Invoke a function with optional context and locals.
-//  * @property {function(Array<import("../../types").Module | string | import("../../types").Injectable<(...args: any[]) => void>>): void} [loadNewModules] - Add and load new modules to the injector.
-//  * @property {Object.<string, import("../../types").Module>} [modules] - A map of all the modules loaded into the injector.
-//  * @property {boolean} [strictDi] - Indicates if strict dependency injection is enforced.
-//  */
-
-export class InjectorService extends ProviderInjector {
-  constructor(cache, strictDi, providerInjector) {
-    super(cache, strictDi);
-    this.strictDi = strictDi;
-    this.providerInjector = providerInjector;
-    this.providerCache = providerInjector.cache;
-    this.modules = undefined;
-  }
-
-  factory(serviceName, caller) {
-    const provider = this.providerInjector.get(
-      serviceName + providerSuffix,
-      caller,
-    );
-    const res = this.invoke(provider.$get, provider, undefined, serviceName);
-    return res;
-  }
-
-  // Gets overridden
-  loadNewModules() {}
 }
 
 // Helpers
@@ -215,7 +268,7 @@ function annotate(fn, strictDi, name) {
         }
         argDecl = extractArgs(/** @type {String} */ (fn));
         argDecl[1].split(FN_ARG_SPLIT).forEach(function (arg) {
-          arg.replace(FN_ARG, function (all, underscore, name) {
+          arg.replace(FN_ARG, function (_all, _underscore, name) {
             $inject.push(name);
           });
         });
