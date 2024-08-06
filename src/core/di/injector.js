@@ -10,6 +10,7 @@ import {
   assert,
 } from "../../shared/utils";
 import { INJECTOR_LITERAL } from "./ng-module";
+import { ProviderInjector, InjectorService } from "./internal-injector";
 
 const ARROW_ARG = /^([^(]+?)=>/;
 const FN_ARGS = /^[^(]*\(\s*([^)]*)\)/m;
@@ -19,15 +20,14 @@ const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/gm;
 const $injectorMinErr = minErr(INJECTOR_LITERAL);
 
 const providerSuffix = "Provider";
-const INSTANTIATING = "INSTANTIATING";
 /** @type {String[]} Used only for error reporting of circular dependencies*/
-const path = [];
+export const path = [];
 
 /**
  *
  * @param {Array<String|Function>} modulesToLoad
  * @param {boolean} [strictDi]
- * @returns {import("../../types").InjectorService}
+ * @returns {InjectorService}
  */
 export function createInjector(modulesToLoad, strictDi = false) {
   assert(Array.isArray(modulesToLoad), "modules required");
@@ -46,30 +46,16 @@ export function createInjector(modulesToLoad, strictDi = false) {
     },
   };
 
-  const providerInjector = (providerCache.$injector = createInternalInjector(
+  const providerInjector = (providerCache.$injector = new ProviderInjector(
     providerCache,
-    (caller) => {
-      path.push(caller);
-      // prevents lookups to providers through get
-      throw $injectorMinErr("unpr", "Unknown provider: {0}", path.join(" <- "));
-    },
+    strictDi,
   ));
-  const instanceCache = {};
-  const protoInstanceInjector = createInternalInjector(
-    instanceCache,
-    (serviceName, caller) => {
-      const provider = providerInjector.get(
-        serviceName + providerSuffix,
-        caller,
-      );
 
-      return instanceInjector.invoke(
-        provider.$get,
-        provider,
-        undefined,
-        serviceName,
-      );
-    },
+  const instanceCache = {};
+  const protoInstanceInjector = new InjectorService(
+    instanceCache,
+    strictDi,
+    providerInjector,
   );
 
   providerCache.$injectorProvider = {
@@ -77,7 +63,7 @@ export function createInjector(modulesToLoad, strictDi = false) {
     $get: () => protoInstanceInjector,
   };
   let instanceInjector = protoInstanceInjector;
-  instanceInjector.modules = providerInjector.modules = Object.create(null);
+  instanceInjector.modules = providerInjector.modules = {};
   const runBlocks = loadModules(modulesToLoad);
   instanceInjector = protoInstanceInjector.get(INJECTOR_LITERAL);
   instanceInjector.strictDi = strictDi;
@@ -172,9 +158,6 @@ export function createInjector(modulesToLoad, strictDi = false) {
     };
   }
 
-  ////////////////////////////////////
-  // Module Loading
-  ////////////////////////////////////
   /**
    *
    * @param {Array<String|Function>} modulesToLoad
@@ -201,12 +184,13 @@ export function createInjector(modulesToLoad, strictDi = false) {
             .concat(loadModules(moduleFn.requires))
             .concat(moduleFn.runBlocks);
 
-          moduleFn.invokeQueue
-            .concat(moduleFn.configBlocks)
-            .forEach((invokeArgs) => {
-              const provider = providerInjector.get(invokeArgs[0]);
-              provider[invokeArgs[1]].apply(provider, invokeArgs[2]);
-            });
+          const invokeQueue = moduleFn.invokeQueue.concat(
+            moduleFn.configBlocks,
+          );
+          invokeQueue.forEach((invokeArgs) => {
+            const provider = providerInjector.get(invokeArgs[0]);
+            provider[invokeArgs[1]].apply(provider, invokeArgs[2]);
+          });
         } else if (isFunction(module)) {
           runBlocks.push(providerInjector.invoke(module));
         } else if (Array.isArray(module)) {
@@ -236,109 +220,6 @@ export function createInjector(modulesToLoad, strictDi = false) {
     });
     return runBlocks;
   }
-
-  ////////////////////////////////////
-  // internal Injector
-  ////////////////////////////////////
-
-  function createInternalInjector(cache, factory) {
-    function get(serviceName, caller) {
-      if (Object.prototype.hasOwnProperty.call(cache, serviceName)) {
-        if (cache[serviceName] === INSTANTIATING) {
-          throw $injectorMinErr(
-            "cdep",
-            "Circular dependency found: {0}",
-            `${serviceName} <- ${path.join(" <- ")}`,
-          );
-        }
-        return cache[serviceName];
-      }
-
-      path.unshift(serviceName);
-      cache[serviceName] = INSTANTIATING;
-      try {
-        // this goes to line 60
-        cache[serviceName] = factory(serviceName, caller);
-      } catch (err) {
-        // this is for the error handling being thrown by the providerCache multiple times
-        delete cache[serviceName];
-        throw err;
-      }
-      return cache[serviceName];
-    }
-
-    function injectionArgs(fn, locals, serviceName) {
-      const args = [];
-      const $inject = annotate(fn, strictDi, serviceName);
-
-      for (let i = 0, { length } = $inject; i < length; i++) {
-        const key = $inject[i];
-        if (typeof key !== "string") {
-          throw $injectorMinErr(
-            "itkn",
-            "Incorrect injection token! Expected service name as string, got {0}",
-            key,
-          );
-        }
-        args.push(
-          locals && Object.prototype.hasOwnProperty.call(locals, key)
-            ? locals[key]
-            : get(key, serviceName),
-        );
-      }
-      return args;
-    }
-
-    function invoke(fn, self, locals, serviceName) {
-      if (typeof locals === "string") {
-        serviceName = locals;
-        locals = null;
-      }
-
-      const args = injectionArgs(fn, locals, serviceName);
-      if (Array.isArray(fn)) {
-        fn = fn[fn.length - 1];
-      }
-
-      if (isClass(fn)) {
-        args.unshift(null);
-        return new (Function.prototype.bind.apply(fn, args))();
-      } else {
-        return fn.apply(self, args);
-      }
-    }
-
-    function instantiate(Type, locals, serviceName) {
-      // Check if Type is annotated and use just the given function at n-1 as parameter
-      // e.g. someModule.factory('greeter', ['$window', function(renamed$window) {}]);
-      const ctor = Array.isArray(Type) ? Type[Type.length - 1] : Type;
-      const args = injectionArgs(Type, locals, serviceName);
-      // Empty object at position 0 is ignored for invocation with `new`, but required.
-      args.unshift(null);
-      return new (Function.prototype.bind.apply(ctor, args))();
-    }
-
-    /**
-     *
-     * @param {String} name
-     * @returns {boolean}
-     */
-    function has(name) {
-      const hasProvider = Object.prototype.hasOwnProperty.call(
-        providerCache,
-        name + providerSuffix,
-      );
-      const hasCache = Object.prototype.hasOwnProperty.call(cache, name);
-      return hasProvider || hasCache;
-    }
-
-    return {
-      invoke,
-      instantiate,
-      get,
-      has,
-    };
-  }
 }
 
 // Helpers
@@ -359,14 +240,6 @@ function extractArgs(fn) {
   const fnText = stringifyFn(fn).replace(STRIP_COMMENTS, "");
   const args = fnText.match(ARROW_ARG) || fnText.match(FN_ARGS);
   return args;
-}
-
-/**
- * @param {String} func
- * @returns {boolean}
- */
-function isClass(func) {
-  return /^class\b/.test(stringifyFn(func));
 }
 
 /**

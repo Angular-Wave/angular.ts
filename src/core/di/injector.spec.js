@@ -43,13 +43,15 @@ describe("injector.modules", () => {
 
   it("should provide useful message if no provider", () => {
     expect(() => {
-      createInjector([]).get("idontexist");
+      const injector = createInjector([]);
+      injector.get("idontexist");
     }).toThrowError(/Unknown provider/);
   });
 
   it("has a constant that has been registered to a module", () => {
     const module = angular.module("myModule", []);
     module.constant("aConstant", 42);
+
     const injector = createInjector(["myModule"]);
     expect(injector.has("aConstant")).toBe(true);
   });
@@ -121,6 +123,7 @@ describe("injector.modules", () => {
       log.push("initial");
     });
     const injector = createInjector(["initial"]);
+    expect(log).toEqual(["initial"]);
     log.push("created");
 
     angular
@@ -1927,7 +1930,8 @@ describe("decorator", () => {
       "ng",
       function ($provide) {
         $provide.decorator("$injector", function ($delegate) {
-          return extend({}, $delegate, {
+          // Don't forget the prototype
+          return extend(Object.create($delegate), $delegate, {
             get: function (val) {
               if (val === "key") {
                 return "value";
@@ -1938,7 +1942,6 @@ describe("decorator", () => {
         });
       },
     ]);
-
     expect(injector.get("key")).toBe("value");
     expect(injector.get("$http")).not.toBeUndefined();
   });

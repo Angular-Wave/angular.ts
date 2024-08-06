@@ -2,18 +2,17 @@
  *
  * @param {Array<String|Function>} modulesToLoad
  * @param {boolean} [strictDi]
- * @returns {import("../../types").InjectorService}
+ * @returns {InjectorService}
  */
-export function createInjector(modulesToLoad: Array<string | Function>, strictDi?: boolean): import("../../types").InjectorService;
-export namespace createInjector {
-    export { annotate as $$annotate };
-}
+export function createInjector(modulesToLoad: Array<string | Function>, strictDi?: boolean): InjectorService;
 /**
  *
  * @param {any} fn
- * @param {boolean} strictDi
- * @param {String} name
+ * @param {boolean} [strictDi]
+ * @param {String} [name]
  * @returns {Array<string>}
  */
-declare function annotate(fn: any, strictDi: boolean, name: string): Array<string>;
-export {};
+export function annotate(fn: any, strictDi?: boolean, name?: string): Array<string>;
+/** @type {String[]} Used only for error reporting of circular dependencies*/
+export const path: string[];
+import { InjectorService } from "./internal-injector";
