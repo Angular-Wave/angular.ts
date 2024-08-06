@@ -31,7 +31,7 @@ export class TemplateFactory {
      * @param {angular.ITemplateCacheService} $templateCache
      * @param {angular.ITemplateRequestService} $templateRequest
      * @param {angular.IQService} $q
-     * @param {angular.auto.IInjectorService} $injector
+     * @param {import("../core/di/internal-injector").InjectorService} $injector
      * @returns
      */
     ($http, $templateCache, $templateRequest, $q, $injector) => {

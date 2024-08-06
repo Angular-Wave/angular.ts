@@ -499,6 +499,18 @@ export function $HttpProvider() {
     "$q",
     "$injector",
     "$sce",
+    /**
+     *
+     * @param {*} $browser
+     * @param {*} $httpBackend
+     * @param {*} $$cookieReader
+     * @param {*} $cacheFactory
+     * @param {*} $rootScope
+     * @param {*} $q
+     * @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @param {*} $sce
+     * @returns
+     */
     function (
       $browser,
       $httpBackend,

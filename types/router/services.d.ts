@@ -1,4 +1,11 @@
-export function runBlock($injector: any, $q: any, $stateRegistry: any, $urlService: any): void;
+/**
+ *
+ * @param {import("../core/di/internal-injector").InjectorService} $injector
+ * @param {*} $q
+ * @param {*} $stateRegistry
+ * @param {*} $urlService
+ */
+export function runBlock($injector: import("../core/di/internal-injector").InjectorService, $q: any, $stateRegistry: any, $urlService: any): void;
 export namespace runBlock {
     let $inject: string[];
 }

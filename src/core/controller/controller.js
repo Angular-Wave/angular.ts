@@ -63,6 +63,11 @@ export function $ControllerProvider() {
 
   this.$get = [
     "$injector",
+    /**
+     *
+     *  @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @returns
+     */
     function ($injector) {
       /**
        * @ngdoc service

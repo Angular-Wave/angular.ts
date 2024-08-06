@@ -38,7 +38,7 @@ export function $$AnimationProvider() {
     /**
      *
      * @param {*} $rootScope
-     * @param {*} $injector
+     * @param {import("../core/di/internal-injector").InjectorService} $injector
      * @param {*} $$AnimateRunner
      * @param {import("./raf-scheduler").RafScheduler} $$rAFScheduler
      * @param {*} $$animateCache

@@ -113,7 +113,7 @@ export class $HttpProvider {
     useApplyAsync: (value?: boolean | undefined) => boolean | any;
     interceptors: any[];
     xsrfTrustedOrigins: any[];
-    $get: (string | (($browser: any, $httpBackend: any, $$cookieReader: any, $cacheFactory: any, $rootScope: any, $q: any, $injector: any, $sce: any) => {
+    $get: (string | (($browser: any, $httpBackend: any, $$cookieReader: any, $cacheFactory: any, $rootScope: any, $q: any, $injector: import("../../core/di/internal-injector").InjectorService, $sce: any) => {
         (requestConfig: any): HttpPromise;
         pendingRequests: any[];
         /**

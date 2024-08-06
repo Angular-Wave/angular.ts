@@ -13,6 +13,12 @@ export function $$AnimateJsProvider($animateProvider) {
   this.$get = [
     "$injector",
     "$$AnimateRunner",
+    /**
+     * 
+     * @param {import("../core/di/internal-injector").InjectorService} $injector 
+     * @param {*} $$AnimateRunner 
+     * @returns 
+     */
     function ($injector, $$AnimateRunner) {
       const applyAnimationClasses = applyAnimationClassesFactory();
       // $animateJs(element, 'enter');

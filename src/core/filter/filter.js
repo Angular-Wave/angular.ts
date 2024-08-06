@@ -22,6 +22,11 @@ export function $FilterProvider($provide) {
 
   this.$get = [
     "$injector",
+    /**
+     *
+     * @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @returns
+     */
     function ($injector) {
       return function (name) {
         return $injector.get(name + suffix);

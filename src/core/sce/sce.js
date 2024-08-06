@@ -248,7 +248,12 @@ export function $SceDelegateProvider() {
   this.$get = [
     "$injector",
     "$$sanitizeUri",
-
+    /**
+     *
+     * @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @param {*} $$sanitizeUri
+     * @returns
+     */
     function ($injector, $$sanitizeUri) {
       let htmlSanitizer = function () {
         throw $sceMinErr(

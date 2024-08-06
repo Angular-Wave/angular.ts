@@ -9,12 +9,12 @@
 export class TemplateFactory {
     /** @type {boolean} */
     _useHttp: boolean;
-    $get: (string | (($http: angular.IHttpService, $templateCache: angular.ITemplateCacheService, $templateRequest: angular.ITemplateRequestService, $q: angular.IQService, $injector: angular.auto.IInjectorService) => this))[];
+    $get: (string | (($http: angular.IHttpService, $templateCache: angular.ITemplateCacheService, $templateRequest: angular.ITemplateRequestService, $q: angular.IQService, $injector: import("../core/di/internal-injector").InjectorService) => this))[];
     $templateRequest: angular.ITemplateRequestService;
     $http: angular.IHttpService;
     $templateCache: angular.ITemplateCacheService;
     $q: angular.IQService;
-    $injector: angular.auto.IInjectorService;
+    $injector: import("../core/di/internal-injector").InjectorService;
     /**
      * Forces the provider to use $http service directly
      * @param {boolean} value

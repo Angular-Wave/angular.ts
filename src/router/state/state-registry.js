@@ -50,6 +50,11 @@ export class StateRegistry {
 
   $get = [
     "$injector",
+    /**
+     *
+     * @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @returns
+     */
     ($injector) => {
       this.$injector = $injector;
       this.builder.$injector = $injector;

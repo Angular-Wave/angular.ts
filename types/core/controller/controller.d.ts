@@ -28,5 +28,5 @@ export class $ControllerProvider {
      *    annotations in the array notation).
      */
     register: (name: string | any, constructor: Function | any[]) => void;
-    $get: (string | (($injector: any) => (expression: Function | string, locals: any, later: any, ident: any) => any))[];
+    $get: (string | (($injector: import("../../core/di/internal-injector").InjectorService) => (expression: Function | string, locals: any, later: any, ident: any) => any))[];
 }

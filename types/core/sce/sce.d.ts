@@ -150,7 +150,7 @@ export class $SceDelegateProvider {
      * array (i.e. there is no `bannedResourceUrlList`.)
      */
     bannedResourceUrlList: (value: any, ...args: any[]) => any[];
-    $get: (string | (($injector: any, $$sanitizeUri: any) => {
+    $get: (string | (($injector: import("../../core/di/internal-injector").InjectorService, $$sanitizeUri: any) => {
         trustAs: (type: string, trustedValue: any) => any;
         getTrusted: (type: string, maybeTrusted: any) => any;
         valueOf: (maybeTrusted: any) => any;

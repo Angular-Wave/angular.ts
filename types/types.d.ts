@@ -416,35 +416,3 @@ export type ModelValidators = {
 export type AsyncModelValidators = {
     [x: string]: (arg0: any, arg1: any) => Promise<any>;
 };
-export type InjectorService = {
-    /**
-     * - Annotate a function or an array of inline annotations.
-     */
-    annotate: (arg0: Function, arg1: boolean | undefined) => string[];
-    /**
-     * - Get a service by name.
-     */
-    get: (arg0: string, arg1: string | undefined) => any;
-    /**
-     * - Instantiate a type constructor with optional locals.
-     */
-    instantiate: (arg0: Function, arg1: any | null) => any;
-    /**
-     * - Invoke a function with optional context and locals.
-     */
-    invoke: (arg0: Injectable<Function | ((...args: any[]) => any)>, arg1: any | undefined, arg2: any | undefined) => any;
-    /**
-     * - Add and load new modules to the injector.
-     */
-    loadNewModules?: (arg0: Array<Module | string | Injectable<(...args: any[]) => void>>) => void;
-    /**
-     * - A map of all the modules loaded into the injector.
-     */
-    modules?: {
-        [x: string]: Module;
-    };
-    /**
-     * - Indicates if strict dependency injection is enforced.
-     */
-    strictDi?: boolean;
-};

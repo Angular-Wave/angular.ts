@@ -1,7 +1,7 @@
 export function $$AnimateJsProvider($animateProvider: any): void;
 export class $$AnimateJsProvider {
     constructor($animateProvider: any);
-    $get: (string | (($injector: any, $$AnimateRunner: any) => (element: any, event: any, classes: any, options: any, ...args: any[]) => {
+    $get: (string | (($injector: import("../core/di/internal-injector").InjectorService, $$AnimateRunner: any) => (element: any, event: any, classes: any, options: any, ...args: any[]) => {
         $$willAnimate: boolean;
         end(): any;
         start(): any;

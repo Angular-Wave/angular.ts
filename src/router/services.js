@@ -13,6 +13,13 @@ import { trace } from "./common/trace";
 import { annotate } from "../core/di/injector";
 
 runBlock.$inject = ["$injector", "$q", "$stateRegistry", "$urlService"];
+/**
+ *
+ * @param {import("../core/di/internal-injector").InjectorService} $injector
+ * @param {*} $q
+ * @param {*} $stateRegistry
+ * @param {*} $urlService
+ */
 export function runBlock($injector, $q, $stateRegistry, $urlService) {
   services.$injector = $injector;
   services.$q = $q;

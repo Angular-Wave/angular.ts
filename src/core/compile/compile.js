@@ -233,7 +233,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           "$exceptionHandler",
           /**
            *
-           * @param {*} $injector
+           * @param {import("../../core/di/internal-injector").InjectorService} $injector
            * @param {import('../exception-handler').ErrorHandler} $exceptionHandler
            * @returns
            */
@@ -619,6 +619,18 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
     "$rootScope",
     "$sce",
     "$animate",
+    /**
+     * @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @param {*} $interpolate
+     * @param {*} $exceptionHandler
+     * @param {*} $templateRequest
+     * @param {*} $parse
+     * @param {*} $controller
+     * @param {*} $rootScope
+     * @param {*} $sce
+     * @param {*} $animate
+     * @returns
+     */
     function (
       $injector,
       $interpolate,

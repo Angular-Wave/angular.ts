@@ -453,15 +453,4 @@
  * @property {function(any, any): IPromise<any>} [index] - Async validator function for each index.
  */
 
-/**
- * @typedef {Object} InjectorService
- * @property {function(Function, boolean=): string[]} annotate - Annotate a function or an array of inline annotations.
- * @property {function(string, string=): any} get - Get a service by name.
- * @property {function(Function, any?): any} instantiate - Instantiate a type constructor with optional locals.
- * @property {function(Injectable<Function | ((...args: any[]) => any)>, any=, any=): any} invoke - Invoke a function with optional context and locals.
- * @property {function(Array<Module | string | Injectable<(...args: any[]) => void>>): void} [loadNewModules] - Add and load new modules to the injector.
- * @property {Object.<string, Module>} [modules] - A map of all the modules loaded into the injector.
- * @property {boolean} [strictDi] - Indicates if strict dependency injection is enforced.
- */
-
 export {};

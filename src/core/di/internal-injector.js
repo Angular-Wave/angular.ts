@@ -131,6 +131,17 @@ export class ProviderInjector {
   }
 }
 
+// /**
+//  * @typedef {Object} LegacyInjectorService
+//  * @property {function(Function, boolean=): string[]} annotate - Annotate a function or an array of inline annotations.
+//  * @property {function(string, string=): any} get - Get a service by name.
+//  * @property {function(Function, any?): any} instantiate - Instantiate a type constructor with optional locals.
+//  * @property {function(import("../../types").Injectable<Function | ((...args: any[]) => any)>, any=, any=): any} invoke - Invoke a function with optional context and locals.
+//  * @property {function(Array<import("../../types").Module | string | import("../../types").Injectable<(...args: any[]) => void>>): void} [loadNewModules] - Add and load new modules to the injector.
+//  * @property {Object.<string, import("../../types").Module>} [modules] - A map of all the modules loaded into the injector.
+//  * @property {boolean} [strictDi] - Indicates if strict dependency injection is enforced.
+//  */
+
 export class InjectorService extends ProviderInjector {
   constructor(cache, strictDi, providerInjector) {
     super(cache, strictDi);
