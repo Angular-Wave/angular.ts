@@ -62,7 +62,7 @@ const BOOLEAN_ELEMENTS = {};
  * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
  * and execution of chain functions.
  *
- * @param {string|Node|JQLite|ArrayLike<Element>|(() => void)} element
+ * @param {string|Node|JQLite|ArrayLike<Element>|(() => void)|Window} element
  * @returns {JQLite}
  */
 export function JQLite(element) {

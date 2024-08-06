@@ -291,8 +291,6 @@ export function Browser(taskTracker) {
 }
 
 /**
- * @typedef {import('../types').ServiceProvider} angular.BrowserProvider
- * @description
  * This object has two goals:
  *
  * - hide all the global state in the browser caused by the window object
@@ -300,13 +298,8 @@ export function Browser(taskTracker) {
  *
  * Remove this in the future
  */
-
-/**
- * @constructor
- * @this {angular.BrowserProvider}
- */
-export function BrowserProvider() {
-  this.$get = [
+export class BrowserProvider {
+  $get = [
     "$$taskTrackerFactory",
     /**
      * @param {import('../core/task-tracker-factory').TaskTracker} $$taskTrackerFactory

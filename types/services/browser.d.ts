@@ -149,8 +149,6 @@ export class Browser {
     cancel: (deferId: number) => boolean;
 }
 /**
- * @typedef {import('../types').ServiceProvider} angular.BrowserProvider
- * @description
  * This object has two goals:
  *
  * - hide all the global state in the browser caused by the window object
@@ -158,15 +156,7 @@ export class Browser {
  *
  * Remove this in the future
  */
-/**
- * @constructor
- * @this {angular.BrowserProvider}
- */
-export function BrowserProvider(this: any): void;
 export class BrowserProvider {
     $get: (string | (($$taskTrackerFactory: import("../core/task-tracker-factory").TaskTracker) => Browser))[];
 }
 export type UrlChangeListener = (arg0: string, arg1: string | null) => any;
-export namespace angular {
-    type BrowserProvider = import("../types").ServiceProvider;
-}
