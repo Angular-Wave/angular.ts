@@ -11,12 +11,10 @@
  */
 
 /**
- *
  * @typedef {Object} Annotated
  * @property {Array<String>} $inject
- *  *
- * @typedef {Function & Annotated & Array<any>} AnnotatedFunction
  *
+ * @typedef {Function & Annotated & Array<any>} AnnotatedFunction
  */
 
 /**

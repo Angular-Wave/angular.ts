@@ -91,7 +91,7 @@ class AbstractInjector {
   /**
    * Invoke a function with optional context and locals.
    *
-   * @param {Function|String} fn
+   * @param {Function|String|Array<any>} fn
    * @param {*} [self]
    * @param {Object} [locals]
    * @param {String} [serviceName]

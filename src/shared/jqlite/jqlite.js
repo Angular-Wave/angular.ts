@@ -742,10 +742,7 @@ JQLite.prototype.triggerHandler = function (event, extraParameters) {
   };
   for (let i = 0, ii = this.length; i < ii; i++) {
     if (isUndefined(value)) {
-      value = fn(this[i], event, extraParameters);
-      if (isDefined(value)) {
-        value = JQLite(value);
-      }
+      fn(this[i], event, extraParameters);
     } else {
       addNodes(value, fn(this[i], event, extraParameters));
     }
