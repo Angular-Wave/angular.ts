@@ -1,7 +1,6 @@
 import { AST } from "./ast";
 import { Lexer } from "./lexer";
 import {
-  forEach,
   isFunction,
   sliceArgs,
   csp,
@@ -580,27 +579,24 @@ describe("parser", () => {
 
     it("should understand literals", () => {
       // In a strict sense, `undefined` is not a literal but an identifier
-      forEach(
-        {
-          123: 123,
-          '"123"': "123",
-          true: true,
-          false: false,
-          null: null,
-          undefined: undefined,
-        },
-        (value, expression) => {
-          expect(createAst(expression)).toEqual({
-            type: ASTType.Program,
-            body: [
-              {
-                type: ASTType.ExpressionStatement,
-                expression: { type: ASTType.Literal, value },
-              },
-            ],
-          });
-        },
-      );
+      Object.entries({
+        123: 123,
+        '"123"': "123",
+        true: true,
+        false: false,
+        null: null,
+        undefined: undefined,
+      }).forEach(([expression, value]) => {
+        expect(createAst(expression)).toEqual({
+          type: ASTType.Program,
+          body: [
+            {
+              type: ASTType.ExpressionStatement,
+              expression: { type: ASTType.Literal, value },
+            },
+          ],
+        });
+      });
     });
 
     it("should understand the `this` expression", () => {
@@ -628,8 +624,7 @@ describe("parser", () => {
     });
 
     it("should not confuse `this`, `$locals`, `undefined`, `true`, `false`, `null` when used as identifiers", () => {
-      forEach(
-        ["this", "$locals", "undefined", "true", "false", "null"],
+      ["this", "$locals", "undefined", "true", "false", "null"].forEach(
         (identifier) => {
           expect(createAst(`foo.${identifier}`)).toEqual({
             type: ASTType.Program,
@@ -662,7 +657,7 @@ describe("parser", () => {
     });
 
     it("should understand the unary operators `-`, `+` and `!`", () => {
-      forEach(["-", "+", "!"], (operator) => {
+      ["-", "+", "!"].forEach((operator) => {
         expect(createAst(`${operator}foo`)).toEqual({
           type: ASTType.Program,
           body: [
@@ -681,75 +676,69 @@ describe("parser", () => {
     });
 
     it("should handle all unary operators with the same precedence", () => {
-      forEach(
-        [
-          ["+", "-", "!"],
-          ["-", "!", "+"],
-          ["!", "+", "-"],
-        ],
-        (operators) => {
-          expect(createAst(`${operators.join("")}foo`)).toEqual({
-            type: ASTType.Program,
-            body: [
-              {
-                type: ASTType.ExpressionStatement,
-                expression: {
+      [
+        ["+", "-", "!"],
+        ["-", "!", "+"],
+        ["!", "+", "-"],
+      ].forEach((operators) => {
+        expect(createAst(`${operators.join("")}foo`)).toEqual({
+          type: ASTType.Program,
+          body: [
+            {
+              type: ASTType.ExpressionStatement,
+              expression: {
+                type: ASTType.UnaryExpression,
+                operator: operators[0],
+                prefix: true,
+                argument: {
                   type: ASTType.UnaryExpression,
-                  operator: operators[0],
+                  operator: operators[1],
                   prefix: true,
                   argument: {
                     type: ASTType.UnaryExpression,
-                    operator: operators[1],
+                    operator: operators[2],
                     prefix: true,
-                    argument: {
-                      type: ASTType.UnaryExpression,
-                      operator: operators[2],
-                      prefix: true,
-                      argument: { type: ASTType.Identifier, name: "foo" },
-                    },
+                    argument: { type: ASTType.Identifier, name: "foo" },
                   },
                 },
               },
-            ],
-          });
-        },
-      );
+            },
+          ],
+        });
+      });
     });
 
     it("should be able to understand binary operators", () => {
-      forEach(
-        [
-          "*",
-          "/",
-          "%",
-          "+",
-          "-",
-          "<",
-          ">",
-          "<=",
-          ">=",
-          "==",
-          "!=",
-          "===",
-          "!==",
-        ],
-        (operator) => {
-          expect(createAst(`foo${operator}bar`)).toEqual({
-            type: ASTType.Program,
-            body: [
-              {
-                type: ASTType.ExpressionStatement,
-                expression: {
-                  type: ASTType.BinaryExpression,
-                  operator,
-                  left: { type: ASTType.Identifier, name: "foo" },
-                  right: { type: ASTType.Identifier, name: "bar" },
-                },
+      [
+        "*",
+        "/",
+        "%",
+        "+",
+        "-",
+        "<",
+        ">",
+        "<=",
+        ">=",
+        "==",
+        "!=",
+        "===",
+        "!==",
+      ].forEach((operator) => {
+        expect(createAst(`foo${operator}bar`)).toEqual({
+          type: ASTType.Program,
+          body: [
+            {
+              type: ASTType.ExpressionStatement,
+              expression: {
+                type: ASTType.BinaryExpression,
+                operator,
+                left: { type: ASTType.Identifier, name: "foo" },
+                right: { type: ASTType.Identifier, name: "bar" },
               },
-            ],
-          });
-        },
-      );
+            },
+          ],
+        });
+      });
     });
 
     it("should associate binary operators with the same precedence left-to-right", () => {
@@ -759,9 +748,9 @@ describe("parser", () => {
         ["<", ">", "<=", ">="],
         ["==", "!=", "===", "!=="],
       ];
-      forEach(operatorsByPrecedence, (operators) => {
-        forEach(operators, (op1) => {
-          forEach(operators, (op2) => {
+      operatorsByPrecedence.forEach((operators) => {
+        operators.forEach((op1) => {
+          operators.forEach((op2) => {
             expect(createAst(`foo${op1}bar${op2}baz`)).toEqual({
               type: ASTType.Program,
               body: [
@@ -787,7 +776,7 @@ describe("parser", () => {
     });
 
     it("should give higher precedence to member calls than to unary expressions", () => {
-      forEach(["!", "+", "-"], (operator) => {
+      ["!", "+", "-"].forEach((operator) => {
         expect(createAst(`${operator}foo()`)).toEqual({
           type: ASTType.Program,
           body: [
@@ -848,8 +837,8 @@ describe("parser", () => {
     });
 
     it("should give higher precedence to unary operators over multiplicative operators", () => {
-      forEach(["!", "+", "-"], (op1) => {
-        forEach(["*", "/", "%"], (op2) => {
+      ["!", "+", "-"].forEach((op1) => {
+        ["*", "/", "%"].forEach((op2) => {
           expect(createAst(`${op1}foo${op2}${op1}bar`)).toEqual({
             type: ASTType.Program,
             body: [
@@ -886,8 +875,8 @@ describe("parser", () => {
         ["==", "!=", "===", "!=="],
       ];
       for (let i = 0; i < operatorsByPrecedence.length - 1; ++i) {
-        forEach(operatorsByPrecedence[i], (op1) => {
-          forEach(operatorsByPrecedence[i + 1], (op2) => {
+        operatorsByPrecedence[i].forEach((op1) => {
+          operatorsByPrecedence[i + 1].forEach((op2) => {
             expect(createAst(`foo${op1}bar${op2}baz${op1}man`)).toEqual({
               type: ASTType.Program,
               body: [
@@ -918,7 +907,7 @@ describe("parser", () => {
     });
 
     it("should understand logical operators", () => {
-      forEach(["||", "&&"], (operator) => {
+      ["||", "&&"].forEach((operator) => {
         expect(createAst(`foo${operator}bar`)).toEqual({
           type: ASTType.Program,
           body: [
@@ -937,7 +926,7 @@ describe("parser", () => {
     });
 
     it("should associate logical operators left-to-right", () => {
-      forEach(["||", "&&"], (op) => {
+      ["||", "&&"].forEach((op) => {
         expect(createAst(`foo${op}bar${op}baz`)).toEqual({
           type: ASTType.Program,
           body: [
@@ -1053,7 +1042,7 @@ describe("parser", () => {
     });
 
     it("should give higher precedence to equality than to the logical `and` operator", () => {
-      forEach(["==", "!=", "===", "!=="], (operator) => {
+      ["==", "!=", "===", "!=="].forEach((operator) => {
         expect(createAst(`foo${operator}bar && man${operator}shell`)).toEqual({
           type: ASTType.Program,
           body: [
@@ -1775,7 +1764,7 @@ describe("parser", () => {
     });
   });
 
-  forEach([true, false], (cspEnabled) => {
+  [true, false].forEach((cspEnabled) => {
     describe(`csp: ${cspEnabled}`, () => {
       beforeEach(() => {
         createInjector([
@@ -2016,7 +2005,7 @@ describe("parser", () => {
         expect(scope.$eval("a.b.c.d.e.f.g.h.i.j.k.l.m.n", scope)).toBe("nooo!");
       });
 
-      forEach([2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 42, 99], (pathLength) => {
+      [2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 42, 99].forEach((pathLength) => {
         it(`should resolve nested paths of length ${pathLength}`, () => {
           // Create a nested object {x2: {x3: {x4: ... {x[n]: 42} ... }}}.
           let obj = 42;
@@ -2397,23 +2386,20 @@ describe("parser", () => {
 
       it("should throw TypeError on using a 'broken' object as a key to access a property", () => {
         scope.object = {};
-        forEach(
-          [
-            { toString: 2 },
-            { toString: null },
-            {
-              toString() {
-                return {};
-              },
+        [
+          { toString: 2 },
+          { toString: null },
+          {
+            toString() {
+              return {};
             },
-          ],
-          (brokenObject) => {
-            scope.brokenObject = brokenObject;
-            expect(() => {
-              scope.$eval("object[brokenObject]");
-            }).toThrow();
           },
-        );
+        ].forEach((brokenObject) => {
+          scope.brokenObject = brokenObject;
+          expect(() => {
+            scope.$eval("object[brokenObject]");
+          }).toThrow();
+        });
       });
 
       it("should support method calls on primitive types", () => {

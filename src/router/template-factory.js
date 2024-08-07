@@ -27,10 +27,10 @@ export class TemplateFactory {
     "$q",
     "$injector",
     /**
-     * @param {angular.IHttpService} $http
-     * @param {angular.ITemplateCacheService} $templateCache
-     * @param {angular.ITemplateRequestService} $templateRequest
-     * @param {angular.IQService} $q
+     * @param {any} $http
+     * @param {any} $templateCache
+     * @param {any} $templateRequest
+     * @param {any} $q
      * @param {import("../core/di/internal-injector").InjectorService} $injector
      * @returns
      */
@@ -59,9 +59,9 @@ export class TemplateFactory {
    * The following properties are search in the specified order, and the first one
    * that is defined is used to create the template:
    *
-   * @param {angular.Ng1ViewDeclaration} config
+   * @param {any} config
    * @param {any} params  Parameters to pass to the template function.
-   * @param {angular.ResolveContext} context The resolve context associated with the template's view
+   * @param {import("./resolve/resolve-context").ResolveContext} context The resolve context associated with the template's view
    *
    * @return {string|object}  The template html as a string, or a promise for
    * that string,or `null` if no template is configured.
@@ -105,7 +105,7 @@ export class TemplateFactory {
    * Creates a template from a string or a function returning a string.
    *
    * @param {string | Function} template html template as a string or function that returns an html template as a string.
-   * @param {angular.RawParams} [params] Parameters to pass to the template function.
+   * @param {any} [params] Parameters to pass to the template function.
    *
    * @return {string|object} The template html as a string, or a promise for that
    * string.
@@ -142,7 +142,7 @@ export class TemplateFactory {
    *
    * @param {import('../types').Injectable<any>} provider Function to invoke via `locals`
    * @param {Function} injectFn a function used to invoke the template provider
-   * @param {angular.ResolveContext} context
+   * @param {import("./resolve/resolve-context").ResolveContext} context
    * @return {string|Promise.<string>} The template html as a string, or a promise
    * for that string.
    */
@@ -173,8 +173,8 @@ export class TemplateFactory {
    * It analyses the component's bindings, then constructs a template that instantiates the component.
    * The template wires input and output bindings to resolves or from the parent component.
    *
-   * @param {angular.IAugmentedJQuery} ngView {object} The parent ui-view (for binding outputs to callbacks)
-   * @param {angular.ResolveContext} context The ResolveContext (for binding outputs to callbacks returned from resolves)
+   * @param {any} ngView {object} The parent ui-view (for binding outputs to callbacks)
+   * @param {import("./resolve/resolve-context").ResolveContext} context The ResolveContext (for binding outputs to callbacks returned from resolves)
    * @param {string} component {string} Component's name in camel case.
    * @param {any} [bindings] An object defining the component's bindings: {foo: '<'}
    * @return {string} The template as a string: "<component-name input1='::$resolve.foo'></component-name>".

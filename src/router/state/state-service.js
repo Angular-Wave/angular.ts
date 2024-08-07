@@ -190,7 +190,7 @@ export class StateService {
 
   /**
    *
-   * @param {angular.Ng1StateDeclaration} definition
+   * @param {any} definition
    */
   state(definition) {
     if (!definition.name) {

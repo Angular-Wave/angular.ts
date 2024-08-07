@@ -110,10 +110,10 @@ export class StateProvider {
     decorator(name: string, func: object): object;
     /**
      *
-     * @param {angular.Ng1StateDeclaration} definition
+     * @param {*} definition
      * @returns {StateProvider}
      */
-    state(definition: angular.Ng1StateDeclaration): StateProvider;
+    state(definition: any): StateProvider;
     /**
      * Registers an invalid state handler
      *

@@ -155,7 +155,7 @@ export class StateProvider {
 
   /**
    *
-   * @param {angular.Ng1StateDeclaration} definition
+   * @param {*} definition
    * @returns {StateProvider}
    */
   state(definition) {

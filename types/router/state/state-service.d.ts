@@ -123,9 +123,9 @@ export class StateService {
     decorator(name: string, func: object): object;
     /**
      *
-     * @param {angular.Ng1StateDeclaration} definition
+     * @param {any} definition
      */
-    state(definition: angular.Ng1StateDeclaration): this;
+    state(definition: any): this;
     /**
      * Handler for when [[transitionTo]] is called with an invalid state.
      *
