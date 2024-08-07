@@ -1,5 +1,5 @@
 import { Angular } from "../loader";
-import { createInjector } from "../di/injector";
+import { createInjector } from "../core/di/injector";
 
 describe("Filter: orderBy", () => {
   let orderBy;

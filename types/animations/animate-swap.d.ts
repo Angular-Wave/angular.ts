@@ -1,10 +1,7 @@
-export function ngAnimateSwapDirective($animate: any): {
-    restrict: string;
-    transclude: string;
-    terminal: boolean;
-    priority: number;
-    link(scope: any, $element: any, attrs: any, ctrl: any, $transclude: any): void;
-};
+/**
+ * @returns {import('../types').Directive}
+ */
+export function ngAnimateSwapDirective($animate: any): import("../types").Directive;
 export namespace ngAnimateSwapDirective {
     let $inject: string[];
 }

@@ -17,9 +17,7 @@ const parseUrl = (url) => {
   const root = url.charAt(0) === "^";
   return { val: root ? url.substring(1) : url, root };
 };
-function nameBuilder(state) {
-  return state.name;
-}
+
 function selfBuilder(state) {
   state.self.$$state = () => state;
   return state.self;
@@ -250,7 +248,7 @@ export class StateBuilder {
       return matcher.find(self.parentName(state)) || root();
     }
     this.builders = {
-      name: [nameBuilder],
+      name: [(state) => state.name],
       self: [selfBuilder],
       parent: [parentBuilder],
       data: [dataBuilder],

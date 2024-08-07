@@ -57,7 +57,7 @@ export class StateBuilder {
     matcher: any;
     $injector: any;
     builders: {
-        name: (typeof nameBuilder)[];
+        name: ((state: any) => any)[];
         self: (typeof selfBuilder)[];
         parent: ((state: any) => any)[];
         data: (typeof dataBuilder)[];
@@ -81,7 +81,6 @@ export class StateBuilder {
     parentName(state: any): any;
     name(state: any): any;
 }
-declare function nameBuilder(state: any): any;
 declare function selfBuilder(state: any): any;
 declare function dataBuilder(state: any): any;
 declare function pathBuilder(state: any): any;

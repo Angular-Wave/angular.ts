@@ -1,4 +1,7 @@
 ngAnimateSwapDirective.$inject = ["$animate"];
+/**
+ * @returns {import('../types').Directive}
+ */
 export function ngAnimateSwapDirective($animate) {
   return {
     restrict: "A",
