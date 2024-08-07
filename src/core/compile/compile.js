@@ -218,7 +218,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    *    are the factories.
    * @param {Function|Array} directiveFactory An injectable directive factory function. See the
    *    {@link guide/directive directive guide} and the {@link $compile compile API} for more info.
-   * @returns {ng.ICompileProvider} Self for chaining.
+   * @returns {$CompileProvider} Self for chaining.
    */
   this.directive = function registerDirective(name, directiveFactory) {
     assertArg(name, "name");
@@ -442,7 +442,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
    *
    * @param {RegExp=} regexp New regexp to trust urls with.
-   * @returns {RegExp|ng.ICompileProvider} Current RegExp if called without value or self for
+   * @returns {RegExp|$CompileProvider} Current RegExp if called without value or self for
    *    chaining otherwise.
    */
   this.aHrefSanitizationTrustedUrlList = function (regexp) {
@@ -470,7 +470,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
    *
    * @param {RegExp=} regexp New regexp to trust urls with.
-   * @returns {RegExp|ng.ICompileProvider} Current RegExp if called without value or self for
+   * @returns {RegExp|$CompileProvider} Current RegExp if called without value or self for
    *    chaining otherwise.
    */
   this.imgSrcSanitizationTrustedUrlList = function (regexp) {

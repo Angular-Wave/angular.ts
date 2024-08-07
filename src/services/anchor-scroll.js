@@ -18,8 +18,8 @@ export function AnchorScrollProvider() {
     "$rootScope",
     /**
      *
-     * @param {angular.IRootScopeService} $location
-     * @param {*} $rootScope
+     * @param {*} $location
+     * @param {import('../core/scope/scope').Scope} $rootScope
      * @returns
      */
     function ($location, $rootScope) {

@@ -498,7 +498,7 @@ JQLite.prototype.children = function () {
 };
 
 /**
- * @param {string} node
+ * @param {string|JQLite} node
  * @returns {JQLite}
  */
 JQLite.prototype.append = function (node) {

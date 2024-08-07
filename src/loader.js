@@ -175,7 +175,7 @@ export class Angular {
    *
    * @param {any[]} modules
    * @param {boolean?} strictDi
-   * @returns {import("./types").InjectorService}
+   * @returns {import("./core/di/internal-injector").InjectorService}
    */
   injector(modules, strictDi) {
     return createInjector(modules, strictDi);
@@ -284,7 +284,11 @@ export class Angular {
           name,
         );
       }
-      const moduleInstance = new NgModule(name, requires, configFn);
+      const moduleInstance = new NgModule(
+        name,
+        requires,
+        /** @type {Function} */ (configFn),
+      );
       return moduleInstance;
     });
   }

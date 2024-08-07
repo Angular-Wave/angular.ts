@@ -104,10 +104,10 @@ export class JQLite {
     replaceWith(arg1: any): this;
     children(): JQLite;
     /**
-     * @param {string} node
+     * @param {string|JQLite} node
      * @returns {JQLite}
      */
-    append(node: string): JQLite;
+    append(node: string | JQLite): JQLite;
     /**
      * @param {string} node
      * @returns {JQLite}

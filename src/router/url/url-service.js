@@ -159,11 +159,11 @@ export class UrlService {
    * locationServices.url("/some/path?query=value#anchor", true);
    * ```
    *
-   * @param {string} newUrl The new value for the URL.
+   * @param {string} [newUrl] The new value for the URL.
    *               This url should reflect only the new internal [[path]], [[search]], and [[hash]] values.
    *               It should not include the protocol, site, port, or base path of an absolute HREF.
-   * @param {boolean} replace When true, replaces the current history entry (instead of appending it) with this new url
-   * @param {any} state The history's state object, i.e., pushState (if the LocationServices implementation supports it)
+   * @param {boolean} [replace] When true, replaces the current history entry (instead of appending it) with this new url
+   * @param {any} [state] The history's state object, i.e., pushState (if the LocationServices implementation supports it)
    *
    * @return the url (after potentially being processed)
    */
@@ -231,7 +231,7 @@ export class UrlService {
       hash: this.hash(),
     };
     /**
-     * @type {MatchResult}
+     * @type {*}
      */
     const best = this.match(url);
     const applyResult = pattern([

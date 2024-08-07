@@ -1,10 +1,5 @@
 export function identifierForController(controller: any, ident: any): any;
 /**
- * @ngdoc provider
- * @name $controllerProvider
- *
- *
- * @description
  * The {@link ng.$controller $controller service} is used by AngularJS to create new
  * controllers.
  *
