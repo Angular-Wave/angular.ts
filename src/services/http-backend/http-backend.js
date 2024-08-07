@@ -7,39 +7,7 @@ import {
 } from "../../shared/utils";
 
 /**
- * @ngdoc service
- * @name $xhrFactory
- *
- *
- * @description
- * Factory function used to create XMLHttpRequest objects.
- *
- * Replace or decorate this service to create your own custom XMLHttpRequest objects.
- *
- * ```
- * angular.module('myApp', [])
- * .factory('$xhrFactory', function() {
- *   return function createXhr(method, url) {
- *     return new window.XMLHttpRequest({mozSystem: true});
- *   };
- * });
- * ```
- *
- * @param {string} method HTTP method of the request (GET, POST, PUT, ..)
- * @param {string} url URL of the request.
- */
-export function $xhrFactoryProvider() {
-  this.$get = () => {
-    return function createXhr() {
-      return new window.XMLHttpRequest();
-    };
-  };
-}
 
-/**
- * @ngdoc service
- * @name $httpBackend
- * @requires $xhrFactory
  *
  *
  * @description
@@ -53,14 +21,22 @@ export function $xhrFactoryProvider() {
 export function $HttpBackendProvider() {
   this.$get = [
     "$browser",
-    "$xhrFactory",
-    function ($browser, $xhrFactory) {
-      return createHttpBackend($browser, $xhrFactory, $browser.defer);
+    /**
+     * @param {import('../browser').Browser} $browser
+     * @returns
+     */
+    function ($browser) {
+      return createHttpBackend($browser, $browser.defer);
     },
   ];
 }
 
-export function createHttpBackend($browser, createXhr, $browserDefer) {
+/**
+ * @param {import('../browser').Browser} $browser
+ * @param {*} $browserDefer
+ * @returns
+ */
+export function createHttpBackend($browser, $browserDefer) {
   // TODO(vojta): fix the signature
   return function (
     method,
@@ -76,7 +52,7 @@ export function createHttpBackend($browser, createXhr, $browserDefer) {
   ) {
     url = url || $browser.url();
 
-    let xhr = createXhr(method, url);
+    const xhr = new XMLHttpRequest();
     let abortedByTimeout = false;
 
     xhr.open(method, url, true);
@@ -89,23 +65,23 @@ export function createHttpBackend($browser, createXhr, $browserDefer) {
     xhr.onload = function () {
       const statusText = xhr.statusText || "";
 
-      // responseText is the old-school way of retrieving response (supported by IE9)
-      // response/responseType properties were introduced in XHR Level2 spec (supported by IE10)
-      const response = "response" in xhr ? xhr.response : xhr.responseText;
-
       let status = xhr.status;
 
       // fix status code when it is 0 (0 status is undocumented).
       // Occurs when accessing file resources or on Android 4.1 stock browser
       // while retrieving files from application cache.
       if (status === 0) {
-        status = response ? 200 : urlResolve(url).protocol === "file" ? 404 : 0;
+        status = xhr.response
+          ? 200
+          : urlResolve(url).protocol === "file"
+            ? 404
+            : 0;
       }
 
       completeRequest(
         callback,
         status,
-        response,
+        xhr.response,
         xhr.getAllResponseHeaders(),
         statusText,
         "complete",
@@ -202,7 +178,6 @@ export function createHttpBackend($browser, createXhr, $browserDefer) {
       if (isDefined(timeoutId)) {
         $browser.cancel(timeoutId);
       }
-      xhr = null;
 
       callback(status, response, headersString, statusText, xhrStatus);
     }

@@ -16,6 +16,7 @@
 - ```html
 
   ```
+
 - <!-- when $scope.myValue is truthy (element is visible) -->
 - <div ng-show="myValue"></div>
 -
@@ -24,6 +25,7 @@
 - ```
 
   ```
+
 -
 - When the `ngShow` expression evaluates to a falsy value then the `.ng-hide` CSS class is added
 - to the class attribute on the element causing it to become hidden. When truthy, the `.ng-hide`
@@ -51,6 +53,7 @@
 - ```css
 
   ```
+
 - .ng-hide:not(.ng-hide-animate) {
 - /\* These are just alternative ways of hiding an element \*/
 - display: block!important;
@@ -61,6 +64,7 @@
 - ```
 
   ```
+
 -
 - By default you don't need to override anything in CSS and the animations will work around the
 - display style.
@@ -79,6 +83,7 @@
 - ```css
 
   ```
+
 - /\* A working example can be found at the bottom of this page. \*/
 - .my-element.ng-hide-add, .my-element.ng-hide-remove {
 - transition: all 0.5s linear;
@@ -91,6 +96,7 @@
 - ```
 
   ```
+
 -
 - Keep in mind that, as of AngularJS version 1.3, there is no need to change the display property
 - to block during animation states - ngAnimate will automatically handle the style toggling for you.
@@ -141,6 +147,7 @@
 - ```html
 
   ```
+
 - <!-- when $scope.myValue is truthy (element is hidden) -->
 - <div ng-hide="myValue" class="ng-hide"></div>
 -
@@ -149,6 +156,7 @@
 - ```
 
   ```
+
 -
 - When the `ngHide` expression evaluates to a truthy value then the `.ng-hide` CSS class is added
 - to the class attribute on the element causing it to become hidden. When falsy, the `.ng-hide`
@@ -176,6 +184,7 @@
 - ```css
 
   ```
+
 - .ng-hide:not(.ng-hide-animate) {
 - /\* These are just alternative ways of hiding an element \*/
 - display: block!important;
@@ -186,6 +195,7 @@
 - ```
 
   ```
+
 -
 - By default you don't need to override in CSS anything and the animations will work around the
 - display style.
@@ -204,6 +214,7 @@
 - ```css
 
   ```
+
 - /\* A working example can be found at the bottom of this page. \*/
 - .my-element.ng-hide-add, .my-element.ng-hide-remove {
 - transition: all 0.5s linear;
@@ -216,6 +227,7 @@
 - ```
 
   ```
+
 -
 - Keep in mind that, as of AngularJS version 1.3, there is no need to change the display property
 - to block during animation states - ngAnimate will automatically handle the style toggling for you.

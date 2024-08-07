@@ -78,10 +78,7 @@ import {
   $HttpParamSerializerProvider,
   $HttpParamSerializerJQLikeProvider,
 } from "./services/http/http";
-import {
-  $HttpBackendProvider,
-  $xhrFactoryProvider,
-} from "./services/http-backend/http-backend";
+import { $HttpBackendProvider } from "./services/http-backend/http-backend";
 import { $LocationProvider } from "./core/location/location";
 import { $LogProvider } from "./services/log";
 import { $ParseProvider } from "./core/parser/parse";
@@ -191,7 +188,6 @@ export function publishExternalAPI(angular) {
             $httpParamSerializer: $HttpParamSerializerProvider,
             $httpParamSerializerJQLike: $HttpParamSerializerJQLikeProvider,
             $httpBackend: $HttpBackendProvider,
-            $xhrFactory: $xhrFactoryProvider,
             $location: $LocationProvider,
             $log: $LogProvider,
             $parse: $ParseProvider,
