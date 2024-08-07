@@ -9,7 +9,7 @@
  * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided,
  */
 /**
- * @typedef {function} CompiledExpressionFunction
+ * @typedef {Function} CompiledExpressionFunction
  * @param {import('../scope/scope').Scope} context - An object against which any expressions embedded in the strings are evaluated against (typically a scope object).
  * @param {object} [locals] - local variables context object, useful for overriding values in `context`.
  * @param {any} [assign]

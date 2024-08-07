@@ -15,7 +15,7 @@ import { Parser } from "./parser";
  */
 
 /**
- * @typedef {function} CompiledExpressionFunction
+ * @typedef {Function} CompiledExpressionFunction
  * @param {import('../scope/scope').Scope} context - An object against which any expressions embedded in the strings are evaluated against (typically a scope object).
  * @param {object} [locals] - local variables context object, useful for overriding values in `context`.
  * @param {any} [assign]
@@ -81,7 +81,6 @@ export function $ParseProvider() {
         isIdentifierStart: isFunction(identStart) && identStart,
         isIdentifierContinue: isFunction(identContinue) && identContinue,
       };
-      $parse.$$getAst = $$getAst;
       return $parse;
 
       function $parse(exp, interceptorFn) {
@@ -109,16 +108,6 @@ export function $ParseProvider() {
           default:
             return addInterceptor(() => {}, interceptorFn);
         }
-      }
-
-      /**
-       * @param {string} exp
-       * @returns {import("./ast").ASTNode}
-       */
-      function $$getAst(exp) {
-        var lexer = new Lexer($lexerOptions);
-        var parser = new Parser(lexer, $filter);
-        return parser.getAst(exp).ast;
       }
 
       function addInterceptor(parsedExpression, interceptorFn) {

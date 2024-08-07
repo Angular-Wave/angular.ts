@@ -14,9 +14,9 @@ export class $CompileProvider {
      *    are the factories.
      * @param {Function|Array} directiveFactory An injectable directive factory function. See the
      *    {@link guide/directive directive guide} and the {@link $compile compile API} for more info.
-     * @returns {ng.ICompileProvider} Self for chaining.
+     * @returns {$CompileProvider} Self for chaining.
      */
-    directive: (name: string | any, directiveFactory: Function | any[]) => ng.ICompileProvider;
+    directive: (name: string | any, directiveFactory: Function | any[]) => $CompileProvider;
     /**
      * @ngdoc method
      * @name $compileProvider#component
@@ -122,10 +122,10 @@ export class $CompileProvider {
      * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
      *
      * @param {RegExp=} regexp New regexp to trust urls with.
-     * @returns {RegExp|ng.ICompileProvider} Current RegExp if called without value or self for
+     * @returns {RegExp|$CompileProvider} Current RegExp if called without value or self for
      *    chaining otherwise.
      */
-    aHrefSanitizationTrustedUrlList: (regexp?: RegExp | undefined) => RegExp | ng.ICompileProvider;
+    aHrefSanitizationTrustedUrlList: (regexp?: RegExp | undefined) => RegExp | $CompileProvider;
     /**
      * @ngdoc method
      * @name $compileProvider#imgSrcSanitizationTrustedUrlList
@@ -143,10 +143,10 @@ export class $CompileProvider {
      * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
      *
      * @param {RegExp=} regexp New regexp to trust urls with.
-     * @returns {RegExp|ng.ICompileProvider} Current RegExp if called without value or self for
+     * @returns {RegExp|$CompileProvider} Current RegExp if called without value or self for
      *    chaining otherwise.
      */
-    imgSrcSanitizationTrustedUrlList: (regexp?: RegExp | undefined) => RegExp | ng.ICompileProvider;
+    imgSrcSanitizationTrustedUrlList: (regexp?: RegExp | undefined) => RegExp | $CompileProvider;
     strictComponentBindingsEnabled: (enabled: any) => boolean | this;
     /**
      * @ngdoc method
