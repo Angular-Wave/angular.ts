@@ -1,28 +1,29 @@
 /**
  * @template T
- * @typedef {Object} angular.QPromise
+ * @typedef {Object} QPromise
  * @property {function(
  *   ((value: T) => (PromiseLike<never>|PromiseLike<T>|T))|null,
  *   ((reason: any) => (PromiseLike<never>|PromiseLike<T>|T))|null,
  *   ((state: any) => any)
- * ): angular.QPromise<T|never>} then - Calls one of the success or error callbacks asynchronously as soon as the result is available.
+ * ): QPromise<T|never>} then - Calls one of the success or error callbacks asynchronously as soon as the result is available.
  * @property {function(
- *   ((value: T) => (angular.QPromise<never>|angular.QPromise<T>|T))|null,
- *   ((reason: any) => (angular.QPromise<never>|angular.QPromise<never>|never))|null,
+ *   ((value: T) => (QPromise<never>|QPromise<T>|T))|null,
+ *   ((reason: any) => (QPromise<never>|QPromise<never>|never))|null,
  *   ((state: any) => any)
- * ): angular.QPromise<T|never>} then - Calls one of the success or error callbacks asynchronously as soon as the result is available.
- * @property {function(((reason: any) => (PromiseLike<never>|PromiseLike<T>|T))|null): angular.QPromise<T>|T} catch - Shorthand for promise.then(null, errorCallback).
- * @property {function(((reason: any) => (angular.QPromise<never>|angular.QPromise<T>|T))|null): angular.QPromise<T>|T} catch - Shorthand for promise.then(null, errorCallback).
- * @property {function(function(): void): angular.QPromise<T>} finally - Allows you to observe either the fulfillment or rejection of a promise, but to do so without modifying the final value.
+ * ): QPromise<T|never>} then - Calls one of the success or error callbacks asynchronously as soon as the result is available.
+ * @property {function(((reason: any) => (PromiseLike<never>|PromiseLike<T>|T))|null): QPromise<T>|T} catch - Shorthand for promise.then(null, errorCallback).
+ * @property {function(((reason: any) => (QPromise<never>|QPromise<T>|T))|null): QPromise<T>|T} catch - Shorthand for promise.then(null, errorCallback).
+ * @property {function(function(): void): QPromise<T>} finally - Allows you to observe either the fulfillment or rejection of a promise, but to do so without modifying the final value.
+ * @property {number} [$$intervalId] - Internal id set by the $interval service for callback notifications
  */
 
 /**
  *@template T
- * @typedef {Object} angular.Deferred
- * @property {function(T|angular.QPromise<T>): void} resolve - Resolves the promise with a value or another promise.
+ * @typedef {Object} Deferred
+ * @property {function(T|QPromise<T>): void} resolve - Resolves the promise with a value or another promise.
  * @property {function(any): void} reject - Rejects the promise with a reason.
  * @property {function(any): void} notify - Provides a progress notification.
- * @property {angular.QPromise<T>} promise - The promise associated with this deferred object.
+ * @property {QPromise<T>} promise - The promise associated with this deferred object.
  */
 
 import {

@@ -6,7 +6,14 @@ export function $$IntervalFactoryProvider() {
     "$q",
     "$$q",
     "$rootScope",
-    // TODO Add types
+    /**
+     *
+     * @param {import('../../services/browser').Browser} $browser
+     * @param {*} $q
+     * @param {*} $$q
+     * @param {import('../scope/scope').Scope} $rootScope
+     * @returns
+     */
     function ($browser, $q, $$q, $rootScope) {
       return function intervalFactory(setIntervalFn, clearIntervalFn) {
         return function intervalFn(fn, delay, count, invokeApply) {
