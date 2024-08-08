@@ -109,10 +109,10 @@ export class JQLite {
      */
     append(node: string | JQLite): JQLite;
     /**
-     * @param {string} node
+     * @param {string|JQLite} node
      * @returns {JQLite}
      */
-    prepend(node: string): JQLite;
+    prepend(node: string | JQLite): JQLite;
     /**
      * @param {string} newElement
      * @returns {JQLite}

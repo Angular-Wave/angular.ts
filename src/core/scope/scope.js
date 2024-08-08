@@ -1187,9 +1187,6 @@ export class Scope {
     return id;
   }
 
-  /**
-   * @private
-   */
   $$postDigest(fn) {
     $$postDigestQueue.push(fn);
   }

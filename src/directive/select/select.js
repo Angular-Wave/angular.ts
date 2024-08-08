@@ -8,8 +8,6 @@ import {
   shallowCopy,
 } from "../../shared/utils";
 
-const noopNgModelController = { $setViewValue: () => {}, $render: () => {} };
-
 function setOptionSelectedStatus(optionEl, value) {
   optionEl[0].selected = value;
   /**
@@ -29,6 +27,11 @@ function setOptionSelectedStatus(optionEl, value) {
  *
  */
 SelectController.$inject = ["$element", "$scope"];
+/**
+ *
+ * @param {JQLite} $element
+ * @param {import('../../core/scope/scope').Scope} $scope
+ */
 function SelectController($element, $scope) {
   const self = this;
   const optionsMap = new Map();
@@ -36,7 +39,7 @@ function SelectController($element, $scope) {
   self.selectValueMap = {}; // Keys are the hashed values, values the original values
 
   // If the ngModel doesn't get provided then provide a dummy noop version to prevent errors
-  self.ngModelCtrl = noopNgModelController;
+  self.ngModelCtrl = {};
   self.multiple = false;
 
   // The "unknown" option is one that is prepended to the list if the viewValue
@@ -101,7 +104,7 @@ function SelectController($element, $scope) {
 
   // Read the value of the select control, the implementation of this changes depending
   // upon whether the select can have multiple values and whether ngOptions is at work.
-  self.readValue = function readSingleValue() {
+  self.readValue = function () {
     const val = $element.val();
     // ngValue added option values are stored in the selectValueMap, normal interpolations are not
     const realVal = val in self.selectValueMap ? self.selectValueMap[val] : val;

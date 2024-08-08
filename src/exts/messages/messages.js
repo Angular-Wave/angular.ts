@@ -20,6 +20,8 @@ export function initMessageModule(angular) {
               const ctrl = this;
               let latestKey = 0;
               let nextAttachId = 0;
+              this.head = undefined;
+              this.default = undefined;
 
               this.getAttachId = function getAttachId() {
                 return nextAttachId++;

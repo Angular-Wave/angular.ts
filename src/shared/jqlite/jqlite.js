@@ -522,7 +522,7 @@ JQLite.prototype.append = function (node) {
 };
 
 /**
- * @param {string} node
+ * @param {string|JQLite} node
  * @returns {JQLite}
  */
 JQLite.prototype.prepend = function (node) {

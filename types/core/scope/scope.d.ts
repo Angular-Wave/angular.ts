@@ -670,10 +670,7 @@ export class Scope {
    * @returns {*} The result of evaluating the expression.
    */
     $eval(expr?: string | ((arg0: Scope) => any), locals?: (object) | undefined): any;
-    /**
-     * @private
-     */
-    private $$postDigest;
+    $$postDigest(fn: any): void;
     /**
      * @private
      */
