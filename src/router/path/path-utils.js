@@ -74,6 +74,7 @@ export class PathUtils {
    */
   static inheritParams(fromPath, toPath, toKeys = []) {
     function nodeParamVals(path, state) {
+      /** @type {PathNode} */
       const node = find(path, propEq("state", state));
       return Object.assign({}, node && node.paramValues);
     }

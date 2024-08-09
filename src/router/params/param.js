@@ -170,6 +170,13 @@ export class Param {
       array: arrayMode,
       config,
     });
+    this.isOptional = undefined;
+    this.type = undefined;
+    this.config = undefined;
+    this.replace = undefined;
+    this.location = undefined;
+    this.squash = undefined;
+    this.id = undefined;
   }
   isDefaultValue(value) {
     return this.isOptional && this.type.equals(this.value(), value);

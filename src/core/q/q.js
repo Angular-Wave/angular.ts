@@ -1,3 +1,15 @@
+import {
+  forEach,
+  minErr,
+  isUndefined,
+  isFunction,
+  isObject,
+  isDefined,
+  isError,
+  toDebugString,
+  isPromiseLike,
+} from "../../shared/utils";
+
 /**
  * @template T
  * @typedef {Object} QPromise
@@ -26,25 +38,6 @@
  * @property {QPromise<T>} promise - The promise associated with this deferred object.
  */
 
-import {
-  forEach,
-  minErr,
-  isUndefined,
-  isFunction,
-  isObject,
-  isDefined,
-  isError,
-  toDebugString,
-  isPromiseLike,
-} from "../../shared/utils";
-
-/**
- * @ngdoc provider
- * @name $qProvider
- *
- *
- * @description
- */
 export function $QProvider() {
   let errorOnUnhandledRejections = true;
   this.$get = [
@@ -52,14 +45,16 @@ export function $QProvider() {
     "$exceptionHandler",
     /**
      *
-     * @param {*} $rootScope
+     * @param {import('../scope/scope').Scope} $rootScope
      * @param {import('../exception-handler').ErrorHandler} $exceptionHandler
      * @returns
      */
     function ($rootScope, $exceptionHandler) {
       return qFactory(
         (callback) => {
-          $rootScope.$evalAsync(callback);
+          $rootScope.$evalAsync(
+            /** @type {function(function):any} */ (callback),
+          );
         },
         $exceptionHandler,
         errorOnUnhandledRejections,
@@ -130,11 +125,6 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
   const checkQueue = [];
 
   /**
-   * @ngdoc method
-   * @name ng.$q#defer
-   * @kind function
-   *
-   * @description
    * Creates a `Deferred` object which represents a task which will finish in the future.
    *
    * @returns {Deferred} Returns a new instance of deferred.
@@ -157,38 +147,45 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
     };
   }
 
-  function QPromise() {
-    this.$$state = { status: 0 };
-  }
-
-  QPromise.prototype.then = function (onFulfilled, onRejected, progressBack) {
-    if (
-      isUndefined(onFulfilled) &&
-      isUndefined(onRejected) &&
-      isUndefined(progressBack)
-    ) {
-      return this;
+  class QPromise {
+    constructor() {
+      this.$$state = { status: 0 };
     }
-    const result = new QPromise();
 
-    this.$$state.pending = this.$$state.pending || [];
-    this.$$state.pending.push([result, onFulfilled, onRejected, progressBack]);
-    if (this.$$state.status > 0) scheduleProcessQueue(this.$$state);
+    then(onFulfilled, onRejected, progressBack) {
+      if (
+        isUndefined(onFulfilled) &&
+        isUndefined(onRejected) &&
+        isUndefined(progressBack)
+      ) {
+        return this;
+      }
+      const result = new QPromise();
 
-    return result;
-  };
+      this.$$state.pending = this.$$state.pending || [];
+      this.$$state.pending.push([
+        result,
+        onFulfilled,
+        onRejected,
+        progressBack,
+      ]);
+      if (this.$$state.status > 0) scheduleProcessQueue(this.$$state);
 
-  QPromise.prototype.catch = function (callback) {
-    return this.then(null, callback);
-  };
+      return result;
+    }
 
-  QPromise.prototype.finally = function (callback, progressBack) {
-    return this.then(
-      (value) => handleCallback(value, resolve, callback),
-      (error) => handleCallback(error, reject, callback),
-      progressBack,
-    );
-  };
+    catch(callback) {
+      return this.then(null, callback);
+    }
+
+    finally(callback, progressBack) {
+      return this.then(
+        (value) => handleCallback(value, resolve, callback),
+        (error) => handleCallback(error, reject, callback),
+        progressBack,
+      );
+    }
+  }
 
   function processQueue(state) {
     let fn;

@@ -1155,7 +1155,7 @@ export class Scope {
    * will be scheduled. However, it is encouraged to always call code that changes the model
    * from within an `$apply` call. That includes code evaluated via `$evalAsync`.
    *
-   * @param {(string|function())=} expr An AngularTS expression to be executed.
+   * @param {(string|function(any):any)=} expr An AngularTS expression to be executed.
    *
    *    - `string`: execute using the rules as defined in {@link guide/expression expression}.
    *    - `function(scope)`: execute the function with the current `scope` parameter.

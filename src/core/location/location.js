@@ -143,7 +143,6 @@ export function LocationHtml5Url(appBase, appBaseNoFile, basePrefix) {
   /**
    * Parse given HTML5 (regular) URL string into properties
    * @param {string} url HTML5 URL
-   * @private
    */
   this.$$parse = function (url) {
     const pathUrl = stripBaseUrl(appBaseNoFile, url);
@@ -218,7 +217,6 @@ export function LocationHashbangUrl(appBase, appBaseNoFile, hashPrefix) {
   /**
    * Parse given hashbang URL into properties
    * @param {string} url Hashbang URL
-   * @private
    */
   this.$$parse = function (url) {
     const withoutBaseUrl =
@@ -367,7 +365,6 @@ const locationPrototype = {
 
   /**
    * Compose url and update `url` and `absUrl` property
-   * @private
    */
   $$compose() {
     this.$$url = normalizePath(this.$$path, this.$$search, this.$$hash);
@@ -739,11 +736,6 @@ function locationGetterSetter(property, preprocess) {
  */
 
 /**
- * @ngdoc provider
- * @name $locationProvider
- *
- *
- * @description
  * Use the `$locationProvider` to configure how the application deep linking paths are stored.
  */
 export function $LocationProvider() {
