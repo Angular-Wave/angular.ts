@@ -392,7 +392,7 @@ export class Scope {
  *
  *    - `string`: Evaluated as {@link guide/expression expression}
  *    - `function(scope)`: called with current `scope` as a parameter.
- * @param {WatchListener} listener
+ * @param {WatchListener} [listener]
  * @param {boolean=} [objectEquality=false] Compare for object equality using {@link angular.equals} instead of
  *     comparing for reference equality.
  * @returns {function()} Returns a deregistration function for this listener.
