@@ -2,7 +2,6 @@ import {
   LocationHtml5Url,
   LocationHashbangUrl,
   $LocationProvider,
-  LocationHashbangInHtml5Url,
 } from "./location";
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
@@ -464,6 +463,7 @@ describe("$location", () => {
           .hash("abcd")
           .state({ a: 2 })
           .search("bar", "baz");
+
         expect(locationUrl.path()).toEqual("/foo");
         expect(locationUrl.state()).toEqual({ a: 2 });
         expect(locationUrl.search() && locationUrl.search().bar).toBe("baz");
@@ -3308,81 +3308,6 @@ describe("$location", () => {
       expect(locationUrl.url()).toBe("");
       expect(locationUrl.absUrl()).toBe("http://server/next/index.html");
     });
-  });
-
-  describe("LocationHashbangInHtml5Url", () => {
-    /* global LocationHashbangInHtml5Url: false */
-    let locationUrl;
-    let locationIndexUrl;
-
-    beforeEach(() => {
-      locationUrl = new LocationHashbangInHtml5Url(
-        "http://server/pre/",
-        "http://server/pre/",
-        "#!",
-      );
-      locationIndexUrl = new LocationHashbangInHtml5Url(
-        "http://server/pre/index.html",
-        "http://server/pre/",
-        "#!",
-      );
-    });
-
-    it("should rewrite URL", () => {
-      expect(parseLinkAndReturn(locationUrl, "http://other")).toEqual(
-        undefined,
-      );
-      expect(parseLinkAndReturn(locationUrl, "http://server/pre")).toEqual(
-        "http://server/pre/#!",
-      );
-      expect(parseLinkAndReturn(locationUrl, "http://server/pre/")).toEqual(
-        "http://server/pre/#!",
-      );
-      expect(
-        parseLinkAndReturn(locationUrl, "http://server/pre/otherPath"),
-      ).toEqual("http://server/pre/#!/otherPath");
-      // Note: relies on the previous state!
-      expect(
-        parseLinkAndReturn(locationUrl, "someIgnoredAbsoluteHref", "#test"),
-      ).toEqual("http://server/pre/#!/otherPath#test");
-
-      expect(parseLinkAndReturn(locationIndexUrl, "http://server/pre")).toEqual(
-        "http://server/pre/index.html#!",
-      );
-      expect(
-        parseLinkAndReturn(locationIndexUrl, "http://server/pre/"),
-      ).toEqual(undefined);
-      expect(
-        parseLinkAndReturn(locationIndexUrl, "http://server/pre/otherPath"),
-      ).toEqual("http://server/pre/index.html#!/otherPath");
-      // Note: relies on the previous state!
-      expect(
-        parseLinkAndReturn(
-          locationIndexUrl,
-          "someIgnoredAbsoluteHref",
-          "#test",
-        ),
-      ).toEqual("http://server/pre/index.html#!/otherPath#test");
-    });
-
-    it("should throw on url(urlString, stateObject)", () => {
-      expectThrowOnStateChange(locationUrl);
-    });
-
-    // it("should not throw when base path is another domain", () => {
-    //   initService({ html5Mode: true, hashPrefix: "!", supportHistory: true });
-    //   inject(
-    //     initBrowser({
-    //       url: "http://domain.com/base/",
-    //       basePath: "http://otherdomain.com/base/",
-    //     }),
-    //     ($location) => {
-    //       expect(() => {
-    //         $location.absUrl();
-    //       }).not.toThrow();
-    //     },
-    //   );
-    // });
   });
 
   // function mockUpBrowser(options) {

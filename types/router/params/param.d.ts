@@ -25,6 +25,17 @@ export class Param {
     /** Returns true if a the parameter values are valid, according to the Param definitions */
     static validates(params: any, values?: {}): any;
     constructor(id: any, type: any, location: any, urlConfig: any, state: any);
+    isOptional: boolean;
+    type: any;
+    location: any;
+    id: any;
+    dynamic: boolean;
+    raw: boolean;
+    squash: any;
+    replace: any;
+    inherit: boolean;
+    array: any;
+    config: any;
     isDefaultValue(value: any): any;
     /**
      * [Internal] Gets the decoded representation of a value if the value is defined, otherwise, returns the
