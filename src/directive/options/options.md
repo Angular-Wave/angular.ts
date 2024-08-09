@@ -63,6 +63,7 @@
 - ```js
 
   ```
+
 - $scope.items = [{
 - id: 1,
 - label: 'aLabel',
@@ -75,40 +76,49 @@
 - ```
 
   ```
+
 -
 - This will work:
 -
 - ```html
 
   ```
+
 - <select ng-options="item as item.label for item in items track by item.id" ng-model="selected"></select>
 - ```
 
   ```
+
 - ```js
 
   ```
+
 - $scope.selected = $scope.items[0];
 - ```
 
   ```
+
 -
 - but this will not work:
 -
 - ```html
 
   ```
+
 - <select ng-options="item.subItem as item.label for item in items track by item.id" ng-model="selected"></select>
 - ```
 
   ```
+
 - ```js
 
   ```
+
 - $scope.selected = $scope.items[0].subItem;
 - ```
 
   ```
+
 -
 - In both examples, the **`track by`** expression is applied successfully to each `item` in the
 - `items` array. Because the selected option has been set programmatically in the controller, the
