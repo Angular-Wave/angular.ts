@@ -18,13 +18,11 @@ export function AnchorScrollProvider() {
     "$rootScope",
     /**
      *
-     * @param {*} $location
+     * @param {import('../core/location/location').Location} $location
      * @param {import('../core/scope/scope').Scope} $rootScope
      * @returns
      */
     function ($location, $rootScope) {
-      const { document } = window;
-
       // Helper function to get first anchor from a NodeList
       // (using `Array#some()` instead of `angular#forEach()` since it's more performant
       //  and working in all supported browsers.)
@@ -117,7 +115,7 @@ export function AnchorScrollProvider() {
             if (newVal === oldVal && newVal === "") return;
 
             const action = () => $rootScope.$evalAsync(scroll);
-            if (window.document.readyState === "complete") {
+            if (document.readyState === "complete") {
               // Force the action to be run async for consistent behavior
               // from the action's point of view
               // i.e. it will definitely not be in a $apply

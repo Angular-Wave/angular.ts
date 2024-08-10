@@ -1,5 +1,10 @@
 import { isString } from "../../shared/utils";
 
+/**
+ * HTTP protocol
+ * @typedef {"http"|"https"} HttpProtocol
+ */
+
 // service.
 const urlParsingNode = window.document.createElement("a");
 const originUrl = urlResolve(window.location.href);

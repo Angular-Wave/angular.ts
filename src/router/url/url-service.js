@@ -92,6 +92,13 @@ export class UrlService {
     "$location",
     "$browser",
     "$rootScope",
+    /**
+     *
+     * @param {import('../../core/location/location').Location} $location
+     * @param {import('../../services/browser').Browser} $browser
+     * @param {import('../../core/scope/scope').Scope} $rootScope
+     * @returns
+     */
     ($location, $browser, $rootScope) => {
       this.$location = $location;
       this.$browser = $browser;

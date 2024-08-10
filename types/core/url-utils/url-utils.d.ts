@@ -91,3 +91,7 @@ export function urlsAreSameOrigin(url1: string | any, url2: string | object): bo
  * @returns {string}
  */
 export function getBaseUrl(): string;
+/**
+ * HTTP protocol
+ */
+export type HttpProtocol = "http" | "https";

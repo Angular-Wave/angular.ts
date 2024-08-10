@@ -9,8 +9,8 @@ export class UrlService {
     constructor($locationProvider: import("../../core/location/location").$LocationProvider, stateService: any, globals: any, urlConfigProvider: any);
     stateService: any;
     $locationProvider: import("../../core/location/location").$LocationProvider;
-    $location: any;
-    $browser: any;
+    $location: import("../../core/location/location").Location;
+    $browser: import("../../services/browser").Browser;
     /** @type {boolean} */
     interceptDeferred: boolean;
     /** Provides services related to the URL */
@@ -54,12 +54,12 @@ export class UrlService {
      *
      * @return the hash (anchor) portion of the url
      */
-    hash: () => any;
+    hash: () => string | import("../../core/location/location").Location;
     _urlListeners: any[];
-    $get: (string | (($location: any, $browser: any, $rootScope: any) => this))[];
+    $get: (string | (($location: import("../../core/location/location").Location, $browser: import("../../services/browser").Browser, $rootScope: import("../../core/scope/scope").Scope) => this))[];
     html5Mode(): boolean;
-    baseHref(): any;
-    _baseHref: any;
+    baseHref(): string;
+    _baseHref: string;
     /**
      * Gets the current url, or updates the url
      *
@@ -112,7 +112,7 @@ export class UrlService {
      *
      * @return the url (after potentially being processed)
      */
-    url(newUrl?: string, replace?: boolean, state?: any): any;
+    url(newUrl?: string, replace?: boolean, state?: any): string | import("../../core/location/location").Location;
     /**
      * @internal
      *
@@ -137,7 +137,7 @@ export class UrlService {
     parts(): {
         path: any;
         search: any;
-        hash: any;
+        hash: string | import("../../core/location/location").Location;
     };
     /**
      * Activates the best rule for the current URL
@@ -218,7 +218,7 @@ export class UrlService {
      */
     match(url: any): any;
     update(read: any): void;
-    location: any;
+    location: string | import("../../core/location/location").Location;
     /**
      * Internal API.
      *

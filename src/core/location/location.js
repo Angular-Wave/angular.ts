@@ -15,50 +15,92 @@ import {
 } from "../../shared/utils";
 import { ScopePhase } from "../scope/scope";
 
-export const PATH_MATCH = /^([^?#]*)(\?([^#]*))?(#(.*))?$/;
+/**
+ * @typedef {Object} DefaultPorts
+ * @property {number} http
+ * @property {number} https
+ * @property {number} ftp
+ */
+
+/**
+ * @typedef {Object} Html5Mode
+ * @property {boolean} enabled
+ * @property {boolean} requireBase
+ * @property {boolean|string} rewriteLinks
+ */
+
+/** @type {DefaultPorts} */
 const DEFAULT_PORTS = { http: 80, https: 443, ftp: 21 };
+const PATH_MATCH = /^([^?#]*)(\?([^#]*))?(#(.*))?$/;
 const $locationMinErr = minErr("$location");
 
 /**
  * @abstract
  */
-class Location {
-  constructor() {
+export class Location {
+  /**
+   * @param {string} appBase application base URL
+   * @param {string} appBaseNoFile application base URL stripped of any filename
+   */
+  constructor(appBase, appBaseNoFile) {
+    /** @type {string} */
+    this.appBase = appBase;
+
+    /** @type {string} */
+    this.appBaseNoFile = appBaseNoFile;
+
     /**
-     * Ensure absolute URL is initialized.
+     * An absolute URL is the full URL, including protocol (http/https ), the optional subdomain (e.g. www ), domain (example.com), and path (which includes the directory and slug).
+     * @type {string}
      */
     this.$$absUrl = "";
 
     /**
-     * Are we in html5 mode?
+     * If html5 mode is enabled
+     * @type {boolean}
      */
     this.$$html5 = false;
 
     /**
      * Has any change been replacing?
+     * @type {boolean}
      */
     this.$$replace = false;
 
-    this.$$absUrl = undefined;
+    /** @type {import('../url-utils/url-utils').HttpProtocol} */
     this.$$protocol = undefined;
+
+    /** @type {string} */
     this.$$host = undefined;
+
+    /**
+     * The port, without ":"
+     * @type {number}
+     */
     this.$$port = undefined;
+
+    /**
+     * The pathname, beginning with "/"
+     * @type {string}
+     */
     this.$$path = undefined;
+
+    /**
+     * The hash string, minus the hash symbol
+     * @type {string}
+     */
     this.$$hash = undefined;
+
+    /**
+     * Helper property for scope watch changes
+     * @type {boolean}
+     */
+    this.$$urlUpdatedByLocation = false;
   }
 
   /**
-   * This method is getter only.
-   *
    * Return full URL representation with all segments encoded according to rules specified in
    * [RFC 3986](http://www.ietf.org/rfc/rfc3986.txt).
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let absUrl = $location.absUrl();
-   * // => "http://example.com/#/some/path?foo=bar&baz=xoxo"
-   * ```
    *
    * @return {string} full URL
    */
@@ -70,15 +112,7 @@ class Location {
    * This method is getter / setter.
    *
    * Return URL (e.g. `/path?a=b#hash`) when called without any parameter.
-   *
    * Change path, search and hash, when called with parameter and return `$location`.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let url = $location.url();
-   * // => "/some/path?foo=bar&baz=xoxo"
-   * ```
    *
    * @param {string=} url New URL without base prefix (e.g. `/path?a=b#hash`)
    * @return {Location|string} url
@@ -87,6 +121,7 @@ class Location {
     if (isUndefined(url)) {
       return this.$$url;
     }
+
     const match = PATH_MATCH.exec(url);
     if (match[1] || url === "") this.path(decodeURIComponent(match[1]));
     if (match[2] || match[1] || url === "") this.search(match[3] || "");
@@ -96,18 +131,9 @@ class Location {
   }
 
   /**
-   * This method is getter only.
    *
    * Return protocol of current URL.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let protocol = $location.protocol();
-   * // => "http"
-   * ```
-   *
-   * @return {string} protocol of current URL
+   * @return {import("../url-utils/url-utils").HttpProtocol} protocol of current URL
    */
   protocol() {
     return this.$$protocol;
@@ -120,18 +146,6 @@ class Location {
    *
    * Note: compared to the non-AngularJS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
    *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let host = $location.host();
-   * // => "example.com"
-   *
-   * // given URL http://user:password@example.com:8080/#/some/path?foo=bar&baz=xoxo
-   * host = $location.host();
-   * // => "example.com"
-   * host = location.host;
-   * // => "example.com:8080"
-   * ```
    *
    * @return {string} host of current URL.
    */
@@ -151,7 +165,7 @@ class Location {
    * // => 80
    * ```
    *
-   * @return {Number} port
+   * @return {number} port
    */
   port() {
     return this.$$port;
@@ -224,45 +238,11 @@ class Location {
   }
 
   /**
-   * This method is getter / setter.
+   * Returns or sets the search part (as object) of current URL when called without any parameter
    *
-   * Return search part (as object) of current URL when called without any parameter.
-   *
-   * Change search part when called with parameter and return `$location`.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let searchObject = $location.search();
-   * // => {foo: 'bar', baz: 'xoxo'}
-   *
-   * // set foo to 'yipee'
-   * $location.search('foo', 'yipee');
-   * // $location.search() => {foo: 'yipee', baz: 'xoxo'}
-   * ```
-   *
-   * @param {string|Object} search New search params - string or
-   * hash object.
-   *
-   * When called with a single argument the method acts as a setter, setting the `search` component
-   * of `$location` to the specified value.
-   *
-   * If the argument is a hash object containing an array of values, these values will be encoded
-   * as duplicate search parameters in the URL.
-   *
-   * @param {(string|Number|Array<string>|boolean)=} paramValue If `search` is a string or number, then `paramValue`
-   * will override only a single search property.
-   *
-   * If `paramValue` is an array, it will override the property of the `search` component of
-   * `$location` specified via the first argument.
-   *
-   * If `paramValue` is `null`, the property specified via the first argument will be deleted.
-   *
-   * If `paramValue` is `true`, the property specified via the first argument will be added with no
-   * value nor trailing equal sign.
-   *
-   * @return {Object} If called with no arguments returns the parsed `search` object. If called with
-   * one or more arguments returns `$location` object itself.
+   * @param {string|Object=} search New search params - string or hash object.
+   * @param {(string|number|Array<string>|boolean)=} paramValue If search is a string or number, then paramValue will override only a single search property.
+   * @returns {Object|Location} Search object or Location object
    */
   search(search, paramValue) {
     switch (arguments.length) {
@@ -301,6 +281,7 @@ class Location {
 
   /**
    * Compose url and update `url` and `absUrl` property
+   * @returns {void}
    */
   $$compose() {
     this.$$url = normalizePath(this.$$path, this.$$search, this.$$hash);
@@ -317,21 +298,21 @@ class Location {
   }
 
   /**
-   
-     * This method is getter / setter.
-     *
-     * Return the history state object when called without any parameter.
-     *
-     * Change the history state object when called with one parameter and return `$location`.
-     * The state object is later passed to `pushState` or `replaceState`.
-     *
-     * NOTE: This method is supported only in HTML5 mode and only in browsers supporting
-     * the HTML5 History API (i.e. methods `pushState` and `replaceState`). If you need to support
-     * older browsers (like IE9 or Android < 4.0), don't use this method.
-     *
-     * @param {object=} state State object for pushState or replaceState
-     * @return {object} state
-     */
+   * This method is getter / setter.
+   *
+   * Return the history state object when called without any parameter.
+   *
+   * Change the history state object when called with one parameter and return `$location`.
+   * The state object is later passed to `pushState` or `replaceState`.
+   * See {@link https://developer.mozilla.org/en-US/docs/Web/API/History/pushState#state|History.state}
+   *
+   * NOTE: This method is supported only in HTML5 mode and only in browsers supporting
+   * the HTML5 History API (i.e. methods `pushState` and `replaceState`). If you need to support
+   * older browsers (like IE9 or Android < 4.0), don't use this method.
+   *
+   * @param {any} state State object for pushState or replaceState
+   * @return {any} state
+   */
   state(state) {
     if (!arguments.length) {
       return this.$$state;
@@ -355,20 +336,17 @@ class Location {
 }
 
 /**
- * LocationHtml5Url represents a URL
  * This object is exposed as $location service when HTML5 mode is enabled and supported
- *
- * @constructor
- * @param {string} appBase application base URL
- * @param {string} appBaseNoFile application base URL stripped of any filename
- * @param {string} basePrefix URL path prefix
  */
 export class LocationHtml5Url extends Location {
+  /**
+   * @param {string} appBase application base URL
+   * @param {string} appBaseNoFile application base URL stripped of any filename
+   * @param {string} basePrefix URL path prefix
+   */
   constructor(appBase, appBaseNoFile, basePrefix) {
-    super();
+    super(appBase, appBaseNoFile);
     this.$$html5 = true;
-    this.appBase = appBase;
-    this.appBaseNoFile = appBaseNoFile;
     this.basePrefix = basePrefix || "";
     parseAbsoluteUrl(appBase, this);
   }
@@ -447,7 +425,7 @@ export class LocationHtml5Url extends Location {
  */
 export class LocationHashbangUrl extends Location {
   constructor(appBase, appBaseNoFile, hashPrefix) {
-    super();
+    super(appBase, appBaseNoFile);
     this.appBase = appBase;
     this.appBaseNoFile = appBaseNoFile;
     this.hashPrefix = hashPrefix;
@@ -553,9 +531,6 @@ export function $LocationProvider() {
   };
 
   /**
-   * @ngdoc method
-   * @name $locationProvider#hashPrefix
-   * @description
    * The default value for the prefix is `'!'`.
    * @param {string=} prefix Prefix for hash part (containing path and search)
    * @returns {*} current value if used as getter or itself (chaining) if used as setter
@@ -623,6 +598,7 @@ export function $LocationProvider() {
      * @returns
      */
     function ($rootScope, $browser, $rootElement) {
+      /** @type {Location} */
       let $location;
       let LocationMode;
       const baseHref = $browser.baseHref(); // if base[href] is undefined, it defaults to ''
@@ -888,6 +864,10 @@ function normalizePath(pathValue, searchValue, hashValue) {
   return path + (search ? `?${search}` : "") + hash;
 }
 
+/**
+ * @param {string} absoluteUrl
+ * @param {Location} locationObj
+ */
 function parseAbsoluteUrl(absoluteUrl, locationObj) {
   const parsedUrl = urlResolve(absoluteUrl);
 
