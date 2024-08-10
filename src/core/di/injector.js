@@ -247,7 +247,7 @@ function extractArgs(fn) {
  * @returns {Array<string>}
  */
 export function annotate(fn, strictDi, name) {
-  var $inject, argDecl, last;
+  let $inject, argDecl, last;
 
   if (typeof fn === "function") {
     if (!($inject = fn.$inject)) {

@@ -114,7 +114,7 @@ export class Angular {
     };
 
     this.doBootstrap = function () {
-      var jqLite = JQLite(element);
+      const jqLite = JQLite(element);
 
       if (jqLite.injector()) {
         throw ngMinErr("btstrpd", "App already bootstrapped");

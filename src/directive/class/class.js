@@ -2,7 +2,7 @@ import { forEach, isObject, isString } from "../../shared/utils";
 
 function classDirective(name, selector) {
   name = `ngClass${name}`;
-  var indexWatchExpression;
+  let indexWatchExpression;
 
   return [
     "$parse",

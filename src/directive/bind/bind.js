@@ -37,8 +37,8 @@ export const ngBindHtmlDirective = [
     return {
       restrict: "A",
       compile: (_tElement, tAttrs) => {
-        var ngBindHtmlGetter = $parse(tAttrs.ngBindHtml);
-        var ngBindHtmlWatch = $parse(tAttrs.ngBindHtml, (val) => val);
+        const ngBindHtmlGetter = $parse(tAttrs.ngBindHtml);
+        const ngBindHtmlWatch = $parse(tAttrs.ngBindHtml, (val) => val);
         return (scope, element) => {
           scope.$watch(ngBindHtmlWatch, () => {
             // The watched value is the unwrapped value. To avoid re-escaping, use the direct getter.

@@ -203,7 +203,7 @@ export function weekParser(isoWeek, existingDate) {
 
   function getFirstThursdayOfYear(year) {
     // 0 = index of January
-    var dayOfWeekOnFirst = new Date(year, 0, 1).getDay();
+    const dayOfWeekOnFirst = new Date(year, 0, 1).getDay();
     // 4 = index of Thursday (+1 to account for 1st = 5)
     // 11 = index of *next* Thursday (+1 account for 1st = 12)
     return new Date(

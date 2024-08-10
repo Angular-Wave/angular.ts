@@ -12,8 +12,8 @@ describe("Filter: limitTo", () => {
   beforeEach(() => {
     window.angular = new Angular();
     window.angular.module("myModule", ["ng"]);
-    var injector = createInjector(["myModule"]);
-    var $filter = injector.get("$filter");
+    const injector = createInjector(["myModule"]);
+    const $filter = injector.get("$filter");
 
     items = ["a", "b", "c", "d", "e", "f", "g", "h"];
     str = "tuvwxyz";

@@ -6,24 +6,24 @@ describe("filter", function () {
     window.angular = new Angular();
   });
   it("can be registered and obtained", () => {
-    var myFilter = () => {};
-    var myFilterFactory = () => {
+    const myFilter = () => {};
+    const myFilterFactory = () => {
       return myFilter;
     };
-    var injector = createInjector([
+    const injector = createInjector([
       "ng",
       function ($filterProvider) {
         $filterProvider.register("my", myFilterFactory);
       },
     ]);
-    var $filter = injector.get("$filter");
+    const $filter = injector.get("$filter");
     expect($filter("my")).toBe(myFilter);
   });
 
   it("allows registering multiple filters with an object", () => {
-    var myFilter = () => {};
-    var myOtherFilter = () => {};
-    var injector = createInjector([
+    const myFilter = () => {};
+    const myOtherFilter = () => {};
+    const injector = createInjector([
       "ng",
       function ($filterProvider) {
         $filterProvider.register({
@@ -36,14 +36,14 @@ describe("filter", function () {
         });
       },
     ]);
-    var $filter = injector.get("$filter");
+    const $filter = injector.get("$filter");
     expect($filter("my")).toBe(myFilter);
     expect($filter("myOther")).toBe(myOtherFilter);
   });
 
   it("is available through injector", () => {
-    var myFilter = () => {};
-    var injector = createInjector([
+    const myFilter = () => {};
+    const injector = createInjector([
       "ng",
       function ($filterProvider) {
         $filterProvider.register("my", () => {
@@ -56,7 +56,7 @@ describe("filter", function () {
   });
 
   it("may have dependencies in factory", () => {
-    var injector = createInjector([
+    const injector = createInjector([
       "ng",
       function ($provide, $filterProvider) {
         $provide.constant("suffix", "!");
@@ -71,11 +71,11 @@ describe("filter", function () {
   });
 
   it("can be registered through module API", () => {
-    var myFilter = () => {};
+    const myFilter = () => {};
     angular.module("myModule", []).filter("my", () => {
       return myFilter;
     });
-    var injector = createInjector(["ng", "myModule"]);
+    const injector = createInjector(["ng", "myModule"]);
     expect(injector.has("myFilter")).toBe(true);
     expect(injector.get("myFilter")).toBe(myFilter);
   });
@@ -86,7 +86,7 @@ describe("filter filter", function () {
     window.angular = new Angular();
   });
   it("is available", function () {
-    var injector = createInjector(["ng"]);
+    const injector = createInjector(["ng"]);
     expect(injector.has("filterFilter")).toBe(true);
   });
   // TODO

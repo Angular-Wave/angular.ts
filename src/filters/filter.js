@@ -161,9 +161,8 @@ function deepCompare(
 
   switch (actualType) {
     case "object":
-      var key;
       if (matchAgainstAnyProp) {
-        for (key in actual) {
+        for (let key in actual) {
           // Under certain, rare, circumstances, key may not be a string and `charAt` will be undefined
           // See: https://github.com/angular/angular.js/issues/15644
           if (
@@ -179,7 +178,7 @@ function deepCompare(
           : deepCompare(actual, expected, comparator, anyPropertyKey, false);
       }
       if (expectedType === "object") {
-        for (key in expected) {
+        for (let key in expected) {
           const expectedVal = expected[key];
           if (isFunction(expectedVal) || isUndefined(expectedVal)) {
             continue;

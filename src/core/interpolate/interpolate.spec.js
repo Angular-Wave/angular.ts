@@ -13,70 +13,70 @@ describe("$interpolate", () => {
   });
 
   it("produces an identity function for static content", function () {
-    var interp = $interpolate("hello");
+    const interp = $interpolate("hello");
     expect(interp instanceof Function).toBe(true);
     expect(interp()).toEqual("hello");
   });
 
   it("evaluates a single expression", function () {
-    var interp = $interpolate("{{anAttr}}");
+    const interp = $interpolate("{{anAttr}}");
     expect(interp({ anAttr: "42" })).toEqual("42");
   });
 
   it("passes through ill-defined interpolations", function () {
-    var interp = $interpolate("why u no }}work{{");
+    const interp = $interpolate("why u no }}work{{");
     expect(interp({})).toEqual("why u no }}work{{");
   });
 
   it("evaluates many expressions", function () {
-    var interp = $interpolate("First {{anAttr}}, then {{anotherAttr}}!");
+    const interp = $interpolate("First {{anAttr}}, then {{anotherAttr}}!");
     expect(interp({ anAttr: "42", anotherAttr: "43" })).toEqual(
       "First 42, then 43!",
     );
   });
 
   it("turns nulls into empty strings", function () {
-    var interp = $interpolate("{{aNull}}");
+    const interp = $interpolate("{{aNull}}");
     expect(interp({ aNull: null })).toEqual("");
   });
 
   it("turns undefineds into empty strings", function () {
-    var interp = $interpolate("{{anUndefined}}");
+    const interp = $interpolate("{{anUndefined}}");
     expect(interp({})).toEqual("");
   });
 
   it("turns numbers into strings", function () {
-    var interp = $interpolate("{{aNumber}}");
+    const interp = $interpolate("{{aNumber}}");
     expect(interp({ aNumber: 42 })).toEqual("42");
   });
 
   it("turns booleans into strings", function () {
-    var interp = $interpolate("{{aBoolean}}");
+    const interp = $interpolate("{{aBoolean}}");
     expect(interp({ aBoolean: true })).toEqual("true");
   });
 
   it("turns arrays into JSON strings", function () {
-    var interp = $interpolate("{{anArray}}");
+    const interp = $interpolate("{{anArray}}");
     expect(interp({ anArray: [1, 2, [3]] })).toEqual("[1,2,[3]]");
   });
 
   it("turns objects into JSON strings", function () {
-    var interp = $interpolate("{{anObject}}");
+    const interp = $interpolate("{{anObject}}");
     expect(interp({ anObject: { a: 1, b: "2" } })).toEqual('{"a":1,"b":"2"}');
   });
 
   it("unescapes escaped sequences", function () {
-    var interp = $interpolate("\\{\\{expr\\}\\} {{expr}} \\{\\{expr\\}\\}");
+    const interp = $interpolate("\\{\\{expr\\}\\} {{expr}} \\{\\{expr\\}\\}");
     expect(interp({ expr: "value" })).toEqual("{{expr}} value {{expr}}");
   });
 
   it("does not return function when flagged and no expressions", function () {
-    var interp = $interpolate("static content only", true);
+    const interp = $interpolate("static content only", true);
     expect(interp).toBeFalsy();
   });
 
   it("returns function when flagged and has expressions", function () {
-    var interp = $interpolate("has an {{expr}}", true);
+    const interp = $interpolate("has an {{expr}}", true);
     expect(interp).not.toBeFalsy();
   });
 
@@ -253,20 +253,20 @@ describe("$interpolate", () => {
 
   describe("interpolation escaping", () => {
     let obj;
-    var $compile;
+    let $compile;
     beforeEach(() => {
       obj = { foo: "Hello", bar: "World" };
       $compile = $injector.get("$compile");
     });
 
     it("uses a watch delegate", function () {
-      var interp = $interpolate("has an {{expr}}");
+      const interp = $interpolate("has an {{expr}}");
       expect(interp.$$watchDelegate).toBeDefined();
     });
 
     it("correctly returns new and old value when watched", function () {
-      var interp = $interpolate("{{expr}}");
-      var listenerSpy = jasmine.createSpy();
+      const interp = $interpolate("{{expr}}");
+      const listenerSpy = jasmine.createSpy();
       $rootScope.$watch(interp, listenerSpy);
       $rootScope.expr = 42;
       $rootScope.$apply();
@@ -341,50 +341,50 @@ describe("$interpolate", () => {
     });
 
     it("allows configuring start and end symbols", function () {
-      var injector = createInjector([
+      const injector = createInjector([
         "ng",
         function ($interpolateProvider) {
           $interpolateProvider.startSymbol("FOO").endSymbol("OOF");
         },
       ]);
-      var $interpolate = injector.get("$interpolate");
+      const $interpolate = injector.get("$interpolate");
       expect($interpolate.startSymbol()).toEqual("FOO");
       expect($interpolate.endSymbol()).toEqual("OOF");
     });
 
     it("works with start and end symbols that differ from default", function () {
-      var injector = createInjector([
+      const injector = createInjector([
         "ng",
         function ($interpolateProvider) {
           $interpolateProvider.startSymbol("FOO").endSymbol("OOF");
         },
       ]);
-      var $interpolate = injector.get("$interpolate");
-      var interpFn = $interpolate("FOOmyExprOOF");
+      const $interpolate = injector.get("$interpolate");
+      const interpFn = $interpolate("FOOmyExprOOF");
       expect(interpFn({ myExpr: 42 })).toEqual("42");
     });
 
     it("does not work with default symbols when reconfigured", function () {
-      var injector = createInjector([
+      const injector = createInjector([
         "ng",
         function ($interpolateProvider) {
           $interpolateProvider.startSymbol("FOO").endSymbol("OOF");
         },
       ]);
-      var $interpolate = injector.get("$interpolate");
-      var interpFn = $interpolate("{{myExpr}}");
+      const $interpolate = injector.get("$interpolate");
+      const interpFn = $interpolate("{{myExpr}}");
       expect(interpFn({ myExpr: 42 })).toEqual("{{myExpr}}");
     });
 
     it("supports unescaping for reconfigured symbols", function () {
-      var injector = createInjector([
+      const injector = createInjector([
         "ng",
         function ($interpolateProvider) {
           $interpolateProvider.startSymbol("FOO").endSymbol("OOF");
         },
       ]);
-      var $interpolate = injector.get("$interpolate");
-      var interpFn = $interpolate("\\F\\O\\OmyExpr\\O\\O\\F");
+      const $interpolate = injector.get("$interpolate");
+      const interpFn = $interpolate("\\F\\O\\OmyExpr\\O\\O\\F");
       expect(interpFn({})).toEqual("FOOmyExprOOF");
     });
 

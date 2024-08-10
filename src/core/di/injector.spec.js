@@ -1164,42 +1164,42 @@ describe("factories", () => {
   beforeEach(() => (window.angular = new Angular()));
 
   it("allows registering a factory", function () {
-    var module = angular.module("myModule", []);
+    const module = angular.module("myModule", []);
     module.factory("a", function () {
       return 42;
     });
-    var injector = createInjector(["myModule"]);
+    const injector = createInjector(["myModule"]);
     expect(injector.get("a")).toBe(42);
   });
 
   it("injects a factory function with instances", function () {
-    var module = angular.module("myModule", []);
+    const module = angular.module("myModule", []);
     module.factory("a", function () {
       return 1;
     });
     module.factory("b", function (a) {
       return a + 2;
     });
-    var injector = createInjector(["myModule"]);
+    const injector = createInjector(["myModule"]);
     expect(injector.get("b")).toBe(3);
   });
 
   it("only calls a factory function once", function () {
-    var module = angular.module("myModule", []);
+    const module = angular.module("myModule", []);
     module.factory("a", function () {
       return {};
     });
-    var injector = createInjector(["myModule"]);
+    const injector = createInjector(["myModule"]);
     expect(injector.get("a")).toBe(injector.get("a"));
   });
 
   it("forces a factory to return a value", function () {
-    var module = angular.module("myModule", []);
+    const module = angular.module("myModule", []);
     module.factory("a", function () {});
     module.factory("b", function () {
       return null;
     });
-    var injector = createInjector(["myModule"]);
+    const injector = createInjector(["myModule"]);
     expect(function () {
       injector.get("a");
     }).toThrow();
@@ -1224,14 +1224,14 @@ describe("values", () => {
   beforeEach(() => (window.angular = new Angular()));
 
   it("allows registering a value", function () {
-    var module = angular.module("myModule", []);
+    const module = angular.module("myModule", []);
     module.value("a", 42);
-    var injector = createInjector(["myModule"]);
+    const injector = createInjector(["myModule"]);
     expect(injector.get("a")).toBe(42);
   });
 
   it("does not make values available to config blocks", function () {
-    var module = angular.module("myModule", []);
+    const module = angular.module("myModule", []);
     module.value("a", 42);
     module.config(function (a) {});
     expect(function () {
@@ -1240,9 +1240,9 @@ describe("values", () => {
   });
 
   it("allows an undefined value", function () {
-    var module = angular.module("myModule", []);
+    const module = angular.module("myModule", []);
     module.value("a", undefined);
-    var injector = createInjector(["myModule"]);
+    const injector = createInjector(["myModule"]);
     expect(injector.get("a")).toBeUndefined();
   });
 });
@@ -1251,30 +1251,30 @@ describe("services", () => {
   beforeEach(() => (window.angular = new Angular()));
 
   it("allows registering a service", function () {
-    var module = angular.module("myModule", []);
+    const module = angular.module("myModule", []);
     module.service("aService", function MyService() {
       this.getValue = function () {
         return 42;
       };
     });
-    var injector = createInjector(["myModule"]);
+    const injector = createInjector(["myModule"]);
     expect(injector.get("aService").getValue()).toBe(42);
   });
 
   it("injects service constructors with instances", function () {
-    var module = angular.module("myModule", []);
+    const module = angular.module("myModule", []);
     module.value("theValue", 42);
     module.service("aService", function MyService(theValue) {
       this.getValue = function () {
         return theValue;
       };
     });
-    var injector = createInjector(["myModule"]);
+    const injector = createInjector(["myModule"]);
     expect(injector.get("aService").getValue()).toBe(42);
   });
 
   it("injects service ES6 constructors with instances", function () {
-    var module = angular.module("myModule", []);
+    const module = angular.module("myModule", []);
     module.value("theValue", 42);
     module.service(
       "aService",
@@ -1287,14 +1287,14 @@ describe("services", () => {
         }
       },
     );
-    var injector = createInjector(["myModule"]);
+    const injector = createInjector(["myModule"]);
     expect(injector.get("aService").getValue()).toBe(42);
   });
 
   it("only instantiates services once", function () {
-    var module = angular.module("myModule", []);
+    const module = angular.module("myModule", []);
     module.service("aService", function MyService() {});
-    var injector = createInjector(["myModule"]);
+    const injector = createInjector(["myModule"]);
     expect(injector.get("aService")).toBe(injector.get("aService"));
   });
 });
@@ -1303,7 +1303,7 @@ describe("decorators", () => {
   beforeEach(() => (window.angular = new Angular()));
 
   it("allows changing an instance using a decorator", function () {
-    var module = angular.module("myModule", []);
+    const module = angular.module("myModule", []);
     module.factory("aValue", function () {
       return { aKey: 42 };
     });
@@ -1311,14 +1311,14 @@ describe("decorators", () => {
       $delegate.decoratedKey = 43;
       return $delegate;
     });
-    var injector = createInjector(["myModule"]);
+    const injector = createInjector(["myModule"]);
 
     expect(injector.get("aValue").aKey).toBe(42);
     expect(injector.get("aValue").decoratedKey).toBe(43);
   });
 
   it("allows multiple decorators per service", function () {
-    var module = angular.module("myModule", []);
+    const module = angular.module("myModule", []);
     module.factory("aValue", function () {
       return {};
     });
@@ -1330,13 +1330,13 @@ describe("decorators", () => {
       $delegate.otherDecoratedKey = 43;
       return $delegate;
     });
-    var injector = createInjector(["myModule"]);
+    const injector = createInjector(["myModule"]);
     expect(injector.get("aValue").decoratedKey).toBe(42);
     expect(injector.get("aValue").otherDecoratedKey).toBe(43);
   });
 
   it("uses dependency injection with decorators", function () {
-    var module = angular.module("myModule", []);
+    const module = angular.module("myModule", []);
     module.factory("aValue", function () {
       return {};
     });
@@ -1345,7 +1345,7 @@ describe("decorators", () => {
       $delegate.decoratedKey = a;
       return $delegate;
     });
-    var injector = createInjector(["myModule"]);
+    const injector = createInjector(["myModule"]);
     expect(injector.get("aValue").decoratedKey).toBe(42);
   });
 });
@@ -2180,7 +2180,7 @@ describe("service instantiation", () => {
     "should instantiate object and preserve constructor property and be instanceof " +
       "with the array annotated type",
     () => {
-      var t = $injector.instantiate(["book", "author", Type]);
+      const t = $injector.instantiate(["book", "author", Type]);
       expect(t.book).toEqual("moby");
       expect(t.author).toEqual("melville");
       expect(t.title()).toEqual("melville: moby");
@@ -2189,8 +2189,8 @@ describe("service instantiation", () => {
   );
 
   it("should allow constructor to return different object", () => {
-    var obj = {};
-    var Class = function () {
+    const obj = {};
+    const Class = function () {
       return obj;
     };
 
@@ -2198,8 +2198,8 @@ describe("service instantiation", () => {
   });
 
   it("should allow constructor to return a function", () => {
-    var fn = function () {};
-    var Class = function () {
+    const fn = function () {};
+    const Class = function () {
       return fn;
     };
 
@@ -2215,15 +2215,15 @@ describe("service instantiation", () => {
   });
 
   it("should return instance if constructor returns non-object value", () => {
-    var A = function () {
+    const A = function () {
       return 10;
     };
 
-    var B = function () {
+    const B = function () {
       return "some-string";
     };
 
-    var C = function () {
+    const C = function () {
       return undefined;
     };
 

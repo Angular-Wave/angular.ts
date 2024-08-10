@@ -679,7 +679,7 @@ describe("form", () => {
       $compile(doc)(scope);
       scope.$apply();
 
-      var parent = scope.parent,
+      const parent = scope.parent,
         child = scope.child;
 
       expect(parent).toBeDefined();

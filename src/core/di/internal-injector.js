@@ -253,7 +253,7 @@ function isClass(func) {
  * @returns {Array<string>}
  */
 function annotate(fn, strictDi, name) {
-  var $inject, argDecl, last;
+  let $inject, argDecl, last;
 
   if (typeof fn === "function") {
     if (!($inject = fn.$inject)) {

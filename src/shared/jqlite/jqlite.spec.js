@@ -592,8 +592,8 @@ describe("jqLite", () => {
     });
 
     it("should emit $destroy event if element removed via remove()", function () {
-      var log = "";
-      var element = JQLite(a);
+      let log = "";
+      const element = JQLite(a);
       element.on("$destroy", function () {
         log += "destroy;";
       });

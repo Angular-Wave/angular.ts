@@ -1117,7 +1117,7 @@ function specialMouseHandlerWrapper(target, event, handler) {
 export function startingTag(elementStr) {
   const clone = JQLite(elementStr)[0].cloneNode(true);
   const element = JQLite(clone).empty();
-  var elemHtml = JQLite("<div></div>").append(element[0]).html();
+  const elemHtml = JQLite("<div></div>").append(element[0]).html();
   try {
     return element[0].nodeType === Node.TEXT_NODE
       ? lowercase(elemHtml)
@@ -1170,7 +1170,7 @@ export function getBooleanAttrName(element, name) {
  */
 export function cleanElementData(nodes) {
   for (let i = 0, ii = nodes.length; i < ii; i++) {
-    var events = (CACHE.get(nodes[i][EXPANDO]) || {}).events;
+    const events = (CACHE.get(nodes[i][EXPANDO]) || {}).events;
     if (events && events.$destroy) {
       JQLite(nodes[i]).triggerHandler("$destroy");
     }

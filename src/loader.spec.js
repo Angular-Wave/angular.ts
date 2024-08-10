@@ -2,7 +2,7 @@ import { Angular } from "./loader";
 import { createInjector } from "./core/di/injector";
 
 describe("module loader", () => {
-  var angular;
+  let angular;
   beforeEach(() => {
     angular = window.angular = new Angular();
   });

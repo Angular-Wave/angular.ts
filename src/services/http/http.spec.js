@@ -27,7 +27,7 @@ describe("$http", function () {
   });
 
   it("returns a Promise", function () {
-    var result = $http({ url: "test" });
+    const result = $http({ url: "test" });
     expect(result).toBeDefined();
     expect(result.then).toBeDefined();
   });
@@ -197,11 +197,11 @@ describe("$http", function () {
   });
 
   it("supports functions as header values", async function () {
-    var contentTypeSpy = jasmine
+    const contentTypeSpy = jasmine
       .createSpy()
       .and.returnValue("text/plain;charset=utf-8");
     $http.defaults.headers.post["Content-Type"] = contentTypeSpy;
-    var request = {
+    const request = {
       method: "POST",
       url: "/mock/hello",
       data: 42,
@@ -216,9 +216,9 @@ describe("$http", function () {
   });
 
   it("ignores header function value when null/undefined", async function () {
-    var cacheControlSpy = jasmine.createSpy().and.returnValue(null);
+    const cacheControlSpy = jasmine.createSpy().and.returnValue(null);
     $http.defaults.headers.post["Cache-Control"] = cacheControlSpy;
-    var request = {
+    const request = {
       method: "POST",
       url: "/mock/hello",
       data: 42,
@@ -284,7 +284,7 @@ describe("$http", function () {
   });
 
   it("allows transforming requests with functions", async function () {
-    var transformedData;
+    let transformedData;
     await $http({
       method: "POST",
       url: "/mock/hello",
@@ -300,7 +300,7 @@ describe("$http", function () {
   });
 
   it("allows multiple request transform functions", async function () {
-    var transformedData;
+    let transformedData;
     await $http({
       method: "POST",
       url: "/mock/hello",
@@ -320,7 +320,7 @@ describe("$http", function () {
   });
 
   it("allows settings transforms in defaults", async function () {
-    var transformedData;
+    let transformedData;
     $http.defaults.transformRequest = [
       function (data) {
         transformedData = "*" + data + "*";
@@ -336,7 +336,7 @@ describe("$http", function () {
   });
 
   it("passes request headers getter to transforms", async function () {
-    var transformedData;
+    let transformedData;
     $http.defaults.transformRequest = [
       function (data, headers) {
         if (headers("Content-Type") === "text/emphasized") {
@@ -417,7 +417,7 @@ describe("$http", function () {
   });
 
   it("passes HTTP status to response transformers", async function () {
-    var response;
+    let response;
     await $http({
       url: "/mock/401",
       transformResponse: function (data, headers, status) {
@@ -461,16 +461,16 @@ describe("$http", function () {
   });
 
   it("does not serialize blobs for requests", async function () {
-    var blob;
+    let blob;
     if (window.Blob) {
       blob = new Blob(["hello"]);
     } else {
-      var BlobBuilder =
+      const BlobBuilder =
         window.BlobBuilder ||
         window.WebKitBlobBuilder ||
         window.MozBlobBuilder ||
         window.MSBlobBuilder;
-      var bb = new BlobBuilder();
+      const bb = new BlobBuilder();
       bb.append("hello");
       blob = bb.getBlob("text/plain");
     }
@@ -489,7 +489,7 @@ describe("$http", function () {
   });
 
   it("does not serialize form data for requests", async function () {
-    var formData = new FormData();
+    const formData = new FormData();
     formData.append("aField", "aValue");
     await $http({
       method: "POST",
@@ -548,7 +548,7 @@ describe("$http", function () {
   });
 
   it("does not choke on response resembling JSON but not valid", async function () {
-    var response;
+    let response;
     await $http({
       method: "POST",
       url: "/mock/invalidarray",
@@ -561,7 +561,7 @@ describe("$http", function () {
   });
 
   it("does not try to parse interpolation expr as JSON", async function () {
-    var response;
+    let response;
     await $http({
       method: "GET",
       url: "/mock/interpolation",
@@ -716,7 +716,7 @@ describe("$http", function () {
   });
 
   it("allows substituting param serializer through DI", async function () {
-    var injector = createInjector([
+    const injector = createInjector([
       "ng",
       function ($provide) {
         $provide.factory("mySpecialSerializer", function () {
@@ -752,9 +752,9 @@ describe("$http", function () {
   });
 
   it("makes default param serializer available through DI", async function () {
-    var injector = createInjector(["ng"]);
+    const injector = createInjector(["ng"]);
     injector.invoke(function ($httpParamSerializer) {
-      var result = $httpParamSerializer({ a: 42, b: 43 });
+      const result = $httpParamSerializer({ a: 42, b: 43 });
       expect(result).toEqual("a=42&b=43");
     });
   });
@@ -859,8 +859,8 @@ describe("$http", function () {
   });
 
   it("allows attaching interceptor factories", async function () {
-    var interceptorFactorySpy = jasmine.createSpy();
-    var injector = createInjector([
+    const interceptorFactorySpy = jasmine.createSpy();
+    const injector = createInjector([
       "ng",
       function ($httpProvider) {
         $httpProvider.interceptors.push(interceptorFactorySpy);
@@ -872,22 +872,22 @@ describe("$http", function () {
   });
 
   it("uses DI to instantiate interceptors", async function () {
-    var interceptorFactorySpy = jasmine.createSpy();
-    var injector = createInjector([
+    const interceptorFactorySpy = jasmine.createSpy();
+    const injector = createInjector([
       "ng",
       function ($httpProvider) {
         $httpProvider.interceptors.push(["$rootScope", interceptorFactorySpy]);
       },
     ]);
     $http = injector.get("$http");
-    var $rootScope = injector.get("$rootScope");
+    const $rootScope = injector.get("$rootScope");
 
     expect(interceptorFactorySpy).toHaveBeenCalledWith($rootScope);
   });
 
   it("allows referencing existing interceptor factories", async function () {
-    var interceptorFactorySpy = jasmine.createSpy().and.returnValue({});
-    var injector = createInjector([
+    const interceptorFactorySpy = jasmine.createSpy().and.returnValue({});
+    const injector = createInjector([
       "ng",
       function ($provide, $httpProvider) {
         $provide.factory("myInterceptor", interceptorFactorySpy);
@@ -900,7 +900,7 @@ describe("$http", function () {
   });
 
   it("allows intercepting requests", async function () {
-    var injector = createInjector([
+    const injector = createInjector([
       "ng",
       function ($httpProvider) {
         $httpProvider.interceptors.push(function () {
@@ -930,7 +930,7 @@ describe("$http", function () {
   });
 
   it("allows returning promises from request intercepts", async function () {
-    var injector = createInjector([
+    const injector = createInjector([
       "ng",
       function ($httpProvider) {
         $httpProvider.interceptors.push(function ($q) {
@@ -959,7 +959,7 @@ describe("$http", function () {
   });
 
   it("allows intercepting responses", async function () {
-    var injector = createInjector([
+    const injector = createInjector([
       "ng",
       function ($httpProvider) {
         $httpProvider.interceptors.push(() => ({
@@ -973,7 +973,7 @@ describe("$http", function () {
     $http = injector.get("$http");
     $rootScope = injector.get("$rootScope");
 
-    var response;
+    let response;
     await $http.get("/mock/hello").then(function (r) {
       response = r;
     });
@@ -983,8 +983,8 @@ describe("$http", function () {
   });
 
   it("allows intercepting request errors", async function () {
-    var requestErrorSpy = jasmine.createSpy();
-    var injector = createInjector([
+    const requestErrorSpy = jasmine.createSpy();
+    const injector = createInjector([
       "ng",
       function ($httpProvider) {
         $httpProvider.interceptors.push(() => ({
@@ -1012,8 +1012,8 @@ describe("$http", function () {
   });
 
   it("allows intercepting response errors", async function () {
-    var responseErrorSpy = jasmine.createSpy();
-    var injector = createInjector([
+    const responseErrorSpy = jasmine.createSpy();
+    const injector = createInjector([
       "ng",
       function ($httpProvider) {
         $httpProvider.interceptors.push(() => ({
@@ -1037,7 +1037,7 @@ describe("$http", function () {
   });
 
   it("allows attaching success handlers", async function () {
-    var data, status, config;
+    let data, status, config;
     await $http.get("/mock/hello").then(function (res) {
       data = res.data;
       status = res.status;
@@ -1051,7 +1051,7 @@ describe("$http", function () {
   });
 
   it("allows attaching error handlers", async function () {
-    var res;
+    let res;
     await $http.get("/mock/401").then(
       () => {},
       function (r) {
@@ -1184,7 +1184,7 @@ describe("$http", function () {
   });
 
   it("allows aborting a request with a Promise", async function () {
-    var timeout = $q.defer();
+    const timeout = $q.defer();
     $http
       .get("/mock/never", {
         timeout: timeout.promise,
@@ -1242,7 +1242,7 @@ describe("$http", function () {
 
   describe("useApplyAsync", function () {
     beforeEach(function () {
-      var injector = createInjector([
+      const injector = createInjector([
         "ng",
         function ($httpProvider) {
           $httpProvider.useApplyAsync(true);
@@ -1253,7 +1253,7 @@ describe("$http", function () {
     });
 
     it("does not resolve promise immediately when enabled", async function () {
-      var resolvedSpy = jasmine.createSpy();
+      const resolvedSpy = jasmine.createSpy();
       $http.get("/mock/hello").then(resolvedSpy);
       $rootScope.$apply();
 
@@ -1261,7 +1261,7 @@ describe("$http", function () {
     });
 
     it("resolves promise later when enabled", async function () {
-      var resolvedSpy = jasmine.createSpy();
+      const resolvedSpy = jasmine.createSpy();
       await $http.get("/mock/hello").then(resolvedSpy);
       $rootScope.$apply();
 

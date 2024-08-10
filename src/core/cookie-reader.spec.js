@@ -28,7 +28,7 @@ describe("$$cookieReader", () => {
       expect(document.cookie).toEqual("");
 
       window.angular = new Angular();
-      var injector = createInjector(["ng"]);
+      const injector = createInjector(["ng"]);
       $$cookieReader = injector.get("$$cookieReader");
     });
 

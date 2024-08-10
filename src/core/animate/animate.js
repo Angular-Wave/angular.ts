@@ -136,13 +136,13 @@ export function CoreAnimateQueueProvider() {
 
       function handleCSSClassChanges() {
         forEach(postDigestElements, function (element) {
-          var data = postDigestQueue.get(element);
+          const data = postDigestQueue.get(element);
           if (data) {
-            var existing = splitClasses(element.attr("class"));
-            var toAdd = "";
-            var toRemove = "";
+            const existing = splitClasses(element.attr("class"));
+            let toAdd = "";
+            let toRemove = "";
             forEach(data, function (status, className) {
-              var hasClass = !!existing[className];
+              const hasClass = !!existing[className];
               if (status !== hasClass) {
                 if (status) {
                   toAdd += (toAdd.length ? " " : "") + className;

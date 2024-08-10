@@ -8,7 +8,7 @@ describe("filters", () => {
   beforeEach(() => {
     window.angular = new Angular();
     window.angular.module("myModule", ["ng"]);
-    var injector = createInjector(["myModule"]);
+    const injector = createInjector(["myModule"]);
     filter = injector.get("$filter");
   });
 
