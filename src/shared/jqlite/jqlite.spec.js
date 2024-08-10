@@ -8,8 +8,8 @@ import {
 } from "./jqlite";
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
-import { equals, forEach } from "../../shared/utils";
-import { browserTrigger } from "../../shared/test-utils";
+import { equals, forEach } from "../utils";
+import { browserTrigger } from "../test-utils";
 import { CACHE, EXPANDO } from "../../core/cache/cache";
 
 describe("jqLite", () => {

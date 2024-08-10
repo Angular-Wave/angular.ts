@@ -1,4 +1,4 @@
-import { Glob } from "../../router/common/glob";
+import { Glob } from "./glob";
 
 describe("Glob", function () {
   it("should match exact strings", function () {

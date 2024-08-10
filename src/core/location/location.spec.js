@@ -4,7 +4,7 @@ import {
   $LocationProvider,
 } from "./location";
 import { Angular } from "../../loader";
-import { createInjector } from "../../core/di/injector";
+import { createInjector } from "../di/injector";
 
 describe("$location", () => {
   let module;

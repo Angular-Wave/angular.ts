@@ -1,4 +1,4 @@
-import { PREFIX_REGEXP, SPECIAL_CHARS_REGEXP } from "../shared/constants";
+import { PREFIX_REGEXP, SPECIAL_CHARS_REGEXP } from "./constants";
 
 const ngMinErr = minErr("ng");
 

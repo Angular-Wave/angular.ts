@@ -1,4 +1,4 @@
-import { defaultModelOptions } from "../../directive/model-options/model-options";
+import { defaultModelOptions } from "./model-options";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";

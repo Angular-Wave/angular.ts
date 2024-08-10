@@ -7,7 +7,7 @@ import {
   valueFn,
   extend,
 } from "../../shared/utils";
-import { createInjector } from "../../core/di/injector";
+import { createInjector } from "../di/injector";
 import { ASTType } from "./ast-type";
 import { Angular } from "../../loader";
 

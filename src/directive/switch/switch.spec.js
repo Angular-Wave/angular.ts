@@ -1,6 +1,6 @@
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
+import { dealoc } from "../../shared/jqlite/jqlite";
 
 describe("ngSwitch", () => {
   let $scope;

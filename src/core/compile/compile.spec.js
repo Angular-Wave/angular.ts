@@ -9,8 +9,8 @@ import {
   getNodeName,
   extend,
 } from "../../shared/utils";
-import { countChildScopes, countWatchers } from "../../core/scope/scope";
-import { CACHE, EXPANDO } from "../../core/cache/cache";
+import { countChildScopes, countWatchers } from "../scope/scope";
+import { CACHE, EXPANDO } from "../cache/cache";
 import { wait } from "../../shared/test-utils";
 
 function isUnknownElement(el) {

@@ -1,16 +1,13 @@
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
+import { dealoc } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
 import { curry } from "../../shared/hof";
-import { StateMatcher } from "../../router/state/state-matcher";
-import { StateBuilder } from "../../router/state/state-builder";
-import { StateObject } from "../../router/state/state-object";
-import { ViewService } from "../../router/view/view";
-import {
-  ng1ViewsBuilder,
-  getNg1ViewConfigFactory,
-} from "../../router/state/views";
-import { PathNode } from "../../router/path/path-node";
-import { PathUtils } from "../../router/path/path-utils";
+import { StateMatcher } from "../state/state-matcher";
+import { StateBuilder } from "../state/state-builder";
+import { StateObject } from "../state/state-object";
+import { ViewService } from "./view.js";
+import { ng1ViewsBuilder, getNg1ViewConfigFactory } from "../state/views.js";
+import { PathNode } from "../path/path-node";
+import { PathUtils } from "../path/path-utils";
 import { tail } from "../../shared/common";
 import { wait } from "../../shared/test-utils";
 

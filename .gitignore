@@ -7,3 +7,6 @@ tsconfig.tsbuildinfo
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+.idea
+.vscode
+qodana.yaml

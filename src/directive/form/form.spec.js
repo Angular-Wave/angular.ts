@@ -1,7 +1,7 @@
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
-import { FormController } from "../../directive/form/form";
+import { FormController } from "./form";
 
 describe("form", () => {
   let doc;

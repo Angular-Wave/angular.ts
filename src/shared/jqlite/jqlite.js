@@ -12,7 +12,7 @@ import {
   lowercase,
   getNodeName,
   shallowCopy,
-} from "../../shared/utils";
+} from "../utils";
 import { CACHE, EXPANDO } from "../../core/cache/cache";
 
 /** @type {number} */

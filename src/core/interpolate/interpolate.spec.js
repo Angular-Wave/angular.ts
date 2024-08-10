@@ -1,4 +1,4 @@
-import { createInjector } from "../../core/di/injector";
+import { createInjector } from "../di/injector";
 import { Angular } from "../../loader";
 
 describe("$interpolate", () => {

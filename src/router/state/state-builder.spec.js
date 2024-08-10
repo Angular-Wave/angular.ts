@@ -1,4 +1,4 @@
-import { StateBuilder } from "../../router/state/state-builder";
+import { StateBuilder } from "./state-builder";
 
 // TODO refactor this to url service
 xdescribe("StateBuilder", function () {

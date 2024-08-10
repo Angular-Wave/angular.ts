@@ -1,4 +1,4 @@
-import { DefType, Param } from "../params/param";
+import { DefType, Param } from "./param";
 
 export class ParamFactory {
   constructor(urlServiceConfig) {

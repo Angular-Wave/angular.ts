@@ -415,7 +415,7 @@ export class Scope {
 
     lastDirtyWatch = null;
 
-    if (this.$$watchers.length == 0) {
+    if (this.$$watchers.length === 0) {
       this.$$digestWatchIndex = -1;
     }
     // we use unshift since we use a while loop in $digest for speed.
