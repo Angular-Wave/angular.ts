@@ -7,6 +7,13 @@ export const ngIncludeDirective = [
   "$templateRequest",
   "$anchorScroll",
   "$animate",
+  /**
+   *
+   * @param {*} $templateRequest
+   * @param {import("../../services/anchor-scroll").AnchorScrollFunction} $anchorScroll
+   * @param {*} $animate
+   * @returns
+   */
   ($templateRequest, $anchorScroll, $animate) => ({
     restrict: "ECA",
     priority: 400,

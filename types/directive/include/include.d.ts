@@ -1,4 +1,4 @@
-export const ngIncludeDirective: (string | (($templateRequest: any, $anchorScroll: any, $animate: any) => {
+export const ngIncludeDirective: (string | (($templateRequest: any, $anchorScroll: import("../../services/anchor-scroll").AnchorScrollFunction, $animate: any) => {
     restrict: string;
     priority: number;
     terminal: boolean;

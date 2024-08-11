@@ -6,6 +6,19 @@ import {
   getNodeName,
 } from "../shared/utils";
 
+/**
+ * @typedef {Object} AnchorScrollObject
+ * @property {number|function|import("../shared/jqlite/jqlite").JQLite} yOffset
+ */
+
+/**
+ * @typedef {(string) => void} AnchorScrollFunction
+ */
+
+/**
+ * @typedef {AnchorScrollFunction | AnchorScrollObject} AnchorScrollService
+ */
+
 export function AnchorScrollProvider() {
   let autoScrollingEnabled = true;
 
@@ -38,10 +51,11 @@ export function AnchorScrollProvider() {
       }
 
       function getYOffset() {
-        let offset = scroll.yOffset;
+        // Figure out a better way to configure this other than bolting on a property onto a function
+        let offset = /** @type {AnchorScrollObject} */ (scroll).yOffset;
 
         if (isFunction(offset)) {
-          offset = offset();
+          offset = /** @type {Function} */ (offset)();
         } else if (isElement(offset)) {
           const elem = offset[0];
           const style = window.getComputedStyle(elem);
@@ -78,14 +92,15 @@ export function AnchorScrollProvider() {
             // the top of the element and the offset, which is enough to align the top of `elem` at the
             // desired position.
             const elemTop = elem.getBoundingClientRect().top;
-            window.scrollBy(0, elemTop - offset);
+            window.scrollBy(0, elemTop - /** @type {number} */ (offset));
           }
         } else {
           window.scrollTo(0, 0);
         }
       }
 
-      function scroll(hash) {
+      /** @type {AnchorScrollService} */
+      const scroll = function (hash) {
         // Allow numeric hashes
         hash = isString(hash)
           ? hash
@@ -95,7 +110,9 @@ export function AnchorScrollProvider() {
         let elm;
 
         // empty hash, scroll to the top of the page
-        if (!hash) scrollTo(null);
+        if (!hash) {
+          scrollTo(null);
+        }
         // element with given id
         else if ((elm = document.getElementById(hash))) scrollTo(elm);
         // first anchor with given name :-D
@@ -103,7 +120,7 @@ export function AnchorScrollProvider() {
           scrollTo(elm);
         // no element and hash === 'top', scroll to the top of the page
         else if (hash === "top") scrollTo(null);
-      }
+      };
 
       // does not scroll when user clicks on anchor link that is currently on
       // (no url change, no $location.hash() change), browser native does scroll

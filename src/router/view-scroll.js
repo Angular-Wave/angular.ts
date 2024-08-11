@@ -6,7 +6,12 @@ export function $ViewScrollProvider() {
   this.$get = [
     "$anchorScroll",
     "$timeout",
-    function ($anchorScroll, $timeout) {
+    /**
+     * @param {import('../services/anchor-scroll').AnchorScrollObject} $anchorScroll
+     * @param {*} $timeout
+     * @returns {import('../services/anchor-scroll').AnchorScrollObject|Function}
+     */
+    ($anchorScroll, $timeout) => {
       if (useAnchorScroll) {
         return $anchorScroll;
       }
