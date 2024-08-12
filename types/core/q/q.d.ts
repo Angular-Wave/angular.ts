@@ -15,6 +15,7 @@
  * @property {function(((reason: any) => (QPromise<never>|QPromise<T>|T))|null): QPromise<T>|T} catch - Shorthand for promise.then(null, errorCallback).
  * @property {function(function(): void): QPromise<T>} finally - Allows you to observe either the fulfillment or rejection of a promise, but to do so without modifying the final value.
  * @property {number} [$$intervalId] - Internal id set by the $interval service for callback notifications
+ * @property {number} [$$timeoutId] - Timeout id set by the $timeout service for cancelations
  */
 /**
  *@template T
@@ -65,6 +66,10 @@ export type QPromise<T> = {
      * - Internal id set by the $interval service for callback notifications
      */
     $$intervalId?: number;
+    /**
+     * - Timeout id set by the $timeout service for cancelations
+     */
+    $$timeoutId?: number;
 };
 export type Deferred<T> = {
     /**

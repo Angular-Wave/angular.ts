@@ -1,5 +1,5 @@
 import { markQExceptionHandled } from "../q/q";
-import { isDefined, isFunction, minErr, sliceArgs } from "../../shared/utils";
+import { isDefined, minErr, sliceArgs } from "../../shared/utils";
 
 const $timeoutMinErr = minErr("$timeout");
 
@@ -23,21 +23,15 @@ export function $TimeoutProvider() {
       const deferreds = {};
 
       /**
-       * @ngdoc service
-       * @name $timeout
-       *
-       * @description
+    
        * AngularJS's wrapper for `window.setTimeout`. The `fn` function is wrapped into a try/catch
        * block and delegates any exceptions to
-       * {@link ng.$exceptionHandler $exceptionHandler} service.
+       * {@link $exceptionHandler} service.
        *
        * The return value of calling `$timeout` is a promise, which will be resolved when
        * the delay has passed and the timeout function, if provided, is executed.
        *
        * To cancel a timeout request, call `$timeout.cancel(promise)`.
-       *
-       * In tests you can use {@link ngMock.$timeout `$timeout.flush()`} to
-       * synchronously flush the queue of deferred functions.
        *
        * If you only want a promise that will be resolved after some specified delay
        * then you can call `$timeout` without the `fn` function.
@@ -46,17 +40,11 @@ export function $TimeoutProvider() {
        * @param {number=} [delay=0] Delay in milliseconds.
        * @param {boolean=} [invokeApply=true] If set to `false` skips model dirty checking, otherwise
        *   will invoke `fn` within the {@link ng.$rootScope.Scope#$apply $apply} block.
-       * @returns {Promise} Promise that will be resolved when the timeout is reached. The promise
+       * @returns {import("../q/q").QPromise<any>} Promise that will be resolved when the timeout is reached. The promise
        *   will be resolved with the return value of the `fn` function.
        *
        */
       function timeout(fn, delay, invokeApply = true) {
-        if (!isFunction(fn)) {
-          invokeApply = delay;
-          delay = fn;
-          fn = () => {};
-        }
-
         const args = sliceArgs(arguments, 3);
         const skipApply = isDefined(invokeApply) && !invokeApply;
         const deferred = (skipApply ? $$q : $q).defer();
@@ -87,14 +75,10 @@ export function $TimeoutProvider() {
       }
 
       /**
-       * @ngdoc method
-       * @name $timeout#cancel
-       *
-       * @description
        * Cancels a task associated with the `promise`. As a result of this, the promise will be
        * resolved with a rejection.
        *
-       * @param {Promise=} promise Promise returned by the `$timeout` function.
+       * @param {import("../q/q").QPromise<any>} promise Promise returned by the `$timeout` function.
        * @returns {boolean} Returns `true` if the task hasn't executed yet and was successfully
        *   canceled.
        */

@@ -598,7 +598,7 @@ export class Scope {
      *
      * @param {(object)=} locals Local variables object, useful for overriding values in scope.
      */
-    $evalAsync(expr?: (string | ((arg0: any) => any)) | undefined, locals?: (object) | undefined): any;
+    $evalAsync(expr?: (string | ((arg0: any) => any)) | undefined, locals?: (object) | undefined): number;
     /**
      * @ngdoc method
      * @name $rootScope.Scope#$applyAsync

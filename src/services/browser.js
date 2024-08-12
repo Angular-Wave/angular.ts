@@ -242,7 +242,7 @@ export function Browser(taskTracker) {
    * @param {function():any} fn A function, who's execution should be deferred.
    * @param {number=} [delay=0] Number of milliseconds to defer the function execution.
    * @param {string=} [taskType=DEFAULT_TASK_TYPE] The type of task that is deferred.
-   * @returns {*} DeferId that can be used to cancel the task via `$browser.cancel()`.
+   * @returns {number} DeferId that can be used to cancel the task via `$browser.cancel()`.
    *
    * @description
    * Executes a fn asynchronously via `setTimeout(fn, delay)`.
