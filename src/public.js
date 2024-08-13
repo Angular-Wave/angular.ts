@@ -90,7 +90,13 @@ import { TemplateRequestProvider } from "./services/template-request";
 import { $TimeoutProvider } from "./core/timeout/timeout";
 import { SanitizeUriProvider } from "./core/sanitize/sanitize-uri";
 import { initAnimateModule } from "./animations/module";
-import { initMessageModule } from "./exts/messages/messages";
+import {
+  ngMessageDefaultDirective,
+  ngMessageDirective,
+  ngMessageExpDirective,
+  ngMessagesDirective,
+  ngMessagesIncludeDirective,
+} from "./directive/messages/messages";
 import { initAriaModule } from "./exts/aria/aria";
 import { initRouter } from "./router/index";
 
@@ -139,6 +145,11 @@ export function publishExternalAPI(angular) {
               ngIf: ngIfDirective,
               ngInclude: ngIncludeDirective,
               ngInit: ngInitDirective,
+              ngMessages: ngMessagesDirective,
+              ngMessage: ngMessageDirective,
+              ngMessageExp: ngMessageExpDirective,
+              ngMessagesInclude: ngMessagesIncludeDirective,
+              ngMessageDefault: ngMessageDefaultDirective,
               ngNonBindable: ngNonBindableDirective,
               ngRef: ngRefDirective,
               ngRepeat: ngRepeatDirective,
@@ -207,7 +218,6 @@ export function publishExternalAPI(angular) {
     .info({ version: VERSION });
 
   initAnimateModule(angular);
-  initMessageModule(angular);
   initAriaModule(angular);
   initRouter(angular);
   return ng;

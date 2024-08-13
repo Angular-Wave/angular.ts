@@ -9,16 +9,13 @@ describe("ngMessages", () => {
 
   beforeEach(() => {
     window.angular = new Angular();
-    window.angular
-      .module("app", ["ng", "ngMessages"])
-      .directive("messageWrap", () => ({
-        transclude: true,
-        scope: {
-          col: "=col",
-        },
-        template:
-          '<div ng-messages="col"><ng-transclude></ng-transclude></div>',
-      }));
+    window.angular.module("app", ["ng"]).directive("messageWrap", () => ({
+      transclude: true,
+      scope: {
+        col: "=col",
+      },
+      template: '<div ng-messages="col"><ng-transclude></ng-transclude></div>',
+    }));
 
     createInjector(["app"]).invoke(
       (_$rootScope_, _$compile_, _$templateCache_) => {
@@ -932,7 +929,6 @@ describe("ngMessages", () => {
           '  <div ng-message="failed">Your value is that of failure</div>' +
           "</div>",
       )($rootScope);
-
       $rootScope.data = {
         required: true,
         failed: true,
