@@ -153,12 +153,6 @@ FormController.prototype = {
   },
 
   /**
-   * @ngdoc method
-   * @name form.FormController#$addControl
-   * @param {object} control control object, either a {@link form.FormController} or an
-   * {@link ngModel.NgModelController}
-   *
-   * @description
    * Register a control with the form. Input elements using ngModelController do this automatically
    * when they are linked.
    *
@@ -187,11 +181,6 @@ FormController.prototype = {
   },
 
   /**
-   * @ngdoc method
-   * @name form.FormController#$getControls
-   * @returns {Array} the controls that are currently part of this form
-   *
-   * @description
    * This method returns a **shallow copy** of the controls that are currently part of this form.
    * The controls can be instances of {@link form.FormController `FormController`}
    * ({@link ngForm "child-forms"}) and of {@link ngModel.NgModelController `NgModelController`}.
@@ -222,12 +211,6 @@ FormController.prototype = {
   },
 
   /**
-   * @ngdoc method
-   * @name form.FormController#$removeControl
-   * @param {object} control control object, either a {@link form.FormController} or an
-   * {@link ngModel.NgModelController}
-   *
-   * @description
    * Deregister a control from the form.
    *
    * Input elements using ngModelController do this automatically when they are destroyed.
@@ -382,7 +365,7 @@ FormController.prototype = {
  *        (undefined),  or skipped (null). Pending is used for unfulfilled `$asyncValidators`.
  *        Skipped is used by AngularJS when validators do not run because of parse errors and when
  *        `$asyncValidators` do not run because any of the `$validators` failed.
- * @param {NgModelController | FormController} controller - The controller whose validity state is
+ * @param {import("../model/model").NgModelController | FormController} controller - The controller whose validity state is
  *        triggering the change.
  */
 addSetValidityMethod({

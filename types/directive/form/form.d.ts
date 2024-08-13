@@ -49,12 +49,6 @@ export class FormController {
      */
     $commitViewValue(): void;
     /**
-     * @ngdoc method
-     * @name form.FormController#$addControl
-     * @param {object} control control object, either a {@link form.FormController} or an
-     * {@link ngModel.NgModelController}
-     *
-     * @description
      * Register a control with the form. Input elements using ngModelController do this automatically
      * when they are linked.
      *
@@ -69,13 +63,8 @@ export class FormController {
      * For example, if an input control is added that is already `$dirty` and has `$error` properties,
      * calling `$setDirty()` and `$validate()` afterwards will propagate the state to the parent form.
      */
-    $addControl(control: object): void;
+    $addControl(control: any): void;
     /**
-     * @ngdoc method
-     * @name form.FormController#$getControls
-     * @returns {Array} the controls that are currently part of this form
-     *
-     * @description
      * This method returns a **shallow copy** of the controls that are currently part of this form.
      * The controls can be instances of {@link form.FormController `FormController`}
      * ({@link ngForm "child-forms"}) and of {@link ngModel.NgModelController `NgModelController`}.
@@ -90,15 +79,9 @@ export class FormController {
      * in the shallow copy. That means you should get a fresh copy from `$getControls()` every time
      * you need access to the controls.
      */
-    $getControls(): any[];
+    $getControls(): any;
     $$renameControl(control: any, newName: any): void;
     /**
-     * @ngdoc method
-     * @name form.FormController#$removeControl
-     * @param {object} control control object, either a {@link form.FormController} or an
-     * {@link ngModel.NgModelController}
-     *
-     * @description
      * Deregister a control from the form.
      *
      * Input elements using ngModelController do this automatically when they are destroyed.
@@ -108,7 +91,7 @@ export class FormController {
      * different from case to case. For example, removing the only `$dirty` control from a form may or
      * may not mean that the form is still `$dirty`.
      */
-    $removeControl(control: object): void;
+    $removeControl(control: any): void;
     /**
      * @ngdoc method
      * @name form.FormController#$setDirty

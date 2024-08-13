@@ -20,7 +20,7 @@ export function ngAnimateSwapDirective($animate) {
           previousScope.$destroy();
           previousScope = null;
         }
-        if (value || value === 0) {
+        if (value) {
           $transclude((clone, childScope) => {
             previousElement = clone;
             previousScope = childScope;

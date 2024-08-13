@@ -198,7 +198,11 @@ export function $ControllerProvider() {
           );
         }
 
-        instance = $injector.instantiate(expression, locals, constructor);
+        instance = $injector.instantiate(
+          /** @type {Function} */ (expression),
+          locals,
+          constructor,
+        );
 
         if (identifier) {
           addIdentifier(

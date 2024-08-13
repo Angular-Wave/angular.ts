@@ -111,7 +111,9 @@ export class TemplateFactory {
    * string.
    */
   fromString(template, params) {
-    return isFunction(template) ? template(params) : template;
+    return isFunction(template)
+      ? /** @type {Function} */ (template)(params)
+      : template;
   }
   /**
    * Loads a template from the a URL via `$http` and `$templateCache`.
@@ -123,7 +125,7 @@ export class TemplateFactory {
    * for that string.
    */
   fromUrl(url, params) {
-    if (isFunction(url)) url = url(params);
+    if (isFunction(url)) url = /** @type {Function} */ (url)(params);
     if (url == null) return null;
     if (this._useHttp) {
       return this.$http
@@ -141,7 +143,7 @@ export class TemplateFactory {
    * Creates a template by invoking an injectable provider function.
    *
    * @param {import('../types').Injectable<any>} provider Function to invoke via `locals`
-   * @param {Function} injectFn a function used to invoke the template provider
+   * @param {Function} params a function used to invoke the template provider
    * @param {import("./resolve/resolve-context").ResolveContext} context
    * @return {string|Promise.<string>} The template html as a string, or a promise
    * for that string.
@@ -156,7 +158,7 @@ export class TemplateFactory {
    * Creates a component's template by invoking an injectable provider function.
    *
    * @param {import('../types').Injectable<any>} provider Function to invoke via `locals`
-   * @param {Function} injectFn a function used to invoke the template provider
+   * @param {Function} params a function used to invoke the template provider
    * @return {string} The template html as a string: "<component-name input1='::$resolve.foo'></component-name>".
    */
   fromComponentProvider(provider, params, context) {
