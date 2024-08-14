@@ -11,16 +11,17 @@ export function ngMessagesDirective($animate) {
       const ctrl = this;
       let latestKey = 0;
       let nextAttachId = 0;
+      const messages = {};
+      let renderLater;
+      let cachedCollection;
+      
       this.head = undefined;
       this.default = undefined;
+      this.messages = messages;
 
       this.getAttachId = function getAttachId() {
         return nextAttachId++;
       };
-
-      const messages = (this.messages = {});
-      let renderLater;
-      let cachedCollection;
 
       this.render = function (collection) {
         collection = collection || {};

@@ -217,7 +217,7 @@
 /**
 
  *
- * @typedef {function(TScope, CloneAttachFunction, import('./shared/jqlite/jqlite').JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} TranscludeFunction
+ * @typedef {function(TScope|Function, CloneAttachFunction=, import('./shared/jqlite/jqlite').JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} TranscludeFunction
  */
 
 /**

@@ -19,7 +19,6 @@ import {
   isString,
   lowercase,
   extend,
-  reverseParams,
   snakeCase,
   isScope,
   valueFn,
@@ -50,17 +49,10 @@ let ttl = TTL;
 
 const $compileMinErr = minErr("$compile");
 
-const _UNINITIALIZED_VALUE = new Object();
+const UNINITALIZED_VALIED = new Object();
 const EXCLUDED_DIRECTIVES = ["ngIf", "ngRepeat"];
 
-/**
- * @ngdoc provider
- * @name $compileProvider
- *
- * @description
- */
 $CompileProvider.$inject = ["$provide", "$$sanitizeUriProvider"];
-
 export function $CompileProvider($provide, $$sanitizeUriProvider) {
   const hasDirectives = {};
   const Suffix = "Directive";
@@ -159,24 +151,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
     return bindings;
   }
 
-  function assertValidDirectiveName(name) {
-    const letter = name.charAt(0);
-    if (!letter || letter !== lowercase(letter)) {
-      throw $compileMinErr(
-        "baddir",
-        "Directive/Component name '{0}' is invalid. The first character must be a lowercase letter",
-        name,
-      );
-    }
-    if (name !== name.trim()) {
-      throw $compileMinErr(
-        "baddir",
-        "Directive/Component name '{0}' is invalid. The name should not contain leading or trailing whitespaces",
-        name,
-      );
-    }
-  }
-
   function getDirectiveRequire(directive) {
     const require =
       directive.require || (directive.controller && directive.name);
@@ -206,11 +180,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
   }
 
   /**
-   * @ngdoc method
-   * @name $compileProvider#directive
-   * @kind function
-   *
-   * @description
    * Register a new directive with the compiler.
    *
    * @param {string|Object} name Name of the directive in camel-case (i.e. `ngBind` which will match
@@ -273,18 +242,14 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
   };
 
   /**
-   * @ngdoc method
-   * @name $compileProvider#component
-   * @module ng
    * @param {string|Object} name Name of the component in camelCase (i.e. `myComp` which will match `<my-comp>`),
    *    or an object map of components where the keys are the names and the values are the component definition objects.
    * @param {Object} options Component definition object (a simplified
-   *    {@link ng.$compile#directive-definition-object directive definition object}),
+   *    {directive definition object}),
    *    with the following properties (all optional):
    *
    *    - `controller` – `{(string|function()=}` – controller constructor function that should be
-   *      associated with newly created scope or the name of a {@link ng.$compile#-controller-
-   *      registered controller} if passed as a string. An empty `noop` function by default.
+   *      associated with newly created scope or the name of a {controller} if passed as a string. An empty `noop` function by default.
    *    - `controllerAs` – `{string=}` – identifier name for to reference the controller in the component's scope.
    *      If present, the controller will be published to scope under the `controllerAs` name.
    *      If not present, this will default to be `$ctrl`.
@@ -292,7 +257,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    *      returns an html template as a string which should be used as the contents of this component.
    *      Empty string by default.
    *
-   *      If `template` is a function, then it is {@link auto.$injector#invoke injected} with
+   *      If `template` is a function, then it is {injected} with
    *      the following locals:
    *
    *      - `$element` - Current element
@@ -301,7 +266,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    *    - `templateUrl` – `{string=|function()=}` – path or function that returns a path to an html
    *      template that should be used  as the contents of this component.
    *
-   *      If `templateUrl` is a function, then it is {@link auto.$injector#invoke injected} with
+   *      If `templateUrl` is a function, then it is {injected} with
    *      the following locals:
    *
    *      - `$element` - Current element
@@ -309,59 +274,20 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    *
    *    - `bindings` – `{object=}` – defines bindings between DOM attributes and component properties.
    *      Component properties are always bound to the component controller and not to the scope.
-   *      See {@link ng.$compile#-bindtocontroller- `bindToController`}.
-   *    - `transclude` – `{boolean=}` – whether {@link $compile#transclusion content transclusion} is enabled.
+   *      See {`bindToController`}.
+   *    - `transclude` – `{boolean=}` – whether {content transclusion} is enabled.
    *      Disabled by default.
    *    - `require` - `{Object<string, string>=}` - requires the controllers of other directives and binds them to
    *      this component's controller. The object keys specify the property names under which the required
-   *      controllers (object values) will be bound. See {@link ng.$compile#-require- `require`}.
+   *      controllers (object values) will be bound. See {`require`}.
    *    - `$...` – additional properties to attach to the directive factory function and the controller
    *      constructor function. (This is used by the component router to annotate)
    *
-   * @returns {ng.$compileProvider} the compile provider itself, for chaining of function calls.
-   * @description
-   * Register a **component definition** with the compiler. This is a shorthand for registering a special
-   * type of directive, which represents a self-contained UI component in your application. Such components
-   * are always isolated (i.e. `scope: {}`) and are always restricted to elements (i.e. `restrict: 'E'`).
-   *
-   * Component definitions are very simple and do not require as much configuration as defining general
-   * directives. Component definitions usually consist only of a template and a controller backing it.
-   *
-   * In order to make the definition easier, components enforce best practices like use of `controllerAs`,
-   * `bindToController`. They always have **isolate scope** and are restricted to elements.
-   *
-   * Here are a few examples of how you would usually define components:
-   *
-   * ```js
-   *   let myMod = angular.module(...);
-   *   myMod.component('myComp', {
-   *     template: '<div>My name is {{$ctrl.name}}</div>',
-   *     controller: function() {
-   *       this.name = 'shahar';
-   *     }
-   *   });
-   *
-   *   myMod.component('myComp', {
-   *     template: '<div>My name is {{$ctrl.name}}</div>',
-   *     bindings: {name: '@'}
-   *   });
-   *
-   *   myMod.component('myComp', {
-   *     templateUrl: 'views/my-comp.html',
-   *     controller: 'MyCtrl',
-   *     controllerAs: 'ctrl',
-   *     bindings: {name: '@'}
-   *   });
-   *
-   * ```
-   * For more examples, and an in-depth guide, see the {@link guide/component component guide}.
-   *
-   * <br />
-   * See also {@link ng.$compileProvider#directive $compileProvider.directive()}.
+   * @returns {$CompileProvider} the compile provider itself, for chaining of function calls.
    */
-  this.component = function registerComponent(name, options) {
+  this.component = function (name, options) {
     if (!isString(name)) {
-      forEach(name, reverseParams(bind(this, registerComponent)));
+      Object.entries(name).forEach(([key, val]) => this.component(key, val))
       return this;
     }
 
@@ -454,11 +380,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
   };
 
   /**
-   * @ngdoc method
-   * @name $compileProvider#imgSrcSanitizationTrustedUrlList
-   * @kind function
-   *
-   * @description
    * Retrieves or overrides the default regular expression that is used for determining trusted safe
    * urls during img[src] sanitization.
    *
@@ -482,16 +403,10 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
   };
 
   /**
-   * @ngdoc method
-   * @name  $compileProvider#strictComponentBindingsEnabled
-   *
    * @param {boolean=} enabled update the strictComponentBindingsEnabled state if provided,
    * otherwise return the current strictComponentBindingsEnabled state.
    * @returns {*} current value if used as getter or itself (chaining) if used as setter
    *
-   * @kind function
-   *
-   * @description
    * Call this method to enable / disable the strict component bindings check. If enabled, the
    * compiler will enforce that all scope / controller bindings of a
    * {@link $compileProvider#directive directive} / {@link $compileProvider#component component}
@@ -516,10 +431,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
   const PROP_CONTEXTS = Object.create(null);
 
   /**
-   * @ngdoc method
-   * @name $compileProvider#addPropertySecurityContext
-   * @description
-   *
    * Defines the security context for DOM properties bound by ng-prop-*.
    *
    * @param {string} elementName The element name or '*' to match any element.
@@ -621,11 +532,11 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
     /**
      * @param {import("../../core/di/internal-injector").InjectorService} $injector
      * @param {*} $interpolate
-     * @param {*} $exceptionHandler
+     * @param {import("../exception-handler").ExceptionHandlerProvider} $exceptionHandler
      * @param {*} $templateRequest
-     * @param {*} $parse
+     * @param {import("../parser/parse").ParseService} $parse
      * @param {*} $controller
-     * @param {*} $rootScope
+     * @param {import('../scope/scope').Scope} $rootScope
      * @param {*} $sce
      * @param {*} $animate
      * @returns
@@ -901,11 +812,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         }
 
         /**
-       * @ngdoc method
-       * @name $compile.directive.Attributes#$observe
-       * @kind function
-       *
-       * @description
        * Observes an interpolated attribute.
        *
        * The observer function will be invoked once during the next `$digest` following
@@ -913,7 +819,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
        * changes.
        *
        * @param {string} key Normalized key. (ie ngAttribute) .
-       * @param {function(interpolatedValue)} fn Function that will be called whenever
+       * @param {any} fn Function that will be called whenever
                 the interpolated value of the attribute changes.
        *        See the {@link guide/interpolation#how-text-and-attribute-bindings-work Interpolation
        *        guide} for more info.
@@ -947,7 +853,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         // so we have to jump through some hoops to get such an attribute
         // https://github.com/angular/angular.js/pull/13318
         specialAttrHolder.innerHTML = `<span ${attrName}>`;
-        const { attributes } = specialAttrHolder.firstChild;
+        const { attributes } = /** @type {Element} */ (specialAttrHolder.firstChild);
         const attribute = attributes[0];
         // We have to remove the attribute from its container element before we can add it to the destination element
         attributes.removeNamedItem(attribute.name);
@@ -3194,7 +3100,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                 destination[scopeName] = lastValue;
               }
               initialChanges[scopeName] = new SimpleChange(
-                _UNINITIALIZED_VALUE,
+                UNINITALIZED_VALIED,
                 destination[scopeName],
               );
               removeWatchCollection.push(removeWatch);
@@ -3271,7 +3177,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
               var initialValue = (destination[scopeName] = parentGet(scope));
               initialChanges[scopeName] = new SimpleChange(
-                _UNINITIALIZED_VALUE,
+                UNINITALIZED_VALIED,
                 destination[scopeName],
               );
 
@@ -3369,7 +3275,7 @@ class SimpleChange {
    * @returns {boolean}
    */
   isFirstChange() {
-    return this.previousValue === _UNINITIALIZED_VALUE;
+    return this.previousValue === UNINITALIZED_VALIED;
   }
 }
 
@@ -3406,4 +3312,26 @@ function removeComments(jqNodes) {
     }
   }
   return jqNodes;
+}
+
+/**
+ * @param {String} name
+ * @returns {void}
+ */
+function assertValidDirectiveName(name) {
+  const letter = name.charAt(0);
+  if (!letter || letter !== lowercase(letter)) {
+    throw $compileMinErr(
+      "baddir",
+      "Directive/Component name '{0}' is invalid. The first character must be a lowercase letter",
+      name,
+    );
+  }
+  if (name !== name.trim()) {
+    throw $compileMinErr(
+      "baddir",
+      "Directive/Component name '{0}' is invalid. The name should not contain leading or trailing whitespaces",
+      name,
+    );
+  }
 }

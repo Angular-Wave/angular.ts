@@ -223,6 +223,13 @@ export class Location {
      */
     state(state: any, ...args: any[]): any;
     $$state: any;
+    /**
+     * @param {string} _url
+     * @param {string} _url2
+     * @returns {boolean}
+     */
+    $$parseLinkUrl(_url: string, _url2: string): boolean;
+    $$parse(_url: any): void;
 }
 /**
  * This object is exposed as $location service when HTML5 mode is enabled and supported
@@ -241,7 +248,6 @@ export class LocationHtml5Url extends Location {
      */
     $$parse(url: string): void;
     $$normalizeUrl(url: any): string;
-    $$parseLinkUrl: (url: any, relHref: any) => boolean;
 }
 /**
  * LocationHashbangUrl represents URL
@@ -264,7 +270,11 @@ export class LocationHashbangUrl extends Location {
      */
     $$parse(url: string): void;
     $$normalizeUrl(url: any): any;
-    $$parseLinkUrl(url: any): boolean;
+    /**
+     * @param {string} url
+     * @returns {boolean}
+     */
+    $$parseLinkUrl(url: string): boolean;
 }
 export type DefaultPorts = {
     http: number;

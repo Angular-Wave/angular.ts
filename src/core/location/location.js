@@ -333,6 +333,19 @@ export class Location {
 
     return this;
   }
+
+  /**
+   * @param {string} _url 
+   * @param {string} _url2
+   * @returns {boolean} 
+   */
+  $$parseLinkUrl(_url, _url2) {
+    throw new Error(`Method not implemented ${_url} ${_url2}`);
+  }
+
+  $$parse(_url) {
+    throw new Error(`Method not implemented ${_url}`);
+  }
 }
 
 /**
@@ -379,7 +392,12 @@ export class LocationHtml5Url extends Location {
     return this.appBaseNoFile + url.substr(1); // first char is always '/'
   }
 
-  $$parseLinkUrl = function (url, relHref) {
+  /**
+   * @param {string} url 
+   * @param {string} relHref 
+   * @returns {boolean}
+   */
+  $$parseLinkUrl(url, relHref) {
     if (relHref && relHref[0] === "#") {
       // special case for links to hash fragments:
       // keep the old url and only replace the hash fragment
@@ -410,7 +428,7 @@ export class LocationHtml5Url extends Location {
       this.$$parse(rewrittenUrl);
     }
     return !!rewrittenUrl;
-  };
+  }
 }
 
 /**
@@ -513,6 +531,10 @@ export class LocationHashbangUrl extends Location {
     return this.appBase + (url ? this.hashPrefix + url : "");
   }
 
+  /**
+   * @param {string} url 
+   * @returns {boolean}
+   */
   $$parseLinkUrl(url) {
     if (stripHash(this.appBase) === stripHash(url)) {
       this.$$parse(url);
@@ -602,7 +624,7 @@ export function $LocationProvider() {
       let $location;
       let LocationMode;
       const baseHref = $browser.baseHref(); // if base[href] is undefined, it defaults to ''
-      const initialUrl = $browser.url();
+      const initialUrl = /** @type {string} */ ($browser.url());
       let appBase;
 
       if (html5Mode.enabled) {
@@ -639,7 +661,7 @@ export function $LocationProvider() {
           $location.$$state = $browser.state();
         } catch (e) {
           // Restore old values if pushState fails
-          $location.url(oldUrl);
+          $location.url(/** @type {string} */ (oldUrl));
           $location.$$state = oldState;
 
           throw e;

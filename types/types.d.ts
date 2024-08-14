@@ -41,7 +41,7 @@ export type TranscludeFunctionObject = {
      */
     isSlotFilled: (arg0: string) => boolean;
 };
-export type TranscludeFunction = (arg0: TScope, arg1: CloneAttachFunction, arg2: import("./shared/jqlite/jqlite").JQLite | undefined, arg3: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
+export type TranscludeFunction = (arg0: TScope | Function, arg1: CloneAttachFunction | undefined, arg2: import("./shared/jqlite/jqlite").JQLite | undefined, arg3: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
 export type transcludeWithScope = (arg0: TScope, arg1: CloneAttachFunction, arg2: import("./shared/jqlite/jqlite").JQLite | undefined, arg3: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
 export type transcludeWithoutScope = (arg0: CloneAttachFunction | undefined, arg1: import("./shared/jqlite/jqlite").JQLite | undefined, arg2: string | undefined) => import("./shared/jqlite/jqlite").JQLite;
 /**
