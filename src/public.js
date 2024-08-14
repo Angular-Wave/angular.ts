@@ -97,8 +97,21 @@ import {
   ngMessagesDirective,
   ngMessagesIncludeDirective,
 } from "./directive/messages/messages";
-import { initAriaModule } from "./exts/aria/aria";
 import { initRouter } from "./router/index";
+import {
+  AriaProvider,
+  ngCheckedAriaDirective,
+  ngClickAriaDirective,
+  ngDblclickAriaDirective,
+  ngDisabledAriaDirective,
+  ngHideAriaDirective,
+  ngMessagesAriaDirective,
+  ngModelAriaDirective,
+  ngReadonlyAriaDirective,
+  ngRequiredAriaDirective,
+  ngShowAriaDirective,
+  ngValueAriaDirective,
+} from "./directive/aria/aria";
 
 /**
  * @type {string} `version` from `package.json`, injected by Rollup plugin
@@ -140,6 +153,7 @@ export function publishExternalAPI(angular) {
               ngClassOdd: ngClassOddDirective,
               ngCloak: ngCloakDirective,
               ngController: ngControllerDirective,
+              ngDisabled: ngDisabledAriaDirective,
               ngForm: ngFormDirective,
               ngHide: ngHideDirective,
               ngIf: ngIfDirective,
@@ -175,12 +189,23 @@ export function publishExternalAPI(angular) {
               ngModelOptions: ngModelOptionsDirective,
             })
             .directive({
-              ngInclude: ngIncludeFillContentDirective,
               input: hiddenInputBrowserCacheDirective,
+              ngChecked: ngCheckedAriaDirective,
+              ngClick: ngClickAriaDirective,
+              ngDblclick: ngDblclickAriaDirective,
+              ngInclude: ngIncludeFillContentDirective,
+              ngHide: ngHideAriaDirective,
+              ngShow: ngShowAriaDirective,
+              ngMessages: ngMessagesAriaDirective,
+              ngModel: ngModelAriaDirective,
+              ngReadonly: ngReadonlyAriaDirective,
+              ngRequired: ngRequiredAriaDirective,
+              ngValue: ngValueAriaDirective,
             })
             .directive(ngAttributeAliasDirectives)
             .directive(ngEventDirectives);
           $provide.provider({
+            $aria: AriaProvider,
             $anchorScroll: AnchorScrollProvider,
             $animate: AnimateProvider,
             $animateCss: CoreAnimateCssProvider,
@@ -218,7 +243,6 @@ export function publishExternalAPI(angular) {
     .info({ version: VERSION });
 
   initAnimateModule(angular);
-  initAriaModule(angular);
   initRouter(angular);
   return ng;
 }

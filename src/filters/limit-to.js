@@ -45,7 +45,6 @@ export function limitToFilter() {
   };
 }
 
-/** @private */
 function sliceFn(input, begin, end) {
   if (isString(input)) return input.slice(begin, end);
 

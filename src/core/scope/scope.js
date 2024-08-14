@@ -905,7 +905,6 @@ export class Scope {
   }
 
   /**
-   * @private
    * @param {ScopePhase} phase
    */
   beginPhase(phase) {

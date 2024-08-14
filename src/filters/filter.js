@@ -65,7 +65,6 @@ export function filterFilter() {
 }
 
 // Helper functions for `filterFilter`
-/** @private */
 function createPredicateFn(
   expression,
   comparator,
@@ -124,7 +123,6 @@ function createPredicateFn(
   return predicateFn;
 }
 
-/** @private */
 function deepCompare(
   actual,
   expected,
@@ -211,7 +209,6 @@ function deepCompare(
 }
 
 // Used for easily differentiating between `null` and actual `object`
-/** @private */
 function getTypeForFilter(val) {
   return val === null ? "null" : typeof val;
 }

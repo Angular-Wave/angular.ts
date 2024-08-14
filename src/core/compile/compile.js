@@ -512,7 +512,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
   /**
    * The security context of DOM Properties.
-   * @private
    */
   const PROP_CONTEXTS = Object.create(null);
 

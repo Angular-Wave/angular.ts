@@ -9,7 +9,7 @@ describe("$aria", () => {
 
   beforeEach(() => {
     window.angular = new Angular();
-    window.angular.module("test", ["ngAria"]);
+    window.angular.module("test", ["ng"]);
     let injector = createInjector(["test"]);
     scope = injector.get("$rootScope");
     $compile = injector.get("$compile");
@@ -340,7 +340,7 @@ describe("$aria", () => {
   describe("aria-hidden when disabled", () => {
     beforeEach(() => {
       window.angular.module("test", [
-        "ngAria",
+        "ng",
         ($ariaProvider) => {
           $ariaProvider.config({
             ariaHidden: false,
@@ -611,7 +611,7 @@ describe("$aria", () => {
   describe("aria-checked when disabled", () => {
     beforeEach(() => {
       window.angular.module("test", [
-        "ngAria",
+        "ng",
         ($ariaProvider) => {
           $ariaProvider.config({
             ariaChecked: false,
@@ -701,7 +701,7 @@ describe("$aria", () => {
   describe("aria-disabled when disabled", () => {
     beforeEach(() => {
       window.angular.module("test", [
-        "ngAria",
+        "ng",
         ($ariaProvider) => {
           $ariaProvider.config({
             ariaDisabled: false,
@@ -772,7 +772,7 @@ describe("$aria", () => {
   describe("aria-invalid when disabled", () => {
     beforeEach(() => {
       window.angular.module("test", [
-        "ngAria",
+        "ng",
         ($ariaProvider) => {
           $ariaProvider.config({
             ariaInvalid: false,
@@ -843,7 +843,7 @@ describe("$aria", () => {
   describe("aria-readonly when disabled", () => {
     beforeEach(() => {
       window.angular.module("test", [
-        "ngAria",
+        "ng",
         ($ariaProvider) => {
           $ariaProvider.config({
             ariaReadonly: false,
@@ -908,7 +908,7 @@ describe("$aria", () => {
   describe("aria-required when disabled", () => {
     beforeEach(() => {
       window.angular.module("test", [
-        "ngAria",
+        "ng",
         ($ariaProvider) => {
           $ariaProvider.config({
             ariaRequired: false,
@@ -1019,7 +1019,7 @@ describe("$aria", () => {
   describe("aria-value when disabled", () => {
     beforeEach(() => {
       window.angular.module("test", [
-        "ngAria",
+        "ng",
         ($ariaProvider) => {
           $ariaProvider.config({
             ariaValue: false,
@@ -1126,7 +1126,7 @@ describe("$aria", () => {
   describe("actions when bindRoleForClick is set to false", () => {
     beforeEach(() => {
       window.angular.module("test", [
-        "ngAria",
+        "ng",
         ($ariaProvider) => {
           $ariaProvider.config({
             bindRoleForClick: false,
@@ -1149,7 +1149,7 @@ describe("$aria", () => {
   describe("actions when bindKeydown is set to false", () => {
     beforeEach(() => {
       window.angular.module("test", [
-        "ngAria",
+        "ng",
         ($ariaProvider) => {
           $ariaProvider.config({
             bindKeydown: false,
@@ -1186,7 +1186,7 @@ describe("$aria", () => {
   describe("tabindex when disabled", () => {
     beforeEach(() => {
       window.angular.module("test", [
-        "ngAria",
+        "ng",
         ($ariaProvider) => {
           $ariaProvider.config({
             tabindex: false,
@@ -1216,7 +1216,7 @@ describe("$aria", () => {
   describe("ngModel", () => {
     it("should not break when manually compiling", () => {
       window.angular.module("test", [
-        "ngAria",
+        "ng",
         ($compileProvider) => {
           $compileProvider.directive("foo", () => ({
             priority: 10,

@@ -7753,7 +7753,7 @@ describe("$compile", () => {
         expect(
           element[0].outerHTML.replace(' selected="selected"', ""),
         ).toEqual(
-          '<select ng-model="x" class="ng-pristine ng-untouched ng-valid ng-empty">' +
+          '<select ng-model="x" class="ng-pristine ng-untouched ng-valid ng-empty" aria-invalid="false">' +
             '<option value="">Greet !</option>' +
             "</select>",
         );
@@ -7762,7 +7762,7 @@ describe("$compile", () => {
         expect(
           element[0].outerHTML.replace(' selected="selected"', ""),
         ).toEqual(
-          '<select ng-model="x" class="ng-pristine ng-untouched ng-valid ng-empty">' +
+          '<select ng-model="x" class="ng-pristine ng-untouched ng-valid ng-empty" aria-invalid="false">' +
             '<option value="">Greet Misko!</option>' +
             "</select>",
         );

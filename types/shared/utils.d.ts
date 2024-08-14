@@ -106,7 +106,6 @@ export function isFunction(value: any): boolean;
 /**
  * Determines if a value is a regular expression object.
  *
- * @private
  * @param {*} value Reference to check.
  * @returns {boolean} True if `value` is a `RegExp`.
  */
@@ -114,7 +113,6 @@ export function isRegExp(value: any): boolean;
 /**
  * Checks if `obj` is a window object.
  *
- * @private
  * @param {*} obj Object to check
  * @returns {boolean} True if `obj` is a window obj.
  */

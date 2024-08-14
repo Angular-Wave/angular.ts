@@ -404,10 +404,9 @@ export class Scope {
    */
     $digest(): void;
     /**
-     * @private
      * @param {ScopePhase} phase
      */
-    private beginPhase;
+    beginPhase(phase: ScopePhase): void;
     /**
      * @ngdoc method
      * @name $rootScope.Scope#$suspend
