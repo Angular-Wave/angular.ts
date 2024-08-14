@@ -14,7 +14,7 @@ export function ngMessagesDirective($animate) {
       const messages = {};
       let renderLater;
       let cachedCollection;
-      
+
       this.head = undefined;
       this.default = undefined;
       this.messages = messages;

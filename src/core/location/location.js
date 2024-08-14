@@ -335,9 +335,9 @@ export class Location {
   }
 
   /**
-   * @param {string} _url 
+   * @param {string} _url
    * @param {string} _url2
-   * @returns {boolean} 
+   * @returns {boolean}
    */
   $$parseLinkUrl(_url, _url2) {
     throw new Error(`Method not implemented ${_url} ${_url2}`);
@@ -393,8 +393,8 @@ export class LocationHtml5Url extends Location {
   }
 
   /**
-   * @param {string} url 
-   * @param {string} relHref 
+   * @param {string} url
+   * @param {string} relHref
    * @returns {boolean}
    */
   $$parseLinkUrl(url, relHref) {
@@ -532,7 +532,7 @@ export class LocationHashbangUrl extends Location {
   }
 
   /**
-   * @param {string} url 
+   * @param {string} url
    * @returns {boolean}
    */
   $$parseLinkUrl(url) {
