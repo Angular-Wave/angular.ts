@@ -386,7 +386,7 @@ export class Scope {
  *
  *
  *
- * @param {string | ((scope: Scope) => any)} watchExp Expression that is evaluated on each
+ * @param {string | ((scope: Scope) => any) | import("../parser/parse").CompiledExpression} watchExp Expression that is evaluated on each
  *    {@link ng.$rootScope.Scope#$digest $digest} cycle. A change in the return value triggers
  *    a call to the `listener`.
  *
@@ -1074,12 +1074,8 @@ export class Scope {
       this.$$nextSibling.$$prevSibling = this.$$prevSibling;
 
     // Disable listeners, watchers and apply/digest methods
-    this.$destroy =
-      this.$digest =
-      this.$apply =
-      this.$evalAsync =
-      this.$applyAsync =
-        () => {};
+    this.$destroy = this.$digest = this.$apply = this.$applyAsync = () => {};
+    this.$evalAsync = () => undefined;
     this.$on =
       this.$watch =
       this.$watchGroup =
@@ -1358,6 +1354,7 @@ export class Scope {
    * @param {string} name
    */
   decrementListenerCount(count, name) {
+    /** @type {Scope} */
     let self = this;
     for (; self; self = self.$parent) {
       if (self.$$listenerCount[name] !== undefined) {

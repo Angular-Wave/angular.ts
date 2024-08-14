@@ -1,4 +1,4 @@
-import { getBooleanAttrName} from "../../shared/jqlite/jqlite";
+import { getBooleanAttrName } from "../../shared/jqlite/jqlite";
 import {
   forEach,
   isString,
@@ -17,14 +17,14 @@ const specialAttrHolder = window.document.createElement("div");
 
 export class Attributes {
   /**
-   * 
-   * @param {import('../scope/scope').Scope} $rootScope 
-   * @param {*} $animate 
-   * @param {import("../exception-handler").ExceptionHandlerProvider} $exceptionHandler 
-   * @param {*} $sce 
-   * @param {import('../../shared/jqlite/jqlite').JQLite} element 
-   * @param {*} attributesToCopy 
-   */  
+   *
+   * @param {import('../scope/scope').Scope} $rootScope
+   * @param {*} $animate
+   * @param {import("../exception-handler").ExceptionHandlerProvider} $exceptionHandler
+   * @param {*} $sce
+   * @param {import('../../shared/jqlite/jqlite').JQLite} element
+   * @param {*} attributesToCopy
+   */
   constructor(
     $rootScope,
     $animate,

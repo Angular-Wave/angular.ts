@@ -4,7 +4,7 @@
  * @property {boolean} constant - Indicates if the expression is constant.
  * @property {boolean} isPure
  * @property {boolean} oneTime
- * @property {function(import('../scope/scope').Scope, import('../scope/scope').WatchListener, boolean, CompiledExpression, string | ((scope:  import('../scope/scope').Scope) => any)): any} $$watchDelegate
+ * @property {function(import('../scope/scope').Scope, import('../scope/scope').WatchListener, boolean, CompiledExpression, string | ((scope:  import('../scope/scope').Scope) => any) | CompiledExpression): any} $$watchDelegate
  * @property {any[]} inputs
  * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided,
  */
@@ -22,7 +22,7 @@
  * @typedef {CompiledExpressionFunction & CompiledExpressionProps} CompiledExpression
  */
 /**
- * @typedef {function(string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): CompiledExpression} ParseService
+ * @typedef {function(CompiledExpression|string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): CompiledExpression} ParseService
  */
 export function $ParseProvider(): void;
 export class $ParseProvider {
@@ -61,7 +61,7 @@ export type CompiledExpressionProps = {
     constant: boolean;
     isPure: boolean;
     oneTime: boolean;
-    $$watchDelegate: (arg0: import("../scope/scope").Scope, arg1: import("../scope/scope").WatchListener, arg2: boolean, arg3: CompiledExpression, arg4: string | ((scope: import("../scope/scope").Scope) => any)) => any;
+    $$watchDelegate: (arg0: import("../scope/scope").Scope, arg1: import("../scope/scope").WatchListener, arg2: boolean, arg3: CompiledExpression, arg4: string | ((scope: import("../scope/scope").Scope) => any) | CompiledExpression) => any;
     inputs: any[];
     /**
      * - Assigns a value to a context. If value is not provided,
@@ -70,4 +70,4 @@ export type CompiledExpressionProps = {
 };
 export type CompiledExpressionFunction = Function;
 export type CompiledExpression = CompiledExpressionFunction & CompiledExpressionProps;
-export type ParseService = (arg0: string | ((arg0: import("../scope/scope").Scope) => any), arg1: ((arg0: any, arg1: import("../scope/scope").Scope, arg2: any) => any) | undefined, arg2: boolean | undefined) => CompiledExpression;
+export type ParseService = (arg0: CompiledExpression | string | ((arg0: import("../scope/scope").Scope) => any), arg1: ((arg0: any, arg1: import("../scope/scope").Scope, arg2: any) => any) | undefined, arg2: boolean | undefined) => CompiledExpression;

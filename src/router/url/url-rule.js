@@ -203,7 +203,11 @@ export class BaseUrlRule {
     this.match = match;
     this.type = "RAW";
     this.$id = -1;
-    this.matchPriority = () => 0 - this.$id;
+    this._group = undefined;
     this.handler = handler || ((x) => x);
+  }
+
+  matchPriority() {
+    return 0 - this.$id;
   }
 }

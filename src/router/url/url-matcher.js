@@ -406,7 +406,7 @@ export class UrlMatcher {
    *
    * @param id
    * @param opts
-   * @returns {T|Param|any|boolean|UrlMatcher|null}
+   * @returns {Param|any|boolean|UrlMatcher|null}
    */
   parameter(id, opts = {}) {
     const findParam = () => {

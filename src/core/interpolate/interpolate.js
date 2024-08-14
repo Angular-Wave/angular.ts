@@ -29,11 +29,6 @@ $interpolateMinErr.interr = function (text, err) {
 };
 
 /**
- * @ngdoc provider
- * @name $interpolateProvider
- *
- *
- * @description
  *
  * Used for configuring the interpolation markup. Defaults to `{{` and `}}`.
  *
@@ -50,9 +45,6 @@ export function $InterpolateProvider() {
   let endSymbol = "}}";
 
   /**
-   * @ngdoc method
-   * @name $interpolateProvider#startSymbol
-   * @description
    * Symbol to denote start of expression in the interpolated string. Defaults to `{{`.
    *
    * @param {string=} value new value to set the starting symbol to.
@@ -67,9 +59,6 @@ export function $InterpolateProvider() {
   };
 
   /**
-   * @ngdoc method
-   * @name $interpolateProvider#endSymbol
-   * @description
    * Symbol to denote the end of expression in the interpolated string. Defaults to `}}`.
    *
    * @param {string=} value new value to set the ending symbol to.
@@ -89,7 +78,7 @@ export function $InterpolateProvider() {
     "$sce",
     /**
      *
-     * @param {*} $parse
+     * @param {import("../parser/parse").ParseService} $parse
      * @param {import('../exception-handler').ErrorHandler} $exceptionHandler
      * @param {*} $sce
      * @returns

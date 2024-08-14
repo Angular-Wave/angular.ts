@@ -135,9 +135,9 @@ export class UrlMatcher {
      *
      * @param id
      * @param opts
-     * @returns {T|Param|any|boolean|UrlMatcher|null}
+     * @returns {Param|any|boolean|UrlMatcher|null}
      */
-    parameter(id: any, opts?: {}): T | Param | any | boolean | UrlMatcher | null;
+    parameter(id: any, opts?: {}): Param | any | boolean | UrlMatcher | null;
     /**
      * Validates the input parameter values against this UrlMatcher
      *

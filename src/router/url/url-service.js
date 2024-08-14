@@ -356,7 +356,7 @@ export class UrlService {
       return;
     }
     if (this.url() === this.location) return;
-    this.url(this.location, true);
+    this.url(/** @type {string} */ (this.location), true);
   }
 
   /**

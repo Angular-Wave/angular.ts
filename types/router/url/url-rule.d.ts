@@ -130,6 +130,7 @@ export class BaseUrlRule {
     match: any;
     type: string;
     $id: number;
-    matchPriority: () => number;
+    _group: any;
     handler: any;
+    matchPriority(): number;
 }

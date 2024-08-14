@@ -278,7 +278,7 @@ export class Scope {
    *
    *
    *
-   * @param {string | ((scope: Scope) => any)} watchExp Expression that is evaluated on each
+   * @param {string | ((scope: Scope) => any) | import("../parser/parse").CompiledExpression} watchExp Expression that is evaluated on each
    *    {@link ng.$rootScope.Scope#$digest $digest} cycle. A change in the return value triggers
    *    a call to the `listener`.
    *
@@ -289,7 +289,7 @@ export class Scope {
    *     comparing for reference equality.
    * @returns {function()} Returns a deregistration function for this listener.
    */
-    $watch(watchExp: string | ((scope: Scope) => any), listener?: WatchListener, objectEquality?: boolean | undefined): () => any;
+    $watch(watchExp: string | ((scope: Scope) => any) | import("../parser/parse").CompiledExpression, listener?: WatchListener, objectEquality?: boolean | undefined): () => any;
     /**
      * @ngdoc method
      * @name $rootScope.Scope#$watchGroup
@@ -569,6 +569,24 @@ export class Scope {
     $apply(expr?: string | ((arg0: Scope) => any)): any;
     /**
      * @ngdoc method
+     * @name $rootScope.Scope#$applyAsync
+     * @kind function
+     *
+     * @description
+     * Schedule the invocation of $apply to occur at a later time. The actual time difference
+     * varies across browsers, but is typically around ~10 milliseconds.
+     *
+     * This can be used to queue up multiple expressions which need to be evaluated in the same
+     * digest.
+     *
+     * @param {(string|function())=} expr An AngularTS expression to be executed.
+     *
+     *    - `string`: execute using the rules as defined in {@link guide/expression expression}.
+     *    - `function(scope)`: execute the function with current `scope` parameter.
+     */
+    $applyAsync(expr?: (string | (() => any)) | undefined): void;
+    /**
+     * @ngdoc method
      * @name $rootScope.Scope#$evalAsync
      * @kind function
      *
@@ -598,24 +616,6 @@ export class Scope {
      * @param {(object)=} locals Local variables object, useful for overriding values in scope.
      */
     $evalAsync(expr?: (string | ((arg0: any) => any)) | undefined, locals?: (object) | undefined): number;
-    /**
-     * @ngdoc method
-     * @name $rootScope.Scope#$applyAsync
-     * @kind function
-     *
-     * @description
-     * Schedule the invocation of $apply to occur at a later time. The actual time difference
-     * varies across browsers, but is typically around ~10 milliseconds.
-     *
-     * This can be used to queue up multiple expressions which need to be evaluated in the same
-     * digest.
-     *
-     * @param {(string|function())=} expr An AngularTS expression to be executed.
-     *
-     *    - `string`: execute using the rules as defined in {@link guide/expression expression}.
-     *    - `function(scope)`: execute the function with current `scope` parameter.
-     */
-    $applyAsync(expr?: (string | (() => any)) | undefined): void;
     /**
      * @description
      * Listens on events of a given type. See {@link ng.$rootScope.Scope#$emit $emit} for
