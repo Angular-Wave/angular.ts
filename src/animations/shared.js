@@ -128,14 +128,14 @@ export function stripCommentsFromElement(element) {
   if (element instanceof JQLite) {
     switch (element.length) {
       case 0:
-        return /** @type {JQLite} */(element);
+        return /** @type {JQLite} */ (element);
 
       case 1:
         // there is no point of stripping anything if the element
         // is the only element within the JQLite wrapper.
         // (it's important that we retain the element instance.)
         if (element[0].nodeType === Node.ELEMENT_NODE) {
-          return /** @type {JQLite} */(element);
+          return /** @type {JQLite} */ (element);
         }
         break;
 
@@ -144,7 +144,7 @@ export function stripCommentsFromElement(element) {
     }
   }
 
-  if (/** @type {Node} */(element).nodeType === Node.ELEMENT_NODE) {
+  if (/** @type {Node} */ (element).nodeType === Node.ELEMENT_NODE) {
     return JQLite(element);
   }
 }

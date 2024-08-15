@@ -1257,7 +1257,11 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
           // collect multiblock sections
           if (attrStart) {
-            $compileNode = groupScan(/** @type {Element} */ (compileNode), attrStart, attrEnd);
+            $compileNode = groupScan(
+              /** @type {Element} */ (compileNode),
+              attrStart,
+              attrEnd,
+            );
           }
           $template = undefined;
 

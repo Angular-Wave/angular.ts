@@ -22,12 +22,10 @@ export class StateObject {
    * @returns {StateObject} an internal State object
    */
   static create(stateDecl) {
-    const state = StateObject.isStateClass(stateDecl)
-      ? new stateDecl()
-      : Object.setPrototypeOf(
-          Object.assign({}, stateDecl),
-          StateObject.prototype,
-        );
+    const state = Object.setPrototypeOf(
+      Object.assign({}, stateDecl),
+      StateObject.prototype,
+    );
     stateDecl.$$state = () => state;
     state.self = stateDecl;
     state.__stateObjectCache = {
@@ -110,9 +108,6 @@ export class StateObject {
     return this.fqn();
   }
 }
-/** Predicate which returns true if the object is an class with @State() decorator */
-StateObject.isStateClass = (stateDecl) =>
-  isFunction(stateDecl) && stateDecl["__uiRouterState"] === true;
 /** Predicate which returns true if the object is a [[StateDeclaration]] object */
 StateObject.isStateDeclaration = (obj) => isFunction(obj["$$state"]);
 /** Predicate which returns true if the object is an internal [[StateObject]] object */

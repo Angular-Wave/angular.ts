@@ -63,8 +63,6 @@ export class StateObject {
     toString(): any;
 }
 export namespace StateObject {
-    /** Predicate which returns true if the object is an class with @State() decorator */
-    function isStateClass(stateDecl: any): boolean;
     /** Predicate which returns true if the object is a [[StateDeclaration]] object */
     function isStateDeclaration(obj: any): boolean;
     /** Predicate which returns true if the object is an internal [[StateObject]] object */
