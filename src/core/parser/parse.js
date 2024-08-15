@@ -7,11 +7,11 @@ import { Parser } from "./parser";
  * @typedef {Object} CompiledExpressionProps
  * @property {boolean} literal - Indicates if the expression is a literal.
  * @property {boolean} constant - Indicates if the expression is constant.
- * @property {boolean} isPure
+ * @property {boolean} [isPure]
  * @property {boolean} oneTime
- * @property {function(import('../scope/scope').Scope, import('../scope/scope').WatchListener, boolean, CompiledExpression, string | ((scope:  import('../scope/scope').Scope) => any) | CompiledExpression): any} $$watchDelegate
+ * @property {function(import('../scope/scope').Scope, import('../scope/scope').WatchListener, boolean, CompiledExpression, string | ((scope:  import('../scope/scope').Scope) => any) | CompiledExpression): any} [$$watchDelegate]
  * @property {any[]|Function} inputs
- * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided,
+ * @property {function(any, any): any} [assign] - Assigns a value to a context. If value is not provided,
  */
 
 /**
@@ -219,22 +219,22 @@ function inputsWatchDelegate(
   objectEquality,
   parsedExpression,
 ) {
-  /** @type {Function} */
-  let inputExpressions = parsedExpression.inputs;
+  let inputExpressions = /** @type {Function} */ (parsedExpression.inputs);
   let lastResult;
 
   if (inputExpressions.length === 1) {
     let oldInputValueOf = expressionInputDirtyCheck; // init to something unique so that equals check fails
 
-    inputExpressions = inputExpressions[0];
+    let inputExpression = inputExpressions[0];
+
     return scope.$watch(
       ($scope) => {
-        const newInputValue = inputExpressions($scope);
+        const newInputValue = inputExpression($scope);
         if (
           !expressionInputDirtyCheck(
             newInputValue,
             oldInputValueOf,
-            inputExpressions.isPure,
+            inputExpression.isPure,
           )
         ) {
           lastResult = parsedExpression($scope, undefined, undefined, [
@@ -247,48 +247,49 @@ function inputsWatchDelegate(
       listener,
       objectEquality,
     );
-  }
+  } else {
+    const oldInputValueOfValues = [];
+    const oldInputValues = [];
+    for (let i = 0, ii = inputExpressions.length; i < ii; i++) {
+      oldInputValueOfValues[i] = expressionInputDirtyCheck; // init to something unique so that equals check fails
+      oldInputValues[i] = null;
+    }
 
-  const oldInputValueOfValues = [];
-  const oldInputValues = [];
-  for (let i = 0, ii = inputExpressions.length; i < ii; i++) {
-    oldInputValueOfValues[i] = expressionInputDirtyCheck; // init to something unique so that equals check fails
-    oldInputValues[i] = null;
-  }
+    return scope.$watch(
+      (scope) => {
+        let changed = false;
 
-  return scope.$watch(
-    (scope) => {
-      let changed = false;
-
-      for (let i = 0, ii = inputExpressions.length; i < ii; i++) {
-        const newInputValue = inputExpressions[i](scope);
-        if (
-          changed ||
-          (changed = !expressionInputDirtyCheck(
-            newInputValue,
-            oldInputValueOfValues[i],
-            inputExpressions[i].isPure,
-          ))
-        ) {
-          oldInputValues[i] = newInputValue;
-          oldInputValueOfValues[i] = newInputValue && getValueOf(newInputValue);
+        for (let i = 0, ii = inputExpressions.length; i < ii; i++) {
+          const newInputValue = inputExpressions[i](scope);
+          if (
+            changed ||
+            (changed = !expressionInputDirtyCheck(
+              newInputValue,
+              oldInputValueOfValues[i],
+              inputExpressions[i].isPure,
+            ))
+          ) {
+            oldInputValues[i] = newInputValue;
+            oldInputValueOfValues[i] =
+              newInputValue && getValueOf(newInputValue);
+          }
         }
-      }
 
-      if (changed) {
-        lastResult = parsedExpression(
-          scope,
-          undefined,
-          undefined,
-          oldInputValues,
-        );
-      }
+        if (changed) {
+          lastResult = parsedExpression(
+            scope,
+            undefined,
+            undefined,
+            oldInputValues,
+          );
+        }
 
-      return lastResult;
-    },
-    listener,
-    objectEquality,
-  );
+        return lastResult;
+      },
+      listener,
+      objectEquality,
+    );
+  }
 }
 
 function oneTimeWatchDelegate(
@@ -312,6 +313,7 @@ function oneTimeWatchDelegate(
   oneTimeWatch.literal = parsedExpression.literal;
   oneTimeWatch.constant = parsedExpression.constant;
   oneTimeWatch.inputs = parsedExpression.inputs;
+  oneTimeWatch.oneTime = undefined;
 
   // Allow other delegates to run on this wrapped expression
   addWatchDelegate(oneTimeWatch);

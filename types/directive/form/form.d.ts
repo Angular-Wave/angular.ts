@@ -11,17 +11,8 @@ export class FormController {
     $valid: boolean;
     $invalid: boolean;
     $submitted: boolean;
-    $$parentForm: {
-        $addControl: () => void;
-        $getControls: () => any;
-        $$renameControl: typeof nullFormRenameControl;
-        $removeControl: () => void;
-        $setValidity: () => void;
-        $setDirty: () => void;
-        $setPristine: () => void;
-        $setSubmitted: () => void;
-        $$setSubmitted: () => void;
-    };
+    /** @type {FormController|Object} */
+    $$parentForm: FormController | any;
     $$element: any;
     $$animate: any;
     /**

@@ -109,6 +109,7 @@ export function FormController(
   this.$valid = true;
   this.$invalid = false;
   this.$submitted = false;
+  /** @type {FormController|Object} */
   this.$$parentForm = nullFormCtrl;
 
   this.$$element = $element;
@@ -326,6 +327,7 @@ FormController.prototype = {
    * parent forms of the form.
    */
   $setSubmitted() {
+     /** @type {FormController} */
     let rootForm = this;
     while (rootForm.$$parentForm && rootForm.$$parentForm !== nullFormCtrl) {
       rootForm = rootForm.$$parentForm;
@@ -589,7 +591,7 @@ const formDirectiveFactory = function (isNgForm) {
 };
 
 export const formDirective = formDirectiveFactory();
-export const ngFormDirective = formDirectiveFactory(true);
+export const ngFormDirective = formDirectiveFactory("ngForm");
 
 // helper methods
 export function setupValidity(instance) {
