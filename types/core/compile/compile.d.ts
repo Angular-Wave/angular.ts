@@ -104,7 +104,7 @@ export class $CompileProvider {
      * @returns {object} `this` for chaining
      */
     addPropertySecurityContext: (elementName: string, propertyName: string, ctx: string) => object;
-    $get: (string | (($injector: import("../../core/di/internal-injector").InjectorService, $interpolate: any, $exceptionHandler: import("../exception-handler").ExceptionHandlerProvider, $templateRequest: any, $parse: import("../parser/parse").ParseService, $controller: any, $rootScope: import("../scope/scope").Scope, $sce: any, $animate: any) => ($compileNodes: string | NodeList, transcludeFn: any, maxPriority: any, ignoreDirective: any, previousCompileContext: any) => (scope: any, cloneConnectFn: any, options: any) => string | NodeList | JQLite))[];
+    $get: (string | (($injector: import("../../core/di/internal-injector").InjectorService, $interpolate: any, $exceptionHandler: import("../exception-handler").ExceptionHandlerProvider, $templateRequest: any, $parse: import("../parser/parse").ParseService, $controller: any, $rootScope: import("../scope/scope").Scope, $sce: any, $animate: any) => ($compileNodes: string | NodeList, transcludeFn: any, maxPriority: any, ignoreDirective: any, previousCompileContext: any) => (scope: any, cloneConnectFn: any, options: any) => JQLite))[];
 }
 export namespace $CompileProvider {
     let $inject: string[];

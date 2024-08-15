@@ -5,7 +5,7 @@
  * @property {boolean} isPure
  * @property {boolean} oneTime
  * @property {function(import('../scope/scope').Scope, import('../scope/scope').WatchListener, boolean, CompiledExpression, string | ((scope:  import('../scope/scope').Scope) => any) | CompiledExpression): any} $$watchDelegate
- * @property {any[]} inputs
+ * @property {any[]|Function} inputs
  * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided,
  */
 /**
@@ -62,7 +62,7 @@ export type CompiledExpressionProps = {
     isPure: boolean;
     oneTime: boolean;
     $$watchDelegate: (arg0: import("../scope/scope").Scope, arg1: import("../scope/scope").WatchListener, arg2: boolean, arg3: CompiledExpression, arg4: string | ((scope: import("../scope/scope").Scope) => any) | CompiledExpression) => any;
-    inputs: any[];
+    inputs: any[] | Function;
     /**
      * - Assigns a value to a context. If value is not provided,
      */

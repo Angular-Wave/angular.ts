@@ -616,20 +616,15 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         ignoreDirective,
         previousCompileContext,
       ) {
-        if (!($compileNodes instanceof JQLite)) {
-          // jquery always rewraps, whereas we need to preserve the original selector so that we can
-          // modify it.
-
-          $compileNodes = JQLite($compileNodes);
-        }
+        let jqCompileNodes = JQLite($compileNodes);
 
         /**
          * @type {CompositeLinkFn}
          */
         let compositeLinkFn = compileNodes(
-          $compileNodes,
+          jqCompileNodes,
           transcludeFn,
-          $compileNodes,
+          jqCompileNodes,
           maxPriority,
           ignoreDirective,
           previousCompileContext,
@@ -637,7 +632,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
         let namespace = null;
         return function publicLinkFn(scope, cloneConnectFn, options) {
-          if (!$compileNodes) {
+          if (!jqCompileNodes) {
             throw $compileMinErr(
               "multilink",
               "This element has already been linked.",
@@ -676,7 +671,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           }
           let $linkNode;
           if (namespace !== "html") {
-            // When using a directive with replace:true and templateUrl the $compileNodes
+            // When using a directive with replace:true and templateUrl the jqCompileNodes
             // (or a child element inside of them)
             // might change, so we need to recreate the namespace adapted compileNodes
             // for call to the link function.
@@ -684,17 +679,16 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             $linkNode = JQLite(
               wrapTemplate(
                 namespace,
-                JQLite("<div></div>").append($compileNodes).html(),
+                JQLite("<div></div>").append(jqCompileNodes).html(),
               ),
             );
           } else if (cloneConnectFn) {
-            $linkNode = JQLite(
-              Array.from($compileNodes).map((element) =>
-                element.cloneNode(true),
-              ),
-            );
+            let elements = jqCompileNodes
+              .elements()
+              .map((element) => element.cloneNode(true));
+            $linkNode = new JQLite(elements);
           } else {
-            $linkNode = $compileNodes;
+            $linkNode = jqCompileNodes;
           }
 
           if (transcludeControllers) {
@@ -715,7 +709,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
             );
 
           if (!cloneConnectFn) {
-            $compileNodes = compositeLinkFn = null;
+            jqCompileNodes = compositeLinkFn = null;
           }
           return $linkNode;
         };
@@ -740,12 +734,14 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
        * function, which is the a linking function for the node.
        *
        * @param {NodeList} nodeList an array of nodes or NodeList to compile
-       * @param {function(ng.IScope, cloneAttachFn=)} transcludeFn A linking function, where the
+       * @param {*} transcludeFn A linking function, where the
        *        scope argument is auto-generated to the new child of the transcluded parent scope.
        * @param {Element=} $rootElement If the nodeList is the root of the compilation tree then
        *        the rootElement must be set the JQLite collection of the compile root. This is
        *        needed so that the JQLite collection items can be replaced with widgets.
        * @param {number=} maxPriority Max directive priority.
+       * @param {*} [ignoreDirective]
+       * @param {*} [previousCompileContext]
        * @returns {Function} A composite linking function of all of the matched directives or null.
        */
       function compileNodes(
@@ -771,7 +767,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           // We must always refer to `nodeList[i]` hereafter,
           // since the nodes can be replaced underneath us.
           directives = collectDirectives(
-            nodeList[i],
+            /** @type Element */ (nodeList[i]),
             [],
             attrs,
             i === 0 ? maxPriority : undefined,
@@ -1206,7 +1202,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
        *        this needs to be pre-sorted by priority order.
        * @param {Node} compileNode The raw DOM node to apply the compile functions to
        * @param {Object} templateAttrs The shared attribute function
-       * @param {function(angular.Scope, cloneAttachFn=)} transcludeFn A linking function, where the
+       * @param {function(import('../../core/scope/scope').Scope, Function=):any} transcludeFn A linking function, where the
        *                                                  scope argument is auto-generated to the new
        *                                                  child of the transcluded parent scope.
        * @param {JQLite} jqCollection If we are working on the root of the compile tree then this
@@ -1214,9 +1210,9 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
        *                              on it.
        * @param {Object=} originalReplaceDirective An optional directive that will be ignored when
        *                                           compiling the transclusion.
-       * @param {Array.<Function>} preLinkFns
-       * @param {Array.<Function>} postLinkFns
-       * @param {Object} previousCompileContext Context used for previous compilation of the current
+       * @param {Array.<Function>} [preLinkFns]
+       * @param {Array.<Function>} [postLinkFns]
+       * @param {Object} [previousCompileContext] Context used for previous compilation of the current
        *                                        node
        * @returns {Function} linkFn
        */
@@ -1261,7 +1257,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
           // collect multiblock sections
           if (attrStart) {
-            $compileNode = groupScan(compileNode, attrStart, attrEnd);
+            $compileNode = groupScan(/** @type {Element} */ (compileNode), attrStart, attrEnd);
           }
           $template = undefined;
 

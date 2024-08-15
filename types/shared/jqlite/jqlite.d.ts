@@ -2,19 +2,23 @@
  * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
  * and execution of chain functions.
  *
- * @param {string|Node|JQLite|ArrayLike<Element>|(() => void)|Window} element
+ * @param {string|Node|Node[]|NodeList|JQLite|ArrayLike<Element>|(() => void)|Window} element
  * @returns {JQLite}
  */
-export function JQLite(element: string | Node | JQLite | ArrayLike<Element> | (() => void) | Window): JQLite;
+export function JQLite(element: string | Node | Node[] | NodeList | JQLite | ArrayLike<Element> | (() => void) | Window): JQLite;
 export class JQLite {
     /**
      * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
      * and execution of chain functions.
      *
-     * @param {string|Node|JQLite|ArrayLike<Element>|(() => void)|Window} element
+     * @param {string|Node|Node[]|NodeList|JQLite|ArrayLike<Element>|(() => void)|Window} element
      * @returns {JQLite}
      */
-    constructor(element: string | Node | JQLite | ArrayLike<Element> | (() => void) | Window);
+    constructor(element: string | Node | Node[] | NodeList | JQLite | ArrayLike<Element> | (() => void) | Window);
+    /**
+     * @returns {Element[]}
+     */
+    elements(): Element[];
     /**
      * Remove all child nodes of the set of matched elements from the DOM and clears CACHE data, associated with the node.
      * @returns {JQLite} The current instance of JQLite.

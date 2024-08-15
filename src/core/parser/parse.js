@@ -10,7 +10,7 @@ import { Parser } from "./parser";
  * @property {boolean} isPure
  * @property {boolean} oneTime
  * @property {function(import('../scope/scope').Scope, import('../scope/scope').WatchListener, boolean, CompiledExpression, string | ((scope:  import('../scope/scope').Scope) => any) | CompiledExpression): any} $$watchDelegate
- * @property {any[]} inputs
+ * @property {any[]|Function} inputs
  * @property {function(any, any): any} assign - Assigns a value to a context. If value is not provided,
  */
 
@@ -219,6 +219,7 @@ function inputsWatchDelegate(
   objectEquality,
   parsedExpression,
 ) {
+  /** @type {Function} */
   let inputExpressions = parsedExpression.inputs;
   let lastResult;
 
