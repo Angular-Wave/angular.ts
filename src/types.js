@@ -68,9 +68,8 @@
 
 /**
  * @typedef {Object} Controller
+ * @property {string} name
  * @description Interface representing the lifecycle hooks for AngularJS directive controllers.
- * @see {@link https://docs.angularjs.org/api/ng/service/$compile#life-cycle-hooks}
- * @see {@link https://docs.angularjs.org/guide/component}
  *
  * @property {function(): void} [$onInit]
  * Called on each controller after all the controllers on an element have been constructed and had their bindings
@@ -147,7 +146,7 @@
  */
 
 /**
- * @typedef {DirectiveController} TController
+ * @typedef {DirectiveController|NgModelController} TController
  */
 
 /**

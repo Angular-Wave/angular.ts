@@ -40,24 +40,6 @@ function extractElementNode(element) {
   }
 }
 
-function splitClasses(classes) {
-  if (isString(classes)) {
-    classes = classes.split(" ");
-  }
-
-  // Use Object.create(null) to prevent class assumptions involving property names in
-  // Object.prototype
-  const obj = Object.create(null);
-  forEach(classes, (klass) => {
-    // sometimes the split leaves empty string values
-    // incase extra spaces were applied to the options
-    if (klass.length) {
-      obj[klass] = true;
-    }
-  });
-  return obj;
-}
-
 // if any other type of options value besides an Object value is
 // passed into the $animate.method() animation then this helper code
 // will be run which will ignore it. While this patch is not the

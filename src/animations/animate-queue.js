@@ -151,7 +151,7 @@ export function $$AnimateQueueProvider($animateProvider) {
     "$templateRequest",
     /**
      *
-     * @param {*} $rootScope
+     * @param {import('../core/scope/scope').Scope} $rootScope
      * @param {*} $injector
      * @param {*} $$animation
      * @param {*} $$AnimateRunner

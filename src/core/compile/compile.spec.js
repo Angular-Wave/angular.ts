@@ -17149,7 +17149,6 @@ describe("$compile", () => {
       $rootScope.$digest();
       await wait(100);
       const spans = element.find("span");
-      debugger;
       expect(spans.eq(0)[0].classList.contains("ng-hide")).toBeTrue();
       //expect(spans.eq(1)[0].classList.contains("ng-hide")).toBeTrue();
       expect(spans.eq(2)[0].classList.contains("ng-hide")).toBeTrue();

@@ -8,14 +8,16 @@ export type ComponentOptions = any;
 export type ControllerConstructor = Function;
 export type OnChangesObject = any;
 export type ChangesObject = any;
-export type Controller = any;
+export type Controller = {
+    name: string;
+};
 export type Attributes = {
     [x: string]: any;
 };
 export type TScope = import("./core/scope/scope").Scope;
 export type TElement = import("./shared/jqlite/jqlite").JQLite;
 export type TAttributes = Attributes;
-export type TController = DirectiveController;
+export type TController = DirectiveController | NgModelController;
 export type DirectiveController = Controller | Controller[] | {
     [key: string]: Controller;
 };

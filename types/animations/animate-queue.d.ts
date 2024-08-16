@@ -6,7 +6,7 @@ export class $$AnimateQueueProvider {
         cancel: any[];
         join: any[];
     };
-    $get: (string | (($rootScope: any, $injector: any, $$animation: any, $$AnimateRunner: any, $templateRequest: any) => {
+    $get: (string | (($rootScope: import("../core/scope/scope").Scope, $injector: any, $$animation: any, $$AnimateRunner: any, $templateRequest: any) => {
         on(event: any, container: any, callback: any): void;
         off(event: any, container: any, callback: any, ...args: any[]): void;
         pin(element: any, parentElement: any): void;

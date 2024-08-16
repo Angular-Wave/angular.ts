@@ -1,198 +1,203 @@
 import { forEach, isString } from "../../shared/utils";
 
+const ACTIVE_CLASS = "ng-active";
+const INACTIVE_CLASS = "ng-inactive";
+
+class NgMessageCtrl {
+  /**
+   * @param {import('../../shared/jqlite/jqlite').JQLite} $element
+   * @param {import('../../core/scope/scope').Scope} $scope
+   * @param {import('../../core/compile/attributes').Attributes} $attrs
+   * @param {*} $animate
+   */
+  constructor($element, $scope, $attrs, $animate) {
+    this.$element = $element;
+    this.$scope = $scope;
+    this.$attrs = $attrs;
+    this.$animate = $animate;
+
+    this.latestKey = 0;
+    this.nextAttachId = 0;
+    this.messages = {};
+    this.renderLater = false;
+    this.cachedCollection = null;
+
+    this.head = undefined;
+    this.default = undefined;
+
+    this.$scope.$watchCollection(
+      this.$attrs["ngMessages"] || this.$attrs["for"],
+      this.render.bind(this),
+    );
+  }
+
+  getAttachId() {
+    return this.nextAttachId++;
+  }
+
+  render(collection = {}) {
+    this.renderLater = false;
+    this.cachedCollection = collection;
+
+    const multiple =
+      isAttrTruthy(this.$scope, this.$attrs["ngMessagesMultiple"]) ||
+      isAttrTruthy(this.$scope, this.$attrs["multiple"]);
+
+    const unmatchedMessages = [];
+    const matchedKeys = {};
+    let truthyKeys = 0;
+    let messageItem = this.head;
+    let messageFound = false;
+    let totalMessages = 0;
+
+    while (messageItem != null) {
+      totalMessages++;
+      const messageCtrl = messageItem.message;
+      let messageUsed = false;
+
+      if (!messageFound) {
+        forEach(collection, (value, key) => {
+          if (truthy(value) && !messageUsed) {
+            truthyKeys++;
+
+            if (messageCtrl.test(key)) {
+              if (matchedKeys[key]) return;
+              matchedKeys[key] = true;
+
+              messageUsed = true;
+              messageCtrl.attach();
+            }
+          }
+        });
+      }
+
+      if (messageUsed) {
+        messageFound = !multiple;
+      } else {
+        unmatchedMessages.push(messageCtrl);
+      }
+
+      messageItem = messageItem.next;
+    }
+
+    unmatchedMessages.forEach((messageCtrl) => {
+      messageCtrl.detach();
+    });
+
+    const messageMatched = unmatchedMessages.length !== totalMessages;
+    const attachDefault = this.default && !messageMatched && truthyKeys > 0;
+
+    if (attachDefault) {
+      this.default.attach();
+    } else if (this.default) {
+      this.default.detach();
+    }
+
+    if (messageMatched || attachDefault) {
+      this.$animate.setClass(this.$element, ACTIVE_CLASS, INACTIVE_CLASS);
+    } else {
+      this.$animate.setClass(this.$element, INACTIVE_CLASS, ACTIVE_CLASS);
+    }
+  }
+
+  reRender() {
+    if (!this.renderLater) {
+      this.renderLater = true;
+      this.$scope.$evalAsync(() => {
+        if (this.renderLater && this.cachedCollection) {
+          this.render(this.cachedCollection);
+        }
+      });
+    }
+  }
+
+  register(comment, messageCtrl, isDefault) {
+    if (isDefault) {
+      this.default = messageCtrl;
+    } else {
+      const nextKey = this.latestKey.toString();
+      this.messages[nextKey] = {
+        message: messageCtrl,
+      };
+      this.insertMessageNode(this.$element[0], comment, nextKey);
+      comment.$$ngMessageNode = nextKey;
+      this.latestKey++;
+    }
+
+    this.reRender();
+  }
+
+  deregister(comment, isDefault) {
+    if (isDefault) {
+      delete this.default;
+    } else {
+      const key = comment.$$ngMessageNode;
+      delete comment.$$ngMessageNode;
+      this.removeMessageNode(this.$element[0], comment, key);
+      delete this.messages[key];
+    }
+    this.reRender();
+  }
+
+  findPreviousMessage(parent, comment) {
+    let prevNode = comment;
+    const parentLookup = [];
+
+    while (prevNode && prevNode !== parent) {
+      const prevKey = prevNode.$$ngMessageNode;
+      if (prevKey && prevKey.length) {
+        return this.messages[prevKey];
+      }
+
+      if (prevNode.childNodes.length && parentLookup.indexOf(prevNode) === -1) {
+        parentLookup.push(prevNode);
+        prevNode = prevNode.childNodes[prevNode.childNodes.length - 1];
+      } else if (prevNode.previousSibling) {
+        prevNode = prevNode.previousSibling;
+      } else {
+        prevNode = prevNode.parentNode;
+        parentLookup.push(prevNode);
+      }
+    }
+  }
+
+  insertMessageNode(parent, comment, key) {
+    const messageNode = this.messages[key];
+    if (!this.head) {
+      this.head = messageNode;
+    } else {
+      const match = this.findPreviousMessage(parent, comment);
+      if (match) {
+        messageNode.next = match.next;
+        match.next = messageNode;
+      } else {
+        messageNode.next = this.head;
+        this.head = messageNode;
+      }
+    }
+  }
+
+  removeMessageNode(parent, comment, key) {
+    const messageNode = this.messages[key];
+
+    if (!messageNode) return;
+
+    const match = this.findPreviousMessage(parent, comment);
+    if (match) {
+      match.next = messageNode.next;
+    } else {
+      this.head = messageNode.next;
+    }
+  }
+}
+
 ngMessagesDirective.$inject = ["$animate"];
 export function ngMessagesDirective($animate) {
-  const ACTIVE_CLASS = "ng-active";
-  const INACTIVE_CLASS = "ng-inactive";
   return {
     require: "ngMessages",
     restrict: "AE",
-    controller: function ($element, $scope, $attrs) {
-      const ctrl = this;
-      let latestKey = 0;
-      let nextAttachId = 0;
-      const messages = {};
-      let renderLater;
-      let cachedCollection;
-
-      this.head = undefined;
-      this.default = undefined;
-      this.messages = messages;
-
-      this.getAttachId = function getAttachId() {
-        return nextAttachId++;
-      };
-
-      this.render = function (collection) {
-        collection = collection || {};
-
-        renderLater = false;
-        cachedCollection = collection;
-
-        // this is true if the attribute is empty or if the attribute value is truthy
-        const multiple =
-          isAttrTruthy($scope, $attrs.ngMessagesMultiple) ||
-          isAttrTruthy($scope, $attrs.multiple);
-
-        const unmatchedMessages = [];
-        const matchedKeys = {};
-        let truthyKeys = 0;
-        let messageItem = ctrl.head;
-        let messageFound = false;
-        let totalMessages = 0;
-
-        // we use != instead of !== to allow for both undefined and null values
-        while (messageItem != null) {
-          totalMessages++;
-          const messageCtrl = messageItem.message;
-
-          let messageUsed = false;
-          if (!messageFound) {
-            forEach(collection, (value, key) => {
-              if (truthy(value) && !messageUsed) {
-                truthyKeys++;
-
-                if (messageCtrl.test(key)) {
-                  // this is to prevent the same error name from showing up twice
-                  if (matchedKeys[key]) return;
-                  matchedKeys[key] = true;
-
-                  messageUsed = true;
-                  messageCtrl.attach();
-                }
-              }
-            });
-          }
-
-          if (messageUsed) {
-            // unless we want to display multiple messages then we should
-            // set a flag here to avoid displaying the next message in the list
-            messageFound = !multiple;
-          } else {
-            unmatchedMessages.push(messageCtrl);
-          }
-
-          messageItem = messageItem.next;
-        }
-
-        forEach(unmatchedMessages, (messageCtrl) => {
-          messageCtrl.detach();
-        });
-
-        const messageMatched = unmatchedMessages.length !== totalMessages;
-        const attachDefault = ctrl.default && !messageMatched && truthyKeys > 0;
-
-        if (attachDefault) {
-          ctrl.default.attach();
-        } else if (ctrl.default) {
-          ctrl.default.detach();
-        }
-
-        if (messageMatched || attachDefault) {
-          $animate.setClass($element, ACTIVE_CLASS, INACTIVE_CLASS);
-        } else {
-          $animate.setClass($element, INACTIVE_CLASS, ACTIVE_CLASS);
-        }
-      };
-
-      $scope.$watchCollection($attrs.ngMessages || $attrs.for, ctrl.render);
-
-      this.reRender = function () {
-        if (!renderLater) {
-          renderLater = true;
-          $scope.$evalAsync(() => {
-            if (renderLater && cachedCollection) {
-              ctrl.render(cachedCollection);
-            }
-          });
-        }
-      };
-
-      this.register = function (comment, messageCtrl, isDefault) {
-        if (isDefault) {
-          ctrl.default = messageCtrl;
-        } else {
-          const nextKey = latestKey.toString();
-          messages[nextKey] = {
-            message: messageCtrl,
-          };
-          insertMessageNode($element[0], comment, nextKey);
-          comment.$$ngMessageNode = nextKey;
-          latestKey++;
-        }
-
-        ctrl.reRender();
-      };
-
-      this.deregister = function (comment, isDefault) {
-        if (isDefault) {
-          delete ctrl.default;
-        } else {
-          const key = comment.$$ngMessageNode;
-          delete comment.$$ngMessageNode;
-          removeMessageNode($element[0], comment, key);
-          delete messages[key];
-        }
-        ctrl.reRender();
-      };
-
-      function findPreviousMessage(parent, comment) {
-        let prevNode = comment;
-        const parentLookup = [];
-
-        while (prevNode && prevNode !== parent) {
-          const prevKey = prevNode.$$ngMessageNode;
-          if (prevKey && prevKey.length) {
-            return messages[prevKey];
-          }
-
-          // dive deeper into the DOM and examine its children for any ngMessage
-          // comments that may be in an element that appears deeper in the list
-          if (
-            prevNode.childNodes.length &&
-            parentLookup.indexOf(prevNode) === -1
-          ) {
-            parentLookup.push(prevNode);
-            prevNode = prevNode.childNodes[prevNode.childNodes.length - 1];
-          } else if (prevNode.previousSibling) {
-            prevNode = prevNode.previousSibling;
-          } else {
-            prevNode = prevNode.parentNode;
-            parentLookup.push(prevNode);
-          }
-        }
-      }
-
-      function insertMessageNode(parent, comment, key) {
-        const messageNode = messages[key];
-        if (!ctrl.head) {
-          ctrl.head = messageNode;
-        } else {
-          const match = findPreviousMessage(parent, comment);
-          if (match) {
-            messageNode.next = match.next;
-            match.next = messageNode;
-          } else {
-            messageNode.next = ctrl.head;
-            ctrl.head = messageNode;
-          }
-        }
-      }
-
-      function removeMessageNode(parent, comment, key) {
-        const messageNode = messages[key];
-
-        // This message node may have already been removed by a call to deregister()
-        if (!messageNode) return;
-
-        const match = findPreviousMessage(parent, comment);
-        if (match) {
-          match.next = messageNode.next;
-        } else {
-          ctrl.head = messageNode.next;
-        }
-      }
-    },
+    controller: ($element, $scope, $attrs) =>
+      new NgMessageCtrl($element, $scope, $attrs, $animate),
   };
 }
 

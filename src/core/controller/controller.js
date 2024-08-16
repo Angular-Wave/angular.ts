@@ -162,7 +162,9 @@ export function $ControllerProvider() {
               locals,
               identifier,
               instance,
-              constructor || expression.name,
+              constructor ||
+                /** @type {import("../../types").Controller} */ (expression)
+                  .name,
             );
           }
 
@@ -185,7 +187,10 @@ export function $ControllerProvider() {
                     locals,
                     identifier,
                     instance,
-                    constructor || expression.name,
+                    constructor ||
+                      /** @type {import("../../types").Controller} */ (
+                        expression
+                      ).name,
                   );
                 }
               }
@@ -209,7 +214,8 @@ export function $ControllerProvider() {
             locals,
             identifier,
             instance,
-            constructor || expression.name,
+            constructor ||
+              /** @type {import("../../types").Controller} */ (expression).name,
           );
         }
 

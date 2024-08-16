@@ -6,7 +6,9 @@ export function ngChangeDirective() {
     restrict: "A",
     require: "ngModel",
     link(scope, _element, attr, ctrl) {
-      ctrl.$viewChangeListeners.push(() => scope.$eval(attr.ngChange));
+      /** @type {import('../../types').NgModelController} */ (
+        ctrl
+      ).$viewChangeListeners.push(() => scope.$eval(attr.ngChange));
     },
   };
 }
