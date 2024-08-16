@@ -166,11 +166,11 @@ export function extractElementNode(element) {
 export function applyAnimationClassesFactory() {
   return function (element, options) {
     if (options.addClass) {
-      element[0].classList.add(options.addClass);
+      element[0].classList.add(...options.addClass.trim().split(" "));
       options.addClass = null;
     }
     if (options.removeClass) {
-      element[0].classList.remove(options.removeClass);
+      element[0].classList.remove(...options.removeClass.trim().split(" "));
       options.removeClass = null;
     }
   };

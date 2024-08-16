@@ -26,7 +26,7 @@ describe("ngRepeat", () => {
         };
       });
 
-    injector = createInjector([
+    injector = window.angular.bootstrap(document.getElementById("dummy"), [
       "defaultModule",
       (_$compileProvider_) => {
         $compileProvider = _$compileProvider_;

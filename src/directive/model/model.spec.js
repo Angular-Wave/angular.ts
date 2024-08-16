@@ -1,6 +1,5 @@
 import { JQLite, dealoc } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
-import { createInjector } from "../../core/di/injector";
 import { NgModelController } from "./model";
 import { isDefined, valueFn, isObject } from "../../shared/utils";
 import { browserTrigger } from "../../shared/test-utils";
@@ -20,11 +19,13 @@ describe("ngModel", () => {
     window.angular
       .module("myModule", ["ng"])
       .decorator("$exceptionHandler", function () {
-        return (exception, cause) => {
+        return (exception) => {
           throw new Error(exception.message);
         };
       });
-    injector = createInjector(["myModule"]);
+    injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      "myModule",
+    ]);
     $compile = injector.get("$compile");
 
     const attrs = { name: "testAlias", ngModel: "value" };

@@ -1,4 +1,4 @@
-import { forEach, isObject, isString } from "../../shared/utils";
+import { hasAnimate, isObject, isString } from "../../shared/utils";
 
 function classDirective(name, selector) {
   name = `ngClass${name}`;
@@ -34,12 +34,28 @@ function classDirective(name, selector) {
 
         function addClasses(classString) {
           classString = digestClassCounts(split(classString), 1);
-          attr.$addClass(classString);
+          if (hasAnimate(element[0])) {
+            attr.$addClass(classString);
+          } else {
+            scope.$$postDigest(() => {
+              if (classString !== "") {
+                element[0].classList.add(...classString.trim().split(" "));
+              }
+            });
+          }
         }
 
         function removeClasses(classString) {
           classString = digestClassCounts(split(classString), -1);
-          attr.$removeClass(classString);
+          if (hasAnimate(element[0])) {
+            attr.$removeClass(classString);
+          } else {
+            scope.$$postDigest(() => {
+              if (classString !== "") {
+                element[0].classList.remove(...classString.trim().split(" "));
+              }
+            });
+          }
         }
 
         function updateClasses(oldClassString, newClassString) {
@@ -52,22 +68,35 @@ function classDirective(name, selector) {
           const toRemoveString = digestClassCounts(toRemoveArray, -1);
           const toAddString = digestClassCounts(toAddArray, 1);
 
-          attr.$addClass(toAddString);
-          attr.$removeClass(toRemoveString);
+          if (hasAnimate(element[0])) {
+            attr.$addClass(toAddString);
+            attr.$removeClass(toRemoveString);
+          } else {
+            scope.$$postDigest(() => {
+              if (toAddString !== "") {
+                element[0].classList.add(...toAddString.trim().split(" "));
+              }
+              if (toRemoveString !== "") {
+                element[0].classList.remove(
+                  ...toRemoveString.trim().split(" "),
+                );
+              }
+            });
+          }
         }
 
         function digestClassCounts(classArray, count) {
           const classesToUpdate = [];
-
-          forEach(classArray, (className) => {
-            if (count > 0 || classCounts[className]) {
-              classCounts[className] = (classCounts[className] || 0) + count;
-              if (classCounts[className] === +(count > 0)) {
-                classesToUpdate.push(className);
+          if (classArray) {
+            classArray.forEach((className) => {
+              if (count > 0 || classCounts[className]) {
+                classCounts[className] = (classCounts[className] || 0) + count;
+                if (classCounts[className] === +(count > 0)) {
+                  classesToUpdate.push(className);
+                }
               }
-            }
-          });
-
+            });
+          }
           return classesToUpdate.join(" ");
         }
 

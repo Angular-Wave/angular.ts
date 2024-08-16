@@ -1,6 +1,5 @@
 import { dealoc } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
-import { createInjector } from "../../core/di/injector";
 
 describe("ngList", () => {
   let $rootScope;
@@ -11,7 +10,10 @@ describe("ngList", () => {
 
   beforeEach(() => {
     window.angular = new Angular();
-    injector = createInjector(["ng"]);
+    window.angular.module("test", []);
+    injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      "test",
+    ]);
     $compile = injector.get("$compile");
     $rootScope = injector.get("$rootScope");
   });

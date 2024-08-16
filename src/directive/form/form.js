@@ -327,7 +327,7 @@ FormController.prototype = {
    * parent forms of the form.
    */
   $setSubmitted() {
-     /** @type {FormController} */
+    /** @type {FormController} */
     let rootForm = this;
     while (rootForm.$$parentForm && rootForm.$$parentForm !== nullFormCtrl) {
       rootForm = rootForm.$$parentForm;

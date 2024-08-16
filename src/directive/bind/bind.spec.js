@@ -1,5 +1,5 @@
 import { Angular } from "../../loader";
-import { createInjector } from "../../core/di/injector";
+
 import { dealoc } from "../../shared/jqlite/jqlite";
 
 describe("ng-bind", () => {
@@ -14,15 +14,17 @@ describe("ng-bind", () => {
     window.angular
       .module("myModule", ["ng"])
       .decorator("$exceptionHandler", function () {
-        return (exception, cause) => {
+        return (exception) => {
           throw new Error(exception.message);
         };
       });
-    createInjector(["myModule"]).invoke((_$rootScope_, _$compile_, _$sce_) => {
-      $rootScope = _$rootScope_;
-      $compile = _$compile_;
-      $sce = _$sce_;
-    });
+    window.angular
+      .bootstrap(document.getElementById("dummy"), ["myModule"])
+      .invoke((_$rootScope_, _$compile_, _$sce_) => {
+        $rootScope = _$rootScope_;
+        $compile = _$compile_;
+        $sce = _$sce_;
+      });
   });
 
   afterEach(() => {
@@ -197,16 +199,26 @@ describe("ng-bind", () => {
 
     describe("SCE disabled", () => {
       beforeEach(() => {
-        createInjector([
-          "ng",
-          ($sceProvider) => {
-            $sceProvider.enabled(false);
-          },
-        ]).invoke((_$rootScope_, _$compile_, _$sce_) => {
-          $rootScope = _$rootScope_;
-          $compile = _$compile_;
-          $sce = _$sce_;
-        });
+        dealoc(document.getElementById("dummy"));
+        window.angular
+          .module("myModule", [
+            "ng",
+            ($sceProvider) => {
+              $sceProvider.enabled(false);
+            },
+          ])
+          .decorator("$exceptionHandler", function () {
+            return (exception) => {
+              throw new Error(exception.message);
+            };
+          });
+        window.angular
+          .bootstrap(document.getElementById("dummy"), ["myModule"])
+          .invoke((_$rootScope_, _$compile_, _$sce_) => {
+            $rootScope = _$rootScope_;
+            $compile = _$compile_;
+            $sce = _$sce_;
+          });
       });
 
       afterEach(() => dealoc(element));
@@ -243,16 +255,26 @@ describe("ng-bind", () => {
 
     describe("SCE enabled", () => {
       beforeEach(() => {
-        createInjector([
-          "ng",
-          ($sceProvider) => {
-            $sceProvider.enabled(true);
-          },
-        ]).invoke((_$rootScope_, _$compile_, _$sce_) => {
-          $rootScope = _$rootScope_;
-          $compile = _$compile_;
-          $sce = _$sce_;
-        });
+        dealoc(document.getElementById("dummy"));
+        window.angular
+          .module("myModule", [
+            "ng",
+            ($sceProvider) => {
+              $sceProvider.enabled(true);
+            },
+          ])
+          .decorator("$exceptionHandler", function () {
+            return (exception) => {
+              throw new Error(exception.message);
+            };
+          });
+        window.angular
+          .bootstrap(document.getElementById("dummy"), ["myModule"])
+          .invoke((_$rootScope_, _$compile_, _$sce_) => {
+            $rootScope = _$rootScope_;
+            $compile = _$compile_;
+            $sce = _$sce_;
+          });
         scope = $rootScope.$new();
       });
 
@@ -292,23 +314,38 @@ describe("ng-bind", () => {
           this.val = val;
         }
 
-        let injector = createInjector([
-          "ng",
-          function ($provide) {
-            $provide.decorator("$sce", ($delegate) => {
-              $delegate.trustAsHtml = function (html) {
-                return new MySafeHtml(html);
-              };
-              $delegate.getTrustedHtml = function (mySafeHtml) {
-                return mySafeHtml.val;
-              };
-              $delegate.valueOf = function (v) {
-                return v instanceof MySafeHtml ? v.val : v;
-              };
-              return $delegate;
-            });
-          },
-        ]).invoke((_$rootScope_, _$compile_, _$sce_) => {
+        dealoc(document.getElementById("dummy"));
+
+        window.angular
+          .module("myModule", [
+            "ng",
+
+            function ($provide) {
+              $provide.decorator("$sce", ($delegate) => {
+                $delegate.trustAsHtml = function (html) {
+                  return new MySafeHtml(html);
+                };
+                $delegate.getTrustedHtml = function (mySafeHtml) {
+                  return mySafeHtml.val;
+                };
+                $delegate.valueOf = function (v) {
+                  return v instanceof MySafeHtml ? v.val : v;
+                };
+                return $delegate;
+              });
+            },
+          ])
+          .decorator("$exceptionHandler", function () {
+            return (exception) => {
+              throw new Error(exception.message);
+            };
+          });
+        let injector = window.angular.bootstrap(
+          document.getElementById("dummy"),
+          ["myModule"],
+        );
+
+        injector.invoke((_$rootScope_, _$compile_, _$sce_) => {
           $rootScope = _$rootScope_.$new();
           $compile = _$compile_;
           $sce = _$sce_;

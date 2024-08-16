@@ -1,5 +1,4 @@
 import { Angular } from "../../loader";
-import { createInjector } from "../../core/di/injector";
 import { dealoc } from "../../shared/jqlite/jqlite";
 
 describe("ngSwitch", () => {
@@ -10,7 +9,11 @@ describe("ngSwitch", () => {
 
   beforeEach(() => {
     window.angular = new Angular();
-    createInjector(["ng"]).invoke(($rootScope, _$compile_, _$timeout_) => {
+    window.angular.module("test", []);
+    let injector = window.angular.bootstrap(
+      document.getElementById("dummy", ["test"]),
+    );
+    injector.invoke(($rootScope, _$compile_, _$timeout_) => {
       $scope = $rootScope.$new();
       $compile = _$compile_;
       $timeout = _$timeout_;

@@ -17,10 +17,12 @@ describe("validators", () => {
           throw new Error(exception);
         };
       });
-    createInjector(["myModule"]).invoke((_$compile_, _$rootScope_) => {
-      $compile = _$compile_;
-      $rootScope = _$rootScope_;
-    });
+    window.angular
+      .bootstrap(document.getElementById("dummy"), ["myModule"])
+      .invoke((_$compile_, _$rootScope_) => {
+        $compile = _$compile_;
+        $rootScope = _$rootScope_;
+      });
   });
 
   afterEach(() => {

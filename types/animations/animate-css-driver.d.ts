@@ -4,7 +4,7 @@ export class $$AnimateCssDriverProvider {
     /**
      * @returns {Function}
      */
-    $get: (string | (($animateCss: any, $$AnimateRunner: typeof import("../core/animate/animate-runner").AnimateRunner, $rootElement: JQLite) => (animationDetails: any) => any))[];
+    $get: (string | (($animateCss: any, $$AnimateRunner: typeof import("./animate-runner").AnimateRunner, $rootElement: JQLite) => (animationDetails: any) => any))[];
 }
 export namespace $$AnimateCssDriverProvider {
     let $inject: string[];

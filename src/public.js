@@ -53,16 +53,12 @@ import { ngModelOptionsDirective } from "./directive/model-options/model-options
 import { ngAttributeAliasDirectives } from "./directive/attrs/attrs";
 import { ngEventDirectives } from "./directive/events/events";
 import { AnchorScrollProvider } from "./services/anchor-scroll";
-import {
-  AnimateProvider,
-  CoreAnimateQueueProvider,
-} from "./core/animate/animate";
+import { AnimateProvider } from "./animations/animate";
 import { BrowserProvider } from "./services/browser";
-import { CoreAnimateCssProvider } from "./core/animate/animate-css";
 import {
   AnimateAsyncRunFactoryProvider,
   AnimateRunnerFactoryProvider,
-} from "./core/animate/animate-runner";
+} from "./animations/animate-runner";
 import {
   CacheFactoryProvider,
   TemplateCacheProvider,
@@ -89,7 +85,6 @@ import { $$TaskTrackerFactoryProvider } from "./core/task-tracker-factory";
 import { TemplateRequestProvider } from "./services/template-request";
 import { $TimeoutProvider } from "./core/timeout/timeout";
 import { SanitizeUriProvider } from "./core/sanitize/sanitize-uri";
-import { initAnimateModule } from "./animations/module";
 import {
   ngMessageDefaultDirective,
   ngMessageDirective,
@@ -112,6 +107,16 @@ import {
   ngShowAriaDirective,
   ngValueAriaDirective,
 } from "./directive/aria/aria";
+import { $AnimateCssProvider } from "./animations/animate-css";
+import { $$AnimateQueueProvider } from "./animations/animate-queue";
+import { $$AnimateJsProvider } from "./animations/animate-js";
+import { $$AnimationProvider } from "./animations/animation";
+import { RafSchedulerProvider } from "./animations/raf-scheduler";
+import { $$AnimateCacheProvider } from "./animations/animate-cache";
+import { $$AnimateCssDriverProvider } from "./animations/animate-css-driver";
+import { $$AnimateJsDriverProvider } from "./animations/animate-js-driver";
+import { ngAnimateSwapDirective } from "./animations/animate-swap";
+import { $$AnimateChildrenDirective } from "./animations/animate-children-directive";
 
 /**
  * @type {string} `version` from `package.json`, injected by Rollup plugin
@@ -190,6 +195,8 @@ export function publishExternalAPI(angular) {
             })
             .directive({
               input: hiddenInputBrowserCacheDirective,
+              ngAnimateSwap: ngAnimateSwapDirective,
+              ngAnimateChildren: $$AnimateChildrenDirective,
               ngChecked: ngCheckedAriaDirective,
               ngClick: ngClickAriaDirective,
               ngDblclick: ngDblclickAriaDirective,
@@ -208,8 +215,13 @@ export function publishExternalAPI(angular) {
             $aria: AriaProvider,
             $anchorScroll: AnchorScrollProvider,
             $animate: AnimateProvider,
-            $animateCss: CoreAnimateCssProvider,
-            $$animateQueue: CoreAnimateQueueProvider,
+            $$animation: $$AnimationProvider,
+            $animateCss: $AnimateCssProvider,
+            $$animateCssDriver: $$AnimateCssDriverProvider,
+            $$animateJs: $$AnimateJsProvider,
+            $$animateJsDriver: $$AnimateJsDriverProvider,
+            $$animateCache: $$AnimateCacheProvider,
+            $$animateQueue: $$AnimateQueueProvider,
             $$AnimateRunner: AnimateRunnerFactoryProvider,
             $$animateAsyncRun: AnimateAsyncRunFactoryProvider,
             $browser: BrowserProvider,
@@ -227,6 +239,7 @@ export function publishExternalAPI(angular) {
             $location: $LocationProvider,
             $log: $LogProvider,
             $parse: $ParseProvider,
+            $$rAFScheduler: RafSchedulerProvider,
             $rootScope: $RootScopeProvider,
             $q: $QProvider,
             $$q: $$QProvider,
@@ -242,7 +255,6 @@ export function publishExternalAPI(angular) {
     )
     .info({ version: VERSION });
 
-  initAnimateModule(angular);
   initRouter(angular);
   return ng;
 }

@@ -44,7 +44,9 @@ describe("ngModelOptions", () => {
               throw new Error(exception.message);
             };
           });
-        injector = createInjector(["myModule"]);
+        injector = window.angular.bootstrap(document.getElementById("dummy"), [
+          "myModule",
+        ]);
         $compile = injector.get("$compile");
         $rootScope = injector.get("$rootScope");
         $q = injector.get("$q");

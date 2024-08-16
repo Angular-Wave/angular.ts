@@ -6,9 +6,14 @@
  */
 /**
  * Creates a requestAnimationFrame scheduler.
- * @returns {RafScheduler} The scheduler object.
  */
-export function $$rAFSchedulerFactory(): RafScheduler;
+export function RafSchedulerProvider(): void;
+export class RafSchedulerProvider {
+    /**
+     * @returns {RafScheduler} The scheduler object.
+     */
+    $get: () => RafScheduler;
+}
 export type RafSchedulerFunction = Function;
 export type RafSchedulerObject = {
     /**

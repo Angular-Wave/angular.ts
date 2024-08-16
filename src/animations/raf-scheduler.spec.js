@@ -1,6 +1,6 @@
-import { $$rAFSchedulerFactory } from "./raf-scheduler";
+import { RafSchedulerProvider } from "./raf-scheduler";
 
-describe("$$rAFSchedulerFactory", function () {
+describe("RafSchedulerProvider", function () {
   let scheduler;
   let rAFCallbacks;
   let originalRequestAnimationFrame;
@@ -8,7 +8,7 @@ describe("$$rAFSchedulerFactory", function () {
 
   beforeEach(function () {
     rAFCallbacks = [];
-    scheduler = $$rAFSchedulerFactory();
+    scheduler = new RafSchedulerProvider().$get();
 
     originalRequestAnimationFrame = window.requestAnimationFrame;
     originalCancelAnimationFrame = window.cancelAnimationFrame;

@@ -1,13 +1,3 @@
-export function CoreAnimateQueueProvider(): void;
-export class CoreAnimateQueueProvider {
-    $get: (string | (($$AnimateRunner: any, $rootScope: any) => {
-        enabled: () => void;
-        on: () => void;
-        off: () => void;
-        pin: () => void;
-        push(element: any, event: any, options: any, domOperation: any): any;
-    }))[];
-}
 export function domInsert(element: any, parentElement: any, afterElement: any): void;
 export function AnimateProvider($provide: any): void;
 export class AnimateProvider {
@@ -427,4 +417,4 @@ export type AnimationOptions = {
      */
     to: string;
 };
-import { JQLite } from "../../shared/jqlite/jqlite";
+import { JQLite } from "../shared/jqlite/jqlite";

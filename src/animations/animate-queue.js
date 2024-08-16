@@ -145,14 +145,14 @@ export function $$AnimateQueueProvider($animateProvider) {
 
   this.$get = [
     "$rootScope",
-    "$rootElement",
+    "$injector",
     "$$animation",
     "$$AnimateRunner",
     "$templateRequest",
     /**
      *
      * @param {*} $rootScope
-     * @param {JQLite} $rootElement
+     * @param {*} $injector
      * @param {*} $$animation
      * @param {*} $$AnimateRunner
      * @param {*} $templateRequest
@@ -160,7 +160,7 @@ export function $$AnimateQueueProvider($animateProvider) {
      */
     function (
       $rootScope,
-      $rootElement,
+      $injector,
       $$animation,
       $$AnimateRunner,
       $templateRequest,
@@ -747,7 +747,7 @@ export function $$AnimateQueueProvider($animateProvider) {
        */
       function areAnimationsAllowed(node, parentNode) {
         const bodyNode = document.body;
-        const rootNode = getDomNode($rootElement);
+        const rootNode = getDomNode($injector.get("$rootElement"));
 
         let bodyNodeDetected = node === bodyNode || node.nodeName === "HTML";
         let rootNodeDetected = node === rootNode;

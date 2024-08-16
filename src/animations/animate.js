@@ -5,10 +5,9 @@ import {
   isString,
   minErr,
   extend,
-} from "../../shared/utils";
-import { JQLite } from "../../shared/jqlite/jqlite";
-import { NG_ANIMATE_CLASSNAME } from "../../animations/shared";
-import { addInlineStyles } from "./helpers";
+} from "../shared/utils";
+import { JQLite } from "../shared/jqlite/jqlite";
+import { NG_ANIMATE_CLASSNAME } from "./shared";
 
 /** @typedef {"enter"|"leave"|"move"|"addClass"|"setClass"|"removeClass"} AnimationMethod */
 
@@ -68,121 +67,6 @@ function splitClasses(classes) {
 // are wiped clean incase a callback function is provided.
 function prepareAnimateOptions(options) {
   return isObject(options) ? options : {};
-}
-
-// this is prefixed with Core since it conflicts with
-// the animateQueueProvider defined in ngAnimate/animateQueue.js
-export function CoreAnimateQueueProvider() {
-  const postDigestQueue = new Map();
-  const postDigestElements = [];
-
-  this.$get = [
-    "$$AnimateRunner",
-    "$rootScope",
-    function ($$AnimateRunner, $rootScope) {
-      return {
-        enabled: () => {},
-        on: () => {},
-        off: () => {},
-        pin: () => {},
-
-        push(element, event, options, domOperation) {
-          if (domOperation) {
-            domOperation();
-          }
-
-          options = options || {};
-          if (options.from) {
-            addInlineStyles(element[0], options.from);
-          }
-          if (options.to) {
-            addInlineStyles(element[0], options.to);
-          }
-
-          if (options.addClass || options.removeClass) {
-            addRemoveClassesPostDigest(
-              element,
-              options.addClass,
-              options.removeClass,
-            );
-          }
-
-          const runner = new $$AnimateRunner();
-
-          // since there are no animations to run the runner needs to be
-          // notified that the animation call is complete.
-          runner.complete();
-          return runner;
-        },
-      };
-
-      function updateData(data, classes, value) {
-        let changed = false;
-        if (classes) {
-          classes = isString(classes)
-            ? classes.split(" ")
-            : Array.isArray(classes)
-              ? classes
-              : [];
-          forEach(classes, (className) => {
-            if (className) {
-              changed = true;
-              data[className] = value;
-            }
-          });
-        }
-        return changed;
-      }
-
-      function handleCSSClassChanges() {
-        forEach(postDigestElements, function (element) {
-          const data = postDigestQueue.get(element);
-          if (data) {
-            const existing = splitClasses(element.attr("class"));
-            let toAdd = "";
-            let toRemove = "";
-            forEach(data, function (status, className) {
-              const hasClass = !!existing[className];
-              if (status !== hasClass) {
-                if (status) {
-                  toAdd += (toAdd.length ? " " : "") + className;
-                } else {
-                  toRemove += (toRemove.length ? " " : "") + className;
-                }
-              }
-            });
-
-            forEach(element, function (elm) {
-              if (toRemove) {
-                toRemove.split(" ").forEach((css) => elm.classList.remove(css));
-              }
-              if (toAdd) {
-                toAdd.split(" ").forEach((css) => elm.classList.add(css));
-              }
-            });
-            postDigestQueue.delete(element);
-          }
-        });
-        postDigestElements.length = 0;
-      }
-
-      function addRemoveClassesPostDigest(element, add, remove) {
-        const data = postDigestQueue.get(element) || {};
-
-        const classesAdded = updateData(data, add, true);
-        const classesRemoved = updateData(data, remove, false);
-
-        if (classesAdded || classesRemoved) {
-          postDigestQueue.set(element, data);
-          postDigestElements.push(element);
-
-          if (postDigestElements.length === 1) {
-            $rootScope.$$postDigest(handleCSSClassChanges);
-          }
-        }
-      }
-    },
-  ];
 }
 
 export function domInsert(element, parentElement, afterElement) {

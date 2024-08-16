@@ -17,13 +17,13 @@ describe("ngMessages", () => {
       template: '<div ng-messages="col"><ng-transclude></ng-transclude></div>',
     }));
 
-    createInjector(["app"]).invoke(
-      (_$rootScope_, _$compile_, _$templateCache_) => {
+    window.angular
+      .bootstrap(document.getElementById("dummy"), ["app"])
+      .invoke((_$rootScope_, _$compile_, _$templateCache_) => {
         $rootScope = _$rootScope_;
         $compile = _$compile_;
         $templateCache = _$templateCache_;
-      },
-    );
+      });
   });
 
   function messageChildren(element) {

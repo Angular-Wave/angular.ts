@@ -245,7 +245,7 @@ JQLite.prototype.on = function (type, fn) {
  * Removes an event listener to each element in JQLite collection.
  *
  * @param {string} type - The event type(s) to remove listener from
- * @param {Function} fn - The function to remove from event type.
+ * @param {Function} [fn] - The function to remove from event type.
  * @returns {JQLite}
  */
 JQLite.prototype.off = function (type, fn) {

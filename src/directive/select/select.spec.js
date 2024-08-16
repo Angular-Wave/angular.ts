@@ -61,7 +61,7 @@ describe("select", () => {
           throw new Error(exception);
         };
       });
-    createInjector([
+    let injector = window.angular.bootstrap(document.getElementById("dummy"), [
       "myModule",
       ($compileProvider) => {
         $compileProvider.directive("spyOnWriteValue", () => ({
@@ -77,7 +77,6 @@ describe("select", () => {
             },
           },
         }));
-
         $compileProvider.directive("myOptions", () => ({
           scope: { myOptions: "=" },
           replace: true,
@@ -96,7 +95,8 @@ describe("select", () => {
           },
         }));
       },
-    ]).invoke((_$rootScope_, _$compile_) => {
+    ]);
+    injector.invoke((_$rootScope_, _$compile_) => {
       scope = _$rootScope_.$new(); // create a child scope because the root scope can't be $destroy-ed
       $rootScope = _$rootScope_;
       $compile = _$compile_;

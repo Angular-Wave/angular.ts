@@ -1,4 +1,4 @@
-import { domInsert } from "../../core/animate/animate";
+import { domInsert } from "../../animations/animate";
 import { getBlockNodes } from "../../shared/jqlite/jqlite";
 import { hasAnimate } from "../../shared/utils";
 
