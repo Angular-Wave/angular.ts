@@ -1,6 +1,5 @@
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
-import { createInjector } from "../../core/di/injector";
 import { valueFn } from "../../shared/utils";
 
 describe("ngClass", () => {

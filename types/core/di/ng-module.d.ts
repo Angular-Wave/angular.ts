@@ -16,7 +16,6 @@ export const CONTROLLER_LITERAL: "$controllerProvider";
  */
 export class NgModule {
     /**
-     *
      * @param {String} name - Name of the module
      * @param {Array<String>} requires - List of modules which the injector will load before the current module
      * @param {Function} [configFn]
@@ -49,13 +48,13 @@ export class NgModule {
      */
     info(value: any): any;
     /**
-     * @param {String} name
+     * @param {string} name
      * @param {any} object
      * @returns {NgModule}
      */
     value(name: string, object: any): NgModule;
     /**
-     * @param {String} name
+     * @param {string} name
      * @param {any} object
      * @returns {NgModule}
      */
@@ -66,14 +65,58 @@ export class NgModule {
      * @returns {NgModule}
      */
     config(configFn: Function): NgModule;
-    run(block: any): this;
-    component(name: any, options: any): this;
-    factory(name: any, providerFunction: any): this;
-    service(name: any, serviceFunction: any): this;
-    provider(name: any, providerType: any): this;
-    decorator(name: any, decorFn: any): this;
-    directive(name: any, directiveFactory: any): this;
-    animation(name: any, animationFactory: any): this;
+    /**
+     * @param {Function} block
+     * @returns {NgModule}
+     */
+    run(block: Function): NgModule;
+    /**
+     * @param {string} name
+     * @param {*} options
+     * @returns {NgModule}
+     */
+    component(name: string, options: any): NgModule;
+    /**
+     * @param {string} name
+     * @param {*} providerFunction
+     * @returns {NgModule}
+     */
+    factory(name: string, providerFunction: any): NgModule;
+    /**
+     * @param {string} name
+     * @param {*} serviceFunction
+     * @returns {NgModule}
+     */
+    service(name: string, serviceFunction: any): NgModule;
+    /**
+     * @param {string} name
+     * @param {*} providerType
+     * @returns {NgModule}
+     */
+    provider(name: string, providerType: any): NgModule;
+    /**
+     * @param {string} name
+     * @param {*} decorFn
+     * @returns {NgModule}
+     */
+    decorator(name: string, decorFn: any): NgModule;
+    /**
+     * @param {string} name
+     * @param {*} directiveFactory
+     * @returns {NgModule}
+     */
+    directive(name: string, directiveFactory: any): NgModule;
+    /**
+     * @param {string} name
+     * @param {*} animationFactory
+     * @returns {NgModule}
+     */
+    animation(name: string, animationFactory: any): NgModule;
     filter(name: any, filterFn: any): this;
-    controller(name: any, ctlFn: any): this;
+    /**
+     * @param {string} name
+     * @param {*} ctlFn
+     * @returns {NgModule}
+     */
+    controller(name: string, ctlFn: any): NgModule;
 }

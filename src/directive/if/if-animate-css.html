@@ -8,13 +8,11 @@
     <script type="module" src="/src/index.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        window.angular
-          .module("test", ["ngAnimate"])
-          .directive("svgContainer", () => ({
-            template: "<svg ng-transclude></svg>",
-            replace: true,
-            transclude: true,
-          }));
+        window.angular.module("test", []).directive("svgContainer", () => ({
+          template: "<svg ng-transclude></svg>",
+          replace: true,
+          transclude: true,
+        }));
       });
     </script>
 

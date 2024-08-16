@@ -158,7 +158,7 @@
 
   ```
 
-- var info = $injector.modules['ngAnimate'].info();
+- var info = $injector.modules[].info();
 - ```
 
   ```

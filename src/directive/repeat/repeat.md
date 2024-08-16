@@ -107,7 +107,7 @@
 
   <example module="ngRepeat" name="ngRepeat-tracking" deps="angular-animate.js" animations="true">
     <file name="script.js">
-      angular.module('ngRepeat', ['ngAnimate']).controller('repeatController', function($scope) {
+      angular.module('ngRepeat', []).controller('repeatController', function($scope) {
         let friends = [
           {name:'John', age:25},
           {name:'Mary', age:40},

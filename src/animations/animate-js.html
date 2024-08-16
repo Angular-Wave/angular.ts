@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        window.angular.module("test", ["ngAnimate"]).animation(".colorful", [
+        window.angular.module("test", []).animation(".colorful", [
           function () {
             return {
               addClass: function (element, className, doneFn) {

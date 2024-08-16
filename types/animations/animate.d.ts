@@ -231,7 +231,7 @@ export class AnimateProvider {
        * @example
         <example module="animationExample" deps="angular-animate.js" animations="true" name="animate-cancel">
           <file name="app.js">
-            angular.module('animationExample', ['ngAnimate']).component('cancelExample', {
+            angular.module('animationExample', []).component('cancelExample', {
               templateUrl: 'template.html',
               controller: function($element, $animate) {
                 this.runner = null;

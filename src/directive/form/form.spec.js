@@ -1410,7 +1410,7 @@ describe("form", () => {
       JQLite(dummy).append(doc);
       let angular = new Angular();
       window.angular = new Angular();
-      myModule = window.angular.module("myModule", ["ngAnimate"]);
+      myModule = window.angular.module("myModule", []);
 
       injector = angular.bootstrap(dummy, ["myModule"]);
       injector.invoke((_$compile_, $rootScope, _$animate_) => {

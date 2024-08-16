@@ -140,8 +140,7 @@ export class Angular {
         "$compile",
         "$injector",
         /**
-         *
-         * @param {*} scope
+         * @param {import('./core/scope/scope').Scope} scope
          * @param {JQLite} el
          * @param {*} compile
          * @param {import("./core/di/internal-injector").InjectorService} $injector

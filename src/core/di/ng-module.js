@@ -25,7 +25,6 @@ export const CONTROLLER_LITERAL = "$controllerProvider";
  */
 export class NgModule {
   /**
-   *
    * @param {String} name - Name of the module
    * @param {Array<String>} requires - List of modules which the injector will load before the current module
    * @param {Function} [configFn]
@@ -78,7 +77,7 @@ export class NgModule {
   }
 
   /**
-   * @param {String} name
+   * @param {string} name
    * @param {any} object
    * @returns {NgModule}
    */
@@ -88,7 +87,7 @@ export class NgModule {
   }
 
   /**
-   * @param {String} name
+   * @param {string} name
    * @param {any} object
    * @returns {NgModule}
    */
@@ -107,11 +106,20 @@ export class NgModule {
     return this;
   }
 
+  /**
+   * @param {Function} block
+   * @returns {NgModule}
+   */
   run(block) {
     this.runBlocks.push(block);
     return this;
   }
 
+  /**
+   * @param {string} name
+   * @param {*} options
+   * @returns {NgModule}
+   */
   component(name, options) {
     if (options && isFunction(options)) {
       options.$$moduleName = name;
@@ -120,6 +128,11 @@ export class NgModule {
     return this;
   }
 
+  /**
+   * @param {string} name
+   * @param {*} providerFunction
+   * @returns {NgModule}
+   */
   factory(name, providerFunction) {
     if (providerFunction && isFunction(providerFunction)) {
       providerFunction.$$moduleName = name;
@@ -132,6 +145,11 @@ export class NgModule {
     return this;
   }
 
+  /**
+   * @param {string} name
+   * @param {*} serviceFunction
+   * @returns {NgModule}
+   */
   service(name, serviceFunction) {
     if (serviceFunction && isFunction(serviceFunction)) {
       serviceFunction.$$moduleName = name;
@@ -144,6 +162,11 @@ export class NgModule {
     return this;
   }
 
+  /**
+   * @param {string} name
+   * @param {*} providerType
+   * @returns {NgModule}
+   */
   provider(name, providerType) {
     if (providerType && isFunction(providerType)) {
       providerType.$$moduleName = name;
@@ -152,6 +175,11 @@ export class NgModule {
     return this;
   }
 
+  /**
+   * @param {string} name
+   * @param {*} decorFn
+   * @returns {NgModule}
+   */
   decorator(name, decorFn) {
     if (decorFn && isFunction(decorFn)) {
       decorFn.$$moduleName = name;
@@ -160,6 +188,11 @@ export class NgModule {
     return this;
   }
 
+  /**
+   * @param {string} name
+   * @param {*} directiveFactory
+   * @returns {NgModule}
+   */
   directive(name, directiveFactory) {
     if (directiveFactory && isFunction(directiveFactory)) {
       directiveFactory.$$moduleName = name;
@@ -172,6 +205,11 @@ export class NgModule {
     return this;
   }
 
+  /**
+   * @param {string} name
+   * @param {*} animationFactory
+   * @returns {NgModule}
+   */
   animation(name, animationFactory) {
     if (animationFactory && isFunction(animationFactory)) {
       animationFactory.$$moduleName = name;
@@ -192,6 +230,11 @@ export class NgModule {
     return this;
   }
 
+  /**
+   * @param {string} name
+   * @param {*} ctlFn
+   * @returns {NgModule}
+   */
   controller(name, ctlFn) {
     if (ctlFn && isFunction(ctlFn)) {
       ctlFn.$$moduleName = name;

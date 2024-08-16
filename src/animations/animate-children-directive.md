@@ -70,7 +70,7 @@
 
      </file>
      <file name="script.js">
-       angular.module('ngAnimateChildren', ['ngAnimate'])
+       angular.module('ngAnimateChildren', [])
          .controller('MainController', function MainController() {
            this.animateChildren = false;
            this.enterElement = false;
