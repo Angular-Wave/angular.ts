@@ -1,6 +1,5 @@
 import { JQLite, dealoc } from "./shared/jqlite/jqlite";
 import { Angular } from "./loader";
-import { createInjector } from "./core/di/injector";
 import { browserTrigger } from "./shared/test-utils";
 
 describe("binding", () => {
@@ -21,11 +20,13 @@ describe("binding", () => {
     window.angular = new Angular();
     myModule = window.angular.module("myModule", ["ng"]);
     myModule.decorator("$exceptionHandler", function () {
-      return (exception, cause) => {
+      return (exception) => {
         errors.push(exception.message);
       };
     });
-    $injector = createInjector(["myModule"]);
+    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      "myModule",
+    ]);
     $rootScope = $injector.get("$rootScope");
     $compile = $injector.get("$compile");
     $exceptionHandler = $injector.get("$exceptionHandler");

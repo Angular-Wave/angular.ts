@@ -1,6 +1,7 @@
 import { Angular } from "../loader";
 import { createInjector } from "./di/injector";
 import { valueFn } from "../shared/utils";
+import { dealoc } from "../shared/jqlite/jqlite";
 
 fdescribe("ngProp*", () => {
   let $compile, $rootScope, compileProvider, $sce;
@@ -18,7 +19,7 @@ fdescribe("ngProp*", () => {
         };
       });
 
-    let injector = createInjector([
+    let injector = window.angular.bootstrap(document.getElementById("dummy"), [
       "myModule",
       function ($compileProvider) {
         compileProvider = $compileProvider;
@@ -617,16 +618,19 @@ fdescribe("ngProp*", () => {
   describe("*[innerHTML]", () => {
     describe("SCE disabled", () => {
       beforeEach(() => {
-        createInjector([
-          "myModule",
-          ($sceProvider) => {
-            $sceProvider.enabled(false);
-          },
-        ]).invoke((_$compile_, _$rootScope_, _$sce_) => {
-          $compile = _$compile_;
-          $rootScope = _$rootScope_;
-          $sce = _$sce_;
-        });
+        dealoc(document.getElementById("dummy"));
+        window.angular
+          .bootstrap(document.getElementById("dummy"), [
+            "myModule",
+            ($sceProvider) => {
+              $sceProvider.enabled(false);
+            },
+          ])
+          .invoke((_$compile_, _$rootScope_, _$sce_) => {
+            $compile = _$compile_;
+            $rootScope = _$rootScope_;
+            $sce = _$sce_;
+          });
       });
 
       it("should set html", () => {

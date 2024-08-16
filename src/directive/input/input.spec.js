@@ -18,10 +18,12 @@ describe("input", () => {
           throw new Error(exception.message);
         };
       });
-    createInjector(["myModule"]).invoke((_$compile_, $rootScope) => {
-      $compile = _$compile_;
-      scope = $rootScope.$new();
-    });
+    window.angular
+      .bootstrap(document.getElementById("dummy"), ["myModule"])
+      .invoke((_$compile_, $rootScope) => {
+        $compile = _$compile_;
+        scope = $rootScope.$new();
+      });
   });
 
   afterEach(() => {

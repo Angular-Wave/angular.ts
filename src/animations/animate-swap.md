@@ -32,7 +32,7 @@
 -     </div>
 - </file>
 - <file name="script.js">
--     angular.module('ngAnimateSwapExample', ['ngAnimate'])
+-     angular.module('ngAnimateSwapExample', [])
 -       .controller('AppCtrl', ['$scope', '$interval', function($scope, $interval) {
 -         $scope.number = 0;
 -         $interval(function() {
