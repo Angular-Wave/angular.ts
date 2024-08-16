@@ -1,5 +1,4 @@
 import { Angular } from "../../loader";
-import { createInjector } from "../../core/di/injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { FormController } from "./form";
 
@@ -15,11 +14,11 @@ describe("form", () => {
     window.angular
       .module("myModule", ["ng"])
       .decorator("$exceptionHandler", function () {
-        return (exception, cause) => {
+        return (exception) => {
           throw new Error(exception);
         };
       });
-    injector = createInjector([
+    injector = window.angular.bootstrap(document.getElementById("dummy"), [
       "myModule",
       ($compileProvider) => {
         $compileProvider.directive("storeModelCtrl", () => ({
