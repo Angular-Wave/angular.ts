@@ -1,6 +1,6 @@
 import { Transition } from "../transition/transition";
 import { Resolvable } from "../resolve/resolvable";
-import { inArray, uniqR, unnestR } from "../../shared/common";
+import { uniqR, unnestR } from "../../shared/common";
 
 export function registerAddCoreResolvables(transitionService) {
   transitionService.onCreate({}, function addCoreResolvables(trans) {
@@ -17,7 +17,7 @@ export function registerAddCoreResolvables(transitionService) {
 }
 
 const TRANSITION_TOKENS = ["$transition$", Transition];
-const isTransition = inArray(TRANSITION_TOKENS);
+
 // References to Transition in the treeChanges pathnodes makes all
 // previous Transitions reachable in memory, causing a memory leak
 // This function removes resolves for '$transition$' and `Transition` from the treeChanges.
@@ -28,7 +28,9 @@ export function treeChangesCleanup(trans) {
     .reduce(uniqR, []);
   // If the resolvable is a Transition, return a new resolvable with null data
   const replaceTransitionWithNull = (r) => {
-    return isTransition(r.token) ? Resolvable.fromData(r.token, null) : r;
+    return TRANSITION_TOKENS.includes(r.token)
+      ? Resolvable.fromData(r.token, null)
+      : r;
   };
   nodes.forEach((node) => {
     node.resolvables = node.resolvables.map(replaceTransitionWithNull);

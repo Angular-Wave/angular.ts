@@ -101,11 +101,6 @@ export function inherit(parent, extra) {
   return newObj;
 }
 
-/** Given an array, returns true if the object is found in the array, (using includes) */
-export const inArray = curry(_inArray);
-export function _inArray(array, obj) {
-  return array.includes(obj);
-}
 /**
  * Given an array, and an item, if the item is found in the array, it removes it (in-place).
  * The same array is returned
@@ -188,7 +183,7 @@ export function pick(obj, propNames) {
  */
 export function omit(obj, propNames) {
   return Object.keys(obj)
-    .filter(not(inArray(propNames)))
+    .filter((x) => not(propNames.includes(x)))
     .reduce((acc, key) => ((acc[key] = obj[key]), acc), {});
 }
 /**
@@ -287,7 +282,7 @@ export function pushR(arr, obj) {
 }
 /** Reduce function that filters out duplicates */
 export const uniqR = (acc, token) =>
-  inArray(acc, token) ? acc : pushR(acc, token);
+  acc.includes(token) ? acc : pushR(acc, token);
 /**
  * Return a new array with a single level of arrays unnested.
  *

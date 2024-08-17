@@ -1,4 +1,4 @@
-import { find, tail, uniqR, unnestR, inArray } from "../../shared/common";
+import { find, tail, uniqR, unnestR } from "../../shared/common";
 import { propEq, not } from "../../shared/hof";
 import { trace } from "../common/trace";
 import { services } from "../common/coreservices";
@@ -122,7 +122,7 @@ export class ResolveContext {
    */
   resolvePath(when = "LAZY", trans) {
     // This option determines which 'when' policy Resolvables we are about to fetch.
-    const whenOption = inArray(ALL_WHENS, when) ? when : "LAZY";
+    const whenOption = ALL_WHENS.includes(when) ? when : "LAZY";
     // If the caller specified EAGER, only the EAGER Resolvables are fetched.
     // if the caller specified LAZY, both EAGER and LAZY Resolvables are fetched.`
     const matchedWhens =
@@ -130,7 +130,7 @@ export class ResolveContext {
     // get the subpath to the state argument, if provided
     trace.traceResolvePath(this._path, when, trans);
     const matchesPolicy = (acceptedVals, whenOrAsync) => (resolvable) =>
-      inArray(acceptedVals, this.getPolicy(resolvable)[whenOrAsync]);
+      acceptedVals.includes(this.getPolicy(resolvable)[whenOrAsync]);
     // Trigger all the (matching) Resolvables in the path
     // Reduce all the "WAIT" Resolvables into an array
     const promises = this._path.reduce((acc, node) => {
@@ -158,7 +158,7 @@ export class ResolveContext {
     return this._injector || (this._injector = new UIInjectorImpl(this));
   }
   findNode(resolvable) {
-    return find(this._path, (node) => inArray(node.resolvables, resolvable));
+    return find(this._path, (node) => node.resolvables.includes(resolvable));
   }
   /**
    * Gets the async dependencies of a Resolvable

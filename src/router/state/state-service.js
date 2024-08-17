@@ -1,7 +1,6 @@
 import {
   createProxyFunctions,
   defaults,
-  inArray,
   removeFrom,
   silenceUncaughtInPromise,
   silentRejection,
@@ -75,7 +74,7 @@ export class StateService {
     };
     const getters = ["current", "$current", "params", "transition"];
     const boundFns = Object.keys(StateService.prototype).filter(
-      not(inArray(getters)),
+      not(getters.includes),
     );
     createProxyFunctions(
       val(StateService.prototype),

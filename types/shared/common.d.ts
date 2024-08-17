@@ -68,7 +68,6 @@ export function createProxyFunctions(source: any, target: any, bind: any, fnName
  * @returns {Object} - A new object with `parent` as its prototype and properties from `extra`.
  */
 export function inherit(parent: any, extra?: any): any;
-export function _inArray(array: any, obj: any): any;
 export function _removeFrom(array: any, obj: any): any;
 /**
  * Applies a set of defaults to an options object.  The options object is filtered
@@ -172,8 +171,6 @@ export const toJson: any;
 /** Naive forEach implementation works with Objects or Arrays */
 export function forEach(obj: any, cb: any, _this: any): void;
 export function equals(o1: any, o2: any): any;
-/** Given an array, returns true if the object is found in the array, (using includes) */
-export const inArray: any;
 /**
  * Given an array, and an item, if the item is found in the array, it removes it (in-place).
  * The same array is returned

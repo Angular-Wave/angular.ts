@@ -1,10 +1,4 @@
-import {
-  equals,
-  applyPairs,
-  removeFrom,
-  inArray,
-  find,
-} from "../../shared/common";
+import { equals, applyPairs, removeFrom, find } from "../../shared/common";
 import { curry, prop } from "../../shared/hof";
 import { trace } from "../common/trace";
 import { getNg1ViewConfigFactory } from "../state/views";
@@ -133,7 +127,7 @@ export class ViewService {
       .map(matchingConfigPair);
     const matchedViewConfigs = ngViewTuples.map((tuple) => tuple.viewConfig);
     const unmatchedConfigTuples = this._viewConfigs
-      .filter((config) => !inArray(matchedViewConfigs, config))
+      .filter((config) => !matchedViewConfigs.includes(config))
       .map((viewConfig) => ({ ngView: undefined, viewConfig }));
     ngViewTuples.forEach(configureUIView);
     const allTuples = ngViewTuples.concat(unmatchedConfigTuples);

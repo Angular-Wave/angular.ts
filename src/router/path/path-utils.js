@@ -5,7 +5,6 @@ import {
   tail,
   mergeR,
   unnestR,
-  inArray,
   arrayTuples,
 } from "../../shared/common";
 import { prop, propEq } from "../../shared/hof";
@@ -51,7 +50,7 @@ export class PathUtils {
   static applyViewConfigs($view, path, states) {
     // Only apply the viewConfigs to the nodes for the given states
     path
-      .filter((node) => inArray(states, node.state))
+      .filter((node) => states.includes(node.state))
       .forEach((node) => {
         const viewDecls = Object.values(node.state.views || {});
         const subPath = PathUtils.subPath(path, (n) => n === node);

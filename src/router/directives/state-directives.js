@@ -1,11 +1,4 @@
-import {
-  forEach,
-  tail,
-  unnestR,
-  uniqR,
-  inArray,
-  removeFrom,
-} from "../../shared/common";
+import { forEach, tail, unnestR, uniqR, removeFrom } from "../../shared/common";
 import { isString, isObject } from "../../shared/utils";
 
 import { parse } from "../../shared/hof";
@@ -362,7 +355,7 @@ export function $StateRefActiveDirective(
           : [];
         const addClasses = fuzzyClasses.concat(exactClasses).reduce(uniqR, []);
         const removeClasses = allClasses.filter(
-          (cls) => !inArray(addClasses, cls),
+          (cls) => !addClasses.includes(cls),
         );
         $scope.$evalAsync(() => {
           addClasses.forEach((className) =>
