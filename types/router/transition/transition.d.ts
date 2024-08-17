@@ -151,7 +151,6 @@ export class Transition {
      * @returns a [[UIInjector]]
      */
     injector(state: any, pathName?: string): {
-        context: any;
         native: any;
         get(token: any): any;
         getAsync(token: any): any;

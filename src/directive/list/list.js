@@ -28,8 +28,8 @@ export function ngListDirective() {
         return list;
       };
 
-      ctrl.$parsers.push(parse);
-      ctrl.$formatters.push((value) => {
+      ctrl["$parsers"].push(parse);
+      ctrl["$formatters"].push((value) => {
         if (Array.isArray(value)) {
           return value.join(ngList);
         }
@@ -38,7 +38,7 @@ export function ngListDirective() {
       });
 
       // Override the standard $isEmpty because an empty array means the input is empty.
-      ctrl.$isEmpty = function (value) {
+      ctrl["$isEmpty"] = function (value) {
         return !value || !value.length;
       };
     },

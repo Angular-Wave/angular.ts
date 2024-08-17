@@ -92,8 +92,6 @@ export class ResolveContext {
     getDependencies(resolvable: any): any;
 }
 declare class UIInjectorImpl {
-    constructor(context: any);
-    context: any;
     native: any;
     get(token: any): any;
     getAsync(token: any): any;

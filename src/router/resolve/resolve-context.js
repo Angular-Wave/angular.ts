@@ -61,7 +61,7 @@ export class ResolveContext {
   /** Returns the [[ResolvePolicy]] for the given [[Resolvable]] */
   getPolicy(resolvable) {
     const node = this.findNode(resolvable);
-    return resolvable.getPolicy(node.state);
+    return resolvable.getPolicy(node);
   }
   /**
    * Returns a ResolveContext that includes a portion of this one
@@ -155,7 +155,7 @@ export class ResolveContext {
     return services.$q.all(promises);
   }
   injector() {
-    return this._injector || (this._injector = new UIInjectorImpl(this));
+    return this._injector || (this._injector = new UIInjectorImpl());
   }
   findNode(resolvable) {
     return find(this._path, (node) => node.resolvables.includes(resolvable));
@@ -177,7 +177,7 @@ export class ResolveContext {
     const getDependency = (token) => {
       const matching = availableResolvables.filter((r) => r.token === token);
       if (matching.length) return tail(matching);
-      const fromInjector = this.injector().getNative(token);
+      const fromInjector = services.$injector.get(token);
       if (isUndefined(fromInjector)) {
         throw new Error(
           "Could not find Dependency Injection token: " + stringify(token),
@@ -190,31 +190,16 @@ export class ResolveContext {
 }
 
 class UIInjectorImpl {
-  constructor(context) {
-    this.context = context;
-    this.native = this.get(NATIVE_INJECTOR_TOKEN) || services.$injector;
+  constructor() {
+    this.native = services.$injector;
   }
   get(token) {
-    const resolvable = this.context.getResolvable(token);
-    if (resolvable) {
-      if (this.context.getPolicy(resolvable).async === "NOWAIT") {
-        return resolvable.get(this.context);
-      }
-      if (!resolvable.resolved) {
-        throw new Error(
-          "Resolvable async .get() not complete:" + stringify(resolvable.token),
-        );
-      }
-      return resolvable.data;
-    }
-    return this.getNative(token);
+    return services.$injector.get(token);
   }
   getAsync(token) {
-    const resolvable = this.context.getResolvable(token);
-    if (resolvable) return resolvable.get(this.context);
-    return services.$q.when(this.native.get(token));
+    return services.$q.when(services.$injector.get(token));
   }
   getNative(token) {
-    return this.native && this.native.get(token);
+    return services.$injector.get(token);
   }
 }

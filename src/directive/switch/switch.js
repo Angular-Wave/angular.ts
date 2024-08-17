@@ -90,8 +90,8 @@ export function ngSwitchWhenDirective() {
         );
 
       cases.forEach((whenCase) => {
-        ctrl.cases[`!${whenCase}`] = ctrl.cases[`!${whenCase}`] || [];
-        ctrl.cases[`!${whenCase}`].push({
+        ctrl["cases"][`!${whenCase}`] = ctrl["cases"][`!${whenCase}`] || [];
+        ctrl["cases"][`!${whenCase}`].push({
           transclude: $transclude,
           element,
         });
@@ -111,8 +111,8 @@ export function ngSwitchDefaultDirective() {
     require: "^ngSwitch",
     multiElement: true,
     link(_scope, element, _attr, ctrl, $transclude) {
-      ctrl.cases["?"] = ctrl.cases["?"] || [];
-      ctrl.cases["?"].push({ transclude: $transclude, element });
+      ctrl["cases"]["?"] = ctrl["cases"]["?"] || [];
+      ctrl["cases"]["?"].push({ transclude: $transclude, element });
     },
   };
 }
