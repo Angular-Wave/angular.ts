@@ -6,7 +6,7 @@
  *
  * @packageDocumentation
  */
-import { and, not, pipe, prop, or } from "./hof";
+import { and, pipe, prop, or } from "./hof";
 import { isFunction, isObject, isString, isUndefined } from "./utils";
 export const isNull = (o) => o === null;
 export const isNullOrUndefined = or(isNull, isUndefined);
@@ -21,7 +21,8 @@ export function isInjectable(val) {
     const head = val.slice(0, -1),
       tail = val.slice(-1);
     return !(
-      head.filter(not(isString)).length || tail.filter(not(isFunction)).length
+      head.filter((x) => !isString(x)).length ||
+      tail.filter((x) => !isFunction(x)).length
     );
   }
   return isFunction(val);

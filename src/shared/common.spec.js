@@ -1,5 +1,5 @@
 import { defaults, filter, map, mapObj, pick } from "./common";
-import { is, eq, not, pattern, val } from "./hof";
+import { is, eq, pattern, val } from "./hof";
 import { isInjectable } from "./predicates";
 import { Queue } from "../router/common/queue";
 
@@ -55,24 +55,6 @@ describe("common", function () {
       const vals = { param1: 0, param2: 0 };
       expect(defaults(null, vals)).toEqual(vals);
       expect(defaults(undefined, vals)).toEqual(vals);
-    });
-  });
-
-  describe("not", function () {
-    it("should allow double-negatives", function () {
-      function T() {
-        return true;
-      }
-      function F() {
-        return false;
-      }
-      function empty() {
-        return "";
-      }
-
-      expect(not(not(T))()).toBe(true);
-      expect(not(not(F))()).toBe(false);
-      expect(not(not(empty))()).toBe(false);
     });
   });
 

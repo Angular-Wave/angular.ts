@@ -1,5 +1,5 @@
 import { find, tail, uniqR, unnestR } from "../../shared/common";
-import { propEq, not } from "../../shared/hof";
+import { propEq } from "../../shared/hof";
 import { trace } from "../common/trace";
 import { services } from "../common/coreservices";
 import { Resolvable } from "./resolvable";
@@ -139,7 +139,7 @@ export class ResolveContext {
       );
       const nowait = nodeResolvables.filter(matchesPolicy(["NOWAIT"], "async"));
       const wait = nodeResolvables.filter(
-        not(matchesPolicy(["NOWAIT"], "async")),
+        (x) => !matchesPolicy(["NOWAIT"], "async")(x),
       );
       // For the matching Resolvables, start their async fetch process.
       const subContext = this.subContext(node.state);

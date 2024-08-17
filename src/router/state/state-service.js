@@ -17,7 +17,7 @@ import { Param } from "../params/param";
 import { Glob } from "../common/glob";
 import { ResolveContext } from "../resolve/resolve-context";
 import { lazyLoadState } from "../hooks/lazy-load";
-import { not, val } from "../../shared/hof";
+import { val } from "../../shared/hof";
 import { EventBus } from "../../core/pubsub/pubsub";
 
 const err = minErr("$stateProvider");
@@ -74,7 +74,7 @@ export class StateService {
     };
     const getters = ["current", "$current", "params", "transition"];
     const boundFns = Object.keys(StateService.prototype).filter(
-      not(getters.includes),
+      (x) => !getters.includes(x),
     );
     createProxyFunctions(
       val(StateService.prototype),

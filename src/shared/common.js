@@ -1,5 +1,5 @@
 import { isDate, isFunction, isRegExp, isString } from "./utils";
-import { all, any, prop, curry, not } from "./hof";
+import { all, any, prop, curry } from "./hof";
 import { services } from "../router/common/coreservices";
 export const fromJson = JSON.parse.bind(JSON);
 export const toJson = JSON.stringify.bind(JSON);
@@ -183,7 +183,7 @@ export function pick(obj, propNames) {
  */
 export function omit(obj, propNames) {
   return Object.keys(obj)
-    .filter((x) => not(propNames.includes(x)))
+    .filter((x) => !propNames.includes(x))
     .reduce((acc, key) => ((acc[key] = obj[key]), acc), {});
 }
 /**

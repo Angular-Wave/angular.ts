@@ -14,7 +14,7 @@ import {
   uniqR,
 } from "../../shared/common";
 import { isUndefined, isObject } from "../../shared/utils";
-import { prop, propEq, val, not, is } from "../../shared/hof";
+import { prop, propEq, val, is } from "../../shared/hof";
 import { TransitionHookPhase } from "./interface"; // has or is using
 import { TransitionHook } from "./transition-hook";
 import { matchState, makeEvent } from "./hook-registry";
@@ -500,7 +500,7 @@ export class Transition {
       redirectEnteringNodes,
       originalEnteringNodes,
       PathUtils.nonDynamicParams,
-    ).filter(not(nodeIsReloading(targetState.options().reloadState)));
+    ).filter((x) => !nodeIsReloading(targetState.options().reloadState)(x));
     // Use the existing (possibly pre-resolved) resolvables for the matching entering nodes.
     matchingEnteringNodes.forEach((node, idx) => {
       node.resolvables = originalEnteringNodes[idx].resolvables;

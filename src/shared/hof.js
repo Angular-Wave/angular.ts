@@ -104,14 +104,7 @@ export const propEq = curry((name, _val, obj) => obj && obj[name] === _val);
  * propNotFound(obj) === undefined
  */
 export const parse = (name) => pipe.apply(null, name.split(".").map(prop));
-/**
- * Given a function that returns a truthy or falsey value, returns a
- * function that returns the opposite (falsey or truthy) value given the same inputs
- */
-export const not =
-  (fn) =>
-  (...args) =>
-    !fn.apply(null, args);
+
 /**
  * Given two functions that return truthy or falsey values, returns a function that returns truthy
  * if both functions return truthy for the given arguments
