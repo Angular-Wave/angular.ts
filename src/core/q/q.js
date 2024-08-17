@@ -16,7 +16,7 @@ import {
  * @property {function(
  *   ((value: T) => (PromiseLike<never>|PromiseLike<T>|T))|null,
  *   ((reason: any) => (PromiseLike<never>|PromiseLike<T>|T))|null,
- *   ((state: any) => any)
+ *   ((state: any) => any)=
  * ): QPromise<T|never>} then - Calls one of the success or error callbacks asynchronously as soon as the result is available.
  * @property {function(
  *   ((value: T) => (QPromise<never>|QPromise<T>|T))|null,
@@ -25,6 +25,7 @@ import {
  * ): QPromise<T|never>} then - Calls one of the success or error callbacks asynchronously as soon as the result is available.
  * @property {function(((reason: any) => (PromiseLike<never>|PromiseLike<T>|T))|null): QPromise<T>|T} catch - Shorthand for promise.then(null, errorCallback).
  * @property {function(((reason: any) => (QPromise<never>|QPromise<T>|T))|null): QPromise<T>|T} catch - Shorthand for promise.then(null, errorCallback).
+ * @property {function(Array.<QPromise<T>>): QPromise<T>} all
  * @property {function(function(): void): QPromise<T>} finally - Allows you to observe either the fulfillment or rejection of a promise, but to do so without modifying the final value.
  * @property {number} [$$intervalId] - Internal id set by the $interval service for callback notifications
  * @property {number} [$$timeoutId] - Timeout id set by the $timeout service for cancelations

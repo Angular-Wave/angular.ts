@@ -191,10 +191,10 @@ export function getOrSetCacheData(element: Element, key: string | any, value?: a
  */
 export function removeElement(element: Element, keepData?: boolean): void;
 /**
- * @param {string} elementStr
+ * @param {string|JQLite} elementStr
  * @returns {string} Returns the string representation of the element.
  */
-export function startingTag(elementStr: string): string;
+export function startingTag(elementStr: string | JQLite): string;
 /**
  * Return the DOM siblings between the first and last node in the given array.
  * @param {JQLite|Array} nodes An array-like object

@@ -15,9 +15,16 @@ const $compileMinErr = minErr("$compile");
 const SIMPLE_ATTR_NAME = /^\w/;
 const specialAttrHolder = window.document.createElement("div");
 
+/**
+ * @typedef {Object} AnyStringKeyObject
+ * @property {Record<string, any>} [key]
+ */
+
+/**
+ * @extends {AnyStringKeyObject}
+ */
 export class Attributes {
   /**
-   *
    * @param {import('../scope/scope').Scope} $rootScope
    * @param {*} $animate
    * @param {import("../exception-handler").ExceptionHandlerProvider} $exceptionHandler

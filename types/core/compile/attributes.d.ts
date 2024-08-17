@@ -1,6 +1,12 @@
+/**
+ * @typedef {Object} AnyStringKeyObject
+ * @property {Record<string, any>} [key]
+ */
+/**
+ * @extends {AnyStringKeyObject}
+ */
 export class Attributes {
     /**
-     *
      * @param {import('../scope/scope').Scope} $rootScope
      * @param {*} $animate
      * @param {import("../exception-handler").ExceptionHandlerProvider} $exceptionHandler
@@ -98,4 +104,7 @@ export class Attributes {
     sanitizeSrcset(value: any, invokeType: any): any;
     srcset: any;
 }
+export type AnyStringKeyObject = {
+    key?: Record<string, any>;
+};
 import { directiveNormalize } from "../../shared/utils";

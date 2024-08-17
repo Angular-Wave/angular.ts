@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        window.angular.module("test", []).animation(".colorful", [
+        window.angular.module("test", []).animation(".movable", [
           function () {
             return {
               addClass: function (element, className, doneFn) {
@@ -34,7 +34,10 @@
     <style></style>
   </head>
   <body ng-app="test">
-    <div ng-class="location" class="colorful">
+    <div ng-class="location" class="movable" animate="true">
+      this box is moody {{ location }}
+    </div>
+    <div ng-class="location" class="movable" data-animate="true">
       this box is moody {{ location }}
     </div>
     <button ng-click="location='0'">Change to red</button>

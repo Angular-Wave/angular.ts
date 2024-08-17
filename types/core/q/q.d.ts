@@ -4,7 +4,7 @@
  * @property {function(
  *   ((value: T) => (PromiseLike<never>|PromiseLike<T>|T))|null,
  *   ((reason: any) => (PromiseLike<never>|PromiseLike<T>|T))|null,
- *   ((state: any) => any)
+ *   ((state: any) => any)=
  * ): QPromise<T|never>} then - Calls one of the success or error callbacks asynchronously as soon as the result is available.
  * @property {function(
  *   ((value: T) => (QPromise<never>|QPromise<T>|T))|null,
@@ -13,6 +13,7 @@
  * ): QPromise<T|never>} then - Calls one of the success or error callbacks asynchronously as soon as the result is available.
  * @property {function(((reason: any) => (PromiseLike<never>|PromiseLike<T>|T))|null): QPromise<T>|T} catch - Shorthand for promise.then(null, errorCallback).
  * @property {function(((reason: any) => (QPromise<never>|QPromise<T>|T))|null): QPromise<T>|T} catch - Shorthand for promise.then(null, errorCallback).
+ * @property {function(Array.<QPromise<T>>): QPromise<T>} all
  * @property {function(function(): void): QPromise<T>} finally - Allows you to observe either the fulfillment or rejection of a promise, but to do so without modifying the final value.
  * @property {number} [$$intervalId] - Internal id set by the $interval service for callback notifications
  * @property {number} [$$timeoutId] - Timeout id set by the $timeout service for cancelations
@@ -53,11 +54,12 @@ export type QPromise<T> = {
     /**
      * - Calls one of the success or error callbacks asynchronously as soon as the result is available.
      */
-    then: (arg0: ((value: T) => (PromiseLike<never> | PromiseLike<T> | T)) | null, arg1: ((reason: any) => (PromiseLike<never> | PromiseLike<T> | T)) | null, arg2: ((state: any) => any)) => QPromise<T | never>;
+    then: (arg0: ((value: T) => (PromiseLike<never> | PromiseLike<T> | T)) | null, arg1: ((reason: any) => (PromiseLike<never> | PromiseLike<T> | T)) | null, arg2: ((state: any) => any) | undefined) => QPromise<T | never>;
     /**
      * - Shorthand for promise.then(null, errorCallback).
      */
     catch: (arg0: ((reason: any) => (PromiseLike<never> | PromiseLike<T> | T)) | null) => QPromise<T> | T;
+    all: (arg0: Array<QPromise<T>>) => QPromise<T>;
     /**
      * - Allows you to observe either the fulfillment or rejection of a promise, but to do so without modifying the final value.
      */

@@ -1,32 +1,69 @@
+export function ngModelDirective($rootScope: any): {
+    restrict: string;
+    require: string[];
+    controller: typeof NgModelController;
+    priority: number;
+    compile: (element: any) => {
+        pre: (scope: any, element: any, attr: any, ctrls: any) => void;
+        post: (scope: any, element: any, attr: any, ctrls: any) => void;
+    };
+};
+export const ngModelMinErr: (arg0: string, ...arg1: any[]) => Error;
 /**
  *
- * @param {*} $scope
- * @param {import('../../core/exception-handler').ErrorHandler} $exceptionHandler
- * @param {*} $attr
- * @param {*} $element
- * @param {*} $parse
- * @param {*} $animate
- * @param {*} $timeout
- * @param {*} $q
- * @param {*} $interpolate
+ * @property {*} $viewValue The actual value from the control's view.
+ *
+ * @property {*} $modelValue The value in the model that the control is bound to.
+ * @property {Array.<Function>} $parsers Array of functions to execute, as a pipeline, whenever
+ *  the control updates the ngModelController with a new `$viewValue` from the DOM, usually via user input.
+ *
+ * @property {Array.<Function>} $formatters Array of functions to execute, as a pipeline, whenever
+    the bound ngModel expression changes programmatically. The `$formatters` are not called when the
+    value of the control is changed by user interaction.
+ *
+ * @property {Object.<string, (string, string) => boolean>} $validators A collection of validators that are applied whenever the model value changes.
+ * The key value within the object refers to the name of the validator while the function refers to the validation operation.
+ * The validation operation is provided with the model value as an argument and must return a true or false value depending on the response of that validation.
+ *
+ * @property {Object.<string, function(string, string) => QPromise>} $asyncValidators A collection of validations that are expected to perform an asynchronous validation (e.g. a HTTP request).
+ *  The validation function that is provided is expected to return a promise when it is run during the model validation process
+ *
+ * @property {Array.<Function>} $viewChangeListeners Array of functions to execute whenever
+ *     a change to {@link ngModel.NgModelController#$viewValue `$viewValue`} has caused a change
+ *     to {@link ngModel.NgModelController#$modelValue `$modelValue`}.
+ *     It is called with no arguments, and its return value is ignored.
+ *     This can be used in place of additional $watches against the model value.
+ *
+ * @property {Object} $error An object hash with all failing validator ids as keys.
+ * @property {Object} $pending An object hash with all pending validator ids as keys.
+ *
+ * @property {boolean} $untouched True if control has not lost focus yet.
+ * @property {boolean} $touched True if control has lost focus.
+ * @property {boolean} $pristine True if user has not interacted with the control yet.
+ * @property {boolean} $dirty True if user has already interacted with the control.
+ * @property {boolean} $valid True if there is no error.
+ * @property {boolean} $invalid True if at least one error on the control.
+ * @property {string} $name The name attribute of the control.
  */
-export function NgModelController($scope: any, $exceptionHandler: import("../../core/exception-handler").ErrorHandler, $attr: any, $element: any, $parse: any, $animate: any, $timeout: any, $q: any, $interpolate: any): void;
 export class NgModelController {
+    static $inject: string[];
     /**
-     *
-     * @param {*} $scope
+     * @param {import('../../core/scope/scope').Scope} $scope
      * @param {import('../../core/exception-handler').ErrorHandler} $exceptionHandler
-     * @param {*} $attr
-     * @param {*} $element
-     * @param {*} $parse
+     * @param {import('../../core/compile/attributes').Attributes} $attr
+     * @param {import('../../shared/jqlite/jqlite').JQLite} $element
+     * @param {import("../../core/parser/parse").ParseService} $parse
      * @param {*} $animate
      * @param {*} $timeout
-     * @param {*} $q
+     * @param {import("../../core/q/q").QPromise<any>} $q
      * @param {*} $interpolate
      */
-    constructor($scope: any, $exceptionHandler: import("../../core/exception-handler").ErrorHandler, $attr: any, $element: any, $parse: any, $animate: any, $timeout: any, $q: any, $interpolate: any);
-    $viewValue: number;
-    $modelValue: number;
+    constructor($scope: import("../../core/scope/scope").Scope, $exceptionHandler: import("../../core/exception-handler").ErrorHandler, $attr: import("../../core/compile/attributes").Attributes, $element: import("../../shared/jqlite/jqlite").JQLite, $parse: import("../../core/parser/parse").ParseService, $animate: any, $timeout: any, $q: import("../../core/q/q").QPromise<any>, $interpolate: any);
+    /** @type {any} The actual value from the control's view  */
+    $viewValue: any;
+    /** @type {any} The value in the model that the control is bound to. */
+    $modelValue: any;
+    /** @type {any} */
     $$rawModelValue: any;
     $validators: {};
     $asyncValidators: {};
@@ -34,10 +71,15 @@ export class NgModelController {
     $formatters: any[];
     $viewChangeListeners: any[];
     $untouched: boolean;
+    /** @type {boolean} */
     $touched: boolean;
+    /** @type {boolean} */
     $pristine: boolean;
+    /** @type {boolean} */
     $dirty: boolean;
+    /** @type {boolean} */
     $valid: boolean;
+    /** @type {boolean} */
     $invalid: boolean;
     $error: {};
     $$success: {};
@@ -48,7 +90,7 @@ export class NgModelController {
         $getControls: () => any;
         $$renameControl: (control: any, name: any) => void;
         $removeControl: () => void;
-        $setValidity: () => void;
+        $setValidity: (...any: any) => any;
         $setDirty: () => void;
         $setPristine: () => void;
         $setSubmitted: () => void;
@@ -62,26 +104,52 @@ export class NgModelController {
         createChild(options: ModelOptionsConfig): any;
     };
     $$updateEvents: string;
-    $$updateEventHandler: any;
-    $$parsedNgModel: any;
-    $$parsedNgModelAssign: any;
-    $$ngModelGet: any;
-    $$ngModelSet: any;
+    $$updateEventHandler(ev: any): void;
+    $$parsedNgModel: import("../../core/parser/parse").CompiledExpression;
+    $$parsedNgModelAssign: (arg0: any, arg1: any) => any;
+    /** @type {import("../../core/parser/parse").CompiledExpression|((Scope) => any)} */
+    $$ngModelGet: import("../../core/parser/parse").CompiledExpression | ((Scope: any) => any);
+    $$ngModelSet: (arg0: any, arg1: any) => any;
     $$pendingDebounce: any;
     $$parserValid: boolean;
     $$parserName: string;
+    /** @type {number} */
     $$currentValidationRunId: number;
-    $$scope: any;
-    $$rootScope: any;
-    $$attr: any;
-    $$element: any;
+    $$scope: import("../../core/scope/scope").Scope;
+    $$rootScope: import("../../core/scope/scope").Scope;
+    $$attr: import("../../core/compile/attributes").Attributes;
+    $$element: import("../../shared/jqlite/jqlite").JQLite;
     $$animate: any;
     $$timeout: any;
-    $$parse: any;
-    $$q: any;
+    $$parse: import("../../core/parser/parse").ParseService;
+    $$q: import("../../core/q/q").QPromise<any>;
     $$exceptionHandler: import("../../core/exception-handler").ErrorHandler;
+    $$hasNativeValidators: boolean;
+    set(object: any, property: any): void;
+    unset(object: any, property: any): void;
+    $setValidity(validationErrorKey: any, state: any): void;
     $$initGetterSetters(): void;
-    $render: () => void;
+    /**
+     * @ngdoc method
+     * @name ngModel.NgModelController#$render
+     *
+     * @description
+     * Called when the view needs to be updated. It is expected that the user of the ng-model
+     * directive will implement this method.
+     *
+     * The `$render()` method is invoked in the following situations:
+     *
+     * * `$rollbackViewValue()` is called.  If we are rolling back the view value to the last
+     *   committed value then `$render()` is called to update the input control.
+     * * The value referenced by `ng-model` is changed programmatically and both the `$modelValue` and
+     *   the `$viewValue` are different from last time.
+     *
+     * Since `ng-model` does not do a deep watch, `$render()` is only invoked if the values of
+     * `$modelValue` and `$viewValue` are actually different from their previous values. If `$modelValue`
+     * or `$viewValue` are objects (rather than a string or number) then `$render()` will not be
+     * invoked if you only change a property on the objects.
+     */
+    $render(): void;
     /**
      * @ngdoc method
      * @name ngModel.NgModelController#$isEmpty
@@ -256,10 +324,6 @@ export class NgModelController {
     $validate(): void;
     $$runValidators(modelValue: any, viewValue: any, doneCallback: any): void;
     /**
-     * @ngdoc method
-     * @name ngModel.NgModelController#$commitViewValue
-     *
-     * @description
      * Commit a pending update to the `$modelValue`.
      *
      * Updates may be pending by a debounced event or because the input is waiting for a some future
@@ -468,212 +532,10 @@ export class NgModelController {
     /**
      * This method is called internally to run the $formatters on the $modelValue
      */
-    $$format(): number;
+    $$format(): any;
     /**
      * This method is called internally when the bound scope value changes.
      */
     $$setModelValue(modelValue: any): void;
     $$setUpdateOnEvents(): void;
 }
-export namespace NgModelController {
-    let $inject: string[];
-}
-export const ngModelMinErr: (arg0: string, ...arg1: any[]) => Error;
-/**
- * @ngdoc directive
- * @name ngModel
- * @restrict A
- * @priority 1
- * @param {string} ngModel assignable {@link guide/expression Expression} to bind to.
- *
- * @description
- * The `ngModel` directive binds an `input`,`select`, `textarea` (or custom form control) to a
- * property on the scope using {@link ngModel.NgModelController NgModelController},
- * which is created and exposed by this directive.
- *
- * `ngModel` is responsible for:
- *
- * - Binding the view into the model, which other directives such as `input`, `textarea` or `select`
- *   require.
- * - Providing validation behavior (i.e. required, number, email, url).
- * - Keeping the state of the control (valid/invalid, dirty/pristine, touched/untouched, validation errors).
- * - Setting related css classes on the element (`ng-valid`, `ng-invalid`, `ng-dirty`, `ng-pristine`, `ng-touched`,
- *   `ng-untouched`, `ng-empty`, `ng-not-empty`) including animations.
- * - Registering the control with its parent {@link ng.directive:form form}.
- *
- * Note: `ngModel` will try to bind to the property given by evaluating the expression on the
- * current scope. If the property doesn't already exist on this scope, it will be created
- * implicitly and added to the scope.
- *
- * For best practices on using `ngModel`, see:
- *
- *  - [Understanding Scopes](https://github.com/angular/angular.js/wiki/Understanding-Scopes)
- *
- * For basic examples, how to use `ngModel`, see:
- *
- *  - {@link ng.directive:input input}
- *    - {@link input[text] text}
- *    - {@link input[checkbox] checkbox}
- *    - {@link input[radio] radio}
- *    - {@link input[number] number}
- *    - {@link input[email] email}
- *    - {@link input[url] url}
- *    - {@link input[date] date}
- *    - {@link input[datetime-local] datetime-local}
- *    - {@link input[time] time}
- *    - {@link input[month] month}
- *    - {@link input[week] week}
- *  - {@link ng.directive:select select}
- *  - {@link ng.directive:textarea textarea}
- *
- * ## Complex Models (objects or collections)
- *
- * By default, `ngModel` watches the model by reference, not value. This is important to know when
- * binding inputs to models that are objects (e.g. `Date`) or collections (e.g. arrays). If only properties of the
- * object or collection change, `ngModel` will not be notified and so the input will not be  re-rendered.
- *
- * The model must be assigned an entirely new object or collection before a re-rendering will occur.
- *
- * Some directives have options that will cause them to use a custom `$watchCollection` on the model expression
- * - for example, `ngOptions` will do so when a `track by` clause is included in the comprehension expression or
- * if the select is given the `multiple` attribute.
- *
- * The `$watchCollection()` method only does a shallow comparison, meaning that changing properties deeper than the
- * first level of the object (or only changing the properties of an item in the collection if it's an array) will still
- * not trigger a re-rendering of the model.
- *
- * ## CSS classes
- * The following CSS classes are added and removed on the associated input/select/textarea element
- * depending on the validity of the model.
- *
- *  - `ng-valid`: the model is valid
- *  - `ng-invalid`: the model is invalid
- *  - `ng-valid-[key]`: for each valid key added by `$setValidity`
- *  - `ng-invalid-[key]`: for each invalid key added by `$setValidity`
- *  - `ng-pristine`: the control hasn't been interacted with yet
- *  - `ng-dirty`: the control has been interacted with
- *  - `ng-touched`: the control has been blurred
- *  - `ng-untouched`: the control hasn't been blurred
- *  - `ng-pending`: any `$asyncValidators` are unfulfilled
- *  - `ng-empty`: the view does not contain a value or the value is deemed "empty", as defined
- *     by the {@link ngModel.NgModelController#$isEmpty} method
- *  - `ng-not-empty`: the view contains a non-empty value
- *
- * Keep in mind that ngAnimate can detect each of these classes when added and removed.
- *
- * @animations
- * Animations within models are triggered when any of the associated CSS classes are added and removed
- * on the input element which is attached to the model. These classes include: `.ng-pristine`, `.ng-dirty`,
- * `.ng-invalid` and `.ng-valid` as well as any other validations that are performed on the model itself.
- * The animations that are triggered within ngModel are similar to how they work in ngClass and
- * animations can be hooked into using CSS transitions, keyframes as well as JS animations.
- *
- * The following example shows a simple way to utilize CSS transitions to style an input element
- * that has been rendered as invalid after it has been validated:
- *
- * <pre>
- * //be sure to include ngAnimate as a module to hook into more
- * //advanced animations
- * .my-input {
- *   transition:0.5s linear all;
- *   background: white;
- * }
- * .my-input.ng-invalid {
- *   background: red;
- *   color:white;
- * }
- * </pre>
- *
- * @example
- * ### Basic Usage
- * <example deps="angular-animate.js" animations="true" fixBase="true" module="inputExample" name="ng-model">
-     <file name="index.html">
-       <script>
-        angular.module('inputExample', [])
-          .controller('ExampleController', ['$scope', function($scope) {
-            $scope.val = '1';
-          }]);
-       </script>
-       <style>
-         .my-input {
-           transition:all linear 0.5s;
-           background: transparent;
-         }
-         .my-input.ng-invalid {
-           color:white;
-           background: red;
-         }
-       </style>
-       <p id="inputDescription">
-        Update input to see transitions when valid/invalid.
-        Integer is a valid value.
-       </p>
-       <form name="testForm" ng-controller="ExampleController">
-         <input ng-model="val" ng-pattern="/^\d+$/" name="anim" class="my-input"
-                aria-describedby="inputDescription" />
-       </form>
-     </file>
- * </example>
- *
- * @example
- * ### Binding to a getter/setter
- *
- * Sometimes it's helpful to bind `ngModel` to a getter/setter function.  A getter/setter is a
- * function that returns a representation of the model when called with zero arguments, and sets
- * the internal state of a model when called with an argument. It's sometimes useful to use this
- * for models that have an internal representation that's different from what the model exposes
- * to the view.
- *
- * <div class="alert alert-success">
- * **Best Practice:** It's best to keep getters fast because AngularJS is likely to call them more
- * frequently than other parts of your code.
- * </div>
- *
- * You use this behavior by adding `ng-model-options="{ getterSetter: true }"` to an element that
- * has `ng-model` attached to it. You can also add `ng-model-options="{ getterSetter: true }"` to
- * a `<form>`, which will enable this behavior for all `<input>`s within it. See
- * {@link ng.directive:ngModelOptions `ngModelOptions`} for more.
- *
- * The following example shows how to use `ngModel` with a getter/setter:
- *
- * @example
- * <example name="ngModel-getter-setter" module="getterSetterExample">
-     <file name="index.html">
-       <div ng-controller="ExampleController">
-         <form name="userForm">
-           <label>Name:
-             <input type="text" name="userName"
-                    ng-model="user.name"
-                    ng-model-options="{ getterSetter: true }" />
-           </label>
-         </form>
-         <pre>user.name = <span ng-bind="user.name()"></span></pre>
-       </div>
-     </file>
-     <file name="app.js">
-       angular.module('getterSetterExample', [])
-         .controller('ExampleController', ['$scope', function($scope) {
-           let _name = 'Brian';
-           $scope.user = {
-             name: function(newName) {
-              // Note that newName can be undefined for two reasons:
-              // 1. Because it is called as a getter and thus called with no arguments
-              // 2. Because the property should actually be set to undefined. This happens e.g. if the
-              //    input is invalid
-              return arguments.length ? (_name = newName) : _name;
-             }
-           };
-         }]);
-     </file>
- * </example>
- */
-export const ngModelDirective: (string | (($rootScope: any) => {
-    restrict: string;
-    require: string[];
-    controller: typeof NgModelController;
-    priority: number;
-    compile: (element: any) => {
-        pre: (scope: any, element: any, attr: any, ctrls: any) => void;
-        post: (scope: any, element: any, attr: any, ctrls: any) => void;
-    };
-}))[];

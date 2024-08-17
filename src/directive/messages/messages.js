@@ -1,4 +1,4 @@
-import { forEach, isString } from "../../shared/utils";
+import { isString } from "../../shared/utils";
 
 const ACTIVE_CLASS = "ng-active";
 const INACTIVE_CLASS = "ng-inactive";
@@ -56,7 +56,7 @@ class NgMessageCtrl {
       let messageUsed = false;
 
       if (!messageFound) {
-        forEach(collection, (value, key) => {
+        Object.entries(collection).forEach(([key, value]) => {
           if (truthy(value) && !messageUsed) {
             truthyKeys++;
 

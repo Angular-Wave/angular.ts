@@ -141,17 +141,19 @@ export namespace FormController {
 }
 export function setupValidity(instance: any): void;
 export function addSetValidityMethod(context: any): void;
+export function isObjectEmpty(obj: any): boolean;
 export namespace nullFormCtrl {
     export function $addControl(): void;
     export let $getControls: () => any;
     export { nullFormRenameControl as $$renameControl };
     export function $removeControl(): void;
-    export function $setValidity(): void;
+    export let $setValidity: (...any: any) => any;
     export function $setDirty(): void;
     export function $setPristine(): void;
     export function $setSubmitted(): void;
     export function $$setSubmitted(): void;
 }
+export const PENDING_CLASS: "ng-pending";
 export const formDirective: (string | (($timeout: any, $parse: any) => {
     name: string;
     restrict: string;

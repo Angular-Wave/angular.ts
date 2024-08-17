@@ -1123,7 +1123,7 @@ function specialMouseHandlerWrapper(target, event, handler) {
 }
 
 /**
- * @param {string} elementStr
+ * @param {string|JQLite} elementStr
  * @returns {string} Returns the string representation of the element.
  */
 export function startingTag(elementStr) {

@@ -21,13 +21,14 @@ export const nullFormCtrl = {
   $getControls: valueFn([]),
   $$renameControl: nullFormRenameControl,
   $removeControl: () => {},
-  $setValidity: () => {},
+  /** @type {(...any) => any} */
+  $setValidity: function () {},
   $setDirty: () => {},
   $setPristine: () => {},
   $setSubmitted: () => {},
   $$setSubmitted: () => {},
 };
-const PENDING_CLASS = "ng-pending";
+export const PENDING_CLASS = "ng-pending";
 const SUBMITTED_CLASS = "ng-submitted";
 
 function nullFormRenameControl(control, name) {
@@ -695,7 +696,7 @@ export function addSetValidityMethod(context) {
   }
 }
 
-function isObjectEmpty(obj) {
+export function isObjectEmpty(obj) {
   if (obj) {
     for (const prop in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, prop)) {
