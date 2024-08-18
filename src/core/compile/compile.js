@@ -755,6 +755,9 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         const linkFns = [];
         let attrs;
         let directives;
+        /**
+         * @type {any}
+         */
         var nodeLinkFn;
         let childNodes;
         let childLinkFn;
@@ -988,7 +991,10 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               j < jj;
               j++
             ) {
+              /** @type {string|boolean} */
               let attrStartName = false;
+
+              /** @type {string|boolean} */
               let attrEndName = false;
 
               let isNgAttr = false;
@@ -1250,6 +1256,281 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         let didScanForMultipleTransclusion = false;
         let mightHaveMultipleTransclusionError = false;
         let directiveValue;
+
+        /** @type {any} */
+        let nodeLinkFn = function (
+          childLinkFn,
+          scope,
+          linkNode,
+          $rootElement,
+          boundTranscludeFn,
+        ) {
+          let i;
+          let ii;
+          /** @type {import("../../types").Directive|any} */
+          let linkFn;
+          let isolateScope;
+          let controllerScope;
+          let elementControllers;
+          /** @type {import("../../types").TranscludeFunctionObject|any} */
+          let transcludeFn;
+          let $element;
+          let attrs;
+          let scopeBindingInfo;
+
+          if (compileNode === linkNode) {
+            attrs = templateAttrs;
+            $element = templateAttrs.$$element;
+          } else {
+            $element = JQLite(linkNode);
+            attrs = new Attributes(
+              $rootScope,
+              $animate,
+              $exceptionHandler,
+              $sce,
+              $element,
+              templateAttrs,
+            );
+          }
+
+          controllerScope = scope;
+          if (newIsolateScopeDirective) {
+            isolateScope = scope.$new(true);
+          } else if (newScopeDirective) {
+            controllerScope = scope.$parent;
+          }
+
+          if (boundTranscludeFn) {
+            // track `boundTranscludeFn` so it can be unwrapped if `transcludeFn`
+            // is later passed as `parentBoundTranscludeFn` to `publicLinkFn`
+            transcludeFn = controllersBoundTransclude;
+            transcludeFn.$$boundTransclude = boundTranscludeFn;
+            // expose the slots on the `$transclude` function
+            transcludeFn.isSlotFilled = function (slotName) {
+              return !!boundTranscludeFn.$$slots[slotName];
+            };
+          }
+
+          if (controllerDirectives) {
+            elementControllers = setupControllers(
+              $element,
+              attrs,
+              transcludeFn,
+              controllerDirectives,
+              isolateScope,
+              scope,
+              newIsolateScopeDirective,
+            );
+          }
+
+          if (newIsolateScopeDirective) {
+            isolateScope.$$isolateBindings =
+              newIsolateScopeDirective.$$isolateBindings;
+            scopeBindingInfo = initializeDirectiveBindings(
+              scope,
+              attrs,
+              isolateScope,
+              isolateScope.$$isolateBindings,
+              newIsolateScopeDirective,
+            );
+            if (scopeBindingInfo.removeWatches) {
+              isolateScope.$on("$destroy", scopeBindingInfo.removeWatches);
+            }
+          }
+
+          // Initialize bindToController bindings
+          for (const name in elementControllers) {
+            const controllerDirective = controllerDirectives[name];
+            const controller = elementControllers[name];
+            const bindings = controllerDirective.$$bindings.bindToController;
+
+            controller.instance = controller();
+            $element.data(
+              `$${controllerDirective.name}Controller`,
+              controller.instance,
+            );
+            controller.bindingInfo = initializeDirectiveBindings(
+              controllerScope,
+              attrs,
+              controller.instance,
+              bindings,
+              controllerDirective,
+            );
+          }
+
+          // Bind the required controllers to the controller, if `require` is an object and `bindToController` is truthy
+          forEach(controllerDirectives, (controllerDirective, name) => {
+            const { require } = controllerDirective;
+            if (
+              controllerDirective.bindToController &&
+              !Array.isArray(require) &&
+              isObject(require)
+            ) {
+              extend(
+                elementControllers[name].instance,
+                getControllers(name, require, $element, elementControllers),
+              );
+            }
+          });
+
+          // Handle the init and destroy lifecycle hooks on all controllers that have them
+          forEach(elementControllers, (controller) => {
+            const controllerInstance = controller.instance;
+            if (isFunction(controllerInstance.$onChanges)) {
+              try {
+                controllerInstance.$onChanges(
+                  controller.bindingInfo.initialChanges,
+                );
+              } catch (e) {
+                $exceptionHandler(e);
+              }
+            }
+            if (isFunction(controllerInstance.$onInit)) {
+              try {
+                controllerInstance.$onInit();
+              } catch (e) {
+                $exceptionHandler(e);
+              }
+            }
+            if (isFunction(controllerInstance.$doCheck)) {
+              controllerScope.$watch(() => {
+                controllerInstance.$doCheck();
+              });
+              controllerInstance.$doCheck();
+            }
+            if (isFunction(controllerInstance.$onDestroy)) {
+              controllerScope.$on("$destroy", () => {
+                controllerInstance.$onDestroy();
+              });
+            }
+          });
+
+          // PRELINKING
+          for (i = 0, ii = preLinkFns.length; i < ii; i++) {
+            linkFn = preLinkFns[i];
+            invokeLinkFn(
+              linkFn,
+              linkFn.isolateScope ? isolateScope : scope,
+              $element,
+              attrs,
+              linkFn.require &&
+                getControllers(
+                  linkFn.directiveName,
+                  linkFn.require,
+                  $element,
+                  elementControllers,
+                ),
+              transcludeFn,
+            );
+          }
+
+          // RECURSION
+          // We only pass the isolate scope, if the isolate directive has a template,
+          // otherwise the child elements do not belong to the isolate directive.
+          var scopeToChild = scope;
+          if (
+            newIsolateScopeDirective &&
+            (newIsolateScopeDirective.template ||
+              newIsolateScopeDirective.templateUrl === null)
+          ) {
+            scopeToChild = isolateScope;
+          }
+          if (childLinkFn) {
+            childLinkFn(
+              scopeToChild,
+              linkNode.childNodes,
+              undefined,
+              boundTranscludeFn,
+            );
+          }
+
+          // POSTLINKING
+          for (i = postLinkFns.length - 1; i >= 0; i--) {
+            linkFn = postLinkFns[i];
+            invokeLinkFn(
+              linkFn,
+              linkFn.isolateScope ? isolateScope : scope,
+              $element,
+              attrs,
+              linkFn.require &&
+                getControllers(
+                  linkFn.directiveName,
+                  linkFn.require,
+                  $element,
+                  elementControllers,
+                ),
+              transcludeFn,
+            );
+          }
+
+          // Trigger $postLink lifecycle hooks
+          forEach(elementControllers, (controller) => {
+            const controllerInstance = controller.instance;
+            if (isFunction(controllerInstance.$postLink)) {
+              controllerInstance.$postLink();
+            }
+          });
+
+          // This is the function that is injected as `$transclude`.
+          // Note: all arguments are optional!
+          function controllersBoundTransclude(
+            scope,
+            cloneAttachFn,
+            futureParentElement,
+            slotName,
+          ) {
+            let transcludeControllers;
+            // No scope passed in:
+            if (!isScope(scope)) {
+              slotName = futureParentElement;
+              futureParentElement = cloneAttachFn;
+              cloneAttachFn = scope;
+              scope = undefined;
+            }
+
+            if (hasElementTranscludeDirective) {
+              transcludeControllers = elementControllers;
+            }
+            if (!futureParentElement) {
+              futureParentElement = hasElementTranscludeDirective
+                ? $element.parent()
+                : $element;
+            }
+            if (slotName) {
+              // slotTranscludeFn can be one of three things:
+              //  * a transclude function - a filled slot
+              //  * `null` - an optional slot that was not filled
+              //  * `undefined` - a slot that was not declared (i.e. invalid)
+              const slotTranscludeFn = boundTranscludeFn.$$slots[slotName];
+              if (slotTranscludeFn) {
+                return slotTranscludeFn(
+                  scope,
+                  cloneAttachFn,
+                  transcludeControllers,
+                  futureParentElement,
+                  scopeToChild,
+                );
+              }
+              if (isUndefined(slotTranscludeFn)) {
+                throw $compileMinErr(
+                  "noslot",
+                  'No parent directive that requires a transclusion with slot name "{0}". ' +
+                    "Element: {1}",
+                  slotName,
+                  startingTag($element),
+                );
+              }
+            } else {
+              return boundTranscludeFn(
+                scope,
+                cloneAttachFn,
+                transcludeControllers,
+                futureParentElement,
+                scopeToChild,
+              );
+            }
+          }
+        };
 
         // executes all directives on the current element
         for (let i = 0, ii = directives.length; i < ii; i++) {
@@ -1670,278 +1951,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               post = cloneAndAnnotateFn(post, { isolateScope: true });
             }
             postLinkFns.push(post);
-          }
-        }
-
-        function nodeLinkFn(
-          childLinkFn,
-          scope,
-          linkNode,
-          $rootElement,
-          boundTranscludeFn,
-        ) {
-          let i;
-          let ii;
-          let linkFn;
-          let isolateScope;
-          let controllerScope;
-          let elementControllers;
-          let transcludeFn;
-          let $element;
-          let attrs;
-          let scopeBindingInfo;
-
-          if (compileNode === linkNode) {
-            attrs = templateAttrs;
-            $element = templateAttrs.$$element;
-          } else {
-            $element = JQLite(linkNode);
-            attrs = new Attributes(
-              $rootScope,
-              $animate,
-              $exceptionHandler,
-              $sce,
-              $element,
-              templateAttrs,
-            );
-          }
-
-          controllerScope = scope;
-          if (newIsolateScopeDirective) {
-            isolateScope = scope.$new(true);
-          } else if (newScopeDirective) {
-            controllerScope = scope.$parent;
-          }
-
-          if (boundTranscludeFn) {
-            // track `boundTranscludeFn` so it can be unwrapped if `transcludeFn`
-            // is later passed as `parentBoundTranscludeFn` to `publicLinkFn`
-            transcludeFn = controllersBoundTransclude;
-            transcludeFn.$$boundTransclude = boundTranscludeFn;
-            // expose the slots on the `$transclude` function
-            transcludeFn.isSlotFilled = function (slotName) {
-              return !!boundTranscludeFn.$$slots[slotName];
-            };
-          }
-
-          if (controllerDirectives) {
-            elementControllers = setupControllers(
-              $element,
-              attrs,
-              transcludeFn,
-              controllerDirectives,
-              isolateScope,
-              scope,
-              newIsolateScopeDirective,
-            );
-          }
-
-          if (newIsolateScopeDirective) {
-            isolateScope.$$isolateBindings =
-              newIsolateScopeDirective.$$isolateBindings;
-            scopeBindingInfo = initializeDirectiveBindings(
-              scope,
-              attrs,
-              isolateScope,
-              isolateScope.$$isolateBindings,
-              newIsolateScopeDirective,
-            );
-            if (scopeBindingInfo.removeWatches) {
-              isolateScope.$on("$destroy", scopeBindingInfo.removeWatches);
-            }
-          }
-
-          // Initialize bindToController bindings
-          for (const name in elementControllers) {
-            const controllerDirective = controllerDirectives[name];
-            const controller = elementControllers[name];
-            const bindings = controllerDirective.$$bindings.bindToController;
-
-            controller.instance = controller();
-            $element.data(
-              `$${controllerDirective.name}Controller`,
-              controller.instance,
-            );
-            controller.bindingInfo = initializeDirectiveBindings(
-              controllerScope,
-              attrs,
-              controller.instance,
-              bindings,
-              controllerDirective,
-            );
-          }
-
-          // Bind the required controllers to the controller, if `require` is an object and `bindToController` is truthy
-          forEach(controllerDirectives, (controllerDirective, name) => {
-            const { require } = controllerDirective;
-            if (
-              controllerDirective.bindToController &&
-              !Array.isArray(require) &&
-              isObject(require)
-            ) {
-              extend(
-                elementControllers[name].instance,
-                getControllers(name, require, $element, elementControllers),
-              );
-            }
-          });
-
-          // Handle the init and destroy lifecycle hooks on all controllers that have them
-          forEach(elementControllers, (controller) => {
-            const controllerInstance = controller.instance;
-            if (isFunction(controllerInstance.$onChanges)) {
-              try {
-                controllerInstance.$onChanges(
-                  controller.bindingInfo.initialChanges,
-                );
-              } catch (e) {
-                $exceptionHandler(e);
-              }
-            }
-            if (isFunction(controllerInstance.$onInit)) {
-              try {
-                controllerInstance.$onInit();
-              } catch (e) {
-                $exceptionHandler(e);
-              }
-            }
-            if (isFunction(controllerInstance.$doCheck)) {
-              controllerScope.$watch(() => {
-                controllerInstance.$doCheck();
-              });
-              controllerInstance.$doCheck();
-            }
-            if (isFunction(controllerInstance.$onDestroy)) {
-              controllerScope.$on("$destroy", () => {
-                controllerInstance.$onDestroy();
-              });
-            }
-          });
-
-          // PRELINKING
-          for (i = 0, ii = preLinkFns.length; i < ii; i++) {
-            linkFn = preLinkFns[i];
-            invokeLinkFn(
-              linkFn,
-              linkFn.isolateScope ? isolateScope : scope,
-              $element,
-              attrs,
-              linkFn.require &&
-                getControllers(
-                  linkFn.directiveName,
-                  linkFn.require,
-                  $element,
-                  elementControllers,
-                ),
-              transcludeFn,
-            );
-          }
-
-          // RECURSION
-          // We only pass the isolate scope, if the isolate directive has a template,
-          // otherwise the child elements do not belong to the isolate directive.
-          var scopeToChild = scope;
-          if (
-            newIsolateScopeDirective &&
-            (newIsolateScopeDirective.template ||
-              newIsolateScopeDirective.templateUrl === null)
-          ) {
-            scopeToChild = isolateScope;
-          }
-          if (childLinkFn) {
-            childLinkFn(
-              scopeToChild,
-              linkNode.childNodes,
-              undefined,
-              boundTranscludeFn,
-            );
-          }
-
-          // POSTLINKING
-          for (i = postLinkFns.length - 1; i >= 0; i--) {
-            linkFn = postLinkFns[i];
-            invokeLinkFn(
-              linkFn,
-              linkFn.isolateScope ? isolateScope : scope,
-              $element,
-              attrs,
-              linkFn.require &&
-                getControllers(
-                  linkFn.directiveName,
-                  linkFn.require,
-                  $element,
-                  elementControllers,
-                ),
-              transcludeFn,
-            );
-          }
-
-          // Trigger $postLink lifecycle hooks
-          forEach(elementControllers, (controller) => {
-            const controllerInstance = controller.instance;
-            if (isFunction(controllerInstance.$postLink)) {
-              controllerInstance.$postLink();
-            }
-          });
-
-          // This is the function that is injected as `$transclude`.
-          // Note: all arguments are optional!
-          function controllersBoundTransclude(
-            scope,
-            cloneAttachFn,
-            futureParentElement,
-            slotName,
-          ) {
-            let transcludeControllers;
-            // No scope passed in:
-            if (!isScope(scope)) {
-              slotName = futureParentElement;
-              futureParentElement = cloneAttachFn;
-              cloneAttachFn = scope;
-              scope = undefined;
-            }
-
-            if (hasElementTranscludeDirective) {
-              transcludeControllers = elementControllers;
-            }
-            if (!futureParentElement) {
-              futureParentElement = hasElementTranscludeDirective
-                ? $element.parent()
-                : $element;
-            }
-            if (slotName) {
-              // slotTranscludeFn can be one of three things:
-              //  * a transclude function - a filled slot
-              //  * `null` - an optional slot that was not filled
-              //  * `undefined` - a slot that was not declared (i.e. invalid)
-              const slotTranscludeFn = boundTranscludeFn.$$slots[slotName];
-              if (slotTranscludeFn) {
-                return slotTranscludeFn(
-                  scope,
-                  cloneAttachFn,
-                  transcludeControllers,
-                  futureParentElement,
-                  scopeToChild,
-                );
-              }
-              if (isUndefined(slotTranscludeFn)) {
-                throw $compileMinErr(
-                  "noslot",
-                  'No parent directive that requires a transclusion with slot name "{0}". ' +
-                    "Element: {1}",
-                  slotName,
-                  startingTag($element),
-                );
-              }
-            } else {
-              return boundTranscludeFn(
-                scope,
-                cloneAttachFn,
-                transcludeControllers,
-                futureParentElement,
-                scopeToChild,
-              );
-            }
           }
         }
       }
@@ -2780,7 +2789,10 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           // Copy over user data (that includes AngularJS's $scope etc.). Don't copy private
           // data here because there's no public interface in jQuery to do that and copying over
           // event listeners (which is the main use of private data) wouldn't work anyway.
-          getOrSetCacheData(newNode, getOrSetCacheData(firstElementToRemove));
+          getOrSetCacheData(
+            /** @type {Element} */ (newNode),
+            getOrSetCacheData(firstElementToRemove),
+          );
 
           // Remove $destroy event listeners from `firstElementToRemove`
           JQLite(firstElementToRemove).off("$destroy");
