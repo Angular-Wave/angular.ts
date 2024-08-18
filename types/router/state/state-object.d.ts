@@ -9,16 +9,18 @@
  * Each of its own properties (i.e., `hasOwnProperty`) are built using builders from the [[StateBuilder]].
  */
 export class StateObject {
-    /**
-     * Create a state object to put the private/internal implementation details onto.
-     * The object's prototype chain looks like:
-     * (Internal State Object) -> (Copy of State.prototype) -> (State Declaration object) -> (State Declaration's prototype...)
-     *
-     * @param stateDecl the user-supplied State Declaration
-     * @returns {StateObject} an internal State object
-     */
-    static create(stateDecl: any): StateObject;
     constructor(config: any);
+    name: any;
+    navigable: any;
+    /** @type {?StateObject} */
+    parent: StateObject | null;
+    params: any;
+    url: any;
+    $$state: () => this;
+    self: any;
+    __stateObjectCache: {
+        nameGlob: Glob;
+    };
     /**
      * Returns true if the provided parameter is the same state.
      *
@@ -68,3 +70,4 @@ export namespace StateObject {
     /** Predicate which returns true if the object is an internal [[StateObject]] object */
     function isState(obj: any): boolean;
 }
+import { Glob } from "../common/glob";

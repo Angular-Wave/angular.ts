@@ -172,7 +172,7 @@ export function resolvablesBuilder(state) {
     );
   /** extracts the token from a Provider or provide literal */
   const getToken = (p) => p.provide || p.token;
-  // prettier-ignore: Given a literal resolve or provider object, returns a Resolvable
+  // Given a literal resolve or provider object, returns a Resolvable
   const literal2Resolvable = pattern([
     [
       prop("resolveFn"),
@@ -202,20 +202,45 @@ export function resolvablesBuilder(state) {
       (p) => new Resolvable(getToken(p), (x) => x, [p.useExisting], p.policy),
     ],
   ]);
-  // prettier-ignore
   const tuple2Resolvable = pattern([
-        [pipe(prop('val'), isString), (tuple) => new Resolvable(tuple.token, ((x) => x), [tuple.val], tuple.policy)],
-        [pipe(prop('val'), Array.isArray), (tuple) => new Resolvable(tuple.token, tail(tuple.val), tuple.val.slice(0, -1), tuple.policy)],
-        [pipe(prop('val'), isFunction), (tuple) => new Resolvable(tuple.token, tuple.val, annotateFn(tuple.val), tuple.policy)],
-    ]);
-  // prettier-ignore
+    [
+      pipe(prop("val"), isString),
+      (tuple) =>
+        new Resolvable(tuple.token, (x) => x, [tuple.val], tuple.policy),
+    ],
+    [
+      pipe(prop("val"), Array.isArray),
+      (tuple) =>
+        new Resolvable(
+          tuple.token,
+          tail(tuple.val),
+          tuple.val.slice(0, -1),
+          tuple.policy,
+        ),
+    ],
+    [
+      pipe(prop("val"), isFunction),
+      (tuple) =>
+        new Resolvable(
+          tuple.token,
+          tuple.val,
+          annotateFn(tuple.val),
+          tuple.policy,
+        ),
+    ],
+  ]);
   const item2Resolvable = pattern([
-        [is(Resolvable), (r) => r],
-        [isResolveLiteral, literal2Resolvable],
-        [isLikeNg2Provider, literal2Resolvable],
-        [isTupleFromObj, tuple2Resolvable],
-        [val(true), (obj) => { throw new Error('Invalid resolve value: ' + stringify(obj)); },],
-    ]);
+    [is(Resolvable), (r) => r],
+    [isResolveLiteral, literal2Resolvable],
+    [isLikeNg2Provider, literal2Resolvable],
+    [isTupleFromObj, tuple2Resolvable],
+    [
+      val(true),
+      (obj) => {
+        throw new Error("Invalid resolve value: " + stringify(obj));
+      },
+    ],
+  ]);
   // If resolveBlock is already an array, use it as-is.
   // Otherwise, assume it's an object and convert to an Array of tuples
   const decl = state.resolve;

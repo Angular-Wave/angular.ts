@@ -323,12 +323,14 @@ export class Transition {
    * @param resolvable a [[ResolvableLiteral]] object (or a [[Resolvable]])
    * @param state the state in the "to path" which should receive the new resolve (otherwise, the root state)
    */
-  addResolvable(resolvable, state = "") {
+  addResolvable(resolvable, state) {
     resolvable = is(Resolvable)(resolvable)
       ? resolvable
       : new Resolvable(resolvable);
+
     const stateName = typeof state === "string" ? state : state.name;
     const topath = this._treeChanges.to;
+    /** @type {import('../path/path-node').PathNode} */
     const targetNode = find(topath, (node) => {
       return node.state.name === stateName;
     });

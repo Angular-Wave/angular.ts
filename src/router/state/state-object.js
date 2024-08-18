@@ -13,29 +13,19 @@ import { isFunction, isObject } from "../../shared/utils";
  * Each of its own properties (i.e., `hasOwnProperty`) are built using builders from the [[StateBuilder]].
  */
 export class StateObject {
-  /**
-   * Create a state object to put the private/internal implementation details onto.
-   * The object's prototype chain looks like:
-   * (Internal State Object) -> (Copy of State.prototype) -> (State Declaration object) -> (State Declaration's prototype...)
-   *
-   * @param stateDecl the user-supplied State Declaration
-   * @returns {StateObject} an internal State object
-   */
-  static create(stateDecl) {
-    const state = Object.setPrototypeOf(
-      Object.assign({}, stateDecl),
-      StateObject.prototype,
-    );
-    stateDecl.$$state = () => state;
-    state.self = stateDecl;
-    state.__stateObjectCache = {
-      nameGlob: Glob.fromString(state.name), // might return null
-    };
-    return state;
-  }
-  // /** @deprecated use State.create() */
+  name = undefined;
+  navigable = undefined;
+  /** @type {?StateObject} */
+  parent = undefined;
+  params = undefined;
+  url = undefined;
+
   constructor(config) {
-    return StateObject.create(config || {});
+    Object.assign(this, config);
+    this.$$state = () => this;
+    this.self = config;
+    const nameGlob = this.name ? Glob.fromString(this.name) : null;
+    this.__stateObjectCache = { nameGlob };
   }
   /**
    * Returns true if the provided parameter is the same state.

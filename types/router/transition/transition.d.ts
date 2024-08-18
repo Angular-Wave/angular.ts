@@ -218,7 +218,7 @@ export class Transition {
      * @param resolvable a [[ResolvableLiteral]] object (or a [[Resolvable]])
      * @param state the state in the "to path" which should receive the new resolve (otherwise, the root state)
      */
-    addResolvable(resolvable: any, state?: string): void;
+    addResolvable(resolvable: any, state: any): void;
     /**
      * Gets the transition from which this transition was redirected.
      *

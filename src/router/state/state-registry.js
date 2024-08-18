@@ -6,6 +6,7 @@ import { propEq } from "../../shared/hof";
 import { ResolveContext } from "../resolve/resolve-context";
 import { ng1ViewsBuilder } from "./views";
 import { isString } from "../../shared/utils";
+import { StateObject } from "./state-object";
 /**
  * A registry for all of the application's [[StateDeclaration]]s
  *

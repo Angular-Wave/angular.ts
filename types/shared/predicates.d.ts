@@ -3,6 +3,8 @@
  *
  * A value is "injectable" if it is a function, or if it is an ng1 array-notation-style array
  * where all the elements in the array are Strings, except the last one, which is a Function
+ * @param {*} val
+ * @returns {boolean}
  */
 export function isInjectable(val: any): boolean;
 export function isNull(o: any): boolean;

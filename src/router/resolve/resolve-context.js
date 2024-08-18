@@ -107,6 +107,7 @@ export class ResolveContext {
    * @param state Used to find the node to put the resolvable on
    */
   addResolvables(newResolvables, state) {
+    /** @type {import('../path/path-node').PathNode} */
     const node = find(this._path, propEq("state", state));
     const keys = newResolvables.map((r) => r.token);
     node.resolvables = node.resolvables

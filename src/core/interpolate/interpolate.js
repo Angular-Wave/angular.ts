@@ -9,7 +9,7 @@ import {
 import { constantWatchDelegate } from "../parser/parse";
 
 const $interpolateMinErr = minErr("$interpolate");
-$interpolateMinErr.throwNoconcat = function (text) {
+function throwNoconcat(text) {
   throw $interpolateMinErr(
     "noconcat",
     "Error while interpolating: {0}\nStrict Contextual Escaping disallows " +
@@ -17,16 +17,16 @@ $interpolateMinErr.throwNoconcat = function (text) {
       "required.  See http://docs.angularjs.org/api/ng.$sce",
     text,
   );
-};
+}
 
-$interpolateMinErr.interr = function (text, err) {
+function interr(text, err) {
   throw $interpolateMinErr(
     "interr",
     "Can't interpolate: {0}\n{1}",
     text,
     err.toString(),
   );
-};
+}
 
 /**
  *
@@ -48,7 +48,7 @@ export function $InterpolateProvider() {
    * Symbol to denote start of expression in the interpolated string. Defaults to `{{`.
    *
    * @param {string=} value new value to set the starting symbol to.
-   * @returns {string|self} Returns the symbol when used as getter and self if used as setter.
+   * @returns {string|$InterpolateProvider} Returns the symbol when used as getter and self if used as setter.
    */
   this.startSymbol = function (value) {
     if (value) {
@@ -62,7 +62,7 @@ export function $InterpolateProvider() {
    * Symbol to denote the end of expression in the interpolated string. Defaults to `}}`.
    *
    * @param {string=} value new value to set the ending symbol to.
-   * @returns {string|self} Returns the symbol when used as getter and self if used as setter.
+   * @returns {string|$InterpolateProvider} Returns the symbol when used as getter and self if used as setter.
    */
   this.endSymbol = function (value) {
     if (value) {
@@ -237,6 +237,10 @@ export function $InterpolateProvider() {
           if (contextAllowsConcatenation) {
             unescapedText = $sce.getTrusted(trustedContext, unescapedText);
           }
+
+          /**
+           * @type {any}
+           */
           const constantInterp = valueFn(unescapedText);
           constantInterp.exp = text;
           constantInterp.expressions = [];
@@ -322,7 +326,7 @@ export function $InterpolateProvider() {
             }
             if (trustedContext && concat.length > 1) {
               // This context does not allow more than one part, e.g. expr + string or exp + exp.
-              $interpolateMinErr.throwNoconcat(text);
+              throwNoconcat(text);
             }
             // In an unprivileged context or only one part: just concatenate and return.
             return concat.join("");
@@ -341,7 +345,7 @@ export function $InterpolateProvider() {
 
                 return compute(values);
               } catch (err) {
-                $exceptionHandler($interpolateMinErr.interr(text, err));
+                interr(text, err);
               }
             },
             {
@@ -380,7 +384,7 @@ export function $InterpolateProvider() {
                 : $sce.valueOf(value);
             return allOrNothing && !isDefined(value) ? value : stringify(value);
           } catch (err) {
-            $exceptionHandler($interpolateMinErr.interr(text, err));
+            interr(text, err);
           }
         }
       }

@@ -15,11 +15,14 @@ export const isNullOrUndefined = or(isNull, isUndefined);
  *
  * A value is "injectable" if it is a function, or if it is an ng1 array-notation-style array
  * where all the elements in the array are Strings, except the last one, which is a Function
+ * @param {*} val
+ * @returns {boolean}
  */
 export function isInjectable(val) {
   if (Array.isArray(val) && val.length) {
     const head = val.slice(0, -1),
       tail = val.slice(-1);
+
     return !(
       head.filter((x) => !isString(x)).length ||
       tail.filter((x) => !isFunction(x)).length

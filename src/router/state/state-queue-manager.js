@@ -13,7 +13,7 @@ export class StateQueueManager {
   }
   register(stateDecl) {
     const queue = this.queue;
-    const state = StateObject.create(stateDecl);
+    const state = new StateObject(stateDecl);
     const name = state.name;
     if (!isString(name)) throw new Error("State must have a valid name");
     if (

@@ -26,7 +26,7 @@ export class StateRegistry {
      */
     getStateHookBuilder(hookName: any): (stateObject: any) => (trans: any, state: any) => any;
     _registerRoot(): void;
-    _root: import("./state-object").StateObject;
+    _root: StateObject;
     /**
      * Listen for a State Registry events
      *
@@ -67,7 +67,7 @@ export class StateRegistry {
      *
      * @return the root [[StateObject]]
      */
-    root(): import("./state-object").StateObject;
+    root(): StateObject;
     /**
      * Adds a state to the registry
      *
@@ -80,7 +80,7 @@ export class StateRegistry {
      *          If the state was successfully registered, then the object is fully built (See: [[StateBuilder]]).
      *          If the state was only queued, then the object is not fully built.
      */
-    register(stateDefinition: any): import("./state-object").StateObject;
+    register(stateDefinition: any): StateObject;
     _deregisterTree(state: any): any[];
     /**
      * Removes a state from the registry
@@ -109,3 +109,4 @@ export function getLocals(ctx: any): any;
 import { StateMatcher } from "./state-matcher";
 import { StateBuilder } from "./state-builder";
 import { StateQueueManager } from "./state-queue-manager";
+import { StateObject } from "./state-object";
