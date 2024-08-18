@@ -132,5 +132,10 @@ export class BaseUrlRule {
     $id: number;
     _group: any;
     handler: any;
-    matchPriority(): number;
+    /**
+     * This function should be overridden
+     * @param {*} [params]
+     * @returns {number}
+     */
+    matchPriority(params?: any): number;
 }

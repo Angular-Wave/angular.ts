@@ -332,7 +332,7 @@ export class UrlService {
      */
     const checkRule = (rule) => {
       const match = rule.match(url);
-      return match && { match, rule, weight: rule.matchPriority() };
+      return match && { match, rule, weight: rule.matchPriority(match) };
     };
     // The rules are pre-sorted.
     // - Find the first matching rule.

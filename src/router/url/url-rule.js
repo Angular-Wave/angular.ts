@@ -1,5 +1,11 @@
 import { UrlMatcher } from "./url-matcher";
-import { isString, isFunction, isDefined } from "../../shared/utils";
+import {
+  isString,
+  isFunction,
+  isDefined,
+  isUndefined,
+  assert,
+} from "../../shared/utils";
 import { is, or, pattern } from "../../shared/hof";
 import { StateObject } from "../state/state-object";
 /**
@@ -207,7 +213,13 @@ export class BaseUrlRule {
     this.handler = handler || ((x) => x);
   }
 
-  matchPriority() {
+  /**
+   * This function should be overridden
+   * @param {*} [params]
+   * @returns {number}
+   */
+  matchPriority(params) {
+    assert(isUndefined(params));
     return 0 - this.$id;
   }
 }
