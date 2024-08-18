@@ -1,11 +1,4 @@
-import {
-  forEach,
-  isFunction,
-  isObject,
-  isString,
-  minErr,
-  extend,
-} from "../shared/utils";
+import { isFunction, isObject, minErr, extend } from "../shared/utils";
 import { JQLite } from "../shared/jqlite/jqlite";
 import { NG_ANIMATE_CLASSNAME } from "./shared";
 

@@ -1,9 +1,9 @@
 /**
- * @typedef {Object} AnyStringKeyObject
- * @property {Record<string, any>} [key]
+ * @typedef {Object} AttributeLike
+ * @property {Object} $attr
  */
 /**
- * @extends {AnyStringKeyObject}
+ * @extends {AttributeLike}
  */
 export class Attributes {
     /**
@@ -104,7 +104,7 @@ export class Attributes {
     sanitizeSrcset(value: any, invokeType: any): any;
     srcset: any;
 }
-export type AnyStringKeyObject = {
-    key?: Record<string, any>;
+export type AttributeLike = {
+    $attr: any;
 };
 import { directiveNormalize } from "../../shared/utils";

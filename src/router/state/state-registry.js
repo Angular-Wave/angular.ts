@@ -6,7 +6,7 @@ import { propEq } from "../../shared/hof";
 import { ResolveContext } from "../resolve/resolve-context";
 import { ng1ViewsBuilder } from "./views";
 import { isString } from "../../shared/utils";
-import { StateObject } from "./state-object";
+
 /**
  * A registry for all of the application's [[StateDeclaration]]s
  *
@@ -197,7 +197,7 @@ export class StateRegistry {
    * If the state has children, they are are also removed from the registry.
    *
    * @param stateOrName the state's name or object representation
-   * @returns {StateObject[]} a list of removed states
+   * @returns {import('./state-object').StateObject[]} a list of removed states
    */
   deregister(stateOrName) {
     const _state = this.get(stateOrName);

@@ -733,13 +733,13 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
        * functions return values - the linking functions - are combined into a composite linking
        * function, which is the a linking function for the node.
        *
-       * @param {NodeList} nodeList an array of nodes or NodeList to compile
+       * @param {NodeList|JQLite} nodeList an array of nodes or NodeList to compile
        * @param {*} transcludeFn A linking function, where the
        *        scope argument is auto-generated to the new child of the transcluded parent scope.
-       * @param {Element=} $rootElement If the nodeList is the root of the compilation tree then
+       * @param {JQLite} [$rootElement] If the nodeList is the root of the compilation tree then
        *        the rootElement must be set the JQLite collection of the compile root. This is
        *        needed so that the JQLite collection items can be replaced with widgets.
-       * @param {number=} maxPriority Max directive priority.
+       * @param {number=} [maxPriority] Max directive priority.
        * @param {*} [ignoreDirective]
        * @param {*} [previousCompileContext]
        * @returns {Function} A composite linking function of all of the matched directives or null.
@@ -947,8 +947,9 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {Element} node Node to search.
        * @param directives An array to which the directives are added to. This array is sorted before
        *        the function returns.
-       * @param {Attributes} attrs The shared attrs object which is used to populate the normalized attributes.
+       * @param {Attributes|import("./attributes").AttributeLike} attrs The shared attrs object which is used to populate the normalized attributes.
        * @param {number=} maxPriority Max directive priority.
+       * @param {boolean=} ignoreDirective
        */
       function collectDirectives(
         node,
@@ -1243,6 +1244,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         let directiveName;
         let $template;
         let replaceDirective = originalReplaceDirective;
+        /** @type {any} */
         let childTranscludeFn = transcludeFn;
         let linkFn;
         let didScanForMultipleTransclusion = false;
@@ -1528,6 +1530,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
               replaceWith(jqCollection, $compileNode, compileNode);
 
+              /** @type {import("./attributes").AttributeLike} */
               const newTemplateAttrs = { $attr: {} };
 
               // combine directives from the original node and from the template:
@@ -1536,7 +1539,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               // - collect directives from the template and sort them by priority
               // - combine directives as: processed + template + unprocessed
               const templateDirectives = collectDirectives(
-                compileNode,
+                /** @type {Element} */ (compileNode),
                 [],
                 newTemplateAttrs,
               );
@@ -2223,6 +2226,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         previousCompileContext,
       ) {
         let linkQueue = [];
+        /** @type {any} */
         let afterTemplateNodeLinkFn;
         let afterTemplateChildLinkFn;
         const beforeTemplateCompileNode = $compileNode[0];
@@ -2518,6 +2522,61 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         return sanitizeSrcset($sce.valueOf(value), "ng-prop-srcset");
       }
 
+      function sanitizeSrcset(value, invokeType) {
+        if (!value) {
+          return value;
+        }
+        if (!isString(value)) {
+          throw $compileMinErr(
+            "srcset",
+            'Can\'t pass trusted values to `{0}`: "{1}"',
+            invokeType,
+            value.toString(),
+          );
+        }
+
+        // Such values are a bit too complex to handle automatically inside $sce.
+        // Instead, we sanitize each of the URIs individually, which works, even dynamically.
+
+        // It's not possible to work around this using `$sce.trustAsMediaUrl`.
+        // If you want to programmatically set explicitly trusted unsafe URLs, you should use
+        // `$sce.trustAsHtml` on the whole `img` tag and inject it into the DOM using the
+        // `ng-bind-html` directive.
+
+        var result = "";
+
+        // first check if there are spaces because it's not the same pattern
+        var trimmedSrcset = trim(value);
+        //                (   999x   ,|   999w   ,|   ,|,   )
+        var srcPattern = /(\s+\d+x\s*,|\s+\d+w\s*,|\s+,|,\s+)/;
+        var pattern = /\s/.test(trimmedSrcset) ? srcPattern : /(,)/;
+
+        // split srcset into tuple of uri and descriptor except for the last item
+        var rawUris = trimmedSrcset.split(pattern);
+
+        // for each tuples
+        var nbrUrisWith2parts = Math.floor(rawUris.length / 2);
+        for (var i = 0; i < nbrUrisWith2parts; i++) {
+          var innerIdx = i * 2;
+          // sanitize the uri
+          result += $sce.getTrustedMediaUrl(trim(rawUris[innerIdx]));
+          // add the descriptor
+          result += " " + trim(rawUris[innerIdx + 1]);
+        }
+
+        // split the last item into uri and descriptor
+        var lastTuple = trim(rawUris[i * 2]).split(/\s/);
+
+        // sanitize the last uri
+        result += $sce.getTrustedMediaUrl(trim(lastTuple[0]));
+
+        // and add the last descriptor if any
+        if (lastTuple.length === 2) {
+          result += " " + trim(lastTuple[1]);
+        }
+        return result;
+      }
+
       function addPropertyDirective(node, directives, attrName, propName) {
         if (EVENT_HANDLER_ATTR_REGEXP.test(propName)) {
           throw $compileMinErr(
@@ -2699,13 +2758,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                 }
               }
               $rootElement.length -= removeCount - 1;
-
-              // If the replaced element is also the jQuery .context then replace it
-              // .context is a deprecated jQuery api, so we should set it only when jQuery set it
-              // http://api.jquery.com/context/
-              if ($rootElement.context === firstElementToRemove) {
-                $rootElement.context = newNode;
-              }
               break;
             }
           }
@@ -2807,7 +2859,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
           switch (mode) {
             case "@":
-              if (!optional && !hasOwnProperty.call(attrs, attrName)) {
+              if (!optional && !Object.hasOwnProperty.call(attrs, attrName)) {
                 strictBindingsCheck(attrName, directive.name);
                 destination[scopeName] = attrs[attrName] = undefined;
               }

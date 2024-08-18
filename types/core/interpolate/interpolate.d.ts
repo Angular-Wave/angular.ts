@@ -27,7 +27,7 @@ export class $InterpolateProvider {
      */
     endSymbol: (value?: string | undefined) => string | $InterpolateProvider;
     $get: (string | (($parse: import("../parser/parse").ParseService, $exceptionHandler: import("../exception-handler").ErrorHandler, $sce: any) => {
-        (text: string, mustHaveExpression?: boolean | undefined, trustedContext?: string | undefined, allOrNothing?: boolean | undefined): (arg0: context) => any;
+        (text: string, mustHaveExpression?: boolean | undefined, trustedContext?: string | undefined, allOrNothing?: boolean | undefined): Function;
         /**
          * @ngdoc method
          * @name $interpolate#startSymbol

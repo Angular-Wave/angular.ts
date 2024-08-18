@@ -215,7 +215,7 @@ export function $InterpolateProvider() {
        *    provides Strict Contextual Escaping for details.
        * @param {boolean=} allOrNothing if `true`, then the returned function returns undefined
        *    unless all embedded expressions evaluate to a value other than `undefined`.
-       * @returns {function(context)} an interpolation function which is used to compute the
+       * @returns {Function} an interpolation function which is used to compute the
        *    interpolated string. The function has these parameters:
        *
        * - `context`: evaluation context for all expressions embedded in the interpolated text

@@ -16,12 +16,12 @@ const SIMPLE_ATTR_NAME = /^\w/;
 const specialAttrHolder = window.document.createElement("div");
 
 /**
- * @typedef {Object} AnyStringKeyObject
- * @property {Record<string, any>} [key]
+ * @typedef {Object} AttributeLike
+ * @property {Object} $attr
  */
 
 /**
- * @extends {AnyStringKeyObject}
+ * @extends {AttributeLike}
  */
 export class Attributes {
   /**

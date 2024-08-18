@@ -82,7 +82,6 @@ export function stringify(o) {
       if (seen.indexOf(value) !== -1) return "[circular ref]";
       seen.push(value);
     }
-    debugger;
     return stringifyPattern(value);
   }
   if (isUndefined(o)) {
