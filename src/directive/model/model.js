@@ -816,10 +816,6 @@ export class NgModelController {
   }
 
   /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$setViewValue
-   *
-   * @description
    * Update the view value.
    *
    * This method should be called when a control wants to change the view value; typically,
@@ -906,11 +902,6 @@ export class NgModelController {
   }
 
   /**
-   * @ngdoc method
-   *
-   * @name ngModel.NgModelController#$overrideModelOptions
-   *
-   * @description
    *
    * Override the current model options settings programmatically.
    *
@@ -940,12 +931,6 @@ export class NgModelController {
   }
 
   /**
-   * @ngdoc method
-   *
-   * @name  ngModel.NgModelController#$processModelValue
-
-   * @description
-   *
    * Runs the model -> view pipeline on the current
    * {@link ngModel.NgModelController#$modelValue $modelValue}.
    *
@@ -1132,6 +1117,7 @@ function setupModelWatcher(ctrl) {
   });
 }
 
+ngModelDirective.$inject = ["$rootScope"];
 export function ngModelDirective($rootScope) {
   return {
     restrict: "A",
@@ -1146,7 +1132,7 @@ export function ngModelDirective($rootScope) {
       element[0].classList.add(PRISTINE_CLASS, UNTOUCHED_CLASS, VALID_CLASS);
 
       return {
-        pre: function (scope, element, attr, ctrls) {
+        pre: function (scope, _element, attr, ctrls) {
           const modelCtrl = ctrls[0];
           const formCtrl = ctrls[1] || modelCtrl.$$parentForm;
           const optionsCtrl = ctrls[2];
@@ -1170,7 +1156,7 @@ export function ngModelDirective($rootScope) {
             modelCtrl.$$parentForm.$removeControl(modelCtrl);
           });
         },
-        post: function ngModelPostLink(scope, element, attr, ctrls) {
+        post: function (scope, element, _attr, ctrls) {
           const modelCtrl = ctrls[0];
           modelCtrl.$$setUpdateOnEvents();
 
