@@ -5,10 +5,8 @@ AngularTS
 [![stats](https://data.jsdelivr.com/v1/package/npm/@angular-wave/angular.ts/badge?style=rounded)](https://www.jsdelivr.com/package/npm/@angular-wave/angular.ts) 
 
 This project preserves, modernises and expands the original [AngularJS](https://github.com/angular/angular.js) 
-framework. While building on the core features of the original, AngularTS is not 
-a drop-in replacement or an LTS version. It has no relation to [Angular](https://angular.io) and makes no efforts to be compatible with it.
-AngularTS is "AngularJS: The Good Parts". It takes the three core pillars of the original &ndash; a string-interpolation engine, 
-dependency injection, two-way data-binding &ndash; and adopts them for [Modern Web](https://modern-web.dev/). 
+framework. AngularTS is "AngularJS: The Good Parts". It takes the three core pillars of the original &ndash; a string-interpolation engine, 
+dependency injection, two-way data-binding &ndash; and adds modern build tooling with strong typechecking of TypeScript. 
 The result is a buildless, progressive and battle-tested JS framework that stays as close to Web standards as possible. 
 
 AngularTS lets you write server-rendered web applications for desktop and mobile, without leaving the comfort of your tech-stack. 
@@ -21,12 +19,6 @@ the browser how to do dependency injection and inversion of control.
 It also helps with server-side communication, taming async callbacks with promises and deferred objects,
 and it makes client-side navigation and deep linking with hashbang urls or HTML5 pushState a
 piece of cake. 
-
-#### Current state
-
-AngularJS is a large codebase that evolved in its own ecosystem over a long period of time. This resulted in multiple layers of legacy dependencies spread across multiple modules. Current focus is to remove these layers one by one, while incrementally updating internal documentation to the reflect these changes. 
-Particular attention is being paid to removing `@ngdoc` tags and migrating to proper JSDoc annotation with passing TypeScript verifications.
-Placating the compiler is a time-consuming process, so until then, feel free to rely on old documentation or raise a PR if you have a problem migrating. The core remains well-tested (4k unit/integration tests) and stable, but this project is undergoing rapid changes, which means that its stage of development should be qualified as pre-alpha. 
 
 ### Getting started
 
