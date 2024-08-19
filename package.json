@@ -23,7 +23,7 @@
     "express": "node --watch ./utils/express.js",
     "build": "vite build",
     "playwright": "./node_modules/.bin/playwright test",
-    "generate-docs": "node_modules/.bin/jsdoc -c ./jsdoc.json"
+    "generate-docs": "node_modules/.bin/typedoc"
   },
   "devDependencies": {
     "@playwright/test": "^1.44.0",
@@ -41,13 +41,13 @@
     "express": "latest",
     "jasmine-core": "latest",
     "jsdoc": "^4.0.3",
-    "jsdoc-to-markdown": "^8.0.1",
     "npm-run-all": "latest",
     "playwright": "^1.44.0",
     "prettier": "latest",
     "rollup": "latest",
     "rollup-plugin-version-injector": "^1.3.3",
     "sinon": "latest",
+    "typedoc": "latest",
     "typescript": "latest",
     "vite": "latest"
   }
