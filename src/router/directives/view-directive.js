@@ -249,12 +249,6 @@ export let ngView = [
               $$animLeave: animLeave,
             };
             /**
-             * @ngdoc event
-             * @name ui.router.state.directive:ui-view#$viewContentLoading
-             * @eventOf ui.router.state.directive:ui-view
-             * @eventType emits on ui-view directive scope
-             * @description
-             *
              * Fired once the view **begins loading**, *before* the DOM is rendered.
              *
              * @param {Object} event Event object.
@@ -280,11 +274,6 @@ export let ngView = [
             currentEl = cloned;
             currentScope = newScope;
             /**
-             * @ngdoc event
-             * @name ui.router.state.directive:ui-view#$viewContentLoaded
-             * @eventOf ui.router.state.directive:ui-view
-             * @eventType emits on ui-view directive scope
-             * @description           *
              * Fired once the view is **loaded**, *after* the DOM is rendered.
              *
              * @param {Object} event Event object.

@@ -16,10 +16,6 @@ export class FormController {
     $$element: any;
     $$animate: any;
     /**
-     * @ngdoc method
-     * @name form.FormController#$rollbackViewValue
-     *
-     * @description
      * Rollback all form controls pending updates to the `$modelValue`.
      *
      * Updates may be pending by a debounced event or because the input is waiting for a some future
@@ -28,10 +24,6 @@ export class FormController {
      */
     $rollbackViewValue(): void;
     /**
-     * @ngdoc method
-     * @name form.FormController#$commitViewValue
-     *
-     * @description
      * Commit all form controls pending updates to the `$modelValue`.
      *
      * Updates may be pending by a debounced event or because the input is waiting for a some future
@@ -84,10 +76,6 @@ export class FormController {
      */
     $removeControl(control: any): void;
     /**
-     * @ngdoc method
-     * @name form.FormController#$setDirty
-     *
-     * @description
      * Sets the form to a dirty state.
      *
      * This method can be called to add the 'ng-dirty' class and set the form to a dirty
@@ -95,10 +83,6 @@ export class FormController {
      */
     $setDirty(): void;
     /**
-     * @ngdoc method
-     * @name form.FormController#$setPristine
-     *
-     * @description
      * Sets the form to its pristine state.
      *
      * This method sets the form's `$pristine` state to true, the `$dirty` state to false, removes
@@ -112,10 +96,6 @@ export class FormController {
      */
     $setPristine(): void;
     /**
-     * @ngdoc method
-     * @name form.FormController#$setUntouched
-     *
-     * @description
      * Sets the form to its untouched state.
      *
      * This method can be called to remove the 'ng-touched' class and set the form controls to their
@@ -126,10 +106,6 @@ export class FormController {
      */
     $setUntouched(): void;
     /**
-     * @ngdoc method
-     * @name form.FormController#$setSubmitted
-     *
-     * @description
      * Sets the form to its `$submitted` state. This will also set `$submitted` on all child and
      * parent forms of the form.
      */

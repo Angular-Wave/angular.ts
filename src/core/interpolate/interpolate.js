@@ -103,14 +103,6 @@ export function $InterpolateProvider() {
       }
 
       /**
-       * @ngdoc service
-       * @name $interpolate
-       * @kind function
-       *
-       * @requires $parse
-       * @requires $sce
-       *
-       * @description
        *
        * Compiles a string with markup into an interpolation function. This service is used by the
        * HTML {@link ng.$compile $compile} service for data binding. See
@@ -390,9 +382,6 @@ export function $InterpolateProvider() {
       }
 
       /**
-       * @ngdoc method
-       * @name $interpolate#startSymbol
-       * @description
        * Symbol to denote the start of expression in the interpolated string. Defaults to `{{`.
        *
        * Use {@link ng.$interpolateProvider#startSymbol `$interpolateProvider.startSymbol`} to change
@@ -405,9 +394,6 @@ export function $InterpolateProvider() {
       };
 
       /**
-       * @ngdoc method
-       * @name $interpolate#endSymbol
-       * @description
        * Symbol to denote the end of expression in the interpolated string. Defaults to `}}`.
        *
        * Use {@link ng.$interpolateProvider#endSymbol `$interpolateProvider.endSymbol`} to change

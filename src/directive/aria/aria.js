@@ -20,13 +20,8 @@ const isNodeOneOf = function (elem, nodeTypeArray) {
     return true;
   }
 };
+
 /**
- * @ngdoc provider
- * @name $ariaProvider
- *
- *
- * @description
- *
  * Used for configuring the ARIA attributes injected and managed by ngAria.
  *
  * ```js

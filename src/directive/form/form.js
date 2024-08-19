@@ -36,9 +36,6 @@ function nullFormRenameControl(control, name) {
 }
 
 /**
- * @ngdoc type
- * @name form.FormController
- *
  * @property {boolean} $pristine True if user has not interacted with the form yet.
  * @property {boolean} $dirty True if user has already interacted with the form.
  * @property {boolean} $valid True if all of the containing forms and controls are valid.
@@ -121,10 +118,6 @@ export function FormController(
 
 FormController.prototype = {
   /**
-   * @ngdoc method
-   * @name form.FormController#$rollbackViewValue
-   *
-   * @description
    * Rollback all form controls pending updates to the `$modelValue`.
    *
    * Updates may be pending by a debounced event or because the input is waiting for a some future
@@ -138,10 +131,6 @@ FormController.prototype = {
   },
 
   /**
-   * @ngdoc method
-   * @name form.FormController#$commitViewValue
-   *
-   * @description
    * Commit all form controls pending updates to the `$modelValue`.
    *
    * Updates may be pending by a debounced event or because the input is waiting for a some future
@@ -253,10 +242,6 @@ FormController.prototype = {
   },
 
   /**
-   * @ngdoc method
-   * @name form.FormController#$setDirty
-   *
-   * @description
    * Sets the form to a dirty state.
    *
    * This method can be called to add the 'ng-dirty' class and set the form to a dirty
@@ -271,10 +256,6 @@ FormController.prototype = {
   },
 
   /**
-   * @ngdoc method
-   * @name form.FormController#$setPristine
-   *
-   * @description
    * Sets the form to its pristine state.
    *
    * This method sets the form's `$pristine` state to true, the `$dirty` state to false, removes
@@ -301,10 +282,6 @@ FormController.prototype = {
   },
 
   /**
-   * @ngdoc method
-   * @name form.FormController#$setUntouched
-   *
-   * @description
    * Sets the form to its untouched state.
    *
    * This method can be called to remove the 'ng-touched' class and set the form controls to their
@@ -320,10 +297,6 @@ FormController.prototype = {
   },
 
   /**
-   * @ngdoc method
-   * @name form.FormController#$setSubmitted
-   *
-   * @description
    * Sets the form to its `$submitted` state. This will also set `$submitted` on all child and
    * parent forms of the form.
    */
@@ -348,10 +321,6 @@ FormController.prototype = {
 };
 
 /**
- * @ngdoc method
- * @name form.FormController#$setValidity
- *
- * @description
  * Change the validity state of the form, and notify the parent form (if any).
  *
  * Application developers will rarely need to call this method directly. It is used internally, by
@@ -397,11 +366,6 @@ addSetValidityMethod({
 });
 
 /**
- * @ngdoc directive
- * @name ngForm
- * @restrict EA
- *
- * @description
  * Helper directive that makes it possible to create control groups inside a
  * {@link ng.directive:form `form`} directive.
  * These "child forms" can be used, for example, to determine the validity of a sub-group of
@@ -421,11 +385,6 @@ addSetValidityMethod({
  */
 
 /**
- * @ngdoc directive
- * @name form
- * @restrict E
- *
- * @description
  * Directive that instantiates
  * {@link form.FormController FormController}.
  *

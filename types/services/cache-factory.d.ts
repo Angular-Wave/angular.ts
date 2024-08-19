@@ -3,20 +3,12 @@ export class CacheFactoryProvider {
     $get: () => {
         (cacheId: string, options?: object | undefined): object;
         /**
-         * @ngdoc method
-         * @name $cacheFactory#info
-         *
-         * @description
          * Get information about all the caches that have been created
          *
          * @returns {Object} - key-value map of `cacheId` to the result of calling `cache#info`
          */
         info(): any;
         /**
-         * @ngdoc method
-         * @name $cacheFactory#get
-         *
-         * @description
          * Get access to a cache object by the `cacheId` used when it was created.
          *
          * @param {string} cacheId Name or id of a cache to access.

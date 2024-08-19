@@ -57,11 +57,6 @@ export class Attributes {
   }
 
   /**
-   * @ngdoc method
-   * @name $compile.directive.Attributes#$normalize
-   * @kind function
-   *
-   * @description
    * Converts an attribute name (e.g. dash/colon/underscore-delimited string, optionally prefixed with `x-` or
    * `data-`) to its normalized, camelCase form.
    *
@@ -74,11 +69,6 @@ export class Attributes {
   $normalize = directiveNormalize;
 
   /**
-   * @ngdoc method
-   * @name $compile.directive.Attributes#$addClass
-   * @kind function
-   *
-   * @description
    * Adds the CSS class value specified by the classVal parameter to the element. If animations
    * are enabled then an animation will be triggered for the class addition.
    *
@@ -91,11 +81,6 @@ export class Attributes {
   }
 
   /**
-   * @ngdoc method
-   * @name $compile.directive.Attributes#$removeClass
-   * @kind function
-   *
-   * @description
    * Removes the CSS class value specified by the classVal parameter from the element. If
    * animations are enabled then an animation will be triggered for the class removal.
    *
@@ -108,11 +93,6 @@ export class Attributes {
   }
 
   /**
-   * @ngdoc method
-   * @name $compile.directive.Attributes#$updateClass
-   * @kind function
-   *
-   * @description
    * Adds and removes the appropriate CSS class values to the element based on the difference
    * between the new and old CSS class values (specified as newClasses and oldClasses).
    *

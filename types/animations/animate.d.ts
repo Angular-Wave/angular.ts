@@ -4,10 +4,6 @@ export class AnimateProvider {
     constructor($provide: any);
     $$registeredAnimations: any;
     /**
-     * @ngdoc method
-     * @name $animateProvider#register
-     *
-     * @description
      * Registers a new injectable animation factory function. The factory function produces the
      * animation object which contains callback functions for each event that is expected to be
      * animated.
@@ -44,10 +40,6 @@ export class AnimateProvider {
      */
     register: (name: string, factory: Function) => void;
     /**
-     * @ngdoc method
-     * @name $animateProvider#customFilter
-     *
-     * @description
      * Sets and/or returns the custom filter function that is used to "filter" animations, i.e.
      * determine if an animation is allowed or not. When no filter is specified (the default), no
      * animation will be blocked. Setting the `customFilter` value will only allow animations for
@@ -82,10 +74,6 @@ export class AnimateProvider {
      */
     customFilter: (filterFn?: Function | undefined, ...args: any[]) => Function;
     /**
-     * @ngdoc method
-     * @name $animateProvider#classNameFilter
-     *
-     * @description
      * Sets and/or returns the CSS class regular expression that is checked when performing
      * an animation. Upon bootstrap the classNameFilter value is not set at all and will
      * therefore enable $animate to attempt to perform an animation on any element that is triggered.
@@ -192,11 +180,7 @@ export class AnimateProvider {
          */
         pin: any;
         /**
-         *
-         * @ngdoc method
-         * @name $animate#enabled
-         * @kind function
-         * @description Used to get and set whether animations are enabled or not on the entire application or on an element and its children. This
+         * Used to get and set whether animations are enabled or not on the entire application or on an element and its children. This
          * function can be called in four ways:
          *
          * ```js

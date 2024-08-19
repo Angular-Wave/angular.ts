@@ -9,15 +9,11 @@ import { REGEX_STRING_REGEXP } from "./../attrs/attrs";
 import { startingTag } from "../../shared/jqlite/jqlite";
 
 /**
- * @ngdoc directive
- * @name ngRequiredf
- * @restrict A
  *
  * @param {String} ngRequired AngularJS expression. If it evaluates to `true`, it sets the
  *                                `required` attribute to the element and adds the `required`
  *                                {@link ngModel.NgModelController#$validators `validator`}.
  *
- * @description
  *
  * ngRequired adds the required {@link ngModel.NgModelController#$validators `validator`} to {@link ngModel `ngModel`}.
  * It is most often used for {@link input `input`} and {@link select `select`} controls, but can also be
@@ -68,10 +64,6 @@ export const requiredDirective = [
 ];
 
 /**
- * @ngdoc directive
- * @name ngPattern
- * @restrict A
- *
  * @param {String|RegExp} ngPattern AngularJS expression that must evaluate to a `RegExp` or a `String`
  *                                      parsable into a `RegExp`, or a `RegExp` literal. See above for
  *                                      more details.
@@ -178,10 +170,6 @@ export const patternDirective = [
 ];
 
 /**
- * @ngdoc directive
- * @name ngMaxlength
- * @restrict A
- *
  * @param {String} ngMaxlength AngularJS expression that must evaluate to a `Number` or `String`
  *                                 parsable into a `Number`. Used as value for the `maxlength`
  *                                 {@link ngModel.NgModelController#$validators validator}.
@@ -241,9 +229,6 @@ export const maxlengthDirective = [
 ];
 
 /**
- * @ngdoc directive
- * @name ngMinlength
- * @restrict A
  *
  * @param {string} ngMinlength AngularJS expression that must evaluate to a `Number` or `String`
  *                                 parsable into a `Number`. Used as value for the `minlength`

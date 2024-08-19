@@ -29,9 +29,6 @@ export class $InterpolateProvider {
     $get: (string | (($parse: import("../parser/parse").ParseService, $exceptionHandler: import("../exception-handler").ErrorHandler, $sce: any) => {
         (text: string, mustHaveExpression?: boolean | undefined, trustedContext?: string | undefined, allOrNothing?: boolean | undefined): Function;
         /**
-         * @ngdoc method
-         * @name $interpolate#startSymbol
-         * @description
          * Symbol to denote the start of expression in the interpolated string. Defaults to `{{`.
          *
          * Use {@link ng.$interpolateProvider#startSymbol `$interpolateProvider.startSymbol`} to change
@@ -41,9 +38,6 @@ export class $InterpolateProvider {
          */
         startSymbol(): string;
         /**
-         * @ngdoc method
-         * @name $interpolate#endSymbol
-         * @description
          * Symbol to denote the end of expression in the interpolated string. Defaults to `}}`.
          *
          * Use {@link ng.$interpolateProvider#endSymbol `$interpolateProvider.endSymbol`} to change

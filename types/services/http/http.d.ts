@@ -59,11 +59,6 @@ export class $HttpParamSerializerJQLikeProvider {
 }
 export function defaultHttpResponseTransform(data: any, headers: any): any;
 /**
- * @ngdoc provider
- * @name $httpProvider
- *
- *
- * @description
  * Use `$httpProvider` to change the default behavior of the {@link ng.$http $http} service.
  */
 export function $HttpProvider(): void;
@@ -84,10 +79,6 @@ export class $HttpProvider {
         paramSerializer: string;
     };
     /**
-     * @ngdoc method
-     * @name $httpProvider#useApplyAsync
-     * @description
-     *
      * Configure $http service to combine processing of multiple http responses received at around
      * the same time via {@link ng.$rootScope.Scope#$applyAsync $rootScope.$applyAsync}. This can result in
      * significant performance improvement for bigger applications that make many HTTP requests
@@ -109,10 +100,6 @@ export class $HttpProvider {
         (requestConfig: any): any;
         pendingRequests: any[];
         /**
-         * @ngdoc property
-         * @name $http#defaults
-         *
-         * @description
          * Runtime equivalent of the `$httpProvider.defaults` property. Allows configuration of
          * default headers, withCredentials as well as request and response transformations.
          *

@@ -9,14 +9,10 @@ export function identifierForController(controller: any, ident: any): any;
 export function $ControllerProvider(): void;
 export class $ControllerProvider {
     /**
-     * @ngdoc method
-     * @name $controllerProvider#has
      * @param {string} name Controller name to check.
      */
     has: (name: string) => any;
     /**
-     * @ngdoc method
-     * @name $controllerProvider#register
      * @param {string|Object} name Controller name, or an object map of controllers where the keys are
      *    the names and the values are the constructors.
      * @param {Function|Array} constructor Controller constructor fn (optionally decorated with DI

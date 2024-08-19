@@ -166,12 +166,6 @@ function classDirective(name, selector) {
 }
 
 /**
- * @ngdoc directive
- * @name ngClass
- * @restrict AC
- * @element ANY
- *
- * @description
  * The `ngClass` directive allows you to dynamically set CSS classes on an HTML element by databinding
  * an expression that represents all classes to be added.
  *
@@ -223,11 +217,6 @@ function classDirective(name, selector) {
 export const ngClassDirective = classDirective("", true);
 
 /**
- * @ngdoc directive
- * @name ngClassOdd
- * @restrict AC
- *
- * @description
  * The `ngClassOdd` and `ngClassEven` directives work exactly as
  * {@link ng.directive:ngClass ngClass}, except they work in
  * conjunction with `ngRepeat` and take effect only on odd (even) rows.
@@ -250,11 +239,6 @@ export const ngClassDirective = classDirective("", true);
 export const ngClassOddDirective = classDirective("Odd", 0);
 
 /**
- * @ngdoc directive
- * @name ngClassEven
- * @restrict AC
- *
- * @description
  * The `ngClassOdd` and `ngClassEven` directives work exactly as
  * {@link ng.directive:ngClass ngClass}, except they work in
  * conjunction with `ngRepeat` and take effect only on odd (even) rows.

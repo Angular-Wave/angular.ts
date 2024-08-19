@@ -391,7 +391,9 @@ export function $AnimateCssProvider() {
         }
 
         if (!options.$$skipPreparationClasses) {
-          element[0].classList.add(preparationClasses.split(" ").filter(x => x !== ""));
+          element[0].classList.add(
+            preparationClasses.split(" ").filter((x) => x !== ""),
+          );
         }
 
         let applyOnlyDuration;
@@ -785,7 +787,9 @@ export function $AnimateCssProvider() {
 
             applyAnimationClasses(element, options);
 
-            element[0].classList.add(activeClasses.split(" ").filter(x => x !== ""));
+            element[0].classList.add(
+              activeClasses.split(" ").filter((x) => x !== ""),
+            );
             if (flags.recalculateTimingStyles) {
               cacheKey = $$animateCache.cacheKey(
                 node,

@@ -290,11 +290,6 @@ function isSuccess(status) {
 }
 
 /**
- * @ngdoc provider
- * @name $httpProvider
- *
- *
- * @description
  * Use `$httpProvider` to change the default behavior of the {@link ng.$http $http} service.
  */
 export function $HttpProvider() {
@@ -374,10 +369,6 @@ export function $HttpProvider() {
 
   let useApplyAsync = false;
   /**
-   * @ngdoc method
-   * @name $httpProvider#useApplyAsync
-   * @description
-   *
    * Configure $http service to combine processing of multiple http responses received at around
    * the same time via {@link ng.$rootScope.Scope#$applyAsync $rootScope.$applyAsync}. This can result in
    * significant performance improvement for bigger applications that make many HTTP requests
@@ -770,10 +761,6 @@ export function $HttpProvider() {
        */
 
       /**
-       * @ngdoc method
-       * @name $http#patch
-       *
-       * @description
        * Shortcut method to perform `PATCH` request.
        *
        * @param {string} url Relative or absolute URL specifying the destination of the request
@@ -785,10 +772,6 @@ export function $HttpProvider() {
       createShortMethodsWithData("post", "put", "patch");
 
       /**
-       * @ngdoc property
-       * @name $http#defaults
-       *
-       * @description
        * Runtime equivalent of the `$httpProvider.defaults` property. Allows configuration of
        * default headers, withCredentials as well as request and response transformations.
        *

@@ -31,8 +31,6 @@ export function $ControllerProvider() {
   const controllers = {};
 
   /**
-   * @ngdoc method
-   * @name $controllerProvider#has
    * @param {string} name Controller name to check.
    */
   this.has = function (name) {
@@ -40,8 +38,6 @@ export function $ControllerProvider() {
   };
 
   /**
-   * @ngdoc method
-   * @name $controllerProvider#register
    * @param {string|Object} name Controller name, or an object map of controllers where the keys are
    *    the names and the values are the constructors.
    * @param {Function|Array} constructor Controller constructor fn (optionally decorated with DI
@@ -60,15 +56,11 @@ export function $ControllerProvider() {
     "$injector",
     /**
      *
-     *  @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @param {import("../../core/di/internal-injector").InjectorService} $injector
      * @returns
      */
     function ($injector) {
       /**
-       * @ngdoc service
-       * @name $controller
-       * @requires $injector
-       *
        * @param {Function|string} expression If called with a function then it's considered to be the
        *    controller constructor function. Otherwise it's considered to be a string which is used
        *    to retrieve the controller constructor using the following steps:

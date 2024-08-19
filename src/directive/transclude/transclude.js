@@ -2,11 +2,6 @@ import { minErr } from "../../shared/utils";
 import { startingTag } from "../../shared/jqlite/jqlite";
 
 /**
- * @ngdoc directive
- * @name ngTransclude
- * @restrict EA
- *
- * @description
  * Directive that marks the insertion point for the transcluded DOM of the nearest parent directive that uses transclusion.
  *
  * You can specify that you want to insert a named transclusion slot, instead of the default slot, by providing the slot name

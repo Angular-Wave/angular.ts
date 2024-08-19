@@ -300,10 +300,6 @@ export class NgModelController {
   }
 
   /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$render
-   *
-   * @description
    * Called when the view needs to be updated. It is expected that the user of the ng-model
    * directive will implement this method.
    *
@@ -322,10 +318,6 @@ export class NgModelController {
   $render() {}
 
   /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$isEmpty
-   *
-   * @description
    * This is called when we need to determine if the value of an input is empty.
    *
    * For instance, the required directive does this to work out if the input has data or not.
@@ -366,10 +358,6 @@ export class NgModelController {
   }
 
   /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$setPristine
-   *
-   * @description
    * Sets the control to its pristine state.
    *
    * This method can be called to remove the `ng-dirty` class and set the control to its pristine
@@ -389,10 +377,6 @@ export class NgModelController {
   }
 
   /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$setDirty
-   *
-   * @description
    * Sets the control to its dirty state.
    *
    * This method can be called to remove the `ng-pristine` class and set the control to its dirty
@@ -413,10 +397,6 @@ export class NgModelController {
   }
 
   /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$setUntouched
-   *
-   * @description
    * Sets the control to its untouched state.
    *
    * This method can be called to remove the `ng-touched` class and set the control to its
@@ -436,10 +416,6 @@ export class NgModelController {
   }
 
   /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$setTouched
-   *
-   * @description
    * Sets the control to its touched state.
    *
    * This method can be called to remove the `ng-untouched` class and set the control to its
@@ -458,10 +434,6 @@ export class NgModelController {
   }
 
   /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$rollbackViewValue
-   *
-   * @description
    * Cancel an update and reset the input element's value to prevent an update to the `$modelValue`,
    * which may be caused by a pending debounced event or because the input is waiting for some
    * future event.
@@ -553,10 +525,6 @@ export class NgModelController {
   }
 
   /**
-   * @ngdoc method
-   * @name ngModel.NgModelController#$validate
-   *
-   * @description
    * Runs each of the registered validators (first synchronous validators and then
    * asynchronous validators).
    * If the validity changes to invalid, the model will be set to `undefined`,

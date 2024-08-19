@@ -4,10 +4,13 @@ export function ngModelDirective($rootScope: any): {
     controller: typeof NgModelController;
     priority: number;
     compile: (element: any) => {
-        pre: (scope: any, element: any, attr: any, ctrls: any) => void;
-        post: (scope: any, element: any, attr: any, ctrls: any) => void;
+        pre: (scope: any, _element: any, attr: any, ctrls: any) => void;
+        post: (scope: any, element: any, _attr: any, ctrls: any) => void;
     };
 };
+export namespace ngModelDirective {
+    let $inject: string[];
+}
 export const ngModelMinErr: (arg0: string, ...arg1: any[]) => Error;
 /**
  *
@@ -130,10 +133,6 @@ export class NgModelController {
     $setValidity(validationErrorKey: any, state: any): void;
     $$initGetterSetters(): void;
     /**
-     * @ngdoc method
-     * @name ngModel.NgModelController#$render
-     *
-     * @description
      * Called when the view needs to be updated. It is expected that the user of the ng-model
      * directive will implement this method.
      *
@@ -151,10 +150,6 @@ export class NgModelController {
      */
     $render(): void;
     /**
-     * @ngdoc method
-     * @name ngModel.NgModelController#$isEmpty
-     *
-     * @description
      * This is called when we need to determine if the value of an input is empty.
      *
      * For instance, the required directive does this to work out if the input has data or not.
@@ -171,10 +166,6 @@ export class NgModelController {
     $isEmpty(value: any): boolean;
     $$updateEmptyClasses(value: any): void;
     /**
-     * @ngdoc method
-     * @name ngModel.NgModelController#$setPristine
-     *
-     * @description
      * Sets the control to its pristine state.
      *
      * This method can be called to remove the `ng-dirty` class and set the control to its pristine
@@ -183,10 +174,6 @@ export class NgModelController {
      */
     $setPristine(): void;
     /**
-     * @ngdoc method
-     * @name ngModel.NgModelController#$setDirty
-     *
-     * @description
      * Sets the control to its dirty state.
      *
      * This method can be called to remove the `ng-pristine` class and set the control to its dirty
@@ -195,10 +182,6 @@ export class NgModelController {
      */
     $setDirty(): void;
     /**
-     * @ngdoc method
-     * @name ngModel.NgModelController#$setUntouched
-     *
-     * @description
      * Sets the control to its untouched state.
      *
      * This method can be called to remove the `ng-touched` class and set the control to its
@@ -208,10 +191,6 @@ export class NgModelController {
      */
     $setUntouched(): void;
     /**
-     * @ngdoc method
-     * @name ngModel.NgModelController#$setTouched
-     *
-     * @description
      * Sets the control to its touched state.
      *
      * This method can be called to remove the `ng-untouched` class and set the control to its
@@ -220,10 +199,6 @@ export class NgModelController {
      */
     $setTouched(): void;
     /**
-     * @ngdoc method
-     * @name ngModel.NgModelController#$rollbackViewValue
-     *
-     * @description
      * Cancel an update and reset the input element's value to prevent an update to the `$modelValue`,
      * which may be caused by a pending debounced event or because the input is waiting for some
      * future event.
@@ -310,10 +285,6 @@ export class NgModelController {
      */
     $rollbackViewValue(): void;
     /**
-     * @ngdoc method
-     * @name ngModel.NgModelController#$validate
-     *
-     * @description
      * Runs each of the registered validators (first synchronous validators and then
      * asynchronous validators).
      * If the validity changes to invalid, the model will be set to `undefined`,
@@ -335,10 +306,6 @@ export class NgModelController {
     $$parseAndValidate(): void;
     $$writeModelToScope(): void;
     /**
-     * @ngdoc method
-     * @name ngModel.NgModelController#$setViewValue
-     *
-     * @description
      * Update the view value.
      *
      * This method should be called when a control wants to change the view value; typically,
@@ -388,11 +355,6 @@ export class NgModelController {
     $setViewValue(value: any, trigger: string): void;
     $$debounceViewValueCommit(trigger: any): void;
     /**
-     * @ngdoc method
-     *
-     * @name ngModel.NgModelController#$overrideModelOptions
-     *
-     * @description
      *
      * Override the current model options settings programmatically.
      *
@@ -418,12 +380,6 @@ export class NgModelController {
      */
     $overrideModelOptions(options: any): void;
     /**
-     * @ngdoc method
-     *
-     * @name  ngModel.NgModelController#$processModelValue
-  
-     * @description
-     *
      * Runs the model -> view pipeline on the current
      * {@link ngModel.NgModelController#$modelValue $modelValue}.
      *

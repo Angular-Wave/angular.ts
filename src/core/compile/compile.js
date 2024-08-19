@@ -351,11 +351,6 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
   };
 
   /**
-   * @ngdoc method
-   * @name $compileProvider#aHrefSanitizationTrustedUrlList
-   * @kind function
-   *
-   * @description
    * Retrieves or overrides the default regular expression that is used for determining trusted safe
    * urls during a[href] sanitization.
    *

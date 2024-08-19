@@ -179,10 +179,6 @@ function SelectController($element, $scope) {
   };
 
   /**
-   * @ngdoc method
-   * @name select.SelectController#$hasEmptyOption
-   *
-   * @description
    *
    * Returns `true` if the select element currently has an empty option
    * element, i.e. an option that signifies that the select is empty / the selection is null.
@@ -192,12 +188,7 @@ function SelectController($element, $scope) {
     return self.hasEmptyOption;
   };
 
-  /**
-   * @ngdoc method
-   * @name select.SelectController#$isUnknownOptionSelected
-   *
-   * @description
-   *
+  /**   *
    * Returns `true` if the select element's unknown option is selected. The unknown option is added
    * and automatically selected whenever the select model doesn't match any option.
    *

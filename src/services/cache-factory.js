@@ -38,10 +38,6 @@ export function CacheFactoryProvider() {
       let staleEnd = null;
 
       /**
-       * @ngdoc type
-       * @name $cacheFactory.Cache
-       *
-       * @description
        * A cache object used to store and retrieve data, primarily used by
        * {@link $templateRequest $templateRequest} and the {@link ng.directive:script script}
        * directive to cache templates and other data.
@@ -78,11 +74,6 @@ export function CacheFactoryProvider() {
        */
       return (caches[cacheId] = {
         /**
-         * @ngdoc method
-         * @name $cacheFactory.Cache#put
-         * @kind function
-         *
-         * @description
          * Inserts a named entry into the {@link $cacheFactory.Cache Cache} object to be
          * retrieved later, and incrementing the size of the cache if the key was not already
          * present in the cache. If behaving like an LRU cache, it will also remove stale
@@ -114,11 +105,6 @@ export function CacheFactoryProvider() {
         },
 
         /**
-         * @ngdoc method
-         * @name $cacheFactory.Cache#get
-         * @kind function
-         *
-         * @description
          * Retrieves named data stored in the {@link $cacheFactory.Cache Cache} object.
          *
          * @param {string} key the key of the data to be retrieved
@@ -137,11 +123,6 @@ export function CacheFactoryProvider() {
         },
 
         /**
-         * @ngdoc method
-         * @name $cacheFactory.Cache#remove
-         * @kind function
-         *
-         * @description
          * Removes an entry from the {@link $cacheFactory.Cache Cache} object.
          *
          * @param {string} key the key of the entry to be removed
@@ -166,11 +147,6 @@ export function CacheFactoryProvider() {
         },
 
         /**
-         * @ngdoc method
-         * @name $cacheFactory.Cache#removeAll
-         * @kind function
-         *
-         * @description
          * Clears the cache object of any entries.
          */
         removeAll() {
@@ -181,7 +157,7 @@ export function CacheFactoryProvider() {
         },
 
         /**
-         * @ngdoc method
+         *  method
          * @name $cacheFactory.Cache#destroy
          * @kind function
          *
@@ -197,11 +173,6 @@ export function CacheFactoryProvider() {
         },
 
         /**
-         * @ngdoc method
-         * @name $cacheFactory.Cache#info
-         * @kind function
-         *
-         * @description
          * Retrieve information regarding a particular {@link $cacheFactory.Cache Cache}.
          *
          * @returns {object} an object with the following properties:
@@ -247,10 +218,6 @@ export function CacheFactoryProvider() {
     }
 
     /**
-     * @ngdoc method
-     * @name $cacheFactory#info
-     *
-     * @description
      * Get information about all the caches that have been created
      *
      * @returns {Object} - key-value map of `cacheId` to the result of calling `cache#info`
@@ -264,10 +231,6 @@ export function CacheFactoryProvider() {
     };
 
     /**
-     * @ngdoc method
-     * @name $cacheFactory#get
-     *
-     * @description
      * Get access to a cache object by the `cacheId` used when it was created.
      *
      * @param {string} cacheId Name or id of a cache to access.

@@ -287,11 +287,6 @@ export class Scope {
   }
 
   /**
- * @ngdoc method
- * @name $rootScope.Scope#$watch
- * @kind function
- *
- * @description
  * Registers a `listener` callback to be executed whenever the `watchExpression` changes.
  *
  * - The `watchExpression` is called on every call to {@link ng.$rootScope.Scope#$digest
@@ -437,11 +432,6 @@ export class Scope {
   }
 
   /**
-   * @ngdoc method
-   * @name $rootScope.Scope#$watchGroup
-   * @kind function
-   *
-   * @description
    * A variant of {@link ng.$rootScope.Scope#$watch $watch()} where it watches an array of `watchExpressions`.
    * If any one expression in the collection changes the `listener` is executed.
    *
@@ -525,11 +515,6 @@ export class Scope {
   }
 
   /**
-   * @ngdoc method
-   * @name $rootScope.Scope#$watchCollection
-   * @kind function
-   *
-   * @description
    * Shallow watches the properties of an object and fires whenever any of the properties change
    * (for arrays, this implies watching the array items; for object maps, this implies watching
    * the properties). If a change is detected, the `listener` callback is fired.
@@ -701,11 +686,6 @@ export class Scope {
   }
 
   /**
- * @ngdoc method
- * @name $rootScope.Scope#$digest
- * @kind function
- *
- * @description
  * Processes all of the {@link ng.$rootScope.Scope#$watch watchers} of the current scope and
  * its children. Because a {@link ng.$rootScope.Scope#$watch watcher}'s listener can change
  * the model, the `$digest()` keeps calling the {@link ng.$rootScope.Scope#$watch watchers}
@@ -920,11 +900,6 @@ export class Scope {
   }
 
   /**
-   * @ngdoc method
-   * @name $rootScope.Scope#$suspend
-   * @kind function
-   *
-   * @description
    * Suspend watchers of this scope subtree so that they will not be invoked during digest.
    *
    * This can be used to optimize your application when you know that running those watchers
@@ -967,11 +942,7 @@ export class Scope {
   }
 
   /**
-   * @ngdoc method
-   * @name $rootScope.Scope#$isSuspended
-   * @kind function
-   *
-   * @description
+
    * Call this method to determine if this scope has been explicitly suspended. It will not
    * tell you whether an ancestor has been suspended.
    * To determine if this scope will be excluded from a digest triggered at the $rootScope,
@@ -996,11 +967,6 @@ export class Scope {
   }
 
   /**
-   * @ngdoc method
-   * @name $rootScope.Scope#$resume
-   * @kind function
-   *
-   * @description
    * Resume watchers of this scope subtree in case it was suspended.
    *
    * See {@link $rootScope.Scope#$suspend} for information about the dangers of using this approach.
@@ -1010,11 +976,6 @@ export class Scope {
   }
 
   /**
-   * @ngdoc event
-   * @name $rootScope.Scope#$destroy
-   * @eventType broadcast on scope being destroyed
-   *
-   * @description
    * Broadcasted when a scope and its children are being destroyed.
    *
    * Note that, in AngularTS, there is also a `$destroy` jQuery event, which can be used to
@@ -1022,11 +983,6 @@ export class Scope {
    */
 
   /**
-   * @ngdoc method
-   * @name $rootScope.Scope#$destroy
-   * @kind function
-   *
-   * @description
    * Removes the current scope (and all of its children) from the parent scope. Removal implies
    * that calls to {@link ng.$rootScope.Scope#$digest $digest()} will no longer
    * propagate to the current scope and its children. Removal also implies that the current
@@ -1096,11 +1052,6 @@ export class Scope {
   }
 
   /**
- * @ngdoc method
- * @name $rootScope.Scope#$eval
- * @kind function
- *
- * @description
  * Executes the `expression` on the current scope and returns the result. Any exceptions in
  * the expression are propagated (uncaught). This is useful when evaluating AngularTS
  * expressions.
@@ -1128,11 +1079,6 @@ export class Scope {
   }
 
   /**
-   * @ngdoc method
-   * @name $rootScope.Scope#$evalAsync
-   * @kind function
-   *
-   * @description
    * Executes the expression on the current scope at a later point in time.
    *
    * The `$evalAsync` makes no guarantees as to when the `expression` will be executed, only
@@ -1187,11 +1133,6 @@ export class Scope {
   }
 
   /**
- * @ngdoc method
- * @name $rootScope.Scope#$apply
- * @kind function
- *
- * @description
  * `$apply()` is used to execute an expression in AngularTS from outside of the AngularTS
  * framework. (For example from browser DOM events, setTimeout, XHR or third party libraries).
  * Because we are calling into the AngularTS framework we need to perform proper scope life
@@ -1262,11 +1203,6 @@ export class Scope {
   }
 
   /**
-   * @ngdoc method
-   * @name $rootScope.Scope#$applyAsync
-   * @kind function
-   *
-   * @description
    * Schedule the invocation of $apply to occur at a later time. The actual time difference
    * varies across browsers, but is typically around ~10 milliseconds.
    *
@@ -1368,11 +1304,6 @@ export class Scope {
   }
 
   /**
-   * @ngdoc method
-   * @name $rootScope.Scope#$emit
-   * @kind function
-   *
-   * @description
    * Dispatches an event `name` upwards through the scope hierarchy notifying the
    * registered {@link ng.$rootScope.Scope#$on} listeners.
    *
@@ -1442,11 +1373,6 @@ export class Scope {
   }
 
   /**
-   * @ngdoc method
-   * @name $rootScope.Scope#$broadcast
-   * @kind function
-   *
-   * @description
    * Dispatches an event `name` downwards to all child scopes (and their children) notifying the
    * registered {@link ng.$rootScope.Scope#$on} listeners.
    *

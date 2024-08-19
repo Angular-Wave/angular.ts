@@ -1,11 +1,6 @@
 import { getNodeName, minErr, directiveNormalize } from "../../shared/utils";
 
 /**
- * @ngdoc directive
- * @name ngRef
- * @restrict A
- *
- * @description
  * The `ngRef` attribute tells AngularJS to assign the controller of a component (or a directive)
  * to the given property in the current scope. It is also possible to add the jqlite-wrapped DOM
  * element to the scope.

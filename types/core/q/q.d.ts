@@ -30,11 +30,6 @@ export function $QProvider(): void;
 export class $QProvider {
     $get: (string | (($rootScope: import("../scope/scope").Scope, $exceptionHandler: import("../exception-handler").ErrorHandler) => any))[];
     /**
-     * @ngdoc method
-     * @name $qProvider#errorOnUnhandledRejections
-     * @kind function
-     *
-     * @description
      * Retrieves or overrides whether to generate an error when a rejected promise is not handled.
      * This feature is enabled by default.
      *
