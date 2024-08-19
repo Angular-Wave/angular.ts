@@ -6,10 +6,77 @@ export type Annotated = {
 export type AnnotatedFunction = Function & Annotated & Array<any>;
 export type ComponentOptions = any;
 export type ControllerConstructor = Function;
-export type OnChangesObject = any;
-export type ChangesObject = any;
+/**
+ * Object representing changes in one-way bound properties.
+ * Keys are the names of the bound properties that have changed, and values are instances of IChangesObject.
+ */
+export type OnChangesObject = {
+    /**
+     * - Represents a changed property.
+     */
+    property: ChangesObject;
+};
+/**
+ * Object representing changes in a property.
+ */
+export type ChangesObject = {
+    /**
+     * - Current value of the property.
+     */
+    currentValue: any;
+    /**
+     * - Previous value of the property.
+     */
+    previousValue: any;
+    /**
+     * - Function to check if it's the first change of the property.
+     */
+    isFirstChange: () => boolean;
+};
+/**
+ * Interface representing the lifecycle hooks for AngularJS directive controllers.
+ */
 export type Controller = {
+    /**
+     * *
+     */
     name: string;
+    /**
+     * Called on each controller after all the controllers on an element have been constructed and had their bindings
+     * initialized (and before the pre & post linking functions for the directives on this element). This is a good
+     * place to put initialization code for your controller.
+     */
+    $onInit?: () => void;
+    /**
+     * Called on each turn of the digest cycle. Provides an opportunity to detect and act on changes.
+     * Any actions that you wish to take in response to the changes that you detect must be invoked from this hook;
+     * implementing this has no effect on when `$onChanges` is called. For example, this hook could be useful if you wish
+     * to perform a deep equality check, or to check a `Date` object, changes to which would not be detected by Angular's
+     * change detector and thus not trigger `$onChanges`. This hook is invoked with no arguments; if detecting changes,
+     * you must store the previous value(s) for comparison to the current values.
+     */
+    $doCheck?: () => void;
+    /**
+     * Called whenever one-way bindings are updated. The onChangesObj is a hash whose keys are the names of the bound
+     * properties that have changed, and the values are an {@link IChangesObject} object  of the form
+     * { currentValue, previousValue, isFirstChange() }. Use this hook to trigger updates within a component such as
+     * cloning the bound value to prevent accidental mutation of the outer value.
+     */
+    $onChanges?: (arg0: OnChangesObject) => void;
+    /**
+     * Called on a controller when its containing scope is destroyed. Use this hook for releasing external resources,
+     * watches and event handlers.
+     */
+    $onDestroy?: () => void;
+    /**
+     * Called after this controller's element and its children have been linked. Similar to the post-link function this
+     * hook can be used to set up DOM event handlers and do direct DOM manipulation. Note that child elements that contain
+     * templateUrl directives will not have been compiled and linked since they are waiting for their template to load
+     * asynchronously and their own compilation and linking has been suspended until that occurs. This hook can be considered
+     * analogous to the ngAfterViewInit and ngAfterContentInit hooks in Angular 2. Since the compilation process is rather
+     * different in Angular 1 there is no direct mapping and care should be taken when upgrading.
+     */
+    $postLink?: () => void;
 };
 export type Attributes = {
     [x: string]: any;
@@ -163,7 +230,67 @@ export type ServiceProviderFactory = Function;
  * Interface for a service provider.
  */
 export type ServiceProvider = any | Function;
-export type Module = any;
+/**
+ * AngularJS module interface for registering components, services, providers, etc.
+ */
+export type Module = {
+    /**
+     *   Use this method to register a component.
+     */
+    component: (arg0: string, arg1: ComponentOptions) => Module;
+    /**
+     *   Use this method to register work which needs to be performed on module loading.
+     */
+    config: (arg0: Function) => Module;
+    /**
+     *   Register a constant service with the $injector.
+     */
+    constant: (arg0: string, arg1: any) => Module;
+    /**
+     *   Register a controller with the $controller service.
+     */
+    controller: (arg0: string, arg1: Injectable<ControllerConstructor>) => Module;
+    /**
+     *   Register a directive with the compiler.
+     */
+    directive: (arg0: string, arg1: Injectable<DirectiveFactory>) => Module;
+    /**
+     *   Register a service factory with the $injector.
+     */
+    factory: (arg0: string, arg1: Injectable<Function>) => Module;
+    /**
+     *   Register a filter service.
+     */
+    filter: (arg0: string, arg1: Injectable<FilterFactory>) => Module;
+    /**
+     *   Register a provider service factory.
+     */
+    provider: (arg0: string, arg1: ServiceProviderFactory) => Module;
+    /**
+     *   Register code to be run during module loading.
+     */
+    run: (arg0: Injectable<Function>) => Module;
+    /**
+     *   Register a service constructor.
+     */
+    service: (arg0: string, arg1: Injectable<Function>) => Module;
+    /**
+     *   Register a value service with the $injector.
+     */
+    value: (arg0: string, arg1: any) => Module;
+    /**
+     *   Register a service decorator with the $injector.
+     */
+    decorator: (arg0: string, arg1: Injectable<Function>) => Module;
+    /**
+     *   The name of the AngularJS module.
+     */
+    name: string;
+    /**
+     *   Array of module names that this module depends on.
+     */
+    requires: string[];
+};
 export type FormController = {
     /**
      * - True if the form has not been modified.

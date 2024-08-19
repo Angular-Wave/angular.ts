@@ -41,11 +41,13 @@
 - ```
 
   ```
+
 - <input ng-model="userHtml" aria-label="User input">
 - <div ng-bind-html="userHtml"></div>
 - ```
 
   ```
+
 -
 - Notice that `ng-bind-html` is bound to `userHtml` controlled by the user. With SCE
 - disabled, this application allows the user to render arbitrary HTML into the DIV, which would
@@ -92,6 +94,7 @@
 - ```
 
   ```
+
 - let ngBindHtmlDirective = ['$sce', function($sce) {
 - return function(scope, element, attr) {
 -     scope.$watch($sce.parseAsHtml(attr.ngBindHtml), function(value) {
@@ -102,6 +105,7 @@
 - ```
 
   ```
+
 -
 - ### Impact on loading templates
 -
@@ -236,6 +240,7 @@
 - ```
 
   ```
+
 - angular.module('myAppWithSceDisabledmyApp', []).config(function($sceProvider) {
 - // Completely disable SCE. For demonstration purposes only!
 - // Do not use in new projects or libraries.
@@ -244,6 +249,7 @@
 - ```
 
   ```
+
 - \*/
 
 /\* Design notes on the default implementation for SCE.

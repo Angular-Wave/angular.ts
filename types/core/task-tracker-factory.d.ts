@@ -1,6 +1,6 @@
 export function $$TaskTrackerFactoryProvider(): void;
 export class $$TaskTrackerFactoryProvider {
-    $get: (string | ((log: any) => TaskTracker))[];
+    $get: (string | ((log: import("../services/log").LogService) => TaskTracker))[];
 }
 /**
  * ! This is a private undocumented service !
@@ -13,7 +13,7 @@ export class $$TaskTrackerFactoryProvider {
  * parties when all pending tasks (or tasks of a specific type) have been completed.
  * @param {import('../services/log').LogService} log
  */
-export function TaskTracker(log: any): void;
+export function TaskTracker(log: import("../services/log").LogService): void;
 export class TaskTracker {
     /**
      * ! This is a private undocumented service !
@@ -26,7 +26,7 @@ export class TaskTracker {
      * parties when all pending tasks (or tasks of a specific type) have been completed.
      * @param {import('../services/log').LogService} log
      */
-    constructor(log: any);
+    constructor(log: import("../services/log").LogService);
     ALL_TASKS_TYPE: string;
     DEFAULT_TASK_TYPE: string;
     /**

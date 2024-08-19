@@ -37,10 +37,7 @@ export let LogService = {
  */
 
 /**
- * @name $logProvider
  * @type {LogProvider}
- *
- * @description
  * Use the `$logProvider` to configure how the application logs messages
  */
 export class $LogProvider {
@@ -49,8 +46,6 @@ export class $LogProvider {
   }
 
   /**
-   * @name $logProvider#debugEnabled
-   * @description
    * @param {boolean=} flag enable or disable debug level messages
    * @returns {*} current value if used as getter or itself (chaining) if used as setter
    */

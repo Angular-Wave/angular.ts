@@ -7,10 +7,6 @@ import {
 } from "../../shared/utils";
 
 /**
-
- *
- *
- * @description
  * HTTP backend used by the {@link ng.$http service} that delegates to
  * XMLHttpRequest object and deals with browser incompatibilities.
  *

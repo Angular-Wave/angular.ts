@@ -157,11 +157,6 @@ export function CacheFactoryProvider() {
         },
 
         /**
-         *  method
-         * @name $cacheFactory.Cache#destroy
-         * @kind function
-         *
-         * @description
          * Destroys the {@link $cacheFactory.Cache Cache} object entirely,
          * removing it from the {@link $cacheFactory $cacheFactory} set.
          */

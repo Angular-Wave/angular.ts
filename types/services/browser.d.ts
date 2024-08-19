@@ -77,9 +77,6 @@ export class Browser {
      */
     state: () => object;
     /**
-     * @name $browser#onUrlChange
-     *
-     * @description
      * Register callback function that will be called, when url changes.
      *
      * It's only called when the url is changed from outside of AngularJS:
@@ -111,9 +108,6 @@ export class Browser {
      */
     $$checkUrlChange: () => void;
     /**
-     * @name $browser#baseHref
-     *
-     * @description
      * Returns current <base href>
      * (always relative - without domain)
      *
@@ -121,13 +115,11 @@ export class Browser {
      */
     baseHref: () => string;
     /**
-     * @name $browser#defer
      * @param {function():any} fn A function, who's execution should be deferred.
      * @param {number=} [delay=0] Number of milliseconds to defer the function execution.
      * @param {string=} [taskType=DEFAULT_TASK_TYPE] The type of task that is deferred.
      * @returns {number} DeferId that can be used to cancel the task via `$browser.cancel()`.
      *
-     * @description
      * Executes a fn asynchronously via `setTimeout(fn, delay)`.
      *
      * Unlike when calling `setTimeout` directly, in test this function is mocked and instead of using

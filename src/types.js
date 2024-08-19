@@ -52,25 +52,21 @@
  */
 
 /**
- * @typedef {Object} OnChangesObject
- * @description Object representing changes in one-way bound properties.
+ * @typedef {Object} OnChangesObject Object representing changes in one-way bound properties.
  * Keys are the names of the bound properties that have changed, and values are instances of IChangesObject.
- * @property {ChangesObject<any>} property - Represents a changed property.
+ * @property {ChangesObject} property - Represents a changed property.
  */
 
 /**
- * @typedef {Object} ChangesObject
- * @description Object representing changes in a property.
+ * @typedef {Object} ChangesObject Object representing changes in a property.
  * @property {*} currentValue - Current value of the property.
  * @property {*} previousValue - Previous value of the property.
  * @property {function(): boolean} isFirstChange - Function to check if it's the first change of the property.
  */
 
 /**
- * @typedef {Object} Controller
- * @property {string} name
- * @description Interface representing the lifecycle hooks for AngularJS directive controllers.
- *
+ * @typedef {Object} Controller  Interface representing the lifecycle hooks for AngularJS directive controllers.
+ * @property {string} name *
  * @property {function(): void} [$onInit]
  * Called on each controller after all the controllers on an element have been constructed and had their bindings
  * initialized (and before the pre & post linking functions for the directives on this element). This is a good
@@ -102,9 +98,6 @@
  * analogous to the ngAfterViewInit and ngAfterContentInit hooks in Angular 2. Since the compilation process is rather
  * different in Angular 1 there is no direct mapping and care should be taken when upgrading.
  *
- * @property {*} [s: string]
- * IController implementations frequently do not implement any of its methods.
- * A string indexer indicates to TypeScript not to issue a weak type error in this case.
  */
 
 /**
@@ -319,8 +312,7 @@
 
 /**
  *
- * @typedef {Object} Module
- * @description AngularJS module interface for registering components, services, providers, etc.
+ * @typedef {Object} Module AngularJS module interface for registering components, services, providers, etc.
  * @property {function(string, ComponentOptions): Module} component
  *   Use this method to register a component.
  * @property {function({ [componentName: string]: ComponentOptions }): Module} component
@@ -329,13 +321,13 @@
  *   Use this method to register work which needs to be performed on module loading.
  * @property {function(any[]): Module} config
  *   Use this method to register work which needs to be performed on module loading.
- * @property {function<T>(string, T): Module} constant
+ * @property {function(string, any): Module} constant
  *   Register a constant service with the $injector.
  * @property {function(Object): Module} constant
  *   Register multiple constant services.
  * @property {function(string, Injectable<ControllerConstructor>): Module} controller
  *   Register a controller with the $controller service.
- * @property {function({ [name: string]: Injectable<ControllerConstructor>> }): Module} controller
+ * @property {function({ [name: string]: Injectable<ControllerConstructor> }): Module} controller
  *   Register multiple controllers.
  * @property {function(string, Injectable<DirectiveFactory>): Module} directive
  *   Register a directive with the compiler.
@@ -361,7 +353,7 @@
  *   Register a service constructor.
  * @property {function(Object.<string, Injectable<Function>>): Module} service
  *   Register multiple service constructors.
- * @property {function<T>(string, T): Module} value
+ * @property {function(string, any): Module} value
  *   Register a value service with the $injector.
  * @property {function(Object): Module} value
  *   Register multiple value services.
