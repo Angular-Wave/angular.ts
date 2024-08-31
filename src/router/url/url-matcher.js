@@ -14,8 +14,8 @@ import { isDefined, isString } from "../../shared/utils";
 import { Param, DefType } from "../params/param";
 import { joinNeighborsR, splitOnDelim } from "../../shared/strings";
 function quoteRegExp(str, param) {
-  let surroundPattern = ["", ""],
-    result = str.replace(/[\\\[\]\^$*+?.()|{}]/g, "\\$&");
+  let surroundPattern = ["", ""];
+  let result = str.replace(/[\\[\]^$*+?.()|{}]/g, "\\$&");
   if (!param) return result;
   switch (param.squash) {
     case false:
@@ -207,9 +207,9 @@ export class UrlMatcher {
     //    \\.                            - a backslash escape
     //    \{(?:[^{}\\]+|\\.)*\}          - a matched set of curly braces containing other atoms
     const placeholder =
-      /([:*])([\w\[\]]+)|\{([\w\[\]]+)(?:\:\s*((?:[^{}\\]+|\\.|\{(?:[^{}\\]+|\\.)*\})+))?\}/g;
+      /([:*])([\w[\]]+)|\{([\w[\]]+)(?::\s*((?:[^{}\\]+|\\.|\{(?:[^{}\\]+|\\.)*\})+))?\}/g;
     const searchPlaceholder =
-      /([:]?)([\w\[\].-]+)|\{([\w\[\].-]+)(?:\:\s*((?:[^{}\\]+|\\.|\{(?:[^{}\\]+|\\.)*\})+))?\}/g;
+      /([:]?)([\w[\].-]+)|\{([\w[\].-]+)(?::\s*((?:[^{}\\]+|\\.|\{(?:[^{}\\]+|\\.)*\})+))?\}/g;
     const patterns = [];
     let last = 0;
     let matchArray;

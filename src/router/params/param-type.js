@@ -30,27 +30,22 @@ export class ParamType {
    * @returns a new ParamType object
    */
   constructor(def) {
-    /** @inheritdoc */
     this.pattern = /.*/;
-    /** @inheritdoc */
     this.inherit = true;
     Object.assign(this, def);
     this.name = undefined;
   }
   // consider these four methods to be "abstract methods" that should be overridden
-  /** @inheritdoc */
-  is(_val) {
-    return true;
+
+  is(val) {
+    return !!val;
   }
-  /** @inheritdoc */
   encode(val) {
     return val;
   }
-  /** @inheritdoc */
   decode(val) {
     return val;
   }
-  /** @inheritdoc */
   equals(a, b) {
     return a == b;
   }
