@@ -13,7 +13,7 @@ import {
   flattenR,
   uniqR,
 } from "../../shared/common";
-import { isUndefined, isObject } from "../../shared/utils";
+import { isUndefined, isObject, assert } from "../../shared/utils";
 import { prop, propEq, val, is } from "../../shared/hof";
 import { TransitionHookPhase } from "./interface"; // has or is using
 import { TransitionHook } from "./transition-hook";
@@ -334,7 +334,7 @@ export class Transition {
     const targetNode = find(topath, (node) => {
       return node.state.name === stateName;
     });
-    console.assert(targetNode, `targetNode not found ${stateName}`);
+    assert(!!targetNode, `targetNode not found ${stateName}`);
 
     const resolveContext = new ResolveContext(topath);
     resolveContext.addResolvables([resolvable], targetNode.state);

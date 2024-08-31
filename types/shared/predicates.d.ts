@@ -7,11 +7,13 @@
  * @returns {boolean}
  */
 export function isInjectable(val: any): boolean;
-export function isNull(o: any): boolean;
-export const isNullOrUndefined: (...args: any[]) => any;
 /**
  * Predicate which checks if a value looks like a Promise
  *
  * It is probably a Promise if it's an object, and it has a `then` property which is a Function
+ * @param {any} obj
+ * @returns {boolean}
  */
-export const isPromise: (...args: any[]) => any;
+export function isPromise(obj: any): boolean;
+export function isNull(o: any): boolean;
+export const isNullOrUndefined: (...args: any[]) => any;

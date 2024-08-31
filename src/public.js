@@ -129,7 +129,6 @@ export const VERSION = "[VI]{version}[/VI]";
  * @returns {import('./types').Module} `ng`module
  */
 export function publishExternalAPI(angular) {
-  console.assert(angular !== undefined, `angular is %s`, angular);
   const ng = angular
     .module(
       "ng",

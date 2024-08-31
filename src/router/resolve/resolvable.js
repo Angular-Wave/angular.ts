@@ -1,4 +1,4 @@
-import { isFunction, isObject } from "../../shared/utils";
+import { assert, isFunction, isObject } from "../../shared/utils";
 import { services } from "../common/coreservices";
 import { trace } from "../common/trace";
 import { stringify } from "../../shared/strings";
@@ -27,12 +27,7 @@ export class Resolvable {
     if (arg1 instanceof Resolvable) {
       Object.assign(this, arg1);
     } else if (isFunction(resolveFn)) {
-      if (isNullOrUndefined(arg1))
-        throw new Error("new Resolvable(): token argument is required");
-      if (!isFunction(resolveFn))
-        throw new Error(
-          "new Resolvable(): resolveFn argument must be a function",
-        );
+      assert(!isNullOrUndefined(arg1), "token argument is required");
       this.token = arg1;
       this.policy = policy;
       this.resolveFn = resolveFn;
@@ -46,14 +41,11 @@ export class Resolvable {
       (Object.prototype.hasOwnProperty.call(arg1, "resolveFn") ||
         Object.prototype.hasOwnProperty.call(arg1, "data"))
     ) {
-      const literal = arg1;
-      return new Resolvable(
-        literal.token,
-        literal.resolveFn,
-        literal.deps,
-        literal.policy,
-        literal.data,
-      );
+      this.token = arg1.token;
+      this.resolveFn = arg1.resolveFn;
+      this.deps = arg1.deps;
+      this.policy = arg1.policy;
+      this.data = arg1.data;
     }
   }
   getPolicy(state) {

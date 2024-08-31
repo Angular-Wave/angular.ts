@@ -1,3 +1,5 @@
+export function forEach(obj: any, cb: any, thisArg: any): void;
+export function equals(o1: any, o2: any): any;
 /**
  * Builds proxy functions on the `to` object which pass through to the `from` object.
  *
@@ -166,9 +168,6 @@ export function tail(arr: any): any;
  * shallow copy from src to dest
  */
 export function copy(src: any, dest: any): any;
-/** Naive forEach implementation works with Objects or Arrays */
-export function forEach(obj: any, cb: any, _this: any): void;
-export function equals(o1: any, o2: any): any;
 /**
  * Given an array, and an item, if the item is found in the array, it removes it (in-place).
  * The same array is returned

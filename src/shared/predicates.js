@@ -1,15 +1,8 @@
-/**
- * Predicates
- *
- * These predicates return true/false based on the input.
- * Although these functions are exported, they are subject to change without notice.
- *
- * @packageDocumentation
- */
-import { and, pipe, prop, or } from "./hof";
-import { isFunction, isObject, isString, isUndefined } from "./utils";
+import { isFunction, isString } from "./utils";
 export const isNull = (o) => o === null;
-export const isNullOrUndefined = or(isNull, isUndefined);
+export function isNullOrUndefined(obj) {
+  return obj === null && typeof obj === "undefined";
+}
 /**
  * Predicate which checks if a value is injectable
  *
@@ -34,5 +27,11 @@ export function isInjectable(val) {
  * Predicate which checks if a value looks like a Promise
  *
  * It is probably a Promise if it's an object, and it has a `then` property which is a Function
+ * @param {any} obj
+ * @returns {boolean}
  */
-export const isPromise = and(isObject, pipe(prop("then"), isFunction));
+export function isPromise(obj) {
+  return (
+    obj !== null && typeof obj === "object" && typeof obj.then === "function"
+  );
+}

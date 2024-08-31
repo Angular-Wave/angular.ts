@@ -2,8 +2,37 @@ import { isDate, isFunction, isRegExp, isString } from "./utils";
 import { all, any, prop, curry } from "./hof";
 import { services } from "../router/common/coreservices";
 
-export const forEach = _forEach;
-export const equals = _equals;
+export function forEach(obj, cb, thisArg) {
+  if (Array.isArray(obj)) return obj.forEach(cb, thisArg);
+  Object.keys(obj).forEach((key) => cb(obj[key], key));
+}
+
+export function equals(o1, o2) {
+  if (o1 === o2) return true;
+  if (o1 === null || o2 === null) return false;
+  if (o1 !== o1 && o2 !== o2) return true; // NaN === NaN
+  const t1 = typeof o1,
+    t2 = typeof o2;
+  if (t1 !== t2 || t1 !== "object") return false;
+  const tup = [o1, o2];
+  if (all(Array.isArray)(tup)) return _arraysEq(o1, o2);
+  if (all(isDate)(tup)) return o1.getTime() === o2.getTime();
+  if (all(isRegExp)(tup)) return o1.toString() === o2.toString();
+  if (all(isFunction)(tup)) return true; // meh
+  const predicates = [isFunction, Array.isArray, isDate, isRegExp];
+  if (predicates.map(any).reduce((b, fn) => b || !!fn(tup), false))
+    return false;
+  const keys = {};
+
+  for (const key in o1) {
+    if (!equals(o1[key], o2[key])) return false;
+    keys[key] = true;
+  }
+  for (const key in o2) {
+    if (!keys[key]) return false;
+  }
+  return true;
+}
 /**
  * Builds proxy functions on the `to` object which pass through to the `from` object.
  *
@@ -437,41 +466,10 @@ export function copy(src, dest) {
   if (!dest) dest = {};
   return Object.assign(dest, src);
 }
-/** Naive forEach implementation works with Objects or Arrays */
-function _forEach(obj, cb, _this) {
-  if (Array.isArray(obj)) return obj.forEach(cb, _this);
-  Object.keys(obj).forEach((key) => cb(obj[key], key));
-}
 
-function _equals(o1, o2) {
-  if (o1 === o2) return true;
-  if (o1 === null || o2 === null) return false;
-  if (o1 !== o1 && o2 !== o2) return true; // NaN === NaN
-  const t1 = typeof o1,
-    t2 = typeof o2;
-  if (t1 !== t2 || t1 !== "object") return false;
-  const tup = [o1, o2];
-  if (all(Array.isArray)(tup)) return _arraysEq(o1, o2);
-  if (all(isDate)(tup)) return o1.getTime() === o2.getTime();
-  if (all(isRegExp)(tup)) return o1.toString() === o2.toString();
-  if (all(isFunction)(tup)) return true; // meh
-  const predicates = [isFunction, Array.isArray, isDate, isRegExp];
-  if (predicates.map(any).reduce((b, fn) => b || !!fn(tup), false))
-    return false;
-  const keys = {};
-
-  for (const key in o1) {
-    if (!_equals(o1[key], o2[key])) return false;
-    keys[key] = true;
-  }
-  for (const key in o2) {
-    if (!keys[key]) return false;
-  }
-  return true;
-}
 function _arraysEq(a1, a2) {
   if (a1.length !== a2.length) return false;
-  return arrayTuples(a1, a2).reduce((b, t) => b && _equals(t[0], t[1]), true);
+  return arrayTuples(a1, a2).reduce((b, t) => b && equals(t[0], t[1]), true);
 }
 // issue #2676
 export const silenceUncaughtInPromise = (promise) =>
