@@ -649,11 +649,11 @@ export function $LocationProvider() {
 
       const IGNORE_URI_REGEXP = /^\s*(javascript|mailto):/i;
 
-      function setBrowserUrlWithFallback(url, replace, state) {
+      function setBrowserUrlWithFallback(url, state) {
         const oldUrl = $location.url();
         const oldState = $location.$$state;
         try {
-          $browser.url(url, replace, state);
+          $browser.url(url, state);
 
           // Make sure $location.state() returns referentially identical (not just deeply equal)
           // state object; this makes possible quick checking if the state changed in the digest
@@ -762,7 +762,7 @@ export function $LocationProvider() {
           if (defaultPrevented) {
             $location.$$parse(oldUrl);
             $location.$$state = oldState;
-            setBrowserUrlWithFallback(oldUrl, false, oldState);
+            setBrowserUrlWithFallback(oldUrl, oldState);
           } else {
             initializing = false;
             afterLocationChange(oldUrl, oldState);
@@ -779,7 +779,6 @@ export function $LocationProvider() {
           const oldUrl = /** @type {string} */ ($browser.url());
           const newUrl = $location.absUrl();
           const oldState = $browser.state();
-          const currentReplace = $location.$$replace;
           const urlOrStateChanged =
             !urlsEqual(oldUrl, newUrl) ||
             ($location.$$html5 && oldState !== $location.$$state);
@@ -808,7 +807,6 @@ export function $LocationProvider() {
                 if (urlOrStateChanged) {
                   setBrowserUrlWithFallback(
                     newUrl,
-                    currentReplace,
                     oldState === $location.$$state ? null : $location.$$state,
                   );
                 }

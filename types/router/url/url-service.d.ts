@@ -58,8 +58,8 @@ export class UrlService {
     _urlListeners: any[];
     $get: (string | (($location: import("../../core/location/location").Location, $browser: import("../../services/browser").Browser, $rootScope: import("../../core/scope/scope").Scope) => this))[];
     html5Mode(): boolean;
-    baseHref(): string;
-    _baseHref: string;
+    baseHref(): any;
+    _baseHref: any;
     /**
      * Gets the current url, or updates the url
      *

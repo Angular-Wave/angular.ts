@@ -1212,6 +1212,7 @@ describe("$http", function () {
         },
       );
     $rootScope.$apply();
+
     expect(response.xhrStatus).toBe("timeout");
   });
 

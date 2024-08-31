@@ -1893,7 +1893,6 @@ describe("angular", () => {
       expect(element.html()).toBe("{{1+2}}");
       dealoc(element);
     });
-
   });
 
   describe("startingElementHtml", () => {

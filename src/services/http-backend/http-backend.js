@@ -22,17 +22,16 @@ export function $HttpBackendProvider() {
      * @returns
      */
     function ($browser) {
-      return createHttpBackend($browser, $browser.defer);
+      return createHttpBackend($browser);
     },
   ];
 }
 
 /**
  * @param {import('../browser').Browser} $browser
- * @param {*} $browserDefer
  * @returns
  */
-export function createHttpBackend($browser, $browserDefer) {
+export function createHttpBackend($browser) {
   // TODO(vojta): fix the signature
   return function (
     method,
@@ -146,7 +145,7 @@ export function createHttpBackend($browser, $browserDefer) {
     // xhr.abort()                        abort (The xhr object is normally inaccessible, but
     //                                    can be exposed with the xhrFactory)
     if (timeout > 0) {
-      var timeoutId = $browserDefer(() => {
+      var timeoutId = $browser.defer(() => {
         timeoutRequest("timeout");
       }, timeout);
     } else if (isPromiseLike(timeout)) {

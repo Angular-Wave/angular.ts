@@ -74,7 +74,6 @@ export class Angular {
      * @returns {any} InjectorService - Returns the newly created injector for this app.
      */
     bootstrap(element: string | Element | Document, modules?: Array<string | any>, config?: AngularBootstrapConfig): any;
-    resumeBootstrap(extraModules: any): any;
     /**
      *
      * @param {any[]} modules
@@ -82,6 +81,7 @@ export class Angular {
      * @returns {import("./core/di/internal-injector").InjectorService}
      */
     injector(modules: any[], strictDi: boolean | null): import("./core/di/internal-injector").InjectorService;
+    resumeBootstrap(extraModules: any): any;
     /**
      * @param {Element|Document} element
      */

@@ -9,136 +9,73 @@ export function trimEmptyHash(url: string): string;
  * @typedef {function(string, string|null): any} UrlChangeListener
  */
 /**
- * @name $browser
- * @description
  * This object has two goals:
  *
  * - hide all the global state in the browser caused by the window object
  * - abstract away all the browser specific features and inconsistencies
- *
- *
  */
-/**
- * @param {import('../core/task-tracker-factory').TaskTracker} taskTracker
- */
-export function Browser(taskTracker: import("../core/task-tracker-factory").TaskTracker): void;
 export class Browser {
-    /**
-     * @typedef {function(string, string|null): any} UrlChangeListener
-     */
-    /**
-     * @name $browser
-     * @description
-     * This object has two goals:
-     *
-     * - hide all the global state in the browser caused by the window object
-     * - abstract away all the browser specific features and inconsistencies
-     *
-     *
-     */
     /**
      * @param {import('../core/task-tracker-factory').TaskTracker} taskTracker
      */
     constructor(taskTracker: import("../core/task-tracker-factory").TaskTracker);
-    $$completeOutstandingRequest: (fn: any, taskType: any) => void;
-    $$incOutstandingRequestCount: (taskType: any) => void;
-    notifyWhenNoOutstandingRequests: (callback: any, taskType: any) => void;
     /**
-     * @name $browser#url
-     *
-     * @description
-     * GETTER:
-     * Without any argument, this method just returns current value of `location.href` (with a
-     * trailing `#` stripped of if the hash is empty).
-     *
-     * SETTER:
-     * With at least one argument, this method sets url to new value.
-     * If html5 history api supported, `pushState`/`replaceState` is used, otherwise
-     * `location.href`/`location.replace` is used.
-     * Returns its own instance to allow chaining.
-     *
-     * NOTE: this api is intended for use only by the `$location` service. Please use the
-     * {@link ng.$location $location service} to change url.
-     *
-     * @param {string=} url New url (when used as setter)
-     * @param {boolean=} replace Should new url replace current history record?
-     * @param {object=} state State object to use with `pushState`/`replaceState`
+     * @type {import('../core/task-tracker-factory').TaskTracker} taskTracker
      */
-    url: (url?: string | undefined, replace?: boolean | undefined, state?: object | undefined) => string | this;
+    taskTracker: import("../core/task-tracker-factory").TaskTracker;
+    pendingDeferIds: {};
+    /** @type {Array<UrlChangeListener>} */
+    urlChangeListeners: Array<UrlChangeListener>;
+    urlChangeInit: boolean;
+    /** @type {any} */
+    cachedState: any;
+    /** @type {any} */
+    lastHistoryState: any;
+    /** @type {string} */
+    lastBrowserUrl: string;
+    /** @type {JQLite} */
+    baseElement: JQLite;
+    $$completeOutstandingRequest: any;
+    $$incOutstandingRequestCount: any;
+    notifyWhenNoOutstandingRequests: any;
+    url(url: any, state: any): string | this;
     /**
-     * @name $browser#state
+     * Returns the cached state.
      *
-     * @description
-     * This method is a getter.
-     *
-     * Return history.state or null if history.state is undefined.
-     *
-     * @returns {object} state
+     * @returns {any} The cached state.
      */
-    state: () => object;
+    state(): any;
     /**
-     * Register callback function that will be called, when url changes.
+     * Caches the current state and fires the URL change event.
      *
-     * It's only called when the url is changed from outside of AngularJS:
-     * - user types different url into address bar
-     * - user clicks on history (forward/back) button
-     * - user clicks on a link
-     *
-     * It's not called when url is changed by $browser.url() method
-     *
-     * The listener gets called with new url as parameter.
-     *
-     * NOTE: this api is intended for use only by the $location service. Please use the
-     * {@link ng.$location $location service} to monitor url changes in AngularJS apps.
-     *
-     * @param {UrlChangeListener} callback Listener function to be called when url changes.
-     * @return {UrlChangeListener} Returns the registered listener fn - handy if the fn is anonymous.
+     * @private
      */
-    onUrlChange: (callback: UrlChangeListener) => UrlChangeListener;
+    private cacheStateAndFireUrlChange;
     /**
-     * Remove popstate and hashchange handler from window.
+     * Caches the current state.
      *
-     * NOTE: this api is intended for use only by $rootScope.
+     * @private
      */
-    $$applicationDestroyed: () => void;
+    private cacheState;
+    lastCachedState: any;
     /**
-     * Checks whether the url has changed outside of AngularJS.
-     * Needs to be exported to be able to check for changes that have been done in sync,
-     * as hashchange/popstate events fire in async.
+     * Fires the state or URL change event.
+     *
+     * @private
      */
-    $$checkUrlChange: () => void;
+    private fireStateOrUrlChange;
     /**
-     * Returns current <base href>
-     * (always relative - without domain)
+     * Registers a callback to be called when the URL changes.
      *
-     * @returns {string} The current base href
+     * @param {UrlChangeListener} callback - The callback function to register.
+     * @returns {UrlChangeListener} The registered callback function.
      */
-    baseHref: () => string;
-    /**
-     * @param {function():any} fn A function, who's execution should be deferred.
-     * @param {number=} [delay=0] Number of milliseconds to defer the function execution.
-     * @param {string=} [taskType=DEFAULT_TASK_TYPE] The type of task that is deferred.
-     * @returns {number} DeferId that can be used to cancel the task via `$browser.cancel()`.
-     *
-     * Executes a fn asynchronously via `setTimeout(fn, delay)`.
-     *
-     * Unlike when calling `setTimeout` directly, in test this function is mocked and instead of using
-     * `setTimeout` in tests, the fns are queued in an array, which can be programmatically flushed
-     * via `$browser.defer.flush()`.
-     *
-     */
-    defer: (fn: () => any, delay?: number | undefined, taskType?: string | undefined) => number;
-    /**
-     * @name $browser#cancel
-     *
-     * @description
-     * Cancels a deferred task identified with `deferId`.
-     *
-     * @param {number} deferId Token returned by the `$browser.defer` function.
-     * @returns {boolean} Returns `true` if the task hasn't executed yet and was successfully
-     *                    canceled.
-     */
-    cancel: (deferId: number) => boolean;
+    onUrlChange(callback: UrlChangeListener): UrlChangeListener;
+    $$applicationDestroyed(): void;
+    $$checkUrlChange(): void;
+    baseHref(): any;
+    defer(fn: any, delay?: number, taskType?: string): number;
+    cancel(deferId: any): boolean;
 }
 /**
  * This object has two goals:
@@ -152,3 +89,4 @@ export class BrowserProvider {
     $get: (string | (($$taskTrackerFactory: import("../core/task-tracker-factory").TaskTracker) => Browser))[];
 }
 export type UrlChangeListener = (arg0: string, arg1: string | null) => any;
+import { JQLite } from "../shared/jqlite/jqlite";
