@@ -113,61 +113,45 @@ export class Angular {
       strictDi: false,
     };
 
-    this.doBootstrap = function () {
-      const jqLite = JQLite(element);
+    const jqLite = JQLite(element);
 
-      if (jqLite.injector()) {
-        throw ngMinErr("btstrpd", "App already bootstrapped");
-      }
-
-      if (Array.isArray(modules)) {
-        this.bootsrappedModules = modules;
-      }
-
-      this.bootsrappedModules.unshift([
-        "$provide",
-        ($provide) => {
-          $provide.value("$rootElement", jqLite);
-        },
-      ]);
-
-      this.bootsrappedModules.unshift("ng");
-
-      const injector = createInjector(this.bootsrappedModules, config.strictDi);
-      injector.invoke([
-        "$rootScope",
-        "$rootElement",
-        "$compile",
-        "$injector",
-        /**
-         * @param {import('./core/scope/scope').Scope} scope
-         * @param {JQLite} el
-         * @param {*} compile
-         * @param {import("./core/di/internal-injector").InjectorService} $injector
-         */
-        function (scope, el, compile, $injector) {
-          scope.$apply(() => {
-            el.data("$injector", $injector);
-            compile(el)(scope);
-          });
-        },
-      ]);
-      return injector;
-    };
-
-    const NG_DEFER_BOOTSTRAP = /^NG_DEFER_BOOTSTRAP!/;
-
-    if (window && !NG_DEFER_BOOTSTRAP.test(window.name)) {
-      return this.doBootstrap();
+    if (jqLite.injector()) {
+      throw ngMinErr("btstrpd", "App already bootstrapped");
     }
 
-    window.name = window.name.replace(NG_DEFER_BOOTSTRAP, "");
-    this.resumeBootstrap = function (extraModules) {
-      if (Array.isArray(extraModules)) {
-        extraModules.forEach((module) => modules.push(module));
-      }
-      return this.doBootstrap();
-    };
+    if (Array.isArray(modules)) {
+      this.bootsrappedModules = modules;
+    }
+
+    this.bootsrappedModules.unshift([
+      "$provide",
+      ($provide) => {
+        $provide.value("$rootElement", jqLite);
+      },
+    ]);
+
+    this.bootsrappedModules.unshift("ng");
+
+    const injector = createInjector(this.bootsrappedModules, config.strictDi);
+    injector.invoke([
+      "$rootScope",
+      "$rootElement",
+      "$compile",
+      "$injector",
+      /**
+       * @param {import('./core/scope/scope').Scope} scope
+       * @param {JQLite} el
+       * @param {*} compile
+       * @param {import("./core/di/internal-injector").InjectorService} $injector
+       */
+      function (scope, el, compile, $injector) {
+        scope.$apply(() => {
+          el.data("$injector", $injector);
+          compile(el)(scope);
+        });
+      },
+    ]);
+    return injector;
   }
 
   /**
