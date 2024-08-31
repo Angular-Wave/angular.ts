@@ -1,11 +1,4 @@
-import {
-  fromJson,
-  toJson,
-  equals,
-  inherit,
-  map,
-  pick,
-} from "../../shared/common";
+import { equals, inherit, map, pick } from "../../shared/common";
 import { isNullOrUndefined } from "../../shared/predicates";
 import { isDefined } from "../../shared/utils";
 import { is } from "../../shared/hof";
@@ -141,8 +134,8 @@ function initDefaultTypes() {
       capture: /([0-9]{4})-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/,
     }),
     json: makeDefaultType({
-      encode: toJson,
-      decode: fromJson,
+      encode: JSON.stringify,
+      decode: JSON.parse,
       is: is(Object),
       equals: equals,
       pattern: /[^/]*/,

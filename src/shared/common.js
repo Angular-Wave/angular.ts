@@ -1,8 +1,7 @@
 import { isDate, isFunction, isRegExp, isString } from "./utils";
 import { all, any, prop, curry } from "./hof";
 import { services } from "../router/common/coreservices";
-export const fromJson = JSON.parse.bind(JSON);
-export const toJson = JSON.stringify.bind(JSON);
+
 export const forEach = _forEach;
 export const equals = _equals;
 /**

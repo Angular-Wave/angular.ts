@@ -28,18 +28,12 @@ export class ParamType {
      * @returns a new ParamType object
      */
     constructor(def: any);
-    /** @inheritdoc */
     pattern: RegExp;
-    /** @inheritdoc */
     inherit: boolean;
     name: any;
-    /** @inheritdoc */
-    is(_val: any): boolean;
-    /** @inheritdoc */
+    is(val: any): boolean;
     encode(val: any): any;
-    /** @inheritdoc */
     decode(val: any): any;
-    /** @inheritdoc */
     equals(a: any, b: any): boolean;
     $subPattern(): string;
     toString(): string;
