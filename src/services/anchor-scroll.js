@@ -19,14 +19,16 @@ import {
  * @typedef {AnchorScrollFunction | AnchorScrollObject} AnchorScrollService
  */
 
-export function AnchorScrollProvider() {
-  let autoScrollingEnabled = true;
+export class AnchorScrollProvider {
+  constructor() {
+    this.autoScrollingEnabled = true;
+  }
 
-  this.disableAutoScrolling = () => {
-    autoScrollingEnabled = false;
-  };
+  disableAutoScrolling() {
+    this.autoScrollingEnabled = false;
+  }
 
-  this.$get = [
+  $get = [
     "$location",
     "$rootScope",
     /**
@@ -124,7 +126,7 @@ export function AnchorScrollProvider() {
 
       // does not scroll when user clicks on anchor link that is currently on
       // (no url change, no $location.hash() change), browser native does scroll
-      if (autoScrollingEnabled) {
+      if (this.autoScrollingEnabled) {
         $rootScope.$watch(
           () => $location.hash(),
           (newVal, oldVal) => {

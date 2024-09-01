@@ -1,11 +1,4 @@
 /**
- * Higher order functions
- *
- * These utility functions are exported, but are subject to change without notice.
- *
- * @packageDocumentation
- */
-/**
  * Returns a new function for [Partial Application](https://en.wikipedia.org/wiki/Partial_application) of the original function.
  *
  * Given a function with N parameters, returns a new function that supports partial application.
@@ -105,13 +98,6 @@ export const propEq = curry((name, _val, obj) => obj && obj[name] === _val);
  */
 export const parse = (name) => pipe.apply(null, name.split(".").map(prop));
 
-/**
- * Given two functions that return truthy or falsey values, returns a function that returns truthy
- * if both functions return truthy for the given arguments
- */
-export function and(fn1, fn2) {
-  return (...args) => fn1.apply(null, args) && fn2.apply(null, args);
-}
 /**
  * Given two functions that return truthy or falsey values, returns a function that returns truthy
  * if at least one of the functions returns truthy for the given arguments

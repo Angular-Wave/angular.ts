@@ -251,8 +251,6 @@ export class BrowserProvider {
      * @param {import('../core/task-tracker-factory').TaskTracker} $$taskTrackerFactory
      * @returns
      */
-    function ($$taskTrackerFactory) {
-      return new Browser($$taskTrackerFactory);
-    },
+    ($$taskTrackerFactory) => new Browser($$taskTrackerFactory),
   ];
 }
