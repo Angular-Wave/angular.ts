@@ -667,6 +667,7 @@ export class StateService {
   defaultErrorHandler(handler) {
     return (this._defaultErrorHandler = handler || this._defaultErrorHandler);
   }
+
   get(stateOrName, base) {
     const reg = this.stateRegistry;
     if (arguments.length === 0) return reg.get();

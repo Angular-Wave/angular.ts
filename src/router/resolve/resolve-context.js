@@ -7,7 +7,7 @@ import { PathUtils } from "../path/path-utils";
 import { stringify } from "../../shared/strings";
 import { isUndefined } from "../../shared/utils";
 
-export let resolvePolicies = {
+export const resolvePolicies = {
   when: {
     LAZY: "LAZY",
     EAGER: "EAGER",
@@ -18,10 +18,8 @@ export let resolvePolicies = {
   },
 };
 
-const whens = resolvePolicies.when;
-const ALL_WHENS = [whens.EAGER, whens.LAZY];
-const EAGER_WHENS = [whens.EAGER];
-export const NATIVE_INJECTOR_TOKEN = "Native Injector";
+const ALL_WHENS = [resolvePolicies.when.EAGER, resolvePolicies.when.LAZY];
+const EAGER_WHENS = [resolvePolicies.when.EAGER];
 /**
  * Encapsulates Dependency Injection for a path of nodes
  *

@@ -2352,7 +2352,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                 // Copy in CSS classes from original node
                 try {
                   if (oldClasses !== "") {
-                    linkNode.classList.add(oldClasses);
+                    linkNode.classList.add(...oldClasses.trim().split(" "));
                   }
                 } catch (e) {
                   // ignore, since it means that we are trying to set class on
