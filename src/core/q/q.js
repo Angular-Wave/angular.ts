@@ -395,22 +395,11 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
    * @returns {QPromise} Returns a promise of the passed value or promise
    */
 
-  function when(value, successCallback, errorCallback, progressCallback) {
+  function resolve(value, successCallback, errorCallback, progressCallback) {
     const result = new QPromise();
     resolvePromise(result, value);
     return result.then(successCallback, errorCallback, progressCallback);
   }
-
-  /**
-   * Alias of {@link when} to maintain naming consistency with ES6.
-   *
-   * @param {*} value Value or a promise
-   * @param {Function=} successCallback
-   * @param {Function=} errorCallback
-   * @param {Function=} progressCallback
-   * @returns {Promise} Returns a promise of the passed value or promise
-   */
-  let resolve = when;
 
   /**
    * Combines multiple promises into a single promise that is resolved when all of the input
@@ -430,7 +419,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
 
     forEach(promises, (promise, key) => {
       counter++;
-      when(promise).then(
+      resolve(promise).then(
         (value) => {
           results[key] = value;
           if (!--counter) resolvePromise(result, results);
@@ -461,7 +450,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
     const deferred = defer();
 
     forEach(promises, (promise) => {
-      when(promise).then(deferred.resolve, deferred.reject);
+      resolve(promise).then(deferred.resolve, deferred.reject);
     });
 
     return deferred.promise;
@@ -500,7 +489,6 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
 
   $Q.defer = defer;
   $Q.reject = reject;
-  $Q.when = when;
   $Q.resolve = resolve;
   $Q.all = all;
   $Q.race = race;

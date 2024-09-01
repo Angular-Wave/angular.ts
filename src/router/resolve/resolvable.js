@@ -90,7 +90,7 @@ export class Resolvable {
     };
     // Sets the promise property first, then getsResolvableDependencies in the context of the promise chain. Always waits one tick.
     return (this.promise = $q
-      .when()
+      .resolve()
       .then(getResolvableDependencies)
       .then(invokeResolveFn)
       .then(customAsyncPolicy)
