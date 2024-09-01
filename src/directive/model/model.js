@@ -163,7 +163,7 @@ export class NgModelController {
     this.$$animate = $animate;
     this.$$timeout = $timeout;
     this.$$parse = $parse;
-    this.$$q = $q;
+    this.$q = $q;
     this.$$exceptionHandler = $exceptionHandler;
 
     this.$$hasNativeValidators = false;
@@ -650,7 +650,7 @@ export class NgModelController {
       if (!validatorPromises.length) {
         validationDone(true);
       } else {
-        that.$$q.all(validatorPromises).then(
+        that.$q.all(validatorPromises).then(
           () => {
             validationDone(allValid);
           },

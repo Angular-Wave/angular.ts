@@ -40,9 +40,12 @@ import {
  * @property {QPromise<T>} promise - The promise associated with this deferred object.
  */
 
-export function $QProvider() {
-  let errorOnUnhandledRejections = true;
-  this.$get = [
+export class $QProvider {
+  constructor() {
+    this.errorOn = true;
+  }
+
+  $get = [
     "$rootScope",
     "$exceptionHandler",
     /**
@@ -59,7 +62,7 @@ export function $QProvider() {
           );
         },
         $exceptionHandler,
-        errorOnUnhandledRejections,
+        this.errorOn,
       );
     },
   ];
@@ -72,38 +75,40 @@ export function $QProvider() {
    * @returns {boolean|$QProvider} Current value when called without a new value or self for
    *    chaining otherwise.
    */
-  this.errorOnUnhandledRejections = function (value) {
+  errorOnUnhandledRejections(value) {
     if (isDefined(value)) {
-      errorOnUnhandledRejections = value;
+      this.errorOn = value;
       return this;
     }
-    return errorOnUnhandledRejections;
-  };
+    return this.errorOn;
+  }
 }
 
-export function $$QProvider() {
-  let errorOnUnhandledRejections = true;
-  this.$get = [
-    "$browser",
+export class $$QProvider {
+  constructor() {
+    this.errorOn = true;
+  }
+
+  $get = [
     "$exceptionHandler",
-    function ($browser, $exceptionHandler) {
+    function ($exceptionHandler) {
       return qFactory(
         (callback) => {
-          $browser.defer(callback);
+          window.setTimeout(callback);
         },
         $exceptionHandler,
-        errorOnUnhandledRejections,
+        this.errorOn,
       );
     },
   ];
 
-  this.errorOnUnhandledRejections = function (value) {
+  errorOnUnhandledRejections(value) {
     if (isDefined(value)) {
-      errorOnUnhandledRejections = value;
+      this.errorOn = value;
       return this;
     }
-    return errorOnUnhandledRejections;
-  };
+    return this.errorOn;
+  }
 }
 
 /**
@@ -447,9 +452,9 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
    */
 
   function race(promises) {
-    const deferred = defer();
+    const deferred = new Deferred();
 
-    forEach(promises, (promise) => {
+    promises.forEach((promise) => {
       resolve(promise).then(deferred.resolve, deferred.reject);
     });
 
