@@ -69,9 +69,9 @@ export class TemplateFactory {
   fromConfig(config, params, context) {
     const defaultTemplate = "<ui-view></ui-view>";
     const asTemplate = (result) =>
-      this.$q.when(result).then((str) => ({ template: str }));
+      this.$q.resolve(result).then((str) => ({ template: str }));
     const asComponent = (result) =>
-      this.$q.when(result).then((str) => ({ component: str }));
+      this.$q.resolve(result).then((str) => ({ component: str }));
 
     const getConfigType = (config) => {
       if (isDefined(config.template)) return "template";

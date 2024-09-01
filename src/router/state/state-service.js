@@ -208,7 +208,7 @@ export class StateService {
    *
    * Invokes the [[onInvalid]] callbacks, in natural order.
    * Each callback's return value is checked in sequence until one of them returns an instance of TargetState.
-   * The results of the callbacks are wrapped in $q.when(), so the callbacks may return promises.
+   * The results of the callbacks are wrapped in $q.resolve(), so the callbacks may return promises.
    *
    * If a callback returns an TargetState, then it is used as arguments to $state.transitionTo() and the result returned.
    *
@@ -248,7 +248,7 @@ export class StateService {
       const nextCallback = callbackQueue.dequeue();
       if (nextCallback === undefined)
         return Rejection.invalid(toState.error()).toPromise();
-      const callbackResult = services.$q.when(
+      const callbackResult = services.$q.resolve(
         nextCallback(toState, fromState, injector),
       );
       return callbackResult
@@ -463,7 +463,7 @@ export class StateService {
         if (error.type === RejectType.IGNORED) {
           isLatest && this.urlService.update();
           // Consider ignored `Transition.run()` as a successful `transitionTo`
-          return services.$q.when(this.globals.current);
+          return services.$q.resolve(this.globals.current);
         }
         const detail = error.detail;
         if (

@@ -937,7 +937,7 @@ describe("$http", function () {
           return {
             request: function (config) {
               config.params.intercepted = true;
-              return $q.when(config);
+              return $q.resolve(config);
             },
           };
         });

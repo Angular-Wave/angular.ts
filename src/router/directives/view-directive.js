@@ -470,7 +470,7 @@ function registerControllerCallbacks(
       let promise;
       const ids = (trans[cacheProp] = trans[cacheProp] || {});
       if (!prevTruthyAnswer(trans)) {
-        promise = $q.when(controllerInstance.uiCanExit(trans));
+        promise = $q.resolve(controllerInstance.uiCanExit(trans));
         promise.then((val) => (ids[id] = val !== false));
       }
       return promise;

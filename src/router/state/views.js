@@ -122,10 +122,10 @@ export class Ng1ViewConfig {
       {},
     );
     const promises = {
-      template: $q.when(
+      template: $q.resolve(
         this.factory.fromConfig(this.viewDecl, params, context),
       ),
-      controller: $q.when(this.getController(context)),
+      controller: $q.resolve(this.getController(context)),
     };
     return $q.all(promises).then((results) => {
       trace.traceViewServiceEvent("Loaded", this);

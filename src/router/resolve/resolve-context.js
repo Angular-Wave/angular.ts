@@ -196,7 +196,7 @@ class UIInjectorImpl {
     return services.$injector.get(token);
   }
   getAsync(token) {
-    return services.$q.when(services.$injector.get(token));
+    return services.$q.resolve(services.$injector.get(token));
   }
   getNative(token) {
     return services.$injector.get(token);

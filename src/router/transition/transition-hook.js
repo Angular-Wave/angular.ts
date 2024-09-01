@@ -37,7 +37,7 @@ export class TransitionHook {
     // Chain the next hook off the previous
     const createHookChainR = (prev, nextHook) =>
       prev.then(() => nextHook.invokeHook());
-    return hooks.reduce(createHookChainR, waitFor || services.$q.when());
+    return hooks.reduce(createHookChainR, waitFor || services.$q.resolve());
   }
   /**
    * Invokes all the provided TransitionHooks, in order.

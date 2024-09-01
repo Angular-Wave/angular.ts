@@ -27,7 +27,7 @@ export const registerRedirectToHook = (transitionService, stateService) => {
         );
     }
     if (isFunction(redirect)) {
-      return services.$q.when(redirect(trans)).then(handleResult);
+      return services.$q.resolve(redirect(trans)).then(handleResult);
     }
     return handleResult(redirect);
   };

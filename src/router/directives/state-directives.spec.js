@@ -1019,7 +1019,7 @@ describe("ngSrefActive", () => {
       name: "contacts.lazy.**",
       url: "/lazy",
       lazyLoad: () => {
-        return $q.when().then(() => {
+        return $q.resolve().then(() => {
           _stateProvider
             .state({ name: "contacts.lazy", abstract: true, url: "/lazy" })
             .state({ name: "contacts.lazy.s1", url: "/s1" })
@@ -1103,7 +1103,7 @@ describe("ngSrefActive", () => {
         name: "contacts.lazy.**",
         url: "/lazy",
         lazyLoad: () => {
-          return $q.when().then(() => {
+          return $q.resolve().then(() => {
             _stateProvider
               .state({ name: "contacts.lazy", abstract: true, url: "/lazy" })
               .state({ name: "contacts.lazy.s1", url: "/s1" })

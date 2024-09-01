@@ -34,7 +34,7 @@ export class Resolvable {
       this.deps = deps || [];
       this.data = data;
       this.resolved = data !== undefined;
-      this.promise = this.resolved ? services.$q.when(this.data) : undefined;
+      this.promise = this.resolved ? services.$q.resolve(this.data) : undefined;
     } else if (
       isObject(arg1) &&
       arg1.token &&

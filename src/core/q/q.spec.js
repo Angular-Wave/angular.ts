@@ -592,7 +592,7 @@ describe("q", () => {
   it("can make an immediately resolved promise", function () {
     var fulfilledSpy = jasmine.createSpy();
     var rejectedSpy = jasmine.createSpy();
-    var promise = $q.when("ok");
+    var promise = $q.resolve("ok");
     promise.then(fulfilledSpy, rejectedSpy);
     $rootScope.$apply();
     expect(fulfilledSpy).toHaveBeenCalledWith("ok");
@@ -602,7 +602,7 @@ describe("q", () => {
   it("can wrap a foreign promise", function () {
     var fulfilledSpy = jasmine.createSpy();
     var rejectedSpy = jasmine.createSpy();
-    var promise = $q.when({
+    var promise = $q.resolve({
       then: function (handler) {
         $rootScope.$evalAsync(function () {
           handler("ok");
@@ -620,7 +620,7 @@ describe("q", () => {
     var rejectedSpy = jasmine.createSpy();
     var progressSpy = jasmine.createSpy();
     var wrapped = $q.defer();
-    $q.when(wrapped.promise, fulfilledSpy, rejectedSpy, progressSpy);
+    $q.resolve(wrapped.promise, fulfilledSpy, rejectedSpy, progressSpy);
     wrapped.notify("working...");
     wrapped.resolve("ok");
     $rootScope.$apply();
@@ -651,7 +651,7 @@ describe("all", function () {
   });
 
   it("can resolve an array of promises to array of results", function () {
-    var promise = $q.all([$q.when(1), $q.when(2), $q.when(3)]);
+    var promise = $q.all([$q.resolve(1), $q.resolve(2), $q.resolve(3)]);
     var fulfilledSpy = jasmine.createSpy();
     promise.then(fulfilledSpy);
     $rootScope.$apply();
@@ -659,7 +659,7 @@ describe("all", function () {
   });
 
   it("can resolve an object of promises to an object of results", function () {
-    var promise = $q.all({ a: $q.when(1), b: $q.when(2) });
+    var promise = $q.all({ a: $q.resolve(1), b: $q.resolve(2) });
     var fulfilledSpy = jasmine.createSpy();
     promise.then(fulfilledSpy);
     $rootScope.$apply();
@@ -683,7 +683,7 @@ describe("all", function () {
   });
 
   it("rejects when any of the promises rejects", function () {
-    var promise = $q.all([$q.when(1), $q.when(2), $q.reject("fail")]);
+    var promise = $q.all([$q.resolve(1), $q.resolve(2), $q.reject("fail")]);
     var fulfilledSpy = jasmine.createSpy();
     var rejectedSpy = jasmine.createSpy();
     promise.then(fulfilledSpy, rejectedSpy);
@@ -693,7 +693,7 @@ describe("all", function () {
   });
 
   it("wraps non-promises in the input collection", function () {
-    var promise = $q.all([$q.when(1), 2, 3]);
+    var promise = $q.all([$q.resolve(1), 2, 3]);
     var fulfilledSpy = jasmine.createSpy();
     promise.then(fulfilledSpy);
     $rootScope.$apply();
@@ -2162,7 +2162,7 @@ describe("all", function () {
   // describe("when", () => {
   //   describe("resolution", () => {
   //     it("should call the success callback in the next turn when the value is a non-promise", () => {
-  //       q.when("hello", success(), error());
+  //       q.resolve("hello", success(), error());
   //       expect(logStr()).toBe("");
   //       mockNextTick.flush();
   //       expect(logStr()).toBe("success(hello)->hello");
@@ -2170,7 +2170,7 @@ describe("all", function () {
 
   //     it("should call the success callback in the next turn when the value is a resolved promise", () => {
   //       deferred.resolve("hello");
-  //       q.when(deferred.promise, success(), error());
+  //       q.resolve(deferred.promise, success(), error());
   //       expect(logStr()).toBe("");
   //       mockNextTick.flush();
   //       expect(logStr()).toBe("success(hello)->hello");
@@ -2178,14 +2178,14 @@ describe("all", function () {
 
   //     it("should call the errback in the next turn when the value is a rejected promise", () => {
   //       deferred.reject("nope");
-  //       q.when(deferred.promise, success(), error());
+  //       q.resolve(deferred.promise, success(), error());
   //       expect(logStr()).toBe("");
   //       mockNextTick.flush();
   //       expect(logStr()).toBe("error(nope)->reject(nope)");
   //     });
 
   //     it("should call the success callback after the original promise is resolved", () => {
-  //       q.when(deferred.promise, success(), error());
+  //       q.resolve(deferred.promise, success(), error());
   //       expect(logStr()).toBe("");
   //       expect(logStr()).toBe("");
   //       syncResolve(deferred, "hello");
@@ -2193,7 +2193,7 @@ describe("all", function () {
   //     });
 
   //     it("should call the errback after the original promise is rejected", () => {
-  //       q.when(deferred.promise, success(), error());
+  //       q.resolve(deferred.promise, success(), error());
   //       expect(logStr()).toBe("");
   //       expect(logStr()).toBe("");
   //       syncReject(deferred, "nope");
@@ -2203,7 +2203,7 @@ describe("all", function () {
 
   //   describe("notification", () => {
   //     it("should call the progressBack when the value is a promise and gets notified", () => {
-  //       q.when(deferred.promise, success(), error(), progress());
+  //       q.resolve(deferred.promise, success(), error(), progress());
   //       expect(logStr()).toBe("");
   //       syncNotify(deferred, "notification");
   //       expect(logStr()).toBe("progress(notification)->notification");
@@ -2219,14 +2219,14 @@ describe("all", function () {
 
   //   describe("optional callbacks", () => {
   //     it("should not require success callback and propagate resolution", () => {
-  //       q.when("hi", null, error()).then(success(2), error());
+  //       q.resolve("hi", null, error()).then(success(2), error());
   //       expect(logStr()).toBe("");
   //       mockNextTick.flush();
   //       expect(logStr()).toBe("success2(hi)->hi");
   //     });
 
   //     it("should not require success callback and propagate rejection", () => {
-  //       q.when(q.reject("sorry"), null, error(1)).then(success(), error(2));
+  //       q.resolve(q.reject("sorry"), null, error(1)).then(success(), error(2));
   //       expect(logStr()).toBe("");
   //       mockNextTick.flush();
   //       expect(logStr()).toBe(
@@ -2235,21 +2235,21 @@ describe("all", function () {
   //     });
 
   //     it("should not require errback and propagate resolution", () => {
-  //       q.when("hi", success(1, "hello")).then(success(2), error());
+  //       q.resolve("hi", success(1, "hello")).then(success(2), error());
   //       expect(logStr()).toBe("");
   //       mockNextTick.flush();
   //       expect(logStr()).toBe("success1(hi)->hello; success2(hello)->hello");
   //     });
 
   //     it("should not require errback and propagate rejection", () => {
-  //       q.when(q.reject("sorry"), success()).then(success(2), error(2));
+  //       q.resolve(q.reject("sorry"), success()).then(success(2), error(2));
   //       expect(logStr()).toBe("");
   //       mockNextTick.flush();
   //       expect(logStr()).toBe("error2(sorry)->reject(sorry)");
   //     });
 
   //     it("should not require progressBack and propagate notification", () => {
-  //       q.when(deferred.promise).then(success(), error(), progress());
+  //       q.resolve(deferred.promise).then(success(), error(), progress());
   //       expect(logStr()).toBe("");
   //       syncNotify(deferred, "notification");
   //       expect(logStr()).toBe("progress(notification)->notification");
@@ -2261,7 +2261,7 @@ describe("all", function () {
   //       "should return a promise that can be resolved with a value returned from the success " +
   //         "callback",
   //       () => {
-  //         q.when("hello", success(1, "hi"), error()).then(success(2), error());
+  //         q.resolve("hello", success(1, "hi"), error()).then(success(2), error());
   //         mockNextTick.flush();
   //         expect(logStr()).toBe("success1(hello)->hi; success2(hi)->hi");
   //       },
@@ -2271,7 +2271,7 @@ describe("all", function () {
   //       "should return a promise that can be rejected with a rejected promise returned from the " +
   //         "success callback",
   //       () => {
-  //         q.when("hello", success(1, q.reject("sorry")), error()).then(
+  //         q.resolve("hello", success(1, q.reject("sorry")), error()).then(
   //           success(),
   //           error(2),
   //         );
@@ -2283,7 +2283,7 @@ describe("all", function () {
   //     );
 
   //     it("should return a promise that can be resolved with a value returned from the errback", () => {
-  //       q.when(q.reject("sorry"), success(), error(1, "hi")).then(
+  //       q.resolve(q.reject("sorry"), success(), error(1, "hi")).then(
   //         success(2),
   //         error(),
   //       );
@@ -2295,7 +2295,7 @@ describe("all", function () {
   //       "should return a promise that can be rejected with a rejected promise returned from the " +
   //         "errback",
   //       () => {
-  //         q.when(q.reject("sorry"), success(), error(1, q.reject("sigh"))).then(
+  //         q.resolve(q.reject("sorry"), success(), error(1, q.reject("sigh"))).then(
   //           success(),
   //           error(2),
   //         );
@@ -2311,7 +2311,7 @@ describe("all", function () {
   //         "callback",
   //       () => {
   //         const deferred2 = defer();
-  //         q.when("hi", success(1, deferred2.promise), error()).then(
+  //         q.resolve("hi", success(1, deferred2.promise), error()).then(
   //           success(2),
   //           error(),
   //         );
@@ -2329,7 +2329,7 @@ describe("all", function () {
   //         "callback",
   //       () => {
   //         const deferred2 = defer();
-  //         q.when(
+  //         q.resolve(
   //           q.reject("sorry"),
   //           success(),
   //           error(1, deferred2.promise),
@@ -2357,7 +2357,7 @@ describe("all", function () {
   //           },
   //         };
 
-  //         q.when(evilPromise, success(), error());
+  //         q.resolve(evilPromise, success(), error());
   //         expect(logStr()).toBe("");
   //         evilPromise.success("done");
   //         mockNextTick.flush(); // TODO(i) wrong queue, evil promise would be resolved outside of the
@@ -2384,7 +2384,7 @@ describe("all", function () {
   //           },
   //         };
 
-  //         q.when(evilPromise, success(), error());
+  //         q.resolve(evilPromise, success(), error());
   //         expect(logStr()).toBe("");
   //         evilPromise.error("failed");
   //         mockNextTick.flush();
@@ -2408,7 +2408,7 @@ describe("all", function () {
   //           },
   //         };
 
-  //         q.when(evilPromise, success(), error(), progress());
+  //         q.resolve(evilPromise, success(), error(), progress());
   //         expect(logStr()).toBe("");
   //         evilPromise.progress("notification");
   //         evilPromise.success("ok");
@@ -2761,7 +2761,7 @@ describe("all", function () {
   //   describe("in when", () => {
   //     it("should NOT log exceptions thrown in a success callback but reject the derived promise", () => {
   //       const success1 = success(1, "oops", true);
-  //       q.when("hi", success1, error())
+  //       q.resolve("hi", success1, error())
   //         .then(success(), error(2))
   //         .catch(() => {});
   //       mockNextTick.flush();
@@ -2772,7 +2772,7 @@ describe("all", function () {
   //     });
 
   //     it("should NOT log exceptions when a success callback returns rejected promise", () => {
-  //       q.when("hi", success(1, q.reject("rejected")))
+  //       q.resolve("hi", success(1, q.reject("rejected")))
   //         .then(success(2), error(2))
   //         .catch(() => {});
   //       mockNextTick.flush();
@@ -2784,7 +2784,7 @@ describe("all", function () {
 
   //     it("should NOT log exceptions thrown in a errback but reject the derived promise", () => {
   //       const error1 = error(1, "oops", true);
-  //       q.when(q.reject("sorry"), success(), error1)
+  //       q.resolve(q.reject("sorry"), success(), error1)
   //         .then(success(), error(2))
   //         .catch(() => {});
   //       mockNextTick.flush();
@@ -2795,7 +2795,7 @@ describe("all", function () {
   //     });
 
   //     it("should NOT log exceptions when an errback returns a rejected promise", () => {
-  //       q.when(q.reject("sorry"), success(), error(1, q.reject("rejected")))
+  //       q.resolve(q.reject("sorry"), success(), error(1, q.reject("rejected")))
   //         .then(success(2), error(2))
   //         .catch(() => {});
   //       mockNextTick.flush();

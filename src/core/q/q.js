@@ -130,18 +130,13 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
     return new Deferred();
   }
 
-  function Deferred() {
-    const promise = (this.promise = new QPromise());
-    // Non prototype methods necessary to support unbound execution :/
-    this.resolve = function (val) {
-      resolvePromise(promise, val);
-    };
-    this.reject = function (reason) {
-      rejectPromise(promise, reason);
-    };
-    this.notify = function (progress) {
-      notifyPromise(promise, progress);
-    };
+  class Deferred {
+    constructor() {
+      this.promise = new QPromise();
+      this.resolve = (val) => resolvePromise(this.promise, val);
+      this.reject = (reason) => rejectPromise(this.promise, reason);
+      this.notify = (progress) => notifyPromise(this.promise, progress);
+    }
   }
 
   class QPromise {

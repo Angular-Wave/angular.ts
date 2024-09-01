@@ -12,7 +12,7 @@ const loadEnteringViews = (transition) => {
   const enteringViews = transition.views("entering");
   if (!enteringViews.length) return;
   return $q
-    .all(enteringViews.map((view) => $q.when(view.load())))
+    .all(enteringViews.map((view) => $q.resolve(view.load())))
     .then(() => {});
 };
 export const registerLoadEnteringViews = (transitionService) =>
