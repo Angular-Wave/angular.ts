@@ -179,8 +179,6 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
         progressBack,
       );
     }
-
-    static defer;
   }
 
   function processQueue(state) {
@@ -193,7 +191,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
     state.pending = undefined;
     try {
       for (let i = 0, ii = pending.length; i < ii; ++i) {
-        markQExceptionHandled(state);
+        state.pur = true;
         promise = pending[i][0];
         fn = pending[i][state.status];
         try {
@@ -224,7 +222,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
     while (!queueSize && checkQueue.length) {
       const toCheck = checkQueue.shift();
       if (!isStateExceptionHandled(toCheck)) {
-        markQExceptionHandled(toCheck);
+        toCheck.pur = true;
         const errorMessage = `Possibly unhandled rejection: ${toDebugString(toCheck.value)}`;
         if (isError(toCheck.value)) {
           exceptionHandler(toCheck.value, errorMessage);
