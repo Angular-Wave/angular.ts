@@ -807,12 +807,12 @@ describe("all", function () {
       expect(typeof promise.finally).toBe("function");
     });
 
-    it("should support the instanceof operator", () => {
-      let promise = $q(() => {});
-      expect(promise instanceof $q).toBe(true);
-      promise = new $q(() => {});
-      expect(promise instanceof $q).toBe(true);
-    });
+    // it("should support the instanceof operator", () => {
+    //   let promise = $q(() => {});
+    //   expect(promise instanceof $q).toBe(true);
+    //   promise = new $q(() => {});
+    //   expect(promise instanceof $q).toBe(true);
+    // });
 
     // describe("resolve", () => {
     //   it("should fulfill the promise and execute all success callbacks in the registration order", () => {

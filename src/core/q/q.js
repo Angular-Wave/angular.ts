@@ -11,18 +11,17 @@ import {
 } from "../../shared/utils";
 
 /**
+ * @typedef {Object} QService
+ * @property {function():Deferred<any>} defer
+ * @property {function(any?):QPromise<any>} all
+ * @property {function(any?):any} resolve
+ * @property {function(any):any} reject
+ */
+
+/**
  * @template T
  * @typedef {Object} QPromise
- * @property {function(
- *   ((value: T) => (PromiseLike<never>|PromiseLike<T>|T))|null,
- *   ((reason: any) => (PromiseLike<never>|PromiseLike<T>|T))|null,
- *   ((state: any) => any)=
- * ): QPromise<T|never>} then - Calls one of the success or error callbacks asynchronously as soon as the result is available.
- * @property {function(
- *   ((value: T) => (QPromise<never>|QPromise<T>|T))|null,
- *   ((reason: any) => (QPromise<never>|QPromise<never>|never))|null,
- *   ((state: any) => any)
- * ): QPromise<T|never>} then - Calls one of the success or error callbacks asynchronously as soon as the result is available.
+ * @property {function(any,any?): QPromise<T|never>} then - Calls one of the success or error callbacks asynchronously as soon as the result is available.
  * @property {function(((reason: any) => (PromiseLike<never>|PromiseLike<T>|T))|null): QPromise<T>|T} catch - Shorthand for promise.then(null, errorCallback).
  * @property {function(((reason: any) => (QPromise<never>|QPromise<T>|T))|null): QPromise<T>|T} catch - Shorthand for promise.then(null, errorCallback).
  * @property {function(Array.<QPromise<T>>): QPromise<T>} all
@@ -126,15 +125,6 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
   let queueSize = 0;
   const checkQueue = [];
 
-  /**
-   * Creates a `Deferred` object which represents a task which will finish in the future.
-   *
-   * @returns {Deferred} Returns a new instance of deferred.
-   */
-  function defer() {
-    return new Deferred();
-  }
-
   class Deferred {
     constructor() {
       this.promise = new QPromise();
@@ -149,6 +139,13 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
       this.$$state = { status: 0 };
     }
 
+    /**
+     * Calls one of the success or error callbacks asynchronously as soon as the result is available.
+     * @param {*} onFulfilled
+     * @param {*} onRejected
+     * @param {*} progressBack
+     * @returns
+     */
     then(onFulfilled, onRejected, progressBack) {
       if (
         isUndefined(onFulfilled) &&
@@ -182,6 +179,8 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
         progressBack,
       );
     }
+
+    static defer;
   }
 
   function processQueue(state) {
@@ -194,7 +193,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
     state.pending = undefined;
     try {
       for (let i = 0, ii = pending.length; i < ii; ++i) {
-        markQStateExceptionHandled(state);
+        markQExceptionHandled(state);
         promise = pending[i][0];
         fn = pending[i][state.status];
         try {
@@ -225,7 +224,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
     while (!queueSize && checkQueue.length) {
       const toCheck = checkQueue.shift();
       if (!isStateExceptionHandled(toCheck)) {
-        markQStateExceptionHandled(toCheck);
+        markQExceptionHandled(toCheck);
         const errorMessage = `Possibly unhandled rejection: ${toDebugString(toCheck.value)}`;
         if (isError(toCheck.value)) {
           exceptionHandler(toCheck.value, errorMessage);
@@ -475,24 +474,15 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
 
     const promise = new QPromise();
 
-    function resolveFn(value) {
-      resolvePromise(promise, value);
-    }
-
-    function rejectFn(reason) {
-      rejectPromise(promise, reason);
-    }
-
-    resolver(resolveFn, rejectFn);
+    resolver(
+      (value) => resolvePromise(promise, value),
+      (reason) => rejectPromise(promise, reason),
+    );
 
     return promise;
   }
 
-  // Let's make the instanceof operator work for promises, so that
-  // `new $q(fn) instanceof $q` would evaluate to true.
-  $Q.prototype = QPromise.prototype;
-
-  $Q.defer = defer;
+  $Q.defer = () => new Deferred();
   $Q.reject = reject;
   $Q.resolve = resolve;
   $Q.all = all;
@@ -504,15 +494,13 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
 function isStateExceptionHandled(state) {
   return !!state.pur;
 }
-function markQStateExceptionHandled(state) {
-  state.pur = true;
-}
+
 export function markQExceptionHandled(q) {
   // Built-in `$q` promises will always have a `$$state` property. This check is to allow
   // overwriting `$q` with a different promise library (e.g. Bluebird + angular-bluebird-promises).
   // (Currently, this is the only method that might be called with a promise, even if it is not
   // created by the built-in `$q`.)
   if (q.$$state) {
-    markQStateExceptionHandled(q.$$state);
+    q.$$state.pur = true;
   }
 }

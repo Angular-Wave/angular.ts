@@ -89,7 +89,7 @@ export function lazyLoadState(transition, state, stateRegistry) {
       return services.$q.reject(err);
     };
     promise = lazyLoadFn["_promise"] = services.$q
-      .when(lazyLoadFn(transition, state))
+      .resolve(lazyLoadFn(transition, state))
       .then(updateStateRegistry)
       .then(success, error);
   }
