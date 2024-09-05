@@ -7,6 +7,21 @@ export function markQExceptionHandled(q: any): void;
  * @property {function(any):any} reject
  */
 /**
+ * @typedef {Object} PromiseState
+ * @property {?number} status
+ * @property {PromiseResolvables[]} [pending]
+ * @property {boolean} processScheduled
+ * @property {any} [value]
+ * @property {boolean} pur
+ */
+/**
+ * @typedef {Object} PromiseResolvables
+ * @property {any} result
+ * @property {function(any):any} onFulfilled
+ * @property {function(any):any} onRejected
+ * @property {function(any):any} progressBack
+ */
+/**
  * @template T
  * @typedef {Object} QPromise
  * @property {function(any,any?): QPromise<T|never>} then - Calls one of the success or error callbacks asynchronously as soon as the result is available.
@@ -48,6 +63,19 @@ export type QService = {
     all: (arg0: any | null) => QPromise<any>;
     resolve: (arg0: any | null) => any;
     reject: (arg0: any) => any;
+};
+export type PromiseState = {
+    status: number | null;
+    pending?: PromiseResolvables[];
+    processScheduled: boolean;
+    value?: any;
+    pur: boolean;
+};
+export type PromiseResolvables = {
+    result: any;
+    onFulfilled: (arg0: any) => any;
+    onRejected: (arg0: any) => any;
+    progressBack: (arg0: any) => any;
 };
 export type QPromise<T> = {
     /**

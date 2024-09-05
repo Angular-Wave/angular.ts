@@ -19,6 +19,23 @@ import {
  */
 
 /**
+ * @typedef {Object} PromiseState
+ * @property {?number} status
+ * @property {PromiseResolvables[]} [pending]
+ * @property {boolean} processScheduled
+ * @property {any} [value]
+ * @property {boolean} pur
+ */
+
+/**
+ * @typedef {Object} PromiseResolvables
+ * @property {any} result
+ * @property {function(any):any} onFulfilled
+ * @property {function(any):any} onRejected
+ * @property {function(any):any} progressBack
+ */
+
+/**
  * @template T
  * @typedef {Object} QPromise
  * @property {function(any,any?): QPromise<T|never>} then - Calls one of the success or error callbacks asynchronously as soon as the result is available.
@@ -123,6 +140,9 @@ export class $$QProvider {
 function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
   const $qMinErr = minErr("$q");
   let queueSize = 0;
+  /**
+   * @type {PromiseState[]}
+   */
   const checkQueue = [];
 
   class Deferred {
@@ -136,7 +156,13 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
 
   class QPromise {
     constructor() {
-      this.$$state = { status: 0 };
+      /** @type {PromiseState} */
+      this.$$state = {
+        status: 0,
+        pending: undefined,
+        processScheduled: false,
+        pur: false,
+      };
     }
 
     /**
@@ -157,12 +183,12 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
       const result = new QPromise();
 
       this.$$state.pending = this.$$state.pending || [];
-      this.$$state.pending.push([
-        result,
-        onFulfilled,
-        onRejected,
-        progressBack,
-      ]);
+      this.$$state.pending.push({
+        result: result,
+        onFulfilled: onFulfilled,
+        onRejected: onRejected,
+        progressBack: progressBack,
+      });
       if (this.$$state.status > 0) scheduleProcessQueue(this.$$state);
 
       return result;
@@ -181,19 +207,21 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
     }
   }
 
+  /**
+   * @param {PromiseState} state
+   */
   function processQueue(state) {
-    let fn;
-    let promise;
-    let pending;
-
-    pending = state.pending;
     state.processScheduled = false;
-    state.pending = undefined;
     try {
-      for (let i = 0, ii = pending.length; i < ii; ++i) {
+      for (let i = 0, ii = state.pending.length; i < ii; ++i) {
         state.pur = true;
-        promise = pending[i][0];
-        fn = pending[i][state.status];
+        const promise = state.pending[i].result;
+        let fn;
+        if (state.status === 1) {
+          fn = state.pending[i].onFulfilled;
+        } else {
+          fn = state.pending[i].onRejected;
+        }
         try {
           if (isFunction(fn)) {
             resolvePromise(promise, fn(state.value));
@@ -204,10 +232,6 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
           }
         } catch (e) {
           rejectPromise(promise, e);
-          // This error is explicitly marked for being passed to the $exceptionHandler
-          if (e && e.$$passToExceptionHandler === true) {
-            exceptionHandler(e);
-          }
         }
       }
     } finally {
@@ -215,6 +239,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
       if (errorOnUnhandledRejections && queueSize === 0) {
         nextTick(processChecks);
       }
+      state.pending = undefined;
     }
   }
 
@@ -233,6 +258,9 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
     }
   }
 
+  /**
+   * @param {PromiseState} state
+   */
   function scheduleProcessQueue(state) {
     if (
       errorOnUnhandledRejections &&
@@ -312,6 +340,11 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
     scheduleProcessQueue(promise.$$state);
   }
 
+  /**
+   *
+   * @param {QPromise} promise
+   * @param {*} progress
+   */
   function notifyPromise(promise, progress) {
     const callbacks = promise.$$state.pending;
 
@@ -320,8 +353,8 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
         let callback;
         let result;
         for (let i = 0, ii = callbacks.length; i < ii; i++) {
-          result = callbacks[i][0];
-          callback = callbacks[i][3];
+          result = callbacks[i].result;
+          callback = callbacks[i].progressBack;
           try {
             notifyPromise(
               result,
