@@ -131,7 +131,7 @@ export class StateService {
      *
      * Invokes the [[onInvalid]] callbacks, in natural order.
      * Each callback's return value is checked in sequence until one of them returns an instance of TargetState.
-     * The results of the callbacks are wrapped in $q.when(), so the callbacks may return promises.
+     * The results of the callbacks are wrapped in $q.resolve(), so the callbacks may return promises.
      *
      * If a callback returns an TargetState, then it is used as arguments to $state.transitionTo() and the result returned.
      *

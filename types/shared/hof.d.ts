@@ -1,11 +1,4 @@
 /**
- * Higher order functions
- *
- * These utility functions are exported, but are subject to change without notice.
- *
- * @packageDocumentation
- */
-/**
  * Returns a new function for [Partial Application](https://en.wikipedia.org/wiki/Partial_application) of the original function.
  *
  * Given a function with N parameters, returns a new function that supports partial application.
@@ -61,11 +54,6 @@ export function compose(...args: any[]): (...args: any[]) => any;
  * then, piped is: h(g(f(x)))
  */
 export function pipe(...args: any[]): any;
-/**
- * Given two functions that return truthy or falsey values, returns a function that returns truthy
- * if both functions return truthy for the given arguments
- */
-export function and(fn1: any, fn2: any): (...args: any[]) => any;
 /**
  * Given two functions that return truthy or falsey values, returns a function that returns truthy
  * if at least one of the functions returns truthy for the given arguments

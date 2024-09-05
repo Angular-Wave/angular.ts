@@ -8,7 +8,6 @@ export namespace resolvePolicies {
         let NOWAIT: string;
     }
 }
-export const NATIVE_INJECTOR_TOKEN: "Native Injector";
 /**
  * Encapsulates Dependency Injection for a path of nodes
  *
@@ -92,7 +91,7 @@ export class ResolveContext {
     getDependencies(resolvable: any): any;
 }
 declare class UIInjectorImpl {
-    native: any;
+    native: import("../../core/di/internal-injector").InjectorService;
     get(token: any): any;
     getAsync(token: any): any;
     getNative(token: any): any;

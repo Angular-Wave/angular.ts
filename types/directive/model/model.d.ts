@@ -125,7 +125,7 @@ export class NgModelController {
     $$animate: any;
     $$timeout: any;
     $$parse: import("../../core/parser/parse").ParseService;
-    $$q: import("../../core/q/q").QPromise<any>;
+    $q: import("../../core/q/q").QPromise<any>;
     $$exceptionHandler: import("../../core/exception-handler").ErrorHandler;
     $$hasNativeValidators: boolean;
     set(object: any, property: any): void;

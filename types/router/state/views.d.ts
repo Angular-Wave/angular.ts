@@ -35,7 +35,7 @@ export class Ng1ViewConfig {
     /** @type {Number} */ $id: number;
     loaded: boolean;
     getTemplate: (ngView: any, context: any) => any;
-    load(): any;
+    load(): import("../../core/q/q").QPromise<any>;
     controller: any;
     /**
      * Gets the controller for a view configuration.

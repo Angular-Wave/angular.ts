@@ -23,14 +23,14 @@ export class Transition {
     constructor(fromPath: any, targetState: any, transitionService: import("../transition/transition-service").TransitionService, globals: any);
     globals: any;
     transitionService: import("../transition/transition-service").TransitionService;
-    _deferred: any;
+    _deferred: import("../../core/q/q").Deferred<any>;
     /**
      * This promise is resolved or rejected based on the outcome of the Transition.
      *
      * When the transition is successful, the promise is resolved
      * When the transition is unsuccessful, the promise is rejected with the [[Rejection]] or javascript error
      */
-    promise: any;
+    promise: import("../../core/q/q").QPromise<any>;
     /** @internal Holds the hook registration functions such as those passed to Transition.onStart() */
     _registeredHooks: {};
     _hookBuilder: HookBuilder;
@@ -151,7 +151,7 @@ export class Transition {
      * @returns a [[UIInjector]]
      */
     injector(state: any, pathName?: string): {
-        native: any;
+        native: import("../../core/di/internal-injector").InjectorService;
         get(token: any): any;
         getAsync(token: any): any;
         getNative(token: any): any;
@@ -342,7 +342,7 @@ export class Transition {
      *
      * @returns a promise for a successful transition.
      */
-    run(): any;
+    run(): import("../../core/q/q").QPromise<any>;
     success: boolean;
     _error: any;
     /**

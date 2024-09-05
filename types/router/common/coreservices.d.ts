@@ -1,4 +1,4 @@
 export namespace services {
-    let $q: any;
-    let $injector: any;
+    let $q: import("../../core/q/q").QService;
+    let $injector: import("../../core/di/internal-injector").InjectorService;
 }
