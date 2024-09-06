@@ -3,6 +3,10 @@ import { filterFilter } from "../../filters/filter";
 import { jsonFilter } from "../../filters/filters";
 import { limitToFilter } from "../../filters/limit-to";
 import { orderByFilter } from "../../filters/order-by";
+import {
+  $IncludedByStateFilter,
+  $IsStateFilter,
+} from "../../router/state-filters";
 
 $FilterProvider.$inject = ["$provide"];
 export function $FilterProvider($provide) {
@@ -38,4 +42,6 @@ export function $FilterProvider($provide) {
   register("json", jsonFilter);
   register("limitTo", limitToFilter);
   register("orderBy", orderByFilter);
+  register("isState", $IsStateFilter);
+  register("includedByState", $IncludedByStateFilter);
 }

@@ -6,7 +6,7 @@ describe("router services", () => {
 
   beforeEach(() => {
     window["angular"] = new Angular();
-    let module = window["angular"].module("defaultModule", ["ng.router"]);
+    let module = window["angular"].module("defaultModule", []);
     module.config(
       (
         $urlServiceProvider,

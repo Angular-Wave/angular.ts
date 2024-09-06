@@ -117,6 +117,22 @@ import { $$AnimateCssDriverProvider } from "./animations/animate-css-driver";
 import { $$AnimateJsDriverProvider } from "./animations/animate-js-driver";
 import { ngAnimateSwapDirective } from "./animations/animate-swap";
 import { $$AnimateChildrenDirective } from "./animations/animate-children-directive";
+import { UrlConfigProvider } from "./router/url/url-config";
+import { UIRouterGlobals } from "./router/globals";
+import { ViewService } from "./router/view/view";
+import { TransitionService } from "./router/transition/transition-service";
+import { StateService } from "./router/state/state-service";
+import { $ViewScrollProvider } from "./router/view-scroll";
+import { TemplateFactory } from "./router/template-factory";
+import { UrlService } from "./router/url/url-service";
+import { StateRegistry } from "./router/state/state-registry";
+import { trace } from "./router/common/trace";
+import {
+  $StateRefActiveDirective,
+  $StateRefDirective,
+  $StateRefDynamicDirective,
+} from "./router/directives/state-directives";
+import { $ViewDirectiveFill, ngView } from "./router/directives/view-directive";
 
 /**
  * @type {string} `version` from `package.json`, injected by Rollup plugin
@@ -207,6 +223,14 @@ export function publishExternalAPI(angular) {
               ngReadonly: ngReadonlyAriaDirective,
               ngRequired: ngRequiredAriaDirective,
               ngValue: ngValueAriaDirective,
+              ngSref: $StateRefDirective,
+              ngSrefActive: $StateRefActiveDirective,
+              ngSrefActiveEq: $StateRefActiveDirective,
+              ngState: $StateRefDynamicDirective,
+              ngView: ngView,
+            })
+            .directive({
+              ngView: $ViewDirectiveFill,
             })
             .directive(ngAttributeAliasDirectives)
             .directive(ngEventDirectives);
@@ -240,6 +264,7 @@ export function publishExternalAPI(angular) {
             $parse: $ParseProvider,
             $$rAFScheduler: RafSchedulerProvider,
             $rootScope: $RootScopeProvider,
+            $routerGlobals: UIRouterGlobals,
             $q: $QProvider,
             $$q: $$QProvider,
             $sce: $SceProvider,
@@ -248,10 +273,25 @@ export function publishExternalAPI(angular) {
             $templateCache: TemplateCacheProvider,
             $templateRequest: TemplateRequestProvider,
             $timeout: $TimeoutProvider,
+            $urlConfig: UrlConfigProvider,
+            $view: ViewService,
+            $transitions: TransitionService,
+            $state: StateService,
+            $ngViewScroll: $ViewScrollProvider,
+            $templateFactory: TemplateFactory,
+            $urlService: UrlService,
+            $stateRegistry: StateRegistry,
           });
         },
       ],
     )
+    .factory("$stateParams", [
+      "$routerGlobals",
+      function (globals) {
+        return globals.params;
+      },
+    ])
+    .value("$trace", trace)
     .info({ version: VERSION });
 
   initRouter(angular);

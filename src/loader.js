@@ -1,17 +1,18 @@
 import {
   minErr,
-  forEach,
   getNgAttribute,
   ngAttrPrefixes,
   assertNotHasOwnProperty,
   errorHandlingConfig,
 } from "./shared/utils";
 import { JQLite } from "./shared/jqlite/jqlite";
-import { createInjector } from "./core/di/injector";
+import { annotate, createInjector } from "./core/di/injector";
 import { NgModule } from "./core/di/ng-module";
 import { CACHE } from "./core/cache/cache";
 import { publishExternalAPI } from "./public";
 import { VERSION } from "./public";
+import { services } from "./router/common/coreservices";
+import { unnestR } from "./shared/common";
 
 const ngMinErr = minErr("ng");
 const $injectorMinErr = minErr("$injector");
@@ -149,6 +150,32 @@ export class Angular {
           el.data("$injector", $injector);
           compile(el)(scope);
         });
+        services.$injector = $injector;
+        services.$q = $injector.get("$q");
+        // https://github.com/angular-ui/ui-router/issues/3678
+        if (!Object.prototype.hasOwnProperty.call($injector, "strictDi")) {
+          try {
+            $injector.invoke(() => {});
+          } catch (error) {
+            $injector.strictDi = !!/strict mode/.exec(
+              error && error.toString(),
+            );
+          }
+        }
+
+        $injector
+          .get("$stateRegistry")
+          .get()
+          .map((x) => x.$$state().resolvables)
+          .reduce(unnestR, [])
+          .filter((x) => x.deps === "deferred")
+          .forEach(
+            (resolvable) =>
+              (resolvable.deps = annotate(
+                resolvable.resolveFn,
+                $injector.strictDi,
+              )),
+          );
       },
     ]);
     return injector;
@@ -165,7 +192,7 @@ export class Angular {
   }
 
   resumeBootstrap(extraModules) {
-    forEach(extraModules, (module) => {
+    extraModules.forEach((module) => {
       this.bootsrappedModules.push(module);
     });
     return this.doBootstrap();
