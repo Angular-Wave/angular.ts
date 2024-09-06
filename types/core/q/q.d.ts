@@ -19,7 +19,6 @@ export function markQExceptionHandled(q: any): void;
  * @property {any} result
  * @property {function(any):any} onFulfilled
  * @property {function(any):any} onRejected
- * @property {function(any):any} progressBack
  */
 /**
  * @template T
@@ -75,7 +74,6 @@ export type PromiseResolvables = {
     result: any;
     onFulfilled: (arg0: any) => any;
     onRejected: (arg0: any) => any;
-    progressBack: (arg0: any) => any;
 };
 export type QPromise<T> = {
     /**

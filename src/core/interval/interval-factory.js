@@ -40,7 +40,8 @@ export function $$IntervalFactoryProvider() {
             } else {
               $rootScope.$evalAsync(callback);
             }
-            deferred.notify(iteration++);
+
+            iteration++;
 
             if (count > 0 && iteration >= count) {
               deferred.resolve(iteration);

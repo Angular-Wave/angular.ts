@@ -155,7 +155,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
       directive.require || (directive.controller && directive.name);
 
     if (!Array.isArray(require) && isObject(require)) {
-      forEach(require, (value, key) => {
+      Object.entries(require).forEach(([key, value]) => {
         const match = value.match(REQUIRE_PREFIX_REGEXP);
         const name = value.substring(match[0].length);
         if (!name) require[key] = match[0] + key;
@@ -207,7 +207,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
            */
           function ($injector, $exceptionHandler) {
             const directives = [];
-            forEach(hasDirectives[name], (directiveFactory, index) => {
+            hasDirectives[name].forEach((directiveFactory, index) => {
               try {
                 let directive = $injector.invoke(directiveFactory);
                 if (isFunction(directive)) {
@@ -323,7 +323,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
       };
 
       // Copy annotations (starting with $) over to the DDO
-      forEach(options, (val, key) => {
+      Object.entries(options).forEach(([key, val]) => {
         if (key.charAt(0) === "$") ddo[key] = val;
       });
 
@@ -461,7 +461,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    */
   (function registerNativePropertyContexts() {
     function registerContext(ctx, values) {
-      forEach(values, (v) => {
+      values.forEach((v) => {
         PROP_CONTEXTS[v.toLowerCase()] = ctx;
       });
     }
@@ -1257,7 +1257,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
           childLinkFn,
           scope,
           linkNode,
-          $rootElement,
+          _,
           boundTranscludeFn,
         ) {
           let i;

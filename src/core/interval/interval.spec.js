@@ -141,9 +141,7 @@ describe("$interval", () => {
 
     await wait(5);
     expect(log[0]).toEqual("tick");
-    expect(log[1]).toEqual("promise update: 0");
-    expect(log[2]).toEqual("tick");
-    expect(log[3]).toEqual("promise update: 1");
+    expect(log[1]).toEqual("tick");
   });
 
   it("should return a promise which will be resolved after the specified number of iterations", async () => {
@@ -163,19 +161,10 @@ describe("$interval", () => {
       (err) => {
         log.push(`promise error: ${err}`);
       },
-      (note) => {
-        log.push(`promise update: ${note}`);
-      },
     );
     expect(log).toEqual([]);
     await wait(15);
-    expect(log).toEqual([
-      "tick",
-      "promise update: 0",
-      "tick",
-      "promise update: 1",
-      "promise success: 2",
-    ]);
+    expect(log).toEqual(["tick", "tick", "promise success: 2"]);
   });
 
   describe("exception handling", () => {
@@ -203,29 +192,6 @@ describe("$interval", () => {
         expect(applySpy).toHaveBeenCalled();
         done();
       }, 11);
-    });
-
-    it("should still update the interval promise when an exception is thrown", (done) => {
-      const promise = $interval(() => {
-        errors = [];
-        throw "Some Error";
-      }, 102);
-
-      promise.then(
-        (value) => {
-          errors.push(`promise success: ${value}`);
-        },
-        (err) => {
-          errors.push(`promise error: ${err}`);
-        },
-        (note) => {
-          errors.push(`promise update: ${note}`);
-        },
-      );
-      setTimeout(() => {
-        expect(errors[1]).toEqual("promise update: 0");
-        done();
-      }, 102);
     });
   });
 
@@ -261,9 +227,6 @@ describe("$interval", () => {
         (err) => {
           log.push(`promise error: ${err}`);
         },
-        (note) => {
-          log.push(`promise update: ${note}`);
-        },
       );
       expect(log).toEqual([]);
 
@@ -275,7 +238,7 @@ describe("$interval", () => {
         $rootScope.$apply(); // For resolving the promise -
         // necessary since q uses $rootScope.evalAsync.
 
-        expect(log).toEqual(["promise update: 0", "promise error: canceled"]);
+        expect(log).toEqual(["promise error: canceled"]);
         done();
       }, 2);
     });

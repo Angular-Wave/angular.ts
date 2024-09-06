@@ -68,24 +68,6 @@
 
   ```
 
-- // for the purpose of this example let's assume that variables `$q` and `okToGreet`
-- // are available in the current lexical scope (they could have been injected or passed in).
--
-- function asyncGreet(name) {
--     let deferred = $q.defer();
--
--     setTimeout(function() {
--       deferred.notify('About to greet ' + name + '.');
--
--       if (okToGreet(name)) {
--         deferred.resolve('Hello, ' + name + '!');
--       } else {
--         deferred.reject('Greeting ' + name + ' is not allowed.');
--       }
--     }, 1000);
--
--     return deferred.promise;
-- }
 -
 - let promise = asyncGreet('Robin Hood');
 - promise.then(function(greeting) {

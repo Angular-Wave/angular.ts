@@ -1,5 +1,4 @@
 import {
-  forEach,
   minErr,
   isUndefined,
   isFunction,
@@ -32,7 +31,6 @@ import {
  * @property {any} result
  * @property {function(any):any} onFulfilled
  * @property {function(any):any} onRejected
- * @property {function(any):any} progressBack
  */
 
 /**
@@ -150,7 +148,6 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
       this.promise = new QPromise();
       this.resolve = (val) => resolvePromise(this.promise, val);
       this.reject = (reason) => rejectPromise(this.promise, reason);
-      this.notify = (progress) => notifyPromise(this.promise, progress);
     }
   }
 
@@ -169,15 +166,10 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
      * Calls one of the success or error callbacks asynchronously as soon as the result is available.
      * @param {*} onFulfilled
      * @param {*} onRejected
-     * @param {*} progressBack
      * @returns
      */
-    then(onFulfilled, onRejected, progressBack) {
-      if (
-        isUndefined(onFulfilled) &&
-        isUndefined(onRejected) &&
-        isUndefined(progressBack)
-      ) {
+    then(onFulfilled, onRejected) {
+      if (isUndefined(onFulfilled) && isUndefined(onRejected)) {
         return this;
       }
       const result = new QPromise();
@@ -187,7 +179,6 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
         result: result,
         onFulfilled: onFulfilled,
         onRejected: onRejected,
-        progressBack: progressBack,
       });
       if (this.$$state.status > 0) scheduleProcessQueue(this.$$state);
 
@@ -198,11 +189,10 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
       return this.then(null, callback);
     }
 
-    finally(callback, progressBack) {
+    finally(callback) {
       return this.then(
         (value) => handleCallback(value, resolve, callback),
         (error) => handleCallback(error, reject, callback),
-        progressBack,
       );
     }
   }
@@ -281,6 +271,11 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
     });
   }
 
+  /**
+   * @param {QPromise} promise
+   * @param {*} val
+   * @returns
+   */
   function resolvePromise(promise, val) {
     if (promise.$$state.status) return;
     if (val === promise) {
@@ -297,6 +292,11 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
     }
   }
 
+  /**
+   *
+   * @param {QPromise} promise
+   * @param {*} val
+   */
   function $$resolve(promise, val) {
     let then;
     let done = false;
@@ -304,7 +304,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
       if (isObject(val) || isFunction(val)) then = val.then;
       if (isFunction(then)) {
         promise.$$state.status = -1;
-        then.call(val, doResolve, doReject, doNotify);
+        then.call(val, doResolve, doReject);
       } else {
         promise.$$state.value = val;
         promise.$$state.status = 1;
@@ -324,48 +324,27 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
       done = true;
       $$reject(promise, val);
     }
-    function doNotify(progress) {
-      notifyPromise(promise, progress);
-    }
   }
 
+  /**
+   * @param {QPromise} promise
+   * @param {*} reason
+   * @returns
+   */
   function rejectPromise(promise, reason) {
     if (promise.$$state.status) return;
     $$reject(promise, reason);
   }
 
+  /**
+   * @param {QPromise} promise
+   * @param {*} reason
+   * @returns
+   */
   function $$reject(promise, reason) {
     promise.$$state.value = reason;
     promise.$$state.status = 2;
     scheduleProcessQueue(promise.$$state);
-  }
-
-  /**
-   *
-   * @param {QPromise} promise
-   * @param {*} progress
-   */
-  function notifyPromise(promise, progress) {
-    const callbacks = promise.$$state.pending;
-
-    if (promise.$$state.status <= 0 && callbacks && callbacks.length) {
-      nextTick(() => {
-        let callback;
-        let result;
-        for (let i = 0, ii = callbacks.length; i < ii; i++) {
-          result = callbacks[i].result;
-          callback = callbacks[i].progressBack;
-          try {
-            notifyPromise(
-              result,
-              isFunction(callback) ? callback(progress) : progress,
-            );
-          } catch (e) {
-            exceptionHandler(e);
-          }
-        }
-      });
-    }
   }
 
   /**
@@ -378,22 +357,6 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
    * a promise error callback and you want to forward the error to the promise derived from the
    * current promise, you have to "rethrow" the error by returning a rejection constructed via
    * `reject`.
-   *
-   * ```js
-   *   promiseB = promiseA.then(function(result) {
-   *     // success: do something and resolve promiseB
-   *     //          with the old or a new result
-   *     return result;
-   *   }, function(reason) {
-   *     // error: handle the error if possible and
-   *     //        resolve promiseB with newPromiseOrValue,
-   *     //        otherwise forward the rejection to promiseB
-   *     if (canHandle(reason)) {
-   *      // handle the error and recover
-   *      return newPromiseOrValue;
-   *     }
-   *     return $q.reject(reason);
-   *   });
    * ```
    *
    * @param {*} reason Constant, message, exception or an object representing the rejection reason.
@@ -426,14 +389,13 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
    * @param {*} value Value or a promise
    * @param {Function=} successCallback
    * @param {Function=} errorCallback
-   * @param {Function=} progressCallback
    * @returns {QPromise} Returns a promise of the passed value or promise
    */
 
-  function resolve(value, successCallback, errorCallback, progressCallback) {
+  function resolve(value, successCallback, errorCallback) {
     const result = new QPromise();
     resolvePromise(result, value);
-    return result.then(successCallback, errorCallback, progressCallback);
+    return result.then(successCallback, errorCallback);
   }
 
   /**
@@ -452,7 +414,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
     let counter = 0;
     const results = Array.isArray(promises) ? [] : {};
 
-    forEach(promises, (promise, key) => {
+    Object.entries(promises).forEach(([key, promise]) => {
       counter++;
       resolve(promise).then(
         (value) => {
