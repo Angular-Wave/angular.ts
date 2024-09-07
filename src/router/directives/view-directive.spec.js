@@ -137,7 +137,7 @@ describe("ngView", () => {
     window.angular = new Angular();
     log = "";
     app = window.angular
-      .module("defaultModule", ["ng.router"])
+      .module("defaultModule", [])
       .config(($provide, _$stateProvider_) => {
         $provide.decorator("$ngViewScroll", () => {
           return jasmine.createSpy("$ngViewScroll");
@@ -847,7 +847,7 @@ describe("UiView", () => {
     window.angular = new Angular();
     log = "";
     app = window.angular
-      .module("defaultModule", ["ng.router"])
+      .module("defaultModule", [])
       .config((_$stateProvider_) => {
         $stateProvider = _$stateProvider_;
         $stateProvider
@@ -925,7 +925,7 @@ describe("ngView transclusion", () => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
     window.angular
-      .module("defaultModule", ["ng.router"])
+      .module("defaultModule", [])
       .directive("scopeObserver", () => {
         return {
           restrict: "E",
@@ -989,7 +989,7 @@ describe("ngView controllers or onEnter handlers", () => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
     window.angular
-      .module("defaultModule", ["ng.router"])
+      .module("defaultModule", [])
       .config(function ($stateProvider) {
         count = 0;
         $stateProvider
@@ -1076,7 +1076,7 @@ describe("angular 1.5+ style .component()", () => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
     window.angular
-      .module("defaultModule", ["ng.router"])
+      .module("defaultModule", [])
       .directive("ng12Directive", () => {
         return {
           restrict: "E",

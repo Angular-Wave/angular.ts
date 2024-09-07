@@ -13,7 +13,7 @@ describe("router filters", function () {
   describe("isState filter", () => {
     beforeEach(() => {
       window.location.hash = "";
-      module = window.angular.module("defaultModule", ["ng.router"]);
+      module = window.angular.module("defaultModule", []);
       module.config(function ($stateProvider) {
         $stateProvider
           .state({ name: "a", url: "/" })
@@ -72,7 +72,7 @@ describe("router filters", function () {
 
   describe("includedByState filter", function () {
     beforeEach(() => {
-      module = window.angular.module("defaultModule", ["ng.router"]);
+      module = window.angular.module("defaultModule", []);
       module.config(function ($stateProvider) {
         $stateProvider
           .state({ name: "a", url: "/" })

@@ -92,7 +92,6 @@ import {
   ngMessagesDirective,
   ngMessagesIncludeDirective,
 } from "./directive/messages/messages";
-import { initRouter } from "./router/index";
 import {
   AriaProvider,
   ngCheckedAriaDirective,
@@ -294,6 +293,5 @@ export function publishExternalAPI(angular) {
     .value("$trace", trace)
     .info({ version: VERSION });
 
-  initRouter(angular);
   return ng;
 }

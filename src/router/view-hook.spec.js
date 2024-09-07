@@ -23,7 +23,7 @@ describe("view hooks", () => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
     app = window.angular
-      .module("defaultModule", ["ng.router"])
+      .module("defaultModule", [])
       .config(($stateProvider) => {
         $stateProvider.state({ name: "foo", url: "/foo", component: "foo" });
         $stateProvider.state({ name: "bar", url: "/bar", component: "bar" });

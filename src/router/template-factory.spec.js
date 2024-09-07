@@ -15,7 +15,7 @@ describe("templateFactory", () => {
   beforeEach(() => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
-    window.angular.module("defaultModule", ["ng.router"]);
+    window.angular.module("defaultModule", []);
     $injector = window.angular.bootstrap(document.getElementById("dummy"), [
       "defaultModule",
     ]);
@@ -63,7 +63,7 @@ describe("templateFactory", () => {
   describe("templateFactory with forced use of $http service", () => {
     beforeEach(() => {
       dealoc(document.getElementById("dummy"));
-      let module = window.angular.module("defaultModule", ["ng.router"]);
+      let module = window.angular.module("defaultModule", []);
       module.config(function ($templateFactoryProvider) {
         $templateFactoryProvider.useHttpService(true);
       });
@@ -96,7 +96,7 @@ describe("templateFactory", () => {
 
     beforeEach(() => {
       dealoc(document.getElementById("dummy"));
-      const mod = angular.module("defaultModule", ["ng.router"]);
+      const mod = angular.module("defaultModule", []);
       mod.component("myComponent", { template: "hi" });
       mod.component("dataComponent", { template: "hi" });
       mod.component("xComponent", { template: "hi" });

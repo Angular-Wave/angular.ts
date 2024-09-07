@@ -105,6 +105,7 @@ export class UrlService {
       $rootScope.$on("$locationChangeSuccess", (evt) =>
         this._urlListeners.forEach((fn) => fn(evt)),
       );
+      this.listen();
       return this;
     },
   ];

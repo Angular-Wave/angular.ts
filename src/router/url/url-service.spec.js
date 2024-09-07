@@ -11,7 +11,7 @@ describe("UrlMatcher", () => {
   beforeEach(() => {
     dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
-    window.angular.module("defaultModule", ["ng.router"]);
+    window.angular.module("defaultModule", []);
     $injector = window.angular.bootstrap(document.getElementById("dummy"), [
       "defaultModule",
     ]);

@@ -9,7 +9,7 @@ describe("ngView", () => {
     beforeEach(() => {
       dealoc(document.getElementById("dummy"));
       window.angular = new Angular();
-      window.angular.module("defaultModule", ["ng.router"]);
+      window.angular.module("defaultModule", []);
       let $injector = window.angular.bootstrap(
         document.getElementById("dummy"),
         ["defaultModule"],
@@ -46,7 +46,7 @@ describe("ngView", () => {
     beforeEach(() => {
       dealoc(document.getElementById("dummy"));
       window.angular = new Angular();
-      let module = window.angular.module("defaultModule", ["ng.router"]);
+      let module = window.angular.module("defaultModule", []);
       module.config(($provide, $ngViewScrollProvider) => {
         $provide.decorator("$anchorScroll", function ($delegate) {
           return jasmine.createSpy("$anchorScroll");

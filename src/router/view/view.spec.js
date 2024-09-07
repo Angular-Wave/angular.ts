@@ -28,7 +28,7 @@ describe("view", () => {
     window.angular = new Angular();
 
     window.angular
-      .module("defaultModule", ["ng.router"])
+      .module("defaultModule", [])
       .config(
         function (_$provide_, _$controllerProvider_, _$urlServiceProvider_) {
           _$provide_.factory("foo", () => {

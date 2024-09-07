@@ -150,6 +150,7 @@ export class Angular {
           el.data("$injector", $injector);
           compile(el)(scope);
         });
+        // ng-route deps
         services.$injector = $injector;
         services.$q = $injector.get("$q");
         // https://github.com/angular-ui/ui-router/issues/3678

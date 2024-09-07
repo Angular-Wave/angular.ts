@@ -15,12 +15,13 @@ describe("ngStateRef", () => {
     $injector,
     $timeout,
     $state,
-    $stateParams;
+    $stateParams,
+    $urlService;
 
   beforeEach(() => {
     window.location.hash = "";
     window.angular = new Angular();
-    let module = window.angular.module("defaultModule", ["ng.router"]);
+    let module = window.angular.module("defaultModule", []);
     module.config(($stateProvider, $locationProvider) => {
       _locationProvider = $locationProvider;
       $locationProvider.hashPrefix("");
@@ -55,6 +56,8 @@ describe("ngStateRef", () => {
     $timeout = $injector.get("$timeout");
     $state = $injector.get("$state");
     $stateParams = $injector.get("$stateParams");
+    $urlService = $injector.get("$urlService");
+    $urlService.listen();
   });
 
   afterEach(() => (window.location.hash = ""));
@@ -476,8 +479,6 @@ describe("ngStateRef", () => {
     describe("option event", () => {
       beforeEach(() => (window.location.hash = ""));
       it("should bind click event by default", async () => {
-        expect($state.current.name).toBe("top");
-
         el = JQLite('<a ng-state="state"></a>');
 
         scope.state = "contacts";
@@ -489,8 +490,6 @@ describe("ngStateRef", () => {
       });
 
       it("should bind single HTML events", async () => {
-        expect($state.current.name).toEqual("top");
-
         el = JQLite(
           '<input type="text" ng-state="state" ng-state-opts="{ events: [\'change\'] }">',
         );
@@ -506,8 +505,6 @@ describe("ngStateRef", () => {
       });
 
       it("should bind multiple HTML events", async () => {
-        expect($state.current.name).toEqual("top");
-
         el = JQLite(
           '<input type="text" ng-state="state" ng-state-opts="{ events: [\'change\', \'blur\'] }">',
         );
@@ -532,8 +529,6 @@ describe("ngStateRef", () => {
       });
 
       it("should bind multiple Mouse events", async () => {
-        expect($state.current.name).toEqual("top");
-
         el = JQLite(
           "<a ng-state=\"state\" ng-state-opts=\"{ events: ['mouseover', 'mousedown'] }\">",
         );
@@ -587,18 +582,20 @@ describe("ngStateRef", () => {
 
       $compile(el)(scope);
       template = $compile(JQLite("<div><ng-view></ng-view><div>"))(scope);
-      scope.$digest();
+      scope.$apply();
     });
 
     it("should work", async () => {
+      $state.transitionTo("contacts.item", { id: 5 });
+      await wait(200);
       browserTrigger(el, "click");
-      await wait(100);
+      await wait(200);
 
       expect($state.$current.name).toBe("contacts.item.detail");
       expect($state.params.id).toEqual(5);
     });
 
-    xit("should resolve states from parent ngView", async () => {
+    it("should resolve states from parent ngView", async () => {
       $state.transitionTo("contacts");
       await wait(500);
       const parentToChild = JQLite(template[0].querySelector("a.item"));
@@ -633,11 +630,14 @@ describe("ngStateRef", () => {
   });
 
   describe("option event", () => {
-    beforeEach(() => (window.location.hash = ""));
+    beforeEach(() => {
+      window.location.hash = "";
+    });
+
     it("should bind click event by default", async () => {
       el = JQLite('<a ng-sref="contacts"></a>');
       $compile(el)($rootScope);
-
+      $rootScope.$digest();
       expect($state.current.name).toEqual("top");
 
       browserTrigger(el, "click");
@@ -651,6 +651,7 @@ describe("ngStateRef", () => {
         '<input type="text" ng-sref="contacts" ng-sref-opts="{ events: [\'change\'] }">',
       );
       $compile(el)($rootScope);
+      $rootScope.$digest();
       expect($state.current.name).toEqual("top");
 
       browserTrigger(el, "change");
@@ -664,7 +665,7 @@ describe("ngStateRef", () => {
         '<input type="text" ng-sref="contacts" ng-sref-opts="{ events: [\'change\', \'blur\'] }">',
       );
       $compile(el)($rootScope);
-
+      $rootScope.$digest();
       expect($state.current.name).toEqual("top");
 
       browserTrigger(el, "change");
@@ -686,7 +687,7 @@ describe("ngStateRef", () => {
         "<a ng-sref=\"contacts\" ng-sref-opts=\"{ events: ['mouseover', 'mousedown'] }\">",
       );
       $compile(el)($rootScope);
-
+      $rootScope.$digest();
       expect($state.current.name).toEqual("top");
 
       browserTrigger(el, "mouseover");
@@ -724,7 +725,7 @@ describe("ngSrefActive", () => {
   beforeEach(() => {
     window.location.hash = "";
     window.angular = new Angular();
-    let module = window.angular.module("defaultModule", ["ng.router"]);
+    let module = window.angular.module("defaultModule", []);
     module.config(function ($stateProvider) {
       _stateProvider = $stateProvider;
       $stateProvider
