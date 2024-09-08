@@ -120,9 +120,6 @@ export const is = (ctor) => (obj) =>
 export const eq = (value) => (other) => value === other;
 /** Given a value, returns a function which returns the value */
 export const val = (v) => () => v;
-export function invoke(fnName, args) {
-  return (obj) => obj[fnName].apply(obj, args);
-}
 /**
  * Sorta like Pattern Matching (a functional programming conditional construct)
  *
