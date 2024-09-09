@@ -1,5 +1,5 @@
 import { isDate, isFunction, isRegExp, isString } from "./utils";
-import { all, any, prop, curry } from "./hof";
+import { all, prop, curry } from "./hof";
 import { services } from "../router/common/coreservices";
 
 export function forEach(obj, cb, thisArg) {
@@ -19,9 +19,9 @@ export function equals(o1, o2) {
   if (all(isDate)(tup)) return o1.getTime() === o2.getTime();
   if (all(isRegExp)(tup)) return o1.toString() === o2.toString();
   if (all(isFunction)(tup)) return true; // meh
-  const predicates = [isFunction, Array.isArray, isDate, isRegExp];
-  if (predicates.map(any).reduce((b, fn) => b || !!fn(tup), false))
+  if ([isFunction, Array.isArray, isDate, isRegExp].some((fn) => !!fn(tup))) {
     return false;
+  }
   const keys = {};
 
   for (const key in o1) {

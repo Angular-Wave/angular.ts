@@ -112,7 +112,6 @@ export function or(fn1, fn2) {
  * @returns a function which takes an array and returns true if `fn1` is true for all elements of the array
  */
 export const all = (fn1) => (arr) => arr.reduce((b, x) => b && !!fn1(x), true);
-export const any = (fn1) => (arr) => arr.reduce((b, x) => b || !!fn1(x), false);
 /** Given a class, returns a Predicate function that returns true if the object is of that class */
 export const is = (ctor) => (obj) =>
   (obj != null && obj.constructor === ctor) || obj instanceof ctor;

@@ -59,7 +59,6 @@ export function pipe(...args: any[]): any;
  * if at least one of the functions returns truthy for the given arguments
  */
 export function or(fn1: any, fn2: any): (...args: any[]) => any;
-export function invoke(fnName: any, args: any): (obj: any) => any;
 /**
  * Sorta like Pattern Matching (a functional programming conditional construct)
  *
@@ -112,7 +111,6 @@ export function prop(name: any): (obj: any) => any;
 export const propEq: any;
 export function parse(name: any): any;
 export function all(fn1: any): (arr: any) => any;
-export function any(fn1: any): (arr: any) => any;
 export function is(ctor: any): (obj: any) => boolean;
 export function eq(value: any): (other: any) => boolean;
 export function val(v: any): () => any;
