@@ -2,7 +2,7 @@ import { TransitionHookPhase } from "./interface";
 import { defaults, silentRejection } from "../../shared/common";
 import { fnToString, maxLength } from "../../shared/strings";
 import { isPromise } from "../../shared/predicates";
-import { is, parse } from "../../shared/hof";
+import { parse } from "../../shared/hof";
 import { trace } from "../common/trace";
 import { services } from "../common/coreservices";
 import { Rejection } from "./reject-factory";
@@ -134,9 +134,9 @@ export class TransitionHook {
       // Abort this Transition
       return Rejection.aborted("Hook aborted transition").toPromise();
     }
-    const isTargetState = is(TargetState);
+
     // hook returned a TargetState
-    if (isTargetState(result)) {
+    if (result instanceof TargetState) {
       // Halt the current Transition and redirect (a new Transition) to the TargetState.
       return Rejection.redirected(result).toPromise();
     }

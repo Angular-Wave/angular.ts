@@ -48,6 +48,7 @@ export class Resolvable {
       this.data = arg1.data;
     }
   }
+
   getPolicy(state) {
     const thisPolicy = this.policy || {};
     const statePolicy = (state && state.resolvePolicy) || {};
@@ -57,6 +58,7 @@ export class Resolvable {
         thisPolicy.async || statePolicy.async || defaultResolvePolicy.async,
     };
   }
+
   /**
    * Asynchronously resolve this Resolvable's data
    *
@@ -105,9 +107,11 @@ export class Resolvable {
   get(resolveContext, trans) {
     return this.promise || this.resolve(resolveContext, trans);
   }
+
   toString() {
     return `Resolvable(token: ${stringify(this.token)}, requires: [${this.deps.map(stringify)}])`;
   }
+
   clone() {
     return new Resolvable(this);
   }

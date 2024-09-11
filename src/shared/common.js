@@ -230,6 +230,7 @@ export function filter(collection, callback) {
   });
   return result;
 }
+
 /** Finds an object from an array, or a property of an object, that matches a predicate */
 export function find(collection, callback) {
   let result;
@@ -239,8 +240,7 @@ export function find(collection, callback) {
   });
   return result;
 }
-/** Given an object, returns a new object, where each property is transformed by the callback function */
-export let mapObj = map;
+
 /** Maps an array or object properties using a callback function */
 export function map(collection, callback, target) {
   target = target || (Array.isArray(collection) ? [] : {});

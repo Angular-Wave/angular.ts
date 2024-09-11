@@ -1,10 +1,10 @@
 import {
   applyPairs,
   inherit,
-  mapObj,
   omit,
   tail,
   copy,
+  map,
 } from "../../shared/common";
 import { isDefined, isFunction, isString } from "../../shared/utils";
 import { stringify } from "../../shared/strings";
@@ -12,24 +12,27 @@ import { is, pattern, pipe, prop, val } from "../../shared/hof";
 import { Resolvable } from "../resolve/resolvable";
 import { services } from "../common/coreservices";
 import { annotate } from "../../core/di/injector";
-const parseUrl = (url) => {
+
+function parseUrl(url) {
   if (!isString(url)) return false;
   const root = url.charAt(0) === "^";
   return { val: root ? url.substring(1) : url, root };
-};
+}
 
 function selfBuilder(state) {
   state.self.$$state = () => state;
   return state.self;
 }
+
 function dataBuilder(state) {
   if (state.parent && state.parent.data) {
     state.data = state.self.data = inherit(state.parent.data, state.data);
   }
   return state.data;
 }
-const getUrlBuilder = ($urlService, root) =>
-  function urlBuilder(stateObject) {
+
+function getUrlBuilder($urlService, root) {
+  return function (stateObject) {
     let stateDec = stateObject.self;
     // For future states, i.e., states whose name ends with `.**`,
     // match anything that starts with the url prefix
@@ -56,31 +59,34 @@ const getUrlBuilder = ($urlService, root) =>
       ? url
       : ((parent && parent.navigable) || root()).url.append(url);
   };
-const getNavigableBuilder = (isRoot) =>
-  function navigableBuilder(state) {
+}
+
+function getNavigableBuilder(isRoot) {
+  return function (state) {
     return !isRoot(state) && state.url
       ? state
       : state.parent
         ? state.parent.navigable
         : null;
   };
-const getParamsBuilder = (paramFactory) =>
-  function paramsBuilder(state) {
+}
+
+function getParamsBuilder(paramFactory) {
+  return function (state) {
     const makeConfigParam = (config, id) =>
       paramFactory.fromConfig(id, null, state.self);
     const urlParams =
       (state.url && state.url.parameters({ inherit: false })) || [];
     const nonUrlParams = Object.values(
-      mapObj(
-        omit(state.params || {}, urlParams.map(prop("id"))),
-        makeConfigParam,
-      ),
+      map(omit(state.params || {}, urlParams.map(prop("id"))), makeConfigParam),
     );
     return urlParams
       .concat(nonUrlParams)
       .map((p) => [p.id, p])
       .reduce(applyPairs, {});
   };
+}
+
 function pathBuilder(state) {
   if (state.parent && !state.abstract) {
     return state.parent.path.concat(state);
@@ -88,11 +94,13 @@ function pathBuilder(state) {
     return [state];
   }
 }
+
 function includesBuilder(state) {
   const includes = state.parent ? Object.assign({}, state.parent.includes) : {};
   includes[state.name] = true;
   return includes;
 }
+
 /**
  * This is a [[StateBuilder.builder]] function for the `resolve:` block on a [[StateDeclaration]].
  *
@@ -157,12 +165,6 @@ export function resolvablesBuilder(state) {
   };
   /** true if the object has both `token` and `resolveFn`, and is probably a [[ResolveLiteral]] */
   const isResolveLiteral = (obj) => !!(obj.token && obj.resolveFn);
-  /** true if the object looks like a provide literal, or a ng2 Provider */
-  const isLikeNg2Provider = (obj) =>
-    !!(
-      (obj.provide || obj.token) &&
-      (obj.useValue || obj.useFactory || obj.useExisting || obj.useClass)
-    );
   /** true if the object looks like a tuple from obj2Tuples */
   const isTupleFromObj = (obj) =>
     !!(
@@ -170,8 +172,7 @@ export function resolvablesBuilder(state) {
       obj.val &&
       (isString(obj.val) || Array.isArray(obj.val) || isFunction(obj.val))
     );
-  /** extracts the token from a Provider or provide literal */
-  const getToken = (p) => p.provide || p.token;
+
   // Given a literal resolve or provider object, returns a Resolvable
   const literal2Resolvable = pattern([
     [
@@ -232,7 +233,6 @@ export function resolvablesBuilder(state) {
   const item2Resolvable = pattern([
     [is(Resolvable), (r) => r],
     [isResolveLiteral, literal2Resolvable],
-    [isLikeNg2Provider, literal2Resolvable],
     [isTupleFromObj, tuple2Resolvable],
     [
       val(true),
@@ -267,7 +267,6 @@ export class StateBuilder {
     this.$injector = undefined;
     const self = this;
     const root = () => matcher.find("");
-    const isRoot = (state) => state.name === "";
     function parentBuilder(state) {
       if (isRoot(state)) return null;
       return matcher.find(self.parentName(state)) || root();
@@ -357,4 +356,13 @@ export class StateBuilder {
       : state.parent.name;
     return parentName ? parentName + "." + name : name;
   }
+}
+
+function isRoot(state) {
+  return state.name === "";
+}
+
+/** extracts the token from a Provider or provide literal */
+function getToken(p) {
+  return p.provide || p.token;
 }

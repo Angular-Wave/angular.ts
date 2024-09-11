@@ -56,11 +56,13 @@ export class ResolveContext {
       .filter((r) => r.token === token);
     return tail(matching);
   }
+
   /** Returns the [[ResolvePolicy]] for the given [[Resolvable]] */
   getPolicy(resolvable) {
     const node = this.findNode(resolvable);
     return resolvable.getPolicy(node);
   }
+
   /**
    * Returns a ResolveContext that includes a portion of this one
    *
@@ -101,7 +103,7 @@ export class ResolveContext {
    *
    * Note: each resolvable's [[ResolvePolicy]] is merged with the state's policy, and the global default.
    *
-   * @param newResolvables the new Resolvables
+   * @param {Resolvable[]} newResolvables the new Resolvables
    * @param state Used to find the node to put the resolvable on
    */
   addResolvables(newResolvables, state) {
@@ -115,9 +117,9 @@ export class ResolveContext {
   /**
    * Returns a promise for an array of resolved path Element promises
    *
-   * @param when
+   * @param {string} when
    * @param trans
-   * @returns {Promise<any>|any}
+   * @returns {import("../../core/q/q").QPromise<any>|any}
    */
   resolvePath(when = "LAZY", trans) {
     // This option determines which 'when' policy Resolvables we are about to fetch.
@@ -153,16 +155,21 @@ export class ResolveContext {
     // Wait for all the "WAIT" resolvables
     return services.$q.all(promises);
   }
+
   injector() {
     return this._injector || (this._injector = new UIInjectorImpl());
   }
+
   findNode(resolvable) {
     return find(this._path, (node) => node.resolvables.includes(resolvable));
   }
+
   /**
    * Gets the async dependencies of a Resolvable
    *
    * Given a Resolvable, returns its dependencies as a Resolvable[]
+   * @param {Resolvable} resolvable
+   * @returns {Resolvable[]}
    */
   getDependencies(resolvable) {
     const node = this.findNode(resolvable);
@@ -173,7 +180,7 @@ export class ResolveContext {
     const availableResolvables = subPath
       .reduce((acc, _node) => acc.concat(_node.resolvables), []) // all of subpath's resolvables
       .filter((res) => res !== resolvable); // filter out the `resolvable` argument
-    const getDependency = (token) => {
+    return resolvable.deps.map((token) => {
       const matching = availableResolvables.filter((r) => r.token === token);
       if (matching.length) return tail(matching);
       const fromInjector = services.$injector.get(token);
@@ -183,8 +190,7 @@ export class ResolveContext {
         );
       }
       return new Resolvable(token, () => fromInjector, [], fromInjector);
-    };
-    return resolvable.deps.map(getDependency);
+    });
   }
 }
 

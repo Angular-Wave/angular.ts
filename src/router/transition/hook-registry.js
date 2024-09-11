@@ -1,4 +1,4 @@
-import { removeFrom, tail, mapObj } from "../../shared/common";
+import { removeFrom, tail, map } from "../../shared/common";
 import { isString, isFunction } from "../../shared/utils";
 import { Glob } from "../common/glob";
 import { TransitionHookScope } from "./interface";
@@ -93,7 +93,7 @@ export class RegisteredHook {
    * }
    */
   _getDefaultMatchCriteria() {
-    return mapObj(this.tranSvc._pluginapi._getPathTypes(), () => true);
+    return map(this.tranSvc._pluginapi._getPathTypes(), () => true);
   }
   /**
    * Gets matching nodes as [[IMatchingNodes]]

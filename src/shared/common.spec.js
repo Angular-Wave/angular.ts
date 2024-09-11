@@ -1,4 +1,4 @@
-import { defaults, filter, map, mapObj, pick } from "./common";
+import { defaults, filter, map, pick } from "./common";
 import { is, eq, pattern, val } from "./hof";
 import { isInjectable } from "./predicates";
 import { Queue } from "../router/common/queue";
@@ -142,10 +142,10 @@ describe("common", function () {
     });
   });
 
-  describe("mapObj", () => {
+  describe("map", () => {
     it("should map objects", () => {
       const src = { foo: 1, bar: 2, baz: 3 };
-      const dest = mapObj(src, (x) => x * 2);
+      const dest = map(src, (x) => x * 2);
 
       expect(src).toEqual({ foo: 1, bar: 2, baz: 3 });
       expect(dest).toEqual({ foo: 2, bar: 4, baz: 6 });
@@ -153,7 +153,7 @@ describe("common", function () {
 
     it("should map objects in place when target === src", () => {
       const src = { foo: 1, bar: 2, baz: 3 };
-      const dest = mapObj(src, (x) => x * 2, src);
+      const dest = map(src, (x) => x * 2, src);
 
       expect(src).toEqual({ foo: 2, bar: 4, baz: 6 });
       expect(dest).toEqual({ foo: 2, bar: 4, baz: 6 });

@@ -68,18 +68,18 @@ export class ResolveContext {
      *
      * Note: each resolvable's [[ResolvePolicy]] is merged with the state's policy, and the global default.
      *
-     * @param newResolvables the new Resolvables
+     * @param {Resolvable[]} newResolvables the new Resolvables
      * @param state Used to find the node to put the resolvable on
      */
-    addResolvables(newResolvables: any, state: any): void;
+    addResolvables(newResolvables: Resolvable[], state: any): void;
     /**
      * Returns a promise for an array of resolved path Element promises
      *
-     * @param when
+     * @param {string} when
      * @param trans
-     * @returns {Promise<any>|any}
+     * @returns {import("../../core/q/q").QPromise<any>|any}
      */
-    resolvePath(when: string, trans: any): Promise<any> | any;
+    resolvePath(when: string, trans: any): import("../../core/q/q").QPromise<any> | any;
     injector(): UIInjectorImpl;
     _injector: UIInjectorImpl;
     findNode(resolvable: any): undefined;
@@ -87,9 +87,12 @@ export class ResolveContext {
      * Gets the async dependencies of a Resolvable
      *
      * Given a Resolvable, returns its dependencies as a Resolvable[]
+     * @param {Resolvable} resolvable
+     * @returns {Resolvable[]}
      */
-    getDependencies(resolvable: any): any;
+    getDependencies(resolvable: Resolvable): Resolvable[];
 }
+import { Resolvable } from "./resolvable";
 declare class UIInjectorImpl {
     native: import("../../core/di/internal-injector").InjectorService;
     get(token: any): any;

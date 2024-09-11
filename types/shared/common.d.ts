@@ -177,8 +177,6 @@ export const removeFrom: any;
 export const pushTo: any;
 export function deregAll(functions: any): any;
 export function mergeR(memo: any, item: any): any;
-/** Maps an array or object properties using a callback function */
-export function mapObj(collection: any, callback: any, target: any): any;
 export function allTrueR(memo: any, elem: any): any;
 export function anyTrueR(memo: any, elem: any): any;
 export function unnestR(memo: any, elem: any): any;
