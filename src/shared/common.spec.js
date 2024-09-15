@@ -1,5 +1,5 @@
 import { defaults, filter, map, pick } from "./common";
-import { is, eq, pattern, val } from "./hof";
+import { is, pattern, val } from "./hof";
 import { isInjectable } from "./predicates";
 import { Queue } from "../router/common/queue";
 
@@ -76,14 +76,12 @@ describe("common", function () {
         [is(Number), val("number!")],
         [is(String), val("string!")],
         [is(Boolean), val("boolean!")],
-        [eq(null), val("null!")],
       ]);
 
       expect(typeChecker(1)).toBe("number!");
       expect(typeChecker("foo!")).toBe("string!");
       expect(typeChecker(true)).toBe("boolean!");
       expect(typeChecker(false)).toBe("boolean!");
-      expect(typeChecker(null)).toBe("null!");
       expect(typeChecker(undefined)).toBe(undefined);
     });
   });

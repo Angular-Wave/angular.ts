@@ -115,8 +115,7 @@ export const all = (fn1) => (arr) => arr.reduce((b, x) => b && !!fn1(x), true);
 /** Given a class, returns a Predicate function that returns true if the object is of that class */
 export const is = (ctor) => (obj) =>
   (obj != null && obj.constructor === ctor) || obj instanceof ctor;
-/** Given a value, returns a Predicate function that returns true if another value is === equal to the original value */
-export const eq = (value) => (other) => value === other;
+
 /** Given a value, returns a function which returns the value */
 export const val = (v) => () => v;
 /**
