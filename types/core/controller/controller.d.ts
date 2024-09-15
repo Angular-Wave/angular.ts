@@ -6,18 +6,42 @@ export function identifierForController(controller: any, ident: any): any;
  * This provider allows controller registration via the
  * {@link ng.$controllerProvider#register register} method.
  */
-export function $ControllerProvider(): void;
 export class $ControllerProvider {
     /**
-     * @param {string} name Controller name to check.
+     * @type {Map<string, Function|Object>}
+     * @private
      */
-    has: (name: string) => any;
+    private controllers;
     /**
+     * Check if a controller with a given name exists.
+     *
+     * @param {string} name Controller name to check.
+     * @returns {boolean} True if the controller exists, false otherwise.
+     */
+    has(name: string): boolean;
+    /**
+     * Register a controller.
+     *
      * @param {string|Object} name Controller name, or an object map of controllers where the keys are
      *    the names and the values are the constructors.
-     * @param {Function|Array} constructor Controller constructor fn (optionally decorated with DI
+     * @param {Function|Array} constructor Controller constructor function (optionally decorated with DI
      *    annotations in the array notation).
      */
-    register: (name: string | any, constructor: Function | any[]) => void;
-    $get: (string | (($injector: import("../../core/di/internal-injector").InjectorService) => (expression: Function | string, locals: any, later: any, ident: any) => any))[];
+    register(name: string | any, constructor: Function | any[]): void;
+    /**
+     * $get method for dependency injection.
+     *
+     * @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @returns {Function} A service function that creates controllers.
+     */
+    $get: (string | (($injector: any) => (expression: any, locals: any, later: any, ident: any) => any))[];
+    /**
+     * Adds an identifier to the controller instance in the given locals' scope.
+     *
+     * @param {Object} locals The locals object containing the scope.
+     * @param {string} identifier The identifier to assign.
+     * @param {Object} instance The controller instance.
+     * @param {string} name The name of the controller.
+     */
+    addIdentifier(locals: any, identifier: string, instance: any, name: string): void;
 }

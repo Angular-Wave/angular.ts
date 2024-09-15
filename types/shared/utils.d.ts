@@ -368,14 +368,6 @@ export function csp(): any;
  * @param  {String} context the context in which the name is used, such as module or directive
  */
 export function assertNotHasOwnProperty(name: string, context: string): void;
-/**
- * Return the value accessible from the object by path. Any undefined traversals are ignored
- * @param {Object} obj starting object
- * @param {String} path path to traverse
- * @param {boolean} [bindFnToScope=true]
- * @returns {Object} value as accessible by path
- */
-export function getter(obj: any, path: string, bindFnToScope?: boolean): any;
 export function stringify(value: any): any;
 /**
  * @param {Number} maxDepth

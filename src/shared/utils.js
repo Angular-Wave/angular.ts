@@ -734,33 +734,6 @@ export function assertNotHasOwnProperty(name, context) {
   }
 }
 
-/**
- * Return the value accessible from the object by path. Any undefined traversals are ignored
- * @param {Object} obj starting object
- * @param {String} path path to traverse
- * @param {boolean} [bindFnToScope=true]
- * @returns {Object} value as accessible by path
- */
-// TODO(misko): this function needs to be removed
-export function getter(obj, path, bindFnToScope) {
-  if (!path) return obj;
-  const keys = path.split(".");
-  let key;
-  let lastInstance = obj;
-  const len = keys.length;
-
-  for (let i = 0; i < len; i++) {
-    key = keys[i];
-    if (obj) {
-      obj = (lastInstance = obj)[key];
-    }
-  }
-  if (!bindFnToScope && isFunction(obj)) {
-    return bind(lastInstance, obj);
-  }
-  return obj;
-}
-
 export function stringify(value) {
   if (value == null) {
     // null || undefined
