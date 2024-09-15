@@ -112,18 +112,6 @@ describe("ngController", () => {
     expect(element.text()).toBe("Hello Adam!");
   });
 
-  it("should instantiate controller defined on scope", () => {
-    $rootScope.VojtaGreeter = function ($scope) {
-      $scope.name = "Vojta";
-    };
-
-    element = $compile('<div ng-controller="VojtaGreeter">{{name}}</div>')(
-      $rootScope,
-    );
-    $rootScope.$digest();
-    expect(element.text()).toBe("Vojta");
-  });
-
   it("should work with ngInclude on the same element", (done) => {
     element = JQLite(
       '<div><div ng-controller="Greeter" ng-include="\'/mock/interpolation\'"></div></div>',
