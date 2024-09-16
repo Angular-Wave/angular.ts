@@ -1,6 +1,6 @@
 /**
- * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
- * and execution of chain functions.
+ * JQLite is both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
+ * and execution of chains of functions.
  *
  * @param {string|Node|Node[]|NodeList|JQLite|ArrayLike<Element>|(() => void)|Window} element
  * @returns {JQLite}
@@ -8,8 +8,8 @@
 export function JQLite(element: string | Node | Node[] | NodeList | JQLite | ArrayLike<Element> | (() => void) | Window): JQLite;
 export class JQLite {
     /**
-     * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
-     * and execution of chain functions.
+     * JQLite is both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
+     * and execution of chains of functions.
      *
      * @param {string|Node|Node[]|NodeList|JQLite|ArrayLike<Element>|(() => void)|Window} element
      * @returns {JQLite}

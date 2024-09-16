@@ -30,7 +30,7 @@ class AbstractInjector {
   /**
    * Get a service by name.
    *
-   * @param {String} serviceName
+   * @param {string} serviceName
    * @returns {any}
    */
   get(serviceName) {
@@ -63,7 +63,7 @@ class AbstractInjector {
    *
    * @param {Function|Array} fn
    * @param {Object} locals
-   * @param {String} serviceName
+   * @param {string} serviceName
    * @returns
    */
   injectionArgs(fn, locals, serviceName) {
@@ -94,7 +94,7 @@ class AbstractInjector {
    * @param {Function|String|Array<any>} fn
    * @param {*} [self]
    * @param {Object} [locals]
-   * @param {String} [serviceName]
+   * @param {string} [serviceName]
    * @returns
    */
   invoke(fn, self, locals, serviceName) {
@@ -112,7 +112,7 @@ class AbstractInjector {
       fn = fn[fn.length - 1];
     }
 
-    if (isClass(/** @type {String} */ (fn))) {
+    if (isClass(/** @type {string} */ (fn))) {
       args.unshift(null);
       return new (Function.prototype.bind.apply(fn, args))();
     } else {
@@ -124,7 +124,7 @@ class AbstractInjector {
    * Instantiate a type constructor with optional locals.
    * @param {Function|Array} type
    * @param {*} [locals]
-   * @param {String} [serviceName]
+   * @param {string} [serviceName]
    */
   instantiate(type, locals, serviceName) {
     // Check if type is annotated and use just the given function at n-1 as parameter
@@ -143,7 +143,7 @@ class AbstractInjector {
 
   /**
    * @abstract
-   * @param {String} _serviceName
+   * @param {string} _serviceName
    */
   factory(_serviceName) {
     console.error(`Unhandled ${_serviceName}`);
@@ -166,7 +166,7 @@ export class ProviderInjector extends AbstractInjector {
 
   /**
    * Factory method for creating services.
-   * @param {String} caller - The name of the caller requesting the service.
+   * @param {string} caller - The name of the caller requesting the service.
    * @throws {Error} If the provider is unknown.
    */
   factory(caller) {
@@ -204,7 +204,7 @@ export class InjectorService extends AbstractInjector {
 
   /**
    *
-   * @param {String} name
+   * @param {string} name
    * @returns {boolean}
    */
   has(name) {
@@ -220,15 +220,15 @@ export class InjectorService extends AbstractInjector {
 // Helpers
 
 /**
- * @param {String} fn
- * @returns {String}
+ * @param {string} fn
+ * @returns {string}
  */
 function stringifyFn(fn) {
   return Function.prototype.toString.call(fn);
 }
 
 /**
- * @param {String} fn
+ * @param {string} fn
  * @returns {Array<any>}
  */
 function extractArgs(fn) {
@@ -238,7 +238,7 @@ function extractArgs(fn) {
 }
 
 /**
- * @param {String} func
+ * @param {string} func
  * @returns {boolean}
  */
 function isClass(func) {
@@ -249,7 +249,7 @@ function isClass(func) {
  *
  * @param {any} fn
  * @param {boolean} strictDi
- * @param {String} name
+ * @param {string} name
  * @returns {Array<string>}
  */
 function annotate(fn, strictDi, name) {
@@ -266,7 +266,7 @@ function annotate(fn, strictDi, name) {
             name,
           );
         }
-        argDecl = extractArgs(/** @type {String} */ (fn));
+        argDecl = extractArgs(/** @type {string} */ (fn));
         argDecl[1].split(FN_ARG_SPLIT).forEach(function (arg) {
           arg.replace(FN_ARG, function (_all, _underscore, name) {
             $inject.push(name);

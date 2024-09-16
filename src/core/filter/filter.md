@@ -97,7 +97,7 @@
 - @example
   <example name="$filter" module="filterExample">
   <file name="index.html">
-  <div ng-controller="MainCtrl">
+  <div ng-controller="MainCtrl">`
   <h3>{{ originalText }}</h3>
   <h3>{{ filteredText }}</h3>
   </div>

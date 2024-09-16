@@ -10,7 +10,7 @@ import { startingTag } from "../../shared/jqlite/jqlite";
 
 /**
  *
- * @param {String} ngRequired AngularJS expression. If it evaluates to `true`, it sets the
+ * @param {string} ngRequired AngularJS expression. If it evaluates to `true`, it sets the
  *                                `required` attribute to the element and adds the `required`
  *                                {@link ngModel.NgModelController#$validators `validator`}.
  *
@@ -170,7 +170,7 @@ export const patternDirective = [
 ];
 
 /**
- * @param {String} ngMaxlength AngularJS expression that must evaluate to a `Number` or `String`
+ * @param {string} ngMaxlength AngularJS expression that must evaluate to a `Number` or `String`
  *                                 parsable into a `Number`. Used as value for the `maxlength`
  *                                 {@link ngModel.NgModelController#$validators validator}.
  *

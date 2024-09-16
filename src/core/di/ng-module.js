@@ -25,8 +25,8 @@ export const CONTROLLER_LITERAL = "$controllerProvider";
  */
 export class NgModule {
   /**
-   * @param {String} name - Name of the module
-   * @param {Array<String>} requires - List of modules which the injector will load before the current module
+   * @param {string} name - Name of the module
+   * @param {Array<string>} requires - List of modules which the injector will load before the current module
    * @param {Function} [configFn]
    */
   constructor(name, requires, configFn) {

@@ -19,7 +19,7 @@ export function limitToFilter() {
     if (Math.abs(Number(limit)) === Infinity) {
       limit = Number(limit);
     } else {
-      limit = toInt(/** @type {String} */ (limit));
+      limit = toInt(/** @type {string} */ (limit));
     }
     if (isNumberNaN(limit)) return input;
 
@@ -29,7 +29,7 @@ export function limitToFilter() {
     begin =
       !begin || isNaN(/** @type {any} */ (begin))
         ? 0
-        : toInt(/** @type {String} */ (begin));
+        : toInt(/** @type {string} */ (begin));
     begin =
       begin < 0 ? Math.max(0, /** @type {[]} */ (input).length + begin) : begin;
 

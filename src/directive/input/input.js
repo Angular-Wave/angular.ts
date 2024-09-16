@@ -113,7 +113,7 @@ function textInputType(scope, element, attr, ctrl, $browser) {
 }
 
 function baseInputType(scope, element, attr, ctrl, $browser) {
-  const type = lowercase(element[0].type);
+  const type = element[0].type.toLowerCase();
   let composing = false;
   // In composition mode, users are still inputting intermediate text buffer,
   // hold the listener until composition is done.

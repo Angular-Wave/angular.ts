@@ -4,7 +4,6 @@ import {
   isFunction,
   isUndefined,
   isObject,
-  lowercase,
   hasCustomToString,
   equals,
 } from "../shared/utils";
@@ -95,8 +94,8 @@ function createPredicateFn(
         return false;
       }
 
-      actual = lowercase(`${actual}`);
-      expected = lowercase(`${expected}`);
+      actual = `${actual}`.toLowerCase();
+      expected = `${expected}`.toLowerCase();
       return actual.indexOf(expected) !== -1;
     };
   }

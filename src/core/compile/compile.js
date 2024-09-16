@@ -2462,8 +2462,13 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         }
       }
 
+      /**
+       * @param {string} type
+       * @param {string} template
+       * @returns
+       */
       function wrapTemplate(type, template) {
-        type = lowercase(type || "html");
+        type = (type || "html").toLowerCase();
         switch (type) {
           case "svg":
           case "math":

@@ -59,8 +59,8 @@ const BOOLEAN_ELEMENTS = {};
   });
 
 /**
- * JQLite both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
- * and execution of chain functions.
+ * JQLite is both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
+ * and execution of chains of functions.
  *
  * @param {string|Node|Node[]|NodeList|JQLite|ArrayLike<Element>|(() => void)|Window} element
  * @returns {JQLite}
@@ -1031,7 +1031,7 @@ export function removeElement(element, keepData = false) {
 }
 
 /**
- * Executea a function on `DOMContentLoaded`
+ * Execute a function on `DOMContentLoaded`
  * @param {Function} fn
  */
 function onReady(fn) {

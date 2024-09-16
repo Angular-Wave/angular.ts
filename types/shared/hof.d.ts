@@ -112,5 +112,4 @@ export const propEq: any;
 export function parse(name: any): any;
 export function all(fn1: any): (arr: any) => any;
 export function is(ctor: any): (obj: any) => boolean;
-export function eq(value: any): (other: any) => boolean;
 export function val(v: any): () => any;

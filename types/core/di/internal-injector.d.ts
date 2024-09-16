@@ -24,7 +24,7 @@ export class InjectorService extends AbstractInjector {
     factory(serviceName: any): any;
     /**
      *
-     * @param {String} name
+     * @param {string} name
      * @returns {boolean}
      */
     has(name: string): boolean;
@@ -48,7 +48,7 @@ declare class AbstractInjector {
     /**
      * Get a service by name.
      *
-     * @param {String} serviceName
+     * @param {string} serviceName
      * @returns {any}
      */
     get(serviceName: string): any;
@@ -57,7 +57,7 @@ declare class AbstractInjector {
      *
      * @param {Function|Array} fn
      * @param {Object} locals
-     * @param {String} serviceName
+     * @param {string} serviceName
      * @returns
      */
     injectionArgs(fn: Function | any[], locals: any, serviceName: string): any[];
@@ -67,7 +67,7 @@ declare class AbstractInjector {
      * @param {Function|String|Array<any>} fn
      * @param {*} [self]
      * @param {Object} [locals]
-     * @param {String} [serviceName]
+     * @param {string} [serviceName]
      * @returns
      */
     invoke(fn: Function | string | Array<any>, self?: any, locals?: any, serviceName?: string): any;
@@ -75,7 +75,7 @@ declare class AbstractInjector {
      * Instantiate a type constructor with optional locals.
      * @param {Function|Array} type
      * @param {*} [locals]
-     * @param {String} [serviceName]
+     * @param {string} [serviceName]
      */
     instantiate(type: Function | any[], locals?: any, serviceName?: string): any;
     /**
@@ -84,7 +84,7 @@ declare class AbstractInjector {
     loadNewModules(): void;
     /**
      * @abstract
-     * @param {String} _serviceName
+     * @param {string} _serviceName
      */
     factory(_serviceName: string): void;
 }

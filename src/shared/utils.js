@@ -721,8 +721,8 @@ export function csp() {
 
 /**
  * throw error if the name given is hasOwnProperty
- * @param  {String} name    the name to test
- * @param  {String} context the context in which the name is used, such as module or directive
+ * @param  {string} name    the name to test
+ * @param  {string} context the context in which the name is used, such as module or directive
  */
 export function assertNotHasOwnProperty(name, context) {
   if (name === "hasOwnProperty") {
@@ -1250,7 +1250,8 @@ export function mergeClasses(a, b) {
 
 /**
  * Converts all accepted directives format into proper directive name.
- * @param name Name to normalize
+ * @param {string} name Name to normalize
+ * @returns {string}
  */
 
 export function directiveNormalize(name) {
