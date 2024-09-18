@@ -5,7 +5,6 @@ import {
   isObject,
   isDate,
   toJson,
-  forEachSorted,
   isUndefined,
   isFunction,
   forEach,
@@ -60,20 +59,23 @@ export function $HttpParamSerializerProvider() {
     return function ngParamSerializer(params) {
       if (!params) return "";
       const parts = [];
-      forEachSorted(params, (value, key) => {
-        if (value === null || isUndefined(value) || isFunction(value)) return;
-        if (Array.isArray(value)) {
-          value.forEach((v) => {
+      Object.keys(params)
+        .sort()
+        .forEach((key) => {
+          const value = params[key];
+          if (value === null || isUndefined(value) || isFunction(value)) return;
+          if (Array.isArray(value)) {
+            value.forEach((v) => {
+              parts.push(
+                `${encodeUriQuery(key)}=${encodeUriQuery(serializeValue(v))}`,
+              );
+            });
+          } else {
             parts.push(
-              `${encodeUriQuery(key)}=${encodeUriQuery(serializeValue(v))}`,
+              `${encodeUriQuery(key)}=${encodeUriQuery(serializeValue(value))}`,
             );
-          });
-        } else {
-          parts.push(
-            `${encodeUriQuery(key)}=${encodeUriQuery(serializeValue(value))}`,
-          );
-        }
-      });
+          }
+        });
 
       return parts.join("&");
     };
@@ -134,12 +136,15 @@ export function $HttpParamSerializerJQLikeProvider() {
             serialize(value, `${prefix}[${isObject(value) ? index : ""}]`);
           });
         } else if (isObject(toSerialize) && !isDate(toSerialize)) {
-          forEachSorted(toSerialize, (value, key) => {
-            serialize(
-              value,
-              prefix + (topLevel ? "" : "[") + key + (topLevel ? "" : "]"),
-            );
-          });
+          Object.keys(toSerialize)
+            .sort()
+            .forEach((key) => {
+              const value = toSerialize[key];
+              serialize(
+                value,
+                prefix + (topLevel ? "" : "[") + key + (topLevel ? "" : "]"),
+              );
+            });
         } else {
           if (isFunction(toSerialize)) {
             toSerialize = toSerialize();

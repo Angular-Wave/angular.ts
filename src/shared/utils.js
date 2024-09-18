@@ -357,12 +357,6 @@ export function forEach(obj, iterator, context) {
   return obj;
 }
 
-export function forEachSorted(obj, iterator, context) {
-  const keys = Object.keys(obj).sort();
-  keys.forEach((el) => iterator.call(context, obj[el], el));
-  return keys;
-}
-
 /**
  * when using forEach the params are value, key, but it is often useful to have key, value.
  * @param {function(string, *):any} iteratorFn

@@ -192,7 +192,6 @@ export function snakeCase(name: any, separator: any): any;
  * @returns {Object|Array} Reference to `obj`.
  */
 export function forEach(obj: any | any[], iterator: Function, context?: any | undefined): any | any[];
-export function forEachSorted(obj: any, iterator: any, context: any): string[];
 /**
  * when using forEach the params are value, key, but it is often useful to have key, value.
  * @param {function(string, *):any} iteratorFn
