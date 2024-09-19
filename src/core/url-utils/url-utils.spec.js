@@ -65,7 +65,7 @@ describe("urlUtils", () => {
 
       expectIsSameOrigin("path", true);
 
-      const origin = urlResolve(window.document.location.href);
+      const origin = urlResolve(document.location.href);
       expectIsSameOrigin(`//${origin.host}/path`, true);
 
       // Different domain.

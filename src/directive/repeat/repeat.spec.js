@@ -119,7 +119,7 @@ describe("ngRepeat", () => {
       "<a class='test' name='y'>b</a>" +
       "<a class='test' name='x'>c</a>";
 
-    const htmlCollection = window.document.getElementsByClassName("test");
+    const htmlCollection = document.getElementsByClassName("test");
     scope.items = htmlCollection;
     scope.$digest();
     expect(element.find("li").length).toEqual(3);
@@ -382,7 +382,7 @@ describe("ngRepeat", () => {
           "</li>" +
           "</ul>",
       )(scope);
-      window.document.getElementById("dummy").appendChild(element[0]);
+      document.getElementById("dummy").appendChild(element[0]);
       scope.items = { misko: true, shyam: true, zhenbo: true };
       scope.$digest();
       expect(element.find("li").length).toEqual(3);
@@ -413,7 +413,7 @@ describe("ngRepeat", () => {
       expect(element.find("input")[1].checked).toBe(true);
       expect(element.find("input")[2].checked).toBe(true);
 
-      window.document.getElementById("dummy").innerHTML = "";
+      document.getElementById("dummy").innerHTML = "";
     });
 
     it("should invoke track by with correct locals", () => {
@@ -1466,7 +1466,7 @@ describe("ngRepeat", () => {
 //         // we need to run animation on attached elements;
 //         function (_$rootElement_) {
 //           $rootElement = _$rootElement_;
-//           body = JQLite(window.document.body);
+//           body = JQLite(document.body);
 //           body.append($rootElement);
 //         },
 //     ),

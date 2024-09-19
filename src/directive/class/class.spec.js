@@ -737,7 +737,7 @@ describe("ngClass", () => {
 //     module("ngAnimateMock");
 //     inject(($compile, $rootScope, $animate, $timeout) => {
 //       element = angular.element('<div ng-class="val"></div>');
-//       const body = JQLite(window.document.body);
+//       const body = JQLite(document.body);
 //       body.append(element);
 //       $compile(element)($rootScope);
 

@@ -12,7 +12,7 @@ export function getCookies() {
   let i;
   let index;
   let name;
-  const currentCookieString = window.document.cookie;
+  const currentCookieString = document.cookie;
 
   if (currentCookieString !== lastCookieString) {
     lastCookieString = currentCookieString;

@@ -1679,7 +1679,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
               } else {
                 // We have transclusion slots,
                 // collect them up, compile them and store their transclusion functions
-                $template = window.document.createDocumentFragment();
+                $template = document.createDocumentFragment();
 
                 const slotMap = Object.create(null);
                 const filledSlots = Object.create(null);
@@ -1712,8 +1712,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
                   if (slotName) {
                     filledSlots[slotName] = true;
                     slots[slotName] =
-                      slots[slotName] ||
-                      window.document.createDocumentFragment();
+                      slots[slotName] || document.createDocumentFragment();
                     slots[slotName].appendChild(node);
                   } else {
                     $template.appendChild(node);
@@ -2472,7 +2471,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         switch (type) {
           case "svg":
           case "math":
-            var wrapper = window.document.createElement("div");
+            var wrapper = document.createElement("div");
             wrapper.innerHTML = `<${type}>${template}</${type}>`;
             return wrapper.childNodes[0].childNodes;
           default:
@@ -2780,7 +2779,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
         // - remove them from the DOM
         // - allow them to still be traversed with .nextSibling
         // - allow a single fragment.qSA to fetch all elements being removed
-        const fragment = window.document.createDocumentFragment();
+        const fragment = document.createDocumentFragment();
         for (i = 0; i < removeCount; i++) {
           fragment.appendChild(elementsToRemove[i]);
         }

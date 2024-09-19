@@ -5,7 +5,7 @@ import { isString } from "../../shared/utils";
  * @typedef {"http"|"https"} HttpProtocol
  */
 
-const urlParsingNode = window.document.createElement("a");
+const urlParsingNode = document.createElement("a");
 const originUrl = urlResolve(window.location.href);
 let baseUrlParsingNode;
 
@@ -126,13 +126,13 @@ export function urlsAreSameOrigin(url1, url2) {
  * @returns {string}
  */
 export function getBaseUrl() {
-  if (window.document.baseURI) {
-    return window.document.baseURI;
+  if (document.baseURI) {
+    return document.baseURI;
   }
 
   // `document.baseURI` is available everywhere except IE
   if (!baseUrlParsingNode) {
-    baseUrlParsingNode = window.document.createElement("a");
+    baseUrlParsingNode = document.createElement("a");
     baseUrlParsingNode.href = ".";
 
     // Work-around for IE bug described in Implementation Notes. The fix in `urlResolve()` is not

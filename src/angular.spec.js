@@ -1970,7 +1970,7 @@ describe("angular", () => {
   describe("isElement", () => {
     it("should return a boolean value", () => {
       const element = $compile("<p>Hello, world!</p>")($rootScope);
-      const body = window.document.body;
+      const body = document.body;
       const expected = [
         false,
         false,

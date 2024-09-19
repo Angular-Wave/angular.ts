@@ -122,7 +122,7 @@ describe("jqLite", () => {
     });
 
     it("should wrap document fragment", () => {
-      const fragment = JQLite(window.document.createDocumentFragment());
+      const fragment = JQLite(document.createDocumentFragment());
       expect(fragment.length).toBe(1);
       expect(fragment[0].nodeType).toBe(11);
     });
@@ -194,7 +194,7 @@ describe("jqLite", () => {
             done();
           }
         }
-        JQLite(window.document.body).append(container);
+        JQLite(document.body).append(container);
         window.xss = jasmine.createSpy("xss");
 
         // Thanks to Masato Kinugawa from Cure53 for providing the following test cases.
@@ -280,7 +280,7 @@ describe("jqLite", () => {
 
     it("should pass through DocumentFragment boundaries via host", () => {
       const host = JQLite("<div></div>");
-      const frag = window.document.createDocumentFragment();
+      const frag = document.createDocumentFragment();
       const $frag = JQLite(frag);
       frag.host = host[0];
       host.data("foo", 123);
@@ -848,7 +848,7 @@ describe("jqLite", () => {
     });
 
     it("should do nothing when setting or getting on attribute nodes", () => {
-      const attrNode = JQLite(window.document.createAttribute("myattr"));
+      const attrNode = JQLite(document.createAttribute("myattr"));
       expect(attrNode).toBeDefined();
       expect(attrNode[0].nodeType).toEqual(2);
       expect(attrNode.attr("some-attribute", "somevalue")).toEqual(attrNode);
@@ -856,7 +856,7 @@ describe("jqLite", () => {
     });
 
     it("should do nothing when setting or getting on text nodes", () => {
-      const textNode = JQLite(window.document.createTextNode("some text"));
+      const textNode = JQLite(document.createTextNode("some text"));
       expect(textNode).toBeDefined();
       expect(textNode[0].nodeType).toEqual(3);
       expect(textNode.attr("some-attribute", "somevalue")).toEqual(textNode);
@@ -864,7 +864,7 @@ describe("jqLite", () => {
     });
 
     it("should do nothing when setting or getting on comment nodes", () => {
-      const comment = JQLite(window.document.createComment("some comment"));
+      const comment = JQLite(document.createComment("some comment"));
       expect(comment).toBeDefined();
       expect(comment[0].nodeType).toEqual(8);
       expect(comment.attr("some-attribute", "somevalue")).toEqual(comment);
@@ -931,7 +931,7 @@ describe("jqLite", () => {
 
     it("should return text only for element or text nodes", () => {
       expect(JQLite("<div>foo</div>").text()).toBe("foo");
-      expect(JQLite(window.document.createComment("foo")).text()).toBe("");
+      expect(JQLite(document.createComment("foo")).text()).toBe("");
     });
   });
 
@@ -1202,7 +1202,7 @@ describe("jqLite", () => {
       function browserMoveTrigger(from, to) {
         const fireEvent = function (type, element, relatedTarget) {
           let evnt;
-          evnt = window.document.createEvent("MouseEvents");
+          evnt = document.createEvent("MouseEvents");
 
           const originalPreventDefault = evnt.preventDefault;
 
@@ -1700,7 +1700,7 @@ describe("jqLite", () => {
       expect(root.html()).toEqual("text");
     });
     it("should append to document fragment", () => {
-      const root = JQLite(window.document.createDocumentFragment());
+      const root = JQLite(document.createDocumentFragment());
       expect(root.append("<p>foo</p>")).toBe(root);
       expect(root.children().length).toBe(1);
     });
@@ -1802,7 +1802,7 @@ describe("jqLite", () => {
 
     it("should return empty JQLite object when parent is a document fragment", () => {
       // this is quite unfortunate but jQuery 1.5.1 behaves this way
-      const fragment = window.document.createDocumentFragment();
+      const fragment = document.createDocumentFragment();
       const child = JQLite("<p>foo</p>");
 
       fragment.appendChild(child[0]);

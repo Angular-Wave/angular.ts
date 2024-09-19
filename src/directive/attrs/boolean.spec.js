@@ -10,7 +10,7 @@ describe("boolean attr directives", () => {
     createInjector([
       "ng",
       ($provide) => {
-        $provide.value("$rootElement", window.document.body);
+        $provide.value("$rootElement", document.body);
       },
     ]).invoke((_$compile_, _$rootScope_, _$rootElement_) => {
       $compile = _$compile_;

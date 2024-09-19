@@ -49,7 +49,7 @@ function SelectController($element, $scope) {
   // Support: IE 9 only
   // We can't just JQLite('<option>') since JQLite is not smart enough
   // to create it in <select> and IE barfs otherwise.
-  self.unknownOption = JQLite(window.document.createElement("option"));
+  self.unknownOption = JQLite(document.createElement("option"));
 
   // The empty option is an option with the value '' that the application developer can
   // provide inside the select. It is always selectable and indicates that a "null" selection has

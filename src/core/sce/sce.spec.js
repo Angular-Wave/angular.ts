@@ -522,16 +522,16 @@ describe("SCE", () => {
 
         let baseElem;
         beforeEach(() => {
-          baseElem = window.document.createElement("BASE");
+          baseElem = document.createElement("BASE");
           baseElem.setAttribute(
             "href",
             `${window.location.protocol}//foo.example.com/path/`,
           );
-          window.document.head.appendChild(baseElem);
+          document.head.appendChild(baseElem);
         });
 
         afterEach(() => {
-          window.document.head.removeChild(baseElem);
+          document.head.removeChild(baseElem);
         });
 
         it("should allow relative URLs", () => {

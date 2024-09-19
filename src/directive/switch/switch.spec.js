@@ -499,7 +499,7 @@ describe("ngSwitch", () => {
 //         // we need to run animation on attached elements;
 //         function (_$rootElement_) {
 //           $rootElement = _$rootElement_;
-//           body = JQLite(window.document.body);
+//           body = JQLite(document.body);
 //           body.append($rootElement);
 //         },
 //     ),

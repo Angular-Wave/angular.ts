@@ -146,17 +146,23 @@ export class NgModelController {
 
     this.$$parsedNgModel = $parse($attr["ngModel"]);
     this.$$parsedNgModelAssign = this.$$parsedNgModel.assign;
+
     /** @type {import("../../core/parser/parse").CompiledExpression|((Scope) => any)} */
     this.$$ngModelGet = this.$$parsedNgModel;
     this.$$ngModelSet = this.$$parsedNgModelAssign;
     this.$$pendingDebounce = null;
     this.$$parserValid = undefined;
+
+    /** @type {string} */
     this.$$parserName = "parse";
 
     /** @type {number} */
     this.$$currentValidationRunId = 0;
 
+    /** @type {Scope} */
     this.$$scope = $scope;
+
+    /** @type {Scope} */
     this.$$rootScope = $scope.$root;
     this.$$attr = $attr;
     this.$$element = $element;
@@ -1095,54 +1101,56 @@ export function ngModelDirective($rootScope) {
     // so that we can set the NgModelOptions in NgModelController
     // before anyone else uses it.
     priority: 1,
-    compile: function ngModelCompile(element) {
-      // Setup initial state of the control
-      element[0].classList.add(PRISTINE_CLASS, UNTOUCHED_CLASS, VALID_CLASS);
+    compile:
+      /** @param {import("../../shared/jqlite/jqlite.js").JQLite} element  */
+      (element) => {
+        // Setup initial state of the control
+        element[0].classList.add(PRISTINE_CLASS, UNTOUCHED_CLASS, VALID_CLASS);
 
-      return {
-        pre: function (scope, _element, attr, ctrls) {
-          const modelCtrl = ctrls[0];
-          const formCtrl = ctrls[1] || modelCtrl.$$parentForm;
-          const optionsCtrl = ctrls[2];
+        return {
+          pre: (scope, _element, attr, ctrls) => {
+            const modelCtrl = ctrls[0];
+            const formCtrl = ctrls[1] || modelCtrl.$$parentForm;
+            const optionsCtrl = ctrls[2];
 
-          if (optionsCtrl) {
-            modelCtrl.$options = optionsCtrl.$options;
-          }
-
-          modelCtrl.$$initGetterSetters();
-
-          // notify others, especially parent forms
-          formCtrl.$addControl(modelCtrl);
-
-          attr.$observe("name", (newValue) => {
-            if (modelCtrl.$name !== newValue) {
-              modelCtrl.$$parentForm.$$renameControl(modelCtrl, newValue);
+            if (optionsCtrl) {
+              modelCtrl.$options = optionsCtrl.$options;
             }
-          });
 
-          scope.$on("$destroy", () => {
-            modelCtrl.$$parentForm.$removeControl(modelCtrl);
-          });
-        },
-        post: function (scope, element, _attr, ctrls) {
-          const modelCtrl = ctrls[0];
-          modelCtrl.$$setUpdateOnEvents();
+            modelCtrl.$$initGetterSetters();
 
-          function setTouched() {
-            modelCtrl.$setTouched();
-          }
+            // notify others, especially parent forms
+            formCtrl.$addControl(modelCtrl);
 
-          element.on("blur", () => {
-            if (modelCtrl.$touched) return;
+            attr.$observe("name", (newValue) => {
+              if (modelCtrl.$name !== newValue) {
+                modelCtrl.$$parentForm.$$renameControl(modelCtrl, newValue);
+              }
+            });
 
-            if ($rootScope.$$phase !== ScopePhase.NONE) {
-              scope.$evalAsync(setTouched);
-            } else {
-              scope.$apply(setTouched);
+            scope.$on("$destroy", () => {
+              modelCtrl.$$parentForm.$removeControl(modelCtrl);
+            });
+          },
+          post: (scope, element, _attr, ctrls) => {
+            const modelCtrl = ctrls[0];
+            modelCtrl.$$setUpdateOnEvents();
+
+            function setTouched() {
+              modelCtrl.$setTouched();
             }
-          });
-        },
-      };
-    },
+
+            element.on("blur", () => {
+              if (modelCtrl.$touched) return;
+
+              if ($rootScope.$$phase !== ScopePhase.NONE) {
+                scope.$evalAsync(setTouched);
+              } else {
+                scope.$apply(setTouched);
+              }
+            });
+          },
+        };
+      },
   };
 }

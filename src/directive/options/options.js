@@ -209,8 +209,8 @@ export const ngOptionsDirective = [
     // Support: IE 9 only
     // We can't just JQLite('<option>') since JQLite is not smart enough
     // to create it in <select> and IE barfs otherwise.
-    const optionTemplate = window.document.createElement("option");
-    const optGroupTemplate = window.document.createElement("optgroup");
+    const optionTemplate = document.createElement("option");
+    const optGroupTemplate = document.createElement("optgroup");
 
     function ngOptionsPostLink(scope, selectElement, attr, ctrls) {
       const selectCtrl = ctrls[0];

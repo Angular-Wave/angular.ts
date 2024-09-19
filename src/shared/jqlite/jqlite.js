@@ -841,7 +841,7 @@ export function buildFragment(html) {
     // Create wrappers & descend into them
     i = wrap.length;
     while (--i > -1) {
-      tmp.appendChild(window.document.createElement(wrap[i]));
+      tmp.appendChild(document.createElement(wrap[i]));
       tmp = /** @type {HTMLDivElement} */ (tmp.firstChild);
     }
     tmp.innerHTML = html;
@@ -953,29 +953,28 @@ export function getOrSetCacheData(element, key, value) {
  * @param {(Node|Array|NodeList|Object)} elements - The elements to add to the root. This can be a single DOM node, an array-like object (such as an Array or NodeList), or any other object.
  */
 function addNodes(root, elements) {
-  // THIS CODE IS VERY HOT. Don't make changes without benchmarking.
-
-  if (elements) {
-    // if a Node (the most common case)
-    if (elements.nodeType) {
-      root[root.length++] = elements;
-    } else {
-      const { length } = elements;
-
-      // if an Array or NodeList and not a Window
-      if (typeof length === "number" && elements.window !== elements) {
-        if (length) {
-          for (let i = 0; i < length; i++) {
-            root[root.length++] = elements[i];
-          }
-        }
-      } else {
-        root[root.length++] = elements;
-      }
+  if (!elements) return;
+  // If a Node (the most common case)
+  if (elements.nodeType) {
+    root[root.length++] = elements;
+    return;
+  }
+  const length = elements.length;
+  // If elements is an Array or NodeList, but not a Window object
+  if (typeof length === "number" && elements.window !== elements) {
+    for (let i = 0; i < length; i++) {
+      root[root.length++] = elements[i];
     }
+  } else {
+    root[root.length++] = elements;
   }
 }
 
+/**
+ * @param {Node} element
+ * @param {string} name
+ * @returns
+ */
 function getController(element, name) {
   return getInheritedData(element, `$${name || "ngController"}Controller`);
 }
@@ -991,7 +990,6 @@ function getInheritedData(element, name, value) {
   // if element is the document object work with the html element instead
   // this makes $(document).scope() possible
   if (element.nodeType === Node.DOCUMENT_NODE) {
-    // TODO Fix types
     element = /** @type {Document} */ (element).documentElement;
   }
   const names = Array.isArray(name) ? name : [name];
@@ -1036,15 +1034,15 @@ export function removeElement(element, keepData = false) {
  */
 function onReady(fn) {
   function trigger() {
-    window.document.removeEventListener("DOMContentLoaded", trigger);
+    document.removeEventListener("DOMContentLoaded", trigger);
     fn();
   }
   // check if document is already loaded
-  if (window.document.readyState === "complete") {
-    window.setTimeout(fn);
+  if (document.readyState === "complete") {
+    setTimeout(fn);
   } else {
     // We can not use JQLite since we are not done loading.
-    window.document.addEventListener("DOMContentLoaded", trigger);
+    document.addEventListener("DOMContentLoaded", trigger);
   }
 }
 

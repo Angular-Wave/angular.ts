@@ -13,7 +13,7 @@ import { ALIASED_ATTR } from "../../shared/constants";
 
 const $compileMinErr = minErr("$compile");
 const SIMPLE_ATTR_NAME = /^\w/;
-const specialAttrHolder = window.document.createElement("div");
+const specialAttrHolder = document.createElement("div");
 
 /**
  * @typedef {Object} AttributeLike

@@ -1095,7 +1095,7 @@ describe("Scope", function () {
 
           it("should watch array-like objects like arrays", () => {
             logs = [];
-            $rootScope.obj = window.document.getElementsByTagName("src");
+            $rootScope.obj = document.getElementsByTagName("src");
             $rootScope.$digest();
 
             expect(logs.length).toBeTruthy();

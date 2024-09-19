@@ -419,7 +419,7 @@ describe("form", () => {
       );
       // Support: Chrome 60+ (on Windows)
       // We need to add the form to the DOM in order for `submit` events to be properly fired.
-      window.document.body.appendChild(doc[0]);
+      document.body.appendChild(doc[0]);
 
       const assertPreventDefaultListener = function (e) {
         reloadPrevented = e.defaultPrevented || e.returnValue === false;
@@ -1404,7 +1404,7 @@ describe("form", () => {
     let myModule;
 
     beforeEach(() => {
-      let dummy = window.document.getElementById("dummy");
+      let dummy = document.getElementById("dummy");
       doc = JQLite('<form name="myForm"></form>');
       JQLite(dummy).append(doc);
       let angular = new Angular();
@@ -1423,7 +1423,7 @@ describe("form", () => {
     afterEach(() => {
       dealoc(doc);
       dealoc(dummy);
-      window.document.getElementById("dummy").innerHTML = "";
+      document.getElementById("dummy").innerHTML = "";
     });
 
     it("should trigger an animation when invalid", (done) => {

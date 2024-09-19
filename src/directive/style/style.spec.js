@@ -86,7 +86,7 @@ describe("ng-style", () => {
       postCompVal = "100px";
       element = JQLite('<div ng-style="styleObj"></div>');
       element[0].style[preCompStyle] = preCompVal;
-      JQLite(window.document.body).append(element);
+      JQLite(document.body).append(element);
       $compile(element)($scope);
       scope = $scope;
       scope.styleObj = { "margin-top": "44px" };

@@ -19,7 +19,7 @@ describe("sanitizeUri", () => {
   });
 
   function isEvilInCurrentBrowser(uri) {
-    const a = window.document.createElement("a");
+    const a = document.createElement("a");
     a.setAttribute("href", uri);
     return a.href.substring(0, 4) !== "http";
   }

@@ -1796,7 +1796,7 @@ describe("$location", () => {
 
   //   afterEach(() => {
   //     dealoc(root);
-  //     dealoc(window.document.body);
+  //     dealoc(document.body);
   //   });
 
   //   it("should rewrite rel link to new url when history enabled on new browser", () => {
@@ -2303,7 +2303,7 @@ describe("$location", () => {
   //       }),
   //       setupRewriteChecks(),
   //       ($browser) => {
-  //         const rightClick = window.document.createEvent("MouseEvents");
+  //         const rightClick = document.createEvent("MouseEvents");
   //         rightClick.initMouseEvent(
   //           "click",
   //           true,
@@ -2441,12 +2441,12 @@ describe("$location", () => {
   //     });
   //     inject(($location) => {
   //       // make IE happy
-  //       JQLite(window.document.body).html(
+  //       JQLite(document.body).html(
   //         '<a href="http://server/test.html">link</a>',
   //       );
 
   //       const event = {
-  //         target: JQLite(window.document.body).find("a")[0],
+  //         target: JQLite(document.body).find("a")[0],
   //         preventDefault: jasmine.createSpy("preventDefault"),
   //         isDefaultPrevented: jasmine.createSpy().and.returnValue(false),
   //       };
@@ -2481,12 +2481,12 @@ describe("$location", () => {
   //         $location,
   //       ) => {
   //         // make IE happy
-  //         JQLite(window.document.body).html(
+  //         JQLite(document.body).html(
   //           '<a href="http://server/index.html#test">link</a>',
   //         );
 
   //         const event = {
-  //           target: JQLite(window.document.body).find("a")[0],
+  //           target: JQLite(document.body).find("a")[0],
   //           preventDefault: jasmine.createSpy("preventDefault"),
   //           isDefaultPrevented: jasmine.createSpy().and.returnValue(false),
   //         };
@@ -2920,7 +2920,7 @@ describe("$location", () => {
   //         function ($rootElement, $compile, $rootScope) {
   //           $rootElement.html('<a href="http://server/#!/somePath">link</a>');
   //           $compile($rootElement)($rootScope);
-  //           JQLite(window.document.body).append($rootElement);
+  //           JQLite(document.body).append($rootElement);
   //         },
   //     );
 
@@ -2951,7 +2951,7 @@ describe("$location", () => {
   //       return function ($rootElement, $compile, $rootScope) {
   //         $rootElement.html('<a href="http://server/somePath">link</a>');
   //         $compile($rootElement)($rootScope);
-  //         JQLite(window.document.body).append($rootElement);
+  //         JQLite(document.body).append($rootElement);
   //       };
   //     });
 
@@ -3313,7 +3313,7 @@ describe("$location", () => {
   // function mockUpBrowser(options) {
   //   module(($windowProvider, $browserProvider) => {
   //     let browser;
-  //     const parser = window.document.createElement("a");
+  //     const parser = document.createElement("a");
   //     parser.href = options.initialUrl;
 
   //     $windowProvider.$get = function () {

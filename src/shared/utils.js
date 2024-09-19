@@ -680,8 +680,8 @@ const cspCache = {};
 export function csp() {
   if (!isDefined(cspCache.rules)) {
     const ngCspElement =
-      window.document.querySelector("[ng-csp]") ||
-      window.document.querySelector("[data-ng-csp]");
+      document.querySelector("[ng-csp]") ||
+      document.querySelector("[data-ng-csp]");
 
     if (ngCspElement) {
       const ngCspAttribute =

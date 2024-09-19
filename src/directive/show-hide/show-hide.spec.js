@@ -130,7 +130,7 @@ describe("ngShow / ngHide", () => {
 
 //   beforeEach(() => {
 //     // we need to run animation on attached elements;
-//     body = JQLite(window.document.body);
+//     body = JQLite(document.body);
 //   });
 
 //   afterEach(() => {

@@ -25,12 +25,6 @@ function isHTMLElement(el) {
   return !!el.toString().match(/HTML/);
 }
 
-function supportsMathML() {
-  const d = document.createElement("div");
-  d.innerHTML = "<math></math>";
-  return !isUnknownElement(d.firstChild);
-}
-
 function getChildScopes(scope) {
   let children = [];
   if (!scope.$$childHead) {

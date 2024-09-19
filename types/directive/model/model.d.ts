@@ -3,7 +3,7 @@ export function ngModelDirective($rootScope: any): {
     require: string[];
     controller: typeof NgModelController;
     priority: number;
-    compile: (element: any) => {
+    compile: (element: import("../../shared/jqlite/jqlite.js").JQLite) => {
         pre: (scope: any, _element: any, attr: any, ctrls: any) => void;
         post: (scope: any, element: any, _attr: any, ctrls: any) => void;
     };
@@ -115,11 +115,14 @@ export class NgModelController {
     $$ngModelSet: (arg0: any, arg1: any) => any;
     $$pendingDebounce: any;
     $$parserValid: boolean;
+    /** @type {string} */
     $$parserName: string;
     /** @type {number} */
     $$currentValidationRunId: number;
-    $$scope: import("../../core/scope/scope").Scope;
-    $$rootScope: import("../../core/scope/scope").Scope;
+    /** @type {Scope} */
+    $$scope: Scope;
+    /** @type {Scope} */
+    $$rootScope: Scope;
     $$attr: import("../../core/compile/attributes").Attributes;
     $$element: import("../../shared/jqlite/jqlite").JQLite;
     $$animate: any;
