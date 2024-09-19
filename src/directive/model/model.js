@@ -159,10 +159,10 @@ export class NgModelController {
     /** @type {number} */
     this.$$currentValidationRunId = 0;
 
-    /** @type {Scope} */
+    /** @type {import('../../core/scope/scope.js').Scope} */
     this.$$scope = $scope;
 
-    /** @type {Scope} */
+    /** @type {import('../../core/scope/scope.js').Scope} */
     this.$$rootScope = $scope.$root;
     this.$$attr = $attr;
     this.$$element = $element;
