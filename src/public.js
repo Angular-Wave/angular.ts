@@ -62,7 +62,7 @@ import {
 import {
   CacheFactoryProvider,
   TemplateCacheProvider,
-} from "./services/cache-factory";
+} from "./core/cache/cache-factory";
 import { $ControllerProvider } from "./core/controller/controller";
 import { $ExceptionHandlerProvider } from "./core/exception-handler";
 import { $FilterProvider } from "./core/filter/filter";

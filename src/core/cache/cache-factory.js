@@ -1,4 +1,4 @@
-import { extend, forEach, isUndefined, minErr } from "../shared/utils";
+import { extend, forEach, isUndefined, minErr } from "../../shared/utils";
 
 export function CacheFactoryProvider() {
   this.$get = function () {

@@ -119,10 +119,10 @@ export class NgModelController {
     $$parserName: string;
     /** @type {number} */
     $$currentValidationRunId: number;
-    /** @type {Scope} */
-    $$scope: Scope;
-    /** @type {Scope} */
-    $$rootScope: Scope;
+    /** @type {import('../../core/scope/scope.js').Scope} */
+    $$scope: import("../../core/scope/scope.js").Scope;
+    /** @type {import('../../core/scope/scope.js').Scope} */
+    $$rootScope: import("../../core/scope/scope.js").Scope;
     $$attr: import("../../core/compile/attributes").Attributes;
     $$element: import("../../shared/jqlite/jqlite").JQLite;
     $$animate: any;
