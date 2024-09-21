@@ -80,10 +80,10 @@ describe("$templateRequest", () => {
         ]);
 
         createInjector(["test"]).invoke(
-          ($templateRequest, $http, $cacheFactory) => {
+          ($templateRequest, $http) => {
             spyOn($http, "get").and.callThrough();
 
-            const customCache = $cacheFactory("customCache");
+            const customCache = new Map();
             httpOptions.cache = customCache;
 
             $templateRequest("tpl.html");

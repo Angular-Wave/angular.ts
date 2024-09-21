@@ -60,7 +60,6 @@ import {
   AnimateRunnerFactoryProvider,
 } from "./animations/animate-runner";
 import {
-  CacheFactoryProvider,
   TemplateCacheProvider,
 } from "./core/cache/cache-factory";
 import { $ControllerProvider } from "./core/controller/controller";
@@ -247,7 +246,6 @@ export function publishExternalAPI(angular) {
             $$AnimateRunner: AnimateRunnerFactoryProvider,
             $$animateAsyncRun: AnimateAsyncRunFactoryProvider,
             $browser: BrowserProvider,
-            $cacheFactory: CacheFactoryProvider,
             $controller: $ControllerProvider,
             $exceptionHandler: $ExceptionHandlerProvider,
             $filter: $FilterProvider,
