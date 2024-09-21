@@ -461,7 +461,6 @@ export function $HttpProvider() {
   this.$get = [
     "$browser",
     "$httpBackend",
-    "$cacheFactory",
     "$rootScope",
     "$q",
     "$injector",
@@ -470,23 +469,17 @@ export function $HttpProvider() {
      *
      * @param {*} $browser
      * @param {*} $httpBackend
-     * @param {*} $cacheFactory
      * @param {*} $rootScope
      * @param {*} $q
      * @param {import("../../core/di/internal-injector").InjectorService} $injector
      * @param {*} $sce
      * @returns
      */
-    function (
-      $browser,
-      $httpBackend,
-      $cacheFactory,
-      $rootScope,
-      $q,
-      $injector,
-      $sce,
-    ) {
-      const defaultCache = $cacheFactory("$http");
+    function ($browser, $httpBackend, $rootScope, $q, $injector, $sce) {
+      /**
+       * @type {Map<string, string>}
+       */
+      const defaultCache = new Map();
 
       /**
        * Make sure that default param serializer is exposed as a function
@@ -874,7 +867,7 @@ export function $HttpProvider() {
             }
           } else {
             // put the promise for the non-transformed response into cache as a placeholder
-            cache.put(url, promise);
+            cache.set(url, promise);
           }
         }
 
@@ -936,7 +929,7 @@ export function $HttpProvider() {
         function done(status, response, headersString, statusText, xhrStatus) {
           if (cache) {
             if (isSuccess(status)) {
-              cache.put(url, [
+              cache.set(url, [
                 status,
                 response,
                 parseHeaders(headersString),
@@ -945,7 +938,7 @@ export function $HttpProvider() {
               ]);
             } else {
               // remove promise from the cache
-              cache.remove(url);
+              cache.delete(url);
             }
           }
 

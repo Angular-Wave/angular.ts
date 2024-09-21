@@ -1219,11 +1219,11 @@ describe("angular 1.5+ style .component()", () => {
     it("should work with directives which themselves have templateUrls", async () => {
       const $state = svcs.$state;
 
-      $templateCache.put(
+      $templateCache.set(
         "/state_tpl.html",
         'x<ng12-directive data="$resolve.data"></ng12-directive>x',
       );
-      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
 
       await $state.transitionTo("cmp_tpl");
 
@@ -1236,11 +1236,11 @@ describe("angular 1.5+ style .component()", () => {
     it("should work with bindToController directives", async () => {
       const $state = svcs.$state;
 
-      $templateCache.put(
+      $templateCache.set(
         "/state_tpl.html",
         'x<ng13-directive data="$resolve.data"></ng13-directive>x',
       );
-      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
 
       await $state.transitionTo("cmp_tpl");
       await wait(100);
@@ -1254,11 +1254,11 @@ describe("angular 1.5+ style .component()", () => {
     it("should work with .component()s", async () => {
       const $state = svcs.$state;
 
-      $templateCache.put(
+      $templateCache.set(
         "/state_tpl.html",
         'x<ng-component data="$resolve.data"></ng-component>x',
       );
-      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
 
       $state.transitionTo("cmp_tpl");
       await wait(100);
@@ -1345,7 +1345,7 @@ describe("angular 1.5+ style .component()", () => {
 
       const $state = svcs.$state;
 
-      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
       await wait(100);
 
@@ -1371,7 +1371,7 @@ describe("angular 1.5+ style .component()", () => {
         $httpBackend = svcs.$httpBackend,
         $q = svcs.$q;
 
-      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
       await wait(100);
 
@@ -1395,7 +1395,7 @@ describe("angular 1.5+ style .component()", () => {
 
       const $state = svcs.$state;
 
-      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
       await wait(100);
 
@@ -1418,7 +1418,7 @@ describe("angular 1.5+ style .component()", () => {
         $httpBackend = svcs.$httpBackend,
         $q = svcs.$q;
 
-      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
       await wait(100);
 
@@ -1443,7 +1443,7 @@ describe("angular 1.5+ style .component()", () => {
         $httpBackend = svcs.$httpBackend,
         $q = svcs.$q;
 
-      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
       await wait(100);
 
@@ -1465,7 +1465,7 @@ describe("angular 1.5+ style .component()", () => {
         $httpBackend = svcs.$httpBackend,
         $q = svcs.$q;
 
-      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
       await wait(100);
 
@@ -1785,7 +1785,7 @@ describe("angular 1.5+ style .component()", () => {
       $stateProvider.state(stateDef);
       const $state = svcs.$state;
 
-      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
       await wait(100);
 
@@ -1815,7 +1815,7 @@ describe("angular 1.5+ style .component()", () => {
         $httpBackend = svcs.$httpBackend,
         $q = svcs.$q;
 
-      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
       await wait(100);
 
@@ -1857,7 +1857,7 @@ describe("angular 1.5+ style .component()", () => {
 
       const $state = svcs.$state;
 
-      $templateCache.put("/comp_tpl.html", "-{{ $ctrl.data }}-");
+      $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
       await wait(100);
 
@@ -1887,7 +1887,7 @@ describe("angular 1.5+ style .component()", () => {
         $httpBackend = svcs.$httpBackend,
         $q = svcs.$q;
 
-      $templateCache.put(
+      $templateCache.set(
         "/comp_tpl.html",
         "-{{ $ctrl.data }}.{{ $ctrl.data2 }}-",
       );

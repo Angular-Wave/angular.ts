@@ -45,7 +45,7 @@ export class CacheFactoryProvider {
  * ```js
  * let myApp = angular.module('myApp', []);
  * myApp.run(function($templateCache) {
- *   $templateCache.put('templateId.html', 'This is the content of the template');
+ *   $templateCache.set('templateId.html', 'This is the content of the template');
  * });
  * ```
  *
@@ -64,5 +64,5 @@ export class CacheFactoryProvider {
  */
 export function TemplateCacheProvider(): void;
 export class TemplateCacheProvider {
-    $get: (string | (($cacheFactory: any) => any))[];
+    $get: () => Map<any, any>;
 }

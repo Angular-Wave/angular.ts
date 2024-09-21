@@ -107,7 +107,8 @@ export function TemplateRequestProvider() {
             handleRequestFn.totalPendingRequests--;
           })
           .then(function (response) {
-            return $templateCache.put(tpl, response.data);
+            $templateCache.set(tpl, response.data);
+            return response.data;
           }, handleError);
 
         function handleError(resp) {

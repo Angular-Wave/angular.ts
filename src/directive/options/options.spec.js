@@ -2755,7 +2755,7 @@ describe("ngOptions", () => {
 
     it("should not throw with a directive that replaces", () => {
       let $templateCache = injector.get("$templateCache");
-      $templateCache.put(
+      $templateCache.set(
         "select_template.html",
         '<select ng-options="option as option for option in selectable_options"> <option value="">This is a test</option> </select>',
       );

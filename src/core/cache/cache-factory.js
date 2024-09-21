@@ -267,7 +267,7 @@ export function CacheFactoryProvider() {
  * ```js
  * let myApp = angular.module('myApp', []);
  * myApp.run(function($templateCache) {
- *   $templateCache.put('templateId.html', 'This is the content of the template');
+ *   $templateCache.set('templateId.html', 'This is the content of the template');
  * });
  * ```
  *
@@ -285,5 +285,5 @@ export function CacheFactoryProvider() {
  *
  */
 export function TemplateCacheProvider() {
-  this.$get = ["$cacheFactory", ($cacheFactory) => $cacheFactory("templates")];
+  this.$get = () => new Map();
 }

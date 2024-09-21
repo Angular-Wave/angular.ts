@@ -34,8 +34,8 @@ describe("ngInit", () => {
         "ng-init=\"template='template2.tpl'\"></div></div>",
     );
     window.angular.module("myModule", []).run(($templateCache) => {
-      $templateCache.put("template1.tpl", "<span>1</span>");
-      $templateCache.put("template2.tpl", "<span>2</span>");
+      $templateCache.set("template1.tpl", "<span>1</span>");
+      $templateCache.set("template2.tpl", "<span>2</span>");
     });
     injector = angular.bootstrap(element, ["myModule"]);
     $rootScope = injector.get("$rootScope");

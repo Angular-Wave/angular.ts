@@ -125,8 +125,7 @@ describe("$templateRequest", () => {
   });
 
   it("should return the cached value on the first request", async () => {
-    spyOn($templateCache, "put").and.returnValue("_matias");
-
+    $templateCache.set("tpl.html", "_matias");
     const content = [];
     function tplRequestCb(html) {
       content.push(html);
@@ -164,26 +163,12 @@ describe("$templateRequest", () => {
       $rootScope.$digest();
     }).toThrow();
 
-    $templateCache.put("tpl.html"); // is a no-op, so $sce check as well.
-    expect(() => {
-      $templateRequest("tpl.html");
-      $rootScope.$digest();
-    }).toThrow();
-    $templateCache.removeAll();
-
-    $templateCache.put("tpl.html", null); // makes no sense, but it's been added, so trust it.
+    $templateCache.set("tpl.html", ""); // should work (empty template)
     expect(() => {
       $templateRequest("tpl.html");
       $rootScope.$digest();
     }).not.toThrow();
-    $templateCache.removeAll();
-
-    $templateCache.put("tpl.html", ""); // should work (empty template)
-    expect(() => {
-      $templateRequest("tpl.html");
-      $rootScope.$digest();
-    }).not.toThrow();
-    $templateCache.removeAll();
+    $templateCache = new Map();
   });
 
   it("should keep track of how many requests are going on", async () => {

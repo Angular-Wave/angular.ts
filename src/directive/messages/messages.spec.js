@@ -782,7 +782,7 @@ describe("ngMessages", () => {
     //   },
     //   (html) => {
     //     inject(($compile, $rootScope, $templateCache) => {
-    //       $templateCache.put(
+    //       $templateCache.set(
     //         "abc.html",
     //         '<div ng-message="a">A</div>' +
     //           '<div ng-message="b">B</div>' +
@@ -850,7 +850,7 @@ describe("ngMessages", () => {
     //   },
     //   (html) => {
     //     inject(($compile, $rootScope, $templateCache) => {
-    //       $templateCache.put("abc.html", "<div></div>");
+    //       $templateCache.set("abc.html", "<div></div>");
 
     //       element = $compile(html)($rootScope);
     //       $rootScope.$digest();
@@ -881,7 +881,7 @@ describe("ngMessages", () => {
     //   },
     //   (html) => {
     //     inject(($compile, $rootScope, $templateCache) => {
-    //       $templateCache.put(
+    //       $templateCache.set(
     //         "abc.html",
     //         '<div ng-message="a">A</div>' +
     //           '<div ng-message="b">B</div>' +
@@ -948,7 +948,7 @@ describe("ngMessages", () => {
     });
 
     it("should allow for overriding the remote template messages within the element depending on where the remote template is placed", () => {
-      $templateCache.put(
+      $templateCache.set(
         "abc.html",
         '<div ng-message="a">A</div>' +
           '<div ng-message="b">B</div>' +
@@ -995,7 +995,7 @@ describe("ngMessages", () => {
     });
 
     // it("should properly detect a previous message, even if it was registered later", () => {
-    //   $templateCache.put("include.html", '<div ng-message="a">A</div>');
+    //   $templateCache.set("include.html", '<div ng-message="a">A</div>');
     //   const html =
     //     '<div ng-messages="items">' +
     //     "<div ng-include=\"'include.html'\"></div>" +
@@ -1031,8 +1031,8 @@ describe("ngMessages", () => {
         '<div ng-messages-include="messages2.html"></div>' +
         "</div>";
 
-      $templateCache.put("messages1.html", "");
-      $templateCache.put("messages2.html", "   ");
+      $templateCache.set("messages1.html", "");
+      $templateCache.set("messages2.html", "   ");
       element = $compile(html)($rootScope);
       $rootScope.$digest();
 
@@ -1070,7 +1070,7 @@ describe("ngMessages", () => {
     // );
 
     it("should render all truthy messages from a remote template", () => {
-      $templateCache.put(
+      $templateCache.set(
         "xyz.html",
         '<div ng-message="x">X</div>' +
           '<div ng-message="y">Y</div>' +
@@ -1103,7 +1103,7 @@ describe("ngMessages", () => {
     });
 
     it("should render and override all truthy messages from a remote template", () => {
-      $templateCache.put(
+      $templateCache.set(
         "xyz.html",
         '<div ng-message="x">X</div>' +
           '<div ng-message="y">Y</div>' +

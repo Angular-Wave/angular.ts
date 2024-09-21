@@ -4098,7 +4098,7 @@ describe("$compile", () => {
         templateUrl: "/my_component.html",
       });
       reloadModules();
-      $templateCache.put("/my_component.html", "{{ $ctrl.message }}");
+      $templateCache.set("/my_component.html", "{{ $ctrl.message }}");
       var el = $("<my-component></my-component>");
       $compile(el)($rootScope);
       $rootScope.$apply();
@@ -4153,7 +4153,7 @@ describe("$compile", () => {
           return "/template" + myConstant + ".html";
         },
       });
-      $templateCache.put("/template42.html", "{{ 1 + 1 }}");
+      $templateCache.set("/template42.html", "{{ 1 + 1 }}");
       reloadModules();
       var el = $("<my-component></my-component>");
       $compile(el)($rootScope);
@@ -4757,7 +4757,7 @@ describe("$compile", () => {
 
       reloadModules();
 
-      $templateCache.put("fffff.html", "");
+      $templateCache.set("fffff.html", "");
 
       $compile("<ff></ff>")($rootScope);
       $compile("<fff></fff>")($rootScope);
@@ -5946,7 +5946,7 @@ describe("$compile", () => {
       });
 
       it("should trust what is already in the template cache", () => {
-        $templateCache.put(
+        $templateCache.set(
           "http://example.com/should-not-load.html",
           "<span>example.com/cached-version</span>",
         );
@@ -5973,7 +5973,7 @@ describe("$compile", () => {
       });
 
       it("should append template via $http and cache it in $templateCache", (done) => {
-        $templateCache.put("/mock/divexpr", "<span>Cau!</span>");
+        $templateCache.set("/mock/divexpr", "<span>Cau!</span>");
         element = $compile("<div><b hello>ignore</b><b cau>ignore</b></div>")(
           $rootScope,
         );
@@ -5996,7 +5996,7 @@ describe("$compile", () => {
       });
 
       it("should inline template via $http and cache it in $templateCache", (done) => {
-        $templateCache.put("/mock/divexpr", "<span>Cau!</span>");
+        $templateCache.set("/mock/divexpr", "<span>Cau!</span>");
         element = $compile(
           "<div><b i-hello>ignore</b><b i-cau>ignore</b></div>",
         )($rootScope);
@@ -6019,7 +6019,7 @@ describe("$compile", () => {
       });
 
       it("should compile, link and flush the template append", (done) => {
-        $templateCache.put("/mock/hello", "<span>Hello, {{name}}!</span>");
+        $templateCache.set("/mock/hello", "<span>Hello, {{name}}!</span>");
         $rootScope.name = "Elvis";
         element = $compile('<div><b hello=""></b></div>')($rootScope);
 
@@ -6034,7 +6034,7 @@ describe("$compile", () => {
       });
 
       it("should compile, link and flush the template inline", () => {
-        $templateCache.put("/mock/div", "<span>Hello, {{name}}!</span>");
+        $templateCache.set("/mock/div", "<span>Hello, {{name}}!</span>");
         $rootScope.name = "Elvis";
         element = $compile("<div><b i-hello></b></div>")($rootScope);
 
@@ -6046,7 +6046,7 @@ describe("$compile", () => {
       });
 
       it("should compile template when replacing element in another template", () => {
-        $templateCache.put("/mock/hello", "<div replace></div>");
+        $templateCache.set("/mock/hello", "<div replace></div>");
         $rootScope.name = "Elvis";
         element = $compile('<div><b hello=""></b></div>')($rootScope);
 
@@ -6069,7 +6069,7 @@ describe("$compile", () => {
       });
 
       it("should resolve widgets after cloning in append mode", (done) => {
-        $templateCache.put("/mock/divexpr", "<span>{{name}}</span>");
+        $templateCache.set("/mock/divexpr", "<span>{{name}}</span>");
         $rootScope.greeting = "Hello";
         $rootScope.name = "Elvis";
         const template = $compile(
@@ -6123,7 +6123,7 @@ describe("$compile", () => {
       });
 
       it("should resolve widgets after cloning in inline mode", async () => {
-        $templateCache.put("/mock/divexpr", "<span>{{name}}</span>");
+        $templateCache.set("/mock/divexpr", "<span>{{name}}</span>");
         $rootScope.greeting = "Hello";
         $rootScope.name = "Elvis";
         const template = $compile(
@@ -6175,7 +6175,7 @@ describe("$compile", () => {
 
       it("should be implicitly terminal and not compile placeholder content in append", () => {
         // we can't compile the contents because that would result in a memory leak
-        $templateCache.put("/mock/hello", "Hello!");
+        $templateCache.set("/mock/hello", "Hello!");
         element = $compile('<div><b hello=""><div log></div></b></div>')(
           $rootScope,
         );
@@ -6186,7 +6186,7 @@ describe("$compile", () => {
       it("should be implicitly terminal and not compile placeholder content in inline", () => {
         // we can't compile the contents because that would result in a memory leak
 
-        $templateCache.put("/mock/hello", "Hello!");
+        $templateCache.set("/mock/hello", "Hello!");
         element = $compile("<div><b i-hello><div log></div></b></div>")(
           $rootScope,
         );
@@ -6220,7 +6220,7 @@ describe("$compile", () => {
           },
         );
 
-        $templateCache.put("test.html", '<p class="template-class">Hello</p>');
+        $templateCache.set("test.html", '<p class="template-class">Hello</p>');
         element = $compile("<div test></div>")($rootScope, (node) => {
           node[0].classList.add("clonefn-class");
         });
@@ -6287,7 +6287,7 @@ describe("$compile", () => {
         });
 
         it("should flush after link append", () => {
-          $templateCache.put("second.html", "<div third>{{1+2}}</div>");
+          $templateCache.set("second.html", "<div third>{{1+2}}</div>");
           template = $compile("<div><span first second last></span></div>");
           element = template($rootScope);
           expect(log[0]).toEqual("first-C");
@@ -6311,7 +6311,7 @@ describe("$compile", () => {
         });
 
         it("should flush after link inline", () => {
-          $templateCache.put("second.html", "<div i-third>{{1+2}}</div>");
+          $templateCache.set("second.html", "<div i-third>{{1+2}}</div>");
           template = $compile(
             "<div><span i-first i-second i-last></span></div>",
           );
@@ -6336,7 +6336,7 @@ describe("$compile", () => {
         });
 
         it("should flush before link append", () => {
-          $templateCache.put("second.html", "<div third>{{1+2}}</div>");
+          $templateCache.set("second.html", "<div third>{{1+2}}</div>");
           template = $compile("<div><span first second last></span></div>");
           expect(log[0]).toEqual("first-C");
           log.push("FLUSH");
@@ -6360,7 +6360,7 @@ describe("$compile", () => {
         });
 
         it("should flush before link inline", () => {
-          $templateCache.put("second.html", "<div i-third>{{1+2}}</div>");
+          $templateCache.set("second.html", "<div i-third>{{1+2}}</div>");
           template = $compile(
             "<div><span i-first i-second i-last></span></div>",
           );
@@ -6384,14 +6384,14 @@ describe("$compile", () => {
         });
 
         it("should allow multiple elements in template", () => {
-          $templateCache.put("second.html", "before <b>mid</b> after");
+          $templateCache.set("second.html", "before <b>mid</b> after");
           element = $compile("<div second></div>")($rootScope);
           $rootScope.$digest();
           expect(element.text()).toEqual("before mid after");
         });
 
         it("should work when directive is on the root element", () => {
-          $templateCache.put(
+          $templateCache.set(
             "/mock/hello",
             "<span>3==<span ng-transclude></span></span>",
           );
@@ -6426,7 +6426,7 @@ describe("$compile", () => {
 
           // TODO these functions pass when being run in isolation. investigate scope pollution
           // it("should throw if: no root element", () => {
-          //   $templateCache.put("template.html", "dada");
+          //   $templateCache.set("template.html", "dada");
 
           //   expect(() => {
           //     $compile("<p template></p>")($rootScope);
@@ -6435,7 +6435,7 @@ describe("$compile", () => {
           // });
 
           // it("should throw if: multiple root elements", () => {
-          //   $templateCache.put("template.html", "<div></div><div></div>");
+          //   $templateCache.set("template.html", "<div></div><div></div>");
 
           //   expect(() => {
           //     $compile("<p template></p>")($rootScope);
@@ -6444,7 +6444,7 @@ describe("$compile", () => {
           // });
 
           it("should not throw if the root element is accompanied by: whitespace", () => {
-            $templateCache.put("template.html", "<div>Hello World!</div> \n");
+            $templateCache.set("template.html", "<div>Hello World!</div> \n");
             element = $compile("<p template></p>")($rootScope);
             expect(() => {
               $rootScope.$digest();
@@ -6454,7 +6454,7 @@ describe("$compile", () => {
           });
 
           it("should not throw if the root element is accompanied by: comments", () => {
-            $templateCache.put(
+            $templateCache.set(
               "template.html",
               "<!-- oh hi --><div>Hello World!</div> \n",
             );
@@ -6467,7 +6467,7 @@ describe("$compile", () => {
           });
 
           it("should not throw if the root element is accompanied by: comments + whitespace", () => {
-            $templateCache.put(
+            $templateCache.set(
               "template.html",
               "  <!-- oh hi -->  <div>Hello World!</div>  <!-- oh hi -->\n",
             );
@@ -6508,7 +6508,7 @@ describe("$compile", () => {
           );
 
           $rootScope.coolTitle = "boom!";
-          $templateCache.put("delayed.html", "<div>{{title}}</div>");
+          $templateCache.set("delayed.html", "<div>{{title}}</div>");
           element = $compile(
             '<div><div ng-repeat="i in [1,2]"><div delayed title="{{coolTitle + i}}"></div>|</div></div>',
           )($rootScope);
@@ -6527,7 +6527,7 @@ describe("$compile", () => {
 
           createInjector(["test1"]).invoke(
             ($templateCache, $rootScope, $compile) => {
-              $templateCache.put(
+              $templateCache.set(
                 "/some.html",
                 '<div ng-switch="i">' +
                   '<div ng-switch-when="1">i = 1</div>' +
@@ -6548,7 +6548,7 @@ describe("$compile", () => {
       });
 
       it("should support templates with root <tr> tags", () => {
-        $templateCache.put("tr.html", "<tr><td>TR</td></tr>");
+        $templateCache.set("tr.html", "<tr><td>TR</td></tr>");
         expect(() => {
           element = $compile("<div replace-with-tr></div>")($rootScope);
         }).not.toThrow();
@@ -6557,7 +6557,7 @@ describe("$compile", () => {
       });
 
       it("should support templates with root <td> tags", () => {
-        $templateCache.put("td.html", "<td>TD</td>");
+        $templateCache.set("td.html", "<td>TD</td>");
         expect(() => {
           element = $compile("<div replace-with-td></div>")($rootScope);
         }).not.toThrow();
@@ -6566,7 +6566,7 @@ describe("$compile", () => {
       });
 
       it("should support templates with root <th> tags", () => {
-        $templateCache.put("th.html", "<th>TH</th>");
+        $templateCache.set("th.html", "<th>TH</th>");
         expect(() => {
           element = $compile("<div replace-with-th></div>")($rootScope);
         }).not.toThrow();
@@ -6575,7 +6575,7 @@ describe("$compile", () => {
       });
 
       it("should support templates with root <thead> tags", () => {
-        $templateCache.put("thead.html", "<thead><tr><td>TD</td></tr></thead>");
+        $templateCache.set("thead.html", "<thead><tr><td>TD</td></tr></thead>");
         expect(() => {
           element = $compile("<div replace-with-thead></div>")($rootScope);
         }).not.toThrow();
@@ -6584,7 +6584,7 @@ describe("$compile", () => {
       });
 
       it("should support templates with root <tbody> tags", () => {
-        $templateCache.put("tbody.html", "<tbody><tr><td>TD</td></tr></tbody>");
+        $templateCache.set("tbody.html", "<tbody><tr><td>TD</td></tr></tbody>");
         expect(() => {
           element = $compile("<div replace-with-tbody></div>")($rootScope);
         }).not.toThrow();
@@ -6593,7 +6593,7 @@ describe("$compile", () => {
       });
 
       it("should support templates with root <tfoot> tags", () => {
-        $templateCache.put("tfoot.html", "<tfoot><tr><td>TD</td></tr></tfoot>");
+        $templateCache.set("tfoot.html", "<tfoot><tr><td>TD</td></tr></tfoot>");
         expect(() => {
           element = $compile("<div replace-with-tfoot></div>")($rootScope);
         }).not.toThrow();
@@ -6602,7 +6602,7 @@ describe("$compile", () => {
       });
 
       it("should support templates with root <option> tags", () => {
-        $templateCache.put("option.html", "<option>OPTION</option>");
+        $templateCache.set("option.html", "<option>OPTION</option>");
         expect(() => {
           element = $compile("<div replace-with-option></div>")($rootScope);
         }).not.toThrow();
@@ -6611,7 +6611,7 @@ describe("$compile", () => {
       });
 
       it("should support templates with root <optgroup> tags", () => {
-        $templateCache.put("optgroup.html", "<optgroup>OPTGROUP</optgroup>");
+        $templateCache.set("optgroup.html", "<optgroup>OPTGROUP</optgroup>");
         expect(() => {
           element = $compile("<div replace-with-optgroup></div>")($rootScope);
         }).not.toThrow();
@@ -6634,7 +6634,7 @@ describe("$compile", () => {
         );
         createInjector(["myModule"]).invoke(
           ($templateCache, $rootScope, $compile) => {
-            $templateCache.put(
+            $templateCache.set(
               "template.html",
               '<a xlink:href="{{linkurl}}">{{text}}</a>',
             );
@@ -6670,7 +6670,7 @@ describe("$compile", () => {
         );
         createInjector(["myModule"]).invoke(
           ($templateCache, $rootScope, $compile) => {
-            $templateCache.put(
+            $templateCache.set(
               "template.html",
               "<msup><mn>{{pow}}</mn></msup>",
             );
@@ -6705,7 +6705,7 @@ describe("$compile", () => {
 
         createInjector(["myModule"]).invoke(
           ($templateCache, $rootScope, $compile) => {
-            $templateCache.put("test.html", "<p>{{value}}</p>");
+            $templateCache.set("test.html", "<p>{{value}}</p>");
             element = $compile(
               "<template-url-with-prototype><template-url-with-prototype>",
             )($rootScope);
@@ -6736,7 +6736,7 @@ describe("$compile", () => {
 
         createInjector(["test1"]).invoke(
           ($templateCache, $rootScope, $compile) => {
-            $templateCache.put(
+            $templateCache.set(
               "my-directive.html",
               '<div id="templateContent">template content</span>',
             );
@@ -6923,7 +6923,7 @@ describe("$compile", () => {
       });
 
       it("should allow creation of new scopes for directives with templates", () => {
-        $templateCache.put(
+        $templateCache.set(
           "tscope.html",
           "<a log>{{name}}; scopeId: {{$id}}</a>",
         );
@@ -6936,7 +6936,7 @@ describe("$compile", () => {
       });
 
       it("should allow creation of new scopes for replace directives with templates", () => {
-        $templateCache.put(
+        $templateCache.set(
           "trscope.html",
           "<p><a log>{{name}}; scopeId: {{$id}}</a></p>",
         );
@@ -6949,7 +6949,7 @@ describe("$compile", () => {
       });
 
       it("should allow creation of new scopes for replace directives with templates in a repeater", () => {
-        $templateCache.put("trscope.html", "<p><a log>{{name}}|</a></p>");
+        $templateCache.set("trscope.html", "<p><a log>{{name}}|</a></p>");
         element = $compile(
           '<div><span ng-repeat="i in [1,2,3]" trscope></span></div>',
         )($rootScope);
@@ -6961,7 +6961,7 @@ describe("$compile", () => {
       });
 
       it("should allow creation of new isolated scopes for directives with templates", () => {
-        $templateCache.put("tiscope.html", "<a log></a>");
+        $templateCache.set("tiscope.html", "<a log></a>");
         element = $compile("<div><span tiscope></span></div>")($rootScope);
         $rootScope.$digest();
         expect(log.length).toEqual(2);
@@ -6997,7 +6997,7 @@ describe("$compile", () => {
       });
 
       it("should not allow more than one isolate/new scope creation per element regardless of `templateUrl`", () => {
-        $templateCache.put("tiscope.html", "<div>Hello, world !</div>");
+        $templateCache.set("tiscope.html", "<div>Hello, world !</div>");
         $compile("<div tiscope-a scope-b></div>")($rootScope);
         $rootScope.$digest();
         expect(log[0].match(/multidir/)).toBeTruthy();
@@ -7026,7 +7026,7 @@ describe("$compile", () => {
           });
 
           it("should return the new scope for children in the directive template", () => {
-            $templateCache.put("tscope.html", "<a></a>");
+            $templateCache.set("tscope.html", "<a></a>");
             element = $compile("<div tscope></div>")($rootScope);
             $rootScope.$digest();
             expect($rootScope.$$childHead.$parent).toBe($rootScope);
@@ -7053,7 +7053,7 @@ describe("$compile", () => {
           });
 
           it("should return the isolate scope for children in directive template", () => {
-            $templateCache.put("tiscope.html", "<a></a>");
+            $templateCache.set("tiscope.html", "<a></a>");
             element = $compile("<div tiscope></div>")($rootScope);
             expect($rootScope.$$childHead).toBeDefined(); // ??? this is the current behavior, not desired feature
             $rootScope.$digest();
@@ -7372,7 +7372,7 @@ describe("$compile", () => {
       //         it("should return the isolate scope for child elements", () => {
       //           let directiveElement;
       //           let child;
-      //           $templateCache.put("tiscope.html", "<span></span>");
+      //           $templateCache.set("tiscope.html", "<span></span>");
       //           element = $compile('<div><a ng-if="true" tiscope></a></div>')(
       //             $rootScope,
       //           );
@@ -7882,7 +7882,7 @@ describe("$compile", () => {
           $templateCache = _$templateCache_;
         });
 
-        $templateCache.put(
+        $templateCache.set(
           "myDirective.html",
           "<span>{{hello}}|{{hello}}</span>",
         );
@@ -8006,7 +8006,7 @@ describe("$compile", () => {
           },
         );
 
-        $templateCache.put("test-link.html", "{{testAttr}}");
+        $templateCache.set("test-link.html", "{{testAttr}}");
         element = $compile('<div test-link="{{1+2}}"></div>')($rootScope);
         $rootScope.$apply();
         expect(element.text()).toBe("3");
@@ -9513,7 +9513,7 @@ describe("$compile", () => {
           },
         );
 
-        $templateCache.put("other.html", "value: {{value}}");
+        $templateCache.set("other.html", "value: {{value}}");
         element = $compile("<div my-component other-tpl-dir>")($rootScope);
 
         $rootScope.$apply(() => {
@@ -9815,7 +9815,7 @@ describe("$compile", () => {
               $templateCache = _$templateCache_;
             });
 
-          $templateCache.put(
+          $templateCache.set(
             "other.html",
             "1:{{param1}};2:{{param2}};3:{{::param1}};4:{{::param2}}",
           );
@@ -9857,7 +9857,7 @@ describe("$compile", () => {
               $templateCache = _$templateCache_;
             });
 
-          $templateCache.put(
+          $templateCache.set(
             "other.html",
             "1:{{param1}};2:{{param2}};3:{{::param1}};4:{{::param2}}",
           );
@@ -11214,7 +11214,7 @@ describe("$compile", () => {
         );
         initInjector("test1");
 
-        $templateCache.put("test.html", "<p>isolate</p>");
+        $templateCache.set("test.html", "<p>isolate</p>");
         $rootScope.fn = valueFn("called!");
         $rootScope.whom = "world";
         $rootScope.remoteData = {
@@ -11376,7 +11376,7 @@ describe("$compile", () => {
 
                 initInjector("myModule");
 
-                $templateCache.put("test.html", "<p>template</p>");
+                $templateCache.set("test.html", "<p>template</p>");
                 $rootScope.fn = valueFn("called!");
                 $rootScope.whom = "world";
                 $rootScope.remoteData = {
@@ -11764,7 +11764,7 @@ describe("$compile", () => {
             }),
           );
         initInjector("test1");
-        $templateCache.put("test.html", "<p>isolate</p>");
+        $templateCache.set("test.html", "<p>isolate</p>");
         element = $compile("<div foo-dir>")($rootScope);
         $rootScope.$digest();
         expect(controllerCalled).toBe(true);
@@ -11812,7 +11812,7 @@ describe("$compile", () => {
             }),
           );
         initInjector("test1");
-        $templateCache.put("test.html", "<p>isolate</p>");
+        $templateCache.set("test.html", "<p>isolate</p>");
         $rootScope.fn = valueFn("called!");
         $rootScope.whom = "world";
         $rootScope.remoteData = {
@@ -11872,7 +11872,7 @@ describe("$compile", () => {
             }),
           );
         initInjector("test1");
-        $templateCache.put("test.html", "<p>isolate</p>");
+        $templateCache.set("test.html", "<p>isolate</p>");
         $rootScope.fn = valueFn("called!");
         $rootScope.whom = "world";
         $rootScope.remoteData = {
@@ -12050,7 +12050,7 @@ describe("$compile", () => {
           controllerAs: "mainCtrl",
         }));
         initInjector("test1");
-        $templateCache.put(
+        $templateCache.set(
           "main.html",
           "<span>template:{{mainCtrl.name}}</span>",
         );
@@ -12217,7 +12217,7 @@ describe("$compile", () => {
             },
           }));
         initInjector("test1");
-        $templateCache.put("dirB.html", "<p>dirB</p>");
+        $templateCache.set("dirB.html", "<p>dirB</p>");
         element = $compile("<div dir-a dir-b></div>")($rootScope);
         $rootScope.$digest();
         expect(log[0]).toEqual("dirAController.name: dirA");
@@ -12590,7 +12590,7 @@ describe("$compile", () => {
             },
           }));
         initInjector("test1");
-        $templateCache.put(
+        $templateCache.set(
           "main.html",
           "<span ng-init=\"name='WORKS'\">{{name}}</span>",
         );
@@ -12676,7 +12676,7 @@ describe("$compile", () => {
           controllerAs: "mainCtrl",
         }));
         initInjector("test1");
-        $templateCache.put(
+        $templateCache.set(
           "main.html",
           "<span>template:{{mainCtrl.name}} <div ng-transclude></div></span>",
         );
@@ -12698,7 +12698,7 @@ describe("$compile", () => {
             controller: "MainCtrl as mainCtrl",
           }));
         initInjector("test1");
-        $templateCache.put("main.html", "<span>{{mainCtrl.name}}</span>");
+        $templateCache.set("main.html", "<span>{{mainCtrl.name}}</span>");
         element = $compile("<div main></div>")($rootScope);
         $rootScope.$apply();
         expect(element.text()).toBe("lucas");
@@ -12886,7 +12886,7 @@ describe("$compile", () => {
         expect(syncCtrlSpy).not.toHaveBeenCalled();
         expect(asyncCtrlSpy).not.toHaveBeenCalled();
 
-        $templateCache.put("myDirectiveAsync.html", "<div>Hello!</div>");
+        $templateCache.set("myDirectiveAsync.html", "<div>Hello!</div>");
         element = $compile(
           "<div>" +
             "<span xmy-directive-sync></span>" +
@@ -12927,11 +12927,11 @@ describe("$compile", () => {
             },
           }));
         initInjector("test1");
-        $templateCache.put(
+        $templateCache.set(
           "parentDirective.html",
           "<div ng-transclude>parentTemplateText;</div>",
         );
-        $templateCache.put(
+        $templateCache.set(
           "childDirective.html",
           "<span>childTemplateText;</span>",
         );
@@ -12977,7 +12977,7 @@ describe("$compile", () => {
           controller: Ctrl,
         }));
         initInjector("test1");
-        $templateCache.put("/mock/hello", "<p>Hello</p>");
+        $templateCache.set("/mock/hello", "<p>Hello</p>");
         $rootScope.foo = "bar";
 
         element = $compile('<div my-directive my-foo="foo"></div>')($rootScope);
@@ -13014,15 +13014,15 @@ describe("$compile", () => {
             },
           }));
         initInjector("test1");
-        $templateCache.put(
+        $templateCache.set(
           "parentDirective.html",
           "<div ng-transclude>parentTemplateText;</div>",
         );
-        $templateCache.put(
+        $templateCache.set(
           "childDirective.html",
           "<span ng-transclude>childTemplateText;</span>",
         );
-        $templateCache.put(
+        $templateCache.set(
           "babyDirective.html",
           "<span>babyTemplateText;</span>",
         );
@@ -13059,7 +13059,7 @@ describe("$compile", () => {
           },
         }));
         initInjector("test1");
-        $templateCache.put("/mock/hello", "<p>Hello</p>");
+        $templateCache.set("/mock/hello", "<p>Hello</p>");
 
         element = $compile("<div my-directive></div>")($rootScope);
         $rootScope.$apply();
@@ -13185,7 +13185,7 @@ describe("$compile", () => {
             );
           initInjector("test1");
           // return function ($httpBackend) {
-          $templateCache.put(
+          $templateCache.set(
             "chapter.html",
             "<div>chapter-<div section>[<div ng-transclude></div>]</div></div>",
           );
@@ -13495,7 +13495,7 @@ describe("$compile", () => {
         //     }));
         //   initInjector("test1");
         //   const cacheSize = CACHE.size;
-        //   $templateCache.put("red.html", "<p>red</p>");
+        //   $templateCache.set("red.html", "<p>red</p>");
         //   const template = $compile(
         //     '<div ng-controller="Leak">' +
         //       '<div ng-switch="code">' +
@@ -13511,7 +13511,7 @@ describe("$compile", () => {
         //   expect(linkFn).toHaveBeenCalled();
         //   expect(CACHE.size).toEqual(cacheSize + 2);
 
-        //   $templateCache.removeAll();
+        //   $templateCache = new Map();
         //   const destroyedScope = $rootScope.$new();
         //   destroyedScope.$destroy();
         //   const clone = template(destroyedScope, () => {});
@@ -13842,7 +13842,7 @@ describe("$compile", () => {
               }),
             );
           initInjector("test1");
-          $templateCache.put(
+          $templateCache.set(
             "noTransBar.html",
             "<div>" +
               // This ng-transclude is invalid. It should throw an error.
@@ -13871,7 +13871,7 @@ describe("$compile", () => {
             }),
           );
           initInjector("test1");
-          $templateCache.put("foo.html", '<div class="foo">whatever</div>');
+          $templateCache.set("foo.html", '<div class="foo">whatever</div>');
 
           element = $compile("<div trans-in-compile>transcluded content</div>")(
             $rootScope,
@@ -13919,7 +13919,7 @@ describe("$compile", () => {
             },
           }));
           initInjector("test1");
-          $templateCache.put("trans.html", "<div ng-transclude></div>");
+          $templateCache.set("trans.html", "<div ng-transclude></div>");
 
           element = $compile("<div trans><span>unicorn!</span></div>")(
             $rootScope,
@@ -13968,7 +13968,7 @@ describe("$compile", () => {
               },
             }));
             initInjector("test1");
-            $templateCache.put("trans.html", "<div ng-transclude></div>");
+            $templateCache.set("trans.html", "<div ng-transclude></div>");
 
             element = $compile(
               "<div replaced-trans><span>unicorn!</span></div>",
@@ -14398,12 +14398,12 @@ describe("$compile", () => {
               );
 
             initInjector("test1");
-            $templateCache.put("async", "<div ng-transclude></div>");
-            $templateCache.put(
+            $templateCache.set("async", "<div ng-transclude></div>");
+            $templateCache.set(
               "asyncSync",
               "<div noop><div sync><div ng-transclude></div></div></div>",
             );
-            $templateCache.put(
+            $templateCache.set(
               "asyncAsync",
               "<div noop><div async><div ng-transclude></div></div></div>",
             );
@@ -14511,8 +14511,8 @@ describe("$compile", () => {
                 }),
               );
 
-            $templateCache.put("transAsync", "<div ng-transclude></div>");
-            $templateCache.put(
+            $templateCache.set("transAsync", "<div ng-transclude></div>");
+            $templateCache.set(
               "isoAsync",
               "<trans-async><span ng-transclude></span></trans-async>",
             );
@@ -14697,7 +14697,7 @@ describe("$compile", () => {
           );
 
         initInjector("test1");
-        $templateCache.put("template.html", "<p second>template.html</p>");
+        $templateCache.set("template.html", "<p second>template.html</p>");
         expect(() => {
           $compile("<div template first></div>");
           $rootScope.$digest();
@@ -14924,7 +14924,7 @@ describe("$compile", () => {
             }),
           );
         initInjector("test1");
-        $templateCache.put("template.html", "<div transclude></div>");
+        $templateCache.set("template.html", "<div transclude></div>");
         element = $compile("<div template></div>")($rootScope);
         $rootScope.$digest();
         expect(transclude).toBeDefined();
@@ -14960,7 +14960,7 @@ describe("$compile", () => {
           }));
         initInjector("test1");
 
-        $templateCache.put(
+        $templateCache.set(
           "inner.html",
           "<div inner-again><p>Content</p></div>",
         );
@@ -15057,7 +15057,7 @@ describe("$compile", () => {
             replace: true,
           }));
         initInjector("test1");
-        $templateCache.put(
+        $templateCache.set(
           "template.html",
           "<div trans-sync>Content To Be Transcluded</div>",
         );
@@ -15165,7 +15165,8 @@ describe("$compile", () => {
             }),
           );
         initInjector("test1");
-        $templateCache.put("baz.html", "<div>Baz</div>");
+        $templateCache.set("baz.html", "<div>Baz</div>");
+        debugger;
         element = $compile("<trans><inner></inner></trans>")($rootScope);
         $rootScope.$digest();
 
@@ -15286,7 +15287,7 @@ describe("$compile", () => {
             }),
           );
         initInjector("test1");
-        $templateCache.put("inner.html", "<inner></inner>");
+        $templateCache.set("inner.html", "<inner></inner>");
         element = $compile("<outer></outer>")($rootScope);
         $rootScope.$digest();
 
@@ -16399,7 +16400,7 @@ describe("$compile", () => {
             },
           }));
         initInjector("test1");
-        $templateCache.put("async.html", "<h1>Test</h1>");
+        $templateCache.set("async.html", "<h1>Test</h1>");
       });
 
       it("should provide post-digest value in synchronous directive link functions when after overridden attribute", () => {
@@ -17225,7 +17226,7 @@ describe("$compile", () => {
           },
         }));
       initInjector("test1");
-      $templateCache.put("template123", "<p></p>");
+      $templateCache.set("template123", "<p></p>");
 
       $compile(
         '<div replace-start foo="1"><span foo="1.1"></span></div>' +
@@ -17297,7 +17298,7 @@ describe("$compile", () => {
           : undefined,
       }));
       initInjector("test1");
-      $templateCache.put("the-dir-template-url", template);
+      $templateCache.set("the-dir-template-url", template);
 
       testCompileLinkDataCleanup(
         "<div>" +

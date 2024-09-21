@@ -950,7 +950,7 @@ describe("ngRepeat", () => {
         templateUrl: "rr.html",
       }));
 
-      $templateCache.put("rr.html", '<div ng-repeat="i in items">{{i}}|</div>');
+      $templateCache.set("rr.html", '<div ng-repeat="i in items">{{i}}|</div>');
 
       element = JQLite("<div><span rr>{{i}}|</span></div>");
       $compile(element)(scope);
@@ -994,7 +994,7 @@ describe("ngRepeat", () => {
         replace: true,
         templateUrl: "replace-me-with-repeater.html",
       }));
-      $templateCache.put(
+      $templateCache.set(
         "replace-me-with-repeater.html",
         '<div ng-repeat="i in items">{{log(i)}}</div>',
       );
@@ -1042,7 +1042,7 @@ describe("ngRepeat", () => {
         replace: true,
         templateUrl: "replace-me-with-repeater.html",
       }));
-      $templateCache.put(
+      $templateCache.set(
         "replace-me-with-repeater.html",
         '<div ng-repeat="i in [1,2,3]">{{i}}</div>',
       );
@@ -1294,7 +1294,7 @@ describe("ngRepeat", () => {
       const injector = window.angular.bootstrap(element);
       scope = injector.get("$rootScope");
       $templateCache = injector.get("$templateCache");
-      $templateCache.put("test.html", "hello");
+      $templateCache.set("test.html", "hello");
       scope.$digest();
       setTimeout(() => {
         expect(element.text()).toBe("hellohello");

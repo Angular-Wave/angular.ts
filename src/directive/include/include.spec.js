@@ -70,7 +70,7 @@ describe("ngInclude", () => {
       const injector = angular.bootstrap(element);
       $rootScope = injector.get("$rootScope");
       $templateCache = injector.get("$templateCache");
-      $templateCache.put("myUrl", [200, "{{name}}", {}]);
+      $templateCache.set("myUrl", [200, "{{name}}", {}]);
       $rootScope.name = "misko";
       $rootScope.url = "myUrl";
       $rootScope.$digest();
@@ -709,7 +709,7 @@ describe("ngInclude", () => {
     //   it("should fire off the enter animation", () => {
     //     let item;
 
-    //     $templateCache.put("enter", [200, "<div>data</div>", {}]);
+    //     $templateCache.set("enter", [200, "<div>data</div>", {}]);
     //     $rootScope.tpl = "enter";
     //     element = $compile(
     //       html("<div><div " + 'ng-include="tpl">' + "</div></div>"),
@@ -723,7 +723,7 @@ describe("ngInclude", () => {
 
     //   it("should fire off the leave animation", () => {
     //     let item;
-    //     $templateCache.put("enter", [200, "<div>data</div>", {}]);
+    //     $templateCache.set("enter", [200, "<div>data</div>", {}]);
     //     $rootScope.tpl = "enter";
     //     element = $compile(
     //       html("<div><div " + 'ng-include="tpl">' + "</div></div>"),
@@ -744,8 +744,8 @@ describe("ngInclude", () => {
 
     //   it("should animate two separate ngInclude elements", () => {
     //     let item;
-    //     $templateCache.put("one", [200, "one", {}]);
-    //     $templateCache.put("two", [200, "two", {}]);
+    //     $templateCache.set("one", [200, "one", {}]);
+    //     $templateCache.set("two", [200, "two", {}]);
     //     $rootScope.tpl = "one";
     //     element = $compile(
     //       html("<div><div " + 'ng-include="tpl">' + "</div></div>"),
@@ -784,8 +784,8 @@ describe("ngInclude", () => {
     //         html("<div>" + '<div ng-include="inc">Yo</div>' + "</div>"),
     //       )($scope);
 
-    //       $templateCache.put("one", [200, "<div>one</div>", {}]);
-    //       $templateCache.put("two", [200, "<div>two</div>", {}]);
+    //       $templateCache.set("one", [200, "<div>one</div>", {}]);
+    //       $templateCache.set("two", [200, "<div>two</div>", {}]);
 
     //       $scope.$apply('inc = "one"');
 

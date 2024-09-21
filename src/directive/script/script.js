@@ -8,7 +8,7 @@ export const scriptDirective = [
         const templateUrl = attr.id;
         const { text } = element[0];
 
-        $templateCache.put(templateUrl, text);
+        $templateCache.set(templateUrl, text);
       }
     },
   }),
