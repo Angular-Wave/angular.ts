@@ -15166,7 +15166,6 @@ describe("$compile", () => {
           );
         initInjector("test1");
         $templateCache.set("baz.html", "<div>Baz</div>");
-        debugger;
         element = $compile("<trans><inner></inner></trans>")($rootScope);
         $rootScope.$digest();
 
