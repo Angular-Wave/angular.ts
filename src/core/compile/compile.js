@@ -581,14 +581,12 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       const startSymbol = $interpolate.startSymbol();
       const endSymbol = $interpolate.endSymbol();
+      /** @type {(string) => string} */
       const denormalizeTemplate =
         startSymbol === "{{" && endSymbol === "}}"
           ? (x) => x
-          : function denormalizeTemplate(template) {
-              return template
-                .replace(/\{\{/g, startSymbol)
-                .replace(/}}/g, endSymbol);
-            };
+          : (x) => x.replace(/\{\{/g, startSymbol).replace(/}}/g, endSymbol);
+
       const NG_PREFIX_BINDING = /^ng(Attr|Prop|On)([A-Z].*)$/;
       const MULTI_ELEMENT_DIR_RE = /^(.+)Start$/;
       return compile;

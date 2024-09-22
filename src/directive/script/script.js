@@ -1,15 +1,17 @@
-export const scriptDirective = [
-  "$templateCache",
-  ($templateCache) => ({
+scriptDirective.$inject = ["$templateCache"];
+
+/**
+ * @param {import('../../core/cache/cache-factory').TemplateCache} $templateCache
+ * @returns {import('../../types').Directive}
+ */
+export function scriptDirective($templateCache) {
+  return {
     restrict: "E",
     terminal: true,
     compile(element, attr) {
       if (attr.type === "text/ng-template") {
-        const templateUrl = attr.id;
-        const { text } = element[0];
-
-        $templateCache.set(templateUrl, text);
+        $templateCache.set(attr.id, element[0]);
       }
     },
-  }),
-];
+  };
+}

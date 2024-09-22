@@ -9,10 +9,10 @@
 export class TemplateFactory {
     /** @type {boolean} */
     _useHttp: boolean;
-    $get: (string | (($http: any, $templateCache: any, $templateRequest: any, $q: any, $injector: import("../core/di/internal-injector").InjectorService) => this))[];
+    $get: (string | (($http: any, $templateCache: import("../core/cache/cache-factory").TemplateCache, $templateRequest: any, $q: any, $injector: import("../core/di/internal-injector").InjectorService) => this))[];
     $templateRequest: any;
     $http: any;
-    $templateCache: any;
+    $templateCache: import("../core/cache/cache-factory").TemplateCache;
     $q: any;
     $injector: import("../core/di/internal-injector").InjectorService;
     /**

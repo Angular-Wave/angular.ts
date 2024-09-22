@@ -1,5 +1,5 @@
 import { defaultHttpResponseTransform } from "./http/http";
-import { extend, isString, isUndefined, minErr } from "../shared/utils";
+import { extend, isString, minErr } from "../shared/utils";
 
 var $templateRequestMinErr = minErr("$templateRequest");
 
@@ -62,7 +62,7 @@ export function TemplateRequestProvider() {
     /**
      *
      * @param {import('../core/exception-handler').ErrorHandler} $exceptionHandler
-     * @param {*} $templateCache
+     * @param {import('../core/cache/cache-factory').TemplateCache} $templateCache
      * @param {*} $http
      * @param {*} $q
      * @param {*} $sce
@@ -77,7 +77,7 @@ export function TemplateRequestProvider() {
         // resources for keys that already are included in there. This also makes
         // AngularJS accept any script directive, no matter its name. However, we
         // still need to unwrap trusted types.
-        if (!isString(tpl) || isUndefined($templateCache.get(tpl))) {
+        if (!isString(tpl) || !$templateCache.has(tpl)) {
           tpl = $sce.getTrustedResourceUrl(tpl);
         }
 

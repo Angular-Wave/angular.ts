@@ -1,5 +1,8 @@
-export const scriptDirective: (string | (($templateCache: any) => {
-    restrict: string;
-    terminal: boolean;
-    compile(element: any, attr: any): void;
-}))[];
+/**
+ * @param {import('../../core/cache/cache-factory').TemplateCache} $templateCache
+ * @returns {import('../../types').Directive}
+ */
+export function scriptDirective($templateCache: import("../../core/cache/cache-factory").TemplateCache): import("../../types").Directive;
+export namespace scriptDirective {
+    let $inject: string[];
+}

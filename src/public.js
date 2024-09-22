@@ -59,9 +59,7 @@ import {
   AnimateAsyncRunFactoryProvider,
   AnimateRunnerFactoryProvider,
 } from "./animations/animate-runner";
-import {
-  TemplateCacheProvider,
-} from "./core/cache/cache-factory";
+import { TemplateCacheProvider } from "./core/cache/cache-factory";
 import { $ControllerProvider } from "./core/controller/controller";
 import { $ExceptionHandlerProvider } from "./core/exception-handler";
 import { $FilterProvider } from "./core/filter/filter";

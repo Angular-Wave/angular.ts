@@ -28,7 +28,7 @@ export class TemplateFactory {
     "$injector",
     /**
      * @param {any} $http
-     * @param {any} $templateCache
+     * @param {import("../core/cache/cache-factory").TemplateCache} $templateCache
      * @param {any} $templateRequest
      * @param {any} $q
      * @param {import("../core/di/internal-injector").InjectorService} $injector

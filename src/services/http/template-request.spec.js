@@ -79,21 +79,19 @@ describe("$templateRequest", () => {
           },
         ]);
 
-        createInjector(["test"]).invoke(
-          ($templateRequest, $http) => {
-            spyOn($http, "get").and.callThrough();
+        createInjector(["test"]).invoke(($templateRequest, $http) => {
+          spyOn($http, "get").and.callThrough();
 
-            const customCache = new Map();
-            httpOptions.cache = customCache;
+          const customCache = new Map();
+          httpOptions.cache = customCache;
 
-            $templateRequest("tpl.html");
+          $templateRequest("tpl.html");
 
-            expect($http.get).toHaveBeenCalledOnceWith("tpl.html", {
-              cache: customCache,
-              transformResponse: [],
-            });
-          },
-        );
+          expect($http.get).toHaveBeenCalledOnceWith("tpl.html", {
+            cache: customCache,
+            transformResponse: [],
+          });
+        });
       });
     });
   });
