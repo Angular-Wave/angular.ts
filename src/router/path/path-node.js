@@ -25,9 +25,11 @@ export class PathNode {
       this.resolvables = state.resolvables.map((res) => res.clone());
     }
   }
+
   clone() {
     return new PathNode(this);
   }
+
   /** Sets [[paramValues]] for the node, from the values of an object hash */
   applyRawParams(params) {
     const getParamVal = (paramDef) => [
@@ -40,10 +42,12 @@ export class PathNode {
     );
     return this;
   }
+
   /** Gets a specific [[Param]] metadata that belongs to the node */
   parameter(name) {
     return find(this.paramSchema, propEq("id", name));
   }
+
   /**
    * @returns true if the state and parameter values for another PathNode are
    * equal to the state and param values for this PathNode
@@ -52,6 +56,7 @@ export class PathNode {
     const diff = this.diff(node, paramsFn);
     return diff && diff.length === 0;
   }
+
   /**
    * Finds Params with different parameter values on another PathNode.
    *
@@ -70,8 +75,3 @@ export class PathNode {
     return Param.changed(params, this.paramValues, node.paramValues);
   }
 }
-/**
- * Returns a clone of the PathNode
- * @deprecated use instance method `node.clone()`
- */
-PathNode.clone = (node) => node.clone();

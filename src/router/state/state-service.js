@@ -8,7 +8,7 @@ import {
 import { isDefined, isObject, isString, minErr } from "../../shared/utils";
 import { Queue } from "../common/queue";
 import { services } from "../common/coreservices";
-import { PathUtils } from "../path/path-utils";
+import { makeTargetState } from "../path/path-utils";
 import { PathNode } from "../path/path-node";
 import { defaultTransOpts } from "../transition/transition-service";
 import { Rejection, RejectType } from "../transition/reject-factory";
@@ -215,7 +215,7 @@ export class StateService {
    * @internal
    */
   _handleInvalidTargetState(fromPath, toState) {
-    const fromState = PathUtils.makeTargetState(this.stateRegistry, fromPath);
+    const fromState = makeTargetState(this.stateRegistry, fromPath);
     const globals = this.globals;
     const latestThing = () => globals.transitionHistory.peekTail();
     const latest = latestThing();
@@ -690,7 +690,7 @@ export class StateService {
     if (!state || !state.lazyLoad)
       throw new Error("Can not lazy load " + stateOrName);
     const currentPath = this.getCurrentPath();
-    const target = PathUtils.makeTargetState(this.stateRegistry, currentPath);
+    const target = makeTargetState(this.stateRegistry, currentPath);
     transition =
       transition || this.transitionService.create(currentPath, target);
     return lazyLoadState(transition, state);

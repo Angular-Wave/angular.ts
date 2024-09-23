@@ -4,7 +4,6 @@ import { stringify } from "../../shared/strings";
 import {
   map,
   find,
-  mergeR,
   tail,
   omit,
   arrayTuples,
@@ -172,7 +171,9 @@ export class Transition {
   }
   params(pathname = "to") {
     return Object.freeze(
-      this._treeChanges[pathname].map(prop("paramValues")).reduce(mergeR, {}),
+      this._treeChanges[pathname]
+        .map((x) => x.paramValues)
+        .reduce((acc, obj) => ({ ...acc, ...obj }), {}),
     );
   }
   paramsChanged() {
@@ -702,7 +703,9 @@ export class Transition {
       from = isObject(fromStateOrName) ? fromStateOrName.name : fromStateOrName,
       fromParams = stringify(
         avoidEmptyHash(
-          this._treeChanges.from.map(prop("paramValues")).reduce(mergeR, {}),
+          this._treeChanges.from
+            .map(prop("paramValues"))
+            .reduce((acc, obj) => ({ ...acc, ...obj }), {}),
         ),
       ),
       toValid = this.valid() ? "" : "(X) ",

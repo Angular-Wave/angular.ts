@@ -36,10 +36,3 @@ export class PathNode {
      */
     diff(node: any, paramsFn: any): any;
 }
-export namespace PathNode {
-    /**
-     * Returns a clone of the PathNode
-     * @deprecated use instance method `node.clone()`
-     */
-    function clone(node: any): any;
-}

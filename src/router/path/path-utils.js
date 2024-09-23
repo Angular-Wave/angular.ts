@@ -1,12 +1,4 @@
-import {
-  find,
-  pick,
-  omit,
-  tail,
-  mergeR,
-  unnestR,
-  arrayTuples,
-} from "../../shared/common";
+import { find, pick, omit, unnestR, arrayTuples } from "../../shared/common";
 import { prop, propEq } from "../../shared/hof";
 import { TargetState } from "../state/target-state";
 import { PathNode } from "./path-node";
@@ -14,16 +6,6 @@ import { PathNode } from "./path-node";
  * This class contains functions which convert TargetStates, Nodes and paths from one type to another.
  */
 export class PathUtils {
-  /** Given a PathNode[], create an TargetState */
-  static makeTargetState(registry, path) {
-    const state = tail(path).state;
-    return new TargetState(
-      registry,
-      state,
-      path.map(prop("paramValues")).reduce(mergeR, {}),
-      {},
-    );
-  }
   static buildPath(targetState) {
     const toParams = targetState.params();
     return targetState
@@ -201,4 +183,20 @@ export class PathUtils {
   static paramValues(path) {
     return path.reduce((acc, node) => Object.assign(acc, node.paramValues), {});
   }
+}
+
+/** Given a PathNode[], create an TargetState
+ * @param {import("../state/state-registry.js").StateRegistry} registry
+ * @param {Array<PathNode>} path
+ * @returns
+ */
+export function makeTargetState(registry, path) {
+  return new TargetState(
+    registry,
+    path.at(-1).state,
+    path
+      .map((x) => x.paramValues)
+      .reduce((acc, obj) => ({ ...acc, ...obj }), {}),
+    {},
+  );
 }

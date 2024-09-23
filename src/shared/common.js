@@ -160,8 +160,7 @@ export function defaults(opts, ...defaultsList) {
   const defaultVals = Object.assign({}, ...defaultsList.reverse());
   return Object.assign(defaultVals, pick(opts || {}, Object.keys(defaultVals)));
 }
-/** Reduce function that merges each element of the list into a single object, using extend */
-export const mergeR = (memo, item) => Object.assign(memo, item);
+
 /**
  * Finds the common ancestor path between two states.
  *

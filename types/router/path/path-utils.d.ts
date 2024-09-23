@@ -1,9 +1,13 @@
+/** Given a PathNode[], create an TargetState
+ * @param {import("../state/state-registry.js").StateRegistry} registry
+ * @param {Array<PathNode>} path
+ * @returns
+ */
+export function makeTargetState(registry: import("../state/state-registry.js").StateRegistry, path: Array<PathNode>): TargetState;
 /**
  * This class contains functions which convert TargetStates, Nodes and paths from one type to another.
  */
 export class PathUtils {
-    /** Given a PathNode[], create an TargetState */
-    static makeTargetState(registry: any, path: any): TargetState;
     static buildPath(targetState: any): any;
     /** Given a fromPath: PathNode[] and a TargetState, builds a toPath: PathNode[] */
     static buildToPath(fromPath: any, targetState: any): any;
@@ -76,4 +80,5 @@ export class PathUtils {
     /** Gets the raw parameter values from a path */
     static paramValues(path: any): any;
 }
+import { PathNode } from "./path-node";
 import { TargetState } from "../state/target-state";
