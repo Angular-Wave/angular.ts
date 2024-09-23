@@ -13,50 +13,6 @@ export function $HttpParamSerializerProvider(): void;
 export class $HttpParamSerializerProvider {
     $get: () => (params: any) => string;
 }
-/**
- *
- * Alternative {@link $http `$http`} params serializer that follows
- * jQuery's [`param()`](http://api.jquery.com/jquery.param/) method logic.
- * The serializer will also sort the params alphabetically.
- *
- * To use it for serializing `$http` request parameters, set it as the `paramSerializer` property:
- *
- * ```js
- * $http({
- *   url: myUrl,
- *   method: 'GET',
- *   params: myParams,
- *   paramSerializer: '$httpParamSerializerJQLike'
- * });
- * ```
- *
- * It is also possible to set it as the default `paramSerializer` in the
- * {@link $httpProvider#defaults `$httpProvider`}.
- *
- * Additionally, you can inject the serializer and use it explicitly, for example to serialize
- * form data for submission:
- *
- * ```js
- * .controller(function($http, $httpParamSerializerJQLike) {
- *   //...
- *
- *   $http({
- *     url: myUrl,
- *     method: 'POST',
- *     data: $httpParamSerializerJQLike(myData),
- *     headers: {
- *       'Content-Type': 'application/x-www-form-urlencoded'
- *     }
- *   });
- *
- * });
- * ```
- *
- */
-export function $HttpParamSerializerJQLikeProvider(): void;
-export class $HttpParamSerializerJQLikeProvider {
-    $get: () => (params: any) => string;
-}
 export function defaultHttpResponseTransform(data: any, headers: any): any;
 /**
  * Use `$httpProvider` to change the default behavior of the {@link ng.$http $http} service.

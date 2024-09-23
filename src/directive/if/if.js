@@ -18,10 +18,10 @@ export function ngIfDirective($animate) {
     restrict: "A",
     /**
      *
-     * @param {*} $scope
-     * @param {*} $element
-     * @param {*} $attr
-     * @param {*} _ctrl
+     * @param {import("../../core/scope/scope").Scope} $scope
+     * @param {import("../../shared/jqlite/jqlite").JQLite} $element
+     * @param {import("../../core/compile/attributes").Attributes} $attr
+     * @param {Object} _ctrl
      * @param {*} $transclude
      */
     link($scope, $element, $attr, _ctrl, $transclude) {
@@ -32,7 +32,7 @@ export function ngIfDirective($animate) {
       let childScope;
       /** @type {import("../../shared/jqlite/jqlite").JQLite} */
       let previousElements;
-      $scope.$watch($attr.ngIf, (value) => {
+      $scope.$watch($attr["ngIf"], (value) => {
         if (value) {
           if (!childScope) {
             $transclude((clone, newScope) => {

@@ -69,7 +69,6 @@ import { $$IntervalFactoryProvider } from "./core/interval/interval-factory";
 import {
   $HttpProvider,
   $HttpParamSerializerProvider,
-  $HttpParamSerializerJQLikeProvider,
 } from "./services/http/http";
 import { $HttpBackendProvider } from "./services/http-backend/http-backend";
 import { $LocationProvider } from "./core/location/location";
@@ -252,7 +251,6 @@ export function publishExternalAPI(angular) {
             $$intervalFactory: $$IntervalFactoryProvider,
             $http: $HttpProvider,
             $httpParamSerializer: $HttpParamSerializerProvider,
-            $httpParamSerializerJQLike: $HttpParamSerializerJQLikeProvider,
             $httpBackend: $HttpBackendProvider,
             $location: $LocationProvider,
             $log: $LogProvider,
