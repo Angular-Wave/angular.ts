@@ -110,10 +110,6 @@ export function pick(obj: any, propNames: any): {};
  * @param propNames an Array of strings, which are the blacklisted property names
  */
 export function omit(obj: any, propNames: any): {};
-/**
- * Maps an array, or object to a property (by name)
- */
-export function pluck(collection: any, propName: any): any;
 /** Filters an Array or an Object's properties based on a predicate */
 export function filter(collection: any, callback: any): {};
 /** Finds an object from an array, or a property of an object, that matches a predicate */

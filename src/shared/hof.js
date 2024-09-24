@@ -73,13 +73,7 @@ export function compose() {
 export function pipe() {
   return compose.apply(null, [].slice.call(arguments).reverse());
 }
-/**
- * Given a property name, returns a function that returns that property from an object
- * let obj = { foo: 1, name: "blarg" };
- * let getName = prop("name");
- * getName(obj) === "blarg"
- */
-export const prop = (name) => (obj) => obj && obj[name];
+
 /**
  * Given a property name and a value, returns a function that returns a boolean based on whether
  * the passed object has a property that matches the value
@@ -96,7 +90,11 @@ export const propEq = curry((name, _val, obj) => obj && obj[name] === _val);
  * let propNotFound = prop("this.property.doesnt.exist");
  * propNotFound(obj) === undefined
  */
-export const parse = (name) => pipe.apply(null, name.split(".").map(prop));
+export const parse = (name) =>
+  pipe.apply(
+    null,
+    name.split(".").map((name) => (obj) => obj && obj[name]),
+  );
 
 /**
  * Given two functions that return truthy or falsey values, returns a function that returns truthy

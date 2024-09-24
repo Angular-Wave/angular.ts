@@ -8,7 +8,7 @@ import {
 } from "../../shared/common";
 import { isDefined, isFunction, isString } from "../../shared/utils";
 import { stringify } from "../../shared/strings";
-import { is, pattern, pipe, prop, val } from "../../shared/hof";
+import { is, pattern, pipe, val } from "../../shared/hof";
 import { Resolvable } from "../resolve/resolvable";
 import { services } from "../common/coreservices";
 import { annotate } from "../../core/di/injector";
@@ -73,12 +73,18 @@ function getNavigableBuilder(isRoot) {
 
 function getParamsBuilder(paramFactory) {
   return function (state) {
-    const makeConfigParam = (config, id) =>
+    const makeConfigParam = (_config, id) =>
       paramFactory.fromConfig(id, null, state.self);
     const urlParams =
       (state.url && state.url.parameters({ inherit: false })) || [];
     const nonUrlParams = Object.values(
-      map(omit(state.params || {}, urlParams.map(prop("id"))), makeConfigParam),
+      map(
+        omit(
+          state.params || {},
+          urlParams.map((x) => x.id),
+        ),
+        makeConfigParam,
+      ),
     );
     return urlParams
       .concat(nonUrlParams)
@@ -176,11 +182,11 @@ export function resolvablesBuilder(state) {
   // Given a literal resolve or provider object, returns a Resolvable
   const literal2Resolvable = pattern([
     [
-      prop("resolveFn"),
+      (x) => x.resolveFn,
       (p) => new Resolvable(getToken(p), p.resolveFn, p.deps, p.policy),
     ],
     [
-      prop("useFactory"),
+      (x) => x.useFactory,
       (p) =>
         new Resolvable(
           getToken(p),
@@ -190,27 +196,27 @@ export function resolvablesBuilder(state) {
         ),
     ],
     [
-      prop("useClass"),
+      (x) => x.useClass,
       (p) => new Resolvable(getToken(p), () => new p.useClass(), [], p.policy),
     ],
     [
-      prop("useValue"),
+      (x) => x.useValue,
       (p) =>
         new Resolvable(getToken(p), () => p.useValue, [], p.policy, p.useValue),
     ],
     [
-      prop("useExisting"),
+      (x) => x.useExisting,
       (p) => new Resolvable(getToken(p), (x) => x, [p.useExisting], p.policy),
     ],
   ]);
   const tuple2Resolvable = pattern([
     [
-      pipe(prop("val"), isString),
+      pipe((x) => x.val, isString),
       (tuple) =>
         new Resolvable(tuple.token, (x) => x, [tuple.val], tuple.policy),
     ],
     [
-      pipe(prop("val"), Array.isArray),
+      pipe((x) => x.val, Array.isArray),
       (tuple) =>
         new Resolvable(
           tuple.token,
@@ -220,7 +226,7 @@ export function resolvablesBuilder(state) {
         ),
     ],
     [
-      pipe(prop("val"), isFunction),
+      pipe((x) => x.val, isFunction),
       (tuple) =>
         new Resolvable(
           tuple.token,

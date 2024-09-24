@@ -1,5 +1,5 @@
 import { equals, applyPairs, removeFrom, find } from "../../shared/common";
-import { curry, prop } from "../../shared/hof";
+import { curry } from "../../shared/hof";
 import { trace } from "../common/trace";
 import { getNg1ViewConfigFactory } from "../state/views";
 /**
@@ -177,7 +177,7 @@ export class ViewService {
    * @return {Array} Returns an array of fully-qualified view names.
    */
   available() {
-    return this._ngViews.map(prop("fqn"));
+    return this._ngViews.map((x) => x.fqn);
   }
   /**
    * Returns the list of views on the page containing loaded content.
@@ -185,7 +185,7 @@ export class ViewService {
    * @return {Array} Returns an array of fully-qualified view names.
    */
   active() {
-    return this._ngViews.filter(prop("$config")).map(prop("name"));
+    return this._ngViews.filter((x) => x.$config).map((x) => x.name);
   }
 }
 /**

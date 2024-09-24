@@ -100,7 +100,6 @@ export function or(fn1: any, fn2: any): (...args: any[]) => any;
  * @returns {function(any): *}
  */
 export function pattern(struct: any): (arg0: any) => any;
-export function prop(name: any): (obj: any) => any;
 /**
  * Given a property name and a value, returns a function that returns a boolean based on whether
  * the passed object has a property that matches the value

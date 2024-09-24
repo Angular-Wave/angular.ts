@@ -1,5 +1,5 @@
 import { isDate, isFunction, isRegExp, isString } from "./utils";
-import { all, prop, curry } from "./hof";
+import { all, curry } from "./hof";
 import { services } from "../router/common/coreservices";
 
 export function forEach(obj, cb, thisArg) {
@@ -213,12 +213,7 @@ export function omit(obj, propNames) {
     .filter((x) => !propNames.includes(x))
     .reduce((acc, key) => ((acc[key] = obj[key]), acc), {});
 }
-/**
- * Maps an array, or object to a property (by name)
- */
-export function pluck(collection, propName) {
-  return map(collection, prop(propName));
-}
+
 /** Filters an Array or an Object's properties based on a predicate */
 export function filter(collection, callback) {
   const arr = Array.isArray(collection),

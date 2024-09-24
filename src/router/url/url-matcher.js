@@ -9,7 +9,7 @@ import {
   arrayTuples,
   defaults,
 } from "../../shared/common";
-import { prop, propEq } from "../../shared/hof";
+import { propEq } from "../../shared/hof";
 import { isDefined, isString } from "../../shared/utils";
 import { Param, DefType } from "../params/param";
 import { joinNeighborsR, splitOnDelim } from "../../shared/strings";
@@ -344,7 +344,7 @@ export class UrlMatcher {
       return new RegExp(
         [
           "^",
-          unnest(this._cache.path.map(prop("_compiled"))).join(""),
+          unnest(this._cache.path.map((x) => x._compiled)).join(""),
           this.config.strict === false ? "/?" : "",
           "$",
         ].join(""),

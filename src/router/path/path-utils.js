@@ -1,5 +1,5 @@
 import { find, pick, omit, unnestR, arrayTuples } from "../../shared/common";
-import { prop, propEq } from "../../shared/hof";
+import { propEq } from "../../shared/hof";
 import { TargetState } from "../state/target-state";
 import { PathNode } from "./path-node";
 /**
@@ -63,7 +63,7 @@ export class PathUtils {
       .map((node) => node.paramSchema)
       .reduce(unnestR, [])
       .filter((param) => !param.inherit)
-      .map(prop("id"));
+      .map((x) => x.id);
     /**
      * Given an [[PathNode]] "toNode", return a new [[PathNode]] with param values inherited from the
      * matching node in fromPath.  Only inherit keys that aren't found in "toKeys" from the node in "fromPath""

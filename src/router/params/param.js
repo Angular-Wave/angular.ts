@@ -1,5 +1,4 @@
 import { filter, map, allTrueR, find } from "../../shared/common";
-import { prop } from "../../shared/hof";
 import { isInjectable } from "../../shared/predicates";
 import { isDefined, isUndefined, isString } from "../../shared/utils";
 import { services } from "../common/coreservices";
@@ -79,7 +78,7 @@ function getReplace(config, arrayMode, isOptional, squash) {
   ];
   const replace = Array.isArray(config.replace) ? config.replace : [];
   if (isString(squash)) replace.push({ from: squash, to: undefined });
-  const configuredKeys = map(replace, prop("from"));
+  const configuredKeys = map(replace, (x) => x.from);
   return filter(
     defaultPolicy,
     (item) => configuredKeys.indexOf(item.from) === -1,

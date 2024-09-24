@@ -1,4 +1,3 @@
-import { prop } from "../../shared/hof";
 import { isString } from "../../shared/utils";
 import { StateObject } from "./state-object";
 
@@ -18,7 +17,7 @@ export class StateQueueManager {
     if (!isString(name)) throw new Error("State must have a valid name");
     if (
       Object.prototype.hasOwnProperty.call(this.states, name) ||
-      queue.map(prop("name")).includes(name)
+      queue.map((x) => x.name).includes(name)
     )
       throw new Error(`State '${name}' is already defined`);
     queue.push(state);

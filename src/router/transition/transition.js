@@ -13,7 +13,7 @@ import {
   uniqR,
 } from "../../shared/common";
 import { isUndefined, isObject, assert } from "../../shared/utils";
-import { prop, propEq, val, is } from "../../shared/hof";
+import { propEq, val, is } from "../../shared/hof";
 import { TransitionHookPhase } from "./interface"; // has or is using
 import { TransitionHook } from "./transition-hook";
 import { matchState, makeEvent } from "./hook-registry";
@@ -24,7 +24,6 @@ import { Resolvable } from "../resolve/resolvable";
 import { ResolveContext } from "../resolve/resolve-context";
 import { Rejection } from "./reject-factory";
 
-const stateSelf = prop("self");
 /**
  * Represents a transition between two states.
  *
@@ -404,7 +403,7 @@ export class Transition {
    * @returns an array of states that will be entered during this transition.
    */
   entering() {
-    return map(this._treeChanges.entering, prop("state")).map(stateSelf);
+    return map(this._treeChanges.entering, (x) => x.state).map((x) => x.self);
   }
   /**
    * Gets the states being exited.
@@ -412,8 +411,8 @@ export class Transition {
    * @returns an array of states that will be exited during this transition.
    */
   exiting() {
-    return map(this._treeChanges.exiting, prop("state"))
-      .map(stateSelf)
+    return map(this._treeChanges.exiting, (x) => x.state)
+      .map((x) => x.self)
       .reverse();
   }
   /**
@@ -423,7 +422,7 @@ export class Transition {
    *    exited during this Transition
    */
   retained() {
-    return map(this._treeChanges.retained, prop("state")).map(stateSelf);
+    return map(this._treeChanges.retained, (x) => x.state).map((x) => x.self);
   }
   /**
    * Get the [[ViewConfig]]s associated with this Transition
@@ -440,7 +439,7 @@ export class Transition {
   views(pathname = "entering", state) {
     let path = this._treeChanges[pathname];
     path = !state ? path : path.filter(propEq("state", state));
-    return path.map(prop("views")).reduce(unnestR, []);
+    return path.map((x) => x.views).reduce(unnestR, []);
   }
   treeChanges(pathname) {
     return pathname ? this._treeChanges[pathname] : this._treeChanges;
@@ -704,7 +703,7 @@ export class Transition {
       fromParams = stringify(
         avoidEmptyHash(
           this._treeChanges.from
-            .map(prop("paramValues"))
+            .map((x) => x.paramValues)
             .reduce((acc, obj) => ({ ...acc, ...obj }), {}),
         ),
       ),
