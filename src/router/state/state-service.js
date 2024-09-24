@@ -88,11 +88,7 @@ export class StateService {
     );
   }
 
-  $get = [
-    () => {
-      return this;
-    },
-  ];
+  $get = () => this;
 
   /**
    * Decorates states when they are registered

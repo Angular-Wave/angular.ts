@@ -33,33 +33,45 @@ import { startingTag } from "../../shared/jqlite/jqlite";
  */
 export const requiredDirective = [
   "$parse",
+  /**
+   * @param {import("../../core/parser/parse.js").ParseService} $parse
+   * @returns {import("../../types.js").Directive}
+   */
   ($parse) => ({
     restrict: "A",
     require: "?ngModel",
-    link(scope, elm, attr, ctrl) {
-      if (!ctrl) return;
-      // For boolean attributes like required, presence means true
-      let value =
-        Object.prototype.hasOwnProperty.call(attr, "required") ||
-        $parse(attr.ngRequired)(scope);
+    link:
+      /**
+       * @param {import("../../core/scope/scope.js").Scope} scope
+       * @param {*} _elm
+       * @param {import("../../types.js").Attributes} attr
+       * @param {import("../../types.js").NgModelController} ctrl
+       * @returns
+       */
+      (scope, _elm, attr, ctrl) => {
+        if (!ctrl) return;
+        // For boolean attributes like required, presence means true
+        let value =
+          Object.prototype.hasOwnProperty.call(attr, "required") ||
+          $parse(attr.ngRequired)(scope);
 
-      if (!attr.ngRequired) {
-        // force truthy in case we are on non input element
-        // (input elements do this automatically for boolean attributes like required)
-        attr.required = true;
-      }
-
-      ctrl.$validators.required = function (modelValue, viewValue) {
-        return !value || !ctrl.$isEmpty(viewValue);
-      };
-
-      attr.$observe("required", (newVal) => {
-        if (value !== newVal) {
-          value = newVal;
-          ctrl.$validate();
+        if (!attr.ngRequired) {
+          // force truthy in case we are on non input element
+          // (input elements do this automatically for boolean attributes like required)
+          attr.required = true;
         }
-      });
-    },
+
+        ctrl.$validators.required = (_modelValue, viewValue) => {
+          return !value || !ctrl.$isEmpty(viewValue);
+        };
+
+        attr.$observe("required", (newVal) => {
+          if (value !== newVal) {
+            value = newVal;
+            ctrl.$validate();
+          }
+        });
+      },
   }),
 ];
 
@@ -104,11 +116,15 @@ export const requiredDirective = [
  */
 export const patternDirective = [
   "$parse",
-  function ($parse) {
+  /**
+   * @param {import("../../core/parser/parse.js").ParseService} $parse
+   * @returns {import("../../types.js").Directive}
+   */
+  ($parse) => {
     return {
       restrict: "A",
       require: "?ngModel",
-      compile: function (tElm, tAttr) {
+      compile: (_Elm, tAttr) => {
         var patternExp;
         var parseFn;
 
@@ -201,30 +217,42 @@ export const patternDirective = [
  */
 export const maxlengthDirective = [
   "$parse",
+  /**
+   * @param {import("../../core/parser/parse.js").ParseService} $parse
+   * @returns {import("../../types.js").Directive}
+   */
   ($parse) => ({
     restrict: "A",
     require: "?ngModel",
-    link(scope, elm, attr, ctrl) {
-      if (!ctrl) return;
+    link:
+      /**
+       * @param {import("../../core/scope/scope.js").Scope} scope
+       * @param {*} _elm
+       * @param {import("../../types.js").Attributes} attr
+       * @param {import("../../types.js").NgModelController} ctrl
+       * @returns
+       */
+      (scope, _elm, attr, ctrl) => {
+        if (!ctrl) return;
 
-      let maxlength = attr.maxlength || $parse(attr.ngMaxlength)(scope);
-      let maxlengthParsed = parseLength(maxlength);
+        let maxlength = attr.maxlength || $parse(attr.ngMaxlength)(scope);
+        let maxlengthParsed = parseLength(maxlength);
 
-      attr.$observe("maxlength", (value) => {
-        if (maxlength !== value) {
-          maxlengthParsed = parseLength(value);
-          maxlength = value;
-          ctrl.$validate();
-        }
-      });
-      ctrl.$validators.maxlength = function (modelValue, viewValue) {
-        return (
-          maxlengthParsed < 0 ||
-          ctrl.$isEmpty(viewValue) ||
-          viewValue.length <= maxlengthParsed
-        );
-      };
-    },
+        attr.$observe("maxlength", (value) => {
+          if (maxlength !== value) {
+            maxlengthParsed = parseLength(value);
+            maxlength = value;
+            ctrl.$validate();
+          }
+        });
+        ctrl.$validators.maxlength = function (modelValue, viewValue) {
+          return (
+            maxlengthParsed < 0 ||
+            ctrl.$isEmpty(viewValue) ||
+            viewValue.length <= maxlengthParsed
+          );
+        };
+      },
   }),
 ];
 

@@ -30,7 +30,7 @@ export class StateService {
     transitionService: any;
     invalidCallbacks: any[];
     _defaultErrorHandler: ($error$: any) => never;
-    $get: (() => this)[];
+    $get: () => this;
     /**
      * Decorates states when they are registered
      *

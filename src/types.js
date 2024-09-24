@@ -151,20 +151,6 @@
  */
 
 /**
- * @template [S=import('./core/scope/scope').Scope]
- * @template {TScope} S - The type of the directive's scope.
- *
- * @template [T=import('./shared/jqlite/jqlite').JQLite]
- * @template {TElement} T - The type of the directive's element.
- *
- * @template [A=Attributes]
- * @template {TAttributes} A - The type of the directive's attributes.
- *
- * @template [C=Controller]
- * @template {TController} C - The type of the directive's controller.
- */
-
-/**
  * Compile function for an AngularJS directive.
  *
  * @callback DirectiveCompileFn
