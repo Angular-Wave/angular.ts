@@ -27,7 +27,7 @@ const err = minErr("$stateProvider");
  *
  * This API is located at `router.stateService` ([[UIRouter.stateService]])
  */
-export class StateService {
+export class StateProvider {
   /**
    * The latest successful state parameters
    *
@@ -73,11 +73,11 @@ export class StateService {
       }
     };
     const getters = ["current", "$current", "params", "transition"];
-    const boundFns = Object.keys(StateService.prototype).filter(
+    const boundFns = Object.keys(StateProvider.prototype).filter(
       (x) => !getters.includes(x),
     );
     createProxyFunctions(
-      val(StateService.prototype),
+      val(StateProvider.prototype),
       this,
       val(this),
       boundFns,

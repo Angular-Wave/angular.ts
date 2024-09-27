@@ -105,7 +105,7 @@ export class $$QProvider {
 
   $get = [
     "$exceptionHandler",
-    function ($exceptionHandler) {
+    ($exceptionHandler) => {
       return qFactory(
         (callback) => {
           window.setTimeout(callback);

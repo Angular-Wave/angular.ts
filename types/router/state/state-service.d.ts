@@ -3,7 +3,7 @@
  *
  * This API is located at `router.stateService` ([[UIRouter.stateService]])
  */
-export class StateService {
+export class StateProvider {
     static $inject: string[];
     constructor(globals: any, transitionService: any);
     /**

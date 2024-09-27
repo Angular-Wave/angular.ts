@@ -116,8 +116,8 @@ import { UrlConfigProvider } from "./router/url/url-config";
 import { UIRouterGlobals } from "./router/globals";
 import { ViewService } from "./router/view/view";
 import { TransitionProvider } from "./router/transition/transition-service";
-import { StateService } from "./router/state/state-service";
-import { $ViewScrollProvider } from "./router/view-scroll";
+import { StateProvider } from "./router/state/state-service";
+import { ViewScrollProvider } from "./router/view-scroll";
 import { TemplateFactoryProvider } from "./router/template-factory";
 import { UrlService } from "./router/url/url-service";
 import { StateRegistryProvider } from "./router/state/state-registry";
@@ -269,8 +269,8 @@ export function publishExternalAPI(angular) {
             $urlConfig: UrlConfigProvider,
             $view: ViewService,
             $transitions: TransitionProvider,
-            $state: StateService,
-            $ngViewScroll: $ViewScrollProvider,
+            $state: StateProvider,
+            $ngViewScroll: ViewScrollProvider,
             $templateFactory: TemplateFactoryProvider,
             $urlService: UrlService,
             $stateRegistry: StateRegistryProvider,
