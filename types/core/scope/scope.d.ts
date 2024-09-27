@@ -72,7 +72,7 @@ export const $$applyAsyncQueue: Function[];
  * The provider also injects runtime services to make them available to all scopes.
  *
  */
-export class $RootScopeProvider {
+export class RootScopeProvider {
     $get: (string | ((exceptionHandler: import("../exception-handler").ErrorHandler, parse: import("../parser/parse").ParseService, browser: import("../../services/browser").Browser) => Scope))[];
 }
 /**

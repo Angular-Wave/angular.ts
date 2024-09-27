@@ -8,8 +8,8 @@ import {
   $IsStateFilter,
 } from "../../router/state-filters";
 
-$FilterProvider.$inject = ["$provide"];
-export function $FilterProvider($provide) {
+FilterProvider.$inject = ["$provide"];
+export function FilterProvider($provide) {
   const suffix = "Filter";
 
   function register(name, factory) {

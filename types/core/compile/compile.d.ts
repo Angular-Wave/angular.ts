@@ -1,5 +1,5 @@
-export function $CompileProvider($provide: any, $$sanitizeUriProvider: any): void;
-export class $CompileProvider {
+export function CompileProvider($provide: any, $$sanitizeUriProvider: any): void;
+export class CompileProvider {
     constructor($provide: any, $$sanitizeUriProvider: any);
     /**
      * Register a new directive with the compiler.
@@ -9,9 +9,9 @@ export class $CompileProvider {
      *    are the factories.
      * @param {Function|Array} directiveFactory An injectable directive factory function. See the
      *    {@link guide/directive directive guide} and the {@link $compile compile API} for more info.
-     * @returns {$CompileProvider} Self for chaining.
+     * @returns {CompileProvider} Self for chaining.
      */
-    directive: (name: string | any, directiveFactory: Function | any[]) => $CompileProvider;
+    directive: (name: string | any, directiveFactory: Function | any[]) => CompileProvider;
     /**
      * @param {string|Object} name Name of the component in camelCase (i.e. `myComp` which will match `<my-comp>`),
      *    or an object map of components where the keys are the names and the values are the component definition objects.
@@ -54,9 +54,9 @@ export class $CompileProvider {
      *    - `$...` – additional properties to attach to the directive factory function and the controller
      *      constructor function. (This is used by the component router to annotate)
      *
-     * @returns {$CompileProvider} the compile provider itself, for chaining of function calls.
+     * @returns {CompileProvider} the compile provider itself, for chaining of function calls.
      */
-    component: (name: string | any, options: any) => $CompileProvider;
+    component: (name: string | any, options: any) => CompileProvider;
     /**
      * Retrieves or overrides the default regular expression that is used for determining trusted safe
      * urls during a[href] sanitization.
@@ -69,10 +69,10 @@ export class $CompileProvider {
      * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
      *
      * @param {RegExp=} regexp New regexp to trust urls with.
-     * @returns {RegExp|$CompileProvider} Current RegExp if called without value or self for
+     * @returns {RegExp|CompileProvider} Current RegExp if called without value or self for
      *    chaining otherwise.
      */
-    aHrefSanitizationTrustedUrlList: (regexp?: RegExp | undefined) => RegExp | $CompileProvider;
+    aHrefSanitizationTrustedUrlList: (regexp?: RegExp | undefined) => RegExp | CompileProvider;
     /**
      * Retrieves or overrides the default regular expression that is used for determining trusted safe
      * urls during img[src] sanitization.
@@ -85,10 +85,10 @@ export class $CompileProvider {
      * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
      *
      * @param {RegExp=} regexp New regexp to trust urls with.
-     * @returns {RegExp|$CompileProvider} Current RegExp if called without value or self for
+     * @returns {RegExp|CompileProvider} Current RegExp if called without value or self for
      *    chaining otherwise.
      */
-    imgSrcSanitizationTrustedUrlList: (regexp?: RegExp | undefined) => RegExp | $CompileProvider;
+    imgSrcSanitizationTrustedUrlList: (regexp?: RegExp | undefined) => RegExp | CompileProvider;
     strictComponentBindingsEnabled: (enabled: any) => boolean | this;
     /**
      * Defines the security context for DOM properties bound by ng-prop-*.
@@ -101,7 +101,7 @@ export class $CompileProvider {
     addPropertySecurityContext: (elementName: string, propertyName: string, ctx: string) => object;
     $get: (string | (($injector: import("../../core/di/internal-injector").InjectorService, $interpolate: any, $exceptionHandler: import("../exception-handler").ExceptionHandlerProvider, $templateRequest: any, $parse: import("../parser/parse").ParseService, $controller: any, $rootScope: import("../scope/scope").Scope, $sce: any, $animate: any) => ($compileNodes: string | NodeList, transcludeFn: any, maxPriority: any, ignoreDirective: any, previousCompileContext: any) => (scope: any, cloneConnectFn: any, options: any) => JQLite))[];
 }
-export namespace $CompileProvider {
+export namespace CompileProvider {
     let $inject: string[];
 }
 /**

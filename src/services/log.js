@@ -40,7 +40,7 @@ export let LogService = {
  * @type {LogProvider}
  * Use the `$logProvider` to configure how the application logs messages
  */
-export class $LogProvider {
+export class LogProvider {
   constructor() {
     this.debug = true;
   }

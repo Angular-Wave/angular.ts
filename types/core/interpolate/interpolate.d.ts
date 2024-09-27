@@ -10,22 +10,22 @@
  * security bugs!
  * </div>
  */
-export function $InterpolateProvider(): void;
-export class $InterpolateProvider {
+export function InterpolateProvider(): void;
+export class InterpolateProvider {
     /**
      * Symbol to denote start of expression in the interpolated string. Defaults to `{{`.
      *
      * @param {string=} value new value to set the starting symbol to.
-     * @returns {string|$InterpolateProvider} Returns the symbol when used as getter and self if used as setter.
+     * @returns {string|InterpolateProvider} Returns the symbol when used as getter and self if used as setter.
      */
-    startSymbol: (value?: string | undefined) => string | $InterpolateProvider;
+    startSymbol: (value?: string | undefined) => string | InterpolateProvider;
     /**
      * Symbol to denote the end of expression in the interpolated string. Defaults to `}}`.
      *
      * @param {string=} value new value to set the ending symbol to.
-     * @returns {string|$InterpolateProvider} Returns the symbol when used as getter and self if used as setter.
+     * @returns {string|InterpolateProvider} Returns the symbol when used as getter and self if used as setter.
      */
-    endSymbol: (value?: string | undefined) => string | $InterpolateProvider;
+    endSymbol: (value?: string | undefined) => string | InterpolateProvider;
     $get: (string | (($parse: import("../parser/parse").ParseService, $exceptionHandler: import("../exception-handler").ErrorHandler, $sce: any) => {
         (text: string, mustHaveExpression?: boolean | undefined, trustedContext?: string | undefined, allOrNothing?: boolean | undefined): Function;
         /**

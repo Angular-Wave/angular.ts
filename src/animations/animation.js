@@ -12,7 +12,7 @@ import {
 const RUNNER_STORAGE_KEY = "$$animationRunner";
 const PREPARE_CLASSES_KEY = "$$animatePrepareClasses";
 
-export function $$AnimationProvider() {
+export function AnimationProvider() {
   const NG_ANIMATE_REF_ATTR = "ng-animate-ref";
 
   const drivers = (this.drivers = []);

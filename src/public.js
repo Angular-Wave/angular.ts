@@ -1,4 +1,4 @@
-import { $CompileProvider } from "./core/compile/compile";
+import { CompileProvider } from "./core/compile/compile";
 import {
   inputDirective,
   ngValueDirective,
@@ -60,26 +60,26 @@ import {
   AnimateRunnerFactoryProvider,
 } from "./animations/animate-runner";
 import { TemplateCacheProvider } from "./core/cache/cache-factory";
-import { $ControllerProvider } from "./core/controller/controller";
-import { $ExceptionHandlerProvider } from "./core/exception-handler";
-import { $FilterProvider } from "./core/filter/filter";
-import { $IntervalProvider } from "./core/interval/interval";
-import { $InterpolateProvider } from "./core/interpolate/interpolate";
-import { $$IntervalFactoryProvider } from "./core/interval/interval-factory";
+import { ControllerProvider } from "./core/controller/controller";
+import { ExceptionHandlerProvider } from "./core/exception-handler";
+import { FilterProvider } from "./core/filter/filter";
+import { IntervalProvider } from "./core/interval/interval";
+import { InterpolateProvider } from "./core/interpolate/interpolate";
+import { $IntervalFactoryProvider } from "./core/interval/interval-factory";
 import {
-  $HttpProvider,
-  $HttpParamSerializerProvider,
+  HttpProvider,
+  HttpParamSerializerProvider,
 } from "./services/http/http";
-import { $HttpBackendProvider } from "./services/http-backend/http-backend";
-import { $LocationProvider } from "./core/location/location";
-import { $LogProvider } from "./services/log";
-import { $ParseProvider } from "./core/parser/parse";
-import { $RootScopeProvider } from "./core/scope/scope";
+import { HttpBackendProvider } from "./services/http-backend/http-backend";
+import { LocationProvider } from "./core/location/location";
+import { LogProvider } from "./services/log";
+import { ParseProvider } from "./core/parser/parse";
+import { RootScopeProvider } from "./core/scope/scope";
 import { $QProvider, $$QProvider } from "./core/q/q";
-import { $SceProvider, $SceDelegateProvider } from "./core/sce/sce";
-import { $$TaskTrackerFactoryProvider } from "./core/task-tracker-factory";
+import { SceProvider, SceDelegateProvider } from "./core/sce/sce";
+import { TaskTrackerFactoryProvider } from "./core/task-tracker-factory";
 import { TemplateRequestProvider } from "./services/template-request";
-import { $TimeoutProvider } from "./core/timeout/timeout";
+import { TimeoutProvider } from "./core/timeout/timeout";
 import { SanitizeUriProvider } from "./core/sanitize/sanitize-uri";
 import {
   ngMessageDefaultDirective,
@@ -102,25 +102,25 @@ import {
   ngShowAriaDirective,
   ngValueAriaDirective,
 } from "./directive/aria/aria";
-import { $AnimateCssProvider } from "./animations/animate-css";
-import { $$AnimateQueueProvider } from "./animations/animate-queue";
-import { $$AnimateJsProvider } from "./animations/animate-js";
-import { $$AnimationProvider } from "./animations/animation";
+import { AnimateCssProvider } from "./animations/animate-css";
+import { AnimateQueueProvider } from "./animations/animate-queue";
+import { AnimateJsProvider } from "./animations/animate-js";
+import { AnimationProvider } from "./animations/animation";
 import { RafSchedulerProvider } from "./animations/raf-scheduler";
-import { $$AnimateCacheProvider } from "./animations/animate-cache";
-import { $$AnimateCssDriverProvider } from "./animations/animate-css-driver";
-import { $$AnimateJsDriverProvider } from "./animations/animate-js-driver";
+import { AnimateCacheProvider } from "./animations/animate-cache";
+import { AnimateCssDriverProvider } from "./animations/animate-css-driver";
+import { AnimateJsDriverProvider } from "./animations/animate-js-driver";
 import { ngAnimateSwapDirective } from "./animations/animate-swap";
 import { $$AnimateChildrenDirective } from "./animations/animate-children-directive";
 import { UrlConfigProvider } from "./router/url/url-config";
 import { UIRouterGlobals } from "./router/globals";
 import { ViewService } from "./router/view/view";
-import { TransitionService } from "./router/transition/transition-service";
+import { TransitionProvider } from "./router/transition/transition-service";
 import { StateService } from "./router/state/state-service";
 import { $ViewScrollProvider } from "./router/view-scroll";
-import { TemplateFactory } from "./router/template-factory";
+import { TemplateFactoryProvider } from "./router/template-factory";
 import { UrlService } from "./router/url/url-service";
-import { StateRegistry } from "./router/state/state-registry";
+import { StateRegistryProvider } from "./router/state/state-registry";
 import { trace } from "./router/common/trace";
 import {
   $StateRefActiveDirective,
@@ -152,7 +152,7 @@ export function publishExternalAPI(angular) {
             $$sanitizeUri: SanitizeUriProvider,
           });
           $provide
-            .provider("$compile", $CompileProvider)
+            .provider("$compile", CompileProvider)
             .directive({
               input: inputDirective,
               textarea: inputDirective,
@@ -233,47 +233,47 @@ export function publishExternalAPI(angular) {
             $aria: AriaProvider,
             $anchorScroll: AnchorScrollProvider,
             $animate: AnimateProvider,
-            $$animation: $$AnimationProvider,
-            $animateCss: $AnimateCssProvider,
-            $$animateCssDriver: $$AnimateCssDriverProvider,
-            $$animateJs: $$AnimateJsProvider,
-            $$animateJsDriver: $$AnimateJsDriverProvider,
-            $$animateCache: $$AnimateCacheProvider,
-            $$animateQueue: $$AnimateQueueProvider,
+            $$animation: AnimationProvider,
+            $animateCss: AnimateCssProvider,
+            $$animateCssDriver: AnimateCssDriverProvider,
+            $$animateJs: AnimateJsProvider,
+            $$animateJsDriver: AnimateJsDriverProvider,
+            $$animateCache: AnimateCacheProvider,
+            $$animateQueue: AnimateQueueProvider,
             $$AnimateRunner: AnimateRunnerFactoryProvider,
             $$animateAsyncRun: AnimateAsyncRunFactoryProvider,
             $browser: BrowserProvider,
-            $controller: $ControllerProvider,
-            $exceptionHandler: $ExceptionHandlerProvider,
-            $filter: $FilterProvider,
-            $interpolate: $InterpolateProvider,
-            $interval: $IntervalProvider,
-            $$intervalFactory: $$IntervalFactoryProvider,
-            $http: $HttpProvider,
-            $httpParamSerializer: $HttpParamSerializerProvider,
-            $httpBackend: $HttpBackendProvider,
-            $location: $LocationProvider,
-            $log: $LogProvider,
-            $parse: $ParseProvider,
+            $controller: ControllerProvider,
+            $exceptionHandler: ExceptionHandlerProvider,
+            $filter: FilterProvider,
+            $interpolate: InterpolateProvider,
+            $interval: IntervalProvider,
+            $$intervalFactory: $IntervalFactoryProvider,
+            $http: HttpProvider,
+            $httpParamSerializer: HttpParamSerializerProvider,
+            $httpBackend: HttpBackendProvider,
+            $location: LocationProvider,
+            $log: LogProvider,
+            $parse: ParseProvider,
             $$rAFScheduler: RafSchedulerProvider,
-            $rootScope: $RootScopeProvider,
+            $rootScope: RootScopeProvider,
             $routerGlobals: UIRouterGlobals,
             $q: $QProvider,
             $$q: $$QProvider,
-            $sce: $SceProvider,
-            $sceDelegate: $SceDelegateProvider,
-            $$taskTrackerFactory: $$TaskTrackerFactoryProvider,
+            $sce: SceProvider,
+            $sceDelegate: SceDelegateProvider,
+            $$taskTrackerFactory: TaskTrackerFactoryProvider,
             $templateCache: TemplateCacheProvider,
             $templateRequest: TemplateRequestProvider,
-            $timeout: $TimeoutProvider,
+            $timeout: TimeoutProvider,
             $urlConfig: UrlConfigProvider,
             $view: ViewService,
-            $transitions: TransitionService,
+            $transitions: TransitionProvider,
             $state: StateService,
             $ngViewScroll: $ViewScrollProvider,
-            $templateFactory: TemplateFactory,
+            $templateFactory: TemplateFactoryProvider,
             $urlService: UrlService,
-            $stateRegistry: StateRegistry,
+            $stateRegistry: StateRegistryProvider,
           });
         },
       ],

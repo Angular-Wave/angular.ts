@@ -14,7 +14,7 @@ import { annotate } from "../core/di/injector";
 /**
  * Service which manages loading of templates from a ViewConfig.
  */
-export class TemplateFactory {
+export class TemplateFactoryProvider {
   constructor() {
     /** @type {boolean} */
     this._useHttp = false;

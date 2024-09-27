@@ -1,5 +1,5 @@
-export function $LocationProvider(): void;
-export class $LocationProvider {
+export function LocationProvider(): void;
+export class LocationProvider {
     /**
      * The default value for the prefix is `'!'`.
      * @param {string=} prefix Prefix for hash part (containing path and search)

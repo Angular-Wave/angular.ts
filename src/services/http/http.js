@@ -54,7 +54,7 @@ function serializeValue(v) {
  *
  * Note that serializer will sort the request parameters alphabetically.
  */
-export function $HttpParamSerializerProvider() {
+export function HttpParamSerializerProvider() {
   this.$get = function () {
     return function ngParamSerializer(params) {
       if (!params) return "";
@@ -217,7 +217,7 @@ function isSuccess(status) {
 /**
  * Use `$httpProvider` to change the default behavior of the {@link ng.$http $http} service.
  */
-export function $HttpProvider() {
+export function HttpProvider() {
   /**
    * Object containing default values for all {@link ng.$http $http} requests.
    *

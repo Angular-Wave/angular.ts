@@ -20,7 +20,7 @@ export namespace defaultTransOpts {
  *
  * This API is located at `router.transitionService` ([[UIRouter.transitionService]])
  */
-export class TransitionService {
+export class TransitionProvider {
     static $inject: string[];
     /**
      * @param {import('../globals').UIRouterGlobals} globals

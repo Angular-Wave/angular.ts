@@ -26,7 +26,7 @@ export class UrlService {
   ];
 
   /**
-   * @param {import("../../core/location/location").$LocationProvider} $locationProvider
+   * @param {import("../../core/location/location").LocationProvider} $locationProvider
    */
   constructor($locationProvider, stateService, globals, urlConfigProvider) {
     this.stateService = stateService;

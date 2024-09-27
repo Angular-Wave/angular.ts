@@ -3,7 +3,7 @@
  *
  * This API is found at `$stateRegistry` ([[UIRouter.stateRegistry]])
  */
-export class StateRegistry {
+export class StateRegistryProvider {
     static $inject: string[];
     constructor(urlService: any, stateService: any, globals: any, viewService: any);
     states: {};
@@ -25,7 +25,10 @@ export class StateRegistry {
      * @internalapi
      */
     getStateHookBuilder(hookName: any): (stateObject: any) => (trans: any, state: any) => any;
-    _registerRoot(): void;
+    /**
+     * @private
+     */
+    private registerRoot;
     _root: import("./state-object").StateObject;
     /**
      * Listen for a State Registry events

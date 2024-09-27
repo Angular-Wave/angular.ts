@@ -1,5 +1,4 @@
-export function $TimeoutProvider(): void;
-export class $TimeoutProvider {
+export class TimeoutProvider {
     $get: (string | (($rootScope: import("../scope/scope").Scope, $browser: import("../../services/browser").Browser, $q: any, $$q: any, $exceptionHandler: import("../exception-handler").ErrorHandler) => {
         (fn?: (() => any) | undefined, delay?: number | undefined, invokeApply?: boolean | undefined, ...args: any[]): import("../q/q").QPromise<any>;
         /**

@@ -1,4 +1,4 @@
-export class $$TaskTrackerFactoryProvider {
+export class TaskTrackerFactoryProvider {
     $get: (string | ((log: import("../services/log").LogService) => TaskTracker))[];
 }
 /**

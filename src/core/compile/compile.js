@@ -51,8 +51,8 @@ const $compileMinErr = minErr("$compile");
 const UNINITALIZED_VALIED = new Object();
 const EXCLUDED_DIRECTIVES = ["ngIf", "ngRepeat"];
 
-$CompileProvider.$inject = ["$provide", "$$sanitizeUriProvider"];
-export function $CompileProvider($provide, $$sanitizeUriProvider) {
+CompileProvider.$inject = ["$provide", "$$sanitizeUriProvider"];
+export function CompileProvider($provide, $$sanitizeUriProvider) {
   const hasDirectives = {};
   const Suffix = "Directive";
   const ALL_OR_NOTHING_ATTRS = {
@@ -186,7 +186,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    *    are the factories.
    * @param {Function|Array} directiveFactory An injectable directive factory function. See the
    *    {@link guide/directive directive guide} and the {@link $compile compile API} for more info.
-   * @returns {$CompileProvider} Self for chaining.
+   * @returns {CompileProvider} Self for chaining.
    */
   this.directive = function registerDirective(name, directiveFactory) {
     assertArg(name, "name");
@@ -282,7 +282,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    *    - `$...` – additional properties to attach to the directive factory function and the controller
    *      constructor function. (This is used by the component router to annotate)
    *
-   * @returns {$CompileProvider} the compile provider itself, for chaining of function calls.
+   * @returns {CompileProvider} the compile provider itself, for chaining of function calls.
    */
   this.component = function (name, options) {
     if (!isString(name)) {
@@ -362,7 +362,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
    *
    * @param {RegExp=} regexp New regexp to trust urls with.
-   * @returns {RegExp|$CompileProvider} Current RegExp if called without value or self for
+   * @returns {RegExp|CompileProvider} Current RegExp if called without value or self for
    *    chaining otherwise.
    */
   this.aHrefSanitizationTrustedUrlList = function (regexp) {
@@ -385,7 +385,7 @@ export function $CompileProvider($provide, $$sanitizeUriProvider) {
    * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
    *
    * @param {RegExp=} regexp New regexp to trust urls with.
-   * @returns {RegExp|$CompileProvider} Current RegExp if called without value or self for
+   * @returns {RegExp|CompileProvider} Current RegExp if called without value or self for
    *    chaining otherwise.
    */
   this.imgSrcSanitizationTrustedUrlList = function (regexp) {

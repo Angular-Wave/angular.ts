@@ -4,11 +4,11 @@
 export class UrlService {
     static $inject: string[];
     /**
-     * @param {import("../../core/location/location").$LocationProvider} $locationProvider
+     * @param {import("../../core/location/location").LocationProvider} $locationProvider
      */
-    constructor($locationProvider: import("../../core/location/location").$LocationProvider, stateService: any, globals: any, urlConfigProvider: any);
+    constructor($locationProvider: import("../../core/location/location").LocationProvider, stateService: any, globals: any, urlConfigProvider: any);
     stateService: any;
-    $locationProvider: import("../../core/location/location").$LocationProvider;
+    $locationProvider: import("../../core/location/location").LocationProvider;
     $location: import("../../core/location/location").Location;
     $browser: import("../../services/browser").Browser;
     /** @type {boolean} */

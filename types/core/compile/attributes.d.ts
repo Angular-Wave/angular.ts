@@ -17,7 +17,7 @@ export class Attributes {
     constructor($rootScope: import("../scope/scope").Scope, $animate: any, $exceptionHandler: import("../exception-handler").ExceptionHandlerProvider, $sce: any, element?: import("../../shared/jqlite/jqlite").JQLite, attributesToCopy?: any);
     $rootScope: import("../scope/scope").Scope;
     $animate: any;
-    $exceptionHandler: any;
+    $exceptionHandler: import("../exception-handler").ExceptionHandlerProvider;
     $sce: any;
     $attr: {};
     $$element: import("../../shared/jqlite/jqlite").JQLite;

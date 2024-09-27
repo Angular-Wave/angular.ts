@@ -33,7 +33,7 @@ import { Parser } from "./parser";
  * @typedef {function(CompiledExpression|string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): CompiledExpression} ParseService
  */
 
-export function $ParseProvider() {
+export function ParseProvider() {
   const cache = Object.create(null);
 
   /** @type {function(any):boolean?} */
@@ -60,7 +60,7 @@ export function $ParseProvider() {
    *   a valid identifier start character.
    * @param {function(any):boolean} [identifierContinue] The function that will decide whether the given character is
    *   a valid identifier continue character.
-   * @returns {$ParseProvider}
+   * @returns {ParseProvider}
    */
   this.setIdentifierFns = function (identifierStart, identifierContinue) {
     identStart = identifierStart;

@@ -14,7 +14,7 @@ import {
  * {@link ng.$http $http}.
  *
  */
-export function $HttpBackendProvider() {
+export function HttpBackendProvider() {
   this.$get = [
     "$browser",
     /**

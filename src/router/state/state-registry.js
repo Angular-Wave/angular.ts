@@ -12,7 +12,7 @@ import { isString } from "../../shared/utils";
  *
  * This API is found at `$stateRegistry` ([[UIRouter.stateRegistry]])
  */
-export class StateRegistry {
+export class StateRegistryProvider {
   static $inject = [
     "$urlServiceProvider",
     "$stateProvider",
@@ -42,7 +42,8 @@ export class StateRegistry {
       this.builder,
       this.listeners,
     );
-    this._registerRoot();
+
+    this.registerRoot();
 
     viewService._pluginapi._rootViewContext(this.root());
     globals.$current = this.root();
@@ -90,7 +91,10 @@ export class StateRegistry {
     };
   }
 
-  _registerRoot() {
+  /**
+   * @private
+   */
+  registerRoot() {
     const rootStateDef = {
       name: "",
       url: "^",
@@ -100,8 +104,8 @@ export class StateRegistry {
       },
       abstract: true,
     };
-    const _root = (this._root = this.stateQueue.register(rootStateDef));
-    _root.navigable = null;
+    this._root = this.stateQueue.register(rootStateDef);
+    this._root.navigable = null;
   }
 
   /**

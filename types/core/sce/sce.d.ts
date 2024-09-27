@@ -78,8 +78,8 @@ export function adjustMatcher(matcher: any): any;
  * from the trusted resource URL lsit. This helps to mitigate the security impact of certain types
  * of issues, like for instance attacker-controlled `ng-includes`.
  */
-export function $SceDelegateProvider(): void;
-export class $SceDelegateProvider {
+export function SceDelegateProvider(): void;
+export class SceDelegateProvider {
     SCE_CONTEXTS: {
         HTML: string;
         CSS: string;
@@ -139,8 +139,8 @@ export class $SceDelegateProvider {
         valueOf: (maybeTrusted: any) => any;
     }))[];
 }
-export function $SceProvider(): void;
-export class $SceProvider {
+export function SceProvider(): void;
+export class SceProvider {
     /**
      * @param {boolean=} value If provided, then enables/disables SCE application-wide.
      * @return {boolean} True if SCE is enabled, false otherwise.

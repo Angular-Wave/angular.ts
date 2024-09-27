@@ -6,7 +6,7 @@ export function identifierForController(controller: any, ident: any): any;
  * This provider allows controller registration via the
  * {@link ng.$controllerProvider#register register} method.
  */
-export class $ControllerProvider {
+export class ControllerProvider {
     /**
      * @type {Map<string, Function|Object>}
      * @private

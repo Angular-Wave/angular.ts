@@ -24,8 +24,8 @@
 /**
  * @typedef {function(CompiledExpression|string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): CompiledExpression} ParseService
  */
-export function $ParseProvider(): void;
-export class $ParseProvider {
+export function ParseProvider(): void;
+export class ParseProvider {
     /**
      * Allows defining the set of characters that are allowed in AngularJS expressions. The function
      * `identifierStart` will get called to know if a given character is a valid character to be the
@@ -44,9 +44,9 @@ export class $ParseProvider {
      *   a valid identifier start character.
      * @param {function(any):boolean} [identifierContinue] The function that will decide whether the given character is
      *   a valid identifier continue character.
-     * @returns {$ParseProvider}
+     * @returns {ParseProvider}
      */
-    setIdentifierFns: (identifierStart?: (arg0: any) => boolean, identifierContinue?: (arg0: any) => boolean) => $ParseProvider;
+    setIdentifierFns: (identifierStart?: (arg0: any) => boolean, identifierContinue?: (arg0: any) => boolean) => ParseProvider;
     $get: (string | (($filter: (any: any) => any) => ParseService))[];
 }
 export function constantWatchDelegate(scope: any, listener: any, objectEquality: any, parsedExpression: any): any;

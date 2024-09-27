@@ -2,28 +2,38 @@ import { isString } from "../../shared/utils";
 import { StateObject } from "./state-object";
 
 export class StateQueueManager {
+  /**
+   * @param {import("./state-registry.js").StateRegistryProvider} stateRegistry
+   * @param {*} urlServiceRules
+   * @param {*} states
+   * @param {*} builder
+   * @param {*} listeners
+   */
   constructor(stateRegistry, urlServiceRules, states, builder, listeners) {
     this.stateRegistry = stateRegistry;
     this.urlServiceRules = urlServiceRules;
     this.states = states;
     this.builder = builder;
     this.listeners = listeners;
+    /**
+     * @type {Array<StateObject>}
+     */
     this.queue = [];
   }
+
   register(stateDecl) {
-    const queue = this.queue;
     const state = new StateObject(stateDecl);
-    const name = state.name;
     if (!isString(name)) throw new Error("State must have a valid name");
     if (
-      Object.prototype.hasOwnProperty.call(this.states, name) ||
-      queue.map((x) => x.name).includes(name)
+      Object.prototype.hasOwnProperty.call(this.states, state.name) ||
+      this.queue.map((x) => x.name).includes(state.name)
     )
-      throw new Error(`State '${name}' is already defined`);
-    queue.push(state);
+      throw new Error(`State '${state.name}' is already defined`);
+    this.queue.push(state);
     this.flush();
     return state;
   }
+
   flush() {
     const { queue, states, builder } = this;
     const registered = [], // states that got registered

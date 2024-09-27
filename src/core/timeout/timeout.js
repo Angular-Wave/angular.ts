@@ -3,8 +3,8 @@ import { isDefined, minErr, sliceArgs } from "../../shared/utils";
 
 const $timeoutMinErr = minErr("$timeout");
 
-export function $TimeoutProvider() {
-  this.$get = [
+export class TimeoutProvider {
+  $get = [
     "$rootScope",
     "$browser",
     "$q",
@@ -19,7 +19,7 @@ export function $TimeoutProvider() {
      * @param {import('../exception-handler').ErrorHandler} $exceptionHandler
      * @returns
      */
-    function ($rootScope, $browser, $q, $$q, $exceptionHandler) {
+    ($rootScope, $browser, $q, $$q, $exceptionHandler) => {
       const deferreds = {};
 
       /**

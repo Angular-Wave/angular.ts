@@ -1,5 +1,5 @@
-export function $$AnimateQueueProvider($animateProvider: any): void;
-export class $$AnimateQueueProvider {
+export function AnimateQueueProvider($animateProvider: any): void;
+export class AnimateQueueProvider {
     constructor($animateProvider: any);
     rules: {
         skip: any[];
@@ -14,6 +14,6 @@ export class $$AnimateQueueProvider {
         enabled(element: any, bool: any, ...args: any[]): any;
     }))[];
 }
-export namespace $$AnimateQueueProvider {
+export namespace AnimateQueueProvider {
     let $inject: string[];
 }

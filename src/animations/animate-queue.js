@@ -24,8 +24,8 @@ import {
 
 const NG_ANIMATE_ATTR_NAME = "data-ng-animate";
 const NG_ANIMATE_PIN_DATA = "$ngAnimatePin";
-$$AnimateQueueProvider.$inject = ["$animateProvider"];
-export function $$AnimateQueueProvider($animateProvider) {
+AnimateQueueProvider.$inject = ["$animateProvider"];
+export function AnimateQueueProvider($animateProvider) {
   const PRE_DIGEST_STATE = 1;
   const RUNNING_STATE = 2;
   const ONE_SPACE = " ";

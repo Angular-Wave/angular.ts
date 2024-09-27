@@ -1,4 +1,4 @@
-export class $$TaskTrackerFactoryProvider {
+export class TaskTrackerFactoryProvider {
   $get = [
     "$log",
     /**

@@ -6,8 +6,8 @@
  * {@link ng.$http $http}.
  *
  */
-export function $HttpBackendProvider(): void;
-export class $HttpBackendProvider {
+export function HttpBackendProvider(): void;
+export class HttpBackendProvider {
     $get: (string | (($browser: import("../browser").Browser) => (method: any, url: any, post: any, callback: any, headers: any, timeout: any, withCredentials: any, responseType: any, eventHandlers: any, uploadEventHandlers: any) => void))[];
 }
 /**

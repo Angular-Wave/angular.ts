@@ -39,7 +39,7 @@ export function animateCache(): {
      */
     put(key: string, value: any, isValid: boolean): void;
 };
-export function $$AnimateCacheProvider(): void;
-export class $$AnimateCacheProvider {
+export function AnimateCacheProvider(): void;
+export class AnimateCacheProvider {
     $get: (typeof animateCache)[];
 }

@@ -186,7 +186,7 @@ export class PathUtils {
 }
 
 /** Given a PathNode[], create an TargetState
- * @param {import("../state/state-registry.js").StateRegistry} registry
+ * @param {import("../state/state-registry.js").StateRegistryProvider} registry
  * @param {Array<PathNode>} path
  * @returns
  */

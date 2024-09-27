@@ -162,7 +162,7 @@ export function adjustMatcher(matcher) {
  * of issues, like for instance attacker-controlled `ng-includes`.
  */
 
-export function $SceDelegateProvider() {
+export function SceDelegateProvider() {
   this.SCE_CONTEXTS = SCE_CONTEXTS;
 
   // Resource URLs can also be trusted by policy.
@@ -473,7 +473,7 @@ export function $SceDelegateProvider() {
   ];
 }
 
-export function $SceProvider() {
+export function SceProvider() {
   let enabled = true;
 
   /**

@@ -17,12 +17,12 @@ export class Transition {
      * @param fromPath The path of [[PathNode]]s from which the transition is leaving.  The last node in the `fromPath`
      *        encapsulates the "from state".
      * @param targetState The target state and parameters being transitioned to (also, the transition options)
-     * @param {import('../transition/transition-service').TransitionService} transitionService The [[TransitionService]] instance
+     * @param {import('../transition/transition-service').TransitionProvider} transitionService The [[TransitionService]] instance
      * @internal
      */
-    constructor(fromPath: any, targetState: any, transitionService: import("../transition/transition-service").TransitionService, globals: any);
+    constructor(fromPath: any, targetState: any, transitionService: import("../transition/transition-service").TransitionProvider, globals: any);
     globals: any;
-    transitionService: import("../transition/transition-service").TransitionService;
+    transitionService: import("../transition/transition-service").TransitionProvider;
     _deferred: import("../../core/q/q").Deferred<any>;
     /**
      * This promise is resolved or rejected based on the outcome of the Transition.

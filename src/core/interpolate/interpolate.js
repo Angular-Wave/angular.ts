@@ -40,7 +40,7 @@ function interr(text, err) {
  * security bugs!
  * </div>
  */
-export function $InterpolateProvider() {
+export function InterpolateProvider() {
   let startSymbol = "{{";
   let endSymbol = "}}";
 
@@ -48,7 +48,7 @@ export function $InterpolateProvider() {
    * Symbol to denote start of expression in the interpolated string. Defaults to `{{`.
    *
    * @param {string=} value new value to set the starting symbol to.
-   * @returns {string|$InterpolateProvider} Returns the symbol when used as getter and self if used as setter.
+   * @returns {string|InterpolateProvider} Returns the symbol when used as getter and self if used as setter.
    */
   this.startSymbol = function (value) {
     if (value) {
@@ -62,7 +62,7 @@ export function $InterpolateProvider() {
    * Symbol to denote the end of expression in the interpolated string. Defaults to `}}`.
    *
    * @param {string=} value new value to set the ending symbol to.
-   * @returns {string|$InterpolateProvider} Returns the symbol when used as getter and self if used as setter.
+   * @returns {string|InterpolateProvider} Returns the symbol when used as getter and self if used as setter.
    */
   this.endSymbol = function (value) {
     if (value) {

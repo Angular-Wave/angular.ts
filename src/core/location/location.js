@@ -544,7 +544,7 @@ export class LocationHashbangUrl extends Location {
   }
 }
 
-export function $LocationProvider() {
+export function LocationProvider() {
   let hashPrefix = "!";
   const html5Mode = {
     enabled: false,

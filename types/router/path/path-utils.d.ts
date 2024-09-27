@@ -1,9 +1,9 @@
 /** Given a PathNode[], create an TargetState
- * @param {import("../state/state-registry.js").StateRegistry} registry
+ * @param {import("../state/state-registry.js").StateRegistryProvider} registry
  * @param {Array<PathNode>} path
  * @returns
  */
-export function makeTargetState(registry: import("../state/state-registry.js").StateRegistry, path: Array<PathNode>): TargetState;
+export function makeTargetState(registry: import("../state/state-registry.js").StateRegistryProvider, path: Array<PathNode>): TargetState;
 /**
  * This class contains functions which convert TargetStates, Nodes and paths from one type to another.
  */

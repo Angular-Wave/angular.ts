@@ -9,16 +9,16 @@
  *
  * Note that serializer will sort the request parameters alphabetically.
  */
-export function $HttpParamSerializerProvider(): void;
-export class $HttpParamSerializerProvider {
+export function HttpParamSerializerProvider(): void;
+export class HttpParamSerializerProvider {
     $get: () => (params: any) => string;
 }
 export function defaultHttpResponseTransform(data: any, headers: any): any;
 /**
  * Use `$httpProvider` to change the default behavior of the {@link ng.$http $http} service.
  */
-export function $HttpProvider(): void;
-export class $HttpProvider {
+export function HttpProvider(): void;
+export class HttpProvider {
     defaults: {
         transformResponse: (typeof defaultHttpResponseTransform)[];
         transformRequest: ((d: any) => any)[];

@@ -44,8 +44,8 @@ export let LogService: LogService;
  * @type {LogProvider}
  * Use the `$logProvider` to configure how the application logs messages
  */
-export class $LogProvider {
-    debug: boolean;
+export class LogProvider {
+    debug: any;
     /**
      * @param {boolean=} flag enable or disable debug level messages
      * @returns {*} current value if used as getter or itself (chaining) if used as setter
@@ -56,4 +56,3 @@ export class $LogProvider {
     $get(): LogService;
 }
 export type LogCall = (...args: any[]) => void;
-export type LogProvider = import("../types").ServiceProvider;

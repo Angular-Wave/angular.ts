@@ -1,6 +1,6 @@
 import { isDefined, sliceArgs } from "../../shared/utils";
 
-export function $$IntervalFactoryProvider() {
+export function $IntervalFactoryProvider() {
   this.$get = [
     "$browser",
     "$q",

@@ -43,7 +43,7 @@ export class Transition {
    * @param fromPath The path of [[PathNode]]s from which the transition is leaving.  The last node in the `fromPath`
    *        encapsulates the "from state".
    * @param targetState The target state and parameters being transitioned to (also, the transition options)
-   * @param {import('../transition/transition-service').TransitionService} transitionService The [[TransitionService]] instance
+   * @param {import('../transition/transition-service').TransitionProvider} transitionService The [[TransitionService]] instance
    * @internal
    */
   constructor(fromPath, targetState, transitionService, globals) {

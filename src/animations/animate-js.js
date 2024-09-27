@@ -8,8 +8,8 @@ import {
 // TODO: use caching here to speed things up for detection
 // TODO: add documentation
 
-$$AnimateJsProvider.$inject = ["$animateProvider"];
-export function $$AnimateJsProvider($animateProvider) {
+AnimateJsProvider.$inject = ["$animateProvider"];
+export function AnimateJsProvider($animateProvider) {
   this.$get = [
     "$injector",
     "$$AnimateRunner",

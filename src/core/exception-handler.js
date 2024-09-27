@@ -52,7 +52,7 @@ export const errorHandler = (exception, cause) => {
  * @constructor
  * @this {ExceptionHandlerProvider}
  */
-export function $ExceptionHandlerProvider() {
+export function ExceptionHandlerProvider() {
   this.$get = [
     "$log",
     /**

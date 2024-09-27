@@ -1,5 +1,5 @@
-export function $$AnimateJsProvider($animateProvider: any): void;
-export class $$AnimateJsProvider {
+export function AnimateJsProvider($animateProvider: any): void;
+export class AnimateJsProvider {
     constructor($animateProvider: any);
     $get: (string | (($injector: import("../core/di/internal-injector").InjectorService, $$AnimateRunner: any) => (element: any, event: any, classes: any, options: any, ...args: any[]) => {
         $$willAnimate: boolean;
@@ -7,6 +7,6 @@ export class $$AnimateJsProvider {
         start(): any;
     }))[];
 }
-export namespace $$AnimateJsProvider {
+export namespace AnimateJsProvider {
     let $inject: string[];
 }

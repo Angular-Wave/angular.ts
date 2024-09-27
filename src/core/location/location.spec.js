@@ -1,7 +1,7 @@
 import {
   LocationHtml5Url,
   LocationHashbangUrl,
-  $LocationProvider,
+  LocationProvider,
 } from "./location";
 import { Angular } from "../../loader";
 import { createInjector } from "../di/injector";
@@ -23,12 +23,12 @@ describe("$location", () => {
 
   describe("defaults", () => {
     it('should have hashPrefix of "!"', () => {
-      let provider = new $LocationProvider();
+      let provider = new LocationProvider();
       expect(provider.hashPrefix()).toBe("!");
     });
 
     it("should not be html5 mode", () => {
-      let provider = new $LocationProvider();
+      let provider = new LocationProvider();
       expect(provider.html5Mode().enabled).toBeFalse();
     });
   });

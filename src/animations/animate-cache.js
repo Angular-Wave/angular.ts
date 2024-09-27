@@ -75,6 +75,6 @@ export function animateCache() {
   };
 }
 
-export function $$AnimateCacheProvider() {
+export function AnimateCacheProvider() {
   this.$get = [animateCache];
 }

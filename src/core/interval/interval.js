@@ -13,7 +13,7 @@ const $intervalMinErr = minErr("$interval");
  */
 const intervals = new Map();
 
-export function $IntervalProvider() {
+export function IntervalProvider() {
   this.$get = [
     "$$intervalFactory",
     // TODO Add type

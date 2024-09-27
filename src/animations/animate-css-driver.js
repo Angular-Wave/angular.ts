@@ -8,8 +8,8 @@ const NG_ANIMATE_ANCHOR_CLASS_NAME = "ng-anchor";
 const NG_OUT_ANCHOR_CLASS_NAME = "ng-anchor-out";
 const NG_IN_ANCHOR_CLASS_NAME = "ng-anchor-in";
 
-$$AnimateCssDriverProvider.$inject = ["$$animationProvider"];
-export function $$AnimateCssDriverProvider($$animationProvider) {
+AnimateCssDriverProvider.$inject = ["$$animationProvider"];
+export function AnimateCssDriverProvider($$animationProvider) {
   $$animationProvider.drivers.push("$$animateCssDriver");
 
   function isDocumentFragment(node) {

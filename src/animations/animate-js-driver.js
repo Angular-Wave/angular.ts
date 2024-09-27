@@ -1,7 +1,7 @@
 import { forEach } from "../shared/utils";
 
-$$AnimateJsDriverProvider.$inject = ["$$animationProvider"];
-export function $$AnimateJsDriverProvider($$animationProvider) {
+AnimateJsDriverProvider.$inject = ["$$animationProvider"];
+export function AnimateJsDriverProvider($$animationProvider) {
   $$animationProvider.drivers.push("$$animateJsDriver");
   this.$get = [
     "$$animateJs",

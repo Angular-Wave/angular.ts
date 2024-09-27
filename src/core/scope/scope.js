@@ -92,7 +92,7 @@ let rootScope;
  * The provider also injects runtime services to make them available to all scopes.
  *
  */
-export class $RootScopeProvider {
+export class RootScopeProvider {
   constructor() {
     rootScope = new Scope();
   }
