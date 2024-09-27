@@ -27,7 +27,7 @@ export class Attributes {
   /**
    * @param {import('../scope/scope').Scope} $rootScope
    * @param {*} $animate
-   * @param {import("../exception-handler").ExceptionHandlerProvider} $exceptionHandler
+   * @param {import("../exception-handler").ErrorHandler} $exceptionHandler
    * @param {*} $sce
    * @param {import('../../shared/jqlite/jqlite').JQLite} [element]
    * @param {*} [attributesToCopy]

@@ -31,10 +31,6 @@
  *
  */
 
-/**
- * @typedef {import('../types').ServiceProvider} ExceptionHandlerProvider
- */
-
 /** @type {import('../services/log').LogService} */
 let log;
 
@@ -50,7 +46,7 @@ export const errorHandler = (exception, cause) => {
 
 /**
  * @constructor
- * @this {ExceptionHandlerProvider}
+ * @this {import('../types').ServiceProvider}
  */
 export function ExceptionHandlerProvider() {
   this.$get = [

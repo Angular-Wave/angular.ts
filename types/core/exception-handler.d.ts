@@ -1,8 +1,8 @@
 /**
  * @constructor
- * @this {ExceptionHandlerProvider}
+ * @this {import('../types').ServiceProvider}
  */
-export function ExceptionHandlerProvider(this: ExceptionHandlerProvider): void;
+export function ExceptionHandlerProvider(this: any): void;
 export class ExceptionHandlerProvider {
     $get: (string | (($log: import("../services/log").LogService) => ErrorHandler))[];
 }

@@ -526,7 +526,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
     /**
      * @param {import("../../core/di/internal-injector").InjectorService} $injector
      * @param {*} $interpolate
-     * @param {import("../exception-handler").ExceptionHandlerProvider} $exceptionHandler
+     * @param {import("../exception-handler").ErrorHandler} $exceptionHandler
      * @param {*} $templateRequest
      * @param {import("../parser/parse").ParseService} $parse
      * @param {*} $controller
