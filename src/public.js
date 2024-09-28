@@ -128,6 +128,7 @@ import {
   $StateRefDynamicDirective,
 } from "./router/directives/state-directives";
 import { $ViewDirectiveFill, ngView } from "./router/directives/view-directive";
+import { ngObserveDirective } from "./directive/observe/observe";
 
 /**
  * @type {string} `version` from `package.json`, injected by Rollup plugin
@@ -187,6 +188,7 @@ export function publishExternalAPI(angular) {
               ngSwitch: ngSwitchDirective,
               ngSwitchWhen: ngSwitchWhenDirective,
               ngSwitchDefault: ngSwitchDefaultDirective,
+              ngObserve: ngObserveDirective,
               ngOptions: ngOptionsDirective,
               ngTransclude: ngTranscludeDirective,
               ngModel: ngModelDirective,

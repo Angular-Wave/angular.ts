@@ -11,7 +11,7 @@ Object.entries(BOOLEAN_ATTR).forEach(([attrName, propName]) => {
   // binding to multiple is not supported
   if (propName === "multiple") return;
 
-  function defaultLinkFn(scope, element, attr) {
+  function defaultLinkFn(scope, _element, attr) {
     scope.$watch(attr[normalized], (value) => {
       attr.$set(attrName, !!value);
     });

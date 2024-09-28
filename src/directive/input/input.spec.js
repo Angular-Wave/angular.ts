@@ -1,5 +1,4 @@
 import { Angular } from "../../loader";
-import { createInjector } from "../../core/di/injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
 import { EMAIL_REGEXP, ISO_DATE_REGEXP, URL_REGEXP } from "./input";
 import { forEach } from "../../shared/utils";

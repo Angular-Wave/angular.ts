@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>AngularTS Test Runner</title>
+
+    <link rel="shortcut icon" type="image/png" href="/images/favicon.ico" />
+    <script type="module" src="/src/index.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      // Define a custom web component called <test-component>
+      class TestComponent extends HTMLElement {
+        // Called when the element is added to the DOM
+        connectedCallback() {
+          // Get the value of the 'greeting' attribute
+          const greeting = this.getAttribute("greeting") || "world";
+
+          // Set the inner HTML to display the greeting
+          this.innerHTML = `<p>Hello ${greeting}</p>`;
+        }
+
+        // Define which attributes to observe
+        static get observedAttributes() {
+          return ["greeting"];
+        }
+
+        // Called when an observed attribute changes
+        attributeChangedCallback(name, oldValue, newValue) {
+          if (name === "greeting") {
+            this.innerHTML = `<p>Hello ${newValue}</p>`;
+          }
+        }
+      }
+
+      // Register the custom element
+      customElements.define("test-component", TestComponent);
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        var app = window.angular.module("myApp", []);
+      });
+    </script>
+    <script type="module">
+      import {
+        fluentSelect,
+        fluentOption,
+        provideFluentDesignSystem,
+      } from "https://unpkg.com/@fluentui/web-components@2.0.0";
+      provideFluentDesignSystem().register(fluentSelect());
+    </script>
+  </head>
+  <body ng-app="myApp" ng-init="greeting='Middle'">
+    <div id="dummy">{{ greeting }}</div>
+    <input ng-model="greeting" />
+
+    <test-component greeting="{{ greeting }}"></test-component>
+    <div>{{ greeting }}</div>
+
+    <fluent-select
+      ng-observe="current-value"
+      data-update="greeting"
+      ng-attr-current-value="{{ greeting }}"
+      title="Select a section"
+    >
+      <fluent-option value="Beginning">Beginning</fluent-option>
+      <fluent-option value="Middle">Middle</fluent-option>
+      <fluent-option value="End">End</fluent-option>
+    </fluent-select>
+
+    <input type="text" />
+  </body>
+</html>
