@@ -28,6 +28,18 @@ describe("observe", () => {
     $scope.$digest();
   }
 
+  it("should set the scope property to the attribute value before any changes", () => {
+    const scope = $rootScope.$new();
+    const element = JQLite(
+      '<div data-update="testProp" ng-observe="sourceAttr"></div>',
+    );
+    element.attr("sourceAttr", "initialValue");
+    $compile(element)(scope);
+
+    expect(scope.testProp).toBeDefined();
+    expect(scope.testProp).toEqual("initialValue");
+  });
+
   it("should observe attribute changes and update the scope property", () => {
     $scope.myProp = "";
     createDirective("test-attribute", "myProp");

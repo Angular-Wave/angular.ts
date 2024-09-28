@@ -9,12 +9,15 @@ export function ngObserveDirective() {
       const prop = targetElement.dataset["update"];
       const source = attrs["ngObserve"];
 
+      if (!scope[prop]) {
+        scope[prop] = targetElement.getAttribute(source);
+      }
+
       const observer = new MutationObserver((mutations) => {
         const mutation = mutations[0];
         const newValue = /** @type {HTMLElement} */ (
           mutation.target
         ).getAttribute(source);
-
         if (scope[prop] !== newValue) {
           scope[prop] = newValue;
           scope.$digest();

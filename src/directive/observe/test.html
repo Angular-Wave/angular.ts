@@ -48,12 +48,26 @@
       import {
         fluentSelect,
         fluentOption,
+        fluentTab,
+        fluentTabPanel,
+        fluentTabs,
         provideFluentDesignSystem,
+        fluentRadio,
+        fluentRadioGroup,
+        fluentSwitch,
       } from "https://unpkg.com/@fluentui/web-components@2.0.0";
-      provideFluentDesignSystem().register(fluentSelect());
+      provideFluentDesignSystem().register(
+        fluentSelect(),
+        fluentTab(),
+        fluentTabPanel(),
+        fluentTabs(),
+        fluentRadio(),
+        fluentRadioGroup(),
+        fluentSwitch(),
+      );
     </script>
   </head>
-  <body ng-app="myApp" ng-init="greeting='Middle'">
+  <body ng-app="myApp">
     <div id="dummy">{{ greeting }}</div>
     <input ng-model="greeting" />
 
@@ -63,14 +77,121 @@
     <fluent-select
       ng-observe="current-value"
       data-update="greeting"
-      ng-attr-current-value="{{ greeting }}"
       title="Select a section"
     >
       <fluent-option value="Beginning">Beginning</fluent-option>
       <fluent-option value="Middle">Middle</fluent-option>
       <fluent-option value="End">End</fluent-option>
     </fluent-select>
+    <br />
 
-    <input type="text" />
+    {{ activeid }}
+    <fluent-tabs
+      ng-observe="activeid"
+      data-update="activeid"
+      activeid="entrees"
+    >
+      <fluent-tab id="apps">Appetizers</fluent-tab>
+      <fluent-tab id="entrees">Entrees</fluent-tab>
+      <fluent-tab id="desserts">Desserts</fluent-tab>
+      <fluent-tab-panel id="appsPanel">
+        <ol>
+          <li>
+            <fluent-anchor href="#" appearance="hypertext"
+              >Stuffed artichokes</fluent-anchor
+            >
+          </li>
+          <li>
+            <fluent-anchor href="#" appearance="hypertext"
+              >Bruschetta</fluent-anchor
+            >
+          </li>
+          <li>
+            <fluent-anchor href="#" appearance="hypertext"
+              >Oven-baked polenta</fluent-anchor
+            >
+          </li>
+          <li>
+            <fluent-anchor href="#" appearance="hypertext"
+              >Salami and Fig Crostini with Ricotta</fluent-anchor
+            >
+          </li>
+          <li>
+            <fluent-anchor href="#" appearance="hypertext"
+              >Rosemary-Potato Focaccia with Goat Cheese</fluent-anchor
+            >
+          </li>
+        </ol>
+      </fluent-tab-panel>
+      <fluent-tab-panel id="entreesPanel">
+        <ol>
+          <li>
+            <fluent-anchor href="#" appearance="hypertext"
+              >Mushroom-Sausage Ragù</fluent-anchor
+            >
+          </li>
+          <li>
+            <fluent-anchor href="#" appearance="hypertext"
+              >Tomato Bread Soup with Steamed Mussels</fluent-anchor
+            >
+          </li>
+          <li>
+            <fluent-anchor href="#" appearance="hypertext"
+              >Grilled Fish with Artichoke Caponata</fluent-anchor
+            >
+          </li>
+          <li>
+            <fluent-anchor href="#" appearance="hypertext"
+              >Celery Root and Mushroom Lasagna</fluent-anchor
+            >
+          </li>
+          <li>
+            <fluent-anchor href="#" appearance="hypertext"
+              >Osso Buco with Citrus Gremolata</fluent-anchor
+            >
+          </li>
+        </ol>
+      </fluent-tab-panel>
+      <fluent-tab-panel id="dessertsPanel">
+        <ol>
+          <li>
+            <fluent-anchor href="#" appearance="hypertext"
+              >Tiramisu</fluent-anchor
+            >
+          </li>
+          <li>
+            <fluent-anchor href="#" appearance="hypertext"
+              >Spumoni</fluent-anchor
+            >
+          </li>
+          <li>
+            <fluent-anchor href="#" appearance="hypertext"
+              >Limoncello and Ice Cream with Biscotti</fluent-anchor
+            >
+          </li>
+        </ol>
+      </fluent-tab-panel>
+    </fluent-tabs>
+
+    {{ radio }}
+
+    <fluent-radio-group
+      ng-observe="value"
+      data-update="radio"
+      orientation="vertical"
+    >
+      <fluent-radio value="1">18-24</fluent-radio>
+      <fluent-radio value="2">25-33</fluent-radio>
+      <fluent-radio value="3">34-44</fluent-radio>
+      <fluent-radio value="4">45+</fluent-radio>
+    </fluent-radio-group>
+
+    {{ checked }}
+
+    <fluent-switch ng-observe="aria-checked" data-update="checked">
+      <span slot="checked-message">On</span>
+      <span slot="unchecked-message">Off</span>
+      <label for="cap-switch">Captions:</label>
+    </fluent-switch>
   </body>
 </html>
