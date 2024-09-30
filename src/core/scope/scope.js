@@ -201,8 +201,8 @@ export class Scope {
     this.$$suspended = false;
 
     // TODO use maps
-    /** @type {object} */
-    this.$$listeners = {};
+    /** @type {Map<String, Function[]>} */
+    this.$$listeners = new Map();
 
     /** @type {object} */
     this.$$listenerCount = {};
@@ -253,7 +253,7 @@ export class Scope {
       child.$$nextSibling = null;
       child.$$childHead = null;
       child.$$childTail = null;
-      child.$$listeners = {};
+      child.$$listeners = new Map();
       child.$$listenerCount = {};
       child.$$watchersCount = 0;
       child.$$ChildScope = null;
@@ -1033,7 +1033,7 @@ export class Scope {
         function () {
           return () => {};
         };
-    this.$$listeners = {};
+    this.$$listeners.clear();
 
     // Disconnect the next sibling to prevent `cleanUpScope` destroying those too
     this.$$nextSibling = null;
@@ -1246,9 +1246,10 @@ export class Scope {
    * @returns {function()} Returns a deregistration function for this listener.
    */
   $on(name, listener) {
-    let namedListeners = this.$$listeners[name];
+    let namedListeners = this.$$listeners.get(name);
     if (!namedListeners) {
-      this.$$listeners[name] = namedListeners = [];
+      namedListeners = [];
+      this.$$listeners.set(name, namedListeners);
     }
     namedListeners.push(listener);
 
@@ -1337,7 +1338,7 @@ export class Scope {
     let length;
 
     do {
-      namedListeners = scope.$$listeners[name] || empty;
+      namedListeners = scope.$$listeners.get(name) || empty;
       event.currentScope = scope;
       for (i = 0, length = namedListeners.length; i < length; i++) {
         // if listeners were deregistered, defragment the array
@@ -1409,7 +1410,7 @@ export class Scope {
     // down while you can, then up and next sibling or up and next sibling until back at root
     while ((current = next)) {
       event.currentScope = current;
-      listeners = current.$$listeners[name] || [];
+      listeners = current.$$listeners.get(name) || [];
       for (i = 0, length = listeners.length; i < length; i++) {
         // if listeners were deregistered, defragment the array
         if (!listeners[i]) {

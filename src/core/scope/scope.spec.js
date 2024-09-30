@@ -1,4 +1,4 @@
-import { $$asyncQueue } from "./scope";
+import { $$asyncQueue, Scope } from "./scope";
 import { extend, sliceArgs } from "../../shared/utils";
 import { Angular } from "../../loader";
 import { createInjector } from "../di/injector";
@@ -27,6 +27,20 @@ describe("Scope", function () {
     $browser = injector.get("$browser");
 
     $rootScope = injector.get("$rootScope");
+  });
+
+  describe("class", () => {
+    it("can be constructed as a class", () => {
+      const scope = new Scope();
+      expect(scope).toBeDefined();
+      expect(scope.isRoot).toBeFalse();
+    });
+
+    it("can be constructed as a root scope", () => {
+      const scope = new Scope(true);
+      expect(scope).toBeDefined();
+      expect(scope.isRoot).toBeTrue();
+    });
   });
 
   describe("inheritance", () => {
@@ -2870,13 +2884,13 @@ describe("Scope", function () {
           const remove1 = $rootScope.$on("abc", () => {});
           $rootScope.$on("abc", () => {});
 
-          expect($rootScope.$$listeners.abc.length).toBe(2);
-          expect(0 in $rootScope.$$listeners.abc).toBe(true);
+          expect($rootScope.$$listeners.get("abc").length).toBe(2);
+          expect(0 in $rootScope.$$listeners.get("abc")).toBe(true);
 
           remove1();
 
-          expect($rootScope.$$listeners.abc.length).toBe(2);
-          expect(0 in $rootScope.$$listeners.abc).toBe(false);
+          expect($rootScope.$$listeners.get("abc").length).toBe(2);
+          expect(0 in $rootScope.$$listeners.get("abc")).toBe(false);
         });
 
         it("should call next listener after removing the current listener via its own handler", () => {
@@ -3097,14 +3111,14 @@ describe("Scope", function () {
 
         spy1.and.callFake(remove1);
 
-        expect(child.$$listeners.evt.length).toBe(3);
+        expect(child.$$listeners.get("evt").length).toBe(3);
 
         // should call all listeners and remove 1st
         child.$emit("evt");
         expect(spy1).toHaveBeenCalled();
         expect(spy2).toHaveBeenCalled();
         expect(spy3).toHaveBeenCalled();
-        expect(child.$$listeners.evt.length).toBe(3); // cleanup will happen on next $emit
+        expect(child.$$listeners.get("evt").length).toBe(3); // cleanup will happen on next $emit
 
         spy1.calls.reset();
         spy2.calls.reset();
@@ -3116,7 +3130,7 @@ describe("Scope", function () {
         expect(spy1).not.toHaveBeenCalled();
         expect(spy2).toHaveBeenCalled();
         expect(spy3).not.toHaveBeenCalled();
-        expect(child.$$listeners.evt.length).toBe(1);
+        expect(child.$$listeners.get("evt").length).toBe(1);
       });
 
       it("should allow removing event listener inside a listener on $broadcast", () => {
@@ -3130,14 +3144,14 @@ describe("Scope", function () {
 
         spy1.and.callFake(remove1);
 
-        expect(child.$$listeners.evt.length).toBe(3);
+        expect(child.$$listeners.get("evt").length).toBe(3);
 
         // should call all listeners and remove 1st
         child.$broadcast("evt");
         expect(spy1).toHaveBeenCalled();
         expect(spy2).toHaveBeenCalled();
         expect(spy3).toHaveBeenCalled();
-        expect(child.$$listeners.evt.length).toBe(3); // cleanup will happen on next $broadcast
+        expect(child.$$listeners.get("evt").length).toBe(3); // cleanup will happen on next $broadcast
 
         spy1.calls.reset();
         spy2.calls.reset();
@@ -3149,7 +3163,7 @@ describe("Scope", function () {
         expect(spy1).not.toHaveBeenCalled();
         expect(spy2).toHaveBeenCalled();
         expect(spy3).not.toHaveBeenCalled();
-        expect(child.$$listeners.evt.length).toBe(1);
+        expect(child.$$listeners.get("evt").length).toBe(1);
       });
 
       describe("event object", () => {

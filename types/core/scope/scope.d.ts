@@ -151,8 +151,8 @@ export class Scope {
     $$destroyed: boolean;
     /** @type {boolean} */
     $$suspended: boolean;
-    /** @type {object} */
-    $$listeners: object;
+    /** @type {Map<String, Function[]>} */
+    $$listeners: Map<string, Function[]>;
     /** @type {object} */
     $$listenerCount: object;
     /** @type {number} */
