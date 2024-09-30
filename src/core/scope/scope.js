@@ -137,15 +137,14 @@ export class RootScopeProvider {
  */
 
 export class Scope {
+  /**
+   * @param {boolean} [root=false] - Indicates if this scope is the root scope.
+   */
   constructor(root = false) {
     /**
      * @type {boolean}
      */
     this.isRoot = root;
-
-    if (this.$root) {
-      this.rootScope = this;
-    }
 
     /**
      * @type {number} Unique scope ID (monotonically increasing) useful for debugging.
@@ -198,7 +197,6 @@ export class Scope {
     /** @type {boolean} */
     this.$$destroyed = false;
 
-    // TODO use maps
     /** @type {boolean} */
     this.$$suspended = false;
 
@@ -247,7 +245,7 @@ export class Scope {
     let child = isolate ? new Scope() : Object.create(this);
 
     if (isolate) {
-      child.$root = this.isRoot ? this : this.rootScope;
+      child.$root = this.isRoot ? this : this.$root;
     } else {
       // Initialize properties for a non-isolated child scope
       child.$id = nextUid();

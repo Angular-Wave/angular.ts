@@ -73,6 +73,7 @@ export const $$applyAsyncQueue: Function[];
  *
  */
 export class RootScopeProvider {
+    rootScope: Scope;
     $get: (string | ((exceptionHandler: import("../exception-handler").ErrorHandler, parse: import("../parser/parse").ParseService, browser: import("../../services/browser").Browser) => Scope))[];
 }
 /**
@@ -100,6 +101,14 @@ export class RootScopeProvider {
  * to construct.
  */
 export class Scope {
+    /**
+     * @param {boolean} [root=false] - Indicates if this scope is the root scope.
+     */
+    constructor(root?: boolean);
+    /**
+     * @type {boolean}
+     */
+    isRoot: boolean;
     /**
      * @type {number} Unique scope ID (monotonically increasing) useful for debugging.
      */
