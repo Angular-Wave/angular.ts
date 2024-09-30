@@ -77,11 +77,6 @@ let $browser;
 let $exceptionHandler;
 
 /**
- * @type {Scope}
- */
-let rootScope;
-
-/**
  * Provider responsible for instantiating the initial scope, aka - root scope.
  * Every application has a single root {@link ng.$rootScope.Scope scope}.
  * All other scopes are descendant scopes of the root scope. Scopes provide separation
@@ -94,7 +89,7 @@ let rootScope;
  */
 export class RootScopeProvider {
   constructor() {
-    rootScope = new Scope();
+    this.rootScope = new Scope(true);
   }
 
   $get = [
@@ -111,7 +106,7 @@ export class RootScopeProvider {
       $exceptionHandler = exceptionHandler;
       $parse = parse;
       $browser = browser;
-      return rootScope;
+      return this.rootScope;
     },
   ];
 }
@@ -142,7 +137,16 @@ export class RootScopeProvider {
  */
 
 export class Scope {
-  constructor() {
+  constructor(root = false) {
+    /**
+     * @type {boolean}
+     */
+    this.isRoot = root;
+
+    if (this.$root) {
+      this.rootScope = this;
+    }
+
     /**
      * @type {number} Unique scope ID (monotonically increasing) useful for debugging.
      */
@@ -240,13 +244,12 @@ export class Scope {
    *
    */
   $new(isolate, parent) {
-    /** @type {Scope} */
-    let child;
+    let child = isolate ? new Scope() : Object.create(this);
+
     if (isolate) {
-      child = new Scope();
-      child.$root = rootScope;
+      child.$root = this.isRoot ? this : this.rootScope;
     } else {
-      child = Object.create(this);
+      // Initialize properties for a non-isolated child scope
       child.$id = nextUid();
       child.$$watchers = [];
       child.$$nextSibling = null;
@@ -261,6 +264,7 @@ export class Scope {
 
     child.$parent = parent || this;
     child.$$prevSibling = child.$parent.$$childTail;
+
     if (child.$parent.$$childHead) {
       child.$parent.$$childTail.$$nextSibling = child;
       child.$parent.$$childTail = child;
@@ -269,20 +273,13 @@ export class Scope {
       child.$parent.$$childTail = child;
     }
 
-    // When the new scope is not isolated or we inherit from `this`, and
-    // the parent scope is destroyed, the property `$$destroyed` is inherited
-    // prototypically. In all other cases, this property needs to be set
-    // when the parent scope is destroyed.
-    // The listener needs to be added after the parent is set
+    // Add a destroy listener if isolated or the parent differs from `this`
     if (isolate || parent !== this) {
-      child.$on(
-        "$destroy",
-        /** @param {any} $event */ //angular.IAngularEvent
-        ($event) => {
-          $event.currentScope.$$destroyed = true;
-        },
-      );
+      child.$on("$destroy", ($event) => {
+        $event.currentScope.$$destroyed = true;
+      });
     }
+
     return child;
   }
 
