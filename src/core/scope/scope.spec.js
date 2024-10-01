@@ -63,7 +63,7 @@ describe("Scope", function () {
       const child = $rootScope.$new();
       child.aValue = [1, 2, 3];
 
-      expect(parent.aValue).toBeUndefined();
+      expect($rootScope.aValue).toBeUndefined();
     });
 
     it("inherits the parents properties whenever they are defined", () => {
@@ -105,6 +105,7 @@ describe("Scope", function () {
 
       expect(child.aValue).toEqual([1, 2, 3, 4]);
       expect($rootScope.aValue).toEqual([1, 2, 3, 4]);
+      expect(child.aValue).toEqual($rootScope.aValue);
     });
   });
 
@@ -136,6 +137,7 @@ describe("Scope", function () {
       $rootScope.a = 123;
       expect(isolated.a).toBeUndefined();
       expect(trans.a).toEqual(123);
+      expect(trans.$root).toBe($rootScope);
       expect(trans.$parent).toBe(isolated);
     });
   });
@@ -185,7 +187,7 @@ describe("Scope", function () {
       expect($rootScope.$eval("this")).toEqual($rootScope);
     });
 
-    it("should be able to access a constiable named 'this'", () => {
+    it("should be able to access a constant variable named 'this'", () => {
       $rootScope.this = 42;
       expect($rootScope.$eval("this['this']")).toBe(42);
     });

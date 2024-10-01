@@ -750,7 +750,7 @@ export class Scope {
     // TODO Implement browser
     $browser.$$checkUrlChange();
 
-    if (this === this.$root && applyAsyncId !== null) {
+    if (this.isRoot && applyAsyncId !== null) {
       // If this is the root scope, and $applyAsync has scheduled a deferred $apply(), then
       // cancel the scheduled $apply and flush the queue of expressions to be evaluated.
       $browser.cancel(applyAsyncId);
