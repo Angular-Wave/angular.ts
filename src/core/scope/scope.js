@@ -727,7 +727,6 @@ export class Scope {
  *
  */
   $digest() {
-    let watch;
     let value;
     let last;
     let fn;
@@ -736,10 +735,9 @@ export class Scope {
     let dirty;
     let ttl = TTL;
     let next;
-    /**
-     * @type {Scope}
-     */
+    /** @type {Scope} */
     let current;
+    /** @type {Scope} */
     const target = $$asyncQueue.length ? this.$root : this;
     const watchLog = [];
     let logIdx;
@@ -790,7 +788,7 @@ export class Scope {
           current.$$digestWatchIndex = watchers.length;
           while (current.$$digestWatchIndex--) {
             try {
-              watch = watchers[current.$$digestWatchIndex];
+              const watch = watchers[current.$$digestWatchIndex];
               // Most common watches are on primitives, in which case we can short
               // circuit it with === operator, only when === fails do we use .equals
               if (watch) {

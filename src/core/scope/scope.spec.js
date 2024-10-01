@@ -8,6 +8,7 @@ describe("Scope", function () {
   let $parse;
   let $browser;
   let logs;
+  let scope;
 
   beforeEach(() => {
     logs = [];
@@ -27,6 +28,7 @@ describe("Scope", function () {
     $browser = injector.get("$browser");
 
     $rootScope = injector.get("$rootScope");
+    scope = $rootScope;
   });
 
   describe("class", () => {
@@ -194,6 +196,46 @@ describe("Scope", function () {
   });
 
   describe("$watch/$digest", () => {
+    it("calls the listener function of a watch on first $digest", function () {
+      var watchFn = function () {
+        return "wat";
+      };
+      var listenerFn = jasmine.createSpy();
+      $rootScope.$watch(watchFn, listenerFn);
+      $rootScope.$digest();
+      expect(listenerFn).toHaveBeenCalled();
+    });
+
+    it("calls the watch function with the scope as the argument", function () {
+      var watchFn = jasmine.createSpy();
+      var listenerFn = function () {};
+      $rootScope.$watch(watchFn, listenerFn);
+      $rootScope.$digest();
+      expect(watchFn).toHaveBeenCalledWith($rootScope);
+    });
+
+    it("calls the listener function when the watched value changes", function () {
+      scope.someValue = "a";
+      scope.counter = 0;
+      scope.$watch(
+        function (scope) {
+          return scope.someValue;
+        },
+        function (newValue, oldValue, scope) {
+          scope.counter++;
+        },
+      );
+      expect(scope.counter).toBe(0);
+      scope.$digest();
+      expect(scope.counter).toBe(1);
+      scope.$digest();
+      expect(scope.counter).toBe(1);
+      scope.someValue = "b";
+      expect(scope.counter).toBe(1);
+      scope.$digest();
+      expect(scope.counter).toBe(2);
+    });
+
     it("should watch and fire on simple property change", () => {
       const spy = jasmine.createSpy();
       $rootScope.$watch("name", spy);
