@@ -1,9 +1,9 @@
 name: TypeScript check
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+  workflow_run:
+    workflows: ["Lint check"]
+    types:
+      - completed
 jobs:
   test:
     timeout-minutes: 60
