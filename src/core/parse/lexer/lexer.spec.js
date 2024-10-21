@@ -4,7 +4,6 @@ import { createInjector } from "../di/injector";
 
 describe("lexer", () => {
   let $rootScope;
-  let $parse;
   let logs = [];
 
   beforeEach(() => {

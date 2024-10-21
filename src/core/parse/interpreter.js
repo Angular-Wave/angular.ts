@@ -14,12 +14,12 @@ export class ASTInterpreter {
 
   /**
    * Compiles the AST into a function.
-   * @param {import("./ast").ASTNode} ast - The AST to compile.
+   * @param {import("./ast/ast").ASTNode} ast - The AST to compile.
    * @returns {import("./parse").CompiledExpression}
    */
   compile(ast) {
     let decoratedNode = findConstantAndWatchExpressions(ast, this.$filter);
-    /** @type {import("./ast").ASTNode} */
+    /** @type {import("./ast/ast").ASTNode} */
     let assignable;
     /** @type {import("./parse").CompiledExpression} */
     let assign;
@@ -71,7 +71,7 @@ export class ASTInterpreter {
 
   /**
    * Recurses the AST nodes.
-   * @param {import("./ast").ASTNode} ast - The AST node.
+   * @param {import("./ast/ast").ASTNode} ast - The AST node.
    * @param {Object} [context] - The context.
    * @param {boolean|1} [create] - The create flag.
    * @returns {import("./parse").CompiledExpressionFunction} The recursive function.
@@ -585,7 +585,7 @@ export class ASTInterpreter {
 }
 
 /**
- * @typedef {import("./ast").ASTNode & {
+ * @typedef {import("./ast/ast").ASTNode & {
  *  isPure: boolean|number,
  *  constant: boolean,
  *  toWatch: Array,
@@ -594,7 +594,7 @@ export class ASTInterpreter {
 
 /**
  * Decorates AST with constant, toWatch, and isPure properties
- * @param {import("./ast").ASTNode} ast
+ * @param {import("./ast/ast").ASTNode} ast
  * @param {function(any):any} $filter
  * @param {boolean|1|2} [parentIsPure]
  * @returns {DecoratedASTNode}
@@ -795,8 +795,8 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
 /**
  * Converts a single expression AST node into an assignment expression if the expression is assignable.
  *
- * @param {import("./ast").ASTNode} ast
- * @returns {import("./ast").ASTNode}
+ * @param {import("./ast/ast").ASTNode} ast
+ * @returns {import("./ast/ast").ASTNode}
  */
 function assignableAST(ast) {
   if (ast.body.length === 1 && isAssignable(ast.body[0].expression)) {
@@ -817,7 +817,7 @@ function plusFn(l, r) {
 
 /**
  *
- * @param {import("./ast").ASTNode[]} body
+ * @param {import("./ast/ast").ASTNode[]} body
  * @returns {any}
  */
 function getInputs(body) {
@@ -830,7 +830,7 @@ function getInputs(body) {
 
 /**
  * Detect nodes which could depend on non-shallow state of objects
- * @param {import("./ast").ASTNode} node
+ * @param {import("./ast/ast").ASTNode} node
  * @param {boolean|PURITY_ABSOLUTE|PURITY_RELATIVE} parentIsPure
  * @returns {boolean|PURITY_ABSOLUTE|PURITY_RELATIVE}
  */
@@ -877,7 +877,7 @@ function getStringValue(name) {
 }
 
 /**
- * @param {import("./ast").ASTNode} ast
+ * @param {import("./ast/ast").ASTNode} ast
  * @returns {boolean}
  */
 export function isAssignable(ast) {
