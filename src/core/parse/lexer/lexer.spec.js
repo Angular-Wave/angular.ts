@@ -1,9 +1,10 @@
 import { Lexer } from "./lexer";
-import { Angular } from "../../loader";
-import { createInjector } from "../di/injector";
+import { Angular } from "../../../loader";
+import { createInjector } from "../../di/injector";
 
 describe("lexer", () => {
   let $rootScope;
+  let $parse;
   let logs = [];
 
   beforeEach(() => {
