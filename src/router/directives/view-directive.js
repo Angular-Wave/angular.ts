@@ -158,7 +158,7 @@ export let ngView = [
     };
     const directive = {
       count: 0,
-      restrict: "ECA",
+      restrict: "EA",
       terminal: true,
       priority: 400,
       transclude: "element",
@@ -304,7 +304,7 @@ export function $ViewDirectiveFill(
   const getControllerAs = parse("viewDecl.controllerAs");
   const getResolveAs = parse("viewDecl.resolveAs");
   return {
-    restrict: "ECA",
+    restrict: "EA",
     priority: -400,
     compile: function (tElement) {
       const initial = tElement.html();
