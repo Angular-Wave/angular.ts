@@ -2,7 +2,6 @@ import { createInjector } from "../../core/di/injector";
 import { JQLite, dealoc } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
 import {
-  forEach,
   isBoolean,
   hashKey,
   equals,
@@ -2993,7 +2992,7 @@ describe("ngOptions", () => {
         const addSpiesOnProto =
           originalSelectedDescriptor && originalSelectedDescriptor.configurable;
 
-        forEach(options, (option, i) => {
+        Object.entries(options).forEach(([i, option]) => {
           const setSelected = function (value) {
             _selected[i] = value;
           };
@@ -3004,7 +3003,7 @@ describe("ngOptions", () => {
         });
 
         if (!addSpiesOnProto) {
-          forEach(options, (option, i) => {
+          Object.entries(options).forEach(([i, option]) => {
             Object.defineProperty(option, "selected", {
               get() {
                 return _selected[i];

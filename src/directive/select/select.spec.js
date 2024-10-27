@@ -1,7 +1,6 @@
 import { Angular } from "../../loader";
-import { createInjector } from "../../core/di/injector";
 import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
-import { forEach, hashKey, equals, isNumberNaN } from "../../shared/utils";
+import { hashKey, equals, isNumberNaN } from "../../shared/utils";
 import { browserTrigger } from "../../shared/test-utils";
 
 describe("select", () => {
@@ -118,8 +117,9 @@ describe("select", () => {
             const actualValues = {};
             let optionGroup;
             let optionValue;
-
-            forEach(actual.find("option"), (option) => {
+            let options = actual.find("option");
+            for (let i = 0; i < options.length; i++) {
+              let option = options[i];
               optionGroup = option.parentNode.label || "";
               actualValues[optionGroup] = actualValues[optionGroup] || [];
               // IE9 doesn't populate the label property from the text property like other browsers
@@ -127,7 +127,7 @@ describe("select", () => {
               actualValues[optionGroup].push(
                 option.selected ? [optionValue] : optionValue,
               );
-            });
+            }
 
             const message = function () {
               return `Expected ${toJson(actualValues)} to equal ${toJson(expected)}.`;
@@ -1781,12 +1781,11 @@ describe("select", () => {
           // reset
           scope.selected = [];
           scope.$digest();
+          let elems = element.find("option");
 
-          forEach(element.find("option"), (option) => {
-            // browserTrigger can't produce click + ctrl, so set selection manually
-            JQLite(option)[0].selected = true;
-          });
-
+          for (var i = 0; i < elems.length; i++) {
+            JQLite(elems[i])[0].selected = true;
+          }
           browserTrigger(element, "change");
 
           const arrayVal = ["a"];

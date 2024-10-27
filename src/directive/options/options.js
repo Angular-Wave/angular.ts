@@ -1,7 +1,6 @@
 import { JQLite, removeElement, startingTag } from "../../shared/jqlite/jqlite";
 import {
   equals,
-  forEach,
   hashKey,
   includes,
   isArrayLike,

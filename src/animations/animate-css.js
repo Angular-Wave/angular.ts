@@ -1,4 +1,4 @@
-import { forEach, isDefined } from "../shared/utils";
+import { isDefined } from "../shared/utils";
 import {
   TRANSITION_DURATION_PROP,
   TRANSITION_DELAY_PROP,
@@ -67,7 +67,7 @@ function getCssDelayStyle(delay, isKeyframeAnimation) {
 function computeCssStyles(element, properties) {
   const styles = Object.create(null);
   const detectedStyles = window.getComputedStyle(element) || {};
-  forEach(properties, (formalStyleName, actualStyleName) => {
+  properties.forEach(([actualStyleName, formalStyleName]) => {
     let val = detectedStyles[formalStyleName];
     if (val) {
       const c = val.charAt(0);
@@ -92,8 +92,7 @@ function computeCssStyles(element, properties) {
 
 function parseMaxTime(str) {
   let maxValue = 0;
-  const values = str.split(/\s*,\s*/);
-  forEach(values, (value) => {
+  str.split(/\s*,\s*/).forEach((value) => {
     // it's always safe to consider only second values and omit `ms` values since
     // getComputedStyle will always handle the conversion for us
     if (value.charAt(value.length - 1) === "s") {
@@ -130,7 +129,7 @@ function getCssTransitionDurationStyle(duration, applyOnlyDuration) {
 // is to be removed at the end of the animation). If we had a simple
 // "OR" statement then it would not be enough to catch that.
 function registerRestorableStyles(backup, node, properties) {
-  forEach(properties, (prop) => {
+  properties.forEach((prop) => {
     backup[prop] = isDefined(backup[prop])
       ? backup[prop]
       : node.style.getPropertyValue(prop);
