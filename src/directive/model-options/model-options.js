@@ -86,7 +86,7 @@ class ModelOptions {
         // it from the event list and set the `updateOnDefault` flag.
         options.updateOnDefault = false;
         options[key] = trim(
-          option.replace(DEFAULT_REGEXP, () => {
+          /** @type {string} */ (option).replace(DEFAULT_REGEXP, () => {
             options.updateOnDefault = true;
             return " ";
           }),

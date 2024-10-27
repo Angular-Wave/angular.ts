@@ -231,7 +231,7 @@ describe("ngOptions", () => {
 
   function createSelect(attrs, blank, unknown) {
     let html = "<select";
-    forEach(attrs, (value, key) => {
+    Object.entries(attrs).forEach(([key, value]) => {
       if (isBoolean(value)) {
         if (value) html += ` ${key}`;
       } else {

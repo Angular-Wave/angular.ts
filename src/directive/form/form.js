@@ -214,19 +214,25 @@ FormController.prototype = {
     if (control.$name && this[control.$name] === control) {
       delete this[control.$name];
     }
-    Object.keys(this.$pending).forEach((name) => {
-      this.$setValidity(name, null, control);
-    });
-    Object.keys(this.$error).forEach((name) => {
-      this.$setValidity(name, null, control);
-    });
-    Object.keys(this.$success).forEach((name) => {
-      this.$setValidity(name, null, control);
-    });
+    this.$pending &&
+      Object.keys(this.$pending).forEach((name) => {
+        this.$setValidity(name, null, control);
+      });
+    this.$error &&
+      Object.keys(this.$error).forEach((name) => {
+        this.$setValidity(name, null, control);
+      });
+    this.$$success &&
+      Object.keys(this.$$success).forEach((name) => {
+        this.$setValidity(name, null, control);
+      });
 
     arrayRemove(this.$$controls, control);
     control.$$parentForm = nullFormCtrl;
   },
+
+  // eslint-disable-next-line no-unused-vars
+  $setValidity: function (_a, _b, _c) {},
 
   /**
    * Sets the form to a dirty state.

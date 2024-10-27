@@ -102,9 +102,9 @@ export function JQLite(element) {
 JQLite.prototype = {
   toString() {
     const value = [];
-    Array.from(this).forEach((e) => {
-      value.push(`${e}`);
-    });
+    for (var i = 0; i < this.length; i++) {
+      value.push(`${this[i]}`);
+    }
     return `[${value.join(", ")}]`;
   },
 
@@ -481,14 +481,16 @@ JQLite.prototype.replaceWith = function (arg1) {
     let index;
     const parent = element.parentNode;
     dealoc(element);
-    Array.from(new JQLite(replaceNode)).forEach((node) => {
+    const nodes = new JQLite(replaceNode);
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
       if (index) {
         parent.insertBefore(node, index.nextSibling);
       } else {
         parent.replaceChild(node, element);
       }
       index = node;
-    });
+    }
   };
   for (let i = 0; i < this.length; i++) {
     addNodes(value, fn(this[i], arg1));

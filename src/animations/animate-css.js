@@ -598,7 +598,7 @@ export function AnimateCssProvider() {
           blockKeyframeAnimations(node, false);
           blockTransitions(node, false);
 
-          forEach(temporaryStyles, (entry) => {
+          temporaryStyles.forEach((entry) => {
             // There is only one way to remove inline style properties entirely from elements.
             // By using `removeProperty` this works, but we need to convert camel-cased CSS
             // styles down to hyphenated values.
@@ -609,7 +609,7 @@ export function AnimateCssProvider() {
           applyAnimationStyles(element, options);
 
           if (Object.keys(restoreStyles).length) {
-            forEach(restoreStyles, (value, prop) => {
+            Object.entries(restoreStyles).forEach(([prop, value]) => {
               if (value) {
                 node.style.setProperty(prop, value);
               } else {
@@ -774,7 +774,7 @@ export function AnimateCssProvider() {
 
             applyBlocking(false);
 
-            forEach(temporaryStyles, (entry) => {
+            temporaryStyles.forEach((entry) => {
               const key = entry[0];
               const value = entry[1];
               node.style[key] = value;
