@@ -2,8 +2,8 @@ import { Angular } from "../../loader";
 import { EventBus } from "../../core/pubsub/pubsub";
 import { wait } from "../../shared/test-utils";
 
-describe("ngChannelDirective", () => {
-  let $compile, $rootScope, $scope, element, unsubscribeSpy;
+describe("channel", () => {
+  let $compile, $scope, element, unsubscribeSpy;
 
   beforeEach(() => {
     window.angular = new Angular();
@@ -12,8 +12,7 @@ describe("ngChannelDirective", () => {
       .bootstrap(document.getElementById("dummy"), ["myModule"])
       .invoke((_$compile_, _$rootScope_) => {
         $compile = _$compile_;
-        $rootScope = _$rootScope_;
-        $scope = $rootScope.$new();
+        $scope = _$rootScope_;
       });
 
     spyOn(EventBus, "subscribe").and.callThrough();
@@ -33,6 +32,8 @@ describe("ngChannelDirective", () => {
   it("should update innerHtml when EventBus emits a value", async () => {
     element = $compile('<div ng-channel="testChannel"></div>')($scope);
     $scope.$digest();
+
+    expect(element[0].innerHTML).toBe("");
 
     EventBus.publish("testChannel", "New Content");
     await wait(10);
