@@ -5175,14 +5175,16 @@ describe("$compile", () => {
 
     describe("restrict", () => {
       it("should allow restriction of availability", () => {
-        forEach({ div: "E", attr: "A", all: "EA" }, (restrict, name) => {
-          myModule.directive(name, () => ({
-            restrict,
-            compile: valueFn((scope, element, attr) => {
-              log.push(name);
-            }),
-          }));
-        });
+        Object.entries({ div: "E", attr: "A", all: "EA" }).forEach(
+          ([name, restrict]) => {
+            myModule.directive(name, () => ({
+              restrict,
+              compile: valueFn((scope, element, attr) => {
+                log.push(name);
+              }),
+            }));
+          },
+        );
 
         reloadModules();
         dealoc($compile('<span div class="div"></span>')($rootScope));
@@ -17249,7 +17251,7 @@ describe("$compile", () => {
       const toCompile = JQLite(template);
 
       const preCompiledChildren = getAll(toCompile);
-      forEach(preCompiledChildren, (element, i) => {
+      Object.entries(preCompiledChildren).forEach(([i, element]) => {
         getOrSetCacheData(element, "foo", `template#${i}`);
       });
 
@@ -17257,15 +17259,17 @@ describe("$compile", () => {
       $rootScope.$apply();
       linkedElements.remove();
 
-      forEach(preCompiledChildren, (element, i) => {
+      Object.entries(preCompiledChildren).forEach(([i, element]) => {
         expect(CACHE.has(element[EXPANDO])).toBe(false, `template#${i}`);
       });
-      forEach(getAll(linkedElements), (element, i) => {
+
+      Object.entries(linkedElements).forEach(([i, element]) => {
         expect(CACHE.has(element[EXPANDO])).toBe(false, `linked#${i}`);
       });
     }
 
     it("should clean data of element-transcluded link-cloned elements", () => {
+      debugger;
       testCompileLinkDataCleanup(
         '<div><div ng-repeat-start="i in [1,2]"><span></span></div><div ng-repeat-end></div></div>',
       );

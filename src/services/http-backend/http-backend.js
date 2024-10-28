@@ -100,13 +100,18 @@ export function createHttpBackend($browser) {
       );
     };
 
-    Object.entries(eventHandlers).forEach(([key, value]) => {
-      xhr.addEventListener(key, value);
-    });
+    if (eventHandlers) {
+      eventHandlers &&
+        Object.entries(eventHandlers).forEach(([key, value]) => {
+          xhr.addEventListener(key, value);
+        });
+    }
 
-    Object.entries(uploadEventHandlers).forEach(([key, value]) => {
-      xhr.upload.addEventListener(key, value);
-    });
+    if (uploadEventHandlers) {
+      Object.entries(uploadEventHandlers).forEach(([key, value]) => {
+        xhr.upload.addEventListener(key, value);
+      });
+    }
 
     if (withCredentials) {
       xhr.withCredentials = true;
