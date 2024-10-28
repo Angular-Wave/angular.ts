@@ -17269,7 +17269,6 @@ describe("$compile", () => {
     }
 
     it("should clean data of element-transcluded link-cloned elements", () => {
-      debugger;
       testCompileLinkDataCleanup(
         '<div><div ng-repeat-start="i in [1,2]"><span></span></div><div ng-repeat-end></div></div>',
       );

@@ -1,7 +1,6 @@
 import { dealoc } from "../../shared/jqlite/jqlite";
 import { Angular } from "../../loader";
 import { map, find } from "../../shared/common";
-import { forEach } from "../../shared/utils";
 
 describe("UrlMatcher", () => {
   let $url;

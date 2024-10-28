@@ -46,11 +46,13 @@ export function createHttpBackend($browser) {
     let abortedByTimeout = false;
 
     xhr.open(method, url, true);
-    Object.entries(headers).forEach(([key, value]) => {
-      if (isDefined(value)) {
-        xhr.setRequestHeader(key, value);
-      }
-    });
+    if (headers) {
+      Object.entries(headers).forEach(([key, value]) => {
+        if (isDefined(value)) {
+          xhr.setRequestHeader(key, value);
+        }
+      });
+    }
 
     xhr.onload = function () {
       const statusText = xhr.statusText || "";
