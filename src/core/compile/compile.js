@@ -906,7 +906,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           containingScope,
         ) {
           if (!transcludedScope) {
-            transcludedScope = containingScope.$new();
+            transcludedScope = scope.$transcluded(containingScope);
             transcludedScope.$$transcluded = true;
           }
 
