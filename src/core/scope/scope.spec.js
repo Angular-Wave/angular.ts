@@ -135,7 +135,7 @@ describe("Scope", function () {
 
     it("should attach the child scope to a specified parent", () => {
       const isolated = $rootScope.$new(true);
-      const trans = $rootScope.$new(false, isolated);
+      const trans = $rootScope.$transcluded(isolated);
       $rootScope.a = 123;
       expect(isolated.a).toBeUndefined();
       expect(trans.a).toEqual(123);
