@@ -42,6 +42,8 @@ export class Location {
    * @param {string} appBaseNoFile application base URL stripped of any filename
    */
   constructor(appBase, appBaseNoFile) {
+    const parsedUrl = urlResolve(appBase);
+
     /** @type {string} */
     this.appBase = appBase;
 
@@ -67,16 +69,17 @@ export class Location {
     this.$$replace = false;
 
     /** @type {import('../url-utils/url-utils').HttpProtocol} */
-    this.$$protocol = undefined;
+    this.$$protocol = parsedUrl.protocol;
 
     /** @type {string} */
-    this.$$host = undefined;
+    this.$$host = parsedUrl.hostname;
 
     /**
      * The port, without ":"
      * @type {number}
      */
-    this.$$port = undefined;
+    this.$$port =
+      toInt(parsedUrl.port) || DEFAULT_PORTS[parsedUrl.protocol] || null;
 
     /**
      * The pathname, beginning with "/"
@@ -359,7 +362,6 @@ export class LocationHtml5Url extends Location {
     super(appBase, appBaseNoFile);
     this.$$html5 = true;
     this.basePrefix = basePrefix || "";
-    parseAbsoluteUrl(appBase, this);
   }
 
   /**
@@ -442,10 +444,7 @@ export class LocationHtml5Url extends Location {
 export class LocationHashbangUrl extends Location {
   constructor(appBase, appBaseNoFile, hashPrefix) {
     super(appBase, appBaseNoFile);
-    this.appBase = appBase;
-    this.appBaseNoFile = appBaseNoFile;
     this.hashPrefix = hashPrefix;
-    parseAbsoluteUrl(appBase, this);
   }
 
   /**
@@ -888,19 +887,6 @@ function normalizePath(pathValue, searchValue, hashValue) {
   const path = encodePath(pathValue);
 
   return path + (search ? `?${search}` : "") + hash;
-}
-
-/**
- * @param {string} absoluteUrl
- * @param {Location} locationObj
- */
-function parseAbsoluteUrl(absoluteUrl, locationObj) {
-  const parsedUrl = urlResolve(absoluteUrl);
-
-  locationObj.$$protocol = parsedUrl.protocol;
-  locationObj.$$host = parsedUrl.hostname;
-  locationObj.$$port =
-    toInt(parsedUrl.port) || DEFAULT_PORTS[parsedUrl.protocol] || null;
 }
 
 function parseAppUrl(url, locationObj, html5Mode) {
