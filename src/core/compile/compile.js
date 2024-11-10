@@ -2394,7 +2394,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           });
 
         return function delayedNodeLinkFn(
-          ignoreChildLinkFn,
+          _ignoreChildLinkFn,
           scope,
           node,
           rootElement,
@@ -2453,19 +2453,16 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
       }
 
       function addTextInterpolateDirective(directives, text) {
-        const interpolateFn = $interpolate(text, true);
+        const interpolateFn = $interpolate(text, true); // Create interpolation function
         if (interpolateFn) {
           directives.push({
             priority: 0,
-            compile: function textInterpolateCompileFn() {
-              // When transcluding a template that has bindings in the root
-              // we don't have a parent and thus need to add the class during linking fn.
-
-              return function textInterpolateLinkFn(scope, node) {
-                scope.$watch(interpolateFn, (value) => {
-                  node[0].nodeValue = value;
-                });
-              };
+            // When transcluding a template that has bindings in the root
+            // we don't have a parent and thus need to add the class during linking fn.
+            compile: () => (scope, node) => {
+              scope.$watch(interpolateFn, (value) => {
+                node[0].nodeValue = value; // Update text node with new interpolated value
+              });
             },
           });
         }

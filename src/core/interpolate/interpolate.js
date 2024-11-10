@@ -353,19 +353,16 @@ export class InterpolateProvider {
               expressions,
               $$watchDelegate(scope, listener) {
                 let lastValue;
-                return scope.$watchGroup(
-                  parseFns,
-                  function interpolateFnWatcher(values, oldValues) {
-                    const currValue = compute(values);
-                    listener.call(
-                      this,
-                      currValue,
-                      values !== oldValues ? lastValue : currValue,
-                      scope,
-                    );
-                    lastValue = currValue;
-                  },
-                );
+                return scope.$watchGroup(parseFns, (values, oldValues) => {
+                  const currValue = compute(values);
+                  listener.call(
+                    this,
+                    currValue,
+                    values !== oldValues ? lastValue : currValue,
+                    scope,
+                  );
+                  lastValue = currValue;
+                });
               },
             },
           );
