@@ -89,4 +89,25 @@ describe("observe", () => {
 
     expect(observerSpy.disconnect).toHaveBeenCalled();
   });
+
+  it("should observe attribute changes and update the same scope name if data-update attribute is absent", () => {
+    $scope.myProp = "";
+    const template = `<div ng-observe="test-attribute"></div>`;
+    element = $compile(template)($scope);
+    $scope.$digest();
+    spyOn($scope, "$digest").and.callThrough();
+
+    const mutationObserverCallback =
+      MutationObserver.calls.mostRecent().args[0];
+    const mutationRecord = {
+      target: element[0],
+      attributeName: "test-attribute",
+    };
+
+    element.attr("test-attribute", "newValue");
+    element[0].setAttribute("test-attribute", "newValue");
+
+    mutationObserverCallback([mutationRecord]);
+    expect($scope.$digest).toHaveBeenCalled();
+  });
 });
