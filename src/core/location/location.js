@@ -882,19 +882,6 @@ function normalizePath(pathValue, searchValue, hashValue) {
   return path + (search ? `?${search}` : "") + hash;
 }
 
-/**
- * @param {string} absoluteUrl
- * @param {Location} locationObj
- */
-function parseAbsoluteUrl(absoluteUrl, locationObj) {
-  const parsedUrl = urlResolve(absoluteUrl);
-
-  locationObj.$$protocol = parsedUrl.protocol;
-  locationObj.$$host = parsedUrl.hostname;
-  locationObj.$$port =
-    toInt(parsedUrl.port) || DEFAULT_PORTS[parsedUrl.protocol] || null;
-}
-
 function parseAppUrl(url, locationObj, html5Mode) {
   if (/^\s*[\\/]{2,}/.test(url)) {
     throw $locationMinErr("badpath", 'Invalid url "{0}".', url);
