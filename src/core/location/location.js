@@ -2,6 +2,7 @@ import { JQLite } from "../../shared/jqlite/jqlite";
 import { urlResolve } from "../url-utils/url-utils";
 import {
   encodeUriSegment,
+  isBoolean,
   isDefined,
   isNumber,
   isObject,
@@ -541,28 +542,26 @@ export class LocationHashbangUrl extends Location {
   }
 }
 
-export class LocationProvider {
-  constructor() {
-    this.hashPrefixValue = "!";
-    this.html5ModeConfig = {
-      enabled: false,
-      requireBase: true,
-      rewriteLinks: true,
-    };
-  }
+export function LocationProvider() {
+  let hashPrefix = "!";
+  const html5Mode = {
+    enabled: false,
+    requireBase: true,
+    rewriteLinks: true,
+  };
 
   /**
    * The default value for the prefix is `'!'`.
-   * @param {string=} prefix - Prefix for hash part (containing path and search)
-   * @returns {string|LocationProvider} current value if used as getter or itself (chaining) if used as setter
+   * @param {string=} prefix Prefix for hash part (containing path and search)
+   * @returns {*} current value if used as getter or itself (chaining) if used as setter
    */
-  hashPrefix(prefix) {
-    if (typeof prefix !== "undefined") {
-      this.hashPrefixValue = prefix;
+  this.hashPrefix = function (prefix) {
+    if (isDefined(prefix)) {
+      hashPrefix = prefix;
       return this;
     }
-    return this.hashPrefixValue;
-  }
+    return hashPrefix;
+  };
 
   /**
    * @param {(boolean|Object)=} mode If boolean, sets `html5Mode.enabled` to value.
@@ -584,29 +583,30 @@ export class LocationProvider {
    *
    * @returns {Object} html5Mode object if used as getter or itself (chaining) if used as setter
    */
-  html5Mode(mode) {
-    if (typeof mode === "boolean") {
-      this.html5ModeConfig.enabled = mode;
+  this.html5Mode = function (mode) {
+    if (isBoolean(mode)) {
+      html5Mode.enabled = mode;
       return this;
     }
-
-    if (typeof mode === "object") {
-      if (typeof mode.enabled === "boolean")
-        this.html5ModeConfig.enabled = mode.enabled;
-      if (typeof mode.requireBase === "boolean")
-        this.html5ModeConfig.requireBase = mode.requireBase;
-      if (
-        typeof mode.rewriteLinks === "boolean" ||
-        typeof mode.rewriteLinks === "string"
-      ) {
-        this.html5ModeConfig.rewriteLinks = mode.rewriteLinks;
+    if (isObject(mode)) {
+      if (isBoolean(mode.enabled)) {
+        html5Mode.enabled = mode.enabled;
       }
+
+      if (isBoolean(mode.requireBase)) {
+        html5Mode.requireBase = mode.requireBase;
+      }
+
+      if (isBoolean(mode.rewriteLinks) || isString(mode.rewriteLinks)) {
+        html5Mode.rewriteLinks = mode.rewriteLinks;
+      }
+
       return this;
     }
-    return this.html5ModeConfig;
-  }
+    return html5Mode;
+  };
 
-  $get = [
+  this.$get = [
     "$rootScope",
     "$browser",
     "$rootElement",
@@ -625,8 +625,8 @@ export class LocationProvider {
       const initialUrl = /** @type {string} */ ($browser.url());
       let appBase;
 
-      if (this.html5Mode.enabled) {
-        if (!baseHref && this.html5Mode.requireBase) {
+      if (html5Mode.enabled) {
+        if (!baseHref && html5Mode.requireBase) {
           throw $locationMinErr(
             "nobase",
             "$location in HTML5 mode requires a <base> tag to be present!",
@@ -640,11 +640,7 @@ export class LocationProvider {
       }
       const appBaseNoFile = stripFile(appBase);
 
-      $location = new LocationMode(
-        appBase,
-        appBaseNoFile,
-        `#${this.hashPrefix}`,
-      );
+      $location = new LocationMode(appBase, appBaseNoFile, `#${hashPrefix}`);
       $location.$$parseLinkUrl(initialUrl, initialUrl);
 
       $location.$$state = $browser.state();
@@ -671,7 +667,7 @@ export class LocationProvider {
       }
 
       $rootElement.on("click", (event) => {
-        const { rewriteLinks } = this.html5Mode;
+        const { rewriteLinks } = html5Mode;
         // TODO(vojta): rewrite link when opening in new tab/window (in legacy browser)
         // currently we open nice url link and redirect then
 
@@ -774,7 +770,7 @@ export class LocationProvider {
       });
 
       // update browser
-      function browserUpdate() {
+      $rootScope.$watch(() => {
         if (initializing || $location.$$urlUpdatedByLocation) {
           $location.$$urlUpdatedByLocation = false;
 
@@ -822,9 +818,7 @@ export class LocationProvider {
 
         // we don't need to return anything because $evalAsync will make the digest loop dirty when
         // there is a change
-      }
-
-      setTimeout(() => browserUpdate());
+      });
 
       return $location;
 
@@ -836,7 +830,6 @@ export class LocationProvider {
           $location.$$state,
           oldState,
         );
-        browserUpdate();
       }
     },
   ];
@@ -887,6 +880,19 @@ function normalizePath(pathValue, searchValue, hashValue) {
   const path = encodePath(pathValue);
 
   return path + (search ? `?${search}` : "") + hash;
+}
+
+/**
+ * @param {string} absoluteUrl
+ * @param {Location} locationObj
+ */
+function parseAbsoluteUrl(absoluteUrl, locationObj) {
+  const parsedUrl = urlResolve(absoluteUrl);
+
+  locationObj.$$protocol = parsedUrl.protocol;
+  locationObj.$$host = parsedUrl.hostname;
+  locationObj.$$port =
+    toInt(parsedUrl.port) || DEFAULT_PORTS[parsedUrl.protocol] || null;
 }
 
 function parseAppUrl(url, locationObj, html5Mode) {
