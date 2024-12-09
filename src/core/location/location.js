@@ -23,10 +23,21 @@ import { ScopePhase } from "../scope/scope";
  */
 
 /**
+ * Represents the configuration options for HTML5 mode.
+ *
  * @typedef {Object} Html5Mode
- * @property {boolean} enabled
- * @property {boolean} requireBase
- * @property {boolean|string} rewriteLinks
+ * @property {boolean} enabled - (default: false) If true, will rely on `history.pushState` to
+ *     change URLs where supported. Falls back to hash-prefixed paths in browsers that do not
+ *     support `pushState`.
+ * @property {boolean} requireBase - (default: `true`) When html5Mode is enabled, specifies
+ *     whether or not a `<base>` tag is required to be present. If both `enabled` and `requireBase`
+ *     are true, and a `<base>` tag is not present, an error will be thrown when `$location` is injected.
+ *     See the {@link guide/$location $location guide} for more information.
+ * @property {boolean|string} rewriteLinks - (default: `true`) When html5Mode is enabled, enables or
+ *     disables URL rewriting for relative links. If set to a string, URL rewriting will only apply to links
+ *     with an attribute that matches the given string. For example, if set to `'internal-link'`, URL rewriting
+ *     will only occur for `<a internal-link>` links. Note that [attribute name normalization](guide/directive#normalization)
+ *     does not apply here, so `'internalLink'` will **not** match `'internal-link'`.
  */
 
 /** @type {DefaultPorts} */
@@ -542,71 +553,74 @@ export class LocationHashbangUrl extends Location {
   }
 }
 
-export function LocationProvider() {
-  let hashPrefix = "!";
-  const html5Mode = {
-    enabled: false,
-    requireBase: true,
-    rewriteLinks: true,
-  };
+export class LocationProvider {
+  constructor() {
+    /** @type {string} */
+    this.hashPrefixConf = "!";
+
+    /** @type {Html5Mode} */
+    this.html5ModeConf = {
+      enabled: false,
+      requireBase: true,
+      rewriteLinks: true,
+    };
+  }
 
   /**
    * The default value for the prefix is `'!'`.
    * @param {string=} prefix Prefix for hash part (containing path and search)
-   * @returns {*} current value if used as getter or itself (chaining) if used as setter
+   * @returns {void}
    */
-  this.hashPrefix = function (prefix) {
-    if (isDefined(prefix)) {
-      hashPrefix = prefix;
-      return this;
-    }
-    return hashPrefix;
-  };
+  setHashPrefix(prefix) {
+    this.hashPrefixConf = prefix;
+  }
 
   /**
-   * @param {(boolean|Object)=} mode If boolean, sets `html5Mode.enabled` to value.
-   *   If object, sets `enabled`, `requireBase` and `rewriteLinks` to respective values. Supported
-   *   properties:
-   *   - **enabled** – `{boolean}` – (default: false) If true, will rely on `history.pushState` to
-   *     change urls where supported. Will fall back to hash-prefixed paths in browsers that do not
-   *     support `pushState`.
-   *   - **requireBase** - `{boolean}` - (default: `true`) When html5Mode is enabled, specifies
-   *     whether or not a <base> tag is required to be present. If `enabled` and `requireBase` are
-   *     true, and a base tag is not present, an error will be thrown when `$location` is injected.
-   *     See the {@link guide/$location $location guide for more information}
-   *   - **rewriteLinks** - `{boolean|string}` - (default: `true`) When html5Mode is enabled,
-   *     enables/disables URL rewriting for relative links. If set to a string, URL rewriting will
-   *     only happen on links with an attribute that matches the given string. For example, if set
-   *     to `'internal-link'`, then the URL will only be rewritten for `<a internal-link>` links.
-   *     Note that [attribute name normalization](guide/directive#normalization) does not apply
-   *     here, so `'internalLink'` will **not** match `'internal-link'`.
-   *
-   * @returns {Object} html5Mode object if used as getter or itself (chaining) if used as setter
+   * Current hash prefix
+   * @returns {string}
    */
-  this.html5Mode = function (mode) {
+  getHashPrefix() {
+    return this.hashPrefixConf;
+  }
+
+  /**
+   * Configures html5 mode
+   * @param {(boolean|Html5Mode)=} mode If boolean, sets `html5Mode.enabled` to value. Otherwise, accepts html5Mode object
+   *
+   * @returns {void}
+   */
+  setHtml5Mode(mode) {
     if (isBoolean(mode)) {
-      html5Mode.enabled = mode;
-      return this;
+      this.html5ModeConf.enabled = /** @type {boolean} */ (mode);
     }
     if (isObject(mode)) {
-      if (isBoolean(mode.enabled)) {
-        html5Mode.enabled = mode.enabled;
+      const html5Mode = /** @type {Html5Mode} */ (mode);
+      if (isDefined(html5Mode.enabled) && isBoolean(html5Mode.enabled)) {
+        this.html5ModeConf.enabled = html5Mode.enabled;
       }
 
-      if (isBoolean(mode.requireBase)) {
-        html5Mode.requireBase = mode.requireBase;
+      if (isDefined(html5Mode.enabled) && isBoolean(html5Mode.requireBase)) {
+        this.html5ModeConf.requireBase = html5Mode.requireBase;
       }
 
-      if (isBoolean(mode.rewriteLinks) || isString(mode.rewriteLinks)) {
-        html5Mode.rewriteLinks = mode.rewriteLinks;
+      if (
+        isDefined(html5Mode.enabled) &&
+        (isBoolean(html5Mode.rewriteLinks) || isString(html5Mode.rewriteLinks))
+      ) {
+        this.html5ModeConf.rewriteLinks = html5Mode.rewriteLinks;
       }
-
-      return this;
     }
-    return html5Mode;
-  };
+  }
 
-  this.$get = [
+  /**
+   * Returns html5 mode cofiguration
+   * @returns {Html5Mode}
+   */
+  getHtml5Mode() {
+    return this.html5ModeConf;
+  }
+
+  $get = [
     "$rootScope",
     "$browser",
     "$rootElement",
@@ -617,7 +631,7 @@ export function LocationProvider() {
      * @param {JQLite} $rootElement
      * @returns
      */
-    function ($rootScope, $browser, $rootElement) {
+    ($rootScope, $browser, $rootElement) => {
       /** @type {Location} */
       let $location;
       let LocationMode;
@@ -625,8 +639,8 @@ export function LocationProvider() {
       const initialUrl = /** @type {string} */ ($browser.url());
       let appBase;
 
-      if (html5Mode.enabled) {
-        if (!baseHref && html5Mode.requireBase) {
+      if (this.getHtml5Mode().enabled) {
+        if (!baseHref && this.getHtml5Mode().requireBase) {
           throw $locationMinErr(
             "nobase",
             "$location in HTML5 mode requires a <base> tag to be present!",
@@ -640,7 +654,11 @@ export function LocationProvider() {
       }
       const appBaseNoFile = stripFile(appBase);
 
-      $location = new LocationMode(appBase, appBaseNoFile, `#${hashPrefix}`);
+      $location = new LocationMode(
+        appBase,
+        appBaseNoFile,
+        `#${this.getHashPrefix()}`,
+      );
       $location.$$parseLinkUrl(initialUrl, initialUrl);
 
       $location.$$state = $browser.state();
@@ -667,7 +685,7 @@ export function LocationProvider() {
       }
 
       $rootElement.on("click", (event) => {
-        const { rewriteLinks } = html5Mode;
+        const rewriteLinks = this.getHtml5Mode().rewriteLinks;
         // TODO(vojta): rewrite link when opening in new tab/window (in legacy browser)
         // currently we open nice url link and redirect then
 
