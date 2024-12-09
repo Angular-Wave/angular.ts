@@ -599,12 +599,15 @@ export class LocationProvider {
         this.html5ModeConf.enabled = html5Mode.enabled;
       }
 
-      if (isDefined(html5Mode.enabled) && isBoolean(html5Mode.requireBase)) {
+      if (
+        isDefined(html5Mode.requireBase) &&
+        isBoolean(html5Mode.requireBase)
+      ) {
         this.html5ModeConf.requireBase = html5Mode.requireBase;
       }
 
       if (
-        isDefined(html5Mode.enabled) &&
+        isDefined(html5Mode.rewriteLinks) &&
         (isBoolean(html5Mode.rewriteLinks) || isString(html5Mode.rewriteLinks))
       ) {
         this.html5ModeConf.rewriteLinks = html5Mode.rewriteLinks;

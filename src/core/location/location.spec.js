@@ -15,7 +15,7 @@ describe("$location", () => {
 
   // function initService(options) {
   //   module.config(($provide, $locationProvider) => {
-  //     $locationProvider.html5Mode(options.html5Mode);
+  //     $locationProvider.setHtml5Mode(options.html5Mode);
   //     $locationProvider.hashPrefix(options.hashPrefix);
   //     $provide.value("$sniffer", { history: options.supportHistory });
   //   });
@@ -24,12 +24,12 @@ describe("$location", () => {
   describe("defaults", () => {
     it('should have hashPrefix of "!"', () => {
       let provider = new LocationProvider();
-      expect(provider.hashPrefix()).toBe("!");
+      expect(provider.getHashPrefix()).toBe("!");
     });
 
     it("should not be html5 mode", () => {
       let provider = new LocationProvider();
-      expect(provider.html5Mode().enabled).toBeFalse();
+      expect(provider.getHtml5Mode().enabled).toBeFalse();
     });
   });
 
@@ -2947,7 +2947,7 @@ describe("$location", () => {
 
   //   it("should listen on click events on href and prevent browser default in html5 mode", () => {
   //     module(($locationProvider, $provide) => {
-  //       $locationProvider.html5Mode(true);
+  //       $locationProvider.setHtml5Mode(true);
   //       return function ($rootElement, $compile, $rootScope) {
   //         $rootElement.html('<a href="http://server/somePath">link</a>');
   //         $compile($rootElement)($rootScope);
@@ -3011,12 +3011,12 @@ describe("$location", () => {
     describe("html5Mode", () => {
       it("should set enabled, requireBase and rewriteLinks when called with object", () => {
         module.config(($locationProvider) => {
-          $locationProvider.html5Mode({
+          $locationProvider.setHtml5Mode({
             enabled: true,
             requireBase: false,
             rewriteLinks: false,
           });
-          expect($locationProvider.html5Mode()).toEqual({
+          expect($locationProvider.getHtml5Mode()).toEqual({
             enabled: true,
             requireBase: false,
             rewriteLinks: false,
@@ -3027,13 +3027,13 @@ describe("$location", () => {
 
       it("should only overwrite existing properties if values are of the correct type", () => {
         module.config(($locationProvider) => {
-          $locationProvider.html5Mode({
+          $locationProvider.setHtml5Mode({
             enabled: "duh",
             requireBase: "probably",
             rewriteLinks: 0,
           });
 
-          expect($locationProvider.html5Mode()).toEqual({
+          expect($locationProvider.getHtml5Mode()).toEqual({
             enabled: false,
             requireBase: true,
             rewriteLinks: true,
@@ -3045,11 +3045,11 @@ describe("$location", () => {
 
       it("should support setting rewriteLinks to a string", () => {
         module.config(($locationProvider) => {
-          $locationProvider.html5Mode({
+          $locationProvider.setHtml5Mode({
             rewriteLinks: "yes-rewrite",
           });
 
-          expect($locationProvider.html5Mode().rewriteLinks).toEqual(
+          expect($locationProvider.getHtml5Mode().rewriteLinks).toEqual(
             "yes-rewrite",
           );
         });
@@ -3059,11 +3059,11 @@ describe("$location", () => {
 
       it("should not set unknown input properties to html5Mode object", () => {
         module.config(($locationProvider) => {
-          $locationProvider.html5Mode({
+          $locationProvider.setHtml5Mode({
             someProp: "foo",
           });
 
-          expect($locationProvider.html5Mode()).toEqual({
+          expect($locationProvider.getHtml5Mode()).toEqual({
             enabled: false,
             requireBase: true,
             rewriteLinks: true,
@@ -3075,7 +3075,7 @@ describe("$location", () => {
 
       it("should default to enabled:false, requireBase:true and rewriteLinks:true", () => {
         module.config(($locationProvider) => {
-          expect($locationProvider.html5Mode()).toEqual({
+          expect($locationProvider.getHtml5Mode()).toEqual({
             enabled: false,
             requireBase: true,
             rewriteLinks: true,
@@ -3178,7 +3178,7 @@ describe("$location", () => {
     // it("should complain if no base tag present", () => {
     //   let module = window.angular.module("test1", ["ng"]);
     //   module.config((_$locationProvider_) => {
-    //     $locationProvider.html5Mode(true);
+    //     $locationProvider.setHtml5Mode(true);
     //   });
 
     //   createInjector(["test1"]).invoke(($browser, $injector) => {
@@ -3191,7 +3191,7 @@ describe("$location", () => {
 
     // it("should not complain if baseOptOut set to true in html5Mode", () => {
     //   module.config(($locationProvider) => {
-    //     $locationProvider.html5Mode({
+    //     $locationProvider.setHtml5Mode({
     //       enabled: true,
     //       requireBase: false,
     //     });
