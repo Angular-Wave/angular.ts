@@ -37,6 +37,7 @@ import { PREFIX_REGEXP } from "../../shared/constants";
 import { createEventDirective } from "../../directive/events/events";
 import { CACHE, EXPANDO } from "../cache/cache";
 import { Attributes } from "./attributes";
+import { ngObserveDirective } from "../../directive/observe/observe";
 
 let ttl = TTL;
 
@@ -586,7 +587,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           ? (x) => x
           : (x) => x.replace(/\{\{/g, startSymbol).replace(/}}/g, endSymbol);
 
-      const NG_PREFIX_BINDING = /^ng(Attr|Prop|On)([A-Z].*)$/;
+      const NG_PREFIX_BINDING = /^ng(Attr|Prop|On|Observe)([A-Z].*)$/;
       const MULTI_ELEMENT_DIR_RE = /^(.+)Start$/;
       return compile;
 
@@ -992,6 +993,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               let isNgAttr = false;
               let isNgProp = false;
               let isNgEvent = false;
+              let isNgObserve = false;
               let multiElementMatch;
 
               attr = nAttrs[j];
@@ -1005,6 +1007,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 isNgAttr = ngPrefixMatch[1] === "Attr";
                 isNgProp = ngPrefixMatch[1] === "Prop";
                 isNgEvent = ngPrefixMatch[1] === "On";
+                isNgObserve = ngPrefixMatch[1] === "Observe";
 
                 // Normalize the non-prefixed name
                 name = name
@@ -1032,6 +1035,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 } else {
                   addEventDirective(directives, nName, name);
                 }
+              } else if (isNgObserve) {
+                addObserveDirective(directives, name, value);
               } else {
                 // Update nName for cases where a prefix was removed
                 // NOTE: the .toLowerCase() is unnecessary and causes https://github.com/angular/angular.js/issues/16624 for ng-attr-*
@@ -2649,6 +2654,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             /* forceAsync= */ false,
           ),
         );
+      }
+
+      function addObserveDirective(directives, source, prop) {
+        directives.push(ngObserveDirective(source, prop));
       }
 
       function addAttrInterpolateDirective(

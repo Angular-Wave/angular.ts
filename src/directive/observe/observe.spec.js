@@ -23,16 +23,14 @@ describe("observe", () => {
   });
 
   function createDirective(attributeValue, updateProp) {
-    const template = `<div ng-observe="${attributeValue}" data-update="${updateProp}"></div>`;
+    const template = `<div ng-observe-${attributeValue}="${updateProp}"></div>`;
     element = $compile(template)($scope);
     $scope.$digest();
   }
 
   it("should set the scope property to the attribute value before any changes", () => {
     const scope = $rootScope.$new();
-    const element = JQLite(
-      '<div data-update="testProp" ng-observe="sourceAttr"></div>',
-    );
+    const element = JQLite('<div ng-observe-sourceAttr="testProp"></div>');
     element.attr("sourceAttr", "initialValue");
     $compile(element)(scope);
 
@@ -92,7 +90,7 @@ describe("observe", () => {
 
   it("should observe attribute changes and update the same scope name if data-update attribute is absent", () => {
     $scope.myProp = "";
-    const template = `<div ng-observe="test-attribute"></div>`;
+    const template = `<div ng-observe-test-attribute></div>`;
     element = $compile(template)($scope);
     $scope.$digest();
     spyOn($scope, "$digest").and.callThrough();
