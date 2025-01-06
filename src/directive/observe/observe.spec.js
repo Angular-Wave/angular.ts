@@ -89,7 +89,7 @@ describe("observe", () => {
   });
 
   it("should observe attribute changes and update the same scope name if data-update attribute is absent", () => {
-    $scope.myProp = "";
+    $scope.testAttribute = "";
     const template = `<div ng-observe-test-attribute></div>`;
     element = $compile(template)($scope);
     $scope.$digest();
@@ -107,5 +107,6 @@ describe("observe", () => {
 
     mutationObserverCallback([mutationRecord]);
     expect($scope.$digest).toHaveBeenCalled();
+    expect($scope.testAttribute).toBe("newValue");
   });
 });

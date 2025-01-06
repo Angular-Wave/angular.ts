@@ -1,4 +1,4 @@
-import { isUndefined } from "../../shared/utils.js";
+import { kebabToCamel } from "../../shared/jqlite/jqlite.js";
 
 /**
  * @param {string} source - the name of the attribute to be observed
@@ -10,11 +10,12 @@ export function ngObserveDirective(source, prop) {
     restrict: "A",
     compile: () => (scope, element) => {
       const targetElement = element[0];
-      if (isUndefined(prop) || prop == "") {
+      if (prop === "") {
         prop = source;
       }
-      if (!scope[prop]) {
-        scope[prop] = targetElement.getAttribute(source);
+      const normalized = kebabToCamel(prop);
+      if (!scope[normalized]) {
+        scope[normalized] = targetElement.getAttribute(source);
       }
 
       const observer = new MutationObserver((mutations) => {
@@ -22,8 +23,8 @@ export function ngObserveDirective(source, prop) {
         const newValue = /** @type {HTMLElement} */ (
           mutation.target
         ).getAttribute(source);
-        if (scope[prop] !== newValue) {
-          scope[prop] = newValue;
+        if (scope[normalized] !== newValue) {
+          scope[normalized] = newValue;
           scope.$digest();
         }
       });
