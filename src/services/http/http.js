@@ -539,7 +539,13 @@ export function HttpProvider() {
           );
 
           Object.keys(defHeaders).forEach((defHeaderName) => {
-            if (!reqHeaders[lowercase(defHeaderName)]) {
+            const lowercaseDefHeaderName = lowercase(defHeaderName);
+            const hasMatchingHeader = Object.keys(reqHeaders).some(
+              (reqHeaderName) => {
+                return lowercase(reqHeaderName) === lowercaseDefHeaderName;
+              },
+            );
+            if (!hasMatchingHeader) {
               reqHeaders[defHeaderName] = defHeaders[defHeaderName];
             }
           });
