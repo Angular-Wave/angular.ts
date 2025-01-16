@@ -84,7 +84,7 @@ describe("$http", function () {
     expect(response.config.method).toBe("GET");
   });
 
-  it("sets deffault headers on request", async function () {
+  it("sets default headers on request", async function () {
     await $http({
       url: "/mock/hello",
       headers: {
@@ -96,9 +96,7 @@ describe("$http", function () {
     });
     expect(response).toBeDefined();
 
-    expect(response.config.headers.Accept).toBe(
-      "application/json, text/plain, */*",
-    );
+    expect(response.config.headers.Accept).toBe("text/plain");
     expect(response.config.headers["Cache-Control"]).toBe("no-cache");
   });
 
