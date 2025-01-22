@@ -131,6 +131,7 @@ import {
   ngView,
 } from "./router/directives/view-directive.js";
 import { ngChannelDirective } from "./directive/channel/channel.js";
+import { ngSetterDirective } from "./directive/setter/setter.js";
 
 /**
  * @type {string} `version` from `package.json`, injected by Rollup plugin
@@ -185,6 +186,7 @@ export function publishExternalAPI(angular) {
               ngNonBindable: ngNonBindableDirective,
               ngRef: ngRefDirective,
               ngRepeat: ngRepeatDirective,
+              ngSetter: ngSetterDirective,
               ngShow: ngShowDirective,
               ngStyle: ngStyleDirective,
               ngSwitch: ngSwitchDirective,

@@ -104,7 +104,7 @@ export class NgModelController {
         getOption(name: string): string | boolean | number | {
             [x: string]: number;
         };
-        createChild(options: ModelOptionsConfig): any;
+        createChild(options: ModelOptionsConfig): /*elided*/ any;
     };
     $$updateEvents: string;
     $$updateEventHandler(ev: any): void;
