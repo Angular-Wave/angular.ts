@@ -316,7 +316,7 @@ export type FormController = {
      * - An object containing arrays of controls with validation errors keyed by validation error keys.
      */
     $error: {
-        [x: string]: (NgModelController | FormController)[];
+        [x: string]: Array<NgModelController | FormController>;
     };
     /**
      * - The name of the form.
