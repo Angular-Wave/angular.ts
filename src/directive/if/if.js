@@ -1,5 +1,5 @@
 import { domInsert } from "../../animations/animate";
-import { getBlockNodes } from "../../shared/jqlite/jqlite.js";
+import { getBlockNodes, removeElement } from "../../shared/jqlite/jqlite.js";
 import { hasAnimate } from "../../shared/utils";
 
 ngIfDirective.$inject = ["$animate"];
@@ -19,43 +19,40 @@ export function ngIfDirective($animate) {
     /**
      *
      * @param {import("../../core/scope/scope").Scope} $scope
-     * @param {import("../../shared/jqlite/jqlite.js").JQLite} $element
+     * @param {Element} $element
      * @param {import("../../core/compile/attributes").Attributes} $attr
      * @param {Object} _ctrl
      * @param {*} $transclude
      */
     link($scope, $element, $attr, _ctrl, $transclude) {
-      /** @type {{clone: import("../../shared/jqlite/jqlite.js").JQLite }} */
+      /** @type {Element} */
       let block;
 
       /** @type {import('../../core/scope/scope').Scope} */
       let childScope;
-      /** @type {import("../../shared/jqlite/jqlite.js").JQLite} */
+
       let previousElements;
+      let parent = $element.parentElement;
 
       $scope.$watch($attr["ngIf"], (value) => {
         if (value) {
           if (!childScope) {
             $transclude((clone, newScope) => {
               childScope = newScope;
-              // TODO removing this breaks messages test
-              clone[clone.length++] = document.createComment("");
               // Note: We only need the first/last node of the cloned nodes.
               // However, we need to keep the reference to the jqlite wrapper as it might be changed later
               // by a directive with templateUrl when its template arrives.
-              block = {
-                clone,
-              };
-              if (hasAnimate(clone[0])) {
+              block = clone;
+              if (hasAnimate(clone)) {
                 $animate.enter(clone, $element.parentElement, $element);
               } else {
-                domInsert(clone, $element.parentElement, $element);
+                parent.replaceChild(clone[0], $element);
               }
             });
           }
         } else {
           if (previousElements) {
-            previousElements.remove();
+            removeElement(previousElements);
             previousElements = null;
           }
           if (childScope) {
@@ -63,13 +60,13 @@ export function ngIfDirective($animate) {
             childScope = null;
           }
           if (block) {
-            previousElements = block.clone;
-            if (hasAnimate(previousElements[0])) {
+            previousElements = block;
+            if (hasAnimate(previousElements)) {
               $animate.leave(previousElements).done((response) => {
                 if (response !== false) previousElements = null;
               });
             } else {
-              previousElements.remove();
+              parent.replaceChild($element, previousElements[0]);
             }
             block = null;
           }

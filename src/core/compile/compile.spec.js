@@ -739,7 +739,6 @@ describe("$compile", () => {
       element = $compile(
         '<div>0<a set="hello">1</a>2<b set="angular">3</b>4</div>',
       )($rootScope);
-      debugger;
       expect(element.innerText).toEqual("0hello2angular4");
     });
 
