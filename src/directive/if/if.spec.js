@@ -1,4 +1,4 @@
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { createElementFromHTML, dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
 import { Angular } from "../../loader.js";
 import { wait } from "../../shared/test-utils.js";
 
@@ -26,7 +26,7 @@ describe("ngIf", () => {
         $rootScope = _$rootScope_;
         $scope = $rootScope.$new();
         $compile = _$compile_;
-        element = $compile("<div></div>")($scope);
+        //element = $compile("<div></div>")($scope);
       });
     });
 
@@ -35,36 +35,36 @@ describe("ngIf", () => {
     });
 
     function makeIf() {
+      element = createElementFromHTML("<div></div>");
       Array.from(arguments).forEach((expr) => {
-        let newElement = $compile(
-          `<div class="my-class" ng-if="${expr}"><div>Hi</div></div>`,
-        )($scope);
-        element.append(newElement);
+        element.append(createElementFromHTML(`<div class="my-class" ng-if="${expr}"><div>Hi</div></div>`));
       });
+      let res = $compile(element)
+      res($scope);
     }
 
-    it("should immediately remove the element if condition is falsy", async () => {
+    fit("should immediately remove the element if condition is falsy", async () => {
       makeIf("false", "undefined", "null", "NaN", "''", "0");
       await wait();
-      expect(element.children().length).toBe(0);
+      expect(element.childNodes.length).toBe(0);
     });
 
-    it("should leave the element if condition is true", async () => {
+    fit("should leave the element if condition is true", async () => {
       makeIf("true");
       await wait();
-      expect(element.children().length).toBe(1);
+      expect(element.childNodes.length).toBe(1);
     });
 
-    it("should leave the element if the condition is a non-empty string", async () => {
+    fit("should leave the element if the condition is a non-empty string", async () => {
       makeIf("'f'", "'0'", "'false'", "'no'", "'n'", "'[]'");
       await wait();
-      expect(element.children().length).toBe(6);
+      expect(element.childNodes.length).toBe(6);
     });
 
     it("should leave the element if the condition is an object", async () => {
       makeIf("[]", "{}");
       await wait();
-      expect(element.children().length).toBe(2);
+      expect(element.childNodes.length).toBe(2);
     });
 
     it("should react to changes on a property of an object", async () => {
@@ -73,11 +73,11 @@ describe("ngIf", () => {
       };
       makeIf("a.b");
       await wait();
-      expect(element.children().length).toBe(1);
+      expect(element.childNodes.length).toBe(1);
 
       $scope.a.b = false;
       await wait();
-      expect(element.children().length).toBe(0);
+      expect(element.childNodes.length).toBe(0);
     });
 
     it("should react to changes on a property of a nested object", async () => {
@@ -88,25 +88,25 @@ describe("ngIf", () => {
       };
       makeIf("a.b.c");
       await wait();
-      expect(element.children().length).toBe(1);
+      expect(element.childNodes.length).toBe(1);
 
       $scope.a.b.c = false;
       await wait();
-      expect(element.children().length).toBe(0);
+      expect(element.childNodes.length).toBe(0);
 
       $scope.a.b.c = true;
       await wait();
-      expect(element.children().length).toBe(1);
+      expect(element.childNodes.length).toBe(1);
     });
 
     it("should not add the element twice if the condition goes from true to true", async () => {
       $scope.hello = "true1";
       makeIf("hello");
       await wait();
-      expect(element.children().length).toBe(1);
+      expect(element.childNodes.length).toBe(1);
       $scope.$apply('hello = "true2"');
       await wait();
-      expect(element.children().length).toBe(1);
+      expect(element.childNodes.length).toBe(1);
     });
 
     it("should not recreate the element if the condition goes from true to true", async () => {
@@ -123,10 +123,10 @@ describe("ngIf", () => {
       $scope.hello = true;
       makeIf("hello");
       await wait();
-      expect(element.children().length).toBe(1);
+      expect(element.childNodes.length).toBe(1);
       $scope.$apply("hello = false");
       await wait();
-      expect(element.children().length).toBe(0);
+      expect(element.childNodes.length).toBe(0);
     });
 
     it("should create a new scope every time the expression evaluates to true", async () => {
@@ -169,15 +169,15 @@ describe("ngIf", () => {
         )($scope),
       );
       await wait();
-      expect(element.children().length).toBe(9);
+      expect(element.childNodes.length).toBe(9);
 
       $scope.$apply("values.splice(0,1)");
       await wait();
-      expect(element.children().length).toBe(6);
+      expect(element.childNodes.length).toBe(6);
 
       $scope.$apply("values.push(1)");
       await wait();
-      expect(element.children().length).toBe(9);
+      expect(element.childNodes.length).toBe(9);
     });
 
     it("should play nice with ngInclude on the same element", (done) => {
@@ -224,17 +224,17 @@ describe("ngIf", () => {
       $scope.value = true;
       makeIf("value");
       await wait();
-      expect(element.children().length).toBe(1);
+      expect(element.childNodes.length).toBe(1);
       element.children()[0].classList.remove("my-class");
       expect(element.children()[0].className).not.toContain("my-class");
 
       $scope.$apply("value = false");
       await wait();
-      expect(element.children().length).toBe(0);
+      expect(element.childNodes.length).toBe(0);
 
       $scope.$apply("value = true");
       await wait();
-      expect(element.children().length).toBe(1);
+      expect(element.childNodes.length).toBe(1);
       expect(element.children()[0].className).toContain("my-class");
     });
 
@@ -255,7 +255,7 @@ describe("ngIf", () => {
 
       $rootScope.show = false;
       await wait();
-      expect(element.children().length).toBe(0);
+      expect(element.childNodes.length).toBe(0);
       expect(element.textContent).toBe("");
     });
 
@@ -264,11 +264,11 @@ describe("ngIf", () => {
       $scope.hello = true;
       makeIf("hello");
       await wait();
-      expect(element.children().length).toBe(1);
+      expect(element.childNodes.length).toBe(1);
       $scope.$apply("hello = false");
       await wait();
       spy.calls.reset();
-      expect(element.children().length).toBe(0);
+      expect(element.childNodes.length).toBe(0);
       expect(spy).not.toHaveBeenCalled();
     });
 
