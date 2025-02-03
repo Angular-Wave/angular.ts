@@ -11,6 +11,11 @@ export function ngShowDirective($animate) {
   return {
     restrict: "A",
     multiElement: true,
+    /**
+     * @param scope
+     * @param {Element} element
+     * @param $attr
+     */
     link(scope, element, $attr) {
       scope.$watch($attr["ngShow"], (value) => {
         // we're adding a temporary, animation-specific class for ng-hide since this way
@@ -23,13 +28,9 @@ export function ngShowDirective($animate) {
           });
         } else {
           if (value) {
-            element
-              .elements()
-              .forEach((element) => element.classList.remove(NG_HIDE_CLASS));
+            element.classList.remove(NG_HIDE_CLASS);
           } else {
-            element
-              .elements()
-              .forEach((element) => element.classList.add(NG_HIDE_CLASS));
+            element.classList.add(NG_HIDE_CLASS);
           }
         }
       });
@@ -55,13 +56,9 @@ export function ngHideDirective($animate) {
           });
         } else {
           if (value) {
-            element
-              .elements()
-              .forEach((element) => element.classList.add(NG_HIDE_CLASS));
+            element.classList.add(NG_HIDE_CLASS);
           } else {
-            element
-              .elements()
-              .forEach((element) => element.classList.remove(NG_HIDE_CLASS));
+            element.classList.remove(NG_HIDE_CLASS);
           }
         }
       });

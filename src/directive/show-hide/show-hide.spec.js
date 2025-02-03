@@ -1,6 +1,6 @@
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { dealoc, JQLite, createElementFromHTML } from "../../shared/jqlite/jqlite.js";
 import { wait } from "../../shared/test-utils";
 
 describe("ngShow / ngHide", () => {
@@ -23,7 +23,7 @@ describe("ngShow / ngHide", () => {
 
   describe("ngShow", () => {
     it("should show and hide an element", async () => {
-      element = JQLite('<div ng-show="exp"></div>');
+      element = createElementFromHTML('<div ng-show="exp"></div>');
       element = $compile(element)($scope);
       await wait();
       expect(element.classList.contains("ng-hide")).toBeTrue();
@@ -33,16 +33,16 @@ describe("ngShow / ngHide", () => {
     });
 
     // https://github.com/angular/angular.js/issues/5414
-    it("should show if the expression is a function with a no arguments", async () => {
-      element = JQLite('<div ng-show="exp"></div>');
+    it("should hide if the expression is a function with a no arguments", async () => {
+      element = createElementFromHTML('<div ng-show="exp"></div>');
       element = $compile(element)($scope);
       $scope.exp = function () {};
       await wait();
-      expect(element.classList.contains("ng-hide")).toBeFalse();
+      expect(element.classList.contains("ng-hide")).toBeTrue();
     });
 
     it("should make hidden element visible", async () => {
-      element = JQLite('<div class="ng-hide" ng-show="exp"></div>');
+      element = createElementFromHTML('<div class="ng-hide" ng-show="exp"></div>');
       element = $compile(element)($scope);
       await wait();
       expect(element.classList.contains("ng-hide")).toBeTrue();
@@ -53,7 +53,7 @@ describe("ngShow / ngHide", () => {
 
     ["false", "undefined", "null", "NaN", "''", "0"].forEach((x) => {
       it("should hide the element if condition is falsy: " + x, async () => {
-        element = JQLite(`<div ng-show="${x}"></div>`);
+        element = createElementFromHTML(`<div ng-show="${x}"></div>`);
         element = $compile(element)($scope);
         await wait();
         expect(element.classList.contains("ng-hide")).toBeTrue();
@@ -64,7 +64,7 @@ describe("ngShow / ngHide", () => {
       it(
         "should show the element if condition is a non-empty string: " + x,
         async () => {
-          element = JQLite(`<div ng-show="${x}"></div>`);
+          element = createElementFromHTML(`<div ng-show="${x}"></div>`);
           element = $compile(element)($scope);
           await wait();
           expect(element.classList.contains("ng-hide")).toBeFalse();
@@ -76,7 +76,7 @@ describe("ngShow / ngHide", () => {
       it(
         "should show the element if condition is an object: " + x,
         async () => {
-          element = JQLite(`<div ng-show="${x}"></div>`);
+          element = createElementFromHTML(`<div ng-show="${x}"></div>`);
           element = $compile(element)($scope);
           await wait();
           expect(element.classList.contains("ng-hide")).toBeFalse();
@@ -87,7 +87,7 @@ describe("ngShow / ngHide", () => {
 
   describe("ngHide", () => {
     it("should hide an element", async () => {
-      element = JQLite('<div ng-hide="exp"></div>');
+      element = createElementFromHTML('<div ng-hide="exp"></div>');
       element = $compile(element)($scope);
       await wait();
       expect(element.classList.contains("ng-hide")).toBeFalse();
@@ -98,7 +98,7 @@ describe("ngShow / ngHide", () => {
 
     ["false", "undefined", "null", "NaN", "''", "0"].forEach((x) => {
       it("should show the element if condition is falsy: " + x, async () => {
-        element = JQLite(`<div ng-hide="${x}"></div>`);
+        element = createElementFromHTML(`<div ng-hide="${x}"></div>`);
         element = $compile(element)($scope);
         await wait();
         expect(element.classList.contains("ng-hide")).toBeFalse();
@@ -109,7 +109,7 @@ describe("ngShow / ngHide", () => {
       it(
         "should hide the element if condition is a non-empty string " + x,
         async () => {
-          element = JQLite(`<div ng-hide="${x}"></div>`);
+          element = createElementFromHTML(`<div ng-hide="${x}"></div>`);
           element = $compile(element)($scope);
           await wait();
           expect(element.classList.contains("ng-hide")).toBeTrue();
@@ -119,7 +119,7 @@ describe("ngShow / ngHide", () => {
 
     ["[]", "{}"].forEach((x) => {
       it("should hide the element if condition is an object " + x, async () => {
-        element = JQLite(`<div ng-hide="${x}"></div>`);
+        element = createElementFromHTML(`<div ng-hide="${x}"></div>`);
         element = $compile(element)($scope);
         await wait();
         expect(element.classList.contains("ng-hide")).toBeTrue();
