@@ -1472,10 +1472,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               newIsolateScopeDirective,
             );
             if (scopeBindingInfo.removeWatches) {
-              isolateScope.addEventListener(
-                "$destroy",
-                scopeBindingInfo.removeWatches,
-              );
+              isolateScope.$on("$destroy", scopeBindingInfo.removeWatches);
             }
           }
 
@@ -1970,7 +1967,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 );
               }
 
-              replaceWith(jqCollection, $compileNode, compileNode);
+              replaceWith(compileNode, $compileNode, compileNode);
 
               const newTemplateAttrs = { $attr: {} };
 
@@ -2006,7 +2003,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
               ii = directives.length;
             } else {
-              $compileNode.html(directiveValue);
+              $compileNode.innerHTML = directiveValue;
             }
           }
 
@@ -2028,7 +2025,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               directives.splice(i, directives.length - i),
               $compileNode,
               templateAttrs,
-              jqCollection,
+              compileNode,
               hasTranscludeDirective && childTranscludeFn,
               preLinkFns,
               postLinkFns,
@@ -2154,11 +2151,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               value = null;
             } else {
               value = inheritType
-                ? getInheritedData($element, dataName)
+                ? getInheritedData($element.parentElement || $element, dataName)
                 : getCacheData($element, dataName);
             }
           }
-
           if (!value && !optional) {
             throw $compileMinErr(
               "ctreq",
@@ -2464,7 +2460,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               mergeTemplateAttributes(tAttrs, tempTemplateAttrs);
             } else {
               compileNode = beforeTemplateCompileNode;
-              $compileNode.html(content);
+              $compileNode.innerHTML = content;
             }
 
             directives.unshift(derivedSyncDirective);

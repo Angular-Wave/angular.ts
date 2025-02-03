@@ -1,6 +1,10 @@
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
-import { dealoc, JQLite, createElementFromHTML } from "../../shared/jqlite/jqlite.js";
+import {
+  dealoc,
+  JQLite,
+  createElementFromHTML,
+} from "../../shared/jqlite/jqlite.js";
 import { wait } from "../../shared/test-utils";
 
 describe("ngShow / ngHide", () => {
@@ -42,7 +46,9 @@ describe("ngShow / ngHide", () => {
     });
 
     it("should make hidden element visible", async () => {
-      element = createElementFromHTML('<div class="ng-hide" ng-show="exp"></div>');
+      element = createElementFromHTML(
+        '<div class="ng-hide" ng-show="exp"></div>',
+      );
       element = $compile(element)($scope);
       await wait();
       expect(element.classList.contains("ng-hide")).toBeTrue();
