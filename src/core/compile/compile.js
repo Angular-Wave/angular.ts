@@ -2397,7 +2397,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         /** @type {any} */
         let afterTemplateNodeLinkFn;
         let afterTemplateChildLinkFn;
-        const beforeTemplateCompileNode = $compileNode[0];
+        const beforeTemplateCompileNode = $compileNode;
         const origAsyncDirective = directives.shift();
         const derivedSyncDirective = inherit(origAsyncDirective, {
           templateUrl: null,
@@ -2479,12 +2479,12 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             if ($rootElement) {
               Object.entries($rootElement).forEach(([i, node]) => {
                 if (node === compileNode) {
-                  $rootElement[i] = $compileNode[0];
+                  $rootElement[i] = $compileNode;
                 }
               });
             }
             afterTemplateChildLinkFn = compileNodes(
-              $compileNode[0].childNodes,
+              $compileNode.childNodes,
               childTranscludeFn,
             );
 
@@ -2493,7 +2493,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               const beforeTemplateLinkNode = linkQueue.shift();
               const linkRootElement = linkQueue.shift();
               const boundTranscludeFn = linkQueue.shift();
-              let linkNode = $compileNode[0];
+              let linkNode = $compileNode;
 
               if (scope.$$destroyed) continue;
 
@@ -3232,7 +3232,6 @@ class SimpleChange {
 }
 
 function removeComments(jqNodes) {
-  jqNodes = JQLite(jqNodes);
   let i = jqNodes.length;
 
   if (i <= 1) {
