@@ -1379,14 +1379,16 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         previousCompileContext = previousCompileContext || {};
 
         let terminalPriority = -Number.MAX_VALUE;
-        let { newScopeDirective } = previousCompileContext;
-        let { controllerDirectives } = previousCompileContext;
-        let { newIsolateScopeDirective } = previousCompileContext;
-        let { templateDirective } = previousCompileContext;
-        let { nonTlbTranscludeDirective } = previousCompileContext;
+        let {
+          newScopeDirective,
+          controllerDirectives,
+          newIsolateScopeDirective,
+          templateDirective,
+          nonTlbTranscludeDirective,
+          hasElementTranscludeDirective
+        } = previousCompileContext;
         let hasTranscludeDirective = false;
         let hasTemplate = false;
-        let { hasElementTranscludeDirective } = previousCompileContext;
         let $compileNode = (templateAttrs.$$element = compileNode);
         let directive;
         let directiveName;
@@ -2047,7 +2049,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 templateAttrs,
                 childTranscludeFn,
               );
-              linkFn;
               const context = directive.$$originalDirective || directive;
               if (isFunction(linkFn)) {
                 addLinkFns(null, bind(context, linkFn), attrStart, attrEnd);
