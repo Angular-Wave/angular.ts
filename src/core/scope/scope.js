@@ -41,7 +41,6 @@ export class RootScopeProvider {
   $get = [
     "$exceptionHandler",
     "$parse",
-    "$browser",
     /**
      * @param {import('../exception-handler.js').ErrorHandler} exceptionHandler
      * @param {import('../parse/parse.js').ParseService} parse
@@ -60,7 +59,7 @@ export class RootScopeProvider {
  *
  * @param {Object} target - The object to be wrapped in a proxy.
  * @param {Scope} [context] - The context for the handler, used to track listeners.
- * @returns {Scope<Object>} - A proxy that intercepts operations on the target object,
+ * @returns {Scope} - A proxy that intercepts operations on the target object,
  *                                     or the original value if the target is not an object.
  */
 export function createScope(target = {}, context) {
@@ -113,7 +112,6 @@ export const isProxySymbol = Symbol("isProxy");
  * Scope class for the Proxy. It intercepts operations like property access (get)
  * and property setting (set), and adds support for deep change tracking and
  * observer-like behavior.
- * @extends {ProxyHandler}
  */
 export class Scope {
   /**

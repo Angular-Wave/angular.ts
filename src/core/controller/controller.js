@@ -5,7 +5,7 @@ import {
   isObject,
   isString,
   isFunction,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 
 const $controllerMinErr = minErr("$controller");
 
@@ -65,12 +65,14 @@ export class ControllerProvider {
 
   /**
    * $get method for dependency injection.
-   *
-   * @param {import("../../core/di/internal-injector").InjectorService} $injector
-   * @returns {Function} A service function that creates controllers.
    */
   $get = [
     "$injector",
+
+    /**
+     * @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @returns {Function} A service function that creates controllers.
+     */
     ($injector) => {
       return (expression, locals, later, ident) => {
         let instance;

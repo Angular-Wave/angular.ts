@@ -1,11 +1,9 @@
 import {
-  cleanElementData,
   createElementFromHTML,
   emptyElement,
   getBooleanAttrName,
   getCacheData,
   getInheritedData,
-  getOrSetCacheData,
   isTextNode,
   setCacheData,
   startingTag,
@@ -36,7 +34,6 @@ import {
 import { SCE_CONTEXTS } from "../sce/sce.js";
 import { PREFIX_REGEXP } from "../../shared/constants.js";
 import { createEventDirective } from "../../directive/events/events.js";
-import { CACHE, EXPANDO } from "../cache/cache.js";
 import { Attributes } from "./attributes.js";
 import { ngObserveDirective } from "../../directive/observe/observe.js";
 
@@ -675,6 +672,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             // might change, so we need to recreate the namespace adapted compileNodes
             // for call to the link function.
             // Note: This will already clone the nodes...
+
             const wrappedTemplate = wrapTemplate(
               namespace,
               createElementFromHTML("<div></div>").append(jqCompileNodes)
@@ -734,157 +732,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           ? "svg"
           : "html";
       }
-      /**
-       * Compile function matches each node in nodeList against the directives. Once all directives
-       * for a particular node are collected their compile functions are executed. The compile
-       * functions return values - the linking functions - are combined into a composite linking
-       * function, which is the a linking function for the node.
-       *
-       * @param {NodeList} nodeList an array of nodes or NodeList to compile
-       * @param {*} transcludeFn A linking function, where the
-       *        scope argument is auto-generated to the new child of the transcluded parent scope.
-       * @param {number=} [maxPriority] Max directive priority.
-       * @param {*} [ignoreDirective]
-       * @param {*} [previousCompileContext]
-       * @returns {CompositeLinkFn} A composite linking function of all of the matched directives or null.
-       */
-      function compileNodes(
-        nodeList,
-        transcludeFn,
-        maxPriority,
-        ignoreDirective,
-        previousCompileContext,
-      ) {
-        /**
-         * @description  Array to hold nodeLinkFn and childLinkFn for each node
-         * @type {Array<{nodeLinkFn: PublicLinkFn, childLinkFn: CompositeLinkFn}>}
-         */
-        const linkFnsMap = [];
-        let nodeLinkFnFound;
-        let linkFnFound = false;
-
-        for (let i = 0; i < nodeList.length; i++) {
-          const attrs = new Attributes(
-            $rootScope,
-            $animate,
-            $exceptionHandler,
-            $sce,
-          );
-          const directives = collectDirectives(
-            /** @type Element */ (nodeList[i]),
-            [],
-            attrs,
-            i === 0 ? maxPriority : undefined,
-            ignoreDirective,
-          );
-
-          let nodeLinkFn;
-          if (directives.length) {
-            nodeLinkFn = applyDirectivesToNode(
-              directives,
-              nodeList[i],
-              attrs,
-              transcludeFn,
-              null,
-              [],
-              [],
-              previousCompileContext,
-            );
-          } else {
-            nodeLinkFn = null;
-          }
-
-          let childLinkFn;
-          let childNodes;
-
-          if (
-            (nodeLinkFn && nodeLinkFn.terminal) ||
-            !(childNodes = nodeList[i].childNodes) ||
-            !childNodes.length
-          ) {
-            childLinkFn = null;
-          } else {
-            let transcluded =
-              nodeLinkFn &&
-              (nodeLinkFn.transcludeOnThisElement ||
-                !nodeLinkFn.templateOnThisElement)
-                ? nodeLinkFn.transclude
-                : transcludeFn;
-            childLinkFn = compileNodes(childNodes, transcluded);
-          }
-
-          if (nodeLinkFn || childLinkFn) {
-            linkFnsMap.push({ nodeLinkFn, childLinkFn });
-            linkFnFound = true;
-            nodeLinkFnFound = nodeLinkFnFound || nodeLinkFn;
-          }
-
-          // use the previous context only for the first element in the virtual group
-          previousCompileContext = null;
-        }
-
-        // return a linking function if we have found anything, null otherwise
-        return linkFnFound ? compositeLinkFn : null;
-
-        function compositeLinkFn(scope, nodeList, parentBoundTranscludeFn) {
-          // Create a stableNodeList based on whether we have linkFns or not
-          let stableNodeList;
-          if (nodeLinkFnFound) {
-            stableNodeList = new Array(nodeList.length);
-            linkFnsMap.forEach(({ nodeLinkFn, childLinkFn }, idx) => {
-              if (nodeLinkFn || childLinkFn) {
-                stableNodeList[idx] = nodeList[idx];
-              }
-            });
-          } else {
-            stableNodeList = nodeList;
-          }
-
-          // Loop over linkFnsMap to apply each nodeLinkFn or childLinkFn
-          linkFnsMap.forEach(({ nodeLinkFn, childLinkFn }, idx) => {
-            const node = stableNodeList[idx];
-            let childScope;
-            let childBoundTranscludeFn;
-
-            if (nodeLinkFn) {
-              // Determine whether to use a new scope or the current scope
-              childScope = nodeLinkFn.scope ? scope.$new() : scope;
-
-              // Handling transclusion logic
-              if (nodeLinkFn.transcludeOnThisElement) {
-                childBoundTranscludeFn = createBoundTranscludeFn(
-                  scope,
-                  nodeLinkFn.transclude,
-                  parentBoundTranscludeFn,
-                );
-              } else if (
-                !nodeLinkFn.templateOnThisElement &&
-                parentBoundTranscludeFn
-              ) {
-                childBoundTranscludeFn = parentBoundTranscludeFn;
-              } else if (!parentBoundTranscludeFn && transcludeFn) {
-                childBoundTranscludeFn = createBoundTranscludeFn(
-                  scope,
-                  transcludeFn,
-                );
-              } else {
-                childBoundTranscludeFn = null;
-              }
-
-              // Call nodeLinkFn with the proper arguments
-              nodeLinkFn(childLinkFn, childScope, node, childBoundTranscludeFn);
-            } else if (childLinkFn) {
-              // If there's a childLinkFn, apply it recursively
-              childLinkFn(
-                scope,
-                node.childNodes,
-                undefined,
-                parentBoundTranscludeFn,
-              );
-            }
-          });
-        }
-      }
 
       /**
        * Compile function matches each node in nodeList against the directives. Once all directives
@@ -895,9 +742,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {NodeList} nodeList an array of nodes or NodeList to compile
        * @param {*} transcludeFn A linking function, where the
        *        scope argument is auto-generated to the new child of the transcluded parent scope.
-       * @param {Element} [$rootElement] If the nodeList is the root of the compilation tree then
-       *        the rootElement must be set the JQLite collection of the compile root. This is
-       *        needed so that the JQLite collection items can be replaced with widgets.
        * @param {number=} [maxPriority] Max directive priority.
        * @param {*} [ignoreDirective]
        * @param {*} [previousCompileContext]
