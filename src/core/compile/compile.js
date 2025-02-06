@@ -1229,7 +1229,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           newIsolateScopeDirective,
           templateDirective,
           nonTlbTranscludeDirective,
-          hasElementTranscludeDirective
+          hasElementTranscludeDirective,
         } = previousCompileContext;
         let hasTranscludeDirective = false;
         let hasTemplate = false;
