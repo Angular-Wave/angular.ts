@@ -1,5 +1,5 @@
 import { JQLite } from "../shared/jqlite/jqlite.js";
-import { isString } from "../shared/utils";
+import { isString } from "../shared/utils.js";
 import { concatWithSpace } from "./shared";
 
 const NG_ANIMATE_SHIM_CLASS_NAME = "ng-animate-shim";

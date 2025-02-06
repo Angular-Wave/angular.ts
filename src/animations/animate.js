@@ -1,6 +1,6 @@
-import { isFunction, isObject, minErr, extend } from "../shared/utils";
+import { isFunction, isObject, minErr, extend } from "../shared/utils.js";
 import { JQLite, removeElement } from "../shared/jqlite/jqlite.js";
-import { NG_ANIMATE_CLASSNAME } from "./shared";
+import { NG_ANIMATE_CLASSNAME } from "./shared.js";
 
 /** @typedef {"enter"|"leave"|"move"|"addClass"|"setClass"|"removeClass"} AnimationMethod */
 

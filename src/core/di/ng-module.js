@@ -4,7 +4,7 @@ import {
   isObject,
   isString,
   assert,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 
 export const PROVIDE_LITERAL = "$provide";
 export const INJECTOR_LITERAL = "$injector";

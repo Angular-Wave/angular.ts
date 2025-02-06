@@ -1,7 +1,7 @@
 import { defaults, find } from "../../shared/common";
 import { propEq } from "../../shared/hof";
 import { Glob } from "../common/glob";
-import { isFunction, isObject } from "../../shared/utils";
+import { isFunction, isObject } from "../../shared/utils.js";
 /**
  * Internal representation of a ng-router state.
  *

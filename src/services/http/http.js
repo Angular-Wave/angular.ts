@@ -19,7 +19,7 @@ import {
   extend,
   uppercase,
   isPromiseLike,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 import { getCookies } from "../cookie-reader";
 
 const APPLICATION_JSON = "application/json";

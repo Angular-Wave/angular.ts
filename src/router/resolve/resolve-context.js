@@ -4,7 +4,7 @@ import { trace } from "../common/trace";
 import { Resolvable } from "./resolvable";
 import { PathUtils } from "../path/path-utils";
 import { stringify } from "../../shared/strings";
-import { isUndefined } from "../../shared/utils";
+import { isUndefined } from "../../shared/utils.js";
 
 export const resolvePolicies = {
   when: {

@@ -24,7 +24,7 @@ import { registerUpdateGlobalState } from "../hooks/update-globals";
 import { registerLazyLoadHook } from "../hooks/lazy-load";
 import { TransitionEventType } from "./transition-event-type";
 import { TransitionHook } from "./transition-hook";
-import { isDefined } from "../../shared/utils";
+import { isDefined } from "../../shared/utils.js";
 import { createProxyFunctions } from "../../shared/common";
 import { val } from "../../shared/hof";
 import { registerIgnoredTransitionHook } from "../hooks/ignored-transition";

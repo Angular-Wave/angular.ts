@@ -1126,20 +1126,6 @@ export class Scope {
   }
 }
 
-// function setDeepValue(model, obj) {
-//   for (const key in obj) {
-//     if (isObject(obj[key]) && !Array.isArray(obj[key])) {
-//       if (!isObject(model[key])) {
-//         model[key] = {};
-//       }
-//       setDeepValue(model[key], obj[key]);
-//     } else {
-//       model[key] = obj[key];
-//     }
-//   }
-//   Object.setPrototypeOf(model, obj);
-// }
-
 /**
  * @param {Scope} model
  * @returns {number}

@@ -2,7 +2,7 @@ import { wait } from "../../shared/test-utils";
 import { $postUpdateQueue, createScope } from "./scope";
 import { Angular } from "../../loader";
 import { createInjector } from "../di/injector";
-import { isDefined, sliceArgs } from "../../shared/utils";
+import { isDefined, sliceArgs } from "../../shared/utils.js";
 
 describe("Scope", () => {
   let scope;

@@ -1,5 +1,5 @@
 import { urlResolve } from "../../core/url-utils/url-utils";
-import { isDefined, isPromiseLike, isUndefined } from "../../shared/utils";
+import { isDefined, isPromiseLike, isUndefined } from "../../shared/utils.js";
 
 /**
  * HTTP backend used by the {@link ng.$http service} that delegates to

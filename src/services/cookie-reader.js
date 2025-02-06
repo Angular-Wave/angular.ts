@@ -1,4 +1,4 @@
-import { isUndefined } from "../shared/utils";
+import { isUndefined } from "../shared/utils.js";
 
 let lastCookies = {};
 let lastCookieString = "";

@@ -1,4 +1,4 @@
-import { hasAnimate } from "../../shared/utils";
+import { hasAnimate } from "../../shared/utils.js";
 
 const NG_HIDE_CLASS = "ng-hide";
 const NG_HIDE_IN_PROGRESS_CLASS = "ng-hide-animate";

@@ -1,4 +1,4 @@
-import { isDefined, isFunction, isObject } from "../../shared/utils";
+import { isDefined, isFunction, isObject } from "../../shared/utils.js";
 import { ASTType } from "./ast-type";
 
 export const PURITY_ABSOLUTE = 1;

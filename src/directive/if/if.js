@@ -1,6 +1,6 @@
 import { domInsert } from "../../animations/animate";
 import { getBlockNodes, removeElement } from "../../shared/jqlite/jqlite.js";
-import { hasAnimate } from "../../shared/utils";
+import { hasAnimate } from "../../shared/utils.js";
 
 ngIfDirective.$inject = ["$animate"];
 /**

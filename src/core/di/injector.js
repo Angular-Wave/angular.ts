@@ -8,7 +8,7 @@ import {
   assertNotHasOwnProperty,
   isObject,
   assert,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 import { INJECTOR_LITERAL } from "./ng-module";
 import { ProviderInjector, InjectorService } from "./internal-injector";
 

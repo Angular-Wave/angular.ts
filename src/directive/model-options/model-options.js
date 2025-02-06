@@ -1,4 +1,4 @@
-import { isDefined, trim } from "../../shared/utils";
+import { isDefined, trim } from "../../shared/utils.js";
 
 const DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/;
 

@@ -1,6 +1,6 @@
 import { val } from "../shared/hof";
 import { createProxyFunctions } from "../shared/common";
-import { minErr } from "../shared/utils";
+import { minErr } from "../shared/utils.js";
 
 const err = minErr("$stateProvider");
 // Right now this is a collection of all the properties we encounter in tests

@@ -1,4 +1,4 @@
-import { minErr, hashKey, isArrayLike } from "../../shared/utils";
+import { minErr, hashKey, isArrayLike } from "../../shared/utils.js";
 import { getBlockNodes } from "../../shared/jqlite/jqlite.js";
 
 export const ngRepeatDirective = [

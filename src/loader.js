@@ -4,7 +4,7 @@ import {
   ngAttrPrefixes,
   assertNotHasOwnProperty,
   errorHandlingConfig,
-} from "./shared/utils";
+} from "./shared/utils.js";
 import { getInjector, setCacheData } from "./shared/jqlite/jqlite.js";
 import { annotate, createInjector } from "./core/di/injector";
 import { NgModule } from "./core/di/ng-module";

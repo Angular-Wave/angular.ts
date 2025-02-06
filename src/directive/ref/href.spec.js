@@ -1,7 +1,7 @@
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
 import { dealoc } from "../../shared/jqlite/jqlite.js";
-import { isDefined } from "../../shared/utils";
+import { isDefined } from "../../shared/utils.js";
 import { wait } from "../../shared/test-utils";
 
 describe("ngHref", () => {

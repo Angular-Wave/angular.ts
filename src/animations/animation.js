@@ -1,5 +1,5 @@
 import { JQLite } from "../shared/jqlite/jqlite.js";
-import { mergeClasses } from "../shared/utils";
+import { mergeClasses } from "../shared/utils.js";
 import {
   NG_ANIMATE_CLASSNAME,
   PREPARE_CLASS_SUFFIX,

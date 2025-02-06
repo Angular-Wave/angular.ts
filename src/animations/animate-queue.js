@@ -6,7 +6,7 @@ import {
   isElement,
   isDefined,
   extend,
-} from "../shared/utils";
+} from "../shared/utils.js";
 import {
   NG_ANIMATE_CHILDREN_DATA,
   applyAnimationClassesFactory,

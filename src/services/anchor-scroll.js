@@ -4,7 +4,7 @@ import {
   isNumber,
   isString,
   getNodeName,
-} from "../shared/utils";
+} from "../shared/utils.js";
 
 /**
  * @typedef {Object} AnchorScrollObject

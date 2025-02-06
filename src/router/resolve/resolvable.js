@@ -1,4 +1,4 @@
-import { assert, isFunction, isObject } from "../../shared/utils";
+import { assert, isFunction, isObject } from "../../shared/utils.js";
 import { trace } from "../common/trace";
 import { stringify } from "../../shared/strings";
 import { isNullOrUndefined } from "../../shared/predicates";

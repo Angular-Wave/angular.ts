@@ -7,7 +7,7 @@ import {
   equals,
   isString,
   isFunction,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 import { browserTrigger } from "../../shared/test-utils";
 
 describe("ngOptions", () => {

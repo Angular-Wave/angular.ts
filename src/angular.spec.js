@@ -22,7 +22,7 @@ import {
   nextUid,
   getNodeName,
   snakeCase,
-} from "./shared/utils";
+} from "./shared/utils.js";
 import { dealoc, JQLite, startingTag } from "./shared/jqlite/jqlite.js";
 import { Angular } from "./loader";
 import { createInjector } from "./core/di/injector";

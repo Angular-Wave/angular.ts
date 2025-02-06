@@ -5,7 +5,7 @@ import { applyPairs, removeFrom } from "../../shared/common";
 import { propEq } from "../../shared/hof";
 import { ResolveContext } from "../resolve/resolve-context";
 import { ng1ViewsBuilder } from "./views";
-import { isString } from "../../shared/utils";
+import { isString } from "../../shared/utils.js";
 
 /**
  * A registry for all of the application's [[StateDeclaration]]s

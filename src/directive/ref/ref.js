@@ -1,4 +1,4 @@
-import { getNodeName, minErr, directiveNormalize } from "../../shared/utils";
+import { getNodeName, minErr, directiveNormalize } from "../../shared/utils.js";
 
 /**
  * The `ngRef` attribute tells AngularJS to assign the controller of a component (or a directive)

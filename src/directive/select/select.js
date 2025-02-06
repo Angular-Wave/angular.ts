@@ -6,7 +6,7 @@ import {
   includes,
   isDefined,
   shallowCopy,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 
 function setOptionSelectedStatus(optionEl, value) {
   optionEl[0].selected = value;

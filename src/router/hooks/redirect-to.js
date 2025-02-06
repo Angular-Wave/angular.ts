@@ -1,4 +1,4 @@
-import { isString, isFunction } from "../../shared/utils";
+import { isString, isFunction } from "../../shared/utils.js";
 import { TargetState } from "../state/target-state";
 
 export const registerRedirectToHook = (transitionService, stateService) => {

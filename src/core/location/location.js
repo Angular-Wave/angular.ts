@@ -12,7 +12,7 @@ import {
   parseKeyValue,
   toInt,
   toKeyValue,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 
 /**
  * @typedef {Object} DefaultPorts

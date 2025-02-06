@@ -6,7 +6,7 @@ import {
   isObject,
   hasCustomToString,
   equals,
-} from "../shared/utils";
+} from "../shared/utils.js";
 
 /**
  * @returns {function(Array, string|Object|function(any, number, []):[], function(any, any):boolean|boolean, string?): Array}

@@ -1,6 +1,6 @@
 import { Angular } from "../loader";
 import { createInjector } from "../core/di/injector";
-import { toJson } from "../shared/utils";
+import { toJson } from "../shared/utils.js";
 
 describe("filters", () => {
   let filter;

@@ -1,4 +1,4 @@
-import { minErr } from "../../shared/utils";
+import { minErr } from "../../shared/utils.js";
 import { emptyElement, startingTag } from "../../shared/jqlite/jqlite.js";
 
 /**

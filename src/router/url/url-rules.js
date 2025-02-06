@@ -1,7 +1,7 @@
 import { TargetState } from "../state/target-state";
 import { UrlMatcher } from "./url-matcher";
 import { is, val } from "../../shared/hof";
-import { isDefined, isFunction, isString } from "../../shared/utils";
+import { isDefined, isFunction, isString } from "../../shared/utils.js";
 import { removeFrom } from "../../shared/common";
 import { UrlRuleFactory } from "./url-rule";
 const prioritySort = (a, b) => (b.priority || 0) - (a.priority || 0);

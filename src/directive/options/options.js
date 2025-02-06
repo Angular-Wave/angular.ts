@@ -11,7 +11,7 @@ import {
   isArrayLike,
   isDefined,
   minErr,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 
 const ngOptionsMinErr = minErr("ngOptions");
 
