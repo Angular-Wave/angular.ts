@@ -1,4 +1,4 @@
-import { isDefined, isFunction } from "../../shared/utils.js";
+import { isFunction } from "../../shared/utils.js";
 import { PURITY_RELATIVE } from "./interpreter.js";
 import { Lexer } from "./lexer/lexer.js";
 import { Parser } from "./parser/parser.js";
@@ -10,7 +10,7 @@ import { Parser } from "./parser/parser.js";
  * @property {boolean} [isPure]
  * @property {boolean} oneTime
  * @property {import("./interpreter.js").DecoratedASTNode} decoratedNode
- * @property {function(import('../scope/scope').Scope, import('../scope/scope').WatchListener, boolean, CompiledExpression, string | ((scope:  import('../scope/scope').Scope) => any) | CompiledExpression): any} [$$watchDelegate]
+ * @property {function(import('../scope/scope').Scope, Function, boolean, CompiledExpression, string | ((scope:  import('../scope/scope').Scope) => any) | CompiledExpression): any} [$$watchDelegate]
  * @property {any[]|Function} inputs
  * @property {function(any, any): any} [assign] - Assigns a value to a context. If value is not provided,
  */
@@ -227,7 +227,7 @@ function addWatchDelegate(parsedExpression) {
 /**
  *
  * @param {import('../scope/scope').Scope} scope
- * @param {import('../scope/scope').WatchListener} listener
+ * @param {Function} listener
  * @param {*} objectEquality
  * @param {CompiledExpression} parsedExpression
  * @returns
@@ -351,14 +351,6 @@ function expressionInputDirtyCheck(
     newValue === oldValueOfValue ||
     (newValue !== newValue && oldValueOfValue !== oldValueOfValue)
   );
-}
-
-function isAllDefined(value) {
-  let allDefined = true;
-  Object.values(value).forEach((val) => {
-    if (!isDefined(val)) allDefined = false;
-  });
-  return allDefined;
 }
 
 function getValueOf(value) {

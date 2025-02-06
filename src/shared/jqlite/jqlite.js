@@ -1,6 +1,5 @@
 import {
   minErr,
-  arrayRemove,
   concat,
   extend,
   isDefined,
