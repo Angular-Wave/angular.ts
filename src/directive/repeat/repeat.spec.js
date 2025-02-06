@@ -180,236 +180,10 @@ describe("ngRepeat", () => {
     expect(element.textContent).toEqual("misko:swe|");
   });
 
-  describe("track by", () => {
-    it("should track using expression function", async () => {
-      element = $compile(
-        "<ul>" +
-          '<li ng-repeat="item in items track by item.id">{{item.name}};</li>' +
-          "</ul>",
-      )(scope);
-      scope.items = [{ id: "misko" }, { id: "igor" }];
-      await wait();
-      const li0 = element.find("li")[0];
-      const li1 = element.find("li")[1];
-
-      scope.items.push(scope.items.shift());
-      await wait();
-      expect(element.find("li")[0]).toBe(li1);
-      expect(element.find("li")[1]).toBe(li0);
-    });
-
-    it("should track using build in $id function", async () => {
-      element = $compile(
-        "<ul>" +
-          '<li ng-repeat="item in items track by $id(item)">{{item.name}};</li>' +
-          "</ul>",
-      )(scope);
-      scope.items = [{ name: "misko" }, { name: "igor" }];
-      await wait();
-      const li0 = element.find("li")[0];
-      const li1 = element.find("li")[1];
-
-      scope.items.push(scope.items.shift());
-      await wait();
-      expect(element.find("li")[0]).toBe(li1);
-      expect(element.find("li")[1]).toBe(li0);
-    });
-
-    it("should still filter when track is present", async () => {
-      scope.isIgor = function (item) {
-        return item.name === "igor";
-      };
-      element = $compile(
-        "<ul>" +
-          '<li ng-repeat="item in items | filter:isIgor track by $id(item)">{{item.name}};</li>' +
-          "</ul>",
-      )(scope);
-      scope.items = [{ name: "igor" }, { name: "misko" }];
-      await wait();
-      expect(element.find("li").text()).toBe("igor;");
-    });
-
-    it("should track using provided function when a filter is present", async () => {
-      scope.newArray = function (items) {
-        const newArray = [];
-        Object.entries(items).forEach(([id, name]) => {
-          newArray.push({
-            id: id,
-            name: name,
-          });
-        });
-        return newArray;
-      };
-      element = $compile(
-        "<ul><li ng-repeat='item in items | filter:newArray track by item.id'>{{item.name}};</li></ul>",
-      )(scope);
-      scope.items = [
-        { id: 1, name: "igor" },
-        { id: 2, name: "misko" },
-      ];
-      await wait();
-      expect(element.textContent).toBe("igor;misko;");
-
-      const li0 = element.find("li")[0];
-      const li1 = element.find("li")[1];
-
-      scope.items.push(scope.items.shift());
-      await wait();
-      expect(element.find("li")[0]).toBe(li1);
-      expect(element.find("li")[1]).toBe(li0);
-    });
-
-    it("should iterate over an array of primitives", async () => {
-      element = $compile(
-        "<ul>" +
-          '<li ng-repeat="item in items track by $index">{{item}};</li>' +
-          "</ul>",
-      )(scope);
-      await wait();
-      Array.prototype.extraProperty = "should be ignored";
-      // INIT
-      scope.items = [true, true, true];
-      await wait();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.textContent).toEqual("true;true;true;");
-      delete Array.prototype.extraProperty;
-
-      scope.items = [false, true, true];
-      await wait();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.textContent).toEqual("false;true;true;");
-
-      scope.items = [false, true, false];
-      await wait();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.textContent).toEqual("false;true;false;");
-
-      scope.items = [true];
-      await wait();
-      expect(element.find("li").length).toEqual(1);
-      expect(element.textContent).toEqual("true;");
-
-      scope.items = [true, true, false];
-      await wait();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.textContent).toEqual("true;true;false;");
-
-      scope.items = [true, false, false];
-      await wait();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.textContent).toEqual("true;false;false;");
-
-      // string
-      scope.items = ["a", "a", "a"];
-      await wait();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.textContent).toEqual("a;a;a;");
-
-      scope.items = ["ab", "a", "a"];
-      await wait();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.textContent).toEqual("ab;a;a;");
-
-      scope.items = ["test"];
-      await wait();
-      expect(element.find("li").length).toEqual(1);
-      expect(element.textContent).toEqual("test;");
-
-      scope.items = ["same", "value"];
-      await wait();
-      expect(element.find("li").length).toEqual(2);
-      expect(element.textContent).toEqual("same;value;");
-
-      // number
-      scope.items = [12, 12, 12];
-      await wait();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.textContent).toEqual("12;12;12;");
-
-      scope.items = [53, 12, 27];
-      await wait();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.textContent).toEqual("53;12;27;");
-
-      scope.items = [89];
-      await wait();
-      expect(element.find("li").length).toEqual(1);
-      expect(element.textContent).toEqual("89;");
-
-      scope.items = [89, 23];
-      await wait();
-      expect(element.find("li").length).toEqual(2);
-      expect(element.textContent).toEqual("89;23;");
-    });
-
-    it("should iterate over object with changing primitive property values", async () => {
-      element = $compile(
-        "<ul>" +
-          '<li ng-repeat="(key, value) in items track by $index">' +
-          "{{key}}:{{value}};" +
-          "</li>" +
-          "</ul>",
-      )(scope);
-      scope.items = { misko: true, shyam: true, zhenbo: true };
-      await wait();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.textContent).toEqual("misko:true;shyam:true;zhenbo:true;");
-
-      scope.items.misko = false;
-      await wait();
-      expect(element.textContent).toEqual(
-        "misko:false;shyam:true;zhenbo:true;",
-      );
-
-      scope.items.shyam = false;
-      await wait();
-      expect(element.textContent).toEqual(
-        "misko:false;shyam:false;zhenbo:true;",
-      );
-    });
-
-    it("should invoke track by with correct locals", async () => {
-      scope.trackBy = jasmine
-        .createSpy()
-        .and.callFake((k, v) => [k, v].join(""));
-
-      element = $compile(
-        "<ul>" +
-          '<li ng-repeat="(k, v) in [1, 2] track by trackBy(k, v)"></li>' +
-          "</ul>",
-      )(scope);
-      await wait();
-      expect(scope.trackBy).toHaveBeenCalledTimes(2);
-      expect(scope.trackBy.calls.argsFor(0)).toEqual([0, 1]);
-      expect(scope.trackBy.calls.argsFor(1)).toEqual([1, 2]);
-    });
-
-    // https://github.com/angular/angular.js/issues/16776
-    it("should invoke nested track by with correct locals", async () => {
-      scope.trackBy = jasmine
-        .createSpy()
-        .and.callFake((k1, v1, k2, v2) => [k1, v1, k2, v2].join(""));
-
-      element = $compile(
-        "<ul>" +
-          '<li ng-repeat="(k1, v1) in [1, 2]">' +
-          '<div ng-repeat="(k2, v2) in [3, 4] track by trackBy(k1, v1, k2, v2)"></div>' +
-          "</li>" +
-          "</ul>",
-      )(scope);
-      await wait();
-      expect(scope.trackBy).toHaveBeenCalledTimes(4);
-      expect(scope.trackBy.calls.argsFor(0)).toEqual([0, 1, 0, 3]);
-      expect(scope.trackBy.calls.argsFor(1)).toEqual([0, 1, 1, 4]);
-      expect(scope.trackBy.calls.argsFor(2)).toEqual([1, 2, 0, 3]);
-      expect(scope.trackBy.calls.argsFor(3)).toEqual([1, 2, 1, 4]);
-    });
-  });
-
   describe("alias as", () => {
     it("should assigned the filtered to the target scope property if an alias is provided", async () => {
       element = $compile(
-        '<div ng-repeat="item in items | filter:x as results track by $index">{{item.name}}/</div>',
+        '<div ng-repeat="item in items | filter:x as results">{{item.name}}/</div>',
       )(scope);
 
       scope.items = [
@@ -463,7 +237,7 @@ describe("ngRepeat", () => {
       ];
       ["null2", "qthis", "qthisq", "fundefined", "$$parent"].forEach(
         async (name) => {
-          const expr = `item in items | filter:x as ${name} track by $index`;
+          const expr = `item in items | filter:x as ${name}`;
           element = $compile(`<div><div ng-repeat="${expr}"></div></div>`)(
             scope,
           );
@@ -510,11 +284,10 @@ describe("ngRepeat", () => {
         "obj.property",
         "foo=6",
       ].forEach(async (expr) => {
-        const expression =
-          `item in items | filter:x as ${expr} track by $index`.replace(
-            /"/g,
-            "&quot;",
-          );
+        const expression = `item in items | filter:x as ${expr}`.replace(
+          /"/g,
+          "&quot;",
+        );
         element = $compile(
           `<div>` +
             `  <div ng-repeat="${expression}">{{item}}</div>` +
@@ -817,7 +590,7 @@ describe("ngRepeat", () => {
 
     it("should iterate over non-existent elements of a sparse array", async () => {
       element = $compile(
-        '<ul><li ng-repeat="item in array track by $index">{{item}}|</li></ul>',
+        '<ul><li ng-repeat="item in array">{{item}}|</li></ul>',
       )(scope);
       scope.array = ["a", "b"];
       scope.array[4] = "c";

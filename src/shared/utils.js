@@ -437,13 +437,11 @@ export function isElement(node) {
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Node/nodeName)
  *
- * @param {import('../shared/jqlite/jqlite').JQLite|Element} element
+ * @param {Element} element
  * @returns
  */
 export function getNodeName(element) {
-  return lowercase(
-    /** @type {Element} */ (element).nodeName || (element && element.nodeName),
-  );
+  return lowercase(element.nodeName);
 }
 
 export function includes(array, obj) {
@@ -1178,7 +1176,6 @@ export function hasAnimate(node) {
 }
 
 /**
- * @ignore
  * @param {Node} node
  * @param {string} attr
  * @returns {boolean}

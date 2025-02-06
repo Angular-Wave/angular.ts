@@ -2,9 +2,8 @@ import { minErr, hashKey, isArrayLike } from "../../shared/utils.js";
 import { getBlockNodes } from "../../shared/jqlite/jqlite.js";
 
 export const ngRepeatDirective = [
-  "$parse",
   "$animate",
-  ($parse, $animate) => {
+  ($animate) => {
     const NG_REMOVED = "$$NG_REMOVED";
     const ngRepeatMinErr = minErr("ngRepeat");
 
@@ -57,6 +56,7 @@ export const ngRepeatDirective = [
       terminal: true,
       compile: ($element, $attr) => {
         const expression = $attr.ngRepeat;
+        const hasAnimate = !!$attr.animate;
 
         let match = expression.match(
           /^\s*([\s\S]+?)\s+in\s+([\s\S]+?)(?:\s+as\s+([\s\S]+?))?(?:\s+track\s+by\s+([\s\S]+?))?\s*$/,
@@ -73,7 +73,6 @@ export const ngRepeatDirective = [
         const lhs = match[1];
         const rhs = match[2];
         const aliasAs = match[3];
-        const trackByExp = match[4];
 
         match = lhs.match(
           /^(?:(\s*[$\w]+)|\(\s*([$\w]+)\s*,\s*([$\w]+)\s*\))$/,
@@ -104,19 +103,6 @@ export const ngRepeatDirective = [
         }
 
         let trackByIdExpFn;
-
-        if (trackByExp) {
-          var hashFnLocals = { $id: hashKey };
-          const trackByExpGetter = $parse(trackByExp);
-
-          trackByIdExpFn = function ($scope, key, value, index) {
-            // assign key, value, and $index to the locals so that they can be used in hash functions
-            if (keyIdentifier) hashFnLocals[keyIdentifier] = key;
-            hashFnLocals[valueIdentifier] = value;
-            hashFnLocals.$index = index;
-            return trackByExpGetter($scope, hashFnLocals);
-          };
-        }
 
         return function ngRepeatLink(
           $scope,
@@ -214,17 +200,16 @@ export const ngRepeatDirective = [
               }
             }
 
-            // Clear the value property from the hashFnLocals object to prevent a reference to the last value
-            // being leaked into the ngRepeatCompile function scope
-            if (hashFnLocals) {
-              hashFnLocals[valueIdentifier] = undefined;
-            }
-
             // remove leftover items
             for (var blockKey in lastBlockMap) {
               block = lastBlockMap[blockKey];
               elementsToRemove = block.clone;
-              $animate.leave(elementsToRemove);
+              if (hasAnimate) {
+                $animate.leave(elementsToRemove);
+              } else {
+                // TODO
+                throw new Error("TODO");
+              }
               if (elementsToRemove[0].parentNode) {
                 // if the element was not removed yet because of pending animation, mark it as deleted
                 // so that we can ignore it later
@@ -239,7 +224,6 @@ export const ngRepeatDirective = [
               block.scope.$destroy();
             }
 
-            // we are not using forEach for perf reasons (trying to avoid #call)
             for (index = 0; index < collectionLength; index++) {
               key =
                 collection === collectionKeys ? index : collectionKeys[index];
@@ -281,7 +265,12 @@ export const ngRepeatDirective = [
                     // TODO investigate
                     const endNode = document.createComment("");
                     clone[clone.length++] = endNode;
-                    $animate.enter(clone, null, previousNode);
+                    if (hasAnimate) {
+                      $animate.enter(clone, null, previousNode);
+                    } else {
+                      clone[0].parentElement.replaceChild(clone[0], $element);
+                    }
+
                     previousNode = endNode;
                     // Note: We only need the first/last node of the cloned nodes.
                     // However, we need to keep the reference to the jqlite wrapper as it might be changed later
