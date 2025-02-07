@@ -1,5 +1,6 @@
 import { minErr, hashKey, isArrayLike } from "../../shared/utils.js";
 import { getBlockNodes } from "../../shared/jqlite/jqlite.js";
+import { Scope } from "../../core/scope/scope.js";
 
 const NG_REMOVED = "$$NG_REMOVED";
 const ngRepeatMinErr = minErr("ngRepeat");
@@ -203,8 +204,7 @@ export function ngRepeatDirective($animate) {
             if (hasAnimate) {
               $animate.leave(elementsToRemove);
             } else {
-              // TODO
-              throw new Error("TODO");
+              elementsToRemove[0].remove();
             }
             if (elementsToRemove[0].parentNode) {
               // if the element was not removed yet because of pending animation, mark it as deleted
@@ -253,17 +253,18 @@ export function ngRepeatDirective($animate) {
             } else {
               // new item which we don't know about
               $transclude(
-                // Clone attach function
+                /**
+                 * Clone attach function
+                 * @param {Array<NodeList>} clone
+                 * @param {Scope} scope
+                 */
                 (clone, scope) => {
                   block.scope = scope;
-                  // Removing this comment node breaks // "clobber ng-if" test
-                  // TODO investigate
-                  const endNode = document.createComment("");
-                  clone[clone.length++] = endNode;
+                  const endNode = clone[0];
                   if (hasAnimate) {
                     $animate.enter(clone, null, previousNode);
                   } else {
-                    clone[0].parentElement.replaceChild(clone[0], $element);
+                    previousNode.after(clone[0]);
                   }
 
                   previousNode = endNode;

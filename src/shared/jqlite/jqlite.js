@@ -1089,3 +1089,34 @@ export function emptyElement(element) {
       break;
   }
 }
+
+export function domInsert(element, parentElement, afterElement) {
+  // if for some reason the previous element was removed
+  // from the dom sometime before this code runs then let's
+  // just stick to using the parent element as the anchor
+  if (afterElement) {
+    const afterNode = extractElementNode(afterElement);
+    if (
+      afterNode &&
+      !afterNode.parentNode &&
+      !afterNode.previousElementSibling
+    ) {
+      afterElement = null;
+    }
+  }
+  if (afterElement) {
+    afterElement.after(element);
+  } else {
+    parentElement.prepend(element);
+  }
+}
+
+function extractElementNode(element) {
+  const { length } = element;
+  for (let i = 0; i < length; i++) {
+    const elm = element[i];
+    if (elm.nodeType === Node.ELEMENT_NODE) {
+      return elm;
+    }
+  }
+}

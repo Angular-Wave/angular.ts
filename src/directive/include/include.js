@@ -1,7 +1,10 @@
 import { isDefined } from "../../shared/utils.js";
-import { buildFragment, emptyElement } from "../../shared/jqlite/jqlite.js";
+import {
+  buildFragment,
+  emptyElement,
+  domInsert,
+} from "../../shared/jqlite/jqlite.js";
 import { hasAnimate } from "../../shared/utils.js";
-import { domInsert } from "../../animations/animate";
 
 export const ngIncludeDirective = [
   "$templateRequest",

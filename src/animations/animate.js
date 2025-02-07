@@ -1,5 +1,5 @@
 import { isFunction, isObject, minErr, extend } from "../shared/utils.js";
-import { JQLite, removeElement } from "../shared/jqlite/jqlite.js";
+import { JQLite, removeElement, domInsert } from "../shared/jqlite/jqlite.js";
 import { NG_ANIMATE_CLASSNAME } from "./shared.js";
 
 /** @typedef {"enter"|"leave"|"move"|"addClass"|"setClass"|"removeClass"} AnimationMethod */
@@ -23,16 +23,6 @@ function mergeClasses(a, b) {
   return `${a} ${b}`;
 }
 
-function extractElementNode(element) {
-  const { length } = element;
-  for (let i = 0; i < length; i++) {
-    const elm = element[i];
-    if (elm.nodeType === Node.ELEMENT_NODE) {
-      return elm;
-    }
-  }
-}
-
 // if any other type of options value besides an Object value is
 // passed into the $animate.method() animation then this helper code
 // will be run which will ignore it. While this patch is not the
@@ -42,27 +32,6 @@ function extractElementNode(element) {
 // are wiped clean incase a callback function is provided.
 function prepareAnimateOptions(options) {
   return isObject(options) ? options : {};
-}
-
-export function domInsert(element, parentElement, afterElement) {
-  // if for some reason the previous element was removed
-  // from the dom sometime before this code runs then let's
-  // just stick to using the parent element as the anchor
-  if (afterElement) {
-    const afterNode = extractElementNode(afterElement);
-    if (
-      afterNode &&
-      !afterNode.parentNode &&
-      !afterNode.previousElementSibling
-    ) {
-      afterElement = null;
-    }
-  }
-  if (afterElement) {
-    afterElement.after(element);
-  } else {
-    parentElement.prepend(element);
-  }
 }
 
 AnimateProvider.$inject = ["$provide"];
