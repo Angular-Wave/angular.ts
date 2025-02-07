@@ -1,8 +1,9 @@
-export const ngRepeatDirective: (string | (($parse: any, $animate: any) => {
-    restrict: string;
-    multiElement: boolean;
-    transclude: string;
-    priority: number;
-    terminal: boolean;
-    compile: ($element: any, $attr: any) => ($scope: any, $element: any, $attr: any, ctrl: any, $transclude: any) => void;
-}))[];
+/**
+ * TODO // Add type for animate service
+ * @param {*}  $animate
+ * @returns {import("../../types").Directive}
+ */
+export function ngRepeatDirective($animate: any): import("../../types").Directive;
+export namespace ngRepeatDirective {
+    let $inject: string[];
+}

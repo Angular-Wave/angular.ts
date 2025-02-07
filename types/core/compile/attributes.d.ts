@@ -77,4 +77,4 @@ export class Attributes {
     sanitizeSrcset(value: any, invokeType: any): any;
     srcset: any;
 }
-import { directiveNormalize } from "../../shared/utils";
+import { directiveNormalize } from "../../shared/utils.js";

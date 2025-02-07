@@ -166,7 +166,7 @@ export function dealoc(element: Element, onlyDescendants?: boolean): void;
  */
 export function getOrSetCacheData(element: Element, key: string | any, value?: any): any;
 /**
- * Gets or sets cache data for a given element.
+ * Sets cache data for a given element.
  *
  * @param {Element} element - The DOM element to get or set data on.
  * @param {string} key - The key (as a string) to get/set or an object for mass-setting.

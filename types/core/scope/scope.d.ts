@@ -4,10 +4,10 @@
  *
  * @param {Object} target - The object to be wrapped in a proxy.
  * @param {Scope} [context] - The context for the handler, used to track listeners.
- * @returns {Scope<Object>} - A proxy that intercepts operations on the target object,
+ * @returns {Scope} - A proxy that intercepts operations on the target object,
  *                                     or the original value if the target is not an object.
  */
-export function createScope(target?: any, context?: Scope): Scope<any>;
+export function createScope(target?: any, context?: Scope): Scope;
 /**
  *
  * @param {*} value
@@ -26,8 +26,8 @@ export const $postUpdateQueue: any[];
  */
 export const $$applyAsyncQueue: Function[];
 export class RootScopeProvider {
-    rootScope: any;
-    $get: (string | ((exceptionHandler: import("../exception-handler.js").ErrorHandler, parse: import("../parse/parse.js").ParseService) => any))[];
+    rootScope: Scope;
+    $get: (string | ((exceptionHandler: import("../exception-handler.js").ErrorHandler, parse: import("../parse/parse.js").ParseService) => Scope))[];
 }
 /**
  * Listener function definition.
@@ -53,7 +53,6 @@ export const isProxySymbol: unique symbol;
  * Scope class for the Proxy. It intercepts operations like property access (get)
  * and property setting (set), and adds support for deep change tracking and
  * observer-like behavior.
- * @extends {ProxyHandler}
  */
 export class Scope {
     /**

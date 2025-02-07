@@ -30,11 +30,8 @@ export class ControllerProvider {
     register(name: string | any, constructor: Function | any[]): void;
     /**
      * $get method for dependency injection.
-     *
-     * @param {import("../../core/di/internal-injector").InjectorService} $injector
-     * @returns {Function} A service function that creates controllers.
      */
-    $get: (string | (($injector: any) => (expression: any, locals: any, later: any, ident: any) => any))[];
+    $get: (string | (($injector: import("../../core/di/internal-injector").InjectorService) => Function))[];
     /**
      * Adds an identifier to the controller instance in the given locals' scope.
      *

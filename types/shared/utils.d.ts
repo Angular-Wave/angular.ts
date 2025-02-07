@@ -247,10 +247,10 @@ export function isElement(node: any): boolean;
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Node/nodeName)
  *
- * @param {import('../shared/jqlite/jqlite').JQLite|Element} element
+ * @param {Element} element
  * @returns
  */
-export function getNodeName(element: import("../shared/jqlite/jqlite").JQLite | Element): string;
+export function getNodeName(element: Element): string;
 export function includes(array: any, obj: any): boolean;
 /**
  * Removes the first occurrence of a specified value from an array.
