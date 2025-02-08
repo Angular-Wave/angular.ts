@@ -1489,7 +1489,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               cloneAttachFn = scope;
               scope = undefined;
             }
-
             if (hasElementTranscludeDirective) {
               transcludeControllers = elementControllers;
             }

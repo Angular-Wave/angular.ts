@@ -3224,20 +3224,21 @@ describe("$compile", () => {
       }).toThrowError();
     });
 
-    fit("makes scope available to link functions inside", () => {
+    fit("makes scope available to link functions inside", async () => {
       registerDirectives({
         myTranscluder: () => {
           return {
             transclude: true,
             link: function (scope, element, attrs, ctrl, transclude) {
-              element.append(transclude());
+              const res = transclude();
+              element.append(res[0]);
             },
           };
         },
         myInnerDirective: () => {
           return {
             link: function (scope, element) {
-              element.html(scope.anAttr);
+              element.innerHTML = scope.anAttr;
             },
           };
         },
@@ -3249,6 +3250,8 @@ describe("$compile", () => {
 
       $rootScope.anAttr = "Hello from root";
       $compile(el)($rootScope);
+      await wait();
+
       expect(el.innerHTML.match(/Hello from root/)).toBeTruthy();
     });
 
@@ -3260,14 +3263,14 @@ describe("$compile", () => {
             scope: true,
             link: function (scope, element, attrs, ctrl, transclude) {
               scope.anAttr = "Shadowed attribute";
-              element.append(transclude());
+              element.append(transclude()[0]);
             },
           };
         },
         myInnerDirective: () => {
           return {
             link: function (scope, element) {
-              element.html(scope.anAttr);
+              element.innerHTML = scope.anAttr;
             },
           };
         },
@@ -3290,7 +3293,7 @@ describe("$compile", () => {
             transclude: true,
             scope: true,
             link: function (scope, element, attrs, ctrl, transclude) {
-              element.append(transclude());
+              element.append(transclude()[0]);
               window.scope = scope;
               scope.$on("destroyNow", () => {
                 scope.$destroy();
@@ -3361,7 +3364,7 @@ describe("$compile", () => {
         inTemplate: () => {
           return {
             link: function (scope, element, attrs, ctrl, transcludeFn) {
-              element.append(transcludeFn());
+              element.append(transcludeFn()[0]);
             },
           };
         },
@@ -3387,7 +3390,7 @@ describe("$compile", () => {
         inTemplate: () => {
           return {
             link: function (scope, element, attrs, ctrl, transcludeFn) {
-              element.append(transcludeFn());
+              element.append(transcludeFn()[0]);
             },
           };
         },
@@ -3421,7 +3424,7 @@ describe("$compile", () => {
         inCustomTemplate: () => {
           return {
             link: function (scope, element, attrs, ctrl, transclude) {
-              element.append(transclude());
+              element.append(transclude()[0]);
             },
           };
         },
@@ -3506,7 +3509,7 @@ describe("$compile", () => {
       );
       $compile(el)($rootScope);
 
-      expect(transclude().outerHTML.match(/in-transclude/)).toBeTruthy();
+      expect(transclude()[0].outerHTML.match(/in-transclude/)).toBeTruthy();
     });
 
     fit("can be used with multi-element directives", () => {
@@ -3650,7 +3653,7 @@ describe("$compile", () => {
         myOtherDirective: () => {
           return {
             link: function (scope, element) {
-              element.html(scope.dataFromTranscluder);
+              element.innerHTML = scope.dataFromTranscluder;
             },
           };
         },
