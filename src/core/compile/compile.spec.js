@@ -2944,10 +2944,7 @@ describe("$compile", () => {
       registerDirectives({
         myDirective: () => {
           return {
-            link: () => {
-              debugger;
-              linkSpy();
-            },
+            link: linkSpy,
           };
         },
         myOtherDirective: () => {
@@ -2965,12 +2962,11 @@ describe("$compile", () => {
 
       setTimeout(() => {
         expect(linkSpy).toHaveBeenCalled();
-        // debugger
-        // expect(linkSpy.calls.argsFor(0)[0]).toBe($rootScope);
-        // expect(linkSpy.calls.argsFor(0)[1]).toBe(el);
-        // expect(linkSpy.calls.argsFor(0)[2].myDirective).toBeDefined();
+        expect(linkSpy.calls.argsFor(0)[0]).toBe($rootScope);
+        expect(linkSpy.calls.argsFor(0)[1]).toBe(el);
+        expect(linkSpy.calls.argsFor(0)[2].myDirective).toBeDefined();
         done();
-      }, 100);
+      }, 10);
     });
 
     fit("retains isolate scope directives from earlier", (done) => {

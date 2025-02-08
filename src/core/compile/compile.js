@@ -1439,7 +1439,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               boundTranscludeFn,
             );
           }
-
           // POSTLINKING
           for (i = postLinkFns.length - 1; i >= 0; i--) {
             let postLinkFn = postLinkFns[i];
@@ -2315,7 +2314,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               compileNode,
               tAttrs,
               childTranscludeFn,
-              $compileNode,
               origAsyncDirective,
               preLinkFns,
               postLinkFns,
