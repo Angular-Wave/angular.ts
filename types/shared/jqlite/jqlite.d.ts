@@ -252,4 +252,5 @@ export function appendNodesToElement(element: Element, nodes: Node | Node[] | st
  * @param {Element} element
  */
 export function emptyElement(element: Element): void;
+export function domInsert(element: any, parentElement: any, afterElement: any): void;
 export const BOOLEAN_ATTR: {};

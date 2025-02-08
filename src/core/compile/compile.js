@@ -613,7 +613,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
       ) {
         let jqCompileNodes = isString($compileNodes)
           ? [createElementFromHTML(/** @type {string} */ ($compileNodes))]
-          : [$compileNodes];
+          : /** @type {NodeList} */ ($compileNodes).length
+            ? $compileNodes
+            : [$compileNodes];
 
         /**
          * @type {CompositeLinkFn}

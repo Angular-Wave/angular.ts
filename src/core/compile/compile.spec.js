@@ -3107,7 +3107,7 @@ describe("$compile", () => {
 
       linkFunction($rootScope); // then link
       setTimeout(() => {
-        expect(el[0].outerHTML.match(/from-template/)).toBeTruthy();
+        expect(el.outerHTML.match(/from-template/)).toBeTruthy();
         done();
       }, 100);
     });
@@ -3158,7 +3158,7 @@ describe("$compile", () => {
       expect(el.innerHTML).toBe("");
     });
 
-    fit("compiles child elements", () => {
+    fit("compiles child elements", async () => {
       var insideCompileSpy = jasmine.createSpy();
       registerDirectives({
         myTranscluder: () => {
@@ -3180,6 +3180,7 @@ describe("$compile", () => {
         "<div my-transcluder><div inside-transcluder></div></div>",
       );
       $compile(el)($rootScope);
+      await wait();
       expect(insideCompileSpy).toHaveBeenCalled();
     });
 

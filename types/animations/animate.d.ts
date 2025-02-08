@@ -1,4 +1,3 @@
-export function domInsert(element: any, parentElement: any, afterElement: any): void;
 export function AnimateProvider($provide: any): void;
 export class AnimateProvider {
     constructor($provide: any);
