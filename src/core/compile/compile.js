@@ -2373,11 +2373,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               } else {
                 childBoundTranscludeFn = boundTranscludeFn;
               }
+
               afterTemplateNodeLinkFn(
                 afterTemplateChildLinkFn,
                 scope,
                 linkNode,
-                $rootElement,
                 childBoundTranscludeFn,
               );
             }

@@ -52,7 +52,7 @@ describe("ngIf", () => {
       res($scope);
     }
 
-    fit("should immediately remove the element and replace it with comment node if condition is falsy", async () => {
+    it("should immediately remove the element and replace it with comment node if condition is falsy", async () => {
       makeIf("false", "undefined", "null", "NaN", "''", "0");
       await wait();
       Array.from(element.childNodes).forEach((node) => {
@@ -60,25 +60,25 @@ describe("ngIf", () => {
       });
     });
 
-    fit("should leave the element if condition is true", async () => {
+    it("should leave the element if condition is true", async () => {
       makeIf("true");
       await wait();
       expect(element.childNodes.length).toBe(1);
     });
 
-    fit("should leave the element if the condition is a non-empty string", async () => {
+    it("should leave the element if the condition is a non-empty string", async () => {
       makeIf("'f'", "'0'", "'false'", "'no'", "'n'", "'[]'");
       await wait();
       expect(element.childNodes.length).toBe(6);
     });
 
-    fit("should leave the element if the condition is an object", async () => {
+    it("should leave the element if the condition is an object", async () => {
       makeIf("[]", "{}");
       await wait();
       expect(element.childNodes.length).toBe(2);
     });
 
-    fit("should react to changes on a property of an object", async () => {
+    it("should react to changes on a property of an object", async () => {
       $scope.a = {
         b: true,
       };
@@ -91,7 +91,7 @@ describe("ngIf", () => {
       expect(element.childNodes[0].nodeType).toBe(Node.COMMENT_NODE);
     });
 
-    fit("should react to changes on a property of a nested object", async () => {
+    it("should react to changes on a property of a nested object", async () => {
       $scope.a = {
         b: {
           c: true,
@@ -110,7 +110,7 @@ describe("ngIf", () => {
       expect(element.childNodes.length).toBe(1);
     });
 
-    fit("should not add the element twice if the condition goes from true to true", async () => {
+    it("should not add the element twice if the condition goes from true to true", async () => {
       $scope.hello = "true1";
       makeIf("hello");
       await wait();
@@ -120,7 +120,7 @@ describe("ngIf", () => {
       expect(element.childNodes.length).toBe(1);
     });
 
-    fit("should not recreate the element if the condition goes from true to true", async () => {
+    it("should not recreate the element if the condition goes from true to true", async () => {
       $scope.hello = "true1";
       makeIf("hello");
       await wait();
@@ -132,7 +132,7 @@ describe("ngIf", () => {
       expect(getCacheData(element.childNodes[0], "flag")).toBe(true);
     });
 
-    fit("should create then remove the element if condition changes", async () => {
+    it("should create then remove the element if condition changes", async () => {
       $scope.hello = true;
       makeIf("hello");
       await wait();
@@ -142,7 +142,7 @@ describe("ngIf", () => {
       expect(element.childNodes[0].nodeType).toBe(Node.COMMENT_NODE);
     });
 
-    fit("should create a new scope every time the expression evaluates to true", async () => {
+    it("should create a new scope every time the expression evaluates to true", async () => {
       $scope.$apply("value = true");
       await wait();
       element.append(
@@ -155,7 +155,7 @@ describe("ngIf", () => {
       expect(element.childNodes.length).toBe(1);
     });
 
-    fit("should destroy the child scope every time the expression evaluates to false", async () => {
+    it("should destroy the child scope every time the expression evaluates to false", async () => {
       $scope.value = true;
       element.append(createElementFromHTML('<div ng-if="value"></div>'));
       $compile(element)($scope);
@@ -174,7 +174,7 @@ describe("ngIf", () => {
       expect(destroyed).toBe(true);
     });
 
-    fit("should play nice with other elements beside it", async () => {
+    it("should play nice with other elements beside it", async () => {
       $scope.values = [1, 2, 3, 4];
       element.append(
         createElementFromHTML(

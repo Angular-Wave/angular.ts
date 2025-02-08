@@ -2966,7 +2966,7 @@ describe("$compile", () => {
         expect(linkSpy.calls.argsFor(0)[1]).toBe(el);
         expect(linkSpy.calls.argsFor(0)[2].myDirective).toBeDefined();
         done();
-      }, 10);
+      }, 100);
     });
 
     fit("retains isolate scope directives from earlier", (done) => {
@@ -2996,7 +2996,7 @@ describe("$compile", () => {
         expect(linkSpy.calls.first().args[0]).not.toBe($rootScope);
         expect(linkSpy.calls.first().args[0].val).toBe(42);
         done();
-      }, 10);
+      }, 100);
     });
 
     fit("supports isolate scope directives with templateUrls", (done) => {

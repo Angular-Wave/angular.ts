@@ -1,6 +1,5 @@
 import { minErr, hashKey, isArrayLike } from "../../shared/utils.js";
 import { getBlockNodes } from "../../shared/jqlite/jqlite.js";
-import { Scope } from "../../core/scope/scope.js";
 
 const NG_REMOVED = "$$NG_REMOVED";
 const ngRepeatMinErr = minErr("ngRepeat");
@@ -10,7 +9,7 @@ ngRepeatDirective.$inject = ["$animate"];
 /**
  * TODO // Add type for animate service
  * @param {*}  $animate
- * @returns {import("../../types").Directive}
+ * @returns {import("../../types.js").Directive}
  */
 export function ngRepeatDirective($animate) {
   function updateScope(
@@ -266,7 +265,10 @@ export function ngRepeatDirective($animate) {
                   } else {
                     previousNode.after(clone[0]);
                   }
-
+                  // Clean up th initial comment node
+                  if (previousNode.nodeType == Node.COMMENT_NODE) {
+                    previousNode.remove();
+                  }
                   previousNode = endNode;
                   // Note: We only need the first/last node of the cloned nodes.
                   // However, we need to keep the reference to the jqlite wrapper as it might be changed later
