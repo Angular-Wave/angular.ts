@@ -60,7 +60,7 @@ import { ngObserveDirective } from "../../directive/observe/observe.js";
  * @description Entry point for the '$compile' service.
  *
  * @callback CompileFn
- * @param {string|Element|NodeList} $compileNodes - The nodes to be compiled.
+ * @param {string|Element|NodeList|ChildNode} $compileNodes - The nodes to be compiled.
  * @param {*} [transcludeFn] - An optional transclusion function to be used during compilation. TODO
  * @param {number} [maxPriority] - An optional maximum priority for directives.
  * @param {string} [ignoreDirective] - An optional directive to ignore during compilation.
@@ -613,7 +613,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
       ) {
         let jqCompileNodes = isString($compileNodes)
           ? [createElementFromHTML(/** @type {string} */ ($compileNodes))]
-          : /** @type {NodeList} */ ($compileNodes).length
+          : $compileNodes instanceof NodeList || Array.isArray($compileNodes)
             ? $compileNodes
             : [$compileNodes];
 
@@ -667,6 +667,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           if (!namespace) {
             namespace = detectNamespaceForChildElements(futureParentElement);
           }
+          /** @type {Element[]} */
           let $linkNode;
           if (namespace !== "html") {
             // When using a directive with replace:true and templateUrl the jqCompileNodes
@@ -694,7 +695,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           if (transcludeControllers) {
             for (const controllerName in transcludeControllers) {
               setCacheData(
-                $linkNode,
+                $linkNode[0],
                 `$${controllerName}Controller`,
                 transcludeControllers[controllerName].instance,
               );
@@ -1799,6 +1800,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   ),
                 );
               }
+
+              if (isString($template)) {
+                $template = [createElementFromHTML($template)];
+              }
               compileNode = $template[0];
 
               if (
@@ -1985,7 +1990,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
           if (!value) {
             const dataName = `$${name}Controller`;
-
             if (
               inheritType === "^^" &&
               $element &&
@@ -2754,7 +2758,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {Node} newNode The new DOM node.
        */
       function replaceWith($rootElement, elementsToRemove, newNode) {
-        const firstElementToRemove = elementsToRemove[0];
+        const firstElementToRemove = elementsToRemove.length
+          ? elementsToRemove[0]
+          : elementsToRemove;
         // const removeCount = elementsToRemove.length;
         const parent = firstElementToRemove.parentNode;
         // let i;

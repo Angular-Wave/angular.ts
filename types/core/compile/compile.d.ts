@@ -99,7 +99,7 @@ export class CompileProvider {
      * @returns {object} `this` for chaining
      */
     addPropertySecurityContext: (elementName: string, propertyName: string, ctx: string) => object;
-    $get: (string | (($injector: import("../../core/di/internal-injector.js").InjectorService, $interpolate: any, $exceptionHandler: import("../exception-handler").ErrorHandler, $templateRequest: any, $parse: import("../parse/parse").ParseService, $controller: any, $rootScope: import("../scope/scope").Scope, $sce: any, $animate: any) => ($compileNodes: string | Element | NodeList, transcludeFn?: any, maxPriority?: number, ignoreDirective?: string, previousCompileContext?: any) => PublicLinkFn | null))[];
+    $get: (string | (($injector: import("../../core/di/internal-injector.js").InjectorService, $interpolate: any, $exceptionHandler: import("../exception-handler").ErrorHandler, $templateRequest: any, $parse: import("../parse/parse").ParseService, $controller: any, $rootScope: import("../scope/scope").Scope, $sce: any, $animate: any) => ($compileNodes: string | Element | NodeList | ChildNode, transcludeFn?: any, maxPriority?: number, ignoreDirective?: string, previousCompileContext?: any) => PublicLinkFn | null))[];
 }
 export namespace CompileProvider {
     let $inject: string[];
@@ -108,5 +108,5 @@ export const DirectiveSuffix: "Directive";
 export type CompositeLinkFn = (scope: import("../scope/scope.js").Scope, $linkNode: Element[], parentBoundTranscludeFn: Function) => any;
 export type TranscludeFn = Function;
 export type PublicLinkFn = any | ((scope: import("../scope/scope.js").Scope, transcludeFn: TranscludeFn) => string);
-export type CompileFn = ($compileNodes: string | Element | NodeList, transcludeFn?: any, maxPriority?: number, ignoreDirective?: string, previousCompileContext?: any) => PublicLinkFn | null;
+export type CompileFn = ($compileNodes: string | Element | NodeList | ChildNode, transcludeFn?: any, maxPriority?: number, ignoreDirective?: string, previousCompileContext?: any) => PublicLinkFn | null;
 export type NodeLinkFn = Function;

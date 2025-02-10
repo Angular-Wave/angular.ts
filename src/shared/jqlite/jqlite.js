@@ -649,6 +649,7 @@ function elementAcceptsData(node) {
   switch (node.nodeType) {
     case Node.ELEMENT_NODE:
     case Node.DOCUMENT_NODE:
+    case Node.COMMENT_NODE:
     case undefined: // window.object
       return true;
     default:
@@ -808,6 +809,7 @@ export function setCacheData(element, key, value) {
     data[kebabToCamel(key)] = value;
   } else {
     // TODO: check should occur perhaps prior at compilation level that this is a valid element
+    setCacheData(element.parentElement, key, value);
   }
 }
 
@@ -866,11 +868,31 @@ export function getController(element, name) {
 /**
  *
  * @param {Node} element
- * @param {string|string[]} name
+ * @param {string} name
  * @returns
  */
 export function getInheritedData(element, name) {
-  return getOrSetCacheData(/** @type {Element} */ (element), name);
+  // if element is the document object work with the html element instead
+  // this makes $(document).scope() possible
+  if (element.nodeType === Node.DOCUMENT_NODE) {
+    element = /** @type {Document} */ (element).documentElement;
+  }
+
+  let value;
+  while (element) {
+    if (
+      isDefined((value = getCacheData(/** @type {Element} */ (element), name)))
+    )
+      return value;
+
+    // If dealing with a document fragment node with a host element, and no parent, use the host
+    // element as the parent. This enables directives within a Shadow DOM or polyfilled Shadow DOM
+    // to lookup parent controllers.
+    element =
+      element.parentNode ||
+      (element.nodeType === Node.DOCUMENT_FRAGMENT_NODE &&
+        /** @type {ShadowRoot} */ (element).host);
+  }
 }
 
 /**

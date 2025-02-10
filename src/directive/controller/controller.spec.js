@@ -1,8 +1,8 @@
-import { Angular } from "../../loader";
-import { createInjector } from "../../core/di/injector";
+import { Angular } from "../../loader.js";
+import { createInjector } from "../../core/di/injector.js";
 import { dealoc } from "../../shared/jqlite/jqlite.js";
 import { bind, createElement } from "../../shared/utils.js";
-import { wait } from "../../shared/test-utils";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ngController", () => {
   let angular;
@@ -119,17 +119,16 @@ describe("ngController", () => {
     );
     window.angular
       .module("myModule", [])
-      .controller("Greeter", function GreeterController($scope) {
+      .controller("Greeter", function GreeterController($scope, $element) {
         $scope.expr = "Vojta";
       });
     injector = angular.bootstrap(element, ["myModule"]);
 
     $rootScope = injector.get("$rootScope");
     setTimeout(() => {
-      expect(element.innerHTML).toEqual("Vojta");
-      dealoc($rootScope);
+      expect(element.children[0].innerHTML).toEqual("Vojta");
       done();
-    }, 200);
+    }, 100);
   });
 
   it("should only instantiate the controller once with ngInclude on the same element", async () => {

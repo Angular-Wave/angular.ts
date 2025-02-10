@@ -1,23 +1,18 @@
 import { isDefined } from "../../shared/utils.js";
-import {
-  buildFragment,
-  emptyElement,
-  domInsert,
-} from "../../shared/jqlite/jqlite.js";
+import { domInsert } from "../../shared/jqlite/jqlite.js";
 import { hasAnimate } from "../../shared/utils.js";
 
-export const ngIncludeDirective = [
-  "$templateRequest",
-  "$anchorScroll",
-  "$animate",
-  /**
-   *
-   * @param {*} $templateRequest
-   * @param {import("../../services/anchor-scroll").AnchorScrollFunction} $anchorScroll
-   * @param {*} $animate
-   * @returns
-   */
-  ($templateRequest, $anchorScroll, $animate) => ({
+ngIncludeDirective.$inject = ["$templateRequest", "$anchorScroll", "$animate"];
+
+/**
+ *
+ * @param {*} $templateRequest
+ * @param {import("../../services/anchor-scroll.js").AnchorScrollFunction} $anchorScroll
+ * @param {*} $animate
+ * @returns
+ */
+export function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
+  return {
     restrict: "EA",
     priority: 400,
     terminal: true,
@@ -93,7 +88,7 @@ export const ngIncludeDirective = [
                   if (hasAnimate(clone[0])) {
                     $animate.enter(clone, null, $element).done(afterAnimation);
                   } else {
-                    domInsert(clone, null, $element);
+                    domInsert(clone[0], null, $element);
                     maybeScroll();
                   }
                 });
@@ -120,44 +115,30 @@ export const ngIncludeDirective = [
         });
       };
     },
-  }),
-];
+  };
+}
 
 // This directive is called during the $transclude call of the first `ngInclude` directive.
 // It will replace and compile the content of the element with the loaded template.
 // We need this directive so that the element content is already filled when
 // the link function of another directive on the same element as ngInclude
 // is called.
-export const ngIncludeFillContentDirective = [
-  "$compile",
-  /**
-   * @param {import("../../core/compile/compile.js").CompileFn} $compile
-   * @returns {import("../../types.js").Directive}
-   */
-  ($compile) => ({
+ngIncludeFillContentDirective.$inject = ["$compile"];
+
+/**
+ * @param {import("../../core/compile/compile.js").CompileFn} $compile
+ * @returns {import("../../types.js").Directive}
+ */
+export function ngIncludeFillContentDirective($compile) {
+  return {
     restrict: "EA",
     priority: -400,
     require: "ngInclude",
     link(scope, $element, _$attr, ctrl) {
-      if (toString.call($element).match(/SVG/)) {
-        // WebKit: https://bugs.webkit.org/show_bug.cgi?id=135698 --- SVG elements do not
-        // support innerHTML, so detect this here and try to generate the contents
-        // specially.
-        emptyElement($element);
-        $compile(buildFragment(ctrl.template).childNodes)(
-          scope,
-          /**
-           * @param {Element} clone
-           */
-          (clone) => {
-            $element.append(clone);
-          },
-          { futureParentElement: $element },
-        );
-        return;
-      }
-      $element.innerHTML = ctrl.template;
-      Array.from($element.childNodes).forEach((el) => $compile(el)(scope));
+      $element.innerHTML = ctrl["template"];
+      Array.from($element.childNodes).forEach((el) => {
+        $compile(el)(scope);
+      });
     },
-  }),
-];
+  };
+}

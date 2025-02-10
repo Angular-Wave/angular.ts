@@ -988,7 +988,7 @@ describe("$compile", () => {
         '<my-directive ng-attr-some-attribute="42"></my-directive>',
         function (element, attrs) {
           attrs.$set("someAttribute", 43);
-          expect(element.attr("some-attribute")).toEqual("43");
+          expect(element.getAttribute("some-attribute")).toEqual("43");
         },
       );
     });
@@ -3857,7 +3857,9 @@ describe("$compile", () => {
 
       $compile(el)($rootScope);
 
-      expect(el.find("[my-transcluder]").attr("testing")).toBeUndefined();
+      expect(
+        el.find("[my-transcluder]").getAttribute("testing"),
+      ).toBeUndefined();
     });
 
     it("supports requiring controllers", () => {
@@ -3918,12 +3920,12 @@ describe("$compile", () => {
       $compile(el)($rootScope);
 
       await wait();
-      expect(el.attr("alt")).toEqual("");
+      expect(el.getAttribute("alt")).toEqual("");
 
       $rootScope.myAltText = "My favourite photo";
 
       await wait();
-      expect(el.attr("alt")).toEqual("My favourite photo");
+      expect(el.getAttribute("alt")).toEqual("My favourite photo");
     });
 
     it("fires observers on attribute expression changes", async () => {
@@ -4029,7 +4031,7 @@ describe("$compile", () => {
       $compile(el)($rootScope);
       await wait();
 
-      expect(el.attr("my-attr")).toEqual("Other Hello");
+      expect(el.getAttribute("my-attr")).toEqual("Other Hello");
     });
 
     it("is done for attributes so that removal during compile is reflected", async () => {
@@ -4050,7 +4052,7 @@ describe("$compile", () => {
       $compile(el)($rootScope);
       await wait();
 
-      expect(el.attr("my-attr")).toBeFalsy();
+      expect(el.getAttribute("my-attr")).toBeFalsy();
     });
 
     it("cannot be done for event handler attributes", () => {
@@ -4283,7 +4285,7 @@ describe("$compile", () => {
     it("may inject $element and $attrs to template function", () => {
       myModule.component("myComponent", {
         template: function ($element, $attrs) {
-          return $element.attr("copiedAttr", $attrs.myAttr);
+          return $element.getAttribute("copiedAttr", $attrs.myAttr);
         },
       });
       reloadModules();
@@ -4291,7 +4293,7 @@ describe("$compile", () => {
         '<my-component my-attr="42"></my-component>',
       );
       $compile(el)($rootScope);
-      expect(el.attr("copiedAttr")).toEqual("42");
+      expect(el.getAttribute("copiedAttr")).toEqual("42");
     });
 
     it("may have a template function with DI support", async () => {
@@ -5219,7 +5221,7 @@ describe("$compile", () => {
 
   describe("compiler control", () => {
     describe("priority", () => {
-      it("should honor priority", () => {
+      fit("should honor priority", () => {
         registerDefaultDirectives();
         reloadModules();
         element = $compile(
@@ -5230,7 +5232,7 @@ describe("$compile", () => {
     });
 
     describe("terminal", () => {
-      it("should prevent further directives from running", () => {
+      fit("should prevent further directives from running", () => {
         registerDefaultDirectives();
         reloadModules();
 
@@ -5240,7 +5242,7 @@ describe("$compile", () => {
         expect(element.textContent).toEqual("OK");
       });
 
-      it("should prevent further directives from running, but finish current priority level", () => {
+      fit("should prevent further directives from running, but finish current priority level", () => {
         // class is processed after attrs, so putting log in class will put it after
         // the stop in the current level. This proves that the log runs after stop
         registerDefaultDirectives();
@@ -5255,7 +5257,7 @@ describe("$compile", () => {
     });
 
     describe("restrict", () => {
-      it("should allow restriction of availability", () => {
+      fit("should allow restriction of availability", () => {
         Object.entries({ div: "E", attr: "A", all: "EA" }).forEach(
           ([name, restrict]) => {
             myModule.directive(name, () => ({
@@ -5286,7 +5288,7 @@ describe("$compile", () => {
         dealoc($compile('<all class="all" all></all>')($rootScope));
       });
 
-      it("should use EA rule as the default", () => {
+      fit("should use EA rule as the default", () => {
         myModule.directive("defaultDir", () => ({
           compile() {
             log.push("defaultDir");
@@ -5393,33 +5395,37 @@ describe("$compile", () => {
           }));
       });
 
-      it("should replace element with template", () => {
+      fit("should replace element with template", () => {
         reloadModules();
         element = $compile("<div><div replace>ignore</div><div>")($rootScope);
         expect(element.textContent).toEqual("Replace!");
-        expect(element.find("div").attr("compiled")).toEqual("COMPILED");
+        expect(element.find("div").getAttribute("compiled")).toEqual(
+          "COMPILED",
+        );
       });
 
-      it("should append element with template", () => {
+      fit("should append element with template", () => {
         reloadModules();
         element = $compile("<div><div append>ignore</div><div>")($rootScope);
         expect(element.textContent).toEqual("Append!");
-        expect(element.find("div").attr("compiled")).toEqual("COMPILED");
+        expect(element.find("div").getAttribute("compiled")).toEqual(
+          "COMPILED",
+        );
       });
 
-      it("should compile template when replacing", () => {
+      fit("should compile template when replacing", () => {
         reloadModules();
         element = $compile("<div><div replace>ignore</div><div>")($rootScope);
         expect(element.textContent).toEqual("Replace!");
       });
 
-      it("should compile template when appending", () => {
+      fit("should compile template when appending", () => {
         reloadModules();
         element = $compile("<div><div append>ignore</div><div>")($rootScope);
         expect(element.textContent).toEqual("Append!");
       });
 
-      it("should merge attributes including style attr", () => {
+      fit("should merge attributes including style attr", () => {
         reloadModules();
         element = $compile(
           '<div><div replace class="medium-log" style="height: 20px" ></div><div>',
@@ -5429,11 +5435,11 @@ describe("$compile", () => {
         expect(div[0].classList.contains("log")).toBe(true);
         expect(div[0].style.width).toBe("10px");
         expect(div[0].style.height).toBe("20px");
-        expect(div.attr("replace")).toEqual("");
-        expect(div.attr("high-log")).toEqual("");
+        expect(div.getAttribute("replace")).toEqual("");
+        expect(div.getAttribute("high-log")).toEqual("");
       });
 
-      it("should not merge attributes if they are the same", () => {
+      fit("should not merge attributes if they are the same", () => {
         reloadModules();
         element = $compile(
           '<div><div nomerge class="medium-log" id="myid"></div><div>',
@@ -5441,41 +5447,41 @@ describe("$compile", () => {
         const div = element.find("div");
         expect(div[0].classList.contains("medium-log")).toBe(true);
         expect(div[0].classList.contains("log")).toBe(true);
-        expect(div.attr("id")).toEqual("myid");
+        expect(div.getAttribute("id")).toEqual("myid");
       });
 
-      it("should correctly merge attributes that contain special characters", () => {
+      fit("should correctly merge attributes that contain special characters", () => {
         reloadModules();
         element = $compile(
           '<div><div replace (click)="doSomething()" [value]="someExpression" ω="omega"></div><div>',
         )($rootScope);
         const div = element.find("div");
-        expect(div.attr("(click)")).toEqual("doSomething()");
-        expect(div.attr("[value]")).toEqual("someExpression");
-        expect(div.attr("ω")).toEqual("omega");
+        expect(div.getAttribute("(click)")).toEqual("doSomething()");
+        expect(div.getAttribute("[value]")).toEqual("someExpression");
+        expect(div.getAttribute("ω")).toEqual("omega");
       });
 
-      it('should not add white-space when merging an attribute that is "" in the replaced element', () => {
+      fit('should not add white-space when merging an attribute that is "" in the replaced element', () => {
         reloadModules();
         element = $compile('<div><div replace class=""></div><div>')(
           $rootScope,
         );
         const div = element.find("div");
         expect(div[0].classList.contains("log")).toBe(true);
-        expect(div.attr("class")).toBe("log");
+        expect(div.getAttribute("class")).toBe("log");
       });
 
-      it("should not set merged attributes twice in $attrs", () => {
+      fit("should not set merged attributes twice in $attrs", () => {
         reloadModules();
         element = $compile(
           '<div><div log-attrs replace class="myLog"></div><div>',
         )($rootScope);
         const div = element.find("div");
-        expect(div.attr("class")).toBe("myLog log");
+        expect(div.getAttribute("class")).toBe("myLog log");
         expect(attrs.class).toBe("myLog log");
       });
 
-      it("should play nice with repeater when replacing", async () => {
+      fit("should play nice with repeater when replacing", async () => {
         reloadModules();
         element = $compile(
           "<div>" + '<div ng-repeat="i in [1,2]" replace></div>' + "</div>",
@@ -5484,7 +5490,7 @@ describe("$compile", () => {
         expect(element.textContent).toEqual("Replace!Replace!");
       });
 
-      it("should play nice with repeater when appending", async () => {
+      fit("should play nice with repeater when appending", async () => {
         reloadModules();
         element = $compile(
           "<div>" + '<div ng-repeat="i in [1,2]" append></div>' + "</div>",
@@ -5493,7 +5499,7 @@ describe("$compile", () => {
         expect(element.textContent).toEqual("Append!Append!");
       });
 
-      it("should handle interpolated css class from replacing directive", async () => {
+      fit("should handle interpolated css class from replacing directive", async () => {
         reloadModules();
         element = $compile("<div replace-with-interpolated-class></div>")(
           $rootScope,
@@ -5502,7 +5508,7 @@ describe("$compile", () => {
         expect(element.classList.contains("class_2")).toBeTrue();
       });
 
-      it("should merge interpolated css class", async () => {
+      fit("should merge interpolated css class", async () => {
         reloadModules();
         element = $compile('<div class="one {{cls}} three" replace></div>')(
           $rootScope,
@@ -5527,15 +5533,13 @@ describe("$compile", () => {
               "</div>",
           ),
         )($rootScope);
-        await wait();
         $rootScope.cls = "two";
         await wait();
-
-        const child = element.find("div").eq(0);
-        expect(child[0].classList.contains("one")).toBeTrue();
-        expect(child[0].classList.contains("two")).toBeTrue(); // interpolated
-        expect(child[0].classList.contains("three")).toBeTrue();
-        expect(child[0].classList.contains("log")).toBeTrue(); // merged from replace directive template
+        const child = element.childNodes[0];
+        expect(child.classList.contains("one")).toBeTrue();
+        expect(child.classList.contains("two")).toBeTrue(); // interpolated
+        expect(child.classList.contains("three")).toBeTrue();
+        expect(child.classList.contains("log")).toBeTrue(); // merged from replace directive template
       });
 
       describe("replace and not exactly one root element", () => {
@@ -5607,23 +5611,23 @@ describe("$compile", () => {
         });
       });
 
-      fit("should support templates with root <tr> tags", () => {
+      fit("should support templates with root <tr> tags", async () => {
         reloadModules();
-        expect(() => {
-          element = $compile("<div replace-with-tr></div>")($rootScope);
-        }).not.toThrow();
+        element = $compile(
+          createElementFromHTML("<div replace-with-tr></div>"),
+        )($rootScope);
+        await wait(100);
         expect(getNodeName(element)).toMatch(/tr/i);
       });
 
-      it("should support templates with root <td> tags", () => {
+      fit("should support templates with root <td> tags", async () => {
         reloadModules();
-        expect(() => {
-          element = $compile("<div replace-with-td></div>")($rootScope);
-        }).not.toThrow();
+        element = $compile("<div replace-with-td></div>")($rootScope);
+        await wait();
         expect(getNodeName(element)).toMatch(/td/i);
       });
 
-      it("should support templates with root <th> tags", () => {
+      fit("should support templates with root <th> tags", () => {
         reloadModules();
         expect(() => {
           element = $compile("<div replace-with-th></div>")($rootScope);
@@ -5631,7 +5635,7 @@ describe("$compile", () => {
         expect(getNodeName(element)).toMatch(/th/i);
       });
 
-      it("should support templates with root <thead> tags", () => {
+      fit("should support templates with root <thead> tags", () => {
         reloadModules();
         expect(() => {
           element = $compile("<div replace-with-thead></div>")($rootScope);
@@ -5639,7 +5643,7 @@ describe("$compile", () => {
         expect(getNodeName(element)).toMatch(/thead/i);
       });
 
-      it("should support templates with root <tbody> tags", () => {
+      fit("should support templates with root <tbody> tags", () => {
         reloadModules();
         expect(() => {
           element = $compile("<div replace-with-tbody></div>")($rootScope);
@@ -5647,7 +5651,7 @@ describe("$compile", () => {
         expect(getNodeName(element)).toMatch(/tbody/i);
       });
 
-      it("should support templates with root <tfoot> tags", () => {
+      fit("should support templates with root <tfoot> tags", () => {
         reloadModules();
         expect(() => {
           element = $compile("<div replace-with-tfoot></div>")($rootScope);
@@ -5655,7 +5659,7 @@ describe("$compile", () => {
         expect(getNodeName(element)).toMatch(/tfoot/i);
       });
 
-      it("should support templates with root <option> tags", () => {
+      fit("should support templates with root <option> tags", () => {
         reloadModules();
         expect(() => {
           element = $compile("<div replace-with-option></div>")($rootScope);
@@ -5718,7 +5722,7 @@ describe("$compile", () => {
         expect(isHTMLElement(child[0])).toBe(false);
       });
 
-      it("should keep prototype properties on directive", async () => {
+      fit("should keep prototype properties on directive", async () => {
         function DirectiveClass() {
           this.restrict = "E";
           this.template = "<p>{{value}}</p>";
@@ -5739,7 +5743,7 @@ describe("$compile", () => {
           "<template-url-with-prototype><template-url-with-prototype>",
         )($rootScope);
         await wait();
-        expect(element.find("p")[0].innerHTML).toEqual("Test Value");
+        expect(element.childNodes[0].innerHTML).toEqual("Test Value");
       });
     });
 
@@ -6207,7 +6211,7 @@ describe("$compile", () => {
           );
         });
 
-        it("should flush after link append", async () => {
+        fit("should flush after link append", async () => {
           $templateCache.set("second.html", "<div third>{{1+2}}</div>");
           template = $compile("<div><span first second last></span></div>");
           element = template($rootScope);
@@ -6220,12 +6224,11 @@ describe("$compile", () => {
               "first-PreL; second-PreL; last-PreL; third-PreL; " +
               "third-PostL; last-PostL; second-PostL; first-PostL",
           );
-
-          const span = element.find("span");
-          expect(span.attr("first")).toEqual("");
-          expect(span.attr("second")).toEqual("");
-          expect(span.find("div").attr("third")).toEqual("");
-          expect(span.attr("last")).toEqual("");
+          const span = element.children[0];
+          expect(span.getAttribute("first")).toEqual("");
+          expect(span.getAttribute("second")).toEqual("");
+          expect(span.find("div").getAttribute("third")).toEqual("");
+          expect(span.getAttribute("last")).toEqual("");
 
           expect(span.innerText).toEqual("3");
         });
@@ -6247,10 +6250,10 @@ describe("$compile", () => {
           );
 
           const div = element.find("div");
-          expect(div.attr("i-first")).toEqual("");
-          expect(div.attr("i-second")).toEqual("");
-          expect(div.attr("i-third")).toEqual("");
-          expect(div.attr("i-last")).toEqual("");
+          expect(div.getAttribute("i-first")).toEqual("");
+          expect(div.getAttribute("i-second")).toEqual("");
+          expect(div.getAttribute("i-third")).toEqual("");
+          expect(div.getAttribute("i-last")).toEqual("");
 
           expect(div.innerText).toEqual("3");
         });
@@ -6271,10 +6274,10 @@ describe("$compile", () => {
           );
 
           const span = element.find("span");
-          expect(span.attr("first")).toEqual("");
-          expect(span.attr("second")).toEqual("");
-          expect(span.find("div").attr("third")).toEqual("");
-          expect(span.attr("last")).toEqual("");
+          expect(span.getAttribute("first")).toEqual("");
+          expect(span.getAttribute("second")).toEqual("");
+          expect(span.find("div").getAttribute("third")).toEqual("");
+          expect(span.getAttribute("last")).toEqual("");
 
           expect(span.innerText).toEqual("3");
         });
@@ -6295,10 +6298,10 @@ describe("$compile", () => {
           );
 
           const div = element.find("div");
-          expect(div.attr("i-first")).toEqual("");
-          expect(div.attr("i-second")).toEqual("");
-          expect(div.attr("i-third")).toEqual("");
-          expect(div.attr("i-last")).toEqual("");
+          expect(div.getAttribute("i-first")).toEqual("");
+          expect(div.getAttribute("i-second")).toEqual("");
+          expect(div.getAttribute("i-third")).toEqual("");
+          expect(div.getAttribute("i-last")).toEqual("");
 
           expect(div.innerText).toEqual("3");
         });
@@ -7209,16 +7212,16 @@ describe("$compile", () => {
         );
         await wait();
         expect(element.textContent).toEqual("text: angular");
-        expect(element.attr("name")).toEqual("attr: angular");
+        expect(element.getAttribute("name")).toEqual("attr: angular");
       });
 
       it("should interpolate a multi-part expression for regular attributes", async () => {
         element = $compile('<div foo="some/{{id}}"></div>')($rootScope);
         await wait();
-        expect(element.attr("foo")).toBe("some/");
+        expect(element.getAttribute("foo")).toBe("some/");
         $rootScope.id = 1;
         await wait();
-        expect(element.attr("foo")).toEqual("some/1");
+        expect(element.getAttribute("foo")).toEqual("some/1");
       });
 
       it("should process attribute interpolation in pre-linking phase at priority 100", async () => {
@@ -7261,7 +7264,7 @@ describe("$compile", () => {
         )($rootScope);
         $rootScope.name = "angular";
         await wait();
-        log.push(`digest=${element.attr("my-name")}`);
+        log.push(`digest=${element.getAttribute("my-name")}`);
         expect(log.join("; ")).toEqual(
           "compile={{name}}; preLinkP101={{name}}; preLinkP0=; postLink=; digest=angular",
         );
@@ -7289,7 +7292,7 @@ describe("$compile", () => {
           );
           await wait();
         }).not.toThrow();
-        expect(element.attr("remove-attr")).toBeUndefined();
+        expect(element.getAttribute("remove-attr")).toBeUndefined();
       });
 
       describe("SCE values", () => {
@@ -7299,7 +7302,7 @@ describe("$compile", () => {
             $rootScope,
           );
           expect(element.textContent).toEqual("text: angular");
-          expect(element.attr("name")).toEqual("attr: angular");
+          expect(element.getAttribute("name")).toEqual("attr: angular");
         });
       });
 
@@ -7341,7 +7344,7 @@ describe("$compile", () => {
           '<div some-attr="foo-{{1+1}}" replace-some-attr></div>',
         )($rootScope);
         await wait();
-        expect(element.attr("some-attr")).toEqual("bar-2");
+        expect(element.getAttribute("some-attr")).toEqual("bar-2");
       });
 
       it("should call observer of non-interpolated attr through $evalAsync", async () => {
@@ -7356,10 +7359,10 @@ describe("$compile", () => {
       it("should support non-interpolated `src` and `data-src` on the same element", async () => {
         const element = $compile('<img src="abc" data-src="123">')($rootScope);
         await wait();
-        expect(element.attr("src")).toEqual("abc");
-        expect(element.attr("data-src")).toEqual("123");
-        expect(element.attr("src")).toEqual("abc");
-        expect(element.attr("data-src")).toEqual("123");
+        expect(element.getAttribute("src")).toEqual("abc");
+        expect(element.getAttribute("data-src")).toEqual("123");
+        expect(element.getAttribute("src")).toEqual("abc");
+        expect(element.getAttribute("data-src")).toEqual("123");
       });
 
       it("should call observer only when the attribute value changes", async () => {
@@ -7685,8 +7688,8 @@ describe("$compile", () => {
 
           element = $compile("<div setter></div>")($rootScope);
           await wait();
-          expect(element.attr("name")).toEqual("abc");
-          expect(element.attr("disabled")).toEqual("disabled");
+          expect(element.getAttribute("name")).toEqual("abc");
+          expect(element.getAttribute("disabled")).toEqual("disabled");
         });
 
         it("should read boolean attributes as boolean only on control elements", async () => {
@@ -7864,40 +7867,40 @@ describe("$compile", () => {
 
           it("should set attributes", async () => {
             attr.$set("ngMyAttr", "value");
-            expect(element.attr("ng-my-attr")).toEqual("value");
+            expect(element.getAttribute("ng-my-attr")).toEqual("value");
             expect(attr.ngMyAttr).toEqual("value");
           });
 
           it("should allow overriding of attribute name and remember the name", () => {
             attr.$set("ngOther", "123", true, "other");
-            expect(element.attr("other")).toEqual("123");
+            expect(element.getAttribute("other")).toEqual("123");
             expect(attr.ngOther).toEqual("123");
 
             attr.$set("ngOther", "246");
-            expect(element.attr("other")).toEqual("246");
+            expect(element.getAttribute("other")).toEqual("246");
             expect(attr.ngOther).toEqual("246");
           });
 
           it("should remove attribute", () => {
             attr.$set("ngMyAttr", "value");
-            expect(element.attr("ng-my-attr")).toEqual("value");
+            expect(element.getAttribute("ng-my-attr")).toEqual("value");
 
             attr.$set("ngMyAttr", undefined);
-            expect(element.attr("ng-my-attr")).toBeUndefined();
+            expect(element.getAttribute("ng-my-attr")).toBeUndefined();
 
             attr.$set("ngMyAttr", "value");
             attr.$set("ngMyAttr", null);
-            expect(element.attr("ng-my-attr")).toBeUndefined();
+            expect(element.getAttribute("ng-my-attr")).toBeUndefined();
           });
 
           it("should set the value to lowercased keys for boolean attrs", () => {
             attr.$set("disabled", "value");
-            expect(element.attr("disabled")).toEqual("disabled");
+            expect(element.getAttribute("disabled")).toEqual("disabled");
 
             element.removeAttribute("disabled");
 
             attr.$set("dISaBlEd", "VaLuE");
-            expect(element.attr("disabled")).toEqual("disabled");
+            expect(element.getAttribute("disabled")).toEqual("disabled");
           });
 
           it("should call removeAttr for boolean attrs when value is `false`", () => {
@@ -7910,7 +7913,7 @@ describe("$compile", () => {
 
             expect(element.attr).not.toHaveBeenCalled();
             expect(element.removeAttribute).toHaveBeenCalledWith("disabled");
-            expect(element.attr("disabled")).toEqual(undefined);
+            expect(element.getAttribute("disabled")).toEqual(undefined);
 
             attr.$set("disabled", "value");
 
@@ -7921,13 +7924,13 @@ describe("$compile", () => {
 
             expect(element.attr).not.toHaveBeenCalled();
             expect(element.removeAttribute).toHaveBeenCalledWith("disabled");
-            expect(element.attr("disabled")).toEqual(undefined);
+            expect(element.getAttribute("disabled")).toEqual(undefined);
           });
 
           it("should not set DOM element attr if writeAttr false", () => {
             attr.$set("test", "value", false);
 
-            expect(element.attr("test")).toBeUndefined();
+            expect(element.getAttribute("test")).toBeUndefined();
             expect(attr.test).toBe("value");
           });
 
@@ -7935,7 +7938,7 @@ describe("$compile", () => {
             // Breaking change in https://github.com/angular/angular.js/pull/16378
             element = $compile("<a></a>")($rootScope);
             $rootScope.attr.$set("href", "evil:foo()");
-            expect(element.attr("href")).toEqual("evil:foo()");
+            expect(element.getAttribute("href")).toEqual("evil:foo()");
             expect($rootScope.attr.href).toEqual("evil:foo()");
           });
 
@@ -7943,14 +7946,14 @@ describe("$compile", () => {
             // Breaking change in https://github.com/angular/angular.js/pull/16378
             element = $compile("<img></img>")($rootScope);
             $rootScope.attr.$set("img", "evil:foo()");
-            expect(element.attr("img")).toEqual("evil:foo()");
+            expect(element.getAttribute("img")).toEqual("evil:foo()");
             expect($rootScope.attr.img).toEqual("evil:foo()");
           });
 
           it("should automatically sanitize img[srcset]", () => {
             element = $compile("<img></img>")($rootScope);
             $rootScope.attr.$set("srcset", "evil:foo()");
-            expect(element.attr("srcset")).toEqual("unsafe:evil:foo()");
+            expect(element.getAttribute("srcset")).toEqual("unsafe:evil:foo()");
             expect($rootScope.attr.srcset).toEqual("unsafe:evil:foo()");
           });
 
@@ -12027,7 +12030,7 @@ describe("$compile", () => {
           .directive("scopeTester", () => ({
             link($scope, $element) {
               log.push(
-                `${$element.attr("scope-tester")}=${$scope.$root === $scope ? "non-isolate" : "isolate"}`,
+                `${$element.getAttribute("scope-tester")}=${$scope.$root === $scope ? "non-isolate" : "isolate"}`,
               );
             },
           }));
@@ -14791,7 +14794,9 @@ describe("$compile", () => {
       it("should NOT require trusted values for trusted URIs", () => {
         element = $compile(`<${tag} src="{{testUrl}}"></${tag}>`)($rootScope);
         $rootScope.testUrl = "http://example.com/image.mp4"; // `http` is trusted
-        expect(element.attr("src")).toEqual("http://example.com/image.mp4");
+        expect(element.getAttribute("src")).toEqual(
+          "http://example.com/image.mp4",
+        );
       });
 
       it("should accept trusted values", () => {
@@ -14800,17 +14805,17 @@ describe("$compile", () => {
         // Some browsers complain if you try to write `javascript:` into an `img[src]`
         // So for the test use something different
         $rootScope.testUrl = $sce.trustAsMediaUrl("untrusted:foo()");
-        expect(element.attr("src")).toEqual("untrusted:foo()");
+        expect(element.getAttribute("src")).toEqual("untrusted:foo()");
 
         // As a URL
         element = $compile(`<${tag} src="{{testUrl}}"></${tag}>`)($rootScope);
         $rootScope.testUrl = $sce.trustAsUrl("untrusted:foo()");
-        expect(element.attr("src")).toEqual("untrusted:foo()");
+        expect(element.getAttribute("src")).toEqual("untrusted:foo()");
 
         // As a RESOURCE URL
         element = $compile(`<${tag} src="{{testUrl}}"></${tag}>`)($rootScope);
         $rootScope.testUrl = $sce.trustAsResourceUrl("untrusted:foo()");
-        expect(element.attr("src")).toEqual("untrusted:foo()");
+        expect(element.getAttribute("src")).toEqual("untrusted:foo()");
       });
     });
   });
@@ -14822,7 +14827,7 @@ describe("$compile", () => {
           `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
         )($rootScope);
         $rootScope.testUrl = "http://example.com/image.mp4"; // `http` is trusted
-        expect(element.find(tag).attr("src")).toEqual(
+        expect(element.find(tag).getAttribute("src")).toEqual(
           "http://example.com/image.mp4",
         );
       });
@@ -14833,21 +14838,27 @@ describe("$compile", () => {
           `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
         )($rootScope);
         $rootScope.testUrl = $sce.trustAsMediaUrl("javascript:foo()");
-        expect(element.find(tag).attr("src")).toEqual("javascript:foo()");
+        expect(element.find(tag).getAttribute("src")).toEqual(
+          "javascript:foo()",
+        );
 
         // As a URL
         element = $compile(
           `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
         )($rootScope);
         $rootScope.testUrl = $sce.trustAsUrl("javascript:foo()");
-        expect(element.find(tag).attr("src")).toEqual("javascript:foo()");
+        expect(element.find(tag).getAttribute("src")).toEqual(
+          "javascript:foo()",
+        );
 
         // As a RESOURCE URL
         element = $compile(
           `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
         )($rootScope);
         $rootScope.testUrl = $sce.trustAsResourceUrl("javascript:foo()");
-        expect(element.find(tag).attr("src")).toEqual("javascript:foo()");
+        expect(element.find(tag).getAttribute("src")).toEqual(
+          "javascript:foo()",
+        );
       });
     });
   });
@@ -14858,23 +14869,25 @@ describe("$compile", () => {
       // Some browsers complain if you try to write `javascript:` into an `img[src]`
       // So for the test use something different
       $rootScope.testUrl = $sce.trustAsMediaUrl("someUntrustedThing:foo();");
-      expect(element.attr("src")).toEqual("someUntrustedThing:foo();");
+      expect(element.getAttribute("src")).toEqual("someUntrustedThing:foo();");
     });
 
     it("should sanitize concatenated values even if they are trusted", () => {
       element = $compile('<img src="{{testUrl}}ponies"></img>')($rootScope);
       $rootScope.testUrl = $sce.trustAsUrl("untrusted:foo();");
-      expect(element.attr("src")).toEqual("unsafe:untrusted:foo();ponies");
+      expect(element.getAttribute("src")).toEqual(
+        "unsafe:untrusted:foo();ponies",
+      );
 
       element = $compile('<img src="http://{{testUrl2}}"></img>')($rootScope);
       $rootScope.testUrl2 = $sce.trustAsUrl("xyz;");
-      expect(element.attr("src")).toEqual("http://xyz;");
+      expect(element.getAttribute("src")).toEqual("http://xyz;");
 
       element = $compile('<img src="{{testUrl3}}{{testUrl3}}"></img>')(
         $rootScope,
       );
       $rootScope.testUrl3 = $sce.trustAsUrl("untrusted:foo();");
-      expect(element.attr("src")).toEqual(
+      expect(element.getAttribute("src")).toEqual(
         "unsafe:untrusted:foo();untrusted:foo();",
       );
     });
@@ -14883,7 +14896,7 @@ describe("$compile", () => {
       element = $compile('<img title="{{testUrl}}"></img>')($rootScope);
       $rootScope.testUrl = "javascript:doEvilStuff()";
       await wait();
-      expect(element.attr("title")).toBe("javascript:doEvilStuff()");
+      expect(element.getAttribute("title")).toBe("javascript:doEvilStuff()");
     });
 
     it("should use $$sanitizeUri", async () => {
@@ -14895,7 +14908,7 @@ describe("$compile", () => {
       $rootScope.testUrl = "someUrl";
       element = $compile('<img src="{{testUrl}}"></img>')($rootScope);
       await wait();
-      expect(element.attr("src")).toBe("someSanitizedUrl");
+      expect(element.getAttribute("src")).toBe("someSanitizedUrl");
       expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, true);
     });
 
@@ -14910,11 +14923,11 @@ describe("$compile", () => {
 
       element = $compile('<img src="{{testUrl}}ponies"></img>')($rootScope);
       $rootScope.testUrl = $sce.trustAsUrl("javascript:foo();");
-      expect(element.attr("src")).toEqual("someSanitizedUrl");
+      expect(element.getAttribute("src")).toEqual("someSanitizedUrl");
 
       element = $compile('<img src="http://{{testUrl}}"></img>')($rootScope);
       $rootScope.testUrl = $sce.trustAsUrl("xyz");
-      expect(element.attr("src")).toEqual("someSanitizedUrl");
+      expect(element.getAttribute("src")).toEqual("someSanitizedUrl");
     });
 
     it("should not use $$sanitizeUri with trusted values", async () => {
@@ -14928,7 +14941,7 @@ describe("$compile", () => {
       // protocol name.
       $rootScope.testUrl = $sce.trustAsMediaUrl("untrusted:foo();");
       await wait();
-      expect(element.attr("src")).toEqual("untrusted:foo();");
+      expect(element.getAttribute("src")).toEqual("untrusted:foo();");
     });
   });
 
@@ -14947,19 +14960,21 @@ describe("$compile", () => {
       initInjector("test1");
       element = $compile("<img setter></img>")($rootScope);
       expect(linked).toBe(true);
-      expect(element.attr("srcset")).toBeUndefined();
+      expect(element.getAttribute("srcset")).toBeUndefined();
     });
 
     it("should NOT require trusted values for trusted URI values", () => {
       element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
       $rootScope.testUrl = "http://example.com/image.png"; // `http` is trusted
-      expect(element.attr("srcset")).toEqual("http://example.com/image.png");
+      expect(element.getAttribute("srcset")).toEqual(
+        "http://example.com/image.png",
+      );
     });
 
     it("should accept trusted values, if they are also trusted URIs", () => {
       element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
       $rootScope.testUrl = $sce.trustAsUrl("http://example.com");
-      expect(element.attr("srcset")).toEqual("http://example.com");
+      expect(element.getAttribute("srcset")).toEqual("http://example.com");
     });
 
     it("should NOT work with trusted values", () => {
@@ -14967,13 +14982,15 @@ describe("$compile", () => {
       // Use trustAsHtml and ng-bind-html to work around this.
       element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
       $rootScope.testUrl = $sce.trustAsUrl("javascript:something");
-      expect(element.attr("srcset")).toEqual("unsafe:javascript:something");
+      expect(element.getAttribute("srcset")).toEqual(
+        "unsafe:javascript:something",
+      );
 
       element = $compile('<img srcset="{{testUrl}},{{testUrl}}"></img>')(
         $rootScope,
       );
       $rootScope.testUrl = $sce.trustAsUrl("javascript:something");
-      expect(element.attr("srcset")).toEqual(
+      expect(element.getAttribute("srcset")).toEqual(
         "unsafe:javascript:something ,unsafe:javascript:something",
       );
     });
@@ -14989,7 +15006,7 @@ describe("$compile", () => {
       element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
       $rootScope.testUrl = "someUrl";
       await wait();
-      expect(element.attr("srcset")).toBe("someSanitizedUrl");
+      expect(element.getAttribute("srcset")).toBe("someSanitizedUrl");
       expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, true);
 
       element = $compile('<img srcset="{{testUrl}}, {{testUrl}}"></img>')(
@@ -14997,14 +15014,14 @@ describe("$compile", () => {
       );
       $rootScope.testUrl = "javascript:yay";
       await wait();
-      expect(element.attr("srcset")).toEqual(
+      expect(element.getAttribute("srcset")).toEqual(
         "someSanitizedUrl ,someSanitizedUrl",
       );
 
       element = $compile('<img srcset="java{{testUrl}}"></img>')($rootScope);
       $rootScope.testUrl = "script:yay, javascript:nay";
       await wait();
-      expect(element.attr("srcset")).toEqual(
+      expect(element.getAttribute("srcset")).toEqual(
         "someSanitizedUrl ,someSanitizedUrl",
       );
     });
@@ -15057,7 +15074,7 @@ describe("$compile", () => {
 
       Object.entries(testSet).forEach(([url, ref]) => {
         $rootScope.testUrl = url;
-        expect(element.attr("srcset")).toEqual(ref);
+        expect(element.getAttribute("srcset")).toEqual(ref);
       });
     });
   });
@@ -15066,30 +15083,34 @@ describe("$compile", () => {
     it("should NOT require trusted values for trusted URI values", () => {
       $rootScope.testUrl = "http://example.com/image.png"; // `http` is trusted
       element = $compile('<a href="{{testUrl}}"></a>')($rootScope);
-      expect(element.attr("href")).toEqual("http://example.com/image.png");
+      expect(element.getAttribute("href")).toEqual(
+        "http://example.com/image.png",
+      );
 
       element = $compile('<a ng-href="{{testUrl}}"></a>')($rootScope);
-      expect(element.attr("ng-href")).toEqual("http://example.com/image.png");
+      expect(element.getAttribute("ng-href")).toEqual(
+        "http://example.com/image.png",
+      );
     });
 
     it("should accept trusted values for non-trusted URI values", () => {
       $rootScope.testUrl = $sce.trustAsUrl("javascript:foo()"); // `javascript` is not trusted
       element = $compile('<a href="{{testUrl}}"></a>')($rootScope);
-      expect(element.attr("href")).toEqual("javascript:foo()");
+      expect(element.getAttribute("href")).toEqual("javascript:foo()");
 
       element = $compile('<a ng-href="{{testUrl}}"></a>')($rootScope);
-      expect(element.attr("ng-href")).toEqual("javascript:foo()");
+      expect(element.getAttribute("ng-href")).toEqual("javascript:foo()");
     });
 
     it("should sanitize non-trusted values", async () => {
       $rootScope.testUrl = "javascript:foo()"; // `javascript` is not trusted
       element = $compile('<a href="{{testUrl}}"></a>')($rootScope);
       await wait();
-      expect(element.attr("href")).toEqual("unsafe:javascript:foo()");
+      expect(element.getAttribute("href")).toEqual("unsafe:javascript:foo()");
 
       element = $compile('<a ng-href="{{testUrl}}"></a>')($rootScope);
       await wait();
-      expect(element.attr("href")).toEqual("unsafe:javascript:foo()");
+      expect(element.getAttribute("href")).toEqual("unsafe:javascript:foo()");
     });
 
     it("should not sanitize href on elements other than anchor", async () => {
@@ -15097,7 +15118,7 @@ describe("$compile", () => {
       $rootScope.testUrl = "javascript:doEvilStuff()";
       await wait();
 
-      expect(element.attr("href")).toBe("javascript:doEvilStuff()");
+      expect(element.getAttribute("href")).toBe("javascript:doEvilStuff()");
     });
 
     it("should not sanitize attributes other than href/ng-href", async () => {
@@ -15105,7 +15126,7 @@ describe("$compile", () => {
       $rootScope.testUrl = "javascript:doEvilStuff()";
       await wait();
 
-      expect(element.attr("title")).toBe("javascript:doEvilStuff()");
+      expect(element.getAttribute("title")).toBe("javascript:doEvilStuff()");
     });
 
     it("should use $$sanitizeUri", async () => {
@@ -15119,14 +15140,14 @@ describe("$compile", () => {
       element = $compile('<a href="{{testUrl}}"></a>')($rootScope);
       $rootScope.testUrl = "someUrl";
       await wait();
-      expect(element.attr("href")).toBe("someSanitizedUrl");
+      expect(element.getAttribute("href")).toBe("someSanitizedUrl");
       expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);
 
       $$sanitizeUri.calls.reset();
 
       element = $compile('<a ng-href="{{testUrl}}"></a>')($rootScope);
       await wait();
-      expect(element.attr("href")).toBe("someSanitizedUrl");
+      expect(element.getAttribute("href")).toBe("someSanitizedUrl");
       expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);
     });
 
@@ -15146,7 +15167,7 @@ describe("$compile", () => {
         "<svg><a xlink-href=\"{{ testUrl + 'aTag' }}\"></a></svg>",
       )($rootScope);
       await wait();
-      expect(elementA.find("a").attr("xlink-href")).toBe(
+      expect(elementA.find("a").getAttribute("xlink-href")).toBe(
         "https://clean.example.org",
       );
       expect($$sanitizeUri).toHaveBeenCalledWith(
@@ -15158,7 +15179,7 @@ describe("$compile", () => {
         "<svg><image xlink-href=\"{{ testUrl + 'imageTag' }}\"></image></svg>",
       )($rootScope);
       await wait();
-      expect(elementImage.find("image").attr("xlink-href")).toBe(
+      expect(elementImage.find("image").getAttribute("xlink-href")).toBe(
         "https://clean.example.org",
       );
       expect($$sanitizeUri).toHaveBeenCalledWith(
@@ -15237,7 +15258,9 @@ describe("$compile", () => {
       );
       $rootScope.onClickJs = "javascript:doSomething()";
       await wait();
-      expect(element.attr("on-click")).toEqual("javascript:doSomething()");
+      expect(element.getAttribute("on-click")).toEqual(
+        "javascript:doSomething()",
+      );
     });
 
     it('should pass through arbitrary values on "on" and "data-on" attributes', async () => {
@@ -15246,12 +15269,12 @@ describe("$compile", () => {
       );
       $rootScope.dataOnVar = "data-on text";
       await wait();
-      expect(element.attr("data-on")).toEqual("data-on text");
+      expect(element.getAttribute("data-on")).toEqual("data-on text");
 
       element = $compile('<button on="{{onVar}}"></button>')($rootScope);
       $rootScope.onVar = "on text";
       await wait();
-      expect(element.attr("on")).toEqual("on text");
+      expect(element.getAttribute("on")).toEqual("on text");
     });
   });
 
@@ -15269,7 +15292,7 @@ describe("$compile", () => {
       element = $compile('<iframe src="{{testUrl}}"></iframe>')($rootScope);
       $rootScope.testUrl = "different_page";
       await wait();
-      expect(element.attr("src")).toEqual("different_page");
+      expect(element.getAttribute("src")).toEqual("different_page");
     });
 
     it("should clear out src attributes for a different domain", () => {
@@ -15303,7 +15326,9 @@ describe("$compile", () => {
       );
       await wait();
 
-      expect(element.attr("src")).toEqual("javascript:doTrustedStuff()");
+      expect(element.getAttribute("src")).toEqual(
+        "javascript:doTrustedStuff()",
+      );
     });
   });
 
@@ -15319,7 +15344,7 @@ describe("$compile", () => {
 
       $rootScope.testUrl = $sce.trustAsResourceUrl("https://example.com/");
       await wait();
-      expect(element.attr("href")).toContain("https://example.com/");
+      expect(element.getAttribute("href")).toContain("https://example.com/");
 
       $rootScope.testUrl = "https://not.example.com/";
       expect(async () => {
@@ -15342,7 +15367,7 @@ describe("$compile", () => {
       element = $compile('<form action="{{testUrl}}"></form>')($rootScope);
       $rootScope.testUrl = "different_page";
       await wait();
-      expect(element.attr("action")).toEqual("different_page");
+      expect(element.getAttribute("action")).toEqual("different_page");
     });
 
     it("should clear out action attribute for a different domain", () => {
@@ -15376,7 +15401,9 @@ describe("$compile", () => {
       );
       await wait();
 
-      expect(element.attr("action")).toEqual("javascript:doTrustedStuff()");
+      expect(element.getAttribute("action")).toEqual(
+        "javascript:doTrustedStuff()",
+      );
     });
   });
 
@@ -15407,13 +15434,13 @@ describe("$compile", () => {
 
       $rootScope.testUrl = "./css1.css";
       await wait();
-      expect(element.attr("href")).toContain("css1.css");
+      expect(element.getAttribute("href")).toContain("css1.css");
 
       $rootScope.testUrl = $sce.trustAsResourceUrl(
         "https://elsewhere.example.org/css2.css",
       );
       await wait();
-      expect(element.attr("href")).toContain(
+      expect(element.getAttribute("href")).toContain(
         "https://elsewhere.example.org/css2.css",
       );
     });
@@ -15424,7 +15451,7 @@ describe("$compile", () => {
       )($rootScope);
 
       await wait();
-      expect(element.attr("href")).toContain(
+      expect(element.getAttribute("href")).toContain(
         "https://elsewhere.example.org/css2.css",
       );
     });
@@ -15434,8 +15461,8 @@ describe("$compile", () => {
     it("should bind after digest but not before", () => {
       $rootScope.name = "Misko";
       element = $compile('<span ng-attr-test="{{name}}"></span>')($rootScope);
-      expect(element.attr("test")).toBeUndefined();
-      expect(element.attr("test")).toBe("Misko");
+      expect(element.getAttribute("test")).toBeUndefined();
+      expect(element.getAttribute("test")).toBe("Misko");
     });
 
     it("should bind after digest but not before when after overridden attribute", () => {
@@ -15443,8 +15470,8 @@ describe("$compile", () => {
       element = $compile('<span test="123" ng-attr-test="{{name}}"></span>')(
         $rootScope,
       );
-      expect(element.attr("test")).toBe("123");
-      expect(element.attr("test")).toBe("Misko");
+      expect(element.getAttribute("test")).toBe("123");
+      expect(element.getAttribute("test")).toBe("Misko");
     });
 
     it("should bind after digest but not before when before overridden attribute", () => {
@@ -15452,26 +15479,26 @@ describe("$compile", () => {
       element = $compile('<span ng-attr-test="{{name}}" test="123"></span>')(
         $rootScope,
       );
-      expect(element.attr("test")).toBe("123");
-      expect(element.attr("test")).toBe("Misko");
+      expect(element.getAttribute("test")).toBe("123");
+      expect(element.getAttribute("test")).toBe("Misko");
     });
 
     it("should set the attribute (after digest) even if there is no interpolation", () => {
       element = $compile('<span ng-attr-test="foo"></span>')($rootScope);
-      expect(element.attr("test")).toBeUndefined();
+      expect(element.getAttribute("test")).toBeUndefined();
 
-      expect(element.attr("test")).toBe("foo");
+      expect(element.getAttribute("test")).toBe("foo");
     });
 
     it("should remove attribute if any bindings are undefined", () => {
       element = $compile('<span ng-attr-test="{{name}}{{emphasis}}"></span>')(
         $rootScope,
       );
-      expect(element.attr("test")).toBeUndefined();
+      expect(element.getAttribute("test")).toBeUndefined();
       $rootScope.name = "caitp";
-      expect(element.attr("test")).toBeUndefined();
+      expect(element.getAttribute("test")).toBeUndefined();
       $rootScope.emphasis = "!!!";
-      expect(element.attr("test")).toBe("caitp!!!");
+      expect(element.getAttribute("test")).toBe("caitp!!!");
     });
 
     describe("in directive", () => {
@@ -15507,7 +15534,7 @@ describe("$compile", () => {
         element = $compile(
           '<div sync-test test="123" ng-attr-test="{{test}}"></div>',
         )($rootScope);
-        expect(element.attr("test")).toBe("123");
+        expect(element.getAttribute("test")).toBe("123");
         expect(log).toEqual(["TEST", "TEST"]);
       });
 
@@ -15516,7 +15543,7 @@ describe("$compile", () => {
         element = $compile(
           '<div sync-test ng-attr-test="{{test}}" test="123"></div>',
         )($rootScope);
-        expect(element.attr("test")).toBe("123");
+        expect(element.getAttribute("test")).toBe("123");
         expect(log).toEqual(["TEST", "TEST"]);
       });
 
@@ -15525,7 +15552,7 @@ describe("$compile", () => {
         element = $compile(
           '<div async-test test="123" ng-attr-test="{{test}}"></div>',
         )($rootScope);
-        expect(element.attr("test")).toBe("123");
+        expect(element.getAttribute("test")).toBe("123");
         expect(log).toEqual(["TEST", "TEST"]);
       });
 
@@ -15534,7 +15561,7 @@ describe("$compile", () => {
         element = $compile(
           '<div async-test ng-attr-test="{{test}}" test="123"></div>',
         )($rootScope);
-        expect(element.attr("test")).toBe("123");
+        expect(element.getAttribute("test")).toBe("123");
         expect(log).toEqual(["TEST", "TEST"]);
       });
     });
@@ -15544,12 +15571,12 @@ describe("$compile", () => {
       element = $compile(
         '<span ng-attr-test="{{name}}" ng-Attr-test2="{{name}}" ng-Attr-test3="{{name}}"></span>',
       )($rootScope);
-      expect(element.attr("test")).toBeUndefined();
-      expect(element.attr("test2")).toBeUndefined();
-      expect(element.attr("test3")).toBeUndefined();
-      expect(element.attr("test")).toBe("Misko");
-      expect(element.attr("test2")).toBe("Misko");
-      expect(element.attr("test3")).toBe("Misko");
+      expect(element.getAttribute("test")).toBeUndefined();
+      expect(element.getAttribute("test2")).toBeUndefined();
+      expect(element.getAttribute("test3")).toBeUndefined();
+      expect(element.getAttribute("test")).toBe("Misko");
+      expect(element.getAttribute("test2")).toBe("Misko");
+      expect(element.getAttribute("test3")).toBe("Misko");
     });
 
     it("should use the non-prefixed name in $attr mappings", async () => {
@@ -15588,7 +15615,7 @@ describe("$compile", () => {
     it('should work with the "href" attribute', () => {
       $rootScope.value = "test";
       element = $compile('<a ng-attr-href="test/{{value}}"></a>')($rootScope);
-      expect(element.attr("href")).toBe("test/test");
+      expect(element.getAttribute("href")).toBe("test/test");
     });
 
     it("should work if they are prefixed with data- and different prefixes", () => {
@@ -15597,39 +15624,39 @@ describe("$compile", () => {
         '<span data-ng-attr-test2="{{name}}" ng-attr-test3="{{name}}" data-ng-attr-test4="{{name}}" ' +
           'ng-attr-test5="{{name}}" ng-attr-test6="{{name}}"></span>',
       )($rootScope);
-      expect(element.attr("test2")).toBeUndefined();
-      expect(element.attr("test3")).toBeUndefined();
-      expect(element.attr("test4")).toBeUndefined();
-      expect(element.attr("test5")).toBeUndefined();
-      expect(element.attr("test6")).toBeUndefined();
-      expect(element.attr("test2")).toBe("Misko");
-      expect(element.attr("test3")).toBe("Misko");
-      expect(element.attr("test4")).toBe("Misko");
-      expect(element.attr("test5")).toBe("Misko");
-      expect(element.attr("test6")).toBe("Misko");
+      expect(element.getAttribute("test2")).toBeUndefined();
+      expect(element.getAttribute("test3")).toBeUndefined();
+      expect(element.getAttribute("test4")).toBeUndefined();
+      expect(element.getAttribute("test5")).toBeUndefined();
+      expect(element.getAttribute("test6")).toBeUndefined();
+      expect(element.getAttribute("test2")).toBe("Misko");
+      expect(element.getAttribute("test3")).toBe("Misko");
+      expect(element.getAttribute("test4")).toBe("Misko");
+      expect(element.getAttribute("test5")).toBe("Misko");
+      expect(element.getAttribute("test6")).toBe("Misko");
     });
 
     describe("with media url attributes", () => {
       it("should work with interpolated ng-attr-src", () => {
         $rootScope.name = "some-image.png";
         element = $compile('<img ng-attr-src="{{name}}">')($rootScope);
-        expect(element.attr("src")).toBeUndefined();
+        expect(element.getAttribute("src")).toBeUndefined();
 
-        expect(element.attr("src")).toBe("some-image.png");
+        expect(element.getAttribute("src")).toBe("some-image.png");
 
         $rootScope.name = "other-image.png";
-        expect(element.attr("src")).toBe("other-image.png");
+        expect(element.getAttribute("src")).toBe("other-image.png");
       });
 
       it("should work with interpolated ng-attr-data-src", () => {
         $rootScope.name = "some-image.png";
         element = $compile('<img ng-attr-data-src="{{name}}">')($rootScope);
-        expect(element.attr("data-src")).toBeUndefined();
+        expect(element.getAttribute("data-src")).toBeUndefined();
 
-        expect(element.attr("data-src")).toBe("some-image.png");
+        expect(element.getAttribute("data-src")).toBe("some-image.png");
 
         $rootScope.name = "other-image.png";
-        expect(element.attr("data-src")).toBe("other-image.png");
+        expect(element.getAttribute("data-src")).toBe("other-image.png");
       });
 
       it("should work alongside constant [src]-attribute and [ng-attr-data-src] attributes", () => {
@@ -15637,14 +15664,14 @@ describe("$compile", () => {
         element = $compile(
           '<img src="constant.png" ng-attr-data-src="{{name}}">',
         )($rootScope);
-        expect(element.attr("data-src")).toBeUndefined();
+        expect(element.getAttribute("data-src")).toBeUndefined();
 
-        expect(element.attr("src")).toBe("constant.png");
-        expect(element.attr("data-src")).toBe("some-image.png");
+        expect(element.getAttribute("src")).toBe("constant.png");
+        expect(element.getAttribute("data-src")).toBe("some-image.png");
 
         $rootScope.name = "other-image.png";
-        expect(element.attr("src")).toBe("constant.png");
-        expect(element.attr("data-src")).toBe("other-image.png");
+        expect(element.getAttribute("src")).toBe("constant.png");
+        expect(element.getAttribute("data-src")).toBe("other-image.png");
       });
     });
 
@@ -15654,12 +15681,12 @@ describe("$compile", () => {
         element = $compile(
           '<span ng-attr-dash-test="{{name}}" ng-Attr-dash-test2="{{name}}" ng-Attr-dash-test3="{{name}}"></span>',
         )($rootScope);
-        expect(element.attr("dash-test")).toBeUndefined();
-        expect(element.attr("dash-test2")).toBeUndefined();
-        expect(element.attr("dash-test3")).toBeUndefined();
-        expect(element.attr("dash-test")).toBe("JamieMason");
-        expect(element.attr("dash-test2")).toBe("JamieMason");
-        expect(element.attr("dash-test3")).toBe("JamieMason");
+        expect(element.getAttribute("dash-test")).toBeUndefined();
+        expect(element.getAttribute("dash-test2")).toBeUndefined();
+        expect(element.getAttribute("dash-test3")).toBeUndefined();
+        expect(element.getAttribute("dash-test")).toBe("JamieMason");
+        expect(element.getAttribute("dash-test2")).toBe("JamieMason");
+        expect(element.getAttribute("dash-test3")).toBe("JamieMason");
       });
 
       it("should work if they are prefixed with  or data-", () => {
@@ -15667,12 +15694,12 @@ describe("$compile", () => {
         element = $compile(
           '<span data-ng-attr-dash-test2="{{name}}" ng-attr-dash-test3="{{name}}" data-ng-attr-dash-test4="{{name}}"></span>',
         )($rootScope);
-        expect(element.attr("dash-test2")).toBeUndefined();
-        expect(element.attr("dash-test3")).toBeUndefined();
-        expect(element.attr("dash-test4")).toBeUndefined();
-        expect(element.attr("dash-test2")).toBe("JamieMason");
-        expect(element.attr("dash-test3")).toBe("JamieMason");
-        expect(element.attr("dash-test4")).toBe("JamieMason");
+        expect(element.getAttribute("dash-test2")).toBeUndefined();
+        expect(element.getAttribute("dash-test3")).toBeUndefined();
+        expect(element.getAttribute("dash-test4")).toBeUndefined();
+        expect(element.getAttribute("dash-test2")).toBe("JamieMason");
+        expect(element.getAttribute("dash-test3")).toBe("JamieMason");
+        expect(element.getAttribute("dash-test4")).toBe("JamieMason");
       });
 
       it("should keep attributes ending with -start single-element directives", () => {
@@ -15870,8 +15897,8 @@ describe("$compile", () => {
       element = $compile('<svg ng-attr-view-box="{{dimensions}}"></svg>')(
         $rootScope,
       );
-      expect(element.attr("view-box")).toBeUndefined();
-      expect(element.attr("view-box")).toBe("0 0 0 0");
+      expect(element.getAttribute("view-box")).toBeUndefined();
+      expect(element.getAttribute("view-box")).toBe("0 0 0 0");
     });
 
     it("should work if they are prefixed with data-", () => {
@@ -15886,13 +15913,15 @@ describe("$compile", () => {
           '<feSpecularLighting ng-attr-surface-scale="{{scale}}">' +
           "</feSpecularLighting></filter></svg>",
       )($rootScope);
-      expect(element.attr("viewBox")).toBeUndefined();
-      expect(element.attr("view-box")).toBe("0 0 0 0");
-      expect(element.find("filter").attr("filter-units")).toBe("0.42");
-      expect(element.find("feDiffuseLighting").attr("surface-scale")).toBe("1");
-      expect(element.find("feSpecularLighting").attr("surface-scale")).toBe(
-        "1",
-      );
+      expect(element.getAttribute("viewBox")).toBeUndefined();
+      expect(element.getAttribute("view-box")).toBe("0 0 0 0");
+      expect(element.find("filter").getAttribute("filter-units")).toBe("0.42");
+      expect(
+        element.find("feDiffuseLighting").getAttribute("surface-scale"),
+      ).toBe("1");
+      expect(
+        element.find("feSpecularLighting").getAttribute("surface-scale"),
+      ).toBe("1");
     });
   });
 

@@ -191,10 +191,10 @@ export function getController(element: Node, name?: string): any;
 /**
  *
  * @param {Node} element
- * @param {string|string[]} name
+ * @param {string} name
  * @returns
  */
-export function getInheritedData(element: Node, name: string | string[]): any;
+export function getInheritedData(element: Node, name: string): any;
 /**
  *
  * @param {Node} element
