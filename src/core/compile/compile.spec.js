@@ -5397,31 +5397,32 @@ describe("$compile", () => {
 
       fit("should replace element with template", () => {
         reloadModules();
-        element = $compile("<div><div replace>ignore</div><div>")($rootScope);
-        expect(element.textContent).toEqual("Replace!");
-        expect(element.find("div").getAttribute("compiled")).toEqual(
+        element = $compile("<div><div replace>ignore</div></div>")($rootScope);
+        expect(element.childNodes[0].textContent).toEqual("Replace!");
+        expect(element.childNodes[0].getAttribute("compiled")).toEqual(
           "COMPILED",
         );
       });
 
-      fit("should append element with template", () => {
+      fit("should append element with template", async () => {
         reloadModules();
-        element = $compile("<div><div append>ignore</div><div>")($rootScope);
+        element = $compile("<div><div append>ignore</div></div>")($rootScope);
+        await wait();
         expect(element.textContent).toEqual("Append!");
-        expect(element.find("div").getAttribute("compiled")).toEqual(
+        expect(element.childNodes[0].getAttribute("compiled")).toEqual(
           "COMPILED",
         );
       });
 
       fit("should compile template when replacing", () => {
         reloadModules();
-        element = $compile("<div><div replace>ignore</div><div>")($rootScope);
+        element = $compile("<div><div replace>ignore</div></div>")($rootScope);
         expect(element.textContent).toEqual("Replace!");
       });
 
       fit("should compile template when appending", () => {
         reloadModules();
-        element = $compile("<div><div append>ignore</div><div>")($rootScope);
+        element = $compile("<div><div append>ignore</div></div>")($rootScope);
         expect(element.textContent).toEqual("Append!");
       });
 
@@ -5430,11 +5431,11 @@ describe("$compile", () => {
         element = $compile(
           '<div><div replace class="medium-log" style="height: 20px" ></div><div>',
         )($rootScope);
-        const div = element.find("div");
-        expect(div[0].classList.contains("medium-log")).toBe(true);
-        expect(div[0].classList.contains("log")).toBe(true);
-        expect(div[0].style.width).toBe("10px");
-        expect(div[0].style.height).toBe("20px");
+        const div = element.childNodes[0];
+        expect(div.classList.contains("medium-log")).toBe(true);
+        expect(div.classList.contains("log")).toBe(true);
+        expect(div.style.width).toBe("10px");
+        expect(div.style.height).toBe("20px");
         expect(div.getAttribute("replace")).toEqual("");
         expect(div.getAttribute("high-log")).toEqual("");
       });
@@ -5444,9 +5445,9 @@ describe("$compile", () => {
         element = $compile(
           '<div><div nomerge class="medium-log" id="myid"></div><div>',
         )($rootScope);
-        const div = element.find("div");
-        expect(div[0].classList.contains("medium-log")).toBe(true);
-        expect(div[0].classList.contains("log")).toBe(true);
+        const div = element.childNodes[0];
+        expect(div.classList.contains("medium-log")).toBe(true);
+        expect(div.classList.contains("log")).toBe(true);
         expect(div.getAttribute("id")).toEqual("myid");
       });
 
@@ -5455,7 +5456,7 @@ describe("$compile", () => {
         element = $compile(
           '<div><div replace (click)="doSomething()" [value]="someExpression" ω="omega"></div><div>',
         )($rootScope);
-        const div = element.find("div");
+        const div = element.childNodes[0];
         expect(div.getAttribute("(click)")).toEqual("doSomething()");
         expect(div.getAttribute("[value]")).toEqual("someExpression");
         expect(div.getAttribute("ω")).toEqual("omega");
@@ -5463,20 +5464,20 @@ describe("$compile", () => {
 
       fit('should not add white-space when merging an attribute that is "" in the replaced element', () => {
         reloadModules();
-        element = $compile('<div><div replace class=""></div><div>')(
+        element = $compile('<div><div replace class=""></div></div>')(
           $rootScope,
         );
-        const div = element.find("div");
-        expect(div[0].classList.contains("log")).toBe(true);
+        const div = element.childNodes[0];
+        expect(div.classList.contains("log")).toBe(true);
         expect(div.getAttribute("class")).toBe("log");
       });
 
       fit("should not set merged attributes twice in $attrs", () => {
         reloadModules();
         element = $compile(
-          '<div><div log-attrs replace class="myLog"></div><div>',
+          '<div><div log-attrs replace class="myLog"></div></div>',
         )($rootScope);
-        const div = element.find("div");
+        const div = element.childNodes[0];
         expect(div.getAttribute("class")).toBe("myLog log");
         expect(attrs.class).toBe("myLog log");
       });
@@ -6249,7 +6250,7 @@ describe("$compile", () => {
               "iLast-PostL; iThird-PostL; iSecond-PostL; iFirst-PostL",
           );
 
-          const div = element.find("div");
+          const div = element.childNodes[0];
           expect(div.getAttribute("i-first")).toEqual("");
           expect(div.getAttribute("i-second")).toEqual("");
           expect(div.getAttribute("i-third")).toEqual("");
@@ -6297,7 +6298,7 @@ describe("$compile", () => {
               "iLast-PostL; iThird-PostL; iSecond-PostL; iFirst-PostL",
           );
 
-          const div = element.find("div");
+          const div = element.childNodes[0];
           expect(div.getAttribute("i-first")).toEqual("");
           expect(div.getAttribute("i-second")).toEqual("");
           expect(div.getAttribute("i-third")).toEqual("");

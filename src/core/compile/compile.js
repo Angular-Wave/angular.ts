@@ -1662,7 +1662,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 document.createComment("");
               compileNode = $compileNode;
 
-              replaceWith(compileNode, [$template], compileNode);
+              replaceWith([$template], compileNode);
 
               childTranscludeFn = compilationGenerator(
                 mightHaveMultipleTransclusionError,
@@ -1787,7 +1787,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               : directive.template;
 
             directiveValue = denormalizeTemplate(directiveValue);
-
             if (directive.replace) {
               replaceDirective = directive;
               if (isTextNode(directiveValue)) {
@@ -1818,7 +1817,14 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 );
               }
 
-              replaceWith(compileNode, $compileNode, compileNode);
+              $compileNode.parentElement.replaceChild(
+                compileNode,
+                $compileNode,
+              );
+              $compileNode = compileNode;
+
+              templateAttrs.$$element = $compileNode;
+              //replaceWith($compileNode, compileNode);
 
               const newTemplateAttrs = { $attr: {} };
 
@@ -1850,6 +1856,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               directives = directives
                 .concat(templateDirectives)
                 .concat(unprocessedDirectives);
+
               mergeTemplateAttributes(templateAttrs, newTemplateAttrs);
 
               ii = directives.length;
@@ -2293,7 +2300,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               }
 
               tempTemplateAttrs = { $attr: {} };
-              replaceWith($rootElement, $compileNode, compileNode);
+              replaceWith($compileNode, compileNode);
               const templateDirectives = collectDirectives(
                 compileNode,
                 [],
@@ -2357,7 +2364,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   // it was cloned therefore we have to clone as well.
                   linkNode = compileNode.cloneNode(true);
                 }
-                replaceWith(linkRootElement, beforeTemplateLinkNode, linkNode);
+                replaceWith(beforeTemplateLinkNode, linkNode);
 
                 // Copy in CSS classes from original node
                 try {
@@ -2751,13 +2758,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * This is a special JQLite.replaceWith, which can replace items which
        * have no parents, provided that the containing JQLite collection is provided.
        *
-       * @param {Element} $rootElement The root of the compile tree. Used so that we can replace nodes
-       *                               in the root of the tree.
        * @param {Element} elementsToRemove The JQLite element which we are going to replace. We keep
        *                                  the shell, but replace its DOM node reference.
        * @param {Node} newNode The new DOM node.
        */
-      function replaceWith($rootElement, elementsToRemove, newNode) {
+      function replaceWith(elementsToRemove, newNode) {
         const firstElementToRemove = elementsToRemove.length
           ? elementsToRemove[0]
           : elementsToRemove;
@@ -2767,6 +2772,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
         if (parent) {
           parent.replaceChild(newNode, firstElementToRemove);
+          return firstElementToRemove;
         }
 
         // // Append all the `elementsToRemove` to a fragment. This will...
