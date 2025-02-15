@@ -771,6 +771,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             $exceptionHandler,
             $sce,
           );
+          window.TEST = nodeList;
           const directives = collectDirectives(
             /** @type Element */ (nodeList[i]),
             [],
@@ -1817,13 +1818,16 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 );
               }
 
-              $compileNode.parentElement.replaceChild(
-                compileNode,
-                $compileNode,
-              );
-              $compileNode = compileNode;
+              for (const attr of compileNode.attributes) {
+                $compileNode.setAttribute(attr.name, attr.value);
+              }
+              $compileNode.innerHTML = "";
+              while (compileNode.firstChild) {
+                $compileNode.appendChild(compileNode.firstChild);
+              }
 
               templateAttrs.$$element = $compileNode;
+
               //replaceWith($compileNode, compileNode);
 
               const newTemplateAttrs = { $attr: {} };

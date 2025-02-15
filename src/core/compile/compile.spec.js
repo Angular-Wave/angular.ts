@@ -3589,7 +3589,7 @@ describe("$compile", () => {
       expect(gotCompileEl).not.toBe(gotLinkEl);
     });
 
-    it("allows connecting transcluded content", () => {
+    fit("allows connecting transcluded content", () => {
       registerDirectives({
         myTranscluder: () => {
           return {

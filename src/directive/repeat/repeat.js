@@ -255,7 +255,7 @@ export function ngRepeatDirective($animate) {
                 /**
                  * Clone attach function
                  * @param {Array<NodeList>} clone
-                 * @param {Scope} scope
+                 * @param {import("../../core/scope/scope.js").Scope} scope
                  */
                 (clone, scope) => {
                   block.scope = scope;
