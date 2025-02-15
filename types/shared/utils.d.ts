@@ -509,6 +509,7 @@ export function hasAnimate(node: Node): boolean;
  */
 export function isObjectEmpty(obj: any | null | undefined): boolean;
 export function createElement(str: any): ChildNode;
+export function replaceInline(replacedElem: any, newElem: any): void;
 export const ngAttrPrefixes: string[];
 /**
  * Error configuration object. May only contain the options that need to be updated.

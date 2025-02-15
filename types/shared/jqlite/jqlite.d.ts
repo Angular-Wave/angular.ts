@@ -242,6 +242,12 @@ export function setData(element: any, key: any, value: any): void;
  */
 export function createElementFromHTML(htmlString: string): Element;
 /**
+ * Creates a DOM element from an HTML string.
+ * @param {string} htmlString - A string representing the HTML to parse.
+ * @returns {NodeList} - The parsed DOM element.
+ */
+export function createNodelistFromHTML(htmlString: string): NodeList;
+/**
  * Appends nodes or an HTML string to a given DOM element.
  * @param {Element} element - The element to append nodes to.
  * @param {Node | Node[] | string} nodes - Nodes or HTML string to append.

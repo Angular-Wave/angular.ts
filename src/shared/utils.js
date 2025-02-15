@@ -1200,3 +1200,13 @@ export function isObjectEmpty(obj) {
 export function createElement(str) {
   return new DOMParser().parseFromString(str, "text/html").body.firstChild;
 }
+
+export function replaceInline(replacedElem, newElem) {
+  for (const attr of newElem.attributes) {
+    replacedElem.setAttribute(attr.name, attr.value);
+  }
+  replacedElem.innerHTML = "";
+  while (newElem.firstChild) {
+    replacedElem.appendChild(newElem.firstChild);
+  }
+}

@@ -1,5 +1,6 @@
 import {
   createElementFromHTML,
+  createNodelistFromHTML,
   emptyElement,
   getBooleanAttrName,
   getCacheData,
@@ -30,6 +31,7 @@ import {
   simpleCompare,
   isError,
   directiveNormalize,
+  replaceInline,
 } from "../../shared/utils.js";
 import { SCE_CONTEXTS } from "../sce/sce.js";
 import { PREFIX_REGEXP } from "../../shared/constants.js";
@@ -74,7 +76,6 @@ import { ngObserveDirective } from "../../directive/observe/observe.js";
  */
 
 const $compileMinErr = minErr("$compile");
-
 const EXCLUDED_DIRECTIVES = ["ngIf", "ngRepeat"];
 export const DirectiveSuffix = "Directive";
 
@@ -683,7 +684,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             );
             $linkNode = createElementFromHTML(wrappedTemplate);
           } else if (cloneConnectFn) {
-            let elements = jqCompileNodes.map(
+            let elements = (
+              jqCompileNodes instanceof NodeList
+                ? Array.from(jqCompileNodes)
+                : jqCompileNodes
+            ).map(
               /** @param {Element} element */
               (element) => element.cloneNode(true),
             );
@@ -771,7 +776,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             $exceptionHandler,
             $sce,
           );
-          window.TEST = nodeList;
           const directives = collectDirectives(
             /** @type Element */ (nodeList[i]),
             [],
@@ -1802,7 +1806,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               }
 
               if (isString($template)) {
-                $template = [createElementFromHTML($template)];
+                $template = Array.from(
+                  createNodelistFromHTML($template),
+                ).filter((x) => x.nodeType === Node.ELEMENT_NODE);
               }
               compileNode = $template[0];
 
@@ -1821,6 +1827,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               for (const attr of compileNode.attributes) {
                 $compileNode.setAttribute(attr.name, attr.value);
               }
+
               $compileNode.innerHTML = "";
               while (compileNode.firstChild) {
                 $compileNode.appendChild(compileNode.firstChild);
@@ -2284,6 +2291,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             if (origAsyncDirective.replace) {
               if (isTextNode(content)) {
                 $template = [];
+              } else if (isString(content)) {
+                $template = [createElementFromHTML(content)];
               } else {
                 $template = removeComments(
                   wrapTemplate(templateNamespace, trim(content)),
@@ -2304,7 +2313,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               }
 
               tempTemplateAttrs = { $attr: {} };
-              replaceWith($compileNode, compileNode);
+
+              replaceInline($compileNode, compileNode);
               const templateDirectives = collectDirectives(
                 compileNode,
                 [],
@@ -2350,7 +2360,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             while (linkQueue.length) {
               const scope = linkQueue.shift();
               const beforeTemplateLinkNode = linkQueue.shift();
-              const linkRootElement = linkQueue.shift();
               const boundTranscludeFn = linkQueue.shift();
               let linkNode = $compileNode;
 

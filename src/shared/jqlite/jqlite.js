@@ -1079,6 +1079,17 @@ export function createElementFromHTML(htmlString) {
 }
 
 /**
+ * Creates a DOM element from an HTML string.
+ * @param {string} htmlString - A string representing the HTML to parse.
+ * @returns {NodeList} - The parsed DOM element.
+ */
+export function createNodelistFromHTML(htmlString) {
+  const template = document.createElement("template");
+  template.innerHTML = htmlString.trim();
+  return template.content.childNodes;
+}
+
+/**
  * Appends nodes or an HTML string to a given DOM element.
  * @param {Element} element - The element to append nodes to.
  * @param {Node | Node[] | string} nodes - Nodes or HTML string to append.

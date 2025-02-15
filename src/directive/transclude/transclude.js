@@ -66,7 +66,7 @@ export const ngTranscludeDirective = [
 
           function ngTranscludeCloneAttachFn(clone, transcludedScope) {
             if (clone.length && notWhitespace(clone)) {
-              $element.append(clone);
+              $element.append(clone[0]);
             } else {
               useFallbackContent();
               // There is nothing linked against the transcluded scope since no content was available,
@@ -79,7 +79,7 @@ export const ngTranscludeDirective = [
             // Since this is the fallback content rather than the transcluded content,
             // we link against the scope of this directive rather than the transcluded scope
             fallbackLinkFn($scope, (clone) => {
-              $element.append(clone);
+              $element.append(clone[0]);
             });
           }
 

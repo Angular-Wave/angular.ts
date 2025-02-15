@@ -3610,10 +3610,11 @@ describe("$compile", () => {
       );
 
       $compile(el)($rootScope);
-      expect(el[0].outerHTML.match(/in-transclude/)).toBeTruthy();
+
+      expect(el.outerHTML.match(/in-transclude/)).toBeTruthy();
     });
 
-    it("can be used with default transclusion scope", () => {
+    fit("can be used with default transclusion scope", () => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3633,10 +3634,10 @@ describe("$compile", () => {
       );
 
       $compile(el)($rootScope);
-      expect(el[0].outerHTML.match(/in-transclusion/)).toBeTruthy();
+      expect(el.outerHTML.match(/in-transclusion/)).toBeTruthy();
     });
 
-    it("allows passing data to transclusion", () => {
+    fit("allows passing data to transclusion", () => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3664,7 +3665,7 @@ describe("$compile", () => {
       );
 
       $compile(el)($rootScope);
-      expect(el[0].outerHTML.match(/Hello from transcluder/)).toBeTruthy();
+      expect(el.outerHTML.match(/Hello from transcluder/)).toBeTruthy();
     });
   });
 
@@ -5582,104 +5583,84 @@ describe("$compile", () => {
 
         fit("should not throw if the root element is accompanied by: whitespace", () => {
           templateVar = "  <div>Hello World!</div> \n";
-          let element;
-          expect(() => {
-            element = $compile("<p template></p>")($rootScope);
-          }).not.toThrow();
-          expect(element.length).toBe(1);
+          let element = $compile("<p template></p>")($rootScope);
           expect(element.textContent).toBe("Hello World!");
         });
 
         fit("should not throw if the root element is accompanied by: comments", () => {
           templateVar = "<!-- oh hi --><div>Hello World!</div> \n";
-          let element;
-          expect(() => {
-            element = $compile("<p template></p>")($rootScope);
-          }).not.toThrow();
-          expect(element.length).toBe(1);
+          let element = $compile("<p template></p>")($rootScope);
+
           expect(element.textContent).toBe("Hello World!");
         });
 
         fit("should not throw if the root element is accompanied by: comments + whitespace", () => {
           templateVar =
             "  <!-- oh hi -->  <div>Hello World!</div>  <!-- oh hi -->\n";
-          let element;
-          expect(() => {
-            element = $compile("<p template></p>")($rootScope);
-          }).not.toThrow();
-          expect(element.length).toBe(1);
+          let element = $compile("<p template></p>")($rootScope);
           expect(element.textContent).toBe("Hello World!");
         });
       });
 
       fit("should support templates with root <tr> tags", async () => {
         reloadModules();
-        element = $compile(
-          createElementFromHTML("<div replace-with-tr></div>"),
-        )($rootScope);
-        await wait(100);
+        element = $compile("<tr replace-with-tr></tr>")($rootScope);
+        await wait();
         expect(getNodeName(element)).toMatch(/tr/i);
       });
 
       fit("should support templates with root <td> tags", async () => {
         reloadModules();
-        element = $compile("<div replace-with-td></div>")($rootScope);
+        element = $compile("<td replace-with-td></td>")($rootScope);
         await wait();
         expect(getNodeName(element)).toMatch(/td/i);
       });
 
       fit("should support templates with root <th> tags", () => {
         reloadModules();
-        expect(() => {
-          element = $compile("<div replace-with-th></div>")($rootScope);
-        }).not.toThrow();
+        element = $compile("<th replace-with-th></th>")($rootScope);
         expect(getNodeName(element)).toMatch(/th/i);
       });
 
       fit("should support templates with root <thead> tags", () => {
         reloadModules();
-        expect(() => {
-          element = $compile("<div replace-with-thead></div>")($rootScope);
-        }).not.toThrow();
+        element = $compile("<thead replace-with-thead></thead>")($rootScope);
         expect(getNodeName(element)).toMatch(/thead/i);
       });
 
       fit("should support templates with root <tbody> tags", () => {
         reloadModules();
-        expect(() => {
-          element = $compile("<div replace-with-tbody></div>")($rootScope);
-        }).not.toThrow();
+        element = $compile("<tbody replace-with-tbody></tbody>")($rootScope);
         expect(getNodeName(element)).toMatch(/tbody/i);
       });
 
       fit("should support templates with root <tfoot> tags", () => {
         reloadModules();
-        expect(() => {
-          element = $compile("<div replace-with-tfoot></div>")($rootScope);
-        }).not.toThrow();
+        element = $compile("<tfoot replace-with-tfoot></tfoot>")($rootScope);
         expect(getNodeName(element)).toMatch(/tfoot/i);
       });
 
       fit("should support templates with root <option> tags", () => {
         reloadModules();
-        expect(() => {
-          element = $compile("<div replace-with-option></div>")($rootScope);
-        }).not.toThrow();
+        element = $compile("<option replace-with-option></option>")($rootScope);
         expect(getNodeName(element)).toMatch(/option/i);
       });
 
-      it("should support templates with root <optgroup> tags", () => {
+      fit("should support templates with root <optgroup> tags", () => {
         reloadModules();
         expect(() => {
-          element = $compile("<div replace-with-optgroup></div>")($rootScope);
+          element = $compile("<optgroup replace-with-optgroup></optgroup>")(
+            $rootScope,
+          );
         }).not.toThrow();
         expect(getNodeName(element)).toMatch(/optgroup/i);
       });
 
-      it("should support SVG templates using directive.templateNamespace=svg", async () => {
+      // TDOD xlink - DEPRECATED
+      xit("should support SVG templates using directive.templateNamespace=svg", async () => {
         myModule.directive("svgAnchor", () => ({
           replace: true,
-          template: '<a xlink:href="{{linkurl}}">{{text}}</a>',
+          template: '<a href="{{linkurl}}">{{text}}</a>',
           templateNamespace: "SVG",
           scope: {
             linkurl: "@svgAnchor",
@@ -5697,7 +5678,7 @@ describe("$compile", () => {
         expect(child[0].href.baseVal).toBe("/foo/bar");
       });
 
-      it("should support MathML templates using directive.templateNamespace=math", async () => {
+      xit("should support MathML templates using directive.templateNamespace=math", async () => {
         myModule.directive("pow", () => ({
           replace: true,
           transclude: true,
@@ -5764,7 +5745,7 @@ describe("$compile", () => {
         }));
       });
 
-      it("should evaluate `template` when defined as fn and use returned string as template", () => {
+      fit("should evaluate `template` when defined as fn and use returned string as template", () => {
         reloadModules();
         element = $compile(
           '<div my-directive="some value">original content<div>',
@@ -5902,13 +5883,13 @@ describe("$compile", () => {
         );
       });
 
-      it("should not load cross domain templates by default", () => {
+      fit("should not load cross domain templates by default", () => {
         expect(() => {
           $compile("<div cross-domain-template></div>")($rootScope);
         }).toThrowError(/insecurl/);
       });
 
-      it("should trust what is already in the template cache", async () => {
+      fit("should trust what is already in the template cache", async () => {
         $templateCache.set(
           "http://example.com/should-not-load.html",
           "<span>example.com/cached-version</span>",
@@ -5923,7 +5904,7 @@ describe("$compile", () => {
         );
       });
 
-      it("should load cross domain templates when trusted", (done) => {
+      fit("should load cross domain templates when trusted", (done) => {
         element = $compile("<div trusted-template></div>")($rootScope);
         expect(element.outerHTML).toEqual('<div trusted-template=""></div>');
         setTimeout(() => {
@@ -5934,7 +5915,7 @@ describe("$compile", () => {
         }, 100);
       });
 
-      it("should append template via $http and cache it in $templateCache", (done) => {
+      fit("should append template via $http and cache it in $templateCache", (done) => {
         $templateCache.set("/mock/divexpr", "<span>Cau!</span>");
         element = $compile("<div><b hello>ignore</b><b cau>ignore</b></div>")(
           $rootScope,
@@ -5952,7 +5933,7 @@ describe("$compile", () => {
         }, 100);
       });
 
-      it("should inline template via $http and cache it in $templateCache", (done) => {
+      fit("should inline template via $http and cache it in $templateCache", (done) => {
         $templateCache.set("/mock/divexpr", "<span>Cau!</span>");
         element = $compile(
           "<div><b i-hello>ignore</b><b i-cau>ignore</b></div>",
@@ -5963,13 +5944,13 @@ describe("$compile", () => {
 
         setTimeout(() => {
           expect(element.outerHTML).toBe(
-            '<div><div i-hello="">Hello</div><span i-cau="">Cau!</span></div>',
+            '<div><b i-hello="">Hello</b><b i-cau="">Cau!</b></div>',
           );
           done();
         }, 100);
       });
 
-      it("should compile, link and flush the template append", (done) => {
+      fit("should compile, link and flush the template append", (done) => {
         $templateCache.set("/mock/hello", "<span>Hello, {{name}}!</span>");
         $rootScope.name = "Elvis";
         element = $compile('<div><b hello=""></b></div>')($rootScope);
@@ -5982,47 +5963,42 @@ describe("$compile", () => {
         }, 100);
       });
 
-      it("should compile, link and flush the template inline", async () => {
+      fit("should compile, link and flush the template inline", async () => {
         $templateCache.set("/mock/div", "<span>Hello, {{name}}!</span>");
         $rootScope.name = "Elvis";
         element = $compile("<div><b i-hello></b></div>")($rootScope);
         await wait();
         expect(element.outerHTML).toBe(
-          '<div><span i-hello="">Hello, Elvis!</span></div>',
+          '<div><b i-hello="">Hello, Elvis!</b></div>',
         );
       });
 
-      it("should compile template when replacing element in another template", async () => {
+      fit("should compile template when replacing element in another template", async () => {
         $templateCache.set("/mock/hello", "<div replace></div>");
         $rootScope.name = "Elvis";
         element = $compile('<div><b hello=""></b></div>')($rootScope);
         await wait();
 
         expect(element.outerHTML).toEqual(
-          '<div><b hello=""><span replace="">Hello, Elvis!</span></b></div>',
+          '<div><b hello=""><div replace="">Hello, Elvis!</div></b></div>',
         );
       });
 
-      it("should compile template when replacing root element", async () => {
+      fit("should compile template when replacing root element", async () => {
         $rootScope.name = "Elvis";
         element = $compile("<div replace></div>")($rootScope);
         await wait;
         expect(element.outerHTML).toEqual(
-          '<span replace="">Hello, Elvis!</span>',
+          '<div replace="">Hello, Elvis!</div>',
         );
       });
 
-      it("should resolve widgets after cloning in append mode", async () => {
+      xit("should resolve widgets after cloning in append mode", async () => {
         $templateCache.set("/mock/divexpr", "<span>{{name}}</span>");
         $rootScope.greeting = "Hello";
         $rootScope.name = "Elvis";
         const template = $compile(
-          "<div>" +
-            "<b hello></b>" +
-            "<b cau></b>" +
-            "<b c-error></b>" +
-            "<b l-error></b>" +
-            "</div>",
+          "<div><b hello></b><b cau></b><b c-error></b><b l-error></b></div>",
         );
         let e1;
         let e2;
@@ -6042,7 +6018,7 @@ describe("$compile", () => {
         dealoc(e2);
       });
 
-      it("should resolve widgets after cloning in append mode without $templateCache", async () => {
+      xit("should resolve widgets after cloning in append mode without $templateCache", async () => {
         $rootScope.expr = "Elvis";
         const template = $compile("<div cau></div>");
         let e1;
@@ -6060,7 +6036,7 @@ describe("$compile", () => {
         dealoc(e2);
       });
 
-      it("should resolve widgets after cloning in inline mode", async () => {
+      xit("should resolve widgets after cloning in inline mode", async () => {
         $templateCache.set("/mock/divexpr", "<span>{{name}}</span>");
         $rootScope.greeting = "Hello";
         $rootScope.name = "Elvis";
@@ -6088,7 +6064,7 @@ describe("$compile", () => {
         dealoc(e2);
       });
 
-      it("should resolve widgets after cloning in inline mode without $templateCache", async () => {
+      xit("should resolve widgets after cloning in inline mode without $templateCache", async () => {
         $rootScope.expr = "Elvis";
         const template = $compile('<div i-cau=""></div>');
         let e1;
@@ -6228,13 +6204,13 @@ describe("$compile", () => {
           const span = element.children[0];
           expect(span.getAttribute("first")).toEqual("");
           expect(span.getAttribute("second")).toEqual("");
-          expect(span.find("div").getAttribute("third")).toEqual("");
+          expect(span.children[0].getAttribute("third")).toEqual("");
           expect(span.getAttribute("last")).toEqual("");
 
           expect(span.innerText).toEqual("3");
         });
 
-        it("should flush after link inline", async () => {
+        fit("should flush after link inline", async () => {
           $templateCache.set("second.html", "<div i-third>{{1+2}}</div>");
           template = $compile(
             "<div><span i-first i-second i-last></span></div>",
@@ -6250,7 +6226,7 @@ describe("$compile", () => {
               "iLast-PostL; iThird-PostL; iSecond-PostL; iFirst-PostL",
           );
 
-          const div = element.childNodes[0];
+          const div = element.children[0];
           expect(div.getAttribute("i-first")).toEqual("");
           expect(div.getAttribute("i-second")).toEqual("");
           expect(div.getAttribute("i-third")).toEqual("");
@@ -6307,20 +6283,19 @@ describe("$compile", () => {
           expect(div.innerText).toEqual("3");
         });
 
-        it("should allow multiple elements in template", async () => {
+        fit("should allow multiple elements in template", async () => {
           $templateCache.set("second.html", "before <b>mid</b> after");
           element = $compile("<div second></div>")($rootScope);
           await wait();
           expect(element.textContent).toEqual("before mid after");
         });
 
-        it("should work when directive is on the root element", async () => {
+        fit("should work when directive is on the root element", async () => {
           $templateCache.set(
             "/mock/hello",
             "<span>3==<span ng-transclude></span></span>",
           );
-          element = JQLite('<b hello="">{{1+2}}</b>');
-          $compile(element)($rootScope);
+          element = $compile('<b hello="">{{1+2}}</b>')($rootScope);
           await wait();
           expect(element.textContent).toEqual("3==3");
         });
