@@ -1,6 +1,6 @@
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { dealoc, JQLite } from "../../shared//dom.js";
 
 describe("scriptDirective", () => {
   let $rootScope;
@@ -36,7 +36,7 @@ describe("scriptDirective", () => {
   });
 
   it("should not compile scripts", () => {
-    const doc = JQLite("<div></div>");
+    const doc = "<div></div>";
     // jQuery is too smart and removes script tags
     doc[0].innerHTML =
       "foo" +

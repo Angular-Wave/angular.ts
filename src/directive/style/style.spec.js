@@ -1,6 +1,6 @@
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { dealoc, JQLite } from "../../shared//dom.js";
 
 describe("ng-style", () => {
   let $scope;
@@ -70,9 +70,9 @@ describe("ng-style", () => {
       preCompVal = "300px";
       postCompStyle = "height";
       postCompVal = "100px";
-      element = JQLite('<div ng-style="styleObj"></div>');
+      element = '<div ng-style="styleObj"></div>';
       element.style[preCompStyle] = preCompVal;
-      JQLite(document.body).append(element);
+      document.body.append(element);
       $compile(element)($scope);
       scope = $scope;
       scope.styleObj = { "margin-top": "44px" };

@@ -1,5 +1,5 @@
 import { minErr } from "../../shared/utils.js";
-import { emptyElement, startingTag } from "../../shared/jqlite/jqlite.js";
+import { emptyElement, startingTag } from "../../shared//dom.js";
 
 /**
  * Directive that marks the insertion point for the transcluded DOM of the nearest parent directive that uses transclusion.

@@ -1,4 +1,4 @@
-import { dealoc } from "../../shared/jqlite/jqlite.js";
+import { dealoc } from "../../shared//dom.js";
 import { Angular } from "../../loader";
 import { curry } from "../../shared/hof";
 import { StateMatcher } from "../state/state-matcher";

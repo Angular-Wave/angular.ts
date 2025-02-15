@@ -1,4 +1,4 @@
-import { JQLite, dealoc } from "./shared/jqlite/jqlite.js";
+import { JQLite, dealoc } from "./shared//dom.js";
 import { Angular } from "./loader";
 import { browserTrigger, wait } from "./shared/test-utils";
 
@@ -12,7 +12,7 @@ describe("binding", () => {
     errors = [];
 
   function childNode(element, index) {
-    return JQLite(element.childNodes[index]);
+    return element.childNodes[index];
   }
 
   beforeEach(function () {
@@ -32,7 +32,7 @@ describe("binding", () => {
     $exceptionHandler = $injector.get("$exceptionHandler");
     this.compileToHtml = function (content) {
       let html;
-      content = JQLite(content);
+      content = content;
       $compile(content)($rootScope);
       html = content[0].outerHTML;
       return html;
@@ -351,8 +351,8 @@ describe("binding", () => {
     )($rootScope);
     await wait();
 
-    const d1 = JQLite(element.childNodes[1]);
-    const d2 = JQLite(element.childNodes[3]);
+    const d1 = element.childNodes[1];
+    const d2 = element.childNodes[3];
     expect(d1[0].classList.contains("o")).toBeTruthy();
     expect(d2[0].classList.contains("e")).toBeTruthy();
     // expect(element).toBe(
@@ -448,8 +448,8 @@ describe("binding", () => {
         '<input type="radio" ng-model="sex" value="male">' +
         "</div>",
     )($rootScope);
-    const female = JQLite(element.childNodes[0]);
-    const male = JQLite(element.childNodes[1]);
+    const female = element.childNodes[0];
+    const male = element.childNodes[1];
 
     female[0].click();
     browserTrigger(female, "change");

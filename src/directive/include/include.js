@@ -1,5 +1,5 @@
 import { isDefined } from "../../shared/utils.js";
-import { domInsert } from "../../shared/jqlite/jqlite.js";
+import { domInsert } from "../../shared//dom.js";
 import { hasAnimate } from "../../shared/utils.js";
 
 ngIncludeDirective.$inject = ["$templateRequest", "$anchorScroll", "$animate"];

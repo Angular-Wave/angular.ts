@@ -1,4 +1,3 @@
-import { JQLite } from "../../shared/jqlite/jqlite.js";
 import {
   assertNotHasOwnProperty,
   equals,
@@ -29,7 +28,7 @@ function setOptionSelectedStatus(optionEl, value) {
 SelectController.$inject = ["$element", "$scope"];
 /**
  *
- * @param {JQLite} $element
+ * @param {Elements} $element
  * @param {import('../../core/scope/scope').Scope} $scope
  */
 function SelectController($element, $scope) {
@@ -47,9 +46,9 @@ function SelectController($element, $scope) {
   // option is '? XXX ?' where XXX is the hashKey of the value that is not known.
   //
   // Support: IE 9 only
-  // We can't just JQLite('<option>') since JQLite is not smart enough
+  // We can't just ('<option>') since JQLite is not smart enough
   // to create it in <select> and IE barfs otherwise.
-  self.unknownOption = JQLite(document.createElement("option"));
+  self.unknownOption = document.createElement("option");
 
   // The empty option is an option with the value '' that the application developer can
   // provide inside the select. It is always selectable and indicates that a "null" selection has
@@ -81,7 +80,7 @@ function SelectController($element, $scope) {
   };
 
   self.removeUnknownOption = function () {
-    if (self.unknownOption.parent()) self.unknownOption.remove();
+    if (self.unknownOption.parentElement) self.unknownOption.remove();
   };
 
   self.selectEmptyOption = function () {
@@ -123,7 +122,7 @@ function SelectController($element, $scope) {
     // Otherwise, screen readers might get confused
     const currentlySelectedOption = $element.options[$element.selectedIndex];
     if (currentlySelectedOption)
-      setOptionSelectedStatus(JQLite(currentlySelectedOption), false);
+      setOptionSelectedStatus(currentlySelectedOption, false);
 
     if (self.hasOption(value)) {
       self.removeUnknownOption();
@@ -133,7 +132,7 @@ function SelectController($element, $scope) {
 
       // Set selected attribute and property on selected option for screen readers
       const selectedOption = $element.options[$element.selectedIndex];
-      setOptionSelectedStatus(JQLite(selectedOption), true);
+      setOptionSelectedStatus(selectedOption, true);
     } else {
       self.selectUnknownOrEmptyOption(value);
     }
@@ -214,7 +213,7 @@ function SelectController($element, $scope) {
     if (value == null && self.emptyOption) {
       self.removeUnknownOption();
       self.selectEmptyOption();
-    } else if (self.unknownOption.parent().length) {
+    } else if (self.unknownOption.parentElement.length) {
       self.updateUnknownOption(value);
     } else {
       self.renderUnknownOption(value);
@@ -433,7 +432,7 @@ export function selectDirective() {
           // Note: this behavior cannot be replicated via unit tests because it only shows in the
           // actual user interface.
           if (shouldBeSelected !== currentlySelected) {
-            setOptionSelectedStatus(JQLite(option), shouldBeSelected);
+            setOptionSelectedStatus(option, shouldBeSelected);
           }
         });
       };
@@ -510,9 +509,10 @@ export function optionDirective($interpolate) {
         // This is an optimization over using ^^ since we don't want to have to search
         // all the way to the root of the DOM for every single option element
         const selectCtrlName = "$selectController";
-        const parent = element.parent();
+        const parent = element.parentElement;
         const selectCtrl =
-          parent.data(selectCtrlName) || parent.parent().data(selectCtrlName); // in case we are in optgroup
+          parent.data(selectCtrlName) ||
+          parent.parentElement.data(selectCtrlName); // in case we are in optgroup
 
         if (selectCtrl) {
           selectCtrl.registerOption(

@@ -1,4 +1,4 @@
-import { getCacheData, setCacheData } from "../../shared/jqlite/jqlite.js";
+import { getCacheData, setCacheData } from "../../shared//dom.js";
 import { hasAnimate, isObject, isString } from "../../shared/utils.js";
 
 function classDirective(name, selector) {

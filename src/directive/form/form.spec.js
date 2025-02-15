@@ -1,5 +1,5 @@
 import { Angular } from "../../loader.js";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { dealoc, JQLite } from "../../shared//dom.js";
 import { wait } from "../../shared/test-utils.js";
 import { FormController } from "./form.js";
 
@@ -282,7 +282,7 @@ describe("form", () => {
   });
 
   it("should publish widgets", async () => {
-    doc = JQLite(
+    doc = (
       '<form name="form"><input type="text" name="w1" ng-model="some" /></form>',
     );
     $compile(doc)(scope);
@@ -296,7 +296,7 @@ describe("form", () => {
   });
 
   it('should throw an exception if an input has name="hasOwnProperty"', async () => {
-    doc = JQLite(
+    doc = (
       '<form name="form">' +
         '<input name="hasOwnProperty" ng-model="some" />' +
         '<input name="other" ng-model="someOther" />' +
@@ -407,7 +407,7 @@ describe("form", () => {
       let submitted = false;
       let reloadPrevented;
 
-      doc = JQLite(
+      doc = (
         '<form ng-submit="submitMe()">' +
           '<input type="submit" value="submit">' +
           "</form>",
@@ -441,7 +441,7 @@ describe("form", () => {
     });
 
     it("should prevent the default when the form is destroyed by a submission via a click event", (done) => {
-      doc = JQLite(
+      doc = (
         "<div>" +
           '<form ng-submit="submitMe()">' +
           '<button type="submit" ng-click="destroy()"></button>' +
@@ -518,7 +518,7 @@ describe("form", () => {
 
   describe("nested forms", () => {
     it("should chain nested forms", () => {
-      doc = JQLite(
+      doc = (
         '<ng-form name="parent">' +
           '<ng-form name="child">' +
           '<input ng-model="modelA" name="inputA">' +
@@ -554,7 +554,7 @@ describe("form", () => {
     });
 
     it("should set $submitted to true on child forms when parent is submitted", () => {
-      doc = JQLite(
+      doc = (
         '<ng-form name="parent">' +
           '<ng-form name="child">' +
           '<input ng-model="modelA" name="inputA">' +
@@ -573,7 +573,7 @@ describe("form", () => {
     });
 
     it("should not propagate $submitted state on removed child forms when parent is submitted", async () => {
-      doc = JQLite(
+      doc = (
         '<ng-form name="parent">' +
           '<ng-form name="child">' +
           '<ng-form name="grandchild">' +
@@ -638,7 +638,7 @@ describe("form", () => {
     });
 
     it("should set $submitted to true on child and parent forms when form is submitted", async () => {
-      doc = JQLite(
+      doc = (
         '<ng-form name="parent">' +
           '<ng-form name="child">' +
           '<ng-form name="grandchild">' +
@@ -662,7 +662,7 @@ describe("form", () => {
     });
 
     it("should deregister a child form when its DOM is removed", async () => {
-      doc = JQLite(
+      doc = (
         '<form name="parent">' +
           '<div ng-form name="child">' +
           '<input ng-model="modelA" name="inputA" required>' +
@@ -686,7 +686,7 @@ describe("form", () => {
     });
 
     it("should deregister a child form whose name is an expression when its DOM is removed", async () => {
-      doc = JQLite(
+      doc = (
         '<form name="parent">' +
           '<div ng-form name="child.form">' +
           '<input ng-model="modelA" name="inputA" required>' +
@@ -711,7 +711,7 @@ describe("form", () => {
     });
 
     it("should deregister a input when it is removed from DOM", async () => {
-      doc = JQLite(
+      doc = (
         '<form name="parent">' +
           '<div ng-form name="child">' +
           '<input ng-if="inputPresent" ng-model="modelA" name="inputA" required maxlength="10">' +
@@ -777,7 +777,7 @@ describe("form", () => {
     });
 
     it("should deregister a input that is $pending when it is removed from DOM", async () => {
-      doc = JQLite(
+      doc = (
         '<form name="parent">' +
           '<div ng-form name="child">' +
           '<input ng-if="inputPresent" ng-model="modelA" name="inputA">' +
@@ -813,7 +813,7 @@ describe("form", () => {
     });
 
     it("should leave the parent form invalid when deregister a removed input", async () => {
-      doc = JQLite(
+      doc = (
         '<form name="parent">' +
           '<div ng-form name="child">' +
           '<input ng-if="inputPresent" ng-model="modelA" name="inputA" required>' +
@@ -972,7 +972,7 @@ describe("form", () => {
     });
 
     it("should chain nested forms in repeater", async () => {
-      doc = JQLite(
+      doc = (
         "<ng-form name=parent>" +
           '<ng-form ng-repeat="f in forms" name=child>' +
           "<input type=text ng-model=text name=text>" +
@@ -1372,8 +1372,8 @@ describe("form", () => {
 
     beforeEach(() => {
       let dummy = document.getElementById("dummy");
-      doc = JQLite('<form name="myForm"></form>');
-      JQLite(dummy).append(doc);
+      doc = ('<form name="myForm"></form>');
+      (dummy).append(doc);
       let angular = new Angular();
       window.angular = new Angular();
       myModule = window.angular.module("myModule", []);

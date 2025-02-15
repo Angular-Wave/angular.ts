@@ -2,7 +2,7 @@ import { tail, unnestR, uniqR, removeFrom } from "../../shared/common";
 import { isString, isObject } from "../../shared/utils.js";
 
 import { parse } from "../../shared/hof";
-import { getInheritedData } from "../../shared/jqlite/jqlite";
+import { getInheritedData } from "../../shared//dom";
 /** @ignore */
 function parseStateRef(ref) {
   const paramsOnly = ref.match(/^\s*({[^}]*})\s*$/);

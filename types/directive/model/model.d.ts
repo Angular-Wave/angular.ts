@@ -119,7 +119,7 @@ export class NgModelController {
     /** @type {import('../../core/scope/scope.js').Scope} */
     $$rootScope: import("../../core/scope/scope.js").Scope;
     $$attr: import("../../core/compile/attributes.js").Attributes;
-    $$element: import("../../shared/jqlite/jqlite.js").JQLite;
+    $$element: any;
     $$animate: any;
     $$parse: import("../../core/parse/parse.js").ParseService;
     $$exceptionHandler: import("../../core/exception-handler.js").ErrorHandler;

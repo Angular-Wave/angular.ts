@@ -6,7 +6,7 @@ import {
   isUndefined,
 } from "../../shared/utils.js";
 import { REGEX_STRING_REGEXP } from "./../attrs/attrs";
-import { startingTag } from "../../shared/jqlite/jqlite.js";
+import { startingTag } from "../../shared//dom.js";
 
 /**
  *

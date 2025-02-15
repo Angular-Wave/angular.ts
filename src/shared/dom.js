@@ -1,26 +1,18 @@
 import {
-  minErr,
   concat,
-  extend,
   isDefined,
-  isFunction,
   isObject,
-  isString,
-  isUndefined,
   lowercase,
   getNodeName,
-  shallowCopy,
-} from "../utils.js";
-import { CACHE, EXPANDO } from "../../core/cache/cache.js";
+} from "./utils.js";
+import { CACHE, EXPANDO } from "../core/cache/cache.js";
 
 /** @type {number} */
 let jqId = 1;
 
 const DASH_LOWERCASE_REGEXP = /-([a-z])/g;
 const UNDERSCORE_LOWERCASE_REGEXP = /_([a-z])/g;
-const JQLiteMinErr = minErr("jqLite");
 
-const SINGLE_TAG_REGEXP = /^<([\w-]+)\s*\/?>(?:<\/\1>|)$/;
 const TAG_NAME_REGEXP = /<([\w:-]+)/;
 
 // Table parts need to be wrapped with `<table>` or they're
@@ -54,493 +46,6 @@ const BOOLEAN_ELEMENTS = {};
   .forEach((value) => {
     BOOLEAN_ELEMENTS[value] = true;
   });
-
-/**
- * JQLite is both a function and an array-like data structure for manipulation of DOM, linking elements to expando cache,
- * and execution of chains of functions.
- *
- * @param {string|Node|Node[]|NodeList|JQLite|ArrayLike<Element>|(() => void)|Window} element
- * @returns {JQLite}
- */
-export function JQLite(element) {
-  if (element instanceof JQLite) {
-    return /** @type {JQLite} */ (element);
-  }
-
-  let argIsString = false;
-
-  if (isString(element)) {
-    element = /** @type {string} */ (element).trim();
-    argIsString = true;
-  }
-
-  if (!(this instanceof JQLite)) {
-    if (argIsString && /** @type {string} */ (element).charAt(0) !== "<") {
-      throw JQLiteMinErr(
-        "nosel",
-        "Looking up elements via selectors is not supported by JQLite! See: http://docs.angularjs.org/api/angular.element",
-      );
-    }
-    return new JQLite(element);
-  }
-
-  if (argIsString) {
-    const parsed = parseHtml(/** @type {string} */ (element));
-    addNodes(this, parsed);
-  } else if (isFunction(element)) {
-    onReady(/** @type {Function} */ (element));
-  } else {
-    addNodes(this, element);
-  }
-}
-
-/// ///////////////////////////////////////
-// Functions which are declared directly.
-/// ///////////////////////////////////////
-JQLite.prototype = {
-  toString() {
-    const value = [];
-    for (var i = 0; i < this.length; i++) {
-      value.push(`${this[i]}`);
-    }
-    return `[${value.join(", ")}]`;
-  },
-
-  eq(index) {
-    return index >= 0 ? JQLite(this[index]) : JQLite(this[this.length + index]);
-  },
-
-  length: 0,
-};
-
-/**
- * @returns {Element[]}
- */
-JQLite.prototype.elements = function () {
-  /** @type {Element[]} */
-  let elements = [];
-  for (let index = 0; index < this.length; index++) {
-    elements.push(this[index]);
-  }
-  return elements;
-};
-
-/**
- * Remove all child nodes of the set of matched elements from the DOM and clears CACHE data, associated with the node.
- * @returns {JQLite} The current instance of JQLite.
- */
-JQLite.prototype.empty = function () {
-  for (let i = 0; i < this.length; i++) {
-    const element = this[i];
-    dealoc(element, true);
-    // we may run into situation where we empty a transcluded node
-    if (
-      [
-        Node.ELEMENT_NODE,
-        Node.DOCUMENT_NODE,
-        Node.DOCUMENT_FRAGMENT_NODE,
-      ].includes(element.nodeType)
-    ) {
-      element.replaceChildren();
-    }
-  }
-  return this;
-};
-
-/**
- * Returns the `$scope` of the element.
- * @returns {import("../../core/scope/scope").Scope}
- */
-JQLite.prototype.scope = function () {
-  // Can't use JQLiteData here directly so we stay compatible with jQuery!
-  return (
-    getOrSetCacheData(this[0], "$scope") ||
-    getInheritedData(this[0].parentNode || this[0], ["$isolateScope", "$scope"])
-  );
-};
-
-/**
- * Returns the isolate `$scope` of the element.
- * @returns {import("../../core/scope/scope").Scope}
- */
-JQLite.prototype.isolateScope = function () {
-  return (
-    getOrSetCacheData(this[0], "$isolateScope") ||
-    getOrSetCacheData(this[0], "$isolateScopeNoTemplate")
-  );
-};
-
-/**
- * Return instance of controller attached to element
- * @param {string} [name] - Controller name
- * @returns {any}
- */
-JQLite.prototype.controller = function (name) {
-  return getController(this[0], name);
-};
-
-/**
- * Return instance of injector attached to element
- * @returns {import('../../core/di/internal-injector').InjectorService}
- */
-JQLite.prototype.injector = function () {
-  return getInheritedData(this[0], "$injector");
-};
-
-/**
- * Remove data  by name from cache associated with each element in JQLite collection.
- * @param {string} name - The key of the data associated with element
- * @returns {JQLite}
- */
-JQLite.prototype.removeData = function (name) {
-  for (let i = 0; i < this.length; i++) {
-    const element = this[i];
-    removeElementData(element, name);
-  }
-  return this;
-};
-
-/**
- * Gets or sets data on a parent element
- * @param {string} name
- * @param {any} [value]
- * @returns {JQLite|any}
- */
-JQLite.prototype.inheritedData = function (name, value) {
-  for (let i = 0; i < this.length; i++) {
-    const element = this[0];
-    let res = getInheritedData(element, name, value);
-    if (value) {
-      return this;
-    } else {
-      return res;
-    }
-  }
-};
-
-/**
- * Gets or sets innerHTML on the first element in JQLite collection
- * @param {string} [value]
- * @returns {JQLite|any|undefined}
- */
-JQLite.prototype.html = function (value) {
-  const element = this[0];
-  if (!element) return undefined;
-  if (isUndefined(value)) {
-    return element.innerHTML;
-  }
-  dealoc(element, true);
-  element.innerHTML = value;
-  return this;
-};
-
-/**
- * @param {string|Object} name
- * @param {any} value
- * @returns
- */
-JQLite.prototype.attr = function (name, value) {
-  for (let i = 0; i < this.length; i++) {
-    const element = this[i];
-    let ret;
-    const { nodeType } = element;
-    if (
-      nodeType === Node.TEXT_NODE ||
-      nodeType === Node.ATTRIBUTE_NODE ||
-      nodeType === Node.COMMENT_NODE ||
-      !element.getAttribute
-    ) {
-      continue;
-    }
-
-    const lowercasedName = lowercase(name);
-    const isBooleanAttr = BOOLEAN_ATTR[lowercasedName];
-
-    if (isObject(name)) {
-      for (let key in name) {
-        element.setAttribute(key, isBooleanAttr ? lowercasedName : name[key]);
-      }
-    } else if (isDefined(value)) {
-      // setter
-
-      if (value === null || (value === false && isBooleanAttr)) {
-        element.removeAttribute(name);
-      } else {
-        element.setAttribute(name, isBooleanAttr ? lowercasedName : value);
-      }
-    } else {
-      // getter
-      ret = element.getAttribute(name);
-      if (isBooleanAttr && ret !== null) {
-        ret = lowercasedName;
-      }
-      // Normalize non-existing attributes to undefined (as jQuery).
-      return ret === null ? undefined : ret;
-    }
-  }
-
-  if (isDefined(value) || isObject(name)) {
-    return this;
-  }
-};
-
-/**
- * @param {string|any} key - The key (as a string) to get/set or an object for mass-setting.
- * @param {any} [value] - The value to set. If not provided, the function acts as a getter.
- * @returns {JQLite|any} - The retrieved data if acting as a getter. Otherwise, returns undefined.
- */
-JQLite.prototype.data = function (key, value) {
-  let i;
-  const nodeCount = this.length;
-  if (isUndefined(value)) {
-    if (isObject(key)) {
-      // we are a write, but the object properties are the key/values
-      for (i = 0; i < nodeCount; i++) {
-        getOrSetCacheData(this[i], key);
-      }
-      return this;
-    }
-    // we are a read, so read the first child.
-    const jj = isUndefined(value) ? Math.min(nodeCount, 1) : nodeCount;
-    for (let j = 0; j < jj; j++) {
-      const nodeValue = getOrSetCacheData(this[j], key, value);
-      value = value ? value + nodeValue : nodeValue;
-    }
-    return value;
-  }
-  // we are a write, so apply to all children
-  for (i = 0; i < nodeCount; i++) {
-    getOrSetCacheData(this[i], key, value);
-  }
-  return this;
-};
-
-JQLite.prototype.replaceWith = function (arg1) {
-  let value;
-  let fn = function (element, replaceNode) {
-    let index;
-    const parent = element.parentNode;
-    dealoc(element);
-    const nodes = new JQLite(replaceNode);
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i];
-      if (index) {
-        parent.insertBefore(node, index.nextSibling);
-      } else {
-        parent.replaceChild(node, element);
-      }
-      index = node;
-    }
-  };
-  for (let i = 0; i < this.length; i++) {
-    addNodes(value, fn(this[i], arg1));
-  }
-  return isDefined(value) ? value : this;
-};
-
-JQLite.prototype.children = function () {
-  let value;
-  let fn = (element) =>
-    Array.from(element.childNodes).filter(
-      (child) => child.nodeType === Node.ELEMENT_NODE,
-    );
-  for (let i = 0; i < this.length; i++) {
-    value = JQLite(fn(this[i]));
-  }
-  return isDefined(value) ? value : this;
-};
-
-/**
- * @param {string|JQLite} node
- * @returns {JQLite}
- */
-JQLite.prototype.append = function (node) {
-  for (let i = 0; i < this.length; i++) {
-    const element = this[i];
-    const { nodeType } = element;
-    if (
-      nodeType !== Node.ELEMENT_NODE &&
-      nodeType !== Node.DOCUMENT_FRAGMENT_NODE
-    )
-      return this;
-
-    let newNode = new JQLite(node);
-
-    for (let i = 0; i < newNode.length; i++) {
-      const child = newNode[i];
-      element.appendChild(child);
-    }
-  }
-  return this;
-};
-
-/**
- * @param {string|JQLite} node
- * @returns {JQLite}
- */
-JQLite.prototype.prepend = function (node) {
-  for (let i = 0; i < this.length; i++) {
-    const element = this[i];
-    if (element.nodeType === Node.ELEMENT_NODE) {
-      const index = element.firstChild;
-      const el = new JQLite(node);
-      for (let i = 0; i < el.length; i++) {
-        element.insertBefore(el[i], index);
-      }
-    }
-  }
-  return this;
-};
-
-/**
- * @param {string} newElement
- * @returns {JQLite}
- */
-JQLite.prototype.after = function (newElement) {
-  for (let i = 0; i < this.length; i++) {
-    const element = this[i];
-    let index = element;
-    const parent = element.parentNode;
-
-    if (parent) {
-      let el = new JQLite(newElement);
-
-      for (let i = 0, ii = el.length; i < ii; i++) {
-        const node = el[i];
-        parent.insertBefore(node, index.nextSibling);
-        index = node;
-      }
-    }
-  }
-  return this;
-};
-
-/**
- * @param {boolean} [keepData]
- * @returns
- */
-JQLite.prototype.remove = function (keepData = false) {
-  for (let i = 0; i < this.length; i++) {
-    const element = this[i];
-    removeElement(element, keepData);
-  }
-  return this;
-};
-
-JQLite.prototype.detach = function () {
-  for (let i = 0; i < this.length; i++) {
-    const element = this[i];
-    removeElement(element, true);
-  }
-  return this;
-};
-
-JQLite.prototype.parent = function () {
-  let value;
-  let fn = (element) => {
-    const parent = element.parentNode;
-    return parent && parent.nodeType !== Node.DOCUMENT_FRAGMENT_NODE
-      ? parent
-      : null;
-  };
-  for (let i = 0, ii = this.length; i < ii; i++) {
-    if (isUndefined(value)) {
-      value = fn(this[i]);
-      if (isDefined(value)) {
-        value = JQLite(value);
-      }
-    } else {
-      addNodes(value, fn(this[i]));
-    }
-  }
-  return isDefined(value) ? value : this;
-};
-
-JQLite.prototype.find = function (selector) {
-  let value;
-  for (let i = 0, ii = this.length; i < ii; i++) {
-    const element = this[i];
-
-    if (isUndefined(value)) {
-      if (element.getElementsByTagName) {
-        value = element.getElementsByTagName(selector);
-      } else {
-        value = [];
-      }
-      if (isDefined(value)) {
-        // any function which returns a value needs to be wrapped
-        value = JQLite(value);
-      }
-    } else {
-      if (element.getElementsByTagName) {
-        addNodes(value, element.getElementsByTagName(selector));
-      }
-    }
-  }
-  return isDefined(value) ? value : this;
-};
-
-/**
- * TODO: REMOVE! This function being used ONLY in tests!
- */
-JQLite.prototype.triggerHandler = function (event, extraParameters) {
-  let value;
-  let fn = function (element, event, extraParameters) {
-    let dummyEvent;
-    let eventFnsCopy;
-    let handlerArgs;
-    const eventName = event.type || event;
-    const expandoStore = getExpando(element);
-    const events = expandoStore && expandoStore.events;
-    const eventFns = events && events[eventName];
-
-    if (eventFns) {
-      // Create a dummy event to pass to the handlers
-      dummyEvent = {
-        preventDefault() {
-          this.defaultPrevented = true;
-        },
-        isDefaultPrevented() {
-          return this.defaultPrevented === true;
-        },
-        stopImmediatePropagation() {
-          this.immediatePropagationStopped = true;
-        },
-        isImmediatePropagationStopped() {
-          return this.immediatePropagationStopped === true;
-        },
-        stopPropagation: () => {},
-        type: eventName,
-        target: element,
-      };
-
-      // If a custom event was provided then extend our dummy event with it
-      if (event.type) {
-        dummyEvent = extend(dummyEvent, event);
-      }
-
-      // Copy event handlers in case event handlers array is modified during execution.
-      eventFnsCopy = shallowCopy(eventFns);
-      handlerArgs = extraParameters
-        ? [dummyEvent].concat(extraParameters)
-        : [dummyEvent];
-
-      eventFnsCopy.forEach((fn) => {
-        if (!dummyEvent.isImmediatePropagationStopped()) {
-          fn.apply(element, handlerArgs);
-        }
-      });
-    }
-  };
-  for (let i = 0, ii = this.length; i < ii; i++) {
-    if (isUndefined(value)) {
-      fn(this[i], event, extraParameters);
-    } else {
-      addNodes(value, fn(this[i], event, extraParameters));
-    }
-  }
-  return isDefined(value) ? value : this;
-};
 
 ///////////////////////////////////////////////////////////////////
 ////////////        HELPER FUNCTIONS      /////////////////////////
@@ -610,7 +115,7 @@ export function removeElementData(element, name) {
  *
  * @param {Element} element
  * @param {boolean} [createIfNecessary=false]
- * @returns {import("../../core/cache/cache.js").ExpandoStore}
+ * @returns {import("../core/cache/cache.js").ExpandoStore}
  */
 export function getExpando(element, createIfNecessary = false) {
   let expandoId = element[EXPANDO];
@@ -698,23 +203,6 @@ export function buildFragment(html) {
   let fragment = document.createDocumentFragment();
   fragment.append(...nodes);
   return fragment;
-}
-
-/**
- * @param {string} html
- * @returns {NodeListOf<ChildNode> | HTMLElement[]}
- */
-function parseHtml(html) {
-  let regEx = SINGLE_TAG_REGEXP.exec(html);
-  if (regEx) {
-    return [document.createElement(regEx[1])];
-  }
-  let fragment = buildFragment(html);
-  if (fragment) {
-    return fragment.childNodes;
-  }
-
-  return [];
 }
 
 /**
@@ -830,30 +318,6 @@ export function getCacheData(element, key) {
     return data && data[kebabToCamel(key)];
   }
   return undefined;
-}
-
-/**
- * Adds nodes or elements to the root array-like object.
- *
- * @param {JQLite} root - The array-like object to which elements will be added.
- * @param {(Node|Array|NodeList|Object)} elements - The elements to add to the root. This can be a single DOM node, an array-like object (such as an Array or NodeList), or any other object.
- */
-function addNodes(root, elements) {
-  if (!elements) return;
-  // If a Node (the most common case)
-  if (elements.nodeType) {
-    root[root.length++] = elements;
-    return;
-  }
-  const length = elements.length;
-  // If elements is an Array or NodeList, but not a Window object
-  if (typeof length === "number" && elements.window !== elements) {
-    for (let i = 0; i < length; i++) {
-      root[root.length++] = elements[i];
-    }
-  } else {
-    root[root.length++] = elements;
-  }
 }
 
 /**
@@ -1032,7 +496,7 @@ export function getBlockNodes(nodes) {
     }
   }
 
-  return JQLite(blockNodes || nodes);
+  return blockNodes || nodes;
 }
 
 export function getBooleanAttrName(element, name) {
@@ -1049,7 +513,7 @@ export function cleanElementData(nodes) {
   for (let i = 0, ii = nodes.length; i < ii; i++) {
     const events = (CACHE.get(nodes[i][EXPANDO]) || {}).events;
     if (events && events.$destroy) {
-      JQLite(nodes[i]).triggerHandler("$destroy");
+      nodes[i].dispatchEvent(new Event("$destroy"));
     }
     removeElementData(nodes[i]);
   }

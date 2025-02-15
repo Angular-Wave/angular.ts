@@ -1,6 +1,6 @@
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { dealoc, JQLite } from "../../shared//dom.js";
 
 describe("style", () => {
   let $rootScope;
@@ -21,7 +21,7 @@ describe("style", () => {
   });
 
   it("should compile style element without binding", () => {
-    element = JQLite(
+    element = (
       '<style type="text/css">.header{font-size:1.5em; h3{font-size:1.5em}}</style>',
     );
     $compile(element)($rootScope);
@@ -31,7 +31,7 @@ describe("style", () => {
   });
 
   it("should compile style element with one simple bind", () => {
-    element = JQLite(
+    element = (
       '<style type="text/css">.some-container{ width: {{elementWidth}}px; }</style>',
     );
     $compile(element)($rootScope);
@@ -45,7 +45,7 @@ describe("style", () => {
   });
 
   it("should compile style element with one bind", () => {
-    element = JQLite(
+    element = (
       '<style type="text/css">.header{ h3 { font-size: {{fontSize}}em }}</style>',
     );
     $compile(element)($rootScope);
@@ -59,7 +59,7 @@ describe("style", () => {
   });
 
   it("should compile style element with two binds", () => {
-    element = JQLite(
+    element = (
       '<style type="text/css">.header{ h3 { font-size: {{fontSize}}{{unit}} }}</style>',
     );
     $compile(element)($rootScope);
@@ -74,7 +74,7 @@ describe("style", () => {
   });
 
   it("should compile content of element with style attr", () => {
-    element = JQLite('<div style="some">{{bind}}</div>');
+    element = ('<div style="some">{{bind}}</div>');
     $compile(element)($rootScope);
     $rootScope.$apply(() => {
       $rootScope.bind = "value";

@@ -1,7 +1,7 @@
 import { createInjector } from "../../core/di/injector.js";
 import { Angular } from "../../loader.js";
 import { wait } from "../../shared/test-utils.js";
-import { createElementFromHTML } from "../../shared/jqlite/jqlite.js";
+import { createElementFromHTML } from "../../shared//dom.js";
 
 describe("ngRef", () => {
   describe("on a component", () => {
@@ -148,7 +148,7 @@ describe("ngRef", () => {
     //   });
     // });
 
-    // it("should bind the jqlite wrapped DOM element if there is no component", inject((
+    // it("should bind the dom wrapped DOM element if there is no component", inject((
     //   $compile,
     //   $rootScope,
     // ) => {
@@ -287,7 +287,7 @@ describe("ngRef", () => {
     //   });
     // });
 
-    // it("should bind the jqlite element if the controller is on an attribute-directive", () => {
+    // it("should bind the dom element if the controller is on an attribute-directive", () => {
     //   let myDirectiveController;
 
     //   module(($compileProvider) => {
@@ -309,7 +309,7 @@ describe("ngRef", () => {
     //   });
     // });
 
-    // it("should bind the jqlite element if the controller is on an class-directive", () => {
+    // it("should bind the dom element if the controller is on an class-directive", () => {
     //   let myDirectiveController;
 
     //   module(($compileProvider) => {
@@ -363,7 +363,7 @@ describe("ngRef", () => {
     //           this.text = "SUCCESS";
     //           this.$postLink = function () {
     //             $transclude((clone, newScope) => {
-    //               $animate.enter(clone, $element.parent(), $element);
+    //               $animate.enter(clone, $element.parentElement, $element);
     //             });
     //           };
     //         },
@@ -431,7 +431,7 @@ describe("ngRef", () => {
     //             $transclude((clone, newScope) => {
     //               currentClone = clone;
     //               currentScope = newScope;
-    //               $animate.enter(clone, $element.parent(), $element);
+    //               $animate.enter(clone, $element.parentElement, $element);
     //             });
     //           };
     //           this.destroy = function () {
@@ -472,7 +472,7 @@ describe("ngRef", () => {
     //         },
     //         link(scope, element, attrs, ctrl, $transclude) {
     //           $transclude((clone, newScope) => {
-    //             $animate.enter(clone, element.parent(), element);
+    //             $animate.enter(clone, element.parentElement, element);
     //           });
     //         },
     //       }));

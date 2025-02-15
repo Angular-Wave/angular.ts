@@ -2,7 +2,7 @@ import { createInjector } from "../../core/di/injector";
 import { countWatchers } from "../../core/scope/scope";
 import { Angular } from "../../loader";
 import { isString } from "../../shared/utils.js";
-import { JQLite } from "../../shared/jqlite/jqlite.js";
+import { JQLite } from "../../shared//dom.js";
 
 describe("ngMessages", () => {
   let $rootScope, $compile, $templateCache;
@@ -461,7 +461,7 @@ describe("ngMessages", () => {
     // Add the message back in
     $rootScope.col = { primary: true };
     // Simulate the animation completing on the node
-    // JQLite(nodeToRemove).remove();
+    // (nodeToRemove).remove();
 
     // We should not get another call to `leave`
     //expect($animate.leave).not.toHaveBeenCalled();
@@ -553,7 +553,7 @@ describe("ngMessages", () => {
       const deregisterSpy = spyOn(ctrl, "deregister").and.callThrough();
 
       const nodeA = element.querySelector('[ng-message="a"]');
-      JQLite(nodeA).remove(); // The next digest triggers the error
+      nodeA.remove(); // The next digest triggers the error
       // Make sure removing the element triggers the deregistration in ngMessages
       expect(trim(deregisterSpy.calls.mostRecent().args[0].nodeValue)).toBe("");
       expect(messageChildren(element).length).toBe(0);
@@ -590,7 +590,7 @@ describe("ngMessages", () => {
         const deregisterSpy = spyOn(ctrl, "deregister").and.callThrough();
 
         const nodeB = element.querySelector('[ng-message="b"]');
-        JQLite(nodeB).remove(); // The next digest triggers the error
+        nodeB.remove(); // The next digest triggers the error
         // Make sure removing the element triggers the deregistration in ngMessages
         expect(trim(deregisterSpy.calls.mostRecent().args[0].nodeValue)).toBe(
           "",
@@ -985,7 +985,7 @@ describe("ngMessages", () => {
     //   const deregisterSpy = spyOn(ctrl, "deregister").and.callThrough();
 
     //   const nodeB = element.querySelector('[ng-message="b"]');
-    //   JQLite(nodeB).remove();
+    //   (nodeB).remove();
 
     //   // Make sure removing the element triggers the deregistration in ngMessages
     //   expect(trim(deregisterSpy.calls.mostRecent().args[0].nodeValue)).toBe(

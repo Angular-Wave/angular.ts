@@ -18,7 +18,7 @@ export class ViewScrollProvider {
         return $anchorScroll;
       }
       /**
-       * @param {import('../shared/jqlite/jqlite').JQLite} $element
+       * @param {import('../shared//dom').JQLite} $element
        * @returns {Promise<number>}
        */
       return async function ($element) {

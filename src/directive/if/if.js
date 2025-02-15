@@ -1,4 +1,4 @@
-import { removeElement } from "../../shared/jqlite/jqlite.js";
+import { removeElement } from "../../shared//dom.js";
 import { hasAnimate } from "../../shared/utils.js";
 
 ngIfDirective.$inject = ["$animate"];
@@ -39,7 +39,7 @@ export function ngIfDirective($animate) {
             $transclude((clone, newScope) => {
               childScope = newScope;
               // Note: We only need the first/last node of the cloned nodes.
-              // However, we need to keep the reference to the jqlite wrapper as it might be changed later
+              // However, we need to keep the reference to the dom wrapper as it might be changed later
               // by a directive with templateUrl when its template arrives.
               block = clone;
               if (hasAnimate(clone)) {

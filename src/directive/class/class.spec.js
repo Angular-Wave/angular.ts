@@ -1,4 +1,4 @@
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { dealoc, JQLite } from "../../shared//dom.js";
 import { Angular } from "../../loader.js";
 import { wait } from "../../shared/test-utils.js";
 
@@ -243,8 +243,8 @@ describe("ngClass", () => {
       '<ul><li ng-repeat="i in [0,1]" class="existing" ng-class-odd="\'odd\'" ng-class-even="\'even\'"></li><ul>',
     )($rootScope);
     await wait();
-    const e1 = JQLite(element.childNodes[1]);
-    const e2 = JQLite(element.childNodes[3]);
+    const e1 = element.childNodes[1];
+    const e2 = element.childNodes[3];
     expect(e1[0].classList.contains("existing")).toBeTruthy();
     expect(e1[0].classList.contains("odd")).toBeTruthy();
     expect(e2[0].classList.contains("existing")).toBeTruthy();
@@ -259,8 +259,8 @@ describe("ngClass", () => {
         "<ul>",
     )($rootScope);
     await wait();
-    const e1 = JQLite(element.childNodes[1]);
-    const e2 = JQLite(element.childNodes[3]);
+    const e1 = element.childNodes[1];
+    const e2 = element.childNodes[3];
 
     expect(e1[0].classList.contains("plainClass")).toBeTruthy();
     expect(e1[0].classList.contains("odd")).toBeTruthy();
@@ -320,8 +320,8 @@ describe("ngClass", () => {
         "<ul>",
     )($rootScope);
     await wait();
-    const e1 = JQLite(element.childNodes[1]);
-    const e2 = JQLite(element.childNodes[3]);
+    const e1 = element.childNodes[1];
+    const e2 = element.childNodes[3];
 
     expect(e1[0].classList.contains("A")).toBeTruthy();
     expect(e1[0].classList.contains("B")).toBeTruthy();
@@ -432,8 +432,8 @@ describe("ngClass", () => {
     $rootScope.items = ["b", "c", "d"];
     $rootScope.items.unshift("a");
     await wait();
-    const e1 = JQLite(element.childNodes[1]);
-    const e4 = JQLite(element.childNodes[3]);
+    const e1 = element.childNodes[1];
+    const e4 = element.childNodes[3];
 
     expect(e1[0].classList.contains("odd")).toBeTruthy();
     expect(e1[0].classList.contains("even")).toBeFalsy();
@@ -452,8 +452,8 @@ describe("ngClass", () => {
     $rootScope.items = ["a", "b", "a"];
     $rootScope.items = ["a", "a"];
     await wait();
-    const e1 = JQLite(element.childNodes[1]);
-    const e2 = JQLite(element.childNodes[3]);
+    const e1 = element.childNodes[1];
+    const e2 = element.childNodes[3];
 
     expect(e1[0].classList.contains("odd")).toBeTruthy();
     expect(e1[0].classList.contains("even")).toBeFalsy();
@@ -472,8 +472,8 @@ describe("ngClass", () => {
     $rootScope.items = ["a", "b"];
     $rootScope.items = ["b", "a"];
     await wait();
-    const e1 = JQLite(element.childNodes[1]);
-    const e2 = JQLite(element.childNodes[3]);
+    const e1 = element.childNodes[1];
+    const e2 = element.childNodes[3];
 
     expect(e1[0].classList.contains("odd")).toBeTruthy();
     expect(e1[0].classList.contains("even")).toBeFalsy();
@@ -669,7 +669,7 @@ describe("ngClass", () => {
 //     module("ngAnimateMock");
 //     inject(($compile, $rootScope, $animate, $timeout) => {
 //       element = angular.element('<div ng-class="val"></div>');
-//       const body = JQLite(document.body);
+//       const body = (document.body);
 //       body.append(element);
 //       $compile(element)($rootScope);
 
@@ -718,7 +718,7 @@ describe("ngClass", () => {
 
 //         $rootScope.val = "crazy";
 //         element = angular.element('<div ng-class="val"></div>');
-//         JQLite($document[0].body).append($rootElement);
+//         ($document[0].body).append($rootElement);
 
 //         $compile(element)($rootScope);
 
@@ -728,7 +728,7 @@ describe("ngClass", () => {
 //         });
 
 //         // jquery doesn't compare both elements properly so let's use the nodes
-//         expect(element.parent()[0]).toEqual($rootElement[0]);
+//         expect(element.parentElement[0]).toEqual($rootElement[0]);
 //         expect(element.classList.contains("crazy")).toBe(false);
 //         expect(enterComplete).toBe(false);
 

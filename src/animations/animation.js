@@ -1,4 +1,3 @@
-import { JQLite } from "../shared/jqlite/jqlite.js";
 import { mergeClasses } from "../shared/utils.js";
 import {
   NG_ANIMATE_CLASSNAME,
@@ -354,7 +353,7 @@ export function AnimationProvider() {
                 refLookup[key] = refLookup[key] || {};
                 refLookup[key][direction] = {
                   animationID: index,
-                  element: JQLite(anchor),
+                  element: anchor,
                 };
               });
             } else {

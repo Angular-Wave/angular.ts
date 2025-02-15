@@ -1,13 +1,9 @@
-import { JQLite } from "./jqlite/jqlite.js";
-
 /**
- * @param {HTMLElement|JQLite} element
+ * @param {HTMLElement} element
  * @param {string} event
  */
 export function browserTrigger(element, event) {
-  JQLite(element)[0].dispatchEvent(
-    new Event(event, { bubbles: true, cancelable: true }),
-  );
+  element.dispatchEvent(new Event(event, { bubbles: true, cancelable: true }));
 }
 
 /**

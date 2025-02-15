@@ -3,7 +3,7 @@ import {
   dealoc,
   getCacheData,
   setCacheData,
-} from "../../shared/jqlite/jqlite.js";
+} from "../../shared//dom.js";
 import { Angular } from "../../loader.js";
 import { wait } from "../../shared/test-utils.js";
 

@@ -1,4 +1,3 @@
-import { JQLite } from "../../shared/jqlite/jqlite.js";
 import { urlResolve } from "../url-utils/url-utils";
 import {
   encodeUriSegment,
@@ -701,12 +700,13 @@ export class LocationProvider {
         )
           return;
 
-        let elm = JQLite(event.target);
+        let elm = event.target;
 
         // traverse the DOM up to find first A tag
         while (elm[0].nodeName.toLowerCase() !== "a") {
           // ignore rewriting if no A tag (reached root element, or no parent - removed from document)
-          if (elm[0] === $rootElement[0] || !(elm = elm.parent())[0]) return;
+          if (elm[0] === $rootElement[0] || !(elm = elm.parentElement)[0])
+            return;
         }
 
         if (isString(rewriteLinks) && isUndefined(elm.attr(rewriteLinks)))

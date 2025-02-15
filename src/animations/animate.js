@@ -1,5 +1,5 @@
 import { isFunction, isObject, minErr, extend } from "../shared/utils.js";
-import { JQLite, removeElement, domInsert } from "../shared/jqlite/jqlite.js";
+import { removeElement, domInsert } from "../shared//dom.js";
 import { NG_ANIMATE_CLASSNAME } from "./shared.js";
 
 /** @typedef {"enter"|"leave"|"move"|"addClass"|"setClass"|"removeClass"} AnimationMethod */
@@ -392,9 +392,7 @@ export function AnimateProvider($provide) {
          * @returns {import('./animate-runner').AnimateRunner} the animation runner
          */
         enter(element, parent, after, options) {
-          parent = parent && JQLite(parent);
-          after = after && JQLite(after);
-          parent = parent || after.parent();
+          parent = parent || after.parentElement;
           domInsert(element, parent, after);
           return $$animateQueue.push(
             element,
@@ -409,16 +407,14 @@ export function AnimateProvider($provide) {
          * and then triggers an animation. A promise is returned that will be resolved
          * during the next digest once the animation has completed.
          *
-         * @param {JQLite} element - the element which will be inserted into the DOM
-         * @param {JQLite} parent - the parent element which will append the element as a child (so long as the after element is not present)
-         * @param {JQLite} after - after the sibling element after which the element will be appended
+         * @param {Element} element - the element which will be inserted into the DOM
+         * @param {Element} parent - the parent element which will append the element as a child (so long as the after element is not present)
+         * @param {Element} after - after the sibling element after which the element will be appended
          * @param {AnimationOptions} [options] - an optional collection of options/styles that will be applied to the element.
          * @returns {import('./animate-runner').AnimateRunner} the animation runner
          */
         move(element, parent, after, options) {
-          parent = parent && JQLite(parent);
-          after = after && JQLite(after);
-          parent = parent || after.parent();
+          parent = parent || after.parentElement;
           domInsert(element, parent, after);
           return $$animateQueue.push(
             element,

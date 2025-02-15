@@ -293,13 +293,13 @@ export class AnimateProvider {
          * and then triggers an animation. A promise is returned that will be resolved
          * during the next digest once the animation has completed.
          *
-         * @param {JQLite} element - the element which will be inserted into the DOM
-         * @param {JQLite} parent - the parent element which will append the element as a child (so long as the after element is not present)
-         * @param {JQLite} after - after the sibling element after which the element will be appended
+         * @param {Element} element - the element which will be inserted into the DOM
+         * @param {Element} parent - the parent element which will append the element as a child (so long as the after element is not present)
+         * @param {Element} after - after the sibling element after which the element will be appended
          * @param {AnimationOptions} [options] - an optional collection of options/styles that will be applied to the element.
          * @returns {import('./animate-runner').AnimateRunner} the animation runner
          */
-        move(element: JQLite, parent: JQLite, after: JQLite, options?: AnimationOptions): import("./animate-runner").AnimateRunner;
+        move(element: Element, parent: Element, after: Element, options?: AnimationOptions): import("./animate-runner").AnimateRunner;
         /**
          * Triggers an animation and then removes the element from the DOM.
          * When the function is called a promise is returned that will be resolved during the next
@@ -400,4 +400,3 @@ export type AnimationOptions = {
      */
     to: string;
 };
-import { JQLite } from "../shared/jqlite/jqlite.js";

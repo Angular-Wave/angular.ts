@@ -421,7 +421,7 @@
 - - `cloneLinkingFn`: (optional) argument to create clones of the original transcluded content.
 - - `futureParentElement` (optional):
 -        * defines the parent to which the `cloneLinkingFn` will add the cloned elements.
--        * default: `$element.parent()` resp. `$element` for `transclude:'element'` resp. `transclude:true`.
+-        * default: `$element.parentElement` resp. `$element` for `transclude:'element'` resp. `transclude:true`.
 -        * only needed for transcludes that are allowed to contain non html elements (e.g. SVG elements)
 -          and when the `cloneLinkingFn` is passed,
 -          as those elements need to created and cloned in a special way when they are defined outside their

@@ -1,6 +1,6 @@
 import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
-import { dealoc } from "../../shared/jqlite/jqlite.js";
+import { dealoc } from "../../shared//dom.js";
 import { bind, createElement } from "../../shared/utils.js";
 import { wait } from "../../shared/test-utils.js";
 

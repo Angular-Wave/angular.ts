@@ -8,7 +8,7 @@ import {
   isTextNode,
   setCacheData,
   startingTag,
-} from "../../shared/jqlite/jqlite.js";
+} from "../../shared//dom.js";
 import { identifierForController } from "../controller/controller.js";
 import {
   minErr,

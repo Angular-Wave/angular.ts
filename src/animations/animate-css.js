@@ -1,4 +1,4 @@
-import { removeElementData } from "../shared/jqlite/jqlite";
+import { removeElementData } from "../shared//dom";
 import { isDefined } from "../shared/utils.js";
 import {
   TRANSITION_DURATION_PROP,
@@ -28,7 +28,7 @@ import {
   TRANSITIONEND_EVENT,
   ANIMATIONEND_EVENT,
   applyAnimationToStyles,
-} from "./shared";
+} from "./shared.js";
 
 const ANIMATE_TIMER_KEY = "$$animateCss";
 

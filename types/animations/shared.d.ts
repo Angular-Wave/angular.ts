@@ -8,10 +8,10 @@ export function pendClasses(classes: any, fix: any, isPrefix: any): string;
 export function removeFromArray(arr: any, val: any): void;
 /**
  *
- * @param {JQLite|Node} element
- * @returns {JQLite}
+ * @param {NodeList} element
+ * @returns {Node}
  */
-export function stripCommentsFromElement(element: JQLite | Node): JQLite;
+export function stripCommentsFromElement(element: NodeList): Node;
 /**
  * @param {JQLite|Node} element
  * @returns {Node}
@@ -56,4 +56,3 @@ export const ANIMATION_DURATION_PROP: string;
 export const TRANSITION_DELAY_PROP: string;
 export const TRANSITION_DURATION_PROP: string;
 export const ngMinErr: (arg0: string, ...arg1: any[]) => Error;
-import { JQLite } from "../shared/jqlite/jqlite.js";

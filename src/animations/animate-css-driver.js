@@ -1,4 +1,3 @@
-import { JQLite } from "../shared/jqlite/jqlite.js";
 import { isString } from "../shared/utils.js";
 import { concatWithSpace } from "./shared";
 
@@ -26,22 +25,21 @@ export function AnimateCssDriverProvider($$animationProvider) {
     /**
      *
      * @param {*} $animateCss
-     * @param {typeof import('./animate-runner').AnimateRunner} $$AnimateRunner
-     * @param {JQLite} $rootElement
+     * @param {typeof import('./animate-runner.js').AnimateRunner} $$AnimateRunner
+     * @param {Element} $rootElement
      * @returns
      */
     function ($animateCss, $$AnimateRunner, $rootElement) {
       const bodyNode = document.body;
       const rootNode = $rootElement[0];
 
-      const rootBodyElement = JQLite(
+      const rootBodyElement =
         // this is to avoid using something that exists outside of the body
         // we also special case the doc fragment case because our unit test code
         // appends the $rootElement to the body after the app has been bootstrapped
         isDocumentFragment(rootNode) || bodyNode.contains(rootNode)
           ? rootNode
-          : bodyNode,
-      );
+          : bodyNode;
 
       return function initDriverFn(animationDetails) {
         return animationDetails.from && animationDetails.to
@@ -54,7 +52,7 @@ export function AnimateCssDriverProvider($$animationProvider) {
       };
 
       function prepareAnchoredAnimation(outAnchor, inAnchor) {
-        const clone = JQLite(outAnchor.cloneNode(true));
+        const clone = outAnchor.cloneNode(true);
         const startingClasses = filterCssClasses(getClassVal(clone));
 
         outAnchor[0].classList.add(NG_ANIMATE_SHIM_CLASS_NAME);

@@ -1,5 +1,5 @@
 import { defaultModelOptions } from "./model-options.js";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { dealoc, JQLite } from "../../shared//dom.js";
 import { Angular } from "../../loader.js";
 
 function changeGivenInputTo(inputElm, val) {
@@ -435,7 +435,7 @@ describe("ngModelOptions", () => {
         //   )($rootScope);
 
         //   $rootScope.$apply("color = 'white'");
-        //   browserTrigger(JQLite(inputElm[2]), "click");
+        //   browserTrigger((inputElm[2]), "click");
         //   expect($rootScope.color).toBe("blue");
         // });
 
@@ -990,7 +990,7 @@ describe("ngModelOptions", () => {
       });
 
       it("should get initialized in time for `ngModel` on the original element", () => {
-        inputElm = JQLite('<foo ng-model="value"></foo>');
+        inputElm = ('<foo ng-model="value"></foo>');
         const injector = angular.bootstrap(inputElm, ["myModule"]);
         $rootScope = injector.get("$rootScope");
         const ngModelCtrl = inputElm.controller("ngModel");

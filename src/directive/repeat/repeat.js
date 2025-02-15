@@ -1,5 +1,5 @@
 import { minErr, hashKey, isArrayLike } from "../../shared/utils.js";
-import { getBlockNodes } from "../../shared/jqlite/jqlite.js";
+import { getBlockNodes } from "../../shared//dom.js";
 
 const NG_REMOVED = "$$NG_REMOVED";
 const ngRepeatMinErr = minErr("ngRepeat");
@@ -271,7 +271,7 @@ export function ngRepeatDirective($animate) {
                   }
                   previousNode = endNode;
                   // Note: We only need the first/last node of the cloned nodes.
-                  // However, we need to keep the reference to the jqlite wrapper as it might be changed later
+                  // However, we need to keep the reference to the dom wrapper as it might be changed later
                   // by a directive with templateUrl when its template arrives.
                   block.clone = clone;
                   nextBlockMap[block.id] = block;

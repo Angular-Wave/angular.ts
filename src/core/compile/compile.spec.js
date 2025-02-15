@@ -8,7 +8,7 @@ import {
   getCacheData,
   setCacheData,
   createElementFromHTML,
-} from "../../shared/jqlite/jqlite.js";
+} from "../../shared//dom.js";
 import {
   isFunction,
   isElement,
@@ -4896,7 +4896,7 @@ describe("$compile", () => {
     });
 
     it("should handle transcluded svg elements", () => {
-      element = JQLite(
+      element = (
         "<div><svg-container>" +
           '<circle cx="4" cy="4" r="2"></circle>' +
           "</svg-container></div>",
@@ -4910,7 +4910,7 @@ describe("$compile", () => {
     });
 
     it("should handle custom svg elements inside svg tag", () => {
-      element = JQLite(
+      element = (
         '<div><svg width="300" height="300">' +
           "<svg-circle></svg-circle>" +
           "</svg></div>",
@@ -4923,7 +4923,7 @@ describe("$compile", () => {
     });
 
     it("should handle transcluded custom svg elements", () => {
-      element = JQLite(
+      element = (
         "<div><svg-container>" +
           "<svg-circle></svg-circle>" +
           "</svg-container></div>",
@@ -4948,7 +4948,7 @@ describe("$compile", () => {
       "</svg>";
 
     it("should handle foreignObject", () => {
-      element = JQLite(
+      element = (
         `<div>${
           // By hand (for reference)
           HAND_WRITTEN_SVG
@@ -4976,7 +4976,7 @@ describe("$compile", () => {
     });
 
     it("should handle custom svg containers that transclude to foreignObject that transclude html", () => {
-      element = JQLite(
+      element = (
         `<div>${
           // By hand (for reference)
           HAND_WRITTEN_SVG
@@ -5004,7 +5004,7 @@ describe("$compile", () => {
     });
 
     it("should handle directives with templates that manually add the transclude further down", () => {
-      element = JQLite(
+      element = (
         "<div><svg-custom-transclude-container>" +
           '<circle cx="2" cy="2" r="1"></circle></svg-custom-transclude-container>' +
           "</div>",
@@ -5048,13 +5048,13 @@ describe("$compile", () => {
   describe("compile phase", () => {
     // NO ELEMENT ATTACHMENTS
     // it("should attach scope to the document node when it is compiled explicitly", () => {
-    //   let $document = JQLite(document);
+    //   let $document = (document);
     //   $document = $compile($document)($rootScope);
     //   expect($document.scope()).toBe($rootScope);
     // });
 
     it("should not wrap root text nodes in spans", async () => {
-      element = JQLite("<div>   <div>A</div>\n  <div>B</div>C\t\n  </div>");
+      element = ("<div>   <div>A</div>\n  <div>B</div>C\t\n  </div>");
       $compile(element.childNodes)($rootScope);
       await wait();
       const spans = element.find("span");
@@ -5062,7 +5062,7 @@ describe("$compile", () => {
     });
 
     it("should be able to compile text nodes at the root", async () => {
-      element = JQLite("<div>Name: {{name}}<br />\nColor: {{color}}</div>");
+      element = ("<div>Name: {{name}}<br />\nColor: {{color}}</div>");
       $rootScope.name = "Lucas";
       $rootScope.color = "blue";
       $compile(element.childNodes)($rootScope);
@@ -5079,7 +5079,7 @@ describe("$compile", () => {
       createInjector(["test1"]).invoke(($compile) => {
         expect(CACHE.size).toEqual(0);
         // First with only elements at the top level
-        element = JQLite("<div><div></div></div>");
+        element = ("<div><div></div></div>");
         $compile(element.childNodes)($rootScope);
         // expect(CACHE.size).toEqual(2);
         emptyElement(element);
@@ -5087,19 +5087,19 @@ describe("$compile", () => {
 
         // Next with non-empty text nodes at the top level
         // (in this case the compiler will wrap them in a <span>)
-        element = JQLite("<div>xxx</div>");
+        element = ("<div>xxx</div>");
         $compile(element.childNodes)($rootScope);
         emptyElement(element);
         expect(CACHE.size).toEqual(0);
 
         // Next with comment nodes at the top level
-        element = JQLite("<div><!-- comment --></div>");
+        element = ("<div><!-- comment --></div>");
         $compile(element.childNodes)($rootScope);
         emptyElement(element);
         expect(CACHE.size).toEqual(0);
 
         // Finally with empty text nodes at the top level
-        element = JQLite("<div>   \n<div></div>   </div>");
+        element = ("<div>   \n<div></div>   </div>");
         $compile(element.childNodes)($rootScope);
         //expect(CACHE.size).toEqual(2);
         emptyElement(element);
@@ -5112,7 +5112,7 @@ describe("$compile", () => {
       // the plugin's context rather than the usual DOM apis are exposed on this element, so
       // childNodes might not exist.
 
-      element = JQLite("<div>{{1+2}}</div>");
+      element = ("<div>{{1+2}}</div>");
 
       try {
         element.childNodes[1] = {
@@ -5132,7 +5132,7 @@ describe("$compile", () => {
     });
 
     it('should detect anchor elements with the string "SVG" in the `href` attribute as an anchor', async () => {
-      element = JQLite(
+      element = (
         '<div><a href="/ID_SVG_ID">' +
           '<span ng-if="true">Should render</span>' +
           "</a></div>",
@@ -5151,7 +5151,7 @@ describe("$compile", () => {
         },
       }));
       reloadModules();
-      element = JQLite("<div><div after>A</div></div>");
+      element = ("<div><div after>A</div></div>");
       $compile(element)($rootScope);
       expect(element.textContent).toBe("AB");
     });
@@ -5164,7 +5164,7 @@ describe("$compile", () => {
       }));
 
       reloadModules();
-      element = JQLite(
+      element = (
         '<div><div ng-repeat="i in [1,2]"><div after>A</div></div></div>',
       );
       $compile(element)($rootScope);
@@ -5179,7 +5179,7 @@ describe("$compile", () => {
         },
       }));
       reloadModules();
-      element = JQLite("<div><div remove-node></div><div>{{test}}</div></div>");
+      element = ("<div><div remove-node></div><div>{{test}}</div></div>");
       $rootScope.test = "Hello";
       $compile(element)($rootScope);
       await wait();
@@ -7412,7 +7412,7 @@ describe("$compile", () => {
         observer.observe(document.body, { childList: true, subtree: true });
 
         // Run the actual test
-        const base = JQLite('<div>&mdash; {{ "This doesn\'t." }}</div>');
+        const base = ('<div>&mdash; {{ "This doesn\'t." }}</div>');
         element = $compile(base)($rootScope);
         await wait();
         expect(element.textContent).toBe("— This doesn't.");
@@ -7427,7 +7427,7 @@ describe("$compile", () => {
         div.appendChild(document.createTextNode("2{{ value }}"));
         div.appendChild(document.createTextNode("3{{ value }}"));
 
-        element = JQLite(div.childNodes);
+        element = (div.childNodes);
         $compile(element)($rootScope);
         $rootScope.$apply("value = 0");
 
@@ -7580,7 +7580,7 @@ describe("$compile", () => {
       });
 
       it("should not store linkingFns for () => {} branches", () => {
-        element = JQLite('<div name="{{a}}"><span>ignore</span></div>');
+        element = ('<div name="{{a}}"><span>ignore</span></div>');
         const linkingFn = $compile(element);
         // Now prune the branches with no directives
         element.find("span").remove();
@@ -11423,7 +11423,7 @@ describe("$compile", () => {
             return expectedController;
           },
           link(scope, element, attrs, controller) {
-            if (element.parent().length) {
+            if (element.parentElement.length) {
               expect(expectedController).toBeDefined();
               expect(controller).toBe(expectedController);
               expect(controller.foo).toEqual("bar");
@@ -12517,9 +12517,9 @@ describe("$compile", () => {
           await wait();
           expect(element.textContent).toEqual("W:isoT:root;");
           expect(
-            JQLite(JQLite(element.find("li")[1])[0].childNodes[0]).innerText,
+            ((element.find("li")[1])[0].childNodes[0]).innerText,
           ).toEqual("T:root");
-          expect(JQLite(element.find("span")[0]).innerText).toEqual(";");
+          expect((element.find("span")[0]).innerText).toEqual(";");
         });
 
         it("should transclude transcluded content", async () => {
@@ -12899,8 +12899,8 @@ describe("$compile", () => {
             $rootScope,
           );
           await wait();
-          expect(JQLite(element.find("span")[0]).innerText).toEqual("I:");
-          expect(JQLite(element.find("span")[1]).innerText).toEqual("T:true");
+          expect((element.find("span")[0]).innerText).toEqual("I:");
+          expect((element.find("span")[1]).innerText).toEqual("T:true");
         });
 
         it("should clear contents of the ng-transclude element before appending transcluded content if transcluded content exists", async () => {
@@ -12935,7 +12935,7 @@ describe("$compile", () => {
             template: "<div ng-transclude>fallback content</div>",
           }));
           initInjector("test1");
-          element = JQLite("<div trans></div>");
+          element = ("<div trans></div>");
           const linkfn = $compile(element);
           expect(element.innerHTML).toEqual('<div ng-transclude=""></div>');
           linkfn($rootScope);
@@ -13391,7 +13391,7 @@ describe("$compile", () => {
             scope: {},
           }));
           initInjector("test1");
-          element = JQLite("<div transclude></div>");
+          element = ("<div transclude></div>");
           element.appendChild(document.createTextNode("1{{ value }}"));
           element.appendChild(document.createTextNode("2{{ value }}"));
           element.appendChild(document.createTextNode("3{{ value }}"));
@@ -13412,7 +13412,7 @@ describe("$compile", () => {
             module
               .directive("lazyCompile", ($compile) => ({
                 compile(tElement, tAttrs) {
-                  const content = JQLite(tElement[0].childNodes);
+                  const content = (tElement[0].childNodes);
                   tElement.empty();
                   return function (scope, element, attrs, ctrls, transcludeFn) {
                     element.append(content);
@@ -13703,7 +13703,7 @@ describe("$compile", () => {
             let size;
             const initialSize = CACHE.size;
 
-            element = JQLite(
+            element = (
               '<div><ul><li ng-repeat="n in nums">{{n}} => <i ng-if="0 === n%2">Even</i><i ng-if="1 === n%2">Odd</i></li></ul></div>',
             );
             $compile(element)($rootScope.$new());
@@ -13792,7 +13792,7 @@ describe("$compile", () => {
               scope: {},
               link: function link(scope, element, attrs) {
                 const foo = element.querySelector(".foo");
-                scope.children = JQLite(foo).children().length;
+                scope.children = (foo).children().length;
               },
               template:
                 "<div>" +
@@ -13949,8 +13949,8 @@ describe("$compile", () => {
           },
         }));
         initInjector("test1");
-        const element = JQLite(
-          JQLite("<div>before<div transclude></div>after</div>")[0].childNodes,
+        const element = (
+          ("<div>before<div transclude></div>after</div>")[0].childNodes,
         );
         expect(element.length).toEqual(3);
         expect(getNodeName(element[1])).toBe("div");
@@ -14120,7 +14120,7 @@ describe("$compile", () => {
             link(scope, element, attr, controllers, transclude) {
               log.push(`innerAgain:${getNodeName(element)}`);
               transclude(scope, (clone) => {
-                element.parent().append(clone);
+                element.parentElement.append(clone);
               });
             },
           }))
@@ -14136,7 +14136,7 @@ describe("$compile", () => {
             link(scope, element, attrs, controllers, transclude) {
               log.push(`outer:${getNodeName(element)}`);
               transclude(scope, (clone) => {
-                element.parent().append(clone);
+                element.parentElement.append(clone);
               });
             },
           }));
@@ -14750,7 +14750,7 @@ describe("$compile", () => {
         scope: {},
       }));
       initInjector("test1");
-      element = JQLite("<div transclude></div>");
+      element = ("<div transclude></div>");
       element.appendChild(document.createTextNode("1{{ value }}"));
       element.appendChild(document.createTextNode("2{{ value }}"));
       element.appendChild(document.createTextNode("3{{ value }}"));
@@ -15947,7 +15947,7 @@ describe("$compile", () => {
           "<span ng-repeat-end>{{i}}B;</span>" +
           "<div></div>",
       )($rootScope);
-      element = JQLite(element.parentNode.childNodes); // reset because repeater is top level.
+      element = (element.parentNode.childNodes); // reset because repeater is top level.
       expect(element.textContent).toEqual("1A1B;2A2B;");
     });
 
@@ -15969,7 +15969,7 @@ describe("$compile", () => {
           "<div ng-repeat-end>{{i}}B;</div>" +
           "<div></div>",
       )($rootScope);
-      element = JQLite(element.parentNode.childNodes); // reset because repeater is top level.
+      element = (element.parentNode.childNodes); // reset because repeater is top level.
       expect(element.textContent).toEqual("1A..1B;2A..2B;");
     });
 
@@ -15983,7 +15983,7 @@ describe("$compile", () => {
           "<div ng-repeat-end>){{i}};</div>" +
           "<div></div>",
       )($rootScope);
-      element = JQLite(element.parentNode.childNodes); // reset because repeater is top level.
+      element = (element.parentNode.childNodes); // reset because repeater is top level.
       expect(element.textContent).toEqual("1(2-23-3)1;2(2-23-3)2;");
     });
 
@@ -16228,7 +16228,7 @@ describe("$compile", () => {
 
   //   it("should automatically fire the addClass and removeClass animation hooks", () => {
   //     let data;
-  //     const element = JQLite('<div class="{{val1}} {{val2}} fire"></div>');
+  //     const element = ('<div class="{{val1}} {{val2}} fire"></div>');
   //     $compile(element)($rootScope);
 
   //     ;
@@ -16326,7 +16326,7 @@ describe("$compile", () => {
     }
 
     async function testCompileLinkDataCleanup(template) {
-      const toCompile = JQLite(template);
+      const toCompile = (template);
 
       const preCompiledChildren = getAll(toCompile);
       Object.entries(preCompiledChildren).forEach(([i, element]) => {

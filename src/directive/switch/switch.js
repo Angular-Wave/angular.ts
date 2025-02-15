@@ -1,4 +1,4 @@
-import { getBlockNodes } from "../../shared/jqlite/jqlite.js";
+import { getBlockNodes } from "../../shared//dom.js";
 
 export const ngSwitchDirective = [
   "$animate",
@@ -60,7 +60,7 @@ export const ngSwitchDirective = [
               caseElement[caseElement.length++] = document.createComment("");
               const block = { clone: caseElement };
               selectedElements.push(block);
-              $animate.enter(caseElement, anchor.parent(), anchor);
+              $animate.enter(caseElement, anchor.parentElement, anchor);
             });
           });
         }

@@ -883,7 +883,7 @@ describe("$location", () => {
   //       $rootScope.$digest();
   //       $window.location.href = "http://localhost:9876/?q='";
   //       expect(() => {
-  //         JQLite($window).triggerHandler("popstate");
+  //         ($window).triggerHandler("popstate");
   //       }).not.toThrow();
   //     });
   //   });
@@ -939,7 +939,7 @@ describe("$location", () => {
   //         });
   //       });
 
-  //       JQLite($window).triggerHandler("hashchange");
+  //       ($window).triggerHandler("hashchange");
 
   //       expect($browser.url()).toBe("http://foo.bar/#!/baz/qux");
   //       expect($location.absUrl()).toBe("http://foo.bar/#!/baz/qux");
@@ -1378,7 +1378,7 @@ describe("$location", () => {
   //       $rootScope.$digest(); // allow $location initialization to finish
 
   //       $window.location.href = "http://server/app/Home?q='";
-  //       JQLite($window).triggerHandler("popstate");
+  //       ($window).triggerHandler("popstate");
 
   //       expect($location.absUrl()).toEqual("http://server/app/Home?q='");
   //       expect($location.path()).toEqual("/Home");
@@ -1756,9 +1756,9 @@ describe("$location", () => {
   //     }
 
   //     if (linkHref) {
-  //       link = JQLite(`<a href="${linkHref}"${attrs}>${content}</a>`)[0];
+  //       link = (`<a href="${linkHref}"${attrs}>${content}</a>`)[0];
   //     } else {
-  //       link = JQLite(`<a ${attrs}>${content}</a>`)[0];
+  //       link = (`<a ${attrs}>${content}</a>`)[0];
   //     }
 
   //     module(
@@ -1828,15 +1828,15 @@ describe("$location", () => {
   //         browserTrigger(link, "click");
   //         expectRewriteTo($browser, "http://host.com/base/");
 
-  //         JQLite(link).attr("href", "http://host.com/base/foo");
+  //         (link).attr("href", "http://host.com/base/foo");
   //         browserTrigger(link, "click");
   //         expectRewriteTo($browser, "http://host.com/base/foo");
 
-  //         JQLite(link).attr("href", "http://host.com/base/");
+  //         (link).attr("href", "http://host.com/base/");
   //         browserTrigger(link, "click");
   //         expectRewriteTo($browser, "http://host.com/base/");
 
-  //         JQLite(link)
+  //         (link)
   //           .attr("href", "http://host.com/base/foo")
   //           .on("click", (e) => {
   //             e.preventDefault();
@@ -2113,7 +2113,7 @@ describe("$location", () => {
   //       }),
   //       setupRewriteChecks(),
   //       ($browser) => {
-  //         const span = JQLite(link).find("span");
+  //         const span = (link).find("span");
 
   //         browserTrigger(span, "click");
   //         expectRewriteTo($browser, "http://host.com/base/some/link");
@@ -2441,12 +2441,12 @@ describe("$location", () => {
   //     });
   //     inject(($location) => {
   //       // make IE happy
-  //       JQLite(document.body).html(
+  //       (document.body).html(
   //         '<a href="http://server/test.html">link</a>',
   //       );
 
   //       const event = {
-  //         target: JQLite(document.body).find("a")[0],
+  //         target: (document.body).find("a")[0],
   //         preventDefault: jasmine.createSpy("preventDefault"),
   //         isDefaultPrevented: jasmine.createSpy().and.returnValue(false),
   //       };
@@ -2481,12 +2481,12 @@ describe("$location", () => {
   //         $location,
   //       ) => {
   //         // make IE happy
-  //         JQLite(document.body).html(
+  //         (document.body).html(
   //           '<a href="http://server/index.html#test">link</a>',
   //         );
 
   //         const event = {
-  //           target: JQLite(document.body).find("a")[0],
+  //           target: (document.body).find("a")[0],
   //           preventDefault: jasmine.createSpy("preventDefault"),
   //           isDefaultPrevented: jasmine.createSpy().and.returnValue(false),
   //         };
@@ -2920,7 +2920,7 @@ describe("$location", () => {
   //         function ($rootElement, $compile, $rootScope) {
   //           $rootElement.html('<a href="http://server/#!/somePath">link</a>');
   //           $compile($rootElement)($rootScope);
-  //           JQLite(document.body).append($rootElement);
+  //           (document.body).append($rootElement);
   //         },
   //     );
 
@@ -2951,7 +2951,7 @@ describe("$location", () => {
   //       return function ($rootElement, $compile, $rootScope) {
   //         $rootElement.html('<a href="http://server/somePath">link</a>');
   //         $compile($rootElement)($rootScope);
-  //         JQLite(document.body).append($rootElement);
+  //         (document.body).append($rootElement);
   //       };
   //     });
 

@@ -1,5 +1,5 @@
 import { Angular } from "../../loader";
-import { dealoc } from "../../shared/jqlite/jqlite.js";
+import { dealoc } from "../../shared//dom.js";
 import { wait } from "../../shared/test-utils";
 
 describe("ng-bind", () => {

@@ -1,4 +1,4 @@
-import { JQLite, dealoc } from "../../shared/jqlite/jqlite.js";
+import { JQLite, dealoc } from "../../shared//dom.js";
 import { Angular } from "../../loader.js";
 import { NgModelController } from "./model.js";
 import { isDefined, isObject } from "../../shared/utils.js";
@@ -36,7 +36,7 @@ describe("ngModel", () => {
       $$clearControlValidity: () => {},
     };
 
-    element = JQLite("<form><input></form>");
+    element = "<form><input></form>";
     let $controller = injector.get("$controller");
     scope = injector.get("$rootScope");
     $rootScope = scope;
@@ -1574,7 +1574,7 @@ describe("ngModel", () => {
     });
 
     function createInput(type) {
-      inputElm = JQLite(`<input type="${type}" ng-model="val" custom-format/>`);
+      inputElm = `<input type="${type}" ng-model="val" custom-format/>`;
       const injector = angular.bootstrap(inputElm, ["myModule"]);
       scope = injector.get("$rootScope");
     }
@@ -1813,7 +1813,7 @@ describe("ngModel", () => {
 
   //   beforeEach(() => {
   //     scope = $rootScope.$new();
-  //     doc = JQLite(
+  //     doc = (
   //       '<form name="myForm">' +
   //         '  <input type="text" ng-model="input" name="myInput" />' +
   //         "</form>",

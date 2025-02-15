@@ -1,5 +1,5 @@
 import { Angular } from "../../loader.js";
-import { JQLite } from "../../shared/jqlite/jqlite.js";
+import { JQLite } from "../../shared//dom.js";
 import { wait } from "../../shared/test-utils.js";
 describe("observe", () => {
   let $compile, $scope, $rootScope, element, observerSpy;
@@ -30,7 +30,7 @@ describe("observe", () => {
 
   it("should set the scope property to the attribute value before any changes", () => {
     const scope = $rootScope.$new();
-    const element = JQLite('<div ng-observe-sourceAttr="testProp"></div>');
+    const element = '<div ng-observe-sourceAttr="testProp"></div>';
     element.attr("sourceAttr", "initialValue");
     $compile(element)(scope);
 

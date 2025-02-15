@@ -1,6 +1,6 @@
 import { isString } from "../shared/utils.js";
 import { NG_ANIMATE_CHILDREN_DATA } from "./shared.js";
-import { setCacheData } from "../shared/jqlite/jqlite.js";
+import { setCacheData } from "../shared//dom.js";
 
 $$AnimateChildrenDirective.$inject = ["$interpolate"];
 

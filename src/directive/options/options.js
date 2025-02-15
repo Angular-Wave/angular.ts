@@ -1,8 +1,4 @@
-import {
-  emptyElement,
-  removeElement,
-  startingTag,
-} from "../../shared/jqlite/jqlite.js";
+import { emptyElement, removeElement, startingTag } from "../../shared//dom.js";
 import {
   assertArg,
   equals,
@@ -217,7 +213,7 @@ export const ngOptionsDirective = [
     }
 
     // Support: IE 9 only
-    // We can't just JQLite('<option>') since JQLite is not smart enough
+    // We can't just ('<option>') since JQLite is not smart enough
     // to create it in <select> and IE barfs otherwise.
     const optionTemplate = document.createElement("option");
     const optGroupTemplate = document.createElement("optgroup");

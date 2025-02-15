@@ -1,5 +1,5 @@
 import { createInjector } from "../../core/di/injector";
-import { JQLite, dealoc } from "../../shared/jqlite/jqlite.js";
+import { JQLite, dealoc } from "../../shared//dom.js";
 import { Angular } from "../../loader";
 import {
   isBoolean,
@@ -21,7 +21,7 @@ describe("ngOptions", () => {
   let injector;
 
   function compile(html) {
-    formElement = JQLite(`<form name="form">${html}</form>`);
+    formElement = `<form name="form">${html}</form>`;
     element = formElement.find("select");
     $compile(formElement)(scope);
     ngModelCtrl = element.controller("ngModel");
@@ -187,7 +187,7 @@ describe("ngOptions", () => {
           .directive("oCompileContents", () => ({
             link(scope, element) {
               linkLog.push("linkCompileContents");
-              $compile(JQLite(element.childNodes))(scope);
+              $compile(element.childNodes)(scope);
             },
           }))
 
@@ -561,8 +561,8 @@ describe("ngOptions", () => {
     });
 
     expect(element.find("option").length).toEqual(2);
-    expect(JQLite(element.find("option")[0]).text()).toEqual("blank");
-    expect(JQLite(element.find("option")[1]).text()).toEqual("A");
+    expect(element.find("option")[0].text()).toEqual("blank");
+    expect(element.find("option")[1].text()).toEqual("A");
 
     scope.$apply(() => {
       scope.values = [];
@@ -570,7 +570,7 @@ describe("ngOptions", () => {
     });
 
     expect(element.find("option").length).toEqual(1);
-    expect(JQLite(element.find("option")[0]).text()).toEqual("blank");
+    expect(element.find("option")[0].text()).toEqual("blank");
   });
 
   it("should ignore $ and $$ properties", () => {
@@ -2001,10 +2001,10 @@ describe("ngOptions", () => {
 
       expect(element.value).toEqual("2");
 
-      const first = JQLite(element.find("option")[0]);
+      const first = element.find("option")[0];
       expect(first.text()).toEqual("first");
       expect(first.attr("value")).toEqual("1");
-      const forth = JQLite(element.find("option")[3]);
+      const forth = element.find("option")[3];
       expect(forth.text()).toEqual("forth");
       expect(forth.attr("value")).toEqual("4");
 
@@ -2160,7 +2160,7 @@ describe("ngOptions", () => {
 
       expect(element.find("option").length).toEqual(2);
       expect(element.value).toEqual("?");
-      expect(JQLite(element.find("option")[0]).value).toEqual("?");
+      expect(element.find("option")[0].value).toEqual("?");
 
       scope.$apply(() => {
         scope.selected = scope.values[0];
@@ -2180,14 +2180,14 @@ describe("ngOptions", () => {
 
       expect(element.find("option").length).toEqual(2);
       expect(element.value).toEqual("");
-      expect(JQLite(element.find("option")[0]).value).toEqual("");
+      expect(element.find("option")[0].value).toEqual("");
 
       scope.$apply(() => {
         scope.selected = scope.values[0];
       });
 
       expect(element).toEqualSelectValue(scope.selected);
-      expect(JQLite(element.find("option")[0]).value).toEqual("");
+      expect(element.find("option")[0].value).toEqual("");
       expect(element.find("option").length).toEqual(2);
     });
 
@@ -2201,7 +2201,7 @@ describe("ngOptions", () => {
 
       expect(element.find("option").length).toEqual(2);
       expect(element.value).toEqual("");
-      expect(JQLite(element.find("option")[0]).value).toEqual("");
+      expect(element.find("option")[0].value).toEqual("");
 
       scope.$apply(() => {
         scope.selected = scope.values[0];

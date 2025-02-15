@@ -1,5 +1,4 @@
 import { isString, minErr, extend } from "../shared/utils.js";
-import { JQLite } from "../shared/jqlite/jqlite.js";
 import { ASTType } from "../core/parse/ast-type.js";
 
 export const ADD_CLASS_SUFFIX = "-add";
@@ -121,31 +120,29 @@ export function removeFromArray(arr, val) {
 
 /**
  *
- * @param {JQLite|Node} element
- * @returns {JQLite}
+ * @param {NodeList} element
+ * @returns {Node}
  */
 export function stripCommentsFromElement(element) {
-  if (element instanceof JQLite) {
-    switch (element.length) {
-      case 0:
+  switch (element.length) {
+    case 0:
+      return /** @type {JQLite} */ (element);
+
+    case 1:
+      // there is no point of stripping anything if the element
+      // is the only element within the JQLite wrapper.
+      // (it's important that we retain the element instance.)
+      if (element.nodeType === Node.ELEMENT_NODE) {
         return /** @type {JQLite} */ (element);
+      }
+      break;
 
-      case 1:
-        // there is no point of stripping anything if the element
-        // is the only element within the JQLite wrapper.
-        // (it's important that we retain the element instance.)
-        if (element.nodeType === Node.ELEMENT_NODE) {
-          return /** @type {JQLite} */ (element);
-        }
-        break;
-
-      default:
-        return JQLite(extractElementNode(element));
-    }
+    default:
+      return extractElementNode(element);
   }
 
   if (/** @type {Node} */ (element).nodeType === Node.ELEMENT_NODE) {
-    return JQLite(element);
+    return element;
   }
 }
 

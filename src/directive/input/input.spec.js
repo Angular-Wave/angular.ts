@@ -1,5 +1,5 @@
 import { Angular } from "../../loader";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { dealoc, JQLite } from "../../shared//dom.js";
 import { wait } from "../../shared/test-utils";
 import { EMAIL_REGEXP, ISO_DATE_REGEXP, URL_REGEXP } from "./input";
 
@@ -57,7 +57,7 @@ describe("input", () => {
 
   it("should not set the `val` property when the value is equal to the current value", async () => {
     // This is a workaround for Firefox validation. Look at #12102.
-    const input = JQLite('<input type="text" ng-model="foo" required/>');
+    const input = '<input type="text" ng-model="foo" required/>';
     let setterCalls = 0;
     scope.foo = "";
     Object.defineProperty(input[0], "value", {
@@ -2508,7 +2508,7 @@ describe("input", () => {
     });
 
     describe("range", () => {
-      const rangeTestEl = JQLite('<input type="range">');
+      const rangeTestEl = '<input type="range">';
       const supportsRange = rangeTestEl[0].type === "range";
 
       it("should render as 50 if null", () => {

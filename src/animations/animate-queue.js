@@ -1,4 +1,4 @@
-import { getOrSetCacheData } from "../shared/jqlite/jqlite.js";
+import { getOrSetCacheData } from "../shared//dom.js";
 import {
   isUndefined,
   isObject,
@@ -619,7 +619,7 @@ export function AnimateQueueProvider($animateProvider) {
           // if addClass/removeClass is called before something like enter then the
           // registered parent element may not be present. The code below will ensure
           // that a final value for parent element is obtained
-          const parentElement = element.parent() || [];
+          const parentElement = element.parentElement || [];
 
           // animate/structural/class-based animations all have requirements. Otherwise there
           // is no point in performing an animation. The parent node must also be set.

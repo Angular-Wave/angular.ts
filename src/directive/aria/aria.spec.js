@@ -1,6 +1,6 @@
 import { createInjector } from "../../core/di/injector";
 import { Angular } from "../../loader";
-import { dealoc } from "../../shared/jqlite/jqlite.js";
+import { dealoc } from "../../shared//dom.js";
 
 describe("$aria", () => {
   let scope;
@@ -1081,16 +1081,16 @@ describe("$aria", () => {
         scope,
       );
 
-      element.triggerHandler({ type: "keydown", keyCode: 13 });
-      element.triggerHandler({ type: "keydown", keyCode: 32 });
-      element.triggerHandler({ type: "keypress", keyCode: 13 });
-      element.triggerHandler({ type: "keypress", keyCode: 32 });
-      element.triggerHandler({ type: "keyup", keyCode: 13 });
-      element.triggerHandler({ type: "keyup", keyCode: 32 });
+      triggerHandler(element, { type: "keydown", keyCode: 13 });
+      triggerHandler(element, { type: "keydown", keyCode: 32 });
+      triggerHandler(element, { type: "keypress", keyCode: 13 });
+      triggerHandler(element, { type: "keypress", keyCode: 32 });
+      triggerHandler(element, { type: "keyup", keyCode: 13 });
+      triggerHandler(element, { type: "keyup", keyCode: 32 });
 
       expect(scope.someAction).not.toHaveBeenCalled();
 
-      element.triggerHandler({ type: "click", keyCode: 32 });
+      triggerHandler(element, { type: "click", keyCode: 32 });
 
       expect(scope.someAction).toHaveBeenCalled();
     });

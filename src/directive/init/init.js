@@ -1,4 +1,4 @@
-import { getController } from "../../shared/jqlite/jqlite.js";
+import { getController } from "../../shared//dom.js";
 
 /**
  * @returns {import('../../types.js').Directive}

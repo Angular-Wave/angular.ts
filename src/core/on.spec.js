@@ -17,7 +17,7 @@ describe("ngOn* event binding", () => {
     const element = $compile('<span ng-on-foo="name = name + 3"></span>')(
       $rootScope,
     );
-    element.triggerHandler("foo");
+    triggerHandler(element, "foo");
     expect($rootScope.name).toBe("Misko3");
   });
 
@@ -25,7 +25,7 @@ describe("ngOn* event binding", () => {
     const element = $compile('<span ng-on-foo="e = $event"></span>')(
       $rootScope,
     );
-    element.triggerHandler("foo");
+    triggerHandler(element, "foo");
     expect($rootScope.e.target).toBe(element);
   });
 
@@ -35,7 +35,7 @@ describe("ngOn* event binding", () => {
     );
     $rootScope.fooEvent = jasmine.createSpy("fooEvent");
 
-    element.triggerHandler("foo");
+    triggerHandler(element, "foo");
 
     expect($rootScope.fooEvent).toHaveBeenCalled();
   });
@@ -47,14 +47,14 @@ describe("ngOn* event binding", () => {
     $rootScope.fooEvent = jasmine.createSpy("fooEvent");
     $rootScope.barEvent = jasmine.createSpy("barEvent");
 
-    element.triggerHandler("foo");
+    triggerHandler(element, "foo");
     expect($rootScope.fooEvent).toHaveBeenCalled();
     expect($rootScope.barEvent).not.toHaveBeenCalled();
 
     $rootScope.fooEvent.calls.reset();
     $rootScope.barEvent.calls.reset();
 
-    element.triggerHandler("bar");
+    triggerHandler(element, "bar");
     expect($rootScope.fooEvent).not.toHaveBeenCalled();
     expect($rootScope.barEvent).toHaveBeenCalled();
   });
@@ -65,10 +65,10 @@ describe("ngOn* event binding", () => {
       '<span ng-on-test="cb(1)" ng-On-test2="cb(2)"></span>',
     )($rootScope);
 
-    element.triggerHandler("test");
+    triggerHandler(element, "test");
     expect(cb).toHaveBeenCalledWith(1);
 
-    element.triggerHandler("test2");
+    triggerHandler(element, "test2");
     expect(cb).toHaveBeenCalledWith(2);
   });
 
@@ -79,19 +79,19 @@ describe("ngOn* event binding", () => {
         'ng-on-test5="cb(5)" ng-on-test6="cb(6)"></span>',
     )($rootScope);
 
-    element.triggerHandler("test2");
+    triggerHandler(element, "test2");
     expect(cb).toHaveBeenCalledWith(2);
 
-    element.triggerHandler("test3");
+    triggerHandler(element, "test3");
     expect(cb).toHaveBeenCalledWith(3);
 
-    element.triggerHandler("test4");
+    triggerHandler(element, "test4");
     expect(cb).toHaveBeenCalledWith(4);
 
-    element.triggerHandler("test5");
+    triggerHandler(element, "test5");
     expect(cb).toHaveBeenCalledWith(5);
 
-    element.triggerHandler("test6");
+    triggerHandler(element, "test6");
     expect(cb).toHaveBeenCalledWith(6);
   });
 
@@ -100,7 +100,7 @@ describe("ngOn* event binding", () => {
       $rootScope,
     );
     const cb = ($rootScope.cb = jasmine.createSpy("ng-on cb"));
-    element.triggerHandler("asdf");
+    triggerHandler(element, "asdf");
     expect(cb).toHaveBeenCalled();
     expect(element.attr("asdf")).toBe("foo");
   });
@@ -110,7 +110,7 @@ describe("ngOn* event binding", () => {
       $rootScope,
     );
     const cb = ($rootScope.cb = jasmine.createSpy("ng-on cb"));
-    element.triggerHandler("asdf");
+    triggerHandler(element, "asdf");
     expect(cb).toHaveBeenCalled();
     expect(element.attr("asdf")).toBe("foo");
   });
@@ -120,7 +120,7 @@ describe("ngOn* event binding", () => {
       $rootScope,
     );
     const cb = ($rootScope.cb = jasmine.createSpy("ng-on cb"));
-    element.triggerHandler("asdf");
+    triggerHandler(element, "asdf");
     expect(cb).toHaveBeenCalled();
     expect(element.asdf).toBe(123);
   });
@@ -187,24 +187,24 @@ describe("ngOn* event binding", () => {
   it("should correctly bind to kebab-cased event names", () => {
     const element = $compile('<span ng-on-foo-bar="cb()"></span>')($rootScope);
     const cb = ($rootScope.cb = jasmine.createSpy("ng-on cb"));
-    element.triggerHandler("foobar");
-    element.triggerHandler("fooBar");
+    triggerHandler(element, "foobar");
+    triggerHandler(element, "fooBar");
     expect(cb).not.toHaveBeenCalled();
 
-    element.triggerHandler("foo-bar");
+    triggerHandler(element, "foo-bar");
     expect(cb).toHaveBeenCalled();
   });
 
   it("should correctly bind to camelCased event names", () => {
     const element = $compile('<span ng-on-foo_bar="cb()"></span>')($rootScope);
     const cb = ($rootScope.cb = jasmine.createSpy("ng-on cb"));
-    element.triggerHandler("foobar");
-    element.triggerHandler("foo-bar");
-    element.triggerHandler("foo-bar");
-    element.triggerHandler("foo-bar");
+    triggerHandler(element, "foobar");
+    triggerHandler(element, "foo-bar");
+    triggerHandler(element, "foo-bar");
+    triggerHandler(element, "foo-bar");
     expect(cb).not.toHaveBeenCalled();
 
-    element.triggerHandler("fooBar");
+    triggerHandler(element, "fooBar");
     expect(cb).toHaveBeenCalled();
   });
 });

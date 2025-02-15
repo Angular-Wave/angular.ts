@@ -1,5 +1,5 @@
 import { Angular } from "../../loader";
-import { dealoc } from "../../shared/jqlite/jqlite.js";
+import { dealoc } from "../../shared//dom.js";
 
 describe("ngSwitch", () => {
   let $scope;
@@ -498,7 +498,7 @@ describe("ngSwitch", () => {
 //         // we need to run animation on attached elements;
 //         function (_$rootElement_) {
 //           $rootElement = _$rootElement_;
-//           body = JQLite(document.body);
+//           body = (document.body);
 //           body.append($rootElement);
 //         },
 //     ),

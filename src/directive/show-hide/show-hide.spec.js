@@ -1,10 +1,6 @@
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
-import {
-  dealoc,
-  JQLite,
-  createElementFromHTML,
-} from "../../shared/jqlite/jqlite.js";
+import { dealoc, JQLite, createElementFromHTML } from "../../shared//dom.js";
 import { wait } from "../../shared/test-utils";
 
 describe("ngShow / ngHide", () => {
@@ -148,7 +144,7 @@ describe("ngShow / ngHide", () => {
 
 //   beforeEach(() => {
 //     // we need to run animation on attached elements;
-//     body = JQLite(document.body);
+//     body = (document.body);
 //   });
 
 //   afterEach(() => {

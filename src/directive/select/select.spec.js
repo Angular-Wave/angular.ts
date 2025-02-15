@@ -1,5 +1,5 @@
 import { Angular } from "../../loader";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { dealoc, JQLite } from "../../shared//dom.js";
 import { hashKey, equals, isNumberNaN } from "../../shared/utils.js";
 import { browserTrigger, wait } from "../../shared/test-utils";
 
@@ -15,7 +15,7 @@ describe("select", () => {
   const optionAttributesList = [];
 
   async function compile(html) {
-    formElement = JQLite(`<form name="form">${html}</form>`);
+    formElement = (`<form name="form">${html}</form>`);
     element = formElement.find("select");
     $compile(formElement)(scope);
     await wait();
@@ -357,7 +357,7 @@ describe("select", () => {
       scope.mySelect = "B";
       await wait();
 
-      const select = JQLite(
+      const select = (
         '<select ng-model="mySelect">' +
           '<optgroup label="first">' +
           '<option value="A">A</option>' +
@@ -380,7 +380,7 @@ describe("select", () => {
     it("should only call selectCtrl.writeValue after a digest has occurred", async () => {
       scope.mySelect = "B";
       await wait();
-      const select = JQLite(
+      const select = (
         '<select spy-on-write-value ng-model="mySelect">' +
           '<optgroup label="first">' +
           '<option value="A">A</option>' +
@@ -1727,7 +1727,7 @@ describe("select", () => {
           let elems = element.find("option");
 
           for (var i = 0; i < elems.length; i++) {
-            JQLite(elems[i])[0].selected = true;
+            (elems[i])[0].selected = true;
           }
           browserTrigger(element, "change");
 

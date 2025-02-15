@@ -1,5 +1,5 @@
 import { getNodeName, minErr, directiveNormalize } from "../../shared/utils.js";
-import { getCacheData } from "../../shared/jqlite/jqlite.js";
+import { getCacheData } from "../../shared//dom.js";
 
 /**
  * The `ngRef` attribute tells AngularJS to assign the controller of a component (or a directive)
@@ -15,7 +15,7 @@ import { getCacheData } from "../../shared/jqlite/jqlite.js";
  *
  * @element ANY
  * @param {string} ngRef property name - A valid AngularJS expression identifier to which the
- *                       controller or jqlite-wrapped DOM element will be bound.
+ *                       controller or dom-wrapped DOM element will be bound.
  * @param {string=} ngRefRead read value - The name of a directive (or component) on this element,
  *                            or the special string `$element`. If a name is provided, `ngRef` will
  *                            assign the matching controller. If `$element` is provided, the element

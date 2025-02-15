@@ -9,9 +9,8 @@ import {
   dealoc,
   getCacheData,
   getInheritedData,
-  JQLite,
   setCacheData,
-} from "../../shared/jqlite/jqlite.js";
+} from "../../shared//dom.js";
 import { getLocals } from "../state/state-registry.js";
 /**
  * `ng-view`: A viewport directive which is filled in by a view from the active state.
@@ -355,8 +354,7 @@ export function $ViewDirectiveFill($compile, $controller, $transitions) {
               .call($element.children)
               .filter((el) => el && el.tagName && tagRegexp.exec(el.tagName));
             return (
-              directiveEl &&
-              JQLite(directiveEl).data(`$${cfg.component}Controller`)
+              directiveEl && directiveEl.data(`$${cfg.component}Controller`)
             );
           };
           const deregisterWatch = scope.$watch(

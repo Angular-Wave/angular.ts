@@ -1,5 +1,5 @@
 import { Angular } from "../../loader.js";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { dealoc, JQLite } from "../../shared//dom.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("ngRepeat", () => {
@@ -350,14 +350,14 @@ describe("ngRepeat", () => {
     });
 
     it("should error on wrong parsing of ngRepeat", async () => {
-      element = JQLite('<ul><li ng-repeat="i dont parse"></li></ul>');
+      element = ('<ul><li ng-repeat="i dont parse"></li></ul>');
       $compile(element)(scope);
       await wait();
       expect(logs.shift().message).toMatch(/i dont parse/);
     });
 
     it("should throw error when left-hand-side of ngRepeat can't be parsed", async () => {
-      element = JQLite('<ul><li ng-repeat="i dont parse in foo"></li></ul>');
+      element = ('<ul><li ng-repeat="i dont parse in foo"></li></ul>');
       $compile(element)(scope);
       await wait();
       expect(logs.shift().message).toMatch(/i dont parse/);
@@ -633,7 +633,7 @@ describe("ngRepeat", () => {
         replace: true,
         template: '<div ng-repeat="i in items">{{i}}|</div>',
       }));
-      element = JQLite("<div><span rr>{{i}}|</span></div>");
+      element = ("<div><span rr>{{i}}|</span></div>");
       $compile(element)(scope);
       await wait();
       expect(element.textContent).toBe("");
@@ -659,7 +659,7 @@ describe("ngRepeat", () => {
 
       $templateCache.set("rr.html", '<div ng-repeat="i in items">{{i}}|</div>');
 
-      element = JQLite("<div><span rr>{{i}}|</span></div>");
+      element = ("<div><span rr>{{i}}|</span></div>");
       $compile(element)(scope);
       await wait();
       expect(element.textContent).toBe("");
@@ -680,7 +680,7 @@ describe("ngRepeat", () => {
         replace: true,
         template: '<span ng-repeat="i in items">{{log(i)}}</span>',
       }));
-      element = JQLite("<span replace-me-with-repeater></span>");
+      element = ("<span replace-me-with-repeater></span>");
       $compile(element)(scope);
       await wait();
       expect(element.textContent).toBe("");
@@ -706,7 +706,7 @@ describe("ngRepeat", () => {
         "replace-me-with-repeater.html",
         '<div ng-repeat="i in items">{{log(i)}}</div>',
       );
-      element = JQLite(
+      element = (
         "<span>-</span><span replace-me-with-repeater></span><span>-</span>",
       );
       $compile(element)(scope);
@@ -767,7 +767,7 @@ describe("ngRepeat", () => {
       $compileProvider.directive("test", () => ({
         templateUrl: "/public/test.html",
       }));
-      element = JQLite('<div><div ng-repeat="i in items" test></div></div>');
+      element = ('<div><div ng-repeat="i in items" test></div></div>');
       $compile(element)(scope);
       scope.items = [1];
       await wait();
@@ -798,7 +798,7 @@ describe("ngRepeat", () => {
       expect(ends.length).toBe(3);
 
       // insert an extra element inside the second block
-      const extra = JQLite("<strong></strong>")[0];
+      const extra = ("<strong></strong>")[0];
       element.insertBefore(extra, ends[1]);
 
       scope.values.splice(1, 1);
@@ -824,7 +824,7 @@ describe("ngRepeat", () => {
       expect(ends.length).toBe(3);
 
       // insert an extra element inside the third block
-      const extra = JQLite("<strong></strong>")[0];
+      const extra = ("<strong></strong>")[0];
       element.insertBefore(extra, ends[2]);
 
       // move the third block to the beginning
@@ -982,7 +982,7 @@ describe("ngRepeat", () => {
     it("should allow mixing ngRepeat with ngInclude", (done) => {
       window.angular = new Angular();
 
-      element = JQLite(
+      element = (
         '<div><div ng-repeat="i in [1,2]" ng-include="\'/public/test.html\'"></div></div>',
       );
       const injector = window.angular.bootstrap(element);
@@ -1152,7 +1152,7 @@ describe("ngRepeat", () => {
 //         // we need to run animation on attached elements;
 //         function (_$rootElement_) {
 //           $rootElement = _$rootElement_;
-//           body = JQLite(document.body);
+//           body = (document.body);
 //           body.append($rootElement);
 //         },
 //     ),
