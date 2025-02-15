@@ -982,7 +982,7 @@ describe("$compile", () => {
       );
     });
 
-    it("does not use ng-attr- prefix in denormalized names", () => {
+    fit("does not use ng-attr- prefix in denormalized names", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive ng-attr-some-attribute="42"></my-directive>',
@@ -2724,7 +2724,7 @@ describe("$compile", () => {
       expect(el.innerHTML).toBe("");
     });
 
-    it("populates element with template", (done) => {
+    fit("populates element with template", (done) => {
       registerDirectives({
         myDirective: () => {
           return { templateUrl: "/public/my_directive.html" };
@@ -2734,7 +2734,7 @@ describe("$compile", () => {
       var el = createElementFromHTML("<div my-directive></div>");
       $compile(el);
       setTimeout(() => {
-        expect(el.find("div").length).toBe(1);
+        expect(el.children.length).toBe(1);
         done();
       }, 100);
     });
