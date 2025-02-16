@@ -1,5 +1,5 @@
-import { createInjector } from "./core/di/injector";
-import { Angular } from "./loader";
+import { createInjector } from "./core/di/injector.js";
+import { Angular } from "./loader.js";
 
 describe("public", () => {
   beforeEach(() => {

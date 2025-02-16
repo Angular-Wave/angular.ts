@@ -107,10 +107,10 @@ export function removeElement(element: Element, keepData?: boolean): void;
 export function startingTag(elementOrStr: string | Element): string;
 /**
  * Return the DOM siblings between the first and last node in the given array.
- * @param {JQLite|Array} nodes An array-like object
- * @returns {JQLite} the inputted object or a JQLite collection containing the nodes
+ * @param {Element|Array} nodes An array-like object
+ * @returns {Element} the inputted object or a JQLite collection containing the nodes
  */
-export function getBlockNodes(nodes: JQLite | any[]): JQLite;
+export function getBlockNodes(nodes: Element | any[]): Element;
 export function getBooleanAttrName(element: any, name: any): any;
 /**
  * Takes an array of elements, calls any `$destroy` event handlers, removes any data in cache, and finally removes any
@@ -120,9 +120,9 @@ export function getBooleanAttrName(element: any, name: any): any;
 export function cleanElementData(nodes: NodeListOf<Element> | Element[]): void;
 /**
  * Return instance of injector attached to element
- * @returns {import('../../core/di/internal-injector.js').InjectorService}
+ * @returns {import('../core/di/internal-injector.js').InjectorService}
  */
-export function getInjector(element: any): any;
+export function getInjector(element: any): import("../core/di/internal-injector.js").InjectorService;
 export function setData(element: any, key: any, value: any): void;
 /**
  * Creates a DOM element from an HTML string.

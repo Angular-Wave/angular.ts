@@ -1,5 +1,5 @@
 import { dealoc, JQLite } from "../shared/dom.js";
-import { Angular } from "../loader";
+import { Angular } from "../loader.js";
 import { wait } from "../shared/test-utils";
 
 describe("templateFactory", () => {

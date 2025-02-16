@@ -6,7 +6,7 @@ import {
   errorHandlingConfig,
 } from "./shared/utils.js";
 import { getInjector, setCacheData } from "./shared/dom.js";
-import { annotate, createInjector } from "./core/di/injector";
+import { annotate, createInjector } from "./core/di/injector.js";
 import { NgModule } from "./core/di/ng-module";
 import { CACHE } from "./core/cache/cache";
 import { publishExternalAPI } from "./public";

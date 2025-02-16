@@ -1,6 +1,6 @@
 import { dealoc, JQLite } from "../../shared/dom.js";
-import { Angular } from "../../loader";
-import { createInjector } from "../../core/di/injector";
+import { Angular } from "../../loader.js";
+import { createInjector } from "../../core/di/injector.js";
 import { wait } from "../../shared/test-utils";
 
 describe("ngInit", () => {

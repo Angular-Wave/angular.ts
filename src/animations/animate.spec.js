@@ -1,8 +1,8 @@
 import { dealoc, JQLite } from "../../shared/dom.js";
-import { Angular } from "../../loader";
+import { Angular } from "../../loader.js";
 import { isObject } from "../../shared/utils.js";
 import { isFunction } from "../../shared/utils.js";
-import { createInjector } from "../di/injector";
+import { createInjector } from "../di/injector.js";
 
 describe("$animate", () => {
   describe("without animation", () => {

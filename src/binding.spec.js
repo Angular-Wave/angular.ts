@@ -1,5 +1,5 @@
 import { dealoc } from "./shared/dom.js";
-import { Angular } from "./loader";
+import { Angular } from "./loader.js";
 import { browserTrigger, wait } from "./shared/test-utils";
 
 describe("binding", () => {

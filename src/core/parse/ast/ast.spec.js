@@ -1,8 +1,8 @@
 import { AST } from "./ast.js";
 import { Lexer } from "../lexer/lexer.js";
-import { createInjector } from "../../di/injector";
+import { createInjector } from "../../di/injector.js";
 import { ASTType } from "../ast-type";
-import { Angular } from "../../../loader";
+import { Angular } from "../../../loader.js";
 
 describe("ast", () => {
   let $rootScope;

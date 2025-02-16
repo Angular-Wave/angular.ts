@@ -1,6 +1,6 @@
-import { createInjector } from "../../core/di/injector";
+import { createInjector } from "../../core/di/injector.js";
 import { countWatchers } from "../../core/scope/scope.js";
-import { Angular } from "../../loader";
+import { Angular } from "../../loader.js";
 import { isString } from "../../shared/utils.js";
 import { JQLite } from "../../shared/dom.js";
 

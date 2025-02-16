@@ -7,9 +7,9 @@ export function ngBindDirective(): import("../../types.js").Directive;
  */
 export function ngBindTemplateDirective(): import("../../types.js").Directive;
 /**
- * TODO: add type
+ * @returns {import('../../types.js').Directive}
  */
-export const ngBindHtmlDirective: (string | (($parse: any) => {
-    restrict: string;
-    compile: (_tElement: any, tAttrs: any) => (scope: any, element: any) => void;
-}))[];
+export function ngBindHtmlDirective($parse: any): import("../../types.js").Directive;
+export namespace ngBindHtmlDirective {
+    let $inject: string[];
+}

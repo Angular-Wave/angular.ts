@@ -1,6 +1,6 @@
-import { createInjector } from "../../core/di/injector";
+import { createInjector } from "../../core/di/injector.js";
 import { dealoc } from "../../shared/dom.js";
-import { Angular } from "../../loader";
+import { Angular } from "../../loader.js";
 
 describe("ngChange", () => {
   let injector;

@@ -24,8 +24,8 @@ import {
   snakeCase,
 } from "./shared/utils.js";
 import { dealoc, startingTag } from "./shared/dom.js";
-import { Angular } from "./loader";
-import { createInjector } from "./core/di/injector";
+import { Angular } from "./loader.js";
+import { createInjector } from "./core/di/injector.js";
 import { wait } from "./shared/test-utils";
 
 describe("angular", () => {

@@ -1,4 +1,4 @@
-import { Angular } from "../../loader";
+import { Angular } from "../../loader.js";
 import { dealoc } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils";
 
@@ -102,7 +102,6 @@ describe("ng-bind", () => {
       $rootScope.value = new Date(2014, 10, 10, 0, 0, 0);
       element = $compile('<div ng-bind="value"></div>')($rootScope);
       await wait();
-      debugger;
       expect(element.textContent).toBe(
         JSON.stringify($rootScope.value.$target),
       );

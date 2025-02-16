@@ -1,4 +1,4 @@
-import { Angular } from "../loader";
+import { Angular } from "../loader.js";
 
 describe("router services", () => {
   let providers;

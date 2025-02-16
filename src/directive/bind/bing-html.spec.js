@@ -1,6 +1,6 @@
-import { createInjector } from "../../core/di/injector";
+import { createInjector } from "../../core/di/injector.js";
 import { forEach } from "../../shared/utils.js";
-import { Angular } from "../../loader";
+import { Angular } from "../../loader.js";
 
 describe("ngBindHtml", () => {
   let $rootScope, $compile;

@@ -1,4 +1,4 @@
-import { Angular } from "../../loader";
+import { Angular } from "../../loader.js";
 import { dealoc } from "../../shared/dom.js";
 
 describe("ngSwitch", () => {

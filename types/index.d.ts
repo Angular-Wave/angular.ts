@@ -1,2 +1,2 @@
 export const angular: Angular;
-import { Angular } from "./loader";
+import { Angular } from "./loader.js";

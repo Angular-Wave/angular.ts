@@ -1,6 +1,6 @@
 import { Lexer } from "./lexer";
-import { Angular } from "../../../loader";
-import { createInjector } from "../../di/injector";
+import { Angular } from "../../../loader.js";
+import { createInjector } from "../../di/injector.js";
 
 describe("lexer", () => {
   let $rootScope;

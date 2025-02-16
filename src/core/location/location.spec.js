@@ -3,8 +3,8 @@ import {
   LocationHashbangUrl,
   LocationProvider,
 } from "./location";
-import { Angular } from "../../loader";
-import { createInjector } from "../di/injector";
+import { Angular } from "../../loader.js";
+import { createInjector } from "../di/injector.js";
 
 describe("$location", () => {
   let module;

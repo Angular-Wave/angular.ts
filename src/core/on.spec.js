@@ -1,5 +1,5 @@
-import { Angular } from "../loader";
-import { createInjector } from "./di/injector";
+import { Angular } from "../loader.js";
+import { createInjector } from "./di/injector.js";
 
 describe("ngOn* event binding", () => {
   let $rootScope, module, injector, $compile;

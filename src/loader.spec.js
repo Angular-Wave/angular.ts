@@ -1,5 +1,5 @@
-import { Angular } from "./loader";
-import { createInjector } from "./core/di/injector";
+import { Angular } from "./loader.js";
+import { createInjector } from "./core/di/injector.js";
 
 describe("module loader", () => {
   let angular;
