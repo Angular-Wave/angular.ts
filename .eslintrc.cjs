@@ -22,7 +22,7 @@ module.exports = {
   },
   rules: {
     "import/prefer-default-export": "off",
-    "no-multy-assign": "off",
+    "no-multi-assign": "off",
     "no-param-reassign": "off"
   },
   ignorePatterns: ["**/*.spec.js"],

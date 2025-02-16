@@ -1,11 +1,5 @@
 import { Angular } from "./loader.js";
+import { onReady } from "./shared/dom.js";
 
 export const angular = new Angular();
-
-if (document.readyState === "complete") {
-  angular.init(document);
-} else {
-  document.addEventListener("DOMContentLoaded", () => {
-    angular.init(document);
-  });
-}
+onReady(() => angular.init(document));

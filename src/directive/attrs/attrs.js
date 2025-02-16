@@ -71,7 +71,6 @@ Object.entries(ALIASED_ATTR).forEach(([ngAttr]) => {
       return {
         priority: 99, // it needs to run after the attributes are interpolated
         link(_scope, element, attr) {
-          debugger;
           let name = attrName;
 
           if (

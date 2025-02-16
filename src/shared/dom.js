@@ -411,24 +411,6 @@ export function removeElement(element, keepData = false) {
 }
 
 /**
- * Execute a function on `DOMContentLoaded`
- * @param {Function} fn
- */
-function onReady(fn) {
-  function trigger() {
-    document.removeEventListener("DOMContentLoaded", trigger);
-    fn();
-  }
-  // check if document is already loaded
-  if (document.readyState === "complete") {
-    setTimeout(fn);
-  } else {
-    // We can not use JQLite since we are not done loading.
-    document.addEventListener("DOMContentLoaded", trigger);
-  }
-}
-
-/**
  * Extracts the starting tag from an HTML string or DOM element.
  *
  * @param {string|Element} elementOrStr - The HTML string or DOM element to process.
