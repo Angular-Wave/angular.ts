@@ -29,7 +29,7 @@ SelectController.$inject = ["$element", "$scope"];
 /**
  *
  * @param {Elements} $element
- * @param {import('../../core/scope/scope').Scope} $scope
+ * @param {import('../../core/scope/scope.js').Scope} $scope
  */
 function SelectController($element, $scope) {
   const self = this;

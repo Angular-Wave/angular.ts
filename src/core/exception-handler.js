@@ -46,7 +46,7 @@ export const errorHandler = (exception, cause) => {
 
 /**
  * @constructor
- * @this {import('../types').ServiceProvider}
+ * @this {import('../types.js').ServiceProvider}
  */
 export function ExceptionHandlerProvider() {
   this.$get = [

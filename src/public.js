@@ -137,7 +137,7 @@ export const VERSION = "[VI]{version}[/VI]";
 /**
  * Initializes `ng`, `animate`, `message`, `aria` and `router` modules.
  * @param {import('./loader').Angular} angular
- * @returns {import('./types').Module} `ng`module
+ * @returns {import('./types.js').Module} `ng`module
  */
 export function publishExternalAPI(angular) {
   const ng = angular

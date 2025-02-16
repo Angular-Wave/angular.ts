@@ -1,6 +1,6 @@
 /**
  * @constructor
- * @this {import('../types').ServiceProvider}
+ * @this {import('../types.js').ServiceProvider}
  */
 export function ExceptionHandlerProvider(this: any): void;
 export class ExceptionHandlerProvider {

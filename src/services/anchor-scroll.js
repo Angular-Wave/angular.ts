@@ -34,7 +34,7 @@ export class AnchorScrollProvider {
     /**
      *
      * @param {import('../core/location/location').Location} $location
-     * @param {import('../core/scope/scope').Scope} $rootScope
+     * @param {import('../core/scope/scope.js').Scope} $rootScope
      * @returns
      */
     function ($location, $rootScope) {

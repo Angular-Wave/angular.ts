@@ -25,9 +25,9 @@ export function removeElementData(element: Element, name?: string): void;
  *
  * @param {Element} element
  * @param {boolean} [createIfNecessary=false]
- * @returns {import("../../core/cache/cache.js").ExpandoStore}
+ * @returns {import("../core/cache/cache.js").ExpandoStore}
  */
-export function getExpando(element: Element, createIfNecessary?: boolean): import("../../core/cache/cache.js").ExpandoStore;
+export function getExpando(element: Element, createIfNecessary?: boolean): import("../core/cache/cache.js").ExpandoStore;
 /**
  * Checks if the string contains HTML tags or entities.
  * @param {string} html
@@ -122,7 +122,7 @@ export function cleanElementData(nodes: NodeListOf<Element> | Element[]): void;
  * Return instance of injector attached to element
  * @returns {import('../../core/di/internal-injector.js').InjectorService}
  */
-export function getInjector(element: any): import("../../core/di/internal-injector.js").InjectorService;
+export function getInjector(element: any): any;
 export function setData(element: any, key: any, value: any): void;
 /**
  * Creates a DOM element from an HTML string.

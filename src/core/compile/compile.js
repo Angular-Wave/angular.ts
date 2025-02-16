@@ -555,7 +555,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
      * @param {*} $templateRequest
      * @param {import("../parse/parse").ParseService} $parse
      * @param {*} $controller
-     * @param {import('../scope/scope').Scope} $rootScope
+     * @param {import('../scope/scope.js').Scope} $rootScope
      * @param {*} $sce
      * @param {*} $animate
      * @returns
@@ -1207,7 +1207,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        *        this needs to be pre-sorted by priority order.
        * @param {Node} compileNode The raw DOM node to apply the compile functions to
        * @param {Object} templateAttrs The shared attribute function
-       * @param {function(import('../../core/scope/scope').Scope, Function=):any} transcludeFn A linking function, where the
+       * @param {function(import('../../core/scope/scope.js').Scope, Function=):any} transcludeFn A linking function, where the
        *                                                  scope argument is auto-generated to the new
        *                                                  child of the transcluded parent scope.
        * @param {Object=} originalReplaceDirective An optional directive that will be ignored when

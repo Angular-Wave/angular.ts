@@ -5,7 +5,7 @@
  * @property {boolean} [isPure]
  * @property {boolean} oneTime
  * @property {import("./interpreter.js").DecoratedASTNode} decoratedNode
- * @property {function(import('../scope/scope').Scope, Function, boolean, CompiledExpression, string | ((scope:  import('../scope/scope').Scope) => any) | CompiledExpression): any} [$$watchDelegate]
+ * @property {function(import('../scope/scope.js').Scope, Function, boolean, CompiledExpression, string | ((scope:  import('../scope/scope.js').Scope) => any) | CompiledExpression): any} [$$watchDelegate]
  * @property {any[]|Function} inputs
  * @property {function(any, any): any} [assign] - Assigns a value to a context. If value is not provided,
  */
@@ -19,7 +19,7 @@
  */
 /**
  * @typedef {Function} CompiledExpressionFunction
- * @param {import('../scope/scope').Scope} context - An object against which any expressions embedded in the strings are evaluated against (typically a scope object).
+ * @param {import('../scope/scope.js').Scope} context - An object against which any expressions embedded in the strings are evaluated against (typically a scope object).
  * @param {object} [locals] - local variables context object, useful for overriding values in `context`.
  * @param {any} [assign]
  * @returns {any}
@@ -31,7 +31,7 @@
  * @typedef {CompiledExpressionFunction & CompiledExpressionProps} CompiledExpression
  */
 /**
- * @typedef {function(CompiledExpression|string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): CompiledExpression} ParseService
+ * @typedef {function(CompiledExpression|string|function(import('../scope/scope.js').Scope):any, function(any, import('../scope/scope.js').Scope, any):any=, boolean=): CompiledExpression} ParseService
  */
 export function ParseProvider(): void;
 export class ParseProvider {
@@ -71,7 +71,7 @@ export type CompiledExpressionProps = {
     isPure?: boolean;
     oneTime: boolean;
     decoratedNode: import("./interpreter.js").DecoratedASTNode;
-    $$watchDelegate?: (arg0: import("../scope/scope").Scope, arg1: Function, arg2: boolean, arg3: CompiledExpression, arg4: string | ((scope: import("../scope/scope").Scope) => any) | CompiledExpression) => any;
+    $$watchDelegate?: (arg0: import("../scope/scope.js").Scope, arg1: Function, arg2: boolean, arg3: CompiledExpression, arg4: string | ((scope: import("../scope/scope.js").Scope) => any) | CompiledExpression) => any;
     inputs: any[] | Function;
     /**
      * - Assigns a value to a context. If value is not provided,
@@ -96,4 +96,4 @@ export type CompiledExpressionHandlerMap = {
 };
 export type CompiledExpressionFunction = Function;
 export type CompiledExpression = CompiledExpressionFunction & CompiledExpressionProps;
-export type ParseService = (arg0: CompiledExpression | string | ((arg0: import("../scope/scope").Scope) => any), arg1: ((arg0: any, arg1: import("../scope/scope").Scope, arg2: any) => any) | undefined, arg2: boolean | undefined) => CompiledExpression;
+export type ParseService = (arg0: CompiledExpression | string | ((arg0: import("../scope/scope.js").Scope) => any), arg1: ((arg0: any, arg1: import("../scope/scope.js").Scope, arg2: any) => any) | undefined, arg2: boolean | undefined) => CompiledExpression;

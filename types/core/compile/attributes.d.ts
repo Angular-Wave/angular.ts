@@ -1,14 +1,14 @@
 export class Attributes {
     /**
-     * @param {import('../scope/scope').Scope} $rootScope
+     * @param {import('../scope/scope.js').Scope} $rootScope
      * @param {*} $animate
      * @param {import("../exception-handler").ErrorHandler} $exceptionHandler
      * @param {*} $sce
      * @param {Element} [element]
      * @param {*} [attributesToCopy]
      */
-    constructor($rootScope: import("../scope/scope").Scope, $animate: any, $exceptionHandler: import("../exception-handler").ErrorHandler, $sce: any, element?: Element, attributesToCopy?: any);
-    $rootScope: import("../scope/scope").Scope;
+    constructor($rootScope: import("../scope/scope.js").Scope, $animate: any, $exceptionHandler: import("../exception-handler").ErrorHandler, $sce: any, element?: Element, attributesToCopy?: any);
+    $rootScope: import("../scope/scope.js").Scope;
     $animate: any;
     $exceptionHandler: import("../exception-handler").ErrorHandler;
     $sce: any;

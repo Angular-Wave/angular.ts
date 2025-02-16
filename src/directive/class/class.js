@@ -16,7 +16,7 @@ function classDirective(name, selector) {
     () => ({
       restrict: "EA",
       /**
-       * @param {import("../../core/scope/scope").Scope} scope
+       * @param {import("../../core/scope/scope.js").Scope} scope
        * @param {Element} element
        * @param {import("../../core/compile/attributes").Attributes} attr
        */

@@ -627,7 +627,7 @@ export class LocationProvider {
     "$rootElement",
     /**
      *
-     * @param {import('../scope/scope').Scope} $rootScope
+     * @param {import('../scope/scope.js').Scope} $rootScope
      * @param {import('../../services/browser').Browser} $browser
      * @param {Element} $rootElement
      * @returns

@@ -1,5 +1,5 @@
 import { isString } from "../shared/utils.js";
-import { concatWithSpace } from "./shared";
+import { concatWithSpace } from "./shared.js";
 
 const NG_ANIMATE_SHIM_CLASS_NAME = "ng-animate-shim";
 const NG_ANIMATE_ANCHOR_CLASS_NAME = "ng-anchor";

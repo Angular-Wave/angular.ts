@@ -47,14 +47,14 @@ export function ngMessageDefaultDirective($animate: any): {
 export namespace ngMessageDefaultDirective { }
 declare class NgMessageCtrl {
     /**
-     * @param {import('../../shared/jqlite/jqlite').JQLite} $element
-     * @param {import('../../core/scope/scope').Scope} $scope
+     * @param {import('../../shared//dom').JQLite} $element
+     * @param {import('../../core/scope/scope.js').Scope} $scope
      * @param {import('../../core/compile/attributes').Attributes} $attrs
      * @param {*} $animate
      */
-    constructor($element: import("../../shared/jqlite/jqlite").JQLite, $scope: import("../../core/scope/scope").Scope, $attrs: import("../../core/compile/attributes").Attributes, $animate: any);
+    constructor($element: import("../../shared//dom").JQLite, $scope: import("../../core/scope/scope.js").Scope, $attrs: import("../../core/compile/attributes").Attributes, $animate: any);
     $element: any;
-    $scope: import("../../core/scope/scope").Scope;
+    $scope: import("../../core/scope/scope.js").Scope;
     $attrs: import("../../core/compile/attributes").Attributes;
     $animate: any;
     latestKey: number;

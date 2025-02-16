@@ -15,7 +15,7 @@ import {
   getNodeName,
   extend,
 } from "../../shared/utils.js";
-// import { countChildScopes, countWatchers } from "../scope/scope";
+// import { countChildScopes, countWatchers } from "../scope/scope.js";
 import { CACHE, EXPANDO } from "../cache/cache.js";
 import { wait } from "../../shared/test-utils.js";
 

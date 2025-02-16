@@ -1,6 +1,6 @@
 ngAnimateSwapDirective.$inject = ["$animate"];
 /**
- * @returns {import('../types').Directive}
+ * @returns {import('../types.js').Directive}
  */
 export function ngAnimateSwapDirective($animate) {
   return {

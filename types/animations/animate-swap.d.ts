@@ -1,7 +1,7 @@
 /**
- * @returns {import('../types').Directive}
+ * @returns {import('../types.js').Directive}
  */
-export function ngAnimateSwapDirective($animate: any): import("../types").Directive;
+export function ngAnimateSwapDirective($animate: any): import("../types.js").Directive;
 export namespace ngAnimateSwapDirective {
     let $inject: string[];
 }

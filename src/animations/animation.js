@@ -5,7 +5,7 @@ import {
   applyAnimationClassesFactory,
   applyAnimationStyles,
   prepareAnimationOptions,
-} from "./shared";
+} from "./shared.js";
 
 const RUNNER_STORAGE_KEY = "$$animationRunner";
 const PREPARE_CLASSES_KEY = "$$animatePrepareClasses";

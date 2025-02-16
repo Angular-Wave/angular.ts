@@ -17,7 +17,7 @@ export function ngIfDirective($animate) {
     restrict: "A",
     /**
      *
-     * @param {import("../../core/scope/scope").Scope} $scope
+     * @param {import("../../core/scope/scope.js").Scope} $scope
      * @param {Element} $element
      * @param {import("../../core/compile/attributes").Attributes} $attr
      * @param {Object} _ctrl
@@ -27,7 +27,7 @@ export function ngIfDirective($animate) {
       /** @type {Element} */
       let block;
 
-      /** @type {import('../../core/scope/scope').Scope} */
+      /** @type {import('../../core/scope/scope.js').Scope} */
       let childScope;
 
       let previousElements;

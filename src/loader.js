@@ -135,7 +135,7 @@ export class Angular {
       "$compile",
       "$injector",
       /**
-       * @param {import('./core/scope/scope').Scope} scope
+       * @param {import('./core/scope/scope.js').Scope} scope
        * @param {Element} el
        * @param {*} compile
        * @param {import("./core/di/internal-injector").InjectorService} $injector
@@ -235,8 +235,8 @@ export class Angular {
    * All modules (AngularJS core or 3rd party) that should be available to an application must be
    * registered using this mechanism.
    *
-   * Passing one argument retrieves an existing {@link import('./types').Module},
-   * whereas passing more than one argument creates a new {@link import('./types').Module}
+   * Passing one argument retrieves an existing {@link import('./types.js').Module},
+   * whereas passing more than one argument creates a new {@link import('./types.js').Module}
    *
    *
    * # Module
@@ -272,7 +272,7 @@ export class Angular {
    * @param {Array.<string>} [requires] If specified then new module is being created. If
    *        unspecified then the module is being retrieved for further configuration.
    * @param {Array<any>|Function} [configFn] Optional configuration function for the module. Same as
-   *        {@link import('./types').Module#config Module#config()}.
+   *        {@link import('./types.js').Module#config Module#config()}.
    * @returns {NgModule} A newly registered module.
    */
   module(name, requires, configFn) {

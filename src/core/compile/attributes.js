@@ -16,7 +16,7 @@ const specialAttrHolder = document.createElement("div");
 
 export class Attributes {
   /**
-   * @param {import('../scope/scope').Scope} $rootScope
+   * @param {import('../scope/scope.js').Scope} $rootScope
    * @param {*} $animate
    * @param {import("../exception-handler").ErrorHandler} $exceptionHandler
    * @param {*} $sce

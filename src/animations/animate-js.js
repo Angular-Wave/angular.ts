@@ -3,7 +3,7 @@ import {
   applyAnimationClassesFactory,
   applyAnimationStyles,
   prepareAnimationOptions,
-} from "./shared";
+} from "./shared.js";
 
 // TODO: use caching here to speed things up for detection
 // TODO: add documentation

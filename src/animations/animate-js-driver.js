@@ -52,10 +52,7 @@ export function AnimateJsDriverProvider($$animationProvider) {
 
       function prepareAnimation(animationDetails) {
         // TODO(matsko): make sure to check for grouped animations and delegate down to normal animations
-        const { element } = animationDetails;
-        const { event } = animationDetails;
-        const { options } = animationDetails;
-        const { classes } = animationDetails;
+        const { element, event, options, classes } = animationDetails;
         return $$animateJs(element, event, classes, options);
       }
     },

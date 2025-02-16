@@ -271,7 +271,7 @@ export class LocationProvider {
      * @returns {Html5Mode}
      */
     getHtml5Mode(): Html5Mode;
-    $get: (string | (($rootScope: import("../scope/scope").Scope, $browser: import("../../services/browser").Browser, $rootElement: Element) => Location))[];
+    $get: (string | (($rootScope: import("../scope/scope.js").Scope, $browser: import("../../services/browser").Browser, $rootElement: Element) => Location))[];
 }
 export type DefaultPorts = {
     http: number;

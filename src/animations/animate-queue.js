@@ -18,7 +18,7 @@ import {
   mergeAnimationDetails,
   prepareAnimationOptions,
   stripCommentsFromElement,
-} from "./shared";
+} from "./shared.js";
 
 const NG_ANIMATE_ATTR_NAME = "data-ng-animate";
 const NG_ANIMATE_PIN_DATA = "$ngAnimatePin";
@@ -149,7 +149,7 @@ export function AnimateQueueProvider($animateProvider) {
     "$templateRequest",
     /**
      *
-     * @param {import('../core/scope/scope').Scope} $rootScope
+     * @param {import('../core/scope/scope.js').Scope} $rootScope
      * @param {*} $injector
      * @param {*} $$animation
      * @param {*} $$AnimateRunner
