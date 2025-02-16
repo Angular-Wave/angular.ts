@@ -1,4 +1,4 @@
-import { dealoc } from "../shared//dom.js";
+import { dealoc } from "../shared/dom.js";
 import { Angular } from "../loader.js";
 import { wait } from "../shared/test-utils.js";
 

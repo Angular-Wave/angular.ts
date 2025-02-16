@@ -1,4 +1,4 @@
-import { kebabToCamel } from "../../shared//dom.js";
+import { kebabToCamel } from "../../shared/dom.js";
 
 /**
  * @param {string} source - the name of the attribute to be observed

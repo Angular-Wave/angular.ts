@@ -1,5 +1,5 @@
 import { defaultModelOptions } from "./model-options.js";
-import { dealoc, JQLite } from "../../shared//dom.js";
+import { dealoc, JQLite } from "../../shared/dom.js";
 import { Angular } from "../../loader.js";
 
 function changeGivenInputTo(inputElm, val) {

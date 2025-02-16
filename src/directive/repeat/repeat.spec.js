@@ -1,5 +1,5 @@
 import { Angular } from "../../loader.js";
-import { dealoc, JQLite } from "../../shared//dom.js";
+import { dealoc, JQLite } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("ngRepeat", () => {

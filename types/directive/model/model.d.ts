@@ -3,7 +3,7 @@ export function ngModelDirective(): {
     require: string[];
     controller: typeof NgModelController;
     priority: number;
-    compile: (element: import("../../shared//dom.js").JQLite) => {
+    compile: (element: import("../../shared/dom.js").JQLite) => {
         pre: (scope: any, _element: any, attr: any, ctrls: any) => void;
         post: (scope: any, element: any, _attr: any, ctrls: any) => void;
     };
@@ -51,12 +51,12 @@ export class NgModelController {
      * @param {import('../../core/scope/scope.js').Scope} $scope
      * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
      * @param {import('../../core/compile/attributes.js').Attributes} $attr
-     * @param {import('../../shared//dom.js').JQLite} $element
+     * @param {import('../../shared/dom.js').JQLite} $element
      * @param {import("../../core/parse/parse.js").ParseService} $parse
      * @param {*} $animate
      * @param {*} $interpolate
      */
-    constructor($scope: import("../../core/scope/scope.js").Scope, $exceptionHandler: import("../../core/exception-handler.js").ErrorHandler, $attr: import("../../core/compile/attributes.js").Attributes, $element: import("../../shared//dom.js").JQLite, $parse: import("../../core/parse/parse.js").ParseService, $animate: any, $interpolate: any);
+    constructor($scope: import("../../core/scope/scope.js").Scope, $exceptionHandler: import("../../core/exception-handler.js").ErrorHandler, $attr: import("../../core/compile/attributes.js").Attributes, $element: import("../../shared/dom.js").JQLite, $parse: import("../../core/parse/parse.js").ParseService, $animate: any, $interpolate: any);
     /** @type {any} The actual value from the control's view  */
     $viewValue: any;
     /** @type {any} The value in the model that the control is bound to. */

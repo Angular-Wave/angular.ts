@@ -13,7 +13,7 @@ import {
   shallowCopy,
 } from "../../shared/utils.js";
 
-import { snakeToCamel } from "../../shared//dom.js";
+import { snakeToCamel } from "../../shared/dom.js";
 
 const $sceMinErr = minErr("$sce");
 

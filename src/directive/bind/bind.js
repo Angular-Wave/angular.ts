@@ -1,3 +1,4 @@
+import { isProxy } from "../../core/scope/scope.js";
 import { isUndefined, stringify } from "../../shared/utils.js";
 
 /**
@@ -6,9 +7,9 @@ import { isUndefined, stringify } from "../../shared/utils.js";
 export function ngBindDirective() {
   return {
     restrict: "EA",
-    link: (scope, element, attr) => {
+    link(scope, element, attr) {
       scope.$watch(attr.ngBind, (value) => {
-        element.textContent = stringify(value);
+        element.textContent = stringify(isProxy(value) ? value.$target : value);
       });
     },
   };
@@ -20,7 +21,7 @@ export function ngBindDirective() {
 export function ngBindTemplateDirective() {
   return {
     restrict: "EA",
-    link: (_scope, element, attr) => {
+    link(_scope, element, attr) {
       attr.$observe("ngBindTemplate", (value) => {
         element.textContent = isUndefined(value) ? "" : value;
       });
@@ -28,24 +29,20 @@ export function ngBindTemplateDirective() {
   };
 }
 
+ngBindHtmlDirective.$inject = ["$parse"];
 /**
- * TODO: add type
+ * @returns {import('../../types.js').Directive}
  */
-export const ngBindHtmlDirective = [
-  "$parse",
-  ($parse) => {
-    return {
-      restrict: "A",
-      compile: (_tElement, tAttrs) => {
-        const ngBindHtmlGetter = $parse(tAttrs.ngBindHtml);
-        const ngBindHtmlWatch = $parse(tAttrs.ngBindHtml, (val) => val);
-        return (scope, element) => {
-          scope.$watch(ngBindHtmlWatch, () => {
-            // The watched value is the unwrapped value. To avoid re-escaping, use the direct getter.
-            element.html(ngBindHtmlGetter(scope) || "");
-          });
-        };
-      },
-    };
-  },
-];
+export function ngBindHtmlDirective($parse) {
+  return {
+    restrict: "A",
+    compile(_tElement, tAttrs) {
+      $parse(tAttrs.ngBindHtml); // checks for interpolation errors
+      return (scope, element) => {
+        scope.$watch(tAttrs.ngBindHtml, (val) => {
+          element.innerHTML = val;
+        });
+      };
+    },
+  };
+}

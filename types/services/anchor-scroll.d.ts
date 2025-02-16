@@ -1,6 +1,6 @@
 /**
  * @typedef {Object} AnchorScrollObject
- * @property {number|function|import("../shared//dom.js").JQLite} yOffset
+ * @property {number|function|import("../shared/dom.js").JQLite} yOffset
  */
 /**
  * @typedef {(string) => void} AnchorScrollFunction
@@ -14,7 +14,7 @@ export class AnchorScrollProvider {
     $get: (string | (($location: import("../core/location/location").Location, $rootScope: import("../core/scope/scope.js").Scope) => AnchorScrollFunction))[];
 }
 export type AnchorScrollObject = {
-    yOffset: number | Function | import("../shared//dom.js").JQLite;
+    yOffset: number | Function | import("../shared/dom.js").JQLite;
 };
 export type AnchorScrollFunction = (string: any) => void;
 export type AnchorScrollService = AnchorScrollFunction | AnchorScrollObject;

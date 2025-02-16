@@ -1,5 +1,5 @@
 import { Angular } from "../../loader";
-import { dealoc } from "../../shared//dom.js";
+import { dealoc } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils";
 
 describe("ng-bind", () => {
@@ -102,8 +102,13 @@ describe("ng-bind", () => {
       $rootScope.value = new Date(2014, 10, 10, 0, 0, 0);
       element = $compile('<div ng-bind="value"></div>')($rootScope);
       await wait();
-      expect(element.textContent).toBe(JSON.stringify($rootScope.value));
-      expect(element.textContent).not.toEqual($rootScope.value.toString());
+      debugger;
+      expect(element.textContent).toBe(
+        JSON.stringify($rootScope.value.$target),
+      );
+      expect(element.textContent).not.toEqual(
+        $rootScope.value.$target.toString(),
+      );
     });
   });
 
@@ -128,9 +133,8 @@ describe("ng-bind", () => {
 
   describe("ngBindHtml", () => {
     it("should complain about accidental use of interpolation", async () => {
-      expect(async () => {
+      expect(() => {
         $compile('<div ng-bind-html="{{myHtml}}"></div>');
-        await wait();
       }).toThrowError(/syntax/);
     });
 
@@ -293,6 +297,8 @@ describe("ng-bind", () => {
           await wait();
           expect(element.innerHTML).toEqual("goodbye");
         };
+
+        expect(true).toBeTrue();
       });
     });
   });

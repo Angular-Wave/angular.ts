@@ -1,4 +1,4 @@
-import { dealoc, JQLite } from "../../shared//dom.js";
+import { dealoc, JQLite } from "../../shared/dom.js";
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
 

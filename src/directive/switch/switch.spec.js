@@ -1,5 +1,5 @@
 import { Angular } from "../../loader";
-import { dealoc } from "../../shared//dom.js";
+import { dealoc } from "../../shared/dom.js";
 
 describe("ngSwitch", () => {
   let $scope;

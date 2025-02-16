@@ -1,5 +1,5 @@
 import { Angular } from "../../loader";
-import { dealoc, JQLite } from "../../shared//dom.js";
+import { dealoc, JQLite } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils";
 import { EMAIL_REGEXP, ISO_DATE_REGEXP, URL_REGEXP } from "./input";
 

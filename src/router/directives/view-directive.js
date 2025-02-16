@@ -10,7 +10,7 @@ import {
   getCacheData,
   getInheritedData,
   setCacheData,
-} from "../../shared//dom.js";
+} from "../../shared/dom.js";
 import { getLocals } from "../state/state-registry.js";
 /**
  * `ng-view`: A viewport directive which is filled in by a view from the active state.

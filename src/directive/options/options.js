@@ -1,4 +1,4 @@
-import { emptyElement, removeElement, startingTag } from "../../shared//dom.js";
+import { emptyElement, removeElement, startingTag } from "../../shared/dom.js";
 import {
   assertArg,
   equals,

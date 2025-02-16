@@ -1,4 +1,4 @@
-import { removeElement } from "../../shared//dom.js";
+import { removeElement } from "../../shared/dom.js";
 import { hasAnimate } from "../../shared/utils.js";
 
 ngIfDirective.$inject = ["$animate"];

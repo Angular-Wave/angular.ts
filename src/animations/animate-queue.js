@@ -1,4 +1,4 @@
-import { getOrSetCacheData } from "../shared//dom.js";
+import { getOrSetCacheData } from "../shared/dom.js";
 import {
   isUndefined,
   isObject,

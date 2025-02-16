@@ -8,7 +8,7 @@ import {
 
 /**
  * @typedef {Object} AnchorScrollObject
- * @property {number|function|import("../shared//dom.js").JQLite} yOffset
+ * @property {number|function|import("../shared/dom.js").JQLite} yOffset
  */
 
 /**

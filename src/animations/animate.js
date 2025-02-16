@@ -1,5 +1,5 @@
 import { isFunction, isObject, minErr, extend } from "../shared/utils.js";
-import { removeElement, domInsert } from "../shared//dom.js";
+import { removeElement, domInsert } from "../shared/dom.js";
 import { NG_ANIMATE_CLASSNAME } from "./shared.js";
 
 /** @typedef {"enter"|"leave"|"move"|"addClass"|"setClass"|"removeClass"} AnimationMethod */

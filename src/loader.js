@@ -5,7 +5,7 @@ import {
   assertNotHasOwnProperty,
   errorHandlingConfig,
 } from "./shared/utils.js";
-import { getInjector, setCacheData } from "./shared//dom.js";
+import { getInjector, setCacheData } from "./shared/dom.js";
 import { annotate, createInjector } from "./core/di/injector";
 import { NgModule } from "./core/di/ng-module";
 import { CACHE } from "./core/cache/cache";

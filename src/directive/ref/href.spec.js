@@ -1,6 +1,6 @@
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
-import { dealoc } from "../../shared//dom.js";
+import { dealoc } from "../../shared/dom.js";
 import { isDefined } from "../../shared/utils.js";
 import { wait } from "../../shared/test-utils";
 

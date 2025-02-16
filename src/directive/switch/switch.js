@@ -1,4 +1,4 @@
-import { getBlockNodes } from "../../shared//dom.js";
+import { getBlockNodes } from "../../shared/dom.js";
 
 export const ngSwitchDirective = [
   "$animate",

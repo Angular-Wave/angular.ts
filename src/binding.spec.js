@@ -1,4 +1,4 @@
-import { JQLite, dealoc } from "./shared//dom.js";
+import { dealoc } from "./shared/dom.js";
 import { Angular } from "./loader";
 import { browserTrigger, wait } from "./shared/test-utils";
 

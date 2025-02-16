@@ -1,4 +1,4 @@
-import { JQLite } from "../../shared//dom.js";
+import { JQLite } from "../../shared/dom.js";
 import { Angular } from "../../loader";
 import { browserTrigger, wait } from "../../shared/test-utils";
 

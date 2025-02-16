@@ -1,6 +1,6 @@
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
-import { dealoc, JQLite, createElementFromHTML } from "../../shared//dom.js";
+import { dealoc, createElementFromHTML } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils";
 
 describe("ngShow / ngHide", () => {

@@ -1,5 +1,5 @@
 import { minErr, hashKey, isArrayLike } from "../../shared/utils.js";
-import { getBlockNodes } from "../../shared//dom.js";
+import { getBlockNodes } from "../../shared/dom.js";
 
 const NG_REMOVED = "$$NG_REMOVED";
 const ngRepeatMinErr = minErr("ngRepeat");

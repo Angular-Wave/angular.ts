@@ -477,8 +477,8 @@ export function startingTag(elementOrStr) {
 
 /**
  * Return the DOM siblings between the first and last node in the given array.
- * @param {JQLite|Array} nodes An array-like object
- * @returns {JQLite} the inputted object or a JQLite collection containing the nodes
+ * @param {Element|Array} nodes An array-like object
+ * @returns {Element} the inputted object or a JQLite collection containing the nodes
  */
 export function getBlockNodes(nodes) {
   // TODO(perf): update `nodes` instead of creating a new object?
@@ -521,7 +521,7 @@ export function cleanElementData(nodes) {
 
 /**
  * Return instance of injector attached to element
- * @returns {import('../../core/di/internal-injector.js').InjectorService}
+ * @returns {import('../core/di/internal-injector.js').InjectorService}
  */
 export function getInjector(element) {
   return getInheritedData(element, "$injector");

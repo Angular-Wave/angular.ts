@@ -1,6 +1,6 @@
 import { Angular } from "../loader.js";
 import { createInjector } from "./di/injector.js";
-import { dealoc } from "../shared//dom.js";
+import { dealoc } from "../shared/dom.js";
 
 describe("ngProp*", () => {
   let $compile, $rootScope, compileProvider, $sce;

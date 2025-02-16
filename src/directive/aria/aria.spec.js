@@ -1,6 +1,6 @@
 import { createInjector } from "../../core/di/injector";
 import { Angular } from "../../loader";
-import { dealoc } from "../../shared//dom.js";
+import { dealoc } from "../../shared/dom.js";
 
 describe("$aria", () => {
   let scope;

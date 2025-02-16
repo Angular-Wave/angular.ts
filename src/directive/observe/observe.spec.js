@@ -1,5 +1,5 @@
 import { Angular } from "../../loader.js";
-import { JQLite } from "../../shared//dom.js";
+import { JQLite } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";
 describe("observe", () => {
   let $compile, $scope, $rootScope, element, observerSpy;

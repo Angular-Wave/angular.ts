@@ -10,25 +10,21 @@ export class ViewScrollProvider {
   $get = [
     "$anchorScroll",
     /**
-     * @param {import('../services/anchor-scroll').AnchorScrollObject} $anchorScroll
-     * @returns {import('../services/anchor-scroll').AnchorScrollObject|Function}
+     * @param {import('../services/anchor-scroll.js').AnchorScrollObject} $anchorScroll
+     * @returns {import('../services/anchor-scroll.js').AnchorScrollObject|Function}
      */
     ($anchorScroll) => {
       if (this.enabled) {
         return $anchorScroll;
       }
       /**
-       * @param {import('../shared//dom').JQLite} $element
+       * @param {Element} $element
        * @returns {Promise<number>}
        */
       return async function ($element) {
-        return setTimeout(
-          () => {
-            $element.scrollIntoView();
-          },
-          0,
-          false,
-        );
+        return setTimeout(() => {
+          $element.scrollIntoView(false);
+        }, 0);
       };
     },
   ];

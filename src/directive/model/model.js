@@ -22,7 +22,7 @@ import {
 } from "../../shared/utils.js";
 import { nullFormCtrl, PENDING_CLASS } from "../form/form.js";
 import { defaultModelOptions } from "../model-options/model-options.js";
-import { startingTag } from "../../shared//dom.js";
+import { startingTag } from "../../shared/dom.js";
 
 export const ngModelMinErr = minErr("ngModel");
 
@@ -78,7 +78,7 @@ export class NgModelController {
    * @param {import('../../core/scope/scope.js').Scope} $scope
    * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
    * @param {import('../../core/compile/attributes.js').Attributes} $attr
-   * @param {import('../../shared//dom.js').JQLite} $element
+   * @param {import('../../shared/dom.js').JQLite} $element
    * @param {import("../../core/parse/parse.js").ParseService} $parse
    * @param {*} $animate
    * @param {*} $interpolate
@@ -1087,7 +1087,7 @@ export function ngModelDirective() {
     // before anyone else uses it.
     priority: 1,
     compile:
-      /** @param {import("../../shared//dom.js").JQLite} element  */
+      /** @param {import("../../shared/dom.js").JQLite} element  */
       (element) => {
         // Setup initial state of the control
         element.classList.add(PRISTINE_CLASS, UNTOUCHED_CLASS, VALID_CLASS);

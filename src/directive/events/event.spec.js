@@ -1,6 +1,6 @@
 import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
-import { dealoc } from "../../shared//dom.js";
+import { dealoc } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("event directives", () => {

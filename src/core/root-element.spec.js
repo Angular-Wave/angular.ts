@@ -1,4 +1,4 @@
-import { createElementFromHTML, dealoc } from "../shared//dom.js";
+import { createElementFromHTML, dealoc } from "../shared/dom.js";
 import { Angular } from "../loader";
 
 describe("$rootElement", () => {
