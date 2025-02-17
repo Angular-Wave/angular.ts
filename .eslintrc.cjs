@@ -3,6 +3,7 @@ module.exports = {
     browser: true,
     es2021: true,
   },
+  plugins: ["import", "promise"],
   extends: ['eslint:recommended', 'prettier'],
   overrides: [
     {

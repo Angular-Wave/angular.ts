@@ -34,7 +34,6 @@
     "@types/node": "latest",
     "docdash": "latest",
     "eslint": "latest",
-    "eslint-config-airbnb-base": "latest",
     "eslint-config-prettier": "latest",
     "eslint-plugin-import": "latest",
     "eslint-plugin-promise": "latest",
