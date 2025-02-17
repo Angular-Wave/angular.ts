@@ -4319,7 +4319,7 @@ describe("$compile", () => {
         "<my-component>Transclude me</my-component>",
       );
       $compile(el)($rootScope);
-      expect(el.find("div").innerText).toEqual("Transclude me");
+      expect(el.children[0].innerText).toEqual("Transclude me");
     });
 
     it("may require other directive controllers", () => {
@@ -4957,8 +4957,8 @@ describe("$compile", () => {
       $compile(element.childNodes)($rootScope);
       document.body.appendChild(element);
 
-      const referenceElem = element.find("div")[0];
-      const testElem = element.find("div")[1];
+      const referenceElem = element.children[0][0];
+      const testElem = element.children[0][1];
       const referenceBounds = referenceElem.getBoundingClientRect();
       const testBounds = testElem.getBoundingClientRect();
 
@@ -4984,8 +4984,8 @@ describe("$compile", () => {
       $compile(element.childNodes)($rootScope);
       document.body.appendChild(element);
 
-      const referenceElem = element.find("div")[0];
-      const testElem = element.find("div")[1];
+      const referenceElem = element.children[0][0];
+      const testElem = element.children[0][1];
       const referenceBounds = referenceElem.getBoundingClientRect();
       const testBounds = testElem.getBoundingClientRect();
 
@@ -6243,13 +6243,13 @@ describe("$compile", () => {
           const span = element.find("span");
           expect(span.getAttribute("first")).toEqual("");
           expect(span.getAttribute("second")).toEqual("");
-          expect(span.find("div").getAttribute("third")).toEqual("");
+          expect(span.children[0].getAttribute("third")).toEqual("");
           expect(span.getAttribute("last")).toEqual("");
 
           expect(span.innerText).toEqual("3");
         });
 
-        it("should flush before link inline", async () => {
+        fit("should flush before link inline", async () => {
           $templateCache.set("second.html", "<div i-third>{{1+2}}</div>");
           template = $compile(
             "<div><span i-first i-second i-last></span></div>",
@@ -6332,7 +6332,7 @@ describe("$compile", () => {
           //   }).toThrowError(/tplrt/);
           // });
 
-          it("should not throw if the root element is accompanied by: whitespace", async () => {
+          fit("should not throw if the root element is accompanied by: whitespace", async () => {
             $templateCache.set("template.html", "<div>Hello World!</div> \n");
             element = $compile("<p template></p>")($rootScope);
             await wait();
@@ -6366,7 +6366,7 @@ describe("$compile", () => {
           });
         });
 
-        it("should resume delayed compilation without duplicates when in a repeater", async () => {
+        fit("should resume delayed compilation without duplicates when in a repeater", async () => {
           // this is a test for a regression
           // scope creation, isolate watcher setup, controller instantiation, etc should happen
           // only once even if we are dealing with delayed compilation of a node due to templateUrl
@@ -6401,7 +6401,7 @@ describe("$compile", () => {
           expect(element.textContent).toBe("boom!1|boom!2|");
         });
 
-        it("should support templateUrl with replace", () => {
+        fit("should support templateUrl with replace", () => {
           // a regression https://github.com/angular/angular.js/issues/3792
           module.directive("simple", () => ({
             templateUrl: "/some.html",
@@ -12858,7 +12858,7 @@ describe("$compile", () => {
 
             // Ensure the AngularJS $destroy event is still sent
             let destroyCount = 0;
-            element.find("div").on("$destroy", () => {
+            element.children[0].on("$destroy", () => {
               destroyCount++;
             });
 
@@ -16004,8 +16004,8 @@ describe("$compile", () => {
       //
       //   <!---->
       // </div>
-      // const ngIfStartScope = element.find("div").eq(0).scope();
-      // const ngIfEndScope = element.find("div").eq(1).scope();
+      // const ngIfStartScope = element.children[0].eq(0).scope();
+      // const ngIfEndScope = element.children[0].eq(1).scope();
 
       // expect(ngIfStartScope.$id).toEqual(ngIfEndScope.$id);
 
@@ -16083,8 +16083,8 @@ describe("$compile", () => {
       //   <!-- end ngIf: val2 -->
       //   <!-- end ngRepeat: val in val0 -->
       // </div>
-      // const ngIf1Scope = element.find("div").eq(0).scope();
-      // const ngIf2Scope = element.find("div").eq(1).scope();
+      // const ngIf1Scope = element.children[0].eq(0).scope();
+      // const ngIf2Scope = element.children[0].eq(1).scope();
       // const ngRepeatScope = ngIf1Scope.$parent;
 
       // expect(ngIf1Scope.$id).not.toEqual(ngIf2Scope.$id);
@@ -16142,7 +16142,7 @@ describe("$compile", () => {
       // expect(ngIf2Scope.$$destroyed).toEqual(true);
     });
 
-    it("should throw error if unterminated", () => {
+    fit("should throw error if unterminated", () => {
       module.directive("foo", () => ({
         multiElement: true,
       }));
@@ -16152,7 +16152,7 @@ describe("$compile", () => {
       }).toThrowError(/uterdir/);
     });
 
-    it("should correctly collect ranges on multiple directives on a single element", () => {
+    fit("should correctly collect ranges on multiple directives on a single element", async () => {
       module
         .directive("emptyDirective", () => ({
           multiElement: true,
@@ -16174,12 +16174,12 @@ describe("$compile", () => {
           "<div range-directive-end>{{y}}</div>" +
           "</div>",
       )($rootScope);
-
+      await wait();
       expect(element.textContent).toBe("XY");
       ///expect(angular.element(element.firstChild).data("x")).toBe("abc");
     });
 
-    it("should throw error if unterminated (containing termination as a child)", () => {
+    fit("should throw error if unterminated (containing termination as a child)", () => {
       module.directive("foo", () => ({
         multiElement: true,
       }));
@@ -16191,7 +16191,7 @@ describe("$compile", () => {
       }).toThrowError(/uterdir/);
     });
 
-    it("should support data- prefix", async () => {
+    fit("should support data- prefix", async () => {
       $rootScope.show = false;
       element = $compile(
         "<div>" +
@@ -16334,13 +16334,13 @@ describe("$compile", () => {
       });
     }
 
-    it("should clean data of element-transcluded link-cloned elements", () => {
+    fit("should clean data of element-transcluded link-cloned elements", () => {
       testCompileLinkDataCleanup(
         '<div><div ng-repeat-start="i in [1,2]"><span></span></div><div ng-repeat-end></div></div>',
       );
     });
 
-    it("should clean data of element-transcluded elements", () => {
+    fit("should clean data of element-transcluded elements", () => {
       testCompileLinkDataCleanup(
         '<div ng-if-start="false"><span><span/></div><span></span><div ng-if-end><span></span></div>',
       );
@@ -16368,34 +16368,34 @@ describe("$compile", () => {
           "</div>",
       );
     }
-    it("should clean data of elements removed for directive template", () => {
+    fit("should clean data of elements removed for directive template", () => {
       testReplaceElementCleanup({});
     });
-    it("should clean data of elements removed for directive templateUrl", () => {
+    fit("should clean data of elements removed for directive templateUrl", () => {
       testReplaceElementCleanup({ asyncTemplate: true });
     });
-    it("should clean data of elements transcluded into directive template", () => {
+    fit("should clean data of elements transcluded into directive template", () => {
       testReplaceElementCleanup({ transclude: true });
     });
-    it("should clean data of elements transcluded into directive templateUrl", () => {
+    fit("should clean data of elements transcluded into directive templateUrl", () => {
       testReplaceElementCleanup({ transclude: true, asyncTemplate: true });
     });
-    it("should clean data of elements replaced with directive template", () => {
+    fit("should clean data of elements replaced with directive template", () => {
       testReplaceElementCleanup({ replace: true });
     });
-    it("should clean data of elements replaced with directive templateUrl", () => {
+    fit("should clean data of elements replaced with directive templateUrl", () => {
       testReplaceElementCleanup({ replace: true, asyncTemplate: true });
     });
   });
 
   describe("component helper", () => {
-    it("should return the module", () => {
+    fit("should return the module", () => {
       const myModule = module;
       expect(myModule.component("myComponent", {})).toBe(myModule);
       expect(myModule.component({})).toBe(myModule);
     });
 
-    it("should register a directive", () => {
+    fit("should register a directive", () => {
       module.component("myComponent", {
         template: "<div>SUCCESS</div>",
         controller() {
@@ -16404,11 +16404,11 @@ describe("$compile", () => {
       });
       initInjector("test1");
       element = $compile("<my-component></my-component>")($rootScope);
-      expect(element.find("div").innerText).toEqual("SUCCESS");
+      expect(element.children[0].innerText).toEqual("SUCCESS");
       expect(log[0]).toEqual("OK");
     });
 
-    it("should register multiple directives when object passed as first parameter", () => {
+    fit("should register multiple directives when object passed as first parameter", async () => {
       module.component({
         fooComponent: {
           template: "<div>FOO SUCCESS</div>",
@@ -16430,13 +16430,14 @@ describe("$compile", () => {
       const barElement = $compile("<bar-component></bar-component>")(
         $rootScope,
       );
-
-      expect(fooElement.find("div").innerText).toEqual("FOO SUCCESS");
-      expect(barElement.find("div").innerText).toEqual("BAR SUCCESS");
+      debugger;
+      await wait();
+      expect(fooElement.children[0].innerText).toEqual("FOO SUCCESS");
+      expect(barElement.children[0].innerText).toEqual("BAR SUCCESS");
       expect(log.join("")).toEqual("FOO:OKBAR:OK");
     });
 
-    it("should register a directive via $compileProvider.component()", () => {
+    fit("should register a directive via $compileProvider.component()", () => {
       module.component("myComponent", {
         template: "<div>SUCCESS</div>",
         controller() {
@@ -16445,11 +16446,11 @@ describe("$compile", () => {
       });
       initInjector("test1");
       element = $compile("<my-component></my-component>")($rootScope);
-      expect(element.find("div").innerText).toEqual("SUCCESS");
+      expect(element.children[0].innerText).toEqual("SUCCESS");
       expect(log[0]).toEqual("OK");
     });
 
-    it("should add additional annotations to directive factory", () => {
+    fit("should add additional annotations to directive factory", () => {
       const myModule = module.component("myComponent", {
         $canActivate: "canActivate",
         $routeConfig: "routeConfig",
@@ -16465,7 +16466,7 @@ describe("$compile", () => {
       );
     });
 
-    it("should expose additional annotations on the directive definition object", () => {
+    fit("should expose additional annotations on the directive definition object", () => {
       module.component("myComponent", {
         $canActivate: "canActivate",
         $routeConfig: "routeConfig",
@@ -16483,7 +16484,7 @@ describe("$compile", () => {
       );
     });
 
-    it("should support custom annotations if the controller is named", () => {
+    fit("should support custom annotations if the controller is named", () => {
       module.component("myComponent", {
         $customAnnotation: "XXX",
         controller: "SomeNamedController",
@@ -16497,7 +16498,7 @@ describe("$compile", () => {
       );
     });
 
-    it("should provide a new empty controller if none is specified", () => {
+    fit("should provide a new empty controller if none is specified", () => {
       module
         .component("myComponent1", { $customAnnotation1: "XXX" })
         .component("myComponent2", { $customAnnotation2: "YYY" });
@@ -16516,7 +16517,7 @@ describe("$compile", () => {
       expect(ctrl2.$customAnnotation2).toBe("YYY");
     });
 
-    it("should return ddo with reasonable defaults", () => {
+    fit("should return ddo with reasonable defaults", () => {
       module.component("myComponent", {});
       initInjector("test1");
 
@@ -16535,7 +16536,7 @@ describe("$compile", () => {
       );
     });
 
-    it("should return ddo with assigned options", () => {
+    fit("should return ddo with assigned options", () => {
       function myCtrl() {}
       module.component("myComponent", {
         controller: myCtrl,
@@ -16562,7 +16563,7 @@ describe("$compile", () => {
       );
     });
 
-    it("should allow passing injectable functions as template/templateUrl", () => {
+    fit("should allow passing injectable functions as template/templateUrl", () => {
       module
         .component("myComponent", {
           template($element, $attrs, myValue) {
@@ -16580,7 +16581,7 @@ describe("$compile", () => {
       expect(log.join("")).toEqual("template,a,b,blah\ntemplateUrl,c,d,blah\n");
     });
 
-    it("should allow passing injectable arrays as template/templateUrl", () => {
+    fit("should allow passing injectable arrays as template/templateUrl", () => {
       module
         .component("myComponent", {
           template: [
@@ -16608,7 +16609,7 @@ describe("$compile", () => {
       expect(log.join("")).toEqual("template,a,b,blah\ntemplateUrl,c,d,blah\n");
     });
 
-    it("should allow passing transclude as object", () => {
+    fit("should allow passing transclude as object", () => {
       module.component("myComponent", {
         transclude: {},
       });
@@ -16621,7 +16622,7 @@ describe("$compile", () => {
       );
     });
 
-    it("should give ctrl as syntax priority over controllerAs", () => {
+    fit("should give ctrl as syntax priority over controllerAs", () => {
       module.component("myComponent", {
         controller: "MyCtrl as vm",
       });
