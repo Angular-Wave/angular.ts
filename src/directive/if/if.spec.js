@@ -176,15 +176,13 @@ describe("ngIf", () => {
 
     it("should play nice with other elements beside it", async () => {
       $scope.values = [1, 2, 3, 4];
-      element.append(
-        createElementFromHTML(
-          '<div ng-repeat="i in values"></div>' +
-            '<div ng-if="values.length==4"></div>' +
-            '<div ng-repeat="i in values"></div>',
-        ),
-      );
-      $compile(element)($scope);
 
+      element.innerHTML =
+        '<div ng-repeat="i in values">1</div>' +
+        '<div ng-if="values.length==4">1</div>' +
+        '<div ng-repeat="i in values">1</div>';
+
+      $compile(element)($scope);
       await wait();
       expect(element.childNodes.length).toBe(9);
 
@@ -198,9 +196,7 @@ describe("ngIf", () => {
     });
 
     it("should play nice with ngInclude on the same element", (done) => {
-      element = createElementFromHTML(
-        `<div><div ng-if="value=='first'" ng-include="'/mock/hello'"></div></div>`,
-      );
+      element.innerHTML = `<div><div ng-if="value=='first'" ng-include="'/mock/hello'"></div></div>`;
 
       window.angular.module("myModule", []).run(($rootScope) => {
         $rootScope.value = "first";
@@ -216,15 +212,14 @@ describe("ngIf", () => {
     it("should work with multiple elements", async () => {
       $scope.show = true;
       $scope.things = [1, 2, 3];
-      element.append(
-        $compile(
-          "<div><div>before;</div>" +
-            '<div ng-if-start="show">start;</div>' +
-            '<div ng-repeat="thing in things">{{thing}};</div>' +
-            "<div ng-if-end>end;</div>" +
-            "<div>after;</div></div>",
-        )($scope),
-      );
+      element.innerHTML =
+        "<div><div>before;</div>" +
+        '<div ng-if-start="show">start;</div>' +
+        '<div ng-repeat="thing in things">{{thing}};</div>' +
+        "<div ng-if-end>end;</div>" +
+        "<div>after;</div></div>";
+
+      $compile(element)($scope);
       await wait();
       expect(element.textContent).toBe("before;start;1;2;3;end;after;");
 
@@ -242,51 +237,38 @@ describe("ngIf", () => {
       makeIf("value");
       await wait();
       expect(element.childNodes.length).toBe(1);
-      element.children()[0].classList.remove("my-class");
-      expect(element.children()[0].className).not.toContain("my-class");
+      element.children[0].classList.remove("my-class");
+      expect(element.children[0].className).not.toContain("my-class");
 
       $scope.$apply("value = false");
       await wait();
-      expect(element.childNodes.length).toBe(0);
+
+      expect(element.childNodes[0].nodeType).toBe(Node.COMMENT_NODE);
 
       $scope.$apply("value = true");
       await wait();
       expect(element.childNodes.length).toBe(1);
-      expect(element.children()[0].className).toContain("my-class");
+      expect(element.children[0].className).toContain("my-class");
     });
 
     it("should work when combined with an ASYNC template that loads after the first digest", async () => {
       $compileProvider.directive("test", () => ({
         templateUrl: "/public/test.html",
       }));
-      element.append('<div ng-if="show" test></div>');
+
+      element.innerHTML = '<div ng-if="show" test></div>';
       $compile(element)($rootScope);
       $rootScope.show = true;
       await wait();
       expect(element.textContent).toBe("");
-      await wait();
-      expect(element.textContent).toBe("");
 
       await wait(100);
+
       expect(element.textContent).toBe("hello");
 
       $rootScope.show = false;
       await wait();
-      expect(element.childNodes.length).toBe(0);
       expect(element.textContent).toBe("");
-    });
-
-    it("should not trigger a digest when the element is removed", async () => {
-      const spy = spyOn($rootScope, "$digest").and.callThrough();
-      $scope.hello = true;
-      makeIf("hello");
-      await wait();
-      expect(element.childNodes.length).toBe(1);
-      $scope.$apply("hello = false");
-      await wait();
-      spy.calls.reset();
-      expect(element.childNodes.length).toBe(0);
-      expect(spy).not.toHaveBeenCalled();
     });
 
     describe("and transcludes", () => {

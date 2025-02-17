@@ -31,7 +31,11 @@ export function ngIfDirective($animate) {
       let childScope;
 
       let previousElements;
-      let parent = $element.parentElement;
+      let parent =
+        $element.length > 1
+          ? $element[0].parentElement
+          : $element.parentElement;
+      let multiElements = [];
 
       $scope.$watch($attr["ngIf"], (value) => {
         if (value) {
@@ -45,7 +49,16 @@ export function ngIfDirective($animate) {
               if (hasAnimate(clone)) {
                 $animate.enter(clone, $element.parentElement, $element);
               } else {
-                parent.replaceChild(clone[0], $element);
+                if ($element.length) {
+                  Array.from(multiElements)
+                    .reverse()
+                    .forEach((el, index) => {
+                      parent.children[index].after(el);
+                    });
+                  multiElements = [];
+                } else {
+                  parent.replaceChild(clone[0], $element);
+                }
               }
             });
           }
@@ -65,7 +78,19 @@ export function ngIfDirective($animate) {
                 if (response !== false) previousElements = null;
               });
             } else {
-              parent.replaceChild($element, previousElements[0]);
+              if ($element.length > 1) {
+                let length = parent.children.length - 1;
+                Array.from(parent.children)
+                  .reverse()
+                  .forEach((el, index) => {
+                    if (index !== 0 && index !== length) {
+                      el.remove();
+                      multiElements.push(el);
+                    }
+                  });
+              } else {
+                parent.replaceChild($element, previousElements[0]);
+              }
             }
             block = null;
           }
