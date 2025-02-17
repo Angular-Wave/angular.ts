@@ -789,7 +789,7 @@ export class Scope {
       child = childInstance;
     } else {
       child = Object.create(this.$target);
-      child.$parent = this.$parent;
+      // child.$parent = this.$parent;
     }
 
     const proxy = new Proxy(child, new Scope(this));

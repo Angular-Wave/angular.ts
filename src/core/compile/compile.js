@@ -38,6 +38,7 @@ import { PREFIX_REGEXP } from "../../shared/constants.js";
 import { createEventDirective } from "../../directive/events/events.js";
 import { Attributes } from "./attributes.js";
 import { ngObserveDirective } from "../../directive/observe/observe.js";
+import { isProxy } from "../scope/scope.js";
 
 /**
  * @description Function that aggregates all linking fns for a compilation root (nodeList)
@@ -2481,7 +2482,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             compile: () => (scope, node) => {
               interpolateFn.expressions.forEach((x) => {
                 scope.$watch(x, () => {
-                  node.nodeValue = interpolateFn(scope);
+                  node.nodeValue = interpolateFn(
+                    isProxy(scope) ? scope.$target : scope,
+                  );
                 });
               });
             },

@@ -1,4 +1,5 @@
 import { isFunction } from "../../shared/utils.js";
+import { isProxy } from "../scope/scope.js";
 import { PURITY_RELATIVE } from "./interpreter.js";
 import { Lexer } from "./lexer/lexer.js";
 import { Parser } from "./parser/parser.js";
@@ -150,7 +151,7 @@ export function ParseProvider() {
             return;
           }
           const res = isFunction(value) ? value() : value;
-          return interceptorFn(res);
+          return interceptorFn(isProxy(res) ? res.$target : res);
         };
 
         // Maintain references to the interceptor/intercepted
