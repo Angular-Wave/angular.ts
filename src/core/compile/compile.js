@@ -598,7 +598,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           : (x) => x.replace(/\{\{/g, startSymbol).replace(/}}/g, endSymbol);
 
       const NG_PREFIX_BINDING = /^ng(Attr|Prop|On|Observe)([A-Z].*)$/;
-      const MULTI_ELEMENT_DIR_RE = /^(.+)Start$/;
       return compile;
 
       //= ===============================
@@ -995,7 +994,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               let isNgProp = false;
               let isNgEvent = false;
               let isNgObserve = false;
-              let multiElementMatch;
 
               attr = nAttrs[j];
               name = attr.name;
@@ -1018,13 +1016,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   .replace(/_(.)/g, (match, letter) => letter.toUpperCase());
 
                 // Support *-start / *-end multi element directives
-              } else if (
-                (multiElementMatch = nName.match(MULTI_ELEMENT_DIR_RE)) &&
-                directiveIsMultiElement(multiElementMatch[1])
-              ) {
-                attrStartName = name;
-                attrEndName = `${name.substring(0, name.length - 5)}end`;
-                name = name.substring(0, name.length - 6);
               }
 
               if (isNgProp || isNgEvent) {
@@ -2177,33 +2168,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           }
         }
         return match;
-      }
-
-      /**
-       * looks up the directive and returns true if it is a multi-element directive,
-       * and therefore requires DOM nodes between -start and -end markers to be grouped
-       * together. Example: `<div my-directive-start></div><div><div/><div my-directive-end></div>`
-       *
-       * @param {string} name name of the directive to look up.
-       * @returns true if directive was registered as multi-element.
-       */
-      function directiveIsMultiElement(name) {
-        if (Object.prototype.hasOwnProperty.call(hasDirectives, name)) {
-          for (
-            let directive,
-              directives = $injector.get(name + DirectiveSuffix),
-              i = 0,
-              ii = directives.length;
-            i < ii;
-            i++
-          ) {
-            directive = directives[i];
-            if (directive.multiElement) {
-              return true;
-            }
-          }
-        }
-        return false;
       }
 
       /**

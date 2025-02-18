@@ -2,7 +2,6 @@
 
 - @ngdoc directive
 - @name ngRepeat
-- @multiElement
 - @restrict A
 -
 - @description

@@ -209,29 +209,6 @@ describe("ngIf", () => {
       }, 300);
     });
 
-    it("should work with multiple elements", async () => {
-      $scope.show = true;
-      $scope.things = [1, 2, 3];
-      element.innerHTML =
-        "<div><div>before;</div>" +
-        '<div ng-if-start="show">start;</div>' +
-        '<div ng-repeat="thing in things">{{thing}};</div>' +
-        "<div ng-if-end>end;</div>" +
-        "<div>after;</div></div>";
-
-      $compile(element)($scope);
-      await wait();
-      expect(element.textContent).toBe("before;start;1;2;3;end;after;");
-
-      $scope.things.push(4);
-      await wait();
-      expect(element.textContent).toBe("before;start;1;2;3;4;end;after;");
-
-      $scope.show = false;
-      await wait();
-      expect(element.textContent).toBe("before;after;");
-    });
-
     it("should restore the element to its compiled state", async () => {
       $scope.value = true;
       makeIf("value");

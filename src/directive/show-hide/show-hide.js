@@ -10,7 +10,6 @@ ngShowDirective.$inject = ["$animate"];
 export function ngShowDirective($animate) {
   return {
     restrict: "A",
-    multiElement: true,
     /**
      * @param scope
      * @param {Element} element
@@ -45,7 +44,6 @@ ngHideDirective.$inject = ["$animate"];
 export function ngHideDirective($animate) {
   return {
     restrict: "A",
-    multiElement: true,
     link(scope, element, attr) {
       scope.$watch(attr["ngHide"], (value) => {
         // The comment inside of the ngShowDirective explains why we add and

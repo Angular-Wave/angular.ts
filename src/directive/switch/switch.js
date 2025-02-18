@@ -78,7 +78,6 @@ export function ngSwitchWhenDirective() {
     priority: 1200,
     restrict: "EA",
     require: "^ngSwitch",
-    multiElement: true,
     link(scope, element, attrs, ctrl, $transclude) {
       const cases = attrs.ngSwitchWhen
         .split(attrs.ngSwitchWhenSeparator)
@@ -108,7 +107,6 @@ export function ngSwitchDefaultDirective() {
     transclude: "element",
     priority: 1200,
     require: "^ngSwitch",
-    multiElement: true,
     link(_scope, element, _attr, ctrl, $transclude) {
       ctrl["cases"]["?"] = ctrl["cases"]["?"] || [];
       ctrl["cases"]["?"].push({ transclude: $transclude, element });

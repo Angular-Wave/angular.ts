@@ -70,7 +70,6 @@
 -       {@link $compile#-controlleras- controllerAs}: 'stringIdentifier',
 -       {@link $compile#-bindtocontroller- bindToController}: false,
 -       {@link $compile#-require- require}: 'siblingDirectiveName', // or // ['^parentDirectiveName', '?optionalDirectiveName', '?^optionalParent'],
--       {@link $compile#-multielement- multiElement}: false,
 -       {@link $compile#-compile- compile}: function compile(tElement, tAttrs, transclude) {
 -         return {
 -            {@link $compile#pre-linking-function pre}: function preLink(scope, iElement, iAttrs, controller) { ... },
