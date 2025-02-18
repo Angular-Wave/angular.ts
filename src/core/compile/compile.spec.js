@@ -4203,10 +4203,10 @@ describe("$compile", () => {
       expect(el.innerText).toEqual("42");
     });
 
-    fit("may inject $element and $attrs to template function", () => {
+    fit("may inject $element and $attrs to template function", async () => {
       myModule.component("myComponent", {
         template: function ($element, $attrs) {
-          return $element.getAttribute("copiedAttr", $attrs.myAttr);
+          return $element.setAttribute("copiedAttr", $attrs.myAttr);
         },
       });
       reloadModules();
@@ -4214,6 +4214,7 @@ describe("$compile", () => {
         '<my-component my-attr="42"></my-component>',
       );
       $compile(el)($rootScope);
+      await wait();
       expect(el.getAttribute("copiedAttr")).toEqual("42");
     });
 
@@ -4816,15 +4817,16 @@ describe("$compile", () => {
     });
 
     fit("should handle transcluded svg elements", async () => {
-      let element =
+      let element = createElementFromHTML(
         "<div><svg-container>" +
-        '<circle cx="4" cy="4" r="2"></circle>' +
-        "</svg-container></div>";
+          '<circle cx="4" cy="4" r="2"></circle>' +
+          "</svg-container></div>",
+      );
       $compile(element)($rootScope);
-      await wait();
-      const circle = element.children[0];
 
-      assertIsValidSvgCircle(circle[0]);
+      await wait();
+      const circle = element.children[0].children[0];
+      assertIsValidSvgCircle(circle);
     });
 
     it("should handle custom svg elements inside svg tag", () => {
