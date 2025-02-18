@@ -6,11 +6,10 @@ ngIfDirective.$inject = ["$animate"];
  *
  * TODO // Add type for animate service
  * @param {*}  $animate
- * @returns {import("../../types").Directive}
+ * @returns {import("../../types.js").Directive}
  */
 export function ngIfDirective($animate) {
   return {
-    multiElement: true,
     transclude: "element",
     priority: 600,
     terminal: true,
@@ -19,7 +18,7 @@ export function ngIfDirective($animate) {
      *
      * @param {import("../../core/scope/scope.js").Scope} $scope
      * @param {Element} $element
-     * @param {import("../../core/compile/attributes").Attributes} $attr
+     * @param {import("../../core/compile/attributes.js").Attributes} $attr
      * @param {Object} _ctrl
      * @param {*} $transclude
      */
@@ -31,10 +30,7 @@ export function ngIfDirective($animate) {
       let childScope;
 
       let previousElements;
-      let parent =
-        $element.length > 1
-          ? $element[0].parentElement
-          : $element.parentElement;
+      let parent = $element.parentElement;
 
       $scope.$watch($attr["ngIf"], (value) => {
         if (value) {

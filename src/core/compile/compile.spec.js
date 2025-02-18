@@ -3820,7 +3820,7 @@ describe("$compile", () => {
   });
 
   describe("interpolation", () => {
-    it("is done for text nodes", async () => {
+    fit("is done for text nodes", async () => {
       registerDirectives({});
       reloadModules();
       var el = createElementFromHTML("<div>My expression: {{myExpr}}</div>");
@@ -3834,7 +3834,7 @@ describe("$compile", () => {
       expect(el.innerHTML).toEqual("My expression: Hello");
     });
 
-    it("is done for attributes", async () => {
+    fit("is done for attributes", async () => {
       registerDirectives({});
       reloadModules();
       var el = createElementFromHTML('<img alt="{{myAltText}}">');
@@ -3849,7 +3849,7 @@ describe("$compile", () => {
       expect(el.getAttribute("alt")).toEqual("My favourite photo");
     });
 
-    it("fires observers on attribute expression changes", async () => {
+    fit("fires observers on attribute expression changes", async () => {
       var observerSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -3871,7 +3871,7 @@ describe("$compile", () => {
       );
     });
 
-    it("fires observers just once upon registration", async () => {
+    fit("fires observers just once upon registration", async () => {
       var observerSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -3889,7 +3889,7 @@ describe("$compile", () => {
       expect(observerSpy.calls.count()).toBe(1);
     });
 
-    it("is done for attributes by the time other directive is linked", async () => {
+    fit("is done for attributes by the time other directive is linked", async () => {
       var gotMyAttr;
       registerDirectives({
         myDirective: () => {
@@ -3910,7 +3910,7 @@ describe("$compile", () => {
       expect(gotMyAttr).toEqual("Hello");
     });
 
-    it("is done for attributes by the time bound to iso scope", async () => {
+    fit("is done for attributes by the time bound to iso scope", async () => {
       var gotMyAttr;
       registerDirectives({
         myDirective: () => {
@@ -3933,7 +3933,7 @@ describe("$compile", () => {
       expect(gotMyAttr).toEqual("Hello");
     });
 
-    it("is done for attributes so that changes during compile are reflected", async () => {
+    fit("is done for attributes so that changes during compile are reflected", async () => {
       registerDirectives({
         myDirective: () => {
           return {
@@ -3955,7 +3955,7 @@ describe("$compile", () => {
       expect(el.getAttribute("my-attr")).toEqual("Other Hello");
     });
 
-    it("is done for attributes so that removal during compile is reflected", async () => {
+    fit("is done for attributes so that removal during compile is reflected", async () => {
       registerDirectives({
         myDirective: () => {
           return {
@@ -3976,7 +3976,7 @@ describe("$compile", () => {
       expect(el.getAttribute("my-attr")).toBeFalsy();
     });
 
-    it("cannot be done for event handler attributes", () => {
+    fit("cannot be done for event handler attributes", () => {
       registerDirectives({});
       reloadModules();
       $rootScope.myFunction = () => {};
@@ -3988,7 +3988,7 @@ describe("$compile", () => {
       }).toThrowError();
     });
 
-    it("denormalizes directive templates", () => {
+    fit("denormalizes directive templates", () => {
       createInjector([
         "ng",
         function ($interpolateProvider, $compileProvider) {
@@ -4012,13 +4012,13 @@ describe("$compile", () => {
   });
 
   describe("components", () => {
-    it("can be registered and become directives", () => {
+    fit("can be registered and become directives", () => {
       myModule.component("myComponent", {});
       var injector = createInjector(["ng", "myModule"]);
       expect(injector.has("myComponentDirective")).toBe(true);
     });
 
-    it("are element directives with controllers", () => {
+    fit("are element directives with controllers", () => {
       var controllerInstantiated = false;
       var componentElement;
       myModule.component("myComponent", {
@@ -4037,7 +4037,7 @@ describe("$compile", () => {
       expect(el[0]).toBe(componentElement[0]);
     });
 
-    it("cannot be applied to an attribute", async () => {
+    fit("cannot be applied to an attribute", async () => {
       var controllerInstantiated = false;
       registerComponent("myComponent", {
         restrict: "A", // Will be ignored
@@ -4052,7 +4052,7 @@ describe("$compile", () => {
       expect(controllerInstantiated).toBe(false);
     });
 
-    it("has an isolate scope", async () => {
+    fit("has an isolate scope", async () => {
       var componentScope;
       myModule.component("myComponent", {
         controller: function ($scope) {
@@ -4068,7 +4068,7 @@ describe("$compile", () => {
       expect(Object.getPrototypeOf(componentScope)).not.toBe($rootScope);
     });
 
-    it("may have bindings which are attached to controller", async () => {
+    fit("may have bindings which are attached to controller", async () => {
       var controllerInstance;
       myModule.component("myComponent", {
         bindings: {
@@ -4110,7 +4110,7 @@ describe("$compile", () => {
       expect(componentScope.myComponentController).toEqual(controllerInstance);
     });
 
-    it('may use a controller alias with "controller as" syntax', async () => {
+    fit('may use a controller alias with "controller as" syntax', async () => {
       var componentScope;
       var controllerInstance;
       myModule
@@ -4128,7 +4128,7 @@ describe("$compile", () => {
       expect(componentScope.myComponentController).toEqual(controllerInstance);
     });
 
-    it("has a default controller alias of $ctrl", async () => {
+    fit("has a default controller alias of $ctrl", async () => {
       var componentScope;
       var controllerInstance;
       myModule.component("myComponent", {
@@ -4144,7 +4144,7 @@ describe("$compile", () => {
       expect(componentScope.$ctrl).toEqual(controllerInstance);
     });
 
-    it("may have a template", async () => {
+    fit("may have a template", async () => {
       myModule.component("myComponent", {
         controller: function () {
           this.message = "Hello from component";
@@ -4158,7 +4158,7 @@ describe("$compile", () => {
       expect(el.innerText).toEqual("Hello from component");
     });
 
-    it("may have a templateUrl", (done) => {
+    fit("may have a templateUrl", (done) => {
       myModule.component("myComponent", {
         controller: function () {
           this.message = "Hello from component";
@@ -4175,7 +4175,7 @@ describe("$compile", () => {
       }, 100);
     });
 
-    it("may have a template function with DI support", async () => {
+    fit("may have a template function with DI support", async () => {
       myModule.constant("myConstant", 42).component("myComponent", {
         template: function (myConstant) {
           return "" + myConstant;
@@ -4188,7 +4188,7 @@ describe("$compile", () => {
       expect(el.innerText).toEqual("42");
     });
 
-    it("may have a template function with array-wrapped DI", () => {
+    fit("may have a template function with array-wrapped DI", () => {
       myModule.constant("myConstant", 42).component("myComponent", {
         template: [
           "myConstant",
@@ -4203,7 +4203,7 @@ describe("$compile", () => {
       expect(el.innerText).toEqual("42");
     });
 
-    it("may inject $element and $attrs to template function", () => {
+    fit("may inject $element and $attrs to template function", () => {
       myModule.component("myComponent", {
         template: function ($element, $attrs) {
           return $element.getAttribute("copiedAttr", $attrs.myAttr);
@@ -4217,7 +4217,7 @@ describe("$compile", () => {
       expect(el.getAttribute("copiedAttr")).toEqual("42");
     });
 
-    it("may have a template function with DI support", async () => {
+    fit("may have a template function with DI support", async () => {
       myModule.constant("myConstant", 42).component("myComponent", {
         templateUrl: function (myConstant) {
           return "/template" + myConstant + ".html";
@@ -4231,7 +4231,7 @@ describe("$compile", () => {
       expect(el.innerText).toEqual("2");
     });
 
-    it("may use transclusion", () => {
+    fit("may use transclusion", () => {
       myModule.component("myComponent", {
         transclude: true,
         template: "<div ng-transclude></div>",
@@ -4244,7 +4244,7 @@ describe("$compile", () => {
       expect(el.children[0].innerText).toEqual("Transclude me");
     });
 
-    it("may require other directive controllers", () => {
+    fit("may require other directive controllers", () => {
       var secondControllerInstance;
       myModule
         .component("first", {
@@ -4264,7 +4264,7 @@ describe("$compile", () => {
   });
 
   describe("lifecycle", () => {
-    it("calls $onInit after all ctrls created before linking", () => {
+    fit("calls $onInit after all ctrls created before linking", () => {
       var invocations = [];
       myModule
         .component("first", {
@@ -4307,7 +4307,7 @@ describe("$compile", () => {
       ]);
     });
 
-    it("calls $onDestroy when the scope is destroyed", () => {
+    fit("calls $onDestroy when the scope is destroyed", () => {
       var destroySpy = jasmine.createSpy();
       myModule.component("myComponent", {
         controller: function () {
@@ -4321,7 +4321,7 @@ describe("$compile", () => {
       expect(destroySpy).toHaveBeenCalled();
     });
 
-    it("calls $postLink after all linking is done", () => {
+    fit("calls $postLink after all linking is done", () => {
       var invocations = [];
       myModule
         .component("first", {
@@ -4354,7 +4354,7 @@ describe("$compile", () => {
       ]);
     });
 
-    it("does not call $onChanges for two-way bindings", () => {
+    fit("does not call $onChanges for two-way bindings", () => {
       var changesSpy = jasmine.createSpy();
       myModule.component("myComponent", {
         bindings: {
@@ -4373,7 +4373,7 @@ describe("$compile", () => {
       expect(changesSpy.calls.mostRecent().args[0].myBinding).toBeUndefined();
     });
 
-    it("calls $onChanges when binding changes", async () => {
+    fit("calls $onChanges when binding changes", async () => {
       var changesSpy = jasmine.createSpy();
       myModule.component("myComponent", {
         bindings: {
@@ -4403,7 +4403,7 @@ describe("$compile", () => {
       expect(lastChanges.myBinding.isFirstChange()).toBe(true);
     });
 
-    it("calls $onChanges when attribute changes", async () => {
+    fit("calls $onChanges when attribute changes", async () => {
       var changesSpy = jasmine.createSpy();
       var attrs;
       myModule.component("myComponent", {
@@ -4472,7 +4472,7 @@ describe("$compile", () => {
       expect(lastChanges.myAttr.currentValue).toBe("fourtyThree");
     });
 
-    it("runs $onChanges that tracks first changes", async () => {
+    fit("runs $onChanges that tracks first changes", async () => {
       let $val;
       myModule.component("myComponent", {
         bindings: {
@@ -4519,7 +4519,7 @@ describe("$compile", () => {
       expect($val.yourBinding.isFirstChange()).toBe(false);
     });
 
-    it("runs $onChanges for all components in the same digest", async () => {
+    fit("runs $onChanges for all components in the same digest", async () => {
       var watchSpy = jasmine.createSpy();
       myModule
         .component("first", {
@@ -4560,7 +4560,7 @@ describe("$compile", () => {
   });
 
   describe("configuration", () => {
-    it("should use $$sanitizeUriProvider for reconfiguration of the `aHrefSanitizationTrustedUrlList`", () => {
+    fit("should use $$sanitizeUriProvider for reconfiguration of the `aHrefSanitizationTrustedUrlList`", () => {
       createInjector([
         "ng",
         ($compileProvider, $$sanitizeUriProvider) => {
@@ -4582,7 +4582,7 @@ describe("$compile", () => {
       ]);
     });
 
-    it("should use $$sanitizeUriProvider for reconfiguration of the `imgSrcSanitizationTrustedUrlList`", () => {
+    fit("should use $$sanitizeUriProvider for reconfiguration of the `imgSrcSanitizationTrustedUrlList`", () => {
       createInjector([
         "ng",
         ($compileProvider, $$sanitizeUriProvider) => {
@@ -4604,7 +4604,7 @@ describe("$compile", () => {
       ]);
     });
 
-    it("should allow strictComponentBindingsEnabled to be configured", () => {
+    fit("should allow strictComponentBindingsEnabled to be configured", () => {
       createInjector([
         "ng",
         ($compileProvider) => {
@@ -4615,7 +4615,7 @@ describe("$compile", () => {
       ]);
     });
 
-    it("should register a directive", () => {
+    fit("should register a directive", () => {
       myModule.directive("div", () => ({
         restrict: "EA",
         link(scope, element) {
@@ -4629,7 +4629,7 @@ describe("$compile", () => {
       expect(log).toEqual("OK");
     });
 
-    it("should allow registration of multiple directives with same name", () => {
+    fit("should allow registration of multiple directives with same name", () => {
       myModule
         .directive("div", () => ({
           restrict: "EA",
@@ -4651,21 +4651,21 @@ describe("$compile", () => {
       expect(log).toEqual(["pre1", "pre2", "post2", "post1"]);
     });
 
-    it('should throw an exception if a directive is called "hasOwnProperty"', () => {
+    fit('should throw an exception if a directive is called "hasOwnProperty"', () => {
       expect(() => {
         myModule.directive("hasOwnProperty", () => {});
         reloadModules();
       }).toThrowError(/hasOwnProperty is not a valid directive name/);
     });
 
-    it("should throw an exception if a directive name starts with a non-lowercase letter", () => {
+    fit("should throw an exception if a directive name starts with a non-lowercase letter", () => {
       expect(() => {
         myModule.directive("BadDirectiveName", () => {});
         reloadModules();
       }).toThrowError(/The first character must be a lowercase letter/);
     });
 
-    it("should throw an exception if a directive name has leading or trailing whitespace", () => {
+    fit("should throw an exception if a directive name has leading or trailing whitespace", () => {
       function assertLeadingOrTrailingWhitespaceInDirectiveName(name) {
         expect(() => {
           myModule.directive(name, () => {});
@@ -4690,7 +4690,7 @@ describe("$compile", () => {
       }).toThrowError(/areq/);
     });
 
-    it("should ignore special chars before processing attribute directive name", () => {
+    fit("should ignore special chars before processing attribute directive name", () => {
       // a regression https://github.com/angular/angular.js/issues/16278
       myModule.directive("t", () => ({
         restrict: "A",
@@ -4706,14 +4706,14 @@ describe("$compile", () => {
       expect(log.join("; ")).toEqual("pre; post; pre; post; pre; post");
     });
 
-    it("should throw an exception if the directive factory is not defined", () => {
+    fit("should throw an exception if the directive factory is not defined", () => {
       expect(() => {
         myModule.directive("myDir");
         createInjector(["myModule"]).invoke(($compile) => {});
       }).toThrowError(/areq/);
     });
 
-    it("should preserve context within declaration", async () => {
+    fit("should preserve context within declaration", async () => {
       myModule
         .directive("ff", () => {
           const declaration = {
@@ -4815,15 +4815,14 @@ describe("$compile", () => {
       dealoc(element);
     });
 
-    it("should handle transcluded svg elements", () => {
-      element =
+    fit("should handle transcluded svg elements", async () => {
+      let element =
         "<div><svg-container>" +
         '<circle cx="4" cy="4" r="2"></circle>' +
         "</svg-container></div>";
-      $compile(element.childNodes)($rootScope);
-      document.body.appendChild(element);
-
-      const circle = element.find("circle");
+      $compile(element)($rootScope);
+      await wait();
+      const circle = element.children[0];
 
       assertIsValidSvgCircle(circle[0]);
     });
