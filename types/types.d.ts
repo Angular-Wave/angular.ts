@@ -153,10 +153,6 @@ export type Directive = {
      */
     link?: DirectiveLinkFn | DirectivePrePost | undefined;
     /**
-     * Multi-element directive flag.
-     */
-    multiElement?: boolean | undefined;
-    /**
      * Skip all directives on element
      */
     priority?: number | undefined;

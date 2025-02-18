@@ -101,10 +101,10 @@ export function removeElement(element: Element, keepData?: boolean): void;
 /**
  * Extracts the starting tag from an HTML string or DOM element.
  *
- * @param {string|Element} elementOrStr - The HTML string or DOM element to process.
+ * @param {string|Element|Node} elementOrStr - The HTML string or DOM element to process.
  * @returns {string} The starting tag or processed result.
  */
-export function startingTag(elementOrStr: string | Element): string;
+export function startingTag(elementOrStr: string | Element | Node): string;
 /**
  * Return the DOM siblings between the first and last node in the given array.
  * @param {Element|Array} nodes An array-like object
@@ -119,10 +119,11 @@ export function getBooleanAttrName(element: any, name: any): any;
  */
 export function cleanElementData(nodes: NodeListOf<Element> | Element[]): void;
 /**
- * Return instance of injector attached to element
+ * Return instance of InjectorService attached to element
+ * @param {Element} element
  * @returns {import('../core/di/internal-injector.js').InjectorService}
  */
-export function getInjector(element: any): import("../core/di/internal-injector.js").InjectorService;
+export function getInjector(element: Element): import("../core/di/internal-injector.js").InjectorService;
 export function setData(element: any, key: any, value: any): void;
 /**
  * Creates a DOM element from an HTML string.

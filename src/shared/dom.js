@@ -413,7 +413,7 @@ export function removeElement(element, keepData = false) {
 /**
  * Extracts the starting tag from an HTML string or DOM element.
  *
- * @param {string|Element} elementOrStr - The HTML string or DOM element to process.
+ * @param {string|Element|Node} elementOrStr - The HTML string or DOM element to process.
  * @returns {string} The starting tag or processed result.
  */
 export function startingTag(elementOrStr) {
@@ -423,7 +423,7 @@ export function startingTag(elementOrStr) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(elementOrStr, "text/html");
     clone = doc.body.firstChild.cloneNode(true);
-  } else if (elementOrStr instanceof Element) {
+  } else if (elementOrStr instanceof Element || elementOrStr instanceof Node) {
     clone = elementOrStr.cloneNode(true);
   } else {
     throw new Error("Input must be an HTML string or a DOM element.");
@@ -502,7 +502,8 @@ export function cleanElementData(nodes) {
 }
 
 /**
- * Return instance of injector attached to element
+ * Return instance of InjectorService attached to element
+ * @param {Element} element
  * @returns {import('../core/di/internal-injector.js').InjectorService}
  */
 export function getInjector(element) {

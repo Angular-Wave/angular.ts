@@ -880,7 +880,7 @@ function radioInputType(scope, element, attr, ctrl) {
   const doTrim = !attr.ngTrim || trim(attr.ngTrim) !== "false";
   // make the name unique, if not defined
   if (isUndefined(attr.name)) {
-    element.attr("name", nextUid());
+    element.setAttribute("name", nextUid());
   }
 
   const listener = function (ev) {

@@ -55,7 +55,6 @@ export function ngRepeatDirective($animate) {
 
   return {
     restrict: "A",
-    multiElement: true,
     transclude: "element",
     priority: 1000,
     terminal: true,
@@ -180,7 +179,7 @@ export function ngRepeatDirective($animate) {
               });
               throw ngRepeatMinErr(
                 "dupes",
-                "Duplicates in a repeater are not allowed. Use 'track by' expression to specify unique keys. Repeater: {0}, Duplicate key: {1}, Duplicate value: {2}",
+                "Duplicates keys in a repeater are not allowed. Repeater: {0}, Duplicate key: {1} for value: {2}",
                 expression,
                 trackById,
                 value,

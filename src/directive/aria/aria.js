@@ -225,8 +225,8 @@ export function ngModelAriaDirective($aria) {
     // AND element type is equal to role (if custom element has a type equaling shape) <-- remove?
     // AND element is not in nativeAriaNodeNames
     return (
-      !elem.setAttribute("role") &&
-      elem.setAttribute("type") === role &&
+      !elem.getAttribute("role") &&
+      elem.getAttribute("type") === role &&
       !isNodeOneOf(elem, nativeAriaNodeNames)
     );
   }

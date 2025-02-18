@@ -12,6 +12,7 @@ import { CACHE } from "./core/cache/cache";
 import { publishExternalAPI } from "./public";
 import { VERSION } from "./public";
 import { unnestR } from "./shared/common";
+import { EventBus } from "./core/pubsub/pubsub.js";
 
 const ngMinErr = minErr("ng");
 const $injectorMinErr = minErr("$injector");
@@ -32,6 +33,8 @@ export class Angular {
 
     /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
     this.cache = CACHE;
+
+    this.EventBus = EventBus;
 
     /** @type {string} */
     this.version = VERSION;
@@ -111,7 +114,10 @@ export class Angular {
       strictDi: false,
     };
 
-    if (getInjector(element)) {
+    if (
+      (element instanceof Element || element instanceof Document) &&
+      getInjector(/** @type {Element} */ (element))
+    ) {
       throw ngMinErr("btstrpd", "App already bootstrapped");
     }
 
@@ -183,6 +189,15 @@ export class Angular {
    */
   injector(modules, strictDi) {
     return createInjector(modules, strictDi);
+  }
+
+  /**
+   * Return instance of InjectorService attached to element
+   * @param {Element} element
+   * @returns {import('../core/di/internal-injector.js').InjectorService}
+   */
+  getInjector(element) {
+    return getInjector(element);
   }
 
   resumeBootstrap(extraModules) {

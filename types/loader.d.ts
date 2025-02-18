@@ -7,6 +7,7 @@
 export class Angular {
     /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
     cache: Map<number, import("./core/cache/cache").ExpandoStore>;
+    EventBus: import("./core/pubsub/pubsub.js").PubSub;
     /** @type {string} */
     version: string;
     /** @type {!Array<string|any>} */
@@ -80,6 +81,12 @@ export class Angular {
      * @returns {import("./core/di/internal-injector").InjectorService}
      */
     injector(modules: any[], strictDi: boolean | null): import("./core/di/internal-injector").InjectorService;
+    /**
+     * Return instance of InjectorService attached to element
+     * @param {Element} element
+     * @returns {import('../core/di/internal-injector.js').InjectorService}
+     */
+    getInjector(element: Element): any;
     resumeBootstrap(extraModules: any): any;
     /**
      * @param {Element|Document} element

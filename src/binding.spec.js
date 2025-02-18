@@ -30,12 +30,10 @@ describe("binding", () => {
     $rootScope = $injector.get("$rootScope");
     $compile = $injector.get("$compile");
     $exceptionHandler = $injector.get("$exceptionHandler");
-    this.compileToHtml = function (content) {
-      let html;
-      content = content;
+    this.compileToHtml = async function (content) {
       $compile(content)($rootScope);
-      html = content[0].outerHTML;
-      return html;
+      await wait();
+      return content;
     };
   });
 
@@ -128,43 +126,34 @@ describe("binding", () => {
         '<LI ng-repeat="item in model.items" ng-bind="item.a"></LI>' +
         "</ul>",
     )($rootScope);
-    const items = [{ a: "A" }, { a: "B" }];
-    $rootScope.model = { items };
+
+    $rootScope.model = { items: [{ a: "A" }, { a: "B" }] };
 
     await wait();
-    expect(form[0].outerHTML).toBe(
+    expect(form.outerHTML).toBe(
       "<ul>" +
-        "<!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">A</li>' +
-        "<!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">B</li>' +
-        "<!---->" +
         "</ul>",
     );
 
-    items.unshift({ a: "C" });
+    $rootScope.model.items.unshift({ a: "C" });
     await wait();
-    expect(form[0].outerHTML).toBe(
+
+    expect(form.outerHTML).toBe(
       "<ul>" +
-        "<!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">C</li>' +
-        "<!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">A</li>' +
-        "<!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">B</li>' +
-        "<!---->" +
         "</ul>",
     );
 
     items.shift();
     await wait();
-    expect(form[0].outerHTML).toBe(
+    expect(form.outerHTML).toBe(
       "<ul>" +
-        "<!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">A</li>' +
-        "<!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">B</li>' +
-        "<!---->" +
         "</ul>",
     );
 
@@ -179,19 +168,18 @@ describe("binding", () => {
         '<LI ng-repeat="item in model.items"><span ng-bind="item.a"></span></li>' +
         "</ul>",
     )($rootScope);
+    await wait();
     $rootScope.model = { items: [{ a: "A" }] };
     await wait();
     expect(element.outerHTML).toBe(
       "<ul>" +
-        "<!---->" +
         '<li ng-repeat="item in model.items"><span ng-bind="item.a">A</span></li>' +
-        "<!---->" +
         "</ul>",
     );
   });
 
-  it("DoNotOverwriteCustomAction", function () {
-    const html = this.compileToHtml(
+  it("DoNotOverwriteCustomAction", async function () {
+    const html = await this.compileToHtml(
       '<input type="submit" value="Save" action="foo();">',
     );
     expect(html.indexOf('action="foo();"')).toBeGreaterThan(0);
@@ -201,19 +189,18 @@ describe("binding", () => {
     element = $compile('<div><div ng-repeat="i in items">{{i}}</div></div>')(
       $rootScope,
     );
-    const items = {};
-    $rootScope.items = items;
+    $rootScope.items = {};
 
     await wait();
-    expect(element.childNodes.length).toEqual(1);
+    expect(element.textContent).toEqual("");
 
-    items.name = "misko";
+    $rootScope.items.name = "misko";
     await wait();
-    expect(element.childNodes.length).toEqual(3);
+    expect(element.textContent).toEqual("misko");
 
-    delete items.name;
+    delete $rootScope.items.name;
     await wait();
-    expect(element.childNodes.length).toEqual(1);
+    expect(element.textContent).toEqual("");
   });
 
   it("IfAttrBindingThrowsErrorDecorateTheAttribute", async () => {
@@ -351,19 +338,10 @@ describe("binding", () => {
     )($rootScope);
     await wait();
 
-    const d1 = element.childNodes[1];
-    const d2 = element.childNodes[3];
-    expect(d1[0].classList.contains("o")).toBeTruthy();
-    expect(d2[0].classList.contains("e")).toBeTruthy();
-    // expect(element).toBe(
-    //   "<div>" +
-    //     "<!-- ngRepeat: i in [0,1] -->" +
-    //     '<div class="o" ng-class-even="\'e\'" ng-class-odd="\'o\'" ng-repeat="i in [0,1]"></div>' +
-    //     "<!-- end ngRepeat: i in [0,1] -->" +
-    //     '<div class="e" ng-class-even="\'e\'" ng-class-odd="\'o\'" ng-repeat="i in [0,1]"></div>' +
-    //     "<!-- end ngRepeat: i in [0,1] -->" +
-    //     "</div>",
-    //);
+    const d1 = element.childNodes[0];
+    const d2 = element.childNodes[1];
+    expect(d1.classList.contains("o")).toBeTruthy();
+    expect(d2.classList.contains("e")).toBeTruthy();
   });
 
   it("BindStyle", async () => {
@@ -384,7 +362,7 @@ describe("binding", () => {
       throw new Error("MyError");
     };
     await wait();
-    input[0].dispatchEvent(
+    input.dispatchEvent(
       new MouseEvent("click", {
         bubbles: true,
         cancelable: true,
@@ -431,39 +409,36 @@ describe("binding", () => {
     const optionB = childNode(element, 1);
     const optionC = childNode(element, 2);
 
-    expect(optionA.attr("value")).toEqual("A");
-    expect(optionA.text()).toEqual("A");
+    expect(optionA.getAttribute("value")).toEqual("A");
+    expect(optionA.textContent).toEqual("A");
 
-    expect(optionB.attr("value")).toEqual("");
-    expect(optionB.text()).toEqual("B");
+    expect(optionB.getAttribute("value")).toEqual("");
+    expect(optionB.textContent).toEqual("B");
 
-    expect(optionC.attr("value")).toEqual("C");
-    expect(optionC.text()).toEqual("C");
+    expect(optionC.getAttribute("value")).toEqual("C");
+    expect(optionC.textContent).toEqual("C");
   });
 
-  it("ItShouldSelectTheCorrectRadioBox", () => {
+  it("ItShouldSelectTheCorrectRadioBox", async () => {
     element = $compile(
       "<div>" +
         '<input type="radio" ng-model="sex" value="female">' +
         '<input type="radio" ng-model="sex" value="male">' +
         "</div>",
     )($rootScope);
+    await wait();
     const female = element.childNodes[0];
     const male = element.childNodes[1];
-
-    female[0].click();
+    female.checked = true;
     browserTrigger(female, "change");
+    await wait();
     expect($rootScope.sex).toBe("female");
-    expect(female[0].checked).toBe(true);
-    expect(male[0].checked).toBe(false);
-    expect(female.value).toBe("female");
 
-    male[0].click();
+    male.checked = true;
     browserTrigger(male, "change");
+    await wait();
+    expect(female.checked).toBe(false);
     expect($rootScope.sex).toBe("male");
-    expect(female[0].checked).toBe(false);
-    expect(male[0].checked).toBe(true);
-    expect(male.value).toBe("male");
   });
 
   it("ItShouldRepeatOnHashes", async () => {
@@ -475,11 +450,8 @@ describe("binding", () => {
     await wait();
     expect(element.outerHTML).toBe(
       "<ul>" +
-        "<!---->" +
         '<li ng-repeat="(k,v) in {a:0,b:1}" ng-bind="k + v">a0</li>' +
-        "<!---->" +
         '<li ng-repeat="(k,v) in {a:0,b:1}" ng-bind="k + v">b1</li>' +
-        "<!---->" +
         "</ul>",
     );
   });

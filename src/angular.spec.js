@@ -23,7 +23,7 @@ import {
   getNodeName,
   snakeCase,
 } from "./shared/utils.js";
-import { dealoc, startingTag } from "./shared/dom.js";
+import { createElementFromHTML, dealoc, startingTag } from "./shared/dom.js";
 import { Angular } from "./loader.js";
 import { createInjector } from "./core/di/injector.js";
 import { wait } from "./shared/test-utils";
@@ -780,7 +780,9 @@ describe("angular", () => {
     it("should copy elements by reference", () => {
       const src = {
         element: document.createElement("div"),
-        jqObject: JQLite("<p><span>s1</span><span>s2</span></p>").find("span"),
+        jqObject: createElementFromHTML(
+          "<p><span>s1</span><span>s2</span></p>",
+        ).querySelectorAll("span"),
       };
       const dst = {};
 
@@ -1335,7 +1337,7 @@ describe("angular", () => {
 
     it("should look for ngApp directive as attr", () => {
       window.angular.module("ABC", []);
-      const appElement = JQLite('<div ng-app="ABC"></div>')[0];
+      const appElement = createElementFromHTML('<div ng-app="ABC"></div>');
 
       window.angular.init(appElement);
       expect(bootstrapSpy).toHaveBeenCalled();
@@ -1343,34 +1345,36 @@ describe("angular", () => {
 
     it("should look for ngApp directive using querySelectorAll", () => {
       window.angular.module("ABC", []);
-      const appElement = JQLite('<div ng-app="ABC"></div>')[0];
+      const appElement = createElementFromHTML('<div ng-app="ABC"></div>');
       element.querySelector["[ng-app]"] = appElement;
       window.angular.init(element);
       expect(bootstrapSpy).toHaveBeenCalled();
     });
 
     it("should bootstrap anonymously", () => {
-      const appElement = JQLite("<div ng-app></div>")[0];
+      const appElement = createElementFromHTML("<div ng-app></div>");
       element.querySelector["[ng-app]"] = appElement;
       window.angular.init(element);
       expect(bootstrapSpy).toHaveBeenCalled();
     });
 
     it("should bootstrap if the annotation is on the root element", () => {
-      const appElement = JQLite('<div ng-app=""></div>')[0];
+      const appElement = createElementFromHTML('<div ng-app=""></div>');
       window.angular.init(appElement);
       expect(bootstrapSpy).toHaveBeenCalled();
     });
 
     it("should complain if app module cannot be found", () => {
-      const appElement = JQLite('<div ng-app="doesntexist"></div>')[0];
+      const appElement = createElementFromHTML(
+        '<div ng-app="doesntexist"></div>',
+      );
       expect(() => {
         window.angular.init(appElement);
       }).toThrowError(/modulerr/);
     });
 
     it("should complain if an element has already been bootstrapped", () => {
-      const element = JQLite("<div>bootstrap me!</div>");
+      const element = createElementFromHTML("<div>bootstrap me!</div>");
       angular.bootstrap(element);
 
       expect(() => {
@@ -1390,12 +1394,17 @@ describe("angular", () => {
     });
 
     it("should bootstrap in strict mode when ng-strict-di attribute is specified", () => {
-      const appElement = JQLite('<div ng-app="" ng-strict-di></div>');
-      window.angular.init(JQLite("<div></div>").append(appElement[0])[0]);
+      const appElement = createElementFromHTML(
+        '<div ng-app="" ng-strict-di></div>',
+      );
+      const root = createElementFromHTML("<div></div>");
+      root.append(appElement);
+
+      window.angular.init(root);
       expect(bootstrapSpy).toHaveBeenCalled();
       expect(bootstrapSpy.calls.mostRecent().args[2].strictDi).toBe(true);
 
-      const injector = appElement.injector();
+      const injector = angular.getInjector(appElement);
       function testFactory($rootScope) {}
       expect(() => {
         injector.instantiate(testFactory);
@@ -1516,45 +1525,50 @@ describe("angular", () => {
 
   describe("compile", () => {
     it("should link to existing node and create scope", async () => {
-      const template = angular.element(
+      const template = createElementFromHTML(
         '<div>{{greeting = "hello world"}}</div>',
       );
       element = $compile(template)($rootScope);
       await wait();
-      expect(template.text()).toEqual("hello world");
+
+      expect(template.innerHTML).toEqual("hello world");
       expect($rootScope.greeting).toEqual("hello world");
     });
 
     it("should link to existing node and given scope", async () => {
-      const template = angular.element(
+      const template = createElementFromHTML(
         '<div>{{greeting = "hello world"}}</div>',
       );
       element = $compile(template)($rootScope);
       await wait();
-      expect(template.text()).toEqual("hello world");
+      expect(template.textContent).toEqual("hello world");
     });
 
     it("should link to new node and given scope", async () => {
-      const template = JQLite('<div>{{greeting = "hello world"}}</div>');
+      const template = createElementFromHTML(
+        '<div>{{greeting = "hello world"}}</div>',
+      );
 
       const compile = $compile(template);
-      let templateClone = template[0].cloneNode(true);
+      let templateClone = template.cloneNode(true);
 
       element = compile($rootScope, (clone) => {
         templateClone = clone;
       });
       await wait();
-      expect(template.text()).toEqual('{{greeting = "hello world"}}');
+      expect(template.textContent).toEqual('{{greeting = "hello world"}}');
       expect(element.textContent).toEqual("hello world");
-      expect(element).toEqual(templateClone);
+      expect(element).toEqual(templateClone[0]);
       expect($rootScope.greeting).toEqual("hello world");
     });
 
     it("should link to cloned node and create scope", async () => {
-      const template = JQLite('<div>{{greeting = "hello world"}}</div>');
+      const template = createElementFromHTML(
+        '<div>{{greeting = "hello world"}}</div>',
+      );
       element = $compile(template)($rootScope, () => {});
       await wait();
-      expect(template.text()).toEqual('{{greeting = "hello world"}}');
+      expect(template.textContent).toEqual('{{greeting = "hello world"}}');
       expect(element.textContent).toEqual("hello world");
       expect($rootScope.greeting).toEqual("hello world");
     });
@@ -1562,21 +1576,21 @@ describe("angular", () => {
 
   describe("getNodeName", () => {
     it('should correctly detect node name with "namespace" when xmlns is defined', () => {
-      const div = JQLite(
+      const div = createElementFromHTML(
         '<div xmlns:ngtest="http://angularjs.org/">' +
           '<ngtest:foo ngtest:attr="bar"></ngtest:foo>' +
           "</div>",
-      )[0];
+      );
       expect(getNodeName(div.childNodes[0])).toBe("ngtest:foo");
       expect(div.childNodes[0].getAttribute("ngtest:attr")).toBe("bar");
     });
 
     it('should correctly detect node name with "namespace" when xmlns is NOT defined', () => {
-      const div = JQLite(
+      const div = createElementFromHTML(
         '<div xmlns:ngtest="http://angularjs.org/">' +
           '<ngtest:foo ngtest:attr="bar"></ng-test>' +
           "</div>",
-      )[0];
+      );
       expect(getNodeName(div.childNodes[0])).toBe("ngtest:foo");
       expect(div.childNodes[0].getAttribute("ngtest:attr")).toBe("bar");
     });
@@ -1613,15 +1627,16 @@ describe("angular", () => {
     });
 
     it("should bootstrap app", () => {
-      const element = JQLite("<div>{{1+2}}</div>");
+      const element = createElementFromHTML("<div>{{1+2}}</div>");
       const injector = angular.bootstrap(element);
       expect(injector).toBeDefined();
-      expect(element.injector()).toBe(injector);
-      dealoc(element);
+      debugger;
+      expect(angular.getInjector(element)).toBe(injector);
+      // dealoc(element);
     });
 
     it("should complain if app module can't be found", () => {
-      const element = JQLite("<div>{{1+2}}</div>");
+      const element = createElementFromHTML("<div>{{1+2}}</div>");
 
       expect(() => {
         angular.bootstrap(element, ["doesntexist"]);

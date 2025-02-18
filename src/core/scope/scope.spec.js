@@ -1392,6 +1392,10 @@ describe("Scope", () => {
         scope.aValue.pop();
         await wait();
         expect(scope.counter).toBe(3);
+
+        scope.aValue.unshift(4);
+        await wait();
+        expect(scope.counter).toBe(4);
       });
 
       it("can pass the new value of the array as well as the previous value of the dropped item", async () => {

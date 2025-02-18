@@ -459,7 +459,7 @@ export class Scope {
 
     if (
       Array.isArray(target) &&
-      ["pop", "shift"].includes(/** @type { string } */ (property))
+      ["pop", "shift", "unshift"].includes(/** @type { string } */ (property))
     ) {
       if (this.objectListeners.has(proxy)) {
         let keys = this.objectListeners.get(this.$proxy);
@@ -469,6 +469,11 @@ export class Scope {
             this.scheduled = listeners;
           }
         });
+      }
+
+      // TODO aditional testing
+      if (property === "unshift") {
+        this.scheduleListener(this.scheduled);
       }
     }
 

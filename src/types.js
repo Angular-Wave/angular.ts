@@ -232,8 +232,6 @@
  * Bindings to controller.
  * @property {DirectiveLinkFn |  DirectivePrePost | undefined} [link]
  * Link function.
- * @property {boolean | undefined} [multiElement]
- * Multi-element directive flag.
  * @property {number | undefined} [priority]
  * Skip all directives on element
  * @property {boolean | undefined} [terminal]
