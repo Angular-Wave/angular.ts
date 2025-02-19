@@ -2326,6 +2326,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               const scope = linkQueue.shift();
               const beforeTemplateLinkNode = linkQueue.shift();
               const boundTranscludeFn = linkQueue.shift();
+              //childBoundTranscludeFn = linkQueue.shift();
               let linkNode = $compileNode;
 
               if (scope.$$destroyed) continue;
@@ -2389,7 +2390,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           let childBoundTranscludeFn = boundTranscludeFn;
           if (scope.$$destroyed) return;
           if (linkQueue) {
-            linkQueue.push(scope, node, rootElement, childBoundTranscludeFn);
+            linkQueue.push(scope, node, rootElement);
           } else {
             if (afterTemplateNodeLinkFn.transcludeOnThisElement) {
               childBoundTranscludeFn = createBoundTranscludeFn(
