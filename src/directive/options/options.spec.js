@@ -72,9 +72,9 @@ describe("ngOptions", () => {
                 `Expected option value "${actual.attr("value")}" to equal "${hash}"`,
               );
             }
-            if (text && actual.text() !== text) {
+            if (text && actual.textContent !== text) {
               errors.push(
-                `Expected option text "${actual.text()}" to equal "${text}"`,
+                `Expected option text "${actual.textContent}" to equal "${text}"`,
               );
             }
             if (label && actual.attr("label") !== label) {
@@ -100,9 +100,9 @@ describe("ngOptions", () => {
                 `Expected option value "${actual.attr("value")}" to equal "${value}"`,
               );
             }
-            if (text && actual.text() !== text) {
+            if (text && actual.textContent !== text) {
               errors.push(
-                `Expected option text "${actual.text()}" to equal "${text}"`,
+                `Expected option text "${actual.textContent}" to equal "${text}"`,
               );
             }
             if (label && actual.attr("label") !== label) {
@@ -561,8 +561,8 @@ describe("ngOptions", () => {
     });
 
     expect(element.find("option").length).toEqual(2);
-    expect(element.find("option")[0].text()).toEqual("blank");
-    expect(element.find("option")[1].text()).toEqual("A");
+    expect(element.find("option")[0].textContent).toEqual("blank");
+    expect(element.find("option")[1].textContent).toEqual("A");
 
     scope.$apply(() => {
       scope.values = [];
@@ -570,7 +570,7 @@ describe("ngOptions", () => {
     });
 
     expect(element.find("option").length).toEqual(1);
-    expect(element.find("option")[0].text()).toEqual("blank");
+    expect(element.find("option")[0].textContent).toEqual("blank");
   });
 
   it("should ignore $ and $$ properties", () => {
@@ -676,7 +676,7 @@ describe("ngOptions", () => {
 
     const optionToSelect = options.eq(1);
 
-    expect(optionToSelect.text()).toBe("B");
+    expect(optionToSelect.textContent).toBe("B");
 
     optionToSelect[0].selected = true;
     expect(optionToSelect[0].selected).toBe(true);
@@ -1211,7 +1211,7 @@ describe("ngOptions", () => {
       // But the label of the selected option does not change
       const option = element.find("option").eq(1);
       expect(option[0].selected).toEqual(true);
-      expect(option.text()).toEqual("twenty"); // not 'new twenty'
+      expect(option.textContent).toEqual("twenty"); // not 'new twenty'
     });
 
     it(
@@ -1241,7 +1241,7 @@ describe("ngOptions", () => {
         // But the label of the selected option does not change
         const option = element.find("option").eq(1);
         expect(option[0].selected).toEqual(true);
-        expect(option.text()).toEqual("twenty"); // not 'new twenty'
+        expect(option.textContent).toEqual("twenty"); // not 'new twenty'
       },
     );
 
@@ -1728,22 +1728,22 @@ describe("ngOptions", () => {
       const b = zero.find("option").eq(0);
       const e = zero.find("option").eq(1);
       expect(zero.attr("label")).toEqual("0");
-      expect(b.text()).toEqual("B");
-      expect(e.text()).toEqual("E");
+      expect(b.textContent).toEqual("B");
+      expect(e.textContent).toEqual("E");
 
       const first = optgroups.eq(1);
       const c = first.find("option").eq(0);
       const f = first.find("option").eq(1);
       expect(first.attr("label")).toEqual("first");
-      expect(c.text()).toEqual("C");
-      expect(f.text()).toEqual("F");
+      expect(c.textContent).toEqual("C");
+      expect(f.textContent).toEqual("F");
 
       const second = optgroups.eq(2);
       const d = second.find("option").eq(0);
       const g = second.find("option").eq(1);
       expect(second.attr("label")).toEqual("second");
-      expect(d.text()).toEqual("D");
-      expect(g.text()).toEqual("G");
+      expect(d.textContent).toEqual("D");
+      expect(g.textContent).toEqual("G");
 
       scope.$apply(() => {
         scope.selected = scope.values[0];
@@ -1776,15 +1776,15 @@ describe("ngOptions", () => {
       const c = first.find("option").eq(0);
       const f = first.find("option").eq(1);
       expect(first.attr("label")).toEqual("first");
-      expect(c.text()).toEqual("C");
-      expect(f.text()).toEqual("F");
+      expect(c.textContent).toEqual("C");
+      expect(f.textContent).toEqual("F");
 
       const second = optgroups.eq(1);
       const d = second.find("option").eq(0);
       const g = second.find("option").eq(1);
       expect(second.attr("label")).toEqual("second");
-      expect(d.text()).toEqual("D");
-      expect(g.text()).toEqual("G");
+      expect(d.textContent).toEqual("D");
+      expect(g.textContent).toEqual("G");
 
       scope.$apply(() => {
         scope.selected = scope.values[0];
@@ -1823,15 +1823,15 @@ describe("ngOptions", () => {
       alpha = one.find("option").eq(0);
       beta = one.find("option").eq(1);
       expect(one.attr("label")).toEqual("one");
-      expect(alpha.text()).toEqual("Alpha");
-      expect(beta.text()).toEqual("Beta");
+      expect(alpha.textContent).toEqual("Alpha");
+      expect(beta.textContent).toEqual("Beta");
 
       two = optgroups.eq(1);
       expect(two.children("option").length).toBe(1);
 
       gamma = two.find("option").eq(0);
       expect(two.attr("label")).toEqual("two");
-      expect(gamma.text()).toEqual("Gamma");
+      expect(gamma.textContent).toEqual("Gamma");
 
       // Remove item from first group, add item to second group, add new group
       scope.list.shift();
@@ -1848,7 +1848,7 @@ describe("ngOptions", () => {
 
       beta = one.find("option").eq(0);
       expect(one.attr("label")).toEqual("one");
-      expect(beta.text()).toEqual("Beta");
+      expect(beta.textContent).toEqual("Beta");
 
       // Group with new item
       two = optgroups.eq(1);
@@ -1856,10 +1856,10 @@ describe("ngOptions", () => {
 
       gamma = two.find("option").eq(0);
       expect(two.attr("label")).toEqual("two");
-      expect(gamma.text()).toEqual("Gamma");
+      expect(gamma.textContent).toEqual("Gamma");
       delta = two.find("option").eq(1);
       expect(two.attr("label")).toEqual("two");
-      expect(delta.text()).toEqual("Delta");
+      expect(delta.textContent).toEqual("Delta");
 
       // New group
       three = optgroups.eq(2);
@@ -1867,7 +1867,7 @@ describe("ngOptions", () => {
 
       epsilon = three.find("option").eq(0);
       expect(three.attr("label")).toEqual("three");
-      expect(epsilon.text()).toEqual("Epsilon");
+      expect(epsilon.textContent).toEqual("Epsilon");
     });
 
     it("should place non-grouped items in the list where they appear", () => {
@@ -2002,10 +2002,10 @@ describe("ngOptions", () => {
       expect(element.value).toEqual("2");
 
       const first = element.find("option")[0];
-      expect(first.text()).toEqual("first");
+      expect(first.textContent).toEqual("first");
       expect(first.attr("value")).toEqual("1");
       const forth = element.find("option")[3];
-      expect(forth.text()).toEqual("forth");
+      expect(forth.textContent).toEqual("forth");
       expect(forth.attr("value")).toEqual("4");
 
       scope.$apply(() => {
@@ -2452,7 +2452,7 @@ describe("ngOptions", () => {
       expect(element.find("option").length).toBe(2);
       option = element.find("option").eq(0);
       expect(option.value).toBe("");
-      expect(option.text()).toBe("blank is so blank");
+      expect(option.textContent).toBe("blank is so blank");
 
       scope.$apply(() => {
         scope.blankVal = "not so blank";
@@ -2462,7 +2462,7 @@ describe("ngOptions", () => {
       expect(element.find("option").length).toBe(2);
       option = element.find("option").eq(0);
       expect(option.value).toBe("");
-      expect(option.text()).toBe("blank is not so blank");
+      expect(option.textContent).toBe("blank is not so blank");
     });
 
     it("should support binding via ngBindTemplate directive", () => {
@@ -2480,7 +2480,7 @@ describe("ngOptions", () => {
       expect(element.find("option").length).toBe(2);
       option = element.find("option").eq(0);
       expect(option.value).toBe("");
-      expect(option.text()).toBe("blank is so blank");
+      expect(option.textContent).toBe("blank is so blank");
     });
 
     it("should support binding via ngBind attribute", () => {
@@ -2496,7 +2496,7 @@ describe("ngOptions", () => {
       expect(element.find("option").length).toBe(2);
       option = element.find("option").eq(0);
       expect(option.value).toBe("");
-      expect(option.text()).toBe("is blank");
+      expect(option.textContent).toBe("is blank");
     });
 
     it("should be ignored when it has no value attribute", () => {
@@ -2587,7 +2587,7 @@ describe("ngOptions", () => {
       options = element.find("option");
       expect(options.length).toBe(2);
       expect(options.eq(0).value).toBe("");
-      expect(options.eq(0).text()).toBe("blank");
+      expect(options.eq(0).textContent).toBe("blank");
 
       scope.$apply("isBlank = false");
 
@@ -2784,7 +2784,7 @@ describe("ngOptions", () => {
 
       const options = element.find("option");
       const optionToSelect = options.eq(0);
-      expect(optionToSelect.text()).toBe("Choose One");
+      expect(optionToSelect.textContent).toBe("Choose One");
       expect(optionToSelect[0].selected).toBe(true);
       expect(element.value).toBe("");
 
@@ -2804,7 +2804,7 @@ describe("ngOptions", () => {
 
       const options = element.find("option");
       const optionToSelect = options.eq(0);
-      expect(optionToSelect.text()).toBe("Choose One");
+      expect(optionToSelect.textContent).toBe("Choose One");
       expect(optionToSelect[0].selected).toBe(true);
       expect(element.value).toBe("");
 

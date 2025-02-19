@@ -92,15 +92,15 @@ describe("ngSwitch", () => {
 
     $scope.$apply('select = "1"');
     expect(element.find("li").length).toBe(3);
-    expect(element.find("li").eq(0).text()).toBe("A");
-    expect(element.find("li").eq(1).text()).toBe("B");
-    expect(element.find("li").eq(2).text()).toBe("C");
+    expect(element.find("li").eq(0).textContent).toBe("A");
+    expect(element.find("li").eq(1).textContent).toBe("B");
+    expect(element.find("li").eq(2).textContent).toBe("C");
 
     $scope.$apply('select = "2"');
     expect(element.find("li").length).toBe(3);
-    expect(element.find("li").eq(0).text()).toBe("D");
-    expect(element.find("li").eq(1).text()).toBe("E");
-    expect(element.find("li").eq(2).text()).toBe("F");
+    expect(element.find("li").eq(0).textContent).toBe("D");
+    expect(element.find("li").eq(1).textContent).toBe("E");
+    expect(element.find("li").eq(2).textContent).toBe("F");
   });
 
   it("should switch on switch-when-default", async () => {
@@ -131,15 +131,15 @@ describe("ngSwitch", () => {
 
     $scope.$apply('select = "1"');
     expect(element.find("li").length).toBe(3);
-    expect(element.find("li").eq(0).text()).toBe("A");
-    expect(element.find("li").eq(1).text()).toBe("B");
-    expect(element.find("li").eq(2).text()).toBe("C");
+    expect(element.find("li").eq(0).textContent).toBe("A");
+    expect(element.find("li").eq(1).textContent).toBe("B");
+    expect(element.find("li").eq(2).textContent).toBe("C");
 
     $scope.$apply('select = "2"');
     expect(element.find("li").length).toBe(3);
-    expect(element.find("li").eq(0).text()).toBe("D");
-    expect(element.find("li").eq(1).text()).toBe("E");
-    expect(element.find("li").eq(2).text()).toBe("F");
+    expect(element.find("li").eq(0).textContent).toBe("D");
+    expect(element.find("li").eq(1).textContent).toBe("E");
+    expect(element.find("li").eq(2).textContent).toBe("F");
   });
 
   it("should show all switch-when-default", async () => {

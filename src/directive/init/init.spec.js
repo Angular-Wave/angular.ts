@@ -41,7 +41,7 @@ describe("ngInit", () => {
     $rootScope = injector.get("$rootScope");
     expect($rootScope.template).toEqual("template2.tpl");
     setTimeout(() => {
-      expect(element.find("span").text()).toEqual("2");
+      expect(element.find("span").textContent).toEqual("2");
       done();
     }, 100);
   });

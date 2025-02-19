@@ -499,7 +499,7 @@ describe("select", () => {
 
         scope.robot = undefined;
         expect(element.find("option").eq(0)[0].selected).toBe(true);
-        expect(element.find("option").eq(0).text()).toBe("--static-select--");
+        expect(element.find("option").eq(0).textContent).toBe("--static-select--");
 
         scope.dynamicOptions = [
           { val: "", display: "--dynamic-select--" },
@@ -1414,7 +1414,7 @@ describe("select", () => {
 
       scope.selected = "option2";
       expect(element.find("option").eq(1)[0].selected).toBe(true);
-      expect(element.find("option").eq(1).text()).toBe("Option 2");
+      expect(element.find("option").eq(1).textContent).toBe("Option 2");
     });
 
     it("should update the option when the interpolated value attribute changes", () => {
@@ -1439,7 +1439,7 @@ describe("select", () => {
       scope.selected = "option2Changed";
       expect(selectCtrl.removeOption).toHaveBeenCalledWith("");
       expect(element.find("option").eq(1)[0].selected).toBe(true);
-      expect(element.find("option").eq(1).text()).toBe("Option 2");
+      expect(element.find("option").eq(1).textContent).toBe("Option 2");
     });
 
     it("should add options with interpolated text", () => {
@@ -1460,7 +1460,7 @@ describe("select", () => {
 
       scope.selected = "Option 2";
       expect(element.find("option").eq(1)[0].selected).toBe(true);
-      expect(element.find("option").eq(1).text()).toBe("Option 2");
+      expect(element.find("option").eq(1).textContent).toBe("Option 2");
     });
 
     it("should update options when their interpolated text changes", () => {
@@ -1485,7 +1485,7 @@ describe("select", () => {
       scope.selected = "Option 2 Changed";
       expect(selectCtrl.removeOption).toHaveBeenCalledWith("");
       expect(element.find("option").eq(1)[0].selected).toBe(true);
-      expect(element.find("option").eq(1).text()).toBe("Option 2 Changed");
+      expect(element.find("option").eq(1).textContent).toBe("Option 2 Changed");
     });
 
     it("should not blow up when option directive is found inside of a datalist", () => {
@@ -1497,7 +1497,7 @@ describe("select", () => {
       )($rootScope);
 
       $rootScope.foo = "success";
-      expect(element.find("span").text()).toBe("success");
+      expect(element.find("span").textContent).toBe("success");
       dealoc(element);
     });
 

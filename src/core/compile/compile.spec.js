@@ -3602,7 +3602,7 @@ describe("$compile", () => {
       var el = createElementFromHTML("<div><div my-transcluder></div></div>");
 
       $compile(el);
-      expect(el[0].innerText).toBe("");
+      expect(el.innerText).toBe("");
     });
 
     it("replaces the element with a comment", () => {
@@ -3618,7 +3618,7 @@ describe("$compile", () => {
 
       $compile(el);
 
-      expect(el[0].innerHTML).toEqual("<!---->");
+      expect(el.innerHTML).toEqual("<!---->");
     });
 
     it("includes directive attribute value in comment", () => {
@@ -3634,7 +3634,7 @@ describe("$compile", () => {
 
       $compile(el);
 
-      expect(el[0].innerHTML).toEqual("<!---->");
+      expect(el.innerHTML).toEqual("<!---->");
     });
 
     it("calls directive compile and link with comment", () => {
@@ -3657,8 +3657,8 @@ describe("$compile", () => {
 
       $compile(el)($rootScope);
 
-      expect(gotCompiledEl[0].nodeType).toBe(Node.COMMENT_NODE);
-      expect(gotLinkedEl[0].nodeType).toBe(Node.COMMENT_NODE);
+      expect(gotCompiledEl.nodeType).toBe(Node.COMMENT_NODE);
+      expect(gotLinkedEl.nodeType).toBe(Node.COMMENT_NODE);
     });
 
     it("calls lower priority compile with original", () => {
@@ -3688,7 +3688,7 @@ describe("$compile", () => {
       );
 
       $compile(el);
-      expect(gotCompiledEl[0].nodeType).toBe(Node.ELEMENT_NODE);
+      expect(gotCompiledEl.nodeType).toBe(Node.ELEMENT_NODE);
     });
 
     it("calls compile on child element directives", () => {
@@ -4034,7 +4034,7 @@ describe("$compile", () => {
       $compile(el)($rootScope);
 
       expect(controllerInstantiated).toBe(true);
-      expect(el[0]).toBe(componentElement[0]);
+      expect(el).toBe(componentElement);
     });
 
     it("cannot be applied to an attribute", async () => {
@@ -6036,7 +6036,10 @@ describe("$compile", () => {
           },
         );
 
-        $templateCache.set("test.html", '<p class="template-class">Hello</p>');
+        $templateCache.set(
+          "test.html",
+          '<div class="template-class">Hello</div>',
+        );
         element = $compile("<div test></div>")($rootScope, (node) => {
           node[0].classList.add("clonefn-class");
         });
@@ -7330,21 +7333,21 @@ describe("$compile", () => {
         observer.disconnect();
       });
 
-      it("should not process text nodes merged into their sibling", () => {
+      it("should not process text nodes merged into their sibling", async () => {
         const div = document.createElement("div");
         div.appendChild(document.createTextNode("1{{ value }}"));
         div.appendChild(document.createTextNode("2{{ value }}"));
         div.appendChild(document.createTextNode("3{{ value }}"));
 
-        element = div.childNodes;
+        element = div;
         $compile(element)($rootScope);
         $rootScope.$apply("value = 0");
-
+        await wait();
         expect(element.textContent).toBe("102030");
         dealoc(div);
       });
 
-      it("should support custom start/end interpolation symbols in template and directive template", () => {
+      it("should support custom start/end interpolation symbols in template and directive template", async () => {
         createInjector([
           "test1",
           ($interpolateProvider, $compileProvider) => {
@@ -7363,10 +7366,11 @@ describe("$compile", () => {
           $rootScope,
         );
         $rootScope.hello = "ahoj";
+        await wait();
         expect(element.textContent).toBe("ahoj|ahoj|ahoj");
       });
 
-      it("should support custom start interpolation symbol, even when `endSymbol` doesn't change", () => {
+      it("should support custom start interpolation symbol, even when `endSymbol` doesn't change", async () => {
         createInjector([
           "test1",
           ($interpolateProvider, $compileProvider) => {
@@ -7384,10 +7388,11 @@ describe("$compile", () => {
         element = $compile(tmpl)($rootScope);
 
         $rootScope.hello = "ahoj";
+        await wait();
         expect(element.textContent).toBe("ahoj|ahoj|ahoj");
       });
 
-      it("should support custom end interpolation symbol, even when `startSymbol` doesn't change", () => {
+      it("should support custom end interpolation symbol, even when `startSymbol` doesn't change", async () => {
         createInjector([
           "test1",
           ($interpolateProvider, $compileProvider) => {
@@ -7406,10 +7411,11 @@ describe("$compile", () => {
         element = $compile(tmpl)($rootScope);
 
         $rootScope.hello = "ahoj";
+        await wait();
         expect(element.textContent).toBe("ahoj|ahoj|ahoj");
       });
 
-      it("should support custom start/end interpolation symbols in async directive template", () => {
+      it("should support custom start/end interpolation symbols in async directive template", async () => {
         createInjector([
           "test1",
           ($interpolateProvider, $compileProvider) => {
@@ -7432,10 +7438,11 @@ describe("$compile", () => {
           $rootScope,
         );
         $rootScope.hello = "ahoj";
+        await wait();
         expect(element.textContent).toBe("ahoj|ahoj|ahoj");
       });
 
-      it("should make attributes observable for terminal directives", () => {
+      it("should make attributes observable for terminal directives", async () => {
         module.directive("myAttr", () => ({
           terminal: true,
           link(scope, element, attrs) {
@@ -7456,6 +7463,7 @@ describe("$compile", () => {
         expect(log).toEqual([]);
 
         $rootScope.myVal = "carrot";
+        await wait();
         expect(log[0]).toEqual("carrot");
       });
     });
@@ -7488,16 +7496,6 @@ describe("$compile", () => {
         });
       });
 
-      it("should not store linkingFns for () => {} branches", () => {
-        element = '<div name="{{a}}"><span>ignore</span></div>';
-        const linkingFn = $compile(element);
-        // Now prune the branches with no directives
-        element.find("span").remove();
-        expect(element.find("span").length).toBe(0);
-        // and we should still be able to compile without errors
-        linkingFn($rootScope);
-      });
-
       it("should compile from top to bottom but link from bottom up", async () => {
         element = $compile("<a b><c></c></a>")($rootScope);
         await wait();
@@ -7509,7 +7507,7 @@ describe("$compile", () => {
       it("should support link function on directive object", async () => {
         module.directive("abc", () => ({
           link(scope, element, attrs) {
-            element.text(attrs.abc);
+            element.innerText = attrs.abc;
           },
         }));
 

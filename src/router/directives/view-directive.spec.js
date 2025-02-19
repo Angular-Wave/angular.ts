@@ -180,12 +180,12 @@ describe("ngView", () => {
     it("anonymous ng-view should be replaced with the template of the current $state", async () => {
       elem.append($compile("<div><ng-view></ng-view></div>")(scope));
 
-      expect(elem.find("ng-view").text()).toBe("");
+      expect(elem.find("ng-view").textContent).toBe("");
 
       $state.transitionTo(aState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(aState.template);
+      expect(elem.find("ng-view").textContent).toBe(aState.template);
     });
 
     it("named ng-view should be replaced with the template of the current $state", async () => {
@@ -196,22 +196,22 @@ describe("ngView", () => {
       $state.transitionTo(cState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(cState.views.cview.template);
+      expect(elem.find("ng-view").textContent).toBe(cState.views.cview.template);
     });
 
     it("ng-view should be updated after transition to another state", async () => {
       elem.append($compile("<div><ng-view></ng-view></div>")(scope));
-      expect(elem.find("ng-view").text()).toBe("");
+      expect(elem.find("ng-view").textContent).toBe("");
 
       $state.transitionTo(aState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(aState.template);
+      expect(elem.find("ng-view").textContent).toBe(aState.template);
 
       $state.transitionTo(bState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(bState.template);
+      expect(elem.find("ng-view").textContent).toBe(bState.template);
     });
 
     it("should handle NOT nested ng-views", async () => {
@@ -220,28 +220,28 @@ describe("ngView", () => {
           '<div><ng-view name="dview1" class="dview1"></ng-view><ng-view name="dview2" class="dview2"></ng-view></div>',
         )(scope),
       );
-      expect(elem.find("ng-view").eq(0).text()).toBe("");
-      expect(elem.find("ng-view").eq(1).text()).toBe("");
+      expect(elem.find("ng-view").eq(0).textContent).toBe("");
+      expect(elem.find("ng-view").eq(1).textContent).toBe("");
 
       $state.transitionTo(dState);
       await wait(100);
 
-      expect(elem.find("ng-view").eq(0).text()).toBe(
+      expect(elem.find("ng-view").eq(0).textContent).toBe(
         dState.views.dview1.template,
       );
-      expect(elem.find("ng-view").eq(1).text()).toBe(
+      expect(elem.find("ng-view").eq(1).textContent).toBe(
         dState.views.dview2.template,
       );
     });
 
     it("should handle nested ng-views (testing two levels deep)", async () => {
       $compile(elem.append("<div><ng-view></ng-view></div>"))(scope);
-      expect(elem.find("ng-view").text()).toBe("");
+      expect(elem.find("ng-view").textContent).toBe("");
 
       $state.transitionTo(fState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(fState.views.eview.template);
+      expect(elem.find("ng-view").textContent).toBe(fState.views.eview.template);
     });
   });
 
@@ -254,7 +254,7 @@ describe("ngView", () => {
       $state.transitionTo(gState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(content);
+      expect(elem.find("ng-view").textContent).toBe(content);
     });
 
     it("initial view should be put back after removal of the view", async () => {
@@ -265,13 +265,13 @@ describe("ngView", () => {
       $state.go(hState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(hState.views.inner.template);
+      expect(elem.find("ng-view").textContent).toBe(hState.views.inner.template);
 
       // going to the parent state which makes the inner view empty
       $state.go(gState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(content);
+      expect(elem.find("ng-view").textContent).toBe(content);
     });
 
     // related to issue #435
@@ -291,7 +291,7 @@ describe("ngView", () => {
       $state.transitionTo(jState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(jState.template);
+      expect(elem.find("ng-view").textContent).toBe(jState.template);
 
       // transition back to the state with empty subview and the initial view
       $state.transitionTo(iState);
@@ -351,7 +351,7 @@ describe("ngView", () => {
 
       while (index++ < ngViews.length) {
         const ngView = (ngViews[index]);
-        if (ngView.text() === bState.template) target = ngView;
+        if (ngView.textContent === bState.template) target = ngView;
       }
 
       expect($ngViewScroll).toHaveBeenCalledWith(target);
@@ -361,7 +361,7 @@ describe("ngView", () => {
   it("should instantiate a controller with controllerAs", async () => {
     elem.append($compile("<div><ng-view></ng-view></div>")(scope));
     await $state.transitionTo(kState);
-    expect(elem.text()).toBe("value");
+    expect(elem.textContent).toBe("value");
   });
 
   it("should instantiate a controller with both $scope and $element injections", async () => {
@@ -373,7 +373,7 @@ describe("ngView", () => {
     $state.transitionTo(mState);
     await wait(100);
 
-    expect(elem.text()).toBe("mState");
+    expect(elem.textContent).toBe("mState");
   });
 
   describe("(resolved data)", () => {
@@ -409,7 +409,7 @@ describe("ngView", () => {
       await $state.transitionTo("resolve");
       await wait(100);
 
-      expect(elem.text()).toBe("joeschmoe");
+      expect(elem.textContent).toBe("joeschmoe");
       expect(_scope.$resolve).toBeDefined();
       expect(_scope.$ctrl).toBeDefined();
       expect(_scope.$ctrl.$resolve).toBeDefined();
@@ -428,7 +428,7 @@ describe("ngView", () => {
       await $state.transitionTo("resolve");
       await wait(100);
 
-      expect(elem.text()).toBe("joeschmoe");
+      expect(elem.textContent).toBe("joeschmoe");
       expect(_scope.$resolve).toBeDefined();
       expect(_scope.$resolve.user).toBe("joeschmoe");
     });
@@ -440,12 +440,12 @@ describe("ngView", () => {
       });
       $stateProvider.state(state);
       elem.append($compile("<div><ng-view></ng-view></div>")(scope));
-      expect(elem.text()).toBe("");
+      expect(elem.textContent).toBe("");
 
       await $state.transitionTo("resolve");
       await wait(100);
 
-      expect(elem.text()).toBe("joeschmoe");
+      expect(elem.textContent).toBe("joeschmoe");
     });
 
     it("should put the resolved data on the resolveAs variable", async () => {
@@ -460,7 +460,7 @@ describe("ngView", () => {
       await $state.transitionTo("resolve");
       await wait(100);
 
-      expect(elem.text()).toBe("joeschmoe");
+      expect(elem.textContent).toBe("joeschmoe");
       expect(_scope.$$$resolve).toBeDefined();
       expect(_scope.$$$resolve.user).toBe("joeschmoe");
     });
@@ -506,7 +506,7 @@ describe("ngView", () => {
     $state.transitionTo("abstract.foo");
     await wait(100);
 
-    expect(elem.text()).toBe("hello");
+    expect(elem.textContent).toBe("hello");
   });
 
   describe("play nicely with other directives", () => {
@@ -526,7 +526,7 @@ describe("ngView", () => {
       // Turn on the div that holds the ng-view
       scope.someBoolean = true;
       // Verify that the ng-view is there and it has the correct content
-      expect(elem.find("ng-view").text()).toBe(aState.template);
+      expect(elem.find("ng-view").textContent).toBe(aState.template);
 
       // Turn off the ng-view
       scope.someBoolean = false;
@@ -536,7 +536,7 @@ describe("ngView", () => {
       // Turn on the div that holds the ng-view once again
       scope.someBoolean = true;
       // Verify that the ng-view is there and it has the correct content
-      expect(elem.find("ng-view").text()).toBe(aState.template);
+      expect(elem.find("ng-view").textContent).toBe(aState.template);
     });
 
     it("should work with ngClass", async () => {
@@ -602,16 +602,16 @@ describe("ngView", () => {
 
         let ngViews = elem.find("ng-view");
 
-        expect(ngViews.eq(0).text()).toBe(lState.views.view1.template);
-        expect(ngViews.eq(1).text()).toBe(lState.views.view2.template);
+        expect(ngViews.eq(0).textContent).toBe(lState.views.view1.template);
+        expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
         expect(ngViews.eq(2).length).toBe(0);
 
         scope.views.push("view3");
         ngViews = elem.find("ng-view");
 
-        expect(ngViews.eq(0).text()).toBe(lState.views.view1.template);
-        expect(ngViews.eq(1).text()).toBe(lState.views.view2.template);
-        expect(ngViews.eq(2).text()).toBe(lState.views.view3.template);
+        expect(ngViews.eq(0).textContent).toBe(lState.views.view1.template);
+        expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
+        expect(ngViews.eq(2).textContent).toBe(lState.views.view3.template);
       });
 
       xit("should interpolate ng-view names", async () => {
@@ -632,16 +632,16 @@ describe("ngView", () => {
 
         let ngViews = elem.find("ng-view");
 
-        expect(ngViews.eq(0).text()).toBe(lState.views.view1.template);
-        expect(ngViews.eq(1).text()).toBe(lState.views.view2.template);
+        expect(ngViews.eq(0).textContent).toBe(lState.views.view1.template);
+        expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
         expect(ngViews.eq(2).length).toBe(0);
 
         scope.views.push("view3");
         ngViews = elem.find("ng-view");
 
-        expect(ngViews.eq(0).text()).toBe(lState.views.view1.template);
-        expect(ngViews.eq(1).text()).toBe(lState.views.view2.template);
-        expect(ngViews.eq(2).text()).toBe(lState.views.view3.template);
+        expect(ngViews.eq(0).textContent).toBe(lState.views.view1.template);
+        expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
+        expect(ngViews.eq(2).textContent).toBe(lState.views.view3.template);
       });
     });
   });
@@ -887,7 +887,7 @@ describe("UiView", () => {
     await wait(100);
 
     expect($state.current.name).toBe("test");
-    expect(el.text().replace(/\s*/g, "")).toBe("MAIN-DEFAULT-TEST");
+    expect(el.textContent.replace(/\s*/g, "")).toBe("MAIN-DEFAULT-TEST");
   });
 });
 
@@ -1323,7 +1323,7 @@ describe("angular 1.5+ style .component()", () => {
       const directiveEl = el[0].querySelector("div ng-view ng12-directive");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("route2cmp");
-      expect(el.text()).toBe("-DATA!-");
+      expect(el.textContent).toBe("-DATA!-");
     });
 
     it("should work with angular 1.3+ bindToComponent directives", async () => {
@@ -1348,7 +1348,7 @@ describe("angular 1.5+ style .component()", () => {
       const directiveEl = el[0].querySelector("div ng-view ng13-directive");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("route2cmp");
-      expect(el.text()).toBe("-DATA!-");
+      expect(el.textContent).toBe("-DATA!-");
     });
 
     it("should call $onInit() once", async () => {
@@ -1394,7 +1394,7 @@ describe("angular 1.5+ style .component()", () => {
       const directiveEl = el[0].querySelector("div ng-view ng-component");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("route2cmp");
-      expect(el.text()).toBe("-DATA!-");
+      expect(el.textContent).toBe("-DATA!-");
     });
 
     it("should only call $onInit() once", async () => {
@@ -1463,7 +1463,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("bindingtypes");
       await wait(100);
 
-      expect(el.text()).toBe("-ONEWAY,TWOWAY,ATTRIBUTE-");
+      expect(el.textContent).toBe("-ONEWAY,TWOWAY,ATTRIBUTE-");
     });
 
     it('should supply resolve data to optional "<?", "=?", "@?" bindings', async () => {
@@ -1489,7 +1489,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("optionalbindingtypes");
       await wait(100);
 
-      expect(el.text()).toBe("-ONEWAY,TWOWAY,ATTRIBUTE-");
+      expect(el.textContent).toBe("-ONEWAY,TWOWAY,ATTRIBUTE-");
     });
 
     // Test for #3099
@@ -1503,7 +1503,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("nothrow");
       await wait(100);
 
-      expect(el.text()).toBe("eventCmp");
+      expect(el.textContent).toBe("eventCmp");
     });
 
     // Test for #3276
@@ -1517,7 +1517,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("data");
       await wait(100);
 
-      expect(el.text()).toBe("DataComponent");
+      expect(el.textContent).toBe("DataComponent");
     });
 
     // Test for #3276
@@ -1532,7 +1532,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("data");
       await wait(100);
 
-      expect(el.text()).toBe("-user-");
+      expect(el.textContent).toBe("-user-");
     });
 
     // Test for #3239
@@ -1556,7 +1556,7 @@ describe("angular 1.5+ style .component()", () => {
 
       $state.transitionTo("parent.child");
       await wait(100);
-      expect(el.text()).toEqual("-1w,2w,attrval-");
+      expect(el.textContent).toEqual("-1w,2w,attrval-");
     });
 
     // Test for #3239
@@ -1585,7 +1585,7 @@ describe("angular 1.5+ style .component()", () => {
 
       $state.transitionTo("parent.child");
       await wait(100);
-      expect(el.text()).toEqual("-1w,2w,attrval-");
+      expect(el.textContent).toEqual("-1w,2w,attrval-");
     });
 
     // Test for #3239
@@ -1615,7 +1615,7 @@ describe("angular 1.5+ style .component()", () => {
 
       $state.transitionTo("parent.child");
       await wait(100);
-      expect(el.text()).toEqual("-asfasfd,2w,attrval-");
+      expect(el.textContent).toEqual("-asfasfd,2w,attrval-");
     });
 
     // Test for #3239
@@ -1638,7 +1638,7 @@ describe("angular 1.5+ style .component()", () => {
       expect($rootScope.log).toEqual([]);
       expect(
         el
-          .text()
+          .textContent
           .split(/\s+/)
           .filter((x) => x),
       ).toEqual(["parentCmp", "childCmp", "Button"]);
@@ -1821,7 +1821,7 @@ describe("angular 1.5+ style .component()", () => {
       const directiveEl = el[0].querySelector("div ng-view ng12-directive");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("route2cmp");
-      expect(el.text()).toBe("-DATA!-");
+      expect(el.textContent).toBe("-DATA!-");
     });
 
     it("should provide default bindings for any component bindings omitted in the state.bindings map", async () => {
@@ -1853,7 +1853,7 @@ describe("angular 1.5+ style .component()", () => {
       const directiveEl = el[0].querySelector("div ng-view ng-component");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("route2cmp");
-      expect(el.text()).toBe("-DATA!.DATA2!-");
+      expect(el.textContent).toBe("-DATA!.DATA2!-");
     });
   });
 
@@ -1882,7 +1882,7 @@ describe("angular 1.5+ style .component()", () => {
       );
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("ng12-dynamic-directive");
-      expect(el.text()).toBe("dynamic directive");
+      expect(el.textContent).toBe("dynamic directive");
     });
 
     // TODO Invalid transition
@@ -1909,7 +1909,7 @@ describe("angular 1.5+ style .component()", () => {
       const directiveEl = el[0].querySelector("div ng-view dynamic-component");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("dynamicComponent");
-      expect(el.text().trim()).toBe("dynamicComponent");
+      expect(el.textContent.trim()).toBe("dynamicComponent");
     });
   });
 
@@ -1938,7 +1938,7 @@ describe("angular 1.5+ style .component()", () => {
       const $state = svcs.$state;
       $state.go("dynamic", { param: "abc" });
       await wait(100);
-      expect(el.text().trim()).toBe("dynamicComponent");
+      expect(el.textContent.trim()).toBe("dynamicComponent");
     });
 
     it("should be called when dynamic parameters change", async () => {
@@ -1948,7 +1948,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.go("dynamic", { param: "def" });
       await wait(100);
 
-      expect(el.text().trim()).toBe("dynamicComponent def");
+      expect(el.textContent.trim()).toBe("dynamicComponent def");
     });
 
     it("should work with componentProvider", async () => {
@@ -1958,7 +1958,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.go("dynamic2", { param: "def" });
       await wait(100);
 
-      expect(el.text().trim()).toBe("dynamicComponent def");
+      expect(el.textContent.trim()).toBe("dynamicComponent def");
     });
   });
 });

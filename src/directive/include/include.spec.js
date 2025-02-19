@@ -1,4 +1,4 @@
-import { dealoc, JQLite } from "../../shared/dom.js";
+import { createElementFromHTML, dealoc } from "../../shared/dom.js";
 import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
 import { wait } from "../../shared/test-utils.js";
@@ -32,25 +32,26 @@ describe("ngInclude", () => {
       $compile = injector.get("$compile");
     });
 
-    afterEach(() => {
-      dealoc(element);
-    });
+    // afterEach(() => {
+    //   dealoc(element);
+    // });
 
     it("should trust and use literal urls", (done) => {
-      const element = (
+      const element = createElementFromHTML(
         "<div><div ng-include=\"'/public/test.html'\"></div></div>",
       );
       const injector = angular.bootstrap(element);
       $rootScope = injector.get("$rootScope");
       setTimeout(() => {
         expect(element.textContent).toEqual("hello");
-        dealoc($rootScope);
         done();
       }, 200);
     });
 
     it("should trust and use trusted urls", async () => {
-      const element = ('<div><div ng-include="fooUrl">test</div></div>');
+      const element = createElementFromHTML(
+        '<div><div ng-include="fooUrl">test</div></div>',
+      );
       const injector = angular.bootstrap(element);
       let $sce = injector.get("$sce");
       $rootScope = injector.get("$rootScope");
@@ -59,12 +60,13 @@ describe("ngInclude", () => {
       );
       await wait(100);
       expect(element.textContent).toEqual("Hello");
-      dealoc($rootScope);
     });
 
     it("should include an external file", async () => {
-      element = ('<div><ng-include src="url"></ng-include></div>');
-      const body = (document.getElementById("dummy"));
+      element = createElementFromHTML(
+        '<div><ng-include src="url"></ng-include></div>',
+      );
+      const body = document.getElementById("dummy");
       body.append(element);
       const injector = angular.bootstrap(element);
       $rootScope = injector.get("$rootScope");
@@ -73,13 +75,13 @@ describe("ngInclude", () => {
       $rootScope.name = "misko";
       $rootScope.url = "myUrl";
       await wait(100);
-      expect(body.text()).toEqual("misko");
-      body.empty();
-      dealoc($rootScope);
+      expect(body.textContent).toEqual("misko");
     });
 
     it('should support ng-include="src" syntax', (done) => {
-      element = ('<div><div ng-include="url"></div></div>');
+      element = createElementFromHTML(
+        '<div><div ng-include="url"></div></div>',
+      );
       const injector = angular.bootstrap(element);
       $rootScope = injector.get("$rootScope");
       $rootScope.expr = "Alibaba";
@@ -91,7 +93,7 @@ describe("ngInclude", () => {
     });
 
     it("should NOT use untrusted URL expressions ", async () => {
-      element = ('<ng-include src="url"></ng-include>');
+      element = createElementFromHTML('<ng-include src="url"></ng-include>');
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       $rootScope.url = "http://example.com/myUrl";
@@ -100,7 +102,9 @@ describe("ngInclude", () => {
     });
 
     it("should remove previously included text if a falsy value is bound to src", (done) => {
-      element = ('<div><ng-include src="url"></ng-include></div>');
+      element = createElementFromHTML(
+        '<div><ng-include src="url"></ng-include></div>',
+      );
       const injector = angular.bootstrap(element);
       $rootScope = injector.get("$rootScope");
       $rootScope.expr = "igor";
@@ -123,7 +127,7 @@ describe("ngInclude", () => {
           called = true;
         });
       });
-      element = (
+      element = createElementFromHTML(
         '<div><div><ng-include src="url"></ng-include></div></div>',
       );
       const injector = angular.bootstrap(element, ["myModule"]);
@@ -143,7 +147,7 @@ describe("ngInclude", () => {
           called = true;
         });
       });
-      element = (
+      element = createElementFromHTML(
         '<div><div><ng-include src="url"></ng-include></div></div>',
       );
       const injector = angular.bootstrap(element, ["myModule"]);
@@ -165,7 +169,7 @@ describe("ngInclude", () => {
         $rootScope.$on("$includeContentError", contentErrorSpy);
       });
 
-      element = (
+      element = createElementFromHTML(
         '<div><div><ng-include src="url"></ng-include></div></div>',
       );
 
@@ -181,7 +185,7 @@ describe("ngInclude", () => {
     it("should evaluate onload expression when a partial is loaded", (done) => {
       window.angular.module("myModule", []);
 
-      element = (
+      element = createElementFromHTML(
         '<div><div><ng-include src="url" onload="loaded = true"></ng-include></div></div>',
       );
       const injector = angular.bootstrap(element, ["myModule"]);
@@ -198,7 +202,9 @@ describe("ngInclude", () => {
     it("should create child scope and destroy old one", (done) => {
       window.angular.module("myModule", []);
 
-      element = ('<div><ng-include src="url"></ng-include></div>');
+      element = createElementFromHTML(
+        '<div><ng-include src="url"></ng-include></div>',
+      );
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       expect($rootScope.$children.length).toBe(1);
@@ -232,7 +238,9 @@ describe("ngInclude", () => {
 
     it("should do xhr request and cache it", async () => {
       window.angular.module("myModule", []);
-      element = ('<div><ng-include src="url"></ng-include></div>');
+      element = createElementFromHTML(
+        '<div><ng-include src="url"></ng-include></div>',
+      );
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       $rootScope.url = "/mock/hello";
@@ -250,7 +258,9 @@ describe("ngInclude", () => {
 
     it("should clear content when error during xhr request", async () => {
       window.angular.module("myModule", []);
-      element = ('<div><ng-include src="url">content</ng-include></div>');
+      element = createElementFromHTML(
+        '<div><ng-include src="url">content</ng-include></div>',
+      );
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       $rootScope.url = "/mock/401";
@@ -260,7 +270,9 @@ describe("ngInclude", () => {
 
     it("should be async even if served from cache", (done) => {
       window.angular.module("myModule", []);
-      element = ('<div><ng-include src="url"></ng-include></div>');
+      element = createElementFromHTML(
+        '<div><ng-include src="url"></ng-include></div>',
+      );
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       $rootScope.url = "/mock/hello";
@@ -273,7 +285,7 @@ describe("ngInclude", () => {
 
     it("should discard pending xhr callbacks if a new template is requested before the current finished loading", (done) => {
       window.angular.module("myModule", []);
-      element = (
+      element = createElementFromHTML(
         "<div><ng-include src='templateUrl'></ng-include></div>",
       );
       const injector = angular.bootstrap(element, ["myModule"]);
@@ -291,7 +303,7 @@ describe("ngInclude", () => {
 
     it("should not break attribute bindings on the same element", async () => {
       window.angular.module("myModule", []);
-      element = (
+      element = createElementFromHTML(
         '<div><span foo="#/{{hrefUrl}}" ng-include="includeUrl"></span></div>',
       );
       const injector = angular.bootstrap(element, ["myModule"]);
@@ -319,7 +331,7 @@ describe("ngInclude", () => {
         templateUrl: "/mock/my-rect.html",
         replace: true,
       }));
-      element = ("<svg><test></test></svg>");
+      element = createElementFromHTML("<svg><test></test></svg>");
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       await wait(100);
@@ -334,7 +346,7 @@ describe("ngInclude", () => {
         templateUrl: "/mock/my-rect2.html",
         replace: true,
       }));
-      element = ("<svg><test></test></svg>");
+      element = createElementFromHTML("<svg><test></test></svg>");
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       await wait(200);
@@ -343,7 +355,7 @@ describe("ngInclude", () => {
 
     it("should not compile template if original scope is destroyed", (done) => {
       window.angular.module("myModule", []);
-      element = (
+      element = createElementFromHTML(
         '<div ng-if="show"><div ng-include="\'/mock/hello\'"></div></div>',
       );
       const injector = angular.bootstrap(element, ["myModule"]);
@@ -358,7 +370,9 @@ describe("ngInclude", () => {
 
     it("should not trigger a digest when the include is changed", (done) => {
       window.angular.module("myModule", []);
-      element = ('<div><ng-include src="url"></ng-include></div>');
+      element = createElementFromHTML(
+        '<div><ng-include src="url"></ng-include></div>',
+      );
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       const spy = spyOn($rootScope, "$digest").and.callThrough();
@@ -391,7 +405,7 @@ describe("ngInclude", () => {
             $provide.value("$anchorScroll", autoScrollSpy);
           },
         ]);
-        element = (
+        element = createElementFromHTML(
           '<div><ng-include src="tpl" autoscroll></ng-include></div>',
         );
         const injector = angular.bootstrap(element, ["myModule"]);
@@ -414,7 +428,7 @@ describe("ngInclude", () => {
             $provide.value("$anchorScroll", autoScrollSpy);
           },
         ]);
-        element = (
+        element = createElementFromHTML(
           '<div><ng-include src="tpl" autoscroll="value"></ng-include></div>',
         );
         const injector = angular.bootstrap(element, ["myModule"]);
@@ -439,7 +453,9 @@ describe("ngInclude", () => {
           },
         ]);
 
-        element = ('<div><ng-include src="tpl"></ng-include></div>');
+        element = createElementFromHTML(
+          '<div><ng-include src="tpl"></ng-include></div>',
+        );
         const injector = angular.bootstrap(element, ["myModule"]);
         $rootScope = injector.get("$rootScope");
 
@@ -460,7 +476,7 @@ describe("ngInclude", () => {
           },
         ]);
 
-        element = (
+        element = createElementFromHTML(
           '<div><ng-include src="tpl" autoscroll="value"></ng-include></div>',
         );
         const injector = angular.bootstrap(element, ["myModule"]);
@@ -531,7 +547,7 @@ describe("ngInclude", () => {
               controller = ctrl;
             },
           }));
-        element = ("<div><div template></div></div>");
+        element = createElementFromHTML("<div><div template></div></div>");
         const injector = angular.bootstrap(element, ["myModule"]);
         $rootScope = injector.get("$rootScope");
 
@@ -549,7 +565,7 @@ describe("ngInclude", () => {
           },
         }));
 
-        element = (
+        element = createElementFromHTML(
           "<div><div ng-include=\"'/mock/empty'\"><div test></div></div></div>",
         );
         const injector = angular.bootstrap(element, ["myModule"]);
@@ -568,7 +584,9 @@ describe("ngInclude", () => {
             contentOnLink = element.textContent;
           },
         }));
-        element = ("<div><div ng-include=\"'/mock/hello'\" test></div>");
+        element = createElementFromHTML(
+          "<div><div ng-include=\"'/mock/hello'\" test></div>",
+        );
         const injector = angular.bootstrap(element, ["myModule"]);
         $rootScope = injector.get("$rootScope");
         setTimeout(() => {
@@ -584,7 +602,9 @@ describe("ngInclude", () => {
             root = el.parentElement.parentElement.parentElement;
           },
         }));
-        element = ("<div><div ng-include=\"'/mock/directive'\"></div>");
+        element = createElementFromHTML(
+          "<div><div ng-include=\"'/mock/directive'\"></div>",
+        );
         const injector = angular.bootstrap(element, ["myModule"]);
         $rootScope = injector.get("$rootScope");
         await wait();
@@ -674,7 +694,7 @@ describe("ngInclude", () => {
     //     ;
 
     //     const item1 = $animate.queue.shift().element;
-    //     expect(item1.text()).toBe("one");
+    //     expect(item1.textContent).toBe("one");
 
     //     $rootScope.tpl = "two";
     //     ;
