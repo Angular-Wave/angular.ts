@@ -1,5 +1,9 @@
 import { Angular } from "../../loader.js";
-import { dealoc, JQLite } from "../../shared/dom.js";
+import {
+  createElementFromHTML,
+  dealoc,
+  getCacheData,
+} from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";
 import { FormController } from "./form.js";
 
@@ -44,8 +48,10 @@ describe("form", () => {
   it("should instantiate form and attach it to DOM", async () => {
     doc = $compile("<form>")(scope);
     await wait();
-    expect(doc.data("$formController")).toBeTruthy();
-    expect(doc.data("$formController") instanceof FormController).toBe(true);
+    expect(getCacheData(doc, "$formController")).toBeTruthy();
+    expect(getCacheData(doc, "$formController") instanceof FormController).toBe(
+      true,
+    );
   });
 
   it("should remove form control references from the form when nested control is removed from the DOM", async () => {
@@ -80,11 +86,11 @@ describe("form", () => {
     await wait();
     const form = scope.myForm;
 
-    const input = doc.find("input").eq(0);
+    const input = doc.children[0];
     const inputController = input.controller("ngModel");
 
-    input[0].setAttribute("value", "ab");
-    input[0].dispatchEvent(new Event("change"));
+    input.setAttribute("value", "ab");
+    input.dispatchEvent(new Event("change"));
 
     // await wait();
     await wait(10);
@@ -102,8 +108,8 @@ describe("form", () => {
 
     form.$setPristine();
 
-    input[0].setAttribute("value", "ab");
-    input[0].dispatchEvent(new Event("change"));
+    input.setAttribute("value", "ab");
+    input.dispatchEvent(new Event("change"));
     // await wait();
     await wait();
     expect(form.$error.maxlength).toBeFalsy();
@@ -118,15 +124,14 @@ describe("form", () => {
     )(scope);
 
     const form = scope.myForm;
-
-    const input = doc.find("input").eq(0);
+    const input = doc.children[0];
 
     // remove control and invalidate it
     form.$removeControl(control);
     expect(form.control).toBeUndefined();
 
-    input[0].setAttribute("value", "abc");
-    input[0].dispatchEvent(new Event("change"));
+    input.setAttribute("value", "abc");
+    input.dispatchEvent(new Event("change"));
     expect(control.$error.maxlength).toBe(true);
     expect(control.$dirty).toBe(true);
     expect(form.$error.maxlength).toBeFalsy();
@@ -139,8 +144,8 @@ describe("form", () => {
     expect(form.$dirty).toBe(false);
 
     // Only when the input changes again its validation state is propagated
-    input[0].setAttribute("value", "abcd");
-    input[0].dispatchEvent(new Event("change"));
+    input.setAttribute("value", "abcd");
+    input.dispatchEvent(new Event("change"));
     expect(form.$error.maxlength[0]).toBe(control);
     expect(form.$dirty).toBe(false);
   });
@@ -266,7 +271,7 @@ describe("form", () => {
     expect(scope.formB.$error.required.length).toBe(1);
     expect(scope.formB.$error.required).toEqual([scope.formB.lastName]);
 
-    const inputA = doc.find("input").eq(0);
+    const inputA = doc.children[0];
     const inputB = doc.find("input").eq(1);
 
     inputA[0].setAttribute("value", "val1");
@@ -282,7 +287,7 @@ describe("form", () => {
   });
 
   it("should publish widgets", async () => {
-    doc = (
+    doc = createElementFromHTML(
       '<form name="form"><input type="text" name="w1" ng-model="some" /></form>',
     );
     $compile(doc)(scope);
@@ -296,7 +301,7 @@ describe("form", () => {
   });
 
   it('should throw an exception if an input has name="hasOwnProperty"', async () => {
-    doc = (
+    doc = createElementFromHTML(
       '<form name="form">' +
         '<input name="hasOwnProperty" ng-model="some" />' +
         '<input name="other" ng-model="someOther" />' +
@@ -314,7 +319,7 @@ describe("form", () => {
           '<input type="text" ng-model="name" />' +
           "</form>",
       )(scope);
-      const inputElm = form.find("input").eq(0);
+      const inputElm = form.children[0];
 
       inputElm[0].setAttribute("value", "a");
       inputElm[0].dispatchEvent(new Event("change"));
@@ -334,7 +339,7 @@ describe("form", () => {
           "</form>",
       )(scope);
       await wait();
-      const inputElm = form.find("input").eq(0);
+      const inputElm = form.children[0];
       inputElm[0].setAttribute("value", "a");
       inputElm[0].dispatchEvent(new Event("change"));
       expect(scope.name).toEqual(undefined);
@@ -352,7 +357,7 @@ describe("form", () => {
           "</form>",
       )(scope);
       await wait();
-      const inputElm = form.find("input").eq(0);
+      const inputElm = form.children[0];
       inputElm[0].setAttribute("value", "a");
       inputElm[0].dispatchEvent(new Event("change"));
       scope.submit = jasmine.createSpy("submit").and.callFake(() => {
@@ -373,7 +378,7 @@ describe("form", () => {
           '<button ng-click="test.$rollbackViewValue()" />' +
           "</form>",
       )(scope);
-      const inputElm = form.find("input").eq(0);
+      const inputElm = form.children[0];
       inputElm[0].setAttribute("value", "a");
       inputElm[0].dispatchEvent(new Event("click"));
       expect(inputElm.value).toBe("a");
@@ -391,7 +396,7 @@ describe("form", () => {
           '<button ng-click="test.$rollbackViewValue()" />' +
           "</form>",
       )(scope);
-      const inputElm = form.find("input").eq(0);
+      const inputElm = form.children[0];
       inputElm[0].setAttribute("value", "a");
       inputElm[0].dispatchEvent(new Event("click"));
       expect(inputElm.value).toBe("a");
@@ -407,7 +412,7 @@ describe("form", () => {
       let submitted = false;
       let reloadPrevented;
 
-      doc = (
+      doc = createElementFromHTML(
         '<form ng-submit="submitMe()">' +
           '<input type="submit" value="submit">' +
           "</form>",
@@ -441,7 +446,7 @@ describe("form", () => {
     });
 
     it("should prevent the default when the form is destroyed by a submission via a click event", (done) => {
-      doc = (
+      doc = createElementFromHTML(
         "<div>" +
           '<form ng-submit="submitMe()">' +
           '<button type="submit" ng-click="destroy()"></button>' +
@@ -518,7 +523,7 @@ describe("form", () => {
 
   describe("nested forms", () => {
     it("should chain nested forms", () => {
-      doc = (
+      doc = createElementFromHTML(
         '<ng-form name="parent">' +
           '<ng-form name="child">' +
           '<input ng-model="modelA" name="inputA">' +
@@ -554,7 +559,7 @@ describe("form", () => {
     });
 
     it("should set $submitted to true on child forms when parent is submitted", () => {
-      doc = (
+      doc = createElementFromHTML(
         '<ng-form name="parent">' +
           '<ng-form name="child">' +
           '<input ng-model="modelA" name="inputA">' +
@@ -573,7 +578,7 @@ describe("form", () => {
     });
 
     it("should not propagate $submitted state on removed child forms when parent is submitted", async () => {
-      doc = (
+      doc = createElementFromHTML(
         '<ng-form name="parent">' +
           '<ng-form name="child">' +
           '<ng-form name="grandchild">' +
@@ -638,7 +643,7 @@ describe("form", () => {
     });
 
     it("should set $submitted to true on child and parent forms when form is submitted", async () => {
-      doc = (
+      doc = createElementFromHTML(
         '<ng-form name="parent">' +
           '<ng-form name="child">' +
           '<ng-form name="grandchild">' +
@@ -662,7 +667,7 @@ describe("form", () => {
     });
 
     it("should deregister a child form when its DOM is removed", async () => {
-      doc = (
+      doc = createElementFromHTML(
         '<form name="parent">' +
           '<div ng-form name="child">' +
           '<input ng-model="modelA" name="inputA" required>' +
@@ -686,7 +691,7 @@ describe("form", () => {
     });
 
     it("should deregister a child form whose name is an expression when its DOM is removed", async () => {
-      doc = (
+      doc = createElementFromHTML(
         '<form name="parent">' +
           '<div ng-form name="child.form">' +
           '<input ng-model="modelA" name="inputA" required>' +
@@ -711,7 +716,7 @@ describe("form", () => {
     });
 
     it("should deregister a input when it is removed from DOM", async () => {
-      doc = (
+      doc = createElementFromHTML(
         '<form name="parent">' +
           '<div ng-form name="child">' +
           '<input ng-if="inputPresent" ng-model="modelA" name="inputA" required maxlength="10">' +
@@ -777,7 +782,7 @@ describe("form", () => {
     });
 
     it("should deregister a input that is $pending when it is removed from DOM", async () => {
-      doc = (
+      doc = createElementFromHTML(
         '<form name="parent">' +
           '<div ng-form name="child">' +
           '<input ng-if="inputPresent" ng-model="modelA" name="inputA">' +
@@ -813,7 +818,7 @@ describe("form", () => {
     });
 
     it("should leave the parent form invalid when deregister a removed input", async () => {
-      doc = (
+      doc = createElementFromHTML(
         '<form name="parent">' +
           '<div ng-form name="child">' +
           '<input ng-if="inputPresent" ng-model="modelA" name="inputA" required>' +
@@ -855,12 +860,12 @@ describe("form", () => {
       const form = scope.myForm;
       const childformController = doc.find("ng-form").eq(0).controller("form");
 
-      const input = doc.find("input").eq(0);
+      const input = doc.children[0];
       const inputController = input.controller("ngModel");
 
       // changeInputValue(input, "ab");
-      input[0].setAttribute("value", "ab");
-      input[0].dispatchEvent(new Event("change"));
+      input.setAttribute("value", "ab");
+      input.dispatchEvent(new Event("change"));
 
       await wait();
 
@@ -881,8 +886,8 @@ describe("form", () => {
       expect(form.$error.maxlength).toBeFalsy();
 
       // changeInputValue(input, "abc");
-      input[0].setAttribute("value", "abc");
-      input[0].dispatchEvent(new Event("change"));
+      input.setAttribute("value", "abc");
+      input.dispatchEvent(new Event("change"));
       await wait();
 
       expect(form.$error.maxlength).toBeFalsy();
@@ -902,13 +907,13 @@ describe("form", () => {
       const form = scope.myForm;
       const childFormController = doc.find("ng-form").eq(0).controller("form");
 
-      const input = doc.find("input").eq(0);
+      const input = doc.children[0];
 
       // remove child form so we can add it manually
       form.$removeControl(childFormController);
       // changeInputValue(input, "ab");
-      input[0].setAttribute("value", "ab");
-      input[0].dispatchEvent(new Event("change"));
+      input.setAttribute("value", "ab");
+      input.dispatchEvent(new Event("change"));
 
       expect(form.childForm).toBeUndefined();
       expect(form.$dirty).toBe(false);
@@ -922,8 +927,8 @@ describe("form", () => {
 
       // Only when the input inside the child form changes, the validation state is propagated
       // changeInputValue(input, "abc");
-      input[0].setAttribute("value", "abc");
-      input[0].dispatchEvent(new Event("change"));
+      input.setAttribute("value", "abc");
+      input.dispatchEvent(new Event("change"));
       expect(form.$error.maxlength[0]).toBe(childFormController);
       expect(form.$dirty).toBe(false);
     });
@@ -972,7 +977,7 @@ describe("form", () => {
     });
 
     it("should chain nested forms in repeater", async () => {
-      doc = (
+      doc = createElementFromHTML(
         "<ng-form name=parent>" +
           '<ng-form ng-repeat="f in forms" name=child>' +
           "<input type=text ng-model=text name=text>" +
@@ -1100,7 +1105,7 @@ describe("form", () => {
 
       const form = doc;
       const formCtrl = scope.testForm;
-      const input1 = form.find("input").eq(0);
+      const input1 = form.children[0];
       const input1Ctrl = input1.controller("ngModel");
       const input2 = form.find("input").eq(1);
       const input2Ctrl = input2.controller("ngModel");
@@ -1133,19 +1138,19 @@ describe("form", () => {
 
       const form = doc;
       const formCtrl = scope.testForm;
-      const input = form.find("input").eq(0);
+      const input = form.children[0];
       const inputCtrl = input.controller("ngModel");
 
       inputCtrl.$setViewValue("xx");
       await wait();
       expect(form[0].classList.contains("ng-dirty")).toBeTrue();
-      expect(input[0].classList.contains("ng-dirty")).toBeTrue();
+      expect(input.classList.contains("ng-dirty")).toBeTrue();
 
       formCtrl.$setPristine();
       expect(form[0].classList.contains("ng-pristine")).toBeTrue();
       expect(formCtrl.$pristine).toBe(true);
       expect(formCtrl.$dirty).toBe(false);
-      expect(input[0].classList.contains("ng-pristine")).toBeTrue();
+      expect(input.classList.contains("ng-pristine")).toBeTrue();
       expect(inputCtrl.$pristine).toBe(true);
       expect(inputCtrl.$dirty).toBe(false);
     });
@@ -1163,7 +1168,7 @@ describe("form", () => {
       const formCtrl = scope.testForm;
       const nestedForm = form.find("div");
       const nestedFormCtrl = nestedForm.controller("form");
-      const nestedInput = form.find("input").eq(0);
+      const nestedInput = form.children[0];
       const nestedInputCtrl = nestedInput.controller("ngModel");
 
       nestedInputCtrl.$setViewValue("xx");
@@ -1372,8 +1377,8 @@ describe("form", () => {
 
     beforeEach(() => {
       let dummy = document.getElementById("dummy");
-      doc = ('<form name="myForm"></form>');
-      (dummy).append(doc);
+      doc = '<form name="myForm"></form>';
+      dummy.append(doc);
       let angular = new Angular();
       window.angular = new Angular();
       myModule = window.angular.module("myModule", []);

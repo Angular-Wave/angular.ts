@@ -1,6 +1,7 @@
 import { Angular } from "../../loader.js";
-import { JQLite } from "../../shared/dom.js";
+import { createElementFromHTML } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";
+
 describe("observe", () => {
   let $compile, $scope, $rootScope, element, observerSpy;
 
@@ -30,8 +31,10 @@ describe("observe", () => {
 
   it("should set the scope property to the attribute value before any changes", () => {
     const scope = $rootScope.$new();
-    const element = '<div ng-observe-sourceAttr="testProp"></div>';
-    element.attr("sourceAttr", "initialValue");
+    const element = createElementFromHTML(
+      '<div ng-observe-sourceAttr="testProp"></div>',
+    );
+    element.setAttribute("sourceAttr", "initialValue");
     $compile(element)(scope);
 
     expect(scope.testProp).toBeDefined();
@@ -49,7 +52,6 @@ describe("observe", () => {
       attributeName: "test-attribute",
     };
 
-    element.attr("test-attribute", "newValue");
     element.setAttribute("test-attribute", "newValue");
 
     mutationObserverCallback([mutationRecord]);
@@ -67,7 +69,6 @@ describe("observe", () => {
       attributeName: "test-attribute",
     };
 
-    element.attr("test-attribute", "existingValue");
     element.setAttribute("test-attribute", "existingValue");
 
     mutationObserverCallback([mutationRecord]);
@@ -77,7 +78,6 @@ describe("observe", () => {
 
   it("should disconnect the observer on scope destruction", () => {
     createDirective("test-attribute", "myProp");
-
     $scope.$destroy();
 
     expect(observerSpy.disconnect).toHaveBeenCalled();
@@ -96,7 +96,6 @@ describe("observe", () => {
       attributeName: "test-attribute",
     };
 
-    element.attr("test-attribute", "newValue");
     element.setAttribute("test-attribute", "newValue");
 
     mutationObserverCallback([mutationRecord]);

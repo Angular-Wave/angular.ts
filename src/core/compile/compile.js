@@ -1990,7 +1990,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
           // If only parents then start at the parent element
           if (inheritType === "^^") {
-            $element = $element.parentElement;
+            if ($element.parentElement) {
+              $element = $element.parentElement;
+            }
             // Otherwise attempt getting the controller from elementControllers in case
             // the element is transcluded (and has no data) and to avoid .data if possible
           } else {
