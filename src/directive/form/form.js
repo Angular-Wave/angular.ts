@@ -82,10 +82,17 @@ const SUBMITTED_CLASS = "ng-submitted";
 export class FormController {
   static $inject = ["$element", "$attrs", "$scope", "$animate", "$interpolate"];
 
+  /**
+   * @param {Element} $element
+   * @param {import("../../core/compile/attributes.js").Attributes} $attrs
+   * @param {import("../../core/scope/scope.js").Scope} $scope
+   * @param {*} $animate
+   * @param {*} $interpolate
+   */
   constructor($element, $attrs, $scope, $animate, $interpolate) {
     this.$$controls = [];
 
-    this.$name = $interpolate($attrs.name || $attrs.ngForm || "")($scope);
+    this.$name = $interpolate($attrs["name"] || $attrs["ngForm"] || "")($scope);
 
     /**
      * @property {boolean} $dirty True if user has already interacted with the form.

@@ -45,7 +45,7 @@ describe("form", () => {
     dealoc(doc);
   });
 
-  it("should instantiate form and attach it to DOM", async () => {
+  fit("should instantiate form and attach it to DOM", async () => {
     doc = $compile("<form>")(scope);
     await wait();
     expect(getCacheData(doc, "$formController")).toBeTruthy();
@@ -64,6 +64,7 @@ describe("form", () => {
     scope.inputPresent = true;
     const form = scope.myForm;
     await wait();
+    debugger;
     control.$setValidity("required", false);
     await wait();
 

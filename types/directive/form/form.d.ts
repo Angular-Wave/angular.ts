@@ -57,7 +57,14 @@ export const PENDING_CLASS: "ng-pending";
  */
 export class FormController {
     static $inject: string[];
-    constructor($element: any, $attrs: any, $scope: any, $animate: any, $interpolate: any);
+    /**
+     * @param {Element} $element
+     * @param {import("../../core/compile/attributes.js").Attributes} $attrs
+     * @param {import("../../core/scope/scope.js").Scope} $scope
+     * @param {*} $animate
+     * @param {*} $interpolate
+     */
+    constructor($element: Element, $attrs: import("../../core/compile/attributes.js").Attributes, $scope: import("../../core/scope/scope.js").Scope, $animate: any, $interpolate: any);
     $$controls: any[];
     $name: any;
     /**
@@ -73,7 +80,7 @@ export class FormController {
     $submitted: boolean;
     /** @type {FormController|Object} */
     $$parentForm: FormController | any;
-    $$element: any;
+    $$element: Element;
     $$animate: any;
     $error: {};
     $$success: {};
