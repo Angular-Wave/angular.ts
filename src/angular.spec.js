@@ -1630,7 +1630,6 @@ describe("angular", () => {
       const element = createElementFromHTML("<div>{{1+2}}</div>");
       const injector = angular.bootstrap(element);
       expect(injector).toBeDefined();
-      debugger;
       expect(angular.getInjector(element)).toBe(injector);
       // dealoc(element);
     });

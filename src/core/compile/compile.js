@@ -2257,14 +2257,17 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               if (isTextNode(content)) {
                 $template = [];
               } else if (isString(content)) {
-                $template = [createElementFromHTML(content)];
+                $template = Array.from(createNodelistFromHTML(content)).filter(
+                  (node) =>
+                    node.nodeType !== Node.COMMENT_NODE &&
+                    node.nodeType !== Node.TEXT_NODE,
+                );
               } else {
                 $template = removeComments(
                   wrapTemplate(templateNamespace, trim(content)),
                 );
               }
               compileNode = $template[0];
-
               if (
                 $template.length !== 1 ||
                 compileNode.nodeType !== Node.ELEMENT_NODE

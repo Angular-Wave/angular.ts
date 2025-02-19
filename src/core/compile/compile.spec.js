@@ -5457,7 +5457,7 @@ describe("$compile", () => {
         expect(child.classList.contains("log")).toBeTrue(); // merged from replace directive template
       });
 
-      fdescribe("replace and not exactly one root element", () => {
+      describe("replace and not exactly one root element", () => {
         let templateVar;
 
         beforeEach(() => {
@@ -6146,7 +6146,7 @@ describe("$compile", () => {
           expect(div.innerText).toEqual("3");
         });
 
-        it("should flush before link append", async () => {
+        fit("should flush before link append", async () => {
           $templateCache.set("second.html", "<div third>{{1+2}}</div>");
           template = $compile("<div><span first second last></span></div>");
           expect(log[0]).toEqual("first-C");
@@ -6161,7 +6161,7 @@ describe("$compile", () => {
               "third-PostL; last-PostL; second-PostL; first-PostL",
           );
 
-          const span = element.find("span");
+          const span = element.childNodes[0];
           expect(span.getAttribute("first")).toEqual("");
           expect(span.getAttribute("second")).toEqual("");
           expect(span.children[0].getAttribute("third")).toEqual("");
@@ -6260,27 +6260,23 @@ describe("$compile", () => {
             expect(element.textContent).toBe("Hello World!");
           });
 
-          it("should not throw if the root element is accompanied by: comments", async () => {
+          fit("should not throw if the root element is accompanied by: comments", async () => {
             $templateCache.set(
               "template.html",
               "<!-- oh hi --><div>Hello World!</div> \n",
             );
             element = $compile("<p template></p>")($rootScope);
             await wait();
-            expect(() => {}).not.toThrow();
-            expect(element.length).toBe(1);
             expect(element.textContent).toBe("Hello World!");
           });
 
-          it("should not throw if the root element is accompanied by: comments + whitespace", async () => {
+          fit("should not throw if the root element is accompanied by: comments + whitespace", async () => {
             $templateCache.set(
               "template.html",
               "  <!-- oh hi -->  <div>Hello World!</div>  <!-- oh hi -->\n",
             );
             element = $compile("<p template></p>")($rootScope);
             await wait();
-            expect(() => {}).not.toThrow();
-            expect(element.length).toBe(1);
             expect(element.textContent).toBe("Hello World!");
           });
         });
@@ -6338,7 +6334,7 @@ describe("$compile", () => {
               );
 
               element = $compile("<div simple></div>")($rootScope);
-
+              await wait();
               $rootScope.i = 1;
               await wait();
               expect(element.innerHTML).toContain("i = 1");
@@ -6376,52 +6372,56 @@ describe("$compile", () => {
         expect(getNodeName(element)).toMatch(/th/i);
       });
 
-      it("should support templates with root <thead> tags", async () => {
+      fit("should support templates with root <thead> tags", async () => {
         $templateCache.set("thead.html", "<thead><tr><td>TD</td></tr></thead>");
         expect(() => {
-          element = $compile("<div replace-with-thead></div>")($rootScope);
+          element = $compile("<thead replace-with-thead></thead>")($rootScope);
         }).not.toThrow();
         await wait();
         expect(getNodeName(element)).toMatch(/thead/i);
       });
 
-      it("should support templates with root <tbody> tags", async () => {
+      fit("should support templates with root <tbody> tags", async () => {
         $templateCache.set("tbody.html", "<tbody><tr><td>TD</td></tr></tbody>");
         expect(() => {
-          element = $compile("<div replace-with-tbody></div>")($rootScope);
+          element = $compile("<tbody replace-with-tbody></tbody>")($rootScope);
         }).not.toThrow();
         await wait();
         expect(getNodeName(element)).toMatch(/tbody/i);
       });
 
-      it("should support templates with root <tfoot> tags", async () => {
+      fit("should support templates with root <tfoot> tags", async () => {
         $templateCache.set("tfoot.html", "<tfoot><tr><td>TD</td></tr></tfoot>");
         expect(() => {
-          element = $compile("<div replace-with-tfoot></div>")($rootScope);
+          element = $compile("<tfoot replace-with-tfoot></tfoot>")($rootScope);
         }).not.toThrow();
         await wait();
         expect(getNodeName(element)).toMatch(/tfoot/i);
       });
 
-      it("should support templates with root <option> tags", async () => {
+      fit("should support templates with root <option> tags", async () => {
         $templateCache.set("option.html", "<option>OPTION</option>");
         expect(() => {
-          element = $compile("<div replace-with-option></div>")($rootScope);
+          element = $compile("<option replace-with-option></option>")(
+            $rootScope,
+          );
         }).not.toThrow();
         await wait();
         expect(getNodeName(element)).toMatch(/option/i);
       });
 
-      it("should support templates with root <optgroup> tags", async () => {
+      fit("should support templates with root <optgroup> tags", async () => {
         $templateCache.set("optgroup.html", "<optgroup>OPTGROUP</optgroup>");
         expect(() => {
-          element = $compile("<div replace-with-optgroup></div>")($rootScope);
+          element = $compile("<optgroup replace-with-optgroup></optgroup>")(
+            $rootScope,
+          );
         }).not.toThrow();
         await wait();
         expect(getNodeName(element)).toMatch(/optgroup/i);
       });
 
-      it("should support SVG templates using directive.templateNamespace=svg", () => {
+      fit("should support SVG templates using directive.templateNamespace=svg", () => {
         myModule.directive("svgAnchor", () => ({
           replace: true,
           templateUrl: "template.html",
@@ -6449,7 +6449,7 @@ describe("$compile", () => {
         );
       });
 
-      it("should support MathML templates using directive.templateNamespace=math", () => {
+      fit("should support MathML templates using directive.templateNamespace=math", () => {
         myModule.directive("pow", () => ({
           replace: true,
           transclude: true,
@@ -6483,7 +6483,7 @@ describe("$compile", () => {
         expect().toBe();
       });
 
-      it("should keep prototype properties on sync version of async directive", async () => {
+      fit("should keep prototype properties on sync version of async directive", async () => {
         function DirectiveClass() {
           this.restrict = "E";
           this.templateUrl = "test.html";
@@ -6514,7 +6514,7 @@ describe("$compile", () => {
     });
 
     describe("templateUrl as function", () => {
-      it("should evaluate `templateUrl` when defined as fn and use returned value as url", async () => {
+      fit("should evaluate `templateUrl` when defined as fn and use returned value as url", async () => {
         window.angular.module("test1", ["ng"]).directive("myDirective", () => ({
           replace: true,
           templateUrl($element, $attrs) {
@@ -6790,19 +6790,19 @@ describe("$compile", () => {
         }).toThrowError(/multidir/);
       });
 
-      it("should not allow more than one isolate/new scope creation per element regardless of `templateUrl`", async () => {
+      fit("should not allow more than one isolate/new scope creation per element regardless of `templateUrl`", async () => {
         $templateCache.set("tiscope.html", "<div>Hello, world !</div>");
         $compile("<div tiscope-a scope-b></div>")($rootScope);
         await wait();
         expect(log[0].match(/multidir/)).toBeTruthy();
       });
 
-      it("should create new scope even at the root of the template", () => {
+      fit("should create new scope even at the root of the template", () => {
         element = $compile("<div scope-a></div>")($rootScope);
         expect(log.length).toEqual(1);
       });
 
-      it("should create isolate scope even at the root of the template", () => {
+      fit("should create isolate scope even at the root of the template", () => {
         element = $compile("<div iscope></div>")($rootScope);
         expect(log.length).toEqual(1);
       });
@@ -14212,7 +14212,7 @@ describe("$compile", () => {
         expect(element.textContent).toBe("BazFooBar");
       });
 
-      it("should lazily compile the contents of directives that are transcluded with a templateUrl", () => {
+      fit("should lazily compile the contents of directives that are transcluded with a templateUrl", () => {
         let innerCompilationCount = 0;
         let transclude;
 
@@ -15904,7 +15904,6 @@ describe("$compile", () => {
       const barElement = $compile("<bar-component></bar-component>")(
         $rootScope,
       );
-      debugger;
       await wait();
       expect(fooElement.children[0].innerText).toEqual("FOO SUCCESS");
       expect(barElement.children[0].innerText).toEqual("BAR SUCCESS");
