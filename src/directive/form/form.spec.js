@@ -3,6 +3,7 @@ import {
   createElementFromHTML,
   dealoc,
   getCacheData,
+  getController,
 } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";
 import { FormController } from "./form.js";
@@ -45,7 +46,7 @@ describe("form", () => {
     dealoc(doc);
   });
 
-  fit("should instantiate form and attach it to DOM", async () => {
+  it("should instantiate form and attach it to DOM", async () => {
     doc = $compile("<form>")(scope);
     await wait();
     expect(getCacheData(doc, "$formController")).toBeTruthy();
@@ -64,7 +65,6 @@ describe("form", () => {
     scope.inputPresent = true;
     const form = scope.myForm;
     await wait();
-    debugger;
     control.$setValidity("required", false);
     await wait();
 
@@ -88,7 +88,7 @@ describe("form", () => {
     const form = scope.myForm;
 
     const input = doc.children[0];
-    const inputController = input.controller("ngModel");
+    const inputController = getController(input, "ngModel");
 
     input.setAttribute("value", "ab");
     input.dispatchEvent(new Event("change"));
@@ -862,7 +862,7 @@ describe("form", () => {
       const childformController = doc.find("ng-form").eq(0).controller("form");
 
       const input = doc.children[0];
-      const inputController = input.controller("ngModel");
+      const inputController = getController(input, "ngModel");
 
       // changeInputValue(input, "ab");
       input.setAttribute("value", "ab");
@@ -1140,7 +1140,7 @@ describe("form", () => {
       const form = doc;
       const formCtrl = scope.testForm;
       const input = form.children[0];
-      const inputCtrl = input.controller("ngModel");
+      const inputCtrl = getController(input, "ngModel");
 
       inputCtrl.$setViewValue("xx");
       await wait();

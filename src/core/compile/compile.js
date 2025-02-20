@@ -1974,6 +1974,14 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         }
       }
 
+      /**
+       *
+       * @param {*} directiveName
+       * @param {*} require
+       * @param {Element} $element
+       * @param {*} elementControllers
+       * @returns
+       */
       function getControllers(
         directiveName,
         require,
@@ -1992,6 +2000,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           if (inheritType === "^^") {
             if ($element.parentElement) {
               $element = $element.parentElement;
+            } else {
+              $element = undefined;
             }
             // Otherwise attempt getting the controller from elementControllers in case
             // the element is transcluded (and has no data) and to avoid .data if possible
@@ -2011,9 +2021,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               // require from the element itself.
               value = null;
             } else {
-              value = inheritType
-                ? getInheritedData($element.parentElement || $element, dataName)
-                : getCacheData($element, dataName);
+              value = $element
+                ? inheritType
+                  ? getInheritedData($element, dataName)
+                  : getCacheData($element, dataName)
+                : undefined;
             }
           }
           if (!value && !optional) {

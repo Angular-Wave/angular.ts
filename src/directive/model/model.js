@@ -1087,7 +1087,7 @@ export function ngModelDirective() {
     // before anyone else uses it.
     priority: 1,
     compile:
-      /** @param {import("../../shared/dom.js").JQLite} element  */
+      /** @param {Element} element  */
       (element) => {
         // Setup initial state of the control
         element.classList.add(PRISTINE_CLASS, UNTOUCHED_CLASS, VALID_CLASS);
