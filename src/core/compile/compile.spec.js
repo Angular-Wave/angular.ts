@@ -6330,7 +6330,7 @@ describe("$compile", () => {
       it("should support templates with root <tr> tags", async () => {
         $templateCache.set("tr.html", "<tr><td>TR</td></tr>");
         expect(() => {
-          element = $compile("<div replace-with-tr></div>")($rootScope);
+          element = $compile("<tr replace-with-tr></tr>")($rootScope);
         }).not.toThrow();
         await wait();
         expect(getNodeName(element)).toMatch(/tr/i);
@@ -6339,7 +6339,7 @@ describe("$compile", () => {
       it("should support templates with root <td> tags", async () => {
         $templateCache.set("td.html", "<td>TD</td>");
         expect(() => {
-          element = $compile("<div replace-with-td></div>")($rootScope);
+          element = $compile("<td replace-with-td></td>")($rootScope);
         }).not.toThrow();
         await wait();
         expect(getNodeName(element)).toMatch(/td/i);
@@ -6348,7 +6348,7 @@ describe("$compile", () => {
       it("should support templates with root <th> tags", async () => {
         $templateCache.set("th.html", "<th>TH</th>");
         expect(() => {
-          element = $compile("<div replace-with-th></div>")($rootScope);
+          element = $compile("<th replace-with-th></th>")($rootScope);
         }).not.toThrow();
         await wait();
         expect(getNodeName(element)).toMatch(/th/i);
@@ -7748,11 +7748,11 @@ describe("$compile", () => {
             expect(element.getAttribute("ng-my-attr")).toEqual("value");
 
             attr.$set("ngMyAttr", undefined);
-            expect(element.getAttribute("ng-my-attr")).toBeUndefined();
+            expect(element.getAttribute("ng-my-attr")).toBeNull();
 
             attr.$set("ngMyAttr", "value");
             attr.$set("ngMyAttr", null);
-            expect(element.getAttribute("ng-my-attr")).toBeUndefined();
+            expect(element.getAttribute("ng-my-attr")).toBeNull();
           });
 
           it("should set the value to lowercased keys for boolean attrs", () => {
@@ -15426,14 +15426,16 @@ describe("$compile", () => {
       });
     });
 
-    it("should work with different prefixes", () => {
+    it("should work with different prefixes", async () => {
       $rootScope.name = "Misko";
       element = $compile(
         '<span ng-attr-test="{{name}}" ng-Attr-test2="{{name}}" ng-Attr-test3="{{name}}"></span>',
       )($rootScope);
-      expect(element.getAttribute("test")).toBeUndefined();
-      expect(element.getAttribute("test2")).toBeUndefined();
-      expect(element.getAttribute("test3")).toBeUndefined();
+      expect(element.getAttribute("test")).toBeNull();
+      expect(element.getAttribute("test2")).toBeNull();
+      expect(element.getAttribute("test3")).toBeNull();
+
+      await wait();
       expect(element.getAttribute("test")).toBe("Misko");
       expect(element.getAttribute("test2")).toBe("Misko");
       expect(element.getAttribute("test3")).toBe("Misko");

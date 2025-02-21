@@ -9,6 +9,7 @@ import {
   directiveNormalize,
 } from "../../shared/utils.js";
 import { ALIASED_ATTR } from "../../shared/constants.js";
+import { isProxy } from "../scope/scope.js";
 
 const $compileMinErr = minErr("$compile");
 const SIMPLE_ATTR_NAME = /^\w/;
@@ -149,8 +150,11 @@ export class Attributes {
     }
 
     if (writeAttr !== false) {
+      let elem = isProxy(this.$$element)
+        ? this.$$element.$target
+        : this.$$element;
       if (value === null || isUndefined(value)) {
-        this.$$element.removeAttribute(attrName);
+        elem.removeAttribute(attrName);
         //
       } else if (SIMPLE_ATTR_NAME.test(attrName)) {
         // jQuery skips special boolean attrs treatment in XML nodes for
@@ -159,9 +163,9 @@ export class Attributes {
         // in XHTML, call `removeAttr` in such cases instead.
         // See https://github.com/jquery/jquery/issues/4249
         if (booleanKey && value === false) {
-          this.$$element.removeAttribute(attrName);
+          elem.removeAttribute(attrName);
         } else {
-          this.$$element.setAttribute(attrName, value);
+          elem.setAttribute(attrName, value);
         }
       } else {
         this.setSpecialAttr(this.$$element, attrName, value);
