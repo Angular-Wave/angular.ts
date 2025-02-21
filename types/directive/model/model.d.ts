@@ -3,7 +3,7 @@ export function ngModelDirective(): {
     require: string[];
     controller: typeof NgModelController;
     priority: number;
-    compile: (element: import("../../shared/dom.js").JQLite) => {
+    compile: (element: Element) => {
         pre: (scope: any, _element: any, attr: any, ctrls: any) => void;
         post: (scope: any, element: any, _attr: any, ctrls: any) => void;
     };

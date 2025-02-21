@@ -1201,11 +1201,20 @@ export function createElement(str) {
   return new DOMParser().parseFromString(str, "text/html").body.firstChild;
 }
 
+/**
+ * Replaces the attributes and child elements of an existing element (`replacedElem`)
+ * with those of a new element (`newElem`), while keeping the original reference.
+ *
+ * @param {HTMLElement} replacedElem - The element to be replaced (its content and attributes will be updated).
+ * @param {HTMLElement} newElem - The element providing the new attributes and content.
+ */
 export function replaceInline(replacedElem, newElem) {
-  for (const attr of newElem.attributes) {
+  for (const attr of Array.from(newElem.attributes)) {
     replacedElem.setAttribute(attr.name, attr.value);
   }
+
   replacedElem.innerHTML = "";
+
   while (newElem.firstChild) {
     replacedElem.appendChild(newElem.firstChild);
   }

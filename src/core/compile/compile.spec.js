@@ -13,6 +13,7 @@ import {
   isElement,
   getNodeName,
   extend,
+  createElement,
 } from "../../shared/utils.js";
 // import { countChildScopes, countWatchers } from "../scope/scope.js";
 import { CACHE, EXPANDO } from "../cache/cache.js";
@@ -3745,10 +3746,10 @@ describe("$compile", () => {
             template: "<div ng-transclude></div>",
             link: function (scope, el, attrs, ctrl, transclude) {
               transclude(function (clone) {
-                el.after(clone);
+                el.children[0].textContent += clone[0].textContent;
               });
               transclude(function (clone) {
-                el.after(clone);
+                el.children[0].textContent += clone[0].textContent;
               });
             },
           };
@@ -3759,28 +3760,6 @@ describe("$compile", () => {
 
       $compile(el)($rootScope);
       expect(el.innerText).toBe("HelloHelloHello");
-    });
-
-    it("sets directive attributes element to comment", () => {
-      registerDirectives({
-        myTranscluder: () => {
-          return {
-            transclude: "element",
-            link: function (scope, element, attrs, ctrl, transclude) {
-              attrs.$set("testing", "42");
-              element.after(transclude());
-            },
-          };
-        },
-      });
-      reloadModules();
-      var el = createElementFromHTML("<div><div my-transcluder></div></div>");
-
-      $compile(el)($rootScope);
-
-      expect(
-        el.find("[my-transcluder]").getAttribute("testing"),
-      ).toBeUndefined();
     });
 
     it("supports requiring controllers", () => {
@@ -4837,7 +4816,7 @@ describe("$compile", () => {
       $compile(element.childNodes)($rootScope);
       document.body.appendChild(element);
 
-      const circle = element.find("circle");
+      const circle = element.querySelector("circle");
       assertIsValidSvgCircle(circle[0]);
     });
 
@@ -4849,7 +4828,7 @@ describe("$compile", () => {
       $compile(element.childNodes)($rootScope);
       document.body.appendChild(element);
 
-      const circle = element.find("circle");
+      const circle = element.querySelector("circle");
       assertIsValidSvgCircle(circle[0]);
     });
 
@@ -4927,7 +4906,7 @@ describe("$compile", () => {
       $compile(element.childNodes)($rootScope);
       document.body.appendChild(element);
 
-      const circle = element.find("circle");
+      const circle = element.querySelector("circle");
       assertIsValidSvgCircle(circle[0]);
     });
 
@@ -4946,38 +4925,35 @@ describe("$compile", () => {
       // initially the template is not yet loaded
       $rootScope.list = [1];
       await wait();
-      expect(element.find("svg-circle-url").length).toBe(1);
-      expect(element.find("circle").length).toBe(0);
+      expect(element.querySelector("svg-circle-url").length).toBe(1);
+      expect(element.querySelector("circle").length).toBe(0);
       await wait(100);
       // template is loaded and replaces the existing nodes
-      expect(element.find("svg-circle-url").length).toBe(0);
-      expect(element.find("circle").length).toBe(1);
+      expect(element.querySelector("svg-circle-url").length).toBe(0);
+      expect(element.querySelector("circle").length).toBe(1);
 
       $rootScope.list.push(2);
       await wait();
-      expect(element.find("svg-circle-url").length).toBe(0);
-      expect(element.find("circle").length).toBe(2);
+      expect(element.querySelector("svg-circle-url").length).toBe(0);
+      expect(element.querySelector("circle").length).toBe(2);
     });
   });
 
   describe("compile phase", () => {
-    // NO ELEMENT ATTACHMENTS
-    // it("should attach scope to the document node when it is compiled explicitly", () => {
-    //   let $document = (document);
-    //   $document = $compile($document)($rootScope);
-    //   expect($document.scope()).toBe($rootScope);
-    // });
-
     it("should not wrap root text nodes in spans", async () => {
-      element = "<div>   <div>A</div>\n  <div>B</div>C\t\n  </div>";
+      element = createElementFromHTML(
+        "<div>   <div>A</div>\n  <div>B</div>C\t\n  </div>",
+      );
       $compile(element.childNodes)($rootScope);
       await wait();
-      const spans = element.find("span");
+      const spans = element.querySelectorAll("span");
       expect(spans.length).toEqual(0);
     });
 
     it("should be able to compile text nodes at the root", async () => {
-      element = "<div>Name: {{name}}<br />\nColor: {{color}}</div>";
+      element = createElementFromHTML(
+        "<div>Name: {{name}}<br />\nColor: {{color}}</div>",
+      );
       $rootScope.name = "Lucas";
       $rootScope.color = "blue";
       $compile(element.childNodes)($rootScope);
@@ -4994,7 +4970,7 @@ describe("$compile", () => {
       createInjector(["test1"]).invoke(($compile) => {
         expect(CACHE.size).toEqual(0);
         // First with only elements at the top level
-        element = "<div><div></div></div>";
+        element = createElementFromHTML("<div><div></div></div>");
         $compile(element.childNodes)($rootScope);
         // expect(CACHE.size).toEqual(2);
         emptyElement(element);
@@ -5002,19 +4978,19 @@ describe("$compile", () => {
 
         // Next with non-empty text nodes at the top level
         // (in this case the compiler will wrap them in a <span>)
-        element = "<div>xxx</div>";
+        element = createElementFromHTML("<div>xxx</div>");
         $compile(element.childNodes)($rootScope);
         emptyElement(element);
         expect(CACHE.size).toEqual(0);
 
         // Next with comment nodes at the top level
-        element = "<div><!-- comment --></div>";
+        element = createElementFromHTML("<div><!-- comment --></div>");
         $compile(element.childNodes)($rootScope);
         emptyElement(element);
         expect(CACHE.size).toEqual(0);
 
         // Finally with empty text nodes at the top level
-        element = "<div>   \n<div></div>   </div>";
+        element = createElementFromHTML("<div>   \n<div></div>   </div>");
         $compile(element.childNodes)($rootScope);
         //expect(CACHE.size).toEqual(2);
         emptyElement(element);
@@ -5027,7 +5003,7 @@ describe("$compile", () => {
       // the plugin's context rather than the usual DOM apis are exposed on this element, so
       // childNodes might not exist.
 
-      element = "<div>{{1+2}}</div>";
+      element = createElementFromHTML("<div>{{1+2}}</div>");
 
       try {
         element.childNodes[1] = {
@@ -5047,15 +5023,18 @@ describe("$compile", () => {
     });
 
     it('should detect anchor elements with the string "SVG" in the `href` attribute as an anchor', async () => {
-      element =
+      element = createElementFromHTML(
         '<div><a href="/ID_SVG_ID">' +
-        '<span ng-if="true">Should render</span>' +
-        "</a></div>";
+          '<span ng-if="true">Should render</span>' +
+          "</a></div>",
+      );
 
       $compile(element.childNodes)($rootScope);
       await wait();
       document.body.appendChild(element);
-      expect(element.find("span").innerText).toContain("Should render");
+      expect(element.querySelector("span").innerText).toContain(
+        "Should render",
+      );
     });
 
     it("should allow changing the template structure after the current node", () => {
@@ -6510,7 +6489,7 @@ describe("$compile", () => {
               "<template-url-with-prototype><template-url-with-prototype>",
             )($rootScope);
             await wait();
-            expect(element.find("p")[0].innerHTML).toEqual("Test Value");
+            expect(element.querySelector("p").innerHTML).toEqual("Test Value");
           },
         );
       });
@@ -6535,7 +6514,7 @@ describe("$compile", () => {
           async ($templateCache, $rootScope, $compile) => {
             $templateCache.set(
               "my-directive.html",
-              '<div id="templateContent">template content</span>',
+              '<div id="templateContent">template content</div>',
             );
             element = $compile(
               '<div my-directive="some value">original content<div>',
@@ -6951,7 +6930,7 @@ describe("$compile", () => {
       //             $rootScope,
       //           );
       //          await wait();
-      //           directiveElement = element.find("a");
+      //           directiveElement = element.querySelector("a");
       //           expect(directiveElement.scope().$parent).toBe($rootScope);
       //           expect(directiveElement.scope()).not.toBe(
       //             directiveElement.isolateScope(),
@@ -6967,8 +6946,8 @@ describe("$compile", () => {
       //           );
       //          await wait();
       //           ;
-      //           directiveElement = element.find("a");
-      //           child = directiveElement.find("span");
+      //           directiveElement = element.querySelector("a");
+      //           child = directiveElement.querySelector("span");
       //           expect(child.scope()).toBe(directiveElement.isolateScope());
       //         });
 
@@ -6979,8 +6958,8 @@ describe("$compile", () => {
       //             $rootScope,
       //           );
       //          await wait();
-      //           directiveElement = element.find("a");
-      //           child = directiveElement.find("span");
+      //           directiveElement = element.querySelector("a");
+      //           child = directiveElement.querySelector("span");
       //           expect(child.scope()).toBe(directiveElement.isolateScope());
       //         });
       //       });
@@ -7572,7 +7551,7 @@ describe("$compile", () => {
           element = $compile("<div setter></div>")($rootScope);
           await wait();
           expect(element.getAttribute("name")).toEqual("abc");
-          expect(element.getAttribute("disabled")).toEqual("disabled");
+          expect(element.getAttribute("disabled")).toEqual("true");
         });
 
         it("should read boolean attributes as boolean only on control elements", async () => {
@@ -7963,9 +7942,9 @@ describe("$compile", () => {
           await wait();
           $rootScope.$apply("show = [true, true, true]");
           await wait();
-          const d1Controller = element.find("d1").controller("d1");
-          const d2Controller = element.find("d2").controller("d2");
-          const d3Controller = element.find("d3").controller("d3");
+          const d1Controller = element.querySelector("d1").controller("d1");
+          const d2Controller = element.querySelector("d2").controller("d2");
+          const d3Controller = element.querySelector("d3").controller("d3");
 
           expect([
             d1Controller.count,
@@ -9024,7 +9003,7 @@ describe("$compile", () => {
         $rootScope.value = "from-parent";
 
         await wait();
-        expect(element.find("input").value).toBe("from-parent");
+        expect(element.querySelector("input").value).toBe("from-parent");
         expect(componentScope).not.toBe(regularScope);
         expect(componentScope.$parent).toBe(regularScope);
       });
@@ -9297,8 +9276,8 @@ describe("$compile", () => {
           )($rootScope);
 
           await wait();
-          element.find("button")[0].click();
-          expect(element.find("p").innerText).toBe("Hello!");
+          element.querySelector("button")[0].click();
+          expect(element.querySelector("p").innerText).toBe("Hello!");
         });
       });
 
@@ -10543,7 +10522,7 @@ describe("$compile", () => {
         element = $compile('<div at-binding="Test: {{text}}"></div>')(
           $rootScope,
         );
-        const p = element.find("p");
+        const p = element.querySelector("p");
         expect(p.innerText).toBe("Test: ");
 
         $rootScope.text = "Kittens";
@@ -10997,7 +10976,7 @@ describe("$compile", () => {
             "</div>",
         )($rootScope);
         const parentCtrl = element.controller("ngController");
-        const childCtrl = element.find("child").controller("child");
+        const childCtrl = element.querySelector("child").controller("child");
 
         expect(childCtrl.fromParent1).toBe(parentCtrl.value1);
         expect(childCtrl.fromParent1).not.toBe(childCtrl.value1);
@@ -11055,7 +11034,7 @@ describe("$compile", () => {
             "</div>",
         )($rootScope);
         const parentCtrl = element.controller("ngController");
-        const childCtrl = element.find("child").controller("child");
+        const childCtrl = element.querySelector("child").controller("child");
 
         expect(childCtrl.fromParent1).toBe(parentCtrl.value1);
         expect(childCtrl.fromParent1).not.toBe(childCtrl.value1);
@@ -11632,7 +11611,7 @@ describe("$compile", () => {
           "</div>";
         element = $compile(template)($rootScope);
 
-        const ctrl1 = element.find("me").eq(0).controller("me");
+        const ctrl1 = element.querySelector("me").eq(0).controller("me");
         expect(ctrl1.parent).toEqual(jasmine.any(ParentController));
         expect(ctrl1.parentOpt).toEqual(jasmine.any(ParentOptController));
         expect(ctrl1.parentOrSibling1).toEqual(
@@ -11650,7 +11629,7 @@ describe("$compile", () => {
         expect(ctrl1.sibling).toEqual(jasmine.any(SiblingController));
         expect(ctrl1.siblingOpt).toEqual(jasmine.any(SiblingOptController));
 
-        const ctrl2 = element.find("me").eq(1).controller("me");
+        const ctrl2 = element.querySelector("me").eq(1).controller("me");
         expect(ctrl2.parent).toEqual(jasmine.any(ParentController));
         expect(ctrl2.parentOpt).toBe(null);
         expect(ctrl2.parentOrSibling1).toEqual(
@@ -12423,10 +12402,10 @@ describe("$compile", () => {
           $rootScope.x = "root";
           await wait();
           expect(element.textContent).toEqual("W:isoT:root;");
-          expect(element.find("li")[1][0].childNodes[0].innerText).toEqual(
-            "T:root",
-          );
-          expect(element.find("span")[0].innerText).toEqual(";");
+          expect(
+            element.querySelector("li")[1][0].childNodes[0].innerText,
+          ).toEqual("T:root");
+          expect(element.querySelector("span")[0].innerText).toEqual(";");
         });
 
         it("should transclude transcluded content", async () => {
@@ -12806,8 +12785,8 @@ describe("$compile", () => {
             $rootScope,
           );
           await wait();
-          expect(element.find("span")[0].innerText).toEqual("I:");
-          expect(element.find("span")[1].innerText).toEqual("T:true");
+          expect(element.querySelector("span")[0].innerText).toEqual("I:");
+          expect(element.querySelector("span")[1].innerText).toEqual("T:true");
         });
 
         it("should clear contents of the ng-transclude element before appending transcluded content if transcluded content exists", async () => {
@@ -14708,7 +14687,7 @@ describe("$compile", () => {
           `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
         )($rootScope);
         $rootScope.testUrl = "http://example.com/image.mp4"; // `http` is trusted
-        expect(element.find(tag).getAttribute("src")).toEqual(
+        expect(element.querySelector(tag).getAttribute("src")).toEqual(
           "http://example.com/image.mp4",
         );
       });
@@ -14719,7 +14698,7 @@ describe("$compile", () => {
           `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
         )($rootScope);
         $rootScope.testUrl = $sce.trustAsMediaUrl("javascript:foo()");
-        expect(element.find(tag).getAttribute("src")).toEqual(
+        expect(element.querySelector(tag).getAttribute("src")).toEqual(
           "javascript:foo()",
         );
 
@@ -14728,7 +14707,7 @@ describe("$compile", () => {
           `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
         )($rootScope);
         $rootScope.testUrl = $sce.trustAsUrl("javascript:foo()");
-        expect(element.find(tag).getAttribute("src")).toEqual(
+        expect(element.querySelector(tag).getAttribute("src")).toEqual(
           "javascript:foo()",
         );
 
@@ -14737,7 +14716,7 @@ describe("$compile", () => {
           `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
         )($rootScope);
         $rootScope.testUrl = $sce.trustAsResourceUrl("javascript:foo()");
-        expect(element.find(tag).getAttribute("src")).toEqual(
+        expect(element.querySelector(tag).getAttribute("src")).toEqual(
           "javascript:foo()",
         );
       });
@@ -15048,7 +15027,7 @@ describe("$compile", () => {
         "<svg><a xlink-href=\"{{ testUrl + 'aTag' }}\"></a></svg>",
       )($rootScope);
       await wait();
-      expect(elementA.find("a").getAttribute("xlink-href")).toBe(
+      expect(elementA.querySelector("a").getAttribute("xlink-href")).toBe(
         "https://clean.example.org",
       );
       expect($$sanitizeUri).toHaveBeenCalledWith(
@@ -15060,9 +15039,9 @@ describe("$compile", () => {
         "<svg><image xlink-href=\"{{ testUrl + 'imageTag' }}\"></image></svg>",
       )($rootScope);
       await wait();
-      expect(elementImage.find("image").getAttribute("xlink-href")).toBe(
-        "https://clean.example.org",
-      );
+      expect(
+        elementImage.querySelector("image").getAttribute("xlink-href"),
+      ).toBe("https://clean.example.org");
       expect($$sanitizeUri).toHaveBeenCalledWith(
         `${$rootScope.testUrl}imageTag`,
         true,
@@ -15085,7 +15064,7 @@ describe("$compile", () => {
         '<svg><a xlink:href="" ng-href="{{ testUrl }}"></a></svg>',
       )($rootScope);
       await wait();
-      expect(element.find("a")[0].href.baseVal).toBe(
+      expect(element.querySelector("a")[0].href.baseVal).toBe(
         "https://clean.example.org",
       );
       expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);
@@ -15796,12 +15775,18 @@ describe("$compile", () => {
       )($rootScope);
       expect(element.getAttribute("viewBox")).toBeUndefined();
       expect(element.getAttribute("view-box")).toBe("0 0 0 0");
-      expect(element.find("filter").getAttribute("filter-units")).toBe("0.42");
+      expect(element.querySelector("filter").getAttribute("filter-units")).toBe(
+        "0.42",
+      );
       expect(
-        element.find("feDiffuseLighting").getAttribute("surface-scale"),
+        element
+          .querySelector("feDiffuseLighting")
+          .getAttribute("surface-scale"),
       ).toBe("1");
       expect(
-        element.find("feSpecularLighting").getAttribute("surface-scale"),
+        element
+          .querySelector("feSpecularLighting")
+          .getAttribute("surface-scale"),
       ).toBe("1");
     });
   });

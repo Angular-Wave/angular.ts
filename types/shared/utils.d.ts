@@ -509,7 +509,14 @@ export function hasAnimate(node: Node): boolean;
  */
 export function isObjectEmpty(obj: any | null | undefined): boolean;
 export function createElement(str: any): ChildNode;
-export function replaceInline(replacedElem: any, newElem: any): void;
+/**
+ * Replaces the attributes and child elements of an existing element (`replacedElem`)
+ * with those of a new element (`newElem`), while keeping the original reference.
+ *
+ * @param {HTMLElement} replacedElem - The element to be replaced (its content and attributes will be updated).
+ * @param {HTMLElement} newElem - The element providing the new attributes and content.
+ */
+export function replaceInline(replacedElem: HTMLElement, newElem: HTMLElement): void;
 export const ngAttrPrefixes: string[];
 /**
  * Error configuration object. May only contain the options that need to be updated.

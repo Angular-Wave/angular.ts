@@ -2309,6 +2309,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 markDirectiveScope(templateDirectives, true);
               }
               directives = templateDirectives.concat(directives);
+
               mergeTemplateAttributes(tAttrs, tempTemplateAttrs);
             } else {
               compileNode = beforeTemplateCompileNode;
@@ -2319,7 +2320,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
             afterTemplateNodeLinkFn = applyDirectivesToNode(
               directives,
-              compileNode,
+              $compileNode,
               tAttrs,
               childTranscludeFn,
               origAsyncDirective,
