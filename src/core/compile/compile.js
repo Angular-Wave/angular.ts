@@ -1867,7 +1867,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               $compileNode.innerHTML = directiveValue;
             }
           }
-
           if (directive.templateUrl) {
             hasTemplate = true;
             assertNoDuplicate(
@@ -1881,7 +1880,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             if (directive.replace) {
               replaceDirective = directive;
             }
-
             nodeLinkFn = compileTemplateUrl(
               directives.splice(i, directives.length - i),
               $compileNode,
@@ -2360,13 +2358,15 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 ) {
                   // it was cloned therefore we have to clone as well.
                   linkNode = compileNode.cloneNode(true);
+                  beforeTemplateLinkNode.innerHTML = "";
+                  while (linkNode.firstChild) {
+                    beforeTemplateLinkNode.appendChild(linkNode.firstChild);
+                  }
                 }
-                replaceWith(beforeTemplateLinkNode, linkNode);
-
                 // Copy in CSS classes from original node
                 try {
                   if (oldClasses !== "") {
-                    linkNode.classList.add(...oldClasses.trim().split(" "));
+                    beforeTemplateLinkNode.classList.add(...linkNode.classList);
                   }
                 } catch (e) {
                   // ignore, since it means that we are trying to set class on
@@ -2753,9 +2753,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
       }
 
       /**
-       * TODO this is broken for now
-       * This is a special JQLite.replaceWith, which can replace items which
-       * have no parents, provided that the containing JQLite collection is provided.
        *
        * @param {Element} elementsToRemove The JQLite element which we are going to replace. We keep
        *                                  the shell, but replace its DOM node reference.

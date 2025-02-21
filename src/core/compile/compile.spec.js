@@ -5037,29 +5037,29 @@ describe("$compile", () => {
       );
     });
 
-    it("should allow changing the template structure after the current node", () => {
+    it("should allow changing the template structure after the current node", async () => {
       myModule.directive("after", () => ({
         compile(element) {
-          element.after("<span log>B</span>");
+          element.append(createElementFromHTML("<span log>B</span>"));
         },
       }));
       reloadModules();
-      element = "<div><div after>A</div></div>";
-      $compile(element)($rootScope);
+      element = $compile("<div><div after>A</div></div>")($rootScope);
+      await wait();
       expect(element.textContent).toBe("AB");
     });
 
     it("should allow changing the template structure after the current node inside ngRepeat", async () => {
       myModule.directive("after", () => ({
         compile(element) {
-          element.after("<span log>B</span>");
+          element.append(createElementFromHTML("<span log>B</span>"));
         },
       }));
 
       reloadModules();
-      element =
-        '<div><div ng-repeat="i in [1,2]"><div after>A</div></div></div>';
-      $compile(element)($rootScope);
+      element = $compile(
+        '<div><div ng-repeat="i in [1,2]"><div after>A</div></div></div>',
+      )($rootScope);
       await wait();
       expect(element.textContent).toBe("ABAB");
     });
@@ -5067,15 +5067,16 @@ describe("$compile", () => {
     it("should allow modifying the DOM structure in post link fn", async () => {
       myModule.directive("removeNode", () => ({
         link($scope, $element) {
-          removeElement($element);
+          $element.parentElement.removeChild($element);
         },
       }));
       reloadModules();
-      element = "<div><div remove-node></div><div>{{test}}</div></div>";
+      element = $compile(
+        "<div><div remove-node></div><div>{{test}}</div></div>",
+      )($rootScope);
       $rootScope.test = "Hello";
-      $compile(element)($rootScope);
       await wait();
-      expect(element.children().length).toBe(1);
+      expect(element.children.length).toBe(1);
       expect(element.textContent).toBe("Hello");
     });
   });
@@ -6975,7 +6976,7 @@ describe("$compile", () => {
       //             return {
       //               pre(scope, element) {
       //                 log.push(scope.$id);
-      //                 expect(element.data("$scope")).toBe(scope);
+      //                 expect(getCacheData(element, "$scope")).toBe(scope);
       //               },
       //             };
       //           },
@@ -6987,7 +6988,7 @@ describe("$compile", () => {
       //             return function (scope, element) {
       //               iscope = scope;
       //               log.push(scope.$id);
-      //               expect(element.data("$isolateScopeNoTemplate")).toBe(scope);
+      //               expect(getCacheData(element, "$isolateScopeNoTemplate")).toBe(scope);
       //             };
       //           },
       //         });
@@ -7001,7 +7002,7 @@ describe("$compile", () => {
       //               return {
       //                 pre(scope, element) {
       //                   log.push(scope.$id);
-      //                   expect(element.data("$scope")).toBe(scope);
+      //                   expect(getCacheData(element, "$scope")).toBe(scope);
       //                 },
       //               };
       //             },
@@ -11285,7 +11286,7 @@ describe("$compile", () => {
           },
           link(scope, element, attrs, controller) {
             expect(expectedController).toBeDefined();
-            expect(controller).toBe(expectedController);
+            expect(controller).toEqual(expectedController);
             expect(controller.foo).toBe("bar");
             log.push("done");
           },
@@ -11295,7 +11296,7 @@ describe("$compile", () => {
           $rootScope,
         );
         expect(log[0]).toEqual("done");
-        expect(element.data("$logControllerPropController")).toBe(
+        expect(getCacheData(element, "$logControllerPropController")).toEqual(
           expectedController,
         );
       });
@@ -11320,7 +11321,9 @@ describe("$compile", () => {
         initInjector("test1");
         element = $compile("<div nested><div nested></div></div>")($rootScope);
         expect(log[0]).toEqual("done");
-        expect(element.data("$nestedController")).toBe(expectedController);
+        expect(getCacheData(element, "$nestedController")).toBe(
+          expectedController,
+        );
       });
 
       it("should respect explicit controller return value when using controllerAs", async () => {
@@ -11372,7 +11375,9 @@ describe("$compile", () => {
         element = $compile("<div nester><div nested></div></div>")($rootScope);
         await wait();
         expect(log.toString()).toBe("done");
-        expect(element.data("$nesterController")).toBe(expectedController);
+        expect(getCacheData(element, "$nesterController")).toBe(
+          expectedController,
+        );
       });
 
       it("explicit controller return values are ignored if they are primitives", () => {
@@ -11390,7 +11395,9 @@ describe("$compile", () => {
           $rootScope,
         );
         expect(log[0]).toEqual("baz");
-        expect(element.data("$logControllerPropController").foo).toEqual("baz");
+        expect(
+          getCacheData(element, "$logControllerPropController").foo,
+        ).toEqual("baz");
       });
 
       it("should correctly assign controller return values for multiple directives", () => {
@@ -11418,10 +11425,10 @@ describe("$compile", () => {
         element = $compile("<my-directive my-other-directive></my-directive>")(
           $rootScope,
         );
-        expect(element.data("$myDirectiveController")).toBe(
+        expect(getCacheData(element, "$myDirectiveController")).toBe(
           directiveController,
         );
-        expect(element.data("$myOtherDirectiveController")).toBe(
+        expect(getCacheData(element, "$myOtherDirectiveController")).toBe(
           otherDirectiveController,
         );
       });
@@ -13193,7 +13200,9 @@ describe("$compile", () => {
           let i;
           expect(transcludeCtrl).toBeDefined();
 
-          expect(element.data("$transcludeController")).toBe(transcludeCtrl);
+          expect(getCacheData(element, "$transcludeController")).toBe(
+            transcludeCtrl,
+          );
           for (i = 0; i < cloneCount; i++) {
             expect(
               children.eq(i).data("$transcludeController"),

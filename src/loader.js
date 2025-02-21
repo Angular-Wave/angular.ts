@@ -150,7 +150,8 @@ export class Angular {
         // ng-route deps
         this.$injector = $injector;
         setCacheData(el, "$injector", $injector);
-        compile(el)(scope);
+        const compileFn = compile(el);
+        compileFn(scope);
 
         // https://github.com/angular-ui/ui-router/issues/3678
         if (!Object.prototype.hasOwnProperty.call($injector, "strictDi")) {
