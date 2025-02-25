@@ -6539,7 +6539,7 @@ describe("$compile", () => {
           .module("test1", ["ng"])
           .decorator("$exceptionHandler", () => {
             return (exception) => {
-              log.push(exception.message);
+              throw new Error(exception.message);
             };
           });
 
@@ -6591,8 +6591,8 @@ describe("$compile", () => {
             replace: true,
             restrict: "A",
             templateUrl: "trscope.html",
-            compile() {
-              return function (scope) {
+            compile(el) {
+              return function (scope, elem) {
                 log.push(scope.$id);
               };
             },
@@ -6762,8 +6762,9 @@ describe("$compile", () => {
         expect(log.length).toEqual(6);
       });
 
-      it("should allow more than one new scope directives per element, but directives should share the scope", () => {
+      it("should allow more than one new scope directives per element, but directives should share the scope", async () => {
         element = $compile("<div scope-a scope-b></div>")($rootScope);
+        await wait();
         expect(log.length).toEqual(2);
       });
 

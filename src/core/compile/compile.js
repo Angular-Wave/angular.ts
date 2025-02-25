@@ -838,7 +838,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             // create a stable copy of the nodeList, only copying elements with linkFns
             stableNodeList = new Array(nodeList.length);
             Object.keys(linkFnsMap).forEach((idx) => {
-              stableNodeList[idx] = nodeList[idx];
+              if (nodeList[idx]) {
+                stableNodeList[idx] = nodeList[idx];
+              }
             });
           } else {
             stableNodeList = nodeList;
@@ -1410,14 +1412,20 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 $element,
                 elementControllers,
               );
-            invokeLinkFn(
-              preLinkFn,
-              preLinkFn.isolateScope ? isolateScope : scope,
-              $element,
-              attrs,
-              controllers,
-              transcludeFn,
-            );
+
+            // invoke link function
+            try {
+              preLinkFn(
+                preLinkFn.isolateScope ? isolateScope : scope,
+                $element,
+                attrs,
+                controllers,
+                transcludeFn,
+              );
+            } catch (e) {
+              console.error(e);
+              $exceptionHandler(e, startingTag($element));
+            }
           }
 
           // RECURSION
@@ -1431,7 +1439,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           ) {
             scopeToChild = isolateScope;
           }
-          if (childLinkFn) {
+          if (childLinkFn && linkNode && linkNode.childNodes) {
             childLinkFn(
               scopeToChild,
               linkNode.childNodes,
@@ -1451,14 +1459,19 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 elementControllers,
               );
 
-            invokeLinkFn(
-              postLinkFn,
-              postLinkFn.isolateScope ? isolateScope : scope,
-              $element,
-              attrs,
-              controllers,
-              transcludeFn,
-            );
+            // invoke link function
+            try {
+              postLinkFn(
+                postLinkFn.isolateScope ? isolateScope : scope,
+                $element,
+                attrs,
+                controllers,
+                transcludeFn,
+              );
+            } catch (e) {
+              console.error(e);
+              $exceptionHandler(e, startingTag($element));
+            }
           }
 
           if (elementControllers) {
@@ -2358,10 +2371,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 ) {
                   // it was cloned therefore we have to clone as well.
                   linkNode = compileNode.cloneNode(true);
-                  beforeTemplateLinkNode.innerHTML = "";
-                  while (linkNode.firstChild) {
-                    beforeTemplateLinkNode.appendChild(linkNode.firstChild);
-                  }
+                  beforeTemplateLinkNode.appendChild(linkNode);
                 }
                 // Copy in CSS classes from original node
                 try {
@@ -2810,22 +2820,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           fn,
           annotation,
         );
-      }
-
-      function invokeLinkFn(
-        linkFn,
-        scope,
-        element,
-        attrs,
-        controllers,
-        transcludeFn,
-      ) {
-        try {
-          linkFn(scope, element, attrs, controllers, transcludeFn);
-        } catch (e) {
-          console.error(e);
-          $exceptionHandler(e, startingTag(element));
-        }
       }
 
       function strictBindingsCheck(attrName, directiveName) {

@@ -1215,7 +1215,7 @@ export function replaceInline(replacedElem, newElem) {
 
   replacedElem.innerHTML = "";
 
-  while (newElem.firstChild) {
-    replacedElem.appendChild(newElem.firstChild);
+  for (const child of Array.from(newElem.childNodes)) {
+    replacedElem.appendChild(child.cloneNode(true));
   }
 }
