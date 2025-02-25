@@ -9239,18 +9239,8 @@ describe("$compile", () => {
         expect(scope.ctrl.getProp()).toBe("foop");
       });
 
-      describe("bind-once", () => {
-        function countWatches(scope) {
-          let result = 0;
-          while (scope !== null) {
-            result += (scope.$$watchers && scope.$$watchers.length) || 0;
-            result += countWatches(scope.$children[0]);
-            scope = scope.$$nextSibling;
-          }
-          return result;
-        }
-
-        it("should continue with a digets cycle when there is a two-way binding from the child to the parent", async () => {
+      describe("bind-child-parent", () => {
+        it("should continue with a sync cycle when there is a two-way binding from the child to the parent", async () => {
           module.directive("hello", () => ({
             restrict: "E",
             scope: { greeting: "=" },
@@ -9278,7 +9268,8 @@ describe("$compile", () => {
           )($rootScope);
 
           await wait();
-          element.querySelector("button")[0].click();
+          element.querySelector("button").click();
+          await wait();
           expect(element.querySelector("p").innerText).toBe("Hello!");
         });
       });
