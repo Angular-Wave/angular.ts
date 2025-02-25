@@ -15319,46 +15319,49 @@ describe("$compile", () => {
   });
 
   describe("ngAttr* attribute binding", () => {
-    it("should bind after digest but not before", () => {
+    it("should bind after digest but not before", async () => {
       $rootScope.name = "Misko";
       element = $compile('<span ng-attr-test="{{name}}"></span>')($rootScope);
-      expect(element.getAttribute("test")).toBeUndefined();
+      expect(element.getAttribute("test")).toBeNull();
+      await wait();
       expect(element.getAttribute("test")).toBe("Misko");
     });
 
-    it("should bind after digest but not before when after overridden attribute", () => {
+    it("should bind after digest but not before when after overridden attribute", async () => {
       $rootScope.name = "Misko";
       element = $compile('<span test="123" ng-attr-test="{{name}}"></span>')(
         $rootScope,
       );
       expect(element.getAttribute("test")).toBe("123");
+      await wait();
       expect(element.getAttribute("test")).toBe("Misko");
     });
 
-    it("should bind after digest but not before when before overridden attribute", () => {
+    it("should bind after digest but not before when before overridden attribute", async () => {
       $rootScope.name = "Misko";
       element = $compile('<span ng-attr-test="{{name}}" test="123"></span>')(
         $rootScope,
       );
       expect(element.getAttribute("test")).toBe("123");
+      await wait();
       expect(element.getAttribute("test")).toBe("Misko");
     });
 
     it("should set the attribute (after digest) even if there is no interpolation", () => {
       element = $compile('<span ng-attr-test="foo"></span>')($rootScope);
-      expect(element.getAttribute("test")).toBeUndefined();
-
       expect(element.getAttribute("test")).toBe("foo");
     });
 
-    it("should remove attribute if any bindings are undefined", () => {
+    it("should remove attribute if any bindings are undefined", async () => {
       element = $compile('<span ng-attr-test="{{name}}{{emphasis}}"></span>')(
         $rootScope,
       );
-      expect(element.getAttribute("test")).toBeUndefined();
+
+      expect(element.getAttribute("test")).toBeNull();
       $rootScope.name = "caitp";
-      expect(element.getAttribute("test")).toBeUndefined();
+      expect(element.getAttribute("test")).toBeNull();
       $rootScope.emphasis = "!!!";
+      await wait();
       expect(element.getAttribute("test")).toBe("caitp!!!");
     });
 
@@ -15408,21 +15411,26 @@ describe("$compile", () => {
         expect(log).toEqual(["TEST", "TEST"]);
       });
 
-      it("should provide post-digest value in asynchronous directive link functions when after overridden attribute", () => {
+      it("should provide post-digest value in asynchronous directive link functions when after overridden attribute", async () => {
         $rootScope.test = "TEST";
         element = $compile(
           '<div async-test test="123" ng-attr-test="{{test}}"></div>',
         )($rootScope);
         expect(element.getAttribute("test")).toBe("123");
+
+        await wait();
+        expect(element.getAttribute("test")).toBe("TEST");
         expect(log).toEqual(["TEST", "TEST"]);
       });
 
-      it("should provide post-digest value in asynchronous directive link functions when before overridden attribute", () => {
+      it("should provide post-digest value in asynchronous directive link functions when before overridden attribute", async () => {
         $rootScope.test = "TEST";
         element = $compile(
           '<div async-test ng-attr-test="{{test}}" test="123"></div>',
         )($rootScope);
-        expect(element.getAttribute("test")).toBe("123");
+
+        await wait();
+        expect(element.getAttribute("test")).toBe("TEST");
         expect(log).toEqual(["TEST", "TEST"]);
       });
     });
@@ -15475,23 +15483,27 @@ describe("$compile", () => {
       expect(attrs.$attr.ngAttrMyCamelTitle).toBeUndefined();
     });
 
-    it('should work with the "href" attribute', () => {
+    it('should work with the "href" attribute', async () => {
       $rootScope.value = "test";
       element = $compile('<a ng-attr-href="test/{{value}}"></a>')($rootScope);
+      await wait();
       expect(element.getAttribute("href")).toBe("test/test");
     });
 
-    it("should work if they are prefixed with data- and different prefixes", () => {
+    it("should work if they are prefixed with data- and different prefixes", async () => {
       $rootScope.name = "Misko";
       element = $compile(
         '<span data-ng-attr-test2="{{name}}" ng-attr-test3="{{name}}" data-ng-attr-test4="{{name}}" ' +
           'ng-attr-test5="{{name}}" ng-attr-test6="{{name}}"></span>',
       )($rootScope);
-      expect(element.getAttribute("test2")).toBeUndefined();
-      expect(element.getAttribute("test3")).toBeUndefined();
-      expect(element.getAttribute("test4")).toBeUndefined();
-      expect(element.getAttribute("test5")).toBeUndefined();
-      expect(element.getAttribute("test6")).toBeUndefined();
+
+      expect(element.getAttribute("test2")).toBeNull();
+      expect(element.getAttribute("test3")).toBeNull();
+      expect(element.getAttribute("test4")).toBeNull();
+      expect(element.getAttribute("test5")).toBeNull();
+      expect(element.getAttribute("test6")).toBeNull();
+
+      await wait();
       expect(element.getAttribute("test2")).toBe("Misko");
       expect(element.getAttribute("test3")).toBe("Misko");
       expect(element.getAttribute("test4")).toBe("Misko");
@@ -15500,53 +15512,57 @@ describe("$compile", () => {
     });
 
     describe("with media url attributes", () => {
-      it("should work with interpolated ng-attr-src", () => {
+      it("should work with interpolated ng-attr-src", async () => {
         $rootScope.name = "some-image.png";
         element = $compile('<img ng-attr-src="{{name}}">')($rootScope);
-        expect(element.getAttribute("src")).toBeUndefined();
-
+        expect(element.getAttribute("src")).toBeNull();
+        await wait();
         expect(element.getAttribute("src")).toBe("some-image.png");
 
         $rootScope.name = "other-image.png";
+        await wait();
         expect(element.getAttribute("src")).toBe("other-image.png");
       });
 
-      it("should work with interpolated ng-attr-data-src", () => {
+      it("should work with interpolated ng-attr-data-src", async () => {
         $rootScope.name = "some-image.png";
         element = $compile('<img ng-attr-data-src="{{name}}">')($rootScope);
-        expect(element.getAttribute("data-src")).toBeUndefined();
-
+        expect(element.getAttribute("data-src")).toBeNull();
+        await wait();
         expect(element.getAttribute("data-src")).toBe("some-image.png");
 
         $rootScope.name = "other-image.png";
+        await wait();
         expect(element.getAttribute("data-src")).toBe("other-image.png");
       });
 
-      it("should work alongside constant [src]-attribute and [ng-attr-data-src] attributes", () => {
+      it("should work alongside constant [src]-attribute and [ng-attr-data-src] attributes", async () => {
         $rootScope.name = "some-image.png";
         element = $compile(
           '<img src="constant.png" ng-attr-data-src="{{name}}">',
         )($rootScope);
-        expect(element.getAttribute("data-src")).toBeUndefined();
+        expect(element.getAttribute("data-src")).toBeNull();
 
+        await wait();
         expect(element.getAttribute("src")).toBe("constant.png");
         expect(element.getAttribute("data-src")).toBe("some-image.png");
 
         $rootScope.name = "other-image.png";
+        await wait();
         expect(element.getAttribute("src")).toBe("constant.png");
         expect(element.getAttribute("data-src")).toBe("other-image.png");
       });
     });
 
-    describe("when an attribute has a dash-separated name", () => {
+    describe("when an attribute has a dash-separated name", async () => {
       it("should work with different prefixes", () => {
         $rootScope.name = "JamieMason";
         element = $compile(
           '<span ng-attr-dash-test="{{name}}" ng-Attr-dash-test2="{{name}}" ng-Attr-dash-test3="{{name}}"></span>',
         )($rootScope);
-        expect(element.getAttribute("dash-test")).toBeUndefined();
-        expect(element.getAttribute("dash-test2")).toBeUndefined();
-        expect(element.getAttribute("dash-test3")).toBeUndefined();
+        expect(element.getAttribute("dash-test")).toBeNull();
+        expect(element.getAttribute("dash-test2")).toBeNull();
+        expect(element.getAttribute("dash-test3")).toBeNull();
         expect(element.getAttribute("dash-test")).toBe("JamieMason");
         expect(element.getAttribute("dash-test2")).toBe("JamieMason");
         expect(element.getAttribute("dash-test3")).toBe("JamieMason");

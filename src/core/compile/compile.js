@@ -2756,6 +2756,12 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                     }
                   });
                 });
+
+                if (interpolateFn.expressions.length == 0) {
+                  // if there is nothing to watch, its a constant
+                  debugger;
+                  attr.$set(name, newValue);
+                }
               },
             };
           },
