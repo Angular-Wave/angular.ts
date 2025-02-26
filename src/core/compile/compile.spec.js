@@ -7,6 +7,7 @@ import {
   getCacheData,
   setCacheData,
   createElementFromHTML,
+  getController,
 } from "../../shared/dom.js";
 import {
   isFunction,
@@ -7832,6 +7833,64 @@ describe("$compile", () => {
       });
     });
 
+    describe("controller", () => {
+      function TestController() {
+        this.count = 0;
+      }
+
+      beforeEach(() => {
+        log = [];
+        module = window.angular.module("test1", ["ng"]);
+        module
+          .directive("d1", () => ({
+            scope: true,
+            restrict: "EA",
+            controller: TestController,
+          }))
+          .directive("d2", () => ({
+            scope: {},
+            restrict: "EA",
+            controller: TestController,
+          }))
+          .directive("d3", () => ({
+            restrict: "EA",
+            controller: TestController,
+          }));
+
+        createInjector(["test1"]).invoke((_$compile_, _$rootScope_) => {
+          $compile = _$compile_;
+          $rootScope = _$rootScope_;
+        });
+      });
+
+      it("should set controller on element with inherited scope", async () => {
+        element = $compile("<div d1></div>")($rootScope);
+        await wait();
+        expect(getController(element, "d1")).toBeDefined();
+
+        element = $compile("<d1></d1>")($rootScope);
+        expect(getController(element, "d1")).toBeDefined();
+      });
+
+      it("should set controller on element with isolate scope", async () => {
+        element = $compile("<div d2></div>")($rootScope);
+        await wait();
+        expect(getController(element, "d2")).toBeDefined();
+
+        element = $compile("<d2></d2>")($rootScope);
+        expect(getController(element, "d2")).toBeDefined();
+      });
+
+      it("should set controller on element with parent scope", async () => {
+        element = $compile("<div d3></div>")($rootScope);
+        await wait();
+        expect(getController(element, "d3")).toBeDefined();
+
+        element = $compile("<d3></d3>")($rootScope);
+        expect(getController(element, "d3")).toBeDefined();
+      });
+    });
+
     describe("controller lifecycle hooks", () => {
       let module, log;
 
@@ -7930,8 +7989,13 @@ describe("$compile", () => {
               scope: true,
               controller: TestController,
             }))
-            .directive("d2", () => ({ scope: {}, controller: TestController }))
-            .directive("d3", () => ({ controller: TestController }));
+            .directive("d2", () => ({
+              scope: {},
+              controller: TestController,
+            }))
+            .directive("d3", () => ({
+              controller: TestController,
+            }));
 
           createInjector(["test1"]).invoke((_$compile_, _$rootScope_) => {
             $compile = _$compile_;
@@ -7944,6 +8008,7 @@ describe("$compile", () => {
           await wait();
           $rootScope.$apply("show = [true, true, true]");
           await wait();
+
           const d1Controller = element.querySelector("d1").controller("d1");
           const d2Controller = element.querySelector("d2").controller("d2");
           const d3Controller = element.querySelector("d3").controller("d3");
