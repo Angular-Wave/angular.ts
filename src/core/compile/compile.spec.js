@@ -7758,38 +7758,24 @@ describe("$compile", () => {
             expect(element.getAttribute("ng-my-attr")).toBeNull();
           });
 
-          it("should set the value to lowercased keys for boolean attrs", () => {
+          it("should set the value to empty for boolean attrs", () => {
             attr.$set("disabled", "value");
-            expect(element.getAttribute("disabled")).toEqual("disabled");
-
+            expect(element.getAttribute("disabled")).toEqual("");
             element.removeAttribute("disabled");
 
             attr.$set("dISaBlEd", "VaLuE");
-            expect(element.getAttribute("disabled")).toEqual("disabled");
+            expect(element.getAttribute("disabled")).toEqual("");
           });
 
           it("should call removeAttr for boolean attrs when value is `false`", () => {
-            attr.$set("disabled", "value");
-
-            spyOn(JQLite.prototype, "attr").and.callThrough();
-            spyOn(element, "removeAttribute").and.callThrough();
-
             attr.$set("disabled", false);
-
-            expect(element.attr).not.toHaveBeenCalled();
-            expect(element.removeAttribute).toHaveBeenCalledWith("disabled");
-            expect(element.getAttribute("disabled")).toEqual(undefined);
+            expect(element.getAttribute("disabled")).toBeNull();
 
             attr.$set("disabled", "value");
-
-            element.attr.calls.reset();
-            element.removeAttribute.calls.reset();
+            expect(element.getAttribute("disabled")).toEqual("");
 
             attr.$set("dISaBlEd", false);
-
-            expect(element.attr).not.toHaveBeenCalled();
-            expect(element.removeAttribute).toHaveBeenCalledWith("disabled");
-            expect(element.getAttribute("disabled")).toEqual(undefined);
+            expect(element.getAttribute("disabled")).toBeNull();
           });
 
           it("should not set DOM element attr if writeAttr false", () => {
@@ -15620,7 +15606,7 @@ describe("$compile", () => {
     });
 
     describe("when an attribute has a dash-separated name", () => {
-      it("should work with different prefixes", () => {
+      it("should work with different prefixes", async () => {
         $rootScope.name = "JamieMason";
         element = $compile(
           '<span ng-attr-dash-test="{{name}}" ng-Attr-dash-test2="{{name}}" ng-Attr-dash-test3="{{name}}"></span>',
@@ -15628,19 +15614,22 @@ describe("$compile", () => {
         expect(element.getAttribute("dash-test")).toBeNull();
         expect(element.getAttribute("dash-test2")).toBeNull();
         expect(element.getAttribute("dash-test3")).toBeNull();
+        await wait();
         expect(element.getAttribute("dash-test")).toBe("JamieMason");
         expect(element.getAttribute("dash-test2")).toBe("JamieMason");
         expect(element.getAttribute("dash-test3")).toBe("JamieMason");
       });
 
-      it("should work if they are prefixed with  or data-", () => {
+      it("should work if they are prefixed with  or data-", async () => {
         $rootScope.name = "JamieMason";
         element = $compile(
           '<span data-ng-attr-dash-test2="{{name}}" ng-attr-dash-test3="{{name}}" data-ng-attr-dash-test4="{{name}}"></span>',
         )($rootScope);
-        expect(element.getAttribute("dash-test2")).toBeUndefined();
-        expect(element.getAttribute("dash-test3")).toBeUndefined();
-        expect(element.getAttribute("dash-test4")).toBeUndefined();
+        expect(element.getAttribute("dash-test2")).toBeNull();
+        expect(element.getAttribute("dash-test3")).toBeNull();
+        expect(element.getAttribute("dash-test4")).toBeNull();
+
+        await wait();
         expect(element.getAttribute("dash-test2")).toBe("JamieMason");
         expect(element.getAttribute("dash-test3")).toBe("JamieMason");
         expect(element.getAttribute("dash-test4")).toBe("JamieMason");

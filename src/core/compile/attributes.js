@@ -165,7 +165,11 @@ export class Attributes {
         if (booleanKey && value === false) {
           elem.removeAttribute(attrName);
         } else {
-          elem.setAttribute(attrName, value);
+          if (booleanKey) {
+            elem[attrName] = true;
+          } else {
+            elem.setAttribute(attrName, value);
+          }
         }
       } else {
         this.setSpecialAttr(this.$$element, attrName, value);
