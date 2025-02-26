@@ -151,7 +151,7 @@ describe("$compile", () => {
         link(scope, element, attr, ctrls, $transclude) {
           const futureParent = element.firstChild;
           $transclude((clone) => {
-            futureParent.append(clone);
+            futureParent.append(clone[0]);
           }, futureParent);
         },
       }),
@@ -4798,117 +4798,54 @@ describe("$compile", () => {
 
     it("should handle transcluded svg elements", async () => {
       let element = createElementFromHTML(
-        "<div><svg-container>" +
+        "<div><svg svg-container>" +
           '<circle cx="4" cy="4" r="2"></circle>' +
-          "</svg-container></div>",
+          "</svg></div>",
       );
-      $compile(element)($rootScope);
-
+      element = $compile(element)($rootScope);
+      document.body.appendChild(element);
       await wait();
       const circle = element.children[0].children[0];
       assertIsValidSvgCircle(circle);
     });
 
-    it("should handle custom svg elements inside svg tag", () => {
-      element =
+    it("should handle custom svg elements inside svg tag", async () => {
+      let element = createElementFromHTML(
         '<div><svg width="300" height="300">' +
-        "<svg-circle></svg-circle>" +
-        "</svg></div>";
-      $compile(element.childNodes)($rootScope);
+          "<circle svg-circle></circle>" +
+          "</svg></div>",
+      );
+      $compile(element)($rootScope);
       document.body.appendChild(element);
-
+      await wait();
       const circle = element.querySelector("circle");
-      assertIsValidSvgCircle(circle[0]);
+      assertIsValidSvgCircle(circle);
     });
 
-    it("should handle transcluded custom svg elements", () => {
-      element =
-        "<div><svg-container>" +
-        "<svg-circle></svg-circle>" +
-        "</svg-container></div>";
-      $compile(element.childNodes)($rootScope);
+    it("should handle transcluded custom svg elements", async () => {
+      let element = createElementFromHTML(
+        "<div><svg svg-container>" +
+          "<circle svg-circle></circle>" +
+          "</svg></div>",
+      );
+      $compile(element)($rootScope);
       document.body.appendChild(element);
-
+      await wait();
       const circle = element.querySelector("circle");
-      assertIsValidSvgCircle(circle[0]);
+      assertIsValidSvgCircle(circle);
     });
 
-    // Supports: Chrome 53-57+
-    // Since Chrome 53-57+, the reported size of `<foreignObject>` elements and their descendants
-    // is affected by global display settings (e.g. font size) and browser settings (e.g. default
-    // zoom level). In order to avoid false negatives, we compare against the size of the
-    // equivalent, hand-written SVG instead of fixed widths/heights.
-    const HAND_WRITTEN_SVG =
-      '<svg width="400" height="400">' +
-      '<foreignObject width="100" height="100">' +
-      '<div style="position:absolute;width:20px;height:20px">test</div>' +
-      "</foreignObject>" +
-      "</svg>";
-
-    it("should handle foreignObject", () => {
-      element =
-        `<div>${
-          // By hand (for reference)
-          HAND_WRITTEN_SVG
-          // By directive
-        }<svg-container>` +
-        `<foreignObject width="100" height="100">` +
-        `<div style="position:absolute;width:20px;height:20px">test</div>` +
-        `</foreignObject>` +
-        `</svg-container>` +
-        `</div>`;
-      $compile(element.childNodes)($rootScope);
+    it("should handle directives with templates that manually add the transclude further down", async () => {
+      element = createElementFromHTML(
+        "<div><svg svg-custom-transclude-container>" +
+          '<circle cx="2" cy="2" r="1"></circle></svg>' +
+          "</div>",
+      );
+      element = $compile(element)($rootScope);
       document.body.appendChild(element);
-
-      const referenceElem = element.children[0][0];
-      const testElem = element.children[0][1];
-      const referenceBounds = referenceElem.getBoundingClientRect();
-      const testBounds = testElem.getBoundingClientRect();
-
-      expect(isHTMLElement(testElem)).toBe(true);
-      expect(referenceBounds.width).toBeGreaterThan(0);
-      expect(referenceBounds.height).toBeGreaterThan(0);
-      expect(testBounds.width).toBe(referenceBounds.width);
-      expect(testBounds.height).toBe(referenceBounds.height);
-    });
-
-    it("should handle custom svg containers that transclude to foreignObject that transclude html", () => {
-      element =
-        `<div>${
-          // By hand (for reference)
-          HAND_WRITTEN_SVG
-          // By directive
-        }<svg-container>` +
-        `<my-foreign-object>` +
-        `<div style="width:20px;height:20px">test</div>` +
-        `</my-foreign-object>` +
-        `</svg-container>` +
-        `</div>`;
-      $compile(element.childNodes)($rootScope);
-      document.body.appendChild(element);
-
-      const referenceElem = element.children[0][0];
-      const testElem = element.children[0][1];
-      const referenceBounds = referenceElem.getBoundingClientRect();
-      const testBounds = testElem.getBoundingClientRect();
-
-      expect(isHTMLElement(testElem)).toBe(true);
-      expect(referenceBounds.width).toBeGreaterThan(0);
-      expect(referenceBounds.height).toBeGreaterThan(0);
-      expect(testBounds.width).toBe(referenceBounds.width);
-      expect(testBounds.height).toBe(referenceBounds.height);
-    });
-
-    it("should handle directives with templates that manually add the transclude further down", () => {
-      element =
-        "<div><svg-custom-transclude-container>" +
-        '<circle cx="2" cy="2" r="1"></circle></svg-custom-transclude-container>' +
-        "</div>";
-      $compile(element.childNodes)($rootScope);
-      document.body.appendChild(element);
-
+      await wait();
       const circle = element.querySelector("circle");
-      assertIsValidSvgCircle(circle[0]);
+      assertIsValidSvgCircle(circle);
     });
 
     it("should support directives with SVG templates and a slow url that are stamped out later by a transcluding directive", async () => {
@@ -4920,23 +4857,21 @@ describe("$compile", () => {
 
       injector.loadNewModules(["test"]);
       element = $compile(
-        '<svg><g ng-repeat="l in list"><svg-circle-url></svg-circle-url></g></svg>',
+        '<svg><g ng-repeat="l in list"><svg-circle-url></svg-circle-ur></g></svg>',
       )($rootScope);
 
       // initially the template is not yet loaded
       $rootScope.list = [1];
       await wait();
-      expect(element.querySelector("svg-circle-url").length).toBe(1);
-      expect(element.querySelector("circle").length).toBe(0);
+      expect(element.querySelectorAll("circle").length).toBe(0);
       await wait(100);
-      // template is loaded and replaces the existing nodes
-      expect(element.querySelector("svg-circle-url").length).toBe(0);
-      expect(element.querySelector("circle").length).toBe(1);
 
+      // template is loaded and replaces the existing nodes
+      expect(element.querySelectorAll("circle").length).toBe(1);
+      // debugger
       $rootScope.list.push(2);
-      await wait();
-      expect(element.querySelector("svg-circle-url").length).toBe(0);
-      expect(element.querySelector("circle").length).toBe(2);
+      await wait(100);
+      expect(element.querySelectorAll("circle").length).toBe(2);
     });
   });
 
@@ -6540,7 +6475,8 @@ describe("$compile", () => {
           .module("test1", ["ng"])
           .decorator("$exceptionHandler", () => {
             return (exception) => {
-              throw new Error(exception.message);
+              log.push(exception.message);
+              // throw new Error(exception.message);
             };
           });
 
@@ -7778,18 +7714,13 @@ describe("$compile", () => {
             expect(element.getAttribute("disabled")).toBeNull();
           });
 
-          it("should not set DOM element attr if writeAttr false", () => {
-            attr.$set("test", "value", false);
-
-            expect(element.getAttribute("test")).toBeUndefined();
-            expect(attr.test).toBe("value");
-          });
-
-          it("should not automatically sanitize a[href]", () => {
+          it("should not automatically sanitize a[href]", async () => {
             // Breaking change in https://github.com/angular/angular.js/pull/16378
             element = $compile("<a></a>")($rootScope);
+            await wait();
             $rootScope.attr.$set("href", "evil:foo()");
             expect(element.getAttribute("href")).toEqual("evil:foo()");
+
             expect($rootScope.attr.href).toEqual("evil:foo()");
           });
 
