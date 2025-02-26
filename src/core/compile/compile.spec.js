@@ -15554,7 +15554,7 @@ describe("$compile", () => {
       });
     });
 
-    describe("when an attribute has a dash-separated name", async () => {
+    describe("when an attribute has a dash-separated name", () => {
       it("should work with different prefixes", () => {
         $rootScope.name = "JamieMason";
         element = $compile(
@@ -15771,16 +15771,17 @@ describe("$compile", () => {
   });
 
   describe("when an attribute has an underscore-separated name", () => {
-    it("should work with different prefixes", () => {
+    it("should work with different prefixes", async () => {
       $rootScope.dimensions = "0 0 0 0";
       element = $compile('<svg ng-attr-view-box="{{dimensions}}"></svg>')(
         $rootScope,
       );
-      expect(element.getAttribute("view-box")).toBeUndefined();
+      expect(element.getAttribute("view-box")).toBeNull();
+      await wait();
       expect(element.getAttribute("view-box")).toBe("0 0 0 0");
     });
 
-    it("should work if they are prefixed with data-", () => {
+    it("should work if they are prefixed with data-", async () => {
       $rootScope.dimensions = "0 0 0 0";
       $rootScope.number = 0.42;
       $rootScope.scale = 1;
@@ -15792,7 +15793,8 @@ describe("$compile", () => {
           '<feSpecularLighting ng-attr-surface-scale="{{scale}}">' +
           "</feSpecularLighting></filter></svg>",
       )($rootScope);
-      expect(element.getAttribute("viewBox")).toBeUndefined();
+      expect(element.getAttribute("viewBox")).toBeNull();
+      await wait();
       expect(element.getAttribute("view-box")).toBe("0 0 0 0");
       expect(element.querySelector("filter").getAttribute("filter-units")).toBe(
         "0.42",
