@@ -13,7 +13,7 @@ BOOLEAN_ATTR.forEach((i) => {
 
   function defaultLinkFn(scope, _element, attr) {
     scope.$watch(attr[normalized], (value) => {
-      attr.$set(attr, !!value);
+      attr.$set(i, !!value);
     });
   }
 
