@@ -66,7 +66,7 @@
 
 /**
  * @typedef {Object} Controller  Interface representing the lifecycle hooks for AngularJS directive controllers.
- * @property {string} name *
+ * @property {string} [name]
  * @property {function(): void} [$onInit]
  * Called on each controller after all the controllers on an element have been constructed and had their bindings
  * initialized (and before the pre & post linking functions for the directives on this element). This is a good

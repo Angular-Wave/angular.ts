@@ -1,106 +1,119 @@
-import { getBlockNodes } from "../../shared/dom.js";
+import { hasAnimate } from "../../shared/utils.js";
+
+/**
+ * @typedef {Object} SwitchCase
+ * @property {Element} element
+ * @property {Function} transclude - of type "controllersBoundTransclude"
+ * @property {Element} comment - the comment replacing the element
+ */
+
+/**
+ * @typedef {Object} SwitchCaseScope
+ * @property {import("../../core/scope/scope.js").Scope} scope
+ * @property {Element} element
+ * @property {Element} comment
+ * @property {SwitchCase} selectedTransclude
+ */
+
+/**
+ * @extends import("../../types.js").Controller
+ */
+class SwitchController {
+  constructor() {
+    /**
+     * @type {Record<string, Array<SwitchCase>>}
+     */
+    this.cases = {};
+  }
+}
 
 export const ngSwitchDirective = [
   "$animate",
   ($animate) => ({
     require: "ngSwitch",
 
-    // asks for $scope to fool the BC controller module
-    controller: [
-      "$scope",
-      class {
-        constructor() {
-          this.cases = {};
-        }
-      },
-    ],
-    link(scope, _element, attr, ngSwitchController) {
+    controller: ["$scope", SwitchController],
+
+    /**
+     * @param {*} scope
+     * @param {*} element
+     * @param {*} attr
+     * @param {SwitchController} ngSwitchController
+     */
+    link(scope, element, attr, ngSwitchController) {
+      const shouldAnimate = hasAnimate(element);
       const watchExpr = attr.ngSwitch || attr.on;
       let selectedTranscludes = [];
-      const selectedElements = [];
-      const previousLeaveAnimations = [];
-      const selectedScopes = [];
 
-      const spliceFactory = function (array, index) {
-        return function (response) {
-          if (response !== false) array.splice(index, 1);
-        };
+      /**
+       * @type {SwitchCaseScope[]}
+       */
+      const selected = [];
+
+      const cleanupSelected = () => {
+        while (selected.length > 0) {
+          const select = selected.shift();
+          select.element.parentElement.replaceChild(
+            select.comment,
+            select.element,
+          );
+          select.selectedTransclude.element = select.comment;
+        }
+      };
+
+      const processTranscludes = (transcludes) => {
+        transcludes.forEach((selectedTransclude) => {
+          selectedTransclude.transclude(scope, (caseElement, selectedScope) => {
+            const anchor = selectedTransclude.element;
+
+            if (shouldAnimate) {
+              $animate.enter(caseElement, anchor.parentElement, anchor);
+            } else {
+              anchor.parentElement.replaceChild(caseElement[0], anchor);
+              selectedTransclude.element = caseElement[0];
+              selected.push({
+                scope: selectedScope,
+                element: caseElement[0],
+                comment: anchor,
+                selectedTransclude: selectedTransclude,
+              });
+            }
+          });
+        });
       };
 
       scope.$watch(watchExpr, (value) => {
-        let i;
-        let ii;
-
-        // Start with the last, in case the array is modified during the loop
-        while (previousLeaveAnimations.length) {
-          $animate.cancel(previousLeaveAnimations.pop());
-        }
-
-        for (i = 0, ii = selectedScopes.length; i < ii; ++i) {
-          const selected = getBlockNodes(selectedElements[i].clone);
-          selectedScopes[i].$destroy();
-          const runner = (previousLeaveAnimations[i] =
-            $animate.leave(selected));
-          runner.done(spliceFactory(previousLeaveAnimations, i));
-        }
-
-        selectedElements.length = 0;
-        selectedScopes.length = 0;
-
-        if (
-          (selectedTranscludes =
-            ngSwitchController.cases[`!${value}`] ||
-            ngSwitchController.cases["?"])
-        ) {
-          Object.values(selectedTranscludes).forEach((selectedTransclude) => {
-            selectedTransclude.transclude((caseElement, selectedScope) => {
-              selectedScopes.push(selectedScope);
-              const anchor = selectedTransclude.element;
-              // TODO removing this breaks repeater test
-              caseElement[caseElement.length++] = document.createComment("");
-              const block = { clone: caseElement };
-              selectedElements.push(block);
-              $animate.enter(caseElement, anchor.parentElement, anchor);
-            });
-          });
+        cleanupSelected();
+        selectedTranscludes =
+          ngSwitchController.cases[`!${value}`] ||
+          ngSwitchController.cases["?"];
+        if (selectedTranscludes) {
+          processTranscludes(Object.values(selectedTranscludes));
         }
       });
     },
   }),
 ];
 
-/**
- * @returns {import('../../types.js').Directive}
- */
 export function ngSwitchWhenDirective() {
   return {
     transclude: "element",
     priority: 1200,
     restrict: "EA",
     require: "^ngSwitch",
-    link(scope, element, attrs, ctrl, $transclude) {
-      const cases = attrs.ngSwitchWhen
+    link(_scope, element, attrs, ctrl, $transclude) {
+      attrs.ngSwitchWhen
         .split(attrs.ngSwitchWhenSeparator)
         .sort()
-        .filter(
-          // Filter duplicate cases
-          (element, index, array) => array[index - 1] !== element,
-        );
-
-      cases.forEach((whenCase) => {
-        ctrl["cases"][`!${whenCase}`] = ctrl["cases"][`!${whenCase}`] || [];
-        ctrl["cases"][`!${whenCase}`].push({
-          transclude: $transclude,
-          element,
+        .filter((item, index, array) => array[index - 1] !== item)
+        .forEach((whenCase) => {
+          ctrl.cases[`!${whenCase}`] = ctrl.cases[`!${whenCase}`] || [];
+          ctrl.cases[`!${whenCase}`].push({ transclude: $transclude, element });
         });
-      });
     },
   };
 }
 
-/**
- * @returns {import('../../types.js').Directive}
- */
 export function ngSwitchDefaultDirective() {
   return {
     restrict: "EA",
@@ -108,8 +121,8 @@ export function ngSwitchDefaultDirective() {
     priority: 1200,
     require: "^ngSwitch",
     link(_scope, element, _attr, ctrl, $transclude) {
-      ctrl["cases"]["?"] = ctrl["cases"]["?"] || [];
-      ctrl["cases"]["?"].push({ transclude: $transclude, element });
+      ctrl.cases["?"] = ctrl.cases["?"] || [];
+      ctrl.cases["?"].push({ transclude: $transclude, element });
     },
   };
 }

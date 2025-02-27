@@ -37,10 +37,7 @@ export type ChangesObject = {
  * Interface representing the lifecycle hooks for AngularJS directive controllers.
  */
 export type Controller = {
-    /**
-     * *
-     */
-    name: string;
+    name?: string;
     /**
      * Called on each controller after all the controllers on an element have been constructed and had their bindings
      * initialized (and before the pre & post linking functions for the directives on this element). This is a good
@@ -312,7 +309,7 @@ export type FormController = {
      * - An object containing arrays of controls with validation errors keyed by validation error keys.
      */
     $error: {
-        [x: string]: (NgModelController | FormController)[];
+        [x: string]: Array<NgModelController | FormController>;
     };
     /**
      * - The name of the form.

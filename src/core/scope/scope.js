@@ -74,7 +74,7 @@ export function createScope(target = {}, context) {
         try {
           target[key] = createScope(target[key], proxy.$handler);
         } catch (e) {
-          // convert only what we cant
+          // convert only what we can
         }
       }
     }

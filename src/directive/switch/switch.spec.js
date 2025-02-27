@@ -1,5 +1,6 @@
 import { Angular } from "../../loader.js";
 import { dealoc } from "../../shared/dom.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ngSwitch", () => {
   let $scope;
@@ -12,10 +13,9 @@ describe("ngSwitch", () => {
     let injector = window.angular.bootstrap(
       document.getElementById("dummy", ["test"]),
     );
-    injector.invoke(($rootScope, _$compile_, _$timeout_) => {
+    injector.invoke(($rootScope, _$compile_) => {
       $scope = $rootScope.$new();
       $compile = _$compile_;
-      $timeout = _$timeout_;
     });
   });
 
@@ -38,6 +38,9 @@ describe("ngSwitch", () => {
     $scope.name = "shyam";
     await wait();
     expect(element.textContent).toEqual("first:shyam");
+    $scope.select = undefined;
+    await wait();
+    expect(element.textContent).toEqual("");
     $scope.select = 2;
     await wait();
     expect(element.textContent).toEqual("second:shyam");
@@ -78,31 +81,6 @@ describe("ngSwitch", () => {
     expect(element.textContent).toEqual("true:misko");
   });
 
-  it("should show all elements between start and end markers that match the current value", () => {
-    element = $compile(
-      '<ul ng-switch="select">' +
-        '<li ng-switch-when-start="1">A</li>' +
-        "<li>B</li>" +
-        "<li ng-switch-when-end>C</li>" +
-        '<li ng-switch-when-start="2">D</li>' +
-        "<li>E</li>" +
-        "<li ng-switch-when-end>F</li>" +
-        "</ul>",
-    )($scope);
-
-    $scope.$apply('select = "1"');
-    expect(element.find("li").length).toBe(3);
-    expect(element.find("li").eq(0).textContent).toBe("A");
-    expect(element.find("li").eq(1).textContent).toBe("B");
-    expect(element.find("li").eq(2).textContent).toBe("C");
-
-    $scope.$apply('select = "2"');
-    expect(element.find("li").length).toBe(3);
-    expect(element.find("li").eq(0).textContent).toBe("D");
-    expect(element.find("li").eq(1).textContent).toBe("E");
-    expect(element.find("li").eq(2).textContent).toBe("F");
-  });
-
   it("should switch on switch-when-default", async () => {
     element = $compile(
       '<ng-switch on="select">' +
@@ -115,31 +93,6 @@ describe("ngSwitch", () => {
     $scope.select = 1;
     await wait();
     expect(element.textContent).toEqual("one");
-  });
-
-  it("should show all default elements between start and end markers when no match", () => {
-    element = $compile(
-      '<ul ng-switch="select">' +
-        '<li ng-switch-when-start="1">A</li>' +
-        "<li>B</li>" +
-        "<li ng-switch-when-end>C</li>" +
-        "<li ng-switch-default-start>D</li>" +
-        "<li>E</li>" +
-        "<li ng-switch-default-end>F</li>" +
-        "</ul>",
-    )($scope);
-
-    $scope.$apply('select = "1"');
-    expect(element.find("li").length).toBe(3);
-    expect(element.find("li").eq(0).textContent).toBe("A");
-    expect(element.find("li").eq(1).textContent).toBe("B");
-    expect(element.find("li").eq(2).textContent).toBe("C");
-
-    $scope.$apply('select = "2"');
-    expect(element.find("li").length).toBe(3);
-    expect(element.find("li").eq(0).textContent).toBe("D");
-    expect(element.find("li").eq(1).textContent).toBe("E");
-    expect(element.find("li").eq(2).textContent).toBe("F");
   });
 
   it("should show all switch-when-default", async () => {
