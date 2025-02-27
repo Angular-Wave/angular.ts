@@ -613,7 +613,7 @@ export class Scope {
         break;
       // 4
       case ASTType.ConditionalExpression: {
-        key = get.decoratedNode.body[0].expression.toWatch[0]?.test.name;
+        key = get.decoratedNode.body[0].expression.toWatch[0]?.test?.name;
         listener.property.push(key);
         break;
       }

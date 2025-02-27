@@ -7,20 +7,20 @@ export const REGEX_STRING_REGEXP = /^\/(.+)\/([a-z]*)$/;
 export const ngAttributeAliasDirectives = {};
 
 // boolean attrs are evaluated
-Object.entries(BOOLEAN_ATTR).forEach(([attrName, propName]) => {
+BOOLEAN_ATTR.forEach((i) => {
   // binding to multiple is not supported
-  if (propName === "multiple") return;
+  if (i === "multiple") return;
 
   function defaultLinkFn(scope, _element, attr) {
     scope.$watch(attr[normalized], (value) => {
-      attr.$set(attrName, !!value);
+      attr.$set(attr, !!value);
     });
   }
 
-  let normalized = directiveNormalize(`ng-${attrName}`);
+  let normalized = directiveNormalize(`ng-${i}`);
   let linkFn = defaultLinkFn;
 
-  if (propName === "checked") {
+  if (i === "checked") {
     linkFn = function (scope, element, attr) {
       // ensuring ngChecked doesn't interfere with ngModel when both are set on the same input
       if (attr.ngModel !== attr[normalized]) {

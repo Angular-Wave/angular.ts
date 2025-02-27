@@ -1,10 +1,4 @@
-import {
-  concat,
-  isDefined,
-  isObject,
-  lowercase,
-  getNodeName,
-} from "./utils.js";
+import { concat, isDefined, isObject, getNodeName } from "./utils.js";
 import { CACHE, EXPANDO } from "../core/cache/cache.js";
 
 /** @type {number} */
@@ -34,12 +28,20 @@ wrapMap.tbody =
     wrapMap.thead;
 wrapMap.th = wrapMap.td;
 
-export const BOOLEAN_ATTR = {};
-"multiple,selected,checked,disabled,readOnly,required,open"
-  .split(",")
-  .forEach((value) => {
-    BOOLEAN_ATTR[lowercase(value)] = value;
-  });
+/**
+ * A list of boolean attributes in HTML.
+ * @type {string[]}
+ */
+export const BOOLEAN_ATTR = [
+  "multiple",
+  "selected",
+  "checked",
+  "disabled",
+  "readOnly",
+  "required",
+  "open",
+];
+
 const BOOLEAN_ELEMENTS = {};
 "input,select,option,textarea,button,form,details"
   .split(",")
@@ -481,9 +483,19 @@ export function getBlockNodes(nodes) {
   return blockNodes || nodes;
 }
 
+/**
+ * Gets the name of a boolean attribute if it exists on a given element.
+ *
+ * @param {Element} element - The DOM element to check.
+ * @param {string} name - The name of the attribute.
+ * @returns {string|false} - The attribute name if valid, otherwise false.
+ */
 export function getBooleanAttrName(element, name) {
-  const booleanAttr = BOOLEAN_ATTR[name.toLowerCase()];
-  return booleanAttr && BOOLEAN_ELEMENTS[getNodeName(element)] && booleanAttr;
+  const normalizedName = name.toLowerCase();
+  const isBooleanAttr = BOOLEAN_ATTR.includes(normalizedName);
+  return isBooleanAttr && BOOLEAN_ELEMENTS[getNodeName(element)]
+    ? normalizedName
+    : false;
 }
 
 /**

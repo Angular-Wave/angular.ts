@@ -31,23 +31,7 @@ export class InterpolateProvider {
     endSymbol(value?: string | undefined): string | InterpolateProvider;
     $get: (string | (($parse: import("../parse/parse").ParseService, $sce: any) => {
         (text: string, mustHaveExpression?: boolean | undefined, trustedContext?: string | undefined, allOrNothing?: boolean | undefined): Function;
-        /**
-         * Symbol to denote the start of expression in the interpolated string. Defaults to `{{`.
-         *
-         * Use {@link ng.$interpolateProvider#startSymbol `$interpolateProvider.startSymbol`} to change
-         * the symbol.
-         *
-         * @returns {string} start symbol.
-         */
         startSymbol(): string;
-        /**
-         * Symbol to denote the end of expression in the interpolated string. Defaults to `}}`.
-         *
-         * Use {@link ng.$interpolateProvider#endSymbol `$interpolateProvider.endSymbol`} to change
-         * the symbol.
-         *
-         * @returns {string} end symbol.
-         */
         endSymbol(): string;
     }))[];
 }

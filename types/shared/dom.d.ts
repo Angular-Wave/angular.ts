@@ -111,7 +111,14 @@ export function startingTag(elementOrStr: string | Element | Node): string;
  * @returns {Element} the inputted object or a JQLite collection containing the nodes
  */
 export function getBlockNodes(nodes: Element | any[]): Element;
-export function getBooleanAttrName(element: any, name: any): any;
+/**
+ * Gets the name of a boolean attribute if it exists on a given element.
+ *
+ * @param {Element} element - The DOM element to check.
+ * @param {string} name - The name of the attribute.
+ * @returns {string|false} - The attribute name if valid, otherwise false.
+ */
+export function getBooleanAttrName(element: Element, name: string): string | false;
 /**
  * Takes an array of elements, calls any `$destroy` event handlers, removes any data in cache, and finally removes any
  * listeners.
@@ -149,4 +156,8 @@ export function appendNodesToElement(element: Element, nodes: Node | Node[] | st
  */
 export function emptyElement(element: Element): void;
 export function domInsert(element: any, parentElement: any, afterElement: any): void;
-export const BOOLEAN_ATTR: {};
+/**
+ * A list of boolean attributes in HTML.
+ * @type {string[]}
+ */
+export const BOOLEAN_ATTR: string[];
