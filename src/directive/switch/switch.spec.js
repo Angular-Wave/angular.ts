@@ -220,7 +220,7 @@ describe("ngSwitch", () => {
     // afterwards a global afterEach will check for leaks in jq data cache object
   });
 
-  it("should properly support case labels with different numbers of transclude fns", () => {
+  it("should properly support case labels with different numbers of transclude fns", async () => {
     element = $compile(
       '<div ng-switch="mode">' +
         '<p ng-switch-when="a">Block1</p>' +
@@ -230,16 +230,20 @@ describe("ngSwitch", () => {
     )($scope);
 
     $scope.$apply('mode = "a"');
-    expect(element.children().length).toBe(2);
+    await wait();
+    expect(element.children.length).toBe(2);
 
     $scope.$apply('mode = "b"');
-    expect(element.children().length).toBe(1);
+    await wait();
+    expect(element.children.length).toBe(1);
 
     $scope.$apply('mode = "a"');
-    expect(element.children().length).toBe(2);
+    await wait();
+    expect(element.children.length).toBe(2);
 
     $scope.$apply('mode = "b"');
-    expect(element.children().length).toBe(1);
+    await wait();
+    expect(element.children.length).toBe(1);
   });
 
   it("should not trigger a digest after an element is removed", async () => {
@@ -269,7 +273,7 @@ describe("ngSwitch", () => {
     //$timeout.verifyNoPendingTasks();
   });
 
-  it("should handle changes to the switch value in a digest loop with multiple value matches", () => {
+  it("should handle changes to the switch value in a digest loop with multiple value matches", async () => {
     const scope = $scope.$new();
     scope.value = "foo";
 
@@ -290,15 +294,17 @@ describe("ngSwitch", () => {
         "</div>",
     )(scope);
 
-    scope.$apply();
+    await wait();
     expect(element.textContent).toBe("FOO 1FOO 2");
 
     scope.$apply('value = "bar"');
+
+    await wait();
     expect(element.textContent).toBe("BAZ");
   });
 
   describe("ngSwitchWhen separator", () => {
-    it("should be possible to define a separator", () => {
+    it("should be possible to define a separator", async () => {
       element = $compile(
         '<div ng-switch="mode">' +
           '<p ng-switch-when="a|b" ng-switch-when-separator="|">Block1|</p>' +
@@ -308,19 +314,20 @@ describe("ngSwitch", () => {
       )($scope);
 
       $scope.$apply('mode = "a"');
-      expect(element.children().length).toBe(2);
+      await wait();
+      expect(element.children.length).toBe(2);
       expect(element.textContent).toBe("Block1|Block2|");
       $scope.$apply('mode = "b"');
-
-      expect(element.children().length).toBe(1);
+      await wait();
+      expect(element.children.length).toBe(1);
       expect(element.textContent).toBe("Block1|");
       $scope.$apply('mode = "c"');
-
-      expect(element.children().length).toBe(1);
+      await wait();
+      expect(element.children.length).toBe(1);
       expect(element.textContent).toBe("Block3|");
     });
 
-    it("should be possible to use a separator at the end of the value", () => {
+    it("should be possible to use a separator at the end of the value", async () => {
       element = $compile(
         '<div ng-switch="mode">' +
           '<p ng-switch-when="a|b|" ng-switch-when-separator="|">Block1|</p>' +
@@ -330,19 +337,20 @@ describe("ngSwitch", () => {
       )($scope);
 
       $scope.$apply('mode = "a"');
-      expect(element.children().length).toBe(2);
+      await wait();
+      expect(element.children.length).toBe(2);
       expect(element.textContent).toBe("Block1|Block2|");
       $scope.$apply('mode = ""');
-
-      expect(element.children().length).toBe(1);
+      await wait();
+      expect(element.children.length).toBe(1);
       expect(element.textContent).toBe("Block1|");
       $scope.$apply('mode = "c"');
-
-      expect(element.children().length).toBe(1);
+      await wait();
+      expect(element.children.length).toBe(1);
       expect(element.textContent).toBe("Block3|");
     });
 
-    it("should be possible to use the empty string as a separator", () => {
+    it("should be possible to use the empty string as a separator", async () => {
       element = $compile(
         '<div ng-switch="mode">' +
           '<p ng-switch-when="ab" ng-switch-when-separator="">Block1|</p>' +
@@ -352,19 +360,20 @@ describe("ngSwitch", () => {
       )($scope);
 
       $scope.$apply('mode = "a"');
-      expect(element.children().length).toBe(2);
+      await wait();
+      expect(element.children.length).toBe(2);
       expect(element.textContent).toBe("Block1|Block2|");
       $scope.$apply('mode = "b"');
-
-      expect(element.children().length).toBe(1);
+      await wait();
+      expect(element.children.length).toBe(1);
       expect(element.textContent).toBe("Block1|");
       $scope.$apply('mode = "c"');
-
-      expect(element.children().length).toBe(1);
+      await wait();
+      expect(element.children.length).toBe(1);
       expect(element.textContent).toBe("Block3|");
     });
 
-    it("should be possible to use separators that are multiple characters long", () => {
+    it("should be possible to use separators that are multiple characters long", async () => {
       element = $compile(
         '<div ng-switch="mode">' +
           '<p ng-switch-when="a||b|a" ng-switch-when-separator="||">Block1|</p>' +
@@ -374,19 +383,20 @@ describe("ngSwitch", () => {
       )($scope);
 
       $scope.$apply('mode = "a"');
-      expect(element.children().length).toBe(2);
+      await wait();
+      expect(element.children.length).toBe(2);
       expect(element.textContent).toBe("Block1|Block2|");
       $scope.$apply('mode = "b|a"');
-
-      expect(element.children().length).toBe(1);
+      await wait();
+      expect(element.children.length).toBe(1);
       expect(element.textContent).toBe("Block1|");
       $scope.$apply('mode = "c"');
-
-      expect(element.children().length).toBe(1);
+      await wait();
+      expect(element.children.length).toBe(1);
       expect(element.textContent).toBe("Block3|");
     });
 
-    it("should ignore multiple appearances of the same item", () => {
+    it("should ignore multiple appearances of the same item", async () => {
       element = $compile(
         '<div ng-switch="mode">' +
           '<p ng-switch-when="a|b|a" ng-switch-when-separator="|">Block1|</p>' +
@@ -396,15 +406,16 @@ describe("ngSwitch", () => {
       )($scope);
 
       $scope.$apply('mode = "a"');
-      expect(element.children().length).toBe(2);
+      await wait();
+      expect(element.children.length).toBe(2);
       expect(element.textContent).toBe("Block1|Block2|");
       $scope.$apply('mode = "b"');
-
-      expect(element.children().length).toBe(1);
+      await wait();
+      expect(element.children.length).toBe(1);
       expect(element.textContent).toBe("Block1|");
       $scope.$apply('mode = "c"');
-
-      expect(element.children().length).toBe(1);
+      await wait();
+      expect(element.children.length).toBe(1);
       expect(element.textContent).toBe("Block3|");
     });
   });
@@ -417,7 +428,7 @@ describe("ngSwitch", () => {
 
 //   function html(content) {
 //     $rootElement[0].innerHTML = content;
-//     element = $rootElement.children().eq(0);
+//     element = $rootElement.children.eq(0);
 //     return element;
 //   }
 
