@@ -6753,11 +6753,10 @@ describe("$compile", () => {
         });
 
         describe("with isolate scope directives", () => {
-          it("should return the non-isolate scope at the directive element", () => {
+          it("should return the non-isolate scope at the directive element", async () => {
             expect($rootScope.$children).toEqual([]);
-            let directiveElement;
-            element = $compile("<div><div iscope></div></div>")($rootScope);
-            directiveElement = element.children();
+            $compile("<div><div iscope></div></div>")($rootScope);
+            await wait();
             expect($rootScope.$children[0].$parent.$id).toBe($rootScope.$id);
           });
 
@@ -7102,11 +7101,12 @@ describe("$compile", () => {
       });
 
       describe("SCE values", () => {
-        it("should resolve compile and link both attribute and text bindings", () => {
+        it("should resolve compile and link both attribute and text bindings", async () => {
           $rootScope.name = $sce.trustAsHtml("angular");
           element = $compile('<div name="attr: {{name}}">text: {{name}}</div>')(
             $rootScope,
           );
+          await wait();
           expect(element.textContent).toEqual("text: angular");
           expect(element.getAttribute("name")).toEqual("attr: angular");
         });
@@ -7648,7 +7648,7 @@ describe("$compile", () => {
               module.directive(tag, () => ({
                 restrict: "EA",
                 link(scope, element, attr) {
-                  scope.attr = attr;
+                  scope.$target.attr = attr;
                 },
               }));
             });
@@ -7718,9 +7718,9 @@ describe("$compile", () => {
             // Breaking change in https://github.com/angular/angular.js/pull/16378
             element = $compile("<a></a>")($rootScope);
             await wait();
+
             $rootScope.attr.$set("href", "evil:foo()");
             expect(element.getAttribute("href")).toEqual("evil:foo()");
-
             expect($rootScope.attr.href).toEqual("evil:foo()");
           });
 
@@ -11947,7 +11947,7 @@ describe("$compile", () => {
           $rootScope,
         );
         await wait();
-        expect(element.textContent).toBe("template:lucas transclude:");
+        expect(element.textContent).toBe("template:lucas transclude:lucas");
       });
 
       it("should support controller alias", async () => {

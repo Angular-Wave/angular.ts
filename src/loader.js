@@ -5,14 +5,15 @@ import {
   assertNotHasOwnProperty,
   errorHandlingConfig,
 } from "./shared/utils.js";
-import { getInjector, setCacheData } from "./shared/dom.js";
+import { getController, getInjector, setCacheData } from "./shared/dom.js";
 import { annotate, createInjector } from "./core/di/injector.js";
-import { NgModule } from "./core/di/ng-module";
-import { CACHE } from "./core/cache/cache";
-import { publishExternalAPI } from "./public";
-import { VERSION } from "./public";
-import { unnestR } from "./shared/common";
+import { NgModule } from "./core/di/ng-module.js";
+import { CACHE } from "./core/cache/cache.js";
+import { publishExternalAPI } from "./public.js";
+import { VERSION } from "./public.js";
+import { unnestR } from "./shared/common.js";
 import { EventBus } from "./core/pubsub/pubsub.js";
+import { Scope } from "./core/scope/scope.js";
 
 const ngMinErr = minErr("ng");
 const $injectorMinErr = minErr("$injector");
@@ -311,6 +312,15 @@ export class Angular {
       );
       return moduleInstance;
     });
+  }
+
+  /**
+   * @param {Node} element
+   * @param {string} [name]
+   * @returns {Scope}
+   */
+  getController(element, name) {
+    return getController(element, name);
   }
 }
 

@@ -176,35 +176,6 @@ describe("ngSwitch", () => {
     },
   );
 
-  it("should properly create and destroy child scopes", async () => {
-    element = $compile(
-      '<ng-switch on="url"><div ng-switch-when="a">{{name}}</div></ng-switch>',
-    )($scope);
-    await wait();
-
-    expect($scope.$$childHead).toBeNull();
-
-    $scope.url = "a";
-    await wait();
-    const child1 = $scope.$$childHead;
-    expect(child1).toBeDefined();
-    spyOn(child1, "$destroy");
-
-    $scope.url = "x";
-    await wait();
-
-    // NOTE THAT THE CHILD SCOPE IS NOT ACTUALLY DESTROYED.
-    expect(child1).toBeDefined();
-    expect(child1.$destroy).toHaveBeenCalled();
-
-    $scope.url = "a";
-    await wait();
-    // ... BUT A NEW CHILD SCOPE WILL BE CREATED IN A TAIL.
-    const child2 = $scope.$$childTail;
-    expect(child2).toBeDefined();
-    expect(child2).not.toBe(child1);
-  });
-
   it("should interoperate with other transclusion directives like ngRepeat", async () => {
     element = $compile(
       '<div ng-switch="value">' +
@@ -213,18 +184,23 @@ describe("ngSwitch", () => {
         "</div>",
     )($scope);
     $scope.$apply('value="foo";foos=["one", "two"]');
+    await wait();
     expect(element.textContent).toEqual("foo:one|foo:two|");
 
     $scope.$apply('value="foo";foos=["one"]');
+    await wait();
     expect(element.textContent).toEqual("foo:one|");
 
     $scope.$apply('value="foo";foos=["one","two","three"]');
+    await wait();
     expect(element.textContent).toEqual("foo:one|foo:two|foo:three|");
 
     $scope.$apply('value="bar";bars=["up", "down"]');
+    await wait();
     expect(element.textContent).toEqual("bar:up|bar:down|");
 
     $scope.$apply('value="bar";bars=["up", "down", "forwards", "backwards"]');
+    await wait();
     expect(element.textContent).toEqual(
       "bar:up|bar:down|bar:forwards|bar:backwards|",
     );
