@@ -1416,6 +1416,10 @@ describe("Scope", () => {
         scope.aValue[1] = 2;
         await wait();
         expect(newValueGiven).toEqual([4, 2]);
+
+        scope.aValue[0] = 2;
+        await wait();
+        expect(newValueGiven).toEqual([2, 2]);
       });
 
       it("can detect removal of items", async () => {

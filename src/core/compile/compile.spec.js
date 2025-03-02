@@ -7724,24 +7724,28 @@ describe("$compile", () => {
             expect($rootScope.attr.href).toEqual("evil:foo()");
           });
 
-          it("should not automatically sanitize img[src]", () => {
+          it("should not automatically sanitize img[src]", async () => {
             // Breaking change in https://github.com/angular/angular.js/pull/16378
             element = $compile("<img></img>")($rootScope);
+            await wait();
             $rootScope.attr.$set("img", "evil:foo()");
+            await wait();
             expect(element.getAttribute("img")).toEqual("evil:foo()");
             expect($rootScope.attr.img).toEqual("evil:foo()");
           });
 
-          it("should automatically sanitize img[srcset]", () => {
+          it("should automatically sanitize img[srcset]", async () => {
             element = $compile("<img></img>")($rootScope);
             $rootScope.attr.$set("srcset", "evil:foo()");
+            await wait();
             expect(element.getAttribute("srcset")).toEqual("unsafe:evil:foo()");
             expect($rootScope.attr.srcset).toEqual("unsafe:evil:foo()");
           });
 
-          it("should not accept trusted values for img[srcset]", () => {
+          it("should not accept trusted values for img[srcset]", async () => {
             const trusted = $sce.trustAsMediaUrl("trustme:foo()");
             element = $compile("<img></img>")($rootScope);
+            await wait();
             expect(() => {
               $rootScope.attr.$set("srcset", trusted);
             }).toThrowError(/srcset/);
@@ -11275,7 +11279,7 @@ describe("$compile", () => {
         );
       });
 
-      it("should get explicit return value of required parent controller", () => {
+      it("should get explicit return value of required parent controller", async () => {
         let expectedController;
         module.directive("nested", () => ({
           require: "^^?nested",
@@ -11294,6 +11298,7 @@ describe("$compile", () => {
         }));
         initInjector("test1");
         element = $compile("<div nested><div nested></div></div>")($rootScope);
+        await wait();
         expect(log[0]).toEqual("done");
         expect(getCacheData(element, "$nestedController")).toBe(
           expectedController,
@@ -14634,29 +14639,33 @@ describe("$compile", () => {
 
   ["img", "audio", "video"].forEach((tag) => {
     describe(`${tag}[src] context requirement`, () => {
-      it("should NOT require trusted values for trusted URIs", () => {
+      it("should NOT require trusted values for trusted URIs", async () => {
         element = $compile(`<${tag} src="{{testUrl}}"></${tag}>`)($rootScope);
         $rootScope.testUrl = "http://example.com/image.mp4"; // `http` is trusted
+        await wait();
         expect(element.getAttribute("src")).toEqual(
           "http://example.com/image.mp4",
         );
       });
 
-      it("should accept trusted values", () => {
+      it("should accept trusted values", async () => {
         // As a MEDIA_URL URL
         element = $compile(`<${tag} src="{{testUrl}}"></${tag}>`)($rootScope);
         // Some browsers complain if you try to write `javascript:` into an `img[src]`
         // So for the test use something different
         $rootScope.testUrl = $sce.trustAsMediaUrl("untrusted:foo()");
+        await wait();
         expect(element.getAttribute("src")).toEqual("untrusted:foo()");
 
         // As a URL
         element = $compile(`<${tag} src="{{testUrl}}"></${tag}>`)($rootScope);
+        await wait();
         $rootScope.testUrl = $sce.trustAsUrl("untrusted:foo()");
         expect(element.getAttribute("src")).toEqual("untrusted:foo()");
 
         // As a RESOURCE URL
         element = $compile(`<${tag} src="{{testUrl}}"></${tag}>`)($rootScope);
+        await wait();
         $rootScope.testUrl = $sce.trustAsResourceUrl("untrusted:foo()");
         expect(element.getAttribute("src")).toEqual("untrusted:foo()");
       });
@@ -14665,22 +14674,24 @@ describe("$compile", () => {
 
   ["source", "track"].forEach((tag) => {
     describe(`${tag}[src]`, () => {
-      it("should NOT require trusted values for trusted URIs", () => {
+      it("should NOT require trusted values for trusted URIs", async () => {
         element = $compile(
           `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
         )($rootScope);
         $rootScope.testUrl = "http://example.com/image.mp4"; // `http` is trusted
+        await wait();
         expect(element.querySelector(tag).getAttribute("src")).toEqual(
           "http://example.com/image.mp4",
         );
       });
 
-      it("should accept trusted values", () => {
+      it("should accept trusted values", async () => {
         // As a MEDIA_URL URL
         element = $compile(
           `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
         )($rootScope);
         $rootScope.testUrl = $sce.trustAsMediaUrl("javascript:foo()");
+        await wait();
         expect(element.querySelector(tag).getAttribute("src")).toEqual(
           "javascript:foo()",
         );
@@ -14690,6 +14701,7 @@ describe("$compile", () => {
           `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
         )($rootScope);
         $rootScope.testUrl = $sce.trustAsUrl("javascript:foo()");
+        await wait();
         expect(element.querySelector(tag).getAttribute("src")).toEqual(
           "javascript:foo()",
         );
@@ -14698,7 +14710,9 @@ describe("$compile", () => {
         element = $compile(
           `<video><${tag} src="{{testUrl}}"></${tag}></video>`,
         )($rootScope);
+
         $rootScope.testUrl = $sce.trustAsResourceUrl("javascript:foo()");
+        await wait();
         expect(element.querySelector(tag).getAttribute("src")).toEqual(
           "javascript:foo()",
         );
@@ -14707,29 +14721,33 @@ describe("$compile", () => {
   });
 
   describe("img[src] sanitization", () => {
-    it("should accept trusted values", () => {
+    it("should accept trusted values", async () => {
       element = $compile('<img src="{{testUrl}}"></img>')($rootScope);
       // Some browsers complain if you try to write `javascript:` into an `img[src]`
       // So for the test use something different
       $rootScope.testUrl = $sce.trustAsMediaUrl("someUntrustedThing:foo();");
+      await wait();
       expect(element.getAttribute("src")).toEqual("someUntrustedThing:foo();");
     });
 
-    it("should sanitize concatenated values even if they are trusted", () => {
+    it("should sanitize concatenated values even if they are trusted", async () => {
       element = $compile('<img src="{{testUrl}}ponies"></img>')($rootScope);
       $rootScope.testUrl = $sce.trustAsUrl("untrusted:foo();");
+      await wait();
       expect(element.getAttribute("src")).toEqual(
         "unsafe:untrusted:foo();ponies",
       );
 
       element = $compile('<img src="http://{{testUrl2}}"></img>')($rootScope);
       $rootScope.testUrl2 = $sce.trustAsUrl("xyz;");
+      await wait();
       expect(element.getAttribute("src")).toEqual("http://xyz;");
 
       element = $compile('<img src="{{testUrl3}}{{testUrl3}}"></img>')(
         $rootScope,
       );
       $rootScope.testUrl3 = $sce.trustAsUrl("untrusted:foo();");
+      await wait();
       expect(element.getAttribute("src")).toEqual(
         "unsafe:untrusted:foo();untrusted:foo();",
       );
@@ -14755,7 +14773,7 @@ describe("$compile", () => {
       expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, true);
     });
 
-    it("should use $$sanitizeUri on concatenated trusted values", () => {
+    it("should use $$sanitizeUri on concatenated trusted values", async () => {
       const $$sanitizeUri = jasmine
         .createSpy("$$sanitizeUri")
         .and.returnValue("someSanitizedUrl");
@@ -14766,10 +14784,12 @@ describe("$compile", () => {
 
       element = $compile('<img src="{{testUrl}}ponies"></img>')($rootScope);
       $rootScope.testUrl = $sce.trustAsUrl("javascript:foo();");
+      await wait();
       expect(element.getAttribute("src")).toEqual("someSanitizedUrl");
 
       element = $compile('<img src="http://{{testUrl}}"></img>')($rootScope);
       $rootScope.testUrl = $sce.trustAsUrl("xyz");
+      await wait();
       expect(element.getAttribute("src")).toEqual("someSanitizedUrl");
     });
 
