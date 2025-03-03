@@ -1,8 +1,14 @@
-import { getBlockNodes } from "../../shared/jqlite/jqlite";
+import { getBlockNodes } from "../../shared/jqlite/jqlite.js";
+import { hasAnimate } from "../../shared/utils.js";
+import { domInsert } from "../../animations/animate.js";
 
-export const ngSwitchDirective = [
-  "$animate",
-  ($animate) => ({
+ngSwitchDirective.$inject = ["$animate"];
+
+/**
+ * @returns {import('../../types.js').Directive}
+ */
+export function ngSwitchDirective($animate) {
+  return {
     require: "ngSwitch",
 
     // asks for $scope to fool the BC controller module
@@ -39,9 +45,14 @@ export const ngSwitchDirective = [
         for (i = 0, ii = selectedScopes.length; i < ii; ++i) {
           const selected = getBlockNodes(selectedElements[i].clone);
           selectedScopes[i].$destroy();
-          const runner = (previousLeaveAnimations[i] =
-            $animate.leave(selected));
-          runner.done(spliceFactory(previousLeaveAnimations, i));
+
+          if (hasAnimate(selected[0])) {
+            const runner = (previousLeaveAnimations[i] =
+              $animate.leave(selected));
+            runner.done(spliceFactory(previousLeaveAnimations, i));
+          } else {
+            selected.remove();
+          }
         }
 
         selectedElements.length = 0;
@@ -49,8 +60,8 @@ export const ngSwitchDirective = [
 
         if (
           (selectedTranscludes =
-            ngSwitchController.cases[`!${value}`] ||
-            ngSwitchController.cases["?"])
+            ngSwitchController['cases'][`!${value}`] ||
+            ngSwitchController['cases']["?"])
         ) {
           Object.values(selectedTranscludes).forEach((selectedTransclude) => {
             selectedTransclude.transclude((caseElement, selectedScope) => {
@@ -60,17 +71,21 @@ export const ngSwitchDirective = [
               caseElement[caseElement.length++] = document.createComment("");
               const block = { clone: caseElement };
               selectedElements.push(block);
-              $animate.enter(caseElement, anchor.parent(), anchor);
+              if (hasAnimate(caseElement[0])) {
+                $animate.enter(caseElement, anchor.parent(), anchor);
+              } else {
+                domInsert(caseElement, anchor.parent(), anchor);
+              }
             });
           });
         }
       });
     },
-  }),
-];
+  };
+}
 
 /**
- * @returns {import('../../types').Directive}
+ * @returns {import('../../types.js').Directive}
  */
 export function ngSwitchWhenDirective() {
   return {
@@ -100,7 +115,7 @@ export function ngSwitchWhenDirective() {
 }
 
 /**
- * @returns {import('../../types').Directive}
+ * @returns {import('../../types.js').Directive}
  */
 export function ngSwitchDefaultDirective() {
   return {

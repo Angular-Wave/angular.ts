@@ -1,17 +1,15 @@
 /**
- * @returns {import('../../types').Directive}
+ * @returns {import('../../types.js').Directive}
  */
-export function ngSwitchWhenDirective(): import("../../types").Directive;
+export function ngSwitchDirective($animate: any): import("../../types.js").Directive;
+export namespace ngSwitchDirective {
+    let $inject: string[];
+}
 /**
- * @returns {import('../../types').Directive}
+ * @returns {import('../../types.js').Directive}
  */
-export function ngSwitchDefaultDirective(): import("../../types").Directive;
-export const ngSwitchDirective: (string | (($animate: any) => {
-    require: string;
-    controller: (string | {
-        new (): {
-            cases: {};
-        };
-    })[];
-    link(scope: any, _element: any, attr: any, ngSwitchController: any): void;
-}))[];
+export function ngSwitchWhenDirective(): import("../../types.js").Directive;
+/**
+ * @returns {import('../../types.js').Directive}
+ */
+export function ngSwitchDefaultDirective(): import("../../types.js").Directive;
