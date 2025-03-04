@@ -140,6 +140,12 @@ export class Angular {
      * @returns {NgModule} A newly registered module.
      */
     module(name: string, requires?: Array<string>, configFn?: Array<any> | Function): NgModule;
+    /**
+     * @param {Node} element
+     * @param {string} [name]
+     * @returns {Scope}
+     */
+    getController(element: Node, name?: string): Scope;
 }
 /**
  * Configuration option for AngularTS bootstrap process.
@@ -150,4 +156,5 @@ export type AngularBootstrapConfig = {
      */
     strictDi?: boolean;
 };
-import { NgModule } from "./core/di/ng-module";
+import { NgModule } from "./core/di/ng-module.js";
+import { Scope } from "./core/scope/scope.js";

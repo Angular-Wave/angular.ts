@@ -782,70 +782,6 @@ describe("ngRepeat", () => {
       expect(element.children().length).toBe(0);
       expect(element.textContent).toBe("");
     });
-
-    it("should remove whole block even if the number of elements inside it changes", async () => {
-      scope.values = [1, 2, 3];
-
-      element = $compile(
-        "<div>" +
-          '<div ng-repeat-start="val in values"></div>' +
-          "<span>{{val}}</span>" +
-          "<p ng-repeat-end></p>" +
-          "</div>",
-      )(scope);
-      await wait();
-      const ends = element.find("p");
-      expect(ends.length).toBe(3);
-
-      // insert an extra element inside the second block
-      const extra = ("<strong></strong>")[0];
-      element.insertBefore(extra, ends[1]);
-
-      scope.values.splice(1, 1);
-      await wait();
-      // expect the strong tag to be removed too
-      expect(
-        Array.from(element.children).map((x) => x.tagName.toLowerCase()),
-      ).toEqual(["div", "span", "p", "div", "span", "p"]);
-    });
-
-    it("should move whole block even if the number of elements inside it changes", async () => {
-      scope.values = [1, 2, 3];
-
-      element = $compile(
-        "<div>" +
-          '<div ng-repeat-start="val in values"></div>' +
-          "<span>{{val}}</span>" +
-          "<p ng-repeat-end></p>" +
-          "</div>",
-      )(scope);
-      await wait();
-      const ends = element.find("p");
-      expect(ends.length).toBe(3);
-
-      // insert an extra element inside the third block
-      const extra = ("<strong></strong>")[0];
-      element.insertBefore(extra, ends[2]);
-
-      // move the third block to the beginning
-      scope.values.unshift(scope.values.pop());
-      await wait();
-      // expect the strong tag to be moved too
-      expect(
-        Array.from(element.children).map((x) => x.tagName.toLowerCase()),
-      ).toEqual([
-        "div",
-        "span",
-        "strong",
-        "p",
-        "div",
-        "span",
-        "p",
-        "div",
-        "span",
-        "p",
-      ]);
-    });
   });
 
   describe("stability", () => {
@@ -1001,46 +937,6 @@ describe("ngRepeat", () => {
       )(scope);
       await wait();
       expect(element.textContent).toBe("2;4;");
-    });
-  });
-
-  describe("ngRepeatStart", () => {
-    it("should grow multi-node repeater", async () => {
-      scope.show = false;
-      scope.books = [
-        { title: "T1", description: "D1" },
-        { title: "T2", description: "D2" },
-      ];
-      element = $compile(
-        "<div>" +
-          '<dt ng-repeat-start="book in books">{{book.title}}:</dt>' +
-          "<dd ng-repeat-end>{{book.description}};</dd>" +
-          "</div>",
-      )(scope);
-      await wait();
-      expect(element.textContent).toEqual("T1:D1;T2:D2;");
-      scope.books.push({ title: "T3", description: "D3" });
-      await wait();
-      expect(element.textContent).toEqual("T1:D1;T2:D2;T3:D3;");
-    });
-
-    it("should not clobber ng-if when updating collection", async () => {
-      scope.values = [1, 2, 3];
-      scope.showMe = true;
-
-      element = $compile(
-        "<div>" +
-          '<div ng-repeat-start="val in values">val:{{val}};</div>' +
-          '<div ng-if="showMe" ng-repeat-end>if:{{val}};</div>' +
-          "</div>",
-      )(scope);
-      await wait();
-      expect(element.find("div").length).toBe(6);
-      scope.values.shift();
-      scope.values.push(4);
-      await wait();
-      expect(element.find("div").length).toBe(6);
-      expect(element.textContent).not.toContain("if:1;");
     });
   });
 

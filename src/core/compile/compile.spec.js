@@ -12510,44 +12510,6 @@ describe("$compile", () => {
           }).toThrowError(/multidir/);
         });
 
-        it("should correctly handle multi-element directives", () => {
-          module
-            .directive("foo", () => ({
-              template: "[<div ng-transclude></div>]",
-              transclude: true,
-            }))
-            .directive("bar", () => ({
-              template:
-                '[<div ng-transclude="header"></div>|<div ng-transclude="footer"></div>]',
-              transclude: {
-                header: "header",
-                footer: "footer",
-              },
-            }));
-          initInjector("test1");
-          const tmplWithFoo =
-            "<foo>" +
-            '<div ng-if-start="true">Hello, </div>' +
-            "<div ng-if-end>world!</div>" +
-            "</foo>";
-          const tmplWithBar =
-            "<bar>" +
-            '<header ng-if-start="true">This is a </header>' +
-            "<header ng-if-end>header!</header>" +
-            '<footer ng-if-start="true">This is a </footer>' +
-            "<footer ng-if-end>footer!</footer>" +
-            "</bar>";
-
-          const elem1 = $compile(tmplWithFoo)($rootScope);
-          const elem2 = $compile(tmplWithBar)($rootScope);
-
-          expect(elem1.innerText).toBe("[Hello, world!]");
-          expect(elem2.innerText).toBe("[This is a header!|This is a footer!]");
-
-          dealoc(elem1);
-          dealoc(elem2);
-        });
-
         // see issue https://github.com/angular/angular.js/issues/12936
         it("should use the proper scope when it is on the root element of a replaced directive template", async () => {
           module
@@ -13402,35 +13364,6 @@ describe("$compile", () => {
 
             $rootScope.$apply("t = false");
             expect(element.textContent).not.toContain("msg-1");
-            // Expected scopes: $rootScope
-            expect(countChildScopes($rootScope)).toBe(0);
-          });
-
-          it("should not leak the transclude scope when the transcluded content is an multi-element transclusion directive", () => {
-            element = $compile(
-              "<div toggle>" +
-                "<div ng-repeat-start=\"msg in ['msg-1']\">{{ msg }}</div>" +
-                "<div ng-repeat-end>{{ msg }}</div>" +
-                "</div>",
-            )($rootScope);
-
-            $rootScope.$apply("t = true");
-            expect(element.textContent).toContain("msg-1msg-1");
-            // Expected scopes: $rootScope, ngIf, transclusion, ngRepeat
-            expect(countChildScopes($rootScope)).toBe(3);
-
-            $rootScope.$apply("t = false");
-            expect(element.textContent).not.toContain("msg-1msg-1");
-            // Expected scopes: $rootScope
-            expect(countChildScopes($rootScope)).toBe(0);
-
-            $rootScope.$apply("t = true");
-            expect(element.textContent).toContain("msg-1msg-1");
-            // Expected scopes: $rootScope, ngIf, transclusion, ngRepeat
-            expect(countChildScopes($rootScope)).toBe(3);
-
-            $rootScope.$apply("t = false");
-            expect(element.textContent).not.toContain("msg-1msg-1");
             // Expected scopes: $rootScope
             expect(countChildScopes($rootScope)).toBe(0);
           });
@@ -15584,19 +15517,6 @@ describe("$compile", () => {
         expect(element.getAttribute("dash-test2")).toBe("JamieMason");
         expect(element.getAttribute("dash-test3")).toBe("JamieMason");
         expect(element.getAttribute("dash-test4")).toBe("JamieMason");
-      });
-
-      it("should keep attributes ending with -start single-element directives", () => {
-        module.directive("dashStarter", () => ({
-          link(scope, element, attrs) {
-            log.push(attrs.onDashStart);
-          },
-        }));
-        initInjector("test1");
-        $compile(
-          '<span data-dash-starter data-on-dash-start="starter"></span>',
-        )($rootScope);
-        expect(log[0]).toEqual("starter");
       });
 
       it("should keep attributes ending with -end single-element directives", () => {

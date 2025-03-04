@@ -59,8 +59,8 @@ export function ngSwitchDirective($animate) {
 
         if (
           (selectedTranscludes =
-            ngSwitchController['cases'][`!${value}`] ||
-            ngSwitchController['cases']["?"])
+            ngSwitchController["cases"][`!${value}`] ||
+            ngSwitchController["cases"]["?"])
         ) {
           Object.values(selectedTranscludes).forEach((selectedTransclude) => {
             selectedTransclude.transclude((caseElement, selectedScope) => {
