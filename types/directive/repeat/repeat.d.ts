@@ -1,6 +1,5 @@
 export const ngRepeatDirective: (string | (($parse: any, $animate: any) => {
     restrict: string;
-    multiElement: boolean;
     transclude: string;
     priority: number;
     terminal: boolean;

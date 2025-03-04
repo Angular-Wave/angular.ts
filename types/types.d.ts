@@ -149,13 +149,9 @@ export type Directive = {
         [boundProperty: string]: string;
     } | undefined;
     /**
-     * Link function.
-     */
-    link?: DirectiveLinkFn | DirectivePrePost | undefined;
-    /**
      * Multi-element directive flag.
      */
-    multiElement?: boolean | undefined;
+    link?: DirectiveLinkFn | DirectivePrePost | undefined;
     /**
      * Skip all directives on element
      */

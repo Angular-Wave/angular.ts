@@ -20,7 +20,7 @@ export class Attributes {
     $exceptionHandler: import("../exception-handler").ErrorHandler;
     $sce: any;
     $attr: {};
-    $$element: import("../../shared/jqlite/jqlite").JQLite;
+    $$element: import("../../shared/jqlite/jqlite.js").JQLite;
     /**
      * Converts an attribute name (e.g. dash/colon/underscore-delimited string, optionally prefixed with `x-` or
      * `data-`) to its normalized, camelCase form.
@@ -87,4 +87,4 @@ export class Attributes {
 export type AttributeLike = {
     $attr: any;
 };
-import { directiveNormalize } from "../../shared/utils";
+import { directiveNormalize } from "../../shared/utils.js";

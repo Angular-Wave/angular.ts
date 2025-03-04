@@ -124,7 +124,7 @@ export class NgModelController {
     /** @type {import('../../core/scope/scope.js').Scope} */
     $$rootScope: import("../../core/scope/scope.js").Scope;
     $$attr: import("../../core/compile/attributes").Attributes;
-    $$element: import("../../shared/jqlite/jqlite").JQLite;
+    $$element: import("../../shared/jqlite/jqlite.js").JQLite;
     $$animate: any;
     $$timeout: any;
     $$parse: import("../../core/parse/parse").ParseService;
