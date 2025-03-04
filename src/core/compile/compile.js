@@ -983,12 +983,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               j < jj;
               j++
             ) {
-              /** @type {string|boolean} */
-              let attrStartName = false;
-
-              /** @type {string|boolean} */
-              let attrEndName = false;
-
               let isNgAttr = false;
               let isNgProp = false;
               let isNgEvent = false;
@@ -1055,8 +1049,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   "A",
                   maxPriority,
                   ignoreDirective,
-                  attrStartName,
-                  attrEndName,
                 );
               }
             }
@@ -1080,62 +1072,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
         directives.sort(byPriority);
         return directives;
-      }
-
-      /**
-       * Given a node with a directive-start it collects all of the siblings until it finds
-       * directive-end.
-       * @param {Element} node
-       * @param {string} attrStart
-       * @param {string} attrEnd
-       * @returns {*}
-       */
-      function groupScan(node, attrStart, attrEnd) {
-        const nodes = [];
-        let depth = 0;
-        if (attrStart && node.hasAttribute && node.hasAttribute(attrStart)) {
-          do {
-            if (!node) {
-              throw $compileMinErr(
-                "uterdir",
-                "Unterminated attribute, found '{0}' but no matching '{1}' found.",
-                attrStart,
-                attrEnd,
-              );
-            }
-            if (node.nodeType === Node.ELEMENT_NODE) {
-              if (node.hasAttribute(attrStart)) depth++;
-              if (node.hasAttribute(attrEnd)) depth--;
-            }
-            nodes.push(node);
-            node = /** @type {Element} */ (node.nextSibling);
-          } while (depth > 0);
-        } else {
-          nodes.push(node);
-        }
-
-        return JQLite(nodes);
-      }
-
-      /**
-       * Wrapper for linking function which converts normal linking function into a grouped
-       * linking function.
-       * @param linkFn
-       * @param attrStart
-       * @param attrEnd
-       * @returns {Function}
-       */
-      function groupElementsLinkFnWrapper(linkFn, attrStart, attrEnd) {
-        return function groupedElementsLink(
-          scope,
-          element,
-          attrs,
-          controllers,
-          transcludeFn,
-        ) {
-          element = groupScan(element[0], attrStart, attrEnd);
-          return linkFn(scope, element, attrs, controllers, transcludeFn);
-        };
       }
 
       /**
@@ -1529,17 +1465,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         // executes all directives on the current element
         for (let i = 0, ii = directives.length; i < ii; i++) {
           directive = directives[i];
-          const attrStart = directive.$$start;
-          const attrEnd = directive.$$end;
-
-          // collect multiblock sections
-          if (attrStart) {
-            $compileNode = groupScan(
-              /** @type {Element} */ (compileNode),
-              attrStart,
-              attrEnd,
-            );
-          }
           $template = undefined;
 
           if (terminalPriority > directive.priority) {
@@ -1887,13 +1812,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               );
               const context = directive.$$originalDirective || directive;
               if (isFunction(linkFn)) {
-                addLinkFns(null, bind(context, linkFn), attrStart, attrEnd);
+                addLinkFns(null, bind(context, linkFn));
               } else if (linkFn) {
                 addLinkFns(
                   bind(context, linkFn.pre),
                   bind(context, linkFn.post),
-                  attrStart,
-                  attrEnd,
                 );
               }
             } catch (e) {
@@ -1921,10 +1844,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
         /// /////////////////
 
-        function addLinkFns(pre, post, attrStart, attrEnd) {
+        function addLinkFns(pre, post) {
           if (pre) {
-            if (attrStart)
-              pre = groupElementsLinkFnWrapper(pre, attrStart, attrEnd);
             pre.require = directive.require;
             pre.directiveName = directiveName;
             if (
@@ -1936,8 +1857,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             preLinkFns.push(pre);
           }
           if (post) {
-            if (attrStart)
-              post = groupElementsLinkFnWrapper(post, attrStart, attrEnd);
             post.require = directive.require;
             post.directiveName = directiveName;
             if (
@@ -2106,8 +2025,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         location,
         maxPriority,
         ignoreDirective,
-        startAttrName,
-        endAttrName,
       ) {
         if (name === ignoreDirective) return false;
         let match = false;
@@ -2125,12 +2042,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               (isUndefined(maxPriority) || maxPriority > directive.priority) &&
               directive.restrict.indexOf(location) !== -1
             ) {
-              if (startAttrName) {
-                directive = inherit(directive, {
-                  $$start: startAttrName,
-                  $$end: endAttrName,
-                });
-              }
               if (!directive.$$bindings) {
                 const bindings = (directive.$$bindings = parseDirectiveBindings(
                   directive,
