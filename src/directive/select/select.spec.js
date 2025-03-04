@@ -1,6 +1,6 @@
 import { Angular } from "../../loader";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
-import { hashKey, equals, isNumberNaN } from "../../shared/utils";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { hashKey, equals, isNumberNaN } from "../../shared/utils.js";
 import { browserTrigger } from "../../shared/test-utils";
 
 describe("select", () => {

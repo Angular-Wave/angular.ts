@@ -1,4 +1,4 @@
-import { hasAnimate, isObject, isString } from "../../shared/utils";
+import { hasAnimate, isObject, isString } from "../../shared/utils.js";
 
 function classDirective(name, selector) {
   name = `ngClass${name}`;

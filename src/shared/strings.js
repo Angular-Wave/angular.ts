@@ -6,7 +6,7 @@
  * @packageDocumentation
  */
 import { isInjectable, isNull, isPromise } from "./predicates";
-import { isUndefined, isFunction, isString, isObject } from "./utils";
+import { isUndefined, isFunction, isString, isObject } from "./utils.js";
 import { pushR, tail } from "./common";
 import { pattern, val } from "./hof";
 /**

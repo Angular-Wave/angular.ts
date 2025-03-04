@@ -1,4 +1,9 @@
-import { isFunction, isDefined, isObject, isString } from "../../shared/utils";
+import {
+  isFunction,
+  isDefined,
+  isObject,
+  isString,
+} from "../../shared/utils.js";
 import { is, pattern } from "../../shared/hof";
 import { UrlRules } from "./url-rules";
 import { TargetState } from "../state/target-state";

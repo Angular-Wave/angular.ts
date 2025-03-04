@@ -11,8 +11,8 @@ import {
   lowercase,
   getNodeName,
   shallowCopy,
-} from "../utils";
-import { CACHE, EXPANDO } from "../../core/cache/cache";
+} from "../utils.js";
+import { CACHE, EXPANDO } from "../../core/cache/cache.js";
 
 /** @type {number} */
 let jqId = 1;

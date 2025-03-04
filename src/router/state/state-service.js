@@ -5,7 +5,7 @@ import {
   silenceUncaughtInPromise,
   silentRejection,
 } from "../../shared/common";
-import { isDefined, isObject, isString, minErr } from "../../shared/utils";
+import { isDefined, isObject, isString, minErr } from "../../shared/utils.js";
 import { Queue } from "../common/queue";
 import { services } from "../common/coreservices";
 import { makeTargetState } from "../path/path-utils";

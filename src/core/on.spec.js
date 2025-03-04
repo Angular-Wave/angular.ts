@@ -1,6 +1,6 @@
 import { Angular } from "../loader";
 import { createInjector } from "./di/injector";
-import { valueFn } from "../shared/utils";
+import { valueFn } from "../shared/utils.js";
 
 describe("ngOn* event binding", () => {
   let $rootScope, module, injector, $compile;

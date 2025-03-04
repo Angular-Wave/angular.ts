@@ -1,4 +1,4 @@
-import { isDefined } from "../shared/utils";
+import { isDefined } from "../shared/utils.js";
 import {
   TRANSITION_DURATION_PROP,
   TRANSITION_DELAY_PROP,

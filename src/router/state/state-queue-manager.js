@@ -1,4 +1,4 @@
-import { isString } from "../../shared/utils";
+import { isString } from "../../shared/utils.js";
 import { StateObject } from "./state-object";
 
 export class StateQueueManager {

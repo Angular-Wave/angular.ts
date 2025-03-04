@@ -1,4 +1,8 @@
-import { JQLite, removeElement, startingTag } from "../../shared/jqlite/jqlite";
+import {
+  JQLite,
+  removeElement,
+  startingTag,
+} from "../../shared/jqlite/jqlite.js";
 import {
   equals,
   hashKey,
@@ -6,7 +10,7 @@ import {
   isArrayLike,
   isDefined,
   minErr,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 
 const ngOptionsMinErr = minErr("ngOptions");
 

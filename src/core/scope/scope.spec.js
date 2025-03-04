@@ -1,5 +1,5 @@
 import { $$asyncQueue, Scope } from "./scope";
-import { extend, sliceArgs } from "../../shared/utils";
+import { extend, sliceArgs } from "../../shared/utils.js";
 import { Angular } from "../../loader";
 import { createInjector } from "../di/injector";
 

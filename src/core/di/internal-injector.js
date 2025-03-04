@@ -1,4 +1,4 @@
-import { assertArgFn, minErr } from "../../shared/utils";
+import { assertArgFn, minErr } from "../../shared/utils.js";
 import { INJECTOR_LITERAL } from "./ng-module";
 
 const ARROW_ARG = /^([^(]+?)=>/;

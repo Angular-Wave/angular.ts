@@ -1,5 +1,5 @@
 import { ParamTypes } from "../params/param-types";
-import { isDefined, isString } from "../../shared/utils";
+import { isDefined, isString } from "../../shared/utils.js";
 /**
  * An API to customize the URL behavior and retrieve URL configuration
  *

@@ -1,8 +1,8 @@
 import { defaultModelOptions } from "./model-options";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
-import { valueFn } from "../../shared/utils";
+import { valueFn } from "../../shared/utils.js";
 
 function changeGivenInputTo(inputElm, val) {
   inputElm[0].value = val;

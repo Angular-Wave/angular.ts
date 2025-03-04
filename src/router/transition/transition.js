@@ -12,7 +12,7 @@ import {
   flattenR,
   uniqR,
 } from "../../shared/common";
-import { isUndefined, isObject, assert } from "../../shared/utils";
+import { isUndefined, isObject, assert } from "../../shared/utils.js";
 import { propEq, val, is } from "../../shared/hof";
 import { TransitionHookPhase } from "./interface"; // has or is using
 import { TransitionHook } from "./transition-hook";

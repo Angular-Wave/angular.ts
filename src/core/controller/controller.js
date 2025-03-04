@@ -5,7 +5,7 @@ import {
   isObject,
   isString,
   isFunction,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 
 const $controllerMinErr = minErr("$controller");
 

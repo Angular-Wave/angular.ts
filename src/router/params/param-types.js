@@ -1,6 +1,6 @@
 import { equals, inherit, map, pick } from "../../shared/common";
 import { isNullOrUndefined } from "../../shared/predicates";
-import { isDefined } from "../../shared/utils";
+import { isDefined } from "../../shared/utils.js";
 import { is } from "../../shared/hof";
 import { services } from "../common/coreservices";
 import { ParamType } from "./param-type";

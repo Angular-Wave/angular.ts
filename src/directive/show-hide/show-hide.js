@@ -1,4 +1,4 @@
-import { hasAnimate } from "../../shared/utils";
+import { hasAnimate } from "../../shared/utils.js";
 
 const NG_HIDE_CLASS = "ng-hide";
 const NG_HIDE_IN_PROGRESS_CLASS = "ng-hide-animate";
@@ -10,7 +10,6 @@ ngShowDirective.$inject = ["$animate"];
 export function ngShowDirective($animate) {
   return {
     restrict: "A",
-    multiElement: true,
     link(scope, element, attr) {
       scope.$watch(attr.ngShow, (value) => {
         // we're adding a temporary, animation-specific class for ng-hide since this way
@@ -46,7 +45,6 @@ ngHideDirective.$inject = ["$animate"];
 export function ngHideDirective($animate) {
   return {
     restrict: "A",
-    multiElement: true,
     link(scope, element, attr) {
       scope.$watch(attr.ngHide, (value) => {
         // The comment inside of the ngShowDirective explains why we add and

@@ -1,4 +1,4 @@
-import { getBooleanAttrName } from "../../shared/jqlite/jqlite";
+import { getBooleanAttrName } from "../../shared/jqlite/jqlite.js";
 import {
   isString,
   snakeCase,
@@ -7,8 +7,8 @@ import {
   minErr,
   trim,
   directiveNormalize,
-} from "../../shared/utils";
-import { ALIASED_ATTR } from "../../shared/constants";
+} from "../../shared/utils.js";
+import { ALIASED_ATTR } from "../../shared/constants.js";
 
 const $compileMinErr = minErr("$compile");
 const SIMPLE_ATTR_NAME = /^\w/;

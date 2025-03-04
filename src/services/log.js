@@ -1,4 +1,4 @@
-import { isError } from "../shared/utils";
+import { isError } from "../shared/utils.js";
 
 ///////////////////////////////////////////////////////////////////////////
 // LogService

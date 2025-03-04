@@ -1,4 +1,4 @@
-import { isString, isFunction } from "../../shared/utils";
+import { isString, isFunction } from "../../shared/utils.js";
 import { services } from "../common/coreservices";
 import { TargetState } from "../state/target-state";
 

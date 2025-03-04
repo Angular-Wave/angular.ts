@@ -1,6 +1,6 @@
-import { dealoc } from "../../shared/jqlite/jqlite";
+import { dealoc } from "../../shared/jqlite/jqlite.js";
 import { Angular } from "../../loader";
-import { isFunction } from "../../shared/utils";
+import { isFunction } from "../../shared/utils.js";
 import { wait } from "../../shared/test-utils";
 
 describe("$state", () => {

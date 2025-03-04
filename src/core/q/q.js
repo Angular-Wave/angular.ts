@@ -7,7 +7,7 @@ import {
   isError,
   toDebugString,
   isPromiseLike,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 
 /**
  * @typedef {Object} QService

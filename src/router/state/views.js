@@ -1,5 +1,5 @@
 import { pick, tail } from "../../shared/common";
-import { isDefined, isString } from "../../shared/utils";
+import { isDefined, isString } from "../../shared/utils.js";
 import { isInjectable } from "../../shared/predicates";
 import { services } from "../common/coreservices";
 import { trace } from "../common/trace";

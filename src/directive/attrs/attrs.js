@@ -1,6 +1,6 @@
-import { BOOLEAN_ATTR } from "../../shared/jqlite/jqlite";
-import { directiveNormalize } from "../../shared/utils";
-import { ALIASED_ATTR } from "../../shared/constants";
+import { BOOLEAN_ATTR } from "../../shared/jqlite/jqlite.js";
+import { directiveNormalize } from "../../shared/utils.js";
+import { ALIASED_ATTR } from "../../shared/constants.js";
 
 export const REGEX_STRING_REGEXP = /^\/(.+)\/([a-z]*)$/;
 

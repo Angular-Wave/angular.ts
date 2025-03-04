@@ -1,5 +1,5 @@
 import { filter, map } from "../../shared/common";
-import { isDefined } from "../../shared/utils";
+import { isDefined } from "../../shared/utils.js";
 /**
  * An internal class which implements [[ParamTypeDefinition]].
  *

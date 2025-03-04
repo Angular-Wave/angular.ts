@@ -1,5 +1,5 @@
-import { directiveNormalize } from "../../shared/utils";
-import { ScopePhase } from "../../core/scope/scope";
+import { directiveNormalize } from "../../shared/utils.js";
+import { ScopePhase } from "../../core/scope/scope.js";
 
 /*
  * A collection of directives that allows creation of custom event handlers that are defined as

@@ -1,6 +1,6 @@
 import { Angular } from "../../loader";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
-import { valueFn } from "../../shared/utils";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { valueFn } from "../../shared/utils.js";
 
 describe("ngRepeat", () => {
   let element;
@@ -1066,76 +1066,6 @@ describe("ngRepeat", () => {
         done();
       }, 300);
     });
-
-    it("should remove whole block even if the number of elements inside it changes", () => {
-      scope.values = [1, 2, 3];
-
-      element = $compile(
-        "<div>" +
-          '<div ng-repeat-start="val in values"></div>' +
-          "<span>{{val}}</span>" +
-          "<p ng-repeat-end></p>" +
-          "</div>",
-      )(scope);
-
-      scope.$digest();
-
-      const ends = element.find("p");
-      expect(ends.length).toBe(3);
-
-      // insert an extra element inside the second block
-      const extra = JQLite("<strong></strong>")[0];
-      element[0].insertBefore(extra, ends[1]);
-
-      scope.values.splice(1, 1);
-      scope.$digest();
-
-      // expect the strong tag to be removed too
-      expect(
-        Array.from(element[0].children).map((x) => x.tagName.toLowerCase()),
-      ).toEqual(["div", "span", "p", "div", "span", "p"]);
-    });
-
-    it("should move whole block even if the number of elements inside it changes", () => {
-      scope.values = [1, 2, 3];
-
-      element = $compile(
-        "<div>" +
-          '<div ng-repeat-start="val in values"></div>' +
-          "<span>{{val}}</span>" +
-          "<p ng-repeat-end></p>" +
-          "</div>",
-      )(scope);
-
-      scope.$digest();
-
-      const ends = element.find("p");
-      expect(ends.length).toBe(3);
-
-      // insert an extra element inside the third block
-      const extra = JQLite("<strong></strong>")[0];
-      element[0].insertBefore(extra, ends[2]);
-
-      // move the third block to the beginning
-      scope.values.unshift(scope.values.pop());
-      scope.$digest();
-
-      // expect the strong tag to be moved too
-      expect(
-        Array.from(element[0].children).map((x) => x.tagName.toLowerCase()),
-      ).toEqual([
-        "div",
-        "span",
-        "strong",
-        "p",
-        "div",
-        "span",
-        "p",
-        "div",
-        "span",
-        "p",
-      ]);
-    });
   });
 
   describe("stability", () => {
@@ -1299,49 +1229,6 @@ describe("ngRepeat", () => {
       )(scope);
       scope.$digest();
       expect(element.text()).toBe("2;4;");
-    });
-  });
-
-  describe("ngRepeatStart", () => {
-    it("should grow multi-node repeater", () => {
-      scope.show = false;
-      scope.books = [
-        { title: "T1", description: "D1" },
-        { title: "T2", description: "D2" },
-      ];
-      element = $compile(
-        "<div>" +
-          '<dt ng-repeat-start="book in books">{{book.title}}:</dt>' +
-          "<dd ng-repeat-end>{{book.description}};</dd>" +
-          "</div>",
-      )(scope);
-
-      scope.$digest();
-      expect(element.text()).toEqual("T1:D1;T2:D2;");
-      scope.books.push({ title: "T3", description: "D3" });
-      scope.$digest();
-      expect(element.text()).toEqual("T1:D1;T2:D2;T3:D3;");
-    });
-
-    it("should not clobber ng-if when updating collection", () => {
-      scope.values = [1, 2, 3];
-      scope.showMe = true;
-
-      element = $compile(
-        "<div>" +
-          '<div ng-repeat-start="val in values">val:{{val}};</div>' +
-          '<div ng-if="showMe" ng-repeat-end>if:{{val}};</div>' +
-          "</div>",
-      )(scope);
-
-      scope.$digest();
-      expect(element.find("div").length).toBe(6);
-      scope.values.shift();
-      scope.values.push(4);
-
-      scope.$digest();
-      expect(element.find("div").length).toBe(6);
-      expect(element.text()).not.toContain("if:1;");
     });
   });
 

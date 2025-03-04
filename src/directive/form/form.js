@@ -7,13 +7,13 @@ import {
   snakeCase,
   extend,
   isUndefined,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 import {
   PRISTINE_CLASS,
   DIRTY_CLASS,
   VALID_CLASS,
   INVALID_CLASS,
-} from "../../shared/constants";
+} from "../../shared/constants.js";
 
 export const nullFormCtrl = {
   $addControl: () => {},

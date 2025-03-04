@@ -1,5 +1,5 @@
 import { tail, unnestR, uniqR, removeFrom } from "../../shared/common";
-import { isString, isObject } from "../../shared/utils";
+import { isString, isObject } from "../../shared/utils.js";
 
 import { parse } from "../../shared/hof";
 /** @ignore */

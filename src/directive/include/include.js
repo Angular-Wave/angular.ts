@@ -1,6 +1,6 @@
-import { isDefined } from "../../shared/utils";
-import { buildFragment } from "../../shared/jqlite/jqlite";
-import { hasAnimate } from "../../shared/utils";
+import { isDefined } from "../../shared/utils.js";
+import { buildFragment } from "../../shared/jqlite/jqlite.js";
+import { hasAnimate } from "../../shared/utils.js";
 import { domInsert } from "../../animations/animate";
 
 export const ngIncludeDirective = [

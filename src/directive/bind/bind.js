@@ -1,4 +1,4 @@
-import { isUndefined, stringify } from "../../shared/utils";
+import { isUndefined, stringify } from "../../shared/utils.js";
 
 /**
  * @returns {import('../../types').Directive}

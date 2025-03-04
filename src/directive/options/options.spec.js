@@ -1,5 +1,5 @@
 import { createInjector } from "../../core/di/injector";
-import { JQLite, dealoc } from "../../shared/jqlite/jqlite";
+import { JQLite, dealoc } from "../../shared/jqlite/jqlite.js";
 import { Angular } from "../../loader";
 import {
   isBoolean,
@@ -7,7 +7,7 @@ import {
   equals,
   isString,
   isFunction,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 import { browserTrigger } from "../../shared/test-utils";
 
 describe("ngOptions", () => {

@@ -1,5 +1,5 @@
 import { Angular } from "../../loader";
-import { dealoc } from "../../shared/jqlite/jqlite";
+import { dealoc } from "../../shared/jqlite/jqlite.js";
 
 describe("ngSwitch", () => {
   let $scope;
@@ -79,31 +79,6 @@ describe("ngSwitch", () => {
     expect(element.text()).toEqual("true:misko");
   });
 
-  it("should show all elements between start and end markers that match the current value", () => {
-    element = $compile(
-      '<ul ng-switch="select">' +
-        '<li ng-switch-when-start="1">A</li>' +
-        "<li>B</li>" +
-        "<li ng-switch-when-end>C</li>" +
-        '<li ng-switch-when-start="2">D</li>' +
-        "<li>E</li>" +
-        "<li ng-switch-when-end>F</li>" +
-        "</ul>",
-    )($scope);
-
-    $scope.$apply('select = "1"');
-    expect(element.find("li").length).toBe(3);
-    expect(element.find("li").eq(0).text()).toBe("A");
-    expect(element.find("li").eq(1).text()).toBe("B");
-    expect(element.find("li").eq(2).text()).toBe("C");
-
-    $scope.$apply('select = "2"');
-    expect(element.find("li").length).toBe(3);
-    expect(element.find("li").eq(0).text()).toBe("D");
-    expect(element.find("li").eq(1).text()).toBe("E");
-    expect(element.find("li").eq(2).text()).toBe("F");
-  });
-
   it("should switch on switch-when-default", () => {
     element = $compile(
       '<ng-switch on="select">' +
@@ -116,31 +91,6 @@ describe("ngSwitch", () => {
     $scope.select = 1;
     $scope.$apply();
     expect(element.text()).toEqual("one");
-  });
-
-  it("should show all default elements between start and end markers when no match", () => {
-    element = $compile(
-      '<ul ng-switch="select">' +
-        '<li ng-switch-when-start="1">A</li>' +
-        "<li>B</li>" +
-        "<li ng-switch-when-end>C</li>" +
-        "<li ng-switch-default-start>D</li>" +
-        "<li>E</li>" +
-        "<li ng-switch-default-end>F</li>" +
-        "</ul>",
-    )($scope);
-
-    $scope.$apply('select = "1"');
-    expect(element.find("li").length).toBe(3);
-    expect(element.find("li").eq(0).text()).toBe("A");
-    expect(element.find("li").eq(1).text()).toBe("B");
-    expect(element.find("li").eq(2).text()).toBe("C");
-
-    $scope.$apply('select = "2"');
-    expect(element.find("li").length).toBe(3);
-    expect(element.find("li").eq(0).text()).toBe("D");
-    expect(element.find("li").eq(1).text()).toBe("E");
-    expect(element.find("li").eq(2).text()).toBe("F");
   });
 
   it("should show all switch-when-default", () => {

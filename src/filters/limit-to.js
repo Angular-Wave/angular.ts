@@ -4,7 +4,7 @@ import {
   isNumberNaN,
   isString,
   toInt,
-} from "../shared/utils";
+} from "../shared/utils.js";
 
 /**
  * @returns {function(Array|ArrayLike|string|number, string|number, (string|number)?):Array|ArrayLike|string|number}

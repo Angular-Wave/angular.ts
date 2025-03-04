@@ -1,6 +1,6 @@
-import { JQLite } from "../shared/jqlite/jqlite";
+import { JQLite } from "../shared/jqlite/jqlite.js";
 import { urlResolve } from "../core/url-utils/url-utils";
-import { equals } from "../shared/utils";
+import { equals } from "../shared/utils.js";
 
 /**
  * Removes a trailing hash ('#') from the given URL if it exists.

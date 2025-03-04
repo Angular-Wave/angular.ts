@@ -1,6 +1,6 @@
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
 import { Angular } from "../../loader";
-import { valueFn } from "../../shared/utils";
+import { valueFn } from "../../shared/utils.js";
 
 describe("ngClass", () => {
   let element;

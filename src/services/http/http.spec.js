@@ -1,5 +1,5 @@
 import { createInjector } from "../../core/di/injector";
-import { isObject } from "../../shared/utils";
+import { isObject } from "../../shared/utils.js";
 import { Angular } from "../../loader";
 
 export function getLastAjaxRequest() {

@@ -5,9 +5,9 @@ import {
   getOrSetCacheData,
   isTextNode,
   startingTag,
-} from "../../shared/jqlite/jqlite";
-import { identifierForController } from "../controller/controller";
-import { TTL } from "../scope/scope";
+} from "../../shared/jqlite/jqlite.js";
+import { identifierForController } from "../controller/controller.js";
+import { TTL } from "../scope/scope.js";
 import {
   minErr,
   assertArg,
@@ -31,13 +31,13 @@ import {
   simpleCompare,
   isError,
   directiveNormalize,
-} from "../../shared/utils";
-import { SCE_CONTEXTS } from "../sce/sce";
-import { PREFIX_REGEXP } from "../../shared/constants";
-import { createEventDirective } from "../../directive/events/events";
-import { CACHE, EXPANDO } from "../cache/cache";
-import { Attributes } from "./attributes";
-import { ngObserveDirective } from "../../directive/observe/observe";
+} from "../../shared/utils.js";
+import { SCE_CONTEXTS } from "../sce/sce.js";
+import { PREFIX_REGEXP } from "../../shared/constants.js";
+import { createEventDirective } from "../../directive/events/events.js";
+import { CACHE, EXPANDO } from "../cache/cache.js";
+import { Attributes } from "./attributes.js";
+import { ngObserveDirective } from "../../directive/observe/observe.js";
 
 let ttl = TTL;
 
@@ -588,7 +588,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           : (x) => x.replace(/\{\{/g, startSymbol).replace(/}}/g, endSymbol);
 
       const NG_PREFIX_BINDING = /^ng(Attr|Prop|On|Observe)([A-Z].*)$/;
-      const MULTI_ELEMENT_DIR_RE = /^(.+)Start$/;
       return compile;
 
       //= ===============================
@@ -994,7 +993,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               let isNgProp = false;
               let isNgEvent = false;
               let isNgObserve = false;
-              let multiElementMatch;
 
               attr = nAttrs[j];
               name = attr.name;
@@ -1015,15 +1013,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   .toLowerCase()
                   .substring(4 + ngPrefixMatch[1].length)
                   .replace(/_(.)/g, (match, letter) => letter.toUpperCase());
-
-                // Support *-start / *-end multi element directives
-              } else if (
-                (multiElementMatch = nName.match(MULTI_ELEMENT_DIR_RE)) &&
-                directiveIsMultiElement(multiElementMatch[1])
-              ) {
-                attrStartName = name;
-                attrEndName = `${name.substring(0, name.length - 5)}end`;
-                name = name.substring(0, name.length - 6);
               }
 
               if (isNgProp || isNgEvent) {
@@ -2157,33 +2146,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           }
         }
         return match;
-      }
-
-      /**
-       * looks up the directive and returns true if it is a multi-element directive,
-       * and therefore requires DOM nodes between -start and -end markers to be grouped
-       * together. Example: `<div my-directive-start></div><div><div/><div my-directive-end></div>`
-       *
-       * @param {string} name name of the directive to look up.
-       * @returns true if directive was registered as multi-element.
-       */
-      function directiveIsMultiElement(name) {
-        if (Object.prototype.hasOwnProperty.call(hasDirectives, name)) {
-          for (
-            let directive,
-              directives = $injector.get(name + Suffix),
-              i = 0,
-              ii = directives.length;
-            i < ii;
-            i++
-          ) {
-            directive = directives[i];
-            if (directive.multiElement) {
-              return true;
-            }
-          }
-        }
-        return false;
       }
 
       /**

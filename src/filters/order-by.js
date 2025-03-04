@@ -5,7 +5,7 @@ import {
   isArrayLike,
   isString,
   minErr,
-} from "../shared/utils";
+} from "../shared/utils.js";
 
 orderByFilter.$inject = ["$parse"];
 

@@ -1,7 +1,7 @@
-import { JQLite, dealoc } from "../../shared/jqlite/jqlite";
+import { JQLite, dealoc } from "../../shared/jqlite/jqlite.js";
 import { Angular } from "../../loader";
 import { NgModelController } from "./model";
-import { isDefined, valueFn, isObject } from "../../shared/utils";
+import { isDefined, valueFn, isObject } from "../../shared/utils.js";
 import { browserTrigger } from "../../shared/test-utils";
 
 describe("ngModel", () => {

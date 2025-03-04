@@ -1,4 +1,4 @@
-import { isDefined, isFunction, isObject } from "../shared/utils";
+import { isDefined, isFunction, isObject } from "../shared/utils.js";
 import { services } from "./common/coreservices";
 import { tail, unnestR } from "../shared/common";
 import { Resolvable } from "./resolve/resolvable";

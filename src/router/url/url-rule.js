@@ -5,7 +5,7 @@ import {
   isDefined,
   isUndefined,
   assert,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 import { is, or, pattern } from "../../shared/hof";
 import { StateObject } from "../state/state-object";
 /**

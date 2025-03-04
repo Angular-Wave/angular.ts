@@ -8,9 +8,9 @@ import {
 } from "./jqlite";
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
-import { equals } from "../utils";
+import { equals } from "../utils.js";
 import { browserTrigger } from "../test-utils";
-import { CACHE, EXPANDO } from "../../core/cache/cache";
+import { CACHE, EXPANDO } from "../../core/cache/cache.js";
 
 describe("jqLite", () => {
   let scope;

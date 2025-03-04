@@ -7,7 +7,7 @@ import {
   TOUCHED_CLASS,
   UNTOUCHED_CLASS,
   VALID_CLASS,
-} from "../../shared/constants";
+} from "../../shared/constants.js";
 import {
   minErr,
   isNumber,
@@ -18,7 +18,7 @@ import {
   hasAnimate,
   isBoolean,
   snakeCase,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 import {
   isObjectEmpty,
   nullFormCtrl,
@@ -26,8 +26,8 @@ import {
   setupValidity,
 } from "../form/form";
 import { defaultModelOptions } from "../model-options/model-options";
-import { startingTag } from "../../shared/jqlite/jqlite";
-import { ScopePhase } from "../../core/scope/scope";
+import { startingTag } from "../../shared/jqlite/jqlite.js";
+import { ScopePhase } from "../../core/scope/scope.js";
 
 export const ngModelMinErr = minErr("ngModel");
 

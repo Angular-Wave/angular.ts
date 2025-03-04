@@ -10,7 +10,7 @@ import {
   defaults,
 } from "../../shared/common";
 import { propEq } from "../../shared/hof";
-import { isDefined, isString } from "../../shared/utils";
+import { isDefined, isString } from "../../shared/utils.js";
 import { Param, DefType } from "../params/param";
 import { joinNeighborsR, splitOnDelim } from "../../shared/strings";
 function quoteRegExp(str, param) {

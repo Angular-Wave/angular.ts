@@ -1,4 +1,4 @@
-import { ScopePhase } from "../../core/scope/scope";
+import { ScopePhase } from "../../core/scope/scope.js";
 import { urlIsAllowedOriginFactory } from "../../core/url-utils/url-utils";
 import {
   minErr,
@@ -20,7 +20,7 @@ import {
   extend,
   uppercase,
   isPromiseLike,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 import { getCookies } from "../cookie-reader";
 
 const APPLICATION_JSON = "application/json";

@@ -5,7 +5,7 @@ import {
   stringify,
   valueFn,
   extend,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 import { constantWatchDelegate } from "../parse/parse.js";
 
 const $interpolateMinErr = minErr("$interpolate");

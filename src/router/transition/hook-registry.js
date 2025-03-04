@@ -1,5 +1,5 @@
 import { removeFrom, tail, map } from "../../shared/common";
-import { isString, isFunction } from "../../shared/utils";
+import { isString, isFunction } from "../../shared/utils.js";
 import { Glob } from "../common/glob";
 import { TransitionHookScope } from "./interface";
 /**

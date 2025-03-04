@@ -1,4 +1,4 @@
-import { assert, isFunction, isObject } from "../../shared/utils";
+import { assert, isFunction, isObject } from "../../shared/utils.js";
 import { services } from "../common/coreservices";
 import { trace } from "../common/trace";
 import { stringify } from "../../shared/strings";

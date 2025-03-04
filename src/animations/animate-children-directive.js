@@ -1,4 +1,4 @@
-import { isString } from "../shared/utils";
+import { isString } from "../shared/utils.js";
 import { NG_ANIMATE_CHILDREN_DATA } from "./shared";
 
 $$AnimateChildrenDirective.$inject = ["$interpolate"];

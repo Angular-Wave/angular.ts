@@ -1,6 +1,6 @@
 import { filter, map, allTrueR, find } from "../../shared/common";
 import { isInjectable } from "../../shared/predicates";
-import { isDefined, isUndefined, isString } from "../../shared/utils";
+import { isDefined, isUndefined, isString } from "../../shared/utils.js";
 import { services } from "../common/coreservices";
 import { ParamType } from "./param-type";
 

@@ -2,7 +2,6 @@
 
 - @ngdoc directive
 - @name ngRepeat
-- @multiElement
 - @restrict A
 -
 - @description
@@ -223,28 +222,7 @@
 
   </example>
 
--
-- ## Special repeat start and end points
-- To repeat a series of elements instead of just one parent element, ngRepeat (as well as other ng directives) supports extending
-- the range of the repeater by defining explicit start and end points by using **ng-repeat-start** and **ng-repeat-end** respectively.
-- The **ng-repeat-start** directive works the same as **ng-repeat**, but will repeat all the HTML code (including the tag it's defined on)
-- up to and including the ending HTML tag where **ng-repeat-end** is placed.
--
-- The example below makes use of this feature:
-- ```html
-
   ```
-
-- <header ng-repeat-start="item in items">
--     Header {{ item }}
-- </header>
-- <div class="body">
--     Body {{ item }}
-- </div>
-- <footer ng-repeat-end>
--     Footer {{ item }}
-- </footer>
-- ```
 
   ```
 

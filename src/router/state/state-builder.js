@@ -6,7 +6,7 @@ import {
   copy,
   map,
 } from "../../shared/common";
-import { isDefined, isFunction, isString } from "../../shared/utils";
+import { isDefined, isFunction, isString } from "../../shared/utils.js";
 import { stringify } from "../../shared/strings";
 import { is, pattern, pipe, val } from "../../shared/hof";
 import { Resolvable } from "../resolve/resolvable";

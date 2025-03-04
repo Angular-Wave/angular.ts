@@ -5,7 +5,7 @@ import { services } from "../common/coreservices";
 import { Resolvable } from "./resolvable";
 import { PathUtils } from "../path/path-utils";
 import { stringify } from "../../shared/strings";
-import { isUndefined } from "../../shared/utils";
+import { isUndefined } from "../../shared/utils.js";
 
 export const resolvePolicies = {
   when: {

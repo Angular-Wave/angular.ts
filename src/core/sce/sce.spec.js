@@ -1,7 +1,7 @@
 import { createInjector } from "../di/injector";
 
 import { Angular } from "../../loader";
-import { adjustMatcher } from "./sce";
+import { adjustMatcher } from "./sce.js";
 
 describe("SCE", () => {
   let $sce, $rootScope;

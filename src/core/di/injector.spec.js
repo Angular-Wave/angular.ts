@@ -1,6 +1,6 @@
 import { Angular } from "../../loader";
 import { createInjector, annotate } from "./injector";
-import { valueFn, extend } from "../../shared/utils";
+import { valueFn, extend } from "../../shared/utils.js";
 
 describe("injector.modules", () => {
   beforeEach(() => {

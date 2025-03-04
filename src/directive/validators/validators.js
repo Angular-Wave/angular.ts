@@ -4,9 +4,9 @@ import {
   toInt,
   minErr,
   isUndefined,
-} from "../../shared/utils";
+} from "../../shared/utils.js";
 import { REGEX_STRING_REGEXP } from "./../attrs/attrs";
-import { startingTag } from "../../shared/jqlite/jqlite";
+import { startingTag } from "../../shared/jqlite/jqlite.js";
 
 /**
  *

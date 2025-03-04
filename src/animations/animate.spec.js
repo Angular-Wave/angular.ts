@@ -1,7 +1,7 @@
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
 import { Angular } from "../../loader";
-import { isObject } from "../../shared/utils";
-import { isFunction } from "../../shared/utils";
+import { isObject } from "../../shared/utils.js";
+import { isFunction } from "../../shared/utils.js";
 import { createInjector } from "../di/injector";
 
 describe("$animate", () => {

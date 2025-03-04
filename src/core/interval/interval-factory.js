@@ -1,4 +1,4 @@
-import { isDefined, sliceArgs } from "../../shared/utils";
+import { isDefined, sliceArgs } from "../../shared/utils.js";
 
 export function $IntervalFactoryProvider() {
   this.$get = [

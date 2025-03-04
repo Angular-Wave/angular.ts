@@ -1,4 +1,4 @@
-import { JQLite } from "../../shared/jqlite/jqlite";
+import { JQLite } from "../../shared/jqlite/jqlite.js";
 import { urlResolve } from "../url-utils/url-utils";
 import {
   encodeUriSegment,
@@ -12,8 +12,8 @@ import {
   parseKeyValue,
   toInt,
   toKeyValue,
-} from "../../shared/utils";
-import { ScopePhase } from "../scope/scope";
+} from "../../shared/utils.js";
+import { ScopePhase } from "../scope/scope.js";
 
 /**
  * @typedef {Object} DefaultPorts

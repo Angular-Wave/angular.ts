@@ -1,4 +1,4 @@
-import { isObject, isString } from "../../shared/utils";
+import { isObject, isString } from "../../shared/utils.js";
 import { stringify } from "../../shared/strings";
 /**
  * Encapsulate the target (destination) state/params/options of a [[Transition]].

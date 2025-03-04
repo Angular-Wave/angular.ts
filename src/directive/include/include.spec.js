@@ -1,7 +1,7 @@
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
-import { valueFn } from "../../shared/utils";
+import { valueFn } from "../../shared/utils.js";
 import { wait } from "../../shared/test-utils";
 
 describe("ngInclude", () => {

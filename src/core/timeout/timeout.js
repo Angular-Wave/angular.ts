@@ -1,5 +1,5 @@
 import { markQExceptionHandled } from "../q/q";
-import { isDefined, minErr, sliceArgs } from "../../shared/utils";
+import { isDefined, minErr, sliceArgs } from "../../shared/utils.js";
 
 const $timeoutMinErr = minErr("$timeout");
 

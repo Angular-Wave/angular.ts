@@ -1,4 +1,4 @@
-import { isObject } from "../../shared/utils";
+import { isObject } from "../../shared/utils.js";
 import { filterFilter } from "../../filters/filter";
 import { jsonFilter } from "../../filters/filters";
 import { limitToFilter } from "../../filters/limit-to";

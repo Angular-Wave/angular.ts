@@ -4,11 +4,11 @@ import {
   ngAttrPrefixes,
   assertNotHasOwnProperty,
   errorHandlingConfig,
-} from "./shared/utils";
-import { JQLite } from "./shared/jqlite/jqlite";
+} from "./shared/utils.js";
+import { JQLite } from "./shared/jqlite/jqlite.js";
 import { annotate, createInjector } from "./core/di/injector";
 import { NgModule } from "./core/di/ng-module";
-import { CACHE } from "./core/cache/cache";
+import { CACHE } from "./core/cache/cache.js";
 import { publishExternalAPI } from "./public";
 import { VERSION } from "./public";
 import { services } from "./router/common/coreservices";

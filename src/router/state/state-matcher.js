@@ -1,4 +1,4 @@
-import { isString } from "../../shared/utils";
+import { isString } from "../../shared/utils.js";
 export class StateMatcher {
   constructor(_states) {
     this._states = _states;

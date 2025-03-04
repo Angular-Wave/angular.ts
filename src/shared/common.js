@@ -1,4 +1,4 @@
-import { isDate, isFunction, isRegExp, isString } from "./utils";
+import { isDate, isFunction, isRegExp, isString } from "./utils.js";
 import { all, curry } from "./hof";
 import { services } from "../router/common/coreservices";
 

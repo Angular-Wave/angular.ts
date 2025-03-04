@@ -1,8 +1,8 @@
 import { createInjector } from "../../core/di/injector";
-import { countWatchers } from "../../core/scope/scope";
+import { countWatchers } from "../../core/scope/scope.js";
 import { Angular } from "../../loader";
-import { isString } from "../../shared/utils";
-import { JQLite } from "../../shared/jqlite/jqlite";
+import { isString } from "../../shared/utils.js";
+import { JQLite } from "../../shared/jqlite/jqlite.js";
 
 describe("ngMessages", () => {
   let $rootScope, $compile, $templateCache;

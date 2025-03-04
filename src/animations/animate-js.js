@@ -1,4 +1,4 @@
-import { isObject, isFunction } from "../shared/utils";
+import { isObject, isFunction } from "../shared/utils.js";
 import {
   applyAnimationClassesFactory,
   applyAnimationStyles,

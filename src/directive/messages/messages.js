@@ -1,4 +1,4 @@
-import { isString } from "../../shared/utils";
+import { isString } from "../../shared/utils.js";
 
 const ACTIVE_CLASS = "ng-active";
 const INACTIVE_CLASS = "ng-inactive";

@@ -1,7 +1,7 @@
 import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite";
-import { bind } from "../../shared/utils";
+import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { bind } from "../../shared/utils.js";
 
 describe("ngController", () => {
   let angular;

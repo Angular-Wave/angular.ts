@@ -1,15 +1,19 @@
 import { Angular } from "../../loader";
 import { createInjector } from "../di/injector";
-import { dealoc, JQLite, getOrSetCacheData } from "../../shared/jqlite/jqlite";
+import {
+  dealoc,
+  JQLite,
+  getOrSetCacheData,
+} from "../../shared/jqlite/jqlite.js";
 import {
   isFunction,
   valueFn,
   isElement,
   getNodeName,
   extend,
-} from "../../shared/utils";
-import { countChildScopes, countWatchers } from "../scope/scope";
-import { CACHE, EXPANDO } from "../cache/cache";
+} from "../../shared/utils.js";
+import { countChildScopes, countWatchers } from "../scope/scope.js";
+import { CACHE, EXPANDO } from "../cache/cache.js";
 import { wait } from "../../shared/test-utils";
 
 function isUnknownElement(el) {
@@ -689,21 +693,6 @@ describe("$compile", () => {
       dealoc(element);
     });
 
-    it("allows applying a directive to multiple elements", () => {
-      var compileEl = false;
-      registerDirectives("myDir", () => {
-        return {
-          multiElement: true,
-          compile: function (element) {
-            compileEl = element;
-          },
-        };
-      });
-      reloadModules();
-      $compile("<div my-dir-start></div><span></span><div my-dir-end></div>");
-      expect(compileEl.length).toBe(3);
-    });
-
     it("should allow multiple directives per element", () => {
       reloadModules();
       var el = $(
@@ -1271,26 +1260,6 @@ describe("$compile", () => {
     expect(givenElements.length).toBe(2);
     expect(givenElements[0]).toBe(el1);
     expect(givenElements[1]).toBe(el2);
-  });
-
-  it("invokes multi-element directive link functions with whole group", () => {
-    var givenElements;
-    registerDirectives("myDirective", () => {
-      return {
-        multiElement: true,
-        link: function (scope, element, attrs) {
-          givenElements = element;
-        },
-      };
-    });
-    reloadModules();
-    var el = $(
-      "<div my-directive-start></div>" +
-        "<p></p>" +
-        "<div my-directive-end></div>",
-    );
-    $compile(el)($rootScope);
-    expect(givenElements.length).toBe(3);
   });
 
   it("makes new scope for element when directive asks for it", () => {
@@ -2250,26 +2219,6 @@ describe("$compile", () => {
       });
       reloadModules();
       var el = $("<div my-directive></div>");
-      $compile(el)($rootScope);
-      expect(gotMyController).toBeDefined();
-      expect(gotMyController instanceof MyController).toBe(true);
-    });
-
-    it("is passed through grouped link wrapper", () => {
-      function MyController() {}
-      var gotMyController;
-      myModule.directive("myDirective", () => {
-        return {
-          multiElement: true,
-          scope: {},
-          controller: MyController,
-          link: function (scope, element, attrs, myController) {
-            gotMyController = myController;
-          },
-        };
-      });
-      reloadModules();
-      var el = $("<div my-directive-start></div><div my-directive-end></div>");
       $compile(el)($rootScope);
       expect(gotMyController).toBeDefined();
       expect(gotMyController instanceof MyController).toBe(true);
@@ -3385,27 +3334,6 @@ describe("$compile", () => {
       $compile(el)($rootScope);
 
       expect(transclude()[0].outerHTML.match(/in-transclude/)).toBeTruthy();
-    });
-
-    it("can be used with multi-element directives", () => {
-      registerDirectives({
-        myTranscluder: function ($compile) {
-          return {
-            transclude: true,
-            multiElement: true,
-            template: "<div in-template></div>",
-            link: function (scope, element, attrs, ctrl, transclude) {
-              element[0].append(transclude()[0]);
-            },
-          };
-        },
-      });
-      reloadModules();
-      var el = $(
-        "<div><div my-transcluder-start><div in-transclude></div></div><div my-transcluder-end></div></div>",
-      );
-      $compile(el)($rootScope);
-      expect(el[0].outerHTML.match(/in-transclude/)).toBeTruthy();
     });
   });
 
@@ -13287,52 +13215,6 @@ describe("$compile", () => {
           }).toThrowError(/multidir/);
         });
 
-        it("should correctly handle multi-element directives", () => {
-          module
-            .directive(
-              "foo",
-              valueFn({
-                template: "[<div ng-transclude></div>]",
-                transclude: true,
-              }),
-            )
-            .directive(
-              "bar",
-              valueFn({
-                template:
-                  '[<div ng-transclude="header"></div>|<div ng-transclude="footer"></div>]',
-                transclude: {
-                  header: "header",
-                  footer: "footer",
-                },
-              }),
-            );
-          initInjector("test1");
-          const tmplWithFoo =
-            "<foo>" +
-            '<div ng-if-start="true">Hello, </div>' +
-            "<div ng-if-end>world!</div>" +
-            "</foo>";
-          const tmplWithBar =
-            "<bar>" +
-            '<header ng-if-start="true">This is a </header>' +
-            "<header ng-if-end>header!</header>" +
-            '<footer ng-if-start="true">This is a </footer>' +
-            "<footer ng-if-end>footer!</footer>" +
-            "</bar>";
-
-          const elem1 = $compile(tmplWithFoo)($rootScope);
-          const elem2 = $compile(tmplWithBar)($rootScope);
-
-          $rootScope.$digest();
-
-          expect(elem1.text()).toBe("[Hello, world!]");
-          expect(elem2.text()).toBe("[This is a header!|This is a footer!]");
-
-          dealoc(elem1);
-          dealoc(elem2);
-        });
-
         // see issue https://github.com/angular/angular.js/issues/12936
         it("should use the proper scope when it is on the root element of a replaced directive template", () => {
           module
@@ -14242,35 +14124,6 @@ describe("$compile", () => {
 
             $rootScope.$apply("t = false");
             expect(element.text()).not.toContain("msg-1");
-            // Expected scopes: $rootScope
-            expect(countChildScopes($rootScope)).toBe(0);
-          });
-
-          it("should not leak the transclude scope when the transcluded content is an multi-element transclusion directive", () => {
-            element = $compile(
-              "<div toggle>" +
-                "<div ng-repeat-start=\"msg in ['msg-1']\">{{ msg }}</div>" +
-                "<div ng-repeat-end>{{ msg }}</div>" +
-                "</div>",
-            )($rootScope);
-
-            $rootScope.$apply("t = true");
-            expect(element.text()).toContain("msg-1msg-1");
-            // Expected scopes: $rootScope, ngIf, transclusion, ngRepeat
-            expect(countChildScopes($rootScope)).toBe(3);
-
-            $rootScope.$apply("t = false");
-            expect(element.text()).not.toContain("msg-1msg-1");
-            // Expected scopes: $rootScope
-            expect(countChildScopes($rootScope)).toBe(0);
-
-            $rootScope.$apply("t = true");
-            expect(element.text()).toContain("msg-1msg-1");
-            // Expected scopes: $rootScope, ngIf, transclusion, ngRepeat
-            expect(countChildScopes($rootScope)).toBe(3);
-
-            $rootScope.$apply("t = false");
-            expect(element.text()).not.toContain("msg-1msg-1");
             // Expected scopes: $rootScope
             expect(countChildScopes($rootScope)).toBe(0);
           });
@@ -16811,339 +16664,6 @@ describe("$compile", () => {
     });
   });
 
-  describe("multi-element directive", () => {
-    it("should group on link function", async () => {
-      $rootScope.show = false;
-      element = $compile(
-        "<div>" +
-          '<span ng-show-start="show"></span>' +
-          "<span ng-show-end='show'></span>" +
-          "</div>",
-      )($rootScope);
-      $rootScope.$digest();
-      await wait(100);
-      const spans = element.find("span");
-      expect(spans.eq(0)[0].classList.contains("ng-hide")).toBeTrue();
-      expect(spans.eq(1)[0].classList.contains("ng-hide")).toBeTrue();
-    });
-
-    it("should group on compile function", () => {
-      $rootScope.show = false;
-      element = $compile(
-        "<div>" +
-          '<span ng-repeat-start="i in [1,2]">{{i}}A</span>' +
-          "<span ng-repeat-end>{{i}}B;</span>" +
-          "</div>",
-      )($rootScope);
-      $rootScope.$digest();
-      expect(element.text()).toEqual("1A1B;2A2B;");
-    });
-
-    it("should support grouping over text nodes", () => {
-      $rootScope.show = false;
-      element = $compile(
-        "<div>" +
-          '<span ng-repeat-start="i in [1,2]">{{i}}A</span>' +
-          ":" + // Important: proves that we can iterate over non-elements
-          "<span ng-repeat-end>{{i}}B;</span>" +
-          "</div>",
-      )($rootScope);
-      $rootScope.$digest();
-      expect(element.text()).toEqual("1A:1B;2A:2B;");
-    });
-
-    it("should group on $root compile function", () => {
-      $rootScope.show = false;
-      element = $compile(
-        "<div></div>" +
-          '<span ng-repeat-start="i in [1,2]">{{i}}A</span>' +
-          "<span ng-repeat-end>{{i}}B;</span>" +
-          "<div></div>",
-      )($rootScope);
-      $rootScope.$digest();
-      element = JQLite(element[0].parentNode.childNodes); // reset because repeater is top level.
-      expect(element.text()).toEqual("1A1B;2A2B;");
-    });
-
-    it("should group on nested groups", () => {
-      module.directive(
-        "ngMultiBind",
-        valueFn({
-          multiElement: true,
-          link(scope, element, attr) {
-            element.text(scope.$eval(attr.ngMultiBind));
-          },
-        }),
-      );
-      initInjector("test1");
-
-      $rootScope.show = false;
-      element = $compile(
-        "<div></div>" +
-          '<div ng-repeat-start="i in [1,2]">{{i}}A</div>' +
-          "<span ng-multi-bind-start=\"'.'\"></span>" +
-          "<span ng-multi-bind-end></span>" +
-          "<div ng-repeat-end>{{i}}B;</div>" +
-          "<div></div>",
-      )($rootScope);
-      $rootScope.$digest();
-      element = JQLite(element[0].parentNode.childNodes); // reset because repeater is top level.
-      expect(element.text()).toEqual("1A..1B;2A..2B;");
-    });
-
-    it("should group on nested groups of same directive", () => {
-      $rootScope.show = false;
-      element = $compile(
-        "<div></div>" +
-          '<div ng-repeat-start="i in [1,2]">{{i}}(</div>' +
-          '<span ng-repeat-start="j in [2,3]">{{j}}-</span>' +
-          "<span ng-repeat-end>{{j}}</span>" +
-          "<div ng-repeat-end>){{i}};</div>" +
-          "<div></div>",
-      )($rootScope);
-      $rootScope.$digest();
-      element = JQLite(element[0].parentNode.childNodes); // reset because repeater is top level.
-      expect(element.text()).toEqual("1(2-23-3)1;2(2-23-3)2;");
-    });
-
-    it("should set up and destroy the transclusion scopes correctly", () => {
-      element = $compile(
-        "<div>" +
-          '<div ng-if-start="val0"><span ng-if="val1"></span></div>' +
-          '<div ng-if-end><span ng-if="val2"></span></div>' +
-          "</div>",
-      )($rootScope);
-      $rootScope.$apply("val0 = true; val1 = true; val2 = true");
-      expect($rootScope.$$childHead).toBeTruthy();
-      expect($rootScope.$$childHead.$$childHead).toBeTruthy();
-      // At this point we should have something like:
-      //
-      // <div>
-      //
-      //   <!---->
-      //   <div ng-if-start="val0">
-      //     <!---->
-      //     <span ng-if="val1"></span>
-      //     <!---->
-      //   </div>
-      //
-      //   <div ng-if-end="">
-      //     <!---->
-      //     <span ng-if="val2"></span>
-      //     <!---->
-      //   </div>
-      //
-      //   <!---->
-      // </div>
-      // const ngIfStartScope = element.find("div").eq(0).scope();
-      // const ngIfEndScope = element.find("div").eq(1).scope();
-
-      // expect(ngIfStartScope.$id).toEqual(ngIfEndScope.$id);
-
-      // const ngIf1Scope = element.find("span").eq(0).scope();
-      // const ngIf2Scope = element.find("span").eq(1).scope();
-
-      // expect(ngIf1Scope.$id).not.toEqual(ngIf2Scope.$id);
-      // expect(ngIf1Scope.$parent.$id).toEqual(ngIf2Scope.$parent.$id);
-
-      $rootScope.$apply("val1 = false");
-      // Now we should have something like:
-      //
-      // <div>
-      //   <!-- ngIf: val0 -->
-      //   <div ng-if-start="val0">
-      //     <!-- ngIf: val1 -->
-      //   </div>
-      //   <div ng-if-end="">
-      //     <!-- ngIf: val2 -->
-      //     <span ng-if="val2"></span>
-      //     <!-- end ngIf: val2 -->
-      //   </div>
-      //   <!-- end ngIf: val0 -->
-      // </div>
-
-      // expect(ngIfStartScope.$$destroyed).not.toEqual(true);
-      // expect(ngIf1Scope.$$destroyed).toEqual(true);
-      // expect(ngIf2Scope.$$destroyed).not.toEqual(true);
-
-      $rootScope.$apply("val0 = false");
-
-      // Now we should have something like:
-      //
-      // <div>
-      //   <!-- ngIf: val0 -->
-      // </div>
-      // TODO: Until we figure out a better way of testing this
-      expect($rootScope.$$childHead).toBeNull();
-      // expect(ngIfStartScope.$$destroyed).toEqual(true);
-      // expect(ngIf1Scope.$$destroyed).toEqual(true);
-      // expect(ngIf2Scope.$$destroyed).toEqual(true);
-    });
-
-    it("should set up and destroy the transclusion scopes correctly", () => {
-      element = $compile(
-        "<div>" +
-          '<div ng-repeat-start="val in val0" ng-if="val1"></div>' +
-          '<div ng-repeat-end ng-if="val2"></div>' +
-          "</div>",
-      )($rootScope);
-
-      // To begin with there is (almost) nothing:
-      // <div>
-      //   <!-- ngRepeat: val in val0 -->
-      // </div>
-
-      //expect(element.scope().$id).toEqual($rootScope.$id);
-
-      // Now we create all the elements
-      $rootScope.$apply("val0 = [1]; val1 = true; val2 = true");
-
-      // At this point we have:
-      //
-      // <div>
-      //
-      //   <!-- ngRepeat: val in val0 -->
-      //   <!-- ngIf: val1 -->
-      //   <div ng-repeat-start="val in val0">
-      //   </div>
-      //   <!-- end ngIf: val1 -->
-      //
-      //   <!-- ngIf: val2 -->
-      //   <div ng-repeat-end="">
-      //   </div>
-      //   <!-- end ngIf: val2 -->
-      //   <!-- end ngRepeat: val in val0 -->
-      // </div>
-      // const ngIf1Scope = element.find("div").eq(0).scope();
-      // const ngIf2Scope = element.find("div").eq(1).scope();
-      // const ngRepeatScope = ngIf1Scope.$parent;
-
-      // expect(ngIf1Scope.$id).not.toEqual(ngIf2Scope.$id);
-      // expect(ngIf1Scope.$parent.$id).toEqual(ngRepeatScope.$id);
-      // expect(ngIf2Scope.$parent.$id).toEqual(ngRepeatScope.$id);
-
-      // // What is happening here??
-      // // We seem to have a repeater scope which doesn't actually match to any element
-      // expect(ngRepeatScope.$parent.$id).toEqual($rootScope.$id);
-
-      // Now remove the first ngIf element from the first item in the repeater
-      $rootScope.$apply("val1 = false");
-
-      // At this point we should have:
-      //
-      // <div>
-      //   <!-- ngRepeat: val in val0 -->
-      //
-      //   <!-- ngIf: val1 -->
-      //
-      //   <!-- ngIf: val2 -->
-      //   <div ng-repeat-end="" ng-if="val2"></div>
-      //   <!-- end ngIf: val2 -->
-      //
-      //   <!-- end ngRepeat: val in val0 -->
-      // </div>
-      //
-      // expect(ngRepeatScope.$$destroyed).toEqual(false);
-      // expect(ngIf1Scope.$$destroyed).toEqual(true);
-      // expect(ngIf2Scope.$$destroyed).toEqual(false);
-
-      // Now remove the second ngIf element from the first item in the repeater
-      $rootScope.$apply("val2 = false");
-
-      // We are mostly back to where we started
-      //
-      // <div>
-      //   <!-- ngRepeat: val in val0 -->
-      //   <!-- ngIf: val1 -->
-      //   <!-- ngIf: val2 -->
-      //   <!-- end ngRepeat: val in val0 -->
-      // </div>
-
-      // expect(ngRepeatScope.$$destroyed).toEqual(false);
-      // expect(ngIf1Scope.$$destroyed).toEqual(true);
-      // expect(ngIf2Scope.$$destroyed).toEqual(true);
-
-      // Finally remove the repeat items
-      $rootScope.$apply("val0 = []");
-
-      // Somehow this ngRepeat scope knows how to destroy itself...
-      expect($rootScope.$$childHead).toBeNull();
-      // expect(ngRepeatScope.$$destroyed).toEqual(true);
-      // expect(ngIf1Scope.$$destroyed).toEqual(true);
-      // expect(ngIf2Scope.$$destroyed).toEqual(true);
-    });
-
-    it("should throw error if unterminated", () => {
-      module.directive("foo", () => ({
-        multiElement: true,
-      }));
-      initInjector("test1");
-      expect(() => {
-        element = $compile("<div><span foo-start></span></div>");
-      }).toThrowError(/uterdir/);
-    });
-
-    it("should correctly collect ranges on multiple directives on a single element", () => {
-      module
-        .directive("emptyDirective", () => ({
-          multiElement: true,
-          link(scope, element) {
-            element.data("x", "abc");
-          },
-        }))
-        .directive("rangeDirective", () => ({
-          multiElement: true,
-          link(scope) {
-            scope.x = "X";
-            scope.y = "Y";
-          },
-        }));
-      initInjector("test1");
-      element = $compile(
-        "<div>" +
-          "<div range-directive-start empty-directive>{{x}}</div>" +
-          "<div range-directive-end>{{y}}</div>" +
-          "</div>",
-      )($rootScope);
-
-      $rootScope.$digest();
-
-      expect(element.text()).toBe("XY");
-      ///expect(angular.element(element[0].firstChild).data("x")).toBe("abc");
-    });
-
-    it("should throw error if unterminated (containing termination as a child)", () => {
-      module.directive("foo", () => ({
-        multiElement: true,
-      }));
-      initInjector("test1");
-      expect(() => {
-        element = $compile(
-          "<div><span foo-start><span foo-end></span></span></div>",
-        );
-      }).toThrowError(/uterdir/);
-    });
-
-    it("should support data- prefix", async () => {
-      $rootScope.show = false;
-      element = $compile(
-        "<div>" +
-          '<span data-ng-show-start="show"></span>' +
-          "<span data-ng-show-end></span>" +
-          '<span ng-show-start="show"></span>' +
-          "<span ng-show-end></span>" +
-          "</div>",
-      )($rootScope);
-      $rootScope.$digest();
-      await wait(100);
-      const spans = element.find("span");
-      expect(spans.eq(0)[0].classList.contains("ng-hide")).toBeTrue();
-      //expect(spans.eq(1)[0].classList.contains("ng-hide")).toBeTrue();
-      expect(spans.eq(2)[0].classList.contains("ng-hide")).toBeTrue();
-      // expect(spans.eq(3)[0].classList.contains("ng-hide")).toBeTrue();
-    });
-  });
-
   // TODO ANIMATIONS
   // describe("$animate animation hooks", () => {
   //   beforeEach(module("ngAnimateMock"));
@@ -17197,130 +16717,6 @@ describe("$compile", () => {
   //     expect(element[0].classList.contains(ist.contains("fire")).toBe(true);
   //   });
   // });
-
-  describe("element replacement", () => {
-    it("should broadcast $destroy only on removed elements, not replaced", () => {
-      const linkCalls = [];
-      const destroyCalls = [];
-
-      module
-        .directive("replace", () => ({
-          multiElement: true,
-          replace: true,
-          templateUrl: "template123",
-        }))
-        .directive("foo", () => ({
-          priority: 1, // before the replace directive
-          link($scope, $element, $attrs) {
-            linkCalls.push($attrs.foo);
-            $element.on("$destroy", () => {
-              destroyCalls.push($attrs.foo);
-            });
-          },
-        }));
-      initInjector("test1");
-      $templateCache.set("template123", "<p></p>");
-
-      $compile(
-        '<div replace-start foo="1"><span foo="1.1"></span></div>' +
-          '<div foo="2"><span foo="2.1"></span></div>' +
-          '<div replace-end foo="3"><span foo="3.1"></span></div>',
-      )($rootScope);
-
-      expect(linkCalls).toEqual(["2", "3"]);
-      expect(destroyCalls).toEqual([]);
-      $rootScope.$apply();
-      expect(linkCalls).toEqual(["2", "3", "1"]);
-      expect(destroyCalls).toEqual(["2", "3"]);
-    });
-
-    function sliceArgs(args, startIndex) {
-      return [].slice.call(args, startIndex || 0);
-    }
-
-    function getAll($root) {
-      // check for .querySelectorAll to support comment nodes
-      return [$root[0]].concat(
-        $root[0].querySelectorAll
-          ? sliceArgs($root[0].querySelectorAll("*"))
-          : [],
-      );
-    }
-
-    function testCompileLinkDataCleanup(template) {
-      const toCompile = JQLite(template);
-
-      const preCompiledChildren = getAll(toCompile);
-      Object.entries(preCompiledChildren).forEach(([i, element]) => {
-        getOrSetCacheData(element, "foo", `template#${i}`);
-      });
-
-      const linkedElements = $compile(toCompile)($rootScope);
-      $rootScope.$apply();
-      linkedElements.remove();
-
-      Object.entries(preCompiledChildren).forEach(([i, element]) => {
-        expect(CACHE.has(element[EXPANDO])).toBe(false, `template#${i}`);
-      });
-
-      Object.entries(linkedElements).forEach(([i, element]) => {
-        expect(CACHE.has(element[EXPANDO])).toBe(false, `linked#${i}`);
-      });
-    }
-
-    it("should clean data of element-transcluded link-cloned elements", () => {
-      testCompileLinkDataCleanup(
-        '<div><div ng-repeat-start="i in [1,2]"><span></span></div><div ng-repeat-end></div></div>',
-      );
-    });
-
-    it("should clean data of element-transcluded elements", () => {
-      testCompileLinkDataCleanup(
-        '<div ng-if-start="false"><span><span/></div><span></span><div ng-if-end><span></span></div>',
-      );
-    });
-
-    function testReplaceElementCleanup(dirOptions) {
-      const template = "<div></div>";
-      module.directive("theDir", () => ({
-        multiElement: true,
-        replace: dirOptions.replace,
-        transclude: dirOptions.transclude,
-        template: dirOptions.asyncTemplate ? undefined : template,
-        templateUrl: dirOptions.asyncTemplate
-          ? "the-dir-template-url"
-          : undefined,
-      }));
-      initInjector("test1");
-      $templateCache.set("the-dir-template-url", template);
-
-      testCompileLinkDataCleanup(
-        "<div>" +
-          "<div the-dir-start><span></span></div>" +
-          "<div><span></span><span></span></div>" +
-          "<div the-dir-end><span></span></div>" +
-          "</div>",
-      );
-    }
-    it("should clean data of elements removed for directive template", () => {
-      testReplaceElementCleanup({});
-    });
-    it("should clean data of elements removed for directive templateUrl", () => {
-      testReplaceElementCleanup({ asyncTemplate: true });
-    });
-    it("should clean data of elements transcluded into directive template", () => {
-      testReplaceElementCleanup({ transclude: true });
-    });
-    it("should clean data of elements transcluded into directive templateUrl", () => {
-      testReplaceElementCleanup({ transclude: true, asyncTemplate: true });
-    });
-    it("should clean data of elements replaced with directive template", () => {
-      testReplaceElementCleanup({ replace: true });
-    });
-    it("should clean data of elements replaced with directive templateUrl", () => {
-      testReplaceElementCleanup({ replace: true, asyncTemplate: true });
-    });
-  });
 
   describe("component helper", () => {
     it("should return the module", () => {

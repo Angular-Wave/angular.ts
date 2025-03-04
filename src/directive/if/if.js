@@ -1,6 +1,6 @@
 import { domInsert } from "../../animations/animate";
-import { getBlockNodes } from "../../shared/jqlite/jqlite";
-import { hasAnimate } from "../../shared/utils";
+import { getBlockNodes } from "../../shared/jqlite/jqlite.js";
+import { hasAnimate } from "../../shared/utils.js";
 
 ngIfDirective.$inject = ["$animate"];
 /**
@@ -11,7 +11,6 @@ ngIfDirective.$inject = ["$animate"];
  */
 export function ngIfDirective($animate) {
   return {
-    multiElement: true,
     transclude: "element",
     priority: 600,
     terminal: true,
