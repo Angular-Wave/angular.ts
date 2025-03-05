@@ -13,7 +13,6 @@ import { publishExternalAPI } from "./public.js";
 import { VERSION } from "./public.js";
 import { unnestR } from "./shared/common.js";
 import { EventBus } from "./core/pubsub/pubsub.js";
-import { Scope } from "./core/scope/scope.js";
 
 const ngMinErr = minErr("ng");
 const $injectorMinErr = minErr("$injector");
@@ -317,7 +316,7 @@ export class Angular {
   /**
    * @param {Node} element
    * @param {string} [name]
-   * @returns {Scope}
+   * @returns {import('./core/scope/scope.js').Scope}
    */
   getController(element, name) {
     return getController(element, name);
