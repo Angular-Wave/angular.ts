@@ -637,6 +637,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               "This element has already been linked.",
             );
           }
+
           assertArg(scope, "scope");
 
           if (previousCompileContext && previousCompileContext.needsNewScope) {
@@ -1529,12 +1530,14 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           // is found, then we know that when we encounter a transcluded directive, we need to eagerly
           // compile the `transclude` function rather than doing it lazily in order to throw
           // exceptions at the correct time
+          const hasReplacedTemplate =
+            directive.replace && (directive.templateUrl || directive.template);
+          const shouldTransclude =
+            directive.transclude &&
+            !EXCLUDED_DIRECTIVES.includes(directive.name);
           if (
             !didScanForMultipleTransclusion &&
-            ((directive.replace &&
-              (directive.templateUrl || directive.template)) ||
-              (directive.transclude &&
-                !EXCLUDED_DIRECTIVES.includes(directive.name)))
+            (hasReplacedTemplate || shouldTransclude)
           ) {
             let candidateDirective;
 
@@ -2693,6 +2696,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         if (parent) {
           parent.replaceChild(newNode, firstElementToRemove);
           return firstElementToRemove;
+        } else {
+          // we cannot replace the element
+          throw new Error("replaced element has no parent");
         }
 
         // // Append all the `elementsToRemove` to a fragment. This will...

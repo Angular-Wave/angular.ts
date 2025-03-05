@@ -89,6 +89,7 @@ export function ngSwitchDirective($animate) {
 export function ngSwitchWhenDirective() {
   return {
     transclude: "element",
+    terminal: true,
     priority: 1200,
     restrict: "EA",
     require: "^ngSwitch",
@@ -119,6 +120,7 @@ export function ngSwitchDefaultDirective() {
   return {
     restrict: "EA",
     transclude: "element",
+    terminal: true,
     priority: 1200,
     require: "^ngSwitch",
     link(_scope, element, _attr, ctrl, $transclude) {

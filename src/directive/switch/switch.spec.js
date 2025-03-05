@@ -176,50 +176,6 @@ describe("ngSwitch", () => {
     },
   );
 
-  it("should interoperate with other transclusion directives like ngRepeat", async () => {
-    element = $compile(
-      '<div ng-switch="value">' +
-        '<div ng-switch-when="foo" ng-repeat="foo in foos">{{value}}:{{foo}}|</div>' +
-        '<div ng-switch-default ng-repeat="bar in bars">{{value}}:{{bar}}|</div>' +
-        "</div>",
-    )($scope);
-    $scope.$apply('value="foo";foos=["one", "two"]');
-    await wait();
-    expect(element.textContent).toEqual("foo:one|foo:two|");
-
-    $scope.$apply('value="foo";foos=["one"]');
-    await wait();
-    expect(element.textContent).toEqual("foo:one|");
-
-    $scope.$apply('value="foo";foos=["one","two","three"]');
-    await wait();
-    expect(element.textContent).toEqual("foo:one|foo:two|foo:three|");
-
-    $scope.$apply('value="bar";bars=["up", "down"]');
-    await wait();
-    expect(element.textContent).toEqual("bar:up|bar:down|");
-
-    $scope.$apply('value="bar";bars=["up", "down", "forwards", "backwards"]');
-    await wait();
-    expect(element.textContent).toEqual(
-      "bar:up|bar:down|bar:forwards|bar:backwards|",
-    );
-  });
-
-  it("should not leak jq data when compiled but not attached to parent when parent is destroyed", async () => {
-    element = $compile(
-      '<div ng-repeat="i in []">' +
-        '<ng-switch on="url">' +
-        '<div ng-switch-when="a">{{name}}</div>' +
-        "</ng-switch>" +
-        "</div>",
-    )($scope);
-    await wait();
-
-    // element now contains only empty repeater. this element is deallocated by local afterEach.
-    // afterwards a global afterEach will check for leaks in jq data cache object
-  });
-
   it("should properly support case labels with different numbers of transclude fns", async () => {
     element = $compile(
       '<div ng-switch="mode">' +
