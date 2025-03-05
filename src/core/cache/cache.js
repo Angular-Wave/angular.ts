@@ -17,4 +17,4 @@ export const EXPANDO = "ng";
  *
  * @type {Map<number, ExpandoStore>}
  */
-export const CACHE = new Map();
+export const Cache = new Map();

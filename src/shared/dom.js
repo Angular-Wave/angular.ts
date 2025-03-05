@@ -1,5 +1,5 @@
 import { concat, isDefined, isObject, getNodeName } from "./utils.js";
-import { CACHE, EXPANDO } from "../core/cache/cache.js";
+import { Cache, EXPANDO } from "../core/cache/cache.js";
 
 /** @type {number} */
 let jqId = 1;
@@ -97,7 +97,7 @@ export function snakeToCamel(name) {
  */
 export function removeElementData(element, name) {
   const expandoId = element[EXPANDO];
-  const expandoStore = expandoId && CACHE.get(expandoId);
+  const expandoStore = expandoId && Cache.get(expandoId);
 
   if (expandoStore) {
     if (name) {
@@ -121,7 +121,7 @@ export function removeElementData(element, name) {
  */
 export function getExpando(element, createIfNecessary = false) {
   let expandoId = element[EXPANDO];
-  let expandoStore = expandoId && CACHE.get(expandoId);
+  let expandoStore = expandoId && Cache.get(expandoId);
 
   if (createIfNecessary && !expandoStore) {
     element[EXPANDO] = expandoId = jqNextId();
@@ -130,7 +130,7 @@ export function getExpando(element, createIfNecessary = false) {
       data: {},
       handle: null,
     };
-    CACHE.set(expandoId, expandoStore);
+    Cache.set(expandoId, expandoStore);
   }
 
   return expandoStore;
@@ -235,13 +235,13 @@ export function dealoc(element, onlyDescendants) {
  */
 function removeIfEmptyData(element) {
   const expandoId = element[EXPANDO];
-  const { events, data } = CACHE.get(expandoId);
+  const { events, data } = Cache.get(expandoId);
 
   if (
     (!data || !Object.keys(data).length) &&
     (!events || !Object.keys(events).length)
   ) {
-    CACHE.delete(expandoId);
+    Cache.delete(expandoId);
     element[EXPANDO] = undefined; // don't delete DOM expandos. Chrome don't like it
   }
 }
@@ -505,7 +505,7 @@ export function getBooleanAttrName(element, name) {
  */
 export function cleanElementData(nodes) {
   for (let i = 0, ii = nodes.length; i < ii; i++) {
-    const events = (CACHE.get(nodes[i][EXPANDO]) || {}).events;
+    const events = (Cache.get(nodes[i][EXPANDO]) || {}).events;
     if (events && events.$destroy) {
       nodes[i].dispatchEvent(new Event("$destroy"));
     }
@@ -568,7 +568,7 @@ export function appendNodesToElement(element, nodes) {
 }
 
 /**
- * Remove element from the DOM and clear CACHE data, associated with the node.
+ * Remove element from the DOM and clear Cache data, associated with the node.
  * @param {Element} element
  */
 export function emptyElement(element) {

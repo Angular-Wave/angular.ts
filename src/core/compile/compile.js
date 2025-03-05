@@ -2710,7 +2710,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         //   fragment.appendChild(elementsToRemove[i]);
         // }
 
-        // if (CACHE.has(firstElementToRemove[EXPANDO])) {
+        // if (Cache.has(firstElementToRemove[EXPANDO])) {
         //   // Copy over user data (that includes AngularJS's $scope etc.). Don't copy private
         //   // data here because there's no public interface in jQuery to do that and copying over
         //   // event listeners (which is the main use of private data) wouldn't work anyway.

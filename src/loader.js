@@ -8,7 +8,7 @@ import {
 import { getController, getInjector, setCacheData } from "./shared/dom.js";
 import { annotate, createInjector } from "./core/di/injector.js";
 import { NgModule } from "./core/di/ng-module.js";
-import { CACHE } from "./core/cache/cache.js";
+import { Cache } from "./core/cache/cache.js";
 import { publishExternalAPI } from "./public.js";
 import { VERSION } from "./public.js";
 import { unnestR } from "./shared/common.js";
@@ -29,12 +29,13 @@ const modules = {};
 
 export class Angular {
   constructor() {
-    CACHE.clear(); // a ensure new instance of angular gets a clean cache
+    Cache.clear(); // a ensure new instance of angular gets a clean cache
 
     /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
-    this.cache = CACHE;
+    this.cache = Cache;
 
-    this.EventBus = EventBus;
+    /** @type {import('./core/pubsub/pubsub.js').PubSub} */
+    this.eventBus = EventBus;
 
     /** @type {string} */
     this.version = VERSION;
@@ -144,7 +145,7 @@ export class Angular {
        * @param {import('./core/scope/scope.js').Scope} scope
        * @param {Element} el
        * @param {*} compile
-       * @param {import("./core/di/internal-injector").InjectorService} $injector
+       * @param {import("./core/di/internal-injector.js").InjectorService} $injector
        */
       (scope, el, compile, $injector) => {
         // ng-route deps
@@ -186,7 +187,7 @@ export class Angular {
    *
    * @param {any[]} modules
    * @param {boolean?} strictDi
-   * @returns {import("./core/di/internal-injector").InjectorService}
+   * @returns {import("./core/di/internal-injector.js").InjectorService}
    */
   injector(modules, strictDi) {
     return createInjector(modules, strictDi);
@@ -195,7 +196,7 @@ export class Angular {
   /**
    * Return instance of InjectorService attached to element
    * @param {Element} element
-   * @returns {import('../core/di/internal-injector.js').InjectorService}
+   * @returns {import('./core/di/internal-injector.js').InjectorService}
    */
   getInjector(element) {
     return getInjector(element);

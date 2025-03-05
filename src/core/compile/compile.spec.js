@@ -17,7 +17,7 @@ import {
   createElement,
 } from "../../shared/utils.js";
 // import { countChildScopes, countWatchers } from "../scope/scope.js";
-import { CACHE, EXPANDO } from "../cache/cache.js";
+import { Cache, EXPANDO } from "../cache/cache.js";
 import { wait } from "../../shared/test-utils.js";
 
 function isUnknownElement(el) {
@@ -4901,36 +4901,36 @@ describe("$compile", () => {
       // We compile the contents of element (i.e. not element itself)
       // Then delete these contents and check the cache has been reset to zero
       // Clear cache
-      CACHE.clear();
+      Cache.clear();
       window.angular.module("test1", ["ng"]);
       createInjector(["test1"]).invoke(($compile) => {
-        expect(CACHE.size).toEqual(0);
+        expect(Cache.size).toEqual(0);
         // First with only elements at the top level
         element = createElementFromHTML("<div><div></div></div>");
         $compile(element.childNodes)($rootScope);
-        // expect(CACHE.size).toEqual(2);
+        // expect(Cache.size).toEqual(2);
         emptyElement(element);
-        expect(CACHE.size).toEqual(0);
+        expect(Cache.size).toEqual(0);
 
         // Next with non-empty text nodes at the top level
         // (in this case the compiler will wrap them in a <span>)
         element = createElementFromHTML("<div>xxx</div>");
         $compile(element.childNodes)($rootScope);
         emptyElement(element);
-        expect(CACHE.size).toEqual(0);
+        expect(Cache.size).toEqual(0);
 
         // Next with comment nodes at the top level
         element = createElementFromHTML("<div><!-- comment --></div>");
         $compile(element.childNodes)($rootScope);
         emptyElement(element);
-        expect(CACHE.size).toEqual(0);
+        expect(Cache.size).toEqual(0);
 
         // Finally with empty text nodes at the top level
         element = createElementFromHTML("<div>   \n<div></div>   </div>");
         $compile(element.childNodes)($rootScope);
-        //expect(CACHE.size).toEqual(2);
+        //expect(Cache.size).toEqual(2);
         emptyElement(element);
-        expect(CACHE.size).toEqual(0);
+        expect(Cache.size).toEqual(0);
       });
     });
 
@@ -12583,28 +12583,28 @@ describe("$compile", () => {
         });
 
         it('should not leak if two "element" transclusions are on the same element', () => {
-          const cacheSize = CACHE.size;
+          const cacheSize = Cache.size;
 
           element = $compile(
             '<div><div ng-repeat="x in xs" ng-if="x==1">{{x}}</div></div>',
           )($rootScope);
-          expect(CACHE.size).toEqual(cacheSize);
+          expect(Cache.size).toEqual(cacheSize);
 
           $rootScope.$apply("xs = [0,1]");
-          expect(CACHE.size).toEqual(cacheSize);
+          expect(Cache.size).toEqual(cacheSize);
 
           $rootScope.$apply("xs = [0]");
-          expect(CACHE.size).toEqual(cacheSize);
+          expect(Cache.size).toEqual(cacheSize);
 
           $rootScope.$apply("xs = []");
-          expect(CACHE.size).toEqual(cacheSize);
+          expect(Cache.size).toEqual(cacheSize);
 
           element.remove();
-          expect(CACHE.size).toEqual(cacheSize);
+          expect(Cache.size).toEqual(cacheSize);
         });
 
         it('should not leak if two "element" transclusions are on the same element', () => {
-          const cacheSize = CACHE.size;
+          const cacheSize = Cache.size;
           element = $compile(
             '<div><div ng-repeat="x in xs" ng-if="val">{{x}}</div></div>',
           )($rootScope);
@@ -12612,20 +12612,20 @@ describe("$compile", () => {
           $rootScope.$apply("xs = [0,1]");
           // At this point we have a bunch of comment placeholders but no real transcluded elements
           // So the cache only contains the root element's data
-          expect(CACHE.size).toEqual(cacheSize);
+          expect(Cache.size).toEqual(cacheSize);
 
           $rootScope.$apply("val = true");
           // Now we have two concrete transcluded elements plus some comments so two more cache items
-          expect(CACHE.size).toEqual(cacheSize);
+          expect(Cache.size).toEqual(cacheSize);
 
           $rootScope.$apply("val = false");
           // Once again we only have comments so no transcluded elements and the cache is back to just
           // the root element
-          expect(CACHE.size).toEqual(cacheSize);
+          expect(Cache.size).toEqual(cacheSize);
 
           element.remove();
           // Now we've even removed the root element along with its cache
-          expect(CACHE.size).toEqual(cacheSize);
+          expect(Cache.size).toEqual(cacheSize);
         });
 
         // it("should not leak when continuing the compilation of elements on a scope that was destroyed", () => {
@@ -12650,7 +12650,7 @@ describe("$compile", () => {
         //       link: linkFn,
         //     }));
         //   initInjector("test1");
-        //   const cacheSize = CACHE.size;
+        //   const cacheSize = Cache.size;
         //   $templateCache.set("red.html", "<p>red</p>");
         //   const template = $compile(
         //     '<div ng-controller="Leak">' +
@@ -12665,7 +12665,7 @@ describe("$compile", () => {
         //   ;
 
         //   expect(linkFn).toHaveBeenCalled();
-        //   expect(CACHE.size).toEqual(cacheSize + 2);
+        //   expect(Cache.size).toEqual(cacheSize + 2);
 
         //   $templateCache = new Map();
         //   const destroyedScope = $rootScope.$new();
@@ -12694,7 +12694,7 @@ describe("$compile", () => {
             $rootScope.$apply(`xs = [${xs}]`);
             firstRepeatedElem = element.children(".ng-scope").eq(0);
 
-            privateData = CACHE.get(firstRepeatedElem[0][EXPANDO]);
+            privateData = Cache.get(firstRepeatedElem[0][EXPANDO]);
             expect(privateData.events).toBeDefined();
 
             expect(privateData.events.click).toBeDefined();
@@ -12710,7 +12710,7 @@ describe("$compile", () => {
 
             expect(destroyCount).toBe(2);
             expect(firstRepeatedElem.data("$scope")).not.toBeDefined();
-            privateData = CACHE.get(firstRepeatedElem[0][EXPANDO]);
+            privateData = Cache.get(firstRepeatedElem[0][EXPANDO]);
             expect(privateData && privateData.events).not.toBeDefined();
           }
 
@@ -13508,7 +13508,7 @@ describe("$compile", () => {
 
           it("should not leak memory with nested transclusion", async () => {
             let size;
-            const initialSize = CACHE.size;
+            const initialSize = Cache.size;
 
             element =
               '<div><ul><li ng-repeat="n in nums">{{n}} => <i ng-if="0 === n%2">Even</i><i ng-if="1 === n%2">Odd</i></li></ul></div>';
@@ -13516,14 +13516,14 @@ describe("$compile", () => {
 
             $rootScope.nums = [0, 1, 2];
             await wait();
-            size = CACHE.size;
+            size = Cache.size;
 
             $rootScope.nums = [3, 4, 5];
             await wait();
-            expect(CACHE.size).toEqual(size);
+            expect(Cache.size).toEqual(size);
 
             element.remove();
-            expect(CACHE.size).toEqual(initialSize);
+            expect(Cache.size).toEqual(initialSize);
           });
         });
 
