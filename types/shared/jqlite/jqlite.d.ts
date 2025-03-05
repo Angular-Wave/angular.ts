@@ -20,7 +20,7 @@ export class JQLite {
      */
     elements(): Element[];
     /**
-     * Remove all child nodes of the set of matched elements from the DOM and clears CACHE data, associated with the node.
+     * Remove all child nodes of the set of matched elements from the DOM and clears Cache data, associated with the node.
      * @returns {JQLite} The current instance of JQLite.
      */
     empty(): JQLite;

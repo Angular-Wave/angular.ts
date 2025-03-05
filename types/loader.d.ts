@@ -7,6 +7,8 @@
 export class Angular {
     /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
     cache: Map<number, import("./core/cache/cache").ExpandoStore>;
+    /** @type {import('./core/pubsub/pubsub.js').PubSub} */
+    eventBus: import("./core/pubsub/pubsub.js").PubSub;
     /** @type {string} */
     version: string;
     /** @type {typeof import('./shared/jqlite/jqlite').JQLite} */

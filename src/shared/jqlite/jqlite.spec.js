@@ -10,7 +10,7 @@ import { Angular } from "../../loader";
 import { createInjector } from "../../core/di/injector";
 import { equals } from "../utils.js";
 import { browserTrigger } from "../test-utils";
-import { CACHE, EXPANDO } from "../../core/cache/cache.js";
+import { Cache, EXPANDO } from "../../core/cache/cache.js";
 
 describe("jqLite", () => {
   let scope;
@@ -532,7 +532,7 @@ describe("jqLite", () => {
 
       it("should not break on cleanElementData(), if element has no data", () => {
         const selected = JQLite([a, b, c]);
-        spyOn(CACHE, "get").and.returnValue(undefined);
+        spyOn(Cache, "get").and.returnValue(undefined);
         expect(() => {
           cleanElementData(selected);
         }).not.toThrow();
@@ -552,13 +552,13 @@ describe("jqLite", () => {
     });
 
     it("should not add to the cache if the node is a comment or text node", () => {
-      const initial = CACHE.size;
+      const initial = Cache.size;
       const nodes = JQLite("<!-- some comment --> and some text");
-      expect(CACHE.size).toEqual(initial);
+      expect(Cache.size).toEqual(initial);
       nodes.data("someKey");
-      expect(CACHE.size).toEqual(initial);
+      expect(Cache.size).toEqual(initial);
       nodes.data("someKey", "someValue");
-      expect(CACHE.size).toEqual(initial);
+      expect(Cache.size).toEqual(initial);
     });
 
     describe("removeElementData/getOrSetCacheData helpers", () => {
@@ -566,13 +566,13 @@ describe("jqLite", () => {
         const node = document.createElement("div");
         document.body.appendChild(node);
 
-        expect(CACHE.has(node[EXPANDO])).toBe(false);
+        expect(Cache.has(node[EXPANDO])).toBe(false);
         expect(getOrSetCacheData(node, "foo")).toBeUndefined();
-        expect(CACHE.has(node[EXPANDO])).toBe(false);
+        expect(Cache.has(node[EXPANDO])).toBe(false);
 
         getOrSetCacheData(node, "foo", "bar");
 
-        expect(CACHE.has(node[EXPANDO])).toBe(true);
+        expect(Cache.has(node[EXPANDO])).toBe(true);
         expect(getOrSetCacheData(node, "foo")).toBe("bar");
         expect(JQLite(node).data("foo")).toBe("bar");
 
@@ -587,7 +587,7 @@ describe("jqLite", () => {
         expect(getOrSetCacheData(node, "bar")).toBeUndefined();
 
         JQLite(node).remove();
-        expect(CACHE.has(node[EXPANDO])).toBe(false);
+        expect(Cache.has(node[EXPANDO])).toBe(false);
       });
     });
 

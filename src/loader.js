@@ -8,11 +8,12 @@ import {
 import { JQLite } from "./shared/jqlite/jqlite.js";
 import { annotate, createInjector } from "./core/di/injector";
 import { NgModule } from "./core/di/ng-module";
-import { CACHE } from "./core/cache/cache.js";
+import { Cache } from "./core/cache/cache.js";
 import { publishExternalAPI } from "./public";
 import { VERSION } from "./public";
 import { services } from "./router/common/coreservices";
 import { unnestR } from "./shared/common";
+import { EventBus } from "./core/pubsub/pubsub.js";
 
 const ngMinErr = minErr("ng");
 const $injectorMinErr = minErr("$injector");
@@ -29,10 +30,13 @@ const modules = {};
 
 export class Angular {
   constructor() {
-    CACHE.clear(); // a ensure new instance of angular gets a clean cache
+    Cache.clear(); // a ensure new instance of angular gets a clean Cache
 
     /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
-    this.cache = CACHE;
+    this.cache = Cache;
+
+    /** @type {import('./core/pubsub/pubsub.js').PubSub} */
+    this.eventBus = EventBus;
 
     /** @type {string} */
     this.version = VERSION;
@@ -45,6 +49,7 @@ export class Angular {
 
     /** @type {Function} */
     this.doBootstrap;
+    window["angular"] = this;
     publishExternalAPI(this);
   }
 
