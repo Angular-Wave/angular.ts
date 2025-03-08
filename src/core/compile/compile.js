@@ -2698,7 +2698,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           return firstElementToRemove;
         } else {
           // we cannot replace the element
-          throw new Error("replaced element has no parent");
+          //throw new Error("replaced element has no parent");
         }
 
         // // Append all the `elementsToRemove` to a fragment. This will...

@@ -30,7 +30,6 @@ export function ngIfDirective($animate) {
       let childScope;
 
       let previousElements;
-      let parent = $element.parentElement;
 
       $scope.$watch($attr["ngIf"], (value) => {
         if (value) {
@@ -44,7 +43,7 @@ export function ngIfDirective($animate) {
               if (hasAnimate(clone)) {
                 $animate.enter(clone, $element.parentElement, $element);
               } else {
-                parent.replaceChild(clone[0], $element);
+                $element.after(clone[0]);
               }
             });
           }
@@ -64,7 +63,7 @@ export function ngIfDirective($animate) {
                 if (response !== false) previousElements = null;
               });
             } else {
-              parent.replaceChild($element, previousElements[0]);
+              $element.nextElementSibling.remove();
             }
             block = null;
           }

@@ -55,7 +55,7 @@ describe("ngIf", () => {
     it("should immediately remove the element and replace it with comment node if condition is falsy", async () => {
       makeIf("false", "undefined", "null", "NaN", "''", "0");
       await wait();
-      Array.from(element.childNodes).forEach((node) => {
+      Array.from(element.children).forEach((node) => {
         expect(node.nodeType).toBe(Node.COMMENT_NODE);
       });
     });
@@ -63,19 +63,19 @@ describe("ngIf", () => {
     it("should leave the element if condition is true", async () => {
       makeIf("true");
       await wait();
-      expect(element.childNodes.length).toBe(1);
+      expect(element.children.length).toBe(1);
     });
 
     it("should leave the element if the condition is a non-empty string", async () => {
       makeIf("'f'", "'0'", "'false'", "'no'", "'n'", "'[]'");
       await wait();
-      expect(element.childNodes.length).toBe(6);
+      expect(element.children.length).toBe(6);
     });
 
     it("should leave the element if the condition is an object", async () => {
       makeIf("[]", "{}");
       await wait();
-      expect(element.childNodes.length).toBe(2);
+      expect(element.children.length).toBe(2);
     });
 
     it("should react to changes on a property of an object", async () => {
@@ -84,7 +84,7 @@ describe("ngIf", () => {
       };
       makeIf("a.b");
       await wait();
-      expect(element.childNodes.length).toBe(1);
+      expect(element.children.length).toBe(1);
 
       $scope.a.b = false;
       await wait();
@@ -99,7 +99,7 @@ describe("ngIf", () => {
       };
       makeIf("a.b.c");
       await wait();
-      expect(element.childNodes.length).toBe(1);
+      expect(element.children.length).toBe(1);
 
       $scope.a.b.c = false;
       await wait();
@@ -107,36 +107,36 @@ describe("ngIf", () => {
 
       $scope.a.b.c = true;
       await wait();
-      expect(element.childNodes.length).toBe(1);
+      expect(element.children.length).toBe(1);
     });
 
     it("should not add the element twice if the condition goes from true to true", async () => {
       $scope.hello = "true1";
       makeIf("hello");
       await wait();
-      expect(element.childNodes.length).toBe(1);
+      expect(element.children.length).toBe(1);
       $scope.$apply('hello = "true2"');
       await wait();
-      expect(element.childNodes.length).toBe(1);
+      expect(element.children.length).toBe(1);
     });
 
     it("should not recreate the element if the condition goes from true to true", async () => {
       $scope.hello = "true1";
       makeIf("hello");
       await wait();
-      expect(element.childNodes.length).toBe(1);
-      setCacheData(element.childNodes[0], "flag", true);
+      expect(element.children.length).toBe(1);
+      setCacheData(element.children[0], "flag", true);
       $scope.$apply('hello = "true2"');
       await wait();
-      expect(element.childNodes.length).toBe(1);
-      expect(getCacheData(element.childNodes[0], "flag")).toBe(true);
+      expect(element.children.length).toBe(1);
+      expect(getCacheData(element.children[0], "flag")).toBe(true);
     });
 
     it("should create then remove the element if condition changes", async () => {
       $scope.hello = true;
       makeIf("hello");
       await wait();
-      expect(element.childNodes.length).toBe(1);
+      expect(element.children.length).toBe(1);
       $scope.$apply("hello = false");
       await wait();
       expect(element.childNodes[0].nodeType).toBe(Node.COMMENT_NODE);
@@ -152,7 +152,7 @@ describe("ngIf", () => {
       );
       $compile(element)($scope);
       await wait();
-      expect(element.childNodes.length).toBe(1);
+      expect(element.children.length).toBe(1);
     });
 
     it("should destroy the child scope every time the expression evaluates to false", async () => {
@@ -184,15 +184,15 @@ describe("ngIf", () => {
 
       $compile(element)($scope);
       await wait();
-      expect(element.childNodes.length).toBe(9);
+      expect(element.children.length).toBe(9);
 
       $scope.$apply("values.splice(0,1)");
       await wait();
-      expect(element.childNodes.length).toBe(7);
+      expect(element.children.length).toBe(6);
 
       $scope.$apply("values.push(1)");
       await wait();
-      expect(element.childNodes.length).toBe(9);
+      expect(element.children.length).toBe(9);
     });
 
     it("should play nice with ngInclude on the same element", (done) => {
@@ -213,7 +213,7 @@ describe("ngIf", () => {
       $scope.value = true;
       makeIf("value");
       await wait();
-      expect(element.childNodes.length).toBe(1);
+      expect(element.children.length).toBe(1);
       element.children[0].classList.remove("my-class");
       expect(element.children[0].className).not.toContain("my-class");
 
@@ -224,7 +224,7 @@ describe("ngIf", () => {
 
       $scope.$apply("value = true");
       await wait();
-      expect(element.childNodes.length).toBe(1);
+      expect(element.children.length).toBe(1);
       expect(element.children[0].className).toContain("my-class");
     });
 

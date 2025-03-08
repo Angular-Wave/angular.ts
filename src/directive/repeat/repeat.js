@@ -264,10 +264,7 @@ export function ngRepeatDirective($animate) {
                   } else {
                     previousNode.after(clone[0]);
                   }
-                  // Clean up th initial comment node
-                  if (previousNode.nodeType == Node.COMMENT_NODE) {
-                    previousNode.remove();
-                  }
+
                   previousNode = endNode;
                   // Note: We only need the first/last node of the cloned nodes.
                   // However, we need to keep the reference to the dom wrapper as it might be changed later
