@@ -33,10 +33,10 @@ export class Angular {
     Cache.clear(); // a ensure new instance of angular gets a clean Cache
 
     /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
-    this.cache = Cache;
+    this.Cache = Cache;
 
     /** @type {import('./core/pubsub/pubsub.js').PubSub} */
-    this.eventBus = EventBus;
+    this.EventBus = EventBus;
 
     /** @type {string} */
     this.version = VERSION;
@@ -47,8 +47,6 @@ export class Angular {
     /** @type {!Array<string|any>} */
     this.bootsrappedModules = [];
 
-    /** @type {Function} */
-    this.doBootstrap;
     window["angular"] = this;
     publishExternalAPI(this);
   }
@@ -196,13 +194,6 @@ export class Angular {
    */
   injector(modules, strictDi) {
     return createInjector(modules, strictDi);
-  }
-
-  resumeBootstrap(extraModules) {
-    extraModules.forEach((module) => {
-      this.bootsrappedModules.push(module);
-    });
-    return this.doBootstrap();
   }
 
   /**

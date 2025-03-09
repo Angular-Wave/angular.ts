@@ -1,7 +1,10 @@
-export const ngRepeatDirective: (string | (($parse: any, $animate: any) => {
-    restrict: string;
-    transclude: string;
-    priority: number;
-    terminal: boolean;
-    compile: ($element: any, $attr: any) => ($scope: any, $element: any, $attr: any, ctrl: any, $transclude: any) => void;
-}))[];
+/**
+ *
+ * @param {import("../../core/parse/parse.js").ParseService} $parse
+ * @param {*} $animate
+ * @returns {import("../../types.js").Directive}
+ */
+export function ngRepeatDirective($parse: import("../../core/parse/parse.js").ParseService, $animate: any): import("../../types.js").Directive;
+export namespace ngRepeatDirective {
+    let $inject: string[];
+}

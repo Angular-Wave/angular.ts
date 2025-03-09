@@ -6,17 +6,15 @@
  */
 export class Angular {
     /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
-    cache: Map<number, import("./core/cache/cache").ExpandoStore>;
+    Cache: Map<number, import("./core/cache/cache").ExpandoStore>;
     /** @type {import('./core/pubsub/pubsub.js').PubSub} */
-    eventBus: import("./core/pubsub/pubsub.js").PubSub;
+    EventBus: import("./core/pubsub/pubsub.js").PubSub;
     /** @type {string} */
     version: string;
     /** @type {typeof import('./shared/jqlite/jqlite').JQLite} */
     element: typeof import("./shared/jqlite/jqlite").JQLite;
     /** @type {!Array<string|any>} */
     bootsrappedModules: Array<string | any>;
-    /** @type {Function} */
-    doBootstrap: Function;
     /**
      * Configure several aspects of error handling if used as a setter or return the
      * current configuration if used as a getter.
@@ -83,7 +81,6 @@ export class Angular {
      * @returns {import("./core/di/internal-injector").InjectorService}
      */
     injector(modules: any[], strictDi: boolean | null): import("./core/di/internal-injector").InjectorService;
-    resumeBootstrap(extraModules: any): any;
     /**
      * @param {Element|Document} element
      */

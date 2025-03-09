@@ -49,4 +49,21 @@ describe("channel", () => {
 
     expect(unsubscribeSpy).toHaveBeenCalled();
   });
+
+  it("should handle templates when EventBus emits a value", async () => {
+    element = $compile(
+      '<div ng-channel="testChannel">{{ a.firstName }} {{ a.lastName }}</div>',
+    )($scope);
+    $scope.$digest();
+    expect(element[0].textContent).toBe(" ");
+
+    EventBus.publish("testChannel", {
+      a: { firstName: "John", lastName: "Doe" },
+    });
+
+    await wait(100);
+    $scope.$digest();
+
+    expect(element[0].textContent).toBe("John Doe");
+  });
 });
