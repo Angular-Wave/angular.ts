@@ -1773,7 +1773,11 @@ describe("provider", () => {
     expect(
       createInjector([
         function ($provide) {
-          $provide.provider({ value: () => ({ $get: Array }) });
+          $provide.provider({
+            value: function () {
+              return { $get: Array };
+            },
+          });
         },
       ]).get("value"),
     ).toEqual([]);
