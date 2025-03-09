@@ -8,7 +8,7 @@ export function ngChangeDirective() {
     link(scope, _element, attr, ctrl) {
       /** @type {import('../../types.js').NgModelController} */ (
         ctrl
-      ).$viewChangeListeners.push(() => scope.$eval(attr.ngChange));
+      ).$viewChangeListeners.push(() => scope.$eval(attr["ngChange"]));
     },
   };
 }

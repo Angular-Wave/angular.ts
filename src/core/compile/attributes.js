@@ -152,7 +152,7 @@ export class Attributes {
 
     if (writeAttr !== false) {
       let elem = isProxy(this.$$element)
-        ? this.$$element.$target
+        ? this.$$element['$target']
         : this.$$element;
       if (value === null || isUndefined(value)) {
         elem.removeAttribute(attrName);
