@@ -6,14 +6,13 @@
  */
 export class Angular {
     /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
-    cache: Map<number, import("./core/cache/cache").ExpandoStore>;
+    Cache: Map<number, import("./core/cache/cache").ExpandoStore>;
+    /** @type {import('./core/pubsub/pubsub.js').PubSub} */
     EventBus: import("./core/pubsub/pubsub.js").PubSub;
     /** @type {string} */
     version: string;
     /** @type {!Array<string|any>} */
     bootsrappedModules: Array<string | any>;
-    /** @type {Function} */
-    doBootstrap: Function;
     /**
      * Configure several aspects of error handling if used as a setter or return the
      * current configuration if used as a getter.
@@ -73,21 +72,20 @@ export class Angular {
      * @returns {any} InjectorService - Returns the newly created injector for this app.
      */
     bootstrap(element: string | Element | Document, modules?: Array<string | any>, config?: AngularBootstrapConfig): any;
-    $injector: import("./core/di/internal-injector").InjectorService;
+    $injector: import("./core/di/internal-injector.js").InjectorService;
     /**
      *
      * @param {any[]} modules
      * @param {boolean?} strictDi
-     * @returns {import("./core/di/internal-injector").InjectorService}
+     * @returns {import("./core/di/internal-injector.js").InjectorService}
      */
-    injector(modules: any[], strictDi: boolean | null): import("./core/di/internal-injector").InjectorService;
+    injector(modules: any[], strictDi: boolean | null): import("./core/di/internal-injector.js").InjectorService;
     /**
      * Return instance of InjectorService attached to element
      * @param {Element} element
-     * @returns {import('../core/di/internal-injector.js').InjectorService}
+     * @returns {import('./core/di/internal-injector.js').InjectorService}
      */
-    getInjector(element: Element): any;
-    resumeBootstrap(extraModules: any): any;
+    getInjector(element: Element): import("./core/di/internal-injector.js").InjectorService;
     /**
      * @param {Element|Document} element
      */
@@ -143,9 +141,9 @@ export class Angular {
     /**
      * @param {Node} element
      * @param {string} [name]
-     * @returns {Scope}
+     * @returns {import('./core/scope/scope.js').Scope}
      */
-    getController(element: Node, name?: string): Scope;
+    getController(element: Node, name?: string): import("./core/scope/scope.js").Scope;
 }
 /**
  * Configuration option for AngularTS bootstrap process.
@@ -157,4 +155,3 @@ export type AngularBootstrapConfig = {
     strictDi?: boolean;
 };
 import { NgModule } from "./core/di/ng-module.js";
-import { Scope } from "./core/scope/scope.js";

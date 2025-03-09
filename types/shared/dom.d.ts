@@ -151,7 +151,7 @@ export function createNodelistFromHTML(htmlString: string): NodeList;
  */
 export function appendNodesToElement(element: Element, nodes: Node | Node[] | string): void;
 /**
- * Remove element from the DOM and clear CACHE data, associated with the node.
+ * Remove element from the DOM and clear Cache data, associated with the node.
  * @param {Element} element
  */
 export function emptyElement(element: Element): void;

@@ -50,6 +50,10 @@ export class RootScopeProvider {
  */
 export const isProxySymbol: unique symbol;
 /**
+ * Decorator for excluding objects from scope observability
+ */
+export const NONSCOPE: "$nonscope";
+/**
  * Scope class for the Proxy. It intercepts operations like property access (get)
  * and property setting (set), and adds support for deep change tracking and
  * observer-like behavior.
@@ -133,7 +137,6 @@ export class Scope {
         $watchCollection: any;
         $new: any;
         $newIsolate: any;
-        $deproxy: any;
         $destroy: any;
         $eval: any;
         $apply: any;
@@ -154,6 +157,7 @@ export class Scope {
         $id: number;
         registerForeignKey: any;
         notifyListener: any;
+        $merge: any;
     };
     /**
      * @private
@@ -175,7 +179,6 @@ export class Scope {
     $new(childInstance: any): any;
     $newIsolate(instance: any): any;
     $transcluded(parentInstance: any): any;
-    $deproxy(): any;
     registerKey(key: any, listener: any): void;
     registerForeignKey(key: any, listener: any): void;
     deregisterKey(key: any, id: any): boolean;
@@ -186,6 +189,7 @@ export class Scope {
     $digest(): void;
     $eval(expr: any, locals: any): any;
     $evalAsync(expr: any, locals: any): Promise<any>;
+    $merge(newTarget: any): void;
     $apply(expr: any): any;
     $on(name: any, listener: any): () => void;
     /**

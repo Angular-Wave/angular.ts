@@ -15,7 +15,7 @@ export const EXPANDO: "ng";
  *
  * @type {Map<number, ExpandoStore>}
  */
-export const CACHE: Map<number, ExpandoStore>;
+export const Cache: Map<number, ExpandoStore>;
 export type ExpandoStore = {
     data: {
         [x: string]: any;

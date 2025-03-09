@@ -443,7 +443,6 @@ export class Scope {
       $watchCollection: this.$watchCollection.bind(this),
       $new: this.$new.bind(this),
       $newIsolate: this.$newIsolate.bind(this),
-      $deproxy: this.$deproxy.bind(this),
       $destroy: this.$destroy.bind(this),
       $eval: this.$eval.bind(this),
       $apply: this.$apply.bind(this),
@@ -464,6 +463,7 @@ export class Scope {
       $id: this.$id,
       registerForeignKey: this.registerForeignKey.bind(this),
       notifyListener: this.notifyListener.bind(this),
+      $merge: this.$merge.bind(this),
     };
 
     if (
@@ -826,22 +826,6 @@ export class Scope {
     return proxy;
   }
 
-  $deproxy() {
-    if (isObject(this.$target) && !Array.isArray(this.$target)) {
-      let clone = {};
-      for (let k in this.$target) {
-        let v = this.$target[k];
-        if (v[isProxySymbol]) {
-          clone[k] = v.$deproxy();
-        } else {
-          clone[k] = v;
-        }
-      }
-    } else {
-      return this.$target;
-    }
-  }
-
   registerKey(key, listener) {
     if (this.watchers.has(key)) {
       this.watchers.get(key).push(listener);
@@ -921,6 +905,12 @@ export class Scope {
 
   async $evalAsync(expr, locals) {
     return this.$eval(expr, locals);
+  }
+
+  $merge(newTarget) {
+    Object.entries(newTarget).forEach(([key, value]) => {
+      this.set(this.$target, key, value);
+    });
   }
 
   $apply(expr) {
