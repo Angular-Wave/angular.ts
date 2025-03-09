@@ -74,6 +74,24 @@ describe("Scope", () => {
   describe("$id", () => {
     it("should have a unique id", () => {
       expect(scope.$id < scope.$new().$id).toBeTruthy();
+
+      const res = createScope(new Demo());
+      expect(res.$id).toBeDefined();
+    });
+  });
+
+  describe("$nonscope", () => {
+    it("should ignore objects with $nonscope property", () => {
+      const res = createScope({ $nonscope: true });
+      expect(res.$id).toBeUndefined();
+    });
+
+    it("should ignore instances from classes with $nonscope property", () => {
+      Demo.$nonscope = true;
+      const res = createScope(new Demo());
+      expect(res.$id).toBeUndefined();
+
+      Demo.$nonscope = undefined;
     });
   });
 

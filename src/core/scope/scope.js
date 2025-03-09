@@ -63,7 +63,11 @@ export class RootScopeProvider {
  *                                     or the original value if the target is not an object.
  */
 export function createScope(target = {}, context) {
-  if (isNull(target)) {
+  if (
+    isNull(target) ||
+    target[NONSCOPE] === true ||
+    (target.constructor && target.constructor[NONSCOPE]) === true
+  ) {
     return target;
   }
 
@@ -107,6 +111,11 @@ export function createScope(target = {}, context) {
  */
 
 export const isProxySymbol = Symbol("isProxy");
+
+/**
+ * Decorator for excluding objects from scope observability
+ */
+export const NONSCOPE = "$nonscope";
 
 /**
  * Scope class for the Proxy. It intercepts operations like property access (get)

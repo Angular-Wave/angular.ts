@@ -19,7 +19,7 @@ export class Attributes {
   /**
    * @param {import('../scope/scope.js').Scope} $rootScope
    * @param {*} $animate
-   * @param {import("../exception-handler").ErrorHandler} $exceptionHandler
+   * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
    * @param {*} $sce
    * @param {Element} [element]
    * @param {*} [attributesToCopy]
@@ -32,6 +32,7 @@ export class Attributes {
     element,
     attributesToCopy,
   ) {
+    this.$nonscope = true;
     this.$rootScope = $rootScope;
     this.$animate = $animate;
     this.$exceptionHandler = $exceptionHandler;
