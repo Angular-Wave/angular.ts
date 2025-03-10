@@ -111,6 +111,7 @@ export function TemplateRequestProvider() {
 
         function handleError(resp) {
           if (!ignoreRequestError) {
+            debugger;
             resp = $templateRequestMinErr(
               "tpload",
               "Failed to load template: {0} (HTTP status: {1} {2})",

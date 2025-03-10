@@ -904,7 +904,7 @@ export class Scope {
   }
 
   async $evalAsync(expr, locals) {
-    return this.$eval(expr, locals);
+    return await this.$eval(expr, locals);
   }
 
   $merge(newTarget) {

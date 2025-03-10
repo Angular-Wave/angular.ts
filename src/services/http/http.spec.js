@@ -931,11 +931,11 @@ describe("$http", function () {
     const injector = createInjector([
       "ng",
       function ($httpProvider) {
-        $httpProvider.interceptors.push(function ($q) {
+        $httpProvider.interceptors.push(function () {
           return {
             request: function (config) {
               config.params.intercepted = true;
-              return $q.resolve(config);
+              return Promise.resolve(config);
             },
           };
         });
@@ -1097,7 +1097,7 @@ describe("$http", function () {
   });
 
   describe("pending requests", function () {
-    it("are in the collection while pending", async function (done) {
+    it("are in the collection while pending", async function () {
       $http.get("/mock/hello");
       expect($http.pendingRequests.length).toBe(0);
       await wait();
