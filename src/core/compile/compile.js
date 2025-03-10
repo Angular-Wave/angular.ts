@@ -78,24 +78,18 @@ import { isProxy } from "../scope/scope.js";
 
 const $compileMinErr = minErr("$compile");
 const EXCLUDED_DIRECTIVES = ["ngIf", "ngRepeat"];
+const ALL_OR_NOTHING_ATTRS = ["ngSrc", "ngSrcset", "src", "srcset"];
+const REQUIRE_PREFIX_REGEXP = /^(?:(\^\^?)?(\?)?(\^\^?)?)?/;
+// Ref: http://developers.whatwg.org/webappapis.html#event-handler-idl-attributes
+// The assumption is that future DOM event attribute names will begin with
+// 'on' and be composed of only English letters.
+const EVENT_HANDLER_ATTR_REGEXP = /^(on[a-z]+|formaction)$/;
 export const DirectiveSuffix = "Directive";
 
 CompileProvider.$inject = ["$provide", "$$sanitizeUriProvider"];
 export function CompileProvider($provide, $$sanitizeUriProvider) {
   const hasDirectives = {};
 
-  const ALL_OR_NOTHING_ATTRS = {
-    ngSrc: true,
-    ngSrcset: true,
-    src: true,
-    srcset: true,
-  };
-  const REQUIRE_PREFIX_REGEXP = /^(?:(\^\^?)?(\?)?(\^\^?)?)?/;
-
-  // Ref: http://developers.whatwg.org/webappapis.html#event-handler-idl-attributes
-  // The assumption is that future DOM event attribute names will begin with
-  // 'on' and be composed of only English letters.
-  const EVENT_HANDLER_ATTR_REGEXP = /^(on[a-z]+|formaction)$/;
   const bindingCache = Object.create(null);
 
   function parseIsolateBindings(scope, directiveName, isController) {
@@ -2587,7 +2581,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         const nodeName = getNodeName(node);
         const trustedContext = getTrustedAttrContext(nodeName, name);
         const mustHaveExpression = !isNgAttr;
-        const allOrNothing = ALL_OR_NOTHING_ATTRS[name] || isNgAttr;
+        const allOrNothing = ALL_OR_NOTHING_ATTRS.includes(name) || isNgAttr;
 
         let interpolateFn = $interpolate(
           value,

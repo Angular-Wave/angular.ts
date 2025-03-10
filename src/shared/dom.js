@@ -526,13 +526,14 @@ export function setData(element, key, value) {
   getOrSetCacheData(element, key, value);
 }
 
+const template = document.createElement("template");
+
 /**
  * Creates a DOM element from an HTML string.
- * @param {string} htmlString - A string representing the HTML to parse.
+ * @param {string} htmlString - A string representing the HTML to parse. Must have only one root element.
  * @returns {Element} - The parsed DOM element.
  */
 export function createElementFromHTML(htmlString) {
-  const template = document.createElement("template");
   template.innerHTML = htmlString.trim();
   return /** @type {Element} */ (template.content.firstChild);
 }

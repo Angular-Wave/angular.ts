@@ -47,8 +47,6 @@ function getChildScopes(scope) {
 
 describe("$compile", () => {
   let $rootScope,
-    myModule,
-    module,
     injector,
     defaultModule,
     element,
@@ -57,10 +55,19 @@ describe("$compile", () => {
     log,
     $sce;
 
+  /** @type {import("../di/ng-module.js").NgModule} */
+  let myModule;
+
+  /** @type {import("../di/ng-module.js").NgModule} */
+  let module;
+
+  /** @type {Angular} */
+  let angular;
+
   beforeEach(() => {
     dealoc(document.getElementById("dummy"));
     log = [];
-    window.angular = new Angular();
+    angular = new Angular();
     module = window.angular.module("test1", ["ng"]);
     defaultModule = window.angular.module("defaultModule", ["ng"]);
     myModule = window.angular.module("myModule", ["ng"]);
@@ -195,6 +202,10 @@ describe("$compile", () => {
     $templateCache = injector.get("$templateCache");
     $sce = injector.get("$sce");
   }
+
+  it("is provided by injector $compile", () => {
+    expect(injector.get("$compile")).toBeDefined();
+  });
 
   it("allows creating directives", () => {
     myModule.directive("testing", () => {});
@@ -5358,15 +5369,13 @@ describe("$compile", () => {
       it("should merge interpolated css class with ngRepeat", async () => {
         reloadModules();
         element = $compile(
-          createElementFromHTML(
-            "<div>" +
-              '<div ng-repeat="i in [1]" class="one {{cls}} three" replace></div>' +
-              "</div>",
-          ),
+          "<div>" +
+            '<div ng-repeat="i in [1]" class="one {{cls}} three" replace></div>' +
+            "</div>",
         )($rootScope);
         $rootScope.cls = "two";
         await wait();
-        const child = element.childNodes[0];
+        const child = element.children[0];
         expect(child.classList.contains("one")).toBeTrue();
         expect(child.classList.contains("two")).toBeTrue(); // interpolated
         expect(child.classList.contains("three")).toBeTrue();
@@ -5501,8 +5510,8 @@ describe("$compile", () => {
         await wait();
         const child = element.firstChild;
         expect(getNodeName(child)).toMatch(/a/i);
-        expect(isSVGElement(child[0])).toBe(true);
-        expect(child[0].href.baseVal).toBe("/foo/bar");
+        expect(isSVGElement(child)).toBe(true);
+        expect(child.href.baseVal).toBe("/foo/bar");
       });
 
       xit("should support MathML templates using directive.templateNamespace=math", async () => {
@@ -6354,16 +6363,17 @@ describe("$compile", () => {
           async ($templateCache, $rootScope, $compile) => {
             $templateCache.set(
               "template.html",
-              '<a xlink:href="{{linkurl}}">{{text}}</a>',
+              '<a href="{{linkurl}}">{{text}}</a>',
             );
             element = $compile(
-              '<svg><g svg-anchor="/foo/bar" text="foo/bar!"></g></svg>',
+              '<svg><a svg-anchor="/foo/bar" text="foo/bar!"></a></svg>',
             )($rootScope);
             await wait();
+
             const child = element.firstChild;
             expect(getNodeName(child)).toMatch(/a/i);
-            expect(isSVGElement(child[0])).toBe(true);
-            expect(child[0].href.baseVal).toBe("/foo/bar");
+            expect(isSVGElement(child)).toBe(true);
+            expect(child.href.baseVal).toBe("/foo/bar");
           },
         );
       });
@@ -6394,9 +6404,9 @@ describe("$compile", () => {
             );
             await wait();
             const child = element.firstChild;
-            expect(getNodeName(child)).toMatch(/msup/i);
-            expect(isUnknownElement(child[0])).toBe(false);
-            expect(isHTMLElement(child[0])).toBe(false);
+            expect(getNodeName(child)).toMatch(/mn/i);
+            expect(isUnknownElement(child)).toBe(false);
+            expect(isHTMLElement(child)).toBe(false);
           },
         );
         expect().toBe();
@@ -14984,7 +14994,7 @@ describe("$compile", () => {
       );
     });
 
-    it("should use $$sanitizeUri when working with svg and xlink:href through ng-href", async () => {
+    it("should use $$sanitizeUri when working with svg and href through ng-href", async () => {
       const $$sanitizeUri = jasmine
         .createSpy("$$sanitizeUri")
         .and.returnValue("https://clean.example.org");
@@ -14996,9 +15006,9 @@ describe("$compile", () => {
       // because these interpolations will be resolved against the URL context instead
       $rootScope.testUrl = "https://bad.example.org";
 
-      element = $compile(
-        '<svg><a xlink:href="" ng-href="{{ testUrl }}"></a></svg>',
-      )($rootScope);
+      element = $compile('<svg><a href="" ng-href="{{ testUrl }}"></a></svg>')(
+        $rootScope,
+      );
       await wait();
       expect(element.querySelector("a")[0].href.baseVal).toBe(
         "https://clean.example.org",
@@ -15006,7 +15016,7 @@ describe("$compile", () => {
       expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);
     });
 
-    it("should require a RESOURCE_URL context for xlink:href by if not on an anchor or image", () => {
+    it("should require a RESOURCE_URL context for href by if not on an anchor or image", () => {
       module.decorator("$exceptionHandler", () => {
         return (exception, cause) => {
           throw new Error(exception.message);
