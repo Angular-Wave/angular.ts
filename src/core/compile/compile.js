@@ -972,31 +972,20 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             }
 
             // iterate over the attributes
-            for (
-              var attr,
-                name,
-                nName,
-                value,
-                ngPrefixMatch,
-                nAttrs = node.attributes,
-                j = 0,
-                jj = nAttrs && nAttrs.length;
-              j < jj;
-              j++
-            ) {
+            for (let j = 0; j < node.attributes?.length; j++) {
               let isNgAttr = false;
               let isNgProp = false;
               let isNgEvent = false;
               let isNgObserve = false;
 
-              attr = nAttrs[j];
-              name = attr.name;
-              value = attr.value;
-
-              nName = directiveNormalize(name.toLowerCase());
+              let attr = node.attributes[j];
+              let name = attr.name;
+              let value = attr.value;
+              let nName = directiveNormalize(name.toLowerCase());
 
               // Support ng-attr-*, ng-prop-* and ng-on-*
-              if ((ngPrefixMatch = nName.match(NG_PREFIX_BINDING))) {
+              const ngPrefixMatch = nName.match(NG_PREFIX_BINDING);
+              if (ngPrefixMatch) {
                 isNgAttr = ngPrefixMatch[1] === "Attr";
                 isNgProp = ngPrefixMatch[1] === "Prop";
                 isNgEvent = ngPrefixMatch[1] === "On";
@@ -1017,10 +1006,19 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 if (isNgProp) {
                   addPropertyDirective(node, directives, nName, name);
                 } else {
-                  addEventDirective(directives, nName, name);
+                  directives.push(
+                    createEventDirective(
+                      $parse,
+                      $rootScope,
+                      $exceptionHandler,
+                      nName,
+                      name,
+                      /* forceAsync= */ false,
+                    ),
+                  );
                 }
               } else if (isNgObserve) {
-                addObserveDirective(directives, name, value);
+                directives.push(ngObserveDirective(name, value));
               } else {
                 // Update nName for cases where a prefix was removed
                 // NOTE: the .toLowerCase() is unnecessary and causes https://github.com/angular/angular.js/issues/16624 for ng-attr-*
@@ -2400,10 +2398,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         );
       }
 
-      function sanitizeSrcsetPropertyValue(value) {
-        return sanitizeSrcset($sce.valueOf(value), "ng-prop-srcset");
-      }
-
       function sanitizeSrcset(value, invokeType) {
         if (!value) {
           return value;
@@ -2476,7 +2470,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           propName === "srcset" &&
           (nodeName === "img" || nodeName === "source")
         ) {
-          sanitizer = sanitizeSrcsetPropertyValue;
+          sanitizer = (value) =>
+            sanitizeSrcset($sce.valueOf(value), "ng-prop-srcset");
         } else if (trustedContext) {
           sanitizer = $sce.getTrusted.bind($sce, trustedContext);
         }
@@ -2503,23 +2498,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             };
           },
         });
-      }
-
-      function addEventDirective(directives, attrName, eventName) {
-        directives.push(
-          createEventDirective(
-            $parse,
-            $rootScope,
-            $exceptionHandler,
-            attrName,
-            eventName,
-            /* forceAsync= */ false,
-          ),
-        );
-      }
-
-      function addObserveDirective(directives, source, prop) {
-        directives.push(ngObserveDirective(source, prop));
       }
 
       function addAttrInterpolateDirective(
