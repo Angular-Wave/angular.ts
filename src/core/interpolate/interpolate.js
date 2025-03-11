@@ -41,38 +41,15 @@ function interr(text, err) {
  */
 export class InterpolateProvider {
   constructor() {
-    /** @type {string} */
-    this.start = "{{";
-    /** @type {string} */
-    this.end = "}}";
-  }
+    /**
+     * @type {string} Symbol to denote start of expression in the interpolated string. Defaults to `{{`.
+     */
+    this.startSymbol = "{{";
 
-  /**
-   * Symbol to denote start of expression in the interpolated string. Defaults to `{{`.
-   *
-   * @param {string=} value new value to set the starting symbol to.
-   * @returns {string|InterpolateProvider} Returns the symbol when used as getter and self if used as setter.
-   */
-  startSymbol(value) {
-    if (value) {
-      this.start = value;
-      return this;
-    }
-    return this.start;
-  }
-
-  /**
-   * Symbol to denote the end of expression in the interpolated string. Defaults to `}}`.
-   *
-   * @param {string=} value new value to set the ending symbol to.
-   * @returns {string|InterpolateProvider} Returns the symbol when used as getter and self if used as setter.
-   */
-  endSymbol(value) {
-    if (value) {
-      this.end = value;
-      return this;
-    }
-    return this.end;
+    /**
+     * @type {string} Symbol to denote the end of expression in the interpolated string. Defaults to `}}`.
+     */
+    this.endSymbol = "}}";
   }
 
   $get = [
@@ -87,14 +64,15 @@ export class InterpolateProvider {
     function ($parse, $sce) {
       /** @type {InterpolateProvider} */
       const provider = this;
-      const startSymbolLength = provider.start.length;
-      const endSymbolLength = provider.end.length;
+      const startSymbolLength = provider.startSymbol.length;
+      const endSymbolLength = provider.endSymbol.length;
+
       const escapedStartRegexp = new RegExp(
-        this.start.replace(/./g, escape),
+        provider.startSymbol.replace(/./g, escape),
         "g",
       );
       const escapedEndRegexp = new RegExp(
-        provider.end.replace(/./g, escape),
+        provider.endSymbol.replace(/./g, escape),
         "g",
       );
 
@@ -104,8 +82,8 @@ export class InterpolateProvider {
 
       function unescapeText(text) {
         return text
-          .replace(escapedStartRegexp, provider.start)
-          .replace(escapedEndRegexp, provider.end);
+          .replace(escapedStartRegexp, provider.startSymbol)
+          .replace(escapedEndRegexp, provider.endSymbol);
       }
 
       /**
@@ -228,7 +206,7 @@ export class InterpolateProvider {
           trustedContext === $sce.URL || trustedContext === $sce.MEDIA_URL;
 
         // Provide a quick exit and simplified result function for text with no interpolation
-        if (!text.length || text.indexOf(provider.start) === -1) {
+        if (!text.length || text.indexOf(provider.startSymbol) === -1) {
           if (mustHaveExpression) return;
 
           let unescapedText = unescapeText(text);
@@ -261,9 +239,9 @@ export class InterpolateProvider {
 
         while (index < textLength) {
           if (
-            (startIndex = text.indexOf(provider.start, index)) !== -1 &&
+            (startIndex = text.indexOf(provider.startSymbol, index)) !== -1 &&
             (endIndex = text.indexOf(
-              provider.end,
+              provider.endSymbol,
               startIndex + startSymbolLength,
             )) !== -1
           ) {
@@ -411,7 +389,7 @@ export class InterpolateProvider {
        * @returns {string} start symbol.
        */
       $interpolate.startSymbol = function () {
-        return provider.start;
+        return provider.startSymbol;
       };
 
       /**
@@ -423,7 +401,7 @@ export class InterpolateProvider {
        * @returns {string} end symbol.
        */
       $interpolate.endSymbol = function () {
-        return provider.end;
+        return provider.endSymbol;
       };
 
       return $interpolate;

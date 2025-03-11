@@ -1,6 +1,6 @@
 import { createInjector } from "../di/injector.js";
 import { Angular } from "../../loader.js";
-import { wait } from "../../shared/test-utils";
+import { wait } from "../../shared/test-utils.js";
 
 describe("$interpolate", () => {
   let $interpolate, $injector, $rootScope, $sce;
@@ -204,8 +204,8 @@ describe("$interpolate", () => {
       angular
         .module("customInterpolationApp", ["ng"])
         .config(function ($interpolateProvider) {
-          $interpolateProvider.startSymbol("[[");
-          $interpolateProvider.endSymbol("]]");
+          $interpolateProvider.startSymbol = "[[";
+          $interpolateProvider.endSymbol = "]]";
         });
 
       $injector = createInjector(["customInterpolationApp"]);
@@ -239,7 +239,8 @@ describe("$interpolate", () => {
       const injector = createInjector([
         "ng",
         function ($interpolateProvider) {
-          $interpolateProvider.startSymbol("FOO").endSymbol("OOF");
+          $interpolateProvider.startSymbol = "FOO";
+          $interpolateProvider.endSymbol = "OOF";
         },
       ]);
       const $interpolate = injector.get("$interpolate");
@@ -251,7 +252,8 @@ describe("$interpolate", () => {
       const injector = createInjector([
         "ng",
         function ($interpolateProvider) {
-          $interpolateProvider.startSymbol("FOO").endSymbol("OOF");
+          $interpolateProvider.startSymbol = "FOO";
+          $interpolateProvider.endSymbol = "OOF";
         },
       ]);
       const $interpolate = injector.get("$interpolate");
@@ -263,7 +265,8 @@ describe("$interpolate", () => {
       const injector = createInjector([
         "ng",
         function ($interpolateProvider) {
-          $interpolateProvider.startSymbol("FOO").endSymbol("OOF");
+          $interpolateProvider.startSymbol = "FOO";
+          $interpolateProvider.endSymbol = "OOF";
         },
       ]);
       const $interpolate = injector.get("$interpolate");
@@ -275,7 +278,8 @@ describe("$interpolate", () => {
       const injector = createInjector([
         "ng",
         function ($interpolateProvider) {
-          $interpolateProvider.startSymbol("FOO").endSymbol("OOF");
+          $interpolateProvider.startSymbol = "FOO";
+          $interpolateProvider.endSymbol = "OOF";
         },
       ]);
       const $interpolate = injector.get("$interpolate");
@@ -401,8 +405,8 @@ describe("$interpolate", () => {
       angular
         .module("customInterpolationApp", ["ng"])
         .config(function ($interpolateProvider) {
-          $interpolateProvider.startSymbol("--");
-          $interpolateProvider.endSymbol("--");
+          $interpolateProvider.startSymbol = "--";
+          $interpolateProvider.endSymbol = "--";
         });
 
       $injector = createInjector(["customInterpolationApp"]);
@@ -525,8 +529,8 @@ describe("$interpolate", () => {
       angular
         .module("customInterpolationApp", ["ng"])
         .config(function ($interpolateProvider) {
-          expect($interpolateProvider.startSymbol()).toBe("{{");
-          $interpolateProvider.startSymbol("((");
+          expect($interpolateProvider.startSymbol).toBe("{{");
+          $interpolateProvider.startSymbol = "((";
         });
 
       $injector = createInjector(["customInterpolationApp"]);
@@ -537,7 +541,7 @@ describe("$interpolate", () => {
       angular
         .module("customInterpolationApp")
         .config(function ($interpolateProvider) {
-          expect($interpolateProvider.startSymbol()).toBe("((");
+          expect($interpolateProvider.startSymbol).toBe("((");
         });
     });
 
@@ -549,8 +553,8 @@ describe("$interpolate", () => {
       angular
         .module("customInterpolationApp", ["ng"])
         .config(function ($interpolateProvider) {
-          $interpolateProvider.startSymbol("--");
-          $interpolateProvider.endSymbol("--");
+          $interpolateProvider.startSymbol = "--";
+          $interpolateProvider.endSymbol = "--";
         });
 
       $injector = createInjector(["customInterpolationApp"]);
@@ -569,8 +573,8 @@ describe("$interpolate", () => {
       angular
         .module("customInterpolationApp", ["ng"])
         .config(function ($interpolateProvider) {
-          expect($interpolateProvider.endSymbol()).toBe("}}");
-          $interpolateProvider.endSymbol("))");
+          expect($interpolateProvider.endSymbol).toBe("}}");
+          $interpolateProvider.endSymbol = "))";
         });
 
       $injector = createInjector(["customInterpolationApp"]);
@@ -581,7 +585,7 @@ describe("$interpolate", () => {
       angular
         .module("customInterpolationApp")
         .config(function ($interpolateProvider) {
-          expect($interpolateProvider.endSymbol()).toBe("))");
+          expect($interpolateProvider.endSymbol).toBe("))");
         });
     });
 
