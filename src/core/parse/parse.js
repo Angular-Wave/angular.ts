@@ -147,7 +147,7 @@ export function ParseProvider() {
               ? inputs[0]
               : parsedExpression(scope, locals, assign, inputs);
           // Do not invoke for getters
-          if (scope.getter) {
+          if (scope?.getter) {
             return;
           }
           const res = isFunction(value) ? value() : value;

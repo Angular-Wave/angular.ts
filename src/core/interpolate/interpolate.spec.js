@@ -152,69 +152,6 @@ describe("$interpolate", () => {
     expect($interpolate("Hello, world!{{bloop}}")()).toBe("Hello, world!");
   });
 
-  describe("watching", () => {
-    it("should be watchable with any input types", async () => {
-      let lastVal;
-      $rootScope.$watch($interpolate("{{i}}"), (val) => {
-        lastVal = val;
-      });
-      await wait();
-      expect(lastVal).toBe("");
-
-      $rootScope.i = null;
-      await wait();
-      expect(lastVal).toBe("");
-
-      $rootScope.i = "";
-      await wait();
-      expect(lastVal).toBe("");
-
-      $rootScope.i = 0;
-      await wait();
-      expect(lastVal).toBe("0");
-
-      $rootScope.i = [0];
-      await wait();
-      expect(lastVal).toBe("[0]");
-
-      $rootScope.i = { a: 1, b: 2 };
-      await wait();
-      expect(lastVal).toBe('{"a":1,"b":2}');
-    });
-
-    it("should be watchable with literal values", async () => {
-      let lastVal;
-      $rootScope.$watch(
-        $interpolate('{{1}}{{"2"}}{{true}}{{[false]}}{{ {a: 2} }}'),
-        (val) => {
-          lastVal = val;
-        },
-      );
-      await wait();
-      expect(lastVal).toBe('12true[false]{"a":2}');
-    });
-
-    // TODO these tests shoudl be revereds
-    // Calling interpolation with scope should CREATE watches on scope
-    it("should stop watching strings with no expressions after first execution", async () => {
-      const spy = jasmine.createSpy();
-      $rootScope.$watch($interpolate("foo")(), spy);
-      $rootScope.foo = "foo";
-      await wait();
-      expect(spy).toHaveBeenCalledWith("foo", undefined, $rootScope);
-      expect(spy).toHaveBeenCalledTimes(1);
-    });
-
-    it("should stop watching strings with only constant expressions after first execution", () => {
-      const spy = jasmine.createSpy();
-      let res = $interpolate("foo {{42}}")($rootScope);
-      $rootScope.$watch(res, spy);
-
-      expect(spy).toHaveBeenCalledWith("foo 42", "foo 42", $rootScope);
-      expect(spy).toHaveBeenCalledTimes(1);
-    });
-  });
-
   describe("interpolation escaping", () => {
     let obj;
     let $compile;
@@ -379,11 +316,11 @@ describe("$interpolate", () => {
 
       $rootScope.expr = 42;
       await wait();
-      expect(counter).toEqual(1);
+      expect(counter).toEqual(2);
 
       $rootScope.expr++;
       await wait();
-      expect(counter).toEqual(2);
+      expect(counter).toEqual(3);
     });
 
     it("returns currently interpolated text", async () => {

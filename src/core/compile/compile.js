@@ -546,9 +546,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
     /**
      * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
      * @param {*} $interpolate
-     * @param {import("../exception-handler").ErrorHandler} $exceptionHandler
+     * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
      * @param {*} $templateRequest
-     * @param {import("../parse/parse").ParseService} $parse
+     * @param {import("../parse/parse.js").ParseService} $parse
      * @param {*} $controller
      * @param {import('../scope/scope.js').Scope} $rootScope
      * @param {*} $sce
@@ -773,7 +773,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           );
           const directives = collectDirectives(
             /** @type Element */ (nodeList[i]),
-            [],
             attrs,
             i === 0 ? maxPriority : undefined,
             ignoreDirective,
@@ -940,17 +939,16 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {Element} node Node to search.
        * @param directives An array to which the directives are added to. This array is sorted before
        *        the function returns.
-       * @param {Attributes|import("./attributes").Attributes} attrs The shared attrs object which is used to populate the normalized attributes.
+       * @param {Attributes|import("./attributes.js").Attributes} attrs The shared attrs object which is used to populate the normalized attributes.
        * @param {number=} maxPriority Max directive priority.
-       * @param {boolean=} ignoreDirective
+       * @param {string} [ignoreDirective]
+       * @return {import('../../types.js').Directive[]} An array to which the directives are added to. This array is sorted before the function returns.
        */
-      function collectDirectives(
-        node,
-        directives,
-        attrs,
-        maxPriority,
-        ignoreDirective,
-      ) {
+      function collectDirectives(node, attrs, maxPriority, ignoreDirective) {
+        /**
+         * @type {import('../../types.js').Directive[]}
+         */
+        const directives = [];
         const { nodeType } = node;
         const attrsMap = attrs.$attr;
         let nodeName;
@@ -958,15 +956,15 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         switch (nodeType) {
           case Node.ELEMENT_NODE /* Element */:
             nodeName = node.nodeName.toLowerCase();
-
-            // use the node name: <directive>
-            addDirective(
-              directives,
-              directiveNormalize(nodeName),
-              "E",
-              maxPriority,
-              ignoreDirective,
-            );
+            if (ignoreDirective !== directiveNormalize(nodeName)) {
+              // use the node name: <directive>
+              addDirective(
+                directives,
+                directiveNormalize(nodeName),
+                "E",
+                maxPriority,
+              );
+            }
 
             // iterate over the attributes
             for (
@@ -1042,13 +1040,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   isNgAttr,
                 );
 
-                addDirective(
-                  directives,
-                  nName,
-                  "A",
-                  maxPriority,
-                  ignoreDirective,
-                );
+                if (nName !== ignoreDirective) {
+                  addDirective(directives, nName, "A", maxPriority);
+                }
               }
             }
 
@@ -1771,7 +1765,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               // - combine directives as: processed + template + unprocessed
               const templateDirectives = collectDirectives(
                 /** @type {Element} */ (compileNode),
-                [],
                 newTemplateAttrs,
               );
               const unprocessedDirectives = directives.splice(
@@ -2061,14 +2054,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        *   * `A': attribute
        * @returns {boolean} true if directive was added.
        */
-      function addDirective(
-        tDirectives,
-        name,
-        location,
-        maxPriority,
-        ignoreDirective,
-      ) {
-        if (name === ignoreDirective) return false;
+      function addDirective(tDirectives, name, location, maxPriority) {
         let match = false;
         if (Object.prototype.hasOwnProperty.call(hasDirectives, name)) {
           for (
@@ -2216,7 +2202,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               replaceInline($compileNode, compileNode);
               const templateDirectives = collectDirectives(
                 compileNode,
-                [],
                 tempTemplateAttrs,
               );
 
@@ -2374,7 +2359,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
       }
 
       function addTextInterpolateDirective(directives, text) {
-        const interpolateFn = $interpolate(text, true); // Create interpolation function
+        const interpolateFn = $interpolate(text, true);
         if (interpolateFn) {
           directives.push({
             priority: 0,
