@@ -1,6 +1,7 @@
 import { createInjector } from "../../core/di/injector.js";
 import { Angular } from "../../loader.js";
 import { dealoc } from "../../shared/dom.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("$aria", () => {
   let scope;
@@ -35,19 +36,19 @@ describe("$aria", () => {
 
     it("should not attach aria-checked to custom radio controls", () => {
       element = $compile(
-        '<div role="radio" ng-model="val" value="one" ng-aria-disable></div>' +
-          '<div role="radio" ng-model="val" value="two" ng-aria-disable></div>',
+        '<div><div role="radio" ng-model="val" value="one" ng-aria-disable></div>' +
+          '<div role="radio" ng-model="val" value="two" ng-aria-disable></div></div>',
       )(scope);
-      const radio1 = element.eq(0);
-      const radio2 = element.eq(1);
+      const radio1 = element.children[0];
+      const radio2 = element.children[1];
 
       scope.$apply('val = "one"');
-      expect(radio1[0].hasAttribute("aria-checked")).toBeFalse();
-      expect(radio2[0].hasAttribute("aria-checked")).toBeFalse();
+      expect(radio1.hasAttribute("aria-checked")).toBeFalse();
+      expect(radio2.hasAttribute("aria-checked")).toBeFalse();
 
       scope.$apply('val = "two"');
-      expect(radio1[0].hasAttribute("aria-checked")).toBeFalse();
-      expect(radio2[0].hasAttribute("aria-checked")).toBeFalse();
+      expect(radio1.hasAttribute("aria-checked")).toBeFalse();
+      expect(radio2.hasAttribute("aria-checked")).toBeFalse();
     });
 
     // ariaDisabled
@@ -163,27 +164,27 @@ describe("$aria", () => {
 
     it("should not attach aria-value* to custom controls", () => {
       element = $compile(
-        '<div role="progressbar" ng-model="val" min="0" max="100" ng-aria-disable></div>' +
-          '<div role="slider" ng-model="val" min="0" max="100" ng-aria-disable></div>',
+        '<div><div role="progressbar" ng-model="val" min="0" max="100" ng-aria-disable></div>' +
+          '<div role="slider" ng-model="val" min="0" max="100" ng-aria-disable></div></div>',
       )(scope);
-      const progressbar = element.eq(0);
-      const slider = element.eq(1);
+      const progressbar = element.children[0];
+      const slider = element.children[1];
 
       ["aria-valuemax", "aria-valuemin", "aria-valuenow"].forEach((attr) => {
-        expect(progressbar[0].hasAttribute(attr)).toBeFalse();
-        expect(slider[0].hasAttribute(attr)).toBeFalse();
+        expect(progressbar.hasAttribute(attr)).toBeFalse();
+        expect(slider.hasAttribute(attr)).toBeFalse();
       });
 
       scope.$apply("val = 50");
       ["aria-valuemax", "aria-valuemin", "aria-valuenow"].forEach((attr) => {
-        expect(progressbar[0].hasAttribute(attr)).toBeFalse();
-        expect(slider[0].hasAttribute(attr)).toBeFalse();
+        expect(progressbar.hasAttribute(attr)).toBeFalse();
+        expect(slider.hasAttribute(attr)).toBeFalse();
       });
 
       scope.$apply("val = 150");
       ["aria-valuemax", "aria-valuemin", "aria-valuenow"].forEach((attr) => {
-        expect(progressbar[0].hasAttribute(attr)).toBeFalse();
-        expect(slider[0].hasAttribute(attr)).toBeFalse();
+        expect(progressbar.hasAttribute(attr)).toBeFalse();
+        expect(slider.hasAttribute(attr)).toBeFalse();
       });
     });
 
@@ -191,8 +192,8 @@ describe("$aria", () => {
     it("should not bind keypress to `ngClick`", () => {
       scope.onClick = jasmine.createSpy("onClick");
       element = $compile(
-        '<div ng-click="onClick()" tabindex="0" ng-aria-disable></div>' +
-          '<ul><li ng-click="onClick()" tabindex="0" ng-aria-disable></li></ul>',
+        '<div><div ng-click="onClick()" tabindex="0" ng-aria-disable></div>' +
+          '<ul><li ng-click="onClick()" tabindex="0" ng-aria-disable></li></ul></div>',
       )(scope);
       const div = element.find("div");
       const li = element.find("li");
@@ -206,15 +207,15 @@ describe("$aria", () => {
     // bindRoleForClick
     it("should not attach role to custom controls", () => {
       element = $compile(
-        '<div ng-click="onClick()" ng-aria-disable></div>' +
+        '<div><div ng-click="onClick()" ng-aria-disable></div>' +
           '<div type="checkbox" ng-model="val" ng-aria-disable></div>' +
           '<div type="radio" ng-model="val" ng-aria-disable></div>' +
-          '<div type="range" ng-model="val" ng-aria-disable></div>',
+          '<div type="range" ng-model="val" ng-aria-disable></div></div>',
       )(scope);
-      expect(element.eq(0)[0].hasAttribute("role")).toBeFalse();
-      expect(element.eq(1)[0].hasAttribute("role")).toBeFalse();
-      expect(element.eq(2)[0].hasAttribute("role")).toBeFalse();
-      expect(element.eq(3)[0].hasAttribute("role")).toBeFalse();
+      expect(element.children[0].hasAttribute("role")).toBeFalse();
+      expect(element.children[1].hasAttribute("role")).toBeFalse();
+      expect(element.children[2].hasAttribute("role")).toBeFalse();
+      expect(element.children[3].hasAttribute("role")).toBeFalse();
     });
 
     // tabindex
@@ -223,8 +224,8 @@ describe("$aria", () => {
         '<div role="checkbox" ng-model="val" ng-aria-disable></div>' +
           '<div role="slider" ng-model="val" ng-aria-disable></div>',
       )(scope);
-      expect(element.eq(0)[0].hasAttribute("tabindex")).toBeFalse();
-      expect(element.eq(1)[0].hasAttribute("tabindex")).toBeFalse();
+      expect(element.children[0].hasAttribute("tabindex")).toBeFalse();
+      expect(element.children[1].hasAttribute("tabindex")).toBeFalse();
     });
 
     it("should not attach tabindex to `ngClick` or `ngDblclick`", () => {
@@ -232,8 +233,8 @@ describe("$aria", () => {
         '<div ng-click="onClick()" ng-aria-disable></div>' +
           '<div ng-dblclick="onDblclick()" ng-aria-disable></div>',
       )(scope);
-      expect(element.eq(0)[0].hasAttribute("tabindex")).toBeFalse();
-      expect(element.eq(1)[0].hasAttribute("tabindex")).toBeFalse();
+      expect(element.children[0].hasAttribute("tabindex")).toBeFalse();
+      expect(element.children[1].hasAttribute("tabindex")).toBeFalse();
     });
   });
 
@@ -395,12 +396,12 @@ describe("$aria", () => {
       )(scope);
 
       scope.$apply("val='one'");
-      expect(element.eq(0).attr("aria-checked")).toBeUndefined();
-      expect(element.eq(1).attr("aria-checked")).toBeUndefined();
+      expect(element.children[0].attr("aria-checked")).toBeUndefined();
+      expect(element.children[1].attr("aria-checked")).toBeUndefined();
 
       scope.$apply("val='two'");
-      expect(element.eq(0).attr("aria-checked")).toBeUndefined();
-      expect(element.eq(1).attr("aria-checked")).toBeUndefined();
+      expect(element.children[0].attr("aria-checked")).toBeUndefined();
+      expect(element.children[1].attr("aria-checked")).toBeUndefined();
     });
 
     it("should attach to custom radio controls", () => {
@@ -410,12 +411,12 @@ describe("$aria", () => {
       )(scope);
 
       scope.$apply("val='one'");
-      expect(element.eq(0).attr("aria-checked")).toBe("true");
-      expect(element.eq(1).attr("aria-checked")).toBe("false");
+      expect(element.children[0].attr("aria-checked")).toBe("true");
+      expect(element.children[1].attr("aria-checked")).toBe("false");
 
       scope.$apply("val='two'");
-      expect(element.eq(0).attr("aria-checked")).toBe("false");
-      expect(element.eq(1).attr("aria-checked")).toBe("true");
+      expect(element.children[0].attr("aria-checked")).toBe("false");
+      expect(element.children[1].attr("aria-checked")).toBe("true");
     });
 
     it("should handle custom radios with integer model values", () => {
@@ -425,12 +426,12 @@ describe("$aria", () => {
       )(scope);
 
       scope.$apply("val=0");
-      expect(element.eq(0).attr("aria-checked")).toBe("true");
-      expect(element.eq(1).attr("aria-checked")).toBe("false");
+      expect(element.children[0].attr("aria-checked")).toBe("true");
+      expect(element.children[1].attr("aria-checked")).toBe("false");
 
       scope.$apply("val=1");
-      expect(element.eq(0).attr("aria-checked")).toBe("false");
-      expect(element.eq(1).attr("aria-checked")).toBe("true");
+      expect(element.children[0].attr("aria-checked")).toBe("false");
+      expect(element.children[1].attr("aria-checked")).toBe("true");
     });
 
     it("should handle radios with boolean model values using ngValue", () => {
@@ -444,12 +445,12 @@ describe("$aria", () => {
         scope.valExp2 = false;
         scope.val = true;
       });
-      expect(element.eq(0).attr("aria-checked")).toBe("true");
-      expect(element.eq(1).attr("aria-checked")).toBe("false");
+      expect(element.children[0].attr("aria-checked")).toBe("true");
+      expect(element.children[1].attr("aria-checked")).toBe("false");
 
       scope.$apply("val = false");
-      expect(element.eq(0).attr("aria-checked")).toBe("false");
-      expect(element.eq(1).attr("aria-checked")).toBe("true");
+      expect(element.children[0].attr("aria-checked")).toBe("false");
+      expect(element.children[1].attr("aria-checked")).toBe("true");
     });
 
     it('should attach itself to role="menuitemradio"', () => {
@@ -933,11 +934,16 @@ describe("$aria", () => {
   });
 
   describe("announcing ngMessages", () => {
-    it("should attach aria-live", () => {
-      const element = [
-        $compile('<div ng-messages="myForm.myName.$error">')(scope),
-      ];
-      expectAriaAttrOnEachElement(element, "aria-live", "assertive");
+    it("should attach aria-live", async () => {
+      const element = $compile(
+        '<div><div ng-messages="myForm.myName.$error"></div></div',
+      )(scope);
+      await wait();
+      expectAriaAttrOnEachElement(
+        Array.from(element.children),
+        "aria-live",
+        "assertive",
+      );
     });
   });
 
@@ -1152,7 +1158,7 @@ describe("$aria", () => {
 
   function expectAriaAttrOnEachElement(elem, ariaAttr, expected) {
     elem.forEach((val) => {
-      expect(val[0].getAttribute(ariaAttr)).toBe(expected);
+      expect(val.getAttribute(ariaAttr)).toBe(expected);
     });
   }
 });

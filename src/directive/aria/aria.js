@@ -106,7 +106,7 @@ export function ngMessagesAriaDirective() {
     link(_scope, elem, attr) {
       if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR)) return;
 
-      if (!elem.setAttribute("aria-live")) {
+      if (!elem.hasAttribute("aria-live")) {
         elem.setAttribute("aria-live", "assertive");
       }
     },
