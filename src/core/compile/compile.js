@@ -723,7 +723,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * Compile function matches each node in nodeList against the directives. Once all directives
        * for a particular node are collected their compile functions are executed. The compile
        * functions return values - the linking functions - are combined into a composite linking
-       * function, which is the a linking function for the node.
+       * function, which is the linking function for the node.
        *
        * @param {NodeList|JQLite} nodeList an array of nodes or NodeList to compile
        * @param {*} transcludeFn A linking function, where the
@@ -745,25 +745,27 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         previousCompileContext,
       ) {
         const linkFns = [];
-        let attrs;
-        let directives;
         /**
          * @type {any}
          */
-        var nodeLinkFn;
+        var nodeLinkFn = null;
         let childNodes;
         let childLinkFn;
         let linkFnFound;
         let nodeLinkFnFound;
 
         for (let i = 0; i < nodeList.length; i++) {
-          attrs = new Attributes($rootScope, $animate, $exceptionHandler, $sce);
+          const attrs = new Attributes(
+            $rootScope,
+            $animate,
+            $exceptionHandler,
+            $sce,
+          );
 
           // We must always refer to `nodeList[i]` hereafter,
           // since the nodes can be replaced underneath us.
-          directives = collectDirectives(
+          const directives = collectDirectives(
             /** @type Element */ (nodeList[i]),
-            [],
             attrs,
             i === 0 ? maxPriority : undefined,
             ignoreDirective,
@@ -944,15 +946,14 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        *        the function returns.
        * @param {Attributes|import("./attributes").AttributeLike} attrs The shared attrs object which is used to populate the normalized attributes.
        * @param {number=} maxPriority Max directive priority.
-       * @param {boolean=} ignoreDirective
+       * @param {string} [ignoreDirective]
+       * @return {import('../../types.js').Directive[]} An array to which the directives are added to. This array is sorted before the function returns.
        */
-      function collectDirectives(
-        node,
-        directives,
-        attrs,
-        maxPriority,
-        ignoreDirective,
-      ) {
+      function collectDirectives(node, attrs, maxPriority, ignoreDirective) {
+        /**
+         * @type {import('../../types.js').Directive[]}
+         */
+        const directives = [];
         const { nodeType } = node;
         const attrsMap = attrs.$attr;
         let nodeName;
@@ -960,15 +961,15 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         switch (nodeType) {
           case Node.ELEMENT_NODE /* Element */:
             nodeName = node.nodeName.toLowerCase();
-
-            // use the node name: <directive>
-            addDirective(
-              directives,
-              directiveNormalize(nodeName),
-              "E",
-              maxPriority,
-              ignoreDirective,
-            );
+            if (ignoreDirective !== directiveNormalize(nodeName)) {
+              // use the node name: <directive>
+              addDirective(
+                directives,
+                directiveNormalize(nodeName),
+                "E",
+                maxPriority,
+              );
+            }
 
             // iterate over the attributes
             for (
@@ -1043,13 +1044,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   nName,
                   isNgAttr,
                 );
-                addDirective(
-                  directives,
-                  nName,
-                  "A",
-                  maxPriority,
-                  ignoreDirective,
-                );
+
+                if (nName !== ignoreDirective) {
+                  addDirective(directives, nName, "A", maxPriority);
+                }
               }
             }
 
@@ -1742,7 +1740,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               // - combine directives as: processed + template + unprocessed
               const templateDirectives = collectDirectives(
                 /** @type {Element} */ (compileNode),
-                [],
                 newTemplateAttrs,
               );
               const unprocessedDirectives = directives.splice(
@@ -2011,22 +2008,17 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * looks up the directive and decorates it with exception handling and proper parameters. We
        * call this the boundDirective.
        *
+       * @param tDirectives
        * @param {string} name name of the directive to look up.
        * @param {string} location The directive must be found in specific format.
        *   String containing any of these characters:
        *
        *   * `E`: element name
        *   * `A': attribute
+       * @param maxPriority
        * @returns {boolean} true if directive was added.
        */
-      function addDirective(
-        tDirectives,
-        name,
-        location,
-        maxPriority,
-        ignoreDirective,
-      ) {
-        if (name === ignoreDirective) return false;
+      function addDirective(tDirectives, name, location, maxPriority) {
         let match = false;
         if (Object.prototype.hasOwnProperty.call(hasDirectives, name)) {
           for (
@@ -2168,7 +2160,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               replaceWith($rootElement, $compileNode, compileNode);
               const templateDirectives = collectDirectives(
                 compileNode,
-                [],
                 tempTemplateAttrs,
               );
 
@@ -2331,15 +2322,13 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
       }
 
       function addTextInterpolateDirective(directives, text) {
-        const interpolateFn = $interpolate(text, true); // Create interpolation function
+        const interpolateFn = $interpolate(text, true);
         if (interpolateFn) {
           directives.push({
             priority: 0,
-            // When transcluding a template that has bindings in the root
-            // we don't have a parent and thus need to add the class during linking fn.
             compile: () => (scope, node) => {
               scope.$watch(interpolateFn, (value) => {
-                node[0].nodeValue = value; // Update text node with new interpolated value
+                node[0].nodeValue = value;
               });
             },
           });
