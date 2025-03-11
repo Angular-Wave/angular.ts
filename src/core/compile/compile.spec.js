@@ -3983,7 +3983,8 @@ describe("$compile", () => {
       createInjector([
         "ng",
         function ($interpolateProvider, $compileProvider) {
-          $interpolateProvider.startSymbol("[[").endSymbol("]]");
+          $interpolateProvider.startSymbol = "[[";
+          $interpolateProvider.endSymbol = "]]";
           $compileProvider.directive("myDirective", () => {
             return {
               template: "Value is {{myExpr}}",
@@ -7279,7 +7280,8 @@ describe("$compile", () => {
         createInjector([
           "test1",
           ($interpolateProvider, $compileProvider) => {
-            $interpolateProvider.startSymbol("##").endSymbol("]]");
+            $interpolateProvider.startSymbol = "##";
+            $interpolateProvider.endSymbol = "]]";
             $compileProvider.directive("myDirective", () => ({
               template: "<span>{{hello}}|{{hello}}</span>",
             }));
@@ -7302,7 +7304,7 @@ describe("$compile", () => {
         createInjector([
           "test1",
           ($interpolateProvider, $compileProvider) => {
-            $interpolateProvider.startSymbol("[[");
+            $interpolateProvider.startSymbol = "[[";
             $compileProvider.directive("myDirective", () => ({
               template: "<span>{{ hello }}|{{ hello}}</span>",
             }));
@@ -7347,7 +7349,8 @@ describe("$compile", () => {
         createInjector([
           "test1",
           ($interpolateProvider, $compileProvider) => {
-            $interpolateProvider.startSymbol("##").endSymbol("]]");
+            $interpolateProvider.startSymbol = "##";
+            $interpolateProvider.endSymbol = "]]";
             $compileProvider.directive("myDirective", () => ({
               templateUrl: "myDirective.html",
             }));
