@@ -93,6 +93,14 @@ describe("Scope", () => {
 
       Demo.$nonscope = undefined;
     });
+
+    it("should ignore classes with static $nonscope property", () => {
+      class NonScope {
+        static $nonscope = true;
+      }
+      const res = createScope(new NonScope());
+      expect(res.$id).toBeUndefined();
+    });
   });
 
   describe("inheritance", () => {

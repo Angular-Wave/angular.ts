@@ -16,6 +16,8 @@ const SIMPLE_ATTR_NAME = /^\w/;
 const specialAttrHolder = document.createElement("div");
 
 export class Attributes {
+  static $nonscope = true;
+
   /**
    * @param {import('../scope/scope.js').Scope} $rootScope
    * @param {*} $animate
@@ -32,7 +34,6 @@ export class Attributes {
     element,
     attributesToCopy,
   ) {
-    this.$nonscope = true;
     this.$rootScope = $rootScope;
     this.$animate = $animate;
     this.$exceptionHandler = $exceptionHandler;
