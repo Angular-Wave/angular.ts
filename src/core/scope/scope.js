@@ -72,7 +72,7 @@ let applyAsyncId = null;
 let $parse;
 /** @type {import('../../services/browser').Browser} */
 let $browser;
-/**@type {import('../exception-handler').ErrorHandler} */
+/**@type {import("../exception-handler.js").ErrorHandler} */
 let $exceptionHandler;
 
 /**
@@ -96,7 +96,7 @@ export class RootScopeProvider {
     "$parse",
     "$browser",
     /**
-     * @param {import('../exception-handler').ErrorHandler} exceptionHandler
+     * @param {import("../exception-handler.js").ErrorHandler} exceptionHandler
      * @param {import('../parse/parse').ParseService} parse
      * @param {import('../../services/browser').Browser} browser
      * @returns {Scope} root scope

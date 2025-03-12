@@ -74,7 +74,7 @@ export const $$applyAsyncQueue: Function[];
  */
 export class RootScopeProvider {
     rootScope: Scope;
-    $get: (string | ((exceptionHandler: import("../exception-handler").ErrorHandler, parse: import("../parse/parse").ParseService, browser: import("../../services/browser").Browser) => Scope))[];
+    $get: (string | ((exceptionHandler: import("../exception-handler.js").ErrorHandler, parse: import("../parse/parse").ParseService, browser: import("../../services/browser").Browser) => Scope))[];
 }
 /**
  * DESIGN NOTES

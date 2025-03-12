@@ -1,5 +1,5 @@
 export class TimeoutProvider {
-    $get: (string | (($rootScope: import("../scope/scope").Scope, $browser: import("../../services/browser").Browser, $q: any, $exceptionHandler: import("../exception-handler").ErrorHandler) => {
+    $get: (string | (($rootScope: import("../scope/scope").Scope, $browser: import("../../services/browser").Browser, $q: any, $exceptionHandler: import("../exception-handler.js").ErrorHandler) => {
         (fn?: (() => any) | undefined, delay?: number | undefined, invokeApply?: boolean, ...args: any[]): import("../q/q").QPromise<any>;
         /**
          * Cancels a task associated with the `promise`. As a result of this, the promise will be

@@ -28,7 +28,7 @@ export function FilterProvider($provide) {
     "$injector",
     /**
      *
-     * @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
      * @returns
      */
     function ($injector) {

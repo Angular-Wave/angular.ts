@@ -230,7 +230,7 @@ export function SceDelegateProvider() {
     "$$sanitizeUri",
     /**
      *
-     * @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
      * @param {*} $$sanitizeUri
      * @returns
      */

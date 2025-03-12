@@ -1,9 +1,10 @@
 import { isDefined, isFunction, isObject } from "../shared/utils.js";
-import { services } from "./common/coreservices";
-import { tail, unnestR } from "../shared/common";
-import { Resolvable } from "./resolve/resolvable";
-import { kebobString } from "../shared/strings";
-import { annotate } from "../core/di/injector";
+import { services } from "./common/coreservices.js";
+import { tail, unnestR } from "../shared/common.js";
+import { Resolvable } from "./resolve/resolvable.js";
+import { kebobString } from "../shared/strings.js";
+import { annotate } from "../core/di/injector.js";
+import { DIRECTIVE_SUFFIX } from "../core/compile/compile.js";
 
 /**
  * @typedef BindingTuple
@@ -31,7 +32,7 @@ export class TemplateFactoryProvider {
      * @param {import("../core/cache/cache-factory").TemplateCache} $templateCache
      * @param {any} $templateRequest
      * @param {any} $q
-     * @param {import("../core/di/internal-injector").InjectorService} $injector
+     * @param {import("../core/di/internal-injector.js").InjectorService} $injector
      * @returns
      */
     ($http, $templateCache, $templateRequest, $q, $injector) => {
@@ -230,7 +231,7 @@ export class TemplateFactoryProvider {
  * @returns
  */
 function getComponentBindings(name) {
-  const cmpDefs = services.$injector.get(name + "Directive"); // could be multiple
+  const cmpDefs = services.$injector.get(name + DIRECTIVE_SUFFIX); // could be multiple
   if (!cmpDefs || !cmpDefs.length)
     throw new Error(`Unable to find component named '${name}'`);
   return cmpDefs.map(getBindings).reduce(unnestR, []);

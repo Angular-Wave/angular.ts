@@ -31,7 +31,7 @@ export class ControllerProvider {
     /**
      * $get method for dependency injection.
      *
-     * @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
      * @returns {Function} A service function that creates controllers.
      */
     $get: (string | (($injector: any) => (expression: any, locals: any, later: any, ident: any) => any))[];

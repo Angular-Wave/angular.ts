@@ -146,7 +146,7 @@ export class Angular {
        * @param {import('./core/scope/scope').Scope} scope
        * @param {JQLite} el
        * @param {*} compile
-       * @param {import("./core/di/internal-injector").InjectorService} $injector
+       * @param {import("./core/di/internal-injector.js").InjectorService} $injector
        */
       function (scope, el, compile, $injector) {
         // ng-route deps
@@ -190,7 +190,7 @@ export class Angular {
    *
    * @param {any[]} modules
    * @param {boolean?} strictDi
-   * @returns {import("./core/di/internal-injector").InjectorService}
+   * @returns {import("./core/di/internal-injector.js").InjectorService}
    */
   injector(modules, strictDi) {
     return createInjector(modules, strictDi);

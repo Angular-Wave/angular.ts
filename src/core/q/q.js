@@ -65,7 +65,7 @@ export class $QProvider {
     /**
      *
      * @param {import('../scope/scope').Scope} $rootScope
-     * @param {import('../exception-handler').ErrorHandler} $exceptionHandler
+     * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
      * @returns
      */
     function ($rootScope, $exceptionHandler) {

@@ -50,11 +50,10 @@ const $compileMinErr = minErr("$compile");
 
 const UNINITALIZED_VALIED = new Object();
 const EXCLUDED_DIRECTIVES = ["ngIf", "ngRepeat"];
-
+export const DIRECTIVE_SUFFIX = "Directive";
 CompileProvider.$inject = ["$provide", "$$sanitizeUriProvider"];
 export function CompileProvider($provide, $$sanitizeUriProvider) {
   const hasDirectives = {};
-  const Suffix = "Directive";
   const ALL_OR_NOTHING_ATTRS = {
     ngSrc: true,
     ngSrcset: true,
@@ -196,14 +195,14 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
       assertArg(directiveFactory, "directiveFactory");
       if (!Object.prototype.hasOwnProperty.call(hasDirectives, name)) {
         hasDirectives[name] = [];
-        $provide.factory(name + Suffix, [
+        $provide.factory(name + DIRECTIVE_SUFFIX, [
           "$injector",
           "$exceptionHandler",
           /**
            *
-           * @param {import("../../core/di/internal-injector").InjectorService} $injector
-           * @param {import('../exception-handler').ErrorHandler} $exceptionHandler
-           * @returns
+           * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
+           * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
+           * @returns {import("../../types.js").Directive[]}
            */
           function ($injector, $exceptionHandler) {
             const directives = [];
@@ -524,7 +523,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
     "$sce",
     "$animate",
     /**
-     * @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
      * @param {*} $interpolate
      * @param {import("../exception-handler").ErrorHandler} $exceptionHandler
      * @param {*} $templateRequest
@@ -767,7 +766,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           const directives = collectDirectives(
             /** @type Element */ (nodeList[i]),
             attrs,
-            i === 0 ? maxPriority : undefined,
+            maxPriority,
             ignoreDirective,
           );
 
@@ -824,8 +823,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           let childLinkFn;
           let node;
           let childScope;
-          let i;
-          let ii;
           let idx;
           let childBoundTranscludeFn;
           let stableNodeList;
@@ -836,7 +833,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             stableNodeList = new Array(nodeList.length);
 
             // create a sparse array by only copying the elements which have a linkFn
-            for (i = 0; i < linkFns.length; i += 3) {
+            for (let i = 0; i < linkFns.length; i += 3) {
               idx = linkFns[i];
               stableNodeList[idx] = nodeList[idx];
             }
@@ -844,7 +841,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             stableNodeList = nodeList;
           }
 
-          for (i = 0, ii = linkFns.length; i < ii; ) {
+          for (let i = 0, ii = linkFns.length; i < ii; ) {
             node = stableNodeList[linkFns[i++]];
             nodeLinkFn = linkFns[i++];
             childLinkFn = linkFns[i++];
@@ -2006,11 +2003,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * looks up the directive and decorates it with exception handling and proper parameters. We
        * call this the boundDirective.
        *
-       * @param tDirectives
+       * @param {import('../../types.js').Directive[]} tDirectives
        * @param {string} name name of the directive to look up.
        * @param {string} location The directive must be found in specific format.
        *   String containing any of these characters:
-       *
        *   * `E`: element name
        *   * `A': attribute
        * @param maxPriority
@@ -2019,15 +2015,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
       function addDirective(tDirectives, name, location, maxPriority) {
         let match = false;
         if (Object.prototype.hasOwnProperty.call(hasDirectives, name)) {
-          for (
-            let directive,
-              directives = $injector.get(name + Suffix),
-              i = 0,
-              ii = directives.length;
-            i < ii;
-            i++
-          ) {
-            directive = directives[i];
+          let directives = $injector.get(name + DIRECTIVE_SUFFIX);
+          for (let i = 0, ii = directives.length; i < ii; i++) {
+            let directive = directives[i];
             if (
               (isUndefined(maxPriority) || maxPriority > directive.priority) &&
               directive.restrict.indexOf(location) !== -1

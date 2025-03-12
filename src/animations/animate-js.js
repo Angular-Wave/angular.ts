@@ -15,7 +15,7 @@ export function AnimateJsProvider($animateProvider) {
     "$$AnimateRunner",
     /**
      *
-     * @param {import("../core/di/internal-injector").InjectorService} $injector
+     * @param {import("../core/di/internal-injector.js").InjectorService} $injector
      * @param {*} $$AnimateRunner
      * @returns
      */

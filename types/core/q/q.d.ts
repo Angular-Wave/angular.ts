@@ -41,7 +41,7 @@ export function markQExceptionHandled(q: any): void;
  */
 export class $QProvider {
     errorOn: boolean;
-    $get: (string | (($rootScope: import("../scope/scope").Scope, $exceptionHandler: import("../exception-handler").ErrorHandler) => any))[];
+    $get: (string | (($rootScope: import("../scope/scope").Scope, $exceptionHandler: import("../exception-handler.js").ErrorHandler) => any))[];
     /**
      * Retrieves or overrides whether to generate an error when a rejected promise is not handled.
      * This feature is enabled by default.

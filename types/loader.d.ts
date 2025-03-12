@@ -78,9 +78,9 @@ export class Angular {
      *
      * @param {any[]} modules
      * @param {boolean?} strictDi
-     * @returns {import("./core/di/internal-injector").InjectorService}
+     * @returns {import("./core/di/internal-injector.js").InjectorService}
      */
-    injector(modules: any[], strictDi: boolean | null): import("./core/di/internal-injector").InjectorService;
+    injector(modules: any[], strictDi: boolean | null): import("./core/di/internal-injector.js").InjectorService;
     /**
      * @param {Element|Document} element
      */

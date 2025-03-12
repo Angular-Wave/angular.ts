@@ -9,12 +9,12 @@ export class StateRegistryProvider {
     states: {};
     urlService: any;
     urlServiceRules: any;
-    $injector: import("../../core/di/internal-injector").InjectorService;
+    $injector: import("../../core/di/internal-injector.js").InjectorService;
     listeners: any[];
     matcher: StateMatcher;
     builder: StateBuilder;
     stateQueue: StateQueueManager;
-    $get: (string | (($injector: import("../../core/di/internal-injector").InjectorService) => this))[];
+    $get: (string | (($injector: import("../../core/di/internal-injector.js").InjectorService) => this))[];
     /**
      * This is a [[StateBuilder.builder]] function for angular1 `onEnter`, `onExit`,
      * `onRetain` callback hooks on a [[Ng1StateDeclaration]].

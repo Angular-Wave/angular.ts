@@ -52,7 +52,7 @@ export class HttpProvider {
     useApplyAsync: (value?: boolean | undefined) => boolean | any;
     interceptors: any[];
     xsrfTrustedOrigins: any[];
-    $get: (string | (($browser: any, $httpBackend: any, $rootScope: any, $q: any, $injector: import("../../core/di/internal-injector").InjectorService, $sce: any) => {
+    $get: (string | (($browser: any, $httpBackend: any, $rootScope: any, $q: any, $injector: import("../../core/di/internal-injector.js").InjectorService, $sce: any) => {
         (requestConfig: any): any;
         pendingRequests: any[];
         /**

@@ -14,7 +14,7 @@ export class TimeoutProvider {
      * @param {import('../scope/scope').Scope} $rootScope
      * @param {import('../../services/browser').Browser} $browser
      * @param {*} $q
-     * @param {import('../exception-handler').ErrorHandler} $exceptionHandler
+     * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
      * @returns
      */
     ($rootScope, $browser, $q, $exceptionHandler) => {

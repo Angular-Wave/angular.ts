@@ -1,5 +1,5 @@
 import { assertArgFn, minErr } from "../../shared/utils.js";
-import { INJECTOR_LITERAL } from "./ng-module";
+import { INJECTOR_LITERAL } from "./ng-module.js";
 
 const ARROW_ARG = /^([^(]+?)=>/;
 const FN_ARGS = /^[^(]*\(\s*([^)]*)\)/m;

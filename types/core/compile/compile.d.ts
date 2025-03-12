@@ -99,11 +99,12 @@ export class CompileProvider {
      * @returns {object} `this` for chaining
      */
     addPropertySecurityContext: (elementName: string, propertyName: string, ctx: string) => object;
-    $get: (string | (($injector: import("../../core/di/internal-injector").InjectorService, $interpolate: any, $exceptionHandler: import("../exception-handler").ErrorHandler, $templateRequest: any, $parse: import("../parse/parse").ParseService, $controller: any, $rootScope: import("../scope/scope").Scope, $sce: any, $animate: any) => ($compileNodes: string | NodeList, transcludeFn: any, maxPriority: any, ignoreDirective: any, previousCompileContext: any) => (scope: any, cloneConnectFn: any, options: any) => JQLite))[];
+    $get: (string | (($injector: import("../../core/di/internal-injector.js").InjectorService, $interpolate: any, $exceptionHandler: import("../exception-handler").ErrorHandler, $templateRequest: any, $parse: import("../parse/parse").ParseService, $controller: any, $rootScope: import("../scope/scope").Scope, $sce: any, $animate: any) => ($compileNodes: string | NodeList, transcludeFn: any, maxPriority: any, ignoreDirective: any, previousCompileContext: any) => (scope: any, cloneConnectFn: any, options: any) => JQLite))[];
 }
 export namespace CompileProvider {
     let $inject: string[];
 }
+export const DIRECTIVE_SUFFIX: "Directive";
 /**
  * Function that aggregates all linking fns for a compilation root (nodeList)
  */

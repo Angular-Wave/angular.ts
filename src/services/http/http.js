@@ -390,7 +390,7 @@ export function HttpProvider() {
      * @param {*} $httpBackend
      * @param {*} $rootScope
      * @param {*} $q
-     * @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
      * @param {*} $sce
      * @returns
      */

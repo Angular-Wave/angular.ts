@@ -52,7 +52,7 @@ export class NgModelController {
     static $inject: string[];
     /**
      * @param {import('../../core/scope/scope').Scope} $scope
-     * @param {import('../../core/exception-handler').ErrorHandler} $exceptionHandler
+     * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
      * @param {import('../../core/compile/attributes').Attributes} $attr
      * @param {import('../../shared/jqlite/jqlite').JQLite} $element
      * @param {import("../../core/parse/parse.js").ParseService} $parse
@@ -61,7 +61,7 @@ export class NgModelController {
      * @param {import("../../core/q/q").QPromise<any>} $q
      * @param {*} $interpolate
      */
-    constructor($scope: import("../../core/scope/scope").Scope, $exceptionHandler: import("../../core/exception-handler").ErrorHandler, $attr: import("../../core/compile/attributes").Attributes, $element: import("../../shared/jqlite/jqlite").JQLite, $parse: import("../../core/parse/parse.js").ParseService, $animate: any, $timeout: any, $q: import("../../core/q/q").QPromise<any>, $interpolate: any);
+    constructor($scope: import("../../core/scope/scope").Scope, $exceptionHandler: import("../../core/exception-handler.js").ErrorHandler, $attr: import("../../core/compile/attributes").Attributes, $element: import("../../shared/jqlite/jqlite").JQLite, $parse: import("../../core/parse/parse.js").ParseService, $animate: any, $timeout: any, $q: import("../../core/q/q").QPromise<any>, $interpolate: any);
     /** @type {any} The actual value from the control's view  */
     $viewValue: any;
     /** @type {any} The value in the model that the control is bound to. */
@@ -129,7 +129,7 @@ export class NgModelController {
     $$timeout: any;
     $$parse: import("../../core/parse/parse.js").ParseService;
     $q: import("../../core/q/q").QPromise<any>;
-    $$exceptionHandler: import("../../core/exception-handler").ErrorHandler;
+    $$exceptionHandler: import("../../core/exception-handler.js").ErrorHandler;
     $$hasNativeValidators: boolean;
     set(object: any, property: any): void;
     unset(object: any, property: any): void;
