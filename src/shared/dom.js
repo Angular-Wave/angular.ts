@@ -1,5 +1,5 @@
-import { concat, isDefined, isObject, getNodeName } from "./utils.js";
-import { Cache, EXPANDO } from "../core/cache/cache.js";
+import { concat, isDefined, isObject } from "./utils.js";
+import { Cache, EXPANDO, SCOPE_KEY } from "../core/cache/cache.js";
 
 /** @type {number} */
 let jqId = 1;
@@ -42,12 +42,19 @@ export const BOOLEAN_ATTR = [
   "open",
 ];
 
-const BOOLEAN_ELEMENTS = {};
-"input,select,option,textarea,button,form,details"
-  .split(",")
-  .forEach((value) => {
-    BOOLEAN_ELEMENTS[value] = true;
-  });
+/**
+ * A list of boolean attributes in HTML
+ * @type {string[]}
+ */
+const BOOLEAN_ELEMENTS = [
+  "INPUT",
+  "SELECT",
+  "OPTION",
+  "TEXTAREA",
+  "BUTTON",
+  "FORM",
+  "DETAILS",
+];
 
 ///////////////////////////////////////////////////////////////////
 ////////////        HELPER FUNCTIONS      /////////////////////////
@@ -323,6 +330,17 @@ export function getCacheData(element, key) {
 }
 
 /**
+ * Gets scope for a given element.
+ *
+ * @param {Element} element - The DOM element to get data from.
+ * @returns {*} - The retrieved data for the given key or all data if no key is provided.
+ */
+export function getScope(element) {
+  return getCacheData(element, SCOPE_KEY);
+}
+
+
+/**
  * @param {Node} element
  * @param {string} [name]
  * @returns
@@ -493,7 +511,7 @@ export function getBlockNodes(nodes) {
 export function getBooleanAttrName(element, name) {
   const normalizedName = name.toLowerCase();
   const isBooleanAttr = BOOLEAN_ATTR.includes(normalizedName);
-  return isBooleanAttr && BOOLEAN_ELEMENTS[getNodeName(element)]
+  return isBooleanAttr && BOOLEAN_ELEMENTS.includes(element.nodeName)
     ? normalizedName
     : false;
 }

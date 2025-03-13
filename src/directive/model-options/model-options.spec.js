@@ -806,7 +806,7 @@ describe("ngModelOptions", () => {
           expect(inputElm.value).toBe("a");
         });
 
-        it("should try to invoke a function model if getterSetter is true", () => {
+        it("should try to invoke a function model if getterSetter is true", async () => {
           inputElm = $compile(
             '<input type="text" ng-model="name" ' +
               'ng-model-options="{ getterSetter: true }" />',

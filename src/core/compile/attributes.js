@@ -7,6 +7,7 @@ import {
   minErr,
   trim,
   directiveNormalize,
+  hasAnimate,
 } from "../../shared/utils.js";
 import { ALIASED_ATTR } from "../../shared/constants.js";
 import { isProxy } from "../scope/scope.js";
@@ -23,7 +24,7 @@ export class Attributes {
    * @param {*} $animate
    * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
    * @param {*} $sce
-   * @param {Element} [element]
+   * @param {Element} element
    * @param {*} [attributesToCopy]
    */
   constructor(
@@ -48,6 +49,8 @@ export class Attributes {
       this.$attr = {};
     }
     this.$$element = element;
+    /** @type {boolean} */
+    this.hasAnimate = hasAnimate(element);
   }
 
   /**
@@ -70,7 +73,11 @@ export class Attributes {
    */
   $addClass(classVal) {
     if (classVal && classVal.length > 0) {
-      this.$animate.addClass(this.$$element, classVal);
+      if (hasAnimate) {
+        this.$animate.addClass(this.$$element, classVal);
+      } else {
+        this.$$element.classList.add(classVal);
+      }
     }
   }
 
@@ -82,7 +89,11 @@ export class Attributes {
    */
   $removeClass(classVal) {
     if (classVal && classVal.length > 0) {
-      this.$animate.removeClass(this.$$element, classVal);
+      if (hasAnimate) {
+        this.$animate.removeClass(this.$$element, classVal);
+      } else {
+        this.$$element.classList.remove(classVal);
+      }
     }
   }
 
@@ -96,12 +107,19 @@ export class Attributes {
   $updateClass(newClasses, oldClasses) {
     const toAdd = tokenDifference(newClasses, oldClasses);
     if (toAdd && toAdd.length) {
-      this.$animate.addClass(this.$$element, toAdd);
+      if (hasAnimate) {
+        this.$animate.addClass(this.$$element, toAdd);
+      } else {
+        this.$$element.classList.add(...toAdd.split(/\s+/));
+      }
     }
-
     const toRemove = tokenDifference(oldClasses, newClasses);
     if (toRemove && toRemove.length) {
-      this.$animate.removeClass(this.$$element, toRemove);
+      if (hasAnimate) {
+        this.$animate.removeClass(this.$$element, toRemove);
+      } else {
+        this.$$element.classList.remove(...toRemove.split(/\s+/));
+      }
     }
   }
 
@@ -308,16 +326,9 @@ export class Attributes {
  * tokenDifference("apple banana orange", "banana grape");
  */
 function tokenDifference(str1, str2) {
-  let values = "";
-  const tokens1 = str1.split(/\s+/);
-  const tokens2 = str2.split(/\s+/);
+  const tokens1 = new Set(str1.split(/\s+/));
+  const tokens2 = new Set(str2.split(/\s+/));
 
-  outer: for (let i = 0; i < tokens1.length; i++) {
-    const token = tokens1[i];
-    for (let j = 0; j < tokens2.length; j++) {
-      if (token === tokens2[j]) continue outer;
-    }
-    values += (values.length > 0 ? " " : "") + token;
-  }
-  return values;
+  const difference = [...tokens1].filter((token) => !tokens2.has(token));
+  return difference.join(" ");
 }

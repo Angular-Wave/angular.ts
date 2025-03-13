@@ -18,3 +18,9 @@ export const EXPANDO = "ng";
  * @type {Map<number, ExpandoStore>}
  */
 export const Cache = new Map();
+
+
+/**
+ * Key for storing scope data, attached to an element
+ */
+export const SCOPE_KEY = "$scope";

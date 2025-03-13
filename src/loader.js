@@ -5,7 +5,7 @@ import {
   assertNotHasOwnProperty,
   errorHandlingConfig,
 } from "./shared/utils.js";
-import { getController, getInjector, setCacheData } from "./shared/dom.js";
+import { getController, getInjector, getScope, setCacheData } from "./shared/dom.js";
 import { annotate, createInjector } from "./core/di/injector.js";
 import { NgModule } from "./core/di/ng-module.js";
 import { Cache } from "./core/cache/cache.js";
@@ -198,6 +198,26 @@ export class Angular {
    */
   getInjector(element) {
     return getInjector(element);
+  }
+
+  /**
+   * Gets the scope instance for a given element, if exists.
+   *
+   * @param {Element} element - The DOM element to get data from.
+   * @returns {import("./core/scope/scope.js").Scope|undefined} - The retrieved data 
+   */
+  getScope(element) {
+    return getScope(element)
+  }
+
+  /**
+   * Gets the constoller instance for a given element, if exists.
+   *
+   * @param {Element} element - The DOM element to get data from.
+   * @returns {import("./core/scope/scope.js").Scope|undefined} - The retrieved data 
+   */
+  getContoller(element, name) {
+    return getController(element, name)
   }
 
   /**
