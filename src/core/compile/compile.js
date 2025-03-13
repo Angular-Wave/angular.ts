@@ -42,22 +42,17 @@ import { isProxy } from "../scope/scope.js";
 import { SCOPE_KEY } from "../cache/cache.js";
 
 /**
- * @description Function that aggregates all linking fns for a compilation root (nodeList)
- * @callback CompositeLinkFn
- * @param {import('../scope/scope.js').Scope} scope - The scope to be linked to the template
- * @param {Element[]} $linkNode - nodeList
- * @param {Function} parentBoundTranscludeFn
- */
-
-/**
  * @typedef {Function} TranscludeFn
  */
 
 /**
  * @description A function returned by the '$compile' service that links a compiled template to a scope.
- * @typedef {Object | ((scope: import('../scope/scope.js').Scope, transcludeFn: TranscludeFn) => string) } PublicLinkFn
- * @property {boolean} terminal
  *
+ * @callback PublicLinkFn
+ * @param {import('../scope/scope.js').Scope} scope - Scope to link with element
+ * @param {TranscludeFn} [cloneConnectFn]
+ * @param {*} [options]
+ * @return {Element} The nodes to be linked.
  */
 
 /**
@@ -65,16 +60,31 @@ import { SCOPE_KEY } from "../cache/cache.js";
  *
  * @callback CompileFn
  * @param {string|Element} compileNode - The nodes to be compiled.
- * @param {*} [transcludeFn] - An optional transclusion function to be used during compilation. TODO
+ * @param {TranscludeFn} [transcludeFn] - An optional transclusion function to be used during compilation.
  * @param {number} [maxPriority] - An optional maximum priority for directives.
  * @param {string} [ignoreDirective] - An optional directive to ignore during compilation.
  * @param {*} [previousCompileContext] - An optional context from a previous compilation. TODO
- *
- * @returns {PublicLinkFn|null} A public link function or null.
+ * @returns {PublicLinkFn} A public link function.
+ */
+
+/**
+ * @typedef {function(): CompositeLinkFn} CompileNodesFn
  */
 
 /**
  * @typedef {Function} NodeLinkFn
+ */
+
+/**
+ * @typedef {function(): NodeLinkFn} ApplyDirectivesToNodeFn
+ */
+
+/**
+ * @description Function that aggregates all linking fns for a compilation root (nodeList)
+ * @callback CompositeLinkFn
+ * @param {import('../scope/scope.js').Scope} scope - The scope to be linked to the template
+ * @param {Element[]} $linkNode - nodeList
+ * @param {Function} parentBoundTranscludeFn
  */
 
 const $compileMinErr = minErr("$compile");
@@ -626,7 +636,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         );
 
         let namespace = null;
-        return function publicLinkFn(scope, cloneConnectFn, options) {
+        return publicLinkFn;
+
+        /** @type {PublicLinkFn} */
+        function publicLinkFn(scope, cloneConnectFn, options) {
           if (!compileNode) {
             throw $compileMinErr(
               "multilink",
@@ -721,7 +734,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           }
 
           return $linkNode;
-        };
+        }
       }
 
       function detectNamespaceForChildElements(parentElement) {
@@ -785,6 +798,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             ignoreDirective,
           );
 
+          /** @function  */
           let nodeLinkFn;
           if (directives.length) {
             nodeLinkFn = applyDirectivesToNode(
@@ -833,28 +847,33 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           previousCompileContext = null;
         }
 
-        // return a linking function if we have found anything, null otherwise
+        // return a composing linking function if we have found anything, null otherwise
         return linkFnFound ? compositeLinkFn : null;
 
         /**
          * The composite link links all the individual nodes
          *
          * @param {import("../scope/scope.js").Scope} scope
-         * @param {Element} elem
+         * @param {Element|NodeList} elem
          * @param {*} parentBoundTranscludeFn
          */
         function compositeLinkFn(scope, elem, parentBoundTranscludeFn) {
           let stableNodeList = [];
+          let isNodeList = !!(/** @type {NodeList } */ (elem).length);
           if (nodeLinkFnFound) {
             // create a stable copy of the nodeList, only copying elements with linkFns
-            stableNodeList = new Array(elem.childNodes.length);
+            stableNodeList = new Array(
+              /** @type {NodeList } */ (elem).length ||
+                /** @type {Element } */ (elem).childNodes.length,
+            );
+
             Object.keys(linkFnsMap).forEach((idx) => {
               // the first item will always be a nodeLink function of the element itself
               if (idx === "0") {
-                stableNodeList[idx] = elem;
+                stableNodeList[idx] = isNodeList ? elem[idx] : elem;
               } else {
                 if (nodeList[idx]) {
-                  stableNodeList[idx] = nodeList[idx];
+                  stableNodeList[idx] = elem[idx];
                 }
               }
             });
@@ -890,6 +909,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 } else {
                   childBoundTranscludeFn = null;
                 }
+                debugger;
                 nodeLinkFn(
                   childLinkFn,
                   childScope,
@@ -1148,7 +1168,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {Array.<Function>} [postLinkFns]
        * @param {Object} [previousCompileContext] Context used for previous compilation of the current
        *                                        node
-       * @returns {PublicLinkFn} linkFn
+       * @returns {nodeLinkFn} linkFn
        */
       function applyDirectivesToNode(
         directives,
@@ -1188,7 +1208,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         /**
          * Links all the directives of a single node.
          * @type {NodeLinkFn}
-         * */
+         */
         let nodeLinkFn = function (
           childLinkFn,
           scope,

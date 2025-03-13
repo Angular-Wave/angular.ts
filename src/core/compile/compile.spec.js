@@ -1180,6 +1180,24 @@ describe("$compile", () => {
       expect(givenAttrs).toBeDefined();
       expect(givenAttrs.myDirective).toBeDefined();
     });
+
+    fit("links directive on child elements first", function () {
+      const givenElements = [];
+      registerDirectives("myDirective", function () {
+        return {
+          link: function (scope, element, attrs) {
+            givenElements.push(element);
+          },
+        };
+      });
+      reloadModules();
+      var el = $("<div my-directive><div my-directive></div></div>");
+      $compile(el)($rootScope);
+
+      expect(givenElements.length).toBe(2);
+      expect(givenElements[0]).toBe(el.firstChild);
+      expect(givenElements[1]).toBe(el);
+    });
   });
 
   it("links children when parent has no directives", async () => {
