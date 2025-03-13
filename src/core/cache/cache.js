@@ -19,7 +19,6 @@ export const EXPANDO = "ng";
  */
 export const Cache = new Map();
 
-
 /**
  * Key for storing scope data, attached to an element
  */

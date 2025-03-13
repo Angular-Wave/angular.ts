@@ -24,7 +24,7 @@ export class Attributes {
    * @param {*} $animate
    * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
    * @param {*} $sce
-   * @param {Element} element
+   * @param {Node} element
    * @param {*} [attributesToCopy]
    */
   constructor(
@@ -48,7 +48,8 @@ export class Attributes {
     } else {
       this.$attr = {};
     }
-    this.$$element = element;
+    /** @type {Element} */
+    this.$$element = /** @type {Element} */ (element);
     /** @type {boolean} */
     this.hasAnimate = hasAnimate(element);
   }

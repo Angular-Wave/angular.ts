@@ -339,7 +339,6 @@ export function getScope(element) {
   return getCacheData(element, SCOPE_KEY);
 }
 
-
 /**
  * @param {Node} element
  * @param {string} [name]

@@ -6,8 +6,9 @@ import {
   emptyElement,
   getCacheData,
   setCacheData,
-  createElementFromHTML,
+  createElementFromHTML as $,
   getController,
+  getScope,
 } from "../../shared/dom.js";
 import {
   isFunction,
@@ -203,17 +204,17 @@ describe("$compile", () => {
     $sce = injector.get("$sce");
   }
 
-  it("is provided by injector $compile", () => {
+  fit("is provided by injector $compile", () => {
     expect(injector.get("$compile")).toBeDefined();
   });
 
-  it("allows creating directives", () => {
+  fit("allows creating directives", () => {
     myModule.directive("testing", () => {});
     reloadModules();
     expect(injector.has("testingDirective")).toBe(true);
   });
 
-  it("allows creating many directives with the same name", () => {
+  fit("allows creating many directives with the same name", () => {
     myModule.directive("testing", () => ({ d: "one" }));
     myModule.directive("testing", () => ({ d: "two" }));
     reloadModules();
@@ -223,14 +224,14 @@ describe("$compile", () => {
     expect(result[1].d).toEqual("two");
   });
 
-  it("does not allow a directive called hasOwnProperty", () => {
+  fit("does not allow a directive called hasOwnProperty", () => {
     myModule.directive("hasOwnProperty", () => {});
     expect(() => {
       reloadModules();
     }).toThrowError();
   });
 
-  it("allows creating directives with object notation", () => {
+  fit("allows creating directives with object notation", () => {
     myModule.directive({
       a: () => {},
       b: () => {},
@@ -243,7 +244,7 @@ describe("$compile", () => {
     expect(injector.has("cDirective")).toBe(true);
   });
 
-  it("compiles element directives from a single element", () => {
+  fit("compiles element directives from a single element", () => {
     myModule.directive("myDirective", () => {
       return {
         restrict: "EA",
@@ -254,12 +255,12 @@ describe("$compile", () => {
     });
     reloadModules();
 
-    var el = createElementFromHTML("<my-directive></my-directive>");
+    var el = $("<my-directive></my-directive>");
     $compile(el);
     expect(getCacheData(el, "hasCompiled")).toBe(true);
   });
 
-  it("compiles element directives found from several elements", () => {
+  fit("compiles element directives found from several elements", () => {
     var idx = 1;
     myModule.directive("myDirective", () => {
       return {
@@ -270,7 +271,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML(
+    var el = $(
       "<div><my-directive></my-directive><my-directive></my-directive></div>",
     );
     $compile(el);
@@ -278,7 +279,7 @@ describe("$compile", () => {
     expect(getCacheData(el.childNodes[1], "idx")).toBe(2);
   });
 
-  it("compiles element directives from child elements", () => {
+  fit("compiles element directives from child elements", () => {
     var idx = 1;
     myModule.directive("myDirective", () => {
       return {
@@ -290,14 +291,14 @@ describe("$compile", () => {
     });
     reloadModules();
 
-    var el = createElementFromHTML("<div><my-directive></my-directive></div>");
+    var el = $("<div><my-directive></my-directive></div>");
     $compile(el);
     expect(getCacheData(el, "dir")).toBeUndefined();
 
     expect(getCacheData(el.firstChild, "dir")).toBe(1);
   });
 
-  it("compiles nested directives", () => {
+  fit("compiles nested directives", () => {
     var idx = 1;
     myModule.directive("myDir", () => {
       return {
@@ -308,18 +309,16 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML(
-      "<my-dir><my-dir><my-dir></my-dir></my-dir></my-dir>",
-    );
+    var el = $("<my-dir><my-dir><my-dir></my-dir></my-dir></my-dir>");
     $compile(el);
     expect(getCacheData(el, "dir")).toBe(1);
     expect(getCacheData(el.firstChild, "dir")).toBe(2);
-    expect(el.firstChild.firstChild).toBeTruthy();
+    expect(getCacheData(el.firstChild.firstChild, "dir")).toBe(3);
   });
 
   ["data"].forEach((prefix) => {
     ["-"].forEach((delim) => {
-      it(
+      fit(
         "compiles element directives with " + prefix + delim + " prefix",
         () => {
           myModule.directive("myDirective", () => {
@@ -331,7 +330,7 @@ describe("$compile", () => {
             };
           });
           reloadModules();
-          var el = createElementFromHTML(
+          var el = $(
             "<" +
               prefix +
               delim +
@@ -347,7 +346,7 @@ describe("$compile", () => {
     });
   });
 
-  it("compiles attribute directives", () => {
+  fit("compiles attribute directives", () => {
     myModule.directive("myDirective", () => {
       return {
         restrict: "EA",
@@ -358,12 +357,12 @@ describe("$compile", () => {
     });
 
     reloadModules();
-    var el = createElementFromHTML("<div my-directive></div>");
+    var el = $("<div my-directive></div>");
     $compile(el);
     expect(getCacheData(el, "hasCompiled")).toBe(true);
   });
 
-  it("compiles attribute directives with prefixes", () => {
+  fit("compiles attribute directives with prefixes", () => {
     myModule.directive("myDirective", () => {
       return {
         restrict: "EA",
@@ -373,12 +372,12 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML("<div my-directive></div>");
+    var el = $("<div my-directive></div>");
     $compile(el);
     expect(getCacheData(el, "hasCompiled")).toBe(true);
   });
 
-  it("compiles several attribute directives in an element", () => {
+  fit("compiles several attribute directives in an element", () => {
     myModule
       .directive("myDirective", () => {
         return {
@@ -397,15 +396,13 @@ describe("$compile", () => {
         };
       });
     reloadModules();
-    var el = createElementFromHTML(
-      "<div my-directive my-second-directive></div>",
-    );
+    var el = $("<div my-directive my-second-directive></div>");
     $compile(el);
     expect(getCacheData(el, "hasCompiled")).toBe(true);
     expect(getCacheData(el, "secondCompiled")).toBe(true);
   });
 
-  it("compiles both element and attributes directives in an element", () => {
+  fit("compiles both element and attributes directives in an element", () => {
     myModule
       .directive("myDirective", () => {
         return {
@@ -425,15 +422,13 @@ describe("$compile", () => {
       });
 
     reloadModules();
-    var el = createElementFromHTML(
-      "<my-directive my-second-directive></my-directive>",
-    );
+    var el = $("<my-directive my-second-directive></my-directive>");
     $compile(el);
     expect(getCacheData(el, "hasCompiled")).toBe(true);
     expect(getCacheData(el, "secondCompiled")).toBe(true);
   });
 
-  it("compiles attribute directives with ng-attr prefix", () => {
+  fit("compiles attribute directives with ng-attr prefix", () => {
     myModule.directive("myDirective", () => {
       return {
         restrict: "EA",
@@ -443,12 +438,12 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML("<div ng-attr-my-directive></div>");
+    var el = $("<div ng-attr-my-directive></div>");
     $compile(el);
     expect(getCacheData(el, "hasCompiled")).toBe(true);
   });
 
-  it("compiles attribute directives with ng-attr prefix", () => {
+  fit("compiles attribute directives with ng-attr prefix", () => {
     myModule.directive("myDirective", () => {
       return {
         restrict: "EA",
@@ -458,7 +453,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML("<div ng-attr-my-directive></div>");
+    var el = $("<div ng-attr-my-directive></div>");
     $compile(el);
     expect(getCacheData(el, "hasCompiled")).toBe(true);
   });
@@ -473,7 +468,7 @@ describe("$compile", () => {
         element: "<my-directive></my-directive>",
         attribute: "<div my-directive></div>",
       }).forEach(([type, dom]) => {
-        it(
+        fit(
           (expected[type] ? "matches" : "does not match") + " on " + type,
           () => {
             var hasCompiled = false;
@@ -494,7 +489,7 @@ describe("$compile", () => {
     });
   });
 
-  it("applies to attributes when no restrict given", () => {
+  fit("applies to attributes when no restrict given", () => {
     var hasCompiled = false;
     myModule.directive("myDirective", () => {
       return {
@@ -504,12 +499,12 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML("<div my-directive></div>");
+    var el = $("<div my-directive></div>");
     $compile(el);
     expect(hasCompiled).toBe(true);
   });
 
-  it("applies to elements when no restrict given", () => {
+  fit("applies to elements when no restrict given", () => {
     var hasCompiled = false;
     myModule.directive("myDirective", () => {
       return {
@@ -519,12 +514,12 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML("<my-directive></my-directive>");
+    var el = $("<my-directive></my-directive>");
     $compile(el);
     expect(hasCompiled).toBe(true);
   });
 
-  it("does not apply to classes when no restrict given", () => {
+  fit("does not apply to classes when no restrict given", () => {
     var hasCompiled = false;
     myModule.directive("myDirective", () => {
       return {
@@ -534,12 +529,12 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML('<div class="my-directive"></div>');
+    var el = $('<div class="my-directive"></div>');
     $compile(el);
     expect(hasCompiled).toBe(false);
   });
 
-  it("applies in priority order", () => {
+  fit("applies in priority order", () => {
     var compilations = [];
     myModule
       .directive("lowerDirective", () => {
@@ -559,14 +554,12 @@ describe("$compile", () => {
         };
       });
     reloadModules();
-    var el = createElementFromHTML(
-      "<div lower-directive higher-directive></div>",
-    );
+    var el = $("<div lower-directive higher-directive></div>");
     $compile(el);
     expect(compilations).toEqual(["higher", "lower"]);
   });
 
-  it("applies in name order when priorities are the same", () => {
+  fit("applies in name order when priorities are the same", () => {
     var compilations = [];
     myModule
       .directive("firstDirective", () => {
@@ -590,7 +583,7 @@ describe("$compile", () => {
     expect(compilations).toEqual(["first", "second"]);
   });
 
-  it("applies in registration order when names are the same", () => {
+  fit("applies in registration order when names are the same", () => {
     var compilations = [];
     myModule
       .directive("aDirective", () => {
@@ -614,7 +607,7 @@ describe("$compile", () => {
     expect(compilations).toEqual(["first", "second"]);
   });
 
-  it("uses default priority when one not given", () => {
+  fit("uses default priority when one not given", () => {
     var compilations = [];
     myModule
       .directive("firstDirective", () => {
@@ -637,7 +630,7 @@ describe("$compile", () => {
     expect(compilations).toEqual(["first", "second"]);
   });
 
-  it("stops compiling at a terminal directive", () => {
+  fit("stops compiling at a terminal directive", () => {
     var compilations = [];
 
     myModule
@@ -663,7 +656,7 @@ describe("$compile", () => {
     expect(compilations).toEqual(["first"]);
   });
 
-  it("still compiles directives with same priority after terminal", () => {
+  fit("still compiles directives with same priority after terminal", () => {
     var compilations = [];
     myModule
       .directive("firstDirective", () => {
@@ -688,7 +681,7 @@ describe("$compile", () => {
     expect(compilations).toEqual(["first", "second"]);
   });
 
-  it("stops child compilation after a terminal directive", () => {
+  fit("stops child compilation after a terminal directive", () => {
     var compilations = [];
     myModule
       .directive("parentDirective", () => {
@@ -722,7 +715,7 @@ describe("$compile", () => {
 
     it("should allow multiple directives per element", () => {
       reloadModules();
-      var el = createElementFromHTML(
+      var el = $(
         "<span greet='angular' log='L' high-log='H' data-medium-log='M'></span>",
       );
       $compile(el)($rootScope);
@@ -797,7 +790,17 @@ describe("$compile", () => {
     });
   });
 
-  describe("attributes", () => {
+  fdescribe("attributes", () => {
+    /**
+     * 1. Register a directive
+     * 2. Compile a DOM fragment
+     * 3. Grab the attributes object
+     * 4. Run some checks on it.
+     *
+     * @param {*} dirName A directive name to register
+     * @param {*} domString A a DOM string to parse and compile,
+     * @param {*} callback A callback to invoke when it’s all done
+     */
     function registerAndCompile(dirName, domString, callback) {
       var givenAttrs;
       registerDirectives(dirName, () => {
@@ -809,7 +812,7 @@ describe("$compile", () => {
         };
       });
       reloadModules();
-      var el = createElementFromHTML(domString);
+      var el = $(domString);
       $compile(el);
       callback(el, givenAttrs, $rootScope);
     }
@@ -872,6 +875,7 @@ describe("$compile", () => {
         function (element, attrs) {
           attrs.$set("attr", "false");
           expect(attrs.attr).toEqual("false");
+          expect(element.getAttribute("attr")).toEqual("false");
         },
       );
     });
@@ -918,7 +922,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-dir my-other-dir></div>");
+      var el = $("<div my-dir my-other-dir></div>");
       $compile(el);
       expect(attrs1).toBe(attrs2);
     });
@@ -978,6 +982,17 @@ describe("$compile", () => {
       );
     });
 
+    it("accepts attribute by using original attribute name", () => {
+      registerAndCompile(
+        "myDirective",
+        '<my-directive some-attribute="42"></my-directive>',
+        function (element, attrs) {
+          attrs.$set("some-attribute", 43);
+          expect(element.getAttribute("some-attribute")).toEqual("43");
+        },
+      );
+    });
+
     it("does not use ng-attr- prefix in denormalized names", () => {
       registerAndCompile(
         "myDirective",
@@ -1013,13 +1028,12 @@ describe("$compile", () => {
           });
 
           attrs.$set("someAttribute", "43");
-
           expect(gotValue).toEqual("43");
         },
       );
     });
 
-    it("calls observer on next $digest after registration", () => {
+    it("calls observer on immediately after registration", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive some-attribute="42"></my-directive>',
@@ -1028,7 +1042,6 @@ describe("$compile", () => {
           attrs.$observe("someAttribute", function (value) {
             gotValue = value;
           });
-
           expect(gotValue).toEqual("42");
         },
       );
@@ -1101,30 +1114,31 @@ describe("$compile", () => {
     });
   });
 
-  it("returns a public link function from compile", () => {
+  fit("returns a public link function from compile", () => {
     registerDirectives("myDirective", () => {
       return { compile: () => {} };
     });
     reloadModules();
-    var el = createElementFromHTML("<div my-directive></div>");
+    var el = $("<div my-directive></div>");
     var linkFn = $compile(el);
     expect(linkFn).toBeDefined();
     expect(isFunction(linkFn)).toBe(true);
   });
 
   describe("linking", () => {
-    // THERE IS NO SCOPE ATTACHED TO ACTUAL ELEMENTS
-    // it("takes a scope and attaches it to elements", () => {
-    //   registerDirectives("myDirective", () => {
-    //     return { compile: () => {} };
-    //   });
-    //   reloadModules();
-    //   var el = createElementFromHTML("<div my-directive></div>");
-    //   $compile(el)($rootScope);
-    //   expect(el.data("$scope")).toBe($rootScope);
-    // });
+    fit("takes a scope and attaches it to elements", async () => {
+      registerDirectives("myDirective", () => {
+        return { compile: () => {} };
+      });
+      reloadModules();
+      var el = $("<div my-directive></div>");
+      $compile(el)($rootScope);
+      await wait();
+      expect(getCacheData(el, "$scope")).toBe($rootScope);
+      expect(getScope(el)).toBe($rootScope);
+    });
 
-    it("calls directive link function with scope", () => {
+    fit("calls directive link function with scope", async () => {
       var givenScope, givenElement, givenAttrs;
       registerDirectives("myDirective", () => {
         return {
@@ -1138,15 +1152,16 @@ describe("$compile", () => {
         };
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
       $compile(el)($rootScope);
+      await wait();
       expect(givenScope).toBe($rootScope);
-      expect(givenElement[0]).toBe(el[0]);
+      expect(givenElement).toBe(el);
       expect(givenAttrs).toBeDefined();
       expect(givenAttrs.myDirective).toBeDefined();
     });
 
-    it("supports link function in directive definition object", () => {
+    fit("supports link function in directive definition object", () => {
       var givenScope, givenElement, givenAttrs;
       registerDirectives("myDirective", () => {
         return {
@@ -1158,10 +1173,10 @@ describe("$compile", () => {
         };
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
       $compile(el)($rootScope);
       expect(givenScope).toBe($rootScope);
-      expect(givenElement[0]).toBe(el[0]);
+      expect(givenElement).toBe(el);
       expect(givenAttrs).toBeDefined();
       expect(givenAttrs.myDirective).toBeDefined();
     });
@@ -1177,7 +1192,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML("<div><div my-directive></div></div>");
+    var el = $("<div><div my-directive></div></div>");
     $compile(el)($rootScope);
     await wait();
     expect(givenElements.length).toBe(1);
@@ -1196,7 +1211,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML("<div><div my-directive></div></div>");
+    var el = $("<div><div my-directive></div></div>");
     $compile(el)($rootScope);
     expect(linked).toBe(true);
   });
@@ -1216,9 +1231,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML(
-      "<div my-directive><div my-directive></div></div>",
-    );
+    var el = $("<div my-directive><div my-directive></div></div>");
     $compile(el)($rootScope);
     expect(linkings.length).toBe(4);
     expect(linkings[0]).toEqual(["pre", el]);
@@ -1258,9 +1271,7 @@ describe("$compile", () => {
       },
     });
     reloadModules();
-    var el = createElementFromHTML(
-      "<div first-directive second-directive></div>",
-    );
+    var el = $("<div first-directive second-directive></div>");
     $compile(el)($rootScope);
     expect(linkings).toEqual([
       "first-pre",
@@ -1281,9 +1292,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML(
-      "<div><div my-directive></div><div my-directive></div></div>",
-    );
+    var el = $("<div><div my-directive></div><div my-directive></div></div>");
     var el1 = el.childNodes[0],
       el2 = el.childNodes[1];
     $compile(el)($rootScope);
@@ -1303,7 +1312,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML("<div my-directive></div>");
+    var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
     expect(givenScope.$parent.id).toBe($rootScope.id);
   });
@@ -1325,9 +1334,7 @@ describe("$compile", () => {
       },
     });
     reloadModules();
-    var el = createElementFromHTML(
-      "<div my-directive my-other-directive></div>",
-    );
+    var el = $("<div my-directive my-other-directive></div>");
     $compile(el)($rootScope);
     await wait();
     expect(givenScope.$parent.$id).toBe($rootScope.$id);
@@ -1344,7 +1351,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML("<div my-directive></div>");
+    var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
     await wait();
     expect($rootScope.$children[0].$id).toBe(givenScope.$id);
@@ -1361,7 +1368,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML("<div my-directive></div>");
+    var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
     await wait();
     expect(givenScope.$parent.$id).toBe($rootScope.$id);
@@ -1385,9 +1392,7 @@ describe("$compile", () => {
       },
     });
     reloadModules();
-    var el = createElementFromHTML(
-      "<div my-directive my-other-directive></div>",
-    );
+    var el = $("<div my-directive my-other-directive></div>");
     $compile(el)($rootScope);
     await wait();
     expect(givenScope).toBeDefined();
@@ -1411,9 +1416,7 @@ describe("$compile", () => {
       },
     });
     reloadModules();
-    var el = createElementFromHTML(
-      "<div my-directive><div my-other-directive></div></div>",
-    );
+    var el = $("<div my-directive><div my-other-directive></div></div>");
     $compile(el)($rootScope);
     await wait();
     expect(givenScope).toBeDefined();
@@ -1434,9 +1437,7 @@ describe("$compile", () => {
       },
     });
     reloadModules();
-    var el = createElementFromHTML(
-      "<div my-directive my-other-directive></div>",
-    );
+    var el = $("<div my-directive my-other-directive></div>");
     expect(() => {
       $compile(el);
     }).toThrowError();
@@ -1456,9 +1457,7 @@ describe("$compile", () => {
       },
     });
     reloadModules();
-    var el = createElementFromHTML(
-      "<div my-directive my-other-directive></div>",
-    );
+    var el = $("<div my-directive my-other-directive></div>");
     expect(() => {
       $compile(el);
     }).toThrowError();
@@ -1475,7 +1474,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML("<div my-directive></div>");
+    var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
     await wait();
     expect($rootScope.$children[0]).toBe(givenScope);
@@ -1495,7 +1494,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML("<div my-directive></div>");
+    var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
     await wait();
 
@@ -1517,7 +1516,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML('<div my-directive an-attr="42"></div>');
+    var el = $('<div my-directive an-attr="42"></div>');
     $compile(el)($rootScope);
     await wait();
     expect(givenScope.anAttr).toEqual("42");
@@ -1536,7 +1535,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML('<div my-directive an-attr="42"></div>');
+    var el = $('<div my-directive an-attr="42"></div>');
     $compile(el)($rootScope);
     await wait();
     expect(givenScope.aScopeAttr).toEqual("42");
@@ -1555,7 +1554,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML('<div my-directive an-attr="42"></div>');
+    var el = $('<div my-directive an-attr="42"></div>');
     $compile(el)($rootScope);
     await wait();
     expect(givenScope.anAttr).toBe(42);
@@ -1574,7 +1573,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML('<div my-directive the-attr="42"></div>');
+    var el = $('<div my-directive the-attr="42"></div>');
     $compile(el)($rootScope);
     await wait();
     expect(givenScope.myAttr).toBe(42);
@@ -1594,9 +1593,7 @@ describe("$compile", () => {
     });
     reloadModules();
     $rootScope.parentAttr = 41;
-    var el = createElementFromHTML(
-      '<div my-directive my-attr="parentAttr + 1"></div>',
-    );
+    var el = $('<div my-directive my-attr="parentAttr + 1"></div>');
     $compile(el)($rootScope);
     await wait();
     expect(givenScope.myAttr).toBe(42);
@@ -1616,9 +1613,7 @@ describe("$compile", () => {
     });
     reloadModules();
     $rootScope.parentAttr = 41;
-    var el = createElementFromHTML(
-      '<div my-directive my-attr="parentAttr + 1"></div>',
-    );
+    var el = $('<div my-directive my-attr="parentAttr + 1"></div>');
     $compile(el)($rootScope);
     await wait();
     expect(givenScope.myAttr).toBe(42);
@@ -1637,7 +1632,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML("<div my-directive></div>");
+    var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
     await wait();
     expect($rootScope.$handler.watchers.size).toEqual(1);
@@ -1656,7 +1651,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML('<div my-directive an-attr="42"></div>');
+    var el = $('<div my-directive an-attr="42"></div>');
     $compile(el)($rootScope);
     await wait();
     expect(givenScope.anAttr).toBe(42);
@@ -1675,7 +1670,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML('<div my-directive the-attr="42"></div>');
+    var el = $('<div my-directive the-attr="42"></div>');
     $compile(el)($rootScope);
     await wait();
     expect(givenScope.myAttr).toBe(42);
@@ -1695,9 +1690,7 @@ describe("$compile", () => {
     });
     reloadModules();
     $rootScope.parentAttr = 41;
-    var el = createElementFromHTML(
-      '<div my-directive my-attr="parentAttr + 1"></div>',
-    );
+    var el = $('<div my-directive my-attr="parentAttr + 1"></div>');
     $compile(el)($rootScope);
     await wait();
     expect(givenScope.myAttr).toBe(42);
@@ -1713,7 +1706,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML("<div my-directive></div>");
+    var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
     await wait();
     expect($rootScope.$handler.watchers.size).toEqual(1);
@@ -1732,9 +1725,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML(
-      '<div my-directive my-attr="parentAttr"></div>',
-    );
+    var el = $('<div my-directive my-attr="parentAttr"></div>');
     $compile(el)($rootScope);
     await wait();
     isolateScope.myAttr = 42;
@@ -1756,9 +1747,7 @@ describe("$compile", () => {
       };
     });
     reloadModules();
-    var el = createElementFromHTML(
-      '<div my-directive my-attr="parentAttr"></div>',
-    );
+    var el = $('<div my-directive my-attr="parentAttr"></div>');
     $compile(el)($rootScope);
     $rootScope.parentAttr = 42;
     isolateScope.myAttr = 43;
@@ -1783,9 +1772,7 @@ describe("$compile", () => {
     $rootScope.parentFunction = () => {
       return [1, 2, 3];
     };
-    var el = createElementFromHTML(
-      '<div my-directive my-attr="parentFunction()"></div>',
-    );
+    var el = $('<div my-directive my-attr="parentFunction()"></div>');
     $compile(el)($rootScope);
     await wait();
     expect(givenScope.myAttr).toEqual([1, 2, 3]);
@@ -1807,9 +1794,7 @@ describe("$compile", () => {
     $rootScope.parentFunction = () => {
       return [1, 2, 3];
     };
-    var el = createElementFromHTML(
-      '<div my-directive my-attr="parentFunction()"></div>',
-    );
+    var el = $('<div my-directive my-attr="parentFunction()"></div>');
     $compile(el)($rootScope);
     await wait();
     expect(givenScope.myAttr.$target).toEqual([1, 2, 3]);
@@ -1831,9 +1816,7 @@ describe("$compile", () => {
     $rootScope.parentFunction = () => {
       return 42;
     };
-    var el = createElementFromHTML(
-      '<div my-directive my-expr="parentFunction() + 1"></div>',
-    );
+    var el = $('<div my-directive my-expr="parentFunction() + 1"></div>');
     $compile(el)($rootScope);
     expect(givenScope.myExpr()).toBe(43);
   });
@@ -1855,7 +1838,7 @@ describe("$compile", () => {
     $rootScope.parentFunction = function (arg) {
       gotArg = arg;
     };
-    var el = createElementFromHTML(
+    var el = $(
       '<div my-directive my-expr="parentFunction(argFromChild)"></div>',
     );
     $compile(el)($rootScope);
@@ -1880,7 +1863,7 @@ describe("$compile", () => {
     $rootScope.parentFunction = function (arg) {
       gotArg = arg;
     };
-    var el = createElementFromHTML("<div my-directive></div>");
+    var el = $("<div my-directive></div>");
     $compile(el)($rootScope);
     expect(givenScope.myExpr).toBeUndefined();
   });
@@ -1896,7 +1879,7 @@ describe("$compile", () => {
         };
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
       $compile(el)($rootScope);
       await wait();
       expect(controllerInvoked).toBe(true);
@@ -1914,7 +1897,7 @@ describe("$compile", () => {
         });
 
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
       $compile(el)($rootScope);
       await wait();
       expect(controllerInvoked).toBe(true);
@@ -1939,9 +1922,7 @@ describe("$compile", () => {
           return { controller: "MyOtherController" };
         });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive my-other-directive></div>",
-      );
+      var el = $("<div my-directive my-other-directive></div>");
       $compile(el)($rootScope);
       expect(controllerInvoked).toBe(true);
       expect(otherControllerInvoked).toBe(true);
@@ -1961,9 +1942,7 @@ describe("$compile", () => {
           return { controller: "MyController" };
         });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive my-other-directive></div>",
-      );
+      var el = $("<div my-directive my-other-directive></div>");
       $compile(el)($rootScope);
       expect(invocations).toBe(2);
     });
@@ -1997,7 +1976,7 @@ describe("$compile", () => {
           return { controller: "MyController" };
         });
       reloadModules();
-      var el = createElementFromHTML('<div my-directive an-attr="abc"></div>');
+      var el = $('<div my-directive an-attr="abc"></div>');
       $compile(el)($rootScope);
       expect(gotElement[0]).toBe(el[0]);
       expect(gotScope).toBe($rootScope);
@@ -2016,7 +1995,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
       $compile(el)($rootScope);
       expect($rootScope.myCtrl).toBeDefined();
       expect($rootScope.myCtrl instanceof MyController).toBe(true);
@@ -2036,7 +2015,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
       $compile(el)($rootScope);
       expect(gotScope).not.toBe($rootScope);
     });
@@ -2057,7 +2036,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML('<div my-directive="abc"></div>');
+      var el = $('<div my-directive="abc"></div>');
       $compile(el)($rootScope);
       expect(gotMyAttr).toEqual("abc");
     });
@@ -2079,7 +2058,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML('<div my-directive="abc"></div>');
+      var el = $('<div my-directive="abc"></div>');
 
       $compile(el)($rootScope);
       expect(ctl.myAttr).toEqual("abc");
@@ -2119,7 +2098,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML('<div my-directive="abc"></div>');
+      var el = $('<div my-directive="abc"></div>');
       $compile(el)($rootScope);
       expect(ctl.myAttr).toEqual("abc");
     });
@@ -2141,7 +2120,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML('<div my-directive="abc"></div>');
+      var el = $('<div my-directive="abc"></div>');
       $compile(el)($rootScope);
       expect(ctl.myAttr).toEqual("abc");
     });
@@ -2165,9 +2144,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive my-other-directive></div>",
-      );
+      var el = $("<div my-directive my-other-directive></div>");
       $compile(el)($rootScope);
       expect(gotMyController).toBeDefined();
       expect(gotMyController instanceof MyController).toBe(true);
@@ -2199,7 +2176,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML(
+      var el = $(
         "<div my-directive my-other-directive my-third-directive></div>",
       );
       $compile(el)($rootScope);
@@ -2238,7 +2215,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML(
+      var el = $(
         "<div my-directive my-other-directive my-third-directive></div>",
       );
       $compile(el)($rootScope);
@@ -2270,7 +2247,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML(
+      var el = $(
         "<div my-directive my-other-directive my-third-directive></div>",
       );
       $compile(el)($rootScope);
@@ -2291,7 +2268,7 @@ describe("$compile", () => {
         };
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
       $compile(el)($rootScope);
       expect(gotMyController).toBeDefined();
       expect(gotMyController instanceof MyController).toBe(true);
@@ -2316,9 +2293,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive><div my-other-directive></div></div>",
-      );
+      var el = $("<div my-directive><div my-other-directive></div></div>");
       $compile(el)($rootScope);
       await wait();
       expect(gotMyController).toBeDefined();
@@ -2344,9 +2319,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive my-other-directive></div>",
-      );
+      var el = $("<div my-directive my-other-directive></div>");
       $compile(el)($rootScope);
       expect(gotMyController).toBeDefined();
       expect(gotMyController instanceof MyController).toBe(true);
@@ -2371,9 +2344,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive><div my-other-directive></div></div>",
-      );
+      var el = $("<div my-directive><div my-other-directive></div></div>");
       $compile(el)($rootScope);
       expect(gotMyController).toBeDefined();
       expect(gotMyController instanceof MyController).toBe(true);
@@ -2395,9 +2366,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive my-other-directive></div>",
-      );
+      var el = $("<div my-directive my-other-directive></div>");
       expect(() => {
         $compile(el)($rootScope);
       }).toThrowError();
@@ -2424,9 +2393,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive><div my-other-directive></div></div>",
-      );
+      var el = $("<div my-directive><div my-other-directive></div></div>");
       $compile(el)($rootScope);
       expect(gotControllers.myDirective instanceof MyController).toBe(true);
     });
@@ -2442,7 +2409,7 @@ describe("$compile", () => {
         };
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
       $compile(el)($rootScope);
       expect(gotCtrl).toBe(null);
     });
@@ -2458,7 +2425,7 @@ describe("$compile", () => {
         };
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
       $compile(el)($rootScope);
       expect(gotCtrl).toBe(null);
     });
@@ -2482,9 +2449,7 @@ describe("$compile", () => {
           };
         });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive my-other-directive></div>",
-      );
+      var el = $("<div my-directive my-other-directive></div>");
       $compile(el)($rootScope);
       expect(gotMyController).toBeDefined();
       expect(gotMyController instanceof MyController).toBe(true);
@@ -2528,7 +2493,7 @@ describe("$compile", () => {
         };
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
       $compile(el);
       expect(el.innerHTML).toBe('<div class="from-template"></div>');
     });
@@ -2540,9 +2505,7 @@ describe("$compile", () => {
         };
       });
       reloadModules();
-      var el = createElementFromHTML(
-        '<div my-directive><div class="existing"></div></div>',
-      );
+      var el = $('<div my-directive><div class="existing"></div></div>');
       $compile(el);
       expect(el.innerHTML).toBe('<div class="from-template"></div>');
     });
@@ -2562,7 +2525,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
       $compile(el);
       expect(compileSpy).toHaveBeenCalled();
     });
@@ -2577,9 +2540,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive my-other-directive></div>",
-      );
+      var el = $("<div my-directive my-other-directive></div>");
       expect(() => {
         $compile(el);
       }).toThrowError();
@@ -2597,7 +2558,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
       $compile(el);
       expect(el.innerHTML).toBe('<div class="from-template"></div>');
       expect(templateSpy.calls.first().args[0][0]).toBe(el[0]);
@@ -2620,7 +2581,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML('<div my-directive="42"></div>');
+      var el = $('<div my-directive="42"></div>');
       $compile(el)($rootScope);
       await wait();
       expect(linkSpy.calls.first().args[0]).not.toBe($rootScope);
@@ -2640,9 +2601,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive my-other-directive></div>",
-      );
+      var el = $("<div my-directive my-other-directive></div>");
       $compile(el);
       await wait();
       expect(otherCompileSpy).not.toHaveBeenCalled();
@@ -2659,7 +2618,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
       $compile(el);
       await wait();
       expect(compileSpy).not.toHaveBeenCalled();
@@ -2672,7 +2631,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive>Hello</div>");
+      var el = $("<div my-directive>Hello</div>");
       $compile(el);
       await wait();
       expect(el.innerHTML).toBe("");
@@ -2685,7 +2644,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
       $compile(el);
       setTimeout(() => {
         expect(el.children.length).toBe(1);
@@ -2704,7 +2663,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
 
       $compile(el);
 
@@ -2725,9 +2684,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive my-other-directive></div>",
-      );
+      var el = $("<div my-directive my-other-directive></div>");
 
       $compile(el);
 
@@ -2748,7 +2705,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
 
       $compile(el);
 
@@ -2770,7 +2727,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
 
       $compile(el);
       await wait();
@@ -2788,9 +2745,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive my-other-directive></div>",
-      );
+      var el = $("<div my-directive my-other-directive></div>");
       expect(() => {
         $compile(el);
       }).toThrowError();
@@ -2806,9 +2761,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive my-other-directive></div>",
-      );
+      var el = $("<div my-directive my-other-directive></div>");
 
       $compile(el);
 
@@ -2829,7 +2782,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
 
       var linkFunction = $compile(el);
 
@@ -2855,7 +2808,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
 
       var linkFunction = $compile(el);
 
@@ -2880,7 +2833,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
 
       var linkFunction = $compile(el)($rootScope); // link first
 
@@ -2906,9 +2859,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive my-other-directive></div>",
-      );
+      var el = $("<div my-directive my-other-directive></div>");
 
       let linkFunction = $compile(el);
 
@@ -2937,9 +2888,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        '<div my-directive="42" my-other-directive></div>',
-      );
+      var el = $('<div my-directive="42" my-other-directive></div>');
 
       var linkFunction = $compile(el);
       linkFunction($rootScope);
@@ -2965,7 +2914,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML('<div my-directive="42"></div>');
+      var el = $('<div my-directive="42"></div>');
 
       $compile(el)($rootScope);
       setTimeout(() => {
@@ -2992,7 +2941,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML('<div my-directive="42"></div>');
+      var el = $('<div my-directive="42"></div>');
       $compile(el)($rootScope);
 
       setTimeout(() => {
@@ -3024,9 +2973,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-directive my-other-directive></div>",
-      );
+      var el = $("<div my-directive my-other-directive></div>");
 
       $compile(el)($rootScope);
 
@@ -3053,9 +3000,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div in-transclude></div></div>",
-      );
+      var el = $("<div my-transcluder><div in-transclude></div></div>");
 
       var linkFunction = $compile(el);
 
@@ -3085,9 +3030,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder my-second-transcluder></div>",
-      );
+      var el = $("<div my-transcluder my-second-transcluder></div>");
 
       $compile(el);
       await wait();
@@ -3104,9 +3047,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div>Must go</div></div>",
-      );
+      var el = $("<div my-transcluder><div>Must go</div></div>");
 
       $compile(el);
       expect(el.innerHTML).toBe("");
@@ -3130,9 +3071,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div inside-transcluder></div></div>",
-      );
+      var el = $("<div my-transcluder><div inside-transcluder></div></div>");
       $compile(el)($rootScope);
       await wait();
       expect(insideCompileSpy).toHaveBeenCalled();
@@ -3151,9 +3090,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div in-transcluder></div></div>",
-      );
+      var el = $("<div my-transcluder><div in-transcluder></div></div>");
 
       $compile(el)($rootScope);
       expect(el.outerHTML.match(/my-transcluder/)).toBeTruthy();
@@ -3169,9 +3106,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder my-second-transcluder></div>",
-      );
+      var el = $("<div my-transcluder my-second-transcluder></div>");
 
       expect(() => {
         $compile(el);
@@ -3198,9 +3133,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div my-inner-directive></div></div>",
-      );
+      var el = $("<div my-transcluder><div my-inner-directive></div></div>");
 
       $rootScope.anAttr = "Hello from root";
       $compile(el)($rootScope);
@@ -3230,9 +3163,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div my-inner-directive></div></div>",
-      );
+      var el = $("<div my-transcluder><div my-inner-directive></div></div>");
 
       $rootScope.anAttr = "Hello from root";
       $compile(el)($rootScope);
@@ -3264,9 +3195,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div my-inner-directive>TEST</div>",
-      );
+      var el = $("<div my-transcluder><div my-inner-directive>TEST</div>");
       $compile(el)($rootScope);
 
       await wait();
@@ -3297,9 +3226,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div my-other-directive></div></div>",
-      );
+      var el = $("<div my-transcluder><div my-other-directive></div></div>");
 
       $compile(el)($rootScope);
       await wait();
@@ -3324,9 +3251,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div in-transclude></div></div>",
-      );
+      var el = $("<div my-transcluder><div in-transclude></div></div>");
 
       $compile(el)($rootScope);
       await wait();
@@ -3350,9 +3275,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div in-transclude></div></div>",
-      );
+      var el = $("<div my-transcluder><div in-transclude></div></div>");
 
       $compile(el)($rootScope);
 
@@ -3365,9 +3288,7 @@ describe("$compile", () => {
           return {
             transclude: true,
             link: function (scope, element, attrs, ctrl, transclude) {
-              var customTemplate = createElementFromHTML(
-                "<div in-custom-template></div>",
-              );
+              var customTemplate = $("<div in-custom-template></div>");
               element.append(customTemplate);
               $compile(customTemplate)(scope, undefined, {
                 parentBoundTranscludeFn: transclude,
@@ -3384,9 +3305,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div in-transclude></div></div>",
-      );
+      var el = $("<div my-transcluder><div in-transclude></div></div>");
 
       $compile(el)($rootScope);
       await wait();
@@ -3400,9 +3319,7 @@ describe("$compile", () => {
           return {
             transclude: true,
             link: function (scope, element, attrs, ctrl, transclude) {
-              var customTemplate = createElementFromHTML(
-                "<div in-custom-template></div>",
-              );
+              var customTemplate = $("<div in-custom-template></div>");
               element.append(customTemplate);
               $compile(customTemplate)(scope, undefined, {
                 parentBoundTranscludeFn: transclude,
@@ -3430,9 +3347,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div in-transclude></div></div>",
-      );
+      var el = $("<div my-transcluder><div in-transclude></div></div>");
 
       $compile(el)($rootScope);
 
@@ -3458,9 +3373,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div in-transclude></div></div>",
-      );
+      var el = $("<div my-transcluder><div in-transclude></div></div>");
       $compile(el)($rootScope);
 
       expect(transclude()[0].outerHTML.match(/in-transclude/)).toBeTruthy();
@@ -3471,7 +3384,7 @@ describe("$compile", () => {
     it("can be passed to public link fn", () => {
       registerDirectives({});
       reloadModules();
-      var el = createElementFromHTML("<div>Hello</div>");
+      var el = $("<div>Hello</div>");
       var myScope = $rootScope.$new();
       var gotEl, gotScope;
 
@@ -3487,7 +3400,7 @@ describe("$compile", () => {
     it("causes compiled elements to be cloned", () => {
       registerDirectives({});
       reloadModules();
-      var el = createElementFromHTML("<div>Hello</div>");
+      var el = $("<div>Hello</div>");
       var myScope = $rootScope.$new();
       var gotClonedEl;
 
@@ -3514,7 +3427,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-directive></div>");
+      var el = $("<div my-directive></div>");
       var myScope = $rootScope.$new();
 
       $compile(el)(myScope, () => {});
@@ -3538,9 +3451,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div in-transclude></div></div>",
-      );
+      var el = $("<div my-transcluder><div in-transclude></div></div>");
 
       $compile(el)($rootScope);
 
@@ -3562,9 +3473,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div in-transclusion></div></div>",
-      );
+      var el = $("<div my-transcluder><div in-transclusion></div></div>");
 
       $compile(el)($rootScope);
       expect(el.outerHTML.match(/in-transclusion/)).toBeTruthy();
@@ -3593,9 +3502,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-transcluder><div my-other-directive></div></div>",
-      );
+      var el = $("<div my-transcluder><div my-other-directive></div></div>");
 
       $compile(el)($rootScope);
       expect(el.outerHTML.match(/Hello from transcluder/)).toBeTruthy();
@@ -3612,7 +3519,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div><div my-transcluder></div></div>");
+      var el = $("<div><div my-transcluder></div></div>");
 
       $compile(el);
       expect(el.innerText).toBe("");
@@ -3627,7 +3534,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div><div my-transcluder></div></div>");
+      var el = $("<div><div my-transcluder></div></div>");
 
       $compile(el);
 
@@ -3641,9 +3548,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div><div my-transcluder=42></div></div>",
-      );
+      var el = $("<div><div my-transcluder=42></div></div>");
 
       $compile(el);
 
@@ -3666,7 +3571,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div><div my-transcluder></div></div>");
+      var el = $("<div><div my-transcluder></div></div>");
 
       $compile(el)($rootScope);
 
@@ -3696,9 +3601,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<div my-other-directive my-transcluder></div>",
-      );
+      var el = $("<div my-other-directive my-transcluder></div>");
 
       $compile(el);
       expect(gotCompiledEl.nodeType).toBe(Node.ELEMENT_NODE);
@@ -3720,7 +3623,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
+      var el = $(
         "<div><div my-transcluder><div my-other-directive></div></div></div>",
       );
       $compile(el)($rootScope);
@@ -3741,7 +3644,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
+      var el = $(
         "<div><div my-transcluder><div my-other-directive></div></div></div>",
       );
 
@@ -3768,7 +3671,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div><div my-double>Hello</div>");
+      var el = $("<div><div my-double>Hello</div>");
 
       $compile(el)($rootScope);
       expect(el.innerText).toBe("HelloHelloHello");
@@ -3799,7 +3702,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
+      var el = $(
         "<div><div my-ctrl-directive my-transcluder><div my-other-directive>Hello</div></div>",
       );
 
@@ -3814,7 +3717,7 @@ describe("$compile", () => {
     it("is done for text nodes", async () => {
       registerDirectives({});
       reloadModules();
-      var el = createElementFromHTML("<div>My expression: {{myExpr}}</div>");
+      var el = $("<div>My expression: {{myExpr}}</div>");
       $compile(el)($rootScope);
 
       await wait();
@@ -3828,7 +3731,7 @@ describe("$compile", () => {
     it("is done for attributes", async () => {
       registerDirectives({});
       reloadModules();
-      var el = createElementFromHTML('<img alt="{{myAltText}}">');
+      var el = $('<img alt="{{myAltText}}">');
       $compile(el)($rootScope);
 
       await wait();
@@ -3852,7 +3755,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML('<img alt="{{myAltText}}" my-directive>');
+      var el = $('<img alt="{{myAltText}}" my-directive>');
       $compile(el)($rootScope);
 
       $rootScope.myAltText = "My favourite photo";
@@ -3874,7 +3777,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML('<img alt="{{myAltText}}" my-directive>');
+      var el = $('<img alt="{{myAltText}}" my-directive>');
       $compile(el)($rootScope);
       await wait();
       expect(observerSpy.calls.count()).toBe(1);
@@ -3892,9 +3795,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        '<div my-directive my-attr="{{myExpr}}"></div>',
-      );
+      var el = $('<div my-directive my-attr="{{myExpr}}"></div>');
       $rootScope.myExpr = "Hello";
       $compile(el)($rootScope);
       await wait();
@@ -3914,9 +3815,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        '<div my-directive my-attr="{{myExpr}}"></div>',
-      );
+      var el = $('<div my-directive my-attr="{{myExpr}}"></div>');
       $rootScope.myExpr = "Hello";
       $compile(el)($rootScope);
       await wait();
@@ -3935,9 +3834,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        '<div my-directive my-attr="{{myExpr}}"></div>',
-      );
+      var el = $('<div my-directive my-attr="{{myExpr}}"></div>');
       $rootScope.myExpr = "Hello";
       $rootScope.myDifferentExpr = "Other Hello";
       $compile(el)($rootScope);
@@ -3957,9 +3854,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        '<div my-directive my-attr="{{myExpr}}"></div>',
-      );
+      var el = $('<div my-directive my-attr="{{myExpr}}"></div>');
       $rootScope.myExpr = "Hello";
       $compile(el)($rootScope);
       await wait();
@@ -3971,9 +3866,7 @@ describe("$compile", () => {
       registerDirectives({});
       reloadModules();
       $rootScope.myFunction = () => {};
-      var el = createElementFromHTML(
-        '<button onclick="{{myFunction()}}"></button>',
-      );
+      var el = $('<button onclick="{{myFunction()}}"></button>');
       expect(() => {
         $compile(el)($rootScope);
       }).toThrowError();
@@ -3992,7 +3885,7 @@ describe("$compile", () => {
           });
         },
       ]).invoke(async ($compile, $rootScope) => {
-        var el = createElementFromHTML("<div my-directive></div>");
+        var el = $("<div my-directive></div>");
         $rootScope.myExpr = 42;
         $compile(el)($rootScope);
         await wait();
@@ -4022,7 +3915,7 @@ describe("$compile", () => {
       });
 
       reloadModules();
-      var el = createElementFromHTML("<my-component></my-component>");
+      var el = $("<my-component></my-component>");
       $compile(el)($rootScope);
 
       expect(controllerInstantiated).toBe(true);
@@ -4038,7 +3931,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<div my-component></div>");
+      var el = $("<div my-component></div>");
       $compile(el)($rootScope);
       await wait();
       expect(controllerInstantiated).toBe(false);
@@ -4052,7 +3945,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<my-component></my-component>");
+      var el = $("<my-component></my-component>");
       $compile(el)($rootScope);
       await wait();
       expect(componentScope.$id).not.toBe($rootScope.$id);
@@ -4075,7 +3968,7 @@ describe("$compile", () => {
       reloadModules();
       $rootScope.b = 42;
       $rootScope.c = 43;
-      var el = createElementFromHTML(
+      var el = $(
         '<my-component attr="a", one-way="b", two-way="c"></my-component>',
       );
       $compile(el)($rootScope);
@@ -4096,7 +3989,7 @@ describe("$compile", () => {
         controllerAs: "myComponentController",
       });
       reloadModules();
-      var el = createElementFromHTML("<my-component></my-component>");
+      var el = $("<my-component></my-component>");
       $compile(el)($rootScope);
       await wait();
       expect(componentScope.myComponentController).toEqual(controllerInstance);
@@ -4114,7 +4007,7 @@ describe("$compile", () => {
           controller: "MyController as myComponentController",
         });
       reloadModules();
-      var el = createElementFromHTML("<my-component></my-component");
+      var el = $("<my-component></my-component");
       $compile(el)($rootScope);
       await wait();
       expect(componentScope.myComponentController).toEqual(controllerInstance);
@@ -4130,7 +4023,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<my-component></my-component>");
+      var el = $("<my-component></my-component>");
       $compile(el)($rootScope);
       await wait();
       expect(componentScope.$ctrl).toEqual(controllerInstance);
@@ -4144,7 +4037,7 @@ describe("$compile", () => {
         template: "{{ $ctrl.message }}",
       });
       reloadModules();
-      var el = createElementFromHTML("<my-component></my-component>");
+      var el = $("<my-component></my-component>");
       $compile(el)($rootScope);
       await wait();
       expect(el.innerText).toEqual("Hello from component");
@@ -4159,7 +4052,7 @@ describe("$compile", () => {
       });
       reloadModules();
       $templateCache.set("/my_component.html", "{{ $ctrl.message }}");
-      var el = createElementFromHTML("<my-component></my-component>");
+      var el = $("<my-component></my-component>");
       $compile(el)($rootScope);
       setTimeout(() => {
         expect(el.innerText).toEqual("Hello from component");
@@ -4174,7 +4067,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<my-component></my-component>");
+      var el = $("<my-component></my-component>");
       $compile(el)($rootScope);
       await wait();
       expect(el.innerText).toEqual("42");
@@ -4190,7 +4083,7 @@ describe("$compile", () => {
         ],
       });
       reloadModules();
-      var el = createElementFromHTML("<my-component></my-component>");
+      var el = $("<my-component></my-component>");
       $compile(el)($rootScope);
       expect(el.innerText).toEqual("42");
     });
@@ -4202,9 +4095,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        '<my-component my-attr="42"></my-component>',
-      );
+      var el = $('<my-component my-attr="42"></my-component>');
       $compile(el)($rootScope);
       await wait();
       expect(el.getAttribute("copiedAttr")).toEqual("42");
@@ -4218,7 +4109,7 @@ describe("$compile", () => {
       });
       $templateCache.set("/template42.html", "{{ 1 + 1 }}");
       reloadModules();
-      var el = createElementFromHTML("<my-component></my-component>");
+      var el = $("<my-component></my-component>");
       $compile(el)($rootScope);
       await wait();
       expect(el.innerText).toEqual("2");
@@ -4230,9 +4121,7 @@ describe("$compile", () => {
         template: "<div ng-transclude></div>",
       });
       reloadModules();
-      var el = createElementFromHTML(
-        "<my-component>Transclude me</my-component>",
-      );
+      var el = $("<my-component>Transclude me</my-component>");
       $compile(el)($rootScope);
       expect(el.children[0].innerText).toEqual("Transclude me");
     });
@@ -4250,7 +4139,7 @@ describe("$compile", () => {
           },
         });
       reloadModules();
-      var el = createElementFromHTML("<first><second></second></first>");
+      var el = $("<first><second></second></first>");
       $compile(el)($rootScope);
       expect(secondControllerInstance.first).toBeDefined();
     });
@@ -4288,7 +4177,7 @@ describe("$compile", () => {
         });
 
       reloadModules();
-      var el = createElementFromHTML("<first second></first>");
+      var el = $("<first second></first>");
       $compile(el)($rootScope);
       expect(invocations).toEqual([
         "first controller created",
@@ -4308,7 +4197,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML("<my-component></my-component>");
+      var el = $("<my-component></my-component>");
       $compile(el)($rootScope);
       $rootScope.$destroy();
       expect(destroySpy).toHaveBeenCalled();
@@ -4338,7 +4227,7 @@ describe("$compile", () => {
         });
 
       reloadModules();
-      var el = createElementFromHTML("<first><second></second></first>");
+      var el = $("<first><second></second></first>");
       $compile(el)($rootScope);
       expect(invocations).toEqual([
         "second postlink",
@@ -4358,9 +4247,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        '<my-component my-binding="42"></my-component>',
-      );
+      var el = $('<my-component my-binding="42"></my-component>');
       $compile(el)($rootScope);
       expect(changesSpy).toHaveBeenCalled();
       expect(changesSpy.calls.mostRecent().args[0].myBinding).toBeUndefined();
@@ -4380,9 +4267,7 @@ describe("$compile", () => {
       });
       reloadModules();
       $rootScope.aValue = 42;
-      var el = createElementFromHTML(
-        '<my-component my-binding="aValue"></my-component>',
-      );
+      var el = $('<my-component my-binding="aValue"></my-component>');
       $compile(el)($rootScope);
       await wait();
 
@@ -4411,9 +4296,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = createElementFromHTML(
-        '<my-component my-attr="42"></my-component>',
-      );
+      var el = $('<my-component my-attr="42"></my-component>');
       $compile(el)($rootScope);
       await wait();
       expect(changesSpy.calls.count()).toBe(1);
@@ -4442,7 +4325,7 @@ describe("$compile", () => {
       });
       reloadModules();
       $rootScope.aValue = 42;
-      var el = createElementFromHTML(
+      var el = $(
         '<my-component my-binding="aValue" my-attr="fourtyTwo"></my-component>',
       );
       $compile(el)($rootScope);
@@ -4482,7 +4365,7 @@ describe("$compile", () => {
       });
       reloadModules();
       $rootScope.aValue = 42;
-      var el = createElementFromHTML(
+      var el = $(
         '<my-component my-binding="aValue" your-binding="bValue" ></my-component>',
       );
       $compile(el)($rootScope);
@@ -4534,7 +4417,7 @@ describe("$compile", () => {
       reloadModules();
 
       $rootScope.aValue = 42;
-      var el = createElementFromHTML(
+      var el = $(
         "<div>" +
           '<first my-binding="aValue"></first>' +
           '<second my-binding="aValue"></second>' +
@@ -4809,7 +4692,7 @@ describe("$compile", () => {
     });
 
     it("should handle transcluded svg elements", async () => {
-      let element = createElementFromHTML(
+      let element = $(
         "<div><svg svg-container>" +
           '<circle cx="4" cy="4" r="2"></circle>' +
           "</svg></div>",
@@ -4822,7 +4705,7 @@ describe("$compile", () => {
     });
 
     it("should handle custom svg elements inside svg tag", async () => {
-      let element = createElementFromHTML(
+      let element = $(
         '<div><svg width="300" height="300">' +
           "<circle svg-circle></circle>" +
           "</svg></div>",
@@ -4835,7 +4718,7 @@ describe("$compile", () => {
     });
 
     it("should handle transcluded custom svg elements", async () => {
-      let element = createElementFromHTML(
+      let element = $(
         "<div><svg svg-container>" +
           "<circle svg-circle></circle>" +
           "</svg></div>",
@@ -4848,7 +4731,7 @@ describe("$compile", () => {
     });
 
     it("should handle directives with templates that manually add the transclude further down", async () => {
-      element = createElementFromHTML(
+      element = $(
         "<div><svg svg-custom-transclude-container>" +
           '<circle cx="2" cy="2" r="1"></circle></svg>' +
           "</div>",
@@ -4880,7 +4763,7 @@ describe("$compile", () => {
 
       // template is loaded and replaces the existing nodes
       expect(element.querySelectorAll("circle").length).toBe(1);
-      // debugger
+
       $rootScope.list.push(2);
       await wait(100);
       expect(element.querySelectorAll("circle").length).toBe(2);
@@ -4889,9 +4772,7 @@ describe("$compile", () => {
 
   describe("compile phase", () => {
     it("should not wrap root text nodes in spans", async () => {
-      element = createElementFromHTML(
-        "<div>   <div>A</div>\n  <div>B</div>C\t\n  </div>",
-      );
+      element = $("<div>   <div>A</div>\n  <div>B</div>C\t\n  </div>");
       $compile(element.childNodes)($rootScope);
       await wait();
       const spans = element.querySelectorAll("span");
@@ -4899,9 +4780,7 @@ describe("$compile", () => {
     });
 
     it("should be able to compile text nodes at the root", async () => {
-      element = createElementFromHTML(
-        "<div>Name: {{name}}<br />\nColor: {{color}}</div>",
-      );
+      element = $("<div>Name: {{name}}<br />\nColor: {{color}}</div>");
       $rootScope.name = "Lucas";
       $rootScope.color = "blue";
       $compile(element.childNodes)($rootScope);
@@ -4918,7 +4797,7 @@ describe("$compile", () => {
       createInjector(["test1"]).invoke(($compile) => {
         expect(Cache.size).toEqual(0);
         // First with only elements at the top level
-        element = createElementFromHTML("<div><div></div></div>");
+        element = $("<div><div></div></div>");
         $compile(element.childNodes)($rootScope);
         // expect(Cache.size).toEqual(2);
         emptyElement(element);
@@ -4926,19 +4805,19 @@ describe("$compile", () => {
 
         // Next with non-empty text nodes at the top level
         // (in this case the compiler will wrap them in a <span>)
-        element = createElementFromHTML("<div>xxx</div>");
+        element = $("<div>xxx</div>");
         $compile(element.childNodes)($rootScope);
         emptyElement(element);
         expect(Cache.size).toEqual(0);
 
         // Next with comment nodes at the top level
-        element = createElementFromHTML("<div><!-- comment --></div>");
+        element = $("<div><!-- comment --></div>");
         $compile(element.childNodes)($rootScope);
         emptyElement(element);
         expect(Cache.size).toEqual(0);
 
         // Finally with empty text nodes at the top level
-        element = createElementFromHTML("<div>   \n<div></div>   </div>");
+        element = $("<div>   \n<div></div>   </div>");
         $compile(element.childNodes)($rootScope);
         //expect(Cache.size).toEqual(2);
         emptyElement(element);
@@ -4951,7 +4830,7 @@ describe("$compile", () => {
       // the plugin's context rather than the usual DOM apis are exposed on this element, so
       // childNodes might not exist.
 
-      element = createElementFromHTML("<div>{{1+2}}</div>");
+      element = $("<div>{{1+2}}</div>");
 
       try {
         element.childNodes[1] = {
@@ -4971,7 +4850,7 @@ describe("$compile", () => {
     });
 
     it('should detect anchor elements with the string "SVG" in the `href` attribute as an anchor', async () => {
-      element = createElementFromHTML(
+      element = $(
         '<div><a href="/ID_SVG_ID">' +
           '<span ng-if="true">Should render</span>' +
           "</a></div>",
@@ -4988,7 +4867,7 @@ describe("$compile", () => {
     it("should allow changing the template structure after the current node", async () => {
       myModule.directive("after", () => ({
         compile(element) {
-          element.append(createElementFromHTML("<span log>B</span>"));
+          element.append($("<span log>B</span>"));
         },
       }));
       reloadModules();
@@ -5000,7 +4879,7 @@ describe("$compile", () => {
     it("should allow changing the template structure after the current node inside ngRepeat", async () => {
       myModule.directive("after", () => ({
         compile(element) {
-          element.append(createElementFromHTML("<span log>B</span>"));
+          element.append($("<span log>B</span>"));
         },
       }));
 
@@ -6178,7 +6057,7 @@ describe("$compile", () => {
 
           //   expect(() => {
           //     $compile("<p template></p>")($rootScope);
-          //     $rootScope.createElementFromHTML();
+          //     $rootScope.$();
           //   }).toThrowError(/tplrt/);
           // });
 
@@ -7107,8 +6986,8 @@ describe("$compile", () => {
             $rootScope,
           );
           await wait();
+          expect(element.getAttribute("remove-attr")).toBeNull();
         }).not.toThrow();
-        expect(element.getAttribute("remove-attr")).toBeUndefined();
       });
 
       describe("SCE values", () => {
@@ -7166,10 +7045,8 @@ describe("$compile", () => {
 
       it("should call observer of non-interpolated attr through $evalAsync", async () => {
         $compile('<div some-attr="nonBound" observer></div>')($rootScope);
-        await wait();
-        expect(directiveAttrs.someAttr).toBe("nonBound");
 
-        expect(observeSpy).not.toHaveBeenCalled();
+        expect(directiveAttrs.someAttr).toBe("nonBound");
         expect(observeSpy).toHaveBeenCalled();
       });
 
@@ -7940,7 +7817,7 @@ describe("$compile", () => {
             '<div><d1 ng-if="show[0]"></d1><d2 ng-if="show[1]"></d2><div ng-if="show[2]"><d3></d3></div></div>',
           )($rootScope);
           await wait();
-          $rootScope.$apply("show = [true, true, true]");
+          $rootScope.show = [true, true, true];
           await wait();
 
           const d1Controller = element.querySelector("d1").controller("d1");

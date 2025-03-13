@@ -5,7 +5,12 @@ import {
   assertNotHasOwnProperty,
   errorHandlingConfig,
 } from "./shared/utils.js";
-import { getController, getInjector, getScope, setCacheData } from "./shared/dom.js";
+import {
+  getController,
+  getInjector,
+  getScope,
+  setCacheData,
+} from "./shared/dom.js";
 import { annotate, createInjector } from "./core/di/injector.js";
 import { NgModule } from "./core/di/ng-module.js";
 import { Cache } from "./core/cache/cache.js";
@@ -194,7 +199,7 @@ export class Angular {
   /**
    * Return instance of InjectorService attached to element
    * @param {Element} element
-   * @returns {import('./core/di/internal-injector.js').InjectorService}
+   * @returns {import("./core/di/internal-injector.js").InjectorService}
    */
   getInjector(element) {
     return getInjector(element);
@@ -204,20 +209,20 @@ export class Angular {
    * Gets the scope instance for a given element, if exists.
    *
    * @param {Element} element - The DOM element to get data from.
-   * @returns {import("./core/scope/scope.js").Scope|undefined} - The retrieved data 
+   * @returns {import("./core/scope/scope.js").Scope|undefined} - The retrieved data
    */
   getScope(element) {
-    return getScope(element)
+    return getScope(element);
   }
 
   /**
    * Gets the constoller instance for a given element, if exists.
    *
    * @param {Element} element - The DOM element to get data from.
-   * @returns {import("./core/scope/scope.js").Scope|undefined} - The retrieved data 
+   * @returns {import("./core/scope/scope.js").Scope|undefined} - The retrieved data
    */
   getContoller(element, name) {
-    return getController(element, name)
+    return getController(element, name);
   }
 
   /**

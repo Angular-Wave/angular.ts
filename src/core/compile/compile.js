@@ -39,6 +39,7 @@ import { createEventDirective } from "../../directive/events/events.js";
 import { Attributes } from "./attributes.js";
 import { ngObserveDirective } from "../../directive/observe/observe.js";
 import { isProxy } from "../scope/scope.js";
+import { SCOPE_KEY } from "../cache/cache.js";
 
 /**
  * @description Function that aggregates all linking fns for a compilation root (nodeList)
@@ -63,7 +64,7 @@ import { isProxy } from "../scope/scope.js";
  * @description Entry point for the '$compile' service.
  *
  * @callback CompileFn
- * @param {string|Element|NodeList|ChildNode} $compileNodes - The nodes to be compiled.
+ * @param {string|Element} compileNode - The nodes to be compiled.
  * @param {*} [transcludeFn] - An optional transclusion function to be used during compilation. TODO
  * @param {number} [maxPriority] - An optional maximum priority for directives.
  * @param {string} [ignoreDirective] - An optional directive to ignore during compilation.
@@ -600,23 +601,24 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * @type {CompileFn}
        */
       function compile(
-        $compileNodes,
+        element,
         transcludeFn,
         maxPriority,
         ignoreDirective,
         previousCompileContext,
       ) {
-        let jqCompileNodes = isString($compileNodes)
-          ? [createElementFromHTML(/** @type {string} */ ($compileNodes))]
-          : $compileNodes instanceof NodeList || Array.isArray($compileNodes)
-            ? $compileNodes
-            : [$compileNodes];
+        /** @type {Element} */
+        let compileNode = isString(element)
+          ? createElementFromHTML(/** @type {string} */ (element))
+          : /** @type {Element} */ (element);
 
         /**
+         * The composite link function is a composite of individual node linking functions.
+         * It will be invoke by the public link function below.
          * @type {CompositeLinkFn}
          */
         let compositeLinkFn = compileNodes(
-          jqCompileNodes,
+          [compileNode],
           transcludeFn,
           maxPriority,
           ignoreDirective,
@@ -625,7 +627,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
         let namespace = null;
         return function publicLinkFn(scope, cloneConnectFn, options) {
-          if (!jqCompileNodes) {
+          if (!compileNode) {
             throw $compileMinErr(
               "multilink",
               "This element has already been linked.",
@@ -634,6 +636,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
           assertArg(scope, "scope");
 
+          setCacheData(compileNode, SCOPE_KEY, scope);
           if (previousCompileContext && previousCompileContext.needsNewScope) {
             // A parent directive did a replace and a directive on this element asked
             // for transclusion, which caused us to lose a layer of element on which
@@ -674,28 +677,28 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
             const wrappedTemplate = wrapTemplate(
               namespace,
-              createElementFromHTML("<div></div>").append(jqCompileNodes)
+              createElementFromHTML("<div></div>").append(compileNode)
                 .innerHTML,
             );
             $linkNode = createElementFromHTML(wrappedTemplate);
           } else if (cloneConnectFn) {
             let elements = (
-              jqCompileNodes instanceof NodeList
-                ? Array.from(jqCompileNodes)
-                : jqCompileNodes
+              compileNode instanceof NodeList
+                ? Array.from(compileNode)
+                : compileNode
             ).map(
               /** @param {Element} element */
               (element) => element.cloneNode(true),
             );
             $linkNode = elements;
           } else {
-            $linkNode = jqCompileNodes;
+            $linkNode = compileNode;
           }
 
           if (transcludeControllers) {
             for (const controllerName in transcludeControllers) {
               setCacheData(
-                $linkNode[0],
+                $linkNode,
                 `$${controllerName}Controller`,
                 transcludeControllers[controllerName].instance,
               );
@@ -714,12 +717,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           }
 
           if (!cloneConnectFn) {
-            jqCompileNodes = compositeLinkFn = null;
+            compileNode = compositeLinkFn = null;
           }
 
-          if (Array.isArray($linkNode)) {
-            return $linkNode[0];
-          }
           return $linkNode;
         };
       }
@@ -742,7 +742,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * functions return values - the linking functions - are combined into a composite linking
        * function, which is the a linking function for the node.
        *
-       * @param {NodeList} nodeList an array of nodes or NodeList to compile
+       * @param {NodeList|Node[]} nodeList an array of nodes or NodeList to compile
        * @param {*} transcludeFn A linking function, where the
        *        scope argument is auto-generated to the new child of the transcluded parent scope.
        * @param {number=} [maxPriority] Max directive priority.
@@ -757,7 +757,12 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         ignoreDirective,
         previousCompileContext,
       ) {
+        assertArg(nodeList.length);
+
         /**
+         * Aggregates for the composite linking function, where a node in a node list is mapped
+         * to a corresponding link function. For single elements, the node should be mapped to
+         * a single node link function.
          * @type {Object<number, {nodeLinkFn: PublicLinkFn, childLinkFn: CompositeLinkFn}>}
          */
         const linkFnsMap = {}; // A map to hold node indices and their linkFns
@@ -770,7 +775,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             $animate,
             $exceptionHandler,
             $sce,
+            nodeList[i],
           );
+
           const directives = collectDirectives(
             /** @type Element */ (nodeList[i]),
             attrs,
@@ -810,7 +817,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 !nodeLinkFn.templateOnThisElement)
                 ? nodeLinkFn.transclude
                 : transcludeFn;
-            childLinkFn = compileNodes(childNodes, transcluded);
+            childLinkFn = compileNodes(
+              /** @type {NodeList} */ (childNodes),
+              transcluded,
+            );
           }
 
           if (nodeLinkFn || childLinkFn) {
@@ -826,18 +836,30 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         // return a linking function if we have found anything, null otherwise
         return linkFnFound ? compositeLinkFn : null;
 
-        function compositeLinkFn(scope, nodeList, parentBoundTranscludeFn) {
-          let stableNodeList;
+        /**
+         * The composite link links all the individual nodes
+         *
+         * @param {import("../scope/scope.js").Scope} scope
+         * @param {Element} elem
+         * @param {*} parentBoundTranscludeFn
+         */
+        function compositeLinkFn(scope, elem, parentBoundTranscludeFn) {
+          let stableNodeList = [];
           if (nodeLinkFnFound) {
             // create a stable copy of the nodeList, only copying elements with linkFns
-            stableNodeList = new Array(nodeList.length);
+            stableNodeList = new Array(elem.childNodes.length);
             Object.keys(linkFnsMap).forEach((idx) => {
-              if (nodeList[idx]) {
-                stableNodeList[idx] = nodeList[idx];
+              // the first item will always be a nodeLink function of the element itself
+              if (idx === "0") {
+                stableNodeList[idx] = elem;
+              } else {
+                if (nodeList[idx]) {
+                  stableNodeList[idx] = nodeList[idx];
+                }
               }
             });
           } else {
-            stableNodeList = nodeList;
+            //
           }
 
           Object.entries(linkFnsMap).forEach(
@@ -868,7 +890,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 } else {
                   childBoundTranscludeFn = null;
                 }
-
                 nodeLinkFn(
                   childLinkFn,
                   childScope,
@@ -1164,7 +1185,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         let mightHaveMultipleTransclusionError = false;
         let directiveValue;
 
-        /** @type {NodeLinkFn} */
+        /**
+         * Links all the directives of a single node.
+         * @type {NodeLinkFn}
+         * */
         let nodeLinkFn = function (
           childLinkFn,
           scope,
