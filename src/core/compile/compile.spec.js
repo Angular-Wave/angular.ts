@@ -1198,9 +1198,30 @@ describe("$compile", () => {
       expect(givenElements[0]).toBe(el.firstChild);
       expect(givenElements[1]).toBe(el);
     });
+
+    fit("links directive on multiple child elements first", function () {
+      const givenElements = [];
+      registerDirectives("myDirective", function () {
+        return {
+          link: function (scope, element, attrs) {
+            givenElements.push(element);
+          },
+        };
+      });
+      reloadModules();
+      var el = $(
+        "<div my-directive><div my-directive></div><div my-directive></div></div>",
+      );
+      $compile(el)($rootScope);
+
+      expect(givenElements.length).toBe(3);
+      expect(givenElements[0]).toBe(el.children[0]);
+      expect(givenElements[1]).toBe(el.children[1]);
+      expect(givenElements[2]).toBe(el);
+    });
   });
 
-  it("links children when parent has no directives", async () => {
+  fit("links children when parent has no directives", async () => {
     var givenElements = [];
     registerDirectives("myDirective", () => {
       return {
@@ -1215,6 +1236,25 @@ describe("$compile", () => {
     await wait();
     expect(givenElements.length).toBe(1);
     expect(givenElements[0]).toBe(el.firstChild);
+  });
+
+  fit("links nested children when parent has no directives", async () => {
+    var givenElements = [];
+    registerDirectives("myDirective", () => {
+      return {
+        link: function (scope, element, attrs) {
+          givenElements.push(element);
+        },
+      };
+    });
+    reloadModules();
+    var el = $(
+      `<div><div my-directive><div><div my-directive><div></div></div></div>`,
+    );
+    $compile(el)($rootScope);
+    await wait();
+    expect(givenElements.length).toBe(2);
+    // expect(givenElements[0]).toBe(el.firstChild);
   });
 
   it("supports link function objects", () => {

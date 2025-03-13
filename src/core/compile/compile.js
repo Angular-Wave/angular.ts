@@ -72,7 +72,9 @@ import { SCOPE_KEY } from "../cache/cache.js";
  */
 
 /**
- * @typedef {Function} NodeLinkFn
+ * @callback NodeLinkFn
+ * @param {CompositeLinkFn} childLinkFn
+ * @returns
  */
 
 /**
@@ -84,7 +86,7 @@ import { SCOPE_KEY } from "../cache/cache.js";
  * @callback CompositeLinkFn
  * @param {import('../scope/scope.js').Scope} scope - The scope to be linked to the template
  * @param {Element[]} $linkNode - nodeList
- * @param {Function} parentBoundTranscludeFn
+ * @param {Function} [parentBoundTranscludeFn]
  */
 
 const $compileMinErr = minErr("$compile");
@@ -798,7 +800,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             ignoreDirective,
           );
 
-          /** @function  */
+          /** @type {NodeLinkFn} */
           let nodeLinkFn;
           if (directives.length) {
             nodeLinkFn = applyDirectivesToNode(
@@ -831,10 +833,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 !nodeLinkFn.templateOnThisElement)
                 ? nodeLinkFn.transclude
                 : transcludeFn;
-            childLinkFn = compileNodes(
-              /** @type {NodeList} */ (childNodes),
-              transcluded,
-            );
+            // recursive call
+            childLinkFn = compileNodes(childNodes, transcluded);
           }
 
           if (nodeLinkFn || childLinkFn) {
@@ -855,9 +855,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
          *
          * @param {import("../scope/scope.js").Scope} scope
          * @param {Element|NodeList} elem
-         * @param {*} parentBoundTranscludeFn
+         * @param {*} [parentBoundTranscludeFn]
          */
         function compositeLinkFn(scope, elem, parentBoundTranscludeFn) {
+          assertArg(elem, "elem");
           let stableNodeList = [];
           let isNodeList = !!(/** @type {NodeList } */ (elem).length);
           if (nodeLinkFnFound) {
@@ -878,7 +879,12 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               }
             });
           } else {
-            //
+            // node with no directives
+            linkFnsMap[0]?.childLinkFn(
+              scope,
+              isNodeList ? elem : /** @type {Element } */ (elem).childNodes,
+            );
+            return;
           }
 
           Object.entries(linkFnsMap).forEach(
@@ -917,6 +923,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   childBoundTranscludeFn,
                 );
               } else if (childLinkFn) {
+                debugger;
                 childLinkFn(
                   scope,
                   node.childNodes,
@@ -1168,7 +1175,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {Array.<Function>} [postLinkFns]
        * @param {Object} [previousCompileContext] Context used for previous compilation of the current
        *                                        node
-       * @returns {nodeLinkFn} linkFn
+       * @returns {NodeLinkFn} node link function
        */
       function applyDirectivesToNode(
         directives,
@@ -1401,6 +1408,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             scopeToChild = isolateScope;
           }
           if (childLinkFn && linkNode && linkNode.childNodes) {
+            debugger;
             childLinkFn(
               scopeToChild,
               linkNode.childNodes,
