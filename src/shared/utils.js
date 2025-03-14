@@ -1197,10 +1197,6 @@ export function isObjectEmpty(obj) {
   return !Object.keys(obj).length;
 }
 
-export function createElement(str) {
-  return new DOMParser().parseFromString(str, "text/html").body.firstChild;
-}
-
 /**
  * Replaces the attributes and child elements of an existing element (`replacedElem`)
  * with those of a new element (`newElem`), while keeping the original reference.

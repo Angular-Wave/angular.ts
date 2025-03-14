@@ -7,6 +7,8 @@ import {
   getInheritedData,
   isTextNode,
   setCacheData,
+  setIsolateScope,
+  setScope,
   startingTag,
 } from "../../shared/dom.js";
 import { identifierForController } from "../controller/controller.js";
@@ -39,7 +41,6 @@ import { createEventDirective } from "../../directive/events/events.js";
 import { Attributes } from "./attributes.js";
 import { ngObserveDirective } from "../../directive/observe/observe.js";
 import { isProxy } from "../scope/scope.js";
-import { SCOPE_KEY } from "../cache/cache.js";
 
 /**
  * @typedef {Function} TranscludeFn
@@ -105,8 +106,15 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
   const bindingCache = Object.create(null);
 
+  /**
+   *
+   * @param {import("../scope/scope.js").Scope} scope
+   * @param {string} directiveName
+   * @param {boolean} isController
+   * @returns {Object} a configuartion object for attribute bindings
+   */
   function parseIsolateBindings(scope, directiveName, isController) {
-    const LOCAL_REGEXP = /^([@&]|[=<](\*?))(\??)\s*([\w$]*)$/;
+    const LOCAL_REGEXP = /^([@&]|[=<]())(\??)\s*([\w$]*)$/;
 
     const bindings = Object.create(null);
 
@@ -651,7 +659,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
           assertArg(scope, "scope");
 
-          setCacheData(compileNode, SCOPE_KEY, scope);
+          setScope(compileNode, scope);
+
           if (previousCompileContext && previousCompileContext.needsNewScope) {
             // A parent directive did a replace and a directive on this element asked
             // for transclusion, which caused us to lose a layer of element on which
@@ -915,7 +924,12 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 } else {
                   childBoundTranscludeFn = null;
                 }
-                debugger;
+
+                // attach new scope to element
+                if (nodeLinkFn.scope) {
+                  setScope(node, childScope);
+                }
+
                 nodeLinkFn(
                   childLinkFn,
                   childScope,
@@ -923,7 +937,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   childBoundTranscludeFn,
                 );
               } else if (childLinkFn) {
-                debugger;
                 childLinkFn(
                   scope,
                   node.childNodes,
@@ -1139,21 +1152,26 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             previousCompileContext,
           );
         }
+
         return function lazyCompilation() {
           if (!compiled) {
-            compiled = compile(
-              $compileNodes,
-              transcludeFn,
-              maxPriority,
-              ignoreDirective,
-              previousCompileContext,
-            );
+            // Lazily compile all nodes and store them in the 'compiled' array
+            compiled = Array.from($compileNodes).map((node) => {
+              compile(
+                node,
+                transcludeFn,
+                maxPriority,
+                ignoreDirective,
+                previousCompileContext,
+              );
+            });
 
-            // Null out all of these references in order to make them eligible for garbage collection
-            // since this is a potentially long lived closure
+            // Null out all of these references for garbage collection
             $compileNodes = transcludeFn = previousCompileContext = null;
           }
-          return compiled.apply(this, arguments);
+
+          // Iterate over each compiled function and apply the same 'this' and arguments
+          return compiled.map((fn) => fn.apply(this, arguments));
         };
       }
 
@@ -1408,7 +1426,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             scopeToChild = isolateScope;
           }
           if (childLinkFn && linkNode && linkNode.childNodes) {
-            debugger;
             childLinkFn(
               scopeToChild,
               linkNode.childNodes,
@@ -1430,6 +1447,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
             // invoke link function
             try {
+              if (postLinkFn.isolateScope) {
+                setIsolateScope($element, isolateScope);
+              }
+
               postLinkFn(
                 postLinkFn.isolateScope ? isolateScope : scope,
                 $element,

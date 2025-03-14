@@ -1,5 +1,10 @@
 import { concat, isDefined, isObject } from "./utils.js";
-import { Cache, EXPANDO, SCOPE_KEY } from "../core/cache/cache.js";
+import {
+  Cache,
+  EXPANDO,
+  ISOLATE_SCOPE_KEY,
+  SCOPE_KEY,
+} from "../core/cache/cache.js";
 
 /** @type {number} */
 let jqId = 1;
@@ -337,6 +342,36 @@ export function getCacheData(element, key) {
  */
 export function getScope(element) {
   return getCacheData(element, SCOPE_KEY);
+}
+
+/**
+ * Set scope for a given element.
+ *
+ * @param {Element} element - The DOM element to set data on.
+ * @param {import("../core/scope/scope.js").Scope} scope - The Scope attached to this element
+ */
+export function setScope(element, scope) {
+  return setCacheData(element, SCOPE_KEY, scope);
+}
+
+/**
+ * Gets isolate scope for a given element.
+ *
+ * @param {Element} element - The DOM element to get data from.
+ * @returns {*} - The retrieved data for the given key or all data if no key is provided.
+ */
+export function getIsolateScope(element) {
+  return getCacheData(element, ISOLATE_SCOPE_KEY);
+}
+
+/**
+ * Set isolate scope for a given element.
+ *
+ * @param {Element} element - The DOM element to set data on.
+ * @param {import("../core/scope/scope.js").Scope} scope - The Scope attached to this element
+ */
+export function setIsolateScope(element, scope) {
+  return setCacheData(element, ISOLATE_SCOPE_KEY, scope);
 }
 
 /**
