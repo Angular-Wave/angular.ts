@@ -7,6 +7,7 @@ import {
   minErr,
   trim,
   directiveNormalize,
+  hasAnimate,
 } from "../../shared/utils.js";
 import { ALIASED_ATTR } from "../../shared/constants.js";
 
@@ -75,7 +76,11 @@ export class Attributes {
    */
   $addClass(classVal) {
     if (classVal && classVal.length > 0) {
-      this.$animate.addClass(this.$$element, classVal);
+      if (hasAnimate(this.$$element[0])) {
+        this.$animate.addClass(this.$$element, classVal);
+      } else {
+        this.$$element[0].classList.add(classVal);
+      }
     }
   }
 
@@ -87,7 +92,11 @@ export class Attributes {
    */
   $removeClass(classVal) {
     if (classVal && classVal.length > 0) {
-      this.$animate.removeClass(this.$$element, classVal);
+      if (hasAnimate(this.$$element[0])) {
+        this.$animate.removeClass(this.$$element, classVal);
+      } else {
+        this.$$element[0].classList.remove(classVal);
+      }
     }
   }
 
@@ -101,12 +110,20 @@ export class Attributes {
   $updateClass(newClasses, oldClasses) {
     const toAdd = tokenDifference(newClasses, oldClasses);
     if (toAdd && toAdd.length) {
-      this.$animate.addClass(this.$$element, toAdd);
+      if (hasAnimate(this.$$element[0])) {
+        this.$animate.addClass(this.$$element, toAdd);
+      } else {
+        this.$$element[0].classList.add(...toAdd.split(/\s+/));
+      }
     }
 
     const toRemove = tokenDifference(oldClasses, newClasses);
     if (toRemove && toRemove.length) {
-      this.$animate.removeClass(this.$$element, toRemove);
+      if (hasAnimate(this.$$element[0])) {
+        this.$animate.removeClass(this.$$element, toRemove);
+      } else {
+        this.$$element[0].classList.remove(...toRemove.split(/\s+/));
+      }
     }
   }
 
