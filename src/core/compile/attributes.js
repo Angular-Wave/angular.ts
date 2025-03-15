@@ -50,8 +50,6 @@ export class Attributes {
     }
     /** @type {Element} */
     this.$$element = /** @type {Element} */ (element);
-    /** @type {boolean} */
-    this.animated = hasAnimate(element);
   }
 
   /**
@@ -74,7 +72,7 @@ export class Attributes {
    */
   $addClass(classVal) {
     if (classVal && classVal.length > 0) {
-      if (this.animated) {
+      if (hasAnimate(this.$$element)) {
         this.$animate.addClass(this.$$element, classVal);
       } else {
         this.$$element.classList.add(classVal);
@@ -90,7 +88,7 @@ export class Attributes {
    */
   $removeClass(classVal) {
     if (classVal && classVal.length > 0) {
-      if (this.animated) {
+      if (hasAnimate(this.$$element)) {
         this.$animate.removeClass(this.$$element, classVal);
       } else {
         this.$$element.classList.remove(classVal);
@@ -108,7 +106,7 @@ export class Attributes {
   $updateClass(newClasses, oldClasses) {
     const toAdd = tokenDifference(newClasses, oldClasses);
     if (toAdd && toAdd.length) {
-      if (this.animated) {
+      if (hasAnimate(this.$$element)) {
         this.$animate.addClass(this.$$element, toAdd);
       } else {
         this.$$element.classList.add(...toAdd.split(/\s+/));
@@ -116,7 +114,7 @@ export class Attributes {
     }
     const toRemove = tokenDifference(oldClasses, newClasses);
     if (toRemove && toRemove.length) {
-      if (this.animated) {
+      if (hasAnimate(this.$$element)) {
         this.$animate.removeClass(this.$$element, toRemove);
       } else {
         this.$$element.classList.remove(...toRemove.split(/\s+/));
@@ -322,9 +320,6 @@ export class Attributes {
  * @param {string} str2 - The second string containing space-separated tokens.
  * @returns {string} A string containing tokens that are in str1 but not in str2, separated by spaces.
  *
- * @example
- * // returns "apple orange"
- * tokenDifference("apple banana orange", "banana grape");
  */
 function tokenDifference(str1, str2) {
   const tokens1 = new Set(str1.split(/\s+/));
