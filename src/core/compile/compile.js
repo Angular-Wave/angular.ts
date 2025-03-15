@@ -706,14 +706,13 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             );
             $linkNode = createElementFromHTML(wrappedTemplate);
           } else if (cloneConnectFn) {
-            let elements = (
+            let elements =
               compileNode instanceof NodeList
-                ? Array.from(compileNode)
-                : compileNode
-            ).map(
-              /** @param {Element} element */
-              (element) => element.cloneNode(true),
-            );
+                ? Array.from(compileNode).map(
+                    /** @param {Element} element */
+                    (element) => element.cloneNode(true),
+                  )
+                : compileNode.cloneNode(true);
             $linkNode = elements;
           } else {
             $linkNode = compileNode;
@@ -1156,7 +1155,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         return function lazyCompilation() {
           if (!compiled) {
             // Lazily compile all nodes and store them in the 'compiled' array
-            compiled = Array.from($compileNodes).map((node) => {
+            compiled = (
+              $compileNodes.length ? Array.from($compileNodes) : [$compileNodes]
+            ).map((node) => {
               return compile(
                 node,
                 transcludeFn,

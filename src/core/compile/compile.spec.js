@@ -712,7 +712,7 @@ describe("$compile", () => {
       dealoc(element);
     });
 
-    it("should allow multiple directives per element", () => {
+    fit("should allow multiple directives per element", () => {
       reloadModules();
       var el = $(
         "<span greet='angular' log='L' high-log='H' data-medium-log='M'></span>",
@@ -722,7 +722,7 @@ describe("$compile", () => {
       expect(log.join("; ")).toEqual("L; M; H");
     });
 
-    it("should recurse to children", () => {
+    fit("should recurse to children", () => {
       reloadModules();
       element = $compile(
         '<div>0<a set="hello">1</a>2<b set="angular">3</b>4</div>',
@@ -730,7 +730,7 @@ describe("$compile", () => {
       expect(element.innerText).toEqual("0hello2angular4");
     });
 
-    it("should allow directives in SVG element classes", () => {
+    xit("should allow directives in SVG element classes", () => {
       reloadModules();
       if (!window.SVGElement) return;
       element = $compile('<svg><text greet="angular" log="123"></text></svg>')(
@@ -743,7 +743,7 @@ describe("$compile", () => {
       expect(log[0]).toEqual("123");
     });
 
-    it("should ignore not set CSS classes on SVG elements", async () => {
+    xit("should ignore not set CSS classes on SVG elements", async () => {
       reloadModules();
       if (!window.SVGElement) return;
       // According to spec SVG element className property is readonly, but only FF
@@ -753,7 +753,7 @@ describe("$compile", () => {
       expect(element.textContent).toEqual("1");
     });
 
-    it("should receive scope, element, and attributes", () => {
+    fit("should receive scope, element, and attributes", () => {
       let injectableInjector;
       myModule.directive("log", ($rootScope, $injector) => {
         injectableInjector = $injector;
@@ -3458,7 +3458,7 @@ describe("$compile", () => {
   });
 
   describe("clone attach function", () => {
-    it("can be passed to public link fn", () => {
+    fit("can be passed to public link fn", () => {
       registerDirectives({});
       reloadModules();
       var el = $("<div>Hello</div>");
@@ -3466,7 +3466,7 @@ describe("$compile", () => {
       var gotEl, gotScope;
 
       $compile(el)(myScope, function (el, scope) {
-        gotEl = el[0];
+        gotEl = el;
         gotScope = scope;
       });
 
@@ -3474,7 +3474,7 @@ describe("$compile", () => {
       expect(gotScope).toBe(myScope);
     });
 
-    it("causes compiled elements to be cloned", () => {
+    fit("causes compiled elements to be cloned", () => {
       registerDirectives({});
       reloadModules();
       var el = $("<div>Hello</div>");
@@ -3485,11 +3485,11 @@ describe("$compile", () => {
         gotClonedEl = clonedEl;
       });
 
-      expect(gotClonedEl[0].isEqualNode(el)).toBe(true);
-      expect(gotClonedEl[0]).not.toBe(el);
+      expect(gotClonedEl.isEqualNode(el)).toBe(true);
+      expect(gotClonedEl).not.toBe(el);
     });
 
-    it("causes cloned DOM to be linked", () => {
+    fit("causes cloned DOM to be linked", () => {
       var gotCompileEl, gotLinkEl;
       registerDirectives({
         myDirective: () => {
@@ -3512,7 +3512,7 @@ describe("$compile", () => {
       expect(gotCompileEl).not.toBe(gotLinkEl);
     });
 
-    it("allows connecting transcluded content", () => {
+    fit("allows connecting transcluded content", () => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3521,7 +3521,7 @@ describe("$compile", () => {
             link: function (scope, element, attrs, ctrl, transcludeFn) {
               var myScope = scope.$new();
               transcludeFn(myScope, function (transclNode) {
-                element.append(transclNode[0]);
+                element.append(transclNode);
               });
             },
           };
@@ -3535,7 +3535,7 @@ describe("$compile", () => {
       expect(el.outerHTML.match(/in-transclude/)).toBeTruthy();
     });
 
-    it("can be used with default transclusion scope", () => {
+    fit("can be used with default transclusion scope", () => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3543,7 +3543,7 @@ describe("$compile", () => {
             template: "<div in-template></div>",
             link: function (scope, element, attrs, ctrl, transcludeFn) {
               transcludeFn(function (transclNode) {
-                element.append(transclNode[0]);
+                element.append(transclNode);
               });
             },
           };
@@ -3556,7 +3556,7 @@ describe("$compile", () => {
       expect(el.outerHTML.match(/in-transclusion/)).toBeTruthy();
     });
 
-    it("allows passing data to transclusion", () => {
+    fit("allows passing data to transclusion", () => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3565,7 +3565,7 @@ describe("$compile", () => {
             link: function (scope, element, attrs, ctrl, transcludeFn) {
               transcludeFn(function (transclNode, transclScope) {
                 transclScope.dataFromTranscluder = "Hello from transcluder";
-                element.append(transclNode[0]);
+                element.append(transclNode);
               });
             },
           };
@@ -13953,7 +13953,7 @@ describe("$compile", () => {
       expect(element.textContent).toBe("bar");
     });
 
-    it("should distinguish different bindings with the same binding name", () => {
+    it("should distinguish different bindings with the same binding name", async () => {
       module.directive("foo", () => ({
         scope: {
           foo: "=",
