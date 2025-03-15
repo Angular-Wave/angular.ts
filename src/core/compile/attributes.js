@@ -51,7 +51,7 @@ export class Attributes {
     /** @type {Element} */
     this.$$element = /** @type {Element} */ (element);
     /** @type {boolean} */
-    this.hasAnimate = hasAnimate(element);
+    this.animated = hasAnimate(element);
   }
 
   /**
@@ -74,7 +74,7 @@ export class Attributes {
    */
   $addClass(classVal) {
     if (classVal && classVal.length > 0) {
-      if (hasAnimate) {
+      if (this.animated) {
         this.$animate.addClass(this.$$element, classVal);
       } else {
         this.$$element.classList.add(classVal);
@@ -90,7 +90,7 @@ export class Attributes {
    */
   $removeClass(classVal) {
     if (classVal && classVal.length > 0) {
-      if (hasAnimate) {
+      if (this.animated) {
         this.$animate.removeClass(this.$$element, classVal);
       } else {
         this.$$element.classList.remove(classVal);
@@ -108,7 +108,7 @@ export class Attributes {
   $updateClass(newClasses, oldClasses) {
     const toAdd = tokenDifference(newClasses, oldClasses);
     if (toAdd && toAdd.length) {
-      if (hasAnimate) {
+      if (this.animated) {
         this.$animate.addClass(this.$$element, toAdd);
       } else {
         this.$$element.classList.add(...toAdd.split(/\s+/));
@@ -116,7 +116,7 @@ export class Attributes {
     }
     const toRemove = tokenDifference(oldClasses, newClasses);
     if (toRemove && toRemove.length) {
-      if (hasAnimate) {
+      if (this.animated) {
         this.$animate.removeClass(this.$$element, toRemove);
       } else {
         this.$$element.classList.remove(...toRemove.split(/\s+/));
