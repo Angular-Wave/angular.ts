@@ -1157,7 +1157,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           if (!compiled) {
             // Lazily compile all nodes and store them in the 'compiled' array
             compiled = Array.from($compileNodes).map((node) => {
-              compile(
+              return compile(
                 node,
                 transcludeFn,
                 maxPriority,

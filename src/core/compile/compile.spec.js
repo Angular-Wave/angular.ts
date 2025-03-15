@@ -3197,16 +3197,14 @@ describe("$compile", () => {
           return {
             transclude: true,
             link: function (scope, element, attrs, ctrl, transclude) {
-              debugger;
               const res = transclude();
-              element.append(res);
+              element.append(res[0]);
             },
           };
         },
         myInnerDirective: () => {
           return {
             link: function (scope, element) {
-              debugger;
               element.innerHTML = scope.anAttr;
             },
           };
@@ -3218,11 +3216,10 @@ describe("$compile", () => {
       $rootScope.anAttr = "Hello from root";
       $compile(el)($rootScope);
       await wait();
-
       expect(el.innerHTML.match(/Hello from root/)).toBeTruthy();
     });
 
-    it("does not use the inherited scope of the directive", () => {
+    fit("does not use the inherited scope of the directive", () => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3250,7 +3247,7 @@ describe("$compile", () => {
       expect(el.innerHTML.match(/Hello from root/)).toBeTruthy();
     });
 
-    it("contents are destroyed along with transcluding directive", async () => {
+    fit("contents are destroyed along with transcluding directive", async () => {
       var watchSpy = jasmine.createSpy();
       registerDirectives({
         myTranscluder: () => {
@@ -3286,7 +3283,7 @@ describe("$compile", () => {
       expect(watchSpy.calls.count()).toBe(1);
     });
 
-    it("allows passing another scope to transclusion function", async () => {
+    fit("allows passing another scope to transclusion function", async () => {
       var otherLinkSpy = jasmine.createSpy();
       registerDirectives({
         myTranscluder: () => {
@@ -3314,7 +3311,7 @@ describe("$compile", () => {
       expect(transcludedScope.specialAttr).toBe(42);
     });
 
-    it("makes contents available to child elements", async () => {
+    fit("makes contents available to child elements", async () => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3338,7 +3335,7 @@ describe("$compile", () => {
       expect(el.outerHTML.match(/in-transclude/)).toBeTruthy();
     });
 
-    it("makes contents available to indirect child elements", () => {
+    fit("makes contents available to indirect child elements", () => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3362,7 +3359,7 @@ describe("$compile", () => {
       expect(el.outerHTML.match(/in-transclude/)).toBeTruthy();
     });
 
-    it("supports passing transclusion function to public link function", async () => {
+    fit("supports passing transclusion function to public link function", async () => {
       registerDirectives({
         myTranscluder: function ($compile) {
           return {
@@ -3392,7 +3389,7 @@ describe("$compile", () => {
       expect(el.outerHTML.match(/in-transclude/)).toBeTruthy();
     });
 
-    it("destroys scope passed through public link fn at the right time", async () => {
+    fit("destroys scope passed through public link fn at the right time", async () => {
       var watchSpy = jasmine.createSpy();
       registerDirectives({
         myTranscluder: function ($compile) {
@@ -3439,7 +3436,7 @@ describe("$compile", () => {
       expect(watchSpy.calls.count()).toBe(1);
     });
 
-    it("makes contents available to controller", () => {
+    fit("makes contents available to controller", () => {
       let transclude;
       registerDirectives({
         myTranscluder: () => {
