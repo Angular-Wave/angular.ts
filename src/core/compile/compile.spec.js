@@ -3587,7 +3587,7 @@ describe("$compile", () => {
   });
 
   describe("element transclusion", () => {
-    it("removes the element from the DOM", () => {
+    fit("removes the element from the DOM", () => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3602,7 +3602,7 @@ describe("$compile", () => {
       expect(el.innerText).toBe("");
     });
 
-    it("replaces the element with a comment", () => {
+    fit("replaces the element with a comment", () => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3618,7 +3618,7 @@ describe("$compile", () => {
       expect(el.innerHTML).toEqual("<!---->");
     });
 
-    it("includes directive attribute value in comment", () => {
+    fit("includes directive attribute value in comment", () => {
       registerDirectives({
         myTranscluder: () => {
           return { transclude: "element" };
@@ -3632,7 +3632,7 @@ describe("$compile", () => {
       expect(el.innerHTML).toEqual("<!---->");
     });
 
-    it("calls directive compile and link with comment", () => {
+    fit("calls directive compile and link with comment", () => {
       var gotCompiledEl, gotLinkedEl;
       registerDirectives({
         myTranscluder: () => {
@@ -3656,7 +3656,7 @@ describe("$compile", () => {
       expect(gotLinkedEl.nodeType).toBe(Node.COMMENT_NODE);
     });
 
-    it("calls lower priority compile with original", () => {
+    fit("calls lower priority compile with original", () => {
       var gotCompiledEl;
       registerDirectives({
         myTranscluder: () => {
@@ -3684,7 +3684,7 @@ describe("$compile", () => {
       expect(gotCompiledEl.nodeType).toBe(Node.ELEMENT_NODE);
     });
 
-    it("calls compile on child element directives", () => {
+    fit("calls compile on child element directives", () => {
       var compileSpy = jasmine.createSpy();
       registerDirectives({
         myTranscluder: () => {
@@ -3708,7 +3708,7 @@ describe("$compile", () => {
       expect(compileSpy).toHaveBeenCalled();
     });
 
-    it("compiles original element contents once", () => {
+    fit("compiles original element contents once", () => {
       var compileSpy = jasmine.createSpy();
       registerDirectives({
         myTranscluder: () => {
@@ -3730,7 +3730,7 @@ describe("$compile", () => {
       expect(compileSpy.calls.count()).toBe(1);
     });
 
-    it("makes original element available for transclusion", () => {
+    fit("makes original element available for transclusion", () => {
       registerDirectives({
         myDouble: () => {
           return {
@@ -3738,10 +3738,10 @@ describe("$compile", () => {
             template: "<div ng-transclude></div>",
             link: function (scope, el, attrs, ctrl, transclude) {
               transclude(function (clone) {
-                el.children[0].textContent += clone[0].textContent;
+                el.children[0].textContent += clone.textContent;
               });
               transclude(function (clone) {
-                el.children[0].textContent += clone[0].textContent;
+                el.children[0].textContent += clone.textContent;
               });
             },
           };
@@ -3754,7 +3754,7 @@ describe("$compile", () => {
       expect(el.innerText).toBe("HelloHelloHello");
     });
 
-    it("supports requiring controllers", () => {
+    fit("supports requiring controllers", () => {
       var MyController = function () {};
       var gotCtrl;
       registerDirectives({

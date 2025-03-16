@@ -66,7 +66,7 @@ export const ngTranscludeDirective = [
 
           function ngTranscludeCloneAttachFn(clone, transcludedScope) {
             if (clone.length && notWhitespace(clone)) {
-              $element.append(clone[0]);
+              $element.append(clone);
             } else {
               useFallbackContent();
               // There is nothing linked against the transcluded scope since no content was available,
@@ -79,16 +79,13 @@ export const ngTranscludeDirective = [
             // Since this is the fallback content rather than the transcluded content,
             // we link against the scope of this directive rather than the transcluded scope
             fallbackLinkFn($scope, (clone) => {
-              $element.append(clone[0]);
+              $element.append(clone);
             });
           }
 
-          function notWhitespace(nodes) {
-            for (let i = 0, ii = nodes.length; i < ii; i++) {
-              const node = nodes[i];
-              if (node.nodeType !== Node.TEXT_NODE || node.nodeValue.trim()) {
-                return true;
-              }
+          function notWhitespace(node) {
+            if (node.nodeType !== Node.TEXT_NODE || node.nodeValue.trim()) {
+              return true;
             }
           }
         };
