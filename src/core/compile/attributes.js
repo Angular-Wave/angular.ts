@@ -79,7 +79,7 @@ export class Attributes {
       if (hasAnimate(this.$$element[0])) {
         this.$animate.addClass(this.$$element, classVal);
       } else {
-        this.$$element[0].classList.add(classVal);
+        this.$$element[0].classList.add(classVal.trim());
       }
     }
   }
@@ -95,7 +95,7 @@ export class Attributes {
       if (hasAnimate(this.$$element[0])) {
         this.$animate.removeClass(this.$$element, classVal);
       } else {
-        this.$$element[0].classList.remove(classVal);
+        this.$$element[0].classList.remove(classVal.trim());
       }
     }
   }
@@ -113,7 +113,7 @@ export class Attributes {
       if (hasAnimate(this.$$element[0])) {
         this.$animate.addClass(this.$$element, toAdd);
       } else {
-        this.$$element[0].classList.add(...toAdd.split(/\s+/));
+        this.$$element[0].classList.add(...toAdd.trim().split(/\s+/));
       }
     }
 
@@ -122,7 +122,7 @@ export class Attributes {
       if (hasAnimate(this.$$element[0])) {
         this.$animate.removeClass(this.$$element, toRemove);
       } else {
-        this.$$element[0].classList.remove(...toRemove.split(/\s+/));
+        this.$$element[0].classList.remove(...toRemove.trim().split(/\s+/));
       }
     }
   }
