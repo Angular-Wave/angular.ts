@@ -85,10 +85,10 @@ export function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
                 // directives to non existing elements.
                 const clone = $transclude(newScope, (clone) => {
                   cleanupLastIncludeContent();
-                  if (hasAnimate(clone[0])) {
+                  if (hasAnimate(clone)) {
                     $animate.enter(clone, null, $element).done(afterAnimation);
                   } else {
-                    domInsert(clone[0], null, $element);
+                    domInsert(clone, null, $element);
                     maybeScroll();
                   }
                 });

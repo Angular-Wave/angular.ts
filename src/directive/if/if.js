@@ -43,7 +43,7 @@ export function ngIfDirective($animate) {
               if (hasAnimate(clone)) {
                 $animate.enter(clone, $element.parentElement, $element);
               } else {
-                $element.after(clone[0]);
+                $element.after(clone);
               }
             });
           }
