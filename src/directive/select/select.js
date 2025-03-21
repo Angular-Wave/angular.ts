@@ -28,7 +28,7 @@ function setOptionSelectedStatus(optionEl, value) {
 SelectController.$inject = ["$element", "$scope"];
 /**
  *
- * @param {Elements} $element
+ * @param {Element} $element
  * @param {import('../../core/scope/scope.js').Scope} $scope
  */
 function SelectController($element, $scope) {

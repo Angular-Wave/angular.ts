@@ -1,5 +1,9 @@
 import { Angular } from "../../loader.js";
-import { dealoc, JQLite } from "../../shared/dom.js";
+import {
+  createElementFromHTML,
+  dealoc,
+  getController,
+} from "../../shared/dom.js";
 import { hashKey, equals, isNumberNaN } from "../../shared/utils.js";
 import { browserTrigger, wait } from "../../shared/test-utils";
 
@@ -15,11 +19,11 @@ describe("select", () => {
   const optionAttributesList = [];
 
   async function compile(html) {
-    formElement = (`<form name="form">${html}</form>`);
-    element = formElement.find("select");
+    formElement = createElementFromHTML(`<form name="form">${html}</form>`);
+    element = formElement.querySelector("select");
     $compile(formElement)(scope);
     await wait();
-    ngModelCtrl = element.controller("ngModel");
+    ngModelCtrl = getController(element, "ngModel");
   }
 
   function setSelectValue(selectElement, optionIndex) {
@@ -160,7 +164,7 @@ describe("select", () => {
         "</select>",
     );
 
-    const selectCtrl = element.controller("select");
+    const selectCtrl = getController(element, "select");
 
     expect(selectCtrl.hasOption("a")).toBe(false);
     expect(selectCtrl.hasOption("b")).toBe(false);
@@ -357,7 +361,7 @@ describe("select", () => {
       scope.mySelect = "B";
       await wait();
 
-      const select = (
+      const select = createElementFromHTML(
         '<select ng-model="mySelect">' +
           '<optgroup label="first">' +
           '<option value="A">A</option>' +
@@ -380,7 +384,7 @@ describe("select", () => {
     it("should only call selectCtrl.writeValue after a digest has occurred", async () => {
       scope.mySelect = "B";
       await wait();
-      const select = (
+      const select = createElementFromHTML(
         '<select spy-on-write-value ng-model="mySelect">' +
           '<optgroup label="first">' +
           '<option value="A">A</option>' +
@@ -499,7 +503,9 @@ describe("select", () => {
 
         scope.robot = undefined;
         expect(element.find("option").eq(0)[0].selected).toBe(true);
-        expect(element.find("option").eq(0).textContent).toBe("--static-select--");
+        expect(element.find("option").eq(0).textContent).toBe(
+          "--static-select--",
+        );
 
         scope.dynamicOptions = [
           { val: "", display: "--dynamic-select--" },
@@ -870,7 +876,7 @@ describe("select", () => {
       () => {
         compile('<select ng-model="mySelect"></select>');
 
-        const selectCtrl = element.controller("select");
+        const selectCtrl = getController(element, "select");
 
         expect(selectCtrl.$hasEmptyOption).toEqual(jasmine.any(Function));
         expect(selectCtrl.$isEmptyOptionSelected).toEqual(
@@ -892,7 +898,7 @@ describe("select", () => {
           "</select>",
       );
 
-      const selectCtrl = element.controller("select");
+      const selectCtrl = getController(element, "select");
 
       expect(element.value).toBe("? string: ?");
       expect(selectCtrl.$hasEmptyOption()).toBe(false);
@@ -981,7 +987,7 @@ describe("select", () => {
 
         compileRepeatedOptions();
 
-        const selectCtrl = element.controller("select");
+        const selectCtrl = getController(element, "select");
 
         scope.$apply(() => {
           scope.robots.shift();
@@ -999,7 +1005,7 @@ describe("select", () => {
 
         compileRepeatedOptions();
 
-        const selectCtrl = element.controller("select");
+        const selectCtrl = getController(element, "select");
 
         scope.$apply(() => {
           scope.robots.pop();
@@ -1014,7 +1020,7 @@ describe("select", () => {
 
         compileRepeatedOptions();
 
-        const selectCtrl = element.controller("select");
+        const selectCtrl = getController(element, "select");
 
         scope.$apply(() => {
           scope.robots.unshift({ value: 1, label: "c3p0" });
@@ -1029,7 +1035,7 @@ describe("select", () => {
           "<select ng-model=\"mySelect\"><option ng-repeat=\"o in ['A','B','C']\">{{o}}</option></select>",
         );
 
-        const selectCtrl = element.controller("select");
+        const selectCtrl = getController(element, "select");
 
         scope.$apply(() => {
           scope.mySelect = "C";
@@ -1058,7 +1064,7 @@ describe("select", () => {
 
         compileGroupedOptions();
 
-        const selectCtrl = element.controller("select");
+        const selectCtrl = getController(element, "select");
 
         scope.$apply(() => {
           const itemD = scope.groups[0].values.pop();
@@ -1093,7 +1099,7 @@ describe("select", () => {
 
         compileGroupedOptions();
 
-        const selectCtrl = element.controller("select");
+        const selectCtrl = getController(element, "select");
 
         scope.$apply(() => {
           const itemD = scope.groups[1].values.shift();
@@ -1127,7 +1133,7 @@ describe("select", () => {
 
         compileGroupedOptions();
 
-        const selectCtrl = element.controller("select");
+        const selectCtrl = getController(element, "select");
 
         scope.$apply(() => {
           const itemD = scope.groups[0].values.pop();
@@ -1162,7 +1168,7 @@ describe("select", () => {
 
         compileGroupedOptions();
 
-        const selectCtrl = element.controller("select");
+        const selectCtrl = getController(element, "select");
 
         scope.$apply(() => {
           scope.groups[0].values.pop();
@@ -1196,7 +1202,7 @@ describe("select", () => {
 
         compileGroupedOptions();
         await wait();
-        const selectCtrl = element.controller("select");
+        const selectCtrl = getController(element, "select");
 
         scope.groups[1].values.shift();
         await wait();
@@ -1227,7 +1233,7 @@ describe("select", () => {
 
         compileGroupedOptions();
 
-        const selectCtrl = element.controller("select");
+        const selectCtrl = getController(element, "select");
 
         scope.$apply(() => {
           scope.groups.pop();
@@ -1339,7 +1345,7 @@ describe("select", () => {
             "</select>",
         );
 
-        ngModelCtrl = element.controller("ngModel");
+        ngModelCtrl = getController(element, "ngModel");
         spyOn(ngModelCtrl, "$render").and.callThrough();
       });
 
@@ -1428,7 +1434,7 @@ describe("select", () => {
           "</select>",
       );
 
-      const selectCtrl = element.controller("select");
+      const selectCtrl = getController(element, "select");
       spyOn(selectCtrl, "removeOption").and.callThrough();
 
       expect(scope.selected).toBeUndefined();
@@ -1474,7 +1480,7 @@ describe("select", () => {
           "</select>",
       );
 
-      const selectCtrl = element.controller("select");
+      const selectCtrl = getController(element, "select");
       spyOn(selectCtrl, "removeOption").and.callThrough();
 
       expect(scope.selected).toBeUndefined();
@@ -1575,7 +1581,7 @@ describe("select", () => {
               "</select>",
           );
 
-          const selectController = element.controller("select");
+          const selectController = getController(element, "select");
           spyOn(selectController, "removeOption").and.callThrough();
 
           expect(selectController.removeOption).not.toHaveBeenCalled();
@@ -1727,7 +1733,7 @@ describe("select", () => {
           let elems = element.find("option");
 
           for (var i = 0; i < elems.length; i++) {
-            (elems[i])[0].selected = true;
+            elems[i][0].selected = true;
           }
           browserTrigger(element, "change");
 
@@ -2085,7 +2091,7 @@ describe("select", () => {
               `<select ng-model="obj.value" multiple>${optionString}</select>`,
             );
 
-            const ngModelCtrl = element.controller("ngModel");
+            const ngModelCtrl = getController(element, "ngModel");
             const ngModelCtrlSpy = spyOn(
               ngModelCtrl,
               "$setViewValue",
@@ -2147,7 +2153,7 @@ describe("select", () => {
               `<select ng-model="obj.value" multiple>${optionString}</select>`,
             );
 
-            const ngModelCtrl = element.controller("ngModel");
+            const ngModelCtrl = getController(element, "ngModel");
             const ngModelCtrlSpy = spyOn(
               ngModelCtrl,
               "$setViewValue",
@@ -2211,7 +2217,7 @@ describe("select", () => {
               `<select ng-model="obj.value" multiple>${optionString}</select>`,
             );
 
-            const ngModelCtrl = element.controller("ngModel");
+            const ngModelCtrl = getController(element, "ngModel");
             const ngModelCtrlSpy = spyOn(
               ngModelCtrl,
               "$setViewValue",

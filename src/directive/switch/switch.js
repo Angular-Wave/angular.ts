@@ -45,12 +45,12 @@ export function ngSwitchDirective($animate) {
           const selected = getBlockNodes(selectedElements[i].clone);
           selectedScopes[i].$destroy();
 
-          if (hasAnimate(selected[0])) {
+          if (hasAnimate(selected)) {
             const runner = (previousLeaveAnimations[i] =
               $animate.leave(selected));
             runner.done(spliceFactory(previousLeaveAnimations, i));
           } else {
-            selected[0].remove();
+            selected.remove();
           }
         }
 
@@ -67,13 +67,15 @@ export function ngSwitchDirective($animate) {
               selectedScopes.push(selectedScope);
               const anchor = selectedTransclude.element;
               // TODO removing this breaks repeater test
-              caseElement[caseElement.length++] = document.createComment("");
-              const block = { clone: caseElement };
+              const block = {
+                clone: caseElement,
+                comment: document.createComment(""),
+              };
               selectedElements.push(block);
-              if (hasAnimate(caseElement[0])) {
-                $animate.enter(caseElement[0], anchor.parentElement, anchor);
+              if (hasAnimate(caseElement)) {
+                $animate.enter(caseElement, anchor.parentElement, anchor);
               } else {
-                domInsert(caseElement[0], anchor.parentElement, anchor);
+                domInsert(caseElement, anchor.parentElement, anchor);
               }
             });
           });

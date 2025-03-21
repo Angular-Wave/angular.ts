@@ -5893,7 +5893,7 @@ fdescribe("$compile", () => {
         expect(element.classList.contains("clonefn-class")).toBeTrue();
       });
 
-      fdescribe("delay compile / linking functions until after template is resolved", () => {
+      describe("delay compile / linking functions until after template is resolved", () => {
         let template, module;
         beforeEach(() => {
           log = [];
@@ -7144,8 +7144,8 @@ fdescribe("$compile", () => {
         expect(observeSpy).toHaveBeenCalled();
         expect(observeSpy).toHaveBeenCalledTimes(2);
       });
-      // LEAK
-      xit("should translate {{}} in terminal nodes", async () => {
+
+      fit("should translate {{}} in terminal nodes", async () => {
         element = $compile(
           '<select ng-model="x"><option value="">Greet {{name}}!</option></select>',
         )($rootScope);
@@ -11372,7 +11372,7 @@ fdescribe("$compile", () => {
         }).toThrowError(/ctreq/);
       });
 
-      it("should get required controller via linkingFn (template)", () => {
+      fit("should get required controller via linkingFn (template)", async () => {
         module
           .directive("dirA", () => ({
             controller() {
@@ -11388,10 +11388,11 @@ fdescribe("$compile", () => {
           }));
         initInjector("test1");
         element = $compile("<div dir-a dir-b></div>")($rootScope);
+        await wait();
         expect(log[0]).toEqual("dirAController.name: dirA");
       });
 
-      it("should get required controller via linkingFn (templateUrl)", () => {
+      fit("should get required controller via linkingFn (templateUrl)", async () => {
         module
           .directive("dirA", () => ({
             controller() {
@@ -11408,6 +11409,7 @@ fdescribe("$compile", () => {
         initInjector("test1");
         $templateCache.set("dirB.html", "<p>dirB</p>");
         element = $compile("<div dir-a dir-b></div>")($rootScope);
+        await wait();
         expect(log[0]).toEqual("dirAController.name: dirA");
       });
 
@@ -11552,7 +11554,7 @@ fdescribe("$compile", () => {
         expect(ctrl2.siblingOpt).toBe(null);
       });
 
-      it("should not bind required controllers if bindToController is falsy", () => {
+      fit("should not bind required controllers if bindToController is falsy", async () => {
         let parentController;
         let siblingController;
 
@@ -11588,6 +11590,7 @@ fdescribe("$compile", () => {
           }));
         initInjector("test1");
         element = $compile("<parent><me sibling></me></parent>")($rootScope);
+        await wait();
         expect(MeController.prototype.$onInit).toHaveBeenCalled();
         expect(parentController).toBeUndefined();
         expect(siblingController).toBeUndefined();
@@ -11820,10 +11823,10 @@ fdescribe("$compile", () => {
         );
       });
 
-      it(
+      fit(
         "should require controller of a non-isolate directive from an isolate directive on the " +
           "same element",
-        () => {
+        async () => {
           const NonIsolateController = function () {};
           let nonIsolateDirControllerInIsolateDirective;
 
@@ -11841,7 +11844,7 @@ fdescribe("$compile", () => {
             }));
           initInjector("test1");
           element = $compile("<div isolate non-isolate></div>")($rootScope);
-
+          await wait();
           expect(nonIsolateDirControllerInIsolateDirective).toBeDefined();
           expect(
             nonIsolateDirControllerInIsolateDirective instanceof
@@ -13559,16 +13562,19 @@ fdescribe("$compile", () => {
               log.push("link");
               let cursor = element;
               template(scope.$new(), (clone) => {
+                debugger;
                 cursor.after((cursor = clone));
               });
               ctrl.$transclude((clone) => {
+                debugger;
                 cursor.after(clone);
               });
             };
           },
         }));
         initInjector("test1");
-        element = $compile('<div><div trans="text">{{$id}}</div></div>')(
+        $rootScope.id = "1";
+        element = $compile('<div><div trans="text">{{id}}</div></div>')(
           $rootScope,
         );
         await wait();
@@ -13666,7 +13672,7 @@ fdescribe("$compile", () => {
         }).toThrowError(/multidir/);
       });
 
-      it("should support transcluded element on root content", () => {
+      it("should support transcluded element on root content", async () => {
         let comment;
         module.directive("transclude", () => ({
           transclude: "element",
@@ -13677,12 +13683,12 @@ fdescribe("$compile", () => {
           },
         }));
         initInjector("test1");
-        const element = "<div>before<div transclude></div>after</div>"[0]
-          .childNodes;
-        expect(element.length).toEqual(3);
-        expect(getNodeName(element[1])).toBe("div");
+        const element = $("<div>before<div transclude></div>after</div>");
+        expect(element.childNodes.length).toEqual(3);
+        expect(getNodeName(element.childNodes[1])).toBe("div");
         $compile(element)($rootScope);
-        expect(getNodeName(element[1])).toBe("#comment");
+        await wait();
+        expect(getNodeName(element.childNodes[1])).toBe("#comment");
         expect(getNodeName(comment)).toBe("#comment");
       });
 
