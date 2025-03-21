@@ -1248,13 +1248,13 @@ fdescribe("$compile", () => {
     });
     reloadModules();
     var el = $(
-      `<div><div my-directive><div><div my-directive><div></div></div></div>`,
+      `<div><div my-directive><div><div my-directive></div></div></div></div>`,
     );
     $compile(el)($rootScope);
     await wait();
     expect(givenElements.length).toBe(2);
-    // chilred are linked first in reverse order for post elements - which is the default behaviour
-    expect(givenElements[0]).toBe(el.firstChild.firstChild);
+    // children are linked first in reverse order for post elements - which is the default behaviour
+    expect(givenElements[0]).toBe(el.firstChild.firstChild.firstChild);
     expect(givenElements[1]).toBe(el.firstChild);
   });
 
