@@ -780,8 +780,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         ignoreDirective,
         previousCompileContext,
       ) {
-        assertArg(nodeList.length);
-
         /**
          * Aggregates for the composite linking function, where a node in a node list is mapped
          * to a corresponding link function. For single elements, the node should be mapped to
@@ -868,7 +866,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         function compositeLinkFn(scope, elem, parentBoundTranscludeFn) {
           assertArg(elem, "elem");
           let stableNodeList = [];
-          let isNodeList = !!(/** @type {NodeList } */ (elem).length);
+          let isNodeList = elem instanceof NodeList;
           if (nodeLinkFnFound) {
             // create a stable copy of the nodeList, only copying elements with linkFns
             stableNodeList = new Array(
@@ -876,27 +874,28 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 /** @type {Element } */ (elem).childNodes.length,
             );
 
-            Object.keys(linkFnsMap).forEach((idx) => {
+            Object.keys(linkFnsMap).forEach((idx, count) => {
               // the first item will always be a nodeLink function of the element itself
               if (idx === "0") {
                 stableNodeList[idx] = isNodeList ? elem[idx] : elem;
               } else {
                 if (nodeList[idx]) {
-                  stableNodeList[idx] = elem[idx];
+                  stableNodeList[count] = elem[idx];
                 }
               }
             });
           } else {
-            // node with no directives
-            linkFnsMap[0]?.childLinkFn(
-              scope,
-              isNodeList ? elem : /** @type {Element } */ (elem).childNodes,
-            );
-            return;
+            if (isNodeList) {
+              /** @type {NodeList } */ (elem).forEach((elem) =>
+                stableNodeList.push(elem),
+              );
+            } else {
+              stableNodeList.push(elem);
+            }
           }
 
           Object.entries(linkFnsMap).forEach(
-            ([idx, { nodeLinkFn, childLinkFn }]) => {
+            ([_, { nodeLinkFn, childLinkFn }], idx) => {
               const node = stableNodeList[idx];
               let childScope;
               let childBoundTranscludeFn;
@@ -1709,7 +1708,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 );
 
                 // Add the matching elements into their slot
-                $compileNode[0].childNodes.forEach((node) => {
+                $compileNode.childNodes.forEach((node) => {
                   const slotName =
                     slotMap[directiveNormalize(getNodeName(node))];
                   if (slotName) {
@@ -2434,9 +2433,17 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             compile: () => (scope, node) => {
               interpolateFn.expressions.forEach((x) => {
                 scope.$watch(x, () => {
-                  node.nodeValue = interpolateFn(
-                    isProxy(scope) ? scope.$target : scope,
-                  );
+                  switch (node.nodeType) {
+                    case 1:
+                      node.innerHTML = interpolateFn(
+                        isProxy(scope) ? scope.$target : scope,
+                      );
+                      break;
+                    default:
+                      node.nodeValue = interpolateFn(
+                        isProxy(scope) ? scope.$target : scope,
+                      );
+                  }
                 });
               });
             },
@@ -2602,9 +2609,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   const propValue = ngPropGetter(scope);
                   $element[propName] = sanitizer(propValue);
                 }
-
                 applyPropValue();
-                scope.$watch(ngPropWatch, applyPropValue);
+                scope.$watch(propName, applyPropValue);
               },
             };
           },

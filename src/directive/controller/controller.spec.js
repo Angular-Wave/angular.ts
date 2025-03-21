@@ -1,7 +1,7 @@
 import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
-import { dealoc } from "../../shared/dom.js";
-import { bind, createElement } from "../../shared/utils.js";
+import { dealoc, createElementFromHTML } from "../../shared/dom.js";
+import { bind } from "../../shared/utils.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("ngController", () => {
@@ -114,7 +114,7 @@ describe("ngController", () => {
   });
 
   it("should work with ngInclude on the same element", (done) => {
-    element = createElement(
+    element = createElementFromHTML(
       '<div><div ng-controller="Greeter" ng-include="\'/mock/interpolation\'"></div></div>',
     );
     window.angular
@@ -128,13 +128,13 @@ describe("ngController", () => {
     setTimeout(() => {
       expect(element.children[0].innerHTML).toEqual("Vojta");
       done();
-    }, 100);
+    }, 500);
   });
 
   it("should only instantiate the controller once with ngInclude on the same element", async () => {
     let count = 0;
 
-    element = createElement(
+    element = createElementFromHTML(
       '<div><div ng-controller="Count" ng-include="\'/mock/interpolation\'"></div></div>',
     );
     window.angular
@@ -156,7 +156,7 @@ describe("ngController", () => {
   it("when ngInclude is on the same element, the content included content should get a child scope of the controller", async () => {
     let controllerScope;
 
-    element = createElement(
+    element = createElementFromHTML(
       '<div><div ng-controller="ExposeScope" ng-include="\'/mock/scopeinit\'"></div></div>',
     );
 
