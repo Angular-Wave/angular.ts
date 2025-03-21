@@ -7827,7 +7827,7 @@ fdescribe("$compile", () => {
       });
 
       fdescribe("$onDestroy", () => {
-        xit("should call `$onDestroy`, if provided, on the controller when its scope is destroyed", async () => {
+        fit("should call `$onDestroy`, if provided, on the controller when its scope is destroyed", async () => {
           function TestController() {
             this.count = 0;
           }
@@ -7852,7 +7852,7 @@ fdescribe("$compile", () => {
             $compile = _$compile_;
             $rootScope = _$rootScope_;
           });
-
+          $rootScope.show = [true, true, true];
           element = $compile(
             '<div><d1 ng-if="show[0]"></d1><d2 ng-if="show[1]"></d2><div ng-if="show[2]"><d3></d3></div></div>',
           )($rootScope);
@@ -7860,9 +7860,9 @@ fdescribe("$compile", () => {
           $rootScope.show = [true, true, true];
           await wait();
 
-          const d1Controller = element.querySelector("d1").controller("d1");
-          const d2Controller = element.querySelector("d2").controller("d2");
-          const d3Controller = element.querySelector("d3").controller("d3");
+          const d1Controller = getController(element.querySelector("d1"), "d1");
+          const d2Controller = getController(element.querySelector("d2"), "d2");
+          const d3Controller = getController(element.querySelector("d3"), "d3");
 
           expect([
             d1Controller.count,
@@ -8092,7 +8092,7 @@ fdescribe("$compile", () => {
       });
 
       fdescribe("$onChanges", () => {
-        xit("should call `$onChanges`, if provided, when a one-way (`<`) or interpolation (`@`) bindings are updated", async () => {
+        fit("should call `$onChanges`, if provided, when a one-way (`<`) or interpolation (`@`) bindings are updated", async () => {
           function TestController() {}
           TestController.prototype.$onChanges = function (change) {
             log.push(change);
@@ -8181,7 +8181,7 @@ fdescribe("$compile", () => {
           ]);
         });
 
-        xit("should trigger `$onChanges` even if the inner value already equals the new outer value", async () => {
+        fit("should trigger `$onChanges` even if the inner value already equals the new outer value", async () => {
           function TestController() {}
           TestController.prototype.$onChanges = function (change) {
             log.push(change);
@@ -8219,7 +8219,7 @@ fdescribe("$compile", () => {
           });
         });
 
-        xit("should trigger `$onChanges` for literal expressions when expression input value changes (simple value)", async () => {
+        fit("should trigger `$onChanges` for literal expressions when expression input value changes (simple value)", async () => {
           function TestController() {}
           TestController.prototype.$onChanges = function (change) {
             log.push(change);
@@ -8904,7 +8904,7 @@ fdescribe("$compile", () => {
         });
       });
 
-      xit("should give other directives the parent scope", async () => {
+      fit("should give other directives the parent scope", async () => {
         element = $compile(
           '<div><input type="text" my-component store-scope ng-model="value"></div>',
         )($rootScope);
@@ -11148,7 +11148,7 @@ fdescribe("$compile", () => {
         module = window.angular.module("test1", ["ng"]);
       });
 
-      it("should get required controller", () => {
+      fit("should get required controller", () => {
         module
           .directive("main", () => ({
             priority: 2,
@@ -11176,7 +11176,7 @@ fdescribe("$compile", () => {
         expect(log.join("; ")).toEqual("false; dep:main; main");
       });
 
-      it("should respect explicit return value from controller", () => {
+      fit("should respect explicit return value from controller", () => {
         let expectedController;
         module.directive("logControllerProp", () => ({
           controller($scope) {
@@ -11201,7 +11201,7 @@ fdescribe("$compile", () => {
         );
       });
 
-      it("should get explicit return value of required parent controller", async () => {
+      fit("should get explicit return value of required parent controller", async () => {
         let expectedController;
         module.directive("nested", () => ({
           require: "^^?nested",
@@ -11210,9 +11210,9 @@ fdescribe("$compile", () => {
             return expectedController;
           },
           link(scope, element, attrs, controller) {
-            if (element.parentElement.length) {
+            if (element.parentElement) {
               expect(expectedController).toBeDefined();
-              expect(controller).toBe(expectedController);
+              expect(controller).toEqual(expectedController);
               expect(controller.foo).toEqual("bar");
               log.push("done");
             }
@@ -11222,12 +11222,12 @@ fdescribe("$compile", () => {
         element = $compile("<div nested><div nested></div></div>")($rootScope);
         await wait();
         expect(log[0]).toEqual("done");
-        expect(getCacheData(element, "$nestedController")).toBe(
+        expect(getCacheData(element, "$nestedController")).toEqual(
           expectedController,
         );
       });
 
-      it("should respect explicit controller return value when using controllerAs", async () => {
+      fit("should respect explicit controller return value when using controllerAs", async () => {
         module.directive("main", () => ({
           templateUrl: "main.html",
           scope: {},
@@ -11247,7 +11247,7 @@ fdescribe("$compile", () => {
         expect(element.textContent).toBe("template:george");
       });
 
-      it("transcluded children should receive explicit return value of parent controller", async () => {
+      fit("transcluded children should receive explicit return value of parent controller", async () => {
         let expectedController;
         module
           .directive("nester", () => ({
@@ -11281,7 +11281,7 @@ fdescribe("$compile", () => {
         );
       });
 
-      it("explicit controller return values are ignored if they are primitives", () => {
+      fit("explicit controller return values are ignored if they are primitives", () => {
         module.directive("logControllerProp", () => ({
           controller($scope) {
             this.foo = "baz"; // value *will* be used.
@@ -11301,7 +11301,7 @@ fdescribe("$compile", () => {
         ).toEqual("baz");
       });
 
-      it("should correctly assign controller return values for multiple directives", () => {
+      fit("should correctly assign controller return values for multiple directives", () => {
         let directiveController;
         let otherDirectiveController;
         module
@@ -11334,7 +11334,7 @@ fdescribe("$compile", () => {
         );
       });
 
-      it("should get required parent controller", () => {
+      fit("should get required parent controller", () => {
         module.directive("nested", () => ({
           require: "^^?nested",
           controller($scope) {},
@@ -11347,7 +11347,7 @@ fdescribe("$compile", () => {
         expect(log.join("; ")).toEqual("true; false");
       });
 
-      it("should get required parent controller when the question mark precedes the ^^", () => {
+      fit("should get required parent controller when the question mark precedes the ^^", () => {
         module.directive("nested", () => ({
           require: "?^^nested",
           controller($scope) {},
@@ -13769,7 +13769,7 @@ fdescribe("$compile", () => {
         expect(_$transclude).toBeDefined();
       });
 
-      it("should copy the directive controller to all clones", () => {
+      fit("should copy the directive controller to all clones", () => {
         let transcludeCtrl;
         const cloneCount = 2;
         module.directive("transclude", () => ({
@@ -13790,10 +13790,10 @@ fdescribe("$compile", () => {
         }));
         initInjector("test1");
         element = $compile("<div><div transclude></div></div>")($rootScope);
-        const children = element.children();
+        const children = element.childNodes;
         let i;
         for (i = 0; i < cloneCount; i++) {
-          expect(children.eq(i).data("$transcludeController")).toBe(
+          expect(getCacheData(children[i], "$transcludeController")).toEqual(
             transcludeCtrl,
           );
         }

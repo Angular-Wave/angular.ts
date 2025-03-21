@@ -677,8 +677,16 @@ export class Scope {
           });
         };
       }
+
+      // 9
       case ASTType.MemberExpression: {
         key = get.decoratedNode.body[0].expression.property.name;
+
+        // array watcher
+        if (!key) {
+          key = get.decoratedNode.body[0].expression.object.name;
+        }
+
         listener.property.push(key);
         if (watchProp !== key) {
           // Handle nested expression call
@@ -794,10 +802,14 @@ export class Scope {
       if (Object.getPrototypeOf(childInstance) === Object.prototype) {
         Object.setPrototypeOf(childInstance, this.$target);
       } else {
-        Object.setPrototypeOf(
-          Object.getPrototypeOf(childInstance) || childInstance,
-          this.$target,
-        );
+        if (Object.getPrototypeOf(childInstance) == this.$target) {
+          Object.setPrototypeOf(childInstance, this.$target);
+        } else {
+          Object.setPrototypeOf(
+            Object.getPrototypeOf(childInstance) || childInstance,
+            this.$target,
+          );
+        }
       }
 
       child = childInstance;

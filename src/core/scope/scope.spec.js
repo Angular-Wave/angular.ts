@@ -830,8 +830,37 @@ describe("Scope", () => {
       });
     });
 
+    describe("array expressions", () => {
+      it("adds watches for array expressions", async () => {
+        expect(scope.$$watchersCount).toBe(0);
+        scope.$watch("foo[0]", () => {});
+
+        await wait();
+        expect(scope.$$watchersCount).toBe(1);
+      });
+
+      it("adds watches for array expressions", async () => {
+        expect(scope.$$watchersCount).toBe(0);
+        let res;
+        scope.$watch("foo[0]", (val) => {
+          res = val;
+        });
+
+        await wait();
+        expect(scope.$$watchersCount).toBe(1);
+
+        scope.foo = [1];
+        await wait();
+        expect(res).toEqual(1);
+
+        scope.foo = [2];
+        await wait();
+        expect(res).toEqual(2);
+      });
+    });
+
     describe("apply expression", () => {
-      it("adds watches expressions", async () => {
+      it("adds watches for expressions", async () => {
         expect(scope.$$watchersCount).toBe(0);
         scope.$watch("foo = 1", () => {});
 
