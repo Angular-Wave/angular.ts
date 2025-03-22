@@ -38,11 +38,11 @@ export function ngRepeatDirective($animate) {
   }
 
   const getBlockStart = function (block) {
-    return block.clone[0];
+    return block.clone;
   };
 
   const getBlockEnd = function (block) {
-    return block.clone[block.clone.length - 1];
+    return block.clone;
   };
 
   const trackByIdArrayFn = function ($scope, key, value) {
@@ -116,7 +116,6 @@ export function ngRepeatDirective($animate) {
         // We are using no-proto object so that we don't need to guard against inherited props via
         // hasOwnProperty.
         let lastBlockMap = Object.create(null);
-
         // watch props
         $scope.$watch(rhs, (collection) => {
           var index,
@@ -202,9 +201,9 @@ export function ngRepeatDirective($animate) {
             if (hasAnimate) {
               $animate.leave(elementsToRemove);
             } else {
-              elementsToRemove[0].remove();
+              elementsToRemove.remove();
             }
-            if (elementsToRemove[0].parentNode) {
+            if (elementsToRemove.parentNode) {
               // if the element was not removed yet because of pending animation, mark it as deleted
               // so that we can ignore it later
               for (
@@ -258,11 +257,11 @@ export function ngRepeatDirective($animate) {
                  */
                 (clone, scope) => {
                   block.scope = scope;
-                  const endNode = clone[0];
+                  const endNode = clone;
                   if (hasAnimate) {
                     $animate.enter(clone, null, previousNode);
                   } else {
-                    previousNode.after(clone[0]);
+                    previousNode.after(clone);
                   }
 
                   previousNode = endNode;

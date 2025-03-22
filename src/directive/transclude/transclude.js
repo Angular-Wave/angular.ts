@@ -65,7 +65,7 @@ export const ngTranscludeDirective = [
           }
 
           function ngTranscludeCloneAttachFn(clone, transcludedScope) {
-            if (clone.length && notWhitespace(clone)) {
+            if (notWhitespace(clone)) {
               $element.append(clone);
             } else {
               useFallbackContent();
