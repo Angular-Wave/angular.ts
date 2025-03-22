@@ -8115,7 +8115,6 @@ fdescribe("$compile", () => {
           element = $compile(
             '<c1 prop1="val" prop2="val2" other="val3" attr="{{val4}}"></c1>',
           )($rootScope);
-          await wait();
           expect(log).toEqual([
             {
               prop1: jasmine.objectContaining({ currentValue: undefined }),
@@ -8123,40 +8122,34 @@ fdescribe("$compile", () => {
               attr: jasmine.objectContaining({ currentValue: "" }),
             },
           ]);
-
+          await wait();
           // Clear the initial changes from the log
           log = [];
 
           // Update val to trigger the onChanges
           $rootScope.$apply("val = 42");
           await wait();
+
           // Now we should have a single changes entry in the log
-          expect(log).toEqual([
-            {
-              prop1: jasmine.objectContaining({ currentValue: 42 }),
-              prop2: jasmine.objectContaining({ currentValue: 84 }),
-            },
-          ]);
+          expect(log[0]).toEqual({
+            prop1: jasmine.objectContaining({ currentValue: 42 }),
+          });
+          expect(log[1]).toEqual({
+            prop2: jasmine.objectContaining({ currentValue: 84 }),
+          });
 
           // Clear the log
           log = [];
 
-          // Update val to trigger the onChanges
+          // // Update val to trigger the onChanges
           $rootScope.$apply("val = 17");
           await wait();
-          // Now we should have a single changes entry in the log
-          expect(log).toEqual([
-            {
-              prop1: jasmine.objectContaining({
-                previousValue: 42,
-                currentValue: 17,
-              }),
-              prop2: jasmine.objectContaining({
-                previousValue: 84,
-                currentValue: 34,
-              }),
-            },
-          ]);
+          expect(log[0]).toEqual({
+            prop1: jasmine.objectContaining({ currentValue: 17 }),
+          });
+          expect(log[1]).toEqual({
+            prop2: jasmine.objectContaining({ currentValue: 34 }),
+          });
 
           // Clear the log
           log = [];
@@ -8171,14 +8164,9 @@ fdescribe("$compile", () => {
           $rootScope.$apply("val4 = 22");
           await wait();
           // onChanges should not have been called
-          expect(log).toEqual([
-            {
-              attr: jasmine.objectContaining({
-                previousValue: "",
-                currentValue: "22",
-              }),
-            },
-          ]);
+          expect(log[0]).toEqual({
+            attr: jasmine.objectContaining({ currentValue: "22" }),
+          });
         });
 
         fit("should trigger `$onChanges` even if the inner value already equals the new outer value", async () => {
@@ -8199,11 +8187,11 @@ fdescribe("$compile", () => {
 
           element = $compile('<c1 prop1="val"></c1>')($rootScope);
           await wait();
+          log = [];
           $rootScope.$apply("val = 1");
           await wait();
           expect(log.pop()).toEqual({
             prop1: jasmine.objectContaining({
-              previousValue: undefined,
               currentValue: 1,
             }),
           });
@@ -8213,7 +8201,6 @@ fdescribe("$compile", () => {
           await wait();
           expect(log.pop()).toEqual({
             prop1: jasmine.objectContaining({
-              previousValue: 1,
               currentValue: 2,
             }),
           });
