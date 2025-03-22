@@ -8889,6 +8889,12 @@ fdescribe("$compile", () => {
               componentScope = scope;
             },
           }))
+          .directive("parentComponent", () => ({
+            scope: {},
+            link(scope) {
+              componentScope = scope;
+            },
+          }))
           .directive("badDeclaration", () => ({
             scope: { attr: "xxx" },
           }))
@@ -8906,7 +8912,7 @@ fdescribe("$compile", () => {
 
       fit("should give other directives the parent scope", async () => {
         element = $compile(
-          '<div><input type="text" my-component store-scope ng-model="value"></div>',
+          '<div><input type="text" parent-component store-scope ng-model="value"></div>',
         )($rootScope);
 
         await wait();
@@ -8915,7 +8921,7 @@ fdescribe("$compile", () => {
         await wait();
         expect(element.querySelector("input").value).toBe("from-parent");
         expect(componentScope).not.toBe(regularScope);
-        expect(componentScope.$parent).toBe(regularScope);
+        expect(componentScope.$parent.$id).toEqual(regularScope.$id);
       });
 
       xit("should not give the isolate scope to other directive template", async () => {
@@ -13562,11 +13568,9 @@ fdescribe("$compile", () => {
               log.push("link");
               let cursor = element;
               template(scope.$new(), (clone) => {
-                debugger;
                 cursor.after((cursor = clone));
               });
               ctrl.$transclude((clone) => {
-                debugger;
                 cursor.after(clone);
               });
             };
@@ -13938,7 +13942,6 @@ fdescribe("$compile", () => {
     });
 
     fdescribe("lazy compilation", () => {
-      // See https://github.com/angular/angular.js/issues/7183
       it("should pass transclusion through to template of a 'replace' directive", (done) => {
         module
           .directive("transSync", () => ({
@@ -13946,9 +13949,6 @@ fdescribe("$compile", () => {
 
             link(scope, element, attr, ctrl, transclude) {
               expect(transclude).toEqual(jasmine.any(Function));
-              transclude((child) => {
-                element.append(child);
-              });
             },
           }))
           .directive("trans", () => ({

@@ -2901,10 +2901,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 };
                 parentValueWatch.$stateful = true;
                 if (definition.collection) {
-                  removeWatch = scope.$watchCollection(
-                    attrs[attrName],
-                    parentValueWatch,
-                  );
+                  removeWatch = scope.$watch(attrs[attrName], parentValueWatch);
                 } else {
                   removeWatch = scope.$watch(attrName, (val) => {
                     if (val) {

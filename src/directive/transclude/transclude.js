@@ -29,7 +29,6 @@ export const ngTranscludeDirective = [
     return {
       restrict: "EA",
       compile: function ngTranscludeCompile(tElement) {
-        debugger;
         // Remove and cache any original content to act as a fallback
         const fallbackLinkFn = $compile(tElement.childNodes);
         emptyElement(tElement);

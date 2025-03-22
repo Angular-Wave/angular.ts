@@ -842,10 +842,12 @@ describe("Scope", () => {
       it("adds watches for array expressions", async () => {
         expect(scope.$$watchersCount).toBe(0);
         let res;
+
         scope.$watch("foo[0]", (val) => {
           res = val;
         });
 
+        scope.foo = [];
         await wait();
         expect(scope.$$watchersCount).toBe(1);
 
