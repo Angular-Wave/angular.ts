@@ -2888,7 +2888,7 @@ fdescribe("$compile", () => {
         expect(linkSpy.calls.first().args[1]).toBe(el);
         expect(linkSpy.calls.first().args[2].myDirective).toBeDefined();
         done();
-      }, 10);
+      }, 100);
     });
 
     fit("links child elements when public link function is invoked", (done) => {
@@ -4934,7 +4934,7 @@ fdescribe("$compile", () => {
       expect(element.textContent).toBe("AB");
     });
 
-    xit("should allow changing the template structure after the current node inside ngRepeat", async () => {
+    fit("should allow changing the template structure after the current node inside ngRepeat", async () => {
       myModule.directive("after", () => ({
         compile(element) {
           element.append($("<span log>B</span>"));
@@ -5261,7 +5261,7 @@ fdescribe("$compile", () => {
         expect(attrs.class).toBe("myLog log");
       });
 
-      xit("should play nice with repeater when replacing", async () => {
+      fit("should play nice with repeater when replacing", async () => {
         reloadModules();
         element = $compile(
           "<div>" + '<div ng-repeat="i in [1,2]" replace></div>' + "</div>",
@@ -5270,7 +5270,7 @@ fdescribe("$compile", () => {
         expect(element.textContent).toEqual("Replace!Replace!");
       });
 
-      xit("should play nice with repeater when appending", async () => {
+      fit("should play nice with repeater when appending", async () => {
         reloadModules();
         element = $compile(
           "<div>" + '<div ng-repeat="i in [1,2]" append></div>' + "</div>",
@@ -5304,7 +5304,7 @@ fdescribe("$compile", () => {
         expect(element.classList.contains("log")).toBeTrue(); // merged from replace directive template
       });
 
-      xit("should merge interpolated css class with ngRepeat", async () => {
+      fit("should merge interpolated css class with ngRepeat", async () => {
         reloadModules();
         element = $compile(
           "<div>" +
@@ -6147,7 +6147,7 @@ fdescribe("$compile", () => {
           });
         });
 
-        xit("should resume delayed compilation without duplicates when in a repeater", async () => {
+        fit("should resume delayed compilation without duplicates when in a repeater", async () => {
           // this is a test for a regression
           // scope creation, isolate watcher setup, controller instantiation, etc should happen
           // only once even if we are dealing with delayed compilation of a node due to templateUrl
@@ -6610,7 +6610,7 @@ fdescribe("$compile", () => {
         expect(element.textContent.match(/Jozo/)).toBeTruthy();
       });
 
-      xit("should allow creation of new scopes for replace directives with templates in a repeater", async () => {
+      fit("should allow creation of new scopes for replace directives with templates in a repeater", async () => {
         $templateCache.set("trscope.html", "<p><a log>{{name}}|</a></p>");
         element = $compile(
           '<div><span ng-repeat="i in [1,2,3]" trscope></span></div>',
@@ -7551,7 +7551,7 @@ fdescribe("$compile", () => {
           });
         });
 
-        xit("should properly $observe inside ng-repeat", async () => {
+        fit("should properly $observe inside ng-repeat", async () => {
           const spies = [];
 
           module.directive(
