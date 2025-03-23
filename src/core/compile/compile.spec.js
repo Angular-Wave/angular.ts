@@ -1381,6 +1381,23 @@ fdescribe("$compile", () => {
     expect(givenScope.$parent.id).toBe($rootScope.id);
   });
 
+  fit("makes new scope for element when directive rejects it", () => {
+    var givenScope;
+    registerDirectives("myDirective", () => {
+      return {
+        scope: false,
+        link: function (scope) {
+          givenScope = scope;
+        },
+      };
+    });
+    reloadModules();
+    var el = $("<div my-directive></div>");
+    $compile(el)($rootScope);
+    //A false value for scope is considered equivalent to undefined, i.e. should receive parent scope
+    expect(givenScope.id).toBe($rootScope.id);
+  });
+
   fit("gives inherited scope to all directives on element", () => {
     var givenScope;
     registerDirectives({
@@ -1451,6 +1468,7 @@ fdescribe("$compile", () => {
     $compile(el)($rootScope);
     expect(givenScope.$parent.$id).toBe($rootScope.$id);
     expect($rootScope.$children[0]).toBe(givenScope);
+    debugger;
     expect(Object.getPrototypeOf(givenScope)).not.toBe($rootScope);
   });
 
@@ -1540,7 +1558,7 @@ fdescribe("$compile", () => {
     }).toThrowError();
   });
 
-  fit("adds class and data for element with isolated scope", function () {
+  fit("adds data for element with isolated scope", function () {
     var givenScope;
     registerDirectives("myDirective", function () {
       return {
