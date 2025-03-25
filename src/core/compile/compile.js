@@ -2794,6 +2794,15 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
       }
 
       // Set up $watches for isolate scope and controller bindings.
+      /**
+       *
+       * @param {import('../scope/scope.js').Scope} scope
+       * @param {*} attrs
+       * @param {import('../scope/scope.js').Scope}  destination - child scope or isolate scope
+       * @param {*} bindings
+       * @param {*} directive
+       * @returns
+       */
       function initializeDirectiveBindings(
         scope,
         attrs,
@@ -2866,11 +2875,13 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 if (optional && !attrs[attrName]) break;
 
                 parentGet = $parse(attrs[attrName]);
+                var complexExpression = !!parentGet.inputs;
                 if (parentGet.literal) {
                   compare = equals;
                 } else {
                   compare = simpleCompare;
                 }
+
                 parentSet =
                   parentGet.assign ||
                   function () {
@@ -2884,6 +2895,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                       directive.name,
                     );
                   };
+
+                // store the value that the parent scope had after the last check:
                 lastValue = destination[scopeName] = parentGet(scope);
                 var parentValueWatch = function parentValueWatch(parentValue) {
                   if (!compare(parentValue, destination[scopeName])) {
@@ -2903,20 +2916,46 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 if (definition.collection) {
                   removeWatch = scope.$watch(attrs[attrName], parentValueWatch);
                 } else {
-                  removeWatch = scope.$watch(attrName, (val) => {
-                    if (val) {
-                      scope[attrs[attrName]] = val;
+                  if (attrs[attrName]) {
+                    let expr = attrs[attrName];
+
+                    scope.$watch(expr, (val) => {
+                      var res = $parse(attrs[attrName], parentValueWatch);
+                      if (val) {
+                        scope[attrName] = val;
+                        res(scope);
+                      }
+                    });
+                  }
+
+                  destination.$watch(attrName, (val) => {
+                    if (val === lastValue && !isUndefined(attrs[attrName])) {
+                      return;
+                    }
+                    if (
+                      complexExpression ||
+                      (isUndefined(attrs[attrName]) && isDefined(val))
+                    ) {
+                      destination.$target[attrName] = lastValue;
+                      throw $compileMinErr(
+                        "nonassign",
+                        "Expression '{0}' in attribute '{1}' used with directive '{2}' is non-assignable!",
+                        attrs[attrName],
+                        attrName,
+                        directive.name,
+                      );
+                    } else {
+                      // manually set the handler to avoid watch cycles
+                      scope.$target[attrs[attrName]] = val;
+                      scope.$handler.watchers
+                        .get(attrs[attrName])
+                        ?.forEach((watchFn) => {
+                          watchFn.listenerFn(val);
+                        });
                     }
                   });
-                  removeWatchCollection.push(removeWatch);
-                  if (!attrs[attrName]) {
-                    return;
-                  }
-                  removeWatch = scope.$watch(attrs[attrName], (val) => {
-                    destination[attrName] = val;
-                  });
                 }
-                removeWatchCollection.push(removeWatch);
+                //removeWatchCollection.push(removeWatch);
                 break;
 
               case "<":
@@ -2928,24 +2967,28 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 if (optional && !attrs[attrName]) break;
 
                 parentGet = $parse(attrs[attrName]);
+
                 destination[scopeName] = parentGet(scope);
                 initialChanges[scopeName] = new SimpleChange(
                   destination[scopeName],
                   firstChange,
                 );
                 scope.$target.attrs = attrs;
-                removeWatch = scope.$watch(
-                  attrs[attrName],
-                  (val) => {
-                    destination[scopeName] = val;
-                    recordChanges(scopeName, val, firstChange);
-                    if (firstChange) {
-                      firstChange = false;
-                    }
-                  },
-                  true,
-                );
-                removeWatchCollection.push(removeWatch);
+
+                if (attrs[attrName]) {
+                  removeWatch = scope.$watch(
+                    attrs[attrName],
+                    (val) => {
+                      destination[scopeName] = val;
+                      recordChanges(scopeName, val, firstChange);
+                      if (firstChange) {
+                        firstChange = false;
+                      }
+                    },
+                    true,
+                  );
+                  removeWatchCollection.push(removeWatch);
+                }
 
                 // removeWatch = scope.$watch(
                 //   `attrs.${attrName}`,
@@ -3000,7 +3043,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         }
 
         function triggerOnChangesHook() {
-          destination.$onChanges(changes);
+          destination.$onChanges && destination.$onChanges(changes);
           // Now clear the changes so that we schedule onChanges when more changes arrive
           changes = undefined;
         }
