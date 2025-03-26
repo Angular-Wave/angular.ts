@@ -336,7 +336,7 @@ function SelectController($element, $scope) {
       }
     });
 
-    optionElement.addEventListerer("$destroy", () => {
+    optionElement.addEventListener("$destroy", () => {
       const currentValue = self.readValue();
       const removeValue = optionAttrs.value;
 

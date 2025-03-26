@@ -194,7 +194,7 @@ export function AnimationProvider() {
           close,
         });
 
-        element.addEventListerer("$destroy", handleDestroyedElement);
+        element.addEventListener("$destroy", handleDestroyedElement);
 
         // we only want there to be one function called within the post digest
         // block. This way we can group animations for all the animations that

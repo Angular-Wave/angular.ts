@@ -782,7 +782,7 @@ export function rangeInputType(scope, element, attr, ctrl) {
     // interpolated attributes set the attribute value only after a digest, but we need the
     // attribute value when the input is first rendered, so that the browser can adjust the
     // input value based on the min/max value
-    element.attr(htmlAttrName, attr[htmlAttrName]);
+    element.setAttribute(htmlAttrName, attr[htmlAttrName]);
     let oldVal = attr[htmlAttrName];
     attr.$observe(htmlAttrName, (val) => {
       if (val !== oldVal) {

@@ -1,9 +1,21 @@
 /**
- * @param {HTMLElement} element
- * @param {string} event
+ * Triggers a browser event on the specified element.
+ * @param {HTMLElement} element - The target element.
+ * @param {Object} options - The event type and properties.
  */
-export function browserTrigger(element, event) {
-  element.dispatchEvent(new Event(event, { bubbles: true, cancelable: true }));
+export function browserTrigger(element, options) {
+  const { type, ...eventProps } = options;
+
+  let event;
+  if (type.startsWith("key")) {
+    event = new KeyboardEvent(type, eventProps);
+  } else if (type.startsWith("mouse")) {
+    event = new MouseEvent(type, eventProps);
+  } else {
+    event = new Event(type, { bubbles: true, cancelable: true });
+  }
+
+  element.dispatchEvent(event);
 }
 
 /**

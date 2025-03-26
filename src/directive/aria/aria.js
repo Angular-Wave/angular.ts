@@ -121,14 +121,18 @@ export function ngClickAriaDirective($aria, $parse) {
       if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR)) return;
 
       const fn = $parse(attr.ngClick);
+
+      /**
+       * @param {Element} elem
+       */
       return function (scope, elem, attr) {
         if (!isNodeOneOf(elem, nativeAriaNodeNames)) {
-          if ($aria.config("bindRoleForClick") && !elem.setAttribute("role")) {
+          if ($aria.config("bindRoleForClick") && !elem.hasAttribute("role")) {
             elem.setAttribute("role", "button");
           }
 
-          if ($aria.config("tabindex") && !elem.setAttribute("tabindex")) {
-            elem.setAttribute("tabindex", 0);
+          if ($aria.config("tabindex") && !elem.hasAttribute("tabindex")) {
+            elem.setAttribute("tabindex", "0");
           }
 
           if (
@@ -137,26 +141,35 @@ export function ngClickAriaDirective($aria, $parse) {
             !attr.ngKeypress &&
             !attr.ngKeyup
           ) {
-            elem.addEventListerer("keydown", (event) => {
-              const keyCode = event.which || event.keyCode;
+            elem.addEventListener(
+              "keydown",
+              /** @param {KeyboardEvent} event */
+              (event) => {
+                const keyCode = parseInt(event.key, 10);
 
-              if (keyCode === 13 || keyCode === 32) {
-                // If the event is triggered on a non-interactive element ...
-                if (
-                  nativeAriaNodeNames.indexOf(event.target.nodeName) === -1 &&
-                  !event.target.isContentEditable
-                ) {
-                  // ... prevent the default browser behavior (e.g. scrolling when pressing spacebar)
-                  // See https://github.com/angular/angular.js/issues/16664
-                  event.preventDefault();
+                if (keyCode === 13 || keyCode === 32) {
+                  // If the event is triggered on a non-interactive element ...
+                  if (
+                    nativeAriaNodeNames.indexOf(
+                      /** @type {Node} */ (event.target).nodeName,
+                    ) === -1 &&
+                    !(
+                      /** @type {HTMLElement} */ (event.target)
+                        .isContentEditable
+                    )
+                  ) {
+                    // ... prevent the default browser behavior (e.g. scrolling when pressing spacebar)
+                    // See https://github.com/angular/angular.js/issues/16664
+                    event.preventDefault();
+                  }
+                  scope.$apply(callback);
                 }
-                scope.$apply(callback);
-              }
 
-              function callback() {
-                fn(scope, { $event: event });
-              }
-            });
+                function callback() {
+                  fn(scope, { $event: event });
+                }
+              },
+            );
           }
         }
       };
@@ -216,7 +229,7 @@ export function ngModelAriaDirective($aria) {
       $aria.config(normalizedAttr) &&
       !elem.getAttribute(attr) &&
       (allowNonAriaNodes || !isNodeOneOf(elem, nativeAriaNodeNames)) &&
-      (elem.getAttribute("type") !== "hidden" || elem[0].nodeName !== "INPUT")
+      (elem.getAttribute("type") !== "hidden" || elem.nodeName !== "INPUT")
     );
   }
 
@@ -262,13 +275,9 @@ export function ngModelAriaDirective($aria) {
             false,
           );
 
-          function ngAriaWatchModelValue() {
-            return ngModel.$modelValue;
-          }
-
           function getRadioReaction() {
             // Strict comparison would cause a BC
-            elem[0].setAttribute(
+            elem.setAttribute(
               "aria-checked",
               (attr.value == ngModel.$viewValue).toString(),
             );
@@ -290,8 +299,8 @@ export function ngModelAriaDirective($aria) {
               if (
                 shouldAttachAttr("aria-checked", "ariaChecked", elem, false)
               ) {
-                scope.$watch(
-                  ngAriaWatchModelValue,
+                ngModel.$watch(
+                  "$modelValue",
                   shape === "radio" ? getRadioReaction : getCheckboxReaction,
                 );
               }
@@ -305,14 +314,14 @@ export function ngModelAriaDirective($aria) {
               }
               if ($aria.config("ariaValue")) {
                 const needsAriaValuemin =
-                  !elem.setAttribute("aria-valuemin") &&
+                  !elem.hasAttribute("aria-valuemin") &&
                   (Object.prototype.hasOwnProperty.call(attr, "min") ||
                     Object.prototype.hasOwnProperty.call(attr, "ngMin"));
                 const needsAriaValuemax =
-                  !elem.setAttribute("aria-valuemax") &&
+                  !elem.hasAttribute("aria-valuemax") &&
                   (Object.prototype.hasOwnProperty.call(attr, "max") ||
                     Object.prototype.hasOwnProperty.call(attr, "ngMax"));
-                const needsAriaValuenow = !elem.setAttribute("aria-valuenow");
+                const needsAriaValuenow = !elem.hasAttribute("aria-valuenow");
 
                 if (needsAriaValuemin) {
                   attr.$observe("min", (newVal) => {
@@ -325,7 +334,7 @@ export function ngModelAriaDirective($aria) {
                   });
                 }
                 if (needsAriaValuenow) {
-                  scope.$watch(ngAriaWatchModelValue, (newVal) => {
+                  ngModel.$watch("$modelValue", (newVal) => {
                     elem.setAttribute("aria-valuenow", newVal);
                   });
                 }
@@ -348,7 +357,7 @@ export function ngModelAriaDirective($aria) {
           }
 
           if (shouldAttachAttr("aria-invalid", "ariaInvalid", elem, true)) {
-            scope.$watch("ngModel.$invalid", (newVal) => {
+            ngModel.$watch("$invalid", (newVal) => {
               elem.setAttribute("aria-invalid", (!!newVal).toString());
             });
           }
@@ -365,7 +374,7 @@ export function ngDblclickAriaDirective($aria) {
 
     if (
       $aria.config("tabindex") &&
-      !elem.setAttribute("tabindex") &&
+      !elem.hasAttribute("tabindex") &&
       !isNodeOneOf(elem, nativeAriaNodeNames)
     ) {
       elem.setAttribute("tabindex", 0);

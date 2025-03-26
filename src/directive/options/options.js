@@ -392,7 +392,7 @@ export const ngOptionsDirective = [
               // This ensures the new empty option is selected if previously no option was selected
               ngModelCtrl.$render();
 
-              optionEl.addEventListerer("$destroy", () => {
+              optionEl.addEventListener("$destroy", () => {
                 const needsRerender = selectCtrl.$isEmptyOptionSelected();
 
                 selectCtrl.hasEmptyOption = false;

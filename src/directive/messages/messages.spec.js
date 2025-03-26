@@ -1,5 +1,5 @@
-import { countWatchers } from "../../core/scope/scope.js";
 import { Angular } from "../../loader.js";
+import { wait } from "../../shared/test-utils.js";
 import { isString } from "../../shared/utils.js";
 
 describe("ngMessages", () => {
@@ -25,9 +25,7 @@ describe("ngMessages", () => {
   });
 
   function messageChildren(element) {
-    return (element.length ? element : element).querySelectorAll(
-      "[ng-message], [ng-message-exp]",
-    );
+    return element.querySelectorAll("[ng-message], [ng-message-exp]");
   }
 
   function s(str) {
@@ -40,22 +38,22 @@ describe("ngMessages", () => {
 
   let element;
 
-  it("should render based off of a hashmap collection", () => {
+  it("should render based off of a hashmap collection", async () => {
     element = $compile(
       '<div ng-messages="col">' +
         '  <div ng-message="val">Message is set</div>' +
         "</div>",
     )($rootScope);
+    await wait();
     expect(element.textContent).not.toContain("Message is set");
 
-    $rootScope.$apply(() => {
-      $rootScope.col = { val: true };
-    });
+    $rootScope.col = { val: true };
+    await wait();
 
     expect(element.textContent).toContain("Message is set");
   });
 
-  it("should render the same message if multiple message keys match", () => {
+  it("should render the same message if multiple message keys match", async () => {
     element = $compile(
       '<div ng-messages="col">' +
         '  <div ng-message="one, two, three">Message is set</div>' +
@@ -88,7 +86,7 @@ describe("ngMessages", () => {
     expect(element.textContent).not.toContain("Message is set");
   });
 
-  it("should use the when attribute when an element directive is used", () => {
+  it("should use the when attribute when an element directive is used", async () => {
     element = $compile(
       '<ng-messages for="col">' +
         '  <ng-message when="val">Message is set</div>' +
@@ -103,7 +101,7 @@ describe("ngMessages", () => {
     expect(element.textContent).toContain("Message is set");
   });
 
-  it("should render the same message if multiple message keys match based on the when attribute", () => {
+  it("should render the same message if multiple message keys match based on the when attribute", async () => {
     element = $compile(
       '<ng-messages for="col">' +
         '  <ng-message when=" one two three ">Message is set</div>' +
@@ -136,7 +134,7 @@ describe("ngMessages", () => {
     expect(element.textContent).not.toContain("Message is set");
   });
 
-  it("should allow a dynamic expression to be set when ng-message-exp is used", () => {
+  it("should allow a dynamic expression to be set when ng-message-exp is used", async () => {
     element = $compile(
       '<div ng-messages="col">' +
         '  <div ng-message-exp="variable">Message is crazy</div>' +
@@ -170,7 +168,7 @@ describe("ngMessages", () => {
     expect(element.textContent).not.toContain("Message is crazy");
   });
 
-  it("should allow a dynamic expression to be set when the when-exp attribute is used", () => {
+  it("should allow a dynamic expression to be set when the when-exp attribute is used", async () => {
     element = $compile(
       '<ng-messages for="col">' +
         '  <ng-message when-exp="variable">Message is crazy</ng-message>' +
@@ -289,7 +287,7 @@ describe("ngMessages", () => {
   //   },
   // );
 
-  it("should display the elements in the order defined in the DOM", () => {
+  it("should display the elements in the order defined in the DOM", async () => {
     element = $compile(
       '<div ng-messages="col">' +
         '  <div ng-message="one">Message#one</div>' +
@@ -317,7 +315,7 @@ describe("ngMessages", () => {
     expect(s(element.textContent)).toEqual("");
   });
 
-  it("should add ng-active/ng-inactive CSS classes to the element when errors are/aren't displayed", () => {
+  it("should add ng-active/ng-inactive CSS classes to the element when errors are/aren't displayed", async () => {
     element = $compile(
       '<div ng-messages="col">' +
         '  <div ng-message="ready">This message is ready</div>' +
@@ -339,7 +337,7 @@ describe("ngMessages", () => {
     expect(element.classList.contains("ng-inactive")).toBe(false);
   });
 
-  it("should automatically re-render the messages when other directives dynamically change them", () => {
+  fit("should automatically re-render the messages when other directives dynamically change them", async () => {
     element = $compile(
       '<div ng-messages="col">' +
         '  <div ng-message="primary">Enter something</div>' +
@@ -349,51 +347,47 @@ describe("ngMessages", () => {
         "</div>",
     )($rootScope);
 
-    $rootScope.$apply(() => {
-      $rootScope.col = {};
-      $rootScope.items = [
-        { text: "Your age is incorrect", name: "age" },
-        { text: "You're too tall man!", name: "height" },
-        { text: "Your hair is too long", name: "hair" },
-      ];
-    });
+    $rootScope.col = {};
+    $rootScope.items = [
+      { text: "Your age is incorrect", name: "age" },
+      { text: "You're too tall man!", name: "height" },
+      { text: "Your hair is too long", name: "hair" },
+    ];
+    await wait();
 
     expect(messageChildren(element).length).toBe(0);
     expect(trim(element.textContent)).toEqual("");
 
-    $rootScope.$apply(() => {
-      $rootScope.col = { hair: true };
-    });
+    $rootScope.col = { hair: true };
+    await wait();
 
     expect(messageChildren(element).length).toBe(1);
     expect(trim(element.textContent)).toEqual("Your hair is too long");
 
-    $rootScope.$apply(() => {
-      $rootScope.col = { age: true, hair: true };
-    });
+    $rootScope.col = { age: true, hair: true };
+    await wait();
 
     expect(messageChildren(element).length).toBe(1);
     expect(trim(element.textContent)).toEqual("Your age is incorrect");
 
-    $rootScope.$apply(() => {
-      // remove the age!
-      $rootScope.items.shift();
-    });
+    // remove the age!
+    $rootScope.items.shift();
+
+    await wait();
 
     expect(messageChildren(element).length).toBe(1);
     expect(trim(element.textContent)).toEqual("Your hair is too long");
 
-    $rootScope.$apply(() => {
-      // remove the hair!
-      $rootScope.items.length = 0;
-      $rootScope.col.primary = true;
-    });
+    // remove the hair!
+    $rootScope.items.length = 0;
+    $rootScope.col.primary = true;
+    await wait();
 
     expect(messageChildren(element).length).toBe(1);
     expect(trim(element.textContent)).toEqual("Enter something");
   });
 
-  it("should be compatible with ngBind", () => {
+  it("should be compatible with ngBind", async () => {
     element = $compile(
       '<div ng-messages="col">' +
         '        <div ng-message="required" ng-bind="errorMessages.required"></div>' +
@@ -401,38 +395,36 @@ describe("ngMessages", () => {
         "</div>",
     )($rootScope);
 
-    $rootScope.$apply(() => {
-      $rootScope.col = {
-        required: true,
-        extra: true,
-      };
-      $rootScope.errorMessages = {
-        required: "Fill in the text field.",
-        extra: "Extra error message.",
-      };
-    });
+    $rootScope.col = {
+      required: true,
+      extra: true,
+    };
+
+    $rootScope.errorMessages = {
+      required: "Fill in the text field.",
+      extra: "Extra error message.",
+    };
+    await wait();
 
     expect(messageChildren(element).length).toBe(1);
     expect(trim(element.textContent)).toEqual("Fill in the text field.");
 
-    $rootScope.$apply(() => {
-      $rootScope.col.required = false;
-      $rootScope.col.extra = true;
-    });
+    $rootScope.col.required = false;
+    $rootScope.col.extra = true;
+    await wait();
 
     expect(messageChildren(element).length).toBe(1);
     expect(trim(element.textContent)).toEqual("Extra error message.");
 
-    $rootScope.$apply(() => {
-      $rootScope.errorMessages.extra = "New error message.";
-    });
+    $rootScope.errorMessages.extra = "New error message.";
+    await wait();
 
     expect(messageChildren(element).length).toBe(1);
     expect(trim(element.textContent)).toEqual("New error message.");
   });
 
   // issue #12856
-  it("should only detach the message object that is associated with the message node being removed", () => {
+  it("should only detach the message object that is associated with the message node being removed", async () => {
     // We are going to spy on the `leave` method to give us control over
     // when the element is actually removed
     //spyOn($animate, "leave");
@@ -446,6 +438,7 @@ describe("ngMessages", () => {
 
     // Trigger the message to be displayed
     $rootScope.col = { primary: true };
+    await wait();
     expect(messageChildren(element).length).toEqual(1);
     const oldMessageNode = messageChildren(element)[0];
 
@@ -465,12 +458,13 @@ describe("ngMessages", () => {
     //expect($animate.leave).not.toHaveBeenCalled();
 
     // There should only be the new message node
+    await wait();
     expect(messageChildren(element).length).toEqual(1);
     const newMessageNode = messageChildren(element)[0];
     expect(newMessageNode).not.toBe(oldMessageNode);
   });
 
-  // it("should render animations when the active/inactive classes are added/removed", () => {
+  // it("should render animations when the active/inactive classes are added/removed", async () => {
   //   // module("ngAnimate");
   //   // module("ngAnimateMock");
   //   element = $compile(
@@ -502,7 +496,7 @@ describe("ngMessages", () => {
     it(
       "should not crash or leak memory when the messages are transcluded, the first message is " +
         "visible, and ngMessages is removed by ngIf",
-      () => {
+      async () => {
         element = $compile(
           '<div><div ng-if="show"><div message-wrap col="col">' +
             '        <div ng-message="a">A</div>' +
@@ -510,24 +504,22 @@ describe("ngMessages", () => {
             "</div></div></div>",
         )($rootScope);
 
-        $rootScope.$apply(() => {
-          $rootScope.show = true;
-          $rootScope.col = {
-            a: true,
-            b: true,
-          };
-        });
-
+        $rootScope.show = true;
+        $rootScope.col = {
+          a: true,
+          b: true,
+        };
+        await wait();
         expect(messageChildren(element).length).toBe(1);
         expect(trim(element.textContent)).toEqual("A");
 
         $rootScope.$apply("show = false");
-
+        await wait();
         expect(messageChildren(element).length).toBe(0);
       },
     );
 
-    it("should not crash when the first of two nested messages is removed", () => {
+    it("should not crash when the first of two nested messages is removed", async () => {
       element = $compile(
         '<div ng-messages="col">' +
           '<div class="wrapper">' +
@@ -599,7 +591,7 @@ describe("ngMessages", () => {
     );
   });
 
-  it("should clean-up the ngMessage scope when a message is removed", () => {
+  it("should clean-up the ngMessage scope when a message is removed", async () => {
     const html =
       '<div ng-messages="items">' +
       '<div ng-message="a">{{forA}}</div>' +
@@ -622,7 +614,7 @@ describe("ngMessages", () => {
     expect(countWatchers($rootScope)).toBe(watchers - 1);
   });
 
-  it("should unregister the ngMessage even if it was never attached", () => {
+  it("should unregister the ngMessage even if it was never attached", async () => {
     const html =
       '<div ng-messages="items">' +
       '<div ng-if="show"><div ng-message="x">ERROR</div></div>' +
@@ -645,7 +637,7 @@ describe("ngMessages", () => {
   });
 
   describe("default message", () => {
-    it("should render a default message when no message matches", () => {
+    it("should render a default message when no message matches", async () => {
       element = $compile(
         '<div ng-messages="col">' +
           '  <div ng-message="val">Message is set</div>' +
@@ -681,7 +673,7 @@ describe("ngMessages", () => {
       expect(element.classList.contains("ng-active")).toBeTrue();
     });
 
-    it("should not render a default message with ng-messages-multiple if another error matches", () => {
+    it("should not render a default message with ng-messages-multiple if another error matches", async () => {
       element = $compile(
         '<div ng-messages="col" ng-messages-multiple>' +
           '  <div ng-message="val">Message is set</div>' +
@@ -713,7 +705,7 @@ describe("ngMessages", () => {
       expect(element.textContent.trim()).toBe("Default message is set");
     });
 
-    it("should handle a default message with ngIf", () => {
+    it("should handle a default message with ngIf", async () => {
       element = $compile(
         '<div ng-messages="col">' +
           '  <div ng-message="val">Message is set</div>' +
@@ -885,7 +877,7 @@ describe("ngMessages", () => {
     //   },
     // );
 
-    it("should cache the template after download", () => {
+    it("should cache the template after download", async () => {
       expect($templateCache.get("/mock/hello")).toBeUndefined();
       element = $compile(
         '<div ng-messages="data"><div ng-messages-include="/mock/hello"></div></div>',
@@ -918,7 +910,7 @@ describe("ngMessages", () => {
       }, 10);
     });
 
-    it("should allow for overriding the remote template messages within the element depending on where the remote template is placed", () => {
+    it("should allow for overriding the remote template messages within the element depending on where the remote template is placed", async () => {
       $templateCache.set(
         "abc.html",
         '<div ng-message="a">A</div>' +
@@ -965,7 +957,7 @@ describe("ngMessages", () => {
       expect(trim(element.textContent)).toEqual("C");
     });
 
-    // it("should properly detect a previous message, even if it was registered later", () => {
+    // it("should properly detect a previous message, even if it was registered later", async () => {
     //   $templateCache.set("include.html", '<div ng-message="a">A</div>');
     //   const html =
     //     '<div ng-messages="items">' +
@@ -995,7 +987,7 @@ describe("ngMessages", () => {
     //   expect(element.textContent).toBe("A");
     // });
 
-    it("should not throw if the template is empty", () => {
+    it("should not throw if the template is empty", async () => {
       const html =
         '<div ng-messages="items">' +
         '<div ng-messages-include="messages1.html"></div>' +
@@ -1038,7 +1030,7 @@ describe("ngMessages", () => {
     //   },
     // );
 
-    it("should render all truthy messages from a remote template", () => {
+    it("should render all truthy messages from a remote template", async () => {
       $templateCache.set(
         "xyz.html",
         '<div ng-message="x">X</div>' +
@@ -1071,7 +1063,7 @@ describe("ngMessages", () => {
       expect(s(element.textContent)).toEqual("XYZ");
     });
 
-    it("should render and override all truthy messages from a remote template", () => {
+    it("should render and override all truthy messages from a remote template", async () => {
       $templateCache.set(
         "xyz.html",
         '<div ng-message="x">X</div>' +
