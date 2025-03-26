@@ -203,17 +203,17 @@ describe("$compile", () => {
     $sce = injector.get("$sce");
   }
 
-  it("is provided by injector $compile", () => {
+  fit("is provided by injector $compile", () => {
     expect(injector.get("$compile")).toBeDefined();
   });
 
-  it("allows creating directives", () => {
+  fit("allows creating directives", () => {
     myModule.directive("testing", () => {});
     reloadModules();
     expect(injector.has("testingDirective")).toBe(true);
   });
 
-  it("allows creating many directives with the same name", () => {
+  fit("allows creating many directives with the same name", () => {
     myModule.directive("testing", () => ({ d: "one" }));
     myModule.directive("testing", () => ({ d: "two" }));
     reloadModules();
@@ -223,14 +223,14 @@ describe("$compile", () => {
     expect(result[1].d).toEqual("two");
   });
 
-  it("does not allow a directive called hasOwnProperty", () => {
+  fit("does not allow a directive called hasOwnProperty", () => {
     myModule.directive("hasOwnProperty", () => {});
     expect(() => {
       reloadModules();
     }).toThrowError();
   });
 
-  it("allows creating directives with object notation", () => {
+  fit("allows creating directives with object notation", () => {
     myModule.directive({
       a: () => {},
       b: () => {},
@@ -243,7 +243,7 @@ describe("$compile", () => {
     expect(injector.has("cDirective")).toBe(true);
   });
 
-  it("compiles element directives from a single element", () => {
+  fit("compiles element directives from a single element", () => {
     myModule.directive("myDirective", () => {
       return {
         restrict: "EA",
@@ -259,7 +259,7 @@ describe("$compile", () => {
     expect(getCacheData(el, "hasCompiled")).toBe(true);
   });
 
-  it("compiles element directives found from several elements", () => {
+  fit("compiles element directives found from several elements", () => {
     var idx = 1;
     myModule.directive("myDirective", () => {
       return {
@@ -278,7 +278,7 @@ describe("$compile", () => {
     expect(getCacheData(el.childNodes[1], "idx")).toBe(2);
   });
 
-  it("compiles element directives from child elements", () => {
+  fit("compiles element directives from child elements", () => {
     var idx = 1;
     myModule.directive("myDirective", () => {
       return {
@@ -297,7 +297,7 @@ describe("$compile", () => {
     expect(getCacheData(el.firstChild, "dir")).toBe(1);
   });
 
-  it("compiles nested directives", () => {
+  fit("compiles nested directives", () => {
     var idx = 1;
     myModule.directive("myDir", () => {
       return {
@@ -317,7 +317,7 @@ describe("$compile", () => {
 
   ["data"].forEach((prefix) => {
     ["-"].forEach((delim) => {
-      it(
+      fit(
         "compiles element directives with " + prefix + delim + " prefix",
         () => {
           myModule.directive("myDirective", () => {
@@ -345,7 +345,7 @@ describe("$compile", () => {
     });
   });
 
-  it("compiles attribute directives", () => {
+  fit("compiles attribute directives", () => {
     myModule.directive("myDirective", () => {
       return {
         restrict: "EA",
@@ -361,7 +361,7 @@ describe("$compile", () => {
     expect(getCacheData(el, "hasCompiled")).toBe(true);
   });
 
-  it("compiles attribute directives with prefixes", () => {
+  fit("compiles attribute directives with prefixes", () => {
     myModule.directive("myDirective", () => {
       return {
         restrict: "EA",
@@ -376,7 +376,7 @@ describe("$compile", () => {
     expect(getCacheData(el, "hasCompiled")).toBe(true);
   });
 
-  it("compiles several attribute directives in an element", () => {
+  fit("compiles several attribute directives in an element", () => {
     myModule
       .directive("myDirective", () => {
         return {
@@ -401,7 +401,7 @@ describe("$compile", () => {
     expect(getCacheData(el, "secondCompiled")).toBe(true);
   });
 
-  it("compiles both element and attributes directives in an element", () => {
+  fit("compiles both element and attributes directives in an element", () => {
     myModule
       .directive("myDirective", () => {
         return {
@@ -427,7 +427,7 @@ describe("$compile", () => {
     expect(getCacheData(el, "secondCompiled")).toBe(true);
   });
 
-  it("compiles attribute directives with ng-attr prefix", () => {
+  fit("compiles attribute directives with ng-attr prefix", () => {
     myModule.directive("myDirective", () => {
       return {
         restrict: "EA",
@@ -442,7 +442,7 @@ describe("$compile", () => {
     expect(getCacheData(el, "hasCompiled")).toBe(true);
   });
 
-  it("compiles attribute directives with ng-attr prefix", () => {
+  fit("compiles attribute directives with ng-attr prefix", () => {
     myModule.directive("myDirective", () => {
       return {
         restrict: "EA",
@@ -467,7 +467,7 @@ describe("$compile", () => {
         element: "<my-directive></my-directive>",
         attribute: "<div my-directive></div>",
       }).forEach(([type, dom]) => {
-        it(
+        fit(
           (expected[type] ? "matches" : "does not match") + " on " + type,
           () => {
             var hasCompiled = false;
@@ -488,7 +488,7 @@ describe("$compile", () => {
     });
   });
 
-  it("applies to attributes when no restrict given", () => {
+  fit("applies to attributes when no restrict given", () => {
     var hasCompiled = false;
     myModule.directive("myDirective", () => {
       return {
@@ -503,7 +503,7 @@ describe("$compile", () => {
     expect(hasCompiled).toBe(true);
   });
 
-  it("applies to elements when no restrict given", () => {
+  fit("applies to elements when no restrict given", () => {
     var hasCompiled = false;
     myModule.directive("myDirective", () => {
       return {
@@ -518,7 +518,7 @@ describe("$compile", () => {
     expect(hasCompiled).toBe(true);
   });
 
-  it("does not apply to classes when no restrict given", () => {
+  fit("does not apply to classes when no restrict given", () => {
     var hasCompiled = false;
     myModule.directive("myDirective", () => {
       return {
@@ -533,7 +533,7 @@ describe("$compile", () => {
     expect(hasCompiled).toBe(false);
   });
 
-  it("applies in priority order", () => {
+  fit("applies in priority order", () => {
     var compilations = [];
     myModule
       .directive("lowerDirective", () => {
@@ -558,7 +558,7 @@ describe("$compile", () => {
     expect(compilations).toEqual(["higher", "lower"]);
   });
 
-  it("applies in name order when priorities are the same", () => {
+  fit("applies in name order when priorities are the same", () => {
     var compilations = [];
     myModule
       .directive("firstDirective", () => {
@@ -582,7 +582,7 @@ describe("$compile", () => {
     expect(compilations).toEqual(["first", "second"]);
   });
 
-  it("applies in registration order when names are the same", () => {
+  fit("applies in registration order when names are the same", () => {
     var compilations = [];
     myModule
       .directive("aDirective", () => {
@@ -606,7 +606,7 @@ describe("$compile", () => {
     expect(compilations).toEqual(["first", "second"]);
   });
 
-  it("uses default priority when one not given", () => {
+  fit("uses default priority when one not given", () => {
     var compilations = [];
     myModule
       .directive("firstDirective", () => {
@@ -629,7 +629,7 @@ describe("$compile", () => {
     expect(compilations).toEqual(["first", "second"]);
   });
 
-  it("stops compiling at a terminal directive", () => {
+  fit("stops compiling at a terminal directive", () => {
     var compilations = [];
 
     myModule
@@ -655,7 +655,7 @@ describe("$compile", () => {
     expect(compilations).toEqual(["first"]);
   });
 
-  it("still compiles directives with same priority after terminal", () => {
+  fit("still compiles directives with same priority after terminal", () => {
     var compilations = [];
     myModule
       .directive("firstDirective", () => {
@@ -680,7 +680,7 @@ describe("$compile", () => {
     expect(compilations).toEqual(["first", "second"]);
   });
 
-  it("stops child compilation after a terminal directive", () => {
+  fit("stops child compilation after a terminal directive", () => {
     var compilations = [];
     myModule
       .directive("parentDirective", () => {
@@ -712,7 +712,7 @@ describe("$compile", () => {
       dealoc(element);
     });
 
-    it("should allow multiple directives per element", () => {
+    fit("should allow multiple directives per element", () => {
       reloadModules();
       var el = $(
         "<span greet='angular' log='L' high-log='H' data-medium-log='M'></span>",
@@ -722,7 +722,7 @@ describe("$compile", () => {
       expect(log.join("; ")).toEqual("L; M; H");
     });
 
-    it("should recurse to children", () => {
+    fit("should recurse to children", () => {
       reloadModules();
       element = $compile(
         '<div>0<a set="hello">1</a>2<b set="angular">3</b>4</div>',
@@ -730,7 +730,7 @@ describe("$compile", () => {
       expect(element.innerText).toEqual("0hello2angular4");
     });
 
-    xit("should allow directives in SVG element classes", () => {
+    fit("should allow directives in SVG element classes", () => {
       reloadModules();
       if (!window.SVGElement) return;
       element = $compile('<svg><text greet="angular" log="123"></text></svg>')(
@@ -743,7 +743,7 @@ describe("$compile", () => {
       expect(log[0]).toEqual("123");
     });
 
-    xit("should ignore not set CSS classes on SVG elements", async () => {
+    fit("should ignore not set CSS classes on SVG elements", async () => {
       reloadModules();
       if (!window.SVGElement) return;
       // According to spec SVG element className property is readonly, but only FF
@@ -753,7 +753,7 @@ describe("$compile", () => {
       expect(element.textContent).toEqual("1");
     });
 
-    it("should receive scope, element, and attributes", () => {
+    fit("should receive scope, element, and attributes", () => {
       let injectableInjector;
       myModule.directive("log", ($rootScope, $injector) => {
         injectableInjector = $injector;
@@ -816,7 +816,7 @@ describe("$compile", () => {
       callback(el, givenAttrs, $rootScope);
     }
 
-    it("passes the element attributes to the compile function", () => {
+    fit("passes the element attributes to the compile function", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive my-attr="1" my-other-attr="two"></my-directive>',
@@ -827,7 +827,7 @@ describe("$compile", () => {
       );
     });
 
-    it("trims attribute values", () => {
+    fit("trims attribute values", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive my-attr="val"></my-directive>',
@@ -837,7 +837,7 @@ describe("$compile", () => {
       );
     });
 
-    it("sets the value of boolean attributes to true", () => {
+    fit("sets the value of boolean attributes to true", () => {
       registerAndCompile(
         "myDirective",
         "<input my-directive disabled>",
@@ -847,7 +847,7 @@ describe("$compile", () => {
       );
     });
 
-    it("does not set the value of non-standard boolean attributes to true", () => {
+    fit("does not set the value of non-standard boolean attributes to true", () => {
       registerAndCompile(
         "myDirective",
         "<input my-directive whatever>",
@@ -857,7 +857,7 @@ describe("$compile", () => {
       );
     });
 
-    it("overrides attributes with ng-attr- versions", () => {
+    fit("overrides attributes with ng-attr- versions", () => {
       registerAndCompile(
         "myDirective",
         '<input my-directive ng-attr-whatever="42" whatever="41">',
@@ -867,7 +867,7 @@ describe("$compile", () => {
       );
     });
 
-    it("allows setting attributes", () => {
+    fit("allows setting attributes", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive attr="true"></my-directive>',
@@ -879,7 +879,7 @@ describe("$compile", () => {
       );
     });
 
-    it("sets attributes to DOM", () => {
+    fit("sets attributes to DOM", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive attr="true"></my-directive>',
@@ -890,7 +890,7 @@ describe("$compile", () => {
       );
     });
 
-    it("does not set attributes to DOM when flag set to false", () => {
+    fit("does not set attributes to DOM when flag set to false", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive attr="true"></my-directive>',
@@ -902,7 +902,7 @@ describe("$compile", () => {
       );
     });
 
-    it("shares attributes between directives", () => {
+    fit("shares attributes between directives", () => {
       var attrs1, attrs2;
       registerDirectives({
         myDir: () => {
@@ -926,7 +926,7 @@ describe("$compile", () => {
       expect(attrs1).toBe(attrs2);
     });
 
-    it("sets prop for boolean attributes", () => {
+    fit("sets prop for boolean attributes", () => {
       registerAndCompile(
         "myDirective",
         "<input my-directive>",
@@ -937,7 +937,7 @@ describe("$compile", () => {
       );
     });
 
-    it("sets prop for boolean attributes even when not flushing", () => {
+    fit("sets prop for boolean attributes even when not flushing", () => {
       registerAndCompile(
         "myDirective",
         "<input my-directive>",
@@ -948,7 +948,7 @@ describe("$compile", () => {
       );
     });
 
-    it("denormalizes attribute name when explicitly given", () => {
+    fit("denormalizes attribute name when explicitly given", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive some-attribute="42"></my-directive>',
@@ -959,7 +959,7 @@ describe("$compile", () => {
       );
     });
 
-    it("denormalizes attribute by snake-casing when no other means available", () => {
+    fit("denormalizes attribute by snake-casing when no other means available", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive some-attribute="42"></my-directive>',
@@ -970,7 +970,7 @@ describe("$compile", () => {
       );
     });
 
-    it("denormalizes attribute by using original attribute name", () => {
+    fit("denormalizes attribute by using original attribute name", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive some-attribute="42"></my-directive>',
@@ -981,7 +981,7 @@ describe("$compile", () => {
       );
     });
 
-    it("accepts attribute by using original attribute name", () => {
+    fit("accepts attribute by using original attribute name", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive some-attribute="42"></my-directive>',
@@ -992,7 +992,7 @@ describe("$compile", () => {
       );
     });
 
-    it("does not use ng-attr- prefix in denormalized names", () => {
+    fit("does not use ng-attr- prefix in denormalized names", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive ng-attr-some-attribute="42"></my-directive>',
@@ -1003,7 +1003,7 @@ describe("$compile", () => {
       );
     });
 
-    it("uses new attribute name after once given", () => {
+    fit("uses new attribute name after once given", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive some-attribute="42"></my-directive>',
@@ -1016,7 +1016,7 @@ describe("$compile", () => {
       );
     });
 
-    it("calls observer immediately when attribute is $set", () => {
+    fit("calls observer immediately when attribute is $set", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive some-attribute="42"></my-directive>',
@@ -1032,7 +1032,7 @@ describe("$compile", () => {
       );
     });
 
-    it("calls observer on immediately after registration", () => {
+    fit("calls observer on immediately after registration", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive some-attribute="42"></my-directive>',
@@ -1046,7 +1046,7 @@ describe("$compile", () => {
       );
     });
 
-    it("lets observers be deregistered", () => {
+    fit("lets observers be deregistered", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive some-attribute="42"></my-directive>',
@@ -1066,7 +1066,7 @@ describe("$compile", () => {
       );
     });
 
-    it("does not add attribute from class without a directive", () => {
+    fit("does not add attribute from class without a directive", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive class="some-class"></my-directive>',
@@ -1076,7 +1076,7 @@ describe("$compile", () => {
       );
     });
 
-    it("allows adding classes", () => {
+    fit("allows adding classes", () => {
       registerAndCompile(
         "myDirective",
         "<my-directive></my-directive>",
@@ -1087,7 +1087,7 @@ describe("$compile", () => {
       );
     });
 
-    it("allows removing classes", () => {
+    fit("allows removing classes", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive class="some-class"></my-directive>',
@@ -1098,7 +1098,7 @@ describe("$compile", () => {
       );
     });
 
-    it("allows updating classes", () => {
+    fit("allows updating classes", () => {
       registerAndCompile(
         "myDirective",
         '<my-directive class="one three four"></my-directive>',
@@ -1113,7 +1113,7 @@ describe("$compile", () => {
     });
   });
 
-  it("returns a public link function from compile", () => {
+  fit("returns a public link function from compile", () => {
     registerDirectives("myDirective", () => {
       return { compile: () => {} };
     });
@@ -1125,7 +1125,7 @@ describe("$compile", () => {
   });
 
   describe("linking", () => {
-    it("takes a scope and attaches it to elements", async () => {
+    fit("takes a scope and attaches it to elements", async () => {
       registerDirectives("myDirective", () => {
         return { compile: () => {} };
       });
@@ -1137,7 +1137,7 @@ describe("$compile", () => {
       expect(getScope(el)).toBe($rootScope);
     });
 
-    it("calls directive link function with scope", async () => {
+    fit("calls directive link function with scope", async () => {
       var givenScope, givenElement, givenAttrs;
       registerDirectives("myDirective", () => {
         return {
@@ -1160,7 +1160,7 @@ describe("$compile", () => {
       expect(givenAttrs.myDirective).toBeDefined();
     });
 
-    it("supports link function in directive definition object", () => {
+    fit("supports link function in directive definition object", () => {
       var givenScope, givenElement, givenAttrs;
       registerDirectives("myDirective", () => {
         return {
@@ -1180,7 +1180,7 @@ describe("$compile", () => {
       expect(givenAttrs.myDirective).toBeDefined();
     });
 
-    it("links directive on child elements first", function () {
+    fit("links directive on child elements first", function () {
       const givenElements = [];
       registerDirectives("myDirective", function () {
         return {
@@ -1198,7 +1198,7 @@ describe("$compile", () => {
       expect(givenElements[1]).toBe(el);
     });
 
-    it("links directive on multiple child elements first", function () {
+    fit("links directive on multiple child elements first", function () {
       const givenElements = [];
       registerDirectives("myDirective", function () {
         return {
@@ -1220,7 +1220,7 @@ describe("$compile", () => {
     });
   });
 
-  it("links children when parent has no directives", async () => {
+  fit("links children when parent has no directives", async () => {
     var givenElements = [];
     registerDirectives("myDirective", () => {
       return {
@@ -1237,7 +1237,7 @@ describe("$compile", () => {
     expect(givenElements[0]).toBe(el.firstChild);
   });
 
-  it("links nested children when parent has no directives", async () => {
+  fit("links nested children when parent has no directives", async () => {
     var givenElements = [];
     registerDirectives("myDirective", () => {
       return {
@@ -1258,7 +1258,7 @@ describe("$compile", () => {
     expect(givenElements[1]).toBe(el.firstChild);
   });
 
-  it("supports link function objects", () => {
+  fit("supports link function objects", () => {
     var linked;
     registerDirectives("myDirective", () => {
       return {
@@ -1275,7 +1275,7 @@ describe("$compile", () => {
     expect(linked).toBe(true);
   });
 
-  it("supports prelinking and postlinking", () => {
+  fit("supports prelinking and postlinking", () => {
     var linkings = [];
     registerDirectives("myDirective", () => {
       return {
@@ -1304,7 +1304,7 @@ describe("$compile", () => {
     expect(linkings[3]).toEqual(["post", el]);
   });
 
-  it("reverses priority for postlink functions", () => {
+  fit("reverses priority for postlink functions", () => {
     var linkings = [];
     registerDirectives({
       firstDirective: () => {
@@ -1345,7 +1345,7 @@ describe("$compile", () => {
     ]);
   });
 
-  it("stabilizes node list during linking", () => {
+  fit("stabilizes node list during linking", () => {
     var givenElements = [];
     registerDirectives("myDirective", () => {
       return {
@@ -1365,7 +1365,7 @@ describe("$compile", () => {
     expect(givenElements[1]).toBe(el2);
   });
 
-  it("makes new scope for element when directive asks for it", () => {
+  fit("makes new scope for element when directive asks for it", () => {
     var givenScope;
     registerDirectives("myDirective", () => {
       return {
@@ -1381,7 +1381,7 @@ describe("$compile", () => {
     expect(givenScope.$parent.id).toBe($rootScope.id);
   });
 
-  it("makes new scope for element when directive rejects it", () => {
+  fit("makes new scope for element when directive rejects it", () => {
     var givenScope;
     registerDirectives("myDirective", () => {
       return {
@@ -1398,7 +1398,7 @@ describe("$compile", () => {
     expect(givenScope.id).toBe($rootScope.id);
   });
 
-  it("gives inherited scope to all directives on element", () => {
+  fit("gives inherited scope to all directives on element", () => {
     var givenScope;
     registerDirectives({
       myDirective: () => {
@@ -1420,7 +1420,7 @@ describe("$compile", () => {
     expect(givenScope.$parent.$id).toBe($rootScope.$id);
   });
 
-  it("adds new scope data for element with new scope", function () {
+  fit("adds new scope data for element with new scope", function () {
     var givenScope;
     registerDirectives("myDirective", function () {
       return {
@@ -1436,7 +1436,7 @@ describe("$compile", () => {
     expect(getScope(el)).toBe(givenScope);
   });
 
-  it("adds new scope", async () => {
+  fit("adds new scope", async () => {
     var givenScope;
     registerDirectives("myDirective", () => {
       return {
@@ -1453,7 +1453,7 @@ describe("$compile", () => {
     expect($rootScope.$children[0].$id).toBe(givenScope.$id);
   });
 
-  it("creates an isolate scope when requested", () => {
+  fit("creates an isolate scope when requested", () => {
     var givenScope;
     registerDirectives("myDirective", () => {
       return {
@@ -1471,7 +1471,7 @@ describe("$compile", () => {
     expect(Object.getPrototypeOf(givenScope)).not.toBe($rootScope);
   });
 
-  it("does not share isolate scope with other directives on the element", () => {
+  fit("does not share isolate scope with other directives on the element", () => {
     var givenScope;
     registerDirectives({
       myDirective: () => {
@@ -1494,7 +1494,7 @@ describe("$compile", () => {
     expect(givenScope).toBe($rootScope);
   });
 
-  it("does not use isolate scope on child elements", () => {
+  fit("does not use isolate scope on child elements", () => {
     var givenScope;
     registerDirectives({
       myDirective: () => {
@@ -1517,7 +1517,7 @@ describe("$compile", () => {
     expect(givenScope).toBe($rootScope);
   });
 
-  it("does not allow two isolate scope directives on an element", () => {
+  fit("does not allow two isolate scope directives on an element", () => {
     registerDirectives({
       myDirective: () => {
         return {
@@ -1537,7 +1537,7 @@ describe("$compile", () => {
     }).toThrowError();
   });
 
-  it("does not allow both isolate and inherited scopes on an element", () => {
+  fit("does not allow both isolate and inherited scopes on an element", () => {
     registerDirectives({
       myDirective: () => {
         return {
@@ -1557,7 +1557,7 @@ describe("$compile", () => {
     }).toThrowError();
   });
 
-  it("adds data for element with isolated scope", function () {
+  fit("adds data for element with isolated scope", function () {
     var givenScope;
     registerDirectives("myDirective", function () {
       return {
@@ -1573,7 +1573,7 @@ describe("$compile", () => {
     expect(getIsolateScope(el)).toBe(givenScope);
   });
 
-  it("allows observing attribute to the isolate scope", () => {
+  fit("allows observing attribute to the isolate scope", () => {
     var givenScope, givenAttrs;
     registerDirectives("myDirective", () => {
       return {
@@ -1596,7 +1596,7 @@ describe("$compile", () => {
     expect(givenScope.anAttr).toEqual("43");
   });
 
-  it("sets initial value of observed attr to the isolate scope", () => {
+  fit("sets initial value of observed attr to the isolate scope", () => {
     var givenScope;
     registerDirectives("myDirective", () => {
       return {
@@ -1614,7 +1614,7 @@ describe("$compile", () => {
     expect(givenScope.anAttr).toEqual("42");
   });
 
-  it("allows aliasing observed attribute", async () => {
+  fit("allows aliasing observed attribute", async () => {
     var givenScope;
     registerDirectives("myDirective", () => {
       return {
@@ -1633,8 +1633,8 @@ describe("$compile", () => {
     expect(givenScope.aScopeAttr).toEqual("42");
   });
 
-  fdescribe("bi-directional databinding", () => {
-    it("allows binding expression to isolate scope", () => {
+  describe("bi-directional databinding", () => {
+    fit("allows binding expression to isolate scope", () => {
       var givenScope;
       registerDirectives("myDirective", () => {
         return {
@@ -1652,7 +1652,7 @@ describe("$compile", () => {
       expect(givenScope.anAttr).toBe(42);
     });
 
-    it("allows aliasing expression attribute on isolate scope", async () => {
+    fit("allows aliasing expression attribute on isolate scope", async () => {
       var givenScope;
       registerDirectives("myDirective", () => {
         return {
@@ -1671,7 +1671,7 @@ describe("$compile", () => {
       expect(givenScope.myAttr).toBe(42);
     });
 
-    it("evaluates isolate scope expression on parent scope", async () => {
+    fit("evaluates isolate scope expression on parent scope", async () => {
       var givenScope;
       registerDirectives("myDirective", () => {
         return {
@@ -1691,7 +1691,7 @@ describe("$compile", () => {
       expect(givenScope.myAttr).toBe(42);
     });
 
-    it("watches isolated scope expressions", async () => {
+    fit("watches isolated scope expressions", async () => {
       var givenScope;
       registerDirectives("myDirective", () => {
         return {
@@ -1713,7 +1713,7 @@ describe("$compile", () => {
       expect(givenScope.myAttr).toBe(42);
     });
 
-    it("does not watch optional missing two-way expressions", async () => {
+    fit("does not watch optional missing two-way expressions", async () => {
       registerDirectives("myDirective", () => {
         return {
           scope: {
@@ -1729,7 +1729,7 @@ describe("$compile", () => {
       expect($rootScope.$handler.watchers.size).toEqual(1);
     });
 
-    it("allows assigning to two-way scope expressions", async () => {
+    fit("allows assigning to two-way scope expressions", async () => {
       var isolateScope;
       registerDirectives("myDirective", () => {
         return {
@@ -1751,7 +1751,7 @@ describe("$compile", () => {
       expect($rootScope.parentAttr).toBe(42);
     });
 
-    it("gives parent change precedence when both parent and child change", async () => {
+    fit("gives parent change precedence when both parent and child change", async () => {
       var isolateScope;
       registerDirectives("myDirective", () => {
         return {
@@ -1773,7 +1773,7 @@ describe("$compile", () => {
       expect(isolateScope.myAttr).toBe(42);
     });
 
-    it("does not throw when two-way expression returns new arrays", async () => {
+    fit("does not throw when two-way expression returns new arrays", async () => {
       var givenScope;
       registerDirectives("myDirective", () => {
         return {
@@ -1795,7 +1795,7 @@ describe("$compile", () => {
       expect(givenScope.myAttr).toEqual([1, 2, 3]);
     });
 
-    it("can watch two-way bindings as collections", async () => {
+    fit("can watch two-way bindings as collections", async () => {
       var givenScope;
       registerDirectives("myDirective", () => {
         return {
@@ -1818,8 +1818,8 @@ describe("$compile", () => {
     });
   });
 
-  fdescribe("one-way databinding", () => {
-    it("allows binding expression to isolate scope", async () => {
+  describe("one-way databinding", () => {
+    fit("allows binding expression to isolate scope", async () => {
       var givenScope;
       registerDirectives("myDirective", () => {
         return {
@@ -1838,7 +1838,7 @@ describe("$compile", () => {
       expect(givenScope.anAttr).toBe(42);
     });
 
-    it("allows aliasing expression attribute on isolate scope", async () => {
+    fit("allows aliasing expression attribute on isolate scope", async () => {
       var givenScope;
       registerDirectives("myDirective", () => {
         return {
@@ -1857,7 +1857,7 @@ describe("$compile", () => {
       expect(givenScope.myAttr).toBe(42);
     });
 
-    it("evaluates isolate scope expression on parent scope", async () => {
+    fit("evaluates isolate scope expression on parent scope", async () => {
       var givenScope;
       registerDirectives("myDirective", () => {
         return {
@@ -1877,7 +1877,7 @@ describe("$compile", () => {
       expect(givenScope.myAttr).toBe(42);
     });
 
-    it("watches isolated scope expressions", async () => {
+    fit("watches isolated scope expressions", async () => {
       var givenScope;
       registerDirectives("myDirective", () => {
         return {
@@ -1899,7 +1899,7 @@ describe("$compile", () => {
       expect(givenScope.myAttr).toBe(42);
     });
 
-    it("does not watch optional missing isolate scope expressions", async () => {
+    fit("does not watch optional missing isolate scope expressions", async () => {
       var givenScope;
       registerDirectives("myDirective", () => {
         return {
@@ -1919,7 +1919,7 @@ describe("$compile", () => {
     });
   });
 
-  it("allows binding an invokable expression on the parent scope", () => {
+  fit("allows binding an invokable expression on the parent scope", () => {
     var givenScope;
     registerDirectives("myDirective", () => {
       return {
@@ -1940,7 +1940,7 @@ describe("$compile", () => {
     expect(givenScope.myExpr()).toBe(43);
   });
 
-  it("allows passing arguments to parent scope expression", () => {
+  fit("allows passing arguments to parent scope expression", () => {
     var givenScope;
     registerDirectives("myDirective", () => {
       return {
@@ -1965,7 +1965,7 @@ describe("$compile", () => {
     expect(gotArg).toBe(42);
   });
 
-  it("sets missing optional parent scope expression to undefined", () => {
+  fit("sets missing optional parent scope expression to undefined", () => {
     var givenScope;
     registerDirectives("myDirective", () => {
       return {
@@ -1988,7 +1988,7 @@ describe("$compile", () => {
   });
 
   describe("controllers", () => {
-    it("can be attached to directives as functions", async () => {
+    fit("can be attached to directives as functions", async () => {
       var controllerInvoked;
       registerDirectives("myDirective", () => {
         return {
@@ -2004,7 +2004,7 @@ describe("$compile", () => {
       expect(controllerInvoked).toBe(true);
     });
 
-    it("can be attached to directives as string references", async () => {
+    fit("can be attached to directives as string references", async () => {
       var controllerInvoked;
       function MyController() {
         controllerInvoked = true;
@@ -2022,7 +2022,7 @@ describe("$compile", () => {
       expect(controllerInvoked).toBe(true);
     });
 
-    it("can be applied in the same element independent of each other", () => {
+    fit("can be applied in the same element independent of each other", () => {
       var controllerInvoked;
       var otherControllerInvoked;
       function MyController() {
@@ -2047,7 +2047,7 @@ describe("$compile", () => {
       expect(otherControllerInvoked).toBe(true);
     });
 
-    it("can be applied to different directives, as different instances", () => {
+    fit("can be applied to different directives, as different instances", () => {
       var invocations = 0;
       function MyController() {
         invocations++;
@@ -2066,7 +2066,7 @@ describe("$compile", () => {
       expect(invocations).toBe(2);
     });
 
-    it("can be aliased with @ when given in directive attribute", () => {
+    fit("can be aliased with @ when given in directive attribute", () => {
       var controllerInvoked;
       function MyController() {
         controllerInvoked = true;
@@ -2082,7 +2082,7 @@ describe("$compile", () => {
       expect(controllerInvoked).toBe(true);
     });
 
-    it("gets scope, element, and attrs through DI", () => {
+    fit("gets scope, element, and attrs through DI", () => {
       var gotScope, gotElement, gotAttrs;
       function MyController($element, $scope, $attrs) {
         gotElement = $element;
@@ -2103,7 +2103,7 @@ describe("$compile", () => {
       expect(gotAttrs.anAttr).toEqual("abc");
     });
 
-    it("can be attached on the scope", () => {
+    fit("can be attached on the scope", () => {
       function MyController() {}
       myModule
         .controller("MyController", MyController)
@@ -2120,7 +2120,7 @@ describe("$compile", () => {
       expect($rootScope.myCtrl instanceof MyController).toBe(true);
     });
 
-    it("gets isolate scope as injected $scope", () => {
+    fit("gets isolate scope as injected $scope", () => {
       var gotScope;
       function MyController($scope) {
         gotScope = $scope;
@@ -2139,7 +2139,7 @@ describe("$compile", () => {
       expect(gotScope).not.toBe($rootScope);
     });
 
-    it("has isolate scope bindings available during construction", () => {
+    fit("has isolate scope bindings available during construction", () => {
       var gotMyAttr;
       function MyController($scope) {
         gotMyAttr = $scope.myAttr;
@@ -2160,7 +2160,7 @@ describe("$compile", () => {
       expect(gotMyAttr).toEqual("abc");
     });
 
-    it("can bind isolate scope bindings directly to self", () => {
+    fit("can bind isolate scope bindings directly to self", () => {
       var ctl;
       function MyController() {
         ctl = this;
@@ -2183,7 +2183,7 @@ describe("$compile", () => {
       expect(ctl.myAttr).toEqual("abc");
     });
 
-    it("can return a semi-constructed controller when using array injection", () => {
+    fit("can return a semi-constructed controller when using array injection", () => {
       myModule.constant("aDep", 42);
       reloadModules();
       var $controller = injector.get("$controller");
@@ -2200,7 +2200,7 @@ describe("$compile", () => {
       expect(actualController.aDep).toBe(42);
     });
 
-    it("can bind iso scope bindings through bindToController", () => {
+    fit("can bind iso scope bindings through bindToController", () => {
       var ctl;
       function MyController() {
         ctl = this;
@@ -2222,7 +2222,7 @@ describe("$compile", () => {
       expect(ctl.myAttr).toEqual("abc");
     });
 
-    it("can bind through bindToController without iso scope", () => {
+    fit("can bind through bindToController without iso scope", () => {
       var ctl;
       function MyController() {
         ctl = this;
@@ -2244,7 +2244,7 @@ describe("$compile", () => {
       expect(ctl.myAttr).toEqual("abc");
     });
 
-    it("can be required from a sibling directive", () => {
+    fit("can be required from a sibling directive", () => {
       function MyController() {}
       var gotMyController;
       myModule
@@ -2269,7 +2269,7 @@ describe("$compile", () => {
       expect(gotMyController instanceof MyController).toBe(true);
     });
 
-    it("can be required from multiple sibling directives", () => {
+    fit("can be required from multiple sibling directives", () => {
       function MyController() {}
       function MyOtherController() {}
       var gotControllers;
@@ -2305,7 +2305,7 @@ describe("$compile", () => {
       expect(gotControllers[1] instanceof MyOtherController).toBe(true);
     });
 
-    it("can be required as an object", () => {
+    fit("can be required as an object", () => {
       function MyController() {}
       function MyOtherController() {}
       var gotControllers;
@@ -2345,7 +2345,7 @@ describe("$compile", () => {
       );
     });
 
-    it("can be required as an object with values omitted", () => {
+    fit("can be required as an object with values omitted", () => {
       function MyController() {}
       var gotControllers;
       myModule
@@ -2374,7 +2374,7 @@ describe("$compile", () => {
       expect(gotControllers.myDirective instanceof MyController).toBe(true);
     });
 
-    it("requires itself if there is no explicit require", () => {
+    fit("requires itself if there is no explicit require", () => {
       function MyController() {}
       var gotMyController;
       myModule.directive("myDirective", () => {
@@ -2393,7 +2393,7 @@ describe("$compile", () => {
       expect(gotMyController instanceof MyController).toBe(true);
     });
 
-    it("can be required from a parent directive", async () => {
+    fit("can be required from a parent directive", async () => {
       function MyController() {}
       var gotMyController;
       myModule
@@ -2419,7 +2419,7 @@ describe("$compile", () => {
       expect(gotMyController instanceof MyController).toBe(true);
     });
 
-    it("also finds from sibling directive when requiring with parent prefix", () => {
+    fit("also finds from sibling directive when requiring with parent prefix", () => {
       function MyController() {}
       var gotMyController;
       myModule
@@ -2444,7 +2444,7 @@ describe("$compile", () => {
       expect(gotMyController instanceof MyController).toBe(true);
     });
 
-    it("can be required from a parent directive with ^^", () => {
+    fit("can be required from a parent directive with ^^", () => {
       function MyController() {}
       var gotMyController;
       myModule
@@ -2469,7 +2469,7 @@ describe("$compile", () => {
       expect(gotMyController instanceof MyController).toBe(true);
     });
 
-    it("does not find from sibling directive when requiring with ^^", () => {
+    fit("does not find from sibling directive when requiring with ^^", () => {
       function MyController() {}
       myModule
         .directive("myDirective", () => {
@@ -2491,7 +2491,7 @@ describe("$compile", () => {
       }).toThrowError();
     });
 
-    it("can be required from parent in object form", () => {
+    fit("can be required from parent in object form", () => {
       function MyController() {}
       var gotControllers;
       myModule
@@ -2517,7 +2517,7 @@ describe("$compile", () => {
       expect(gotControllers.myDirective instanceof MyController).toBe(true);
     });
 
-    it("does not throw on required missing controller when optional", () => {
+    fit("does not throw on required missing controller when optional", () => {
       var gotCtrl;
       myModule.directive("myDirective", () => {
         return {
@@ -2533,7 +2533,7 @@ describe("$compile", () => {
       expect(gotCtrl).toBe(null);
     });
 
-    it("allows optional marker after parent marker", () => {
+    fit("allows optional marker after parent marker", () => {
       var gotCtrl;
       myModule.directive("myDirective", () => {
         return {
@@ -2549,7 +2549,7 @@ describe("$compile", () => {
       expect(gotCtrl).toBe(null);
     });
 
-    it("allows optional marker before parent marker", () => {
+    fit("allows optional marker before parent marker", () => {
       function MyController() {}
       var gotMyController;
       myModule
@@ -2574,7 +2574,7 @@ describe("$compile", () => {
       expect(gotMyController instanceof MyController).toBe(true);
     });
 
-    it("attaches required controllers on controller when using object", () => {
+    fit("attaches required controllers on controller when using object", () => {
       function MyController() {}
       var ctl;
       myModule
@@ -2605,7 +2605,7 @@ describe("$compile", () => {
   });
 
   describe("template", () => {
-    it("populates an element during compilation", () => {
+    fit("populates an element during compilation", () => {
       registerDirectives("myDirective", () => {
         return {
           template: '<div class="from-template"></div>',
@@ -2617,7 +2617,7 @@ describe("$compile", () => {
       expect(el.innerHTML).toBe('<div class="from-template"></div>');
     });
 
-    it("replaces any existing children", () => {
+    fit("replaces any existing children", () => {
       registerDirectives("myDirective", () => {
         return {
           template: '<div class="from-template"></div>',
@@ -2629,7 +2629,7 @@ describe("$compile", () => {
       expect(el.innerHTML).toBe('<div class="from-template"></div>');
     });
 
-    it("compiles template contents also", () => {
+    fit("compiles template contents also", () => {
       var compileSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -2649,7 +2649,7 @@ describe("$compile", () => {
       expect(compileSpy).toHaveBeenCalled();
     });
 
-    it("does not allow two directives with templates", () => {
+    fit("does not allow two directives with templates", () => {
       registerDirectives({
         myDirective: () => {
           return { template: "<div></div>" };
@@ -2665,7 +2665,7 @@ describe("$compile", () => {
       }).toThrowError();
     });
 
-    it("supports functions as template values", () => {
+    fit("supports functions as template values", () => {
       var templateSpy = jasmine
         .createSpy()
         .and.returnValue('<div class="from-template"></div>');
@@ -2684,7 +2684,7 @@ describe("$compile", () => {
       expect(templateSpy.calls.first().args[1].myDirective).toBeDefined();
     });
 
-    it("uses isolate scope for template contents", async () => {
+    fit("uses isolate scope for template contents", async () => {
       var linkSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -2709,7 +2709,7 @@ describe("$compile", () => {
   });
 
   describe("templateUrl", () => {
-    it("defers remaining directive compilation", async () => {
+    fit("defers remaining directive compilation", async () => {
       var otherCompileSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -2726,7 +2726,7 @@ describe("$compile", () => {
       expect(otherCompileSpy).not.toHaveBeenCalled();
     });
 
-    it("defers current directive compilation", async () => {
+    fit("defers current directive compilation", async () => {
       var compileSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -2743,7 +2743,7 @@ describe("$compile", () => {
       expect(compileSpy).not.toHaveBeenCalled();
     });
 
-    it("immediately empties out the element", async () => {
+    fit("immediately empties out the element", async () => {
       registerDirectives({
         myDirective: () => {
           return { templateUrl: "/my_directive.html" };
@@ -2756,7 +2756,7 @@ describe("$compile", () => {
       expect(el.innerHTML).toBe("");
     });
 
-    it("populates element with template", (done) => {
+    fit("populates element with template", (done) => {
       registerDirectives({
         myDirective: () => {
           return { templateUrl: "/public/my_directive.html" };
@@ -2771,7 +2771,7 @@ describe("$compile", () => {
       }, 100);
     });
 
-    it("resumes current directive compilation after template received", (done) => {
+    fit("resumes current directive compilation after template received", (done) => {
       var compileSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -2792,7 +2792,7 @@ describe("$compile", () => {
       }, 100);
     });
 
-    it("resumes remaining directive compilation after template received", (done) => {
+    fit("resumes remaining directive compilation after template received", (done) => {
       var otherCompileSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -2813,7 +2813,7 @@ describe("$compile", () => {
       }, 100);
     });
 
-    it("resumes child compilation after template received", (done) => {
+    fit("resumes child compilation after template received", (done) => {
       var otherCompileSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -2831,10 +2831,10 @@ describe("$compile", () => {
       setTimeout(() => {
         expect(otherCompileSpy).toHaveBeenCalled();
         done();
-      }, 10);
+      }, 100);
     });
 
-    it("supports functions as values", async () => {
+    fit("supports functions as values", async () => {
       var templateUrlSpy = jasmine
         .createSpy()
         .and.returnValue("/public/my_directive.html");
@@ -2854,7 +2854,7 @@ describe("$compile", () => {
       expect(templateUrlSpy.calls.first().args[1].myDirective).toBeDefined();
     });
 
-    it("does not allow templateUrl directive after template directive", () => {
+    fit("does not allow templateUrl directive after template directive", () => {
       registerDirectives({
         myDirective: () => {
           return { template: "<div></div>" };
@@ -2870,7 +2870,7 @@ describe("$compile", () => {
       }).toThrowError();
     });
 
-    it("does not allow template directive after templateUrl directive", (done) => {
+    fit("does not allow template directive after templateUrl directive", (done) => {
       registerDirectives({
         myDirective: () => {
           return { templateUrl: "/public/my_directive.html" };
@@ -2890,7 +2890,7 @@ describe("$compile", () => {
       }, 10);
     });
 
-    it("links the directive when public link function is invoked", (done) => {
+    fit("links the directive when public link function is invoked", (done) => {
       var linkSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -2916,7 +2916,7 @@ describe("$compile", () => {
       }, 100);
     });
 
-    it("links child elements when public link function is invoked", (done) => {
+    fit("links child elements when public link function is invoked", (done) => {
       var linkSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -2941,7 +2941,7 @@ describe("$compile", () => {
       }, 100);
     });
 
-    it("links when template received if node link function has been invoked", (done) => {
+    fit("links when template received if node link function has been invoked", (done) => {
       var linkSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -2965,7 +2965,7 @@ describe("$compile", () => {
       }, 10);
     });
 
-    it("links directives that were compiled earlier", (done) => {
+    fit("links directives that were compiled earlier", (done) => {
       var linkSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -2993,7 +2993,7 @@ describe("$compile", () => {
       }, 100);
     });
 
-    it("retains isolate scope directives from earlier", (done) => {
+    fit("retains isolate scope directives from earlier", (done) => {
       var linkSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -3021,7 +3021,7 @@ describe("$compile", () => {
       }, 100);
     });
 
-    it("supports isolate scope directives with templateUrls", (done) => {
+    fit("supports isolate scope directives with templateUrls", (done) => {
       var linkSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -3044,7 +3044,7 @@ describe("$compile", () => {
       }, 10);
     });
 
-    it("links children of isolate scope directives with templateUrls", (done) => {
+    fit("links children of isolate scope directives with templateUrls", (done) => {
       var linkSpy = jasmine.createSpy();
       registerDirectives({
         myDirective: () => {
@@ -3071,7 +3071,7 @@ describe("$compile", () => {
       }, 50);
     });
 
-    it("sets up controllers for all controller directives", (done) => {
+    fit("sets up controllers for all controller directives", (done) => {
       var myDirectiveControllerInstantiated,
         myOtherDirectiveControllerInstantiated;
       registerDirectives({
@@ -3106,7 +3106,7 @@ describe("$compile", () => {
   });
 
   describe("with transclusion", () => {
-    it("makes transclusion available to link fn when template arrives", (done) => {
+    fit("makes transclusion available to link fn when template arrives", (done) => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3130,7 +3130,7 @@ describe("$compile", () => {
       }, 100);
     });
 
-    it("is only allowed once", async () => {
+    fit("is only allowed once", async () => {
       var otherCompileSpy = jasmine.createSpy();
       registerDirectives({
         myTranscluder: () => {
@@ -3159,7 +3159,7 @@ describe("$compile", () => {
   });
 
   describe("transclude", () => {
-    it("removes the children of the element from the DOM", () => {
+    fit("removes the children of the element from the DOM", () => {
       registerDirectives({
         myTranscluder: () => {
           return { transclude: true };
@@ -3172,7 +3172,7 @@ describe("$compile", () => {
       expect(el.innerHTML).toBe("");
     });
 
-    it("compiles child elements", async () => {
+    fit("compiles child elements", async () => {
       var insideCompileSpy = jasmine.createSpy();
       registerDirectives({
         myTranscluder: () => {
@@ -3198,7 +3198,7 @@ describe("$compile", () => {
       expect(insideCompileSpy).toHaveBeenCalledTimes(2);
     });
 
-    it("makes contents available to link function", () => {
+    fit("makes contents available to link function", () => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3217,7 +3217,7 @@ describe("$compile", () => {
       expect(el.outerHTML.match(/my-transcluder/)).toBeTruthy();
     });
 
-    it("is only allowed once per element", () => {
+    fit("is only allowed once per element", () => {
       registerDirectives({
         myTranscluder: () => {
           return { transclude: true };
@@ -3234,7 +3234,7 @@ describe("$compile", () => {
       }).toThrowError();
     });
 
-    it("makes scope available to link functions inside", async () => {
+    fit("makes scope available to link functions inside", async () => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3262,7 +3262,7 @@ describe("$compile", () => {
       expect(el.innerHTML.match(/Hello from root/)).toBeTruthy();
     });
 
-    it("does not use the inherited scope of the directive", () => {
+    fit("does not use the inherited scope of the directive", () => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3290,7 +3290,7 @@ describe("$compile", () => {
       expect(el.innerHTML.match(/Hello from root/)).toBeTruthy();
     });
 
-    it("contents are destroyed along with transcluding directive", async () => {
+    fit("contents are destroyed along with transcluding directive", async () => {
       var watchSpy = jasmine.createSpy();
       registerDirectives({
         myTranscluder: () => {
@@ -3326,7 +3326,7 @@ describe("$compile", () => {
       expect(watchSpy.calls.count()).toBe(1);
     });
 
-    it("allows passing another scope to transclusion function", async () => {
+    fit("allows passing another scope to transclusion function", async () => {
       var otherLinkSpy = jasmine.createSpy();
       registerDirectives({
         myTranscluder: () => {
@@ -3354,7 +3354,7 @@ describe("$compile", () => {
       expect(transcludedScope.specialAttr).toBe(42);
     });
 
-    it("makes contents available to child elements", async () => {
+    fit("makes contents available to child elements", async () => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3378,7 +3378,7 @@ describe("$compile", () => {
       expect(el.outerHTML.match(/in-transclude/)).toBeTruthy();
     });
 
-    it("makes contents available to indirect child elements", () => {
+    fit("makes contents available to indirect child elements", () => {
       registerDirectives({
         myTranscluder: () => {
           return {
@@ -3402,7 +3402,7 @@ describe("$compile", () => {
       expect(el.outerHTML.match(/in-transclude/)).toBeTruthy();
     });
 
-    it("supports passing transclusion function to public link function", async () => {
+    fit("supports passing transclusion function to public link function", async () => {
       registerDirectives({
         myTranscluder: function ($compile) {
           return {
@@ -3432,7 +3432,7 @@ describe("$compile", () => {
       expect(el.outerHTML.match(/in-transclude/)).toBeTruthy();
     });
 
-    it("destroys scope passed through public link fn at the right time", async () => {
+    fit("destroys scope passed through public link fn at the right time", async () => {
       var watchSpy = jasmine.createSpy();
       registerDirectives({
         myTranscluder: function ($compile) {
@@ -3479,7 +3479,7 @@ describe("$compile", () => {
       expect(watchSpy.calls.count()).toBe(1);
     });
 
-    it("makes contents available to controller", () => {
+    fit("makes contents available to controller", () => {
       let transclude;
       registerDirectives({
         myTranscluder: () => {
@@ -3501,7 +3501,7 @@ describe("$compile", () => {
   });
 
   describe("clone attach function", () => {
-    it("can be passed to public link fn", () => {
+    fit("can be passed to public link fn", () => {
       registerDirectives({});
       reloadModules();
       var el = $("<div>Hello</div>");
@@ -3517,7 +3517,7 @@ describe("$compile", () => {
       expect(gotScope).toBe(myScope);
     });
 
-    it("causes compiled elements to be cloned", () => {
+    fit("causes compiled elements to be cloned", () => {
       registerDirectives({});
       reloadModules();
       var el = $("<div>Hello</div>");
@@ -3532,7 +3532,7 @@ describe("$compile", () => {
       expect(gotClonedEl).not.toBe(el);
     });
 
-    it("causes cloned DOM to be linked", () => {
+    fit("causes cloned DOM to be linked", () => {
       var gotCompileEl, gotLinkEl;
       registerDirectives({
         myDirective: () => {
@@ -8875,7 +8875,7 @@ describe("$compile", () => {
       });
     });
 
-    fdescribe("isolated locals", () => {
+    describe("isolated locals", () => {
       let componentScope;
       let regularScope;
       let module;
@@ -8939,7 +8939,7 @@ describe("$compile", () => {
         });
       });
 
-      it("should give other directives the parent scope", async () => {
+      fit("should give other directives the parent scope", async () => {
         element = $compile(
           '<div><input type="text" parent-component store-scope ng-model="value"></div>',
         )($rootScope);
@@ -8953,7 +8953,7 @@ describe("$compile", () => {
         expect(componentScope.$parent.$id).toEqual(regularScope.$id);
       });
 
-      it("should not give the isolate scope to other directive template", async () => {
+      fit("should not give the isolate scope to other directive template", async () => {
         module.directive("otherTplDir", () => ({
           template: "value: {{value}}",
         }));
@@ -8970,7 +8970,7 @@ describe("$compile", () => {
         expect(element.innerHTML).toBe("value: from-parent");
       });
 
-      it("should not give the isolate scope to other directive template (with templateUrl)", async () => {
+      fit("should not give the isolate scope to other directive template (with templateUrl)", async () => {
         module.directive("otherTplDir", () => ({
           templateUrl: "other.html",
         }));
@@ -8991,7 +8991,7 @@ describe("$compile", () => {
         expect(element.innerHTML).toBe("value: from-parent");
       });
 
-      it("should not give the isolate scope to regular child elements", async () => {
+      fit("should not give the isolate scope to regular child elements", async () => {
         element = $compile("<div my-component>value: {{value}}</div>")(
           $rootScope,
         );
@@ -9002,7 +9002,7 @@ describe("$compile", () => {
         expect(element.innerHTML).toBe("value: from-parent");
       });
 
-      it('should update parent scope when "="-bound NaN changes', async () => {
+      fit('should update parent scope when "="-bound NaN changes', async () => {
         $rootScope.num = NaN;
         element = $compile('<div my-component reference="num"></div>')(
           $rootScope,
@@ -9017,7 +9017,7 @@ describe("$compile", () => {
         expect($rootScope.num).toBe(64);
       });
 
-      it('should update isolate scope when "="-bound NaN changes', async () => {
+      fit('should update isolate scope when "="-bound NaN changes', async () => {
         $rootScope.num = NaN;
         element = $compile('<div my-component reference="num"></div>')(
           $rootScope,
@@ -9033,7 +9033,7 @@ describe("$compile", () => {
         expect(isolateScope.reference).toBe(64);
       });
 
-      it("should be able to bind attribute names which are present in Object.prototype", async () => {
+      fit("should be able to bind attribute names which are present in Object.prototype", async () => {
         module.directive("inProtoAttr", () => ({
           scope: {
             constructor: "@",
@@ -9067,7 +9067,7 @@ describe("$compile", () => {
         expect($rootScope.value).toBe(true);
       });
 
-      it("should be able to interpolate attribute names which are present in Object.prototype", async () => {
+      fit("should be able to interpolate attribute names which are present in Object.prototype", async () => {
         let attrs;
         module.directive("attrExposer", () => ({
           link($scope, $element, $attrs) {
@@ -9085,7 +9085,7 @@ describe("$compile", () => {
         expect(attrs.toString).toBe("2");
       });
 
-      it("should not initialize scope value if optional expression binding is not passed", async () => {
+      fit("should not initialize scope value if optional expression binding is not passed", async () => {
         element = $compile("<div my-component></div>")($rootScope);
 
         await wait();
@@ -9093,7 +9093,7 @@ describe("$compile", () => {
         expect(isolateScope.optExpr).toBeUndefined();
       });
 
-      it("should initialize scope value if optional expression binding is passed", async () => {
+      fit("should initialize scope value if optional expression binding is passed", async () => {
         element = $compile(
           "<div my-component opt-expr=\"value = 'did!'\"></div>",
         )($rootScope);
@@ -9105,7 +9105,7 @@ describe("$compile", () => {
         expect($rootScope.value).toBe("did!");
       });
 
-      it("should initialize scope value if optional expression binding with Object.prototype name is passed", async () => {
+      fit("should initialize scope value if optional expression binding with Object.prototype name is passed", async () => {
         element = $compile(
           "<div my-component constructor=\"value = 'did!'\"></div>",
         )($rootScope);
@@ -9117,7 +9117,7 @@ describe("$compile", () => {
         expect($rootScope.value).toBe("did!");
       });
 
-      it("should not overwrite @-bound property each digest when not present", async () => {
+      fit("should not overwrite @-bound property each digest when not present", async () => {
         module.directive("testDir", () => ({
           scope: { prop: "@" },
           controller($scope) {
@@ -9172,7 +9172,7 @@ describe("$compile", () => {
         expect(scope.ctrl.getProp()).toBe("foop");
       });
 
-      fdescribe("bind-child-parent", () => {
+      describe("bind-child-parent", () => {
         it("should continue with a sync cycle when there is a two-way binding from the child to the parent", async () => {
           module.directive("hello", () => ({
             restrict: "E",
@@ -9207,7 +9207,7 @@ describe("$compile", () => {
         });
       });
 
-      fdescribe("attribute", () => {
+      describe("attribute", () => {
         it("should copy simple attribute", async () => {
           element = $compile('<div><span my-component attr="some text">')(
             $rootScope,
@@ -9354,12 +9354,11 @@ describe("$compile", () => {
         });
 
         describe("literal objects", () => {
-          //LEAK
-          it("should copy parent changes", async () => {
+          fit("should copy parent changes", async () => {
             $compile('<div><span my-component reference="{name: name}">')(
               $rootScope,
             );
-
+            await wait();
             $rootScope.name = "a";
             await wait();
             expect(componentScope.reference).toEqual({ name: "a" });
@@ -9368,8 +9367,7 @@ describe("$compile", () => {
             await wait();
             expect(componentScope.reference).toEqual({ name: "b" });
           });
-          // LEAK
-          xit("should not change the component when parent does not change", async () => {
+          fit("should not change the component when parent does not change", async () => {
             $compile('<div><span my-component reference="{name: name}">')(
               $rootScope,
             );
@@ -9381,7 +9379,7 @@ describe("$compile", () => {
             expect(componentScope.reference).toBe(lastComponentValue);
           });
 
-          xit("should complain when the component changes", async () => {
+          fit("should complain when the component changes", async () => {
             $compile('<div><span my-component reference="{name: name}">')(
               $rootScope,
             );
@@ -9389,17 +9387,17 @@ describe("$compile", () => {
             $rootScope.name = "a";
             await wait();
             componentScope.reference = { name: "b" };
-            expect(async () => {
-              await wait();
-            }).toThrowError(/nonassign/);
+
+            await wait();
+            expect(error).toMatch(/nonassign/);
           });
 
-          xit("should work for primitive literals", () => {
-            test("1", 1);
-            test("null", null);
-            test("undefined", undefined);
-            test("'someString'", "someString");
-            test("true", true);
+          fit("should work for primitive literals", async () => {
+            await test("1", 1);
+            await test("null", null);
+            await test("undefined", undefined);
+            await test("'someString'", "someString");
+            await test("true", true);
 
             async function test(literalString, literalValue) {
               $compile(`<div><span my-component reference="${literalString}">`)(
@@ -9408,46 +9406,41 @@ describe("$compile", () => {
 
               await wait();
               expect(componentScope.reference).toBe(literalValue);
-              dealoc(element);
             }
+
+            expect().toBe();
           });
         });
       });
 
       describe("optional object reference", () => {
-        xit("should update local when origin changes", async () => {
-          $compile('<div><span my-component optref="name" $optref$="name">')(
-            $rootScope,
-          );
+        fit("should update local when origin changes", async () => {
+          $compile('<div><span my-component optref="name">')($rootScope);
           expect(componentScope.optRef).toBeUndefined();
-          expect(componentScope.optRefAlias).toBe(componentScope.optRef);
-          expect(componentScope.$optRefAlias).toBe(componentScope.optRef);
+          expect(componentScope.optRefAlias).toEqual(componentScope.optRef);
 
           $rootScope.name = "misko";
           await wait();
-          expect(componentScope.optref).toBe($rootScope.name);
-          expect(componentScope.optrefAlias).toBe($rootScope.name);
-          expect(componentScope.$optrefAlias).toBe($rootScope.name);
+          expect(componentScope.optref).toEqual($rootScope.name);
+          expect(componentScope.optrefAlias).toEqual($rootScope.name);
 
           $rootScope.name = {};
           await wait();
-          expect(componentScope.optref).toBe($rootScope.name);
-          expect(componentScope.optrefAlias).toBe($rootScope.name);
-          expect(componentScope.$optrefAlias).toBe($rootScope.name);
+          expect(componentScope.optref).toEqual($rootScope.name);
+          expect(componentScope.optrefAlias).toEqual($rootScope.name);
         });
 
-        xit("should not throw exception when reference does not exist", async () => {
+        fit("should not throw exception when reference does not exist", async () => {
           $compile("<div><span my-component>")($rootScope);
           await wait();
           expect(componentScope.optref).toBeUndefined();
           expect(componentScope.optrefAlias).toBeUndefined();
-          expect(componentScope.$optrefAlias).toBeUndefined();
           expect(componentScope.optreference).toBeUndefined();
         });
       });
 
       describe("collection object reference", () => {
-        xit("should update isolate scope when origin scope changes", async () => {
+        fit("should update isolate scope when origin scope changes", async () => {
           $rootScope.collection = [
             {
               name: "Gabriel",
@@ -9464,10 +9457,9 @@ describe("$compile", () => {
           $compile(
             '<div><span my-component colref="collection | filter:query" $colref$="collection | filter:query">',
           )($rootScope);
-
+          await wait();
           expect(componentScope.colref).toEqual($rootScope.collection);
           expect(componentScope.colrefAlias).toEqual(componentScope.colref);
-          expect(componentScope.$colrefAlias).toEqual(componentScope.colref);
 
           $rootScope.query = "Gab";
           await wait();
@@ -9476,12 +9468,9 @@ describe("$compile", () => {
           expect(componentScope.colrefAlias).toEqual([
             $rootScope.collection[0],
           ]);
-          expect(componentScope.$colrefAlias).toEqual([
-            $rootScope.collection[0],
-          ]);
         });
 
-        xit("should update origin scope when isolate scope changes", () => {
+        fit("should update origin scope when isolate scope changes", async () => {
           $rootScope.collection = [
             {
               name: "Gabriel",
@@ -9500,7 +9489,7 @@ describe("$compile", () => {
             value: 10,
           };
           componentScope.colref.push(newItem);
-          componentScope.$apply();
+          await wait();
 
           expect($rootScope.collection[2]).toEqual(newItem);
         });

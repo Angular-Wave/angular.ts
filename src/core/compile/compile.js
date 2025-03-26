@@ -2886,7 +2886,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   parentGet.assign ||
                   function () {
                     // reset the change, or we will throw this exception on every $digest
-                    lastValue = destination[scopeName] = parentGet(scope);
+                    lastValue = destination.$target[scopeName] =
+                      parentGet(scope);
                     throw $compileMinErr(
                       "nonassign",
                       "Expression '{0}' in attribute '{1}' used with directive '{2}' is non-assignable!",
@@ -2922,7 +2923,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                     scope.$watch(expr, (val) => {
                       var res = $parse(attrs[attrName], parentValueWatch);
                       if (val) {
-                        scope[attrName] = val;
+                        if (parentGet.literal) {
+                          scope.$target[attrName] = val;
+                        } else {
+                          scope[attrName] = val;
+                        }
                         res(scope);
                       }
                     });
@@ -2933,7 +2938,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                       return;
                     }
                     if (
-                      complexExpression ||
+                      (complexExpression && !parentGet.literal) ||
                       (isUndefined(attrs[attrName]) && isDefined(val))
                     ) {
                       destination.$target[attrName] = lastValue;
@@ -2946,12 +2951,18 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                       );
                     } else {
                       // manually set the handler to avoid watch cycles
-                      scope.$target[attrs[attrName]] = val;
-                      scope.$handler.watchers
-                        .get(attrs[attrName])
-                        ?.forEach((watchFn) => {
-                          watchFn.listenerFn(val);
+                      if (isObject(val)) {
+                        Object.entries(val).forEach(([key, value]) => {
+                          scope.$target[key] = value;
                         });
+                      } else {
+                        scope.$target[attrs[attrName]] = val;
+                        scope.$handler.watchers
+                          .get(attrs[attrName])
+                          ?.forEach((watchFn) => {
+                            watchFn.listenerFn(val);
+                          });
+                      }
                     }
                   });
                 }

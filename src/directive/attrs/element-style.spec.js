@@ -1,6 +1,7 @@
 import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
-import { dealoc, JQLite } from "../../shared/dom.js";
+import { createElementFromHTML, dealoc } from "../../shared/dom.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("style", () => {
   let $rootScope;
@@ -20,66 +21,65 @@ describe("style", () => {
     dealoc(element);
   });
 
-  it("should compile style element without binding", () => {
-    element = (
+  it("should compile style element without binding", async () => {
+    element = createElementFromHTML(
       '<style type="text/css">.header{font-size:1.5em; h3{font-size:1.5em}}</style>',
     );
     $compile(element)($rootScope);
+    await wait();
     expect(element.innerHTML).toBe(
       ".header{font-size:1.5em; h3{font-size:1.5em}}",
     );
   });
 
-  it("should compile style element with one simple bind", () => {
-    element = (
+  it("should compile style element with one simple bind", async () => {
+    element = createElementFromHTML(
       '<style type="text/css">.some-container{ width: {{elementWidth}}px; }</style>',
     );
     $compile(element)($rootScope);
+    await wait();
     expect(element.innerHTML).toBe(".some-container{ width: px; }");
 
-    $rootScope.$apply(() => {
-      $rootScope.elementWidth = 200;
-    });
-
+    $rootScope.elementWidth = 200;
+    await wait();
     expect(element.innerHTML).toBe(".some-container{ width: 200px; }");
   });
 
-  it("should compile style element with one bind", () => {
-    element = (
+  it("should compile style element with one bind", async () => {
+    element = createElementFromHTML(
       '<style type="text/css">.header{ h3 { font-size: {{fontSize}}em }}</style>',
     );
     $compile(element)($rootScope);
+    await wait();
     expect(element.innerHTML).toBe(".header{ h3 { font-size: em }}");
 
-    $rootScope.$apply(() => {
-      $rootScope.fontSize = 1.5;
-    });
-
+    $rootScope.fontSize = 1.5;
+    await wait();
     expect(element.innerHTML).toBe(".header{ h3 { font-size: 1.5em }}");
   });
 
-  it("should compile style element with two binds", () => {
-    element = (
+  it("should compile style element with two binds", async () => {
+    element = createElementFromHTML(
       '<style type="text/css">.header{ h3 { font-size: {{fontSize}}{{unit}} }}</style>',
     );
     $compile(element)($rootScope);
+    await wait();
     expect(element.innerHTML).toBe(".header{ h3 { font-size:  }}");
 
-    $rootScope.$apply(() => {
-      $rootScope.fontSize = 1.5;
-      $rootScope.unit = "em";
-    });
+    $rootScope.fontSize = 1.5;
+    $rootScope.unit = "em";
+    await wait();
 
     expect(element.innerHTML).toBe(".header{ h3 { font-size: 1.5em }}");
   });
 
-  it("should compile content of element with style attr", () => {
-    element = ('<div style="some">{{bind}}</div>');
+  it("should compile content of element with style attr", async () => {
+    element = createElementFromHTML('<div style="some">{{bind}}</div>');
+    await wait();
     $compile(element)($rootScope);
-    $rootScope.$apply(() => {
-      $rootScope.bind = "value";
-    });
 
+    $rootScope.bind = "value";
+    await wait();
     expect(element.textContent).toBe("value");
   });
 });

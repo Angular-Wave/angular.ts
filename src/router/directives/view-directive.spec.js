@@ -6,7 +6,7 @@
 //   }
 // }
 
-import { dealoc, JQLite } from "../../shared/dom.js";
+import { createElementFromHTML, dealoc } from "../../shared/dom.js";
 import { Angular } from "../../loader.js";
 import { wait } from "../../shared/test-utils";
 
@@ -170,7 +170,7 @@ describe("ngView", () => {
         $compile = _$compile_;
         $state = _$state_;
         $timeout = _$timeout_;
-        elem = ("<div>");
+        elem = "<div>";
         $ngViewScroll = _$ngViewScroll_;
       },
     );
@@ -196,7 +196,9 @@ describe("ngView", () => {
       $state.transitionTo(cState);
       await wait(100);
 
-      expect(elem.find("ng-view").textContent).toBe(cState.views.cview.template);
+      expect(elem.find("ng-view").textContent).toBe(
+        cState.views.cview.template,
+      );
     });
 
     it("ng-view should be updated after transition to another state", async () => {
@@ -241,7 +243,9 @@ describe("ngView", () => {
       $state.transitionTo(fState);
       await wait(100);
 
-      expect(elem.find("ng-view").textContent).toBe(fState.views.eview.template);
+      expect(elem.find("ng-view").textContent).toBe(
+        fState.views.eview.template,
+      );
     });
   });
 
@@ -265,7 +269,9 @@ describe("ngView", () => {
       $state.go(hState);
       await wait(100);
 
-      expect(elem.find("ng-view").textContent).toBe(hState.views.inner.template);
+      expect(elem.find("ng-view").textContent).toBe(
+        hState.views.inner.template,
+      );
 
       // going to the parent state which makes the inner view empty
       $state.go(gState);
@@ -350,7 +356,7 @@ describe("ngView", () => {
         ngViews = elem.find("ng-view");
 
       while (index++ < ngViews.length) {
-        const ngView = (ngViews[index]);
+        const ngView = ngViews[index];
         if (ngView.textContent === bState.template) target = ngView;
       }
 
@@ -851,7 +857,7 @@ describe("UiView", () => {
         $state = _$state_;
         $q = _$q_;
         $timeout = _$timeout_;
-        elem = ("<div>");
+        elem = "<div>";
         $ngViewScroll = _$ngViewScroll_;
       },
     );
@@ -935,7 +941,7 @@ describe("ngView transclusion", () => {
         scope = $rootScope.$new();
         $compile = _$compile_;
         $state = _$state_;
-        elem = ("<div>");
+        elem = "<div>";
       },
     );
   });
@@ -1013,13 +1019,13 @@ describe("ngView controllers or onEnter handlers", () => {
         scope = $rootScope.$new();
         $compile = _$compile_;
         $state = _$state_;
-        elem = ("<div>");
+        elem = "<div>";
       },
     );
   });
 
   it("should not go into an infinite loop when controller uses $state.go", async () => {
-    el = ("<div><ng-view></ng-view></div>");
+    el = "<div><ng-view></ng-view></div>";
     template = $compile(el)($rootScope);
     await $state.transitionTo("aside");
     await wait(100);
@@ -1165,7 +1171,7 @@ describe("angular 1.5+ style .component()", () => {
         $rootScope = _$rootScope_;
         scope = $rootScope.$new();
         log = "";
-        el = ("<div><ng-view></ng-view></div>");
+        el = "<div><ng-view></ng-view></div>";
         svcs.$compile(el)(scope);
         $templateCache = _$templateCache_;
       },
@@ -1636,12 +1642,11 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("parent.child");
       await wait(100);
       expect($rootScope.log).toEqual([]);
-      expect(
-        el
-          .textContent
-          .split(/\s+/)
-          .filter((x) => x),
-      ).toEqual(["parentCmp", "childCmp", "Button"]);
+      expect(el.textContent.split(/\s+/).filter((x) => x)).toEqual([
+        "parentCmp",
+        "childCmp",
+        "Button",
+      ]);
 
       // - Click button
       // - ng-click handler calls $ctrl.onEvent({ foo: 123, bar: 456 })
@@ -1722,7 +1727,7 @@ describe("angular 1.5+ style .component()", () => {
         },
       };
 
-      el = (
+      el = createElementFromHTML(
         '<div><div ng-view="header"></div><div ng-view="content"</div>',
       );
       svcs.$compile(el)(scope);

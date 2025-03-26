@@ -1,4 +1,4 @@
-import { dealoc, JQLite } from "../../shared/dom.js";
+import { createElementFromHTML, dealoc } from "../../shared/dom.js";
 import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
 import { wait } from "../../shared/test-utils";
@@ -29,7 +29,7 @@ describe("ngInit", () => {
   });
 
   it("should be evaluated before ngInclude", (done) => {
-    element = (
+    element = createElementFromHTML(
       '<div><div ng-include="template" ' +
         "ng-init=\"template='template2.tpl'\"></div></div>",
     );

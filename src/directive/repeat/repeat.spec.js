@@ -1,5 +1,5 @@
 import { Angular } from "../../loader.js";
-import { dealoc, JQLite } from "../../shared/dom.js";
+import { createElementFromHTML, dealoc } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("ngRepeat", () => {
@@ -350,14 +350,14 @@ describe("ngRepeat", () => {
     });
 
     it("should error on wrong parsing of ngRepeat", async () => {
-      element = ('<ul><li ng-repeat="i dont parse"></li></ul>');
+      element = '<ul><li ng-repeat="i dont parse"></li></ul>';
       $compile(element)(scope);
       await wait();
       expect(logs.shift().message).toMatch(/i dont parse/);
     });
 
     it("should throw error when left-hand-side of ngRepeat can't be parsed", async () => {
-      element = ('<ul><li ng-repeat="i dont parse in foo"></li></ul>');
+      element = '<ul><li ng-repeat="i dont parse in foo"></li></ul>';
       $compile(element)(scope);
       await wait();
       expect(logs.shift().message).toMatch(/i dont parse/);
@@ -633,7 +633,7 @@ describe("ngRepeat", () => {
         replace: true,
         template: '<div ng-repeat="i in items">{{i}}|</div>',
       }));
-      element = ("<div><span rr>{{i}}|</span></div>");
+      element = "<div><span rr>{{i}}|</span></div>";
       $compile(element)(scope);
       await wait();
       expect(element.textContent).toBe("");
@@ -659,7 +659,7 @@ describe("ngRepeat", () => {
 
       $templateCache.set("rr.html", '<div ng-repeat="i in items">{{i}}|</div>');
 
-      element = ("<div><span rr>{{i}}|</span></div>");
+      element = "<div><span rr>{{i}}|</span></div>";
       $compile(element)(scope);
       await wait();
       expect(element.textContent).toBe("");
@@ -680,7 +680,7 @@ describe("ngRepeat", () => {
         replace: true,
         template: '<span ng-repeat="i in items">{{log(i)}}</span>',
       }));
-      element = ("<span replace-me-with-repeater></span>");
+      element = "<span replace-me-with-repeater></span>";
       $compile(element)(scope);
       await wait();
       expect(element.textContent).toBe("");
@@ -706,7 +706,7 @@ describe("ngRepeat", () => {
         "replace-me-with-repeater.html",
         '<div ng-repeat="i in items">{{log(i)}}</div>',
       );
-      element = (
+      element = createElementFromHTML(
         "<span>-</span><span replace-me-with-repeater></span><span>-</span>",
       );
       $compile(element)(scope);
@@ -767,7 +767,9 @@ describe("ngRepeat", () => {
       $compileProvider.directive("test", () => ({
         templateUrl: "/public/test.html",
       }));
-      element = ('<div><div ng-repeat="i in items" test></div></div>');
+      element = createElementFromHTML(
+        '<div><div ng-repeat="i in items" test></div></div>',
+      );
       $compile(element)(scope);
       scope.items = [1];
       await wait();
@@ -918,7 +920,7 @@ describe("ngRepeat", () => {
     it("should allow mixing ngRepeat with ngInclude", (done) => {
       window.angular = new Angular();
 
-      element = (
+      element = createElementFromHTML(
         '<div><div ng-repeat="i in [1,2]" ng-include="\'/public/test.html\'"></div></div>',
       );
       const injector = window.angular.bootstrap(element);
