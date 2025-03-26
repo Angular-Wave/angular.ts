@@ -58,7 +58,7 @@ export function AnimateCssDriverProvider($$animationProvider) {
         outAnchor[0].classList.add(NG_ANIMATE_SHIM_CLASS_NAME);
         inAnchor[0].classList.add(NG_ANIMATE_SHIM_CLASS_NAME);
 
-        clone[0].classList.add(NG_ANIMATE_ANCHOR_CLASS_NAME);
+        clone.classList.add(NG_ANIMATE_ANCHOR_CLASS_NAME);
 
         rootBodyElement.append(clone);
 

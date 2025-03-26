@@ -853,7 +853,7 @@ describe("ngModelOptions", () => {
           }).not.toThrow();
         });
 
-        it("should invoke a model in the correct context if getterSetter is true", () => {
+        it("should invoke a model in the correct context if getterSetter is true", async () => {
           inputElm = $compile(
             '<input type="text" ng-model="someService.getterSetter" ' +
               'ng-model-options="{ getterSetter: true }" />',
@@ -979,18 +979,14 @@ describe("ngModelOptions", () => {
       beforeEach(() => {
         angular = new Angular();
         window.angular = new Angular();
-        module = window.angular.module("myModule", []).directive(
-          "foo",
-          () => ({
-            replace: true,
-            template:
-              '<input type="text" ng-model-options="{debounce: 1000}" />',
-          }),
-        );
+        module = window.angular.module("myModule", []).directive("foo", () => ({
+          replace: true,
+          template: '<input type="text" ng-model-options="{debounce: 1000}" />',
+        }));
       });
 
       it("should get initialized in time for `ngModel` on the original element", () => {
-        inputElm = ('<foo ng-model="value"></foo>');
+        inputElm = '<foo ng-model="value"></foo>';
         const injector = angular.bootstrap(inputElm, ["myModule"]);
         $rootScope = injector.get("$rootScope");
         const ngModelCtrl = inputElm.controller("ngModel");

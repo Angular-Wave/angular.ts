@@ -260,9 +260,9 @@ export let ngView = [
              */
             newScope.$emit("$viewContentLoading", name);
             const cloned = $transclude(newScope, function (clone) {
-              setCacheData(clone[0], "$ngViewAnim", $ngViewAnim);
-              setCacheData(clone[0], "$ngView", $ngViewData);
-              renderer.enter(clone[0], $element, function () {
+              setCacheData(clone, "$ngViewAnim", $ngViewAnim);
+              setCacheData(clone, "$ngView", $ngViewData);
+              renderer.enter(clone, $element, function () {
                 animEnter.resolve();
                 if (currentScope)
                   currentScope.$emit("$viewContentAnimationEnded");
