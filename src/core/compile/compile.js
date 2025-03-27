@@ -2598,11 +2598,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           priority: 100,
           compile: function ngPropCompileFn(_, attr) {
             const ngPropGetter = $parse(attr[attrName]);
-            const ngPropWatch = $parse(attr[attrName], (val) =>
-              // Unwrap the value to compare the actual inner safe value, not the wrapper object.
-              $sce.valueOf(val),
-            );
-
             return {
               pre: function ngPropPreLinkFn(scope, $element) {
                 function applyPropValue() {
@@ -2611,6 +2606,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 }
                 applyPropValue();
                 scope.$watch(propName, applyPropValue);
+                scope.$watch(attr[attrName], (val) => {
+                  $sce.valueOf(val);
+                  applyPropValue();
+                });
               },
             };
           },
@@ -2981,7 +2980,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
                 destination[scopeName] = parentGet(scope);
                 initialChanges[scopeName] = new SimpleChange(
-                  destination[scopeName],
+                  destination.$target[scopeName],
                   firstChange,
                 );
                 scope.$target.attrs = attrs;
@@ -2990,7 +2989,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   removeWatch = scope.$watch(
                     attrs[attrName],
                     (val) => {
-                      destination[scopeName] = val;
+                      destination.$target[scopeName] = val;
                       recordChanges(scopeName, val, firstChange);
                       if (firstChange) {
                         firstChange = false;

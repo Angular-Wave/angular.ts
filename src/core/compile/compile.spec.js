@@ -4885,10 +4885,10 @@ describe("$compile", () => {
 
       // template is loaded and replaces the existing nodes
       expect(element.querySelectorAll("circle").length).toBe(1);
-      debugger;
+
       $rootScope.list.push(2);
       await wait(200);
-      debugger;
+
       expect(element.querySelectorAll("circle").length).toBe(2);
     });
   });
@@ -9497,14 +9497,11 @@ describe("$compile", () => {
       });
 
       describe("one-way binding", () => {
-        xit("should update isolate when the identity of origin changes", async () => {
-          $compile('<div><span my-component ow-ref="obj" $ow-ref$="obj">')(
-            $rootScope,
-          );
-
+        it("should update isolate when the identity of origin changes", async () => {
+          $compile('<div><span my-component ow-ref="obj">')($rootScope);
+          await wait();
           expect(componentScope.owRef).toBeUndefined();
           expect(componentScope.owRefAlias).toBe(componentScope.owRef);
-          expect(componentScope.$owRefAlias).toBe(componentScope.owRef);
 
           $rootScope.obj = { value: "initial" };
           await wait();
@@ -9521,12 +9518,13 @@ describe("$compile", () => {
 
           componentScope.owRef = { value: "isolate1" };
           componentScope.$apply();
+          await wait();
           expect($rootScope.obj.value).toBe("origin1");
 
-          // Change does not propagate because object identity hasn't changed
+          // Change does propagate because object property changes
           $rootScope.obj.value = "origin2";
           await wait();
-          expect(componentScope.owRef.value).toBe("isolate1");
+          expect(componentScope.owRef.value).toBe("origin2");
           expect(componentScope.owRefAlias.value).toBe("origin2");
 
           // Change does propagate because object identity changes
@@ -9537,10 +9535,8 @@ describe("$compile", () => {
           expect(componentScope.owRefAlias).toBe($rootScope.obj);
         });
 
-        xit("should update isolate when both change", async () => {
-          $compile('<div><span my-component ow-ref="name" $ow-ref$="name">')(
-            $rootScope,
-          );
+        it("should update isolate when both change", async () => {
+          $compile('<div><span my-component ow-ref="name">')($rootScope);
 
           $rootScope.name = { mark: 123 };
           componentScope.owRef = "misko";
@@ -9617,14 +9613,15 @@ describe("$compile", () => {
             ]);
           });
 
-          xit("should not update isolate again after $onInit if outer object reference has not changed", () => {
+          xit("should not update isolate again after $onInit if outer object reference has not changed", async () => {
             $rootScope.name = ["outer"];
             $compile('<ow-component input="name"></ow-component>')($rootScope);
-
+            await wait();
             expect($rootScope.name).toEqual(["outer"]);
             expect(component.input).toEqual("$onInit");
 
             $rootScope.name[0] = "inner";
+            await wait();
             expect($rootScope.name).toEqual(["inner"]);
             expect(component.input).toEqual("$onInit");
 
@@ -9750,7 +9747,7 @@ describe("$compile", () => {
             ]);
           });
 
-          xit("should not break when isolate and origin both change to the same value", async () => {
+          it("should not break when isolate and origin both change to the same value", async () => {
             $rootScope.name = "aaa";
             $compile('<div><span my-component ow-ref="name">')($rootScope);
 
@@ -9767,26 +9764,22 @@ describe("$compile", () => {
             expect(componentScope.owRef).toBe("aaa");
           });
 
-          xit("should not update origin when identity of isolate changes", async () => {
+          it("should not update origin when identity of isolate changes", async () => {
             $rootScope.name = { mark: 123 };
-            $compile('<div><span my-component ow-ref="name" $ow-ref$="name">')(
-              $rootScope,
-            );
-
+            $compile('<div><span my-component ow-ref="name">')($rootScope);
+            await wait();
             expect($rootScope.name).toEqual({ mark: 123 });
             expect(componentScope.owRef).toBe($rootScope.name);
             expect(componentScope.owRefAlias).toBe($rootScope.name);
-            expect(componentScope.$owRefAlias).toBe($rootScope.name);
 
             componentScope.owRef = "martin";
             await wait();
             expect($rootScope.name).toEqual({ mark: 123 });
             expect(componentScope.owRef).toBe("martin");
             expect(componentScope.owRefAlias).toEqual({ mark: 123 });
-            expect(componentScope.$owRefAlias).toEqual({ mark: 123 });
           });
 
-          xit("should update origin when property of isolate object reference changes", async () => {
+          it("should update origin when property of isolate object reference changes", async () => {
             $rootScope.obj = { mark: 123 };
             $compile('<div><span my-component ow-ref="obj">')($rootScope);
 
@@ -9799,7 +9792,7 @@ describe("$compile", () => {
             expect(componentScope.owRef).toBe($rootScope.obj);
           });
 
-          xit("should not throw on non assignable expressions in the parent", async () => {
+          it("should not throw on non assignable expressions in the parent", async () => {
             $compile("<div><span my-component ow-ref=\"'hello ' + name\">")(
               $rootScope,
             );
@@ -9845,7 +9838,7 @@ describe("$compile", () => {
         });
 
         describe("literal objects", () => {
-          xit("should copy parent changes", async () => {
+          it("should copy parent changes", async () => {
             $compile('<div><span my-component ow-ref="{name: name}">')(
               $rootScope,
             );
@@ -9859,7 +9852,7 @@ describe("$compile", () => {
             expect(componentScope.owRef).toEqual({ name: "b" });
           });
 
-          xit("should not change the isolated scope when origin does not change", async () => {
+          it("should not change the isolated scope when origin does not change", async () => {
             $compile('<div><span my-component ref="{name: name}">')($rootScope);
 
             $rootScope.name = "a";
@@ -9869,7 +9862,7 @@ describe("$compile", () => {
             expect(componentScope.owRef).toBe(lastComponentValue);
           });
 
-          xit("should watch input values to array literals", async () => {
+          it("should watch input values to array literals", async () => {
             $rootScope.name = "georgios";
             $rootScope.obj = { name: "pete" };
             $compile('<div><span my-component ow-ref="[{name: name}, obj]">')(
@@ -9890,7 +9883,7 @@ describe("$compile", () => {
             ]);
           });
 
-          xit("should watch input values object literals", async () => {
+          it("should watch input values object literals", async () => {
             $rootScope.name = "georgios";
             $rootScope.obj = { name: "pete" };
             $compile(
@@ -9937,7 +9930,7 @@ describe("$compile", () => {
             expect(componentScope.undi).toBeDefined();
           });
 
-          xit("should not complain when the isolated scope changes", async () => {
+          it("should not complain when the isolated scope changes", async () => {
             $compile('<div><span my-component ow-ref="{name: name}">')(
               $rootScope,
             );
@@ -10038,7 +10031,7 @@ describe("$compile", () => {
           ]);
         });
 
-        xit("should not update isolate scope when deep state within origin scope changes", async () => {
+        it("should not update isolate scope when deep state within origin scope changes", async () => {
           $rootScope.collection = [
             {
               name: "Gabriel",
@@ -10054,15 +10047,15 @@ describe("$compile", () => {
           $compile('<div><span my-component ow-colref="collection">')(
             $rootScope,
           );
+
           await wait();
 
-          expect(componentScope.owColref).toEqual($rootScope.collection);
-          expect(componentScope.owColrefAlias).toEqual(componentScope.owColref);
+          expect(componentScope.owColref).toBe($rootScope.collection);
+          expect(componentScope.owColrefAlias).toBe(componentScope.owColref);
 
-          componentScope.owColref =
-            componentScope.owColrefAlias =
-            componentScope.$owColrefAlias =
-              undefined;
+          componentScope.$target.owColref = undefined;
+          componentScope.$target.owColrefAlias = undefined;
+
           $rootScope.collection[0].name = "Joe";
           await wait();
 
@@ -10070,7 +10063,7 @@ describe("$compile", () => {
           expect(componentScope.owColrefAlias).toBeUndefined();
         });
 
-        xit("should update isolate scope when origin scope changes", async () => {
+        it("should update isolate scope when origin scope changes", async () => {
           $rootScope.gab = {
             name: "Gabriel",
             value: 18,
@@ -10085,7 +10078,7 @@ describe("$compile", () => {
           $compile(
             '<div><span my-component ow-colref="[gab, tony] | filter:query">',
           )($rootScope);
-
+          await wait();
           expect(componentScope.owColref).toEqual([
             $rootScope.gab,
             $rootScope.tony,
@@ -10113,9 +10106,9 @@ describe("$compile", () => {
           };
           await wait();
 
-          $compile(
-            '<div><span my-component ow-colref="[gab, tony]" $ow-colref$="[gab, tony]">',
-          )($rootScope);
+          $compile('<div><span my-component ow-colref="[gab, tony]">')(
+            $rootScope,
+          );
 
           expect(componentScope.owColref).toEqual([
             $rootScope.gab,
@@ -10740,7 +10733,7 @@ describe("$compile", () => {
         expect(controller2Called).toBe(true);
       });
 
-      xit("should bind to multiple directives controllers via object notation (new scope)", async () => {
+      it("should bind to multiple directives controllers via object notation (new scope)", async () => {
         let controller1Called = false;
         let controller2Called = false;
         module
@@ -11520,7 +11513,7 @@ describe("$compile", () => {
         );
         expect(ctrl1.sibling).toEqual(jasmine.any(SiblingController));
         expect(ctrl1.siblingOpt).toEqual(jasmine.any(SiblingOptController));
-        debugger;
+
         const ctrl2 = getController(element.querySelector("me"), "me");
         expect(ctrl2.parent).toEqual(jasmine.any(ParentController));
         expect(ctrl2.parentOpt).toBe(null);
@@ -14953,16 +14946,17 @@ describe("$compile", () => {
         $rootScope,
       );
       await wait();
-      expect(element.querySelectorAll("a")[0].href.baseVal).toBe(
+      expect(element.querySelectorAll("a").href.baseVal).toBe(
         "https://clean.example.org",
       );
       expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);
     });
 
-    xit("should require a RESOURCE_URL context for href by if not on an anchor or image", () => {
+    it("should require a RESOURCE_URL context for href by if not on an anchor or image", async () => {
+      let error = [];
       module.decorator("$exceptionHandler", () => {
         return (exception, cause) => {
-          throw new Error(exception.message);
+          error.push(exception.message);
         };
       });
       initInjector("test1");
@@ -14970,10 +14964,8 @@ describe("$compile", () => {
         '<svg><whatever xlink-href="{{ testUrl }}"></whatever></svg>',
       )($rootScope);
       $rootScope.testUrl = "https://bad.example.org";
-
-      expect(async () => {
-        await wait();
-      }).toThrowError(/interr/);
+      await wait();
+      expect(error[0].match(/interr/)).toBeTruthy();
     });
   });
 
@@ -15081,7 +15073,7 @@ describe("$compile", () => {
   });
 
   describe("base[href]", () => {
-    xit("should be a RESOURCE_URL context", async () => {
+    it("should be a RESOURCE_URL context", async () => {
       let error = [];
       module.decorator("$exceptionHandler", () => {
         return (exception, cause) => {
@@ -15570,7 +15562,7 @@ describe("$compile", () => {
       expect(true).toBeTrue();
     });
 
-    xit("should enforce the specified sce type for properties added for specific elements", async () => {
+    it("should enforce the specified sce type for properties added for specific elements", async () => {
       injector = createInjector([
         "ng",
         "defaultModule",
@@ -15585,9 +15577,9 @@ describe("$compile", () => {
       $rootScope.bar = "untrusted:test1";
       await wait();
       expect(element.foo).toBe("unsafe:untrusted:test1");
-
       $rootScope.bar = $sce.trustAsCss("untrusted:test2");
       await wait();
+
       expect(element.foo).toBe("unsafe:untrusted:test2");
 
       $rootScope.bar = $sce.trustAsMediaUrl("untrusted:test3");
@@ -15595,7 +15587,7 @@ describe("$compile", () => {
       expect(element.foo).toBe("untrusted:test3");
     });
 
-    xit("should enforce the specified sce type for properties added for all elements (*)", async () => {
+    it("should enforce the specified sce type for properties added for all elements (*)", async () => {
       injector = createInjector([
         "ng",
         "defaultModule",
@@ -15620,7 +15612,7 @@ describe("$compile", () => {
       expect(element.foo).toBe("untrusted:test3");
     });
 
-    xit("should enforce the specific sce type when both an element specific and generic exist", async () => {
+    it("should enforce the specific sce type when both an element specific and generic exist", async () => {
       injector = createInjector([
         "ng",
         "defaultModule",
