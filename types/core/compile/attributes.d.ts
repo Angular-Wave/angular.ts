@@ -1,19 +1,20 @@
 export class Attributes {
+    static $nonscope: boolean;
     /**
      * @param {import('../scope/scope.js').Scope} $rootScope
      * @param {*} $animate
      * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
      * @param {*} $sce
-     * @param {Element} [element]
+     * @param {Node} element
      * @param {*} [attributesToCopy]
      */
-    constructor($rootScope: import("../scope/scope.js").Scope, $animate: any, $exceptionHandler: import("../exception-handler.js").ErrorHandler, $sce: any, element?: Element, attributesToCopy?: any);
-    $nonscope: boolean;
+    constructor($rootScope: import("../scope/scope.js").Scope, $animate: any, $exceptionHandler: import("../exception-handler.js").ErrorHandler, $sce: any, element: Node, attributesToCopy?: any);
     $rootScope: import("../scope/scope.js").Scope;
     $animate: any;
     $exceptionHandler: import("../exception-handler.js").ErrorHandler;
     $sce: any;
     $attr: {};
+    /** @type {Element} */
     $$element: Element;
     /**
      * Converts an attribute name (e.g. dash/colon/underscore-delimited string, optionally prefixed with `x-` or

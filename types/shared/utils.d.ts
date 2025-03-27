@@ -508,7 +508,6 @@ export function hasAnimate(node: Node): boolean;
  * @returns {boolean}
  */
 export function isObjectEmpty(obj: any | null | undefined): boolean;
-export function createElement(str: any): ChildNode;
 /**
  * Replaces the attributes and child elements of an existing element (`replacedElem`)
  * with those of a new element (`newElem`), while keeping the original reference.

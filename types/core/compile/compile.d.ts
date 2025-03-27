@@ -99,14 +99,16 @@ export class CompileProvider {
      * @returns {object} `this` for chaining
      */
     addPropertySecurityContext: (elementName: string, propertyName: string, ctx: string) => object;
-    $get: (string | (($injector: import("../../core/di/internal-injector.js").InjectorService, $interpolate: any, $exceptionHandler: import("../exception-handler").ErrorHandler, $templateRequest: any, $parse: import("../parse/parse").ParseService, $controller: any, $rootScope: import("../scope/scope.js").Scope, $sce: any, $animate: any) => ($compileNodes: string | Element | NodeList | ChildNode, transcludeFn?: any, maxPriority?: number, ignoreDirective?: string, previousCompileContext?: any) => PublicLinkFn | null))[];
+    $get: (string | (($injector: import("../../core/di/internal-injector.js").InjectorService, $interpolate: any, $exceptionHandler: import("../exception-handler.js").ErrorHandler, $templateRequest: any, $parse: import("../parse/parse.js").ParseService, $controller: any, $rootScope: import("../scope/scope.js").Scope, $sce: any, $animate: any) => (compileNode: string | Element, transcludeFn?: TranscludeFn, maxPriority?: number, ignoreDirective?: string, previousCompileContext?: any) => PublicLinkFn))[];
 }
 export namespace CompileProvider {
     let $inject: string[];
 }
 export const DirectiveSuffix: "Directive";
-export type CompositeLinkFn = (scope: import("../scope/scope.js").Scope, $linkNode: Element[], parentBoundTranscludeFn: Function) => any;
 export type TranscludeFn = Function;
-export type PublicLinkFn = any | ((scope: import("../scope/scope.js").Scope, transcludeFn: TranscludeFn) => string);
-export type CompileFn = ($compileNodes: string | Element | NodeList | ChildNode, transcludeFn?: any, maxPriority?: number, ignoreDirective?: string, previousCompileContext?: any) => PublicLinkFn | null;
-export type NodeLinkFn = Function;
+export type PublicLinkFn = (scope: import("../scope/scope.js").Scope, cloneConnectFn?: TranscludeFn, options?: any) => Element;
+export type CompileFn = (compileNode: string | Element, transcludeFn?: TranscludeFn, maxPriority?: number, ignoreDirective?: string, previousCompileContext?: any) => PublicLinkFn;
+export type CompileNodesFn = () => CompositeLinkFn;
+export type NodeLinkFn = (childLinkFn: CompositeLinkFn) => any;
+export type ApplyDirectivesToNodeFn = () => NodeLinkFn;
+export type CompositeLinkFn = (scope: import("../scope/scope.js").Scope, $linkNode: Element[], parentBoundTranscludeFn?: Function) => any;

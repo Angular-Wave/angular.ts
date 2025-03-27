@@ -83,9 +83,23 @@ export class Angular {
     /**
      * Return instance of InjectorService attached to element
      * @param {Element} element
-     * @returns {import('./core/di/internal-injector.js').InjectorService}
+     * @returns {import("./core/di/internal-injector.js").InjectorService}
      */
     getInjector(element: Element): import("./core/di/internal-injector.js").InjectorService;
+    /**
+     * Gets the scope instance for a given element, if exists.
+     *
+     * @param {Element} element - The DOM element to get data from.
+     * @returns {import("./core/scope/scope.js").Scope|undefined} - The retrieved data
+     */
+    getScope(element: Element): import("./core/scope/scope.js").Scope | undefined;
+    /**
+     * Gets the constoller instance for a given element, if exists.
+     *
+     * @param {Element} element - The DOM element to get data from.
+     * @returns {import("./core/scope/scope.js").Scope|undefined} - The retrieved data
+     */
+    getContoller(element: Element, name: any): import("./core/scope/scope.js").Scope | undefined;
     /**
      * @param {Element|Document} element
      */

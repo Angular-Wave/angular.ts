@@ -11,25 +11,15 @@
  * </div>
  */
 export class InterpolateProvider {
-    /** @type {string} */
-    start: string;
-    /** @type {string} */
-    end: string;
     /**
-     * Symbol to denote start of expression in the interpolated string. Defaults to `{{`.
-     *
-     * @param {string=} value new value to set the starting symbol to.
-     * @returns {string|InterpolateProvider} Returns the symbol when used as getter and self if used as setter.
+     * @type {string} Symbol to denote start of expression in the interpolated string. Defaults to `{{`.
      */
-    startSymbol(value?: string | undefined): string | InterpolateProvider;
+    startSymbol: string;
     /**
-     * Symbol to denote the end of expression in the interpolated string. Defaults to `}}`.
-     *
-     * @param {string=} value new value to set the ending symbol to.
-     * @returns {string|InterpolateProvider} Returns the symbol when used as getter and self if used as setter.
+     * @type {string} Symbol to denote the end of expression in the interpolated string. Defaults to `}}`.
      */
-    endSymbol(value?: string | undefined): string | InterpolateProvider;
-    $get: (string | (($parse: import("../parse/parse").ParseService, $sce: any) => {
+    endSymbol: string;
+    $get: (string | (($parse: import("../parse/parse.js").ParseService, $sce: any) => {
         (text: string, mustHaveExpression?: boolean | undefined, trustedContext?: string | undefined, allOrNothing?: boolean | undefined): Function;
         /**
          * Symbol to denote the start of expression in the interpolated string. Defaults to `{{`.

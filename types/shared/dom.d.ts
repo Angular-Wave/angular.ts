@@ -72,6 +72,34 @@ export function setCacheData(element: Element, key: string, value?: any): void;
  */
 export function getCacheData(element: Element, key?: string): any;
 /**
+ * Gets scope for a given element.
+ *
+ * @param {Element} element - The DOM element to get data from.
+ * @returns {*} - The retrieved data for the given key or all data if no key is provided.
+ */
+export function getScope(element: Element): any;
+/**
+ * Set scope for a given element.
+ *
+ * @param {Element} element - The DOM element to set data on.
+ * @param {import("../core/scope/scope.js").Scope} scope - The Scope attached to this element
+ */
+export function setScope(element: Element, scope: import("../core/scope/scope.js").Scope): void;
+/**
+ * Gets isolate scope for a given element.
+ *
+ * @param {Element} element - The DOM element to get data from.
+ * @returns {*} - The retrieved data for the given key or all data if no key is provided.
+ */
+export function getIsolateScope(element: Element): any;
+/**
+ * Set isolate scope for a given element.
+ *
+ * @param {Element} element - The DOM element to set data on.
+ * @param {import("../core/scope/scope.js").Scope} scope - The Scope attached to this element
+ */
+export function setIsolateScope(element: Element, scope: import("../core/scope/scope.js").Scope): void;
+/**
  * @param {Node} element
  * @param {string} [name]
  * @returns
@@ -134,7 +162,7 @@ export function getInjector(element: Element): import("../core/di/internal-injec
 export function setData(element: any, key: any, value: any): void;
 /**
  * Creates a DOM element from an HTML string.
- * @param {string} htmlString - A string representing the HTML to parse.
+ * @param {string} htmlString - A string representing the HTML to parse. Must have only one root element.
  * @returns {Element} - The parsed DOM element.
  */
 export function createElementFromHTML(htmlString: string): Element;

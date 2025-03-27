@@ -38,7 +38,7 @@ export function ngMessagesAriaDirective(): {
 };
 export function ngClickAriaDirective($aria: any, $parse: any): {
     restrict: string;
-    compile(elem: any, attr: any): (scope: any, elem: any, attr: any) => void;
+    compile(elem: any, attr: any): (scope: any, elem: Element, attr: any) => void;
 };
 export namespace ngClickAriaDirective {
     let $inject_2: string[];
