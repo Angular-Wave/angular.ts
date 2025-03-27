@@ -48,27 +48,19 @@ export class Angular {
     /** @type {!Array<string|any>} */
     this.bootsrappedModules = [];
 
+    this.getController = getController;
+    this.getInjector = getInjector;
+    this.getScope = getScope;
+    this.errorHandlingConfig = errorHandlingConfig;
+
     window["angular"] = this;
     publishExternalAPI(this);
   }
 
   /**
-   * Configure several aspects of error handling if used as a setter or return the
-   * current configuration if used as a getter.
-   *
-   * Omitted or undefined options will leave the corresponding configuration values unchanged.
-   *
-   * @param {import('./shared/utils').ErrorHandlingConfig} [config]
-   * @returns {import('./shared/utils').ErrorHandlingConfig}
-   */
-  errorHandlingConfig(config) {
-    return errorHandlingConfig(config);
-  }
-
-  /**
    * Use this function to manually start up AngularJS application.
    *
-   * AngularJS will detect if it has been loaded into the browser more than once and only allow the
+   * AngularTS will detect if it has been loaded into the browser more than once and only allow the
    * first loaded script to be bootstrapped and will report a warning to the browser console for
    * each of the subsequent scripts. This prevents strange results in applications, where otherwise
    * multiple instances of AngularJS try to work on the DOM.
@@ -187,42 +179,12 @@ export class Angular {
   }
 
   /**
-   *
    * @param {any[]} modules
    * @param {boolean?} strictDi
    * @returns {import("./core/di/internal-injector.js").InjectorService}
    */
   injector(modules, strictDi) {
     return createInjector(modules, strictDi);
-  }
-
-  /**
-   * Return instance of InjectorService attached to element
-   * @param {Element} element
-   * @returns {import("./core/di/internal-injector.js").InjectorService}
-   */
-  getInjector(element) {
-    return getInjector(element);
-  }
-
-  /**
-   * Gets the scope instance for a given element, if exists.
-   *
-   * @param {Element} element - The DOM element to get data from.
-   * @returns {import("./core/scope/scope.js").Scope|undefined} - The retrieved data
-   */
-  getScope(element) {
-    return getScope(element);
-  }
-
-  /**
-   * Gets the constoller instance for a given element, if exists.
-   *
-   * @param {Element} element - The DOM element to get data from.
-   * @returns {import("./core/scope/scope.js").Scope|undefined} - The retrieved data
-   */
-  getContoller(element, name) {
-    return getController(element, name);
   }
 
   /**
@@ -328,15 +290,6 @@ export class Angular {
       );
       return moduleInstance;
     });
-  }
-
-  /**
-   * @param {Node} element
-   * @param {string} [name]
-   * @returns {import('./core/scope/scope.js').Scope}
-   */
-  getController(element, name) {
-    return getController(element, name);
   }
 }
 

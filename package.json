@@ -31,7 +31,6 @@
     "@rollup/plugin-node-resolve": "latest",
     "@rollup/plugin-terser": "latest",
     "@types/jasmine": "latest",
-    "@types/node": "latest",
     "docdash": "latest",
     "eslint": "latest",
     "eslint-config-prettier": "latest",

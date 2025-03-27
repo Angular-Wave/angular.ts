@@ -1,4 +1,11 @@
 /**
+ * @typedef {string} Expression
+ * @description A JavaScript-like code snippet, used in interpolation bindings such as
+ * `<span title="{{ attrBinding }}">{{ textBinding }}</span>`, and evaluated in the context of a
+ * {@link import('./core/scope/scope.js').Scope `scope`} object.
+ */
+
+/**
  * @typedef {Object} BootstrapConfig
  * @description Configuration option for AngularTS bootstrap process.
  * @property {boolean} [strictDi] - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.

@@ -100,11 +100,13 @@ export function getIsolateScope(element: Element): any;
  */
 export function setIsolateScope(element: Element, scope: import("../core/scope/scope.js").Scope): void;
 /**
- * @param {Node} element
- * @param {string} [name]
- * @returns
+ * Gets the controller instance for a given element, if exists. Defaults to "ngControllerController"
+ *
+ * @param {Element} element - The DOM element to get data from.
+ * @param {string} name - The DOM element to get data from.
+ * @returns {import("../core/scope/scope.js").Scope|undefined} - The retrieved data
  */
-export function getController(element: Node, name?: string): any;
+export function getController(element: Element, name: string): import("../core/scope/scope.js").Scope | undefined;
 /**
  *
  * @param {Node} element
@@ -159,7 +161,6 @@ export function cleanElementData(nodes: NodeListOf<Element> | Element[]): void;
  * @returns {import('../core/di/internal-injector.js').InjectorService}
  */
 export function getInjector(element: Element): import("../core/di/internal-injector.js").InjectorService;
-export function setData(element: any, key: any, value: any): void;
 /**
  * Creates a DOM element from an HTML string.
  * @param {string} htmlString - A string representing the HTML to parse. Must have only one root element.

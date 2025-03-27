@@ -25,7 +25,7 @@ export const ngModelMinErr: (arg0: string, ...arg1: any[]) => Error;
  * The key value within the object refers to the name of the validator while the function refers to the validation operation.
  * The validation operation is provided with the model value as an argument and must return a true or false value depending on the response of that validation.
  *
- * @property {Object.<string, function(string, string) => QPromise>} $asyncValidators A collection of validations that are expected to perform an asynchronous validation (e.g. a HTTP request).
+ * @property {Object.<string, function(string, string) => Promise>} $asyncValidators A collection of validations that are expected to perform an asynchronous validation (e.g. a HTTP request).
  *  The validation function that is provided is expected to return a promise when it is run during the model validation process
  *
  * @property {Array.<Function>} $viewChangeListeners Array of functions to execute whenever
@@ -108,7 +108,7 @@ export class NgModelController {
     /** @type {import("../../core/parse/parse").CompiledExpression|((Scope) => any)} */
     $$ngModelGet: import("../../core/parse/parse").CompiledExpression | ((Scope: any) => any);
     $$ngModelSet: (arg0: any, arg1: any) => any;
-    $$pendingDebounce: NodeJS.Timeout;
+    $$pendingDebounce: number;
     $$parserValid: boolean;
     /** @type {string} */
     $$parserName: string;

@@ -446,6 +446,11 @@ export function assert(argument: boolean, errorMsg?: string): void;
 export function assertArg(arg: any, name: any, reason: any): any;
 export function assertArgFn(arg: any, name: any, acceptArrayAnnotation: any): any;
 /**
+ * Configure several aspects of error handling if used as a setter or return the
+ * current configuration if used as a getter.
+ *
+ * Omitted or undefined options will leave the corresponding configuration values unchanged.
+ *
  * @param {ErrorHandlingConfig} [config]
  * @returns {ErrorHandlingConfig}
  */

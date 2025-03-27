@@ -1,3 +1,4 @@
+export type Expression = string;
 export type BootstrapConfig = any;
 export type Injectable<T> = Function | Array<string | Function>;
 export type Annotated = {

@@ -13,20 +13,14 @@ export class Angular {
     version: string;
     /** @type {!Array<string|any>} */
     bootsrappedModules: Array<string | any>;
-    /**
-     * Configure several aspects of error handling if used as a setter or return the
-     * current configuration if used as a getter.
-     *
-     * Omitted or undefined options will leave the corresponding configuration values unchanged.
-     *
-     * @param {import('./shared/utils').ErrorHandlingConfig} [config]
-     * @returns {import('./shared/utils').ErrorHandlingConfig}
-     */
-    errorHandlingConfig(config?: import("./shared/utils").ErrorHandlingConfig): import("./shared/utils").ErrorHandlingConfig;
+    getController: typeof getController;
+    getInjector: typeof getInjector;
+    getScope: typeof getScope;
+    errorHandlingConfig: typeof errorHandlingConfig;
     /**
      * Use this function to manually start up AngularJS application.
      *
-     * AngularJS will detect if it has been loaded into the browser more than once and only allow the
+     * AngularTS will detect if it has been loaded into the browser more than once and only allow the
      * first loaded script to be bootstrapped and will report a warning to the browser console for
      * each of the subsequent scripts. This prevents strange results in applications, where otherwise
      * multiple instances of AngularJS try to work on the DOM.
@@ -74,32 +68,11 @@ export class Angular {
     bootstrap(element: string | Element | Document, modules?: Array<string | any>, config?: AngularBootstrapConfig): any;
     $injector: import("./core/di/internal-injector.js").InjectorService;
     /**
-     *
      * @param {any[]} modules
      * @param {boolean?} strictDi
      * @returns {import("./core/di/internal-injector.js").InjectorService}
      */
     injector(modules: any[], strictDi: boolean | null): import("./core/di/internal-injector.js").InjectorService;
-    /**
-     * Return instance of InjectorService attached to element
-     * @param {Element} element
-     * @returns {import("./core/di/internal-injector.js").InjectorService}
-     */
-    getInjector(element: Element): import("./core/di/internal-injector.js").InjectorService;
-    /**
-     * Gets the scope instance for a given element, if exists.
-     *
-     * @param {Element} element - The DOM element to get data from.
-     * @returns {import("./core/scope/scope.js").Scope|undefined} - The retrieved data
-     */
-    getScope(element: Element): import("./core/scope/scope.js").Scope | undefined;
-    /**
-     * Gets the constoller instance for a given element, if exists.
-     *
-     * @param {Element} element - The DOM element to get data from.
-     * @returns {import("./core/scope/scope.js").Scope|undefined} - The retrieved data
-     */
-    getContoller(element: Element, name: any): import("./core/scope/scope.js").Scope | undefined;
     /**
      * @param {Element|Document} element
      */
@@ -152,12 +125,6 @@ export class Angular {
      * @returns {NgModule} A newly registered module.
      */
     module(name: string, requires?: Array<string>, configFn?: Array<any> | Function): NgModule;
-    /**
-     * @param {Node} element
-     * @param {string} [name]
-     * @returns {import('./core/scope/scope.js').Scope}
-     */
-    getController(element: Node, name?: string): import("./core/scope/scope.js").Scope;
 }
 /**
  * Configuration option for AngularTS bootstrap process.
@@ -168,4 +135,8 @@ export type AngularBootstrapConfig = {
      */
     strictDi?: boolean;
 };
+import { getController } from "./shared/dom.js";
+import { getInjector } from "./shared/dom.js";
+import { getScope } from "./shared/dom.js";
+import { errorHandlingConfig } from "./shared/utils.js";
 import { NgModule } from "./core/di/ng-module.js";

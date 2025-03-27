@@ -280,13 +280,13 @@ export class AnimateProvider {
          * A promise is returned that will be resolved during the next digest once the animation
          * has completed.
          *
-         * @param {JQLite} element - the element which will be inserted into the DOM
-         * @param {JQLite} parent - the parent element which will append the element as a child (so long as the after element is not present)
-         * @param {JQLite} after - after the sibling element after which the element will be appended
+         * @param {Element} element - the element which will be inserted into the DOM
+         * @param {Element} parent - the parent element which will append the element as a child (so long as the after element is not present)
+         * @param {Element} after - after the sibling element after which the element will be appended
          * @param {AnimationOptions} [options] - an optional collection of options/styles that will be applied to the element.
          * @returns {import('./animate-runner').AnimateRunner} the animation runner
          */
-        enter(element: JQLite, parent: JQLite, after: JQLite, options?: AnimationOptions): import("./animate-runner").AnimateRunner;
+        enter(element: Element, parent: Element, after: Element, options?: AnimationOptions): import("./animate-runner").AnimateRunner;
         /**
          * Inserts (moves) the element into its new position in the DOM either after
          * the `after` element (if provided) or as the first child within the `parent` element
@@ -318,12 +318,12 @@ export class AnimateProvider {
          * (like enter, move and leave) since the CSS classes may be added/removed at different points
          * depending if CSS or JavaScript animations are used.
          *
-         * @param {JQLite} element the element which the CSS classes will be applied to
+         * @param {Element} element the element which the CSS classes will be applied to
          * @param {string} className the CSS class(es) that will be added (multiple classes are separated via spaces)
          * @param {AnimationOptions} [options] an optional collection of options/styles that will be applied to the element.
          * @return {import('./animate-runner').AnimateRunner}} animationRunner the animation runner
          */
-        addClass(element: JQLite, className: string, options?: AnimationOptions): import("./animate-runner").AnimateRunner;
+        addClass(element: Element, className: string, options?: AnimationOptions): import("./animate-runner").AnimateRunner;
         /**
          * Triggers a removeClass animation surrounding the removal of the provided CSS class(es). Upon
          * execution, the removeClass operation will only be handled after the next digest and it will not trigger an
@@ -332,12 +332,12 @@ export class AnimateProvider {
          * (like enter, move and leave) since the CSS classes may be added/removed at different points
          * depending if CSS or JavaScript animations are used.
          *
-         * @param {JQLite} element the element which the CSS classes will be applied to
+         * @param {Element} element the element which the CSS classes will be applied to
          * @param {string} className the CSS class(es) that will be removed (multiple classes are separated via spaces)
          * @param {AnimationOptions} [options] an optional collection of options/styles that will be applied to the element.         *
          * @return {import('./animate-runner').AnimateRunner} animationRunner the animation runner
          */
-        removeClass(element: JQLite, className: string, options?: AnimationOptions): import("./animate-runner").AnimateRunner;
+        removeClass(element: Element, className: string, options?: AnimationOptions): import("./animate-runner").AnimateRunner;
         /**
          * Performs both the addition and removal of a CSS classes on an element and (during the process)
          * triggers an animation surrounding the class addition/removal. Much like `$animate.addClass` and

@@ -1001,6 +1001,11 @@ const minErrConfig = {
 };
 
 /**
+ * Configure several aspects of error handling if used as a setter or return the
+ * current configuration if used as a getter.
+ *
+ * Omitted or undefined options will leave the corresponding configuration values unchanged.
+ *
  * @param {ErrorHandlingConfig} [config]
  * @returns {ErrorHandlingConfig}
  */

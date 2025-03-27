@@ -375,9 +375,11 @@ export function setIsolateScope(element, scope) {
 }
 
 /**
- * @param {Node} element
- * @param {string} [name]
- * @returns
+ * Gets the controller instance for a given element, if exists. Defaults to "ngControllerController"
+ *
+ * @param {Element} element - The DOM element to get data from.
+ * @param {string} name - The DOM element to get data from.
+ * @returns {import("../core/scope/scope.js").Scope|undefined} - The retrieved data
  */
 export function getController(element, name) {
   return getInheritedData(element, `$${name || "ngController"}Controller`);
@@ -432,10 +434,7 @@ export function setInheritedData(element, name, value) {
     for (let i = 0, ii = names.length; i < ii; i++) {
       if (
         isDefined(
-          (value = getOrSetCacheData(
-            /** @type {Element} */ (element),
-            names[i],
-          )),
+          (value = setCacheData(/** @type {Element} */ (element), names[i])),
         )
       )
         return value;
@@ -572,10 +571,6 @@ export function cleanElementData(nodes) {
  */
 export function getInjector(element) {
   return getInheritedData(element, "$injector");
-}
-
-export function setData(element, key, value) {
-  getOrSetCacheData(element, key, value);
 }
 
 const template = document.createElement("template");
