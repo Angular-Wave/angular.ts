@@ -80,6 +80,7 @@ const SUBMITTED_CLASS = "ng-submitted";
 // asks for $scope to fool the BC controller module
 
 export class FormController {
+  static $nonscope = true;
   static $inject = ["$element", "$attrs", "$scope", "$animate", "$interpolate"];
 
   /**
@@ -168,7 +169,7 @@ export class FormController {
     this.$$controls.push(control);
 
     if (control.$name) {
-      this.$target[control.$name] = control;
+      this[control.$name] = control;
     }
     control.$target.$$parentForm = this;
   }
@@ -216,7 +217,7 @@ export class FormController {
   $removeControl(control) {
     if (control.$name && this[control.$name] === control) {
       // delete this[control.$name];
-      this.$target[control.$name] = undefined;
+      this[control.$name] = undefined;
     }
     this.$pending &&
       Object.keys(this.$pending).forEach((name) => {

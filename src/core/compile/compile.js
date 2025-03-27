@@ -698,13 +698,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             // might change, so we need to recreate the namespace adapted compileNodes
             // for call to the link function.
             // Note: This will already clone the nodes...
-
-            const wrappedTemplate = wrapTemplate(
-              namespace,
-              createElementFromHTML("<div></div>").append(compileNode)
-                .innerHTML,
-            );
-            $linkNode = createElementFromHTML(wrappedTemplate);
+            const fragment = createElementFromHTML("<div></div>");
+            fragment.append(compileNode);
+            const wrappedTemplate = wrapTemplate(namespace, fragment.innerHTML);
+            $linkNode = wrappedTemplate;
           } else if (cloneConnectFn) {
             let elements =
               compileNode instanceof NodeList
@@ -1182,7 +1179,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        *
        * @param {Array} directives Array of collected directives to execute their compile function.
        *        this needs to be pre-sorted by priority order.
-       * @param {Node} compileNode The raw DOM node to apply the compile functions to
+       * @param {Element} compileNode The raw DOM node to apply the compile functions to
        * @param {Object} templateAttrs The shared attribute function
        * @param {function(import('../../core/scope/scope.js').Scope, Function=):any} transcludeFn A linking function, where the
        *                                                  scope argument is auto-generated to the new
@@ -2461,6 +2458,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         switch (type) {
           case "svg":
           case "math":
+            /** @type {HTMLDivElement} */
             var wrapper = document.createElement("div");
             wrapper.innerHTML = `<${type}>${template}</${type}>`;
             return wrapper.childNodes[0].childNodes;

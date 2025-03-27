@@ -7797,10 +7797,10 @@ describe("$compile", () => {
       });
 
       describe("$onInit", () => {
-        it("should call `$onInit`, if provided, after all the controllers on the element have been initialized", () => {
-          function check() {
-            expect(this.element.controller("d1").id).toEqual(1);
-            expect(this.element.controller("d2").id).toEqual(2);
+        it("should call `$onInit`, if provided, after all the controllers on the element have been initialized", async () => {
+          function check(args) {
+            expect(getController(this.element, "d1").id).toEqual(1);
+            expect(getController(this.element, "d2").id).toEqual(2);
           }
 
           function Controller1($element) {
@@ -7829,6 +7829,8 @@ describe("$compile", () => {
           });
 
           element = $compile("<div d1 d2></div>")($rootScope);
+          await wait();
+
           expect(Controller1.prototype.$onInit).toHaveBeenCalled();
           expect(Controller2.prototype.$onInit).toHaveBeenCalled();
         });

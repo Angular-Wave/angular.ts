@@ -1,4 +1,4 @@
-import { dealoc } from "../../shared/dom.js";
+import { createElementFromHTML, dealoc } from "../../shared/dom.js";
 import { Angular } from "../../loader.js";
 import { NgModelController } from "./model.js";
 import { isDefined, isObject } from "../../shared/utils.js";
@@ -36,13 +36,13 @@ describe("ngModel", () => {
       $$clearControlValidity: () => {},
     };
 
-    element = "<form><input></form>";
+    element = createElementFromHTML("<form><input></form>");
     let $controller = injector.get("$controller");
     scope = injector.get("$rootScope");
     $rootScope = scope;
     ctrl = $controller(NgModelController, {
       $scope: scope,
-      $element: element.find("input"),
+      $element: element.querySelector("input"),
       $attrs: attrs,
     });
 
@@ -356,7 +356,7 @@ describe("ngModel", () => {
             '<input name="myControl" ng-model="value" >' +
             "</form>",
         )($rootScope);
-        const inputElm = element.find("input");
+        const inputElm = element.querySelector("input");
         const ctrl = $rootScope.myForm.myControl;
 
         let parserIsFailing = false;
@@ -385,17 +385,17 @@ describe("ngModel", () => {
         let pass = true;
         ctrl.$parsers.push((v) => (pass ? v : undefined));
 
-        const input = element.find("input");
+        const input = element.querySelector("input");
 
         ctrl.$setViewValue("1");
-        expect(input[0].classList.contains("ng-valid-parse")).toBeTrue();
-        expect(input[0].classList.contains("ng-invalid-parse")).toBeFalse();
+        expect(input.classList.contains("ng-valid-parse")).toBeTrue();
+        expect(input.classList.contains("ng-invalid-parse")).toBeFalse();
 
         pass = undefined;
 
         ctrl.$setViewValue("2");
-        expect(input[0].classList.contains("ng-valid-parse")).toBeFalse();
-        expect(input[0].classList.contains("ng-invalid-parse")).toBeTrue();
+        expect(input.classList.contains("ng-valid-parse")).toBeFalse();
+        expect(input.classList.contains("ng-invalid-parse")).toBeTrue();
       });
 
       it("should update the model after all async validators resolve", async () => {
@@ -1190,7 +1190,7 @@ describe("ngModel", () => {
             "</form>",
         )($rootScope);
         await wait();
-        const inputElm = element.find("input");
+        const inputElm = element.querySelector("input");
 
         const formCtrl = $rootScope.myForm;
         const usernameCtrl = formCtrl.username;
@@ -1215,7 +1215,7 @@ describe("ngModel", () => {
             "</form>",
         )($rootScope);
         await wait();
-        const inputElm = element.find("input");
+        const inputElm = element.querySelector("input");
 
         const formCtrl = $rootScope.myForm;
         const usernameCtrl = formCtrl.username;
@@ -1493,10 +1493,12 @@ describe("ngModel", () => {
 
       element.value = "";
       browserTrigger(element, "change");
+      await wait();
       expect(element.value).toBe("");
 
       element.value = "YYY";
       browserTrigger(element, "change");
+      await wait();
       expect(element.value).toBe("YYY");
     });
 
@@ -1621,7 +1623,7 @@ describe("ngModel", () => {
           "</form>",
       )($rootScope);
       await wait();
-      const inputElm = element.find("input");
+      const inputElm = element.querySelector("input");
       const control = $rootScope.myForm.myControl;
 
       expect(control.$touched).toBe(false);
@@ -1641,7 +1643,7 @@ describe("ngModel", () => {
           "</form>",
       )($rootScope);
       await wait();
-      const inputElm = element.find("input");
+      const inputElm = element.querySelector("input");
       const control = $rootScope.myForm.myControl;
 
       control.$setTouched();
@@ -1658,7 +1660,7 @@ describe("ngModel", () => {
           "</form>",
       )($rootScope);
       await wait();
-      const inputElm = element.find("input");
+      const inputElm = element.querySelector("input");
       const control = $rootScope.myForm.myControl;
 
       expect(control.$touched).toBe(false);

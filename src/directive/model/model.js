@@ -1032,7 +1032,10 @@ export class NgModelController {
 
   $$setUpdateOnEvents() {
     if (this.$$updateEvents) {
-      this.$$element.off(this.$$updateEvents, this.$$updateEventHandler);
+      this.$$element.addEventListener(
+        this.$$updateEvents,
+        this.$$updateEventHandler,
+      );
     }
 
     this.$$updateEvents = /** @type {string} */ (

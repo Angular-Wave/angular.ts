@@ -1,3 +1,5 @@
+import { isObject } from "./utils.js";
+
 /**
  * Triggers a browser event on the specified element.
  * @param {HTMLElement} element - The target element.
@@ -7,9 +9,9 @@ export function browserTrigger(element, options) {
   const { type, ...eventProps } = options;
 
   let event;
-  if (type.startsWith("key")) {
+  if (isObject(type) && type.startsWith("key")) {
     event = new KeyboardEvent(type, eventProps);
-  } else if (type.startsWith("mouse")) {
+  } else if (isObject(type) && type.startsWith("mouse")) {
     event = new MouseEvent(type, eventProps);
   } else {
     event = new Event(type, { bubbles: true, cancelable: true });
