@@ -12,6 +12,7 @@ const DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/;
  */
 
 class NgModelOptionsController {
+  static $nonscope = true;
   static $inject = ["$attrs", "$scope"];
 
   /**
@@ -42,6 +43,8 @@ class NgModelOptionsController {
  * A container for the options set by the {@link ngModelOptions} directive
  */
 class ModelOptions {
+  static $nonscope = true;
+
   /**
    * @param {ModelOptionsConfig} options
    */

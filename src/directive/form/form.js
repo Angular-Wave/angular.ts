@@ -17,6 +17,7 @@ import {
 import { isProxy } from "../../core/scope/scope.js";
 
 export const nullFormCtrl = {
+  $nonscope: true,
   $addControl: () => {},
   $getControls: () => [],
   $$renameControl: (control, name) => {

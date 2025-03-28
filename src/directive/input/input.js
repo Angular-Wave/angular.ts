@@ -151,7 +151,7 @@ function baseInputType(scope, element, attr, ctrl) {
       ctrl.$viewValue !== value ||
       (value === "" && ctrl.$$hasNativeValidators)
     ) {
-      ctrl.$setViewValue(value, event);
+      ctrl.$target.$setViewValue(value, event);
     }
   };
 

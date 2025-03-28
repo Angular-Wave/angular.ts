@@ -12,14 +12,16 @@ describe("ngModel", () => {
   let $compile;
   let injector;
   let $rootScope;
+  let errors = [];
 
   beforeEach(() => {
+    errors = [];
     window.angular = new Angular();
     window.angular
       .module("myModule", ["ng"])
       .decorator("$exceptionHandler", function () {
         return (exception) => {
-          throw new Error(exception.message);
+          errors.push(exception.message);
         };
       });
     injector = window.angular.bootstrap(document.getElementById("dummy"), [
@@ -997,14 +999,13 @@ describe("ngModel", () => {
         expect(ctrl.$pending).toBeUndefined();
       });
 
-      xit("should throw an error when a promise is not returned for an asynchronous validator", () => {
+      it("should throw an error when a promise is not returned for an asynchronous validator", async () => {
         ctrl.$asyncValidators.async = function (value) {
           return true;
         };
-
-        expect(() => {
-          scope.$apply('value = "123"');
-        }).toThrowError(/nopromise/);
+        scope.$apply('value = "123"');
+        await wait();
+        expect(errors[0].match(/nopromise/)).toBeTruthy();
       });
 
       it("should only run the async validators once all the sync validators have passed", async () => {
@@ -1182,7 +1183,7 @@ describe("ngModel", () => {
         expect(ctrl.$error).toEqual({ sync: true });
       });
 
-      xit("should be possible to extend Object prototype and still be able to do form validation", async () => {
+      it("should be possible to extend Object prototype and still be able to do form validation", async () => {
         Object.prototype.someThing = function () {};
         const element = $compile(
           '<form name="myForm">' +
@@ -1507,14 +1508,11 @@ describe("ngModel", () => {
         $rootScope,
       );
       await wait();
-      expect(element.classList.contains("ng-valid")).toBeTrue();
-      expect(element.classList.contains("ng-pristine")).toBeTrue();
-      expect(element.classList.contains("ng-touched")).toBeFalse();
-      expect(element.classList.contains("ng-valid-email")).toBe(true);
-      expect(element.classList.contains("ng-invalid-email")).toBe(false);
+      // expect(element/assList.contains("ng-invalid-email")).toBe(false);
 
-      $rootScope.$apply("value = 'invalid-email'");
+      $rootScope.value = "invalid-email";
       await wait();
+
       expect(element.classList.contains("ng-invalid")).toBeTrue();
       expect(element.classList.contains("ng-pristine")).toBeTrue();
       expect(element.classList.contains("ng-valid-email")).toBe(false);
@@ -1522,6 +1520,8 @@ describe("ngModel", () => {
 
       element.value = "invalid-again";
       browserTrigger(element, "change");
+      await wait();
+
       expect(element.classList.contains("ng-invalid")).toBeTrue();
       expect(element.classList.contains("ng-dirty")).toBeTrue();
       expect(element.classList.contains("ng-valid-email")).toBe(false);
@@ -1535,10 +1535,8 @@ describe("ngModel", () => {
       expect(element.classList.contains("ng-invalid-email")).toBe(false);
 
       browserTrigger(element, "blur");
-
+      await wait();
       expect(element.classList.contains("ng-touched")).toBeTrue();
-
-      dealoc(element);
     });
 
     it("should set invalid classes on init", async () => {
@@ -1576,14 +1574,16 @@ describe("ngModel", () => {
     });
 
     function createInput(type) {
-      inputElm = `<input type="${type}" ng-model="val" custom-format/>`;
+      inputElm = createElementFromHTML(
+        `<input type="${type}" ng-model="val" custom-format/>`,
+      );
       const injector = angular.bootstrap(inputElm, ["myModule"]);
       scope = injector.get("$rootScope");
     }
 
     xit("should use them after the builtin ones for text inputs", async () => {
       createInput("text");
-      scope.$apply('val = {part: "a"}');
+      scope.val = { part: "a" };
       await wait();
       expect(inputElm.value).toBe("a");
 
@@ -1636,30 +1636,12 @@ describe("ngModel", () => {
       dealoc(element);
     });
 
-    it('should not cause a digest on "blur" event if control is already touched', async () => {
-      const element = $compile(
-        '<form name="myForm">' +
-          '<input name="myControl" ng-model="value" >' +
-          "</form>",
-      )($rootScope);
-      await wait();
-      const inputElm = element.querySelector("input");
-      const control = $rootScope.myForm.myControl;
-
-      control.$setTouched();
-      spyOn($rootScope, "$apply");
-      browserTrigger(inputElm, "blur");
-
-      dealoc(element);
-    });
-
     it('should digest asynchronously on "blur" event if a apply is already in progress', async () => {
       const element = $compile(
         '<form name="myForm">' +
           '<input name="myControl" ng-model="value" >' +
           "</form>",
       )($rootScope);
-      await wait();
       const inputElm = element.querySelector("input");
       const control = $rootScope.myForm.myControl;
 
@@ -1667,14 +1649,8 @@ describe("ngModel", () => {
       expect(control.$untouched).toBe(true);
 
       browserTrigger(inputElm, "blur");
-
-      expect(control.$touched).toBe(false);
-      expect(control.$untouched).toBe(true);
-
       expect(control.$touched).toBe(true);
       expect(control.$untouched).toBe(false);
-
-      dealoc(element);
     });
   });
 

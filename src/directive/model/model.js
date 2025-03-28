@@ -64,6 +64,7 @@ export const ngModelMinErr = minErr("ngModel");
  */
 
 export class NgModelController {
+  static $nonscope = true;
   static $inject = [
     "$scope",
     "$exceptionHandler",
@@ -78,7 +79,7 @@ export class NgModelController {
    * @param {import('../../core/scope/scope.js').Scope} $scope
    * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
    * @param {import('../../core/compile/attributes.js').Attributes} $attr
-   * @param {import('../../shared/dom.js').JQLite} $element
+   * @param {Element} $element
    * @param {import("../../core/parse/parse.js").ParseService} $parse
    * @param {*} $animate
    * @param {*} $interpolate
@@ -768,7 +769,7 @@ export class NgModelController {
   }
 
   $$writeModelToScope() {
-    this.$$ngModelSet(this.$$scope, this.$modelValue);
+    this.$$ngModelSet(this.$$scope.$target, this.$modelValue);
     Object.values(this.$viewChangeListeners).forEach((listener) => {
       try {
         listener();

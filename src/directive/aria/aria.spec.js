@@ -243,7 +243,7 @@ describe("$aria", () => {
       element = $compile('<div ng-show="val"></div>')(scope);
       scope.$apply("val = false");
       await wait();
-      debugger;
+
       expect(element.getAttribute("aria-hidden")).toBe("true");
 
       scope.$apply("val = true");
