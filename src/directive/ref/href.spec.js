@@ -31,60 +31,68 @@ describe("ngHref", () => {
   it("should interpolate the expression and bind to href", async () => {
     element = $compile('<a ng-href="some/{{id}}"></div>')($rootScope);
     await wait();
-    expect(element.attr("href")).toEqual("some/");
+    expect(element.getAttribute("href")).toEqual("some/");
 
     $rootScope.id = 1;
     await wait();
-    expect(element.attr("href")).toEqual("some/1");
+    expect(element.getAttribute("href")).toEqual("some/1");
   });
 
-  it("should bind href and merge with other attrs", () => {
+  it("should bind href and merge with other attrs", async () => {
     element = $compile('<a ng-href="{{url}}" rel="{{rel}}"></a>')($rootScope);
     $rootScope.url = "http://server";
     $rootScope.rel = "REL";
-    expect(element.attr("href")).toEqual("http://server");
-    expect(element.attr("rel")).toEqual("REL");
+    await wait();
+    expect(element.getAttribute("href")).toEqual("http://server");
+    expect(element.getAttribute("rel")).toEqual("REL");
   });
 
-  it("should bind href even if no interpolation", () => {
+  it("should bind href even if no interpolation", async () => {
     element = $compile('<a ng-href="http://server"></a>')($rootScope);
-    expect(element.attr("href")).toEqual("http://server");
+    await wait();
+    expect(element.getAttribute("href")).toEqual("http://server");
   });
 
-  it("should not set the href if ng-href is empty", () => {
+  it("should not set the href if ng-href is empty", async () => {
     $rootScope.url = null;
     element = $compile('<a ng-href="{{url}}">')($rootScope);
-    expect(element.attr("href")).toEqual(undefined);
+    await wait();
+    expect(element.getAttribute("href")).toEqual(null);
   });
 
-  it("should remove the href if ng-href changes to empty", () => {
+  it("should remove the href if ng-href changes to empty", async () => {
     $rootScope.url = "http://www.google.com/";
     element = $compile('<a ng-href="{{url}}">')($rootScope);
     $rootScope.url = null;
-    expect(element.attr("href")).toEqual(undefined);
+    await wait();
+    expect(element.getAttribute("href")).toEqual(null);
   });
 
-  it("should sanitize interpolated url", () => {
+  it("should sanitize interpolated url", async () => {
     /* eslint no-script-url: "off" */
     $rootScope.imageUrl = "javascript:alert(1);";
     element = $compile('<a ng-href="{{imageUrl}}">')($rootScope);
-    expect(element.attr("href")).toBe("unsafe:javascript:alert(1);");
+    await wait();
+    expect(element.getAttribute("href")).toBe("unsafe:javascript:alert(1);");
   });
 
-  it("should sanitize non-interpolated url", () => {
+  it("should sanitize non-interpolated url", async () => {
     element = $compile('<a ng-href="javascript:alert(1);">')($rootScope);
-    expect(element.attr("href")).toBe("unsafe:javascript:alert(1);");
+    await wait();
+    expect(element.getAttribute("href")).toBe("unsafe:javascript:alert(1);");
   });
 
-  it("should bind numbers", () => {
+  it("should bind numbers", async () => {
     element = $compile('<a ng-href="{{1234}}"></a>')($rootScope);
-    expect(element.attr("href")).toEqual("1234");
+    await wait();
+    expect(element.getAttribute("href")).toEqual("1234");
   });
 
-  it("should bind and sanitize the result of a (custom) toString() function", () => {
+  it("should bind and sanitize the result of a (custom) toString() function", async () => {
     $rootScope.value = {};
     element = $compile('<a ng-href="{{value}}"></a>')($rootScope);
-    expect(element.attr("href")).toEqual("[object Object]");
+    await wait();
+    expect(element.getAttribute("href")).toEqual("[object Object]");
 
     function SafeClass() {}
 
@@ -93,7 +101,8 @@ describe("ngHref", () => {
     };
 
     $rootScope.value = new SafeClass();
-    expect(element.attr("href")).toEqual("custom value");
+    await wait();
+    expect(element.getAttribute("href")).toEqual("custom value");
 
     function UnsafeClass() {}
 
@@ -102,30 +111,31 @@ describe("ngHref", () => {
     };
 
     $rootScope.value = new UnsafeClass();
-    expect(element.attr("href")).toEqual("unsafe:javascript:alert(1);");
+    await wait();
+    expect(element.getAttribute("href")).toEqual("unsafe:javascript:alert(1);");
   });
 
   if (isDefined(window.SVGElement)) {
     describe("SVGAElement", () => {
-      it("should interpolate the expression and bind to xlink:href", () => {
+      it("should interpolate the expression and bind to xlink:href", async () => {
         element = $compile('<svg><a ng-href="some/{{id}}"></a></svg>')(
           $rootScope,
         );
-        const child = element.children("a");
-        expect(child.attr("xlink:href")).toEqual("some/");
+        await wait();
+        const child = element.querySelector("a");
+        expect(child.getAttribute("xlink:href")).toEqual("some/");
 
-        $rootScope.$apply(() => {
-          $rootScope.id = 1;
-        });
-        expect(child.attr("xlink:href")).toEqual("some/1");
+        $rootScope.id = 1;
+        await wait();
+        expect(child.getAttribute("xlink:href")).toEqual("some/1");
       });
 
-      it("should bind xlink:href even if no interpolation", () => {
+      it("should bind xlink:href even if no interpolation", async () => {
         element = $compile('<svg><a ng-href="http://server"></a></svg>')(
           $rootScope,
         );
-        const child = element.children("a");
-        expect(child.attr("xlink:href")).toEqual("http://server");
+        const child = element.querySelector("a");
+        expect(child.getAttribute("xlink:href")).toEqual("http://server");
       });
     });
   }

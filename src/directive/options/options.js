@@ -274,7 +274,7 @@ export const ngOptionsDirective = [
           if (!options) return;
 
           const selectedOption =
-            selectElement[0].options[selectElement[0].selectedIndex];
+            selectElement.options[selectElement.selectedIndex];
           const option = options.getOptionFromViewValue(value);
 
           // Make sure to remove the selected attribute from the previously selected option
@@ -287,10 +287,10 @@ export const ngOptionsDirective = [
             // most properties are set automatically - except the `selected` attribute, which we
             // set always
 
-            if (selectElement[0].value !== option.selectValue) {
+            if (selectElement.value !== option.selectValue) {
               selectCtrl.removeUnknownOption();
 
-              selectElement[0].value = option.selectValue;
+              selectElement.value = option.selectValue;
               option.element.selected = true;
             }
 
@@ -493,7 +493,7 @@ export const ngOptionsDirective = [
           }
         });
 
-        selectElement[0].appendChild(listFragment);
+        selectElement.appendChild(listFragment);
 
         ngModelCtrl.$render();
 
