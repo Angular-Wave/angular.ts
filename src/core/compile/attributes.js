@@ -185,7 +185,7 @@ export class Attributes {
           elem.removeAttribute(attrName);
         } else {
           if (booleanKey) {
-            elem[attrName] = true;
+            elem.toggleAttribute(attrName, value);
           } else {
             elem.setAttribute(attrName, value);
           }

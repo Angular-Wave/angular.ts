@@ -42,7 +42,7 @@ export const BOOLEAN_ATTR = [
   "selected",
   "checked",
   "disabled",
-  "readOnly",
+  "readonly",
   "required",
   "open",
 ];

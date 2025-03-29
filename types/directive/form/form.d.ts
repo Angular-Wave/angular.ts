@@ -1,5 +1,6 @@
 export function setupValidity(instance: any): void;
 export namespace nullFormCtrl {
+    let $nonscope: boolean;
     function $addControl(): void;
     function $getControls(): any[];
     function $$renameControl(control: any, name: any): void;
@@ -56,6 +57,7 @@ export const PENDING_CLASS: "ng-pending";
  *
  */
 export class FormController {
+    static $nonscope: boolean;
     static $inject: string[];
     /**
      * @param {Element} $element

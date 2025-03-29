@@ -43,17 +43,9 @@ export type Controller = {
      * Called on each controller after all the controllers on an element have been constructed and had their bindings
      * initialized (and before the pre & post linking functions for the directives on this element). This is a good
      * place to put initialization code for your controller.
+     * *
      */
     $onInit?: () => void;
-    /**
-     * Called on each turn of the digest cycle. Provides an opportunity to detect and act on changes.
-     * Any actions that you wish to take in response to the changes that you detect must be invoked from this hook;
-     * implementing this has no effect on when `$onChanges` is called. For example, this hook could be useful if you wish
-     * to perform a deep equality check, or to check a `Date` object, changes to which would not be detected by Angular's
-     * change detector and thus not trigger `$onChanges`. This hook is invoked with no arguments; if detecting changes,
-     * you must store the previous value(s) for comparison to the current values.
-     */
-    $doCheck?: () => void;
     /**
      * Called whenever one-way bindings are updated. The onChangesObj is a hash whose keys are the names of the bound
      * properties that have changed, and the values are an {@link IChangesObject} object  of the form

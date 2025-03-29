@@ -26,6 +26,7 @@ export type ModelOptionsConfig = {
  * A container for the options set by the {@link ngModelOptions} directive
  */
 declare class ModelOptions {
+    static $nonscope: boolean;
     /**
      * @param {ModelOptionsConfig} options
      */

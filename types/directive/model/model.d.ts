@@ -46,17 +46,18 @@ export const ngModelMinErr: (arg0: string, ...arg1: any[]) => Error;
  * @property {string} $name The name attribute of the control.
  */
 export class NgModelController {
+    static $nonscope: boolean;
     static $inject: string[];
     /**
      * @param {import('../../core/scope/scope.js').Scope} $scope
      * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
      * @param {import('../../core/compile/attributes.js').Attributes} $attr
-     * @param {import('../../shared/dom.js').JQLite} $element
+     * @param {Element} $element
      * @param {import("../../core/parse/parse.js").ParseService} $parse
      * @param {*} $animate
      * @param {*} $interpolate
      */
-    constructor($scope: import("../../core/scope/scope.js").Scope, $exceptionHandler: import("../../core/exception-handler.js").ErrorHandler, $attr: import("../../core/compile/attributes.js").Attributes, $element: import("../../shared/dom.js").JQLite, $parse: import("../../core/parse/parse.js").ParseService, $animate: any, $interpolate: any);
+    constructor($scope: import("../../core/scope/scope.js").Scope, $exceptionHandler: import("../../core/exception-handler.js").ErrorHandler, $attr: import("../../core/compile/attributes.js").Attributes, $element: Element, $parse: import("../../core/parse/parse.js").ParseService, $animate: any, $interpolate: any);
     /** @type {any} The actual value from the control's view  */
     $viewValue: any;
     /** @type {any} The value in the model that the control is bound to. */
@@ -84,6 +85,7 @@ export class NgModelController {
     $pending: any;
     $name: any;
     $$parentForm: {
+        $nonscope: boolean;
         $addControl: () => void;
         $getControls: () => any[];
         $$renameControl: (control: any, name: any) => void;
@@ -108,7 +110,7 @@ export class NgModelController {
     /** @type {import("../../core/parse/parse").CompiledExpression|((Scope) => any)} */
     $$ngModelGet: import("../../core/parse/parse").CompiledExpression | ((Scope: any) => any);
     $$ngModelSet: (arg0: any, arg1: any) => any;
-    $$pendingDebounce: number;
+    $$pendingDebounce: NodeJS.Timeout;
     $$parserValid: boolean;
     /** @type {string} */
     $$parserName: string;
@@ -119,12 +121,13 @@ export class NgModelController {
     /** @type {import('../../core/scope/scope.js').Scope} */
     $$rootScope: import("../../core/scope/scope.js").Scope;
     $$attr: import("../../core/compile/attributes.js").Attributes;
-    $$element: any;
+    $$element: Element;
     $$animate: any;
     $$parse: import("../../core/parse/parse.js").ParseService;
     $$exceptionHandler: import("../../core/exception-handler.js").ErrorHandler;
     $$hasNativeValidators: boolean;
     $$classCache: {};
+    $$eventRemovers: Set<any>;
     set(object: any, property: any): void;
     unset(object: any, property: any): void;
     $setValidity(validationErrorKey: any, state: any): void;
@@ -490,5 +493,6 @@ export class NgModelController {
      * This method is called internally when the bound scope value changes.
      */
     $$setModelValue(modelValue: any): void;
+    $$removeAllEventListeners(): void;
     $$setUpdateOnEvents(): void;
 }
