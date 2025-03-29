@@ -275,7 +275,7 @@ export let ngView = [
               });
               cleanupLastView();
             });
-            currentEl = cloned;
+            currentEl = cloned[0];
             currentScope = newScope;
             /**
              * Fired once the view is **loaded**, *after* the DOM is rendered.

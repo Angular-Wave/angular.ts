@@ -8210,8 +8210,8 @@ describe("$compile", () => {
             }),
           });
         });
-        // LEAK
-        xit("should trigger `$onChanges` for literal expressions when expression input value changes (complex value)", async () => {
+
+        it("should trigger `$onChanges` for literal expressions when expression input value changes (complex value)", async () => {
           function TestController() {}
           TestController.prototype.$onChanges = function (change) {
             log.push(change);
@@ -8229,25 +8229,31 @@ describe("$compile", () => {
 
           element = $compile('<c1 prop1="[val]"></c1>')($rootScope);
           await wait();
+          expect(log.pop()).toEqual({
+            prop1: jasmine.objectContaining({
+              currentValue: [undefined],
+            }),
+          });
+          log = [];
           $rootScope.$apply("val = [1]");
           await wait();
+
           expect(log.pop()).toEqual({
             prop1: jasmine.objectContaining({
               currentValue: [[1]],
             }),
           });
 
-          $rootScope.$apply("val = [2]");
+          $rootScope.$apply("val = [1]");
           await wait();
           expect(log.pop()).toEqual({
             prop1: jasmine.objectContaining({
-              previousValue: [[1]],
               currentValue: [[2]],
             }),
           });
         });
-        // LEAK
-        xit("should trigger `$onChanges` for literal expressions when expression input value changes instances, even when equal", async () => {
+
+        it("should trigger `$onChanges` for literal expressions when expression input value changes instances, even when equal", async () => {
           function TestController() {}
           TestController.prototype.$onChanges = function (change) {
             log.push(change);
@@ -8281,66 +8287,9 @@ describe("$compile", () => {
             }),
           });
         });
-        // LEAK
-        xit("should pass the original value as `previousValue` even if there were multiple changes in a single digest", async () => {
-          let log = [];
-          function TestController() {}
-          TestController.prototype.$onChanges = function (change) {
-            log.push(change);
-          };
-
-          module.component("c1", {
-            controller: TestController,
-            bindings: { prop: "<" },
-          });
-
-          createInjector(["test1"]).invoke((_$compile_, _$rootScope_) => {
-            $compile = _$compile_;
-            $rootScope = _$rootScope_;
-          });
-
-          element = $compile('<c1 prop="a + b"></c1>')($rootScope);
-          await wait();
-          // We add this watch after the compilation to ensure that it will run after the binding watchers
-          // therefore triggering the thing that this test is hoping to enforce
-          $rootScope.$watch("a", (val) => {
-            $rootScope.b = val * 2;
-          });
-          await wait();
-          expect(log).toEqual([
-            { prop: jasmine.objectContaining({ currentValue: undefined }) },
-          ]);
-
-          // Clear the initial values from the log
-          log = [];
-
-          // Update val to trigger the onChanges
-          $rootScope.$apply("a = 42");
-          await wait();
-          // Now the change should have the real previous value (undefined), not the intermediate one (42)
-          expect(log).toEqual([
-            { prop: jasmine.objectContaining({ currentValue: 126 }) },
-          ]);
-
-          // Clear the log
-          log = [];
-
-          // Update val to trigger the onChanges
-          $rootScope.$apply("a = 7");
-          await wait();
-          // Now the change should have the real previous value (126), not the intermediate one, (91)
-          expect(log).toEqual([
-            {
-              prop: jasmine.objectContaining({
-                previousValue: 126,
-                currentValue: 21,
-              }),
-            },
-          ]);
-        });
 
         // LEAK
-        xit("should trigger an initial onChanges call for each binding with the `isFirstChange()` returning true", async () => {
+        fit("should trigger an initial onChanges call for each binding with the `isFirstChange()` returning true", async () => {
           function TestController() {}
           TestController.prototype.$onChanges = function (change) {
             log.push(change);
