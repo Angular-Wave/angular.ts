@@ -331,6 +331,7 @@ export class Scope {
       }
 
       if (oldValue !== value) {
+        let expectedTarget = this.$target;
         let listeners = [];
         // Handle the case where we need to start observing object after a watcher has been set
         if (isUndefined(oldValue) && isObject(target[property])) {
@@ -340,7 +341,7 @@ export class Scope {
           for (const k of Object.keys(value)) {
             this.watchers.get(k)?.forEach((l) => listeners.push(l));
             // overwhrite the context so we pass the owneship test in filter
-            target = value;
+            expectedTarget = value;
           }
         }
 
@@ -359,8 +360,7 @@ export class Scope {
               const expectedHandler = $parse(wrapperExpr)(
                 x.originalTarget,
               )?.$handler;
-              const expectedTarget = expectedHandler?.$target;
-              return expectedTarget === target;
+              return expectedTarget === expectedHandler?.$target;
             });
           });
         }

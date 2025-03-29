@@ -628,55 +628,51 @@ describe("ngModel", () => {
           expect(ctrl.$render).toHaveBeenCalled();
         });
 
-        // TODO
-        // it("should add the validation and empty-state classes", () => {
-        //   const input = $compile(
-        //     '<input name="myControl" maxlength="1" ng-model="value" >',
-        //   )($rootScope);
-        //   ;
+        it("should add the validation and empty-state classes", async () => {
+          const input = $compile(
+            '<input name="myControl" maxlength="1" ng-model="value" >',
+          )($rootScope);
+          await wait();
 
-        //   spyOn($animate, "addClass");
-        //   spyOn($animate, "removeClass");
+          //const ctrl = getController(input, "ngModel");
 
-        //   const ctrl = input.controller("ngModel");
+          expect(input.classList.contains("ng-empty")).toBeTrue();
+          expect(input.classList.contains("ng-valid")).toBeTrue();
 
-        //   expect(input[0].classList.contains("ng-empty")).toBeTrue();
-        //   expect(input[0].classList.contains("ng-valid")).toBeTrue();
+          // setModelValue(ctrl, 3);
+          // ctrl.$processModelValue();
 
-        //   setModelValue(ctrl, 3);
-        //   ctrl.$processModelValue();
+          // // $animate adds / removes classes in the $postUpdate, which
+          // // we cannot trigger with $digest, because that would set the model from the scope,
+          // // so we simply check if the functions have been called
+          // expect($animate.removeClass.calls.mostRecent().args[0][0]).toBe(
+          //   input[0],
+          // );
+          // expect($animate.removeClass.calls.mostRecent().args[1]).toBe(
+          //   "ng-empty",
+          // );
 
-        //   // $animate adds / removes classes in the $postUpdate, which
-        //   // we cannot trigger with $digest, because that would set the model from the scope,
-        //   // so we simply check if the functions have been called
-        //   expect($animate.removeClass.calls.mostRecent().args[0][0]).toBe(
-        //     input[0],
-        //   );
-        //   expect($animate.removeClass.calls.mostRecent().args[1]).toBe(
-        //     "ng-empty",
-        //   );
+          // expect($animate.addClass.calls.mostRecent().args[0][0]).toBe(
+          //   input[0],
+          // );
+          // expect($animate.addClass.calls.mostRecent().args[1]).toBe(
+          //   "ng-not-empty",
+          // );
 
-        //   expect($animate.addClass.calls.mostRecent().args[0][0]).toBe(
-        //     input[0],
-        //   );
-        //   expect($animate.addClass.calls.mostRecent().args[1]).toBe(
-        //     "ng-not-empty",
-        //   );
+          // $animate.removeClass.calls.reset();
+          // $animate.addClass.calls.reset();
 
-        //   $animate.removeClass.calls.reset();
-        //   $animate.addClass.calls.reset();
+          // setModelValue(ctrl, 35);
+          // ctrl.$processModelValue();
 
-        //   setModelValue(ctrl, 35);
-        //   ctrl.$processModelValue();
+          // expect($animate.addClass.calls.argsFor(1)[0][0]).toBe(input[0]);
+          // expect($animate.addClass.calls.argsFor(1)[1]).toBe("ng-invalid");
 
-        //   expect($animate.addClass.calls.argsFor(1)[0][0]).toBe(input[0]);
-        //   expect($animate.addClass.calls.argsFor(1)[1]).toBe("ng-invalid");
-
-        //   expect($animate.addClass.calls.argsFor(2)[0][0]).toBe(input[0]);
-        //   expect($animate.addClass.calls.argsFor(2)[1]).toBe(
-        //     "ng-invalid-maxlength",
-        //   );
-        // });
+          // expect($animate.addClass.calls.argsFor(2)[0][0]).toBe(input[0]);
+          // expect($animate.addClass.calls.argsFor(2)[1]).toBe(
+          //   "ng-invalid-maxlength",
+          // );
+        });
 
         // this is analogue to $setViewValue
         it("should run the model -> view pipeline even if the value has not changed", () => {
@@ -1581,7 +1577,7 @@ describe("ngModel", () => {
       scope = injector.get("$rootScope");
     }
 
-    xit("should use them after the builtin ones for text inputs", async () => {
+    it("should use them after the builtin ones for text inputs", async () => {
       createInput("text");
       scope.val = { part: "a" };
       await wait();
@@ -1592,7 +1588,7 @@ describe("ngModel", () => {
       expect(scope.val).toEqual({ part: "b" });
     });
 
-    xit("should use them after the builtin ones for number inputs", async () => {
+    it("should use them after the builtin ones for number inputs", async () => {
       createInput("number");
       scope.$apply("val = {part: 1}");
       await wait();
@@ -1603,7 +1599,7 @@ describe("ngModel", () => {
       expect(scope.val).toEqual({ part: 2 });
     });
 
-    xit("should use them after the builtin ones for date inputs", async () => {
+    it("should use them after the builtin ones for date inputs", async () => {
       createInput("date");
       scope.val = { part: "2000-11-08" };
       await wait();

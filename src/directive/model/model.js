@@ -23,6 +23,7 @@ import {
 import { nullFormCtrl, PENDING_CLASS } from "../form/form.js";
 import { defaultModelOptions } from "../model-options/model-options.js";
 import { startingTag } from "../../shared/dom.js";
+import { isProxy } from "../../core/scope/scope.js";
 
 export const ngModelMinErr = minErr("ngModel");
 
@@ -165,6 +166,8 @@ export class NgModelController {
     const isValid = this.$$element.classList.contains(VALID_CLASS);
     this.$$classCache[VALID_CLASS] = isValid;
     this.$$classCache[INVALID_CLASS] = !isValid;
+
+    this.$$eventRemovers = new Set();
 
     setupModelWatcher(this);
   }
@@ -886,7 +889,9 @@ export class NgModelController {
    *
    */
   $overrideModelOptions(options) {
+    this.$$removeAllEventListeners();
     this.$options = this.$options.createChild(options);
+    this.$$updateEvents = this.$options.$$options.updateOn;
     this.$$setUpdateOnEvents();
   }
 
@@ -1031,22 +1036,31 @@ export class NgModelController {
     this.$processModelValue();
   }
 
+  $$removeAllEventListeners() {
+    this.$$eventRemovers.forEach((removeCallback) => removeCallback());
+    this.$$eventRemovers.clear();
+  }
+
   $$setUpdateOnEvents() {
     if (this.$$updateEvents) {
-      this.$$element.addEventListener(
-        this.$$updateEvents,
-        this.$$updateEventHandler,
-      );
+      this.$$updateEvents.split(" ").forEach((ev) => {
+        this.$$element.addEventListener(ev, this.$$updateEventHandler);
+        this.$$eventRemovers.add(() =>
+          this.$$element.removeEventListener(ev, this.$$updateEventHandler),
+        );
+      });
     }
 
     this.$$updateEvents = /** @type {string} */ (
       this.$options.getOption("updateOn")
     );
     if (this.$$updateEvents) {
-      this.$$element.addEventListener(
-        this.$$updateEvents,
-        this.$$updateEventHandler,
-      );
+      this.$$updateEvents.split(" ").forEach((ev) => {
+        this.$$element.addEventListener(ev, this.$$updateEventHandler);
+        this.$$eventRemovers.add(() =>
+          this.$$element.removeEventListener(ev, this.$$updateEventHandler),
+        );
+      });
     }
   }
 
@@ -1116,7 +1130,7 @@ export function ngModelDirective() {
               }
             });
             let deregisterWatch = scope.$watch(attr["ngModel"], (val) => {
-              modelCtrl.$$setModelValue(val);
+              modelCtrl.$$setModelValue(isProxy(val) ? val.$target : val);
             });
 
             scope.$on("$destroy", () => {
@@ -1134,8 +1148,7 @@ export function ngModelDirective() {
 
             element.addEventListener("blur", () => {
               if (modelCtrl.$touched) return;
-
-              scope.$apply(setTouched);
+              setTouched();
             });
           },
         };
