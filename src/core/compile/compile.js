@@ -1369,13 +1369,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   $exceptionHandler(e);
                 }
               }
-              if (isFunction(controllerInstance.$doCheck)) {
-                // this will throw
-                controllerScope.$watch(() => {
-                  controllerInstance.$doCheck();
-                });
-                controllerInstance.$doCheck();
-              }
               if (isFunction(controllerInstance.$onDestroy)) {
                 controllerScope.$on("$destroy", () => {
                   controllerInstance.$onDestroy();

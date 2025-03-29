@@ -8059,86 +8059,6 @@ describe("$compile", () => {
         });
       });
 
-      describe("$doCheck", () => {
-        xit("should call `$doCheck`, if provided, for each digest cycle, after $onChanges and $onInit", async () => {
-          function TestController() {}
-          TestController.prototype.$doCheck = () => {
-            log.push("$doCheck");
-          };
-          TestController.prototype.$onChanges = () => {
-            log.push("$onChanges");
-          };
-          TestController.prototype.$onInit = () => {
-            log.push("$onInit");
-          };
-
-          module.component("dcc", {
-            controller: TestController,
-            bindings: { prop1: "<" },
-          });
-
-          createInjector(["test1"]).invoke((_$compile_, _$rootScope_) => {
-            $compile = _$compile_;
-            $rootScope = _$rootScope_;
-          });
-          element = $compile('<dcc prop1="val"></dcc>')($rootScope);
-          await wait();
-          expect(log).toEqual(["$onChanges", "$onInit", "$doCheck"]);
-
-          // Clear log
-          log = [];
-
-          await wait();
-          expect(log).toEqual(["$doCheck", "$doCheck"]);
-
-          //Clear log
-          log = [];
-
-          $rootScope.$apply("val = 2");
-          expect(log).toEqual(["$doCheck", "$onChanges", "$doCheck"]);
-        });
-
-        xit("should work if $doCheck is provided in the constructor", async () => {
-          function TestController() {
-            this.$doCheck = () => {
-              log.push("$doCheck");
-            };
-            this.$onChanges = () => {
-              log.push("$onChanges");
-            };
-            this.$onInit = () => {
-              log.push("$onInit");
-            };
-          }
-
-          module.component("dcc", {
-            controller: TestController,
-            bindings: { prop1: "<" },
-          });
-
-          createInjector(["test1"]).invoke((_$compile_, _$rootScope_) => {
-            $compile = _$compile_;
-            $rootScope = _$rootScope_;
-          });
-
-          element = $compile('<dcc prop1="val"></dcc>')($rootScope);
-          await wait();
-          expect(log).toEqual(["$onChanges", "$onInit", "$doCheck"]);
-
-          // Clear log
-          log = [];
-
-          await wait();
-          expect(log).toEqual(["$doCheck", "$doCheck"]);
-
-          // Clear log
-          log = [];
-
-          $rootScope.$apply("val = 2");
-          expect(log).toEqual(["$doCheck", "$onChanges", "$doCheck"]);
-        });
-      });
-
       describe("$onChanges", () => {
         it("should call `$onChanges`, if provided, when a one-way (`<`) or interpolation (`@`) bindings are updated", async () => {
           function TestController() {}
@@ -9950,12 +9870,12 @@ describe("$compile", () => {
             expect(componentScope.owRef).toEqual({ name: "c" });
           });
 
-          xit("should work for primitive literals", () => {
-            test("1", 1);
-            test("null", null);
-            test("undefined", undefined);
-            test("'someString'", "someString");
-            test("true", true);
+          it("should work for primitive literals", async () => {
+            await test("1", 1);
+            await test("null", null);
+            await test("undefined", undefined);
+            await test("'someString'", "someString");
+            await test("true", true);
 
             async function test(literalString, literalValue) {
               $compile(`<div><span my-component ow-ref="${literalString}">`)(
@@ -9963,7 +9883,6 @@ describe("$compile", () => {
               );
               await wait();
               expect(componentScope.owRef).toBe(literalValue);
-              dealoc(element);
             }
           });
 
@@ -10749,7 +10668,7 @@ describe("$compile", () => {
             scope: true,
             controllerAs: "fooCtrl",
             controller() {
-              this.$onInit = () => {
+              this.$onInit = function () {
                 expect(this.data).toEqual({ foo: "bar", baz: "biz" });
                 expect(this.oneway).toEqual({ foo: "bar", baz: "biz" });
                 expect(this.str).toBe("Hello, world!");
@@ -10768,7 +10687,7 @@ describe("$compile", () => {
             scope: true,
             controllerAs: "barCtrl",
             controller() {
-              this.$onInit = () => {
+              this.$onInit = function () {
                 expect(this.data).toEqual({ foo2: "bar2", baz2: "biz2" });
                 expect(this.oneway).toEqual({ foo2: "bar2", baz2: "biz2" });
                 expect(this.str).toBe("Hello, second world!");
@@ -11432,7 +11351,7 @@ describe("$compile", () => {
         expect(siblingController).toEqual(jasmine.any(SiblingController));
       });
 
-      xit("should use the key if the name of a required controller is omitted", async () => {
+      it("should use the key if the name of a required controller is omitted", async () => {
         function ParentController() {
           this.name = "Parent";
         }
@@ -11498,7 +11417,7 @@ describe("$compile", () => {
         element = $compile(template)($rootScope);
         await wait();
 
-        const ctrl1 = getController(element.querySelector("me"), "me");
+        const ctrl1 = getController(element.querySelectorAll("me")[0], "me");
         expect(ctrl1.parent).toEqual(jasmine.any(ParentController));
         expect(ctrl1.parentOpt).toEqual(jasmine.any(ParentOptController));
         expect(ctrl1.parentOrSibling1).toEqual(
@@ -11516,7 +11435,7 @@ describe("$compile", () => {
         expect(ctrl1.sibling).toEqual(jasmine.any(SiblingController));
         expect(ctrl1.siblingOpt).toEqual(jasmine.any(SiblingOptController));
 
-        const ctrl2 = getController(element.querySelector("me"), "me");
+        const ctrl2 = getController(element.querySelectorAll("me")[1], "me");
         expect(ctrl2.parent).toEqual(jasmine.any(ParentController));
         expect(ctrl2.parentOpt).toBe(null);
         expect(ctrl2.parentOrSibling1).toEqual(
