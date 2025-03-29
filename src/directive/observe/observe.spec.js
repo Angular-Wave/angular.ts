@@ -59,7 +59,7 @@ describe("observe", () => {
     expect($scope.myProp).toBe("newValue");
   });
 
-  it("should not trigger digest cycle if the attribute value is unchanged", () => {
+  it("should not update the model if the attribute value is unchanged", () => {
     $scope.myProp = "existingValue";
     createDirective("test-attribute", "myProp");
     const mutationObserverCallback =
