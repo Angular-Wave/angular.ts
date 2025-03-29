@@ -1,6 +1,6 @@
 import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
-import { dealoc } from "../../shared/dom.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ngSrc", () => {
   let $scope;
@@ -16,59 +16,56 @@ describe("ngSrc", () => {
     });
   });
 
-  afterEach(() => {
-    dealoc(element);
-  });
-
   describe("img[ng-src]", () => {
-    it("should not result empty string in img src", () => {
+    it("should not result empty string in img src", async () => {
       $scope.image = {};
       element = $compile('<img ng-src="{{image.url}}">')($scope);
-      expect(element.attr("src")).not.toBe("");
-      expect(element.attr("src")).toBeUndefined();
+      await wait();
+      expect(element.getAttribute("src")).not.toBe("");
+      expect(element.getAttribute("src")).toBeNull();
     });
 
-    it("should sanitize interpolated url", () => {
+    it("should sanitize interpolated url", async () => {
       $scope.imageUrl = "javascript:alert(1);";
       element = $compile('<img ng-src="{{imageUrl}}">')($scope);
-      expect(element.attr("src")).toBe("unsafe:javascript:alert(1);");
+      await wait();
+      expect(element.getAttribute("src")).toBe("unsafe:javascript:alert(1);");
     });
 
-    it("should sanitize non-interpolated url", () => {
+    it("should sanitize non-interpolated url", async () => {
       element = $compile('<img ng-src="javascript:alert(1);">')($scope);
-      expect(element.attr("src")).toBe("unsafe:javascript:alert(1);");
+      expect(element.getAttribute("src")).toBe("unsafe:javascript:alert(1);");
     });
 
-    it("should interpolate the expression and bind to src with raw same-domain value", () => {
+    it("should interpolate the expression and bind to src with raw same-domain value", async () => {
       element = $compile('<img ng-src="{{id}}"></img>')($scope);
+      expect(element.getAttribute("src")).toBeNull();
 
-      expect(element.attr("src")).toBeUndefined();
-
-      $scope.$apply(() => {
-        $scope.id = "/somewhere/here";
-      });
-      expect(element.attr("src")).toEqual("/somewhere/here");
+      $scope.id = "/somewhere/here";
+      await wait();
+      expect(element.getAttribute("src")).toEqual("/somewhere/here");
     });
 
-    it("should interpolate a multi-part expression for img src attribute (which requires the MEDIA_URL context)", () => {
+    it("should interpolate a multi-part expression for img src attribute (which requires the MEDIA_URL context)", async () => {
       element = $compile('<img ng-src="some/{{id}}"></img>')($scope);
-      expect(element.attr("src")).toBe(undefined); // URL concatenations are all-or-nothing
-      $scope.$apply(() => {
-        $scope.id = 1;
-      });
-      expect(element.attr("src")).toEqual("some/1");
+      await wait();
+      expect(element.getAttribute("src")).toBeNull(); // URL concatenations are all-or-nothing
+      $scope.id = 1;
+      await wait();
+      expect(element.getAttribute("src")).toEqual("some/1");
     });
 
-    it("should work with `src` attribute on the same element", () => {
+    it("should work with `src` attribute on the same element", async () => {
       $scope.imageUrl = "dynamic";
       element = $compile('<img ng-src="{{imageUrl}}" src="static">')($scope);
-      expect(element.attr("src")).toBe("static");
-      expect(element.attr("src")).toBe("dynamic");
-      dealoc(element);
+      expect(element.getAttribute("src")).toBe("static");
+      await wait();
+      expect(element.getAttribute("src")).toBe("dynamic");
 
       element = $compile('<img src="static" ng-src="{{imageUrl}}">')($scope);
-      expect(element.attr("src")).toBe("static");
-      expect(element.attr("src")).toBe("dynamic");
+      expect(element.getAttribute("src")).toBe("static");
+      await wait();
+      expect(element.getAttribute("src")).toBe("dynamic");
     });
   });
 
@@ -77,10 +74,18 @@ describe("ngSrc", () => {
     let $compile;
     let element;
     let $sce;
+    let error;
 
     beforeEach(() => {
+      error = undefined;
       window.angular = new Angular();
-      window.angular.module("myModule", ["ng"]);
+      window.angular
+        .module("myModule", ["ng"])
+        .decorator("$exceptionHandler", () => {
+          return (exception, cause) => {
+            error = exception;
+          };
+        });
       createInjector(["myModule"]).invoke(($rootScope, _$compile_, _$sce_) => {
         $scope = $rootScope.$new();
         $compile = _$compile_;
@@ -88,34 +93,35 @@ describe("ngSrc", () => {
       });
     });
 
-    afterEach(() => {
-      dealoc(element);
-    });
-
     it("should pass through src attributes for the same domain", async () => {
       element = $compile('<iframe ng-src="{{testUrl}}"></iframe>')($scope);
       $scope.testUrl = "different_page";
       await wait();
-      expect(element.attr("src")).toEqual("different_page");
+      expect(element.getAttribute("src")).toEqual("different_page");
     });
 
     it("should error on src attributes for a different domain", async () => {
       element = $compile('<iframe ng-src="{{testUrl}}"></iframe>')($scope);
       $scope.testUrl = "http://a.different.domain.example.com";
       await wait();
-      expect($scope.$apply).toThrowError();
+
+      expect(error).toBeDefined();
     });
 
-    it("should error on JS src attributes", () => {
+    it("should error on JS src attributes", async () => {
       element = $compile('<iframe ng-src="{{testUrl}}"></iframe>')($scope);
       $scope.testUrl = "javascript:alert(1);";
-      expect($scope.$apply).toThrowError();
+      await wait();
+
+      expect(error).toBeDefined();
     });
 
-    it("should error on non-resource_url src attributes", () => {
+    it("should error on non-resource_url src attributes", async () => {
       element = $compile('<iframe ng-src="{{testUrl}}"></iframe>')($scope);
       $scope.testUrl = $sce.trustAsUrl("javascript:doTrustedStuff()");
-      expect($scope.$apply).toThrowError();
+      await wait();
+
+      expect(error).toBeDefined();
     });
 
     it("should pass through $sce.trustAs() values in src attributes", async () => {
@@ -123,30 +129,35 @@ describe("ngSrc", () => {
       $scope.testUrl = $sce.trustAsResourceUrl("javascript:doTrustedStuff()");
       await wait();
 
-      expect(element.attr("src")).toEqual("javascript:doTrustedStuff()");
+      expect(element.getAttribute("src")).toEqual(
+        "javascript:doTrustedStuff()",
+      );
     });
 
-    it("should interpolate the expression and bind to src with a trusted value", () => {
+    it("should interpolate the expression and bind to src with a trusted value", async () => {
       element = $compile('<iframe ng-src="{{id}}"></iframe>')($scope);
 
-      expect(element.attr("src")).toBeUndefined();
+      expect(element.getAttribute("src")).toBeNull();
 
-      $scope.$apply(() => {
-        $scope.id = $sce.trustAsResourceUrl("http://somewhere");
-      });
-      expect(element.attr("src")).toEqual("http://somewhere");
+      $scope.id = $sce.trustAsResourceUrl("http://somewhere");
+      await wait();
+      expect(element.getAttribute("src")).toEqual("http://somewhere");
     });
 
-    it("should NOT interpolate a multi-part expression in a `src` attribute that requires a non-MEDIA_URL context", () => {
+    it("should NOT interpolate a multi-part expression in a `src` attribute that requires a non-MEDIA_URL context", async () => {
       element = $compile('<iframe ng-src="some/{{id}}"></iframe>')($scope);
       $scope.id = 1;
-      expect($scope.$apply).toThrowError();
+      await wait();
+
+      expect(error).toBeDefined();
     });
 
-    it("should NOT interpolate a wrongly typed expression", () => {
+    it("should NOT interpolate a wrongly typed expression", async () => {
       element = $compile('<iframe ng-src="{{id}}"></iframe>')($scope);
       $scope.id = $sce.trustAsUrl("http://somewhere");
-      expect($scope.$apply).toThrowError();
+      await wait();
+
+      expect(error).toBeDefined();
     });
   });
 });
