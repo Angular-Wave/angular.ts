@@ -1,5 +1,5 @@
 import { wait } from "../../shared/test-utils";
-import { $postUpdateQueue, createScope } from "./scope.js";
+import { $postUpdateQueue, createScope, isProxy } from "./scope.js";
 import { Angular } from "../../loader.js";
 import { createInjector } from "../di/injector.js";
 import { isDefined, sliceArgs } from "../../shared/utils.js";
@@ -100,6 +100,54 @@ describe("Scope", () => {
       }
       const res = createScope(new NonScope());
       expect(res.$id).toBeUndefined();
+    });
+
+    it("should ignore properties marked as $nonscope array", () => {
+      class ExcludePropertyScope {
+        constructor() {
+          this.a = {};
+          this.b = [];
+        }
+      }
+      let res = createScope(new ExcludePropertyScope());
+      expect(res.$id).toBeDefined();
+      expect(res.a.$id).toBeDefined();
+      expect(isProxy(res.a)).toBeTrue();
+
+      ExcludePropertyScope.$nonscope = ["a"];
+      res = createScope(new ExcludePropertyScope());
+      expect(res.$id).toBeDefined();
+      expect(res.a.$id).toBeUndefined();
+      expect(isProxy(res.a)).toBeFalse();
+      expect(isProxy(res.b)).toBeTrue();
+
+      ExcludePropertyScope.$nonscope = ["a", "b"];
+      res = createScope(new ExcludePropertyScope());
+      expect(res.$id).toBeDefined();
+      expect(res.a.$id).toBeUndefined();
+      expect(isProxy(res.a)).toBeFalse();
+      expect(isProxy(res.b)).toBeFalse();
+
+      res = createScope({
+        a: {},
+        b: [],
+      });
+      expect(res.$id).toBeDefined();
+      expect(res.a.$id).toBeDefined();
+      expect(res.b.$id).toBeDefined();
+      expect(isProxy(res.a)).toBeTrue();
+      expect(isProxy(res.b)).toBeTrue();
+
+      res = createScope({
+        a: {},
+        b: [],
+        $nonscope: ["a", "b"],
+      });
+      expect(res.$id).toBeDefined();
+      expect(res.a.$id).toBeUndefined();
+      expect(res.b.$id).toBeUndefined();
+      expect(isProxy(res.a)).toBeFalse();
+      expect(isProxy(res.b)).toBeFalse();
     });
   });
 

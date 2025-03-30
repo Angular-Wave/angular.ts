@@ -6,7 +6,7 @@
  */
 export class Angular {
     /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
-    Cache: Map<number, import("./core/cache/cache").ExpandoStore>;
+    Cache: Map<number, any>;
     /** @type {import('./core/pubsub/pubsub.js').PubSub} */
     EventBus: import("./core/pubsub/pubsub.js").PubSub;
     /** @type {string} */

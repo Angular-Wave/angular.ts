@@ -26,5 +26,3 @@ export class UIRouterGlobals {
     successfulTransitions: Queue;
     $get: (() => this)[];
 }
-import { StateParams } from "./params/state-params";
-import { Queue } from "./common/queue";

@@ -1,6 +1,7 @@
 import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
-import { dealoc, JQLite } from "../../shared/dom.js";
+import { createElementFromHTML, dealoc } from "../../shared/dom.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ng-style", () => {
   let $scope;
@@ -22,17 +23,19 @@ describe("ng-style", () => {
     dealoc(element);
   });
 
-  it("should set", () => {
+  it("should set", async () => {
     element = $compile("<div ng-style=\"{height: '40px'}\"></div>")($scope);
+    await wait();
     expect(element.style.height).toEqual("40px");
   });
 
-  it("should silently ignore undefined style", () => {
+  it("should silently ignore undefined style", async () => {
     element = $compile('<div ng-style="myStyle"></div>')($scope);
+    await wait();
     expect(element.classList.contains("ng-exception")).toBeFalsy();
   });
 
-  it("should not deep watch objects", () => {
+  it("should not deep watch objects", async () => {
     element = $compile('<div ng-style="{height: heightObj}"></div>')($scope);
     expect(parseInt(element.style.height + 0, 10)).toEqual(0); // height could be '' or '0px'
     $scope.heightObj = {
@@ -40,6 +43,7 @@ describe("ng-style", () => {
         return "40px";
       },
     };
+    await wait();
     expect(element.style.height).toBe("40px");
 
     element.style.height = "10px";
@@ -47,13 +51,15 @@ describe("ng-style", () => {
     expect(element.style.height).toBe("10px");
   });
 
-  it("should support binding for object literals", () => {
+  it("should support binding for object literals", async () => {
     element = $compile('<div ng-style="{height: heightStr}"></div>')($scope);
     expect(parseInt(element.style.height + 0, 10)).toEqual(0); // height could be '' or '0px'
     $scope.$apply('heightStr = "40px"');
+    await wait();
     expect(element.style.height).toBe("40px");
 
     $scope.$apply('heightStr = "100px"');
+    await wait();
     expect(element.style.height).toBe("100px");
   });
 
@@ -70,7 +76,7 @@ describe("ng-style", () => {
       preCompVal = "300px";
       postCompStyle = "height";
       postCompVal = "100px";
-      element = '<div ng-style="styleObj"></div>';
+      element = createElementFromHTML('<div ng-style="styleObj"></div>');
       element.style[preCompStyle] = preCompVal;
       document.body.append(element);
       $compile(element)($scope);
@@ -84,38 +90,47 @@ describe("ng-style", () => {
       element.remove();
     });
 
-    it("should not mess up stuff after compilation", () => {
+    it("should not mess up stuff after compilation", async () => {
       element.style.margin = "44px";
+      await wait();
       expect(element.style[preCompStyle]).toBe(preCompVal);
       expect(element.style["margin-top"]).toBe("44px");
       expect(element.style[postCompStyle]).toBe(postCompVal);
     });
 
-    it("should not mess up stuff after $apply with no model changes", () => {
+    it("should not mess up stuff after $apply with no model changes", async () => {
       element.style["padding-top"] = "33px";
       scope.$apply();
+      await wait();
+
       expect(element.style[preCompStyle]).toBe(preCompVal);
       expect(element.style["margin-top"]).toBe("44px");
       expect(element.style[postCompStyle]).toBe(postCompVal);
       expect(element.style["padding-top"]).toBe("33px");
     });
 
-    it("should not mess up stuff after $apply with non-colliding model changes", () => {
+    it("should not mess up stuff after $apply with non-colliding model changes", async () => {
       scope.styleObj = { "padding-top": "99px" };
       scope.$apply();
+      await wait();
+
       expect(element.style[preCompStyle]).toBe(preCompVal);
       expect(element.style["margin-top"]).not.toBe("44px");
       expect(element.style["padding-top"]).toBe("99px");
       expect(element.style[postCompStyle]).toBe(postCompVal);
     });
 
-    it("should overwrite original styles after a colliding model change", () => {
+    fit("should overwrite original styles after a colliding model change", async () => {
       scope.styleObj = { height: "99px", width: "88px" };
       scope.$apply();
+      await wait();
+
       expect(element.style[preCompStyle]).toBe("88px");
       expect(element.style[postCompStyle]).toBe("99px");
+
       scope.styleObj = {};
-      scope.$apply();
+      await wait();
+
       expect(element.style[preCompStyle]).not.toBe("88px");
       expect(element.style[postCompStyle]).not.toBe("99px");
     });

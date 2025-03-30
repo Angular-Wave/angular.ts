@@ -19,7 +19,7 @@ export class StateObject {
     $$state: () => this;
     self: any;
     __stateObjectCache: {
-        nameGlob: Glob;
+        nameGlob: any;
     };
     /**
      * Returns true if the provided parameter is the same state.
@@ -70,4 +70,3 @@ export namespace StateObject {
     /** Predicate which returns true if the object is an internal [[StateObject]] object */
     function isState(obj: any): boolean;
 }
-import { Glob } from "../common/glob";

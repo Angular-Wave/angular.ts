@@ -1,3 +1,3 @@
-export const ngClassDirective: (() => import("../../types").Directive)[];
-export const ngClassOddDirective: (() => import("../../types").Directive)[];
-export const ngClassEvenDirective: (() => import("../../types").Directive)[];
+export const ngClassDirective: (() => any)[];
+export const ngClassOddDirective: (() => any)[];
+export const ngClassEvenDirective: (() => any)[];

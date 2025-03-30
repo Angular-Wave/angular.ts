@@ -97,4 +97,3 @@ export class UrlConfigProvider {
      */
     type(name: any, definition: any, definitionFn: any): any;
 }
-import { ParamTypes } from "../params/param-types";

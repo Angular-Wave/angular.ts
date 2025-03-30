@@ -137,10 +137,10 @@ export function removeElement(element: Element, keepData?: boolean): void;
 export function startingTag(elementOrStr: string | Element | Node): string;
 /**
  * Return the DOM siblings between the first and last node in the given array.
- * @param {Element|Array} nodes An array-like object
+ * @param {Array<Node>} nodes An array-like object
  * @returns {Element} the inputted object or a JQLite collection containing the nodes
  */
-export function getBlockNodes(nodes: Element | any[]): Element;
+export function getBlockNodes(nodes: Array<Node>): Element;
 /**
  * Gets the name of a boolean attribute if it exists on a given element.
  *

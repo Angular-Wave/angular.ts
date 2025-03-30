@@ -25,7 +25,7 @@ export class TransitionProvider {
     /**
      * @param {import('../globals').UIRouterGlobals} globals
      */
-    constructor(globals: import("../globals").UIRouterGlobals, viewService: any);
+    constructor(globals: any, viewService: any);
     _transitionCount: number;
     /** The transition hook types, such as `onEnter`, `onStart`, etc */
     _eventTypes: any[];
@@ -33,7 +33,7 @@ export class TransitionProvider {
     _registeredHooks: {};
     /** The  paths on a criteria object */
     _criteriaPaths: {};
-    globals: import("../globals").UIRouterGlobals;
+    globals: any;
     $view: any;
     _deregisterHookFns: {};
     _pluginapi: any;
@@ -72,10 +72,10 @@ export class TransitionProvider {
      * @param targetState the target state (destination)
      * @returns a Transition
      */
-    create(fromPath: any, targetState: any): Transition;
+    create(fromPath: any, targetState: any): any;
     _defineCoreEvents(): void;
     _defineCorePaths(): void;
-    _defineEvent(name: any, hookPhase: any, hookOrder: any, criteriaMatchPath: any, reverseSort?: boolean, getResultHandler?: (hook: any) => (result: any) => any, getErrorHandler?: () => (error: any) => any, synchronous?: boolean): void;
+    _defineEvent(name: any, hookPhase: any, hookOrder: any, criteriaMatchPath: any, reverseSort?: boolean, getResultHandler?: any, getErrorHandler?: any, synchronous?: boolean): void;
     _getEvents(phase: any): any[];
     /**
      * Adds a Path to be used as a criterion against a TreeChanges path
@@ -95,4 +95,3 @@ export class TransitionProvider {
     getHooks(hookName: any): any;
     _registerCoreTransitionHooks(): void;
 }
-import { Transition } from "./transition";

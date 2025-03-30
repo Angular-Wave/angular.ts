@@ -1,6 +1,5 @@
 import {
   createElementFromHTML,
-  dealoc,
   getCacheData,
   setCacheData,
 } from "../../shared/dom.js";
@@ -18,8 +17,7 @@ describe("ngIf", () => {
     let angular;
 
     beforeEach(function () {
-      angular = new Angular();
-      window.angular = new Angular();
+      angular = window.angular = new Angular();
       window.angular.module("test", []);
       injector = window.angular.bootstrap(document.getElementById("dummy"), [
         "test",
@@ -33,10 +31,6 @@ describe("ngIf", () => {
         $compile = _$compile_;
         element = $compile("<div></div>")($scope);
       });
-    });
-
-    afterEach(() => {
-      dealoc(element);
     });
 
     function makeIf() {

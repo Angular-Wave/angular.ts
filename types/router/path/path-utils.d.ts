@@ -3,7 +3,7 @@
  * @param {Array<PathNode>} path
  * @returns
  */
-export function makeTargetState(registry: import("../state/state-registry.js").StateRegistryProvider, path: Array<PathNode>): TargetState;
+export function makeTargetState(registry: import("../state/state-registry.js").StateRegistryProvider, path: Array<PathNode>): any;
 /**
  * This class contains functions which convert TargetStates, Nodes and paths from one type to another.
  */
@@ -55,7 +55,7 @@ export class PathUtils {
      *
      * @returns an array of PathNodes from the first path which match the nodes in the second path
      */
-    static matching(pathA: any, pathB: any, paramsFn: any): any[];
+    static matching(pathA: any, pathB: any, paramsFn: any): any;
     /**
      * Returns true if two paths are identical.
      *
@@ -80,5 +80,3 @@ export class PathUtils {
     /** Gets the raw parameter values from a path */
     static paramValues(path: any): any;
 }
-import { PathNode } from "./path-node";
-import { TargetState } from "../state/target-state";

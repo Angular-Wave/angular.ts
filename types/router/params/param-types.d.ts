@@ -24,7 +24,7 @@
 export class ParamTypes {
     enqueue: boolean;
     typeQueue: any[];
-    defaultTypes: {};
+    defaultTypes: any;
     types: any;
     /**
      * Registers a parameter type

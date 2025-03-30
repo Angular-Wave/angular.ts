@@ -1,5 +1,5 @@
 export class TaskTrackerFactoryProvider {
-    $get: (string | ((log: import("../services/log").LogService) => TaskTracker))[];
+    $get: (string | ((log: any) => TaskTracker))[];
 }
 /**
  * A factory function to create `TaskTracker` instances.
@@ -11,7 +11,7 @@ export class TaskTracker {
     /**
      * @param {import('../services/log').LogService} log - The logging service.
      */
-    constructor(log: import("../services/log").LogService);
+    constructor(log: any);
     /** @private */
     private log;
     /** @private */

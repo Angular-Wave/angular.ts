@@ -16,8 +16,7 @@ export class StateQueueManager {
      * @type {Array<StateObject>}
      */
     queue: Array<StateObject>;
-    register(stateDecl: any): StateObject;
+    register(stateDecl: any): any;
     flush(): any;
     attachRoute(state: any): void;
 }
-import { StateObject } from "./state-object";

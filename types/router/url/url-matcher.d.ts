@@ -168,4 +168,3 @@ export class UrlMatcher {
 export namespace UrlMatcher {
     let nameValidator: RegExp;
 }
-import { Param } from "../params/param";

@@ -24,7 +24,7 @@ export namespace $StateRefDynamicDirective {
  * @param {*} $transitions
  * @returns {import("../../types").Directive}
  */
-export function $StateRefActiveDirective($state: any, $routerGlobals: any, $interpolate: any, $stateRegistry: any, $transitions: any): import("../../types").Directive;
+export function $StateRefActiveDirective($state: any, $routerGlobals: any, $interpolate: any, $stateRegistry: any, $transitions: any): any;
 export namespace $StateRefActiveDirective {
     let $inject_2: string[];
     export { $inject_2 as $inject };

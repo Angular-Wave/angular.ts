@@ -33,7 +33,15 @@ export const ngTranscludeDirective = [
         const fallbackLinkFn = $compile(tElement.childNodes);
         emptyElement(tElement);
 
-        return function ngTranscludePostLink(
+        /**
+         *
+         * @param {import("../../core/scope/scope.js").Scope} $scope
+         * @param {Element} $element
+         * @param {import("../../core/compile/attributes.js").Attributes} $attrs
+         * @param {*} controller
+         * @param {*} $transclude
+         */
+        function ngTranscludePostLink(
           $scope,
           $element,
           $attrs,
@@ -56,8 +64,18 @@ export const ngTranscludeDirective = [
           }
           const slotName = $attrs.ngTransclude || $attrs.ngTranscludeSlot;
 
-          // If the slot is required and no transclusion content is provided then this call will throw an error
-          $transclude(ngTranscludeCloneAttachFn, null, slotName);
+          // transcluded element may itself be transcluded, in which case we have to get the outer scope
+          if ($scope.$$transcluded === true) {
+            let currentScope = $scope;
+            while (currentScope.$$transcluded === true) {
+              currentScope = currentScope.$handler.$parent;
+            }
+            let outerScope = currentScope.$parent;
+            $transclude(outerScope, ngTranscludeCloneAttachFn, null, slotName);
+          } else {
+            // If the slot is required and no transclusion content is provided then this call will throw an error
+            $transclude(ngTranscludeCloneAttachFn, null, slotName);
+          }
 
           // If the slot is optional and no transclusion content is provided then use the fallback content
           if (slotName && !$transclude.isSlotFilled(slotName)) {
@@ -88,7 +106,9 @@ export const ngTranscludeDirective = [
               return true;
             }
           }
-        };
+        }
+
+        return ngTranscludePostLink;
       },
     };
   },

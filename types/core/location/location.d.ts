@@ -38,7 +38,7 @@ export class Location {
      */
     $$replace: boolean;
     /** @type {import('../url-utils/url-utils').HttpProtocol} */
-    $$protocol: import("../url-utils/url-utils").HttpProtocol;
+    $$protocol: any;
     /** @type {string} */
     $$host: string;
     /**
@@ -83,7 +83,7 @@ export class Location {
      * Return protocol of current URL.
      * @return {import("../url-utils/url-utils").HttpProtocol} protocol of current URL
      */
-    protocol(): import("../url-utils/url-utils").HttpProtocol;
+    protocol(): any;
     /**
      * This method is getter only.
      *
@@ -271,7 +271,7 @@ export class LocationProvider {
      * @returns {Html5Mode}
      */
     getHtml5Mode(): Html5Mode;
-    $get: (string | (($rootScope: import("../scope/scope.js").Scope, $browser: import("../../services/browser").Browser, $rootElement: Element) => Location))[];
+    $get: (string | (($rootScope: import("../scope/scope.js").Scope, $browser: any, $rootElement: Element) => Location))[];
 }
 export type DefaultPorts = {
     http: number;

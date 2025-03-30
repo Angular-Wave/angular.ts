@@ -2423,16 +2423,15 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             compile: () => (scope, node) => {
               interpolateFn.expressions.forEach((x) => {
                 scope.$watch(x, () => {
+                  const res = interpolateFn(
+                    isProxy(scope) ? scope.$target : scope,
+                  );
                   switch (node.nodeType) {
                     case 1:
-                      node.innerHTML = interpolateFn(
-                        isProxy(scope) ? scope.$target : scope,
-                      );
+                      node.innerHTML = res;
                       break;
                     default:
-                      node.nodeValue = interpolateFn(
-                        isProxy(scope) ? scope.$target : scope,
-                      );
+                      node.nodeValue = res;
                   }
                 });
               });

@@ -108,7 +108,7 @@ export class NgModelController {
     $$parsedNgModel: import("../../core/parse/parse.js").CompiledExpression;
     $$parsedNgModelAssign: (arg0: any, arg1: any) => any;
     /** @type {import("../../core/parse/parse").CompiledExpression|((Scope) => any)} */
-    $$ngModelGet: import("../../core/parse/parse").CompiledExpression | ((Scope: any) => any);
+    $$ngModelGet: any | ((Scope: any) => any);
     $$ngModelSet: (arg0: any, arg1: any) => any;
     $$pendingDebounce: NodeJS.Timeout;
     $$parserValid: boolean;

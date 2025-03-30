@@ -313,7 +313,7 @@ export class Transition {
      *
      * @returns Returns a new [[Transition]] instance.
      */
-    redirect(targetState: any): Transition;
+    redirect(targetState: any): any;
     /** @internal If a transition doesn't exit/enter any states, returns any [[Param]] whose value changed */
     _changedParams(): any;
     /**
@@ -332,7 +332,7 @@ export class Transition {
      * @returns true if the Transition is ignored.
      */
     ignored(): boolean;
-    _ignoredReason(): "SameAsPending" | "SameAsCurrent";
+    _ignoredReason(): "SameAsCurrent" | "SameAsPending";
     /**
      * Runs the transition
      *

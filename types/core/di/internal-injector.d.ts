@@ -43,7 +43,7 @@ declare class AbstractInjector {
     path: any[];
     /** @type {Object.<string, import("../../types").Module>} */
     modules: {
-        [x: string]: import("../../types").Module;
+        [x: string]: any;
     };
     /**
      * Get a service by name.

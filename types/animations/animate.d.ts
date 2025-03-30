@@ -273,7 +273,7 @@ export class AnimateProvider {
           </file>
         </example>
        */
-        cancel(runner: import("./animate-runner").AnimateRunner): void;
+        cancel(runner: any): void;
         /**
          * Inserts the element into the DOM either after the `after` element (if provided) or
          * as the first child within the `parent` element and then triggers an animation.
@@ -286,7 +286,7 @@ export class AnimateProvider {
          * @param {AnimationOptions} [options] - an optional collection of options/styles that will be applied to the element.
          * @returns {import('./animate-runner').AnimateRunner} the animation runner
          */
-        enter(element: Element, parent: Element, after: Element, options?: AnimationOptions): import("./animate-runner").AnimateRunner;
+        enter(element: Element, parent: Element, after: Element, options?: AnimationOptions): any;
         /**
          * Inserts (moves) the element into its new position in the DOM either after
          * the `after` element (if provided) or as the first child within the `parent` element
@@ -299,7 +299,7 @@ export class AnimateProvider {
          * @param {AnimationOptions} [options] - an optional collection of options/styles that will be applied to the element.
          * @returns {import('./animate-runner').AnimateRunner} the animation runner
          */
-        move(element: Element, parent: Element, after: Element, options?: AnimationOptions): import("./animate-runner").AnimateRunner;
+        move(element: Element, parent: Element, after: Element, options?: AnimationOptions): any;
         /**
          * Triggers an animation and then removes the element from the DOM.
          * When the function is called a promise is returned that will be resolved during the next
@@ -309,7 +309,7 @@ export class AnimateProvider {
          * @param {AnimationOptions} [options] an optional collection of options/styles that will be applied to the element.
          * @returns {import('./animate-runner').AnimateRunner} the animation runner
          */
-        leave(element: Element, options?: AnimationOptions): import("./animate-runner").AnimateRunner;
+        leave(element: Element, options?: AnimationOptions): any;
         /**
          * Triggers an addClass animation surrounding the addition of the provided CSS class(es). Upon
          * execution, the addClass operation will only be handled after the next digest and it will not trigger an
@@ -323,7 +323,7 @@ export class AnimateProvider {
          * @param {AnimationOptions} [options] an optional collection of options/styles that will be applied to the element.
          * @return {import('./animate-runner').AnimateRunner}} animationRunner the animation runner
          */
-        addClass(element: Element, className: string, options?: AnimationOptions): import("./animate-runner").AnimateRunner;
+        addClass(element: Element, className: string, options?: AnimationOptions): any;
         /**
          * Triggers a removeClass animation surrounding the removal of the provided CSS class(es). Upon
          * execution, the removeClass operation will only be handled after the next digest and it will not trigger an
@@ -337,7 +337,7 @@ export class AnimateProvider {
          * @param {AnimationOptions} [options] an optional collection of options/styles that will be applied to the element.         *
          * @return {import('./animate-runner').AnimateRunner} animationRunner the animation runner
          */
-        removeClass(element: Element, className: string, options?: AnimationOptions): import("./animate-runner").AnimateRunner;
+        removeClass(element: Element, className: string, options?: AnimationOptions): any;
         /**
          * Performs both the addition and removal of a CSS classes on an element and (during the process)
          * triggers an animation surrounding the class addition/removal. Much like `$animate.addClass` and
@@ -353,7 +353,7 @@ export class AnimateProvider {
          *
          * @return {import('./animate-runner').AnimateRunner} the animation runner
          */
-        setClass(element: Element, add: string, remove: string, options?: object | undefined): import("./animate-runner").AnimateRunner;
+        setClass(element: Element, add: string, remove: string, options?: object | undefined): any;
         /**
          * Performs an inline animation on the element which applies the provided to and from CSS styles to the element.
          * If any detected CSS transition, keyframe or JavaScript matches the provided className value, then the animation will take
@@ -375,7 +375,7 @@ export class AnimateProvider {
          * ```
          *  @return {import('./animate-runner').AnimateRunner} the animation runner
          */
-        animate(element: any, from: any, to: any, className: any, options: any): import("./animate-runner").AnimateRunner;
+        animate(element: any, from: any, to: any, className: any, options: any): any;
     }))[];
 }
 export namespace AnimateProvider {

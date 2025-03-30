@@ -1,5 +1,6 @@
 import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
+import { wait } from "../../shared/test-utils.js";
 import { dealoc } from "../../shared/dom.js";
 
 describe("validators", () => {
@@ -35,25 +36,25 @@ describe("validators", () => {
         '<input type="text" ng-model="value" ng-pattern="/^\\d\\d\\d-\\d\\d-\\d\\d\\d\\d$/" />',
       )($rootScope);
 
-      inputElm[0].setAttribute("value", "x000-00-0000x");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "x000-00-0000x");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "000-00-0000");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      inputElm.setAttribute("value", "000-00-0000");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "000-00-0000x");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "000-00-0000x");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "123-45-6789");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      inputElm.setAttribute("value", "123-45-6789");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "x");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "x");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
     });
 
     it("should listen on ng-pattern when pattern is changed", async () => {
@@ -64,7 +65,7 @@ describe("validators", () => {
 
       $rootScope.pat = patternVal;
       await wait();
-      expect(inputElm[0].getAttribute("ng-pattern")).toEqual("/^\\w+$/");
+      expect(inputElm.getAttribute("ng-pattern")).toEqual("/^\\w+$/");
     });
 
     it("should validate in-lined pattern with modifiers", () => {
@@ -72,13 +73,13 @@ describe("validators", () => {
         '<input type="text" ng-model="value" ng-pattern="/^abc?$/i" />',
       )($rootScope);
 
-      inputElm[0].setAttribute("value", "aB");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      inputElm.setAttribute("value", "aB");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "xx");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "xx");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
     });
 
     it("should validate pattern from scope", () => {
@@ -87,85 +88,86 @@ describe("validators", () => {
         '<input type="text" ng-model="value" ng-pattern="regexp" />',
       )($rootScope);
 
-      inputElm[0].setAttribute("value", "x000-00-0000x");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "x000-00-0000x");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "000-00-0000");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      inputElm.setAttribute("value", "000-00-0000");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "000-00-0000x");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "000-00-0000x");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "123-45-6789");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      inputElm.setAttribute("value", "123-45-6789");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "x");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "x");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
       $rootScope.$apply(() => {
         $rootScope.regexp = /abc?/;
       });
 
-      inputElm[0].setAttribute("value", "ab");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      inputElm.setAttribute("value", "ab");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "xx");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "xx");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
     });
 
-    it("should perform validations when the ngPattern scope value changes", () => {
+    it("should perform validations when the ngPattern scope value changes", async () => {
       $rootScope.regexp = /^[a-z]+$/;
       inputElm = $compile(
         '<input type="text" ng-model="value" ng-pattern="regexp" />',
       )($rootScope);
+      await wait();
+      inputElm.setAttribute("value", "abcdef");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "abcdef");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
-
-      inputElm[0].setAttribute("value", "123");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "123");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
       $rootScope.$apply(() => {
         $rootScope.regexp = /^\d+$/;
       });
+      await wait();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
-
-      inputElm[0].setAttribute("value", "abcdef");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "abcdef");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
       $rootScope.$apply(() => {
         $rootScope.regexp = "";
       });
 
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
 
     it('should register "pattern" with the model validations when the pattern attribute is used', async () => {
       const formElm = $compile(
         '<form name="form"><input type="text" name="input" ng-model="value" pattern="^\\d+$" /></form>',
       )($rootScope);
-      inputElm = formElm.find("input");
-
-      inputElm[0].value = "abcd";
-      inputElm[0].dispatchEvent(new Event("change"));
       await wait();
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm = formElm.querySelector("input");
+
+      inputElm.value = "abcd";
+      inputElm.dispatchEvent(new Event("change"));
+      await wait();
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
       expect($rootScope.form.input.$error.pattern).toBe(true);
 
-      inputElm[0].value = "12345";
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      inputElm.value = "12345";
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
       expect($rootScope.form.input.$error.pattern).not.toBe(true);
     });
 
@@ -194,79 +196,80 @@ describe("validators", () => {
       let formElm = $compile(
         '<form name="form"><input type="text" name="test" ng-model="value" pattern="\\d{4}"></form>',
       )($rootScope);
-      inputElm = formElm.find("input");
-      inputElm[0].setAttribute("value", "1234");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm = formElm.querySelector("input");
+      inputElm.setAttribute("value", "1234");
+      inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.form.test.$error.pattern).not.toBe(true);
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "123");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "123");
+      inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.form.test.$error.pattern).toBe(true);
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "12345");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "12345");
+      inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.form.test.$error.pattern).toBe(true);
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
     });
 
     it("should be cope with patterns that start with ^", () => {
       let formElm = $compile(
         '<form name="form"><input type="text" name="test" ng-model="value" pattern="^\\d{4}"></form>',
       )($rootScope);
-      inputElm = formElm.find("input");
-      inputElm[0].setAttribute("value", "1234");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm = formElm.querySelector("input");
+      inputElm.setAttribute("value", "1234");
+      inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.form.test.$error.pattern).not.toBe(true);
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "123");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "123");
+      inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.form.test.$error.pattern).toBe(true);
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "12345");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "12345");
+      inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.form.test.$error.pattern).toBe(true);
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
     });
 
-    it("should be cope with patterns that end with $", () => {
+    it("should be cope with patterns that end with $", async () => {
       let formElm = $compile(
         '<form name="form"><input type="text" name="test" ng-model="value" pattern="\\d{4}$"></form>',
       )($rootScope);
-      inputElm = formElm.find("input");
-      inputElm[0].setAttribute("value", "1234");
-      inputElm[0].dispatchEvent(new Event("change"));
+      await wait();
+      inputElm = formElm.querySelector("input");
+      inputElm.setAttribute("value", "1234");
+      inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.form.test.$error.pattern).not.toBe(true);
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "123");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "123");
+      inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.form.test.$error.pattern).toBe(true);
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "12345");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "12345");
+      inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.form.test.$error.pattern).toBe(true);
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
     });
 
     it("should validate the viewValue and not the modelValue", () => {
       let formElm = $compile(
         '<form name="form"><input type="text" name="test" ng-model="value" pattern="\\d{4}"></form>',
       )($rootScope);
-      inputElm = formElm.find("input");
+      inputElm = formElm.querySelector("input");
       const ctrl = inputElm.controller("ngModel");
 
       ctrl.$parsers.push((value) => `${value * 10}`);
 
-      inputElm[0].setAttribute("value", "1234");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "1234");
+      inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.form.test.$error.pattern).not.toBe(true);
       expect($rootScope.form.test.$modelValue).toBe("12340");
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
 
     it("should validate on non-input elements", () => {
@@ -297,30 +300,30 @@ describe("validators", () => {
         '<input type="text" ng-model="value" ng-minlength="3" />',
       )($rootScope);
 
-      inputElm[0].setAttribute("value", "aa");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "aa");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "aaa");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      inputElm.setAttribute("value", "aaa");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
 
     it("should observe the standard minlength attribute and register it as a validator on the model", () => {
       let formElm = $compile(
         '<form name="form"><input type="text" name="input" ng-model="value" minlength="{{ min }}" /></form>',
       )($rootScope);
-      inputElm = formElm.find("input");
+      inputElm = formElm.querySelector("input");
       $rootScope.$apply("min = 10");
 
-      inputElm[0].setAttribute("value", "12345");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "12345");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
       expect($rootScope.form.input.$error.minlength).toBe(true);
 
       $rootScope.$apply("min = 5");
 
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
       expect($rootScope.form.input.$error.minlength).not.toBe(true);
     });
 
@@ -329,7 +332,7 @@ describe("validators", () => {
       let formElm = $compile(
         '<form name="form"><input type="text" name="input" ng-model="value" minlength="3" /></form>',
       )($rootScope);
-      inputElm = formElm.find("input");
+      inputElm = formElm.querySelector("input");
       expect($rootScope.value).toBe(12345);
       expect($rootScope.form.input.$error.minlength).toBeUndefined();
     });
@@ -344,8 +347,8 @@ describe("validators", () => {
 
       ctrl.$parsers.push((value) => `${value}678`);
 
-      inputElm[0].setAttribute("value", "12345");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "12345");
+      inputElm.dispatchEvent(new Event("change"));
       expect(ctrl.$isEmpty).toHaveBeenCalledWith("12345");
     });
 
@@ -377,13 +380,13 @@ describe("validators", () => {
         '<input type="text" ng-model="value" ng-maxlength="5" />',
       )($rootScope);
 
-      inputElm[0].setAttribute("value", "aaaaaaaa");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "aaaaaaaa");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "aaa");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      inputElm.setAttribute("value", "aaa");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
 
     it("should only accept empty values when maxlength is 0", () => {
@@ -391,13 +394,13 @@ describe("validators", () => {
         '<input type="text" ng-model="value" ng-maxlength="0" />',
       )($rootScope);
 
-      inputElm[0].setAttribute("value", "");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      inputElm.setAttribute("value", "");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "a");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "a");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
     });
 
     it("should accept values of any length when maxlength is negative", () => {
@@ -405,54 +408,54 @@ describe("validators", () => {
         '<input type="text" ng-model="value" ng-maxlength="-1" />',
       )($rootScope);
 
-      inputElm[0].setAttribute("value", "");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      inputElm.setAttribute("value", "");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "aaaaaaaaaa");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      inputElm.setAttribute("value", "aaaaaaaaaa");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
 
     it("should accept values of any length when maxlength is non-numeric", () => {
       inputElm = $compile(
         '<input type="text" ng-model="value" ng-maxlength="maxlength" />',
       )($rootScope);
-      inputElm[0].setAttribute("value", "aaaaaaaaaa");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "aaaaaaaaaa");
+      inputElm.dispatchEvent(new Event("change"));
 
       $rootScope.$apply('maxlength = "5"');
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
       $rootScope.$apply('maxlength = "abc"');
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
       $rootScope.$apply('maxlength = ""');
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
       $rootScope.$apply("maxlength = null");
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
       $rootScope.someObj = {};
       $rootScope.$apply("maxlength = someObj");
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
 
     it("should observe the standard maxlength attribute and register it as a validator on the model", () => {
       let formElm = $compile(
         '<form name="form"><input type="text" name="input" ng-model="value" maxlength="{{ max }}" /></form>',
       )($rootScope);
-      inputElm = formElm.find("input");
+      inputElm = formElm.querySelector("input");
       $rootScope.$apply("max = 1");
 
-      inputElm[0].setAttribute("value", "12345");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "12345");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
       expect($rootScope.form.input.$error.maxlength).toBe(true);
 
       $rootScope.$apply("max = 6");
 
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
       expect($rootScope.form.input.$error.maxlength).not.toBe(true);
     });
 
@@ -462,8 +465,8 @@ describe("validators", () => {
       )($rootScope);
 
       $rootScope.$apply("max = 1");
-      inputElm[0].setAttribute("value", "12345");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "12345");
+      inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.value).toBeUndefined();
 
       $rootScope.$apply("max = 6");
@@ -476,8 +479,8 @@ describe("validators", () => {
       )($rootScope);
 
       $rootScope.$apply("max = 6");
-      inputElm[0].setAttribute("value", "12345");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "12345");
+      inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.value).toBe("12345");
 
       $rootScope.$apply("max = 1");
@@ -488,18 +491,18 @@ describe("validators", () => {
       let formElm = $compile(
         '<form name="form"><input type="text" name="input" ng-model="value" maxlength="{{ max }}" /></form>',
       )($rootScope);
-      inputElm = formElm.find("input");
+      inputElm = formElm.querySelector("input");
       $rootScope.$apply("max = 1");
 
-      inputElm[0].setAttribute("value", "12345");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.setAttribute("value", "12345");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
       expect($rootScope.form.input.$error.maxlength).toBe(true);
       expect($rootScope.value).toBeUndefined();
 
       $rootScope.$apply("max = 3");
 
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
       expect($rootScope.form.input.$error.maxlength).toBe(true);
       expect($rootScope.value).toBeUndefined();
     });
@@ -511,8 +514,8 @@ describe("validators", () => {
       )($rootScope);
 
       $rootScope.$apply("max = 1");
-      inputElm[0].setAttribute("value", "12345");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "12345");
+      inputElm.dispatchEvent(new Event("change"));
 
       $rootScope.ngChangeSpy = jasmine.createSpy();
       $rootScope.$apply("max = 3");
@@ -548,8 +551,8 @@ describe("validators", () => {
 
       ctrl.$parsers.push((value) => `${value}678`);
 
-      inputElm[0].setAttribute("value", "12345");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "12345");
+      inputElm.dispatchEvent(new Event("change"));
       expect(ctrl.$isEmpty).toHaveBeenCalledWith("12345");
     });
 
@@ -583,22 +586,22 @@ describe("validators", () => {
 
       $rootScope.$apply("required = false");
 
-      inputElm[0].setAttribute("value", "");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      inputElm.setAttribute("value", "");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
       $rootScope.$apply("required = true");
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
       $rootScope.$apply("value = 'some'");
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
-      inputElm[0].value = "";
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      inputElm.value = "";
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
       $rootScope.$apply("required = false");
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
 
     it("should invalid initial value with bound required", () => {
@@ -608,7 +611,7 @@ describe("validators", () => {
 
       $rootScope.$apply("required = true");
 
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
     });
 
     it("should be $invalid but $pristine if not touched", () => {
@@ -618,21 +621,21 @@ describe("validators", () => {
 
       $rootScope.$apply("name = null");
 
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
-      expect(inputElm[0].classList.contains("ng-pristine")).toBeTrue();
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-pristine")).toBeTrue();
 
-      inputElm[0].setAttribute("value", "");
-      inputElm[0].dispatchEvent(new Event("change"));
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
-      expect(inputElm[0].classList.contains("ng-dirty")).toBeTrue();
+      inputElm.setAttribute("value", "");
+      inputElm.dispatchEvent(new Event("change"));
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-dirty")).toBeTrue();
     });
 
     it("should allow empty string if not required", () => {
       inputElm = $compile('<input type="text" ng-model="foo" />')($rootScope);
-      inputElm[0].setAttribute("value", "a");
-      inputElm[0].dispatchEvent(new Event("change"));
-      inputElm[0].setAttribute("value", "");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "a");
+      inputElm.dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "");
+      inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.foo).toBe("");
     });
 
@@ -640,7 +643,7 @@ describe("validators", () => {
       inputElm = $compile(
         '<input type="text" ng-model="notDefined" required />',
       )($rootScope);
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
     });
 
     it("should consider bad input as an error before any other errors are considered", () => {
@@ -650,12 +653,12 @@ describe("validators", () => {
       const ctrl = inputElm.controller("ngModel");
       ctrl.$parsers.push(() => undefined);
 
-      inputElm[0].setAttribute("value", "abc123");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "abc123");
+      inputElm.dispatchEvent(new Event("change"));
 
       expect(ctrl.$error.parse).toBe(true);
-      expect(inputElm[0].classList.contains("ng-invalid-parse")).toBeTrue();
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue(); // invalid because of the number validator
+      expect(inputElm.classList.contains("ng-invalid-parse")).toBeTrue();
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue(); // invalid because of the number validator
     });
 
     it('should allow `false` as a valid value when the input type is not "checkbox"', async () => {
@@ -665,13 +668,13 @@ describe("validators", () => {
       )($rootScope);
 
       await wait();
-      expect(inputElm[0].classList.contains("ng-invalid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
       $rootScope.$apply("answer = true");
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
       $rootScope.$apply("answer = false");
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
 
     it("should validate emptiness against the viewValue", () => {
@@ -684,8 +687,8 @@ describe("validators", () => {
 
       ctrl.$parsers.push((value) => `${value}678`);
 
-      inputElm[0].setAttribute("value", "12345");
-      inputElm[0].dispatchEvent(new Event("change"));
+      inputElm.setAttribute("value", "12345");
+      inputElm.dispatchEvent(new Event("change"));
       expect(ctrl.$isEmpty).toHaveBeenCalledWith("12345");
     });
 
@@ -715,7 +718,7 @@ describe("validators", () => {
         '<input type="text" ng-model="notDefined" required ng-required="false" />',
       )($rootScope);
 
-      expect(inputElm[0].classList.contains("ng-valid")).toBeTrue();
+      expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
   });
 });

@@ -52,10 +52,10 @@ declare class NgMessageCtrl {
      * @param {import('../../core/compile/attributes').Attributes} $attrs
      * @param {*} $animate
      */
-    constructor($element: import("../../shared//dom").JQLite, $scope: import("../../core/scope/scope.js").Scope, $attrs: import("../../core/compile/attributes").Attributes, $animate: any);
+    constructor($element: any, $scope: import("../../core/scope/scope.js").Scope, $attrs: any, $animate: any);
     $element: any;
     $scope: import("../../core/scope/scope.js").Scope;
-    $attrs: import("../../core/compile/attributes").Attributes;
+    $attrs: any;
     $animate: any;
     latestKey: number;
     nextAttachId: number;

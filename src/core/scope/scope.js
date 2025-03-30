@@ -76,7 +76,18 @@ export function createScope(target = {}, context) {
     for (const key in target) {
       if (Object.prototype.hasOwnProperty.call(target, key)) {
         try {
-          target[key] = createScope(target[key], proxy.$handler);
+          if (
+            (target.constructor.$nonscope &&
+              Array.isArray(target.constructor.$nonscope) &&
+              target.constructor.$nonscope.includes(key)) ||
+            (target.$nonscope &&
+              Array.isArray(target.$nonscope) &&
+              target.$nonscope.includes(key))
+          ) {
+            continue;
+          } else {
+            target[key] = createScope(target[key], proxy.$handler);
+          }
         } catch (e) {
           // convert only what we can
         }
@@ -751,9 +762,17 @@ export class Scope {
         // get.decoratedNode.body[0].expression.expression.forEach(x => {
         //   x.toWatch[0].name
         // });
+
+        // key = get.decoratedNode.body[0].expression.properties[0].key.name;
+        // listener.property.push(key);
         get.decoratedNode.body[0].expression.properties.forEach((prop) => {
-          keySet.push(prop.value.name);
-          listener.property.push(key);
+          if (prop.key.isPure === false) {
+            keySet.push(prop.key.name);
+            listener.property.push(key);
+          } else {
+            keySet.push(prop.value.name);
+            listener.property.push(key);
+          }
         });
 
         // key = get.decoratedNode.body[0].expression.toWatch[0].name;

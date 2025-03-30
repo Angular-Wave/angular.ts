@@ -92,7 +92,6 @@ export class ResolveContext {
      */
     getDependencies(resolvable: Resolvable): Resolvable[];
 }
-import { Resolvable } from "./resolvable";
 declare class UIInjectorImpl {
     native: any;
     get(token: any): any;

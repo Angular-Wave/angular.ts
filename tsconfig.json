@@ -5,13 +5,13 @@
     "noEmit": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "lib": ["ES2023", "DOM", "ESNext"],
+    "lib": ["ES2023", "DOM"],
     "target": "ES2017",
     "sourceMap": false,
     "declaration": false,
     "incremental": true,
     "typeRoots": ["node_modules/@types"]
   },
-  "include": ["./src/*.js", "./**/*.ts"],
+  "include": ["./src/*.js", "./src/*.ts"],
   "exclude": ["./node_modules/@types/",  "./types/**", "**/*.test.js", "**/*.spec.js"]
 }

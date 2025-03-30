@@ -3,7 +3,7 @@
  * @param {import('./loader').Angular} angular
  * @returns {import('./types.js').Module} `ng`module
  */
-export function publishExternalAPI(angular: import("./loader").Angular): import("./types.js").Module;
+export function publishExternalAPI(angular: any): import("./types.js").Module;
 /**
  * @type {string} `version` from `package.json`, injected by Rollup plugin
  */

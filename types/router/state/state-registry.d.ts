@@ -9,12 +9,12 @@ export class StateRegistryProvider {
     states: {};
     urlService: any;
     urlServiceRules: any;
-    $injector: import("../../core/di/internal-injector").InjectorService;
+    $injector: any;
     listeners: any[];
-    matcher: StateMatcher;
-    builder: StateBuilder;
-    stateQueue: StateQueueManager;
-    $get: (string | (($injector: import("../../core/di/internal-injector").InjectorService) => this))[];
+    matcher: any;
+    builder: any;
+    stateQueue: any;
+    $get: (string | (($injector: any) => this))[];
     /**
      * This is a [[StateBuilder.builder]] function for angular1 `onEnter`, `onExit`,
      * `onRetain` callback hooks on a [[Ng1StateDeclaration]].
@@ -29,7 +29,7 @@ export class StateRegistryProvider {
      * @private
      */
     private registerRoot;
-    _root: import("./state-object").StateObject;
+    _root: any;
     /**
      * Listen for a State Registry events
      *
@@ -70,7 +70,7 @@ export class StateRegistryProvider {
      *
      * @return the root [[StateObject]]
      */
-    root(): import("./state-object").StateObject;
+    root(): any;
     /**
      * Adds a state to the registry
      *
@@ -83,7 +83,7 @@ export class StateRegistryProvider {
      *          If the state was successfully registered, then the object is fully built (See: [[StateBuilder]]).
      *          If the state was only queued, then the object is not fully built.
      */
-    register(stateDefinition: any): import("./state-object").StateObject;
+    register(stateDefinition: any): any;
     _deregisterTree(state: any): any[];
     /**
      * Removes a state from the registry
@@ -94,7 +94,7 @@ export class StateRegistryProvider {
      * @param stateOrName the state's name or object representation
      * @returns {import('./state-object').StateObject[]} a list of removed states
      */
-    deregister(stateOrName: any): import("./state-object").StateObject[];
+    deregister(stateOrName: any): any[];
     get(stateOrName: any, base: any, ...args: any[]): any;
     /**
      * Registers a [[BuilderFunction]] for a specific [[StateObject]] property (e.g., `parent`, `url`, or `path`).
@@ -109,6 +109,3 @@ export class StateRegistryProvider {
     decorator(property: any, builderFunction: any): any;
 }
 export function getLocals(ctx: any): any;
-import { StateMatcher } from "./state-matcher";
-import { StateBuilder } from "./state-builder";
-import { StateQueueManager } from "./state-queue-manager";

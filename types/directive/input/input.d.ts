@@ -14,7 +14,7 @@ export function rangeInputType(scope: any, element: any, attr: any, ctrl: any): 
  * @param {*} $parse
  * @returns
  */
-export function inputDirective($browser: import("../../services/browser").Browser, $filter: any, $parse: any): {
+export function inputDirective($browser: any, $filter: any, $parse: any): {
     restrict: string;
     require: string[];
     link: {

@@ -5,7 +5,7 @@ import {
   minErr,
   isUndefined,
 } from "../../shared/utils.js";
-import { REGEX_STRING_REGEXP } from "./../attrs/attrs";
+import { REGEX_STRING_REGEXP } from "./../attrs/attrs.js";
 import { startingTag } from "../../shared/dom.js";
 
 /**
@@ -43,7 +43,7 @@ export const requiredDirective = [
     link:
       /**
        * @param {import("../../core/scope/scope.js").Scope} scope
-       * @param {*} _elm
+       * @param {Element} _elm
        * @param {import("../../types.js").Attributes} attr
        * @param {import("../../types.js").NgModelController} ctrl
        * @returns

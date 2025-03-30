@@ -9,10 +9,10 @@ export class UrlService {
      * @param globals
      * @param {import("../../router/url/url-config.js").UrlConfigProvider} urlConfigProvider
      */
-    constructor($locationProvider: import("../../core/location/location").LocationProvider, stateService: import("../../router/state/state-service.js").StateProvider, globals: any, urlConfigProvider: import("../../router/url/url-config.js").UrlConfigProvider);
+    constructor($locationProvider: any, stateService: import("../../router/state/state-service.js").StateProvider, globals: any, urlConfigProvider: import("../../router/url/url-config.js").UrlConfigProvider);
     stateService: import("../../router/state/state-service.js").StateProvider;
-    $locationProvider: import("../../core/location/location").LocationProvider;
-    $location: import("../../core/location/location").Location;
+    $locationProvider: any;
+    $location: import("../../core/location/location.js").Location;
     $browser: import("../../services/browser.js").Browser;
     /** Provides services related to the URL */
     urlRuleFactory: UrlRuleFactory;
@@ -29,7 +29,7 @@ export class UrlService {
      * See: [[UrlConfig]] for details
      * @type {import("./url-config").UrlConfigProvider}
      */
-    config: import("./url-config").UrlConfigProvider;
+    config: any;
     /** Creates a new [[Param]] for a given location (DefType) */
     paramFactory: ParamFactory;
     /**
@@ -55,7 +55,7 @@ export class UrlService {
      *
      * @return the hash (anchor) portion of the url
      */
-    hash: () => string | import("../../core/location/location").Location;
+    hash: () => string | import("../../core/location/location.js").Location;
     _urlListeners: any[];
     $get: (string | (($location: import("../../core/location/location.js").Location, $browser: import("../../services/browser.js").Browser, $rootScope: import("../../core/scope/scope.js").Scope) => UrlService))[];
     /**
@@ -116,7 +116,7 @@ export class UrlService {
      *
      * @return the url (after potentially being processed)
      */
-    url(newUrl?: string, replace?: boolean, state?: any): string | import("../../core/location/location").Location;
+    url(newUrl?: string, replace?: boolean, state?: any): string | import("../../core/location/location.js").Location;
     /**
      * @internal
      *
@@ -141,7 +141,7 @@ export class UrlService {
     parts(): {
         path: any;
         search: any;
-        hash: string | import("../../core/location/location").Location;
+        hash: string | import("../../core/location/location.js").Location;
     };
     /**
      * Activates the best rule for the current URL
@@ -195,7 +195,7 @@ export class UrlService {
      */
     match(url: any): any;
     update(read: any): void;
-    location: string | import("../../core/location/location").Location;
+    location: string | import("../../core/location/location.js").Location;
     /**
      * Internal API.
      *

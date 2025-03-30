@@ -256,7 +256,7 @@ export class StateProvider {
      *
      * This may be returned from a Transition Hook to redirect a transition, for example.
      */
-    target(identifier: any, params: any, options?: {}): TargetState;
+    target(identifier: any, params: any, options?: {}): any;
     getCurrentPath(): any;
     /**
      * Low-level method for transitioning to a new state.
@@ -313,7 +313,7 @@ export class StateProvider {
      *
      * @returns Returns true if it is the state.
      */
-    is(stateOrName: any, params: any, options: any): boolean;
+    is(stateOrName: any, params: any, options: any): any;
     /**
      * Checks if the current state *includes* the provided state
      *
@@ -410,4 +410,3 @@ export class StateProvider {
      */
     lazyLoad(stateOrName: any, transition: any): any;
 }
-import { TargetState } from "./target-state";
