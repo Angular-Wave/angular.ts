@@ -596,6 +596,7 @@ export class Scope {
     };
     // simplest case
     let key = get.decoratedNode.body[0].expression.name;
+    let keySet = [];
 
     let type = get.decoratedNode.body[0].expression.type;
     switch (type) {
@@ -750,8 +751,11 @@ export class Scope {
         // get.decoratedNode.body[0].expression.expression.forEach(x => {
         //   x.toWatch[0].name
         // });
-        key = get.decoratedNode.body[0].expression.properties[0].key.name;
-        listener.property.push(key);
+        get.decoratedNode.body[0].expression.properties.forEach((prop) => {
+          keySet.push(prop.value.name);
+          listener.property.push(key);
+        });
+
         // key = get.decoratedNode.body[0].expression.toWatch[0].name;
         // listener.property.push(key);
         break;
@@ -779,12 +783,30 @@ export class Scope {
       this.objectListeners.set(listenerObject, [key]);
     }
 
-    this.registerKey(key, listener);
+    if (keySet.length > 0) {
+      keySet.forEach((key) => {
+        this.registerKey(key, listener);
+      });
+    } else {
+      this.registerKey(key, listener);
+    }
+
     if (!lazy) {
       this.scheduleListener([listener]);
     }
     return () => {
-      return this.deregisterKey(key, listener.id);
+      if (keySet.length > 0) {
+        let res = true;
+        keySet.forEach((key) => {
+          let success = this.deregisterKey(key, listener.id);
+          if (!success) {
+            res = false;
+          }
+        });
+        return res;
+      } else {
+        return this.deregisterKey(key, listener.id);
+      }
     };
   }
 

@@ -1,4 +1,4 @@
-import { dealoc, JQLite } from "../../shared/dom.js";
+import { createElementFromHTML, dealoc } from "../../shared/dom.js";
 import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
 
@@ -20,14 +20,16 @@ describe("ngCloak", () => {
   });
 
   it("should get removed when an element is compiled", () => {
-    element = "<div ng-cloak></div>";
-    expect(element.attr("ng-cloak")).toBe("");
+    element = createElementFromHTML("<div ng-cloak></div>");
+    expect(element.getAttribute("ng-cloak")).toBe("");
     $compile(element);
-    expect(element.attr("ng-cloak")).toBeUndefined();
+    expect(element.getAttribute("ng-cloak")).toBeNull();
   });
 
   it("should remove ngCloak class from a compiled element with attribute", () => {
-    element = '<div ng-cloak class="foo ng-cloak bar"></div>';
+    element = createElementFromHTML(
+      '<div ng-cloak class="foo ng-cloak bar"></div>',
+    );
 
     expect(element.classList.contains("foo")).toBe(true);
     expect(element.classList.contains("ng-cloak")).toBe(true);

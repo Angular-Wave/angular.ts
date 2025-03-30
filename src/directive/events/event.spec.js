@@ -1,7 +1,7 @@
 import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
 import { dealoc } from "../../shared/dom.js";
-import { wait } from "../../shared/test-utils.js";
+import { browserTrigger, wait } from "../../shared/test-utils.js";
 
 describe("event directives", () => {
   let angular;
@@ -93,7 +93,7 @@ describe("event directives", () => {
         scope.focus = jasmine.createSpy("focus");
 
         expect(scope.focus).not.toHaveBeenCalled();
-        triggerHandler(element, "focus");
+        browserTrigger(element, "focus");
         await wait();
 
         expect(scope.focus).toHaveBeenCalled();
@@ -105,7 +105,7 @@ describe("event directives", () => {
         await wait();
 
         scope.focus = jasmine.createSpy("focus");
-        triggerHandler(element, "focus");
+        browserTrigger(element, "focus");
         expect(scope.focus).toHaveBeenCalled();
       });
     });
@@ -119,7 +119,7 @@ describe("event directives", () => {
         $rootScope.value = "newValue";
       });
 
-      triggerHandler(element, "focus");
+      browserTrigger(element, "focus");
       await wait();
       expect($rootScope.focus).toHaveBeenCalled();
     });
@@ -130,7 +130,7 @@ describe("event directives", () => {
       const scope = $rootScope.$new();
       element = $compile('<button ng-click="e = $event">BTN</button>')(scope);
       await wait();
-      triggerHandler(element, "click");
+      browserTrigger(element, "click");
       await wait();
       // TODO
       // expect(scope.e.target).toBe(element);
@@ -147,7 +147,7 @@ describe("event directives", () => {
         scope.blur = jasmine.createSpy("blur");
 
         expect(scope.blur).not.toHaveBeenCalled();
-        triggerHandler(element, "blur");
+        browserTrigger(element, "blur");
         expect(scope.blur).toHaveBeenCalled();
       });
 
@@ -157,7 +157,7 @@ describe("event directives", () => {
         await wait();
         scope.blur = jasmine.createSpy("blur");
         expect(scope.blur).not.toHaveBeenCalled();
-        triggerHandler(element, "blur");
+        browserTrigger(element, "blur");
         await wait();
         expect(scope.blur).toHaveBeenCalled();
       });
@@ -177,7 +177,7 @@ describe("event directives", () => {
       $rootScope.value = "newValue";
     });
     await wait();
-    triggerHandler(element, "click");
+    browserTrigger(element, "click");
     await wait();
     expect($rootScope.click).toHaveBeenCalled();
     expect(watchedVal).toEqual("newValue");
@@ -198,7 +198,7 @@ describe("event directives", () => {
       $rootScope.value = "newValue";
     });
 
-    triggerHandler(element, "click");
+    browserTrigger(element, "click");
     await wait();
 
     expect($rootScope.click).toHaveBeenCalled();
@@ -234,7 +234,7 @@ describe("event directives", () => {
       };
 
       $rootScope.do = function () {
-        triggerHandler(element, "click");
+        browserTrigger(element, "click");
         logs.push("done");
       };
 

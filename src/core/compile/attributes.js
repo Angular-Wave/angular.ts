@@ -109,7 +109,7 @@ export class Attributes {
       if (hasAnimate(this.$$element)) {
         this.$animate.addClass(this.$$element, toAdd);
       } else {
-        this.$$element.classList.add(...toAdd.split(/\s+/));
+        this.$$element.classList.add(...toAdd.trim().split(/\s+/));
       }
     }
     const toRemove = tokenDifference(oldClasses, newClasses);
@@ -117,7 +117,7 @@ export class Attributes {
       if (hasAnimate(this.$$element)) {
         this.$animate.removeClass(this.$$element, toRemove);
       } else {
-        this.$$element.classList.remove(...toRemove.split(/\s+/));
+        this.$$element.classList.remove(...toRemove.trim().split(/\s+/));
       }
     }
   }

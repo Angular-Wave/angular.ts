@@ -1,6 +1,6 @@
 import { Angular } from "../../loader.js";
 import { dealoc } from "../../shared/dom.js";
-import { wait } from "../../shared/test-utils";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ng-bind", () => {
   let $rootScope;

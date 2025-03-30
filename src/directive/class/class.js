@@ -45,6 +45,7 @@ function classDirective(name, selector) {
           // });
         }
         scope.$watch(attr[name], (val) => {
+          debugger;
           ngClassWatchAction(toClassString(val));
         });
 
@@ -112,6 +113,7 @@ function classDirective(name, selector) {
         }
 
         function ngClassIndexWatchAction(newModulo) {
+          debugger;
           // This watch-action should run before the `ngClassWatchAction()`, thus it
           // adds/removes `oldClassString`. If the `ngClass` expression has changed as well, the
           // `ngClassWatchAction()` will update the classes.
