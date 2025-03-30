@@ -378,7 +378,7 @@ export function setIsolateScope(element, scope) {
  * Gets the controller instance for a given element, if exists. Defaults to "ngControllerController"
  *
  * @param {Element} element - The DOM element to get data from.
- * @param {string} name - The DOM element to get data from.
+ * @param {string} [name] - The DOM element to get data from.
  * @returns {import("../core/scope/scope.js").Scope|undefined} - The retrieved data
  */
 export function getController(element, name) {

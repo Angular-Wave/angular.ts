@@ -312,17 +312,23 @@ describe("ngInclude", () => {
       $rootScope.includeUrl = "/mock/hello";
       await wait(100);
       expect(element.textContent).toBe("Hello");
-      expect(element.find("span").attr("foo")).toBe("#/fooUrl1");
+      expect(element.querySelector("span").getAttribute("foo")).toBe(
+        "#/fooUrl1",
+      );
 
       $rootScope.hrefUrl = "fooUrl2";
       await wait(100);
       expect(element.textContent).toBe("Hello");
-      expect(element.find("span").attr("foo")).toBe("#/fooUrl2");
+      expect(element.querySelector("span").getAttribute("foo")).toBe(
+        "#/fooUrl2",
+      );
 
       $rootScope.includeUrl = "/mock/hello2";
       await wait(100);
       expect(element.textContent).toBe("Hello2");
-      expect(element.find("span").attr("foo")).toBe("#/fooUrl2");
+      expect(element.querySelector("span").getAttribute("foo")).toBe(
+        "#/fooUrl2",
+      );
     });
 
     it("should construct SVG template elements with correct namespace", async () => {
@@ -335,7 +341,7 @@ describe("ngInclude", () => {
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       await wait(100);
-      const child = element.find("rect");
+      const child = element.querySelector("rect");
       expect(child.length).toBe(2);
       expect(child[0] instanceof SVGRectElement).toBe(true);
     });
@@ -350,7 +356,7 @@ describe("ngInclude", () => {
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       await wait(200);
-      expect(element.find("a").length).toBe(0);
+      expect(element.querySelector("a").length).toBe(0);
     });
 
     it("should not compile template if original scope is destroyed", (done) => {
@@ -572,7 +578,7 @@ describe("ngInclude", () => {
         $rootScope = injector.get("$rootScope");
 
         setTimeout(() => {
-          expect(testElement[0].nodeName).toBe("DIV");
+          expect(testElement.nodeName).toBe("DIV");
           done();
         }, 100);
       });
@@ -609,7 +615,7 @@ describe("ngInclude", () => {
         $rootScope = injector.get("$rootScope");
         await wait();
         await wait(100);
-        expect(root[0]).toBe(element);
+        expect(root).toBe(element);
       });
     });
 
@@ -701,8 +707,8 @@ describe("ngInclude", () => {
 
     //     const itemA = $animate.queue.shift().element;
     //     const itemB = $animate.queue.shift().element;
-    //     expect(itemA.attr("ng-include")).toBe("tpl");
-    //     expect(itemB.attr("ng-include")).toBe("tpl");
+    //     expect(itemA.getAttribute("ng-include")).toBe("tpl");
+    //     expect(itemB.getAttribute("ng-include")).toBe("tpl");
     //     expect(itemA).not.toEqual(itemB);
     //   });
 

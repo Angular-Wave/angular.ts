@@ -39,7 +39,7 @@ export function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
         let currentElement;
         const cleanupLastIncludeContent = () => {
           if (previousElement) {
-            previousElement.remove();
+            previousElement[0].remove();
             previousElement = null;
           }
           if (currentScope) {
@@ -52,7 +52,7 @@ export function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
                 if (response !== false) previousElement = null;
               });
             } else {
-              currentElement.remove();
+              currentElement[0].remove();
             }
 
             previousElement = currentElement;
