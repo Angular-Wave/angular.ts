@@ -2676,10 +2676,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
                 ($$observers[name] || ($$observers[name] = [])).$$inter = true;
                 interpolateFn.expressions.forEach((x) => {
-                  (
+                  const targetScope =
                     (attr.$$observers && attr.$$observers[name].$$scope) ||
-                    scope
-                  ).$watch(x, () => {
+                    scope;
+                  targetScope.$watch(x, () => {
                     let newValue = interpolateFn(scope);
                     // special case for class attribute addition + removal
                     // so that class changes can tap into the animation

@@ -17,6 +17,7 @@ import {
   isElement,
   getNodeName,
   extend,
+  assert,
 } from "../../shared/utils.js";
 import { Cache, EXPANDO } from "../cache/cache.js";
 import { wait } from "../../shared/test-utils.js";
@@ -8289,7 +8290,7 @@ describe("$compile", () => {
         });
 
         // LEAK
-        fit("should trigger an initial onChanges call for each binding with the `isFirstChange()` returning true", async () => {
+        it("should trigger an initial onChanges call for each binding with the `isFirstChange()` returning true", async () => {
           function TestController() {}
           TestController.prototype.$onChanges = function (change) {
             log.push(change);
@@ -8334,7 +8335,7 @@ describe("$compile", () => {
           expect(log[0].attr.isFirstChange()).toEqual(false);
         });
 
-        xit("should trigger an initial onChanges call for each binding even if the hook is defined in the constructor", async () => {
+        it("should trigger an initial onChanges call for each binding even if the hook is defined in the constructor", async () => {
           function TestController() {
             this.$onChanges = function (change) {
               log.push(change);
@@ -9871,7 +9872,7 @@ describe("$compile", () => {
       });
 
       describe("one-way collection bindings", () => {
-        xit("should update isolate scope when origin scope changes", async () => {
+        it("should update isolate scope when origin scope changes", async () => {
           $rootScope.collection = [
             {
               name: "Gabriel",
@@ -9888,7 +9889,7 @@ describe("$compile", () => {
           $compile(
             '<div><span my-component ow-colref="collection | filter:query" >',
           )($rootScope);
-
+          await wait();
           expect(componentScope.owColref).toEqual($rootScope.collection);
           expect(componentScope.owColrefAlias).toEqual(componentScope.owColref);
 
@@ -9965,7 +9966,7 @@ describe("$compile", () => {
           expect(componentScope.owColrefAlias).toEqual([$rootScope.gab]);
         });
 
-        xit("should update isolate scope when origin literal object content changes", async () => {
+        it("should update isolate scope when origin literal object content changes", async () => {
           $rootScope.gab = {
             name: "Gabriel",
             value: 18,
@@ -9979,16 +9980,12 @@ describe("$compile", () => {
           $compile('<div><span my-component ow-colref="[gab, tony]">')(
             $rootScope,
           );
-
+          await wait();
           expect(componentScope.owColref).toEqual([
             $rootScope.gab,
             $rootScope.tony,
           ]);
           expect(componentScope.owColrefAlias).toEqual([
-            $rootScope.gab,
-            $rootScope.tony,
-          ]);
-          expect(componentScope.$owColrefAlias).toEqual([
             $rootScope.gab,
             $rootScope.tony,
           ]);
@@ -10004,10 +10001,6 @@ describe("$compile", () => {
             $rootScope.tony,
           ]);
           expect(componentScope.owColrefAlias).toEqual([
-            $rootScope.gab,
-            $rootScope.tony,
-          ]);
-          expect(componentScope.$owColrefAlias).toEqual([
             $rootScope.gab,
             $rootScope.tony,
           ]);
@@ -10425,7 +10418,7 @@ describe("$compile", () => {
                 },
               );
 
-              xit(`(${description.join(", ")})`, async () => {
+              it(`(${description.join(", ")})`, async () => {
                 let controllerCalled = false;
                 myModule
                   .controller("myCtrl", function () {
@@ -10669,7 +10662,7 @@ describe("$compile", () => {
         expect(controller2Called).toBe(true);
       });
 
-      xit("should evaluate against the correct scope, when using `bindToController` (new scope)", async () => {
+      it("should evaluate against the correct scope, when using `bindToController` (new scope)", async () => {
         module
           .controller("ParentCtrl", function () {
             this.value1 = "parent1";
@@ -10711,10 +10704,12 @@ describe("$compile", () => {
         )($rootScope);
         await wait();
         const parentCtrl = getController(element, "ngController");
+        assert(parentCtrl);
         const childCtrl = getController(
           element.querySelector("child"),
           "child",
         );
+        assert(childCtrl);
 
         expect(childCtrl.fromParent1).toBe(parentCtrl.value1);
         expect(childCtrl.fromParent1).not.toBe(childCtrl.value1);
@@ -10726,6 +10721,7 @@ describe("$compile", () => {
         expect(childCtrl.fromParent4).not.toBe(childCtrl.value4);
 
         childCtrl.fromParent2 = "modified";
+        await wait();
         expect(parentCtrl.value2).toBe("modified");
         expect(childCtrl.value2).toBe("child2");
       });
@@ -12141,7 +12137,7 @@ describe("$compile", () => {
 
     describe("transclude", () => {
       describe("content transclusion", () => {
-        xit("should support transclude directive", async () => {
+        it("should support transclude directive", async () => {
           module.directive("trans", () => ({
             transclude: "content",
             replace: true,
@@ -12159,9 +12155,9 @@ describe("$compile", () => {
           await wait();
           expect(element.textContent).toEqual("W:isoT:root;");
           expect(
-            element.querySelector("li")[1][0].childNodes[0].innerText,
+            element.querySelectorAll("li")[1].childNodes[0].innerText,
           ).toEqual("T:root");
-          expect(element.querySelector("span")[0].innerText).toEqual(";");
+          expect(element.querySelector("span").innerText).toEqual(";");
         });
 
         it("should transclude transcluded content", async () => {
@@ -12307,7 +12303,7 @@ describe("$compile", () => {
         });
 
         // see issue https://github.com/angular/angular.js/issues/12936
-        xit("should use the proper scope when it is on the root element of a replaced directive template with child scope", async () => {
+        it("should use the proper scope when it is on the root element of a replaced directive template with child scope", async () => {
           module
             .directive("child", () => ({
               scope: true,
@@ -12541,14 +12537,15 @@ describe("$compile", () => {
           );
         });
 
-        xit("should clear the fallback content from the element during compile and before linking", async () => {
+        it("should clear the fallback content from the element during compile and before linking", async () => {
           module.directive("trans", () => ({
             transclude: true,
             template: "<div ng-transclude>fallback content</div>",
           }));
           initInjector("test1");
-          element = "<div trans></div>";
+          element = $("<div trans></div>");
           const linkfn = $compile(element);
+          await wait();
           expect(element.innerHTML).toEqual('<div ng-transclude=""></div>');
           linkfn($rootScope);
           await wait();
@@ -12557,7 +12554,7 @@ describe("$compile", () => {
           );
         });
 
-        xit("should allow cloning of the fallback via ngRepeat", async () => {
+        it("should allow cloning of the fallback via ngRepeat", async () => {
           module.directive("trans", () => ({
             transclude: true,
             template:

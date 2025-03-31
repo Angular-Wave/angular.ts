@@ -1,6 +1,5 @@
 import { createInjector } from "../../core/di/injector.js";
 import { Angular } from "../../loader.js";
-import { wait } from "../../shared/test-utils.js";
 import { createElementFromHTML } from "../../shared/dom.js";
 
 describe("ngRef", () => {
