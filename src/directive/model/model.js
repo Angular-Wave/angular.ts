@@ -367,6 +367,7 @@ export class NgModelController {
   $setPristine() {
     this.$dirty = false;
     this.$pristine = true;
+    if (!this.$$element) return;
     if (hasAnimate(this.$$element)) {
       this.$$animate.removeClass(this.$$element, EMPTY_CLASS);
       this.$$animate.addClass(this.$$element, PRISTINE_CLASS);
@@ -831,7 +832,7 @@ export class NgModelController {
    */
   $setViewValue(value, trigger) {
     this.$viewValue = value;
-    if (this.$options.getOption("updateOnDefault")) {
+    if (this.$options?.getOption("updateOnDefault")) {
       this.$$debounceViewValueCommit(trigger);
     }
   }
