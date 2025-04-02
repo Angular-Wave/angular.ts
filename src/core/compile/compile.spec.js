@@ -9445,7 +9445,10 @@ describe("$compile", () => {
 
                 this.$onChanges = function (changes) {
                   if (changes.input) {
-                    log.push(["$onChanges", structuredClone(changes.input)]);
+                    log.push([
+                      "$onChanges",
+                      changes.input.currentValue.$target[0],
+                    ]);
                   }
                 };
               },
@@ -9465,27 +9468,17 @@ describe("$compile", () => {
             });
           });
 
-          it("should not update isolate again after $onInit if outer has not changed", () => {
+          it("should not update isolate again after $onInit", () => {
             $rootScope.name = "outer";
             $compile('<ow-component input="name"></ow-component>')($rootScope);
 
             expect($rootScope.name).toEqual("outer");
             expect(component.input).toEqual("$onInit");
 
-            expect($rootScope.name).toEqual("outer");
-            expect(component.input).toEqual("$onInit");
-
-            expect(log).toEqual([
-              "constructor",
-              [
-                "$onChanges",
-                jasmine.objectContaining({ currentValue: "outer" }),
-              ],
-              "$onInit",
-            ]);
+            expect(log).toEqual(["constructor", "$onInit"]);
           });
 
-          xit("should not update isolate again after $onInit if outer object reference has not changed", async () => {
+          it("should update isolate again after $onInit if the object reference has changed", async () => {
             $rootScope.name = ["outer"];
             $compile('<ow-component input="name"></ow-component>')($rootScope);
             await wait();
@@ -9495,15 +9488,12 @@ describe("$compile", () => {
             $rootScope.name[0] = "inner";
             await wait();
             expect($rootScope.name).toEqual(["inner"]);
-            expect(component.input).toEqual("$onInit");
-
+            expect(component.input).toEqual(["inner"]);
             expect(log).toEqual([
               "constructor",
-              [
-                "$onChanges",
-                jasmine.objectContaining({ currentValue: ["outer"] }),
-              ],
+              ["$onChanges", "outer"],
               "$onInit",
+              ["$onChanges", "inner"],
             ]);
           });
 

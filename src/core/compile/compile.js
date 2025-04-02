@@ -47,6 +47,12 @@ import { isProxy } from "../scope/scope.js";
  */
 
 /**
+ * @typedef {Object} SimpleChange
+ * @property {any} currentValue
+ * @property {boolean} firstChange
+ */
+
+/**
  * @description A function returned by the '$compile' service that links a compiled template to a scope.
  *
  * @callback PublicLinkFn
@@ -2848,10 +2854,14 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   // the value to boolean rather than a string, so we special case this situation
                   destination[scopeName] = lastValue;
                 }
-                initialChanges[scopeName] = new SimpleChange(
-                  destination[scopeName],
-                  true,
-                );
+
+                /**
+                 * @type {SimpleChange}
+                 */
+                initialChanges[scopeName] = {
+                  currentValue: destination[scopeName],
+                  firstChange: true,
+                };
                 removeWatchCollection.push(removeWatch);
                 break;
 
@@ -2969,10 +2979,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 parentGet = $parse(attrs[attrName]);
 
                 destination[scopeName] = parentGet(scope);
-                initialChanges[scopeName] = new SimpleChange(
-                  destination.$target[scopeName],
-                  firstChange,
-                );
+                /** @type {SimpleChange} */
+                initialChanges[scopeName] = {
+                  currentValue: destination.$target[scopeName],
+                  firstChange: firstChange,
+                };
                 scope.$target.attrs = attrs;
 
                 if (attrs[attrName]) {
@@ -3038,7 +3049,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               onChangesQueue.push(triggerOnChangesHook);
             }
             // Store this change
-            changes[key] = new SimpleChange(currentValue, initial);
+            changes[key] = { currentValue: currentValue, firstChange: initial };
           }
         }
 
@@ -3061,20 +3072,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
       }
     },
   ];
-}
-
-class SimpleChange {
-  constructor(current, firstChange) {
-    this.currentValue = current;
-    this.firstChange = firstChange;
-  }
-
-  /**
-   * @returns {boolean}
-   */
-  isFirstChange() {
-    return this.firstChange;
-  }
 }
 
 function removeComments(jqNodes) {
