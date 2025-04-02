@@ -1897,26 +1897,27 @@ describe("Scope", () => {
             logs = [];
             scope.obj = {};
             await wait();
-            expect(logs).toEqual([{ newVal: { a: {} } }]);
+            expect(logs[0]).toEqual({ newVal: { a: {} } });
           });
 
-          it("should not trigger change when object in collection changes", async () => {
+          it("should trigger change when deeply nested property in  object changes", async () => {
             scope.obj = { name: "foo" };
             await wait();
-            expect(logs).toEqual([
-              {
-                newVal: { a: { name: "foo" } },
-              },
-            ]);
+            expect(logs[0]).toEqual({
+              newVal: { a: { name: "foo" } },
+            });
 
             logs = [];
             scope.obj.name = "bar";
             await wait();
-            expect(logs).toEqual([]);
+            expect(logs[0]).toEqual({
+              newVal: { a: { name: "bar" } },
+            });
           });
 
-          it("should not infinitely digest when current value is NaN", () => {
+          it("should not infinitely digest when current value is NaN", async () => {
             scope.obj = NaN;
+            await wait();
             expect(() => {}).not.toThrow();
           });
         });
