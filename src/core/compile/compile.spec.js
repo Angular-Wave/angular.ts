@@ -4401,7 +4401,7 @@ describe("$compile", () => {
 
       var lastChanges = changesSpy.calls.mostRecent().args[0];
       expect(lastChanges.myBinding.currentValue).toBe(43);
-      expect(lastChanges.myBinding.isFirstChange()).toBe(true);
+      expect(lastChanges.myBinding.firstChange).toBe(true);
     });
 
     it("calls $onChanges when attribute changes", async () => {
@@ -4428,7 +4428,7 @@ describe("$compile", () => {
       expect(changesSpy.calls.count()).toBe(2);
       var lastChanges = changesSpy.calls.mostRecent().args[0];
       expect(lastChanges.myAttr.currentValue).toBe("43");
-      expect(lastChanges.myAttr.isFirstChange()).toBe(true);
+      expect(lastChanges.myAttr.firstChange).toBe(true);
     });
 
     it("calls $onChanges once with multiple changes", async () => {
@@ -4499,23 +4499,23 @@ describe("$compile", () => {
       await wait();
 
       expect(el.innerText).toEqual("myBinding is 43");
-      expect($val.myBinding.isFirstChange()).toBe(true);
+      expect($val.myBinding.firstChange).toBe(true);
 
       $rootScope.aValue = 44;
       await wait();
 
       expect(el.innerText).toEqual("myBinding is 44");
-      expect($val.myBinding.isFirstChange()).toBe(false);
+      expect($val.myBinding.firstChange).toBe(false);
 
       $rootScope.bValue = 43;
       await wait();
 
-      expect($val.yourBinding.isFirstChange()).toBe(true);
+      expect($val.yourBinding.firstChange).toBe(true);
 
       $rootScope.bValue = 44;
       await wait();
 
-      expect($val.yourBinding.isFirstChange()).toBe(false);
+      expect($val.yourBinding.firstChange).toBe(false);
     });
 
     it("runs $onChanges for all components in the same digest", async () => {
@@ -13281,11 +13281,11 @@ describe("$compile", () => {
             expect(element.textContent).toEqual("transcluded content");
           });
 
-          it("should allow nested transclude directives with async template containing asynch template", async () => {
+          it("should allow nested transclude directives with async template containing async template", async () => {
             element = $compile("<div async-async>transcluded content</div>")(
               $rootScope,
             );
-            await wait();
+            await wait(100);
             expect(element.textContent).toEqual("transcluded content");
           });
 
