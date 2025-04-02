@@ -263,7 +263,6 @@ describe("ngIf", () => {
         }));
         $compile("<div><div template></div></div>")($rootScope);
         await wait();
-        await wait();
         expect(controller.flag).toBe(true);
       });
 
