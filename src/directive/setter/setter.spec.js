@@ -23,30 +23,29 @@ describe("setter", () => {
   it("should update the scope model when the element content changes", async () => {
     $rootScope.testModel = "";
     const element = $compile('<div ng-setter="testModel"></div>')($rootScope);
-    $rootScope.$digest();
-
-    element.html("New content");
     await wait();
-    $rootScope.$digest();
+
+    element.innerHTML = "New content";
+    await wait();
 
     expect($rootScope.testModel).toBe("New content");
   });
 
-  it("should handle initial content in the element", () => {
+  it("should handle initial content in the element", async () => {
     $rootScope.testModel = "";
     const element = $compile(
       '<div ng-setter="testModel">Initial content</div>',
     )($rootScope);
-    $rootScope.$digest();
+    await wait();
 
     expect($rootScope.testModel).toBe("Initial content");
   });
 
-  it("should warn if no model expression is provided", () => {
+  it("should warn if no model expression is provided", async () => {
     spyOn(console, "warn");
 
     $compile("<div ng-setter></div>")($rootScope);
-    $rootScope.$digest();
+    await wait();
 
     expect(console.warn).toHaveBeenCalledWith(
       "ngSetter: Model expression is not provided.",
@@ -56,18 +55,17 @@ describe("setter", () => {
   it("should clean up the MutationObserver on scope destruction", async () => {
     spyOn(window, "MutationObserver").and.returnValue(observerSpy);
     const element = $compile('<div ng-setter="testModel"></div>')($rootScope);
-    const isolateScope = element.isolateScope();
 
     $rootScope.$destroy();
     await wait();
     expect(observerSpy.disconnect).toHaveBeenCalled();
   });
 
-  it("should gracefully handle invalid DOM elements", () => {
+  it("should gracefully handle invalid DOM elements", async () => {
     spyOn(console, "warn");
 
     const element = $compile("<div></div>")($rootScope);
-    $rootScope.$digest();
+    await wait();
 
     expect(console.warn).not.toHaveBeenCalledWith(
       "ngSetter: Element is not a valid DOM node.",

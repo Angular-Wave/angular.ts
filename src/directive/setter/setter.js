@@ -22,7 +22,6 @@ export function ngSetterDirective($parse) {
 
       const updateModel = (value) => {
         assignModel(scope, value);
-        scope.$digest();
       };
 
       const observer = new MutationObserver((mutationsList) => {
