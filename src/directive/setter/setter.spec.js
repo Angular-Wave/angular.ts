@@ -21,7 +21,6 @@ describe("setter", () => {
   });
 
   it("should update the scope model when the element content changes", async () => {
-    $rootScope.testModel = "";
     const element = $compile('<div ng-setter="testModel"></div>')($rootScope);
     $rootScope.$digest();
 
@@ -32,14 +31,38 @@ describe("setter", () => {
     expect($rootScope.testModel).toBe("New content");
   });
 
+  it("should update the scope model for objects when the element content changes", async () => {
+    const element = $compile('<div ng-setter="testModel.a">1</div>')(
+      $rootScope,
+    );
+    $rootScope.$digest();
+
+    element.html("New content");
+    await wait();
+    $rootScope.$digest();
+
+    expect($rootScope.testModel.a).toBe("New content");
+  });
+
   it("should handle initial content in the element", () => {
-    $rootScope.testModel = "";
-    const element = $compile(
-      '<div ng-setter="testModel">Initial content</div>',
-    )($rootScope);
+    $compile('<div ng-setter="testModel">Initial content</div>')($rootScope);
     $rootScope.$digest();
 
     expect($rootScope.testModel).toBe("Initial content");
+  });
+
+  it("should handle initial content in the element for objects", () => {
+    $compile('<div ng-setter="testModel.a">Initial content</div>')($rootScope);
+    $rootScope.$digest();
+
+    expect($rootScope.testModel.a).toBe("Initial content");
+  });
+
+  it("should convert initial content in the element to numbers if possible", () => {
+    $compile('<div ng-setter="testModel.a">1</div>')($rootScope);
+    $rootScope.$digest();
+
+    expect($rootScope.testModel.a).toBe(1);
   });
 
   it("should warn if no model expression is provided", () => {
@@ -55,9 +78,7 @@ describe("setter", () => {
 
   it("should clean up the MutationObserver on scope destruction", async () => {
     spyOn(window, "MutationObserver").and.returnValue(observerSpy);
-    const element = $compile('<div ng-setter="testModel"></div>')($rootScope);
-    const isolateScope = element.isolateScope();
-
+    $compile('<div ng-setter="testModel"></div>')($rootScope);
     $rootScope.$destroy();
     await wait();
     expect(observerSpy.disconnect).toHaveBeenCalled();

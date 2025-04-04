@@ -21,8 +21,12 @@ export function ngSetterDirective($parse) {
       }
 
       const updateModel = (value) => {
-        assignModel(scope, value);
-        scope.$digest();
+        if (value !== "") {
+          debugger;
+          const maybeNumber = convertToNumberOrString(value);
+          assignModel(scope, maybeNumber);
+          scope.$digest();
+        }
       };
 
       const observer = new MutationObserver((mutationsList) => {
@@ -54,7 +58,20 @@ export function ngSetterDirective($parse) {
       }
 
       scope.$on("$destroy", () => observer.disconnect());
-      updateModel(element.html());
+      const content = element.html();
+      debugger;
+      updateModel(content);
     },
   };
+}
+
+/**
+ * Converts the input to a number if possible, otherwise returns the input as a string.
+ *
+ * @param {string} input - The input to be converted or returned.
+ * @returns {number|string} The converted number if valid, or the original string if not convertible.
+ */
+function convertToNumberOrString(input) {
+  const converted = Number(input);
+  return isNaN(converted) ? input : converted;
 }
