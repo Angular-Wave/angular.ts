@@ -326,7 +326,6 @@ export function createDateInputType(type, regexp, parseDate) {
     $filter,
     $parse,
   ) {
-    console.error("Unused ", $browser);
     badInputChecker(scope, element, attr, ctrl, type);
     baseInputType(scope, element, attr, ctrl);
     let previousDate;

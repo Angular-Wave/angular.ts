@@ -1,4 +1,5 @@
 import { PREFIX_REGEXP, SPECIAL_CHARS_REGEXP } from "./constants.js";
+import {isProxy} from "../core/scope/scope.js";
 
 const ngMinErr = minErr("ng");
 
@@ -1090,6 +1091,7 @@ export function minErr(module) {
         message += `${paramPrefix}p${i}=${encodeURIComponent(templateArgs[i])}`;
       }
     }
+    debugger
     return new Error(message);
   };
 }
@@ -1103,7 +1105,7 @@ export function toDebugString(obj) {
   }
   if (typeof obj !== "string") {
     const seen = [];
-    let copyObj = structuredClone(obj);
+    let copyObj = structuredClone(isProxy(obj) ? obj.$target : obj);
     return JSON.stringify(copyObj, (key, val) => {
       const replace = toJsonReplacer(key, val);
       if (isObject(replace)) {

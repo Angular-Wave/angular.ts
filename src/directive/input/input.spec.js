@@ -4,21 +4,23 @@ import {
   dealoc,
   getController,
 } from "../../shared/dom.js";
-import { wait } from "../../shared/test-utils";
-import { EMAIL_REGEXP, ISO_DATE_REGEXP, URL_REGEXP } from "./input";
+import { wait } from "../../shared/test-utils.js";
+import { EMAIL_REGEXP, ISO_DATE_REGEXP, URL_REGEXP } from "./input.js";
 
 describe("input", () => {
   let $compile;
   let scope;
   let inputElm;
+  let error;
 
   beforeEach(() => {
+    error = [];
     window.angular = new Angular();
     window.angular
       .module("myModule", ["ng"])
       .decorator("$exceptionHandler", function () {
         return (exception) => {
-          throw new Error(exception.message);
+          error.push(exception.message)
         };
       });
     window.angular
@@ -27,10 +29,6 @@ describe("input", () => {
         $compile = _$compile_;
         scope = $rootScope.$new();
       });
-  });
-
-  afterEach(() => {
-    dealoc(inputElm);
   });
 
   it("should bind to a model", async () => {
@@ -267,11 +265,10 @@ describe("input", () => {
       });
 
       it("should report error on assignment error", () => {
-        expect(async () => {
+        expect(() => {
           inputElm = $compile('<input type="text" ng-model="throw \'\'">')(
             scope,
           );
-          await wait();
         }).toThrowError(/Syntax Error/);
       });
 
@@ -313,9 +310,7 @@ describe("input", () => {
       it("should allow a String object in format 'YYYY-MM'", async () => {
         inputElm = $compile('<input type="month" ng-model="january"/>')(scope);
         await wait();
-        scope.$apply(() => {
-          scope.january = "2013-01";
-        });
+        scope.january = "2013-01";
         await wait();
         expect(inputElm.value).toBe("2013-01");
       });
@@ -323,31 +318,23 @@ describe("input", () => {
       it("should throw if the model is a Date object", async () => {
         inputElm = $compile('<input type="month" ng-model="march"/>')(scope);
         await wait();
-        expect(async () => {
-          scope.$apply(() => {
-            scope.march = new Date(2013, 2, 1);
-          });
-          await wait();
-        }).toThrowError(/datefmt/);
+        scope.march = new Date(2013, 2, 1);
+        await wait();
+        expect(error[0].match(/datefmt/)).toBeTruthy();
       });
 
-      it("should throw if the model is a Invalid string", () => {
+      it("should throw if the model is a Invalid string", async  () => {
         inputElm = $compile('<input type="month" ng-model="march"/>')(scope);
-
-        expect(() => {
-          scope.$apply(() => {
-            scope.march = "fail";
-          });
-        }).toThrowError(/datefmt/);
+        scope.march = "fail";
+        await wait();
+        expect(error[0].match(/datefmt/)).toBeTruthy();
       });
 
-      it("should not change the model if the input is an invalid month string", () => {
+      it("should not change the model if the input is an invalid month string", async  () => {
         inputElm = $compile('<input type="month" ng-model="value"/>')(scope);
 
-        scope.$apply(() => {
-          scope.value = "2013-01";
-        });
-
+        scope.value = "2013-01";
+        await wait();
         expect(inputElm.value).toBe("2013-01");
 
         inputElm.setAttribute("value", "stuff");
@@ -401,6 +388,7 @@ describe("input", () => {
             '<form name="form"><input type="month" ng-model="value" name="alias" min="{{ minVal }}" /></form>',
           )(scope);
           await wait();
+          return
         });
 
         it("should invalidate", () => {
@@ -425,14 +413,13 @@ describe("input", () => {
 
         it("should revalidate when the min value changes", async () => {
           inputElm.querySelector("input").setAttribute("value", "2013-07");
+          await wait();
           expect(
             inputElm.querySelector("input").classList.contains("ng-valid"),
           ).toBeTrue();
           expect(scope.form.alias.$error.min).toBeFalsy();
 
-          scope.$apply(() => {
-            scope.minVal = "2014-01";
-          });
+          scope.minVal = "2014-01";
           await wait();
           expect(
             inputElm.querySelector("input").classList.contains("ng-invalid"),
