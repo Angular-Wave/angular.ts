@@ -159,65 +159,68 @@ describe("ngOptions", () => {
   beforeEach(() => {
     window.angular = new Angular();
     window.angular
-      .module("myModule", ["ng"])
+      .module("myModule", ["ng", 
+        ($compileProvider, $provide) => {
+          linkLog = [];
+  
+          $compileProvider
+            .directive("customSelect", () => ({
+              restrict: "E",
+              replace: true,
+              scope: {
+                ngModel: "=",
+                options: "=",
+              },
+              templateUrl: "select_template.html",
+              link(scope, $element, attributes) {
+                scope.selectable_options = scope.options;
+              },
+            }))
+  
+            .directive("oCompileContents", () => ({
+              link(scope, element) {
+                linkLog.push("linkCompileContents");
+                $compile(JQLite(element[0].childNodes))(scope);
+              },
+            }))
+  
+            .directive("observeChildList", () => ({
+              link(scope, element) {
+                const config = { childList: true };
+  
+                childListMutationObserver = new window.MutationObserver(() => {});
+                childListMutationObserver.observe(element[0], config);
+              },
+            }));
+  
+          $provide.decorator("ngOptionsDirective", ($delegate) => {
+            const origPreLink = $delegate[0].link.pre;
+            const origPostLink = $delegate[0].link.post;
+  
+            $delegate[0].compile = function () {
+              return {
+                pre: origPreLink,
+                post() {
+                  linkLog.push("linkNgOptions");
+                  origPostLink.apply(this, arguments);
+                },
+              };
+            };
+  
+            return $delegate;
+          });
+        },
+      ])
       .decorator("$exceptionHandler", function () {
         return (exception, cause) => {
           throw new Error(exception.message);
         };
       });
-    injector = createInjector([
+
+    injector = window.angular.bootstrap(document.getElementById("dummy"), [
       "myModule",
-      ($compileProvider, $provide) => {
-        linkLog = [];
+    ]);   
 
-        $compileProvider
-          .directive("customSelect", () => ({
-            restrict: "E",
-            replace: true,
-            scope: {
-              ngModel: "=",
-              options: "=",
-            },
-            templateUrl: "select_template.html",
-            link(scope, $element, attributes) {
-              scope.selectable_options = scope.options;
-            },
-          }))
-
-          .directive("oCompileContents", () => ({
-            link(scope, element) {
-              linkLog.push("linkCompileContents");
-              $compile(JQLite(element[0].childNodes))(scope);
-            },
-          }))
-
-          .directive("observeChildList", () => ({
-            link(scope, element) {
-              const config = { childList: true };
-
-              childListMutationObserver = new window.MutationObserver(() => {});
-              childListMutationObserver.observe(element[0], config);
-            },
-          }));
-
-        $provide.decorator("ngOptionsDirective", ($delegate) => {
-          const origPreLink = $delegate[0].link.pre;
-          const origPostLink = $delegate[0].link.post;
-
-          $delegate[0].compile = function () {
-            return {
-              pre: origPreLink,
-              post() {
-                linkLog.push("linkNgOptions");
-                origPostLink.apply(this, arguments);
-              },
-            };
-          };
-
-          return $delegate;
-        });
-      },
-    ]);
     $compile = injector.get("$compile");
     scope = injector.get("$rootScope").$new(); // create a child scope because the root scope can't be $destroy-ed
     formElement = element = null;
@@ -2992,7 +2995,7 @@ describe("ngOptions", () => {
         const addSpiesOnProto =
           originalSelectedDescriptor && originalSelectedDescriptor.configurable;
 
-        Object.entries(options).forEach(([i, option]) => {
+        options.elements().forEach((option, i) => {
           const setSelected = function (value) {
             _selected[i] = value;
           };
@@ -3003,7 +3006,7 @@ describe("ngOptions", () => {
         });
 
         if (!addSpiesOnProto) {
-          Object.entries(options).forEach(([i, option]) => {
+          options.elements().forEach((option, i) => {
             Object.defineProperty(option, "selected", {
               get() {
                 return _selected[i];
