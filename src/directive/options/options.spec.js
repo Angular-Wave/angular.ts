@@ -159,10 +159,11 @@ describe("ngOptions", () => {
   beforeEach(() => {
     window.angular = new Angular();
     window.angular
-      .module("myModule", ["ng", 
+      .module("myModule", [
+        "ng",
         ($compileProvider, $provide) => {
           linkLog = [];
-  
+
           $compileProvider
             .directive("customSelect", () => ({
               restrict: "E",
@@ -176,27 +177,29 @@ describe("ngOptions", () => {
                 scope.selectable_options = scope.options;
               },
             }))
-  
+
             .directive("oCompileContents", () => ({
               link(scope, element) {
                 linkLog.push("linkCompileContents");
                 $compile(JQLite(element[0].childNodes))(scope);
               },
             }))
-  
+
             .directive("observeChildList", () => ({
               link(scope, element) {
                 const config = { childList: true };
-  
-                childListMutationObserver = new window.MutationObserver(() => {});
+
+                childListMutationObserver = new window.MutationObserver(
+                  () => {},
+                );
                 childListMutationObserver.observe(element[0], config);
               },
             }));
-  
+
           $provide.decorator("ngOptionsDirective", ($delegate) => {
             const origPreLink = $delegate[0].link.pre;
             const origPostLink = $delegate[0].link.post;
-  
+
             $delegate[0].compile = function () {
               return {
                 pre: origPreLink,
@@ -206,7 +209,7 @@ describe("ngOptions", () => {
                 },
               };
             };
-  
+
             return $delegate;
           });
         },
@@ -219,7 +222,7 @@ describe("ngOptions", () => {
 
     injector = window.angular.bootstrap(document.getElementById("dummy"), [
       "myModule",
-    ]);   
+    ]);
 
     $compile = injector.get("$compile");
     scope = injector.get("$rootScope").$new(); // create a child scope because the root scope can't be $destroy-ed

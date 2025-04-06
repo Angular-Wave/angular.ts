@@ -3664,7 +3664,6 @@ describe("$compile", () => {
           return {
             transclude: "element",
             link: function (scope, el, attrs, ctrl, transclude) {
-              debugger;
               const res = transclude();
               el.after(res);
             },

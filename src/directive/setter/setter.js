@@ -22,7 +22,6 @@ export function ngSetterDirective($parse) {
 
       const updateModel = (value) => {
         if (value !== "") {
-          debugger;
           const maybeNumber = convertToNumberOrString(value);
           assignModel(scope, maybeNumber);
           scope.$digest();
@@ -59,7 +58,6 @@ export function ngSetterDirective($parse) {
 
       scope.$on("$destroy", () => observer.disconnect());
       const content = element.html();
-      debugger;
       updateModel(content);
     },
   };
