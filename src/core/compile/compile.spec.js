@@ -5414,53 +5414,51 @@ describe("$compile", () => {
 
       it("should support templates with root <td> tags", async () => {
         reloadModules();
-        element = $compile("<td replace-with-td></td>")($rootScope);
+        element = $compile("<div replace-with-td></div>")($rootScope);
         await wait();
         expect(getNodeName(element)).toMatch(/td/i);
       });
 
       it("should support templates with root <th> tags", () => {
         reloadModules();
-        element = $compile("<th replace-with-th></th>")($rootScope);
+        element = $compile("<div replace-with-th></div>")($rootScope);
         expect(getNodeName(element)).toMatch(/th/i);
       });
 
       it("should support templates with root <thead> tags", () => {
         reloadModules();
-        element = $compile("<thead replace-with-thead></thead>")($rootScope);
+        element = $compile("<div replace-with-thead></div>")($rootScope);
         expect(getNodeName(element)).toMatch(/thead/i);
       });
 
       it("should support templates with root <tbody> tags", () => {
         reloadModules();
-        element = $compile("<tbody replace-with-tbody></tbody>")($rootScope);
+        element = $compile("<div replace-with-tbody></div>")($rootScope);
         expect(getNodeName(element)).toMatch(/tbody/i);
       });
 
       it("should support templates with root <tfoot> tags", () => {
         reloadModules();
-        element = $compile("<tfoot replace-with-tfoot></tfoot>")($rootScope);
+        element = $compile("<div replace-with-tfoot></div>")($rootScope);
         expect(getNodeName(element)).toMatch(/tfoot/i);
       });
 
       it("should support templates with root <option> tags", () => {
         reloadModules();
-        element = $compile("<option replace-with-option></option>")($rootScope);
+        element = $compile("<div replace-with-option></div>")($rootScope);
         expect(getNodeName(element)).toMatch(/option/i);
       });
 
       it("should support templates with root <optgroup> tags", () => {
         reloadModules();
         expect(() => {
-          element = $compile("<optgroup replace-with-optgroup></optgroup>")(
-            $rootScope,
-          );
+          element = $compile("<div replace-with-optgroup></div>")($rootScope);
         }).not.toThrow();
         expect(getNodeName(element)).toMatch(/optgroup/i);
       });
 
       // TDOD xlink - DEPRECATED
-      xit("should support SVG templates using directive.templateNamespace=svg", async () => {
+      it("should support SVG templates using directive.templateNamespace=svg", async () => {
         myModule.directive("svgAnchor", () => ({
           replace: true,
           template: '<a href="{{linkurl}}">{{text}}</a>',
@@ -5481,7 +5479,7 @@ describe("$compile", () => {
         expect(child.href.baseVal).toBe("/foo/bar");
       });
 
-      xit("should support MathML templates using directive.templateNamespace=math", async () => {
+      it("should support MathML templates using directive.templateNamespace=math", async () => {
         myModule.directive("pow", () => ({
           replace: true,
           transclude: true,
@@ -5492,7 +5490,7 @@ describe("$compile", () => {
           },
           link(scope, elm, attr, ctrl, transclude) {
             transclude((node) => {
-              elm.prepend(node[0]);
+              elm.prepend(node);
             });
           },
         }));
@@ -5503,8 +5501,8 @@ describe("$compile", () => {
         await wait();
         const child = element.firstChild;
         expect(getNodeName(child)).toMatch(/msup/i);
-        expect(isUnknownElement(child[0])).toBe(false);
-        expect(isHTMLElement(child[0])).toBe(false);
+        expect(isUnknownElement(child)).toBe(false);
+        expect(isHTMLElement(child)).toBe(false);
       });
 
       it("should keep prototype properties on directive", async () => {
