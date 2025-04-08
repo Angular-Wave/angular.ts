@@ -20,7 +20,7 @@ describe("input", () => {
       .module("myModule", ["ng"])
       .decorator("$exceptionHandler", function () {
         return (exception) => {
-          error.push(exception.message)
+          error.push(exception.message);
         };
       });
     window.angular
@@ -323,14 +323,14 @@ describe("input", () => {
         expect(error[0].match(/datefmt/)).toBeTruthy();
       });
 
-      it("should throw if the model is a Invalid string", async  () => {
+      it("should throw if the model is a Invalid string", async () => {
         inputElm = $compile('<input type="month" ng-model="march"/>')(scope);
         scope.march = "fail";
         await wait();
         expect(error[0].match(/datefmt/)).toBeTruthy();
       });
 
-      it("should not change the model if the input is an invalid month string", async  () => {
+      it("should not change the model if the input is an invalid month string", async () => {
         inputElm = $compile('<input type="month" ng-model="value"/>')(scope);
 
         scope.value = "2013-01";
@@ -388,7 +388,7 @@ describe("input", () => {
             '<form name="form"><input type="month" ng-model="value" name="alias" min="{{ minVal }}" /></form>',
           )(scope);
           await wait();
-          return
+          return;
         });
 
         it("should invalidate", () => {

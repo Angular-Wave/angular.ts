@@ -1,5 +1,5 @@
 import { PREFIX_REGEXP, SPECIAL_CHARS_REGEXP } from "./constants.js";
-import {isProxy} from "../core/scope/scope.js";
+import { isProxy } from "../core/scope/scope.js";
 
 const ngMinErr = minErr("ng");
 
@@ -1091,7 +1091,7 @@ export function minErr(module) {
         message += `${paramPrefix}p${i}=${encodeURIComponent(templateArgs[i])}`;
       }
     }
-    debugger
+    debugger;
     return new Error(message);
   };
 }

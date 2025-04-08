@@ -638,16 +638,19 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           ? createElementFromHTML(/** @type {string} */ (element))
           : /** @type {Element} */ (element);
 
-        var parent
+        var parent;
         if (!compileNode.parentNode) {
           parent = document.createDocumentFragment();
-          parent.appendChild(compileNode);
+          if (compileNode instanceof NodeList) {
+            Array.from(compileNode).forEach((x) => {
+              parent.appendChild(x);
+            });
+          } else {
+            parent.appendChild(compileNode);
+          }
         } else {
           parent = compileNode.parentNode;
         }
-        debugger
-
-        let children = parent.children
 
         /**
          * The composite link function is a composite of individual node linking functions.
@@ -661,14 +664,12 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           ignoreDirective,
           previousCompileContext,
         );
-        debugger
-        compileNode = children[0]
+        compileNode = parent.children[0];
         let namespace = null;
         return publicLinkFn;
 
         /** @type {PublicLinkFn} */
         function publicLinkFn(scope, cloneConnectFn, options) {
-          debugger
           if (!compileNode) {
             throw $compileMinErr(
               "multilink",
@@ -825,7 +826,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           /** @type {NodeLinkFn} */
           let nodeLinkFn;
           if (directives.length) {
-            debugger
+            debugger;
             nodeLinkFn = applyDirectivesToNode(
               directives,
               nodeList[i],
@@ -836,7 +837,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               [],
               previousCompileContext,
             );
-            debugger
+            debugger;
           } else {
             nodeLinkFn = null;
           }
@@ -1664,7 +1665,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 document.createComment("");
               compileNode = $compileNode;
 
-              replaceWith([$template], compileNode);
+              replaceWith($template, compileNode);
 
               childTranscludeFn = compilationGenerator(
                 mightHaveMultipleTransclusionError,
@@ -1831,7 +1832,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               // }
 
               const parent = $compileNode.parentNode;
-              parent.replaceChild(compileNode, $compileNode)
+              parent.replaceChild(compileNode, $compileNode);
               templateAttrs.$$element = compileNode;
 
               const newTemplateAttrs = { $attr: {} };
@@ -2745,6 +2746,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           parent.replaceChild(newNode, firstElementToRemove);
         } else {
           // we cannot replace the element
+          debugger
           throw new Error("replaced element has no parent");
         }
 

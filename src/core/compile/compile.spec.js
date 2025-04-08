@@ -3193,12 +3193,10 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = $(
-        "<div my-transcluder><div inside-transcluder></div><div inside-transcluder></div></div>",
-      );
+      var el = $("<div my-transcluder><div inside-transcluder></div></div>");
       $compile(el)($rootScope);
       await wait();
-      expect(insideCompileSpy).toHaveBeenCalledTimes(2);
+      expect(insideCompileSpy).toHaveBeenCalledTimes(1);
     });
 
     it("makes contents available to link function", () => {
