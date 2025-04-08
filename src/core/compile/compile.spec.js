@@ -5407,7 +5407,7 @@ describe("$compile", () => {
 
       it("should support templates with root <tr> tags", async () => {
         reloadModules();
-        element = $compile("<tr replace-with-tr></tr>")($rootScope);
+        element = $compile("<div replace-with-tr></div>")($rootScope);
         await wait();
         expect(getNodeName(element)).toMatch(/tr/i);
       });

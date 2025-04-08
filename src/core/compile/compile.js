@@ -638,24 +638,37 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           ? createElementFromHTML(/** @type {string} */ (element))
           : /** @type {Element} */ (element);
 
+        var parent
+        if (!compileNode.parentNode) {
+          parent = document.createDocumentFragment();
+          parent.appendChild(compileNode);
+        } else {
+          parent = compileNode.parentNode;
+        }
+        debugger
+
+        let children = parent.children
+
         /**
          * The composite link function is a composite of individual node linking functions.
          * It will be invoke by the public link function below.
          * @type {CompositeLinkFn}
          */
         let compositeLinkFn = compileNodes(
-          [compileNode],
+          parent.children,
           transcludeFn,
           maxPriority,
           ignoreDirective,
           previousCompileContext,
         );
-
+        debugger
+        compileNode = children[0]
         let namespace = null;
         return publicLinkFn;
 
         /** @type {PublicLinkFn} */
         function publicLinkFn(scope, cloneConnectFn, options) {
+          debugger
           if (!compileNode) {
             throw $compileMinErr(
               "multilink",
@@ -812,6 +825,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           /** @type {NodeLinkFn} */
           let nodeLinkFn;
           if (directives.length) {
+            debugger
             nodeLinkFn = applyDirectivesToNode(
               directives,
               nodeList[i],
@@ -822,6 +836,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               [],
               previousCompileContext,
             );
+            debugger
           } else {
             nodeLinkFn = null;
           }
@@ -1806,18 +1821,18 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 );
               }
 
-              for (const attr of compileNode.attributes) {
-                $compileNode.setAttribute(attr.name, attr.value);
-              }
+              // for (const attr of compileNode.attributes) {
+              //   $compileNode.setAttribute(attr.name, attr.value);
+              // }
+              //
+              // $compileNode.innerHTML = "";
+              // while (compileNode.firstChild) {
+              //   $compileNode.appendChild(compileNode.firstChild);
+              // }
 
-              $compileNode.innerHTML = "";
-              while (compileNode.firstChild) {
-                $compileNode.appendChild(compileNode.firstChild);
-              }
-
-              templateAttrs.$$element = $compileNode;
-
-              //replaceWith($compileNode, compileNode);
+              const parent = $compileNode.parentNode;
+              parent.replaceChild(compileNode, $compileNode)
+              templateAttrs.$$element = compileNode;
 
               const newTemplateAttrs = { $attr: {} };
 
@@ -2721,29 +2736,24 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {Node} newNode The new DOM node.
        */
       function replaceWith(elementsToRemove, newNode) {
-        const firstElementToRemove = elementsToRemove.length
-          ? elementsToRemove[0]
-          : elementsToRemove;
+        const firstElementToRemove = elementsToRemove;
         // const removeCount = elementsToRemove.length;
         const parent = firstElementToRemove.parentNode;
         // let i;
 
         if (parent) {
           parent.replaceChild(newNode, firstElementToRemove);
-          return firstElementToRemove;
         } else {
           // we cannot replace the element
-          //throw new Error("replaced element has no parent");
+          throw new Error("replaced element has no parent");
         }
 
-        // // Append all the `elementsToRemove` to a fragment. This will...
-        // // - remove them from the DOM
-        // // - allow them to still be traversed with .nextSibling
-        // // - allow a single fragment.qSA to fetch all elements being removed
-        // const fragment = document.createDocumentFragment();
-        // for (i = 0; i < removeCount; i++) {
-        //   fragment.appendChild(elementsToRemove[i]);
-        // }
+        // Append all the `elementsToRemove` to a fragment. This will...
+        // - remove them from the DOM
+        // - allow them to still be traversed with .nextSibling
+        // - allow a single fragment.qSA to fetch all elements being removed
+        const fragment = document.createDocumentFragment();
+        fragment.appendChild(elementsToRemove);
 
         // if (Cache.has(firstElementToRemove[EXPANDO])) {
         //   // Copy over user data (that includes AngularJS's $scope etc.). Don't copy private

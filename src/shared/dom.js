@@ -11,7 +11,7 @@ let jqId = 1;
 
 const DASH_LOWERCASE_REGEXP = /-([a-z])/g;
 const UNDERSCORE_LOWERCASE_REGEXP = /_([a-z])/g;
-
+const SINGLE_TAG_REGEXP = /^<([\w-]+)\s*\/?>(?:<\/\1>|)$/;
 const TAG_NAME_REGEXP = /<([\w:-]+)/;
 
 // Table parts need to be wrapped with `<table>` or they're
@@ -217,6 +217,23 @@ export function buildFragment(html) {
   let fragment = document.createDocumentFragment();
   fragment.append(...nodes);
   return fragment;
+}
+
+/**
+ * @param {string} html
+ * @returns {NodeListOf<ChildNode> | HTMLElement[]}
+ */
+export function parseHtml(html) {
+  let regEx = SINGLE_TAG_REGEXP.exec(html);
+  if (regEx) {
+    return [document.createElement(regEx[1])];
+  }
+  let fragment = buildFragment(html);
+  if (fragment) {
+    return fragment.childNodes;
+  }
+
+  return [];
 }
 
 /**
