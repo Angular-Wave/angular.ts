@@ -952,12 +952,14 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   childBoundTranscludeFn,
                 );
               } else if (childLinkFn) {
-                childLinkFn(
-                  scope,
-                  node.childNodes,
-                  undefined,
-                  parentBoundTranscludeFn,
-                );
+                if (node.childNodes.length) {
+                  childLinkFn(
+                    scope,
+                    node.childNodes,
+                    undefined,
+                    parentBoundTranscludeFn,
+                  );
+                }
               }
             },
           );
@@ -2744,7 +2746,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           parent.replaceChild(newNode, firstElementToRemove);
         } else {
           // we cannot replace the element
-          debugger
+          debugger;
           throw new Error("replaced element has no parent");
         }
 

@@ -1,3 +1,4 @@
+import { getCacheData } from "../../shared/dom.js";
 import {
   assertNotHasOwnProperty,
   equals,
@@ -8,15 +9,7 @@ import {
 } from "../../shared/utils.js";
 
 function setOptionSelectedStatus(optionEl, value) {
-  optionEl[0].selected = value;
-  /**
-   * When unselecting an option, setting the property to null / false should be enough
-   * However, screenreaders might react to the selected attribute instead, see
-   * https://github.com/angular/angular.js/issues/14419
-   * Note: "selected" is a boolean attr and will be removed when the "value" arg in attr() is false
-   * or null
-   */
-  optionEl.attr("selected", value);
+  optionEl.selected = value;
 }
 
 /**
@@ -511,8 +504,8 @@ export function optionDirective($interpolate) {
         const selectCtrlName = "$selectController";
         const parent = element.parentElement;
         const selectCtrl =
-          parent.data(selectCtrlName) ||
-          parent.parentElement.data(selectCtrlName); // in case we are in optgroup
+          getCacheData(parent, selectCtrlName) ||
+          getCacheData(parent.parentElement, selectCtrlName); // in case we are in optgroup
 
         if (selectCtrl) {
           selectCtrl.registerOption(

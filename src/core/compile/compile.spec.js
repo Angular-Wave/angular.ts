@@ -3782,11 +3782,9 @@ describe("$compile", () => {
             template: "<div ng-transclude></div>",
             link: function (scope, el, attrs, ctrl, transclude) {
               transclude(function (clone) {
-                debugger
                 el.children[0].textContent += clone.textContent;
               });
               transclude(function (clone) {
-                debugger
                 el.children[0].textContent += clone.textContent;
               });
             },
@@ -4839,7 +4837,7 @@ describe("$compile", () => {
       await wait();
       const circle = element.querySelector("circle");
       assertIsValidSvgCircle(circle);
-      document.body.removeChild(element);      
+      document.body.removeChild(element);
     });
 
     it("should handle transcluded custom svg elements", async () => {
@@ -4867,7 +4865,6 @@ describe("$compile", () => {
       await wait();
       const circle = element.querySelector("circle");
       assertIsValidSvgCircle(circle);
-      
     });
 
     it("should support directives with SVG templates and a slow url that are stamped out later by a transcluding directive", async () => {
@@ -6978,15 +6975,16 @@ describe("$compile", () => {
               expect(element).toBe(attr.$$element);
             },
           }));
-        dealoc(document.getElementById("dummy"));
-        window.angular
-          .bootstrap(document.getElementById("dummy"), ["test1"])
-          .invoke((_$compile_, _$rootScope_, _$templateCache_, _$sce_) => {
-            $compile = _$compile_;
-            $rootScope = _$rootScope_;
-            $templateCache = _$templateCache_;
-            $sce = _$sce_;
-          });
+        // dealoc(document.getElementById("dummy"));
+        // debugger
+        // window.angular
+        //   .bootstrap(document.getElementById("dummy"), ["test1"])
+        //   .invoke((_$compile_, _$rootScope_, _$templateCache_, _$sce_) => {
+        //     $compile = _$compile_;
+        //     $rootScope = _$rootScope_;
+        //     $templateCache = _$templateCache_;
+        //     $sce = _$sce_;
+        //   });
       });
 
       it("should compile and link both attribute and text bindings", async () => {
@@ -7199,14 +7197,14 @@ describe("$compile", () => {
           '<select ng-model="x"><option value="">Greet {{name}}!</option></select>',
         )($rootScope);
         await wait();
-        expect(element.outerHTML.replace(' selected="selected"', "")).toEqual(
+        expect(element.outerHTML).toEqual(
           '<select ng-model="x" class="ng-pristine ng-untouched ng-valid ng-empty" aria-invalid="false">' +
             '<option value="">Greet !</option>' +
             "</select>",
         );
         $rootScope.name = "Misko";
         await wait();
-        expect(element.outerHTML.replace(' selected="selected"', "")).toEqual(
+        expect(element.outerHTML).toEqual(
           '<select ng-model="x" class="ng-pristine ng-untouched ng-valid ng-empty" aria-invalid="false">' +
             '<option value="">Greet Misko!</option>' +
             "</select>",
@@ -7493,7 +7491,7 @@ describe("$compile", () => {
           expect(value).toEqual(true);
         });
 
-        it("should read boolean attributes as text on non-controll elements", async () => {
+        it("should read boolean attributes as text on non-control elements", async () => {
           let value;
           module.directive({
             div: () => ({
@@ -8385,7 +8383,7 @@ describe("$compile", () => {
           expect(log[0].attr.isFirstChange()).toEqual(false);
         });
 
-        xit("should clean up `@`-binding observers when re-assigning bindings", async () => {
+        it("should clean up `@`-binding observers when re-assigning bindings", async () => {
           const constructorSpy = jasmine.createSpy("constructor");
           const prototypeSpy = jasmine.createSpy("prototype");
 
@@ -8419,7 +8417,7 @@ describe("$compile", () => {
           expect(prototypeSpy).not.toHaveBeenCalled();
         });
 
-        xit("should not call `$onChanges` twice even when the initial value is `NaN`", async () => {
+        it("should not call `$onChanges` twice even when the initial value is `NaN`", async () => {
           const onChangesSpy = jasmine.createSpy("$onChanges");
 
           module.component("test", {
@@ -8478,7 +8476,7 @@ describe("$compile", () => {
           });
         });
 
-        xit("should only trigger one extra digest however many controllers have changes", async () => {
+        it("should only trigger one extra digest however many controllers have changes", async () => {
           let log = [];
           function TestController1() {}
           TestController1.prototype.$onChanges = function (change) {
@@ -8527,7 +8525,7 @@ describe("$compile", () => {
           ]);
         });
 
-        xit("should cope with changes occurring inside `$onChanges()` hooks", async () => {
+        it("should cope with changes occurring inside `$onChanges()` hooks", async () => {
           function OuterController() {}
           OuterController.prototype.$onChanges = function (change) {
             log.push(["OuterController", change]);
@@ -8623,6 +8621,7 @@ describe("$compile", () => {
           $rootScope.$apply("b = 48");
         });
 
+        // LEAK
         xit("should log an error if `$onChanges()` hooks are not stable", async () => {
           function TestController() {}
           TestController.prototype.$onChanges = function (change) {
@@ -9499,7 +9498,7 @@ describe("$compile", () => {
             ]);
           });
 
-          xit("should update isolate again after $onInit if outer object reference changes even if equal", () => {
+          it("should update isolate again after $onInit if outer object reference changes even if equal", () => {
             $rootScope.name = ["outer"];
             $compile('<ow-component input="name"></ow-component>')($rootScope);
 
@@ -9527,7 +9526,7 @@ describe("$compile", () => {
             ]);
           });
 
-          xit("should not update isolate again after $onInit if outer is a literal", () => {
+          it("should not update isolate again after $onInit if outer is a literal", () => {
             $rootScope.name = "outer";
             $compile('<ow-component input="[name]"></ow-component>')(
               $rootScope,
@@ -9559,7 +9558,7 @@ describe("$compile", () => {
             ]);
           });
 
-          xit("should update isolate again after $onInit if outer has changed (before initial watchAction call)", () => {
+          it("should update isolate again after $onInit if outer has changed (before initial watchAction call)", () => {
             $rootScope.name = "outer1";
             $compile('<ow-component input="name"></ow-component>')($rootScope);
 
@@ -9585,7 +9584,7 @@ describe("$compile", () => {
             ]);
           });
 
-          xit("should update isolate again after $onInit if outer has changed (before initial watchAction call)", () => {
+          it("should update isolate again after $onInit if outer has changed (before initial watchAction call)", () => {
             $rootScope.name = "outer1";
             $compile('<ow-component input="name" change-input></ow-component>')(
               $rootScope,
@@ -10718,7 +10717,7 @@ describe("$compile", () => {
         expect(childCtrl.value2).toBe("child2");
       });
 
-      xit("should evaluate against the correct scope, when using `bindToController` (new iso scope)", async () => {
+      it("should evaluate against the correct scope, when using `bindToController` (new iso scope)", async () => {
         module
           .controller("ParentCtrl", function () {
             this.value1 = "parent1";
@@ -10776,6 +10775,7 @@ describe("$compile", () => {
         expect(childCtrl.fromParent4).not.toBe(childCtrl.value4);
 
         childCtrl.fromParent2 = "modified";
+        await wait();
         expect(parentCtrl.value2).toBe("modified");
         expect(childCtrl.value2).toBe("child2");
       });
@@ -10804,7 +10804,7 @@ describe("$compile", () => {
         expect(childScope.theCtrl).toEqual(myCtrl);
       });
 
-      xit("should re-install controllerAs and bindings for returned value from controller (new scope)", async () => {
+      it("should re-install controllerAs and bindings for returned value from controller (new scope)", async () => {
         let controllerCalled = false;
         let myCtrl;
 
@@ -11625,7 +11625,7 @@ describe("$compile", () => {
         expect(element.textContent).toEqual("WORKS");
       });
 
-      xit("should not get confused about where to use isolate scope when a replaced directive is used multiple times", async () => {
+      it("should not get confused about where to use isolate scope when a replaced directive is used multiple times", async () => {
         module
           .directive("isolate", () => ({
             replace: true,
@@ -11982,7 +11982,7 @@ describe("$compile", () => {
         expect(log[0]).toEqual("myFoo=bar");
       });
 
-      xit("should instantiate controllers in the parent->child->baby order when nested transclusion, templateUrl and replacement are in the mix", async () => {
+      it("should instantiate controllers in the parent->child->baby order when nested transclusion, templateUrl and replacement are in the mix", async () => {
         // similar to the test above, except that we have one more layer of nesting and nested transclusion
 
         module
@@ -12269,7 +12269,7 @@ describe("$compile", () => {
         });
 
         // see issue https://github.com/angular/angular.js/issues/12936
-        xit("should use the proper scope when it is on the root element of a replaced directive template", async () => {
+        it("should use the proper scope when it is on the root element of a replaced directive template", async () => {
           module
             .directive("isolate", () => ({
               scope: {},
@@ -12340,7 +12340,7 @@ describe("$compile", () => {
           }).toThrowError(/multilink/);
         });
 
-        xit('should not leak if two "element" transclusions are on the same element', async () => {
+        it('should not leak if two "element" transclusions are on the same element', async () => {
           const cacheSize = Cache.size;
 
           element = $compile(
@@ -12366,7 +12366,7 @@ describe("$compile", () => {
           expect(Cache.size).toEqual(cacheSize);
         });
 
-        xit('should not leak if two "element" transclusions are on the same element', async () => {
+        it('should not leak if two "element" transclusions are on the same element', async () => {
           const cacheSize = Cache.size;
           element = $compile(
             '<div><div ng-repeat="x in xs" ng-if="val">{{x}}</div></div>',
@@ -12480,13 +12480,13 @@ describe("$compile", () => {
             expect(privateData && privateData.events).not.toBeDefined();
           }
 
-          xit(
+          it(
             "should work without external libraries (except jQuery)",
             testCleanup,
           );
         });
 
-        xit("should add a $$transcluded property onto the transcluded scope", async () => {
+        it("should add a $$transcluded property onto the transcluded scope", async () => {
           module.directive("trans", () => ({
             transclude: true,
             replace: true,
@@ -12516,7 +12516,7 @@ describe("$compile", () => {
           );
         });
 
-        xit("should NOT clear contents of the ng-transclude element before appending transcluded content if transcluded content does NOT exist", async () => {
+        it("should NOT clear contents of the ng-transclude element before appending transcluded content if transcluded content does NOT exist", async () => {
           module.directive("trans", () => ({
             transclude: true,
             template: "<div ng-transclude>old stuff!</div>",
@@ -12580,7 +12580,7 @@ describe("$compile", () => {
           expect(linkSpy).not.toHaveBeenCalled();
         });
 
-        xit("should compile and link the fallback content if no transcluded content is provided", async () => {
+        it("should compile and link the fallback content if no transcluded content is provided", async () => {
           const linkSpy = jasmine.createSpy("postlink");
 
           module
@@ -12602,7 +12602,7 @@ describe("$compile", () => {
           expect(linkSpy).toHaveBeenCalled();
         });
 
-        xit("should compile and link the fallback content if only whitespace transcluded content is provided", async () => {
+        it("should compile and link the fallback content if only whitespace transcluded content is provided", async () => {
           const linkSpy = jasmine.createSpy("postlink");
 
           module
@@ -12624,7 +12624,7 @@ describe("$compile", () => {
           expect(linkSpy).toHaveBeenCalled();
         });
 
-        xit("should not link the fallback content if only whitespace and comments are provided as transclude content", async () => {
+        it("should not link the fallback content if only whitespace and comments are provided as transclude content", async () => {
           const linkSpy = jasmine.createSpy("postlink");
 
           module
@@ -12648,7 +12648,7 @@ describe("$compile", () => {
           expect(linkSpy).not.toHaveBeenCalled();
         });
 
-        xit("should compile and link the fallback content if an optional transclusion slot is not provided", async () => {
+        it("should compile and link the fallback content if an optional transclusion slot is not provided", async () => {
           const linkSpy = jasmine.createSpy("postlink");
 
           module
@@ -12702,7 +12702,7 @@ describe("$compile", () => {
           // we need to do this because different browsers print empty attributes differently
         });
 
-        xit("should not pass transclusion into a template directive when the directive didn't request transclusion", async () => {
+        it("should not pass transclusion into a template directive when the directive didn't request transclusion", async () => {
           module
             .decorator("$exceptionHandler", () => {
               return (exception, cause) => {
@@ -12766,7 +12766,7 @@ describe("$compile", () => {
           $compile("<div trans-foo>content</div>")($rootScope);
         });
 
-        xit("should expose transcludeFn in compile fn even for templateUrl", async () => {
+        it("should expose transcludeFn in compile fn even for templateUrl", async () => {
           module.directive("transInCompile", () => ({
             transclude: true,
             // template: '<div class="foo">whatever</div>',
@@ -12947,7 +12947,7 @@ describe("$compile", () => {
           expect(ctrlTransclude).toBe(postLinkTransclude);
         });
 
-        xit("should allow an optional scope argument in $transclude", async () => {
+        it("should allow an optional scope argument in $transclude", async () => {
           let capturedChildCtrl;
           module.directive("transclude", () => ({
             transclude: "content",
@@ -12989,7 +12989,7 @@ describe("$compile", () => {
         });
 
         // See issue https://github.com/angular/angular.js/issues/14924
-        xit("should not process top-level transcluded text nodes merged into their sibling", async () => {
+        it("should not process top-level transcluded text nodes merged into their sibling", async () => {
           module.directive("transclude", () => ({
             template: "<ng-transclude></ng-transclude>",
             transclude: true,
@@ -13032,7 +13032,7 @@ describe("$compile", () => {
             initInjector("test1");
           });
 
-          xit("should preserve the bound scope", async () => {
+          it("should preserve the bound scope", async () => {
             element = $compile(
               "<div>" +
                 '<div ng-init="outer=true"></div>' +
@@ -13061,7 +13061,7 @@ describe("$compile", () => {
             expect(element.textContent).toBe("Success");
           });
 
-          xit("should preserve the bound scope when using recursive transclusion", async () => {
+          it("should preserve the bound scope when using recursive transclusion", async () => {
             module.directive("recursiveTransclude", () => ({
               transclude: true,
               template:
@@ -13111,7 +13111,7 @@ describe("$compile", () => {
             initInjector("test1");
           });
 
-          xit("should not leak the transclude scope when the transcluded content is an element transclusion directive", async () => {
+          it("should not leak the transclude scope when the transcluded content is an element transclusion directive", async () => {
             element = $compile(
               "<div toggle>" +
                 "<div ng-repeat=\"msg in ['msg-1']\">{{ msg }}</div>" +
@@ -13143,7 +13143,7 @@ describe("$compile", () => {
             expect($rootScope.$handler.$children.length).toBe(0);
           });
 
-          xit("should not leak the transclude scope if the transcluded contains only comments", async () => {
+          it("should not leak the transclude scope if the transcluded contains only comments", async () => {
             element = $compile("<div toggle><!-- some comment --></div>")(
               $rootScope,
             );
@@ -13173,7 +13173,7 @@ describe("$compile", () => {
             expect($rootScope.$handler.$children.length).toBe(0);
           });
 
-          xit("should not leak the transclude scope if the transcluded contains only text nodes", async () => {
+          it("should not leak the transclude scope if the transcluded contains only text nodes", async () => {
             element = $compile("<div toggle>some text</div>")($rootScope);
 
             $rootScope.$apply("t = true");
@@ -13197,7 +13197,7 @@ describe("$compile", () => {
             expect($rootScope.$handler.$children.length).toBe(0);
           });
 
-          xit("should mark as destroyed all sub scopes of the scope being destroyed", async () => {
+          it("should mark as destroyed all sub scopes of the scope being destroyed", async () => {
             element = $compile(
               "<div toggle>" +
                 "<div ng-repeat=\"msg in ['msg-1']\">{{ msg }}</div>" +
@@ -13291,7 +13291,7 @@ describe("$compile", () => {
             expect(element.textContent).toEqual("transcluded content");
           });
 
-          xit("should not leak memory with nested transclusion", async () => {
+          it("should not leak memory with nested transclusion", async () => {
             let size;
             const initialSize = Cache.size;
 
@@ -13381,7 +13381,7 @@ describe("$compile", () => {
         });
 
         describe("multiple siblings receiving transclusion", () => {
-          xit("should only receive transclude from parent", async () => {
+          it("should only receive transclude from parent", async () => {
             module.directive("myExample", () => ({
               scope: {},
               link: function link(scope, element, attrs) {
@@ -13583,7 +13583,7 @@ describe("$compile", () => {
         );
       });
 
-      xit("should instantiate high priority controllers only once, but low priority ones each time we transclude", async () => {
+      it("should instantiate high priority controllers only once, but low priority ones each time we transclude", async () => {
         module
           .directive("elementTrans", () => ({
             transclude: true,
@@ -14029,7 +14029,7 @@ describe("$compile", () => {
   });
 
   describe("multi-slot transclude", () => {
-    xit("should only include elements without a matching transclusion element in default transclusion slot", async () => {
+    it("should only include elements without a matching transclusion element in default transclusion slot", async () => {
       module.directive("minionComponent", () => ({
         restrict: "E",
         scope: {},
@@ -14051,7 +14051,7 @@ describe("$compile", () => {
       expect(element.textContent).toEqual("stuartbobkevin");
     });
 
-    xit("should use the default transclusion slot if the ng-transclude attribute has the same value as its key", async () => {
+    it("should use the default transclusion slot if the ng-transclude attribute has the same value as its key", async () => {
       module.directive("minionComponent", () => ({
         restrict: "E",
         scope: {},
@@ -14081,7 +14081,7 @@ describe("$compile", () => {
       expect(c.innerText).toEqual("stuartbobkevin");
     });
 
-    xit("should include non-element nodes in the default transclusion", async () => {
+    it("should include non-element nodes in the default transclusion", async () => {
       module.directive("minionComponent", () => ({
         restrict: "E",
         scope: {},
@@ -14105,7 +14105,7 @@ describe("$compile", () => {
       expect(element.textContent).toEqual("text1stuartbobtext2kevin");
     });
 
-    xit("should transclude elements to an `ng-transclude` with a matching transclusion slot name", async () => {
+    it("should transclude elements to an `ng-transclude` with a matching transclusion slot name", async () => {
       module.directive("minionComponent", () => ({
         restrict: "E",
         scope: {},
@@ -14133,7 +14133,7 @@ describe("$compile", () => {
       expect(element.children().eq(2).innerText).toEqual("dorothy");
     });
 
-    xit("should use the `ng-transclude-slot` attribute if ng-transclude is used as an element", async () => {
+    it("should use the `ng-transclude-slot` attribute if ng-transclude is used as an element", async () => {
       module.directive("minionComponent", () => ({
         restrict: "E",
         scope: {},
@@ -14185,7 +14185,7 @@ describe("$compile", () => {
       }).toThrowError(/reqslot/);
     });
 
-    xit("should not error if an optional transclude slot is not filled", async () => {
+    it("should not error if an optional transclude slot is not filled", async () => {
       module.directive("minionComponent", () => ({
         restrict: "E",
         scope: {},
@@ -14254,7 +14254,7 @@ describe("$compile", () => {
       expect(element.textContent).toEqual("baz");
     });
 
-    xit("should match the normalized form of the element name", async () => {
+    it("should match the normalized form of the element name", async () => {
       module.directive("foo", () => ({
         restrict: "E",
         scope: {},
@@ -14280,7 +14280,7 @@ describe("$compile", () => {
       expect(element.children[1].innerText).toEqual("baz1baz2");
     });
 
-    xit("should return true from `isSlotFilled(slotName) for slots that have content in the transclusion", async () => {
+    it("should return true from `isSlotFilled(slotName) for slots that have content in the transclusion", async () => {
       let capturedTranscludeFn;
       module.directive("minionComponent", () => ({
         restrict: "E",
@@ -14314,7 +14314,7 @@ describe("$compile", () => {
       expect(hasBosses).toBe(false);
     });
 
-    xit("should not overwrite the contents of an `ng-transclude` element, if the matching optional slot is not filled", async () => {
+    it("should not overwrite the contents of an `ng-transclude` element, if the matching optional slot is not filled", async () => {
       module.directive("minionComponent", () => ({
         restrict: "E",
         scope: {},
@@ -14342,7 +14342,7 @@ describe("$compile", () => {
     });
 
     // See issue https://github.com/angular/angular.js/issues/14924
-    xit("should not process top-level transcluded text nodes merged into their sibling", async () => {
+    it("should not process top-level transcluded text nodes merged into their sibling", async () => {
       module.directive("transclude", () => ({
         template: "<ng-transclude></ng-transclude>",
         transclude: {},
@@ -14622,7 +14622,7 @@ describe("$compile", () => {
       );
     });
 
-    xit("should sanitize all uris in srcset", () => {
+    it("should sanitize all uris in srcset", () => {
       element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
       const testSet = {
         "http://example.com/image.png": "http://example.com/image.png",
@@ -14789,7 +14789,7 @@ describe("$compile", () => {
       );
     });
 
-    xit("should use $$sanitizeUri when working with svg and href through ng-href", async () => {
+    it("should use $$sanitizeUri when working with svg and href through ng-href", async () => {
       const $$sanitizeUri = jasmine
         .createSpy("$$sanitizeUri")
         .and.returnValue("https://clean.example.org");

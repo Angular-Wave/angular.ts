@@ -254,6 +254,8 @@ export function dealoc(element, onlyDescendants) {
       cleanElementData(element.querySelectorAll("*"));
     }
   }
+  delete element[EXPANDO];
+  element;
 }
 
 /**
