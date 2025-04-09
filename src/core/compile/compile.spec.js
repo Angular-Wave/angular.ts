@@ -3782,9 +3782,11 @@ describe("$compile", () => {
             template: "<div ng-transclude></div>",
             link: function (scope, el, attrs, ctrl, transclude) {
               transclude(function (clone) {
+                debugger
                 el.children[0].textContent += clone.textContent;
               });
               transclude(function (clone) {
+                debugger
                 el.children[0].textContent += clone.textContent;
               });
             },
@@ -3792,7 +3794,7 @@ describe("$compile", () => {
         },
       });
       reloadModules();
-      var el = $("<div><div my-double>Hello</div>");
+      var el = $("<div><div my-double>Hello</div></div>");
 
       $compile(el)($rootScope);
       expect(el.innerText).toBe("HelloHelloHello");
@@ -4823,6 +4825,7 @@ describe("$compile", () => {
       await wait();
       const circle = element.children[0].children[0];
       assertIsValidSvgCircle(circle);
+      document.body.removeChild(element);
     });
 
     it("should handle custom svg elements inside svg tag", async () => {
@@ -4836,6 +4839,7 @@ describe("$compile", () => {
       await wait();
       const circle = element.querySelector("circle");
       assertIsValidSvgCircle(circle);
+      document.body.removeChild(element);      
     });
 
     it("should handle transcluded custom svg elements", async () => {
@@ -4849,6 +4853,7 @@ describe("$compile", () => {
       await wait();
       const circle = element.querySelector("circle");
       assertIsValidSvgCircle(circle);
+      document.body.removeChild(element);
     });
 
     it("should handle directives with templates that manually add the transclude further down", async () => {
@@ -4862,9 +4867,10 @@ describe("$compile", () => {
       await wait();
       const circle = element.querySelector("circle");
       assertIsValidSvgCircle(circle);
+      
     });
 
-    xit("should support directives with SVG templates and a slow url that are stamped out later by a transcluding directive", async () => {
+    it("should support directives with SVG templates and a slow url that are stamped out later by a transcluding directive", async () => {
       window.angular.module("test", []).directive("svgCircleUrl", () => ({
         replace: true,
         templateUrl: "/mock/circle-svg",
@@ -5779,7 +5785,7 @@ describe("$compile", () => {
         await wait();
 
         expect(element.outerHTML).toEqual(
-          '<div><b hello=""><div replace="">Hello, Elvis!</div></b></div>',
+          '<div><b hello=""><span replace="">Hello, Elvis!</span></b></div>',
         );
       });
 
@@ -5788,7 +5794,7 @@ describe("$compile", () => {
         element = $compile("<div replace></div>")($rootScope);
         await wait;
         expect(element.outerHTML).toEqual(
-          '<div replace="">Hello, Elvis!</div>',
+          '<span replace="">Hello, Elvis!</span>',
         );
       });
 

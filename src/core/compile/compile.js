@@ -664,7 +664,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           ignoreDirective,
           previousCompileContext,
         );
-        compileNode = parent.children[0];
+        compileNode = parent.children[0] || compileNode;
         let namespace = null;
         return publicLinkFn;
 
@@ -826,7 +826,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           /** @type {NodeLinkFn} */
           let nodeLinkFn;
           if (directives.length) {
-            debugger;
             nodeLinkFn = applyDirectivesToNode(
               directives,
               nodeList[i],
@@ -837,7 +836,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               [],
               previousCompileContext,
             );
-            debugger;
           } else {
             nodeLinkFn = null;
           }
@@ -1834,7 +1832,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               const parent = $compileNode.parentNode;
               parent.replaceChild(compileNode, $compileNode);
               templateAttrs.$$element = compileNode;
-
+              $compileNode = compileNode;
               const newTemplateAttrs = { $attr: {} };
 
               // combine directives from the original node and from the template:
