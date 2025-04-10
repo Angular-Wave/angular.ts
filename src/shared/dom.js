@@ -649,6 +649,15 @@ export function emptyElement(element) {
   }
 }
 
+/**
+ * Checks if the element is root
+ * @param {Element} element
+ * @returns {boolean}
+ */
+export function isRoot(element) {
+  return !!getCacheData(element, "$injector");
+}
+
 export function domInsert(element, parentElement, afterElement) {
   // if for some reason the previous element was removed
   // from the dom sometime before this code runs then let's

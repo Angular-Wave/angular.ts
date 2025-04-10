@@ -4,12 +4,12 @@ import {
   emptyElement,
   getBooleanAttrName,
   getCacheData,
-  getInheritedData,
+  getInheritedData, isRoot,
   isTextNode,
   setCacheData,
   setIsolateScope,
   setScope,
-  startingTag,
+  startingTag
 } from "../../shared/dom.js";
 import { identifierForController } from "../controller/controller.js";
 import {
@@ -633,24 +633,39 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         ignoreDirective,
         previousCompileContext,
       ) {
+
         /** @type {Element} */
-        let compileNode = isString(element)
-          ? createElementFromHTML(/** @type {string} */ (element))
-          : /** @type {Element} */ (element);
+        let compileNode
+        /** @type {boolean} */
+        let synthetic = false;
+        if (isString(element)) {
+          compileNode = createElementFromHTML(/** @type {string} */ (element))
+          synthetic = true;
+        } else {
+          compileNode = /** @type {Element} */ (element);
+        }
+
+        let rootElement = isRoot(compileNode);
 
         var parent;
-        if (!compileNode.parentNode) {
-          parent = document.createDocumentFragment();
-          if (compileNode instanceof NodeList) {
-            Array.from(compileNode).forEach((x) => {
-              parent.appendChild(x);
-            });
-          } else {
-            parent.appendChild(compileNode);
-          }
+        if (rootElement) {
+          // Root has no parent
+          parent = compileNode
         } else {
-          parent = compileNode.parentNode;
+          if (!compileNode.parentNode) {
+            parent = document.createDocumentFragment();
+            if (compileNode instanceof NodeList) {
+              Array.from(compileNode).forEach((x) => {
+                parent.appendChild(x);
+              });
+            } else {
+              parent.appendChild(compileNode);
+            }
+          } else {
+            parent = compileNode.parentNode;
+          }
         }
+
 
         /**
          * The composite link function is a composite of individual node linking functions.
@@ -658,13 +673,15 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
          * @type {CompositeLinkFn}
          */
         let compositeLinkFn = compileNodes(
-          parent.children,
+          rootElement? [compileNode] : parent.children,
           transcludeFn,
           maxPriority,
           ignoreDirective,
           previousCompileContext,
         );
-        compileNode = parent.children[0] || compileNode;
+        if (synthetic) {
+          compileNode = parent.children[0];
+        }
         let namespace = null;
         return publicLinkFn;
 
@@ -751,7 +768,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           if (compositeLinkFn) {
             compositeLinkFn(
               scope,
-              /** @type {Element[]} */ ($linkNode),
+              $linkNode,
               parentBoundTranscludeFn,
             );
           }
@@ -780,9 +797,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * Compile function matches each node in nodeList against the directives. Once all directives
        * for a particular node are collected their compile functions are executed. The compile
        * functions return values - the linking functions - are combined into a composite linking
-       * function, which is the a linking function for the node.
+       * function, which is a linking function for the node.
        *
-       * @param {NodeList|Node[]} nodeList an array of nodes or NodeList to compile
+       * @param {NodeList|Node[]|HTMLCollection} nodeList an array of nodes or NodeList to compile
        * @param {*} transcludeFn A linking function, where the
        *        scope argument is auto-generated to the new child of the transcluded parent scope.
        * @param {number=} [maxPriority] Max directive priority.
@@ -797,16 +814,23 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         ignoreDirective,
         previousCompileContext,
       ) {
+
+        /**
+         * @typedef {Object} LinkFnMapping
+         * @property {number} index
+         * @property {NodeLinkFn} nodeLinkFn
+         * @property {CompositeLinkFn} childLinkFn
+         */
+
         /**
          * Aggregates for the composite linking function, where a node in a node list is mapped
          * to a corresponding link function. For single elements, the node should be mapped to
          * a single node link function.
-         * @type {Object<number, {nodeLinkFn: PublicLinkFn, childLinkFn: CompositeLinkFn}>}
+         * @type {LinkFnMapping[]}
          */
-        const linkFnsMap = {}; // A map to hold node indices and their linkFns
+        const linkFnsList =  []; // An array to hold node indices and their linkFns
         let nodeLinkFnFound;
         let linkFnFound = false;
-
         for (let i = 0; i < nodeList.length; i++) {
           const attrs = new Attributes(
             $rootScope,
@@ -861,7 +885,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           }
 
           if (nodeLinkFn || childLinkFn) {
-            linkFnsMap[i] = { nodeLinkFn, childLinkFn };
+            linkFnsList.push({ index: i, nodeLinkFn: nodeLinkFn, childLinkFn: childLinkFn });
             linkFnFound = true;
             nodeLinkFnFound = nodeLinkFnFound || nodeLinkFn;
           }
@@ -883,7 +907,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         function compositeLinkFn(scope, elem, parentBoundTranscludeFn) {
           assertArg(elem, "elem");
           let stableNodeList = [];
-          let isNodeList = elem instanceof NodeList;
           if (nodeLinkFnFound) {
             // create a stable copy of the nodeList, only copying elements with linkFns
             stableNodeList = new Array(
@@ -891,29 +914,31 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 /** @type {Element } */ (elem).childNodes.length,
             );
 
-            Object.keys(linkFnsMap).forEach((idx, count) => {
-              // the first item will always be a nodeLink function of the element itself
-              if (idx === "0") {
-                stableNodeList[idx] = isNodeList ? elem[idx] : elem;
-              } else {
-                if (nodeList[idx]) {
-                  stableNodeList[count] = elem[idx];
-                }
-              }
-            });
+            // linkFnsList.forEach((idx, count) => {
+            //   // the first item will always be a nodeLink function of the element itself
+            //   if (idx === "0") {
+            //     stableNodeList[idx] = isNodeList ? elem[idx] : elem;
+            //   } else {
+            //     if (nodeList[idx]) {
+            //       stableNodeList[count] = elem[idx];
+            //     }
+            //   }
+            // });
+
+            // create a sparse array by only copying the elements which have a linkFn
+            linkFnsList.forEach((val) => {
+              let idx = val.index;
+              stableNodeList[idx] = nodeList[idx];
+
+            })
           } else {
-            if (isNodeList) {
-              /** @type {NodeList } */ (elem).forEach((elem) =>
-                stableNodeList.push(elem),
-              );
-            } else {
-              stableNodeList.push(elem);
-            }
+            stableNodeList = nodeList;
           }
 
-          Object.entries(linkFnsMap).forEach(
-            ([_, { nodeLinkFn, childLinkFn }], idx) => {
-              const node = stableNodeList[idx];
+          linkFnsList.forEach(
+            ({index, nodeLinkFn, childLinkFn}) => {
+              const node = stableNodeList[index];
+              node.stable = true
               let childScope;
               let childBoundTranscludeFn;
 
@@ -2444,6 +2469,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             priority: 0,
             compile: () => (scope, node) => {
               interpolateFn.expressions.forEach((x) => {
+
                 scope.$watch(x, () => {
                   const res = interpolateFn(
                     isProxy(scope) ? scope.$target : scope,

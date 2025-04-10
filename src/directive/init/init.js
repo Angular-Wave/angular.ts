@@ -13,7 +13,7 @@ export function ngInitDirective() {
           if (controller) {
             controller.$eval(attrs["ngInit"]);
           } else {
-            scope.$eval(attrs.ngInit);
+            scope.$eval(attrs["ngInit"]);
           }
         },
       };

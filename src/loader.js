@@ -146,6 +146,7 @@ export class Angular {
         // ng-route deps
         this.$injector = $injector;
         setCacheData(el, "$injector", $injector);
+
         const compileFn = compile(el);
         compileFn(scope);
 
