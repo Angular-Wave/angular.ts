@@ -256,7 +256,6 @@ export function ngRepeatDirective($animate) {
                  * @param {import("../../core/scope/scope.js").Scope} scope
                  */
                 (clone, scope) => {
-                  debugger;
                   block.scope = scope;
                   const endNode = clone;
                   if (hasAnimate) {

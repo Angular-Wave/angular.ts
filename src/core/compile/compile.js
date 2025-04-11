@@ -672,7 +672,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
          * @type {CompositeLinkFn}
          */
         let compositeLinkFn = compileNodes(
-          rootElement ? [compileNode] : parent.children,
+          rootElement ? [compileNode] : parent.childNodes,
           transcludeFn,
           maxPriority,
           ignoreDirective,
@@ -905,13 +905,12 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         function compositeLinkFn(scope, elem, parentBoundTranscludeFn) {
           assertArg(elem, "elem");
           let stableNodeList = [];
-          let isNodeList = !!elem.length;
+          let isNodeList = elem instanceof NodeList || Array.isArray(elem);
           if (nodeLinkFnFound) {
             // create a stable copy of the nodeList, only copying elements with linkFns
-            stableNodeList = new Array(
-              /** @type {NodeList } */ (elem).length ||
-                /** @type {Element } */ (elem).childNodes.length,
-            );
+            stableNodeList = isNodeList
+              ? new Array(/** @type {NodeList } */ (elem).length)
+              : new Array(/** @type {Element } */ (elem).childNodes.length);
             // create a sparse array by only copying the elements which have a linkFn
             linkFnsList.forEach((val) => {
               let idx = val.index;
@@ -2457,7 +2456,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           directives.push({
             priority: 0,
             compile: () => (scope, node) => {
-              debugger;
               interpolateFn.expressions.forEach((x) => {
                 scope.$watch(x, () => {
                   const res = interpolateFn(

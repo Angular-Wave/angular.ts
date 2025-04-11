@@ -6964,6 +6964,7 @@ describe("$compile", () => {
             "observer",
             () =>
               function (scope, elm, attr) {
+                debugger;
                 directiveAttrs = attr;
                 observeSpy = jasmine.createSpy("$observe attr");
                 deregisterObserver = attr.$observe("someAttr", observeSpy);
@@ -6975,16 +6976,15 @@ describe("$compile", () => {
               expect(element).toBe(attr.$$element);
             },
           }));
-        // dealoc(document.getElementById("dummy"));
-        // debugger
-        // window.angular
-        //   .bootstrap(document.getElementById("dummy"), ["test1"])
-        //   .invoke((_$compile_, _$rootScope_, _$templateCache_, _$sce_) => {
-        //     $compile = _$compile_;
-        //     $rootScope = _$rootScope_;
-        //     $templateCache = _$templateCache_;
-        //     $sce = _$sce_;
-        //   });
+        dealoc(document.getElementById("dummy"));
+        window.angular
+          .bootstrap(document.getElementById("dummy"), ["test1"])
+          .invoke((_$compile_, _$rootScope_, _$templateCache_, _$sce_) => {
+            $compile = _$compile_;
+            $rootScope = _$rootScope_;
+            $templateCache = _$templateCache_;
+            $sce = _$sce_;
+          });
       });
 
       it("should compile and link both attribute and text bindings", async () => {
@@ -14805,7 +14805,7 @@ describe("$compile", () => {
         $rootScope,
       );
       await wait();
-      expect(element.querySelectorAll("a").href.baseVal).toBe(
+      expect(element.querySelector("a").href.baseVal).toBe(
         "https://clean.example.org",
       );
       expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);

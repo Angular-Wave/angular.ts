@@ -72,7 +72,6 @@ export function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
             $templateRequest(src, true).then(
               (response) => {
                 if (scope.$$destroyed) return;
-
                 if (thisChangeId !== changeCounter) return;
                 const newScope = scope.$new();
                 ctrl.template = response;
