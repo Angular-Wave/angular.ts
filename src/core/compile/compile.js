@@ -4,12 +4,13 @@ import {
   emptyElement,
   getBooleanAttrName,
   getCacheData,
-  getInheritedData, isRoot,
+  getInheritedData,
+  isRoot,
   isTextNode,
   setCacheData,
   setIsolateScope,
   setScope,
-  startingTag
+  startingTag,
 } from "../../shared/dom.js";
 import { identifierForController } from "../controller/controller.js";
 import {
@@ -633,13 +634,12 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         ignoreDirective,
         previousCompileContext,
       ) {
-
         /** @type {Element} */
-        let compileNode
+        let compileNode;
         /** @type {boolean} */
         let synthetic = false;
         if (isString(element)) {
-          compileNode = createElementFromHTML(/** @type {string} */ (element))
+          compileNode = createElementFromHTML(/** @type {string} */ (element));
           synthetic = true;
         } else {
           compileNode = /** @type {Element} */ (element);
@@ -650,7 +650,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         var parent;
         if (rootElement) {
           // Root has no parent
-          parent = compileNode
+          parent = compileNode;
         } else {
           if (!compileNode.parentNode) {
             parent = document.createDocumentFragment();
@@ -666,14 +666,13 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           }
         }
 
-
         /**
          * The composite link function is a composite of individual node linking functions.
          * It will be invoke by the public link function below.
          * @type {CompositeLinkFn}
          */
         let compositeLinkFn = compileNodes(
-          rootElement? [compileNode] : parent.children,
+          rootElement ? [compileNode] : parent.children,
           transcludeFn,
           maxPriority,
           ignoreDirective,
@@ -766,11 +765,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           }
 
           if (compositeLinkFn) {
-            compositeLinkFn(
-              scope,
-              $linkNode,
-              parentBoundTranscludeFn,
-            );
+            compositeLinkFn(scope, $linkNode, parentBoundTranscludeFn);
           }
 
           if (!cloneConnectFn) {
@@ -814,7 +809,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         ignoreDirective,
         previousCompileContext,
       ) {
-
         /**
          * @typedef {Object} LinkFnMapping
          * @property {number} index
@@ -828,7 +822,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
          * a single node link function.
          * @type {LinkFnMapping[]}
          */
-        const linkFnsList =  []; // An array to hold node indices and their linkFns
+        const linkFnsList = []; // An array to hold node indices and their linkFns
         let nodeLinkFnFound;
         let linkFnFound = false;
         for (let i = 0; i < nodeList.length; i++) {
@@ -885,7 +879,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           }
 
           if (nodeLinkFn || childLinkFn) {
-            linkFnsList.push({ index: i, nodeLinkFn: nodeLinkFn, childLinkFn: childLinkFn });
+            linkFnsList.push({
+              index: i,
+              nodeLinkFn: nodeLinkFn,
+              childLinkFn: childLinkFn,
+            });
             linkFnFound = true;
             nodeLinkFnFound = nodeLinkFnFound || nodeLinkFn;
           }
@@ -907,87 +905,78 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         function compositeLinkFn(scope, elem, parentBoundTranscludeFn) {
           assertArg(elem, "elem");
           let stableNodeList = [];
+          let isNodeList = !!elem.length;
           if (nodeLinkFnFound) {
             // create a stable copy of the nodeList, only copying elements with linkFns
             stableNodeList = new Array(
               /** @type {NodeList } */ (elem).length ||
                 /** @type {Element } */ (elem).childNodes.length,
             );
-
-            // linkFnsList.forEach((idx, count) => {
-            //   // the first item will always be a nodeLink function of the element itself
-            //   if (idx === "0") {
-            //     stableNodeList[idx] = isNodeList ? elem[idx] : elem;
-            //   } else {
-            //     if (nodeList[idx]) {
-            //       stableNodeList[count] = elem[idx];
-            //     }
-            //   }
-            // });
-
             // create a sparse array by only copying the elements which have a linkFn
             linkFnsList.forEach((val) => {
               let idx = val.index;
-              stableNodeList[idx] = nodeList[idx];
-
-            })
-          } else {
-            stableNodeList = nodeList;
-          }
-
-          linkFnsList.forEach(
-            ({index, nodeLinkFn, childLinkFn}) => {
-              const node = stableNodeList[index];
-              node.stable = true
-              let childScope;
-              let childBoundTranscludeFn;
-
-              if (nodeLinkFn) {
-                childScope = nodeLinkFn.scope ? scope.$new() : scope;
-
-                if (nodeLinkFn.transcludeOnThisElement) {
-                  childBoundTranscludeFn = createBoundTranscludeFn(
-                    scope,
-                    nodeLinkFn.transclude,
-                    parentBoundTranscludeFn,
-                  );
-                } else if (
-                  !nodeLinkFn.templateOnThisElement &&
-                  parentBoundTranscludeFn
-                ) {
-                  childBoundTranscludeFn = parentBoundTranscludeFn;
-                } else if (!parentBoundTranscludeFn && transcludeFn) {
-                  childBoundTranscludeFn = createBoundTranscludeFn(
-                    scope,
-                    transcludeFn,
-                  );
-                } else {
-                  childBoundTranscludeFn = null;
-                }
-
-                // attach new scope to element
-                if (nodeLinkFn.scope) {
-                  setScope(node, childScope);
-                }
-
-                nodeLinkFn(
-                  childLinkFn,
-                  childScope,
-                  node,
-                  childBoundTranscludeFn,
-                );
-              } else if (childLinkFn) {
-                if (node.childNodes.length) {
-                  childLinkFn(
-                    scope,
-                    node.childNodes,
-                    undefined,
-                    parentBoundTranscludeFn,
-                  );
+              if (idx === 0) {
+                stableNodeList[idx] = isNodeList ? elem[idx] : elem;
+              } else {
+                if (nodeList[idx]) {
+                  stableNodeList[idx] = elem[idx];
                 }
               }
-            },
-          );
+            });
+          } else {
+            if (isNodeList) {
+              /** @type {NodeList } */ (elem).forEach((elem) =>
+                stableNodeList.push(elem),
+              );
+            } else {
+              stableNodeList.push(elem);
+            }
+          }
+
+          linkFnsList.forEach(({ index, nodeLinkFn, childLinkFn }) => {
+            const node = stableNodeList[index];
+            node.stable = true;
+            let childScope;
+            let childBoundTranscludeFn;
+
+            if (nodeLinkFn) {
+              childScope = nodeLinkFn.scope ? scope.$new() : scope;
+
+              if (nodeLinkFn.transcludeOnThisElement) {
+                childBoundTranscludeFn = createBoundTranscludeFn(
+                  scope,
+                  nodeLinkFn.transclude,
+                  parentBoundTranscludeFn,
+                );
+              } else if (
+                !nodeLinkFn.templateOnThisElement &&
+                parentBoundTranscludeFn
+              ) {
+                childBoundTranscludeFn = parentBoundTranscludeFn;
+              } else if (!parentBoundTranscludeFn && transcludeFn) {
+                childBoundTranscludeFn = createBoundTranscludeFn(
+                  scope,
+                  transcludeFn,
+                );
+              } else {
+                childBoundTranscludeFn = null;
+              }
+
+              // attach new scope to element
+              if (nodeLinkFn.scope) {
+                setScope(node, childScope);
+              }
+
+              nodeLinkFn(childLinkFn, childScope, node, childBoundTranscludeFn);
+            } else if (childLinkFn) {
+              childLinkFn(
+                scope,
+                node.childNodes,
+                undefined,
+                parentBoundTranscludeFn,
+              );
+            }
+          });
         }
       }
 
@@ -2468,8 +2457,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           directives.push({
             priority: 0,
             compile: () => (scope, node) => {
+              debugger;
               interpolateFn.expressions.forEach((x) => {
-
                 scope.$watch(x, () => {
                   const res = interpolateFn(
                     isProxy(scope) ? scope.$target : scope,
