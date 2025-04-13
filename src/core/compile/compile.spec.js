@@ -6964,7 +6964,6 @@ describe("$compile", () => {
             "observer",
             () =>
               function (scope, elm, attr) {
-                debugger;
                 directiveAttrs = attr;
                 observeSpy = jasmine.createSpy("$observe attr");
                 deregisterObserver = attr.$observe("someAttr", observeSpy);

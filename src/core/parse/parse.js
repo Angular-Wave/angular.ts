@@ -256,7 +256,6 @@ function inputsWatchDelegate(
     let oldInputValueOf = expressionInputDirtyCheck; // init to something unique so that equals check fails
 
     let inputExpression = inputExpressions[0];
-    debugger;
     return scope.$watch(
       ($scope) => {
         const newInputValue = inputExpression($scope);
@@ -284,7 +283,6 @@ function inputsWatchDelegate(
       oldInputValueOfValues[i] = expressionInputDirtyCheck; // init to something unique so that equals check fails
       oldInputValues[i] = null;
     }
-    debugger;
     return scope.$watch(
       (scope) => {
         let changed = false;

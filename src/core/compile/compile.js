@@ -678,7 +678,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           ignoreDirective,
           previousCompileContext,
         );
-        if (synthetic) {
+        // update only
+        if (
+          (synthetic && parent.children[0]) ||
+          previousCompileContext?.updateCompileNode
+        ) {
           compileNode = parent.children[0];
         }
         let namespace = null;
@@ -1186,9 +1190,14 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         return function lazyCompilation() {
           if (!compiled) {
             // Lazily compile all nodes and store them in the 'compiled' array
+
             compiled = (
               $compileNodes.length ? Array.from($compileNodes) : [$compileNodes]
             ).map((node) => {
+              // Update compile node if not text
+              if (node.nodeType !== 3) {
+                previousCompileContext.updateCompileNode = true;
+              }
               return compile(
                 node,
                 transcludeFn,
@@ -2758,8 +2767,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         if (parent) {
           parent.replaceChild(newNode, firstElementToRemove);
         } else {
-          // we cannot replace the element
-          debugger;
           throw new Error("replaced element has no parent");
         }
 

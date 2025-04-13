@@ -40,6 +40,11 @@ export function isTextNode(html: string): boolean;
  */
 export function buildFragment(html: string): DocumentFragment;
 /**
+ * @param {string} html
+ * @returns {NodeListOf<ChildNode> | HTMLElement[]}
+ */
+export function parseHtml(html: string): NodeListOf<ChildNode> | HTMLElement[];
+/**
  * @param {Element} element
  * @param {boolean} [onlyDescendants]
  * @returns {void}
@@ -184,6 +189,12 @@ export function appendNodesToElement(element: Element, nodes: Node | Node[] | st
  * @param {Element} element
  */
 export function emptyElement(element: Element): void;
+/**
+ * Checks if the element is root
+ * @param {Element} element
+ * @returns {boolean}
+ */
+export function isRoot(element: Element): boolean;
 export function domInsert(element: any, parentElement: any, afterElement: any): void;
 /**
  * A list of boolean attributes in HTML.
