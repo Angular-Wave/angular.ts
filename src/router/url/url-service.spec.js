@@ -8,10 +8,10 @@ describe("UrlMatcher", () => {
   let $location;
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular.module("defaultModule", []);
-    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
 

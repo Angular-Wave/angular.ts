@@ -19,7 +19,7 @@ describe("ng-bind", () => {
         };
       });
     window.angular
-      .bootstrap(document.getElementById("dummy"), ["myModule"])
+      .bootstrap(document.getElementById("app"), ["myModule"])
       .invoke((_$rootScope_, _$compile_, _$sce_) => {
         $rootScope = _$rootScope_;
         $compile = _$compile_;
@@ -139,7 +139,7 @@ describe("ng-bind", () => {
 
     describe("SCE disabled", () => {
       beforeEach(() => {
-        dealoc(document.getElementById("dummy"));
+        dealoc(document.getElementById("app"));
         window.angular
           .module("myModule", [
             "ng",
@@ -153,7 +153,7 @@ describe("ng-bind", () => {
             };
           });
         window.angular
-          .bootstrap(document.getElementById("dummy"), ["myModule"])
+          .bootstrap(document.getElementById("app"), ["myModule"])
           .invoke((_$rootScope_, _$compile_, _$sce_) => {
             $rootScope = _$rootScope_;
             $compile = _$compile_;
@@ -183,7 +183,7 @@ describe("ng-bind", () => {
 
     describe("SCE enabled", () => {
       beforeEach(() => {
-        dealoc(document.getElementById("dummy"));
+        dealoc(document.getElementById("app"));
         window.angular
           .module("myModule", [
             "ng",
@@ -197,7 +197,7 @@ describe("ng-bind", () => {
             };
           });
         window.angular
-          .bootstrap(document.getElementById("dummy"), ["myModule"])
+          .bootstrap(document.getElementById("app"), ["myModule"])
           .invoke((_$rootScope_, _$compile_, _$sce_) => {
             $rootScope = _$rootScope_;
             $compile = _$compile_;
@@ -242,7 +242,7 @@ describe("ng-bind", () => {
           this.val = val;
         }
 
-        dealoc(document.getElementById("dummy"));
+        dealoc(document.getElementById("app"));
 
         window.angular
           .module("myModule", [
@@ -269,7 +269,7 @@ describe("ng-bind", () => {
             };
           });
         let injector = window.angular.bootstrap(
-          document.getElementById("dummy"),
+          document.getElementById("app"),
           ["myModule"],
         );
 

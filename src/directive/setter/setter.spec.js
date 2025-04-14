@@ -8,7 +8,7 @@ describe("setter", () => {
     window.angular = new Angular();
     angular.module("myModule", ["ng"]);
     angular
-      .bootstrap(document.getElementById("dummy"), ["myModule"])
+      .bootstrap(document.getElementById("app"), ["myModule"])
       .invoke((_$compile_, _$rootScope_, _$parse_) => {
         $compile = _$compile_;
         $rootScope = _$rootScope_;

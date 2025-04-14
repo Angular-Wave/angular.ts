@@ -26,7 +26,7 @@ describe("ngRepeat", () => {
         };
       });
 
-    injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
       (_$compileProvider_) => {
         $compileProvider = _$compileProvider_;
@@ -83,7 +83,7 @@ describe("ngRepeat", () => {
       "<ul>" + '<li ng-repeat="item in items">{{item.name}};</li>' + "</ul>",
     )(scope);
     await wait();
-    document.getElementById("dummy").innerHTML =
+    document.getElementById("app").innerHTML =
       "<a class='test' name='x'>a</a>" +
       "<a class='test' name='y'>b</a>" +
       "<a class='test' name='x'>c</a>";
@@ -95,7 +95,7 @@ describe("ngRepeat", () => {
     expect(element.textContent).toEqual("x;y;x;");
 
     // reset dummy
-    document.getElementById("dummy").innerHTML = "";
+    document.getElementById("app").innerHTML = "";
   });
 
   it("should iterate over an array-like class", async () => {

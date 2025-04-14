@@ -24,7 +24,7 @@ describe("binding", () => {
         errors.push(exception.message);
       };
     });
-    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    $injector = window.angular.bootstrap(document.getElementById("app"), [
       "myModule",
     ]);
     $rootScope = $injector.get("$rootScope");

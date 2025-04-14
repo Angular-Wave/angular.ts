@@ -13,10 +13,10 @@ describe("templateFactory", () => {
     $stateService;
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular.module("defaultModule", []);
-    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
     $injector.invoke(
@@ -61,12 +61,12 @@ describe("templateFactory", () => {
 
   describe("templateFactory with forced use of $http service", () => {
     beforeEach(() => {
-      dealoc(document.getElementById("dummy"));
+      dealoc(document.getElementById("app"));
       let module = window.angular.module("defaultModule", []);
       module.config(function ($templateFactoryProvider) {
         $templateFactoryProvider.useHttpService(true);
       });
-      $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      $injector = window.angular.bootstrap(document.getElementById("app"), [
         "defaultModule",
       ]);
       $injector.invoke(
@@ -94,12 +94,12 @@ describe("templateFactory", () => {
     let el;
 
     beforeEach(() => {
-      dealoc(document.getElementById("dummy"));
+      dealoc(document.getElementById("app"));
       const mod = angular.module("defaultModule", []);
       mod.component("myComponent", { template: "hi" });
       mod.component("dataComponent", { template: "hi" });
       mod.component("xComponent", { template: "hi" });
-      $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      $injector = window.angular.bootstrap(document.getElementById("app"), [
         "defaultModule",
       ]);
       $injector.invoke(

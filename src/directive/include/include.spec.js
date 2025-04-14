@@ -66,7 +66,7 @@ describe("ngInclude", () => {
       element = createElementFromHTML(
         '<div><ng-include src="url"></ng-include></div>',
       );
-      const body = document.getElementById("dummy");
+      const body = document.getElementById("app");
       body.append(element);
       const injector = angular.bootstrap(element);
       $rootScope = injector.get("$rootScope");

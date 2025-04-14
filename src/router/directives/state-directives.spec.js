@@ -53,7 +53,7 @@ describe("ngStateRef", () => {
           });
       },
     );
-    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
     $rootScope = $injector.get("$rootScope");
@@ -682,7 +682,7 @@ describe("ngSrefActive", () => {
           template: "<div></div>",
         });
     });
-    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
     $rootScope = $injector.get("$rootScope");

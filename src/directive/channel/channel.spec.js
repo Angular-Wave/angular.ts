@@ -9,7 +9,7 @@ describe("channel", () => {
     window.angular = new Angular();
     angular.module("myModule", ["ng"]);
     angular
-      .bootstrap(document.getElementById("dummy"), ["myModule"])
+      .bootstrap(document.getElementById("app"), ["myModule"])
       .invoke((_$compile_, _$rootScope_) => {
         $compile = _$compile_;
         $scope = _$rootScope_;

@@ -730,8 +730,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           if (!namespace) {
             namespace = detectNamespaceForChildElements(futureParentElement);
           }
-          /** @type {Element[]} */
+          /** @type {Element} */
           let $linkNode;
+
           if (namespace !== "html") {
             // When using a directive with replace:true and templateUrl the jqCompileNodes
             // (or a child element inside of them)
@@ -2264,6 +2265,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
         $templateRequest(templateUrl)
           .then((content) => {
+            debugger;
             let compileNode;
             let tempTemplateAttrs;
             let $template;
@@ -2300,7 +2302,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
               tempTemplateAttrs = { $attr: {} };
 
-              replaceInline($compileNode, compileNode);
+              const parent = $compileNode.parentNode;
+              const clone = compileNode.cloneNode(true);
+              parent.replaceChild(clone, $compileNode);
+              $compileNode = compileNode = clone;
+
               const templateDirectives = collectDirectives(
                 compileNode,
                 tempTemplateAttrs,

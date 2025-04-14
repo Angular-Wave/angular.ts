@@ -20,7 +20,7 @@ describe("view hooks", () => {
   };
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     app = window.angular
       .module("defaultModule", [])
@@ -37,7 +37,7 @@ describe("view hooks", () => {
       .component("bar", Object.assign({}, component))
       .component("baz", Object.assign({}, component));
 
-    let $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    let $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
 

@@ -31,7 +31,7 @@ describe("event directives", () => {
   afterEach(() => {
     dealoc(element);
     logs = [];
-    document.getElementById("dummy").innerHTML = "";
+    document.getElementById("app").innerHTML = "";
   });
 
   describe("ngSubmit", () => {
@@ -43,7 +43,7 @@ describe("event directives", () => {
       )($rootScope);
       // Support: Chrome 60+
       // We need to add the form to the DOM in order for `submit` events to be properly fired.
-      document.getElementById("dummy").appendChild(element);
+      document.getElementById("app").appendChild(element);
 
       // prevent submit within the test harness
       element.addEventListener("submit", (e) => {
@@ -70,7 +70,7 @@ describe("event directives", () => {
       )($rootScope);
       // Support: Chrome 60+ (on Windows)
       // We need to add the form to the DOM in order for `submit` events to be properly fired.
-      document.getElementById("dummy").appendChild(element);
+      document.getElementById("app").appendChild(element);
 
       // prevent submit within the test harness
       element.addEventListener("submit", (e) => {

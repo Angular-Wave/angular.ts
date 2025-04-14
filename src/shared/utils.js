@@ -1214,7 +1214,6 @@ export function replaceInline(replacedElem, newElem) {
   for (const attr of Array.from(newElem.attributes)) {
     replacedElem.setAttribute(attr.name, attr.value);
   }
-
   replacedElem.innerHTML = "";
 
   for (const child of Array.from(newElem.childNodes)) {

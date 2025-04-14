@@ -7,13 +7,12 @@ describe("ngView", () => {
     let elem, $anchorScroll, $ngViewScroll;
 
     beforeEach(() => {
-      dealoc(document.getElementById("dummy"));
+      dealoc(document.getElementById("app"));
       window.angular = new Angular();
       window.angular.module("defaultModule", []);
-      let $injector = window.angular.bootstrap(
-        document.getElementById("dummy"),
-        ["defaultModule"],
-      );
+      let $injector = window.angular.bootstrap(document.getElementById("app"), [
+        "defaultModule",
+      ]);
 
       $injector.invoke((_$ngViewScroll_, _$anchorScroll_) => {
         $anchorScroll = _$anchorScroll_;
@@ -43,7 +42,7 @@ describe("ngView", () => {
     let elem, $anchorScroll, $ngViewScroll;
 
     beforeEach(() => {
-      dealoc(document.getElementById("dummy"));
+      dealoc(document.getElementById("app"));
       window.angular = new Angular();
       let module = window.angular.module("defaultModule", []);
       module.config(($provide, $ngViewScrollProvider) => {
@@ -53,10 +52,9 @@ describe("ngView", () => {
         $ngViewScrollProvider.useAnchorScroll();
       });
 
-      let $injector = window.angular.bootstrap(
-        document.getElementById("dummy"),
-        ["defaultModule"],
-      );
+      let $injector = window.angular.bootstrap(document.getElementById("app"), [
+        "defaultModule",
+      ]);
 
       $injector.invoke((_$ngViewScroll_, _$anchorScroll_) => {
         $anchorScroll = _$anchorScroll_;

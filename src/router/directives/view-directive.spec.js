@@ -131,7 +131,7 @@ describe("ngView", () => {
     };
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     log = "";
     app = window.angular
@@ -160,7 +160,7 @@ describe("ngView", () => {
         $stateProvider = _$stateProvider_;
       });
 
-    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
 
@@ -822,7 +822,7 @@ describe("UiView", () => {
     $ngViewScroll;
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     log = "";
     app = window.angular
@@ -838,7 +838,7 @@ describe("UiView", () => {
           .state({ name: "test", views: { nest: { template: "TEST" } } });
       });
 
-    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
 
@@ -901,7 +901,7 @@ describe("ngView transclusion", () => {
   let scope, $compile, elem, $injector, $rootScope, $state;
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular
       .module("defaultModule", [])
@@ -924,7 +924,7 @@ describe("ngView transclusion", () => {
           })
           .state({ name: "a.b", template: "anything" });
       });
-    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
 
@@ -965,7 +965,7 @@ describe("ngView controllers or onEnter handlers", () => {
   let el, template, scope, count, $rootScope, $compile, $state, elem;
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular
       .module("defaultModule", [])
@@ -1002,7 +1002,7 @@ describe("ngView controllers or onEnter handlers", () => {
           });
       });
 
-    let $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    let $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
 
@@ -1050,7 +1050,7 @@ describe("angular 1.5+ style .component()", () => {
   let el, app, scope, log, svcs, $stateProvider, $templateCache, $rootScope;
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular
       .module("defaultModule", [])
@@ -1149,7 +1149,7 @@ describe("angular 1.5+ style .component()", () => {
         $stateProvider = _$stateProvider_;
       });
 
-    let $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    let $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
 

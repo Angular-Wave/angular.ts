@@ -255,6 +255,7 @@ export function dealoc(element, onlyDescendants) {
     }
   }
   delete element[EXPANDO];
+  element.innerHTML = "";
   element;
 }
 

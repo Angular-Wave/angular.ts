@@ -91,25 +91,25 @@ describe("$state", () => {
   }
 
   afterEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
   });
 
   describe("provider", () => {
     beforeEach(() => {
-      dealoc(document.getElementById("dummy"));
+      dealoc(document.getElementById("app"));
       // some tests are polluting the cache
       window.angular = new Angular();
       module = window.angular.module("defaultModule", []);
       module.config((_$stateProvider_, _$provide_) => {
         $stateProvider = _$stateProvider_;
       });
-      window.angular.bootstrap(document.getElementById("dummy"), [
+      window.angular.bootstrap(document.getElementById("app"), [
         "defaultModule",
       ]);
     });
 
     afterEach(() => {
-      dealoc(document.getElementById("dummy"));
+      dealoc(document.getElementById("app"));
     });
 
     it("should be available at config", () => {
@@ -139,7 +139,7 @@ describe("$state", () => {
     let $rootScope, $state, $stateParams, $transitions, $q, $location;
 
     beforeEach(() => {
-      dealoc(document.getElementById("dummy"));
+      dealoc(document.getElementById("app"));
       window.angular = new Angular();
       module = window.angular.module("defaultModule", []);
       module.config((_$stateProvider_, _$provide_) => {
@@ -300,7 +300,7 @@ describe("$state", () => {
         $provide.value("AppInjectable", AppInjectable);
       });
 
-      $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      $injector = window.angular.bootstrap(document.getElementById("app"), [
         "defaultModule",
       ]);
 
@@ -326,7 +326,7 @@ describe("$state", () => {
     });
 
     afterEach(() => {
-      dealoc(document.getElementById("dummy"));
+      dealoc(document.getElementById("app"));
     });
 
     it("returns a promise for the target state", () => {

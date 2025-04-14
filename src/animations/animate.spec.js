@@ -6,7 +6,7 @@ import { createInjector } from "../di/injector.js";
 
 describe("$animate", () => {
   describe("without animation", () => {
-    let dummy = document.getElementById("dummy");
+    let dummy = document.getElementById("app");
     let element;
     let $compile;
     let $rootElement;

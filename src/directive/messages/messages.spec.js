@@ -16,7 +16,7 @@ describe("ngMessages", () => {
     }));
 
     window.angular
-      .bootstrap(document.getElementById("dummy"), ["app"])
+      .bootstrap(document.getElementById("app"), ["app"])
       .invoke((_$rootScope_, _$compile_, _$templateCache_) => {
         $rootScope = _$rootScope_;
         $compile = _$compile_;

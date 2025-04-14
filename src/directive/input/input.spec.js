@@ -24,7 +24,7 @@ describe("input", () => {
         };
       });
     window.angular
-      .bootstrap(document.getElementById("dummy"), ["myModule"])
+      .bootstrap(document.getElementById("app"), ["myModule"])
       .invoke((_$compile_, $rootScope) => {
         $compile = _$compile_;
         scope = $rootScope.$new();

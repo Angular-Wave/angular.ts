@@ -11,7 +11,7 @@ describe("ngSwitch", () => {
     window.angular = new Angular();
     window.angular.module("test", []);
     let injector = window.angular.bootstrap(
-      document.getElementById("dummy", ["test"]),
+      document.getElementById("app", ["test"]),
     );
     injector.invoke(($rootScope, _$compile_) => {
       $scope = $rootScope.$new();

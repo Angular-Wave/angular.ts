@@ -18,7 +18,7 @@ describe("ngProp*", () => {
         };
       });
 
-    let injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    let injector = window.angular.bootstrap(document.getElementById("app"), [
       "myModule",
       function ($compileProvider) {
         compileProvider = $compileProvider;
@@ -574,9 +574,9 @@ describe("ngProp*", () => {
   describe("*[innerHTML]", () => {
     describe("SCE disabled", () => {
       beforeEach(() => {
-        dealoc(document.getElementById("dummy"));
+        dealoc(document.getElementById("app"));
         window.angular
-          .bootstrap(document.getElementById("dummy"), [
+          .bootstrap(document.getElementById("app"), [
             "myModule",
             ($sceProvider) => {
               $sceProvider.enabled(false);

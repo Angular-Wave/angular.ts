@@ -25,7 +25,7 @@ describe("form", () => {
           throw new Error(exception);
         };
       });
-    injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    injector = window.angular.bootstrap(document.getElementById("app"), [
       "myModule",
       ($compileProvider) => {
         $compileProvider.directive("storeModelCtrl", () => ({
@@ -1381,7 +1381,7 @@ describe("form", () => {
     let myModule;
 
     beforeEach(() => {
-      let dummy = document.getElementById("dummy");
+      let dummy = document.getElementById("app");
       doc = '<form name="myForm"></form>';
       dummy.append(doc);
       let angular = new Angular();
@@ -1400,7 +1400,7 @@ describe("form", () => {
     afterEach(() => {
       dealoc(doc);
       dealoc(dummy);
-      document.getElementById("dummy").innerHTML = "";
+      document.getElementById("app").innerHTML = "";
     });
 
     it("should trigger an animation when invalid", (done) => {

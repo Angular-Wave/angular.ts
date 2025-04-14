@@ -25,7 +25,7 @@ describe("router services", () => {
       },
     );
 
-    $injector = window["angular"].bootstrap(document.getElementById("dummy"), [
+    $injector = window["angular"].bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
   });

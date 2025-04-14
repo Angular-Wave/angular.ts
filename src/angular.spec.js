@@ -1460,7 +1460,7 @@ describe("angular", () => {
   describe("isError", () => {
     function testErrorFromDifferentContext(createError) {
       const iframe = document.createElement("iframe");
-      document.getElementById("dummy").appendChild(iframe);
+      document.getElementById("app").appendChild(iframe);
       try {
         const error = createError(iframe.contentWindow);
         expect(isError(error)).toBe(true);

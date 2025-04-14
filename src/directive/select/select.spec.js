@@ -64,7 +64,7 @@ describe("select", () => {
           throw new Error(exception);
         };
       });
-    let injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    let injector = window.angular.bootstrap(document.getElementById("app"), [
       "myModule",
       ($compileProvider) => {
         $compileProvider.directive("spyOnWriteValue", () => ({

@@ -20,10 +20,9 @@ describe("router filters", function () {
           .state({ name: "a.b", url: "/b" })
           .state({ name: "with-param", url: "/with/:param" });
       });
-      let $injector = window.angular.bootstrap(
-        document.getElementById("dummy"),
-        ["defaultModule"],
-      );
+      let $injector = window.angular.bootstrap(document.getElementById("app"), [
+        "defaultModule",
+      ]);
 
       $injector.invoke(
         (
@@ -81,10 +80,9 @@ describe("router filters", function () {
           .state({ name: "d", url: "/d/:id" });
       });
 
-      let $injector = window.angular.bootstrap(
-        document.getElementById("dummy"),
-        ["defaultModule"],
-      );
+      let $injector = window.angular.bootstrap(document.getElementById("app"), [
+        "defaultModule",
+      ]);
 
       $injector.invoke(
         (

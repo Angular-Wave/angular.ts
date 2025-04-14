@@ -10,7 +10,7 @@ describe("ngClass", () => {
   beforeEach(() => {
     window.angular = new Angular();
     window.angular.module("test", []);
-    injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    injector = window.angular.bootstrap(document.getElementById("app"), [
       "test",
     ]);
     $compile = injector.get("$compile");
@@ -507,8 +507,8 @@ describe("ngClass", () => {
 
   // https://github.com/angular/angular.js/issues/15960#issuecomment-299109412
   it("should always reevaluate filters with non-primitive inputs within literals", async () => {
-    document.getElementById("dummy").ng = undefined;
-    injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    document.getElementById("app").ng = undefined;
+    injector = window.angular.bootstrap(document.getElementById("app"), [
       "test",
       ($filterProvider) => {
         $filterProvider.register("foo", () => (o) => o.a || o.b);

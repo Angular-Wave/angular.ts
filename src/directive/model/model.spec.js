@@ -24,7 +24,7 @@ describe("ngModel", () => {
           errors.push(exception.message);
         };
       });
-    injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    injector = window.angular.bootstrap(document.getElementById("app"), [
       "myModule",
     ]);
     $compile = injector.get("$compile");

@@ -19,7 +19,7 @@ describe("ngIf", () => {
     beforeEach(function () {
       angular = window.angular = new Angular();
       window.angular.module("test", []);
-      injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      injector = window.angular.bootstrap(document.getElementById("app"), [
         "test",
         function (_$compileProvider_) {
           $compileProvider = _$compileProvider_;

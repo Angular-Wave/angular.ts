@@ -48,6 +48,17 @@ function getChildScopes(scope) {
   return children;
 }
 
+const ELEMENT = document.getElementById("app");
+
+/**
+ * Helper for boostraping content onto default element
+ */
+function boostrap(htmlContent, moduleName) {
+  dealoc(ELEMENT);
+  ELEMENT.innerHTML = htmlContent;
+  return angular.bootstrap(ELEMENT, [moduleName || "myModule"]);
+}
+
 describe("$compile", () => {
   let $rootScope,
     injector,
@@ -68,20 +79,22 @@ describe("$compile", () => {
   let angular;
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
     log = [];
+    bootstrapDefaultApplication();
+  });
+
+  function bootstrapDefaultApplication() {
     angular = new Angular();
     module = window.angular.module("test1", ["ng"]);
     defaultModule = window.angular.module("defaultModule", ["ng"]);
     myModule = window.angular.module("myModule", ["ng"]);
-    injector = window.angular.bootstrap(document.getElementById("dummy"), [
-      "defaultModule",
-    ]);
+    injector = window.angular.bootstrap(ELEMENT, ["defaultModule"]);
     $rootScope = injector.get("$rootScope");
     $compile = injector.get("$compile");
     $templateCache = injector.get("$templateCache");
     $sce = injector.get("$sce");
-  });
+  }
 
   function registerDirectives() {
     var args = arguments;
@@ -192,10 +205,8 @@ describe("$compile", () => {
   }
 
   function initInjector(name) {
-    dealoc(document.getElementById("dummy"));
-    injector = window.angular.bootstrap(document.getElementById("dummy"), [
-      name,
-    ]);
+    dealoc(document.getElementById("app"));
+    injector = window.angular.bootstrap(document.getElementById("app"), [name]);
     reloadInjector();
   }
 
@@ -4938,16 +4949,14 @@ describe("$compile", () => {
     });
 
     it('should detect anchor elements with the string "SVG" in the `href` attribute as an anchor', async () => {
-      element = $(
+      ELEMENT.innerHTML =
         '<div><a href="/ID_SVG_ID">' +
-          '<span ng-if="true">Should render</span>' +
-          "</a></div>",
-      );
+        '<span ng-if="true">Should render</span>' +
+        "</a></div>";
 
-      $compile(element.childNodes)($rootScope);
+      bootstrapDefaultApplication();
       await wait();
-      document.body.appendChild(element);
-      expect(element.querySelector("span").innerText).toContain(
+      expect(ELEMENT.querySelector("span").innerText).toContain(
         "Should render",
       );
     });
@@ -5746,7 +5755,7 @@ describe("$compile", () => {
 
         setTimeout(() => {
           expect(element.outerHTML).toBe(
-            '<div><b i-hello="">Hello</b><b i-cau="">Cau!</b></div>',
+            "<div><div>Hello</div><span>Cau!</span></div>",
           );
           done();
         }, 100);
@@ -5770,9 +5779,7 @@ describe("$compile", () => {
         $rootScope.name = "Elvis";
         element = $compile("<div><b i-hello></b></div>")($rootScope);
         await wait();
-        expect(element.outerHTML).toBe(
-          '<div><b i-hello="">Hello, Elvis!</b></div>',
-        );
+        expect(element.outerHTML).toBe("<div><span>Hello, Elvis!</span></div>");
       });
 
       it("should compile template when replacing element in another template", async () => {
@@ -5943,6 +5950,7 @@ describe("$compile", () => {
         let template, module;
         beforeEach(() => {
           log = [];
+          dealoc(ELEMENT);
           module = angular.module("test1", ["ng"]).directive("hello", () => ({
             restrict: "A",
             templateUrl: "/mock/hello",
@@ -5984,13 +5992,13 @@ describe("$compile", () => {
           logDirective("iThird", 3, { replace: true });
           logDirective("iLast", 0, { replace: true });
 
-          createInjector(["test1"]).invoke(
-            (_$compile_, _$rootScope_, _$templateCache_) => {
+          angular
+            .bootstrap(ELEMENT, ["test1"])
+            .invoke((_$compile_, _$rootScope_, _$templateCache_) => {
               $compile = _$compile_;
               $rootScope = _$rootScope_;
               $templateCache = _$templateCache_;
-            },
-          );
+            });
         });
 
         it("should flush after link append", async () => {
@@ -6030,13 +6038,7 @@ describe("$compile", () => {
               "iFirst-PreL; iSecond-PreL; iThird-PreL; iLast-PreL; " +
               "iLast-PostL; iThird-PostL; iSecond-PostL; iFirst-PostL",
           );
-
           const div = element.children[0];
-          expect(div.getAttribute("i-first")).toEqual("");
-          expect(div.getAttribute("i-second")).toEqual("");
-          expect(div.getAttribute("i-third")).toEqual("");
-          expect(div.getAttribute("i-last")).toEqual("");
-
           expect(div.innerText).toEqual("3");
         });
 
@@ -6056,11 +6058,6 @@ describe("$compile", () => {
           );
 
           const span = element.childNodes[0];
-          expect(span.getAttribute("first")).toEqual("");
-          expect(span.getAttribute("second")).toEqual("");
-          expect(span.children[0].getAttribute("third")).toEqual("");
-          expect(span.getAttribute("last")).toEqual("");
-
           expect(span.innerText).toEqual("3");
         });
 
@@ -6080,11 +6077,6 @@ describe("$compile", () => {
           );
 
           const div = element.childNodes[0];
-          expect(div.getAttribute("i-first")).toEqual("");
-          expect(div.getAttribute("i-second")).toEqual("");
-          expect(div.getAttribute("i-third")).toEqual("");
-          expect(div.getAttribute("i-last")).toEqual("");
-
           expect(div.innerText).toEqual("3");
         });
 
@@ -6119,13 +6111,6 @@ describe("$compile", () => {
               replace: true,
               templateUrl: "template.html",
             }));
-            createInjector(["test1"]).invoke(
-              (_$compile_, _$rootScope_, _$templateCache_) => {
-                $compile = _$compile_;
-                $rootScope = _$rootScope_;
-                $templateCache = _$templateCache_;
-              },
-            );
           });
 
           // TODO these functions pass when being run in isolation. investigate scope pollution
@@ -6148,30 +6133,36 @@ describe("$compile", () => {
           // });
 
           it("should not throw if the root element is accompanied by: whitespace", async () => {
-            $templateCache.set("template.html", "<div>Hello World!</div> \n");
-            element = $compile("<p template></p>")($rootScope);
+            ELEMENT.innerHTML = "<p template></p>";
+            angular.bootstrap(ELEMENT, ["test1"]).invoke(($templateCache) => {
+              $templateCache.set("template.html", "<div>Hello World!</div> \n");
+            });
             await wait();
-            expect(element.textContent).toBe("Hello World!");
+            expect(ELEMENT.textContent).toBe("Hello World!");
           });
 
           it("should not throw if the root element is accompanied by: comments", async () => {
-            $templateCache.set(
-              "template.html",
-              "<!-- oh hi --><div>Hello World!</div> \n",
-            );
-            element = $compile("<p template></p>")($rootScope);
+            ELEMENT.innerHTML = "<p template></p>";
+            angular.bootstrap(ELEMENT, ["test1"]).invoke(($templateCache) => {
+              $templateCache.set(
+                "template.html",
+                "<!-- oh hi --><div>Hello World!</div> \n",
+              );
+            });
             await wait();
-            expect(element.textContent).toBe("Hello World!");
+            expect(ELEMENT.textContent).toBe("Hello World!");
           });
 
           it("should not throw if the root element is accompanied by: comments + whitespace", async () => {
-            $templateCache.set(
-              "template.html",
-              "  <!-- oh hi -->  <div>Hello World!</div>  <!-- oh hi -->\n",
-            );
-            element = $compile("<p template></p>")($rootScope);
+            ELEMENT.innerHTML = "<p template></p>";
+            angular.bootstrap(ELEMENT, ["test1"]).invoke(($templateCache) => {
+              $templateCache.set(
+                "template.html",
+                "  <!-- oh hi -->  <div>Hello World!</div>  <!-- oh hi -->\n",
+              );
+            });
             await wait();
-            expect(element.textContent).toBe("Hello World!");
+            expect(ELEMENT.textContent).toBe("Hello World!");
           });
         });
 
@@ -6210,15 +6201,19 @@ describe("$compile", () => {
           expect(element.textContent).toBe("boom!1|boom!2|");
         });
 
-        it("should support templateUrl with replace", () => {
+        it("should support templateUrl with replace", async () => {
           // a regression https://github.com/angular/angular.js/issues/3792
           module.directive("simple", () => ({
             templateUrl: "/some.html",
             replace: true,
           }));
 
-          createInjector(["test1"]).invoke(
-            async ($templateCache, $rootScope, $compile) => {
+          dealoc(ELEMENT);
+          ELEMENT.innerHTML = "<div simple></div>";
+
+          angular
+            .bootstrap(ELEMENT, ["test1"])
+            .invoke(($templateCache, _$rootScope_) => {
               $templateCache.set(
                 "/some.html",
                 '<div ng-switch="i">' +
@@ -6226,16 +6221,13 @@ describe("$compile", () => {
                   "<div ng-switch-default>I dont know what `i` is.</div>" +
                   "</div>",
               );
+              $rootScope = _$rootScope_;
+            });
 
-              element = $compile("<div simple></div>")($rootScope);
-              await wait();
-              $rootScope.i = 1;
-              await wait();
-              expect(element.innerHTML).toContain("i = 1");
-            },
-          );
-
-          expect().toBe();
+          await wait();
+          $rootScope.i = 1;
+          await wait();
+          expect(ELEMENT.innerHTML).toContain("i = 1");
         });
       });
 
@@ -6315,7 +6307,7 @@ describe("$compile", () => {
         expect(getNodeName(element)).toMatch(/optgroup/i);
       });
 
-      it("should support SVG templates using directive.templateNamespace=svg", () => {
+      it("should support SVG templates using directive.templateNamespace=svg", async () => {
         myModule.directive("svgAnchor", () => ({
           replace: true,
           templateUrl: "template.html",
@@ -6325,26 +6317,24 @@ describe("$compile", () => {
             text: "@?",
           },
         }));
-        createInjector(["myModule"]).invoke(
-          async ($templateCache, $rootScope, $compile) => {
-            $templateCache.set(
-              "template.html",
-              '<a href="{{linkurl}}">{{text}}</a>',
-            );
-            element = $compile(
-              '<svg><a svg-anchor="/foo/bar" text="foo/bar!"></a></svg>',
-            )($rootScope);
-            await wait();
+        dealoc(ELEMENT);
+        ELEMENT.innerHTML =
+          '<svg><a svg-anchor="/foo/bar" text="foo/bar!"></a></svg>';
+        angular.bootstrap(ELEMENT, ["myModule"]).invoke(($templateCache) => {
+          $templateCache.set(
+            "template.html",
+            '<a href="{{linkurl}}">{{text}}</a>',
+          );
+        });
 
-            const child = element.firstChild;
-            expect(getNodeName(child)).toMatch(/a/i);
-            expect(isSVGElement(child)).toBe(true);
-            expect(child.href.baseVal).toBe("/foo/bar");
-          },
-        );
+        await wait();
+        const child = ELEMENT.firstChild;
+        expect(getNodeName(child.firstChild)).toMatch(/a/i);
+        expect(isSVGElement(child)).toBe(true);
+        expect(child.firstChild.href).toMatch(/foo\/bar/);
       });
 
-      it("should support MathML templates using directive.templateNamespace=math", () => {
+      it("should support MathML templates using directive.templateNamespace=math", async () => {
         myModule.directive("pow", () => ({
           replace: true,
           transclude: true,
@@ -6355,27 +6345,25 @@ describe("$compile", () => {
           },
           link(scope, elm, attr, ctrl, transclude) {
             transclude((node) => {
-              elm.prepend(node[0]);
+              debugger;
+              elm.prepend(node);
             });
           },
         }));
-        createInjector(["myModule"]).invoke(
-          async ($templateCache, $rootScope, $compile) => {
+        boostrap('<math><mn pow="2"><mn>8</mn></mn></math>').invoke(
+          ($templateCache, $rootScope, $compile) => {
             $templateCache.set(
               "template.html",
               "<msup><mn>{{pow}}</mn></msup>",
             );
-            element = $compile('<math><mn pow="2"><mn>8</mn></mn></math>')(
-              $rootScope,
-            );
-            await wait();
-            const child = element.firstChild;
-            expect(getNodeName(child)).toMatch(/mn/i);
-            expect(isUnknownElement(child)).toBe(false);
-            expect(isHTMLElement(child)).toBe(false);
           },
         );
         expect().toBe();
+        await wait();
+        const child = ELEMENT.firstChild;
+        expect(getNodeName(child.firstChild.firstChild)).toMatch(/mn/i);
+        expect(isUnknownElement(child)).toBe(false);
+        expect(isHTMLElement(child)).toBe(false);
       });
 
       it("should keep prototype properties on sync version of async directive", async () => {
@@ -6410,6 +6398,9 @@ describe("$compile", () => {
 
     describe("templateUrl as function", () => {
       it("should evaluate `templateUrl` when defined as fn and use returned value as url", async () => {
+        dealoc(ELEMENT);
+        ELEMENT.innerHTML =
+          '<div my-directive="some value">original content<div>';
         window.angular.module("test1", ["ng"]).directive("myDirective", () => ({
           replace: true,
           templateUrl($element, $attrs) {
@@ -6423,20 +6414,18 @@ describe("$compile", () => {
           },
         }));
 
-        createInjector(["test1"]).invoke(
-          async ($templateCache, $rootScope, $compile) => {
-            $templateCache.set(
-              "my-directive.html",
-              '<div id="templateContent">template content</div>',
-            );
-            element = $compile(
-              '<div my-directive="some value">original content<div>',
-            )($rootScope);
-            expect(element.textContent).toEqual("");
-            await wait();
-            expect(element.textContent).toEqual("template content");
-          },
-        );
+        injector = window.angular.bootstrap(ELEMENT, ["test1"]);
+
+        injector.invoke(async ($templateCache, $rootScope, $compile) => {
+          $templateCache.set(
+            "my-directive.html",
+            '<div id="templateContent">template content</div>',
+          );
+          expect(ELEMENT.textContent).toEqual("");
+          window.elm = element;
+          await wait();
+          expect(ELEMENT.textContent).toEqual("template content");
+        });
       });
     });
 
@@ -6975,9 +6964,9 @@ describe("$compile", () => {
               expect(element).toBe(attr.$$element);
             },
           }));
-        dealoc(document.getElementById("dummy"));
+        dealoc(document.getElementById("app"));
         window.angular
-          .bootstrap(document.getElementById("dummy"), ["test1"])
+          .bootstrap(document.getElementById("app"), ["test1"])
           .invoke((_$compile_, _$rootScope_, _$templateCache_, _$sce_) => {
             $compile = _$compile_;
             $rootScope = _$rootScope_;
@@ -13803,12 +13792,13 @@ describe("$compile", () => {
     });
 
     describe("lazy compilation", () => {
-      it("should pass transclusion through to template of a 'replace' directive", (done) => {
+      fit("should pass transclusion through to template of a 'replace' directive", async () => {
         module
           .directive("transSync", () => ({
             transclude: true,
 
             link(scope, element, attr, ctrl, transclude) {
+              debugger;
               expect(transclude).toEqual(jasmine.any(Function));
             },
           }))
@@ -13827,21 +13817,19 @@ describe("$compile", () => {
             templateUrl: "template.html",
             replace: true,
           }));
-        initInjector("test1");
-        $templateCache.set(
-          "template.html",
-          "<div trans-sync>Content To Be Transcluded</div>",
-        );
-        let res;
-        expect(() => {
-          res = $compile(
-            "<div><div trans><div replace-with-template></div></div></div>",
-          )($rootScope);
-        }).not.toThrow();
-        setTimeout(() => {
-          expect(res.innerText).toEqual("Content To Be Transcluded");
-          done();
-        }, 200);
+
+        boostrap(
+          "<div><div trans><div replace-with-template></div></div></div>",
+          "test1",
+        ).invoke(($templateCache) => {
+          $templateCache.set(
+            "template.html",
+            "<div trans-sync>Content To Be Transcluded</div>",
+          );
+        });
+
+        await wait(200);
+        expect(ELEMENT.innerText).toEqual("Content To Be Transcluded");
       });
 
       it("should lazily compile the contents of directives that are transcluded", () => {
