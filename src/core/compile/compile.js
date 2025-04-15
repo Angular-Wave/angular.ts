@@ -1188,7 +1188,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           );
         }
 
-        return function lazyCompilation() {
+        return function lazyCompilation(
+          _scope,
+          _transcludeFn,
+          { futureParentElement },
+        ) {
           if (!compiled) {
             // Lazily compile all nodes and store them in the 'compiled' array
 
@@ -1198,6 +1202,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               // Update compile node if not text
               if (node.nodeType !== 3) {
                 previousCompileContext.updateCompileNode = true;
+              }
+              if (futureParentElement) {
+                previousCompileContext.futureParentElement =
+                  futureParentElement;
               }
               return compile(
                 node,
@@ -1895,6 +1903,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               $compileNode.innerHTML = directiveValue;
             }
           }
+
           if (directive.templateUrl) {
             hasTemplate = true;
             assertNoDuplicate(
@@ -1908,6 +1917,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             if (directive.replace) {
               replaceDirective = directive;
             }
+
             nodeLinkFn = compileTemplateUrl(
               directives.splice(i, directives.length - i),
               $compileNode,
@@ -1923,6 +1933,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 newIsolateScopeDirective,
                 templateDirective,
                 nonTlbTranscludeDirective,
+                futureParentElement: previousCompileContext.futureParentElement,
               },
             );
             ii = directives.length;
@@ -2265,7 +2276,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
         $templateRequest(templateUrl)
           .then((content) => {
-            debugger;
             let compileNode;
             let tempTemplateAttrs;
             let $template;
@@ -2301,10 +2311,23 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               }
 
               tempTemplateAttrs = { $attr: {} };
-
-              const parent = $compileNode.parentNode;
               const clone = compileNode.cloneNode(true);
-              parent.replaceChild(clone, $compileNode);
+
+              if (previousCompileContext.futureParentElement) {
+                for (const child of previousCompileContext.futureParentElement
+                  .children) {
+                  if (child.isEqualNode($compileNode)) {
+                    previousCompileContext.futureParentElement.replaceChild(
+                      clone,
+                      child,
+                    );
+                  }
+                }
+              } else {
+                const parent = $compileNode.parentNode;
+                parent.replaceChild(clone, $compileNode);
+              }
+
               $compileNode = compileNode = clone;
 
               const templateDirectives = collectDirectives(

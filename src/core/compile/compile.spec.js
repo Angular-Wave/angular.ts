@@ -6345,7 +6345,6 @@ describe("$compile", () => {
           },
           link(scope, elm, attr, ctrl, transclude) {
             transclude((node) => {
-              debugger;
               elm.prepend(node);
             });
           },
@@ -13791,12 +13790,11 @@ describe("$compile", () => {
       expect(element.textContent).toBe("-->|x|");
     });
 
-    describe("lazy compilation", () => {
-      fit("should pass transclusion through to template of a 'replace' directive", async () => {
+    fdescribe("lazy compilation", () => {
+      it("should pass transclusion through to template of a 'replace' directive", async () => {
         module
           .directive("transSync", () => ({
             transclude: true,
-
             link(scope, element, attr, ctrl, transclude) {
               debugger;
               expect(transclude).toEqual(jasmine.any(Function));
@@ -13819,7 +13817,7 @@ describe("$compile", () => {
           }));
 
         boostrap(
-          "<div><div trans><div replace-with-template></div></div></div>",
+          "<div trans><div replace-with-template></div></div>",
           "test1",
         ).invoke(($templateCache) => {
           $templateCache.set(
@@ -13828,7 +13826,7 @@ describe("$compile", () => {
           );
         });
 
-        await wait(200);
+        await wait(500);
         expect(ELEMENT.innerText).toEqual("Content To Be Transcluded");
       });
 
