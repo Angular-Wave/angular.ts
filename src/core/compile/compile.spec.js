@@ -22,6 +22,7 @@ import {
 import { Cache, EXPANDO } from "../cache/cache.js";
 import { wait } from "../../shared/test-utils.js";
 import { isAwaitKeyword } from "typescript";
+import { NodeRef } from "../../shared/noderef.js";
 
 function isUnknownElement(el) {
   return !!el.toString().match(/Unknown/);
@@ -257,12 +258,26 @@ describe("$compile", () => {
     expect(injector.has("cDirective")).toBe(true);
   });
 
+  it("passes an element to directive compile", () => {
+    let el;
+    myModule.directive("myDirective", () => {
+      return {
+        restrict: "EA",
+        compile: function (element) {
+          el = element;
+        },
+      };
+    });
+    reloadModules();
+    $compile("<my-directive></my-directive>");
+    expect(el instanceof Element).toBe(true);
+  });
+
   it("compiles element directives from a single element", () => {
     myModule.directive("myDirective", () => {
       return {
         restrict: "EA",
         compile: function (element) {
-          debugger;
           setCacheData(element, "hasCompiled", true);
         },
       };
@@ -270,7 +285,6 @@ describe("$compile", () => {
     reloadModules();
 
     var el = $("<my-directive></my-directive>");
-    debugger;
     $compile(el);
     expect(getCacheData(el, "hasCompiled")).toBe(true);
   });
@@ -778,7 +792,8 @@ describe("$compile", () => {
           compile(element, templateAttr) {
             expect(typeof templateAttr.$normalize).toBe("function");
             expect(typeof templateAttr.$set).toBe("function");
-            expect(isElement(templateAttr.$$element)).toBeTruthy();
+            expect(templateAttr.$$element instanceof NodeRef).toBeTruthy();
+            expect(isElement(templateAttr.$$element.element)).toBeTruthy();
             expect(element.textContent).toEqual("unlinked");
             expect(templateAttr.exp).toEqual("abc");
             expect(templateAttr.aa).toEqual("A");

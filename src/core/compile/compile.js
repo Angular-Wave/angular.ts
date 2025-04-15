@@ -936,7 +936,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             } else if (childLinkFn) {
               childLinkFn(
                 scope,
-                node.childNodes,
+                new NodeRef(node.childNodes),
                 undefined,
                 parentBoundTranscludeFn,
               );
@@ -1229,9 +1229,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         } = previousCompileContext;
         let hasTranscludeDirective = false;
         let hasTemplate = false;
-        let compileNodeRef = (templateAttrs.$$element = new NodeRef(
-          compileNode,
-        ));
+        let compileNodeRef = new NodeRef(compileNode);
+        templateAttrs.$$element = compileNodeRef.node;
         let directive;
         let directiveName;
         let $template;
@@ -1275,7 +1274,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               $animate,
               $exceptionHandler,
               $sce,
-              $element.node,
+              $element.element,
               templateAttrs,
             );
           }
@@ -1466,7 +1465,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
               postLinkFn(
                 postLinkFn.isolateScope ? isolateScope : scope,
-                $element.element,
+                $element.node,
                 attrs,
                 controllers,
                 transcludeFn,
@@ -1662,9 +1661,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               hasElementTranscludeDirective = true;
               terminalPriority = directive.priority;
               $template = compileNodeRef;
-              compileNodeRef = templateAttrs.$$element = new NodeRef(
-                document.createComment(""),
-              );
+              compileNodeRef = new NodeRef(document.createComment(""));
+              templateAttrs.$$element = compileNodeRef.node;
               compileNode = compileNodeRef.node;
 
               replaceWith($template.element, compileNode);

@@ -48,6 +48,7 @@ export class Attributes {
     } else {
       this.$attr = {};
     }
+    // This can be an node
     /** @type {Element} */
     this.$$element = /** @type {Element} */ (element);
   }
@@ -160,7 +161,7 @@ export class Attributes {
         this.$attr[key] = attrName = snakeCase(key, "-");
       }
     }
-
+    debugger;
     let nodeName = this.$$element.nodeName.toLowerCase();
 
     // Sanitize img[srcset] values.
