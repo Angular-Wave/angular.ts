@@ -262,6 +262,7 @@ describe("$compile", () => {
       return {
         restrict: "EA",
         compile: function (element) {
+          debugger;
           setCacheData(element, "hasCompiled", true);
         },
       };
@@ -269,6 +270,7 @@ describe("$compile", () => {
     reloadModules();
 
     var el = $("<my-directive></my-directive>");
+    debugger;
     $compile(el);
     expect(getCacheData(el, "hasCompiled")).toBe(true);
   });
@@ -13790,14 +13792,16 @@ describe("$compile", () => {
       expect(element.textContent).toBe("-->|x|");
     });
 
-    fdescribe("lazy compilation", () => {
+    describe("lazy compilation", () => {
       it("should pass transclusion through to template of a 'replace' directive", async () => {
         module
           .directive("transSync", () => ({
             transclude: true,
             link(scope, element, attr, ctrl, transclude) {
-              debugger;
               expect(transclude).toEqual(jasmine.any(Function));
+              transclude((child) => {
+                element.append(child);
+              });
             },
           }))
           .directive("trans", () => ({
