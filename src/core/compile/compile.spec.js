@@ -792,8 +792,7 @@ describe("$compile", () => {
           compile(element, templateAttr) {
             expect(typeof templateAttr.$normalize).toBe("function");
             expect(typeof templateAttr.$set).toBe("function");
-            expect(templateAttr.$$element instanceof NodeRef).toBeTruthy();
-            expect(isElement(templateAttr.$$element.element)).toBeTruthy();
+            expect(isElement(templateAttr.$$element)).toBeTruthy();
             expect(element.textContent).toEqual("unlinked");
             expect(templateAttr.exp).toEqual("abc");
             expect(templateAttr.aa).toEqual("A");

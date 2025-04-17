@@ -49,8 +49,8 @@ export class Attributes {
       this.$attr = {};
     }
     // This can be an node
-    /** @type {Element} */
-    this.$$element = /** @type {Element} */ (element);
+    /** @type {Element|Node} */
+    this.$$element = element;
   }
 
   /**

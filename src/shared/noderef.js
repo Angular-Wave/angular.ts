@@ -71,15 +71,37 @@ export class NodeRef {
     return this._element;
   }
 
+  /** @param {Element} el */
+  set element(el) {
+    assertArg(el instanceof Element, "element");
+    this._element = el;
+  }
+
   /** @returns {Node | ChildNode} */
   get node() {
     assertArg(this._node, "node");
     return this._node;
   }
 
+   /** @param {Node | ChildNode} node */
+   set node(node) {
+    assertArg(node instanceof Node, "node");
+    this._node = node;
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      this._element = /** @type {Element} */ (node);
+    }
+  }
+
+   /** @param {Node[]} nodes */
+   set nodes(nodes) {
+    assertArg(Array.isArray(nodes) && nodes.every(n => n instanceof Node), "nodes");
+    this._nodes = nodes;
+    this.isList = true;
+  }
+
   /** @returns {Node[]} */
   get nodes() {
-    assertArg(this._nodes.length, "nodes");
+    assertArg(this._nodes, "nodes");
     return this._nodes;
   }
 
