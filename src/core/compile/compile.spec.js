@@ -5151,6 +5151,7 @@ describe("$compile", () => {
               '<div class="log" style="width: 10px" high-log>Replace!</div>',
             compile(element, attr) {
               attr.$set("compiled", "COMPILED");
+              element.compiled = true;
               expect(element).toBe(attr.$$element);
             },
           }))
@@ -5232,6 +5233,7 @@ describe("$compile", () => {
       it("should replace element with template", () => {
         reloadModules();
         element = $compile("<div><div replace>ignore</div></div>")($rootScope);
+        debugger;
         expect(element.childNodes[0].textContent).toEqual("Replace!");
         expect(element.childNodes[0].getAttribute("compiled")).toEqual(
           "COMPILED",
@@ -5413,6 +5415,8 @@ describe("$compile", () => {
         it("should not throw if the root element is accompanied by: whitespace", () => {
           templateVar = "  <div>Hello World!</div> \n";
           let element = $compile("<p template></p>")($rootScope);
+          debugger;
+          debugger;
           expect(element.textContent).toBe("Hello World!");
         });
 

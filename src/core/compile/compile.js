@@ -668,8 +668,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           }
 
           assertArg(scope, "scope");
-          assertArg(nodeRef.element, "element");
-          setScope(nodeRef.element, scope);
+          //assertArg(nodeRef.element, "element");
+          setScope(nodeRef.node, scope);
 
           if (previousCompileContext && previousCompileContext.needsNewScope) {
             // A parent directive did a replace and a directive on this element asked
@@ -716,7 +716,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           } else if (cloneConnectFn) {
             let elements = nodeRef.isList
               ? nodeRef.nodes.map((element) => element.cloneNode(true))
-              : nodeRef.element.cloneNode(true);
+              : nodeRef.node.cloneNode(true);
             $linkNode = new NodeRef(elements);
           } else {
             $linkNode = nodeRef;
@@ -733,8 +733,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             }
           }
           if (cloneConnectFn) {
-            assertArg($linkNode.element, "element");
-            cloneConnectFn($linkNode.element, scope);
+            assertArg($linkNode.node, "node");
+            cloneConnectFn($linkNode.node, scope);
           }
 
           if (compositeLinkFn) {
@@ -745,7 +745,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             nodeRef = compositeLinkFn = null;
           }
 
-          return $linkNode.element;
+          return $linkNode.node;
         }
       }
 
@@ -1268,7 +1268,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             attrs = templateAttrs;
             $element = new NodeRef(templateAttrs.$$element);
           } else {
-            $element = linkNode;
+            $element = new NodeRef(linkNode);
             attrs = new Attributes(
               $rootScope,
               $animate,
@@ -1334,7 +1334,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             const controllerInstance = controller();
             controller.instance = controllerScope.$new(controllerInstance);
             setCacheData(
-              $element.element,
+              $element.node,
               `$${controllerDirective.name}Controller`,
               controller.instance,
             );
@@ -1507,8 +1507,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             }
             if (!futureParentElement) {
               futureParentElement = hasElementTranscludeDirective
-                ? $element.element.parentElement
-                : $element.element;
+                ? $element.node.parentElement
+                : $element.node;
             }
             if (slotName) {
               // slotTranscludeFn can be one of three things:
@@ -1822,20 +1822,24 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 );
               }
 
-              // for (const attr of compileNode.attributes) {
-              //   $compileNode.setAttribute(attr.name, attr.value);
-              // }
+              debugger;
               //
               // $compileNode.innerHTML = "";
               // while (compileNode.firstChild) {
               //   $compileNode.appendChild(compileNode.firstChild);
               // }
 
+              // for (const attr of compileNodeRef.element.attributes) {
+              //   compileNode.setAttribute(attr.name, attr.value);
+              // }
+
               const parent = compileNodeRef.element.parentNode;
               assertArg(parent, "parent");
               parent.replaceChild(compileNode, compileNodeRef.element);
-              // templateAttrs.$$element = compileNode;
-              // compileNodeRef = compileNode;
+
+              templateAttrs.$$element = compileNode;
+              compileNodeRef.node = compileNode;
+
               const newTemplateAttrs = { $attr: {} };
 
               // combine directives from the original node and from the template:
@@ -2089,7 +2093,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               directive === newIsolateScopeDirective || directive.$$isolateScope
                 ? isolateScope
                 : scope,
-            $element: $element.element,
+            $element: $element.node,
             $attrs: attrs,
             $transclude: transcludeFn,
           };

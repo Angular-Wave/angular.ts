@@ -161,7 +161,7 @@ export class Attributes {
         this.$attr[key] = attrName = snakeCase(key, "-");
       }
     }
-    debugger;
+
     let nodeName = this.$$element.nodeName.toLowerCase();
 
     // Sanitize img[srcset] values.
