@@ -1122,7 +1122,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * A function generator that is used to support both eager and lazy compilation
        * linking function.
        * @param eager
-       * @param $compileNodes
+       * @param {NodeList|Node} $compileNodes
        * @param transcludeFn
        * @param maxPriority
        * @param ignoreDirective
@@ -1437,7 +1437,12 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           ) {
             scopeToChild = isolateScope;
           }
-          if (childLinkFn && linkNode && linkNode.childNodes) {
+          if (
+            childLinkFn &&
+            linkNode &&
+            linkNode.childNodes &&
+            linkNode.childNodes.length
+          ) {
             childLinkFn(
               scopeToChild,
               new NodeRef(linkNode.childNodes),
@@ -1669,7 +1674,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
               childTranscludeFn = compilationGenerator(
                 mightHaveMultipleTransclusionError,
-                $template,
+                $template.element,
                 transcludeFn,
                 terminalPriority,
                 replaceDirective && replaceDirective.name,
@@ -1786,7 +1791,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             templateDirective = directive;
 
             directiveValue = isFunction(directive.template)
-              ? directive.template(compileNodeRef, templateAttrs)
+              ? directive.template(compileNodeRef.node, templateAttrs)
               : directive.template;
 
             directiveValue = denormalizeTemplate(directiveValue);
