@@ -831,7 +831,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
           if (
             (nodeLinkFn && nodeLinkFn.terminal) ||
-            !(childNodes = nodeList[i].childNodes) ||
+            !(childNodes = nodeRef.getIndex(i).childNodes) ||
             !childNodes.length
           ) {
             childLinkFn = null;
@@ -1830,20 +1830,12 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 );
               }
 
-              //
-              // $compileNode.innerHTML = "";
-              // while (compileNode.firstChild) {
-              //   $compileNode.appendChild(compileNode.firstChild);
-              // }
-
-              // for (const attr of compileNodeRef.element.attributes) {
-              //   compileNode.setAttribute(attr.name, attr.value);
-              // }
-
               const parent = compileNodeRef.isList
                 ? compileNodeRef.nodes[0].parentNode
                 : compileNodeRef.element.parentNode;
+
               assertArg(parent, "parent");
+
               parent.replaceChild(
                 compileNode,
                 compileNodeRef.isList
@@ -1852,7 +1844,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               );
 
               templateAttrs.$$element = compileNode;
-              compileNodeRef.node = compileNode;
+              compileNodeRef.isList
+                ? (compileNodeRef.nodes[0] = compileNode)
+                : (compileNodeRef.node = compileNode);
 
               const newTemplateAttrs = { $attr: {} };
 
@@ -2392,7 +2386,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               const scope = linkQueue.shift();
               const beforeTemplateLinkNode = linkQueue.shift();
               const boundTranscludeFn = linkQueue.shift();
-              linkQueue.shift();
               let linkNode = $compileNode.getIndex(index);
 
               if (scope.$$destroyed) continue;

@@ -112,7 +112,13 @@ export type SimpleChange = {
 };
 export type PublicLinkFn = (scope: import("../scope/scope.js").Scope, cloneConnectFn?: TranscludeFn, options?: any) => Element;
 export type CompileFn = (compileNode: string | Element, transcludeFn?: TranscludeFn, maxPriority?: number, ignoreDirective?: string, previousCompileContext?: any) => PublicLinkFn;
+export type LinkFnMapping = {
+    index: number;
+    nodeLinkFn?: NodeLinkFn;
+    childLinkFn?: CompositeLinkFn;
+};
 export type CompileNodesFn = () => CompositeLinkFn;
 export type NodeLinkFn = (childLinkFn: CompositeLinkFn) => any;
 export type ApplyDirectivesToNodeFn = () => NodeLinkFn;
-export type CompositeLinkFn = (scope: import("../scope/scope.js").Scope, $linkNode: Element[], parentBoundTranscludeFn?: Function) => any;
+export type CompositeLinkFn = (scope: import("../scope/scope.js").Scope, $linkNode: NodeRef, parentBoundTranscludeFn?: Function) => any;
+import { NodeRef } from "../../shared/noderef.js";

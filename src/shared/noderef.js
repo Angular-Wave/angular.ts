@@ -92,8 +92,6 @@ export class NodeRef {
     if (node.nodeType === Node.ELEMENT_NODE) {
       this._element = /** @type {Element} */ (node);
     }
-    this._nodes = [];
-    this.isList = false;
   }
 
   /** @param {Node[]} nodes */
@@ -142,7 +140,7 @@ export class NodeRef {
     if (this.isList) {
       this._nodes[index] = node;
     } else {
-      this.node = node;
+      this._node = node;
     }
   }
 }

@@ -5818,12 +5818,15 @@ describe("$compile", () => {
         const template = $compile(
           "<div><b hello></b><b cau></b><b c-error></b><b l-error></b></div>",
         );
-        let e1;
-        let e2;
 
-        e1 = template($rootScope.$new(), () => {}); // clone
+        let e1 = template($rootScope.$new(), () => {}); // clone
+        window.e1 = e1;
         expect(e1.innerText).toEqual("");
-        e2 = template($rootScope.$new(), () => {}); // clone
+
+        let clone = $rootScope.$new();
+        let e2 = template(clone, () => {}); // clone
+        window.e2 = e2;
+        expect(e2.innerText).toEqual("");
         await wait(100);
         expect(e1.innerText).toEqual("HelloElvis  ");
         expect(e2.innerText).toEqual("HelloElvis  ");
@@ -5839,13 +5842,10 @@ describe("$compile", () => {
       it("should resolve widgets after cloning in append mode without $templateCache", async () => {
         $rootScope.expr = "Elvis";
         const template = $compile("<div cau></div>");
-        let e1;
-        let e2;
 
-        e1 = template($rootScope.$new(), () => {}); // clone
+        let e1 = template($rootScope.$new(), () => {}); // clone
         expect(e1.innerText).toEqual("");
-
-        e2 = template($rootScope.$new(), () => {}); // clone
+        let e2 = template($rootScope.$new(), () => {}); // clone
         await wait(100);
         expect(e1.innerText).toEqual("Elvis");
         expect(e2.innerText).toEqual("Elvis");
@@ -5866,13 +5866,11 @@ describe("$compile", () => {
             "<b i-l-error></b>" +
             "</div>",
         );
-        let e1;
-        let e2;
 
-        e1 = template($rootScope.$new(), () => {}); // clone
+        let e1 = template($rootScope.$new(), () => {}); // clone
         expect(e1.innerText).toEqual("");
 
-        e2 = template($rootScope.$new(), () => {}); // clone
+        let e2 = template($rootScope.$new(), () => {}); // clone
         await wait(100);
         expect(e1.innerText).toEqual("HelloElvis");
         expect(e2.innerText).toEqual("HelloElvis");
@@ -5885,12 +5883,10 @@ describe("$compile", () => {
       it("should resolve widgets after cloning in inline mode without $templateCache", async () => {
         $rootScope.expr = "Elvis";
         const template = $compile('<div i-cau=""></div>');
-        let e1;
-        let e2;
 
-        e1 = template($rootScope.$new(), () => {}); // clone
+        let e1 = template($rootScope.$new(), () => {}); // clone
         expect(e1.innerText).toEqual("");
-        e2 = template($rootScope.$new(), () => {}); // clone
+        let e2 = template($rootScope.$new(), () => {}); // clone
         await wait(100);
         expect(e1.innerText).toEqual("Elvis");
         expect(e2.innerText).toEqual("Elvis");

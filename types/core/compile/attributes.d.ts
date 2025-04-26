@@ -14,8 +14,8 @@ export class Attributes {
     $exceptionHandler: import("../exception-handler.js").ErrorHandler;
     $sce: any;
     $attr: {};
-    /** @type {Element} */
-    $$element: Element;
+    /** @type {Element|Node} */
+    $$element: Element | Node;
     /**
      * Converts an attribute name (e.g. dash/colon/underscore-delimited string, optionally prefixed with `x-` or
      * `data-`) to its normalized, camelCase form.
