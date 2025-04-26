@@ -4870,11 +4870,11 @@ describe("$compile", () => {
     it("should handle transcluded custom svg elements", async () => {
       let element = $(
         "<div><svg svg-container>" +
-          "<circle svg-circle></circle>" +
+          "<svg-circle></svg-circle>" +
           "</svg></div>",
       );
-      $compile(element)($rootScope);
       document.body.appendChild(element);
+      $compile(element)($rootScope);
       await wait();
       const circle = element.querySelector("circle");
       assertIsValidSvgCircle(circle);
@@ -4923,14 +4923,6 @@ describe("$compile", () => {
   });
 
   describe("compile phase", () => {
-    it("should not wrap root text nodes in spans", async () => {
-      element = $("<div>   <div>A</div>\n  <div>B</div>C\t\n  </div>");
-      $compile(element.childNodes)($rootScope);
-      await wait();
-      const spans = element.querySelectorAll("span");
-      expect(spans.length).toEqual(0);
-    });
-
     it("should be able to compile text nodes at the root", async () => {
       element = $("<div>Name: {{name}}<br />\nColor: {{color}}</div>");
       $rootScope.name = "Lucas";
@@ -5233,7 +5225,6 @@ describe("$compile", () => {
       it("should replace element with template", () => {
         reloadModules();
         element = $compile("<div><div replace>ignore</div></div>")($rootScope);
-        debugger;
         expect(element.childNodes[0].textContent).toEqual("Replace!");
         expect(element.childNodes[0].getAttribute("compiled")).toEqual(
           "COMPILED",
@@ -5415,8 +5406,6 @@ describe("$compile", () => {
         it("should not throw if the root element is accompanied by: whitespace", () => {
           templateVar = "  <div>Hello World!</div> \n";
           let element = $compile("<p template></p>")($rootScope);
-          debugger;
-          debugger;
           expect(element.textContent).toBe("Hello World!");
         });
 

@@ -75,6 +75,8 @@ export class NodeRef {
   set element(el) {
     assertArg(el instanceof Element, "element");
     this._element = el;
+    this._nodes = [];
+    this.isList = false;
   }
 
   /** @returns {Node | ChildNode} */
@@ -90,6 +92,8 @@ export class NodeRef {
     if (node.nodeType === Node.ELEMENT_NODE) {
       this._element = /** @type {Element} */ (node);
     }
+    this._nodes = [];
+    this.isList = false;
   }
 
   /** @param {Node[]} nodes */
@@ -110,6 +114,35 @@ export class NodeRef {
 
   /** @returns {Element | Node | ChildNode} */
   getAny() {
-    return this._element || this._node;
+    if (this.isList) {
+      return this._nodes[0];
+    } else {
+      return this._element || this._node;
+    }
+  }
+
+  /**
+   * @param {number} index
+   * @returns {Element | Node | ChildNode}
+   */
+  getIndex(index) {
+    if (this.isList) {
+      return this._nodes[index];
+    } else {
+      return this._node;
+    }
+  }
+
+  /**
+   * @param {number} index
+   * @param {Element | Node | ChildNode} node
+   * @returns {void}
+   */
+  setIndex(index, node) {
+    if (this.isList) {
+      this._nodes[index] = node;
+    } else {
+      this.node = node;
+    }
   }
 }
