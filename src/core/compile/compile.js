@@ -2272,7 +2272,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         /** @type {any} */
         let afterTemplateNodeLinkFn;
         let afterTemplateChildLinkFn;
-        const beforeTemplateCompileNode = $compileNode;
+        const beforeTemplateCompileNode = $compileNode.getIndex(index);
         const origAsyncDirective = directives.shift();
         const derivedSyncDirective = inherit(origAsyncDirective, {
           templateUrl: null,
@@ -2359,7 +2359,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
               mergeTemplateAttributes(tAttrs, tempTemplateAttrs);
             } else {
-              compileNode = beforeTemplateCompileNode.getIndex(index).node;
+              compileNode = beforeTemplateCompileNode;
               $compileNode.getIndex(index).innerHTML = content;
             }
 
@@ -2393,13 +2393,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               const beforeTemplateLinkNode = linkQueue.shift();
               const boundTranscludeFn = linkQueue.shift();
               linkQueue.shift();
-              let linkNode = $compileNode;
+              let linkNode = $compileNode.getIndex(index);
 
               if (scope.$$destroyed) continue;
 
-              if (
-                beforeTemplateLinkNode !== beforeTemplateCompileNode.element
-              ) {
+              if (beforeTemplateLinkNode !== beforeTemplateCompileNode) {
                 const oldClasses = beforeTemplateLinkNode.className;
 
                 if (
@@ -2435,7 +2433,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               afterTemplateNodeLinkFn(
                 afterTemplateChildLinkFn,
                 scope,
-                linkNode.element,
+                linkNode,
                 childBoundTranscludeFn,
               );
             }
