@@ -140,7 +140,7 @@ export class NodeRef {
     if (this.isList) {
       this._nodes[index] = node;
     } else {
-      this._node = node;
+      this.node = node;
     }
   }
 }

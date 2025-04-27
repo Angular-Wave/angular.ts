@@ -57,24 +57,24 @@ describe("ngRepeat", () => {
     // INIT
     scope.items = [{ name: "misko" }, { name: "shyam" }];
     await wait();
-    expect(element.find("li").length).toEqual(2);
+    expect(element.querySelectorAll("li").length).toEqual(2);
     expect(element.textContent).toEqual("misko;shyam;");
     delete Array.prototype.extraProperty;
 
     // GROW
     scope.items.push({ name: "adam" });
     await wait();
-    expect(element.find("li").length).toEqual(3);
+    expect(element.querySelectorAll("li").length).toEqual(3);
     expect(element.textContent).toEqual("misko;shyam;adam;");
 
     // SHRINK
     scope.items.pop();
     await wait();
-    expect(element.find("li").length).toEqual(2);
+    expect(element.querySelectorAll("li").length).toEqual(2);
 
     scope.items.shift();
     await wait();
-    expect(element.find("li").length).toEqual(1);
+    expect(element.querySelectorAll("li").length).toEqual(1);
     expect(element.textContent).toEqual("shyam;");
   });
 
@@ -91,7 +91,7 @@ describe("ngRepeat", () => {
     const htmlCollection = document.getElementsByClassName("test");
     scope.items = htmlCollection;
     await wait();
-    expect(element.find("li").length).toEqual(3);
+    expect(element.querySelectorAll("li").length).toEqual(3);
     expect(element.textContent).toEqual("x;y;x;");
 
     // reset dummy
@@ -114,7 +114,7 @@ describe("ngRepeat", () => {
     await wait();
     scope.items = collection;
     await wait();
-    expect(element.find("li").length).toEqual(3);
+    expect(element.querySelectorAll("li").length).toEqual(3);
     expect(element.textContent).toEqual("x;y;z;");
   });
 
@@ -350,14 +350,15 @@ describe("ngRepeat", () => {
     });
 
     it("should error on wrong parsing of ngRepeat", async () => {
-      element = '<ul><li ng-repeat="i dont parse"></li></ul>';
-      $compile(element)(scope);
+      element = $compile('<ul><li ng-repeat="i dont parse"></li></ul>')(scope);
       await wait();
       expect(logs.shift().message).toMatch(/i dont parse/);
     });
 
     it("should throw error when left-hand-side of ngRepeat can't be parsed", async () => {
-      element = '<ul><li ng-repeat="i dont parse in foo"></li></ul>';
+      element = createElementFromHTML(
+        '<ul><li ng-repeat="i dont parse in foo"></li></ul>',
+      );
       $compile(element)(scope);
       await wait();
       expect(logs.shift().message).toMatch(/i dont parse/);
@@ -614,13 +615,13 @@ describe("ngRepeat", () => {
       )(scope);
       scope.array = ["a", "b"];
       await wait();
-      let lis = element.find("li");
+      let lis = element.querySelectorAll("li");
       lis.eq(0).data("mark", "a");
       lis.eq(1).data("mark", "b");
 
       scope.array = ["b", "a"];
       await wait();
-      lis = element.find("li");
+      lis = element.querySelectorAll("li");
       expect(lis.eq(0).data("mark")).toEqual("b");
       expect(lis.eq(1).data("mark")).toEqual("a");
     });
@@ -633,8 +634,7 @@ describe("ngRepeat", () => {
         replace: true,
         template: '<div ng-repeat="i in items">{{i}}|</div>',
       }));
-      element = "<div><span rr>{{i}}|</span></div>";
-      $compile(element)(scope);
+      element = $compile("<div><span rr>{{i}}|</span></div>")(scope);
       await wait();
       expect(element.textContent).toBe("");
 
@@ -804,13 +804,13 @@ describe("ngRepeat", () => {
 
       scope.items = [a, b, c];
       await wait();
-      lis = element.find("li");
+      lis = element.querySelectorAll("li");
     });
 
     it("should preserve the order of elements", async () => {
       scope.items = [a, c, d];
       await wait();
-      const newElements = element.find("li");
+      const newElements = element.querySelectorAll("li");
       expect(newElements[0]).toEqual(lis[0]);
       expect(newElements[1]).toEqual(lis[2]);
       expect(newElements[2]).not.toEqual(lis[1]);
@@ -824,13 +824,13 @@ describe("ngRepeat", () => {
       // recover
       scope.items = [a];
       await wait();
-      let newElements = element.find("li");
+      let newElements = element.querySelectorAll("li");
       expect(newElements.length).toEqual(1);
       expect(newElements[0]).toEqual(lis[0]);
 
       scope.items = [];
       await wait();
-      newElements = element.find("li");
+      newElements = element.querySelectorAll("li");
       expect(newElements.length).toEqual(0);
     });
 
@@ -842,24 +842,24 @@ describe("ngRepeat", () => {
       // recover
       scope.items = [a];
       await wait();
-      let newElements = element.find("li");
+      let newElements = element.querySelectorAll("li");
       expect(newElements.length).toEqual(1);
       expect(newElements[0]).toEqual(lis[0]);
 
       scope.items = [];
       await wait();
-      newElements = element.find("li");
+      newElements = element.querySelectorAll("li");
       expect(newElements.length).toEqual(0);
     });
 
     it("should reverse items when the collection is reversed", async () => {
       scope.items = [a, b, c];
       await wait();
-      lis = element.find("li");
+      lis = element.querySelectorAll("li");
 
       scope.items = [c, b, a];
       await wait();
-      const newElements = element.find("li");
+      const newElements = element.querySelectorAll("li");
       expect(newElements.length).toEqual(3);
       expect(newElements[0]).toEqual(lis[2]);
       expect(newElements[1]).toEqual(lis[1]);
@@ -872,12 +872,12 @@ describe("ngRepeat", () => {
 
       scope.items = ["hello", "cau", "ahoj"];
       await wait();
-      lis = element.find("li");
+      lis = element.querySelectorAll("li");
       lis[2].id = "yes";
 
       scope.items = ["ahoj", "hello", "cau"];
       await wait();
-      const newLis = element.find("li");
+      const newLis = element.querySelectorAll("li");
       expect(newLis.length).toEqual(3);
       expect(newLis[0]).toEqual(lis[2]);
       expect(newLis[1]).toEqual(lis[0]);
@@ -888,10 +888,10 @@ describe("ngRepeat", () => {
       scope.items = undefined;
       scope.items = [{ name: "A" }, { name: "B" }, { name: "C" }];
       await wait();
-      lis = element.find("li");
+      lis = element.querySelectorAll("li");
       scope.items.shift();
       await wait();
-      const newLis = element.find("li");
+      const newLis = element.querySelectorAll("li");
       expect(newLis.length).toBe(2);
       expect(newLis[0]).toBe(lis[1]);
     });
@@ -1021,7 +1021,7 @@ describe("ngRepeat", () => {
         $rootScope.rows = [1];
         await wait();
 
-        const circle = element.find("circle");
+        const circle = element.querySelectorAll("circle");
         expect(circle[0].toString()).toMatch(/SVG/);
         dealoc(element);
       });

@@ -6445,7 +6445,7 @@ describe("$compile", () => {
           .decorator("$exceptionHandler", () => {
             return (exception) => {
               log.push(exception.message);
-              // throw new Error(exception.message);
+              throw new Error(exception.message);
             };
           });
 
@@ -6497,8 +6497,8 @@ describe("$compile", () => {
             replace: true,
             restrict: "A",
             templateUrl: "trscope.html",
-            compile(el) {
-              return function (scope, elem) {
+            compile() {
+              return function (scope) {
                 log.push(scope.$id);
               };
             },
@@ -11603,18 +11603,22 @@ describe("$compile", () => {
               normalScope = s;
             },
           }));
-        initInjector("test1");
-        $templateCache.set(
-          "main.html",
-          "<span ng-init=\"name='WORKS'\">{{name}}</span>",
+
+        boostrap("<div isolate non-isolate></div>", "test1").invoke(
+          ($templateCache) => {
+            $templateCache.set(
+              "main.html",
+              "<span ng-init=\"name='WORKS'\">{{name}}</span>",
+            );
+          },
         );
-        element = $compile("<div isolate non-isolate></div>")($rootScope);
+
         await wait();
 
-        expect(normalScope).toBe($rootScope);
         expect(normalScope.name).toEqual(undefined);
         expect(isolateScope.name).toEqual("WORKS");
-        expect(element.textContent).toEqual("WORKS");
+        expect(ELEMENT.textContent).toEqual("WORKS");
+        dealoc(ELEMENT);
       });
 
       it("should not get confused about where to use isolate scope when a replaced directive is used multiple times", async () => {
@@ -11628,12 +11632,12 @@ describe("$compile", () => {
           .directive("scopeTester", () => ({
             link($scope, $element) {
               log.push(
-                `${$element.getAttribute("scope-tester")}=${$scope.$root === $scope ? "non-isolate" : "isolate"}`,
+                `${$element.getAttribute("scope-tester")}=${$scope.$root.$id === $scope.$id ? "non-isolate" : "isolate"}`,
               );
             },
           }));
         initInjector("test1");
-        element = $compile(
+        $compile(
           "<div>" +
             '<div isolate scope-tester="outside"></div>' +
             '<span scope-tester="sibling"></span>' +

@@ -66,7 +66,7 @@ import { isProxy } from "../scope/scope.js";
  * @description Entry point for the '$compile' service.
  *
  * @callback CompileFn
- * @param {string|Element} compileNode - The nodes to be compiled.
+ * @param {string|Element|Node|ChildNode} compileNode - The node to be compiled.
  * @param {TranscludeFn} [transcludeFn] - An optional transclusion function to be used during compilation.
  * @param {number} [maxPriority] - An optional maximum priority for directives.
  * @param {string} [ignoreDirective] - An optional directive to ignore during compilation.
@@ -1150,11 +1150,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           );
         }
 
-        return function lazyCompilation(
-          _scope,
-          _transcludeFn,
-          { futureParentElement },
-        ) {
+        return function lazyCompilation(_scope, _transcludeFn, options) {
           if (!compiled) {
             // Lazily compile all nodes and store them in the 'compiled' array
 
@@ -1165,9 +1161,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               if (node.nodeType !== 3) {
                 previousCompileContext.updateCompileNode = true;
               }
-              if (futureParentElement) {
+              if (options && options.futureParentElement) {
                 previousCompileContext.futureParentElement =
-                  futureParentElement;
+                  options.futureParentElement;
               }
               return compile(
                 node,
@@ -1425,7 +1421,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               );
             } catch (e) {
               console.error(e);
-              $exceptionHandler(e, startingTag($element.element));
+              $exceptionHandler(e, startingTag($element.getAny()));
             }
           }
 
@@ -1461,14 +1457,14 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               getControllers(
                 postLinkFn.directiveName,
                 postLinkFn.require,
-                $element.element,
+                $element.node,
                 elementControllers,
               );
 
             // invoke link function
             try {
               if (postLinkFn.isolateScope) {
-                setIsolateScope($element.element, isolateScope);
+                setIsolateScope($element.node, isolateScope);
               }
 
               postLinkFn(
@@ -1480,7 +1476,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               );
             } catch (e) {
               console.error(e);
-              $exceptionHandler(e, startingTag($element.element));
+              $exceptionHandler(e, startingTag($element.getAny()));
             }
           }
 
@@ -2275,7 +2271,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           $$originalDirective: origAsyncDirective,
         });
         const templateUrl = isFunction(origAsyncDirective.templateUrl)
-          ? origAsyncDirective.templateUrl($compileNode, tAttrs)
+          ? origAsyncDirective.templateUrl($compileNode.getIndex(index), tAttrs)
           : origAsyncDirective.templateUrl;
         const { templateNamespace } = origAsyncDirective;
 
@@ -2321,20 +2317,20 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               tempTemplateAttrs = { $attr: {} };
               const clone = compileNode.cloneNode(true);
 
-              if (previousCompileContext.futureParentElement) {
-                for (const child of previousCompileContext.futureParentElement
-                  .children) {
-                  if (child.isEqualNode($compileNode)) {
-                    previousCompileContext.futureParentElement.replaceChild(
-                      clone,
-                      child,
-                    );
-                  }
-                }
-              } else {
-                const parent = $compileNode.getIndex(index).parentNode;
-                parent.replaceChild(clone, $compileNode.getIndex(index));
-              }
+              // if (previousCompileContext.futureParentElement) {
+              //   for (const child of previousCompileContext.futureParentElement
+              //     .children) {
+              //     if (child.isEqualNode($compileNode)) {
+              //       previousCompileContext.futureParentElement.replaceChild(
+              //         clone,
+              //         child,
+              //       );
+              //     }
+              //   }
+              // } else {
+              const parent = $compileNode.getIndex(index).parentNode;
+              parent.replaceChild(clone, $compileNode.getIndex(index));
+              //}
 
               compileNode = /** @type {Element} */ (clone);
               $compileNode.setIndex(index, compileNode);
@@ -2492,7 +2488,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             directive.name,
             wrapModuleNameIfDefined(directive.$$moduleName),
             what,
-            startingTag(element),
+            startingTag(element.getAny()),
           );
         }
       }
