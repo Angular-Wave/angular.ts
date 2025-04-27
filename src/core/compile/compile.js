@@ -884,7 +884,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               if (idx === 0) {
                 stableNodeList[idx] = nodeRef.isList
                   ? nodeRef.nodes[idx]
-                  : nodeRef.element;
+                  : nodeRef.node;
               } else {
                 if (nodeList[idx]) {
                   stableNodeList[idx] = nodeRef.nodes[idx];
