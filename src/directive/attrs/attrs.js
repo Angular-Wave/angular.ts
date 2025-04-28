@@ -78,7 +78,7 @@ Object.entries(ALIASED_ATTR).forEach(([ngAttr]) => {
             toString.call(element.href) === "[object SVGAnimatedString]"
           ) {
             name = "xlinkHref";
-            attr.$attr[name] = "xlink:href";
+            attr.$attr[name] = "href";
           }
 
           // We need to sanitize the url at least once, in case it is a constant

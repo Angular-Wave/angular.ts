@@ -6445,7 +6445,6 @@ describe("$compile", () => {
           .decorator("$exceptionHandler", () => {
             return (exception) => {
               log.push(exception.message);
-              throw new Error(exception.message);
             };
           });
 
@@ -14618,53 +14617,50 @@ describe("$compile", () => {
       );
     });
 
-    it("should sanitize all uris in srcset", () => {
-      element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
-      const testSet = {
-        "http://example.com/image.png": "http://example.com/image.png",
-        " http://example.com/image.png": "http://example.com/image.png",
-        "http://example.com/image.png ": "http://example.com/image.png",
-        "http://example.com/image.png 128w":
-          "http://example.com/image.png 128w",
-        "http://example.com/image.png 2x": "http://example.com/image.png 2x",
-        "http://example.com/image.png 1.5x":
-          "http://example.com/image.png 1.5x",
-        "http://example.com/image1.png 1x,http://example.com/image2.png 2x":
-          "http://example.com/image1.png 1x,http://example.com/image2.png 2x",
-        "http://example.com/image1.png 1x ,http://example.com/image2.png 2x":
-          "http://example.com/image1.png 1x ,http://example.com/image2.png 2x",
-        "http://example.com/image1.png 1x, http://example.com/image2.png 2x":
-          "http://example.com/image1.png 1x,http://example.com/image2.png 2x",
-        "http://example.com/image1.png 1x , http://example.com/image2.png 2x":
-          "http://example.com/image1.png 1x ,http://example.com/image2.png 2x",
-        "http://example.com/image1.png 48w,http://example.com/image2.png 64w":
-          "http://example.com/image1.png 48w,http://example.com/image2.png 64w",
-        // Test regex to make sure doesn't mistake parts of url for width descriptors
-        "http://example.com/image1.png?w=48w,http://example.com/image2.png 64w":
-          "http://example.com/image1.png?w=48w,http://example.com/image2.png 64w",
-        "http://example.com/image1.png 1x,http://example.com/image2.png 64w":
-          "http://example.com/image1.png 1x,http://example.com/image2.png 64w",
-        "http://example.com/image1.png,http://example.com/image2.png":
-          "http://example.com/image1.png ,http://example.com/image2.png",
-        "http://example.com/image1.png ,http://example.com/image2.png":
-          "http://example.com/image1.png ,http://example.com/image2.png",
-        "http://example.com/image1.png, http://example.com/image2.png":
-          "http://example.com/image1.png ,http://example.com/image2.png",
-        "http://example.com/image1.png , http://example.com/image2.png":
-          "http://example.com/image1.png ,http://example.com/image2.png",
-        "http://example.com/image1.png 1x, http://example.com/image2.png 2x, http://example.com/image3.png 3x":
-          "http://example.com/image1.png 1x,http://example.com/image2.png 2x,http://example.com/image3.png 3x",
-        "javascript:doEvilStuff() 2x": "unsafe:javascript:doEvilStuff() 2x",
-        "http://example.com/image1.png 1x,javascript:doEvilStuff() 2x":
-          "http://example.com/image1.png 1x,unsafe:javascript:doEvilStuff() 2x",
-        "http://example.com/image1.jpg?x=a,b 1x,http://example.com/ima,ge2.jpg 2x":
-          "http://example.com/image1.jpg?x=a,b 1x,http://example.com/ima,ge2.jpg 2x",
-        // Test regex to make sure doesn't mistake parts of url for pixel density descriptors
-        "http://example.com/image1.jpg?x=a2x,b 1x,http://example.com/ima,ge2.jpg 2x":
-          "http://example.com/image1.jpg?x=a2x,b 1x,http://example.com/ima,ge2.jpg 2x",
-      };
-
-      Object.entries(testSet).forEach(async ([url, ref]) => {
+    const testSet = {
+      "http://example.com/image.png": "http://example.com/image.png",
+      " http://example.com/image.png": "http://example.com/image.png",
+      "http://example.com/image.png ": "http://example.com/image.png",
+      "http://example.com/image.png 128w": "http://example.com/image.png 128w",
+      "http://example.com/image.png 2x": "http://example.com/image.png 2x",
+      "http://example.com/image.png 1.5x": "http://example.com/image.png 1.5x",
+      "http://example.com/image1.png 1x,http://example.com/image2.png 2x":
+        "http://example.com/image1.png 1x,http://example.com/image2.png 2x",
+      "http://example.com/image1.png 1x ,http://example.com/image2.png 2x":
+        "http://example.com/image1.png 1x ,http://example.com/image2.png 2x",
+      "http://example.com/image1.png 1x, http://example.com/image2.png 2x":
+        "http://example.com/image1.png 1x,http://example.com/image2.png 2x",
+      "http://example.com/image1.png 1x , http://example.com/image2.png 2x":
+        "http://example.com/image1.png 1x ,http://example.com/image2.png 2x",
+      "http://example.com/image1.png 48w,http://example.com/image2.png 64w":
+        "http://example.com/image1.png 48w,http://example.com/image2.png 64w",
+      // Test regex to make sure doesn't mistake parts of url for width descriptors
+      "http://example.com/image1.png?w=48w,http://example.com/image2.png 64w":
+        "http://example.com/image1.png?w=48w,http://example.com/image2.png 64w",
+      "http://example.com/image1.png 1x,http://example.com/image2.png 64w":
+        "http://example.com/image1.png 1x,http://example.com/image2.png 64w",
+      "http://example.com/image1.png,http://example.com/image2.png":
+        "http://example.com/image1.png ,http://example.com/image2.png",
+      "http://example.com/image1.png ,http://example.com/image2.png":
+        "http://example.com/image1.png ,http://example.com/image2.png",
+      "http://example.com/image1.png, http://example.com/image2.png":
+        "http://example.com/image1.png ,http://example.com/image2.png",
+      "http://example.com/image1.png , http://example.com/image2.png":
+        "http://example.com/image1.png ,http://example.com/image2.png",
+      "http://example.com/image1.png 1x, http://example.com/image2.png 2x, http://example.com/image3.png 3x":
+        "http://example.com/image1.png 1x,http://example.com/image2.png 2x,http://example.com/image3.png 3x",
+      "javascript:doEvilStuff() 2x": "unsafe:javascript:doEvilStuff() 2x",
+      "http://example.com/image1.png 1x,javascript:doEvilStuff() 2x":
+        "http://example.com/image1.png 1x,unsafe:javascript:doEvilStuff() 2x",
+      "http://example.com/image1.jpg?x=a,b 1x,http://example.com/ima,ge2.jpg 2x":
+        "http://example.com/image1.jpg?x=a,b 1x,http://example.com/ima,ge2.jpg 2x",
+      // Test regex to make sure doesn't mistake parts of url for pixel density descriptors
+      "http://example.com/image1.jpg?x=a2x,b 1x,http://example.com/ima,ge2.jpg 2x":
+        "http://example.com/image1.jpg?x=a2x,b 1x,http://example.com/ima,ge2.jpg 2x",
+    };
+    Object.entries(testSet).forEach(async ([url, ref]) => {
+      it("should sanitize all uris in srcset " + url, async () => {
+        element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
         $rootScope.testUrl = url;
         await wait();
         expect(element.getAttribute("srcset")).toEqual(ref);
