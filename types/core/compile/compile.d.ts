@@ -99,7 +99,7 @@ export class CompileProvider {
      * @returns {object} `this` for chaining
      */
     addPropertySecurityContext: (elementName: string, propertyName: string, ctx: string) => object;
-    $get: (string | (($injector: import("../../core/di/internal-injector.js").InjectorService, $interpolate: any, $exceptionHandler: import("../exception-handler.js").ErrorHandler, $templateRequest: any, $parse: import("../parse/parse.js").ParseService, $controller: any, $rootScope: import("../scope/scope.js").Scope, $sce: any, $animate: any) => (compileNode: string | Element | Node | ChildNode, transcludeFn?: TranscludeFn, maxPriority?: number, ignoreDirective?: string, previousCompileContext?: any) => PublicLinkFn))[];
+    $get: (string | (($injector: import("../../core/di/internal-injector.js").InjectorService, $interpolate: any, $exceptionHandler: import("../exception-handler.js").ErrorHandler, $templateRequest: any, $parse: import("../parse/parse.js").ParseService, $controller: any, $rootScope: import("../scope/scope.js").Scope, $sce: any, $animate: any) => (compileNode: string | Element | Node | ChildNode | NodeList, transcludeFn?: TranscludeFn, maxPriority?: number, ignoreDirective?: string, previousCompileContext?: any) => PublicLinkFn))[];
 }
 export namespace CompileProvider {
     let $inject: string[];
@@ -112,13 +112,18 @@ export const DirectiveSuffix: "Directive";
  *
  * The function returns the DOM content to be injected (transcluded) into the directive.
  */
-export type TranscludeFn = () => Element | Node;
+export type TranscludeFn = (scope: import("../scope/scope.js").Scope) => Element | Node;
+/**
+ * A specialized version of {@link TranscludeFn} with the scope argument already bound.
+ * This function requires no parameters and returns the same result as {@link TranscludeFn}.
+ */
+export type BoundTranscludeFn = () => Element | Node;
 export type SimpleChange = {
     currentValue: any;
     firstChange: boolean;
 };
 export type PublicLinkFn = (scope: import("../scope/scope.js").Scope, cloneConnectFn?: TranscludeFn, options?: any) => Element | Node | ChildNode;
-export type CompileFn = (compileNode: string | Element | Node | ChildNode, transcludeFn?: TranscludeFn, maxPriority?: number, ignoreDirective?: string, previousCompileContext?: any) => PublicLinkFn;
+export type CompileFn = (compileNode: string | Element | Node | ChildNode | NodeList, transcludeFn?: TranscludeFn, maxPriority?: number, ignoreDirective?: string, previousCompileContext?: any) => PublicLinkFn;
 export type LinkFnMapping = {
     index: number;
     nodeLinkFn?: NodeLinkFn;

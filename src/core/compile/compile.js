@@ -50,7 +50,15 @@ import { isProxy } from "../scope/scope.js";
  * The function returns the DOM content to be injected (transcluded) into the directive.
  *
  * @callback TranscludeFn
+ * @param {import("../scope/scope.js").Scope} scope - The new child scope created from the transcluded parent.
  * @returns {Element|Node} The DOM node to be inserted into the transcluded directive.
+ */
+
+/**
+ * A specialized version of {@link TranscludeFn} with the scope argument already bound.
+ * This function requires no parameters and returns the same result as {@link TranscludeFn}.
+ *
+ * @typedef {() => Element|Node} BoundTranscludeFn
  */
 
 /**
@@ -73,7 +81,7 @@ import { isProxy } from "../scope/scope.js";
  * @description Entry point for the '$compile' service.
  *
  * @callback CompileFn
- * @param {string|Element|Node|ChildNode} compileNode - The node to be compiled.
+ * @param {string|Element|Node|ChildNode|NodeList} compileNode - The node to be compiled.
  * @param {TranscludeFn} [transcludeFn] - An optional transclusion function to be used during compilation.
  * @param {number} [maxPriority] - An optional maximum priority for directives.
  * @param {string} [ignoreDirective] - An optional directive to ignore during compilation.
@@ -916,6 +924,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               childScope = nodeLinkFn.scope ? scope.$new() : scope;
 
               if (nodeLinkFn.transcludeOnThisElement) {
+                // bind proper scope for the translusion function
                 childBoundTranscludeFn = createBoundTranscludeFn(
                   scope,
                   nodeLinkFn.transclude,
@@ -953,6 +962,13 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         }
       }
 
+      /**
+       * Prebinds the transclusion function to a scope
+       * @param {import("../scope/scope.js").Scope} scope
+       * @param {*} transcludeFn
+       * @param {*} previousBoundTranscludeFn
+       * @returns {BoundTranscludeFn}
+       */
       function createBoundTranscludeFn(
         scope,
         transcludeFn,
@@ -1130,7 +1146,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * A function generator that is used to support both eager and lazy compilation
        * linking function.
        * @param eager
-       * @param {NodeList|Node} $compileNodes
+       * @param {NodeList|Node} compileNodes
        * @param transcludeFn
        * @param maxPriority
        * @param ignoreDirective
@@ -1139,7 +1155,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        */
       function compilationGenerator(
         eager,
-        $compileNodes,
+        compileNodes,
         transcludeFn,
         maxPriority,
         ignoreDirective,
@@ -1149,7 +1165,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
         if (eager) {
           return compile(
-            $compileNodes,
+            compileNodes,
             transcludeFn,
             maxPriority,
             ignoreDirective,
@@ -1163,8 +1179,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             // TODO investigate if this ever has more than one node, because this is a type of linkFn
             // and is being used as a link function and the publicLinkFn return an element or a node
             // See assert below
-            compiled = (
-              $compileNodes.length ? Array.from($compileNodes) : [$compileNodes]
+            compiled = /** @type {NodeList} */ (
+              compileNodes.length
+                ? Array.from(/** @type {NodeList} */ (compileNodes))
+                : [/** @type {Node} */ (compileNodes)]
             ).map((node) => {
               return compile(
                 node,
@@ -1176,7 +1194,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             });
 
             // Null out all of these references for garbage collection
-            $compileNodes = transcludeFn = previousCompileContext = null;
+            compileNodes = transcludeFn = previousCompileContext = null;
           }
 
           // Iterate over each compiled function and apply the same 'this' and arguments
@@ -1954,6 +1972,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
         nodeLinkFn.scope =
           newScopeDirective && newScopeDirective.scope === true;
+
+        // track trancluded scope
         nodeLinkFn.transcludeOnThisElement = hasTranscludeDirective;
         nodeLinkFn.templateOnThisElement = hasTemplate;
         nodeLinkFn.transclude = childTranscludeFn;

@@ -3328,7 +3328,6 @@ describe("$compile", () => {
             scope: true,
             link: function (scope, element, attrs, ctrl, transclude) {
               element.append(transclude());
-              window.scope = scope;
               scope.$on("destroyNow", () => {
                 scope.$destroy();
               });
