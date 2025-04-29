@@ -43,7 +43,14 @@ import { ngObserveDirective } from "../../directive/observe/observe.js";
 import { isProxy } from "../scope/scope.js";
 
 /**
- * @typedef {Function} TranscludeFn
+ * A function passed as the fifth argument to a {@type PublicLinkFn} link function.
+ * It behaves like a linking function, with the `scope` argument automatically created
+ * as a new child of the transcluded parent scope.
+ *
+ * The function returns the DOM content to be injected (transcluded) into the directive.
+ *
+ * @callback TranscludeFn
+ * @returns {Element|Node} The DOM node to be inserted into the transcluded directive.
  */
 
 /**
@@ -59,7 +66,7 @@ import { isProxy } from "../scope/scope.js";
  * @param {import('../scope/scope.js').Scope} scope - Scope to link with element
  * @param {TranscludeFn} [cloneConnectFn]
  * @param {*} [options]
- * @return {Element} The nodes to be linked.
+ * @return {Element|Node|ChildNode} The nodes to be linked.
  */
 
 /**
@@ -1128,7 +1135,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * @param maxPriority
        * @param ignoreDirective
        * @param previousCompileContext
-       * @returns {Function}
+       * @returns {PublicLinkFn|TranscludeFn}
        */
       function compilationGenerator(
         eager,
@@ -1150,21 +1157,15 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           );
         }
 
-        return function lazyCompilation(_scope, _transcludeFn, options) {
+        return function lazyCompilation() {
           if (!compiled) {
             // Lazily compile all nodes and store them in the 'compiled' array
-
+            // TODO investigate if this ever has more than one node, because this is a type of linkFn
+            // and is being used as a link function and the publicLinkFn return an element or a node
+            // See assert below
             compiled = (
               $compileNodes.length ? Array.from($compileNodes) : [$compileNodes]
             ).map((node) => {
-              // Update compile node if not text
-              if (node.nodeType !== 3) {
-                previousCompileContext.updateCompileNode = true;
-              }
-              if (options && options.futureParentElement) {
-                previousCompileContext.futureParentElement =
-                  options.futureParentElement;
-              }
               return compile(
                 node,
                 transcludeFn,
@@ -1179,7 +1180,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           }
 
           // Iterate over each compiled function and apply the same 'this' and arguments
-          return compiled.map((fn) => fn.apply(this, arguments));
+          const linked = compiled.map((fn) => fn.apply(this, arguments));
+          assertArg(linked.length == 1, "single element required");
+
+          return linked[0];
         };
       }
 
@@ -1193,9 +1197,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {NodeRef} compileNodeRef Referebce DOM node to apply the compile functions to
        * @param {number} index Index in node collections
        * @param {Attributes} templateAttrs The shared attribute function
-       * @param {function(import('../../core/scope/scope.js').Scope, Function=):any} transcludeFn A linking function, where the
-       *                                                  scope argument is auto-generated to the new
-       *                                                  child of the transcluded parent scope.
+       * @param {TranscludeFn} transcludeFn
        * @param {Object=} originalReplaceDirective An optional directive that will be ignored when
        *                                           compiling the transclusion.
        * @param {Array.<Function>} [preLinkFns]
@@ -1234,7 +1236,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         let directiveName;
         let $template;
         let replaceDirective = originalReplaceDirective;
-        /** @type {any} */
+        /** @type {TranscludeFn} */
         let childTranscludeFn = transcludeFn;
 
         let didScanForMultipleTransclusion = false;
@@ -1490,7 +1492,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             });
           }
 
-          // This is the function that is injected as `$transclude`.
+          // This is the function that is injected as `$transclude` or
+          // the fifth parameter to the link function.
+          // Example: function link (scope, element, attrs, ctrl, transclude) {}
           // Note: all arguments are optional!
           function controllersBoundTransclude(
             scope,
@@ -1692,6 +1696,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               const slots = Object.create(null);
 
               if (!isObject(directiveValue)) {
+                //
+                // Clone childnodes before clearing contents on transcluded directives
                 $template = compileNode.cloneNode(true).childNodes;
               } else {
                 // We have transclusion slots,
@@ -1763,7 +1769,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 $template = $template.childNodes;
               }
 
-              emptyElement(compileNode); // clear contents
+              emptyElement(compileNode); // clear contents on transcluded directives
+
+              // lazily compile transcluded template and generate a transcluded link function
               childTranscludeFn = compilationGenerator(
                 mightHaveMultipleTransclusionError,
                 $template,
@@ -2317,20 +2325,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               tempTemplateAttrs = { $attr: {} };
               const clone = compileNode.cloneNode(true);
 
-              // if (previousCompileContext.futureParentElement) {
-              //   for (const child of previousCompileContext.futureParentElement
-              //     .children) {
-              //     if (child.isEqualNode($compileNode)) {
-              //       previousCompileContext.futureParentElement.replaceChild(
-              //         clone,
-              //         child,
-              //       );
-              //     }
-              //   }
-              // } else {
               const parent = $compileNode.getIndex(index).parentNode;
               parent.replaceChild(clone, $compileNode.getIndex(index));
-              //}
 
               compileNode = /** @type {Element} */ (clone);
               $compileNode.setIndex(index, compileNode);

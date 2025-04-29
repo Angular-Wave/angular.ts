@@ -105,12 +105,19 @@ export namespace CompileProvider {
     let $inject: string[];
 }
 export const DirectiveSuffix: "Directive";
-export type TranscludeFn = Function;
+/**
+ * A function passed as the fifth argument to a {@type PublicLinkFn} link function.
+ * It behaves like a linking function, with the `scope` argument automatically created
+ * as a new child of the transcluded parent scope.
+ *
+ * The function returns the DOM content to be injected (transcluded) into the directive.
+ */
+export type TranscludeFn = () => Element | Node;
 export type SimpleChange = {
     currentValue: any;
     firstChange: boolean;
 };
-export type PublicLinkFn = (scope: import("../scope/scope.js").Scope, cloneConnectFn?: TranscludeFn, options?: any) => Element;
+export type PublicLinkFn = (scope: import("../scope/scope.js").Scope, cloneConnectFn?: TranscludeFn, options?: any) => Element | Node | ChildNode;
 export type CompileFn = (compileNode: string | Element | Node | ChildNode, transcludeFn?: TranscludeFn, maxPriority?: number, ignoreDirective?: string, previousCompileContext?: any) => PublicLinkFn;
 export type LinkFnMapping = {
     index: number;

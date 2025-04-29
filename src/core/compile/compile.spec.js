@@ -3233,7 +3233,8 @@ describe("$compile", () => {
             transclude: true,
             template: "<div in-template></div>",
             link: function (scope, element, attrs, ctrl, transclude) {
-              element.append(transclude()[0]);
+              const res = transclude();
+              element.append(res);
             },
           };
         },
@@ -3269,7 +3270,7 @@ describe("$compile", () => {
             transclude: true,
             link: function (scope, element, attrs, ctrl, transclude) {
               const res = transclude();
-              element.append(res[0]);
+              element.append(res);
             },
           };
         },
@@ -3298,7 +3299,7 @@ describe("$compile", () => {
             scope: true,
             link: function (scope, element, attrs, ctrl, transclude) {
               scope.anAttr = "Shadowed attribute";
-              element.append(transclude()[0]);
+              element.append(transclude());
             },
           };
         },
@@ -3326,7 +3327,7 @@ describe("$compile", () => {
             transclude: true,
             scope: true,
             link: function (scope, element, attrs, ctrl, transclude) {
-              element.append(transclude()[0]);
+              element.append(transclude());
               window.scope = scope;
               scope.$on("destroyNow", () => {
                 scope.$destroy();
@@ -3393,7 +3394,7 @@ describe("$compile", () => {
         inTemplate: () => {
           return {
             link: function (scope, element, attrs, ctrl, transcludeFn) {
-              element.append(transcludeFn()[0]);
+              element.append(transcludeFn());
             },
           };
         },
@@ -3417,7 +3418,7 @@ describe("$compile", () => {
         inTemplate: () => {
           return {
             link: function (scope, element, attrs, ctrl, transcludeFn) {
-              element.append(transcludeFn()[0]);
+              element.append(transcludeFn());
             },
           };
         },
@@ -3447,7 +3448,7 @@ describe("$compile", () => {
         inCustomTemplate: () => {
           return {
             link: function (scope, element, attrs, ctrl, transclude) {
-              element.append(transclude()[0]);
+              element.append(transclude());
             },
           };
         },
@@ -3524,7 +3525,7 @@ describe("$compile", () => {
       var el = $("<div my-transcluder><div in-transclude></div></div>");
       $compile(el)($rootScope);
 
-      expect(transclude()[0].outerHTML.match(/in-transclude/)).toBeTruthy();
+      expect(transclude().outerHTML.match(/in-transclude/)).toBeTruthy();
     });
   });
 
