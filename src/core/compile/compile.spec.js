@@ -13060,7 +13060,7 @@ describe("$compile", () => {
       describe("content transclusion", () => {
         it("should support transclude directive", () => {
           module.directive("trans", () => ({
-            transclude: "content",
+            transclude: true,
             replace: true,
             scope: {},
             link(scope) {
@@ -13086,7 +13086,7 @@ describe("$compile", () => {
             .directive(
               "book",
               valueFn({
-                transclude: "content",
+                transclude: true,
                 template:
                   "<div>book-<div chapter>(<div ng-transclude></div>)</div></div>",
               }),
@@ -13094,14 +13094,14 @@ describe("$compile", () => {
             .directive(
               "chapter",
               valueFn({
-                transclude: "content",
+                transclude: true,
                 templateUrl: "chapter.html",
               }),
             )
             .directive(
               "section",
               valueFn({
-                transclude: "content",
+                transclude: true,
                 template:
                   "<div>section-!<div ng-transclude></div>!</div></div>",
               }),
@@ -13164,7 +13164,7 @@ describe("$compile", () => {
           module.directive(
             "foo",
             valueFn({
-              transclude: "content",
+              transclude: true,
               template: "<div>This is before {{before}}. </div>",
               link(scope, element, attr, ctrls, $transclude) {
                 const futureParent = element.children().eq(0);
@@ -13233,7 +13233,7 @@ describe("$compile", () => {
             .directive(
               "trans",
               valueFn({
-                transclude: "content",
+                transclude: true,
                 link(scope, element, attr, ctrl, $transclude) {
                   $transclude((clone) => {
                     element.append(clone);
@@ -13265,7 +13265,7 @@ describe("$compile", () => {
             .directive(
               "trans",
               valueFn({
-                transclude: "content",
+                transclude: true,
                 link(scope, element, attr, ctrl, $transclude) {
                   $transclude((clone) => {
                     element.append(clone);
@@ -13861,7 +13861,7 @@ describe("$compile", () => {
           module.directive(
             "transclude",
             valueFn({
-              transclude: "content",
+              transclude: true,
               controller($transclude) {
                 transcludeCtrl = this;
               },
@@ -13898,7 +13898,7 @@ describe("$compile", () => {
           module.directive(
             "transclude",
             valueFn({
-              transclude: "content",
+              transclude: true,
               controller($transclude) {
                 ctrlTransclude = $transclude;
               },
@@ -13926,7 +13926,7 @@ describe("$compile", () => {
           module.directive(
             "transclude",
             valueFn({
-              transclude: "content",
+              transclude: true,
               link(scope, element, attr, ctrl, $transclude) {
                 $transclude(scope, (clone) => {
                   element.append(clone);
@@ -13946,7 +13946,7 @@ describe("$compile", () => {
             .directive(
               "transclude",
               valueFn({
-                transclude: "content",
+                transclude: true,
                 controller() {},
                 link(scope, element, attr, ctrl, $transclude) {
                   $transclude((clone) => {
@@ -14765,7 +14765,7 @@ describe("$compile", () => {
           .directive(
             "transclude",
             valueFn({
-              transclude: "content",
+              transclude: true,
               controller($transclude) {
                 transclude = $transclude;
               },
