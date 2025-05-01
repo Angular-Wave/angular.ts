@@ -12,6 +12,16 @@ import {
 import { ASTType } from "../parse/ast-type.js";
 
 /**
+ * @type {number}
+ */
+let uid = 0;
+
+export function nextId() {
+  uid += 1;
+  return uid;
+}
+
+/**
  * @type {import('../parse/parse.js').ParseService}
  */
 let $parse;
@@ -185,7 +195,7 @@ export class Scope {
     /**
      * @type {number} Unique model ID (monotonically increasing) useful for debugging.
      */
-    this.$id = nextUid();
+    this.$id = nextId();
 
     /**
      * @type {Scope}
