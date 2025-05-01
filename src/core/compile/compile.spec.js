@@ -3270,6 +3270,7 @@ describe("$compile", () => {
             transclude: true,
             link: function (scope, element, attrs, ctrl, transclude) {
               const res = transclude();
+              debugger;
               element.append(res);
             },
           };

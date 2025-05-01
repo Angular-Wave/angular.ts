@@ -103,7 +103,7 @@ import { isProxy } from "../scope/scope.js";
 /**
  * @callback NodeLinkFn
  * @param {CompositeLinkFn} childLinkFn
- * @returns
+ * @returns {Node|Element|NodeList}
  */
 
 /**
@@ -1176,9 +1176,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         return function lazyCompilation() {
           if (!compiled) {
             // Lazily compile all nodes and store them in the 'compiled' array
-            // TODO investigate if this ever has more than one node, because this is a type of linkFn
-            // and is being used as a link function and the publicLinkFn return an element or a node
-            // See assert below
             compiled = /** @type {NodeList} */ (
               compileNodes.length
                 ? Array.from(/** @type {NodeList} */ (compileNodes))
@@ -1199,9 +1196,12 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
           // Iterate over each compiled function and apply the same 'this' and arguments
           const linked = compiled.map((fn) => fn.apply(this, arguments));
-          assertArg(linked.length == 1, "single element required");
 
-          return linked[0];
+          if (linked.length == 1) {
+            return linked[0];
+          } else {
+            return linked[0].parentElement.childNodes;
+          }
         };
       }
 
