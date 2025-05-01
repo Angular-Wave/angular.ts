@@ -954,7 +954,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               childLinkFn(
                 scope,
                 new NodeRef(node.childNodes),
-                undefined,
                 parentBoundTranscludeFn,
               );
             }
@@ -974,6 +973,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         transcludeFn,
         previousBoundTranscludeFn,
       ) {
+        window.fixedScope = scope;
         function boundTranscludeFn(
           transcludedScope,
           cloneFn,
@@ -982,7 +982,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           containingScope,
         ) {
           if (!transcludedScope) {
-            transcludedScope = scope.$transcluded(containingScope);
+            transcludedScope = window.fixedScope.$transcluded(containingScope);
             transcludedScope.$$transcluded = true;
           }
 
@@ -1175,9 +1175,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
         return function lazyCompilation() {
           if (!compiled) {
+            const list = /** @type {NodeList} */ (compileNodes).length;
             // Lazily compile all nodes and store them in the 'compiled' array
-            compiled = /** @type {NodeList} */ (
-              compileNodes.length
+            compiled = (
+              list
                 ? Array.from(/** @type {NodeList} */ (compileNodes))
                 : [/** @type {Node} */ (compileNodes)]
             ).map((node) => {
@@ -1465,7 +1466,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             childLinkFn(
               scopeToChild,
               new NodeRef(linkNode.childNodes),
-              undefined,
               boundTranscludeFn,
             );
           }

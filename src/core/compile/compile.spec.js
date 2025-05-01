@@ -3270,7 +3270,6 @@ describe("$compile", () => {
             transclude: true,
             link: function (scope, element, attrs, ctrl, transclude) {
               const res = transclude();
-              debugger;
               element.append(res);
             },
           };
@@ -12143,7 +12142,7 @@ describe("$compile", () => {
           await wait();
           expect(element.textContent).toEqual("W:isoT:root;");
           expect(
-            element.querySelectorAll("li")[1].childNodes[0].innerText,
+            element.querySelectorAll("li")[1].childNodes[0].textContent,
           ).toEqual("T:root");
           expect(element.querySelector("span").innerText).toEqual(";");
         });
