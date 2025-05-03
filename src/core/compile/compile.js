@@ -2338,8 +2338,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               parent.replaceChild(clone, $compileNode.getIndex(index));
 
               compileNode = /** @type {Element} */ (clone);
-              $compileNode.setIndex(index, compileNode);
-
+              $compileNode.setAll(compileNode);
               const templateDirectives = collectDirectives(
                 compileNode,
                 tempTemplateAttrs,
@@ -2359,7 +2358,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             }
 
             directives.unshift(derivedSyncDirective);
-
             afterTemplateNodeLinkFn = applyDirectivesToNode(
               directives,
               $compileNode,

@@ -97,7 +97,7 @@ export class NodeRef {
     }
   }
 
-  /** @param {Node[]} nodes */
+  /** @param {NodeList} nodes */
   set nodes(nodes) {
     assertArg(
       Array.isArray(nodes) && nodes.every((n) => n instanceof Node),
@@ -131,6 +131,14 @@ export class NodeRef {
     }
   }
 
+  setAll(update) {
+    if (update instanceof NodeList) {
+      return (this._nodes = update);
+    } else {
+      return (this.node = update);
+    }
+  }
+
   /**
    * @param {number} index
    * @returns {Element | Node | ChildNode}
@@ -140,19 +148,6 @@ export class NodeRef {
       return this._nodes[index];
     } else {
       return this.node;
-    }
-  }
-
-  /**
-   * @param {number} index
-   * @param {Element | Node | ChildNode} node
-   * @returns {void}
-   */
-  setIndex(index, node) {
-    if (this.isList) {
-      this._nodes[index] = node;
-    } else {
-      this.node = node;
     }
   }
 }

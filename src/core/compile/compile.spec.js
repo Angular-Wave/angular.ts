@@ -5579,13 +5579,7 @@ describe("$compile", () => {
       // let module, log, $compile, $rootScope, $sce, $templateCache, errors;
 
       beforeEach(() => {
-        // log = [];
         errors = [];
-        // publishExternalAPI().decorator("$exceptionHandler", () => {
-        //   return (exception, cause) => {
-        //     errors.push(exception.message);
-        //   };
-        // });
         myModule
           .decorator("$exceptionHandler", () => {
             return (exception, cause) => {
@@ -5868,6 +5862,7 @@ describe("$compile", () => {
         );
 
         let e1 = template($rootScope.$new(), () => {}); // clone
+        window.e1 = e1;
         expect(e1.innerText).toEqual("");
 
         let e2 = template($rootScope.$new(), () => {}); // clone
