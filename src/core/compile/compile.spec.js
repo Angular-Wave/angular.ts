@@ -6412,7 +6412,7 @@ describe("$compile", () => {
 
         injector = window.angular.bootstrap(ELEMENT, ["test1"]);
 
-        injector.invoke(async ($templateCache, $rootScope, $compile) => {
+        injector.invoke(async ($templateCache) => {
           $templateCache.set(
             "my-directive.html",
             '<div id="templateContent">template content</div>',

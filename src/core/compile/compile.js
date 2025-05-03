@@ -2280,9 +2280,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           replace: null,
           $$originalDirective: origAsyncDirective,
         });
-        debugger;
         const templateUrl = isFunction(origAsyncDirective.templateUrl)
-          ? origAsyncDirective.templateUrl($compileNode, tAttrs)
+          ? origAsyncDirective.templateUrl($compileNode.getAny(), tAttrs)
           : origAsyncDirective.templateUrl;
         const { templateNamespace } = origAsyncDirective;
 
