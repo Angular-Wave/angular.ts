@@ -94,6 +94,8 @@ export class NodeRef {
     this._node = node;
     if (node.nodeType === Node.ELEMENT_NODE) {
       this._element = /** @type {Element} */ (node);
+    } else {
+      this._element = undefined;
     }
   }
 
