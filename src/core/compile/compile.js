@@ -829,8 +829,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           if (directives.length) {
             nodeLinkFn = applyDirectivesToNode(
               directives,
-              nodeRef,
-              i,
+              nodeRef.getIndex(i),
               attrs,
               transcludeFn,
               null,
@@ -1199,8 +1198,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        *
        * @param {Array} directives Array of collected directives to execute their compile function.
        *        this needs to be pre-sorted by priority order.
-       * @param {NodeRef} compileNodeRef Referebce DOM node to apply the compile functions to
-       * @param {number} index Index in node collections
+       * @param {Node | Element} compileNode  DOM node to apply the compile functions to
        * @param {Attributes} templateAttrs The shared attribute function
        * @param {TranscludeFn} transcludeFn
        * @param {Object=} originalReplaceDirective An optional directive that will be ignored when
@@ -1213,8 +1211,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        */
       function applyDirectivesToNode(
         directives,
-        compileNodeRef,
-        index,
+        compileNode,
         templateAttrs,
         transcludeFn,
         originalReplaceDirective,
@@ -1235,8 +1232,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         } = previousCompileContext;
         let hasTranscludeDirective = false;
         let hasTemplate = false;
-        let compileNode = compileNodeRef.getIndex(index);
-        templateAttrs.$$element = compileNodeRef.getIndex(index);
+        let compileNodeRef = new NodeRef(compileNode);
+        templateAttrs.$$element = compileNodeRef.getAny();
         let directive;
         let directiveName;
         let $template;
@@ -1676,12 +1673,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               compileNodeRef = new NodeRef(document.createComment(""));
               templateAttrs.$$element = compileNodeRef.node;
               compileNode = compileNodeRef.node;
-
-              replaceWith($template.getIndex(index), compileNode);
+              replaceWith($template.getAny().parentElement, compileNode);
 
               childTranscludeFn = compilationGenerator(
                 mightHaveMultipleTransclusionError,
-                $template.getIndex(index),
+                $template.getAny(),
                 transcludeFn,
                 terminalPriority,
                 replaceDirective && replaceDirective.name,
@@ -1893,7 +1889,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
               ii = directives.length;
             } else {
-              compileNodeRef.getIndex(index).innerHTML = directiveValue;
+              compileNodeRef.getAny().innerHTML = directiveValue;
             }
           }
 
@@ -1914,7 +1910,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             nodeLinkFn = compileTemplateUrl(
               directives.splice(i, directives.length - i),
               compileNodeRef,
-              index,
               templateAttrs,
               compileNode,
               hasTranscludeDirective && childTranscludeFn,
@@ -1935,7 +1930,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             try {
               /** @type {PublicLinkFn} */
               const linkFn = directive.compile(
-                compileNodeRef.getIndex(index),
+                compileNodeRef.getAny(),
                 templateAttrs,
                 childTranscludeFn,
               );
@@ -2255,7 +2250,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        *
        * @param {import("../../types.js").Directive[]} directives
        * @param {NodeRef} $compileNode
-       * @param {number} index
        * @param {Attributes} tAttrs
        * @param {Element} $rootElement
        * @param {*} childTranscludeFn
@@ -2267,7 +2261,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
       function compileTemplateUrl(
         directives,
         $compileNode,
-        index,
         tAttrs,
         $rootElement,
         childTranscludeFn,
@@ -2279,7 +2272,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         /** @type {any} */
         let afterTemplateNodeLinkFn;
         let afterTemplateChildLinkFn;
-        const beforeTemplateCompileNode = $compileNode.getIndex(index);
+        const beforeTemplateCompileNode = $compileNode.getAny();
         const origAsyncDirective = directives.shift();
         const derivedSyncDirective = inherit(origAsyncDirective, {
           templateUrl: null,
@@ -2287,12 +2280,13 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           replace: null,
           $$originalDirective: origAsyncDirective,
         });
+        debugger;
         const templateUrl = isFunction(origAsyncDirective.templateUrl)
-          ? origAsyncDirective.templateUrl($compileNode.getIndex(index), tAttrs)
+          ? origAsyncDirective.templateUrl($compileNode, tAttrs)
           : origAsyncDirective.templateUrl;
         const { templateNamespace } = origAsyncDirective;
 
-        emptyElement($compileNode.getIndex(index));
+        emptyElement($compileNode.getAny());
 
         $templateRequest(templateUrl)
           .then((content) => {
@@ -2334,8 +2328,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               tempTemplateAttrs = { $attr: {} };
               const clone = compileNode.cloneNode(true);
 
-              const parent = $compileNode.getIndex(index).parentNode;
-              parent.replaceChild(clone, $compileNode.getIndex(index));
+              const parent = $compileNode.getAny().parentNode;
+              parent.replaceChild(clone, $compileNode.getAny());
 
               compileNode = /** @type {Element} */ (clone);
               $compileNode.setAll(compileNode);
@@ -2354,14 +2348,13 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               mergeTemplateAttributes(tAttrs, tempTemplateAttrs);
             } else {
               compileNode = beforeTemplateCompileNode;
-              $compileNode.getIndex(index).innerHTML = content;
+              $compileNode.getAny().innerHTML = content;
             }
 
             directives.unshift(derivedSyncDirective);
             afterTemplateNodeLinkFn = applyDirectivesToNode(
               directives,
-              $compileNode,
-              0,
+              compileNode,
               tAttrs,
               childTranscludeFn,
               origAsyncDirective,
@@ -2377,7 +2370,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               });
             }
             afterTemplateChildLinkFn = compileNodes(
-              new NodeRef($compileNode.getIndex(index).childNodes),
+              new NodeRef($compileNode.getAny().childNodes),
               childTranscludeFn,
             );
 
@@ -2385,7 +2378,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               const scope = linkQueue.shift();
               const beforeTemplateLinkNode = linkQueue.shift();
               const boundTranscludeFn = linkQueue.shift();
-              let linkNode = $compileNode.getIndex(index);
+              let linkNode = $compileNode.getAny();
 
               if (scope.$$destroyed) continue;
 

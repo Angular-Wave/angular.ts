@@ -64,6 +64,7 @@ export function ngSwitchDirective($animate) {
         ) {
           Object.values(selectedTranscludes).forEach((selectedTransclude) => {
             selectedTransclude.transclude((caseElement, selectedScope) => {
+              debugger;
               selectedScopes.push(selectedScope);
               const anchor = selectedTransclude.element;
               // TODO removing this breaks repeater test
