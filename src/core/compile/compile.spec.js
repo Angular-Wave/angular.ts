@@ -5814,12 +5814,10 @@ describe("$compile", () => {
         );
 
         let e1 = template($rootScope.$new(), () => {}); // clone
-        window.e1 = e1;
         expect(e1.innerText).toEqual("");
 
         let clone = $rootScope.$new();
         let e2 = template(clone, () => {}); // clone
-        window.e2 = e2;
         expect(e2.innerText).toEqual("");
         await wait(100);
         expect(e1.innerText).toEqual("HelloElvis  ");
@@ -5862,7 +5860,6 @@ describe("$compile", () => {
         );
 
         let e1 = template($rootScope.$new(), () => {}); // clone
-        window.e1 = e1;
         expect(e1.innerText).toEqual("");
 
         let e2 = template($rootScope.$new(), () => {}); // clone
@@ -6421,7 +6418,6 @@ describe("$compile", () => {
             '<div id="templateContent">template content</div>',
           );
           expect(ELEMENT.textContent).toEqual("");
-          window.elm = element;
           await wait();
           expect(ELEMENT.textContent).toEqual("template content");
         });
