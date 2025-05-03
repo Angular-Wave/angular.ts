@@ -684,7 +684,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
           assertArg(scope, "scope");
           //assertArg(nodeRef.element, "element");
-          setScope(nodeRef.node, scope);
+          setScope(nodeRef.getAny(), scope);
 
           if (previousCompileContext && previousCompileContext.needsNewScope) {
             // A parent directive did a replace and a directive on this element asked
@@ -730,7 +730,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             $linkNode = new NodeRef(wrappedTemplate[0]);
           } else if (cloneConnectFn) {
             let elements = nodeRef.isList
-              ? nodeRef.nodes.map((element) => element.cloneNode(true))
+              ? Array.from(nodeRef.nodes).map((element) =>
+                  element.cloneNode(true),
+                )
               : nodeRef.node.cloneNode(true);
             $linkNode = new NodeRef(elements);
           } else {
@@ -748,8 +750,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             }
           }
           if (cloneConnectFn) {
-            assertArg($linkNode.node, "node");
-            cloneConnectFn($linkNode.node, scope);
+            cloneConnectFn($linkNode.getAll(), scope);
           }
 
           if (compositeLinkFn) {
@@ -760,7 +761,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             nodeRef = compositeLinkFn = null;
           }
 
-          return $linkNode.node;
+          return $linkNode.getAll();
         }
       }
 
@@ -910,7 +911,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             if (nodeRef.isList) {
               nodeRef.nodes.forEach((elem) => stableNodeList.push(elem));
             } else {
-              stableNodeList.push(nodeRef.element);
+              stableNodeList.push(nodeRef.node);
             }
           }
 
@@ -973,7 +974,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         transcludeFn,
         previousBoundTranscludeFn,
       ) {
-        window.fixedScope = scope;
         function boundTranscludeFn(
           transcludedScope,
           cloneFn,
@@ -982,7 +982,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           containingScope,
         ) {
           if (!transcludedScope) {
-            transcludedScope = window.fixedScope.$transcluded(containingScope);
+            transcludedScope = scope.$transcluded(containingScope);
             transcludedScope.$$transcluded = true;
           }
 
@@ -1175,34 +1175,20 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
         return function lazyCompilation() {
           if (!compiled) {
-            const list = /** @type {NodeList} */ (compileNodes).length;
-            // Lazily compile all nodes and store them in the 'compiled' array
-            compiled = (
-              list
-                ? Array.from(/** @type {NodeList} */ (compileNodes))
-                : [/** @type {Node} */ (compileNodes)]
-            ).map((node) => {
-              return compile(
-                node,
-                transcludeFn,
-                maxPriority,
-                ignoreDirective,
-                previousCompileContext,
-              );
-            });
+            compiled = compile(
+              compileNodes,
+              transcludeFn,
+              maxPriority,
+              ignoreDirective,
+              previousCompileContext,
+            );
 
             // Null out all of these references for garbage collection
             compileNodes = transcludeFn = previousCompileContext = null;
           }
+          const linked = compiled.apply(this, arguments);
 
-          // Iterate over each compiled function and apply the same 'this' and arguments
-          const linked = compiled.map((fn) => fn.apply(this, arguments));
-
-          if (linked.length == 1) {
-            return linked[0];
-          } else {
-            return linked[0].parentElement.childNodes;
-          }
+          return new NodeRef(linked).getAll();
         };
       }
 
@@ -1867,7 +1853,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
               templateAttrs.$$element = compileNode;
               compileNodeRef.isList
-                ? (compileNodeRef.nodes[0] = compileNode)
+                ? compileNodeRef.nodes[0].parentElement.replaceChild(
+                    compileNodeRef.nodes[0],
+                    compileNode,
+                  )
                 : (compileNodeRef.node = compileNode);
 
               const newTemplateAttrs = { $attr: {} };

@@ -1,5 +1,6 @@
 import { minErr } from "../../shared/utils.js";
 import { emptyElement, startingTag } from "../../shared/dom.js";
+import { NodeRef } from "../../shared/noderef.js";
 
 /**
  * Directive that marks the insertion point for the transcluded DOM of the nearest parent directive that uses transclusion.
@@ -63,7 +64,6 @@ export const ngTranscludeDirective = [
             $attrs.ngTransclude = "";
           }
           const slotName = $attrs.ngTransclude || $attrs.ngTranscludeSlot;
-
           // transcluded element may itself be transcluded, in which case we have to get the outer scope
           if ($scope.$$transcluded === true) {
             let currentScope = $scope;
@@ -82,9 +82,19 @@ export const ngTranscludeDirective = [
             useFallbackContent();
           }
 
+          /**
+           * @param {import("../../shared/noderef.js").NodeRef} clone
+           * @param {import("../../core/scope/scope.js").Scope} transcludedScope
+           */
           function ngTranscludeCloneAttachFn(clone, transcludedScope) {
             if (notWhitespace(clone)) {
-              $element.append(clone);
+              if (clone instanceof NodeList) {
+                Array.from(clone).forEach((el) => {
+                  $element.append(el);
+                });
+              } else {
+                $element.append(clone);
+              }
             } else {
               useFallbackContent();
               // There is nothing linked against the transcluded scope since no content was available,

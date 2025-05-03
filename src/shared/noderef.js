@@ -7,7 +7,7 @@ import { createElementFromHTML } from "./dom.js";
  */
 export class NodeRef {
   /**
-   * @param {Node | HTMLElement | string | Node[] | NodeList} element - The DOM node(s) or HTML string to wrap.
+   * @param {Node | Element | string | NodeList | Node[]} element - The DOM node(s) or HTML string to wrap.
    * @throws {Error} If the argument is invalid or cannot be wrapped properly.
    */
   constructor(element) {
@@ -19,11 +19,8 @@ export class NodeRef {
     /** @private @type {Element | undefined} */
     this._element = undefined;
 
-    /** @private @type {Node[]} */
-    this._nodes = [];
-
-    /** @type {boolean} */
-    this.synthetic = false;
+    /** @private @type {NodeList} */
+    this._nodes = undefined;
 
     /** @type {boolean} */
     this.linked = false;
@@ -31,37 +28,43 @@ export class NodeRef {
     /** @type {boolean} */
     this.isList = false;
 
-    // Handle NodeList
-    if (element instanceof NodeList) {
-      this._nodes = Array.from(element);
-      this.isList = true;
-    }
-
-    // Handle array of Nodes
-    else if (
-      Array.isArray(element) &&
-      element.every((e) => e instanceof Node)
-    ) {
-      this._nodes = element;
-      this.isList = true;
-    }
-
     // Handle HTML string
-    else if (isString(element)) {
-      this._node = createElementFromHTML(/** @type {string} */ (element));
-      this.synthetic = true;
+    if (isString(element)) {
+      let res = createElementFromHTML(/** @type {string} */ (element));
+      switch (true) {
+        case res instanceof Element:
+          this.element = res;
+          break;
+        case res instanceof Node:
+          this.node = res;
+          break;
+      }
+    }
+
+    // Handle NodeList
+    else if (element instanceof NodeList) {
+      if (element.length == 1) {
+        this.node = element[0];
+      } else {
+        this._nodes = element;
+        this.isList = true;
+      }
+    } else if (element instanceof Element) {
+      this._element = /** @type {Element} */ element;
     }
 
     // Handle single Node
     else if (element instanceof Node) {
       this._node = element;
+    } else if (element instanceof Array) {
+      // const fragment = document.createDocumentFragment();
+      // element.forEach(el => {
+      //   fragment.appendChild(el);
+      // });
+      // this._nodes = fragment.childNodes;
+      // this.isList = true;
     } else {
       throw new Error("Invalid element passed to NodeRef");
-    }
-
-    // If it's not a list, extract element if applicable
-    if (!this.isList && this._node?.nodeType === Node.ELEMENT_NODE) {
-      this._element = /** @type {Element} */ (this._node);
     }
   }
 
@@ -75,14 +78,14 @@ export class NodeRef {
   set element(el) {
     assertArg(el instanceof Element, "element");
     this._element = el;
-    this._nodes = [];
+    this._nodes = undefined;
     this.isList = false;
   }
 
   /** @returns {Node | ChildNode} */
   get node() {
-    assertArg(this._node, "node");
-    return this._node;
+    assertArg(this._node || this._element, "node");
+    return this._node || this._element;
   }
 
   /** @param {Node | ChildNode} node */
@@ -104,7 +107,7 @@ export class NodeRef {
     this.isList = true;
   }
 
-  /** @returns {Node[]} */
+  /** @returns {NodeList} */
   get nodes() {
     assertArg(this._nodes, "nodes");
     return this._nodes;
@@ -119,6 +122,15 @@ export class NodeRef {
     }
   }
 
+  /** @returns {Element | NodeList | Node | ChildNode} */
+  getAll() {
+    if (this.isList) {
+      return this._nodes;
+    } else {
+      return this._element || this._node;
+    }
+  }
+
   /**
    * @param {number} index
    * @returns {Element | Node | ChildNode}
@@ -127,7 +139,7 @@ export class NodeRef {
     if (this.isList) {
       return this._nodes[index];
     } else {
-      return this._node;
+      return this.node;
     }
   }
 
