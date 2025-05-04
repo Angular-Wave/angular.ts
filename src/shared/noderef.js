@@ -133,6 +133,15 @@ export class NodeRef {
     }
   }
 
+  /** @returns {Array<Element> | Array<Node>} */
+  collection() {
+    if (this.isList) {
+      return Array.from(this._nodes);
+    } else {
+      return [this._element || this._node];
+    }
+  }
+
   setAll(update) {
     if (update instanceof NodeList) {
       return (this._nodes = update);

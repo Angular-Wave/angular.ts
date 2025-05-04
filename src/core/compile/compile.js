@@ -1673,7 +1673,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               compileNodeRef = new NodeRef(document.createComment(""));
               templateAttrs.$$element = compileNodeRef.node;
               compileNode = compileNodeRef.node;
-              replaceWith($template.getAny().parentElement, compileNode);
+              replaceWith($template, compileNode);
 
               childTranscludeFn = compilationGenerator(
                 mightHaveMultipleTransclusionError,
@@ -2783,49 +2783,29 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
       /**
        *
-       * @param {Element} elementsToRemove The JQLite element which we are going to replace. We keep
+       * @param {NodeRef} elementsToRemove The JQLite element which we are going to replace. We keep
        *                                  the shell, but replace its DOM node reference.
        * @param {Node} newNode The new DOM node.
        */
       function replaceWith(elementsToRemove, newNode) {
-        const firstElementToRemove = elementsToRemove;
+        const firstElementToRemove = elementsToRemove.getAny();
         // const removeCount = elementsToRemove.length;
         const parent = firstElementToRemove.parentNode;
-        // let i;
-
-        if (parent) {
-          parent.replaceChild(newNode, firstElementToRemove);
-        } else {
-          throw new Error("replaced element has no parent");
-        }
 
         // Append all the `elementsToRemove` to a fragment. This will...
         // - remove them from the DOM
         // - allow them to still be traversed with .nextSibling
         // - allow a single fragment.qSA to fetch all elements being removed
         const fragment = document.createDocumentFragment();
-        fragment.appendChild(elementsToRemove);
+        elementsToRemove.collection().forEach((element) => {
+          fragment.appendChild(element);
+        });
 
-        // if (Cache.has(firstElementToRemove[EXPANDO])) {
-        //   // Copy over user data (that includes AngularJS's $scope etc.). Don't copy private
-        //   // data here because there's no public interface in jQuery to do that and copying over
-        //   // event listeners (which is the main use of private data) wouldn't work anyway.
-        //   getOrSetCacheData(
-        //     /** @type {Element} */ (newNode),
-        //     getOrSetCacheData(firstElementToRemove),
-        //   );
-        // }
-
-        // // Cleanup any data/listeners on the elements and children.
-        // // This includes invoking the $destroy event on any elements with listeners.
-        // cleanElementData(fragment.querySelectorAll("*"));
-
-        // // Update the JQLite collection to only contain the `newNode`
-        // for (i = 1; i < removeCount; i++) {
-        //   delete elementsToRemove[i];
-        // }
-        // elementsToRemove[0] = newNode;
-        // elementsToRemove.length = 1;
+        if (parent) {
+          parent.append(newNode);
+        } else {
+          throw new Error("replaced element has no parent");
+        }
       }
 
       function cloneAndAnnotateFn(fn, annotation) {
