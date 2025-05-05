@@ -12152,18 +12152,18 @@ describe("$compile", () => {
               transclude: "content",
               template: "<div>section-!<div ng-transclude></div>!</div></div>",
             }));
-          initInjector("test1");
-          // return function ($httpBackend) {
-          $templateCache.set(
-            "chapter.html",
-            "<div>chapter-<div section>[<div ng-transclude></div>]</div></div>",
+
+          bootstrap("<div><div book>paragraph</div></div>", "test1").invoke(
+            ($templateCache) => {
+              $templateCache.set(
+                "chapter.html",
+                "<div>chapter-<div section>[<div ng-transclude></div>]</div></div>",
+              );
+            },
           );
-          element = $compile("<div><div book>paragraph</div></div>")(
-            $rootScope,
-          );
-          expect(element.textContent).toEqual("book-");
+          expect(ELEMENT.textContent).toEqual("book-");
           await wait();
-          expect(element.textContent).toEqual(
+          expect(ELEMENT.textContent).toEqual(
             "book-chapter-section-![(paragraph)]!",
           );
         });

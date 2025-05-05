@@ -1182,8 +1182,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             compileNodes = transcludeFn = previousCompileContext = null;
           }
           const linked = compiled.apply(this, arguments);
-
-          return new NodeRef(linked).getAll();
+          return linked;
         };
       }
 
