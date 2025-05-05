@@ -5778,7 +5778,9 @@ describe("$compile", () => {
         $rootScope.name = "Elvis";
         element = $compile("<div><b i-hello></b></div>")($rootScope);
         await wait();
-        expect(element.outerHTML).toBe('<div><span i-hello="">Hello, Elvis!</span></div>');
+        expect(element.outerHTML).toBe(
+          '<div><span i-hello="">Hello, Elvis!</span></div>',
+        );
       });
 
       it("should compile template when replacing element in another template", async () => {
@@ -12113,7 +12115,7 @@ describe("$compile", () => {
       describe("content transclusion", () => {
         it("should support transclude directive", async () => {
           module.directive("trans", () => ({
-            transclude: "content",
+            transclude: true,
             replace: true,
             scope: {},
             link(scope) {
@@ -12122,17 +12124,16 @@ describe("$compile", () => {
             template: "<ul><li>W:{{x}}</li><li ng-transclude></li></ul>",
           }));
           initInjector("test1");
-          bootstrap(
+          element = $compile(
             "<div><div trans>T:{{x}}<span>;</span></div></div>",
-            "test1",
-          );
+          )($rootScope);
           $rootScope.x = "root";
           await wait();
-          expect(ELEMENT.textContent).toEqual("W:isoT:root;");
+          expect(element.textContent).toEqual("W:isoT:root;");
           expect(
-            ELEMENT.querySelectorAll("li")[1].childNodes[0].textContent,
+            element.querySelectorAll("li")[1].childNodes[0].textContent,
           ).toEqual("T:root");
-          expect(ELEMENT.querySelector("span").innerText).toEqual(";");
+          expect(element.querySelector("span").innerText).toEqual(";");
         });
 
         it("should transclude transcluded content", async () => {
