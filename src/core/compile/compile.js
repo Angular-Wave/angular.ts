@@ -675,7 +675,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
         /** @type {PublicLinkFn} */
         function publicLinkFn(scope, cloneConnectFn, options) {
-          if (!nodeRef) {
+          if (!nodeRef || !nodeRef.getAny()) {
             throw $compileMinErr(
               "multilink",
               "This element has already been linked.",

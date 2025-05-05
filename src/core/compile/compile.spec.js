@@ -11907,22 +11907,23 @@ describe("$compile", () => {
               log.push("childController");
             },
           }));
-        initInjector("test1");
-        $templateCache.set(
-          "parentDirective.html",
-          "<div ng-transclude>parentTemplateText;</div>",
-        );
-        $templateCache.set(
-          "childDirective.html",
-          "<span>childTemplateText;</span>",
-        );
 
-        element = $compile(
+        bootstrap(
           "<div parent-directive><div child-directive></div>childContentText;</div>",
-        )($rootScope);
+          "test1",
+        ).invoke(($templateCache) => {
+          $templateCache.set(
+            "parentDirective.html",
+            "<div ng-transclude>parentTemplateText;</div>",
+          );
+          $templateCache.set(
+            "childDirective.html",
+            "<span>childTemplateText;</span>",
+          );
+        });
         await wait();
         expect(log.join("; ")).toEqual("parentController; childController");
-        expect(element.textContent).toBe("childTemplateText;childContentText;");
+        expect(ELEMENT.textContent).toBe("childTemplateText;childContentText;");
       });
 
       it("should instantiate the controller after the isolate scope bindings are initialized (with template)", async () => {
@@ -12327,9 +12328,9 @@ describe("$compile", () => {
         it('should not leak if two "element" transclusions are on the same element', async () => {
           const cacheSize = Cache.size;
 
-          element = $compile(
+          bootstrap(
             '<div><div ng-repeat="x in xs" ng-if="x==1">{{x}}</div></div>',
-          )($rootScope);
+          );
           await wait();
           expect(Cache.size).toEqual(cacheSize);
 
@@ -12345,16 +12346,16 @@ describe("$compile", () => {
           await wait();
           expect(Cache.size).toEqual(cacheSize);
 
-          element.remove();
+          dealoc(ELEMENT.firstChild);
           await wait();
           expect(Cache.size).toEqual(cacheSize);
         });
 
         it('should not leak if two "element" transclusions are on the same element', async () => {
           const cacheSize = Cache.size;
-          element = $compile(
+          bootstrap(
             '<div><div ng-repeat="x in xs" ng-if="val">{{x}}</div></div>',
-          )($rootScope);
+          );
 
           $rootScope.$apply("xs = [0,1]");
           await wait();
@@ -12372,7 +12373,7 @@ describe("$compile", () => {
           // the root element
           expect(Cache.size).toEqual(cacheSize);
 
-          element.remove();
+          dealoc(ELEMENT.firstChild);
           await wait();
           // Now we've even removed the root element along with its cache
           expect(Cache.size).toEqual(cacheSize);
