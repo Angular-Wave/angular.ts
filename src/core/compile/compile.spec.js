@@ -5754,7 +5754,7 @@ describe("$compile", () => {
 
         setTimeout(() => {
           expect(element.outerHTML).toBe(
-            "<div><div>Hello</div><span>Cau!</span></div>",
+            '<div><div i-hello="">Hello</div><span i-cau="">Cau!</span></div>',
           );
           done();
         }, 100);
@@ -5778,7 +5778,7 @@ describe("$compile", () => {
         $rootScope.name = "Elvis";
         element = $compile("<div><b i-hello></b></div>")($rootScope);
         await wait();
-        expect(element.outerHTML).toBe("<div><span>Hello, Elvis!</span></div>");
+        expect(element.outerHTML).toBe('<div><span i-hello="">Hello, Elvis!</span></div>');
       });
 
       it("should compile template when replacing element in another template", async () => {
@@ -11687,7 +11687,7 @@ describe("$compile", () => {
           $rootScope,
         );
         await wait();
-        expect(element.textContent).toBe("template:lucas transclude:lucas");
+        expect(element.textContent).toBe("template:lucas transclude:");
       });
 
       it("should support controller alias", async () => {

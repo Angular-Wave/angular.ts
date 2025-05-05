@@ -1158,7 +1158,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         previousCompileContext,
       ) {
         let compiled;
-
         if (eager) {
           return compile(
             compileNodes,
@@ -1673,7 +1672,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               compileNodeRef = new NodeRef(document.createComment(""));
               templateAttrs.$$element = compileNodeRef.node;
               compileNode = compileNodeRef.node;
-              replaceWith(new NodeRef($template.getAny()), compileNode);
+              replaceWith(new NodeRef($template.getAny()), compileNode, index);
 
               childTranscludeFn = compilationGenerator(
                 mightHaveMultipleTransclusionError,
@@ -1891,7 +1890,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             if (directive.replace) {
               replaceDirective = directive;
             }
-
             nodeLinkFn = compileTemplateUrl(
               directives.splice(i, directives.length - i),
               compileNodeRef,
@@ -1901,6 +1899,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               preLinkFns,
               postLinkFns,
               {
+                index,
                 controllerDirectives,
                 newScopeDirective:
                   newScopeDirective !== directive && newScopeDirective,
@@ -2311,7 +2310,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
               tempTemplateAttrs = { $attr: {} };
 
-              replaceWith($compileNode, compileNode);
+              replaceWith(
+                $compileNode,
+                compileNode,
+                previousCompileContext.index,
+              );
               tAttrs.$$element = compileNode;
 
               const templateDirectives = collectDirectives(
@@ -2768,14 +2771,23 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {NodeRef} elementsToRemove The JQLite element which we are going to replace. We keep
        *                                  the shell, but replace its DOM node reference.
        * @param {Node} newNode The new DOM node.
+       * @param {number} index Parent node index.
        */
-      function replaceWith(elementsToRemove, newNode) {
+      function replaceWith(elementsToRemove, newNode, index) {
         const firstElementToRemove = elementsToRemove.getAny();
         // const removeCount = elementsToRemove.length;
         const parent = firstElementToRemove.parentNode;
 
         if (parent) {
-          parent.append(newNode);
+          if (isDefined(index)) {
+            const oldChild = parent.childNodes[index];
+            if (oldChild) {
+              parent.replaceChild(newNode, oldChild);
+            }
+          } else {
+            parent.insertBefore(newNode, parent.firstChild);
+            //parent.append(newNode);
+          }
         } else {
           throw new Error("replaced element has no parent");
         }
