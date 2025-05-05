@@ -50,11 +50,12 @@ function getChildScopes(scope) {
 }
 
 const ELEMENT = document.getElementById("app");
+window.ELEMENT = ELEMENT;
 
 /**
- * Helper for boostraping content onto default element
+ * Helper for bootstraping content onto default element
  */
-function boostrap(htmlContent, moduleName) {
+function bootstrap(htmlContent, moduleName) {
   dealoc(ELEMENT);
   ELEMENT.innerHTML = htmlContent;
   return angular.bootstrap(ELEMENT, [moduleName || "myModule"]);
@@ -5255,10 +5256,10 @@ describe("$compile", () => {
 
       it("should merge attributes including style attr", () => {
         reloadModules();
-        element = $compile(
-          '<div><div replace class="medium-log" style="height: 20px" ></div><div>',
-        )($rootScope);
-        const div = element.childNodes[0];
+        bootstrap(
+          '<div replace class="medium-log" style="height: 20px"></div>',
+        );
+        const div = ELEMENT.childNodes[0];
         expect(div.classList.contains("medium-log")).toBe(true);
         expect(div.classList.contains("log")).toBe(true);
         expect(div.style.width).toBe("10px");
@@ -5269,10 +5270,8 @@ describe("$compile", () => {
 
       it("should not merge attributes if they are the same", () => {
         reloadModules();
-        element = $compile(
-          '<div><div nomerge class="medium-log" id="myid"></div><div>',
-        )($rootScope);
-        const div = element.childNodes[0];
+        bootstrap('<div nomerge class="medium-log" id="myid"></div>');
+        const div = ELEMENT.childNodes[0];
         expect(div.classList.contains("medium-log")).toBe(true);
         expect(div.classList.contains("log")).toBe(true);
         expect(div.getAttribute("id")).toEqual("myid");
@@ -5280,10 +5279,10 @@ describe("$compile", () => {
 
       it("should correctly merge attributes that contain special characters", () => {
         reloadModules();
-        element = $compile(
-          '<div><div replace (click)="doSomething()" [value]="someExpression" ω="omega"></div><div>',
-        )($rootScope);
-        const div = element.childNodes[0];
+        element = bootstrap(
+          '<div replace (click)="doSomething()" [value]="someExpression" ω="omega"></div>',
+        );
+        const div = ELEMENT.childNodes[0];
         expect(div.getAttribute("(click)")).toEqual("doSomething()");
         expect(div.getAttribute("[value]")).toEqual("someExpression");
         expect(div.getAttribute("ω")).toEqual("omega");
@@ -5426,57 +5425,56 @@ describe("$compile", () => {
 
       it("should support templates with root <tr> tags", async () => {
         reloadModules();
-        element = $compile("<div replace-with-tr></div>")($rootScope);
+        bootstrap("<div replace-with-tr></div>");
         await wait();
-        expect(getNodeName(element)).toMatch(/tr/i);
+        expect(getNodeName(ELEMENT.firstChild)).toMatch(/tr/i);
       });
 
       it("should support templates with root <td> tags", async () => {
         reloadModules();
-        element = $compile("<div replace-with-td></div>")($rootScope);
+        bootstrap("<div replace-with-td></div>");
         await wait();
-        expect(getNodeName(element)).toMatch(/td/i);
+        expect(getNodeName(ELEMENT.firstChild)).toMatch(/td/i);
       });
 
       it("should support templates with root <th> tags", () => {
         reloadModules();
-        element = $compile("<div replace-with-th></div>")($rootScope);
-        expect(getNodeName(element)).toMatch(/th/i);
+        bootstrap("<div replace-with-th></div>");
+        expect(getNodeName(ELEMENT.firstChild)).toMatch(/th/i);
       });
 
       it("should support templates with root <thead> tags", () => {
         reloadModules();
-        element = $compile("<div replace-with-thead></div>")($rootScope);
-        expect(getNodeName(element)).toMatch(/thead/i);
+        bootstrap("<div replace-with-thead></div>");
+        expect(getNodeName(ELEMENT.firstChild)).toMatch(/thead/i);
       });
 
       it("should support templates with root <tbody> tags", () => {
         reloadModules();
-        element = $compile("<div replace-with-tbody></div>")($rootScope);
-        expect(getNodeName(element)).toMatch(/tbody/i);
+        bootstrap("<div replace-with-tbody></div>");
+        expect(getNodeName(ELEMENT.firstChild)).toMatch(/tbody/i);
       });
 
       it("should support templates with root <tfoot> tags", () => {
         reloadModules();
-        element = $compile("<div replace-with-tfoot></div>")($rootScope);
-        expect(getNodeName(element)).toMatch(/tfoot/i);
+        bootstrap("<div replace-with-tfoot></div>");
+        expect(getNodeName(ELEMENT.firstChild)).toMatch(/tfoot/i);
       });
 
       it("should support templates with root <option> tags", () => {
         reloadModules();
-        element = $compile("<div replace-with-option></div>")($rootScope);
-        expect(getNodeName(element)).toMatch(/option/i);
+        bootstrap("<div replace-with-option></div>");
+        expect(getNodeName(ELEMENT.firstChild)).toMatch(/option/i);
       });
 
       it("should support templates with root <optgroup> tags", () => {
         reloadModules();
         expect(() => {
-          element = $compile("<div replace-with-optgroup></div>")($rootScope);
+          bootstrap("<div replace-with-optgroup></div>");
         }).not.toThrow();
-        expect(getNodeName(element)).toMatch(/optgroup/i);
+        expect(getNodeName(ELEMENT.firstChild)).toMatch(/optgroup/i);
       });
 
-      // TDOD xlink - DEPRECATED
       it("should support SVG templates using directive.templateNamespace=svg", async () => {
         myModule.directive("svgAnchor", () => ({
           replace: true,
@@ -5488,11 +5486,9 @@ describe("$compile", () => {
           },
         }));
         reloadModules();
-        element = $compile(
-          '<svg><g svg-anchor="/foo/bar" text="foo/bar!"></g></svg>',
-        )($rootScope);
+        bootstrap('<svg><g svg-anchor="/foo/bar" text="foo/bar!"></g></svg>');
         await wait();
-        const child = element.firstChild;
+        const child = ELEMENT.firstChild.firstChild;
         expect(getNodeName(child)).toMatch(/a/i);
         expect(isSVGElement(child)).toBe(true);
         expect(child.href.baseVal).toBe("/foo/bar");
@@ -6346,7 +6342,7 @@ describe("$compile", () => {
             });
           },
         }));
-        boostrap('<math><mn pow="2"><mn>8</mn></mn></math>').invoke(
+        bootstrap('<math><mn pow="2"><mn>8</mn></mn></math>').invoke(
           ($templateCache, $rootScope, $compile) => {
             $templateCache.set(
               "template.html",
@@ -11594,7 +11590,7 @@ describe("$compile", () => {
             },
           }));
 
-        boostrap("<div isolate non-isolate></div>", "test1").invoke(
+        bootstrap("<div isolate non-isolate></div>", "test1").invoke(
           ($templateCache) => {
             $templateCache.set(
               "main.html",
@@ -12126,16 +12122,17 @@ describe("$compile", () => {
             template: "<ul><li>W:{{x}}</li><li ng-transclude></li></ul>",
           }));
           initInjector("test1");
-          element = $compile(
+          bootstrap(
             "<div><div trans>T:{{x}}<span>;</span></div></div>",
-          )($rootScope);
+            "test1",
+          );
           $rootScope.x = "root";
           await wait();
-          expect(element.textContent).toEqual("W:isoT:root;");
+          expect(ELEMENT.textContent).toEqual("W:isoT:root;");
           expect(
-            element.querySelectorAll("li")[1].childNodes[0].textContent,
+            ELEMENT.querySelectorAll("li")[1].childNodes[0].textContent,
           ).toEqual("T:root");
-          expect(element.querySelector("span").innerText).toEqual(";");
+          expect(ELEMENT.querySelector("span").innerText).toEqual(";");
         });
 
         it("should transclude transcluded content", async () => {
@@ -13817,7 +13814,7 @@ describe("$compile", () => {
             replace: true,
           }));
 
-        boostrap(
+        bootstrap(
           "<div trans><div replace-with-template></div></div>",
           "test1",
         ).invoke(($templateCache) => {

@@ -4,18 +4,17 @@
  */
 export class NodeRef {
     /**
-     * @param {Node | HTMLElement | string | Node[] | NodeList} element - The DOM node(s) or HTML string to wrap.
+     * @param {Node | Element | string | NodeList | Node[]} element - The DOM node(s) or HTML string to wrap.
      * @throws {Error} If the argument is invalid or cannot be wrapped properly.
      */
-    constructor(element: Node | HTMLElement | string | Node[] | NodeList);
+    constructor(element: Node | Element | string | NodeList | Node[]);
+    initial: string | Node | NodeList | Node[];
     /** @private @type {Node | ChildNode | null} */
     private _node;
     /** @private @type {Element | undefined} */
     private _element;
-    /** @private @type {Node[]} */
+    /** @private @type {Array<Node>} a stable list on nodes */
     private _nodes;
-    /** @type {boolean} */
-    synthetic: boolean;
     /** @type {boolean} */
     linked: boolean;
     /** @type {boolean} */
@@ -28,12 +27,23 @@ export class NodeRef {
     set node(node: Node | ChildNode);
     /** @returns {Node | ChildNode} */
     get node(): Node | ChildNode;
-    /** @param {Node[]} nodes */
+    /** @param {Array<Node>} nodes */
     set nodes(nodes: Node[]);
-    /** @returns {Node[]} */
+    /** @returns {Array<Node>} */
     get nodes(): Node[];
+    /** @returns {NodeList} */
+    get nodelist(): NodeList;
+    /** @returns {Element | Node | ChildNode | NodeList} */
+    get dom(): Element | Node | ChildNode | NodeList;
+    /** @returns {number} */
+    get size(): number;
     /** @returns {Element | Node | ChildNode} */
     getAny(): Element | Node | ChildNode;
+    /** @returns {Element | Array<Node> | Node | ChildNode} */
+    getAll(): Element | Array<Node> | Node | ChildNode;
+    /** @returns {Array<Element> | Array<Node>} */
+    collection(): Array<Element> | Array<Node>;
+    setAll(update: any): any;
     /**
      * @param {number} index
      * @returns {Element | Node | ChildNode}
@@ -42,7 +52,10 @@ export class NodeRef {
     /**
      * @param {number} index
      * @param {Element | Node | ChildNode} node
-     * @returns {void}
      */
     setIndex(index: number, node: Element | Node | ChildNode): void;
+    /**
+     * @returns {NodeRef}
+     */
+    clone(): NodeRef;
 }

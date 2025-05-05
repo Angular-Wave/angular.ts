@@ -130,7 +130,7 @@ export type LinkFnMapping = {
     childLinkFn?: CompositeLinkFn;
 };
 export type CompileNodesFn = () => CompositeLinkFn;
-export type NodeLinkFn = (childLinkFn: CompositeLinkFn) => any;
+export type NodeLinkFn = (childLinkFn: CompositeLinkFn) => Node | Element | NodeList;
 export type ApplyDirectivesToNodeFn = () => NodeLinkFn;
 export type CompositeLinkFn = (scope: import("../scope/scope.js").Scope, $linkNode: NodeRef, parentBoundTranscludeFn?: Function) => any;
 import { NodeRef } from "../../shared/noderef.js";

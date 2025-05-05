@@ -1,3 +1,4 @@
+export function nextId(): number;
 /**
  * Creates a deep proxy for the target object, intercepting property changes
  * and recursively applying proxies to nested objects.

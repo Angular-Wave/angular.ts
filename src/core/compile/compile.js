@@ -729,12 +729,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             const wrappedTemplate = wrapTemplate(namespace, fragment.innerHTML);
             $linkNode = new NodeRef(wrappedTemplate[0]);
           } else if (cloneConnectFn) {
-            let elements = nodeRef.isList
-              ? Array.from(nodeRef.nodes).map((element) =>
-                  element.cloneNode(true),
-                )
-              : nodeRef.node.cloneNode(true);
-            $linkNode = new NodeRef(elements);
+            $linkNode = nodeRef.clone();
           } else {
             $linkNode = nodeRef;
           }
@@ -750,7 +745,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             }
           }
           if (cloneConnectFn) {
-            cloneConnectFn($linkNode.getAll(), scope);
+            cloneConnectFn($linkNode.dom, scope);
           }
 
           if (compositeLinkFn) {
@@ -783,7 +778,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * functions return values - the linking functions - are combined into a composite linking
        * function, which is a linking function for the node.
        *
-       * @param {NodeRef} nodeRef a node or an array of nodes or NodeList to compile
+       * @param {NodeRef} nodeRefList a node or an array of nodes or NodeList to compile
        * @param {*} transcludeFn A linking function, where the
        *        scope argument is auto-generated to the new child of the transcluded parent scope.
        * @param {number=} [maxPriority] Max directive priority.
@@ -792,7 +787,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * @returns {CompositeLinkFn} A composite linking function of all of the matched directives or null.
        */
       function compileNodes(
-        nodeRef,
+        nodeRefList,
         transcludeFn,
         maxPriority,
         ignoreDirective,
@@ -807,18 +802,17 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         const linkFnsList = []; // An array to hold node indices and their linkFns
         let nodeLinkFnFound;
         let linkFnFound = false;
-        let nodeList = nodeRef.isList ? nodeRef.nodes : [nodeRef.node];
-        for (let i = 0; i < nodeList.length; i++) {
+        for (let i = 0; i < nodeRefList.size; i++) {
           const attrs = new Attributes(
             $rootScope,
             $animate,
             $exceptionHandler,
             $sce,
-            nodeList[i],
+            nodeRefList.getIndex(i),
           );
 
           const directives = collectDirectives(
-            /** @type Element */ (nodeList[i]),
+            /** @type Element */ (nodeRefList.getIndex(i)),
             attrs,
             i === 0 ? maxPriority : undefined,
             ignoreDirective,
@@ -829,13 +823,16 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           if (directives.length) {
             nodeLinkFn = applyDirectivesToNode(
               directives,
-              nodeRef.getIndex(i),
+              nodeRefList.getIndex(i),
               attrs,
               transcludeFn,
               null,
               [],
               [],
-              previousCompileContext,
+              Object.assign({}, previousCompileContext, {
+                index: i,
+                parentNodeRef: nodeRefList,
+              }),
             );
           } else {
             nodeLinkFn = null;
@@ -846,7 +843,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
           if (
             (nodeLinkFn && nodeLinkFn.terminal) ||
-            !(childNodes = nodeRef.getIndex(i).childNodes) ||
+            !(childNodes = nodeRefList.getIndex(i).childNodes) ||
             !childNodes.length
           ) {
             childLinkFn = null;
@@ -901,7 +898,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   ? nodeRef.nodes[idx]
                   : nodeRef.node;
               } else {
-                if (nodeList[idx]) {
+                if (nodeRefList.getIndex(idx)) {
                   stableNodeList[idx] = nodeRef.nodes[idx];
                 }
               }
@@ -1233,6 +1230,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         let hasTranscludeDirective = false;
         let hasTemplate = false;
         let compileNodeRef = new NodeRef(compileNode);
+        const index = previousCompileContext.index;
+        /** @type {NodeRef} */
+        const parentNodeRef = previousCompileContext.parentNodeRef;
         templateAttrs.$$element = compileNodeRef.getAny();
         let directive;
         let directiveName;
@@ -1673,7 +1673,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               compileNodeRef = new NodeRef(document.createComment(""));
               templateAttrs.$$element = compileNodeRef.node;
               compileNode = compileNodeRef.node;
-              replaceWith($template, compileNode);
+              replaceWith(new NodeRef($template.getAny()), compileNode);
 
               childTranscludeFn = compilationGenerator(
                 mightHaveMultipleTransclusionError,
@@ -1834,26 +1834,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 );
               }
 
-              const parent = compileNodeRef.isList
-                ? compileNodeRef.nodes[0].parentNode
-                : compileNodeRef.element.parentNode;
-
-              assertArg(parent, "parent");
-
-              parent.replaceChild(
-                compileNode,
-                compileNodeRef.isList
-                  ? compileNodeRef.nodes[0]
-                  : compileNodeRef.node,
-              );
-
+              replaceWith(compileNodeRef, compileNode);
               templateAttrs.$$element = compileNode;
-              compileNodeRef.isList
-                ? compileNodeRef.nodes[0].parentElement.replaceChild(
-                    compileNodeRef.nodes[0],
-                    compileNode,
-                  )
-                : (compileNodeRef.node = compileNode);
+              if (parentNodeRef) {
+                parentNodeRef.setIndex(index, compileNode);
+              }
 
               const newTemplateAttrs = { $attr: {} };
 
@@ -2325,13 +2310,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               }
 
               tempTemplateAttrs = { $attr: {} };
-              const clone = compileNode.cloneNode(true);
 
-              const parent = $compileNode.getAny().parentNode;
-              parent.replaceChild(clone, $compileNode.getAny());
+              replaceWith($compileNode, compileNode);
+              tAttrs.$$element = compileNode;
 
-              compileNode = /** @type {Element} */ (clone);
-              $compileNode.setAll(compileNode);
               const templateDirectives = collectDirectives(
                 compileNode,
                 tempTemplateAttrs,
@@ -2792,6 +2774,12 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         // const removeCount = elementsToRemove.length;
         const parent = firstElementToRemove.parentNode;
 
+        if (parent) {
+          parent.append(newNode);
+        } else {
+          throw new Error("replaced element has no parent");
+        }
+
         // Append all the `elementsToRemove` to a fragment. This will...
         // - remove them from the DOM
         // - allow them to still be traversed with .nextSibling
@@ -2801,11 +2789,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           fragment.appendChild(element);
         });
 
-        if (parent) {
-          parent.append(newNode);
-        } else {
-          throw new Error("replaced element has no parent");
-        }
+        elementsToRemove.node = newNode;
       }
 
       function cloneAndAnnotateFn(fn, annotation) {

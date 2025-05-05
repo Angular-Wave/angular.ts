@@ -62,12 +62,12 @@ export function getOrSetCacheData(element: Element, key: string | any, value?: a
 /**
  * Sets cache data for a given element.
  *
- * @param {Element} element - The DOM element to get or set data on.
+ * @param {Element|Node} element - The DOM element to get or set data on.
  * @param {string} key - The key (as a string) to get/set or an object for mass-setting.
  * @param {*} [value] - The value to set. If not provided, the function acts as a getter.
  * @returns
  */
-export function setCacheData(element: Element, key: string, value?: any): void;
+export function setCacheData(element: Element | Node, key: string, value?: any): void;
 /**
  * Gets cache data for a given element.
  *
@@ -86,10 +86,10 @@ export function getScope(element: Element): any;
 /**
  * Set scope for a given element.
  *
- * @param {Element} element - The DOM element to set data on.
+ * @param {Element|Node|ChildNode} element - The DOM element to set data on.
  * @param {import("../core/scope/scope.js").Scope} scope - The Scope attached to this element
  */
-export function setScope(element: Element, scope: import("../core/scope/scope.js").Scope): void;
+export function setScope(element: Element | Node | ChildNode, scope: import("../core/scope/scope.js").Scope): void;
 /**
  * Gets isolate scope for a given element.
  *

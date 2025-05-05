@@ -120,20 +120,20 @@ export function removeFromArray(arr, val) {
 
 /**
  *
- * @param {NodeList} element
+ * @param {NodeList|Node} element
  * @returns {Node}
  */
 export function stripCommentsFromElement(element) {
   switch (element.length) {
     case 0:
-      return /** @type {JQLite} */ (element);
+      return /** @type {NodeList} */ (element);
 
     case 1:
       // there is no point of stripping anything if the element
       // is the only element within the JQLite wrapper.
       // (it's important that we retain the element instance.)
       if (element.nodeType === Node.ELEMENT_NODE) {
-        return /** @type {JQLite} */ (element);
+        return /** @type {NodeList} */ (element);
       }
       break;
 
@@ -147,12 +147,12 @@ export function stripCommentsFromElement(element) {
 }
 
 /**
- * @param {JQLite|Node} element
+ * @param {NodeList|Node} element
  * @returns {Node}
  */
 export function extractElementNode(element) {
   if (!element) return /** @type {Node} */ (element);
-  for (let i = 0; i < /** @type {JQLite} */ (element).length; i++) {
+  for (let i = 0; i < /** @type {NodeList} */ (element).length; i++) {
     const elm = element[i];
     if (elm.nodeType === Node.ELEMENT_NODE) {
       return elm;
