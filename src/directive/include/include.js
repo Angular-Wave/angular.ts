@@ -39,7 +39,7 @@ export function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
         let currentElement;
         const cleanupLastIncludeContent = () => {
           if (previousElement) {
-            previousElement[0].remove();
+            previousElement.remove();
             previousElement = null;
           }
           if (currentScope) {
@@ -47,12 +47,12 @@ export function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
             currentScope = null;
           }
           if (currentElement) {
-            if (hasAnimate(currentElement[0])) {
+            if (hasAnimate(currentElement)) {
               $animate.leave(currentElement).done((response) => {
                 if (response !== false) previousElement = null;
               });
             } else {
-              currentElement[0].remove();
+              currentElement.remove();
             }
 
             previousElement = currentElement;
@@ -60,7 +60,7 @@ export function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
           }
         };
 
-        scope.$watch(srcExp, (src) => {
+        scope.$watch(srcExp, async (src) => {
           const afterAnimation = function (response) {
             response !== false && maybeScroll();
           };
@@ -69,7 +69,7 @@ export function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
           if (src) {
             // set the 2nd param to true to ignore the template request error so that the inner
             // contents and scope can be cleaned up.
-            $templateRequest(src, true).then(
+            await $templateRequest(src, true).then(
               (response) => {
                 if (scope.$$destroyed) return;
                 if (thisChangeId !== changeCounter) return;

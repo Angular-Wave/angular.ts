@@ -3,6 +3,8 @@ import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
 import { wait } from "../../shared/test-utils.js";
 
+const EL = document.getElementById("app");
+
 describe("ngInclude", () => {
   describe("basic", () => {
     let element;
@@ -337,13 +339,12 @@ describe("ngInclude", () => {
         templateUrl: "/mock/my-rect.html",
         replace: true,
       }));
-      element = createElementFromHTML("<svg><test></test></svg>");
-      const injector = angular.bootstrap(element, ["myModule"]);
-      $rootScope = injector.get("$rootScope");
-      await wait(100);
-      const child = element.querySelector("rect");
+      EL.innerHTML = "<svg><test></test></svg>";
+      angular.bootstrap(EL, ["myModule"]);
+      await wait(1000);
+      const child = EL.querySelectorAll("rect");
       expect(child.length).toBe(2);
-      expect(child[0] instanceof SVGRectElement).toBe(true);
+      expect(child instanceof SVGRectElement).toBe(true);
     });
 
     it("should compile only the template content of an SVG template", async () => {
@@ -356,7 +357,7 @@ describe("ngInclude", () => {
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       await wait(200);
-      expect(element.querySelector("a").length).toBe(0);
+      expect(element.querySelectorAll("a").length).toBe(0);
     });
 
     it("should not compile template if original scope is destroyed", (done) => {
