@@ -5694,9 +5694,8 @@ describe("$compile", () => {
       });
 
       it("should not load cross domain templates by default", () => {
-        expect(() => {
-          $compile("<div cross-domain-template></div>")($rootScope);
-        }).toThrowError(/insecurl/);
+        $compile("<div cross-domain-template></div>")($rootScope);
+        expect(errors[0]).toMatch(/insecurl/);
       });
 
       it("should trust what is already in the template cache", async () => {

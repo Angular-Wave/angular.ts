@@ -2792,8 +2792,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             parent.insertBefore(newNode, parent.firstChild);
             //parent.append(newNode);
           }
-        } else {
-          throw new Error("replaced element has no parent");
         }
 
         // Append all the `elementsToRemove` to a fragment. This will...
