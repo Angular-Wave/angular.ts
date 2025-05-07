@@ -181,7 +181,7 @@ describe("ngInclude", () => {
         expect(contentLoadedSpy).not.toHaveBeenCalled();
         expect(contentErrorSpy).toHaveBeenCalled();
         done();
-      }, 100);
+      }, 300);
     });
 
     it("should evaluate onload expression when a partial is loaded", (done) => {

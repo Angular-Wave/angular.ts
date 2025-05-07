@@ -808,7 +808,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             $animate,
             $exceptionHandler,
             $sce,
-            nodeRefList.getIndex(i),
           );
 
           const directives = collectDirectives(
@@ -1231,7 +1230,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         const index = previousCompileContext.index;
         /** @type {NodeRef} */
         const parentNodeRef = previousCompileContext.parentNodeRef;
-        templateAttrs.$$element = compileNodeRef.getAny();
+        templateAttrs.$nodeRef = compileNodeRef;
         let directive;
         let directiveName;
         let $template;
@@ -1262,12 +1261,13 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
           /** @type {NodeRef} */
           let $element;
+          /** @type {Attributes} */
           let attrs;
           let scopeBindingInfo;
 
           if (compileNode === linkNode) {
             attrs = templateAttrs;
-            $element = new NodeRef(templateAttrs.$$element);
+            $element = templateAttrs.$nodeRef;
           } else {
             $element = new NodeRef(linkNode);
             attrs = new Attributes(
@@ -1275,7 +1275,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               $animate,
               $exceptionHandler,
               $sce,
-              $element.node,
+              $element,
               templateAttrs,
             );
           }
@@ -1669,7 +1669,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               terminalPriority = directive.priority;
               $template = compileNodeRef;
               compileNodeRef = new NodeRef(document.createComment(""));
-              templateAttrs.$$element = compileNodeRef.node;
+              templateAttrs.$nodeRef = compileNodeRef;
               compileNode = compileNodeRef.node;
               replaceWith(new NodeRef($template.getAny()), compileNode, index);
 
@@ -1833,7 +1833,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               }
 
               replaceWith(compileNodeRef, compileNode);
-              templateAttrs.$$element = compileNode;
+
               if (parentNodeRef) {
                 parentNodeRef.setIndex(index, compileNode);
               }
@@ -2314,7 +2314,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 compileNode,
                 previousCompileContext.index,
               );
-              tAttrs.$$element = compileNode;
 
               const templateDirectives = collectDirectives(
                 compileNode,
@@ -2770,7 +2769,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {NodeRef} elementsToRemove The JQLite element which we are going to replace. We keep
        *                                  the shell, but replace its DOM node reference.
        * @param {Node} newNode The new DOM node.
-       * @param {number} index Parent node index.
+       * @param {number} [index] Parent node index.
        */
       function replaceWith(elementsToRemove, newNode, index) {
         const firstElementToRemove = elementsToRemove.getAny();

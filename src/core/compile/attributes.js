@@ -24,7 +24,7 @@ export class Attributes {
    * @param {*} $animate
    * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
    * @param {*} $sce
-   * @param {Node} element
+   * @param {import("../../shared/noderef.js").NodeRef} [nodeRef]
    * @param {*} [attributesToCopy]
    */
   constructor(
@@ -32,7 +32,7 @@ export class Attributes {
     $animate,
     $exceptionHandler,
     $sce,
-    element,
+    nodeRef,
     attributesToCopy,
   ) {
     this.$rootScope = $rootScope;
@@ -48,9 +48,14 @@ export class Attributes {
     } else {
       this.$attr = {};
     }
-    // This can be an node
-    /** @type {Element|Node} */
-    this.$$element = element;
+
+    /** @type {import("../../shared/noderef.js").NodeRef} */
+    this.$nodeRef = nodeRef;
+  }
+
+  /** @type {Node} */
+  get $$element() {
+    return this.$nodeRef.node;
   }
 
   /**
@@ -76,7 +81,7 @@ export class Attributes {
       if (hasAnimate(this.$$element)) {
         this.$animate.addClass(this.$$element, classVal);
       } else {
-        this.$$element.classList.add(classVal);
+        this.$nodeRef.element.classList.add(classVal);
       }
     }
   }
@@ -92,7 +97,7 @@ export class Attributes {
       if (hasAnimate(this.$$element)) {
         this.$animate.removeClass(this.$$element, classVal);
       } else {
-        this.$$element.classList.remove(classVal);
+        this.$nodeRef.element.classList.remove(classVal);
       }
     }
   }
@@ -110,7 +115,7 @@ export class Attributes {
       if (hasAnimate(this.$$element)) {
         this.$animate.addClass(this.$$element, toAdd);
       } else {
-        this.$$element.classList.add(...toAdd.trim().split(/\s+/));
+        this.$nodeRef.element.classList.add(...toAdd.trim().split(/\s+/));
       }
     }
     const toRemove = tokenDifference(oldClasses, newClasses);
@@ -118,7 +123,7 @@ export class Attributes {
       if (hasAnimate(this.$$element)) {
         this.$animate.removeClass(this.$$element, toRemove);
       } else {
-        this.$$element.classList.remove(...toRemove.trim().split(/\s+/));
+        this.$nodeRef.element.classList.remove(...toRemove.trim().split(/\s+/));
       }
     }
   }
@@ -162,7 +167,7 @@ export class Attributes {
       }
     }
 
-    let nodeName = this.$$element.nodeName.toLowerCase();
+    let nodeName = this.$nodeRef.node.nodeName.toLowerCase();
 
     // Sanitize img[srcset] values.
     if (nodeName === "img" && key === "srcset") {
