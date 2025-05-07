@@ -99,7 +99,7 @@ describe("ngInclude", () => {
       const injector = angular.bootstrap(element, ["myModule"]);
       $rootScope = injector.get("$rootScope");
       $rootScope.url = "http://example.com/myUrl";
-      await wait();
+      await wait(100);
       expect(errorLog[0]).toMatch(/insecurl/);
     });
 

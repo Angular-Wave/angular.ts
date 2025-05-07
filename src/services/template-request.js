@@ -77,6 +77,9 @@ export function TemplateRequestProvider() {
         // still need to unwrap trusted types.
         if (!isString(tpl) || !$templateCache.has(tpl)) {
           tpl = $sce.getTrustedResourceUrl(tpl);
+          if (!tpl) {
+            return Promise.reject();
+          }
         }
 
         var transformResponse =

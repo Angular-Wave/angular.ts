@@ -492,7 +492,8 @@ export function SceProvider() {
   this.$get = [
     "$parse",
     "$sceDelegate",
-    function ($parse, $sceDelegate) {
+    "$exceptionHandler",
+    function ($parse, $sceDelegate, $exceptionHandler) {
       const sce = shallowCopy(SCE_CONTEXTS);
 
       /**
@@ -736,7 +737,11 @@ export function SceProvider() {
           return parse(enumValue, expr);
         };
         sce[snakeToCamel(`get_trusted_${lName}`)] = function (value) {
-          return getTrusted(enumValue, value);
+          try {
+            return getTrusted(enumValue, value);
+          } catch (e) {
+            $exceptionHandler(e);
+          }
         };
         sce[snakeToCamel(`trust_as_${lName}`)] = function (value) {
           return trustAs(enumValue, value);
