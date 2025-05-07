@@ -1,5 +1,4 @@
 import { isDefined } from "../../shared/utils.js";
-import { domInsert } from "../../shared/dom.js";
 import { hasAnimate } from "../../shared/utils.js";
 
 ngIncludeDirective.$inject = ["$templateRequest", "$anchorScroll", "$animate"];
@@ -87,7 +86,7 @@ export function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
                   if (hasAnimate(clone)) {
                     $animate.enter(clone, null, $element).done(afterAnimation);
                   } else {
-                    domInsert(clone, null, $element);
+                    $element.after(clone);
                     maybeScroll();
                   }
                 });
@@ -135,9 +134,7 @@ export function ngIncludeFillContentDirective($compile) {
     require: "ngInclude",
     link(scope, $element, _$attr, ctrl) {
       $element.innerHTML = ctrl["template"];
-      Array.from($element.childNodes).forEach((el) => {
-        $compile(el)(scope);
-      });
+      $compile($element.childNodes)(scope);
     },
   };
 }

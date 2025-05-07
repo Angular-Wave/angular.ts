@@ -1,4 +1,4 @@
-import { createElementFromHTML, dealoc } from "../../shared/dom.js";
+import { createElementFromHTML, dealoc, getScope } from "../../shared/dom.js";
 import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
 import { wait } from "../../shared/test-utils.js";
@@ -333,7 +333,7 @@ describe("ngInclude", () => {
       );
     });
 
-    it("should construct SVG template elements with correct namespace", async () => {
+    it("should construct SVG template elements with correct namespace", (done) => {
       window.angular.module("myModule", []).directive("test", () => ({
         templateNamespace: "svg",
         templateUrl: "/mock/my-rect.html",
@@ -341,10 +341,12 @@ describe("ngInclude", () => {
       }));
       EL.innerHTML = "<svg><test></test></svg>";
       angular.bootstrap(EL, ["myModule"]);
-      await wait(1000);
-      const child = EL.querySelectorAll("rect");
-      expect(child.length).toBe(2);
-      expect(child instanceof SVGRectElement).toBe(true);
+      getScope(EL).$on("$includeContentRequested", () => {
+        const child = EL.querySelectorAll("rect");
+        expect(child.length).toBe(2);
+        expect(child[0] instanceof SVGRectElement).toBe(true);
+        done();
+      });
     });
 
     it("should compile only the template content of an SVG template", async () => {

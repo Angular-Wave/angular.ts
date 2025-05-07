@@ -831,6 +831,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               Object.assign({}, previousCompileContext, {
                 index: i,
                 parentNodeRef: nodeRefList,
+                ctxNodeRef: nodeRefList,
               }),
             );
           } else {
@@ -1223,13 +1224,13 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           templateDirective,
           nonTlbTranscludeDirective,
           hasElementTranscludeDirective,
+          ctxNodeRef,
+          parentNodeRef,
         } = previousCompileContext;
         let hasTranscludeDirective = false;
         let hasTemplate = false;
         let compileNodeRef = new NodeRef(compileNode);
         const index = previousCompileContext.index;
-        /** @type {NodeRef} */
-        const parentNodeRef = previousCompileContext.parentNodeRef;
         templateAttrs.$nodeRef = compileNodeRef;
         let directive;
         let directiveName;
@@ -1671,7 +1672,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               compileNodeRef = new NodeRef(document.createComment(""));
               templateAttrs.$nodeRef = compileNodeRef;
               compileNode = compileNodeRef.node;
-              parentNodeRef.node = compileNode;
+              ctxNodeRef.node = compileNode;
+
               $template.node.parentNode.replaceChild(
                 compileNode,
                 $template.node,
@@ -2346,7 +2348,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               origAsyncDirective,
               preLinkFns,
               postLinkFns,
-              previousCompileContext,
+              { ...previousCompileContext, ctxNodeRef: $compileNode },
             );
             if ($rootElement) {
               Object.entries($rootElement).forEach(([i, node]) => {
