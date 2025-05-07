@@ -1223,7 +1223,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           templateDirective,
           nonTlbTranscludeDirective,
           hasElementTranscludeDirective,
-          contextNode,
         } = previousCompileContext;
         let hasTranscludeDirective = false;
         let hasTemplate = false;
@@ -1673,6 +1672,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               templateAttrs.$nodeRef = compileNodeRef;
               compileNode = compileNodeRef.node;
               parentNodeRef.node = compileNode;
+              $template.node.parentElement.replaceChild(
+                compileNode,
+                $template.node,
+              );
 
               childTranscludeFn = compilationGenerator(
                 mightHaveMultipleTransclusionError,
@@ -2343,7 +2346,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               origAsyncDirective,
               preLinkFns,
               postLinkFns,
-              { ...previousCompileContext, contextNode: $compileNode },
+              previousCompileContext,
             );
             if ($rootElement) {
               Object.entries($rootElement).forEach(([i, node]) => {
