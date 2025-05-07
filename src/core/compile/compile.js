@@ -1672,7 +1672,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               templateAttrs.$nodeRef = compileNodeRef;
               compileNode = compileNodeRef.node;
               parentNodeRef.node = compileNode;
-              $template.node.parentElement.replaceChild(
+              $template.node.parentNode.replaceChild(
                 compileNode,
                 $template.node,
               );
