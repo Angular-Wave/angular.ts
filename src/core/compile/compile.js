@@ -1673,11 +1673,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               templateAttrs.$nodeRef = compileNodeRef;
               compileNode = compileNodeRef.node;
               ctxNodeRef.node = compileNode;
-
-              $template.node.parentNode.replaceChild(
-                compileNode,
-                $template.node,
-              );
+              replaceWith(new NodeRef($template.getAny()), compileNode, index);
 
               childTranscludeFn = compilationGenerator(
                 mightHaveMultipleTransclusionError,
