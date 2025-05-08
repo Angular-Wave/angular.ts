@@ -675,7 +675,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
         /** @type {PublicLinkFn} */
         function publicLinkFn(scope, cloneConnectFn, options) {
-          if (!nodeRef || !nodeRef.getAny()) {
+          if (!nodeRef) {
             throw $compileMinErr(
               "multilink",
               "This element has already been linked.",
@@ -683,8 +683,10 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           }
 
           assertArg(scope, "scope");
-          //assertArg(nodeRef.element, "element");
-          setScope(nodeRef.getAny(), scope);
+          // could be empty nodelist
+          if (nodeRef.getAny()) {
+            setScope(nodeRef.getAny(), scope);
+          }
 
           if (previousCompileContext && previousCompileContext.needsNewScope) {
             // A parent directive did a replace and a directive on this element asked
@@ -755,6 +757,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           if (!cloneConnectFn) {
             nodeRef = compositeLinkFn = null;
           }
+
+          $linkNode.linked = true;
 
           return $linkNode.getAll();
         }

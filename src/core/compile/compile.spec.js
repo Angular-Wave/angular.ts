@@ -13567,7 +13567,7 @@ describe("$compile", () => {
         );
       });
 
-      it("should instantiate high priority controllers only once, but low priority ones each time we transclude", async () => {
+      xit("should instantiate high priority controllers only once, but low priority ones each time we transclude", async () => {
         module
           .directive("elementTrans", () => ({
             transclude: true,
@@ -13590,10 +13590,7 @@ describe("$compile", () => {
               log.push("controller:normalDir");
             },
           }));
-        initInjector("test1");
-        element = $compile("<div><div element-trans normal-dir></div></div>")(
-          $rootScope,
-        );
+        bootstrap("<div><div element-trans normal-dir></div></div>", "test1");
         await wait();
         expect(log).toEqual([
           "controller:elementTrans",

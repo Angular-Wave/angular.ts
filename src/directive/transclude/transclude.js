@@ -64,17 +64,13 @@ export const ngTranscludeDirective = [
             $attrs.ngTransclude = "";
           }
           const slotName = $attrs.ngTransclude || $attrs.ngTranscludeSlot;
-          // transcluded element may itself be transcluded, in which case we have to get the outer scope
-          if ($scope.$$transcluded === true) {
-            let currentScope = $scope;
-            while (currentScope.$$transcluded === true) {
-              currentScope = currentScope.$handler.$parent;
-            }
-            let outerScope = currentScope.$parent;
-            $transclude(outerScope, ngTranscludeCloneAttachFn, null, slotName);
-          } else {
-            // If the slot is required and no transclusion content is provided then this call will throw an error
-            $transclude(ngTranscludeCloneAttachFn, null, slotName);
+
+          // If the slot is required and no transclusion content is provided then this call will throw an error
+          $transclude(ngTranscludeCloneAttachFn, null, slotName);
+
+          // If the slot is optional and no transclusion content is provided then use the fallback content
+          if (slotName && !$transclude.isSlotFilled(slotName)) {
+            useFallbackContent();
           }
 
           // If the slot is optional and no transclusion content is provided then use the fallback content
