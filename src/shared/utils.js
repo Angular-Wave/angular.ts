@@ -1139,6 +1139,10 @@ export function hashKey(obj) {
     return obj.$$hashKey;
   }
 
+  if (objType === "undefined") {
+    return `${objType}:${nextUid()}`;
+  }
+
   return `${objType}:${obj}`;
 }
 

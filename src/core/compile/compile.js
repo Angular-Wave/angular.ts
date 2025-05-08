@@ -727,7 +727,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             // for call to the link function.
             // Note: This will already clone the nodes...
             const fragment = createElementFromHTML("<div></div>");
-            fragment.append(nodeRef.element);
+            fragment.append(nodeRef.node);
             const wrappedTemplate = wrapTemplate(namespace, fragment.innerHTML);
             $linkNode = new NodeRef(wrappedTemplate[0]);
           } else if (cloneConnectFn) {

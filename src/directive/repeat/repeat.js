@@ -4,6 +4,24 @@ import { getBlockNodes } from "../../shared/dom.js";
 const NG_REMOVED = "$$NG_REMOVED";
 const ngRepeatMinErr = minErr("ngRepeat");
 
+/**
+ * Regular expression to match either:
+ * 1. A single variable name (optionally preceded by whitespace), e.g. "foo", "   $bar"
+ * 2. A pair of variable names inside parentheses separated by a comma (with optional whitespace), e.g. "(x, y)", "($foo, _bar123)"
+ *
+ * Capturing groups:
+ * - Group 1: The single variable name (if present)
+ * - Group 2: The first variable in the tuple (if present)
+ * - Group 3: The second variable in the tuple (if present)
+ *
+ * Examples:
+ *  - Matches: "foo", "   $var", "(x, y)", "($a, $b)"
+ *  - Does NOT match: "x,y", "(x)", "(x y)", ""
+ *
+ * @constant {RegExp}
+ */
+const VAR_OR_TUPLE_REGEX = /^(?:(\s*[$\w]+)|\(\s*([$\w]+)\s*,\s*([$\w]+)\s*\))$/;
+
 ngRepeatDirective.$inject = ["$animate"];
 
 /**
@@ -37,28 +55,28 @@ export function ngRepeatDirective($animate) {
     scope.$odd = !(scope.$even = (index & 1) === 0);
   }
 
-  const getBlockStart = function (block) {
+  function getBlockStart(block) {
     return block.clone;
-  };
+  }
 
-  const getBlockEnd = function (block) {
+  function getBlockEnd(block) {
     return block.clone;
-  };
+  }
 
-  const trackByIdArrayFn = function ($scope, key, value) {
+  function trackByIdArrayFn(_$scope, _key, value) {
     return hashKey(value);
-  };
+  }
 
-  const trackByIdObjFn = function ($scope, key) {
+  function trackByIdObjFn(_$scope, key) {
     return key;
-  };
+  }
 
   return {
     restrict: "A",
     transclude: "element",
     priority: 1000,
     terminal: true,
-    compile: ($element, $attr) => {
+    compile: (_$element, $attr) => {
       const expression = $attr.ngRepeat;
       const hasAnimate = !!$attr.animate;
 
@@ -78,7 +96,7 @@ export function ngRepeatDirective($animate) {
       const rhs = match[2];
       const aliasAs = match[3];
 
-      match = lhs.match(/^(?:(\s*[$\w]+)|\(\s*([$\w]+)\s*,\s*([$\w]+)\s*\))$/);
+      match = lhs.match(VAR_OR_TUPLE_REGEX);
 
       if (!match) {
         throw ngRepeatMinErr(
@@ -147,7 +165,7 @@ export function ngRepeatDirective($animate) {
             trackByIdFn = trackByIdExpFn || trackByIdObjFn;
             // if object, extract keys, in enumeration order, unsorted
             collectionKeys = [];
-            for (var itemKey in collection) {
+            for (const itemKey in collection) {
               if (
                 Object.hasOwnProperty.call(collection, itemKey) &&
                 itemKey.charAt(0) !== "$"
