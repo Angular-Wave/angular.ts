@@ -396,13 +396,15 @@ describe("ngClass", () => {
       "<ul>" +
         '<li ng-repeat="i in items" ' +
         "ng-class-odd=\"'odd'\" ng-class-even=\"'even'\"></li>" +
-        "<ul>",
+      "</ul>",
     )($rootScope);
     $rootScope.items = ["a", "b", "a"];
     await wait();
+    $rootScope.items = ["a", "a"];
+    await wait();
 
-    const e1 = element.childNodes[0];
-    const e2 = element.childNodes[1];
+    const e1 = element.childNodes[1];
+    const e2 = element.childNodes[2];
 
     expect(e1.classList.contains("odd")).toBeTruthy();
     expect(e1.classList.contains("even")).toBeFalsy();
@@ -416,12 +418,12 @@ describe("ngClass", () => {
       "<ul>" +
         '<li ng-repeat="i in items" ' +
         "ng-class-odd=\"'odd'\" ng-class-even=\"'even'\">i</li>" +
-        "<ul>",
+        "</ul>",
     )($rootScope);
     $rootScope.items = ["a", "b"];
     await wait();
-    const e1 = element.childNodes[0];
-    const e2 = element.childNodes[1];
+    const e1 = element.children[0];
+    const e2 = element.children[1];
 
     expect(e1.classList.contains("odd")).toBeTruthy();
     expect(e1.classList.contains("even")).toBeFalsy();
@@ -438,8 +440,8 @@ describe("ngClass", () => {
         "</div>",
     )($rootScope);
     await wait();
-    const odd = element.children().eq(0)[0];
-    const even = element.children().eq(1)[0];
+    const odd = element.children[0];
+    const even = element.children[1];
 
     $rootScope.$apply('$index = 0; foo = "class1"');
     await wait();
@@ -477,7 +479,7 @@ describe("ngClass", () => {
     await wait();
     expect(element).toHaveClass("orange");
 
-    $rootScope.classVar[0].orange = false;
+    $rootScope.classVar.pop()
     await wait();
     expect(element).not.toHaveClass("orange");
   });
@@ -500,7 +502,7 @@ describe("ngClass", () => {
     element = $compile('<div ng-class="classVar"></div>')($rootScope);
     await wait();
     expect(element).toHaveClass("orange");
-    $rootScope.classVar[0].orange = false;
+    $rootScope.classVar.pop();
     await wait();
     expect(element).not.toHaveClass("orange");
   });

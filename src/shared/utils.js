@@ -1142,8 +1142,8 @@ export function hashKey(obj) {
   if (objType === "undefined") {
     return `${objType}:${nextUid()}`;
   }
-
-  return `${objType}:${obj}`;
+  // account for primitives
+  return `${objType}-${nextUid()}:${obj}`;
 }
 
 export function mergeClasses(a, b) {
