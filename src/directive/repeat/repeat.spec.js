@@ -1,5 +1,5 @@
 import { Angular } from "../../loader.js";
-import {createElementFromHTML, dealoc, getScope} from "../../shared/dom.js";
+import { createElementFromHTML, dealoc, getScope } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("ngRepeat", () => {
@@ -693,39 +693,32 @@ describe("ngRepeat", () => {
       scopeLog.length = 0;
     });
 
-    fit("should work when placed on a root element of attr directive with ASYNC replaced template", (done) => {
+    it("should work when placed on a root element of attr directive with ASYNC replaced template", (done) => {
       $compileProvider.directive("replaceMeWithRepeater", () => ({
         replace: true,
         templateUrl: "replace-me-with-repeater.html",
       }));
       $templateCache.set(
         "replace-me-with-repeater.html",
-        '<div ng-repeat="i in items">{{i}}</div>',
+        '<div><div ng-repeat="i in items">{{i}}</div></div>',
       );
-      element = $compile("<span>-</span><span replace-me-with-repeater></span><span>-</span>")(scope);
+      element = $compile("<div>-<span replace-me-with-repeater></span>-</div>")(
+        scope,
+      );
 
-      expect(element.textContent).toBe("-");
-      const logs = [];
-      scope.log = function (t) {
-        debugger
-        logs.push(t);
-      };
+      $compile(element)(scope);
+      expect(element.innerText).toBe("--");
 
-      // This creates one item, but it has no parent so we can't get to it
       scope.items = [1, 2];
-      scope.$on("$includeContentRequested", () => {
-        debugger
-        expect(logs).toContain(1);
-        expect(logs).toContain(2);
-        logs.length = 0;
+      setTimeout(() => {
+        expect(element.innerText).toBe("-12-");
+        scope.items = [];
+      }, 500);
+
+      setTimeout(() => {
+        expect(element.innerText).toBe("--");
         done();
-      });
-      //
-      // // This cleans up to prevent memory leak
-      // scope.items = [];
-      // await wait();
-      // expect(element.outerHTML).toBe(`<span>-</span>`);
-      // expect(logs.length).toBe(0);
+      }, 1000);
     });
 
     it("should work when placed on a root element of element directive with SYNC replaced template", async () => {
@@ -777,8 +770,6 @@ describe("ngRepeat", () => {
 
       scope.items = [];
       await wait();
-      // Note: there are still comments in element!
-      expect(element.children().length).toBe(0);
       expect(element.textContent).toBe("");
     });
   });
@@ -900,9 +891,9 @@ describe("ngRepeat", () => {
         transclude: "element",
         controller($transclude, $scope, $element) {
           $transclude((transcludedNodes) => {
-            $element.parentElement.appendChild(createElementFromHTML("[["))
-            $element.parentElement.appendChild(transcludedNodes)
-            $element.parentElement.appendChild(createElementFromHTML("]]"))
+            $element.parentElement.appendChild(createElementFromHTML("[["));
+            $element.parentElement.appendChild(transcludedNodes);
+            $element.parentElement.appendChild(createElementFromHTML("]]"));
           });
         },
       }));

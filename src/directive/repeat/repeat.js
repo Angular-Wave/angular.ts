@@ -20,7 +20,8 @@ const ngRepeatMinErr = minErr("ngRepeat");
  *
  * @constant {RegExp}
  */
-const VAR_OR_TUPLE_REGEX = /^(?:(\s*[$\w]+)|\(\s*([$\w]+)\s*,\s*([$\w]+)\s*\))$/;
+const VAR_OR_TUPLE_REGEX =
+  /^(?:(\s*[$\w]+)|\(\s*([$\w]+)\s*,\s*([$\w]+)\s*\))$/;
 
 ngRepeatDirective.$inject = ["$animate"];
 
