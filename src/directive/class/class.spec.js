@@ -396,7 +396,7 @@ describe("ngClass", () => {
       "<ul>" +
         '<li ng-repeat="i in items" ' +
         "ng-class-odd=\"'odd'\" ng-class-even=\"'even'\"></li>" +
-      "</ul>",
+        "</ul>",
     )($rootScope);
     $rootScope.items = ["a", "b", "a"];
     await wait();
@@ -479,7 +479,7 @@ describe("ngClass", () => {
     await wait();
     expect(element).toHaveClass("orange");
 
-    $rootScope.classVar.pop()
+    $rootScope.classVar.pop();
     await wait();
     expect(element).not.toHaveClass("orange");
   });
