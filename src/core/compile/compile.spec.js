@@ -11994,33 +11994,34 @@ describe("$compile", () => {
               log.push("babyController");
             },
           }));
-        initInjector("test1");
-        $templateCache.set(
-          "parentDirective.html",
-          "<div ng-transclude>parentTemplateText;</div>",
-        );
-        $templateCache.set(
-          "childDirective.html",
-          "<span ng-transclude>childTemplateText;</span>",
-        );
-        $templateCache.set(
-          "babyDirective.html",
-          "<span>babyTemplateText;</span>",
-        );
 
-        element = $compile(
+        bootstrap(
           "<div parent-directive>" +
             "<div child-directive>" +
             "childContentText;" +
             "<div baby-directive>babyContent;</div>" +
             "</div>" +
             "</div>",
-        )($rootScope);
+          "test1",
+        ).invoke(($templateCache) => {
+          $templateCache.set(
+            "parentDirective.html",
+            "<div ng-transclude>parentTemplateText;</div>",
+          );
+          $templateCache.set(
+            "childDirective.html",
+            "<span ng-transclude>childTemplateText;</span>",
+          );
+          $templateCache.set(
+            "babyDirective.html",
+            "<span>babyTemplateText;</span>",
+          );
+        });
         await wait();
         expect(log.join("; ")).toEqual(
           "parentController; childController; babyController",
         );
-        expect(element.textContent).toBe("childContentText;babyTemplateText;");
+        expect(ELEMENT.textContent).toBe("childContentText;babyTemplateText;");
       });
 
       it("should allow controller usage in pre-link directive functions with templateUrl", async () => {
