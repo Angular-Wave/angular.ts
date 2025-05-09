@@ -1421,7 +1421,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             try {
               preLinkFn(
                 preLinkFn.isolateScope ? isolateScope : scope,
-                $element.element,
+                $element.node, // Prelink functions accept a Node
                 attrs,
                 controllers,
                 transcludeFn,

@@ -229,4 +229,8 @@ export class NodeRef {
 
     return new NodeRef(cloned);
   }
+
+  isElement() {
+    return this._element !== undefined;
+  }
 }

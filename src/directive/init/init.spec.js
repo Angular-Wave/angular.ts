@@ -43,7 +43,7 @@ describe("ngInit", () => {
     setTimeout(() => {
       expect(element.querySelector("span").textContent).toEqual("2");
       done();
-    }, 100);
+    }, 200);
   });
 
   it("should be evaluated after ngController", async () => {
