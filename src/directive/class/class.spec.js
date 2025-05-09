@@ -398,9 +398,9 @@ describe("ngClass", () => {
         "ng-class-odd=\"'odd'\" ng-class-even=\"'even'\"></li>" +
         "</ul>",
     )($rootScope);
-    $rootScope.items = ["a", "b", "a"];
+    $rootScope.items = ["a", "b", "c"];
     await wait();
-    $rootScope.items = ["a", "a"];
+    $rootScope.items = ["a", "c"];
     await wait();
 
     const e1 = element.childNodes[1];

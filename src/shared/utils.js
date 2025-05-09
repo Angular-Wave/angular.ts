@@ -1143,7 +1143,7 @@ export function hashKey(obj) {
     return `${objType}:${nextUid()}`;
   }
   // account for primitives
-  return `${objType}-${nextUid()}:${obj}`;
+  return `${objType}:${obj}`;
 }
 
 export function mergeClasses(a, b) {
