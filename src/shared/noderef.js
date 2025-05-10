@@ -130,7 +130,10 @@ export class NodeRef {
   /** @returns {NodeList} */
   get nodelist() {
     assertArg(this.isList, "nodes");
-    assertArg(this._nodes.length, "node list cannot be empty");
+    // assertArg(this._nodes.length, "node list cannot be empty");
+    if (this._nodes.length === 0) {
+      return this._nodes;
+    }
     if (this._nodes[0].parentElement) {
       return this._nodes[0].parentElement.childNodes;
     } else {

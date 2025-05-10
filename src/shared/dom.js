@@ -330,8 +330,10 @@ export function setCacheData(element, key, value) {
     const data = expandoStore && expandoStore.data;
     data[kebabToCamel(key)] = value;
   } else {
-    // TODO: check should occur perhaps prior at compilation level that this is a valid element
-    setCacheData(element.parentElement, key, value);
+    if (element.parentElement) {
+      // TODO: check should occur perhaps prior at compilation level that this is a valid element
+      setCacheData(element.parentElement, key, value);
+    }
   }
 }
 

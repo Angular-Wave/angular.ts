@@ -108,7 +108,12 @@ export const ngTranscludeDirective = [
           }
 
           function notWhitespace(node) {
-            if (node.nodeType !== Node.TEXT_NODE || node.nodeValue.trim()) {
+            if (node instanceof Array) {
+              return false;
+            } else if (
+              node.nodeType !== Node.TEXT_NODE ||
+              node.nodeValue.trim()
+            ) {
               return true;
             }
           }

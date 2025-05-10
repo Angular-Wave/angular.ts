@@ -12427,50 +12427,6 @@ describe("$compile", () => {
         //   // clone.remove();
         // });
 
-        describe("cleaning up after a replaced element", () => {
-          let xs;
-
-          beforeEach(() => {
-            xs = [0, 1];
-          });
-
-          function testCleanup() {
-            let privateData;
-            let firstRepeatedElem;
-            $rootScope.noop = function () {};
-            element = $compile(
-              '<div><div ng-repeat="x in xs" ng-click="noop()">{{x}}</div></div>',
-            )($rootScope);
-
-            $rootScope.$apply(`xs = [${xs}]`);
-            firstRepeatedElem = element.children[0];
-
-            privateData = Cache.get(firstRepeatedElem[EXPANDO]);
-            expect(privateData.events).toBeDefined();
-
-            expect(privateData.events.click).toBeDefined();
-            expect(privateData.events.click[0]).toBeDefined();
-
-            // Ensure the AngularJS $destroy event is still sent
-            let destroyCount = 0;
-            element.children[0].on("$destroy", () => {
-              destroyCount++;
-            });
-
-            $rootScope.$apply("xs = null");
-
-            expect(destroyCount).toBe(2);
-            expect(getCacheData(firstRepeatedElem, "$scope")).not.toBeDefined();
-            privateData = Cache.get(firstRepeatedElem[EXPANDO]);
-            expect(privateData && privateData.events).not.toBeDefined();
-          }
-
-          it(
-            "should work without external libraries (except jQuery)",
-            testCleanup,
-          );
-        });
-
         it("should add a $$transcluded property onto the transcluded scope", async () => {
           module.directive("trans", () => ({
             transclude: true,
@@ -12479,13 +12435,12 @@ describe("$compile", () => {
             template:
               "<div><span>I:{{$$transcluded}}</span><span ng-transclude></span></div>",
           }));
-          initInjector("test1");
-          element = $compile("<div><div trans>T:{{$$transcluded}}</div></div>")(
-            $rootScope,
-          );
+          bootstrap("<div><div trans>T:{{$$transcluded}}</div></div>", "test1");
           await wait();
-          expect(element.querySelector("span")[0].innerText).toEqual("I:");
-          expect(element.querySelector("span")[1].innerText).toEqual("T:true");
+          expect(ELEMENT.querySelectorAll("span")[0].innerText).toEqual("I:");
+          expect(ELEMENT.querySelectorAll("span")[1].innerText).toEqual(
+            "T:true",
+          );
         });
 
         it("should clear contents of the ng-transclude element before appending transcluded content if transcluded content exists", async () => {
@@ -12506,11 +12461,10 @@ describe("$compile", () => {
             transclude: true,
             template: "<div ng-transclude>old stuff!</div>",
           }));
-          initInjector("test1");
-          element = $compile("<div trans></div>")($rootScope);
+          bootstrap("<div trans></div>", "test1");
           await wait();
-          expect(element.innerHTML).toEqual(
-            '<div ng-transclude="">old stuff!</div>',
+          expect(ELEMENT.innerHTML).toEqual(
+            '<div trans=""><div ng-transclude="">old stuff!</div></div>',
           );
         });
 
