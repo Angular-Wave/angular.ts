@@ -12602,10 +12602,9 @@ describe("$compile", () => {
               template:
                 '<div ng-transclude="optionalSlot"><inner></inner></div>',
             }));
-          initInjector("test1");
-          element = $compile("<div trans></div>")($rootScope);
+          bootstrap("<div trans></div>", "test1");
           await wait();
-          expect(element.innerHTML).toEqual(
+          expect(ELEMENT.firstChild.innerHTML).toEqual(
             '<div ng-transclude="optionalSlot"><inner>old stuff! </inner></div>',
           );
           expect(linkSpy).toHaveBeenCalled();

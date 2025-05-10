@@ -39,14 +39,14 @@ export const ngTranscludeDirective = [
          * @param {import("../../core/scope/scope.js").Scope} $scope
          * @param {Element} $element
          * @param {import("../../core/compile/attributes.js").Attributes} $attrs
-         * @param {*} controller
+         * @param {*} _controller
          * @param {*} $transclude
          */
         function ngTranscludePostLink(
           $scope,
           $element,
           $attrs,
-          controller,
+          _controller,
           $transclude,
         ) {
           if (!$transclude) {
@@ -67,11 +67,6 @@ export const ngTranscludeDirective = [
 
           // If the slot is required and no transclusion content is provided then this call will throw an error
           $transclude(ngTranscludeCloneAttachFn, null, slotName);
-
-          // If the slot is optional and no transclusion content is provided then use the fallback content
-          if (slotName && !$transclude.isSlotFilled(slotName)) {
-            useFallbackContent();
-          }
 
           // If the slot is optional and no transclusion content is provided then use the fallback content
           if (slotName && !$transclude.isSlotFilled(slotName)) {
