@@ -12641,19 +12641,16 @@ describe("$compile", () => {
         });
 
         it("should not pass transclusion into a template directive when the directive didn't request transclusion", async () => {
+          let error
           module
             .decorator("$exceptionHandler", () => {
-              return (exception, cause) => {
-                throw new Error(exception.message);
+              return (exception) => {
+                error = exception.message;
               };
             })
             .directive("transFoo", () => ({
               template:
-                "<div>" +
-                "<div no-trans-bar></div>" +
-                "<div ng-transclude>this one should get replaced with content</div>" +
-                '<div class="foo" ng-transclude></div>' +
-                "</div>",
+                "<div no-trans-bar></div>",
               transclude: true,
             }))
             .directive("noTransBar", () => ({
@@ -12665,10 +12662,10 @@ describe("$compile", () => {
               transclude: false,
             }));
           initInjector("test1");
-          expect(async () => {
-            $compile("<div trans-foo>content</div>")($rootScope);
-            await wait();
-          }).toThrowError(/orphan/);
+          bootstrap("<div trans-foo>content</div>", "test1");
+          await wait();
+
+          expect(error).toMatch(/orphan/);
         });
 
         it("should not pass transclusion into a templateUrl directive", (done) => {
@@ -12712,21 +12709,19 @@ describe("$compile", () => {
             compile(_, __, transclude) {
               return function (scope, element) {
                 transclude(scope, (clone, scope) => {
-                  element.html("");
+                  element.innerHTML = "";
                   element.append(clone);
                 });
               };
             },
           }));
-          initInjector("test1");
-          $templateCache.set("foo.html", '<div class="foo">whatever</div>');
-
-          element = $compile("<div trans-in-compile>transcluded content</div>")(
-            $rootScope,
-          );
+          bootstrap("<div trans-in-compile>transcluded content</div>", "test1")
+          .invoke(($templateCache) => {
+            $templateCache.set("foo.html", '<div class="foo">whatever</div>');
+          });
           await wait();
 
-          expect(element.textContent).toBe("transcluded content");
+          expect(ELEMENT.textContent).toBe("transcluded content");
         });
 
         it("should make the result of a transclusion available to the parent directive in post-linking phase (template)", async () => {

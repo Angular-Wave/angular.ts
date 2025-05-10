@@ -853,11 +853,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
             childLinkFn = null;
           } else {
             let transcluded =
-              nodeLinkFn &&
-              (nodeLinkFn.transcludeOnThisElement ||
-                !nodeLinkFn.templateOnThisElement)
-                ? nodeLinkFn.transclude
-                : transcludeFn;
+            nodeLinkFn
+            ? (nodeLinkFn.transcludeOnThisElement ||
+                !nodeLinkFn.templateOnThisElement) &&
+                nodeLinkFn.transclude
+            : transcludeFn
             // recursive call
             const childNodeRef = new NodeRef(childNodes);
             childLinkFn = compileNodes(childNodeRef, transcluded);
@@ -949,8 +949,13 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               if (nodeLinkFn.scope) {
                 setScope(node, childScope);
               }
+              nodeLinkFn(
+                childLinkFn, 
+                childScope,
+                node,
+                childBoundTranscludeFn
+              );
 
-              nodeLinkFn(childLinkFn, childScope, node, childBoundTranscludeFn);
             } else if (childLinkFn) {
               childLinkFn(
                 scope,
