@@ -12641,7 +12641,7 @@ describe("$compile", () => {
         });
 
         it("should not pass transclusion into a template directive when the directive didn't request transclusion", async () => {
-          let error
+          let error;
           module
             .decorator("$exceptionHandler", () => {
               return (exception) => {
@@ -12649,8 +12649,7 @@ describe("$compile", () => {
               };
             })
             .directive("transFoo", () => ({
-              template:
-                "<div no-trans-bar></div>",
+              template: "<div no-trans-bar></div>",
               transclude: true,
             }))
             .directive("noTransBar", () => ({
@@ -12715,8 +12714,10 @@ describe("$compile", () => {
               };
             },
           }));
-          bootstrap("<div trans-in-compile>transcluded content</div>", "test1")
-          .invoke(($templateCache) => {
+          bootstrap(
+            "<div trans-in-compile>transcluded content</div>",
+            "test1",
+          ).invoke(($templateCache) => {
             $templateCache.set("foo.html", '<div class="foo">whatever</div>');
           });
           await wait();
@@ -12885,15 +12886,16 @@ describe("$compile", () => {
           module.directive("transclude", () => ({
             transclude: "content",
             link(scope, element, attr, ctrl, $transclude) {
+              scope.id = scope.$id;
+              capturedChildCtrl = scope;
               $transclude(scope, (clone) => {
                 element.append(clone);
               });
             },
           }));
-          initInjector("test1");
-          element = $compile("<div transclude>{{$id}}</div>")($rootScope);
+          bootstrap("<div transclude>{{id}}</div>", "test1");
           await wait();
-          expect(element.textContent).toBe(`${$rootScope.$id}`);
+          expect(ELEMENT.textContent).toBe(`${capturedChildCtrl.$id}`);
         });
 
         it("should expose the directive controller to transcluded children", () => {
