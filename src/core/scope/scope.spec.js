@@ -80,6 +80,32 @@ describe("Scope", () => {
     });
   });
 
+  describe("$target", () => {
+    it("should have a $target property", () => {
+      scope = createScope({ a: 1 });
+      expect(scope.$target).toBeDefined();
+    });
+
+    it("should make its properties available for getters", () => {
+      scope = createScope({ a: 1, b: { test: "test" } });
+      expect(scope.$target).toBeDefined();
+      expect(scope.a).toEqual(1);
+      expect(scope.$target.a).toEqual(1);
+      expect(scope.a).toBe(scope.$target.a);
+      expect(scope.b).toBe(scope.$target.b);
+    });
+
+    it("should make its properties available for setters", () => {
+      scope = createScope({ a: 1, b: { test: "test" } });
+      expect(scope.$target).toBeDefined();
+      expect(scope.a).toEqual(1);
+      scope.a = 2;
+      expect(scope.$target.a).toEqual(2);
+      scope.b = 2;
+      expect(scope.$target.b).toEqual(2);
+    });
+  });
+
   describe("$nonscope", () => {
     it("should ignore objects with $nonscope property", () => {
       const res = createScope({ $nonscope: true });

@@ -674,7 +674,13 @@ export class Scope {
       }
       // 7
       case ASTType.UnaryExpression: {
-        throw new Error("Unsupported type " + type);
+        let expr = get.decoratedNode.body[0].expression.toWatch[0];
+        key = expr.property ? expr.property.name : expr.name;
+        if (!key) {
+          throw new Error("Unable to determine key");
+        }
+        listener.property.push(key);
+        break;
       }
       // 8 function
       case ASTType.CallExpression: {

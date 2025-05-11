@@ -526,7 +526,10 @@ export class ASTInterpreter {
       if (create && create !== 1 && base && base[name] == null) {
         base[name] = {};
       }
-      const value = base ? base[name] : undefined;
+      let value = undefined;
+      if (base) {
+        value = base[name];
+      }
       if (context) {
         return { context: base, name, value };
       }

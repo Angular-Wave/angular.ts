@@ -145,13 +145,13 @@ describe("ngStateRef", () => {
 
     // TODO investigate further why this fails
     xit("should not transition states when meta-clicked", async () => {
-      el[0].dispatchEvent(new MouseEvent("click", { metaKey: true }));
+      el.dispatchEvent(new MouseEvent("click", { metaKey: true }));
       expect($state.current.name).toEqual("");
       expect($stateParams.id).toBeUndefined();
     });
 
     it("should not transition states when shift-clicked", async () => {
-      el[0].dispatchEvent(new MouseEvent("click", { shiftKey: true }));
+      el.dispatchEvent(new MouseEvent("click", { shiftKey: true }));
       expect($state.current.name).toEqual("top");
       expect($stateParams.id).toBeUndefined();
     });
@@ -160,7 +160,7 @@ describe("ngStateRef", () => {
     xit("should not transition states when alt-clicked", async () => {
       expect($state.current.name).toEqual("");
 
-      el[0].dispatchEvent(new MouseEvent("click", { altKey: true }));
+      el.dispatchEvent(new MouseEvent("click", { altKey: true }));
       expect($state.current.name).toEqual("top");
       expect($stateParams.id).toBeUndefined();
     });
@@ -168,7 +168,7 @@ describe("ngStateRef", () => {
     it("should not transition states when alt-clicked", async () => {
       expect($state.current.name).toEqual("top");
 
-      el[0].dispatchEvent(new MouseEvent("click", { button: 1 }));
+      el.dispatchEvent(new MouseEvent("click", { button: 1 }));
       expect($state.current.name).toEqual("top");
       expect($stateParams.id).toBeUndefined();
     });
@@ -183,7 +183,7 @@ describe("ngStateRef", () => {
 
     it("should not transition states if preventDefault() is called in click handler", async () => {
       expect($stateParams.id).toBeUndefined();
-      el[0].onclick = (e) => e.preventDefault();
+      el.onclick = (e) => e.preventDefault();
 
       browserTrigger(el, "click");
       await wait(100);
@@ -949,9 +949,9 @@ describe("ngSrefActive", () => {
       )($rootScope);
       $state.transitionTo("admin.roles");
       await wait(100);
-      const abstractParent = el[0];
+      const abstractParent = el;
       expect(abstractParent.className).toMatch(/active/);
-      const child = el[0].querySelector("a");
+      const child = el.querySelector("a");
       expect(child.className).toMatch(/active/);
     });
 
@@ -961,7 +961,7 @@ describe("ngSrefActive", () => {
       )($rootScope);
       $state.transitionTo("admin.roles", { page: 1 });
       await wait(100);
-      expect(el[0].className).toMatch(/active/);
+      expect(el.className).toMatch(/active/);
     });
 
     it("should shadow the state provided by ng-sref", async () => {
@@ -970,10 +970,10 @@ describe("ngSrefActive", () => {
       )($rootScope);
       $state.transitionTo("admin.roles");
       await wait(100);
-      expect(el[0].className).not.toMatch(/active/);
+      expect(el.className).not.toMatch(/active/);
       $state.transitionTo("admin.roles", { page: 1 });
       await wait(100);
-      expect(el[0].className).toMatch(/active/);
+      expect(el.className).toMatch(/active/);
     });
 
     it("should support multiple <className, stateOrName> pairs", async () => {
@@ -982,12 +982,12 @@ describe("ngSrefActive", () => {
       )($rootScope);
       $state.transitionTo("contacts");
       await wait(100);
-      expect(el[0].className).toMatch(/contacts/);
-      expect(el[0].className).not.toMatch(/admin/);
+      expect(el.className).toMatch(/contacts/);
+      expect(el.className).not.toMatch(/admin/);
       $state.transitionTo("admin.roles", { page: 1 });
       await wait(100);
-      expect(el[0].className).toMatch(/admin/);
-      expect(el[0].className).not.toMatch(/contacts/);
+      expect(el.className).toMatch(/admin/);
+      expect(el.className).not.toMatch(/contacts/);
     });
 
     it("should update the active classes when compiled", async () => {
@@ -1030,9 +1030,9 @@ describe("ngSrefActive", () => {
       )($rootScope);
       $state.transitionTo("admin.roles");
       await wait(100);
-      const abstractParent = el[0];
+      const abstractParent = el;
       expect(abstractParent.className).toMatch(/active/);
-      const child = el[0].querySelector("a");
+      const child = el.querySelector("a");
       expect(child.className).toMatch(/active/);
     });
 
@@ -1042,7 +1042,7 @@ describe("ngSrefActive", () => {
       )($rootScope);
       $state.transitionTo("admin.roles", { page: 1 });
       await wait(100);
-      expect(el[0].className).toMatch(/active/);
+      expect(el.className).toMatch(/active/);
     });
 
     it("should support multiple <className, stateOrName> pairs", async () => {
@@ -1051,12 +1051,12 @@ describe("ngSrefActive", () => {
       )($rootScope);
       $state.transitionTo("contacts.item.detail", { id: 1, foo: "bar" });
       await wait(100);
-      expect(el[0].className).toMatch(/contacts/);
-      expect(el[0].className).not.toMatch(/admin/);
+      expect(el.className).toMatch(/contacts/);
+      expect(el.className).not.toMatch(/admin/);
       $state.transitionTo("admin.roles", { page: 1 });
       await wait(100);
-      expect(el[0].className).toMatch(/admin/);
-      expect(el[0].className).not.toMatch(/contacts/);
+      expect(el.className).toMatch(/admin/);
+      expect(el.className).not.toMatch(/contacts/);
     });
 
     it("should update the active classes when compiled", async () => {

@@ -1314,7 +1314,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           }
 
           if (newIsolateScopeDirective) {
-            isolateScope.$$isolateBindings =
+            isolateScope.$target.$$isolateBindings =
               newIsolateScopeDirective.$$isolateBindings;
             scopeBindingInfo = initializeDirectiveBindings(
               scope,
@@ -2848,9 +2848,11 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
         if (bindings) {
           Object.entries(bindings).forEach(([scopeName, definition]) => {
-            const { attrName } = definition;
-            const { optional } = definition;
-            const { mode } = definition; // @, =, <, or &
+            const {
+              attrName,
+              optional,
+              mode, // @, =, <, or &
+            } = definition;
             let lastValue;
             let parentGet;
             let parentSet;
@@ -2934,7 +2936,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   };
 
                 // store the value that the parent scope had after the last check:
-                lastValue = destination[scopeName] = parentGet(scope);
+                lastValue = destination[scopeName] = parentGet(scope.$target);
                 var parentValueWatch = function parentValueWatch(parentValue) {
                   if (!compare(parentValue, destination[scopeName])) {
                     // we are out of sync and need to copy
@@ -2955,7 +2957,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 } else {
                   if (attrs[attrName]) {
                     let expr = attrs[attrName];
-
                     scope.$watch(expr, (val) => {
                       var res = $parse(attrs[attrName], parentValueWatch);
                       if (val) {
@@ -2965,11 +2966,13 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                           scope[attrName] = val;
                         }
                         res(scope);
+                      } else {
+                        scope[attrName] = scope[attrs[attrName]];
                       }
                     });
                   }
 
-                  destination.$watch(attrName, (val) => {
+                  removeWatch = destination.$watch(attrName, (val) => {
                     if (val === lastValue && !isUndefined(attrs[attrName])) {
                       return;
                     }
@@ -3002,7 +3005,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                     }
                   });
                 }
-                //removeWatchCollection.push(removeWatch);
+                removeWatchCollection.push(removeWatch);
                 break;
 
               case "<":
@@ -3015,7 +3018,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
                 parentGet = $parse(attrs[attrName]);
 
-                destination[scopeName] = parentGet(scope);
+                destination[scopeName] = parentGet(scope.$target);
                 /** @type {SimpleChange} */
                 initialChanges[scopeName] = {
                   currentValue: destination.$target[scopeName],
@@ -3037,17 +3040,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   );
                   removeWatchCollection.push(removeWatch);
                 }
-
-                // removeWatch = scope.$watch(
-                //   `attrs.${attrName}`,
-                //   (val) => {
-                //     recordChanges(scopeName, val);
-                //     destination[scopeName] = val;
-                //   },
-                //   true,
-                // );
-
-                // removeWatchCollection.push(removeWatch);
                 break;
 
               case "&":
@@ -3063,12 +3055,17 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   : () => {};
 
                 // Don't assign noop to destination if expression is not valid
-                if (parentGet.toString() === (() => {}).toString() && optional)
+                if (
+                  parentGet.toString() === (() => {}).toString() &&
+                  optional
+                ) {
                   break;
+                }
 
                 destination[scopeName] = function (locals) {
-                  return parentGet(scope, locals);
+                  return parentGet(scope.$target, locals);
                 };
+
                 break;
             }
           });

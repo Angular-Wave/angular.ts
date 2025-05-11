@@ -34,12 +34,12 @@ function processedDef($state, $element, def) {
 function getTypeInfo(el) {
   // SVGAElement does not use the href attribute, but rather the 'xlinkHref' attribute.
   const isSvg =
-    Object.prototype.toString.call(el[0].getAttribute("href")) ===
+    Object.prototype.toString.call(el.getAttribute("href")) ===
     "[object SVGAnimatedString]";
-  const isForm = el[0].nodeName === "FORM";
+  const isForm = el.nodeName === "FORM";
   return {
     attr: isForm ? "action" : isSvg ? "xlink:href" : "href",
-    isAnchor: el[0].nodeName === "A",
+    isAnchor: el.nodeName === "A",
     clickable: !isForm,
   };
 }
@@ -93,14 +93,15 @@ function bindEvents(element, scope, hookFn, ngStateOpts) {
   if (!Array.isArray(events)) {
     events = ["click"];
   }
-  const on = element.on ? "on" : "bind";
+  //const on = element.on ? "on" : "bind";
+
   for (const event of events) {
-    element[on](event, hookFn);
+    element.addEventListener(event, hookFn);
   }
   scope.$on("$destroy", function () {
-    const off = element.off ? "off" : "unbind";
+    // const off = element.off ? "off" : "unbind";
     for (const event of events) {
-      element[off](event, hookFn);
+      element.removeEventListener(event, hookFn);
     }
   });
 }

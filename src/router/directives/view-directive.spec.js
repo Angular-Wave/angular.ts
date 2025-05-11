@@ -1205,7 +1205,7 @@ describe("angular 1.5+ style .component()", () => {
       await $state.transitionTo("cmp_tpl");
 
       expect($state.current.name).toBe("cmp_tpl");
-      expect(el[0].querySelector("ng-view").innerHTML).toEqual(
+      expect(el.querySelector("ng-view").innerHTML).toEqual(
         'x<ng12-directive data="$resolve.data">-DATA!-</ng12-directive>x',
       );
     });
@@ -1223,7 +1223,7 @@ describe("angular 1.5+ style .component()", () => {
       await wait(100);
 
       expect($state.current.name).toBe("cmp_tpl");
-      expect(el[0].querySelector("ng-view").innerHTML).toEqual(
+      expect(el.querySelector("ng-view").innerHTML).toEqual(
         'x<ng13-directive data="$resolve.data">-DATA!-</ng13-directive>x',
       );
     });
@@ -1241,7 +1241,7 @@ describe("angular 1.5+ style .component()", () => {
       await wait(100);
 
       expect($state.current.name).toBe("cmp_tpl");
-      expect(el[0].querySelector("ng-view").innerHTML).toEqual(
+      expect(el.querySelector("ng-view").innerHTML).toEqual(
         'x<ng-component data="$resolve.data">-DATA!-</ng-component>x',
       );
     });
@@ -1326,7 +1326,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("route2cmp");
       await wait(100);
 
-      const directiveEl = el[0].querySelector("div ng-view ng12-directive");
+      const directiveEl = el.querySelector("div ng-view ng12-directive");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("route2cmp");
       expect(el.textContent).toBe("-DATA!-");
@@ -1351,7 +1351,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("route2cmp");
       await wait(100);
 
-      const directiveEl = el[0].querySelector("div ng-view ng13-directive");
+      const directiveEl = el.querySelector("div ng-view ng13-directive");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("route2cmp");
       expect(el.textContent).toBe("-DATA!-");
@@ -1397,7 +1397,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("route2cmp");
       await wait(100);
 
-      const directiveEl = el[0].querySelector("div ng-view ng-component");
+      const directiveEl = el.querySelector("div ng-view ng-component");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("route2cmp");
       expect(el.textContent).toBe("-DATA!-");
@@ -1752,8 +1752,8 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("route2cmp");
       await wait(100);
 
-      const header = el[0].querySelector("[ng-view=header]");
-      const content = el[0].querySelector("[ng-view=content]");
+      const header = el.querySelector("[ng-view=header]");
+      const content = el.querySelector("[ng-view=content]");
 
       expect(header.textContent).toBe("#awesome#");
       expect(content.textContent).toBe("-DATA!-");
@@ -1781,8 +1781,8 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("route2cmp");
       await wait(100);
 
-      const header = el[0].querySelector("[ng-view=header]");
-      const content = el[0].querySelector("[ng-view=content]");
+      const header = el.querySelector("[ng-view=header]");
+      const content = el.querySelector("[ng-view=content]");
 
       expect(header.textContent).toBe("#awesome#");
       expect(content.textContent).toBe("-DATA!-");
@@ -1823,7 +1823,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("route2cmp");
       await wait(100);
 
-      const directiveEl = el[0].querySelector("div ng-view ng12-directive");
+      const directiveEl = el.querySelector("div ng-view ng12-directive");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("route2cmp");
       expect(el.textContent).toBe("-DATA!-");
@@ -1855,7 +1855,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("route2cmp");
       await wait(100);
 
-      const directiveEl = el[0].querySelector("div ng-view ng-component");
+      const directiveEl = el.querySelector("div ng-view ng-component");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("route2cmp");
       expect(el.textContent).toBe("-DATA!.DATA2!-");
@@ -1882,7 +1882,7 @@ describe("angular 1.5+ style .component()", () => {
       });
       await wait(100);
 
-      const directiveEl = el[0].querySelector(
+      const directiveEl = el.querySelector(
         "div ng-view ng12-dynamic-directive",
       );
       expect(directiveEl).toBeDefined();
@@ -1911,7 +1911,7 @@ describe("angular 1.5+ style .component()", () => {
       });
       await wait(100);
 
-      const directiveEl = el[0].querySelector("div ng-view dynamic-component");
+      const directiveEl = el.querySelector("div ng-view dynamic-component");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("dynamicComponent");
       expect(el.textContent.trim()).toBe("dynamicComponent");
