@@ -2128,7 +2128,7 @@ describe("$compile", () => {
       reloadModules();
       var el = $('<div my-directive an-attr="abc"></div>');
       $compile(el)($rootScope);
-      expect(gotElement[0]).toBe(el);
+      expect(gotElement[0]).toBe(el[0]);
       expect(gotScope).toBe($rootScope);
       expect(gotAttrs).toBeDefined();
       expect(gotAttrs.anAttr).toEqual("abc");
@@ -2711,7 +2711,7 @@ describe("$compile", () => {
       var el = $("<div my-directive></div>");
       $compile(el);
       expect(el.innerHTML).toBe('<div class="from-template"></div>');
-      expect(templateSpy.calls.first().args[0][0]).toBe(el);
+      expect(templateSpy.calls.first().args[0][0]).toBe(el[0]);
       expect(templateSpy.calls.first().args[1].myDirective).toBeDefined();
     });
 
