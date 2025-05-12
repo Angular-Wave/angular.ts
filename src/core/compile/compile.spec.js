@@ -10384,16 +10384,16 @@ describe("$compile", () => {
                 myModule
                   .controller("myCtrl", function () {
                     this.$onInit = function () {
-                      expect(this.data).toEqual({
+                      expect(this.$target.data).toEqual({
                         foo: "bar",
                         baz: "biz",
                       });
-                      expect(this.oneway).toEqual({
+                      expect(this.$target.oneway).toEqual({
                         foo: "bar",
                         baz: "biz",
                       });
-                      expect(this.str).toBe("Hello, world!");
-                      expect(this.fn()).toBe("called!");
+                      expect(this.$target.str).toBe("Hello, world!");
+                      expect(this.$target.fn()).toBe("called!");
                     };
                     controllerCalled = true;
                   })
