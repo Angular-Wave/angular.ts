@@ -2881,7 +2881,7 @@ describe("$compile", () => {
 
       $compile(el);
       await wait();
-      expect(templateUrlSpy.calls.first().args[0][0]).toBe(el);
+      expect(templateUrlSpy.calls.first().args[0][0]).toBe(el[0]);
       expect(templateUrlSpy.calls.first().args[1].myDirective).toBeDefined();
     });
 
@@ -2990,7 +2990,7 @@ describe("$compile", () => {
       setTimeout(() => {
         expect(linkSpy).toHaveBeenCalled();
         expect(linkSpy.calls.argsFor(0)[0]).toBe($rootScope);
-        expect(linkSpy.calls.argsFor(0)[1][0]).toBe(el);
+        expect(linkSpy.calls.argsFor(0)[1][0]).toBe(el[0]);
         expect(linkSpy.calls.argsFor(0)[2].myDirective).toBeDefined();
         done();
       }, 10);
