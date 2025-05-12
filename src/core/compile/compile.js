@@ -1390,7 +1390,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
               }
               if (isFunction(controllerInstance.$onInit)) {
                 try {
-                  controllerInstance.$onInit();
+                  controllerInstance.$target.$onInit();
                 } catch (e) {
                   $exceptionHandler(e);
                 }
@@ -2936,7 +2936,9 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   };
 
                 // store the value that the parent scope had after the last check:
-                lastValue = destination[scopeName] = parentGet(scope.$target);
+                lastValue = destination.$target[scopeName] = parentGet(
+                  scope.$target,
+                );
                 var parentValueWatch = function parentValueWatch(parentValue) {
                   if (!compare(parentValue, destination[scopeName])) {
                     // we are out of sync and need to copy
@@ -3018,7 +3020,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
                 parentGet = $parse(attrs[attrName]);
 
-                destination[scopeName] = parentGet(scope.$target);
+                destination.$target[scopeName] = parentGet(scope.$target);
                 /** @type {SimpleChange} */
                 initialChanges[scopeName] = {
                   currentValue: destination.$target[scopeName],
@@ -3062,7 +3064,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   break;
                 }
 
-                destination[scopeName] = function (locals) {
+                destination.$target[scopeName] = function (locals) {
                   return parentGet(scope.$target, locals);
                 };
 

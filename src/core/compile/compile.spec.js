@@ -10571,11 +10571,12 @@ describe("$compile", () => {
             scope: true,
             controllerAs: "fooCtrl",
             controller() {
-              this.$onInit = function () {
-                // expect(this.$target.data).toEqual({ foo: "bar", baz: "biz" });
-                // expect(this.$target.oneway).toEqual({ foo: "bar", baz: "biz" });
-                // expect(this.$target.str).toBe("Hello, world!");
-                // expect(this.$target.fn()).toBe("called!");
+              this.$onInit = () => {
+                // UNDEFINED BEHAVIOR IN JASMINE? unless using $target this test overwrites scope.$target!
+                expect(this.$target.data).toEqual({ foo: "bar", baz: "biz" });
+                expect(this.$target.oneway).toEqual({ foo: "bar", baz: "biz" });
+                expect(this.$target.str).toBe("Hello, world!");
+                expect(this.$target.fn()).toBe("called!");
               };
               controller1Called = true;
             },
@@ -10591,10 +10592,16 @@ describe("$compile", () => {
             controllerAs: "barCtrl",
             controller() {
               this.$onInit = function () {
-                // expect(this.data).toEqual({ foo2: "bar2", baz2: "biz2" });
-                // expect(this.oneway).toEqual({ foo2: "bar2", baz2: "biz2" });
-                // expect(this.str).toBe("Hello, second world!");
-                // expect(this.fn()).toBe("second called!");
+                expect(this.$target.data).toEqual({
+                  foo2: "bar2",
+                  baz2: "biz2",
+                });
+                expect(this.$target.oneway).toEqual({
+                  foo2: "bar2",
+                  baz2: "biz2",
+                });
+                expect(this.$target.str).toBe("Hello, second world!");
+                expect(this.fn()).toBe("second called!");
               };
               controller2Called = true;
             },
