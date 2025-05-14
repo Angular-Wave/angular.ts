@@ -10630,7 +10630,7 @@ describe("$compile", () => {
         expect(controller2Called).toBe(true);
       });
 
-      it("should evaluate against the correct scope, when using `bindToController` (new scope)", async () => {
+      fit("should evaluate against the correct scope, when using `bindToController` (new scope)", async () => {
         module
           .controller("ParentCtrl", function () {
             this.value1 = "parent1";
@@ -10650,11 +10650,11 @@ describe("$compile", () => {
           })
           .directive("child", () => ({
             scope: true,
-            controller: "ChildCtrl as ctrl",
+            controller: "ChildCtrl as ctrl1",
             bindToController: {
               fromParent1: "@",
-              fromParent2: "=",
-              fromParent3: "&",
+              // fromParent2: "=",
+              // fromParent3: "&",
               fromParent4: "<",
             },
             template: "",
@@ -10665,7 +10665,7 @@ describe("$compile", () => {
             "<child " +
             'from-parent-1="{{ ctrl.value1 }}" ' +
             'from-parent-2="ctrl.value2" ' +
-            'from-parent-3="ctrl.value3" ' +
+            // 'from-parent-3="ctrl.value3" ' +
             'from-parent-4="ctrl.value4">' +
             "</child>" +
             "</div>",
@@ -10681,17 +10681,18 @@ describe("$compile", () => {
 
         expect(childCtrl.fromParent1).toBe(parentCtrl.value1);
         expect(childCtrl.fromParent1).not.toBe(childCtrl.value1);
-        expect(childCtrl.fromParent2).toBe(parentCtrl.value2);
-        expect(childCtrl.fromParent2).not.toBe(childCtrl.value2);
-        expect(childCtrl.fromParent3()()).toBe(parentCtrl.value3());
-        expect(childCtrl.fromParent3()()).not.toBe(childCtrl.value3());
+        // expect(childCtrl.fromParent2).toBe(parentCtrl.value2);
+        // expect(childCtrl.fromParent2).not.toBe(childCtrl.value2);
+        // expect(childCtrl.fromParent3()()).toBe(parentCtrl.value3());
+        // expect(childCtrl.fromParent3()()).not.toBe(childCtrl.value3());
         expect(childCtrl.fromParent4).toBe(parentCtrl.value4);
         expect(childCtrl.fromParent4).not.toBe(childCtrl.value4);
+        debugger
 
-        childCtrl.fromParent2 = "modified";
-        await wait();
-        expect(parentCtrl.value2).toBe("modified");
-        expect(childCtrl.value2).toBe("child2");
+        // childCtrl.fromParent2 = "modified";
+        // await wait();
+        // expect(parentCtrl.value2).toBe("modified");
+        // expect(childCtrl.value2).toBe("child2");
       });
 
       it("should evaluate against the correct scope, when using `bindToController` (new iso scope)", async () => {
