@@ -448,16 +448,15 @@ export class Scope {
    * @returns {*} - The value of the property or a method if accessing `watch` or `sync`.
    */
   get(target, property, proxy) {
+    if (property === "$$watchersCount") return calculateWatcherCount(this);
+    if (property === isProxySymbol) return true;
+
     if (target[property] && isProxy(target[property])) {
       this.$proxy = target[property];
     } else {
       this.$proxy = proxy;
     }
-    this.$target = target;
-
-    if (property === "$$watchersCount") return calculateWatcherCount(this);
-    if (property === isProxySymbol) return true;
-
+    
     this.propertyMap = {
       $watch: this.$watch.bind(this),
       $watchGroup: this.$watchGroup.bind(this),
@@ -507,11 +506,14 @@ export class Scope {
         this.scheduleListener(this.scheduled);
       }
     }
-
-    let res = Object.prototype.hasOwnProperty.call(this.propertyMap, property)
-      ? this.propertyMap[property]
-      : target[property];
-    return res;
+    
+    if (Object.prototype.hasOwnProperty.call(this.propertyMap, property)) {
+      this.$target = target;
+      return this.propertyMap[property]
+    } else {
+      // we are a simple getter
+      return target[property]
+    }
   }
 
   /**
