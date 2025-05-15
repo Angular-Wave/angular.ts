@@ -13310,7 +13310,7 @@ describe("$compile", () => {
               scope: {},
               link: function link(scope, element, attrs) {
                 const foo = element.querySelector(".foo");
-                scope.children = foo.children().length;
+                scope.children = foo.children.length;
               },
               template:
                 "<div>" +
