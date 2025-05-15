@@ -2934,7 +2934,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                       directive.name,
                     );
                   };
-
                 // store the value that the parent scope had after the last check:
                 lastValue = destination.$target[scopeName] = parentGet(
                   scope.$target,
@@ -2959,53 +2958,62 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 } else {
                   if (attrs[attrName]) {
                     let expr = attrs[attrName];
-                    scope.$watch(expr, (val) => {
-                      var res = $parse(attrs[attrName], parentValueWatch);
-                      if (val) {
-                        if (parentGet.literal) {
-                          scope.$target[attrName] = val;
+                    // make it lazy as we dont want to trigger the two way data binding at this point
+                    scope.$watch(
+                      expr,
+                      (val) => {
+                        var res = $parse(attrs[attrName], parentValueWatch);
+                        if (val) {
+                          if (parentGet.literal) {
+                            scope.$target[attrName] = val;
+                          } else {
+                            scope[attrName] = val;
+                          }
+                          res(scope);
                         } else {
-                          scope[attrName] = val;
+                          scope[attrName] = scope[attrs[attrName]];
                         }
-                        res(scope);
-                      } else {
-                        scope[attrName] = scope[attrs[attrName]];
-                      }
-                    });
+                      },
+                      true,
+                    );
                   }
 
-                  removeWatch = destination.$watch(attrName, (val) => {
-                    if (val === lastValue && !isUndefined(attrs[attrName])) {
-                      return;
-                    }
-                    if (
-                      (complexExpression && !parentGet.literal) ||
-                      (isUndefined(attrs[attrName]) && isDefined(val))
-                    ) {
-                      destination.$target[attrName] = lastValue;
-                      throw $compileMinErr(
-                        "nonassign",
-                        "Expression '{0}' in attribute '{1}' used with directive '{2}' is non-assignable!",
-                        attrs[attrName],
-                        attrName,
-                        directive.name,
-                      );
-                    } else {
-                      // manually set the handler to avoid watch cycles
-                      if (isObject(val)) {
-                        Object.entries(val).forEach(([key, value]) => {
-                          scope.$target[key] = value;
-                        });
-                      } else {
-                        scope.$target[attrs[attrName]] = val;
-                        scope.$handler.watchers
-                          .get(attrs[attrName])
-                          ?.forEach((watchFn) => {
-                            watchFn.listenerFn(val);
-                          });
+                  removeWatch = destination.$watch(
+                    attrName,
+                    (val) => {
+                      if (val === lastValue && !isUndefined(attrs[attrName])) {
+                        return;
                       }
-                    }
-                  });
+                      if (
+                        (complexExpression && !parentGet.literal) ||
+                        (isUndefined(attrs[attrName]) && isDefined(val))
+                      ) {
+                        destination.$target[attrName] = lastValue;
+                        throw $compileMinErr(
+                          "nonassign",
+                          "Expression '{0}' in attribute '{1}' used with directive '{2}' is non-assignable!",
+                          attrs[attrName],
+                          attrName,
+                          directive.name,
+                        );
+                      } else {
+                        // manually set the handler to avoid watch cycles
+                        if (isObject(val)) {
+                          Object.entries(val).forEach(([key, value]) => {
+                            scope.$target[key] = value;
+                          });
+                        } else {
+                          parentSet(scope.$target, (lastValue = val));
+                          scope.$handler.watchers
+                            .get(attrs[attrName])
+                            ?.forEach((watchFn) => {
+                              watchFn.listenerFn(val);
+                            });
+                        }
+                      }
+                    },
+                    true,
+                  );
                 }
                 removeWatchCollection.push(removeWatch);
                 break;

@@ -456,7 +456,7 @@ export class Scope {
     } else {
       this.$proxy = proxy;
     }
-    
+
     this.propertyMap = {
       $watch: this.$watch.bind(this),
       $watchGroup: this.$watchGroup.bind(this),
@@ -506,13 +506,13 @@ export class Scope {
         this.scheduleListener(this.scheduled);
       }
     }
-    
+
     if (Object.prototype.hasOwnProperty.call(this.propertyMap, property)) {
       this.$target = target;
-      return this.propertyMap[property]
+      return this.propertyMap[property];
     } else {
       // we are a simple getter
-      return target[property]
+      return target[property];
     }
   }
 
