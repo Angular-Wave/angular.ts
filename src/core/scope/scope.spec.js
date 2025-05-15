@@ -376,6 +376,18 @@ describe("Scope", () => {
       expect(scope.$children).toEqual([child, child2]);
       expect(child2.$children).toEqual([child3]);
     });
+
+    it("should can get children by id", () => {
+      const child = scope.$new();
+      const child2 = scope.$new();
+      const child3 = child2.$new();
+      const child4 = child3.$transcluded();
+
+      expect(scope.$getById(child.$id).$id).toEqual(child.$id);
+      expect(scope.$getById(child2.$id).$id).toEqual(child2.$id);
+      expect(scope.$getById(child3.$id).$id).toEqual(child3.$id);
+      expect(scope.$getById(child4.$id).$id).toEqual(child4.$id);
+    });
   });
 
   describe("this", () => {

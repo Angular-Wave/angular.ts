@@ -485,6 +485,7 @@ export class Scope {
       registerForeignKey: this.registerForeignKey.bind(this),
       notifyListener: this.notifyListener.bind(this),
       $merge: this.$merge.bind(this),
+      $getById: this.$getById.bind(this),
     };
 
     if (
@@ -1195,6 +1196,31 @@ export class Scope {
       }
     } catch (e) {
       $exceptionHandler(e);
+    }
+  }
+
+  /**
+   * Searches the scope instance
+   *
+   * @param {string|number}id
+   * @returns {Scope|undefined}
+   */
+  $getById(id) {
+    if (isString(id)) {
+      id = parseInt(id, 10);
+    }
+    if (this.$id === id) {
+      return this;
+    } else {
+      let res = undefined;
+      for (const child of this.$children) {
+        let found = child.$getById(id);
+        if (found) {
+          res = found;
+          break;
+        }
+      }
+      return res;
     }
   }
 }
