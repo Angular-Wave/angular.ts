@@ -152,7 +152,7 @@ export function AnimateCssDriverProvider($$animationProvider) {
         }
 
         function getClassVal(element) {
-          return element.attr("class") || "";
+          return element.getAttribute("class") || "";
         }
 
         function prepareInAnimation() {

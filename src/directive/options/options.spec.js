@@ -66,9 +66,9 @@ describe("ngOptions", () => {
           compare(actual, value, text, label) {
             const errors = [];
             const hash = hashKey(value);
-            if (actual.attr("value") !== hash) {
+            if (actual.getAttribute("value") !== hash) {
               errors.push(
-                `Expected option value "${actual.attr("value")}" to equal "${hash}"`,
+                `Expected option value "${actual.getAttribute("value")}" to equal "${hash}"`,
               );
             }
             if (text && actual.textContent !== text) {
@@ -76,9 +76,9 @@ describe("ngOptions", () => {
                 `Expected option text "${actual.textContent}" to equal "${text}"`,
               );
             }
-            if (label && actual.attr("label") !== label) {
+            if (label && actual.getAttribute("label") !== label) {
               errors.push(
-                `Expected option label "${actual.attr("label")}" to equal "${label}"`,
+                `Expected option label "${actual.getAttribute("label")}" to equal "${label}"`,
               );
             }
 
@@ -94,9 +94,9 @@ describe("ngOptions", () => {
         return {
           compare(actual, value, text, label) {
             const errors = [];
-            if (actual.attr("value") !== `${value}`) {
+            if (actual.getAttribute("value") !== `${value}`) {
               errors.push(
-                `Expected option value "${actual.attr("value")}" to equal "${value}"`,
+                `Expected option value "${actual.getAttribute("value")}" to equal "${value}"`,
               );
             }
             if (text && actual.textContent !== text) {
@@ -104,9 +104,9 @@ describe("ngOptions", () => {
                 `Expected option text "${actual.textContent}" to equal "${text}"`,
               );
             }
-            if (label && actual.attr("label") !== label) {
+            if (label && actual.getAttribute("label") !== label) {
               errors.push(
-                `Expected option label "${actual.attr("label")}" to equal "${label}"`,
+                `Expected option label "${actual.getAttribute("label")}" to equal "${label}"`,
               );
             }
 
@@ -122,9 +122,9 @@ describe("ngOptions", () => {
         return {
           compare(actual) {
             const errors = [];
-            if (actual.attr("value") !== "?") {
+            if (actual.getAttribute("value") !== "?") {
               errors.push(
-                `Expected option value "${actual.attr("value")}" to equal "?"`,
+                `Expected option value "${actual.getAttribute("value")}" to equal "?"`,
               );
             }
 
@@ -390,13 +390,13 @@ describe("ngOptions", () => {
     expect(options.eq(1)).toEqualOption("0000FF", "blue");
 
     expect(options.eq(0)[0].getAttribute("selected")).toBe("selected");
-    expect(options.eq(0).attr("selected")).toBe("selected");
+    expect(options.eq(0).getAttribute("selected")).toBe("selected");
     expect(options.eq(0)[0].selected).toBe(true);
     expect(options.eq(0)[0].selected).toBe(true);
 
     scope.selected = "0000FF";
     expect(options.eq(1)[0].getAttribute("selected")).toBe("selected");
-    expect(options.eq(1).attr("selected")).toBe("selected");
+    expect(options.eq(1).getAttribute("selected")).toBe("selected");
     expect(options.eq(1)[0].selected).toBe(true);
     expect(options.eq(1)[0].selected).toBe(true);
   });
@@ -1724,21 +1724,21 @@ describe("ngOptions", () => {
       const zero = optgroups.eq(0);
       const b = zero.find("option").eq(0);
       const e = zero.find("option").eq(1);
-      expect(zero.attr("label")).toEqual("0");
+      expect(zero.getAttribute("label")).toEqual("0");
       expect(b.textContent).toEqual("B");
       expect(e.textContent).toEqual("E");
 
       const first = optgroups.eq(1);
       const c = first.find("option").eq(0);
       const f = first.find("option").eq(1);
-      expect(first.attr("label")).toEqual("first");
+      expect(first.getAttribute("label")).toEqual("first");
       expect(c.textContent).toEqual("C");
       expect(f.textContent).toEqual("F");
 
       const second = optgroups.eq(2);
       const d = second.find("option").eq(0);
       const g = second.find("option").eq(1);
-      expect(second.attr("label")).toEqual("second");
+      expect(second.getAttribute("label")).toEqual("second");
       expect(d.textContent).toEqual("D");
       expect(g.textContent).toEqual("G");
 
@@ -1772,14 +1772,14 @@ describe("ngOptions", () => {
       const first = optgroups.eq(0);
       const c = first.find("option").eq(0);
       const f = first.find("option").eq(1);
-      expect(first.attr("label")).toEqual("first");
+      expect(first.getAttribute("label")).toEqual("first");
       expect(c.textContent).toEqual("C");
       expect(f.textContent).toEqual("F");
 
       const second = optgroups.eq(1);
       const d = second.find("option").eq(0);
       const g = second.find("option").eq(1);
-      expect(second.attr("label")).toEqual("second");
+      expect(second.getAttribute("label")).toEqual("second");
       expect(d.textContent).toEqual("D");
       expect(g.textContent).toEqual("G");
 
@@ -1819,7 +1819,7 @@ describe("ngOptions", () => {
 
       alpha = one.find("option").eq(0);
       beta = one.find("option").eq(1);
-      expect(one.attr("label")).toEqual("one");
+      expect(one.getAttribute("label")).toEqual("one");
       expect(alpha.textContent).toEqual("Alpha");
       expect(beta.textContent).toEqual("Beta");
 
@@ -1827,7 +1827,7 @@ describe("ngOptions", () => {
       expect(two.children("option").length).toBe(1);
 
       gamma = two.find("option").eq(0);
-      expect(two.attr("label")).toEqual("two");
+      expect(two.getAttribute("label")).toEqual("two");
       expect(gamma.textContent).toEqual("Gamma");
 
       // Remove item from first group, add item to second group, add new group
@@ -1844,7 +1844,7 @@ describe("ngOptions", () => {
       expect(one.children("option").length).toBe(1);
 
       beta = one.find("option").eq(0);
-      expect(one.attr("label")).toEqual("one");
+      expect(one.getAttribute("label")).toEqual("one");
       expect(beta.textContent).toEqual("Beta");
 
       // Group with new item
@@ -1852,10 +1852,10 @@ describe("ngOptions", () => {
       expect(two.children("option").length).toBe(2);
 
       gamma = two.find("option").eq(0);
-      expect(two.attr("label")).toEqual("two");
+      expect(two.getAttribute("label")).toEqual("two");
       expect(gamma.textContent).toEqual("Gamma");
       delta = two.find("option").eq(1);
-      expect(two.attr("label")).toEqual("two");
+      expect(two.getAttribute("label")).toEqual("two");
       expect(delta.textContent).toEqual("Delta");
 
       // New group
@@ -1863,7 +1863,7 @@ describe("ngOptions", () => {
       expect(three.children("option").length).toBe(1);
 
       epsilon = three.find("option").eq(0);
-      expect(three.attr("label")).toEqual("three");
+      expect(three.getAttribute("label")).toEqual("three");
       expect(epsilon.textContent).toEqual("Epsilon");
     });
 
@@ -2000,10 +2000,10 @@ describe("ngOptions", () => {
 
       const first = element.find("option")[0];
       expect(first.textContent).toEqual("first");
-      expect(first.attr("value")).toEqual("1");
+      expect(first.getAttribute("value")).toEqual("1");
       const forth = element.find("option")[3];
       expect(forth.textContent).toEqual("forth");
-      expect(forth.attr("value")).toEqual("4");
+      expect(forth.getAttribute("value")).toEqual("4");
 
       scope.$apply(() => {
         scope.selected = scope.values[3];
@@ -2309,34 +2309,44 @@ describe("ngOptions", () => {
         ];
       });
       expect(element.value).toEqualUnknownValue();
-      expect(element.find("option").eq(0).attr("selected")).toEqual("selected");
+      expect(element.find("option").eq(0).getAttribute("selected")).toEqual(
+        "selected",
+      );
 
       scope.$apply(() => {
         scope.selected = 10;
       });
       // Here the ? option should disappear and the first real option should have selected attribute
       expect(element).toEqualSelectValue(scope.selected);
-      expect(element.find("option").eq(0).attr("selected")).toEqual("selected");
+      expect(element.find("option").eq(0).getAttribute("selected")).toEqual(
+        "selected",
+      );
 
       // Here the selected value is changed and we change the selected attribute
       scope.$apply(() => {
         scope.selected = 20;
       });
       expect(element).toEqualSelectValue(scope.selected);
-      expect(element.find("option").eq(1).attr("selected")).toEqual("selected");
+      expect(element.find("option").eq(1).getAttribute("selected")).toEqual(
+        "selected",
+      );
 
       scope.$apply(() => {
         scope.values.push({ id: 30, name: "C" });
       });
       expect(element).toEqualSelectValue(scope.selected);
-      expect(element.find("option").eq(1).attr("selected")).toEqual("selected");
+      expect(element.find("option").eq(1).getAttribute("selected")).toEqual(
+        "selected",
+      );
 
       // Here the ? option should reappear and have selected attribute
       scope.$apply(() => {
         scope.selected = undefined;
       });
       expect(element.value).toEqualUnknownValue();
-      expect(element.find("option").eq(0).attr("selected")).toEqual("selected");
+      expect(element.find("option").eq(0).getAttribute("selected")).toEqual(
+        "selected",
+      );
     });
 
     it("should select the correct option for selectAs and falsy values", () => {
@@ -2526,8 +2536,8 @@ describe("ngOptions", () => {
       // check blank option is first and is compiled
       option = element.find("option").eq(0);
       expect(option[0].classList.contains("coyote")).toBeTruthy();
-      expect(option.attr("id")).toBe("road-runner");
-      expect(option.attr("custom-attr")).toBe("custom-attr");
+      expect(option.getAttribute("id")).toBe("road-runner");
+      expect(option.getAttribute("custom-attr")).toBe("custom-attr");
     });
 
     it("should be selected, if it is available and no other option is selected", () => {

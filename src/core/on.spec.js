@@ -102,7 +102,7 @@ describe("ngOn* event binding", () => {
     const cb = ($rootScope.cb = jasmine.createSpy("ng-on cb"));
     triggerHandler(element, "asdf");
     expect(cb).toHaveBeenCalled();
-    expect(element.attr("asdf")).toBe("foo");
+    expect(element.getAttribute("asdf")).toBe("foo");
   });
 
   it("should work independently of (ng-)attributes with the same name", () => {
@@ -112,7 +112,7 @@ describe("ngOn* event binding", () => {
     const cb = ($rootScope.cb = jasmine.createSpy("ng-on cb"));
     triggerHandler(element, "asdf");
     expect(cb).toHaveBeenCalled();
-    expect(element.attr("asdf")).toBe("foo");
+    expect(element.getAttribute("asdf")).toBe("foo");
   });
 
   it("should work independently of properties with the same name", () => {

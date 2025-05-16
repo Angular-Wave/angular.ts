@@ -1828,16 +1828,16 @@ describe("$location", () => {
   //         browserTrigger(link, "click");
   //         expectRewriteTo($browser, "http://host.com/base/");
 
-  //         (link).attr("href", "http://host.com/base/foo");
+  //         (link).getAttribute("href", "http://host.com/base/foo");
   //         browserTrigger(link, "click");
   //         expectRewriteTo($browser, "http://host.com/base/foo");
 
-  //         (link).attr("href", "http://host.com/base/");
+  //         (link).getAttribute("href", "http://host.com/base/");
   //         browserTrigger(link, "click");
   //         expectRewriteTo($browser, "http://host.com/base/");
 
   //         (link)
-  //           .attr("href", "http://host.com/base/foo")
+  //           .getAttribute("href", "http://host.com/base/foo")
   //           .on("click", (e) => {
   //             e.preventDefault();
   //           });

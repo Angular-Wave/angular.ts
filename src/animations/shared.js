@@ -212,7 +212,11 @@ export function mergeAnimationDetails(element, oldAnimation, newAnimation) {
 
   const toAdd = `${target.addClass || ""} ${newOptions.addClass || ""}`;
   const toRemove = `${target.removeClass || ""} ${newOptions.removeClass || ""}`;
-  const classes = resolveElementClasses(element.attr("class"), toAdd, toRemove);
+  const classes = resolveElementClasses(
+    element.getAttribute("class"),
+    toAdd,
+    toRemove,
+  );
 
   if (newOptions.preparationClasses) {
     target.preparationClasses = concatWithSpace(

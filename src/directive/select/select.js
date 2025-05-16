@@ -267,7 +267,7 @@ function SelectController($element, $scope) {
         // Set the attribute directly instead of using optionAttrs.$set - this stops the observer
         // from firing a second time. Other $observers on value will also get the result of the
         // ngValue expression, not the hashed value
-        optionElement.attr("value", hashedVal);
+        optionElement.getAttribute("value", hashedVal);
 
         if (removal && previouslySelected) {
           scheduleViewValueUpdate();

@@ -139,7 +139,7 @@ describe("ngProp*", () => {
     );
     $rootScope.asdf = 123;
     expect(element.asdf).toBe(123);
-    expect(element.attr("asdf")).toBe("foo");
+    expect(element.getAttribute("asdf")).toBe("foo");
   });
 
   it("should work independently of (ng-)attributes with the same name", () => {
@@ -148,7 +148,7 @@ describe("ngProp*", () => {
     );
     $rootScope.asdf = 123;
     expect(element.asdf).toBe(123);
-    expect(element.attr("asdf")).toBe("foo");
+    expect(element.getAttribute("asdf")).toBe("foo");
   });
 
   it("should use the full ng-prop-* attribute name in $attr mappings", () => {

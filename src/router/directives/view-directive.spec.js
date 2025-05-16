@@ -110,7 +110,7 @@ describe("ngView", () => {
       name: "m",
       template: "mState",
       controller: function ($scope, $element) {
-        $scope.elementId = $element.attr("id");
+        $scope.elementId = $element.getAttribute("id");
       },
     },
     nState = {

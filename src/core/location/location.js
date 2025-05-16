@@ -709,13 +709,17 @@ export class LocationProvider {
             return;
         }
 
-        if (isString(rewriteLinks) && isUndefined(elm.attr(rewriteLinks)))
+        if (
+          isString(rewriteLinks) &&
+          isUndefined(elm.getAttribute(rewriteLinks))
+        )
           return;
 
         let absHref = elm[0].href;
         // get the actual href attribute - see
         // http://msdn.microsoft.com/en-us/library/ie/dd347148(v=vs.85).aspx
-        const relHref = elm.attr("href") || elm.attr("xlink:href");
+        const relHref =
+          elm.getAttribute("href") || elm.getAttribute("xlink:href");
 
         if (
           isObject(absHref) &&
@@ -729,7 +733,11 @@ export class LocationProvider {
         // Ignore when url is started with javascript: or mailto:
         if (IGNORE_URI_REGEXP.test(absHref)) return;
 
-        if (absHref && !elm.attr("target") && !event.isDefaultPrevented()) {
+        if (
+          absHref &&
+          !elm.getAttribute("target") &&
+          !event.isDefaultPrevented()
+        ) {
           if ($location.$$parseLinkUrl(absHref, relHref)) {
             // We do a preventDefault for all urls that are part of the AngularJS application,
             // in html5mode and also without, so that we are able to abort navigation without

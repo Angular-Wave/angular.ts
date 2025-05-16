@@ -55,11 +55,11 @@ function clickHook(el, $state, type, getDef) {
       e.metaKey ||
       e.shiftKey ||
       e.altKey ||
-      el.attr("target");
+      el.getAttribute("target");
     if (!res) {
       // HACK: This is to allow ng-clicks to be processed before the transition is initiated:
       const transition = setTimeout(function () {
-        if (!el.attr("disabled")) {
+        if (!el.getAttribute("disabled")) {
           $state.go(target.ngState, target.ngStateParams, target.ngStateOpts);
         }
       });

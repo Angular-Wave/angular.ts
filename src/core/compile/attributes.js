@@ -184,7 +184,7 @@ export class Attributes {
       } else if (SIMPLE_ATTR_NAME.test(attrName)) {
         // jQuery skips special boolean attrs treatment in XML nodes for
         // historical reasons and hence AngularJS cannot freely call
-        // `.attr(attrName, false) with such attributes. To avoid issues
+        // `.getAttribute(attrName, false) with such attributes. To avoid issues
         // in XHTML, call `removeAttr` in such cases instead.
         // See https://github.com/jquery/jquery/issues/4249
         if (booleanKey && value === false) {

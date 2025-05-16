@@ -192,8 +192,8 @@ export class TemplateFactoryProvider {
       // If the ng-view has an attribute which matches a binding on the routed component
       // then pass that attribute through to the routed component template.
       // Prefer ng-view wired mappings to resolve data, unless the resolve was explicitly bound using `bindings:`
-      if (ngView.attr(attrName) && !bindings[name])
-        return `${attrName}='${ngView.attr(attrName)}'`;
+      if (ngView.getAttribute(attrName) && !bindings[name])
+        return `${attrName}='${ngView.getAttribute(attrName)}'`;
       const resolveName = bindings[name] || name;
       // Pre-evaluate the expression for "@" bindings by enclosing in {{ }}
       // some-attr="{{$resolve.someResolveName }}"

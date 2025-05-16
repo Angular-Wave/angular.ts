@@ -35,7 +35,7 @@ export function AnimateJsProvider($animateProvider) {
 
         options = prepareAnimationOptions(options);
         if (!classes) {
-          classes = element.attr("class") || "";
+          classes = element.getAttribute("class") || "";
           if (options.addClass) {
             classes += ` ${options.addClass}`;
           }

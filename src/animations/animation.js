@@ -164,7 +164,7 @@ export function AnimationProvider() {
         }
 
         let classes = mergeClasses(
-          element.attr("class"),
+          element.getAttribute("class"),
           mergeClasses(options.addClass, options.removeClass),
         );
         let { tempClasses } = options;
