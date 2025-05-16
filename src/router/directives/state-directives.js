@@ -44,7 +44,7 @@ function getTypeInfo(el) {
   };
 }
 /** @ignore */
-function clickHook(el, $state, type, getDef) {
+function clickHook(el, $state, type, getDef, scope) {
   return function (e) {
     const button = e.which || e.button,
       target = getDef();
@@ -60,7 +60,10 @@ function clickHook(el, $state, type, getDef) {
       // HACK: This is to allow ng-clicks to be processed before the transition is initiated:
       const transition = setTimeout(function () {
         if (!el.getAttribute("disabled")) {
-          $state.go(target.ngState, target.ngStateParams, target.ngStateOpts);
+          var res = $state.go(target.ngState, target.ngStateParams, target.ngStateOpts);
+          res.then(() => {
+            scope.$emit("$updateBrowser")
+          });
         }
       });
       e.preventDefault();
@@ -151,7 +154,7 @@ export function $StateRefDirective(
       scope.$on("$destroy", $stateRegistry.onStatesChanged(update));
       scope.$on("$destroy", $transitions.onSuccess({}, update));
       if (!type.clickable) return;
-      const hookFn = clickHook(element, $state, type, getDef);
+      const hookFn = clickHook(element, $state, type, getDef, scope);
       bindEvents(element, scope, hookFn, rawDef.ngStateOpts);
     },
   };
@@ -207,7 +210,7 @@ export function $StateRefDynamicDirective(
       scope.$on("$destroy", $stateRegistry.onStatesChanged(update));
       scope.$on("$destroy", $transitions.onSuccess({}, update));
       if (!type.clickable) return;
-      hookFn = clickHook(element, $state, type, getDef);
+      hookFn = clickHook(element, $state, type, getDef, scope);
       bindEvents(element, scope, hookFn, rawDef.ngStateOpts);
     },
   };

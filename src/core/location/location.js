@@ -797,7 +797,7 @@ export class LocationProvider {
       });
 
       // update browser
-      (() => {
+      const updateBrowser = () => {
         if (initializing || $location.$$urlUpdatedByLocation) {
           $location.$$urlUpdatedByLocation = false;
 
@@ -845,7 +845,10 @@ export class LocationProvider {
 
         // we don't need to return anything because $evalAsync will make the digest loop dirty when
         // there is a change
-      })();
+      };
+
+      updateBrowser();
+      $rootScope.$on("$updateBrowser", updateBrowser)
 
       return $location;
 
