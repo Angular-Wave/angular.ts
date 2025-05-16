@@ -208,7 +208,7 @@ describe("form", () => {
 
     expect(scope.ctrl.myForm).toBeDefined();
 
-    formController = doc.find("form").controller("form");
+    formController = doc.querySelector("form").controller("form");
     expect(scope.ctrl.myForm == formController).toBeTrue();
 
     scope.$apply("formPresent = false");
@@ -277,7 +277,7 @@ describe("form", () => {
     expect(scope.formB.$error.required).toEqual([scope.formB.lastName]);
 
     const inputA = doc.children[0];
-    const inputB = doc.find("input").eq(1);
+    const inputB = doc.querySelector("input").eq(1);
 
     inputA[0].setAttribute("value", "val1");
     inputA[0].dispatchEvent(new Event("change"));
@@ -433,7 +433,7 @@ describe("form", () => {
       };
 
       doc.addEventListener("submit", assertPreventDefaultListener);
-      doc.find("input").click();
+      doc.querySelector("input").click();
 
       // let the browser process all events (and potentially reload the page)
       window.setTimeout(() => {
@@ -455,7 +455,7 @@ describe("form", () => {
           "</div>",
       );
 
-      const form = doc.find("form");
+      const form = doc.querySelector("form");
       let destroyed = false;
       let nextTurn = false;
       let submitted = false;
@@ -744,13 +744,15 @@ describe("form", () => {
       expect(doc.classList.contains("ng-invalid")).toBe(true);
       expect(doc.classList.contains("ng-invalid-required")).toBe(true);
       expect(doc.classList.contains("ng-valid-maxlength")).toBe(true);
-      expect(doc.find("div").classList.contains("ng-invalid")).toBe(true);
-      expect(doc.find("div").classList.contains("ng-invalid-required")).toBe(
+      expect(doc.querySelector("div").classList.contains("ng-invalid")).toBe(
         true,
       );
-      expect(doc.find("div").classList.contains("ng-valid-maxlength")).toBe(
-        true,
-      );
+      expect(
+        doc.querySelector("div").classList.contains("ng-invalid-required"),
+      ).toBe(true);
+      expect(
+        doc.querySelector("div").classList.contains("ng-valid-maxlength"),
+      ).toBe(true);
 
       // remove child input
       scope.$apply("inputPresent = false");
@@ -767,19 +769,21 @@ describe("form", () => {
       expect(doc.classList.contains("ng-valid-maxlength")).toBe(false);
       expect(doc.classList.contains("ng-invalid-maxlength")).toBe(false);
 
-      expect(doc.find("div").classList.contains("ng-valid")).toBe(true);
-      expect(doc.find("div").classList.contains("ng-valid-required")).toBe(
-        false,
+      expect(doc.querySelector("div").classList.contains("ng-valid")).toBe(
+        true,
       );
-      expect(doc.find("div").classList.contains("ng-invalid-required")).toBe(
-        false,
-      );
-      expect(doc.find("div").classList.contains("ng-valid-maxlength")).toBe(
-        false,
-      );
-      expect(doc.find("div").classList.contains("ng-invalid-maxlength")).toBe(
-        false,
-      );
+      expect(
+        doc.querySelector("div").classList.contains("ng-valid-required"),
+      ).toBe(false);
+      expect(
+        doc.querySelector("div").classList.contains("ng-invalid-required"),
+      ).toBe(false);
+      expect(
+        doc.querySelector("div").classList.contains("ng-valid-maxlength"),
+      ).toBe(false);
+      expect(
+        doc.querySelector("div").classList.contains("ng-invalid-maxlength"),
+      ).toBe(false);
     });
 
     it("should deregister a input that is $pending when it is removed from DOM", async () => {
@@ -806,7 +810,9 @@ describe("form", () => {
       expect(child.$pending.fake).toEqual([input]);
 
       expect(doc.classList.contains("ng-pending")).toBe(true);
-      expect(doc.find("div").classList.contains("ng-pending")).toBe(true);
+      expect(doc.querySelector("div").classList.contains("ng-pending")).toBe(
+        true,
+      );
 
       // remove child input
       scope.$apply("inputPresent = false");
@@ -815,7 +821,9 @@ describe("form", () => {
       expect(child.$pending).toBeUndefined();
 
       expect(doc.classList.contains("ng-pending")).toBe(false);
-      expect(doc.find("div").classList.contains("ng-pending")).toBe(false);
+      expect(doc.querySelector("div").classList.contains("ng-pending")).toBe(
+        false,
+      );
     });
 
     it("should leave the parent form invalid when deregister a removed input", async () => {
@@ -859,7 +867,10 @@ describe("form", () => {
       )(scope);
       await wait();
       const form = scope.myForm;
-      const childformController = doc.find("ng-form").eq(0).controller("form");
+      const childformController = doc
+        .querySelector("ng-form")
+        .eq(0)
+        .controller("form");
 
       const input = doc.children[0];
       const inputController = getController(input, "ngModel");
@@ -906,7 +917,10 @@ describe("form", () => {
       await wait();
 
       const form = scope.myForm;
-      const childFormController = doc.find("ng-form").eq(0).controller("form");
+      const childFormController = doc
+        .querySelector("ng-form")
+        .eq(0)
+        .controller("form");
 
       const input = doc.children[0];
 

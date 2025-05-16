@@ -1767,7 +1767,7 @@ describe("$location", () => {
   //           $rootElement.append(link);
   //           root = $rootElement[0];
   //           // we need to do this otherwise we can't simulate events
-  //           $document.find("body").append($rootElement);
+  //           $document.querySelector("body").append($rootElement);
   //         },
   //     );
   //   }
@@ -2113,7 +2113,7 @@ describe("$location", () => {
   //       }),
   //       setupRewriteChecks(),
   //       ($browser) => {
-  //         const span = (link).find("span");
+  //         const span = (link).querySelector("span");
 
   //         browserTrigger(span, "click");
   //         expectRewriteTo($browser, "http://host.com/base/some/link");
@@ -2365,14 +2365,14 @@ describe("$location", () => {
   //         $location,
   //       ) => {
   //         // we need to do this otherwise we can't simulate events
-  //         $document.find("body").append($rootElement);
+  //         $document.querySelector("body").append($rootElement);
 
   //         const element = $compile(
   //           '<a href="#!/view1">v1</a><a href="#!/view2">v2</a>',
   //         )($rootScope);
   //         $rootElement.append(element);
-  //         const av1 = $rootElement.find("a").eq(0);
-  //         const av2 = $rootElement.find("a").eq(1);
+  //         const av1 = $rootElement.querySelector("a").eq(0);
+  //         const av2 = $rootElement.querySelector("a").eq(1);
 
   //         browserTrigger(av1, "click");
   //         expect($browser.url()).toEqual(`${base}#!/view1`);
@@ -2406,14 +2406,14 @@ describe("$location", () => {
   //         $location,
   //       ) => {
   //         // we need to do this otherwise we can't simulate events
-  //         $document.find("body").append($rootElement);
+  //         $document.querySelector("body").append($rootElement);
 
   //         const element = $compile(
   //           '<a href="#!!/view1">v1</a><a href="#!!/view2">v2</a>',
   //         )($rootScope);
   //         $rootElement.append(element);
-  //         const av1 = $rootElement.find("a").eq(0);
-  //         const av2 = $rootElement.find("a").eq(1);
+  //         const av1 = $rootElement.querySelector("a").eq(0);
+  //         const av2 = $rootElement.querySelector("a").eq(1);
 
   //         browserTrigger(av1, "click");
   //         expect($browser.url()).toEqual(`${base}#!!/view1`);
@@ -2446,7 +2446,7 @@ describe("$location", () => {
   //       );
 
   //       const event = {
-  //         target: (document.body).find("a")[0],
+  //         target: (document.body).querySelector("a")[0],
   //         preventDefault: jasmine.createSpy("preventDefault"),
   //         isDefaultPrevented: jasmine.createSpy().and.returnValue(false),
   //       };
@@ -2486,7 +2486,7 @@ describe("$location", () => {
   //         );
 
   //         const event = {
-  //           target: (document.body).find("a")[0],
+  //           target: (document.body).querySelector("a")[0],
   //           preventDefault: jasmine.createSpy("preventDefault"),
   //           isDefaultPrevented: jasmine.createSpy().and.returnValue(false),
   //         };
@@ -2504,10 +2504,10 @@ describe("$location", () => {
   //     $location,
   //   ) => {
   //     // we need to do this otherwise we can't simulate events
-  //     $document.find("body").append($rootElement);
+  //     $document.querySelector("body").append($rootElement);
 
   //     $rootElement.html("<button></button>");
-  //     const button = $rootElement.find("button");
+  //     const button = $rootElement.querySelector("button");
 
   //     button.on("click", () => {
   //       button.remove();
@@ -2536,13 +2536,13 @@ describe("$location", () => {
   //         $location,
   //       ) => {
   //         // we need to do this otherwise we can't simulate events
-  //         $document.find("body").append($rootElement);
+  //         $document.querySelector("body").append($rootElement);
   //         const template =
   //           '<svg><g><a xlink:href="#!/view1"><circle r="50"></circle></a></g></svg>';
   //         const element = $compile(template)($rootScope);
 
   //         $rootElement.append(element);
-  //         const av1 = $rootElement.find("a").eq(0);
+  //         const av1 = $rootElement.querySelector("a").eq(0);
   //         expect(() => {
   //           browserTrigger(av1, "click");
   //         }).not.toThrow();
@@ -2957,7 +2957,7 @@ describe("$location", () => {
 
   //     inject(($location, $rootScope, $browser, $rootElement) => {
   //       let log = "";
-  //       const link = $rootElement.find("a");
+  //       const link = $rootElement.querySelector("a");
   //       const browserUrlBefore = $browser.url();
 
   //       $rootScope.$on("$locationChangeStart", (event) => {

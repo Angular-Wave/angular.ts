@@ -1796,7 +1796,7 @@ describe("ngModel", () => {
   //     $compile(doc)(scope);
   //     $animate.queue = [];
 
-  //     input = doc.find("input");
+  //     input = doc.querySelector("input");
   //     model = scope.myForm.myInput;
   //   });
 

@@ -848,7 +848,7 @@ export class LocationProvider {
       };
 
       updateBrowser();
-      $rootScope.$on("$updateBrowser", updateBrowser)
+      $rootScope.$on("$updateBrowser", updateBrowser);
 
       return $location;
 

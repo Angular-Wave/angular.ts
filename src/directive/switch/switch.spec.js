@@ -527,7 +527,7 @@ describe("ngSwitch", () => {
 //         $rootScope.inc = "one";
 //         await wait();
 
-//         const circle = element.find("circle");
+//         const circle = element.querySelectorAll("circle");
 //         expect(circle[0].toString()).toMatch(/SVG/);
 //       });
 //     });

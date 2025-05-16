@@ -206,7 +206,7 @@ function SelectController($element, $scope) {
     if (value == null && self.emptyOption) {
       self.removeUnknownOption();
       self.selectEmptyOption();
-    } else if (self.unknownOption.parentElement.length) {
+    } else if (self.unknownOption.parentElement) {
       self.updateUnknownOption(value);
     } else {
       self.renderUnknownOption(value);
@@ -252,7 +252,7 @@ function SelectController($element, $scope) {
 
       optionAttrs.$observe("value", (newVal) => {
         let removal;
-        const previouslySelected = optionElement[0].selected;
+        const previouslySelected = optionElement.selected;
 
         if (isDefined(hashedVal)) {
           self.removeOption(oldVal);
@@ -280,7 +280,7 @@ function SelectController($element, $scope) {
         self.readValue();
 
         let removal;
-        const previouslySelected = optionElement[0].selected;
+        const previouslySelected = optionElement.selected;
 
         if (isDefined(oldVal)) {
           self.removeOption(oldVal);
@@ -299,7 +299,7 @@ function SelectController($element, $scope) {
       // The text content is interpolated
       optionScope.$watch("value", (newVal) => {
         optionAttrs.$set("value", newVal);
-        const previouslySelected = optionElement[0].selected;
+        const previouslySelected = optionElement.selected;
         if (oldVal !== newVal) {
           self.removeOption(oldVal);
           oldVal = newVal;
@@ -319,7 +319,7 @@ function SelectController($element, $scope) {
       // Since model updates will also select disabled options (like ngOptions),
       // we only have to handle options becoming disabled, not enabled
 
-      if (newVal === "true" || (newVal && optionElement[0].selected)) {
+      if (newVal === "true" || (newVal && optionElement.selected)) {
         if (self.multiple) {
           scheduleViewValueUpdate(true);
         } else {

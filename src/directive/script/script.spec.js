@@ -43,7 +43,7 @@ describe("scriptDirective", () => {
       '<script type="text/javascript">some {{binding}}</script>' +
       '<script type="text/ng-template" id="/some">other {{binding}}</script>';
     $compile(doc)($rootScope);
-    const scripts = doc.find("script");
+    const scripts = doc.querySelector("script");
     expect(scripts.eq(0)[0].text).toBe("some {{binding}}");
     expect(scripts.eq(1)[0].text).toBe("other {{binding}}");
     dealoc(doc);

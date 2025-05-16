@@ -60,9 +60,13 @@ function clickHook(el, $state, type, getDef, scope) {
       // HACK: This is to allow ng-clicks to be processed before the transition is initiated:
       const transition = setTimeout(function () {
         if (!el.getAttribute("disabled")) {
-          var res = $state.go(target.ngState, target.ngStateParams, target.ngStateOpts);
+          var res = $state.go(
+            target.ngState,
+            target.ngStateParams,
+            target.ngStateOpts,
+          );
           res.then(() => {
-            scope.$emit("$updateBrowser")
+            scope.$emit("$updateBrowser");
           });
         }
       });

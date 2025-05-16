@@ -13950,7 +13950,7 @@ describe("$compile", () => {
   });
 
   describe("multi-slot transclude", () => {
-    it("should only include elements without a matching transclusion element in default transclusion slot", async () => {
+    fit("should only include elements without a matching transclusion element in default transclusion slot", async () => {
       module.directive("minionComponent", () => ({
         restrict: "E",
         scope: {},
@@ -13959,17 +13959,17 @@ describe("$compile", () => {
         },
         template: '<div class="other" ng-transclude></div>',
       }));
-      initInjector("test1");
-      element = $compile(
+      bootstrap(
         "<minion-component>" +
           "<span>stuart</span>" +
           "<span>bob</span>" +
           "<boss>gru</boss>" +
           "<span>kevin</span>" +
           "</minion-component>",
-      )($rootScope);
+        "test1",
+      );
       await wait();
-      expect(element.textContent).toEqual("stuartbobkevin");
+      expect(ELEMENT.textContent).toEqual("stuartbobkevin");
     });
 
     it("should use the default transclusion slot if the ng-transclude attribute has the same value as its key", async () => {

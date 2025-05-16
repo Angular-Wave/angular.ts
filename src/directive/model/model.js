@@ -961,7 +961,7 @@ export class NgModelController {
             let ngModel;
 
             that.$postLink = function() {
-              ngModel = $element.find('input').controller('ngModel');
+              ngModel = $element.querySelectorAll('input').controller('ngModel');
 
               ngModel.$formatters.push(function(value) {
                 return (value && value.name) || value;

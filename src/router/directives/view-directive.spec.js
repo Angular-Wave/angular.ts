@@ -180,12 +180,12 @@ describe("ngView", () => {
     it("anonymous ng-view should be replaced with the template of the current $state", async () => {
       elem.append($compile("<div><ng-view></ng-view></div>")(scope));
 
-      expect(elem.find("ng-view").textContent).toBe("");
+      expect(elem.querySelector("ng-view").textContent).toBe("");
 
       $state.transitionTo(aState);
       await wait(100);
 
-      expect(elem.find("ng-view").textContent).toBe(aState.template);
+      expect(elem.querySelector("ng-view").textContent).toBe(aState.template);
     });
 
     it("named ng-view should be replaced with the template of the current $state", async () => {
@@ -196,24 +196,24 @@ describe("ngView", () => {
       $state.transitionTo(cState);
       await wait(100);
 
-      expect(elem.find("ng-view").textContent).toBe(
+      expect(elem.querySelector("ng-view").textContent).toBe(
         cState.views.cview.template,
       );
     });
 
     it("ng-view should be updated after transition to another state", async () => {
       elem.append($compile("<div><ng-view></ng-view></div>")(scope));
-      expect(elem.find("ng-view").textContent).toBe("");
+      expect(elem.querySelector("ng-view").textContent).toBe("");
 
       $state.transitionTo(aState);
       await wait(100);
 
-      expect(elem.find("ng-view").textContent).toBe(aState.template);
+      expect(elem.querySelector("ng-view").textContent).toBe(aState.template);
 
       $state.transitionTo(bState);
       await wait(100);
 
-      expect(elem.find("ng-view").textContent).toBe(bState.template);
+      expect(elem.querySelector("ng-view").textContent).toBe(bState.template);
     });
 
     it("should handle NOT nested ng-views", async () => {
@@ -222,28 +222,28 @@ describe("ngView", () => {
           '<div><ng-view name="dview1" class="dview1"></ng-view><ng-view name="dview2" class="dview2"></ng-view></div>',
         )(scope),
       );
-      expect(elem.find("ng-view").eq(0).textContent).toBe("");
-      expect(elem.find("ng-view").eq(1).textContent).toBe("");
+      expect(elem.querySelector("ng-view").eq(0).textContent).toBe("");
+      expect(elem.querySelector("ng-view").eq(1).textContent).toBe("");
 
       $state.transitionTo(dState);
       await wait(100);
 
-      expect(elem.find("ng-view").eq(0).textContent).toBe(
+      expect(elem.querySelector("ng-view").eq(0).textContent).toBe(
         dState.views.dview1.template,
       );
-      expect(elem.find("ng-view").eq(1).textContent).toBe(
+      expect(elem.querySelector("ng-view").eq(1).textContent).toBe(
         dState.views.dview2.template,
       );
     });
 
     it("should handle nested ng-views (testing two levels deep)", async () => {
       $compile(elem.append("<div><ng-view></ng-view></div>"))(scope);
-      expect(elem.find("ng-view").textContent).toBe("");
+      expect(elem.querySelector("ng-view").textContent).toBe("");
 
       $state.transitionTo(fState);
       await wait(100);
 
-      expect(elem.find("ng-view").textContent).toBe(
+      expect(elem.querySelector("ng-view").textContent).toBe(
         fState.views.eview.template,
       );
     });
@@ -258,7 +258,7 @@ describe("ngView", () => {
       $state.transitionTo(gState);
       await wait(100);
 
-      expect(elem.find("ng-view").textContent).toBe(content);
+      expect(elem.querySelector("ng-view").textContent).toBe(content);
     });
 
     it("initial view should be put back after removal of the view", async () => {
@@ -269,7 +269,7 @@ describe("ngView", () => {
       $state.go(hState);
       await wait(100);
 
-      expect(elem.find("ng-view").textContent).toBe(
+      expect(elem.querySelector("ng-view").textContent).toBe(
         hState.views.inner.template,
       );
 
@@ -277,7 +277,7 @@ describe("ngView", () => {
       $state.go(gState);
       await wait(100);
 
-      expect(elem.find("ng-view").textContent).toBe(content);
+      expect(elem.querySelector("ng-view").textContent).toBe(content);
     });
 
     // related to issue #435
@@ -291,20 +291,20 @@ describe("ngView", () => {
       await wait(100);
 
       // verify if ng-repeat has been compiled
-      expect(elem.find("li").length).toBe(scope.items.length);
+      expect(elem.querySelector("li").length).toBe(scope.items.length);
 
       // transition to another state that replace the initial content
       $state.transitionTo(jState);
       await wait(100);
 
-      expect(elem.find("ng-view").textContent).toBe(jState.template);
+      expect(elem.querySelector("ng-view").textContent).toBe(jState.template);
 
       // transition back to the state with empty subview and the initial view
       $state.transitionTo(iState);
       await wait(100);
 
       // verify if the initial view is correct
-      expect(elem.find("li").length).toBe(scope.items.length);
+      expect(elem.querySelector("li").length).toBe(scope.items.length);
 
       // change scope properties
       scope.$apply(() => {
@@ -312,7 +312,7 @@ describe("ngView", () => {
       });
 
       // verify if the initial view has been updated
-      expect(elem.find("li").length).toBe(scope.items.length);
+      expect(elem.querySelector("li").length).toBe(scope.items.length);
     });
   });
 
@@ -332,7 +332,7 @@ describe("ngView", () => {
 
       // animateFlush($animate);
 
-      expect($ngViewScroll).toHaveBeenCalledWith(elem.find("ng-view"));
+      expect($ngViewScroll).toHaveBeenCalledWith(elem.querySelector("ng-view"));
     });
 
     it("should autoscroll based on expression", async () => {
@@ -353,7 +353,7 @@ describe("ngView", () => {
 
       let target,
         index = -1,
-        ngViews = elem.find("ng-view");
+        ngViews = elem.querySelector("ng-view");
 
       while (index++ < ngViews.length) {
         const ngView = ngViews[index];
@@ -527,22 +527,22 @@ describe("ngView", () => {
       await wait(100);
 
       // Verify there is no ng-view in the DOM
-      expect(elem.find("ng-view").length).toBe(0);
+      expect(elem.querySelector("ng-view").length).toBe(0);
 
       // Turn on the div that holds the ng-view
       scope.someBoolean = true;
       // Verify that the ng-view is there and it has the correct content
-      expect(elem.find("ng-view").textContent).toBe(aState.template);
+      expect(elem.querySelector("ng-view").textContent).toBe(aState.template);
 
       // Turn off the ng-view
       scope.someBoolean = false;
       // Verify there is no ng-view in the DOM
-      expect(elem.find("ng-view").length).toBe(0);
+      expect(elem.querySelector("ng-view").length).toBe(0);
 
       // Turn on the div that holds the ng-view once again
       scope.someBoolean = true;
       // Verify that the ng-view is there and it has the correct content
-      expect(elem.find("ng-view").textContent).toBe(aState.template);
+      expect(elem.querySelector("ng-view").textContent).toBe(aState.template);
     });
 
     it("should work with ngClass", async () => {
@@ -555,13 +555,13 @@ describe("ngView", () => {
         )(scope),
       );
 
-      expect(classes(elem.find("ng-view"))).not.toContain("someClass");
+      expect(classes(elem.querySelector("ng-view"))).not.toContain("someClass");
 
       scope.showClass = true;
-      expect(classes(elem.find("ng-view"))).toContain("someClass");
+      expect(classes(elem.querySelector("ng-view"))).toContain("someClass");
 
       scope.showClass = false;
-      expect(classes(elem.find("ng-view"))).not.toContain("someClass");
+      expect(classes(elem.querySelector("ng-view"))).not.toContain("someClass");
     });
 
     describe("working with ngRepeat", () => {
@@ -573,23 +573,23 @@ describe("ngView", () => {
         );
 
         // Should be no ng-views in DOM
-        expect(elem.find("ng-view").length).toBe(0);
+        expect(elem.querySelector("ng-view").length).toBe(0);
 
         // Lets add 3
         scope.views = ["view1", "view2", "view3"];
         // Should be 3 ng-views in the DOM
-        expect(elem.find("ng-view").length).toBe(scope.views.length);
+        expect(elem.querySelector("ng-view").length).toBe(scope.views.length);
 
         // Lets add one more - yay two-way binding
         scope.views.push("view4");
         // Should have 4 ng-views
-        expect(elem.find("ng-view").length).toBe(scope.views.length);
+        expect(elem.querySelector("ng-view").length).toBe(scope.views.length);
 
         // Lets remove 2 ng-views from the DOM
         scope.views.pop();
         scope.views.pop();
         // Should have 2 ng-views
-        expect(elem.find("ng-view").length).toBe(scope.views.length);
+        expect(elem.querySelector("ng-view").length).toBe(scope.views.length);
       });
 
       it("should populate each view with content", async () => {
@@ -602,18 +602,18 @@ describe("ngView", () => {
         $state.transitionTo(lState);
         await wait(100);
 
-        expect(elem.find("ng-view").length).toBe(0);
+        expect(elem.querySelector("ng-view").length).toBe(0);
 
         scope.views = ["view1", "view2"];
 
-        let ngViews = elem.find("ng-view");
+        let ngViews = elem.querySelector("ng-view");
 
         expect(ngViews.eq(0).textContent).toBe(lState.views.view1.template);
         expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
         expect(ngViews.eq(2).length).toBe(0);
 
         scope.views.push("view3");
-        ngViews = elem.find("ng-view");
+        ngViews = elem.querySelector("ng-view");
 
         expect(ngViews.eq(0).textContent).toBe(lState.views.view1.template);
         expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
@@ -632,18 +632,18 @@ describe("ngView", () => {
         $state.transitionTo(lState);
         await wait(100);
 
-        expect(elem.find("ng-view").length).toBe(0);
+        expect(elem.querySelector("ng-view").length).toBe(0);
 
         scope.views = ["view1", "view2"];
 
-        let ngViews = elem.find("ng-view");
+        let ngViews = elem.querySelector("ng-view");
 
         expect(ngViews.eq(0).textContent).toBe(lState.views.view1.template);
         expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
         expect(ngViews.eq(2).length).toBe(0);
 
         scope.views.push("view3");
-        ngViews = elem.find("ng-view");
+        ngViews = elem.querySelector("ng-view");
 
         expect(ngViews.eq(0).textContent).toBe(lState.views.view1.template);
         expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
@@ -1652,7 +1652,7 @@ describe("angular 1.5+ style .component()", () => {
       // - ng-click handler calls $ctrl.onEvent({ foo: 123, bar: 456 })
       // - on-event is bound to $ctrl.handleEvent(foo, bar) on parentCallbackComponent
       // - handleEvent pushes param values to the log
-      el.find("button")[0].click();
+      el.querySelector("button")[0].click();
       expect($rootScope.log).toEqual([123, 456]);
     });
 
@@ -1675,7 +1675,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("resolve");
       await wait(100);
       expect(log).toEqual([]);
-      el.find("button")[0].click();
+      el.querySelector("button")[0].click();
       expect(log).toEqual([123, 456]);
     });
 
@@ -1702,7 +1702,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("resolve");
       await wait(100);
       expect(log).toEqual([]);
-      el.find("button")[0].click();
+      el.querySelector("button")[0].click();
       expect(log).toEqual([123, 456]);
     });
   });

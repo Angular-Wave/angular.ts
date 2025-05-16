@@ -320,7 +320,7 @@ export function AnimateProvider($provide) {
                 this.runner = null;
 
                 this.addClass = function() {
-                  this.runner = $animate.addClass($element.find('div'), 'red');
+                  this.runner = $animate.addClass($element.querySelectorAll('div'), 'red');
                   let ctrl = this;
                   this.runner.finally(function() {
                     ctrl.runner = null;
@@ -328,7 +328,7 @@ export function AnimateProvider($provide) {
                 };
 
                 this.removeClass = function() {
-                  this.runner = $animate.removeClass($element.find('div'), 'red');
+                  this.runner = $animate.removeClass($element.querySelectorAll('div'), 'red');
                   let ctrl = this;
                   this.runner.finally(function() {
                     ctrl.runner = null;
