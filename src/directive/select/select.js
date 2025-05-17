@@ -8,10 +8,6 @@ import {
   shallowCopy,
 } from "../../shared/utils.js";
 
-function setOptionSelectedStatus(optionEl, value) {
-  optionEl.selected = value;
-}
-
 /**
  * The controller for the {@link ng.select select} directive. The controller exposes
  * a few utility methods that can be used to augment the behavior of a regular or an
@@ -21,7 +17,7 @@ function setOptionSelectedStatus(optionEl, value) {
 SelectController.$inject = ["$element", "$scope"];
 /**
  *
- * @param {Element} $element
+ * @param {HTMLSelectElement} $element
  * @param {import('../../core/scope/scope.js').Scope} $scope
  */
 function SelectController($element, $scope) {
@@ -51,20 +47,22 @@ function SelectController($element, $scope) {
   // If the model is set to a different unmatched value, the unknown option is rendered and
   // selected, i.e both are present, because a "null" selection and an unknown value are different.
   self.hasEmptyOption = false;
+
+  /** @type {HTMLOptionElement} */
   self.emptyOption = undefined;
 
   self.renderUnknownOption = function (val) {
     const unknownVal = self.generateUnknownOptionValue(val);
     self.unknownOption.value = unknownVal;
     $element.prepend(self.unknownOption);
-    setOptionSelectedStatus(self.unknownOption, true);
+    self.unknownOption.selected = true;
     $element.value = unknownVal;
   };
 
   self.updateUnknownOption = function (val) {
     const unknownVal = self.generateUnknownOptionValue(val);
     self.unknownOption.value = unknownVal;
-    setOptionSelectedStatus(self.unknownOption, true);
+    self.unknownOption.selected = true;
     $element.value = unknownVal;
   };
 
@@ -79,13 +77,13 @@ function SelectController($element, $scope) {
   self.selectEmptyOption = function () {
     if (self.emptyOption) {
       $element.value = "";
-      setOptionSelectedStatus(self.emptyOption, true);
+      self.emptyOption.selected = true;
     }
   };
 
   self.unselectEmptyOption = function () {
     if (self.hasEmptyOption) {
-      setOptionSelectedStatus(self.emptyOption, false);
+      self.emptyOption.selected = false;
     }
   };
 
@@ -114,8 +112,7 @@ function SelectController($element, $scope) {
     // Make sure to remove the selected attribute from the previously selected option
     // Otherwise, screen readers might get confused
     const currentlySelectedOption = $element.options[$element.selectedIndex];
-    if (currentlySelectedOption)
-      setOptionSelectedStatus(currentlySelectedOption, false);
+    if (currentlySelectedOption) currentlySelectedOption.selected = false;
 
     if (self.hasOption(value)) {
       self.removeUnknownOption();
@@ -125,7 +122,7 @@ function SelectController($element, $scope) {
 
       // Set selected attribute and property on selected option for screen readers
       const selectedOption = $element.options[$element.selectedIndex];
-      setOptionSelectedStatus(selectedOption, true);
+      selectedOption.selected = true;
     } else {
       self.selectUnknownOrEmptyOption(value);
     }
@@ -365,7 +362,7 @@ export function selectDirective() {
     },
   };
 
-  function selectPreLink(scope, element, attr, ctrls) {
+  function selectPreLink(_scope, element, attr, ctrls) {
     const selectCtrl = ctrls[0];
     const ngModelCtrl = ctrls[1];
 
@@ -395,39 +392,57 @@ export function selectDirective() {
       // Read value now needs to check each option to see if it is selected
       selectCtrl.readValue = function readMultipleValue() {
         const array = [];
-        Array.from(element.getElementsByTagName("option")).forEach((option) => {
-          if (option.selected && !option.disabled) {
-            const val = option.value;
-            array.push(
-              val in selectCtrl.selectValueMap
-                ? selectCtrl.selectValueMap[val]
-                : val,
-            );
-          }
-        });
+        /**
+         * @type {HTMLCollection}
+         */
+        const options = element.getElementsByTagName("option");
+        Array.from(options).forEach(
+          /**
+           * @param {HTMLOptionElement} option
+           */
+          (option) => {
+            if (option.selected && !option.disabled) {
+              const val = option.value;
+              array.push(
+                val in selectCtrl.selectValueMap
+                  ? selectCtrl.selectValueMap[val]
+                  : val,
+              );
+            }
+          },
+        );
         return array;
       };
 
       // Write value now needs to set the selected property of each matching option
       selectCtrl.writeValue = function writeMultipleValue(value) {
-        Array.from(element.getElementsByTagName("option")).forEach((option) => {
-          const shouldBeSelected =
-            !!value &&
-            (includes(value, option.value) ||
-              includes(value, selectCtrl.selectValueMap[option.value]));
-          const currentlySelected = option.selected;
+        /**
+         * @type {HTMLCollection}
+         */
+        const options = element.getElementsByTagName("option");
+        Array.from(options).forEach(
+          /**
+           * @param {HTMLOptionElement} option
+           */
+          (option) => {
+            const shouldBeSelected =
+              !!value &&
+              (includes(value, option.value) ||
+                includes(value, selectCtrl.selectValueMap[option.value]));
+            const currentlySelected = option.selected;
 
-          // Support: IE 9-11 only, Edge 12-15+
-          // In IE and Edge adding options to the selection via shift+click/UP/DOWN
-          // will de-select already selected options if "selected" on those options was set
-          // more than once (i.e. when the options were already selected)
-          // So we only modify the selected property if necessary.
-          // Note: this behavior cannot be replicated via unit tests because it only shows in the
-          // actual user interface.
-          if (shouldBeSelected !== currentlySelected) {
-            setOptionSelectedStatus(option, shouldBeSelected);
-          }
-        });
+            // Support: IE 9-11 only, Edge 12-15+
+            // In IE and Edge adding options to the selection via shift+click/UP/DOWN
+            // will de-select already selected options if "selected" on those options was set
+            // more than once (i.e. when the options were already selected)
+            // So we only modify the selected property if necessary.
+            // Note: this behavior cannot be replicated via unit tests because it only shows in the
+            // actual user interface.
+            if (shouldBeSelected !== currentlySelected) {
+              option.selected = shouldBeSelected;
+            }
+          },
+        );
       };
 
       // we have to do it on each watch since ngModel watches reference, but

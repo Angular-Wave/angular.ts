@@ -379,7 +379,7 @@ describe("select", () => {
       });
     });
 
-    it("should only call selectCtrl.writeValue after a digest has occurred", async () => {
+    fit("should only call selectCtrl.writeValue after a digest has occurred", async () => {
       scope.mySelect = "B";
       await wait();
       const select = createElementFromHTML(
@@ -401,7 +401,7 @@ describe("select", () => {
       dealoc(select);
     });
 
-    it('should remove the "selected" attribute from the previous option when the model changes', async () => {
+    fit('should remove the "selected" attribute from the previous option when the model changes', async () => {
       compile(
         '<select name="select" ng-model="selected">' +
           '<option value="">--empty--</option>' +
@@ -458,7 +458,7 @@ describe("select", () => {
     });
 
     describe("empty option", () => {
-      it("should allow empty option to be added and removed dynamically", () => {
+      fit("should allow empty option to be added and removed dynamically", async () => {
         scope.dynamicOptions = [];
         scope.robot = "";
         compile(
@@ -466,7 +466,7 @@ describe("select", () => {
             '<option ng-repeat="opt in dynamicOptions" value="{{opt.val}}">{{opt.display}}</option>' +
             "</select>",
         );
-
+        await wait();
         expect(element.value).toBe("? string: ?");
 
         scope.dynamicOptions = [
@@ -474,15 +474,21 @@ describe("select", () => {
           { val: "x", display: "robot x" },
           { val: "y", display: "robot y" },
         ];
+
+        await wait();
         expect(element.value).toBe("");
 
         scope.robot = "x";
+        await wait();
         expect(element.value).toBe("x");
-        scope.dynamicOptions.shift();
 
+        scope.dynamicOptions.shift();
+        await wait();
         expect(element.value).toBe("x");
 
         scope.robot = undefined;
+        await wait();
+
         expect(element.value).toBe(unknownValue(undefined));
       });
 
