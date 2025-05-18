@@ -228,6 +228,18 @@ export class Scope {
     if (property === "undefined") {
       throw new Error("Attempting to set undefined property");
     }
+    if (
+      (target.constructor?.$nonscope &&
+        Array.isArray(target.constructor.$nonscope) &&
+        target.constructor.$nonscope.includes(property)) ||
+      (target.$nonscope &&
+        Array.isArray(target.$nonscope) &&
+        target.$nonscope.includes(property))
+    ) {
+      target[property] = value;
+      return true;
+    }
+
     this.$proxy = proxy;
     this.$target = target;
     const oldValue = target[property];

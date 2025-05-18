@@ -828,7 +828,7 @@ export class NgModelController {
    * </div>
    *
    * @param {*} value value from the view.
-   * @param {string} trigger Event that triggered the update.
+   * @param {string} [trigger] Event that triggered the update.
    */
   $setViewValue(value, trigger) {
     this.$viewValue = value;
@@ -1079,7 +1079,7 @@ function setupModelWatcher(ctrl) {
   //    -> scope value did not change since the last digest as
   //       ng-change executes in apply phase
   // 4. view should be changed back to 'a'
-  ctrl.$$scope.$watch("value", (value) => {
+  ctrl.$$scope.$watch("value", () => {
     const modelValue = ctrl.$$ngModelGet(ctrl.$$scope);
 
     // if scope model value and ngModel value are out of sync
@@ -1091,7 +1091,7 @@ function setupModelWatcher(ctrl) {
 
       (ctrl.$modelValue === ctrl.$modelValue || modelValue === modelValue)
     ) {
-      ctrl.$$setModelValue(value);
+      ctrl.$$setModelValue(modelValue);
     }
   });
 }
