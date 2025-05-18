@@ -302,7 +302,6 @@ class SelectController {
   ) {
     let oldVal;
     let hashedVal;
-
     if (optionAttrs.$attr.ngValue) {
       optionAttrs.$observe("value", (newVal) => {
         let removal;
@@ -343,9 +342,15 @@ class SelectController {
       });
     } else if (interpolateTextFn) {
       optionScope.value = interpolateTextFn(optionScope);
+      if (!optionAttrs["value"]) {
+        optionAttrs.$set("value", optionScope.value);
+      }
+      
       let oldVal;
       optionScope.$watch("value", (newVal) => {
-        optionAttrs.$set("value", newVal);
+        if (!optionAttrs["value"]) {
+          optionAttrs.$set("value", newVal);
+        }
         const previouslySelected = optionElement.selected;
         if (oldVal !== newVal) {
           this.removeOption(oldVal);

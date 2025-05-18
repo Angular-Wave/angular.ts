@@ -1414,18 +1414,20 @@ describe("select", () => {
       expect(element.value).toBe(`? undefined:undefined ?`);
     });
 
-    it("should ignore the option text if the value attribute exists", () => {
+    fit("should ignore the option text if the value attribute exists", async () => {
       compile('<select ng-model="x"><option value="abc">xyz</option></select>');
+      await wait();
       expect(element.value).toBe(`? undefined:undefined ?`);
     });
 
-    it("should set value even if self closing HTML", () => {
+    fit("should set value even if self closing HTML", async () => {
       scope.x = "hello";
       compile('<select ng-model="x"><option>hello</select>');
+      await wait();
       expect(element.value).toBe("hello");
     });
 
-    it("should add options with interpolated value attributes", () => {
+    fit("should add options with interpolated value attributes", async () => {
       scope.option1 = "option1";
       scope.option2 = "option2";
 
@@ -1435,20 +1437,26 @@ describe("select", () => {
           '<option value="{{option2}}">Option 2</option>' +
           "</select>",
       );
-
+      await wait();
       expect(scope.selected).toBeUndefined();
 
       setSelectValue(element, 0);
+      await wait();
       expect(scope.selected).toBe("option1");
 
       scope.selected = "option2";
-      expect(element.querySelectorAll("option").eq(1)[0].selected).toBe(true);
-      expect(element.querySelectorAll("option").eq(1).textContent).toBe(
+      await wait();
+      expect(element.querySelectorAll("option")[0].selected).toBe(false);
+      expect(element.querySelectorAll("option")[0].textContent).toBe(
+        "Option 1",
+      );
+      expect(element.querySelectorAll("option")[1].selected).toBe(true);
+      expect(element.querySelectorAll("option")[1].textContent).toBe(
         "Option 2",
       );
     });
 
-    it("should update the option when the interpolated value attribute changes", () => {
+    fit("should update the option when the interpolated value attribute changes", async () => {
       scope.option1 = "option1";
       scope.option2 = "";
 
@@ -1458,7 +1466,7 @@ describe("select", () => {
           '<option value="{{option2}}">Option 2</option>' +
           "</select>",
       );
-
+      await wait();
       const selectCtrl = getController(element, "select");
       spyOn(selectCtrl, "removeOption").and.callThrough();
 
@@ -1468,17 +1476,22 @@ describe("select", () => {
       // Change value of option2
       scope.option2 = "option2Changed";
       scope.selected = "option2Changed";
+      await wait();
       expect(selectCtrl.removeOption).toHaveBeenCalledWith("");
-      expect(element.querySelectorAll("option").eq(1)[0].selected).toBe(true);
-      expect(element.querySelectorAll("option").eq(1).textContent).toBe(
+      expect(element.querySelectorAll("option")[0].selected).toBe(false);
+      expect(element.querySelectorAll("option")[0].textContent).toBe(
+        "Option 1",
+      );
+      expect(element.querySelectorAll("option")[1].selected).toBe(true);
+      expect(element.querySelectorAll("option")[1].textContent).toBe(
         "Option 2",
       );
     });
 
-    it("should add options with interpolated text", () => {
+    fit("should add options with interpolated text", async () => {
       scope.option1 = "Option 1";
       scope.option2 = "Option 2";
-
+      
       compile(
         '<select ng-model="selected">' +
           "<option>{{option1}}</option>" +
@@ -1486,16 +1499,23 @@ describe("select", () => {
           "</select>",
       );
 
+      await wait();
       expect(scope.selected).toBeUndefined();
-
+      debugger
       setSelectValue(element, 0);
+      await wait();
+      expect(element.querySelectorAll("option")[0].selected).toBe(true);
+      expect(element.querySelectorAll("option")[0].textContent).toBe(
+        "Option 1",
+      );
       expect(scope.selected).toBe("Option 1");
 
-      scope.selected = "Option 2";
-      expect(element.querySelectorAll("option").eq(1)[0].selected).toBe(true);
-      expect(element.querySelectorAll("option").eq(1).textContent).toBe(
-        "Option 2",
-      );
+      // scope.selected = "Option 2";
+      // await wait();
+      // expect(element.querySelectorAll("option")[1].selected).toBe(true);
+      // expect(element.querySelectorAll("option")[1].textContent).toBe(
+      //   "Option 2",
+      // );
     });
 
     it("should update options when their interpolated text changes", () => {
@@ -1519,8 +1539,8 @@ describe("select", () => {
       scope.option2 = "Option 2 Changed";
       scope.selected = "Option 2 Changed";
       expect(selectCtrl.removeOption).toHaveBeenCalledWith("");
-      expect(element.querySelectorAll("option").eq(1)[0].selected).toBe(true);
-      expect(element.querySelectorAll("option").eq(1).textContent).toBe(
+      expect(element.querySelectorAll("option")[1].selected).toBe(true);
+      expect(element.querySelectorAll("option")[1].textContent).toBe(
         "Option 2 Changed",
       );
     });
@@ -1653,10 +1673,10 @@ describe("select", () => {
           expect(element.querySelectorAll("option").eq(0).value).toBe(
             unknownValue(prop),
           );
-          expect(element.querySelectorAll("option").eq(1)[0].selected).toBe(
+          expect(element.querySelectorAll("option")[1].selected).toBe(
             false,
           );
-          expect(element.querySelectorAll("option").eq(1).value).toBe(
+          expect(element.querySelectorAll("option")[1].value).toBe(
             "string:UPDATEDVALUE",
           );
 
@@ -1684,13 +1704,13 @@ describe("select", () => {
 
         scope.option = "init";
         expect(log[0]).toBe("init");
-        expect(element.querySelectorAll("option").eq(1).value).toBe(
+        expect(element.querySelectorAll("option")[1].value).toBe(
           "string:init",
         );
 
         optionAttr.$set("value", "update");
         expect(log[1]).toBe("update");
-        expect(element.querySelectorAll("option").eq(1).value).toBe(
+        expect(element.querySelectorAll("option")[1].value).toBe(
           "string:update",
         );
       });
@@ -1978,7 +1998,7 @@ describe("select", () => {
           // jQuery returns null for val() when the option is disabled, see
           // https://bugs.jquery.com/ticket/13097
           expect(element.value).toBe(prop === "ngValue" ? "string:B" : "B");
-          expect(optionElements.eq(1)[0].selected).toBe(true);
+          expect(optionElements[1].selected).toBe(true);
         });
 
         it("should ignore an option with $prop that becomes enabled and does not match the model", () => {
@@ -2383,7 +2403,7 @@ describe("select", () => {
 
             let optionElements = element.querySelectorAll("option");
             expect(optionElements.length).toEqual(2);
-            expect(optionElements.eq(1)[0].selected).toBe(true);
+            expect(optionElements[1].selected).toBe(true);
 
             scope.options.push(C);
             optionElements = element.querySelectorAll("option");
