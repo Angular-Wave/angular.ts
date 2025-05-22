@@ -629,7 +629,7 @@ describe("ngInclude", () => {
 
     //   function html(content) {
     //     $rootElement.html(content);
-    //     element = $rootElement.children().eq(0);
+    //     element = $rootElement.children()[0];
     //     return element;
     //   }
 

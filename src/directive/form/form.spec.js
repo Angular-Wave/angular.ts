@@ -868,8 +868,7 @@ describe("form", () => {
       await wait();
       const form = scope.myForm;
       const childformController = doc
-        .querySelector("ng-form")
-        .eq(0)
+        .querySelector("ng-form")[0]
         .controller("form");
 
       const input = doc.children[0];
@@ -918,8 +917,7 @@ describe("form", () => {
 
       const form = scope.myForm;
       const childFormController = doc
-        .querySelector("ng-form")
-        .eq(0)
+        .querySelector("ng-form")[0]
         .controller("form");
 
       const input = doc.children[0];

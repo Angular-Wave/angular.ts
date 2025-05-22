@@ -222,13 +222,13 @@ describe("ngView", () => {
           '<div><ng-view name="dview1" class="dview1"></ng-view><ng-view name="dview2" class="dview2"></ng-view></div>',
         )(scope),
       );
-      expect(elem.querySelector("ng-view").eq(0).textContent).toBe("");
+      expect(elem.querySelector("ng-view")[0].textContent).toBe("");
       expect(elem.querySelector("ng-view").eq(1).textContent).toBe("");
 
       $state.transitionTo(dState);
       await wait(100);
 
-      expect(elem.querySelector("ng-view").eq(0).textContent).toBe(
+      expect(elem.querySelector("ng-view")[0].textContent).toBe(
         dState.views.dview1.template,
       );
       expect(elem.querySelector("ng-view").eq(1).textContent).toBe(
@@ -608,14 +608,14 @@ describe("ngView", () => {
 
         let ngViews = elem.querySelector("ng-view");
 
-        expect(ngViews.eq(0).textContent).toBe(lState.views.view1.template);
+        expect(ngViews[0].textContent).toBe(lState.views.view1.template);
         expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
         expect(ngViews.eq(2).length).toBe(0);
 
         scope.views.push("view3");
         ngViews = elem.querySelector("ng-view");
 
-        expect(ngViews.eq(0).textContent).toBe(lState.views.view1.template);
+        expect(ngViews[0].textContent).toBe(lState.views.view1.template);
         expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
         expect(ngViews.eq(2).textContent).toBe(lState.views.view3.template);
       });
@@ -638,14 +638,14 @@ describe("ngView", () => {
 
         let ngViews = elem.querySelector("ng-view");
 
-        expect(ngViews.eq(0).textContent).toBe(lState.views.view1.template);
+        expect(ngViews[0].textContent).toBe(lState.views.view1.template);
         expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
         expect(ngViews.eq(2).length).toBe(0);
 
         scope.views.push("view3");
         ngViews = elem.querySelector("ng-view");
 
-        expect(ngViews.eq(0).textContent).toBe(lState.views.view1.template);
+        expect(ngViews[0].textContent).toBe(lState.views.view1.template);
         expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
         expect(ngViews.eq(2).textContent).toBe(lState.views.view3.template);
       });

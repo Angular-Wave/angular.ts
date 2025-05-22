@@ -439,7 +439,7 @@ describe("$animate", () => {
         if (!window.SVGElement) return;
 
         element = "<svg><g></g></svg>";
-        const target = element.children().eq(0);
+        const target = element.children()[0];
 
         $rootScope.$apply(() => {
           $animate.addClass(target, "test-class1");
@@ -461,7 +461,7 @@ describe("$animate", () => {
         if (!window.SVGElement) return;
 
         element = '<svg><g class="test-class4"></g></svg>';
-        const target = element.children().eq(0);
+        const target = element.children()[0];
         $animate.addClass(target, "test-class1");
         $animate.removeClass(target, "test-class1");
         $animate.addClass(target, "test-class2");
@@ -474,7 +474,7 @@ describe("$animate", () => {
       it("should perform class manipulation in expected order at end of digest for SVG", () => {
         if (!window.SVGElement) return;
         element = '<svg><g class="test-class3"></g></svg>';
-        const target = element.children().eq(0);
+        const target = element.children()[0];
 
         $rootScope.$apply(() => {
           $animate.addClass(target, "test-class1");

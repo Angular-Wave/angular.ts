@@ -943,7 +943,7 @@ describe("ngSrefActive", () => {
     $state.transitionTo("contacts.lazy.s1");
     await wait(100);
 
-    expect(template.eq(0)[0].hasClass("active")).toBeTruthy();
+    expect(template[0][0].hasClass("active")).toBeTruthy();
     //expect(template.eq(1).hasClass("active")).toBeFalsy();
   });
 
@@ -1024,7 +1024,7 @@ describe("ngSrefActive", () => {
       )($rootScope);
       $state.transitionTo("contacts.lazy.s1");
       await wait(100);
-      expect(template.eq(0).hasClass("active")).toBeTruthy();
+      expect(template[0].hasClass("active")).toBeTruthy();
       expect(template.eq(1).hasClass("active")).toBeFalsy();
     });
   });

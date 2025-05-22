@@ -138,7 +138,7 @@ describe("ngShow / ngHide", () => {
 //   function html(content) {
 //     body.append($rootElement);
 //     $rootElement.html(content);
-//     element = $rootElement.children().eq(0);
+//     element = $rootElement.children()[0];
 //     return element;
 //   }
 

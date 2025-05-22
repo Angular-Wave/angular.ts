@@ -2371,7 +2371,7 @@ describe("$location", () => {
   //           '<a href="#!/view1">v1</a><a href="#!/view2">v2</a>',
   //         )($rootScope);
   //         $rootElement.append(element);
-  //         const av1 = $rootElement.querySelector("a").eq(0);
+  //         const av1 = $rootElement.querySelector("a")[0];
   //         const av2 = $rootElement.querySelector("a").eq(1);
 
   //         browserTrigger(av1, "click");
@@ -2412,7 +2412,7 @@ describe("$location", () => {
   //           '<a href="#!!/view1">v1</a><a href="#!!/view2">v2</a>',
   //         )($rootScope);
   //         $rootElement.append(element);
-  //         const av1 = $rootElement.querySelector("a").eq(0);
+  //         const av1 = $rootElement.querySelector("a")[0];
   //         const av2 = $rootElement.querySelector("a").eq(1);
 
   //         browserTrigger(av1, "click");
@@ -2542,7 +2542,7 @@ describe("$location", () => {
   //         const element = $compile(template)($rootScope);
 
   //         $rootElement.append(element);
-  //         const av1 = $rootElement.querySelector("a").eq(0);
+  //         const av1 = $rootElement.querySelector("a")[0];
   //         expect(() => {
   //           browserTrigger(av1, "click");
   //         }).not.toThrow();
