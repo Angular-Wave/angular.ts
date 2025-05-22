@@ -5,17 +5,19 @@ export class Attributes {
      * @param {*} $animate
      * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
      * @param {*} $sce
-     * @param {Node} element
+     * @param {import("../../shared/noderef.js").NodeRef} [nodeRef]
      * @param {*} [attributesToCopy]
      */
-    constructor($rootScope: import("../scope/scope.js").Scope, $animate: any, $exceptionHandler: import("../exception-handler.js").ErrorHandler, $sce: any, element: Node, attributesToCopy?: any);
+    constructor($rootScope: import("../scope/scope.js").Scope, $animate: any, $exceptionHandler: import("../exception-handler.js").ErrorHandler, $sce: any, nodeRef?: import("../../shared/noderef.js").NodeRef, attributesToCopy?: any);
     $rootScope: import("../scope/scope.js").Scope;
     $animate: any;
     $exceptionHandler: import("../exception-handler.js").ErrorHandler;
     $sce: any;
     $attr: {};
-    /** @type {Element|Node} */
-    $$element: Element | Node;
+    /** @type {import("../../shared/noderef.js").NodeRef} */
+    $nodeRef: import("../../shared/noderef.js").NodeRef;
+    /** @type {Node} */
+    get $$element(): Node;
     /**
      * Converts an attribute name (e.g. dash/colon/underscore-delimited string, optionally prefixed with `x-` or
      * `data-`) to its normalized, camelCase form.

@@ -287,7 +287,7 @@ describe("ngOptions", () => {
     }).toThrow();
   });
 
-  fit("should render a list", () => {
+  it("should render a list", () => {
     createSingleSelect();
 
     scope.values = [{ name: "A" }, { name: "B" }, { name: "C" }];

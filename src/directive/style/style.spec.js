@@ -120,7 +120,7 @@ describe("ng-style", () => {
       expect(element.style[postCompStyle]).toBe(postCompVal);
     });
 
-    fit("should overwrite original styles after a colliding model change", async () => {
+    it("should overwrite original styles after a colliding model change", async () => {
       scope.styleObj = { height: "99px", width: "88px" };
       scope.$apply();
       await wait();

@@ -337,7 +337,7 @@ describe("ngMessages", () => {
     expect(element.classList.contains("ng-inactive")).toBe(false);
   });
 
-  fit("should automatically re-render the messages when other directives dynamically change them", async () => {
+  it("should automatically re-render the messages when other directives dynamically change them", async () => {
     element = $compile(
       '<div ng-messages="col">' +
         '  <div ng-message="primary">Enter something</div>' +

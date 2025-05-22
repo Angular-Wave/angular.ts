@@ -58,4 +58,5 @@ export class NodeRef {
      * @returns {NodeRef}
      */
     clone(): NodeRef;
+    isElement(): boolean;
 }

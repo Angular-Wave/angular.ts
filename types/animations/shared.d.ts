@@ -8,15 +8,15 @@ export function pendClasses(classes: any, fix: any, isPrefix: any): string;
 export function removeFromArray(arr: any, val: any): void;
 /**
  *
- * @param {NodeList} element
+ * @param {NodeList|Node} element
  * @returns {Node}
  */
-export function stripCommentsFromElement(element: NodeList): Node;
+export function stripCommentsFromElement(element: NodeList | Node): Node;
 /**
- * @param {JQLite|Node} element
+ * @param {NodeList|Node} element
  * @returns {Node}
  */
-export function extractElementNode(element: JQLite | Node): Node;
+export function extractElementNode(element: NodeList | Node): Node;
 export function applyAnimationClassesFactory(): (element: any, options: any) => void;
 export function prepareAnimationOptions(options: any): any;
 export function applyAnimationStyles(element: any, options: any): void;

@@ -350,9 +350,9 @@ export class NgModelController {
      * </div>
      *
      * @param {*} value value from the view.
-     * @param {string} trigger Event that triggered the update.
+     * @param {string} [trigger] Event that triggered the update.
      */
-    $setViewValue(value: any, trigger: string): void;
+    $setViewValue(value: any, trigger?: string): void;
     $$debounceViewValueCommit(trigger: any): void;
     /**
      *
@@ -444,7 +444,7 @@ export class NgModelController {
               let ngModel;
   
               that.$postLink = function() {
-                ngModel = $element.find('input').controller('ngModel');
+                ngModel = $element.querySelectorAll('input').controller('ngModel');
   
                 ngModel.$formatters.push(function(value) {
                   return (value && value.name) || value;

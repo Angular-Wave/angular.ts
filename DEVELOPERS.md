@@ -431,7 +431,7 @@ important that they work correctly.  To ensure this, all these e2e scenarios are
 continuous integration tests.
 
 If you are adding an example with an e2e test, you should [run the test locally](#e2e-tests) first
-to ensure it passes. You can change `it(...)` to `fit(...)` to run only your test,
+to ensure it passes. You can change `it(...)` to `it(...)` to run only your test,
 but make sure you change it back to `it(...)` before committing.
 
 #### The `<example>` tag

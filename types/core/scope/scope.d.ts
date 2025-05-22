@@ -159,6 +159,7 @@ export class Scope {
         registerForeignKey: any;
         notifyListener: any;
         $merge: any;
+        $getById: any;
     };
     /**
      * @private
@@ -224,6 +225,13 @@ export class Scope {
      * @param {Listener} listener - The property path that was changed.
      */
     notifyListener(listener: Listener, target: any): void;
+    /**
+     * Searches the scope instance
+     *
+     * @param {string|number}id
+     * @returns {Scope|undefined}
+     */
+    $getById(id: string | number): Scope | undefined;
 }
 export type AsyncQueueTask = {
     handler: Scope;
