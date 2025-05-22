@@ -5,7 +5,7 @@ import {
   getController,
 } from "../../shared/dom.js";
 import { Angular } from "../../loader.js";
-import { wait } from "../../shared/test-utils.js";
+import { bootstrap, wait } from "../../shared/test-utils.js";
 
 function changeGivenInputTo(inputElm, val) {
   inputElm.value = val;
@@ -1012,20 +1012,18 @@ describe("ngModelOptions", () => {
       let inputElm, module, $rootScope, angular;
 
       beforeEach(() => {
-        angular = new Angular();
-        window.angular = new Angular();
-        module = window.angular.module("myModule", []).directive("foo", () => ({
+        window.angular = angular = new Angular();
+        module = angular.module("myModule", []).directive("foo", () => ({
           replace: true,
           template: '<input type="text" ng-model-options="{debounce: 1000}" />',
         }));
       });
 
-      it("should get initialized in time for `ngModel` on the original element", () => {
-        inputElm = createElementFromHTML('<foo ng-model="value"></foo>');
-        const injector = angular.bootstrap(inputElm, ["myModule"]);
+      it("should get initialized in time for `ngModel` on the original element", async () => {
+        const injector = bootstrap('<foo ng-model="value"></foo>');
+        await wait();
         $rootScope = injector.get("$rootScope");
-        const ngModelCtrl = getController(inputElm, "ngModel");
-
+        const ngModelCtrl = getController(ELEMENT.firstChild, "ngModel");
         expect(ngModelCtrl.$options.getOption("debounce")).toBe(1000);
       });
     });

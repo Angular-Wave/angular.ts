@@ -1,10 +1,7 @@
 import { Angular } from "../../loader.js";
 import { createInjector } from "../di/injector.js";
-
 import {
   dealoc,
-  getOrSetCacheData,
-  emptyElement,
   getCacheData,
   setCacheData,
   createElementFromHTML as $,
@@ -19,10 +16,8 @@ import {
   extend,
   assert,
 } from "../../shared/utils.js";
-import { Cache, EXPANDO } from "../cache/cache.js";
+import { Cache } from "../cache/cache.js";
 import { wait } from "../../shared/test-utils.js";
-import { isAwaitKeyword } from "typescript";
-import { NodeRef } from "../../shared/noderef.js";
 
 function isUnknownElement(el) {
   return !!el.toString().match(/Unknown/);

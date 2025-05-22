@@ -1,4 +1,5 @@
 import { isObject } from "./utils.js";
+import { dealoc } from "./dom.js";
 
 /**
  * Triggers a browser event on the specified element.
@@ -26,4 +27,19 @@ export function browserTrigger(element, options) {
  */
 export function wait(t) {
   return new Promise((resolve) => setTimeout(resolve, t));
+}
+
+let ELEMENT;
+
+/**
+ * Helper for bootstraping content onto default element
+ */
+export function bootstrap(htmlContent, moduleName) {
+  if (!ELEMENT) {
+    ELEMENT = document.getElementById("app");
+    window.ELEMENT = ELEMENT;
+  }
+  dealoc(ELEMENT);
+  ELEMENT.innerHTML = htmlContent;
+  return window.angular.bootstrap(ELEMENT, [moduleName || "myModule"]);
 }

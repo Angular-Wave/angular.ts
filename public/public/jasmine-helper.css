@@ -1,0 +1,10 @@
+#app {
+  background-color: white;
+  position: absolute;
+  width: 20rem;
+  right: 0;
+  height: 2rem;
+  border: solid 1px #6088af;
+  background: rgba(132, 169, 206, 0.21);
+  bottom: 0;
+}
