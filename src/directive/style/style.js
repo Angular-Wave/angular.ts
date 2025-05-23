@@ -3,20 +3,22 @@
  */
 export function ngStyleDirective() {
   return {
-    restrict: "EA",
+    restrict: "A",
     link: (scope, element, attr) => {
-      scope.$watchCollection(attr.ngStyle, (newStyles, oldStyles) => {
+      let oldStyles;
+      scope.$watch(attr.ngStyle, (newStyles) => {
         if (oldStyles) {
           const oldKeys = Object.keys(oldStyles);
           for (let i = 0, length = oldKeys.length; i < length; i++) {
-            element.style[oldKeys[i]] = "";
+            element.style.removeProperty(oldKeys[i]);
           }
         }
         if (newStyles) {
+          oldStyles = { ...newStyles.$target };
           const newEntries = Object.entries(newStyles);
           for (let i = 0, length = newEntries.length; i < length; i++) {
             const [key, value] = newEntries[i];
-            element.style[key] = value;
+            element.style.setProperty(key, value);
           }
         }
       });

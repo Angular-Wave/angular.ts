@@ -71,18 +71,20 @@ describe("ng-style", () => {
     let postCompVal;
     let element;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       preCompStyle = "width";
       preCompVal = "300px";
       postCompStyle = "height";
       postCompVal = "100px";
       element = createElementFromHTML('<div ng-style="styleObj"></div>');
       element.style[preCompStyle] = preCompVal;
+      element.style.setProperty("background", "red");
       document.body.append(element);
       $compile(element)($scope);
+      await wait();
       scope = $scope;
       scope.styleObj = { "margin-top": "44px" };
-      scope.$apply();
+      await wait();
       element.style[postCompStyle] = postCompVal;
     });
 
@@ -100,7 +102,7 @@ describe("ng-style", () => {
 
     it("should not mess up stuff after $apply with no model changes", async () => {
       element.style["padding-top"] = "33px";
-      scope.$apply();
+      await wait();
       await wait();
 
       expect(element.style[preCompStyle]).toBe(preCompVal);
@@ -111,7 +113,7 @@ describe("ng-style", () => {
 
     it("should not mess up stuff after $apply with non-colliding model changes", async () => {
       scope.styleObj = { "padding-top": "99px" };
-      scope.$apply();
+      await wait();
       await wait();
 
       expect(element.style[preCompStyle]).toBe(preCompVal);
@@ -122,7 +124,6 @@ describe("ng-style", () => {
 
     it("should overwrite original styles after a colliding model change", async () => {
       scope.styleObj = { height: "99px", width: "88px" };
-      scope.$apply();
       await wait();
 
       expect(element.style[preCompStyle]).toBe("88px");
@@ -135,46 +136,46 @@ describe("ng-style", () => {
       expect(element.style[postCompStyle]).not.toBe("99px");
     });
 
-    it("should clear style when the new model is null", () => {
+    it("should clear style when the new model is null", async () => {
       scope.styleObj = { height: "99px", width: "88px" };
-      scope.$apply();
+      await wait();
       expect(element.style[preCompStyle]).toBe("88px");
       expect(element.style[postCompStyle]).toBe("99px");
       scope.styleObj = null;
-      scope.$apply();
+      await wait();
       expect(element.style[preCompStyle]).not.toBe("88px");
       expect(element.style[postCompStyle]).not.toBe("99px");
     });
 
-    it("should clear style when the value is undefined or null", () => {
+    it("should clear style when the value is undefined or null", async () => {
       scope.styleObj = { height: "99px", width: "88px" };
-      scope.$apply();
+      await wait();
       expect(element.style[preCompStyle]).toBe("88px");
       expect(element.style[postCompStyle]).toBe("99px");
       scope.styleObj = { height: undefined, width: null };
-      scope.$apply();
+      await wait();
       expect(element.style[preCompStyle]).not.toBe("88px");
       expect(element.style[postCompStyle]).not.toBe("99px");
     });
 
-    it("should clear style when the value is false", () => {
+    it("should clear style when the value is false", async () => {
       scope.styleObj = { height: "99px", width: "88px" };
-      scope.$apply();
+      await wait();
       expect(element.style[preCompStyle]).toBe("88px");
       expect(element.style[postCompStyle]).toBe("99px");
       scope.styleObj = { height: false, width: false };
-      scope.$apply();
+      await wait();
       expect(element.style[preCompStyle]).not.toBe("88px");
       expect(element.style[postCompStyle]).not.toBe("99px");
     });
 
-    it("should set style when the value is zero", () => {
+    it("should set style when the value is zero", async () => {
       scope.styleObj = { height: "99px", width: "88px" };
-      scope.$apply();
+      await wait();
       expect(element.style[preCompStyle]).toBe("88px");
       expect(element.style[postCompStyle]).toBe("99px");
       scope.styleObj = { height: 0, width: 0 };
-      scope.$apply();
+      await wait();
       expect(element.style[preCompStyle]).toBe("0px");
       expect(element.style[postCompStyle]).toBe("0px");
     });

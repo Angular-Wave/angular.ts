@@ -10,3 +10,7 @@ export function browserTrigger(element: HTMLElement, options: any): void;
  * @returns
  */
 export function wait(t: number): Promise<any>;
+/**
+ * Helper for bootstraping content onto default element
+ */
+export function bootstrap(htmlContent: any, moduleName: any): any;
