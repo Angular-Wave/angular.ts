@@ -123,11 +123,11 @@ describe("ngHref", () => {
         );
         await wait();
         const child = element.querySelector("a");
-        expect(child.getAttribute("xlink:href")).toEqual("some/");
+        expect(child.getAttribute("href")).toEqual("some/");
 
         $rootScope.id = 1;
         await wait();
-        expect(child.getAttribute("xlink:href")).toEqual("some/1");
+        expect(child.getAttribute("href")).toEqual("some/1");
       });
 
       it("should bind xlink:href even if no interpolation", async () => {
@@ -135,7 +135,7 @@ describe("ngHref", () => {
           $rootScope,
         );
         const child = element.querySelector("a");
-        expect(child.getAttribute("xlink:href")).toEqual("http://server");
+        expect(child.getAttribute("href")).toEqual("http://server");
       });
     });
   }
