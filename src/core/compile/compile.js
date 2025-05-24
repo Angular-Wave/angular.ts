@@ -50,9 +50,9 @@ import { isProxy } from "../scope/scope.js";
  * The function returns the DOM content to be injected (transcluded) into the directive.
  *
  * @callback TranscludeFn
- * @param {import("../scope/scope.js").Scope} scope - The new child scope created from the transcluded parent.
- * @returns {Element|Node} The DOM node to be inserted into the transcluded directive.
- */
+ * @param {Element|Node} [clone] - The DOM node to be inserted into the transcluded directive.
+ * @param {import("../scope/scope.js").Scope} [scope] - The new child scope created from the transcluded parent.
+ * @returns void
 
 /**
  * A specialized version of {@link TranscludeFn} with the scope argument already bound.

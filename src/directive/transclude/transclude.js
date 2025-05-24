@@ -1,6 +1,5 @@
 import { minErr } from "../../shared/utils.js";
 import { emptyElement, startingTag } from "../../shared/dom.js";
-import { NodeRef } from "../../shared/noderef.js";
 
 /**
  * Directive that marks the insertion point for the transcluded DOM of the nearest parent directive that uses transclusion.
@@ -60,10 +59,10 @@ export const ngTranscludeDirective = [
           }
 
           // If the attribute is of the form: `ng-transclude="ng-transclude"` then treat it like the default
-          if ($attrs.ngTransclude === $attrs.$attr.ngTransclude) {
-            $attrs.ngTransclude = "";
+          if ($attrs["ngTransclude"] === $attrs.$attr.ngTransclude) {
+            $attrs["ngTransclude"] = "";
           }
-          const slotName = $attrs.ngTransclude || $attrs.ngTranscludeSlot;
+          const slotName = $attrs["ngTransclude"] || $attrs["ngTranscludeSlot"];
 
           // If the slot is required and no transclusion content is provided then this call will throw an error
           $transclude(ngTranscludeCloneAttachFn, null, slotName);
@@ -74,7 +73,7 @@ export const ngTranscludeDirective = [
           }
 
           /**
-           * @param {import("../../shared/noderef.js").NodeRef} clone
+           * @param {NodeList | Node} clone
            * @param {import("../../core/scope/scope.js").Scope} transcludedScope
            */
           function ngTranscludeCloneAttachFn(clone, transcludedScope) {
@@ -84,7 +83,7 @@ export const ngTranscludeDirective = [
                   $element.append(el);
                 });
               } else {
-                $element.append(clone);
+                $element.append(/** @type {Node} */ (clone));
               }
             } else {
               useFallbackContent();
@@ -97,9 +96,13 @@ export const ngTranscludeDirective = [
           function useFallbackContent() {
             // Since this is the fallback content rather than the transcluded content,
             // we link against the scope of this directive rather than the transcluded scope
-            fallbackLinkFn($scope, (clone) => {
-              $element.append(clone);
-            });
+            fallbackLinkFn(
+              $scope,
+
+              (clone) => {
+                $element.append(clone);
+              },
+            );
           }
 
           function notWhitespace(node) {

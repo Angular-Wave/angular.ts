@@ -112,10 +112,13 @@ export const DirectiveSuffix: "Directive";
  *
  * The function returns the DOM content to be injected (transcluded) into the directive.
  */
-export type TranscludeFn = (scope: import("../scope/scope.js").Scope) => Element | Node;
+export type TranscludeFn = (clone?: Element | Node, scope?: import("../scope/scope.js").Scope) => any;
 /**
- * A specialized version of {@link TranscludeFn} with the scope argument already bound.
- * This function requires no parameters and returns the same result as {@link TranscludeFn}.
+ * A function passed as the fifth argument to a {@type PublicLinkFn} link function.
+ * It behaves like a linking function, with the `scope` argument automatically created
+ * as a new child of the transcluded parent scope.
+ *
+ * The function returns the DOM content to be injected (transcluded) into the directive.
  */
 export type BoundTranscludeFn = () => Element | Node;
 export type SimpleChange = {
