@@ -81,7 +81,7 @@ export type DirectiveController = Controller | Controller[] | {
 /**
  * Compile function for an AngularJS directive.
  */
-export type DirectiveCompileFn = (templateElement: Element, templateAttributes: TAttributes, transclude: TranscludeFunction) => any;
+export type DirectiveCompileFn = (templateElement: HTMLElement, templateAttributes: TAttributes, transclude: TranscludeFunction) => any;
 /**
  * Link function for an AngularJS directive.
  */
