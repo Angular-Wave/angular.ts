@@ -1,21 +1,21 @@
 import { Angular } from "../../loader.js";
-import { createInjector } from "../../core/di/injector.js";
 import { wait } from "../../shared/test-utils.js";
-import { dealoc } from "../../shared/dom.js";
+import { getController } from "../../shared/dom.js";
 
 describe("validators", () => {
   let $rootScope;
   let $compile;
   let inputElm;
+  let errors = [];
 
   beforeEach(() => {
+    errors = [];
     window.angular = new Angular();
     window.angular
       .module("myModule", ["ng"])
       .decorator("$exceptionHandler", function () {
         return (exception, cause) => {
-          console.error(exception);
-          throw new Error(exception);
+          errors.push(exception.message);
         };
       });
     window.angular
@@ -24,10 +24,6 @@ describe("validators", () => {
         $compile = _$compile_;
         $rootScope = _$rootScope_;
       });
-  });
-
-  afterEach(() => {
-    dealoc(inputElm);
   });
 
   describe("pattern", () => {
@@ -82,12 +78,12 @@ describe("validators", () => {
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
     });
 
-    it("should validate pattern from scope", () => {
+    it("should validate pattern from scope", async () => {
       $rootScope.regexp = /^\d\d\d-\d\d-\d\d\d\d$/;
       inputElm = $compile(
         '<input type="text" ng-model="value" ng-pattern="regexp" />',
       )($rootScope);
-
+      await wait();
       inputElm.setAttribute("value", "x000-00-0000x");
       inputElm.dispatchEvent(new Event("change"));
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
@@ -111,7 +107,7 @@ describe("validators", () => {
       $rootScope.$apply(() => {
         $rootScope.regexp = /abc?/;
       });
-
+      await wait();
       inputElm.setAttribute("value", "ab");
       inputElm.dispatchEvent(new Event("change"));
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
@@ -148,7 +144,7 @@ describe("validators", () => {
       $rootScope.$apply(() => {
         $rootScope.regexp = "";
       });
-
+      await wait();
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
 
@@ -180,16 +176,15 @@ describe("validators", () => {
       }).not.toThrow();
     });
 
-    it("should throw an error when the scope pattern is not a regular expression", () => {
-      expect(() => {
-        inputElm = $compile(
-          '<input type="text" ng-model="foo" ng-pattern="fooRegexp" />',
-        )($rootScope);
-        $rootScope.$apply(() => {
-          $rootScope.fooRegexp = {};
-          $rootScope.foo = "bar";
-        });
-      }).toThrowError(/Expected fooRegexp/);
+    it("should throw an error when the scope pattern is not a regular expression", async () => {
+      inputElm = $compile(
+        '<div><input type="text" ng-model="foo" ng-pattern="fooRegexp" /></div>',
+      )($rootScope);
+      await wait();
+      $rootScope.fooRegexp = {};
+      $rootScope.foo = "bar";
+      await wait();
+      expect(errors[0]).toMatch(/Expected fooRegexp/);
     });
 
     it("should be invalid if entire string does not match pattern", () => {
@@ -256,12 +251,13 @@ describe("validators", () => {
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
     });
 
-    it("should validate the viewValue and not the modelValue", () => {
+    it("should validate the viewValue and not the modelValue", async () => {
       let formElm = $compile(
         '<form name="form"><input type="text" name="test" ng-model="value" pattern="\\d{4}"></form>',
       )($rootScope);
+      await wait();
       inputElm = formElm.querySelector("input");
-      const ctrl = inputElm.controller("ngModel");
+      const ctrl = getController(inputElm, "ngModel");
 
       ctrl.$parsers.push((value) => `${value * 10}`);
 
@@ -280,8 +276,8 @@ describe("validators", () => {
       const elmNg = $compile(
         '<span ng-model="value" ng-pattern="pattern"></span>',
       )($rootScope);
-      const ctrl = elm.controller("ngModel");
-      const ctrlNg = elmNg.controller("ngModel");
+      const ctrl = getController(elm, "ngModel");
+      const ctrlNg = getController(elmNg, "ngModel");
 
       expect(ctrl.$error.pattern).not.toBe(true);
       expect(ctrlNg.$error.pattern).not.toBe(true);
@@ -295,11 +291,11 @@ describe("validators", () => {
   });
 
   describe("minlength", () => {
-    it("should invalidate values that are shorter than the given minlength", () => {
+    it("should invalidate values that are shorter than the given minlength", async () => {
       inputElm = $compile(
         '<input type="text" ng-model="value" ng-minlength="3" />',
       )($rootScope);
-
+      await wait();
       inputElm.setAttribute("value", "aa");
       inputElm.dispatchEvent(new Event("change"));
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
@@ -309,20 +305,20 @@ describe("validators", () => {
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
 
-    it("should observe the standard minlength attribute and register it as a validator on the model", () => {
+    it("should observe the standard minlength attribute and register it as a validator on the model", async () => {
       let formElm = $compile(
         '<form name="form"><input type="text" name="input" ng-model="value" minlength="{{ min }}" /></form>',
       )($rootScope);
       inputElm = formElm.querySelector("input");
       $rootScope.$apply("min = 10");
-
+      await wait();
       inputElm.setAttribute("value", "12345");
       inputElm.dispatchEvent(new Event("change"));
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
       expect($rootScope.form.input.$error.minlength).toBe(true);
 
       $rootScope.$apply("min = 5");
-
+      await wait();
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
       expect($rootScope.form.input.$error.minlength).not.toBe(true);
     });
@@ -342,7 +338,7 @@ describe("validators", () => {
         '<input type="text" name="input" ng-model="value" minlength="3" />',
       )($rootScope);
 
-      const ctrl = inputElm.controller("ngModel");
+      const ctrl = getController(inputElm, "ngModel");
       spyOn(ctrl, "$isEmpty").and.callThrough();
 
       ctrl.$parsers.push((value) => `${value}678`);
@@ -360,8 +356,8 @@ describe("validators", () => {
       const elmNg = $compile(
         '<span ng-model="value" ng-minlength="min"></span>',
       )($rootScope);
-      const ctrl = elm.controller("ngModel");
-      const ctrlNg = elmNg.controller("ngModel");
+      const ctrl = getController(elm, "ngModel");
+      const ctrlNg = getController(elmNg, "ngModel");
 
       expect(ctrl.$error.minlength).not.toBe(true);
       expect(ctrlNg.$error.minlength).not.toBe(true);
@@ -375,125 +371,135 @@ describe("validators", () => {
   });
 
   describe("maxlength", () => {
-    it("should invalidate values that are longer than the given maxlength", () => {
+    it("should invalidate values that are longer than the given maxlength", async () => {
       inputElm = $compile(
         '<input type="text" ng-model="value" ng-maxlength="5" />',
       )($rootScope);
-
+      await wait();
       inputElm.setAttribute("value", "aaaaaaaa");
       inputElm.dispatchEvent(new Event("change"));
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
-
+      await wait();
       inputElm.setAttribute("value", "aaa");
       inputElm.dispatchEvent(new Event("change"));
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
 
-    it("should only accept empty values when maxlength is 0", () => {
+    it("should only accept empty values when maxlength is 0", async () => {
       inputElm = $compile(
         '<input type="text" ng-model="value" ng-maxlength="0" />',
       )($rootScope);
-
+      await wait();
       inputElm.setAttribute("value", "");
       inputElm.dispatchEvent(new Event("change"));
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
-
+      await wait();
       inputElm.setAttribute("value", "a");
       inputElm.dispatchEvent(new Event("change"));
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
     });
 
-    it("should accept values of any length when maxlength is negative", () => {
+    it("should accept values of any length when maxlength is negative", async () => {
       inputElm = $compile(
         '<input type="text" ng-model="value" ng-maxlength="-1" />',
       )($rootScope);
-
+      await wait();
       inputElm.setAttribute("value", "");
       inputElm.dispatchEvent(new Event("change"));
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
-
+      await wait();
       inputElm.setAttribute("value", "aaaaaaaaaa");
       inputElm.dispatchEvent(new Event("change"));
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
 
-    it("should accept values of any length when maxlength is non-numeric", () => {
+    it("should accept values of any length when maxlength is non-numeric", async () => {
       inputElm = $compile(
         '<input type="text" ng-model="value" ng-maxlength="maxlength" />',
       )($rootScope);
+      await wait();
       inputElm.setAttribute("value", "aaaaaaaaaa");
       inputElm.dispatchEvent(new Event("change"));
 
       $rootScope.$apply('maxlength = "5"');
+      await wait();
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
       $rootScope.$apply('maxlength = "abc"');
+      await wait();
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
       $rootScope.$apply('maxlength = ""');
+      await wait();
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
       $rootScope.$apply("maxlength = null");
+      await wait();
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
       $rootScope.someObj = {};
       $rootScope.$apply("maxlength = someObj");
+      await wait();
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
 
-    it("should observe the standard maxlength attribute and register it as a validator on the model", () => {
+    it("should observe the standard maxlength attribute and register it as a validator on the model", async () => {
       let formElm = $compile(
         '<form name="form"><input type="text" name="input" ng-model="value" maxlength="{{ max }}" /></form>',
       )($rootScope);
       inputElm = formElm.querySelector("input");
       $rootScope.$apply("max = 1");
-
+      await wait();
       inputElm.setAttribute("value", "12345");
       inputElm.dispatchEvent(new Event("change"));
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
       expect($rootScope.form.input.$error.maxlength).toBe(true);
 
       $rootScope.$apply("max = 6");
-
+      await wait();
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
       expect($rootScope.form.input.$error.maxlength).not.toBe(true);
     });
 
-    it("should assign the correct model after an observed validator became valid", () => {
+    it("should assign the correct model after an observed validator became valid", async () => {
       inputElm = $compile(
         '<input type="text" name="input" ng-model="value" maxlength="{{ max }}" />',
       )($rootScope);
 
       $rootScope.$apply("max = 1");
+      await wait();
       inputElm.setAttribute("value", "12345");
       inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.value).toBeUndefined();
 
       $rootScope.$apply("max = 6");
+      await wait();
       expect($rootScope.value).toBe("12345");
     });
 
-    it("should assign the correct model after an observed validator became invalid", () => {
+    it("should assign the correct model after an observed validator became invalid", async () => {
       inputElm = $compile(
         '<input type="text" name="input" ng-model="value" maxlength="{{ max }}" />',
       )($rootScope);
 
       $rootScope.$apply("max = 6");
+      await wait();
       inputElm.setAttribute("value", "12345");
       inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.value).toBe("12345");
 
       $rootScope.$apply("max = 1");
+      await wait();
       expect($rootScope.value).toBeUndefined();
     });
 
-    it("should leave the value as invalid if observed maxlength changed, but is still invalid", () => {
+    it("should leave the value as invalid if observed maxlength changed, but is still invalid", async () => {
       let formElm = $compile(
         '<form name="form"><input type="text" name="input" ng-model="value" maxlength="{{ max }}" /></form>',
       )($rootScope);
       inputElm = formElm.querySelector("input");
       $rootScope.$apply("max = 1");
-
+      await wait();
       inputElm.setAttribute("value", "12345");
       inputElm.dispatchEvent(new Event("change"));
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
@@ -501,7 +507,7 @@ describe("validators", () => {
       expect($rootScope.value).toBeUndefined();
 
       $rootScope.$apply("max = 3");
-
+      await wait();
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
       expect($rootScope.form.input.$error.maxlength).toBe(true);
       expect($rootScope.value).toBeUndefined();
@@ -546,7 +552,7 @@ describe("validators", () => {
         '<input type="text" name="input" ng-model="value" maxlength="10" />',
       )($rootScope);
 
-      const ctrl = inputElm.controller("ngModel");
+      const ctrl = getController(inputElm, "ngModel");
       spyOn(ctrl, "$isEmpty").and.callThrough();
 
       ctrl.$parsers.push((value) => `${value}678`);
@@ -564,8 +570,8 @@ describe("validators", () => {
       const elmNg = $compile(
         '<span ng-model="value" ng-maxlength="max"></span>',
       )($rootScope);
-      const ctrl = elm.controller("ngModel");
-      const ctrlNg = elmNg.controller("ngModel");
+      const ctrl = getController(elm, "ngModel");
+      const ctrlNg = getController(elmNg, "ngModel");
 
       expect(ctrl.$error.maxlength).not.toBe(true);
       expect(ctrlNg.$error.maxlength).not.toBe(true);
@@ -579,21 +585,23 @@ describe("validators", () => {
   });
 
   describe("required", () => {
-    it("should allow bindings via ngRequired", () => {
+    it("should allow bindings via ngRequired", async () => {
       inputElm = $compile(
         '<input type="text" ng-model="value" ng-required="required" />',
       )($rootScope);
 
       $rootScope.$apply("required = false");
-
+      await wait();
       inputElm.setAttribute("value", "");
       inputElm.dispatchEvent(new Event("change"));
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
       $rootScope.$apply("required = true");
+      await wait();
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
       $rootScope.$apply("value = 'some'");
+      await wait();
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
       inputElm.value = "";
@@ -601,26 +609,27 @@ describe("validators", () => {
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
       $rootScope.$apply("required = false");
+      await wait();
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
 
-    it("should invalid initial value with bound required", () => {
+    it("should invalid initial value with bound required", async () => {
       inputElm = $compile(
         '<input type="text" ng-model="value" required="{{required}}" />',
       )($rootScope);
 
       $rootScope.$apply("required = true");
-
+      await wait();
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
     });
 
-    it("should be $invalid but $pristine if not touched", () => {
+    it("should be $invalid but $pristine if not touched", async () => {
       inputElm = $compile(
         '<input type="text" ng-model="name" name="alias" required />',
       )($rootScope);
 
       $rootScope.$apply("name = null");
-
+      await wait();
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
       expect(inputElm.classList.contains("ng-pristine")).toBeTrue();
 
@@ -639,10 +648,11 @@ describe("validators", () => {
       expect($rootScope.foo).toBe("");
     });
 
-    it("should set $invalid when model undefined", () => {
+    it("should set $invalid when model undefined", async () => {
       inputElm = $compile(
         '<input type="text" ng-model="notDefined" required />',
       )($rootScope);
+      await wait();
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
     });
 
@@ -650,7 +660,7 @@ describe("validators", () => {
       inputElm = $compile('<input type="text" ng-model="value" required />', {
         badInput: true,
       })($rootScope);
-      const ctrl = inputElm.controller("ngModel");
+      const ctrl = getController(inputElm, "ngModel");
       ctrl.$parsers.push(() => undefined);
 
       inputElm.setAttribute("value", "abc123");
@@ -671,9 +681,11 @@ describe("validators", () => {
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
 
       $rootScope.$apply("answer = true");
+      await wait();
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
       $rootScope.$apply("answer = false");
+      await wait();
       expect(inputElm.classList.contains("ng-valid")).toBeTrue();
     });
 
@@ -682,7 +694,7 @@ describe("validators", () => {
         '<input type="text" name="input" ng-model="value" required />',
       )($rootScope);
 
-      const ctrl = inputElm.controller("ngModel");
+      const ctrl = getController(inputElm, "ngModel");
       spyOn(ctrl, "$isEmpty").and.callThrough();
 
       ctrl.$parsers.push((value) => `${value}678`);
@@ -700,8 +712,8 @@ describe("validators", () => {
       const elmNg = $compile(
         '<span ng-model="value" ng-required="true"></span>',
       )($rootScope);
-      const ctrl = elm.controller("ngModel");
-      const ctrlNg = elmNg.controller("ngModel");
+      const ctrl = getController(elm, "ngModel");
+      const ctrlNg = getController(elmNg, "ngModel");
 
       expect(ctrl.$error.required).not.toBe(true);
       expect(ctrlNg.$error.required).not.toBe(true);

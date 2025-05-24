@@ -7,6 +7,7 @@ import {
 } from "../../shared/utils.js";
 import { REGEX_STRING_REGEXP } from "./../attrs/attrs.js";
 import { startingTag } from "../../shared/dom.js";
+import { isProxy } from "../../core/scope/scope.js";
 
 /**
  *
@@ -319,6 +320,10 @@ export const minlengthDirective = [
 function parsePatternAttr(regex, patternExp, elm) {
   if (!regex) return undefined;
 
+  if (isProxy(regex)) {
+    regex = regex.$target;
+  }
+
   if (isString(regex)) {
     regex = new RegExp(`^${regex}$`);
   }
@@ -329,7 +334,7 @@ function parsePatternAttr(regex, patternExp, elm) {
       "Expected {0} to be a RegExp but was {1}. Element: {2}",
       patternExp,
       regex,
-      startingTag(elm[0]),
+      startingTag(elm),
     );
   }
 
