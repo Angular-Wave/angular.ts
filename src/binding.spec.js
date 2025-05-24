@@ -37,11 +37,6 @@ describe("binding", () => {
     };
   });
 
-  afterEach(function () {
-    dealoc(element);
-    dealoc(this.element);
-  });
-
   it("BindUpdate", () => {
     $compile('<div ng-init="a=123"/>')($rootScope);
     expect($rootScope.a).toBe(123);
@@ -131,7 +126,7 @@ describe("binding", () => {
 
     await wait();
     expect(form.outerHTML).toBe(
-      "<ul>" +
+      "<ul><!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">A</li>' +
         '<li ng-repeat="item in model.items" ng-bind="item.a">B</li>' +
         "</ul>",
@@ -139,27 +134,23 @@ describe("binding", () => {
 
     $rootScope.model.items.unshift({ a: "C" });
     await wait();
-
+    debugger;
     expect(form.outerHTML).toBe(
-      "<ul>" +
+      "<ul><!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">C</li>' +
         '<li ng-repeat="item in model.items" ng-bind="item.a">A</li>' +
         '<li ng-repeat="item in model.items" ng-bind="item.a">B</li>' +
         "</ul>",
     );
 
-    items.shift();
+    $rootScope.model.items.shift();
     await wait();
     expect(form.outerHTML).toBe(
-      "<ul>" +
+      "<ul><!---->" +
         '<li ng-repeat="item in model.items" ng-bind="item.a">A</li>' +
         '<li ng-repeat="item in model.items" ng-bind="item.a">B</li>' +
         "</ul>",
     );
-
-    items.shift();
-    items.shift();
-    await wait();
   });
 
   it("RepeaterContentDoesNotBind", async () => {
@@ -429,6 +420,7 @@ describe("binding", () => {
     await wait();
     const female = element.childNodes[0];
     const male = element.childNodes[1];
+
     female.checked = true;
     browserTrigger(female, "change");
     await wait();

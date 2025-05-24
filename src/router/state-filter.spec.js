@@ -1,7 +1,7 @@
 import { Angular } from "../loader.js";
 
 describe("router filters", function () {
-  let module, $parse, $state, $q, $rootScope, $location;
+  let module, $parse, $state, $rootScope, $location;
 
   beforeEach(() => {
     window.location.hash = "";
@@ -30,14 +30,12 @@ describe("router filters", function () {
           _$state_,
           _$rootScope_,
           _$transitions_,
-          _$q_,
           _$location_,
           _$compile_,
         ) => {
           $parse = _$parse_;
           $state = _$state_;
           $rootScope = _$rootScope_;
-          $q = _$q_;
           $location = _$location_;
         },
       );
@@ -90,14 +88,12 @@ describe("router filters", function () {
           _$state_,
           _$rootScope_,
           _$transitions_,
-          _$q_,
           _$location_,
           _$compile_,
         ) => {
           $parse = _$parse_;
           $state = _$state_;
           $rootScope = _$rootScope_;
-          $q = _$q_;
           $location = _$location_;
         },
       );

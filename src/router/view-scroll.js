@@ -22,7 +22,7 @@ export class ViewScrollProvider {
        * @returns {Promise<number>}
        */
       return async function ($element) {
-        return setTimeout(() => {
+        setTimeout(() => {
           $element.scrollIntoView(false);
         }, 0);
       };

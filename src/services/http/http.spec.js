@@ -1199,7 +1199,7 @@ describe("$http", function () {
 //           $httpProvider.interceptors.push(($q) => ({
 //             requestError(error) {
 //               savedConfig.url += error;
-//               return $q.resolve(savedConfig);
+//               return Promise.resolve(savedConfig);
 //             },
 //           }));
 //           $httpProvider.interceptors.push(() => ({
@@ -1398,7 +1398,7 @@ describe("$http", function () {
 //         module(($provide, $httpProvider) => {
 //           $provide.factory("myInterceptor", ($q, $rootScope) => ({
 //             request(config) {
-//               return $q.resolve("/intercepted").then((intercepted) => {
+//               return Promise.resolve("/intercepted").then((intercepted) => {
 //                 config.url = intercepted;
 //                 return config;
 //               });

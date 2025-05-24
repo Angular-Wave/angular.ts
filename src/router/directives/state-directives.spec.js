@@ -11,9 +11,7 @@ describe("ngStateRef", () => {
     _locationProvider,
     $rootScope,
     $compile,
-    $q,
     $injector,
-    $timeout,
     $state,
     $stateParams,
     $urlService;
@@ -645,7 +643,6 @@ describe("ngSrefActive", () => {
     _locationProvider,
     $rootScope,
     $compile,
-    $q,
     $injector,
     $timeout,
     $state,
@@ -929,7 +926,7 @@ describe("ngSrefActive", () => {
       name: "contacts.lazy.**",
       url: "/lazy",
       lazyLoad: () => {
-        return $q.resolve().then(() => {
+        return Promise.resolve().then(() => {
           _stateProvider
             .state({ name: "contacts.lazy", abstract: true, url: "/lazy" })
             .state({ name: "contacts.lazy.s1", url: "/s1" })
@@ -1011,7 +1008,7 @@ describe("ngSrefActive", () => {
         name: "contacts.lazy.**",
         url: "/lazy",
         lazyLoad: () => {
-          return $q.resolve().then(() => {
+          return Promise.resolve().then(() => {
             _stateProvider
               .state({ name: "contacts.lazy", abstract: true, url: "/lazy" })
               .state({ name: "contacts.lazy.s1", url: "/s1" })
