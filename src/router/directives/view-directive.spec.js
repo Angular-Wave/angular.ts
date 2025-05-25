@@ -164,16 +164,13 @@ describe("ngView", () => {
       "defaultModule",
     ]);
 
-    $injector.invoke(
-      (_$state_, _$timeout_, $rootScope, _$compile_, _$ngViewScroll_) => {
-        scope = $rootScope.$new();
-        $compile = _$compile_;
-        $state = _$state_;
-        $timeout = _$timeout_;
-        elem = "<div>";
-        $ngViewScroll = _$ngViewScroll_;
-      },
-    );
+    $injector.invoke((_$state_, $rootScope, _$compile_, _$ngViewScroll_) => {
+      scope = $rootScope.$new();
+      $compile = _$compile_;
+      $state = _$state_;
+      elem = "<div>";
+      $ngViewScroll = _$ngViewScroll_;
+    });
   });
 
   describe("linking ui-directive", () => {
@@ -816,8 +813,6 @@ describe("UiView", () => {
     app,
     $injector,
     $state,
-    $q,
-    $timeout,
     $rootScope,
     $ngViewScroll;
 
@@ -842,25 +837,14 @@ describe("UiView", () => {
       "defaultModule",
     ]);
 
-    $injector.invoke(
-      (
-        _$state_,
-        _$q_,
-        _$timeout_,
-        _$rootScope_,
-        _$compile_,
-        _$ngViewScroll_,
-      ) => {
-        $rootScope = _$rootScope_;
-        scope = $rootScope.$new();
-        $compile = _$compile_;
-        $state = _$state_;
-        $q = _$q_;
-        $timeout = _$timeout_;
-        elem = "<div>";
-        $ngViewScroll = _$ngViewScroll_;
-      },
-    );
+    $injector.invoke((_$state_, _$rootScope_, _$compile_, _$ngViewScroll_) => {
+      $rootScope = _$rootScope_;
+      scope = $rootScope.$new();
+      $compile = _$compile_;
+      $state = _$state_;
+      elem = "<div>";
+      $ngViewScroll = _$ngViewScroll_;
+    });
   });
 
   // TODO targetNode not found
@@ -928,22 +912,13 @@ describe("ngView transclusion", () => {
       "defaultModule",
     ]);
 
-    $injector.invoke(
-      (
-        _$state_,
-        _$q_,
-        _$timeout_,
-        _$rootScope_,
-        _$compile_,
-        _$ngViewScroll_,
-      ) => {
-        $rootScope = _$rootScope_;
-        scope = $rootScope.$new();
-        $compile = _$compile_;
-        $state = _$state_;
-        elem = "<div>";
-      },
-    );
+    $injector.invoke((_$state_, _$rootScope_, _$compile_, _$ngViewScroll_) => {
+      $rootScope = _$rootScope_;
+      scope = $rootScope.$new();
+      $compile = _$compile_;
+      $state = _$state_;
+      elem = "<div>";
+    });
   });
 
   it("should not link the initial view and leave its scope undestroyed when a subview is activated", async () => {
@@ -1006,22 +981,13 @@ describe("ngView controllers or onEnter handlers", () => {
       "defaultModule",
     ]);
 
-    $injector.invoke(
-      (
-        _$state_,
-        _$q_,
-        _$timeout_,
-        _$rootScope_,
-        _$compile_,
-        _$ngViewScroll_,
-      ) => {
-        $rootScope = _$rootScope_;
-        scope = $rootScope.$new();
-        $compile = _$compile_;
-        $state = _$state_;
-        elem = "<div>";
-      },
-    );
+    $injector.invoke((_$state_, _$rootScope_, _$compile_, _$ngViewScroll_) => {
+      $rootScope = _$rootScope_;
+      scope = $rootScope.$new();
+      $compile = _$compile_;
+      $state = _$state_;
+      elem = "<div>";
+    });
   });
 
   it("should not go into an infinite loop when controller uses $state.go", async () => {
@@ -1029,19 +995,19 @@ describe("ngView controllers or onEnter handlers", () => {
     template = $compile(el)($rootScope);
     await $state.transitionTo("aside");
     await wait(100);
-    expect(template[0].querySelector(".aside")).toBeDefined();
-    expect(template[0].querySelector(".fwd")).toBeNull();
+    expect(template.querySelector(".aside")).toBeDefined();
+    expect(template.querySelector(".fwd")).toBeNull();
 
     await $state.transitionTo("A");
     await wait(100);
-    expect(template[0].querySelector(".A")).not.toBeNull();
-    expect(template[0].querySelector(".fwd")).toBeNull();
+    expect(template.querySelector(".A")).not.toBeNull();
+    expect(template.querySelector(".fwd")).toBeNull();
 
     await $state.transitionTo("A.fwd");
     await wait(100);
-    expect(template[0].querySelector(".A")).not.toBeNull();
-    expect(template[0].querySelector(".fwd")).not.toBeNull();
-    expect(template[0].querySelector(".nest")).not.toBeNull();
+    expect(template.querySelector(".A")).not.toBeNull();
+    expect(template.querySelector(".fwd")).not.toBeNull();
+    expect(template.querySelector(".nest")).not.toBeNull();
     expect(count).toBe(1);
   });
 });
@@ -1159,14 +1125,12 @@ describe("angular 1.5+ style .component()", () => {
         _$httpBackend_,
         _$compile_,
         _$state_,
-        _$q_,
         _$templateCache_,
       ) => {
         svcs = {
           $httpBackend: _$httpBackend_,
           $compile: _$compile_,
           $state: _$state_,
-          $q: _$q_,
         };
         $rootScope = _$rootScope_;
         scope = $rootScope.$new();

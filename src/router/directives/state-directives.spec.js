@@ -234,12 +234,12 @@ describe("ngStateRef", () => {
       template = $compile(el)($rootScope);
 
       $rootScope.urlParams = { id: 1 };
-      expect(template[0].querySelector("a").getAttribute("href")).toBe(
+      expect(template.querySelector("a").getAttribute("href")).toBe(
         "#/contacts/1",
       );
 
       $rootScope.urlParams.id = 2;
-      expect(template[0].querySelector("a").getAttribute("href")).toBe(
+      expect(template.querySelector("a").getAttribute("href")).toBe(
         "#/contacts/2",
       );
     });
@@ -291,55 +291,55 @@ describe("ngStateRef", () => {
     });
 
     it("sets the correct initial href", () => {
-      expect(template[0].getAttribute("href")).toBe("#/contacts");
+      expect(template.getAttribute("href")).toBe("#/contacts");
     });
 
     it("updates to the new href", () => {
-      expect(template[0].getAttribute("href")).toBe("#/contacts");
+      expect(template.getAttribute("href")).toBe("#/contacts");
 
       scope.state = "contacts.item";
       scope.params = { id: 5 };
-      expect(template[0].getAttribute("href")).toBe("#/contacts/5");
+      expect(template.getAttribute("href")).toBe("#/contacts/5");
 
       scope.params.id = 25;
-      expect(template[0].getAttribute("href")).toBe("#/contacts/25");
+      expect(template.getAttribute("href")).toBe("#/contacts/25");
     });
 
     it("updates a linked ng-sref-active", async () => {
-      expect(template[0].className).not.toContain("active");
-      expect(template[0].className).not.toContain("activeeq");
+      expect(template.className).not.toContain("active");
+      expect(template.className).not.toContain("activeeq");
 
       $state.go("contacts");
       await wait(100);
-      expect(template[0].className).toContain("active activeeq");
+      expect(template.className).toContain("active activeeq");
 
       scope.state = "contacts.item";
       scope.params = { id: 5 };
       await wait(100);
-      expect(template[0].className).not.toContain("active");
-      expect(template[0].className).not.toContain("activeeq");
+      expect(template.className).not.toContain("active");
+      expect(template.className).not.toContain("activeeq");
 
       $state.go("contacts.item", { id: -5 });
       await wait(100);
-      expect(template[0].className).not.toContain("active");
-      expect(template[0].className).not.toContain("activeeq");
+      expect(template.className).not.toContain("active");
+      expect(template.className).not.toContain("activeeq");
 
       $state.go("contacts.item", { id: 5 });
       await wait(100);
-      expect(template[0].className).toContain("active activeeq");
+      expect(template.className).toContain("active activeeq");
 
       scope.state = "contacts";
       scope.params = {};
       await wait(100);
-      expect(template[0].className).toContain("active");
-      expect(template[0].className).not.toContain("activeeq");
+      expect(template.className).toContain("active");
+      expect(template.className).not.toContain("activeeq");
     });
 
     it("updates to a new href when it points to a new state", () => {
-      expect(template[0].getAttribute("href")).toBe("#/contacts");
+      expect(template.getAttribute("href")).toBe("#/contacts");
       scope.state = "other";
       scope.params = { id: "123" };
-      expect(template[0].getAttribute("href")).toBe("#/other/123");
+      expect(template.getAttribute("href")).toBe("#/other/123");
     });
 
     it("should allow passing params to current state using empty ng-state", async () => {
@@ -373,24 +373,24 @@ describe("ngStateRef", () => {
     });
 
     it("retains the old href if the new points to a non-state", () => {
-      expect(template[0].getAttribute("href")).toBe("#/contacts");
+      expect(template.getAttribute("href")).toBe("#/contacts");
       scope.state = "nostate";
-      expect(template[0].getAttribute("href")).toBe("#/contacts");
+      expect(template.getAttribute("href")).toBe("#/contacts");
     });
 
     it("accepts param overrides", () => {
       scope.state = "contacts.item";
       scope.params = { id: 10 };
-      expect(template[0].getAttribute("href")).toBe("#/contacts/10");
+      expect(template.getAttribute("href")).toBe("#/contacts/10");
     });
 
     it("accepts param overrides", () => {
       scope.state = "contacts.item";
       scope.params = { id: 10 };
-      expect(template[0].getAttribute("href")).toBe("#/contacts/10");
+      expect(template.getAttribute("href")).toBe("#/contacts/10");
 
       scope.params.id = 22;
-      expect(template[0].getAttribute("href")).toBe("#/contacts/22");
+      expect(template.getAttribute("href")).toBe("#/contacts/22");
     });
 
     it("watches attributes", () => {
@@ -403,10 +403,10 @@ describe("ngStateRef", () => {
       scope.state1 = "contacts.item";
       scope.state2 = "other";
       scope.params = { id: 10 };
-      expect(template[0].getAttribute("href")).toBe("#/contacts/10");
+      expect(template.getAttribute("href")).toBe("#/contacts/10");
 
       scope.exprvar = "state2";
-      expect(template[0].getAttribute("href")).toBe("#/other/10");
+      expect(template.getAttribute("href")).toBe("#/other/10");
     });
 
     it("accepts option overrides", async () => {
@@ -538,19 +538,19 @@ describe("ngStateRef", () => {
     it("should resolve states from parent ngView", async () => {
       $state.transitionTo("contacts");
       await wait(500);
-      const parentToChild = template[0].querySelector("a.item");
+      const parentToChild = template.querySelector("a.item");
       browserTrigger(parentToChild, "click");
       await wait(100);
 
       expect($state.$current.name).toBe("contacts.item");
 
-      const childToGrandchild = template[0].querySelector("a.item-detail");
-      const childToParent = template[0].querySelector("a.item-parent");
+      const childToGrandchild = template.querySelector("a.item-detail");
+      const childToParent = template.querySelector("a.item-parent");
 
       browserTrigger(childToGrandchild, "click");
       await wait(100);
 
-      const grandchildToParent = template[0].querySelector("a.item-parent2");
+      const grandchildToParent = template.querySelector("a.item-parent2");
       expect($state.$current.name).toBe("contacts.item.detail");
 
       browserTrigger(grandchildToParent, "click");
@@ -697,14 +697,14 @@ describe("ngSrefActive", () => {
       '<div><a ng-sref="contacts.item({ id: 1 })" ng-sref-active="active">Contacts</a><a ng-sref="contacts.item({ id: 2 })" ng-sref-active="active">Contacts</a></div>',
     );
     template = $compile(el)($rootScope);
-    expect(template[0].querySelector("a").getAttribute("class")).toBeFalsy();
+    expect(template.querySelector("a").getAttribute("class")).toBeFalsy();
     $state.transitionTo("contacts.item", { id: 1 });
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBe("active");
+    expect(template.querySelector("a").getAttribute("class")).toBe("active");
 
     $state.transitionTo("contacts.item", { id: 2 });
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBeFalsy();
+    expect(template.querySelector("a").getAttribute("class")).toBeFalsy();
   });
 
   it("should match state's parameters", async () => {
@@ -712,14 +712,14 @@ describe("ngSrefActive", () => {
       '<div><a ng-sref="contacts.item.detail({ foo: \'bar\' })" ng-sref-active="active">Contacts</a></div>',
     );
     template = $compile(el)($rootScope);
-    expect(template[0].querySelector("a").getAttribute("class")).toBeFalsy();
+    expect(template.querySelector("a").getAttribute("class")).toBeFalsy();
     $state.transitionTo("contacts.item.detail", { id: 5, foo: "bar" });
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBe("active");
+    expect(template.querySelector("a").getAttribute("class")).toBe("active");
 
     $state.transitionTo("contacts.item.detail", { id: 5, foo: "baz" });
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBeFalsy();
+    expect(template.querySelector("a").getAttribute("class")).toBeFalsy();
   });
 
   // Test for #2696
@@ -728,19 +728,19 @@ describe("ngSrefActive", () => {
       '<div><a ng-sref="arrayparam({ foo: [1,2,3] })" ng-sref-active="active">foo 123</a></div>',
     );
     template = $compile(el)($rootScope);
-    expect(template[0].querySelector("a").getAttribute("class")).toBeFalsy();
+    expect(template.querySelector("a").getAttribute("class")).toBeFalsy();
 
     $state.transitionTo("arrayparam", { foo: [1, 2, 3] });
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBe("active");
+    expect(template.querySelector("a").getAttribute("class")).toBe("active");
 
     $state.transitionTo("arrayparam", { foo: [1, 2, 3], bar: "asdf" });
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBe("active");
+    expect(template.querySelector("a").getAttribute("class")).toBe("active");
 
     $state.transitionTo("arrayparam", { foo: [1, 2] });
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBeFalsy();
+    expect(template.querySelector("a").getAttribute("class")).toBeFalsy();
   });
 
   // Test for #3154
@@ -749,19 +749,19 @@ describe("ngSrefActive", () => {
       '<div><a ng-sref="arrayparam({ foo: [1,2,3] })" ng-sref-active-eq="active">foo 123</a></div>',
     );
     template = $compile(el)($rootScope);
-    expect(template[0].querySelector("a").getAttribute("class")).toBeFalsy();
+    expect(template.querySelector("a").getAttribute("class")).toBeFalsy();
 
     $state.transitionTo("arrayparam", { foo: [1, 2, 3] });
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBe("active");
+    expect(template.querySelector("a").getAttribute("class")).toBe("active");
 
     $state.transitionTo("arrayparam", { foo: [1, 2, 3], bar: "asdf" });
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBe("active");
+    expect(template.querySelector("a").getAttribute("class")).toBe("active");
 
     $state.transitionTo("arrayparam", { foo: [1, 2] });
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBeFalsy();
+    expect(template.querySelector("a").getAttribute("class")).toBeFalsy();
   });
 
   it("should update in response to ng-sref param expression changes", async () => {
@@ -770,21 +770,21 @@ describe("ngSrefActive", () => {
     );
     template = $compile(el)($rootScope);
     $rootScope.fooId = "bar";
-    expect(template[0].querySelector("a").getAttribute("class")).toBeFalsy();
+    expect(template.querySelector("a").getAttribute("class")).toBeFalsy();
     $state.transitionTo("contacts.item.detail", { id: 5, foo: "bar" });
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBe("active");
+    expect(template.querySelector("a").getAttribute("class")).toBe("active");
 
     $rootScope.fooId = "baz";
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBeFalsy();
+    expect(template.querySelector("a").getAttribute("class")).toBeFalsy();
   });
 
   it("should match on child states", async () => {
     template = $compile(
       '<div><a ng-sref="contacts.item({ id: 1 })" ng-sref-active="active">Contacts</a></div>',
     )($rootScope);
-    const a = template[0].getElementsByTagName("a")[0];
+    const a = template.getElementsByTagName("a")[0];
 
     $state.transitionTo("contacts.item.edit", { id: 1 });
     await wait(100);
@@ -801,7 +801,7 @@ describe("ngSrefActive", () => {
     template = $compile(
       '<div><a ng-sref="contacts.item({ id: 1 })" ng-sref-active-eq="active">Contacts</a></div>',
     )($rootScope);
-    const a = template[0].getElementsByTagName("a")[0];
+    const a = template.getElementsByTagName("a")[0];
 
     $state.transitionTo("contacts.item", { id: 1 });
     await wait(100);
@@ -816,7 +816,7 @@ describe("ngSrefActive", () => {
     template = $compile(
       '<div><a ng-sref="contacts.item({ id: 1 })" ng-sref-active="active" ng-sref-active-eq="active-eq">Contacts</a></div>',
     )($rootScope);
-    const a = template[0].getElementsByTagName("a")[0];
+    const a = template.getElementsByTagName("a")[0];
 
     $state.transitionTo("contacts.item", { id: 1 });
     await wait(100);
@@ -834,17 +834,15 @@ describe("ngSrefActive", () => {
     template = $compile(el)($rootScope);
     $state.transitionTo("contacts");
     await wait(100);
-    expect(
-      template[0].querySelector("a").getAttribute("class"),
-    ).toBeUndefined();
+    expect(template.querySelector("a").getAttribute("class")).toBeUndefined();
 
     $state.transitionTo("contacts.item", { id: 6 });
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBe("active");
+    expect(template.querySelector("a").getAttribute("class")).toBe("active");
 
     $state.transitionTo("contacts.item", { id: 5 });
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBe("");
+    expect(template.querySelector("a").getAttribute("class")).toBe("");
   });
 
   it("should match on any child state refs", async () => {
@@ -852,15 +850,15 @@ describe("ngSrefActive", () => {
       '<div ng-sref-active="active"><a ng-sref="contacts.item({ id: 1 })">Contacts</a><a ng-sref="contacts.item({ id: 2 })">Contacts</a></div>',
     );
     template = $compile(el)($rootScope);
-    expect(template[0].getAttribute("class")).toBeUndefined();
+    expect(template.getAttribute("class")).toBeUndefined();
 
     $state.transitionTo("contacts.item", { id: 1 });
     await wait(100);
-    expect(template[0].getAttribute("class")).toBe("active");
+    expect(template.getAttribute("class")).toBe("active");
 
     $state.transitionTo("contacts.item", { id: 2 });
     await wait(100);
-    expect(template[0].getAttribute("class")).toBe("active");
+    expect(template.getAttribute("class")).toBe("active");
   });
 
   it("should match fuzzy on lazy loaded states", async () => {
@@ -879,11 +877,11 @@ describe("ngSrefActive", () => {
 
     $state.transitionTo("contacts.item", { id: 1 });
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBeFalsy();
+    expect(template.querySelector("a").getAttribute("class")).toBeFalsy();
 
     $state.transitionTo("contacts.lazy");
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBe("active");
+    expect(template.querySelector("a").getAttribute("class")).toBe("active");
   });
 
   it("should match exactly on lazy loaded states", async () => {
@@ -902,18 +900,18 @@ describe("ngSrefActive", () => {
 
     $state.transitionTo("contacts.item", { id: 1 });
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBeFalsy();
+    expect(template.querySelector("a").getAttribute("class")).toBeFalsy();
 
     $state.transitionTo("contacts.lazy");
     await wait(100);
-    expect(template[0].querySelector("a").getAttribute("class")).toBe("active");
+    expect(template.querySelector("a").getAttribute("class")).toBe("active");
   });
 
   it("should allow multiple classes to be supplied", async () => {
     template = $compile(
       '<div><a ng-sref="contacts.item({ id: 1 })" ng-sref-active="active also-active">Contacts</a></div>',
     )($rootScope);
-    const a = template[0].getElementsByTagName("a")[0];
+    const a = template.getElementsByTagName("a")[0];
 
     $state.transitionTo("contacts.item.edit", { id: 1 });
     await wait(100);
@@ -940,7 +938,7 @@ describe("ngSrefActive", () => {
     $state.transitionTo("contacts.lazy.s1");
     await wait(100);
 
-    expect(template[0][0].hasClass("active")).toBeTruthy();
+    expect(template.hasClass("active")).toBeTruthy();
     //expect(template.eq(1).hasClass("active")).toBeFalsy();
   });
 
@@ -1021,7 +1019,7 @@ describe("ngSrefActive", () => {
       )($rootScope);
       $state.transitionTo("contacts.lazy.s1");
       await wait(100);
-      expect(template[0].hasClass("active")).toBeTruthy();
+      expect(template.hasClass("active")).toBeTruthy();
       expect(template.eq(1).hasClass("active")).toBeFalsy();
     });
   });
