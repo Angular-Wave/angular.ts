@@ -1,5 +1,4 @@
 import { createInjector } from "../../core/di/injector";
-import { forEach } from "../../shared/utils.js";
 import { Angular } from "../../loader";
 
 describe("ngBindHtml", () => {
