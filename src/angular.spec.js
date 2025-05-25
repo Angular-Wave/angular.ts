@@ -905,7 +905,7 @@ describe("angular", () => {
       await wait();
       expect(template.textContent).toEqual('{{greeting = "hello world"}}');
       expect(element.textContent).toEqual("hello world");
-      expect(element).toEqual(templateClone[0]);
+      expect(element).toEqual(templateClone);
       expect($rootScope.greeting).toEqual("hello world");
     });
 
