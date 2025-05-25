@@ -1,4 +1,6 @@
 import { isFunction, isString } from "./utils";
+
+// TODO MOVE THESE TO UTILS
 export const isNull = (o) => o === null;
 export function isNullOrUndefined(obj) {
   return obj === null && typeof obj === "undefined";

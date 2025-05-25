@@ -1,4 +1,5 @@
 import { isProxy } from "../../core/scope/scope.js";
+import { isNull } from "../../shared/predicates.js";
 import { isUndefined, stringify } from "../../shared/utils.js";
 
 /**
@@ -55,6 +56,9 @@ export function ngBindHtmlDirective($parse) {
          */
         (scope, element) => {
           scope.$watch(tAttrs.ngBindHtml, (val) => {
+            if (isUndefined(val) || isNull(val)) {
+              val = "";
+            }
             element.innerHTML = val;
           });
         }
