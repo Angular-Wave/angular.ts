@@ -78,7 +78,7 @@ export function TemplateRequestProvider() {
         if (!isString(tpl) || !$templateCache.has(tpl)) {
           tpl = $sce.getTrustedResourceUrl(tpl);
           if (!tpl) {
-            return Promise.reject();
+            return Promise.reject("Template not found");
           }
         }
 

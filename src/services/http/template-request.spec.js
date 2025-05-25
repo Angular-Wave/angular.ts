@@ -3,11 +3,24 @@ import { Angular } from "../../loader.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("$templateRequest", () => {
-  let module, $rootScope, $templateRequest, $templateCache, $sce, angular;
+  let module,
+    $rootScope,
+    $templateRequest,
+    $templateCache,
+    $sce,
+    angular,
+    errors;
 
   beforeEach(() => {
+    errors = [];
     angular = window.angular = new Angular();
-    module = angular.module("test", ["ng"]);
+    module = angular
+      .module("test", ["ng"])
+      .decorator("$exceptionHandler", () => {
+        return (exception, cause) => {
+          errors.push(exception.message);
+        };
+      });
     let injector = createInjector(["test"]);
     $rootScope = injector.get("$rootScope");
     $templateRequest = injector.get("$templateRequest");
@@ -149,15 +162,12 @@ describe("$templateRequest", () => {
     // Will throw on any template not in cache.
     spyOn($sce, "getTrustedResourceUrl").and.returnValue(false);
 
-    expect(() => {
-      $templateRequest("/public/test.html"); // should go through $sce
-    }).toThrow();
-
+    $templateRequest("/public/test.html"); // should go through $sce
+    expect(errors.length).toBe(1);
     $templateCache.set("/public/test.html", ""); // should work (empty template)
-    expect(() => {
-      $templateRequest("/public/test.html");
-    }).not.toThrow();
-    $templateCache = new Map();
+
+    $templateRequest("/public/test.html");
+    expect(errors.length).toBe(1);
   });
 
   it("should keep track of how many requests are going on", async () => {
