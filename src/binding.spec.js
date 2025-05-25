@@ -1,4 +1,4 @@
-import { dealoc } from "./shared/dom.js";
+import { createElementFromHTML, dealoc } from "./shared/dom.js";
 import { Angular } from "./loader.js";
 import { browserTrigger, wait } from "./shared/test-utils";
 
@@ -116,41 +116,42 @@ describe("binding", () => {
   });
 
   it("RepeaterUpdateBindings", async () => {
-    const form = $compile(
-      "<ul>" +
-        '<LI ng-repeat="item in model.items" ng-bind="item.a"></LI>' +
-        "</ul>",
-    )($rootScope);
+    let elem = createElementFromHTML(
+      "<ul>" + '<li ng-repeat="item in items" ng-bind="item.a"></li>' + "</ul>",
+    );
+    document.getElementById("app").insertAdjacentElement("afterend", elem);
+    $injector = window.angular.bootstrap(elem, ["myModule"]);
+    $rootScope = $injector.get("$rootScope");
+    $compile = $injector.get("$compile");
 
-    $rootScope.model = { items: [{ a: "A" }, { a: "B" }] };
-
+    $rootScope.items = [{ a: "A" }, { a: "B" }];
     await wait();
-    expect(form.outerHTML).toBe(
+    expect(elem.outerHTML).toBe(
       "<ul><!---->" +
-        '<li ng-repeat="item in model.items" ng-bind="item.a">A</li>' +
-        '<li ng-repeat="item in model.items" ng-bind="item.a">B</li>' +
+        '<li ng-repeat="item in items" ng-bind="item.a">A</li>' +
+        '<li ng-repeat="item in items" ng-bind="item.a">B</li>' +
         "</ul>",
     );
 
-    $rootScope.model.items.unshift({ a: "C" });
+    $rootScope.items.unshift({ a: "C" });
     await wait();
-    debugger;
-    expect(form.outerHTML).toBe(
+    expect(elem.outerHTML).toBe(
       "<ul><!---->" +
-        '<li ng-repeat="item in model.items" ng-bind="item.a">C</li>' +
-        '<li ng-repeat="item in model.items" ng-bind="item.a">A</li>' +
-        '<li ng-repeat="item in model.items" ng-bind="item.a">B</li>' +
+        '<li ng-repeat="item in items" ng-bind="item.a">C</li>' +
+        '<li ng-repeat="item in items" ng-bind="item.a">A</li>' +
+        '<li ng-repeat="item in items" ng-bind="item.a">B</li>' +
         "</ul>",
     );
 
-    $rootScope.model.items.shift();
+    $rootScope.items.shift();
     await wait();
-    expect(form.outerHTML).toBe(
+    expect(elem.outerHTML).toBe(
       "<ul><!---->" +
-        '<li ng-repeat="item in model.items" ng-bind="item.a">A</li>' +
-        '<li ng-repeat="item in model.items" ng-bind="item.a">B</li>' +
+        '<li ng-repeat="item in items" ng-bind="item.a">A</li>' +
+        '<li ng-repeat="item in items" ng-bind="item.a">B</li>' +
         "</ul>",
     );
+    elem.remove();
   });
 
   it("RepeaterContentDoesNotBind", async () => {
@@ -163,7 +164,7 @@ describe("binding", () => {
     $rootScope.model = { items: [{ a: "A" }] };
     await wait();
     expect(element.outerHTML).toBe(
-      "<ul>" +
+      "<ul><!---->" +
         '<li ng-repeat="item in model.items"><span ng-bind="item.a">A</span></li>' +
         "</ul>",
     );
@@ -237,16 +238,15 @@ describe("binding", () => {
         `<!---->` +
         `<div ng-repeat="m in model" name="a">` +
         `<!---->` +
-        `<ul name="a1" ng-repeat="i in m.item"></ul><!---->` +
-        `<ul name="a2" ng-repeat="i in m.item"></ul><!---->` +
-        `</div><!---->` +
+        `<ul name="a1" ng-repeat="i in m.item"></ul>` +
+        `<ul name="a2" ng-repeat="i in m.item"></ul>` +
+        `</div>` +
         `<div ng-repeat="m in model" name="b">` +
         `<!---->` +
         `<ul name="b1" ng-repeat="i in m.item"></ul>` +
-        `<!---->` +
         `<ul name="b2" ng-repeat="i in m.item"></ul>` +
-        `<!----></div>` +
-        `<!----></div>`,
+        `</div>` +
+        `</div>`,
     );
   });
 
@@ -329,8 +329,9 @@ describe("binding", () => {
     )($rootScope);
     await wait();
 
-    const d1 = element.childNodes[0];
-    const d2 = element.childNodes[1];
+    const d1 = element.querySelectorAll("div")[0];
+    const d2 = element.querySelectorAll("div")[1];
+
     expect(d1.classList.contains("o")).toBeTruthy();
     expect(d2.classList.contains("e")).toBeTruthy();
   });
@@ -396,6 +397,7 @@ describe("binding", () => {
     $rootScope.a = "A";
     $rootScope.b = "B";
     await wait();
+
     const optionA = childNode(element, 0);
     const optionB = childNode(element, 1);
     const optionC = childNode(element, 2);
@@ -411,15 +413,17 @@ describe("binding", () => {
   });
 
   it("ItShouldSelectTheCorrectRadioBox", async () => {
-    element = $compile(
+    const ELEMENT = document.getElementById("app");
+    ELEMENT.innerHTML =
       "<div>" +
-        '<input type="radio" ng-model="sex" value="female">' +
-        '<input type="radio" ng-model="sex" value="male">' +
-        "</div>",
-    )($rootScope);
+      '<input type="radio" name="sex" ng-model="sex" value="female">' +
+      '<input type="radio" name="sex" ng-model="sex" value="male">' +
+      "{{ sex }} " +
+      "</div>";
+    $compile(ELEMENT)($rootScope);
     await wait();
-    const female = element.childNodes[0];
-    const male = element.childNodes[1];
+    const female = ELEMENT.firstChild.childNodes[0];
+    const male = ELEMENT.firstChild.childNodes[1];
 
     female.checked = true;
     browserTrigger(female, "change");
@@ -441,7 +445,7 @@ describe("binding", () => {
     )($rootScope);
     await wait();
     expect(element.outerHTML).toBe(
-      "<ul>" +
+      "<ul><!---->" +
         '<li ng-repeat="(k,v) in {a:0,b:1}" ng-bind="k + v">a0</li>' +
         '<li ng-repeat="(k,v) in {a:0,b:1}" ng-bind="k + v">b1</li>' +
         "</ul>",

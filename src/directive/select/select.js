@@ -351,25 +351,22 @@ class SelectController {
       }
 
       let oldVal;
-      optionScope.$watch(
-        "value",
-        (newVal) => {
-          if (!optionAttrs["value"]) {
-            optionAttrs.$set("value", newVal);
-          }
-          const previouslySelected = optionElement.selected;
-          if (oldVal !== newVal) {
-            this.removeOption(oldVal);
-            oldVal = newVal;
-          }
-          this.addOption(newVal, optionElement);
+      optionScope.$watch("value", () => {
+        let newVal = interpolateTextFn(optionScope);
+        if (!optionAttrs["value"]) {
+          optionAttrs.$set("value", newVal);
+        }
+        const previouslySelected = optionElement.selected;
+        if (oldVal !== newVal) {
+          this.removeOption(oldVal);
+          oldVal = newVal;
+        }
+        this.addOption(newVal, optionElement);
 
-          if (oldVal && previouslySelected) {
-            this.scheduleViewValueUpdate();
-          }
-        },
-        true,
-      );
+        if (oldVal && previouslySelected) {
+          this.scheduleViewValueUpdate();
+        }
+      });
     } else {
       this.addOption(optionAttrs.value, optionElement);
     }
