@@ -127,7 +127,6 @@ describe("form", () => {
     await wait();
     const form = scope.myForm;
     const input = doc.children[0];
-
     // remove control and invalidate it
     form.$removeControl(control);
     expect(form.control).toBeUndefined();
@@ -135,25 +134,23 @@ describe("form", () => {
     input.setAttribute("value", "abc");
     input.dispatchEvent(new Event("change"));
     await wait();
-    // expect(control.$error.maxlength).toBe(true);
-    // expect(control.$dirty).toBe(true);
+    expect(control.$error.maxlength).toBe(true);
+    expect(control.$dirty).toBe(true);
     expect(form.$error.maxlength).toBeFalsy();
     expect(form.$dirty).toBe(false);
-
-    // // re-add the control; its current validation state is not propagated
-    debugger;
+    // re-add the control; its current validation state is not propagated
     form.$addControl(control);
     await wait();
     expect(form.control).toBe(control);
-    // expect(form.$error.maxlength).toBeFalsy();
-    // expect(form.$dirty).toBe(false);
+    expect(form.$error.maxlength).toBeFalsy();
+    expect(form.$dirty).toBe(false);
 
-    // // Only when the input changes again its validation state is propagated
-    // input.setAttribute("value", "abcd");
-    // input.dispatchEvent(new Event("change"));
+    // Only when the input changes again its validation state is propagated
+    input.setAttribute("value", "abcd");
+    input.dispatchEvent(new Event("change"));
 
-    // expect(form.$error.maxlength[0]).toBe(control);
-    // expect(form.$dirty).toBe(false);
+    expect(form.$error.maxlength[0]).toEqual(control);
+    expect(form.$dirty).toBe(false);
   });
 
   it("should use the correct parent when renaming and removing dynamically added controls", async () => {

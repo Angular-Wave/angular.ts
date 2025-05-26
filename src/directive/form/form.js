@@ -217,8 +217,7 @@ export class FormController {
    */
   $removeControl(control) {
     if (control.$name && this[control.$name] === control) {
-      // delete this[control.$name];
-      this[control.$name] = undefined;
+      delete this[control.$name];
     }
     this.$pending &&
       Object.keys(this.$pending).forEach((name) => {
