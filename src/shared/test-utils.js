@@ -21,11 +21,12 @@ export function browserTrigger(element, options) {
 }
 
 /**
+ * Delays execution for a specified number of milliseconds.
  *
- * @param {number} t milliseconds to wait
- * @returns
+ * @param {number} [t=0] - The number of milliseconds to wait. Defaults to 0.
+ * @returns {Promise<void>} A promise that resolves after the delay.
  */
-export function wait(t) {
+export function wait(t = 0) {
   return new Promise((resolve) => setTimeout(resolve, t));
 }
 
