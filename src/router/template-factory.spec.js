@@ -1,4 +1,4 @@
-import { dealoc, JQLite } from "../shared/dom.js";
+import { dealoc } from "../shared/dom.js";
 import { Angular } from "../loader.js";
 import { wait } from "../shared/test-utils";
 
@@ -13,7 +13,6 @@ describe("templateFactory", () => {
     $stateService;
 
   beforeEach(() => {
-    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular.module("defaultModule", []);
     $injector = window.angular.bootstrap(document.getElementById("app"), [
@@ -35,9 +34,9 @@ describe("templateFactory", () => {
 
   describe("should follow $sce policy and", () => {
     it("accepts relative URLs", async () => {
-      let res = $templateFactory.fromUrl("mock/hello");
+      let res = $templateFactory.fromUrl("/mock/hello");
       await wait(100);
-      expect(res.$$state.status).toBe(1);
+      expect(await res).toEqual("Hello");
     });
 
     it("rejects untrusted URLs", () => {
