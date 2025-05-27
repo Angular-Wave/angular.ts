@@ -34,5 +34,4 @@ export type ParsedAST = {
      */
     ast: import("../ast/ast.js").ASTNode;
 };
-import { AST } from "../ast/ast.js";
 import { ASTInterpreter } from "../interpreter.js";

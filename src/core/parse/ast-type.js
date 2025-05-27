@@ -2,7 +2,7 @@
  * @readonly
  * @enum {number}
  */
-export const ASTType = Object.freeze({
+export const ASTType = {
   Program: 1,
   ExpressionStatement: 2,
   AssignmentExpression: 3,
@@ -20,4 +20,4 @@ export const ASTType = Object.freeze({
   ThisExpression: 15,
   LocalsExpression: 16,
   NGValueParameter: 17,
-});
+};

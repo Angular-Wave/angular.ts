@@ -124,7 +124,7 @@ export function removeFromArray(arr, val) {
  * @returns {Node}
  */
 export function stripCommentsFromElement(element) {
-  switch (element.length) {
+  switch (element.size) {
     case 0:
       return /** @type {NodeList} */ (element);
 

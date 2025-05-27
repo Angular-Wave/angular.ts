@@ -1,24 +1,20 @@
 export type ASTType = number;
-/**
- * @readonly
- * @enum {number}
- */
-export const ASTType: Readonly<{
-    Program: 1;
-    ExpressionStatement: 2;
-    AssignmentExpression: 3;
-    ConditionalExpression: 4;
-    LogicalExpression: 5;
-    BinaryExpression: 6;
-    UnaryExpression: 7;
-    CallExpression: 8;
-    MemberExpression: 9;
-    Identifier: 10;
-    Literal: 11;
-    ArrayExpression: 12;
-    Property: 13;
-    ObjectExpression: 14;
-    ThisExpression: 15;
-    LocalsExpression: 16;
-    NGValueParameter: 17;
-}>;
+export namespace ASTType {
+    let Program: number;
+    let ExpressionStatement: number;
+    let AssignmentExpression: number;
+    let ConditionalExpression: number;
+    let LogicalExpression: number;
+    let BinaryExpression: number;
+    let UnaryExpression: number;
+    let CallExpression: number;
+    let MemberExpression: number;
+    let Identifier: number;
+    let Literal: number;
+    let ArrayExpression: number;
+    let Property: number;
+    let ObjectExpression: number;
+    let ThisExpression: number;
+    let LocalsExpression: number;
+    let NGValueParameter: number;
+}

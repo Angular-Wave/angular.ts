@@ -1,30 +1,5 @@
 /**
- * @typedef {Object} ASTNode
- * @property {number} type - The type of the AST node.
- * @property {string} [name] - The name of the identifier.
- * @property {string} [kind] - The kind of the property (e.g., 'init').
- * @property {*} [value] - The value of the node if it is a literal.
- * @property {ASTNode[]} [elements] - The elements of an array node.
- * @property {ASTNode[]} [properties] - The properties of an object node.
- * @property {ASTNode} [key] - The key of an object property.
- * @property {ASTNode} [value] - The value of an object property.
- * @property {ASTNode} [left] - The left-hand side of a binary expression.
- * @property {ASTNode} [right] - The right-hand side of a binary expression.
- * @property {ASTNode} [argument] - The argument of a unary expression.
- * @property {ASTNode} [test] - The test expression of a conditional expression.
- * @property {ASTNode} [alternate] - The alternate expression of a conditional expression.
- * @property {ASTNode} [consequent] - The consequent expression of a conditional expression.
- * @property {ASTNode[]} [body] - The body of a program or block statement.
- * @property {ASTNode[]} [toWatch] - A list of expressions to observe in a program or block statement.
- * @property {ASTNode} [expression] - The expression of an expression statement.
- * @property {ASTNode} [callee] - The callee of a call expression.
- * @property {ASTNode[]} [arguments] - The arguments of a call expression.
- * @property {boolean} [prefix] - Indicates if a unary operator is a prefix.
- * @property {ASTNode} [object] - The object of a member expression.
- * @property {ASTNode} [property] - The property of a member expression.
- * @property {boolean} [computed] - Indicates if a member expression is computed.
- * @property {string} [operator] - The operator of a binary or logical expression.
- * @property {boolean} [filter]
+ * @typedef {import("./ast.d.ts").ASTNode} ASTNode
  */
 /** @type {Map<string,any>} */
 export const literals: Map<string, any>;
@@ -40,10 +15,10 @@ export class AST {
     lexer: import("../lexer/lexer.js").Lexer;
     selfReferential: {
         this: {
-            type: 15;
+            type: number;
         };
         $locals: {
-            type: 16;
+            type: number;
         };
     };
     /**
@@ -187,98 +162,4 @@ export class AST {
      */
     expect(...expected?: string[]): import("../lexer/lexer.js").Token | boolean;
 }
-export type ASTNode = {
-    /**
-     * - The type of the AST node.
-     */
-    type: number;
-    /**
-     * - The name of the identifier.
-     */
-    name?: string;
-    /**
-     * - The kind of the property (e.g., 'init').
-     */
-    kind?: string;
-    /**
-     * - The value of the node if it is a literal.
-     */
-    value?: any;
-    /**
-     * - The elements of an array node.
-     */
-    elements?: ASTNode[];
-    /**
-     * - The properties of an object node.
-     */
-    properties?: ASTNode[];
-    /**
-     * - The key of an object property.
-     */
-    key?: ASTNode;
-    /**
-     * - The left-hand side of a binary expression.
-     */
-    left?: ASTNode;
-    /**
-     * - The right-hand side of a binary expression.
-     */
-    right?: ASTNode;
-    /**
-     * - The argument of a unary expression.
-     */
-    argument?: ASTNode;
-    /**
-     * - The test expression of a conditional expression.
-     */
-    test?: ASTNode;
-    /**
-     * - The alternate expression of a conditional expression.
-     */
-    alternate?: ASTNode;
-    /**
-     * - The consequent expression of a conditional expression.
-     */
-    consequent?: ASTNode;
-    /**
-     * - The body of a program or block statement.
-     */
-    body?: ASTNode[];
-    /**
-     * - A list of expressions to observe in a program or block statement.
-     */
-    toWatch?: ASTNode[];
-    /**
-     * - The expression of an expression statement.
-     */
-    expression?: ASTNode;
-    /**
-     * - The callee of a call expression.
-     */
-    callee?: ASTNode;
-    /**
-     * - The arguments of a call expression.
-     */
-    arguments?: ASTNode[];
-    /**
-     * - Indicates if a unary operator is a prefix.
-     */
-    prefix?: boolean;
-    /**
-     * - The object of a member expression.
-     */
-    object?: ASTNode;
-    /**
-     * - The property of a member expression.
-     */
-    property?: ASTNode;
-    /**
-     * - Indicates if a member expression is computed.
-     */
-    computed?: boolean;
-    /**
-     * - The operator of a binary or logical expression.
-     */
-    operator?: string;
-    filter?: boolean;
-};
+export type ASTNode = import("./ast.d.ts").ASTNode;
