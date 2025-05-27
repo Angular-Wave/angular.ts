@@ -1,6 +1,6 @@
 /*
 Copyright (c) 2008-2019 Pivotal Labs
-Copyright (c) 2008-2024 The Jasmine developers
+Copyright (c) 2008-2025 The Jasmine developers
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -21,6 +21,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 /**
  This file finishes 'booting' Jasmine, performing all of the necessary
  initialization before executing the loaded environment and all of a project's
@@ -34,7 +35,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  after `boot0.js` is loaded and before this file is loaded.
  */
 
-(function () {
+(function() {
   const env = jasmine.getEnv();
 
   /**
@@ -44,28 +45,28 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    */
 
   const queryString = new jasmine.QueryString({
-    getWindowLocation: function () {
+    getWindowLocation: function() {
       return window.location;
-    },
+    }
   });
 
-  const filterSpecs = !!queryString.getParam("spec");
+  const filterSpecs = !!queryString.getParam('spec');
 
   const config = {
-    stopOnSpecFailure: queryString.getParam("stopOnSpecFailure"),
+    stopOnSpecFailure: queryString.getParam('stopOnSpecFailure'),
     stopSpecOnExpectationFailure: queryString.getParam(
-      "stopSpecOnExpectationFailure",
+      'stopSpecOnExpectationFailure'
     ),
-    hideDisabled: queryString.getParam("hideDisabled"),
+    hideDisabled: queryString.getParam('hideDisabled')
   };
 
-  const random = queryString.getParam("random");
+  const random = queryString.getParam('random');
 
-  if (random !== undefined && random !== "") {
+  if (random !== undefined && random !== '') {
     config.random = random;
   }
 
-  const seed = queryString.getParam("seed");
+  const seed = queryString.getParam('seed');
   if (seed) {
     config.seed = seed;
   }
@@ -76,23 +77,23 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    */
   const htmlReporter = new jasmine.HtmlReporter({
     env: env,
-    navigateWithNewParam: function (key, value) {
+    navigateWithNewParam: function(key, value) {
       return queryString.navigateWithNewParam(key, value);
     },
-    addToExistingQueryString: function (key, value) {
+    addToExistingQueryString: function(key, value) {
       return queryString.fullStringWithNewParam(key, value);
     },
-    getContainer: function () {
+    getContainer: function() {
       return document.body;
     },
-    createElement: function () {
+    createElement: function() {
       return document.createElement.apply(document, arguments);
     },
-    createTextNode: function () {
+    createTextNode: function() {
       return document.createTextNode.apply(document, arguments);
     },
     timer: new jasmine.Timer(),
-    filterSpecs: filterSpecs,
+    filterSpecs: filterSpecs
   });
 
   /**
@@ -105,12 +106,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    * Filter which specs will be run by matching the start of the full name against the `spec` query param.
    */
   const specFilter = new jasmine.HtmlSpecFilter({
-    filterString: function () {
-      return queryString.getParam("spec");
-    },
+    filterString: function() {
+      return queryString.getParam('spec');
+    }
   });
 
-  config.specFilter = function (spec) {
+  config.specFilter = function(spec) {
     return specFilter.matches(spec.getFullName());
   };
 
@@ -123,7 +124,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
    */
   const currentWindowOnload = window.onload;
 
-  window.onload = function () {
+  window.onload = function() {
     if (currentWindowOnload) {
       currentWindowOnload();
     }

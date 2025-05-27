@@ -1,6 +1,6 @@
 /*
 Copyright (c) 2008-2019 Pivotal Labs
-Copyright (c) 2008-2024 The Jasmine developers
+Copyright (c) 2008-2025 The Jasmine developers
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -21,14 +21,15 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
 /**
  This file starts the process of "booting" Jasmine. It initializes Jasmine,
  makes its globals available, and creates the env. This file should be loaded
  after `jasmine.js` and `jasmine_html.js`, but before `boot1.js` or any project
  source files or spec files are loaded.
  */
-(function () {
-  const jasmineRequire = window.jasmineRequire || require("./jasmine.js");
+(function() {
+  const jasmineRequire = window.jasmineRequire || require('./jasmine.js');
 
   /**
    * ## Require &amp; Instantiate
