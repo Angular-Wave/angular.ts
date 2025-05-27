@@ -2,7 +2,7 @@ import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
 import { dealoc } from "../../shared/dom.js";
 import { isDefined } from "../../shared/utils.js";
-import { wait } from "../../shared/test-utils";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ngHref", () => {
   let $rootScope;

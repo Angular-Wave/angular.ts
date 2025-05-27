@@ -1,6 +1,6 @@
 import { Angular } from "../../loader.js";
 import { EventBus } from "../../core/pubsub/pubsub";
-import { wait } from "../../shared/test-utils";
+import { wait } from "../../shared/test-utils.js";
 
 describe("channel", () => {
   let $compile, $scope, element, unsubscribeSpy;

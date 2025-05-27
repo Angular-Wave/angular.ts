@@ -8,7 +8,7 @@
 
 import { createElementFromHTML, dealoc } from "../../shared/dom.js";
 import { Angular } from "../../loader.js";
-import { wait } from "../../shared/test-utils";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ngView", () => {
   window.location.hash = "";

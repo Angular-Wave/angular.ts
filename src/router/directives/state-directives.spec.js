@@ -1,6 +1,6 @@
 import { Angular } from "../../loader.js";
 import { createElementFromHTML } from "../../shared/dom.js";
-import { browserTrigger, wait } from "../../shared/test-utils";
+import { browserTrigger, wait } from "../../shared/test-utils.js";
 
 describe("ngStateRef", () => {
   window.location.hash = "";

@@ -5,7 +5,7 @@ import {
   getController,
 } from "../../shared/dom.js";
 import { hashKey, equals, isNumberNaN } from "../../shared/utils.js";
-import { browserTrigger, wait } from "../../shared/test-utils";
+import { browserTrigger, wait } from "../../shared/test-utils.js";
 
 describe("select", () => {
   let scope;

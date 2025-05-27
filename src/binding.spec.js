@@ -1,6 +1,6 @@
 import { createElementFromHTML, dealoc } from "./shared/dom.js";
 import { Angular } from "./loader.js";
-import { browserTrigger, wait } from "./shared/test-utils";
+import { browserTrigger, wait } from "./shared/test-utils.js";
 
 describe("binding", () => {
   let element,

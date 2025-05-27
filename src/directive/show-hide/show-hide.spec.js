@@ -1,7 +1,7 @@
 import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
 import { dealoc, createElementFromHTML } from "../../shared/dom.js";
-import { wait } from "../../shared/test-utils";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ngShow / ngHide", () => {
   let $scope;

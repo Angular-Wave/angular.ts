@@ -1,7 +1,7 @@
 import { dealoc } from "../../shared/dom.js";
 import { Angular } from "../../loader.js";
 import { isFunction } from "../../shared/utils.js";
-import { wait } from "../../shared/test-utils";
+import { wait } from "../../shared/test-utils.js";
 
 describe("$state", () => {
   let $injector, template, ctrlName, $provide, $compile, module, $stateRegistry;

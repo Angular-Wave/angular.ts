@@ -1,4 +1,4 @@
-import { wait } from "../../shared/test-utils";
+import { wait } from "../../shared/test-utils.js";
 import { $postUpdateQueue, createScope, isProxy } from "./scope.js";
 import { Angular } from "../../loader.js";
 import { createInjector } from "../di/injector.js";
