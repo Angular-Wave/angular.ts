@@ -1,15 +1,15 @@
 import { dealoc } from "../../shared/dom.js";
 import { Angular } from "../../loader.js";
-import { curry } from "../../shared/hof";
-import { StateMatcher } from "../state/state-matcher";
-import { StateBuilder } from "../state/state-builder";
-import { StateObject } from "../state/state-object";
+import { curry } from "../../shared/hof.js";
+import { StateMatcher } from "../state/state-matcher.js";
+import { StateBuilder } from "../state/state-builder.js";
+import { StateObject } from "../state/state-object.js";
 import { ViewService } from "./view.js";
 import { ng1ViewsBuilder, getNg1ViewConfigFactory } from "../state/views.js";
-import { PathNode } from "../path/path-node";
-import { PathUtils } from "../path/path-utils";
-import { tail } from "../../shared/common";
-import { wait } from "../../shared/test-utils";
+import { PathNode } from "../path/path-node.js";
+import { PathUtils } from "../path/path-utils.js";
+import { tail } from "../../shared/common.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("view", () => {
   let scope,

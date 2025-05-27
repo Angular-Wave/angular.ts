@@ -4,25 +4,25 @@ import {
   removeFrom,
   silenceUncaughtInPromise,
   silentRejection,
-} from "../../shared/common";
+} from "../../shared/common.js";
 import { isDefined, isObject, isString, minErr } from "../../shared/utils.js";
-import { Queue } from "../common/queue";
-import { makeTargetState } from "../path/path-utils";
-import { PathNode } from "../path/path-node";
-import { defaultTransOpts } from "../transition/transition-service";
-import { Rejection, RejectType } from "../transition/reject-factory";
-import { TargetState } from "./target-state";
-import { Param } from "../params/param";
-import { Glob } from "../common/glob";
-import { ResolveContext } from "../resolve/resolve-context";
-import { lazyLoadState } from "../hooks/lazy-load";
-import { val } from "../../shared/hof";
-import { EventBus } from "../../core/pubsub/pubsub";
+import { Queue } from "../common/queue.js";
+import { makeTargetState } from "../path/path-utils.js";
+import { PathNode } from "../path/path-node.js";
+import { defaultTransOpts } from "../transition/transition-service.js";
+import { Rejection, RejectType } from "../transition/reject-factory.js";
+import { TargetState } from "./target-state.js";
+import { Param } from "../params/param.js";
+import { Glob } from "../common/glob.js";
+import { ResolveContext } from "../resolve/resolve-context.js";
+import { lazyLoadState } from "../hooks/lazy-load.js";
+import { val } from "../../shared/hof.js";
+import { EventBus } from "../../core/pubsub/pubsub.js";
 
 const err = minErr("$stateProvider");
 
 /**
- * Provides services related to ui-router states.
+ * Provides services related to ng-router states.
  *
  * This API is located at `router.stateService` ([[UIRouter.stateService]])
  */
@@ -94,7 +94,7 @@ export class StateProvider {
    *
    * Allows you to extend (carefully) or override (at your own peril) the
    * `stateBuilder` object used internally by [[StateRegistry]].
-   * This can be used to add custom functionality to ui-router,
+   * This can be used to add custom functionality to ng-router,
    * for example inferring templateUrl based on the state name.
    *
    * When passing only a name, it returns the current (original or decorated) builder

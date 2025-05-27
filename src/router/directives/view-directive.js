@@ -190,7 +190,7 @@ export let ngView = [
                 inherited,
               );
               // Allow <ng-view name="foo"><ng-view name="bar"></ng-view></ng-view>
-              // See https://github.com/angular-ui/ui-router/issues/3355
+              // See https://github.com/angular-ui/ng-router/issues/3355
               const fromParentTag = parse("$ngView.creationContext")(inherited);
               return fromParentTagConfig || fromParentTag;
             },
@@ -302,6 +302,7 @@ export function $ViewDirectiveFill($compile, $controller, $transitions) {
     compile: function (tElement) {
       const initial = tElement.innerHTML;
       dealoc(tElement, true);
+
       return function (scope, $element) {
         const data = getCacheData($element, "$ngView");
         if (!data) {
@@ -327,17 +328,17 @@ export function $ViewDirectiveFill($compile, $controller, $transitions) {
             Object.assign({}, locals, { $scope: scope, $element: $element }),
           );
           if (controllerAs) {
-            scope[controllerAs] = controllerInstance;
-            scope[controllerAs][resolveAs] = locals;
+            scope.$target[controllerAs] = controllerInstance;
+            scope.$target[controllerAs][resolveAs] = locals;
           }
           // TODO: Use $view service as a central point for registering component-level hooks
           // Then, when a component is created, tell the $view service, so it can invoke hooks
           // $view.componentLoaded(controllerInstance, { $scope: scope, $element: $element });
           // scope.$on('$destroy', () => $view.componentUnloaded(controllerInstance, { $scope: scope, $element: $element }));
           setCacheData($element, "$ngControllerController", controllerInstance);
-          $element
-            .children()
-            .data("$ngControllerController", controllerInstance);
+          Array.from($element.children).forEach((e) => {
+            setCacheData(e, "$ngControllerController", controllerInstance);
+          });
           registerControllerCallbacks(
             $transitions,
             controllerInstance,

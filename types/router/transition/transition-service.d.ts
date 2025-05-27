@@ -72,10 +72,10 @@ export class TransitionProvider {
      * @param targetState the target state (destination)
      * @returns a Transition
      */
-    create(fromPath: any, targetState: any): any;
+    create(fromPath: any, targetState: any): Transition;
     _defineCoreEvents(): void;
     _defineCorePaths(): void;
-    _defineEvent(name: any, hookPhase: any, hookOrder: any, criteriaMatchPath: any, reverseSort?: boolean, getResultHandler?: any, getErrorHandler?: any, synchronous?: boolean): void;
+    _defineEvent(name: any, hookPhase: any, hookOrder: any, criteriaMatchPath: any, reverseSort?: boolean, getResultHandler?: (hook: any) => (result: any) => any, getErrorHandler?: () => (error: any) => any, synchronous?: boolean): void;
     _getEvents(phase: any): any[];
     /**
      * Adds a Path to be used as a criterion against a TreeChanges path
@@ -95,3 +95,4 @@ export class TransitionProvider {
     getHooks(hookName: any): any;
     _registerCoreTransitionHooks(): void;
 }
+import { Transition } from "./transition.js";

@@ -939,7 +939,7 @@ describe("ngSrefActive", () => {
     await wait(100);
 
     expect(template.hasClass("active")).toBeTruthy();
-    //expect(template.eq(1).hasClass("active")).toBeFalsy();
+    //expect(template[1].hasClass("active")).toBeFalsy();
   });
 
   // TODO investigate why transitions error out
@@ -1020,7 +1020,7 @@ describe("ngSrefActive", () => {
       $state.transitionTo("contacts.lazy.s1");
       await wait(100);
       expect(template.hasClass("active")).toBeTruthy();
-      expect(template.eq(1).hasClass("active")).toBeFalsy();
+      expect(template[1].hasClass("active")).toBeFalsy();
     });
   });
 

@@ -1,6 +1,6 @@
-import { Transition } from "../transition/transition";
-import { Resolvable } from "../resolve/resolvable";
-import { uniqR, unnestR } from "../../shared/common";
+import { Transition } from "../transition/transition.js";
+import { Resolvable } from "../resolve/resolvable.js";
+import { uniqR, unnestR } from "../../shared/common.js";
 
 export function registerAddCoreResolvables(transitionService) {
   transitionService.onCreate({}, function addCoreResolvables(trans) {

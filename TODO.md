@@ -1,7 +1,7 @@
 
 1. Separate out individual typescript types in index.d.ts. Its currently a God file.
 2. Decide on a stategy for JsTypes vs .d.ts types. Should we keep only public types in index.d.ts? 
-3. Rename ui-router to ng-router.
+3. Rename ng-router to ng-router.
 4. Set up docsy website
 5. Begin migrating protractor examples to playwright
 6. Figure out animation testing strategy

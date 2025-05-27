@@ -1,4 +1,7 @@
 /**
+ * Functions that manipulate strings
+ */
+/**
  * Returns a string shortened to a maximum length
  *
  * If the string is already less than the `max` length, return the string.

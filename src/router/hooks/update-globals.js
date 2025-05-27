@@ -1,4 +1,5 @@
-import { copy } from "../../shared/common";
+import { copy } from "../../shared/common.js";
+
 /**
  * A [[TransitionHookFn]] which updates global ng-router state
  *
@@ -26,5 +27,6 @@ const updateGlobalState = (trans) => {
   trans.onSuccess({}, transitionSuccessful, { priority: 10000 });
   trans.promise.then(clearCurrentTransition, clearCurrentTransition);
 };
+
 export const registerUpdateGlobalState = (transitionService) =>
   transitionService.onCreate({}, updateGlobalState);

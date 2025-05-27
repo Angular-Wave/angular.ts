@@ -1,5 +1,5 @@
 /**
- * Provides services related to ui-router states.
+ * Provides services related to ng-router states.
  *
  * This API is located at `router.stateService` ([[UIRouter.stateService]])
  */
@@ -36,7 +36,7 @@ export class StateProvider {
      *
      * Allows you to extend (carefully) or override (at your own peril) the
      * `stateBuilder` object used internally by [[StateRegistry]].
-     * This can be used to add custom functionality to ui-router,
+     * This can be used to add custom functionality to ng-router,
      * for example inferring templateUrl based on the state name.
      *
      * When passing only a name, it returns the current (original or decorated) builder
@@ -256,7 +256,7 @@ export class StateProvider {
      *
      * This may be returned from a Transition Hook to redirect a transition, for example.
      */
-    target(identifier: any, params: any, options?: {}): any;
+    target(identifier: any, params: any, options?: {}): TargetState;
     getCurrentPath(): any;
     /**
      * Low-level method for transitioning to a new state.
@@ -313,7 +313,7 @@ export class StateProvider {
      *
      * @returns Returns true if it is the state.
      */
-    is(stateOrName: any, params: any, options: any): any;
+    is(stateOrName: any, params: any, options: any): boolean;
     /**
      * Checks if the current state *includes* the provided state
      *
@@ -410,3 +410,4 @@ export class StateProvider {
      */
     lazyLoad(stateOrName: any, transition: any): any;
 }
+import { TargetState } from "./target-state.js";

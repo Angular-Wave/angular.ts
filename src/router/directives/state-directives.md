@@ -207,7 +207,7 @@
 -
 - ### Linked State
 - The attribute value of `ng-state` is an expression which is `$watch`ed and evaluated as the state to link to.
-- **This is in contrast with `ui-sref`, which takes a state name as a string literal.**
+- **This is in contrast with `ng-sref`, which takes a state name as a string literal.**
 -
 - #### Example:
 - Create a list of links.
@@ -289,7 +289,7 @@
 -
 - ### Notes
 -
-- - You can use `ui-params` to change **only the parameter values** by omitting the state name and supplying only `ng-state-params`.
+- - You can use `ng-params` to change **only the parameter values** by omitting the state name and supplying only `ng-state-params`.
 - However, it might be simpler to use [[ngSref]] parameter-only links.
 -
 - #### Example:
@@ -312,7 +312,7 @@
 
 /\*\*
 
-- `ui-sref-active` and `ui-sref-active-eq`: A directive that adds a CSS class when a `ui-sref` is active
+- `ng-sref-active` and `ng-sref-active-eq`: A directive that adds a CSS class when a `ng-sref` is active
 -
 - A directive working alongside [[ngSref]] and [[ngState]] to add classes to an element when the
 - related directive's state is active (and remove them when it is inactive).
@@ -320,20 +320,20 @@
 - The primary use-case is to highlight the active link in navigation menus,
 - distinguishing it from the inactive menu items.
 -
-- ### Linking to a `ui-sref` or `ng-state`
-- `ui-sref-active` can live on the same element as `ui-sref`/`ng-state`, or it can be on a parent element.
-- If a `ui-sref-active` is a parent to more than one `ui-sref`/`ng-state`, it will apply the CSS class when **any of the links are active**.
+- ### Linking to a `ng-sref` or `ng-state`
+- `ng-sref-active` can live on the same element as `ng-sref`/`ng-state`, or it can be on a parent element.
+- If a `ng-sref-active` is a parent to more than one `ng-sref`/`ng-state`, it will apply the CSS class when **any of the links are active**.
 -
 - ### Matching
 -
-- The `ui-sref-active` directive applies the CSS class when the `ui-sref`/`ng-state`'s target state **or any child state is active**.
+- The `ng-sref-active` directive applies the CSS class when the `ng-sref`/`ng-state`'s target state **or any child state is active**.
 - This is a "fuzzy match" which uses [[StateService.includes]].
 -
-- The `ui-sref-active-eq` directive applies the CSS class when the `ui-sref`/`ng-state`'s target state is directly active (not when child states are active).
+- The `ng-sref-active-eq` directive applies the CSS class when the `ng-sref`/`ng-state`'s target state is directly active (not when child states are active).
 - This is an "exact match" which uses [[StateService.is]].
 -
 - ### Parameter values
-- If the `ui-sref`/`ng-state` includes parameter values, the current parameter values must match the link's values for the link to be highlighted.
+- If the `ng-sref`/`ng-state` includes parameter values, the current parameter values must match the link's values for the link to be highlighted.
 - This allows a list of links to the same state with different parameters to be rendered, and the correct one highlighted.
 -
 - #### Example:
@@ -341,8 +341,8 @@
 
   ```
 
-- <li ng-repeat="user in users" ui-sref-active="active">
-- <a ui-sref="user.details({ userId: user.id })">{{ user.lastName }}</a>
+- <li ng-repeat="user in users" ng-sref-active="active">
+- <a ng-sref="user.details({ userId: user.id })">{{ user.lastName }}</a>
 - </li>
 - ```
 
@@ -358,8 +358,8 @@
   ```
 
 - <ul>
-- <li ui-sref-active="active" class="item">
--     <a href ui-sref="app.user({user: 'bilbobaggins'})">@bilbobaggins</a>
+- <li ng-sref-active="active" class="item">
+-     <a href ng-sref="app.user({user: 'bilbobaggins'})">@bilbobaggins</a>
 - </li>
 - </ul>
 - ```
@@ -376,8 +376,8 @@
   ```
 
 - <ul>
-- <li ui-sref-active="active" class="item active">
--     <a ui-sref="app.user({user: 'bilbobaggins'})" href="/users/bilbobaggins">@bilbobaggins</a>
+- <li ng-sref-active="active" class="item active">
+-     <a ng-sref="app.user({user: 'bilbobaggins'})" href="/users/bilbobaggins">@bilbobaggins</a>
 - </li>
 - </ul>
 - ```
@@ -387,9 +387,9 @@
 -
 - ### Glob mode
 -
-- It is possible to pass `ui-sref-active` an expression that evaluates to an object.
+- It is possible to pass `ng-sref-active` an expression that evaluates to an object.
 - The objects keys represent active class names and values represent the respective state names/globs.
-- `ui-sref-active` will match if the current active state **includes** any of
+- `ng-sref-active` will match if the current active state **includes** any of
 - the specified state names/globs, even the abstract ones.
 -
 - #### Example:
@@ -398,8 +398,8 @@
 
   ```
 
-- <div ui-sref-active="{'active': 'admin.**'}">
-- <a ui-sref-active="active" ui-sref="admin.roles">Roles</a>
+- <div ng-sref-active="{'active': 'admin.**'}">
+- <a ng-sref-active="active" ng-sref="admin.roles">Roles</a>
 - </div>
 - ```
 
@@ -415,8 +415,8 @@
 
   ```
 
-- <div ui-sref-active="{'active': ['owner.**', 'admin.**']}">
-- <a ui-sref-active="active" ui-sref="admin.roles">Roles</a>
+- <div ng-sref-active="{'active': ['owner.**', 'admin.**']}">
+- <a ng-sref-active="active" ng-sref="admin.roles">Roles</a>
 - </div>
 - ```
 
@@ -424,12 +424,12 @@
 
 -
 - When the current state is "admin.roles" the "active" class will be applied to both the `<div>` and `<a>` elements.
-- It is important to note that the state names/globs passed to `ui-sref-active` override any state provided by a linked `ui-sref`.
+- It is important to note that the state names/globs passed to `ng-sref-active` override any state provided by a linked `ng-sref`.
 -
 - ### Notes:
 -
 - - The class name is interpolated **once** during the directives link time (any further changes to the
 - interpolated value are ignored).
 -
-- - Multiple classes may be specified in a space-separated format: `ui-sref-active='class1 class2 class3'`
+- - Multiple classes may be specified in a space-separated format: `ng-sref-active='class1 class2 class3'`
     \*/

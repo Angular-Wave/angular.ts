@@ -2372,7 +2372,7 @@ describe("$location", () => {
   //         )($rootScope);
   //         $rootElement.append(element);
   //         const av1 = $rootElement.querySelector("a")[0];
-  //         const av2 = $rootElement.querySelector("a").eq(1);
+  //         const av2 = $rootElement.querySelector("a")[1];
 
   //         browserTrigger(av1, "click");
   //         expect($browser.url()).toEqual(`${base}#!/view1`);
@@ -2413,7 +2413,7 @@ describe("$location", () => {
   //         )($rootScope);
   //         $rootElement.append(element);
   //         const av1 = $rootElement.querySelector("a")[0];
-  //         const av2 = $rootElement.querySelector("a").eq(1);
+  //         const av2 = $rootElement.querySelector("a")[1];
 
   //         browserTrigger(av1, "click");
   //         expect($browser.url()).toEqual(`${base}#!!/view1`);

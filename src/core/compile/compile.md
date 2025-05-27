@@ -575,7 +575,7 @@
 -
 - Transclusion is used (often with {@link ngTransclude}) to insert the
 - original contents of a directive's element into a specified place in the template of the directive.
-- The benefit of transclusion, over simply moving the DOM elements manually, is that the transcluded
+- The beneit of transclusion, over simply moving the DOM elements manually, is that the transcluded
 - content has access to the properties on the scope from which it was taken, even if the directive
 - has isolated scope.
 - See the {@link guide/directive#creating-a-directive-that-wraps-other-elements Directives Guide}.

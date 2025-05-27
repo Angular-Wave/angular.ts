@@ -1,6 +1,7 @@
-import { applyPairs, find } from "../../shared/common";
-import { propEq } from "../../shared/hof";
-import { Param } from "../params/param";
+import { applyPairs, find } from "../../shared/common.js";
+import { propEq } from "../../shared/hof.js";
+import { Param } from "../params/param.js";
+
 /**
  * A node in a [[TreeChanges]] path
  *

@@ -5,11 +5,11 @@ import {
   tail,
   copy,
   map,
-} from "../../shared/common";
+} from "../../shared/common.js";
 import { isDefined, isFunction, isString } from "../../shared/utils.js";
-import { stringify } from "../../shared/strings";
-import { is, pattern, pipe, val } from "../../shared/hof";
-import { Resolvable } from "../resolve/resolvable";
+import { stringify } from "../../shared/strings.js";
+import { is, pattern, pipe, val } from "../../shared/hof.js";
+import { Resolvable } from "../resolve/resolvable.js";
 import { annotate } from "../../core/di/injector.js";
 
 function parseUrl(url) {
@@ -287,7 +287,7 @@ export class StateBuilder {
       navigable: [getNavigableBuilder(isRoot)],
       // TODO
       params: [getParamsBuilder(urlService.paramFactory)],
-      // Each framework-specific ui-router implementation should define its own `views` builder
+      // Each framework-specific ng-router implementation should define its own `views` builder
       // e.g., src/ng1/statebuilders/views.ts
       views: [],
       // Keep a full path from the root down to this state as this is needed for state activation.

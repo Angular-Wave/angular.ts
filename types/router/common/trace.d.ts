@@ -17,33 +17,33 @@ export class Trace {
      * @returns boolean true if the category is enabled
      */
     enabled(category: any): boolean;
-    /** @internal called by ui-router code */
+    /** @internal called by ng-router code */
     traceTransitionStart(trans: any): void;
-    /** @internal called by ui-router code */
+    /** @internal called by ng-router code */
     traceTransitionIgnored(trans: any): void;
-    /** @internal called by ui-router code */
+    /** @internal called by ng-router code */
     traceHookInvocation(step: any, trans: any, options: any): void;
-    /** @internal called by ui-router code */
+    /** @internal called by ng-router code */
     traceHookResult(hookResult: any, trans: any): void;
-    /** @internal called by ui-router code */
+    /** @internal called by ng-router code */
     traceResolvePath(path: any, when: any, trans: any): void;
-    /** @internal called by ui-router code */
+    /** @internal called by ng-router code */
     traceResolvableResolved(resolvable: any, trans: any): void;
-    /** @internal called by ui-router code */
+    /** @internal called by ng-router code */
     traceError(reason: any, trans: any): void;
-    /** @internal called by ui-router code */
+    /** @internal called by ng-router code */
     traceSuccess(finalState: any, trans: any): void;
-    /** @internal called by ui-router code */
+    /** @internal called by ng-router code */
     traceUIViewEvent(event: any, viewData: any, extra?: string): void;
-    /** @internal called by ui-router code */
+    /** @internal called by ng-router code */
     traceUIViewConfigUpdated(viewData: any, context: any): void;
-    /** @internal called by ui-router code */
+    /** @internal called by ng-router code */
     traceUIViewFill(viewData: any, html: any): void;
-    /** @internal called by ui-router code */
+    /** @internal called by ng-router code */
     traceViewSync(pairs: any): void;
-    /** @internal called by ui-router code */
+    /** @internal called by ng-router code */
     traceViewServiceEvent(event: any, viewConfig: any): void;
-    /** @internal called by ui-router code */
+    /** @internal called by ng-router code */
     traceViewServiceUIViewEvent(event: any, viewData: any): void;
 }
 /**

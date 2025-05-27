@@ -1,6 +1,6 @@
 import { dealoc } from "../../shared/dom.js";
 import { Angular } from "../../loader.js";
-import { map, find } from "../../shared/common";
+import { map, find } from "../../shared/common.js";
 
 describe("UrlMatcher", () => {
   let $url;
@@ -568,7 +568,7 @@ describe("UrlMatcher", () => {
       expect(values).toEqual(expected);
     });
 
-    it("should not be wrapped by ui-router into an array if array: false", () => {
+    it("should not be wrapped by ng-router into an array if array: false", () => {
       const m = $url.compile("/foo?param1", {
         state: { params: { param1: { array: false } } },
       });

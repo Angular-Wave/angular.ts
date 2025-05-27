@@ -11,9 +11,9 @@ export class StateRegistryProvider {
     urlServiceRules: any;
     $injector: any;
     listeners: any[];
-    matcher: any;
-    builder: any;
-    stateQueue: any;
+    matcher: StateMatcher;
+    builder: StateBuilder;
+    stateQueue: StateQueueManager;
     $get: (string | (($injector: any) => this))[];
     /**
      * This is a [[StateBuilder.builder]] function for angular1 `onEnter`, `onExit`,
@@ -109,3 +109,6 @@ export class StateRegistryProvider {
     decorator(property: any, builderFunction: any): any;
 }
 export function getLocals(ctx: any): any;
+import { StateMatcher } from "./state-matcher.js";
+import { StateBuilder } from "./state-builder.js";
+import { StateQueueManager } from "./state-queue-manager.js";

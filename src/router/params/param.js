@@ -1,7 +1,7 @@
-import { filter, map, allTrueR, find } from "../../shared/common";
-import { isInjectable } from "../../shared/predicates";
+import { filter, map, allTrueR, find } from "../../shared/common.js";
+import { isInjectable } from "../../shared/predicates.js";
 import { isDefined, isUndefined, isString } from "../../shared/utils.js";
-import { ParamType } from "./param-type";
+import { ParamType } from "./param-type.js";
 
 const isShorthand = (cfg) =>
   ["value", "type", "squash", "array", "dynamic"].filter(

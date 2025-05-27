@@ -1,7 +1,7 @@
-import { find, pick, omit, unnestR, arrayTuples } from "../../shared/common";
-import { propEq } from "../../shared/hof";
-import { TargetState } from "../state/target-state";
-import { PathNode } from "./path-node";
+import { find, pick, omit, unnestR, arrayTuples } from "../../shared/common.js";
+import { propEq } from "../../shared/hof.js";
+import { TargetState } from "../state/target-state.js";
+import { PathNode } from "./path-node.js";
 /**
  * This class contains functions which convert TargetStates, Nodes and paths from one type to another.
  */

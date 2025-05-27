@@ -1,7 +1,7 @@
-import { equals, applyPairs, removeFrom, find } from "../../shared/common";
-import { curry } from "../../shared/hof";
-import { trace } from "../common/trace";
-import { getNg1ViewConfigFactory } from "../state/views";
+import { equals, applyPairs, removeFrom, find } from "../../shared/common.js";
+import { curry } from "../../shared/hof.js";
+import { trace } from "../common/trace.js";
+import { getNg1ViewConfigFactory } from "../state/views.js";
 /**
  * The View service
  *

@@ -1,24 +1,29 @@
-import { TargetState } from "../state/target-state";
-import { UrlMatcher } from "./url-matcher";
-import { is, val } from "../../shared/hof";
+import { TargetState } from "../state/target-state.js";
+import { UrlMatcher } from "./url-matcher.js";
+import { is, val } from "../../shared/hof.js";
 import { isDefined, isFunction, isString } from "../../shared/utils.js";
-import { removeFrom } from "../../shared/common";
-import { UrlRuleFactory } from "./url-rule";
+import { removeFrom } from "../../shared/common.js";
+import { UrlRuleFactory } from "./url-rule.js";
+
 const prioritySort = (a, b) => (b.priority || 0) - (a.priority || 0);
+
 const typeSort = (a, b) => {
   const weights = { STATE: 4, URLMATCHER: 4, REGEXP: 3, RAW: 2, OTHER: 1 };
   return (weights[a.type] || 0) - (weights[b.type] || 0);
 };
+
 const urlMatcherSort = (a, b) =>
   !a.urlMatcher || !b.urlMatcher
     ? 0
     : UrlMatcher.compare(a.urlMatcher, b.urlMatcher);
+
 const idSort = (a, b) => {
   // Identically sorted STATE and URLMATCHER best rule will be chosen by `matchPriority` after each rule matches the URL
   const useMatchPriority = { STATE: true, URLMATCHER: true };
   const equal = useMatchPriority[a.type] && useMatchPriority[b.type];
   return equal ? 0 : (a.$id || 0) - (b.$id || 0);
 };
+
 /**
  * Default rule priority sorting function.
  *

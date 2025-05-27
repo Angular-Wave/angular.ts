@@ -189,12 +189,12 @@ describe("ngClass", () => {
 
   it('should preserve other classes with similar name"', async () => {
     element = $compile(
-      '<div class="ui-panel ui-selected" ng-class="dynCls"></div>',
+      '<div class="ng-panel ng-selected" ng-class="dynCls"></div>',
     )($rootScope);
     $rootScope.dynCls = "panel";
     $rootScope.dynCls = "foo";
     await wait();
-    expect(element.className).toBe("ui-panel ui-selected foo");
+    expect(element.className).toBe("ng-panel ng-selected foo");
   });
 
   it("should not add duplicate classes", async () => {

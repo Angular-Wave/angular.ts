@@ -22,7 +22,7 @@ export class ViewService {
     _pluginapi: {
         _rootViewContext: any;
         _viewConfigFactory: any;
-        _registeredUIView: (id: any) => any;
+        _registeredUIView: (id: any) => undefined;
         _registeredUIViews: () => any[];
         _activeViewConfigs: () => any[];
         _onSync: (listener: any) => () => any;

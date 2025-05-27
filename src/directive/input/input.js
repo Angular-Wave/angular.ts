@@ -36,7 +36,7 @@ export const URL_REGEXP =
 
 export const EMAIL_REGEXP =
   /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
-const NUMBER_REGEXP = /^\s*(-|\+)?(\d+|(\d*(\.\d*)))([eE][+-]?\d+)?\s*$/;
+const NUMBER_REGEXP = /^\s*([-+])?(\d+|(\d*(\.\d*)))([eE][+-]?\d+)?\s*$/;
 const DATE_REGEXP = /^(\d{4,})-(\d{2})-(\d{2})$/;
 const DATETIMELOCAL_REGEXP =
   /^(\d{4,})-(\d\d)-(\d\d)T(\d\d):(\d\d)(?::(\d\d)(\.\d{1,3})?)?$/;

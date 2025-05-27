@@ -586,8 +586,8 @@ dl.tsd-comment-tag-group p {
 }
 .tsd-filter-input {
     display: flex;
-    width: -moz-fit-content;
-    width: fit-content;
+    width: -moz-it-content;
+    width: it-content;
     align-items: center;
     -webkit-user-select: none;
     -moz-user-select: none;

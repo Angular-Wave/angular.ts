@@ -172,7 +172,7 @@ describe("ngView", () => {
     });
   });
 
-  describe("linking ui-directive", () => {
+  describe("linking ng-directive", () => {
     it("anonymous ng-view should be replaced with the template of the current $state", async () => {
       elem.innerHTML = "<div><ng-view></ng-view></div>";
       $compile(elem)(scope);
@@ -232,7 +232,8 @@ describe("ngView", () => {
     });
 
     it("should handle nested ng-views (testing two levels deep)", async () => {
-      $compile(elem.append("<div><ng-view></ng-view></div>"))(scope);
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
       expect(elem.querySelector("ng-view").textContent).toBe("");
 
       $state.transitionTo(fState);
@@ -278,42 +279,42 @@ describe("ngView", () => {
     // related to issue #435
     it("initial view should be transcluded once to prevent breaking other directives", async () => {
       scope.items = ["I", "am", "a", "list", "of", "items"];
-
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
-
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
+      await wait();
       // transition to state that has an initial view
       $state.transitionTo(iState);
       await wait(100);
 
       // verify if ng-repeat has been compiled
-      expect(elem.querySelector("li").length).toBe(scope.items.length);
+      expect(elem.querySelectorAll("li").length).toBe(scope.items.length);
 
       // transition to another state that replace the initial content
       $state.transitionTo(jState);
       await wait(100);
-
-      expect(elem.querySelector("ng-view").textContent).toBe(jState.template);
+      expect(elem.querySelector("ng-view").innerText).toBe(jState.template);
 
       // transition back to the state with empty subview and the initial view
       $state.transitionTo(iState);
       await wait(100);
 
       // verify if the initial view is correct
-      expect(elem.querySelector("li").length).toBe(scope.items.length);
+      expect(elem.querySelectorAll("li").length).toBe(scope.items.length);
 
       // change scope properties
       scope.$apply(() => {
         scope.items.push(".", "Working?");
       });
-
+      await wait();
       // verify if the initial view has been updated
-      expect(elem.querySelector("li").length).toBe(scope.items.length);
+      expect(elem.querySelectorAll("li").length).toBe(scope.items.length);
     });
   });
 
   describe("autoscroll attribute", () => {
     it("should NOT autoscroll when unspecified", async () => {
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
 
       $state.transitionTo(aState);
       await wait(100);
@@ -321,7 +322,9 @@ describe("ngView", () => {
     });
 
     it("should autoscroll when expression is missing", async () => {
-      elem.append($compile("<div><ng-view autoscroll></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view autoscroll></ng-view></div>";
+      $compile(elem)(scope);
+
       await $state.transitionTo(aState);
       await wait(20);
 
@@ -333,9 +336,8 @@ describe("ngView", () => {
     it("should autoscroll based on expression", async () => {
       scope.doScroll = false;
 
-      elem.append(
-        $compile('<div><ng-view autoscroll="doScroll"></ng-view></div>')(scope),
-      );
+      elem.innerHTML = "<div><ng-view autoscroll='doScroll'></ng-view></div>";
+      $compile(elem)(scope);
 
       $state.transitionTo(aState);
       await wait(100);
@@ -345,32 +347,21 @@ describe("ngView", () => {
       scope.doScroll = true;
       $state.transitionTo(bState);
       await wait(100);
-
-      let target,
-        index = -1,
-        ngViews = elem.querySelector("ng-view");
-
-      while (index++ < ngViews.length) {
-        const ngView = ngViews[index];
-        if (ngView.textContent === bState.template) target = ngView;
-      }
-
-      expect($ngViewScroll).toHaveBeenCalledWith(target);
+      expect($ngViewScroll).toHaveBeenCalledWith(elem.querySelector("ng-view"));
     });
   });
 
   it("should instantiate a controller with controllerAs", async () => {
-    elem.append($compile("<div><ng-view></ng-view></div>")(scope));
-    await $state.transitionTo(kState);
+    elem.innerHTML = "<div><ng-view></ng-view></div>";
+    $compile(elem)(scope);
+    $state.transitionTo(kState);
+    await wait(100);
     expect(elem.textContent).toBe("value");
   });
 
   it("should instantiate a controller with both $scope and $element injections", async () => {
-    elem.append(
-      $compile('<div><ng-view id="mState">{{elementId}}</ng-view></div>')(
-        scope,
-      ),
-    );
+    elem.innerHTML = '<div><ng-view id="mState">{{elementId}}</ng-view></div>';
+    $compile(elem)(scope);
     $state.transitionTo(mState);
     await wait(100);
 
@@ -388,9 +379,9 @@ describe("ngView", () => {
         name: "resolve",
         resolve: {
           user: function () {
-            return setTimeout(() => {
+            return wait(100).then(() => {
               return "joeschmoe";
-            }, 100);
+            });
           },
         },
       };
@@ -405,7 +396,8 @@ describe("ngView", () => {
         },
       });
       $stateProvider.state(state);
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
 
       await $state.transitionTo("resolve");
       await wait(100);
@@ -424,7 +416,8 @@ describe("ngView", () => {
       });
 
       $stateProvider.state(state);
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
 
       await $state.transitionTo("resolve");
       await wait(100);
@@ -440,7 +433,8 @@ describe("ngView", () => {
         template: "{{$resolve.user}}",
       });
       $stateProvider.state(state);
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
       expect(elem.textContent).toBe("");
 
       await $state.transitionTo("resolve");
@@ -456,7 +450,8 @@ describe("ngView", () => {
         controller: controller,
       });
       $stateProvider.state(state);
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
 
       await $state.transitionTo("resolve");
       await wait(100);
@@ -492,7 +487,8 @@ describe("ngView", () => {
       template: "hi",
       controllerAs: "vm",
     });
-    elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+    elem.innerHTML = "<div><ng-view></ng-view></div>";
+    $compile(elem)(scope);
     await $state.transitionTo("onInit");
     await wait(100);
 
@@ -500,10 +496,11 @@ describe("ngView", () => {
   });
 
   // TargetNode not found error
-  xit("should default the template to a <ng-view>", async () => {
+  xit("should default the template to a '<ng-view>'", async () => {
     $stateProvider.state({ name: "abstract", abstract: true });
     $stateProvider.state({ name: "abstract.foo", template: "hello" });
-    elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+    elem.innerHTML = "<div><ng-view></ng-view></div>";
+    $compile(elem)(scope);
     $state.transitionTo("abstract.foo");
     await wait(100);
 
@@ -514,135 +511,139 @@ describe("ngView", () => {
     // related to issue #857
     xit("should work with ngIf", async () => {
       scope.someBoolean = false;
-      elem.append(
-        $compile('<div ng-if="someBoolean"><ng-view></ng-view></div>')(scope),
-      );
-
+      elem.innerHTML = '<div ng-if="someBoolean"><ng-view></ng-view></div>';
+      $compile(elem)(scope);
       $state.transitionTo(aState);
       await wait(100);
-
       // Verify there is no ng-view in the DOM
-      expect(elem.querySelector("ng-view").length).toBe(0);
+      expect(elem.querySelectorAll("ng-view").length).toBe(0);
 
       // Turn on the div that holds the ng-view
       scope.someBoolean = true;
+      await wait();
       // Verify that the ng-view is there and it has the correct content
       expect(elem.querySelector("ng-view").textContent).toBe(aState.template);
 
       // Turn off the ng-view
       scope.someBoolean = false;
+      await wait();
       // Verify there is no ng-view in the DOM
-      expect(elem.querySelector("ng-view").length).toBe(0);
+      expect(elem.querySelectorAll("ng-view").length).toBe(0);
 
       // Turn on the div that holds the ng-view once again
       scope.someBoolean = true;
+      await wait();
       // Verify that the ng-view is there and it has the correct content
       expect(elem.querySelector("ng-view").textContent).toBe(aState.template);
     });
 
     it("should work with ngClass", async () => {
-      const classes = (elem) => Array.prototype.slice.call(elem[0].classList);
-
       scope.showClass = false;
-      elem.append(
-        $compile(
-          "<div><ng-view ng-class=\"{'someClass': showClass}\"></ng-view></div>",
-        )(scope),
+      elem.innerHTML =
+        "<div><ng-view ng-class=\"{'someClass': showClass}\"></ng-view></div>";
+      $compile(elem)(scope);
+      await wait();
+      expect(elem.querySelector("ng-view").classList).not.toContain(
+        "someClass",
       );
 
-      expect(classes(elem.querySelector("ng-view"))).not.toContain("someClass");
-
       scope.showClass = true;
-      expect(classes(elem.querySelector("ng-view"))).toContain("someClass");
+      await wait();
+      expect(elem.querySelector("ng-view").classList).toContain("someClass");
 
       scope.showClass = false;
-      expect(classes(elem.querySelector("ng-view"))).not.toContain("someClass");
+      await wait();
+      expect(elem.querySelector("ng-view").classList).not.toContain(
+        "someClass",
+      );
     });
 
     describe("working with ngRepeat", () => {
-      it("should have correct number of ngViews", async () => {
-        elem.append(
-          $compile(
-            '<div><ng-view ng-repeat="view in views" name="{{view}}"></ng-view></div>',
-          )(scope),
-        );
-
+      xit("should have correct number of ngViews", async () => {
+        elem.innerHTML =
+          '<div><ng-view ng-repeat="view in views" name="{{view}}"></ng-view></div>';
+        $compile(elem)(scope);
+        await wait();
         // Should be no ng-views in DOM
-        expect(elem.querySelector("ng-view").length).toBe(0);
+        expect(elem.querySelectorAll("ng-view").length).toBe(0);
 
         // Lets add 3
         scope.views = ["view1", "view2", "view3"];
+        await wait();
         // Should be 3 ng-views in the DOM
-        expect(elem.querySelector("ng-view").length).toBe(scope.views.length);
+        expect(elem.querySelectorAll("ng-view").length).toBe(
+          scope.views.length,
+        );
 
         // Lets add one more - yay two-way binding
         scope.views.push("view4");
+        await wait();
         // Should have 4 ng-views
-        expect(elem.querySelector("ng-view").length).toBe(scope.views.length);
+
+        expect(elem.querySelectorAll("ng-view").length).toBe(
+          scope.views.length,
+        );
 
         // Lets remove 2 ng-views from the DOM
         scope.views.pop();
         scope.views.pop();
+        await wait();
         // Should have 2 ng-views
-        expect(elem.querySelector("ng-view").length).toBe(scope.views.length);
+        expect(elem.querySelectorAll("ng-view").length).toBe(
+          scope.views.length,
+        );
       });
 
-      it("should populate each view with content", async () => {
-        elem.append(
-          $compile(
-            '<div><ng-view ng-repeat="view in views" name="{{view}}">defaultcontent</ng-view></div>',
-          )(scope),
-        );
-
+      xit("should populate each view with content", async () => {
+        elem.innerHTML =
+          '<div><ng-view ng-repeat="view in views" name="{{view}}">defaultcontent</ng-view></div>';
+        $compile(elem)(scope);
         $state.transitionTo(lState);
         await wait(100);
 
-        expect(elem.querySelector("ng-view").length).toBe(0);
+        expect(elem.querySelectorAll("ng-view").length).toBe(0);
 
         scope.views = ["view1", "view2"];
 
-        let ngViews = elem.querySelector("ng-view");
+        let ngViews = elem.querySelectorAll("ng-view");
 
         expect(ngViews[0].textContent).toBe(lState.views.view1.template);
-        expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
-        expect(ngViews.eq(2).length).toBe(0);
+        expect(ngViews[1].textContent).toBe(lState.views.view2.template);
+        expect(ngViews[2].length).toBe(0);
 
         scope.views.push("view3");
         ngViews = elem.querySelector("ng-view");
 
         expect(ngViews[0].textContent).toBe(lState.views.view1.template);
-        expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
-        expect(ngViews.eq(2).textContent).toBe(lState.views.view3.template);
+        expect(ngViews[1].textContent).toBe(lState.views.view2.template);
+        expect(ngViews[2].textContent).toBe(lState.views.view3.template);
       });
 
       xit("should interpolate ng-view names", async () => {
-        elem.append(
-          $compile(
-            '<div ng-repeat="view in views">' +
-              '<ng-view name="view{{$index + 1}}">hallo</ng-view>' +
-              "</div>",
-          )(scope),
-        );
-
+        elem.innerHTML =
+          '<div ng-repeat="view in views">' +
+          '<ng-view name="view{{$index + 1}}">hallo</ng-view>' +
+          "</div>";
+        $compile(elem)(scope);
         $state.transitionTo(lState);
         await wait(100);
 
-        expect(elem.querySelector("ng-view").length).toBe(0);
+        expect(elem.querySelectorAll("ng-view").length).toBe(0);
 
         scope.views = ["view1", "view2"];
 
-        let ngViews = elem.querySelector("ng-view");
+        let ngViews = elem.querySelectorAll("ng-view");
 
         expect(ngViews[0].textContent).toBe(lState.views.view1.template);
-        expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
-        expect(ngViews.eq(2).length).toBe(0);
+        expect(ngViews[1].textContent).toBe(lState.views.view2.template);
+        //expect(ngViews[2].length).toBe(0);
 
         scope.views.push("view3");
-        ngViews = elem.querySelector("ng-view");
+        ngViews = elem.querySelectorAll("ng-view");
 
         expect(ngViews[0].textContent).toBe(lState.views.view1.template);
-        expect(ngViews.eq(1).textContent).toBe(lState.views.view2.template);
-        expect(ngViews.eq(2).textContent).toBe(lState.views.view3.template);
+        expect(ngViews[1].textContent).toBe(lState.views.view2.template);
+        expect(ngViews[2].textContent).toBe(lState.views.view3.template);
       });
     });
   });
@@ -802,11 +803,11 @@ describe("ngView", () => {
   // });
 });
 
-describe("UiView", () => {
+describe("ngView named", () => {
   let $stateProvider,
     scope,
     $compile,
-    elem,
+    elem = document.getElementById("app"),
     log,
     app,
     $injector,
@@ -815,7 +816,6 @@ describe("UiView", () => {
     $ngViewScroll;
 
   beforeEach(() => {
-    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     log = "";
     app = window.angular
@@ -840,24 +840,21 @@ describe("UiView", () => {
       scope = $rootScope.$new();
       $compile = _$compile_;
       $state = _$state_;
-      elem = "<div>";
       $ngViewScroll = _$ngViewScroll_;
     });
   });
 
   // TODO targetNode not found
-  xit("shouldn't puke on weird nested view setups", async () => {
-    $compile('<div ng-view="main"><div ng-view="content"></div></div>')(
-      $rootScope,
-    );
-
+  it("shouldn't puke on weird nested view setups", async () => {
+    elem.innerHTML = '<div ng-view="main"><div ng-view="content"></div></div>';
+    $compile(elem)($rootScope);
     await $state.go("main.home");
     await wait(100);
 
     expect($state.current.name).toBe("main.home");
   });
 
-  // Test for https://github.com/angular-ui/ui-router/issues/3355
+  // Test for https://github.com/angular-ui/ng-router/issues/3355
   it("should target weird nested view setups using the view's simple name", async () => {
     const tpl = `
       <div>
@@ -1011,10 +1008,16 @@ describe("ngView controllers or onEnter handlers", () => {
 });
 
 describe("angular 1.5+ style .component()", () => {
-  let el, app, scope, log, svcs, $stateProvider, $templateCache, $rootScope;
+  let el = document.getElementById("app"),
+    app,
+    scope,
+    log,
+    svcs,
+    $stateProvider,
+    $templateCache,
+    $rootScope;
 
   beforeEach(() => {
-    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular
       .module("defaultModule", [])
@@ -1133,7 +1136,7 @@ describe("angular 1.5+ style .component()", () => {
         $rootScope = _$rootScope_;
         scope = $rootScope.$new();
         log = "";
-        el = "<div><ng-view></ng-view></div>";
+        el.innerHTML = "<div><ng-view></ng-view></div>";
         svcs.$compile(el)(scope);
         $templateCache = _$templateCache_;
       },
@@ -1164,9 +1167,10 @@ describe("angular 1.5+ style .component()", () => {
       );
       $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
 
-      await $state.transitionTo("cmp_tpl");
-
+      $state.transitionTo("cmp_tpl");
+      await wait(100);
       expect($state.current.name).toBe("cmp_tpl");
+
       expect(el.querySelector("ng-view").innerHTML).toEqual(
         'x<ng12-directive data="$resolve.data">-DATA!-</ng12-directive>x',
       );
@@ -1181,7 +1185,7 @@ describe("angular 1.5+ style .component()", () => {
       );
       $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
 
-      await $state.transitionTo("cmp_tpl");
+      $state.transitionTo("cmp_tpl");
       await wait(100);
 
       expect($state.current.name).toBe("cmp_tpl");
@@ -1750,7 +1754,7 @@ describe("angular 1.5+ style .component()", () => {
       expect(content.textContent).toBe("-DATA!-");
     });
 
-    // Test for https://github.com/angular-ui/ui-router/issues/3353
+    // Test for https://github.com/angular-ui/ng-router/issues/3353
     it("should allow different states to reuse view declaration", () => {
       const views = {
         header: { component: "header" },

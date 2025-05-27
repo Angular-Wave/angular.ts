@@ -14045,8 +14045,8 @@ describe("$compile", () => {
       )($rootScope);
       await wait();
       expect(element.firstChild.innerText).toEqual("gru");
-      expect(element.children().eq(1).innerText).toEqual("stuartkevin");
-      expect(element.children().eq(2).innerText).toEqual("dorothy");
+      expect(element.children()[1].innerText).toEqual("stuartkevin");
+      expect(element.children()[2].innerText).toEqual("dorothy");
     });
 
     it("should use the `ng-transclude-slot` attribute if ng-transclude is used as an element", async () => {

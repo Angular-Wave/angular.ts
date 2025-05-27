@@ -1,8 +1,8 @@
-import { equals, inherit, map, pick } from "../../shared/common";
-import { isNullOrUndefined } from "../../shared/predicates";
+import { equals, inherit, map, pick } from "../../shared/common.js";
+import { isNullOrUndefined } from "../../shared/predicates.js";
 import { isDefined } from "../../shared/utils.js";
-import { is } from "../../shared/hof";
-import { ParamType } from "./param-type";
+import { is } from "../../shared/hof.js";
+import { ParamType } from "./param-type.js";
 /**
  * A registry for parameter types.
  *
@@ -108,7 +108,7 @@ function initDefaultTypes() {
       encode: (val) => (val && 1) || 0,
       decode: (val) => parseInt(val, 10) !== 0,
       is: is(Boolean),
-      pattern: /0|1/,
+      pattern: /[01]/,
     }),
     date: makeDefaultType({
       encode: function (val) {

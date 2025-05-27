@@ -1,6 +1,5 @@
 #app {
-  background-color: white;
-  position: absolute;
+  position: fixed;
   width: 20rem;
   right: 0;
   height: 2rem;

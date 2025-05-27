@@ -1,36 +1,36 @@
-import { TransitionHookScope, TransitionHookPhase } from "./interface";
-import { Transition } from "./transition";
-import { makeEvent } from "./hook-registry";
+import { TransitionHookScope, TransitionHookPhase } from "./interface.js";
+import { Transition } from "./transition.js";
+import { makeEvent } from "./hook-registry.js";
 import {
   registerAddCoreResolvables,
   treeChangesCleanup,
-} from "../hooks/core-resolvables";
+} from "../hooks/core-resolvables.js";
 import {
   registerOnExitHook,
   registerOnRetainHook,
   registerOnEnterHook,
-} from "../hooks/on-enter-exit-retain";
+} from "../hooks/on-enter-exit-retain.js";
 import {
   registerEagerResolvePath,
   registerLazyResolveState,
   registerResolveRemaining,
-} from "../hooks/resolve";
+} from "../hooks/resolve.js";
 import {
   registerActivateViews,
   registerLoadEnteringViews,
-} from "../hooks/views";
-import { registerUpdateGlobalState } from "../hooks/update-globals";
+} from "../hooks/views.js";
+import { registerUpdateGlobalState } from "../hooks/update-globals.js";
 
-import { registerLazyLoadHook } from "../hooks/lazy-load";
-import { TransitionEventType } from "./transition-event-type";
-import { TransitionHook } from "./transition-hook";
+import { registerLazyLoadHook } from "../hooks/lazy-load.js";
+import { TransitionEventType } from "./transition-event-type.js";
+import { TransitionHook } from "./transition-hook.js";
 import { isDefined } from "../../shared/utils.js";
-import { createProxyFunctions } from "../../shared/common";
-import { val } from "../../shared/hof";
-import { registerIgnoredTransitionHook } from "../hooks/ignored-transition";
-import { registerInvalidTransitionHook } from "../hooks/invalid-transition";
-import { registerRedirectToHook } from "../hooks/redirect-to";
-import { registerUpdateUrl } from "../hooks/url";
+import { createProxyFunctions } from "../../shared/common.js";
+import { val } from "../../shared/hof.js";
+import { registerIgnoredTransitionHook } from "../hooks/ignored-transition.js";
+import { registerInvalidTransitionHook } from "../hooks/invalid-transition.js";
+import { registerRedirectToHook } from "../hooks/redirect-to.js";
+import { registerUpdateUrl } from "../hooks/url.js";
 /**
  * The default [[Transition]] options.
  *

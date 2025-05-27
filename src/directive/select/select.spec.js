@@ -1811,9 +1811,7 @@ describe("select", () => {
           scope.selected = ["string", 1];
           await wait();
           expect(element.querySelectorAll("option")[0][0].selected).toBe(true);
-          expect(element.querySelectorAll("option").eq(2)[0].selected).toBe(
-            true,
-          );
+          expect(element.querySelectorAll("option")[2][0].selected).toBe(true);
 
           setSelectValue(element, 1);
           await wait();
@@ -2203,7 +2201,7 @@ describe("select", () => {
             expect(optionElements.length).toEqual(3);
             await wait();
             optionElements[0][0].selected = true;
-            optionElements.eq(2)[0].selected = true;
+            optionElements[2][0].selected = true;
             browserTrigger(element);
             await wait();
             optionElements = element.querySelectorAll("option");
@@ -2266,7 +2264,7 @@ describe("select", () => {
             expect(optionElements.length).toEqual(3);
 
             optionElements[0][0].selected = true;
-            optionElements.eq(2)[0].selected = true;
+            optionElements[2][0].selected = true;
             browserTrigger(element, "change");
             await wait();
             optionElements = element.querySelectorAll("option");
@@ -2331,7 +2329,7 @@ describe("select", () => {
             expect(optionElements.length).toEqual(4);
 
             optionElements[0][0].selected = true;
-            optionElements.eq(2)[0].selected = true;
+            optionElements[2][0].selected = true;
             optionElements.eq(3)[0].selected = true;
             await wait();
             browserTrigger(element, "change");
@@ -2399,7 +2397,7 @@ describe("select", () => {
             optionElements = element.querySelectorAll("option");
             expect(optionElements.length).toEqual(4);
             expect(optionElements[0][0].selected).toBe(true);
-            expect(optionElements.eq(2)[0].selected).toBe(true);
+            expect(optionElements[2][0].selected).toBe(true);
             expect(optionElements.eq(3)[0].selected).toBe(true);
           });
 

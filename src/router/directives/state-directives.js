@@ -1,8 +1,8 @@
-import { tail, unnestR, uniqR, removeFrom } from "../../shared/common";
+import { tail, unnestR, uniqR, removeFrom } from "../../shared/common.js";
 import { isString, isObject } from "../../shared/utils.js";
+import { parse } from "../../shared/hof.js";
+import { getInheritedData } from "../../shared/dom.js";
 
-import { parse } from "../../shared/hof";
-import { getInheritedData } from "../../shared//dom";
 /** @ignore */
 function parseStateRef(ref) {
   const paramsOnly = ref.match(/^\s*({[^}]*})\s*$/);
@@ -14,12 +14,14 @@ function parseStateRef(ref) {
     throw new Error("Invalid state ref '" + ref + "'");
   return { state: parsed[1] || null, paramExpr: parsed[3] || null };
 }
+
 /** @ignore */
 function stateContext(el) {
   const $ngView = getInheritedData(el.parentElement, "$ngView");
   const path = parse("$cfg.path")($ngView);
   return path ? tail(path).state.name : undefined;
 }
+
 /** @ignore */
 function processedDef($state, $element, def) {
   const ngState = def.ngState || $state.current.name;
@@ -30,6 +32,7 @@ function processedDef($state, $element, def) {
   const href = $state.href(ngState, def.ngStateParams, ngStateOpts);
   return { ngState, ngStateParams: def.ngStateParams, ngStateOpts, href };
 }
+
 /** @ignore */
 function getTypeInfo(el) {
   // SVGAElement does not use the href attribute, but rather the 'xlinkHref' attribute.
@@ -43,6 +46,7 @@ function getTypeInfo(el) {
     clickable: !isForm,
   };
 }
+
 /** @ignore */
 function clickHook(el, $state, type, getDef, scope) {
   return function (e) {
@@ -83,6 +87,7 @@ function clickHook(el, $state, type, getDef, scope) {
     }
   };
 }
+
 /** @ignore */
 function defaultOpts(el, $state) {
   return {
@@ -91,6 +96,7 @@ function defaultOpts(el, $state) {
     source: "sref",
   };
 }
+
 /** @ignore */
 function bindEvents(element, scope, hookFn, ngStateOpts) {
   let events;
@@ -265,8 +271,8 @@ export function $StateRefActiveDirective(
       setStatesFromDefinitionObject(ngSrefActive);
       // Allow ngSref to communicate with ngSrefActive[Equals]
       this.$$addStateInfo = function (newState, newParams) {
-        // we already got an explicit state provided by ui-sref-active, so we
-        // shadow the one that comes from ui-sref
+        // we already got an explicit state provided by ng-sref-active, so we
+        // shadow the one that comes from ng-sref
         if (isObject(ngSrefActive) && states.length > 0) {
           return;
         }
