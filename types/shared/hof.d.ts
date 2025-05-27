@@ -46,7 +46,7 @@ export function curry(fn: any): any | (() => (any | any));
  * let composed = compose(f,g,h)
  * then, composed is: f(g(h(x)))
  */
-export function compose(...args: any[]): (...args: any[]) => any;
+export function compose(...args: any[]): () => any;
 /**
  * Given a varargs list of functions, returns a function that is composes the argument functions, left-to-right
  * given: f(x), g(x), h(x)

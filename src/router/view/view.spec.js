@@ -15,7 +15,7 @@ describe("view", () => {
   let scope,
     $compile,
     $injector,
-    elem,
+    elem = document.getElementById("app"),
     $controllerProvider,
     $urlServiceProvider,
     $view,
@@ -25,8 +25,6 @@ describe("view", () => {
   beforeEach(() => {
     dealoc(document.getElementById("app"));
     window.angular = new Angular();
-    window.angular = new Angular();
-
     window.angular
       .module("defaultModule", [])
       .config(
@@ -46,8 +44,6 @@ describe("view", () => {
       scope = $rootScope.$new();
       $compile = _$compile_;
       $injector = _$injector_;
-      elem = angular.element("<div>");
-
       states = {};
       const matcher = new StateMatcher(states);
       const stateBuilder = new StateBuilder(matcher, $urlServiceProvider);
@@ -94,7 +90,8 @@ describe("view", () => {
 
     it("uses the controllerProvider to get controller dynamically", async () => {
       $controllerProvider.register("AcmeFooController", () => {});
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
       await wait();
       const view = tail(path).views[0];
       view.load();

@@ -28,9 +28,9 @@ export class NodeRef {
     /** @returns {Node | ChildNode} */
     get node(): Node | ChildNode;
     /** @param {Array<Node>} nodes */
-    set nodes(nodes: Node[]);
+    set nodes(nodes: Array<Node>);
     /** @returns {Array<Node>} */
-    get nodes(): Node[];
+    get nodes(): Array<Node>;
     /** @returns {NodeList} */
     get nodelist(): NodeList;
     /** @returns {Element | Node | ChildNode | NodeList} */

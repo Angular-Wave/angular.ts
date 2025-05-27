@@ -15,6 +15,7 @@
  * @property {ASTNode} [alternate] - The alternate expression of a conditional expression.
  * @property {ASTNode} [consequent] - The consequent expression of a conditional expression.
  * @property {ASTNode[]} [body] - The body of a program or block statement.
+ * @property {ASTNode[]} [toWatch] - A list of expressions to observe in a program or block statement.
  * @property {ASTNode} [expression] - The expression of an expression statement.
  * @property {ASTNode} [callee] - The callee of a call expression.
  * @property {ASTNode[]} [arguments] - The arguments of a call expression.
@@ -243,6 +244,10 @@ export type ASTNode = {
      * - The body of a program or block statement.
      */
     body?: ASTNode[];
+    /**
+     * - A list of expressions to observe in a program or block statement.
+     */
+    toWatch?: ASTNode[];
     /**
      * - The expression of an expression statement.
      */

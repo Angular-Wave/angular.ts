@@ -249,7 +249,8 @@ describe("ngView", () => {
     it("initial view should be compiled if the view is empty", async () => {
       const content = "inner content";
       scope.content = content;
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
 
       $state.transitionTo(gState);
       await wait(100);
@@ -260,7 +261,8 @@ describe("ngView", () => {
     it("initial view should be put back after removal of the view", async () => {
       const content = "inner content";
       scope.content = content;
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
 
       $state.go(hState);
       await wait(100);
@@ -924,7 +926,8 @@ describe("ngView transclusion", () => {
     scope.$on("directiveDestroyed", () => {
       aliveCount--;
     });
-    elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+    elem.innerHTML = "<div><ng-view></ng-view></div>";
+    $compile(elem)(scope);
     $state.transitionTo("a.b");
     await wait(100);
     expect(aliveCount).toBe(0);

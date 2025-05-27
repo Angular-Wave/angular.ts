@@ -101,7 +101,7 @@ export class NgModelController {
         getOption(name: string): string | boolean | number | {
             [x: string]: number;
         };
-        createChild(options: ModelOptionsConfig): any;
+        createChild(options: ModelOptionsConfig): /*elided*/ any;
     };
     $$updateEvents: string;
     $$updateEventHandler(ev: any): void;
@@ -110,7 +110,7 @@ export class NgModelController {
     /** @type {import("../../core/parse/parse").CompiledExpression|((Scope) => any)} */
     $$ngModelGet: any | ((Scope: any) => any);
     $$ngModelSet: (arg0: any, arg1: any) => any;
-    $$pendingDebounce: NodeJS.Timeout;
+    $$pendingDebounce: number;
     $$parserValid: boolean;
     /** @type {string} */
     $$parserName: string;
