@@ -1,5 +1,5 @@
 import { isDefined, isFunction, isObject } from "../../shared/utils.js";
-import { ASTType } from "./ast-type";
+import { ASTType } from "./ast-type.js";
 
 export const PURITY_ABSOLUTE = 1;
 export const PURITY_RELATIVE = 2;
