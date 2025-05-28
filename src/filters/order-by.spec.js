@@ -592,8 +592,6 @@ describe("Filter: orderBy", () => {
       });
 
       it("should ignore the `toString()` inherited from `Object`", () => {
-        /* globals toString: true */
-
         // The global `toString` variable (in 'src/Angular.js')
         // has already captured `Object.prototype.toString`
         const originalToString = toString;

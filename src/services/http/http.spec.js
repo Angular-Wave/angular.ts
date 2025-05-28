@@ -1730,8 +1730,7 @@ describe("$http", function () {
 //       });
 //     });
 
-//     describe("response headers parser", () => {
-//       /* global parseHeaders: false */
+//     describe("response headers parser", () =>
 
 //       it("should parse basic", () => {
 //         const parsed = parseHeaders(

@@ -34,7 +34,6 @@ describe("$location", () => {
   });
 
   describe("File Protocol", () => {
-    /* global urlParsingNode: true */
     let urlParsingNodePlaceholder;
     let urlParsingNode;
 
@@ -3371,7 +3370,6 @@ describe("$location", () => {
   //       $sniffer,
   //       $$taskTrackerFactory,
   //     ) {
-  //       /* global Browser: false */
   //       browser = new Browser(
   //         $window,
   //

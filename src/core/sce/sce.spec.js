@@ -274,7 +274,6 @@ describe("SCE", () => {
     });
 
     describe("adjustMatcher", () => {
-      /* global adjustMatcher: false */
       it("should rewrite regex into regex and add ^ & $ on either end", () => {
         expect(adjustMatcher(/a.*b/).exec("a.b")).not.toBeNull();
         expect(adjustMatcher(/a.*b/).exec("-a.b-")).toBeNull();

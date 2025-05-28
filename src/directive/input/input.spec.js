@@ -2858,7 +2858,6 @@ describe("input", () => {
       });
 
       describe("EMAIL_REGEXP", () => {
-        /* global EMAIL_REGEXP: false */
         it("should validate email", () => {
           /* basic functionality */
           expect(EMAIL_REGEXP.test("a@b.com")).toBe(true);
@@ -3143,7 +3142,6 @@ describe("input", () => {
             const url = item;
             const valid = item[1];
 
-            /* global URL_REGEXP: false */
             expect(URL_REGEXP.test(url)).toBe(valid);
           });
         });

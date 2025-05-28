@@ -346,7 +346,6 @@ describe("$httpBackend", () => {
   //   });
 
   // it("should convert 0 to 404 if no content - relative url", () => {
-  //   /* global urlParsingNode: true */
   //   const originalUrlParsingNode = urlParsingNode;
 
   //   // temporarily overriding the DOM element to pretend that the test runs origin with file:// protocol
