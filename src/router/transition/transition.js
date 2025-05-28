@@ -73,6 +73,7 @@ export class Transition {
     );
     this.$id = transitionService._transitionCount++;
     const toPath = PathUtils.buildToPath(fromPath, targetState);
+    debugger;
     this._treeChanges = PathUtils.treeChanges(
       fromPath,
       toPath,
@@ -323,18 +324,18 @@ export class Transition {
    * @param state the state in the "to path" which should receive the new resolve (otherwise, the root state)
    */
   addResolvable(resolvable, state) {
+    if (state === void 0) {
+      state = "";
+    }
     resolvable = is(Resolvable)(resolvable)
       ? resolvable
       : new Resolvable(resolvable);
-
     const stateName = typeof state === "string" ? state : state.name;
     const topath = this._treeChanges.to;
-    /** @type {import('../path/path-node').PathNode} */
     const targetNode = find(topath, (node) => {
       return node.state.name === stateName;
     });
     assert(!!targetNode, `targetNode not found ${stateName}`);
-
     const resolveContext = new ResolveContext(topath);
     resolveContext.addResolvables([resolvable], targetNode.state);
   }

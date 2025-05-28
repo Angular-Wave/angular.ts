@@ -93,11 +93,7 @@ function getParamsBuilder(paramFactory) {
 }
 
 function pathBuilder(state) {
-  if (state.parent && !state.abstract) {
-    return state.parent.path.concat(state);
-  } else {
-    return [state];
-  }
+  return state.parent ? state.parent.path.concat(state) : [state];
 }
 
 function includesBuilder(state) {
