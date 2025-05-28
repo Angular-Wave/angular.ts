@@ -1,4 +1,4 @@
-import { urlResolve } from "../url-utils/url-utils";
+import { urlResolve } from "../url-utils/url-utils.js";
 import {
   encodeUriSegment,
   isBoolean,

@@ -1,5 +1,5 @@
-import { isDate, isFunction, isRegExp, isString } from "./utils";
-import { all, curry } from "./hof";
+import { isDate, isFunction, isRegExp, isString } from "./utils.js";
+import { all, curry } from "./hof.js";
 
 export function equals(o1, o2) {
   if (o1 === o2) return true;

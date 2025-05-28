@@ -1,4 +1,4 @@
-import { urlIsAllowedOriginFactory } from "../../core/url-utils/url-utils";
+import { urlIsAllowedOriginFactory } from "../../core/url-utils/url-utils.js";
 import {
   minErr,
   isObject,
@@ -20,7 +20,7 @@ import {
   uppercase,
   isPromiseLike,
 } from "../../shared/utils.js";
-import { getCookies } from "../cookie-reader";
+import { getCookies } from "../cookie-reader.js";
 
 const APPLICATION_JSON = "application/json";
 const CONTENT_TYPE_APPLICATION_JSON = {

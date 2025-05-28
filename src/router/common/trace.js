@@ -32,7 +32,7 @@
  *
  * @packageDocumentation
  */
-import { parse } from "../../shared/hof";
+import { parse } from "../../shared/hof.js";
 import { isNumber } from "../../shared/utils.js";
 import {
   stringify,

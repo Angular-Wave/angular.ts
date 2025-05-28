@@ -1,4 +1,9 @@
-import { minErr, isDefined, toDebugString, errorHandlingConfig } from "./utils";
+import {
+  minErr,
+  isDefined,
+  toDebugString,
+  errorHandlingConfig,
+} from "./utils.js";
 
 describe("errors", () => {
   afterEach(() => {});

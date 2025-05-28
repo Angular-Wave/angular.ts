@@ -1,4 +1,4 @@
-import { UrlMatcher } from "./url-matcher";
+import { UrlMatcher } from "./url-matcher.js";
 import {
   isString,
   isFunction,
@@ -6,8 +6,8 @@ import {
   isUndefined,
   assert,
 } from "../../shared/utils.js";
-import { is, or, pattern } from "../../shared/hof";
-import { StateObject } from "../state/state-object";
+import { is, or, pattern } from "../../shared/hof.js";
+import { StateObject } from "../state/state-object.js";
 /**
  * Creates a [[UrlRule]]
  *

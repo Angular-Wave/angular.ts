@@ -2,7 +2,7 @@ import {
   urlIsSameOrigin,
   urlIsSameOriginAsBaseUrl,
   urlResolve,
-} from "./../url-utils/url-utils";
+} from "./../url-utils/url-utils.js";
 import {
   isFunction,
   isRegExp,

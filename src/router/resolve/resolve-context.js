@@ -1,9 +1,9 @@
 import { find, tail, uniqR, unnestR } from "../../shared/common.js";
 import { propEq } from "../../shared/hof.js";
-import { trace } from "../common/trace";
-import { Resolvable } from "./resolvable";
-import { PathUtils } from "../path/path-utils";
-import { stringify } from "../../shared/strings";
+import { trace } from "../common/trace.js";
+import { Resolvable } from "./resolvable.js";
+import { PathUtils } from "../path/path-utils.js";
+import { stringify } from "../../shared/strings.js";
 import { isUndefined } from "../../shared/utils.js";
 
 export const resolvePolicies = {

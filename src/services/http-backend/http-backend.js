@@ -1,4 +1,4 @@
-import { urlResolve } from "../../core/url-utils/url-utils";
+import { urlResolve } from "../../core/url-utils/url-utils.js";
 import { isDefined, isPromiseLike, isUndefined } from "../../shared/utils.js";
 
 /**
