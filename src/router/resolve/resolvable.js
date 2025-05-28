@@ -1,7 +1,12 @@
-import { assert, isFunction, isObject } from "../../shared/utils.js";
-import { trace } from "../common/trace";
-import { stringify } from "../../shared/strings";
-import { isNullOrUndefined } from "../../shared/predicates";
+import {
+  assert,
+  isFunction,
+  isObject,
+  isNullOrUndefined,
+} from "../../shared/utils.js";
+import { trace } from "../common/trace.js";
+import { stringify } from "../../shared/strings.js";
+
 // TODO: explicitly make this user configurable
 export let defaultResolvePolicy = {
   when: "LAZY",

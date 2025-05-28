@@ -1,4 +1,3 @@
-import { isNull } from "../../shared/predicates.js";
 import {
   isUndefined,
   nextUid,
@@ -8,6 +7,7 @@ import {
   assert,
   isString,
   isDefined,
+  isNull,
 } from "../../shared/utils.js";
 import { ASTType } from "../parse/ast-type.js";
 

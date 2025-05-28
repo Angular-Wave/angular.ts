@@ -116,6 +116,26 @@ export function isString(value) {
 }
 
 /**
+ * Determines if a reference is a null.
+ *
+ * @param {*} value Reference to check.
+ * @returns {boolean} True if `value` is a null.
+ */
+export function isNull(value) {
+  return value === null;
+}
+
+/**
+ * Determines if a reference is null or undefined.
+ *
+ * @param {*} obj Reference to check.
+ * @returns {boolean} True if `value` is null or undefined.
+ */
+export function isNullOrUndefined(obj) {
+  return obj === null && typeof obj === "undefined";
+}
+
+/**
  * Determines if a reference is a `Number`.
  *
  * This includes the "special" numbers `NaN`, `+Infinity` and `-Infinity`.

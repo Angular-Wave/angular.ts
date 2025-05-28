@@ -1,6 +1,5 @@
 import { equals, inherit, map, pick } from "../../shared/common.js";
-import { isNullOrUndefined } from "../../shared/predicates.js";
-import { isDefined } from "../../shared/utils.js";
+import { isDefined, isNullOrUndefined } from "../../shared/utils.js";
 import { is } from "../../shared/hof.js";
 import { ParamType } from "./param-type.js";
 /**

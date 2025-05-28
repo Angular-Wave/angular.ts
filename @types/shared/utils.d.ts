@@ -58,6 +58,20 @@ export function isBlankObject(value: any): boolean;
  */
 export function isString(value: any): boolean;
 /**
+ * Determines if a reference is a null.
+ *
+ * @param {*} value Reference to check.
+ * @returns {boolean} True if `value` is a null.
+ */
+export function isNull(value: any): boolean;
+/**
+ * Determines if a reference is null or undefined.
+ *
+ * @param {*} obj Reference to check.
+ * @returns {boolean} True if `value` is null or undefined.
+ */
+export function isNullOrUndefined(obj: any): boolean;
+/**
  * Determines if a reference is a `Number`.
  *
  * This includes the "special" numbers `NaN`, `+Infinity` and `-Infinity`.

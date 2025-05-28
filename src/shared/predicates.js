@@ -1,10 +1,5 @@
-import { isFunction, isString } from "./utils";
+import { isFunction, isString } from "./utils.js";
 
-// TODO MOVE THESE TO UTILS
-export const isNull = (o) => o === null;
-export function isNullOrUndefined(obj) {
-  return obj === null && typeof obj === "undefined";
-}
 /**
  * Predicate which checks if a value is injectable
  *

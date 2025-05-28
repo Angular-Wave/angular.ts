@@ -73,7 +73,6 @@ export class Transition {
     );
     this.$id = transitionService._transitionCount++;
     const toPath = PathUtils.buildToPath(fromPath, targetState);
-    debugger;
     this._treeChanges = PathUtils.treeChanges(
       fromPath,
       toPath,

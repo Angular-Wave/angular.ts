@@ -1,4 +1,3 @@
-export function isNullOrUndefined(obj: any): boolean;
 /**
  * Predicate which checks if a value is injectable
  *
@@ -16,4 +15,3 @@ export function isInjectable(val: any): boolean;
  * @returns {boolean}
  */
 export function isPromise(obj: any): boolean;
-export function isNull(o: any): boolean;

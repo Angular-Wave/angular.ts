@@ -1,6 +1,5 @@
 import { isProxy } from "../../core/scope/scope.js";
-import { isNull } from "../../shared/predicates.js";
-import { isUndefined, stringify } from "../../shared/utils.js";
+import { isUndefined, stringify, isNull } from "../../shared/utils.js";
 
 /**
  * @returns {import('../../types.js').Directive}

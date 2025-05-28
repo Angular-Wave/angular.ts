@@ -1,5 +1,11 @@
-import { isInjectable, isNull, isPromise } from "./predicates.js";
-import { isUndefined, isFunction, isString, isObject } from "./utils.js";
+import { isInjectable, isPromise } from "./predicates.js";
+import {
+  isUndefined,
+  isFunction,
+  isNull,
+  isString,
+  isObject,
+} from "./utils.js";
 import { pushR, tail } from "./common.js";
 import { pattern, val } from "./hof.js";
 
