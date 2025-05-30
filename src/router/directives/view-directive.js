@@ -12,6 +12,7 @@ import {
   setCacheData,
 } from "../../shared/dom.js";
 import { getLocals } from "../state/state-registry.js";
+
 /**
  * `ng-view`: A viewport directive which is filled in by a view from the active state.
  *
@@ -166,7 +167,7 @@ export let ngView = [
       terminal: true,
       priority: 400,
       transclude: "element",
-      compile: function (tElement, tAttrs, $transclude) {
+      compile: function (_tElement, _tAttrs, $transclude) {
         return function (scope, $element, attrs) {
           const onloadExp = attrs["onload"] || "",
             autoScrollExp = attrs["autoscroll"],
@@ -302,7 +303,6 @@ export function $ViewDirectiveFill($compile, $controller, $transitions) {
     compile: function (tElement) {
       const initial = tElement.innerHTML;
       dealoc(tElement, true);
-
       return function (scope, $element) {
         const data = getCacheData($element, "$ngView");
         if (!data) {

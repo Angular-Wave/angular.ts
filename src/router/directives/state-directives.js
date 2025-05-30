@@ -143,11 +143,18 @@ export function $StateRefDirective(
         ? scope.$eval(attrs.ngSrefOpts)
         : {};
       function update() {
+        // TODO this update used to happen inside a digest watche
+        rawDef.ngStateParams = Object.assign({}, scope.$eval(ref.paramExpr));
         const def = getDef();
-        if (unlinkInfoFn) unlinkInfoFn();
-        if (active)
+        if (unlinkInfoFn) {
+          unlinkInfoFn();
+        }
+        if (active) {
           unlinkInfoFn = active.$$addStateInfo(def.ngState, def.ngStateParams);
-        if (def.href != null) attrs.$set(type.attr, def.href);
+        }
+        if (def.href != null) {
+          attrs.$set(type.attr, def.href);
+        }
       }
       if (ref.paramExpr) {
         scope.$watch(
@@ -197,10 +204,16 @@ export function $StateRefDynamicDirective(
       );
       function update() {
         const def = getDef();
-        if (unlinkInfoFn) unlinkInfoFn();
-        if (active)
+
+        if (unlinkInfoFn) {
+          unlinkInfoFn();
+        }
+        if (active) {
           unlinkInfoFn = active.$$addStateInfo(def.ngState, def.ngStateParams);
-        if (def.href != null) attrs.$set(type.attr, def.href);
+        }
+        if (def.href != null) {
+          attrs.$set(type.attr, def.href);
+        }
       }
       inputAttrs.forEach((field) => {
         rawDef[field] = attrs[field] ? scope.$eval(attrs[field]) : null;

@@ -618,8 +618,7 @@ export class Transition {
       // Wait to build the RUN hook chain until the BEFORE hooks are done
       // This allows a BEFORE hook to dynamically add additional RUN hooks via the Transition object.
       const allRunHooks = getHooksFor(TransitionHookPhase.RUN);
-      const done = () => Promise.resolve(undefined);
-      return TransitionHook.invokeHooks(allRunHooks, done);
+      return TransitionHook.invokeHooks(allRunHooks, () => Promise.resolve());
     };
     const startTransition = () => {
       const globals = this.globals;
@@ -627,7 +626,7 @@ export class Transition {
       globals.transition = this;
       globals.transitionHistory.enqueue(this);
       trace.traceTransitionStart(this);
-      return Promise.resolve(undefined);
+      return Promise.resolve();
     };
     const allBeforeHooks = getHooksFor(TransitionHookPhase.BEFORE);
     TransitionHook.invokeHooks(allBeforeHooks, startTransition)

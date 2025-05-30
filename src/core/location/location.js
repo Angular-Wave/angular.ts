@@ -685,71 +685,75 @@ export class LocationProvider {
         }
       }
 
-      $rootElement.addEventListener("click", (event) => {
-        const rewriteLinks = this.getHtml5Mode().rewriteLinks;
-        // TODO(vojta): rewrite link when opening in new tab/window (in legacy browser)
-        // currently we open nice url link and redirect then
+      $rootElement.addEventListener(
+        "click",
+        /** @param {MouseEvent} event */
+        (event) => {
+          const rewriteLinks = this.getHtml5Mode().rewriteLinks;
+          // TODO(vojta): rewrite link when opening in new tab/window (in legacy browser)
+          // currently we open nice url link and redirect then
 
-        if (
-          !rewriteLinks ||
-          event.ctrlKey ||
-          event.metaKey ||
-          event.shiftKey ||
-          event.which === 2 ||
-          event.button === 2
-        )
-          return;
-
-        let elm = event.target;
-
-        // traverse the DOM up to find first A tag
-        while (elm[0].nodeName.toLowerCase() !== "a") {
-          // ignore rewriting if no A tag (reached root element, or no parent - removed from document)
-          if (elm[0] === $rootElement[0] || !(elm = elm.parentElement)[0])
+          if (
+            !rewriteLinks ||
+            event.ctrlKey ||
+            event.metaKey ||
+            event.shiftKey ||
+            event.which === 2 ||
+            event.button === 2
+          ) {
             return;
-        }
-
-        if (
-          isString(rewriteLinks) &&
-          isUndefined(elm.getAttribute(rewriteLinks))
-        )
-          return;
-
-        let absHref = elm[0].href;
-        // get the actual href attribute - see
-        // http://msdn.microsoft.com/en-us/library/ie/dd347148(v=vs.85).aspx
-        const relHref =
-          elm.getAttribute("href") || elm.getAttribute("xlink:href");
-
-        if (
-          isObject(absHref) &&
-          absHref.toString() === "[object SVGAnimatedString]"
-        ) {
-          // SVGAnimatedString.animVal should be identical to SVGAnimatedString.baseVal, unless during
-          // an animation.
-          absHref = urlResolve(absHref.animVal).href;
-        }
-
-        // Ignore when url is started with javascript: or mailto:
-        if (IGNORE_URI_REGEXP.test(absHref)) return;
-
-        if (
-          absHref &&
-          !elm.getAttribute("target") &&
-          !event.isDefaultPrevented()
-        ) {
-          if ($location.$$parseLinkUrl(absHref, relHref)) {
-            // We do a preventDefault for all urls that are part of the AngularJS application,
-            // in html5mode and also without, so that we are able to abort navigation without
-            // getting double entries in the location history.
-            event.preventDefault();
-            // update location manually
-            // if ($location.absUrl() !== $browser.url()) {
-            //   $rootScope.$apply();
-            // }
           }
-        }
-      });
+          let elm = /** @type {HTMLAnchorElement} */ (event.target);
+
+          // traverse the DOM up to find first A tag
+          while (elm.nodeName.toLowerCase() !== "a") {
+            // ignore rewriting if no A tag (reached root element, or no parent - removed from document)
+            if (elm === $rootElement || !(elm = elm.parentElement)) return;
+          }
+
+          if (
+            isString(rewriteLinks) &&
+            isUndefined(elm.getAttribute(/** @type {string} */ (rewriteLinks)))
+          ) {
+            return;
+          }
+
+          let absHref = elm.href;
+          // get the actual href attribute - see
+          // http://msdn.microsoft.com/en-us/library/ie/dd347148(v=vs.85).aspx
+          const relHref =
+            elm.getAttribute("href") || elm.getAttribute("xlink:href");
+
+          if (
+            isObject(absHref) &&
+            absHref.toString() === "[object SVGAnimatedString]"
+          ) {
+            // SVGAnimatedString.animVal should be identical to SVGAnimatedString.baseVal, unless during
+            // an animation.
+            absHref = urlResolve(absHref.animVal).href;
+          }
+
+          // Ignore when url is started with javascript: or mailto:
+          if (IGNORE_URI_REGEXP.test(absHref)) return;
+
+          if (
+            absHref &&
+            !elm.getAttribute("target") &&
+            !event.defaultPrevented
+          ) {
+            if ($location.$$parseLinkUrl(absHref, relHref)) {
+              // We do a preventDefault for all urls that are part of the AngularJS application,
+              // in html5mode and also without, so that we are able to abort navigation without
+              // getting double entries in the location history.
+              event.preventDefault();
+              // update location manually
+              // if ($location.absUrl() !== $browser.url()) {
+              //   $rootScope.$apply();
+              // }
+            }
+          }
+        },
+      );
 
       // rewrite hashbang url <> html5 url
       if ($location.absUrl() !== initialUrl) {

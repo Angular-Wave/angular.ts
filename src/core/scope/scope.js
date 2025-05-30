@@ -801,8 +801,13 @@ export class Scope {
             keySet.push(prop.key.name);
             listener.property.push(key);
           } else {
-            keySet.push(prop.value.name);
-            listener.property.push(key);
+            if (prop.value.name) {
+              keySet.push(prop.value.name);
+              listener.property.push(key);
+            } else {
+              key = get.decoratedNode.body[0].expression.properties[0].key.name;
+              listener.property.push(key);
+            }
           }
         });
 

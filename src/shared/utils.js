@@ -132,7 +132,7 @@ export function isNull(value) {
  * @returns {boolean} True if `value` is null or undefined.
  */
 export function isNullOrUndefined(obj) {
-  return obj === null && typeof obj === "undefined";
+  return obj === null || typeof obj === "undefined";
 }
 
 /**
