@@ -8,6 +8,8 @@ import {
   isString,
   isDefined,
   isNull,
+  isProxy,
+  isProxySymbol,
 } from "../../shared/utils.js";
 import { ASTType } from "../parse/ast-type.js";
 
@@ -130,8 +132,6 @@ export function createScope(target = {}, context) {
  * @param {*} newValue - The new value of the changed property.
  * @param {Object} originalTarget - The original target object.
  */
-
-export const isProxySymbol = Symbol("isProxy");
 
 /**
  * Decorator for excluding objects from scope observability
@@ -1275,16 +1275,4 @@ function collectChildIds(child) {
     collectChildIds(c).forEach((id) => ids.add(id));
   });
   return ids;
-}
-
-/**
- *
- * @param {*} value
- * @returns {boolean}
- */
-export function isProxy(value) {
-  if (value && value[isProxySymbol]) {
-    return true;
-  }
-  return false;
 }

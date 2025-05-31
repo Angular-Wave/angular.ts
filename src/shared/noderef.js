@@ -109,6 +109,8 @@ export class NodeRef {
     } else {
       this._element = undefined;
     }
+    // this._nodes = undefined;
+    // this.isList = false;
   }
 
   /** @param {Array<Node>} nodes */
@@ -127,10 +129,9 @@ export class NodeRef {
     return this._nodes;
   }
 
-  /** @returns {NodeList} */
+  /** @returns {NodeList|Node[]} */
   get nodelist() {
     assertArg(this.isList, "nodes");
-    // assertArg(this._nodes.length, "node list cannot be empty");
     if (this._nodes.length === 0) {
       return this._nodes;
     }
@@ -145,7 +146,7 @@ export class NodeRef {
     }
   }
 
-  /** @returns {Element | Node | ChildNode | NodeList} */
+  /** @returns {Element | Node | ChildNode | NodeList | Node[]} */
   get dom() {
     if (this.isList) return this.nodelist;
     else return this.node;

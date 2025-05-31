@@ -34,13 +34,13 @@ import {
   simpleCompare,
   isError,
   directiveNormalize,
+  isProxy,
 } from "../../shared/utils.js";
 import { SCE_CONTEXTS } from "../sce/sce.js";
 import { PREFIX_REGEXP } from "../../shared/constants.js";
 import { createEventDirective } from "../../directive/events/events.js";
 import { Attributes } from "./attributes.js";
 import { ngObserveDirective } from "../../directive/observe/observe.js";
-import { isProxy } from "../scope/scope.js";
 
 /**
  * A function passed as the fifth argument to a {@type PublicLinkFn} link function.

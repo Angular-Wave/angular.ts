@@ -1,4 +1,10 @@
 /**
+ *
+ * @param {*} value
+ * @returns {boolean}
+ */
+export function isProxy(value: any): boolean;
+/**
  * @returns {number} an unique alpha-numeric string
  */
 export function nextUid(): number;
@@ -528,6 +534,7 @@ export function isObjectEmpty(obj: any | null | undefined): boolean;
  * @param {HTMLElement} newElem - The element providing the new attributes and content.
  */
 export function replaceInline(replacedElem: HTMLElement, newElem: HTMLElement): void;
+export const isProxySymbol: unique symbol;
 export const ngAttrPrefixes: string[];
 /**
  * Error configuration object. May only contain the options that need to be updated.

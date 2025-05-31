@@ -3,7 +3,6 @@ import { isString, isObject } from "../../shared/utils.js";
 import { parse } from "../../shared/hof.js";
 import { getInheritedData } from "../../shared/dom.js";
 
-/** @ignore */
 function parseStateRef(ref) {
   const paramsOnly = ref.match(/^\s*({[^}]*})\s*$/);
   if (paramsOnly) ref = "(" + paramsOnly[1] + ")";
@@ -15,14 +14,12 @@ function parseStateRef(ref) {
   return { state: parsed[1] || null, paramExpr: parsed[3] || null };
 }
 
-/** @ignore */
 function stateContext(el) {
-  const $ngView = getInheritedData(el.parentElement, "$ngView");
+  const $ngView = getInheritedData(el, "$ngView");
   const path = parse("$cfg.path")($ngView);
   return path ? tail(path).state.name : undefined;
 }
 
-/** @ignore */
 function processedDef($state, $element, def) {
   const ngState = def.ngState || $state.current.name;
   const ngStateOpts = Object.assign(
@@ -33,7 +30,6 @@ function processedDef($state, $element, def) {
   return { ngState, ngStateParams: def.ngStateParams, ngStateOpts, href };
 }
 
-/** @ignore */
 function getTypeInfo(el) {
   // SVGAElement does not use the href attribute, but rather the 'xlinkHref' attribute.
   const isSvg =
@@ -47,7 +43,6 @@ function getTypeInfo(el) {
   };
 }
 
-/** @ignore */
 function clickHook(el, $state, type, getDef, scope) {
   return function (e) {
     const button = e.which || e.button,
@@ -88,7 +83,6 @@ function clickHook(el, $state, type, getDef, scope) {
   };
 }
 
-/** @ignore */
 function defaultOpts(el, $state) {
   return {
     relative: stateContext(el) || $state.$current,
@@ -97,7 +91,6 @@ function defaultOpts(el, $state) {
   };
 }
 
-/** @ignore */
 function bindEvents(element, scope, hookFn, ngStateOpts) {
   let events;
   if (ngStateOpts) {
@@ -142,6 +135,7 @@ export function $StateRefDirective(
       rawDef.ngStateOpts = attrs.ngSrefOpts
         ? scope.$eval(attrs.ngSrefOpts)
         : {};
+
       function update() {
         // TODO this update used to happen inside a digest watche
         rawDef.ngStateParams = Object.assign({}, scope.$eval(ref.paramExpr));
@@ -156,6 +150,7 @@ export function $StateRefDirective(
           attrs.$set(type.attr, def.href);
         }
       }
+
       if (ref.paramExpr) {
         scope.$watch(
           ref.paramExpr,
@@ -167,12 +162,19 @@ export function $StateRefDirective(
         );
         rawDef.ngStateParams = Object.assign({}, scope.$eval(ref.paramExpr));
       }
+
       update();
       scope.$on("$destroy", $stateRegistry.onStatesChanged(update));
       scope.$on("$destroy", $transitions.onSuccess({}, update));
-      if (!type.clickable) return;
-      const hookFn = clickHook(element, $state, type, getDef, scope);
-      bindEvents(element, scope, hookFn, rawDef.ngStateOpts);
+      if (!type.clickable) {
+        return;
+      }
+      bindEvents(
+        element,
+        scope,
+        clickHook(element, $state, type, getDef, scope),
+        rawDef.ngStateOpts,
+      );
     },
   };
 }

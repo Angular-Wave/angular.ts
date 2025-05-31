@@ -8,9 +8,9 @@ import {
   trim,
   directiveNormalize,
   hasAnimate,
+  isProxy,
 } from "../../shared/utils.js";
 import { ALIASED_ATTR } from "../../shared/constants.js";
-import { isProxy } from "../scope/scope.js";
 
 const $compileMinErr = minErr("$compile");
 const SIMPLE_ATTR_NAME = /^\w/;

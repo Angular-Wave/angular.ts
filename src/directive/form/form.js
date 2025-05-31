@@ -7,6 +7,7 @@ import {
   extend,
   isUndefined,
   isObjectEmpty,
+  isProxy,
 } from "../../shared/utils.js";
 import {
   PRISTINE_CLASS,
@@ -14,7 +15,6 @@ import {
   VALID_CLASS,
   INVALID_CLASS,
 } from "../../shared/constants.js";
-import { isProxy } from "../../core/scope/scope.js";
 
 export const nullFormCtrl = {
   $nonscope: true,

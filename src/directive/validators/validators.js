@@ -4,10 +4,10 @@ import {
   toInt,
   minErr,
   isUndefined,
+  isProxy,
 } from "../../shared/utils.js";
 import { REGEX_STRING_REGEXP } from "./../attrs/attrs.js";
 import { startingTag } from "../../shared/dom.js";
-import { isProxy } from "../../core/scope/scope.js";
 
 /**
  *

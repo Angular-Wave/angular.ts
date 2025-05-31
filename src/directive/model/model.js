@@ -19,11 +19,11 @@ import {
   isBoolean,
   snakeCase,
   isObjectEmpty,
+  isProxy,
 } from "../../shared/utils.js";
 import { nullFormCtrl, PENDING_CLASS } from "../form/form.js";
 import { defaultModelOptions } from "../model-options/model-options.js";
 import { startingTag } from "../../shared/dom.js";
-import { isProxy } from "../../core/scope/scope.js";
 
 export const ngModelMinErr = minErr("ngModel");
 

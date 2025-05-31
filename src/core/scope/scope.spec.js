@@ -1,8 +1,8 @@
 import { wait } from "../../shared/test-utils.js";
-import { $postUpdateQueue, createScope, isProxy } from "./scope.js";
+import { $postUpdateQueue, createScope } from "./scope.js";
 import { Angular } from "../../loader.js";
 import { createInjector } from "../di/injector.js";
-import { isDefined, sliceArgs } from "../../shared/utils.js";
+import { isDefined, sliceArgs, isProxy } from "../../shared/utils.js";
 
 describe("Scope", () => {
   let scope;
@@ -1069,6 +1069,17 @@ describe("Scope", () => {
         await wait();
 
         expect(scope.counter).toBe(2);
+
+        scope.someValue = { a: 3 };
+        await wait();
+
+        expect(scope.counter).toBe(3);
+
+        // Should not trigger as we are updating the inner object and we are not listening on its property
+        scope.someValue.a = 4;
+        await wait();
+
+        expect(scope.counter).toBe(3);
       });
 
       it("calls the listener function registered via expression when a value is created as an object", async () => {

@@ -221,7 +221,7 @@ export const ngOptionsDirective = [
     /**
      *
      * @param {import("../../core/scope/scope.js").Scope} scope
-     * @param {Element} selectElement
+     * @param {HTMLSelectElement} selectElement
      * @param {*} attr
      * @param {*} ctrls
      */
@@ -237,9 +237,9 @@ export const ngOptionsDirective = [
         i < ii;
         i++
       ) {
-        if (children[i].value === "") {
+        if (/** @type {HTMLOptionElement} */ (children[i]).value === "") {
           selectCtrl.hasEmptyOption = true;
-          selectCtrl.emptyOption = children.eq(i);
+          selectCtrl.emptyOption = children[i];
           break;
         }
       }

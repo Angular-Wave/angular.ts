@@ -1,5 +1,18 @@
 import { PREFIX_REGEXP, SPECIAL_CHARS_REGEXP } from "./constants.js";
-import { isProxy } from "../core/scope/scope.js";
+
+export const isProxySymbol = Symbol("isProxy");
+
+/**
+ *
+ * @param {*} value
+ * @returns {boolean}
+ */
+export function isProxy(value) {
+  if (value && value[isProxySymbol]) {
+    return true;
+  }
+  return false;
+}
 
 const ngMinErr = minErr("ng");
 

@@ -137,5 +137,5 @@ export let ngView: (string | (($view: any, $animate: any, $ngViewScroll: any, $i
     terminal: boolean;
     priority: number;
     transclude: string;
-    compile: (tElement: any, tAttrs: any, $transclude: any) => (scope: any, $element: any, attrs: any) => void;
+    compile: (_tElement: any, _tAttrs: any, $transclude: any) => (scope: any, $element: any, attrs: any) => void;
 }))[];

@@ -1,11 +1,3 @@
-// function animateFlush($animate) {
-//   if ($animate && $animate.flush) {
-//     $animate.flush(); // 1.4
-//   } else if ($animate && $animate.triggerCallbacks) {
-//     $animate.triggerCallbacks(); // 1.2-1.3
-//   }
-// }
-
 import { createElementFromHTML, dealoc } from "../../shared/dom.js";
 import { Angular } from "../../loader.js";
 import { wait } from "../../shared/test-utils.js";
@@ -497,8 +489,7 @@ describe("ngView", () => {
     expect($onInit).toHaveBeenCalled();
   });
 
-  // TargetNode not found error
-  xit("should default the template to a '<ng-view>'", async () => {
+  it("should default the template to a '<ng-view>'", async () => {
     $stateProvider.state({ name: "abstract", abstract: true });
     $stateProvider.state({ name: "abstract.foo", template: "hello" });
     elem.innerHTML = "<div><ng-view></ng-view></div>";
@@ -511,7 +502,7 @@ describe("ngView", () => {
 
   describe("play nicely with other directives", () => {
     // related to issue #857
-    xit("should work with ngIf", async () => {
+    it("should work with ngIf", async () => {
       scope.someBoolean = false;
       elem.innerHTML = '<div ng-if="someBoolean"><ng-view></ng-view></div>';
       $compile(elem)(scope);
@@ -561,7 +552,7 @@ describe("ngView", () => {
     });
 
     describe("working with ngRepeat", () => {
-      xit("should have correct number of ngViews", async () => {
+      it("should have correct number of ngViews", async () => {
         elem.innerHTML =
           '<div><ng-view ng-repeat="view in views" name="{{view}}"></ng-view></div>';
         $compile(elem)(scope);
@@ -596,7 +587,7 @@ describe("ngView", () => {
         );
       });
 
-      xit("should populate each view with content", async () => {
+      it("should populate each view with content", async () => {
         elem.innerHTML =
           '<div><ng-view ng-repeat="view in views" name="{{view}}">defaultcontent</ng-view></div>';
         $compile(elem)(scope);
@@ -621,7 +612,7 @@ describe("ngView", () => {
         expect(ngViews[2].textContent).toBe(lState.views.view3.template);
       });
 
-      xit("should interpolate ng-view names", async () => {
+      it("should interpolate ng-view names", async () => {
         elem.innerHTML =
           '<div ng-repeat="view in views">' +
           '<ng-view name="view{{$index + 1}}">hallo</ng-view>' +
@@ -857,7 +848,7 @@ describe("ngView named", () => {
   });
 
   // Test for https://github.com/angular-ui/ng-router/issues/3355
-  it("should target weird nested view setups using the view's simple name", async () => {
+  fit("should target weird nested view setups using the view's simple name", async () => {
     const tpl = `
       <div>
         <div ng-view="main">
@@ -868,13 +859,14 @@ describe("ngView named", () => {
         </div>
       </div>
     `;
-    const el = $compile(tpl)($rootScope);
+    elem.innerHTML = tpl;
+    $compile(elem)($rootScope);
 
     $state.go("test");
     await wait(100);
 
     expect($state.current.name).toBe("test");
-    expect(el.textContent.replace(/\s*/g, "")).toBe("MAIN-DEFAULT-TEST");
+    expect(elem.textContent.replace(/\s*/g, "")).toBe("MAIN-DEFAULT-TEST");
   });
 });
 
@@ -1860,7 +1852,7 @@ describe("angular 1.5+ style .component()", () => {
     });
 
     // TODO Invalid transition
-    xit("should load correct component when using componentProvider", async () => {
+    it("should load correct component when using componentProvider", async () => {
       $stateProvider.state({
         name: "dynamicComponent",
         url: "/dynamicComponent/:type",

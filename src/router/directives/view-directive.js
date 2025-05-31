@@ -1,5 +1,10 @@
 import { filter, tail, unnestR } from "../../shared/common.js";
-import { isDefined, isFunction, isString } from "../../shared/utils.js";
+import {
+  hasAnimate,
+  isDefined,
+  isFunction,
+  isString,
+} from "../../shared/utils.js";
 import { kebobString } from "../../shared/strings.js";
 import { parse } from "../../shared/hof.js";
 import { ResolveContext } from "../resolve/resolve-context.js";
@@ -147,7 +152,12 @@ export let ngView = [
     function getRenderer() {
       return {
         enter: function (element, target, cb) {
-          $animate.enter(element, null, target).then(cb);
+          if (hasAnimate(element)) {
+            $animate.enter(element, null, target).then(cb);
+          } else {
+            target.after(element);
+            cb();
+          }
         },
         leave: function (element, cb) {
           $animate.leave(element).then(cb);

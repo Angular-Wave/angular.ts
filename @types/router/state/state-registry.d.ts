@@ -29,7 +29,7 @@ export class StateRegistryProvider {
      * @private
      */
     private registerRoot;
-    _root: any;
+    _root: import("./state-object.js").StateObject;
     /**
      * Listen for a State Registry events
      *
@@ -70,7 +70,7 @@ export class StateRegistryProvider {
      *
      * @return the root [[StateObject]]
      */
-    root(): any;
+    root(): import("./state-object.js").StateObject;
     /**
      * Adds a state to the registry
      *
@@ -83,7 +83,7 @@ export class StateRegistryProvider {
      *          If the state was successfully registered, then the object is fully built (See: [[StateBuilder]]).
      *          If the state was only queued, then the object is not fully built.
      */
-    register(stateDefinition: any): any;
+    register(stateDefinition: any): import("./state-object.js").StateObject;
     _deregisterTree(state: any): any[];
     /**
      * Removes a state from the registry

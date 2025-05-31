@@ -31,10 +31,10 @@ export class NodeRef {
     set nodes(nodes: Array<Node>);
     /** @returns {Array<Node>} */
     get nodes(): Array<Node>;
-    /** @returns {NodeList} */
-    get nodelist(): NodeList;
-    /** @returns {Element | Node | ChildNode | NodeList} */
-    get dom(): Element | Node | ChildNode | NodeList;
+    /** @returns {NodeList|Node[]} */
+    get nodelist(): NodeList | Node[];
+    /** @returns {Element | Node | ChildNode | NodeList | Node[]} */
+    get dom(): Element | Node | ChildNode | NodeList | Node[];
     /** @returns {number} */
     get size(): number;
     /** @returns {Element | Node | ChildNode} */
