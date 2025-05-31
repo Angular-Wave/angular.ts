@@ -1,4 +1,4 @@
-import { getOrSetCacheData } from "../shared/dom.js";
+import { getOrSetCacheData, setCacheData } from "../shared/dom.js";
 import {
   isUndefined,
   isObject,
@@ -344,7 +344,7 @@ export function AnimateQueueProvider($animateProvider) {
             "parentElement",
             "not an element",
           );
-          element.data(NG_ANIMATE_PIN_DATA, parentElement);
+          setCacheData(element, NG_ANIMATE_PIN_DATA, parentElement);
         },
 
         push(element, event, options, domOperation) {

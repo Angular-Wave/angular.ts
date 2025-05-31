@@ -77,6 +77,14 @@ export function setCacheData(element: Element | Node, key: string, value?: any):
  */
 export function getCacheData(element: Element, key?: string): any;
 /**
+ * Deletes cache data for a given element for a particular key.
+ *
+ * @param {Element} element - The DOM element to delete data from.
+ * @param {string} key - The key (as a string) to delete.
+ * @returns void
+ */
+export function deleteCacheData(element: Element, key: string): void;
+/**
  * Gets scope for a given element.
  *
  * @param {Element} element - The DOM element to get data from.

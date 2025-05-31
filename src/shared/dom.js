@@ -357,6 +357,25 @@ export function getCacheData(element, key) {
 }
 
 /**
+ * Deletes cache data for a given element for a particular key.
+ *
+ * @param {Element} element - The DOM element to delete data from.
+ * @param {string} key - The key (as a string) to delete.
+ * @returns void
+ */
+export function deleteCacheData(element, key) {
+  if (!key) return;
+
+  if (elementAcceptsData(element)) {
+    const expandoStore = getExpando(element, false); // Don't create if it doesn't exist
+    const data = expandoStore?.data;
+
+    if (data && data.hasOwnProperty(kebabToCamel(key))) {
+      delete data[kebabToCamel(key)];
+    }
+  }
+}
+/**
  * Gets scope for a given element.
  *
  * @param {Element} element - The DOM element to get data from.

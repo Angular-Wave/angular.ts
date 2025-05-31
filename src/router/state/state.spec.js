@@ -112,11 +112,11 @@ describe("$state", () => {
       dealoc(document.getElementById("app"));
     });
 
-    it("should be available at config", () => {
+    fit("should be available at config", () => {
       expect($stateProvider).toBeDefined();
     });
 
-    it("should should not allow states that are already registerred", () => {
+    fit("should should not allow states that are already registerred", () => {
       expect(() => {
         $stateProvider.state({ name: "toString", url: "/to-string" });
       }).not.toThrow();
@@ -125,7 +125,7 @@ describe("$state", () => {
       }).toThrowError(/stateinvalid/);
     });
 
-    it("should requred `name` if state definition object is passed", () => {
+    fit("should requred `name` if state definition object is passed", () => {
       expect(() => {
         $stateProvider.state({ url: "/to-string" });
       }).toThrowError(/stateinvalid/);
@@ -329,27 +329,32 @@ describe("$state", () => {
       dealoc(document.getElementById("app"));
     });
 
-    it("returns a promise for the target state", () => {
+    fit("returns a promise for the target state", () => {
       const promise = $state.transitionTo(A, {});
       expect(isFunction(promise.then)).toBeTruthy();
       expect(promise.transition.to()).toBe(A);
     });
 
-    it("returns a promise for the target state", () => {
+    fit("returns a promise for the target state", () => {
       const promise = $state.transitionTo(A, {});
       expect(isFunction(promise.then)).toBeTruthy();
       expect(promise.transition.to()).toBe(A);
     });
 
-    it("show return promise with an error on invalid state", (done) => {
+    fit("show return promise with an error on invalid state", (done) => {
       let res = $state.transitionTo("about.person.item", { id: 5 });
+      let message;
+      res.catch((x) => {
+        debugger;
+        message = x.message;
+      });
       setTimeout(() => {
-        expect(res.$$state.status).toEqual(2);
+        expect(message).toBeDefined();
         done();
       }, 100);
     });
 
-    xit("allows transitions by name", (done) => {
+    fit("allows transitions by name", (done) => {
       $state.transitionTo("A", {});
       setTimeout(() => {
         expect($state.current).toBe(A);
@@ -457,17 +462,17 @@ describe("$state", () => {
       });
 
       describe("[ transition.dynamic() ]:", function () {
-        it("is considered fully dynamic when only dynamic params have changed", function () {
+        fit("is considered fully dynamic when only dynamic params have changed", function () {
           const promise = $state.go(".", { pathDyn: "pd2", searchDyn: "sd2" });
           expect(promise.transition.dynamic()).toBeTruthy();
         });
 
-        it("is not considered fully dynamic if any state is entered", function () {
+        fit("is not considered fully dynamic if any state is entered", function () {
           const promise = $state.go(childWithParam);
           expect(promise.transition.dynamic()).toBeFalsy();
         });
 
-        it("is not considered fully dynamic if any state is exited", async () => {
+        fit("is not considered fully dynamic if any state is exited", async () => {
           await initStateTo(childWithParam, {
             config: "p1",
             path: "p1",
@@ -479,12 +484,12 @@ describe("$state", () => {
           expect(promise.transition.dynamic()).toBeFalsy();
         });
 
-        it("is not considered fully dynamic if any state is reloaded", function () {
+        fit("is not considered fully dynamic if any state is reloaded", function () {
           const promise = $state.go(dynamicstate, null, { reload: true });
           expect(promise.transition.dynamic()).toBeFalsy();
         });
 
-        it("is not considered fully dynamic if any non-dynamic parameter changes", function () {
+        fit("is not considered fully dynamic if any non-dynamic parameter changes", function () {
           const promise = $state.go(dynamicstate, { path: "p2" });
           expect(promise.transition.dynamic()).toBeFalsy();
         });

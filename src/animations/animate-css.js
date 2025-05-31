@@ -1,4 +1,4 @@
-import { removeElementData } from "../shared//dom";
+import { getCacheData, removeElementData, setCacheData } from "../shared//dom";
 import { isDefined } from "../shared/utils.js";
 import {
   TRANSITION_DURATION_PROP,
@@ -625,7 +625,7 @@ export function AnimateCssProvider() {
           }
 
           // Cancel the fallback closing timeout and remove the timer data
-          const animationTimerData = element.data(ANIMATE_TIMER_KEY);
+          const animationTimerData = getCacheData(element, ANIMATE_TIMER_KEY);
           if (animationTimerData) {
             clearTimeout(animationTimerData[0].timer);
             removeElementData(element, ANIMATE_TIMER_KEY);
@@ -843,7 +843,8 @@ export function AnimateCssProvider() {
               maxDelayTime + CLOSING_TIME_BUFFER * maxDurationTime;
             const endTime = startTime + timerTime;
 
-            const animationsData = element.data(ANIMATE_TIMER_KEY) || [];
+            const animationsData =
+              getCacheData(element, ANIMATE_TIMER_KEY) || [];
             let setupFallbackTimer = true;
             if (animationsData.length) {
               const currentTimerData = animationsData[0];
@@ -862,7 +863,7 @@ export function AnimateCssProvider() {
                 expectedEndTime: endTime,
               };
               animationsData.push(close);
-              element.data(ANIMATE_TIMER_KEY, animationsData);
+              setCacheData(element, ANIMATE_TIMER_KEY, animationsData);
             }
 
             if (events.length) {
@@ -884,7 +885,7 @@ export function AnimateCssProvider() {
           }
 
           function onAnimationExpired() {
-            const animationsData = element.data(ANIMATE_TIMER_KEY);
+            const animationsData = getCacheData(element, ANIMATE_TIMER_KEY);
 
             // this will be false in the event that the element was
             // removed from the DOM (via a leave animation or something

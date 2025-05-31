@@ -229,7 +229,7 @@ export let ngView = [
             if (previousEl) {
               trace.traceUIViewEvent(
                 "Removing (previous) el",
-                previousEl.data("$ngView"),
+                getCacheData(previousEl, "$ngView"),
               );
               previousEl.remove();
               previousEl = null;
@@ -365,7 +365,8 @@ export function $ViewDirectiveFill($compile, $controller, $transitions) {
               .call($element.children)
               .filter((el) => el && el.tagName && tagRegexp.exec(el.tagName));
             return (
-              directiveEl && directiveEl.data(`$${cfg.component}Controller`)
+              directiveEl &&
+              getCacheData(directiveEl, `$${cfg.component}Controller`)
             );
           };
           const deregisterWatch = scope.$watch(

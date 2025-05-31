@@ -1,3 +1,4 @@
+import { deleteCacheData, getCacheData, setCacheData } from "../shared/dom.js";
 import { mergeClasses } from "../shared/utils.js";
 import {
   NG_ANIMATE_CLASSNAME,
@@ -16,15 +17,15 @@ export function AnimationProvider() {
   const drivers = (this.drivers = []);
 
   function setRunner(element, runner) {
-    element.data(RUNNER_STORAGE_KEY, runner);
+    setCacheData(element, RUNNER_STORAGE_KEY, runner);
   }
 
   function removeRunner(element) {
-    element.removeData(RUNNER_STORAGE_KEY);
+    deleteCacheData(element, RUNNER_STORAGE_KEY);
   }
 
   function getRunner(element) {
-    return element.data(RUNNER_STORAGE_KEY);
+    return getCacheData(element, RUNNER_STORAGE_KEY);
   }
 
   this.$get = [
@@ -174,7 +175,8 @@ export function AnimationProvider() {
         }
 
         if (isStructural) {
-          element.data(
+          setCacheData(
+            element,
             PREPARE_CLASSES_KEY,
             `ng-${event}${PREPARE_CLASS_SUFFIX}`,
           );
@@ -306,7 +308,10 @@ export function AnimationProvider() {
                 continue;
               }
 
-              const prepareClassName = element.data(PREPARE_CLASSES_KEY);
+              const prepareClassName = getCacheData(
+                element,
+                PREPARE_CLASSES_KEY,
+              );
               if (prepareClassName) {
                 element.classList.add(prepareClassName);
               }
@@ -459,7 +464,7 @@ export function AnimationProvider() {
           tempClasses =
             (tempClasses ? `${tempClasses} ` : "") + NG_ANIMATE_CLASSNAME;
           element.className += ` ${tempClasses}`;
-          let prepareClassName = element.data(PREPARE_CLASSES_KEY);
+          let prepareClassName = getCacheData(element, PREPARE_CLASSES_KEY);
           if (prepareClassName) {
             element.classList.remove(prepareClassName);
             prepareClassName = null;
