@@ -1,4 +1,8 @@
-/** An object for Transition Hook Phases */
+/**
+ * An object for Transition Hook Phases
+ * @enum {number}
+ * @readonly
+ */
 export const TransitionHookPhase = {
   CREATE: 0,
   BEFORE: 1,

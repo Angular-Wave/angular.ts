@@ -14,7 +14,11 @@
 export class HookBuilder {
     constructor(transition: any);
     transition: any;
-    buildHooksForPhase(phase: any): any;
+    /**
+     * @param {TransitionHookPhase} phase
+     * @returns
+     */
+    buildHooksForPhase(phase: TransitionHookPhase): any;
     /**
      * Returns an array of newly built TransitionHook objects.
      *
@@ -38,3 +42,4 @@ export class HookBuilder {
      */
     getMatchingHooks(hookType: any, treeChanges: any, transition: any): any;
 }
+import { TransitionHookPhase } from "./interface.js";

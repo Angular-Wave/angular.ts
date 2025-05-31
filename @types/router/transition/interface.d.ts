@@ -1,3 +1,7 @@
+/**
+ * *
+ */
+export type TransitionHookPhase = number;
 export namespace TransitionHookPhase {
     let CREATE: number;
     let BEFORE: number;

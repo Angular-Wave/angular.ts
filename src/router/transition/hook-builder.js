@@ -18,14 +18,19 @@ export class HookBuilder {
   constructor(transition) {
     this.transition = transition;
   }
+
+  /**
+   * @param {TransitionHookPhase} phase
+   * @returns
+   */
   buildHooksForPhase(phase) {
-    const $transitions = this.transition.transitionService;
-    return $transitions._pluginapi
+    return this.transition.transitionService._pluginapi
       ._getEvents(phase)
       .map((type) => this.buildHooks(type))
       .reduce(unnestR, [])
       .filter(Boolean);
   }
+
   /**
    * Returns an array of newly built TransitionHook objects.
    *

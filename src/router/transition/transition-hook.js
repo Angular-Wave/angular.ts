@@ -57,9 +57,9 @@ export class TransitionHook {
       const hookResult = hooks[idx].invokeHook();
       if (isPromise(hookResult)) {
         const remainingHooks = hooks.slice(idx + 1);
-        return TransitionHook.chain(remainingHooks, hookResult).then(
-          doneCallback,
-        );
+        return TransitionHook.chain(remainingHooks, hookResult).then(() => {
+          doneCallback();
+        });
       }
     }
     return doneCallback();

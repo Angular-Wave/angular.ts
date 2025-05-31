@@ -597,7 +597,6 @@ export class Transition {
    * @returns a promise for a successful transition.
    */
   run() {
-    const runAllHooks = TransitionHook.runAllHooks;
     // Gets transition hooks array for the given phase
     const getHooksFor = (phase) => this._hookBuilder.buildHooksForPhase(phase);
     // When the chain is complete, then resolve or reject the deferred
@@ -605,20 +604,29 @@ export class Transition {
       trace.traceSuccess(this.$to(), this);
       this.success = true;
       this._deferred.resolve(this.to());
-      runAllHooks(getHooksFor(TransitionHookPhase.SUCCESS));
+      const hooks = this._hookBuilder.buildHooksForPhase(
+        TransitionHookPhase.SUCCESS,
+      );
+      hooks.forEach((hook) => {
+        hook.invokeHook();
+      });
     };
+
     const transitionError = (reason) => {
       trace.traceError(reason, this);
       this.success = false;
       this._deferred.reject(reason);
       this._error = reason;
-      runAllHooks(getHooksFor(TransitionHookPhase.ERROR));
+      const hooks = getHooksFor(TransitionHookPhase.ERROR);
+      hooks.forEach((hook) => hook.invokeHook());
     };
+
     const runTransition = () => {
       // Wait to build the RUN hook chain until the BEFORE hooks are done
       // This allows a BEFORE hook to dynamically add additional RUN hooks via the Transition object.
       const allRunHooks = getHooksFor(TransitionHookPhase.RUN);
-      return TransitionHook.invokeHooks(allRunHooks, () => Promise.resolve());
+      const resolved = Promise.resolve();
+      return TransitionHook.invokeHooks(allRunHooks, () => resolved);
     };
     const startTransition = () => {
       const globals = this.globals;

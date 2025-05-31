@@ -160,7 +160,12 @@ export let ngView = [
           }
         },
         leave: function (element, cb) {
-          $animate.leave(element).then(cb);
+          if (hasAnimate(element)) {
+            $animate.leave(element).then(cb);
+          } else {
+            element.parentElement.removeChild(element);
+            cb();
+          }
         },
       };
     }

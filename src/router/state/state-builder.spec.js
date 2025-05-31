@@ -1,6 +1,6 @@
-import { StateBuilder } from "./state-builder";
+import { StateBuilder } from "./state-builder.js";
 
-// TODO refactor this to url service
+// TODO refactor this to url service as it is using the provider right now
 xdescribe("StateBuilder", function () {
   const parent = { name: "" };
   let builder,
@@ -69,7 +69,7 @@ xdescribe("StateBuilder", function () {
     ).toThrow();
   });
 
-  it("should replace a resolve: string value with a function that injects the service of the same name", function () {
+  xit("should replace a resolve: string value with a function that injects the service of the same name", function () {
     const config = { resolve: { foo: "bar" } };
     expect(builder.builder("resolvables")).toBeDefined();
     const built = builder.builder("resolvables")(config);
