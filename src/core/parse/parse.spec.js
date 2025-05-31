@@ -78,7 +78,6 @@ describe("parser", () => {
       });
 
       it("should parse comparison", () => {
-        /* eslint-disable eqeqeq, no-self-compare */
         expect(scope.$eval("false")).toBeFalsy();
         expect(scope.$eval("!true")).toBeFalsy();
         expect(scope.$eval("1==1")).toBeTruthy();
@@ -101,7 +100,6 @@ describe("parser", () => {
         expect(scope.$eval("true===3===3")).toEqual((true === 3) === 3);
         expect(scope.$eval("3===3===true")).toEqual((3 === 3) === true);
         expect(scope.$eval("3 >= 3 > 2")).toEqual(3 >= 3 > 2);
-        /* eslint-enable */
       });
 
       it("should parse logical", () => {

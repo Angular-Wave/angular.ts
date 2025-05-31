@@ -2954,7 +2954,7 @@ describe("input", () => {
               "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xxx",
             ),
           ).toBe(false);
-          /* eslint-enable */
+
           /* local-part valid characters and dot-atom syntax */
           expect(EMAIL_REGEXP.test("'@x")).toBe(true);
           expect(

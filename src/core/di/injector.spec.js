@@ -433,7 +433,7 @@ describe("annotate", () => {
     ) {
       extraParams();
     }
-    /* eslint-enable */
+
     expect(annotate($f_n0)).toEqual(["$a", "b_", "_c", "d"]);
     expect($f_n0.$inject).toEqual(["$a", "b_", "_c", "d"]);
   });
