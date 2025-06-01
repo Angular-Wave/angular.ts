@@ -10,7 +10,7 @@ dependency injection, two-way data-binding &ndash; and adds a reactive change-de
 
 The result is a high-performance, buildless, progressive and battle-tested JS framework that stays as close to Web standards as possible. 
 
-With AngularTS, you get a decade-long optimization effort of Angular Team Google and massive testing suite, required for applications like Google Cloud, plus:
+With AngularTS, you get a decade-long optimization effort of Angular Team at Google and massive testing suite, required for applications like Google Cloud and Kubernetes, plus:
 - a fully reactive change-detection model without digests or virtual DOMs.
 - access to native DOM APIs at component and directive level (no `JQuery`or `JQLite`)
 - access to native Promises API (no `$q` oe `$timetout`)
