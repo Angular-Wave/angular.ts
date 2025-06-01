@@ -10,16 +10,15 @@ dependency injection, two-way data-binding &ndash; and adds a reactive change-de
 
 The result is a high-performance, buildless, progressive and battle-tested JS framework that stays as close to Web standards as possible. 
 
-AngularTS lets you write server-rendered web applications for desktop and mobile, without leaving the comfort of your tech-stack. 
-It lets you use good old HTML as your template language and lets you extend HTML’s
-syntax to express your application’s components clearly and succinctly. It automatically
-synchronizes data from your UI (view) with your JavaScript objects (model) through 2-way data
-binding. To help you structure your application better and make it easy to test, AngularTS teaches
-the browser how to do dependency injection and inversion of control.
+With AngularTS, you get a decade-long optimization effort of Angular Team Google and massive testing suite, required for applications like Google Cloud, plus:
+- a fully reactive change-detection model without digests or virtual DOMs.
+- access to native DOM APIs at component and directive level (no `JQuery`or `JQLite`)
+- access to native Promises API (no `$q` oe `$timetout`)
+- built-in enterprise-level router (`ui-router` ported as `ng-router`)
+- built-in animations (`animate`)
+- new directives, inspired by HTMX
 
-It also helps with server-side communication, taming async callbacks with promises and deferred objects,
-and it makes client-side navigation and deep linking with hashbang urls or HTML5 pushState a
-piece of cake. 
+If you write server-rendered web applications for desktop and mobile, and do not wish to leave the comfort of your tech-stack, this is your new secret weapon.
 
 ### Getting started
 
