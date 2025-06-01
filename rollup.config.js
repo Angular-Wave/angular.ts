@@ -4,36 +4,46 @@ import pkg from './package.json' assert { type: 'json' };
 import terser from '@rollup/plugin-terser';
 import versionInjector from 'rollup-plugin-version-injector';
 
-const SHARED_PLUGINS = [
-  terser(), 
+const basePlugins = [
+  resolve(),
+  commonjs(),
   versionInjector()
-]
+];
+
+const baseInput = 'src/index.js';
 
 export default [
-  // browser-friendly UMD build
+  // UMD build - minified and unminified
   {
-    input: 'src/index.js',
-    output: {
-      name: 'angular',
-      file: pkg.browser,
-      format: 'umd',
-    },
-    plugins: [
-      resolve(), 
-      commonjs()
-    ].concat(SHARED_PLUGINS)
+    input: baseInput,
+    output: [
+      {
+        name: 'angular',
+        file: pkg.browser.replace(/\.js$/, '.min.js'),
+        format: 'umd',
+        plugins: [terser()],
+      },
+      {
+        name: 'angular',
+        file: pkg.browser,
+        format: 'umd',
+      }
+    ],
+    plugins: basePlugins
   },
 
-  // ES module (for bundlers) build.
-  // (We could have three entries in the configuration array
-  // instead of two, but it's quicker to generate multiple
-  // builds from a single configuration where possible, using
-  // an array for the `output` option, where we can specify
-  // `file` and `format` for each target)
+  // ESM build
   {
-    input: 'src/index.js',
+    input: baseInput,
     external: ['ms'],
-    output: { file: pkg.main, format: 'es' },
-    plugins: SHARED_PLUGINS,
-  },
+    output: [
+      {
+        file: pkg.module,
+        format: 'es',
+      },
+    ],
+    plugins: [
+      versionInjector()
+    ]
+  }
 ];
