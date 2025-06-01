@@ -3,40 +3,6 @@ import { createProxyFunctions } from "../shared/common.js";
 import { minErr } from "../shared/utils.js";
 
 const err = minErr("$stateProvider");
-// Right now this is a collection of all the properties we encounter in tests
-const validKeys = [
-  "$$state",
-  "__stateObjectCache",
-  "abstract",
-  "bindings",
-  "controller",
-  "controllerAs",
-  "controllerProvider",
-  "component",
-  "componentProvider",
-  "data",
-  "includes",
-  "lazyLoad",
-  "name",
-  "navigable",
-  "onEnter",
-  "onExit",
-  "onRetain",
-  "params",
-  "parent",
-  "path",
-  "redirectTo",
-  "reloadOnSearch",
-  "resolve",
-  "resolveAs",
-  "resolvables",
-  "self",
-  "template",
-  "templateProvider",
-  "templateUrl",
-  "url",
-  "views",
-];
 
 /**
  * The Angular 1 `StateProvider`
@@ -161,13 +127,6 @@ export class StateProvider {
   state(definition) {
     if (!definition.name) {
       throw err("stateinvalid", `'name' required`);
-    }
-
-    const hasInvalidKeys = Object.keys(definition).filter(
-      (key) => !validKeys.includes(key),
-    );
-    if (hasInvalidKeys.length) {
-      throw err("stateinvalid", `Invalid key(s): ${hasInvalidKeys.join(", ")}`);
     }
     try {
       this.stateRegistry.register(definition);

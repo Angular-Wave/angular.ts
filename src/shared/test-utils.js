@@ -42,5 +42,5 @@ export function bootstrap(htmlContent, moduleName) {
   }
   dealoc(ELEMENT);
   ELEMENT.innerHTML = htmlContent;
-  return window.angular.bootstrap(ELEMENT, [moduleName || "myModule"]);
+  return window["angular"].bootstrap(ELEMENT, [moduleName || "myModule"]);
 }

@@ -140,11 +140,11 @@ export class Param {
      */
     const getDefaultValue = () => {
       if (this._defaultValueCache) return this._defaultValueCache.defaultValue;
-      if (!window.angular.$injector)
+      if (!window["angular"].$injector)
         throw new Error(
           "Injectable functions cannot be called at configuration time",
         );
-      const defaultValue = window.angular.$injector.invoke(this.config.$$fn);
+      const defaultValue = window["angular"].$injector.invoke(this.config.$$fn);
       if (
         defaultValue !== null &&
         defaultValue !== undefined &&

@@ -182,7 +182,7 @@ export class ResolveContext {
     return resolvable.deps.map((token) => {
       const matching = availableResolvables.filter((r) => r.token === token);
       if (matching.length) return tail(matching);
-      const fromInjector = window.angular.$injector.get(token);
+      const fromInjector = window["angular"].$injector.get(token);
       if (isUndefined(fromInjector)) {
         throw new Error(
           "Could not find Dependency Injection token: " + stringify(token),
@@ -195,15 +195,15 @@ export class ResolveContext {
 
 class UIInjectorImpl {
   constructor() {
-    this.native = window.angular.$injector;
+    this.native = window["angular"].$injector;
   }
   get(token) {
-    return window.angular.$injector.get(token);
+    return window["angular"].$injector.get(token);
   }
   getAsync(token) {
-    return Promise.resolve(window.angular.$injector.get(token));
+    return Promise.resolve(window["angular"].$injector.get(token));
   }
   getNative(token) {
-    return window.angular.$injector.get(token);
+    return window["angular"].$injector.get(token);
   }
 }
