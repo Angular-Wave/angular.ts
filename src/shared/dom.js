@@ -544,7 +544,7 @@ export function startingTag(elementOrStr) {
         });
       }
     }
-  } catch (e) {
+  } catch {
     return elemHtml.toLowerCase();
   }
 

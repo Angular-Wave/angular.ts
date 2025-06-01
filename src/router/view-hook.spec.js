@@ -184,7 +184,7 @@ describe("view hooks", () => {
       expect($state.current.name).toBe("bar");
     });
 
-    // Test for https://github.com/angular-ui/ng-router/issues/3308
+    // Test for https://github.com/angular-ui/ui-router/issues/3308
     xit("should trigger once when answered truthy even if redirected", async () => {
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";
@@ -198,7 +198,7 @@ describe("view hooks", () => {
       expect($state.current.name).toBe("baz");
     });
 
-    // Test for https://github.com/angular-ui/ng-router/issues/3308
+    // Test for https://github.com/angular-ui/ui-router/issues/3308
     xit("should trigger only once if returns a redirect", async () => {
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";

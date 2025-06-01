@@ -847,7 +847,7 @@ describe("ngView named", () => {
     expect($state.current.name).toBe("main.home");
   });
 
-  // Test for https://github.com/angular-ui/ng-router/issues/3355
+  // Test for https://github.com/angular-ui/ui-router/issues/3355
   fit("should target weird nested view setups using the view's simple name", async () => {
     const tpl = `
       <div>
@@ -1749,7 +1749,7 @@ describe("angular 1.5+ style .component()", () => {
       expect(content.textContent).toBe("-DATA!-");
     });
 
-    // Test for https://github.com/angular-ui/ng-router/issues/3353
+    // Test for https://github.com/angular-ui/ui-router/issues/3353
     it("should allow different states to reuse view declaration", () => {
       const views = {
         header: { component: "header" },

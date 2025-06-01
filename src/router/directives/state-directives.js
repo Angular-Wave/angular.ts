@@ -277,7 +277,7 @@ export function $StateRefActiveDirective(
       activeEqClass = $interpolate($attrs.ngSrefActiveEq || "", false)($scope);
       try {
         ngSrefActive = $scope.$eval($attrs.ngSrefActive);
-      } catch (e) {
+      } catch {
         // Do nothing. ngSrefActive is not a valid expression.
         // Fall back to using $interpolate below
       }

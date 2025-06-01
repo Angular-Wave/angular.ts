@@ -641,7 +641,7 @@ export function csp() {
     try {
       new Function("");
       return false;
-    } catch (e) {
+    } catch {
       return true;
     }
   }
@@ -887,7 +887,7 @@ export function toKeyValue(obj) {
 export function tryDecodeURIComponent(value) {
   try {
     return decodeURIComponent(value);
-  } catch (e) {
+  } catch {
     value;
   }
 }
@@ -1079,44 +1079,22 @@ export function errorHandlingConfig(config) {
  * @returns {function(string, ...*): Error} minErr instance
  */
 export function minErr(module) {
-  const url = 'https://errors.angularjs.org/"NG_VERSION_FULL"/';
-  const regex = `${url.replace(".", "\\.")}[\\s\\S]*`;
-  const errRegExp = new RegExp(regex, "g");
-
   return function (...args) {
     const code = args[0];
     const template = args[1];
     let message = `[${module ? `${module}:` : ""}${code}] `;
     const templateArgs = sliceArgs(args, 2).map((arg) => toDebugString(arg));
-    let paramPrefix;
-    let i;
-
-    // A minErr message has two parts: the message itself and the url that contains the
-    // encoded message.
-    // The message's parameters can contain other error messages which also include error urls.
-    // To prevent the messages from getting too long, we strip the error urls from the parameters.
 
     message += template.replace(/\{\d+\}/g, (match) => {
       const index = +match.slice(1, -1);
 
       if (index < templateArgs.length) {
-        return templateArgs[index].replace(errRegExp, "");
+        return templateArgs[index];
       }
 
       return match;
     });
 
-    message += `\n${url}${module ? `${module}/` : ""}${code}`;
-
-    if (errorHandlingConfig().urlErrorParamsEnabled) {
-      for (
-        i = 0, paramPrefix = "?";
-        i < templateArgs.length;
-        i++, paramPrefix = "&"
-      ) {
-        message += `${paramPrefix}p${i}=${encodeURIComponent(templateArgs[i])}`;
-      }
-    }
     return new Error(message);
   };
 }

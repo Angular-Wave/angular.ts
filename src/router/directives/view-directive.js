@@ -206,7 +206,7 @@ export let ngView = [
                 inherited,
               );
               // Allow <ng-view name="foo"><ng-view name="bar"></ng-view></ng-view>
-              // See https://github.com/angular-ui/ng-router/issues/3355
+              // See https://github.com/angular-ui/ui-router/issues/3355
               const fromParentTag = parse("$ngView.creationContext")(inherited);
               return fromParentTagConfig || fromParentTag;
             },

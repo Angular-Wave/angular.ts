@@ -42,7 +42,7 @@ export function getCookies() {
 function safeDecodeURIComponent(str) {
   try {
     return decodeURIComponent(str);
-  } catch (e) {
+  } catch {
     return str;
   }
 }

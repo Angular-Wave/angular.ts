@@ -161,7 +161,7 @@ export class TemplateFactoryProvider {
     const deps = annotate(provider);
     const providerFn = Array.isArray(provider) ? tail(provider) : provider;
     const resolvable = new Resolvable("", providerFn, deps);
-    return resolvable.get(context); // https://github.com/angular-ui/ng-router/pull/3165/files
+    return resolvable.get(context); // https://github.com/angular-ui/ui-router/pull/3165/files
   }
   /**
    * Creates a template from a component's name

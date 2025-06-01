@@ -29,7 +29,7 @@ export class UrlConfigProvider {
      * The Angular 1 `$location` service is a bit weird.
      * It doesn't allow slashes to be encoded/decoded bi-directionally.
      *
-     * See the writeup at https://github.com/angular-ui/ng-router/issues/2598
+     * See the writeup at https://github.com/angular-ui/ui-router/issues/2598
      *
      * This code patches the `path` parameter type so it encoded/decodes slashes as ~2F
      *
@@ -37,9 +37,7 @@ export class UrlConfigProvider {
     const pathType = this.type("path");
     pathType.encode = (x) =>
       x != null
-        ? x
-            .toString()
-            .replace(/([~\/])/g, (m) => ({ "~": "~~", "/": "~2F" })[m])
+        ? x.toString().replace(/([~/])/g, (m) => ({ "~": "~~", "/": "~2F" })[m])
         : x;
     pathType.decode = (x) =>
       x != null

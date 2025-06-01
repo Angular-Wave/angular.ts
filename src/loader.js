@@ -150,7 +150,7 @@ export class Angular {
         const compileFn = compile(el);
         compileFn(scope);
 
-        // https://github.com/angular-ui/ng-router/issues/3678
+        // https://github.com/angular-ui/ui-router/issues/3678
         if (!Object.prototype.hasOwnProperty.call($injector, "strictDi")) {
           try {
             $injector.invoke(() => {});

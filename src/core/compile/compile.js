@@ -2386,7 +2386,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   if (oldClasses !== "") {
                     beforeTemplateLinkNode.classList.add(...linkNode.classList);
                   }
-                } catch (e) {
+                } catch {
                   // ignore, since it means that we are trying to set class on
                   // SVG element, where class name is read-only.
                 }
