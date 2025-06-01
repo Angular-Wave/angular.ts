@@ -9,9 +9,9 @@ export function removeFromArray(arr: any, val: any): void;
 /**
  *
  * @param {NodeList|Node} element
- * @returns {Node}
+ * @returns {Node[]|Node|undefined}
  */
-export function stripCommentsFromElement(element: NodeList | Node): Node;
+export function stripCommentsFromElement(element: NodeList | Node): Node[] | Node | undefined;
 /**
  * @param {NodeList|Node} element
  * @returns {Node}

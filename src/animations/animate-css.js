@@ -141,17 +141,15 @@ export function AnimateCssProvider() {
     "$$AnimateRunner",
     "$$animateCache",
     "$$rAFScheduler",
-    "$$animateQueue",
 
     /**
      *
      * @param {*} $$AnimateRunner
      * @param {*} $$animateCache
      * @param {import("./raf-scheduler").RafScheduler} $$rAFScheduler
-     * @param {*} $$animateQueue
      * @returns
      */
-    function ($$AnimateRunner, $$animateCache, $$rAFScheduler, $$animateQueue) {
+    function ($$AnimateRunner, $$animateCache, $$rAFScheduler) {
       const applyAnimationClasses = applyAnimationClassesFactory();
 
       function computeCachedCssStyles(
@@ -277,7 +275,8 @@ export function AnimateCssProvider() {
 
         const restoreStyles = {};
         const node = /** @type {HTMLElement} */ (element);
-        if (!node || !node.parentNode || !$$animateQueue.enabled()) {
+        // Note: this had an additional  !$$animateQueue.enabled() check
+        if (!node || !node.parentNode) {
           return closeAndReturnNoopAnimator();
         }
 
@@ -894,7 +893,7 @@ export function AnimateCssProvider() {
               for (let i = 1; i < animationsData.length; i++) {
                 animationsData[i]();
               }
-              element.removeData(ANIMATE_TIMER_KEY);
+              removeElementData(element, ANIMATE_TIMER_KEY);
             }
           }
         }

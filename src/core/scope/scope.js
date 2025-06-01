@@ -179,7 +179,7 @@ export class Scope {
     this.$proxy = null;
 
     /** @type {Scope} The actual proxy */
-    this.$handler = this;
+    this.$handler = /** @type {Scope} */ (this);
 
     /** @type {*} Current target being called on */
     this.$target = null;
@@ -200,9 +200,13 @@ export class Scope {
     /**
      * @type {Scope}
      */
-    this.$root = context ? context.$root : this;
+    this.$root = context ? context.$root : /** @type {Scope} */ (this);
 
-    this.$parent = parent ? parent : this.$root === this ? null : context;
+    this.$parent = parent
+      ? parent
+      : /** @type {Scope} */ (this).$root === this
+        ? null
+        : context;
 
     /** @type {AsyncQueueTask[]} */
     this.$$asyncQueue = [];
@@ -1140,7 +1144,7 @@ export class Scope {
    * @returns {boolean}
    */
   isRoot() {
-    return this.$root == this;
+    return this.$root == /** @type {Scope} */ (this);
   }
 
   async $applyAsync(expr) {

@@ -383,7 +383,7 @@ describe("ngSwitch", () => {
 //   let $rootElement;
 
 //   function html(content) {
-//     $rootElement[0].innerHTML = content;
+//     $rootElement.innerHTML = content;
 //     element = $rootElement.children[0];
 //     return element;
 //   }

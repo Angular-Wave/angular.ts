@@ -183,7 +183,7 @@ export class UrlMatcher {
    * @param config  A [[UrlMatcherCompileConfig]] configuration object
    */
   constructor(pattern, paramTypes, paramFactory, config) {
-    this._cache = { path: [this] };
+    this._cache = { path: [/** @type {UrlMatcher} */ (this)] };
 
     this._children = [];
 

@@ -637,7 +637,7 @@ describe("ngClass", () => {
 //         });
 
 //         // jquery doesn't compare both elements properly so let's use the nodes
-//         expect(element.parentElement[0]).toEqual($rootElement[0]);
+//         expect(element.parentElement[0]).toEqual($rootElement);
 //         expect(element.classList.contains("crazy")).toBe(false);
 //         expect(enterComplete).toBe(false);
 

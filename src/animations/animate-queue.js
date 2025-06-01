@@ -397,6 +397,12 @@ export function AnimateQueueProvider($animateProvider) {
 
       return $animate;
 
+      /**
+       * @param {Element} originalElement
+       * @param {string} event
+       * @param {*} initialOptions
+       * @returns void
+       */
       function queueAnimation(originalElement, event, initialOptions) {
         // we always make a copy of the options since
         // there should never be any side effects on
@@ -443,12 +449,11 @@ export function AnimateQueueProvider($animateProvider) {
         if (options.to && !isObject(options.to)) {
           options.to = null;
         }
-
         // If animations are hard-disabled for the whole application there is no need to continue.
         // There are also situations where a directive issues an animation for a JQLite wrapper that
         // contains only comment nodes. In this case, there is no way we can perform an animation.
         if (
-          !animationsEnabled ||
+          // !animationsEnabled ||
           !node ||
           !isAnimatableByFilter(node, event, initialOptions) ||
           !isAnimatableClassName(node, options)
@@ -468,7 +473,6 @@ export function AnimateQueueProvider($animateProvider) {
         const existingAnimation =
           (!skipAnimations && activeAnimationsLookup.get(node)) || {};
         const hasExistingAnimation = !!existingAnimation.state;
-
         // there is no point in traversing the same collection of parent ancestors if a followup
         // animation will be run on the same element that already did all that checking work
         if (
@@ -601,7 +605,6 @@ export function AnimateQueueProvider($animateProvider) {
         newAnimation.counter = counter;
 
         markElementAnimationState(node, PRE_DIGEST_STATE, newAnimation);
-
         $rootScope.$postUpdate(() => {
           // It is possible that the DOM nodes inside `originalElement` have been replaced. This can
           // happen if the animated element is a transcluded clone and also has a `templateUrl`
@@ -624,7 +627,7 @@ export function AnimateQueueProvider($animateProvider) {
           // animate/structural/class-based animations all have requirements. Otherwise there
           // is no point in performing an animation. The parent node must also be set.
           const isValidAnimation =
-            parentElement.length > 0 &&
+            parentElement &&
             (animationDetails.event === "animate" ||
               animationDetails.structural ||
               hasAnimationClasses(animationDetails));

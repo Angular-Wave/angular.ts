@@ -1,4 +1,9 @@
-import { deleteCacheData, getCacheData, setCacheData } from "../shared/dom.js";
+import {
+  deleteCacheData,
+  getCacheData,
+  removeElementData,
+  setCacheData,
+} from "../shared/dom.js";
 import { mergeClasses } from "../shared/utils.js";
 import {
   NG_ANIMATE_CLASSNAME,
@@ -304,7 +309,7 @@ export function AnimationProvider() {
               // since the elements are at the top of the animation hierarchy and they
               // will be applied without a RAF having to pass...
               if (i === 0) {
-                element.removeData(PREPARE_CLASSES_KEY);
+                removeElementData(element, PREPARE_CLASSES_KEY);
                 continue;
               }
 

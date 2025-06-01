@@ -370,7 +370,7 @@ export function deleteCacheData(element, key) {
     const expandoStore = getExpando(element, false); // Don't create if it doesn't exist
     const data = expandoStore?.data;
 
-    if (data && data.hasOwnProperty(kebabToCamel(key))) {
+    if (data && Object.prototype.hasOwnProperty.call(data, kebabToCamel(key))) {
       delete data[kebabToCamel(key)];
     }
   }

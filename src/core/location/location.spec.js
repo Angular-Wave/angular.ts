@@ -1764,7 +1764,7 @@ describe("$location", () => {
   //       ($provide) =>
   //         function ($rootElement, $document) {
   //           $rootElement.append(link);
-  //           root = $rootElement[0];
+  //           root = $rootElement;
   //           // we need to do this otherwise we can't simulate events
   //           $document.querySelector("body").append($rootElement);
   //         },

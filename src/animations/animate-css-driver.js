@@ -31,7 +31,7 @@ export function AnimateCssDriverProvider($$animationProvider) {
      */
     function ($animateCss, $$AnimateRunner, $rootElement) {
       const bodyNode = document.body;
-      const rootNode = $rootElement[0];
+      const rootNode = $rootElement;
 
       const rootBodyElement =
         // this is to avoid using something that exists outside of the body
