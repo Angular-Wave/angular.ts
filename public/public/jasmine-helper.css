@@ -1,0 +1,9 @@
+#app {
+  position: fixed;
+  width: 20rem;
+  right: 0;
+  height: 2rem;
+  border: solid 1px #29b029;
+  background: rgba(66, 255, 66, 0.3);
+  bottom: 0;
+}

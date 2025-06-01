@@ -1,6 +1,6 @@
-import { dealoc } from "../../shared/jqlite/jqlite.js";
-import { Angular } from "../../loader";
-import { createInjector } from "../../core/di/injector";
+import { dealoc } from "../../shared/dom.js";
+import { Angular } from "../../loader.js";
+import { createInjector } from "../../core/di/injector.js";
 
 describe("ngClick", () => {
   let element;
@@ -21,18 +21,15 @@ describe("ngClick", () => {
 
   it("should get called on a click", () => {
     element = $compile('<div ng-click="clicked = true"></div>')($rootScope);
-    $rootScope.$digest();
     expect($rootScope.clicked).toBeFalsy();
 
-    element[0].click();
+    element.click();
     expect($rootScope.clicked).toEqual(true);
   });
 
   it("should pass event object", () => {
     element = $compile('<div ng-click="event = $event"></div>')($rootScope);
-    $rootScope.$digest();
-
-    element[0].click();
+    element.click();
     expect($rootScope.event).toBeDefined();
   });
 });

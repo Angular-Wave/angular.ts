@@ -5,8 +5,8 @@ const INACTIVE_CLASS = "ng-inactive";
 
 class NgMessageCtrl {
   /**
-   * @param {import('../../shared/jqlite/jqlite').JQLite} $element
-   * @param {import('../../core/scope/scope').Scope} $scope
+   * @param {import('../../shared//dom').JQLite} $element
+   * @param {import('../../core/scope/scope.js').Scope} $scope
    * @param {import('../../core/compile/attributes').Attributes} $attrs
    * @param {*} $animate
    */
@@ -119,7 +119,7 @@ class NgMessageCtrl {
       this.messages[nextKey] = {
         message: messageCtrl,
       };
-      this.insertMessageNode(this.$element[0], comment, nextKey);
+      this.insertMessageNode(this.$element, comment, nextKey);
       comment.$$ngMessageNode = nextKey;
       this.latestKey++;
     }
@@ -133,7 +133,7 @@ class NgMessageCtrl {
     } else {
       const key = comment.$$ngMessageNode;
       delete comment.$$ngMessageNode;
-      this.removeMessageNode(this.$element[0], comment, key);
+      this.removeMessageNode(this.$element, comment, key);
       delete this.messages[key];
     }
     this.reRender();
@@ -254,7 +254,7 @@ function ngMessageDirectiveFactory(isDefault) {
         let dynamicExp;
 
         if (!isDefault) {
-          commentNode = element[0];
+          commentNode = element;
           staticExp = attrs.ngMessage || attrs.when;
           dynamicExp = attrs.ngMessageExp || attrs.whenExp;
 
@@ -297,7 +297,7 @@ function ngMessageDirectiveFactory(isDefault) {
                   // in the event that the element or a parent element is destroyed
                   // by another structural directive then it's time
                   // to deregister the message from the controller
-                  currentElement.on("$destroy", () => {
+                  currentElement.addEventListener("$destroy", () => {
                     // If the message element was removed via a call to `detach` then `currentElement` will be null
                     // So this handler only handles cases where something else removed the message element.
                     if (

@@ -1,4 +1,4 @@
-import { BOOLEAN_ATTR } from "../../shared/jqlite/jqlite.js";
+import { BOOLEAN_ATTR } from "../../shared/dom.js";
 import { directiveNormalize } from "../../shared/utils.js";
 import { ALIASED_ATTR } from "../../shared/constants.js";
 
@@ -7,20 +7,20 @@ export const REGEX_STRING_REGEXP = /^\/(.+)\/([a-z]*)$/;
 export const ngAttributeAliasDirectives = {};
 
 // boolean attrs are evaluated
-Object.entries(BOOLEAN_ATTR).forEach(([attrName, propName]) => {
+BOOLEAN_ATTR.forEach((i) => {
   // binding to multiple is not supported
-  if (propName === "multiple") return;
+  if (i === "multiple") return;
 
   function defaultLinkFn(scope, _element, attr) {
     scope.$watch(attr[normalized], (value) => {
-      attr.$set(attrName, !!value);
+      attr.$set(i, !!value);
     });
   }
 
-  let normalized = directiveNormalize(`ng-${attrName}`);
+  let normalized = directiveNormalize(`ng-${i}`);
   let linkFn = defaultLinkFn;
 
-  if (propName === "checked") {
+  if (i === "checked") {
     linkFn = function (scope, element, attr) {
       // ensuring ngChecked doesn't interfere with ngModel when both are set on the same input
       if (attr.ngModel !== attr[normalized]) {
@@ -75,10 +75,10 @@ Object.entries(ALIASED_ATTR).forEach(([ngAttr]) => {
 
           if (
             attrName === "href" &&
-            toString.call(element[0].href) === "[object SVGAnimatedString]"
+            toString.call(element.href) === "[object SVGAnimatedString]"
           ) {
             name = "xlinkHref";
-            attr.$attr[name] = "xlink:href";
+            attr.$attr[name] = "href";
           }
 
           // We need to sanitize the url at least once, in case it is a constant

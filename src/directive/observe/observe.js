@@ -1,4 +1,4 @@
-import { kebabToCamel } from "../../shared/jqlite/jqlite.js";
+import { kebabToCamel } from "../../shared/dom.js";
 
 /**
  * @param {string} source - the name of the attribute to be observed
@@ -9,7 +9,7 @@ export function ngObserveDirective(source, prop) {
   return {
     restrict: "A",
     compile: () => (scope, element) => {
-      const targetElement = element[0];
+      const targetElement = element;
       if (prop === "") {
         prop = source;
       }
@@ -25,7 +25,6 @@ export function ngObserveDirective(source, prop) {
         ).getAttribute(source);
         if (scope[normalized] !== newValue) {
           scope[normalized] = newValue;
-          scope.$digest();
         }
       });
 

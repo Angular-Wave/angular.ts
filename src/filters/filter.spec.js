@@ -1,7 +1,7 @@
-import { Angular } from "../loader";
-import { createInjector } from "../core/di/injector";
+import { Angular } from "../loader.js";
+import { createInjector } from "../core/di/injector.js";
 import { isString, includes } from "../shared/utils.js";
-import { JQLite } from "../shared/jqlite/jqlite.js";
+import { createElementFromHTML } from "../shared/dom.js";
 
 describe("Filter: filter", () => {
   let filter;
@@ -491,9 +491,9 @@ describe("Filter: filter", () => {
       { name: "Brad" },
     );
 
-    const nodeList = JQLite(
+    const nodeList = createElementFromHTML(
       "<p><span>Misko</span><span>Igor</span><span>Brad</span></p>",
-    )[0].childNodes;
+    ).childNodes;
     function nodeFilterPredicate(node) {
       return node.innerHTML.indexOf("I") !== -1;
     }

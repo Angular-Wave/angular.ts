@@ -1,10 +1,9 @@
 import { isDefined, isFunction, isObject } from "../shared/utils.js";
-import { services } from "./common/coreservices.js";
 import { tail, unnestR } from "../shared/common.js";
 import { Resolvable } from "./resolve/resolvable.js";
 import { kebobString } from "../shared/strings.js";
 import { annotate } from "../core/di/injector.js";
-import { DIRECTIVE_SUFFIX } from "../core/compile/compile.js";
+import { DirectiveSuffix } from "../core/compile/compile.js";
 
 /**
  * @typedef BindingTuple
@@ -25,21 +24,18 @@ export class TemplateFactoryProvider {
     "$http",
     "$templateCache",
     "$templateRequest",
-    "$q",
     "$injector",
     /**
      * @param {any} $http
-     * @param {import("../core/cache/cache-factory").TemplateCache} $templateCache
+     * @param {import("../core/cache/cache-factory.js").TemplateCache} $templateCache
      * @param {any} $templateRequest
-     * @param {any} $q
      * @param {import("../core/di/internal-injector.js").InjectorService} $injector
      * @returns
      */
-    ($http, $templateCache, $templateRequest, $q, $injector) => {
+    ($http, $templateCache, $templateRequest, $injector) => {
       this.$templateRequest = $templateRequest;
       this.$http = $http;
       this.$templateCache = $templateCache;
-      this.$q = $q;
       this.$injector = $injector;
       return this;
     },
@@ -62,17 +58,17 @@ export class TemplateFactoryProvider {
    *
    * @param {any} config
    * @param {any} params  Parameters to pass to the template function.
-   * @param {import("./resolve/resolve-context").ResolveContext} context The resolve context associated with the template's view
+   * @param {import("./resolve/resolve-context.js").ResolveContext} context The resolve context associated with the template's view
    *
    * @return {string|object}  The template html as a string, or a promise for
    * that string,or `null` if no template is configured.
    */
   fromConfig(config, params, context) {
-    const defaultTemplate = "<ui-view></ui-view>";
+    const defaultTemplate = "<ng-view></ng-view>";
     const asTemplate = (result) =>
-      this.$q.resolve(result).then((str) => ({ template: str }));
+      Promise.resolve(result).then((str) => ({ template: str }));
     const asComponent = (result) =>
-      this.$q.resolve(result).then((str) => ({ component: str }));
+      Promise.resolve(result).then((str) => ({ component: str }));
 
     const getConfigType = (config) => {
       if (isDefined(config.template)) return "template";
@@ -96,7 +92,7 @@ export class TemplateFactoryProvider {
         return asComponent(config.component);
       case "componentProvider":
         return asComponent(
-          this.fromComponentProvider(config.componentProvider, params, context),
+          this.fromComponentProvider(config.componentProvider, context),
         );
       default:
         return asTemplate(defaultTemplate);
@@ -143,9 +139,9 @@ export class TemplateFactoryProvider {
   /**
    * Creates a template by invoking an injectable provider function.
    *
-   * @param {import('../types').Injectable<any>} provider Function to invoke via `locals`
+   * @param {import('../types.js').Injectable<any>} provider Function to invoke via `locals`
    * @param {Function} params a function used to invoke the template provider
-   * @param {import("./resolve/resolve-context").ResolveContext} context
+   * @param {import("./resolve/resolve-context.js").ResolveContext} context
    * @return {string|Promise.<string>} The template html as a string, or a promise
    * for that string.
    */
@@ -158,15 +154,14 @@ export class TemplateFactoryProvider {
   /**
    * Creates a component's template by invoking an injectable provider function.
    *
-   * @param {import('../types').Injectable<any>} provider Function to invoke via `locals`
-   * @param {Function} params a function used to invoke the template provider
+   * @param {import('../types.js').Injectable<any>} provider Function to invoke via `locals`
    * @return {string} The template html as a string: "<component-name input1='::$resolve.foo'></component-name>".
    */
-  fromComponentProvider(provider, params, context) {
+  fromComponentProvider(provider, context) {
     const deps = annotate(provider);
     const providerFn = Array.isArray(provider) ? tail(provider) : provider;
     const resolvable = new Resolvable("", providerFn, deps);
-    return resolvable.get(context);
+    return resolvable.get(context); // https://github.com/angular-ui/ng-router/pull/3165/files
   }
   /**
    * Creates a template from a component's name
@@ -176,16 +171,15 @@ export class TemplateFactoryProvider {
    * It analyses the component's bindings, then constructs a template that instantiates the component.
    * The template wires input and output bindings to resolves or from the parent component.
    *
-   * @param {any} ngView {object} The parent ui-view (for binding outputs to callbacks)
-   * @param {import("./resolve/resolve-context").ResolveContext} context The ResolveContext (for binding outputs to callbacks returned from resolves)
+   * @param {any} ngView {object} The parent ng-view (for binding outputs to callbacks)
+   * @param {import("./resolve/resolve-context.js").ResolveContext} context The ResolveContext (for binding outputs to callbacks returned from resolves)
    * @param {string} component {string} Component's name in camel case.
    * @param {any} [bindings] An object defining the component's bindings: {foo: '<'}
-   * @return {string} The template as a string: "<component-name input1='::$resolve.foo'></component-name>".
+   * @return {string} The template as a string: "<component-name input1='$resolve.foo'></component-name>".
    */
   makeComponentTemplate(ngView, context, component, bindings) {
     bindings = bindings || {};
     // Bind once prefix
-    const prefix = "::"; //angular.version.minor >= 3 ? "::" : "";
     // Convert to kebob name. Add x- prefix if the string starts with `x-` or `data-`
     const kebob = (camelCase) => {
       const kebobed = kebobString(camelCase);
@@ -195,16 +189,15 @@ export class TemplateFactoryProvider {
     const attributeTpl = /** @param {BindingTuple} input*/ (input) => {
       const { name, type } = input;
       const attrName = kebob(name);
-      // If the ui-view has an attribute which matches a binding on the routed component
+      // If the ng-view has an attribute which matches a binding on the routed component
       // then pass that attribute through to the routed component template.
-      // Prefer ui-view wired mappings to resolve data, unless the resolve was explicitly bound using `bindings:`
-      if (ngView.attr(attrName) && !bindings[name])
-        return `${attrName}='${ngView.attr(attrName)}'`;
+      // Prefer ng-view wired mappings to resolve data, unless the resolve was explicitly bound using `bindings:`
+      if (ngView.getAttribute(attrName) && !bindings[name])
+        return `${attrName}='${ngView.getAttribute(attrName)}'`;
       const resolveName = bindings[name] || name;
       // Pre-evaluate the expression for "@" bindings by enclosing in {{ }}
-      // some-attr="{{ ::$resolve.someResolveName }}"
-      if (type === "@")
-        return `${attrName}='{{${prefix}$resolve.${resolveName}}}'`;
+      // some-attr="{{$resolve.someResolveName }}"
+      if (type === "@") return `${attrName}='{{s$resolve.${resolveName}}}'`;
       // Wire "&" callbacks to resolves that return a callback function
       // Get the result of the resolve (should be a function) and annotate it to get its arguments.
       // some-attr="$resolve.someResolveResultName(foo, bar)"
@@ -217,9 +210,11 @@ export class TemplateFactoryProvider {
         return `${attrName}='$resolve.${resolveName}${arrayIdxStr}(${args.join(",")})'`;
       }
       // some-attr="::$resolve.someResolveName"
-      return `${attrName}='${prefix}$resolve.${resolveName}'`;
+      return `${attrName}='$resolve.${resolveName}'`;
     };
-    const attrs = getComponentBindings(component).map(attributeTpl).join(" ");
+    const attrs = getComponentBindings(this.$injector, component)
+      .map(attributeTpl)
+      .join(" ");
     const kebobName = kebob(component);
     return `<${kebobName} ${attrs}></${kebobName}>`;
   }
@@ -227,11 +222,9 @@ export class TemplateFactoryProvider {
 
 /**
  * Gets all the directive(s)' inputs ('@', '=', and '<') and outputs ('&')
- * @param {string} name
- * @returns
  */
-function getComponentBindings(name) {
-  const cmpDefs = services.$injector.get(name + DIRECTIVE_SUFFIX); // could be multiple
+function getComponentBindings($injector, name) {
+  const cmpDefs = $injector.get(name + DirectiveSuffix); // could be multiple
   if (!cmpDefs || !cmpDefs.length)
     throw new Error(`Unable to find component named '${name}'`);
   return cmpDefs.map(getBindings).reduce(unnestR, []);

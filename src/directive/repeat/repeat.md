@@ -222,10 +222,6 @@
 
   </example>
 
-  ```
-
-  ```
-
 -
 - And with an input of {@type ['A','B']} for the items variable in the example above, the output will evaluate to:
 - ```html
@@ -255,8 +251,6 @@
   ```
 
 -
-- The custom start and end points for ngRepeat also support all other HTML directive syntax flavors provided in AngularJS (such
-- as **data-ng-repeat-start**, **ng-repeat-start** and **ng:repeat-start**).
 -
 - @animations
 - | Animation | Occurs |

@@ -1,11 +1,11 @@
-import { Angular } from "../../loader";
-import { createInjector } from "../../core/di/injector";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { Angular } from "../../loader.js";
+import { createInjector } from "../../core/di/injector.js";
+import { createElementFromHTML } from "../../shared/dom.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("scriptDirective", () => {
   let $rootScope;
   let $compile;
-  let element;
   let $templateCache;
 
   beforeEach(() => {
@@ -20,10 +20,6 @@ describe("scriptDirective", () => {
     );
   });
 
-  afterEach(() => {
-    dealoc(element);
-  });
-
   it("should populate $templateCache with contents of a ng-template script element", () => {
     $compile(
       "<div>foo" +
@@ -35,19 +31,17 @@ describe("scriptDirective", () => {
     expect($templateCache.get("/ignore")).toBeUndefined();
   });
 
-  it("should not compile scripts", () => {
-    const doc = JQLite("<div></div>");
-    // jQuery is too smart and removes script tags
-    doc[0].innerHTML =
-      "foo" +
-      '<script type="text/javascript">some {{binding}}</script>' +
-      '<script type="text/ng-template" id="/some">other {{binding}}</script>';
-    $compile(doc)($rootScope);
-    $rootScope.$digest();
+  it("should not compile scripts", async () => {
+    const doc = createElementFromHTML(`<div>
+      foo
+      <script type="text/javascript">some {{binding}}</script>
+      <script type="text/ng-template" id="/some">other {{binding}}</script>
+    </div>`);
 
-    const scripts = doc.find("script");
-    expect(scripts.eq(0)[0].text).toBe("some {{binding}}");
-    expect(scripts.eq(1)[0].text).toBe("other {{binding}}");
-    dealoc(doc);
+    $compile(doc)($rootScope);
+    await wait();
+    const scripts = doc.querySelectorAll("script");
+    expect(scripts[0].text).toBe("some {{binding}}");
+    expect(scripts[1].text).toBe("other {{binding}}");
   });
 });

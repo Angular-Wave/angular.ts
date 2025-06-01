@@ -1,10 +1,10 @@
-import { StateMatcher } from "./state-matcher";
-import { StateBuilder } from "./state-builder";
-import { StateQueueManager } from "./state-queue-manager";
-import { applyPairs, removeFrom } from "../../shared/common";
-import { propEq } from "../../shared/hof";
-import { ResolveContext } from "../resolve/resolve-context";
-import { ng1ViewsBuilder } from "./views";
+import { StateMatcher } from "./state-matcher.js";
+import { StateBuilder } from "./state-builder.js";
+import { StateQueueManager } from "./state-queue-manager.js";
+import { applyPairs, removeFrom } from "../../shared/common.js";
+import { propEq } from "../../shared/hof.js";
+import { ResolveContext } from "../resolve/resolve-context.js";
+import { ng1ViewsBuilder } from "./views.js";
 import { isString } from "../../shared/utils.js";
 
 /**
@@ -54,7 +54,7 @@ export class StateRegistryProvider {
     "$injector",
     /**
      *
-     * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
+     * @param {import("../../core/di/internal-injector").InjectorService} $injector
      * @returns
      */
     ($injector) => {

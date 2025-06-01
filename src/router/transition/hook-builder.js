@@ -1,6 +1,6 @@
-import { assertPredicate, unnestR } from "../../shared/common";
-import { TransitionHookPhase, TransitionHookScope } from "./interface";
-import { TransitionHook } from "./transition-hook";
+import { assertPredicate, unnestR } from "../../shared/common.js";
+import { TransitionHookPhase, TransitionHookScope } from "./interface.js";
+import { TransitionHook } from "./transition-hook.js";
 /**
  * This class returns applicable TransitionHooks for a specific Transition instance.
  *
@@ -18,14 +18,19 @@ export class HookBuilder {
   constructor(transition) {
     this.transition = transition;
   }
+
+  /**
+   * @param {TransitionHookPhase} phase
+   * @returns
+   */
   buildHooksForPhase(phase) {
-    const $transitions = this.transition.transitionService;
-    return $transitions._pluginapi
+    return this.transition.transitionService._pluginapi
       ._getEvents(phase)
       .map((type) => this.buildHooks(type))
       .reduce(unnestR, [])
       .filter(Boolean);
   }
+
   /**
    * Returns an array of newly built TransitionHook objects.
    *

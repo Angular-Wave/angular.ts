@@ -1,30 +1,8 @@
-import { createInjector } from "../../core/di/injector";
-import { Angular } from "../../loader";
+import { createInjector } from "../../core/di/injector.js";
+import { Angular } from "../../loader.js";
+import { createElementFromHTML } from "../../shared/dom.js";
 
 describe("ngRef", () => {
-  beforeEach(() => {
-    jasmine.addMatchers({
-      toEqualJq(util) {
-        return {
-          compare(actual, expected) {
-            // Jquery <= 2.2 objects add a context property that is irrelevant for equality
-            if (actual && actual.hasOwnProperty("context")) {
-              delete actual.context;
-            }
-
-            if (expected && expected.hasOwnProperty("context")) {
-              delete expected.context;
-            }
-
-            return {
-              pass: util.equals(actual, expected),
-            };
-          },
-        };
-      },
-    });
-  });
-
   describe("on a component", () => {
     let myComponentController;
     let attributeDirectiveController;
@@ -70,71 +48,61 @@ describe("ngRef", () => {
         $rootScope,
       );
       expect($rootScope.$ctrl).toBe("undamaged");
-      //expect($rootScope.myComponentRef).toBe(myComponentController);
+      expect($rootScope.myComponentRef).toEqual(myComponentController);
     });
 
-    //   it("should throw if the expression is not assignable", () => {
-    //     expect(() => {
-    //       $compile("<my-component ng-ref=\"'hello'\"></my-component>")(
-    //         $rootScope,
-    //       );
-    //     }).toThrow(
-    //       "ngRef",
-    //       "nonassign",
-    //       "Expression in ngRef=\"'hello'\" is non-assignable!",
-    //     );
-    //   });
+    it("should throw if the expression is not assignable", () => {
+      expect(() => {
+        $compile(
+          createElementFromHTML(
+            "<my-component ng-ref=\"'hello'\"></my-component>",
+          ),
+        )($rootScope);
+      }).toThrow();
+    });
 
-    //   it("should work with non:normalized entity name", () => {
-    //     $compile('<my:component ng-ref="myComponent1"></my:component>')(
-    //       $rootScope,
-    //     );
-    //     expect($rootScope.myComponent1).toBe(myComponentController);
-    //   });
+    it("should work with data-non-normalized entity name", () => {
+      $compile(
+        createElementFromHTML(
+          '<data-my-component ng-ref="myComponent2"></data-my-component>',
+        ),
+      )($rootScope);
+      expect($rootScope.myComponent2).toEqual(myComponentController);
+    });
 
-    //   it("should work with data-non-normalized entity name", () => {
-    //     $compile('<data-my-component ng-ref="myComponent2"></data-my-component>')(
-    //       $rootScope,
-    //     );
-    //     expect($rootScope.myComponent2).toBe(myComponentController);
-    //   });
+    it("should work with data-non-normalized attribute name", () => {
+      $compile(
+        createElementFromHTML(
+          '<my-component data-ng-ref="myComponent1"></my-component>',
+        ),
+      )($rootScope);
+      expect($rootScope.myComponent1).toEqual(myComponentController);
+    });
 
-    //   it("should work with x-non-normalized entity name", () => {
-    //     $compile('<x-my-component ng-ref="myComponent3"></x-my-component>')(
-    //       $rootScope,
-    //     );
-    //     expect($rootScope.myComponent3).toBe(myComponentController);
-    //   });
+    it("should work with x-non-normalized attribute name", () => {
+      $compile(
+        createElementFromHTML(
+          '<my-component ng-ref="myComponent2"></my-component>',
+        ),
+      )($rootScope);
+      expect($rootScope.myComponent2).toEqual(myComponentController);
+    });
 
-    //   it("should work with data-non-normalized attribute name", () => {
-    //     $compile('<my-component data-ng-ref="myComponent1"></my-component>')(
-    //       $rootScope,
-    //     );
-    //     expect($rootScope.myComponent1).toBe(myComponentController);
-    //   });
+    it("should not bind the controller of an attribute directive", () => {
+      $compile(
+        '<my-component attribute-directive-1 ng-ref="myComponentRef"></my-component>',
+      )($rootScope);
+      expect($rootScope.myComponentRef).toEqual(myComponentController);
+    });
 
-    //   it("should work with x-non-normalized attribute name", () => {
-    //     $compile('<my-component ng-ref="myComponent2"></my-component>')(
-    //       $rootScope,
-    //     );
-    //     expect($rootScope.myComponent2).toBe(myComponentController);
-    //   });
-
-    //   it("should not bind the controller of an attribute directive", () => {
-    //     $compile(
-    //       '<my-component attribute-directive-1 ng-ref="myComponentRef"></my-component>',
-    //     )($rootScope);
-    //     expect($rootScope.myComponentRef).toBe(myComponentController);
-    //   });
-
-    //   it("should not leak to parent scopes", () => {
-    //     const template =
-    //       '<div ng-if="true">' +
-    //       '<my-component ng-ref="myComponent"></my-component>' +
-    //       "</div>";
-    //     $compile(template)($rootScope);
-    //     expect($rootScope.myComponent).toBe(undefined);
-    //   });
+    it("should not leak to parent scopes", () => {
+      const template =
+        '<div ng-if="true">' +
+        '<my-component ng-ref="myComponent"></my-component>' +
+        "</div>";
+      $compile(template)($rootScope);
+      expect($rootScope.myComponent).toBe(undefined);
+    });
 
     //   it("should nullify the variable once the component is destroyed", () => {
     //     const template =
@@ -179,7 +147,7 @@ describe("ngRef", () => {
     //   });
     // });
 
-    // it("should bind the jqlite wrapped DOM element if there is no component", inject((
+    // it("should bind the dom wrapped DOM element if there is no component", inject((
     //   $compile,
     //   $rootScope,
     // ) => {
@@ -318,7 +286,7 @@ describe("ngRef", () => {
     //   });
     // });
 
-    // it("should bind the jqlite element if the controller is on an attribute-directive", () => {
+    // it("should bind the dom element if the controller is on an attribute-directive", () => {
     //   let myDirectiveController;
 
     //   module(($compileProvider) => {
@@ -340,7 +308,7 @@ describe("ngRef", () => {
     //   });
     // });
 
-    // it("should bind the jqlite element if the controller is on an class-directive", () => {
+    // it("should bind the dom element if the controller is on an class-directive", () => {
     //   let myDirectiveController;
 
     //   module(($compileProvider) => {
@@ -380,8 +348,8 @@ describe("ngRef", () => {
     //       const template =
     //         '<my-component ng-ref="myComponent">{{myComponent.text}}</my-component>';
     //       const element = $compile(template)($rootScope);
-    //       $rootScope.$apply();
-    //       expect(element.text()).toBe("SUCCESS");
+    //       await wait();
+    //       expect(element.textContent).toBe("SUCCESS");
     //       dealoc(element);
     //     });
     //   });
@@ -394,7 +362,7 @@ describe("ngRef", () => {
     //           this.text = "SUCCESS";
     //           this.$postLink = function () {
     //             $transclude((clone, newScope) => {
-    //               $animate.enter(clone, $element.parent(), $element);
+    //               $animate.enter(clone, $element.parentElement, $element);
     //             });
     //           };
     //         },
@@ -409,8 +377,8 @@ describe("ngRef", () => {
     //         "</my-component>" +
     //         "</div>";
     //       const element = $compile(template)($rootScope);
-    //       $rootScope.$apply();
-    //       expect(element.text()).toBe("SUCCESS");
+    //       await wait();
+    //       expect(element.textContent).toBe("SUCCESS");
     //       dealoc(element);
     //     });
     //   });
@@ -436,13 +404,13 @@ describe("ngRef", () => {
     //       const element = $compile(template)($rootScope);
 
     //       $rootScope.$apply("present = false");
-    //       expect(element.text()).toBe("");
+    //       expect(element.textContent).toBe("");
     //       $rootScope.$apply("present = true");
-    //       expect(element.text()).toBe("SUCCESS");
+    //       expect(element.textContent).toBe("SUCCESS");
     //       $rootScope.$apply("present = false");
-    //       expect(element.text()).toBe("");
+    //       expect(element.textContent).toBe("");
     //       $rootScope.$apply("present = true");
-    //       expect(element.text()).toBe("SUCCESS");
+    //       expect(element.textContent).toBe("SUCCESS");
     //       dealoc(element);
     //     });
     //   });
@@ -462,7 +430,7 @@ describe("ngRef", () => {
     //             $transclude((clone, newScope) => {
     //               currentClone = clone;
     //               currentScope = newScope;
-    //               $animate.enter(clone, $element.parent(), $element);
+    //               $animate.enter(clone, $element.parentElement, $element);
     //             });
     //           };
     //           this.destroy = function () {
@@ -481,16 +449,16 @@ describe("ngRef", () => {
     //         "</my-transcluding-component>" +
     //         "</div>";
     //       const element = $compile(template)($rootScope);
-    //       $rootScope.$apply();
-    //       expect(element.text()).toBe("");
+    //       await wait();
+    //       expect(element.textContent).toBe("");
 
     //       myComponentController.transclude("transcludedOk");
-    //       $rootScope.$apply();
-    //       expect(element.text()).toBe("transcludedOk");
+    //       await wait();
+    //       expect(element.textContent).toBe("transcludedOk");
 
     //       myComponentController.destroy();
-    //       $rootScope.$apply();
-    //       expect(element.text()).toBe("");
+    //       await wait();
+    //       expect(element.textContent).toBe("");
     //     });
     //   });
 
@@ -503,7 +471,7 @@ describe("ngRef", () => {
     //         },
     //         link(scope, element, attrs, ctrl, $transclude) {
     //           $transclude((clone, newScope) => {
-    //             $animate.enter(clone, element.parent(), element);
+    //             $animate.enter(clone, element.parentElement, element);
     //           });
     //         },
     //       }));
@@ -517,8 +485,8 @@ describe("ngRef", () => {
     //         "</my-directive>" +
     //         "</div>";
     //       const element = $compile(template)($rootScope);
-    //       $rootScope.$apply();
-    //       expect(element.text()).toBe("SUCCESS");
+    //       await wait();
+    //       expect(element.textContent).toBe("SUCCESS");
     //       dealoc(element);
     //     });
     //   });
@@ -539,7 +507,7 @@ describe("ngRef", () => {
     //       '<div><http-component ng-ref="controller"></http-component></div>';
     //     const element = $compile(template)($rootScope);
     //     $httpBackend.expect("GET", "template.html").respond("ok");
-    //     $rootScope.$apply();
+    //     await wait();
     //     expect($rootScope.controller).toBeUndefined();
     //     $httpBackend.flush();
     //     expect($rootScope.controller.me).toBe(true);
@@ -566,7 +534,7 @@ describe("ngRef", () => {
     //     const template =
     //       '<div><my-component ng-repeat="(key, el) in elements" ng-ref="controllers[key]"></my-component></div>';
     //     const element = $compile(template)($rootScope);
-    //     $rootScope.$apply();
+    //     await wait();
 
     //     expect($rootScope.controllers).toEqual(controllers);
 

@@ -1,5 +1,6 @@
-import { createInjector } from "../di/injector";
-import { Angular } from "../../loader";
+import { createInjector } from "../di/injector.js";
+import { Angular } from "../../loader.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("$interpolate", () => {
   let $interpolate, $injector, $rootScope, $sce;
@@ -151,106 +152,6 @@ describe("$interpolate", () => {
     expect($interpolate("Hello, world!{{bloop}}")()).toBe("Hello, world!");
   });
 
-  describe("watching", () => {
-    it("should be watchable with any input types", () => {
-      let lastVal;
-      $rootScope.$watch($interpolate("{{i}}"), (val) => {
-        lastVal = val;
-      });
-      $rootScope.$apply();
-      expect(lastVal).toBe("");
-
-      $rootScope.i = null;
-      $rootScope.$apply();
-      expect(lastVal).toBe("");
-
-      $rootScope.i = "";
-      $rootScope.$apply();
-      expect(lastVal).toBe("");
-
-      $rootScope.i = 0;
-      $rootScope.$apply();
-      expect(lastVal).toBe("0");
-
-      $rootScope.i = [0];
-      $rootScope.$apply();
-      expect(lastVal).toBe("[0]");
-
-      $rootScope.i = { a: 1, b: 2 };
-      $rootScope.$apply();
-      expect(lastVal).toBe('{"a":1,"b":2}');
-    });
-
-    it("should be watchable with literal values", () => {
-      let lastVal;
-      $rootScope.$watch(
-        $interpolate('{{1}}{{"2"}}{{true}}{{[false]}}{{ {a: 2} }}'),
-        (val) => {
-          lastVal = val;
-        },
-      );
-      $rootScope.$apply();
-      expect(lastVal).toBe('12true[false]{"a":2}');
-    });
-
-    it("should respect one-time bindings for each individual expression", () => {
-      const calls = [];
-      $rootScope.$watch($interpolate("{{::a}} {{::s}}"), (val) => {
-        calls.push(val);
-      });
-
-      $rootScope.$apply();
-      expect(calls.length).toBe(1);
-      expect(calls).toEqual([" "]);
-
-      $rootScope.a = "a";
-      $rootScope.$apply();
-      expect(calls.length).toBe(2);
-      expect(calls[1]).toBe("a ");
-
-      $rootScope.a = "b";
-      $rootScope.$apply();
-      expect(calls.length).toBe(2);
-
-      $rootScope.s = "str!";
-      $rootScope.$apply();
-      expect(calls.length).toBe(3);
-      expect(calls[2]).toBe("a str!");
-    });
-
-    it("should respect one-time bindings for literals", () => {
-      const calls = [];
-      $rootScope.$watch($interpolate("{{ ::{x: x} }}"), (val) => {
-        calls.push(val);
-      });
-
-      $rootScope.$apply();
-      expect(calls.pop()).toBe("{}");
-
-      $rootScope.$apply("x = 1");
-      expect(calls.pop()).toBe('{"x":1}');
-
-      $rootScope.$apply("x = 2");
-      expect(calls.pop()).toBeUndefined();
-    });
-
-    it("should stop watching strings with no expressions after first execution", () => {
-      const spy = jasmine.createSpy();
-      $rootScope.$watch($interpolate("foo"), spy);
-      $rootScope.$digest();
-      expect(spy).toHaveBeenCalledWith("foo", "foo", $rootScope);
-      expect(spy).toHaveBeenCalledTimes(1);
-    });
-
-    it("should stop watching strings with only constant expressions after first execution", () => {
-      const spy = jasmine.createSpy();
-      $rootScope.$watch($interpolate("foo {{42}}"), spy);
-      $rootScope.$digest();
-      expect(spy).toHaveBeenCalledWith("foo 42", "foo 42", $rootScope);
-      expect(spy).toHaveBeenCalledTimes(1);
-    });
-  });
-
   describe("interpolation escaping", () => {
     let obj;
     let $compile;
@@ -264,18 +165,12 @@ describe("$interpolate", () => {
       expect(interp.$$watchDelegate).toBeDefined();
     });
 
-    it("correctly returns new and old value when watched", function () {
+    it("correctly returns new value", async () => {
       const interp = $interpolate("{{expr}}");
-      const listenerSpy = jasmine.createSpy();
-      $rootScope.$watch(interp, listenerSpy);
+      $rootScope.$watch("expr", () => {});
       $rootScope.expr = 42;
-      $rootScope.$apply();
-      expect(listenerSpy.calls.mostRecent().args[0]).toEqual("42");
-      expect(listenerSpy.calls.mostRecent().args[1]).toEqual("42");
-      $rootScope.expr++;
-      $rootScope.$apply();
-      expect(listenerSpy.calls.mostRecent().args[0]).toEqual("43");
-      expect(listenerSpy.calls.mostRecent().args[1]).toEqual("42");
+      await wait();
+      expect(interp($rootScope)).toEqual("42");
     });
 
     it("should support escaping interpolation signs", () => {
@@ -309,8 +204,8 @@ describe("$interpolate", () => {
       angular
         .module("customInterpolationApp", ["ng"])
         .config(function ($interpolateProvider) {
-          $interpolateProvider.startSymbol("[[");
-          $interpolateProvider.endSymbol("]]");
+          $interpolateProvider.startSymbol = "[[";
+          $interpolateProvider.endSymbol = "]]";
         });
 
       $injector = createInjector(["customInterpolationApp"]);
@@ -337,14 +232,15 @@ describe("$interpolate", () => {
       );
       expect(() => {
         $interpolate("{{\\{\\{foo\\}\\}}}")(obj);
-      }).toThrowError(/Unexpected next character  at columns 0-0/);
+      }).toThrowError(/Unexpected next character at columns 0-0/);
     });
 
     it("allows configuring start and end symbols", function () {
       const injector = createInjector([
         "ng",
         function ($interpolateProvider) {
-          $interpolateProvider.startSymbol("FOO").endSymbol("OOF");
+          $interpolateProvider.startSymbol = "FOO";
+          $interpolateProvider.endSymbol = "OOF";
         },
       ]);
       const $interpolate = injector.get("$interpolate");
@@ -356,7 +252,8 @@ describe("$interpolate", () => {
       const injector = createInjector([
         "ng",
         function ($interpolateProvider) {
-          $interpolateProvider.startSymbol("FOO").endSymbol("OOF");
+          $interpolateProvider.startSymbol = "FOO";
+          $interpolateProvider.endSymbol = "OOF";
         },
       ]);
       const $interpolate = injector.get("$interpolate");
@@ -368,7 +265,8 @@ describe("$interpolate", () => {
       const injector = createInjector([
         "ng",
         function ($interpolateProvider) {
-          $interpolateProvider.startSymbol("FOO").endSymbol("OOF");
+          $interpolateProvider.startSymbol = "FOO";
+          $interpolateProvider.endSymbol = "OOF";
         },
       ]);
       const $interpolate = injector.get("$interpolate");
@@ -380,7 +278,8 @@ describe("$interpolate", () => {
       const injector = createInjector([
         "ng",
         function ($interpolateProvider) {
-          $interpolateProvider.startSymbol("FOO").endSymbol("OOF");
+          $interpolateProvider.startSymbol = "FOO";
+          $interpolateProvider.endSymbol = "OOF";
         },
       ]);
       const $interpolate = injector.get("$interpolate");
@@ -396,6 +295,61 @@ describe("$interpolate", () => {
       expect($interpolate("\\{\\{Hello, {{bar}}!\\}\\}")(obj)).toBe(
         "{{Hello, World!}}",
       );
+    });
+  });
+
+  describe("interpolation callbacks", () => {
+    it("does not require a callback", async () => {
+      let text;
+      $rootScope.expr = 42;
+      const interp = $interpolate("{{expr}}");
+
+      text = interp($rootScope);
+
+      expect(text).toEqual("42");
+    });
+
+    it("correctly invokes callback when interpolated value changes", async () => {
+      let counter = 0;
+
+      const interp = $interpolate("{{expr}}");
+
+      interp($rootScope, (val) => {
+        counter++;
+      });
+
+      $rootScope.expr = 42;
+      await wait();
+      expect(counter).toEqual(2);
+
+      $rootScope.expr++;
+      await wait();
+      expect(counter).toEqual(3);
+    });
+
+    it("returns currently interpolated text", async () => {
+      let text;
+      $rootScope.expr = 42;
+      const interp = $interpolate("{{expr}}");
+
+      text = interp($rootScope, (val) => {
+        text = val;
+      });
+
+      expect(text).toEqual("42");
+    });
+
+    it("invokes callback with newly interpolated text", async () => {
+      let text;
+      const interp = $interpolate("{{expr}}");
+
+      interp($rootScope, (val) => {
+        text = val;
+      });
+
+      $rootScope.expr = 42;
+      await wait();
+      expect(text).toEqual("42");
     });
   });
 
@@ -451,8 +405,8 @@ describe("$interpolate", () => {
       angular
         .module("customInterpolationApp", ["ng"])
         .config(function ($interpolateProvider) {
-          $interpolateProvider.startSymbol("--");
-          $interpolateProvider.endSymbol("--");
+          $interpolateProvider.startSymbol = "--";
+          $interpolateProvider.endSymbol = "--";
         });
 
       $injector = createInjector(["customInterpolationApp"]);
@@ -575,8 +529,8 @@ describe("$interpolate", () => {
       angular
         .module("customInterpolationApp", ["ng"])
         .config(function ($interpolateProvider) {
-          expect($interpolateProvider.startSymbol()).toBe("{{");
-          $interpolateProvider.startSymbol("((");
+          expect($interpolateProvider.startSymbol).toBe("{{");
+          $interpolateProvider.startSymbol = "((";
         });
 
       $injector = createInjector(["customInterpolationApp"]);
@@ -587,7 +541,7 @@ describe("$interpolate", () => {
       angular
         .module("customInterpolationApp")
         .config(function ($interpolateProvider) {
-          expect($interpolateProvider.startSymbol()).toBe("((");
+          expect($interpolateProvider.startSymbol).toBe("((");
         });
     });
 
@@ -599,8 +553,8 @@ describe("$interpolate", () => {
       angular
         .module("customInterpolationApp", ["ng"])
         .config(function ($interpolateProvider) {
-          $interpolateProvider.startSymbol("--");
-          $interpolateProvider.endSymbol("--");
+          $interpolateProvider.startSymbol = "--";
+          $interpolateProvider.endSymbol = "--";
         });
 
       $injector = createInjector(["customInterpolationApp"]);
@@ -619,8 +573,8 @@ describe("$interpolate", () => {
       angular
         .module("customInterpolationApp", ["ng"])
         .config(function ($interpolateProvider) {
-          expect($interpolateProvider.endSymbol()).toBe("}}");
-          $interpolateProvider.endSymbol("))");
+          expect($interpolateProvider.endSymbol).toBe("}}");
+          $interpolateProvider.endSymbol = "))";
         });
 
       $injector = createInjector(["customInterpolationApp"]);
@@ -631,7 +585,7 @@ describe("$interpolate", () => {
       angular
         .module("customInterpolationApp")
         .config(function ($interpolateProvider) {
-          expect($interpolateProvider.endSymbol()).toBe("))");
+          expect($interpolateProvider.endSymbol).toBe("))");
         });
     });
 

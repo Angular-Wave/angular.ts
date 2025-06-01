@@ -1,5 +1,6 @@
 import {
   isArrayLike,
+  isFunction,
   isNumber,
   isNumberNaN,
   isString,
@@ -11,11 +12,14 @@ import {
  */
 export function limitToFilter() {
   /**
-   * @param {Array|ArrayLike|string|number} input Array/array-like, string, or number to be limited.
+   * @param {Array|ArrayLike|string|number|Function} input Array/array-like, string, or number to be limited.
    * @param {string|number} limit The length of the returned array or string.
    * @param {string|number} [begin] Index at which to begin limitation. As a negative index, `begin` indicates an offset from the end of `input`. Defaults to `0`.
    */
   return function (input, limit, begin) {
+    if (isFunction(input)) {
+      input = /** @type {Function} */ (input)();
+    }
     if (Math.abs(Number(limit)) === Infinity) {
       limit = Number(limit);
     } else {

@@ -1,5 +1,4 @@
-import { ScopePhase } from "../../core/scope/scope.js";
-import { urlIsAllowedOriginFactory } from "../../core/url-utils/url-utils";
+import { urlIsAllowedOriginFactory } from "../../core/url-utils/url-utils.js";
 import {
   minErr,
   isObject,
@@ -21,7 +20,7 @@ import {
   uppercase,
   isPromiseLike,
 } from "../../shared/utils.js";
-import { getCookies } from "../cookie-reader";
+import { getCookies } from "../cookie-reader.js";
 
 const APPLICATION_JSON = "application/json";
 const CONTENT_TYPE_APPLICATION_JSON = {
@@ -381,7 +380,6 @@ export function HttpProvider() {
     "$browser",
     "$httpBackend",
     "$rootScope",
-    "$q",
     "$injector",
     "$sce",
     /**
@@ -389,12 +387,11 @@ export function HttpProvider() {
      * @param {*} $browser
      * @param {*} $httpBackend
      * @param {*} $rootScope
-     * @param {*} $q
-     * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
+     * @param {import("../../core/di/internal-injector").InjectorService} $injector
      * @param {*} $sce
      * @returns
      */
-    function ($browser, $httpBackend, $rootScope, $q, $injector, $sce) {
+    function ($browser, $httpBackend, $rootScope, $injector, $sce) {
       /**
        * @type {Map<string, string>}
        */
@@ -468,7 +465,7 @@ export function HttpProvider() {
 
         const requestInterceptors = [];
         const responseInterceptors = [];
-        let promise = $q.resolve(config);
+        let promise = Promise.resolve(config);
 
         // apply interceptors
         reversedInterceptors.forEach((interceptor) => {
@@ -595,7 +592,7 @@ export function HttpProvider() {
             response.status,
             config.transformResponse,
           );
-          return isSuccess(response.status) ? resp : $q.reject(resp);
+          return isSuccess(response.status) ? resp : Promise.reject(resp);
         }
       }
 
@@ -738,8 +735,7 @@ export function HttpProvider() {
        * $httpBackend, defaults, $log, $rootScope, defaultCache, $http.pendingRequests
        */
       function sendReq(config, reqData) {
-        const deferred = $q.defer();
-        const { promise } = deferred;
+        const { promise, resolve, reject } = Promise.withResolvers();
         let cache;
         let cachedResp;
         const reqHeaders = config.headers;
@@ -829,9 +825,7 @@ export function HttpProvider() {
             Object.entries(eventHandlers).forEach(([key, eventHandler]) => {
               applyHandlers[key] = function (event) {
                 if (useApplyAsync) {
-                  $rootScope.$applyAsync(callEventHandler);
-                } else if ($rootScope.$$phase !== ScopePhase.NONE) {
-                  callEventHandler();
+                  setTimeout(() => $rootScope.$apply(callEventHandler));
                 } else {
                   $rootScope.$apply(callEventHandler);
                 }
@@ -878,10 +872,9 @@ export function HttpProvider() {
           }
 
           if (useApplyAsync) {
-            $rootScope.$applyAsync(resolveHttpPromise);
+            setTimeout(resolveHttpPromise);
           } else {
             resolveHttpPromise();
-            if (!$rootScope.$$phase) $rootScope.$apply();
           }
         }
 
@@ -898,7 +891,7 @@ export function HttpProvider() {
           // status: HTTP response status code, 0, -1 (aborted by timeout / promise)
           status = status >= -1 ? status : 0;
 
-          (isSuccess(status) ? deferred.resolve : deferred.reject)({
+          (isSuccess(status) ? resolve : reject)({
             data: response,
             status,
             headers: headersGetter(headers),

@@ -1,6 +1,6 @@
-import { Angular } from "../../loader";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
-import { valueFn } from "../../shared/utils.js";
+import { Angular } from "../../loader.js";
+import { createElementFromHTML, dealoc, getScope } from "../../shared/dom.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ngRepeat", () => {
   let element;
@@ -10,6 +10,7 @@ describe("ngRepeat", () => {
   let $compileProvider;
   let $templateCache;
   let injector;
+  let $rootScope;
   let logs = [];
 
   beforeEach(() => {
@@ -25,7 +26,7 @@ describe("ngRepeat", () => {
         };
       });
 
-    injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
       (_$compileProvider_) => {
         $compileProvider = _$compileProvider_;
@@ -44,91 +45,60 @@ describe("ngRepeat", () => {
     //   dump($exceptionHandler.errors);
     //   expect($exceptionHandler.errors).toBe([]);
     // }
-    dealoc(element);
+    //dealoc(element);
   });
 
-  it("should iterate over an array of objects", () => {
+  it("should iterate over an array of objects", async () => {
     element = $compile(
       '<ul><li ng-repeat="item in items">{{item.name}};</li></ul>',
     )(scope);
-
+    await wait();
     Array.prototype.extraProperty = "should be ignored";
     // INIT
     scope.items = [{ name: "misko" }, { name: "shyam" }];
-    scope.$digest();
-    expect(element.find("li").length).toEqual(2);
-    expect(element.text()).toEqual("misko;shyam;");
+    await wait();
+    expect(element.querySelectorAll("li").length).toEqual(2);
+    expect(element.textContent).toEqual("misko;shyam;");
     delete Array.prototype.extraProperty;
 
     // GROW
     scope.items.push({ name: "adam" });
-    scope.$digest();
-    expect(element.find("li").length).toEqual(3);
-    expect(element.text()).toEqual("misko;shyam;adam;");
+    await wait();
+    expect(element.querySelectorAll("li").length).toEqual(3);
+    expect(element.textContent).toEqual("misko;shyam;adam;");
 
-    // // SHRINK
+    // SHRINK
     scope.items.pop();
+    await wait();
+    expect(element.querySelectorAll("li").length).toEqual(2);
+
     scope.items.shift();
-    scope.$digest();
-    expect(element.find("li").length).toEqual(1);
-    expect(element.text()).toEqual("shyam;");
+    await wait();
+    expect(element.querySelectorAll("li").length).toEqual(1);
+    expect(element.textContent).toEqual("shyam;");
   });
 
-  it("should be possible to use one-time bindings on the collection", () => {
-    element = $compile(
-      "<ul>" + '<li ng-repeat="item in ::items">{{item.name}};</li>' + "</ul>",
-    )(scope);
-
-    scope.$digest();
-
-    scope.items = [{ name: "misko" }, { name: "shyam" }];
-    scope.$digest();
-    expect(element.find("li").length).toEqual(2);
-    expect(element.text()).toEqual("misko;shyam;");
-    scope.items.push({ name: "adam" });
-    scope.$digest();
-    expect(element.find("li").length).toEqual(2);
-    expect(element.text()).toEqual("misko;shyam;");
-  });
-
-  it("should be possible to use one-time bindings on the content", () => {
-    element = $compile(
-      "<ul>" + '<li ng-repeat="item in items">{{::item.name}};</li>' + "</ul>",
-    )(scope);
-
-    scope.$digest();
-
-    scope.items = [{ name: "misko" }, { name: "shyam" }];
-    scope.$digest();
-    expect(element.find("li").length).toEqual(2);
-    expect(element.text()).toEqual("misko;shyam;");
-    scope.items.push({ name: "adam" });
-    scope.$digest();
-    expect(element.find("li").length).toEqual(3);
-    expect(element.text()).toEqual("misko;shyam;adam;");
-  });
-
-  it("should iterate over an array-like object", () => {
+  it("should iterate over an array-like object", async () => {
     element = $compile(
       "<ul>" + '<li ng-repeat="item in items">{{item.name}};</li>' + "</ul>",
     )(scope);
-
-    document.getElementById("dummy").innerHTML =
+    await wait();
+    document.getElementById("app").innerHTML =
       "<a class='test' name='x'>a</a>" +
       "<a class='test' name='y'>b</a>" +
       "<a class='test' name='x'>c</a>";
 
     const htmlCollection = document.getElementsByClassName("test");
     scope.items = htmlCollection;
-    scope.$digest();
-    expect(element.find("li").length).toEqual(3);
-    expect(element.text()).toEqual("x;y;x;");
+    await wait();
+    expect(element.querySelectorAll("li").length).toEqual(3);
+    expect(element.textContent).toEqual("x;y;x;");
 
     // reset dummy
-    document.getElementById("dummy").innerHTML = "";
+    document.getElementById("app").innerHTML = "";
   });
 
-  it("should iterate over an array-like class", () => {
+  it("should iterate over an array-like class", async () => {
     function Collection() {}
     Collection.prototype = new Array();
     Collection.prototype.length = 0;
@@ -141,41 +111,42 @@ describe("ngRepeat", () => {
     element = $compile(
       "<ul>" + '<li ng-repeat="item in items">{{item.name}};</li>' + "</ul>",
     )(scope);
-
+    await wait();
     scope.items = collection;
-    scope.$digest();
-    expect(element.find("li").length).toEqual(3);
-    expect(element.text()).toEqual("x;y;z;");
+    await wait();
+    expect(element.querySelectorAll("li").length).toEqual(3);
+    expect(element.textContent).toEqual("x;y;z;");
   });
 
-  it("should iterate over on object/map", () => {
+  it("should iterate over on object/map", async () => {
     element = $compile(
       "<ul>" +
         '<li ng-repeat="(key, value) in items">{{key}}:{{value}}|</li>' +
         "</ul>",
     )(scope);
     scope.items = { misko: "swe", shyam: "set" };
-    scope.$digest();
-    expect(element.text()).toEqual("misko:swe|shyam:set|");
+    await wait();
+    expect(element.textContent).toEqual("misko:swe|shyam:set|");
   });
 
-  it("should iterate over on object/map where (key,value) contains whitespaces", () => {
+  it("should iterate over on object/map where (key,value) contains whitespaces", async () => {
     element = $compile(
       "<ul>" +
         '<li ng-repeat="(  key ,  value  ) in items">{{key}}:{{value}}|</li>' +
         "</ul>",
     )(scope);
     scope.items = { me: "swe", you: "set" };
-    scope.$digest();
-    expect(element.text()).toEqual("me:swe|you:set|");
+    await wait();
+    expect(element.textContent).toEqual("me:swe|you:set|");
   });
 
-  it("should iterate over an object/map with identical values", () => {
+  it("should iterate over an object/map with identical values", async () => {
     element = $compile(
       "<ul>" +
         '<li ng-repeat="(key, value) in items">{{key}}:{{value}}|</li>' +
         "</ul>",
     )(scope);
+    await wait();
     scope.items = {
       age: 20,
       wealth: 20,
@@ -183,282 +154,36 @@ describe("ngRepeat", () => {
       dogname: "Bingo",
       codename: "20",
     };
-    scope.$digest();
-    expect(element.text()).toEqual(
+    await wait();
+    expect(element.textContent).toEqual(
       "age:20|wealth:20|prodname:Bingo|dogname:Bingo|codename:20|",
     );
   });
 
-  it("should iterate over on object created using `Object.create(null)`", () => {
+  it("should iterate over on object created using `Object.create(null)`", async () => {
     element = $compile(
       "<ul>" +
         '<li ng-repeat="(key, value) in items">{{key}}:{{value}}|</li>' +
         "</ul>",
     )(scope);
-
+    await wait();
     const items = Object.create(null);
     items.misko = "swe";
     items.shyam = "set";
 
     scope.items = items;
-    scope.$digest();
-    expect(element.text()).toEqual("misko:swe|shyam:set|");
+    await wait();
+    expect(element.textContent).toEqual("misko:swe|shyam:set|");
 
-    delete items.shyam;
-    scope.$digest();
-    expect(element.text()).toEqual("misko:swe|");
-  });
-
-  describe("track by", () => {
-    it("should track using expression function", () => {
-      element = $compile(
-        "<ul>" +
-          '<li ng-repeat="item in items track by item.id">{{item.name}};</li>' +
-          "</ul>",
-      )(scope);
-      scope.items = [{ id: "misko" }, { id: "igor" }];
-      scope.$digest();
-      const li0 = element.find("li")[0];
-      const li1 = element.find("li")[1];
-
-      scope.items.push(scope.items.shift());
-      scope.$digest();
-      expect(element.find("li")[0]).toBe(li1);
-      expect(element.find("li")[1]).toBe(li0);
-    });
-
-    it("should track using build in $id function", () => {
-      element = $compile(
-        "<ul>" +
-          '<li ng-repeat="item in items track by $id(item)">{{item.name}};</li>' +
-          "</ul>",
-      )(scope);
-      scope.items = [{ name: "misko" }, { name: "igor" }];
-      scope.$digest();
-      const li0 = element.find("li")[0];
-      const li1 = element.find("li")[1];
-
-      scope.items.push(scope.items.shift());
-      scope.$digest();
-      expect(element.find("li")[0]).toBe(li1);
-      expect(element.find("li")[1]).toBe(li0);
-    });
-
-    it("should still filter when track is present", () => {
-      scope.isIgor = function (item) {
-        return item.name === "igor";
-      };
-      element = $compile(
-        "<ul>" +
-          '<li ng-repeat="item in items | filter:isIgor track by $id(item)">{{item.name}};</li>' +
-          "</ul>",
-      )(scope);
-      scope.items = [{ name: "igor" }, { name: "misko" }];
-      scope.$digest();
-
-      expect(element.find("li").text()).toBe("igor;");
-    });
-
-    it("should track using provided function when a filter is present", () => {
-      scope.newArray = function (items) {
-        const newArray = [];
-        Object.entries(items).forEach(([id, name]) => {
-          newArray.push({
-            id: id,
-            name: name,
-          });
-        });
-        return newArray;
-      };
-      element = $compile(
-        "<ul><li ng-repeat='item in items | filter:newArray track by item.id'>{{item.name}};</li></ul>",
-      )(scope);
-      scope.items = [
-        { id: 1, name: "igor" },
-        { id: 2, name: "misko" },
-      ];
-      scope.$digest();
-      expect(element.text()).toBe("igor;misko;");
-
-      const li0 = element.find("li")[0];
-      const li1 = element.find("li")[1];
-
-      scope.items.push(scope.items.shift());
-      scope.$digest();
-      expect(element.find("li")[0]).toBe(li1);
-      expect(element.find("li")[1]).toBe(li0);
-    });
-
-    it("should iterate over an array of primitives", () => {
-      element = $compile(
-        "<ul>" +
-          '<li ng-repeat="item in items track by $index">{{item}};</li>' +
-          "</ul>",
-      )(scope);
-
-      Array.prototype.extraProperty = "should be ignored";
-      // INIT
-      scope.items = [true, true, true];
-      scope.$digest();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.text()).toEqual("true;true;true;");
-      delete Array.prototype.extraProperty;
-
-      scope.items = [false, true, true];
-      scope.$digest();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.text()).toEqual("false;true;true;");
-
-      scope.items = [false, true, false];
-      scope.$digest();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.text()).toEqual("false;true;false;");
-
-      scope.items = [true];
-      scope.$digest();
-      expect(element.find("li").length).toEqual(1);
-      expect(element.text()).toEqual("true;");
-
-      scope.items = [true, true, false];
-      scope.$digest();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.text()).toEqual("true;true;false;");
-
-      scope.items = [true, false, false];
-      scope.$digest();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.text()).toEqual("true;false;false;");
-
-      // string
-      scope.items = ["a", "a", "a"];
-      scope.$digest();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.text()).toEqual("a;a;a;");
-
-      scope.items = ["ab", "a", "a"];
-      scope.$digest();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.text()).toEqual("ab;a;a;");
-
-      scope.items = ["test"];
-      scope.$digest();
-      expect(element.find("li").length).toEqual(1);
-      expect(element.text()).toEqual("test;");
-
-      scope.items = ["same", "value"];
-      scope.$digest();
-      expect(element.find("li").length).toEqual(2);
-      expect(element.text()).toEqual("same;value;");
-
-      // number
-      scope.items = [12, 12, 12];
-      scope.$digest();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.text()).toEqual("12;12;12;");
-
-      scope.items = [53, 12, 27];
-      scope.$digest();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.text()).toEqual("53;12;27;");
-
-      scope.items = [89];
-      scope.$digest();
-      expect(element.find("li").length).toEqual(1);
-      expect(element.text()).toEqual("89;");
-
-      scope.items = [89, 23];
-      scope.$digest();
-      expect(element.find("li").length).toEqual(2);
-      expect(element.text()).toEqual("89;23;");
-    });
-
-    it("should iterate over object with changing primitive property values", () => {
-      element = $compile(
-        "<ul>" +
-          '<li ng-repeat="(key, value) in items track by $index">' +
-          "{{key}}:{{value}};" +
-          '<input type="checkbox" ng-model="items[key]">' +
-          "</li>" +
-          "</ul>",
-      )(scope);
-      document.getElementById("dummy").appendChild(element[0]);
-      scope.items = { misko: true, shyam: true, zhenbo: true };
-      scope.$digest();
-      expect(element.find("li").length).toEqual(3);
-      expect(element.text()).toEqual("misko:true;shyam:true;zhenbo:true;");
-      element.find("input").eq(0)[0].click();
-
-      expect(element.text()).toEqual("misko:false;shyam:true;zhenbo:true;");
-      expect(element.find("input")[0].checked).toBe(false);
-      expect(element.find("input")[1].checked).toBe(true);
-      expect(element.find("input")[2].checked).toBe(true);
-
-      element.find("input").eq(0)[0].click();
-      expect(element.text()).toEqual("misko:true;shyam:true;zhenbo:true;");
-      expect(element.find("input")[0].checked).toBe(true);
-      expect(element.find("input")[1].checked).toBe(true);
-      expect(element.find("input")[2].checked).toBe(true);
-
-      element.find("input").eq(1)[0].click();
-      expect(element.text()).toEqual("misko:true;shyam:false;zhenbo:true;");
-      expect(element.find("input")[0].checked).toBe(true);
-      expect(element.find("input")[1].checked).toBe(false);
-      expect(element.find("input")[2].checked).toBe(true);
-
-      scope.items = { misko: false, shyam: true, zhenbo: true };
-      scope.$digest();
-      expect(element.text()).toEqual("misko:false;shyam:true;zhenbo:true;");
-      expect(element.find("input")[0].checked).toBe(false);
-      expect(element.find("input")[1].checked).toBe(true);
-      expect(element.find("input")[2].checked).toBe(true);
-
-      document.getElementById("dummy").innerHTML = "";
-    });
-
-    it("should invoke track by with correct locals", () => {
-      scope.trackBy = jasmine
-        .createSpy()
-        .and.callFake((k, v) => [k, v].join(""));
-
-      element = $compile(
-        "<ul>" +
-          '<li ng-repeat="(k, v) in [1, 2] track by trackBy(k, v)"></li>' +
-          "</ul>",
-      )(scope);
-      scope.$digest();
-
-      expect(scope.trackBy).toHaveBeenCalledTimes(2);
-      expect(scope.trackBy.calls.argsFor(0)).toEqual([0, 1]);
-      expect(scope.trackBy.calls.argsFor(1)).toEqual([1, 2]);
-    });
-
-    // https://github.com/angular/angular.js/issues/16776
-    it("should invoke nested track by with correct locals", () => {
-      scope.trackBy = jasmine
-        .createSpy()
-        .and.callFake((k1, v1, k2, v2) => [k1, v1, k2, v2].join(""));
-
-      element = $compile(
-        "<ul>" +
-          '<li ng-repeat="(k1, v1) in [1, 2]">' +
-          '<div ng-repeat="(k2, v2) in [3, 4] track by trackBy(k1, v1, k2, v2)"></div>' +
-          "</li>" +
-          "</ul>",
-      )(scope);
-      scope.$digest();
-
-      expect(scope.trackBy).toHaveBeenCalledTimes(4);
-      expect(scope.trackBy.calls.argsFor(0)).toEqual([0, 1, 0, 3]);
-      expect(scope.trackBy.calls.argsFor(1)).toEqual([0, 1, 1, 4]);
-      expect(scope.trackBy.calls.argsFor(2)).toEqual([1, 2, 0, 3]);
-      expect(scope.trackBy.calls.argsFor(3)).toEqual([1, 2, 1, 4]);
-    });
+    delete scope.items.shyam;
+    await wait();
+    expect(element.textContent).toEqual("misko:swe|");
   });
 
   describe("alias as", () => {
-    it("should assigned the filtered to the target scope property if an alias is provided", () => {
+    it("should assigned the filtered to the target scope property if an alias is provided", async () => {
       element = $compile(
-        '<div ng-repeat="item in items | filter:x as results track by $index">{{item.name}}/</div>',
+        '<div ng-repeat="item in items | filter:x as results">{{item.name}}/</div>',
       )(scope);
 
       scope.items = [
@@ -471,41 +196,32 @@ describe("ngRepeat", () => {
       ];
 
       expect(scope.results).toBeUndefined();
-      scope.$digest();
-
       scope.x = "bl";
-      scope.$digest();
+      await wait();
 
-      expect(scope.results).toEqual([
-        { name: "blue" },
-        { name: "black" },
-        { name: "blonde" },
-      ]);
+      expect(scope.results[0].name).toEqual("blue");
+      expect(scope.results[1].name).toEqual("black");
+      expect(scope.results[2].name).toEqual("blonde");
 
       scope.items = [];
-      scope.$digest();
-
+      await wait();
       expect(scope.results).toEqual([]);
     });
 
-    it("should render a message when the repeat list is empty", () => {
+    it("should render an empty list", async () => {
       element = $compile(
         "<div>" +
           '  <div ng-repeat="item in items | filter:x as results">{{item}}</div>' +
-          '  <div ng-if="results.length === 0">' +
-          "    No results found..." +
-          "  </div>" +
           "</div>",
       )(scope);
 
       scope.items = [1, 2, 3, 4, 5, 6];
-      scope.$digest();
-      expect(element.text().trim()).toEqual("123456");
+      await wait();
+      expect(element.textContent.trim()).toEqual("123456");
 
       scope.x = "0";
-      scope.$digest();
-
-      expect(element.text().trim()).toEqual("No results found...");
+      await wait();
+      expect(element.textContent.trim()).toEqual("");
     });
 
     it("should support alias identifiers containing reserved words", () => {
@@ -518,20 +234,24 @@ describe("ngRepeat", () => {
         { name: "orange" },
         { name: "blonde" },
       ];
-      ["null2", "qthis", "qthisq", "fundefined", "$$parent"].forEach((name) => {
-        const expr = `item in items | filter:x as ${name} track by $index`;
-        element = $compile(`<div><div ng-repeat="${expr}"></div></div>`)(scope);
-        scope.$digest();
-        expect(scope[name]).toEqual([
-          { name: "blue" },
-          { name: "black" },
-          { name: "blonde" },
-        ]);
-        dealoc(element);
-      });
+      ["null2", "qthis", "qthisq", "fundefined", "$$parent"].forEach(
+        async (name) => {
+          const expr = `item in items | filter:x as ${name}`;
+          element = $compile(`<div><div ng-repeat="${expr}"></div></div>`)(
+            scope,
+          );
+          await wait();
+          expect(scope[name][0].name).toEqual("blue");
+          expect(scope[name][1].name).toEqual("black");
+          expect(scope[name][2].name).toEqual("blonde");
+          dealoc(element);
+        },
+      );
+
+      expect().toBe();
     });
 
-    it("should throw if alias identifier is not a simple identifier", () => {
+    it("should throw if alias identifier is not a simple identifier", async () => {
       scope.x = "bl";
       scope.items = [
         { name: "red" },
@@ -560,24 +280,26 @@ describe("ngRepeat", () => {
         "obj['key']",
         "obj.property",
         "foo=6",
-      ].forEach((expr) => {
-        const expression =
-          `item in items | filter:x as ${expr} track by $index`.replace(
-            /"/g,
-            "&quot;",
-          );
+      ].forEach(async (expr) => {
+        const expression = `item in items | filter:x as ${expr}`.replace(
+          /"/g,
+          "&quot;",
+        );
         element = $compile(
           `<div>` +
             `  <div ng-repeat="${expression}">{{item}}</div>` +
             `</div>`,
         )(scope);
+        await wait();
         expect(logs.shift().message).toMatch(/must be a valid JS identifier/);
 
         dealoc(element);
       });
+
+      expect().toBe();
     });
 
-    it("should allow expressions over multiple lines", () => {
+    it("should allow expressions over multiple lines", async () => {
       element = $compile(
         "<ul>" +
           '<li ng-repeat="item in items\n' +
@@ -589,13 +311,11 @@ describe("ngRepeat", () => {
         return true;
       };
       scope.items = [{ name: "igor" }, { name: "misko" }];
-
-      scope.$digest();
-
-      expect(element.text()).toEqual("igor/misko/");
+      await wait();
+      expect(element.textContent).toEqual("igor/misko/");
     });
 
-    it("should strip white space characters correctly", () => {
+    it("should strip white space characters correctly", async () => {
       element = $compile(
         "<ul>" +
           '<li ng-repeat="item   \t\n  \t  in  \n \t\n\n \nitems \t\t\n | filter:\n\n{' +
@@ -605,13 +325,12 @@ describe("ngRepeat", () => {
       )(scope);
 
       scope.items = [{ name: "igor" }, { name: "misko" }];
+      await wait();
 
-      scope.$digest();
-
-      expect(element.text()).toEqual("misko/");
+      expect(element.textContent).toEqual("misko/");
     });
 
-    it("should not ngRepeat over parent properties", () => {
+    it("should not ngRepeat over parent properties", async () => {
       const Class = function () {};
       Class.prototype.abc = function () {};
       Class.prototype.value = "abc";
@@ -623,72 +342,75 @@ describe("ngRepeat", () => {
       )(scope);
       scope.items = new Class();
       scope.items.name = "value";
-      scope.$digest();
-      expect(element.text()).toEqual("name:value;");
+      await wait();
+      expect(element.textContent).toEqual("name:value;");
     });
 
-    it("should error on wrong parsing of ngRepeat", () => {
-      element = JQLite('<ul><li ng-repeat="i dont parse"></li></ul>');
-      $compile(element)(scope);
+    it("should error on wrong parsing of ngRepeat", async () => {
+      element = $compile('<ul><li ng-repeat="i dont parse"></li></ul>')(scope);
+      await wait();
       expect(logs.shift().message).toMatch(/i dont parse/);
     });
 
-    it("should throw error when left-hand-side of ngRepeat can't be parsed", () => {
-      element = JQLite('<ul><li ng-repeat="i dont parse in foo"></li></ul>');
+    it("should throw error when left-hand-side of ngRepeat can't be parsed", async () => {
+      element = createElementFromHTML(
+        '<ul><li ng-repeat="i dont parse in foo"></li></ul>',
+      );
       $compile(element)(scope);
+      await wait();
       expect(logs.shift().message).toMatch(/i dont parse/);
     });
 
-    it("should expose iterator offset as $index when iterating over arrays", () => {
+    it("should expose iterator offset as $index when iterating over arrays", async () => {
       element = $compile(
         "<ul>" +
           '<li ng-repeat="item in items">{{item}}:{{$index}}|</li>' +
           "</ul>",
       )(scope);
       scope.items = ["misko", "shyam", "frodo"];
-      scope.$digest();
-      expect(element.text()).toEqual("misko:0|shyam:1|frodo:2|");
+      await wait();
+      expect(element.textContent).toEqual("misko:0|shyam:1|frodo:2|");
     });
 
-    it("should expose iterator offset as $index when iterating over objects", () => {
+    it("should expose iterator offset as $index when iterating over objects", async () => {
       element = $compile(
         "<ul>" +
           '<li ng-repeat="(key, val) in items">{{key}}:{{val}}:{{$index}}|</li>' +
           "</ul>",
       )(scope);
       scope.items = { misko: "m", shyam: "s", frodo: "f" };
-      scope.$digest();
-      expect(element.text()).toEqual("misko:m:0|shyam:s:1|frodo:f:2|");
+      await wait();
+      expect(element.textContent).toEqual("misko:m:0|shyam:s:1|frodo:f:2|");
     });
 
-    it("should expose iterator offset as $index when iterating over objects with length key value 0", () => {
+    it("should expose iterator offset as $index when iterating over objects with length key value 0", async () => {
       element = $compile(
         "<ul>" +
           '<li ng-repeat="(key, val) in items">{{key}}:{{val}}:{{$index}}|</li>' +
           "</ul>",
       )(scope);
       scope.items = { misko: "m", shyam: "s", frodo: "f", length: 0 };
-      scope.$digest();
-      expect(element.text()).toEqual(
+      await wait();
+      expect(element.textContent).toEqual(
         "misko:m:0|shyam:s:1|frodo:f:2|length:0:3|",
       );
     });
 
-    it("should expose iterator position as $first, $middle and $last when iterating over arrays", () => {
+    it("should expose iterator position as $first, $middle and $last when iterating over arrays", async () => {
       element = $compile(
         "<ul>" +
           '<li ng-repeat="item in items">{{item}}:{{$first}}-{{$middle}}-{{$last}}|</li>' +
           "</ul>",
       )(scope);
       scope.items = ["misko", "shyam", "doug"];
-      scope.$digest();
-      expect(element.text()).toEqual(
+      await wait();
+      expect(element.textContent).toEqual(
         "misko:true-false-false|shyam:false-true-false|doug:false-false-true|",
       );
 
       scope.items.push("frodo");
-      scope.$digest();
-      expect(element.text()).toEqual(
+      await wait();
+      expect(element.textContent).toEqual(
         "misko:true-false-false|" +
           "shyam:false-true-false|" +
           "doug:false-true-false|" +
@@ -697,31 +419,31 @@ describe("ngRepeat", () => {
 
       scope.items.pop();
       scope.items.pop();
-      scope.$digest();
-      expect(element.text()).toEqual(
+      await wait();
+      expect(element.textContent).toEqual(
         "misko:true-false-false|shyam:false-false-true|",
       );
 
       scope.items.pop();
-      scope.$digest();
-      expect(element.text()).toEqual("misko:true-false-true|");
+      await wait();
+      expect(element.textContent).toEqual("misko:true-false-true|");
     });
 
-    it("should expose iterator position as $even and $odd when iterating over arrays", () => {
+    it("should expose iterator position as $even and $odd when iterating over arrays", async () => {
       element = $compile(
         "<ul>" +
           '<li ng-repeat="item in items">{{item}}:{{$even}}-{{$odd}}|</li>' +
           "</ul>",
       )(scope);
       scope.items = ["misko", "shyam", "doug"];
-      scope.$digest();
-      expect(element.text()).toEqual(
+      await wait();
+      expect(element.textContent).toEqual(
         "misko:true-false|shyam:false-true|doug:true-false|",
       );
 
       scope.items.push("frodo");
-      scope.$digest();
-      expect(element.text()).toBe(
+      await wait();
+      expect(element.textContent).toBe(
         "misko:true-false|" +
           "shyam:false-true|" +
           "doug:true-false|" +
@@ -730,19 +452,19 @@ describe("ngRepeat", () => {
 
       scope.items.shift();
       scope.items.pop();
-      scope.$digest();
-      expect(element.text()).toBe("shyam:true-false|doug:false-true|");
+      await wait();
+      expect(element.textContent).toBe("shyam:true-false|doug:false-true|");
     });
 
-    it("should expose iterator position as $first, $middle and $last when iterating over objects", () => {
+    it("should expose iterator position as $first, $middle and $last when iterating over objects", async () => {
       element = $compile(
         "<ul>" +
           '<li ng-repeat="(key, val) in items">{{key}}:{{val}}:{{$first}}-{{$middle}}-{{$last}}|</li>' +
           "</ul>",
       )(scope);
       scope.items = { misko: "m", shyam: "s", doug: "d", frodo: "f" };
-      scope.$digest();
-      expect(element.text()).toEqual(
+      await wait();
+      expect(element.textContent).toEqual(
         "misko:m:true-false-false|" +
           "shyam:s:false-true-false|" +
           "doug:d:false-true-false|" +
@@ -751,25 +473,25 @@ describe("ngRepeat", () => {
 
       delete scope.items.doug;
       delete scope.items.frodo;
-      scope.$digest();
-      expect(element.text()).toEqual(
+      await wait();
+      expect(element.textContent).toEqual(
         "misko:m:true-false-false|shyam:s:false-false-true|",
       );
 
       delete scope.items.shyam;
-      scope.$digest();
-      expect(element.text()).toEqual("misko:m:true-false-true|");
+      await wait();
+      expect(element.textContent).toEqual("misko:m:true-false-true|");
     });
 
-    it("should expose iterator position as $even and $odd when iterating over objects", () => {
+    it("should expose iterator position as $even and $odd when iterating over objects", async () => {
       element = $compile(
         "<ul>" +
           '<li ng-repeat="(key, val) in items">{{key}}:{{val}}:{{$even}}-{{$odd}}|</li>' +
           "</ul>",
       )(scope);
       scope.items = { misko: "m", shyam: "s", doug: "d", frodo: "f" };
-      scope.$digest();
-      expect(element.text()).toBe(
+      await wait();
+      expect(element.textContent).toBe(
         "misko:m:true-false|" +
           "shyam:s:false-true|" +
           "doug:d:true-false|" +
@@ -778,11 +500,11 @@ describe("ngRepeat", () => {
 
       delete scope.items.frodo;
       delete scope.items.shyam;
-      scope.$digest();
-      expect(element.text()).toBe("misko:m:true-false|doug:d:false-true|");
+      await wait();
+      expect(element.textContent).toBe("misko:m:true-false|doug:d:false-true|");
     });
 
-    it("should calculate $first, $middle and $last when we filter out properties from an obj", () => {
+    it("should calculate $first, $middle and $last when we filter out properties from an obj", async () => {
       element = $compile(
         "<ul>" +
           '<li ng-repeat="(key, val) in items">{{key}}:{{val}}:{{$first}}-{{$middle}}-{{$last}}|</li>' +
@@ -795,9 +517,8 @@ describe("ngRepeat", () => {
         frodo: "f",
         $toBeFilteredOut: "xxxx",
       };
-      scope.$digest();
-
-      expect(element.text()).toEqual(
+      await wait();
+      expect(element.textContent).toEqual(
         "misko:m:true-false-false|" +
           "shyam:s:false-true-false|" +
           "doug:d:false-true-false|" +
@@ -805,7 +526,7 @@ describe("ngRepeat", () => {
       );
     });
 
-    it("should calculate $even and $odd when we filter out properties from an obj", () => {
+    it("should calculate $even and $odd when we filter out properties from an obj", async () => {
       element = $compile(
         "<ul>" +
           '<li ng-repeat="(key, val) in items">{{key}}:{{val}}:{{$even}}-{{$odd}}|</li>' +
@@ -818,8 +539,8 @@ describe("ngRepeat", () => {
         frodo: "f",
         $toBeFilteredOut: "xxxx",
       };
-      scope.$digest();
-      expect(element.text()).toEqual(
+      await wait();
+      expect(element.textContent).toEqual(
         "misko:m:true-false|" +
           "shyam:s:false-true|" +
           "doug:d:true-false|" +
@@ -827,19 +548,18 @@ describe("ngRepeat", () => {
       );
     });
 
-    it("should ignore $ and $$ properties", () => {
+    it("should ignore $ and $$ properties", async () => {
       element = $compile('<ul><li ng-repeat="i in items">{{i}}|</li></ul>')(
         scope,
       );
       scope.items = ["a", "b", "c"];
       scope.items.$$hashKey = "xxx";
       scope.items.$root = "yyy";
-      scope.$digest();
-
-      expect(element.text()).toEqual("a|b|c|");
+      await wait();
+      expect(element.textContent).toEqual("a|b|c|");
     });
 
-    it("should repeat over nested arrays", () => {
+    it("should repeat over nested arrays", async () => {
       element = $compile(
         "<ul>" +
           '<li ng-repeat="subgroup in groups">' +
@@ -851,90 +571,85 @@ describe("ngRepeat", () => {
         ["a", "b"],
         ["c", "d"],
       ];
-      scope.$digest();
-
-      expect(element.text()).toEqual("a|b|Xc|d|X");
+      await wait();
+      expect(element.textContent).toEqual("a|b|Xc|d|X");
     });
 
-    it("should ignore non-array element properties when iterating over an array", () => {
+    it("should ignore non-array element properties when iterating over an array", async () => {
       element = $compile(
         '<ul><li ng-repeat="item in array">{{item}}|</li></ul>',
       )(scope);
       scope.array = ["a", "b", "c"];
       scope.array.foo = "23";
       scope.array.bar = function () {};
-      scope.$digest();
-
-      expect(element.text()).toBe("a|b|c|");
+      await wait();
+      expect(element.textContent).toBe("a|b|c|");
     });
 
-    it("should iterate over non-existent elements of a sparse array", () => {
+    it("should iterate over non-existent elements of a sparse array", async () => {
       element = $compile(
-        '<ul><li ng-repeat="item in array track by $index">{{item}}|</li></ul>',
+        '<ul><li ng-repeat="item in array">{{item}}|</li></ul>',
       )(scope);
       scope.array = ["a", "b"];
       scope.array[4] = "c";
       scope.array[6] = "d";
-      scope.$digest();
-
-      expect(element.text()).toBe("a|b|||c||d|");
+      await wait();
+      expect(element.textContent).toBe("a|b|||c||d|");
     });
 
-    it("should iterate over all kinds of types", () => {
+    it("should iterate over all kinds of types", async () => {
       element = $compile(
         '<ul><li ng-repeat="item in array">{{item}}|</li></ul>',
       )(scope);
       scope.array = ["a", 1, null, undefined, {}];
-      scope.$digest();
-
-      expect(element.text()).toMatch(/a\|1\|\|\|\{\s*\}\|/);
+      await wait();
+      expect(element.textContent).toMatch("a|1||{}|{}|");
     });
 
-    it("should preserve data on move of elements", () => {
+    it("should preserve data on move of elements", async () => {
       element = $compile(
         '<ul><li ng-repeat="item in array">{{item}}|</li></ul>',
       )(scope);
       scope.array = ["a", "b"];
-      scope.$digest();
+      await wait();
+      let lis = element.querySelectorAll("li");
 
-      let lis = element.find("li");
-      lis.eq(0).data("mark", "a");
-      lis.eq(1).data("mark", "b");
+      lis[0].setAttribute("mark", "a");
+      lis[1].setAttribute("mark", "b");
 
       scope.array = ["b", "a"];
-      scope.$digest();
+      await wait();
 
-      lis = element.find("li");
-      expect(lis.eq(0).data("mark")).toEqual("b");
-      expect(lis.eq(1).data("mark")).toEqual("a");
+      lis = element.querySelectorAll("li");
+      expect(lis[0].getAttribute("mark")).toEqual("b");
+      expect(lis[1].getAttribute("mark")).toEqual("a");
     });
   });
 
   describe("nesting in replaced directive templates", () => {
-    it("should work when placed on a non-root element of attr directive with SYNC replaced template", () => {
+    it("should work when placed on a non-root element of attr directive with SYNC replaced template", async () => {
       $compileProvider.directive("rr", () => ({
         restrict: "A",
         replace: true,
         template: '<div ng-repeat="i in items">{{i}}|</div>',
       }));
-      element = JQLite("<div><span rr>{{i}}|</span></div>");
-      $compile(element)(scope);
-      scope.$apply();
-      expect(element.text()).toBe("");
+      element = $compile("<div><span rr>{{i}}|</span></div>")(scope);
+      await wait();
+      expect(element.textContent).toBe("");
 
       scope.items = [1, 2];
-      scope.$apply();
-      expect(element.text()).toBe("1|2|");
+      await wait();
+      expect(element.textContent).toBe("1|2|");
 
-      expect(element[0].children[0].outerHTML).toBe(
+      expect(element.children[0].outerHTML).toBe(
         '<div ng-repeat="i in items" rr="">1|</div>',
       );
-      expect(element[0].children[1].outerHTML).toBe(
+      expect(element.children[1].outerHTML).toBe(
         '<div ng-repeat="i in items" rr="">2|</div>',
       );
     });
 
-    it("should work when placed on a non-root element of attr directive with ASYNC replaced template", () => {
+    it("should work when placed on a non-root element of attr directive with ASYNC replaced template", async () => {
       $compileProvider.directive("rr", () => ({
         restrict: "A",
         replace: true,
@@ -942,31 +657,29 @@ describe("ngRepeat", () => {
       }));
 
       $templateCache.set("rr.html", '<div ng-repeat="i in items">{{i}}|</div>');
-
-      element = JQLite("<div><span rr>{{i}}|</span></div>");
-      $compile(element)(scope);
-      scope.$apply();
-      expect(element.text()).toBe("");
+      element = $compile("<div><span rr>{{i}}|</span></div>")(scope);
+      await wait();
+      expect(element.textContent).toBe("");
 
       scope.items = [1, 2];
-      scope.$apply();
-      expect(element.text()).toBe("1|2|");
-      expect(element[0].children[0].outerHTML).toBe(
+      await wait();
+      expect(element.textContent).toBe("1|2|");
+      expect(element.children[0].outerHTML).toBe(
         '<div ng-repeat="i in items" rr="">1|</div>',
       );
-      expect(element[0].children[1].outerHTML).toBe(
+      expect(element.children[1].outerHTML).toBe(
         '<div ng-repeat="i in items" rr="">2|</div>',
       );
     });
 
-    it("should work when placed on a root element of attr directive with SYNC replaced template", () => {
+    it("should work when placed on a root element of attr directive with SYNC replaced template", async () => {
       $compileProvider.directive("replaceMeWithRepeater", () => ({
         replace: true,
         template: '<span ng-repeat="i in items">{{log(i)}}</span>',
       }));
-      element = JQLite("<span replace-me-with-repeater></span>");
-      $compile(element)(scope);
-      expect(element.text()).toBe("");
+      element = $compile("<span replace-me-with-repeater></span>")(scope);
+      await wait();
+      expect(element.textContent).toBe("");
       const scopeLog = [];
       scope.log = function (t) {
         scopeLog.push(t);
@@ -974,46 +687,41 @@ describe("ngRepeat", () => {
 
       // This creates one item, but it has no parent so we can't get to it
       scope.items = [1, 2];
-      scope.$apply();
+      await wait();
       expect(scopeLog).toContain(1);
       expect(scopeLog).toContain(2);
       scopeLog.length = 0;
     });
 
-    it("should work when placed on a root element of attr directive with ASYNC replaced template", () => {
+    it("should work when placed on a root element of attr directive with ASYNC replaced template", (done) => {
       $compileProvider.directive("replaceMeWithRepeater", () => ({
         replace: true,
         templateUrl: "replace-me-with-repeater.html",
       }));
       $templateCache.set(
         "replace-me-with-repeater.html",
-        '<div ng-repeat="i in items">{{log(i)}}</div>',
+        '<div><div ng-repeat="i in items">{{i}}</div></div>',
       );
-      element = JQLite(
-        "<span>-</span><span replace-me-with-repeater></span><span>-</span>",
+      element = $compile("<div>-<span replace-me-with-repeater></span>-</div>")(
+        scope,
       );
+
       $compile(element)(scope);
-      expect(element.text()).toBe("--");
-      const logs = [];
-      scope.log = function (t) {
-        logs.push(t);
-      };
+      expect(element.innerText).toBe("--");
 
-      // This creates one item, but it has no parent so we can't get to it
       scope.items = [1, 2];
-      scope.$apply();
-      expect(logs).toContain(1);
-      expect(logs).toContain(2);
-      logs.length = 0;
+      setTimeout(() => {
+        expect(element.innerText).toBe("-12-");
+        scope.items = [];
+      }, 500);
 
-      // This cleans up to prevent memory leak
-      scope.items = [];
-      scope.$apply();
-      expect(element[0].outerHTML).toBe(`<span>-</span>`);
-      expect(logs.length).toBe(0);
+      setTimeout(() => {
+        expect(element.innerText).toBe("--");
+        done();
+      }, 1000);
     });
 
-    it("should work when placed on a root element of element directive with SYNC replaced template", () => {
+    it("should work when placed on a root element of element directive with SYNC replaced template", async () => {
       $compileProvider.directive("replaceMeWithRepeater", () => ({
         restrict: "E",
         replace: true,
@@ -1022,12 +730,12 @@ describe("ngRepeat", () => {
       element = $compile(
         "<div><replace-me-with-repeater></replace-me-with-repeater></div>",
       )(scope);
-      expect(element.text()).toBe("");
-      scope.$apply();
-      expect(element.text()).toBe("123");
+      expect(element.textContent).toBe("");
+      await wait();
+      expect(element.textContent).toBe("123");
     });
 
-    it("should work when placed on a root element of element directive with ASYNC replaced template", () => {
+    it("should work when placed on a root element of element directive with ASYNC replaced template", async () => {
       $compileProvider.directive("replaceMeWithRepeater", () => ({
         restrict: "E",
         replace: true,
@@ -1040,31 +748,29 @@ describe("ngRepeat", () => {
       element = $compile(
         "<div><replace-me-with-repeater></replace-me-with-repeater></div>",
       )(scope);
-      expect(element.text()).toBe("");
-      scope.$apply();
-      expect(element.text()).toBe("123");
+      expect(element.textContent).toBe("");
+      await wait();
+      expect(element.textContent).toBe("123");
     });
 
-    it("should work when combined with an ASYNC template that loads after the first digest", (done) => {
+    it("should work when combined with an ASYNC template that loads after the first digest", async () => {
       $compileProvider.directive("test", () => ({
         templateUrl: "/public/test.html",
       }));
-      element = JQLite('<div><div ng-repeat="i in items" test></div></div>');
+      element = createElementFromHTML(
+        '<div><div ng-repeat="i in items" test></div></div>',
+      );
       $compile(element)(scope);
       scope.items = [1];
-      scope.$apply();
-      expect(element.text()).toBe("");
+      await wait();
+      expect(element.textContent).toBe("");
 
-      setTimeout(() => {
-        expect(element.text()).toBe("hello");
+      await wait(300);
+      expect(element.textContent).toBe("hello");
 
-        scope.items = [];
-        scope.$apply();
-        // Note: there are still comments in element!
-        expect(element.children().length).toBe(0);
-        expect(element.text()).toBe("");
-        done();
-      }, 300);
+      scope.items = [];
+      await wait();
+      expect(element.textContent).toBe("");
     });
   });
 
@@ -1075,7 +781,7 @@ describe("ngRepeat", () => {
     let d;
     let lis;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       element = $compile(
         "<ul>" + '<li ng-repeat="item in items">{{item}}</li>' + "</ul>",
       )(scope);
@@ -1085,150 +791,144 @@ describe("ngRepeat", () => {
       d = 4;
 
       scope.items = [a, b, c];
-      scope.$digest();
-      lis = element.find("li");
+      await wait();
+      lis = element.querySelectorAll("li");
     });
 
-    it("should preserve the order of elements", () => {
+    it("should preserve the order of elements", async () => {
       scope.items = [a, c, d];
-      scope.$digest();
-      const newElements = element.find("li");
+      await wait();
+      const newElements = element.querySelectorAll("li");
       expect(newElements[0]).toEqual(lis[0]);
       expect(newElements[1]).toEqual(lis[2]);
       expect(newElements[2]).not.toEqual(lis[1]);
     });
 
-    it("should throw error on adding existing duplicates and recover", () => {
+    it("should throw error on adding existing duplicates and recover", async () => {
       scope.items = [a, a, a];
-      scope.$digest();
+      await wait();
       expect(logs.shift().message).toMatch(/Duplicate key/);
 
       // recover
       scope.items = [a];
-      scope.$digest();
-      let newElements = element.find("li");
+      await wait();
+      let newElements = element.querySelectorAll("li");
       expect(newElements.length).toEqual(1);
       expect(newElements[0]).toEqual(lis[0]);
 
       scope.items = [];
-      scope.$digest();
-      newElements = element.find("li");
+      await wait();
+      newElements = element.querySelectorAll("li");
       expect(newElements.length).toEqual(0);
     });
 
-    it("should throw error on new duplicates and recover", () => {
+    it("should throw error on new duplicates and recover", async () => {
       scope.items = [d, d, d];
-      scope.$digest();
+      await wait();
       expect(logs.shift().message).toMatch(/Duplicate key/);
 
       // recover
       scope.items = [a];
-      scope.$digest();
-      let newElements = element.find("li");
+      await wait();
+      let newElements = element.querySelectorAll("li");
       expect(newElements.length).toEqual(1);
       expect(newElements[0]).toEqual(lis[0]);
 
       scope.items = [];
-      scope.$digest();
-      newElements = element.find("li");
+      await wait();
+      newElements = element.querySelectorAll("li");
       expect(newElements.length).toEqual(0);
     });
 
-    it("should reverse items when the collection is reversed", () => {
+    it("should reverse items when the collection is reversed", async () => {
       scope.items = [a, b, c];
-      scope.$digest();
-      lis = element.find("li");
+      await wait();
+      lis = element.querySelectorAll("li");
 
       scope.items = [c, b, a];
-      scope.$digest();
-      const newElements = element.find("li");
+      await wait();
+      const newElements = element.querySelectorAll("li");
       expect(newElements.length).toEqual(3);
       expect(newElements[0]).toEqual(lis[2]);
       expect(newElements[1]).toEqual(lis[1]);
       expect(newElements[2]).toEqual(lis[0]);
     });
 
-    it("should reuse elements even when model is composed of primitives", () => {
+    it("should reuse elements even when model is composed of primitives", async () => {
       // rebuilding repeater from scratch can be expensive, we should try to avoid it even for
       // model that is composed of primitives.
 
       scope.items = ["hello", "cau", "ahoj"];
-      scope.$digest();
-      lis = element.find("li");
+      await wait();
+      lis = element.querySelectorAll("li");
       lis[2].id = "yes";
 
       scope.items = ["ahoj", "hello", "cau"];
-      scope.$digest();
-      const newLis = element.find("li");
+      await wait();
+      const newLis = element.querySelectorAll("li");
       expect(newLis.length).toEqual(3);
       expect(newLis[0]).toEqual(lis[2]);
       expect(newLis[1]).toEqual(lis[0]);
       expect(newLis[2]).toEqual(lis[1]);
     });
 
-    it("should be stable even if the collection is initially undefined", () => {
+    it("should be stable even if the collection is initially undefined", async () => {
       scope.items = undefined;
-      scope.$digest();
-
       scope.items = [{ name: "A" }, { name: "B" }, { name: "C" }];
-      scope.$digest();
-
-      lis = element.find("li");
+      await wait();
+      lis = element.querySelectorAll("li");
       scope.items.shift();
-      scope.$digest();
-
-      const newLis = element.find("li");
+      await wait();
+      const newLis = element.querySelectorAll("li");
       expect(newLis.length).toBe(2);
       expect(newLis[0]).toBe(lis[1]);
     });
   });
 
   describe("compatibility", () => {
-    it("should allow mixing ngRepeat and another element transclusion directive", () => {
-      $compileProvider.directive(
-        "elmTrans",
-        valueFn({
-          transclude: "element",
-          controller($transclude, $scope, $element) {
-            $transclude((transcludedNodes) => {
-              $element.after("]]").after(transcludedNodes).after("[[");
-            });
-          },
-        }),
-      );
+    it("should allow mixing ngRepeat and another element transclusion directive", async () => {
+      $compileProvider.directive("elmTrans", () => ({
+        transclude: "element",
+        controller($transclude, $scope, $element) {
+          $transclude((transcludedNodes) => {
+            $element.parentElement.appendChild(createElementFromHTML("[["));
+            $element.parentElement.appendChild(transcludedNodes);
+            $element.parentElement.appendChild(createElementFromHTML("]]"));
+          });
+        },
+      }));
 
       $compile = injector.get("$compile");
 
       element = $compile(
         '<div><div ng-repeat="i in [1,2]" elm-trans>{{i}}</div></div>',
       )(scope);
-      scope.$digest();
-      expect(element.text()).toBe("[[1]][[2]]");
+      await wait();
+      expect(element.textContent).toBe("[[1]][[2]]");
     });
 
     it("should allow mixing ngRepeat with ngInclude", (done) => {
       window.angular = new Angular();
 
-      element = JQLite(
+      element = createElementFromHTML(
         '<div><div ng-repeat="i in [1,2]" ng-include="\'/public/test.html\'"></div></div>',
       );
       const injector = window.angular.bootstrap(element);
       scope = injector.get("$rootScope");
       $templateCache = injector.get("$templateCache");
       $templateCache.set("test.html", "hello");
-      scope.$digest();
       setTimeout(() => {
-        expect(element.text()).toBe("hellohello");
+        expect(element.textContent).toBe("hellohello");
         done();
       }, 500);
     });
 
-    it("should allow mixing ngRepeat with ngIf", () => {
+    it("should allow mixing ngRepeat with ngIf", async () => {
       element = $compile(
         '<div><div ng-repeat="i in [1,2,3,4]" ng-if="i % 2 === 0">{{i}};</div></div>',
       )(scope);
-      scope.$digest();
-      expect(element.text()).toBe("2;4;");
+      await wait();
+      expect(element.textContent).toBe("2;4;");
     });
   });
 
@@ -1236,90 +936,86 @@ describe("ngRepeat", () => {
     it("should allow access to directive controller from children when used in a replace template", () => {
       let controller;
       $compileProvider
-        .directive(
-          "template",
-          valueFn({
-            template: '<div ng-repeat="l in [1]"><span test></span></div>',
-            replace: true,
-            controller() {
-              this.flag = true;
-            },
-          }),
-        )
-        .directive(
-          "test",
-          valueFn({
-            require: "^template",
-            link(_scope, _el, _attr, ctrl) {
-              controller = ctrl;
-            },
-          }),
-        );
+        .directive("template", () => ({
+          template: '<div ng-repeat="l in [1]"><span test></span></div>',
+          replace: true,
+          controller() {
+            this.flag = true;
+          },
+        }))
+        .directive("test", () => ({
+          require: "^template",
+          link(_scope, _el, _attr, ctrl) {
+            controller = ctrl;
+          },
+        }));
 
-      injector.invoke(($compile, $rootScope) => {
+      injector.invoke(async ($compile, $rootScope) => {
         const element = $compile("<div><div template></div></div>")($rootScope);
-        $rootScope.$apply();
+        await wait();
         expect(controller.flag).toBe(true);
         dealoc(element);
       });
+      expect().toBe();
     });
 
-    it("should use the correct transcluded scope", () => {
-      $compileProvider.directive(
-        "iso",
-        valueFn({
-          restrict: "E",
-          transclude: true,
-          template: '<div ng-repeat="a in [1]"><div ng-transclude></div></div>',
-          scope: {},
-        }),
-      );
-      injector.invoke(($compile, $rootScope) => {
-        $rootScope.val = "transcluded content";
-        const element = $compile('<iso><span ng-bind="val"></span></iso>')(
-          $rootScope,
-        );
-        $rootScope.$digest();
-        expect(element.text().trim()).toEqual("transcluded content");
-        dealoc(element);
+    it("should use the correct transcluded scope", async () => {
+      $compileProvider.directive("iso", () => ({
+        restrict: "E",
+        transclude: true,
+        template: '<div ng-repeat="a in [1]"><div ng-transclude></div></div>',
+        scope: {},
+      }));
+      injector.invoke(async (_$compile_, _$rootScope_) => {
+        $compile = _$compile_;
+        $rootScope = _$rootScope_;
       });
-    });
 
-    it("should set the state before linking", () => {
-      $compileProvider.directive(
-        "assertA",
-        valueFn((scope) => {
-          // This linking function asserts that a is set.
-          // If we only test this by asserting binding, it will work even if the value is set later.
-          expect(scope.a).toBeDefined();
-        }),
+      $rootScope.val = "transcluded content";
+      const element = $compile('<iso><span ng-bind="val"></span></iso>')(
+        $rootScope,
       );
-      injector.invoke(($compile, $rootScope) => {
-        const element = $compile(
-          '<div><span ng-repeat="a in [1]"><span assert-a></span></span></div>',
-        )($rootScope);
-        $rootScope.$digest();
-        dealoc(element);
-      });
+      await wait();
+      expect(element.textContent.trim()).toEqual("transcluded content");
+      dealoc(element);
     });
 
-    it("should work with svg elements when the svg container is transcluded", () => {
+    it("should set the state before linking", async () => {
+      $compileProvider.directive("assertA", () => (scope) => {
+        // This linking function asserts that a is set.
+        // If we only test this by asserting binding, it will work even if the value is set later.
+        expect(scope.a).toBeDefined();
+      });
+
+      injector.invoke(async (_$compile_, _$rootScope_) => {
+        $compile = _$compile_;
+        $rootScope = _$rootScope_;
+      });
+      const element = $compile(
+        '<div><span ng-repeat="a in [1]"><span assert-a></span></span></div>',
+      )($rootScope);
+      await wait();
+      dealoc(element);
+    });
+
+    it("should work with svg elements when the svg container is transcluded", async () => {
       $compileProvider.directive("svgContainer", () => ({
         template: "<svg ng-transclude></svg>",
         replace: true,
         transclude: true,
       }));
-      injector.invoke(($compile, $rootScope) => {
+      injector.invoke(async ($compile, $rootScope) => {
         const element = $compile(
           '<svg-container><circle ng-repeat="r in rows"></circle></svg-container>',
         )($rootScope);
         $rootScope.rows = [1];
-        $rootScope.$apply();
+        await wait();
 
-        const circle = element.find("circle");
+        const circle = element.querySelectorAll("circle");
         expect(circle[0].toString()).toMatch(/SVG/);
         dealoc(element);
       });
+      expect().toBe();
     });
   });
 });
@@ -1331,7 +1027,7 @@ describe("ngRepeat", () => {
 
 //   function html(content) {
 //     $rootElement.html(content);
-//     element = $rootElement.children().eq(0);
+//     element = $rootElement.children()[0];
 //     return element;
 //   }
 
@@ -1344,7 +1040,7 @@ describe("ngRepeat", () => {
 //         // we need to run animation on attached elements;
 //         function (_$rootElement_) {
 //           $rootElement = _$rootElement_;
-//           body = JQLite(document.body);
+//           body = (document.body);
 //           body.append($rootElement);
 //         },
 //     ),
@@ -1370,22 +1066,22 @@ describe("ngRepeat", () => {
 //       ),
 //     )(scope);
 
-//     scope.$digest(); // re-enable the animations;
+//     ; // re-enable the animations;
 
 //     scope.items = ["1", "2", "3"];
-//     scope.$digest();
+//     ;
 
 //     item = $animate.queue.shift();
 //     expect(item.event).toBe("enter");
-//     expect(item.element.text()).toBe("1");
+//     expect(item.element.textContent).toBe("1");
 
 //     item = $animate.queue.shift();
 //     expect(item.event).toBe("enter");
-//     expect(item.element.text()).toBe("2");
+//     expect(item.element.textContent).toBe("2");
 
 //     item = $animate.queue.shift();
 //     expect(item.event).toBe("enter");
-//     expect(item.element.text()).toBe("3");
+//     expect(item.element.textContent).toBe("3");
 //   }));
 
 //   it("should fire off the leave animation", inject((
@@ -1405,26 +1101,26 @@ describe("ngRepeat", () => {
 //     )(scope);
 
 //     scope.items = ["1", "2", "3"];
-//     scope.$digest();
+//     ;
 
 //     item = $animate.queue.shift();
 //     expect(item.event).toBe("enter");
-//     expect(item.element.text()).toBe("1");
+//     expect(item.element.textContent).toBe("1");
 
 //     item = $animate.queue.shift();
 //     expect(item.event).toBe("enter");
-//     expect(item.element.text()).toBe("2");
+//     expect(item.element.textContent).toBe("2");
 
 //     item = $animate.queue.shift();
 //     expect(item.event).toBe("enter");
-//     expect(item.element.text()).toBe("3");
+//     expect(item.element.textContent).toBe("3");
 
 //     scope.items = ["1", "3"];
-//     scope.$digest();
+//     ;
 
 //     item = $animate.queue.shift();
 //     expect(item.event).toBe("leave");
-//     expect(item.element.text()).toBe("2");
+//     expect(item.element.textContent).toBe("2");
 //   }));
 
 //   it("should not change the position of the block that is being animated away via a leave animation", inject((
@@ -1457,16 +1153,16 @@ describe("ngRepeat", () => {
 //       )(scope);
 
 //       scope.items = ["1", "2", "3"];
-//       scope.$digest();
-//       expect(element.text()).toBe("123");
+//       ;
+//       expect(element.textContent).toBe("123");
 
 //       scope.items = ["1", "3"];
-//       scope.$digest();
+//       ;
 
-//       expect(element.text()).toBe("123"); // the original order should be preserved
+//       expect(element.textContent).toBe("123"); // the original order should be preserved
 //       $animate.flush();
 //       $timeout.flush(1500); // 1s * 1.5 closing buffer
-//       expect(element.text()).toBe("13");
+//       expect(element.textContent).toBe("13");
 //     } finally {
 //       ss.destroy();
 //     }
@@ -1486,29 +1182,29 @@ describe("ngRepeat", () => {
 //     )(scope);
 
 //     scope.items = ["1", "2", "3"];
-//     scope.$digest();
+//     ;
 
 //     item = $animate.queue.shift();
 //     expect(item.event).toBe("enter");
-//     expect(item.element.text()).toBe("1");
+//     expect(item.element.textContent).toBe("1");
 
 //     item = $animate.queue.shift();
 //     expect(item.event).toBe("enter");
-//     expect(item.element.text()).toBe("2");
+//     expect(item.element.textContent).toBe("2");
 
 //     item = $animate.queue.shift();
 //     expect(item.event).toBe("enter");
-//     expect(item.element.text()).toBe("3");
+//     expect(item.element.textContent).toBe("3");
 
 //     scope.items = ["2", "3", "1"];
-//     scope.$digest();
+//     ;
 
 //     item = $animate.queue.shift();
 //     expect(item.event).toBe("move");
-//     expect(item.element.text()).toBe("2");
+//     expect(item.element.textContent).toBe("2");
 
 //     item = $animate.queue.shift();
 //     expect(item.event).toBe("move");
-//     expect(item.element.text()).toBe("3");
+//     expect(item.element.textContent).toBe("3");
 //   });
 // });

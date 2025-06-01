@@ -4,8 +4,88 @@
       <meta charset="utf-8">
       <title>AngularTS</title>
       <link rel="shortcut icon" type="image/png" href="images/favicon.ico">
+      <script type="module" src="/src/index.js"></script>
+      <script> document.addEventListener("DOMContentLoaded", () => {
+          class Todo {
+            constructor(task) {
+              this.task = task;
+              this.done = false;
+            }
+          }
+          class TodoController {
+            constructor($element) {
+              this.greeting = "Todos";
+              this.counter = 123
+              this.name = "dfsf"
+              this.model = {
+                name: "John",
+                lastName: "Doe"
+              }
+              this.tasks = [
+                new Todo("Learn AngularTS"),
+                new Todo("Build an AngularTS app"),
+              ];
+              window.test = this;
+            }
+
+            get() {
+              return this.counter;
+            }
+
+            increase() {
+              console.log(this)
+              this.counter++
+              
+            }
+
+            /**
+             * @param {String} task
+             * @return {void}
+             */
+            add(task) {
+              this.tasks.push(new Todo(task));
+            }
+
+            /**
+             * Delete all finished tasks
+             * @return {void}
+             */
+            archive() {
+              let newTasks = this.tasks.filter((task) => !task.done)
+              this.tasks = newTasks;
+            }
+          }
+
+          class Demo {
+            constructor() {
+              this.test = "DemoCtrl"
+            }
+          }
+          window.angular.module("todo", [])
+            .controller("TodoCtrl", TodoController).controller("DemoCtrl", Demo)
+            .run(($rootScope) => {
+              $rootScope.model = [
+                { name: "a", item: ["a1", "a2"] },
+                { name: "b", item: ["b1", "b2"] },
+              ];
+            });
+        });
+      </script>
     </head>
-    <body>
-      TODO
-    </body>    
+    <body ng-app="todo" ng-init="hide = false">
+      <div ng-controller="TodoCtrl as $ctrl">
+        <h3>Todos</h3>
+        <button ng-click="$ctrl.archive()">Archive</button>
+        <ul>
+          <li ng-repeat="todo in $ctrl.tasks">
+            {{ todo.task }} {{ todo.done }}
+            <input type="checkbox" ng-click="todo.done = !todo.done" />
+          </li>
+        </ul>
+        <form ng-submit="$ctrl.add(newTodo)">
+          <input type="text" ng-model="newTodo" ng-required="true" />
+          <button type="submit">Add</button>
+        </form>
+      </div>      
+    </body>
 </html>

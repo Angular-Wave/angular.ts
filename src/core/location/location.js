@@ -1,5 +1,4 @@
-import { JQLite } from "../../shared/jqlite/jqlite.js";
-import { urlResolve } from "../url-utils/url-utils";
+import { urlResolve } from "../url-utils/url-utils.js";
 import {
   encodeUriSegment,
   isBoolean,
@@ -13,7 +12,6 @@ import {
   toInt,
   toKeyValue,
 } from "../../shared/utils.js";
-import { ScopePhase } from "../scope/scope.js";
 
 /**
  * @typedef {Object} DefaultPorts
@@ -629,9 +627,9 @@ export class LocationProvider {
     "$rootElement",
     /**
      *
-     * @param {import('../scope/scope').Scope} $rootScope
+     * @param {import('../scope/scope.js').Scope} $rootScope
      * @param {import('../../services/browser').Browser} $browser
-     * @param {JQLite} $rootElement
+     * @param {Element} $rootElement
      * @returns
      */
     ($rootScope, $browser, $rootElement) => {
@@ -687,62 +685,75 @@ export class LocationProvider {
         }
       }
 
-      $rootElement.on("click", (event) => {
-        const rewriteLinks = this.getHtml5Mode().rewriteLinks;
-        // TODO(vojta): rewrite link when opening in new tab/window (in legacy browser)
-        // currently we open nice url link and redirect then
+      $rootElement.addEventListener(
+        "click",
+        /** @param {MouseEvent} event */
+        (event) => {
+          const rewriteLinks = this.getHtml5Mode().rewriteLinks;
+          // TODO(vojta): rewrite link when opening in new tab/window (in legacy browser)
+          // currently we open nice url link and redirect then
 
-        if (
-          !rewriteLinks ||
-          event.ctrlKey ||
-          event.metaKey ||
-          event.shiftKey ||
-          event.which === 2 ||
-          event.button === 2
-        )
-          return;
+          if (
+            !rewriteLinks ||
+            event.ctrlKey ||
+            event.metaKey ||
+            event.shiftKey ||
+            event.which === 2 ||
+            event.button === 2
+          ) {
+            return;
+          }
+          let elm = /** @type {HTMLAnchorElement} */ (event.target);
 
-        let elm = JQLite(event.target);
+          // traverse the DOM up to find first A tag
+          while (elm.nodeName.toLowerCase() !== "a") {
+            // ignore rewriting if no A tag (reached root element, or no parent - removed from document)
+            if (elm === $rootElement || !(elm = elm.parentElement)) return;
+          }
 
-        // traverse the DOM up to find first A tag
-        while (elm[0].nodeName.toLowerCase() !== "a") {
-          // ignore rewriting if no A tag (reached root element, or no parent - removed from document)
-          if (elm[0] === $rootElement[0] || !(elm = elm.parent())[0]) return;
-        }
+          if (
+            isString(rewriteLinks) &&
+            isUndefined(elm.getAttribute(/** @type {string} */ (rewriteLinks)))
+          ) {
+            return;
+          }
 
-        if (isString(rewriteLinks) && isUndefined(elm.attr(rewriteLinks)))
-          return;
+          let absHref = elm.href;
+          // get the actual href attribute - see
+          // http://msdn.microsoft.com/en-us/library/ie/dd347148(v=vs.85).aspx
+          const relHref =
+            elm.getAttribute("href") || elm.getAttribute("xlink:href");
 
-        let absHref = elm[0].href;
-        // get the actual href attribute - see
-        // http://msdn.microsoft.com/en-us/library/ie/dd347148(v=vs.85).aspx
-        const relHref = elm.attr("href") || elm.attr("xlink:href");
+          if (
+            isObject(absHref) &&
+            absHref.toString() === "[object SVGAnimatedString]"
+          ) {
+            // SVGAnimatedString.animVal should be identical to SVGAnimatedString.baseVal, unless during
+            // an animation.
+            absHref = urlResolve(absHref.animVal).href;
+          }
 
-        if (
-          isObject(absHref) &&
-          absHref.toString() === "[object SVGAnimatedString]"
-        ) {
-          // SVGAnimatedString.animVal should be identical to SVGAnimatedString.baseVal, unless during
-          // an animation.
-          absHref = urlResolve(absHref.animVal).href;
-        }
+          // Ignore when url is started with javascript: or mailto:
+          if (IGNORE_URI_REGEXP.test(absHref)) return;
 
-        // Ignore when url is started with javascript: or mailto:
-        if (IGNORE_URI_REGEXP.test(absHref)) return;
-
-        if (absHref && !elm.attr("target") && !event.isDefaultPrevented()) {
-          if ($location.$$parseLinkUrl(absHref, relHref)) {
-            // We do a preventDefault for all urls that are part of the AngularJS application,
-            // in html5mode and also without, so that we are able to abort navigation without
-            // getting double entries in the location history.
-            event.preventDefault();
-            // update location manually
-            if ($location.absUrl() !== $browser.url()) {
-              $rootScope.$apply();
+          if (
+            absHref &&
+            !elm.getAttribute("target") &&
+            !event.defaultPrevented
+          ) {
+            if ($location.$$parseLinkUrl(absHref, relHref)) {
+              // We do a preventDefault for all urls that are part of the AngularJS application,
+              // in html5mode and also without, so that we are able to abort navigation without
+              // getting double entries in the location history.
+              event.preventDefault();
+              // update location manually
+              // if ($location.absUrl() !== $browser.url()) {
+              //   $rootScope.$apply();
+              // }
             }
           }
-        }
-      });
+        },
+      );
 
       // rewrite hashbang url <> html5 url
       if ($location.absUrl() !== initialUrl) {
@@ -787,11 +798,10 @@ export class LocationProvider {
             afterLocationChange(oldUrl, oldState);
           }
         });
-        if ($rootScope.$$phase === ScopePhase.NONE) $rootScope.$digest();
       });
 
       // update browser
-      $rootScope.$watch(() => {
+      const updateBrowser = () => {
         if (initializing || $location.$$urlUpdatedByLocation) {
           $location.$$urlUpdatedByLocation = false;
 
@@ -805,7 +815,7 @@ export class LocationProvider {
           if (initializing || urlOrStateChanged) {
             initializing = false;
 
-            $rootScope.$evalAsync(() => {
+            setTimeout(() => {
               const newUrl = $location.absUrl();
               const { defaultPrevented } = $rootScope.$broadcast(
                 "$locationChangeStart",
@@ -839,7 +849,10 @@ export class LocationProvider {
 
         // we don't need to return anything because $evalAsync will make the digest loop dirty when
         // there is a change
-      });
+      };
+
+      updateBrowser();
+      $rootScope.$on("$updateBrowser", updateBrowser);
 
       return $location;
 

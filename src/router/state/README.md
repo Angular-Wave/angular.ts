@@ -2,7 +2,7 @@
 
 - # The state subsystem
 -
-- This subsystem implements the ui-router state tree
+- This subsystem implements the ng-router state tree
 -
 - - The [[StateService]] has state-related service methods such as:
 - - [[StateService.get]]: Get a registered [[StateDeclaration]] object

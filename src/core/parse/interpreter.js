@@ -1,5 +1,5 @@
-import { isDefined } from "../../shared/utils.js";
-import { ASTType } from "./ast-type";
+import { isDefined, isFunction, isObject } from "../../shared/utils.js";
+import { ASTType } from "./ast-type.js";
 
 export const PURITY_ABSOLUTE = 1;
 export const PURITY_RELATIVE = 2;
@@ -66,6 +66,7 @@ export class ASTInterpreter {
     if (inputs) {
       fn.inputs = inputs;
     }
+    fn.decoratedNode = decoratedNode;
     return fn;
   }
 
@@ -134,9 +135,12 @@ export class ASTInterpreter {
           ? function (scope, locals, assign) {
               const values = [];
               for (let i = 0; i < args.length; ++i) {
-                values.push(args[i](scope, locals, assign));
+                const res = args[i](scope, locals, assign);
+                values.push(res);
               }
-              const value = right.apply(undefined, values);
+              const value = () => {
+                return right.apply(undefined, values);
+              };
               return context
                 ? { context: undefined, name: undefined, value }
                 : value;
@@ -144,10 +148,11 @@ export class ASTInterpreter {
           : function (scope, locals, assign) {
               const rhs = right(scope, locals, assign);
               let value;
-              if (rhs.value != null) {
+              if (rhs.value != null && isFunction(rhs.value)) {
                 const values = [];
                 for (let i = 0; i < args.length; ++i) {
-                  values.push(args[i](scope, locals, assign));
+                  const res = args[i](scope, locals, assign);
+                  values.push(isFunction(res) ? res() : res);
                 }
                 value = rhs.value.apply(rhs.context, values);
               }
@@ -459,7 +464,7 @@ export class ASTInterpreter {
    * @returns {function} The binary logical AND function.
    */
   "binary&&"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) && right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -521,7 +526,10 @@ export class ASTInterpreter {
       if (create && create !== 1 && base && base[name] == null) {
         base[name] = {};
       }
-      const value = base ? base[name] : undefined;
+      let value = undefined;
+      if (base) {
+        value = base[name];
+      }
       if (context) {
         return { context: base, name, value };
       }
@@ -810,8 +818,8 @@ function assignableAST(ast) {
 }
 
 function plusFn(l, r) {
-  if (typeof l === "undefined") return r;
-  if (typeof r === "undefined") return l;
+  if (typeof l === "undefined" || isObject(l)) return r;
+  if (typeof r === "undefined" || isObject(r)) return l;
   return l + r;
 }
 

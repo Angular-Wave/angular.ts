@@ -2,7 +2,7 @@ scriptDirective.$inject = ["$templateCache"];
 
 /**
  * @param {import('../../core/cache/cache-factory').TemplateCache} $templateCache
- * @returns {import('../../types').Directive}
+ * @returns {import('../../types.js').Directive}
  */
 export function scriptDirective($templateCache) {
   return {
@@ -10,7 +10,7 @@ export function scriptDirective($templateCache) {
     terminal: true,
     compile(element, attr) {
       if (attr.type === "text/ng-template") {
-        $templateCache.set(attr.id, element[0].text);
+        $templateCache.set(attr.id, element.innerText);
       }
     },
   };

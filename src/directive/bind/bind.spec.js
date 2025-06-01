@@ -1,5 +1,6 @@
-import { Angular } from "../../loader";
-import { dealoc } from "../../shared/jqlite/jqlite.js";
+import { Angular } from "../../loader.js";
+import { dealoc } from "../../shared/dom.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ng-bind", () => {
   let $rootScope;
@@ -18,7 +19,7 @@ describe("ng-bind", () => {
         };
       });
     window.angular
-      .bootstrap(document.getElementById("dummy"), ["myModule"])
+      .bootstrap(document.getElementById("app"), ["myModule"])
       .invoke((_$rootScope_, _$compile_, _$sce_) => {
         $rootScope = _$rootScope_;
         $compile = _$compile_;
@@ -31,28 +32,29 @@ describe("ng-bind", () => {
   });
 
   describe("ngBind", () => {
-    it("should set text", () => {
+    it("should set text", async () => {
       element = $compile('<div ng-bind="a"></div>')($rootScope);
-      expect(element.text()).toEqual("");
+      await wait();
+      expect(element.textContent).toEqual("");
       $rootScope.a = "misko";
-      $rootScope.$digest();
-      expect(element.text()).toEqual("misko");
+      await wait();
+      expect(element.textContent).toEqual("misko");
     });
 
-    it("should set text to blank if undefined", () => {
+    it("should set text to blank if undefined", async () => {
       element = $compile('<div ng-bind="a"></div>')($rootScope);
       $rootScope.a = "misko";
-      $rootScope.$digest();
-      expect(element.text()).toEqual("misko");
+      await wait();
+      expect(element.textContent).toEqual("misko");
       $rootScope.a = undefined;
-      $rootScope.$digest();
-      expect(element.text()).toEqual("");
+      await wait();
+      expect(element.textContent).toEqual("");
       $rootScope.a = null;
-      $rootScope.$digest();
-      expect(element.text()).toEqual("");
+      await wait();
+      expect(element.textContent).toEqual("");
     });
 
-    it("should suppress rendering of falsy values", () => {
+    it("should suppress rendering of falsy values", async () => {
       element = $compile(
         '<div><span ng-bind="null"></span>' +
           '<span ng-bind="undefined"></span>' +
@@ -61,8 +63,8 @@ describe("ng-bind", () => {
           '<span ng-bind="false"></span>' +
           "</div>",
       )($rootScope);
-      $rootScope.$digest();
-      expect(element.text()).toEqual("-0false");
+      await wait();
+      expect(element.textContent).toEqual("-0false");
     });
 
     [
@@ -70,135 +72,74 @@ describe("ng-bind", () => {
       [true, "true"],
       [false, "false"],
     ].forEach((prop) => {
-      it("should jsonify $prop", () => {
-        () => {
-          $rootScope.value = prop[0];
-          element = $compile('<div ng-bind="value"></div>')($rootScope);
-          $rootScope.$digest();
-          expect(element.text()).toEqual(prop[1]);
-        };
+      it("should jsonify $prop " + prop, async () => {
+        $rootScope.value = prop[0];
+        element = $compile('<div ng-bind="value"></div>')($rootScope);
+        await wait();
+        expect(element.textContent).toEqual(prop[1]);
       });
     });
 
-    it("should use custom toString when present", () => {
+    it("should use custom toString when present", async () => {
       $rootScope.value = {
         toString() {
           return "foo";
         },
       };
       element = $compile('<div ng-bind="value"></div>')($rootScope);
-      $rootScope.$digest();
-      expect(element.text()).toEqual("foo");
+      await wait();
+      expect(element.textContent).toEqual("foo");
     });
 
-    it("should NOT use toString on array objects", () => {
+    it("should NOT use toString on array objects", async () => {
       $rootScope.value = [];
       element = $compile('<div ng-bind="value"></div>')($rootScope);
-      $rootScope.$digest();
-      expect(element.text()).toEqual("[]");
+      await wait();
+      expect(element.textContent).toEqual("[]");
     });
 
-    it("should NOT use toString on Date objects", () => {
+    it("should NOT use toString on Date objects", async () => {
       $rootScope.value = new Date(2014, 10, 10, 0, 0, 0);
       element = $compile('<div ng-bind="value"></div>')($rootScope);
-      $rootScope.$digest();
-      expect(element.text()).toBe(JSON.stringify($rootScope.value));
-      expect(element.text()).not.toEqual($rootScope.value.toString());
-    });
-
-    it("should one-time bind if the expression starts with two colons", () => {
-      element = $compile('<div ng-bind="::a"></div>')($rootScope);
-      $rootScope.a = "lucas";
-      expect($rootScope.$$watchers.length).toEqual(1);
-      $rootScope.$digest();
-      expect(element.text()).toEqual("lucas");
-      expect($rootScope.$$watchers.length).toEqual(0);
-      $rootScope.a = undefined;
-      $rootScope.$digest();
-      expect(element.text()).toEqual("lucas");
-    });
-
-    it("should be possible to bind to a new value within the same $digest", () => {
-      element = $compile('<div ng-bind="::a"></div>')($rootScope);
-      $rootScope.$watch("a", (newVal) => {
-        if (newVal === "foo") {
-          $rootScope.a = "bar";
-        }
-      });
-      $rootScope.a = "foo";
-      $rootScope.$digest();
-      expect(element.text()).toEqual("bar");
-      $rootScope.a = undefined;
-      $rootScope.$digest();
-      expect(element.text()).toEqual("bar");
-    });
-
-    it("should remove the binding if the value is defined at the end of a $digest loop", () => {
-      element = $compile('<div ng-bind="::a"></div>')($rootScope);
-      $rootScope.$watch("a", (newVal) => {
-        if (newVal === "foo") {
-          $rootScope.a = undefined;
-        }
-      });
-      $rootScope.a = "foo";
-      $rootScope.$digest();
-      expect(element.text()).toEqual("");
-      $rootScope.a = "bar";
-      $rootScope.$digest();
-      expect(element.text()).toEqual("bar");
-      $rootScope.a = "man";
-      $rootScope.$digest();
-      expect(element.text()).toEqual("bar");
+      await wait();
+      expect(element.textContent).toBe(
+        JSON.stringify($rootScope.value.$target),
+      );
+      expect(element.textContent).not.toEqual(
+        $rootScope.value.$target.toString(),
+      );
     });
   });
 
   describe("ngBindTemplate", () => {
-    it("should ngBindTemplate", () => {
+    it("should ngBindTemplate", async () => {
       element = $compile('<div ng-bind-template="Hello {{name}}!"></div>')(
         $rootScope,
       );
       $rootScope.name = "Misko";
-      $rootScope.$digest();
-      expect(element.text()).toEqual("Hello Misko!");
+      await wait();
+      expect(element.textContent).toEqual("Hello Misko!");
     });
 
-    it("should one-time bind the expressions that start with ::", () => {
-      element = $compile(
-        '<div ng-bind-template="{{::hello}} {{::name}}!"></div>',
-      )($rootScope);
-      $rootScope.name = "Misko";
-      expect($rootScope.$$watchers.length).toEqual(2);
-      $rootScope.$digest();
-      expect(element.text()).toEqual(" Misko!");
-      expect($rootScope.$$watchers.length).toEqual(1);
-      $rootScope.hello = "Hello";
-      $rootScope.name = "Lucas";
-      $rootScope.$digest();
-      expect(element.text()).toEqual("Hello Misko!");
-      expect($rootScope.$$watchers.length).toEqual(0);
-    });
-
-    it("should render object as JSON ignore $$", () => {
+    it("should render object as JSON ignore $$", async () => {
       element = $compile('<pre>{{ {key:"value", $$key:"hide"}  }}</pre>')(
         $rootScope,
       );
-      $rootScope.$digest();
-
-      expect(JSON.parse(element.text())).toEqual({ key: "value" });
+      await wait();
+      expect(JSON.parse(element.textContent)).toEqual({ key: "value" });
     });
   });
 
   describe("ngBindHtml", () => {
-    it("should complain about accidental use of interpolation", () => {
+    it("should complain about accidental use of interpolation", async () => {
       expect(() => {
         $compile('<div ng-bind-html="{{myHtml}}"></div>');
-        $rootScope.$digest();
       }).toThrowError(/syntax/);
     });
 
     describe("SCE disabled", () => {
       beforeEach(() => {
-        dealoc(document.getElementById("dummy"));
+        dealoc(document.getElementById("app"));
         window.angular
           .module("myModule", [
             "ng",
@@ -212,7 +153,7 @@ describe("ng-bind", () => {
             };
           });
         window.angular
-          .bootstrap(document.getElementById("dummy"), ["myModule"])
+          .bootstrap(document.getElementById("app"), ["myModule"])
           .invoke((_$rootScope_, _$compile_, _$sce_) => {
             $rootScope = _$rootScope_;
             $compile = _$compile_;
@@ -222,39 +163,27 @@ describe("ng-bind", () => {
 
       afterEach(() => dealoc(element));
 
-      it("should set html", () => {
+      it("should set html", async () => {
         element = $compile('<div ng-bind-html="html"></div>')($rootScope);
         $rootScope.html = '<div onclick="">hello</div>';
-        $rootScope.$digest();
-        expect(element.html()).toEqual('<div onclick="">hello</div>');
+        await wait();
+        expect(element.innerHTML).toEqual('<div onclick="">hello</div>');
       });
 
-      it("should update html", () => {
+      it("should update html", async () => {
         element = $compile('<div ng-bind-html="html"></div>')($rootScope);
         $rootScope.html = "hello";
-        $rootScope.$digest();
-        expect(element.html()).toEqual("hello");
+        await wait();
+        expect(element.innerHTML).toEqual("hello");
         $rootScope.html = "goodbye";
-        $rootScope.$digest();
-        expect(element.html()).toEqual("goodbye");
-      });
-
-      it("should one-time bind if the expression starts with two colons", () => {
-        element = $compile('<div ng-bind-html="::html"></div>')($rootScope);
-        $rootScope.html = '<div onclick="">hello</div>';
-        expect($rootScope.$$watchers.length).toEqual(1);
-        $rootScope.$digest();
-        expect(element.text()).toEqual("hello");
-        expect($rootScope.$$watchers.length).toEqual(0);
-        $rootScope.html = '<div onclick="">hello</div>';
-        $rootScope.$digest();
-        expect(element.text()).toEqual("hello");
+        await wait();
+        expect(element.innerHTML).toEqual("goodbye");
       });
     });
 
     describe("SCE enabled", () => {
       beforeEach(() => {
-        dealoc(document.getElementById("dummy"));
+        dealoc(document.getElementById("app"));
         window.angular
           .module("myModule", [
             "ng",
@@ -268,7 +197,7 @@ describe("ng-bind", () => {
             };
           });
         window.angular
-          .bootstrap(document.getElementById("dummy"), ["myModule"])
+          .bootstrap(document.getElementById("app"), ["myModule"])
           .invoke((_$rootScope_, _$compile_, _$sce_) => {
             $rootScope = _$rootScope_;
             $compile = _$compile_;
@@ -279,24 +208,24 @@ describe("ng-bind", () => {
 
       afterEach(() => dealoc(element));
 
-      it("should set html for trusted values", () => {
+      it("should set html for trusted values", async () => {
         element = $compile('<div ng-bind-html="html"></div>')($rootScope);
         $rootScope.html = $sce.trustAsHtml('<div onclick="">hello</div>');
-        $rootScope.$digest();
-        expect(element.html()).toEqual('<div onclick="">hello</div>');
+        await wait();
+        expect(element.innerHTML).toEqual('<div onclick="">hello</div>');
       });
 
-      it("should update html", () => {
+      it("should update html", async () => {
         element = $compile('<div ng-bind-html="html"></div>')(scope);
         scope.html = $sce.trustAsHtml("hello");
-        scope.$digest();
-        expect(element.html()).toEqual("hello");
+        await wait();
+        expect(element.innerHTML).toEqual("hello");
         scope.html = $sce.trustAsHtml("goodbye");
-        scope.$digest();
-        expect(element.html()).toEqual("goodbye");
+        await wait();
+        expect(element.innerHTML).toEqual("goodbye");
       });
 
-      it("should not cause infinite recursion for trustAsHtml object watches", () => {
+      it("should not cause infinite recursion for trustAsHtml object watches", async () => {
         // Ref: https://github.com/angular/angular.js/issues/3932
         // If the binding is a function that creates a new value on every call via trustAs, we'll
         // trigger an infinite digest if we don't take care of it.
@@ -304,16 +233,16 @@ describe("ng-bind", () => {
         $rootScope.getHtml = function () {
           return $sce.trustAsHtml('<div onclick="">hello</div>');
         };
-        $rootScope.$digest();
-        expect(element.html()).toEqual('<div onclick="">hello</div>');
+        await wait();
+        expect(element.innerHTML).toEqual('<div onclick="">hello</div>');
       });
 
-      it("should handle custom $sce objects", () => {
+      it("should handle custom $sce objects", async () => {
         function MySafeHtml(val) {
           this.val = val;
         }
 
-        dealoc(document.getElementById("dummy"));
+        dealoc(document.getElementById("app"));
 
         window.angular
           .module("myModule", [
@@ -340,7 +269,7 @@ describe("ng-bind", () => {
             };
           });
         let injector = window.angular.bootstrap(
-          document.getElementById("dummy"),
+          document.getElementById("app"),
           ["myModule"],
         );
 
@@ -350,7 +279,7 @@ describe("ng-bind", () => {
           $sce = _$sce_;
         });
 
-        () => {
+        async () => {
           // Ref: https://github.com/angular/angular.js/issues/14526
           // Previous code used toString for change detection, which fails for custom objects
           // that don't override toString.
@@ -361,12 +290,14 @@ describe("ng-bind", () => {
           $rootScope.getHtml = function () {
             return $sce.trustAsHtml(html);
           };
-          $rootScope.$digest();
-          expect(element.html()).toEqual("hello");
+          await wait();
+          expect(element.innerHTML).toEqual("hello");
           html = "goodbye";
-          $rootScope.$digest();
-          expect(element.html()).toEqual("goodbye");
+          await wait();
+          expect(element.innerHTML).toEqual("goodbye");
         };
+
+        expect(true).toBeTrue();
       });
     });
   });

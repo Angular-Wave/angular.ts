@@ -4,26 +4,25 @@ import {
   removeFrom,
   silenceUncaughtInPromise,
   silentRejection,
-} from "../../shared/common";
+} from "../../shared/common.js";
 import { isDefined, isObject, isString, minErr } from "../../shared/utils.js";
-import { Queue } from "../common/queue";
-import { services } from "../common/coreservices";
-import { makeTargetState } from "../path/path-utils";
-import { PathNode } from "../path/path-node";
-import { defaultTransOpts } from "../transition/transition-service";
-import { Rejection, RejectType } from "../transition/reject-factory";
-import { TargetState } from "./target-state";
-import { Param } from "../params/param";
-import { Glob } from "../common/glob";
-import { ResolveContext } from "../resolve/resolve-context";
-import { lazyLoadState } from "../hooks/lazy-load";
-import { val } from "../../shared/hof";
-import { EventBus } from "../../core/pubsub/pubsub";
+import { Queue } from "../common/queue.js";
+import { makeTargetState } from "../path/path-utils.js";
+import { PathNode } from "../path/path-node.js";
+import { defaultTransOpts } from "../transition/transition-service.js";
+import { Rejection, RejectType } from "../transition/reject-factory.js";
+import { TargetState } from "./target-state.js";
+import { Param } from "../params/param.js";
+import { Glob } from "../common/glob.js";
+import { ResolveContext } from "../resolve/resolve-context.js";
+import { lazyLoadState } from "../hooks/lazy-load.js";
+import { val } from "../../shared/hof.js";
+import { EventBus } from "../../core/pubsub/pubsub.js";
 
 const err = minErr("$stateProvider");
 
 /**
- * Provides services related to ui-router states.
+ * Provides services related to ng-router states.
  *
  * This API is located at `router.stateService` ([[UIRouter.stateService]])
  */
@@ -95,7 +94,7 @@ export class StateProvider {
    *
    * Allows you to extend (carefully) or override (at your own peril) the
    * `stateBuilder` object used internally by [[StateRegistry]].
-   * This can be used to add custom functionality to ui-router,
+   * This can be used to add custom functionality to ng-router,
    * for example inferring templateUrl based on the state name.
    *
    * When passing only a name, it returns the current (original or decorated) builder
@@ -204,7 +203,7 @@ export class StateProvider {
    *
    * Invokes the [[onInvalid]] callbacks, in natural order.
    * Each callback's return value is checked in sequence until one of them returns an instance of TargetState.
-   * The results of the callbacks are wrapped in $q.resolve(), so the callbacks may return promises.
+   * The results of the callbacks are wrapped in Promise.resolve(), so the callbacks may return promises.
    *
    * If a callback returns an TargetState, then it is used as arguments to $state.transitionTo() and the result returned.
    *
@@ -244,7 +243,7 @@ export class StateProvider {
       const nextCallback = callbackQueue.dequeue();
       if (nextCallback === undefined)
         return Rejection.invalid(toState.error()).toPromise();
-      const callbackResult = services.$q.resolve(
+      const callbackResult = Promise.resolve(
         nextCallback(toState, fromState, injector),
       );
       return callbackResult
@@ -459,7 +458,7 @@ export class StateProvider {
         if (error.type === RejectType.IGNORED) {
           isLatest && this.urlService.update();
           // Consider ignored `Transition.run()` as a successful `transitionTo`
-          return services.$q.resolve(this.globals.current);
+          return Promise.resolve(this.globals.current);
         }
         const detail = error.detail;
         if (
@@ -474,12 +473,12 @@ export class StateProvider {
         }
         if (error.type === RejectType.ABORTED) {
           isLatest && this.urlService.update();
-          return services.$q.reject(error);
+          return Promise.reject(error);
         }
       }
       const errorHandler = this.defaultErrorHandler();
       errorHandler(error);
-      return services.$q.reject(error);
+      return Promise.reject(error);
     };
     const transition = this.transitionService.create(currentPath, ref);
     const transitionToPromise = transition

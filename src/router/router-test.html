@@ -16,11 +16,20 @@
               requireBase: false,
               rewriteLinks: false,
             };
-            $stateProvider.state({
-              name: "home",
-              url: "/src/router/router-test.html",
-              template: "<h3>Success</h3>",
-            });
+            $stateProvider
+              .state({
+                name: "home",
+                url: "/src/router/router-test.html",
+                template: `
+                <h1>Home</h1>
+                <a ng-sref="page1">Page 1</a>
+              `,
+              })
+              .state({
+                name: "page1",
+                url: "/page1",
+                template: "<h3>Its the NG-Router hello world app!</h3>",
+              });
           },
         ]);
       });

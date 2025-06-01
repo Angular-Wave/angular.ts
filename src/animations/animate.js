@@ -1,6 +1,6 @@
 import { isFunction, isObject, minErr, extend } from "../shared/utils.js";
-import { JQLite } from "../shared/jqlite/jqlite.js";
-import { NG_ANIMATE_CLASSNAME } from "./shared";
+import { removeElement, domInsert } from "../shared/dom.js";
+import { NG_ANIMATE_CLASSNAME } from "./shared.js";
 
 /** @typedef {"enter"|"leave"|"move"|"addClass"|"setClass"|"removeClass"} AnimationMethod */
 
@@ -23,16 +23,6 @@ function mergeClasses(a, b) {
   return `${a} ${b}`;
 }
 
-function extractElementNode(element) {
-  const { length } = element;
-  for (let i = 0; i < length; i++) {
-    const elm = element[i];
-    if (elm.nodeType === Node.ELEMENT_NODE) {
-      return elm;
-    }
-  }
-}
-
 // if any other type of options value besides an Object value is
 // passed into the $animate.method() animation then this helper code
 // will be run which will ignore it. While this patch is not the
@@ -42,27 +32,6 @@ function extractElementNode(element) {
 // are wiped clean incase a callback function is provided.
 function prepareAnimateOptions(options) {
   return isObject(options) ? options : {};
-}
-
-export function domInsert(element, parentElement, afterElement) {
-  // if for some reason the previous element was removed
-  // from the dom sometime before this code runs then let's
-  // just stick to using the parent element as the anchor
-  if (afterElement) {
-    const afterNode = extractElementNode(afterElement);
-    if (
-      afterNode &&
-      !afterNode.parentNode &&
-      !afterNode.previousElementSibling
-    ) {
-      afterElement = null;
-    }
-  }
-  if (afterElement) {
-    afterElement.after(element);
-  } else {
-    parentElement.prepend(element);
-  }
 }
 
 AnimateProvider.$inject = ["$provide"];
@@ -351,7 +320,7 @@ export function AnimateProvider($provide) {
                 this.runner = null;
 
                 this.addClass = function() {
-                  this.runner = $animate.addClass($element.find('div'), 'red');
+                  this.runner = $animate.addClass($element.querySelectorAll('div'), 'red');
                   let ctrl = this;
                   this.runner.finally(function() {
                     ctrl.runner = null;
@@ -359,7 +328,7 @@ export function AnimateProvider($provide) {
                 };
 
                 this.removeClass = function() {
-                  this.runner = $animate.removeClass($element.find('div'), 'red');
+                  this.runner = $animate.removeClass($element.querySelectorAll('div'), 'red');
                   let ctrl = this;
                   this.runner.finally(function() {
                     ctrl.runner = null;
@@ -416,16 +385,14 @@ export function AnimateProvider($provide) {
          * A promise is returned that will be resolved during the next digest once the animation
          * has completed.
          *
-         * @param {JQLite} element - the element which will be inserted into the DOM
-         * @param {JQLite} parent - the parent element which will append the element as a child (so long as the after element is not present)
-         * @param {JQLite} after - after the sibling element after which the element will be appended
+         * @param {Element} element - the element which will be inserted into the DOM
+         * @param {Element} parent - the parent element which will append the element as a child (so long as the after element is not present)
+         * @param {Element} after - after the sibling element after which the element will be appended
          * @param {AnimationOptions} [options] - an optional collection of options/styles that will be applied to the element.
          * @returns {import('./animate-runner').AnimateRunner} the animation runner
          */
         enter(element, parent, after, options) {
-          parent = parent && JQLite(parent);
-          after = after && JQLite(after);
-          parent = parent || after.parent();
+          parent = parent || after.parentElement;
           domInsert(element, parent, after);
           return $$animateQueue.push(
             element,
@@ -440,16 +407,14 @@ export function AnimateProvider($provide) {
          * and then triggers an animation. A promise is returned that will be resolved
          * during the next digest once the animation has completed.
          *
-         * @param {JQLite} element - the element which will be inserted into the DOM
-         * @param {JQLite} parent - the parent element which will append the element as a child (so long as the after element is not present)
-         * @param {JQLite} after - after the sibling element after which the element will be appended
+         * @param {Element} element - the element which will be inserted into the DOM
+         * @param {Element} parent - the parent element which will append the element as a child (so long as the after element is not present)
+         * @param {Element} after - after the sibling element after which the element will be appended
          * @param {AnimationOptions} [options] - an optional collection of options/styles that will be applied to the element.
          * @returns {import('./animate-runner').AnimateRunner} the animation runner
          */
         move(element, parent, after, options) {
-          parent = parent && JQLite(parent);
-          after = after && JQLite(after);
-          parent = parent || after.parent();
+          parent = parent || after.parentElement;
           domInsert(element, parent, after);
           return $$animateQueue.push(
             element,
@@ -463,7 +428,7 @@ export function AnimateProvider($provide) {
          * When the function is called a promise is returned that will be resolved during the next
          * digest once the animation has completed.
          *
-         * @param {JQLite} element the element which will be removed from the DOM
+         * @param {Element} element the element which will be removed from the DOM
          * @param {AnimationOptions} [options] an optional collection of options/styles that will be applied to the element.
          * @returns {import('./animate-runner').AnimateRunner} the animation runner
          */
@@ -473,7 +438,12 @@ export function AnimateProvider($provide) {
             "leave",
             prepareAnimateOptions(options),
             () => {
-              element.remove();
+              // TODO no array should be here
+              if (Array.isArray(element)) {
+                element.forEach((x) => removeElement(x));
+              } else {
+                removeElement(element);
+              }
             },
           );
         },
@@ -486,7 +456,7 @@ export function AnimateProvider($provide) {
          * (like enter, move and leave) since the CSS classes may be added/removed at different points
          * depending if CSS or JavaScript animations are used.
          *
-         * @param {JQLite} element the element which the CSS classes will be applied to
+         * @param {Element} element the element which the CSS classes will be applied to
          * @param {string} className the CSS class(es) that will be added (multiple classes are separated via spaces)
          * @param {AnimationOptions} [options] an optional collection of options/styles that will be applied to the element.
          * @return {import('./animate-runner').AnimateRunner}} animationRunner the animation runner
@@ -505,7 +475,7 @@ export function AnimateProvider($provide) {
          * (like enter, move and leave) since the CSS classes may be added/removed at different points
          * depending if CSS or JavaScript animations are used.
          *
-         * @param {JQLite} element the element which the CSS classes will be applied to
+         * @param {Element} element the element which the CSS classes will be applied to
          * @param {string} className the CSS class(es) that will be removed (multiple classes are separated via spaces)
          * @param {AnimationOptions} [options] an optional collection of options/styles that will be applied to the element.         *
          * @return {import('./animate-runner').AnimateRunner} animationRunner the animation runner

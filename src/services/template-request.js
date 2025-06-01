@@ -57,18 +57,16 @@ export function TemplateRequestProvider() {
     "$exceptionHandler",
     "$templateCache",
     "$http",
-    "$q",
     "$sce",
     /**
      *
-     * @param {import('../core/exception-handler.js').ErrorHandler} $exceptionHandler
+     * @param {import('../core/exception-handler').ErrorHandler} $exceptionHandler
      * @param {import('../core/cache/cache-factory').TemplateCache} $templateCache
      * @param {*} $http
-     * @param {*} $q
      * @param {*} $sce
      * @returns
      */
-    function ($exceptionHandler, $templateCache, $http, $q, $sce) {
+    function ($exceptionHandler, $templateCache, $http, $sce) {
       function handleRequestFn(tpl, ignoreRequestError) {
         handleRequestFn.totalPendingRequests++;
 
@@ -79,6 +77,9 @@ export function TemplateRequestProvider() {
         // still need to unwrap trusted types.
         if (!isString(tpl) || !$templateCache.has(tpl)) {
           tpl = $sce.getTrustedResourceUrl(tpl);
+          if (!tpl) {
+            return Promise.reject("Template not found");
+          }
         }
 
         var transformResponse =
@@ -124,7 +125,7 @@ export function TemplateRequestProvider() {
             $exceptionHandler(resp);
           }
 
-          return $q.reject(resp);
+          return Promise.reject(resp);
         }
       }
 

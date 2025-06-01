@@ -1,5 +1,4 @@
-import { domInsert } from "../../animations/animate";
-import { getBlockNodes } from "../../shared/jqlite/jqlite.js";
+import { removeElement } from "../../shared/dom.js";
 import { hasAnimate } from "../../shared/utils.js";
 
 ngIfDirective.$inject = ["$animate"];
@@ -7,7 +6,7 @@ ngIfDirective.$inject = ["$animate"];
  *
  * TODO // Add type for animate service
  * @param {*}  $animate
- * @returns {import("../../types").Directive}
+ * @returns {import("../../types.js").Directive}
  */
 export function ngIfDirective($animate) {
   return {
@@ -17,43 +16,40 @@ export function ngIfDirective($animate) {
     restrict: "A",
     /**
      *
-     * @param {import("../../core/scope/scope").Scope} $scope
-     * @param {import("../../shared/jqlite/jqlite").JQLite} $element
-     * @param {import("../../core/compile/attributes").Attributes} $attr
+     * @param {import("../../core/scope/scope.js").Scope} $scope
+     * @param {Element} $element
+     * @param {import("../../core/compile/attributes.js").Attributes} $attr
      * @param {Object} _ctrl
      * @param {*} $transclude
      */
     link($scope, $element, $attr, _ctrl, $transclude) {
-      /** @type {{clone: import("../../shared/jqlite/jqlite").JQLite }} */
+      /** @type {Element} */
       let block;
 
-      /** @type {import('../../core/scope/scope').Scope} */
+      /** @type {import('../../core/scope/scope.js').Scope} */
       let childScope;
-      /** @type {import("../../shared/jqlite/jqlite").JQLite} */
+
       let previousElements;
+
       $scope.$watch($attr["ngIf"], (value) => {
         if (value) {
           if (!childScope) {
             $transclude((clone, newScope) => {
               childScope = newScope;
-              // TODO removing this breaks messages test
-              clone[clone.length++] = document.createComment("");
               // Note: We only need the first/last node of the cloned nodes.
-              // However, we need to keep the reference to the jqlite wrapper as it might be changed later
+              // However, we need to keep the reference to the dom wrapper as it might be changed later
               // by a directive with templateUrl when its template arrives.
-              block = {
-                clone,
-              };
-              if (hasAnimate(clone[0])) {
-                $animate.enter(clone, $element.parent(), $element);
+              block = clone;
+              if (hasAnimate(clone)) {
+                $animate.enter(clone, $element.parentElement, $element);
               } else {
-                domInsert(clone, $element.parent(), $element);
+                $element.after(clone);
               }
             });
           }
         } else {
           if (previousElements) {
-            previousElements.remove();
+            removeElement(previousElements);
             previousElements = null;
           }
           if (childScope) {
@@ -61,13 +57,13 @@ export function ngIfDirective($animate) {
             childScope = null;
           }
           if (block) {
-            previousElements = getBlockNodes(block.clone);
-            if (hasAnimate(previousElements[0])) {
+            previousElements = block;
+            if (hasAnimate(previousElements)) {
               $animate.leave(previousElements).done((response) => {
                 if (response !== false) previousElements = null;
               });
             } else {
-              previousElements.remove();
+              $element.nextElementSibling.remove();
             }
             block = null;
           }

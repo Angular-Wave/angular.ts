@@ -1,6 +1,7 @@
-import { dealoc } from "../../shared/jqlite/jqlite.js";
-import { Angular } from "../../loader";
-import { createInjector } from "../../core/di/injector";
+import { dealoc } from "../../shared/dom.js";
+import { Angular } from "../../loader.js";
+import { createInjector } from "../../core/di/injector.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ngNonBindable", () => {
   let element;
@@ -26,7 +27,7 @@ describe("ngNonBindable", () => {
     dealoc(element);
   });
 
-  it("should prevent compilation of the owning element and its children", () => {
+  it("should prevent compilation of the owning element and its children", async () => {
     element = $compile(
       '<div ng-non-bindable text="{{name}}"><span ng-bind="name"></span></div>',
     )($rootScope);
@@ -43,16 +44,16 @@ describe("ngNonBindable", () => {
     )($rootScope);
     $rootScope.a = "one";
     $rootScope.b = "two";
-    $rootScope.$digest();
+    await wait();
     // Bindings not contained by ng-non-bindable should resolve.
-    const spans = element.find("span");
-    expect(spans.eq(0).text()).toEqual("one");
-    expect(spans.eq(1).text()).toEqual("two");
-    expect(spans.eq(3).text()).toEqual("one");
-    expect(spans.eq(4).text()).toEqual("two");
+    const spans = element.querySelectorAll("span");
+    expect(spans[0].textContent).toEqual("one");
+    expect(spans[1].textContent).toEqual("two");
+    expect(spans[3].textContent).toEqual("one");
+    expect(spans[4].textContent).toEqual("two");
     // Bindings contained by ng-non-bindable should be left alone.
-    const nonBindableDiv = element.find("div");
-    expect(nonBindableDiv.attr("foo")).toEqual("{{a}}");
-    expect(nonBindableDiv.text().trim()).toEqual("{{b}}");
+    const nonBindableDiv = element.querySelector("div");
+    expect(nonBindableDiv.getAttribute("foo")).toEqual("{{a}}");
+    expect(nonBindableDiv.textContent.trim()).toEqual("{{b}}");
   });
 });

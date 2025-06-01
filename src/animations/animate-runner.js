@@ -34,17 +34,13 @@ export function AnimateAsyncRunFactoryProvider() {
 const INITIAL_STATE = 0;
 const DONE_PENDING_STATE = 1;
 const DONE_COMPLETE_STATE = 2;
-let $q, $$animateAsyncRun, $timeout;
+let $$animateAsyncRun;
 
 export function AnimateRunnerFactoryProvider() {
   this.$get = [
-    "$q",
     "$$animateAsyncRun",
-    "$timeout",
-    function (q, animateAsyncRun, timeout) {
-      $q = q;
+    function (animateAsyncRun) {
       $$animateAsyncRun = animateAsyncRun;
-      $timeout = timeout;
       return AnimateRunner;
     },
   ];
@@ -94,7 +90,7 @@ export class AnimateRunner {
 
     const rafTick = $$animateAsyncRun();
     const timeoutTick = (fn) => {
-      $timeout(fn, 0, false);
+      setTimeout(fn, 0, false);
     };
 
     this._doneCallbacks = [];
@@ -125,7 +121,7 @@ export class AnimateRunner {
   getPromise() {
     if (!this.promise) {
       const self = this;
-      this.promise = $q((resolve, reject) => {
+      this.promise = new Promise((resolve, reject) => {
         self.done((status) => {
           if (status === false) {
             reject();

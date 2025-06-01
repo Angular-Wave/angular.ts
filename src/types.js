@@ -1,4 +1,11 @@
 /**
+ * @typedef {string} Expression
+ * @description A JavaScript-like code snippet, used in interpolation bindings such as
+ * `<span title="{{ attrBinding }}">{{ textBinding }}</span>`, and evaluated in the context of a
+ * {@link import('./core/scope/scope.js').Scope `scope`} object.
+ */
+
+/**
  * @typedef {Object} BootstrapConfig
  * @description Configuration option for AngularTS bootstrap process.
  * @property {boolean} [strictDi] - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.
@@ -24,7 +31,7 @@
  *   Controller constructor function or name of a registered controller.
  *   Use array form for dependencies (necessary with strictDi).
  * @property {string | undefined} [controllerAs]
- *   Identifier name for the controller published to its scope (default: '$ctrl').
+ *   Identifier name for the controller published to its scope (default: '$ctrl.js').
  * @property {string |Injectable<(...args: any[]) => string> | undefined} [template]
  *   HTML template string or function returning an HTML template.
  *   If a function, injects $element and $attrs.
@@ -66,20 +73,12 @@
 
 /**
  * @typedef {Object} Controller  Interface representing the lifecycle hooks for AngularJS directive controllers.
- * @property {string} name *
+ * @property {string} [name]
  * @property {function(): void} [$onInit]
  * Called on each controller after all the controllers on an element have been constructed and had their bindings
  * initialized (and before the pre & post linking functions for the directives on this element). This is a good
  * place to put initialization code for your controller.
- *
- * @property {function(): void} [$doCheck]
- * Called on each turn of the digest cycle. Provides an opportunity to detect and act on changes.
- * Any actions that you wish to take in response to the changes that you detect must be invoked from this hook;
- * implementing this has no effect on when `$onChanges` is called. For example, this hook could be useful if you wish
- * to perform a deep equality check, or to check a `Date` object, changes to which would not be detected by Angular's
- * change detector and thus not trigger `$onChanges`. This hook is invoked with no arguments; if detecting changes,
- * you must store the previous value(s) for comparison to the current values.
- *
+ * *
  * @property {function(OnChangesObject): void} [$onChanges]
  * Called whenever one-way bindings are updated. The onChangesObj is a hash whose keys are the names of the bound
  * properties that have changed, and the values are an {@link IChangesObject} object  of the form
@@ -127,11 +126,11 @@
  */
 
 /**
- * @typedef {import('./core/scope/scope').Scope} TScope
+ * @typedef {import('./core/scope/scope.js').Scope} TScope
  */
 
 /**
- * @typedef {import('./shared/jqlite/jqlite').JQLite} TElement
+ * @typedef {Element} TElement
  */
 
 /**
@@ -154,7 +153,7 @@
  * Compile function for an AngularJS directive.
  *
  * @callback DirectiveCompileFn
- * @param {TElement} templateElement - The template element.
+ * @param {HTMLElement} templateElement - The template element.
  * @param {TAttributes} templateAttributes - The template attributes.
  * @param {TranscludeFunction} transclude - @deprecated The transclude function. Note: The transclude function that is passed to the compile function is deprecated,
  * as it e.g. does not know about the right outer scope. Please use the transclude function
@@ -167,7 +166,7 @@
  *
  * @callback DirectiveLinkFn
  * @param {TScope} scope
- * @param {TElement} instanceElement
+ * @param {HTMLElement} instanceElement
  * @param {TAttributes} instanceAttributes
  * @param {TController} [controller]
  * @param {TranscludeFunction} [transclude]
@@ -176,8 +175,8 @@
 
 /**
  * @callback CloneAttachFunction
- * @param {import('./shared/jqlite/jqlite').JQLite} [clonedElement]
- * @param {import('./core/scope/scope').Scope} [scope] // Let's hint but not force cloneAttachFn's signature
+ * @param {Element} [clonedElement]
+ * @param {import('./core/scope/scope.js').Scope} [scope] // Let's hint but not force cloneAttachFn's signature
  * @returns {any}
  */
 
@@ -187,23 +186,23 @@
  * http://teropa.info/blog/2015/06/09/transclusion.html
  *
  * @typedef {Object} TranscludeFunctionObject
- * @property {function(TScope, CloneAttachFunction, import('./shared/jqlite/jqlite').JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithScope
- * @property {function(CloneAttachFunction=, import('./shared/jqlite/jqlite').JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithoutScope
+ * @property {function(TScope, CloneAttachFunction, Element=, string=): Element} transcludeWithScope
+ * @property {function(CloneAttachFunction=, Element=, string=): Element} transcludeWithoutScope
  * @property {function(string): boolean} isSlotFilled - Returns true if the specified slot contains content (i.e., one or more DOM nodes)
  */
 
 /**
 
  *
- * @typedef {function(TScope|Function, CloneAttachFunction=, import('./shared/jqlite/jqlite').JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} TranscludeFunction
+ * @typedef {function(TScope|Function, CloneAttachFunction=, Element=, string=): Element} TranscludeFunction
  */
 
 /**
- * @typedef {function(TScope, CloneAttachFunction, import('./shared/jqlite/jqlite').JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithScope
+ * @typedef {function(TScope, CloneAttachFunction, Element=, string=): Element} transcludeWithScope
  */
 
 /**
- * @typedef {function(CloneAttachFunction=, import('./shared/jqlite/jqlite').JQLite=, string=): import('./shared/jqlite/jqlite').JQLite} transcludeWithoutScope
+ * @typedef {function(CloneAttachFunction=, Element=, string=): Element} transcludeWithoutScope
  */
 
 /**
@@ -231,7 +230,7 @@
  * @property {boolean | { [boundProperty: string]: string } | undefined} [bindToController]
  * Bindings to controller.
  * @property {DirectiveLinkFn |  DirectivePrePost | undefined} [link]
- * Multi-element directive flag.
+ * Link function.
  * @property {number | undefined} [priority]
  * Skip all directives on element
  * @property {boolean | undefined} [terminal]
@@ -265,7 +264,6 @@
 
 /**
  * @typedef {Function} FilterFunction
- * @property {boolean|undefined} [$stateful] By default, filters are only run once the input value changes. By marking the filter as `$stateful`, the filter will be run on every `$digest` to update the output. **This is strongly discouraged.** See https://docs.angularjs.org/guide/filter#stateful-filters
  */
 
 /**

@@ -1,12 +1,26 @@
-import { createInjector } from "../../core/di/injector";
-import { Angular } from "../../loader";
+import { createInjector } from "../../core/di/injector.js";
+import { Angular } from "../../loader.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("$templateRequest", () => {
-  let module, $rootScope, $templateRequest, $templateCache, $sce, angular;
+  let module,
+    $rootScope,
+    $templateRequest,
+    $templateCache,
+    $sce,
+    angular,
+    errors;
 
   beforeEach(() => {
+    errors = [];
     angular = window.angular = new Angular();
-    module = angular.module("test", ["ng"]);
+    module = angular
+      .module("test", ["ng"])
+      .decorator("$exceptionHandler", () => {
+        return (exception, cause) => {
+          errors.push(exception.message);
+        };
+      });
     let injector = createInjector(["test"]);
     $rootScope = injector.get("$rootScope");
     $templateRequest = injector.get("$templateRequest");
@@ -17,8 +31,6 @@ describe("$templateRequest", () => {
   describe("provider", () => {
     describe("httpOptions", () => {
       it("should default to undefined and fallback to default $http options", () => {
-        let defaultHeader;
-
         angular.module("test", [
           "ng",
           ($templateRequestProvider) => {
@@ -27,15 +39,15 @@ describe("$templateRequest", () => {
         ]);
 
         createInjector(["test"]).invoke(
-          ($templateRequest, $http, $templateCache) => {
+          async ($templateRequest, $http, $templateCache) => {
             spyOn($http, "get").and.callThrough();
 
-            $templateRequest("tpl.html");
-
-            expect($http.get).toHaveBeenCalledOnceWith("tpl.html", {
+            $templateRequest("/public/test.html");
+            expect($http.get).toHaveBeenCalledOnceWith("/public/test.html", {
               cache: $templateCache,
               transformResponse: [],
             });
+            await wait();
           },
         );
       });
@@ -58,9 +70,9 @@ describe("$templateRequest", () => {
           ($templateRequest, $http, $templateCache) => {
             spyOn($http, "get").and.callThrough();
 
-            $templateRequest("tpl.html");
+            $templateRequest("/public/test.html");
 
-            expect($http.get).toHaveBeenCalledOnceWith("tpl.html", {
+            expect($http.get).toHaveBeenCalledOnceWith("/public/test.html", {
               cache: $templateCache,
               transformResponse: [someTransform],
               headers: { Accept: "moo" },
@@ -85,9 +97,9 @@ describe("$templateRequest", () => {
           const customCache = new Map();
           httpOptions.cache = customCache;
 
-          $templateRequest("tpl.html");
+          $templateRequest("/public/test.html");
 
-          expect($http.get).toHaveBeenCalledOnceWith("tpl.html", {
+          expect($http.get).toHaveBeenCalledOnceWith("/public/test.html", {
             cache: customCache,
             transformResponse: [],
           });
@@ -101,8 +113,7 @@ describe("$templateRequest", () => {
     await $templateRequest("/mock/div").then((html) => {
       content = html;
     });
-
-    $rootScope.$digest();
+    await wait();
     expect(content).toBe("<div>Hello</div>");
   });
 
@@ -115,23 +126,20 @@ describe("$templateRequest", () => {
     await $templateRequest("/mock/div").then(tplRequestCb);
 
     $templateRequest("/mock/div").then(tplRequestCb);
-    $rootScope.$digest();
-
+    await wait();
     expect(content[0]).toBe("<div>Hello</div>");
     expect(content[1]).toBe("<div>Hello</div>");
     expect($templateCache.get("/mock/div")).toBe("<div>Hello</div>");
   });
 
   it("should return the cached value on the first request", async () => {
-    $templateCache.set("tpl.html", "_matias");
+    $templateCache.set("/public/test.html", "_matias");
     const content = [];
     function tplRequestCb(html) {
       content.push(html);
     }
 
-    await $templateRequest("tpl.html").then(tplRequestCb);
-    $rootScope.$digest();
-
+    await $templateRequest("/public/test.html").then(tplRequestCb);
     expect(content[0]).toBe("_matias");
   });
 
@@ -147,8 +155,6 @@ describe("$templateRequest", () => {
   it("should not call `$exceptionHandler` when the template is empty", async () => {
     const onError = jasmine.createSpy("onError");
     await $templateRequest("/mock/empty").catch(onError);
-    $rootScope.$digest();
-
     expect(onError).not.toHaveBeenCalled();
   });
 
@@ -156,17 +162,12 @@ describe("$templateRequest", () => {
     // Will throw on any template not in cache.
     spyOn($sce, "getTrustedResourceUrl").and.returnValue(false);
 
-    expect(() => {
-      $templateRequest("tpl.html"); // should go through $sce
-      $rootScope.$digest();
-    }).toThrow();
+    $templateRequest("/public/test.html"); // should go through $sce
+    expect(errors.length).toBe(1);
+    $templateCache.set("/public/test.html", ""); // should work (empty template)
 
-    $templateCache.set("tpl.html", ""); // should work (empty template)
-    expect(() => {
-      $templateRequest("tpl.html");
-      $rootScope.$digest();
-    }).not.toThrow();
-    $templateCache = new Map();
+    $templateRequest("/public/test.html");
+    expect(errors.length).toBe(1);
   });
 
   it("should keep track of how many requests are going on", async () => {
@@ -175,7 +176,6 @@ describe("$templateRequest", () => {
 
     expect($templateRequest.totalPendingRequests).toBe(2);
 
-    $rootScope.$digest();
     await res;
     expect($templateRequest.totalPendingRequests).toBe(0);
   });

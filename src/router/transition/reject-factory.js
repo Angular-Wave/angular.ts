@@ -1,6 +1,6 @@
-import { silentRejection } from "../../shared/common";
-import { stringify } from "../../shared/strings";
-import { is } from "../../shared/hof";
+import { silentRejection } from "../../shared/common.js";
+import { stringify } from "../../shared/strings.js";
+import { is } from "../../shared/hof.js";
 
 /**
  * An object for Transition Rejection reasons.

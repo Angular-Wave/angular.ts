@@ -46,20 +46,18 @@ export const errorHandler = (exception, cause) => {
 
 /**
  * @constructor
- * @this {import('../types').ServiceProvider}
+ * @this {import('../types.js').ServiceProvider}
  */
-export class ExceptionHandlerProvider {
-  constructor() {
-    this.$get = [
-      "$log",
-      /**
-       * @param {import('../services/log').LogService} $log
-       * @returns {ErrorHandler}
-       */
-      function ($log) {
-        log = $log;
-        return errorHandler;
-      },
-    ];
-  }
+export function ExceptionHandlerProvider() {
+  this.$get = [
+    "$log",
+    /**
+     * @param {import('../services/log').LogService} $log
+     * @returns {ErrorHandler}
+     */
+    function ($log) {
+      log = $log;
+      return errorHandler;
+    },
+  ];
 }

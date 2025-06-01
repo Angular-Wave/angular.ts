@@ -1,9 +1,6 @@
+import { emptyElement, removeElement, startingTag } from "../../shared/dom.js";
 import {
-  JQLite,
-  removeElement,
-  startingTag,
-} from "../../shared/jqlite/jqlite.js";
-import {
+  assertArg,
   equals,
   hashKey,
   includes,
@@ -29,6 +26,12 @@ const NG_OPTIONS_REGEXP =
 export const ngOptionsDirective = [
   "$compile",
   "$parse",
+  /**
+   *
+   * @param {import("../../core/compile/compile.js").CompileFn} $compile
+   * @param {import("../../core/parse/parse.js").ParseService} $parse
+   * @returns
+   */
   function ($compile, $parse) {
     function parseOptionsExpression(optionsExp, selectElement, scope) {
       const match = optionsExp.match(NG_OPTIONS_REGEXP);
@@ -39,7 +42,7 @@ export const ngOptionsDirective = [
             "'_select_ (as _label_)? for (_key_,)?_value_ in _collection_'" +
             " but got '{0}'. Element: {1}",
           optionsExp,
-          startingTag(selectElement),
+          startingTag(selectElement[0]),
         );
       }
 
@@ -210,11 +213,18 @@ export const ngOptionsDirective = [
     }
 
     // Support: IE 9 only
-    // We can't just JQLite('<option>') since JQLite is not smart enough
+    // We can't just ('<option>') since JQLite is not smart enough
     // to create it in <select> and IE barfs otherwise.
     const optionTemplate = document.createElement("option");
     const optGroupTemplate = document.createElement("optgroup");
 
+    /**
+     *
+     * @param {import("../../core/scope/scope.js").Scope} scope
+     * @param {HTMLSelectElement} selectElement
+     * @param {*} attr
+     * @param {*} ctrls
+     */
     function ngOptionsPostLink(scope, selectElement, attr, ctrls) {
       const selectCtrl = ctrls[0];
       const ngModelCtrl = ctrls[1];
@@ -223,24 +233,25 @@ export const ngOptionsDirective = [
       // The emptyOption allows the application developer to provide their own custom "empty"
       // option when the viewValue does not match any of the option values.
       for (
-        let i = 0, children = selectElement.children(), ii = children.length;
+        let i = 0, children = selectElement.childNodes, ii = children.length;
         i < ii;
         i++
       ) {
-        if (children[i].value === "") {
+        if (/** @type {HTMLOptionElement} */ (children[i]).value === "") {
           selectCtrl.hasEmptyOption = true;
-          selectCtrl.emptyOption = children.eq(i);
+          selectCtrl.emptyOption = children[i];
           break;
         }
       }
 
       // The empty option will be compiled and rendered before we first generate the options
-      selectElement.empty();
+      emptyElement(selectElement);
 
       const providedEmptyOption = !!selectCtrl.emptyOption;
 
-      const unknownOption = JQLite(optionTemplate.cloneNode(false));
-      unknownOption.val("?");
+      const unknownOption = optionTemplate.cloneNode(false);
+      // TODO double check
+      unknownOption.nodeValue = "?";
 
       let options;
       const ngOptions = parseOptionsExpression(
@@ -263,7 +274,7 @@ export const ngOptionsDirective = [
           if (!options) return;
 
           const selectedOption =
-            selectElement[0].options[selectElement[0].selectedIndex];
+            selectElement.options[selectElement.selectedIndex];
           const option = options.getOptionFromViewValue(value);
 
           // Make sure to remove the selected attribute from the previously selected option
@@ -276,10 +287,10 @@ export const ngOptionsDirective = [
             // most properties are set automatically - except the `selected` attribute, which we
             // set always
 
-            if (selectElement[0].value !== option.selectValue) {
+            if (selectElement.value !== option.selectValue) {
               selectCtrl.removeUnknownOption();
 
-              selectElement[0].value = option.selectValue;
+              selectElement.value = option.selectValue;
               option.element.selected = true;
             }
 
@@ -290,7 +301,7 @@ export const ngOptionsDirective = [
         };
 
         selectCtrl.readValue = function readNgOptionsValue() {
-          const selectedOption = options.selectValueMap[selectElement.val()];
+          const selectedOption = options.selectValueMap[selectElement.value];
 
           if (selectedOption && !selectedOption.disabled) {
             selectCtrl.unselectEmptyOption();
@@ -303,14 +314,14 @@ export const ngOptionsDirective = [
         // If we are using `track by` then we must watch the tracked value on the model
         // since ngModel only watches for object identity change
         // FIXME: When a user selects an option, this watch will fire needlessly
-        if (ngOptions.trackBy) {
-          scope.$watch(
-            () => ngOptions.getTrackByValue(ngModelCtrl.$viewValue),
-            () => {
-              ngModelCtrl.$render();
-            },
-          );
-        }
+        // if (ngOptions.trackBy) {
+        //   scope.$watch(
+        //     () => ngOptions.getTrackByValue(ngModelCtrl.$viewValue),
+        //     () => {
+        //       ngModelCtrl.$render();
+        //     },
+        //   );
+        // }
       } else {
         selectCtrl.writeValue = function writeNgOptionsMultiple(values) {
           // The options might not be defined yet when ngModel tries to render
@@ -329,7 +340,7 @@ export const ngOptionsDirective = [
         };
 
         selectCtrl.readValue = function readNgOptionsMultiple() {
-          const selectedValues = selectElement.val() || [];
+          const selectedValues = selectElement.value || [];
           const selections = [];
           selectedValues.forEach((value) => {
             const option = options.selectValueMap[value];
@@ -360,7 +371,9 @@ export const ngOptionsDirective = [
 
       if (providedEmptyOption) {
         // compile the element since there might be bindings in it
-        $compile(selectCtrl.emptyOption)(scope);
+        const linkFn = $compile(selectCtrl.emptyOption);
+        assertArg(linkFn, "LinkFn required");
+        linkFn(scope);
 
         selectElement.prepend(selectCtrl.emptyOption);
 
@@ -373,13 +386,13 @@ export const ngOptionsDirective = [
           // options that are added by ngIf etc. (rendering of the node is async because of
           // lazy transclusion)
           selectCtrl.registerOption = function (optionScope, optionEl) {
-            if (optionEl.val() === "") {
+            if (optionEl.value === "") {
               selectCtrl.hasEmptyOption = true;
               selectCtrl.emptyOption = optionEl;
               // This ensures the new empty option is selected if previously no option was selected
               ngModelCtrl.$render();
 
-              optionEl.on("$destroy", () => {
+              optionEl.addEventListener("$destroy", () => {
                 const needsRerender = selectCtrl.$isEmptyOptionSelected();
 
                 selectCtrl.hasEmptyOption = false;
@@ -480,7 +493,7 @@ export const ngOptionsDirective = [
           }
         });
 
-        selectElement[0].appendChild(listFragment);
+        selectElement.appendChild(listFragment);
 
         ngModelCtrl.$render();
 

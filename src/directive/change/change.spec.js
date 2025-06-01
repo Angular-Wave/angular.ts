@@ -1,6 +1,7 @@
-import { createInjector } from "../../core/di/injector";
-import { dealoc } from "../../shared/jqlite/jqlite.js";
-import { Angular } from "../../loader";
+import { createInjector } from "../../core/di/injector.js";
+import { dealoc } from "../../shared/dom.js";
+import { Angular } from "../../loader.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ngChange", () => {
   let injector;
@@ -23,8 +24,8 @@ describe("ngChange", () => {
         expect($rootScope.value).toBe("new value");
       });
 
-      el[0].setAttribute("value", "new value");
-      el[0].dispatchEvent(new Event("change"));
+      el.setAttribute("value", "new value");
+      el.dispatchEvent(new Event("change"));
 
       expect($rootScope.change).toHaveBeenCalled();
     });
@@ -52,20 +53,23 @@ describe("ngChange", () => {
       $rootScope.changeFn = jasmine.createSpy("changeFn");
       expect($rootScope.changeFn).not.toHaveBeenCalled();
 
-      el[0].dispatchEvent(new Event("change"));
+      el.dispatchEvent(new Event("change"));
       expect($rootScope.changeFn).toHaveBeenCalled();
     });
   });
 
   it("should be able to change the model and via that also update the view", () => {
-    injector.invoke(($compile, $rootScope) => {
+    injector.invoke(async ($compile, $rootScope) => {
       el = $compile(
         '<input type="text" ng-model="value" ng-change="value=\'b\'" />',
       )($rootScope);
 
-      el[0].setAttribute("value", "a");
-      el[0].dispatchEvent(new Event("change"));
-      expect(el.val()).toBe("b");
+      el.setAttribute("value", "a");
+      el.dispatchEvent(new Event("change"));
+      await wait();
+      expect(el.value).toBe("b");
     });
+
+    expect(el.value).toBe("a");
   });
 });

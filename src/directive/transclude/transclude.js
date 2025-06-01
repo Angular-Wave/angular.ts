@@ -1,5 +1,5 @@
 import { minErr } from "../../shared/utils.js";
-import { startingTag } from "../../shared/jqlite/jqlite.js";
+import { emptyElement, startingTag } from "../../shared/dom.js";
 
 /**
  * Directive that marks the insertion point for the transcluded DOM of the nearest parent directive that uses transclusion.
@@ -20,19 +20,32 @@ import { startingTag } from "../../shared/jqlite/jqlite.js";
 const ngTranscludeMinErr = minErr("ngTransclude");
 export const ngTranscludeDirective = [
   "$compile",
+  /**
+   *
+   * @param {import("../../core/compile/compile.js").CompileFn} $compile
+   * @returns {import("../../types").Directive}
+   */
   function ($compile) {
     return {
       restrict: "EA",
       compile: function ngTranscludeCompile(tElement) {
         // Remove and cache any original content to act as a fallback
-        const fallbackLinkFn = $compile(tElement[0].childNodes);
-        tElement.empty();
+        const fallbackLinkFn = $compile(tElement.childNodes);
+        emptyElement(tElement);
 
-        return function ngTranscludePostLink(
+        /**
+         *
+         * @param {import("../../core/scope/scope.js").Scope} $scope
+         * @param {Element} $element
+         * @param {import("../../core/compile/attributes.js").Attributes} $attrs
+         * @param {*} _controller
+         * @param {*} $transclude
+         */
+        function ngTranscludePostLink(
           $scope,
           $element,
           $attrs,
-          controller,
+          _controller,
           $transclude,
         ) {
           if (!$transclude) {
@@ -46,10 +59,10 @@ export const ngTranscludeDirective = [
           }
 
           // If the attribute is of the form: `ng-transclude="ng-transclude"` then treat it like the default
-          if ($attrs.ngTransclude === $attrs.$attr.ngTransclude) {
-            $attrs.ngTransclude = "";
+          if ($attrs["ngTransclude"] === $attrs.$attr.ngTransclude) {
+            $attrs["ngTransclude"] = "";
           }
-          const slotName = $attrs.ngTransclude || $attrs.ngTranscludeSlot;
+          const slotName = $attrs["ngTransclude"] || $attrs["ngTranscludeSlot"];
 
           // If the slot is required and no transclusion content is provided then this call will throw an error
           $transclude(ngTranscludeCloneAttachFn, null, slotName);
@@ -59,9 +72,19 @@ export const ngTranscludeDirective = [
             useFallbackContent();
           }
 
+          /**
+           * @param {NodeList | Node} clone
+           * @param {import("../../core/scope/scope.js").Scope} transcludedScope
+           */
           function ngTranscludeCloneAttachFn(clone, transcludedScope) {
-            if (clone.length && notWhitespace(clone)) {
-              $element.append(clone);
+            if (notWhitespace(clone)) {
+              if (clone instanceof NodeList) {
+                Array.from(clone).forEach((el) => {
+                  $element.append(el);
+                });
+              } else {
+                $element.append(/** @type {Node} */ (clone));
+              }
             } else {
               useFallbackContent();
               // There is nothing linked against the transcluded scope since no content was available,
@@ -73,20 +96,28 @@ export const ngTranscludeDirective = [
           function useFallbackContent() {
             // Since this is the fallback content rather than the transcluded content,
             // we link against the scope of this directive rather than the transcluded scope
-            fallbackLinkFn($scope, (clone) => {
-              $element.append(clone);
-            });
+            fallbackLinkFn(
+              $scope,
+
+              (clone) => {
+                $element.append(clone);
+              },
+            );
           }
 
-          function notWhitespace(nodes) {
-            for (let i = 0, ii = nodes.length; i < ii; i++) {
-              const node = nodes[i];
-              if (node.nodeType !== Node.TEXT_NODE || node.nodeValue.trim()) {
-                return true;
-              }
+          function notWhitespace(node) {
+            if (node instanceof Array) {
+              return false;
+            } else if (
+              node.nodeType !== Node.TEXT_NODE ||
+              node.nodeValue.trim()
+            ) {
+              return true;
             }
           }
-        };
+        }
+
+        return ngTranscludePostLink;
       },
     };
   },

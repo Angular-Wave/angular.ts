@@ -2,7 +2,7 @@ import {
   urlIsSameOrigin,
   urlIsSameOriginAsBaseUrl,
   urlResolve,
-} from "./../url-utils/url-utils";
+} from "./../url-utils/url-utils.js";
 import {
   isFunction,
   isRegExp,
@@ -13,7 +13,7 @@ import {
   shallowCopy,
 } from "../../shared/utils.js";
 
-import { snakeToCamel } from "../../shared/jqlite/jqlite.js";
+import { snakeToCamel } from "../../shared/dom.js";
 
 const $sceMinErr = minErr("$sce");
 
@@ -230,7 +230,7 @@ export function SceDelegateProvider() {
     "$$sanitizeUri",
     /**
      *
-     * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
+     * @param {import("../../core/di/internal-injector").InjectorService} $injector
      * @param {*} $$sanitizeUri
      * @returns
      */
@@ -492,7 +492,8 @@ export function SceProvider() {
   this.$get = [
     "$parse",
     "$sceDelegate",
-    function ($parse, $sceDelegate) {
+    "$exceptionHandler",
+    function ($parse, $sceDelegate, $exceptionHandler) {
       const sce = shallowCopy(SCE_CONTEXTS);
 
       /**
@@ -736,7 +737,11 @@ export function SceProvider() {
           return parse(enumValue, expr);
         };
         sce[snakeToCamel(`get_trusted_${lName}`)] = function (value) {
-          return getTrusted(enumValue, value);
+          try {
+            return getTrusted(enumValue, value);
+          } catch (e) {
+            $exceptionHandler(e);
+          }
         };
         sce[snakeToCamel(`trust_as_${lName}`)] = function (value) {
           return trustAs(enumValue, value);

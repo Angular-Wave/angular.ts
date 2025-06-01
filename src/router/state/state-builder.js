@@ -5,13 +5,12 @@ import {
   tail,
   copy,
   map,
-} from "../../shared/common";
+} from "../../shared/common.js";
 import { isDefined, isFunction, isString } from "../../shared/utils.js";
-import { stringify } from "../../shared/strings";
-import { is, pattern, pipe, val } from "../../shared/hof";
-import { Resolvable } from "../resolve/resolvable";
-import { services } from "../common/coreservices";
-import { annotate } from "../../core/di/injector";
+import { stringify } from "../../shared/strings.js";
+import { is, pattern, pipe, val } from "../../shared/hof.js";
+import { Resolvable } from "../resolve/resolvable.js";
+import { annotate } from "../../core/di/injector.js";
 
 function parseUrl(url) {
   if (!isString(url)) return false;
@@ -94,11 +93,7 @@ function getParamsBuilder(paramFactory) {
 }
 
 function pathBuilder(state) {
-  if (state.parent && !state.abstract) {
-    return state.parent.path.concat(state);
-  } else {
-    return [state];
-  }
+  return state.parent ? state.parent.path.concat(state) : [state];
 }
 
 function includesBuilder(state) {
@@ -159,7 +154,7 @@ export function resolvablesBuilder(state) {
     }));
   /** fetch DI annotations from a function or ng1-style array */
   const annotateFn = (fn) => {
-    const $injector = services.$injector;
+    const $injector = window.angular.$injector;
     // ng1 doesn't have an $injector until runtime.
     // If the $injector doesn't exist, use "deferred" literal as a
     // marker indicating they should be annotated when runtime starts
@@ -288,7 +283,7 @@ export class StateBuilder {
       navigable: [getNavigableBuilder(isRoot)],
       // TODO
       params: [getParamsBuilder(urlService.paramFactory)],
-      // Each framework-specific ui-router implementation should define its own `views` builder
+      // Each framework-specific ng-router implementation should define its own `views` builder
       // e.g., src/ng1/statebuilders/views.ts
       views: [],
       // Keep a full path from the root down to this state as this is needed for state activation.

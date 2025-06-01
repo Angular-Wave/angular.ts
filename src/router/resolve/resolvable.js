@@ -1,8 +1,12 @@
-import { assert, isFunction, isObject } from "../../shared/utils.js";
-import { services } from "../common/coreservices";
-import { trace } from "../common/trace";
-import { stringify } from "../../shared/strings";
-import { isNullOrUndefined } from "../../shared/predicates";
+import {
+  assert,
+  isFunction,
+  isObject,
+  isNullOrUndefined,
+} from "../../shared/utils.js";
+import { trace } from "../common/trace.js";
+import { stringify } from "../../shared/strings.js";
+
 // TODO: explicitly make this user configurable
 export let defaultResolvePolicy = {
   when: "LAZY",
@@ -34,7 +38,7 @@ export class Resolvable {
       this.deps = deps || [];
       this.data = data;
       this.resolved = data !== undefined;
-      this.promise = this.resolved ? services.$q.resolve(this.data) : undefined;
+      this.promise = this.resolved ? Promise.resolve(this.data) : undefined;
     } else if (
       isObject(arg1) &&
       arg1.token &&
@@ -67,10 +71,9 @@ export class Resolvable {
    * and update the Resolvable's state
    */
   resolve(resolveContext, trans) {
-    const $q = services.$q;
     // Gets all dependencies from ResolveContext and wait for them to be resolved
     const getResolvableDependencies = () =>
-      $q.all(
+      Promise.all(
         resolveContext
           .getDependencies(this)
           .map((resolvable) => resolvable.get(resolveContext, trans)),
@@ -91,12 +94,12 @@ export class Resolvable {
       return this.data;
     };
     // Sets the promise property first, then getsResolvableDependencies in the context of the promise chain. Always waits one tick.
-    return (this.promise = $q
-      .resolve()
+    this.promise = Promise.resolve()
       .then(getResolvableDependencies)
       .then(invokeResolveFn)
       .then(customAsyncPolicy)
-      .then(applyResolvedValue));
+      .then(applyResolvedValue);
+    return this.promise;
   }
   /**
    * Gets a promise for this Resolvable's data.

@@ -5,31 +5,7 @@ import { minErr } from "../../../shared/utils.js";
 const $parseMinErr = minErr("$parse");
 
 /**
- * @typedef {Object} ASTNode
- * @property {number} type - The type of the AST node.
- * @property {string} [name] - The name of the identifier.
- * @property {string} [kind] - The kind of the property (e.g., 'init').
- * @property {*} [value] - The value of the node if it is a literal.
- * @property {ASTNode[]} [elements] - The elements of an array node.
- * @property {ASTNode[]} [properties] - The properties of an object node.
- * @property {ASTNode} [key] - The key of an object property.
- * @property {ASTNode} [value] - The value of an object property.
- * @property {ASTNode} [left] - The left-hand side of a binary expression.
- * @property {ASTNode} [right] - The right-hand side of a binary expression.
- * @property {ASTNode} [argument] - The argument of a unary expression.
- * @property {ASTNode} [test] - The test expression of a conditional expression.
- * @property {ASTNode} [alternate] - The alternate expression of a conditional expression.
- * @property {ASTNode} [consequent] - The consequent expression of a conditional expression.
- * @property {ASTNode[]} [body] - The body of a program or block statement.
- * @property {ASTNode} [expression] - The expression of an expression statement.
- * @property {ASTNode} [callee] - The callee of a call expression.
- * @property {ASTNode[]} [arguments] - The arguments of a call expression.
- * @property {boolean} [prefix] - Indicates if a unary operator is a prefix.
- * @property {ASTNode} [object] - The object of a member expression.
- * @property {ASTNode} [property] - The property of a member expression.
- * @property {boolean} [computed] - Indicates if a member expression is computed.
- * @property {string} [operator] - The operator of a binary or logical expression.
- * @property {boolean} [filter]
+ * @typedef {import("./ast.d.ts").ASTNode} ASTNode
  */
 
 // Keep this exported in case modification is required

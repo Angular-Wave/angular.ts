@@ -4,9 +4,10 @@ import {
   toInt,
   minErr,
   isUndefined,
+  isProxy,
 } from "../../shared/utils.js";
-import { REGEX_STRING_REGEXP } from "./../attrs/attrs";
-import { startingTag } from "../../shared/jqlite/jqlite.js";
+import { REGEX_STRING_REGEXP } from "./../attrs/attrs.js";
+import { startingTag } from "../../shared/dom.js";
 
 /**
  *
@@ -43,7 +44,7 @@ export const requiredDirective = [
     link:
       /**
        * @param {import("../../core/scope/scope.js").Scope} scope
-       * @param {*} _elm
+       * @param {Element} _elm
        * @param {import("../../types.js").Attributes} attr
        * @param {import("../../types.js").NgModelController} ctrl
        * @returns
@@ -318,6 +319,10 @@ export const minlengthDirective = [
 
 function parsePatternAttr(regex, patternExp, elm) {
   if (!regex) return undefined;
+
+  if (isProxy(regex)) {
+    regex = regex.$target;
+  }
 
   if (isString(regex)) {
     regex = new RegExp(`^${regex}$`);

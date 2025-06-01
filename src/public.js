@@ -62,9 +62,7 @@ import { TemplateCacheProvider } from "./core/cache/cache-factory.js";
 import { ControllerProvider } from "./core/controller/controller.js";
 import { ExceptionHandlerProvider } from "./core/exception-handler.js";
 import { FilterProvider } from "./core/filter/filter.js";
-import { IntervalProvider } from "./core/interval/interval.js";
 import { InterpolateProvider } from "./core/interpolate/interpolate.js";
-import { $IntervalFactoryProvider } from "./core/interval/interval-factory.js";
 import {
   HttpProvider,
   HttpParamSerializerProvider,
@@ -74,11 +72,9 @@ import { LocationProvider } from "./core/location/location.js";
 import { LogProvider } from "./services/log.js";
 import { ParseProvider } from "./core/parse/parse.js";
 import { RootScopeProvider } from "./core/scope/scope.js";
-import { $QProvider } from "./core/q/q.js";
 import { SceProvider, SceDelegateProvider } from "./core/sce/sce.js";
 import { TaskTrackerFactoryProvider } from "./core/task-tracker-factory.js";
 import { TemplateRequestProvider } from "./services/template-request.js";
-import { TimeoutProvider } from "./core/timeout/timeout.js";
 import { SanitizeUriProvider } from "./core/sanitize/sanitize-uri.js";
 import {
   ngMessageDefaultDirective,
@@ -141,7 +137,7 @@ export const VERSION = "[VI]{version}[/VI]";
 /**
  * Initializes `ng`, `animate`, `message`, `aria` and `router` modules.
  * @param {import('./loader').Angular} angular
- * @returns {import('./types').Module} `ng`module
+ * @returns {import('./types.js').Module} `ng`module
  */
 export function publishExternalAPI(angular) {
   const ng = angular
@@ -252,8 +248,6 @@ export function publishExternalAPI(angular) {
             $exceptionHandler: ExceptionHandlerProvider,
             $filter: FilterProvider,
             $interpolate: InterpolateProvider,
-            $interval: IntervalProvider,
-            $$intervalFactory: $IntervalFactoryProvider,
             $http: HttpProvider,
             $httpParamSerializer: HttpParamSerializerProvider,
             $httpBackend: HttpBackendProvider,
@@ -263,13 +257,11 @@ export function publishExternalAPI(angular) {
             $$rAFScheduler: RafSchedulerProvider,
             $rootScope: RootScopeProvider,
             $routerGlobals: UIRouterGlobals,
-            $q: $QProvider,
             $sce: SceProvider,
             $sceDelegate: SceDelegateProvider,
             $$taskTrackerFactory: TaskTrackerFactoryProvider,
             $templateCache: TemplateCacheProvider,
             $templateRequest: TemplateRequestProvider,
-            $timeout: TimeoutProvider,
             $urlConfig: UrlConfigProvider,
             $view: ViewService,
             $transitions: TransitionProvider,

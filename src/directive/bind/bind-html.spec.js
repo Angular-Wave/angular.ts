@@ -1,5 +1,6 @@
-import { createInjector } from "../../core/di/injector";
-import { Angular } from "../../loader";
+import { createInjector } from "../../core/di/injector.js";
+import { Angular } from "../../loader.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ngBindHtml", () => {
   let $rootScope, $compile;
@@ -12,24 +13,24 @@ describe("ngBindHtml", () => {
     });
   });
 
-  it("should set html", () => {
+  it("should set html", async () => {
     const element = $compile('<div ng-bind-html="html"></div>')($rootScope);
     $rootScope.html = "<div>hello</div>";
-    $rootScope.$digest();
-    expect(element.html()).toEqual("<div>hello</div>");
+    await wait();
+    expect(element.innerHTML).toEqual("<div>hello</div>");
   });
 
-  it("should reset html when value is null or undefined", () => {
-    const element = $compile('<div ng-bind-html="html"></div>')($rootScope);
+  [null, undefined, ""].forEach((val) => {
+    it("should reset html when value is null or undefined " + val, async () => {
+      const element = $compile('<div ng-bind-html="html"></div>')($rootScope);
 
-    [null, undefined, ""].forEach((val) => {
       $rootScope.html = "some val";
-      $rootScope.$digest();
-      expect(element.html()).toEqual("some val");
+      await wait();
+      expect(element.innerHTML).toEqual("some val");
 
       $rootScope.html = val;
-      $rootScope.$digest();
-      expect(element.html()).toEqual("");
+      await wait();
+      expect(element.innerHTML).toEqual("");
     });
   });
 });

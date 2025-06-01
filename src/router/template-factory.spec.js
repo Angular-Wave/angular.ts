@@ -1,6 +1,6 @@
-import { dealoc, JQLite } from "../shared/jqlite/jqlite.js";
-import { Angular } from "../loader";
-import { wait } from "../shared/test-utils";
+import { dealoc } from "../shared/dom.js";
+import { Angular } from "../loader.js";
+import { wait } from "../shared/test-utils.js";
 
 describe("templateFactory", () => {
   let $injector,
@@ -13,10 +13,9 @@ describe("templateFactory", () => {
     $stateService;
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
     window.angular.module("defaultModule", []);
-    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
     $injector.invoke(
@@ -35,10 +34,9 @@ describe("templateFactory", () => {
 
   describe("should follow $sce policy and", () => {
     it("accepts relative URLs", async () => {
-      let res = $templateFactory.fromUrl("mock/hello");
-      $scope.$digest();
+      let res = $templateFactory.fromUrl("/mock/hello");
       await wait(100);
-      expect(res.$$state.status).toBe(1);
+      expect(await res).toEqual("Hello");
     });
 
     it("rejects untrusted URLs", () => {
@@ -62,12 +60,12 @@ describe("templateFactory", () => {
 
   describe("templateFactory with forced use of $http service", () => {
     beforeEach(() => {
-      dealoc(document.getElementById("dummy"));
+      dealoc(document.getElementById("app"));
       let module = window.angular.module("defaultModule", []);
       module.config(function ($templateFactoryProvider) {
         $templateFactoryProvider.useHttpService(true);
       });
-      $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      $injector = window.angular.bootstrap(document.getElementById("app"), [
         "defaultModule",
       ]);
       $injector.invoke(
@@ -95,12 +93,12 @@ describe("templateFactory", () => {
     let el;
 
     beforeEach(() => {
-      dealoc(document.getElementById("dummy"));
+      dealoc(document.getElementById("app"));
       const mod = angular.module("defaultModule", []);
       mod.component("myComponent", { template: "hi" });
       mod.component("dataComponent", { template: "hi" });
       mod.component("xComponent", { template: "hi" });
-      $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+      $injector = window.angular.bootstrap(document.getElementById("app"), [
         "defaultModule",
       ]);
       $injector.invoke(
@@ -122,15 +120,14 @@ describe("templateFactory", () => {
           $compile = _$compile_;
         },
       );
-      el = $compile(JQLite("<div><ng-view></ng-view></div>"))($scope.$new());
+      el = $compile("<div><ng-view></ng-view></div>")($scope.$new());
     });
 
     it("should not prefix the components dom element with anything", async () => {
       $stateRegistry.register({ name: "cmp", component: "myComponent" });
       $stateService.go("cmp");
-      $scope.$digest();
       await wait(100);
-      expect(el.html()).toMatch(/\<my-component/);
+      expect(el.innerHTML).toMatch(/\<my-component/);
     });
 
     it("should prefix the components dom element with x- for components named dataFoo", () => {
@@ -139,15 +136,13 @@ describe("templateFactory", () => {
         component: "dataComponent",
       });
       $stateService.go("cmp");
-      $scope.$digest();
-      expect(el.html()).toMatch(/\<x-data-component/);
+      expect(el.innerHTML).toMatch(/\<x-data-component/);
     });
 
     it("should prefix the components dom element with x- for components named xFoo", () => {
       $stateRegistry.register({ name: "cmp", component: "xComponent" });
       $stateService.go("cmp");
-      $scope.$digest();
-      expect(el.html()).toMatch(/\<x-x-component/);
+      expect(el.innerHTML).toMatch(/\<x-x-component/);
     });
   });
 });

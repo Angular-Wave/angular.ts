@@ -1,11 +1,14 @@
 {
     "compilerOptions": {
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
       "declaration": true,
       "allowJs": true,
       "emitDeclarationOnly": true,
-      "outDir": "types"
+      "outDir": "@types",
+      "target": "ES2023"
     },
     "include": ["src/**/*.js"],
-    "exclude": ["**/*.spec.js", "**/*.test.js"]
+    "exclude": ["./node_modules/@types/**",  "./types/**", "**/*.test.js", "**/*.spec.js"]
   }
   

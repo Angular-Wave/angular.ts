@@ -1,25 +1,37 @@
-import {
-  minErr,
-  hashKey,
-  isArrayLike,
-  hasAnimate,
-} from "../../shared/utils.js";
-import { getBlockNodes, JQLite } from "../../shared/jqlite/jqlite.js";
-import { domInsert } from "../../animations/animate.js";
+import { minErr, hashKey, isArrayLike } from "../../shared/utils.js";
+import { getBlockNodes } from "../../shared/dom.js";
 
-ngRepeatDirective.$inject = ["$parse", "$animate"];
+const NG_REMOVED = "$$NG_REMOVED";
+const ngRepeatMinErr = minErr("ngRepeat");
 
 /**
+ * Regular expression to match either:
+ * 1. A single variable name (optionally preceded by whitespace), e.g. "foo", "   $bar"
+ * 2. A pair of variable names inside parentheses separated by a comma (with optional whitespace), e.g. "(x, y)", "($foo, _bar123)"
  *
- * @param {import("../../core/parse/parse.js").ParseService} $parse
- * @param {*} $animate
+ * Capturing groups:
+ * - Group 1: The single variable name (if present)
+ * - Group 2: The first variable in the tuple (if present)
+ * - Group 3: The second variable in the tuple (if present)
+ *
+ * Examples:
+ *  - Matches: "foo", "   $var", "(x, y)", "($a, $b)"
+ *  - Does NOT match: "x,y", "(x)", "(x y)", ""
+ *
+ * @constant {RegExp}
+ */
+const VAR_OR_TUPLE_REGEX =
+  /^(?:(\s*[$\w]+)|\(\s*([$\w]+)\s*,\s*([$\w]+)\s*\))$/;
+
+ngRepeatDirective.$inject = ["$animate"];
+
+/**
+ * TODO // Add type for animate service
+ * @param {*}  $animate
  * @returns {import("../../types.js").Directive}
  */
-export function ngRepeatDirective($parse, $animate) {
-  const NG_REMOVED = "$$NG_REMOVED";
-  const ngRepeatMinErr = minErr("ngRepeat");
-
-  const updateScope = function (
+export function ngRepeatDirective($animate) {
+  function updateScope(
     scope,
     index,
     valueIdentifier,
@@ -29,38 +41,45 @@ export function ngRepeatDirective($parse, $animate) {
     arrayLength,
   ) {
     // TODO(perf): generate setters to shave off ~40ms or 1-1.5%
-    scope[valueIdentifier] = value;
+    if (scope[valueIdentifier] !== value) {
+      scope[valueIdentifier] = value;
+    }
+
     if (keyIdentifier) scope[keyIdentifier] = key;
+    if (value) {
+      scope.$target.$$hashKey = value.$$hashKey;
+    }
     scope.$index = index;
     scope.$first = index === 0;
     scope.$last = index === arrayLength - 1;
     scope.$middle = !(scope.$first || scope.$last);
     scope.$odd = !(scope.$even = (index & 1) === 0);
-  };
+  }
 
-  const getBlockStart = function (block) {
-    return block.clone[0];
-  };
+  function getBlockStart(block) {
+    return block.clone;
+  }
 
-  const getBlockEnd = function (block) {
-    return block.clone[block.clone.length - 1];
-  };
+  function getBlockEnd(block) {
+    return block.clone;
+  }
 
-  const trackByIdArrayFn = function ($scope, key, value) {
+  function trackByIdArrayFn(_$scope, _key, value) {
     return hashKey(value);
-  };
+  }
 
-  const trackByIdObjFn = function ($scope, key) {
+  function trackByIdObjFn(_$scope, key) {
     return key;
-  };
+  }
 
   return {
     restrict: "A",
     transclude: "element",
     priority: 1000,
     terminal: true,
-    compile: function ngRepeatCompile($element, $attr) {
+    compile: (_$element, $attr) => {
       const expression = $attr.ngRepeat;
+      const hasAnimate = !!$attr.animate;
 
       let match = expression.match(
         /^\s*([\s\S]+?)\s+in\s+([\s\S]+?)(?:\s+as\s+([\s\S]+?))?(?:\s+track\s+by\s+([\s\S]+?))?\s*$/,
@@ -77,9 +96,8 @@ export function ngRepeatDirective($parse, $animate) {
       const lhs = match[1];
       const rhs = match[2];
       const aliasAs = match[3];
-      const trackByExp = match[4];
 
-      match = lhs.match(/^(?:(\s*[$\w]+)|\(\s*([$\w]+)\s*,\s*([$\w]+)\s*\))$/);
+      match = lhs.match(VAR_OR_TUPLE_REGEX);
 
       if (!match) {
         throw ngRepeatMinErr(
@@ -107,19 +125,6 @@ export function ngRepeatDirective($parse, $animate) {
 
       let trackByIdExpFn;
 
-      if (trackByExp) {
-        var hashFnLocals = { $id: hashKey };
-        const trackByExpGetter = $parse(trackByExp);
-
-        trackByIdExpFn = function ($scope, key, value, index) {
-          // assign key, value, and $index to the locals so that they can be used in hash functions
-          if (keyIdentifier) hashFnLocals[keyIdentifier] = key;
-          hashFnLocals[valueIdentifier] = value;
-          hashFnLocals.$index = index;
-          return trackByExpGetter($scope, hashFnLocals);
-        };
-      }
-
       return function ngRepeatLink($scope, $element, $attr, ctrl, $transclude) {
         // Store a list of elements from previous run. This is a hash where key is the item from the
         // iterator, and the value is objects with following properties.
@@ -130,13 +135,11 @@ export function ngRepeatDirective($parse, $animate) {
         // We are using no-proto object so that we don't need to guard against inherited props via
         // hasOwnProperty.
         let lastBlockMap = Object.create(null);
-
         // watch props
-        //watch props
-        $scope.$watchCollection(rhs, (collection) => {
+        $scope.$watch(rhs, (collection) => {
           var index,
             length,
-            previousNode = $element[0], // node that cloned nodes should be inserted after
+            previousNode = $element, // node that cloned nodes should be inserted after
             // initialized to the comment node anchor
             nextNode,
             // Same as lastBlockMap but it has the current state. It will become the
@@ -163,7 +166,7 @@ export function ngRepeatDirective($parse, $animate) {
             trackByIdFn = trackByIdExpFn || trackByIdObjFn;
             // if object, extract keys, in enumeration order, unsorted
             collectionKeys = [];
-            for (var itemKey in collection) {
+            for (const itemKey in collection) {
               if (
                 Object.hasOwnProperty.call(collection, itemKey) &&
                 itemKey.charAt(0) !== "$"
@@ -194,7 +197,7 @@ export function ngRepeatDirective($parse, $animate) {
               });
               throw ngRepeatMinErr(
                 "dupes",
-                "Duplicates in a repeater are not allowed. Use 'track by' expression to specify unique keys. Repeater: {0}, Duplicate key: {1}, Duplicate value: {2}",
+                "Duplicates keys in a repeater are not allowed. Repeater: {0}, Duplicate key: {1} for value: {2}",
                 expression,
                 trackById,
                 value,
@@ -210,18 +213,16 @@ export function ngRepeatDirective($parse, $animate) {
             }
           }
 
-          // Clear the value property from the hashFnLocals object to prevent a reference to the last value
-          // being leaked into the ngRepeatCompile function scope
-          if (hashFnLocals) {
-            hashFnLocals[valueIdentifier] = undefined;
-          }
-
           // remove leftover items
           for (var blockKey in lastBlockMap) {
             block = lastBlockMap[blockKey];
-            elementsToRemove = getBlockNodes(block.clone);
-            $animate.leave(elementsToRemove);
-            if (elementsToRemove[0].parentNode) {
+            elementsToRemove = block.clone;
+            if (hasAnimate) {
+              $animate.leave(elementsToRemove);
+            } else {
+              elementsToRemove.remove();
+            }
+            if (elementsToRemove.parentNode) {
               // if the element was not removed yet because of pending animation, mark it as deleted
               // so that we can ignore it later
               for (
@@ -235,7 +236,6 @@ export function ngRepeatDirective($parse, $animate) {
             block.scope.$destroy();
           }
 
-          // we are not using forEach for perf reasons (trying to avoid #call)
           for (index = 0; index < collectionLength; index++) {
             key = collection === collectionKeys ? index : collectionKeys[index];
             value = collection[key];
@@ -268,38 +268,39 @@ export function ngRepeatDirective($parse, $animate) {
               );
             } else {
               // new item which we don't know about
-              $transclude((clone, scope) => {
-                block.scope = scope;
-                // Removing this comment node breaks // "clobber ng-if" test
-                // TODO investigate
-                const endNode = document.createComment("");
-                clone[clone.length++] = endNode;
+              $transclude(
+                /**
+                 * Clone attach function
+                 * @param {Array<NodeList>} clone
+                 * @param {import("../../core/scope/scope.js").Scope} scope
+                 */
 
-                if (hasAnimate(clone[0])) {
-                  $animate.enter(clone, null, previousNode);
-                } else {
-                  domInsert(
-                    clone,
-                    JQLite(previousNode).parent(),
-                    JQLite(previousNode),
+                (clone, scope) => {
+                  block.scope = scope;
+                  const endNode = clone;
+                  if (hasAnimate) {
+                    $animate.enter(clone, null, previousNode);
+                  } else {
+                    previousNode.after(clone);
+                  }
+
+                  previousNode = endNode;
+                  // Note: We only need the first/last node of the cloned nodes.
+                  // However, we need to keep the reference to the dom wrapper as it might be changed later
+                  // by a directive with templateUrl when its template arrives.
+                  block.clone = clone;
+                  nextBlockMap[block.id] = block;
+                  updateScope(
+                    block.scope,
+                    index,
+                    valueIdentifier,
+                    value,
+                    keyIdentifier,
+                    key,
+                    collectionLength,
                   );
-                }
-                previousNode = endNode;
-                // Note: We only need the first/last node of the cloned nodes.
-                // However, we need to keep the reference to the jqlite wrapper as it might be changed later
-                // by a directive with templateUrl when its template arrives.
-                block.clone = clone;
-                nextBlockMap[block.id] = block;
-                updateScope(
-                  block.scope,
-                  index,
-                  valueIdentifier,
-                  value,
-                  keyIdentifier,
-                  key,
-                  collectionLength,
-                );
-              });
+                },
+              );
             }
           }
           lastBlockMap = nextBlockMap;

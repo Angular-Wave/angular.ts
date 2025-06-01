@@ -1,10 +1,9 @@
-import { find, tail, uniqR, unnestR } from "../../shared/common";
-import { propEq } from "../../shared/hof";
-import { trace } from "../common/trace";
-import { services } from "../common/coreservices";
-import { Resolvable } from "./resolvable";
-import { PathUtils } from "../path/path-utils";
-import { stringify } from "../../shared/strings";
+import { find, tail, uniqR, unnestR } from "../../shared/common.js";
+import { propEq } from "../../shared/hof.js";
+import { trace } from "../common/trace.js";
+import { Resolvable } from "./resolvable.js";
+import { PathUtils } from "../path/path-utils.js";
+import { stringify } from "../../shared/strings.js";
 import { isUndefined } from "../../shared/utils.js";
 
 export const resolvePolicies = {
@@ -119,7 +118,7 @@ export class ResolveContext {
    *
    * @param {string} when
    * @param trans
-   * @returns {import("../../core/q/q").QPromise<any>|any}
+   * @returns {Promise<any>|any}
    */
   resolvePath(when = "LAZY", trans) {
     // This option determines which 'when' policy Resolvables we are about to fetch.
@@ -153,7 +152,7 @@ export class ResolveContext {
       return acc.concat(wait.map(getResult));
     }, []);
     // Wait for all the "WAIT" resolvables
-    return services.$q.all(promises);
+    return Promise.all(promises);
   }
 
   injector() {
@@ -183,7 +182,7 @@ export class ResolveContext {
     return resolvable.deps.map((token) => {
       const matching = availableResolvables.filter((r) => r.token === token);
       if (matching.length) return tail(matching);
-      const fromInjector = services.$injector.get(token);
+      const fromInjector = window.angular.$injector.get(token);
       if (isUndefined(fromInjector)) {
         throw new Error(
           "Could not find Dependency Injection token: " + stringify(token),
@@ -196,15 +195,15 @@ export class ResolveContext {
 
 class UIInjectorImpl {
   constructor() {
-    this.native = services.$injector;
+    this.native = window.angular.$injector;
   }
   get(token) {
-    return services.$injector.get(token);
+    return window.angular.$injector.get(token);
   }
   getAsync(token) {
-    return services.$q.resolve(services.$injector.get(token));
+    return Promise.resolve(window.angular.$injector.get(token));
   }
   getNative(token) {
-    return services.$injector.get(token);
+    return window.angular.$injector.get(token);
   }
 }

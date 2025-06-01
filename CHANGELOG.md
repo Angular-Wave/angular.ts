@@ -3060,7 +3060,7 @@ option directly as a property of the `ngModelContoller.$options` object. This do
 affect the usage in templates and only affects custom directives that might have been
 reading options for their own purposes.
 
-One benefit of these changes, though, is that the `ngModelControler.$options` property
+One beneit of these changes, though, is that the `ngModelControler.$options` property
 is now guaranteed to be defined so there is no need to check before accessing.
 
 So, previously:
@@ -4344,7 +4344,7 @@ option directly as a property of the `ngModelContoller.$options` object. This do
 affect the usage in templates and only affects custom directives that might have been
 reading options for their own purposes.
 
-One benefit of these changes, though, is that the `ngModelControler.$options` property
+One beneit of these changes, though, is that the `ngModelControler.$options` property
 is now guaranteed to be defined so there is no need to check before accessing.
 
 So, previously:
@@ -10316,7 +10316,7 @@ all changes.
 
 If an existing filter is stateful, it can be flagged as such but keep in
 mind that this will result in a significant performance-penalty (or rather
-lost opportunity to benefit from a major perf improvement) that will
+lost opportunity to beneit from a major perf improvement) that will
 affect the `$digest` duration.
 
 To flag a filter as stateful do the following:
@@ -15153,7 +15153,7 @@ Contains only these fixes cherry-picked from [v1.2.0rc1](#1.2.0rc1).
     }
     ```
 
-    This makes it possible to access a form from a controller using the new "controller as" syntax. Supporting the previous behavior offers no benefit.
+    This makes it possible to access a form from a controller using the new "controller as" syntax. Supporting the previous behavior offers no beneit.
 
 - **ngView:** due to [7d69d52a](https://github.com/angular/angular.js/commit/7d69d52acff8578e0f7d6fe57a6c45561a05b182),
   previously ngView only updated its content, after this change ngView will recreate itself every time a new content is included. This ensures that a single rootElement for all the included contents always exists, which makes definition of css styles for animations much easier.

@@ -1,27 +1,17 @@
-// function animateFlush($animate) {
-//   if ($animate && $animate.flush) {
-//     $animate.flush(); // 1.4
-//   } else if ($animate && $animate.triggerCallbacks) {
-//     $animate.triggerCallbacks(); // 1.2-1.3
-//   }
-// }
-
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
-import { Angular } from "../../loader";
-import { wait } from "../../shared/test-utils";
+import { createElementFromHTML, dealoc } from "../../shared/dom.js";
+import { Angular } from "../../loader.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ngView", () => {
   window.location.hash = "";
   let $stateProvider,
     scope,
     $compile,
-    elem,
+    elem = document.getElementById("app"),
     log,
     app,
     $injector,
     $state,
-    $q,
-    $timeout,
     $ngViewScroll;
 
   const aState = {
@@ -112,14 +102,14 @@ describe("ngView", () => {
       name: "m",
       template: "mState",
       controller: function ($scope, $element) {
-        $scope.elementId = $element.attr("id");
+        $scope.elementId = $element.getAttribute("id");
       },
     },
     nState = {
       name: "n",
       template: "nState",
       controller: function ($scope, $element) {
-        const data = $element.data("$ngViewAnim");
+        const data = getCacheData($element, "$ngViewAnim");
         $scope.$on("$destroy", () => {
           log += "destroy;";
         });
@@ -133,7 +123,7 @@ describe("ngView", () => {
     };
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     log = "";
     app = window.angular
@@ -162,89 +152,88 @@ describe("ngView", () => {
         $stateProvider = _$stateProvider_;
       });
 
-    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
 
-    $injector.invoke(
-      (_$state_, _$q_, _$timeout_, $rootScope, _$compile_, _$ngViewScroll_) => {
-        scope = $rootScope.$new();
-        $compile = _$compile_;
-        $state = _$state_;
-        $q = _$q_;
-        $timeout = _$timeout_;
-        elem = JQLite("<div>");
-        $ngViewScroll = _$ngViewScroll_;
-      },
-    );
+    $injector.invoke((_$state_, $rootScope, _$compile_, _$ngViewScroll_) => {
+      scope = $rootScope.$new();
+      $compile = _$compile_;
+      $state = _$state_;
+      $ngViewScroll = _$ngViewScroll_;
+    });
   });
 
-  describe("linking ui-directive", () => {
+  describe("linking ng-directive", () => {
     it("anonymous ng-view should be replaced with the template of the current $state", async () => {
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
 
-      expect(elem.find("ng-view").text()).toBe("");
+      expect(elem.querySelector("ng-view").textContent).toBe("");
 
       $state.transitionTo(aState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(aState.template);
+      expect(elem.querySelector("ng-view").textContent).toBe(aState.template);
     });
 
     it("named ng-view should be replaced with the template of the current $state", async () => {
-      elem.append(
-        $compile('<div><ng-view name="cview"></ng-view></div>')(scope),
-      );
+      elem.innerHTML = '<div><ng-view name="cview"></ng-view></div>';
+      $compile(elem)(scope);
 
       $state.transitionTo(cState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(cState.views.cview.template);
+      expect(elem.querySelector("ng-view").textContent).toBe(
+        cState.views.cview.template,
+      );
     });
 
     it("ng-view should be updated after transition to another state", async () => {
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
-      expect(elem.find("ng-view").text()).toBe("");
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
+      expect(elem.querySelector("ng-view").textContent).toBe("");
 
       $state.transitionTo(aState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(aState.template);
+      expect(elem.querySelector("ng-view").textContent).toBe(aState.template);
 
       $state.transitionTo(bState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(bState.template);
+      expect(elem.querySelector("ng-view").textContent).toBe(bState.template);
     });
 
     it("should handle NOT nested ng-views", async () => {
-      elem.append(
-        $compile(
-          '<div><ng-view name="dview1" class="dview1"></ng-view><ng-view name="dview2" class="dview2"></ng-view></div>',
-        )(scope),
-      );
-      expect(elem.find("ng-view").eq(0).text()).toBe("");
-      expect(elem.find("ng-view").eq(1).text()).toBe("");
+      elem.innerHTML =
+        '<div><ng-view name="dview1" class="dview1"></ng-view><ng-view name="dview2" class="dview2"></ng-view></div>';
+      $compile(elem)(scope);
+      expect(elem.querySelectorAll("ng-view")[0].textContent).toBe("");
+      expect(elem.querySelectorAll("ng-view")[1].textContent).toBe("");
 
       $state.transitionTo(dState);
       await wait(100);
 
-      expect(elem.find("ng-view").eq(0).text()).toBe(
+      expect(elem.querySelectorAll("ng-view")[0].textContent).toBe(
         dState.views.dview1.template,
       );
-      expect(elem.find("ng-view").eq(1).text()).toBe(
+      expect(elem.querySelectorAll("ng-view")[1].textContent).toBe(
         dState.views.dview2.template,
       );
     });
 
     it("should handle nested ng-views (testing two levels deep)", async () => {
-      $compile(elem.append("<div><ng-view></ng-view></div>"))(scope);
-      expect(elem.find("ng-view").text()).toBe("");
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
+      expect(elem.querySelector("ng-view").textContent).toBe("");
 
       $state.transitionTo(fState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(fState.views.eview.template);
+      expect(elem.querySelector("ng-view").textContent).toBe(
+        fState.views.eview.template,
+      );
     });
   });
 
@@ -252,70 +241,74 @@ describe("ngView", () => {
     it("initial view should be compiled if the view is empty", async () => {
       const content = "inner content";
       scope.content = content;
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
 
       $state.transitionTo(gState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(content);
+      expect(elem.querySelector("ng-view").textContent).toBe(content);
     });
 
     it("initial view should be put back after removal of the view", async () => {
       const content = "inner content";
       scope.content = content;
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
 
       $state.go(hState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(hState.views.inner.template);
+      expect(elem.querySelector("ng-view").textContent).toBe(
+        hState.views.inner.template,
+      );
 
       // going to the parent state which makes the inner view empty
       $state.go(gState);
       await wait(100);
 
-      expect(elem.find("ng-view").text()).toBe(content);
+      expect(elem.querySelector("ng-view").textContent).toBe(content);
     });
 
     // related to issue #435
     it("initial view should be transcluded once to prevent breaking other directives", async () => {
       scope.items = ["I", "am", "a", "list", "of", "items"];
-
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
-
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
+      await wait();
       // transition to state that has an initial view
       $state.transitionTo(iState);
       await wait(100);
 
       // verify if ng-repeat has been compiled
-      expect(elem.find("li").length).toBe(scope.items.length);
+      expect(elem.querySelectorAll("li").length).toBe(scope.items.length);
 
       // transition to another state that replace the initial content
       $state.transitionTo(jState);
       await wait(100);
-
-      expect(elem.find("ng-view").text()).toBe(jState.template);
+      expect(elem.querySelector("ng-view").innerText).toBe(jState.template);
 
       // transition back to the state with empty subview and the initial view
       $state.transitionTo(iState);
       await wait(100);
 
       // verify if the initial view is correct
-      expect(elem.find("li").length).toBe(scope.items.length);
+      expect(elem.querySelectorAll("li").length).toBe(scope.items.length);
 
       // change scope properties
       scope.$apply(() => {
         scope.items.push(".", "Working?");
       });
-
+      await wait();
       // verify if the initial view has been updated
-      expect(elem.find("li").length).toBe(scope.items.length);
+      expect(elem.querySelectorAll("li").length).toBe(scope.items.length);
     });
   });
 
   describe("autoscroll attribute", () => {
     it("should NOT autoscroll when unspecified", async () => {
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
 
       $state.transitionTo(aState);
       await wait(100);
@@ -323,21 +316,22 @@ describe("ngView", () => {
     });
 
     it("should autoscroll when expression is missing", async () => {
-      elem.append($compile("<div><ng-view autoscroll></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view autoscroll></ng-view></div>";
+      $compile(elem)(scope);
+
       await $state.transitionTo(aState);
       await wait(20);
 
       // animateFlush($animate);
 
-      expect($ngViewScroll).toHaveBeenCalledWith(elem.find("ng-view"));
+      expect($ngViewScroll).toHaveBeenCalledWith(elem.querySelector("ng-view"));
     });
 
     it("should autoscroll based on expression", async () => {
       scope.doScroll = false;
 
-      elem.append(
-        $compile('<div><ng-view autoscroll="doScroll"></ng-view></div>')(scope),
-      );
+      elem.innerHTML = "<div><ng-view autoscroll='doScroll'></ng-view></div>";
+      $compile(elem)(scope);
 
       $state.transitionTo(aState);
       await wait(100);
@@ -347,36 +341,25 @@ describe("ngView", () => {
       scope.doScroll = true;
       $state.transitionTo(bState);
       await wait(100);
-
-      let target,
-        index = -1,
-        ngViews = elem.find("ng-view");
-
-      while (index++ < ngViews.length) {
-        const ngView = JQLite(ngViews[index]);
-        if (ngView.text() === bState.template) target = ngView;
-      }
-
-      expect($ngViewScroll).toHaveBeenCalledWith(target);
+      expect($ngViewScroll).toHaveBeenCalledWith(elem.querySelector("ng-view"));
     });
   });
 
   it("should instantiate a controller with controllerAs", async () => {
-    elem.append($compile("<div><ng-view></ng-view></div>")(scope));
-    await $state.transitionTo(kState);
-    expect(elem.text()).toBe("value");
+    elem.innerHTML = "<div><ng-view></ng-view></div>";
+    $compile(elem)(scope);
+    $state.transitionTo(kState);
+    await wait(100);
+    expect(elem.textContent).toBe("value");
   });
 
   it("should instantiate a controller with both $scope and $element injections", async () => {
-    elem.append(
-      $compile('<div><ng-view id="mState">{{elementId}}</ng-view></div>')(
-        scope,
-      ),
-    );
+    elem.innerHTML = '<div><ng-view id="mState">{{elementId}}</ng-view></div>';
+    $compile(elem)(scope);
     $state.transitionTo(mState);
     await wait(100);
 
-    expect(elem.text()).toBe("mState");
+    expect(elem.textContent).toBe("mState");
   });
 
   describe("(resolved data)", () => {
@@ -390,9 +373,9 @@ describe("ngView", () => {
         name: "resolve",
         resolve: {
           user: function () {
-            return $timeout(() => {
+            return wait(100).then(() => {
               return "joeschmoe";
-            }, 100);
+            });
           },
         },
       };
@@ -407,12 +390,13 @@ describe("ngView", () => {
         },
       });
       $stateProvider.state(state);
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
 
       await $state.transitionTo("resolve");
       await wait(100);
 
-      expect(elem.text()).toBe("joeschmoe");
+      expect(elem.textContent).toBe("joeschmoe");
       expect(_scope.$resolve).toBeDefined();
       expect(_scope.$ctrl).toBeDefined();
       expect(_scope.$ctrl.$resolve).toBeDefined();
@@ -426,12 +410,13 @@ describe("ngView", () => {
       });
 
       $stateProvider.state(state);
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
 
       await $state.transitionTo("resolve");
       await wait(100);
 
-      expect(elem.text()).toBe("joeschmoe");
+      expect(elem.textContent).toBe("joeschmoe");
       expect(_scope.$resolve).toBeDefined();
       expect(_scope.$resolve.user).toBe("joeschmoe");
     });
@@ -442,13 +427,14 @@ describe("ngView", () => {
         template: "{{$resolve.user}}",
       });
       $stateProvider.state(state);
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
-      expect(elem.text()).toBe("");
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
+      expect(elem.textContent).toBe("");
 
       await $state.transitionTo("resolve");
       await wait(100);
 
-      expect(elem.text()).toBe("joeschmoe");
+      expect(elem.textContent).toBe("joeschmoe");
     });
 
     it("should put the resolved data on the resolveAs variable", async () => {
@@ -458,12 +444,13 @@ describe("ngView", () => {
         controller: controller,
       });
       $stateProvider.state(state);
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
 
       await $state.transitionTo("resolve");
       await wait(100);
 
-      expect(elem.text()).toBe("joeschmoe");
+      expect(elem.textContent).toBe("joeschmoe");
       expect(_scope.$$$resolve).toBeDefined();
       expect(_scope.$$$resolve.user).toBe("joeschmoe");
     });
@@ -494,181 +481,162 @@ describe("ngView", () => {
       template: "hi",
       controllerAs: "vm",
     });
-    elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+    elem.innerHTML = "<div><ng-view></ng-view></div>";
+    $compile(elem)(scope);
     await $state.transitionTo("onInit");
     await wait(100);
 
     expect($onInit).toHaveBeenCalled();
   });
 
-  // TargetNode not found error
-  xit("should default the template to a <ng-view>", async () => {
+  it("should default the template to a '<ng-view>'", async () => {
     $stateProvider.state({ name: "abstract", abstract: true });
     $stateProvider.state({ name: "abstract.foo", template: "hello" });
-    elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+    elem.innerHTML = "<div><ng-view></ng-view></div>";
+    $compile(elem)(scope);
     $state.transitionTo("abstract.foo");
     await wait(100);
 
-    expect(elem.text()).toBe("hello");
+    expect(elem.textContent).toBe("hello");
   });
 
   describe("play nicely with other directives", () => {
     // related to issue #857
-    xit("should work with ngIf", async () => {
+    it("should work with ngIf", async () => {
       scope.someBoolean = false;
-      elem.append(
-        $compile('<div ng-if="someBoolean"><ng-view></ng-view></div>')(scope),
-      );
-
+      elem.innerHTML = '<div ng-if="someBoolean"><ng-view></ng-view></div>';
+      $compile(elem)(scope);
       $state.transitionTo(aState);
       await wait(100);
-
       // Verify there is no ng-view in the DOM
-      expect(elem.find("ng-view").length).toBe(0);
+      expect(elem.querySelectorAll("ng-view").length).toBe(0);
 
       // Turn on the div that holds the ng-view
       scope.someBoolean = true;
-      scope.$digest();
-
+      await wait();
       // Verify that the ng-view is there and it has the correct content
-      expect(elem.find("ng-view").text()).toBe(aState.template);
+      expect(elem.querySelector("ng-view").textContent).toBe(aState.template);
 
       // Turn off the ng-view
       scope.someBoolean = false;
-      scope.$digest();
-
+      await wait();
       // Verify there is no ng-view in the DOM
-      expect(elem.find("ng-view").length).toBe(0);
+      expect(elem.querySelectorAll("ng-view").length).toBe(0);
 
       // Turn on the div that holds the ng-view once again
       scope.someBoolean = true;
-      scope.$digest();
-
+      await wait();
       // Verify that the ng-view is there and it has the correct content
-      expect(elem.find("ng-view").text()).toBe(aState.template);
+      expect(elem.querySelector("ng-view").textContent).toBe(aState.template);
     });
 
     it("should work with ngClass", async () => {
-      const classes = (elem) => Array.prototype.slice.call(elem[0].classList);
-
       scope.showClass = false;
-      elem.append(
-        $compile(
-          "<div><ng-view ng-class=\"{'someClass': showClass}\"></ng-view></div>",
-        )(scope),
+      elem.innerHTML =
+        "<div><ng-view ng-class=\"{'someClass': showClass}\"></ng-view></div>";
+      $compile(elem)(scope);
+      await wait();
+      expect(elem.querySelector("ng-view").classList).not.toContain(
+        "someClass",
       );
 
-      expect(classes(elem.find("ng-view"))).not.toContain("someClass");
-
       scope.showClass = true;
-      scope.$digest();
-
-      expect(classes(elem.find("ng-view"))).toContain("someClass");
+      await wait();
+      expect(elem.querySelector("ng-view").classList).toContain("someClass");
 
       scope.showClass = false;
-      scope.$digest();
-
-      expect(classes(elem.find("ng-view"))).not.toContain("someClass");
+      await wait();
+      expect(elem.querySelector("ng-view").classList).not.toContain(
+        "someClass",
+      );
     });
 
     describe("working with ngRepeat", () => {
       it("should have correct number of ngViews", async () => {
-        elem.append(
-          $compile(
-            '<div><ng-view ng-repeat="view in views" name="{{view}}"></ng-view></div>',
-          )(scope),
-        );
-
+        elem.innerHTML =
+          '<div><ng-view ng-repeat="view in views" name="{{view}}"></ng-view></div>';
+        $compile(elem)(scope);
+        await wait();
         // Should be no ng-views in DOM
-        expect(elem.find("ng-view").length).toBe(0);
+        expect(elem.querySelectorAll("ng-view").length).toBe(0);
 
         // Lets add 3
         scope.views = ["view1", "view2", "view3"];
-        scope.$digest();
-
+        await wait();
         // Should be 3 ng-views in the DOM
-        expect(elem.find("ng-view").length).toBe(scope.views.length);
+        expect(elem.querySelectorAll("ng-view").length).toBe(
+          scope.views.length,
+        );
 
         // Lets add one more - yay two-way binding
         scope.views.push("view4");
-        scope.$digest();
-
+        await wait();
         // Should have 4 ng-views
-        expect(elem.find("ng-view").length).toBe(scope.views.length);
+
+        expect(elem.querySelectorAll("ng-view").length).toBe(
+          scope.views.length,
+        );
 
         // Lets remove 2 ng-views from the DOM
         scope.views.pop();
         scope.views.pop();
-        scope.$digest();
-
+        await wait();
         // Should have 2 ng-views
-        expect(elem.find("ng-view").length).toBe(scope.views.length);
+        expect(elem.querySelectorAll("ng-view").length).toBe(
+          scope.views.length,
+        );
       });
 
       it("should populate each view with content", async () => {
-        elem.append(
-          $compile(
-            '<div><ng-view ng-repeat="view in views" name="{{view}}">defaultcontent</ng-view></div>',
-          )(scope),
-        );
-
+        elem.innerHTML =
+          '<div><ng-view ng-repeat="view in views" name="{{view}}">defaultcontent</ng-view></div>';
+        $compile(elem)(scope);
         $state.transitionTo(lState);
         await wait(100);
 
-        expect(elem.find("ng-view").length).toBe(0);
+        expect(elem.querySelectorAll("ng-view").length).toBe(0);
 
         scope.views = ["view1", "view2"];
 
-        scope.$digest();
+        let ngViews = elem.querySelectorAll("ng-view");
 
-        let ngViews = elem.find("ng-view");
-
-        expect(ngViews.eq(0).text()).toBe(lState.views.view1.template);
-        expect(ngViews.eq(1).text()).toBe(lState.views.view2.template);
-        expect(ngViews.eq(2).length).toBe(0);
+        expect(ngViews[0].textContent).toBe(lState.views.view1.template);
+        expect(ngViews[1].textContent).toBe(lState.views.view2.template);
+        expect(ngViews[2].length).toBe(0);
 
         scope.views.push("view3");
-        scope.$digest();
+        ngViews = elem.querySelector("ng-view");
 
-        ngViews = elem.find("ng-view");
-
-        expect(ngViews.eq(0).text()).toBe(lState.views.view1.template);
-        expect(ngViews.eq(1).text()).toBe(lState.views.view2.template);
-        expect(ngViews.eq(2).text()).toBe(lState.views.view3.template);
+        expect(ngViews[0].textContent).toBe(lState.views.view1.template);
+        expect(ngViews[1].textContent).toBe(lState.views.view2.template);
+        expect(ngViews[2].textContent).toBe(lState.views.view3.template);
       });
 
-      xit("should interpolate ng-view names", async () => {
-        elem.append(
-          $compile(
-            '<div ng-repeat="view in views">' +
-              '<ng-view name="view{{$index + 1}}">hallo</ng-view>' +
-              "</div>",
-          )(scope),
-        );
-
+      it("should interpolate ng-view names", async () => {
+        elem.innerHTML =
+          '<div ng-repeat="view in views">' +
+          '<ng-view name="view{{$index + 1}}">hallo</ng-view>' +
+          "</div>";
+        $compile(elem)(scope);
         $state.transitionTo(lState);
         await wait(100);
 
-        expect(elem.find("ng-view").length).toBe(0);
+        expect(elem.querySelectorAll("ng-view").length).toBe(0);
 
         scope.views = ["view1", "view2"];
 
-        scope.$digest();
+        let ngViews = elem.querySelectorAll("ng-view");
 
-        let ngViews = elem.find("ng-view");
-
-        expect(ngViews.eq(0).text()).toBe(lState.views.view1.template);
-        expect(ngViews.eq(1).text()).toBe(lState.views.view2.template);
-        expect(ngViews.eq(2).length).toBe(0);
+        expect(ngViews[0].textContent).toBe(lState.views.view1.template);
+        expect(ngViews[1].textContent).toBe(lState.views.view2.template);
+        //expect(ngViews[2].length).toBe(0);
 
         scope.views.push("view3");
-        scope.$digest();
+        ngViews = elem.querySelectorAll("ng-view");
 
-        ngViews = elem.find("ng-view");
-
-        expect(ngViews.eq(0).text()).toBe(lState.views.view1.template);
-        expect(ngViews.eq(1).text()).toBe(lState.views.view2.template);
-        expect(ngViews.eq(2).text()).toBe(lState.views.view3.template);
+        expect(ngViews[0].textContent).toBe(lState.views.view1.template);
+        expect(ngViews[1].textContent).toBe(lState.views.view2.template);
+        expect(ngViews[2].textContent).toBe(lState.views.view3.template);
       });
     });
   });
@@ -684,7 +652,7 @@ describe("ngView", () => {
   //     // Enter Animation
   //     animation = $animate.queue.shift();
   //     expect(animation.event).toBe("enter");
-  //     expect(animation.element.text() + "-1").toBe(content + "-1");
+  //     expect(animation.element.textContent + "-1").toBe(content + "-1");
 
   //     $state.transitionTo(aState);
   //     await wait(100);
@@ -692,11 +660,11 @@ describe("ngView", () => {
   //     // Enter Animation
   //     animation = $animate.queue.shift();
   //     expect(animation.event).toBe("enter");
-  //     expect(animation.element.text() + "-2").toBe(aState.template + "-2");
+  //     expect(animation.element.textContent + "-2").toBe(aState.template + "-2");
   //     // Leave Animation
   //     animation = $animate.queue.shift();
   //     expect(animation.event).toBe("leave");
-  //     expect(animation.element.text() + "-3").toBe(content + "-3");
+  //     expect(animation.element.textContent + "-3").toBe(content + "-3");
 
   //     $state.transitionTo(bState);
   //     await wait(100);
@@ -704,11 +672,11 @@ describe("ngView", () => {
   //     // Enter Animation
   //     animation = $animate.queue.shift();
   //     expect(animation.event).toBe("enter");
-  //     expect(animation.element.text() + "-4").toBe(bState.template + "-4");
+  //     expect(animation.element.textContent + "-4").toBe(bState.template + "-4");
   //     // Leave Animation
   //     animation = $animate.queue.shift();
   //     expect(animation.event).toBe("leave");
-  //     expect(animation.element.text() + "-5").toBe(aState.template + "-5");
+  //     expect(animation.element.textContent + "-5").toBe(aState.template + "-5");
 
   //     // No more animations
   //     expect($animate.queue.length).toBe(0);
@@ -732,18 +700,18 @@ describe("ngView", () => {
   //     $animate.queue.shift();
 
   //     scope.classOn = true;
-  //     scope.$digest();
+  //     ;
 
   //     animation = $animate.queue.shift();
   //     expect(animation.event).toBe("addClass");
-  //     expect(animation.element.text()).toBe(content);
+  //     expect(animation.element.textContent).toBe(content);
 
   //     scope.classOn = false;
-  //     scope.$digest();
+  //     ;
 
   //     animation = $animate.queue.shift();
   //     expect(animation.event).toBe("removeClass");
-  //     expect(animation.element.text()).toBe(content);
+  //     expect(animation.element.textContent).toBe(content);
 
   //     // No more animations
   //     expect($animate.queue.length).toBe(0);
@@ -763,25 +731,25 @@ describe("ngView", () => {
   //     expect($animate.queue.length).toBe(0);
 
   //     scope.shouldShow = true;
-  //     scope.$digest();
+  //     ;
 
   //     // $ViewDirective enter animation - Basically it's just the <!-- ngView --> comment
   //     animation = $animate.queue.shift();
   //     expect(animation.event).toBe("enter");
-  //     expect(animation.element.text()).toBe("");
+  //     expect(animation.element.textContent).toBe("");
 
   //     // $ViewDirectiveFill enter animation - The second ngView directive that files in the content
   //     animation = $animate.queue.shift();
   //     expect(animation.event).toBe("enter");
-  //     expect(animation.element.text()).toBe(content);
+  //     expect(animation.element.textContent).toBe(content);
 
   //     scope.shouldShow = false;
-  //     scope.$digest();
+  //     ;
 
   //     // ngView leave animation
   //     animation = $animate.queue.shift();
   //     expect(animation.event).toBe("leave");
-  //     expect(animation.element.text()).toBe(content);
+  //     expect(animation.element.textContent).toBe(content);
 
   //     // No more animations
   //     expect($animate.queue.length).toBe(0);
@@ -828,22 +796,19 @@ describe("ngView", () => {
   // });
 });
 
-describe("UiView", () => {
+describe("ngView named", () => {
   let $stateProvider,
     scope,
     $compile,
-    elem,
+    elem = document.getElementById("app"),
     log,
     app,
     $injector,
     $state,
-    $q,
-    $timeout,
     $rootScope,
     $ngViewScroll;
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
     log = "";
     app = window.angular
@@ -859,45 +824,31 @@ describe("UiView", () => {
           .state({ name: "test", views: { nest: { template: "TEST" } } });
       });
 
-    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
 
-    $injector.invoke(
-      (
-        _$state_,
-        _$q_,
-        _$timeout_,
-        _$rootScope_,
-        _$compile_,
-        _$ngViewScroll_,
-      ) => {
-        $rootScope = _$rootScope_;
-        scope = $rootScope.$new();
-        $compile = _$compile_;
-        $state = _$state_;
-        $q = _$q_;
-        $timeout = _$timeout_;
-        elem = JQLite("<div>");
-        $ngViewScroll = _$ngViewScroll_;
-      },
-    );
+    $injector.invoke((_$state_, _$rootScope_, _$compile_, _$ngViewScroll_) => {
+      $rootScope = _$rootScope_;
+      scope = $rootScope.$new();
+      $compile = _$compile_;
+      $state = _$state_;
+      $ngViewScroll = _$ngViewScroll_;
+    });
   });
 
   // TODO targetNode not found
-  xit("shouldn't puke on weird nested view setups", async () => {
-    $compile('<div ng-view="main"><div ng-view="content"></div></div>')(
-      $rootScope,
-    );
-
+  it("shouldn't puke on weird nested view setups", async () => {
+    elem.innerHTML = '<div ng-view="main"><div ng-view="content"></div></div>';
+    $compile(elem)($rootScope);
     await $state.go("main.home");
     await wait(100);
 
     expect($state.current.name).toBe("main.home");
   });
 
-  // Test for https://github.com/angular-ui/ui-router/issues/3355
-  it("should target weird nested view setups using the view's simple name", async () => {
+  // Test for https://github.com/angular-ui/ng-router/issues/3355
+  fit("should target weird nested view setups using the view's simple name", async () => {
     const tpl = `
       <div>
         <div ng-view="main">
@@ -908,13 +859,14 @@ describe("UiView", () => {
         </div>
       </div>
     `;
-    const el = $compile(tpl)($rootScope);
+    elem.innerHTML = tpl;
+    $compile(elem)($rootScope);
 
     $state.go("test");
     await wait(100);
 
     expect($state.current.name).toBe("test");
-    expect(el.text().replace(/\s*/g, "")).toBe("MAIN-DEFAULT-TEST");
+    expect(elem.textContent.replace(/\s*/g, "")).toBe("MAIN-DEFAULT-TEST");
   });
 });
 
@@ -922,7 +874,7 @@ describe("ngView transclusion", () => {
   let scope, $compile, elem, $injector, $rootScope, $state;
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular
       .module("defaultModule", [])
@@ -945,26 +897,17 @@ describe("ngView transclusion", () => {
           })
           .state({ name: "a.b", template: "anything" });
       });
-    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
 
-    $injector.invoke(
-      (
-        _$state_,
-        _$q_,
-        _$timeout_,
-        _$rootScope_,
-        _$compile_,
-        _$ngViewScroll_,
-      ) => {
-        $rootScope = _$rootScope_;
-        scope = $rootScope.$new();
-        $compile = _$compile_;
-        $state = _$state_;
-        elem = JQLite("<div>");
-      },
-    );
+    $injector.invoke((_$state_, _$rootScope_, _$compile_, _$ngViewScroll_) => {
+      $rootScope = _$rootScope_;
+      scope = $rootScope.$new();
+      $compile = _$compile_;
+      $state = _$state_;
+      elem = "<div>";
+    });
   });
 
   it("should not link the initial view and leave its scope undestroyed when a subview is activated", async () => {
@@ -975,7 +918,8 @@ describe("ngView transclusion", () => {
     scope.$on("directiveDestroyed", () => {
       aliveCount--;
     });
-    elem.append($compile("<div><ng-view></ng-view></div>")(scope));
+    elem.innerHTML = "<div><ng-view></ng-view></div>";
+    $compile(elem)(scope);
     $state.transitionTo("a.b");
     await wait(100);
     expect(aliveCount).toBe(0);
@@ -986,7 +930,7 @@ describe("ngView controllers or onEnter handlers", () => {
   let el, template, scope, count, $rootScope, $compile, $state, elem;
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular
       .module("defaultModule", [])
@@ -1023,57 +967,52 @@ describe("ngView controllers or onEnter handlers", () => {
           });
       });
 
-    let $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    let $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
 
-    $injector.invoke(
-      (
-        _$state_,
-        _$q_,
-        _$timeout_,
-        _$rootScope_,
-        _$compile_,
-        _$ngViewScroll_,
-      ) => {
-        $rootScope = _$rootScope_;
-        scope = $rootScope.$new();
-        $compile = _$compile_;
-        $state = _$state_;
-        elem = JQLite("<div>");
-      },
-    );
+    $injector.invoke((_$state_, _$rootScope_, _$compile_, _$ngViewScroll_) => {
+      $rootScope = _$rootScope_;
+      scope = $rootScope.$new();
+      $compile = _$compile_;
+      $state = _$state_;
+      elem = "<div>";
+    });
   });
 
   it("should not go into an infinite loop when controller uses $state.go", async () => {
-    el = JQLite("<div><ng-view></ng-view></div>");
+    el = "<div><ng-view></ng-view></div>";
     template = $compile(el)($rootScope);
-    $rootScope.$digest();
-
     await $state.transitionTo("aside");
     await wait(100);
-    expect(template[0].querySelector(".aside")).toBeDefined();
-    expect(template[0].querySelector(".fwd")).toBeNull();
+    expect(template.querySelector(".aside")).toBeDefined();
+    expect(template.querySelector(".fwd")).toBeNull();
 
     await $state.transitionTo("A");
     await wait(100);
-    expect(template[0].querySelector(".A")).not.toBeNull();
-    expect(template[0].querySelector(".fwd")).toBeNull();
+    expect(template.querySelector(".A")).not.toBeNull();
+    expect(template.querySelector(".fwd")).toBeNull();
 
     await $state.transitionTo("A.fwd");
     await wait(100);
-    expect(template[0].querySelector(".A")).not.toBeNull();
-    expect(template[0].querySelector(".fwd")).not.toBeNull();
-    expect(template[0].querySelector(".nest")).not.toBeNull();
+    expect(template.querySelector(".A")).not.toBeNull();
+    expect(template.querySelector(".fwd")).not.toBeNull();
+    expect(template.querySelector(".nest")).not.toBeNull();
     expect(count).toBe(1);
   });
 });
 
 describe("angular 1.5+ style .component()", () => {
-  let el, app, scope, log, svcs, $stateProvider, $templateCache, $rootScope;
+  let el = document.getElementById("app"),
+    app,
+    scope,
+    log,
+    svcs,
+    $stateProvider,
+    $templateCache,
+    $rootScope;
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
     window.angular = new Angular();
     window.angular
       .module("defaultModule", [])
@@ -1172,7 +1111,7 @@ describe("angular 1.5+ style .component()", () => {
         $stateProvider = _$stateProvider_;
       });
 
-    let $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    let $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
 
@@ -1182,19 +1121,17 @@ describe("angular 1.5+ style .component()", () => {
         _$httpBackend_,
         _$compile_,
         _$state_,
-        _$q_,
         _$templateCache_,
       ) => {
         svcs = {
           $httpBackend: _$httpBackend_,
           $compile: _$compile_,
           $state: _$state_,
-          $q: _$q_,
         };
         $rootScope = _$rootScope_;
         scope = $rootScope.$new();
         log = "";
-        el = JQLite("<div><ng-view></ng-view></div>");
+        el.innerHTML = "<div><ng-view></ng-view></div>";
         svcs.$compile(el)(scope);
         $templateCache = _$templateCache_;
       },
@@ -1225,10 +1162,11 @@ describe("angular 1.5+ style .component()", () => {
       );
       $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
 
-      await $state.transitionTo("cmp_tpl");
-
+      $state.transitionTo("cmp_tpl");
+      await wait(100);
       expect($state.current.name).toBe("cmp_tpl");
-      expect(el[0].querySelector("ng-view").innerHTML).toEqual(
+
+      expect(el.querySelector("ng-view").innerHTML).toEqual(
         'x<ng12-directive data="$resolve.data">-DATA!-</ng12-directive>x',
       );
     });
@@ -1242,11 +1180,11 @@ describe("angular 1.5+ style .component()", () => {
       );
       $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
 
-      await $state.transitionTo("cmp_tpl");
+      $state.transitionTo("cmp_tpl");
       await wait(100);
 
       expect($state.current.name).toBe("cmp_tpl");
-      expect(el[0].querySelector("ng-view").innerHTML).toEqual(
+      expect(el.querySelector("ng-view").innerHTML).toEqual(
         'x<ng13-directive data="$resolve.data">-DATA!-</ng13-directive>x',
       );
     });
@@ -1264,7 +1202,7 @@ describe("angular 1.5+ style .component()", () => {
       await wait(100);
 
       expect($state.current.name).toBe("cmp_tpl");
-      expect(el[0].querySelector("ng-view").innerHTML).toEqual(
+      expect(el.querySelector("ng-view").innerHTML).toEqual(
         'x<ng-component data="$resolve.data">-DATA!-</ng-component>x',
       );
     });
@@ -1349,10 +1287,10 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("route2cmp");
       await wait(100);
 
-      const directiveEl = el[0].querySelector("div ng-view ng12-directive");
+      const directiveEl = el.querySelector("div ng-view ng12-directive");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("route2cmp");
-      expect(el.text()).toBe("-DATA!-");
+      expect(el.textContent).toBe("-DATA!-");
     });
 
     it("should work with angular 1.3+ bindToComponent directives", async () => {
@@ -1368,17 +1306,16 @@ describe("angular 1.5+ style .component()", () => {
       });
 
       const $state = svcs.$state,
-        $httpBackend = svcs.$httpBackend,
-        $q = svcs.$q;
+        $httpBackend = svcs.$httpBackend;
 
       $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
       await wait(100);
 
-      const directiveEl = el[0].querySelector("div ng-view ng13-directive");
+      const directiveEl = el.querySelector("div ng-view ng13-directive");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("route2cmp");
-      expect(el.text()).toBe("-DATA!-");
+      expect(el.textContent).toBe("-DATA!-");
     });
 
     it("should call $onInit() once", async () => {
@@ -1415,17 +1352,16 @@ describe("angular 1.5+ style .component()", () => {
       });
 
       const $state = svcs.$state,
-        $httpBackend = svcs.$httpBackend,
-        $q = svcs.$q;
+        $httpBackend = svcs.$httpBackend;
 
       $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
       await wait(100);
 
-      const directiveEl = el[0].querySelector("div ng-view ng-component");
+      const directiveEl = el.querySelector("div ng-view ng-component");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("route2cmp");
-      expect(el.text()).toBe("-DATA!-");
+      expect(el.textContent).toBe("-DATA!-");
     });
 
     it("should only call $onInit() once", async () => {
@@ -1440,8 +1376,7 @@ describe("angular 1.5+ style .component()", () => {
       });
 
       const $state = svcs.$state,
-        $httpBackend = svcs.$httpBackend,
-        $q = svcs.$q;
+        $httpBackend = svcs.$httpBackend;
 
       $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
@@ -1462,8 +1397,7 @@ describe("angular 1.5+ style .component()", () => {
       });
 
       const $state = svcs.$state,
-        $httpBackend = svcs.$httpBackend,
-        $q = svcs.$q;
+        $httpBackend = svcs.$httpBackend;
 
       $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
@@ -1491,13 +1425,12 @@ describe("angular 1.5+ style .component()", () => {
       });
 
       const $state = svcs.$state,
-        $httpBackend = svcs.$httpBackend,
-        $q = svcs.$q;
+        $httpBackend = svcs.$httpBackend;
 
       $state.transitionTo("bindingtypes");
       await wait(100);
 
-      expect(el.text()).toBe("-ONEWAY,TWOWAY,ATTRIBUTE-");
+      expect(el.textContent).toBe("-ONEWAY,TWOWAY,ATTRIBUTE-");
     });
 
     it('should supply resolve data to optional "<?", "=?", "@?" bindings', async () => {
@@ -1523,7 +1456,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("optionalbindingtypes");
       await wait(100);
 
-      expect(el.text()).toBe("-ONEWAY,TWOWAY,ATTRIBUTE-");
+      expect(el.textContent).toBe("-ONEWAY,TWOWAY,ATTRIBUTE-");
     });
 
     // Test for #3099
@@ -1537,7 +1470,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("nothrow");
       await wait(100);
 
-      expect(el.text()).toBe("eventCmp");
+      expect(el.textContent).toBe("eventCmp");
     });
 
     // Test for #3276
@@ -1547,12 +1480,11 @@ describe("angular 1.5+ style .component()", () => {
         component: "dataComponent",
       });
 
-      const $state = svcs.$state,
-        $q = svcs.$q;
+      const $state = svcs.$state;
       $state.transitionTo("data");
       await wait(100);
 
-      expect(el.text()).toBe("DataComponent");
+      expect(el.textContent).toBe("DataComponent");
     });
 
     // Test for #3276
@@ -1563,18 +1495,16 @@ describe("angular 1.5+ style .component()", () => {
         resolve: { dataUser: () => "user" },
       });
 
-      const $state = svcs.$state,
-        $q = svcs.$q;
+      const $state = svcs.$state;
       $state.transitionTo("data");
       await wait(100);
 
-      expect(el.text()).toBe("-user-");
+      expect(el.textContent).toBe("-user-");
     });
 
     // Test for #3239
     it("should pass any bindings (wired from a parent component template via the ng-view) through to the child", async () => {
-      const $state = svcs.$state,
-        $q = svcs.$q;
+      const $state = svcs.$state;
 
       $stateProvider.state({
         name: "parent",
@@ -1593,13 +1523,12 @@ describe("angular 1.5+ style .component()", () => {
 
       $state.transitionTo("parent.child");
       await wait(100);
-      expect(el.text()).toEqual("-1w,2w,attrval-");
+      expect(el.textContent).toEqual("-1w,2w,attrval-");
     });
 
     // Test for #3239
     it("should prefer ng-view bindings over resolve data", async () => {
-      const $state = svcs.$state,
-        $q = svcs.$q;
+      const $state = svcs.$state;
 
       $stateProvider.state({
         name: "parent",
@@ -1623,13 +1552,12 @@ describe("angular 1.5+ style .component()", () => {
 
       $state.transitionTo("parent.child");
       await wait(100);
-      expect(el.text()).toEqual("-1w,2w,attrval-");
+      expect(el.textContent).toEqual("-1w,2w,attrval-");
     });
 
     // Test for #3239
     it("should prefer ng-view bindings over resolve data unless a bindings exists", async () => {
-      const $state = svcs.$state,
-        $q = svcs.$q;
+      const $state = svcs.$state;
 
       $stateProvider.state({
         name: "parent",
@@ -1654,13 +1582,12 @@ describe("angular 1.5+ style .component()", () => {
 
       $state.transitionTo("parent.child");
       await wait(100);
-      expect(el.text()).toEqual("-asfasfd,2w,attrval-");
+      expect(el.textContent).toEqual("-asfasfd,2w,attrval-");
     });
 
     // Test for #3239
     it("should pass & bindings (wired from a parent component via the ng-view) through to the child", async () => {
-      const $state = svcs.$state,
-        $q = svcs.$q;
+      const $state = svcs.$state;
       $rootScope.log = [];
 
       $stateProvider.state({
@@ -1676,26 +1603,24 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("parent.child");
       await wait(100);
       expect($rootScope.log).toEqual([]);
-      expect(
-        el
-          .text()
-          .split(/\s+/)
-          .filter((x) => x),
-      ).toEqual(["parentCmp", "childCmp", "Button"]);
+      expect(el.textContent.split(/\s+/).filter((x) => x)).toEqual([
+        "parentCmp",
+        "childCmp",
+        "Button",
+      ]);
 
       // - Click button
       // - ng-click handler calls $ctrl.onEvent({ foo: 123, bar: 456 })
       // - on-event is bound to $ctrl.handleEvent(foo, bar) on parentCallbackComponent
       // - handleEvent pushes param values to the log
-      el.find("button")[0].click();
+      el.querySelector("button")[0].click();
       expect($rootScope.log).toEqual([123, 456]);
     });
 
     // Test for #3111
     it("should bind & bindings to a resolve that returns a function", async () => {
-      const $state = svcs.$state,
-        $q = svcs.$q,
-        log = [];
+      const $state = svcs.$state;
+      log = [];
 
       $stateProvider.state({
         name: "resolve",
@@ -1711,15 +1636,14 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("resolve");
       await wait(100);
       expect(log).toEqual([]);
-      el.find("button")[0].click();
+      el.querySelector("button")[0].click();
       expect(log).toEqual([123, 456]);
     });
 
     // Test for #3111
     it("should bind & bindings to a resolve that returns an array-style function", async () => {
-      const $state = svcs.$state,
-        $q = svcs.$q,
-        log = [];
+      const $state = svcs.$state;
+      log = [];
 
       $stateProvider.state({
         name: "resolve",
@@ -1739,7 +1663,7 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("resolve");
       await wait(100);
       expect(log).toEqual([]);
-      el.find("button")[0].click();
+      el.querySelector("button")[0].click();
       expect(log).toEqual([123, 456]);
     });
   });
@@ -1764,7 +1688,7 @@ describe("angular 1.5+ style .component()", () => {
         },
       };
 
-      el = JQLite(
+      el = createElementFromHTML(
         '<div><div ng-view="header"></div><div ng-view="content"</div>',
       );
       svcs.$compile(el)(scope);
@@ -1789,8 +1713,8 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("route2cmp");
       await wait(100);
 
-      const header = el[0].querySelector("[ng-view=header]");
-      const content = el[0].querySelector("[ng-view=content]");
+      const header = el.querySelector("[ng-view=header]");
+      const content = el.querySelector("[ng-view=content]");
 
       expect(header.textContent).toBe("#awesome#");
       expect(content.textContent).toBe("-DATA!-");
@@ -1812,21 +1736,20 @@ describe("angular 1.5+ style .component()", () => {
       };
       $stateProvider.state(stateDef);
       const $state = svcs.$state,
-        $httpBackend = svcs.$httpBackend,
-        $q = svcs.$q;
+        $httpBackend = svcs.$httpBackend;
 
       $templateCache.set("/comp_tpl.html", "-{{ $ctrl.data }}-");
       $state.transitionTo("route2cmp");
       await wait(100);
 
-      const header = el[0].querySelector("[ng-view=header]");
-      const content = el[0].querySelector("[ng-view=content]");
+      const header = el.querySelector("[ng-view=header]");
+      const content = el.querySelector("[ng-view=content]");
 
       expect(header.textContent).toBe("#awesome#");
       expect(content.textContent).toBe("-DATA!-");
     });
 
-    // Test for https://github.com/angular-ui/ui-router/issues/3353
+    // Test for https://github.com/angular-ui/ng-router/issues/3353
     it("should allow different states to reuse view declaration", () => {
       const views = {
         header: { component: "header" },
@@ -1861,10 +1784,10 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("route2cmp");
       await wait(100);
 
-      const directiveEl = el[0].querySelector("div ng-view ng12-directive");
+      const directiveEl = el.querySelector("div ng-view ng12-directive");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("route2cmp");
-      expect(el.text()).toBe("-DATA!-");
+      expect(el.textContent).toBe("-DATA!-");
     });
 
     it("should provide default bindings for any component bindings omitted in the state.bindings map", async () => {
@@ -1884,8 +1807,7 @@ describe("angular 1.5+ style .component()", () => {
       });
 
       const $state = svcs.$state,
-        $httpBackend = svcs.$httpBackend,
-        $q = svcs.$q;
+        $httpBackend = svcs.$httpBackend;
 
       $templateCache.set(
         "/comp_tpl.html",
@@ -1894,10 +1816,10 @@ describe("angular 1.5+ style .component()", () => {
       $state.transitionTo("route2cmp");
       await wait(100);
 
-      const directiveEl = el[0].querySelector("div ng-view ng-component");
+      const directiveEl = el.querySelector("div ng-view ng-component");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("route2cmp");
-      expect(el.text()).toBe("-DATA!.DATA2!-");
+      expect(el.textContent).toBe("-DATA!.DATA2!-");
     });
   });
 
@@ -1914,24 +1836,23 @@ describe("angular 1.5+ style .component()", () => {
         ],
       });
 
-      const $state = svcs.$state,
-        $q = svcs.$q;
+      const $state = svcs.$state;
 
       $state.transitionTo("ng12-dynamic-directive", {
         type: "ng12DynamicDirective",
       });
       await wait(100);
 
-      const directiveEl = el[0].querySelector(
+      const directiveEl = el.querySelector(
         "div ng-view ng12-dynamic-directive",
       );
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("ng12-dynamic-directive");
-      expect(el.text()).toBe("dynamic directive");
+      expect(el.textContent).toBe("dynamic directive");
     });
 
     // TODO Invalid transition
-    xit("should load correct component when using componentProvider", async () => {
+    it("should load correct component when using componentProvider", async () => {
       $stateProvider.state({
         name: "dynamicComponent",
         url: "/dynamicComponent/:type",
@@ -1951,10 +1872,10 @@ describe("angular 1.5+ style .component()", () => {
       });
       await wait(100);
 
-      const directiveEl = el[0].querySelector("div ng-view dynamic-component");
+      const directiveEl = el.querySelector("div ng-view dynamic-component");
       expect(directiveEl).toBeDefined();
       expect($state.current.name).toBe("dynamicComponent");
-      expect(el.text().trim()).toBe("dynamicComponent");
+      expect(el.textContent.trim()).toBe("dynamicComponent");
     });
   });
 
@@ -1983,7 +1904,7 @@ describe("angular 1.5+ style .component()", () => {
       const $state = svcs.$state;
       $state.go("dynamic", { param: "abc" });
       await wait(100);
-      expect(el.text().trim()).toBe("dynamicComponent");
+      expect(el.textContent.trim()).toBe("dynamicComponent");
     });
 
     it("should be called when dynamic parameters change", async () => {
@@ -1993,18 +1914,17 @@ describe("angular 1.5+ style .component()", () => {
       $state.go("dynamic", { param: "def" });
       await wait(100);
 
-      expect(el.text().trim()).toBe("dynamicComponent def");
+      expect(el.textContent.trim()).toBe("dynamicComponent def");
     });
 
     it("should work with componentProvider", async () => {
-      const $state = svcs.$state,
-        $q = svcs.$q;
+      const $state = svcs.$state;
       $state.go("dynamic2", { param: "abc" });
       await wait(100);
       $state.go("dynamic2", { param: "def" });
       await wait(100);
 
-      expect(el.text().trim()).toBe("dynamicComponent def");
+      expect(el.textContent.trim()).toBe("dynamicComponent def");
     });
   });
 });

@@ -1,9 +1,7 @@
-import { equals, inherit, map, pick } from "../../shared/common";
-import { isNullOrUndefined } from "../../shared/predicates";
-import { isDefined } from "../../shared/utils.js";
-import { is } from "../../shared/hof";
-import { services } from "../common/coreservices";
-import { ParamType } from "./param-type";
+import { equals, inherit, map, pick } from "../../shared/common.js";
+import { isDefined, isNullOrUndefined } from "../../shared/utils.js";
+import { is } from "../../shared/hof.js";
+import { ParamType } from "./param-type.js";
 /**
  * A registry for parameter types.
  *
@@ -68,7 +66,10 @@ export class ParamTypes {
       const type = this.typeQueue.shift();
       if (type.pattern)
         throw new Error("You cannot override a type's .pattern at runtime.");
-      Object.assign(this.types[type.name], services.$injector.invoke(type.def));
+      Object.assign(
+        this.types[type.name],
+        window.angular.$injector.invoke(type.def),
+      );
     }
   }
 }
@@ -106,7 +107,7 @@ function initDefaultTypes() {
       encode: (val) => (val && 1) || 0,
       decode: (val) => parseInt(val, 10) !== 0,
       is: is(Boolean),
-      pattern: /0|1/,
+      pattern: /[01]/,
     }),
     date: makeDefaultType({
       encode: function (val) {

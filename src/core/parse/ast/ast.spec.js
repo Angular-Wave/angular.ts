@@ -1,8 +1,8 @@
-import { AST } from "./ast.js";
+import { AST } from "ast.js";
 import { Lexer } from "../lexer/lexer.js";
-import { createInjector } from "../../di/injector";
-import { ASTType } from "../ast-type";
-import { Angular } from "../../../loader";
+import { createInjector } from "../../di/injector.js";
+import { ASTType } from "../ast-type.js";
+import { Angular } from "../../../loader.js";
 
 describe("ast", () => {
   let $rootScope;
@@ -27,7 +27,6 @@ describe("ast", () => {
   let createAst;
 
   beforeEach(() => {
-    /* global AST: false */
     createAst = function () {
       const lexer = new Lexer({});
       const ast = new AST(lexer, {

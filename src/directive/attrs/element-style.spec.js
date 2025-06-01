@@ -1,6 +1,7 @@
-import { Angular } from "../../loader";
-import { createInjector } from "../../core/di/injector";
-import { dealoc, JQLite } from "../../shared/jqlite/jqlite.js";
+import { Angular } from "../../loader.js";
+import { createInjector } from "../../core/di/injector.js";
+import { createElementFromHTML, dealoc } from "../../shared/dom.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("style", () => {
   let $rootScope;
@@ -20,74 +21,65 @@ describe("style", () => {
     dealoc(element);
   });
 
-  it("should compile style element without binding", () => {
-    element = JQLite(
+  it("should compile style element without binding", async () => {
+    element = createElementFromHTML(
       '<style type="text/css">.header{font-size:1.5em; h3{font-size:1.5em}}</style>',
     );
     $compile(element)($rootScope);
-    $rootScope.$digest();
-
-    expect(element[0].innerHTML).toBe(
+    await wait();
+    expect(element.innerHTML).toBe(
       ".header{font-size:1.5em; h3{font-size:1.5em}}",
     );
   });
 
-  it("should compile style element with one simple bind", () => {
-    element = JQLite(
+  it("should compile style element with one simple bind", async () => {
+    element = createElementFromHTML(
       '<style type="text/css">.some-container{ width: {{elementWidth}}px; }</style>',
     );
     $compile(element)($rootScope);
-    $rootScope.$digest();
+    await wait();
+    expect(element.innerHTML).toBe(".some-container{ width: px; }");
 
-    expect(element[0].innerHTML).toBe(".some-container{ width: px; }");
-
-    $rootScope.$apply(() => {
-      $rootScope.elementWidth = 200;
-    });
-
-    expect(element[0].innerHTML).toBe(".some-container{ width: 200px; }");
+    $rootScope.elementWidth = 200;
+    await wait();
+    expect(element.innerHTML).toBe(".some-container{ width: 200px; }");
   });
 
-  it("should compile style element with one bind", () => {
-    element = JQLite(
+  it("should compile style element with one bind", async () => {
+    element = createElementFromHTML(
       '<style type="text/css">.header{ h3 { font-size: {{fontSize}}em }}</style>',
     );
     $compile(element)($rootScope);
-    $rootScope.$digest();
+    await wait();
+    expect(element.innerHTML).toBe(".header{ h3 { font-size: em }}");
 
-    expect(element[0].innerHTML).toBe(".header{ h3 { font-size: em }}");
-
-    $rootScope.$apply(() => {
-      $rootScope.fontSize = 1.5;
-    });
-
-    expect(element[0].innerHTML).toBe(".header{ h3 { font-size: 1.5em }}");
+    $rootScope.fontSize = 1.5;
+    await wait();
+    expect(element.innerHTML).toBe(".header{ h3 { font-size: 1.5em }}");
   });
 
-  it("should compile style element with two binds", () => {
-    element = JQLite(
+  it("should compile style element with two binds", async () => {
+    element = createElementFromHTML(
       '<style type="text/css">.header{ h3 { font-size: {{fontSize}}{{unit}} }}</style>',
     );
     $compile(element)($rootScope);
-    $rootScope.$digest();
+    await wait();
+    expect(element.innerHTML).toBe(".header{ h3 { font-size:  }}");
 
-    expect(element[0].innerHTML).toBe(".header{ h3 { font-size:  }}");
+    $rootScope.fontSize = 1.5;
+    $rootScope.unit = "em";
+    await wait();
 
-    $rootScope.$apply(() => {
-      $rootScope.fontSize = 1.5;
-      $rootScope.unit = "em";
-    });
-
-    expect(element[0].innerHTML).toBe(".header{ h3 { font-size: 1.5em }}");
+    expect(element.innerHTML).toBe(".header{ h3 { font-size: 1.5em }}");
   });
 
-  it("should compile content of element with style attr", () => {
-    element = JQLite('<div style="some">{{bind}}</div>');
+  it("should compile content of element with style attr", async () => {
+    element = createElementFromHTML('<div style="some">{{bind}}</div>');
+    await wait();
     $compile(element)($rootScope);
-    $rootScope.$apply(() => {
-      $rootScope.bind = "value";
-    });
 
-    expect(element.text()).toBe("value");
+    $rootScope.bind = "value";
+    await wait();
+    expect(element.textContent).toBe("value");
   });
 });

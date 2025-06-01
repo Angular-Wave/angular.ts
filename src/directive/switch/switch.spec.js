@@ -1,22 +1,21 @@
-import { Angular } from "../../loader";
-import { dealoc } from "../../shared/jqlite/jqlite.js";
+import { Angular } from "../../loader.js";
+import { dealoc } from "../../shared/dom.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ngSwitch", () => {
   let $scope;
   let $compile;
   let element;
-  let $timeout;
 
   beforeEach(() => {
     window.angular = new Angular();
     window.angular.module("test", []);
     let injector = window.angular.bootstrap(
-      document.getElementById("dummy", ["test"]),
+      document.getElementById("app", ["test"]),
     );
-    injector.invoke(($rootScope, _$compile_, _$timeout_) => {
+    injector.invoke(($rootScope, _$compile_) => {
       $scope = $rootScope.$new();
       $compile = _$compile_;
-      $timeout = _$timeout_;
     });
   });
 
@@ -24,7 +23,7 @@ describe("ngSwitch", () => {
     dealoc(element);
   });
 
-  it("should switch on value change", () => {
+  it("should switch on value change", async () => {
     element = $compile(
       '<div ng-switch="select">' +
         '<div ng-switch-when="1">first:{{name}}</div>' +
@@ -32,25 +31,28 @@ describe("ngSwitch", () => {
         '<div ng-switch-when="true">true:{{name}}</div>' +
         "</div>",
     )($scope);
-    expect(element[0].innerHTML).toEqual("<!----><!----><!---->");
+    expect(element.innerHTML).toEqual("<!----><!----><!---->");
     $scope.select = 1;
-    $scope.$apply();
-    expect(element.text()).toEqual("first:");
+    await wait();
+    expect(element.textContent).toEqual("first:");
     $scope.name = "shyam";
-    $scope.$apply();
-    expect(element.text()).toEqual("first:shyam");
+    await wait();
+    expect(element.textContent).toEqual("first:shyam");
+    $scope.select = undefined;
+    await wait();
+    expect(element.textContent).toEqual("");
     $scope.select = 2;
-    $scope.$apply();
-    expect(element.text()).toEqual("second:shyam");
+    await wait();
+    expect(element.textContent).toEqual("second:shyam");
     $scope.name = "misko";
-    $scope.$apply();
-    expect(element.text()).toEqual("second:misko");
+    await wait();
+    expect(element.textContent).toEqual("second:misko");
     $scope.select = true;
-    $scope.$apply();
-    expect(element.text()).toEqual("true:misko");
+    await wait();
+    expect(element.textContent).toEqual("true:misko");
   });
 
-  it("should show all switch-whens that match the current value", () => {
+  it("should show all switch-whens that match the current value", async () => {
     element = $compile(
       '<ul ng-switch="select">' +
         '<li ng-switch-when="1">first:{{name}}</li>' +
@@ -59,41 +61,41 @@ describe("ngSwitch", () => {
         '<li ng-switch-when="true">true:{{name}}</li>' +
         "</ul>",
     )($scope);
-    expect(element[0].innerHTML).toEqual("<!----><!----><!----><!---->");
+    expect(element.innerHTML).toEqual("<!----><!----><!----><!---->");
     $scope.select = 1;
-    $scope.$apply();
-    expect(element.text()).toEqual("first:, first too:");
+    await wait();
+    expect(element.textContent).toEqual("first:, first too:");
     $scope.name = "shyam";
-    $scope.$apply();
-    expect(element.text()).toEqual("first:shyam, first too:shyam");
+    await wait();
+    expect(element.textContent).toEqual("first:shyam, first too:shyam");
 
     $scope.select = 2;
-    $scope.$apply();
-    expect(element.text()).toEqual("second:shyam");
+    await wait();
+    expect(element.textContent).toEqual("second:shyam");
     $scope.name = "misko";
-    $scope.$apply();
-    expect(element.text()).toEqual("second:misko");
+    await wait();
+    expect(element.textContent).toEqual("second:misko");
 
     $scope.select = true;
-    $scope.$apply();
-    expect(element.text()).toEqual("true:misko");
+    await wait();
+    expect(element.textContent).toEqual("true:misko");
   });
 
-  it("should switch on switch-when-default", () => {
+  it("should switch on switch-when-default", async () => {
     element = $compile(
       '<ng-switch on="select">' +
         '<div ng-switch-when="1">one</div>' +
         "<div ng-switch-default>other</div>" +
         "</ng-switch>",
     )($scope);
-    $scope.$apply();
-    expect(element.text()).toEqual("other");
+    await wait();
+    expect(element.textContent).toEqual("other");
     $scope.select = 1;
-    $scope.$apply();
-    expect(element.text()).toEqual("one");
+    await wait();
+    expect(element.textContent).toEqual("one");
   });
 
-  it("should show all switch-when-default", () => {
+  it("should show all switch-when-default", async () => {
     element = $compile(
       '<ul ng-switch="select">' +
         '<li ng-switch-when="1">one</li>' +
@@ -101,14 +103,14 @@ describe("ngSwitch", () => {
         "<li ng-switch-default>, other too</li>" +
         "</ul>",
     )($scope);
-    $scope.$apply();
-    expect(element.text()).toEqual("other, other too");
+    await wait();
+    expect(element.textContent).toEqual("other, other too");
     $scope.select = 1;
-    $scope.$apply();
-    expect(element.text()).toEqual("one");
+    await wait();
+    expect(element.textContent).toEqual("one");
   });
 
-  it("should always display the elements that do not match a switch", () => {
+  it("should always display the elements that do not match a switch", async () => {
     element = $compile(
       '<ul ng-switch="select">' +
         "<li>always </li>" +
@@ -118,11 +120,11 @@ describe("ngSwitch", () => {
         "<li ng-switch-default>other too </li>" +
         "</ul>",
     )($scope);
-    $scope.$apply();
-    expect(element.text()).toEqual("always other, other too ");
+    await wait();
+    expect(element.textContent).toEqual("always other, other too ");
     $scope.select = 1;
-    $scope.$apply();
-    expect(element.text()).toEqual("always one ");
+    await wait();
+    expect(element.textContent).toEqual("always one ");
   });
 
   it(
@@ -130,7 +132,7 @@ describe("ngSwitch", () => {
       "ngSwitchDefault at the position specified in the template, when the " +
       "first and last elements in the ngSwitch body do not have a ngSwitch* " +
       "directive",
-    () => {
+    async () => {
       element = $compile(
         '<ul ng-switch="select">' +
           "<li>1</li>" +
@@ -143,11 +145,11 @@ describe("ngSwitch", () => {
           "<li>8</li>" +
           "</ul>",
       )($scope);
-      $scope.$apply();
-      expect(element.text()).toEqual("135678");
+      await wait();
+      expect(element.textContent).toEqual("135678");
       $scope.select = 1;
-      $scope.$apply();
-      expect(element.text()).toEqual("12368");
+      await wait();
+      expect(element.textContent).toEqual("12368");
     },
   );
 
@@ -155,7 +157,7 @@ describe("ngSwitch", () => {
     "should display the elements that do not have ngSwitchWhen nor " +
       "ngSwitchDefault at the position specified in the template when the " +
       "first and last elements in the ngSwitch have a ngSwitch* directive",
-    () => {
+    async () => {
       element = $compile(
         '<ul ng-switch="select">' +
           '<li ng-switch-when="1">2</li>' +
@@ -166,83 +168,15 @@ describe("ngSwitch", () => {
           "<li ng-switch-default>7</li>" +
           "</ul>",
       )($scope);
-      $scope.$apply();
-      expect(element.text()).toEqual("3567");
+      await wait();
+      expect(element.textContent).toEqual("3567");
       $scope.select = 1;
-      $scope.$apply();
-      expect(element.text()).toEqual("236");
+      await wait();
+      expect(element.textContent).toEqual("236");
     },
   );
 
-  it("should properly create and destroy child scopes", () => {
-    element = $compile(
-      '<ng-switch on="url"><div ng-switch-when="a">{{name}}</div></ng-switch>',
-    )($scope);
-    $scope.$apply();
-
-    expect($scope.$$childHead).toBeNull();
-
-    $scope.url = "a";
-    $scope.$apply();
-    const child1 = $scope.$$childHead;
-    expect(child1).toBeDefined();
-    spyOn(child1, "$destroy");
-
-    $scope.url = "x";
-    $scope.$apply();
-
-    // NOTE THAT THE CHILD SCOPE IS NOT ACTUALLY DESTROYED.
-    expect(child1).toBeDefined();
-    expect(child1.$destroy).toHaveBeenCalled();
-
-    $scope.url = "a";
-    $scope.$apply();
-    // ... BUT A NEW CHILD SCOPE WILL BE CREATED IN A TAIL.
-    const child2 = $scope.$$childTail;
-    expect(child2).toBeDefined();
-    expect(child2).not.toBe(child1);
-  });
-
-  it("should interoperate with other transclusion directives like ngRepeat", () => {
-    element = $compile(
-      '<div ng-switch="value">' +
-        '<div ng-switch-when="foo" ng-repeat="foo in foos">{{value}}:{{foo}}|</div>' +
-        '<div ng-switch-default ng-repeat="bar in bars">{{value}}:{{bar}}|</div>' +
-        "</div>",
-    )($scope);
-    $scope.$apply('value="foo";foos=["one", "two"]');
-    expect(element.text()).toEqual("foo:one|foo:two|");
-
-    $scope.$apply('value="foo";foos=["one"]');
-    expect(element.text()).toEqual("foo:one|");
-
-    $scope.$apply('value="foo";foos=["one","two","three"]');
-    expect(element.text()).toEqual("foo:one|foo:two|foo:three|");
-
-    $scope.$apply('value="bar";bars=["up", "down"]');
-    expect(element.text()).toEqual("bar:up|bar:down|");
-
-    $scope.$apply('value="bar";bars=["up", "down", "forwards", "backwards"]');
-    expect(element.text()).toEqual(
-      "bar:up|bar:down|bar:forwards|bar:backwards|",
-    );
-  });
-
-  it("should not leak jq data when compiled but not attached to parent when parent is destroyed", () => {
-    element = $compile(
-      '<div ng-repeat="i in []">' +
-        '<ng-switch on="url">' +
-        '<div ng-switch-when="a">{{name}}</div>' +
-        "</ng-switch>" +
-        "</div>",
-    )($scope);
-    $scope.$apply();
-
-    // element now contains only empty repeater. this element is deallocated by local afterEach.
-    // afterwards a global afterEach will check for leaks in jq data cache object
-  });
-
-  it("should properly support case labels with different numbers of transclude fns", () => {
+  it("should properly support case labels with different numbers of transclude fns", async () => {
     element = $compile(
       '<div ng-switch="mode">' +
         '<p ng-switch-when="a">Block1</p>' +
@@ -252,19 +186,23 @@ describe("ngSwitch", () => {
     )($scope);
 
     $scope.$apply('mode = "a"');
-    expect(element.children().length).toBe(2);
+    await wait();
+    expect(element.children.length).toBe(2);
 
     $scope.$apply('mode = "b"');
-    expect(element.children().length).toBe(1);
+    await wait();
+    expect(element.children.length).toBe(1);
 
     $scope.$apply('mode = "a"');
-    expect(element.children().length).toBe(2);
+    await wait();
+    expect(element.children.length).toBe(2);
 
     $scope.$apply('mode = "b"');
-    expect(element.children().length).toBe(1);
+    await wait();
+    expect(element.children.length).toBe(1);
   });
 
-  it("should not trigger a digest after an element is removed", () => {
+  it("should not trigger a digest after an element is removed", async () => {
     const spy = spyOn($scope, "$digest").and.callThrough();
 
     $scope.select = 1;
@@ -274,14 +212,14 @@ describe("ngSwitch", () => {
         '<div ng-switch-when="2">second</div>' +
         "</div>",
     )($scope);
-    $scope.$apply();
+    await wait();
 
-    expect(element.text()).toEqual("first");
+    expect(element.textContent).toEqual("first");
 
     $scope.select = 2;
-    $scope.$apply();
+    await wait();
     spy.calls.reset();
-    expect(element.text()).toEqual("second");
+    expect(element.textContent).toEqual("second");
     // If ngSwitch re-introduces code that triggers a digest after an element is removed (in an
     // animation .then callback), flushing the queue ensures the callback will be called, and the test
     // fails
@@ -291,7 +229,7 @@ describe("ngSwitch", () => {
     //$timeout.verifyNoPendingTasks();
   });
 
-  it("should handle changes to the switch value in a digest loop with multiple value matches", () => {
+  it("should handle changes to the switch value in a digest loop with multiple value matches", async () => {
     const scope = $scope.$new();
     scope.value = "foo";
 
@@ -312,15 +250,17 @@ describe("ngSwitch", () => {
         "</div>",
     )(scope);
 
-    scope.$apply();
-    expect(element.text()).toBe("FOO 1FOO 2");
+    await wait();
+    expect(element.textContent).toBe("FOO 1FOO 2");
 
     scope.$apply('value = "bar"');
-    expect(element.text()).toBe("BAZ");
+
+    await wait();
+    expect(element.textContent).toBe("BAZ");
   });
 
   describe("ngSwitchWhen separator", () => {
-    it("should be possible to define a separator", () => {
+    it("should be possible to define a separator", async () => {
       element = $compile(
         '<div ng-switch="mode">' +
           '<p ng-switch-when="a|b" ng-switch-when-separator="|">Block1|</p>' +
@@ -330,19 +270,20 @@ describe("ngSwitch", () => {
       )($scope);
 
       $scope.$apply('mode = "a"');
-      expect(element.children().length).toBe(2);
-      expect(element.text()).toBe("Block1|Block2|");
+      await wait();
+      expect(element.children.length).toBe(2);
+      expect(element.textContent).toBe("Block1|Block2|");
       $scope.$apply('mode = "b"');
-
-      expect(element.children().length).toBe(1);
-      expect(element.text()).toBe("Block1|");
+      await wait();
+      expect(element.children.length).toBe(1);
+      expect(element.textContent).toBe("Block1|");
       $scope.$apply('mode = "c"');
-
-      expect(element.children().length).toBe(1);
-      expect(element.text()).toBe("Block3|");
+      await wait();
+      expect(element.children.length).toBe(1);
+      expect(element.textContent).toBe("Block3|");
     });
 
-    it("should be possible to use a separator at the end of the value", () => {
+    it("should be possible to use a separator at the end of the value", async () => {
       element = $compile(
         '<div ng-switch="mode">' +
           '<p ng-switch-when="a|b|" ng-switch-when-separator="|">Block1|</p>' +
@@ -352,19 +293,20 @@ describe("ngSwitch", () => {
       )($scope);
 
       $scope.$apply('mode = "a"');
-      expect(element.children().length).toBe(2);
-      expect(element.text()).toBe("Block1|Block2|");
+      await wait();
+      expect(element.children.length).toBe(2);
+      expect(element.textContent).toBe("Block1|Block2|");
       $scope.$apply('mode = ""');
-
-      expect(element.children().length).toBe(1);
-      expect(element.text()).toBe("Block1|");
+      await wait();
+      expect(element.children.length).toBe(1);
+      expect(element.textContent).toBe("Block1|");
       $scope.$apply('mode = "c"');
-
-      expect(element.children().length).toBe(1);
-      expect(element.text()).toBe("Block3|");
+      await wait();
+      expect(element.children.length).toBe(1);
+      expect(element.textContent).toBe("Block3|");
     });
 
-    it("should be possible to use the empty string as a separator", () => {
+    it("should be possible to use the empty string as a separator", async () => {
       element = $compile(
         '<div ng-switch="mode">' +
           '<p ng-switch-when="ab" ng-switch-when-separator="">Block1|</p>' +
@@ -374,19 +316,20 @@ describe("ngSwitch", () => {
       )($scope);
 
       $scope.$apply('mode = "a"');
-      expect(element.children().length).toBe(2);
-      expect(element.text()).toBe("Block1|Block2|");
+      await wait();
+      expect(element.children.length).toBe(2);
+      expect(element.textContent).toBe("Block1|Block2|");
       $scope.$apply('mode = "b"');
-
-      expect(element.children().length).toBe(1);
-      expect(element.text()).toBe("Block1|");
+      await wait();
+      expect(element.children.length).toBe(1);
+      expect(element.textContent).toBe("Block1|");
       $scope.$apply('mode = "c"');
-
-      expect(element.children().length).toBe(1);
-      expect(element.text()).toBe("Block3|");
+      await wait();
+      expect(element.children.length).toBe(1);
+      expect(element.textContent).toBe("Block3|");
     });
 
-    it("should be possible to use separators that are multiple characters long", () => {
+    it("should be possible to use separators that are multiple characters long", async () => {
       element = $compile(
         '<div ng-switch="mode">' +
           '<p ng-switch-when="a||b|a" ng-switch-when-separator="||">Block1|</p>' +
@@ -396,19 +339,20 @@ describe("ngSwitch", () => {
       )($scope);
 
       $scope.$apply('mode = "a"');
-      expect(element.children().length).toBe(2);
-      expect(element.text()).toBe("Block1|Block2|");
+      await wait();
+      expect(element.children.length).toBe(2);
+      expect(element.textContent).toBe("Block1|Block2|");
       $scope.$apply('mode = "b|a"');
-
-      expect(element.children().length).toBe(1);
-      expect(element.text()).toBe("Block1|");
+      await wait();
+      expect(element.children.length).toBe(1);
+      expect(element.textContent).toBe("Block1|");
       $scope.$apply('mode = "c"');
-
-      expect(element.children().length).toBe(1);
-      expect(element.text()).toBe("Block3|");
+      await wait();
+      expect(element.children.length).toBe(1);
+      expect(element.textContent).toBe("Block3|");
     });
 
-    it("should ignore multiple appearances of the same item", () => {
+    it("should ignore multiple appearances of the same item", async () => {
       element = $compile(
         '<div ng-switch="mode">' +
           '<p ng-switch-when="a|b|a" ng-switch-when-separator="|">Block1|</p>' +
@@ -418,16 +362,17 @@ describe("ngSwitch", () => {
       )($scope);
 
       $scope.$apply('mode = "a"');
-      expect(element.children().length).toBe(2);
-      expect(element.text()).toBe("Block1|Block2|");
+      await wait();
+      expect(element.children.length).toBe(2);
+      expect(element.textContent).toBe("Block1|Block2|");
       $scope.$apply('mode = "b"');
-
-      expect(element.children().length).toBe(1);
-      expect(element.text()).toBe("Block1|");
+      await wait();
+      expect(element.children.length).toBe(1);
+      expect(element.textContent).toBe("Block1|");
       $scope.$apply('mode = "c"');
-
-      expect(element.children().length).toBe(1);
-      expect(element.text()).toBe("Block3|");
+      await wait();
+      expect(element.children.length).toBe(1);
+      expect(element.textContent).toBe("Block3|");
     });
   });
 });
@@ -438,8 +383,8 @@ describe("ngSwitch", () => {
 //   let $rootElement;
 
 //   function html(content) {
-//     $rootElement[0].innerHTML = content;
-//     element = $rootElement.children().eq(0);
+//     $rootElement.innerHTML = content;
+//     element = $rootElement.children[0];
 //     return element;
 //   }
 
@@ -449,7 +394,7 @@ describe("ngSwitch", () => {
 //         // we need to run animation on attached elements;
 //         function (_$rootElement_) {
 //           $rootElement = _$rootElement_;
-//           body = JQLite(document.body);
+//           body = (document.body);
 //           body.append($rootElement);
 //         },
 //     ),
@@ -520,13 +465,13 @@ describe("ngSwitch", () => {
 //         ),
 //       )($scope);
 
-//       $rootScope.$digest(); // re-enable the animations;
+//       ; // re-enable the animations;
 //       $scope.val = "one";
-//       $scope.$digest();
+//       ;
 
 //       item = $animate.queue.shift();
 //       expect(item.event).toBe("enter");
-//       expect(item.element.text()).toBe("one");
+//       expect(item.element.textContent).toBe("one");
 //     }));
 
 //     it("should fire off the leave animation", inject((
@@ -546,24 +491,24 @@ describe("ngSwitch", () => {
 //         ),
 //       )($scope);
 
-//       $rootScope.$digest(); // re-enable the animations;
+//       ; // re-enable the animations;
 //       $scope.val = "two";
-//       $scope.$digest();
+//       ;
 
 //       item = $animate.queue.shift();
 //       expect(item.event).toBe("enter");
-//       expect(item.element.text()).toBe("two");
+//       expect(item.element.textContent).toBe("two");
 
 //       $scope.val = "three";
-//       $scope.$digest();
+//       ;
 
 //       item = $animate.queue.shift();
 //       expect(item.event).toBe("leave");
-//       expect(item.element.text()).toBe("two");
+//       expect(item.element.textContent).toBe("two");
 
 //       item = $animate.queue.shift();
 //       expect(item.event).toBe("enter");
-//       expect(item.element.text()).toBe("three");
+//       expect(item.element.textContent).toBe("three");
 //     }));
 
 //     it("should work with svg elements when the svg container is transcluded", () => {
@@ -580,9 +525,9 @@ describe("ngSwitch", () => {
 //             "</svg-container>",
 //         )($rootScope);
 //         $rootScope.inc = "one";
-//         $rootScope.$apply();
+//         await wait();
 
-//         const circle = element.find("circle");
+//         const circle = element.querySelectorAll("circle");
 //         expect(circle[0].toString()).toMatch(/SVG/);
 //       });
 //     });

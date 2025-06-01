@@ -3,7 +3,7 @@ import {
   applyAnimationClassesFactory,
   applyAnimationStyles,
   prepareAnimationOptions,
-} from "./shared";
+} from "./shared.js";
 
 // TODO: use caching here to speed things up for detection
 // TODO: add documentation
@@ -15,7 +15,7 @@ export function AnimateJsProvider($animateProvider) {
     "$$AnimateRunner",
     /**
      *
-     * @param {import("../core/di/internal-injector.js").InjectorService} $injector
+     * @param {import("../core/di/internal-injector").InjectorService} $injector
      * @param {*} $$AnimateRunner
      * @returns
      */
@@ -35,7 +35,7 @@ export function AnimateJsProvider($animateProvider) {
 
         options = prepareAnimationOptions(options);
         if (!classes) {
-          classes = element.attr("class") || "";
+          classes = element.getAttribute("class") || "";
           if (options.addClass) {
             classes += ` ${options.addClass}`;
           }

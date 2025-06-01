@@ -4,14 +4,14 @@ import {
   isObject,
   isString,
 } from "../../shared/utils.js";
-import { is, pattern } from "../../shared/hof";
-import { UrlRules } from "./url-rules";
-import { TargetState } from "../state/target-state";
-import { removeFrom } from "../../shared/common";
-import { stripLastPathElement } from "../../shared/strings";
-import { UrlMatcher } from "./url-matcher";
-import { ParamFactory } from "../params/param-factory";
-import { UrlRuleFactory } from "./url-rule";
+import { is, pattern } from "../../shared/hof.js";
+import { UrlRules } from "./url-rules.js";
+import { TargetState } from "../state/target-state.js";
+import { removeFrom } from "../../shared/common.js";
+import { stripLastPathElement } from "../../shared/strings.js";
+import { UrlMatcher } from "./url-matcher.js";
+import { ParamFactory } from "../params/param-factory.js";
+import { UrlRuleFactory } from "./url-rule.js";
 
 /**
  * API for URL management
@@ -93,17 +93,19 @@ export class UrlService {
     "$rootScope",
     /**
      *
-     * @param {import('../../core/location/location').Location} $location
-     * @param {import('../../services/browser').Browser} $browser
-     * @param {import('../../core/scope/scope').Scope} $rootScope
+     * @param {import('../../core/location/location.js').Location} $location
+     * @param {import('../../services/browser.js').Browser} $browser
+     * @param {import('../../core/scope/scope.js').Scope} $rootScope
      * @returns {UrlService}
      */
     ($location, $browser, $rootScope) => {
       this.$location = $location;
       this.$browser = $browser;
-      $rootScope.$on("$locationChangeSuccess", (evt) =>
-        this._urlListeners.forEach((fn) => fn(evt)),
-      );
+      $rootScope.$on("$locationChangeSuccess", (evt) => {
+        this._urlListeners.forEach((fn) => {
+          fn(evt);
+        });
+      });
       this.listen();
       return this;
     },

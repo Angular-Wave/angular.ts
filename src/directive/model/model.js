@@ -18,16 +18,12 @@ import {
   hasAnimate,
   isBoolean,
   snakeCase,
-} from "../../shared/utils.js";
-import {
   isObjectEmpty,
-  nullFormCtrl,
-  PENDING_CLASS,
-  setupValidity,
-} from "../form/form";
-import { defaultModelOptions } from "../model-options/model-options";
-import { startingTag } from "../../shared/jqlite/jqlite.js";
-import { ScopePhase } from "../../core/scope/scope.js";
+  isProxy,
+} from "../../shared/utils.js";
+import { nullFormCtrl, PENDING_CLASS } from "../form/form.js";
+import { defaultModelOptions } from "../model-options/model-options.js";
+import { startingTag } from "../../shared/dom.js";
 
 export const ngModelMinErr = minErr("ngModel");
 
@@ -47,7 +43,7 @@ export const ngModelMinErr = minErr("ngModel");
  * The key value within the object refers to the name of the validator while the function refers to the validation operation. 
  * The validation operation is provided with the model value as an argument and must return a true or false value depending on the response of that validation.
  *
- * @property {Object.<string, function(string, string) => QPromise>} $asyncValidators A collection of validations that are expected to perform an asynchronous validation (e.g. a HTTP request).
+ * @property {Object.<string, function(string, string) => Promise>} $asyncValidators A collection of validations that are expected to perform an asynchronous validation (e.g. a HTTP request).
  *  The validation function that is provided is expected to return a promise when it is run during the model validation process
  *
  * @property {Array.<Function>} $viewChangeListeners Array of functions to execute whenever
@@ -69,6 +65,7 @@ export const ngModelMinErr = minErr("ngModel");
  */
 
 export class NgModelController {
+  static $nonscope = true;
   static $inject = [
     "$scope",
     "$exceptionHandler",
@@ -76,20 +73,16 @@ export class NgModelController {
     "$element",
     "$parse",
     "$animate",
-    "$timeout",
-    "$q",
     "$interpolate",
   ];
 
   /**
-   * @param {import('../../core/scope/scope').Scope} $scope
+   * @param {import('../../core/scope/scope.js').Scope} $scope
    * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
-   * @param {import('../../core/compile/attributes').Attributes} $attr
-   * @param {import('../../shared/jqlite/jqlite').JQLite} $element
+   * @param {import('../../core/compile/attributes.js').Attributes} $attr
+   * @param {Element} $element
    * @param {import("../../core/parse/parse.js").ParseService} $parse
    * @param {*} $animate
-   * @param {*} $timeout
-   * @param {import("../../core/q/q").QPromise<any>} $q
    * @param {*} $interpolate
    */
   constructor(
@@ -99,8 +92,6 @@ export class NgModelController {
     $element,
     $parse,
     $animate,
-    $timeout,
-    $q,
     $interpolate,
   ) {
     /** @type {any} The actual value from the control's view  */
@@ -146,7 +137,7 @@ export class NgModelController {
     this.$$parsedNgModel = $parse($attr["ngModel"]);
     this.$$parsedNgModelAssign = this.$$parsedNgModel.assign;
 
-    /** @type {import("../../core/parse/parse.js").CompiledExpression|((Scope) => any)} */
+    /** @type {import("../../core/parse/parse").CompiledExpression|((Scope) => any)} */
     this.$$ngModelGet = this.$$parsedNgModel;
     this.$$ngModelSet = this.$$parsedNgModelAssign;
     this.$$pendingDebounce = null;
@@ -159,21 +150,25 @@ export class NgModelController {
     this.$$currentValidationRunId = 0;
 
     /** @type {import('../../core/scope/scope.js').Scope} */
-    this.$$scope = $scope;
+    this.$$scope = $scope; // attempt to bind to nearest controller if present
 
     /** @type {import('../../core/scope/scope.js').Scope} */
     this.$$rootScope = $scope.$root;
     this.$$attr = $attr;
     this.$$element = $element;
     this.$$animate = $animate;
-    this.$$timeout = $timeout;
     this.$$parse = $parse;
-    this.$q = $q;
     this.$$exceptionHandler = $exceptionHandler;
 
     this.$$hasNativeValidators = false;
 
-    setupValidity(this);
+    this.$$classCache = {};
+    const isValid = this.$$element.classList.contains(VALID_CLASS);
+    this.$$classCache[VALID_CLASS] = isValid;
+    this.$$classCache[INVALID_CLASS] = !isValid;
+
+    this.$$eventRemovers = new Set();
+
     setupModelWatcher(this);
   }
 
@@ -280,14 +275,14 @@ export class NgModelController {
       const invokeModelGetter = this.$$parse(`${this.$$attr["ngModel"]}()`);
       const invokeModelSetter = this.$$parse(`${this.$$attr["ngModel"]}($$$p)`);
 
-      this.$$ngModelGet = function ($scope) {
+      this.$$ngModelGet = ($scope) => {
         let modelValue = this.$$parsedNgModel($scope);
         if (isFunction(modelValue)) {
           modelValue = invokeModelGetter($scope);
         }
         return modelValue;
       };
-      this.$$ngModelSet = function ($scope, newValue) {
+      this.$$ngModelSet = ($scope, newValue) => {
         if (isFunction(this.$$parsedNgModel($scope))) {
           invokeModelSetter($scope, { $$$p: newValue });
         } else {
@@ -344,20 +339,20 @@ export class NgModelController {
 
   $$updateEmptyClasses(value) {
     if (this.$isEmpty(value)) {
-      if (hasAnimate(this.$$element[0])) {
+      if (hasAnimate(this.$$element)) {
         this.$$animate.removeClass(this.$$element, NOT_EMPTY_CLASS);
         this.$$animate.addClass(this.$$element, EMPTY_CLASS);
       } else {
-        this.$$element[0].classList.remove(NOT_EMPTY_CLASS);
-        this.$$element[0].classList.add(EMPTY_CLASS);
+        this.$$element.classList.remove(NOT_EMPTY_CLASS);
+        this.$$element.classList.add(EMPTY_CLASS);
       }
     } else {
-      if (hasAnimate(this.$$element[0])) {
+      if (hasAnimate(this.$$element)) {
         this.$$animate.removeClass(this.$$element, EMPTY_CLASS);
         this.$$animate.addClass(this.$$element, NOT_EMPTY_CLASS);
       } else {
-        this.$$element[0].classList.remove(EMPTY_CLASS);
-        this.$$element[0].classList.add(NOT_EMPTY_CLASS);
+        this.$$element.classList.remove(EMPTY_CLASS);
+        this.$$element.classList.add(NOT_EMPTY_CLASS);
       }
     }
   }
@@ -372,12 +367,13 @@ export class NgModelController {
   $setPristine() {
     this.$dirty = false;
     this.$pristine = true;
-    if (hasAnimate(this.$$element[0])) {
+    if (!this.$$element) return;
+    if (hasAnimate(this.$$element)) {
       this.$$animate.removeClass(this.$$element, EMPTY_CLASS);
       this.$$animate.addClass(this.$$element, PRISTINE_CLASS);
     } else {
-      this.$$element[0].classList.remove(EMPTY_CLASS);
-      this.$$element[0].classList.add(PRISTINE_CLASS);
+      this.$$element.classList.remove(EMPTY_CLASS);
+      this.$$element.classList.add(PRISTINE_CLASS);
     }
   }
 
@@ -391,12 +387,12 @@ export class NgModelController {
   $setDirty() {
     this.$dirty = true;
     this.$pristine = false;
-    if (hasAnimate(this.$$element[0])) {
+    if (hasAnimate(this.$$element)) {
       this.$$animate.removeClass(this.$$element, PRISTINE_CLASS);
       this.$$animate.addClass(this.$$element, DIRTY_CLASS);
     } else {
-      this.$$element[0].classList.remove(PRISTINE_CLASS);
-      this.$$element[0].classList.add(DIRTY_CLASS);
+      this.$$element.classList.remove(PRISTINE_CLASS);
+      this.$$element.classList.add(DIRTY_CLASS);
     }
     this.$$parentForm.$setDirty();
   }
@@ -412,11 +408,11 @@ export class NgModelController {
   $setUntouched() {
     this.$touched = false;
     this.$untouched = true;
-    if (hasAnimate(this.$$element[0])) {
+    if (hasAnimate(this.$$element)) {
       this.$$animate.setClass(this.$$element, UNTOUCHED_CLASS, TOUCHED_CLASS);
     } else {
-      this.$$element[0].classList.remove(TOUCHED_CLASS);
-      this.$$element[0].classList.add(UNTOUCHED_CLASS);
+      this.$$element.classList.remove(TOUCHED_CLASS);
+      this.$$element.classList.add(UNTOUCHED_CLASS);
     }
   }
 
@@ -430,11 +426,11 @@ export class NgModelController {
   $setTouched() {
     this.$touched = true;
     this.$untouched = false;
-    if (hasAnimate(this.$$element[0])) {
+    if (hasAnimate(this.$$element)) {
       this.$$animate.setClass(this.$$element, TOUCHED_CLASS, UNTOUCHED_CLASS);
     } else {
-      this.$$element[0].classList.remove(UNTOUCHED_CLASS);
-      this.$$element[0].classList.add(TOUCHED_CLASS);
+      this.$$element.classList.remove(UNTOUCHED_CLASS);
+      this.$$element.classList.add(TOUCHED_CLASS);
     }
   }
 
@@ -524,7 +520,7 @@ export class NgModelController {
    * </example>
    */
   $rollbackViewValue() {
-    this.$$timeout.cancel(this.$$pendingDebounce);
+    clearTimeout(this.$$pendingDebounce);
     this.$viewValue = this.$$lastCommittedViewValue;
     this.$render();
   }
@@ -655,7 +651,7 @@ export class NgModelController {
       if (!validatorPromises.length) {
         validationDone(true);
       } else {
-        that.$q.all(validatorPromises).then(
+        Promise.all(validatorPromises).then(
           () => {
             validationDone(allValid);
           },
@@ -685,7 +681,7 @@ export class NgModelController {
    * usually handles calling this in response to input events.
    */
   $commitViewValue() {
-    this.$$timeout.cancel(this.$$pendingDebounce);
+    clearTimeout(this.$$pendingDebounce);
 
     // If the view value has not changed then we should just exit, except in the case where there is
     // a native validator on the element. In this case the validation state may have changed even though
@@ -736,9 +732,8 @@ export class NgModelController {
     }
     if (isNumberNaN(this.$modelValue)) {
       // this.$modelValue has not been touched yet...
-      this.$modelValue = /** @type {(Scope) => any} */ (this.$$ngModelGet)(
-        this.$$scope,
-      );
+      // @ts-ignore
+      this.$modelValue = this.$$ngModelGet(this.$$scope);
     }
     const prevModelValue = this.$modelValue;
     const allowInvalid = this.$options.getOption("allowInvalid");
@@ -760,6 +755,9 @@ export class NgModelController {
           // external validators (e.g. calculated on the server),
           // that just call $setValidity and need the model value
           // to calculate their validity.
+          // if (that.$modelValue ?? that.$modelValue[isProxySymbol]) {
+          //   delete that.$modelValue;
+          // }
           that.$modelValue = allValid ? modelValue : undefined;
           writeToModelIfNeeded();
         }
@@ -767,14 +765,15 @@ export class NgModelController {
     );
 
     function writeToModelIfNeeded() {
-      if (that.$modelValue !== prevModelValue) {
+      // intentional loose equality
+      if (that.$modelValue != prevModelValue) {
         that.$$writeModelToScope();
       }
     }
   }
 
   $$writeModelToScope() {
-    this.$$ngModelSet(this.$$scope, this.$modelValue);
+    this.$$ngModelSet(this.$$scope.$target, this.$modelValue);
     Object.values(this.$viewChangeListeners).forEach((listener) => {
       try {
         listener();
@@ -829,11 +828,11 @@ export class NgModelController {
    * </div>
    *
    * @param {*} value value from the view.
-   * @param {string} trigger Event that triggered the update.
+   * @param {string} [trigger] Event that triggered the update.
    */
   $setViewValue(value, trigger) {
     this.$viewValue = value;
-    if (this.$options.getOption("updateOnDefault")) {
+    if (this.$options?.getOption("updateOnDefault")) {
       this.$$debounceViewValueCommit(trigger);
     }
   }
@@ -854,19 +853,15 @@ export class NgModelController {
       debounceDelay = debounceDelay["*"];
     }
 
-    this.$$timeout.cancel(this.$$pendingDebounce);
+    clearTimeout(this.$$pendingDebounce);
     const that = this;
     if (/** @type {number} */ (debounceDelay) > 0) {
       // this fails if debounceDelay is an object
-      this.$$pendingDebounce = this.$$timeout(() => {
+      this.$$pendingDebounce = setTimeout(() => {
         that.$commitViewValue();
-      }, debounceDelay);
-    } else if (this.$$rootScope.$$phase !== ScopePhase.NONE) {
-      this.$commitViewValue();
+      }, /** @type {number} */ (debounceDelay));
     } else {
-      this.$$scope.$apply(() => {
-        that.$commitViewValue();
-      });
+      this.$commitViewValue();
     }
   }
 
@@ -895,7 +890,9 @@ export class NgModelController {
    *
    */
   $overrideModelOptions(options) {
+    this.$$removeAllEventListeners();
     this.$options = this.$options.createChild(options);
+    this.$$updateEvents = this.$options.$$options.updateOn;
     this.$$setUpdateOnEvents();
   }
 
@@ -964,7 +961,7 @@ export class NgModelController {
             let ngModel;
 
             that.$postLink = function() {
-              ngModel = $element.find('input').controller('ngModel');
+              ngModel = $element.querySelectorAll('input').controller('ngModel');
 
               ngModel.$formatters.push(function(value) {
                 return (value && value.name) || value;
@@ -1040,16 +1037,31 @@ export class NgModelController {
     this.$processModelValue();
   }
 
+  $$removeAllEventListeners() {
+    this.$$eventRemovers.forEach((removeCallback) => removeCallback());
+    this.$$eventRemovers.clear();
+  }
+
   $$setUpdateOnEvents() {
     if (this.$$updateEvents) {
-      this.$$element.off(this.$$updateEvents, this.$$updateEventHandler);
+      this.$$updateEvents.split(" ").forEach((ev) => {
+        this.$$element.addEventListener(ev, this.$$updateEventHandler);
+        this.$$eventRemovers.add(() =>
+          this.$$element.removeEventListener(ev, this.$$updateEventHandler),
+        );
+      });
     }
 
     this.$$updateEvents = /** @type {string} */ (
       this.$options.getOption("updateOn")
     );
     if (this.$$updateEvents) {
-      this.$$element.on(this.$$updateEvents, this.$$updateEventHandler);
+      this.$$updateEvents.split(" ").forEach((ev) => {
+        this.$$element.addEventListener(ev, this.$$updateEventHandler);
+        this.$$eventRemovers.add(() =>
+          this.$$element.removeEventListener(ev, this.$$updateEventHandler),
+        );
+      });
     }
   }
 
@@ -1067,8 +1079,8 @@ function setupModelWatcher(ctrl) {
   //    -> scope value did not change since the last digest as
   //       ng-change executes in apply phase
   // 4. view should be changed back to 'a'
-  ctrl.$$scope.$watch((scope) => {
-    const modelValue = ctrl.$$ngModelGet(scope);
+  ctrl.$$scope.$watch("value", () => {
+    const modelValue = ctrl.$$ngModelGet(ctrl.$$scope);
 
     // if scope model value and ngModel value are out of sync
     // This cannot be moved to the action function, because it would not catch the
@@ -1081,13 +1093,10 @@ function setupModelWatcher(ctrl) {
     ) {
       ctrl.$$setModelValue(modelValue);
     }
-
-    return modelValue;
   });
 }
 
-ngModelDirective.$inject = ["$rootScope"];
-export function ngModelDirective($rootScope) {
+export function ngModelDirective() {
   return {
     restrict: "A",
     require: ["ngModel", "^?form", "^?ngModelOptions"],
@@ -1097,10 +1106,10 @@ export function ngModelDirective($rootScope) {
     // before anyone else uses it.
     priority: 1,
     compile:
-      /** @param {import("../../shared/jqlite/jqlite.js").JQLite} element  */
+      /** @param {Element} element  */
       (element) => {
         // Setup initial state of the control
-        element[0].classList.add(PRISTINE_CLASS, UNTOUCHED_CLASS, VALID_CLASS);
+        element.classList.add(PRISTINE_CLASS, UNTOUCHED_CLASS, VALID_CLASS);
 
         return {
           pre: (scope, _element, attr, ctrls) => {
@@ -1111,7 +1120,6 @@ export function ngModelDirective($rootScope) {
             if (optionsCtrl) {
               modelCtrl.$options = optionsCtrl.$options;
             }
-
             modelCtrl.$$initGetterSetters();
 
             // notify others, especially parent forms
@@ -1122,9 +1130,13 @@ export function ngModelDirective($rootScope) {
                 modelCtrl.$$parentForm.$$renameControl(modelCtrl, newValue);
               }
             });
+            let deregisterWatch = scope.$watch(attr["ngModel"], (val) => {
+              modelCtrl.$$setModelValue(isProxy(val) ? val.$target : val);
+            });
 
             scope.$on("$destroy", () => {
               modelCtrl.$$parentForm.$removeControl(modelCtrl);
+              deregisterWatch();
             });
           },
           post: (scope, element, _attr, ctrls) => {
@@ -1135,14 +1147,9 @@ export function ngModelDirective($rootScope) {
               modelCtrl.$setTouched();
             }
 
-            element.on("blur", () => {
+            element.addEventListener("blur", () => {
               if (modelCtrl.$touched) return;
-
-              if ($rootScope.$$phase !== ScopePhase.NONE) {
-                scope.$evalAsync(setTouched);
-              } else {
-                scope.$apply(setTouched);
-              }
+              setTouched();
             });
           },
         };

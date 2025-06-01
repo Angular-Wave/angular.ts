@@ -1,19 +1,20 @@
-import { TransitionHookPhase } from "./interface";
-import { defaults, silentRejection } from "../../shared/common";
-import { fnToString, maxLength } from "../../shared/strings";
-import { isPromise } from "../../shared/predicates";
-import { parse } from "../../shared/hof";
-import { trace } from "../common/trace";
-import { services } from "../common/coreservices";
-import { Rejection } from "./reject-factory";
-import { TargetState } from "../state/target-state";
-import { EventBus } from "../../core/pubsub/pubsub";
+import { TransitionHookPhase } from "./interface.js";
+import { defaults, silentRejection } from "../../shared/common.js";
+import { fnToString, maxLength } from "../../shared/strings.js";
+import { isPromise } from "../../shared/predicates.js";
+import { parse } from "../../shared/hof.js";
+import { trace } from "../common/trace.js";
+import { Rejection } from "./reject-factory.js";
+import { TargetState } from "../state/target-state.js";
+import { EventBus } from "../../core/pubsub/pubsub.js";
+
 const defaultOptions = {
   current: () => {},
   transition: null,
   traceData: {},
   bind: null,
 };
+
 export class TransitionHook {
   /**
    * Chains together an array of TransitionHooks.
@@ -37,8 +38,9 @@ export class TransitionHook {
     // Chain the next hook off the previous
     const createHookChainR = (prev, nextHook) =>
       prev.then(() => nextHook.invokeHook());
-    return hooks.reduce(createHookChainR, waitFor || services.$q.resolve());
+    return hooks.reduce(createHookChainR, waitFor || Promise.resolve());
   }
+
   /**
    * Invokes all the provided TransitionHooks, in order.
    * Each hook's return value is checked.
@@ -55,19 +57,21 @@ export class TransitionHook {
       const hookResult = hooks[idx].invokeHook();
       if (isPromise(hookResult)) {
         const remainingHooks = hooks.slice(idx + 1);
-        return TransitionHook.chain(remainingHooks, hookResult).then(
-          doneCallback,
-        );
+        return TransitionHook.chain(remainingHooks, hookResult).then(() => {
+          doneCallback();
+        });
       }
     }
     return doneCallback();
   }
+
   /**
    * Run all TransitionHooks, ignoring their return value.
    */
   static runAllHooks(hooks) {
     hooks.forEach((hook) => hook.invokeHook());
   }
+
   constructor(transition, stateContext, registeredHook, options) {
     this.transition = transition;
     this.stateContext = stateContext;
@@ -79,9 +83,11 @@ export class TransitionHook {
     this.options = defaults(options, defaultOptions);
     this.type = registeredHook.eventType;
   }
+
   logError(err) {
     EventBus.publish("$stateService:defaultErrorHandler", err);
   }
+
   invokeHook() {
     const hook = this.registeredHook;
     if (hook._deregistered) return;

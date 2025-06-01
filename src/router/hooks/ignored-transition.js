@@ -1,5 +1,5 @@
-import { trace } from "../common/trace";
-import { Rejection } from "../transition/reject-factory";
+import { trace } from "../common/trace.js";
+import { Rejection } from "../transition/reject-factory.js";
 /**
  * A [[TransitionHookFn]] that skips a transition if it should be ignored
  *

@@ -1,4 +1,3 @@
-import { services } from "../common/coreservices";
 /**
  * A [[TransitionHookFn]] that performs lazy loading
  *
@@ -61,7 +60,7 @@ export function registerLazyLoadHook(
         .entering()
         .filter((state) => !!state.$$state().lazyLoad)
         .map((state) => lazyLoadState(transition, state, stateRegistry));
-      return services.$q.all(promises).then(retryTransition);
+      return Promise.all(promises).then(retryTransition);
     },
   );
 }
@@ -86,10 +85,11 @@ export function lazyLoadState(transition, state, stateRegistry) {
     };
     const error = (err) => {
       delete lazyLoadFn["_promise"];
-      return services.$q.reject(err);
+      return Promise.reject(err);
     };
-    promise = lazyLoadFn["_promise"] = services.$q
-      .resolve(lazyLoadFn(transition, state))
+    promise = lazyLoadFn["_promise"] = Promise.resolve(
+      lazyLoadFn(transition, state),
+    )
       .then(updateStateRegistry)
       .then(success, error);
   }

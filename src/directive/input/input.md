@@ -252,9 +252,9 @@
 - but does not trigger HTML5 native validation. Takes an expression.
 - @param {string=} ngMax Like `max`, sets the `max` validation error key if the value entered is greater than `ngMax`,
 - but does not trigger HTML5 native validation. Takes an expression.
-- @param {string=} step Sets the `step` validation error key if the value entered does not fit the `step` constraint.
+- @param {string=} step Sets the `step` validation error key if the value entered does not it the `step` constraint.
 - Can be interpolated.
-- @param {string=} ngStep Like `step`, sets the `step` validation error key if the value entered does not fit the `ngStep` constraint,
+- @param {string=} ngStep Like `step`, sets the `step` validation error key if the value entered does not it the `ngStep` constraint,
 - but does not trigger HTML5 native validation. Takes an expression.
 - @param {string=} required Sets `required` validation error key if the value is not entered.
 - @param {string=} ngRequired Adds `required` attribute and `required` validation constraint to

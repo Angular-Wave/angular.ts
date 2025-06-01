@@ -6,7 +6,7 @@
 - `ngOptions` comprehension expression.
 -
 - In many cases, {@link ng.directive:ngRepeat ngRepeat} can be used on `<option>` elements instead of
-- `ngOptions` to achieve a similar result. However, `ngOptions` provides some benefits:
+- `ngOptions` to achieve a similar result. However, `ngOptions` provides some beneits:
 - - more flexibility in how the `<select>`'s model is assigned via the `select` **`as`** part of the
 - comprehension expression
 - - reduced memory consumption by not creating a new scope for each repeated instance

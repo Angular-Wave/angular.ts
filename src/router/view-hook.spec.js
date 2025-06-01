@@ -1,6 +1,6 @@
-import { dealoc } from "../shared/jqlite/jqlite.js";
-import { Angular } from "../loader";
-import { wait } from "../shared/test-utils";
+import { dealoc } from "../shared/dom.js";
+import { Angular } from "../loader.js";
+import { wait } from "../shared/test-utils.js";
 
 describe("view hooks", () => {
   let app,
@@ -20,7 +20,7 @@ describe("view hooks", () => {
   };
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     app = window.angular
       .module("defaultModule", [])
@@ -37,7 +37,7 @@ describe("view hooks", () => {
       .component("bar", Object.assign({}, component))
       .component("baz", Object.assign({}, component));
 
-    let $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    let $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
 
@@ -129,7 +129,7 @@ describe("view hooks", () => {
       $state.defaultErrorHandler(function () {});
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";
-        return $timeout(() => {
+        return setTimeout(() => {
           log += "delay;";
           return false;
         }, 1);
@@ -145,7 +145,7 @@ describe("view hooks", () => {
     it("can wait for a promise and then allow the transition", async () => {
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";
-        return $timeout(() => {
+        return setTimeout(() => {
           log += "delay;";
         }, 1);
       };
@@ -184,7 +184,7 @@ describe("view hooks", () => {
       expect($state.current.name).toBe("bar");
     });
 
-    // Test for https://github.com/angular-ui/ui-router/issues/3308
+    // Test for https://github.com/angular-ui/ng-router/issues/3308
     xit("should trigger once when answered truthy even if redirected", async () => {
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";
@@ -198,7 +198,7 @@ describe("view hooks", () => {
       expect($state.current.name).toBe("baz");
     });
 
-    // Test for https://github.com/angular-ui/ui-router/issues/3308
+    // Test for https://github.com/angular-ui/ng-router/issues/3308
     xit("should trigger only once if returns a redirect", async () => {
       ctrl.prototype.uiCanExit = function () {
         log += "canexit;";

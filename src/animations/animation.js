@@ -1,13 +1,17 @@
-import { JQLite } from "../shared/jqlite/jqlite.js";
+import {
+  deleteCacheData,
+  getCacheData,
+  removeElementData,
+  setCacheData,
+} from "../shared/dom.js";
 import { mergeClasses } from "../shared/utils.js";
 import {
   NG_ANIMATE_CLASSNAME,
   PREPARE_CLASS_SUFFIX,
   applyAnimationClassesFactory,
   applyAnimationStyles,
-  getDomNode,
   prepareAnimationOptions,
-} from "./shared";
+} from "./shared.js";
 
 const RUNNER_STORAGE_KEY = "$$animationRunner";
 const PREPARE_CLASSES_KEY = "$$animatePrepareClasses";
@@ -18,15 +22,15 @@ export function AnimationProvider() {
   const drivers = (this.drivers = []);
 
   function setRunner(element, runner) {
-    element.data(RUNNER_STORAGE_KEY, runner);
+    setCacheData(element, RUNNER_STORAGE_KEY, runner);
   }
 
   function removeRunner(element) {
-    element.removeData(RUNNER_STORAGE_KEY);
+    deleteCacheData(element, RUNNER_STORAGE_KEY);
   }
 
   function getRunner(element) {
-    return element.data(RUNNER_STORAGE_KEY);
+    return getCacheData(element, RUNNER_STORAGE_KEY);
   }
 
   this.$get = [
@@ -38,7 +42,7 @@ export function AnimationProvider() {
     /**
      *
      * @param {*} $rootScope
-     * @param {import("../core/di/internal-injector.js").InjectorService} $injector
+     * @param {import("../core/di/internal-injector").InjectorService} $injector
      * @param {*} $$AnimateRunner
      * @param {import("./raf-scheduler").RafScheduler} $$rAFScheduler
      * @param {*} $$animateCache
@@ -166,7 +170,7 @@ export function AnimationProvider() {
         }
 
         let classes = mergeClasses(
-          element.attr("class"),
+          element.getAttribute("class"),
           mergeClasses(options.addClass, options.removeClass),
         );
         let { tempClasses } = options;
@@ -176,7 +180,8 @@ export function AnimationProvider() {
         }
 
         if (isStructural) {
-          element.data(
+          setCacheData(
+            element,
             PREPARE_CLASSES_KEY,
             `ng-${event}${PREPARE_CLASS_SUFFIX}`,
           );
@@ -196,14 +201,14 @@ export function AnimationProvider() {
           close,
         });
 
-        element.on("$destroy", handleDestroyedElement);
+        element.addEventListener("$destroy", handleDestroyedElement);
 
         // we only want there to be one function called within the post digest
         // block. This way we can group animations for all the animations that
         // were apart of the same postDigest flush call.
         if (animationQueue.length > 1) return runner;
 
-        $rootScope.$$postDigest(() => {
+        $rootScope.$postUpdate(() => {
           const animations = [];
           animationQueue.forEach((entry) => {
             // the element was destroyed early on which removed the runner
@@ -231,7 +236,7 @@ export function AnimationProvider() {
             extraClasses =
               (extraClasses ? `${extraClasses} ` : "") + NG_ANIMATE_CLASSNAME;
             const cacheKey = $$animateCache.cacheKey(
-              element[0],
+              element,
               animationEntry.event,
               extraClasses,
               options.removeClass,
@@ -239,7 +244,7 @@ export function AnimationProvider() {
 
             toBeSortedAnimations.push({
               element,
-              domNode: getDomNode(element),
+              domNode: element,
               fn: function triggerAnimationStart() {
                 let startAnimationFn;
                 const closeFn = animationEntry.close;
@@ -304,13 +309,16 @@ export function AnimationProvider() {
               // since the elements are at the top of the animation hierarchy and they
               // will be applied without a RAF having to pass...
               if (i === 0) {
-                element.removeData(PREPARE_CLASSES_KEY);
+                removeElementData(element, PREPARE_CLASSES_KEY);
                 continue;
               }
 
-              const prepareClassName = element.data(PREPARE_CLASSES_KEY);
+              const prepareClassName = getCacheData(
+                element,
+                PREPARE_CLASSES_KEY,
+              );
               if (prepareClassName) {
-                element[0].classList.add(prepareClassName);
+                element.classList.add(prepareClassName);
               }
             }
           }
@@ -340,7 +348,7 @@ export function AnimationProvider() {
           const refLookup = {};
           animations.forEach((animation, index) => {
             const { element } = animation;
-            const node = getDomNode(element);
+            const node = element;
             const { event } = animation;
             const enterOrMove = ["enter", "move"].indexOf(event) >= 0;
             const anchorNodes = animation.structural
@@ -355,7 +363,7 @@ export function AnimationProvider() {
                 refLookup[key] = refLookup[key] || {};
                 refLookup[key][direction] = {
                   animationID: index,
-                  element: JQLite(anchor),
+                  element: anchor,
                 };
               });
             } else {
@@ -461,9 +469,9 @@ export function AnimationProvider() {
           tempClasses =
             (tempClasses ? `${tempClasses} ` : "") + NG_ANIMATE_CLASSNAME;
           element.className += ` ${tempClasses}`;
-          let prepareClassName = element.data(PREPARE_CLASSES_KEY);
+          let prepareClassName = getCacheData(element, PREPARE_CLASSES_KEY);
           if (prepareClassName) {
-            element[0].classList.remove(prepareClassName);
+            element.classList.remove(prepareClassName);
             prepareClassName = null;
           }
         }
@@ -490,7 +498,6 @@ export function AnimationProvider() {
         }
 
         function close(rejected) {
-          element.off("$destroy", handleDestroyedElement);
           removeRunner(element);
 
           applyAnimationClasses(element, options);
@@ -500,7 +507,7 @@ export function AnimationProvider() {
           if (tempClasses) {
             tempClasses
               .split(" ")
-              .forEach((cls) => element[0].classList.remove(cls));
+              .forEach((cls) => element.classList.remove(cls));
           }
 
           runner.complete(!rejected);

@@ -8,11 +8,12 @@ import {
   unnestR,
   arrayTuples,
   defaults,
-} from "../../shared/common";
-import { propEq } from "../../shared/hof";
+} from "../../shared/common.js";
+import { propEq } from "../../shared/hof.js";
 import { isDefined, isString } from "../../shared/utils.js";
-import { Param, DefType } from "../params/param";
-import { joinNeighborsR, splitOnDelim } from "../../shared/strings";
+import { Param, DefType } from "../params/param.js";
+import { joinNeighborsR, splitOnDelim } from "../../shared/strings.js";
+
 function quoteRegExp(str, param) {
   let surroundPattern = ["", ""];
   let result = str.replace(/[\\[\]^$*+?.()|{}]/g, "\\$&");
@@ -182,7 +183,7 @@ export class UrlMatcher {
    * @param config  A [[UrlMatcherCompileConfig]] configuration object
    */
   constructor(pattern, paramTypes, paramFactory, config) {
-    this._cache = { path: [this] };
+    this._cache = { path: [/** @type {UrlMatcher} */ (this)] };
 
     this._children = [];
 

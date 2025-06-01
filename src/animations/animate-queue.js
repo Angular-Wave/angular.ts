@@ -1,4 +1,4 @@
-import { getOrSetCacheData, JQLite } from "../shared/jqlite/jqlite.js";
+import { getOrSetCacheData, setCacheData } from "../shared/dom.js";
 import {
   isUndefined,
   isObject,
@@ -15,11 +15,10 @@ import {
   assertArg,
   clearGeneratedClasses,
   extractElementNode,
-  getDomNode,
   mergeAnimationDetails,
   prepareAnimationOptions,
   stripCommentsFromElement,
-} from "./shared";
+} from "./shared.js";
 
 const NG_ANIMATE_ATTR_NAME = "data-ng-animate";
 const NG_ANIMATE_PIN_DATA = "$ngAnimatePin";
@@ -150,7 +149,7 @@ export function AnimateQueueProvider($animateProvider) {
     "$templateRequest",
     /**
      *
-     * @param {import('../core/scope/scope').Scope} $rootScope
+     * @param {import('../core/scope/scope.js').Scope} $rootScope
      * @param {*} $injector
      * @param {*} $$animation
      * @param {*} $$AnimateRunner
@@ -182,7 +181,7 @@ export function AnimateQueueProvider($animateProvider) {
           if (postDigestCalled) {
             fn();
           } else {
-            $rootScope.$$postDigest(() => {
+            $rootScope.$postUpdate(() => {
               postDigestCalled = true;
               fn();
             });
@@ -194,30 +193,32 @@ export function AnimateQueueProvider($animateProvider) {
       // compiled. The $templateRequest.totalPendingRequests variable keeps track of
       // all of the remote templates being currently downloaded. If there are no
       // templates currently downloading then the watcher will still fire anyway.
-      $rootScope["$templateRequest"] = $templateRequest;
+      $rootScope["templateRequest"] = $templateRequest;
       const deregisterWatch = $rootScope.$watch(
         "$templateRequest.totalPendingRequests",
         (val) => {
-          if (val !== 0) return;
-          deregisterWatch();
-          $rootScope["$templateRequest"] = undefined;
-          // Now that all templates have been downloaded, $animate will wait until
-          // the post digest queue is empty before enabling animations. By having two
-          // calls to $postDigest calls we can ensure that the flag is enabled at the
-          // very end of the post digest queue. Since all of the animations in $animate
-          // use $postDigest, it's important that the code below executes at the end.
-          // This basically means that the page is fully downloaded and compiled before
-          // any animations are triggered.
-          $rootScope.$$postDigest(() => {
-            $rootScope.$$postDigest(() => {
-              // we check for null directly in the event that the application already called
-              // .enabled() with whatever arguments that it provided it with
-              if (animationsEnabled === null) {
-                animationsEnabled = true;
-              }
+          if (val === 0) {
+            deregisterWatch();
+            $rootScope["$templateRequest"] = undefined;
+            // Now that all templates have been downloaded, $animate will wait until
+            // the post digest queue is empty before enabling animations. By having two
+            // calls to $postDigest calls we can ensure that the flag is enabled at the
+            // very end of the post digest queue. Since all of the animations in $animate
+            // use $postDigest, it's important that the code below executes at the end.
+            // This basically means that the page is fully downloaded and compiled before
+            // any animations are triggered.
+            $rootScope.$postUpdate(() => {
+              $rootScope.$postUpdate(() => {
+                // we check for null directly in the event that the application already called
+                // .enabled() with whatever arguments that it provided it with
+                if (animationsEnabled === null) {
+                  animationsEnabled = true;
+                }
+              });
             });
-          });
+          }
         },
+        true,
       );
 
       const callbackRegistry = Object.create(null);
@@ -302,7 +303,7 @@ export function AnimateQueueProvider($animateProvider) {
           });
 
           // Remove the callback when the element is removed from the DOM
-          JQLite(container).on("$destroy", () => {
+          container.addEventListener("$destroy", () => {
             const animationDetails = activeAnimationsLookup.get(node);
 
             if (!animationDetails) {
@@ -343,7 +344,7 @@ export function AnimateQueueProvider($animateProvider) {
             "parentElement",
             "not an element",
           );
-          element.data(NG_ANIMATE_PIN_DATA, parentElement);
+          setCacheData(element, NG_ANIMATE_PIN_DATA, parentElement);
         },
 
         push(element, event, options, domOperation) {
@@ -370,7 +371,7 @@ export function AnimateQueueProvider($animateProvider) {
               // (bool) - Global setter
               bool = animationsEnabled = !!element;
             } else {
-              const node = getDomNode(element);
+              const node = element;
 
               if (argCount === 1) {
                 // (element) - Element getter
@@ -380,7 +381,7 @@ export function AnimateQueueProvider($animateProvider) {
                 if (!disabledElementsLookup.has(node)) {
                   // The element is added to the map for the first time.
                   // Create a listener to remove it on `$destroy` (to avoid memory leak).
-                  JQLite(element).on(
+                  element.addEventListener(
                     "$destroy",
                     removeFromDisabledElementsLookup,
                   );
@@ -396,14 +397,24 @@ export function AnimateQueueProvider($animateProvider) {
 
       return $animate;
 
+      /**
+       * @param {Element} originalElement
+       * @param {string} event
+       * @param {*} initialOptions
+       * @returns void
+       */
       function queueAnimation(originalElement, event, initialOptions) {
         // we always make a copy of the options since
         // there should never be any side effects on
         // the input data when running `$animateCss`.
         let options = initialOptions;
 
-        let element = stripCommentsFromElement(originalElement);
-        const node = getDomNode(element);
+        // strip comments
+
+        let element = Array.isArray(originalElement)
+          ? originalElement.filter((x) => x.nodeName !== "#comment")[0]
+          : originalElement;
+        const node = element;
         const parentNode = node && node.parentNode;
 
         options = prepareAnimationOptions(options);
@@ -438,12 +449,11 @@ export function AnimateQueueProvider($animateProvider) {
         if (options.to && !isObject(options.to)) {
           options.to = null;
         }
-
         // If animations are hard-disabled for the whole application there is no need to continue.
         // There are also situations where a directive issues an animation for a JQLite wrapper that
         // contains only comment nodes. In this case, there is no way we can perform an animation.
         if (
-          !animationsEnabled ||
+          // !animationsEnabled ||
           !node ||
           !isAnimatableByFilter(node, event, initialOptions) ||
           !isAnimatableClassName(node, options)
@@ -463,7 +473,6 @@ export function AnimateQueueProvider($animateProvider) {
         const existingAnimation =
           (!skipAnimations && activeAnimationsLookup.get(node)) || {};
         const hasExistingAnimation = !!existingAnimation.state;
-
         // there is no point in traversing the same collection of parent ancestors if a followup
         // animation will be run on the same element that already did all that checking work
         if (
@@ -596,8 +605,7 @@ export function AnimateQueueProvider($animateProvider) {
         newAnimation.counter = counter;
 
         markElementAnimationState(node, PRE_DIGEST_STATE, newAnimation);
-
-        $rootScope.$$postDigest(() => {
+        $rootScope.$postUpdate(() => {
           // It is possible that the DOM nodes inside `originalElement` have been replaced. This can
           // happen if the animated element is a transcluded clone and also has a `templateUrl`
           // directive on it. Therefore, we must recreate `element` in order to interact with the
@@ -614,12 +622,12 @@ export function AnimateQueueProvider($animateProvider) {
           // if addClass/removeClass is called before something like enter then the
           // registered parent element may not be present. The code below will ensure
           // that a final value for parent element is obtained
-          const parentElement = element.parent() || [];
+          const parentElement = element.parentElement || [];
 
           // animate/structural/class-based animations all have requirements. Otherwise there
           // is no point in performing an animation. The parent node must also be set.
           const isValidAnimation =
-            parentElement.length > 0 &&
+            parentElement &&
             (animationDetails.event === "animate" ||
               animationDetails.structural ||
               hasAnimationClasses(animationDetails));
@@ -747,7 +755,7 @@ export function AnimateQueueProvider($animateProvider) {
        */
       function areAnimationsAllowed(node, parentNode) {
         const bodyNode = document.body;
-        const rootNode = getDomNode($injector.get("$rootElement"));
+        const rootNode = $injector.get("$rootElement");
 
         let bodyNodeDetected = node === bodyNode || node.nodeName === "HTML";
         let rootNodeDetected = node === rootNode;
@@ -757,7 +765,7 @@ export function AnimateQueueProvider($animateProvider) {
 
         let parentHost = getOrSetCacheData(node, NG_ANIMATE_PIN_DATA);
         if (parentHost) {
-          parentNode = getDomNode(parentHost);
+          parentNode = parentHost;
         }
 
         while (parentNode) {
@@ -821,7 +829,7 @@ export function AnimateQueueProvider($animateProvider) {
             parentHost = getOrSetCacheData(parentNode, NG_ANIMATE_PIN_DATA);
             if (parentHost) {
               // The pin target element becomes the next parent element
-              parentNode = getDomNode(parentHost);
+              parentNode = parentHost;
               continue;
             }
           }

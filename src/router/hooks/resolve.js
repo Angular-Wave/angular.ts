@@ -1,5 +1,6 @@
-import { ResolveContext } from "../resolve/resolve-context";
-import { val } from "../../shared/hof";
+import { ResolveContext } from "../resolve/resolve-context.js";
+import { val } from "../../shared/hof.js";
+
 export const RESOLVE_HOOK_PRIORITY = 1000;
 /**
  * A [[TransitionHookFn]] which resolves all EAGER Resolvables in the To Path

@@ -1,5 +1,19 @@
 import { PREFIX_REGEXP, SPECIAL_CHARS_REGEXP } from "./constants.js";
 
+export const isProxySymbol = Symbol("isProxy");
+
+/**
+ *
+ * @param {*} value
+ * @returns {boolean}
+ */
+export function isProxy(value) {
+  if (value && value[isProxySymbol]) {
+    return true;
+  }
+  return false;
+}
+
 const ngMinErr = minErr("ng");
 
 /**
@@ -8,13 +22,6 @@ const ngMinErr = minErr("ng");
 let uid = 0;
 
 /**
- * A consistent way of creating unique IDs in angular.
- *
- * Using simple numbers allows us to generate 28.6 million unique ids per second for 10 years before
- * we hit number precision issues in JavaScript.
- *
- * Math.pow(2,53) / 60 / 60 / 24 / 365 / 10 = 28.6M
- *
  * @returns {number} an unique alpha-numeric string
  */
 export function nextUid() {
@@ -119,6 +126,26 @@ export function isBlankObject(value) {
  */
 export function isString(value) {
   return typeof value === "string";
+}
+
+/**
+ * Determines if a reference is a null.
+ *
+ * @param {*} value Reference to check.
+ * @returns {boolean} True if `value` is a null.
+ */
+export function isNull(value) {
+  return value === null;
+}
+
+/**
+ * Determines if a reference is null or undefined.
+ *
+ * @param {*} obj Reference to check.
+ * @returns {boolean} True if `value` is null or undefined.
+ */
+export function isNullOrUndefined(obj) {
+  return obj === null || typeof obj === "undefined";
 }
 
 /**
@@ -408,16 +435,6 @@ export function inherit(parent, extra) {
   return extend(Object.create(parent), extra);
 }
 
-/**
- * @param {*} value
- * @returns {() => *}
- */
-export function valueFn(value) {
-  return function valueRef() {
-    return value;
-  };
-}
-
 export function hasCustomToString(obj) {
   return isFunction(obj.toString) && obj.toString !== toString;
 }
@@ -447,14 +464,11 @@ export function isElement(node) {
  *
  * [MDN Reference](https://developer.mozilla.org/docs/Web/API/Node/nodeName)
  *
- * @param {import('../shared/jqlite/jqlite').JQLite|Element} element
+ * @param {Element} element
  * @returns
  */
 export function getNodeName(element) {
-  return lowercase(
-    /** @type {Element} */ (element).nodeName ||
-      (element[0] && element[0].nodeName),
-  );
+  return lowercase(element.nodeName);
 }
 
 export function includes(array, obj) {
@@ -1014,6 +1028,11 @@ const minErrConfig = {
 };
 
 /**
+ * Configure several aspects of error handling if used as a setter or return the
+ * current configuration if used as a getter.
+ *
+ * Omitted or undefined options will leave the corresponding configuration values unchanged.
+ *
  * @param {ErrorHandlingConfig} [config]
  * @returns {ErrorHandlingConfig}
  */
@@ -1111,7 +1130,7 @@ export function toDebugString(obj) {
   }
   if (typeof obj !== "string") {
     const seen = [];
-    let copyObj = structuredClone(obj);
+    let copyObj = structuredClone(isProxy(obj) ? obj.$target : obj);
     return JSON.stringify(copyObj, (key, val) => {
       const replace = toJsonReplacer(key, val);
       if (isObject(replace)) {
@@ -1153,6 +1172,10 @@ export function hashKey(obj) {
     return obj.$$hashKey;
   }
 
+  if (objType === "undefined") {
+    return `${objType}:${nextUid()}`;
+  }
+  // account for primitives
   return `${objType}:${obj}`;
 }
 
@@ -1189,7 +1212,6 @@ export function hasAnimate(node) {
 }
 
 /**
- * @ignore
  * @param {Node} node
  * @param {string} attr
  * @returns {boolean}
@@ -1200,4 +1222,31 @@ function hasCustomOrDataAttribute(node, attr) {
   return (
     element.dataset[attr] === "true" || element.getAttribute(attr) === "true"
   );
+}
+
+/**
+ * @param {Object|null|undefined} obj
+ * @returns {boolean}
+ */
+export function isObjectEmpty(obj) {
+  if (!obj) return true;
+  return !Object.keys(obj).length;
+}
+
+/**
+ * Replaces the attributes and child elements of an existing element (`replacedElem`)
+ * with those of a new element (`newElem`), while keeping the original reference.
+ *
+ * @param {HTMLElement} replacedElem - The element to be replaced (its content and attributes will be updated).
+ * @param {HTMLElement} newElem - The element providing the new attributes and content.
+ */
+export function replaceInline(replacedElem, newElem) {
+  for (const attr of Array.from(newElem.attributes)) {
+    replacedElem.setAttribute(attr.name, attr.value);
+  }
+  replacedElem.innerHTML = "";
+
+  for (const child of Array.from(newElem.childNodes)) {
+    replacedElem.appendChild(child.cloneNode(true));
+  }
 }

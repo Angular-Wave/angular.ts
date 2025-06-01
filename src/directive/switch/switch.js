@@ -1,6 +1,5 @@
-import { getBlockNodes } from "../../shared/jqlite/jqlite.js";
+import { domInsert, getBlockNodes } from "../../shared/dom.js";
 import { hasAnimate } from "../../shared/utils.js";
-import { domInsert } from "../../animations/animate.js";
 
 ngSwitchDirective.$inject = ["$animate"];
 
@@ -46,7 +45,7 @@ export function ngSwitchDirective($animate) {
           const selected = getBlockNodes(selectedElements[i].clone);
           selectedScopes[i].$destroy();
 
-          if (hasAnimate(selected[0])) {
+          if (hasAnimate(selected)) {
             const runner = (previousLeaveAnimations[i] =
               $animate.leave(selected));
             runner.done(spliceFactory(previousLeaveAnimations, i));
@@ -68,13 +67,15 @@ export function ngSwitchDirective($animate) {
               selectedScopes.push(selectedScope);
               const anchor = selectedTransclude.element;
               // TODO removing this breaks repeater test
-              caseElement[caseElement.length++] = document.createComment("");
-              const block = { clone: caseElement };
+              const block = {
+                clone: caseElement,
+                comment: document.createComment(""),
+              };
               selectedElements.push(block);
-              if (hasAnimate(caseElement[0])) {
-                $animate.enter(caseElement, anchor.parent(), anchor);
+              if (hasAnimate(caseElement)) {
+                $animate.enter(caseElement, anchor.parentElement, anchor);
               } else {
-                domInsert(caseElement, anchor.parent(), anchor);
+                domInsert(caseElement, anchor.parentElement, anchor);
               }
             });
           });
@@ -90,6 +91,7 @@ export function ngSwitchDirective($animate) {
 export function ngSwitchWhenDirective() {
   return {
     transclude: "element",
+    terminal: true,
     priority: 1200,
     restrict: "EA",
     require: "^ngSwitch",
@@ -120,6 +122,7 @@ export function ngSwitchDefaultDirective() {
   return {
     restrict: "EA",
     transclude: "element",
+    terminal: true,
     priority: 1200,
     require: "^ngSwitch",
     link(_scope, element, _attr, ctrl, $transclude) {

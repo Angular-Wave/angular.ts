@@ -1,4 +1,4 @@
-import { isDefined, isFunction } from "../../shared/utils.js";
+import { isFunction, isProxy } from "../../shared/utils.js";
 import { PURITY_RELATIVE } from "./interpreter.js";
 import { Lexer } from "./lexer/lexer.js";
 import { Parser } from "./parser/parser.js";
@@ -9,14 +9,24 @@ import { Parser } from "./parser/parser.js";
  * @property {boolean} constant - Indicates if the expression is constant.
  * @property {boolean} [isPure]
  * @property {boolean} oneTime
- * @property {function(import('../scope/scope').Scope, import('../scope/scope').WatchListener, boolean, CompiledExpression, string | ((scope:  import('../scope/scope').Scope) => any) | CompiledExpression): any} [$$watchDelegate]
+ * @property {import("./interpreter.js").DecoratedASTNode} decoratedNode
+ * @property {function(import('../scope/scope.js').Scope, Function, boolean, CompiledExpression, string | ((scope:  import('../scope/scope.js').Scope) => any) | CompiledExpression): any} [$$watchDelegate]
  * @property {any[]|Function} inputs
  * @property {function(any, any): any} [assign] - Assigns a value to a context. If value is not provided,
  */
 
 /**
+ * @typedef {Object} CompiledExpressionHandlerMap
+ * @property {boolean} literal - Indicates if the expression is a literal.
+ * @property {boolean} constant - Indicates if the expression is constant.
+ * @property {boolean} [isPure]
+ * @property {boolean} oneTime
+ * @property {Map<string, Function>} keyMap - property keys to observe
+ */
+
+/**
  * @typedef {Function} CompiledExpressionFunction
- * @param {import('../scope/scope').Scope} context - An object against which any expressions embedded in the strings are evaluated against (typically a scope object).
+ * @param {import('../scope/scope.js').Scope} context - An object against which any expressions embedded in the strings are evaluated against (typically a scope object).
  * @param {object} [locals] - local variables context object, useful for overriding values in `context`.
  * @param {any} [assign]
  * @returns {any}
@@ -30,7 +40,7 @@ import { Parser } from "./parser/parser.js";
  */
 
 /**
- * @typedef {function(CompiledExpression|string|function(import('../scope/scope').Scope):any, function(any, import('../scope/scope').Scope, any):any=, boolean=): CompiledExpression} ParseService
+ * @typedef {function(CompiledExpression|string|function(import('../scope/scope.js').Scope):any, function(any, import('../scope/scope.js').Scope, any):any=, boolean=): CompiledExpression} ParseService
  */
 
 export function ParseProvider() {
@@ -83,6 +93,11 @@ export function ParseProvider() {
       };
       return $parse;
 
+      /**
+       * @param {string} exp
+       * @param interceptorFn
+       * @returns {*|((function(import('../scope/scope.js').Scope, Object=, *=): *)&{literal: boolean, constant: boolean, isPure?: boolean, oneTime: boolean, decoratedNode: import("./interpreter.js").DecoratedASTNode, $$watchDelegate?: (function(import('../scope/scope.js').Scope, Function, boolean, CompiledExpression, (string|(function(import('../scope/scope.js').Scope): *)|CompiledExpression)): *), inputs: (*[]|Function), assign?: (function(*, *): *)})}
+       */
       function $parse(exp, interceptorFn) {
         var parsedExpression, cacheKey;
 
@@ -110,6 +125,11 @@ export function ParseProvider() {
         }
       }
 
+      /**
+       * @param {Function} parsedExpression
+       * @param interceptorFn
+       * @returns {CompiledExpression|*}
+       */
       function addInterceptor(parsedExpression, interceptorFn) {
         if (!interceptorFn) return parsedExpression;
 
@@ -123,14 +143,24 @@ export function ParseProvider() {
           parsedExpression = parsedExpression.$$intercepted;
         }
 
-        var useInputs = false;
+        let useInputs = false;
 
-        var fn = function interceptedExpression(scope, locals, assign, inputs) {
-          var value =
+        const fn = function interceptedExpression(
+          scope,
+          locals,
+          assign,
+          inputs,
+        ) {
+          const value =
             useInputs && inputs
               ? inputs[0]
               : parsedExpression(scope, locals, assign, inputs);
-          return interceptorFn(value);
+          // Do not invoke for getters
+          if (scope?.getter) {
+            return;
+          }
+          const res = isFunction(value) ? value() : value;
+          return interceptorFn(isProxy(res) ? res.$target : res);
         };
 
         // Maintain references to the interceptor/intercepted
@@ -141,6 +171,7 @@ export function ParseProvider() {
         fn.literal = parsedExpression.literal;
         fn.oneTime = parsedExpression.oneTime;
         fn.constant = parsedExpression.constant;
+        fn.decoratedNode = parsedExpression.decoratedNode;
 
         // Treat the interceptor like filters.
         // If it is not $stateful then only watch its inputs.
@@ -196,8 +227,6 @@ export function constantWatchDelegate(
 function addWatchDelegate(parsedExpression) {
   if (parsedExpression.constant) {
     parsedExpression.$$watchDelegate = constantWatchDelegate;
-  } else if (parsedExpression.oneTime) {
-    parsedExpression.$$watchDelegate = oneTimeWatchDelegate;
   } else if (parsedExpression.inputs) {
     parsedExpression.$$watchDelegate = inputsWatchDelegate;
   }
@@ -207,8 +236,8 @@ function addWatchDelegate(parsedExpression) {
 
 /**
  *
- * @param {import('../scope/scope').Scope} scope
- * @param {import('../scope/scope').WatchListener} listener
+ * @param {import('../scope/scope.js').Scope} scope
+ * @param {Function} listener
  * @param {*} objectEquality
  * @param {CompiledExpression} parsedExpression
  * @returns
@@ -226,7 +255,6 @@ function inputsWatchDelegate(
     let oldInputValueOf = expressionInputDirtyCheck; // init to something unique so that equals check fails
 
     let inputExpression = inputExpressions[0];
-
     return scope.$watch(
       ($scope) => {
         const newInputValue = inputExpression($scope);
@@ -254,7 +282,6 @@ function inputsWatchDelegate(
       oldInputValueOfValues[i] = expressionInputDirtyCheck; // init to something unique so that equals check fails
       oldInputValues[i] = null;
     }
-
     return scope.$watch(
       (scope) => {
         let changed = false;
@@ -290,52 +317,6 @@ function inputsWatchDelegate(
       objectEquality,
     );
   }
-}
-
-function oneTimeWatchDelegate(
-  scope,
-  listener,
-  objectEquality,
-  parsedExpression,
-) {
-  const isDone = parsedExpression.literal ? isAllDefined : isDefined;
-
-  let unwatch;
-  let lastValue;
-
-  const exp = parsedExpression.$$intercepted || parsedExpression;
-  const post = parsedExpression.$$interceptor || ((x) => x);
-
-  const useInputs = parsedExpression.inputs && !exp.inputs;
-
-  // Propagate the literal/inputs/constant attributes
-  // ... but not oneTime since we are handling it
-  oneTimeWatch.literal = parsedExpression.literal;
-  oneTimeWatch.constant = parsedExpression.constant;
-  oneTimeWatch.inputs = parsedExpression.inputs;
-  oneTimeWatch.oneTime = undefined;
-
-  // Allow other delegates to run on this wrapped expression
-  addWatchDelegate(oneTimeWatch);
-
-  function unwatchIfDone() {
-    if (isDone(lastValue)) {
-      unwatch();
-    }
-  }
-
-  function oneTimeWatch(scope, locals, assign, inputs) {
-    lastValue =
-      useInputs && inputs ? inputs[0] : exp(scope, locals, assign, inputs);
-    if (isDone(lastValue)) {
-      scope.$$postDigest(unwatchIfDone);
-    }
-    return post(lastValue);
-  }
-
-  unwatch = scope.$watch(oneTimeWatch, listener, objectEquality);
-
-  return unwatch;
 }
 
 function chainInterceptors(first, second) {
@@ -378,14 +359,6 @@ function expressionInputDirtyCheck(
     newValue === oldValueOfValue ||
     (newValue !== newValue && oldValueOfValue !== oldValueOfValue)
   );
-}
-
-function isAllDefined(value) {
-  let allDefined = true;
-  Object.values(value).forEach((val) => {
-    if (!isDefined(val)) allDefined = false;
-  });
-  return allDefined;
 }
 
 function getValueOf(value) {

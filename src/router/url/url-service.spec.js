@@ -1,6 +1,6 @@
-import { dealoc } from "../../shared/jqlite/jqlite.js";
-import { Angular } from "../../loader";
-import { map, find } from "../../shared/common";
+import { dealoc } from "../../shared/dom.js";
+import { Angular } from "../../loader.js";
+import { map, find } from "../../shared/common.js";
 
 describe("UrlMatcher", () => {
   let $url;
@@ -8,10 +8,10 @@ describe("UrlMatcher", () => {
   let $location;
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular.module("defaultModule", []);
-    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
 
@@ -568,7 +568,7 @@ describe("UrlMatcher", () => {
       expect(values).toEqual(expected);
     });
 
-    it("should not be wrapped by ui-router into an array if array: false", () => {
+    it("should not be wrapped by ng-router into an array if array: false", () => {
       const m = $url.compile("/foo?param1", {
         state: { params: { param1: { array: false } } },
       });

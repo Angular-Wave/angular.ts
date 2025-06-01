@@ -36,7 +36,7 @@ export const URL_REGEXP =
 
 export const EMAIL_REGEXP =
   /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
-const NUMBER_REGEXP = /^\s*(-|\+)?(\d+|(\d*(\.\d*)))([eE][+-]?\d+)?\s*$/;
+const NUMBER_REGEXP = /^\s*([-+])?(\d+|(\d*(\.\d*)))([eE][+-]?\d+)?\s*$/;
 const DATE_REGEXP = /^(\d{4,})-(\d{2})-(\d{2})$/;
 const DATETIMELOCAL_REGEXP =
   /^(\d{4,})-(\d\d)-(\d\d)T(\d\d):(\d\d)(?::(\d\d)(\.\d{1,3})?)?$/;
@@ -106,22 +106,22 @@ function stringBasedInputType(ctrl) {
   );
 }
 
-function textInputType(scope, element, attr, ctrl, $browser) {
-  baseInputType(scope, element, attr, ctrl, $browser);
+function textInputType(scope, element, attr, ctrl) {
+  baseInputType(scope, element, attr, ctrl);
   stringBasedInputType(ctrl);
 }
 
-function baseInputType(scope, element, attr, ctrl, $browser) {
-  const type = element[0].type.toLowerCase();
+function baseInputType(scope, element, attr, ctrl) {
+  const type = element.type.toLowerCase();
   let composing = false;
   // In composition mode, users are still inputting intermediate text buffer,
   // hold the listener until composition is done.
   // More about composition events: https://developer.mozilla.org/en-US/docs/Web/API/CompositionEvent
-  element.on("compositionstart", () => {
+  element.addEventListener("compositionstart", () => {
     composing = true;
   });
 
-  element.on("compositionend", () => {
+  element.addEventListener("compositionend", () => {
     composing = false;
     listener();
   });
@@ -130,11 +130,11 @@ function baseInputType(scope, element, attr, ctrl, $browser) {
 
   let listener = function (ev) {
     if (timeout) {
-      $browser.cancel(timeout);
+      clearTimeout(timeout);
       timeout = null;
     }
     if (composing) return;
-    let value = element.val();
+    let value = element.value;
     const event = ev && ev.type;
 
     // By default we will trim the value
@@ -151,12 +151,12 @@ function baseInputType(scope, element, attr, ctrl, $browser) {
       ctrl.$viewValue !== value ||
       (value === "" && ctrl.$$hasNativeValidators)
     ) {
-      ctrl.$setViewValue(value, event);
+      ctrl.$target.$setViewValue(value, event);
     }
   };
 
   ["input", "change", "paste", "drop", "cut"].forEach((event) => {
-    element.on(event, listener);
+    element.addEventListener(event, listener);
   });
 
   // Some native input types (date-family) have the ability to change validity without
@@ -168,12 +168,12 @@ function baseInputType(scope, element, attr, ctrl, $browser) {
     ctrl.$$hasNativeValidators &&
     type === attr.type
   ) {
-    element.on(PARTIAL_VALIDATION_EVENTS, function (ev) {
+    element.addEventListener(PARTIAL_VALIDATION_EVENTS, function (ev) {
       if (!timeout) {
         const validity = this[VALIDITY_STATE_PROPERTY];
         const origBadInput = validity.badInput;
         const origTypeMismatch = validity.typeMismatch;
-        timeout = $browser.defer(() => {
+        timeout = setTimeout(() => {
           timeout = null;
           if (
             validity.badInput !== origBadInput ||
@@ -189,8 +189,8 @@ function baseInputType(scope, element, attr, ctrl, $browser) {
   ctrl.$render = function () {
     // Workaround for Firefox validation #12102.
     const value = ctrl.$isEmpty(ctrl.$viewValue) ? "" : ctrl.$viewValue;
-    if (element.val() !== value) {
-      element.val(value);
+    if (element.value !== value) {
+      element.value = value;
     }
   };
 }
@@ -327,7 +327,7 @@ export function createDateInputType(type, regexp, parseDate) {
     $parse,
   ) {
     badInputChecker(scope, element, attr, ctrl, type);
-    baseInputType(scope, element, attr, ctrl, $browser);
+    baseInputType(scope, element, attr, ctrl);
     let previousDate;
     let previousTimezone;
 
@@ -498,14 +498,14 @@ export function createDateInputType(type, regexp, parseDate) {
 }
 
 export function badInputChecker(scope, element, attr, ctrl, parserName) {
-  const node = element[0];
+  const node = element;
   const nativeValidation = (ctrl.$$hasNativeValidators = isObject(
     node.validity,
   ));
 
   if (nativeValidation) {
     ctrl.$parsers.push((value) => {
-      const validity = element[0][VALIDITY_STATE_PROPERTY] || {};
+      const validity = element[VALIDITY_STATE_PROPERTY] || {};
       if (validity.badInput || validity.typeMismatch) {
         ctrl.$$parserName = parserName;
         return undefined;
@@ -616,7 +616,7 @@ export function numberInputType(
 ) {
   badInputChecker(scope, element, attr, ctrl, "number");
   numberFormatterParser(ctrl);
-  baseInputType(scope, element, attr, ctrl, $browser);
+  baseInputType(scope, element, attr, ctrl);
 
   let parsedMinVal;
 
@@ -687,17 +687,16 @@ export function numberInputType(
   }
 }
 
-export function rangeInputType(scope, element, attr, ctrl, $browser) {
+export function rangeInputType(scope, element, attr, ctrl) {
   badInputChecker(scope, element, attr, ctrl, "range");
   numberFormatterParser(ctrl);
-  baseInputType(scope, element, attr, ctrl, $browser);
+  baseInputType(scope, element, attr, ctrl);
 
-  const supportsRange =
-    ctrl.$$hasNativeValidators && element[0].type === "range";
+  const supportsRange = ctrl.$$hasNativeValidators && element.type === "range";
   let minVal = supportsRange ? 0 : undefined;
   let maxVal = supportsRange ? 100 : undefined;
   let stepVal = supportsRange ? 1 : undefined;
-  const { validity } = element[0];
+  const { validity } = element;
   const hasMinAttr = isDefined(attr.min);
   const hasMaxAttr = isDefined(attr.max);
   const hasStepAttr = isDefined(attr.step);
@@ -712,7 +711,7 @@ export function rangeInputType(scope, element, attr, ctrl, $browser) {
         // $render would cause the min / max validators to be applied with the wrong value
         function rangeRender() {
           originalRender();
-          ctrl.$setViewValue(element.val());
+          ctrl.$setViewValue(element.value);
         }
       : originalRender;
 
@@ -782,7 +781,7 @@ export function rangeInputType(scope, element, attr, ctrl, $browser) {
     // interpolated attributes set the attribute value only after a digest, but we need the
     // attribute value when the input is first rendered, so that the browser can adjust the
     // input value based on the min/max value
-    element.attr(htmlAttrName, attr[htmlAttrName]);
+    element.setAttribute(htmlAttrName, attr[htmlAttrName]);
     let oldVal = attr[htmlAttrName];
     attr.$observe(htmlAttrName, (val) => {
       if (val !== oldVal) {
@@ -800,11 +799,11 @@ export function rangeInputType(scope, element, attr, ctrl, $browser) {
     }
 
     if (supportsRange) {
-      let elVal = element.val();
+      let elVal = element.value;
       // IE11 doesn't set the el val correctly if the minVal is greater than the element value
       if (minVal > elVal) {
         elVal = minVal;
-        element.val(elVal);
+        element.value = elVal;
       }
       ctrl.$setViewValue(elVal);
     } else {
@@ -821,10 +820,10 @@ export function rangeInputType(scope, element, attr, ctrl, $browser) {
     }
 
     if (supportsRange) {
-      let elVal = element.val();
+      let elVal = element.value;
       // IE11 doesn't set the el val correctly if the maxVal is less than the element value
       if (maxVal < elVal) {
-        element.val(maxVal);
+        element.value = maxVal;
         // IE11 and Chrome don't set the value to the minVal when max < min
         elVal = maxVal < minVal ? minVal : maxVal;
       }
@@ -846,16 +845,16 @@ export function rangeInputType(scope, element, attr, ctrl, $browser) {
     if (!supportsRange) {
       // TODO(matsko): implement validateLater to reduce number of validations
       ctrl.$validate();
-    } else if (ctrl.$viewValue !== element.val()) {
-      ctrl.$setViewValue(element.val());
+    } else if (ctrl.$viewValue !== element.value) {
+      ctrl.$setViewValue(element.value);
     }
   }
 }
 
-function urlInputType(scope, element, attr, ctrl, $browser) {
+function urlInputType(scope, element, attr, ctrl) {
   // Note: no badInputChecker here by purpose as `url` is only a validation
   // in browsers, i.e. we can always read out input.value even if it is not valid!
-  baseInputType(scope, element, attr, ctrl, $browser);
+  baseInputType(scope, element, attr, ctrl);
   stringBasedInputType(ctrl);
 
   ctrl.$validators.url = function (modelValue, viewValue) {
@@ -864,10 +863,10 @@ function urlInputType(scope, element, attr, ctrl, $browser) {
   };
 }
 
-function emailInputType(scope, element, attr, ctrl, $browser) {
+function emailInputType(scope, element, attr, ctrl) {
   // Note: no badInputChecker here by purpose as `url` is only a validation
   // in browsers, i.e. we can always read out input.value even if it is not valid!
-  baseInputType(scope, element, attr, ctrl, $browser);
+  baseInputType(scope, element, attr, ctrl);
   stringBasedInputType(ctrl);
 
   ctrl.$validators.email = function (modelValue, viewValue) {
@@ -880,12 +879,12 @@ function radioInputType(scope, element, attr, ctrl) {
   const doTrim = !attr.ngTrim || trim(attr.ngTrim) !== "false";
   // make the name unique, if not defined
   if (isUndefined(attr.name)) {
-    element.attr("name", nextUid());
+    element.setAttribute("name", nextUid());
   }
 
   const listener = function (ev) {
     let value;
-    if (element[0].checked) {
+    if (element.checked) {
       value = attr.value;
       if (doTrim) {
         value = trim(value);
@@ -894,14 +893,14 @@ function radioInputType(scope, element, attr, ctrl) {
     }
   };
 
-  element.on("change", listener);
+  element.addEventListener("change", listener);
 
   ctrl.$render = function () {
     let { value } = attr;
     if (doTrim) {
       value = trim(value);
     }
-    element[0].checked = value === ctrl.$viewValue;
+    element.checked = value === ctrl.$viewValue;
   };
 
   attr.$observe("value", ctrl.$render);
@@ -949,13 +948,13 @@ function checkboxInputType(
   );
 
   const listener = function (ev) {
-    ctrl.$setViewValue(element[0].checked, ev && ev.type);
+    ctrl.$setViewValue(element.checked, ev && ev.type);
   };
 
-  element.on("change", listener);
+  element.addEventListener("change", listener);
 
   ctrl.$render = function () {
-    element[0].checked = ctrl.$viewValue;
+    element.checked = ctrl.$viewValue;
   };
 
   // Override the standard `$isEmpty` because the $viewValue of an empty checkbox is always set to `false`
@@ -971,7 +970,7 @@ function checkboxInputType(
 }
 
 /**
- * @returns {import('../../types').Directive}
+ * @returns {import('../../types.js').Directive}
  */
 inputDirective.$inject = ["$browser", "$filter", "$parse"];
 
@@ -1004,7 +1003,7 @@ export function inputDirective($browser, $filter, $parse) {
 }
 
 /**
- * @returns {import('../../types').Directive}
+ * @returns {import('../../types.js').Directive}
  */
 export function hiddenInputBrowserCacheDirective() {
   const valueProperty = {
@@ -1028,7 +1027,7 @@ export function hiddenInputBrowserCacheDirective() {
 
       return {
         pre(scope, element) {
-          const node = element[0];
+          const node = element;
 
           // Support: Edge
           // Moving the DOM around prevents autofillling
@@ -1050,7 +1049,7 @@ export function hiddenInputBrowserCacheDirective() {
 const CONSTANT_VALUE_REGEXP = /^(true|false|\d+)$/;
 
 /**
- * @returns {import('../../types').Directive}
+ * @returns {import('../../types.js').Directive}
  */
 export function ngValueDirective() {
   /**
@@ -1063,7 +1062,7 @@ export function ngValueDirective() {
     // Support: IE9 only
     // In IE9 values are converted to string (e.g. `input.value = null` results in `input.value === 'null'`).
     const propValue = isDefined(value) ? value : null;
-    element[0]["value"] = propValue;
+    element["value"] = propValue;
     attr.$set("value", value);
   }
 

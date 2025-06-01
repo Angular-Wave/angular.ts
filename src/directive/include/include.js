@@ -1,20 +1,17 @@
 import { isDefined } from "../../shared/utils.js";
-import { buildFragment } from "../../shared/jqlite/jqlite.js";
 import { hasAnimate } from "../../shared/utils.js";
-import { domInsert } from "../../animations/animate";
 
-export const ngIncludeDirective = [
-  "$templateRequest",
-  "$anchorScroll",
-  "$animate",
-  /**
-   *
-   * @param {*} $templateRequest
-   * @param {import("../../services/anchor-scroll").AnchorScrollFunction} $anchorScroll
-   * @param {*} $animate
-   * @returns
-   */
-  ($templateRequest, $anchorScroll, $animate) => ({
+ngIncludeDirective.$inject = ["$templateRequest", "$anchorScroll", "$animate"];
+
+/**
+ *
+ * @param {*} $templateRequest
+ * @param {import("../../services/anchor-scroll.js").AnchorScrollFunction} $anchorScroll
+ * @param {*} $animate
+ * @returns
+ */
+export function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
+  return {
     restrict: "EA",
     priority: 400,
     terminal: true,
@@ -49,7 +46,7 @@ export const ngIncludeDirective = [
             currentScope = null;
           }
           if (currentElement) {
-            if (hasAnimate(currentElement[0])) {
+            if (hasAnimate(currentElement)) {
               $animate.leave(currentElement).done((response) => {
                 if (response !== false) previousElement = null;
               });
@@ -62,7 +59,7 @@ export const ngIncludeDirective = [
           }
         };
 
-        scope.$watch(srcExp, (src) => {
+        scope.$watch(srcExp, async (src) => {
           const afterAnimation = function (response) {
             response !== false && maybeScroll();
           };
@@ -71,10 +68,9 @@ export const ngIncludeDirective = [
           if (src) {
             // set the 2nd param to true to ignore the template request error so that the inner
             // contents and scope can be cleaned up.
-            $templateRequest(src, true).then(
+            await $templateRequest(src, true).then(
               (response) => {
                 if (scope.$$destroyed) return;
-
                 if (thisChangeId !== changeCounter) return;
                 const newScope = scope.$new();
                 ctrl.template = response;
@@ -87,17 +83,16 @@ export const ngIncludeDirective = [
                 // directives to non existing elements.
                 const clone = $transclude(newScope, (clone) => {
                   cleanupLastIncludeContent();
-                  if (hasAnimate(clone[0])) {
+                  if (hasAnimate(clone)) {
                     $animate.enter(clone, null, $element).done(afterAnimation);
                   } else {
-                    domInsert(clone, null, $element);
+                    $element.after(clone);
                     maybeScroll();
                   }
                 });
 
                 currentScope = newScope;
                 currentElement = clone;
-
                 currentScope.$emit("$includeContentLoaded", src);
                 scope.$eval(onloadExp);
               },
@@ -118,38 +113,28 @@ export const ngIncludeDirective = [
         });
       };
     },
-  }),
-];
+  };
+}
 
 // This directive is called during the $transclude call of the first `ngInclude` directive.
 // It will replace and compile the content of the element with the loaded template.
 // We need this directive so that the element content is already filled when
 // the link function of another directive on the same element as ngInclude
 // is called.
-export const ngIncludeFillContentDirective = [
-  "$compile",
-  ($compile) => ({
+ngIncludeFillContentDirective.$inject = ["$compile"];
+
+/**
+ * @param {import("../../core/compile/compile.js").CompileFn} $compile
+ * @returns {import("../../types.js").Directive}
+ */
+export function ngIncludeFillContentDirective($compile) {
+  return {
     restrict: "EA",
     priority: -400,
     require: "ngInclude",
     link(scope, $element, _$attr, ctrl) {
-      if (toString.call($element[0]).match(/SVG/)) {
-        // WebKit: https://bugs.webkit.org/show_bug.cgi?id=135698 --- SVG elements do not
-        // support innerHTML, so detect this here and try to generate the contents
-        // specially.
-        $element.empty();
-        $compile(buildFragment(ctrl.template).childNodes)(
-          scope,
-          (clone) => {
-            $element.append(clone);
-          },
-          { futureParentElement: $element },
-        );
-        return;
-      }
-
-      $element.html(ctrl.template);
-      $compile($element[0].childNodes)(scope);
+      $element.innerHTML = ctrl["template"];
+      $compile($element.childNodes)(scope);
     },
-  }),
-];
+  };
+}

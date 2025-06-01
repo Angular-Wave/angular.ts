@@ -5,14 +5,18 @@ import {
   assertNotHasOwnProperty,
   errorHandlingConfig,
 } from "./shared/utils.js";
-import { JQLite } from "./shared/jqlite/jqlite.js";
-import { annotate, createInjector } from "./core/di/injector";
-import { NgModule } from "./core/di/ng-module";
+import {
+  getController,
+  getInjector,
+  getScope,
+  setCacheData,
+} from "./shared/dom.js";
+import { annotate, createInjector } from "./core/di/injector.js";
+import { NgModule } from "./core/di/ng-module.js";
 import { Cache } from "./core/cache/cache.js";
-import { publishExternalAPI } from "./public";
-import { VERSION } from "./public";
-import { services } from "./router/common/coreservices";
-import { unnestR } from "./shared/common";
+import { publishExternalAPI } from "./public.js";
+import { VERSION } from "./public.js";
+import { unnestR } from "./shared/common.js";
 import { EventBus } from "./core/pubsub/pubsub.js";
 
 const ngMinErr = minErr("ng");
@@ -30,7 +34,7 @@ const modules = {};
 
 export class Angular {
   constructor() {
-    Cache.clear(); // a ensure new instance of angular gets a clean Cache
+    Cache.clear(); // a ensure new instance of angular gets a clean cache
 
     /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
     this.Cache = Cache;
@@ -41,33 +45,22 @@ export class Angular {
     /** @type {string} */
     this.version = VERSION;
 
-    /** @type {typeof import('./shared/jqlite/jqlite').JQLite} */
-    this.element = JQLite;
-
     /** @type {!Array<string|any>} */
     this.bootsrappedModules = [];
+
+    this.getController = getController;
+    this.getInjector = getInjector;
+    this.getScope = getScope;
+    this.errorHandlingConfig = errorHandlingConfig;
 
     window["angular"] = this;
     publishExternalAPI(this);
   }
 
   /**
-   * Configure several aspects of error handling if used as a setter or return the
-   * current configuration if used as a getter.
-   *
-   * Omitted or undefined options will leave the corresponding configuration values unchanged.
-   *
-   * @param {import('./shared/utils').ErrorHandlingConfig} [config]
-   * @returns {import('./shared/utils').ErrorHandlingConfig}
-   */
-  errorHandlingConfig(config) {
-    return errorHandlingConfig(config);
-  }
-
-  /**
    * Use this function to manually start up AngularJS application.
    *
-   * AngularJS will detect if it has been loaded into the browser more than once and only allow the
+   * AngularTS will detect if it has been loaded into the browser more than once and only allow the
    * first loaded script to be bootstrapped and will report a warning to the browser console for
    * each of the subsequent scripts. This prevents strange results in applications, where otherwise
    * multiple instances of AngularJS try to work on the DOM.
@@ -117,9 +110,10 @@ export class Angular {
       strictDi: false,
     };
 
-    const jqLite = JQLite(element);
-
-    if (jqLite.injector()) {
+    if (
+      (element instanceof Element || element instanceof Document) &&
+      getInjector(/** @type {Element} */ (element))
+    ) {
       throw ngMinErr("btstrpd", "App already bootstrapped");
     }
 
@@ -130,7 +124,7 @@ export class Angular {
     this.bootsrappedModules.unshift([
       "$provide",
       ($provide) => {
-        $provide.value("$rootElement", jqLite);
+        $provide.value("$rootElement", element);
       },
     ]);
 
@@ -143,21 +137,20 @@ export class Angular {
       "$compile",
       "$injector",
       /**
-       * @param {import('./core/scope/scope').Scope} scope
-       * @param {JQLite} el
+       * @param {import('./core/scope/scope.js').Scope} scope
+       * @param {Element} el
        * @param {*} compile
        * @param {import("./core/di/internal-injector.js").InjectorService} $injector
        */
-      function (scope, el, compile, $injector) {
+      (scope, el, compile, $injector) => {
         // ng-route deps
-        services.$injector = $injector;
-        services.$q = $injector.get("$q");
-        scope.$apply(() => {
-          el.data("$injector", $injector);
-          compile(el)(scope);
-        });
+        this.$injector = $injector;
+        setCacheData(el, "$injector", $injector);
 
-        // https://github.com/angular-ui/ui-router/issues/3678
+        const compileFn = compile(el);
+        compileFn(scope);
+
+        // https://github.com/angular-ui/ng-router/issues/3678
         if (!Object.prototype.hasOwnProperty.call($injector, "strictDi")) {
           try {
             $injector.invoke(() => {});
@@ -187,7 +180,6 @@ export class Angular {
   }
 
   /**
-   *
    * @param {any[]} modules
    * @param {boolean?} strictDi
    * @returns {import("./core/di/internal-injector.js").InjectorService}
@@ -239,8 +231,8 @@ export class Angular {
    * All modules (AngularJS core or 3rd party) that should be available to an application must be
    * registered using this mechanism.
    *
-   * Passing one argument retrieves an existing {@link import('./types').Module},
-   * whereas passing more than one argument creates a new {@link import('./types').Module}
+   * Passing one argument retrieves an existing {@link import('./types.js').Module},
+   * whereas passing more than one argument creates a new {@link import('./types.js').Module}
    *
    *
    * # Module
@@ -276,7 +268,7 @@ export class Angular {
    * @param {Array.<string>} [requires] If specified then new module is being created. If
    *        unspecified then the module is being retrieved for further configuration.
    * @param {Array<any>|Function} [configFn] Optional configuration function for the module. Same as
-   *        {@link import('./types').Module#config Module#config()}.
+   *        {@link import('./types.js').Module#config Module#config()}.
    * @returns {NgModule} A newly registered module.
    */
   module(name, requires, configFn) {

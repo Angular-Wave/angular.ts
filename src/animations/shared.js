@@ -1,5 +1,4 @@
 import { isString, minErr, extend } from "../shared/utils.js";
-import { JQLite } from "../shared/jqlite/jqlite.js";
 import { ASTType } from "../core/parse/ast-type.js";
 
 export const ADD_CLASS_SUFFIX = "-add";
@@ -121,41 +120,26 @@ export function removeFromArray(arr, val) {
 
 /**
  *
- * @param {JQLite|Node} element
- * @returns {JQLite}
+ * @param {NodeList|Node} element
+ * @returns {Node[]|Node|undefined}
  */
 export function stripCommentsFromElement(element) {
-  if (element instanceof JQLite) {
-    switch (element.length) {
-      case 0:
-        return /** @type {JQLite} */ (element);
-
-      case 1:
-        // there is no point of stripping anything if the element
-        // is the only element within the JQLite wrapper.
-        // (it's important that we retain the element instance.)
-        if (element[0].nodeType === Node.ELEMENT_NODE) {
-          return /** @type {JQLite} */ (element);
-        }
-        break;
-
-      default:
-        return JQLite(extractElementNode(element));
-    }
-  }
-
-  if (/** @type {Node} */ (element).nodeType === Node.ELEMENT_NODE) {
-    return JQLite(element);
+  if (element instanceof NodeList) {
+    return Array.from(element).filter((x) => x.nodeType == Node.ELEMENT_NODE);
+  } else if (element.nodeType === Node.ELEMENT_NODE) {
+    return /** @type {Node} */ (element);
+  } else {
+    return undefined;
   }
 }
 
 /**
- * @param {JQLite|Node} element
+ * @param {NodeList|Node} element
  * @returns {Node}
  */
 export function extractElementNode(element) {
-  if (!element[0]) return /** @type {Node} */ (element);
-  for (let i = 0; i < /** @type {JQLite} */ (element).length; i++) {
+  if (!element) return /** @type {Node} */ (element);
+  for (let i = 0; i < /** @type {NodeList} */ (element).length; i++) {
     const elm = element[i];
     if (elm.nodeType === Node.ELEMENT_NODE) {
       return elm;
@@ -166,11 +150,11 @@ export function extractElementNode(element) {
 export function applyAnimationClassesFactory() {
   return function (element, options) {
     if (options.addClass) {
-      element[0].classList.add(...options.addClass.trim().split(" "));
+      element.classList.add(...options.addClass.trim().split(" "));
       options.addClass = null;
     }
     if (options.removeClass) {
-      element[0].classList.remove(...options.removeClass.trim().split(" "));
+      element.classList.remove(...options.removeClass.trim().split(" "));
       options.removeClass = null;
     }
   };
@@ -215,7 +199,11 @@ export function mergeAnimationDetails(element, oldAnimation, newAnimation) {
 
   const toAdd = `${target.addClass || ""} ${newOptions.addClass || ""}`;
   const toRemove = `${target.removeClass || ""} ${newOptions.removeClass || ""}`;
-  const classes = resolveElementClasses(element.attr("class"), toAdd, toRemove);
+  const classes = resolveElementClasses(
+    element.getAttribute("class"),
+    toAdd,
+    toRemove,
+  );
 
   if (newOptions.preparationClasses) {
     target.preparationClasses = concatWithSpace(
@@ -314,15 +302,6 @@ export function resolveElementClasses(existing, toAdd, toRemove) {
   return classes;
 }
 
-/**
- *
- * @param {JQLite|Element} element
- * @returns {Element}
- */
-export function getDomNode(element) {
-  return element instanceof JQLite ? element[0] : element;
-}
-
 export function applyGeneratedPreparationClasses(element, event, options) {
   let classes = "";
   if (event) {
@@ -342,7 +321,7 @@ export function applyGeneratedPreparationClasses(element, event, options) {
   }
   if (classes.length) {
     options.preparationClasses = classes;
-    element[0].className += ` ${classes}`;
+    element.className += ` ${classes}`;
   }
 }
 
@@ -350,13 +329,13 @@ export function clearGeneratedClasses(element, options) {
   if (options.preparationClasses) {
     options.preparationClasses
       .split(" ")
-      .forEach((cls) => element[0].classList.remove(cls));
+      .forEach((cls) => element.classList.remove(cls));
     options.preparationClasses = null;
   }
   if (options.activeClasses) {
     options.activeClasses
       .split(" ")
-      .forEach((cls) => element[0].classList.remove(cls));
+      .forEach((cls) => element.classList.remove(cls));
     options.activeClasses = null;
   }
 }

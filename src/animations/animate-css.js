@@ -1,3 +1,4 @@
+import { getCacheData, removeElementData, setCacheData } from "../shared//dom";
 import { isDefined } from "../shared/utils.js";
 import {
   TRANSITION_DURATION_PROP,
@@ -12,7 +13,6 @@ import {
   applyAnimationClassesFactory,
   pendClasses,
   prepareAnimationOptions,
-  getDomNode,
   packageStyles,
   EVENT_CLASS_PREFIX,
   ADD_CLASS_SUFFIX,
@@ -28,7 +28,7 @@ import {
   TRANSITIONEND_EVENT,
   ANIMATIONEND_EVENT,
   applyAnimationToStyles,
-} from "./shared";
+} from "./shared.js";
 
 const ANIMATE_TIMER_KEY = "$$animateCss";
 
@@ -139,27 +139,17 @@ function registerRestorableStyles(backup, node, properties) {
 export function AnimateCssProvider() {
   this.$get = [
     "$$AnimateRunner",
-    "$timeout",
     "$$animateCache",
     "$$rAFScheduler",
-    "$$animateQueue",
 
     /**
      *
      * @param {*} $$AnimateRunner
-     * @param {*} $timeout
      * @param {*} $$animateCache
      * @param {import("./raf-scheduler").RafScheduler} $$rAFScheduler
-     * @param {*} $$animateQueue
      * @returns
      */
-    function (
-      $$AnimateRunner,
-      $timeout,
-      $$animateCache,
-      $$rAFScheduler,
-      $$animateQueue,
-    ) {
+    function ($$AnimateRunner, $$animateCache, $$rAFScheduler) {
       const applyAnimationClasses = applyAnimationClassesFactory();
 
       function computeCachedCssStyles(
@@ -284,8 +274,9 @@ export function AnimateCssProvider() {
         }
 
         const restoreStyles = {};
-        const node = /** @type {HTMLElement} */ (getDomNode(element));
-        if (!node || !node.parentNode || !$$animateQueue.enabled()) {
+        const node = /** @type {HTMLElement} */ (element);
+        // Note: this had an additional  !$$animateQueue.enabled() check
+        if (!node || !node.parentNode) {
           return closeAndReturnNoopAnimator();
         }
 
@@ -390,7 +381,7 @@ export function AnimateCssProvider() {
         }
 
         if (!options.$$skipPreparationClasses) {
-          element[0].classList.add(
+          element.classList.add(
             ...preparationClasses.split(" ").filter((x) => x !== ""),
           );
         }
@@ -588,11 +579,11 @@ export function AnimateCssProvider() {
           animationPaused = false;
 
           if (preparationClasses && !options.$$skipPreparationClasses) {
-            element[0].classList.remove(...preparationClasses.split(" "));
+            element.classList.remove(...preparationClasses.split(" "));
           }
           activeClasses = pendClasses(preparationClasses, ACTIVE_CLASS_SUFFIX);
           if (activeClasses) {
-            element[0].classList.remove(...activeClasses.split(" "));
+            element.classList.remove(...activeClasses.split(" "));
           }
 
           blockKeyframeAnimations(node, false);
@@ -633,10 +624,10 @@ export function AnimateCssProvider() {
           }
 
           // Cancel the fallback closing timeout and remove the timer data
-          const animationTimerData = element.data(ANIMATE_TIMER_KEY);
+          const animationTimerData = getCacheData(element, ANIMATE_TIMER_KEY);
           if (animationTimerData) {
-            $timeout.cancel(animationTimerData[0].timer);
-            element.removeData(ANIMATE_TIMER_KEY);
+            clearTimeout(animationTimerData[0].timer);
+            removeElementData(element, ANIMATE_TIMER_KEY);
           }
 
           // if the preparation function fails then the promise is not setup
@@ -749,7 +740,7 @@ export function AnimateCssProvider() {
               (timings.animationDuration && stagger.animationDuration === 0)) &&
             Math.max(stagger.animationDelay, stagger.transitionDelay);
           if (maxStagger) {
-            $timeout(
+            setTimeout(
               triggerAnimationStart,
               Math.floor(maxStagger * itemIndex * ONE_SECOND),
               false,
@@ -781,7 +772,7 @@ export function AnimateCssProvider() {
             });
 
             applyAnimationClasses(element, options);
-            element[0].classList.add(
+            element.classList.add(
               ...activeClasses.split(" ").filter((x) => x !== ""),
             );
             if (flags.recalculateTimingStyles) {
@@ -851,30 +842,33 @@ export function AnimateCssProvider() {
               maxDelayTime + CLOSING_TIME_BUFFER * maxDurationTime;
             const endTime = startTime + timerTime;
 
-            const animationsData = element.data(ANIMATE_TIMER_KEY) || [];
+            const animationsData =
+              getCacheData(element, ANIMATE_TIMER_KEY) || [];
             let setupFallbackTimer = true;
             if (animationsData.length) {
               const currentTimerData = animationsData[0];
               setupFallbackTimer = endTime > currentTimerData.expectedEndTime;
               if (setupFallbackTimer) {
-                $timeout.cancel(currentTimerData.timer);
+                clearTimeout(currentTimerData.timer);
               } else {
                 animationsData.push(close);
               }
             }
 
             if (setupFallbackTimer) {
-              const timer = $timeout(onAnimationExpired, timerTime, false);
+              const timer = setTimeout(onAnimationExpired, timerTime, false);
               animationsData[0] = {
                 timer,
                 expectedEndTime: endTime,
               };
               animationsData.push(close);
-              element.data(ANIMATE_TIMER_KEY, animationsData);
+              setCacheData(element, ANIMATE_TIMER_KEY, animationsData);
             }
 
             if (events.length) {
-              element.on(events.join(" "), onAnimationProgress);
+              events.forEach((x) => {
+                element.addEventListener(x, onAnimationProgress);
+              });
             }
 
             if (options.to) {
@@ -890,7 +884,7 @@ export function AnimateCssProvider() {
           }
 
           function onAnimationExpired() {
-            const animationsData = element.data(ANIMATE_TIMER_KEY);
+            const animationsData = getCacheData(element, ANIMATE_TIMER_KEY);
 
             // this will be false in the event that the element was
             // removed from the DOM (via a leave animation or something
@@ -899,7 +893,7 @@ export function AnimateCssProvider() {
               for (let i = 1; i < animationsData.length; i++) {
                 animationsData[i]();
               }
-              element.removeData(ANIMATE_TIMER_KEY);
+              removeElementData(element, ANIMATE_TIMER_KEY);
             }
           }
         }

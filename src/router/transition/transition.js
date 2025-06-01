@@ -1,6 +1,5 @@
-import { trace } from "../common/trace";
-import { services } from "../common/coreservices";
-import { stringify } from "../../shared/strings";
+import { trace } from "../common/trace.js";
+import { stringify } from "../../shared/strings.js";
 import {
   map,
   find,
@@ -11,18 +10,18 @@ import {
   anyTrueR,
   flattenR,
   uniqR,
-} from "../../shared/common";
+} from "../../shared/common.js";
 import { isUndefined, isObject, assert } from "../../shared/utils.js";
-import { propEq, val, is } from "../../shared/hof";
-import { TransitionHookPhase } from "./interface"; // has or is using
-import { TransitionHook } from "./transition-hook";
-import { matchState, makeEvent } from "./hook-registry";
-import { HookBuilder } from "./hook-builder";
-import { PathUtils } from "../path/path-utils";
-import { Param } from "../params/param";
-import { Resolvable } from "../resolve/resolvable";
-import { ResolveContext } from "../resolve/resolve-context";
-import { Rejection } from "./reject-factory";
+import { propEq, val, is } from "../../shared/hof.js";
+import { TransitionHookPhase } from "./interface.js"; // has or is using
+import { TransitionHook } from "./transition-hook.js";
+import { matchState, makeEvent } from "./hook-registry.js";
+import { HookBuilder } from "./hook-builder.js";
+import { PathUtils } from "../path/path-utils.js";
+import { Param } from "../params/param.js";
+import { Resolvable } from "../resolve/resolvable.js";
+import { ResolveContext } from "../resolve/resolve-context.js";
+import { Rejection } from "./reject-factory.js";
 
 /**
  * Represents a transition between two states.
@@ -43,13 +42,13 @@ export class Transition {
    * @param fromPath The path of [[PathNode]]s from which the transition is leaving.  The last node in the `fromPath`
    *        encapsulates the "from state".
    * @param targetState The target state and parameters being transitioned to (also, the transition options)
-   * @param {import('../transition/transition-service').TransitionProvider} transitionService The [[TransitionService]] instance
+   * @param {import('../transition/transition-service.js').TransitionProvider} transitionService The [[TransitionService]] instance
    * @internal
    */
   constructor(fromPath, targetState, transitionService, globals) {
     this.globals = globals;
     this.transitionService = transitionService;
-    this._deferred = services.$q.defer();
+    this._deferred = Promise.withResolvers();
     /**
      * This promise is resolved or rejected based on the outcome of the Transition.
      *
@@ -324,18 +323,18 @@ export class Transition {
    * @param state the state in the "to path" which should receive the new resolve (otherwise, the root state)
    */
   addResolvable(resolvable, state) {
+    if (state === void 0) {
+      state = "";
+    }
     resolvable = is(Resolvable)(resolvable)
       ? resolvable
       : new Resolvable(resolvable);
-
     const stateName = typeof state === "string" ? state : state.name;
     const topath = this._treeChanges.to;
-    /** @type {import('../path/path-node').PathNode} */
     const targetNode = find(topath, (node) => {
       return node.state.name === stateName;
     });
     assert(!!targetNode, `targetNode not found ${stateName}`);
-
     const resolveContext = new ResolveContext(topath);
     resolveContext.addResolvables([resolvable], targetNode.state);
   }
@@ -598,7 +597,6 @@ export class Transition {
    * @returns a promise for a successful transition.
    */
   run() {
-    const runAllHooks = TransitionHook.runAllHooks;
     // Gets transition hooks array for the given phase
     const getHooksFor = (phase) => this._hookBuilder.buildHooksForPhase(phase);
     // When the chain is complete, then resolve or reject the deferred
@@ -606,21 +604,29 @@ export class Transition {
       trace.traceSuccess(this.$to(), this);
       this.success = true;
       this._deferred.resolve(this.to());
-      runAllHooks(getHooksFor(TransitionHookPhase.SUCCESS));
+      const hooks = this._hookBuilder.buildHooksForPhase(
+        TransitionHookPhase.SUCCESS,
+      );
+      hooks.forEach((hook) => {
+        hook.invokeHook();
+      });
     };
+
     const transitionError = (reason) => {
       trace.traceError(reason, this);
       this.success = false;
       this._deferred.reject(reason);
       this._error = reason;
-      runAllHooks(getHooksFor(TransitionHookPhase.ERROR));
+      const hooks = getHooksFor(TransitionHookPhase.ERROR);
+      hooks.forEach((hook) => hook.invokeHook());
     };
+
     const runTransition = () => {
       // Wait to build the RUN hook chain until the BEFORE hooks are done
       // This allows a BEFORE hook to dynamically add additional RUN hooks via the Transition object.
       const allRunHooks = getHooksFor(TransitionHookPhase.RUN);
-      const done = () => services.$q.resolve(undefined);
-      return TransitionHook.invokeHooks(allRunHooks, done);
+      const resolved = Promise.resolve();
+      return TransitionHook.invokeHooks(allRunHooks, () => resolved);
     };
     const startTransition = () => {
       const globals = this.globals;
@@ -628,7 +634,7 @@ export class Transition {
       globals.transition = this;
       globals.transitionHistory.enqueue(this);
       trace.traceTransitionStart(this);
-      return services.$q.resolve(undefined);
+      return Promise.resolve();
     };
     const allBeforeHooks = getHooksFor(TransitionHookPhase.BEFORE);
     TransitionHook.invokeHooks(allBeforeHooks, startTransition)

@@ -1,25 +1,22 @@
+import { getCacheData, setCacheData } from "../../shared/dom.js";
 import { hasAnimate, isObject, isString } from "../../shared/utils.js";
 
+/**
+ * @returns {() => import("../../types.js").Directive}
+ */
 function classDirective(name, selector) {
   name = `ngClass${name}`;
-  let indexWatchExpression;
 
-  return [
-    "$parse",
-    /**
-     *
-     * @param {import("../../core/parse/parse.js").ParseService} $parse
-     * @returns {import("../../types").Directive}
-     */
-    ($parse) => ({
+  return function () {
+    return {
       restrict: "EA",
       /**
-       * @param {import("../../core/scope/scope").Scope} scope
-       * @param {import("../../shared/jqlite/jqlite").JQLite} element
+       * @param {import("../../core/scope/scope.js").Scope} scope
+       * @param {Element} element
        * @param {import("../../core/compile/attributes").Attributes} attr
        */
       link(scope, element, attr) {
-        let classCounts = element.data("$classCounts");
+        let classCounts = getCacheData(element, "$classCounts");
         let oldModulo = true;
         let oldClassString;
 
@@ -27,29 +24,26 @@ function classDirective(name, selector) {
           // Use Object.create(null) to prevent class assumptions involving property
           // names in Object.prototype
           classCounts = Object.create(null);
-          element.data("$classCounts", classCounts);
+          setCacheData(element, "$classCounts", classCounts);
         }
 
         if (name !== "ngClass") {
-          if (!indexWatchExpression) {
-            indexWatchExpression = $parse("$index", function moduloTwo($index) {
-              return $index & 1;
-            });
-          }
-
-          scope.$watch(indexWatchExpression, ngClassIndexWatchAction);
+          scope.$watch("$index", () => {
+            ngClassIndexWatchAction(scope["$index"] & 1);
+          });
         }
-
-        scope.$watch($parse(attr[name], toClassString), ngClassWatchAction);
+        scope.$watch(attr[name], (val) => {
+          ngClassWatchAction(toClassString(val));
+        });
 
         function addClasses(classString) {
           classString = digestClassCounts(split(classString), 1);
-          if (hasAnimate(element[0])) {
+          if (hasAnimate(element)) {
             attr.$addClass(classString);
           } else {
-            scope.$$postDigest(() => {
+            scope.$postUpdate(() => {
               if (classString !== "") {
-                element[0].classList.add(...classString.trim().split(" "));
+                element.classList.add(...classString.trim().split(" "));
               }
             });
           }
@@ -57,12 +51,12 @@ function classDirective(name, selector) {
 
         function removeClasses(classString) {
           classString = digestClassCounts(split(classString), -1);
-          if (hasAnimate(element[0])) {
+          if (hasAnimate(element)) {
             attr.$removeClass(classString);
           } else {
-            scope.$$postDigest(() => {
+            scope.$postUpdate(() => {
               if (classString !== "") {
-                element[0].classList.remove(...classString.trim().split(" "));
+                element.classList.remove(...classString.trim().split(" "));
               }
             });
           }
@@ -77,21 +71,16 @@ function classDirective(name, selector) {
 
           const toRemoveString = digestClassCounts(toRemoveArray, -1);
           const toAddString = digestClassCounts(toAddArray, 1);
-
-          if (hasAnimate(element[0])) {
+          if (hasAnimate(element)) {
             attr.$addClass(toAddString);
             attr.$removeClass(toRemoveString);
           } else {
-            scope.$$postDigest(() => {
-              if (toAddString !== "") {
-                element[0].classList.add(...toAddString.trim().split(" "));
-              }
-              if (toRemoveString !== "") {
-                element[0].classList.remove(
-                  ...toRemoveString.trim().split(" "),
-                );
-              }
-            });
+            if (toAddString !== "") {
+              element.classList.add(...toAddString.trim().split(" "));
+            }
+            if (toRemoveString !== "") {
+              element.classList.remove(...toRemoveString.trim().split(" "));
+            }
           }
         }
 
@@ -131,48 +120,48 @@ function classDirective(name, selector) {
           oldClassString = newClassString;
         }
       },
-    }),
-  ];
+    };
+  };
+}
 
-  // Helpers
-  function arrayDifference(tokens1, tokens2) {
-    if (!tokens1 || !tokens1.length) return [];
-    if (!tokens2 || !tokens2.length) return tokens1;
+// Helpers
+function arrayDifference(tokens1, tokens2) {
+  if (!tokens1 || !tokens1.length) return [];
+  if (!tokens2 || !tokens2.length) return tokens1;
 
-    const values = [];
+  const values = [];
 
-    outer: for (let i = 0; i < tokens1.length; i++) {
-      const token = tokens1[i];
-      for (let j = 0; j < tokens2.length; j++) {
-        if (token === tokens2[j]) continue outer;
-      }
-      values.push(token);
+  outer: for (let i = 0; i < tokens1.length; i++) {
+    const token = tokens1[i];
+    for (let j = 0; j < tokens2.length; j++) {
+      if (token === tokens2[j]) continue outer;
     }
-
-    return values;
+    values.push(token);
   }
 
-  function split(classString) {
-    return classString && classString.split(" ");
+  return values;
+}
+
+function split(classString) {
+  return classString && classString.split(" ");
+}
+
+function toClassString(classValue) {
+  if (!classValue) return classValue;
+
+  let classString = classValue;
+
+  if (Array.isArray(classValue)) {
+    classString = classValue.map(toClassString).join(" ");
+  } else if (isObject(classValue)) {
+    classString = Object.keys(classValue)
+      .filter((key) => classValue[key])
+      .join(" ");
+  } else if (!isString(classValue)) {
+    classString = `${classValue}`;
   }
 
-  function toClassString(classValue) {
-    if (!classValue) return classValue;
-
-    let classString = classValue;
-
-    if (Array.isArray(classValue)) {
-      classString = classValue.map(toClassString).join(" ");
-    } else if (isObject(classValue)) {
-      classString = Object.keys(classValue)
-        .filter((key) => classValue[key])
-        .join(" ");
-    } else if (!isString(classValue)) {
-      classString = `${classValue}`;
-    }
-
-    return classString;
-  }
+  return classString;
 }
 
 export const ngClassDirective = classDirective("", true);

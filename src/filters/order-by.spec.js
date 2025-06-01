@@ -1,5 +1,5 @@
-import { Angular } from "../loader";
-import { createInjector } from "../core/di/injector";
+import { Angular } from "../loader.js";
+import { createInjector } from "../core/di/injector.js";
 
 describe("Filter: orderBy", () => {
   let orderBy;
@@ -155,7 +155,6 @@ describe("Filter: orderBy", () => {
     });
 
     it("should support string predicates with names containing non-identifier characters", () => {
-      /* eslint-disable no-floating-decimal */
       expect(
         orderBy(
           [{ "Tip %": 0.25 }, { "Tip %": 0.15 }, { "Tip %": 0.4 }],
@@ -165,18 +164,15 @@ describe("Filter: orderBy", () => {
       expect(
         orderBy([{ 원: 76000 }, { 원: 31000 }, { 원: 156000 }], '"원"'),
       ).toEqual([{ 원: 31000 }, { 원: 76000 }, { 원: 156000 }]);
-      /* eslint-enable */
     });
 
     it("should throw if quoted string predicate is quoted incorrectly", () => {
-      /* eslint-disable no-floating-decimal */
       expect(() =>
         orderBy(
           [{ "Tip %": 0.15 }, { "Tip %": 0.25 }, { "Tip %": 0.4 }],
           "\"Tip %'",
         ),
       ).toThrow();
-      /* eslint-enable */
     });
 
     it("should not reverse array of objects with no predicate and reverse is not `true`", () => {
@@ -592,8 +588,6 @@ describe("Filter: orderBy", () => {
       });
 
       it("should ignore the `toString()` inherited from `Object`", () => {
-        /* globals toString: true */
-
         // The global `toString` variable (in 'src/Angular.js')
         // has already captured `Object.prototype.toString`
         const originalToString = toString;
@@ -847,7 +841,6 @@ describe("Filter: orderBy", () => {
     });
 
     it("should support string predicates with names containing non-identifier characters", () => {
-      /* eslint-disable no-floating-decimal */
       expect(
         orderBy(
           [{ "Tip %": 0.25 }, { "Tip %": 0.15 }, { "Tip %": 0.4 }],
@@ -857,18 +850,15 @@ describe("Filter: orderBy", () => {
       expect(
         orderBy([{ 원: 76000 }, { 원: 31000 }, { 원: 156000 }], '"원"'),
       ).toEqual([{ 원: 31000 }, { 원: 76000 }, { 원: 156000 }]);
-      /* eslint-enable */
     });
 
     it("should throw if quoted string predicate is quoted incorrectly", () => {
-      /* eslint-disable no-floating-decimal */
       expect(() =>
         orderBy(
           [{ "Tip %": 0.15 }, { "Tip %": 0.25 }, { "Tip %": 0.4 }],
           "\"Tip %'",
         ),
       ).toThrow();
-      /* eslint-enable */
     });
 
     it("should not reverse array of objects with no predicate", () => {

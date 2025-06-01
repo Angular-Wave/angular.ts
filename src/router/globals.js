@@ -1,5 +1,5 @@
-import { StateParams } from "./params/state-params";
-import { Queue } from "./common/queue";
+import { StateParams } from "./params/state-params.js";
+import { Queue } from "./common/queue.js";
 /**
  * Global router state
  *

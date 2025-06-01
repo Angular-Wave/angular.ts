@@ -24,17 +24,15 @@ export function ngChannelDirective() {
   return {
     restrict: "EA",
     link: (scope, element, attrs) => {
-      const hasTemplate = element[0].childNodes.length > 0;
+      const hasTemplate = element.childNodes.length > 0;
       const channel = attrs["ngChannel"];
 
       const key = EventBus.subscribe(channel, async (val) => {
         if (!hasTemplate) {
-          element[0].innerHTML = val;
+          element.innerHTML = val;
         } else {
           if (isObject(val)) {
-            Object.entries(val).forEach(([key, value]) => {
-              scope[key] = value;
-            });
+            scope.$merge(val);
           }
         }
       });

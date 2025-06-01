@@ -65,12 +65,14 @@ export class ControllerProvider {
 
   /**
    * $get method for dependency injection.
-   *
-   * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
-   * @returns {Function} A service function that creates controllers.
    */
   $get = [
     "$injector",
+
+    /**
+     * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
+     * @returns {Function} A service function that creates controllers.
+     */
     ($injector) => {
       return (expression, locals, later, ident) => {
         let instance;
@@ -112,6 +114,7 @@ export class ControllerProvider {
           instance = Object.create(controllerPrototype || null);
 
           if (identifier) {
+            instance["$controllerIdentifier"] = identifier;
             this.addIdentifier(
               locals,
               identifier,
@@ -134,6 +137,7 @@ export class ControllerProvider {
             ) {
               instance = result;
               if (identifier) {
+                instance["$controllerIdentifier"] = identifier;
                 this.addIdentifier(
                   locals,
                   identifier,

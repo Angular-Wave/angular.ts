@@ -1,7 +1,7 @@
-import { find, pick, omit, unnestR, arrayTuples } from "../../shared/common";
-import { propEq } from "../../shared/hof";
-import { TargetState } from "../state/target-state";
-import { PathNode } from "./path-node";
+import { find, pick, omit, unnestR, arrayTuples } from "../../shared/common.js";
+import { propEq } from "../../shared/hof.js";
+import { TargetState } from "../state/target-state.js";
+import { PathNode } from "./path-node.js";
 /**
  * This class contains functions which convert TargetStates, Nodes and paths from one type to another.
  */
@@ -36,9 +36,9 @@ export class PathUtils {
       .forEach((node) => {
         const viewDecls = Object.values(node.state.views || {});
         const subPath = PathUtils.subPath(path, (n) => n === node);
-        const viewConfigs = viewDecls.map((view) =>
-          $view.createViewConfig(subPath, view),
-        );
+        const viewConfigs = viewDecls.map((view) => {
+          return $view.createViewConfig(subPath, view);
+        });
         node.views = viewConfigs.reduce(unnestR, []);
       });
   }

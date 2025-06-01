@@ -1,32 +1,30 @@
-import { dealoc } from "../../shared/jqlite/jqlite.js";
-import { Angular } from "../../loader";
-import { curry } from "../../shared/hof";
-import { StateMatcher } from "../state/state-matcher";
-import { StateBuilder } from "../state/state-builder";
-import { StateObject } from "../state/state-object";
+import { dealoc } from "../../shared/dom.js";
+import { Angular } from "../../loader.js";
+import { curry } from "../../shared/hof.js";
+import { StateMatcher } from "../state/state-matcher.js";
+import { StateBuilder } from "../state/state-builder.js";
+import { StateObject } from "../state/state-object.js";
 import { ViewService } from "./view.js";
 import { ng1ViewsBuilder, getNg1ViewConfigFactory } from "../state/views.js";
-import { PathNode } from "../path/path-node";
-import { PathUtils } from "../path/path-utils";
-import { tail } from "../../shared/common";
-import { wait } from "../../shared/test-utils";
+import { PathNode } from "../path/path-node.js";
+import { PathUtils } from "../path/path-utils.js";
+import { tail } from "../../shared/common.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("view", () => {
   let scope,
     $compile,
     $injector,
-    elem,
+    elem = document.getElementById("app"),
     $controllerProvider,
     $urlServiceProvider,
     $view,
-    $q;
-  let root, states;
+    root,
+    states;
 
   beforeEach(() => {
-    dealoc(document.getElementById("dummy"));
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
-    window.angular = new Angular();
-
     window.angular
       .module("defaultModule", [])
       .config(
@@ -38,23 +36,20 @@ describe("view", () => {
           $urlServiceProvider = _$urlServiceProvider_;
         },
       );
-    $injector = window.angular.bootstrap(document.getElementById("dummy"), [
+    $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
 
-    $injector.invoke(($rootScope, _$compile_, _$injector_, _$view_, _$q_) => {
+    $injector.invoke(($rootScope, _$compile_, _$injector_, _$view_) => {
       scope = $rootScope.$new();
       $compile = _$compile_;
       $injector = _$injector_;
-      elem = angular.element("<div>");
-
       states = {};
       const matcher = new StateMatcher(states);
       const stateBuilder = new StateBuilder(matcher, $urlServiceProvider);
       stateBuilder.builder("views", ng1ViewsBuilder);
       register = registerState(states, stateBuilder);
       root = register({ name: "" });
-      $q = _$q_;
       $view = _$view_;
     });
   });
@@ -95,8 +90,9 @@ describe("view", () => {
 
     it("uses the controllerProvider to get controller dynamically", async () => {
       $controllerProvider.register("AcmeFooController", () => {});
-      elem.append($compile("<div><ng-view></ng-view></div>")(scope));
-
+      elem.innerHTML = "<div><ng-view></ng-view></div>";
+      $compile(elem)(scope);
+      await wait();
       const view = tail(path).views[0];
       view.load();
       await wait(100);

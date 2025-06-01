@@ -1,4 +1,4 @@
-import { getBooleanAttrName } from "../../shared/jqlite/jqlite.js";
+import { getBooleanAttrName } from "../../shared/dom.js";
 import {
   isString,
   snakeCase,
@@ -8,6 +8,7 @@ import {
   trim,
   directiveNormalize,
   hasAnimate,
+  isProxy,
 } from "../../shared/utils.js";
 import { ALIASED_ATTR } from "../../shared/constants.js";
 
@@ -15,21 +16,15 @@ const $compileMinErr = minErr("$compile");
 const SIMPLE_ATTR_NAME = /^\w/;
 const specialAttrHolder = document.createElement("div");
 
-/**
- * @typedef {Object} AttributeLike
- * @property {Object} $attr
- */
-
-/**
- * @extends {AttributeLike}
- */
 export class Attributes {
+  static $nonscope = true;
+
   /**
-   * @param {import('../scope/scope').Scope} $rootScope
+   * @param {import('../scope/scope.js').Scope} $rootScope
    * @param {*} $animate
-   * @param {import("../exception-handler").ErrorHandler} $exceptionHandler
+   * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
    * @param {*} $sce
-   * @param {import('../../shared/jqlite/jqlite').JQLite} [element]
+   * @param {import("../../shared/noderef.js").NodeRef} [nodeRef]
    * @param {*} [attributesToCopy]
    */
   constructor(
@@ -37,7 +32,7 @@ export class Attributes {
     $animate,
     $exceptionHandler,
     $sce,
-    element,
+    nodeRef,
     attributesToCopy,
   ) {
     this.$rootScope = $rootScope;
@@ -53,7 +48,14 @@ export class Attributes {
     } else {
       this.$attr = {};
     }
-    this.$$element = element;
+
+    /** @type {import("../../shared/noderef.js").NodeRef} */
+    this.$nodeRef = nodeRef;
+  }
+
+  /** @type {Node} */
+  get $$element() {
+    return this.$nodeRef.node;
   }
 
   /**
@@ -76,10 +78,10 @@ export class Attributes {
    */
   $addClass(classVal) {
     if (classVal && classVal.length > 0) {
-      if (hasAnimate(this.$$element[0])) {
+      if (hasAnimate(this.$$element)) {
         this.$animate.addClass(this.$$element, classVal);
       } else {
-        this.$$element[0].classList.add(classVal.trim());
+        this.$nodeRef.element.classList.add(classVal);
       }
     }
   }
@@ -92,10 +94,10 @@ export class Attributes {
    */
   $removeClass(classVal) {
     if (classVal && classVal.length > 0) {
-      if (hasAnimate(this.$$element[0])) {
+      if (hasAnimate(this.$$element)) {
         this.$animate.removeClass(this.$$element, classVal);
       } else {
-        this.$$element[0].classList.remove(classVal.trim());
+        this.$nodeRef.element.classList.remove(classVal);
       }
     }
   }
@@ -110,19 +112,18 @@ export class Attributes {
   $updateClass(newClasses, oldClasses) {
     const toAdd = tokenDifference(newClasses, oldClasses);
     if (toAdd && toAdd.length) {
-      if (hasAnimate(this.$$element[0])) {
+      if (hasAnimate(this.$$element)) {
         this.$animate.addClass(this.$$element, toAdd);
       } else {
-        this.$$element[0].classList.add(...toAdd.trim().split(/\s+/));
+        this.$nodeRef.element.classList.add(...toAdd.trim().split(/\s+/));
       }
     }
-
     const toRemove = tokenDifference(oldClasses, newClasses);
     if (toRemove && toRemove.length) {
-      if (hasAnimate(this.$$element[0])) {
+      if (hasAnimate(this.$$element)) {
         this.$animate.removeClass(this.$$element, toRemove);
       } else {
-        this.$$element[0].classList.remove(...toRemove.trim().split(/\s+/));
+        this.$nodeRef.element.classList.remove(...toRemove.trim().split(/\s+/));
       }
     }
   }
@@ -141,13 +142,13 @@ export class Attributes {
     // is set through this function since it may cause $updateClass to
     // become unstable.
 
-    const node = this.$$element[0];
+    const node = this.$$element;
     const booleanKey = getBooleanAttrName(node, key);
     const aliasedKey = ALIASED_ATTR[key];
     let observer = key;
 
     if (booleanKey) {
-      this.$$element[0][key] = value;
+      this.$$element[key] = value;
       attrName = booleanKey;
     } else if (aliasedKey) {
       this[aliasedKey] = value;
@@ -166,7 +167,7 @@ export class Attributes {
       }
     }
 
-    let nodeName = this.$$element[0].nodeName.toLowerCase();
+    let nodeName = this.$nodeRef.node.nodeName.toLowerCase();
 
     // Sanitize img[srcset] values.
     if (nodeName === "img" && key === "srcset") {
@@ -174,22 +175,29 @@ export class Attributes {
     }
 
     if (writeAttr !== false) {
+      let elem = isProxy(this.$$element)
+        ? this.$$element["$target"]
+        : this.$$element;
       if (value === null || isUndefined(value)) {
-        this.$$element[0].removeAttribute(attrName);
+        elem.removeAttribute(attrName);
         //
       } else if (SIMPLE_ATTR_NAME.test(attrName)) {
         // jQuery skips special boolean attrs treatment in XML nodes for
         // historical reasons and hence AngularJS cannot freely call
-        // `.attr(attrName, false) with such attributes. To avoid issues
+        // `.getAttribute(attrName, false) with such attributes. To avoid issues
         // in XHTML, call `removeAttr` in such cases instead.
         // See https://github.com/jquery/jquery/issues/4249
         if (booleanKey && value === false) {
-          this.$$element[0].removeAttribute(attrName);
+          elem.removeAttribute(attrName);
         } else {
-          this.$$element.attr(attrName, value);
+          if (booleanKey) {
+            elem.toggleAttribute(attrName, value);
+          } else {
+            elem.setAttribute(attrName, value);
+          }
         }
       } else {
-        this.setSpecialAttr(this.$$element[0], attrName, value);
+        this.setSpecialAttr(this.$$element, attrName, value);
       }
     }
 
@@ -226,16 +234,14 @@ export class Attributes {
     const listeners = $$observers[key] || ($$observers[key] = []);
 
     listeners.push(fn);
-    this.$rootScope.$evalAsync(() => {
-      if (
-        !listeners.$$inter &&
-        Object.prototype.hasOwnProperty.call(this, key) &&
-        !isUndefined(this[key])
-      ) {
-        // no one registered attribute interpolation function, so lets call it manually
-        fn(this[key]);
-      }
-    });
+    if (
+      !listeners.$$inter &&
+      Object.prototype.hasOwnProperty.call(this, key) &&
+      !isUndefined(this[key])
+    ) {
+      // no one registered attribute interpolation function, so lets call it manually
+      fn(this[key]);
+    }
 
     return function () {
       arrayRemove(listeners, fn);
@@ -313,17 +319,18 @@ export class Attributes {
   }
 }
 
+/**
+ * Computes the difference between two space-separated token strings.
+ *
+ * @param {string} str1 - The first string containing space-separated tokens.
+ * @param {string} str2 - The second string containing space-separated tokens.
+ * @returns {string} A string containing tokens that are in str1 but not in str2, separated by spaces.
+ *
+ */
 function tokenDifference(str1, str2) {
-  let values = "";
-  const tokens1 = str1.split(/\s+/);
-  const tokens2 = str2.split(/\s+/);
+  const tokens1 = new Set(str1.split(/\s+/));
+  const tokens2 = new Set(str2.split(/\s+/));
 
-  outer: for (let i = 0; i < tokens1.length; i++) {
-    const token = tokens1[i];
-    for (let j = 0; j < tokens2.length; j++) {
-      if (token === tokens2[j]) continue outer;
-    }
-    values += (values.length > 0 ? " " : "") + token;
-  }
-  return values;
+  const difference = [...tokens1].filter((token) => !tokens2.has(token));
+  return difference.join(" ");
 }

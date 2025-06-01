@@ -1,5 +1,5 @@
-import { val } from "../shared/hof";
-import { createProxyFunctions } from "../shared/common";
+import { val } from "../shared/hof.js";
+import { createProxyFunctions } from "../shared/common.js";
 import { minErr } from "../shared/utils.js";
 
 const err = minErr("$stateProvider");
@@ -65,7 +65,7 @@ export class StateProvider {
    *
    * Allows you to extend (carefully) or override (at your own peril) the
    * `stateBuilder` object used internally by [[StateRegistry]].
-   * This can be used to add custom functionality to ui-router,
+   * This can be used to add custom functionality to ng-router,
    * for example inferring templateUrl based on the state name.
    *
    * When passing only a name, it returns the current (original or decorated) builder

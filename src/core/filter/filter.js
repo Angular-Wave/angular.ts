@@ -1,8 +1,8 @@
 import { isObject } from "../../shared/utils.js";
-import { filterFilter } from "../../filters/filter";
-import { jsonFilter } from "../../filters/filters";
-import { limitToFilter } from "../../filters/limit-to";
-import { orderByFilter } from "../../filters/order-by";
+import { filterFilter } from "../../filters/filter.js";
+import { jsonFilter } from "../../filters/filters.js";
+import { limitToFilter } from "../../filters/limit-to.js";
+import { orderByFilter } from "../../filters/order-by.js";
 import {
   $IncludedByStateFilter,
   $IsStateFilter,
@@ -28,7 +28,7 @@ export function FilterProvider($provide) {
     "$injector",
     /**
      *
-     * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
+     * @param {import("../../core/di/internal-injector").InjectorService} $injector
      * @returns
      */
     function ($injector) {

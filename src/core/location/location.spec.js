@@ -3,8 +3,8 @@ import {
   LocationHashbangUrl,
   LocationProvider,
 } from "./location";
-import { Angular } from "../../loader";
-import { createInjector } from "../di/injector";
+import { Angular } from "../../loader.js";
+import { createInjector } from "../di/injector.js";
 
 describe("$location", () => {
   let module;
@@ -34,7 +34,6 @@ describe("$location", () => {
   });
 
   describe("File Protocol", () => {
-    /* global urlParsingNode: true */
     let urlParsingNodePlaceholder;
     let urlParsingNode;
 
@@ -883,7 +882,7 @@ describe("$location", () => {
   //       $rootScope.$digest();
   //       $window.location.href = "http://localhost:9876/?q='";
   //       expect(() => {
-  //         JQLite($window).triggerHandler("popstate");
+  //         ($window).triggerHandler("popstate");
   //       }).not.toThrow();
   //     });
   //   });
@@ -939,7 +938,7 @@ describe("$location", () => {
   //         });
   //       });
 
-  //       JQLite($window).triggerHandler("hashchange");
+  //       ($window).triggerHandler("hashchange");
 
   //       expect($browser.url()).toBe("http://foo.bar/#!/baz/qux");
   //       expect($location.absUrl()).toBe("http://foo.bar/#!/baz/qux");
@@ -1378,7 +1377,7 @@ describe("$location", () => {
   //       $rootScope.$digest(); // allow $location initialization to finish
 
   //       $window.location.href = "http://server/app/Home?q='";
-  //       JQLite($window).triggerHandler("popstate");
+  //       ($window).triggerHandler("popstate");
 
   //       expect($location.absUrl()).toEqual("http://server/app/Home?q='");
   //       expect($location.path()).toEqual("/Home");
@@ -1756,18 +1755,18 @@ describe("$location", () => {
   //     }
 
   //     if (linkHref) {
-  //       link = JQLite(`<a href="${linkHref}"${attrs}>${content}</a>`)[0];
+  //       link = (`<a href="${linkHref}"${attrs}>${content}</a>`)[0];
   //     } else {
-  //       link = JQLite(`<a ${attrs}>${content}</a>`)[0];
+  //       link = (`<a ${attrs}>${content}</a>`)[0];
   //     }
 
   //     module(
   //       ($provide) =>
   //         function ($rootElement, $document) {
   //           $rootElement.append(link);
-  //           root = $rootElement[0];
+  //           root = $rootElement;
   //           // we need to do this otherwise we can't simulate events
-  //           $document.find("body").append($rootElement);
+  //           $document.querySelector("body").append($rootElement);
   //         },
   //     );
   //   }
@@ -1828,16 +1827,16 @@ describe("$location", () => {
   //         browserTrigger(link, "click");
   //         expectRewriteTo($browser, "http://host.com/base/");
 
-  //         JQLite(link).attr("href", "http://host.com/base/foo");
+  //         (link).getAttribute("href", "http://host.com/base/foo");
   //         browserTrigger(link, "click");
   //         expectRewriteTo($browser, "http://host.com/base/foo");
 
-  //         JQLite(link).attr("href", "http://host.com/base/");
+  //         (link).getAttribute("href", "http://host.com/base/");
   //         browserTrigger(link, "click");
   //         expectRewriteTo($browser, "http://host.com/base/");
 
-  //         JQLite(link)
-  //           .attr("href", "http://host.com/base/foo")
+  //         (link)
+  //           .getAttribute("href", "http://host.com/base/foo")
   //           .on("click", (e) => {
   //             e.preventDefault();
   //           });
@@ -2113,7 +2112,7 @@ describe("$location", () => {
   //       }),
   //       setupRewriteChecks(),
   //       ($browser) => {
-  //         const span = JQLite(link).find("span");
+  //         const span = (link).querySelector("span");
 
   //         browserTrigger(span, "click");
   //         expectRewriteTo($browser, "http://host.com/base/some/link");
@@ -2365,14 +2364,14 @@ describe("$location", () => {
   //         $location,
   //       ) => {
   //         // we need to do this otherwise we can't simulate events
-  //         $document.find("body").append($rootElement);
+  //         $document.querySelector("body").append($rootElement);
 
   //         const element = $compile(
   //           '<a href="#!/view1">v1</a><a href="#!/view2">v2</a>',
   //         )($rootScope);
   //         $rootElement.append(element);
-  //         const av1 = $rootElement.find("a").eq(0);
-  //         const av2 = $rootElement.find("a").eq(1);
+  //         const av1 = $rootElement.querySelector("a")[0];
+  //         const av2 = $rootElement.querySelector("a")[1];
 
   //         browserTrigger(av1, "click");
   //         expect($browser.url()).toEqual(`${base}#!/view1`);
@@ -2406,14 +2405,14 @@ describe("$location", () => {
   //         $location,
   //       ) => {
   //         // we need to do this otherwise we can't simulate events
-  //         $document.find("body").append($rootElement);
+  //         $document.querySelector("body").append($rootElement);
 
   //         const element = $compile(
   //           '<a href="#!!/view1">v1</a><a href="#!!/view2">v2</a>',
   //         )($rootScope);
   //         $rootElement.append(element);
-  //         const av1 = $rootElement.find("a").eq(0);
-  //         const av2 = $rootElement.find("a").eq(1);
+  //         const av1 = $rootElement.querySelector("a")[0];
+  //         const av2 = $rootElement.querySelector("a")[1];
 
   //         browserTrigger(av1, "click");
   //         expect($browser.url()).toEqual(`${base}#!!/view1`);
@@ -2441,12 +2440,12 @@ describe("$location", () => {
   //     });
   //     inject(($location) => {
   //       // make IE happy
-  //       JQLite(document.body).html(
+  //       (document.body).html(
   //         '<a href="http://server/test.html">link</a>',
   //       );
 
   //       const event = {
-  //         target: JQLite(document.body).find("a")[0],
+  //         target: (document.body).querySelector("a")[0],
   //         preventDefault: jasmine.createSpy("preventDefault"),
   //         isDefaultPrevented: jasmine.createSpy().and.returnValue(false),
   //       };
@@ -2481,12 +2480,12 @@ describe("$location", () => {
   //         $location,
   //       ) => {
   //         // make IE happy
-  //         JQLite(document.body).html(
+  //         (document.body).html(
   //           '<a href="http://server/index.html#test">link</a>',
   //         );
 
   //         const event = {
-  //           target: JQLite(document.body).find("a")[0],
+  //           target: (document.body).querySelector("a")[0],
   //           preventDefault: jasmine.createSpy("preventDefault"),
   //           isDefaultPrevented: jasmine.createSpy().and.returnValue(false),
   //         };
@@ -2504,10 +2503,10 @@ describe("$location", () => {
   //     $location,
   //   ) => {
   //     // we need to do this otherwise we can't simulate events
-  //     $document.find("body").append($rootElement);
+  //     $document.querySelector("body").append($rootElement);
 
   //     $rootElement.html("<button></button>");
-  //     const button = $rootElement.find("button");
+  //     const button = $rootElement.querySelector("button");
 
   //     button.on("click", () => {
   //       button.remove();
@@ -2536,13 +2535,13 @@ describe("$location", () => {
   //         $location,
   //       ) => {
   //         // we need to do this otherwise we can't simulate events
-  //         $document.find("body").append($rootElement);
+  //         $document.querySelector("body").append($rootElement);
   //         const template =
   //           '<svg><g><a xlink:href="#!/view1"><circle r="50"></circle></a></g></svg>';
   //         const element = $compile(template)($rootScope);
 
   //         $rootElement.append(element);
-  //         const av1 = $rootElement.find("a").eq(0);
+  //         const av1 = $rootElement.querySelector("a")[0];
   //         expect(() => {
   //           browserTrigger(av1, "click");
   //         }).not.toThrow();
@@ -2920,7 +2919,7 @@ describe("$location", () => {
   //         function ($rootElement, $compile, $rootScope) {
   //           $rootElement.html('<a href="http://server/#!/somePath">link</a>');
   //           $compile($rootElement)($rootScope);
-  //           JQLite(document.body).append($rootElement);
+  //           (document.body).append($rootElement);
   //         },
   //     );
 
@@ -2951,13 +2950,13 @@ describe("$location", () => {
   //       return function ($rootElement, $compile, $rootScope) {
   //         $rootElement.html('<a href="http://server/somePath">link</a>');
   //         $compile($rootElement)($rootScope);
-  //         JQLite(document.body).append($rootElement);
+  //         (document.body).append($rootElement);
   //       };
   //     });
 
   //     inject(($location, $rootScope, $browser, $rootElement) => {
   //       let log = "";
-  //       const link = $rootElement.find("a");
+  //       const link = $rootElement.querySelector("a");
   //       const browserUrlBefore = $browser.url();
 
   //       $rootScope.$on("$locationChangeStart", (event) => {
@@ -3371,7 +3370,6 @@ describe("$location", () => {
   //       $sniffer,
   //       $$taskTrackerFactory,
   //     ) {
-  //       /* global Browser: false */
   //       browser = new Browser(
   //         $window,
   //

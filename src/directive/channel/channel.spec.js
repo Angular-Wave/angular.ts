@@ -1,6 +1,6 @@
-import { Angular } from "../../loader";
+import { Angular } from "../../loader.js";
 import { EventBus } from "../../core/pubsub/pubsub";
-import { wait } from "../../shared/test-utils";
+import { wait } from "../../shared/test-utils.js";
 
 describe("channel", () => {
   let $compile, $scope, element, unsubscribeSpy;
@@ -9,7 +9,7 @@ describe("channel", () => {
     window.angular = new Angular();
     angular.module("myModule", ["ng"]);
     angular
-      .bootstrap(document.getElementById("dummy"), ["myModule"])
+      .bootstrap(document.getElementById("app"), ["myModule"])
       .invoke((_$compile_, _$rootScope_) => {
         $compile = _$compile_;
         $scope = _$rootScope_;
@@ -21,7 +21,6 @@ describe("channel", () => {
 
   it("should subscribe to the specified EventBus channel", () => {
     element = $compile('<div ng-channel="testChannel"></div>')($scope);
-    $scope.$digest();
 
     expect(EventBus.subscribe).toHaveBeenCalledWith(
       "testChannel",
@@ -31,19 +30,17 @@ describe("channel", () => {
 
   it("should update innerHtml when EventBus emits a value", async () => {
     element = $compile('<div ng-channel="testChannel"></div>')($scope);
-    $scope.$digest();
 
-    expect(element[0].innerHTML).toBe("");
+    expect(element.innerHTML).toBe("");
 
     EventBus.publish("testChannel", "New Content");
     await wait(10);
 
-    expect(element[0].innerHTML).toBe("New Content");
+    expect(element.innerHTML).toBe("New Content");
   });
 
   it("should unsubscribe from the EventBus when the scope is destroyed", () => {
     element = $compile('<div ng-channel="testChannel"></div>')($scope);
-    $scope.$digest();
 
     $scope.$destroy();
 
@@ -54,16 +51,15 @@ describe("channel", () => {
     element = $compile(
       '<div ng-channel="testChannel">{{ a.firstName }} {{ a.lastName }}</div>',
     )($scope);
-    $scope.$digest();
-    expect(element[0].textContent).toBe(" ");
+    await wait();
+    expect(element.textContent).toBe(" ");
 
     EventBus.publish("testChannel", {
       a: { firstName: "John", lastName: "Doe" },
     });
 
     await wait(100);
-    $scope.$digest();
 
-    expect(element[0].textContent).toBe("John Doe");
+    expect(element.textContent).toBe("John Doe");
   });
 });

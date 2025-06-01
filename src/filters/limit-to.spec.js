@@ -1,6 +1,6 @@
-import { Angular } from "../loader";
-import { createInjector } from "../core/di/injector";
-import { JQLite } from "../shared/jqlite/jqlite.js";
+import { Angular } from "../loader.js";
+import { createInjector } from "../core/di/injector.js";
+import { createElementFromHTML } from "../shared/dom.js";
 
 describe("Filter: limitTo", () => {
   let items;
@@ -241,9 +241,9 @@ describe("Filter: limitTo", () => {
       { name: "Brad" },
     );
 
-    const nodeList = JQLite(
+    const nodeList = createElementFromHTML(
       "<p><span>Misko</span><span>Igor</span><span>Brad</span></p>",
-    )[0].childNodes;
+    ).childNodes;
 
     expect(limitTo(argsObj, 2).length).toBe(2);
     expect(limitTo("abc", 1).length).toBe(1);

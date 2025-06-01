@@ -1,5 +1,6 @@
 import { isString } from "../shared/utils.js";
-import { NG_ANIMATE_CHILDREN_DATA } from "./shared";
+import { NG_ANIMATE_CHILDREN_DATA } from "./shared.js";
+import { setCacheData } from "../shared/dom.js";
 
 $$AnimateChildrenDirective.$inject = ["$interpolate"];
 
@@ -13,7 +14,7 @@ export function $$AnimateChildrenDirective($interpolate) {
       const val = attrs.ngAnimateChildren;
       if (isString(val) && val.length === 0) {
         // empty attribute
-        element.data(NG_ANIMATE_CHILDREN_DATA, true);
+        setCacheData(element, NG_ANIMATE_CHILDREN_DATA, true);
       } else {
         // Interpolate and set the value, so that it is available to
         // animations that run right after compilation
@@ -23,7 +24,7 @@ export function $$AnimateChildrenDirective($interpolate) {
 
       function setData(value) {
         value = value === "on" || value === "true";
-        element.data(NG_ANIMATE_CHILDREN_DATA, value);
+        setCacheData(element, NG_ANIMATE_CHILDREN_DATA, value);
       }
     },
   };

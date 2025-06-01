@@ -32,7 +32,7 @@
  *
  * @packageDocumentation
  */
-import { parse } from "../../shared/hof";
+import { parse } from "../../shared/hof.js";
 import { isNumber } from "../../shared/utils.js";
 import {
   stringify,
@@ -41,16 +41,16 @@ import {
   padString,
 } from "../../shared/strings";
 function ngViewString(uiview) {
-  if (!uiview) return "ui-view (defunct)";
+  if (!uiview) return "ng-view (defunct)";
   const state = uiview.creationContext
     ? uiview.creationContext.name || "(root)"
     : "(none)";
-  return `[ui-view#${uiview.id} ${uiview.$type}:${uiview.fqn} (${uiview.name}@${state})]`;
+  return `[ng-view#${uiview.id}:${uiview.fqn} (${uiview.name}@${state})]`;
 }
 const viewConfigString = (viewConfig) => {
   const view = viewConfig.viewDecl;
   const state = view.$context.name || "(root)";
-  return `[View#${viewConfig.$id} from '${state}' state]: target ui-view: '${view.$ngViewName}@${view.$ngViewContextAnchor}'`;
+  return `[View#${viewConfig.$id} from '${state}' state]: target ng-view: '${view.$ngViewName}@${view.$ngViewContextAnchor}'`;
 };
 function normalizedCat(input) {
   return isNumber(input) ? Category[input] : Category[Category[input]];
@@ -118,17 +118,17 @@ export class Trace {
   enabled(category) {
     return !!this._enabled[normalizedCat(category)];
   }
-  /** @internal called by ui-router code */
+  /** @internal called by ng-router code */
   traceTransitionStart(trans) {
     if (!this.enabled(Category.TRANSITION)) return;
     console.log(`${transLbl(trans)}: Started  -> ${stringify(trans)}`);
   }
-  /** @internal called by ui-router code */
+  /** @internal called by ng-router code */
   traceTransitionIgnored(trans) {
     if (!this.enabled(Category.TRANSITION)) return;
     console.log(`${transLbl(trans)}: Ignored  <> ${stringify(trans)}`);
   }
-  /** @internal called by ui-router code */
+  /** @internal called by ng-router code */
   traceHookInvocation(step, trans, options) {
     if (!this.enabled(Category.HOOK)) return;
     const event = parse("traceData.hookType")(options) || "internal",
@@ -141,47 +141,47 @@ export class Trace {
       `${transLbl(trans)}:   Hook -> ${event} context: ${context}, ${maxLength(200, name)}`,
     );
   }
-  /** @internal called by ui-router code */
+  /** @internal called by ng-router code */
   traceHookResult(hookResult, trans) {
     if (!this.enabled(Category.HOOK)) return;
     console.log(
       `${transLbl(trans)}:   <- Hook returned: ${maxLength(200, stringify(hookResult))}`,
     );
   }
-  /** @internal called by ui-router code */
+  /** @internal called by ng-router code */
   traceResolvePath(path, when, trans) {
     if (!this.enabled(Category.RESOLVE)) return;
     console.log(`${transLbl(trans)}:         Resolving ${path} (${when})`);
   }
-  /** @internal called by ui-router code */
+  /** @internal called by ng-router code */
   traceResolvableResolved(resolvable, trans) {
     if (!this.enabled(Category.RESOLVE)) return;
     console.log(
       `${transLbl(trans)}:               <- Resolved  ${resolvable} to: ${maxLength(200, stringify(resolvable.data))}`,
     );
   }
-  /** @internal called by ui-router code */
+  /** @internal called by ng-router code */
   traceError(reason, trans) {
     if (!this.enabled(Category.TRANSITION)) return;
     console.log(
       `${transLbl(trans)}: <- Rejected ${stringify(trans)}, reason: ${reason}`,
     );
   }
-  /** @internal called by ui-router code */
+  /** @internal called by ng-router code */
   traceSuccess(finalState, trans) {
     if (!this.enabled(Category.TRANSITION)) return;
     console.log(
       `${transLbl(trans)}: <- Success  ${stringify(trans)}, final state: ${finalState.name}`,
     );
   }
-  /** @internal called by ui-router code */
+  /** @internal called by ng-router code */
   traceUIViewEvent(event, viewData, extra = "") {
     if (!this.enabled(Category.UIVIEW)) return;
     console.log(
-      `ui-view: ${padString(30, event)} ${ngViewString(viewData)}${extra}`,
+      `ng-view: ${padString(30, event)} ${ngViewString(viewData)}${extra}`,
     );
   }
-  /** @internal called by ui-router code */
+  /** @internal called by ng-router code */
   traceUIViewConfigUpdated(viewData, context) {
     if (!this.enabled(Category.UIVIEW)) return;
     this.traceUIViewEvent(
@@ -190,12 +190,12 @@ export class Trace {
       ` with ViewConfig from context='${context}'`,
     );
   }
-  /** @internal called by ui-router code */
+  /** @internal called by ng-router code */
   traceUIViewFill(viewData, html) {
     if (!this.enabled(Category.UIVIEW)) return;
     this.traceUIViewEvent("Fill", viewData, ` with: ${maxLength(200, html)}`);
   }
-  /** @internal called by ui-router code */
+  /** @internal called by ng-router code */
   traceViewSync(pairs) {
     if (!this.enabled(Category.VIEWCONFIG)) return;
     const uivheader = "uiview component fqn";
@@ -211,12 +211,12 @@ export class Trace {
       .sort((a, b) => (a[uivheader] || "").localeCompare(b[uivheader] || ""));
     console.table(mapping);
   }
-  /** @internal called by ui-router code */
+  /** @internal called by ng-router code */
   traceViewServiceEvent(event, viewConfig) {
     if (!this.enabled(Category.VIEWCONFIG)) return;
     console.log(`VIEWCONFIG: ${event} ${viewConfigString(viewConfig)}`);
   }
-  /** @internal called by ui-router code */
+  /** @internal called by ng-router code */
   traceViewServiceUIViewEvent(event, viewData) {
     if (!this.enabled(Category.VIEWCONFIG)) return;
     console.log(`VIEWCONFIG: ${event} ${ngViewString(viewData)}`);

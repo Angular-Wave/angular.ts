@@ -1,5 +1,5 @@
-import { createInjector } from "../../core/di/injector";
-import { Angular } from "../../loader";
+import { createInjector } from "../../core/di/injector.js";
+import { Angular } from "../../loader.js";
 import { createHttpBackend } from "./http-backend";
 import sinon from "sinon";
 
@@ -159,7 +159,7 @@ describe("$httpBackend", () => {
   //     null,
   //     callback,
   //     {},
-  //     $timeout(() => {}, 2000),
+  //     setTimeout(() => {}, 2000),
   //   );
   //   spyOn(xhr, "abort");
   //   expect(xhr.abort).toHaveBeenCalled();
@@ -179,7 +179,7 @@ describe("$httpBackend", () => {
   //     null,
   //     callback,
   //     {},
-  //     $timeout(() => {}, 2000),
+  //     setTimeout(() => {}, 2000),
   //   );
   //   xhr = MockXhr.$$lastInstance;
   //   spyOn(xhr, "abort");
@@ -193,7 +193,7 @@ describe("$httpBackend", () => {
   // });
 
   // it("should abort request on canceler promise resolution", () => {
-  //   const canceler = $q.defer();
+  //   const canceler = Promise.withResolvers();
 
   //   callback.and.callFake(
   //     (status, response, headers, statusText, xhrStatus) => {
@@ -244,7 +244,7 @@ describe("$httpBackend", () => {
   //     null,
   //     callback,
   //     {},
-  //     $timeout(() => {}, 2000),
+  //     setTimeout(() => {}, 2000),
   //   );
   //   spyOn(xhr, "abort").and.callThrough();
 
@@ -346,7 +346,6 @@ describe("$httpBackend", () => {
   //   });
 
   // it("should convert 0 to 404 if no content - relative url", () => {
-  //   /* global urlParsingNode: true */
   //   const originalUrlParsingNode = urlParsingNode;
 
   //   // temporarily overriding the DOM element to pretend that the test runs origin with file:// protocol

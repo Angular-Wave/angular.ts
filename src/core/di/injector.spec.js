@@ -1,6 +1,6 @@
-import { Angular } from "../../loader";
-import { createInjector, annotate } from "./injector";
-import { valueFn, extend } from "../../shared/utils.js";
+import { Angular } from "../../loader.js";
+import { createInjector, annotate } from "./injector.js";
+import { extend } from "../../shared/utils.js";
 
 describe("injector.modules", () => {
   beforeEach(() => {
@@ -433,7 +433,7 @@ describe("annotate", () => {
     ) {
       extraParams();
     }
-    /* eslint-enable */
+
     expect(annotate($f_n0)).toEqual(["$a", "b_", "_c", "d"]);
     expect($f_n0.$inject).toEqual(["$a", "b_", "_c", "d"]);
   });
@@ -1410,8 +1410,7 @@ describe("directive", () => {
     injector.loadNewModules(["a"]);
     injector.invoke(($compile, $rootScope) => {
       const elem = $compile("<div a-directive></div>")($rootScope); // compile and link
-      $rootScope.$digest();
-      expect(elem.text()).toEqual("test directive");
+      expect(elem.textContent).toEqual("test directive");
       elem.remove();
     });
   });
@@ -1424,8 +1423,7 @@ describe("directive", () => {
     injector.loadNewModules(["a"]);
     injector.invoke(($compile, $rootScope) => {
       const elem = $compile("<div a-directive></div>")($rootScope); // compile and link
-      $rootScope.$digest();
-      expect(elem.text()).toEqual("test directive");
+      expect(elem.textContent).toEqual("test directive");
       elem.remove();
     });
   });
@@ -1436,9 +1434,9 @@ it("should define module", () => {
   createInjector([
     function ($provide) {
       $provide.value("value", "value;");
-      $provide.factory("fn", valueFn("function;"));
+      $provide.factory("fn", () => "function;");
       $provide.provider("service", function Provider() {
-        this.$get = valueFn("service;");
+        this.$get = () => "service;";
       });
     },
     function (valueProvider, fnProvider, serviceProvider) {
@@ -1566,13 +1564,13 @@ describe("module", () => {
       });
     createInjector([
       "b",
-      valueFn(() => {
+      () => () => {
         log += "C";
-      }),
+      },
       [
-        valueFn(() => {
+        () => () => {
           log += "D";
-        }),
+        },
       ],
     ]);
     expect(log).toEqual("abABCD");
@@ -1675,7 +1673,7 @@ describe("factory", () => {
     expect(
       createInjector([
         function ($provide) {
-          $provide.factory("value", valueFn("abc"));
+          $provide.factory("value", () => "abc");
         },
       ]).get("value"),
     ).toEqual("abc");
@@ -1732,7 +1730,7 @@ describe("provider", () => {
       createInjector([
         function ($provide) {
           $provide.provider("value", {
-            $get: valueFn("abc"),
+            $get: () => "abc",
           });
         },
       ]).get("value"),
@@ -1775,7 +1773,11 @@ describe("provider", () => {
     expect(
       createInjector([
         function ($provide) {
-          $provide.provider({ value: valueFn({ $get: Array }) });
+          $provide.provider({
+            value: function () {
+              return { $get: Array };
+            },
+          });
         },
       ]).get("value"),
     ).toEqual([]);
