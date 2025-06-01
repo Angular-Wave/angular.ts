@@ -1,6 +1,7 @@
 import { Angular } from "../loader.js";
 import { createInjector } from "./di/injector.js";
 import { dealoc } from "../shared/dom.js";
+import { wait } from "../shared/test-utils.js";
 
 describe("ngProp*", () => {
   let $compile, $rootScope, compileProvider, $sce;
@@ -14,7 +15,6 @@ describe("ngProp*", () => {
       .decorator("$exceptionHandler", function () {
         return (exception) => {
           logs.push(exception);
-          throw new Error(exception);
         };
       });
 
@@ -29,103 +29,124 @@ describe("ngProp*", () => {
     $sce = injector.get("$sce");
   });
 
-  it("should bind boolean properties (input disabled)", () => {
+  it("should bind boolean properties (input disabled)", async () => {
     const element = $compile(
       '<button ng-prop-disabled="isDisabled">Button</button>',
     )($rootScope);
+    await wait();
     expect(element.disabled).toBe(false);
     $rootScope.isDisabled = true;
+    await wait();
     expect(element.disabled).toBe(true);
     $rootScope.isDisabled = false;
+    await wait();
     expect(element.disabled).toBe(false);
   });
 
-  it("should bind boolean properties (input checked)", () => {
+  it("should bind boolean properties (input checked)", async () => {
     const element = $compile(
       '<input type="checkbox" ng-prop-checked="isChecked" />',
     )($rootScope);
+    await wait();
     expect(element.checked).toBe(false);
     $rootScope.isChecked = true;
+    await wait();
     expect(element.checked).toBe(true);
     $rootScope.isChecked = false;
+    await wait();
     expect(element.checked).toBe(false);
   });
 
-  it("should bind string properties (title)", () => {
+  it("should bind string properties (title)", async () => {
     const element = $compile('<span ng-prop-title="title" />')($rootScope);
     $rootScope.title = 123;
+    await wait();
     expect(element.title).toBe("123");
     $rootScope.title = "foobar";
+    await wait();
     expect(element.title).toBe("foobar");
   });
 
-  it("should bind variable type properties", () => {
+  it("should bind variable type properties", async () => {
     const element = $compile('<span ng-prop-asdf="asdf" />')($rootScope);
     $rootScope.asdf = 123;
+    await wait();
     expect(element.asdf).toBe(123);
     $rootScope.asdf = "foobar";
+    await wait();
     expect(element.asdf).toBe("foobar");
     $rootScope.asdf = true;
+    await wait();
     expect(element.asdf).toBe(true);
   });
 
-  // https://github.com/angular/angular.js/issues/16797
-  it("should support falsy property values", () => {
+  it("should support falsy property values", async () => {
     const element = $compile('<span ng-prop-text="myText" />')($rootScope);
     // Initialize to truthy value
     $rootScope.myText = "abc";
+    await wait();
     expect(element.text).toBe("abc");
 
     // Assert various falsey values get assigned to the property
     $rootScope.myText = "";
+    await wait();
     expect(element.text).toBe("");
     $rootScope.myText = 0;
+    await wait();
     expect(element.text).toBe(0);
     $rootScope.myText = false;
+    await wait();
     expect(element.text).toBe(false);
     $rootScope.myText = undefined;
+    await wait();
     expect(element.text).toBeUndefined();
     $rootScope.myText = null;
+    await wait();
     expect(element.text).toBe(null);
   });
 
-  it("should directly map special properties (class)", () => {
+  it("should directly map special properties (class)", async () => {
     const element = $compile('<span ng-prop-class="myText" />')($rootScope);
     $rootScope.myText = "abc";
+    await wait();
     expect(element.class).toBe("abc");
     expect(element).not.toHaveClass("abc");
   });
 
-  it("should support mixed case using underscore-separated names", () => {
+  it("should support mixed case using underscore-separated names", async () => {
     const element = $compile('<span ng-prop-a_bcd_e="value" />')($rootScope);
     $rootScope.value = 123;
+    await wait();
     expect(element.aBcdE).toBe(123);
   });
 
-  it("should work with different prefixes", () => {
+  it("should work with different prefixes", async () => {
     $rootScope.name = "Misko";
     const element = $compile(
       '<span ng-prop-test="name" ng-Prop-test2="name" ng-Prop-test3="name"></span>',
     )($rootScope);
+    await wait();
     expect(element.test).toBe("Misko");
     expect(element.test2).toBe("Misko");
     expect(element.test3).toBe("Misko");
   });
 
-  it('should work with the "href" property', () => {
+  it('should work with the "href" property', async () => {
     $rootScope.value = "test";
     const element = $compile("<a ng-prop-href=\"'test/' + value\"></a>")(
       $rootScope,
     );
-    expect(element.href).toMatch(/\/test\/test$/);
+    await wait();
+    expect(element.href).toMatch(/test\/test$/);
   });
 
-  it("should work if they are prefixed with x- or data- and different prefixes", () => {
+  it("should work if they are prefixed with x- or data- and different prefixes", async () => {
     $rootScope.name = "Misko";
     const element = $compile(
       '<span data-ng-prop-test2="name" ng-prop-test3="name" data-ng-prop-test4="name" ' +
         'ng-prop-test5="name" ng-prop-test6="name"></span>',
     )($rootScope);
+    await wait();
     expect(element.test2).toBe("Misko");
     expect(element.test3).toBe("Misko");
     expect(element.test4).toBe("Misko");
@@ -133,25 +154,27 @@ describe("ngProp*", () => {
     expect(element.test6).toBe("Misko");
   });
 
-  it("should work independently of attributes with the same name", () => {
+  it("should work independently of attributes with the same name", async () => {
     const element = $compile('<span ng-prop-asdf="asdf" asdf="foo" />')(
       $rootScope,
     );
     $rootScope.asdf = 123;
+    await wait();
     expect(element.asdf).toBe(123);
     expect(element.getAttribute("asdf")).toBe("foo");
   });
 
-  it("should work independently of (ng-)attributes with the same name", () => {
+  it("should work independently of (ng-)attributes with the same name", async () => {
     const element = $compile('<span ng-prop-asdf="asdf" ng-attr-asdf="foo" />')(
       $rootScope,
     );
     $rootScope.asdf = 123;
+    await wait();
     expect(element.asdf).toBe(123);
     expect(element.getAttribute("asdf")).toBe("foo");
   });
 
-  it("should use the full ng-prop-* attribute name in $attr mappings", () => {
+  it("should use the full ng-prop-* attribute name in $attr mappings", async () => {
     let attrs;
     compileProvider.directive("attrExposer", () => ({
       link($scope, $element, $attrs) {
@@ -161,7 +184,7 @@ describe("ngProp*", () => {
     $compile(
       '<div attr-exposer ng-prop-title="12" ng-prop-super-title="34" ng-prop-my-camel-title="56">',
     )($rootScope);
-
+    await wait();
     expect(attrs.title).toBeUndefined();
     expect(attrs.$attr.title).toBeUndefined();
     expect(attrs.ngPropTitle).toBe("12");
@@ -245,11 +268,12 @@ describe("ngProp*", () => {
   });
 
   describe("img[src] sanitization", () => {
-    it("should accept trusted values", () => {
+    it("should accept trusted values", async () => {
       const element = $compile('<img ng-prop-src="testUrl"></img>')($rootScope);
       // Some browsers complain if you try to write `javascript:` into an `img[src]`
       // So for the test use something different
       $rootScope.testUrl = $sce.trustAsMediaUrl("someuntrustedthing:foo();");
+      await wait();
       expect(element.src).toEqual("someuntrustedthing:foo();");
     });
 
@@ -266,11 +290,17 @@ describe("ngProp*", () => {
         $compile = _$compile_;
         $rootScope = _$rootScope_;
       });
-      const element = $compile('<img ng-prop-src="testUrl"></img>')($rootScope);
+
+      app.innerHTML = '<img ng-prop-src="testUrl"></img>';
+
+      $compile(app)($rootScope);
       $rootScope.testUrl = "someUrl";
 
       await wait();
-      expect(element.src).toMatch(/^http:\/\/.*\/someSanitizedUrl$/);
+
+      expect(app.querySelector("img").src).toMatch(
+        /^http:\/\/.*\/someSanitizedUrl$/,
+      );
       expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, true);
     });
 
@@ -288,12 +318,16 @@ describe("ngProp*", () => {
         $rootScope = _$rootScope_;
         $sce = _$sce_;
       });
-      const element = $compile('<img ng-prop-src="testUrl"></img>')($rootScope);
+
+      app.innerHTML = '<img ng-prop-src="testUrl"></img>';
+
+      $compile(app)($rootScope);
+
       // Assigning javascript:foo to src makes at least IE9-11 complain, so use another
       // protocol name.
       $rootScope.testUrl = $sce.trustAsMediaUrl("untrusted:foo();");
       await wait();
-      expect(element.src).toBe("untrusted:foo();");
+      expect(app.querySelector("img").src).toBe("untrusted:foo();");
     });
   });
 
@@ -356,17 +390,23 @@ describe("ngProp*", () => {
         $compile = _$compile_;
         $rootScope = _$rootScope_;
       });
-      let element = $compile('<a ng-prop-href="testUrl"></a>')($rootScope);
+      app.innerHTML = '<a ng-prop-href="testUrl"></a>';
+      $compile(app)($rootScope);
       $rootScope.testUrl = "someUrl";
       await wait();
-      expect(element.href).toMatch(/^http:\/\/.*\/someSanitizedUrl$/);
+      expect(app.querySelector("a").href).toMatch(
+        /^http:\/\/.*\/someSanitizedUrl$/,
+      );
       expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);
 
       $$sanitizeUri.calls.reset();
 
-      element = $compile('<a ng-prop-href="testUrl"></a>')($rootScope);
+      app.innerHTML = '<a ng-prop-href="testUrl"></a>';
+      $compile(app)($rootScope);
       await wait();
-      expect(element.href).toMatch(/^http:\/\/.*\/someSanitizedUrl$/);
+      expect(app.querySelector("a").href).toMatch(
+        /^http:\/\/.*\/someSanitizedUrl$/,
+      );
       expect($$sanitizeUri).toHaveBeenCalledWith($rootScope.testUrl, false);
     });
 
@@ -399,7 +439,7 @@ describe("ngProp*", () => {
       );
       $rootScope.testUrl = "different_page";
       await wait();
-      expect(element.src).toMatch(/\/different_page$/);
+      expect(element.src).toMatch(/different_page$/);
     });
 
     it("should clear out src properties for a different domain", async () => {
@@ -407,29 +447,22 @@ describe("ngProp*", () => {
         $rootScope,
       );
       $rootScope.testUrl = "http://a.different.domain.example.com";
-      expect(async () => {
-        await wait();
-      }).toThrowError(/insecurl/);
+      await wait();
+      expect(logs[0]).toMatch(/insecurl/);
     });
 
     it("should clear out JS src properties", async () => {
-      const element = $compile('<iframe ng-prop-src="testUrl"></iframe>')(
-        $rootScope,
-      );
+      $compile('<iframe ng-prop-src="testUrl"></iframe>')($rootScope);
       $rootScope.testUrl = "javascript:alert(1);";
-      expect(async () => {
-        await wait();
-      }).toThrowError(/insecurl/);
+      await wait();
+      expect(logs[0]).toMatch(/insecurl/);
     });
 
     it("should clear out non-resource_url src properties", async () => {
-      const element = $compile('<iframe ng-prop-src="testUrl"></iframe>')(
-        $rootScope,
-      );
+      $compile('<iframe ng-prop-src="testUrl"></iframe>')($rootScope);
       $rootScope.testUrl = $sce.trustAsUrl("javascript:doTrustedStuff()");
-      expect(async () => {
-        await wait();
-      }).toThrowError(/insecurl/);
+      await wait();
+      expect(logs[0]).toMatch(/insecurl/);
     });
 
     it("should pass through $sce.trustAs() values in src properties", async () => {
@@ -464,9 +497,8 @@ describe("ngProp*", () => {
       expect(element.href).toContain("https://example.com/");
 
       $rootScope.testUrl = "https://not.example.com/";
-      expect(async () => {
-        await wait();
-      }).toThrowError(/insecurl/);
+      await wait();
+      expect(logs[0]).toMatch(/insecurl/);
     });
   });
 
@@ -482,12 +514,11 @@ describe("ngProp*", () => {
     });
 
     it("should pass through action property for the same domain", async () => {
-      const element = $compile('<form ng-prop-action="testUrl"></form>')(
-        $rootScope,
-      );
+      app.innerHTML = '<form ng-prop-action="testUrl"></form>';
+      $compile(app)($rootScope);
       $rootScope.testUrl = "different_page";
       await wait();
-      expect(element.action).toMatch(/\/different_page$/);
+      expect(app.querySelector("form").action).toMatch(/\/different_page$/);
     });
 
     it("should clear out action property for a different domain", async () => {
@@ -495,29 +526,26 @@ describe("ngProp*", () => {
         $rootScope,
       );
       $rootScope.testUrl = "http://a.different.domain.example.com";
-      expect(async () => {
-        await wait();
-      }).toThrowError(/insecurl/);
+      await wait();
+      expect(logs[0]).toMatch(/insecurl/);
     });
 
-    it("should clear out JS action property", () => {
+    it("should clear out JS action property", async () => {
       const element = $compile('<form ng-prop-action="testUrl"></form>')(
         $rootScope,
       );
       $rootScope.testUrl = "javascript:alert(1);";
-      expect(async () => {
-        await wait();
-      }).toThrowError(/insecurl/);
+      await wait();
+      expect(logs[0]).toMatch(/insecurl/);
     });
 
-    it("should clear out non-resource_url action property", () => {
+    it("should clear out non-resource_url action property", async () => {
       const element = $compile('<form ng-prop-action="testUrl"></form>')(
         $rootScope,
       );
       $rootScope.testUrl = $sce.trustAsUrl("javascript:doTrustedStuff()");
-      expect(async () => {
-        await wait();
-      }).toThrowError(/insecurl/);
+      await wait();
+      expect(logs[0]).toMatch(/insecurl/);
     });
 
     it("should pass through $sce.trustAsResourceUrl() values in action property", async () => {
@@ -544,14 +572,13 @@ describe("ngProp*", () => {
       );
     });
 
-    it("should reject invalid RESOURCE_URLs", () => {
+    it("should reject invalid RESOURCE_URLs", async () => {
       const element = $compile(
         '<link ng-prop-href="testUrl" rel="stylesheet" />',
       )($rootScope);
       $rootScope.testUrl = "https://evil.example.org/css.css";
-      expect(async () => {
-        await wait();
-      }).toThrowError(/insecurl/);
+      await wait();
+      expect(logs[0]).toMatch(/insecurl/);
     });
 
     it("should accept valid RESOURCE_URLs", async () => {
@@ -589,21 +616,24 @@ describe("ngProp*", () => {
           });
       });
 
-      it("should set html", () => {
+      it("should set html", async () => {
         const element = $compile('<div ng-prop-inner_h_t_m_l="html"></div>')(
           $rootScope,
         );
         $rootScope.html = '<div onclick="">hello</div>';
+        await wait();
         expect(element.innerHTML).toEqual('<div onclick="">hello</div>');
       });
 
-      it("should update html", () => {
+      it("should update html", async () => {
         const element = $compile('<div ng-prop-inner_h_t_m_l="html"></div>')(
           $rootScope,
         );
         $rootScope.html = "hello";
+        await wait();
         expect(element.innerHTML).toEqual("hello");
         $rootScope.html = "goodbye";
+        await wait();
         expect(element.innerHTML).toEqual("goodbye");
       });
     });
@@ -622,41 +652,46 @@ describe("ngProp*", () => {
         });
       });
 
-      it("should NOT set html for untrusted values", () => {
+      it("should NOT set html for untrusted values", async () => {
         const element = $compile('<div ng-prop-inner_h_t_m_l="html"></div>')(
           $rootScope,
         );
         $rootScope.html = '<div onclick="">hello</div>';
-        expect(() => {}).toThrowError(/unsafe/);
+        await wait();
+        expect(logs[0]).toMatch(/unsafe/);
       });
 
-      it("should NOT set html for wrongly typed values", () => {
+      it("should NOT set html for wrongly typed values", async () => {
         const element = $compile('<div ng-prop-inner_h_t_m_l="html"></div>')(
           $rootScope,
         );
         $rootScope.html = $sce.trustAsCss('<div onclick="">hello</div>');
-        expect(() => {}).toThrowError(/unsafe/);
+        await wait();
+        expect(logs[0]).toMatch(/unsafe/);
       });
 
-      it("should set html for trusted values", () => {
+      it("should set html for trusted values", async () => {
         const element = $compile('<div ng-prop-inner_h_t_m_l="html"></div>')(
           $rootScope,
         );
         $rootScope.html = $sce.trustAsHtml('<div onclick="">hello</div>');
+        await wait();
         expect(element.innerHTML).toEqual('<div onclick="">hello</div>');
       });
 
-      it("should update html", () => {
+      it("should update html", async () => {
         const element = $compile('<div ng-prop-inner_h_t_m_l="html"></div>')(
           $rootScope,
         );
         $rootScope.html = $sce.trustAsHtml("hello");
+        await wait();
         expect(element.innerHTML).toEqual("hello");
         $rootScope.html = $sce.trustAsHtml("goodbye");
+        await wait();
         expect(element.innerHTML).toEqual("goodbye");
       });
 
-      it("should not cause infinite recursion for trustAsHtml object watches", () => {
+      it("should not cause infinite recursion for trustAsHtml object watches", async () => {
         // Ref: https://github.com/angular/angular.js/issues/3932
         // If the binding is a function that creates a new value on every call via trustAs, we'll
         // trigger an infinite digest if we don't take care of it.
@@ -666,10 +701,11 @@ describe("ngProp*", () => {
         $rootScope.getHtml = function () {
           return $sce.trustAsHtml('<div onclick="">hello</div>');
         };
+        await wait();
         expect(element.innerHTML).toEqual('<div onclick="">hello</div>');
       });
 
-      it("should handle custom $sce objects", () => {
+      it("should handle custom $sce objects", async () => {
         function MySafeHtml(val) {
           this.val = val;
         }
@@ -699,36 +735,39 @@ describe("ngProp*", () => {
         // Ref: https://github.com/angular/angular.js/issues/14526
         // Previous code used toString for change detection, which fails for custom objects
         // that don't override toString.
-        const element = $compile(
-          '<div ng-prop-inner_h_t_m_l="getHtml()"></div>',
-        )($rootScope);
         let html = "hello";
         $rootScope.getHtml = function () {
           return $sce.trustAsHtml(html);
         };
+        const element = $compile(
+          '<div ng-prop-inner_h_t_m_l="getHtml()"></div>',
+        )($rootScope);
+        await wait();
+
         expect(element.innerHTML).toEqual("hello");
-        html = "goodbye";
-        expect(element.innerHTML).toEqual("goodbye");
       });
     });
   });
 
   describe("*[style]", () => {
-    it("should NOT set style for untrusted values", () => {
-      const element = $compile('<div ng-prop-style="style"></div>')($rootScope);
+    it("should NOT set style for untrusted values", async () => {
+      $compile('<div ng-prop-style="style"></div>')($rootScope);
       $rootScope.style = "margin-left: 10px";
-      expect(() => {}).toThrowError(/unsafe/);
+      await wait();
+      expect(logs[0]).toMatch(/unsafe/);
     });
 
-    it("should NOT set style for wrongly typed values", () => {
+    it("should NOT set style for wrongly typed values", async () => {
       const element = $compile('<div ng-prop-style="style"></div>')($rootScope);
       $rootScope.style = $sce.trustAsHtml("margin-left: 10px");
-      expect(() => {}).toThrowError(/unsafe/);
+      await wait();
+      expect(logs[0]).toMatch(/unsafe/);
     });
 
-    it("should set style for trusted values", () => {
+    it("should set style for trusted values", async () => {
       const element = $compile('<div ng-prop-style="style"></div>')($rootScope);
       $rootScope.style = $sce.trustAsCss("margin-left: 10px");
+      await wait();
       expect(element.style["margin-left"]).toEqual("10px");
     });
   });

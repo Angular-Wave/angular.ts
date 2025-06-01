@@ -27,7 +27,6 @@ describe("ngOn* event binding", () => {
     app.innerHTML = '<span ng-on-foo="e = $event"></span>';
     $compile(app)($rootScope);
     await wait();
-    debugger;
     browserTrigger(app.querySelector("span"), "foo");
     expect($rootScope.e.target).toBeDefined();
     expect($rootScope.e.target).toBe(app.querySelector("span"));
