@@ -52,6 +52,7 @@ export class ViewService {
     this._viewConfigFactory = factory;
   }
   createViewConfig(path, decl) {
+    /** @type {function(any, any): any} */
     const cfgFactory = this._viewConfigFactory;
     if (!cfgFactory)
       throw new Error(

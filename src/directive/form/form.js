@@ -16,6 +16,20 @@ import {
   INVALID_CLASS,
 } from "../../shared/constants.js";
 
+/**
+ * @type {{
+ *   $nonscope: boolean,
+ *   $addControl: Function,
+ *   $getControls: () => any[],
+ *   $$renameControl: Function,
+ *   $removeControl: Function,
+ *   $setValidity: Function | ((key: any, isValid: boolean, control: any) => any),
+ *   $setDirty: Function,
+ *   $setPristine: Function,
+ *   $setSubmitted: Function,
+ *   $$setSubmitted: Function
+ * }}
+ */
 export const nullFormCtrl = {
   $nonscope: true,
   $addControl: () => {},

@@ -293,6 +293,7 @@ export class Transition {
   getResolveTokens(pathname = "to") {
     return new ResolveContext(this._treeChanges[pathname]).getTokens();
   }
+
   /**
    * Dynamically adds a new [[Resolvable]] (i.e., [[StateDeclaration.resolve]]) to this transition.
    *
@@ -336,7 +337,10 @@ export class Transition {
     });
     assert(!!targetNode, `targetNode not found ${stateName}`);
     const resolveContext = new ResolveContext(topath);
-    resolveContext.addResolvables([resolvable], targetNode.state);
+    resolveContext.addResolvables(
+      [resolvable],
+      /** @type {import("../path/path-node.js").PathNode} */ (targetNode).state,
+    );
   }
   /**
    * Gets the transition from which this transition was redirected.

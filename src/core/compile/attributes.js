@@ -53,7 +53,7 @@ export class Attributes {
     this.$nodeRef = nodeRef;
   }
 
-  /** @type {Node} */
+  /** @type {Node|Element} */
   get $$element() {
     return this.$nodeRef.node;
   }
@@ -143,7 +143,7 @@ export class Attributes {
     // become unstable.
 
     const node = this.$$element;
-    const booleanKey = getBooleanAttrName(node, key);
+    const booleanKey = getBooleanAttrName(/** @type {Element}   */ node, key);
     const aliasedKey = ALIASED_ATTR[key];
     let observer = key;
 

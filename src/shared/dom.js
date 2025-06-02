@@ -159,7 +159,7 @@ export function isTextNode(html) {
 
 /**
  * Check if element can accept expando data
- * @param {Element} node
+ * @param {Element|Node} node
  * @returns {boolean}
  */
 function elementAcceptsData(node) {
@@ -326,7 +326,7 @@ export function getOrSetCacheData(element, key, value) {
  */
 export function setCacheData(element, key, value) {
   if (elementAcceptsData(element)) {
-    const expandoStore = getExpando(element, true);
+    const expandoStore = getExpando(/** @type {Element} */ (element), true);
     const data = expandoStore && expandoStore.data;
     data[kebabToCamel(key)] = value;
   } else {

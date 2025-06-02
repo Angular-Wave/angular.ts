@@ -137,7 +137,10 @@ export class NgModelController {
     this.$$parsedNgModel = $parse($attr["ngModel"]);
     this.$$parsedNgModelAssign = this.$$parsedNgModel.assign;
 
-    /** @type {import("../../core/parse/parse").CompiledExpression|((Scope) => any)} */
+    /**
+     * @type {import("../../core/parse/parse").CompiledExpression |
+     *        (function(import("../../core/scope/scope.js").Scope): any)}
+     */
     this.$$ngModelGet = this.$$parsedNgModel;
     this.$$ngModelSet = this.$$parsedNgModelAssign;
     this.$$pendingDebounce = null;
@@ -151,9 +154,6 @@ export class NgModelController {
 
     /** @type {import('../../core/scope/scope.js').Scope} */
     this.$$scope = $scope; // attempt to bind to nearest controller if present
-
-    /** @type {import('../../core/scope/scope.js').Scope} */
-    this.$$rootScope = $scope.$root;
     this.$$attr = $attr;
     this.$$element = $element;
     this.$$animate = $animate;
@@ -773,7 +773,7 @@ export class NgModelController {
   }
 
   $$writeModelToScope() {
-    this.$$ngModelSet(this.$$scope.$target, this.$modelValue);
+    this.$$ngModelSet(this.$$scope, this.$modelValue);
     Object.values(this.$viewChangeListeners).forEach((listener) => {
       try {
         listener();
