@@ -1,5 +1,9 @@
 import { isDefined, minErr } from "../../../shared/utils.js";
 
+/**
+ * @typedef {import("./token.ts").Token} Token
+ */
+
 const $parseMinErr = minErr("$parse");
 
 const ESCAPE = {
@@ -20,17 +24,6 @@ const OPERATORS = new Set(
  * @typedef {Object} LexerOptions
  * @property {(ch: string, codePoint: number) => boolean} [isIdentifierStart] - Custom function to determine if a character is a valid identifier start.
  * @property {(ch: string, codePoint: number) => boolean} [isIdentifierContinue] - Custom function to determine if a character is a valid identifier continuation.
- */
-
-/**
- * Represents a token produced by the lexer, which will be used by the AST to construct an abstract syntax tree.
- * @typedef {Object} Token
- * @property {number} index - Index of the token.
- * @property {string} text - Text of the token.
- * @property {boolean} [identifier] - Indicates if token is an identifier.
- * @property {boolean} [constant] - Indicates if token is a constant.
- * @property {string|number} [value] - Value of the token if it's a constant.
- * @property {boolean} [operator] - Indicates if token is an operator.
  */
 
 /**

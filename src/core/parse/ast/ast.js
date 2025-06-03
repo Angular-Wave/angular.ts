@@ -5,7 +5,11 @@ import { minErr } from "../../../shared/utils.js";
 const $parseMinErr = minErr("$parse");
 
 /**
- * @typedef {import("./ast-node.js").ASTNode} ASTNode
+ * @typedef {import("./ast-node.ts").ASTNode} ASTNode
+ */
+
+/**
+ * @typedef {import("../lexer/token.js").Token} Token
  */
 
 // Keep this exported in case modification is required
@@ -178,7 +182,7 @@ export class AST {
     while ((token = this.expect("==", "!=", "===", "!=="))) {
       left = {
         type: ASTType.BinaryExpression,
-        operator: /** @type {import("../lexer/lexer.js").Token} */ (token).text,
+        operator: /** @type {Token} */ (token).text,
         left,
         right: this.relational(),
       };
@@ -196,7 +200,7 @@ export class AST {
     while ((token = this.expect("<", ">", "<=", ">="))) {
       left = {
         type: ASTType.BinaryExpression,
-        operator: /** @type {import("../lexer/lexer.js").Token} */ (token).text,
+        operator: /** @type {Token} */ (token).text,
         left,
         right: this.additive(),
       };
@@ -214,7 +218,7 @@ export class AST {
     while ((token = this.expect("+", "-"))) {
       left = {
         type: ASTType.BinaryExpression,
-        operator: /** @type {import("../lexer/lexer.js").Token} */ (token).text,
+        operator: /** @type {Token} */ (token).text,
         left,
         right: this.multiplicative(),
       };

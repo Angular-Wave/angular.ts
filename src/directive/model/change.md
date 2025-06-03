@@ -1,12 +1,12 @@
-## ngChange Directive
+## data-change attribute
 
 ### Description
 
 Evaluate the given expression when the user changes the input. The expression is evaluated immediately, unlike the JavaScript `onchange` event which only triggers at the end of a change (usually, when the user leaves the form element or presses the return key).
 
-The `ngChange` expression is only evaluated when a change in the input value causes a new value to be committed to the model.
+The `data-change ` expression is only evaluated when a change in the input value causes a new value to be committed to the model.
 
-### Conditions where `ngChange` is Not Evaluated
+### Conditions where `data-change` is Not Evaluated
 
 - If the value returned from the `$parsers` transformation pipeline has not changed.
 - If the input has continued to be invalid since the model will stay `null`.
@@ -14,7 +14,7 @@ The `ngChange` expression is only evaluated when a change in the input value cau
 
 ### Requirements
 
-Note, this directive requires `ngModel` to be present.
+Note, this data attribute modifoed `ngModel` directive.
 
 ### Element
 
@@ -22,4 +22,4 @@ Note, this directive requires `ngModel` to be present.
 
 ### Parameters
 
-- `ngChange` (`string`): [Expression](guide/expression) to evaluate upon change in input value.
+- `data-chage` (`string`): [Expression](guide/expression) to evaluate upon change in input value.

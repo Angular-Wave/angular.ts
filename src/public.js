@@ -41,7 +41,6 @@ import {
 import { ngOptionsDirective } from "./directive/options/options.js";
 import { ngTranscludeDirective } from "./directive/transclude/transclude.js";
 import { ngModelDirective } from "./directive/model/model.js";
-import { ngChangeDirective } from "./directive/change/change.js";
 import {
   maxlengthDirective,
   minlengthDirective,
@@ -191,7 +190,6 @@ export function publishExternalAPI(angular) {
               ngOptions: ngOptionsDirective,
               ngTransclude: ngTranscludeDirective,
               ngModel: ngModelDirective,
-              ngChange: ngChangeDirective,
               pattern: patternDirective,
               ngPattern: patternDirective,
               required: requiredDirective,

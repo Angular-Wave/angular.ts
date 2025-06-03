@@ -4,16 +4,6 @@
  * @property {(ch: string, codePoint: number) => boolean} [isIdentifierContinue] - Custom function to determine if a character is a valid identifier continuation.
  */
 /**
- * Represents a token produced by the lexer, which will be used by the AST to construct an abstract syntax tree.
- * @typedef {Object} Token
- * @property {number} index - Index of the token.
- * @property {string} text - Text of the token.
- * @property {boolean} [identifier] - Indicates if token is an identifier.
- * @property {boolean} [constant] - Indicates if token is a constant.
- * @property {string|number} [value] - Value of the token if it's a constant.
- * @property {boolean} [operator] - Indicates if token is an operator.
- */
-/**
  * Represents a lexer that tokenizes input text. The Lexer takes the original expression string and returns an array of tokens parsed from that string.
  * For example, the string "a + b" would result in tokens for a, +, and b.
  */
@@ -116,6 +106,7 @@ export class Lexer {
      */
     handleUnicodeEscape(): string;
 }
+export type Token = import("./token.ts").Token;
 export type LexerOptions = {
     /**
      * - Custom function to determine if a character is a valid identifier start.
@@ -125,33 +116,4 @@ export type LexerOptions = {
      * - Custom function to determine if a character is a valid identifier continuation.
      */
     isIdentifierContinue?: (ch: string, codePoint: number) => boolean;
-};
-/**
- * Represents a token produced by the lexer, which will be used by the AST to construct an abstract syntax tree.
- */
-export type Token = {
-    /**
-     * - Index of the token.
-     */
-    index: number;
-    /**
-     * - Text of the token.
-     */
-    text: string;
-    /**
-     * - Indicates if token is an identifier.
-     */
-    identifier?: boolean;
-    /**
-     * - Indicates if token is a constant.
-     */
-    constant?: boolean;
-    /**
-     * - Value of the token if it's a constant.
-     */
-    value?: string | number;
-    /**
-     * - Indicates if token is an operator.
-     */
-    operator?: boolean;
 };

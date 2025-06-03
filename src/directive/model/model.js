@@ -1151,6 +1151,10 @@ export function ngModelDirective() {
               if (modelCtrl.$touched) return;
               setTouched();
             });
+
+            modelCtrl.$viewChangeListeners.push(() =>
+              scope.$eval(element.dataset["change"]),
+            );
           },
         };
       },

@@ -1,5 +1,8 @@
 /**
- * @typedef {import("./ast-node.js").ASTNode} ASTNode
+ * @typedef {import("./ast-node.ts").ASTNode} ASTNode
+ */
+/**
+ * @typedef {import("../lexer/token.js").Token} Token
  */
 /** @type {Map<string,any>} */
 export const literals: Map<string, any>;
@@ -28,7 +31,7 @@ export class AST {
      */
     ast(text: string): ASTNode;
     text: string;
-    tokens: import("../lexer/lexer.js").Token[];
+    tokens: import("../lexer/token.js").Token[];
     /**
      * Parses a program.
      * @returns {ASTNode} The program node.
@@ -162,4 +165,5 @@ export class AST {
      */
     expect(...expected?: string[]): import("../lexer/lexer.js").Token | boolean;
 }
-export type ASTNode = import("./ast-node.js").ASTNode;
+export type ASTNode = import("./ast-node.ts").ASTNode;
+export type Token = import("../lexer/token.js").Token;

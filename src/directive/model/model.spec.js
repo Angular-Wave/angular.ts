@@ -1893,3 +1893,80 @@ describe("ngModel", () => {
   //   });
   // });
 });
+
+describe("data-change", () => {
+  let $rootScope, $compile;
+  let el = document.getElementById("app");
+
+  beforeEach(() => {
+    window.angular = new Angular();
+  });
+
+  afterEach(() => dealoc(el));
+
+  it("should $eval expression after new value is set in the model", async () => {
+    el.innerHTML =
+      'Test<input type="text" ng-model="value" data-change="change()" />';
+
+    window.angular.bootstrap(el, []).invoke((_$rootScope_, _$compile_) => {
+      $rootScope = _$rootScope_;
+      $compile = _$compile_;
+    });
+
+    $rootScope.change = jasmine.createSpy("change").and.callFake(() => {
+      expect($rootScope.value).toBe("new value");
+    });
+
+    el.querySelector("input").setAttribute("value", "new value");
+    el.querySelector("input").dispatchEvent(new Event("change"));
+    await wait();
+    expect($rootScope.change).toHaveBeenCalled();
+  });
+
+  it("should not $eval the expression if changed from model", async () => {
+    el.innerHTML =
+      'Test<input type="text" ng-model="value" data-change="change()" />';
+
+    window.angular.bootstrap(el, []).invoke((_$rootScope_, _$compile_) => {
+      $rootScope = _$rootScope_;
+      $compile = _$compile_;
+    });
+
+    $rootScope.change = jasmine.createSpy("change");
+    $rootScope.$apply("value = true");
+    await wait();
+    expect($rootScope.change).not.toHaveBeenCalled();
+  });
+
+  it("should $eval ngChange expression on checkbox", async () => {
+    el.innerHTML =
+      'Test<input type="checkbox" ng-model="value" data-change="changeFn()" />';
+
+    window.angular.bootstrap(el, []).invoke((_$rootScope_, _$compile_) => {
+      $rootScope = _$rootScope_;
+      $compile = _$compile_;
+    });
+
+    $rootScope.changeFn = jasmine.createSpy("changeFn");
+    expect($rootScope.changeFn).not.toHaveBeenCalled();
+
+    el.querySelector("input").dispatchEvent(new Event("change"));
+    await wait();
+    expect($rootScope.changeFn).toHaveBeenCalled();
+  });
+
+  it("should be able to change the model and via that also update the view", async () => {
+    el.innerHTML =
+      '<input type="text" ng-model="value" data-change="value=\'b\'" />';
+
+    window.angular.bootstrap(el, []).invoke((_$rootScope_, _$compile_) => {
+      $rootScope = _$rootScope_;
+      $compile = _$compile_;
+    });
+
+    el.querySelector("input").setAttribute("value", "a");
+    el.querySelector("input").dispatchEvent(new Event("change"));
+    await wait();
+    expect(el.querySelector("input").value).toBe("b");
+  });
+});
