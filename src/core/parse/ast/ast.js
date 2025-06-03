@@ -5,7 +5,7 @@ import { minErr } from "../../../shared/utils.js";
 const $parseMinErr = minErr("$parse");
 
 /**
- * @typedef {import("./ast.d.ts").ASTNode} ASTNode
+ * @typedef {import("./ast-node.js").ASTNode} ASTNode
  */
 
 // Keep this exported in case modification is required

@@ -8,10 +8,10 @@
  */
 export function HttpBackendProvider(): void;
 export class HttpBackendProvider {
-    $get: (string | (($browser: any) => (method: any, url: any, post: any, callback: any, headers: any, timeout: any, withCredentials: any, responseType: any, eventHandlers: any, uploadEventHandlers: any) => void))[];
+    $get: (string | (($browser: import("../browser.js").Browser) => (method: any, url: any, post: any, callback: any, headers: any, timeout: any, withCredentials: any, responseType: any, eventHandlers: any, uploadEventHandlers: any) => void))[];
 }
 /**
- * @param {import('../browser').Browser} $browser
+ * @param {import('../browser.js').Browser} $browser
  * @returns
  */
-export function createHttpBackend($browser: any): (method: any, url: any, post: any, callback: any, headers: any, timeout: any, withCredentials: any, responseType: any, eventHandlers: any, uploadEventHandlers: any) => void;
+export function createHttpBackend($browser: import("../browser.js").Browser): (method: any, url: any, post: any, callback: any, headers: any, timeout: any, withCredentials: any, responseType: any, eventHandlers: any, uploadEventHandlers: any) => void;

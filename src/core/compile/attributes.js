@@ -143,7 +143,7 @@ export class Attributes {
     // become unstable.
 
     const node = this.$$element;
-    const booleanKey = getBooleanAttrName(/** @type {Element}   */ node, key);
+    const booleanKey = getBooleanAttrName(/** @type {Element}   */ (node), key);
     const aliasedKey = ALIASED_ATTR[key];
     let observer = key;
 
@@ -331,6 +331,6 @@ function tokenDifference(str1, str2) {
   const tokens1 = new Set(str1.split(/\s+/));
   const tokens2 = new Set(str2.split(/\s+/));
 
-  const difference = [...tokens1].filter((token) => !tokens2.has(token));
+  const difference = Array.from(tokens1).filter((token) => !tokens2.has(token));
   return difference.join(" ");
 }

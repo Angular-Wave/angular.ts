@@ -4,7 +4,7 @@ import { ASTInterpreter } from "../interpreter.js";
 
 /**
  * @typedef {Object} ParsedAST
- * @property {import("../ast/ast.js").ASTNode} ast - AST representation of expression
+ * @property {import("../ast/ast-node.d.ts").ASTNode} ast - AST representation of expression
  */
 
 /**

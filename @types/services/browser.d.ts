@@ -105,6 +105,6 @@ export class Browser {
  * Remove this in the future
  */
 export class BrowserProvider {
-    $get: (string | (($$taskTrackerFactory: any) => Browser))[];
+    $get: (string | (($$taskTrackerFactory: import("../core/task-tracker-factory.js").TaskTracker) => Browser))[];
 }
 export type UrlChangeListener = (arg0: string, arg1: string | null) => any;

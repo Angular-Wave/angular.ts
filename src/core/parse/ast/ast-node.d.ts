@@ -77,5 +77,5 @@ export type ASTNode = {
   filter?: boolean;
 
   /** Indicates in node depends on non-shallow state of objects */
-  isPure: boolean;
+  isPure?: boolean;
 };

@@ -68,7 +68,7 @@ export class ParamTypes {
         throw new Error("You cannot override a type's .pattern at runtime.");
       Object.assign(
         this.types[type.name],
-        window.angular.$injector.invoke(type.def),
+        window["angular"].$injector.invoke(type.def),
       );
     }
   }

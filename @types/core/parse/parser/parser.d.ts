@@ -1,6 +1,6 @@
 /**
  * @typedef {Object} ParsedAST
- * @property {import("../ast/ast.js").ASTNode} ast - AST representation of expression
+ * @property {import("../ast/ast-node.d.ts").ASTNode} ast - AST representation of expression
  */
 /**
  * @constructor
@@ -32,6 +32,7 @@ export type ParsedAST = {
     /**
      * - AST representation of expression
      */
-    ast: import("../ast/ast.js").ASTNode;
+    ast: import("../ast/ast-node.d.ts").ASTNode;
 };
+import { AST } from "../ast/ast.js";
 import { ASTInterpreter } from "../interpreter.js";

@@ -5,7 +5,7 @@ const INACTIVE_CLASS = "ng-inactive";
 
 class NgMessageCtrl {
   /**
-   * @param {import('../../shared//dom').JQLite} $element
+   * @param {Element} $element
    * @param {import('../../core/scope/scope.js').Scope} $scope
    * @param {import('../../core/compile/attributes').Attributes} $attrs
    * @param {*} $animate

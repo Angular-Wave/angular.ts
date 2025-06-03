@@ -242,7 +242,7 @@ export class BrowserProvider {
   $get = [
     "$$taskTrackerFactory",
     /**
-     * @param {import('../core/task-tracker-factory').TaskTracker} $$taskTrackerFactory
+     * @param {import('../core/task-tracker-factory.js').TaskTracker} $$taskTrackerFactory
      * @returns
      */
     ($$taskTrackerFactory) => new Browser($$taskTrackerFactory),

@@ -47,13 +47,13 @@ export function ngMessageDefaultDirective($animate: any): {
 export namespace ngMessageDefaultDirective { }
 declare class NgMessageCtrl {
     /**
-     * @param {import('../../shared//dom').JQLite} $element
+     * @param {Element} $element
      * @param {import('../../core/scope/scope.js').Scope} $scope
      * @param {import('../../core/compile/attributes').Attributes} $attrs
      * @param {*} $animate
      */
-    constructor($element: any, $scope: import("../../core/scope/scope.js").Scope, $attrs: any, $animate: any);
-    $element: any;
+    constructor($element: Element, $scope: import("../../core/scope/scope.js").Scope, $attrs: any, $animate: any);
+    $element: Element;
     $scope: import("../../core/scope/scope.js").Scope;
     $attrs: any;
     $animate: any;

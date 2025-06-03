@@ -38,7 +38,7 @@ let ELEMENT;
 export function bootstrap(htmlContent, moduleName) {
   if (!ELEMENT) {
     ELEMENT = document.getElementById("app");
-    window.ELEMENT = ELEMENT;
+    window["ELEMENT"] = ELEMENT;
   }
   dealoc(ELEMENT);
   ELEMENT.innerHTML = htmlContent;

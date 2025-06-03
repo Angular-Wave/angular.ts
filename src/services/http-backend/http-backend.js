@@ -13,7 +13,7 @@ export function HttpBackendProvider() {
   this.$get = [
     "$browser",
     /**
-     * @param {import('../browser').Browser} $browser
+     * @param {import('../browser.js').Browser} $browser
      * @returns
      */
     function ($browser) {
@@ -23,7 +23,7 @@ export function HttpBackendProvider() {
 }
 
 /**
- * @param {import('../browser').Browser} $browser
+ * @param {import('../browser.js').Browser} $browser
  * @returns
  */
 export function createHttpBackend($browser) {

@@ -155,7 +155,7 @@ export class TemplateFactoryProvider {
    * Creates a component's template by invoking an injectable provider function.
    *
    * @param {import('../types.js').Injectable<any>} provider Function to invoke via `locals`
-   * @return {string} The template html as a string: "<component-name input1='::$resolve.foo'></component-name>".
+   * @return {Promise<any>} The template html as a string: "<component-name input1='::$resolve.foo'></component-name>".
    */
   fromComponentProvider(provider, context) {
     const deps = annotate(provider);
