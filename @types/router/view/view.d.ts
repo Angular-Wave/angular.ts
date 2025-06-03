@@ -31,7 +31,7 @@ export class ViewService {
     _rootViewContext(context: any): any;
     _rootContext: any;
     _viewConfigFactory(factory: any): void;
-    createViewConfig(path: any, decl: any): (void & any[]) | void[];
+    createViewConfig(path: any, decl: any): any[];
     /**
      * Deactivates a ViewConfig.
      *

@@ -86,15 +86,15 @@ export class NgModelController {
     $name: any;
     $$parentForm: {
         $nonscope: boolean;
-        $addControl: () => void;
+        $addControl: Function;
         $getControls: () => any[];
-        $$renameControl: (control: any, name: any) => void;
-        $removeControl: () => void;
-        $setValidity: () => void;
-        $setDirty: () => void;
-        $setPristine: () => void;
-        $setSubmitted: () => void;
-        $$setSubmitted: () => void;
+        $$renameControl: Function;
+        $removeControl: Function;
+        $setValidity: Function | ((key: any, isValid: boolean, control: any) => any);
+        $setDirty: Function;
+        $setPristine: Function;
+        $setSubmitted: Function;
+        $$setSubmitted: Function;
     };
     $options: {
         $$options: import("../model-options/model-options.js").ModelOptionsConfig;
@@ -107,8 +107,11 @@ export class NgModelController {
     $$updateEventHandler(ev: any): void;
     $$parsedNgModel: import("../../core/parse/parse.js").CompiledExpression;
     $$parsedNgModelAssign: (arg0: any, arg1: any) => any;
-    /** @type {import("../../core/parse/parse").CompiledExpression|((Scope) => any)} */
-    $$ngModelGet: any | ((Scope: any) => any);
+    /**
+     * @type {import("../../core/parse/parse").CompiledExpression |
+     *        (function(import("../../core/scope/scope.js").Scope): any)}
+     */
+    $$ngModelGet: any | ((arg0: import("../../core/scope/scope.js").Scope) => any);
     $$ngModelSet: (arg0: any, arg1: any) => any;
     $$pendingDebounce: number;
     $$parserValid: boolean;
@@ -118,8 +121,6 @@ export class NgModelController {
     $$currentValidationRunId: number;
     /** @type {import('../../core/scope/scope.js').Scope} */
     $$scope: import("../../core/scope/scope.js").Scope;
-    /** @type {import('../../core/scope/scope.js').Scope} */
-    $$rootScope: import("../../core/scope/scope.js").Scope;
     $$attr: import("../../core/compile/attributes.js").Attributes;
     $$element: Element;
     $$animate: any;

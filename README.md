@@ -13,7 +13,7 @@ The result is a high-performance, buildless, progressive and battle-tested JS fr
 With AngularTS, you get a decade-long optimization effort of Angular Team at Google and massive testing suite, required for applications like Google Cloud and Kubernetes, plus:
 - a fully reactive change-detection model without digests or virtual DOMs.
 - access to native DOM APIs at component and directive level (no `JQuery`or `JQLite`)
-- access to native Promises API (no `$q` oe `$timetout`)
+- access to native Promises API (no `$q` or `$timetout`)
 - built-in enterprise-level router (`ui-router` ported as `ng-router`)
 - built-in animations (`animate`)
 - new directives, inspired by HTMX

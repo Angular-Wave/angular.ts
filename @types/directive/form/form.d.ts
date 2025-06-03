@@ -1,16 +1,30 @@
 export function setupValidity(instance: any): void;
-export namespace nullFormCtrl {
-    let $nonscope: boolean;
-    function $addControl(): void;
-    function $getControls(): any[];
-    function $$renameControl(control: any, name: any): void;
-    function $removeControl(): void;
-    function $setValidity(): void;
-    function $setDirty(): void;
-    function $setPristine(): void;
-    function $setSubmitted(): void;
-    function $$setSubmitted(): void;
-}
+/**
+ * @type {{
+ *   $nonscope: boolean,
+ *   $addControl: Function,
+ *   $getControls: () => any[],
+ *   $$renameControl: Function,
+ *   $removeControl: Function,
+ *   $setValidity: Function | ((key: any, isValid: boolean, control: any) => any),
+ *   $setDirty: Function,
+ *   $setPristine: Function,
+ *   $setSubmitted: Function,
+ *   $$setSubmitted: Function
+ * }}
+ */
+export const nullFormCtrl: {
+    $nonscope: boolean;
+    $addControl: Function;
+    $getControls: () => any[];
+    $$renameControl: Function;
+    $removeControl: Function;
+    $setValidity: Function | ((key: any, isValid: boolean, control: any) => any);
+    $setDirty: Function;
+    $setPristine: Function;
+    $setSubmitted: Function;
+    $$setSubmitted: Function;
+};
 export const PENDING_CLASS: "ng-pending";
 /**
  * @property {boolean} $dirty True if user has already interacted with the form.

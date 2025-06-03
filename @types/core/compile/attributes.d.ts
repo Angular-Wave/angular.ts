@@ -16,8 +16,8 @@ export class Attributes {
     $attr: {};
     /** @type {import("../../shared/noderef.js").NodeRef} */
     $nodeRef: import("../../shared/noderef.js").NodeRef;
-    /** @type {Node} */
-    get $$element(): Node;
+    /** @type {Node|Element} */
+    get $$element(): Node | Element;
     /**
      * Converts an attribute name (e.g. dash/colon/underscore-delimited string, optionally prefixed with `x-` or
      * `data-`) to its normalized, camelCase form.

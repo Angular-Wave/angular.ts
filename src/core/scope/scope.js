@@ -204,7 +204,7 @@ export class Scope {
 
     this.$parent = parent
       ? parent
-      : /** @type {Scope} */ (this).$root === this
+      : /** @type {Scope} */ (this).$root === /** @type {Scope} */ (this)
         ? null
         : context;
 
@@ -492,7 +492,7 @@ export class Scope {
       $emit: this.$emit.bind(this),
       $broadcast: this.$broadcast.bind(this),
       $transcluded: this.$transcluded.bind(this),
-      $handler: this,
+      $handler: /** @type {Scope} */ (this),
       $parent: this.$parent,
       $root: this.$root,
       $children: this.$children,
