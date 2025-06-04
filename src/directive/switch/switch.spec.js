@@ -202,33 +202,6 @@ describe("ngSwitch", () => {
     expect(element.children.length).toBe(1);
   });
 
-  it("should not trigger a digest after an element is removed", async () => {
-    const spy = spyOn($scope, "$digest").and.callThrough();
-
-    $scope.select = 1;
-    element = $compile(
-      '<div ng-switch="select">' +
-        '<div ng-switch-when="1">first</div>' +
-        '<div ng-switch-when="2">second</div>' +
-        "</div>",
-    )($scope);
-    await wait();
-
-    expect(element.textContent).toEqual("first");
-
-    $scope.select = 2;
-    await wait();
-    spy.calls.reset();
-    expect(element.textContent).toEqual("second");
-    // If ngSwitch re-introduces code that triggers a digest after an element is removed (in an
-    // animation .then callback), flushing the queue ensures the callback will be called, and the test
-    // fails
-
-    expect(spy).not.toHaveBeenCalled();
-    // A digest may have been triggered asynchronously, so check the queue
-    //$timeout.verifyNoPendingTasks();
-  });
-
   it("should handle changes to the switch value in a digest loop with multiple value matches", async () => {
     const scope = $scope.$new();
     scope.value = "foo";

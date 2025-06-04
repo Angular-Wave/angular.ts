@@ -2,6 +2,7 @@ import { createInjector } from "../di/injector.js";
 
 import { Angular } from "../../loader.js";
 import { adjustMatcher } from "./sce";
+import { wait } from "../../shared/test-utils.js";
 
 describe("SCE", () => {
   let $sce, $rootScope;
@@ -14,7 +15,9 @@ describe("SCE", () => {
       window.angular.module("myModule", ["ng"]);
       createInjector([
         "myModule",
-        function ($sceProvider) {
+        function ($sceProvider, $exceptionHandlerProvider) {
+          $exceptionHandlerProvider.errorHandler = (err) =>
+            logs.push(err.message);
           $sceProvider.enabled(false);
         },
       ]).invoke((_$sce_) => {
@@ -36,9 +39,12 @@ describe("SCE", () => {
   describe("when enabled", () => {
     beforeEach(function () {
       window.angular = new Angular();
+      logs = [];
       createInjector([
         "ng",
-        function ($sceProvider) {
+        function ($sceProvider, $exceptionHandlerProvider) {
+          $exceptionHandlerProvider.errorHandler = (err) =>
+            logs.push(err.message);
           $sceProvider.enabled(true);
         },
       ]).invoke((_$sce_) => {
@@ -51,15 +57,13 @@ describe("SCE", () => {
       let wrappedValue = $sce.trustAs($sce.HTML, originalValue);
       expect(typeof wrappedValue).toBe("object");
       expect($sce.getTrusted($sce.HTML, wrappedValue)).toBe("original_value");
-      expect(() => {
-        $sce.getTrusted($sce.CSS, wrappedValue);
-      }).toThrowError(/unsafe/);
+      $sce.getTrusted($sce.CSS, wrappedValue);
+      expect(logs[0]).toMatch(/unsafe/);
       wrappedValue = $sce.trustAs($sce.CSS, originalValue);
       expect(typeof wrappedValue).toBe("object");
       expect($sce.getTrusted($sce.CSS, wrappedValue)).toBe("original_value");
-      expect(() => {
-        $sce.getTrusted($sce.HTML, wrappedValue);
-      }).toThrowError(/unsafe/);
+      $sce.getTrusted($sce.HTML, wrappedValue);
+      expect(logs[0]).toMatch(/unsafe/);
       wrappedValue = $sce.trustAs($sce.URL, originalValue);
       expect(typeof wrappedValue).toBe("object");
       expect($sce.getTrusted($sce.URL, wrappedValue)).toBe("original_value");
@@ -69,21 +73,18 @@ describe("SCE", () => {
     });
 
     it("should NOT wrap non-string values", () => {
-      expect(() => {
-        $sce.trustAsCss(123);
-      }).toThrowError(/itype/);
+      $sce.trustAsCss(123);
+      expect(logs[0]).toMatch(/itype/);
     });
 
     it("should NOT wrap unknown contexts", () => {
-      expect(() => {
-        $sce.trustAs("unknown1", "123");
-      }).toThrowError(/icontext/);
+      $sce.trustAs("unknown1", "123");
+      expect(logs[0]).toMatch(/icontext/);
     });
 
     it("should NOT wrap undefined context", () => {
-      expect(() => {
-        $sce.trustAs(undefined, "123");
-      }).toThrowError(/icontext/);
+      $sce.trustAs(undefined, "123");
+      expect(logs[0]).toMatch(/icontext/);
     });
 
     it("should wrap undefined into undefined", () => {
@@ -119,9 +120,8 @@ describe("SCE", () => {
     it("should NOT unwrap values when the type is different", () => {
       const originalValue = "originalValue";
       const wrappedValue = $sce.trustAs($sce.HTML, originalValue);
-      expect(() => {
-        $sce.getTrusted($sce.CSS, wrappedValue);
-      }).toThrowError(/unsafe/);
+      $sce.getTrusted($sce.CSS, wrappedValue);
+      expect(logs[0]).toMatch(/unsafe/);
     });
 
     it("should NOT unwrap values that had not been wrapped", () => {
@@ -131,9 +131,8 @@ describe("SCE", () => {
         };
       }
       const wrappedValue = new TrustedValueHolder("originalValue");
-      expect(() => $sce.getTrusted($sce.HTML, wrappedValue)).toThrowError(
-        /unsafe/,
-      );
+      $sce.getTrusted($sce.HTML, wrappedValue);
+      expect(logs[0]).toMatch(/unsafe/);
     });
 
     it("should implement toString on trusted values", () => {
@@ -178,7 +177,14 @@ describe("SCE", () => {
   describe("$sce.parseAs", () => {
     window.angular = new Angular();
     beforeEach(function () {
-      createInjector(["ng"]).invoke((_$sce_, _$rootScope_) => {
+      logs = [];
+      createInjector([
+        "ng",
+        function ($exceptionHandlerProvider) {
+          $exceptionHandlerProvider.errorHandler = (err) =>
+            logs.push(err.message);
+        },
+      ]).invoke((_$sce_, _$rootScope_) => {
         $sce = _$sce_;
         $rootScope = _$rootScope_;
       });
@@ -200,20 +206,19 @@ describe("SCE", () => {
     it("should NOT parse constant non-literals", () => {
       // Until there's a real world use case for this, we're disallowing
       // constant non-literals.  See $SceParseProvider.
-      const exprFn = $sce.parseAsJs("1+1");
-      expect(exprFn).toThrow();
+      $sce.parseAsJs("1+1")();
+      expect(logs[0]).toBeDefined();
     });
 
     it("should NOT return untrusted values from expression function", () => {
       const exprFn = $sce.parseAs($sce.HTML, "foo");
-      expect(() => exprFn({}, { foo: true })).toThrowError(/unsafe/);
+      exprFn({}, { foo: true });
+      expect(logs[0]).toMatch(/unsafe/);
     });
 
     it("should NOT return trusted values of the wrong type from expression function", () => {
       const exprFn = $sce.parseAs($sce.HTML, "foo");
-      expect(() =>
-        exprFn({}, { foo: $sce.trustAs($sce.JS, "123") }),
-      ).toThrowError(/unsafe/);
+      exprFn({}, { foo: $sce.trustAs($sce.JS, "123") });
     });
 
     it("should return trusted values from expression function", () => {
@@ -228,18 +233,19 @@ describe("SCE", () => {
       expect($sce.parseAsHtml("1")()).toBe(1);
       // Test short trustAs methods.
       expect($sce.trustAsAny).toBeUndefined();
-      expect(() => {
-        // mismatched types.
-        $sce.parseAsCss("foo")({}, { foo: $sce.trustAsHtml("1") });
-      }).toThrowError(/unsafe/);
+      $sce.parseAsCss("foo")({}, { foo: $sce.trustAsHtml("1") });
+      expect(logs[0]).toMatch(/unsafe/);
     });
   });
 
   describe("$sceDelegate resource url policies", () => {
     beforeEach(() => {
+      logs = [];
       createInjector([
         "ng",
-        ($sceDelegateProvider) => {
+        ($sceDelegateProvider, $exceptionHandlerProvider) => {
+          $exceptionHandlerProvider.errorHandler = (err) =>
+            logs.push(err.message);
           sceDelegateProvider = $sceDelegateProvider;
         },
       ]).invoke((_$sce_) => {
@@ -254,17 +260,15 @@ describe("SCE", () => {
     it("should reject everything when trusted resource URL list is empty", () => {
       sceDelegateProvider.trustedResourceUrlList([]);
       sceDelegateProvider.bannedResourceUrlList([]);
-      expect(() => {
-        $sce.getTrustedResourceUrl("#");
-      }).toThrowError(/insecurl/);
+      $sce.getTrustedResourceUrl("#");
+      expect(logs[0]).toMatch(/insecurl/);
     });
 
     it("should match against normalized urls", () => {
       sceDelegateProvider.trustedResourceUrlList([/^foo$/]);
       sceDelegateProvider.bannedResourceUrlList([]);
-      expect(() => {
-        $sce.getTrustedResourceUrl("foo");
-      }).toThrowError(/insecurl/);
+      $sce.getTrustedResourceUrl("foo");
+      expect(logs[0]).toMatch(/insecurl/);
     });
 
     it("should not accept unknown matcher type", () => {
@@ -295,7 +299,9 @@ describe("SCE", () => {
       beforeEach(() => {
         createInjector([
           "ng",
-          ($sceDelegateProvider) => {
+          ($sceDelegateProvider, $exceptionHandlerProvider) => {
+            $exceptionHandlerProvider.errorHandler = (err) =>
+              logs.push(err.message);
             sceDelegateProvider = $sceDelegateProvider;
           },
         ]).invoke((_$sce_) => {
@@ -312,13 +318,12 @@ describe("SCE", () => {
           "http://example.com/foo",
         );
         // must match entire regex
-        expect(() => {
-          $sce.getTrustedResourceUrl("https://example.com/foo");
-        }).toThrowError(/insecurl/);
+
+        $sce.getTrustedResourceUrl("https://example.com/foo");
+        expect(logs[0]).toMatch(/insecurl/);
         // https doesn't match (mismatched protocol.)
-        expect(() => {
-          $sce.getTrustedResourceUrl("https://example.com/foo");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("https://example.com/foo");
+        expect(logs[1]).toMatch(/insecurl/);
       });
 
       it("should match entire regex", () => {
@@ -332,25 +337,25 @@ describe("SCE", () => {
         expect($sce.getTrustedResourceUrl("https://example.com/foo")).toEqual(
           "https://example.com/foo",
         );
-        expect(() => {
-          $sce.getTrustedResourceUrl("http://example.com/fo");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("http://example.com/fo");
+        expect(logs[0]).toMatch(/insecurl/);
         // Suffix not allowed even though original regex does not contain an ending $.
-        expect(() => {
-          $sce.getTrustedResourceUrl("http://example.com/foo2");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("http://example.com/foo2");
+        expect(logs[1]).toMatch(/insecurl/);
         // Prefix not allowed even though original regex does not contain a leading ^.
-        expect(() => {
-          $sce.getTrustedResourceUrl("xhttp://example.com/foo");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("xhttp://example.com/foo");
+        expect(logs[2]).toMatch(/insecurl/);
       });
     });
 
     describe("string matchers", () => {
       beforeEach(() => {
+        logs = [];
         createInjector([
           "ng",
-          ($sceDelegateProvider) => {
+          ($sceDelegateProvider, $exceptionHandlerProvider) => {
+            $exceptionHandlerProvider.errorHandler = (err) =>
+              logs.push(err.message);
             sceDelegateProvider = $sceDelegateProvider;
           },
         ]).invoke((_$sce_) => {
@@ -365,17 +370,14 @@ describe("SCE", () => {
           "http://example.com/foo",
         );
         // "." is not a special character like in a regex.
-        expect(() => {
-          $sce.getTrustedResourceUrl("http://example-com/foo");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("http://example-com/foo");
+        expect(logs[0]).toMatch(/insecurl/);
         // You can match a prefix.
-        expect(() => {
-          $sce.getTrustedResourceUrl("http://example.com/foo2");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("http://example.com/foo2");
+        expect(logs[1]).toMatch(/insecurl/);
         // You can match a suffix.
-        expect(() => {
-          $sce.getTrustedResourceUrl("xhttp://example.com/foo");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("xhttp://example.com/foo");
+        expect(logs[2]).toMatch(/insecurl/);
       });
 
       it("should support the * wildcard", () => {
@@ -389,29 +391,23 @@ describe("SCE", () => {
           $sce.getTrustedResourceUrl("http://example.com/foo-bar"),
         ).toEqual("http://example.com/foo-bar");
         // The * wildcard does not match ':'
-        expect(() => {
-          $sce.getTrustedResourceUrl("http://example-com/foo:bar");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("http://example-com/foo:bar");
+        expect(logs[0]).toMatch(/insecurl/);
         // The * wildcard does not match '/'
-        expect(() => {
-          $sce.getTrustedResourceUrl("http://example-com/foo/bar");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("http://example-com/foo/bar");
+        expect(logs[1]).toMatch(/insecurl/);
         // The * wildcard does not match '.'
-        expect(() => {
-          $sce.getTrustedResourceUrl("http://example-com/foo.bar");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("http://example-com/foo.bar");
+        expect(logs[2]).toMatch(/insecurl/);
         // The * wildcard does not match '?'
-        expect(() => {
-          $sce.getTrustedResourceUrl("http://example-com/foo?bar");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("http://example-com/foo?bar");
+        expect(logs[3]).toMatch(/insecurl/);
         // The * wildcard does not match '&'
-        expect(() => {
-          $sce.getTrustedResourceUrl("http://example-com/foo&bar");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("http://example-com/foo&bar");
+        expect(logs[4]).toMatch(/insecurl/);
         // The * wildcard does not match ';'
-        expect(() => {
-          $sce.getTrustedResourceUrl("http://example-com/foo;bar");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("http://example-com/foo;bar");
+        expect(logs[5]).toMatch(/insecurl/);
       });
 
       it("should support the ** wildcard", () => {
@@ -441,9 +437,12 @@ describe("SCE", () => {
 
     describe('"self" matcher', () => {
       beforeEach(() => {
+        logs = [];
         createInjector([
           "ng",
-          ($sceDelegateProvider) => {
+          ($sceDelegateProvider, $exceptionHandlerProvider) => {
+            $exceptionHandlerProvider.errorHandler = (err) =>
+              logs.push(err.message);
             sceDelegateProvider = $sceDelegateProvider;
           },
         ]).invoke((_$sce_) => {
@@ -460,16 +459,17 @@ describe("SCE", () => {
       it('should support the special string "self" in baneed resource URL list', () => {
         sceDelegateProvider.trustedResourceUrlList([/.*/]);
         sceDelegateProvider.bannedResourceUrlList(["self"]);
-        expect(() => {
-          $sce.getTrustedResourceUrl("foo");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("foo");
+        expect(logs[0]).toMatch(/insecurl/);
       });
 
       describe("when the document base URL has changed", () => {
         beforeEach(() => {
           createInjector([
             "ng",
-            ($sceDelegateProvider) => {
+            ($sceDelegateProvider, $exceptionHandlerProvider) => {
+              $exceptionHandlerProvider.errorHandler = (err) =>
+                logs.push(err.message);
               sceDelegateProvider = $sceDelegateProvider;
               sceDelegateProvider.trustedResourceUrlList(["self"]);
               sceDelegateProvider.bannedResourceUrlList([]);
@@ -504,17 +504,16 @@ describe("SCE", () => {
         });
 
         it("should still block some URLs", () => {
-          expect(() => {
-            $sce.getTrustedResourceUrl("//bad.example.com");
-          }).toThrowError(/insecurl/);
+          $sce.getTrustedResourceUrl("//bad.example.com");
+          expect(logs[0]).toMatch(/insecurl/);
         });
       });
+
       it("should have the banned resource URL list override the trusted resource URL list", () => {
         sceDelegateProvider.trustedResourceUrlList(["self"]);
         sceDelegateProvider.bannedResourceUrlList(["self"]);
-        expect(() => {
-          $sce.getTrustedResourceUrl("foo");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("foo");
+        expect(logs[0]).toMatch(/insecurl/);
       });
 
       it("should support multiple items in both lists", () => {
@@ -537,12 +536,10 @@ describe("SCE", () => {
         expect($sce.getTrustedResourceUrl("http://example.com/2")).toEqual(
           "http://example.com/2",
         );
-        expect(() => {
-          $sce.getTrustedResourceUrl("http://example.com/3");
-        }).toThrowError(/insecurl/);
-        expect(() => {
-          $sce.getTrustedResourceUrl("open_redirect");
-        }).toThrowError(/insecurl/);
+        $sce.getTrustedResourceUrl("http://example.com/3");
+        expect(logs[0]).toMatch(/insecurl/);
+        $sce.getTrustedResourceUrl("open_redirect");
+        expect(logs[1]).toMatch(/insecurl/);
       });
     });
 
@@ -610,10 +607,10 @@ describe("SCE", () => {
 
     describe("sanitizing html", () => {
       describe("when $sanitize is NOT available", () => {
-        it("should throw an exception for getTrusted(string) values", () => {
-          expect(() => {
-            $sce.getTrustedHtml("<b></b>");
-          }).toThrowError(/unsafe/);
+        it("should throw an exception for getTrusted(string) values", async () => {
+          $sce.getTrustedHtml("<b></b>");
+          await wait();
+          expect(logs[0]).toMatch(/unsafe/);
         });
       });
     });

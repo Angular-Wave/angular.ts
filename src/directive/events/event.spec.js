@@ -10,6 +10,7 @@ describe("event directives", () => {
   let $rootScope;
   let $compile;
   let logs = [];
+  let app = document.getElementById("app");
 
   beforeEach(() => {
     angular = window.angular = new Angular();
@@ -36,14 +37,15 @@ describe("event directives", () => {
 
   describe("ngSubmit", () => {
     it("should get called on form submit", () => {
-      element = $compile(
+      app.innerHTML =
         '<form ng-submit="submitted = true">' +
-          '<input type="submit" />' +
-          "</form>",
-      )($rootScope);
-      // Support: Chrome 60+
-      // We need to add the form to the DOM in order for `submit` events to be properly fired.
-      document.getElementById("app").appendChild(element);
+        '<input type="submit" />' +
+        "</form>";
+
+      window.angular.bootstrap(app, ["myModule"]).invoke((_$rootScope_) => {
+        $rootScope = _$rootScope_;
+      });
+      element = app.querySelector("form");
 
       // prevent submit within the test harness
       element.addEventListener("submit", (e) => {
@@ -57,20 +59,19 @@ describe("event directives", () => {
     });
 
     it("should expose event on form submit", () => {
+      (app.innerHTML =
+        '<form ng-submit="formSubmission($event)">' +
+        '<input type="submit" />' +
+        "</form>"),
+        window.angular.bootstrap(app, ["myModule"]).invoke((_$rootScope_) => {
+          $rootScope = _$rootScope_;
+        });
+      element = app.querySelector("form");
       $rootScope.formSubmission = function (e) {
         if (e) {
           $rootScope.formSubmitted = "foo";
         }
       };
-
-      element = $compile(
-        '<form ng-submit="formSubmission($event)">' +
-          '<input type="submit" />' +
-          "</form>",
-      )($rootScope);
-      // Support: Chrome 60+ (on Windows)
-      // We need to add the form to the DOM in order for `submit` events to be properly fired.
-      document.getElementById("app").appendChild(element);
 
       // prevent submit within the test harness
       element.addEventListener("submit", (e) => {

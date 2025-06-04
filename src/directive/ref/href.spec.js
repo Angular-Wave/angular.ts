@@ -69,7 +69,6 @@ describe("ngHref", () => {
   });
 
   it("should sanitize interpolated url", async () => {
-    /* eslint no-script-url: "off" */
     $rootScope.imageUrl = "javascript:alert(1);";
     element = $compile('<a ng-href="{{imageUrl}}">')($rootScope);
     await wait();

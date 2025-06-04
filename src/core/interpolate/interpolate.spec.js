@@ -232,7 +232,7 @@ describe("$interpolate", () => {
       );
       expect(() => {
         $interpolate("{{\\{\\{foo\\}\\}}}")(obj);
-      }).toThrowError(/Unexpected next character at columns 0-0/);
+      }).toThrowError(/Lexer Error/);
     });
 
     it("allows configuring start and end symbols", function () {

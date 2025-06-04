@@ -2067,14 +2067,14 @@ describe("input", () => {
         ngStep: 'ng-step="step"',
       }).forEach(([attrName, attrHtml]) => {
         describe(attrName, () => {
-          it("should validate", () => {
+          it("should validate", async () => {
             scope.step = 10;
             scope.value = 20;
             const formElm = $compile(
               `<form name="form"><input type="number" ng-model="value" name="alias" ${attrHtml} /></form>`,
             )(scope);
             inputElm = formElm.querySelector("input");
-            scope.$digest();
+            await wait();
             expect(inputElm.value).toBe("20");
             expect(inputElm.classList.contains("ng-valid")).toBeTrue();
             expect(scope.value).toBe(20);
@@ -2148,7 +2148,7 @@ describe("input", () => {
             expect(scope.form.alias.$error.step).toBeFalsy();
           });
 
-          it('should use the correct "step base" when `[min]` is specified', () => {
+          it('should use the correct "step base" when `[min]` is specified', async () => {
             scope.min = 5;
             scope.step = 10;
             scope.value = 10;
@@ -2156,7 +2156,7 @@ describe("input", () => {
               `<input type="number" ng-model="value" min="{{min}}" ${attrHtml} />`,
             )(scope);
             const ngModel = getController(inputElm, "ngModel");
-            scope.$digest();
+            await wait();
             expect(inputElm.value).toBe("10");
             expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
             expect(ngModel.$error.step).toBe(true);

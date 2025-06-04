@@ -730,7 +730,11 @@ export class LocationProvider {
           ) {
             // SVGAnimatedString.animVal should be identical to SVGAnimatedString.baseVal, unless during
             // an animation.
-            absHref = urlResolve(absHref.animVal).href;
+
+            const scvAnimatedString = /** @type {unknown} */ (absHref);
+            absHref = urlResolve(
+              /** @type {SVGAnimatedString } */ (scvAnimatedString).animVal,
+            ).href;
           }
 
           // Ignore when url is started with javascript: or mailto:

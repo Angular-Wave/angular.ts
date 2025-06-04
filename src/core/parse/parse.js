@@ -135,11 +135,14 @@ export function ParseProvider() {
 
         // Extract any existing interceptors out of the parsedExpression
         // to ensure the original parsedExpression is always the $$intercepted
+        // @ts-ignore
         if (parsedExpression.$$interceptor) {
           interceptorFn = chainInterceptors(
+            // @ts-ignore
             parsedExpression.$$interceptor,
             interceptorFn,
           );
+          // @ts-ignore
           parsedExpression = parsedExpression.$$intercepted;
         }
 
@@ -168,18 +171,25 @@ export function ParseProvider() {
         fn.$$interceptor = interceptorFn;
 
         // Propagate the literal/oneTime/constant attributes
+        // @ts-ignore
         fn.literal = parsedExpression.literal;
+        // @ts-ignore
         fn.oneTime = parsedExpression.oneTime;
+        // @ts-ignore
         fn.constant = parsedExpression.constant;
+        // @ts-ignore
         fn.decoratedNode = parsedExpression.decoratedNode;
 
         // Treat the interceptor like filters.
         // If it is not $stateful then only watch its inputs.
         // If the expression itself has no inputs then use the full expression as an input.
         if (!interceptorFn.$stateful) {
+          // @ts-ignore
           useInputs = !parsedExpression.inputs;
+          // @ts-ignore
           fn.inputs = parsedExpression.inputs
-            ? parsedExpression.inputs
+            ? // @ts-ignore
+              parsedExpression.inputs
             : [parsedExpression];
 
           if (!interceptorFn.$$pure) {
@@ -256,6 +266,7 @@ function inputsWatchDelegate(
 
     let inputExpression = inputExpressions[0];
     return scope.$watch(
+      // @ts-ignore
       ($scope) => {
         const newInputValue = inputExpression($scope);
         if (
@@ -283,6 +294,7 @@ function inputsWatchDelegate(
       oldInputValues[i] = null;
     }
     return scope.$watch(
+      // @ts-ignore
       (scope) => {
         let changed = false;
 

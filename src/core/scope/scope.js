@@ -487,7 +487,6 @@ export class Scope {
       $isRoot: this.isRoot.bind(this),
       $target: target,
       $proxy: this.$proxy,
-      $digest: this.$digest.bind(this),
       $on: this.$on.bind(this),
       $emit: this.$emit.bind(this),
       $broadcast: this.$broadcast.bind(this),
@@ -967,13 +966,6 @@ export class Scope {
     return true;
   }
 
-  /**
-   * @deprecated
-   */
-  $digest() {
-    throw new Error("$Digest is deprecated");
-  }
-
   $eval(expr, locals) {
     const fn = $parse(expr);
     const res = fn(this.$target, locals);
@@ -1048,7 +1040,7 @@ export class Scope {
   /**
    * @param {string} name
    * @param  {...any} args
-   * @returns
+   * @returns {any}
    */
   $broadcast(name, ...args) {
     return this.eventHelper(

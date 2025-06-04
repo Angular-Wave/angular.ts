@@ -133,7 +133,7 @@ export class SceDelegateProvider {
      * array (i.e. there is no `bannedResourceUrlList`.)
      */
     bannedResourceUrlList: (value: any, ...args: any[]) => any[];
-    $get: (string | (($injector: any, $$sanitizeUri: any) => {
+    $get: (string | (($injector: any, $$sanitizeUri: any, $exceptionHandler: ErrorHandler) => {
         trustAs: (type: string, trustedValue: any) => any;
         getTrusted: (type: string, maybeTrusted: any) => any;
         valueOf: (maybeTrusted: any) => any;
@@ -159,3 +159,4 @@ export namespace SCE_CONTEXTS {
     let RESOURCE_URL: string;
     let JS: string;
 }
+export type ErrorHandler = import("../exception-handler.js").ErrorHandler;

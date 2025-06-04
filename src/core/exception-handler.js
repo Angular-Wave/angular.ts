@@ -1,38 +1,48 @@
 /**
- * Any uncaught exception in AngularJS expressions is delegated to this service.
- * The default implementation simply delegates to `$log.error` which logs it into
- * the browser console.
+ * Handles uncaught exceptions thrown in AngularJS expressions.
  *
+ * By default, this service delegates to `$log.error()`, logging the exception to the browser console.
+ * You can override this behavior to provide custom exception handling—such as reporting errors
+ * to a backend server, or altering the log level used.
  *
- * ## Example:
+ * ## Default Behavior
  *
- * The example below will overwrite the default `$exceptionHandler` in order to (a) log uncaught
- * errors to the backend for later inspection by the developers and (b) to use `$log.warn()` instead
- * of `$log.error()`.
+ * Uncaught exceptions within AngularJS expressions are intercepted and passed to this service.
+ * The default implementation logs the error using `$log.error(exception, cause)`.
+ *
+ * ## Custom Implementation
+ *
+ * You can override the default `$exceptionHandler` by providing your own factory. This allows you to:
+ * - Log errors to a remote server
+ * - Change the log level (e.g., from `error` to `warn`)
+ * - Trigger custom error-handling workflows
+ *
+ * ### Example: Overriding `$exceptionHandler`
  *
  * ```js
- *   angular.
- *     module('exceptionOverwrite', []).
- *     factory('$exceptionHandler', ['$log', 'logErrorsToBackend', function($log, logErrorsToBackend) {
- *       return function myExceptionHandler(exception, cause) {
- *         logErrorsToBackend(exception, cause);
- *         $log.warn(exception, cause);
- *       };
- *     }]);
+ * angular
+ *   .module('exceptionOverwrite', [])
+ *   .factory('$exceptionHandler', ['$log', 'logErrorsToBackend', function($log, logErrorsToBackend) {
+ *     return function myExceptionHandler(exception, cause) {
+ *       logErrorsToBackend(exception, cause);
+ *       $log.warn(exception, cause); // Use warn instead of error
+ *     };
+ *   }]);
+ * ```
+ * - You may also manually invoke the exception handler:
+ *
+ * ```js
+ * try {
+ *   // Some code that might throw
+ * } catch (e) {
+ *   $exceptionHandler(e, 'optional context');
+ * }
  * ```
  *
- * <hr />
- * Note, that code executed in event-listeners (even those registered using JQLite's `on`/`bind`
- * methods) does not delegate exceptions to the {@link angular.ErrorHandler }
- * (unless executed during a digest).
- *
- * If you wish, you can manually delegate exceptions, e.g.
- * `try { ... } catch(e) { $exceptionHandler(e); }`
- *
+ * @see {@link angular.ErrorHandler AngularJS ErrorHandler}
  */
 
-/** @type {import('../services/log').LogService} */
-let log;
+/** @typedef {import('../services/log').LogService} LogService */
 
 /**
  * @callback ErrorHandler
@@ -40,24 +50,31 @@ let log;
  * @param {string} [cause] - Optional information about the context in which the error was thrown.
  * @returns {void}
  */
-export const errorHandler = (exception, cause) => {
-  log.error(exception, cause);
-};
 
 /**
- * @constructor
- * @this {import('../types.js').ServiceProvider}
+ * Provider for `$exceptionHandler` service. Delegates uncaught exceptions to `$log.error()` by default.
+ * Can be overridden to implement custom error-handling logic.
  */
-export function ExceptionHandlerProvider() {
-  this.$get = [
-    "$log",
-    /**
-     * @param {import('../services/log').LogService} $log
-     * @returns {ErrorHandler}
-     */
-    function ($log) {
-      log = $log;
-      return errorHandler;
-    },
-  ];
+export class ExceptionHandlerProvider {
+  constructor() {
+    /** @type {LogService} */
+    this.log = window.console;
+
+    /** @type {ErrorHandler} */
+    this.errorHandler = (exception, cause) => {
+      this.log.error(exception, cause);
+    };
+
+    this.$get = [
+      "$log",
+      /**
+       * @param {LogService} $log
+       * @returns {ErrorHandler}
+       */
+      ($log) => {
+        this.log = $log;
+        return this.errorHandler;
+      },
+    ];
+  }
 }

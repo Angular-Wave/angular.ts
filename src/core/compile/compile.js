@@ -50,7 +50,7 @@ import { ngObserveDirective } from "../../directive/observe/observe.js";
  * The function returns the DOM content to be injected (transcluded) into the directive.
  *
  * @callback TranscludeFn
- * @param {Element|Node} [clone] - The DOM node to be inserted into the transcluded directive.
+ * @param {Element | Node | ChildNode | NodeList | Node[]} [clone] - The DOM node to be inserted into the transcluded directive.
  * @param {import("../scope/scope.js").Scope} [scope] - The new child scope created from the transcluded parent.
  * @returns void
 
@@ -3081,7 +3081,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           });
         }
         function recordChanges(key, currentValue, initial) {
-          if (isFunction(destination.$onChanges)) {
+          if (isFunction(destination["$onChanges"])) {
             // If we have not already scheduled the top level onChangesQueue handler then do so now
             if (!onChangesQueue) {
               scope.$postUpdate(flushOnChangesQueue);

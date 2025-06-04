@@ -13,6 +13,7 @@ describe("ngModel", () => {
   let injector;
   let $rootScope;
   let errors = [];
+  let app = document.getElementById("app");
 
   beforeEach(() => {
     errors = [];
@@ -1500,11 +1501,11 @@ describe("ngModel", () => {
     });
 
     it("should set css classes (ng-valid, ng-invalid, ng-pristine, ng-dirty, ng-untouched, ng-touched)", async () => {
-      const element = $compile('<input type="email" ng-model="value" />')(
-        $rootScope,
-      );
+      app.innerHTML = '<input type="email" ng-model="value" />';
+      $compile(app)($rootScope);
+      const element = app.querySelector("input");
       await wait();
-      // expect(element/assList.contains("ng-invalid-email")).toBe(false);
+      expect(element.classList.contains("ng-invalid-email")).toBe(false);
 
       $rootScope.value = "invalid-email";
       await wait();
@@ -1516,7 +1517,6 @@ describe("ngModel", () => {
 
       element.value = "invalid-again";
       browserTrigger(element, "change");
-      await wait();
 
       expect(element.classList.contains("ng-invalid")).toBeTrue();
       expect(element.classList.contains("ng-dirty")).toBeTrue();
@@ -1525,6 +1525,7 @@ describe("ngModel", () => {
 
       element.value = "vojta@google.com";
       browserTrigger(element, "change");
+      await wait();
       expect(element.classList.contains("ng-valid")).toBeTrue();
       expect(element.classList.contains("ng-dirty")).toBeTrue();
       expect(element.classList.contains("ng-valid-email")).toBe(true);

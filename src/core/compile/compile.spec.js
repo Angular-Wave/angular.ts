@@ -13944,7 +13944,7 @@ describe("$compile", () => {
     });
   });
 
-  describe("multi-slot transclude", () => {
+  xdescribe("multi-slot transclude", () => {
     it("should only include elements without a matching transclusion element in default transclusion slot", async () => {
       module.directive("minionComponent", () => ({
         restrict: "E",

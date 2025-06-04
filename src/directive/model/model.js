@@ -200,10 +200,19 @@ export class NgModelController {
 
     function cachedToggleClass(ctrl, className, switchValue) {
       if (switchValue && !ctrl.$$classCache[className]) {
-        ctrl.$$animate.addClass(ctrl.$$element, className);
+        if (hasAnimate(ctrl.$$element)) {
+          ctrl.$$animate.addClass(ctrl.$$element, className);
+        } else {
+          ctrl.$$element.classList.add(className);
+        }
+
         ctrl.$$classCache[className] = true;
       } else if (!switchValue && ctrl.$$classCache[className]) {
-        ctrl.$$animate.removeClass(ctrl.$$element, className);
+        if (hasAnimate(ctrl.$$element)) {
+          ctrl.$$animate.removeClass(ctrl.$$element, className);
+        } else {
+          ctrl.$$element.classList.remove(className);
+        }
         ctrl.$$classCache[className] = false;
       }
     }
@@ -1110,7 +1119,6 @@ export function ngModelDirective() {
       (element) => {
         // Setup initial state of the control
         element.classList.add(PRISTINE_CLASS, UNTOUCHED_CLASS, VALID_CLASS);
-
         return {
           pre: (scope, _element, attr, ctrls) => {
             const modelCtrl = ctrls[0];

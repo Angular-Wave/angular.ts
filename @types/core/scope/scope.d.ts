@@ -139,7 +139,6 @@ export class Scope {
         $isRoot: any;
         $target: any;
         $proxy: any;
-        $digest: any;
         $on: any;
         $emit: any;
         $broadcast: any;
@@ -178,10 +177,6 @@ export class Scope {
     registerForeignKey(key: any, listener: any): void;
     deregisterKey(key: any, id: any): boolean;
     deregisterForeignKey(key: any, id: any): boolean;
-    /**
-     * @deprecated
-     */
-    $digest(): void;
     $eval(expr: any, locals: any): any;
     $evalAsync(expr: any, locals: any): Promise<any>;
     $merge(newTarget: any): void;
@@ -196,9 +191,9 @@ export class Scope {
     /**
      * @param {string} name
      * @param  {...any} args
-     * @returns
+     * @returns {any}
      */
-    $broadcast(name: string, ...args: any[]): void;
+    $broadcast(name: string, ...args: any[]): any;
     /**
      * @private
      * @returns {void}

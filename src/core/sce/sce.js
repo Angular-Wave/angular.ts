@@ -15,6 +15,8 @@ import {
 
 import { snakeToCamel } from "../../shared/dom.js";
 
+/** @typedef {import("../exception-handler.js").ErrorHandler }  ErrorHandler */
+
 const $sceMinErr = minErr("$sce");
 
 export const SCE_CONTEXTS = {
@@ -228,18 +230,23 @@ export function SceDelegateProvider() {
   this.$get = [
     "$injector",
     "$$sanitizeUri",
+    "$exceptionHandler",
     /**
      *
      * @param {import("../../core/di/internal-injector").InjectorService} $injector
      * @param {*} $$sanitizeUri
+     * @param {ErrorHandler} $exceptionHandler
      * @returns
      */
-    function ($injector, $$sanitizeUri) {
+    function ($injector, $$sanitizeUri, $exceptionHandler) {
       let htmlSanitizer = function () {
-        throw $sceMinErr(
-          "unsafe",
-          "Attempting to use an unsafe value in a safe context.",
+        $exceptionHandler(
+          $sceMinErr(
+            "unsafe",
+            "Attempting to use an unsafe value in a safe context.",
+          ),
         );
+        return;
       };
 
       if ($injector.has("$sanitize")) {
@@ -339,12 +346,15 @@ export function SceDelegateProvider() {
           ? byType[type]
           : null;
         if (!Constructor) {
-          throw $sceMinErr(
-            "icontext",
-            "Attempted to trust a value in invalid context. Context: {0}; Value: {1}",
-            type,
-            trustedValue,
+          $exceptionHandler(
+            $sceMinErr(
+              "icontext",
+              "Attempted to trust a value in invalid context. Context: {0}; Value: {1}",
+              type,
+              trustedValue,
+            ),
           );
+          return;
         }
         if (
           trustedValue === null ||
@@ -356,11 +366,14 @@ export function SceDelegateProvider() {
         // All the current contexts in SCE_CONTEXTS happen to be strings.  In order to avoid trusting
         // mutable objects, we ensure here that the value passed in is actually a string.
         if (typeof trustedValue !== "string") {
-          throw $sceMinErr(
-            "itype",
-            "Attempted to trust a non-string value in a content requiring a string: Context: {0}",
-            type,
+          $exceptionHandler(
+            $sceMinErr(
+              "itype",
+              "Attempted to trust a non-string value in a content requiring a string: Context: {0}",
+              type,
+            ),
           );
+          return;
         }
         return new Constructor(trustedValue);
       }
@@ -451,20 +464,26 @@ export function SceDelegateProvider() {
           if (isResourceUrlAllowedByPolicy(maybeTrusted)) {
             return maybeTrusted;
           }
-          throw $sceMinErr(
-            "insecurl",
-            "Blocked loading resource from url not allowed by $sceDelegate policy.  URL: {0}",
-            maybeTrusted.toString(),
+          $exceptionHandler(
+            $sceMinErr(
+              "insecurl",
+              "Blocked loading resource from url not allowed by $sceDelegate policy.  URL: {0}",
+              maybeTrusted.toString(),
+            ),
           );
+          return;
         } else if (type === SCE_CONTEXTS.HTML) {
           // htmlSanitizer throws its own error when no sanitizer is available.
           return htmlSanitizer();
         }
         // Default error when the $sce service has no way to make the input safe.
-        throw $sceMinErr(
-          "unsafe",
-          "Attempting to use an unsafe value in a safe context.",
+        $exceptionHandler(
+          $sceMinErr(
+            "unsafe",
+            "Attempting to use an unsafe value in a safe context.",
+          ),
         );
+        return;
       }
 
       return { trustAs, getTrusted, valueOf };
