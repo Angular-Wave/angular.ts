@@ -20,12 +20,7 @@ describe("$httpBackend", () => {
     angular = window.angular = new Angular();
     let $injector = createInjector(["ng"]);
     $browser = $injector.get("$browser");
-    xhr = sinon.useFakeXMLHttpRequest();
-    $backend = createHttpBackend(
-      $browser,
-      () => new window.XMLHttpRequest(),
-      $browser.defer,
-    );
+    $backend = createHttpBackend($browser);
     callback = jasmine.createSpy("done");
   });
 

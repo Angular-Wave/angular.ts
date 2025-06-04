@@ -14737,7 +14737,7 @@ describe("$compile", () => {
       )($rootScope);
       $rootScope.testUrl = "https://bad.example.org";
       await wait();
-      expect(error[0].match(/interr/)).toBeTruthy();
+      expect(error[0]).toMatch(/insecurl/);
     });
   });
 
@@ -14814,21 +14814,21 @@ describe("$compile", () => {
       element = $compile('<iframe src="{{testUrl}}"></iframe>')($rootScope);
       $rootScope.testUrl = "http://a.different.domain.example.com";
       await wait();
-      expect(errors[0].match(/interr/)).toBeTruthy();
+      expect(errors[0]).toMatch(/insecurl/);
     });
 
     it("should clear out JS src attributes", async () => {
       element = $compile('<iframe src="{{testUrl}}"></iframe>')($rootScope);
       $rootScope.testUrl = "javascript:alert(1);";
       await wait();
-      expect(errors[0].match(/interr/)).toBeTruthy();
+      expect(errors[0]).toMatch(/insecurl/);
     });
 
     it("should clear out non-resource_url src attributes", async () => {
       element = $compile('<iframe src="{{testUrl}}"></iframe>')($rootScope);
       $rootScope.testUrl = $sce.trustAsUrl("javascript:doTrustedStuff()");
       await wait();
-      expect(errors[0].match(/interr/)).toBeTruthy();
+      expect(errors[0]).toMatch(/insecurl/);
     });
 
     it("should pass through $sce.trustAs() values in src attributes", async () => {
@@ -14861,7 +14861,7 @@ describe("$compile", () => {
 
       $rootScope.testUrl = "https://not.example.com/";
       await wait();
-      expect(error[0].match(/interr/)).toBeTruthy();
+      expect(error[0]).toMatch(/insecurl/);
     });
   });
 
@@ -14888,21 +14888,21 @@ describe("$compile", () => {
       element = $compile('<form action="{{testUrl}}"></form>')($rootScope);
       $rootScope.testUrl = "http://a.different.domain.example.com";
       await wait();
-      expect(error[0].match(/interr/)).toBeTruthy();
+      expect(error[0]).toMatch(/insecurl/);
     });
 
     it("should clear out JS action attribute", async () => {
       element = $compile('<form action="{{testUrl}}"></form>')($rootScope);
       $rootScope.testUrl = "javascript:alert(1);";
       await wait();
-      expect(error[0].match(/interr/)).toBeTruthy();
+      expect(error[0]).toMatch(/insecurl/);
     });
 
     it("should clear out non-resource_url action attribute", async () => {
       element = $compile('<form action="{{testUrl}}"></form>')($rootScope);
       $rootScope.testUrl = $sce.trustAsUrl("javascript:doTrustedStuff()");
       await wait();
-      expect(error[0].match(/interr/)).toBeTruthy();
+      expect(error[0]).toMatch(/insecurl/);
     });
 
     it("should pass through $sce.trustAsResourceUrl() values in action attribute", async () => {
@@ -14936,7 +14936,7 @@ describe("$compile", () => {
         $rootScope,
       );
       await wait();
-      expect(error[0].match(/interr/)).toBeTruthy();
+      expect(error[0]).toMatch(/insecurl/);
     });
 
     it("should accept valid RESOURCE_URLs", async () => {

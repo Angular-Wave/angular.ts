@@ -79,22 +79,6 @@ export class Browser {
      * @returns {string} The base href.
      */
     baseHref(): string;
-    /**
-     * Defers a function to be executed after a delay.
-     *
-     * @param {function(): any} fn - The function to defer.
-     * @param {number} [delay=0] - The delay in milliseconds before executing the function.
-     * @param {string} [taskType=this.taskTracker.DEFAULT_TASK_TYPE] - The type of task to track.
-     * @returns {number} The timeout ID associated with the deferred function.
-     */
-    defer(fn: () => any, delay?: number, taskType?: string): number;
-    /**
-     * Cancels a deferred function.
-     *
-     * @param {number} deferId - The ID of the deferred function to cancel.
-     * @returns {boolean} True if the function was successfully canceled, false otherwise.
-     */
-    cancel(deferId: number): boolean;
 }
 /**
  * This object has two goals:
