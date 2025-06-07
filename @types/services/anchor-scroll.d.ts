@@ -11,7 +11,7 @@
 export class AnchorScrollProvider {
     autoScrollingEnabled: boolean;
     disableAutoScrolling(): void;
-    $get: (string | (($location: any, $rootScope: import("../core/scope/scope.js").Scope) => AnchorScrollFunction))[];
+    $get: (string | (($location: import("../core/location/location.js").Location, $rootScope: import("../core/scope/scope.js").Scope) => AnchorScrollFunction))[];
 }
 export type AnchorScrollObject = {
     yOffset: number | Function | Element;

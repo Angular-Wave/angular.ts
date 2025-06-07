@@ -25,7 +25,8 @@
     "express": "node --watch ./utils/express.js",
     "build": "vite build",
     "playwright": "./node_modules/.bin/playwright test",
-    "generate-docs": "node_modules/.bin/typedoc"
+    "generate-docs": "node_modules/.bin/typedoc",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
@@ -42,6 +43,7 @@
     "eslint-plugin-promise": "latest",
     "express": "latest",
     "globals": "^16.2.0",
+    "husky": "^9.1.7",
     "jasmine-core": "latest",
     "jsdoc": "latest",
     "npm-run-all": "latest",
