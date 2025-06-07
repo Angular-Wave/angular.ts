@@ -215,19 +215,19 @@ export class Attributes {
   }
 
   /**
- * Observes an interpolated attribute.
- *
- * The observer function will be invoked once during the next `$digest` following
- * compilation. The observer is then invoked whenever the interpolated value
- * changes.
- *
- * @param {string} key Normalized key. (ie ngAttribute) .
- * @param {any} fn Function that will be called whenever
-          the interpolated value of the attribute changes.
- *        See the {@link guide/interpolation#how-text-and-attribute-bindings-work Interpolation
- *        guide} for more info.
- * @returns {function()} Returns a deregistration function for this observer.
- */
+   * Observes an interpolated attribute.
+   * 
+   * The observer function will be invoked once during the next `$digest` following
+   * compilation. The observer is then invoked whenever the interpolated value
+   * changes.
+   *
+   * @param {string} key Normalized key. (ie ngAttribute) .
+   * @param {any} fn Function that will be called whenever
+            the interpolated value of the attribute changes.
+  *        See the {@link guide/interpolation#how-text-and-attribute-bindings-work Interpolation
+  *        guide} for more info.
+  * @returns {function()} Returns a deregistration function for this observer.
+  */
   $observe(key, fn) {
     const $$observers =
       this.$$observers || (this.$$observers = Object.create(null));

@@ -13,6 +13,7 @@ import {
   timezoneToOffset,
   nextUid,
   equals,
+  isProxy,
 } from "../../shared/utils.js";
 import { ngModelMinErr } from "./../model/model";
 
@@ -413,7 +414,9 @@ export function createDateInputType(type, regexp, parseDate) {
 
     if (isDefined(attr.min) || attr.ngMin) {
       let minVal = attr.min || $parse(attr.ngMin)(scope);
-      let parsedMinVal = parseObservedDateValue(minVal);
+      let parsedMinVal = parseObservedDateValue(
+        isProxy(minVal) ? minVal.$target : minVal,
+      );
 
       ctrl.$validators.min = function (value) {
         if (type === "month") {
@@ -440,7 +443,9 @@ export function createDateInputType(type, regexp, parseDate) {
 
     if (isDefined(attr.max) || attr.ngMax) {
       let maxVal = attr.max || $parse(attr.ngMax)(scope);
-      let parsedMaxVal = parseObservedDateValue(maxVal);
+      let parsedMaxVal = parseObservedDateValue(
+        isProxy(maxVal) ? maxVal.$target : maxVal,
+      );
 
       ctrl.$validators.max = function (value) {
         if (type === "month") {
@@ -1059,9 +1064,14 @@ export function ngValueDirective() {
    *  makes it possible to use ngValue as a sort of one-way bind.
    */
   function updateElementValue(element, attr, value) {
+    // TODO REMOVE IS SUPPORT
     // Support: IE9 only
     // In IE9 values are converted to string (e.g. `input.value = null` results in `input.value === 'null'`).
-    const propValue = isDefined(value) ? value : null;
+    const propValue = isDefined(value)
+      ? isProxy(value)
+        ? value.$target
+        : value
+      : null;
     element["value"] = propValue;
     attr.$set("value", value);
   }
