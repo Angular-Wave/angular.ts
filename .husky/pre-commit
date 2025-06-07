@@ -1,2 +1,3 @@
 make pretty
 make types
+git add ./
