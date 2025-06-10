@@ -1,8 +1,16 @@
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
-import pkg from "./package.json" assert { type: "json" };
 import terser from "@rollup/plugin-terser";
 import versionInjector from "rollup-plugin-version-injector";
+import { readFileSync } from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const pkg = JSON.parse(
+  readFileSync(path.resolve(__dirname, "package.json"), "utf-8"),
+);
 
 const basePlugins = [resolve(), commonjs(), versionInjector()];
 
