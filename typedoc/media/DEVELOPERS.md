@@ -1,10 +1,10 @@
 # Developing AngularJS
 
-* [Development Setup](#setup)
-* [Running Tests](#tests)
-* [Coding Rules](#rules)
-* [Commit Message Guidelines](#commits)
-* [Writing Documentation](#documentation)
+- [Development Setup](#setup)
+- [Running Tests](#tests)
+- [Coding Rules](#rules)
+- [Commit Message Guidelines](#commits)
+- [Writing Documentation](#documentation)
 
 ## <a name="setup"> Development Setup
 
@@ -16,10 +16,10 @@ explains the basic mechanics of using `git`, `node`, `yarn` and `grunt`.
 Before you can build AngularJS, you must install and configure the following dependencies on your
 machine:
 
-* [Git](http://git-scm.com/): The [Github Guide to
+- [Git](http://git-scm.com/): The [Github Guide to
   Installing Git][git-setup] is a good source of information.
 
-* [Node.js v8.x (LTS)](http://nodejs.org): We use Node to generate the documentation, run a
+- [Node.js v8.x (LTS)](http://nodejs.org): We use Node to generate the documentation, run a
   development web server, run tests, and generate distributable files. Depending on your system,
   you can install Node either from source or as a pre-packaged bundle.
 
@@ -27,15 +27,15 @@ machine:
   [nvm-windows](https://github.com/coreybutler/nvm-windows))
   to manage and install Node.js, which makes it easy to change the version of Node.js per project.
 
-* [Yarn](https://yarnpkg.com): We use Yarn to install our Node.js module dependencies
+- [Yarn](https://yarnpkg.com): We use Yarn to install our Node.js module dependencies
   (rather than using npm). See the detailed [installation instructions][yarn-install].
 
-* [Java](http://www.java.com): We minify JavaScript using
+- [Java](http://www.java.com): We minify JavaScript using
   [Closure Tools](https://developers.google.com/closure/), which require Java (version 7 or higher)
   to be installed and included in your
   [PATH](http://docs.oracle.com/javase/tutorial/essential/environment/paths.html) variable.
 
-* [Grunt](http://gruntjs.com): We use Grunt as our build system. We're using it as a local dependency,
+- [Grunt](http://gruntjs.com): We use Grunt as our build system. We're using it as a local dependency,
   but you can also add the grunt command-line tool globally (with `yarn global add grunt-cli`), which allows
   you to leave out the `yarn` prefix for all our grunt commands.
 
@@ -47,7 +47,6 @@ fork of AngularJS and open Pull Requests in the [GitHub Repository][github].
 To create a Github account, follow the instructions [here](https://github.com/signup/free).
 Afterwards, go ahead and [fork](http://help.github.com/forking) the
 [main AngularJS repository][github].
-
 
 ### Building AngularJS
 
@@ -77,14 +76,14 @@ Administrator). This is because `yarn grunt package` creates some symbolic links
 The build output is in the `build` directory. It consists of the following files and
 directories:
 
-* `angular-<version>.zip` — The complete zip file, containing all of the release build
-artifacts.
+- `angular-<version>.zip` — The complete zip file, containing all of the release build
+  artifacts.
 
-* `angular.js` / `angular.min.js` — The regular and minified core AngularJS script file.
+- `angular.js` / `angular.min.js` — The regular and minified core AngularJS script file.
 
-* `angular-*.js` / `angular-*.min.js` — All other AngularJS module script files.
+- `angular-*.js` / `angular-*.min.js` — All other AngularJS module script files.
 
-* `docs/` — A directory that contains a standalone version of the docs
+- `docs/` — A directory that contains a standalone version of the docs
   (same as served in `docs.angularjs.org`).
 
 ### <a name="local-server"></a> Running a Local Development Web Server
@@ -93,14 +92,17 @@ To debug code, run end-to-end tests, and serve the docs, it is often useful to h
 HTTP server. For this purpose, we have made available a local web server based on Node.js.
 
 1. To start the web server, run:
+
    ```shell
    yarn grunt webserver
    ```
 
 2. To access the local server, enter the following URL into your web browser:
+
    ```text
    http://localhost:8000/
    ```
+
    By default, it serves the contents of the AngularJS project directory.
 
 3. To access the locally served docs, visit this URL:
@@ -160,13 +162,11 @@ source or test files change. To execute tests in this mode run:
 
 3. To re-run tests just change any source or test file.
 
-
 To learn more about all of the preconfigured Grunt tasks run:
 
 ```shell
 yarn grunt --help
 ```
-
 
 ### <a name="e2e-tests"></a> Running the End-to-end Test Suite
 
@@ -182,22 +182,22 @@ This will start the webserver and run the tests on Chrome.
 
 To ensure consistency throughout the source code, keep these rules in mind as you are working:
 
-* All features or bug fixes **must be tested** by one or more [specs][unit-testing].
-* All public API methods **must be documented** with ngdoc, an extended version of jsdoc (we added
+- All features or bug fixes **must be tested** by one or more [specs][unit-testing].
+- All public API methods **must be documented** with ngdoc, an extended version of jsdoc (we added
   support for markdown and templating via @ngdoc tag). To see how we document our APIs, please check
   out the existing source code and see the section about [writing documentation](#documentation)
-* With the exceptions listed below, we follow the rules contained in
+- With the exceptions listed below, we follow the rules contained in
   [Google's JavaScript Style Guide][js-style-guide]:
-    * **Do not use namespaces**: Instead,  wrap the entire AngularJS code base in an anonymous
-      closure and export our API explicitly rather than implicitly.
-    * Wrap all code at **100 characters**.
-    * Instead of complex inheritance hierarchies, we **prefer simple objects**. We use prototypal
-      inheritance only when absolutely necessary.
-    * We **love functions and closures** and, whenever possible, prefer them over objects.
-    * To write concise code that can be better minified, we **use aliases internally** that map to
-      the external API. See our existing code to see what we mean.
-    * We **don't go crazy with type annotations** for private internal APIs unless it's an internal
-      API that is used throughout AngularJS. The best guidance is to do what makes the most sense.
+  - **Do not use namespaces**: Instead, wrap the entire AngularJS code base in an anonymous
+    closure and export our API explicitly rather than implicitly.
+  - Wrap all code at **100 characters**.
+  - Instead of complex inheritance hierarchies, we **prefer simple objects**. We use prototypal
+    inheritance only when absolutely necessary.
+  - We **love functions and closures** and, whenever possible, prefer them over objects.
+  - To write concise code that can be better minified, we **use aliases internally** that map to
+    the external API. See our existing code to see what we mean.
+  - We **don't go crazy with type annotations** for private internal APIs unless it's an internal
+    API that is used throughout AngularJS. The best guidance is to do what makes the most sense.
 
 ### Specific topics
 
@@ -224,11 +224,10 @@ errors ids, templated error messages, and adds a link to a detailed error descri
 The `$compile:badrestrict` error is a good example for a well-defined `minErr`:
 [code][code.badrestrict] and [description][docs.badrestrict].
 
-
 ## <a name="commits"></a> Git Commit Guidelines
 
-We have very precise rules over how our git commit messages can be formatted.  This leads to **more
-readable messages** that are easy to follow when looking through the **project history**.  But also,
+We have very precise rules over how our git commit messages can be formatted. This leads to **more
+readable messages** that are easy to follow when looking through the **project history**. But also,
 we use the git commit messages to **generate the AngularJS change log**.
 
 The commit message formatting can be added using a typical git workflow or through the use of a CLI
@@ -236,7 +235,8 @@ wizard ([Commitizen](https://github.com/commitizen/cz-cli)). To use the wizard, 
 in your terminal after staging your changes in git.
 
 ### Commit Message Format
-Each commit message consists of a **header**, a **body** and a **footer**.  The header has a special
+
+Each commit message consists of a **header**, a **body** and a **footer**. The header has a special
 format that includes a **type**, a **scope** and a **subject**:
 
 ```
@@ -253,43 +253,49 @@ Any line of the commit message cannot be longer than 100 characters! This allows
 to read on GitHub as well as in various git tools.
 
 ### Revert
+
 If the commit reverts a previous commit, it should begin with `revert: `, followed by the header
 of the reverted commit.
 In the body it should say: `This reverts commit <hash>.`, where the hash is the SHA of the commit
 being reverted.
 
 ### Type
+
 Must be one of the following:
 
-* **feat**: A new feature
-* **fix**: A bug fix
-* **docs**: Documentation only changes
-* **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing
+- **feat**: A new feature
+- **fix**: A bug fix
+- **docs**: Documentation only changes
+- **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing
   semi-colons, etc)
-* **refactor**: A code change that neither fixes a bug nor adds a feature
-* **perf**: A code change that improves performance
-* **test**: Adding missing or correcting existing tests
-* **chore**: Changes to the build process or auxiliary tools and libraries such as documentation
+- **refactor**: A code change that neither fixes a bug nor adds a feature
+- **perf**: A code change that improves performance
+- **test**: Adding missing or correcting existing tests
+- **chore**: Changes to the build process or auxiliary tools and libraries such as documentation
   generation
 
 ### Scope
+
 The scope could be anything specifying place of the commit change. For example `$location`,
 `$browser`, `$compile`, `$rootScope`, `ngHref`, `ngClick`, `ngView`, etc...
 
 You can use `*` when the change affects more than a single scope.
 
 ### Subject
+
 The subject contains succinct description of the change:
 
-* use the imperative, present tense: "change" not "changed" nor "changes"
-* don't capitalize first letter
-* no dot (.) at the end
+- use the imperative, present tense: "change" not "changed" nor "changes"
+- don't capitalize first letter
+- no dot (.) at the end
 
 ### Body
+
 Just as in the **subject**, use the imperative, present tense: "change" not "changed" nor "changes".
 The body should include the motivation for the change and contrast this with previous behavior.
 
 ### Footer
+
 The footer should contain any information about **Breaking Changes** and is also the place to
 [reference GitHub issues that this commit closes][closing-issues].
 
@@ -316,6 +322,7 @@ Extracting the source code documentation, processing and building the docs is ha
 documentation generation tool [Dgeni][dgeni].
 
 ### Building and viewing the docs locally
+
 The docs can be built from scratch using grunt:
 
 ```shell
@@ -336,35 +343,36 @@ yarn grunt build
 To view the docs, see [Running a Local Development Web Server](#local-server).
 
 ### Writing jsdoc
-The ngdoc utility has basic support for many of the standard jsdoc directives.  But in particular it
+
+The ngdoc utility has basic support for many of the standard jsdoc directives. But in particular it
 is interested in the following block tags:
 
-* `@name name` - the name of the ngdoc document
-* `@param {type} name description` - describes a parameter of a function
-* `@returns {type} description` - describes what a function returns
-* `@requires` - normally indicates that a JavaScript module is required; in an Angular service it is
+- `@name name` - the name of the ngdoc document
+- `@param {type} name description` - describes a parameter of a function
+- `@returns {type} description` - describes what a function returns
+- `@requires` - normally indicates that a JavaScript module is required; in an Angular service it is
   used to describe what other services this service relies on
-* `@property` - describes a property of an object
-* `@description` - used to provide a description of a component in markdown
-* `@link` - specifies a link to a URL or a type in the API reference.
+- `@property` - describes a property of an object
+- `@description` - used to provide a description of a component in markdown
+- `@link` - specifies a link to a URL or a type in the API reference.
   Links to the API have the following structure:
 
-  * the module namespace, followed by `.` (optional, default `ng`)
-  * the `@ngdoc` type (see below), followed by `:` (optional, automatically inferred)
-  * the name
-  * the method, property, or anchor (optional)
-  * the display name
+  - the module namespace, followed by `.` (optional, default `ng`)
+  - the `@ngdoc` type (see below), followed by `:` (optional, automatically inferred)
+  - the name
+  - the method, property, or anchor (optional)
+  - the display name
 
   For example: `{@link ng.type:$rootScope.Scope#$new Scope.$new()}`.
 
-* `@example` - specifies an example. This can be a simple code block, or a
+- `@example` - specifies an example. This can be a simple code block, or a
   [runnable example](#the-example-tag).
-* `@deprecated` - specifies that the following code is deprecated and should not be used.
+- `@deprecated` - specifies that the following code is deprecated and should not be used.
   In The AngularJS docs, there are two specific patterns which can be used to further describe
   the deprecation: `sinceVersion="<version>"` and `removeVersion="<version>"`
 
 The `type` in `@param` and `@returns` must be wrapped in `{}` curly braces, e.g. `{Object|Array}`.
-Parameters can be made optional by *either* appending a `=` to the type, e.g. `{Object=}`, *or* by
+Parameters can be made optional by _either_ appending a `=` to the type, e.g. `{Object=}`, _or_ by
 putting the `[name]` in square brackets.
 Default values are only possible with the second syntax by appending `=<value>` to the parameter
 name, e.g. `@param {boolean} [ownPropsOnly=false]`.
@@ -376,38 +384,39 @@ Descriptions can contain markdown formatting.
 In addition to the standard jsdoc tags, there are a number that are specific to the Angular
 code-base:
 
-* `@ngdoc` - specifies the type of thing being documented. See below for more detail.
-* `@eventType emit|broadcast` - specifies whether the event is emitted or broadcast
-* `@usage` - shows how to use a `function` or `directive`. Is usually automatically generated.
-* `@knownIssue` - adds info about known quirks, problems, or limitations with the API, and possibly,
+- `@ngdoc` - specifies the type of thing being documented. See below for more detail.
+- `@eventType emit|broadcast` - specifies whether the event is emitted or broadcast
+- `@usage` - shows how to use a `function` or `directive`. Is usually automatically generated.
+- `@knownIssue` - adds info about known quirks, problems, or limitations with the API, and possibly,
   workarounds. This section is not for bugs.
 
 The following are specific to directives:
 
-* `@animations` - specifies the animations a directive supports
-* `@multiElement` - specifies if a directive can span over multiple elements
-* `@priority` - specifies a directive's priority
-* `@restrict` - is extracted to show the usage of a directive. For example, for [E]lement,
+- `@animations` - specifies the animations a directive supports
+- `@multiElement` - specifies if a directive can span over multiple elements
+- `@priority` - specifies a directive's priority
+- `@restrict` - is extracted to show the usage of a directive. For example, for [E]lement,
   [A]ttribute, and [C]lass, use `@restrict ECA`
-* `@scope` - specifies that a directive will create a new scope
+- `@scope` - specifies that a directive will create a new scope
 
 ### The `@ngdoc` Directive
-This directive helps to specify the template used to render the item being documented.  For instance,
-a directive would have different properties to a filter and so would be documented differently.  The
+
+This directive helps to specify the template used to render the item being documented. For instance,
+a directive would have different properties to a filter and so would be documented differently. The
 commonly used types are:
 
-* `overview` - a general page (guide, api index)
-* `provider` - AngularJS provider, such as `$compileProvider` or `$httpProvider`.
-* `service` - injectable AngularJS service, such as `$compile` or `$http`.
-* `object` - well defined object (often exposed as a service)
-* `function` - function that will be available to other methods (such as a helper function within
+- `overview` - a general page (guide, api index)
+- `provider` - AngularJS provider, such as `$compileProvider` or `$httpProvider`.
+- `service` - injectable AngularJS service, such as `$compile` or `$http`.
+- `object` - well defined object (often exposed as a service)
+- `function` - function that will be available to other methods (such as a helper function within
   the ng module)
-* `method` - method on an object/service/controller
-* `property` - property on an object/service/controller
-* `event` -  AngularJS event that will propagate through the `$scope` tree.
-* `directive` - AngularJS  directive
-* `filter` - AngularJS filter
-* `error` - minErr error description
+- `method` - method on an object/service/controller
+- `property` - property on an object/service/controller
+- `event` - AngularJS event that will propagate through the `$scope` tree.
+- `directive` - AngularJS directive
+- `filter` - AngularJS filter
+- `error` - minErr error description
 
 ### General documentation with Markdown
 
@@ -416,18 +425,20 @@ feature.
 
 #### Headings
 
-Only use *h2* headings and lower, as the page title is set in *h1*. Also make sure you follow the
+Only use _h2_ headings and lower, as the page title is set in _h1_. Also make sure you follow the
 heading hierarchy. This ensures correct table of contents are created.
 
 #### Code blocks
+
 In line code can be specified by enclosing the code in back-ticks (\`).
 A block of multi-line code can be enclosed in triple back-ticks (\`\`\`) but it is formatted better
 if it is enclosed in &lt;pre&gt;...&lt;/pre&gt; tags and the code lines themselves are indented.
 
 ### Writing runnable (live) examples and e2e tests
+
 It is possible to embed examples in the documentation along with appropriate e2e tests. These
-examples and scenarios will be converted to runnable code within the documentation.  So it is
-important that they work correctly.  To ensure this, all these e2e scenarios are run as part of the
+examples and scenarios will be converted to runnable code within the documentation. So it is
+important that they work correctly. To ensure this, all these e2e scenarios are run as part of the
 continuous integration tests.
 
 If you are adding an example with an e2e test, you should [run the test locally](#e2e-tests) first
@@ -435,15 +446,16 @@ to ensure it passes. You can change `it(...)` to `it(...)` to run only your test
 but make sure you change it back to `it(...)` before committing.
 
 #### The `<example>` tag
+
 This tag identifies a block of HTML that will define a runnable example. It can take the following
 attributes:
 
-* `animations` - if set to `true` then this example uses ngAnimate.
-* `deps` - Semicolon-separated list of additional angular module files to be loaded,
+- `animations` - if set to `true` then this example uses ngAnimate.
+- `deps` - Semicolon-separated list of additional angular module files to be loaded,
   e.g. `angular-animate.js`
-* `name` - every example should have a name. It should start with the component, e.g directive name,
+- `name` - every example should have a name. It should start with the component, e.g directive name,
   and not contain whitespace
-* `module` - the name of the app module as defined in the example's JavaScript
+- `module` - the name of the app module as defined in the example's JavaScript
 
 Within this tag we provide `<file>` tags that specify what files contain the example code.
 

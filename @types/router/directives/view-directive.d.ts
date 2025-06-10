@@ -1,10 +1,14 @@
-export function $ViewDirectiveFill($compile: any, $controller: any, $transitions: any): {
-    restrict: string;
-    priority: number;
-    compile: (tElement: any) => (scope: any, $element: any) => void;
+export function $ViewDirectiveFill(
+  $compile: any,
+  $controller: any,
+  $transitions: any,
+): {
+  restrict: string;
+  priority: number;
+  compile: (tElement: any) => (scope: any, $element: any) => void;
 };
 export namespace $ViewDirectiveFill {
-    let $inject: string[];
+  let $inject: string[];
 }
 /**
  * `ng-view`: A viewport directive which is filled in by a view from the active state.
@@ -131,11 +135,23 @@ export namespace $ViewDirectiveFill {
  * });
  * ```
  */
-export let ngView: (string | (($view: any, $animate: any, $ngViewScroll: any, $interpolate: any) => {
-    count: number;
-    restrict: string;
-    terminal: boolean;
-    priority: number;
-    transclude: string;
-    compile: (_tElement: any, _tAttrs: any, $transclude: any) => (scope: any, $element: any, attrs: any) => void;
-}))[];
+export let ngView: (
+  | string
+  | ((
+      $view: any,
+      $animate: any,
+      $ngViewScroll: any,
+      $interpolate: any,
+    ) => {
+      count: number;
+      restrict: string;
+      terminal: boolean;
+      priority: number;
+      transclude: string;
+      compile: (
+        _tElement: any,
+        _tAttrs: any,
+        $transclude: any,
+      ) => (scope: any, $element: any, attrs: any) => void;
+    })
+)[];

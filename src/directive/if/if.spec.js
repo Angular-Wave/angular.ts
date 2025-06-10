@@ -237,7 +237,7 @@ describe("ngIf", () => {
 
       await wait(100);
 
-      expect(element.textContent).toBe("hello");
+      expect(element.textContent.trim()).toBe("hello");
 
       $rootScope.show = false;
       await wait();

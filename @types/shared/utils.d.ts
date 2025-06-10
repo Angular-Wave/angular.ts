@@ -389,7 +389,10 @@ export function bind(context: any, fn: any, ...args: any[]): Function;
  *
  * See https://github.com/angular/angular.js/pull/14221 for more information.
  */
-export function toJson(obj: any | any[] | Date | string | number | boolean, pretty?: boolean | number): string | undefined;
+export function toJson(
+  obj: any | any[] | Date | string | number | boolean,
+  pretty?: boolean | number,
+): string | undefined;
 /**
  * Deserializes a JSON string.
  *
@@ -399,14 +402,18 @@ export function toJson(obj: any | any[] | Date | string | number | boolean, pret
 export function fromJson(json: string): any | any[] | string | number;
 export function timezoneToOffset(timezone: any, fallback: any): any;
 export function addDateMinutes(date: any, minutes: any): Date;
-export function convertTimezoneToLocal(date: any, timezone: any, reverse: any): Date;
+export function convertTimezoneToLocal(
+  date: any,
+  timezone: any,
+  reverse: any,
+): Date;
 /**
  * Parses an escaped url query string into key-value pairs.
  * @param {string} keyValue
  * @returns {Object.<string,boolean|Array>}
  */
 export function parseKeyValue(keyValue: string): {
-    [x: string]: boolean | any[];
+  [x: string]: boolean | any[];
 };
 export function toKeyValue(obj: any): string;
 /**
@@ -457,7 +464,11 @@ export function assert(argument: boolean, errorMsg?: string): void;
  * Throw error if the argument is falsy.
  */
 export function assertArg(arg: any, name: any, reason: any): any;
-export function assertArgFn(arg: any, name: any, acceptArrayAnnotation: any): any;
+export function assertArgFn(
+  arg: any,
+  name: any,
+  acceptArrayAnnotation: any,
+): any;
 /**
  * Configure several aspects of error handling if used as a setter or return the
  * current configuration if used as a getter.
@@ -467,7 +478,9 @@ export function assertArgFn(arg: any, name: any, acceptArrayAnnotation: any): an
  * @param {ErrorHandlingConfig} [config]
  * @returns {ErrorHandlingConfig}
  */
-export function errorHandlingConfig(config?: ErrorHandlingConfig): ErrorHandlingConfig;
+export function errorHandlingConfig(
+  config?: ErrorHandlingConfig,
+): ErrorHandlingConfig;
 /**
  * This object provides a utility for producing rich Error messages within
  * AngularJS. It can be called as follows:
@@ -533,21 +546,24 @@ export function isObjectEmpty(obj: any | null | undefined): boolean;
  * @param {HTMLElement} replacedElem - The element to be replaced (its content and attributes will be updated).
  * @param {HTMLElement} newElem - The element providing the new attributes and content.
  */
-export function replaceInline(replacedElem: HTMLElement, newElem: HTMLElement): void;
+export function replaceInline(
+  replacedElem: HTMLElement,
+  newElem: HTMLElement,
+): void;
 export const isProxySymbol: unique symbol;
 export const ngAttrPrefixes: string[];
 /**
  * Error configuration object. May only contain the options that need to be updated.
  */
 export type ErrorHandlingConfig = {
-    /**
-     * - The max depth for stringifying objects. Setting to a
-     * non-positive or non-numeric value removes the max depth limit. Default: 5.
-     */
-    objectMaxDepth?: number | undefined;
-    /**
-     * - Specifies whether the generated error URL will
-     * contain the parameters of the thrown error. Default: true. When used without argument, it returns the current value.
-     */
-    urlErrorParamsEnabled?: boolean | undefined;
+  /**
+   * - The max depth for stringifying objects. Setting to a
+   * non-positive or non-numeric value removes the max depth limit. Default: 5.
+   */
+  objectMaxDepth?: number | undefined;
+  /**
+   * - Specifies whether the generated error URL will
+   * contain the parameters of the thrown error. Default: true. When used without argument, it returns the current value.
+   */
+  urlErrorParamsEnabled?: boolean | undefined;
 };

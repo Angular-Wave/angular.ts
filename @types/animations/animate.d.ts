@@ -1,94 +1,96 @@
 export function AnimateProvider($provide: any): void;
 export class AnimateProvider {
-    constructor($provide: any);
-    $$registeredAnimations: any;
-    /**
-     * Registers a new injectable animation factory function. The factory function produces the
-     * animation object which contains callback functions for each event that is expected to be
-     * animated.
-     *
-     *   * `eventFn`: `function(element, ... , doneFunction, options)`
-     *   The element to animate, the `doneFunction` and the options fed into the animation. Depending
-     *   on the type of animation additional arguments will be injected into the animation function. The
-     *   list below explains the function signatures for the different animation methods:
-     *
-     *   - setClass: function(element, addedClasses, removedClasses, doneFunction, options)
-     *   - addClass: function(element, addedClasses, doneFunction, options)
-     *   - removeClass: function(element, removedClasses, doneFunction, options)
-     *   - enter, leave, move: function(element, doneFunction, options)
-     *   - animate: function(element, fromStyles, toStyles, doneFunction, options)
-     *
-     *   Make sure to trigger the `doneFunction` once the animation is fully complete.
-     *
-     * ```js
-     *   return {
-     *     //enter, leave, move signature
-     *     eventFn : function(element, done, options) {
-     *       //code to run the animation
-     *       //once complete, then run done()
-     *       return function endFunction(wasCancelled) {
-     *         //code to cancel the animation
-     *       }
-     *     }
-     *   }
-     * ```
-     *
-     * @param {string} name The name of the animation (this is what the class-based CSS value will be compared to).
-     * @param {Function} factory The factory function that will be executed to return the animation
-     *                           object.
-     */
-    register: (name: string, factory: Function) => void;
-    /**
-     * Sets and/or returns the custom filter function that is used to "filter" animations, i.e.
-     * determine if an animation is allowed or not. When no filter is specified (the default), no
-     * animation will be blocked. Setting the `customFilter` value will only allow animations for
-     * which the filter function's return value is truthy.
-     *
-     * This allows to easily create arbitrarily complex rules for filtering animations, such as
-     * allowing specific events only, or enabling animations on specific subtrees of the DOM, etc.
-     * Filtering animations can also boost performance for low-powered devices, as well as
-     * applications containing a lot of structural operations.
-     *
-     * <div class="alert alert-success">
-     *   **Best Practice:**
-     *   Keep the filtering function as lean as possible, because it will be called for each DOM
-     *   action (e.g. insertion, removal, class change) performed by "animation-aware" directives.
-     *   See {@link guide/animations#which-directives-support-animations- here} for a list of built-in
-     *   directives that support animations.
-     *   Performing computationally expensive or time-consuming operations on each call of the
-     *   filtering function can make your animations sluggish.
-     * </div>
-     *
-     * **Note:** If present, `customFilter` will be checked before
-     * {@link $animateProvider#classNameFilter classNameFilter}.
-     *
-     * @param {Function=} filterFn - The filter function which will be used to filter all animations.
-     *   If a falsy value is returned, no animation will be performed. The function will be called
-     *   with the following arguments:
-     *   - **node** `{Element}` - The DOM element to be animated.
-     *   - **event** `{String}` - The name of the animation event (e.g. `enter`, `leave`, `addClass`
-     *     etc).
-     *   - **options** `{Object}` - A collection of options/styles used for the animation.
-     * @return {Function} The current filter function or `null` if there is none set.
-     */
-    customFilter: (filterFn?: Function | undefined, ...args: any[]) => Function;
-    /**
-     * Sets and/or returns the CSS class regular expression that is checked when performing
-     * an animation. Upon bootstrap the classNameFilter value is not set at all and will
-     * therefore enable $animate to attempt to perform an animation on any element that is triggered.
-     * When setting the `classNameFilter` value, animations will only be performed on elements
-     * that successfully match the filter expression. This in turn can boost performance
-     * for low-powered devices as well as applications containing a lot of structural operations.
-     *
-     * **Note:** If present, `classNameFilter` will be checked after
-     * {@link $animateProvider#customFilter customFilter}. If `customFilter` is present and returns
-     * false, `classNameFilter` will not be checked.
-     *
-     * @param {RegExp=} expression The className expression which will be checked against all animations
-     * @return {RegExp} The current CSS className expression value. If null then there is no expression value
-     */
-    classNameFilter: (expression?: RegExp | undefined, ...args: any[]) => RegExp;
-    $get: (string | (($$animateQueue: any) => {
+  constructor($provide: any);
+  $$registeredAnimations: any;
+  /**
+   * Registers a new injectable animation factory function. The factory function produces the
+   * animation object which contains callback functions for each event that is expected to be
+   * animated.
+   *
+   *   * `eventFn`: `function(element, ... , doneFunction, options)`
+   *   The element to animate, the `doneFunction` and the options fed into the animation. Depending
+   *   on the type of animation additional arguments will be injected into the animation function. The
+   *   list below explains the function signatures for the different animation methods:
+   *
+   *   - setClass: function(element, addedClasses, removedClasses, doneFunction, options)
+   *   - addClass: function(element, addedClasses, doneFunction, options)
+   *   - removeClass: function(element, removedClasses, doneFunction, options)
+   *   - enter, leave, move: function(element, doneFunction, options)
+   *   - animate: function(element, fromStyles, toStyles, doneFunction, options)
+   *
+   *   Make sure to trigger the `doneFunction` once the animation is fully complete.
+   *
+   * ```js
+   *   return {
+   *     //enter, leave, move signature
+   *     eventFn : function(element, done, options) {
+   *       //code to run the animation
+   *       //once complete, then run done()
+   *       return function endFunction(wasCancelled) {
+   *         //code to cancel the animation
+   *       }
+   *     }
+   *   }
+   * ```
+   *
+   * @param {string} name The name of the animation (this is what the class-based CSS value will be compared to).
+   * @param {Function} factory The factory function that will be executed to return the animation
+   *                           object.
+   */
+  register: (name: string, factory: Function) => void;
+  /**
+   * Sets and/or returns the custom filter function that is used to "filter" animations, i.e.
+   * determine if an animation is allowed or not. When no filter is specified (the default), no
+   * animation will be blocked. Setting the `customFilter` value will only allow animations for
+   * which the filter function's return value is truthy.
+   *
+   * This allows to easily create arbitrarily complex rules for filtering animations, such as
+   * allowing specific events only, or enabling animations on specific subtrees of the DOM, etc.
+   * Filtering animations can also boost performance for low-powered devices, as well as
+   * applications containing a lot of structural operations.
+   *
+   * <div class="alert alert-success">
+   *   **Best Practice:**
+   *   Keep the filtering function as lean as possible, because it will be called for each DOM
+   *   action (e.g. insertion, removal, class change) performed by "animation-aware" directives.
+   *   See {@link guide/animations#which-directives-support-animations- here} for a list of built-in
+   *   directives that support animations.
+   *   Performing computationally expensive or time-consuming operations on each call of the
+   *   filtering function can make your animations sluggish.
+   * </div>
+   *
+   * **Note:** If present, `customFilter` will be checked before
+   * {@link $animateProvider#classNameFilter classNameFilter}.
+   *
+   * @param {Function=} filterFn - The filter function which will be used to filter all animations.
+   *   If a falsy value is returned, no animation will be performed. The function will be called
+   *   with the following arguments:
+   *   - **node** `{Element}` - The DOM element to be animated.
+   *   - **event** `{String}` - The name of the animation event (e.g. `enter`, `leave`, `addClass`
+   *     etc).
+   *   - **options** `{Object}` - A collection of options/styles used for the animation.
+   * @return {Function} The current filter function or `null` if there is none set.
+   */
+  customFilter: (filterFn?: Function | undefined, ...args: any[]) => Function;
+  /**
+   * Sets and/or returns the CSS class regular expression that is checked when performing
+   * an animation. Upon bootstrap the classNameFilter value is not set at all and will
+   * therefore enable $animate to attempt to perform an animation on any element that is triggered.
+   * When setting the `classNameFilter` value, animations will only be performed on elements
+   * that successfully match the filter expression. This in turn can boost performance
+   * for low-powered devices as well as applications containing a lot of structural operations.
+   *
+   * **Note:** If present, `classNameFilter` will be checked after
+   * {@link $animateProvider#customFilter customFilter}. If `customFilter` is present and returns
+   * false, `classNameFilter` will not be checked.
+   *
+   * @param {RegExp=} expression The className expression which will be checked against all animations
+   * @return {RegExp} The current CSS className expression value. If null then there is no expression value
+   */
+  classNameFilter: (expression?: RegExp | undefined, ...args: any[]) => RegExp;
+  $get: (
+    | string
+    | (($$animateQueue: any) => {
         /**
          *
          * Sets up an event listener to fire whenever the animation event (enter, leave, move, etc...)
@@ -286,7 +288,12 @@ export class AnimateProvider {
          * @param {AnimationOptions} [options] - an optional collection of options/styles that will be applied to the element.
          * @returns {import('./animate-runner.js').AnimateRunner} the animation runner
          */
-        enter(element: Element, parent: Element, after: Element, options?: AnimationOptions): import("./animate-runner.js").AnimateRunner;
+        enter(
+          element: Element,
+          parent: Element,
+          after: Element,
+          options?: AnimationOptions,
+        ): import("./animate-runner.js").AnimateRunner;
         /**
          * Inserts (moves) the element into its new position in the DOM either after
          * the `after` element (if provided) or as the first child within the `parent` element
@@ -299,7 +306,12 @@ export class AnimateProvider {
          * @param {AnimationOptions} [options] - an optional collection of options/styles that will be applied to the element.
          * @returns {import('./animate-runner.js').AnimateRunner} the animation runner
          */
-        move(element: Element, parent: Element, after: Element, options?: AnimationOptions): import("./animate-runner.js").AnimateRunner;
+        move(
+          element: Element,
+          parent: Element,
+          after: Element,
+          options?: AnimationOptions,
+        ): import("./animate-runner.js").AnimateRunner;
         /**
          * Triggers an animation and then removes the element from the DOM.
          * When the function is called a promise is returned that will be resolved during the next
@@ -309,7 +321,10 @@ export class AnimateProvider {
          * @param {AnimationOptions} [options] an optional collection of options/styles that will be applied to the element.
          * @returns {import('./animate-runner.js').AnimateRunner} the animation runner
          */
-        leave(element: Element, options?: AnimationOptions): import("./animate-runner.js").AnimateRunner;
+        leave(
+          element: Element,
+          options?: AnimationOptions,
+        ): import("./animate-runner.js").AnimateRunner;
         /**
          * Triggers an addClass animation surrounding the addition of the provided CSS class(es). Upon
          * execution, the addClass operation will only be handled after the next digest and it will not trigger an
@@ -323,7 +338,11 @@ export class AnimateProvider {
          * @param {AnimationOptions} [options] an optional collection of options/styles that will be applied to the element.
          * @return {import('./animate-runner.js').AnimateRunner}} animationRunner the animation runner
          */
-        addClass(element: Element, className: string, options?: AnimationOptions): import("./animate-runner.js").AnimateRunner;
+        addClass(
+          element: Element,
+          className: string,
+          options?: AnimationOptions,
+        ): import("./animate-runner.js").AnimateRunner;
         /**
          * Triggers a removeClass animation surrounding the removal of the provided CSS class(es). Upon
          * execution, the removeClass operation will only be handled after the next digest and it will not trigger an
@@ -337,7 +356,11 @@ export class AnimateProvider {
          * @param {AnimationOptions} [options] an optional collection of options/styles that will be applied to the element.         *
          * @return {import('./animate-runner.js').AnimateRunner} animationRunner the animation runner
          */
-        removeClass(element: Element, className: string, options?: AnimationOptions): import("./animate-runner.js").AnimateRunner;
+        removeClass(
+          element: Element,
+          className: string,
+          options?: AnimationOptions,
+        ): import("./animate-runner.js").AnimateRunner;
         /**
          * Performs both the addition and removal of a CSS classes on an element and (during the process)
          * triggers an animation surrounding the class addition/removal. Much like `$animate.addClass` and
@@ -353,7 +376,12 @@ export class AnimateProvider {
          *
          * @return {import('./animate-runner.js').AnimateRunner} the animation runner
          */
-        setClass(element: Element, add: string, remove: string, options?: object | undefined): import("./animate-runner.js").AnimateRunner;
+        setClass(
+          element: Element,
+          add: string,
+          remove: string,
+          options?: object | undefined,
+        ): import("./animate-runner.js").AnimateRunner;
         /**
          * Performs an inline animation on the element which applies the provided to and from CSS styles to the element.
          * If any detected CSS transition, keyframe or JavaScript matches the provided className value, then the animation will take
@@ -375,28 +403,41 @@ export class AnimateProvider {
          * ```
          *  @return {import('./animate-runner.js').AnimateRunner} the animation runner
          */
-        animate(element: any, from: any, to: any, className: any, options: any): import("./animate-runner.js").AnimateRunner;
-    }))[];
+        animate(
+          element: any,
+          from: any,
+          to: any,
+          className: any,
+          options: any,
+        ): import("./animate-runner.js").AnimateRunner;
+      })
+  )[];
 }
 export namespace AnimateProvider {
-    let $inject: string[];
+  let $inject: string[];
 }
-export type AnimationMethod = "enter" | "leave" | "move" | "addClass" | "setClass" | "removeClass";
+export type AnimationMethod =
+  | "enter"
+  | "leave"
+  | "move"
+  | "addClass"
+  | "setClass"
+  | "removeClass";
 export type AnimationOptions = {
-    /**
-     * - space-separated CSS classes to add to element
-     */
-    addClass: string;
-    /**
-     * - CSS properties & values at the beginning of animation. Must have matching `to`
-     */
-    from: any;
-    /**
-     * - space-separated CSS classes to remove from element
-     */
-    removeClass: string;
-    /**
-     * - CSS properties & values at end of animation. Must have matching `from`
-     */
-    to: string;
+  /**
+   * - space-separated CSS classes to add to element
+   */
+  addClass: string;
+  /**
+   * - CSS properties & values at the beginning of animation. Must have matching `to`
+   */
+  from: any;
+  /**
+   * - space-separated CSS classes to remove from element
+   */
+  removeClass: string;
+  /**
+   * - CSS properties & values at end of animation. Must have matching `from`
+   */
+  to: string;
 };

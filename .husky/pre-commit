@@ -1,3 +1,3 @@
-make pretty
 make types
+make pretty
 git add ./

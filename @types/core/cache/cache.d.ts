@@ -25,9 +25,9 @@ export const SCOPE_KEY: "$scope";
  */
 export const ISOLATE_SCOPE_KEY: "$isolateScope";
 export type ExpandoStore = {
-    data: {
-        [x: string]: any;
-    };
-    events: any;
-    handle: Function | null;
+  data: {
+    [x: string]: any;
+  };
+  events: any;
+  handle: Function | null;
 };

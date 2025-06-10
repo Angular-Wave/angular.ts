@@ -15,7 +15,7 @@ build:
 	./node_modules/.bin/rollup -c
 
 pretty:
-	@npx prettier ./src --write
+	@npx prettier ./ --write
 	
 lint:
 	@npx eslint ./src --fix

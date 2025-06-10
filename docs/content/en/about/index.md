@@ -1,7 +1,7 @@
 ---
 title: About Goldydocs
 linkTitle: About
-menu: {main: {weight: 10}}
+menu: { main: { weight: 10 } }
 ---
 
 {{% blocks/cover title="About Goldydocs" image_anchor="bottom" height="auto" %}}
@@ -23,6 +23,7 @@ different sections of the documentation and site for more ideas.
 {{% blocks/section %}}
 
 # This is another section
+
 {.text-center}
 
 {{% /blocks/section %}}
@@ -30,6 +31,7 @@ different sections of the documentation and site for more ideas.
 {{% blocks/section %}}
 
 # This is another section
+
 {.text-center}
 
 {{% /blocks/section %}}

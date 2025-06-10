@@ -9,16 +9,16 @@
  */
 export function RafSchedulerProvider(): void;
 export class RafSchedulerProvider {
-    /**
-     * @returns {RafScheduler} The scheduler object.
-     */
-    $get: () => RafScheduler;
+  /**
+   * @returns {RafScheduler} The scheduler object.
+   */
+  $get: () => RafScheduler;
 }
 export type RafSchedulerFunction = Function;
 export type RafSchedulerObject = {
-    /**
-     * - Function to wait until the animation frame is quiet.
-     */
-    waitUntilQuiet: Function;
+  /**
+   * - Function to wait until the animation frame is quiet.
+   */
+  waitUntilQuiet: Function;
 };
 export type RafScheduler = RafSchedulerObject & RafSchedulerFunction;

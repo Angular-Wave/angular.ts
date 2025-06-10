@@ -50,7 +50,7 @@ class NgMessageCtrl {
     let messageFound = false;
     let totalMessages = 0;
 
-    while (messageItem != null) {
+    while (messageItem) {
       totalMessages++;
       const messageCtrl = messageItem.message;
       let messageUsed = false;

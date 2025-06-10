@@ -496,7 +496,7 @@ describe("ngModelOptions", () => {
           await wait();
           expect($rootScope.name).toBe("a");
           browserTrigger(inputElm, "click");
-          // await wait();
+          await wait();
           expect($rootScope.name).toBe("a");
 
           browserTrigger(inputElm, "mousedown");

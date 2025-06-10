@@ -1,16 +1,16 @@
-AngularTS 
---------------------
+## AngularTS
 
 ![Build status](https://github.com/Angular-Wave/angular.ts/actions/workflows/ci.yml/badge.svg)
-[![stats](https://data.jsdelivr.com/v1/package/npm/@angular-wave/angular.ts/badge?style=rounded)](https://www.jsdelivr.com/package/npm/@angular-wave/angular.ts) 
+[![stats](https://data.jsdelivr.com/v1/package/npm/@angular-wave/angular.ts/badge?style=rounded)](https://www.jsdelivr.com/package/npm/@angular-wave/angular.ts)
 
-This project preserves, modernises and expands the original [AngularJS](https://github.com/angular/angular.js) 
-framework. AngularTS is "AngularJS: The Good Parts". It takes the three core pillars of the original &ndash; a string-interpolation engine, 
-dependency injection, two-way data-binding &ndash; and adds a reactive change-detection model on top of modern build tooling with strong typechecking of TypeScript. 
+This project preserves, modernises and expands the original [AngularJS](https://github.com/angular/angular.js)
+framework. AngularTS is "AngularJS: The Good Parts". It takes the three core pillars of the original &ndash; a string-interpolation engine,
+dependency injection, two-way data-binding &ndash; and adds a reactive change-detection model on top of modern build tooling with strong typechecking of TypeScript.
 
-The result is a high-performance, buildless, progressive and battle-tested JS framework that stays as close to Web standards as possible. 
+The result is a high-performance, buildless, progressive and battle-tested JS framework that stays as close to Web standards as possible.
 
 With AngularTS, you get a decade-long optimization effort of Angular Team at Google and massive testing suite, required for applications like Google Cloud and Kubernetes, plus:
+
 - a fully reactive change-detection model without digests or virtual DOMs.
 - access to native DOM APIs at component and directive level (no `JQuery`or `JQLite`)
 - access to native Promises API (no `$q` or `$timetout`)
@@ -28,6 +28,7 @@ If you write server-rendered web applications for desktop and mobile, and do not
 $ npm i @angular-wave/angular.ts
 
 ```
+
 or
 
 ```html
@@ -39,60 +40,56 @@ or
 Initialize your app
 
 ```html
-<div ng-app ng-init="x='world'">
-    Hello  {{ x }}
-</div>
+<div ng-app ng-init="x='world'">Hello {{ x }}</div>
 ```
 
-Or check out the updated [Angular seed](https://github.com/Angular-Wave/angular-seed), which can serve as a solid starting point 
+Or check out the updated [Angular seed](https://github.com/Angular-Wave/angular-seed), which can serve as a solid starting point
 or a source of inspiration for new ideas.
 
 New docs website is coming!
 
 ### Legacy docs
---------------------
 
-* Web site: https://angularjs.org
-* Tutorial: https://docs.angularjs.org/tutorial
-* API Docs: https://docs.angularjs.org/api
-* Developer Guide: https://docs.angularjs.org/guide
-* Contribution guidelines: [CONTRIBUTING.md](CONTRIBUTING.md)
-* Core Development: [DEVELOPERS.md](DEVELOPERS.md)
-* Dashboard: https://dashboard.angularjs.org
+---
 
+- Web site: https://angularjs.org
+- Tutorial: https://docs.angularjs.org/tutorial
+- API Docs: https://docs.angularjs.org/api
+- Developer Guide: https://docs.angularjs.org/guide
+- Contribution guidelines: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Core Development: [DEVELOPERS.md](DEVELOPERS.md)
+- Dashboard: https://dashboard.angularjs.org
 
-Documentation
---------------------
+## Documentation
+
 Go to https://docs.angularjs.org
 
-Contribute
---------------------
+## Contribute
 
 We've set up a separate document for our
 [contribution guidelines](https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md).
 
-Develop
---------------------
+## Develop
 
 We've set up a separate document for
 [developers](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md).
 
-
 [![Analytics](https://ga-beacon.appspot.com/UA-8594346-11/angular.js/README.md?pixel)](https://github.com/igrigorik/ga-beacon)
 
-What to use AngularJS for and when to use it
----------
+## What to use AngularJS for and when to use it
+
 AngularJS is the next generation framework where each component is designed to work with every other
 component in an interconnected way like a well-oiled machine. AngularJS is JavaScript MVC made easy
 and done right. (Well it is not really MVC, read on, to understand what this means.)
 
-#### MVC, no, MV* done the right way!
+#### MVC, no, MV\* done the right way!
+
 [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), short for
 Model-View-Controller, is a design pattern, i.e. how the code should be organized and how the
 different parts of an application separated for proper readability and debugging. Model is the data
 and the database. View is the user interface and what the user sees. Controller is the main link
 between Model and View. These are the three pillars of major programming frameworks present on the
-market today. On the other hand AngularJS works on MV*, short for Model-View-_Whatever_. The
+market today. On the other hand AngularJS works on MV\*, short for Model-View-_Whatever_. The
 _Whatever_ is AngularJS's way of telling that you may create any kind of linking between the Model
 and the View here.
 
@@ -101,6 +98,7 @@ one has to be written and then connected by the programmer, AngularJS helps the 
 him/her to just create these and everything else will be taken care of by AngularJS.
 
 #### Interconnection with HTML at the root level
+
 AngularJS uses HTML to define the user's interface. AngularJS also enables the programmer to write
 new HTML tags (AngularJS Directives) and increase the readability and understandability of the HTML
 code. Directives are AngularJS’s way of bringing additional functionality to HTML. Directives
@@ -115,10 +113,12 @@ of WYSIWYG way. Rather than spending time on how the program flows and orchestra
 moving parts, we simply define what we want and AngularJS will take care of the dependencies.
 
 #### Data Handling made simple
+
 Data and Data Models in AngularJS are plain JavaScript objects and one can add and change properties
 directly on it and loop over objects and arrays at will.
 
 #### Two-way Data Binding
+
 One of AngularJS's strongest features. Two-way Data Binding means that if something changes in the
 Model, the change gets reflected in the View instantaneously, and the same happens the other way
 around. This is also referred to as Reactive Programming, i.e. suppose `a = b + c` is being
@@ -127,12 +127,14 @@ automatically updated to reflect the change. AngularJS uses its "scopes" as a gl
 and View and makes these updates in one available for the other.
 
 #### Less Written Code and Easily Maintainable Code
+
 Everything in AngularJS is created to enable the programmer to end up writing less code that is
 easily maintainable and readable by any other new person on the team. Believe it or not, one can
 write a complete working two-way data binded application in less than 10 lines of code. Try and see
 for yourself!
 
 #### Testing Ready
+
 AngularJS has Dependency Injection, i.e. it takes care of providing all the necessary dependencies
 to its controllers and services whenever required. This helps in making the AngularJS code ready for
 unit testing by making use of mock dependencies created and injected. This makes AngularJS more

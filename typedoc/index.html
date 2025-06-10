@@ -1,87 +1,646 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>@angular-wave/angular.ts</title><meta name="description" content="Documentation for @angular-wave/angular.ts"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="assets/icons.svg#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div><div class="field"><div id="tsd-toolbar-links"></div></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">@angular-wave/angular.ts</a></div><div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h2>@angular-wave/angular.ts</h2></div><div class="tsd-panel tsd-typography"><a id="md:angularts" class="tsd-anchor"></a><h2 class="tsd-anchor-link">AngularTS<a href="#md:angularts" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p><img src="https://github.com/Angular-Wave/angular.ts/actions/workflows/playwright.yml/badge.svg" alt="Build status">
-<a href="https://www.jsdelivr.com/package/npm/@angular-wave/angular.ts"><img src="https://data.jsdelivr.com/v1/package/npm/@angular-wave/angular.ts/badge?style=rounded" alt="stats"></a></p>
-<p>This project preserves, modernises and expands the original <a href="https://github.com/angular/angular.js">AngularJS</a>
-framework. AngularTS is &quot;AngularJS: The Good Parts&quot;. It takes the three core pillars of the original – a string-interpolation engine,
-dependency injection, two-way data-binding – and adds modern build tooling with strong typechecking of TypeScript.
-The result is a buildless, progressive and battle-tested JS framework that stays as close to Web standards as possible.</p>
-<p>AngularTS lets you write server-rendered web applications for desktop and mobile, without leaving the comfort of your tech-stack.
-It lets you use good old HTML as your template language and lets you extend HTML’s
-syntax to express your application’s components clearly and succinctly. It automatically
-synchronizes data from your UI (view) with your JavaScript objects (model) through 2-way data
-binding. To help you structure your application better and make it easy to test, AngularTS teaches
-the browser how to do dependency injection and inversion of control.</p>
-<p>It also helps with server-side communication, taming async callbacks with promises and deferred objects,
-and it makes client-side navigation and deep linking with hashbang urls or HTML5 pushState a
-piece of cake.</p>
-<a id="md:getting-started" class="tsd-anchor"></a><h3 class="tsd-anchor-link">Getting started<a href="#md:getting-started" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><a id="md:install" class="tsd-anchor"></a><h4 class="tsd-anchor-link">Install<a href="#md:install" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><pre><code class="bash"><span class="hl-0">$</span><span class="hl-1"> </span><span class="hl-2">npm</span><span class="hl-1"> </span><span class="hl-2">i</span><span class="hl-1"> </span><span class="hl-2">@angular-wave/angular.ts</span><br/>
+<!doctype html>
+<html class="default" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <title>@angular-wave/angular.ts</title>
+    <meta
+      name="description"
+      content="Documentation for @angular-wave/angular.ts"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/highlight.css" />
+    <script defer src="assets/main.js"></script>
+    <script async src="assets/icons.js" id="tsd-icons-script"></script>
+    <script async src="assets/search.js" id="tsd-search-script"></script>
+    <script async src="assets/navigation.js" id="tsd-nav-script"></script>
+  </head>
+  <body>
+    <script>
+      document.documentElement.dataset.theme =
+        localStorage.getItem("tsd-theme") || "os";
+      document.body.style.display = "none";
+      setTimeout(
+        () =>
+          app ? app.showPage() : document.body.style.removeProperty("display"),
+        500,
+      );
+    </script>
+    <header class="tsd-page-toolbar">
+      <div class="tsd-toolbar-contents container">
+        <div class="table-cell" id="tsd-search" data-base=".">
+          <div class="field">
+            <label
+              for="tsd-search-field"
+              class="tsd-widget tsd-toolbar-icon search no-caption"
+              ><svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <use href="assets/icons.svg#icon-search"></use></svg></label
+            ><input type="text" id="tsd-search-field" aria-label="Search" />
+          </div>
+          <div class="field"><div id="tsd-toolbar-links"></div></div>
+          <ul class="results">
+            <li class="state loading">Preparing search index...</li>
+            <li class="state failure">The search index is not available</li>
+          </ul>
+          <a href="index.html" class="title">@angular-wave/angular.ts</a>
+        </div>
+        <div class="table-cell" id="tsd-widgets">
+          <a
+            href="#"
+            class="tsd-widget tsd-toolbar-icon menu no-caption"
+            data-toggle="menu"
+            aria-label="Menu"
+            ><svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <use href="assets/icons.svg#icon-menu"></use></svg
+          ></a>
+        </div>
+      </div>
+    </header>
+    <div class="container container-main">
+      <div class="col-content">
+        <div class="tsd-page-title"><h2>@angular-wave/angular.ts</h2></div>
+        <div class="tsd-panel tsd-typography">
+          <a id="md:angularts" class="tsd-anchor"></a>
+          <h2 class="tsd-anchor-link">
+            AngularTS<a
+              href="#md:angularts"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24">
+                <use href="assets/icons.svg#icon-anchor"></use></svg
+            ></a>
+          </h2>
+          <p>
+            <img
+              src="https://github.com/Angular-Wave/angular.ts/actions/workflows/playwright.yml/badge.svg"
+              alt="Build status"
+            />
+            <a
+              href="https://www.jsdelivr.com/package/npm/@angular-wave/angular.ts"
+              ><img
+                src="https://data.jsdelivr.com/v1/package/npm/@angular-wave/angular.ts/badge?style=rounded"
+                alt="stats"
+            /></a>
+          </p>
+          <p>
+            This project preserves, modernises and expands the original
+            <a href="https://github.com/angular/angular.js">AngularJS</a>
+            framework. AngularTS is &quot;AngularJS: The Good Parts&quot;. It
+            takes the three core pillars of the original – a
+            string-interpolation engine, dependency injection, two-way
+            data-binding – and adds modern build tooling with strong
+            typechecking of TypeScript. The result is a buildless, progressive
+            and battle-tested JS framework that stays as close to Web standards
+            as possible.
+          </p>
+          <p>
+            AngularTS lets you write server-rendered web applications for
+            desktop and mobile, without leaving the comfort of your tech-stack.
+            It lets you use good old HTML as your template language and lets you
+            extend HTML’s syntax to express your application’s components
+            clearly and succinctly. It automatically synchronizes data from your
+            UI (view) with your JavaScript objects (model) through 2-way data
+            binding. To help you structure your application better and make it
+            easy to test, AngularTS teaches the browser how to do dependency
+            injection and inversion of control.
+          </p>
+          <p>
+            It also helps with server-side communication, taming async callbacks
+            with promises and deferred objects, and it makes client-side
+            navigation and deep linking with hashbang urls or HTML5 pushState a
+            piece of cake.
+          </p>
+          <a id="md:getting-started" class="tsd-anchor"></a>
+          <h3 class="tsd-anchor-link">
+            Getting started<a
+              href="#md:getting-started"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24">
+                <use href="assets/icons.svg#icon-anchor"></use></svg
+            ></a>
+          </h3>
+          <a id="md:install" class="tsd-anchor"></a>
+          <h4 class="tsd-anchor-link">
+            Install<a
+              href="#md:install"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24">
+                <use href="assets/icons.svg#icon-anchor"></use></svg
+            ></a>
+          </h4>
+          <pre><code class="bash"><span class="hl-0">$</span><span class="hl-1"> </span><span class="hl-2">npm</span><span class="hl-1"> </span><span class="hl-2">i</span><span class="hl-1"> </span><span class="hl-2">@angular-wave/angular.ts</span><br/>
 </code><button type="button">Copy</button></pre>
 
-<p>or</p>
-<pre><code class="html"><span class="hl-3">&lt;</span><span class="hl-4">script</span><span class="hl-5"> </span><span class="hl-6">src</span><span class="hl-5">=</span><span class="hl-7">&quot;</span><br/><span class="hl-7">    https://cdn.jsdelivr.net/npm/@angular-wave/angular.ts/dist/angular-ts.umd.min.js</span><br/><span class="hl-7">&quot;</span><span class="hl-3">&gt;&lt;/</span><span class="hl-4">script</span><span class="hl-3">&gt;</span>
+          <p>or</p>
+          <pre><code class="html"><span class="hl-3">&lt;</span><span class="hl-4">script</span><span class="hl-5"> </span><span class="hl-6">src</span><span class="hl-5">=</span><span class="hl-7">&quot;</span><br/><span class="hl-7">    https://cdn.jsdelivr.net/npm/@angular-wave/angular.ts/dist/angular-ts.umd.min.js</span><br/><span class="hl-7">&quot;</span><span class="hl-3">&gt;&lt;/</span><span class="hl-4">script</span><span class="hl-3">&gt;</span>
 </code><button type="button">Copy</button></pre>
 
-<p>Initialize your app</p>
-<pre><code class="html"><span class="hl-3">&lt;</span><span class="hl-4">div</span><span class="hl-1"> </span><span class="hl-6">ng-app</span><span class="hl-1"> </span><span class="hl-6">ng-init</span><span class="hl-1">=</span><span class="hl-7">&quot;x=&#39;world&#39;&quot;</span><span class="hl-3">&gt;</span><br/><span class="hl-1">    Hello  {{ x }}</span><br/><span class="hl-3">&lt;/</span><span class="hl-4">div</span><span class="hl-3">&gt;</span>
+          <p>Initialize your app</p>
+          <pre><code class="html"><span class="hl-3">&lt;</span><span class="hl-4">div</span><span class="hl-1"> </span><span class="hl-6">ng-app</span><span class="hl-1"> </span><span class="hl-6">ng-init</span><span class="hl-1">=</span><span class="hl-7">&quot;x=&#39;world&#39;&quot;</span><span class="hl-3">&gt;</span><br/><span class="hl-1">    Hello  {{ x }}</span><br/><span class="hl-3">&lt;/</span><span class="hl-4">div</span><span class="hl-3">&gt;</span>
 </code><button type="button">Copy</button></pre>
 
-<p>Or check out the updated <a href="https://github.com/Angular-Wave/angular-seed">Angular seed</a>, which can serve as a solid starting point
-or a source of inspiration for new ideas.</p>
-<p>New docs website is coming!</p>
-<a id="md:legacy-docs" class="tsd-anchor"></a><h3 class="tsd-anchor-link">Legacy docs<a href="#md:legacy-docs" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><hr>
-<ul>
-<li>Web site: <a href="https://angularjs.org">https://angularjs.org</a></li>
-<li>Tutorial: <a href="https://docs.angularjs.org/tutorial">https://docs.angularjs.org/tutorial</a></li>
-<li>API Docs: <a href="https://docs.angularjs.org/api">https://docs.angularjs.org/api</a></li>
-<li>Developer Guide: <a href="https://docs.angularjs.org/guide">https://docs.angularjs.org/guide</a></li>
-<li>Contribution guidelines: <a href="media/CONTRIBUTING.md">CONTRIBUTING.md</a></li>
-<li>Core Development: <a href="media/DEVELOPERS.md">DEVELOPERS.md</a></li>
-<li>Dashboard: <a href="https://dashboard.angularjs.org">https://dashboard.angularjs.org</a></li>
-</ul>
-<a id="md:documentation" class="tsd-anchor"></a><h2 class="tsd-anchor-link">Documentation<a href="#md:documentation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Go to <a href="https://docs.angularjs.org">https://docs.angularjs.org</a></p>
-<a id="md:contribute" class="tsd-anchor"></a><h2 class="tsd-anchor-link">Contribute<a href="#md:contribute" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>We've set up a separate document for our
-<a href="https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md">contribution guidelines</a>.</p>
-<a id="md:develop" class="tsd-anchor"></a><h2 class="tsd-anchor-link">Develop<a href="#md:develop" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>We've set up a separate document for
-<a href="https://github.com/angular/angular.js/blob/master/DEVELOPERS.md">developers</a>.</p>
-<p><a href="https://github.com/igrigorik/ga-beacon"><img src="https://ga-beacon.appspot.com/UA-8594346-11/angular.js/README.md?pixel" alt="Analytics"></a></p>
-<a id="md:what-to-use-angularjs-for-and-when-to-use-it" class="tsd-anchor"></a><h2 class="tsd-anchor-link">What to use AngularJS for and when to use it<a href="#md:what-to-use-angularjs-for-and-when-to-use-it" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>AngularJS is the next generation framework where each component is designed to work with every other
-component in an interconnected way like a well-oiled machine. AngularJS is JavaScript MVC made easy
-and done right. (Well it is not really MVC, read on, to understand what this means.)</p>
-<a id="md:mvc-no-mv-done-the-right-way" class="tsd-anchor"></a><h4 class="tsd-anchor-link">MVC, no, MV* done the right way!<a href="#md:mvc-no-mv-done-the-right-way" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><p><a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">MVC</a>, short for
-Model-View-Controller, is a design pattern, i.e. how the code should be organized and how the
-different parts of an application separated for proper readability and debugging. Model is the data
-and the database. View is the user interface and what the user sees. Controller is the main link
-between Model and View. These are the three pillars of major programming frameworks present on the
-market today. On the other hand AngularJS works on MV*, short for Model-View-<em>Whatever</em>. The
-<em>Whatever</em> is AngularJS's way of telling that you may create any kind of linking between the Model
-and the View here.</p>
-<p>Unlike other frameworks in any programming language, where MVC, the three separate components, each
-one has to be written and then connected by the programmer, AngularJS helps the programmer by asking
-him/her to just create these and everything else will be taken care of by AngularJS.</p>
-<a id="md:interconnection-with-html-at-the-root-level" class="tsd-anchor"></a><h4 class="tsd-anchor-link">Interconnection with HTML at the root level<a href="#md:interconnection-with-html-at-the-root-level" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><p>AngularJS uses HTML to define the user's interface. AngularJS also enables the programmer to write
-new HTML tags (AngularJS Directives) and increase the readability and understandability of the HTML
-code. Directives are AngularJS’s way of bringing additional functionality to HTML. Directives
-achieve this by enabling us to invent our own HTML elements. This also helps in making the code DRY
-(Don't Repeat Yourself), which means once created, a new directive can be used anywhere within the
-application.</p>
-<p>HTML is also used to determine the wiring of the app. Special attributes in the HTML determine where
-to load the app, which components or controllers to use for each element, etc. We specify &quot;what&quot;
-gets loaded, but not &quot;how&quot;. This declarative approach greatly simplifies app development in a sort
-of WYSIWYG way. Rather than spending time on how the program flows and orchestrating the various
-moving parts, we simply define what we want and AngularJS will take care of the dependencies.</p>
-<a id="md:data-handling-made-simple" class="tsd-anchor"></a><h4 class="tsd-anchor-link">Data Handling made simple<a href="#md:data-handling-made-simple" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><p>Data and Data Models in AngularJS are plain JavaScript objects and one can add and change properties
-directly on it and loop over objects and arrays at will.</p>
-<a id="md:two-way-data-binding" class="tsd-anchor"></a><h4 class="tsd-anchor-link">Two-way Data Binding<a href="#md:two-way-data-binding" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><p>One of AngularJS's strongest features. Two-way Data Binding means that if something changes in the
-Model, the change gets reflected in the View instantaneously, and the same happens the other way
-around. This is also referred to as Reactive Programming, i.e. suppose <code>a = b + c</code> is being
-programmed and after this, if the value of <code>b</code> and/or <code>c</code> is changed then the value of <code>a</code> will be
-automatically updated to reflect the change. AngularJS uses its &quot;scopes&quot; as a glue between the Model
-and View and makes these updates in one available for the other.</p>
-<a id="md:less-written-code-and-easily-maintainable-code" class="tsd-anchor"></a><h4 class="tsd-anchor-link">Less Written Code and Easily Maintainable Code<a href="#md:less-written-code-and-easily-maintainable-code" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><p>Everything in AngularJS is created to enable the programmer to end up writing less code that is
-easily maintainable and readable by any other new person on the team. Believe it or not, one can
-write a complete working two-way data binded application in less than 10 lines of code. Try and see
-for yourself!</p>
-<a id="md:testing-ready" class="tsd-anchor"></a><h4 class="tsd-anchor-link">Testing Ready<a href="#md:testing-ready" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><p>AngularJS has Dependency Injection, i.e. it takes care of providing all the necessary dependencies
-to its controllers and services whenever required. This helps in making the AngularJS code ready for
-unit testing by making use of mock dependencies created and injected. This makes AngularJS more
-modular and easily testable thus in turn helping a team create more robust applications.</p>
-</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="assets/icons.svg#icon-chevronDown"></use></svg>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="assets/icons.svg#icon-chevronDown"></use></svg>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#md:angularts"><span>AngularTS</span></a><ul><li><ul><li><a href="#md:getting-started"><span>Getting started</span></a></li><li><ul><li><a href="#md:install"><span>Install</span></a></li></ul></li><li><a href="#md:legacy-docs"><span>Legacy docs</span></a></li></ul></li></ul><a href="#md:documentation"><span>Documentation</span></a><a href="#md:contribute"><span>Contribute</span></a><a href="#md:develop"><span>Develop</span></a><a href="#md:what-to-use-angularjs-for-and-when-to-use-it"><span>What to use <wbr/>AngularJS for and when to use it</span></a><ul><li><a href="#md:mvc-no-mv-done-the-right-way"><span>MVC, no, MV* done the right way!</span></a></li><li><a href="#md:interconnection-with-html-at-the-root-level"><span>Interconnection with HTML at the root level</span></a></li><li><a href="#md:data-handling-made-simple"><span>Data <wbr/>Handling made simple</span></a></li><li><a href="#md:two-way-data-binding"><span>Two-<wbr/>way <wbr/>Data <wbr/>Binding</span></a></li><li><a href="#md:less-written-code-and-easily-maintainable-code"><span>Less <wbr/>Written <wbr/>Code and <wbr/>Easily <wbr/>Maintainable <wbr/>Code</span></a></li><li><a href="#md:testing-ready"><span>Testing <wbr/>Ready</span></a></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="index.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="assets/icons.svg#icon-1"></use></svg><span>@angular-wave/angular.ts</span></a><ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base="."><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>
+          <p>
+            Or check out the updated
+            <a href="https://github.com/Angular-Wave/angular-seed"
+              >Angular seed</a
+            >, which can serve as a solid starting point or a source of
+            inspiration for new ideas.
+          </p>
+          <p>New docs website is coming!</p>
+          <a id="md:legacy-docs" class="tsd-anchor"></a>
+          <h3 class="tsd-anchor-link">
+            Legacy docs<a
+              href="#md:legacy-docs"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24">
+                <use href="assets/icons.svg#icon-anchor"></use></svg
+            ></a>
+          </h3>
+          <hr />
+          <ul>
+            <li>
+              Web site:
+              <a href="https://angularjs.org">https://angularjs.org</a>
+            </li>
+            <li>
+              Tutorial:
+              <a href="https://docs.angularjs.org/tutorial"
+                >https://docs.angularjs.org/tutorial</a
+              >
+            </li>
+            <li>
+              API Docs:
+              <a href="https://docs.angularjs.org/api"
+                >https://docs.angularjs.org/api</a
+              >
+            </li>
+            <li>
+              Developer Guide:
+              <a href="https://docs.angularjs.org/guide"
+                >https://docs.angularjs.org/guide</a
+              >
+            </li>
+            <li>
+              Contribution guidelines:
+              <a href="media/CONTRIBUTING.md">CONTRIBUTING.md</a>
+            </li>
+            <li>
+              Core Development: <a href="media/DEVELOPERS.md">DEVELOPERS.md</a>
+            </li>
+            <li>
+              Dashboard:
+              <a href="https://dashboard.angularjs.org"
+                >https://dashboard.angularjs.org</a
+              >
+            </li>
+          </ul>
+          <a id="md:documentation" class="tsd-anchor"></a>
+          <h2 class="tsd-anchor-link">
+            Documentation<a
+              href="#md:documentation"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24">
+                <use href="assets/icons.svg#icon-anchor"></use></svg
+            ></a>
+          </h2>
+          <p>
+            Go to
+            <a href="https://docs.angularjs.org">https://docs.angularjs.org</a>
+          </p>
+          <a id="md:contribute" class="tsd-anchor"></a>
+          <h2 class="tsd-anchor-link">
+            Contribute<a
+              href="#md:contribute"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24">
+                <use href="assets/icons.svg#icon-anchor"></use></svg
+            ></a>
+          </h2>
+          <p>
+            We've set up a separate document for our
+            <a
+              href="https://github.com/angular/angular.js/blob/master/CONTRIBUTING.md"
+              >contribution guidelines</a
+            >.
+          </p>
+          <a id="md:develop" class="tsd-anchor"></a>
+          <h2 class="tsd-anchor-link">
+            Develop<a
+              href="#md:develop"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24">
+                <use href="assets/icons.svg#icon-anchor"></use></svg
+            ></a>
+          </h2>
+          <p>
+            We've set up a separate document for
+            <a
+              href="https://github.com/angular/angular.js/blob/master/DEVELOPERS.md"
+              >developers</a
+            >.
+          </p>
+          <p>
+            <a href="https://github.com/igrigorik/ga-beacon"
+              ><img
+                src="https://ga-beacon.appspot.com/UA-8594346-11/angular.js/README.md?pixel"
+                alt="Analytics"
+            /></a>
+          </p>
+          <a
+            id="md:what-to-use-angularjs-for-and-when-to-use-it"
+            class="tsd-anchor"
+          ></a>
+          <h2 class="tsd-anchor-link">
+            What to use AngularJS for and when to use it<a
+              href="#md:what-to-use-angularjs-for-and-when-to-use-it"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24">
+                <use href="assets/icons.svg#icon-anchor"></use></svg
+            ></a>
+          </h2>
+          <p>
+            AngularJS is the next generation framework where each component is
+            designed to work with every other component in an interconnected way
+            like a well-oiled machine. AngularJS is JavaScript MVC made easy and
+            done right. (Well it is not really MVC, read on, to understand what
+            this means.)
+          </p>
+          <a id="md:mvc-no-mv-done-the-right-way" class="tsd-anchor"></a>
+          <h4 class="tsd-anchor-link">
+            MVC, no, MV* done the right way!<a
+              href="#md:mvc-no-mv-done-the-right-way"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24">
+                <use href="assets/icons.svg#icon-anchor"></use></svg
+            ></a>
+          </h4>
+          <p>
+            <a
+              href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller"
+              >MVC</a
+            >, short for Model-View-Controller, is a design pattern, i.e. how
+            the code should be organized and how the different parts of an
+            application separated for proper readability and debugging. Model is
+            the data and the database. View is the user interface and what the
+            user sees. Controller is the main link between Model and View. These
+            are the three pillars of major programming frameworks present on the
+            market today. On the other hand AngularJS works on MV*, short for
+            Model-View-<em>Whatever</em>. The <em>Whatever</em> is AngularJS's
+            way of telling that you may create any kind of linking between the
+            Model and the View here.
+          </p>
+          <p>
+            Unlike other frameworks in any programming language, where MVC, the
+            three separate components, each one has to be written and then
+            connected by the programmer, AngularJS helps the programmer by
+            asking him/her to just create these and everything else will be
+            taken care of by AngularJS.
+          </p>
+          <a
+            id="md:interconnection-with-html-at-the-root-level"
+            class="tsd-anchor"
+          ></a>
+          <h4 class="tsd-anchor-link">
+            Interconnection with HTML at the root level<a
+              href="#md:interconnection-with-html-at-the-root-level"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24">
+                <use href="assets/icons.svg#icon-anchor"></use></svg
+            ></a>
+          </h4>
+          <p>
+            AngularJS uses HTML to define the user's interface. AngularJS also
+            enables the programmer to write new HTML tags (AngularJS Directives)
+            and increase the readability and understandability of the HTML code.
+            Directives are AngularJS’s way of bringing additional functionality
+            to HTML. Directives achieve this by enabling us to invent our own
+            HTML elements. This also helps in making the code DRY (Don't Repeat
+            Yourself), which means once created, a new directive can be used
+            anywhere within the application.
+          </p>
+          <p>
+            HTML is also used to determine the wiring of the app. Special
+            attributes in the HTML determine where to load the app, which
+            components or controllers to use for each element, etc. We specify
+            &quot;what&quot; gets loaded, but not &quot;how&quot;. This
+            declarative approach greatly simplifies app development in a sort of
+            WYSIWYG way. Rather than spending time on how the program flows and
+            orchestrating the various moving parts, we simply define what we
+            want and AngularJS will take care of the dependencies.
+          </p>
+          <a id="md:data-handling-made-simple" class="tsd-anchor"></a>
+          <h4 class="tsd-anchor-link">
+            Data Handling made simple<a
+              href="#md:data-handling-made-simple"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24">
+                <use href="assets/icons.svg#icon-anchor"></use></svg
+            ></a>
+          </h4>
+          <p>
+            Data and Data Models in AngularJS are plain JavaScript objects and
+            one can add and change properties directly on it and loop over
+            objects and arrays at will.
+          </p>
+          <a id="md:two-way-data-binding" class="tsd-anchor"></a>
+          <h4 class="tsd-anchor-link">
+            Two-way Data Binding<a
+              href="#md:two-way-data-binding"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24">
+                <use href="assets/icons.svg#icon-anchor"></use></svg
+            ></a>
+          </h4>
+          <p>
+            One of AngularJS's strongest features. Two-way Data Binding means
+            that if something changes in the Model, the change gets reflected in
+            the View instantaneously, and the same happens the other way around.
+            This is also referred to as Reactive Programming, i.e. suppose
+            <code>a = b + c</code> is being programmed and after this, if the
+            value of <code>b</code> and/or <code>c</code> is changed then the
+            value of <code>a</code> will be automatically updated to reflect the
+            change. AngularJS uses its &quot;scopes&quot; as a glue between the
+            Model and View and makes these updates in one available for the
+            other.
+          </p>
+          <a
+            id="md:less-written-code-and-easily-maintainable-code"
+            class="tsd-anchor"
+          ></a>
+          <h4 class="tsd-anchor-link">
+            Less Written Code and Easily Maintainable Code<a
+              href="#md:less-written-code-and-easily-maintainable-code"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24">
+                <use href="assets/icons.svg#icon-anchor"></use></svg
+            ></a>
+          </h4>
+          <p>
+            Everything in AngularJS is created to enable the programmer to end
+            up writing less code that is easily maintainable and readable by any
+            other new person on the team. Believe it or not, one can write a
+            complete working two-way data binded application in less than 10
+            lines of code. Try and see for yourself!
+          </p>
+          <a id="md:testing-ready" class="tsd-anchor"></a>
+          <h4 class="tsd-anchor-link">
+            Testing Ready<a
+              href="#md:testing-ready"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24">
+                <use href="assets/icons.svg#icon-anchor"></use></svg
+            ></a>
+          </h4>
+          <p>
+            AngularJS has Dependency Injection, i.e. it takes care of providing
+            all the necessary dependencies to its controllers and services
+            whenever required. This helps in making the AngularJS code ready for
+            unit testing by making use of mock dependencies created and
+            injected. This makes AngularJS more modular and easily testable thus
+            in turn helping a team create more robust applications.
+          </p>
+        </div>
+      </div>
+      <div class="col-sidebar">
+        <div class="page-menu">
+          <div class="tsd-navigation settings">
+            <details class="tsd-accordion">
+              <summary class="tsd-accordion-summary">
+                <h3>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <use href="assets/icons.svg#icon-chevronDown"></use></svg
+                  >Settings
+                </h3>
+              </summary>
+              <div class="tsd-accordion-details">
+                <div class="tsd-filter-visibility">
+                  <span class="settings-label">Member Visibility</span>
+                  <ul id="tsd-filter-options">
+                    <li class="tsd-filter-item">
+                      <label class="tsd-filter-input"
+                        ><input
+                          type="checkbox"
+                          id="tsd-filter-protected"
+                          name="protected"
+                        /><svg
+                          width="32"
+                          height="32"
+                          viewBox="0 0 32 32"
+                          aria-hidden="true"
+                        >
+                          <rect
+                            class="tsd-checkbox-background"
+                            width="30"
+                            height="30"
+                            x="1"
+                            y="1"
+                            rx="6"
+                            fill="none"
+                          ></rect>
+                          <path
+                            class="tsd-checkbox-checkmark"
+                            d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25"
+                            stroke="none"
+                            stroke-width="3.5"
+                            stroke-linejoin="round"
+                            fill="none"
+                          ></path></svg
+                        ><span>Protected</span></label
+                      >
+                    </li>
+                    <li class="tsd-filter-item">
+                      <label class="tsd-filter-input"
+                        ><input
+                          type="checkbox"
+                          id="tsd-filter-inherited"
+                          name="inherited"
+                          checked
+                        /><svg
+                          width="32"
+                          height="32"
+                          viewBox="0 0 32 32"
+                          aria-hidden="true"
+                        >
+                          <rect
+                            class="tsd-checkbox-background"
+                            width="30"
+                            height="30"
+                            x="1"
+                            y="1"
+                            rx="6"
+                            fill="none"
+                          ></rect>
+                          <path
+                            class="tsd-checkbox-checkmark"
+                            d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25"
+                            stroke="none"
+                            stroke-width="3.5"
+                            stroke-linejoin="round"
+                            fill="none"
+                          ></path></svg
+                        ><span>Inherited</span></label
+                      >
+                    </li>
+                    <li class="tsd-filter-item">
+                      <label class="tsd-filter-input"
+                        ><input
+                          type="checkbox"
+                          id="tsd-filter-external"
+                          name="external"
+                        /><svg
+                          width="32"
+                          height="32"
+                          viewBox="0 0 32 32"
+                          aria-hidden="true"
+                        >
+                          <rect
+                            class="tsd-checkbox-background"
+                            width="30"
+                            height="30"
+                            x="1"
+                            y="1"
+                            rx="6"
+                            fill="none"
+                          ></rect>
+                          <path
+                            class="tsd-checkbox-checkmark"
+                            d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25"
+                            stroke="none"
+                            stroke-width="3.5"
+                            stroke-linejoin="round"
+                            fill="none"
+                          ></path></svg
+                        ><span>External</span></label
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <div class="tsd-theme-toggle">
+                  <label class="settings-label" for="tsd-theme">Theme</label
+                  ><select id="tsd-theme">
+                    <option value="os">OS</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                  </select>
+                </div>
+              </div>
+            </details>
+          </div>
+          <details open class="tsd-accordion tsd-page-navigation">
+            <summary class="tsd-accordion-summary">
+              <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <use href="assets/icons.svg#icon-chevronDown"></use></svg
+                >On This Page
+              </h3>
+            </summary>
+            <div class="tsd-accordion-details">
+              <a href="#md:angularts"><span>AngularTS</span></a>
+              <ul>
+                <li>
+                  <ul>
+                    <li>
+                      <a href="#md:getting-started"
+                        ><span>Getting started</span></a
+                      >
+                    </li>
+                    <li>
+                      <ul>
+                        <li>
+                          <a href="#md:install"><span>Install</span></a>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a href="#md:legacy-docs"><span>Legacy docs</span></a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+              <a href="#md:documentation"><span>Documentation</span></a
+              ><a href="#md:contribute"><span>Contribute</span></a
+              ><a href="#md:develop"><span>Develop</span></a
+              ><a href="#md:what-to-use-angularjs-for-and-when-to-use-it"
+                ><span
+                  >What to use <wbr />AngularJS for and when to use it</span
+                ></a
+              >
+              <ul>
+                <li>
+                  <a href="#md:mvc-no-mv-done-the-right-way"
+                    ><span>MVC, no, MV* done the right way!</span></a
+                  >
+                </li>
+                <li>
+                  <a href="#md:interconnection-with-html-at-the-root-level"
+                    ><span>Interconnection with HTML at the root level</span></a
+                  >
+                </li>
+                <li>
+                  <a href="#md:data-handling-made-simple"
+                    ><span>Data <wbr />Handling made simple</span></a
+                  >
+                </li>
+                <li>
+                  <a href="#md:two-way-data-binding"
+                    ><span>Two-<wbr />way <wbr />Data <wbr />Binding</span></a
+                  >
+                </li>
+                <li>
+                  <a href="#md:less-written-code-and-easily-maintainable-code"
+                    ><span
+                      >Less <wbr />Written <wbr />Code and <wbr />Easily
+                      <wbr />Maintainable <wbr />Code</span
+                    ></a
+                  >
+                </li>
+                <li>
+                  <a href="#md:testing-ready"
+                    ><span>Testing <wbr />Ready</span></a
+                  >
+                </li>
+              </ul>
+            </div>
+          </details>
+        </div>
+        <div class="site-menu">
+          <nav class="tsd-navigation">
+            <a href="index.html" class="current"
+              ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                <use href="assets/icons.svg#icon-1"></use></svg
+              ><span>@angular-wave/angular.ts</span></a
+            >
+            <ul
+              class="tsd-small-nested-navigation"
+              id="tsd-nav-container"
+              data-base="."
+            >
+              <li>Loading...</li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <p class="tsd-generator">
+        Generated using
+        <a href="https://typedoc.org/" target="_blank">TypeDoc</a>
+      </p>
+    </footer>
+    <div class="overlay"></div>
+  </body>
+</html>

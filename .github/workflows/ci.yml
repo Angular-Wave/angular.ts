@@ -5,9 +5,9 @@ permissions:
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
   # 1. Lint check
@@ -23,7 +23,7 @@ jobs:
       - name: Run lint check
         run: ./node_modules/.bin/eslint ./src
 
-  # 2. TypeScript check 
+  # 2. TypeScript check
   typescript:
     needs: lint
     runs-on: ubuntu-latest

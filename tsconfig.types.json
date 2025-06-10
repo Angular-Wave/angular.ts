@@ -1,14 +1,13 @@
 {
-    "compilerOptions": {
-      "module": "NodeNext",
-      "moduleResolution": "NodeNext",
-      "declaration": true,
-      "allowJs": true,
-      "emitDeclarationOnly": true,
-      "outDir": "@types",
-      "target": "ES2023"
-    },
-    "include": ["src"],
-    "exclude": ["./node_modules/@types/**", "**/*.test.js", "**/*.spec.js"]
-  }
-  
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "declaration": true,
+    "allowJs": true,
+    "emitDeclarationOnly": true,
+    "outDir": "@types",
+    "target": "ES2023"
+  },
+  "include": ["src"],
+  "exclude": ["./node_modules/@types/**", "**/*.test.js", "**/*.spec.js"]
+}

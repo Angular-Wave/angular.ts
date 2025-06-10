@@ -792,8 +792,7 @@ function toKeyValue(obj) {
 function tryDecodeURIComponent(value) {
   try {
     return decodeURIComponent(value);
-  } catch (e) {
-  }
+  } catch (e) {}
 }
 
 /**
@@ -1442,7 +1441,6 @@ function getCacheData(element, key) {
  * @returns void
  */
 function deleteCacheData(element, key) {
-
   if (elementAcceptsData(element)) {
     const expandoStore = getExpando(element, false); // Don't create if it doesn't exist
     const data = expandoStore?.data;
@@ -7952,7 +7950,8 @@ const formDirectiveFactory = function (isNgForm) {
                   if (
                     scope.$target !== controller.$$parentForm &&
                     controller.$$parentForm !== nullFormCtrl
-                  ) ; else {
+                  );
+                  else {
                     scope.$target[newValue] = controller;
                   }
                 });
@@ -10881,7 +10880,8 @@ function optionDirective($interpolate) {
       let interpolateValueFn;
       let interpolateTextFn;
 
-      if (isDefined(attr.ngValue)) ; else if (isDefined(attr.value)) {
+      if (isDefined(attr.ngValue));
+      else if (isDefined(attr.value)) {
         // If the value attribute is defined, check if it contains an interpolation
         interpolateValueFn = $interpolate(attr.value, true);
       } else {
@@ -10929,7 +10929,9 @@ function ngBindDirective() {
      */
     link(scope, element, attr) {
       scope.$watch(attr["ngBind"], (value) => {
-        element.textContent = stringify$1(isProxy(value) ? value.$target : value);
+        element.textContent = stringify$1(
+          isProxy(value) ? value.$target : value,
+        );
       });
     },
   };
@@ -13348,12 +13350,7 @@ const TRANSITION_DURATION_PROP = TRANSITION_PROP + DURATION_KEY;
 const ngMinErr$1 = minErr("ng");
 function assertArg(arg, name, reason) {
   if (!arg) {
-    throw ngMinErr$1(
-      "areq",
-      "Argument '{0}' is {1}",
-      name || "?",
-      reason,
-    );
+    throw ngMinErr$1("areq", "Argument '{0}' is {1}", name || "?", reason);
   }
   return arg;
 }
@@ -17808,7 +17805,9 @@ class InterpolateProvider {
               trustedContext && !contextAllowsConcatenation
                 ? $sce.getTrusted(trustedContext, value)
                 : $sce.valueOf(value);
-            return allOrNothing && !isDefined(value) ? value : stringify$1(value);
+            return allOrNothing && !isDefined(value)
+              ? value
+              : stringify$1(value);
           } catch (err) {
             interr(text, err);
           }
@@ -21870,7 +21869,8 @@ function ngMessagesIncludeDirective($templateRequest, $compile) {
       const src = attrs.ngMessagesInclude || attrs.src;
       $templateRequest(src).then((html) => {
         if ($scope.$$destroyed) return;
-        if (isString(html) && !html.trim()) ; else {
+        if (isString(html) && !html.trim());
+        else {
           // Non-empty template - compile and link
           $compile(html)($scope, (contents) => {
             element.after(contents);
@@ -25770,13 +25770,7 @@ function equals(o1, o2) {
  * @param fnNames The function names which will be bound (Defaults to all the functions found on the 'from' object)
  * @param latebind If true, the binding of the function is delayed until the first time it's invoked
  */
-function createProxyFunctions(
-  source,
-  target,
-  bind,
-  fnNames,
-  latebind = false,
-) {
+function createProxyFunctions(source, target, bind, fnNames, latebind = false) {
   const bindFunction = (fnName) => source()[fnName].bind(bind());
   const makeLateRebindFn = (fnName) =>
     function lateRebindFunction() {
@@ -25979,8 +25973,7 @@ function pushR(arr, obj) {
   return arr;
 }
 /** Reduce function that filters out duplicates */
-const uniqR = (acc, token) =>
-  acc.includes(token) ? acc : pushR(acc, token);
+const uniqR = (acc, token) => (acc.includes(token) ? acc : pushR(acc, token));
 /**
  * Return a new array with a single level of arrays unnested.
  *
@@ -26104,8 +26097,7 @@ function _arraysEq(a1, a2) {
   return arrayTuples(a1, a2).reduce((b, t) => b && equals(t[0], t[1]), true);
 }
 // issue #2676
-const silenceUncaughtInPromise = (promise) =>
-  promise.catch(() => 0) && promise;
+const silenceUncaughtInPromise = (promise) => promise.catch(() => 0) && promise;
 const silentRejection = (error) =>
   silenceUncaughtInPromise(Promise.reject(error));
 
@@ -27823,7 +27815,8 @@ const resolvePolicies = {
   when: {
     LAZY: "LAZY",
     EAGER: "EAGER",
-  }};
+  },
+};
 
 const ALL_WHENS = [resolvePolicies.when.EAGER, resolvePolicies.when.LAZY];
 const EAGER_WHENS = [resolvePolicies.when.EAGER];
@@ -30621,11 +30614,7 @@ const registerRedirectToHook = (transitionService, stateService) => {
   );
 };
 
-const registerUpdateUrl = (
-  transitionService,
-  stateService,
-  urlService,
-) => {
+const registerUpdateUrl = (transitionService, stateService, urlService) => {
   /**
    * A [[TransitionHookFn]] which updates the URL after a successful transition
    *
@@ -34368,11 +34357,7 @@ function bindEvents(element, scope, hookFn, ngStateOpts) {
 // // TODO: SEPARATE THESE OUT
 
 $StateRefDirective.$inject = ["$state", "$stateRegistry", "$transitions"];
-function $StateRefDirective(
-  $stateService,
-  $stateRegistry,
-  $transitions,
-) {
+function $StateRefDirective($stateService, $stateRegistry, $transitions) {
   const $state = $stateService;
   return {
     restrict: "A",
@@ -34437,11 +34422,7 @@ $StateRefDynamicDirective.$inject = [
   "$stateRegistry",
   "$transitions",
 ];
-function $StateRefDynamicDirective(
-  $state,
-  $stateRegistry,
-  $transitions,
-) {
+function $StateRefDynamicDirective($state, $stateRegistry, $transitions) {
   return {
     restrict: "A",
     require: ["?^ngSrefActive", "?^ngSrefActiveEq"],

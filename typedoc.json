@@ -1,6 +1,6 @@
 // typedoc.json
 {
-    "entryPoints": ["src"],
-    "entryPointStrategy": "expand",
-    "out": "./typedoc"
+  "entryPoints": ["src"],
+  "entryPointStrategy": "expand",
+  "out": "./typedoc"
 }

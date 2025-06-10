@@ -4,5 +4,5 @@
  */
 export function $$AnimateChildrenDirective($interpolate: any): any;
 export namespace $$AnimateChildrenDirective {
-    let $inject: string[];
+  let $inject: string[];
 }

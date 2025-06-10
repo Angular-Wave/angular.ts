@@ -8,10 +8,7 @@ export const isProxySymbol = Symbol("isProxy");
  * @returns {boolean}
  */
 export function isProxy(value) {
-  if (value && value[isProxySymbol]) {
-    return true;
-  }
-  return false;
+  return !!(value && value[isProxySymbol]);
 }
 
 const ngMinErr = minErr("ng");

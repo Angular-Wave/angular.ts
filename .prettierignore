@@ -1,0 +1,6 @@
+.github
+.husky
+.idea
+dist
+node_modules
+playwright-report

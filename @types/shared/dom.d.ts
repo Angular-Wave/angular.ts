@@ -27,7 +27,10 @@ export function removeElementData(element: Element, name?: string): void;
  * @param {boolean} [createIfNecessary=false]
  * @returns {import("../core/cache/cache.js").ExpandoStore}
  */
-export function getExpando(element: Element, createIfNecessary?: boolean): import("../core/cache/cache.js").ExpandoStore;
+export function getExpando(
+  element: Element,
+  createIfNecessary?: boolean,
+): import("../core/cache/cache.js").ExpandoStore;
 /**
  * Checks if the string contains HTML tags or entities.
  * @param {string} html
@@ -58,7 +61,11 @@ export function dealoc(element: Element, onlyDescendants?: boolean): void;
  * @param {*} [value] - The value to set. If not provided, the function acts as a getter.
  * @returns {*} - The retrieved data if acting as a getter. Otherwise, returns undefined.
  */
-export function getOrSetCacheData(element: Element, key: string | any, value?: any): any;
+export function getOrSetCacheData(
+  element: Element,
+  key: string | any,
+  value?: any,
+): any;
 /**
  * Sets cache data for a given element.
  *
@@ -67,7 +74,11 @@ export function getOrSetCacheData(element: Element, key: string | any, value?: a
  * @param {*} [value] - The value to set. If not provided, the function acts as a getter.
  * @returns
  */
-export function setCacheData(element: Element | Node, key: string, value?: any): void;
+export function setCacheData(
+  element: Element | Node,
+  key: string,
+  value?: any,
+): void;
 /**
  * Gets cache data for a given element.
  *
@@ -97,7 +108,10 @@ export function getScope(element: Element): any;
  * @param {Element|Node|ChildNode} element - The DOM element to set data on.
  * @param {import("../core/scope/scope.js").Scope} scope - The Scope attached to this element
  */
-export function setScope(element: Element | Node | ChildNode, scope: import("../core/scope/scope.js").Scope): void;
+export function setScope(
+  element: Element | Node | ChildNode,
+  scope: import("../core/scope/scope.js").Scope,
+): void;
 /**
  * Gets isolate scope for a given element.
  *
@@ -111,7 +125,10 @@ export function getIsolateScope(element: Element): any;
  * @param {Element} element - The DOM element to set data on.
  * @param {import("../core/scope/scope.js").Scope} scope - The Scope attached to this element
  */
-export function setIsolateScope(element: Element, scope: import("../core/scope/scope.js").Scope): void;
+export function setIsolateScope(
+  element: Element,
+  scope: import("../core/scope/scope.js").Scope,
+): void;
 /**
  * Gets the controller instance for a given element, if exists. Defaults to "ngControllerController"
  *
@@ -119,7 +136,10 @@ export function setIsolateScope(element: Element, scope: import("../core/scope/s
  * @param {string} [name] - The DOM element to get data from.
  * @returns {import("../core/scope/scope.js").Scope|undefined} - The retrieved data
  */
-export function getController(element: Element, name?: string): import("../core/scope/scope.js").Scope | undefined;
+export function getController(
+  element: Element,
+  name?: string,
+): import("../core/scope/scope.js").Scope | undefined;
 /**
  *
  * @param {Node} element
@@ -134,7 +154,11 @@ export function getInheritedData(element: Node, name: string): any;
  * @param {any} [value]
  * @returns
  */
-export function setInheritedData(element: Node, name: string | string[], value?: any): any;
+export function setInheritedData(
+  element: Node,
+  name: string | string[],
+  value?: any,
+): any;
 /**
  *
  * @param {Element} element
@@ -161,7 +185,10 @@ export function getBlockNodes(nodes: Array<Node>): Element;
  * @param {string} name - The name of the attribute.
  * @returns {string|false} - The attribute name if valid, otherwise false.
  */
-export function getBooleanAttrName(element: Element, name: string): string | false;
+export function getBooleanAttrName(
+  element: Element,
+  name: string,
+): string | false;
 /**
  * Takes an array of elements, calls any `$destroy` event handlers, removes any data in cache, and finally removes any
  * listeners.
@@ -173,7 +200,9 @@ export function cleanElementData(nodes: NodeListOf<Element> | Element[]): void;
  * @param {Element} element
  * @returns {import('../core/di/internal-injector.js').InjectorService}
  */
-export function getInjector(element: Element): import("../core/di/internal-injector.js").InjectorService;
+export function getInjector(
+  element: Element,
+): import("../core/di/internal-injector.js").InjectorService;
 /**
  * Creates a DOM element from an HTML string.
  * @param {string} htmlString - A string representing the HTML to parse. Must have only one root element.
@@ -191,7 +220,10 @@ export function createNodelistFromHTML(htmlString: string): NodeList;
  * @param {Element} element - The element to append nodes to.
  * @param {Node | Node[] | string} nodes - Nodes or HTML string to append.
  */
-export function appendNodesToElement(element: Element, nodes: Node | Node[] | string): void;
+export function appendNodesToElement(
+  element: Element,
+  nodes: Node | Node[] | string,
+): void;
 /**
  * Remove element from the DOM and clear Cache data, associated with the node.
  * @param {Element} element
@@ -203,7 +235,11 @@ export function emptyElement(element: Element): void;
  * @returns {boolean}
  */
 export function isRoot(element: Element): boolean;
-export function domInsert(element: any, parentElement: any, afterElement: any): void;
+export function domInsert(
+  element: any,
+  parentElement: any,
+  afterElement: any,
+): void;
 /**
  * A list of boolean attributes in HTML.
  * @type {string[]}

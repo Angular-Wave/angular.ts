@@ -766,7 +766,7 @@ describe("ngRepeat", () => {
       expect(element.textContent).toBe("");
 
       await wait(300);
-      expect(element.textContent).toBe("hello");
+      expect(element.textContent).toBe("hello\n");
 
       scope.items = [];
       await wait();
@@ -918,7 +918,7 @@ describe("ngRepeat", () => {
       $templateCache = injector.get("$templateCache");
       $templateCache.set("test.html", "hello");
       setTimeout(() => {
-        expect(element.textContent).toBe("hellohello");
+        expect(element.textContent).toBe("hello\nhello\n");
         done();
       }, 500);
     });

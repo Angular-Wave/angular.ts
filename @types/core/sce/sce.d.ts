@@ -80,83 +80,93 @@ export function adjustMatcher(matcher: any): any;
  */
 export function SceDelegateProvider(): void;
 export class SceDelegateProvider {
-    SCE_CONTEXTS: {
-        HTML: string;
-        CSS: string;
-        MEDIA_URL: string;
-        URL: string;
-        RESOURCE_URL: string;
-        JS: string;
-    };
-    /**
-     *
-     * @param {Array=} trustedResourceUrlList When provided, replaces the trustedResourceUrlList with
-     *     the value provided.  This must be an array or null.  A snapshot of this array is used so
-     *     further changes to the array are ignored.
-     *     Follow {@link ng.$sce#resourceUrlPatternItem this link} for a description of the items
-     *     allowed in this array.
-     *
-     * @return {Array} The currently set trusted resource URL array.
-     *
-     * @description
-     * Sets/Gets the list trusted of resource URLs.
-     *
-     * The **default value** when no `trustedResourceUrlList` has been explicitly set is `['self']`
-     * allowing only same origin resource requests.
-     *
-     * <div class="alert alert-warning">
-     * **Note:** the default `trustedResourceUrlList` of 'self' is not recommended if your app shares
-     * its origin with other apps! It is a good idea to limit it to only your application's directory.
-     * </div>
-     */
-    trustedResourceUrlList: (value: any, ...args: any[]) => any[];
-    /**
-     *
-     * @param {Array=} bannedResourceUrlList When provided, replaces the `bannedResourceUrlList` with
-     *     the value provided. This must be an array or null. A snapshot of this array is used so
-     *     further changes to the array are ignored.</p><p>
-     *     Follow {@link ng.$sce#resourceUrlPatternItem this link} for a description of the items
-     *     allowed in this array.</p><p>
-     *     The typical usage for the `bannedResourceUrlList` is to **block
-     *     [open redirects](http://cwe.mitre.org/data/definitions/601.html)** served by your domain as
-     *     these would otherwise be trusted but actually return content from the redirected domain.
-     *     </p><p>
-     *     Finally, **the banned resource URL list overrides the trusted resource URL list** and has
-     *     the final say.
-     *
-     * @return {Array} The currently set `bannedResourceUrlList` array.
-     *
-     * @description
-     * Sets/Gets the `bannedResourceUrlList` of trusted resource URLs.
-     *
-     * The **default value** when no trusted resource URL list has been explicitly set is the empty
-     * array (i.e. there is no `bannedResourceUrlList`.)
-     */
-    bannedResourceUrlList: (value: any, ...args: any[]) => any[];
-    $get: (string | (($injector: any, $$sanitizeUri: any, $exceptionHandler: ErrorHandler) => {
+  SCE_CONTEXTS: {
+    HTML: string;
+    CSS: string;
+    MEDIA_URL: string;
+    URL: string;
+    RESOURCE_URL: string;
+    JS: string;
+  };
+  /**
+   *
+   * @param {Array=} trustedResourceUrlList When provided, replaces the trustedResourceUrlList with
+   *     the value provided.  This must be an array or null.  A snapshot of this array is used so
+   *     further changes to the array are ignored.
+   *     Follow {@link ng.$sce#resourceUrlPatternItem this link} for a description of the items
+   *     allowed in this array.
+   *
+   * @return {Array} The currently set trusted resource URL array.
+   *
+   * @description
+   * Sets/Gets the list trusted of resource URLs.
+   *
+   * The **default value** when no `trustedResourceUrlList` has been explicitly set is `['self']`
+   * allowing only same origin resource requests.
+   *
+   * <div class="alert alert-warning">
+   * **Note:** the default `trustedResourceUrlList` of 'self' is not recommended if your app shares
+   * its origin with other apps! It is a good idea to limit it to only your application's directory.
+   * </div>
+   */
+  trustedResourceUrlList: (value: any, ...args: any[]) => any[];
+  /**
+   *
+   * @param {Array=} bannedResourceUrlList When provided, replaces the `bannedResourceUrlList` with
+   *     the value provided. This must be an array or null. A snapshot of this array is used so
+   *     further changes to the array are ignored.</p><p>
+   *     Follow {@link ng.$sce#resourceUrlPatternItem this link} for a description of the items
+   *     allowed in this array.</p><p>
+   *     The typical usage for the `bannedResourceUrlList` is to **block
+   *     [open redirects](http://cwe.mitre.org/data/definitions/601.html)** served by your domain as
+   *     these would otherwise be trusted but actually return content from the redirected domain.
+   *     </p><p>
+   *     Finally, **the banned resource URL list overrides the trusted resource URL list** and has
+   *     the final say.
+   *
+   * @return {Array} The currently set `bannedResourceUrlList` array.
+   *
+   * @description
+   * Sets/Gets the `bannedResourceUrlList` of trusted resource URLs.
+   *
+   * The **default value** when no trusted resource URL list has been explicitly set is the empty
+   * array (i.e. there is no `bannedResourceUrlList`.)
+   */
+  bannedResourceUrlList: (value: any, ...args: any[]) => any[];
+  $get: (
+    | string
+    | ((
+        $injector: any,
+        $$sanitizeUri: any,
+        $exceptionHandler: ErrorHandler,
+      ) => {
         trustAs: (type: string, trustedValue: any) => any;
         getTrusted: (type: string, maybeTrusted: any) => any;
         valueOf: (maybeTrusted: any) => any;
-    }))[];
+      })
+  )[];
 }
 export function SceProvider(): void;
 export class SceProvider {
-    /**
-     * @param {boolean=} value If provided, then enables/disables SCE application-wide.
-     * @return {boolean} True if SCE is enabled, false otherwise.
-     *
-     * @description
-     * Enables/disables SCE and returns the current value.
-     */
-    enabled: (value?: boolean | undefined, ...args: any[]) => boolean;
-    $get: (string | (($parse: any, $sceDelegate: any, $exceptionHandler: any) => any))[];
+  /**
+   * @param {boolean=} value If provided, then enables/disables SCE application-wide.
+   * @return {boolean} True if SCE is enabled, false otherwise.
+   *
+   * @description
+   * Enables/disables SCE and returns the current value.
+   */
+  enabled: (value?: boolean | undefined, ...args: any[]) => boolean;
+  $get: (
+    | string
+    | (($parse: any, $sceDelegate: any, $exceptionHandler: any) => any)
+  )[];
 }
 export namespace SCE_CONTEXTS {
-    let HTML: string;
-    let CSS: string;
-    let MEDIA_URL: string;
-    let URL: string;
-    let RESOURCE_URL: string;
-    let JS: string;
+  let HTML: string;
+  let CSS: string;
+  let MEDIA_URL: string;
+  let URL: string;
+  let RESOURCE_URL: string;
+  let JS: string;
 }
 export type ErrorHandler = import("../exception-handler.js").ErrorHandler;

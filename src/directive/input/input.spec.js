@@ -12,7 +12,7 @@ describe("input", () => {
   let $compile;
   let scope;
   let inputElm;
-  let error;
+  let error = [];
 
   beforeEach(() => {
     error = [];
@@ -2471,24 +2471,20 @@ describe("input", () => {
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
         });
 
-        it("should observe the standard minlength attribute and register it as a validator on the model", () => {
+        it("should observe the standard minlength attribute and register it as a validator on the model", async () => {
           const formElm = $compile(
             '<form name="form"><input type="number" name="input" ng-model="value" minlength="{{ min }}" /></form>',
           )(scope);
           inputElm = formElm.querySelector("input");
-          scope.$apply(() => {
-            scope.min = 10;
-          });
-
+          scope.min = 10;
+          await wait();
           inputElm.value = "12345";
           inputElm.dispatchEvent(new Event("change"));
           expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
           expect(scope.form.input.$error.minlength).toBe(true);
 
-          scope.$apply(() => {
-            scope.min = 5;
-          });
-
+          scope.min = 5;
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(scope.form.input.$error.minlength).not.toBe(true);
         });
@@ -2509,7 +2505,7 @@ describe("input", () => {
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
         });
 
-        it("should observe the standard maxlength attribute and register it as a validator on the model", () => {
+        it("should observe the standard maxlength attribute and register it as a validator on the model", async () => {
           const formElm = $compile(
             '<form name="form"><input type="number" name="input" ng-model="value" maxlength="{{ max }}" /></form>',
           )(scope);
@@ -2517,7 +2513,7 @@ describe("input", () => {
           scope.$apply(() => {
             scope.max = 1;
           });
-
+          await wait();
           inputElm.value = "12345";
           inputElm.dispatchEvent(new Event("change"));
           expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
@@ -2526,7 +2522,7 @@ describe("input", () => {
           scope.$apply(() => {
             scope.max = 6;
           });
-
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(scope.form.input.$error.maxlength).not.toBe(true);
         });
@@ -2537,36 +2533,38 @@ describe("input", () => {
       const rangeTestEl = '<input type="range">';
       const supportsRange = rangeTestEl.type === "range";
 
-      it("should render as 50 if null", () => {
+      it("should render as 50 if null", async () => {
         inputElm = $compile('<input type="range" ng-model="age" />')(scope);
-
         inputElm.value = "25";
         inputElm.dispatchEvent(new Event("change"));
+        await wait();
         expect(scope.age).toBe(25);
 
         scope.$apply("age = null");
-
+        await wait();
         expect(inputElm.value).toEqual("50");
       });
 
-      it("should set model to 50 when no value specified and default min/max", () => {
+      it("should set model to 50 when no value specified and default min/max", async () => {
         inputElm = $compile('<input type="range" ng-model="age" />')(scope);
-
+        await wait();
         expect(inputElm.value).toBe("50");
 
         scope.$apply("age = null");
-
+        await wait();
         expect(scope.age).toBe(50);
       });
 
-      it("should parse non-number values to 50 when default min/max", () => {
+      it("should parse non-number values to 50 when default min/max", async () => {
         inputElm = $compile('<input type="range" ng-model="age" />')(scope);
 
         scope.$apply("age = 10");
+        await wait();
         expect(inputElm.value).toBe("10");
 
         inputElm.value = "";
         inputElm.dispatchEvent(new Event("change"));
+        await wait();
         expect(scope.age).toBe(50);
         expect(inputElm.classList.contains("ng-valid")).toBeTrue();
       });
@@ -2593,20 +2591,21 @@ describe("input", () => {
         expect(inputElm.classList.contains("ng-valid")).toBeTrue();
       });
 
-      it("should throw if the model value is not a number", () => {
-        expect(() => {
-          scope.value = "one";
-          inputElm = $compile('<input type="range" ng-model="value" />')(scope);
-        }).toThrowError(/numfmt/);
+      it("should throw if the model value is not a number", async () => {
+        scope.value = "one";
+        inputElm = $compile('<input type="range" ng-model="value" />')(scope);
+        await wait();
+        expect(error[0]).toMatch("numfmt");
       });
 
       describe("min", () => {
-        it("should initialize correctly with non-default model and min value", () => {
+        it("should initialize correctly with non-default model and min value", async () => {
           scope.value = -3;
           scope.min = -5;
           const formElm = $compile(
             '<form name="form"><input type="range" ng-model="value" name="alias" min="{{min}}" /></form>',
           )(scope);
+          await wait();
           inputElm = formElm.querySelector("input");
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(inputElm.value).toBe("-3");
@@ -2634,48 +2633,54 @@ describe("input", () => {
           expect(scope.form.alias.$error.min).toBeFalsy();
         });
 
-        it("should set the model to the min val if it is less than the min val", () => {
+        it("should set the model to the min val if it is less than the min val", async () => {
           scope.value = -10;
           // Default min is 0
           inputElm = $compile(
             '<input type="range" ng-model="value" name="alias" min="{{min}}" />',
           )(scope);
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(inputElm.value).toBe("0");
           expect(scope.value).toBe(0);
 
           scope.$apply("value = 5; min = 10");
-
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(inputElm.value).toBe("10");
           expect(scope.value).toBe(10);
         });
 
-        it("should adjust the element and model value when the min value changes on-the-fly", () => {
+        it("should adjust the element and model value when the min value changes on-the-fly", async () => {
           scope.min = 10;
           inputElm = $compile(
             '<input type="range" ng-model="value" name="alias" min="{{min}}" />',
           )(scope);
           inputElm.value = "15";
           inputElm.dispatchEvent(new Event("change"));
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
           scope.min = 20;
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(scope.value).toBe(20);
           expect(inputElm.value).toBe("20");
 
           scope.min = null;
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(scope.value).toBe(20);
           expect(inputElm.value).toBe("20");
 
           scope.min = "15";
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(scope.value).toBe(20);
           expect(inputElm.value).toBe("20");
 
           scope.min = "abc";
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(scope.value).toBe(20);
           expect(inputElm.value).toBe("20");
@@ -2684,13 +2689,14 @@ describe("input", () => {
 
       describe("max", () => {
         // Browsers that implement range will never allow you to set the value > max value
-        it("should initialize correctly with non-default model and max value", () => {
+        it("should initialize correctly with non-default model and max value", async () => {
           scope.value = 130;
           scope.max = 150;
           const formElm = $compile(
             '<form name="form"><input type="range" ng-model="value" name="alias" max="{{max}}" /></form>',
           )(scope);
           inputElm = formElm.querySelector("input");
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(inputElm.value).toBe("130");
           expect(scope.value).toBe(130);
@@ -2716,48 +2722,55 @@ describe("input", () => {
           expect(scope.form.alias.$error.max).toBeFalsy();
         });
 
-        it("should set the model to the max val if it is greater than the max val", () => {
+        it("should set the model to the max val if it is greater than the max val", async () => {
           scope.value = 110;
           // Default max is 100
           inputElm = $compile(
             '<input type="range" ng-model="value" name="alias" max="{{max}}" />',
           )(scope);
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(inputElm.value).toBe("100");
           expect(scope.value).toBe(100);
 
           scope.$apply("value = 90; max = 10");
-
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(inputElm.value).toBe("10");
           expect(scope.value).toBe(10);
         });
 
-        it("should adjust the element and model value if the max value changes on-the-fly", () => {
+        it("should adjust the element and model value if the max value changes on-the-fly", async () => {
           scope.max = 10;
           inputElm = $compile(
             '<input type="range" ng-model="value" name="alias" max="{{max}}" />',
           )(scope);
+          await wait();
           inputElm.value = "5";
           inputElm.dispatchEvent(new Event("change"));
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
           scope.max = 0;
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(scope.value).toBe(0);
           expect(inputElm.value).toBe("0");
 
           scope.max = null;
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(scope.value).toBe(0);
           expect(inputElm.value).toBe("0");
 
           scope.max = "4";
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(scope.value).toBe(0);
           expect(inputElm.value).toBe("0");
 
           scope.max = "abc";
+          await wait();
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(scope.value).toBe(0);
           expect(inputElm.value).toBe("0");
@@ -2765,25 +2778,28 @@ describe("input", () => {
       });
 
       describe("min and max", () => {
-        it("should set the correct initial value when min and max are specified", () => {
+        it("should set the correct initial value when min and max are specified", async () => {
           scope.max = 80;
           scope.min = 40;
           inputElm = $compile(
             '<input type="range" ng-model="value" name="alias" max="{{max}}" min="{{min}}" />',
           )(scope);
+          await wait();
           expect(inputElm.value).toBe("60");
           expect(scope.value).toBe(60);
         });
 
-        it("should set element and model value to min if max is less than min", () => {
+        it("should set element and model value to min if max is less than min", async () => {
           scope.min = 40;
           inputElm = $compile(
             '<input type="range" ng-model="value" name="alias" max="{{max}}" min="{{min}}" />',
           )(scope);
+          await wait();
           expect(inputElm.value).toBe("70");
           expect(scope.value).toBe(70);
 
           scope.max = 20;
+          await wait();
           expect(inputElm.value).toBe("40");
           expect(scope.value).toBe(40);
         });
@@ -2831,37 +2847,42 @@ describe("input", () => {
           expect(scope.form.alias.$error.step).toBeFalsy();
         });
 
-        it("should round the input value to the nearest step when setting the model", () => {
+        it("should round the input value to the nearest step when setting the model", async () => {
           const formElm = $compile(
             '<form name="form"><input type="range" ng-model="value" name="alias" step="5" /></form>',
           )(scope);
           inputElm = formElm.querySelector("input");
 
           scope.$apply("value = 10");
+          await wait();
           expect(inputElm.value).toBe("10");
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(scope.value).toBe(10);
           expect(scope.form.alias.$error.step).toBeFalsy();
 
           scope.$apply("value = 5");
+          await wait();
           expect(inputElm.value).toBe("5");
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(scope.value).toBe(5);
           expect(scope.form.alias.$error.step).toBeFalsy();
 
           scope.$apply("value = 7.5");
+          await wait();
           expect(inputElm.value).toBe("10");
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(scope.value).toBe(10);
           expect(scope.form.alias.$error.step).toBeFalsy();
 
           scope.$apply("value = 7");
+          await wait();
           expect(inputElm.value).toBe("5");
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(scope.value).toBe(5);
           expect(scope.form.alias.$error.step).toBeFalsy();
 
           scope.$apply("value = 9");
+          await wait();
           expect(inputElm.value).toBe("10");
           expect(inputElm.classList.contains("ng-valid")).toBeTrue();
           expect(scope.value).toBe(10);
@@ -3321,13 +3342,14 @@ describe("input", () => {
     });
 
     describe("checkbox", () => {
-      it("should ignore checkbox without ngModel directive", () => {
+      it("should ignore checkbox without ngModel directive", async () => {
         inputElm = $compile(
           '<input type="checkbox" name="whatever" required />',
         )(scope);
 
         inputElm.value = "";
         inputElm.dispatchEvent(new Event("change"));
+        await wait();
         expect(inputElm.classList.contains("ng-valid")).toBe(false);
         expect(inputElm.classList.contains("ng-invalid")).toBe(false);
         expect(inputElm.classList.contains("ng-pristine")).toBe(false);
@@ -3335,7 +3357,7 @@ describe("input", () => {
       });
 
       ["click", "change"].forEach((event) => {
-        it("should update the model on $prop event", () => {
+        it("should update the model on $prop event", async () => {
           inputElm = $compile('<input type="checkbox" ng-model="checkbox" />')(
             scope,
           );
@@ -3343,119 +3365,134 @@ describe("input", () => {
           expect(inputElm.checked).toBe(false);
 
           scope.$apply("checkbox = true");
+          await wait();
           expect(inputElm.checked).toBe(true);
 
           scope.$apply("checkbox = false");
+          await wait();
           expect(inputElm.checked).toBe(false);
 
           if (event === "change") inputElm.checked = true;
           if (event === "click") inputElm.click();
           inputElm.dispatchEvent(new Event("change"));
+          await wait();
           expect(scope.checkbox).toBe(true);
         });
       });
 
-      it("should format booleans", () => {
+      it("should format booleans", async () => {
         inputElm = $compile('<input type="checkbox" ng-model="name" />')(scope);
 
         scope.$apply("name = false");
+        await wait();
         expect(inputElm.checked).toBe(false);
 
         scope.$apply("name = true");
+        await wait();
         expect(inputElm.checked).toBe(true);
       });
 
-      it('should support type="checkbox" with non-standard capitalization', () => {
+      it('should support type="checkbox" with non-standard capitalization', async () => {
         inputElm = $compile('<input type="checkBox" ng-model="checkbox" />')(
           scope,
         );
-
+        await wait();
         inputElm.click();
         inputElm.dispatchEvent(new Event("change"));
+        await wait();
         expect(scope.checkbox).toBe(true);
 
         inputElm.click();
         inputElm.dispatchEvent(new Event("change"));
+        await wait();
         expect(scope.checkbox).toBe(false);
       });
 
-      it("should allow custom enumeration", () => {
+      it("should allow custom enumeration", async () => {
         inputElm = $compile(
           '<input type="checkbox" ng-model="name" ng-true-value="\'y\'" ' +
             "ng-false-value=\"'n'\">",
         )(scope);
 
         scope.$apply("name = 'y'");
+        await wait();
         expect(inputElm.checked).toBe(true);
 
         scope.$apply("name = 'n'");
+        await wait();
         expect(inputElm.checked).toBe(false);
 
         scope.$apply("name = 'something else'");
+        await wait();
         expect(inputElm.checked).toBe(false);
 
         inputElm.click();
         inputElm.dispatchEvent(new Event("change"));
+        await wait();
         expect(scope.name).toEqual("y");
 
         inputElm.click();
         inputElm.dispatchEvent(new Event("change"));
+        await wait();
         expect(scope.name).toEqual("n");
       });
 
-      it("should throw if ngTrueValue is present and not a constant expression", () => {
-        expect(() => {
-          inputElm = $compile(
-            '<input type="checkbox" ng-model="value" ng-true-value="yes" />',
-          )(scope);
-        }).toThrowError(/constexpr/);
+      it("should throw if ngTrueValue is present and not a constant expression", async () => {
+        inputElm = $compile(
+          '<input type="checkbox" ng-model="value" ng-true-value="yes" />',
+        )(scope);
+        await wait();
+        expect(error[0]).toMatch("constexpr");
       });
 
-      it("should throw if ngFalseValue is present and not a constant expression", () => {
-        expect(() => {
-          inputElm = $compile(
-            '<input type="checkbox" ng-model="value" ng-false-value="no" />',
-          )(scope);
-        }).toThrowError(/constexpr/);
+      it("should throw if ngFalseValue is present and not a constant expression", async () => {
+        inputElm = $compile(
+          '<input type="checkbox" ng-model="value" ng-false-value="no" />',
+        )(scope);
+        await wait();
+        expect(error[0]).toMatch("constexpr");
       });
 
-      it("should not throw if ngTrueValue or ngFalseValue are not present", () => {
-        expect(() => {
-          inputElm = $compile('<input type="checkbox" ng-model="value" />')(
-            scope,
-          );
-        }).not.toThrow();
+      it("should not throw if ngTrueValue or ngFalseValue are not present", async () => {
+        inputElm = $compile('<input type="checkbox" ng-model="value" />')(
+          scope,
+        );
+        await wait();
+        expect(error.length).toBe(0);
       });
 
-      it("should be required if false", () => {
+      it("should be required if false", async () => {
         inputElm = $compile(
           '<input type="checkbox" ng-model="value" required />',
         )(scope);
 
         inputElm.click();
         inputElm.dispatchEvent(new Event("change"));
+        await wait();
         expect(inputElm.checked).toBe(true);
         expect(inputElm.classList.contains("ng-valid")).toBeTrue();
 
         inputElm.click();
         inputElm.dispatchEvent(new Event("change"));
+        await wait();
         expect(inputElm.checked).toBe(false);
         expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
       });
 
-      it('should pass validation for "required" when trueValue is a string', () => {
+      it('should pass validation for "required" when trueValue is a string', async () => {
         const formElm = $compile(
           '<form name="form">' +
             '<input type="checkbox" required name="cb" ng-model="value" ng-true-value="\'yes\'" />' +
             "</form>",
         )(scope);
         inputElm = formElm.querySelector("input");
-
+        await wait();
         expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
         expect(scope.form.cb.$error.required).toBe(true);
 
         inputElm.click();
         inputElm.dispatchEvent(new Event("change"));
+        await wait();
         expect(inputElm.checked).toBe(true);
         expect(inputElm.classList.contains("ng-valid")).toBeTrue();
         expect(scope.form.cb.$error.required).toBeUndefined();

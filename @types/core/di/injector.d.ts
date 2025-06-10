@@ -4,7 +4,10 @@
  * @param {boolean} [strictDi]
  * @returns {InjectorService}
  */
-export function createInjector(modulesToLoad: Array<string | Function>, strictDi?: boolean): InjectorService;
+export function createInjector(
+  modulesToLoad: Array<string | Function>,
+  strictDi?: boolean,
+): InjectorService;
 /**
  *
  * @param {any} fn
@@ -12,6 +15,10 @@ export function createInjector(modulesToLoad: Array<string | Function>, strictDi
  * @param {String} [name]
  * @returns {Array<string>}
  */
-export function annotate(fn: any, strictDi?: boolean, name?: string): Array<string>;
+export function annotate(
+  fn: any,
+  strictDi?: boolean,
+  name?: string,
+): Array<string>;
 /** @type {String[]} Used only for error reporting of circular dependencies*/
 export const path: string[];

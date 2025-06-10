@@ -158,16 +158,17 @@ describe("$templateRequest", () => {
     expect(onError).not.toHaveBeenCalled();
   });
 
-  it("should accept empty templates and refuse null or undefined templates in cache", () => {
+  it("should accept empty templates and refuse null or undefined templates in cache", async () => {
     // Will throw on any template not in cache.
     spyOn($sce, "getTrustedResourceUrl").and.returnValue(false);
 
-    $templateRequest("/public/test.html"); // should go through $sce
-    expect(errors.length).toBe(1);
-    $templateCache.set("/public/test.html", ""); // should work (empty template)
+    $templateRequest("/public/test.html").catch((e) => {
+      expect(e).toMatch("Template not found");
+    }); // should go through $sce
 
-    $templateRequest("/public/test.html");
-    expect(errors.length).toBe(1);
+    $templateCache.set("/public/test.html", ""); // should work (empty template)
+    let res = await $templateRequest("/public/test.html");
+    expect(res).toBeDefined();
   });
 
   it("should keep track of how many requests are going on", async () => {

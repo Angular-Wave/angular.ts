@@ -53,11 +53,11 @@
  * Can be overridden to implement custom error-handling logic.
  */
 export class ExceptionHandlerProvider {
-    /** @type {LogService} */
-    log: LogService;
-    /** @type {ErrorHandler} */
-    errorHandler: ErrorHandler;
-    $get: (string | (($log: LogService) => ErrorHandler))[];
+  /** @type {LogService} */
+  log: LogService;
+  /** @type {ErrorHandler} */
+  errorHandler: ErrorHandler;
+  $get: (string | (($log: LogService) => ErrorHandler))[];
 }
 export type LogService = any;
 export type ErrorHandler = (exception: Error, cause?: string) => void;

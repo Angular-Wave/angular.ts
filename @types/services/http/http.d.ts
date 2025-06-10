@@ -11,7 +11,7 @@
  */
 export function HttpParamSerializerProvider(): void;
 export class HttpParamSerializerProvider {
-    $get: () => (params: any) => string;
+  $get: () => (params: any) => string;
 }
 export function defaultHttpResponseTransform(data: any, headers: any): any;
 /**
@@ -19,40 +19,48 @@ export function defaultHttpResponseTransform(data: any, headers: any): any;
  */
 export function HttpProvider(): void;
 export class HttpProvider {
-    defaults: {
-        transformResponse: (typeof defaultHttpResponseTransform)[];
-        transformRequest: ((d: any) => any)[];
-        headers: {
-            common: {
-                Accept: string;
-            };
-            post: any;
-            put: any;
-            patch: any;
-        };
-        xsrfCookieName: string;
-        xsrfHeaderName: string;
-        paramSerializer: string;
+  defaults: {
+    transformResponse: (typeof defaultHttpResponseTransform)[];
+    transformRequest: ((d: any) => any)[];
+    headers: {
+      common: {
+        Accept: string;
+      };
+      post: any;
+      put: any;
+      patch: any;
     };
-    /**
-     * Configure $http service to combine processing of multiple http responses received at around
-     * the same time via {@link ng.$rootScope.Scope#$applyAsync $rootScope.$applyAsync}. This can result in
-     * significant performance improvement for bigger applications that make many HTTP requests
-     * concurrently (common during application bootstrap).
-     *
-     * Defaults to false. If no value is specified, returns the current configured value.
-     *
-     * @param {boolean=} value If true, when requests are loaded, they will schedule a deferred
-     *    "apply" on the next tick, giving time for subsequent requests in a roughly ~10ms window
-     *    to load and share the same digest cycle.
-     *
-     * @returns {boolean|Object} If a value is specified, returns the $httpProvider for chaining.
-     *    otherwise, returns the current configured value.
-     */
-    useApplyAsync: (value?: boolean | undefined) => boolean | any;
-    interceptors: any[];
-    xsrfTrustedOrigins: any[];
-    $get: (string | (($browser: any, $httpBackend: any, $rootScope: any, $injector: any, $sce: any) => {
+    xsrfCookieName: string;
+    xsrfHeaderName: string;
+    paramSerializer: string;
+  };
+  /**
+   * Configure $http service to combine processing of multiple http responses received at around
+   * the same time via {@link ng.$rootScope.Scope#$applyAsync $rootScope.$applyAsync}. This can result in
+   * significant performance improvement for bigger applications that make many HTTP requests
+   * concurrently (common during application bootstrap).
+   *
+   * Defaults to false. If no value is specified, returns the current configured value.
+   *
+   * @param {boolean=} value If true, when requests are loaded, they will schedule a deferred
+   *    "apply" on the next tick, giving time for subsequent requests in a roughly ~10ms window
+   *    to load and share the same digest cycle.
+   *
+   * @returns {boolean|Object} If a value is specified, returns the $httpProvider for chaining.
+   *    otherwise, returns the current configured value.
+   */
+  useApplyAsync: (value?: boolean | undefined) => boolean | any;
+  interceptors: any[];
+  xsrfTrustedOrigins: any[];
+  $get: (
+    | string
+    | ((
+        $browser: any,
+        $httpBackend: any,
+        $rootScope: any,
+        $injector: any,
+        $sce: any,
+      ) => {
         (requestConfig: any): Promise<any>;
         pendingRequests: any[];
         /**
@@ -62,19 +70,20 @@ export class HttpProvider {
          * See "Setting HTTP Headers" and "Transforming Requests and Responses" sections above.
          */
         defaults: {
-            transformResponse: (typeof defaultHttpResponseTransform)[];
-            transformRequest: ((d: any) => any)[];
-            headers: {
-                common: {
-                    Accept: string;
-                };
-                post: any;
-                put: any;
-                patch: any;
+          transformResponse: (typeof defaultHttpResponseTransform)[];
+          transformRequest: ((d: any) => any)[];
+          headers: {
+            common: {
+              Accept: string;
             };
-            xsrfCookieName: string;
-            xsrfHeaderName: string;
-            paramSerializer: string;
+            post: any;
+            put: any;
+            patch: any;
+          };
+          xsrfCookieName: string;
+          xsrfHeaderName: string;
+          paramSerializer: string;
         };
-    }))[];
+      })
+  )[];
 }

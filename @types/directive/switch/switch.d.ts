@@ -1,9 +1,11 @@
 /**
  * @returns {import('../../types.js').Directive}
  */
-export function ngSwitchDirective($animate: any): import("../../types.js").Directive;
+export function ngSwitchDirective(
+  $animate: any,
+): import("../../types.js").Directive;
 export namespace ngSwitchDirective {
-    let $inject: string[];
+  let $inject: string[];
 }
 /**
  * @returns {import('../../types.js').Directive}

@@ -55,7 +55,13 @@ export function equals(o1: any, o2: any): any;
  * @param fnNames The function names which will be bound (Defaults to all the functions found on the 'from' object)
  * @param latebind If true, the binding of the function is delayed until the first time it's invoked
  */
-export function createProxyFunctions(source: any, target: any, bind: any, fnNames: any, latebind?: boolean): any;
+export function createProxyFunctions(
+  source: any,
+  target: any,
+  bind: any,
+  fnNames: any,
+  latebind?: boolean,
+): any;
 /**
  * prototypal inheritance helper.
  * Creates a new object which has `parent` object as its prototype, and then copies the properties from `extra` onto it
@@ -120,7 +126,10 @@ export function map(collection: any, callback: any, target: any): any;
  * Mostly just for [[flattenR]] and [[uniqR]]
  */
 export function pushR(arr: any, obj: any): any;
-export function assertFn(predicateOrMap: any, errMsg?: string): (obj: any) => any;
+export function assertFn(
+  predicateOrMap: any,
+  errMsg?: string,
+): (obj: any) => any;
 /**
  * Given two or more parallel arrays, returns an array of tuples where
  * each tuple is composed of [ a[i], b[i], ... z[i] ]
@@ -178,8 +187,14 @@ export function flattenR(memo: any, elem: any): any;
 export function uniqR(acc: any, token: any): any;
 export function unnest(arr: any): any;
 export function flatten(arr: any): any;
-export function assertPredicate(predicateOrMap: any, errMsg?: string): (obj: any) => any;
-export function assertMap(predicateOrMap: any, errMsg?: string): (obj: any) => any;
+export function assertPredicate(
+  predicateOrMap: any,
+  errMsg?: string,
+): (obj: any) => any;
+export function assertMap(
+  predicateOrMap: any,
+  errMsg?: string,
+): (obj: any) => any;
 export function pairs(obj: any): any[][];
 export function silenceUncaughtInPromise(promise: any): any;
 export function silentRejection(error: any): any;

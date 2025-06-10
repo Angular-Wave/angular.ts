@@ -1,67 +1,79 @@
 export class Attributes {
-    static $nonscope: boolean;
-    /**
-     * @param {import('../scope/scope.js').Scope} $rootScope
-     * @param {*} $animate
-     * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
-     * @param {*} $sce
-     * @param {import("../../shared/noderef.js").NodeRef} [nodeRef]
-     * @param {*} [attributesToCopy]
-     */
-    constructor($rootScope: import("../scope/scope.js").Scope, $animate: any, $exceptionHandler: import("../exception-handler.js").ErrorHandler, $sce: any, nodeRef?: import("../../shared/noderef.js").NodeRef, attributesToCopy?: any);
-    $rootScope: import("../scope/scope.js").Scope;
-    $animate: any;
-    $exceptionHandler: import("../exception-handler.js").ErrorHandler;
-    $sce: any;
-    $attr: {};
-    /** @type {import("../../shared/noderef.js").NodeRef} */
-    $nodeRef: import("../../shared/noderef.js").NodeRef;
-    /** @type {Node|Element} */
-    get $$element(): Node | Element;
-    /**
-     * Converts an attribute name (e.g. dash/colon/underscore-delimited string, optionally prefixed with `x-` or
-     * `data-`) to its normalized, camelCase form.
-     *
-     * Also there is special case for Moz prefix starting with upper case letter.
-     *
-     * For further information check out the guide on {@link guide/directive#matching-directives Matching Directives}
-     *
-     * @param {string} name Name to normalize
-     */
-    $normalize: typeof directiveNormalize;
-    /**
-     * Adds the CSS class value specified by the classVal parameter to the element. If animations
-     * are enabled then an animation will be triggered for the class addition.
-     *
-     * @param {string} classVal The className value that will be added to the element
-     */
-    $addClass(classVal: string): void;
-    /**
-     * Removes the CSS class value specified by the classVal parameter from the element. If
-     * animations are enabled then an animation will be triggered for the class removal.
-     *
-     * @param {string} classVal The className value that will be removed from the element
-     */
-    $removeClass(classVal: string): void;
-    /**
-     * Adds and removes the appropriate CSS class values to the element based on the difference
-     * between the new and old CSS class values (specified as newClasses and oldClasses).
-     *
-     * @param {string} newClasses The current CSS className value
-     * @param {string} oldClasses The former CSS className value
-     */
-    $updateClass(newClasses: string, oldClasses: string): void;
-    /**
-     * Set a normalized attribute on the element in a way such that all directives
-     * can share the attribute. This function properly handles boolean attributes.
-     * @param {string} key Normalized key. (ie ngAttribute)
-     * @param {string|boolean} value The value to set. If `null` attribute will be deleted.
-     * @param {boolean=} writeAttr If false, does not write the value to DOM element attribute.
-     *     Defaults to true.
-     * @param {string=} attrName Optional none normalized name. Defaults to key.
-     */
-    $set(key: string, value: string | boolean, writeAttr?: boolean | undefined, attrName?: string | undefined): void;
-    /**
+  static $nonscope: boolean;
+  /**
+   * @param {import('../scope/scope.js').Scope} $rootScope
+   * @param {*} $animate
+   * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
+   * @param {*} $sce
+   * @param {import("../../shared/noderef.js").NodeRef} [nodeRef]
+   * @param {*} [attributesToCopy]
+   */
+  constructor(
+    $rootScope: import("../scope/scope.js").Scope,
+    $animate: any,
+    $exceptionHandler: import("../exception-handler.js").ErrorHandler,
+    $sce: any,
+    nodeRef?: import("../../shared/noderef.js").NodeRef,
+    attributesToCopy?: any,
+  );
+  $rootScope: import("../scope/scope.js").Scope;
+  $animate: any;
+  $exceptionHandler: import("../exception-handler.js").ErrorHandler;
+  $sce: any;
+  $attr: {};
+  /** @type {import("../../shared/noderef.js").NodeRef} */
+  $nodeRef: import("../../shared/noderef.js").NodeRef;
+  /** @type {Node|Element} */
+  get $$element(): Node | Element;
+  /**
+   * Converts an attribute name (e.g. dash/colon/underscore-delimited string, optionally prefixed with `x-` or
+   * `data-`) to its normalized, camelCase form.
+   *
+   * Also there is special case for Moz prefix starting with upper case letter.
+   *
+   * For further information check out the guide on {@link guide/directive#matching-directives Matching Directives}
+   *
+   * @param {string} name Name to normalize
+   */
+  $normalize: typeof directiveNormalize;
+  /**
+   * Adds the CSS class value specified by the classVal parameter to the element. If animations
+   * are enabled then an animation will be triggered for the class addition.
+   *
+   * @param {string} classVal The className value that will be added to the element
+   */
+  $addClass(classVal: string): void;
+  /**
+   * Removes the CSS class value specified by the classVal parameter from the element. If
+   * animations are enabled then an animation will be triggered for the class removal.
+   *
+   * @param {string} classVal The className value that will be removed from the element
+   */
+  $removeClass(classVal: string): void;
+  /**
+   * Adds and removes the appropriate CSS class values to the element based on the difference
+   * between the new and old CSS class values (specified as newClasses and oldClasses).
+   *
+   * @param {string} newClasses The current CSS className value
+   * @param {string} oldClasses The former CSS className value
+   */
+  $updateClass(newClasses: string, oldClasses: string): void;
+  /**
+   * Set a normalized attribute on the element in a way such that all directives
+   * can share the attribute. This function properly handles boolean attributes.
+   * @param {string} key Normalized key. (ie ngAttribute)
+   * @param {string|boolean} value The value to set. If `null` attribute will be deleted.
+   * @param {boolean=} writeAttr If false, does not write the value to DOM element attribute.
+   *     Defaults to true.
+   * @param {string=} attrName Optional none normalized name. Defaults to key.
+   */
+  $set(
+    key: string,
+    value: string | boolean,
+    writeAttr?: boolean | undefined,
+    attrName?: string | undefined,
+  ): void;
+  /**
      * Observes an interpolated attribute.
      *
      * The observer function will be invoked once during the next `$digest` following
@@ -75,10 +87,10 @@ export class Attributes {
     *        guide} for more info.
     * @returns {function()} Returns a deregistration function for this observer.
     */
-    $observe(key: string, fn: any): () => any;
-    $$observers: any;
-    setSpecialAttr(element: any, attrName: any, value: any): void;
-    sanitizeSrcset(value: any, invokeType: any): any;
-    srcset: any;
+  $observe(key: string, fn: any): () => any;
+  $$observers: any;
+  setSpecialAttr(element: any, attrName: any, value: any): void;
+  sanitizeSrcset(value: any, invokeType: any): any;
+  srcset: any;
 }
 import { directiveNormalize } from "../../shared/utils.js";

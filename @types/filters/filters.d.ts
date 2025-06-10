@@ -16,7 +16,9 @@
  * @param  {any} fractionSize     The size of the fractional part of the number
  * @return {string}              The number formatted as a string
  */
-export function formatNumber(number: number, pattern: {
+export function formatNumber(
+  number: number,
+  pattern: {
     minFrac: any;
     maxFrac: any;
     gSize: any;
@@ -25,7 +27,11 @@ export function formatNumber(number: number, pattern: {
     posPre: any;
     negSuf: any;
     posSuf: any;
-}, groupSep: string, decimalSep: string, fractionSize: any): string;
+  },
+  groupSep: string,
+  decimalSep: string,
+  fractionSize: any,
+): string;
 /**
  * @returns {function(Object, number?): Object}
  */

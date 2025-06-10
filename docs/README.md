@@ -96,6 +96,7 @@ To remove the produced images run:
 ```bash
 docker-compose rm
 ```
+
 For more information see the [Docker Compose documentation][].
 
 ## Using a local Docsy clone
@@ -121,7 +122,7 @@ or, when using npm, prepend `local` to the script you want to invoke, e.g.:
 npm run local serve
 ```
 
-By using the `HUGO_MODULE_WORKSPACE` directive (either directly or via prefix `local` when using npm), the server now watches all files and directories inside the sibling directory `../docsy` , too. Any changes inside the local `docsy` theme clone are  now immediately picked up (hot reload), you can instantly see the effect of your local edits.
+By using the `HUGO_MODULE_WORKSPACE` directive (either directly or via prefix `local` when using npm), the server now watches all files and directories inside the sibling directory `../docsy` , too. Any changes inside the local `docsy` theme clone are now immediately picked up (hot reload), you can instantly see the effect of your local edits.
 
 In the command above, we used the environment variable `HUGO_MODULE_WORKSPACE` to tell hugo about the local workspace file `docsy.work`. Alternatively, you can declare the workspace file inside your settings file `hugo.toml`:
 
@@ -172,7 +173,6 @@ Error: failed to download modules: binary with name "go" not found
 
 This error occurs if you have not installed the `go` programming language on your system.
 See this [section](https://www.docsy.dev/docs/get-started/docsy-as-module/installation-prerequisites/#install-go-language) of the user guide for instructions on how to install `go`.
-
 
 [alternate dashboard]: https://app.netlify.com/sites/goldydocs/deploys
 [deploys]: https://app.netlify.com/sites/docsy-example/deploys
