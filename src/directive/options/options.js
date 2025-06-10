@@ -42,10 +42,9 @@ export const ngOptionsDirective = [
             "'_select_ (as _label_)? for (_key_,)?_value_ in _collection_'" +
             " but got '{0}'. Element: {1}",
           optionsExp,
-          startingTag(selectElement[0]),
+          startingTag(selectElement),
         );
       }
-
       // Extract the parts from the ngOptions expression
 
       // The variable name for the value of the item in the collection
@@ -354,6 +353,7 @@ export const ngOptionsDirective = [
         // If we are using `track by` then we must watch these tracked values on the model
         // since ngModel only watches for object identity change
         if (ngOptions.trackBy) {
+          debugger;
           scope.$watchCollection(
             () => {
               if (Array.isArray(ngModelCtrl.$viewValue)) {
@@ -406,7 +406,11 @@ export const ngOptionsDirective = [
       }
 
       // We will re-render the option elements if the option values or labels change
-      scope.$watchCollection(ngOptions.getWatchables, updateOptions);
+      debugger;
+      let watchables = ngOptions.getWatchables();
+      watchables.forEach((i) => {
+        scope.$watch(i, updateOptions);
+      });
 
       // ------------------------------------------------------------------ //
 

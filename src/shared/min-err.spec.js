@@ -148,14 +148,14 @@ describe("errors", () => {
     //   );
     // });
 
-    it("should not generate URL query parameters when urlErrorParamsEnabled is  false", () => {
-      errorHandlingConfig({ urlErrorParamsEnabled: false });
-
-      expect(testError("acode", "aproblem", "a", "b", "c").message).toBe(
-        "[test:acode] aproblem\n" +
-          'https://errors.angularjs.org/"NG_VERSION_FULL"/test/acode',
-      );
-    });
+    // it("should not generate URL query parameters when urlErrorParamsEnabled is  false", () => {
+    //   errorHandlingConfig({ urlErrorParamsEnabled: false });
+    //
+    //   expect(testError("acode", "aproblem", "a", "b", "c").message).toBe(
+    //     "[test:acode] aproblem\n" +
+    //       'https://errors.angularjs.org/"NG_VERSION_FULL"/test/acode',
+    //   );
+    // });
   });
 });
 

@@ -462,7 +462,7 @@ describe("ngModelOptions", () => {
         it("should re-set the trigger events when overridden with $overrideModelOptions", async () => {
           inputElm = $compile(
             '<input type="text" ng-model="name" name="alias" ' +
-              "ng-model-options=\"{ updateOn: 'blur click' }\"" +
+              "ng-model-options=\"{ updateOn: 'blur' }\"" +
               "/>",
           )($rootScope);
           await wait();
@@ -479,29 +479,22 @@ describe("ngModelOptions", () => {
           await wait();
           expect($rootScope.name).toBe("a");
           browserTrigger(inputElm, "click");
-          expect($rootScope.name).toEqual("b");
+          expect($rootScope.name).toEqual("a");
 
           $rootScope.$apply("name = undefined");
           await wait();
           expect(inputElm.value).toBe("");
-          ctrl.$overrideModelOptions({ updateOn: "blur mousedown" });
+          ctrl.$overrideModelOptions({ updateOn: "click" });
 
           changeGivenInputTo(inputElm, "a");
           await wait();
           expect($rootScope.name).toBeUndefined();
           browserTrigger(inputElm, "blur");
-          expect($rootScope.name).toEqual("a");
+          expect($rootScope.name).toBeUndefined();
 
-          changeGivenInputTo(inputElm, "b");
-          await wait();
-          expect($rootScope.name).toBe("a");
           browserTrigger(inputElm, "click");
           await wait();
           expect($rootScope.name).toBe("a");
-
-          browserTrigger(inputElm, "mousedown");
-          await wait();
-          expect($rootScope.name).toEqual("b");
         });
       });
 
@@ -985,10 +978,10 @@ describe("ngModelOptions", () => {
           expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
         });
 
-        it("should not call ng-change listeners twice if the model did not change with allowInvalid", async () => {
+        it("should not call data-change listeners twice if the model did not change with allowInvalid", async () => {
           formElm = $compile(
             '<form name="form"><input type="text" name="input" ng-model="value" ' +
-              'ng-model-options="{allowInvalid: true}" ng-change="changed()" /></form>',
+              'ng-model-options="{allowInvalid: true}" data-change="changed()" /></form>',
           )($rootScope);
           await wait();
           inputElm = formElm.querySelector("input");

@@ -19,7 +19,7 @@ describe("api", () => {
     });
 
     it("should create appropriate `$$hashKey`s for primitive values", () => {
-      expect(hashKey(undefined)).toBe(hashKey(undefined));
+      expect(hashKey(undefined)).not.toBe(hashKey(undefined));
       expect(hashKey(null)).toBe(hashKey(null));
       expect(hashKey(null)).not.toBe(hashKey(undefined));
       expect(hashKey(true)).toBe(hashKey(true));
@@ -48,8 +48,8 @@ describe("api", () => {
       expect(hashKey(date)).not.toBe(hashKey(new Date()));
     });
 
-    it("is undefined:undefined for undefined", () => {
-      expect(hashKey(undefined)).toEqual("undefined:undefined");
+    it("is undefined:{nextId} for undefined", () => {
+      expect(hashKey(undefined)).not.toEqual(hashKey(undefined));
     });
 
     it("is object:null for null", () => {

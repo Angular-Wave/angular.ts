@@ -43,7 +43,6 @@ export class NodeRef {
   getAll(): Element | Array<Node> | Node | ChildNode;
   /** @returns {Array<Element> | Array<Node>} */
   collection(): Array<Element> | Array<Node>;
-  setAll(update: any): any;
   /**
    * @param {number} index
    * @returns {Element | Node | ChildNode}

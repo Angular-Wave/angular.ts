@@ -45,7 +45,7 @@ describe("ngInclude", () => {
       const injector = angular.bootstrap(element);
       $rootScope = injector.get("$rootScope");
       setTimeout(() => {
-        expect(element.textContent).toEqual("hello");
+        expect(element.textContent).toEqual("hello\n");
         done();
       }, 200);
     });

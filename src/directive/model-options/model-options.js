@@ -116,7 +116,6 @@ export const defaultModelOptions = new ModelOptions({
   debounce: 0,
   getterSetter: false,
   allowInvalid: false,
-  //timezone: null,
 });
 
 /**

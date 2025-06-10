@@ -184,19 +184,6 @@ export class NodeRef {
     }
   }
 
-  setAll(update) {
-    assertArg(update, "nodes");
-    if (update instanceof NodeList) {
-      return (this._nodes = Array.from(update));
-    } else {
-      if (Array.isArray(update)) {
-        return (this.nodes = update);
-      } else {
-        return (this.node = update);
-      }
-    }
-  }
-
   /**
    * @param {number} index
    * @returns {Element | Node | ChildNode}

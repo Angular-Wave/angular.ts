@@ -1478,7 +1478,6 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 transcludeFn,
               );
             } catch (e) {
-              console.error(e);
               $exceptionHandler(e, startingTag($element.getAny()));
             }
           }

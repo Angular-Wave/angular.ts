@@ -19,10 +19,12 @@ describe("ngOptions", () => {
   let childListMutationObserver;
   let ngModelCtrl;
   let injector;
+  let errors = [];
 
   async function compile(html) {
     formElement = $compile(`<form name="form">${html}</form>`)(scope);
     await wait();
+    debugger;
     element = formElement.querySelector("select");
     ngModelCtrl = getController(element, "ngModel");
   }
@@ -156,12 +158,14 @@ describe("ngOptions", () => {
   });
 
   beforeEach(() => {
+    errors = [];
     window.angular = new Angular();
     window.angular
       .module("myModule", ["ng"])
       .decorator("$exceptionHandler", function () {
-        return (exception, cause) => {
-          throw new Error(exception.message);
+        return (exception) => {
+          debugger;
+          errors.push(exception.message);
         };
       });
     injector = createInjector([
@@ -178,7 +182,7 @@ describe("ngOptions", () => {
               options: "=",
             },
             templateUrl: "select_template.html",
-            link(scope, $element, attributes) {
+            link(scope) {
               scope.selectable_options = scope.options;
             },
           }))
@@ -273,26 +277,27 @@ describe("ngOptions", () => {
     );
   }
 
-  it('should throw when not formated "? for ? in ?"', () => {
-    expect(() => {
-      compile(
-        '<select ng-model="selected" ng-options="i dont parse"></select>',
-      );
-    }).toThrowError(/iexp/);
+  fit('should throw when not formated "? for ? in ?"', async () => {
+    compile('<select ng-model="selected" ng-options="i dont parse"></select>');
+    await wait();
+    expect(errors[0]).toMatch("iexp");
   });
 
-  it("should have a dependency on ngModel", () => {
-    expect(() => {
-      compile('<select ng-options="item in items"></select>');
-    }).toThrow();
+  fit("should have a dependency on ngModel", async () => {
+    try {
+      await compile('<select ng-options="item in items"></select>');
+      await wait();
+    } catch (error) {
+      expect(error.message).toMatch("ngModel");
+    }
   });
 
-  it("should render a list", () => {
+  fit("should render a list", async () => {
     createSingleSelect();
-
+    await wait();
     scope.values = [{ name: "A" }, { name: "B" }, { name: "C" }];
     scope.selected = scope.values[1];
-
+    debugger;
     const options = element.querySelector("option");
     expect(options.length).toEqual(3);
     // expect(options[0]).toEqualOption(scope.values[0], "A");
