@@ -708,6 +708,7 @@ export class LocationProvider {
           // traverse the DOM up to find first A tag
           while (elm.nodeName.toLowerCase() !== "a") {
             // ignore rewriting if no A tag (reached root element, or no parent - removed from document)
+            // @ts-ignore
             if (elm === $rootElement || !(elm = elm.parentElement)) return;
           }
 

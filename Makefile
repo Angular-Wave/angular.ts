@@ -35,6 +35,8 @@ jsdoc:
 serve:
 	@npm run serve
 
+prepare-release: test check types jsdoc pretty build
+
 PLAYWRIGHT_TEST := npx playwright test
 
 test:

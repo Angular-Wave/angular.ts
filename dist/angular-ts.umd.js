@@ -1,4 +1,4 @@
-/* Version: 0.7.0 - June 10, 2025 10:04:48 */
+/* Version: 0.7.0-beta.0 - June 13, 2025 13:12:14 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -30,7 +30,6 @@
   const isProxySymbol = Symbol("isProxy");
 
   /**
-   *
    * @param {*} value
    * @returns {boolean}
    */
@@ -2682,19 +2681,6 @@
       }
     }
 
-    setAll(update) {
-      assertArg$1(update, "nodes");
-      if (update instanceof NodeList) {
-        return (this._nodes = Array.from(update));
-      } else {
-        if (Array.isArray(update)) {
-          return (this.nodes = update);
-        } else {
-          return (this.node = update);
-        }
-      }
-    }
-
     /**
      * @param {number} index
      * @returns {Element | Node | ChildNode}
@@ -4242,6 +4228,8 @@
     };
   }
 
+  // @ts-nocheck
+
   /**
    * A function passed as the fifth argument to a {@type PublicLinkFn} link function.
    * It behaves like a linking function, with the `scope` argument automatically created
@@ -5676,7 +5664,6 @@
                   transcludeFn,
                 );
               } catch (e) {
-                console.error(e);
                 $exceptionHandler(e, startingTag($element.getAny()));
               }
             }
@@ -6581,7 +6568,8 @@
                   // Copy in CSS classes from original node
                   try {
                     if (oldClasses !== "") {
-                      beforeTemplateLinkNode.classList.add(...linkNode.classList);
+                      const classes = /** {Element} */ linkNode.classList;
+                      beforeTemplateLinkNode.classList.add(...classes);
                     }
                   } catch {
                     // ignore, since it means that we are trying to set class on
@@ -7295,7 +7283,7 @@
           }
 
           function triggerOnChangesHook() {
-            destination.$onChanges && destination.$onChanges(changes);
+            destination["$onChanges"] && destination["$onChanges"](changes);
             // Now clear the changes so that we schedule onChanges when more changes arrive
             changes = undefined;
           }
@@ -8112,7 +8100,6 @@
     debounce: 0,
     getterSetter: false,
     allowInvalid: false,
-    //timezone: null,
   });
 
   /**
@@ -11775,7 +11762,7 @@
             for (index = 0; index < collectionLength; index++) {
               key = collection === collectionKeys ? index : collectionKeys[index];
               value = collection[key];
-              trackById = trackByIdFn($scope, key, value, index);
+              trackById = trackByIdFn($scope, key, value);
               if (lastBlockMap[trackById]) {
                 // found previously seen block
                 block = lastBlockMap[trackById];
@@ -12094,10 +12081,9 @@
               "'_select_ (as _label_)? for (_key_,)?_value_ in _collection_'" +
               " but got '{0}'. Element: {1}",
             optionsExp,
-            startingTag(selectElement[0]),
+            startingTag(selectElement),
           );
         }
-
         // Extract the parts from the ngOptions expression
 
         // The variable name for the value of the item in the collection
@@ -12146,12 +12132,14 @@
               return locals;
             };
 
-        function Option(selectValue, viewValue, label, group, disabled) {
-          this.selectValue = selectValue;
-          this.viewValue = viewValue;
-          this.label = label;
-          this.group = group;
-          this.disabled = disabled;
+        class Option {
+          constructor(selectValue, viewValue, label, group, disabled) {
+            this.selectValue = selectValue;
+            this.viewValue = viewValue;
+            this.label = label;
+            this.group = group;
+            this.disabled = disabled;
+          }
         }
 
         function getOptionValuesKeys(optionValues) {
@@ -12394,6 +12382,7 @@
           selectCtrl.readValue = function readNgOptionsMultiple() {
             const selectedValues = selectElement.value || [];
             const selections = [];
+            // @ts-ignore
             selectedValues.forEach((value) => {
               const option = options.selectValueMap[value];
               if (option && !option.disabled)
@@ -12458,7 +12447,10 @@
         }
 
         // We will re-render the option elements if the option values or labels change
-        scope.$watchCollection(ngOptions.getWatchables, updateOptions);
+        let watchables = ngOptions.getWatchables();
+        watchables.forEach((i) => {
+          scope.$watch(i, updateOptions);
+        });
 
         // ------------------------------------------------------------------ //
 
@@ -12681,6 +12673,7 @@
                 $scope,
 
                 (clone) => {
+                  // @ts-ignore
                   $element.append(clone);
                 },
               );
@@ -15815,6 +15808,7 @@
       decoratedObject,
       decoratedProperty,
       decoratedKey;
+    // @ts-ignore
     const astIsPure = (decoratedNode.isPure = isPure(ast, parentIsPure));
 
     switch (ast.type) {
@@ -17157,7 +17151,7 @@
         /**
          * @param {string} exp
          * @param interceptorFn
-         * @returns {*|((function(import('../scope/scope.js').Scope, Object=, *=): *)&{literal: boolean, constant: boolean, isPure?: boolean, oneTime: boolean, decoratedNode: import("./interpreter.js").DecoratedASTNode, $$watchDelegate?: (function(import('../scope/scope.js').Scope, Function, boolean, CompiledExpression, (string|(function(import('../scope/scope.js').Scope): *)|CompiledExpression)): *), inputs: (*[]|Function), assign?: (function(*, *): *)})}
+         * @returns any
          */
         function $parse(exp, interceptorFn) {
           var parsedExpression, cacheKey;
@@ -19669,6 +19663,7 @@
             // traverse the DOM up to find first A tag
             while (elm.nodeName.toLowerCase() !== "a") {
               // ignore rewriting if no A tag (reached root element, or no parent - removed from document)
+              // @ts-ignore
               if (elm === $rootElement || !(elm = elm.parentElement)) return;
             }
 
@@ -21236,7 +21231,7 @@
      */
     $getById(id) {
       if (isString(id)) {
-        id = parseInt(id, 10);
+        id = parseInt(/** @type {string} */ (id), 10);
       }
       if (this.$id === id) {
         return this;
@@ -34987,32 +34982,33 @@
             );
           }
           // Wait for the component to appear in the DOM
-          if (isString(cfg.component)) {
-            const kebobName = kebobString(cfg.component);
-            const tagRegexp = new RegExp(`^(x-|data-)?${kebobName}$`, "i");
-            const getComponentController = () => {
-              const directiveEl = [].slice
-                .call($element.children)
-                .filter((el) => el && el.tagName && tagRegexp.exec(el.tagName));
-              return (
-                directiveEl &&
-                getCacheData(directiveEl, `$${cfg.component}Controller`)
-              );
-            };
-            const deregisterWatch = scope.$watch(
-              getComponentController,
-              function (ctrlInstance) {
-                if (!ctrlInstance) return;
-                registerControllerCallbacks(
-                  $transitions,
-                  ctrlInstance,
-                  scope,
-                  cfg,
-                );
-                deregisterWatch();
-              },
-            );
-          }
+          // if (isString(cfg.component)) {
+          //const kebobName = kebobString(cfg.component);
+          // const tagRegexp = new RegExp(`^(x-|data-)?${kebobName}$`, "i");
+          // const getComponentController = () => {
+          //   const directiveEl = [].slice
+          //     .call($element.children)
+          //     .filter((el) => el && el.tagName && tagRegexp.exec(el.tagName));
+          //   return (
+          //     directiveEl &&
+          //     getCacheData(directiveEl, `$${cfg.component}Controller`)
+          //   );
+          // };
+          //console.error(getComponentController());
+          // const deregisterWatch = scope.$watch(
+          //   getComponentController,
+          //   function (ctrlInstance) {
+          //     if (!ctrlInstance) return;
+          //     registerControllerCallbacks(
+          //       $transitions,
+          //       ctrlInstance,
+          //       scope,
+          //       cfg,
+          //     );
+          //     deregisterWatch();
+          //   },
+          // );
+          // }
           link(scope);
         };
       },
@@ -35218,7 +35214,7 @@
   /**
    * @type {string} `version` from `package.json`, injected by Rollup plugin
    */
-  const VERSION = "0.7.0";
+  const VERSION = "0.7.0-beta.0";
 
   /**
    * Initializes `ng`, `animate`, `message`, `aria` and `router` modules.

@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="default" lang="en">
+<html class="default" lang="en" data-base="../">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
@@ -15,6 +15,11 @@
     <script async src="../assets/icons.js" id="tsd-icons-script"></script>
     <script async src="../assets/search.js" id="tsd-search-script"></script>
     <script async src="../assets/navigation.js" id="tsd-nav-script"></script>
+    <script
+      async
+      src="../assets/hierarchy.js"
+      id="tsd-hierarchy-script"
+    ></script>
   </head>
   <body>
     <script>
@@ -23,606 +28,1529 @@
       document.body.style.display = "none";
       setTimeout(
         () =>
-          app ? app.showPage() : document.body.style.removeProperty("display"),
+          window.app
+            ? app.showPage()
+            : document.body.style.removeProperty("display"),
         500,
       );
     </script>
     <header class="tsd-page-toolbar">
       <div class="tsd-toolbar-contents container">
-        <div class="table-cell" id="tsd-search" data-base="..">
-          <div class="field">
-            <label
-              for="tsd-search-field"
-              class="tsd-widget tsd-toolbar-icon search no-caption"
-              ><svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <use href="../assets/icons.svg#icon-search"></use></svg></label
-            ><input type="text" id="tsd-search-field" aria-label="Search" />
+        <a href="../index.html" class="title">@angular-wave/angular.ts</a>
+        <div id="tsd-toolbar-links"></div>
+        <button id="tsd-search-trigger" class="tsd-widget" aria-label="Search">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <use href="../assets/icons.svg#icon-search"></use>
+          </svg>
+        </button>
+        <dialog id="tsd-search" aria-label="Search">
+          <input
+            role="combobox"
+            id="tsd-search-input"
+            aria-controls="tsd-search-results"
+            aria-autocomplete="list"
+            aria-expanded="true"
+            autocapitalize="off"
+            autocomplete="off"
+            placeholder="Search the docs"
+            maxlength="100"
+          />
+          <ul role="listbox" id="tsd-search-results"></ul>
+          <div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+            <div>Preparing search index...</div>
           </div>
-          <div class="field"><div id="tsd-toolbar-links"></div></div>
-          <ul class="results">
-            <li class="state loading">Preparing search index...</li>
-            <li class="state failure">The search index is not available</li>
-          </ul>
-          <a href="../index.html" class="title">@angular-wave/angular.ts</a>
-        </div>
-        <div class="table-cell" id="tsd-widgets">
-          <a
-            href="#"
-            class="tsd-widget tsd-toolbar-icon menu no-caption"
-            data-toggle="menu"
-            aria-label="Menu"
-            ><svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <use href="../assets/icons.svg#icon-menu"></use></svg
-          ></a>
-        </div>
+        </dialog>
+        <a
+          href="#"
+          class="tsd-widget menu"
+          id="tsd-toolbar-menu-trigger"
+          data-toggle="menu"
+          aria-label="Menu"
+          ><svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <use href="../assets/icons.svg#icon-menu"></use></svg
+        ></a>
       </div>
     </header>
     <div class="container container-main">
       <div class="col-content">
         <div class="tsd-page-title">
-          <ul class="tsd-breadcrumb">
-            <li><a href="../index.html">@angular-wave/angular.ts</a></li>
-            <li><a href="shared_utils.html">shared/utils</a></li>
+          <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+            <li><a href="" aria-current="page">shared/utils</a></li>
           </ul>
           <h1>Module shared/utils</h1>
         </div>
-        <aside class="tsd-sources">
-          <ul>
-            <li>
-              Defined in
-              <a
-                href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/shared/utils.js#L1"
-                >shared/utils.js:1</a
-              >
-            </li>
-          </ul>
-        </aside>
-        <section class="tsd-panel-group tsd-index-group">
-          <section class="tsd-panel tsd-index-panel">
-            <h3 class="tsd-index-heading uppercase">Index</h3>
-            <section class="tsd-index-section">
-              <h3 class="tsd-index-heading">Interfaces</h3>
-              <div class="tsd-index-list">
-                <a
-                  href="../interfaces/shared_utils.ErrorHandlingConfig.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-256"></use></svg
-                  ><span>Error<wbr />Handling<wbr />Config</span></a
+        <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
+          <summary class="tsd-accordion-summary" data-key="section-Interfaces">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Interfaces</h2>
+          </summary>
+          <dl class="tsd-member-summaries">
+            <dt class="tsd-member-summary" id="errorhandlingconfig">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Interface"
                 >
-              </div>
-            </section>
-            <section class="tsd-index-section">
-              <h3 class="tsd-index-heading">Variables</h3>
-              <div class="tsd-index-list">
-                <a
-                  href="../variables/shared_utils.ngAttrPrefixes.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-32"></use></svg
-                  ><span>ng<wbr />Attr<wbr />Prefixes</span></a
+                  <use href="../assets/icons.svg#icon-256"></use></svg
+                ><a href="../interfaces/shared_utils.ErrorHandlingConfig.html"
+                  >ErrorHandlingConfig</a
+                ><a
+                  href="#errorhandlingconfig"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+          </dl>
+        </details>
+        <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
+          <summary class="tsd-accordion-summary" data-key="section-Variables">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Variables</h2>
+          </summary>
+          <dl class="tsd-member-summaries">
+            <dt class="tsd-member-summary" id="isproxysymbol">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Variable"
                 >
-              </div>
-            </section>
-            <section class="tsd-index-section">
-              <h3 class="tsd-index-heading">Functions</h3>
-              <div class="tsd-index-list">
-                <a
-                  href="../functions/shared_utils.addDateMinutes.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>add<wbr />Date<wbr />Minutes</span></a
+                  <use href="../assets/icons.svg#icon-32"></use></svg
+                ><a href="../variables/shared_utils.isProxySymbol.html"
+                  >isProxySymbol</a
+                ><a
+                  href="#isproxysymbol"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="ngattrprefixes">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Variable"
                 >
-                <a
-                  href="../functions/shared_utils.arrayRemove.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>array<wbr />Remove</span></a
+                  <use href="../assets/icons.svg#icon-32"></use></svg
+                ><a href="../variables/shared_utils.ngAttrPrefixes.html"
+                  >ngAttrPrefixes</a
+                ><a
+                  href="#ngattrprefixes"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+          </dl>
+        </details>
+        <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
+          <summary class="tsd-accordion-summary" data-key="section-Functions">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Functions</h2>
+          </summary>
+          <dl class="tsd-member-summaries">
+            <dt class="tsd-member-summary" id="adddateminutes">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.assert.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>assert</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.addDateMinutes.html"
+                  >addDateMinutes</a
+                ><a
+                  href="#adddateminutes"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="arrayremove">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.assertArg.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>assert<wbr />Arg</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.arrayRemove.html"
+                  >arrayRemove</a
+                ><a
+                  href="#arrayremove"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="assert">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.assertArgFn.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>assert<wbr />Arg<wbr />Fn</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.assert.html">assert</a
+                ><a
+                  href="#assert"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="assertarg">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.assertArg.html">assertArg</a
+                ><a
+                  href="#assertarg"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="assertargfn">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
+                >
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.assertArgFn.html"
+                  >assertArgFn</a
+                ><a
+                  href="#assertargfn"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="assertnothasownproperty">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
+                >
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a
                   href="../functions/shared_utils.assertNotHasOwnProperty.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span
-                    >assert<wbr />Not<wbr />Has<wbr />Own<wbr />Property</span
-                  ></a
+                  >assertNotHasOwnProperty</a
+                ><a
+                  href="#assertnothasownproperty"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="baseextend">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.baseExtend.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>base<wbr />Extend</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.baseExtend.html"
+                  >baseExtend</a
+                ><a
+                  href="#baseextend"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="bind">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.bind.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>bind</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.bind.html">bind</a
+                ><a href="#bind" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="concat">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.concat.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>concat</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.concat.html">concat</a
+                ><a
+                  href="#concat"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="converttimezonetolocal">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.convertTimezoneToLocal.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>convert<wbr />Timezone<wbr />To<wbr />Local</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.convertTimezoneToLocal.html"
+                  >convertTimezoneToLocal</a
+                ><a
+                  href="#converttimezonetolocal"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="csp">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.csp.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>csp</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.csp.html">csp</a
+                ><a href="#csp" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="directivenormalize">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.directiveNormalize.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>directive<wbr />Normalize</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.directiveNormalize.html"
+                  >directiveNormalize</a
+                ><a
+                  href="#directivenormalize"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="encodeuriquery">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.encodeUriQuery.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>encode<wbr />Uri<wbr />Query</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.encodeUriQuery.html"
+                  >encodeUriQuery</a
+                ><a
+                  href="#encodeuriquery"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="encodeurisegment">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.encodeUriSegment.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>encode<wbr />Uri<wbr />Segment</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.encodeUriSegment.html"
+                  >encodeUriSegment</a
+                ><a
+                  href="#encodeurisegment"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="equals">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.equals.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>equals</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.equals.html">equals</a
+                ><a
+                  href="#equals"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="errorhandlingconfig-1">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.errorHandlingConfig-1.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>error<wbr />Handling<wbr />Config</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.errorHandlingConfig.html"
+                  >errorHandlingConfig</a
+                ><a
+                  href="#errorhandlingconfig-1"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="extend">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.extend.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>extend</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.extend.html">extend</a
+                ><a
+                  href="#extend"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="fromjson">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.forEach.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>for<wbr />Each</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.fromJson.html">fromJson</a
+                ><a
+                  href="#fromjson"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="getngattribute">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.fromJson.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>from<wbr />Json</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.getNgAttribute.html"
+                  >getNgAttribute</a
+                ><a
+                  href="#getngattribute"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="getnodename">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.getNgAttribute.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>get<wbr />Ng<wbr />Attribute</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.getNodeName.html"
+                  >getNodeName</a
+                ><a
+                  href="#getnodename"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="hasanimate">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.getNodeName.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>get<wbr />Node<wbr />Name</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.hasAnimate.html"
+                  >hasAnimate</a
+                ><a
+                  href="#hasanimate"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="hascustomtostring">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.hasAnimate.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>has<wbr />Animate</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.hasCustomToString.html"
+                  >hasCustomToString</a
+                ><a
+                  href="#hascustomtostring"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="hashkey">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.hasCustomToString.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>has<wbr />Custom<wbr />To<wbr />String</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.hashKey.html">hashKey</a
+                ><a
+                  href="#hashkey"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="includes">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.hashKey.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>hash<wbr />Key</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.includes.html">includes</a
+                ><a
+                  href="#includes"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="inherit">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.includes.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>includes</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.inherit.html">inherit</a
+                ><a
+                  href="#inherit"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isarraybuffer">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.inherit.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>inherit</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isArrayBuffer.html"
+                  >isArrayBuffer</a
+                ><a
+                  href="#isarraybuffer"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isarraylike">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isArrayBuffer.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Array<wbr />Buffer</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isArrayLike.html"
+                  >isArrayLike</a
+                ><a
+                  href="#isarraylike"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isblankobject">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isArrayLike.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Array<wbr />Like</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isBlankObject.html"
+                  >isBlankObject</a
+                ><a
+                  href="#isblankobject"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isblob">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isBlankObject.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Blank<wbr />Object</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isBlob.html">isBlob</a
+                ><a
+                  href="#isblob"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isboolean">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isBlob.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Blob</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isBoolean.html">isBoolean</a
+                ><a
+                  href="#isboolean"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isdate">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isBoolean.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Boolean</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isDate.html">isDate</a
+                ><a
+                  href="#isdate"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isdefined">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isDate.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Date</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isDefined.html">isDefined</a
+                ><a
+                  href="#isdefined"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="iselement">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isDefined.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Defined</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isElement.html">isElement</a
+                ><a
+                  href="#iselement"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="iserror">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isElement.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Element</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isError.html">isError</a
+                ><a
+                  href="#iserror"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isfile">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isError.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Error</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isFile.html">isFile</a
+                ><a
+                  href="#isfile"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isformdata">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isFile.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />File</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isFormData.html"
+                  >isFormData</a
+                ><a
+                  href="#isformdata"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isfunction">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isFormData.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Form<wbr />Data</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isFunction.html"
+                  >isFunction</a
+                ><a
+                  href="#isfunction"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isnull">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isFunction.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Function</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isNull.html">isNull</a
+                ><a
+                  href="#isnull"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isnullorundefined">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isNumber.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Number</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isNullOrUndefined.html"
+                  >isNullOrUndefined</a
+                ><a
+                  href="#isnullorundefined"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isnumber">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isNumberNaN.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Number<wbr />NaN</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isNumber.html">isNumber</a
+                ><a
+                  href="#isnumber"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isnumbernan">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isObject.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Object</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isNumberNaN.html"
+                  >isNumberNaN</a
+                ><a
+                  href="#isnumbernan"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isobject">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isPromiseLike.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Promise<wbr />Like</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isObject.html">isObject</a
+                ><a
+                  href="#isobject"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isobjectempty">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isRegExp.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Reg<wbr />Exp</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isObjectEmpty.html"
+                  >isObjectEmpty</a
+                ><a
+                  href="#isobjectempty"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="ispromiselike">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isScope.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Scope</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isPromiseLike.html"
+                  >isPromiseLike</a
+                ><a
+                  href="#ispromiselike"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isproxy">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isString.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />String</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isProxy.html">isProxy</a
+                ><a
+                  href="#isproxy"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isregexp">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isTypedArray.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Typed<wbr />Array</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isRegExp.html">isRegExp</a
+                ><a
+                  href="#isregexp"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isscope">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isUndefined.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Undefined</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isScope.html">isScope</a
+                ><a
+                  href="#isscope"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isstring">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isValidObjectMaxDepth.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span
-                    >is<wbr />Valid<wbr />Object<wbr />Max<wbr />Depth</span
-                  ></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isString.html">isString</a
+                ><a
+                  href="#isstring"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="istypedarray">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.isWindow.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>is<wbr />Window</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isTypedArray.html"
+                  >isTypedArray</a
+                ><a
+                  href="#istypedarray"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isundefined">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.lowercase.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>lowercase</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isUndefined.html"
+                  >isUndefined</a
+                ><a
+                  href="#isundefined"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="isvalidobjectmaxdepth">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isValidObjectMaxDepth.html"
+                  >isValidObjectMaxDepth</a
+                ><a
+                  href="#isvalidobjectmaxdepth"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="iswindow">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
+                >
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.isWindow.html">isWindow</a
+                ><a
+                  href="#iswindow"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="lowercase">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
+                >
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.lowercase.html">lowercase</a
+                ><a
+                  href="#lowercase"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="merge">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
+                >
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a
+                  class="deprecated"
                   href="../functions/shared_utils.merge.html"
-                  class="tsd-index-link deprecated"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>merge</span></a
+                  >merge</a
+                ><a href="#merge" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="mergeclasses">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.mergeClasses.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>merge<wbr />Classes</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.mergeClasses.html"
+                  >mergeClasses</a
+                ><a
+                  href="#mergeclasses"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="minerr">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.minErr.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>min<wbr />Err</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.minErr.html">minErr</a
+                ><a
+                  href="#minerr"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="nextuid">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.nextUid.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>next<wbr />Uid</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.nextUid.html">nextUid</a
+                ><a
+                  href="#nextuid"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="parsekeyvalue">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.parseKeyValue.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>parse<wbr />Key<wbr />Value</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.parseKeyValue.html"
+                  >parseKeyValue</a
+                ><a
+                  href="#parsekeyvalue"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="replaceinline">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.reverseParams.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>reverse<wbr />Params</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.replaceInline.html"
+                  >replaceInline</a
+                ><a
+                  href="#replaceinline"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="sethashkey">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.setHashKey.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>set<wbr />Hash<wbr />Key</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.setHashKey.html"
+                  >setHashKey</a
+                ><a
+                  href="#sethashkey"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="shallowcopy">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.shallowCopy.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>shallow<wbr />Copy</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.shallowCopy.html"
+                  >shallowCopy</a
+                ><a
+                  href="#shallowcopy"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="simplecompare">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.simpleCompare.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>simple<wbr />Compare</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.simpleCompare.html"
+                  >simpleCompare</a
+                ><a
+                  href="#simplecompare"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="sliceargs">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.sliceArgs.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>slice<wbr />Args</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.sliceArgs.html">sliceArgs</a
+                ><a
+                  href="#sliceargs"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="snakecase">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.snakeCase.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>snake<wbr />Case</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.snakeCase.html">snakeCase</a
+                ><a
+                  href="#snakecase"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="stringify">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.stringify.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>stringify</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.stringify.html">stringify</a
+                ><a
+                  href="#stringify"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="timezonetooffset">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.timezoneToOffset.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>timezone<wbr />To<wbr />Offset</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.timezoneToOffset.html"
+                  >timezoneToOffset</a
+                ><a
+                  href="#timezonetooffset"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="todebugstring">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.toDebugString.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>to<wbr />Debug<wbr />String</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.toDebugString.html"
+                  >toDebugString</a
+                ><a
+                  href="#todebugstring"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="toint">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.toInt.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>to<wbr />Int</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.toInt.html">toInt</a
+                ><a href="#toint" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="tojson">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.toJson.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>to<wbr />Json</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.toJson.html">toJson</a
+                ><a
+                  href="#tojson"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="tokeyvalue">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.toKeyValue.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>to<wbr />Key<wbr />Value</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.toKeyValue.html"
+                  >toKeyValue</a
+                ><a
+                  href="#tokeyvalue"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="trim">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.trim.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>trim</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.trim.html">trim</a
+                ><a href="#trim" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="trydecodeuricomponent">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.tryDecodeURIComponent.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>try<wbr />DecodeURIComponent</span></a
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.tryDecodeURIComponent.html"
+                  >tryDecodeURIComponent</a
+                ><a
+                  href="#trydecodeuricomponent"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+            <dt class="tsd-member-summary" id="uppercase">
+              <span class="tsd-member-summary-name"
+                ><svg
+                  class="tsd-kind-icon"
+                  viewBox="0 0 24 24"
+                  aria-label="Function"
                 >
-                <a
-                  href="../functions/shared_utils.uppercase.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>uppercase</span></a
-                >
-                <a
-                  href="../functions/shared_utils.valueFn.html"
-                  class="tsd-index-link"
-                  ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-64"></use></svg
-                  ><span>value<wbr />Fn</span></a
-                >
-              </div>
-            </section>
-          </section>
-        </section>
+                  <use href="../assets/icons.svg#icon-64"></use></svg
+                ><a href="../functions/shared_utils.uppercase.html">uppercase</a
+                ><a
+                  href="#uppercase"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg></a
+              ></span>
+            </dt>
+            <dd class="tsd-member-summary"></dd>
+          </dl>
+        </details>
       </div>
       <div class="col-sidebar">
         <div class="page-menu">
           <div class="tsd-navigation settings">
             <details class="tsd-accordion">
               <summary class="tsd-accordion-summary">
-                <h3>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
-                  >Settings
-                </h3>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <use href="../assets/icons.svg#icon-chevronDown"></use>
+                </svg>
+                <h3>Settings</h3>
               </summary>
               <div class="tsd-accordion-details">
                 <div class="tsd-filter-visibility">
@@ -738,19 +1666,696 @@
               </div>
             </details>
           </div>
+          <details open class="tsd-accordion tsd-page-navigation">
+            <summary class="tsd-accordion-summary">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <use href="../assets/icons.svg#icon-chevronDown"></use>
+              </svg>
+              <h3>On This Page</h3>
+            </summary>
+            <div class="tsd-accordion-details">
+              <details open class="tsd-accordion tsd-page-navigation-section">
+                <summary
+                  class="tsd-accordion-summary"
+                  data-key="section-Interfaces"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
+                  >Interfaces
+                </summary>
+                <div>
+                  <a href="#errorhandlingconfig"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Interface"
+                    >
+                      <use href="../assets/icons.svg#icon-256"></use></svg
+                    ><span>Error<wbr />Handling<wbr />Config</span></a
+                  >
+                </div>
+              </details>
+              <details open class="tsd-accordion tsd-page-navigation-section">
+                <summary
+                  class="tsd-accordion-summary"
+                  data-key="section-Variables"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
+                  >Variables
+                </summary>
+                <div>
+                  <a href="#isproxysymbol"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Variable"
+                    >
+                      <use href="../assets/icons.svg#icon-32"></use></svg
+                    ><span>is<wbr />Proxy<wbr />Symbol</span></a
+                  ><a href="#ngattrprefixes"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Variable"
+                    >
+                      <use href="../assets/icons.svg#icon-32"></use></svg
+                    ><span>ng<wbr />Attr<wbr />Prefixes</span></a
+                  >
+                </div>
+              </details>
+              <details open class="tsd-accordion tsd-page-navigation-section">
+                <summary
+                  class="tsd-accordion-summary"
+                  data-key="section-Functions"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
+                  >Functions
+                </summary>
+                <div>
+                  <a href="#adddateminutes"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>add<wbr />Date<wbr />Minutes</span></a
+                  ><a href="#arrayremove"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>array<wbr />Remove</span></a
+                  ><a href="#assert"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>assert</span></a
+                  ><a href="#assertarg"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>assert<wbr />Arg</span></a
+                  ><a href="#assertargfn"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>assert<wbr />Arg<wbr />Fn</span></a
+                  ><a href="#assertnothasownproperty"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span
+                      >assert<wbr />Not<wbr />Has<wbr />Own<wbr />Property</span
+                    ></a
+                  ><a href="#baseextend"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>base<wbr />Extend</span></a
+                  ><a href="#bind"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>bind</span></a
+                  ><a href="#concat"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>concat</span></a
+                  ><a href="#converttimezonetolocal"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>convert<wbr />Timezone<wbr />To<wbr />Local</span></a
+                  ><a href="#csp"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>csp</span></a
+                  ><a href="#directivenormalize"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>directive<wbr />Normalize</span></a
+                  ><a href="#encodeuriquery"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>encode<wbr />Uri<wbr />Query</span></a
+                  ><a href="#encodeurisegment"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>encode<wbr />Uri<wbr />Segment</span></a
+                  ><a href="#equals"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>equals</span></a
+                  ><a href="#errorhandlingconfig-1"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>error<wbr />Handling<wbr />Config</span></a
+                  ><a href="#extend"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>extend</span></a
+                  ><a href="#fromjson"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>from<wbr />Json</span></a
+                  ><a href="#getngattribute"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>get<wbr />Ng<wbr />Attribute</span></a
+                  ><a href="#getnodename"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>get<wbr />Node<wbr />Name</span></a
+                  ><a href="#hasanimate"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>has<wbr />Animate</span></a
+                  ><a href="#hascustomtostring"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>has<wbr />Custom<wbr />To<wbr />String</span></a
+                  ><a href="#hashkey"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>hash<wbr />Key</span></a
+                  ><a href="#includes"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>includes</span></a
+                  ><a href="#inherit"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>inherit</span></a
+                  ><a href="#isarraybuffer"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Array<wbr />Buffer</span></a
+                  ><a href="#isarraylike"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Array<wbr />Like</span></a
+                  ><a href="#isblankobject"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Blank<wbr />Object</span></a
+                  ><a href="#isblob"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Blob</span></a
+                  ><a href="#isboolean"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Boolean</span></a
+                  ><a href="#isdate"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Date</span></a
+                  ><a href="#isdefined"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Defined</span></a
+                  ><a href="#iselement"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Element</span></a
+                  ><a href="#iserror"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Error</span></a
+                  ><a href="#isfile"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />File</span></a
+                  ><a href="#isformdata"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Form<wbr />Data</span></a
+                  ><a href="#isfunction"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Function</span></a
+                  ><a href="#isnull"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Null</span></a
+                  ><a href="#isnullorundefined"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Null<wbr />Or<wbr />Undefined</span></a
+                  ><a href="#isnumber"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Number</span></a
+                  ><a href="#isnumbernan"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Number<wbr />Na<wbr />N</span></a
+                  ><a href="#isobject"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Object</span></a
+                  ><a href="#isobjectempty"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Object<wbr />Empty</span></a
+                  ><a href="#ispromiselike"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Promise<wbr />Like</span></a
+                  ><a href="#isproxy"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Proxy</span></a
+                  ><a href="#isregexp"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Reg<wbr />Exp</span></a
+                  ><a href="#isscope"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Scope</span></a
+                  ><a href="#isstring"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />String</span></a
+                  ><a href="#istypedarray"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Typed<wbr />Array</span></a
+                  ><a href="#isundefined"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Undefined</span></a
+                  ><a href="#isvalidobjectmaxdepth"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span
+                      >is<wbr />Valid<wbr />Object<wbr />Max<wbr />Depth</span
+                    ></a
+                  ><a href="#iswindow"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>is<wbr />Window</span></a
+                  ><a href="#lowercase"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>lowercase</span></a
+                  ><a href="#merge"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>merge</span></a
+                  ><a href="#mergeclasses"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>merge<wbr />Classes</span></a
+                  ><a href="#minerr"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>min<wbr />Err</span></a
+                  ><a href="#nextuid"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>next<wbr />Uid</span></a
+                  ><a href="#parsekeyvalue"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>parse<wbr />Key<wbr />Value</span></a
+                  ><a href="#replaceinline"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>replace<wbr />Inline</span></a
+                  ><a href="#sethashkey"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>set<wbr />Hash<wbr />Key</span></a
+                  ><a href="#shallowcopy"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>shallow<wbr />Copy</span></a
+                  ><a href="#simplecompare"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>simple<wbr />Compare</span></a
+                  ><a href="#sliceargs"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>slice<wbr />Args</span></a
+                  ><a href="#snakecase"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>snake<wbr />Case</span></a
+                  ><a href="#stringify"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>stringify</span></a
+                  ><a href="#timezonetooffset"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>timezone<wbr />To<wbr />Offset</span></a
+                  ><a href="#todebugstring"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>to<wbr />Debug<wbr />String</span></a
+                  ><a href="#toint"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>to<wbr />Int</span></a
+                  ><a href="#tojson"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>to<wbr />Json</span></a
+                  ><a href="#tokeyvalue"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>to<wbr />Key<wbr />Value</span></a
+                  ><a href="#trim"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>trim</span></a
+                  ><a href="#trydecodeuricomponent"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>try<wbr />Decode<wbr />URI<wbr />Component</span></a
+                  ><a href="#uppercase"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Function"
+                    >
+                      <use href="../assets/icons.svg#icon-64"></use></svg
+                    ><span>uppercase</span></a
+                  >
+                </div>
+              </details>
+            </div>
+          </details>
         </div>
         <div class="site-menu">
           <nav class="tsd-navigation">
-            <a href="../index.html"
-              ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                <use href="../assets/icons.svg#icon-1"></use></svg
-              ><span>@angular-wave/angular.ts</span></a
-            >
-            <ul
-              class="tsd-small-nested-navigation"
-              id="tsd-nav-container"
-              data-base=".."
-            >
+            <a href="../modules.html">@angular-wave/angular.ts</a>
+            <ul class="tsd-small-nested-navigation" id="tsd-nav-container">
               <li>Loading...</li>
             </ul>
           </nav>

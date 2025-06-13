@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="default" lang="en">
+<html class="default" lang="en" data-base="../">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
@@ -15,6 +15,11 @@
     <script async src="../assets/icons.js" id="tsd-icons-script"></script>
     <script async src="../assets/search.js" id="tsd-search-script"></script>
     <script async src="../assets/navigation.js" id="tsd-nav-script"></script>
+    <script
+      async
+      src="../assets/hierarchy.js"
+      id="tsd-hierarchy-script"
+    ></script>
   </head>
   <body>
     <script>
@@ -23,53 +28,71 @@
       document.body.style.display = "none";
       setTimeout(
         () =>
-          app ? app.showPage() : document.body.style.removeProperty("display"),
+          window.app
+            ? app.showPage()
+            : document.body.style.removeProperty("display"),
         500,
       );
     </script>
     <header class="tsd-page-toolbar">
       <div class="tsd-toolbar-contents container">
-        <div class="table-cell" id="tsd-search" data-base="..">
-          <div class="field">
-            <label
-              for="tsd-search-field"
-              class="tsd-widget tsd-toolbar-icon search no-caption"
-              ><svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <use href="../assets/icons.svg#icon-search"></use></svg></label
-            ><input type="text" id="tsd-search-field" aria-label="Search" />
+        <a href="../index.html" class="title">@angular-wave/angular.ts</a>
+        <div id="tsd-toolbar-links"></div>
+        <button id="tsd-search-trigger" class="tsd-widget" aria-label="Search">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <use href="../assets/icons.svg#icon-search"></use>
+          </svg>
+        </button>
+        <dialog id="tsd-search" aria-label="Search">
+          <input
+            role="combobox"
+            id="tsd-search-input"
+            aria-controls="tsd-search-results"
+            aria-autocomplete="list"
+            aria-expanded="true"
+            autocapitalize="off"
+            autocomplete="off"
+            placeholder="Search the docs"
+            maxlength="100"
+          />
+          <ul role="listbox" id="tsd-search-results"></ul>
+          <div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+            <div>Preparing search index...</div>
           </div>
-          <div class="field"><div id="tsd-toolbar-links"></div></div>
-          <ul class="results">
-            <li class="state loading">Preparing search index...</li>
-            <li class="state failure">The search index is not available</li>
-          </ul>
-          <a href="../index.html" class="title">@angular-wave/angular.ts</a>
-        </div>
-        <div class="table-cell" id="tsd-widgets">
-          <a
-            href="#"
-            class="tsd-widget tsd-toolbar-icon menu no-caption"
-            data-toggle="menu"
-            aria-label="Menu"
-            ><svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <use href="../assets/icons.svg#icon-menu"></use></svg
-          ></a>
-        </div>
+        </dialog>
+        <a
+          href="#"
+          class="tsd-widget menu"
+          id="tsd-toolbar-menu-trigger"
+          data-toggle="menu"
+          aria-label="Menu"
+          ><svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <use href="../assets/icons.svg#icon-menu"></use></svg
+        ></a>
       </div>
     </header>
     <div class="container container-main">
       <div class="col-content">
         <div class="tsd-page-title">
-          <ul class="tsd-breadcrumb">
-            <li><a href="../index.html">@angular-wave/angular.ts</a></li>
+          <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
             <li>
               <a href="../modules/core_compile_attributes.html"
                 >core/compile/attributes</a
               >
             </li>
-            <li>
-              <a href="core_compile_attributes.Attributes.html">Attributes</a>
-            </li>
+            <li><a href="" aria-current="page">Attributes</a></li>
           </ul>
           <h1>Class Attributes</h1>
         </div>
@@ -78,8 +101,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L26"
-                >core/compile/attributes.js:26</a
+                href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L19"
+                >core/compile/attributes.js:19</a
               >
             </li>
           </ul>
@@ -88,26 +111,27 @@
           <section class="tsd-panel tsd-index-panel">
             <details class="tsd-index-content tsd-accordion" open>
               <summary class="tsd-accordion-summary tsd-index-summary">
-                <h5
-                  class="tsd-index-heading uppercase"
-                  role="button"
-                  aria-expanded="false"
-                  tabindex="0"
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
                 >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <use href="../assets/icons.svg#icon-chevronSmall"></use>
-                  </svg>
-                  Index
-                </h5>
+                  <use href="../assets/icons.svg#icon-chevronDown"></use>
+                </svg>
+                <h5 class="tsd-index-heading uppercase">Index</h5>
               </summary>
               <div class="tsd-accordion-details">
                 <section class="tsd-index-section">
                   <h3 class="tsd-index-heading">Constructors</h3>
                   <div class="tsd-index-list">
-                    <a
-                      href="core_compile_attributes.Attributes.html#constructor"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#constructor" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Constructor"
+                      >
                         <use href="../assets/icons.svg#icon-512"></use></svg
                       ><span>constructor</span></a
                     >
@@ -116,120 +140,175 @@
                 <section class="tsd-index-section">
                   <h3 class="tsd-index-heading">Properties</h3>
                   <div class="tsd-index-list">
-                    <a
-                      href="core_compile_attributes.Attributes.html#__element"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                        <use href="../assets/icons.svg#icon-1024"></use></svg
-                      ><span>$$element</span></a
-                    >
-                    <a
-                      href="core_compile_attributes.Attributes.html#__observers"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#observers" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
                         <use href="../assets/icons.svg#icon-1024"></use></svg
                       ><span>$$observers</span></a
                     >
-                    <a
-                      href="core_compile_attributes.Attributes.html#_animate"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#animate" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
                         <use href="../assets/icons.svg#icon-1024"></use></svg
                       ><span>$animate</span></a
                     >
-                    <a
-                      href="core_compile_attributes.Attributes.html#_attr"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#attr" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
                         <use href="../assets/icons.svg#icon-1024"></use></svg
                       ><span>$attr</span></a
                     >
-                    <a
-                      href="core_compile_attributes.Attributes.html#_exceptionHandler"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#exceptionhandler" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
                         <use href="../assets/icons.svg#icon-1024"></use></svg
                       ><span>$exception<wbr />Handler</span></a
                     >
-                    <a
-                      href="core_compile_attributes.Attributes.html#_normalize"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#noderef" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
+                        <use href="../assets/icons.svg#icon-1024"></use></svg
+                      ><span>$node<wbr />Ref</span></a
+                    >
+                    <a href="#normalize" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
                         <use href="../assets/icons.svg#icon-1024"></use></svg
                       ><span>$normalize</span></a
                     >
-                    <a
-                      href="core_compile_attributes.Attributes.html#_rootScope"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#rootscope" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
                         <use href="../assets/icons.svg#icon-1024"></use></svg
                       ><span>$root<wbr />Scope</span></a
                     >
-                    <a
-                      href="core_compile_attributes.Attributes.html#_sce"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#sce" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
                         <use href="../assets/icons.svg#icon-1024"></use></svg
                       ><span>$sce</span></a
                     >
-                    <a
-                      href="core_compile_attributes.Attributes.html#srcset"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#srcset" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
                         <use href="../assets/icons.svg#icon-1024"></use></svg
                       ><span>srcset</span></a
+                    >
+                    <a href="#nonscope" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
+                        <use href="../assets/icons.svg#icon-1024"></use></svg
+                      ><span>$nonscope</span></a
+                    >
+                  </div>
+                </section>
+                <section class="tsd-index-section">
+                  <h3 class="tsd-index-heading">Accessors</h3>
+                  <div class="tsd-index-list">
+                    <a href="#element" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Accessor"
+                      >
+                        <use href="../assets/icons.svg#icon-262144"></use></svg
+                      ><span>$$element</span></a
                     >
                   </div>
                 </section>
                 <section class="tsd-index-section">
                   <h3 class="tsd-index-heading">Methods</h3>
                   <div class="tsd-index-list">
-                    <a
-                      href="core_compile_attributes.Attributes.html#_addClass"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#addclass" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
                         <use href="../assets/icons.svg#icon-2048"></use></svg
                       ><span>$add<wbr />Class</span></a
                     >
-                    <a
-                      href="core_compile_attributes.Attributes.html#_observe"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#observe" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
                         <use href="../assets/icons.svg#icon-2048"></use></svg
                       ><span>$observe</span></a
                     >
-                    <a
-                      href="core_compile_attributes.Attributes.html#_removeClass"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#removeclass" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
                         <use href="../assets/icons.svg#icon-2048"></use></svg
                       ><span>$remove<wbr />Class</span></a
                     >
-                    <a
-                      href="core_compile_attributes.Attributes.html#_set"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#set" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
                         <use href="../assets/icons.svg#icon-2048"></use></svg
                       ><span>$set</span></a
                     >
-                    <a
-                      href="core_compile_attributes.Attributes.html#_updateClass"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#updateclass" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
                         <use href="../assets/icons.svg#icon-2048"></use></svg
                       ><span>$update<wbr />Class</span></a
                     >
-                    <a
-                      href="core_compile_attributes.Attributes.html#sanitizeSrcset"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#sanitizesrcset" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
                         <use href="../assets/icons.svg#icon-2048"></use></svg
                       ><span>sanitize<wbr />Srcset</span></a
                     >
-                    <a
-                      href="core_compile_attributes.Attributes.html#setSpecialAttr"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#setspecialattr" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
                         <use href="../assets/icons.svg#icon-2048"></use></svg
                       ><span>set<wbr />Special<wbr />Attr</span></a
                     >
@@ -244,130 +323,175 @@
             class="tsd-accordion-summary"
             data-key="section-Constructors"
           >
-            <h2>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <use href="../assets/icons.svg#icon-chevronDown"></use>
-              </svg>
-              Constructors
-            </h2>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Constructors</h2>
           </summary>
           <section>
             <section class="tsd-panel tsd-member">
-              <a id="constructor" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
+              <h3 class="tsd-anchor-link" id="constructor">
                 <span>constructor</span
                 ><a
                   href="#constructor"
                   aria-label="Permalink"
                   class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
               <ul class="tsd-signatures">
-                <li class="tsd-signature tsd-anchor-link">
-                  <a id="constructor.new_Attributes" class="tsd-anchor"></a
-                  ><span class="tsd-kind-constructor-signature"
-                    >new <wbr />Attributes</span
-                  ><span class="tsd-signature-symbol">(</span
-                  ><span class="tsd-kind-parameter">$rootScope</span>,
-                  <span class="tsd-kind-parameter">$animate</span>,
-                  <span class="tsd-kind-parameter">$exceptionHandler</span>,
-                  <span class="tsd-kind-parameter">$sce</span>,
-                  <span class="tsd-kind-parameter">element</span
-                  ><span class="tsd-signature-symbol">?</span>,
-                  <span class="tsd-kind-parameter">attributesToCopy</span
-                  ><span class="tsd-signature-symbol">?</span
-                  ><span class="tsd-signature-symbol">)</span
-                  ><span class="tsd-signature-symbol">: </span
-                  ><a
-                    href="core_compile_attributes.Attributes.html"
-                    class="tsd-signature-type tsd-kind-class"
-                    >Attributes</a
-                  ><a
-                    href="#constructor.new_Attributes"
-                    aria-label="Permalink"
-                    class="tsd-anchor-icon"
-                    ><svg viewBox="0 0 24 24">
-                      <use href="../assets/icons.svg#icon-anchor"></use></svg
-                  ></a>
-                </li>
-                <li class="tsd-description">
-                  <div class="tsd-parameters">
-                    <h4 class="tsd-parameters-title">Parameters</h4>
-                    <ul class="tsd-parameter-list">
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">$rootScope</span>:
-                          <a
-                            href="core_scope_scope.Scope.html"
-                            class="tsd-signature-type tsd-kind-class"
-                            >Scope</a
-                          ></span
-                        >
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">$animate</span>:
-                          <span class="tsd-signature-type">any</span></span
-                        >
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter"
-                            >$exceptionHandler</span
-                          >: <span class="tsd-signature-type">any</span></span
-                        >
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">$sce</span>:
-                          <span class="tsd-signature-type">any</span></span
-                        >
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                      <li>
-                        <span
-                          ><code class="tsd-tag">Optional</code
-                          ><span class="tsd-kind-parameter">element</span>:
-                          <span class="tsd-signature-type">JQLite</span></span
-                        >
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                      <li>
-                        <span
-                          ><code class="tsd-tag">Optional</code
-                          ><span class="tsd-kind-parameter"
-                            >attributesToCopy</span
-                          >: <span class="tsd-signature-type">any</span></span
-                        >
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                    </ul>
-                  </div>
-                  <h4 class="tsd-returns-title">
-                    Returns
+                <li class="">
+                  <div
+                    class="tsd-signature tsd-anchor-link"
+                    id="constructorattributes"
+                  >
+                    <span class="tsd-signature-keyword">new</span>
+                    <span class="tsd-kind-constructor-signature"
+                      >Attributes</span
+                    ><span class="tsd-signature-symbol">(</span><br />    <span
+                      class="tsd-kind-parameter"
+                      >$rootScope</span
+                    ><span class="tsd-signature-symbol">:</span>
                     <a
-                      href="core_compile_attributes.Attributes.html"
+                      href="core_scope_scope.Scope.html"
                       class="tsd-signature-type tsd-kind-class"
+                      >Scope</a
+                    ><span class="tsd-signature-symbol">,</span><br />    <span
+                      class="tsd-kind-parameter"
+                      >$animate</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">any</span
+                    ><span class="tsd-signature-symbol">,</span><br />    <span
+                      class="tsd-kind-parameter"
+                      >$exceptionHandler</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <a
+                      href="../types/core_exception-handler.ErrorHandler.html"
+                      class="tsd-signature-type tsd-kind-type-alias"
+                      >ErrorHandler</a
+                    ><span class="tsd-signature-symbol">,</span><br />    <span
+                      class="tsd-kind-parameter"
+                      >$sce</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">any</span
+                    ><span class="tsd-signature-symbol">,</span><br />    <span
+                      class="tsd-kind-parameter"
+                      >nodeRef</span
+                    ><span class="tsd-signature-symbol">?:</span>
+                    <a
+                      href="shared_noderef.NodeRef.html"
+                      class="tsd-signature-type tsd-kind-class"
+                      >NodeRef</a
+                    ><span class="tsd-signature-symbol">,</span><br />    <span
+                      class="tsd-kind-parameter"
+                      >attributesToCopy</span
+                    ><span class="tsd-signature-symbol">?:</span>
+                    <span class="tsd-signature-type">any</span
+                    ><span class="tsd-signature-symbol">,</span><br /><span
+                      class="tsd-signature-symbol"
+                      >)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <a href="" class="tsd-signature-type tsd-kind-class"
                       >Attributes</a
-                    >
-                  </h4>
-                  <div class="tsd-comment tsd-typography"></div>
-                  <aside class="tsd-sources">
-                    <ul>
-                      <li>
-                        Defined in
-                        <a
-                          href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L35"
-                          >core/compile/attributes.js:35</a
-                        >
-                      </li>
-                    </ul>
-                  </aside>
+                    ><a
+                      href="#constructorattributes"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">$rootScope</span>:
+                            <a
+                              href="core_scope_scope.Scope.html"
+                              class="tsd-signature-type tsd-kind-class"
+                              >Scope</a
+                            ></span
+                          >
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">$animate</span>:
+                            <span class="tsd-signature-type">any</span></span
+                          >
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter"
+                              >$exceptionHandler</span
+                            >:
+                            <a
+                              href="../types/core_exception-handler.ErrorHandler.html"
+                              class="tsd-signature-type tsd-kind-type-alias"
+                              >ErrorHandler</a
+                            ></span
+                          >
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">$sce</span>:
+                            <span class="tsd-signature-type">any</span></span
+                          >
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                        <li>
+                          <span
+                            ><code class="tsd-tag">Optional</code
+                            ><span class="tsd-kind-parameter">nodeRef</span>:
+                            <a
+                              href="shared_noderef.NodeRef.html"
+                              class="tsd-signature-type tsd-kind-class"
+                              >NodeRef</a
+                            ></span
+                          >
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                        <li>
+                          <span
+                            ><code class="tsd-tag">Optional</code
+                            ><span class="tsd-kind-parameter"
+                              >attributesToCopy</span
+                            >: <span class="tsd-signature-type">any</span></span
+                          >
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns
+                      <a href="" class="tsd-signature-type tsd-kind-class"
+                        >Attributes</a
+                      >
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L30"
+                            >core/compile/attributes.js:30</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
                 </li>
               </ul>
             </section>
@@ -375,52 +499,26 @@
         </details>
         <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
           <summary class="tsd-accordion-summary" data-key="section-Properties">
-            <h2>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <use href="../assets/icons.svg#icon-chevronDown"></use>
-              </svg>
-              Properties
-            </h2>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Properties</h2>
           </summary>
           <section>
             <section class="tsd-panel tsd-member">
-              <a id="__element" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
-                <span>$$element</span
-                ><a
-                  href="#__element"
-                  aria-label="Permalink"
-                  class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <div class="tsd-signature">
-                <span class="tsd-kind-property">$$element</span
-                ><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">JQLite</span>
-              </div>
-              <aside class="tsd-sources">
-                <ul>
-                  <li>
-                    Defined in
-                    <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L56"
-                      >core/compile/attributes.js:56</a
-                    >
-                  </li>
-                </ul>
-              </aside>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <a id="__observers" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
+              <h3 class="tsd-anchor-link" id="observers">
                 <span>$$observers</span
                 ><a
-                  href="#__observers"
+                  href="#observers"
                   aria-label="Permalink"
                   class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
@@ -434,22 +532,21 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L209"
-                      >core/compile/attributes.js:209</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L233"
+                      >core/compile/attributes.js:233</a
                     >
                   </li>
                 </ul>
               </aside>
             </section>
             <section class="tsd-panel tsd-member">
-              <a id="_animate" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
+              <h3 class="tsd-anchor-link" id="animate">
                 <span>$animate</span
                 ><a
-                  href="#_animate"
+                  href="#animate"
                   aria-label="Permalink"
                   class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
@@ -463,19 +560,18 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L44"
-                      >core/compile/attributes.js:44</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L39"
+                      >core/compile/attributes.js:39</a
                     >
                   </li>
                 </ul>
               </aside>
             </section>
             <section class="tsd-panel tsd-member">
-              <a id="_attr" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
+              <h3 class="tsd-anchor-link" id="attr">
                 <span>$attr</span
-                ><a href="#_attr" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                ><a href="#attr" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
@@ -489,51 +585,86 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L54"
-                      >core/compile/attributes.js:54</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L49"
+                      >core/compile/attributes.js:49</a
                     >
                   </li>
                 </ul>
               </aside>
             </section>
             <section class="tsd-panel tsd-member">
-              <a id="_exceptionHandler" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
+              <h3 class="tsd-anchor-link" id="exceptionhandler">
                 <span>$exception<wbr />Handler</span
                 ><a
-                  href="#_exceptionHandler"
+                  href="#exceptionhandler"
                   aria-label="Permalink"
                   class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
               <div class="tsd-signature">
-                <span class="tsd-kind-property">$exception<wbr />Handler</span
+                <span class="tsd-kind-property">$exceptionHandler</span
                 ><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">any</span>
+                <a
+                  href="../types/core_exception-handler.ErrorHandler.html"
+                  class="tsd-signature-type tsd-kind-type-alias"
+                  >ErrorHandler</a
+                >
               </div>
               <aside class="tsd-sources">
                 <ul>
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L45"
-                      >core/compile/attributes.js:45</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L40"
+                      >core/compile/attributes.js:40</a
                     >
                   </li>
                 </ul>
               </aside>
             </section>
             <section class="tsd-panel tsd-member">
-              <a id="_normalize" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
-                <span>$normalize</span
+              <h3 class="tsd-anchor-link" id="noderef">
+                <span>$node<wbr />Ref</span
                 ><a
-                  href="#_normalize"
+                  href="#noderef"
                   aria-label="Permalink"
                   class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <div class="tsd-signature">
+                <span class="tsd-kind-property">$nodeRef</span
+                ><span class="tsd-signature-symbol">:</span>
+                <a
+                  href="shared_noderef.NodeRef.html"
+                  class="tsd-signature-type tsd-kind-class"
+                  >NodeRef</a
+                >
+              </div>
+              <div class="tsd-comment tsd-typography"></div>
+              <aside class="tsd-sources">
+                <ul>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L53"
+                      >core/compile/attributes.js:53</a
+                    >
+                  </li>
+                </ul>
+              </aside>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="normalize">
+                <span>$normalize</span
+                ><a
+                  href="#normalize"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
@@ -541,14 +672,12 @@
                 <span class="tsd-kind-property">$normalize</span
                 ><span class="tsd-signature-symbol">:</span>
                 <span class="tsd-signature-symbol">(</span
-                ><span class="tsd-signature-symbol">(</span
                 ><span class="tsd-kind-parameter">name</span
-                ><span class="tsd-signature-symbol">: </span
-                ><span class="tsd-signature-type">string</span
-                ><span class="tsd-signature-symbol">)</span
-                ><span class="tsd-signature-symbol"> =&gt; </span
-                ><span class="tsd-signature-type">string</span
-                ><span class="tsd-signature-symbol">)</span
+                ><span class="tsd-signature-symbol">:</span>
+                <span class="tsd-signature-type">string</span
+                ><span class="tsd-signature-symbol">)</span>
+                <span class="tsd-signature-symbol">=&gt;</span>
+                <span class="tsd-signature-type">string</span
                 ><span class="tsd-signature-symbol"> = directiveNormalize</span>
               </div>
               <div class="tsd-comment tsd-typography">
@@ -572,15 +701,14 @@
                 <ul class="tsd-parameters">
                   <li class="tsd-parameter-signature">
                     <ul class="tsd-signatures">
-                      <li
-                        class="tsd-signature"
-                        id="_normalize.__type-1.__type-2"
-                      >
+                      <li class="tsd-signature">
                         <span class="tsd-signature-symbol">(</span
                         ><span class="tsd-kind-parameter">name</span
+                        ><span class="tsd-signature-symbol">:</span>
+                        <span class="tsd-signature-type">string</span
                         ><span class="tsd-signature-symbol">)</span
-                        ><span class="tsd-signature-symbol">: </span
-                        ><span class="tsd-signature-type">string</span>
+                        ><span class="tsd-signature-symbol">:</span>
+                        <span class="tsd-signature-type">string</span>
                       </li>
                       <li class="tsd-description">
                         <div class="tsd-comment tsd-typography">
@@ -616,43 +744,44 @@
                 </ul>
               </div>
               <div class="tsd-comment tsd-typography">
-                <h4 class="tsd-anchor-link">
-                  <a id="Param: name" class="tsd-anchor"></a>Param: name<a
-                    href="#Param: name"
-                    aria-label="Permalink"
-                    class="tsd-anchor-icon"
-                    ><svg viewBox="0 0 24 24">
-                      <use href="../assets/icons.svg#icon-anchor"></use></svg
-                  ></a>
-                </h4>
-                <p>Name to normalize</p>
+                <div class="tsd-tag-param">
+                  <h4 class="tsd-anchor-link" id="param-name">
+                    Param: name<a
+                      href="#param-name"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </h4>
+                  <p>Name to normalize</p>
+                </div>
               </div>
               <aside class="tsd-sources">
                 <ul>
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L69"
-                      >core/compile/attributes.js:69</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L71"
+                      >core/compile/attributes.js:71</a
                     >
                   </li>
                 </ul>
               </aside>
             </section>
             <section class="tsd-panel tsd-member">
-              <a id="_rootScope" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
+              <h3 class="tsd-anchor-link" id="rootscope">
                 <span>$root<wbr />Scope</span
                 ><a
-                  href="#_rootScope"
+                  href="#rootscope"
                   aria-label="Permalink"
                   class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
               <div class="tsd-signature">
-                <span class="tsd-kind-property">$root<wbr />Scope</span
+                <span class="tsd-kind-property">$rootScope</span
                 ><span class="tsd-signature-symbol">:</span>
                 <a
                   href="core_scope_scope.Scope.html"
@@ -665,19 +794,18 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L43"
-                      >core/compile/attributes.js:43</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L38"
+                      >core/compile/attributes.js:38</a
                     >
                   </li>
                 </ul>
               </aside>
             </section>
             <section class="tsd-panel tsd-member">
-              <a id="_sce" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
+              <h3 class="tsd-anchor-link" id="sce">
                 <span>$sce</span
-                ><a href="#_sce" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                ><a href="#sce" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
@@ -691,22 +819,21 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L46"
-                      >core/compile/attributes.js:46</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L41"
+                      >core/compile/attributes.js:41</a
                     >
                   </li>
                 </ul>
               </aside>
             </section>
             <section class="tsd-panel tsd-member">
-              <a id="srcset" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
+              <h3 class="tsd-anchor-link" id="srcset">
                 <span>srcset</span
                 ><a
                   href="#srcset"
                   aria-label="Permalink"
                   class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
@@ -720,8 +847,37 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L157"
-                      >core/compile/attributes.js:157</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L174"
+                      >core/compile/attributes.js:174</a
+                    >
+                  </li>
+                </ul>
+              </aside>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="nonscope">
+                <code class="tsd-tag">Static</code><span>$nonscope</span
+                ><a
+                  href="#nonscope"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <div class="tsd-signature">
+                <span class="tsd-kind-property">$nonscope</span
+                ><span class="tsd-signature-symbol">:</span>
+                <span class="tsd-signature-type">boolean</span
+                ><span class="tsd-signature-symbol"> = true</span>
+              </div>
+              <aside class="tsd-sources">
+                <ul>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L20"
+                      >core/compile/attributes.js:20</a
                     >
                   </li>
                 </ul>
@@ -730,606 +886,702 @@
           </section>
         </details>
         <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
-          <summary class="tsd-accordion-summary" data-key="section-Methods">
-            <h2>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <use href="../assets/icons.svg#icon-chevronDown"></use>
-              </svg>
-              Methods
-            </h2>
+          <summary class="tsd-accordion-summary" data-key="section-Accessors">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Accessors</h2>
           </summary>
           <section>
             <section class="tsd-panel tsd-member">
-              <a id="_addClass" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
-                <span>$add<wbr />Class</span
+              <h3 class="tsd-anchor-link" id="element">
+                <span>$$element</span
                 ><a
-                  href="#_addClass"
+                  href="#element"
                   aria-label="Permalink"
                   class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
               <ul class="tsd-signatures">
-                <li class="tsd-signature tsd-anchor-link">
-                  <a id="_addClass._addClass-1" class="tsd-anchor"></a
-                  ><span class="tsd-kind-call-signature">$add<wbr />Class</span
-                  ><span class="tsd-signature-symbol">(</span
-                  ><span class="tsd-kind-parameter">classVal</span
-                  ><span class="tsd-signature-symbol">)</span
-                  ><span class="tsd-signature-symbol">: </span
-                  ><span class="tsd-signature-type">void</span
-                  ><a
-                    href="#_addClass._addClass-1"
-                    aria-label="Permalink"
-                    class="tsd-anchor-icon"
-                    ><svg viewBox="0 0 24 24">
-                      <use href="../assets/icons.svg#icon-anchor"></use></svg
-                  ></a>
-                </li>
-                <li class="tsd-description">
-                  <div class="tsd-comment tsd-typography">
-                    <p>
-                      Adds the CSS class value specified by the classVal
-                      parameter to the element. If animations are enabled then
-                      an animation will be triggered for the class addition.
-                    </p>
+                <li>
+                  <div class="tsd-signature" id="elementelement">
+                    <span class="tsd-signature-keyword">get</span>
+                    <span class="tsd-kind-get-signature">$$element</span
+                    ><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">Node</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">Element</span>
                   </div>
-                  <div class="tsd-parameters">
-                    <h4 class="tsd-parameters-title">Parameters</h4>
-                    <ul class="tsd-parameter-list">
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">classVal</span>:
-                          <span class="tsd-signature-type">string</span></span
-                        >
-                        <div class="tsd-comment tsd-typography">
-                          <p>
-                            The className value that will be added to the
-                            element
-                          </p>
-                        </div>
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                    </ul>
-                  </div>
-                  <h4 class="tsd-returns-title">
-                    Returns <span class="tsd-signature-type">void</span>
-                  </h4>
-                  <div class="tsd-comment tsd-typography"></div>
-                  <aside class="tsd-sources">
-                    <ul>
-                      <li>
-                        Defined in
-                        <a
-                          href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L77"
-                          >core/compile/attributes.js:77</a
-                        >
-                      </li>
-                    </ul>
-                  </aside>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <a id="_observe" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
-                <span>$observe</span
-                ><a
-                  href="#_observe"
-                  aria-label="Permalink"
-                  class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
-                    <use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="tsd-signature tsd-anchor-link">
-                  <a id="_observe._observe-1" class="tsd-anchor"></a
-                  ><span class="tsd-kind-call-signature">$observe</span
-                  ><span class="tsd-signature-symbol">(</span
-                  ><span class="tsd-kind-parameter">key</span>,
-                  <span class="tsd-kind-parameter">fn</span
-                  ><span class="tsd-signature-symbol">)</span
-                  ><span class="tsd-signature-symbol">: </span
-                  ><span class="tsd-signature-symbol">(</span
-                  ><span class="tsd-signature-symbol">(</span
-                  ><span class="tsd-signature-symbol">)</span
-                  ><span class="tsd-signature-symbol"> =&gt; </span
-                  ><span class="tsd-signature-type">any</span
-                  ><span class="tsd-signature-symbol">)</span
-                  ><a
-                    href="#_observe._observe-1"
-                    aria-label="Permalink"
-                    class="tsd-anchor-icon"
-                    ><svg viewBox="0 0 24 24">
-                      <use href="../assets/icons.svg#icon-anchor"></use></svg
-                  ></a>
-                </li>
-                <li class="tsd-description">
-                  <div class="tsd-comment tsd-typography">
-                    <p>Observes an interpolated attribute.</p>
-                    <p>
-                      The observer function will be invoked once during the next
-                      <code>$digest</code> following compilation. The observer
-                      is then invoked whenever the interpolated value changes.
-                    </p>
-                  </div>
-                  <div class="tsd-parameters">
-                    <h4 class="tsd-parameters-title">Parameters</h4>
-                    <ul class="tsd-parameter-list">
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">key</span>:
-                          <span class="tsd-signature-type">string</span></span
-                        >
-                        <div class="tsd-comment tsd-typography">
-                          <p>Normalized key. (ie ngAttribute) .</p>
-                        </div>
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">fn</span>:
-                          <span class="tsd-signature-type">any</span></span
-                        >
-                        <div class="tsd-comment tsd-typography">
-                          <p>
-                            Function that will be called whenever the
-                            interpolated value of the attribute changes. See the
-                            guide/interpolation#how-text-and-attribute-bindings-work
-                            Interpolation guide for more info.
-                          </p>
-                        </div>
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                    </ul>
-                  </div>
-                  <h4 class="tsd-returns-title">
-                    Returns <span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-signature-symbol">)</span
-                    ><span class="tsd-signature-symbol"> =&gt; </span
-                    ><span class="tsd-signature-type">any</span
-                    ><span class="tsd-signature-symbol">)</span>
-                  </h4>
-                  <p>Returns a deregistration function for this observer.</p>
-                  <ul class="tsd-parameters">
-                    <li class="tsd-parameter-signature">
-                      <ul class="tsd-signatures">
-                        <li
-                          class="tsd-signature"
-                          id="_observe._observe-1.__type-3.__type-4"
-                        >
-                          <span class="tsd-signature-symbol">(</span
-                          ><span class="tsd-signature-symbol">)</span
-                          ><span class="tsd-signature-symbol">: </span
-                          ><span class="tsd-signature-type">any</span>
-                        </li>
-                        <li class="tsd-description">
-                          <h4 class="tsd-returns-title">
-                            Returns <span class="tsd-signature-type">any</span>
-                          </h4>
+                  <div class="tsd-description">
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">Node</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <span class="tsd-signature-type">Element</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L57"
+                            >core/compile/attributes.js:57</a
+                          >
                         </li>
                       </ul>
-                    </li>
-                  </ul>
-                  <div class="tsd-comment tsd-typography"></div>
-                  <aside class="tsd-sources">
-                    <ul>
-                      <li>
-                        Defined in
-                        <a
-                          href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L207"
-                          >core/compile/attributes.js:207</a
-                        >
-                      </li>
-                    </ul>
-                  </aside>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+          </section>
+        </details>
+        <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
+          <summary class="tsd-accordion-summary" data-key="section-Methods">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Methods</h2>
+          </summary>
+          <section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="addclass">
+                <span>$add<wbr />Class</span
+                ><a
+                  href="#addclass"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="addclass-1">
+                    <span class="tsd-kind-call-signature">$addClass</span
+                    ><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">classVal</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">string</span
+                    ><span class="tsd-signature-symbol">)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">void</span
+                    ><a
+                      href="#addclass-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>
+                        Adds the CSS class value specified by the classVal
+                        parameter to the element. If animations are enabled then
+                        an animation will be triggered for the class addition.
+                      </p>
+                    </div>
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">classVal</span>:
+                            <span class="tsd-signature-type">string</span></span
+                          >
+                          <div class="tsd-comment tsd-typography">
+                            <p>
+                              The className value that will be added to the
+                              element
+                            </p>
+                          </div>
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">void</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L79"
+                            >core/compile/attributes.js:79</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
                 </li>
               </ul>
             </section>
             <section class="tsd-panel tsd-member">
-              <a id="_removeClass" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
+              <h3 class="tsd-anchor-link" id="observe">
+                <span>$observe</span
+                ><a
+                  href="#observe"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="observe-1">
+                    <span class="tsd-kind-call-signature">$observe</span
+                    ><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">key</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">string</span
+                    ><span class="tsd-signature-symbol">,</span>
+                    <span class="tsd-kind-parameter">fn</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">any</span
+                    ><span class="tsd-signature-symbol">)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-symbol">()</span>
+                    <span class="tsd-signature-symbol">=&gt;</span>
+                    <span class="tsd-signature-type">any</span
+                    ><a
+                      href="#observe-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>Observes an interpolated attribute.</p>
+                      <p>
+                        The observer function will be invoked once during the
+                        next <code>$digest</code> following compilation. The
+                        observer is then invoked whenever the interpolated value
+                        changes.
+                      </p>
+                    </div>
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">key</span>:
+                            <span class="tsd-signature-type">string</span></span
+                          >
+                          <div class="tsd-comment tsd-typography">
+                            <p>Normalized key. (ie ngAttribute) .</p>
+                          </div>
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">fn</span>:
+                            <span class="tsd-signature-type">any</span></span
+                          >
+                          <div class="tsd-comment tsd-typography">
+                            <p>
+                              Function that will be called whenever the
+                              interpolated value of the attribute changes. See
+                              the
+                              guide/interpolation#how-text-and-attribute-bindings-work
+                              Interpolation guide for more info.
+                            </p>
+                          </div>
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-symbol">()</span>
+                      <span class="tsd-signature-symbol">=&gt;</span>
+                      <span class="tsd-signature-type">any</span>
+                    </h4>
+                    <p>Returns a deregistration function for this observer.</p>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L231"
+                            >core/compile/attributes.js:231</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="removeclass">
                 <span>$remove<wbr />Class</span
                 ><a
-                  href="#_removeClass"
+                  href="#removeclass"
                   aria-label="Permalink"
                   class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
               <ul class="tsd-signatures">
-                <li class="tsd-signature tsd-anchor-link">
-                  <a id="_removeClass._removeClass-1" class="tsd-anchor"></a
-                  ><span class="tsd-kind-call-signature"
-                    >$remove<wbr />Class</span
-                  ><span class="tsd-signature-symbol">(</span
-                  ><span class="tsd-kind-parameter">classVal</span
-                  ><span class="tsd-signature-symbol">)</span
-                  ><span class="tsd-signature-symbol">: </span
-                  ><span class="tsd-signature-type">void</span
-                  ><a
-                    href="#_removeClass._removeClass-1"
-                    aria-label="Permalink"
-                    class="tsd-anchor-icon"
-                    ><svg viewBox="0 0 24 24">
-                      <use href="../assets/icons.svg#icon-anchor"></use></svg
-                  ></a>
-                </li>
-                <li class="tsd-description">
-                  <div class="tsd-comment tsd-typography">
-                    <p>
-                      Removes the CSS class value specified by the classVal
-                      parameter from the element. If animations are enabled then
-                      an animation will be triggered for the class removal.
-                    </p>
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="removeclass-1">
+                    <span class="tsd-kind-call-signature">$removeClass</span
+                    ><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">classVal</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">string</span
+                    ><span class="tsd-signature-symbol">)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">void</span
+                    ><a
+                      href="#removeclass-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
                   </div>
-                  <div class="tsd-parameters">
-                    <h4 class="tsd-parameters-title">Parameters</h4>
-                    <ul class="tsd-parameter-list">
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">classVal</span>:
-                          <span class="tsd-signature-type">string</span></span
-                        >
-                        <div class="tsd-comment tsd-typography">
-                          <p>
-                            The className value that will be removed from the
-                            element
-                          </p>
-                        </div>
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                    </ul>
+                  <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>
+                        Removes the CSS class value specified by the classVal
+                        parameter from the element. If animations are enabled
+                        then an animation will be triggered for the class
+                        removal.
+                      </p>
+                    </div>
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">classVal</span>:
+                            <span class="tsd-signature-type">string</span></span
+                          >
+                          <div class="tsd-comment tsd-typography">
+                            <p>
+                              The className value that will be removed from the
+                              element
+                            </p>
+                          </div>
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">void</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L95"
+                            >core/compile/attributes.js:95</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
                   </div>
-                  <h4 class="tsd-returns-title">
-                    Returns <span class="tsd-signature-type">void</span>
-                  </h4>
-                  <div class="tsd-comment tsd-typography"></div>
-                  <aside class="tsd-sources">
-                    <ul>
-                      <li>
-                        Defined in
-                        <a
-                          href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L89"
-                          >core/compile/attributes.js:89</a
-                        >
-                      </li>
-                    </ul>
-                  </aside>
                 </li>
               </ul>
             </section>
             <section class="tsd-panel tsd-member">
-              <a id="_set" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
+              <h3 class="tsd-anchor-link" id="set">
                 <span>$set</span
-                ><a href="#_set" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                ><a href="#set" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
               <ul class="tsd-signatures">
-                <li class="tsd-signature tsd-anchor-link">
-                  <a id="_set._set-1" class="tsd-anchor"></a
-                  ><span class="tsd-kind-call-signature">$set</span
-                  ><span class="tsd-signature-symbol">(</span
-                  ><span class="tsd-kind-parameter">key</span>,
-                  <span class="tsd-kind-parameter">value</span>,
-                  <span class="tsd-kind-parameter">writeAttr</span>,
-                  <span class="tsd-kind-parameter">attrName</span
-                  ><span class="tsd-signature-symbol">)</span
-                  ><span class="tsd-signature-symbol">: </span
-                  ><span class="tsd-signature-type">void</span
-                  ><a
-                    href="#_set._set-1"
-                    aria-label="Permalink"
-                    class="tsd-anchor-icon"
-                    ><svg viewBox="0 0 24 24">
-                      <use href="../assets/icons.svg#icon-anchor"></use></svg
-                  ></a>
-                </li>
-                <li class="tsd-description">
-                  <div class="tsd-comment tsd-typography">
-                    <p>
-                      Set a normalized attribute on the element in a way such
-                      that all directives can share the attribute. This function
-                      properly handles boolean attributes.
-                    </p>
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="set-1">
+                    <span class="tsd-kind-call-signature">$set</span
+                    ><span class="tsd-signature-symbol">(</span><br />    <span
+                      class="tsd-kind-parameter"
+                      >key</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">string</span
+                    ><span class="tsd-signature-symbol">,</span><br />    <span
+                      class="tsd-kind-parameter"
+                      >value</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">string</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">boolean</span
+                    ><span class="tsd-signature-symbol">,</span><br />    <span
+                      class="tsd-kind-parameter"
+                      >writeAttr</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">boolean</span
+                    ><span class="tsd-signature-symbol">,</span><br />    <span
+                      class="tsd-kind-parameter"
+                      >attrName</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">string</span
+                    ><span class="tsd-signature-symbol">,</span><br /><span
+                      class="tsd-signature-symbol"
+                      >)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">void</span
+                    ><a
+                      href="#set-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
                   </div>
-                  <div class="tsd-parameters">
-                    <h4 class="tsd-parameters-title">Parameters</h4>
-                    <ul class="tsd-parameter-list">
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">key</span>:
-                          <span class="tsd-signature-type">string</span></span
-                        >
-                        <div class="tsd-comment tsd-typography">
-                          <p>Normalized key. (ie ngAttribute)</p>
-                        </div>
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">value</span>:
-                          <span class="tsd-signature-type">string</span
-                          ><span class="tsd-signature-symbol"> | </span
-                          ><span class="tsd-signature-type">boolean</span></span
-                        >
-                        <div class="tsd-comment tsd-typography">
-                          <p>
-                            The value to set. If <code>null</code> attribute
-                            will be deleted.
-                          </p>
-                        </div>
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">writeAttr</span>:
-                          <span class="tsd-signature-type">boolean</span></span
-                        >
-                        <div class="tsd-comment tsd-typography">
-                          <p>
-                            If false, does not write the value to DOM element
-                            attribute. Defaults to true.
-                          </p>
-                        </div>
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">attrName</span>:
-                          <span class="tsd-signature-type">string</span></span
-                        >
-                        <div class="tsd-comment tsd-typography">
-                          <p>Optional none normalized name. Defaults to key.</p>
-                        </div>
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                    </ul>
+                  <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>
+                        Set a normalized attribute on the element in a way such
+                        that all directives can share the attribute. This
+                        function properly handles boolean attributes.
+                      </p>
+                    </div>
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">key</span>:
+                            <span class="tsd-signature-type">string</span></span
+                          >
+                          <div class="tsd-comment tsd-typography">
+                            <p>Normalized key. (ie ngAttribute)</p>
+                          </div>
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">value</span>:
+                            <span class="tsd-signature-type">string</span>
+                            <span class="tsd-signature-symbol">|</span>
+                            <span class="tsd-signature-type"
+                              >boolean</span
+                            ></span
+                          >
+                          <div class="tsd-comment tsd-typography">
+                            <p>
+                              The value to set. If <code>null</code> attribute
+                              will be deleted.
+                            </p>
+                          </div>
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">writeAttr</span>:
+                            <span class="tsd-signature-type"
+                              >boolean</span
+                            ></span
+                          >
+                          <div class="tsd-comment tsd-typography">
+                            <p>
+                              If false, does not write the value to DOM element
+                              attribute. Defaults to true.
+                            </p>
+                          </div>
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">attrName</span>:
+                            <span class="tsd-signature-type">string</span></span
+                          >
+                          <div class="tsd-comment tsd-typography">
+                            <p>
+                              Optional none normalized name. Defaults to key.
+                            </p>
+                          </div>
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">void</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L140"
+                            >core/compile/attributes.js:140</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
                   </div>
-                  <h4 class="tsd-returns-title">
-                    Returns <span class="tsd-signature-type">void</span>
-                  </h4>
-                  <div class="tsd-comment tsd-typography"></div>
-                  <aside class="tsd-sources">
-                    <ul>
-                      <li>
-                        Defined in
-                        <a
-                          href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L123"
-                          >core/compile/attributes.js:123</a
-                        >
-                      </li>
-                    </ul>
-                  </aside>
                 </li>
               </ul>
             </section>
             <section class="tsd-panel tsd-member">
-              <a id="_updateClass" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
+              <h3 class="tsd-anchor-link" id="updateclass">
                 <span>$update<wbr />Class</span
                 ><a
-                  href="#_updateClass"
+                  href="#updateclass"
                   aria-label="Permalink"
                   class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
               <ul class="tsd-signatures">
-                <li class="tsd-signature tsd-anchor-link">
-                  <a id="_updateClass._updateClass-1" class="tsd-anchor"></a
-                  ><span class="tsd-kind-call-signature"
-                    >$update<wbr />Class</span
-                  ><span class="tsd-signature-symbol">(</span
-                  ><span class="tsd-kind-parameter">newClasses</span>,
-                  <span class="tsd-kind-parameter">oldClasses</span
-                  ><span class="tsd-signature-symbol">)</span
-                  ><span class="tsd-signature-symbol">: </span
-                  ><span class="tsd-signature-type">void</span
-                  ><a
-                    href="#_updateClass._updateClass-1"
-                    aria-label="Permalink"
-                    class="tsd-anchor-icon"
-                    ><svg viewBox="0 0 24 24">
-                      <use href="../assets/icons.svg#icon-anchor"></use></svg
-                  ></a>
-                </li>
-                <li class="tsd-description">
-                  <div class="tsd-comment tsd-typography">
-                    <p>
-                      Adds and removes the appropriate CSS class values to the
-                      element based on the difference between the new and old
-                      CSS class values (specified as newClasses and oldClasses).
-                    </p>
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="updateclass-1">
+                    <span class="tsd-kind-call-signature">$updateClass</span
+                    ><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">newClasses</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">string</span
+                    ><span class="tsd-signature-symbol">,</span>
+                    <span class="tsd-kind-parameter">oldClasses</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">string</span
+                    ><span class="tsd-signature-symbol">)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">void</span
+                    ><a
+                      href="#updateclass-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
                   </div>
-                  <div class="tsd-parameters">
-                    <h4 class="tsd-parameters-title">Parameters</h4>
-                    <ul class="tsd-parameter-list">
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">newClasses</span>:
-                          <span class="tsd-signature-type">string</span></span
-                        >
-                        <div class="tsd-comment tsd-typography">
-                          <p>The current CSS className value</p>
-                        </div>
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">oldClasses</span>:
-                          <span class="tsd-signature-type">string</span></span
-                        >
-                        <div class="tsd-comment tsd-typography">
-                          <p>The former CSS className value</p>
-                        </div>
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                    </ul>
+                  <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>
+                        Adds and removes the appropriate CSS class values to the
+                        element based on the difference between the new and old
+                        CSS class values (specified as newClasses and
+                        oldClasses).
+                      </p>
+                    </div>
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">newClasses</span>:
+                            <span class="tsd-signature-type">string</span></span
+                          >
+                          <div class="tsd-comment tsd-typography">
+                            <p>The current CSS className value</p>
+                          </div>
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">oldClasses</span>:
+                            <span class="tsd-signature-type">string</span></span
+                          >
+                          <div class="tsd-comment tsd-typography">
+                            <p>The former CSS className value</p>
+                          </div>
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">void</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L112"
+                            >core/compile/attributes.js:112</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
                   </div>
-                  <h4 class="tsd-returns-title">
-                    Returns <span class="tsd-signature-type">void</span>
-                  </h4>
-                  <div class="tsd-comment tsd-typography"></div>
-                  <aside class="tsd-sources">
-                    <ul>
-                      <li>
-                        Defined in
-                        <a
-                          href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L102"
-                          >core/compile/attributes.js:102</a
-                        >
-                      </li>
-                    </ul>
-                  </aside>
                 </li>
               </ul>
             </section>
             <section class="tsd-panel tsd-member">
-              <a id="sanitizeSrcset" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
+              <h3 class="tsd-anchor-link" id="sanitizesrcset">
                 <span>sanitize<wbr />Srcset</span
                 ><a
-                  href="#sanitizeSrcset"
+                  href="#sanitizesrcset"
                   aria-label="Permalink"
                   class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
               <ul class="tsd-signatures">
-                <li class="tsd-signature tsd-anchor-link">
-                  <a id="sanitizeSrcset.sanitizeSrcset-1" class="tsd-anchor"></a
-                  ><span class="tsd-kind-call-signature"
-                    >sanitize<wbr />Srcset</span
-                  ><span class="tsd-signature-symbol">(</span
-                  ><span class="tsd-kind-parameter">value</span>,
-                  <span class="tsd-kind-parameter">invokeType</span
-                  ><span class="tsd-signature-symbol">)</span
-                  ><span class="tsd-signature-symbol">: </span
-                  ><span class="tsd-signature-type">any</span
-                  ><a
-                    href="#sanitizeSrcset.sanitizeSrcset-1"
-                    aria-label="Permalink"
-                    class="tsd-anchor-icon"
-                    ><svg viewBox="0 0 24 24">
-                      <use href="../assets/icons.svg#icon-anchor"></use></svg
-                  ></a>
-                </li>
-                <li class="tsd-description">
-                  <div class="tsd-parameters">
-                    <h4 class="tsd-parameters-title">Parameters</h4>
-                    <ul class="tsd-parameter-list">
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">value</span>:
-                          <span class="tsd-signature-type">any</span></span
-                        >
-                      </li>
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">invokeType</span>:
-                          <span class="tsd-signature-type">any</span></span
-                        >
-                      </li>
-                    </ul>
+                <li class="">
+                  <div
+                    class="tsd-signature tsd-anchor-link"
+                    id="sanitizesrcset-1"
+                  >
+                    <span class="tsd-kind-call-signature">sanitizeSrcset</span
+                    ><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">value</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">any</span
+                    ><span class="tsd-signature-symbol">,</span>
+                    <span class="tsd-kind-parameter">invokeType</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">any</span
+                    ><span class="tsd-signature-symbol">)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">any</span
+                    ><a
+                      href="#sanitizesrcset-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
                   </div>
-                  <h4 class="tsd-returns-title">
-                    Returns <span class="tsd-signature-type">any</span>
-                  </h4>
-                  <aside class="tsd-sources">
-                    <ul>
-                      <li>
-                        Defined in
-                        <a
-                          href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L244"
-                          >core/compile/attributes.js:244</a
-                        >
-                      </li>
-                    </ul>
-                  </aside>
+                  <div class="tsd-description">
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">value</span>:
+                            <span class="tsd-signature-type">any</span></span
+                          >
+                        </li>
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">invokeType</span>:
+                            <span class="tsd-signature-type">any</span></span
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">any</span>
+                    </h4>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L266"
+                            >core/compile/attributes.js:266</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
                 </li>
               </ul>
             </section>
             <section class="tsd-panel tsd-member">
-              <a id="setSpecialAttr" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
+              <h3 class="tsd-anchor-link" id="setspecialattr">
                 <span>set<wbr />Special<wbr />Attr</span
                 ><a
-                  href="#setSpecialAttr"
+                  href="#setspecialattr"
                   aria-label="Permalink"
                   class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
               <ul class="tsd-signatures">
-                <li class="tsd-signature tsd-anchor-link">
-                  <a id="setSpecialAttr.setSpecialAttr-1" class="tsd-anchor"></a
-                  ><span class="tsd-kind-call-signature"
-                    >set<wbr />Special<wbr />Attr</span
-                  ><span class="tsd-signature-symbol">(</span
-                  ><span class="tsd-kind-parameter">element</span>,
-                  <span class="tsd-kind-parameter">attrName</span>,
-                  <span class="tsd-kind-parameter">value</span
-                  ><span class="tsd-signature-symbol">)</span
-                  ><span class="tsd-signature-symbol">: </span
-                  ><span class="tsd-signature-type">void</span
-                  ><a
-                    href="#setSpecialAttr.setSpecialAttr-1"
-                    aria-label="Permalink"
-                    class="tsd-anchor-icon"
-                    ><svg viewBox="0 0 24 24">
-                      <use href="../assets/icons.svg#icon-anchor"></use></svg
-                  ></a>
-                </li>
-                <li class="tsd-description">
-                  <div class="tsd-parameters">
-                    <h4 class="tsd-parameters-title">Parameters</h4>
-                    <ul class="tsd-parameter-list">
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">element</span>:
-                          <span class="tsd-signature-type">any</span></span
-                        >
-                      </li>
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">attrName</span>:
-                          <span class="tsd-signature-type">any</span></span
-                        >
-                      </li>
-                      <li>
-                        <span
-                          ><span class="tsd-kind-parameter">value</span>:
-                          <span class="tsd-signature-type">any</span></span
-                        >
-                      </li>
-                    </ul>
+                <li class="">
+                  <div
+                    class="tsd-signature tsd-anchor-link"
+                    id="setspecialattr-1"
+                  >
+                    <span class="tsd-kind-call-signature">setSpecialAttr</span
+                    ><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">element</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">any</span
+                    ><span class="tsd-signature-symbol">,</span>
+                    <span class="tsd-kind-parameter">attrName</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">any</span
+                    ><span class="tsd-signature-symbol">,</span>
+                    <span class="tsd-kind-parameter">value</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">any</span
+                    ><span class="tsd-signature-symbol">)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">void</span
+                    ><a
+                      href="#setspecialattr-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
                   </div>
-                  <h4 class="tsd-returns-title">
-                    Returns <span class="tsd-signature-type">void</span>
-                  </h4>
-                  <aside class="tsd-sources">
-                    <ul>
-                      <li>
-                        Defined in
-                        <a
-                          href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/core/compile/attributes.js#L229"
-                          >core/compile/attributes.js:229</a
-                        >
-                      </li>
-                    </ul>
-                  </aside>
+                  <div class="tsd-description">
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">element</span>:
+                            <span class="tsd-signature-type">any</span></span
+                          >
+                        </li>
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">attrName</span>:
+                            <span class="tsd-signature-type">any</span></span
+                          >
+                        </li>
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">value</span>:
+                            <span class="tsd-signature-type">any</span></span
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">void</span>
+                    </h4>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/core/compile/attributes.js#L251"
+                            >core/compile/attributes.js:251</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
                 </li>
               </ul>
             </section>
@@ -1341,11 +1593,16 @@
           <div class="tsd-navigation settings">
             <details class="tsd-accordion">
               <summary class="tsd-accordion-summary">
-                <h3>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
-                  >Settings
-                </h3>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <use href="../assets/icons.svg#icon-chevronDown"></use>
+                </svg>
+                <h3>Settings</h3>
               </summary>
               <div class="tsd-accordion-details">
                 <div class="tsd-filter-visibility">
@@ -1463,25 +1720,40 @@
           </div>
           <details open class="tsd-accordion tsd-page-navigation">
             <summary class="tsd-accordion-summary">
-              <h3>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <use href="../assets/icons.svg#icon-chevronDown"></use></svg
-                >On This Page
-              </h3>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <use href="../assets/icons.svg#icon-chevronDown"></use>
+              </svg>
+              <h3>On This Page</h3>
             </summary>
             <div class="tsd-accordion-details">
               <details open class="tsd-accordion tsd-page-navigation-section">
                 <summary
                   class="tsd-accordion-summary"
-                  data-key="tsd-otp-Constructors"
+                  data-key="section-Constructors"
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
                     <use href="../assets/icons.svg#icon-chevronDown"></use></svg
                   >Constructors
                 </summary>
                 <div>
-                  <a href="#constructor" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  <a href="#constructor"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Constructor"
+                    >
                       <use href="../assets/icons.svg#icon-512"></use></svg
                     ><span>constructor</span></a
                   >
@@ -1490,88 +1762,199 @@
               <details open class="tsd-accordion tsd-page-navigation-section">
                 <summary
                   class="tsd-accordion-summary"
-                  data-key="tsd-otp-Properties"
+                  data-key="section-Properties"
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
                     <use href="../assets/icons.svg#icon-chevronDown"></use></svg
                   >Properties
                 </summary>
                 <div>
-                  <a href="#__element" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                      <use href="../assets/icons.svg#icon-1024"></use></svg
-                    ><span>$$element</span></a
-                  ><a href="#__observers" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  <a href="#observers"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
                       <use href="../assets/icons.svg#icon-1024"></use></svg
                     ><span>$$observers</span></a
-                  ><a href="#_animate" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  ><a href="#animate"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
                       <use href="../assets/icons.svg#icon-1024"></use></svg
                     ><span>$animate</span></a
-                  ><a href="#_attr" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  ><a href="#attr"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
                       <use href="../assets/icons.svg#icon-1024"></use></svg
                     ><span>$attr</span></a
-                  ><a href="#_exceptionHandler" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  ><a href="#exceptionhandler"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
                       <use href="../assets/icons.svg#icon-1024"></use></svg
                     ><span>$exception<wbr />Handler</span></a
-                  ><a href="#_normalize" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  ><a href="#noderef"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
+                      <use href="../assets/icons.svg#icon-1024"></use></svg
+                    ><span>$node<wbr />Ref</span></a
+                  ><a href="#normalize"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
                       <use href="../assets/icons.svg#icon-1024"></use></svg
                     ><span>$normalize</span></a
-                  ><a href="#_rootScope" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  ><a href="#rootscope"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
                       <use href="../assets/icons.svg#icon-1024"></use></svg
                     ><span>$root<wbr />Scope</span></a
-                  ><a href="#_sce" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  ><a href="#sce"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
                       <use href="../assets/icons.svg#icon-1024"></use></svg
                     ><span>$sce</span></a
-                  ><a href="#srcset" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  ><a href="#srcset"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
                       <use href="../assets/icons.svg#icon-1024"></use></svg
                     ><span>srcset</span></a
+                  ><a href="#nonscope"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
+                      <use href="../assets/icons.svg#icon-1024"></use></svg
+                    ><span>$nonscope</span></a
                   >
                 </div>
               </details>
               <details open class="tsd-accordion tsd-page-navigation-section">
                 <summary
                   class="tsd-accordion-summary"
-                  data-key="tsd-otp-Methods"
+                  data-key="section-Accessors"
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
+                  >Accessors
+                </summary>
+                <div>
+                  <a href="#element"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Accessor"
+                    >
+                      <use href="../assets/icons.svg#icon-262144"></use></svg
+                    ><span>$$element</span></a
+                  >
+                </div>
+              </details>
+              <details open class="tsd-accordion tsd-page-navigation-section">
+                <summary
+                  class="tsd-accordion-summary"
+                  data-key="section-Methods"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
                     <use href="../assets/icons.svg#icon-chevronDown"></use></svg
                   >Methods
                 </summary>
                 <div>
-                  <a href="#_addClass" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  <a href="#addclass"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
                       <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span>$add<wbr />Class</span></a
-                  ><a href="#_observe" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  ><a href="#observe"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
                       <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span>$observe</span></a
-                  ><a href="#_removeClass" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  ><a href="#removeclass"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
                       <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span>$remove<wbr />Class</span></a
-                  ><a href="#_set" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  ><a href="#set"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
                       <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span>$set</span></a
-                  ><a href="#_updateClass" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  ><a href="#updateclass"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
                       <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span>$update<wbr />Class</span></a
-                  ><a href="#sanitizeSrcset" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  ><a href="#sanitizesrcset"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
                       <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span>sanitize<wbr />Srcset</span></a
-                  ><a href="#setSpecialAttr" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  ><a href="#setspecialattr"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
                       <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span>set<wbr />Special<wbr />Attr</span></a
                   >
@@ -1582,16 +1965,8 @@
         </div>
         <div class="site-menu">
           <nav class="tsd-navigation">
-            <a href="../index.html"
-              ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                <use href="../assets/icons.svg#icon-1"></use></svg
-              ><span>@angular-wave/angular.ts</span></a
-            >
-            <ul
-              class="tsd-small-nested-navigation"
-              id="tsd-nav-container"
-              data-base=".."
-            >
+            <a href="../modules.html">@angular-wave/angular.ts</a>
+            <ul class="tsd-small-nested-navigation" id="tsd-nav-container">
               <li>Loading...</li>
             </ul>
           </nav>

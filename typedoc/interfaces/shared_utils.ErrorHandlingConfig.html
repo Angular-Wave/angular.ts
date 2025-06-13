@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="default" lang="en">
+<html class="default" lang="en" data-base="../">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
@@ -15,6 +15,11 @@
     <script async src="../assets/icons.js" id="tsd-icons-script"></script>
     <script async src="../assets/search.js" id="tsd-search-script"></script>
     <script async src="../assets/navigation.js" id="tsd-nav-script"></script>
+    <script
+      async
+      src="../assets/hierarchy.js"
+      id="tsd-hierarchy-script"
+    ></script>
   </head>
   <body>
     <script>
@@ -23,51 +28,67 @@
       document.body.style.display = "none";
       setTimeout(
         () =>
-          app ? app.showPage() : document.body.style.removeProperty("display"),
+          window.app
+            ? app.showPage()
+            : document.body.style.removeProperty("display"),
         500,
       );
     </script>
     <header class="tsd-page-toolbar">
       <div class="tsd-toolbar-contents container">
-        <div class="table-cell" id="tsd-search" data-base="..">
-          <div class="field">
-            <label
-              for="tsd-search-field"
-              class="tsd-widget tsd-toolbar-icon search no-caption"
-              ><svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <use href="../assets/icons.svg#icon-search"></use></svg></label
-            ><input type="text" id="tsd-search-field" aria-label="Search" />
+        <a href="../index.html" class="title">@angular-wave/angular.ts</a>
+        <div id="tsd-toolbar-links"></div>
+        <button id="tsd-search-trigger" class="tsd-widget" aria-label="Search">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <use href="../assets/icons.svg#icon-search"></use>
+          </svg>
+        </button>
+        <dialog id="tsd-search" aria-label="Search">
+          <input
+            role="combobox"
+            id="tsd-search-input"
+            aria-controls="tsd-search-results"
+            aria-autocomplete="list"
+            aria-expanded="true"
+            autocapitalize="off"
+            autocomplete="off"
+            placeholder="Search the docs"
+            maxlength="100"
+          />
+          <ul role="listbox" id="tsd-search-results"></ul>
+          <div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+            <div>Preparing search index...</div>
           </div>
-          <div class="field"><div id="tsd-toolbar-links"></div></div>
-          <ul class="results">
-            <li class="state loading">Preparing search index...</li>
-            <li class="state failure">The search index is not available</li>
-          </ul>
-          <a href="../index.html" class="title">@angular-wave/angular.ts</a>
-        </div>
-        <div class="table-cell" id="tsd-widgets">
-          <a
-            href="#"
-            class="tsd-widget tsd-toolbar-icon menu no-caption"
-            data-toggle="menu"
-            aria-label="Menu"
-            ><svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <use href="../assets/icons.svg#icon-menu"></use></svg
-          ></a>
-        </div>
+        </dialog>
+        <a
+          href="#"
+          class="tsd-widget menu"
+          id="tsd-toolbar-menu-trigger"
+          data-toggle="menu"
+          aria-label="Menu"
+          ><svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <use href="../assets/icons.svg#icon-menu"></use></svg
+        ></a>
       </div>
     </header>
     <div class="container container-main">
       <div class="col-content">
         <div class="tsd-page-title">
-          <ul class="tsd-breadcrumb">
-            <li><a href="../index.html">@angular-wave/angular.ts</a></li>
+          <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
             <li><a href="../modules/shared_utils.html">shared/utils</a></li>
-            <li>
-              <a href="shared_utils.ErrorHandlingConfig.html"
-                >ErrorHandlingConfig</a
-              >
-            </li>
+            <li><a href="" aria-current="page">ErrorHandlingConfig</a></li>
           </ul>
           <h1>Interface ErrorHandlingConfig</h1>
         </div>
@@ -81,23 +102,21 @@
           <div class="tsd-comment tsd-typography"></div>
         </section>
         <div class="tsd-signature">
-          <span class="tsd-signature-keyword">interface </span
-          ><span class="tsd-kind-interface">ErrorHandlingConfig</span>
-          <span class="tsd-signature-symbol">{ </span><br /><span>    </span
-          ><a
+          <span class="tsd-signature-keyword">interface</span>
+          <span class="tsd-kind-interface">ErrorHandlingConfig</span>
+          <span class="tsd-signature-symbol">{</span><br />    <a
             class="tsd-kind-property"
-            href="shared_utils.ErrorHandlingConfig.html#objectMaxDepth"
+            href="#objectmaxdepth"
             >objectMaxDepth</a
-          ><span class="tsd-signature-symbol">: </span
-          ><span class="tsd-signature-type">number</span
-          ><span class="tsd-signature-symbol">; </span><br /><span>    </span
-          ><a
+          ><span class="tsd-signature-symbol">?:</span>
+          <span class="tsd-signature-type">number</span
+          ><span class="tsd-signature-symbol">;</span><br />    <a
             class="tsd-kind-property"
-            href="shared_utils.ErrorHandlingConfig.html#urlErrorParamsEnabled"
+            href="#urlerrorparamsenabled"
             >urlErrorParamsEnabled</a
-          ><span class="tsd-signature-symbol">: </span
-          ><span class="tsd-signature-type">boolean</span
-          ><span class="tsd-signature-symbol">; </span><br /><span
+          ><span class="tsd-signature-symbol">?:</span>
+          <span class="tsd-signature-type">boolean</span
+          ><span class="tsd-signature-symbol">;</span><br /><span
             class="tsd-signature-symbol"
             >}</span
           >
@@ -107,8 +126,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/shared/utils.js#L1079"
-                >shared/utils.js:1079</a
+                href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/utils.js#L1013"
+                >shared/utils.js:1013</a
               >
             </li>
           </ul>
@@ -117,36 +136,39 @@
           <section class="tsd-panel tsd-index-panel">
             <details class="tsd-index-content tsd-accordion" open>
               <summary class="tsd-accordion-summary tsd-index-summary">
-                <h5
-                  class="tsd-index-heading uppercase"
-                  role="button"
-                  aria-expanded="false"
-                  tabindex="0"
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
                 >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <use href="../assets/icons.svg#icon-chevronSmall"></use>
-                  </svg>
-                  Index
-                </h5>
+                  <use href="../assets/icons.svg#icon-chevronDown"></use>
+                </svg>
+                <h5 class="tsd-index-heading uppercase">Index</h5>
               </summary>
               <div class="tsd-accordion-details">
                 <section class="tsd-index-section">
                   <h3 class="tsd-index-heading">Properties</h3>
                   <div class="tsd-index-list">
-                    <a
-                      href="shared_utils.ErrorHandlingConfig.html#objectMaxDepth"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#objectmaxdepth" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
                         <use href="../assets/icons.svg#icon-1024"></use></svg
-                      ><span>object<wbr />Max<wbr />Depth</span></a
+                      ><span>object<wbr />Max<wbr />Depth?</span></a
                     >
-                    <a
-                      href="shared_utils.ErrorHandlingConfig.html#urlErrorParamsEnabled"
-                      class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                    <a href="#urlerrorparamsenabled" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
                         <use href="../assets/icons.svg#icon-1024"></use></svg
                       ><span
-                        >url<wbr />Error<wbr />Params<wbr />Enabled</span
+                        >url<wbr />Error<wbr />Params<wbr />Enabled?</span
                       ></a
                     >
                   </div>
@@ -157,30 +179,33 @@
         </section>
         <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
           <summary class="tsd-accordion-summary" data-key="section-Properties">
-            <h2>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <use href="../assets/icons.svg#icon-chevronDown"></use>
-              </svg>
-              Properties
-            </h2>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Properties</h2>
           </summary>
           <section>
             <section class="tsd-panel tsd-member">
-              <a id="objectMaxDepth" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
-                <span>object<wbr />Max<wbr />Depth</span
+              <h3 class="tsd-anchor-link" id="objectmaxdepth">
+                <code class="tsd-tag">Optional</code
+                ><span>object<wbr />Max<wbr />Depth</span
                 ><a
-                  href="#objectMaxDepth"
+                  href="#objectmaxdepth"
                   aria-label="Permalink"
                   class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
               <div class="tsd-signature">
-                <span class="tsd-kind-property"
-                  >object<wbr />Max<wbr />Depth</span
-                ><span class="tsd-signature-symbol">:</span>
+                <span class="tsd-kind-property">objectMaxDepth</span
+                ><span class="tsd-signature-symbol">?:</span>
                 <span class="tsd-signature-type">number</span>
               </div>
               <div class="tsd-comment tsd-typography">
@@ -196,29 +221,28 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/shared/utils.js#L1081"
-                      >shared/utils.js:1081</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/utils.js#L1015"
+                      >shared/utils.js:1015</a
                     >
                   </li>
                 </ul>
               </aside>
             </section>
             <section class="tsd-panel tsd-member">
-              <a id="urlErrorParamsEnabled" class="tsd-anchor"></a>
-              <h3 class="tsd-anchor-link">
-                <span>url<wbr />Error<wbr />Params<wbr />Enabled</span
+              <h3 class="tsd-anchor-link" id="urlerrorparamsenabled">
+                <code class="tsd-tag">Optional</code
+                ><span>url<wbr />Error<wbr />Params<wbr />Enabled</span
                 ><a
-                  href="#urlErrorParamsEnabled"
+                  href="#urlerrorparamsenabled"
                   aria-label="Permalink"
                   class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24">
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
               <div class="tsd-signature">
-                <span class="tsd-kind-property"
-                  >url<wbr />Error<wbr />Params<wbr />Enabled</span
-                ><span class="tsd-signature-symbol">:</span>
+                <span class="tsd-kind-property">urlErrorParamsEnabled</span
+                ><span class="tsd-signature-symbol">?:</span>
                 <span class="tsd-signature-type">boolean</span>
               </div>
               <div class="tsd-comment tsd-typography">
@@ -234,8 +258,8 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/0dac081f7bdb382f11acfad964216c4f910dad04/src/shared/utils.js#L1083"
-                      >shared/utils.js:1083</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/utils.js#L1017"
+                      >shared/utils.js:1017</a
                     >
                   </li>
                 </ul>
@@ -249,11 +273,16 @@
           <div class="tsd-navigation settings">
             <details class="tsd-accordion">
               <summary class="tsd-accordion-summary">
-                <h3>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
-                  >Settings
-                </h3>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <use href="../assets/icons.svg#icon-chevronDown"></use>
+                </svg>
+                <h3>Settings</h3>
               </summary>
               <div class="tsd-accordion-details">
                 <div class="tsd-filter-visibility">
@@ -371,29 +400,48 @@
           </div>
           <details open class="tsd-accordion tsd-page-navigation">
             <summary class="tsd-accordion-summary">
-              <h3>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <use href="../assets/icons.svg#icon-chevronDown"></use></svg
-                >On This Page
-              </h3>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <use href="../assets/icons.svg#icon-chevronDown"></use>
+              </svg>
+              <h3>On This Page</h3>
             </summary>
             <div class="tsd-accordion-details">
               <details open class="tsd-accordion tsd-page-navigation-section">
                 <summary
                   class="tsd-accordion-summary"
-                  data-key="tsd-otp-Properties"
+                  data-key="section-Properties"
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
                     <use href="../assets/icons.svg#icon-chevronDown"></use></svg
                   >Properties
                 </summary>
                 <div>
-                  <a href="#objectMaxDepth" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  <a href="#objectmaxdepth"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
                       <use href="../assets/icons.svg#icon-1024"></use></svg
                     ><span>object<wbr />Max<wbr />Depth</span></a
-                  ><a href="#urlErrorParamsEnabled" class=""
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
+                  ><a href="#urlerrorparamsenabled"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
                       <use href="../assets/icons.svg#icon-1024"></use></svg
                     ><span>url<wbr />Error<wbr />Params<wbr />Enabled</span></a
                   >
@@ -404,16 +452,8 @@
         </div>
         <div class="site-menu">
           <nav class="tsd-navigation">
-            <a href="../index.html"
-              ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                <use href="../assets/icons.svg#icon-1"></use></svg
-              ><span>@angular-wave/angular.ts</span></a
-            >
-            <ul
-              class="tsd-small-nested-navigation"
-              id="tsd-nav-container"
-              data-base=".."
-            >
+            <a href="../modules.html">@angular-wave/angular.ts</a>
+            <ul class="tsd-small-nested-navigation" id="tsd-nav-container">
               <li>Loading...</li>
             </ul>
           </nav>

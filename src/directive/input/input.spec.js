@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Angular } from "../../loader.js";
 import {
   createElementFromHTML as $,

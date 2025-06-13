@@ -93,12 +93,14 @@ export const ngOptionsDirective = [
             return locals;
           };
 
-      function Option(selectValue, viewValue, label, group, disabled) {
-        this.selectValue = selectValue;
-        this.viewValue = viewValue;
-        this.label = label;
-        this.group = group;
-        this.disabled = disabled;
+      class Option {
+        constructor(selectValue, viewValue, label, group, disabled) {
+          this.selectValue = selectValue;
+          this.viewValue = viewValue;
+          this.label = label;
+          this.group = group;
+          this.disabled = disabled;
+        }
       }
 
       function getOptionValuesKeys(optionValues) {
@@ -341,6 +343,7 @@ export const ngOptionsDirective = [
         selectCtrl.readValue = function readNgOptionsMultiple() {
           const selectedValues = selectElement.value || [];
           const selections = [];
+          // @ts-ignore
           selectedValues.forEach((value) => {
             const option = options.selectValueMap[value];
             if (option && !option.disabled)
@@ -352,21 +355,20 @@ export const ngOptionsDirective = [
 
         // If we are using `track by` then we must watch these tracked values on the model
         // since ngModel only watches for object identity change
-        if (ngOptions.trackBy) {
-          debugger;
-          scope.$watchCollection(
-            () => {
-              if (Array.isArray(ngModelCtrl.$viewValue)) {
-                return ngModelCtrl.$viewValue.map((value) =>
-                  ngOptions.getTrackByValue(value),
-                );
-              }
-            },
-            () => {
-              ngModelCtrl.$render();
-            },
-          );
-        }
+        // if (ngOptions.trackBy) {
+        //   scope.$watchCollection(
+        //     () => {
+        //       if (Array.isArray(ngModelCtrl.$viewValue)) {
+        //         return ngModelCtrl.$viewValue.map((value) =>
+        //           ngOptions.getTrackByValue(value),
+        //         );
+        //       }
+        //     },
+        //     () => {
+        //       ngModelCtrl.$render();
+        //     },
+        //   );
+        // }
       }
 
       if (providedEmptyOption) {
@@ -406,11 +408,15 @@ export const ngOptionsDirective = [
       }
 
       // We will re-render the option elements if the option values or labels change
-      debugger;
-      let watchables = ngOptions.getWatchables();
-      watchables.forEach((i) => {
-        scope.$watch(i, updateOptions);
-      });
+
+      // let watchables = ngOptions.getWatchables();
+      // watchables.forEach((i) => {
+      //   scope.$watch(i, updateOptions);
+      // });
+      scope.$watch(
+        ngOptions.getWatchables.decoratedNode.body[0].expression.name,
+        updateOptions,
+      );
 
       // ------------------------------------------------------------------ //
 

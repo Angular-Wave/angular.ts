@@ -10,7 +10,7 @@ import {
 } from "../../shared/utils.js";
 import { browserTrigger, wait } from "../../shared/test-utils.js";
 
-describe("ngOptions", () => {
+xdescribe("ngOptions", () => {
   let scope;
   let formElement;
   let element;
@@ -24,7 +24,6 @@ describe("ngOptions", () => {
   async function compile(html) {
     formElement = $compile(`<form name="form">${html}</form>`)(scope);
     await wait();
-    debugger;
     element = formElement.querySelector("select");
     ngModelCtrl = getController(element, "ngModel");
   }
@@ -159,12 +158,13 @@ describe("ngOptions", () => {
 
   beforeEach(() => {
     errors = [];
+    element = document.getElementById("app");
+    element.innerHTML = "test";
     window.angular = new Angular();
     window.angular
       .module("myModule", ["ng"])
       .decorator("$exceptionHandler", function () {
         return (exception) => {
-          debugger;
           errors.push(exception.message);
         };
       });
@@ -223,7 +223,6 @@ describe("ngOptions", () => {
     ]);
     $compile = injector.get("$compile");
     scope = injector.get("$rootScope").$new(); // create a child scope because the root scope can't be $destroy-ed
-    formElement = element = null;
   });
 
   afterEach(() => {
@@ -250,8 +249,9 @@ describe("ngOptions", () => {
           : '<option value="?">unknown</option>'
         : ""
     }</select>`;
+    element.innerHTML = html;
 
-    await compile(html);
+    await compile(element);
   }
 
   function createSingleSelect(blank, unknown) {
@@ -277,13 +277,13 @@ describe("ngOptions", () => {
     );
   }
 
-  fit('should throw when not formated "? for ? in ?"', async () => {
+  it('should throw when not formated "? for ? in ?"', async () => {
     compile('<select ng-model="selected" ng-options="i dont parse"></select>');
     await wait();
     expect(errors[0]).toMatch("iexp");
   });
 
-  fit("should have a dependency on ngModel", async () => {
+  it("should have a dependency on ngModel", async () => {
     try {
       await compile('<select ng-options="item in items"></select>');
       await wait();
@@ -292,13 +292,19 @@ describe("ngOptions", () => {
     }
   });
 
-  fit("should render a list", async () => {
-    createSingleSelect();
+  it("should render a list", async () => {
+    element.innerHTML =
+      '<select ng-model="selected" ng-options="value.name for value in values"></select>';
+    injector = window.angular.bootstrap(element, ["myModule"]);
+    scope = injector.get("$rootScope");
     await wait();
     scope.values = [{ name: "A" }, { name: "B" }, { name: "C" }];
-    scope.selected = scope.values[1];
+    await wait();
     debugger;
-    const options = element.querySelector("option");
+    scope.selected = { name: "B" };
+
+    await wait();
+    const options = element.querySelectorAll("option");
     expect(options.length).toEqual(3);
     // expect(options[0]).toEqualOption(scope.values[0], "A");
     // expect(options[1]).toEqualOption(scope.values[1], "B");

@@ -1139,16 +1139,6 @@ export class Scope {
     return this.$root == /** @type {Scope} */ (this);
   }
 
-  async $applyAsync(expr) {
-    try {
-      const result = $parse(expr)(this.$proxy);
-      return result;
-    } catch (error) {
-      $exceptionHandler(error);
-      throw error;
-    }
-  }
-
   $postUpdate(fn) {
     $postUpdateQueue.push(fn);
   }
@@ -1222,7 +1212,7 @@ export class Scope {
    */
   $getById(id) {
     if (isString(id)) {
-      id = parseInt(id, 10);
+      id = parseInt(/** @type {string} */ (id), 10);
     }
     if (this.$id === id) {
       return this;

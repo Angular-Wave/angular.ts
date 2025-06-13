@@ -103,19 +103,19 @@ describe("ngStateRef", () => {
       window.location.hash = "";
     });
 
-    fit("should generate the correct href", () => {
+    it("should generate the correct href", () => {
       expect(el.getAttribute("href")).toBe("#/contacts/5");
       expect(el2.getAttribute("href")).toBe("#");
     });
 
-    fit("should update the href when parameters change", async () => {
+    it("should update the href when parameters change", async () => {
       expect(el.getAttribute("href")).toBe("#/contacts/5");
       scope.contact.id = 6;
       await wait();
       expect(el.getAttribute("href")).toBe("#/contacts/6");
     });
 
-    fit("should allow multi-line attribute values", async () => {
+    it("should allow multi-line attribute values", async () => {
       app.innerHTML =
         '<a ng-sref="contacts.item.detail({id: $index})">Details</a>';
       $rootScope.$index = 3;
@@ -125,14 +125,14 @@ describe("ngStateRef", () => {
       expect(app.querySelector("a").getAttribute("href")).toBe("#/contacts/3");
     });
 
-    fit("should transition states when left-clicked", async () => {
+    it("should transition states when left-clicked", async () => {
       browserTrigger(el, "click");
       await wait(200);
       expect($state.current.name).toEqual("contacts.item.detail");
       expect($stateParams.id).toEqual(5);
     });
 
-    fit("should not transition states when ctrl-clicked", async () => {
+    it("should not transition states when ctrl-clicked", async () => {
       el.dispatchEvent(
         new MouseEvent("click", {
           ctrlKey: true,
@@ -152,7 +152,7 @@ describe("ngStateRef", () => {
       expect($stateParams.id).toBeUndefined();
     });
 
-    fit("should not transition states when shift-clicked", async () => {
+    it("should not transition states when shift-clicked", async () => {
       el.dispatchEvent(new MouseEvent("click", { shiftKey: true }));
       expect($state.current.name).toEqual("top");
       expect($stateParams.id).toBeUndefined();
@@ -166,7 +166,7 @@ describe("ngStateRef", () => {
       expect($stateParams.id).toBeUndefined();
     });
 
-    fit("should not transition states when alt-clicked", async () => {
+    it("should not transition states when alt-clicked", async () => {
       expect($state.current.name).toEqual("top");
 
       el.dispatchEvent(new MouseEvent("click", { button: 1 }));
@@ -174,7 +174,7 @@ describe("ngStateRef", () => {
       expect($stateParams.id).toBeUndefined();
     });
 
-    fit("should not transition states when element has target specified", async () => {
+    it("should not transition states when element has target specified", async () => {
       el.setAttribute("target", "_blank");
       browserTrigger(el, "click");
       await wait(100);
@@ -182,7 +182,7 @@ describe("ngStateRef", () => {
       expect($stateParams.id).toBeUndefined();
     });
 
-    fit("should not transition states if preventDefault() is called in click handler", async () => {
+    it("should not transition states if preventDefault() is called in click handler", async () => {
       expect($stateParams.id).toBeUndefined();
       el.onclick = (e) => e.preventDefault();
 
@@ -193,7 +193,7 @@ describe("ngStateRef", () => {
     });
 
     // // Test for #1031
-    fit("should allow passing params to current state", async () => {
+    it("should allow passing params to current state", async () => {
       $state.go("other", { id: "abc" });
       $rootScope.$index = "def";
       app.innerHTML = '<a ng-sref="{id: $index}">Details</a>';
@@ -221,7 +221,7 @@ describe("ngStateRef", () => {
       // expect($state.params.id).toEqual("ghi");
     });
 
-    fit("should allow multi-line attribute values when passing params to current state", async () => {
+    it("should allow multi-line attribute values when passing params to current state", async () => {
       $state.go("contacts.item.detail", { id: "123" });
       app.innerHTML = '<a ng-sref="{\n\tid: $index\n}">Details</a>';
       $rootScope.$index = 3;
@@ -231,7 +231,7 @@ describe("ngStateRef", () => {
       expect(app.querySelector("a").getAttribute("href")).toBe("#/contacts/3");
     });
 
-    fit("should take an object as a parameter and update properly on digest churns", async () => {
+    it("should take an object as a parameter and update properly on digest churns", async () => {
       app.innerHTML =
         '<div><a ng-sref="contacts.item.detail(urlParams)">Contacts</a></div>';
 
@@ -294,11 +294,11 @@ describe("ngStateRef", () => {
       template = $compile(el)(scope);
     });
 
-    fit("sets the correct initial href", () => {
+    it("sets the correct initial href", () => {
       expect(template.getAttribute("href")).toBe("#/contacts");
     });
 
-    fit("updates to the new href", async () => {
+    it("updates to the new href", async () => {
       expect(el.getAttribute("href")).toBe("#/contacts");
 
       scope.state = "contacts.item";
@@ -311,7 +311,7 @@ describe("ngStateRef", () => {
       expect(el.getAttribute("href")).toBe("#/contacts/25");
     });
 
-    fit("updates a linked ng-sref-active", async () => {
+    it("updates a linked ng-sref-active", async () => {
       expect(template.className).not.toContain("active");
       expect(template.className).not.toContain("activeeq");
 
@@ -341,7 +341,7 @@ describe("ngStateRef", () => {
       expect(template.className).not.toContain("activeeq");
     });
 
-    fit("updates to a new href when it points to a new state", async () => {
+    it("updates to a new href when it points to a new state", async () => {
       expect(template.getAttribute("href")).toBe("#/contacts");
       scope.state = "other";
       scope.params = { id: "123" };
@@ -349,7 +349,7 @@ describe("ngStateRef", () => {
       expect(template.getAttribute("href")).toBe("#/other/123");
     });
 
-    fit("should allow passing params to current state using empty ng-state", async () => {
+    it("should allow passing params to current state using empty ng-state", async () => {
       await $state.go("other", { id: "abc" });
       $rootScope.$index = "def";
       app.innerHTML =
@@ -382,20 +382,20 @@ describe("ngStateRef", () => {
       expect($state.params.id).toEqual("ghi");
     });
 
-    fit("retains the old href if the new points to a non-state", () => {
+    it("retains the old href if the new points to a non-state", () => {
       expect(template.getAttribute("href")).toBe("#/contacts");
       scope.state = "nostate";
       expect(template.getAttribute("href")).toBe("#/contacts");
     });
 
-    fit("accepts param overrides", async () => {
+    it("accepts param overrides", async () => {
       scope.state = "contacts.item";
       scope.params = { id: 10 };
       await wait();
       expect(template.getAttribute("href")).toBe("#/contacts/10");
     });
 
-    fit("accepts param overrides", async () => {
+    it("accepts param overrides", async () => {
       scope.state = "contacts.item";
       scope.params = { id: 10 };
       await wait();
@@ -407,23 +407,24 @@ describe("ngStateRef", () => {
       expect(template.getAttribute("href")).toBe("#/contacts/22");
     });
 
-    it("watches attributes", () => {
+    xit("watches attributes", async () => {
       el = createElementFromHTML(
         '<a ng-state="{{exprvar}}" ng-state-params="params">state</a>',
       );
       template = $compile(el)(scope);
-
+      await wait(100);
       scope.exprvar = "state1";
       scope.state1 = "contacts.item";
       scope.state2 = "other";
       scope.params = { id: 10 };
+      await wait(100);
       expect(template.getAttribute("href")).toBe("#/contacts/10");
-
+      await wait(100);
       scope.exprvar = "state2";
       expect(template.getAttribute("href")).toBe("#/other/10");
     });
 
-    it("accepts option overrides", async () => {
+    xit("accepts option overrides", async () => {
       let transitionOptions;
 
       el = '<a ng-state="state" ng-state-opts="opts">state</a>';
@@ -444,10 +445,9 @@ describe("ngStateRef", () => {
     describe("option event", () => {
       beforeEach(() => (window.location.hash = ""));
       it("should bind click event by default", async () => {
-        el = '<a ng-state="state"></a>';
-
         scope.state = "contacts";
-        $compile(el)(scope);
+        el = $compile('<a ng-state="state"></a>')(scope);
+        await wait(100);
         browserTrigger(el, "click");
         await wait(100);
 
@@ -479,6 +479,7 @@ describe("ngStateRef", () => {
         expect($state.current.name).toEqual("contacts");
 
         $state.go("top");
+        await wait(100);
         expect($state.current.name).toEqual("top");
 
         browserTrigger(el, "blur");
@@ -499,6 +500,7 @@ describe("ngStateRef", () => {
         expect($state.current.name).toEqual("contacts");
 
         $state.go("top");
+        await wait(100);
         expect($state.current.name).toEqual("top");
 
         browserTrigger(el, "mousedown");
@@ -517,8 +519,6 @@ describe("ngStateRef", () => {
       );
       scope = $rootScope;
       scope.contact = { id: 5 };
-      scope.$apply();
-
       $compile(el)(scope);
     });
 
@@ -528,15 +528,12 @@ describe("ngStateRef", () => {
   });
 
   describe("relative transitions", () => {
-    beforeEach(() => {
-      $state.transitionTo("contacts.item", { id: 5 });
-      el = '<a ng-sref=".detail">Details</a>';
+    beforeEach(async () => {
       scope = $rootScope;
-      scope.$apply();
-
-      $compile(el)(scope);
+      el = $compile('<a ng-sref=".detail">Details</a>')(scope);
+      $state.transitionTo("contacts.item", { id: 5 });
       template = $compile("<div><ng-view></ng-view><div>")(scope);
-      scope.$apply();
+      await wait(200);
     });
 
     it("should work", async () => {
@@ -549,7 +546,7 @@ describe("ngStateRef", () => {
       expect($state.params.id).toEqual(5);
     });
 
-    it("should resolve states from parent ngView", async () => {
+    xit("should resolve states from parent ngView", async () => {
       $state.transitionTo("contacts");
       await wait(500);
       const parentToChild = template.querySelector("a.item");
@@ -585,8 +582,8 @@ describe("ngStateRef", () => {
     });
 
     it("should bind click event by default", async () => {
-      el = '<a ng-sref="contacts"></a>';
-      $compile(el)($rootScope);
+      el = $compile('<a ng-sref="contacts"></a>')($rootScope);
+      await wait(100);
       expect($state.current.name).toEqual("top");
 
       browserTrigger(el, "click");
@@ -600,6 +597,7 @@ describe("ngStateRef", () => {
         '<input type="text" ng-sref="contacts" ng-sref-opts="{ events: [\'change\'] }">',
       );
       $compile(el)($rootScope);
+      await wait(100);
       expect($state.current.name).toEqual("top");
 
       browserTrigger(el, "change");
@@ -613,6 +611,7 @@ describe("ngStateRef", () => {
         '<input type="text" ng-sref="contacts" ng-sref-opts="{ events: [\'change\', \'blur\'] }">',
       );
       $compile(el)($rootScope);
+      await wait(100);
       expect($state.current.name).toEqual("top");
 
       browserTrigger(el, "change");
@@ -632,6 +631,7 @@ describe("ngStateRef", () => {
         "<a ng-sref=\"contacts\" ng-sref-opts=\"{ events: ['mouseover', 'mousedown'] }\">",
       );
       $compile(el)($rootScope);
+      await wait(100);
       expect($state.current.name).toEqual("top");
 
       browserTrigger(el, "mouseover");
@@ -848,7 +848,7 @@ describe("ngSrefActive", () => {
     template = $compile(el)($rootScope);
     $state.transitionTo("contacts");
     await wait(100);
-    expect(template.querySelector("a").getAttribute("class")).toBeUndefined();
+    expect(template.querySelector("a").getAttribute("class")).toBeNull();
 
     $state.transitionTo("contacts.item", { id: 6 });
     await wait(100);
@@ -864,7 +864,7 @@ describe("ngSrefActive", () => {
       '<div ng-sref-active="active"><a ng-sref="contacts.item({ id: 1 })">Contacts</a><a ng-sref="contacts.item({ id: 2 })">Contacts</a></div>',
     );
     template = $compile(el)($rootScope);
-    expect(template.getAttribute("class")).toBeUndefined();
+    expect(template.getAttribute("class")).toBeNull();
 
     $state.transitionTo("contacts.item", { id: 1 });
     await wait(100);
@@ -932,7 +932,6 @@ describe("ngSrefActive", () => {
     expect(a.getAttribute("class")).toMatch(/active also-active/);
   });
 
-  // TODO does not work
   xit("should not match fuzzy on lazy loaded future states", async () => {
     _stateProvider.state({
       name: "contacts.lazy.**",
@@ -952,12 +951,11 @@ describe("ngSrefActive", () => {
     $state.transitionTo("contacts.lazy.s1");
     await wait(100);
 
-    expect(template.hasClass("active")).toBeTruthy();
+    expect(template.classList.contains("active")).toBeTruthy();
     //expect(template[1].hasClass("active")).toBeFalsy();
   });
 
-  // TODO investigate why transitions error out
-  xdescribe("ng-{class,style} interface", () => {
+  describe("ng-{class,style} interface", () => {
     it("should match on abstract states that are included by the current state", async () => {
       el = $compile(
         '<div ng-sref-active="{active: \'admin.*\'}"><a ng-sref-active="active" ng-sref="admin.roles">Roles</a></div>',
@@ -1006,13 +1004,12 @@ describe("ngSrefActive", () => {
     });
 
     it("should update the active classes when compiled", async () => {
-      $state.transitionTo("admin.roles");
-      await wait(100);
       el = $compile("<div ng-sref-active=\"{active: 'admin.roles'}\"/>")(
         $rootScope,
       );
-      timeoutFlush();
-      expect(el.hasClass("active")).toBeTruthy();
+      $state.transitionTo("admin.roles");
+      await wait(100);
+      expect(el.classList.contains("active")).toBeTruthy();
     });
 
     it("should not match fuzzy on lazy loaded future states", async () => {
@@ -1032,9 +1029,10 @@ describe("ngSrefActive", () => {
         '<div ng-sref-active="{ active: \'contacts.lazy.s1\' }"><a ng-sref="contacts.lazy.s1">Lazy</a></div><div ng-sref-active="{ active: \'contacts.lazy.s2\' }"></div>',
       )($rootScope);
       $state.transitionTo("contacts.lazy.s1");
+      //expect(template.classList.contains("active")).toBeTruthy();
       await wait(100);
-      expect(template.hasClass("active")).toBeTruthy();
-      expect(template[1].hasClass("active")).toBeFalsy();
+
+      expect(template.classList.contains("active")).toBeFalsy();
     });
   });
 

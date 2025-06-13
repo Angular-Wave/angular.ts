@@ -96,7 +96,7 @@ export function ParseProvider() {
       /**
        * @param {string} exp
        * @param interceptorFn
-       * @returns {*|((function(import('../scope/scope.js').Scope, Object=, *=): *)&{literal: boolean, constant: boolean, isPure?: boolean, oneTime: boolean, decoratedNode: import("./interpreter.js").DecoratedASTNode, $$watchDelegate?: (function(import('../scope/scope.js').Scope, Function, boolean, CompiledExpression, (string|(function(import('../scope/scope.js').Scope): *)|CompiledExpression)): *), inputs: (*[]|Function), assign?: (function(*, *): *)})}
+       * @returns any
        */
       function $parse(exp, interceptorFn) {
         var parsedExpression, cacheKey;

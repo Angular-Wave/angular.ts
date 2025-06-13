@@ -221,7 +221,6 @@ export class Scope {
    * @returns {boolean}
    */
   private isRoot;
-  $applyAsync(expr: any): Promise<any>;
   $postUpdate(fn: any): void;
   $destroy(): void;
   /**

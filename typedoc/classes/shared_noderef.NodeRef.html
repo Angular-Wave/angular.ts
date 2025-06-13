@@ -1,0 +1,1826 @@
+<!doctype html>
+<html class="default" lang="en" data-base="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <title>NodeRef | @angular-wave/angular.ts</title>
+    <meta
+      name="description"
+      content="Documentation for @angular-wave/angular.ts"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../assets/style.css" />
+    <link rel="stylesheet" href="../assets/highlight.css" />
+    <script defer src="../assets/main.js"></script>
+    <script async src="../assets/icons.js" id="tsd-icons-script"></script>
+    <script async src="../assets/search.js" id="tsd-search-script"></script>
+    <script async src="../assets/navigation.js" id="tsd-nav-script"></script>
+    <script
+      async
+      src="../assets/hierarchy.js"
+      id="tsd-hierarchy-script"
+    ></script>
+  </head>
+  <body>
+    <script>
+      document.documentElement.dataset.theme =
+        localStorage.getItem("tsd-theme") || "os";
+      document.body.style.display = "none";
+      setTimeout(
+        () =>
+          window.app
+            ? app.showPage()
+            : document.body.style.removeProperty("display"),
+        500,
+      );
+    </script>
+    <header class="tsd-page-toolbar">
+      <div class="tsd-toolbar-contents container">
+        <a href="../index.html" class="title">@angular-wave/angular.ts</a>
+        <div id="tsd-toolbar-links"></div>
+        <button id="tsd-search-trigger" class="tsd-widget" aria-label="Search">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <use href="../assets/icons.svg#icon-search"></use>
+          </svg>
+        </button>
+        <dialog id="tsd-search" aria-label="Search">
+          <input
+            role="combobox"
+            id="tsd-search-input"
+            aria-controls="tsd-search-results"
+            aria-autocomplete="list"
+            aria-expanded="true"
+            autocapitalize="off"
+            autocomplete="off"
+            placeholder="Search the docs"
+            maxlength="100"
+          />
+          <ul role="listbox" id="tsd-search-results"></ul>
+          <div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+            <div>Preparing search index...</div>
+          </div>
+        </dialog>
+        <a
+          href="#"
+          class="tsd-widget menu"
+          id="tsd-toolbar-menu-trigger"
+          data-toggle="menu"
+          aria-label="Menu"
+          ><svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <use href="../assets/icons.svg#icon-menu"></use></svg
+        ></a>
+      </div>
+    </header>
+    <div class="container container-main">
+      <div class="col-content">
+        <div class="tsd-page-title">
+          <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+            <li><a href="../modules/shared_noderef.html">shared/noderef</a></li>
+            <li><a href="" aria-current="page">NodeRef</a></li>
+          </ul>
+          <h1>Class NodeRef</h1>
+        </div>
+        <section class="tsd-panel tsd-comment">
+          <div class="tsd-comment tsd-typography">
+            <p>
+              A type-safe wrapper around a DOM Node, HTMLElement, HTML string,
+              NodeList, or an array of Nodes. Provides guarantees around
+              presence and access.
+            </p>
+          </div>
+          <div class="tsd-comment tsd-typography"></div>
+        </section>
+        <aside class="tsd-sources">
+          <ul>
+            <li>
+              Defined in
+              <a
+                href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L8"
+                >shared/noderef.js:8</a
+              >
+            </li>
+          </ul>
+        </aside>
+        <section class="tsd-panel-group tsd-index-group">
+          <section class="tsd-panel tsd-index-panel">
+            <details class="tsd-index-content tsd-accordion" open>
+              <summary class="tsd-accordion-summary tsd-index-summary">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <use href="../assets/icons.svg#icon-chevronDown"></use>
+                </svg>
+                <h5 class="tsd-index-heading uppercase">Index</h5>
+              </summary>
+              <div class="tsd-accordion-details">
+                <section class="tsd-index-section">
+                  <h3 class="tsd-index-heading">Constructors</h3>
+                  <div class="tsd-index-list">
+                    <a href="#constructor" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Constructor"
+                      >
+                        <use href="../assets/icons.svg#icon-512"></use></svg
+                      ><span>constructor</span></a
+                    >
+                  </div>
+                </section>
+                <section class="tsd-index-section">
+                  <h3 class="tsd-index-heading">Properties</h3>
+                  <div class="tsd-index-list">
+                    <a href="#initial" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
+                        <use href="../assets/icons.svg#icon-1024"></use></svg
+                      ><span>initial</span></a
+                    >
+                    <a href="#islist" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
+                        <use href="../assets/icons.svg#icon-1024"></use></svg
+                      ><span>is<wbr />List</span></a
+                    >
+                    <a href="#linked" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
+                        <use href="../assets/icons.svg#icon-1024"></use></svg
+                      ><span>linked</span></a
+                    >
+                  </div>
+                </section>
+                <section class="tsd-index-section">
+                  <h3 class="tsd-index-heading">Accessors</h3>
+                  <div class="tsd-index-list">
+                    <a href="#dom" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Accessor"
+                      >
+                        <use href="../assets/icons.svg#icon-262144"></use></svg
+                      ><span>dom</span></a
+                    >
+                    <a href="#element" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Accessor"
+                      >
+                        <use href="../assets/icons.svg#icon-262144"></use></svg
+                      ><span>element</span></a
+                    >
+                    <a href="#node" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Accessor"
+                      >
+                        <use href="../assets/icons.svg#icon-262144"></use></svg
+                      ><span>node</span></a
+                    >
+                    <a href="#nodelist" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Accessor"
+                      >
+                        <use href="../assets/icons.svg#icon-262144"></use></svg
+                      ><span>nodelist</span></a
+                    >
+                    <a href="#nodes" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Accessor"
+                      >
+                        <use href="../assets/icons.svg#icon-262144"></use></svg
+                      ><span>nodes</span></a
+                    >
+                    <a href="#size" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Accessor"
+                      >
+                        <use href="../assets/icons.svg#icon-262144"></use></svg
+                      ><span>size</span></a
+                    >
+                  </div>
+                </section>
+                <section class="tsd-index-section">
+                  <h3 class="tsd-index-heading">Methods</h3>
+                  <div class="tsd-index-list">
+                    <a href="#clone" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
+                        <use href="../assets/icons.svg#icon-2048"></use></svg
+                      ><span>clone</span></a
+                    >
+                    <a href="#collection" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
+                        <use href="../assets/icons.svg#icon-2048"></use></svg
+                      ><span>collection</span></a
+                    >
+                    <a href="#getall" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
+                        <use href="../assets/icons.svg#icon-2048"></use></svg
+                      ><span>get<wbr />All</span></a
+                    >
+                    <a href="#getany" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
+                        <use href="../assets/icons.svg#icon-2048"></use></svg
+                      ><span>get<wbr />Any</span></a
+                    >
+                    <a href="#getindex" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
+                        <use href="../assets/icons.svg#icon-2048"></use></svg
+                      ><span>get<wbr />Index</span></a
+                    >
+                    <a href="#iselement" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
+                        <use href="../assets/icons.svg#icon-2048"></use></svg
+                      ><span>is<wbr />Element</span></a
+                    >
+                    <a href="#setindex" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
+                        <use href="../assets/icons.svg#icon-2048"></use></svg
+                      ><span>set<wbr />Index</span></a
+                    >
+                  </div>
+                </section>
+              </div>
+            </details>
+          </section>
+        </section>
+        <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
+          <summary
+            class="tsd-accordion-summary"
+            data-key="section-Constructors"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Constructors</h2>
+          </summary>
+          <section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="constructor">
+                <span>constructor</span
+                ><a
+                  href="#constructor"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div
+                    class="tsd-signature tsd-anchor-link"
+                    id="constructornoderef"
+                  >
+                    <span class="tsd-signature-keyword">new</span>
+                    <span class="tsd-kind-constructor-signature">NodeRef</span
+                    ><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">element</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">string</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">Node</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">Element</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">NodeList</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">Node</span
+                    ><span class="tsd-signature-symbol">[]</span
+                    ><span class="tsd-signature-symbol">)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <a href="" class="tsd-signature-type tsd-kind-class"
+                      >NodeRef</a
+                    ><a
+                      href="#constructornoderef"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">element</span>:
+                            <span class="tsd-signature-type">string</span>
+                            <span class="tsd-signature-symbol">|</span>
+                            <span class="tsd-signature-type">Node</span>
+                            <span class="tsd-signature-symbol">|</span>
+                            <span class="tsd-signature-type">Element</span>
+                            <span class="tsd-signature-symbol">|</span>
+                            <span class="tsd-signature-type">NodeList</span>
+                            <span class="tsd-signature-symbol">|</span>
+                            <span class="tsd-signature-type">Node</span
+                            ><span class="tsd-signature-symbol">[]</span></span
+                          >
+                          <div class="tsd-comment tsd-typography">
+                            <p>The DOM node(s) or HTML string to wrap.</p>
+                          </div>
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns
+                      <a href="" class="tsd-signature-type tsd-kind-class"
+                        >NodeRef</a
+                      >
+                    </h4>
+                    <div class="tsd-comment tsd-typography">
+                      <div class="tsd-tag-throws">
+                        <h4 class="tsd-anchor-link" id="throws">
+                          Throws<a
+                            href="#throws"
+                            aria-label="Permalink"
+                            class="tsd-anchor-icon"
+                            ><svg viewBox="0 0 24 24" aria-hidden="true">
+                              <use
+                                href="../assets/icons.svg#icon-anchor"
+                              ></use></svg
+                          ></a>
+                        </h4>
+                        <p>
+                          If the argument is invalid or cannot be wrapped
+                          properly.
+                        </p>
+                      </div>
+                    </div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L13"
+                            >shared/noderef.js:13</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+          </section>
+        </details>
+        <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
+          <summary class="tsd-accordion-summary" data-key="section-Properties">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Properties</h2>
+          </summary>
+          <section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="initial">
+                <span>initial</span
+                ><a
+                  href="#initial"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <div class="tsd-signature">
+                <span class="tsd-kind-property">initial</span
+                ><span class="tsd-signature-symbol">:</span>
+                <span class="tsd-signature-type">string</span>
+                <span class="tsd-signature-symbol">|</span>
+                <span class="tsd-signature-type">Node</span>
+                <span class="tsd-signature-symbol">|</span>
+                <span class="tsd-signature-type">NodeList</span>
+                <span class="tsd-signature-symbol">|</span>
+                <span class="tsd-signature-type">Node</span
+                ><span class="tsd-signature-symbol">[]</span>
+              </div>
+              <aside class="tsd-sources">
+                <ul>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L15"
+                      >shared/noderef.js:15</a
+                    >
+                  </li>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L34"
+                      >shared/noderef.js:34</a
+                    >
+                  </li>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L48"
+                      >shared/noderef.js:48</a
+                    >
+                  </li>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L59"
+                      >shared/noderef.js:59</a
+                    >
+                  </li>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L65"
+                      >shared/noderef.js:65</a
+                    >
+                  </li>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L72"
+                      >shared/noderef.js:72</a
+                    >
+                  </li>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L75"
+                      >shared/noderef.js:75</a
+                    >
+                  </li>
+                </ul>
+              </aside>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="islist">
+                <span>is<wbr />List</span
+                ><a
+                  href="#islist"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <div class="tsd-signature">
+                <span class="tsd-kind-property">isList</span
+                ><span class="tsd-signature-symbol">:</span>
+                <span class="tsd-signature-type">boolean</span>
+              </div>
+              <div class="tsd-comment tsd-typography"></div>
+              <aside class="tsd-sources">
+                <ul>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L30"
+                      >shared/noderef.js:30</a
+                    >
+                  </li>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L53"
+                      >shared/noderef.js:53</a
+                    >
+                  </li>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L94"
+                      >shared/noderef.js:94</a
+                    >
+                  </li>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L123"
+                      >shared/noderef.js:123</a
+                    >
+                  </li>
+                </ul>
+              </aside>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="linked">
+                <span>linked</span
+                ><a
+                  href="#linked"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <div class="tsd-signature">
+                <span class="tsd-kind-property">linked</span
+                ><span class="tsd-signature-symbol">:</span>
+                <span class="tsd-signature-type">boolean</span>
+              </div>
+              <div class="tsd-comment tsd-typography"></div>
+              <aside class="tsd-sources">
+                <ul>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L27"
+                      >shared/noderef.js:27</a
+                    >
+                  </li>
+                </ul>
+              </aside>
+            </section>
+          </section>
+        </details>
+        <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
+          <summary class="tsd-accordion-summary" data-key="section-Accessors">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Accessors</h2>
+          </summary>
+          <section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="dom">
+                <span>dom</span
+                ><a href="#dom" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li>
+                  <div class="tsd-signature" id="domdom">
+                    <span class="tsd-signature-keyword">get</span>
+                    <span class="tsd-kind-get-signature">dom</span
+                    ><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">Node</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">Element</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">ChildNode</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">NodeList</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">Node</span
+                    ><span class="tsd-signature-symbol">[]</span>
+                  </div>
+                  <div class="tsd-description">
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">Node</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <span class="tsd-signature-type">Element</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <span class="tsd-signature-type">ChildNode</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <span class="tsd-signature-type">NodeList</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <span class="tsd-signature-type">Node</span
+                      ><span class="tsd-signature-symbol">[]</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L150"
+                            >shared/noderef.js:150</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="element">
+                <span>element</span
+                ><a
+                  href="#element"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li>
+                  <div class="tsd-signature" id="elementelement">
+                    <span class="tsd-signature-keyword">get</span>
+                    <span class="tsd-kind-get-signature">element</span
+                    ><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">Element</span>
+                  </div>
+                  <div class="tsd-description">
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">Element</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L84"
+                            >shared/noderef.js:84</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+                <li>
+                  <div class="tsd-signature" id="elementelement-1">
+                    <span class="tsd-signature-keyword">set</span>
+                    <span class="tsd-kind-set-signature">element</span
+                    ><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">el</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">Element</span
+                    ><span class="tsd-signature-symbol">)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">void</span>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">el</span>:
+                            <span class="tsd-signature-type"
+                              >Element</span
+                            ></span
+                          >
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">void</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L90"
+                            >shared/noderef.js:90</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="node">
+                <span>node</span
+                ><a href="#node" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li>
+                  <div class="tsd-signature" id="nodenode">
+                    <span class="tsd-signature-keyword">get</span>
+                    <span class="tsd-kind-get-signature">node</span
+                    ><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">Node</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">ChildNode</span>
+                  </div>
+                  <div class="tsd-description">
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">Node</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <span class="tsd-signature-type">ChildNode</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L98"
+                            >shared/noderef.js:98</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+                <li>
+                  <div class="tsd-signature" id="nodenode-1">
+                    <span class="tsd-signature-keyword">set</span>
+                    <span class="tsd-kind-set-signature">node</span
+                    ><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">node</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">Node</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">ChildNode</span
+                    ><span class="tsd-signature-symbol">)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">void</span>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">node</span>:
+                            <span class="tsd-signature-type">Node</span>
+                            <span class="tsd-signature-symbol">|</span>
+                            <span class="tsd-signature-type"
+                              >ChildNode</span
+                            ></span
+                          >
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">void</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L104"
+                            >shared/noderef.js:104</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="nodelist">
+                <span>nodelist</span
+                ><a
+                  href="#nodelist"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li>
+                  <div class="tsd-signature" id="nodelistnodelist">
+                    <span class="tsd-signature-keyword">get</span>
+                    <span class="tsd-kind-get-signature">nodelist</span
+                    ><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">NodeList</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">Node</span
+                    ><span class="tsd-signature-symbol">[]</span>
+                  </div>
+                  <div class="tsd-description">
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">NodeList</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <span class="tsd-signature-type">Node</span
+                      ><span class="tsd-signature-symbol">[]</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L133"
+                            >shared/noderef.js:133</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="nodes">
+                <span>nodes</span
+                ><a href="#nodes" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li>
+                  <div class="tsd-signature" id="nodesnodes">
+                    <span class="tsd-signature-keyword">get</span>
+                    <span class="tsd-kind-get-signature">nodes</span
+                    ><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">Node</span
+                    ><span class="tsd-signature-symbol">[]</span>
+                  </div>
+                  <div class="tsd-description">
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">Node</span
+                      ><span class="tsd-signature-symbol">[]</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L127"
+                            >shared/noderef.js:127</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+                <li>
+                  <div class="tsd-signature" id="nodesnodes-1">
+                    <span class="tsd-signature-keyword">set</span>
+                    <span class="tsd-kind-set-signature">nodes</span
+                    ><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">nodes</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">Node</span
+                    ><span class="tsd-signature-symbol">[]</span
+                    ><span class="tsd-signature-symbol">)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">void</span>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">nodes</span>:
+                            <span class="tsd-signature-type">Node</span
+                            ><span class="tsd-signature-symbol">[]</span></span
+                          >
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">void</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L117"
+                            >shared/noderef.js:117</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="size">
+                <span>size</span
+                ><a href="#size" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li>
+                  <div class="tsd-signature" id="sizesize">
+                    <span class="tsd-signature-keyword">get</span>
+                    <span class="tsd-kind-get-signature">size</span
+                    ><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">number</span>
+                  </div>
+                  <div class="tsd-description">
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">number</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L156"
+                            >shared/noderef.js:156</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+          </section>
+        </details>
+        <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
+          <summary class="tsd-accordion-summary" data-key="section-Methods">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Methods</h2>
+          </summary>
+          <section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="clone">
+                <span>clone</span
+                ><a href="#clone" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="clone-1">
+                    <span class="tsd-kind-call-signature">clone</span
+                    ><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <a href="" class="tsd-signature-type tsd-kind-class"
+                      >NodeRef</a
+                    ><a
+                      href="#clone-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <h4 class="tsd-returns-title">
+                      Returns
+                      <a href="" class="tsd-signature-type tsd-kind-class"
+                        >NodeRef</a
+                      >
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L216"
+                            >shared/noderef.js:216</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="collection">
+                <span>collection</span
+                ><a
+                  href="#collection"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="collection-1">
+                    <span class="tsd-kind-call-signature">collection</span
+                    ><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">Element</span
+                    ><span class="tsd-signature-symbol">[]</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">Node</span
+                    ><span class="tsd-signature-symbol">[]</span
+                    ><a
+                      href="#collection-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">Element</span
+                      ><span class="tsd-signature-symbol">[]</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <span class="tsd-signature-type">Node</span
+                      ><span class="tsd-signature-symbol">[]</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L179"
+                            >shared/noderef.js:179</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="getall">
+                <span>get<wbr />All</span
+                ><a
+                  href="#getall"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="getall-1">
+                    <span class="tsd-kind-call-signature">getAll</span
+                    ><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">Node</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">Element</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">ChildNode</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">Node</span
+                    ><span class="tsd-signature-symbol">[]</span
+                    ><a
+                      href="#getall-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">Node</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <span class="tsd-signature-type">Element</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <span class="tsd-signature-type">ChildNode</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <span class="tsd-signature-type">Node</span
+                      ><span class="tsd-signature-symbol">[]</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L170"
+                            >shared/noderef.js:170</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="getany">
+                <span>get<wbr />Any</span
+                ><a
+                  href="#getany"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="getany-1">
+                    <span class="tsd-kind-call-signature">getAny</span
+                    ><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">Node</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">Element</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">ChildNode</span
+                    ><a
+                      href="#getany-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">Node</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <span class="tsd-signature-type">Element</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <span class="tsd-signature-type">ChildNode</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L161"
+                            >shared/noderef.js:161</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="getindex">
+                <span>get<wbr />Index</span
+                ><a
+                  href="#getindex"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="getindex-1">
+                    <span class="tsd-kind-call-signature">getIndex</span
+                    ><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">index</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">number</span
+                    ><span class="tsd-signature-symbol">)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">Node</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">Element</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">ChildNode</span
+                    ><a
+                      href="#getindex-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">index</span>:
+                            <span class="tsd-signature-type">number</span></span
+                          >
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">Node</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <span class="tsd-signature-type">Element</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <span class="tsd-signature-type">ChildNode</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L191"
+                            >shared/noderef.js:191</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="iselement">
+                <span>is<wbr />Element</span
+                ><a
+                  href="#iselement"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="iselement-1">
+                    <span class="tsd-kind-call-signature">isElement</span
+                    ><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">boolean</span
+                    ><a
+                      href="#iselement-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">boolean</span>
+                    </h4>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L224"
+                            >shared/noderef.js:224</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="setindex">
+                <span>set<wbr />Index</span
+                ><a
+                  href="#setindex"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="setindex-1">
+                    <span class="tsd-kind-call-signature">setIndex</span
+                    ><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">index</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">number</span
+                    ><span class="tsd-signature-symbol">,</span>
+                    <span class="tsd-kind-parameter">node</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">Node</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">Element</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <span class="tsd-signature-type">ChildNode</span
+                    ><span class="tsd-signature-symbol">)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">void</span
+                    ><a
+                      href="#setindex-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">index</span>:
+                            <span class="tsd-signature-type">number</span></span
+                          >
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">node</span>:
+                            <span class="tsd-signature-type">Node</span>
+                            <span class="tsd-signature-symbol">|</span>
+                            <span class="tsd-signature-type">Element</span>
+                            <span class="tsd-signature-symbol">|</span>
+                            <span class="tsd-signature-type"
+                              >ChildNode</span
+                            ></span
+                          >
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">void</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/shared/noderef.js#L203"
+                            >shared/noderef.js:203</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+          </section>
+        </details>
+      </div>
+      <div class="col-sidebar">
+        <div class="page-menu">
+          <div class="tsd-navigation settings">
+            <details class="tsd-accordion">
+              <summary class="tsd-accordion-summary">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <use href="../assets/icons.svg#icon-chevronDown"></use>
+                </svg>
+                <h3>Settings</h3>
+              </summary>
+              <div class="tsd-accordion-details">
+                <div class="tsd-filter-visibility">
+                  <span class="settings-label">Member Visibility</span>
+                  <ul id="tsd-filter-options">
+                    <li class="tsd-filter-item">
+                      <label class="tsd-filter-input"
+                        ><input
+                          type="checkbox"
+                          id="tsd-filter-protected"
+                          name="protected"
+                        /><svg
+                          width="32"
+                          height="32"
+                          viewBox="0 0 32 32"
+                          aria-hidden="true"
+                        >
+                          <rect
+                            class="tsd-checkbox-background"
+                            width="30"
+                            height="30"
+                            x="1"
+                            y="1"
+                            rx="6"
+                            fill="none"
+                          ></rect>
+                          <path
+                            class="tsd-checkbox-checkmark"
+                            d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25"
+                            stroke="none"
+                            stroke-width="3.5"
+                            stroke-linejoin="round"
+                            fill="none"
+                          ></path></svg
+                        ><span>Protected</span></label
+                      >
+                    </li>
+                    <li class="tsd-filter-item">
+                      <label class="tsd-filter-input"
+                        ><input
+                          type="checkbox"
+                          id="tsd-filter-inherited"
+                          name="inherited"
+                          checked
+                        /><svg
+                          width="32"
+                          height="32"
+                          viewBox="0 0 32 32"
+                          aria-hidden="true"
+                        >
+                          <rect
+                            class="tsd-checkbox-background"
+                            width="30"
+                            height="30"
+                            x="1"
+                            y="1"
+                            rx="6"
+                            fill="none"
+                          ></rect>
+                          <path
+                            class="tsd-checkbox-checkmark"
+                            d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25"
+                            stroke="none"
+                            stroke-width="3.5"
+                            stroke-linejoin="round"
+                            fill="none"
+                          ></path></svg
+                        ><span>Inherited</span></label
+                      >
+                    </li>
+                    <li class="tsd-filter-item">
+                      <label class="tsd-filter-input"
+                        ><input
+                          type="checkbox"
+                          id="tsd-filter-external"
+                          name="external"
+                        /><svg
+                          width="32"
+                          height="32"
+                          viewBox="0 0 32 32"
+                          aria-hidden="true"
+                        >
+                          <rect
+                            class="tsd-checkbox-background"
+                            width="30"
+                            height="30"
+                            x="1"
+                            y="1"
+                            rx="6"
+                            fill="none"
+                          ></rect>
+                          <path
+                            class="tsd-checkbox-checkmark"
+                            d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25"
+                            stroke="none"
+                            stroke-width="3.5"
+                            stroke-linejoin="round"
+                            fill="none"
+                          ></path></svg
+                        ><span>External</span></label
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <div class="tsd-theme-toggle">
+                  <label class="settings-label" for="tsd-theme">Theme</label
+                  ><select id="tsd-theme">
+                    <option value="os">OS</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                  </select>
+                </div>
+              </div>
+            </details>
+          </div>
+          <details open class="tsd-accordion tsd-page-navigation">
+            <summary class="tsd-accordion-summary">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <use href="../assets/icons.svg#icon-chevronDown"></use>
+              </svg>
+              <h3>On This Page</h3>
+            </summary>
+            <div class="tsd-accordion-details">
+              <details open class="tsd-accordion tsd-page-navigation-section">
+                <summary
+                  class="tsd-accordion-summary"
+                  data-key="section-Constructors"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
+                  >Constructors
+                </summary>
+                <div>
+                  <a href="#constructor"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Constructor"
+                    >
+                      <use href="../assets/icons.svg#icon-512"></use></svg
+                    ><span>constructor</span></a
+                  >
+                </div>
+              </details>
+              <details open class="tsd-accordion tsd-page-navigation-section">
+                <summary
+                  class="tsd-accordion-summary"
+                  data-key="section-Properties"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
+                  >Properties
+                </summary>
+                <div>
+                  <a href="#initial"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
+                      <use href="../assets/icons.svg#icon-1024"></use></svg
+                    ><span>initial</span></a
+                  ><a href="#islist"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
+                      <use href="../assets/icons.svg#icon-1024"></use></svg
+                    ><span>is<wbr />List</span></a
+                  ><a href="#linked"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
+                      <use href="../assets/icons.svg#icon-1024"></use></svg
+                    ><span>linked</span></a
+                  >
+                </div>
+              </details>
+              <details open class="tsd-accordion tsd-page-navigation-section">
+                <summary
+                  class="tsd-accordion-summary"
+                  data-key="section-Accessors"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
+                  >Accessors
+                </summary>
+                <div>
+                  <a href="#dom"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Accessor"
+                    >
+                      <use href="../assets/icons.svg#icon-262144"></use></svg
+                    ><span>dom</span></a
+                  ><a href="#element"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Accessor"
+                    >
+                      <use href="../assets/icons.svg#icon-262144"></use></svg
+                    ><span>element</span></a
+                  ><a href="#node"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Accessor"
+                    >
+                      <use href="../assets/icons.svg#icon-262144"></use></svg
+                    ><span>node</span></a
+                  ><a href="#nodelist"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Accessor"
+                    >
+                      <use href="../assets/icons.svg#icon-262144"></use></svg
+                    ><span>nodelist</span></a
+                  ><a href="#nodes"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Accessor"
+                    >
+                      <use href="../assets/icons.svg#icon-262144"></use></svg
+                    ><span>nodes</span></a
+                  ><a href="#size"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Accessor"
+                    >
+                      <use href="../assets/icons.svg#icon-262144"></use></svg
+                    ><span>size</span></a
+                  >
+                </div>
+              </details>
+              <details open class="tsd-accordion tsd-page-navigation-section">
+                <summary
+                  class="tsd-accordion-summary"
+                  data-key="section-Methods"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
+                  >Methods
+                </summary>
+                <div>
+                  <a href="#clone"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
+                      <use href="../assets/icons.svg#icon-2048"></use></svg
+                    ><span>clone</span></a
+                  ><a href="#collection"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
+                      <use href="../assets/icons.svg#icon-2048"></use></svg
+                    ><span>collection</span></a
+                  ><a href="#getall"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
+                      <use href="../assets/icons.svg#icon-2048"></use></svg
+                    ><span>get<wbr />All</span></a
+                  ><a href="#getany"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
+                      <use href="../assets/icons.svg#icon-2048"></use></svg
+                    ><span>get<wbr />Any</span></a
+                  ><a href="#getindex"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
+                      <use href="../assets/icons.svg#icon-2048"></use></svg
+                    ><span>get<wbr />Index</span></a
+                  ><a href="#iselement"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
+                      <use href="../assets/icons.svg#icon-2048"></use></svg
+                    ><span>is<wbr />Element</span></a
+                  ><a href="#setindex"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
+                      <use href="../assets/icons.svg#icon-2048"></use></svg
+                    ><span>set<wbr />Index</span></a
+                  >
+                </div>
+              </details>
+            </div>
+          </details>
+        </div>
+        <div class="site-menu">
+          <nav class="tsd-navigation">
+            <a href="../modules.html">@angular-wave/angular.ts</a>
+            <ul class="tsd-small-nested-navigation" id="tsd-nav-container">
+              <li>Loading...</li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <p class="tsd-generator">
+        Generated using
+        <a href="https://typedoc.org/" target="_blank">TypeDoc</a>
+      </p>
+    </footer>
+    <div class="overlay"></div>
+  </body>
+</html>

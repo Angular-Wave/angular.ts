@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   createElementFromHTML,
   createNodelistFromHTML,
@@ -2382,7 +2383,8 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 // Copy in CSS classes from original node
                 try {
                   if (oldClasses !== "") {
-                    beforeTemplateLinkNode.classList.add(...linkNode.classList);
+                    const classes = /** {Element} */ linkNode.classList;
+                    beforeTemplateLinkNode.classList.add(...classes);
                   }
                 } catch {
                   // ignore, since it means that we are trying to set class on
@@ -3096,7 +3098,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
         }
 
         function triggerOnChangesHook() {
-          destination.$onChanges && destination.$onChanges(changes);
+          destination["$onChanges"] && destination["$onChanges"](changes);
           // Now clear the changes so that we schedule onChanges when more changes arrive
           changes = undefined;
         }

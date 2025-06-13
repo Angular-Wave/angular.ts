@@ -183,7 +183,7 @@ export function ngRepeatDirective($animate) {
           for (index = 0; index < collectionLength; index++) {
             key = collection === collectionKeys ? index : collectionKeys[index];
             value = collection[key];
-            trackById = trackByIdFn($scope, key, value, index);
+            trackById = trackByIdFn($scope, key, value);
             if (lastBlockMap[trackById]) {
               // found previously seen block
               block = lastBlockMap[trackById];

@@ -2,26 +2,20 @@ import { isAssignable } from "../interpreter.js";
 import { ASTType } from "../ast-type.js";
 import { minErr } from "../../../shared/utils.js";
 
-const $parseMinErr = minErr("$parse");
-
 /**
  * @typedef {import("./ast-node.ts").ASTNode} ASTNode
- */
-
-/**
  * @typedef {import("../lexer/token.js").Token} Token
  */
 
-// Keep this exported in case modification is required
+const $parseMinErr = minErr("$parse");
+
 /** @type {Map<string,any>} */
-export const literals = new Map(
-  Object.entries({
-    true: true,
-    false: false,
-    null: null,
-    undefined,
-  }),
-);
+const literals = new Map([
+  ["true", true],
+  ["false", false],
+  ["null", null],
+  ["undefined", undefined],
+]);
 
 /**
  * @class

@@ -1,12 +1,4 @@
 /**
- * @typedef {import("./ast-node.ts").ASTNode} ASTNode
- */
-/**
- * @typedef {import("../lexer/token.js").Token} Token
- */
-/** @type {Map<string,any>} */
-export const literals: Map<string, any>;
-/**
  * @class
  */
 export class AST {

@@ -620,6 +620,7 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
     decoratedObject,
     decoratedProperty,
     decoratedKey;
+  // @ts-ignore
   const astIsPure = (decoratedNode.isPure = isPure(ast, parentIsPure));
 
   switch (ast.type) {

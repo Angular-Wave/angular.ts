@@ -3,9 +3,9 @@ import {
   hasAnimate,
   isDefined,
   isFunction,
-  isString,
+  // isString,
 } from "../../shared/utils.js";
-import { kebobString } from "../../shared/strings.js";
+// import { kebobString } from "../../shared/strings.js";
 import { parse } from "../../shared/hof.js";
 import { ResolveContext } from "../resolve/resolve-context.js";
 import { trace } from "../common/trace.js";
@@ -362,32 +362,33 @@ export function $ViewDirectiveFill($compile, $controller, $transitions) {
           );
         }
         // Wait for the component to appear in the DOM
-        if (isString(cfg.component)) {
-          const kebobName = kebobString(cfg.component);
-          const tagRegexp = new RegExp(`^(x-|data-)?${kebobName}$`, "i");
-          const getComponentController = () => {
-            const directiveEl = [].slice
-              .call($element.children)
-              .filter((el) => el && el.tagName && tagRegexp.exec(el.tagName));
-            return (
-              directiveEl &&
-              getCacheData(directiveEl, `$${cfg.component}Controller`)
-            );
-          };
-          const deregisterWatch = scope.$watch(
-            getComponentController,
-            function (ctrlInstance) {
-              if (!ctrlInstance) return;
-              registerControllerCallbacks(
-                $transitions,
-                ctrlInstance,
-                scope,
-                cfg,
-              );
-              deregisterWatch();
-            },
-          );
-        }
+        // if (isString(cfg.component)) {
+        //const kebobName = kebobString(cfg.component);
+        // const tagRegexp = new RegExp(`^(x-|data-)?${kebobName}$`, "i");
+        // const getComponentController = () => {
+        //   const directiveEl = [].slice
+        //     .call($element.children)
+        //     .filter((el) => el && el.tagName && tagRegexp.exec(el.tagName));
+        //   return (
+        //     directiveEl &&
+        //     getCacheData(directiveEl, `$${cfg.component}Controller`)
+        //   );
+        // };
+        //console.error(getComponentController());
+        // const deregisterWatch = scope.$watch(
+        //   getComponentController,
+        //   function (ctrlInstance) {
+        //     if (!ctrlInstance) return;
+        //     registerControllerCallbacks(
+        //       $transitions,
+        //       ctrlInstance,
+        //       scope,
+        //       cfg,
+        //     );
+        //     deregisterWatch();
+        //   },
+        // );
+        // }
         link(scope);
       };
     },

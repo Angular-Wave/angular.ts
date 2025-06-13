@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="default" lang="en">
+<html class="default" lang="en" data-base="./">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
@@ -15,6 +15,7 @@
     <script async src="assets/icons.js" id="tsd-icons-script"></script>
     <script async src="assets/search.js" id="tsd-search-script"></script>
     <script async src="assets/navigation.js" id="tsd-nav-script"></script>
+    <script async src="assets/hierarchy.js" id="tsd-hierarchy-script"></script>
   </head>
   <body>
     <script>
@@ -23,57 +24,77 @@
       document.body.style.display = "none";
       setTimeout(
         () =>
-          app ? app.showPage() : document.body.style.removeProperty("display"),
+          window.app
+            ? app.showPage()
+            : document.body.style.removeProperty("display"),
         500,
       );
     </script>
     <header class="tsd-page-toolbar">
       <div class="tsd-toolbar-contents container">
-        <div class="table-cell" id="tsd-search" data-base=".">
-          <div class="field">
-            <label
-              for="tsd-search-field"
-              class="tsd-widget tsd-toolbar-icon search no-caption"
-              ><svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <use href="assets/icons.svg#icon-search"></use></svg></label
-            ><input type="text" id="tsd-search-field" aria-label="Search" />
+        <a href="index.html" class="title">@angular-wave/angular.ts</a>
+        <div id="tsd-toolbar-links"></div>
+        <button id="tsd-search-trigger" class="tsd-widget" aria-label="Search">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <use href="assets/icons.svg#icon-search"></use>
+          </svg>
+        </button>
+        <dialog id="tsd-search" aria-label="Search">
+          <input
+            role="combobox"
+            id="tsd-search-input"
+            aria-controls="tsd-search-results"
+            aria-autocomplete="list"
+            aria-expanded="true"
+            autocapitalize="off"
+            autocomplete="off"
+            placeholder="Search the docs"
+            maxlength="100"
+          />
+          <ul role="listbox" id="tsd-search-results"></ul>
+          <div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+            <div>Preparing search index...</div>
           </div>
-          <div class="field"><div id="tsd-toolbar-links"></div></div>
-          <ul class="results">
-            <li class="state loading">Preparing search index...</li>
-            <li class="state failure">The search index is not available</li>
-          </ul>
-          <a href="index.html" class="title">@angular-wave/angular.ts</a>
-        </div>
-        <div class="table-cell" id="tsd-widgets">
-          <a
-            href="#"
-            class="tsd-widget tsd-toolbar-icon menu no-caption"
-            data-toggle="menu"
-            aria-label="Menu"
-            ><svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <use href="assets/icons.svg#icon-menu"></use></svg
-          ></a>
-        </div>
+        </dialog>
+        <a
+          href="#"
+          class="tsd-widget menu"
+          id="tsd-toolbar-menu-trigger"
+          data-toggle="menu"
+          aria-label="Menu"
+          ><svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <use href="assets/icons.svg#icon-menu"></use></svg
+        ></a>
       </div>
     </header>
     <div class="container container-main">
       <div class="col-content">
-        <div class="tsd-page-title"><h2>@angular-wave/angular.ts</h2></div>
+        <div class="tsd-page-title"><h1>@angular-wave/angular.ts</h1></div>
         <div class="tsd-panel tsd-typography">
-          <a id="md:angularts" class="tsd-anchor"></a>
-          <h2 class="tsd-anchor-link">
+          <h2 id="angularts" class="tsd-anchor-link">
             AngularTS<a
-              href="#md:angularts"
+              href="#angularts"
               aria-label="Permalink"
               class="tsd-anchor-icon"
-              ><svg viewBox="0 0 24 24">
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
                 <use href="assets/icons.svg#icon-anchor"></use></svg
             ></a>
           </h2>
           <p>
             <img
-              src="https://github.com/Angular-Wave/angular.ts/actions/workflows/playwright.yml/badge.svg"
+              src="https://github.com/Angular-Wave/angular.ts/actions/workflows/ci.yml/badge.svg"
               alt="Build status"
             />
             <a
@@ -89,45 +110,59 @@
             framework. AngularTS is &quot;AngularJS: The Good Parts&quot;. It
             takes the three core pillars of the original – a
             string-interpolation engine, dependency injection, two-way
-            data-binding – and adds modern build tooling with strong
-            typechecking of TypeScript. The result is a buildless, progressive
-            and battle-tested JS framework that stays as close to Web standards
-            as possible.
+            data-binding – and adds a reactive change-detection model on top of
+            modern build tooling with strong typechecking of TypeScript.
           </p>
           <p>
-            AngularTS lets you write server-rendered web applications for
-            desktop and mobile, without leaving the comfort of your tech-stack.
-            It lets you use good old HTML as your template language and lets you
-            extend HTML’s syntax to express your application’s components
-            clearly and succinctly. It automatically synchronizes data from your
-            UI (view) with your JavaScript objects (model) through 2-way data
-            binding. To help you structure your application better and make it
-            easy to test, AngularTS teaches the browser how to do dependency
-            injection and inversion of control.
+            The result is a high-performance, buildless, progressive and
+            battle-tested JS framework that stays as close to Web standards as
+            possible.
           </p>
           <p>
-            It also helps with server-side communication, taming async callbacks
-            with promises and deferred objects, and it makes client-side
-            navigation and deep linking with hashbang urls or HTML5 pushState a
-            piece of cake.
+            With AngularTS, you get a decade-long optimization effort of Angular
+            Team at Google and massive testing suite, required for applications
+            like Google Cloud and Kubernetes, plus:
           </p>
-          <a id="md:getting-started" class="tsd-anchor"></a>
-          <h3 class="tsd-anchor-link">
+          <ul>
+            <li>
+              a fully reactive change-detection model without digests or virtual
+              DOMs.
+            </li>
+            <li>
+              access to native DOM APIs at component and directive level (no
+              <code>JQuery</code>or <code>JQLite</code>)
+            </li>
+            <li>
+              access to native Promises API (no <code>$q</code> or
+              <code>$timetout</code>)
+            </li>
+            <li>
+              built-in enterprise-level router (<code>ui-router</code> ported as
+              <code>ng-router</code>)
+            </li>
+            <li>built-in animations (<code>animate</code>)</li>
+            <li>new directives, inspired by HTMX</li>
+          </ul>
+          <p>
+            If you write server-rendered web applications for desktop and
+            mobile, and do not wish to leave the comfort of your tech-stack,
+            this is your new secret weapon.
+          </p>
+          <h3 id="getting-started" class="tsd-anchor-link">
             Getting started<a
-              href="#md:getting-started"
+              href="#getting-started"
               aria-label="Permalink"
               class="tsd-anchor-icon"
-              ><svg viewBox="0 0 24 24">
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
                 <use href="assets/icons.svg#icon-anchor"></use></svg
             ></a>
           </h3>
-          <a id="md:install" class="tsd-anchor"></a>
-          <h4 class="tsd-anchor-link">
+          <h4 id="install" class="tsd-anchor-link">
             Install<a
-              href="#md:install"
+              href="#install"
               aria-label="Permalink"
               class="tsd-anchor-icon"
-              ><svg viewBox="0 0 24 24">
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
                 <use href="assets/icons.svg#icon-anchor"></use></svg
             ></a>
           </h4>
@@ -139,7 +174,7 @@
 </code><button type="button">Copy</button></pre>
 
           <p>Initialize your app</p>
-          <pre><code class="html"><span class="hl-3">&lt;</span><span class="hl-4">div</span><span class="hl-1"> </span><span class="hl-6">ng-app</span><span class="hl-1"> </span><span class="hl-6">ng-init</span><span class="hl-1">=</span><span class="hl-7">&quot;x=&#39;world&#39;&quot;</span><span class="hl-3">&gt;</span><br/><span class="hl-1">    Hello  {{ x }}</span><br/><span class="hl-3">&lt;/</span><span class="hl-4">div</span><span class="hl-3">&gt;</span>
+          <pre><code class="html"><span class="hl-3">&lt;</span><span class="hl-4">div</span><span class="hl-1"> </span><span class="hl-6">ng-app</span><span class="hl-1"> </span><span class="hl-6">ng-init</span><span class="hl-1">=</span><span class="hl-7">&quot;x=&#39;world&#39;&quot;</span><span class="hl-3">&gt;</span><span class="hl-1">Hello {{ x }}</span><span class="hl-3">&lt;/</span><span class="hl-4">div</span><span class="hl-3">&gt;</span>
 </code><button type="button">Copy</button></pre>
 
           <p>
@@ -150,13 +185,12 @@
             inspiration for new ideas.
           </p>
           <p>New docs website is coming!</p>
-          <a id="md:legacy-docs" class="tsd-anchor"></a>
-          <h3 class="tsd-anchor-link">
+          <h3 id="legacy-docs" class="tsd-anchor-link">
             Legacy docs<a
-              href="#md:legacy-docs"
+              href="#legacy-docs"
               aria-label="Permalink"
               class="tsd-anchor-icon"
-              ><svg viewBox="0 0 24 24">
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
                 <use href="assets/icons.svg#icon-anchor"></use></svg
             ></a>
           </h3>
@@ -198,13 +232,12 @@
               >
             </li>
           </ul>
-          <a id="md:documentation" class="tsd-anchor"></a>
-          <h2 class="tsd-anchor-link">
+          <h2 id="documentation" class="tsd-anchor-link">
             Documentation<a
-              href="#md:documentation"
+              href="#documentation"
               aria-label="Permalink"
               class="tsd-anchor-icon"
-              ><svg viewBox="0 0 24 24">
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
                 <use href="assets/icons.svg#icon-anchor"></use></svg
             ></a>
           </h2>
@@ -212,13 +245,12 @@
             Go to
             <a href="https://docs.angularjs.org">https://docs.angularjs.org</a>
           </p>
-          <a id="md:contribute" class="tsd-anchor"></a>
-          <h2 class="tsd-anchor-link">
+          <h2 id="contribute" class="tsd-anchor-link">
             Contribute<a
-              href="#md:contribute"
+              href="#contribute"
               aria-label="Permalink"
               class="tsd-anchor-icon"
-              ><svg viewBox="0 0 24 24">
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
                 <use href="assets/icons.svg#icon-anchor"></use></svg
             ></a>
           </h2>
@@ -229,13 +261,12 @@
               >contribution guidelines</a
             >.
           </p>
-          <a id="md:develop" class="tsd-anchor"></a>
-          <h2 class="tsd-anchor-link">
+          <h2 id="develop" class="tsd-anchor-link">
             Develop<a
-              href="#md:develop"
+              href="#develop"
               aria-label="Permalink"
               class="tsd-anchor-icon"
-              ><svg viewBox="0 0 24 24">
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
                 <use href="assets/icons.svg#icon-anchor"></use></svg
             ></a>
           </h2>
@@ -253,16 +284,15 @@
                 alt="Analytics"
             /></a>
           </p>
-          <a
-            id="md:what-to-use-angularjs-for-and-when-to-use-it"
-            class="tsd-anchor"
-          ></a>
-          <h2 class="tsd-anchor-link">
+          <h2
+            id="what-to-use-angularjs-for-and-when-to-use-it"
+            class="tsd-anchor-link"
+          >
             What to use AngularJS for and when to use it<a
-              href="#md:what-to-use-angularjs-for-and-when-to-use-it"
+              href="#what-to-use-angularjs-for-and-when-to-use-it"
               aria-label="Permalink"
               class="tsd-anchor-icon"
-              ><svg viewBox="0 0 24 24">
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
                 <use href="assets/icons.svg#icon-anchor"></use></svg
             ></a>
           </h2>
@@ -273,13 +303,12 @@
             done right. (Well it is not really MVC, read on, to understand what
             this means.)
           </p>
-          <a id="md:mvc-no-mv-done-the-right-way" class="tsd-anchor"></a>
-          <h4 class="tsd-anchor-link">
+          <h4 id="mvc-no-mv-done-the-right-way" class="tsd-anchor-link">
             MVC, no, MV* done the right way!<a
-              href="#md:mvc-no-mv-done-the-right-way"
+              href="#mvc-no-mv-done-the-right-way"
               aria-label="Permalink"
               class="tsd-anchor-icon"
-              ><svg viewBox="0 0 24 24">
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
                 <use href="assets/icons.svg#icon-anchor"></use></svg
             ></a>
           </h4>
@@ -305,16 +334,15 @@
             asking him/her to just create these and everything else will be
             taken care of by AngularJS.
           </p>
-          <a
-            id="md:interconnection-with-html-at-the-root-level"
-            class="tsd-anchor"
-          ></a>
-          <h4 class="tsd-anchor-link">
+          <h4
+            id="interconnection-with-html-at-the-root-level"
+            class="tsd-anchor-link"
+          >
             Interconnection with HTML at the root level<a
-              href="#md:interconnection-with-html-at-the-root-level"
+              href="#interconnection-with-html-at-the-root-level"
               aria-label="Permalink"
               class="tsd-anchor-icon"
-              ><svg viewBox="0 0 24 24">
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
                 <use href="assets/icons.svg#icon-anchor"></use></svg
             ></a>
           </h4>
@@ -338,13 +366,12 @@
             orchestrating the various moving parts, we simply define what we
             want and AngularJS will take care of the dependencies.
           </p>
-          <a id="md:data-handling-made-simple" class="tsd-anchor"></a>
-          <h4 class="tsd-anchor-link">
+          <h4 id="data-handling-made-simple" class="tsd-anchor-link">
             Data Handling made simple<a
-              href="#md:data-handling-made-simple"
+              href="#data-handling-made-simple"
               aria-label="Permalink"
               class="tsd-anchor-icon"
-              ><svg viewBox="0 0 24 24">
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
                 <use href="assets/icons.svg#icon-anchor"></use></svg
             ></a>
           </h4>
@@ -353,13 +380,12 @@
             one can add and change properties directly on it and loop over
             objects and arrays at will.
           </p>
-          <a id="md:two-way-data-binding" class="tsd-anchor"></a>
-          <h4 class="tsd-anchor-link">
+          <h4 id="two-way-data-binding" class="tsd-anchor-link">
             Two-way Data Binding<a
-              href="#md:two-way-data-binding"
+              href="#two-way-data-binding"
               aria-label="Permalink"
               class="tsd-anchor-icon"
-              ><svg viewBox="0 0 24 24">
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
                 <use href="assets/icons.svg#icon-anchor"></use></svg
             ></a>
           </h4>
@@ -375,16 +401,15 @@
             Model and View and makes these updates in one available for the
             other.
           </p>
-          <a
-            id="md:less-written-code-and-easily-maintainable-code"
-            class="tsd-anchor"
-          ></a>
-          <h4 class="tsd-anchor-link">
+          <h4
+            id="less-written-code-and-easily-maintainable-code"
+            class="tsd-anchor-link"
+          >
             Less Written Code and Easily Maintainable Code<a
-              href="#md:less-written-code-and-easily-maintainable-code"
+              href="#less-written-code-and-easily-maintainable-code"
               aria-label="Permalink"
               class="tsd-anchor-icon"
-              ><svg viewBox="0 0 24 24">
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
                 <use href="assets/icons.svg#icon-anchor"></use></svg
             ></a>
           </h4>
@@ -395,13 +420,12 @@
             complete working two-way data binded application in less than 10
             lines of code. Try and see for yourself!
           </p>
-          <a id="md:testing-ready" class="tsd-anchor"></a>
-          <h4 class="tsd-anchor-link">
+          <h4 id="testing-ready" class="tsd-anchor-link">
             Testing Ready<a
-              href="#md:testing-ready"
+              href="#testing-ready"
               aria-label="Permalink"
               class="tsd-anchor-icon"
-              ><svg viewBox="0 0 24 24">
+              ><svg viewBox="0 0 24 24" aria-hidden="true">
                 <use href="assets/icons.svg#icon-anchor"></use></svg
             ></a>
           </h4>
@@ -420,11 +444,16 @@
           <div class="tsd-navigation settings">
             <details class="tsd-accordion">
               <summary class="tsd-accordion-summary">
-                <h3>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <use href="assets/icons.svg#icon-chevronDown"></use></svg
-                  >Settings
-                </h3>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <use href="assets/icons.svg#icon-chevronDown"></use>
+                </svg>
+                <h3>Settings</h3>
               </summary>
               <div class="tsd-accordion-details">
                 <div class="tsd-filter-visibility">
@@ -542,66 +571,70 @@
           </div>
           <details open class="tsd-accordion tsd-page-navigation">
             <summary class="tsd-accordion-summary">
-              <h3>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <use href="assets/icons.svg#icon-chevronDown"></use></svg
-                >On This Page
-              </h3>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <use href="assets/icons.svg#icon-chevronDown"></use>
+              </svg>
+              <h3>On This Page</h3>
             </summary>
             <div class="tsd-accordion-details">
-              <a href="#md:angularts"><span>AngularTS</span></a>
+              <a href="#angularts"
+                ><span>Angular<wbr />TS</span></a
+              >
               <ul>
+                <li>
+                  <a href="#getting-started"><span>Getting started</span></a>
+                </li>
                 <li>
                   <ul>
                     <li>
-                      <a href="#md:getting-started"
-                        ><span>Getting started</span></a
-                      >
-                    </li>
-                    <li>
-                      <ul>
-                        <li>
-                          <a href="#md:install"><span>Install</span></a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li>
-                      <a href="#md:legacy-docs"><span>Legacy docs</span></a>
+                      <a href="#install"><span>Install</span></a>
                     </li>
                   </ul>
                 </li>
+                <li>
+                  <a href="#legacy-docs"><span>Legacy docs</span></a>
+                </li>
               </ul>
-              <a href="#md:documentation"><span>Documentation</span></a
-              ><a href="#md:contribute"><span>Contribute</span></a
-              ><a href="#md:develop"><span>Develop</span></a
-              ><a href="#md:what-to-use-angularjs-for-and-when-to-use-it"
+              <a href="#documentation"><span>Documentation</span></a
+              ><a href="#contribute"><span>Contribute</span></a
+              ><a href="#develop"><span>Develop</span></a
+              ><a href="#what-to-use-angularjs-for-and-when-to-use-it"
                 ><span
-                  >What to use <wbr />AngularJS for and when to use it</span
+                  >What to use <wbr />Angular<wbr />JS for and when to use
+                  it</span
                 ></a
               >
               <ul>
                 <li>
-                  <a href="#md:mvc-no-mv-done-the-right-way"
-                    ><span>MVC, no, MV* done the right way!</span></a
+                  <a href="#mvc-no-mv-done-the-right-way"
+                    ><span>MVC, no, <wbr />MV* done the right way!</span></a
                   >
                 </li>
                 <li>
-                  <a href="#md:interconnection-with-html-at-the-root-level"
-                    ><span>Interconnection with HTML at the root level</span></a
+                  <a href="#interconnection-with-html-at-the-root-level"
+                    ><span
+                      >Interconnection with <wbr />HTML at the root level</span
+                    ></a
                   >
                 </li>
                 <li>
-                  <a href="#md:data-handling-made-simple"
+                  <a href="#data-handling-made-simple"
                     ><span>Data <wbr />Handling made simple</span></a
                   >
                 </li>
                 <li>
-                  <a href="#md:two-way-data-binding"
+                  <a href="#two-way-data-binding"
                     ><span>Two-<wbr />way <wbr />Data <wbr />Binding</span></a
                   >
                 </li>
                 <li>
-                  <a href="#md:less-written-code-and-easily-maintainable-code"
+                  <a href="#less-written-code-and-easily-maintainable-code"
                     ><span
                       >Less <wbr />Written <wbr />Code and <wbr />Easily
                       <wbr />Maintainable <wbr />Code</span
@@ -609,7 +642,7 @@
                   >
                 </li>
                 <li>
-                  <a href="#md:testing-ready"
+                  <a href="#testing-ready"
                     ><span>Testing <wbr />Ready</span></a
                   >
                 </li>
@@ -619,16 +652,8 @@
         </div>
         <div class="site-menu">
           <nav class="tsd-navigation">
-            <a href="index.html" class="current"
-              ><svg class="tsd-kind-icon" viewBox="0 0 24 24">
-                <use href="assets/icons.svg#icon-1"></use></svg
-              ><span>@angular-wave/angular.ts</span></a
-            >
-            <ul
-              class="tsd-small-nested-navigation"
-              id="tsd-nav-container"
-              data-base="."
-            >
+            <a href="modules.html">@angular-wave/angular.ts</a>
+            <ul class="tsd-small-nested-navigation" id="tsd-nav-container">
               <li>Loading...</li>
             </ul>
           </nav>
