@@ -3,7 +3,6 @@ import {
   uppercase,
   extend,
   isDefined,
-  merge,
   isDate,
   isRegExp,
   isElement,
@@ -137,103 +136,6 @@ describe("angular", () => {
 
       expect(dst.element).toBe(src.element);
       expect(dst.jqObject).toBe(src.jqObject);
-    });
-  });
-
-  describe("merge", () => {
-    it("should recursively copy objects into dst from left to right", () => {
-      const dst = { foo: { bar: "foobar" } };
-      const src1 = { foo: { bazz: "foobazz" } };
-      const src2 = { foo: { bozz: "foobozz" } };
-      merge(dst, src1, src2);
-      expect(dst).toEqual({
-        foo: {
-          bar: "foobar",
-          bazz: "foobazz",
-          bozz: "foobozz",
-        },
-      });
-    });
-
-    it("should replace primitives with objects", () => {
-      const dst = { foo: "bloop" };
-      const src = { foo: { bar: { baz: "bloop" } } };
-      merge(dst, src);
-      expect(dst).toEqual({
-        foo: {
-          bar: {
-            baz: "bloop",
-          },
-        },
-      });
-    });
-
-    it("should replace null values in destination with objects", () => {
-      const dst = { foo: null };
-      const src = { foo: { bar: { baz: "bloop" } } };
-      merge(dst, src);
-      expect(dst).toEqual({
-        foo: {
-          bar: {
-            baz: "bloop",
-          },
-        },
-      });
-    });
-
-    it("should copy references to functions by value rather than merging", () => {
-      function fn() {}
-      const dst = { foo: 1 };
-      const src = { foo: fn };
-      merge(dst, src);
-      expect(dst).toEqual({
-        foo: fn,
-      });
-    });
-
-    it("should create a new array if destination property is a non-object and source property is an array", () => {
-      const dst = { foo: NaN };
-      const src = { foo: [1, 2, 3] };
-      merge(dst, src);
-      expect(dst).toEqual({
-        foo: [1, 2, 3],
-      });
-      expect(dst.foo).not.toBe(src.foo);
-    });
-
-    it("should copy dates by value", () => {
-      const src = { date: new Date() };
-      const dst = {};
-
-      merge(dst, src);
-
-      expect(dst.date).not.toBe(src.date);
-      expect(isDate(dst.date)).toBeTruthy();
-      expect(dst.date.valueOf()).toEqual(src.date.valueOf());
-    });
-
-    it("should copy regexp by value", () => {
-      const src = { regexp: /blah/ };
-      const dst = {};
-
-      merge(dst, src);
-
-      expect(dst.regexp).not.toBe(src.regexp);
-      expect(isRegExp(dst.regexp)).toBe(true);
-      expect(dst.regexp.toString()).toBe(src.regexp.toString());
-    });
-
-    it("should not merge the __proto__ property", () => {
-      const src = JSON.parse('{ "__proto__": { "xxx": "polluted" } }');
-      const dst = {};
-
-      merge(dst, src);
-
-      if (typeof dst.__proto__ !== "undefined") {
-        // Should not overwrite the __proto__ property or pollute the Object prototype
-        expect(dst.__proto__).toBe(Object.prototype);
-      }
-      expect({}.xxx).toBeUndefined();
     });
   });
 
