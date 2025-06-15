@@ -188,43 +188,13 @@ export function baseExtend(dst: any, objs: any, deep: any): any;
  * to `dst`. You can specify multiple `src` objects. If you want to preserve original objects, you can do so
  * by passing an empty object as the target: `let object = angular.extend({}, object1, object2)`.
  *
- * **Note:** Keep in mind that `angular.extend` does not support recursive merge (deep copy). Use
- * {@link angular.merge} for this.
+ * **Note:** Keep in mind that `angular.extend` does not support recursive merge (deep copy).
  *
  * @param {Object} dst Destination object.
  * @param {...Object} src Source object(s).
  * @returns {Object} Reference to `dst`.
  */
 export function extend(dst: any, ...src: any[]): any;
-/**
- * Deeply extends the destination object `dst` by copying own enumerable properties from the `src` object(s)
- * to `dst`. You can specify multiple `src` objects. If you want to preserve original objects, you can do so
- * by passing an empty object as the target: `let object = angular.merge({}, object1, object2)`.
- *
- * Unlike {@link angular.extend extend()}, `merge()` recursively descends into object properties of source
- * objects, performing a deep copy.
- *
- * @deprecated
- * sinceVersion="1.6.5"
- * This function is deprecated, but will not be removed in the 1.x lifecycle.
- * There are edge cases (see {@link angular.merge#known-issues known issues}) that are not
- * supported by this function. We suggest using another, similar library for all-purpose merging,
- * such as [lodash's merge()](https://lodash.com/docs/4.17.4#merge).
- *
- * @knownIssue
- * This is a list of (known) object types that are not handled correctly by this function:
- * - [`Blob`](https://developer.mozilla.org/docs/Web/API/Blob)
- * - [`MediaStream`](https://developer.mozilla.org/docs/Web/API/MediaStream)
- * - [`CanvasGradient`](https://developer.mozilla.org/docs/Web/API/CanvasGradient)
- * - AngularJS {@link $rootScope.Scope scopes};
- *
- * `angular.merge` also does not support merging objects with circular references.
- *
- * @param {Object} dst Destination object.
- * @param {...Object} src Source object(s).
- * @returns {Object} Reference to `dst`.
- */
-export function merge(dst: any, ...src: any[]): any;
 /**
  * @param {string} str
  * @returns {number}
@@ -550,6 +520,21 @@ export function replaceInline(
   replacedElem: HTMLElement,
   newElem: HTMLElement,
 ): void;
+/**
+ * Checks whether the given object has the specified property as its own (not inherited).
+ *
+ * This is a safe version of `hasOwnProperty` that avoids issues with objects
+ * that have it overridden or missing from their prototype chain.
+ *
+ * @param {object} obj - The object to check.
+ * @param {string|number|symbol} key - The property key to look for.
+ * @returns {boolean} True if the object has the property as its own; otherwise, false.
+ *
+ * @example
+ * hasOwn({ foo: 123 }, 'foo'); // true
+ * hasOwn({}, 'bar'); // false
+ */
+export function hasOwn(obj: object, key: string | number | symbol): boolean;
 export const isProxySymbol: unique symbol;
 export const ngAttrPrefixes: string[];
 /**

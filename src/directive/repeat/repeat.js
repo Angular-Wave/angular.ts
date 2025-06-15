@@ -1,4 +1,4 @@
-import { minErr, hashKey, isArrayLike } from "../../shared/utils.js";
+import { minErr, hashKey, isArrayLike, hasOwn } from "../../shared/utils.js";
 import { getBlockNodes } from "../../shared/dom.js";
 
 const NG_REMOVED = "$$NG_REMOVED";
@@ -167,10 +167,7 @@ export function ngRepeatDirective($animate) {
             // if object, extract keys, in enumeration order, unsorted
             collectionKeys = [];
             for (const itemKey in collection) {
-              if (
-                Object.hasOwnProperty.call(collection, itemKey) &&
-                itemKey.charAt(0) !== "$"
-              ) {
+              if (hasOwn(collection, itemKey) && itemKey.charAt(0) !== "$") {
                 collectionKeys.push(itemKey);
               }
             }

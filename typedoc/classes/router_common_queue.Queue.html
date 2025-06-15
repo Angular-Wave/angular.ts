@@ -94,15 +94,32 @@
             </li>
             <li><a href="" aria-current="page">Queue</a></li>
           </ul>
-          <h1>Class Queue</h1>
+          <h1>Class Queue&lt;T&gt;</h1>
         </div>
+        <section class="tsd-panel tsd-comment">
+          <div class="tsd-comment tsd-typography">
+            <p>
+              A simple bounded FIFO queue with optional eviction notifications.
+            </p>
+          </div>
+          <div class="tsd-comment tsd-typography"></div>
+        </section>
+        <section class="tsd-panel">
+          <h4>Type Parameters</h4>
+          <ul class="tsd-type-parameter-list">
+            <li>
+              <span id="t"><span class="tsd-kind-type-parameter">T</span></span>
+              <div class="tsd-comment tsd-typography"></div>
+            </li>
+          </ul>
+        </section>
         <aside class="tsd-sources">
           <ul>
             <li>
               Defined in
               <a
-                href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/router/common/queue.js#L3"
-                >router/common/queue.js:3</a
+                href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/router/common/queue.js#L7"
+                >router/common/queue.js:7</a
               >
             </li>
           </ul>
@@ -295,19 +312,34 @@
                   >
                     <span class="tsd-signature-keyword">new</span>
                     <span class="tsd-kind-constructor-signature">Queue</span
+                    ><span class="tsd-signature-symbol">&lt;</span
+                    ><a
+                      class="tsd-signature-type tsd-kind-type-parameter"
+                      href="#constructorqueuet"
+                      >T</a
+                    ><span class="tsd-signature-symbol">&gt;</span
                     ><span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-kind-parameter">_items</span
+                    ><span class="tsd-kind-parameter">items</span
                     ><span class="tsd-signature-symbol">?:</span>
-                    <span class="tsd-signature-type">any</span
+                    <a
+                      class="tsd-signature-type tsd-kind-type-parameter"
+                      href="#constructorqueuet"
+                      >T</a
                     ><span class="tsd-signature-symbol">[]</span
                     ><span class="tsd-signature-symbol">,</span>
-                    <span class="tsd-kind-parameter">_limit</span
+                    <span class="tsd-kind-parameter">limit</span
                     ><span class="tsd-signature-symbol">?:</span>
-                    <span class="tsd-signature-type">any</span
+                    <span class="tsd-signature-type">number</span
                     ><span class="tsd-signature-symbol">)</span
                     ><span class="tsd-signature-symbol">:</span>
                     <a href="" class="tsd-signature-type tsd-kind-class"
                       >Queue</a
+                    ><span class="tsd-signature-symbol">&lt;</span
+                    ><a
+                      class="tsd-signature-type tsd-kind-type-parameter"
+                      href="#constructorqueuet"
+                      >T</a
+                    ><span class="tsd-signature-symbol">&gt;</span
                     ><a
                       href="#constructorqueue"
                       aria-label="Permalink"
@@ -317,27 +349,55 @@
                     ></a>
                   </div>
                   <div class="tsd-description">
+                    <section class="tsd-panel">
+                      <h4>Type Parameters</h4>
+                      <ul class="tsd-type-parameter-list">
+                        <li>
+                          <span id="constructorqueuet"
+                            ><span class="tsd-kind-type-parameter"
+                              >T</span
+                            ></span
+                          >
+                        </li>
+                      </ul>
+                    </section>
                     <div class="tsd-parameters">
                       <h4 class="tsd-parameters-title">Parameters</h4>
                       <ul class="tsd-parameter-list">
                         <li>
                           <span
-                            ><span class="tsd-kind-parameter">_items</span>:
-                            <span class="tsd-signature-type">any</span
+                            ><code class="tsd-tag">Optional</code
+                            ><span class="tsd-kind-parameter">items</span>:
+                            <a
+                              class="tsd-signature-type tsd-kind-type-parameter"
+                              href="#constructorqueuet"
+                              >T</a
                             ><span class="tsd-signature-symbol">[]</span
                             ><span class="tsd-signature-symbol">
                               = []</span
                             ></span
                           >
+                          <div class="tsd-comment tsd-typography">
+                            <p>Initial queue items.</p>
+                          </div>
+                          <div class="tsd-comment tsd-typography"></div>
                         </li>
                         <li>
                           <span
-                            ><span class="tsd-kind-parameter">_limit</span>:
-                            <span class="tsd-signature-type">any</span
+                            ><code class="tsd-tag">Optional</code
+                            ><span class="tsd-kind-parameter">limit</span>:
+                            <span class="tsd-signature-type">number</span
                             ><span class="tsd-signature-symbol">
                               = null</span
                             ></span
                           >
+                          <div class="tsd-comment tsd-typography">
+                            <p>
+                              Maximum allowed items before eviction (null =
+                              unlimited).
+                            </p>
+                          </div>
+                          <div class="tsd-comment tsd-typography"></div>
                         </li>
                       </ul>
                     </div>
@@ -345,15 +405,21 @@
                       Returns
                       <a href="" class="tsd-signature-type tsd-kind-class"
                         >Queue</a
-                      >
+                      ><span class="tsd-signature-symbol">&lt;</span
+                      ><a
+                        class="tsd-signature-type tsd-kind-type-parameter"
+                        href="#constructorqueuet"
+                        >T</a
+                      ><span class="tsd-signature-symbol">&gt;</span>
                     </h4>
+                    <div class="tsd-comment tsd-typography"></div>
                     <aside class="tsd-sources">
                       <ul>
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/router/common/queue.js#L4"
-                            >router/common/queue.js:4</a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/router/common/queue.js#L12"
+                            >router/common/queue.js:12</a
                           >
                         </li>
                       </ul>
@@ -391,17 +457,30 @@
               </h3>
               <div class="tsd-signature">
                 <span class="tsd-kind-property">_evictListeners</span
+                ><span class="tsd-signature-symbol">:</span> (<span
+                  class="tsd-signature-symbol"
+                  >(</span
+                ><span class="tsd-kind-parameter">item</span
                 ><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">any</span
-                ><span class="tsd-signature-symbol">[]</span>
+                <a
+                  class="tsd-signature-type tsd-kind-type-parameter"
+                  href="#constructorqueuet"
+                  >T</a
+                ><span class="tsd-signature-symbol">)</span>
+                <span class="tsd-signature-symbol">=&gt;</span>
+                <span class="tsd-signature-type">void</span>)<span
+                  class="tsd-signature-symbol"
+                  >[]</span
+                >
               </div>
+              <div class="tsd-comment tsd-typography"></div>
               <aside class="tsd-sources">
                 <ul>
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/router/common/queue.js#L7"
-                      >router/common/queue.js:7</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/router/common/queue.js#L20"
+                      >router/common/queue.js:20</a
                     >
                   </li>
                 </ul>
@@ -421,23 +500,20 @@
               <div class="tsd-signature">
                 <span class="tsd-kind-property">_items</span
                 ><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">any</span
+                <a
+                  class="tsd-signature-type tsd-kind-type-parameter"
+                  href="#constructorqueuet"
+                  >T</a
                 ><span class="tsd-signature-symbol">[]</span>
               </div>
+              <div class="tsd-comment tsd-typography"></div>
               <aside class="tsd-sources">
                 <ul>
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/router/common/queue.js#L5"
-                      >router/common/queue.js:5</a
-                    >
-                  </li>
-                  <li>
-                    Defined in
-                    <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/router/common/queue.js#L30"
-                      >router/common/queue.js:30</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/router/common/queue.js#L14"
+                      >router/common/queue.js:14</a
                     >
                   </li>
                 </ul>
@@ -457,15 +533,16 @@
               <div class="tsd-signature">
                 <span class="tsd-kind-property">_limit</span
                 ><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">any</span>
+                <span class="tsd-signature-type">number</span>
               </div>
+              <div class="tsd-comment tsd-typography"></div>
               <aside class="tsd-sources">
                 <ul>
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/router/common/queue.js#L6"
-                      >router/common/queue.js:6</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/router/common/queue.js#L17"
+                      >router/common/queue.js:17</a
                     >
                   </li>
                 </ul>
@@ -485,15 +562,36 @@
               <div class="tsd-signature">
                 <span class="tsd-kind-property">onEvict</span
                 ><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">any</span>
+                <span class="tsd-signature-symbol">(</span
+                ><span class="tsd-kind-parameter">listener</span
+                ><span class="tsd-signature-symbol">:</span>
+                <span class="tsd-signature-symbol">(</span
+                ><span class="tsd-kind-parameter">item</span
+                ><span class="tsd-signature-symbol">:</span>
+                <a
+                  class="tsd-signature-type tsd-kind-type-parameter"
+                  href="#constructorqueuet"
+                  >T</a
+                ><span class="tsd-signature-symbol">)</span>
+                <span class="tsd-signature-symbol">=&gt;</span>
+                <span class="tsd-signature-type">void</span
+                ><span class="tsd-signature-symbol">)</span>
+                <span class="tsd-signature-symbol">=&gt;</span>
+                <span class="tsd-signature-type">void</span>
               </div>
+              <div class="tsd-comment tsd-typography">
+                <p>
+                  Register a listener that will be called with the evicted item.
+                </p>
+              </div>
+              <div class="tsd-comment tsd-typography"></div>
               <aside class="tsd-sources">
                 <ul>
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/router/common/queue.js#L8"
-                      >router/common/queue.js:8</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/router/common/queue.js#L26"
+                      >router/common/queue.js:26</a
                     >
                   </li>
                 </ul>
@@ -529,7 +627,10 @@
                     <span class="tsd-kind-call-signature">clear</span
                     ><span class="tsd-signature-symbol">()</span
                     ><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">any</span
+                    <a
+                      class="tsd-signature-type tsd-kind-type-parameter"
+                      href="#constructorqueuet"
+                      >T</a
                     ><span class="tsd-signature-symbol">[]</span
                     ><a
                       href="#clear-1"
@@ -540,17 +641,26 @@
                     ></a>
                   </div>
                   <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>Clears all items from the queue.</p>
+                    </div>
                     <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">any</span
+                      Returns
+                      <a
+                        class="tsd-signature-type tsd-kind-type-parameter"
+                        href="#constructorqueuet"
+                        >T</a
                       ><span class="tsd-signature-symbol">[]</span>
                     </h4>
+                    <p>The previously stored items.</p>
+                    <div class="tsd-comment tsd-typography"></div>
                     <aside class="tsd-sources">
                       <ul>
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/router/common/queue.js#L28"
-                            >router/common/queue.js:28</a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/router/common/queue.js#L66"
+                            >router/common/queue.js:66</a
                           >
                         </li>
                       </ul>
@@ -576,7 +686,10 @@
                     <span class="tsd-kind-call-signature">dequeue</span
                     ><span class="tsd-signature-symbol">()</span
                     ><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">any</span
+                    <a
+                      class="tsd-signature-type tsd-kind-type-parameter"
+                      href="#constructorqueuet"
+                      >T</a
                     ><a
                       href="#dequeue-1"
                       aria-label="Permalink"
@@ -586,16 +699,25 @@
                     ></a>
                   </div>
                   <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>Removes and returns the first item in the queue.</p>
+                    </div>
                     <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">any</span>
+                      Returns
+                      <a
+                        class="tsd-signature-type tsd-kind-type-parameter"
+                        href="#constructorqueuet"
+                        >T</a
+                      >
                     </h4>
+                    <div class="tsd-comment tsd-typography"></div>
                     <aside class="tsd-sources">
                       <ul>
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/router/common/queue.js#L24"
-                            >router/common/queue.js:24</a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/router/common/queue.js#L58"
+                            >router/common/queue.js:58</a
                           >
                         </li>
                       </ul>
@@ -622,10 +744,16 @@
                     ><span class="tsd-signature-symbol">(</span
                     ><span class="tsd-kind-parameter">item</span
                     ><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">any</span
+                    <a
+                      class="tsd-signature-type tsd-kind-type-parameter"
+                      href="#constructorqueuet"
+                      >T</a
                     ><span class="tsd-signature-symbol">)</span
                     ><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">any</span
+                    <a
+                      class="tsd-signature-type tsd-kind-type-parameter"
+                      href="#constructorqueuet"
+                      >T</a
                     ><a
                       href="#enqueue-1"
                       aria-label="Permalink"
@@ -635,27 +763,44 @@
                     ></a>
                   </div>
                   <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>
+                        Adds an item to the end of the queue, evicting the head
+                        if over limit.
+                      </p>
+                    </div>
                     <div class="tsd-parameters">
                       <h4 class="tsd-parameters-title">Parameters</h4>
                       <ul class="tsd-parameter-list">
                         <li>
                           <span
                             ><span class="tsd-kind-parameter">item</span>:
-                            <span class="tsd-signature-type">any</span></span
+                            <a
+                              class="tsd-signature-type tsd-kind-type-parameter"
+                              href="#constructorqueuet"
+                              >T</a
+                            ></span
                           >
+                          <div class="tsd-comment tsd-typography"></div>
                         </li>
                       </ul>
                     </div>
                     <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">any</span>
+                      Returns
+                      <a
+                        class="tsd-signature-type tsd-kind-type-parameter"
+                        href="#constructorqueuet"
+                        >T</a
+                      >
                     </h4>
+                    <div class="tsd-comment tsd-typography"></div>
                     <aside class="tsd-sources">
                       <ul>
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/router/common/queue.js#L11"
-                            >router/common/queue.js:11</a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/router/common/queue.js#L34"
+                            >router/common/queue.js:34</a
                           >
                         </li>
                       </ul>
@@ -678,7 +823,10 @@
                     <span class="tsd-kind-call-signature">evict</span
                     ><span class="tsd-signature-symbol">()</span
                     ><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">any</span
+                    <a
+                      class="tsd-signature-type tsd-kind-type-parameter"
+                      href="#constructorqueuet"
+                      >T</a
                     ><a
                       href="#evict-1"
                       aria-label="Permalink"
@@ -688,16 +836,27 @@
                     ></a>
                   </div>
                   <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>
+                        Removes the head item and notifies eviction listeners.
+                      </p>
+                    </div>
                     <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">any</span>
+                      Returns
+                      <a
+                        class="tsd-signature-type tsd-kind-type-parameter"
+                        href="#constructorqueuet"
+                        >T</a
+                      >
                     </h4>
+                    <div class="tsd-comment tsd-typography"></div>
                     <aside class="tsd-sources">
                       <ul>
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/router/common/queue.js#L18"
-                            >router/common/queue.js:18</a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/router/common/queue.js#L46"
+                            >router/common/queue.js:46</a
                           >
                         </li>
                       </ul>
@@ -723,7 +882,10 @@
                     <span class="tsd-kind-call-signature">peekHead</span
                     ><span class="tsd-signature-symbol">()</span
                     ><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">any</span
+                    <a
+                      class="tsd-signature-type tsd-kind-type-parameter"
+                      href="#constructorqueuet"
+                      >T</a
                     ><a
                       href="#peekhead-1"
                       aria-label="Permalink"
@@ -733,16 +895,25 @@
                     ></a>
                   </div>
                   <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>Returns the item at the head (first).</p>
+                    </div>
                     <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">any</span>
+                      Returns
+                      <a
+                        class="tsd-signature-type tsd-kind-type-parameter"
+                        href="#constructorqueuet"
+                        >T</a
+                      >
                     </h4>
+                    <div class="tsd-comment tsd-typography"></div>
                     <aside class="tsd-sources">
                       <ul>
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/router/common/queue.js#L47"
-                            >router/common/queue.js:47</a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/router/common/queue.js#L102"
+                            >router/common/queue.js:102</a
                           >
                         </li>
                       </ul>
@@ -768,7 +939,10 @@
                     <span class="tsd-kind-call-signature">peekTail</span
                     ><span class="tsd-signature-symbol">()</span
                     ><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">any</span
+                    <a
+                      class="tsd-signature-type tsd-kind-type-parameter"
+                      href="#constructorqueuet"
+                      >T</a
                     ><a
                       href="#peektail-1"
                       aria-label="Permalink"
@@ -778,16 +952,25 @@
                     ></a>
                   </div>
                   <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>Returns the item at the tail (last).</p>
+                    </div>
                     <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">any</span>
+                      Returns
+                      <a
+                        class="tsd-signature-type tsd-kind-type-parameter"
+                        href="#constructorqueuet"
+                        >T</a
+                      >
                     </h4>
+                    <div class="tsd-comment tsd-typography"></div>
                     <aside class="tsd-sources">
                       <ul>
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/router/common/queue.js#L43"
-                            >router/common/queue.js:43</a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/router/common/queue.js#L94"
+                            >router/common/queue.js:94</a
                           >
                         </li>
                       </ul>
@@ -814,10 +997,18 @@
                     ><span class="tsd-signature-symbol">(</span
                     ><span class="tsd-kind-parameter">item</span
                     ><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">any</span
+                    <a
+                      class="tsd-signature-type tsd-kind-type-parameter"
+                      href="#constructorqueuet"
+                      >T</a
                     ><span class="tsd-signature-symbol">)</span
                     ><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">any</span
+                    <span class="tsd-signature-type">false</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <a
+                      class="tsd-signature-type tsd-kind-type-parameter"
+                      href="#constructorqueuet"
+                      >T</a
                     ><a
                       href="#remove-1"
                       aria-label="Permalink"
@@ -827,27 +1018,43 @@
                     ></a>
                   </div>
                   <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>Removes a specific item from the queue.</p>
+                    </div>
                     <div class="tsd-parameters">
                       <h4 class="tsd-parameters-title">Parameters</h4>
                       <ul class="tsd-parameter-list">
                         <li>
                           <span
                             ><span class="tsd-kind-parameter">item</span>:
-                            <span class="tsd-signature-type">any</span></span
+                            <a
+                              class="tsd-signature-type tsd-kind-type-parameter"
+                              href="#constructorqueuet"
+                              >T</a
+                            ></span
                           >
+                          <div class="tsd-comment tsd-typography"></div>
                         </li>
                       </ul>
                     </div>
                     <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">any</span>
+                      Returns <span class="tsd-signature-type">false</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <a
+                        class="tsd-signature-type tsd-kind-type-parameter"
+                        href="#constructorqueuet"
+                        >T</a
+                      >
                     </h4>
+                    <p>The removed item, or false if not found.</p>
+                    <div class="tsd-comment tsd-typography"></div>
                     <aside class="tsd-sources">
                       <ul>
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/router/common/queue.js#L38"
-                            >router/common/queue.js:38</a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/router/common/queue.js#L85"
+                            >router/common/queue.js:85</a
                           >
                         </li>
                       </ul>
@@ -880,16 +1087,20 @@
                     ></a>
                   </div>
                   <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>Returns the current number of items.</p>
+                    </div>
                     <h4 class="tsd-returns-title">
                       Returns <span class="tsd-signature-type">number</span>
                     </h4>
+                    <div class="tsd-comment tsd-typography"></div>
                     <aside class="tsd-sources">
                       <ul>
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/Angular-Wave/angular.ts/blob/313b293606259c262c2eb31fddf6a3bc26b2ca23/src/router/common/queue.js#L34"
-                            >router/common/queue.js:34</a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/router/common/queue.js#L76"
+                            >router/common/queue.js:76</a
                           >
                         </li>
                       </ul>

@@ -1,3 +1,6 @@
+make lint
+make check
 make types
+make jsdoc
 make pretty
 git add ./

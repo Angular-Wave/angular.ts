@@ -36,6 +36,7 @@ import {
   isError,
   directiveNormalize,
   isProxy,
+  hasOwn,
 } from "../../shared/utils.js";
 import { SCE_CONTEXTS } from "../sce/sce.js";
 import { PREFIX_REGEXP } from "../../shared/constants.js";
@@ -2863,7 +2864,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
             switch (mode) {
               case "@":
-                if (!optional && !Object.hasOwnProperty.call(attrs, attrName)) {
+                if (!optional && !hasOwn(attrs, attrName)) {
                   strictBindingsCheck(attrName, directive.name);
                   destination[scopeName] = attrs[attrName] = undefined;
                 }
@@ -2905,7 +2906,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 break;
 
               case "=":
-                if (!Object.hasOwnProperty.call(attrs, attrName)) {
+                if (!hasOwn(attrs, attrName)) {
                   if (optional) break;
                   strictBindingsCheck(attrName, directive.name);
                   attrs[attrName] = undefined;
@@ -3019,7 +3020,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 break;
 
               case "<":
-                if (!Object.hasOwnProperty.call(attrs, attrName)) {
+                if (!hasOwn(attrs, attrName)) {
                   if (optional) break;
                   strictBindingsCheck(attrName, directive.name);
                   attrs[attrName] = undefined;
@@ -3053,7 +3054,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 break;
 
               case "&":
-                if (!optional && !Object.hasOwnProperty.call(attrs, attrName)) {
+                if (!optional && !hasOwn(attrs, attrName)) {
                   strictBindingsCheck(attrName, directive.name);
                 }
                 // Don't assign Object.prototype method to scope
