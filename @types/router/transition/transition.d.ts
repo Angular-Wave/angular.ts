@@ -340,7 +340,7 @@ export class Transition {
    * @returns true if the Transition is ignored.
    */
   ignored(): boolean;
-  _ignoredReason(): "SameAsPending" | "SameAsCurrent";
+  _ignoredReason(): "SameAsCurrent" | "SameAsPending";
   /**
    * Runs the transition
    *

@@ -1,15 +1,64 @@
-export class Queue {
-  constructor(_items?: any[], _limit?: any);
-  _items: any[];
-  _limit: any;
-  _evictListeners: any[];
-  onEvict: any;
-  enqueue(item: any): any;
-  evict(): any;
-  dequeue(): any;
-  clear(): any[];
+/**
+ * A simple bounded FIFO queue with optional eviction notifications.
+ * @template T
+ */
+export class Queue<T> {
+  /**
+   * @param {T[]} [items=[]] - Initial queue items.
+   * @param {number|null} [limit=null] - Maximum allowed items before eviction (null = unlimited).
+   */
+  constructor(items?: T[], limit?: number | null);
+  /** @type {T[]} */
+  _items: T[];
+  /** @type {number|null} */
+  _limit: number | null;
+  /** @type {Array<(item: T) => void>} */
+  _evictListeners: Array<(item: T) => void>;
+  /**
+   * Register a listener that will be called with the evicted item.
+   * @type {(listener: (item: T) => void) => void}
+   */
+  onEvict: (listener: (item: T) => void) => void;
+  /**
+   * Adds an item to the end of the queue, evicting the head if over limit.
+   * @param {T} item
+   * @returns {T}
+   */
+  enqueue(item: T): T;
+  /**
+   * Removes the head item and notifies eviction listeners.
+   * @returns {T|undefined}
+   */
+  evict(): T | undefined;
+  /**
+   * Removes and returns the first item in the queue.
+   * @returns {T|undefined}
+   */
+  dequeue(): T | undefined;
+  /**
+   * Clears all items from the queue.
+   * @returns {T[]} The previously stored items.
+   */
+  clear(): T[];
+  /**
+   * Returns the current number of items.
+   * @returns {number}
+   */
   size(): number;
-  remove(item: any): any;
-  peekTail(): any;
-  peekHead(): any;
+  /**
+   * Removes a specific item from the queue.
+   * @param {T} item
+   * @returns {T|false} The removed item, or false if not found.
+   */
+  remove(item: T): T | false;
+  /**
+   * Returns the item at the tail (last).
+   * @returns {T|undefined}
+   */
+  peekTail(): T | undefined;
+  /**
+   * Returns the item at the head (first).
+   * @returns {T|undefined}
+   */
+  peekHead(): T | undefined;
 }

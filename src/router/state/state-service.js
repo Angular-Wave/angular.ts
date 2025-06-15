@@ -214,6 +214,7 @@ export class StateProvider {
     const globals = this.globals;
     const latestThing = () => globals.transitionHistory.peekTail();
     const latest = latestThing();
+    /** @type {Queue<Function>} */
     const callbackQueue = new Queue(this.invalidCallbacks.slice());
     const injector = new ResolveContext(fromPath).injector();
     const checkForRedirect = (result) => {

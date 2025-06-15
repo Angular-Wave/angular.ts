@@ -17,17 +17,17 @@ export class UIRouterGlobals {
     this.params = new StateParams();
 
     /**
-     * @type {Number}
+     * @type {number}
      */
     this.lastStartedTransitionId = -1;
 
     /**
-     * @type {Queue}
+     * @type {Queue<import("./transition/transition.js").Transition>}
      */
     this.transitionHistory = new Queue([], 1);
 
     /**
-     * @type {Queue}
+     * @type {Queue<import("./transition/transition.js").Transition>}
      */
     this.successfulTransitions = new Queue([], 1);
   }

@@ -13,17 +13,17 @@ export class UIRouterGlobals {
    */
   params: StateParams;
   /**
-   * @type {Number}
+   * @type {number}
    */
   lastStartedTransitionId: number;
   /**
-   * @type {Queue}
+   * @type {Queue<import("./transition/transition.js").Transition>}
    */
-  transitionHistory: Queue;
+  transitionHistory: Queue<import("./transition/transition.js").Transition>;
   /**
-   * @type {Queue}
+   * @type {Queue<import("./transition/transition.js").Transition>}
    */
-  successfulTransitions: Queue;
+  successfulTransitions: Queue<import("./transition/transition.js").Transition>;
   $get: (() => this)[];
 }
 import { StateParams } from "./params/state-params.js";
