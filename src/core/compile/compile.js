@@ -268,7 +268,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
     if (isString(name)) {
       assertValidDirectiveName(name);
       assertArg(directiveFactory, "directiveFactory");
-      if (!Object.prototype.hasOwnProperty.call(hasDirectives, name)) {
+      if (!hasOwn(hasDirectives, name)) {
         hasDirectives[name] = [];
         $provide.factory(name + DirectiveSuffix, [
           "$injector",
@@ -1097,10 +1097,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                 nName = directiveNormalize(name.toLowerCase());
                 attrsMap[nName] = name;
 
-                if (
-                  isNgAttr ||
-                  !Object.prototype.hasOwnProperty.call(attrs, nName)
-                ) {
+                if (isNgAttr || !hasOwn(attrs, nName)) {
                   attrs[nName] = value;
                   if (getBooleanAttrName(node, nName)) {
                     attrs[nName] = true; // presence means true
@@ -2157,7 +2154,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
        */
       function addDirective(tDirectives, name, location, maxPriority) {
         let match = false;
-        if (Object.prototype.hasOwnProperty.call(hasDirectives, name)) {
+        if (hasOwn(hasDirectives, name)) {
           for (
             let directive,
               directives = $injector.get(name + DirectiveSuffix),
@@ -2220,10 +2217,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
           // `dst` will never contain hasOwnProperty as DOM parser won't let it.
           // You will get an "InvalidCharacterError: DOM Exception 5" error if you
           // have an attribute like "has-own-property" or "data-has-own-property", etc.
-          if (
-            !Object.prototype.hasOwnProperty.call(dst, key) &&
-            key.charAt(0) !== "$"
-          ) {
+          if (!hasOwn(dst, key) && key.charAt(0) !== "$") {
             dst[key] = value;
 
             if (key !== "class" && key !== "style") {
@@ -3058,10 +3052,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
                   strictBindingsCheck(attrName, directive.name);
                 }
                 // Don't assign Object.prototype method to scope
-                parentGet = Object.prototype.hasOwnProperty.call(
-                  attrs,
-                  attrName,
-                )
+                parentGet = hasOwn(attrs, attrName)
                   ? $parse(attrs[attrName])
                   : () => {};
 

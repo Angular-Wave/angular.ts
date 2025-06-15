@@ -9,6 +9,7 @@ import {
   directiveNormalize,
   hasAnimate,
   isProxy,
+  hasOwn,
 } from "../../shared/utils.js";
 import { ALIASED_ATTR } from "../../shared/constants.js";
 
@@ -234,11 +235,7 @@ export class Attributes {
     const listeners = $$observers[key] || ($$observers[key] = []);
 
     listeners.push(fn);
-    if (
-      !listeners.$$inter &&
-      Object.prototype.hasOwnProperty.call(this, key) &&
-      !isUndefined(this[key])
-    ) {
+    if (!listeners.$$inter && hasOwn(this, key) && !isUndefined(this[key])) {
       // no one registered attribute interpolation function, so lets call it manually
       fn(this[key]);
     }

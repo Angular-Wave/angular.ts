@@ -1,4 +1,4 @@
-import { isString } from "../../shared/utils.js";
+import { hasOwn, isString } from "../../shared/utils.js";
 import { StateObject } from "./state-object.js";
 
 export class StateQueueManager {
@@ -25,7 +25,7 @@ export class StateQueueManager {
     const state = new StateObject(stateDecl);
     if (!isString(name)) throw new Error("State must have a valid name");
     if (
-      Object.prototype.hasOwnProperty.call(this.states, state.name) ||
+      hasOwn(this.states, state.name) ||
       this.queue.map((x) => x.name).includes(state.name)
     )
       throw new Error(`State '${state.name}' is already defined`);
@@ -39,9 +39,7 @@ export class StateQueueManager {
     const registered = [], // states that got registered
       orphans = [], // states that don't yet have a parent registered
       previousQueueLength = {}; // keep track of how long the queue when an orphan was first encountered
-    const getState = (name) =>
-      Object.prototype.hasOwnProperty.call(this.states, name) &&
-      this.states[name];
+    const getState = (name) => hasOwn(this.states, name) && this.states[name];
     const notifyListeners = () => {
       if (registered.length) {
         this.listeners.forEach((listener) =>

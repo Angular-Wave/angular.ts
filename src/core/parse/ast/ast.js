@@ -1,6 +1,6 @@
 import { isAssignable } from "../interpreter.js";
 import { ASTType } from "../ast-type.js";
-import { minErr } from "../../../shared/utils.js";
+import { hasOwn, minErr } from "../../../shared/utils.js";
 
 /**
  * @typedef {import("./ast-node.ts").ASTNode} ASTNode
@@ -269,7 +269,7 @@ export class AST {
     } else if (this.expect("{")) {
       primary = this.object();
     } else if (
-      Object.prototype.hasOwnProperty.call(
+      hasOwn(
         this.selfReferential,
         /** @type {import("../lexer/lexer.js").Token} */ (this.peek()).text,
       )

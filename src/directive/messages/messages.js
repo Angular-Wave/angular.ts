@@ -1,4 +1,4 @@
-import { isString } from "../../shared/utils.js";
+import { hasOwn, isString } from "../../shared/utils.js";
 
 const ACTIVE_CLASS = "ng-active";
 const INACTIVE_CLASS = "ng-inactive";
@@ -340,6 +340,6 @@ function contains(collection, key) {
   if (collection) {
     return Array.isArray(collection)
       ? collection.indexOf(key) >= 0
-      : Object.prototype.hasOwnProperty.call(collection, key);
+      : hasOwn(collection, key);
   }
 }

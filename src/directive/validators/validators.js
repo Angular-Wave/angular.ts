@@ -5,6 +5,7 @@ import {
   minErr,
   isUndefined,
   isProxy,
+  hasOwn,
 } from "../../shared/utils.js";
 import { REGEX_STRING_REGEXP } from "./../attrs/attrs.js";
 import { startingTag } from "../../shared/dom.js";
@@ -52,9 +53,7 @@ export const requiredDirective = [
       (scope, _elm, attr, ctrl) => {
         if (!ctrl) return;
         // For boolean attributes like required, presence means true
-        let value =
-          Object.prototype.hasOwnProperty.call(attr, "required") ||
-          $parse(attr.ngRequired)(scope);
+        let value = hasOwn(attr, "required") || $parse(attr.ngRequired)(scope);
 
         if (!attr.ngRequired) {
           // force truthy in case we are on non input element

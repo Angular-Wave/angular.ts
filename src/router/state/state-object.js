@@ -1,7 +1,7 @@
 import { defaults, find } from "../../shared/common.js";
 import { propEq } from "../../shared/hof.js";
 import { Glob } from "../common/glob.js";
-import { isFunction, isObject } from "../../shared/utils.js";
+import { hasOwn, isFunction, isObject } from "../../shared/utils.js";
 /**
  * Internal representation of a ng-router state.
  *
@@ -78,9 +78,7 @@ export class StateObject {
     return inherited
       .concat(Object.values(this.params))
       .filter(
-        (param) =>
-          !opts.matchingKeys ||
-          Object.prototype.hasOwnProperty.call(opts.matchingKeys, param.id),
+        (param) => !opts.matchingKeys || hasOwn(opts.matchingKeys, param.id),
       );
   }
   /**

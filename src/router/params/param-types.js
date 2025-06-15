@@ -1,5 +1,5 @@
 import { equals, inherit, map, pick } from "../../shared/common.js";
-import { isDefined, isNullOrUndefined } from "../../shared/utils.js";
+import { hasOwn, isDefined, isNullOrUndefined } from "../../shared/utils.js";
 import { is } from "../../shared/hof.js";
 import { ParamType } from "./param-type.js";
 /**
@@ -52,7 +52,7 @@ export class ParamTypes {
    */
   type(name, definition, definitionFn) {
     if (!isDefined(definition)) return this.types[name];
-    if (Object.prototype.hasOwnProperty.call(this.types, name))
+    if (hasOwn(this.types, name))
       throw new Error(`A type named '${name}' has already been defined.`);
     this.types[name] = new ParamType(Object.assign({ name }, definition));
     if (definitionFn) {

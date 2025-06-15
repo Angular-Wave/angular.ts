@@ -10,7 +10,7 @@ import {
   defaults,
 } from "../../shared/common.js";
 import { propEq } from "../../shared/hof.js";
-import { isDefined, isString } from "../../shared/utils.js";
+import { hasOwn, isDefined, isString } from "../../shared/utils.js";
 import { Param, DefType } from "../params/param.js";
 import { joinNeighborsR, splitOnDelim } from "../../shared/strings.js";
 
@@ -436,7 +436,7 @@ export class UrlMatcher {
     params = params || {};
     // I'm not sure why this checks only the param keys passed in, and not all the params known to the matcher
     const paramSchema = this.parameters().filter((paramDef) =>
-      Object.prototype.hasOwnProperty.call(params, paramDef.id),
+      hasOwn(params, paramDef.id),
     );
     return paramSchema
       .map((paramDef) => validParamVal(paramDef, params[paramDef.id]))

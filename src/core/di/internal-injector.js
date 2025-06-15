@@ -1,4 +1,4 @@
-import { assertArgFn, minErr } from "../../shared/utils.js";
+import { assertArgFn, hasOwn, minErr } from "../../shared/utils.js";
 import { INJECTOR_LITERAL } from "./ng-module";
 
 const ARROW_ARG = /^([^(]+?)=>/;
@@ -34,7 +34,7 @@ class AbstractInjector {
    * @returns {any}
    */
   get(serviceName) {
-    if (Object.prototype.hasOwnProperty.call(this.cache, serviceName)) {
+    if (hasOwn(this.cache, serviceName)) {
       if (this.cache[serviceName] === INSTANTIATING) {
         throw $injectorMinErr(
           "cdep",
@@ -79,11 +79,7 @@ class AbstractInjector {
           key,
         );
       }
-      args.push(
-        locals && Object.prototype.hasOwnProperty.call(locals, key)
-          ? locals[key]
-          : this.get(key),
-      );
+      args.push(locals && hasOwn(locals, key) ? locals[key] : this.get(key));
     }
     return args;
   }
@@ -209,11 +205,11 @@ export class InjectorService extends AbstractInjector {
    * @returns {boolean}
    */
   has(name) {
-    const hasProvider = Object.prototype.hasOwnProperty.call(
+    const hasProvider = hasOwn(
       this.providerInjector.cache,
       name + providerSuffix,
     );
-    const hasCache = Object.prototype.hasOwnProperty.call(this.cache, name);
+    const hasCache = hasOwn(this.cache, name);
     return hasProvider || hasCache;
   }
 }

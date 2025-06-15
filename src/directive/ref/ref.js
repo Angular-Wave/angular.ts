@@ -1,4 +1,9 @@
-import { getNodeName, minErr, directiveNormalize } from "../../shared/utils.js";
+import {
+  getNodeName,
+  minErr,
+  directiveNormalize,
+  hasOwn,
+} from "../../shared/utils.js";
 import { getCacheData } from "../../shared/dom.js";
 
 /**
@@ -47,7 +52,7 @@ export function ngRefDirective($parse) {
       return (scope, element, attrs) => {
         let refValue;
 
-        if (Object.prototype.hasOwnProperty.call(attrs, "ngRefRead")) {
+        if (hasOwn(attrs, "ngRefRead")) {
           if (attrs.ngRefRead === "$element") {
             refValue = element;
           } else {

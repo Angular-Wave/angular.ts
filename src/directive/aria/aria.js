@@ -1,4 +1,4 @@
-import { extend } from "../../shared/utils.js";
+import { extend, hasOwn } from "../../shared/utils.js";
 
 const ARIA_DISABLE_ATTR = "ngAriaDisable";
 
@@ -57,7 +57,7 @@ export function AriaProvider() {
 
   function watchExpr(attrName, ariaAttr, nativeAriaNodeNames, negate) {
     return function (scope, elem, attr) {
-      if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR)) return;
+      if (hasOwn(attr, ARIA_DISABLE_ATTR)) return;
 
       const ariaCamelName = attr.$normalize(ariaAttr);
       if (
@@ -104,7 +104,7 @@ export function ngMessagesAriaDirective() {
     restrict: "A",
     require: "?ngMessages",
     link(_scope, elem, attr) {
-      if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR)) return;
+      if (hasOwn(attr, ARIA_DISABLE_ATTR)) return;
 
       if (!elem.hasAttribute("aria-live")) {
         elem.setAttribute("aria-live", "assertive");
@@ -118,7 +118,7 @@ export function ngClickAriaDirective($aria, $parse) {
   return {
     restrict: "A",
     compile(elem, attr) {
-      if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR)) return;
+      if (hasOwn(attr, ARIA_DISABLE_ATTR)) return;
 
       const fn = $parse(attr.ngClick);
 
@@ -262,7 +262,7 @@ export function ngModelAriaDirective($aria) {
     require: "ngModel",
     priority: 200, // Make sure watches are fired after any other directives that affect the ngModel value
     compile(elem, attr) {
-      if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR)) return;
+      if (hasOwn(attr, ARIA_DISABLE_ATTR)) return;
 
       const shape = getShape(attr);
 
@@ -315,12 +315,10 @@ export function ngModelAriaDirective($aria) {
               if ($aria.config("ariaValue")) {
                 const needsAriaValuemin =
                   !elem.hasAttribute("aria-valuemin") &&
-                  (Object.prototype.hasOwnProperty.call(attr, "min") ||
-                    Object.prototype.hasOwnProperty.call(attr, "ngMin"));
+                  (hasOwn(attr, "min") || hasOwn(attr, "ngMin"));
                 const needsAriaValuemax =
                   !elem.hasAttribute("aria-valuemax") &&
-                  (Object.prototype.hasOwnProperty.call(attr, "max") ||
-                    Object.prototype.hasOwnProperty.call(attr, "ngMax"));
+                  (hasOwn(attr, "max") || hasOwn(attr, "ngMax"));
                 const needsAriaValuenow = !elem.hasAttribute("aria-valuenow");
 
                 if (needsAriaValuemin) {
@@ -346,7 +344,7 @@ export function ngModelAriaDirective($aria) {
           }
 
           if (
-            !Object.prototype.hasOwnProperty.call(attr, "ngRequired") &&
+            !hasOwn(attr, "ngRequired") &&
             ngModel.$validators.required &&
             shouldAttachAttr("aria-required", "ariaRequired", elem, false)
           ) {
@@ -370,7 +368,7 @@ export function ngModelAriaDirective($aria) {
 ngDblclickAriaDirective.$inject = ["$aria"];
 export function ngDblclickAriaDirective($aria) {
   return function (scope, elem, attr) {
-    if (Object.prototype.hasOwnProperty.call(attr, ARIA_DISABLE_ATTR)) return;
+    if (hasOwn(attr, ARIA_DISABLE_ATTR)) return;
 
     if (
       $aria.config("tabindex") &&

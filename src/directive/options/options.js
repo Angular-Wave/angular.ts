@@ -3,6 +3,7 @@ import {
   assertArg,
   equals,
   hashKey,
+  hasOwn,
   includes,
   isArrayLike,
   isDefined,
@@ -112,10 +113,7 @@ export const ngOptionsDirective = [
           // if object, extract keys, in enumeration order, unsorted
           optionValuesKeys = [];
           for (const itemKey in optionValues) {
-            if (
-              Object.prototype.hasOwnProperty.call(optionValues, itemKey) &&
-              itemKey.charAt(0) !== "$"
-            ) {
+            if (hasOwn(optionValues, itemKey) && itemKey.charAt(0) !== "$") {
               optionValuesKeys.push(itemKey);
             }
           }

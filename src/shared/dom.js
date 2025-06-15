@@ -1,4 +1,4 @@
-import { concat, isDefined, isObject } from "./utils.js";
+import { concat, hasOwn, isDefined, isObject } from "./utils.js";
 import {
   Cache,
   EXPANDO,
@@ -370,7 +370,7 @@ export function deleteCacheData(element, key) {
     const expandoStore = getExpando(element, false); // Don't create if it doesn't exist
     const data = expandoStore?.data;
 
-    if (data && Object.prototype.hasOwnProperty.call(data, kebabToCamel(key))) {
+    if (data && hasOwn(data, kebabToCamel(key))) {
       delete data[kebabToCamel(key)];
     }
   }

@@ -10,6 +10,7 @@ import {
   isNull,
   isProxy,
   isProxySymbol,
+  hasOwn,
 } from "../../shared/utils.js";
 import { ASTType } from "../parse/ast-type.js";
 
@@ -86,7 +87,7 @@ export function createScope(target = {}, context) {
   if (typeof target === "object") {
     const proxy = new Proxy(target, context || new Scope());
     for (const key in target) {
-      if (Object.prototype.hasOwnProperty.call(target, key)) {
+      if (hasOwn(target, key)) {
         try {
           if (
             (target.constructor.$nonscope &&
@@ -281,7 +282,7 @@ export class Scope {
       }
 
       if (isObject(value)) {
-        if (Object.prototype.hasOwnProperty.call(target, property)) {
+        if (hasOwn(target, property)) {
           Object.keys(oldValue)
             .filter((x) => !value[x])
             .forEach((k) => {
@@ -522,7 +523,7 @@ export class Scope {
       }
     }
 
-    if (Object.prototype.hasOwnProperty.call(this.propertyMap, property)) {
+    if (hasOwn(this.propertyMap, property)) {
       this.$target = target;
       return this.propertyMap[property];
     } else {

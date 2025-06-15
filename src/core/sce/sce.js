@@ -4,6 +4,7 @@ import {
   urlResolve,
 } from "./../url-utils/url-utils.js";
 import {
+  hasOwn,
   isFunction,
   isRegExp,
   isString,
@@ -342,9 +343,7 @@ export function SceDelegateProvider() {
        * @return {*} A trusted representation of value, that can be used in the given context.
        */
       function trustAs(type, trustedValue) {
-        const Constructor = Object.prototype.hasOwnProperty.call(byType, type)
-          ? byType[type]
-          : null;
+        const Constructor = hasOwn(byType, type) ? byType[type] : null;
         if (!Constructor) {
           $exceptionHandler(
             $sceMinErr(
@@ -437,9 +436,7 @@ export function SceDelegateProvider() {
         ) {
           return maybeTrusted;
         }
-        const constructor = Object.prototype.hasOwnProperty.call(byType, type)
-          ? byType[type]
-          : null;
+        const constructor = hasOwn(byType, type) ? byType[type] : null;
         // If maybeTrusted is a trusted class instance or subclass instance, then unwrap and return
         // as-is.
         if (constructor && maybeTrusted instanceof constructor) {

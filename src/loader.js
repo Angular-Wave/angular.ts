@@ -4,6 +4,7 @@ import {
   ngAttrPrefixes,
   assertNotHasOwnProperty,
   errorHandlingConfig,
+  hasOwn,
 } from "./shared/utils.js";
 import {
   getController,
@@ -151,7 +152,7 @@ export class Angular {
         compileFn(scope);
 
         // https://github.com/angular-ui/ui-router/issues/3678
-        if (!Object.prototype.hasOwnProperty.call($injector, "strictDi")) {
+        if (!hasOwn($injector, "strictDi")) {
           try {
             $injector.invoke(() => {});
           } catch (error) {
@@ -273,7 +274,7 @@ export class Angular {
    */
   module(name, requires, configFn) {
     assertNotHasOwnProperty(name, "module");
-    if (requires && Object.prototype.hasOwnProperty.call(modules, name)) {
+    if (requires && hasOwn(modules, name)) {
       modules[name] = null;
     }
     return ensure(modules, name, () => {

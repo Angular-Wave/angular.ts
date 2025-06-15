@@ -3,6 +3,7 @@ import {
   isFunction,
   isObject,
   isNullOrUndefined,
+  hasOwn,
 } from "../../shared/utils.js";
 import { trace } from "../common/trace.js";
 import { stringify } from "../../shared/strings.js";
@@ -42,8 +43,7 @@ export class Resolvable {
     } else if (
       isObject(arg1) &&
       arg1.token &&
-      (Object.prototype.hasOwnProperty.call(arg1, "resolveFn") ||
-        Object.prototype.hasOwnProperty.call(arg1, "data"))
+      (hasOwn(arg1, "resolveFn") || hasOwn(arg1, "data"))
     ) {
       this.token = arg1.token;
       this.resolveFn = arg1.resolveFn;

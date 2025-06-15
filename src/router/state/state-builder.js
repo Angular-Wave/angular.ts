@@ -6,7 +6,7 @@ import {
   copy,
   map,
 } from "../../shared/common.js";
-import { isDefined, isFunction, isString } from "../../shared/utils.js";
+import { hasOwn, isDefined, isFunction, isString } from "../../shared/utils.js";
 import { stringify } from "../../shared/strings.js";
 import { is, pattern, pipe, val } from "../../shared/hof.js";
 import { Resolvable } from "../resolve/resolvable.js";
@@ -318,7 +318,7 @@ export class StateBuilder {
       return null;
     }
     for (const key in builders) {
-      if (!Object.prototype.hasOwnProperty.call(builders, key)) continue;
+      if (!hasOwn(builders, key)) continue;
       const chain = builders[key].reduce(
         (parentFn, step) => (_state) => step(_state, parentFn),
         () => {},
