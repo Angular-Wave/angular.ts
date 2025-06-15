@@ -39,19 +39,22 @@ import {
   functionToString,
   maxLength,
   padString,
-} from "../../shared/strings";
-function ngViewString(uiview) {
-  if (!uiview) return "ng-view (defunct)";
-  const state = uiview.creationContext
-    ? uiview.creationContext.name || "(root)"
+} from "../../shared/strings.js";
+
+function ngViewString(ngView) {
+  if (!ngView) return "ng-view (defunct)";
+  const state = ngView.creationContext
+    ? ngView.creationContext.name || "(root)"
     : "(none)";
-  return `[ng-view#${uiview.id}:${uiview.fqn} (${uiview.name}@${state})]`;
+  return `[ng-view#${ngView.id}:${ngView.fqn} (${ngView.name}@${state})]`;
 }
+
 const viewConfigString = (viewConfig) => {
   const view = viewConfig.viewDecl;
   const state = view.$context.name || "(root)";
   return `[View#${viewConfig.$id} from '${state}' state]: target ng-view: '${view.$ngViewName}@${view.$ngViewContextAnchor}'`;
 };
+
 function normalizedCat(input) {
   return isNumber(input) ? Category[input] : Category[Category[input]];
 }
@@ -68,15 +71,18 @@ function normalizedCat(input) {
  *
  * `trace.enable(1)`
  */
-var Category;
-(function (Category) {
-  Category[(Category["RESOLVE"] = 0)] = "RESOLVE";
-  Category[(Category["TRANSITION"] = 1)] = "TRANSITION";
-  Category[(Category["HOOK"] = 2)] = "HOOK";
-  Category[(Category["UIVIEW"] = 3)] = "UIVIEW";
-  Category[(Category["VIEWCONFIG"] = 4)] = "VIEWCONFIG";
-})(Category || (Category = {}));
-export { Category };
+
+/**
+ * @enum {number}
+ */
+export const Category = {
+  RESOLVE: 0,
+  TRANSITION: 1,
+  HOOK: 2,
+  UIVIEW: 3,
+  VIEWCONFIG: 4,
+};
+
 const _tid = parse("$id");
 const _rid = parse("router.$id");
 const transLbl = (trans) => `Transition #${_tid(trans)}-${_rid(trans)}`;

@@ -1,3 +1,11 @@
+export type Category = number;
+export namespace Category {
+  let RESOLVE: number;
+  let TRANSITION: number;
+  let HOOK: number;
+  let UIVIEW: number;
+  let VIEWCONFIG: number;
+}
 /**
  * Prints ng-router Transition trace information to the console.
  */
@@ -56,17 +64,3 @@ export class Trace {
  * ```
  */
 export const trace: Trace;
-/**
- * Trace categories Enum
- *
- * Enable or disable a category using [[Trace.enable]] or [[Trace.disable]]
- *
- * `trace.enable(Category.TRANSITION)`
- *
- * These can also be provided using a matching string, or position ordinal
- *
- * `trace.enable("TRANSITION")`
- *
- * `trace.enable(1)`
- */
-export var Category: any;
