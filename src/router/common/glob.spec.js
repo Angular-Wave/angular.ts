@@ -1,4 +1,34 @@
-import { Glob } from "./glob";
+import { Glob, hasGlobs } from "./glob.js";
+
+describe("hasGlobs", () => {
+  it("should return true for strings containing asterisk (*)", () => {
+    expect(hasGlobs("file*.js")).toBe(true);
+  });
+
+  it("should return true for strings containing exclamation mark (!)", () => {
+    expect(hasGlobs("!important")).toBe(true);
+  });
+
+  it("should return true for strings containing comma (,)", () => {
+    expect(hasGlobs("file1.js,file2.js")).toBe(true);
+  });
+
+  it("should return true for strings containing multiple glob characters", () => {
+    expect(hasGlobs("!file*.js,file?.ts")).toBe(true);
+  });
+
+  it("should return false for strings without glob characters", () => {
+    expect(hasGlobs("file.js")).toBe(false);
+  });
+
+  it("should return false for an empty string", () => {
+    expect(hasGlobs("")).toBe(false);
+  });
+
+  it("should return false for strings with special characters not in the glob list", () => {
+    expect(hasGlobs("file#name@2025")).toBe(false);
+  });
+});
 
 describe("Glob", function () {
   it("should match exact strings", function () {

@@ -24,6 +24,9 @@ export class StateObject {
     Object.assign(this, config);
     this.$$state = () => this;
     this.self = config;
+    /**
+     * @type {?Glob}
+     */
     const nameGlob = this.name ? Glob.fromString(this.name) : null;
     this.__stateObjectCache = { nameGlob };
   }

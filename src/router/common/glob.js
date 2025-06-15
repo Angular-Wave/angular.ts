@@ -45,20 +45,30 @@
  * | `'**.X'`    | `'X'` , `'A.X'` , `'Z.Y.X'`                   | `'A'` , `'A.login.Z'`             |
  * | `'A.**.X'`  | `'A.X'` , `'A.B.X'` , `'A.B.C.X'`             | `'A'` , `'A.B.C'`                 |
  *
- * @packageDocumentation
  */
 export class Glob {
-  /** Returns true if the string has glob-like characters in it */
-  static is(text) {
-    return !!/[!,*]+/.exec(text);
-  }
-  /** Returns a glob from the string, or null if the string isn't Glob-like */
+  /** Returns a glob from the string, or null if the string isn't Glob-like
+   * @param {string} text
+   * @returns {?Glob}
+   */
   static fromString(text) {
-    return Glob.is(text) ? new Glob(text) : null;
+    return hasGlobs(text) ? new Glob(text) : null;
   }
+
+  /**
+   * @param {string} text
+   */
   constructor(text) {
+    /**
+     * @type {string}
+     */
     this.text = text;
+
+    /**
+     * @type {string[]}
+     */
     this.glob = text.split(".");
+
     const regexpString = this.text
       .split(".")
       .map((seg) => {
@@ -67,9 +77,21 @@ export class Glob {
         return "\\." + seg;
       })
       .join("");
+
+    /**
+     * @type {RegExp}
+     */
     this.regexp = new RegExp("^" + regexpString + "$");
   }
   matches(name) {
     return this.regexp.test("." + name);
   }
+}
+
+/** Returns true if the string has glob-like characters in it
+ *  @param {string} text
+ *  @returns {boolean}
+ */
+export function hasGlobs(text) {
+  return !!/[!,*]+/.exec(text);
 }

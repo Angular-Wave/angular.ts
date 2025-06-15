@@ -1,3 +1,8 @@
+/** Returns true if the string has glob-like characters in it
+ *  @param {string} text
+ *  @returns {boolean}
+ */
+export function hasGlobs(text: string): boolean;
 /**
  * Matches state names using glob-like pattern strings.
  *
@@ -45,16 +50,28 @@
  * | `'**.X'`    | `'X'` , `'A.X'` , `'Z.Y.X'`                   | `'A'` , `'A.login.Z'`             |
  * | `'A.**.X'`  | `'A.X'` , `'A.B.X'` , `'A.B.C.X'`             | `'A'` , `'A.B.C'`                 |
  *
- * @packageDocumentation
  */
 export class Glob {
-  /** Returns true if the string has glob-like characters in it */
-  static is(text: any): boolean;
-  /** Returns a glob from the string, or null if the string isn't Glob-like */
-  static fromString(text: any): Glob;
-  constructor(text: any);
-  text: any;
-  glob: any;
+  /** Returns a glob from the string, or null if the string isn't Glob-like
+   * @param {string} text
+   * @returns {?Glob}
+   */
+  static fromString(text: string): Glob | null;
+  /**
+   * @param {string} text
+   */
+  constructor(text: string);
+  /**
+   * @type {string}
+   */
+  text: string;
+  /**
+   * @type {string[]}
+   */
+  glob: string[];
+  /**
+   * @type {RegExp}
+   */
   regexp: RegExp;
   matches(name: any): boolean;
 }
