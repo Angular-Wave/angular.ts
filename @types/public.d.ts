@@ -1,10 +1,9 @@
 /**
  * Initializes `ng`, `animate`, `message`, `aria` and `router` modules.
- * @param {import('./loader').Angular} angular
- * @returns {import('./types.js').Module} `ng`module
+ * @param {import('./loader.js').Angular} angular
+ * @returns {import('./core/di/ng-module.js').NgModule} `ng`module
  */
-export function publishExternalAPI(angular: any): import("./types.js").Module;
-/**
- * @type {string} `version` from `package.json`, injected by Rollup plugin
- */
-export const VERSION: string;
+export function publishExternalAPI(
+  angular: import("./loader.js").Angular,
+): import("./core/di/ng-module.js").NgModule;
+export const VERSION: "[VI]{version}[/VI]";

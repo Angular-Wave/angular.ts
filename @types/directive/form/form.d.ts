@@ -221,7 +221,7 @@ export class FormController {
    *        `ng-invalid-my-error` classes and can be bound to as `{{ someForm.$error.myError }}`.
    * @param {boolean} state Whether the current state is valid (true), invalid (false), pending
    *        (undefined),  or skipped (null). Pending is used for unfulfilled `$asyncValidators`.
-   *        Skipped is used by AngularJS when validators do not run because of parse errors and when
+   *        Skipped is used by AngularTS when validators do not run because of parse errors and when
    *        `$asyncValidators` do not run because any of the `$validators` failed.
    * @param {import("../model/model.js").NgModelController | FormController} controller - The controller whose validity state is
    *        triggering the change.

@@ -9,6 +9,9 @@
  * ```
  */
 $IsStateFilter.$inject = ["$state"];
+/**
+ * @returns {import('../interface.ts').FilterFn}
+ */
 export function $IsStateFilter($state) {
   const isFilter = function (state, params, options) {
     return $state.is(state, params, options);
@@ -27,6 +30,9 @@ export function $IsStateFilter($state) {
  * ```
  */
 $IncludedByStateFilter.$inject = ["$state"];
+/**
+ * @returns {import('../interface.ts').FilterFn}
+ */
 export function $IncludedByStateFilter($state) {
   const includesFilter = function (state, params, options) {
     return $state.includes(state, params, options);

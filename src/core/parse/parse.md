@@ -1,9 +1,9 @@
-// Sandboxing AngularJS Expressions
+// Sandboxing AngularTS Expressions
 // ------------------------------
-// AngularJS expressions are no longer sandboxed. So it is now even easier to access arbitrary JS code by
+// AngularTS expressions are no longer sandboxed. So it is now even easier to access arbitrary JS code by
 // various means such as obtaining a reference to native JS functions like the Function constructor.
 //
-// As an example, consider the following AngularJS expression:
+// As an example, consider the following AngularTS expression:
 //
 // {}.toString.constructor('alert("evil JS code")')
 //
@@ -20,14 +20,14 @@
 -
 - @description
 -
-- Converts AngularJS {@link guide/expression expression} into a function.
+- Converts AngularTS {@link guide/expression expression} into a function.
 -
 - let getter = $parse('user.name');
 - let setter = getter.assign;
-- let context = {user:{name:'AngularJS'}};
+- let context = {user:{name:'AngularTS'}};
 - let locals = {user:{name:'local'}};
 -
-- expect(getter(context)).toEqual('AngularJS');
+- expect(getter(context)).toEqual('AngularTS');
 - setter(context, 'newValue');
 - expect(context.user.name).toEqual('newValue');
 - expect(getter(context, locals)).toEqual('local');

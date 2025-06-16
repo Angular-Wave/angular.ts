@@ -1,4 +1,4 @@
-# Developing AngularJS
+# Developing AngularTS
 
 - [Development Setup](#setup)
 - [Running Tests](#tests)
@@ -8,12 +8,12 @@
 
 ## <a name="setup"> Development Setup
 
-This document describes how to set up your development environment to build and test AngularJS, and
+This document describes how to set up your development environment to build and test AngularTS, and
 explains the basic mechanics of using `git`, `node`, `yarn` and `grunt`.
 
 ### Installing Dependencies
 
-Before you can build AngularJS, you must install and configure the following dependencies on your
+Before you can build AngularTS, you must install and configure the following dependencies on your
 machine:
 
 - [Git](http://git-scm.com/): The [Github Guide to
@@ -39,34 +39,34 @@ machine:
   but you can also add the grunt command-line tool globally (with `yarn global add grunt-cli`), which allows
   you to leave out the `yarn` prefix for all our grunt commands.
 
-### Forking AngularJS on Github
+### Forking AngularTS on Github
 
-To contribute code to AngularJS, you must have a GitHub account so you can push code to your own
-fork of AngularJS and open Pull Requests in the [GitHub Repository][github].
+To contribute code to AngularTS, you must have a GitHub account so you can push code to your own
+fork of AngularTS and open Pull Requests in the [GitHub Repository][github].
 
 To create a Github account, follow the instructions [here](https://github.com/signup/free).
 Afterwards, go ahead and [fork](http://help.github.com/forking) the
-[main AngularJS repository][github].
+[main AngularTS repository][github].
 
-### Building AngularJS
+### Building AngularTS
 
-To build AngularJS, you clone the source code repository and use Grunt to generate the non-minified
-and minified AngularJS files:
+To build AngularTS, you clone the source code repository and use Grunt to generate the non-minified
+and minified AngularTS files:
 
 ```shell
 # Clone your Github repository:
 git clone https://github.com/<github username>/angular.js.git
 
-# Go to the AngularJS directory:
+# Go to the AngularTS directory:
 cd angular.js
 
-# Add the main AngularJS repository as an upstream remote to your repository:
+# Add the main AngularTS repository as an upstream remote to your repository:
 git remote add upstream "https://github.com/angular/angular.js.git"
 
 # Install JavaScript dependencies:
 yarn install
 
-# Build AngularJS:
+# Build AngularTS:
 yarn grunt package
 ```
 
@@ -79,9 +79,9 @@ directories:
 - `angular-<version>.zip` — The complete zip file, containing all of the release build
   artifacts.
 
-- `angular.js` / `angular.min.js` — The regular and minified core AngularJS script file.
+- `angular.js` / `angular.min.js` — The regular and minified core AngularTS script file.
 
-- `angular-*.js` / `angular-*.min.js` — All other AngularJS module script files.
+- `angular-*.js` / `angular-*.min.js` — All other AngularTS module script files.
 
 - `docs/` — A directory that contains a standalone version of the docs
   (same as served in `docs.angularjs.org`).
@@ -103,7 +103,7 @@ HTTP server. For this purpose, we have made available a local web server based o
    http://localhost:8000/
    ```
 
-   By default, it serves the contents of the AngularJS project directory.
+   By default, it serves the contents of the AngularTS project directory.
 
 3. To access the locally served docs, visit this URL:
    ```text
@@ -170,7 +170,7 @@ yarn grunt --help
 
 ### <a name="e2e-tests"></a> Running the End-to-end Test Suite
 
-AngularJS's end to end tests are run with Protractor. Simply run:
+AngularTS's end to end tests are run with Protractor. Simply run:
 
 ```shell
 yarn grunt test:e2e
@@ -188,7 +188,7 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
   out the existing source code and see the section about [writing documentation](#documentation)
 - With the exceptions listed below, we follow the rules contained in
   [Google's JavaScript Style Guide][js-style-guide]:
-  - **Do not use namespaces**: Instead, wrap the entire AngularJS code base in an anonymous
+  - **Do not use namespaces**: Instead, wrap the entire AngularTS code base in an anonymous
     closure and export our API explicitly rather than implicitly.
   - Wrap all code at **100 characters**.
   - Instead of complex inheritance hierarchies, we **prefer simple objects**. We use prototypal
@@ -197,7 +197,7 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
   - To write concise code that can be better minified, we **use aliases internally** that map to
     the external API. See our existing code to see what we mean.
   - We **don't go crazy with type annotations** for private internal APIs unless it's an internal
-    API that is used throughout AngularJS. The best guidance is to do what makes the most sense.
+    API that is used throughout AngularTS. The best guidance is to do what makes the most sense.
 
 ### Specific topics
 
@@ -228,7 +228,7 @@ The `$compile:badrestrict` error is a good example for a well-defined `minErr`:
 
 We have very precise rules over how our git commit messages can be formatted. This leads to **more
 readable messages** that are easy to follow when looking through the **project history**. But also,
-we use the git commit messages to **generate the AngularJS change log**.
+we use the git commit messages to **generate the AngularTS change log**.
 
 The commit message formatting can be added using a typical git workflow or through the use of a CLI
 wizard ([Commitizen](https://github.com/commitizen/cz-cli)). To use the wizard, run `yarn run commit`
@@ -306,17 +306,17 @@ A detailed explanation can be found in this [document][commit-message-format].
 
 ## <a name="documentation"></a> Writing Documentation
 
-The AngularJS project uses a form of [jsdoc](http://usejsdoc.org/) called ngdoc for all of its code
+The AngularTS project uses a form of [jsdoc](http://usejsdoc.org/) called ngdoc for all of its code
 documentation.
 
 This means that all the docs are stored inline in the source code and so are kept in sync as it
 changes.
 
 There is also extra content (the developer guide, error pages, the tutorial,
-and misceallenous pages) that live inside the AngularJS repository as markdown files.
+and misceallenous pages) that live inside the AngularTS repository as markdown files.
 
 This means that since we generate the documentation from the source code, we can easily provide
-version-specific documentation by simply checking out a version of AngularJS and running the build.
+version-specific documentation by simply checking out a version of AngularTS and running the build.
 
 Extracting the source code documentation, processing and building the docs is handled by the
 documentation generation tool [Dgeni][dgeni].
@@ -368,7 +368,7 @@ is interested in the following block tags:
 - `@example` - specifies an example. This can be a simple code block, or a
   [runnable example](#the-example-tag).
 - `@deprecated` - specifies that the following code is deprecated and should not be used.
-  In The AngularJS docs, there are two specific patterns which can be used to further describe
+  In The AngularTS docs, there are two specific patterns which can be used to further describe
   the deprecation: `sinceVersion="<version>"` and `removeVersion="<version>"`
 
 The `type` in `@param` and `@returns` must be wrapped in `{}` curly braces, e.g. `{Object|Array}`.
@@ -379,7 +379,7 @@ name, e.g. `@param {boolean} [ownPropsOnly=false]`.
 
 Descriptions can contain markdown formatting.
 
-#### AngularJS-specific jsdoc directives
+#### AngularTS-specific jsdoc directives
 
 In addition to the standard jsdoc tags, there are a number that are specific to the Angular
 code-base:
@@ -406,16 +406,16 @@ a directive would have different properties to a filter and so would be document
 commonly used types are:
 
 - `overview` - a general page (guide, api index)
-- `provider` - AngularJS provider, such as `$compileProvider` or `$httpProvider`.
-- `service` - injectable AngularJS service, such as `$compile` or `$http`.
+- `provider` - AngularTS provider, such as `$compileProvider` or `$httpProvider`.
+- `service` - injectable AngularTS service, such as `$compile` or `$http`.
 - `object` - well defined object (often exposed as a service)
 - `function` - function that will be available to other methods (such as a helper function within
   the ng module)
 - `method` - method on an object/service/controller
 - `property` - property on an object/service/controller
-- `event` - AngularJS event that will propagate through the `$scope` tree.
-- `directive` - AngularJS directive
-- `filter` - AngularJS filter
+- `event` - AngularTS event that will propagate through the `$scope` tree.
+- `directive` - AngularTS directive
+- `filter` - AngularTS filter
 - `error` - minErr error description
 
 ### General documentation with Markdown

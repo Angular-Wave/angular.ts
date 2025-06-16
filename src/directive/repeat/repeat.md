@@ -44,14 +44,14 @@
 - However, there are a few limitations compared to array iteration:
 -
 - - The JavaScript specification does not define the order of keys
-- returned for an object, so AngularJS relies on the order returned by the browser
+- returned for an object, so AngularTS relies on the order returned by the browser
 - when running `for key in myObj`. Browsers generally follow the strategy of providing
 - keys in the order in which they were defined, although there are exceptions when keys are deleted
 - and reinstated. See the
 - [MDN page on `delete` for more info](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/delete#Cross-browser_notes).
 -
 - - `ngRepeat` will silently _ignore_ object keys starting with `$`, because
-- it's a prefix used by AngularJS for public (`$`) and private (`$$`) properties.
+- it's a prefix used by AngularTS for public (`$`) and private (`$$`) properties.
 -
 - - The built-in filters {@link ng.orderBy orderBy} and {@link ng.filter filter} do not work with
 - objects, and will throw an error if used with one.
@@ -293,7 +293,7 @@
 -     Note that the default id function does not support duplicate primitive values (`number`, `string`),
 -     but supports duplictae non-primitive values (`object`) that are *equal* in shape.
 -
--     *Custom Expression*: It is possible to use any AngularJS expression to compute the tracking
+-     *Custom Expression*: It is possible to use any AngularTS expression to compute the tracking
 -     id, for example with a function, or using a property on the collection items.
 -     `item in items track by item.id` is a typical pattern when the items have a unique identifier,
 -     e.g. database id. In this case the object identity does not matter. Two objects are considered

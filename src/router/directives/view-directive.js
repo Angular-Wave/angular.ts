@@ -173,7 +173,7 @@ export let ngView = [
       return config1 === config2;
     }
     const rootData = {
-      $cfg: { viewDecl: { $context: $view._pluginapi._rootViewContext() } },
+      $cfg: { viewDecl: { $context: $view.rootViewContext() } },
       $ngView: {},
     };
     const directive = {

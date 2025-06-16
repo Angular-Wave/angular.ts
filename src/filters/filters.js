@@ -227,7 +227,7 @@ export function formatNumber(
 }
 
 /**
- * @returns {function(Object, number?): Object}
+ * @returns {import('../interface.ts').FilterFn}
  */
 export function jsonFilter() {
   return function (object, spacing) {

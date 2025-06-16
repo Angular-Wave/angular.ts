@@ -6,7 +6,7 @@ $$AnimateChildrenDirective.$inject = ["$interpolate"];
 
 /**
  * @param {*} $interpolate
- * @returns {import("../types").Directive}
+ * @returns {import("../types.js").Directive}
  */
 export function $$AnimateChildrenDirective($interpolate) {
   return {

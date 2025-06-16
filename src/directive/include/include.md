@@ -13,7 +13,7 @@
 - $sce.getTrustedResourceUrl} on it. To load templates from other domains or protocols
 - you may either add them to your {@link ng.$sceDelegateProvider#trustedResourceUrlList trusted
 - resource URL list} or {@link $sce#trustAsResourceUrl wrap them} as trusted values. Refer to
-- AngularJS's {@link ng.$sce Strict Contextual Escaping}.
+- AngularTS's {@link ng.$sce Strict Contextual Escaping}.
 -
 - In addition, the browser's
 - [Same Origin Policy](https://code.google.com/p/browsersec/wiki/Part2#Same-origin_policy_for_XMLHttpRequest)
@@ -32,7 +32,7 @@
 -
 - The enter and leave animation occur concurrently.
 -
-- @param {string} ngInclude|src AngularJS expression evaluating to URL. If the source is a string constant,
+- @param {string} ngInclude|src AngularTS expression evaluating to URL. If the source is a string constant,
 -                 make sure you wrap it in **single** quotes, e.g. `src="'myPartialTemplate.html'"`.
 - @param {string=} onload Expression to evaluate when a new partial is loaded.
 -                  <div class="alert alert-warning">

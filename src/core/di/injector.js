@@ -36,6 +36,9 @@ export function createInjector(modulesToLoad, strictDi = false) {
   const loadedModules = new Map(); // Keep track of loaded modules to avoid circular dependencies
 
   const providerCache = {
+    /**
+     * @type {import('../../interface.ts').Provider}
+     */
     $provide: {
       provider: supportObject(provider),
       factory: supportObject(factory),
@@ -75,14 +78,14 @@ export function createInjector(modulesToLoad, strictDi = false) {
   return instanceInjector;
 
   ////////////////////////////////////
-  // $provider
+  // $provide methods
   ////////////////////////////////////
 
   /**
-   *
+   * Registers a provider.
    * @param {string} name
-   * @param {import('../../types.js').ServiceProvider} provider
-   * @returns
+   * @param {import('../../interface.ts').ServiceProvider | import('../../interface.ts').InjectableFactory} provider
+   * @returns {import('../../interface.ts').ServiceProvider}
    */
   function provider(name, provider) {
     assertNotHasOwnProperty(name, "service");
@@ -105,6 +108,12 @@ export function createInjector(modulesToLoad, strictDi = false) {
     return newProvider;
   }
 
+  /**
+   * Registers a factory.
+   * @param {string} name
+   * @param {(string|(function(*): *))[]} factoryFn
+   * @returns {import('../../interface.js').ServiceProvider}
+   */
   function factory(name, factoryFn) {
     return provider(name, {
       $get: () => {
@@ -121,6 +130,12 @@ export function createInjector(modulesToLoad, strictDi = false) {
     });
   }
 
+  /**
+   * Registers a service constructor.
+   * @param {string} name
+   * @param {Function} constructor
+   * @returns {import('../../interface.js').ServiceProvider}
+   */
   function service(name, constructor) {
     return factory(name, [
       INJECTOR_LITERAL,
@@ -129,20 +144,33 @@ export function createInjector(modulesToLoad, strictDi = false) {
   }
 
   /**
+   * Register a fixed value as a service.
    * @param {String} name
    * @param {any} val
-   * @returns {import('../../types.js').ServiceProvider}
+   * @returns {import('../../interface.ts').ServiceProvider}
    */
   function value(name, val) {
     return (providerCache[name + providerSuffix] = { $get: () => val });
   }
 
+  /**
+   * Register a constant value (available during config).
+   * @param {string} name
+   * @param {any} value
+   * @returns {void}
+   */
   function constant(name, value) {
     assertNotHasOwnProperty(name, "constant");
     providerInjector.cache[name] = value;
     protoInstanceInjector.cache[name] = value;
   }
 
+  /**
+   * Register a decorator function to modify or replace an existing service.
+   * @param name - The name of the service to decorate.
+   * @param fn - A function that takes `$delegate` and returns a decorated service.
+   * @returns {void}
+   */
   function decorator(serviceName, decorFn) {
     const origProvider = providerInjector.get(serviceName + providerSuffix);
     const origGet = origProvider.$get;
@@ -281,7 +309,7 @@ export function annotate(fn, strictDi, name) {
 
 /**
  * @param {function(string, any):any} delegate
- * @returns
+ * @returns {any}
  */
 function supportObject(delegate) {
   return function (key, value) {

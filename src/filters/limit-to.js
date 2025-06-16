@@ -8,7 +8,7 @@ import {
 } from "../shared/utils.js";
 
 /**
- * @returns {function(Array|ArrayLike|string|number, string|number, (string|number)?):Array|ArrayLike|string|number}
+ * @returns {import('../interface.ts').FilterFn}
  */
 export function limitToFilter() {
   /**

@@ -770,7 +770,7 @@ export function AnimateQueueProvider($animateProvider) {
 
         while (parentNode) {
           if (!rootNodeDetected) {
-            // AngularJS doesn't want to attempt to animate elements outside of the application
+            // AngularTS doesn't want to attempt to animate elements outside of the application
             // therefore we need to ensure that the rootElement is an ancestor of the current element
             rootNodeDetected = parentNode === rootNode;
           }

@@ -9,7 +9,7 @@
 - annotated with dependencies and is responsible for creating a filter function.
 -
 - <div class="alert alert-warning">
-- **Note:** Filter names must be valid AngularJS {@link expression} identifiers, such as `uppercase` or `orderBy`.
+- **Note:** Filter names must be valid AngularTS {@link expression} identifiers, such as `uppercase` or `orderBy`.
 - Names with special characters, such as hyphens and dots, are not allowed. If you wish to namespace
 - your filters, then you can use capitalization (`myappSubsectionFilterx`) or underscores
 - (`myapp_subsection_filterx`).
@@ -64,8 +64,8 @@
 
 -
 -
-- For more information about how AngularJS filters work, and how to create your own filters, see
-- {@link guide/filter Filters} in the AngularJS Developer Guide.
+- For more information about how AngularTS filters work, and how to create your own filters, see
+- {@link guide/filter Filters} in the AngularTS Developer Guide.
   \*/
 
 /\*\*
@@ -76,7 +76,7 @@
 - @description
 - Filters are used for formatting data displayed to the user.
 -
-- They can be used in view templates, controllers or services. AngularJS comes
+- They can be used in view templates, controllers or services. AngularTS comes
 - with a collection of [built-in filters](api/ng/filter), but it is easy to
 - define your own as well.
 -
@@ -121,7 +121,7 @@
 - the keys are the filter names and the values are the filter factories.
 -
 - <div class="alert alert-warning">
-- **Note:** Filter names must be valid AngularJS {@link expression} identifiers, such as `uppercase` or `orderBy`.
+- **Note:** Filter names must be valid AngularTS {@link expression} identifiers, such as `uppercase` or `orderBy`.
 - Names with special characters, such as hyphens and dots, are not allowed. If you wish to namespace
 - your filters, then you can use capitalization (`myappSubsectionFilterx`) or underscores
 - (`myapp_subsection_filterx`).

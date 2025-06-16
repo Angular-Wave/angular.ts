@@ -1,5 +1,5 @@
 /**
-_ The `$http` service is a core AngularJS service that facilitates communication with the remote
+_ The `$http` service is a core AngularTS service that facilitates communication with the remote
 _ HTTP servers via the browser's [XMLHttpRequest](https://developer.mozilla.org/en/xmlhttprequest)
 _ object or via [JSONP](http://en.wikipedia.org/wiki/JSONP).
 _
@@ -112,7 +112,7 @@ _ the $q service. While for simple usage patterns this doesn't matter much, for 
        * the transformed value (`function(data, headersGetter, status)`) or an array of such transformation functions,
        * which allows you to `push`or`unshift` a new transformation function into the transformation chain. \*
 _ <div class="alert alert-warning">
-_ **Note:** AngularJS does not make a copy of the `data` parameter before it is passed into the `transformRequest` pipeline.
+_ **Note:** AngularTS does not make a copy of the `data` parameter before it is passed into the `transformRequest` pipeline.
 _ That means changes to the properties of `data` are not local to the transform function (since Javascript passes objects by reference).
 _ For example, when calling `$http.get(url, $scope.myObject)`, modifications to the object's properties in a transformRequest
 _ function will be reflected on the scope and in any templates where the object is data-bound.
@@ -127,7 +127,7 @@ _ then these will be applied.
 _
 _ You can augment or replace the default transformations by modifying these properties by adding to or
 _ replacing the array. \*
-_ AngularJS provides the following default transformations:
+_ AngularTS provides the following default transformations:
 _
 _ Request transformations (`$httpProvider.defaults.transformRequest` and `$http.defaults.transformRequest`) is
 _ an array with one function that does the following: \*
@@ -282,7 +282,7 @@ _ ``       *
        * - [JSON vulnerability](http://haacked.com/archive/2008/11/20/anatomy-of-a-subtle-json-vulnerability.aspx)
        * - [XSRF](http://en.wikipedia.org/wiki/Cross-site_request_forgery)
        *
-       * Both server and the client must cooperate in order to eliminate these threats. AngularJS comes
+       * Both server and the client must cooperate in order to eliminate these threats. AngularTS comes
        * pre-configured with strategies that address these issues, but for this to work backend server
        * cooperation is required.
        *
@@ -292,7 +292,7 @@ _ ``       *
        * allows third party website to turn your JSON resource URL into
        * [JSONP](http://en.wikipedia.org/wiki/JSONP) request under some conditions. To
        * counter this your server can prefix all JSON requests with following string `")]}',\n"`.
-       * AngularJS will automatically strip the prefix before processing it as JSON.
+       * AngularTS will automatically strip the prefix before processing it as JSON.
        *
        * For example if your server needs to return:
        *``js
@@ -304,13 +304,13 @@ _ )]}',
 _ ['one','two']
 _ ```
 _
-_ AngularJS will strip the prefix, before processing the JSON.
+_ AngularTS will strip the prefix, before processing the JSON.
 _ \*
 _ ### Cross Site Request Forgery (XSRF) Protection
 _
 _ [XSRF](http://en.wikipedia.org/wiki/Cross-site_request_forgery) is an attack technique by
 _ which the attacker can trick an authenticated user into unknowingly executing actions on your
-_ website. AngularJS provides a mechanism to counter XSRF. When performing XHR requests, the
+_ website. AngularTS provides a mechanism to counter XSRF. When performing XHR requests, the
 _ $http service reads a token from a cookie (by default, `XSRF-TOKEN`) and sets it as an HTTP
 _ header (by default `X-XSRF-TOKEN`). Since only JavaScript that runs on your domain could read
 _ the cookie, your server can be assured that the XHR came from JavaScript running on your
@@ -343,7 +343,7 @@ _ The name of the cookie and the header can be specified using the `xsrfCookieNa
 _ `xsrfHeaderName` properties of either `$httpProvider.defaults` at config-time,
 _ `$http.defaults` at run-time, or the per-request config object.
 _
-_ In order to prevent collisions in environments where multiple AngularJS apps share the
+_ In order to prevent collisions in environments where multiple AngularTS apps share the
 _ same domain or subdomain, we recommend that each application uses a unique cookie name. \* \*
 _ @param {object} requestConfig Object describing the request to be made and how it should be
 _ processed. The object has following properties: \* \* - **method** – `{string}` – HTTP method (e.g. 'GET', 'POST', etc) \* - **url** – `{string|TrustedObject}` – Absolute or relative URL of the resource that is being requested;

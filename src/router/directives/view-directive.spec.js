@@ -644,7 +644,7 @@ describe("ngView", () => {
     });
   });
 
-  // describe("AngularJS Animations", () => {
+  // describe("AngularTS Animations", () => {
   //   it("should do transition animations", async () => {
   //     let content = "Initial Content",
   //       animation;

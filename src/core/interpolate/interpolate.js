@@ -32,9 +32,9 @@ function interr(text, err) {
  * Used for configuring the interpolation markup. Defaults to `{{` and `}}`.
  *
  * <div class="alert alert-danger">
- * This feature is sometimes used to mix different markup languages, e.g. to wrap an AngularJS
+ * This feature is sometimes used to mix different markup languages, e.g. to wrap an AngularTS
  * template within a Python Jinja template (or any other template language). Mixing templating
- * languages is **very dangerous**. The embedding template language will not safely escape AngularJS
+ * languages is **very dangerous**. The embedding template language will not safely escape AngularTS
  * expressions, so any user-controlled values in the template will cause Cross Site Scripting (XSS)
  * security bugs!
  * </div>
@@ -97,7 +97,7 @@ export class InterpolateProvider {
        * ```js
        *   let $interpolate = ...; // injected
        *   let exp = $interpolate('Hello {{name | uppercase}}!');
-       *   expect(exp({name:'AngularJS'})).toEqual('Hello ANGULARJS!');
+       *   expect(exp({name:'AngularTS'})).toEqual('Hello ANGULARJS!');
        * ```
        *
        * `$interpolate` takes an optional fourth argument, `allOrNothing`. If `allOrNothing` is
@@ -115,8 +115,8 @@ export class InterpolateProvider {
        *   // "allOrNothing" mode
        *   exp = $interpolate('{{greeting}} {{name}}!', false, null, true);
        *   expect(exp(context)).toBeUndefined();
-       *   context.name = 'AngularJS';
-       *   expect(exp(context)).toEqual('Hello AngularJS!');
+       *   context.name = 'AngularTS';
+       *   expect(exp(context)).toEqual('Hello AngularTS!');
        * ```
        *
        * `allOrNothing` is useful for interpolating URLs. `ngSrc` and `ngSrcset` use this behavior.

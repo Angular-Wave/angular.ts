@@ -1,6 +1,6 @@
 {
   "name": "@angular-wave/angular.ts",
-  "description": "A modern, optimized and typesafe version of AngularJS",
+  "description": "A modern, optimized and typesafe version of AngularTS",
   "license": "MIT",
   "version": "0.7.0-beta.0",
   "type": "module",
@@ -13,7 +13,7 @@
     "url": "https://github.com/Angular-Wave/angular.ts.git"
   },
   "keywords": [
-    "AngularJS",
+    "AngularTS",
     "AngularTS"
   ],
   "engines": {

@@ -1,17 +1,4 @@
 /**
- * @typedef {string} Expression
- * @description A JavaScript-like code snippet, used in interpolation bindings such as
- * `<span title="{{ attrBinding }}">{{ textBinding }}</span>`, and evaluated in the context of a
- * {@link import('./core/scope/scope.js').Scope `scope`} object.
- */
-
-/**
- * @typedef {Object} BootstrapConfig
- * @description Configuration option for AngularTS bootstrap process.
- * @property {boolean} [strictDi] - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.
- */
-
-/**
  * @typedef {Function|Array<string|Function>} Injectable
  * @description Represents a type that can be injected, either as a function or an array of strings/functions.
  * @template T
@@ -53,7 +40,7 @@
 
 /**
  * @typedef {Function} ControllerConstructor
- * @description Controller constructor type for AngularJS. Note: Instead of classes, plain functions are often used as controller constructors, especially in examples.
+ * @description Controller constructor type for AngularTS. Note: Instead of classes, plain functions are often used as controller constructors, especially in examples.
  * @param {...any} args Arguments passed to the controller constructor.
  * @returns {void | Controller} Returns nothing or an instance of IController.
  */
@@ -72,7 +59,7 @@
  */
 
 /**
- * @typedef {Object} Controller  Interface representing the lifecycle hooks for AngularJS directive controllers.
+ * @typedef {Object} Controller  Interface representing the lifecycle hooks for AngularTS directive controllers.
  * @property {string} [name]
  * @property {function(): void} [$onInit]
  * Called on each controller after all the controllers on an element have been constructed and had their bindings
@@ -130,14 +117,6 @@
  */
 
 /**
- * @typedef {Element} TElement
- */
-
-/**
- * @typedef {Attributes} TAttributes
- */
-
-/**
  * @typedef {DirectiveController|NgModelController} TController
  */
 
@@ -150,26 +129,26 @@
  */
 
 /**
- * Compile function for an AngularJS directive.
+ * Compile function for an AngularTS directive.
  *
  * @callback DirectiveCompileFn
  * @param {HTMLElement} templateElement - The template element.
- * @param {TAttributes} templateAttributes - The template attributes.
- * @param {TranscludeFunction} transclude - @deprecated The transclude function. Note: The transclude function that is passed to the compile function is deprecated,
+ * @param {Attributes} templateAttributes - The template attributes.
+ * @param {Function} transclude - @deprecated The transclude function. Note: The transclude function that is passed to the compile function is deprecated,
  * as it e.g. does not know about the right outer scope. Please use the transclude function
  * that is passed to the link function instead.
  * @returns {void | DirectiveLinkFn | DirectivePrePost} Returns void, DirectiveLinkFn, or  DirectivePrePost.
  */
 
 /**
- * Link function for an AngularJS directive.
+ * Link function for an AngularTS directive.
  *
  * @callback DirectiveLinkFn
  * @param {TScope} scope
  * @param {HTMLElement} instanceElement
- * @param {TAttributes} instanceAttributes
+ * @param {Attributes} instanceAttributes
  * @param {TController} [controller]
- * @param {TranscludeFunction} [transclude]
+ * @param {Function} [transclude]
  * @returns {void}
  */
 
@@ -192,23 +171,7 @@
  */
 
 /**
-
- *
- * @typedef {function(TScope|Function, CloneAttachFunction=, Element=, string=): Element} TranscludeFunction
- */
-
-/**
- * @typedef {function(TScope, CloneAttachFunction, Element=, string=): Element} transcludeWithScope
- */
-
-/**
- * @typedef {function(CloneAttachFunction=, Element=, string=): Element} transcludeWithoutScope
- */
-
-/**
  * Represents the pre and post linking functions of a directive.
- *
- *
  * @typedef {Object} DirectivePrePost
  * @property {DirectiveLinkFn | undefined} [pre]
  *   The pre-linking function of the directive.
@@ -218,7 +181,6 @@
 
 /**
  * Directive definition object.
- *
  *
  * @typedef {Object} Directive
  * @property {DirectiveCompileFn | undefined} [compile]
@@ -243,11 +205,11 @@
  * Restriction mode.
  * @property {boolean | { [boundProperty: string]: string } | undefined} [scope]
  * Scope options.
- * @property {string | ((tElement: TElement, tAttrs: TAttributes) => string) | undefined} [template]
+ * @property {string | ((element: Element, tAttrs: Attributes) => string) | undefined} [template]
  * HTML template.
  * @property {string | undefined} [templateNamespace]
  * Template namespace.
- * @property {string | ((tElement: TElement, tAttrs: TAttributes) => string) | undefined} [templateUrl]
+ * @property {string | ((element: Element, tAttrs: Attributes) => string) | undefined} [templateUrl]
  * HTML template URL.
  * @property {boolean | "element" | { [slot: string]: string } | undefined} [transclude]
  * Transclusion options.
@@ -257,8 +219,6 @@
 
 /**
  * Factory function for creating directives.
- *
- *
  * @typedef {(...args: any[]) => Directive | DirectiveLinkFn} DirectiveFactory
  */
 
@@ -269,82 +229,6 @@
 /**
  * @typedef {Function} FilterFactory
  * @returns {FilterFunction}
- */
-
-/**
- * Interface for a service provider class.
- * @typedef {Object} ServiceProviderClass
- * @property {Function} constructor - The constructor for the service provider.
- * @param {...any} args - The arguments for the constructor.
- * @returns {ServiceProvider}
- */
-
-/**
- * Interface for a service provider factory function.
- * @typedef {Function} ServiceProviderFactory
- * @param {...any} args - The arguments for the factory function.
- * @returns {ServiceProvider}
- */
-
-/**
- * Interface for a service provider.
- * @typedef {Object|Function} ServiceProvider
- * @property {*} $get - The $get property that represents a service instance or a factory function.
- */
-
-/**
- *
- * @typedef {Object} Module AngularJS module interface for registering components, services, providers, etc.
- * @property {function(string, ComponentOptions): Module} component
- *   Use this method to register a component.
- * @property {function({ [componentName: string]: ComponentOptions }): Module} component
- *   Use this method to register multiple components.
- * @property {function(Function): Module} config
- *   Use this method to register work which needs to be performed on module loading.
- * @property {function(any[]): Module} config
- *   Use this method to register work which needs to be performed on module loading.
- * @property {function(string, any): Module} constant
- *   Register a constant service with the $injector.
- * @property {function(Object): Module} constant
- *   Register multiple constant services.
- * @property {function(string, Injectable<ControllerConstructor>): Module} controller
- *   Register a controller with the $controller service.
- * @property {function({ [name: string]: Injectable<ControllerConstructor> }): Module} controller
- *   Register multiple controllers.
- * @property {function(string, Injectable<DirectiveFactory>): Module} directive
- *   Register a directive with the compiler.
- * @property {function(Object.<string, Injectable<DirectiveFactory>>): Module} directive
- *   Register multiple directives.
- * @property {function(string, Injectable<Function>): Module} factory
- *   Register a service factory with the $injector.
- * @property {function(Object.<string, Injectable<Function>>): Module} factory
- *   Register multiple service factories.
- * @property {function(string, Injectable<FilterFactory>): Module} filter
- *   Register a filter service.
- * @property {function(Object.<string, Injectable<FilterFactory>>): Module} filter
- *   Register multiple filter services.
- * @property {function(string, ServiceProviderFactory): Module} provider
- *   Register a provider service factory.
- * @property {function(string, ServiceProviderClass): Module} provider
- *   Register a provider service constructor.
- * @property {function(string, any[]): Module} provider
- *   Register a provider service with inline annotated constructor.
- * @property {function(Injectable<Function>): Module} run
- *   Register code to be run during module loading.
- * @property {function(string, Injectable<Function>): Module} service
- *   Register a service constructor.
- * @property {function(Object.<string, Injectable<Function>>): Module} service
- *   Register multiple service constructors.
- * @property {function(string, any): Module} value
- *   Register a value service with the $injector.
- * @property {function(Object): Module} value
- *   Register multiple value services.
- * @property {function(string, Injectable<Function>): Module} decorator
- *   Register a service decorator with the $injector.
- * @property {string} name
- *   The name of the AngularJS module.
- * @property {string[]} requires
- *   Array of module names that this module depends on.
  */
 
 /**

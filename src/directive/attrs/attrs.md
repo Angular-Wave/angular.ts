@@ -6,10 +6,10 @@
 - @priority 99
 -
 - @description
-- Using AngularJS markup like `{{hash}}` in an href attribute will
+- Using AngularTS markup like `{{hash}}` in an href attribute will
 - make the link go to the wrong URL if the user clicks it before
-- AngularJS has a chance to replace the `{{hash}}` markup with its
-- value. Until AngularJS replaces the markup the link will be broken
+- AngularTS has a chance to replace the `{{hash}}` markup with its
+- value. Until AngularTS replaces the markup the link will be broken
 - and will most likely return a 404 error. The `ngHref` directive
 - solves this problem.
 -
@@ -47,9 +47,9 @@
 - @priority 99
 -
 - @description
-- Using AngularJS markup like `{{hash}}` in a `src` attribute doesn't
+- Using AngularTS markup like `{{hash}}` in a `src` attribute doesn't
 - work right: The browser will fetch from the URL with the literal
-- text `{{hash}}` until AngularJS replaces the expression inside
+- text `{{hash}}` until AngularTS replaces the expression inside
 - `{{hash}}`. The `ngSrc` directive solves this problem.
 -
 - The buggy way to write it:
@@ -86,9 +86,9 @@
 - @priority 99
 -
 - @description
-- Using AngularJS markup like `{{hash}}` in a `srcset` attribute doesn't
+- Using AngularTS markup like `{{hash}}` in a `srcset` attribute doesn't
 - work right: The browser will fetch from the URL with the literal
-- text `{{hash}}` until AngularJS replaces the expression inside
+- text `{{hash}}` until AngularTS replaces the expression inside
 - `{{hash}}`. The `ngSrcset` directive solves this problem.
 -
 - The buggy way to write it:

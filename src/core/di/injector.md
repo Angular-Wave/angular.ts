@@ -35,8 +35,8 @@
   ```
 
 -
-- Sometimes you want to get access to the injector of a currently running AngularJS app
-- from outside AngularJS. Perhaps, you want to inject and compile some markup after the
+- Sometimes you want to get access to the injector of a currently running AngularTS app
+- from outside AngularTS. Perhaps, you want to inject and compile some markup after the
 - application has been bootstrapped. You can do this using the extra `injector()` added
 - to JQuery/jqLite elements. See {@link angular.element}.
 -
@@ -45,7 +45,7 @@
 -
 - In the following example a new block of HTML containing a `ng-controller`
 - directive is added to the end of the document body by JQuery. We then compile and link
-- it into the current AngularJS scope.
+- it into the current AngularTS scope.
 -
 - ```js
 
@@ -381,7 +381,7 @@
 - with the {@link auto.$injector $injector}. Many of these functions are also exposed on
 - {@link angular.Module}.
 -
-- An AngularJS **service** is a singleton object created by a **service factory**. These \*\*service
+- An AngularTS **service** is a singleton object created by a **service factory**. These \*\*service
 - factories** are functions which, in turn, are created by a **service provider\*\*.
 - The **service providers** are constructor functions. When instantiated they must contain a
 - property called `$get`, which holds the **service factory** function.
@@ -644,7 +644,7 @@
 -
 - Value services are similar to constant services, except that they cannot be injected into a
 - module configuration function (see {@link angular.Module#config}) but they can be overridden by
-- an AngularJS {@link auto.$provide#decorator decorator}.
+- an AngularTS {@link auto.$provide#decorator decorator}.
 -
 - @param {string} name The name of the instance.
 - @param {\*} value The value.
@@ -679,7 +679,7 @@
 -
 - But unlike {@link auto.$provide#value value}, a constant can be
 - injected into a module configuration function (see {@link angular.Module#config}) and it cannot
-- be overridden by an AngularJS {@link auto.$provide#decorator decorator}.
+- be overridden by an AngularTS {@link auto.$provide#decorator decorator}.
 -
 - @param {string} name The name of the constant.
 - @param {\*} value The constant value.

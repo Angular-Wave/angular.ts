@@ -8,7 +8,7 @@
 - the `ngShow` attribute.
 -
 - The element is shown or hidden by removing or adding the `.ng-hide` CSS class onto the element.
-- The `.ng-hide` CSS class is predefined in AngularJS and sets the display style to none (using an
+- The `.ng-hide` CSS class is predefined in AngularTS and sets the display style to none (using an
 - `!important` flag). For CSP mode please add `angular-csp.css` to your HTML file (see
 - {@link ng.directive:ngCsp ngCsp}).
 -
@@ -97,7 +97,7 @@
   ```
 
 -
-- Keep in mind that, as of AngularJS version 1.3, there is no need to change the display property
+- Keep in mind that, as of AngularTS version 1.3, there is no need to change the display property
 - to block during animation states - ngAnimate will automatically handle the style toggling for you.
 -
 - @element ANY
@@ -138,7 +138,7 @@
 - the `ngHide` attribute.
 -
 - The element is shown or hidden by removing or adding the `.ng-hide` CSS class onto the element.
-- The `.ng-hide` CSS class is predefined in AngularJS and sets the display style to none (using an
+- The `.ng-hide` CSS class is predefined in AngularTS and sets the display style to none (using an
 - `!important` flag). For CSP mode please add `angular-csp.css` to your HTML file (see
 - {@link ng.directive:ngCsp ngCsp}).
 -
@@ -227,7 +227,7 @@
   ```
 
 -
-- Keep in mind that, as of AngularJS version 1.3, there is no need to change the display property
+- Keep in mind that, as of AngularTS version 1.3, there is no need to change the display property
 - to block during animation states - ngAnimate will automatically handle the style toggling for you.
 -
 - @element ANY

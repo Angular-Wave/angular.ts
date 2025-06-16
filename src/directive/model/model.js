@@ -456,7 +456,7 @@ export class NgModelController {
    * and reset the input to the last committed view value.
    *
    * It is also possible that you run into difficulties if you try to update the ngModel's `$modelValue`
-   * programmatically before these debounced/future events have resolved/occurred, because AngularJS's
+   * programmatically before these debounced/future events have resolved/occurred, because AngularTS's
    * dirty checking mechanism is not able to tell whether the model has actually changed or not.
    *
    * The `$rollbackViewValue()` method should be called before programmatically changing the model of an

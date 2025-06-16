@@ -1,5 +1,3 @@
-export type Expression = string;
-export type BootstrapConfig = any;
 export type Injectable<T> = Function | Array<string | Function>;
 export type Annotated = {
   $inject: Array<string>;
@@ -35,7 +33,7 @@ export type ChangesObject = {
   isFirstChange: () => boolean;
 };
 /**
- * Interface representing the lifecycle hooks for AngularJS directive controllers.
+ * Interface representing the lifecycle hooks for AngularTS directive controllers.
  */
 export type Controller = {
   name?: string;
@@ -72,8 +70,6 @@ export type Attributes = {
   [x: string]: any;
 };
 export type TScope = import("./core/scope/scope.js").Scope;
-export type TElement = Element;
-export type TAttributes = Attributes;
 export type TController = DirectiveController | NgModelController;
 export type DirectiveController =
   | Controller
@@ -82,22 +78,22 @@ export type DirectiveController =
       [key: string]: Controller;
     };
 /**
- * Compile function for an AngularJS directive.
+ * Compile function for an AngularTS directive.
  */
 export type DirectiveCompileFn = (
   templateElement: HTMLElement,
-  templateAttributes: TAttributes,
-  transclude: TranscludeFunction,
+  templateAttributes: Attributes,
+  transclude: Function,
 ) => any;
 /**
- * Link function for an AngularJS directive.
+ * Link function for an AngularTS directive.
  */
 export type DirectiveLinkFn = (
   scope: TScope,
   instanceElement: HTMLElement,
-  instanceAttributes: TAttributes,
+  instanceAttributes: Attributes,
   controller?: TController,
-  transclude?: TranscludeFunction,
+  transclude?: Function,
 ) => void;
 export type CloneAttachFunction = (
   clonedElement?: Element,
@@ -125,23 +121,6 @@ export type TranscludeFunctionObject = {
    */
   isSlotFilled: (arg0: string) => boolean;
 };
-export type TranscludeFunction = (
-  arg0: TScope | Function,
-  arg1: CloneAttachFunction | undefined,
-  arg2: Element | undefined,
-  arg3: string | undefined,
-) => Element;
-export type transcludeWithScope = (
-  arg0: TScope,
-  arg1: CloneAttachFunction,
-  arg2: Element | undefined,
-  arg3: string | undefined,
-) => Element;
-export type transcludeWithoutScope = (
-  arg0: CloneAttachFunction | undefined,
-  arg1: Element | undefined,
-  arg2: string | undefined,
-) => Element;
 /**
  * Represents the pre and post linking functions of a directive.
  */
@@ -224,7 +203,7 @@ export type Directive = {
    */
   template?:
     | string
-    | ((tElement: TElement, tAttrs: TAttributes) => string)
+    | ((element: Element, tAttrs: Attributes) => string)
     | undefined;
   /**
    * Template namespace.
@@ -235,7 +214,7 @@ export type Directive = {
    */
   templateUrl?:
     | string
-    | ((tElement: TElement, tAttrs: TAttributes) => string)
+    | ((element: Element, tAttrs: Attributes) => string)
     | undefined;
   /**
    * Transclusion options.
@@ -258,84 +237,6 @@ export type Directive = {
 export type DirectiveFactory = (...args: any[]) => Directive | DirectiveLinkFn;
 export type FilterFunction = Function;
 export type FilterFactory = Function;
-/**
- * Interface for a service provider class.
- */
-export type ServiceProviderClass = {
-  /**
-   * - The constructor for the service provider.
-   */
-  constructor: Function;
-};
-/**
- * Interface for a service provider factory function.
- */
-export type ServiceProviderFactory = Function;
-/**
- * Interface for a service provider.
- */
-export type ServiceProvider = any | Function;
-/**
- * AngularJS module interface for registering components, services, providers, etc.
- */
-export type Module = {
-  /**
-   *   Use this method to register a component.
-   */
-  component: (arg0: string, arg1: ComponentOptions) => Module;
-  /**
-   *   Use this method to register work which needs to be performed on module loading.
-   */
-  config: (arg0: Function) => Module;
-  /**
-   *   Register a constant service with the $injector.
-   */
-  constant: (arg0: string, arg1: any) => Module;
-  /**
-   *   Register a controller with the $controller service.
-   */
-  controller: (arg0: string, arg1: Injectable<ControllerConstructor>) => Module;
-  /**
-   *   Register a directive with the compiler.
-   */
-  directive: (arg0: string, arg1: Injectable<DirectiveFactory>) => Module;
-  /**
-   *   Register a service factory with the $injector.
-   */
-  factory: (arg0: string, arg1: Injectable<Function>) => Module;
-  /**
-   *   Register a filter service.
-   */
-  filter: (arg0: string, arg1: Injectable<FilterFactory>) => Module;
-  /**
-   *   Register a provider service factory.
-   */
-  provider: (arg0: string, arg1: ServiceProviderFactory) => Module;
-  /**
-   *   Register code to be run during module loading.
-   */
-  run: (arg0: Injectable<Function>) => Module;
-  /**
-   *   Register a service constructor.
-   */
-  service: (arg0: string, arg1: Injectable<Function>) => Module;
-  /**
-   *   Register a value service with the $injector.
-   */
-  value: (arg0: string, arg1: any) => Module;
-  /**
-   *   Register a service decorator with the $injector.
-   */
-  decorator: (arg0: string, arg1: Injectable<Function>) => Module;
-  /**
-   *   The name of the AngularJS module.
-   */
-  name: string;
-  /**
-   *   Array of module names that this module depends on.
-   */
-  requires: string[];
-};
 export type FormController = {
   /**
    * - True if the form has not been modified.

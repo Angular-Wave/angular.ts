@@ -1,5 +1,5 @@
 /**
- * Handles uncaught exceptions thrown in AngularJS expressions.
+ * Handles uncaught exceptions thrown in AngularTS expressions.
  *
  * By default, this service delegates to `$log.error()`, logging the exception to the browser console.
  * You can override this behavior to provide custom exception handling—such as reporting errors
@@ -7,7 +7,7 @@
  *
  * ## Default Behavior
  *
- * Uncaught exceptions within AngularJS expressions are intercepted and passed to this service.
+ * Uncaught exceptions within AngularTS expressions are intercepted and passed to this service.
  * The default implementation logs the error using `$log.error(exception, cause)`.
  *
  * ## Custom Implementation
@@ -39,17 +39,12 @@
  * }
  * ```
  *
- * @see {@link angular.ErrorHandler AngularJS ErrorHandler}
+ * @see {@link angular.ErrorHandler AngularTS ErrorHandler}
  */
 
 /** @typedef {import('../services/log').LogService} LogService */
 
-/**
- * @callback ErrorHandler
- * @param {Error} exception - Exception associated with the error.
- * @param {string} [cause] - Optional information about the context in which the error was thrown.
- * @returns {void}
- */
+/** @typedef {import("./error-handler.ts").ErrorHandler }  ErrorHandler */
 
 /**
  * Provider for `$exceptionHandler` service. Delegates uncaught exceptions to `$log.error()` by default.

@@ -128,15 +128,13 @@ import {
 import { ngChannelDirective } from "./directive/channel/channel.js";
 import { ngSetterDirective } from "./directive/setter/setter.js";
 
-/**
- * @type {string} `version` from `package.json`, injected by Rollup plugin
- */
+//injected by Rollup plugin
 export const VERSION = "[VI]{version}[/VI]";
 
 /**
  * Initializes `ng`, `animate`, `message`, `aria` and `router` modules.
- * @param {import('./loader').Angular} angular
- * @returns {import('./types.js').Module} `ng`module
+ * @param {import('./loader.js').Angular} angular
+ * @returns {import('./core/di/ng-module.js').NgModule} `ng`module
  */
 export function publishExternalAPI(angular) {
   const ng = angular

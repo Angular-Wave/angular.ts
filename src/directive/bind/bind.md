@@ -2,11 +2,11 @@
 
 ### Description
 
-The `ngBind` attribute tells AngularJS to replace the text content of the specified HTML element with the value of a given expression, and to update the text content when the value of that expression changes.
+The `ngBind` attribute tells AngularTS to replace the text content of the specified HTML element with the value of a given expression, and to update the text content when the value of that expression changes.
 
 Typically, you don't use `ngBind` directly, but instead, you use the double curly markup like `{{ expression }}` which is similar but less verbose.
 
-It is preferable to use `ngBind` instead of `{{ expression }}` if a template is momentarily displayed by the browser in its raw state before AngularJS compiles it. Since `ngBind` is an element attribute, it makes the bindings invisible to the user while the page is loading.
+It is preferable to use `ngBind` instead of `{{ expression }}` if a template is momentarily displayed by the browser in its raw state before AngularTS compiles it. Since `ngBind` is an element attribute, it makes the bindings invisible to the user while the page is loading.
 
 An alternative solution to this problem would be using the [`ngCloak`](https://docs.angularjs.org/api/ng/directive/ngCloak) directive.
 
@@ -103,7 +103,7 @@ content will be sanitized using the
 service. To utilize this functionality, ensure that `$sanitize` is available,
 for example, by including
 [`ngSanitize`](https://docs.angularjs.org/api/ngSanitize) in your module's
-dependencies (not in core AngularJS). To use `ngSanitize` in your module's
+dependencies (not in core AngularTS). To use `ngSanitize` in your module's
 dependencies, you need to include "angular-sanitize.js" in your application. You
 may also bypass sanitization for values you know are safe. To do so, bind to an
 explicitly trusted value via

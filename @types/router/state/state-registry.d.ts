@@ -1,9 +1,12 @@
+/** @typedef {import('../../interface.ts').ServiceProvider} ServiceProvider } */
 /**
  * A registry for all of the application's [[StateDeclaration]]s
  *
  * This API is found at `$stateRegistry` ([[UIRouter.stateRegistry]])
+ *
+ * @implements {ServiceProvider}
  */
-export class StateRegistryProvider {
+export class StateRegistryProvider implements ServiceProvider {
   static $inject: string[];
   constructor(
     urlService: any,
@@ -19,7 +22,8 @@ export class StateRegistryProvider {
   matcher: StateMatcher;
   builder: StateBuilder;
   stateQueue: StateQueueManager;
-  $get: (string | (($injector: any) => this))[];
+  /** @type {import('../../interface.ts').AnnotatedFactory} */
+  $get: import("../../interface.ts").AnnotatedFactory;
   /**
    * This is a [[StateBuilder.builder]] function for angular1 `onEnter`, `onExit`,
    * `onRetain` callback hooks on a [[Ng1StateDeclaration]].
@@ -116,6 +120,10 @@ export class StateRegistryProvider {
   decorator(property: any, builderFunction: any): any;
 }
 export function getLocals(ctx: any): any;
+/**
+ * }
+ */
+export type ServiceProvider = import("../../interface.ts").ServiceProvider;
 import { StateMatcher } from "./state-matcher.js";
 import { StateBuilder } from "./state-builder.js";
 import { StateQueueManager } from "./state-queue-manager.js";

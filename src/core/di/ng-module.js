@@ -33,13 +33,14 @@ export class NgModule {
     assert(isString(name), "name required");
     assert(Array.isArray(requires), "requires array required");
     /**
+     * Name of the current module.
      * @type {string}
-     * Name of the module.
      */
     this.name = name;
+
     /**
-     * Holds the list of modules which the injector will load before the current module is
-     * loaded.
+     * Array of module names that this module depends on.
+     * @type {string[]}
      */
     this.requires = requires;
 

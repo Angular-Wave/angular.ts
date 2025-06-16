@@ -1,6 +1,6 @@
-# Contributing to AngularJS
+# Contributing to AngularTS
 
-We'd love for you to contribute to our source code and to make AngularJS even better than it is
+We'd love for you to contribute to our source code and to make AngularTS even better than it is
 today! Here are the guidelines we'd like you to follow:
 
 - [Code of Conduct](#coc)
@@ -14,7 +14,7 @@ today! Here are the guidelines we'd like you to follow:
 
 ## <a name="coc"></a> Code of Conduct
 
-Help us keep AngularJS open and inclusive. Please read and follow our [Code of Conduct][coc].
+Help us keep AngularTS open and inclusive. Please read and follow our [Code of Conduct][coc].
 
 ## <a name="requests"></a> Questions, Bugs, Features
 
@@ -37,8 +37,8 @@ support and redirect people to the section you are reading right now.
 Other channels for support are:
 
 - the [Google Group][groups] discussion list
-- the [AngularJS IRC][irc]
-- the [AngularJS Gitter][gitter]
+- the [AngularTS IRC][irc]
+- the [AngularTS Gitter][gitter]
 
 ### <a name="issue"></a> Found an Issue or Bug?
 
@@ -47,7 +47,7 @@ If you find a bug in the source code, you can help us by submitting an issue to 
 
 **Please see the [Submission Guidelines](#submit) below.**
 
-**Special Note for Localization Issues:** AngularJS uses the [Google Closure I18N library] to
+**Special Note for Localization Issues:** AngularTS uses the [Google Closure I18N library] to
 generate its own I18N files (the ngLocale module). This means that any changes to these files
 would be lost the next time that we import the library.
 Since the Closure library i18n data is itself auto-generated from the data of the
@@ -99,7 +99,7 @@ with quickly:
 
 - **Overview of the Issue** - if an error is being thrown a non-minified stack trace helps
 - **Motivation for or Use Case** - explain why this is a bug for you
-- **AngularJS Version(s)** - is it a regression?
+- **AngularTS Version(s)** - is it a regression?
 - **Browsers and Operating System** - is this a problem with all browsers or only specific ones?
 - **Reproduce the Error** - provide a live example (using [Plunker][plunker] or
   [JSFiddle][jsfiddle]) or an unambiguous set of steps.
@@ -127,7 +127,7 @@ Before you submit your pull request consider the following guidelines:
 - Create your patch commit, **including appropriate test cases**.
 - Follow our [Coding Rules][developers.rules].
 - If the changes affect public APIs, change or add relevant [documentation][developers.documentation].
-- Run the AngularJS [unit][developers.tests-unit] and [E2E test][developers.tests-e2e] suites, and ensure that all tests
+- Run the AngularTS [unit][developers.tests-unit] and [E2E test][developers.tests-e2e] suites, and ensure that all tests
   pass. It is generally sufficient to run the tests only on Chrome, as our continuous integration test will
   run the tests on additional browsers.
 - Run `yarn grunt eslint` to check that you have followed the automatically enforced coding rules
@@ -165,7 +165,7 @@ Before you submit your pull request consider the following guidelines:
 - If we suggest changes, then:
 
   - Make the required updates.
-  - Re-run the AngularJS test suite to ensure tests are still passing.
+  - Re-run the AngularTS test suite to ensure tests are still passing.
   - Commit your changes to your branch (e.g. `my-fix-branch`).
   - Push the changes to your GitHub repository (this will update your Pull Request).
 

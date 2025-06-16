@@ -19,7 +19,7 @@ export function identifierForController(controller, ident) {
 }
 
 /**
- * The {@link ng.$controller $controller service} is used by AngularJS to create new
+ * The {@link ng.$controller $controller service} is used by AngularTS to create new
  * controllers.
  *
  * This provider allows controller registration via the

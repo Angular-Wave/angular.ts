@@ -3,8 +3,8 @@
 ![Build status](https://github.com/Angular-Wave/angular.ts/actions/workflows/ci.yml/badge.svg)
 [![stats](https://data.jsdelivr.com/v1/package/npm/@angular-wave/angular.ts/badge?style=rounded)](https://www.jsdelivr.com/package/npm/@angular-wave/angular.ts)
 
-This project preserves, modernises and expands the original [AngularJS](https://github.com/angular/angular.js)
-framework. AngularTS is "AngularJS: The Good Parts". It takes the three core pillars of the original &ndash; a string-interpolation engine,
+This project preserves, modernises and expands the original [AngularTS](https://github.com/angular/angular.js)
+framework. AngularTS is "AngularTS: The Good Parts". It takes the three core pillars of the original &ndash; a string-interpolation engine,
 dependency injection, two-way data-binding &ndash; and adds a reactive change-detection model on top of modern build tooling with strong typechecking of TypeScript.
 
 The result is a high-performance, buildless, progressive and battle-tested JS framework that stays as close to Web standards as possible.
@@ -76,10 +76,10 @@ We've set up a separate document for
 
 [![Analytics](https://ga-beacon.appspot.com/UA-8594346-11/angular.js/README.md?pixel)](https://github.com/igrigorik/ga-beacon)
 
-## What to use AngularJS for and when to use it
+## What to use AngularTS for and when to use it
 
-AngularJS is the next generation framework where each component is designed to work with every other
-component in an interconnected way like a well-oiled machine. AngularJS is JavaScript MVC made easy
+AngularTS is the next generation framework where each component is designed to work with every other
+component in an interconnected way like a well-oiled machine. AngularTS is JavaScript MVC made easy
 and done right. (Well it is not really MVC, read on, to understand what this means.)
 
 #### MVC, no, MV\* done the right way!
@@ -89,19 +89,19 @@ Model-View-Controller, is a design pattern, i.e. how the code should be organize
 different parts of an application separated for proper readability and debugging. Model is the data
 and the database. View is the user interface and what the user sees. Controller is the main link
 between Model and View. These are the three pillars of major programming frameworks present on the
-market today. On the other hand AngularJS works on MV\*, short for Model-View-_Whatever_. The
-_Whatever_ is AngularJS's way of telling that you may create any kind of linking between the Model
+market today. On the other hand AngularTS works on MV\*, short for Model-View-_Whatever_. The
+_Whatever_ is AngularTS's way of telling that you may create any kind of linking between the Model
 and the View here.
 
 Unlike other frameworks in any programming language, where MVC, the three separate components, each
-one has to be written and then connected by the programmer, AngularJS helps the programmer by asking
-him/her to just create these and everything else will be taken care of by AngularJS.
+one has to be written and then connected by the programmer, AngularTS helps the programmer by asking
+him/her to just create these and everything else will be taken care of by AngularTS.
 
 #### Interconnection with HTML at the root level
 
-AngularJS uses HTML to define the user's interface. AngularJS also enables the programmer to write
-new HTML tags (AngularJS Directives) and increase the readability and understandability of the HTML
-code. Directives are AngularJS’s way of bringing additional functionality to HTML. Directives
+AngularTS uses HTML to define the user's interface. AngularTS also enables the programmer to write
+new HTML tags (AngularTS Directives) and increase the readability and understandability of the HTML
+code. Directives are AngularTS’s way of bringing additional functionality to HTML. Directives
 achieve this by enabling us to invent our own HTML elements. This also helps in making the code DRY
 (Don't Repeat Yourself), which means once created, a new directive can be used anywhere within the
 application.
@@ -110,32 +110,32 @@ HTML is also used to determine the wiring of the app. Special attributes in the 
 to load the app, which components or controllers to use for each element, etc. We specify "what"
 gets loaded, but not "how". This declarative approach greatly simplifies app development in a sort
 of WYSIWYG way. Rather than spending time on how the program flows and orchestrating the various
-moving parts, we simply define what we want and AngularJS will take care of the dependencies.
+moving parts, we simply define what we want and AngularTS will take care of the dependencies.
 
 #### Data Handling made simple
 
-Data and Data Models in AngularJS are plain JavaScript objects and one can add and change properties
+Data and Data Models in AngularTS are plain JavaScript objects and one can add and change properties
 directly on it and loop over objects and arrays at will.
 
 #### Two-way Data Binding
 
-One of AngularJS's strongest features. Two-way Data Binding means that if something changes in the
+One of AngularTS's strongest features. Two-way Data Binding means that if something changes in the
 Model, the change gets reflected in the View instantaneously, and the same happens the other way
 around. This is also referred to as Reactive Programming, i.e. suppose `a = b + c` is being
 programmed and after this, if the value of `b` and/or `c` is changed then the value of `a` will be
-automatically updated to reflect the change. AngularJS uses its "scopes" as a glue between the Model
+automatically updated to reflect the change. AngularTS uses its "scopes" as a glue between the Model
 and View and makes these updates in one available for the other.
 
 #### Less Written Code and Easily Maintainable Code
 
-Everything in AngularJS is created to enable the programmer to end up writing less code that is
+Everything in AngularTS is created to enable the programmer to end up writing less code that is
 easily maintainable and readable by any other new person on the team. Believe it or not, one can
 write a complete working two-way data binded application in less than 10 lines of code. Try and see
 for yourself!
 
 #### Testing Ready
 
-AngularJS has Dependency Injection, i.e. it takes care of providing all the necessary dependencies
-to its controllers and services whenever required. This helps in making the AngularJS code ready for
-unit testing by making use of mock dependencies created and injected. This makes AngularJS more
+AngularTS has Dependency Injection, i.e. it takes care of providing all the necessary dependencies
+to its controllers and services whenever required. This helps in making the AngularTS code ready for
+unit testing by making use of mock dependencies created and injected. This makes AngularTS more
 modular and easily testable thus in turn helping a team create more robust applications.

@@ -1,56 +1,43 @@
+/** @typedef {import('../../interface.ts').ServiceProvider} ServiceProvider } */
 /**
- *
- * @description
  * Private service to sanitize uris for links and images. Used by $compile.
+ * @implements {ServiceProvider}
  */
-export function SanitizeUriProvider(): void;
-export class SanitizeUriProvider {
+export class SanitizeUriProvider implements ServiceProvider {
   /**
-   * @description
-   * Retrieves or overrides the default regular expression that is used for determining trusted safe
-   * urls during a[href] sanitization.
-   *
-   * The sanitization is a security measure aimed at prevent XSS attacks via HTML anchor links.
-   *
-   * Any url due to be assigned to an `a[href]` attribute via interpolation is marked as requiring
-   * the $sce.URL security context. When interpolation occurs a call is made to `$sce.trustAsUrl(url)`
-   * which in turn may call `$$sanitizeUri(url, isMedia)` to sanitize the potentially malicious URL.
-   *
-   * If the URL matches the `aHrefSanitizationTrustedUrlList` regular expression, it is returned unchanged.
-   *
-   * If there is no match the URL is returned prefixed with `'unsafe:'` to ensure that when it is written
-   * to the DOM it is inactive and potentially malicious code will not be executed.
-   *
-   * @param {RegExp=} regexp New regexp to trust urls with.
-   * @returns {RegExp|SanitizeUriProvider} Current RegExp if called without value or self for
-   *    chaining otherwise.
+   * @private
+   * @type {RegExp}
    */
-  aHrefSanitizationTrustedUrlList: (
-    regexp?: RegExp | undefined,
-  ) => RegExp | SanitizeUriProvider;
+  private _aHrefSanitizationTrustedUrlList;
   /**
-   * @description
-   * Retrieves or overrides the default regular expression that is used for determining trusted safe
-   * urls during img[src] sanitization.
-   *
-   * The sanitization is a security measure aimed at prevent XSS attacks via HTML image src links.
-   *
-   * Any URL due to be assigned to an `img[src]` attribute via interpolation is marked as requiring
-   * the $sce.MEDIA_URL security context. When interpolation occurs a call is made to
-   * `$sce.trustAsMediaUrl(url)` which in turn may call `$$sanitizeUri(url, isMedia)` to sanitize
-   * the potentially malicious URL.
-   *
-   * If the URL matches the `imgSrcSanitizationTrustedUrlList` regular expression, it is returned
-   * unchanged.
-   *
-   * If there is no match the URL is returned prefixed with `'unsafe:'` to ensure that when it is written
-   * to the DOM it is inactive and potentially malicious code will not be executed.
-   *
-   * @param {RegExp=} regexp New regexp to trust urls with.
-   * @returns {RegExp|SanitizeUriProvider} Current RegExp if called without value or self for chaining otherwise.
+   * @private
+   * @type {RegExp}
    */
-  imgSrcSanitizationTrustedUrlList: (
+  private _imgSrcSanitizationTrustedUrlList;
+  /**
+   * Retrieves or overrides the regexp used to trust URLs for a[href] sanitization.
+   *
+   * @param {RegExp=} regexp New regexp to trust URLs with.
+   * @returns {RegExp|SanitizeUriProvider} Current regexp if no param, or self for chaining.
+   */
+  aHrefSanitizationTrustedUrlList(
     regexp?: RegExp | undefined,
-  ) => RegExp | SanitizeUriProvider;
-  $get: () => (uri: any, isMediaUrl: any) => any;
+  ): RegExp | SanitizeUriProvider;
+  /**
+   * Retrieves or overrides the regexp used to trust URLs for img[src] sanitization.
+   *
+   * @param {RegExp=} regexp New regexp to trust URLs with.
+   * @returns {RegExp|SanitizeUriProvider} Current regexp if no param, or self for chaining.
+   */
+  imgSrcSanitizationTrustedUrlList(
+    regexp?: RegExp | undefined,
+  ): RegExp | SanitizeUriProvider;
+  /**
+   * @returns {import("./interface.js").SanitizerFn} Sanitizer function.
+   */
+  $get(): import("./interface.js").SanitizerFn;
 }
+/**
+ * }
+ */
+export type ServiceProvider = import("../../interface.ts").ServiceProvider;

@@ -23,9 +23,12 @@ export namespace defaultTransOpts {
 export class TransitionProvider {
   static $inject: string[];
   /**
-   * @param {import('../globals').UIRouterGlobals} globals
+   * @param {import('../globals.js').UIRouterGlobals} globals
    */
-  constructor(globals: any, viewService: any);
+  constructor(
+    globals: import("../globals.js").UIRouterGlobals,
+    viewService: any,
+  );
   _transitionCount: number;
   /** The transition hook types, such as `onEnter`, `onStart`, etc */
   _eventTypes: any[];
@@ -33,7 +36,7 @@ export class TransitionProvider {
   _registeredHooks: {};
   /** The  paths on a criteria object */
   _criteriaPaths: {};
-  globals: any;
+  globals: import("../globals.js").UIRouterGlobals;
   $view: any;
   _deregisterHookFns: {};
   _pluginapi: any;

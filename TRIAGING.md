@@ -1,6 +1,6 @@
 # Triage new issues/PRs on github
 
-This document shows the steps the AngularJS team is using to triage issues.
+This document shows the steps the AngularTS team is using to triage issues.
 The labels are used later on for [planning releases](#assigning-work).
 
 ## Automatic processing
@@ -43,12 +43,12 @@ This process based on the idea of minimizing user pain
 1. Label `frequency: *` – How often does this issue come up? How many developers does this affect? Chose just one of the following:
    - low - obscure issue affecting a handful of developers
    - moderate - impacts a common usage pattern
-   - high - impacts most or all AngularJS apps
+   - high - impacts most or all AngularTS apps
 1. Label `severity: *` - How bad is the issue? Chose just one of the following:
    - security issue
    - regression
    - memory leak
-   - broken expected use - it's hard or impossible for a developer using AngularJS to accomplish something that AngularJS should be able to do
+   - broken expected use - it's hard or impossible for a developer using AngularTS to accomplish something that AngularTS should be able to do
    - confusing - unexpected or inconsistent behavior; hard-to-debug
    - inconvenience - causes ugly/boilerplate code in apps
 1. Label `component: *`

@@ -119,7 +119,7 @@
 
 -
 - ### Life-cycle hooks
-- Directive controllers can provide the following methods that are called by AngularJS at points in the life-cycle of the
+- Directive controllers can provide the following methods that are called by AngularTS at points in the life-cycle of the
 - directive.The following hooks can be defined on the controller prototype or added to the controller inside its constructor:
 - - `$onInit()` - Called on each controller after all the controllers on an element have been constructed and
 - had their bindings initialized (and before the pre &amp; post linking functions for the directives on
@@ -383,7 +383,7 @@
 -
 - #### `templateNamespace`
 - String representing the document type used by the markup in the template.
-- AngularJS needs this information as those elements need to be created and cloned
+- AngularTS needs this information as those elements need to be created and cloned
 - in a special way when they are defined outside their usual containers like `<svg>` and `<math>`.
 -
 - - `html` - All root nodes in the template are HTML. Root nodes may also be
@@ -427,7 +427,7 @@
 -
 - #### `replace`
 - <div class="alert alert-danger">
-- **Note:** `replace` is deprecated in AngularJS and has been removed in the new Angular (v2+).
+- **Note:** `replace` is deprecated in AngularTS and has been removed in the new Angular (v2+).
 - </div>
 -
 - Specifies what the template should replace. Defaults to `false`.
@@ -570,7 +570,7 @@
 - ### Transclusion
 -
 - Transclusion is the process of extracting a collection of DOM elements from one part of the DOM and
-- copying them to another part of the DOM, while maintaining their connection to the original AngularJS
+- copying them to another part of the DOM, while maintaining their connection to the original AngularTS
 - scope from where they were taken.
 -
 - Transclusion is used (often with {@link ngTransclude}) to insert the
@@ -816,7 +816,7 @@
 - element passed in, or the clone of the element if the `cloneAttachFn` is provided.
 -
 - After linking the view is not updated until after a call to `$digest`, which typically is done by
-- AngularJS automatically.
+- AngularTS automatically.
 -
 - If you need access to the bound view, there are two ways to do it:
 -
@@ -856,7 +856,7 @@
 -
 -
 - For information on how the compiler works, see the
-- {@link guide/compiler AngularJS HTML Compiler} section of the Developer Guide.
+- {@link guide/compiler AngularTS HTML Compiler} section of the Developer Guide.
 -
 - @knownIssue
 -
@@ -893,7 +893,7 @@
   ```
 
 -
-- That means attributes that contain AngularJS expressions will not be merged correctly, e.g.
+- That means attributes that contain AngularTS expressions will not be merged correctly, e.g.
 - {@link ngShow} or {@link ngClass} will cause a {@link $parse} error:
 -
 - ```html
@@ -974,7 +974,7 @@
 - the property name in the attribute, e.g. `ng-prop-value="'my value'"` binds 'my value' to
 - the `value` property.
 -
-- Usually, it's not necessary to write to properties in AngularJS, as the built-in directives
+- Usually, it's not necessary to write to properties in AngularTS, as the built-in directives
 - handle the most common use cases (instead of the above example, you would use {@link ngValue}).
 -
 - However, [custom elements](https://developer.mozilla.org/docs/Web/Web_Components/Using_custom_elements)
@@ -984,7 +984,7 @@
 - ## Binding to camelCase properties
 -
 - Since HTML attributes are case-insensitive, camelCase properties like `innerHTML` must be escaped.
-- AngularJS uses the underscore (\_) in front of a character to indicate that it is uppercase, so
+- AngularTS uses the underscore (\_) in front of a character to indicate that it is uppercase, so
 - `innerHTML` must be written as `ng-prop-inner_h_t_m_l="expression"` (Note that this is just an
 - example, and for binding HTML {@link ngBindHtml} should be used.
 -
@@ -1063,8 +1063,8 @@
 - the event name in the attribute, e.g. `ng-on-drop="onDrop()"` executes the 'onDrop()' expression
 - when the `drop` event is fired.
 -
-- AngularJS provides specific directives for many events, such as {@link ngClick}, so in most
-- cases it is not necessary to use `ngOn`. However, AngularJS does not support all events
+- AngularTS provides specific directives for many events, such as {@link ngClick}, so in most
+- cases it is not necessary to use `ngOn`. However, AngularTS does not support all events
 - (e.g. the `drop` event in the example above), and new events might be introduced in later DOM
 - standards.
 -
@@ -1076,7 +1076,7 @@
 - ## Binding to camelCase properties
 -
 - Since HTML attributes are case-insensitive, camelCase properties like `myEvent` must be escaped.
-- AngularJS uses the underscore (\_) in front of a character to indicate that it is uppercase, so
+- AngularTS uses the underscore (\_) in front of a character to indicate that it is uppercase, so
 - `myEvent` must be written as `ng-on-my_event="expression"`.
 -
 - \*/
@@ -1089,7 +1089,7 @@
 - @description
 - A shared object between directive compile / linking functions which contains normalized DOM
 - element attributes. The values reflect current binding state `{{ }}`. The normalization is
-- needed since all of these are treated as equivalent in AngularJS:
+- needed since all of these are treated as equivalent in AngularTS:
 -
 - ```
 

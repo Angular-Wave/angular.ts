@@ -663,7 +663,7 @@ describe("angular", () => {
     });
   });
 
-  describe("AngularJS service", () => {
+  describe("AngularTS service", () => {
     it("should override services", () => {
       injector = createInjector([
         function ($provide) {

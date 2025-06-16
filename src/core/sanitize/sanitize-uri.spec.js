@@ -1,4 +1,4 @@
-import { SanitizeUriProvider } from "./sanitize-uri";
+import { SanitizeUriProvider } from "./sanitize-uri.js";
 
 describe("sanitizeUri", () => {
   let sanitizeHref;

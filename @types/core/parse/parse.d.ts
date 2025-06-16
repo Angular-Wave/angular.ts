@@ -36,7 +36,7 @@
 export function ParseProvider(): void;
 export class ParseProvider {
   /**
-   * Allows defining the set of characters that are allowed in AngularJS expressions. The function
+   * Allows defining the set of characters that are allowed in AngularTS expressions. The function
    * `identifierStart` will get called to know if a given character is a valid character to be the
    * first character for an identifier. The function `identifierContinue` will get called to know if
    * a given character is a valid character to be a follow-up identifier character. The functions

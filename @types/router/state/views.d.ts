@@ -1,7 +1,7 @@
 export function getNg1ViewConfigFactory(): (
   path: any,
   view: any,
-) => Ng1ViewConfig[];
+) => Ng1ViewConfig;
 /**
  * This is a [[StateBuilder.builder]] function for angular1 `views`.
  *
@@ -32,10 +32,19 @@ export class Ng1ViewConfig {
     ngViewName: string;
     ngViewContextAnchor: string;
   };
-  constructor(path: any, viewDecl: any, factory: any);
-  path: any;
+  /**
+   * @param {Array<import('../path/path-node.js').PathNode>} path
+   * @param viewDecl
+   * @param {import('../template-factory.js').TemplateFactoryProvider} factory
+   */
+  constructor(
+    path: Array<import("../path/path-node.js").PathNode>,
+    viewDecl: any,
+    factory: import("../template-factory.js").TemplateFactoryProvider,
+  );
+  path: import("../path/path-node.js").PathNode[];
   viewDecl: any;
-  factory: any;
+  factory: import("../template-factory.js").TemplateFactoryProvider;
   component: any;
   template: any;
   /** @type {Number} */ $id: number;

@@ -69,7 +69,7 @@ expression {(Function|string|Array.<Function|string>)=}: A predicate (or list of
 Can be one of:
 
 Function: A getter function. This function will be called with each item as an argument and the return value will be used for sorting.
-string: An AngularJS expression. This expression will be evaluated against each item and the result will be used for sorting. For example, use 'label' to sort by a property called label or 'label.substring(0, 3)' to sort by the first 3 characters of the label property.
+string: An AngularTS expression. This expression will be evaluated against each item and the result will be used for sorting. For example, use 'label' to sort by a property called label or 'label.substring(0, 3)' to sort by the first 3 characters of the label property.
 (The result of a constant expression is interpreted as a property name to be used for comparison. For example, use '"special name"' (note the extra pair of quotes) to sort by a property called special name.)
 An expression can be optionally prefixed with + or - to control the sorting direction, ascending or descending. For example, '+label' or '-label'. If no property is provided, (e.g., '+' or '-'), the collection element itself is used in comparisons.
 Array: An array of function and/or string predicates. If a predicate cannot determine the relative order of two items, the next predicate is used as a tie-breaker.

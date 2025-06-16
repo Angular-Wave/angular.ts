@@ -1,6 +1,6 @@
 /**
  * Injector for providers
- * @extends AbstractInjector
+ * @extends {AbstractInjector}
  */
 export class ProviderInjector extends AbstractInjector {
   /**
@@ -11,7 +11,7 @@ export class ProviderInjector extends AbstractInjector {
 }
 /**
  * Injector for factories and services
- * @extends AbstractInjector
+ * @extends {AbstractInjector}
  */
 export class InjectorService extends AbstractInjector {
   /**
@@ -21,7 +21,11 @@ export class InjectorService extends AbstractInjector {
    */
   constructor(strictDi: boolean, providerInjector: ProviderInjector);
   providerInjector: ProviderInjector;
-  factory(serviceName: any): any;
+  /**
+   * @param {string} serviceName
+   * @returns {*}
+   */
+  factory(serviceName: string): any;
   /**
    *
    * @param {string} name
@@ -41,9 +45,9 @@ declare class AbstractInjector {
   /** @type {boolean} */
   strictDi: boolean;
   path: any[];
-  /** @type {Object.<string, import("../../types").Module>} */
+  /** @type {Object.<string, import("./ng-module.js").NgModule>} */
   modules: {
-    [x: string]: any;
+    [x: string]: import("./ng-module.js").NgModule;
   };
   /**
    * Get a service by name.
@@ -68,7 +72,7 @@ declare class AbstractInjector {
    * @param {*} [self]
    * @param {Object} [locals]
    * @param {string} [serviceName]
-   * @returns
+   * @returns {*}
    */
   invoke(
     fn: Function | string | Array<any>,

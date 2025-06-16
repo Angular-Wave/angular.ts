@@ -89,7 +89,7 @@ export class Location {
    *
    * Return host of current URL.
    *
-   * Note: compared to the non-AngularJS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
+   * Note: compared to the non-AngularTS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
    *
    *
    * @return {string} host of current URL.

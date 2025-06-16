@@ -1,10 +1,12 @@
+/** @typedef {import('../interface.ts').ServiceProvider} ServiceProvider } */
 /**
  * Global router state
  *
  * This is where we hold the global mutable state such as current state, current
  * params, current transition, etc.
+ * @implements {ServiceProvider}
  */
-export class UIRouterGlobals {
+export class UIRouterGlobals implements ServiceProvider {
   /**
    * Current parameter values
    *
@@ -24,7 +26,11 @@ export class UIRouterGlobals {
    * @type {Queue<import("./transition/transition.js").Transition>}
    */
   successfulTransitions: Queue<import("./transition/transition.js").Transition>;
-  $get: (() => this)[];
+  $get: () => this;
 }
+/**
+ * }
+ */
+export type ServiceProvider = import("../interface.ts").ServiceProvider;
 import { StateParams } from "./params/state-params.js";
 import { Queue } from "./common/queue.js";

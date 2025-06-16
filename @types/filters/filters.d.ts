@@ -33,6 +33,6 @@ export function formatNumber(
   fractionSize: any,
 ): string;
 /**
- * @returns {function(Object, number?): Object}
+ * @returns {import('../interface.ts').FilterFn}
  */
-export function jsonFilter(): (arg0: any, arg1: number | null) => any;
+export function jsonFilter(): import("../interface.ts").FilterFn;

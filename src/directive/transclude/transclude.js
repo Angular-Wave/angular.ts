@@ -20,10 +20,10 @@ import { emptyElement, startingTag } from "../../shared/dom.js";
 const ngTranscludeMinErr = minErr("ngTransclude");
 export const ngTranscludeDirective = [
   "$compile",
+
   /**
-   *
    * @param {import("../../core/compile/compile.js").CompileFn} $compile
-   * @returns {import("../../types").Directive}
+   * @returns {import("../../types.js").Directive}
    */
   function ($compile) {
     return {

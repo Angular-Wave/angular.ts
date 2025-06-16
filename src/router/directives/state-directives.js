@@ -184,6 +184,13 @@ $StateRefDynamicDirective.$inject = [
   "$stateRegistry",
   "$transitions",
 ];
+
+/**
+ * @param $state
+ * @param $stateRegistry
+ * @param $transitions
+ * @returns {import("../../types.js").Directive}
+ */
 export function $StateRefDynamicDirective(
   $state,
   $stateRegistry,
@@ -256,7 +263,7 @@ $StateRefActiveDirective.$inject = [
  * @param {*} $interpolate
  * @param {*} $stateRegistry
  * @param {*} $transitions
- * @returns {import("../../types").Directive}
+ * @returns {import("../../types.js").Directive}
  */
 export function $StateRefActiveDirective(
   $state,

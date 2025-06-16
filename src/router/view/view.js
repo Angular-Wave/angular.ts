@@ -25,13 +25,10 @@ export class ViewService {
     this._viewConfigFactories = {};
     this._listeners = [];
     this._pluginapi = {
-      _rootViewContext: this._rootViewContext.bind(this),
-      _viewConfigFactory: this._viewConfigFactory.bind(this),
       _registeredUIView: (id) => {
         const res = find(this._ngViews, (view) => view.id === id);
         return res;
       },
-
       _registeredUIViews: () => this._ngViews,
       _activeViewConfigs: () => this._viewConfigs,
       _onSync: (listener) => {
@@ -39,27 +36,37 @@ export class ViewService {
         return () => removeFrom(this._listeners, listener);
       },
     };
-    this._pluginapi._viewConfigFactory(getNg1ViewConfigFactory());
+    this.viewConfigFactory(getNg1ViewConfigFactory());
   }
 
   $get = [() => this];
 
-  _rootViewContext(context) {
+  /**
+   * @param {?import('../state/state-object.js').StateObject} context
+   * @return {?import('../state/state-object.js').StateObject}
+   */
+  rootViewContext(context) {
     return (this._rootContext = context || this._rootContext);
   }
 
-  _viewConfigFactory(factory) {
-    this._viewConfigFactory = factory;
+  viewConfigFactory(factory) {
+    this.viewConfigFactory = factory;
   }
+
+  /**
+   * @param path
+   * @param decl
+   * @return {import("../state/views.js").Ng1ViewConfig}
+   */
   createViewConfig(path, decl) {
     /** @type {function(any, any): any} */
-    const cfgFactory = this._viewConfigFactory;
+    const cfgFactory = this.viewConfigFactory;
     if (!cfgFactory)
       throw new Error(
         "ViewService: No view config factory registered for type " + decl.$type,
       );
     const cfgs = cfgFactory(path, decl);
-    return Array.isArray(cfgs) ? cfgs : [cfgs];
+    return cfgs;
   }
   /**
    * Deactivates a ViewConfig.

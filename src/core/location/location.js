@@ -156,7 +156,7 @@ export class Location {
    *
    * Return host of current URL.
    *
-   * Note: compared to the non-AngularJS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
+   * Note: compared to the non-AngularTS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
    *
    *
    * @return {string} host of current URL.
@@ -507,7 +507,7 @@ export class LocationHashbangUrl extends Location {
      *  * a.setAttribute('href', '/foo')
      *   * a.pathname === '/C:/foo' //true
      *
-     * Inside of AngularJS, we're always using pathnames that
+     * Inside of AngularTS, we're always using pathnames that
      * do not include drive names for routing.
      */
     function removeWindowsDriveName(path, url, base) {
@@ -747,7 +747,7 @@ export class LocationProvider {
             !event.defaultPrevented
           ) {
             if ($location.$$parseLinkUrl(absHref, relHref)) {
-              // We do a preventDefault for all urls that are part of the AngularJS application,
+              // We do a preventDefault for all urls that are part of the AngularTS application,
               // in html5mode and also without, so that we are able to abort navigation without
               // getting double entries in the location history.
               event.preventDefault();

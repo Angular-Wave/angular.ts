@@ -1,4 +1,4 @@
-**AngularJS support has officially ended as of January 2022.
+**AngularTS support has officially ended as of January 2022.
 [See what ending support means](https://docs.angularjs.org/misc/version-support-status)
 and [read the end of life announcement](https://goo.gle/angularjs-end-of-life).**
 
@@ -8,7 +8,7 @@ and [read the end of life announcement](https://goo.gle/angularjs-end-of-life).*
 
 # 1.8.3 ultimate-farewell (2022-04-07)
 
-One final release of AngularJS in order to update package README files on npm.
+One final release of AngularTS in order to update package README files on npm.
 
 <a name="1.8.2"></a>
 
@@ -316,13 +316,13 @@ Note that this only patches jqLite. If you use jQuery 3.5.0 or newer, please rea
 # 1.7.2 extreme-compatiplication (2018-06-12)
 
 In the previous release, we removed a private, undocumented API that was no longer used by
-AngularJS. It turned out that several popular UI libraries (such as
-[AngularJS Material](https://material.angularjs.org/),
+AngularTS. It turned out that several popular UI libraries (such as
+[AngularTS Material](https://material.angularjs.org/),
 [UI Bootstrap](https://angular-ui.github.io/bootstrap/),
 [ngDialog](http://likeastore.github.io/ngDialog/) and probably others) relied on that API.
 
 In order to avoid unnecessary pain for developers, this release reverts the removal of the private
-API and restores compatibility of the aforementioned libraries with the latest AngularJS.
+API and restores compatibility of the aforementioned libraries with the latest AngularTS.
 
 ## Reverts
 
@@ -395,8 +395,8 @@ API and restores compatibility of the aforementioned libraries with the latest A
 **Here are the full changes for the release of 1.7.0 that are not already released in the 1.6.x branch,
 which includes commits from 1.7.0-rc.0 and commits from 1.7.0 directly.**
 
-1.7.0 is the last scheduled release of AngularJS that includes breaking changes. 1.7.x patch
-releases will continue to receive bug fixes and non-breaking features until AngularJS enters Long
+1.7.0 is the last scheduled release of AngularTS that includes breaking changes. 1.7.x patch
+releases will continue to receive bug fixes and non-breaking features until AngularTS enters Long
 Term Support mode (LTS) on July 1st 2018.
 
 ## Bug Fixes
@@ -785,7 +785,7 @@ under the hood, such as `angular.copy()`, `angular.equals()`,
 `angular.forEach()`, and `angular.merge()`.
 
 This in turn affects how dirty checking treats objects that prototypally
-inherit from `Array` (e.g. MobX observable arrays). AngularJS will now
+inherit from `Array` (e.g. MobX observable arrays). AngularTS will now
 be able to handle these objects better when copying or watching.
 
 ### **$sce** :
@@ -1070,9 +1070,9 @@ To migrate your code:
    don't have to do anything to migrate.
 
 2. If you specified `$compileProvider.preAssignBindingsEnabled(false)`, you
-   can remove that statement - since AngularJS 1.6.0 this is the default so your
-   app should still work even in AngularJS 1.6 after such removal. Afterwards,
-   migrating to AngularJS 1.7.0 shouldn't require any further action.
+   can remove that statement - since AngularTS 1.6.0 this is the default so your
+   app should still work even in AngularTS 1.6 after such removal. Afterwards,
+   migrating to AngularTS 1.7.0 shouldn't require any further action.
 
 3. If you specified `$compileProvider.preAssignBindingsEnabled(true)` you need
    to first migrate your code so that the flag can be flipped to `false`. The
@@ -1194,7 +1194,7 @@ The option to instantiate controllers from constructors on the global `window` o
 has been removed. Likewise, the deprecated `$controllerProvider.allowGlobals()`
 method that could enable this behavior, has been removed.
 
-This behavior had been deprecated since AngularJS v1.3.0, because polluting the global scope
+This behavior had been deprecated since AngularTS v1.3.0, because polluting the global scope
 is bad. To migrate, remove the call to $controllerProvider.allowGlobals() in the config, and
 register your controller via the Module API or the $controllerProvider, e.g.
 
@@ -1700,7 +1700,7 @@ under the hood, such as `angular.copy()`, `angular.equals()`,
 `angular.forEach()`, and `angular.merge()`.
 
 This in turn affects how dirty checking treats objects that prototypally
-inherit from `Array` (e.g. MobX observable arrays). AngularJS will now
+inherit from `Array` (e.g. MobX observable arrays). AngularTS will now
 be able to handle these objects better when copying or watching.
 
 ### **$sce** due to:
@@ -1955,9 +1955,9 @@ To migrate your code:
    don't have to do anything to migrate.
 
 2. If you specified `$compileProvider.preAssignBindingsEnabled(false)`, you
-   can remove that statement - since AngularJS 1.6.0 this is the default so your
-   app should still work even in AngularJS 1.6 after such removal. Afterwards,
-   migrating to AngularJS 1.7.0 shouldn't require any further action.
+   can remove that statement - since AngularTS 1.6.0 this is the default so your
+   app should still work even in AngularTS 1.6 after such removal. Afterwards,
+   migrating to AngularTS 1.7.0 shouldn't require any further action.
 
 3. If you specified `$compileProvider.preAssignBindingsEnabled(true)` you need
    to first migrate your code so that the flag can be flipped to `false`. The
@@ -2079,7 +2079,7 @@ The option to instantiate controllers from constructors on the global `window` o
 has been removed. Likewise, the deprecated `$controllerProvider.allowGlobals()`
 method that could enable this behavior, has been removed.
 
-This behavior had been deprecated since AngularJS v1.3.0, because polluting the global scope
+This behavior had been deprecated since AngularTS v1.3.0, because polluting the global scope
 is bad. To migrate, remove the call to $controllerProvider.allowGlobals() in the config, and
 register your controller via the Module API or the $controllerProvider, e.g.
 
@@ -2531,7 +2531,7 @@ $timeout.cancel(promise); // Timeout canceled.
 
 ## Bug Fixes
 
-- **AngularJS:**
+- **AngularTS:**
   - do not auto-bootstrap if the `src` exists but is empty
     ([3536e8](https://github.com/angular/angular.js/commit/3536e83d8a085b02bd6dcec8324800b7e6c734e4))
   - do not auto bootstrap if the currentScript has been clobbered
@@ -3097,7 +3097,7 @@ consolidating all the changes shown in the previous 1.6.0 release candidates.**
 
 Previously, `$compileProvider.preAssignBindingsEnabled` was set to true by default. This means
 bindings were pre-assigned on component/directive controller instances (which made them available
-inside the constructors). In AngularJS 1.5+ the place to put the initialization logic relying on
+inside the constructors). In AngularTS 1.5+ the place to put the initialization logic relying on
 bindings being present is the controller's `$onInit` method.
 
 To migrate follow the example below:
@@ -4297,7 +4297,7 @@ validation), you can overwrite the built-in `step` validator with a custom direc
 # 1.5.9 timeturning-lockdown (2016-11-24)
 
 This is an interim release primarily to publish some security fixes, in particular a modification to
-ensure that AngularJS can pass the linter checks for Mozilla add-ons.
+ensure that AngularTS can pass the linter checks for Mozilla add-ons.
 
 ## Security Fixes
 
@@ -4382,7 +4382,7 @@ ensure that AngularJS can pass the linter checks for Mozilla add-ons.
 
 Previously, `$compileProvider.preAssignBindingsEnabled` was
 set to true by default. This means bindings were pre-assigned in component
-constructors. In AngularJS 1.5+ the place to put the initialization logic
+constructors. In AngularTS 1.5+ the place to put the initialization logic
 relying on bindings being present is the controller `$onInit` method.
 
 To migrate follow the example below:
@@ -6375,7 +6375,7 @@ for more info.
 
 ### Upgrade to 1.5.1
 
-This version of AngularJS is problematic due to a issue during its release. Please upgrade to version [1.5.2](#1.5.2).
+This version of AngularTS is problematic due to a issue during its release. Please upgrade to version [1.5.2](#1.5.2).
 
 - **ngAria:** due to [d06431e5](https://github.com/angular/angular.js/commit/d06431e5309bb0125588877451dc79b935808134),
   Where appropriate, ngAria now applies ARIA to custom controls only, not native inputs. Because of this, support for `aria-multiline` on textareas has been removed.
@@ -6765,7 +6765,7 @@ returned unchanged (without throwing an error).
 
 # 1.5.0-rc.0 oblong-panoptikum (2015-12-09)
 
-This is the first Release Candidate for AngularJS 1.5.0. Please try upgrading your applications and
+This is the first Release Candidate for AngularTS 1.5.0. Please try upgrading your applications and
 report any regressions or other issues you find as soon as possible.
 
 ## Features
@@ -7465,12 +7465,12 @@ before the $parsers are applied. Previously, the modelValue
 
 This fixes issues where `input[date]` and `input[number]` cannot
 be validated because the viewValue string is parsed into
-`Date` and `Number` respectively (starting with AngularJS 1.3).
+`Date` and `Number` respectively (starting with AngularTS 1.3).
 It also brings the directives in line with HTML5 constraint
 validation, which validates against the input value.
 
 This change is unlikely to cause applications to fail, because even
-in AngularJS 1.2, the value that was validated by pattern could have
+in AngularTS 1.2, the value that was validated by pattern could have
 been manipulated by the $parsers, as all validation was done
 inside this pipeline.
 
@@ -7578,12 +7578,12 @@ before the $parsers are applied. Previously, the modelValue
 
 This fixes issues where `input[date]` and `input[number]` cannot
 be validated because the viewValue string is parsed into
-`Date` and `Number` respectively (starting with AngularJS 1.3).
+`Date` and `Number` respectively (starting with AngularTS 1.3).
 It also brings the directives in line with HTML5 constraint
 validation, which validates against the input value.
 
 This change is unlikely to cause applications to fail, because even
-in AngularJS 1.2, the value that was validated by pattern could have
+in AngularTS 1.2, the value that was validated by pattern could have
 been manipulated by the $parsers, as all validation was done
 inside this pipeline.
 
@@ -7793,7 +7793,7 @@ describe("$q.when", function () {
     $timeout,
   ) {
     $q.when("foo");
-    // In AngularJS 1.4.3 a call to `$timeout.flush();` was needed
+    // In AngularTS 1.4.3 a call to `$timeout.flush();` was needed
     $timeout.verifyNoPendingTasks();
   }));
 
@@ -8734,12 +8734,12 @@ place the element containing the ngMessagesInclude directive at the
 end of the container containing the ngMessages directive).
 
 ```html
-<!-- AngularJS 1.3.x -->
+<!-- AngularTS 1.3.x -->
 <div ng-messages="model.$error" ng-messages-include="remote.html">
   <div ng-message="required">Your message is required</div>
 </div>
 
-<!-- AngularJS 1.4.x -->
+<!-- AngularTS 1.4.x -->
 <div ng-messages="model.$error">
   <div ng-message="required">Your message is required</div>
   <div ng-messages-include="remote.html"></div>
@@ -9205,7 +9205,7 @@ it is now implemented in the ngOptions directive itself.
 the `select` directive will now use strict comparison of the `ngModel` scope value against `option`
 values to determine which option is selected. This means `Number` scope values will not be matched
 against numeric option strings.
-In AngularJS 1.3.x, setting `scope.x = 200` would select the `option` with the value 200 in the following `select`:
+In AngularTS 1.3.x, setting `scope.x = 200` would select the `option` with the value 200 in the following `select`:
 
 ```
 <select ng-model="x">
@@ -9214,7 +9214,7 @@ In AngularJS 1.3.x, setting `scope.x = 200` would select the `option` with the v
 </select>
 ```
 
-In AngularJS 1.4.x, the 'unknown option' will be selected.
+In AngularTS 1.4.x, the 'unknown option' will be selected.
 To remedy this, you can simply initialize the model as a string: `scope.x = '200'`, or if you want to
 keep the model as a `Number`, you can do the conversion via `$formatters` and `$parsers` on `ngModel`:
 
@@ -9672,7 +9672,7 @@ bind a getter/getter to the global context, or just reference globals normally w
 ## Breaking Changes
 
 - **$parse:** due to [fbad2805](https://github.com/angular/angular.js/commit/fbad2805703569058a4a860747b0e2d8aee36bdf),
-  you can't use characters that have special meaning in AngularJS expressions (ex.: `.` or `-`)
+  you can't use characters that have special meaning in AngularTS expressions (ex.: `.` or `-`)
   as part of filter's name. Before this commit custom filters could contain special characters
   (like a dot) in their name but this wasn't intentional.
 
@@ -15701,7 +15701,7 @@ _Note: This release also contains all bug fixes available in [1.0.3](#1.0.3)._
 - **jqLite:**
   - support append on document fragment
     ([96ed9ff5](https://github.com/angular/angular.js/commit/96ed9ff59a454486c88bdf92ad9d28ab8864b85e))
-  - fire $destroy event via triggerHandler (this makes AngularJS compatible with **jQuery 1.8.x**)
+  - fire $destroy event via triggerHandler (this makes AngularTS compatible with **jQuery 1.8.x**)
     ([b9a9f91f](https://github.com/angular/angular.js/commit/b9a9f91fbf99b71cfde434b6277f4c7d2533556f),
     [#1512](https://github.com/angular/angular.js/issues/1512))
 - **Filters**
@@ -15807,7 +15807,7 @@ This release also contains all bug fixes available in [1.0.2](#1.0.2).
 
 ## Docs
 
-- Conceptual Overview of AngularJS (high level overview of how things work):
+- Conceptual Overview of AngularTS (high level overview of how things work):
   <http://docs.angularjs.org/guide/concepts>
   ([7a5f25f6](https://github.com/angular/angular.js/commit/7a5f25f6671eb5f51b06615d74a05855ab79f31e))
 - Lots of spelling, grammar and other fixes:
@@ -16103,7 +16103,7 @@ This release also contains all bug fixes available in [1.0.2](#1.0.2).
 
 ## Docs
 
-- Tutorial has been finally updated to AngularJS v1.0! Check it out and provide feedback to make it
+- Tutorial has been finally updated to AngularTS v1.0! Check it out and provide feedback to make it
   even better: <http://docs.angularjs.org/tutorial>
 - <http://docs-next.angularjs.org> now redirects to <http://docs.angularjs.org>
 
@@ -16900,7 +16900,7 @@ behavior and migrate your controllers one at a time: <https://gist.github.com/16
 ## Breaking Changes
 
 - $location related changes - for complete list of api changes see:
-  [Migrating from earlier AngularJS releases](http://docs-next.angularjs.org/#!/guide/dev_guide.services.$location)
+  [Migrating from earlier AngularTS releases](http://docs-next.angularjs.org/#!/guide/dev_guide.services.$location)
 
   - $location api changes:
 
@@ -17538,7 +17538,7 @@ behavior and migrate your controllers one at a time: <https://gist.github.com/16
 ### Breaking changes
 
 - we now support ISO 8601 extended format datetime strings (YYYY-MM-DDTHH:mm:ss.SSSZ) as defined
-  in EcmaScript 5 throughout AngularJS. This means that the following apis switched from
+  in EcmaScript 5 throughout AngularTS. This means that the following apis switched from
   YYYY-MM-DDTHH:mm:ssZ to YYYY-MM-DDTHH:mm:ss.SSSZ (note the added millis) when representing dates:
   - angular.Date.toString
   - angular.String.fromDate

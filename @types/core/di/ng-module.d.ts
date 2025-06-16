@@ -22,13 +22,13 @@ export class NgModule {
    */
   constructor(name: string, requires: Array<string>, configFn?: Function);
   /**
+   * Name of the current module.
    * @type {string}
-   * Name of the module.
    */
   name: string;
   /**
-   * Holds the list of modules which the injector will load before the current module is
-   * loaded.
+   * Array of module names that this module depends on.
+   * @type {string[]}
    */
   requires: string[];
   /**

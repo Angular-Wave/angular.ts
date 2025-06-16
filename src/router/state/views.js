@@ -11,7 +11,7 @@ export function getNg1ViewConfigFactory() {
   return (path, view) => {
     templateFactory =
       templateFactory || window["angular"].$injector.get("$templateFactory"); // TODO: remove static injector
-    return [new Ng1ViewConfig(path, view, templateFactory)];
+    return new Ng1ViewConfig(path, view, templateFactory);
   };
 }
 
@@ -92,6 +92,11 @@ export function ng1ViewsBuilder(state) {
 let id = 0;
 
 export class Ng1ViewConfig {
+  /**
+   * @param {Array<import('../path/path-node.js').PathNode>} path
+   * @param viewDecl
+   * @param {import('../template-factory.js').TemplateFactoryProvider} factory
+   */
   constructor(path, viewDecl, factory) {
     this.path = path;
     this.viewDecl = viewDecl;

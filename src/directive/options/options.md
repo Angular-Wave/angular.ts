@@ -129,7 +129,7 @@
 - is not matched against any `<option>` and the `<select>` appears as having no selected value.
 -
 -
-- @param {string} ngModel Assignable AngularJS expression to data-bind to.
+- @param {string} ngModel Assignable AngularTS expression to data-bind to.
 - @param {string} ngOptions in one of the following forms:
 -
 - - for array data sources:

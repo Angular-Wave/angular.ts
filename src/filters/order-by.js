@@ -9,6 +9,9 @@ import {
 
 orderByFilter.$inject = ["$parse"];
 
+/**
+ * @returns {import('../interface.ts').FilterFn}
+ */
 export function orderByFilter($parse) {
   return function (array, sortPredicate, reverseOrder, compareFn) {
     if (array == null) return array;

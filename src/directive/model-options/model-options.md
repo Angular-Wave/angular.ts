@@ -11,7 +11,7 @@
 - directives will use the options of their nearest `ngModelOptions` ancestor.
 -
 - The `ngModelOptions` settings are found by evaluating the value of the attribute directive as
-- an AngularJS expression. This expression should evaluate to an object, whose properties contain
+- an AngularTS expression. This expression should evaluate to an object, whose properties contain
 - the settings. For example: `<div ng-model-options="{ debounce: 100 }"`.
 -
 - ## Inheriting Options

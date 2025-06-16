@@ -16,7 +16,7 @@ import {
 
 import { snakeToCamel } from "../../shared/dom.js";
 
-/** @typedef {import("../exception-handler.js").ErrorHandler }  ErrorHandler */
+/** @typedef {import("../error-handler.ts").ErrorHandler }  ErrorHandler */
 
 const $sceMinErr = minErr("$sce");
 
@@ -24,7 +24,7 @@ export const SCE_CONTEXTS = {
   // HTML is used when there's HTML rendered (e.g. ng-bind-html, iframe srcdoc binding).
   HTML: "html",
 
-  // Style statements or stylesheets. Currently unused in AngularJS.
+  // Style statements or stylesheets. Currently unused in AngularTS.
   CSS: "css",
 
   // An URL used in a context where it refers to the source of media, which are not expected to be run
@@ -40,7 +40,7 @@ export const SCE_CONTEXTS = {
   // A value that can be trusted as a RESOURCE_URL, can also trusted as a URL and a MEDIA_URL.
   RESOURCE_URL: "resourceUrl",
 
-  // Script. Currently unused in AngularJS.
+  // Script. Currently unused in AngularTS.
   JS: "js",
 };
 
@@ -86,20 +86,20 @@ export function adjustMatcher(matcher) {
 
 /**
  * `$sceDelegate` is a service that is used by the `$sce` service to provide {@link ng.$sce Strict
- * Contextual Escaping (SCE)} services to AngularJS.
+ * Contextual Escaping (SCE)} services to AngularTS.
  *
- * For an overview of this service and the functionnality it provides in AngularJS, see the main
+ * For an overview of this service and the functionnality it provides in AngularTS, see the main
  * page for {@link ng.$sce SCE}. The current page is targeted for developers who need to alter how
  * SCE works in their application, which shouldn't be needed in most cases.
  *
  * <div class="alert alert-danger">
- * AngularJS strongly relies on contextual escaping for the security of bindings: disabling or
+ * AngularTS strongly relies on contextual escaping for the security of bindings: disabling or
  * modifying this might cause cross site scripting (XSS) vulnerabilities. For libraries owners,
  * changes to this service will also influence users, so be extra careful and document your changes.
  * </div>
  *
  * Typically, you would configure or override the {@link ng.$sceDelegate $sceDelegate} instead of
- * the `$sce` service to customize the way Strict Contextual Escaping works in AngularJS.  This is
+ * the `$sce` service to customize the way Strict Contextual Escaping works in AngularTS.  This is
  * because, while the `$sce` provides numerous shorthand methods, etc., you really only need to
  * override 3 core functions (`trustAs`, `getTrusted` and `valueOf`) to replace the way things
  * work because `$sce` delegates to `$sceDelegate` for these operations.
@@ -109,7 +109,7 @@ export function adjustMatcher(matcher) {
  * The default instance of `$sceDelegate` should work out of the box with little pain.  While you
  * can override it completely to change the behavior of `$sce`, the common case would
  * involve configuring the {@link ng.$sceDelegateProvider $sceDelegateProvider} instead by setting
- * your own trusted and banned resource lists for trusting URLs used for loading AngularJS resources
+ * your own trusted and banned resource lists for trusting URLs used for loading AngularTS resources
  * such as templates.  Refer {@link ng.$sceDelegateProvider#trustedResourceUrlList
  * $sceDelegateProvider.trustedResourceUrlList} and {@link
  * ng.$sceDelegateProvider#bannedResourceUrlList $sceDelegateProvider.bannedResourceUrlList}
@@ -121,13 +121,13 @@ export function adjustMatcher(matcher) {
  * $sceDelegate service}, used as a delegate for {@link ng.$sce Strict Contextual Escaping (SCE)}.
  *
  * The `$sceDelegateProvider` allows one to get/set the `trustedResourceUrlList` and
- * `bannedResourceUrlList` used to ensure that the URLs used for sourcing AngularJS templates and
+ * `bannedResourceUrlList` used to ensure that the URLs used for sourcing AngularTS templates and
  * other script-running URLs are safe (all places that use the `$sce.RESOURCE_URL` context). See
  * {@link ng.$sceDelegateProvider#trustedResourceUrlList
  * $sceDelegateProvider.trustedResourceUrlList} and
  * {@link ng.$sceDelegateProvider#bannedResourceUrlList $sceDelegateProvider.bannedResourceUrlList},
  *
- * For the general details about this service in AngularJS, read the main page for {@link ng.$sce
+ * For the general details about this service in AngularTS, read the main page for {@link ng.$sce
  * Strict Contextual Escaping (SCE)}.
  *
  * **Example**:  Consider the following case. <a name="example"></a>
@@ -164,328 +164,408 @@ export function adjustMatcher(matcher) {
  * of issues, like for instance attacker-controlled `ng-includes`.
  */
 
-export function SceDelegateProvider() {
-  this.SCE_CONTEXTS = SCE_CONTEXTS;
+/**
+ * `$sceDelegate` is a service that is used by the `$sce` service to provide {@link ng.$sce Strict
+ * Contextual Escaping (SCE)} services to AngularTS.
+ *
+ * For an overview of this service and the functionnality it provides in AngularTS, see the main
+ * page for {@link ng.$sce SCE}. The current page is targeted for developers who need to alter how
+ * SCE works in their application, which shouldn't be needed in most cases.
+ *
+ * <div class="alert alert-danger">
+ * AngularTS strongly relies on contextual escaping for the security of bindings: disabling or
+ * modifying this might cause cross site scripting (XSS) vulnerabilities. For libraries owners,
+ * changes to this service will also influence users, so be extra careful and document your changes.
+ * </div>
+ *
+ * Typically, you would configure or override the {@link ng.$sceDelegate $sceDelegate} instead of
+ * the `$sce` service to customize the way Strict Contextual Escaping works in AngularTS.  This is
+ * because, while the `$sce` provides numerous shorthand methods, etc., you really only need to
+ * override 3 core functions (`trustAs`, `getTrusted` and `valueOf`) to replace the way things
+ * work because `$sce` delegates to `$sceDelegate` for these operations.
+ *
+ * Refer {@link ng.$sceDelegateProvider $sceDelegateProvider} to configure this service.
+ *
+ * The default instance of `$sceDelegate` should work out of the box with little pain.  While you
+ * can override it completely to change the behavior of `$sce`, the common case would
+ * involve configuring the {@link ng.$sceDelegateProvider $sceDelegateProvider} instead by setting
+ * your own trusted and banned resource lists for trusting URLs used for loading AngularTS resources
+ * such as templates.  Refer {@link ng.$sceDelegateProvider#trustedResourceUrlList
+ * $sceDelegateProvider.trustedResourceUrlList} and {@link
+ * ng.$sceDelegateProvider#bannedResourceUrlList $sceDelegateProvider.bannedResourceUrlList}
+ */
+/**
+ *
+ * The `$sceDelegateProvider` provider allows developers to configure the {@link ng.$sceDelegate
+ * $sceDelegate service}, used as a delegate for {@link ng.$sce Strict Contextual Escaping (SCE)}.
+ *
+ * The `$sceDelegateProvider` allows one to get/set the `trustedResourceUrlList` and
+ * `bannedResourceUrlList` used to ensure that the URLs used for sourcing AngularTS templates and
+ * other script-running URLs are safe (all places that use the `$sce.RESOURCE_URL` context). See
+ * {@link ng.$sceDelegateProvider#trustedResourceUrlList
+ * $sceDelegateProvider.trustedResourceUrlList} and
+ * {@link ng.$sceDelegateProvider#bannedResourceUrlList $sceDelegateProvider.bannedResourceUrlList},
+ *
+ * For the general details about this service in AngularTS, read the main page for {@link ng.$sce
+ * Strict Contextual Escaping (SCE)}.
+ *
+ * **Example**:  Consider the following case. <a name="example"></a>
+ *
+ * - your app is hosted at url `http://myapp.example.com/`
+ * - but some of your templates are hosted on other domains you control such as
+ *   `http://srv01.assets.example.com/`, `http://srv02.assets.example.com/`, etc.
+ * - and you have an open redirect at `http://myapp.example.com/clickThru?...`.
+ *
+ * Here is what a secure configuration for this scenario might look like:
+ *
+ * ```
+ *  angular.module('myApp', []).config(function($sceDelegateProvider) {
+ *    $sceDelegateProvider.trustedResourceUrlList([
+ *      // Allow same origin resource loads.
+ *      'self',
+ *      // Allow loading from our assets domain.  Notice the difference between * and **.
+ *      'http://srv*.assets.example.com/**'
+ *    ]);
+ *
+ *    // The banned resource URL list overrides the trusted resource URL list so the open redirect
+ *    // here is blocked.
+ *    $sceDelegateProvider.bannedResourceUrlList([
+ *      'http://myapp.example.com/clickThru**'
+ *    ]);
+ *  });
+ * ```
+ * Note that an empty trusted resource URL list will block every resource URL from being loaded, and will require
+ * you to manually mark each one as trusted with `$sce.trustAsResourceUrl`. However, templates
+ * requested by {@link ng.$templateRequest $templateRequest} that are present in
+ * {@link ng.$templateCache $templateCache} will not go through this check. If you have a mechanism
+ * to populate your templates in that cache at config time, then it is a good idea to remove 'self'
+ * from the trusted resource URL lsit. This helps to mitigate the security impact of certain types
+ * of issues, like for instance attacker-controlled `ng-includes`.
+ */
+export class SceDelegateProvider {
+  constructor() {
+    this.SCE_CONTEXTS = SCE_CONTEXTS;
 
-  // Resource URLs can also be trusted by policy.
-  let trustedResourceUrlList = ["self"];
-  let bannedResourceUrlList = [];
+    // Resource URLs can also be trusted by policy.
+    let trustedResourceUrlList = ["self"];
+    let bannedResourceUrlList = [];
 
-  /**
-   *
-   * @param {Array=} trustedResourceUrlList When provided, replaces the trustedResourceUrlList with
-   *     the value provided.  This must be an array or null.  A snapshot of this array is used so
-   *     further changes to the array are ignored.
-   *     Follow {@link ng.$sce#resourceUrlPatternItem this link} for a description of the items
-   *     allowed in this array.
-   *
-   * @return {Array} The currently set trusted resource URL array.
-   *
-   * @description
-   * Sets/Gets the list trusted of resource URLs.
-   *
-   * The **default value** when no `trustedResourceUrlList` has been explicitly set is `['self']`
-   * allowing only same origin resource requests.
-   *
-   * <div class="alert alert-warning">
-   * **Note:** the default `trustedResourceUrlList` of 'self' is not recommended if your app shares
-   * its origin with other apps! It is a good idea to limit it to only your application's directory.
-   * </div>
-   */
-  this.trustedResourceUrlList = function (value) {
-    if (arguments.length) {
-      trustedResourceUrlList = value.map((v) => adjustMatcher(v));
-    }
-    return trustedResourceUrlList;
-  };
-
-  /**
-   *
-   * @param {Array=} bannedResourceUrlList When provided, replaces the `bannedResourceUrlList` with
-   *     the value provided. This must be an array or null. A snapshot of this array is used so
-   *     further changes to the array are ignored.</p><p>
-   *     Follow {@link ng.$sce#resourceUrlPatternItem this link} for a description of the items
-   *     allowed in this array.</p><p>
-   *     The typical usage for the `bannedResourceUrlList` is to **block
-   *     [open redirects](http://cwe.mitre.org/data/definitions/601.html)** served by your domain as
-   *     these would otherwise be trusted but actually return content from the redirected domain.
-   *     </p><p>
-   *     Finally, **the banned resource URL list overrides the trusted resource URL list** and has
-   *     the final say.
-   *
-   * @return {Array} The currently set `bannedResourceUrlList` array.
-   *
-   * @description
-   * Sets/Gets the `bannedResourceUrlList` of trusted resource URLs.
-   *
-   * The **default value** when no trusted resource URL list has been explicitly set is the empty
-   * array (i.e. there is no `bannedResourceUrlList`.)
-   */
-  this.bannedResourceUrlList = function (value) {
-    if (arguments.length) {
-      bannedResourceUrlList = value.map((v) => adjustMatcher(v));
-    }
-    return bannedResourceUrlList;
-  };
-
-  this.$get = [
-    "$injector",
-    "$$sanitizeUri",
-    "$exceptionHandler",
     /**
      *
-     * @param {import("../../core/di/internal-injector").InjectorService} $injector
-     * @param {*} $$sanitizeUri
-     * @param {ErrorHandler} $exceptionHandler
-     * @returns
+     * @param {Array=} trustedResourceUrlList When provided, replaces the trustedResourceUrlList with
+     *     the value provided.  This must be an array or null.  A snapshot of this array is used so
+     *     further changes to the array are ignored.
+     *     Follow {@link ng.$sce#resourceUrlPatternItem this link} for a description of the items
+     *     allowed in this array.
+     *
+     * @return {Array} The currently set trusted resource URL array.
+     *
+     * @description
+     * Sets/Gets the list trusted of resource URLs.
+     *
+     * The **default value** when no `trustedResourceUrlList` has been explicitly set is `['self']`
+     * allowing only same origin resource requests.
+     *
+     * <div class="alert alert-warning">
+     * **Note:** the default `trustedResourceUrlList` of 'self' is not recommended if your app shares
+     * its origin with other apps! It is a good idea to limit it to only your application's directory.
+     * </div>
      */
-    function ($injector, $$sanitizeUri, $exceptionHandler) {
-      let htmlSanitizer = function () {
-        $exceptionHandler(
-          $sceMinErr(
-            "unsafe",
-            "Attempting to use an unsafe value in a safe context.",
-          ),
-        );
-        return;
-      };
-
-      if ($injector.has("$sanitize")) {
-        htmlSanitizer = $injector.get("$sanitize");
+    this.trustedResourceUrlList = function (value) {
+      if (arguments.length) {
+        trustedResourceUrlList = value.map((v) => adjustMatcher(v));
       }
+      return trustedResourceUrlList;
+    };
 
-      function matchUrl(matcher, parsedUrl) {
-        if (matcher === "self") {
-          return (
-            urlIsSameOrigin(parsedUrl) || urlIsSameOriginAsBaseUrl(parsedUrl)
+    /**
+     *
+     * @param {Array=} bannedResourceUrlList When provided, replaces the `bannedResourceUrlList` with
+     *     the value provided. This must be an array or null. A snapshot of this array is used so
+     *     further changes to the array are ignored.</p><p>
+     *     Follow {@link ng.$sce#resourceUrlPatternItem this link} for a description of the items
+     *     allowed in this array.</p><p>
+     *     The typical usage for the `bannedResourceUrlList` is to **block
+     *     [open redirects](http://cwe.mitre.org/data/definitions/601.html)** served by your domain as
+     *     these would otherwise be trusted but actually return content from the redirected domain.
+     *     </p><p>
+     *     Finally, **the banned resource URL list overrides the trusted resource URL list** and has
+     *     the final say.
+     *
+     * @return {Array} The currently set `bannedResourceUrlList` array.
+     *
+     * @description
+     * Sets/Gets the `bannedResourceUrlList` of trusted resource URLs.
+     *
+     * The **default value** when no trusted resource URL list has been explicitly set is the empty
+     * array (i.e. there is no `bannedResourceUrlList`.)
+     */
+    this.bannedResourceUrlList = function (value) {
+      if (arguments.length) {
+        bannedResourceUrlList = value.map((v) => adjustMatcher(v));
+      }
+      return bannedResourceUrlList;
+    };
+
+    this.$get = [
+      "$injector",
+      "$$sanitizeUri",
+      "$exceptionHandler",
+      /**
+       *
+       * @param {import("../../core/di/internal-injector").InjectorService} $injector
+       * @param {*} $$sanitizeUri
+       * @param {ErrorHandler} $exceptionHandler
+       * @returns
+       */
+      function ($injector, $$sanitizeUri, $exceptionHandler) {
+        let htmlSanitizer = function () {
+          $exceptionHandler(
+            $sceMinErr(
+              "unsafe",
+              "Attempting to use an unsafe value in a safe context.",
+            ),
           );
-        }
-        // definitely a regex.  See adjustMatchers()
-        return !!matcher.exec(parsedUrl.href);
-      }
+          return;
+        };
 
-      function isResourceUrlAllowedByPolicy(url) {
-        const parsedUrl = urlResolve(url.toString());
-        let i;
-        let n;
-        let allowed = false;
-        // Ensure that at least one item from the trusted resource URL list allows this url.
-        for (i = 0, n = trustedResourceUrlList.length; i < n; i++) {
-          if (matchUrl(trustedResourceUrlList[i], parsedUrl)) {
-            allowed = true;
-            break;
-          }
+        if ($injector.has("$sanitize")) {
+          htmlSanitizer = $injector.get("$sanitize");
         }
-        if (allowed) {
-          // Ensure that no item from the banned resource URL list has blocked this url.
-          for (i = 0, n = bannedResourceUrlList.length; i < n; i++) {
-            if (matchUrl(bannedResourceUrlList[i], parsedUrl)) {
-              allowed = false;
+
+        function matchUrl(matcher, parsedUrl) {
+          if (matcher === "self") {
+            return (
+              urlIsSameOrigin(parsedUrl) || urlIsSameOriginAsBaseUrl(parsedUrl)
+            );
+          }
+          // definitely a regex.  See adjustMatchers()
+          return !!matcher.exec(parsedUrl.href);
+        }
+
+        function isResourceUrlAllowedByPolicy(url) {
+          const parsedUrl = urlResolve(url.toString());
+          let i;
+          let n;
+          let allowed = false;
+          // Ensure that at least one item from the trusted resource URL list allows this url.
+          for (i = 0, n = trustedResourceUrlList.length; i < n; i++) {
+            if (matchUrl(trustedResourceUrlList[i], parsedUrl)) {
+              allowed = true;
               break;
             }
           }
+          if (allowed) {
+            // Ensure that no item from the banned resource URL list has blocked this url.
+            for (i = 0, n = bannedResourceUrlList.length; i < n; i++) {
+              if (matchUrl(bannedResourceUrlList[i], parsedUrl)) {
+                allowed = false;
+                break;
+              }
+            }
+          }
+          return allowed;
         }
-        return allowed;
-      }
 
-      function generateHolderType(Base) {
-        const holderType = function TrustedValueHolderType(trustedValue) {
-          this.$$unwrapTrustedValue = function () {
-            return trustedValue;
+        function generateHolderType(Base) {
+          const holderType = function TrustedValueHolderType(trustedValue) {
+            this.$$unwrapTrustedValue = function () {
+              return trustedValue;
+            };
           };
-        };
-        if (Base) {
-          holderType.prototype = new Base();
+          if (Base) {
+            holderType.prototype = new Base();
+          }
+          holderType.prototype.valueOf = function sceValueOf() {
+            return this.$$unwrapTrustedValue();
+          };
+          holderType.prototype.toString = function sceToString() {
+            return this.$$unwrapTrustedValue().toString();
+          };
+          return holderType;
         }
-        holderType.prototype.valueOf = function sceValueOf() {
-          return this.$$unwrapTrustedValue();
-        };
-        holderType.prototype.toString = function sceToString() {
-          return this.$$unwrapTrustedValue().toString();
-        };
-        return holderType;
-      }
 
-      const trustedValueHolderBase = generateHolderType();
-      const byType = {};
+        const trustedValueHolderBase = generateHolderType();
+        const byType = {};
 
-      byType[SCE_CONTEXTS.HTML] = generateHolderType(trustedValueHolderBase);
-      byType[SCE_CONTEXTS.CSS] = generateHolderType(trustedValueHolderBase);
-      byType[SCE_CONTEXTS.MEDIA_URL] = generateHolderType(
-        trustedValueHolderBase,
-      );
-      byType[SCE_CONTEXTS.URL] = generateHolderType(
-        byType[SCE_CONTEXTS.MEDIA_URL],
-      );
-      byType[SCE_CONTEXTS.JS] = generateHolderType(trustedValueHolderBase);
-      byType[SCE_CONTEXTS.RESOURCE_URL] = generateHolderType(
-        byType[SCE_CONTEXTS.URL],
-      );
+        byType[SCE_CONTEXTS.HTML] = generateHolderType(trustedValueHolderBase);
+        byType[SCE_CONTEXTS.CSS] = generateHolderType(trustedValueHolderBase);
+        byType[SCE_CONTEXTS.MEDIA_URL] = generateHolderType(
+          trustedValueHolderBase,
+        );
+        byType[SCE_CONTEXTS.URL] = generateHolderType(
+          byType[SCE_CONTEXTS.MEDIA_URL],
+        );
+        byType[SCE_CONTEXTS.JS] = generateHolderType(trustedValueHolderBase);
+        byType[SCE_CONTEXTS.RESOURCE_URL] = generateHolderType(
+          byType[SCE_CONTEXTS.URL],
+        );
 
-      /**
-       * Returns a trusted representation of the parameter for the specified context. This trusted
-       * object will later on be used as-is, without any security check, by bindings or directives
-       * that require this security context.
-       * For instance, marking a string as trusted for the `$sce.HTML` context will entirely bypass
-       * the potential `$sanitize` call in corresponding `$sce.HTML` bindings or directives, such as
-       * `ng-bind-html`. Note that in most cases you won't need to call this function: if you have the
-       * sanitizer loaded, passing the value itself will render all the HTML that does not pose a
-       * security risk.
-       *
-       * See {@link ng.$sceDelegate#getTrusted getTrusted} for the function that will consume those
-       * trusted values, and {@link ng.$sce $sce} for general documentation about strict contextual
-       * escaping.
-       *
-       * @param {string} type The context in which this value is safe for use, e.g. `$sce.URL`,
-       *     `$sce.RESOURCE_URL`, `$sce.HTML`, `$sce.JS` or `$sce.CSS`.
-       *
-       * @param {*} trustedValue The value that should be considered trusted.
-       * @return {*} A trusted representation of value, that can be used in the given context.
-       */
-      function trustAs(type, trustedValue) {
-        const Constructor = hasOwn(byType, type) ? byType[type] : null;
-        if (!Constructor) {
-          $exceptionHandler(
-            $sceMinErr(
-              "icontext",
-              "Attempted to trust a value in invalid context. Context: {0}; Value: {1}",
-              type,
-              trustedValue,
-            ),
-          );
-          return;
+        /**
+         * Returns a trusted representation of the parameter for the specified context. This trusted
+         * object will later on be used as-is, without any security check, by bindings or directives
+         * that require this security context.
+         * For instance, marking a string as trusted for the `$sce.HTML` context will entirely bypass
+         * the potential `$sanitize` call in corresponding `$sce.HTML` bindings or directives, such as
+         * `ng-bind-html`. Note that in most cases you won't need to call this function: if you have the
+         * sanitizer loaded, passing the value itself will render all the HTML that does not pose a
+         * security risk.
+         *
+         * See {@link ng.$sceDelegate#getTrusted getTrusted} for the function that will consume those
+         * trusted values, and {@link ng.$sce $sce} for general documentation about strict contextual
+         * escaping.
+         *
+         * @param {string} type The context in which this value is safe for use, e.g. `$sce.URL`,
+         *     `$sce.RESOURCE_URL`, `$sce.HTML`, `$sce.JS` or `$sce.CSS`.
+         *
+         * @param {*} trustedValue The value that should be considered trusted.
+         * @return {*} A trusted representation of value, that can be used in the given context.
+         */
+        function trustAs(type, trustedValue) {
+          const Constructor = hasOwn(byType, type) ? byType[type] : null;
+          if (!Constructor) {
+            $exceptionHandler(
+              $sceMinErr(
+                "icontext",
+                "Attempted to trust a value in invalid context. Context: {0}; Value: {1}",
+                type,
+                trustedValue,
+              ),
+            );
+            return;
+          }
+          if (
+            trustedValue === null ||
+            isUndefined(trustedValue) ||
+            trustedValue === ""
+          ) {
+            return trustedValue;
+          }
+          // All the current contexts in SCE_CONTEXTS happen to be strings.  In order to avoid trusting
+          // mutable objects, we ensure here that the value passed in is actually a string.
+          if (typeof trustedValue !== "string") {
+            $exceptionHandler(
+              $sceMinErr(
+                "itype",
+                "Attempted to trust a non-string value in a content requiring a string: Context: {0}",
+                type,
+              ),
+            );
+            return;
+          }
+          return new Constructor(trustedValue);
         }
-        if (
-          trustedValue === null ||
-          isUndefined(trustedValue) ||
-          trustedValue === ""
-        ) {
-          return trustedValue;
-        }
-        // All the current contexts in SCE_CONTEXTS happen to be strings.  In order to avoid trusting
-        // mutable objects, we ensure here that the value passed in is actually a string.
-        if (typeof trustedValue !== "string") {
-          $exceptionHandler(
-            $sceMinErr(
-              "itype",
-              "Attempted to trust a non-string value in a content requiring a string: Context: {0}",
-              type,
-            ),
-          );
-          return;
-        }
-        return new Constructor(trustedValue);
-      }
 
-      /**
-       * If the passed parameter had been returned by a prior call to {@link ng.$sceDelegate#trustAs
-       * `$sceDelegate.trustAs`}, returns the value that had been passed to {@link
-       * ng.$sceDelegate#trustAs `$sceDelegate.trustAs`}.
-       *
-       * If the passed parameter is not a value that had been returned by {@link
-       * ng.$sceDelegate#trustAs `$sceDelegate.trustAs`}, it must be returned as-is.
-       *
-       * @param {*} maybeTrusted The result of a prior {@link ng.$sceDelegate#trustAs `$sceDelegate.trustAs`}
-       *     call or anything else.
-       * @return {*} The `value` that was originally provided to {@link ng.$sceDelegate#trustAs
-       *     `$sceDelegate.trustAs`} if `value` is the result of such a call.  Otherwise, returns
-       *     `value` unchanged.
-       */
-      function valueOf(maybeTrusted) {
-        if (maybeTrusted instanceof trustedValueHolderBase) {
-          return maybeTrusted.$$unwrapTrustedValue();
-        }
-        return maybeTrusted;
-      }
-
-      /**
-       * @description
-       * Given an object and a security context in which to assign it, returns a value that's safe to
-       * use in this context, which was represented by the parameter. To do so, this function either
-       * unwraps the safe type it has been given (for instance, a {@link ng.$sceDelegate#trustAs
-       * `$sceDelegate.trustAs`} result), or it might try to sanitize the value given, depending on
-       * the context and sanitizer availablility.
-       *
-       * The contexts that can be sanitized are $sce.MEDIA_URL, $sce.URL and $sce.HTML. The first two are available
-       * by default, and the third one relies on the `$sanitize` service (which may be loaded through
-       * the `ngSanitize` module). Furthermore, for $sce.RESOURCE_URL context, a plain string may be
-       * accepted if the resource url policy defined by {@link ng.$sceDelegateProvider#trustedResourceUrlList
-       * `$sceDelegateProvider.trustedResourceUrlList`} and {@link ng.$sceDelegateProvider#bannedResourceUrlList
-       * `$sceDelegateProvider.bannedResourceUrlList`} accepts that resource.
-       *
-       * This function will throw if the safe type isn't appropriate for this context, or if the
-       * value given cannot be accepted in the context (which might be caused by sanitization not
-       * being available, or the value not being recognized as safe).
-       *
-       * <div class="alert alert-danger">
-       * Disabling auto-escaping is extremely dangerous, it usually creates a Cross Site Scripting
-       * (XSS) vulnerability in your application.
-       * </div>
-       *
-       * @param {string} type The context in which this value is to be used (such as `$sce.HTML`).
-       * @param {*} maybeTrusted The result of a prior {@link ng.$sceDelegate#trustAs
-       *     `$sceDelegate.trustAs`} call, or anything else (which will not be considered trusted.)
-       * @return {*} A version of the value that's safe to use in the given context, or throws an
-       *     exception if this is impossible.
-       */
-      function getTrusted(type, maybeTrusted) {
-        if (
-          maybeTrusted === null ||
-          isUndefined(maybeTrusted) ||
-          maybeTrusted === ""
-        ) {
+        /**
+         * If the passed parameter had been returned by a prior call to {@link ng.$sceDelegate#trustAs
+         * `$sceDelegate.trustAs`}, returns the value that had been passed to {@link
+         * ng.$sceDelegate#trustAs `$sceDelegate.trustAs`}.
+         *
+         * If the passed parameter is not a value that had been returned by {@link
+         * ng.$sceDelegate#trustAs `$sceDelegate.trustAs`}, it must be returned as-is.
+         *
+         * @param {*} maybeTrusted The result of a prior {@link ng.$sceDelegate#trustAs `$sceDelegate.trustAs`}
+         *     call or anything else.
+         * @return {*} The `value` that was originally provided to {@link ng.$sceDelegate#trustAs
+         *     `$sceDelegate.trustAs`} if `value` is the result of such a call.  Otherwise, returns
+         *     `value` unchanged.
+         */
+        function valueOf(maybeTrusted) {
+          if (maybeTrusted instanceof trustedValueHolderBase) {
+            return maybeTrusted.$$unwrapTrustedValue();
+          }
           return maybeTrusted;
         }
-        const constructor = hasOwn(byType, type) ? byType[type] : null;
-        // If maybeTrusted is a trusted class instance or subclass instance, then unwrap and return
-        // as-is.
-        if (constructor && maybeTrusted instanceof constructor) {
-          return maybeTrusted.$$unwrapTrustedValue();
-        }
 
-        // If maybeTrusted is a trusted class instance but not of the correct trusted type
-        // then unwrap it and allow it to pass through to the rest of the checks
-        if (isFunction(maybeTrusted.$$unwrapTrustedValue)) {
-          maybeTrusted = maybeTrusted.$$unwrapTrustedValue();
-        }
-
-        // If we get here, then we will either sanitize the value or throw an exception.
-        if (type === SCE_CONTEXTS.MEDIA_URL || type === SCE_CONTEXTS.URL) {
-          // we attempt to sanitize non-resource URLs
-          return $$sanitizeUri(
-            maybeTrusted.toString(),
-            type === SCE_CONTEXTS.MEDIA_URL,
-          );
-        }
-        if (type === SCE_CONTEXTS.RESOURCE_URL) {
-          if (isResourceUrlAllowedByPolicy(maybeTrusted)) {
+        /**
+         * @description
+         * Given an object and a security context in which to assign it, returns a value that's safe to
+         * use in this context, which was represented by the parameter. To do so, this function either
+         * unwraps the safe type it has been given (for instance, a {@link ng.$sceDelegate#trustAs
+         * `$sceDelegate.trustAs`} result), or it might try to sanitize the value given, depending on
+         * the context and sanitizer availablility.
+         *
+         * The contexts that can be sanitized are $sce.MEDIA_URL, $sce.URL and $sce.HTML. The first two are available
+         * by default, and the third one relies on the `$sanitize` service (which may be loaded through
+         * the `ngSanitize` module). Furthermore, for $sce.RESOURCE_URL context, a plain string may be
+         * accepted if the resource url policy defined by {@link ng.$sceDelegateProvider#trustedResourceUrlList
+         * `$sceDelegateProvider.trustedResourceUrlList`} and {@link ng.$sceDelegateProvider#bannedResourceUrlList
+         * `$sceDelegateProvider.bannedResourceUrlList`} accepts that resource.
+         *
+         * This function will throw if the safe type isn't appropriate for this context, or if the
+         * value given cannot be accepted in the context (which might be caused by sanitization not
+         * being available, or the value not being recognized as safe).
+         *
+         * <div class="alert alert-danger">
+         * Disabling auto-escaping is extremely dangerous, it usually creates a Cross Site Scripting
+         * (XSS) vulnerability in your application.
+         * </div>
+         *
+         * @param {string} type The context in which this value is to be used (such as `$sce.HTML`).
+         * @param {*} maybeTrusted The result of a prior {@link ng.$sceDelegate#trustAs
+         *     `$sceDelegate.trustAs`} call, or anything else (which will not be considered trusted.)
+         * @return {*} A version of the value that's safe to use in the given context, or throws an
+         *     exception if this is impossible.
+         */
+        function getTrusted(type, maybeTrusted) {
+          if (
+            maybeTrusted === null ||
+            isUndefined(maybeTrusted) ||
+            maybeTrusted === ""
+          ) {
             return maybeTrusted;
           }
+          const constructor = hasOwn(byType, type) ? byType[type] : null;
+          // If maybeTrusted is a trusted class instance or subclass instance, then unwrap and return
+          // as-is.
+          if (constructor && maybeTrusted instanceof constructor) {
+            return maybeTrusted.$$unwrapTrustedValue();
+          }
+
+          // If maybeTrusted is a trusted class instance but not of the correct trusted type
+          // then unwrap it and allow it to pass through to the rest of the checks
+          if (isFunction(maybeTrusted.$$unwrapTrustedValue)) {
+            maybeTrusted = maybeTrusted.$$unwrapTrustedValue();
+          }
+
+          // If we get here, then we will either sanitize the value or throw an exception.
+          if (type === SCE_CONTEXTS.MEDIA_URL || type === SCE_CONTEXTS.URL) {
+            // we attempt to sanitize non-resource URLs
+            return $$sanitizeUri(
+              maybeTrusted.toString(),
+              type === SCE_CONTEXTS.MEDIA_URL,
+            );
+          }
+          if (type === SCE_CONTEXTS.RESOURCE_URL) {
+            if (isResourceUrlAllowedByPolicy(maybeTrusted)) {
+              return maybeTrusted;
+            }
+            $exceptionHandler(
+              $sceMinErr(
+                "insecurl",
+                "Blocked loading resource from url not allowed by $sceDelegate policy.  URL: {0}",
+                maybeTrusted.toString(),
+              ),
+            );
+            return;
+          } else if (type === SCE_CONTEXTS.HTML) {
+            // htmlSanitizer throws its own error when no sanitizer is available.
+            return htmlSanitizer();
+          }
+          // Default error when the $sce service has no way to make the input safe.
           $exceptionHandler(
             $sceMinErr(
-              "insecurl",
-              "Blocked loading resource from url not allowed by $sceDelegate policy.  URL: {0}",
-              maybeTrusted.toString(),
+              "unsafe",
+              "Attempting to use an unsafe value in a safe context.",
             ),
           );
           return;
-        } else if (type === SCE_CONTEXTS.HTML) {
-          // htmlSanitizer throws its own error when no sanitizer is available.
-          return htmlSanitizer();
         }
-        // Default error when the $sce service has no way to make the input safe.
-        $exceptionHandler(
-          $sceMinErr(
-            "unsafe",
-            "Attempting to use an unsafe value in a safe context.",
-          ),
-        );
-        return;
-      }
 
-      return { trustAs, getTrusted, valueOf };
-    },
-  ];
+        return { trustAs, getTrusted, valueOf };
+      },
+    ];
+  }
 }
 
 export function SceProvider() {
@@ -536,7 +616,7 @@ export function SceProvider() {
       }
 
       /**
-       * Converts AngularJS {@link guide/expression expression} into a function.  This is like {@link
+       * Converts AngularTS {@link guide/expression expression} into a function.  This is like {@link
        * ng.$parse $parse} and is identical when the expression is a literal constant.  Otherwise, it
        * wraps the expression in a call to {@link ng.$sce#getTrusted $sce.getTrusted(*type*,
        * *result*)}
@@ -561,7 +641,7 @@ export function SceProvider() {
       /**
        * Delegates to {@link ng.$sceDelegate#trustAs `$sceDelegate.trustAs`}. As such, returns a
        * wrapped object that represents your value, and the trust you have in its safety for the given
-       * context. AngularJS can then use that value as-is in bindings of the specified secure context.
+       * context. AngularTS can then use that value as-is in bindings of the specified secure context.
        * This is used in bindings for `ng-bind-html`, `ng-include`, and most `src` attribute
        * interpolations. See {@link ng.$sce $sce} for strict contextual escaping.
        *

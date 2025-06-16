@@ -715,7 +715,7 @@ function toJsonReplacer(key, value) {
 
 /**
  * Serializes input into a JSON-formatted string. Properties with leading $$ characters will be
- * stripped since AngularJS uses this notation internally.
+ * stripped since AngularTS uses this notation internally.
  *
  * @param {Object|Array|Date|string|number|boolean} obj Input to be serialized into JSON.
  * @param {boolean|number} [pretty=2] If set to true, the JSON output will contain newlines and whitespace.
@@ -1019,7 +1019,7 @@ export function errorHandlingConfig(config) {
 
 /**
  * This object provides a utility for producing rich Error messages within
- * AngularJS. It can be called as follows:
+ * AngularTS. It can be called as follows:
  *
  * let exampleMinErr = minErr('example');
  * throw exampleMinErr('one', 'This {0} is {1}', foo, bar);

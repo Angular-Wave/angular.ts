@@ -20,18 +20,30 @@ export class ViewService {
   _viewConfigFactories: {};
   _listeners: any[];
   _pluginapi: {
-    _rootViewContext: any;
-    _viewConfigFactory: any;
     _registeredUIView: (id: any) => undefined;
     _registeredUIViews: () => any[];
     _activeViewConfigs: () => any[];
     _onSync: (listener: any) => () => any;
   };
   $get: (() => this)[];
-  _rootViewContext(context: any): any;
+  /**
+   * @param {?import('../state/state-object.js').StateObject} context
+   * @return {?import('../state/state-object.js').StateObject}
+   */
+  rootViewContext(
+    context: import("../state/state-object.js").StateObject | null,
+  ): import("../state/state-object.js").StateObject | null;
   _rootContext: any;
-  _viewConfigFactory(factory: any): void;
-  createViewConfig(path: any, decl: any): any[];
+  viewConfigFactory(factory: any): void;
+  /**
+   * @param path
+   * @param decl
+   * @return {import("../state/views.js").Ng1ViewConfig}
+   */
+  createViewConfig(
+    path: any,
+    decl: any,
+  ): import("../state/views.js").Ng1ViewConfig;
   /**
    * Deactivates a ViewConfig.
    *

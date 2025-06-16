@@ -6,8 +6,8 @@
 - @installation
 - @description
 -
-- The ng module is loaded by default when an AngularJS application is started. The module itself
-- contains the essential components for an AngularJS application to function. The table below
+- The ng module is loaded by default when an AngularTS application is started. The module itself
+- contains the essential components for an AngularTS application to function. The table below
 - lists a high level breakdown of each of the services/factories, filters, directives and testing
 - components available within this core module.
 - \*/
@@ -28,23 +28,23 @@
 -
 - @description
 -
-- Use this directive to **auto-bootstrap** an AngularJS application. The `ngApp` directive
+- Use this directive to **auto-bootstrap** an AngularTS application. The `ngApp` directive
 - designates the **root element** of the application and is typically placed near the root element
 - of the page - e.g. on the `<body>` or `<html>` tags.
 -
 - There are a few things to keep in mind when using `ngApp`:
-- - only one AngularJS application can be auto-bootstrapped per HTML document. The first `ngApp`
+- - only one AngularTS application can be auto-bootstrapped per HTML document. The first `ngApp`
 - found in the document will be used to define the root element to auto-bootstrap as an
 - application. To run multiple applications in an HTML document you must manually bootstrap them using
 - {@link angular.bootstrap} instead.
-- - AngularJS applications cannot be nested within each other.
+- - AngularTS applications cannot be nested within each other.
 - - Do not use a directive that uses {@link ng.$compile#transclusion transclusion} on the same element as `ngApp`.
 - This includes directives such as {@link ng.ngIf `ngIf`}, {@link ng.ngInclude `ngInclude`} and
 - {@link ngRoute.ngView `ngView`}.
 - Doing this misplaces the app {@link ng.$rootElement `$rootElement`} and the app's {@link auto.$injector injector},
 - causing animations to stop working and making the injector inaccessible from outside the app.
 -
-- You can specify an **AngularJS module** to be used as the root module for the application. This
+- You can specify an **AngularTS module** to be used as the root module for the application. This
 - module will be loaded into the {@link auto.$injector} when the application is bootstrapped. It
 - should contain the application code needed or have dependencies on other modules that will
 - contain the code. See {@link angular.module} for more information.

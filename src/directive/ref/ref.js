@@ -7,7 +7,7 @@ import {
 import { getCacheData } from "../../shared/dom.js";
 
 /**
- * The `ngRef` attribute tells AngularJS to assign the controller of a component (or a directive)
+ * The `ngRef` attribute tells AngularTS to assign the controller of a component (or a directive)
  * to the given property in the current scope.
  *
  * If the element with `ngRef` is destroyed `null` is assigned to the property.
@@ -19,7 +19,7 @@ import { getCacheData } from "../../shared/dom.js";
  *
  *
  * @element ANY
- * @param {string} ngRef property name - A valid AngularJS expression identifier to which the
+ * @param {string} ngRef property name - A valid AngularTS expression identifier to which the
  *                       controller or dom-wrapped DOM element will be bound.
  * @param {string=} ngRefRead read value - The name of a directive (or component) on this element,
  *                            or the special string `$element`. If a name is provided, `ngRef` will

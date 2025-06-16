@@ -289,7 +289,7 @@ describe("$interpolate", () => {
 
     // This test demonstrates that the web-server is responsible for escaping every single instance
     // of interpolation start/end markers in an expression which they do not wish to evaluate,
-    // because AngularJS will not protect them from being evaluated (due to the added compleity
+    // because AngularTS will not protect them from being evaluated (due to the added compleity
     // and maintenance burden of context-sensitive escaping)
     it("should evaluate expressions between escaped start/end symbols", () => {
       expect($interpolate("\\{\\{Hello, {{bar}}!\\}\\}")(obj)).toBe(

@@ -10,29 +10,29 @@
 /\*\*
 
 -
-- `$sce` is a service that provides Strict Contextual Escaping services to AngularJS.
+- `$sce` is a service that provides Strict Contextual Escaping services to AngularTS.
 -
 - ## Strict Contextual Escaping
 -
-- Strict Contextual Escaping (SCE) is a mode in which AngularJS constrains bindings to only render
+- Strict Contextual Escaping (SCE) is a mode in which AngularTS constrains bindings to only render
 - trusted values. Its goal is to assist in writing code in a way that (a) is secure by default, and
 - (b) makes auditing for security vulnerabilities such as XSS, clickjacking, etc. a lot easier.
 -
 - ### Overview
 -
-- To systematically block XSS security bugs, AngularJS treats all values as untrusted by default in
-- HTML or sensitive URL bindings. When binding untrusted values, AngularJS will automatically
+- To systematically block XSS security bugs, AngularTS treats all values as untrusted by default in
+- HTML or sensitive URL bindings. When binding untrusted values, AngularTS will automatically
 - run security checks on them (sanitizations, trusted URL resource, depending on context), or throw
 - when it cannot guarantee the security of the result. That behavior depends strongly on contexts:
 - HTML can be sanitized, but template URLs cannot, for instance.
 -
 - To illustrate this, consider the `ng-bind-html` directive. It renders its value directly as HTML:
-- we call that the _context_. When given an untrusted input, AngularJS will attempt to sanitize it
+- we call that the _context_. When given an untrusted input, AngularTS will attempt to sanitize it
 - before rendering if a sanitizer is available, and throw otherwise. To bypass sanitization and
 - render the input as-is, you will need to mark it as trusted for that context before attempting
 - to bind it.
 -
-- As of version 1.2, AngularJS ships with SCE enabled by default.
+- As of version 1.2, AngularTS ships with SCE enabled by default.
 -
 - ### In practice
 -
@@ -63,7 +63,7 @@
 - ensure that you didn't accidentally delete the line that sanitized the value, or renamed some
 - properties/fields and forgot to update the binding to the sanitized value?
 -
-- To be secure by default, AngularJS makes sure bindings go through that sanitization, or
+- To be secure by default, AngularTS makes sure bindings go through that sanitization, or
 - any similar validation process, unless there's a good reason to trust the given value in this
 - context. That trust is formalized with a function call. This means that as a developer, you
 - can assume all untrusted bindings are safe. Then, to audit your code for binding security issues,
@@ -73,7 +73,7 @@
 - Ensuring that the internal API exposed by that code doesn't markup arbitrary values as safe then
 - becomes a more manageable task.
 -
-- In the case of AngularJS' SCE service, one uses {@link ng.$sce#trustAs $sce.trustAs}
+- In the case of AngularTS' SCE service, one uses {@link ng.$sce#trustAs $sce.trustAs}
 - (and shorthand methods such as {@link ng.$sce#trustAsHtml $sce.trustAsHtml}, etc.) to
 - build the trusted versions of your values.
 -
@@ -84,7 +84,7 @@
 - a way to enforce the required security context in your data sink. Directives use {@link
 - ng.$sce#parseAs $sce.parseAs} rather than `$parse` to watch attribute bindings, which performs
 - the {@link ng.$sce#getTrusted $sce.getTrusted} behind the scenes on non-constant literals. Also,
-- when binding without directives, AngularJS will understand the context of your bindings
+- when binding without directives, AngularTS will understand the context of your bindings
 - automatically.
 -
 - As an example, {@link ng.directive:ngBindHtml ngBindHtml} uses {@link
@@ -112,7 +112,7 @@
 - This applies both to the {@link ng.directive:ngInclude `ng-include`} directive as well as
 - `templateUrl`'s specified by {@link guide/directive directives}.
 -
-- By default, AngularJS only loads templates from the same domain and protocol as the application
+- By default, AngularTS only loads templates from the same domain and protocol as the application
 - document. This is done by calling {@link ng.$sce#getTrustedResourceUrl
 - $sce.getTrustedResourceUrl} on the template URL. To load templates from other domains and/or
 - protocols, you may either add them to the {@link ng.$sceDelegateProvider#trustedResourceUrlList
@@ -136,7 +136,7 @@
 - `<div ng-bind-html="'<b>implicitly trusted</b>'"></div>`) just works (remember to include the
 - `ngSanitize` module). The `$sceDelegate` will also use the `$sanitize` service if it is available
 - when binding untrusted values to `$sce.HTML` context.
-- AngularJS provides an implementation in `angular-sanitize.js`, and if you
+- AngularTS provides an implementation in `angular-sanitize.js`, and if you
 - wish to use it, you will also need to depend on the {@link ngSanitize `ngSanitize`} module in
 - your application.
 -
@@ -165,7 +165,7 @@
 -
 -
 - <div class="alert alert-warning">
-- Be aware that, before AngularJS 1.7.0, `a[href]` and `img[src]` used to sanitize their
+- Be aware that, before AngularTS 1.7.0, `a[href]` and `img[src]` used to sanitize their
 - interpolated values directly rather than rely upon {@link ng.$sce#getTrusted `$sce.getTrusted`}.
 -
 - **As of 1.7.0, this is no longer the case.**
@@ -175,7 +175,7 @@
 - service evaluates the expressions.
 - </div>
 -
-- There are no CSS or JS context bindings in AngularJS currently, so their corresponding `$sce.trustAs`
+- There are no CSS or JS context bindings in AngularTS currently, so their corresponding `$sce.trustAs`
 - functions aren't useful yet. This might evolve.
 -
 - ### Format of items in {@link ng.$sceDelegateProvider#trustedResourceUrlList trustedResourceUrlList}/{@link ng.$sceDelegateProvider#bannedResourceUrlList bannedResourceUrlList} <a name="resourceUrlPatternItem"></a>

@@ -1,4 +1,4 @@
-# AngularJS Release instructions
+# AngularTS Release instructions
 
 ## Compare the list of commits between stable and unstable
 
@@ -38,7 +38,7 @@ scripts/release/release.sh --git-push-dryrun=false --commit-sha=8822a4f --versio
 
 2. The version number and code-name that should be released, not the next version number (e.g. to release 1.2.12 you enter 1.2.12 as release version and the code-name that was picked for 1.2.12, cauliflower-eradication).
 
-3. You will need to have write access to all the AngularJS github dist repositories and publish rights for the AngularJS packages on npm.
+3. You will need to have write access to all the AngularTS github dist repositories and publish rights for the AngularTS packages on npm.
 
 ## Update GitHub milestones
 
@@ -72,7 +72,7 @@ Double check that angularjs.org is up to date with the new release version befor
 use: `git log --format='%aN' v1.2.12..v1.2.13 | sort -u`
 
 2. Write a blog post (for minor releases, not patch releases) and publish it with the "release" tag
-3. Post on twitter as yourself (tweet from your heart; there is no template for this), retweet as @AngularJS
+3. Post on twitter as yourself (tweet from your heart; there is no template for this), retweet as @AngularTS
 
 ## Party!
 

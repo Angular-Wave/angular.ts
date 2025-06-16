@@ -47,7 +47,7 @@ The `ngDblclick` directive allows you to specify custom behavior on a dblclick e
 **Priority:** `0`
 
 **Description:**  
-Enables binding AngularJS expressions to onsubmit events.
+Enables binding AngularTS expressions to onsubmit events.
 
 Additionally, it prevents the default action (which for forms means sending the request to the server and reloading the current page), but only if the form does not contain `action`, `data-action`, or `x-action` attributes.
 
@@ -69,7 +69,7 @@ Additionally, it prevents the default action (which for forms means sending the 
 **Description:**  
 Specify custom behavior on focus event.
 
-Note: As the `focus` event is executed synchronously when calling `input.focus()`, AngularJS executes the expression using `scope.$evalAsync` if the event is fired during an `$apply` to ensure a consistent state.
+Note: As the `focus` event is executed synchronously when calling `input.focus()`, AngularTS executes the expression using `scope.$evalAsync` if the event is fired during an `$apply` to ensure a consistent state.
 
 **Param:**
 

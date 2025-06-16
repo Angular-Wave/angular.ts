@@ -43,7 +43,9 @@ export class Angular {
     /** @type {import('./core/pubsub/pubsub.js').PubSub} */
     this.EventBus = EventBus;
 
-    /** @type {string} */
+    /**
+     * @type {string} `version` from `package.json`
+     */
     this.version = VERSION;
 
     /** @type {!Array<string|any>} */
@@ -59,12 +61,12 @@ export class Angular {
   }
 
   /**
-   * Use this function to manually start up AngularJS application.
+   * Use this function to manually start up AngularTS application.
    *
    * AngularTS will detect if it has been loaded into the browser more than once and only allow the
    * first loaded script to be bootstrapped and will report a warning to the browser console for
    * each of the subsequent scripts. This prevents strange results in applications, where otherwise
-   * multiple instances of AngularJS try to work on the DOM.
+   * multiple instances of AngularTS try to work on the DOM.
    *   *
    * <div class="alert alert-warning">
    * **Note:** Do not bootstrap the app on an element with a directive that uses {@link ng.$compile#transclusion transclusion},
@@ -93,18 +95,13 @@ export class Angular {
    * </html>
    * ```
    *
-   * @param {string | Element | Document} element DOM element which is the root of AngularJS application.
+   * @param {string | Element | Document} element DOM element which is the root of AngularTS application.
    * @param {Array<String|any>} [modules] an array of modules to load into the application.
    *     Each item in the array should be the name of a predefined module or a (DI annotated)
    *     function that will be invoked by the injector as a `config` block.
    *     See: {@link angular.module modules}
-   * @param {AngularBootstrapConfig} [config] an object for defining configuration options for the application. The
-   *     following keys are supported:
-   *
-   * * `strictDi` - disable automatic function annotation for the application. This is meant to
-   *   assist in finding bugs which break minified code. Defaults to `false`.
-   *
-   * @returns {any} InjectorService - Returns the newly created injector for this app.
+   * @param {AngularBootstrapConfig} [config]
+   * @returns {import('./core/di/internal-injector.js').InjectorService} The created injector instance for this application.
    */
   bootstrap(element, modules, config) {
     config = config || {
@@ -124,6 +121,9 @@ export class Angular {
 
     this.bootsrappedModules.unshift([
       "$provide",
+      /**
+       * @param {import('./interface.ts').Provider} $provide
+       */
       ($provide) => {
         $provide.value("$rootElement", element);
       },
@@ -227,9 +227,9 @@ export class Angular {
 
   /**
    *
-   * The `angular.module` is a global place for creating, registering and retrieving AngularJS
+   * The `angular.module` is a global place for creating, registering and retrieving AngularTS
    * modules.
-   * All modules (AngularJS core or 3rd party) that should be available to an application must be
+   * All modules (AngularTS core or 3rd party) that should be available to an application must be
    * registered using this mechanism.
    *
    * Passing one argument retrieves an existing {@link import('./types.js').Module},
@@ -268,8 +268,8 @@ export class Angular {
    * @param {string} name The name of the module to create or retrieve.
    * @param {Array.<string>} [requires] If specified then new module is being created. If
    *        unspecified then the module is being retrieved for further configuration.
-   * @param {Array<any>|Function} [configFn] Optional configuration function for the module. Same as
-   *        {@link import('./types.js').Module#config Module#config()}.
+   * @param {Array<any>|Function} [configFn] Optional configuration function for the module that gets
+   *        passed to {@link NgModule.config NgModule.config()}.
    * @returns {NgModule} A newly registered module.
    */
   module(name, requires, configFn) {

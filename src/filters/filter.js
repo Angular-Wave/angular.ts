@@ -9,7 +9,7 @@ import {
 } from "../shared/utils.js";
 
 /**
- * @returns {function(Array, string|Object|function(any, number, []):[], function(any, any):boolean|boolean, string?): Array}
+ * @returns {import('../interface.ts').FilterFn}
  */
 export function filterFilter() {
   /**

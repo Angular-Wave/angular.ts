@@ -3,7 +3,6 @@ import { INJECTOR_LITERAL } from "./ng-module";
 
 const ARROW_ARG = /^([^(]+?)=>/;
 const FN_ARGS = /^[^(]*\(\s*([^)]*)\)/m;
-const FN_ARG_SPLIT = /,/;
 const FN_ARG = /^\s*(_?)(\S+?)\1\s*$/;
 const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/gm;
 const $injectorMinErr = minErr(INJECTOR_LITERAL);
@@ -23,7 +22,7 @@ class AbstractInjector {
     /** @type {boolean} */
     this.strictDi = strictDi;
     this.path = [];
-    /** @type {Object.<string, import("../../types").Module>} */
+    /** @type {Object.<string, import("./ng-module.js").NgModule>} */
     this.modules = {};
   }
 
@@ -48,7 +47,6 @@ class AbstractInjector {
     this.path.unshift(serviceName);
     this.cache[serviceName] = INSTANTIATING;
     try {
-      // this goes to line 60
       this.cache[serviceName] = this.factory(serviceName);
     } catch (err) {
       // this is for the error handling being thrown by the providerCache multiple times
@@ -91,7 +89,7 @@ class AbstractInjector {
    * @param {*} [self]
    * @param {Object} [locals]
    * @param {string} [serviceName]
-   * @returns
+   * @returns {*}
    */
   invoke(fn, self, locals, serviceName) {
     if (typeof locals === "string") {
@@ -108,7 +106,7 @@ class AbstractInjector {
       fn = fn[fn.length - 1];
     }
 
-    if (isClass(/** @type {string} */ (fn))) {
+    if (isClass(/** @type {Function} */ (fn))) {
       args.unshift(null);
       const res = new (Function.prototype.bind.apply(fn, args))();
       return res;
@@ -149,7 +147,7 @@ class AbstractInjector {
 
 /**
  * Injector for providers
- * @extends AbstractInjector
+ * @extends {AbstractInjector}
  */
 export class ProviderInjector extends AbstractInjector {
   /**
@@ -179,7 +177,7 @@ export class ProviderInjector extends AbstractInjector {
 
 /**
  * Injector for factories and services
- * @extends AbstractInjector
+ * @extends {AbstractInjector}
  */
 export class InjectorService extends AbstractInjector {
   /**
@@ -193,6 +191,10 @@ export class InjectorService extends AbstractInjector {
     this.modules = this.providerInjector.modules;
   }
 
+  /**
+   * @param {string} serviceName
+   * @returns {*}
+   */
   factory(serviceName) {
     const provider = this.providerInjector.get(serviceName + providerSuffix);
     const res = this.invoke(provider.$get, provider, undefined, serviceName);
@@ -217,7 +219,7 @@ export class InjectorService extends AbstractInjector {
 // Helpers
 
 /**
- * @param {string} fn
+ * @param {Function} fn
  * @returns {string}
  */
 function stringifyFn(fn) {
@@ -225,7 +227,7 @@ function stringifyFn(fn) {
 }
 
 /**
- * @param {string} fn
+ * @param {Function} fn
  * @returns {Array<any>}
  */
 function extractArgs(fn) {
@@ -235,7 +237,7 @@ function extractArgs(fn) {
 }
 
 /**
- * @param {string} func
+ * @param {Function} func
  * @returns {boolean}
  */
 function isClass(func) {
@@ -263,8 +265,8 @@ function annotate(fn, strictDi, name) {
             name,
           );
         }
-        argDecl = extractArgs(/** @type {string} */ (fn));
-        argDecl[1].split(FN_ARG_SPLIT).forEach(function (arg) {
+        argDecl = extractArgs(fn);
+        argDecl[1].split(/,/).forEach(function (arg) {
           arg.replace(FN_ARG, function (_all, _underscore, name) {
             $inject.push(name);
           });

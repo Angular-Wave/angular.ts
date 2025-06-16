@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-**AngularJS support has officially ended as of January 2022.**
+**AngularTS support has officially ended as of January 2022.**
 [See what ending support means](https://docs.angularjs.org/misc/version-support-status)
 and [read the end of life announcement](https://goo.gle/angularjs-end-of-life).
 

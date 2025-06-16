@@ -6,29 +6,38 @@ import { orderByFilter } from "../../filters/order-by.js";
 import {
   $IncludedByStateFilter,
   $IsStateFilter,
-} from "../../router/state-filters";
+} from "../../router/state-filters.js";
 
 FilterProvider.$inject = ["$provide"];
+
+/**
+ * @param {import('../../interface.ts').Provider} $provide
+ */
 export function FilterProvider($provide) {
   const suffix = "Filter";
 
+  /**
+   * @param {string|Record<string, import('../../interface.ts').FilterFactory>} name
+   * @param {import('../../interface.ts').FilterFactory} factory
+   * @return {import('../../interface.ts').ServiceProvider}
+   */
   function register(name, factory) {
     if (isObject(name)) {
       const filters = {};
       Object.entries(name).forEach(([key, filter]) => {
         filters[key] = register(key, filter);
       });
-      return filters;
     }
     return $provide.factory(name + suffix, factory);
   }
+
   this.register = register;
 
   this.$get = [
     "$injector",
     /**
      *
-     * @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
      * @returns
      */
     function ($injector) {

@@ -2884,7 +2884,7 @@ export function CompileProvider($provide, $$sanitizeUriProvider) {
 
                   destination[scopeName] = $interpolate(lastValue)(scope);
                 } else if (isBoolean(lastValue)) {
-                  // If the attributes is one of the BOOLEAN_ATTR then AngularJS will have converted
+                  // If the attributes is one of the BOOLEAN_ATTR then AngularTS will have converted
                   // the value to boolean rather than a string, so we special case this situation
                   destination[scopeName] = lastValue;
                 }

@@ -5,7 +5,7 @@
 - @description
 -
 - The `ng.animate` module provides support for CSS-based animations (keyframes and transitions) as well as JavaScript-based animations via
-- callback hooks. Animations are not enabled by default, however, by including `ng.animate` the animation hooks are enabled for an AngularJS app.
+- callback hooks. Animations are not enabled by default, however, by including `ng.animate` the animation hooks are enabled for an AngularTS app.
 -
 - ## Usage
 - Simply put, there are two ways to make use of animations when ng.animate is used: by using **CSS** and **JavaScript**. The former works purely based
@@ -42,7 +42,7 @@
 - ## CSS-based Animations
 -
 - CSS-based animations with ng.animate are unique since they require no JavaScript code at all. By using a CSS class that we reference between our HTML
-- and CSS code we can create an animation that will be picked up by AngularJS when an underlying directive performs an operation.
+- and CSS code we can create an animation that will be picked up by AngularTS when an underlying directive performs an operation.
 -
 - The example below shows how an `enter` animation can be made possible on an element using `ng-if`:
 -
@@ -389,7 +389,7 @@
 -     enter: function(element, doneFn) {
 -       jQuery(element).fadeIn(1000, doneFn);
 -
--       // remember to call doneFn so that AngularJS
+-       // remember to call doneFn so that AngularTS
 -       // knows that the animation has concluded
 -     },
 -
@@ -452,7 +452,7 @@
 -
 - ## CSS + JS Animations Together
 -
-- AngularJS 1.4 and higher has taken steps to make the amalgamation of CSS and JS animations more flexible. However, unlike earlier versions of AngularJS,
+- AngularTS 1.4 and higher has taken steps to make the amalgamation of CSS and JS animations more flexible. However, unlike earlier versions of AngularTS,
 - defining CSS and JS animations to work off of the same CSS class will not work anymore. Therefore the example below will only result in \*\*JS animations taking
 - charge of the animation\*\*:
 -
@@ -575,7 +575,7 @@
 -
 - ## Animation Anchoring (via `ng-animate-ref`)
 -
-- ng.animate in AngularJS 1.4 comes packed with the ability to cross-animate elements between
+- ng.animate in AngularTS 1.4 comes packed with the ability to cross-animate elements between
 - structural areas of an application (like views) by pairing up elements using an attribute
 - called `ng-animate-ref`.
 -
@@ -829,7 +829,7 @@
 -
 - ## Using $animate in your directive code
 -
-- So far we've explored how to feed in animations into an AngularJS application, but how do we trigger animations within our own directives in our application?
+- So far we've explored how to feed in animations into an AngularTS application, but how do we trigger animations within our own directives in our application?
 - By injecting the `$animate` service into our directive code, we can trigger structural and class-based hooks which can then be consumed by animations. Let's
 - imagine we have a greeting box that shows and hides itself when the data changes
 -
@@ -896,7 +896,7 @@
   ```
 
 -
-- (Note that earlier versions of AngularJS prior to v1.4 required the promise code to be wrapped using `$scope.$apply(...)`. This is not the case
+- (Note that earlier versions of AngularTS prior to v1.4 required the promise code to be wrapped using `$scope.$apply(...)`. This is not the case
 - anymore.)
 -
 - In addition to the animation promise, we can also make use of animation-related callbacks within our directives and controller code by registering
@@ -917,7 +917,7 @@
   ```
 
 -
-- (Note that you will need to trigger a digest within the callback to get AngularJS to notice any scope-related changes.)
+- (Note that you will need to trigger a digest within the callback to get AngularTS to notice any scope-related changes.)
   \*/
 
 /\*\*
