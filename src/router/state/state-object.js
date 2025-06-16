@@ -19,6 +19,7 @@ export class StateObject {
   parent = undefined;
   params = undefined;
   url = undefined;
+  includes = undefined;
 
   constructor(config) {
     Object.assign(this, config);

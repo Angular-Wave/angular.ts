@@ -1,3 +1,4 @@
+/** @typedef {import('./interface.ts').IHookRegistry} IHookRegistry */
 /**
  * Represents a transition between two states.
  *
@@ -5,20 +6,18 @@
  *
  * This object contains all contextual information about the to/from states, parameters, resolves.
  * It has information about all states being entered and exited as a result of the transition.
+ * @implements {IHookRegistry}
  */
-export class Transition {
+export class Transition implements IHookRegistry {
   /**
    * Creates a new Transition object.
    *
    * If the target state is not valid, an error is thrown.
    *
-   * @internal
-   *
    * @param fromPath The path of [[PathNode]]s from which the transition is leaving.  The last node in the `fromPath`
    *        encapsulates the "from state".
    * @param targetState The target state and parameters being transitioned to (also, the transition options)
    * @param {import('../transition/transition-service.js').TransitionProvider} transitionService The [[TransitionService]] instance
-   * @internal
    */
   constructor(
     fromPath: any,
@@ -52,6 +51,14 @@ export class Transition {
     exiting: any;
     entering: any;
   };
+  onStart: any;
+  onBefore: any;
+  onSuccess: any;
+  onEnter: any;
+  onRetain: any;
+  onExit: any;
+  onFinish: any;
+  onError: any;
   /**
    * Creates the transition-level hook registration functions
    * (which can then be used to register hooks)
@@ -65,10 +72,9 @@ export class Transition {
    */
   $from(): any;
   /**
-   * @internal
-   * @returns the internal to [State] object
+   * @returns {import('../state/state-object.js').StateObject} the internal to [State] object
    */
-  $to(): any;
+  $to(): import("../state/state-object.js").StateObject;
   /**
    * Returns the "from state"
    *
@@ -386,4 +392,5 @@ export class Transition {
 export namespace Transition {
   export { Transition as diToken };
 }
+export type IHookRegistry = import("./interface.ts").IHookRegistry;
 import { HookBuilder } from "./hook-builder.js";

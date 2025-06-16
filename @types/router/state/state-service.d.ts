@@ -5,28 +5,36 @@
  */
 export class StateProvider {
   static $inject: string[];
-  constructor(globals: any, transitionService: any);
+  /**
+   *
+   * @param {import('../globals.js').RouterGlobals} globals
+   * @param {*} transitionService
+   */
+  constructor(
+    globals: import("../globals.js").RouterGlobals,
+    transitionService: any,
+  );
   /**
    * The latest successful state parameters
    *
-   * @deprecated This is a passthrough through to [[UIRouterGlobals.params]]
+   * @deprecated This is a passthrough through to [[RouterGlobals.params]]
    */
-  get params(): any;
+  get params(): import("../params/state-params.js").StateParams;
   /**
    * The current [[StateDeclaration]]
    *
-   * @deprecated This is a passthrough through to [[UIRouterGlobals.current]]
+   * @deprecated This is a passthrough through to [[RouterGlobals.current]]
    */
-  get current(): any;
+  get current(): import("./interface.js").StateDeclaration;
   /**
    * The current [[StateObject]] (an internal API)
    *
-   * @deprecated This is a passthrough through to [[UIRouterGlobals.$current]]
+   * @deprecated This is a passthrough through to [[RouterGlobals.$current]]
    */
-  get $current(): any;
+  get $current(): import("./state-object.js").StateObject;
   stateRegistry: any;
   urlService: any;
-  globals: any;
+  globals: import("../globals.js").RouterGlobals;
   transitionService: any;
   invalidCallbacks: any[];
   _defaultErrorHandler: ($error$: any) => never;

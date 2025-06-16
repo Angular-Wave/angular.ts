@@ -11,6 +11,8 @@ import { copy } from "../../shared/common.js";
  *
  * See also the deprecated properties:
  * [[StateService.transition]], [[StateService.current]], [[StateService.params]]
+ *
+ * @param {import('../transition/transition.js').Transition} trans
  */
 const updateGlobalState = (trans) => {
   const globals = trans.globals;

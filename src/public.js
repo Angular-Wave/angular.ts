@@ -107,7 +107,7 @@ import { AnimateJsDriverProvider } from "./animations/animate-js-driver.js";
 import { ngAnimateSwapDirective } from "./animations/animate-swap.js";
 import { $$AnimateChildrenDirective } from "./animations/animate-children-directive.js";
 import { UrlConfigProvider } from "./router/url/url-config.js";
-import { UIRouterGlobals } from "./router/globals.js";
+import { RouterGlobals } from "./router/globals.js";
 import { ViewService } from "./router/view/view.js";
 import { TransitionProvider } from "./router/transition/transition-service.js";
 import { StateProvider } from "./router/state/state-service.js";
@@ -252,7 +252,7 @@ export function publishExternalAPI(angular) {
             $parse: ParseProvider,
             $$rAFScheduler: RafSchedulerProvider,
             $rootScope: RootScopeProvider,
-            $routerGlobals: UIRouterGlobals,
+            $routerGlobals: RouterGlobals,
             $sce: SceProvider,
             $sceDelegate: SceDelegateProvider,
             $$taskTrackerFactory: TaskTrackerFactoryProvider,

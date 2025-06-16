@@ -23,6 +23,8 @@ import { Resolvable } from "../resolve/resolvable.js";
 import { ResolveContext } from "../resolve/resolve-context.js";
 import { Rejection } from "./reject-factory.js";
 
+/** @typedef {import('./interface.ts').IHookRegistry} IHookRegistry */
+
 /**
  * Represents a transition between two states.
  *
@@ -30,6 +32,7 @@ import { Rejection } from "./reject-factory.js";
  *
  * This object contains all contextual information about the to/from states, parameters, resolves.
  * It has information about all states being entered and exited as a result of the transition.
+ * @implements {IHookRegistry}
  */
 export class Transition {
   /**
@@ -37,13 +40,10 @@ export class Transition {
    *
    * If the target state is not valid, an error is thrown.
    *
-   * @internal
-   *
    * @param fromPath The path of [[PathNode]]s from which the transition is leaving.  The last node in the `fromPath`
    *        encapsulates the "from state".
    * @param targetState The target state and parameters being transitioned to (also, the transition options)
    * @param {import('../transition/transition-service.js').TransitionProvider} transitionService The [[TransitionService]] instance
-   * @internal
    */
   constructor(fromPath, targetState, transitionService, globals) {
     this.globals = globals;
@@ -84,6 +84,14 @@ export class Transition {
     );
     TransitionHook.invokeHooks(onCreateHooks, () => null);
     this.applyViewConfigs();
+    this.onStart = undefined;
+    this.onBefore = undefined;
+    this.onSuccess = undefined;
+    this.onEnter = undefined;
+    this.onRetain = undefined;
+    this.onExit = undefined;
+    this.onFinish = undefined;
+    this.onError = undefined;
   }
 
   /**
@@ -117,8 +125,7 @@ export class Transition {
     return tail(this._treeChanges.from).state;
   }
   /**
-   * @internal
-   * @returns the internal to [State] object
+   * @returns {import('../state/state-object.js').StateObject} the internal to [State] object
    */
   $to() {
     return tail(this._treeChanges.to).state;

@@ -10,7 +10,7 @@ import { Queue } from "./common/queue.js";
  * params, current transition, etc.
  * @implements {ServiceProvider}
  */
-export class UIRouterGlobals {
+export class RouterGlobals {
   constructor() {
     /**
      * Current parameter values
@@ -34,6 +34,21 @@ export class UIRouterGlobals {
      * @type {Queue<import("./transition/transition.js").Transition>}
      */
     this.successfulTransitions = new Queue([], 1);
+
+    /**
+     * @type {import("./state/interface.ts").StateDeclaration|undefined}
+     */
+    this.current = undefined;
+
+    /**
+     * @type {import("./state/state-object.js").StateObject|undefined}
+     */
+    this.$current = undefined;
+
+    /**
+     * @type {import("./transition/transition.js").Transition|undefined}
+     */
+    this.transition = undefined;
   }
 
   $get = () => this;

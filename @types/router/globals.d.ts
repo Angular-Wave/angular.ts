@@ -6,7 +6,7 @@
  * params, current transition, etc.
  * @implements {ServiceProvider}
  */
-export class UIRouterGlobals implements ServiceProvider {
+export class RouterGlobals implements ServiceProvider {
   /**
    * Current parameter values
    *
@@ -26,6 +26,18 @@ export class UIRouterGlobals implements ServiceProvider {
    * @type {Queue<import("./transition/transition.js").Transition>}
    */
   successfulTransitions: Queue<import("./transition/transition.js").Transition>;
+  /**
+   * @type {import("./state/interface.ts").StateDeclaration|undefined}
+   */
+  current: import("./state/interface.ts").StateDeclaration | undefined;
+  /**
+   * @type {import("./state/state-object.js").StateObject|undefined}
+   */
+  $current: import("./state/state-object.js").StateObject | undefined;
+  /**
+   * @type {import("./transition/transition.js").Transition|undefined}
+   */
+  transition: import("./transition/transition.js").Transition | undefined;
   $get: () => this;
 }
 /**

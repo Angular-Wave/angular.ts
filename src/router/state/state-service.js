@@ -30,7 +30,7 @@ export class StateProvider {
   /**
    * The latest successful state parameters
    *
-   * @deprecated This is a passthrough through to [[UIRouterGlobals.params]]
+   * @deprecated This is a passthrough through to [[RouterGlobals.params]]
    */
   get params() {
     return this.globals.params;
@@ -38,7 +38,7 @@ export class StateProvider {
   /**
    * The current [[StateDeclaration]]
    *
-   * @deprecated This is a passthrough through to [[UIRouterGlobals.current]]
+   * @deprecated This is a passthrough through to [[RouterGlobals.current]]
    */
   get current() {
     return this.globals.current;
@@ -46,7 +46,7 @@ export class StateProvider {
   /**
    * The current [[StateObject]] (an internal API)
    *
-   * @deprecated This is a passthrough through to [[UIRouterGlobals.$current]]
+   * @deprecated This is a passthrough through to [[RouterGlobals.$current]]
    */
   get $current() {
     return this.globals.$current;
@@ -55,6 +55,11 @@ export class StateProvider {
   static $inject = ["$routerGlobalsProvider", "$transitionsProvider"];
 
   // Needs access to urlService, stateRegistry
+  /**
+   *
+   * @param {import('../globals.js').RouterGlobals} globals
+   * @param {*} transitionService
+   */
   constructor(globals, transitionService) {
     this.stateRegistry = undefined;
     this.urlService = undefined;
@@ -582,10 +587,10 @@ export class StateProvider {
       stateOrName = this.$current.name;
     }
     const state = this.stateRegistry.matcher.find(
-        stateOrName,
-        options.relative,
-      ),
-      include = this.$current.includes;
+      stateOrName,
+      options.relative,
+    );
+    const include = this.$current.includes;
     if (!isDefined(state)) return undefined;
     if (!isDefined(include[state.name])) return false;
     if (!params) return true;

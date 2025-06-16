@@ -64,7 +64,7 @@ export class TransitionProvider {
   static $inject = ["$routerGlobalsProvider", "$viewProvider"];
 
   /**
-   * @param {import('../globals.js').UIRouterGlobals} globals
+   * @param {import('../globals.js').RouterGlobals} globals
    */
   constructor(globals, viewService) {
     this._transitionCount = 0;

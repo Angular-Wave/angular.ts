@@ -16,6 +16,7 @@ export class StateObject {
   parent: StateObject | null;
   params: any;
   url: any;
+  includes: any;
   $$state: () => this;
   self: any;
   __stateObjectCache: {
