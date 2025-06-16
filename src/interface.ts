@@ -28,6 +28,8 @@ export type AnnotatedFactory = [...string[], (...args: any[]) => any];
  */
 export type InjectableFactory = (...args: any[]) => any;
 
+export type Injectable = AnnotatedFactory | InjectableFactory;
+
 /**
  * An object that defines how a service is constructed.
  *
@@ -35,7 +37,7 @@ export type InjectableFactory = (...args: any[]) => any;
  * either as a plain factory function or as an {@link AnnotatedFactory}.
  */
 export interface ServiceProvider {
-  $get: InjectableFactory | AnnotatedFactory;
+  $get: Injectable;
 }
 
 /**

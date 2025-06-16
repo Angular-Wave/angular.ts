@@ -5,6 +5,7 @@ import { StateObject } from "../state/state-object.js";
 import { PathNode } from "../path/path-node.js";
 import { TargetState } from "../state/target-state.js";
 import { RegisteredHook } from "./hook-registry.js";
+
 /**
  * The TransitionOptions object can be used to change the behavior of a transition.
  *
@@ -22,11 +23,13 @@ export interface TransitionOptions {
    * @default `true`
    */
   location?: boolean | "replace";
+
   /**
    * When transitioning to relative path (e.g '`^`'), this option defines which state to be relative from.
    * @default `$state.current`
    */
   relative?: string | StateDeclaration | StateObject;
+
   /**
    * This option sets whether or not the transition's parameter values should be inherited from
    * the current parameter values.
@@ -37,10 +40,12 @@ export interface TransitionOptions {
    * @default `true`
    */
   inherit?: boolean;
+
   /**
    * @deprecated
    */
   notify?: boolean;
+
   /**
    * This option may be used to force states which are currently active to reload.
    *
@@ -89,8 +94,9 @@ export interface TransitionOptions {
   /** @internal */
   source?: "sref" | "url" | "redirect" | "otherwise" | "unknown";
 }
+
 export interface TransitionHookOptions {
-  current?: () => Transition;
+  current?: () => Transition; // path?
   transition?: Transition;
   hookType?: string;
   target?: any;
@@ -98,6 +104,7 @@ export interface TransitionHookOptions {
   bind?: any;
   stateHook?: boolean;
 }
+
 /**
  * TreeChanges encapsulates the various Paths that are involved in a Transition.
  *
@@ -121,10 +128,13 @@ export interface TransitionHookOptions {
 export interface TreeChanges {
   /** @nodoc */
   [key: string]: PathNode[] | undefined;
+
   /** The path of nodes in the state tree that the transition is coming *from* */
   from: PathNode[];
+
   /** The path of nodes in the state tree that the transition is going *to* */
   to: PathNode[];
+
   /**
    * The path of active nodes that the transition is retaining.
    *
@@ -132,6 +142,7 @@ export interface TreeChanges {
    * Before and after the transition is successful, these nodes are active.
    */
   retained: PathNode[];
+
   /**
    * The path of active nodes that the transition is retaining with updated "to params" applied.
    *
@@ -141,6 +152,7 @@ export interface TreeChanges {
    * This is a shallow copy of [[retained]], but with new (dynamic) parameter values from [[to]] applied.
    */
   retainedWithToParams: PathNode[];
+
   /**
    * The path of previously active nodes that the transition is exiting.
    *
@@ -150,6 +162,7 @@ export interface TreeChanges {
    * `exiting` and `entering` paths.
    */
   exiting: PathNode[];
+
   /**
    * The path of nodes that the transition is entering.
    *
@@ -162,11 +175,13 @@ export interface TreeChanges {
    */
   entering: PathNode[];
 }
+
 export type IHookRegistration = (
   matchCriteria: HookMatchCriteria,
   callback: HookFn,
   options?: HookRegOptions,
 ) => Function;
+
 /**
  * The signature for Transition Hooks.
  *
@@ -193,6 +208,7 @@ export type IHookRegistration = (
 export interface TransitionHookFn {
   (transition: Transition): HookResult;
 }
+
 /**
  * The signature for Transition State Hooks.
  *
@@ -217,6 +233,7 @@ export interface TransitionHookFn {
 export interface TransitionStateHookFn {
   (transition: Transition, state: StateDeclaration): HookResult;
 }
+
 /**
  * The signature for Transition onCreate Hooks.
  *
@@ -229,10 +246,12 @@ export interface TransitionStateHookFn {
 export interface TransitionCreateHookFn {
   (transition: Transition): void;
 }
+
 export type HookFn =
   | TransitionHookFn
   | TransitionStateHookFn
   | TransitionCreateHookFn;
+
 /**
  * The return value of a [[TransitionHookFn]] or [[TransitionStateHookFn]]
  *
@@ -251,6 +270,7 @@ export type HookResult =
   | TargetState
   | void
   | Promise<boolean | TargetState | void>;
+
 /**
  * These options may be provided when registering a Transition Hook (such as `onStart`)
  */
@@ -264,16 +284,19 @@ export interface HookRegOptions {
    * The default hook priority is 0
    */
   priority?: number;
+
   /**
    * Specifies what `this` is bound to during hook invocation.
    */
   bind?: any;
+
   /**
    * Limits the number of times that the hook will be invoked.
    * Once the hook has been invoked this many times, it is automatically deregistered.
    */
   invokeLimit?: number;
 }
+
 /**
  * This interface specifies the api for registering Transition Hooks.  Both the
  * [[TransitionService]] and also the [[Transition]] object itself implement this interface.
@@ -281,9 +304,8 @@ export interface HookRegOptions {
  */
 export interface IHookRegistry {
   /** @internal place to store the hooks */
-  _registeredHooks: {
-    [key: string]: RegisteredHook[];
-  };
+  _registeredHooks: { [key: string]: RegisteredHook[] };
+
   /**
    * Registers a [[TransitionHookFn]], called *before a transition starts*.
    *
@@ -385,6 +407,7 @@ export interface IHookRegistry {
     callback: TransitionHookFn,
     options?: HookRegOptions,
   ): Function;
+
   /**
    * Registers a [[TransitionHookFn]], called when a transition starts.
    *
@@ -457,6 +480,7 @@ export interface IHookRegistry {
     callback: TransitionHookFn,
     options?: HookRegOptions,
   ): Function;
+
   /**
    * Registers a [[TransitionStateHookFn]], called when a specific state is entered.
    *
@@ -532,6 +556,7 @@ export interface IHookRegistry {
     callback: TransitionStateHookFn,
     options?: HookRegOptions,
   ): Function;
+
   /**
    * Registers a [[TransitionStateHookFn]], called when a specific state is retained/kept.
    *
@@ -573,6 +598,7 @@ export interface IHookRegistry {
     callback: TransitionStateHookFn,
     options?: HookRegOptions,
   ): Function;
+
   /**
    * Registers a [[TransitionStateHookFn]], called when a specific state is exited.
    *
@@ -616,6 +642,7 @@ export interface IHookRegistry {
     callback: TransitionStateHookFn,
     options?: HookRegOptions,
   ): Function;
+
   /**
    * Registers a [[TransitionHookFn]], called *just before a transition finishes*.
    *
@@ -647,6 +674,7 @@ export interface IHookRegistry {
     callback: TransitionHookFn,
     options?: HookRegOptions,
   ): Function;
+
   /**
    * Registers a [[TransitionHookFn]], called after a successful transition completed.
    *
@@ -677,6 +705,7 @@ export interface IHookRegistry {
     callback: TransitionHookFn,
     options?: HookRegOptions,
   ): Function;
+
   /**
    * Registers a [[TransitionHookFn]], called after a transition has errored.
    *
@@ -723,6 +752,7 @@ export interface IHookRegistry {
     callback: TransitionHookFn,
     options?: HookRegOptions,
   ): Function;
+
   /**
    * Returns all the registered hooks of a given `hookName` type
    *
@@ -733,8 +763,10 @@ export interface IHookRegistry {
    */
   getHooks(hookName: string): RegisteredHook[];
 }
+
 /** A predicate type which tests if a [[StateObject]] and [[Transition]] passes some test. Returns a boolean. */
 export type IStateMatch = PredicateBinary<StateObject, Transition>;
+
 /**
  * This object is used to configure whether or not a Transition Hook is invoked for a particular transition,
  * based on the Transition's "to state" and "from state".
@@ -800,6 +832,7 @@ export type IStateMatch = PredicateBinary<StateObject, Transition>;
  */
 export interface HookMatchCriteria {
   [key: string]: HookMatchCriterion | undefined;
+
   /** A [[HookMatchCriterion]] to match the destination state */
   to?: HookMatchCriterion;
   /** A [[HookMatchCriterion]] to match the original (from) state */
@@ -811,32 +844,39 @@ export interface HookMatchCriteria {
   /** A [[HookMatchCriterion]] to match any state that would be entering */
   entering?: HookMatchCriterion;
 }
+
 export interface IMatchingNodes {
   [key: string]: PathNode[];
+
   to: PathNode[];
   from: PathNode[];
   exiting: PathNode[];
   retained: PathNode[];
   entering: PathNode[];
 }
+
 /** @internal */
 export interface RegisteredHooks {
   [key: string]: RegisteredHook[];
 }
+
 /** @internal */
 export interface PathTypes {
   [key: string]: PathType;
+
   to: PathType;
   from: PathType;
   exiting: PathType;
   retained: PathType;
   entering: PathType;
 }
+
 /** @internal */
 export interface PathType {
   name: string;
   scope: TransitionHookScope;
 }
+
 /**
  * Hook Criterion used to match a transition.
  *
@@ -848,15 +888,17 @@ export interface PathType {
  * Or, `true` to always match
  */
 export type HookMatchCriterion = string | IStateMatch | boolean;
-declare enum TransitionHookPhase {
-  CREATE = 0,
-  BEFORE = 1,
-  RUN = 2,
-  SUCCESS = 3,
-  ERROR = 4,
+
+enum TransitionHookPhase {
+  CREATE,
+  BEFORE,
+  RUN,
+  SUCCESS,
+  ERROR,
 }
-declare enum TransitionHookScope {
-  TRANSITION = 0,
-  STATE = 1,
+enum TransitionHookScope {
+  TRANSITION,
+  STATE,
 }
+
 export { TransitionHookPhase, TransitionHookScope };
