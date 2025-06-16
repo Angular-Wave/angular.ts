@@ -210,28 +210,46 @@ export interface TransitionHookFn {
 }
 
 /**
- * The signature for Transition State Hooks.
+ * The signature for State Transition Hooks.
  *
- * A function which hooks into a lifecycle event for a specific state.
+ * State hooks are registered as onEnter/onRetain/onExit in state declarations.
+ * State hooks can additionally be injected with $transitions and $states for
+ * the current [[Transition]] and [[StateObject]] in the transition.
  *
  * Transition State Hooks are callback functions that hook into the lifecycle events of specific states during a transition.
  * As a transition runs, it may exit some states, retain (keep) states, and enter states.
  * As each lifecycle event occurs, the hooks which are registered for the event and that state are called (in priority order).
  *
- * #### See:
+ * #### See also:
  *
  * - [[IHookRegistry.onExit]]
  * - [[IHookRegistry.onRetain]]
  * - [[IHookRegistry.onEnter]]
  *
- * @param transition the current [[Transition]]
- * @param state the [[StateObject]] that the hook is bound to
- * @param injector (for ng1 or ng2 only) the injector service
+ * #### Example:
+ * ```js
+ * onEnter: function() { console.log('Entering'); }
+ * ```
  *
- * @returns a [[HookResult]] which may alter the transition
+ * Not minification-safe
+ * ```js
+ * onRetain: function($state$) { console.log('Retained ' + $state$.name); }
+ * ```
+ *
+ * Annotated for minification-safety
+ * ```js
+ * onExit: [ '$transition$', '$state', function($transition$, $state) {
+ *   // always redirect to 'foo' state when being exited
+ *   if ($transition$.to().name !== 'foo') {
+ *     return $state.target('foo');
+ *   }
+ * } ]
+ * ```
+ *
+ * @returns an optional [[HookResult]] which may alter the transition
  */
 export interface TransitionStateHookFn {
-  (transition: Transition, state: StateDeclaration): HookResult;
+  (...injectables: any[]): HookResult;
 }
 
 /**

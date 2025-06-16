@@ -1,4 +1,4 @@
-import { _ViewDeclaration } from "../state/interface.ts";
+import { ViewDeclaration } from "../state/interface.ts";
 import { PathNode } from "../path/path-node.js";
 
 /** The context ref can be anything that has a `name` and a `parent` reference to another IContextRef */
@@ -8,8 +8,6 @@ export interface ViewContext {
 }
 
 export interface ActiveUIView {
-  /** type of framework, e.g., "ng1" or "ng2" */
-  $type: string;
   /** An auto-incremented id */
   id: number;
   /** The ui-view short name */
@@ -41,7 +39,7 @@ export interface ViewConfig {
   /* The unique id for the ViewConfig instance */
   $id: number;
   /** The normalized view declaration from [[State.views]] */
-  viewDecl: _ViewDeclaration;
+  viewDecl: ViewDeclaration;
 
   /** The node the ViewConfig is bound to */
   path: PathNode[];

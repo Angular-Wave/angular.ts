@@ -123,9 +123,9 @@ export class StateProvider {
   decorator(name: string, func: object): object;
   /**
    *
-   * @param {any} definition
+   * @param {import("./interface.js").StateDeclaration} definition
    */
-  state(definition: any): this;
+  state(definition: import("./interface.js").StateDeclaration): this;
   /**
    * Handler for when [[transitionTo]] is called with an invalid state.
    *
