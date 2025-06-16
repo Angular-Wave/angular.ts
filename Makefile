@@ -25,7 +25,7 @@ check:
 	./node_modules/.bin/tsc 
 
 types:
-	@rm -rf types
+	@rm -rf @types
 	@echo "Generating *.d.ts"
 	@npx -p typescript tsc --project tsconfig.types.json
 
