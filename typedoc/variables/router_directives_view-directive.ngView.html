@@ -220,7 +220,7 @@
                 unique amongst the other views in the same state. You can have
                 views of the same name that live in different states. The
                 ng-view can be targeted in a View using the name
-                ([[Ng1StateDeclaration.views]]).
+                ([[StateDeclaration.views]]).
               </p>
             </li>
             <li>
@@ -260,8 +260,8 @@
 
           <p>
             The above is a convenient shortcut equivalent to specifying your
-            view explicitly with the [[Ng1StateDeclaration.views]] config
-            property, by name, in this case an empty name:
+            view explicitly with the [[StateDeclaration.views]] config property,
+            by name, in this case an empty name:
           </p>
           <pre><code class="js"><span class="hl-10">$stateProvider</span><span class="hl-1">.</span><span class="hl-0">state</span><span class="hl-1">(</span><span class="hl-2">&quot;home&quot;</span><span class="hl-1">, {</span><br/><span class="hl-1">  </span><span class="hl-10">views:</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-2">&quot;&quot;</span><span class="hl-10">:</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-10">template:</span><span class="hl-1"> </span><span class="hl-2">&quot;&lt;h1&gt;HELLO!&lt;/h1&gt;&quot;</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">})</span>
 </code><button type="button">Copy</button></pre>
@@ -301,8 +301,8 @@
           <p>
             The resolved data from the state's <code>resolve</code> block is
             placed on the scope as <code>$resolve</code> (this can be customized
-            using [[Ng1ViewDeclaration.resolveAs]]). This can be then accessed
-            from the template.
+            using [[ViewDeclaration.resolveAs]]). This can be then accessed from
+            the template.
           </p>
           <p>
             Note that when <code>controllerAs</code> is being used,

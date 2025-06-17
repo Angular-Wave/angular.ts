@@ -1,24 +1,37 @@
 /**
- * @typedef {Function} RafSchedulerFunction
- * @typedef {Object} RafSchedulerObject
- * @property {Function} waitUntilQuiet - Function to wait until the animation frame is quiet.
- * @typedef {RafSchedulerObject & RafSchedulerFunction} RafScheduler
+ * @typedef {import('./interface.js').RafScheduler} RafScheduler
+ * @typedef {import('../interface.js').ServiceProvider} ServiceProvider
  */
 /**
- * Creates a requestAnimationFrame scheduler.
+ * Service provider that creates a requestAnimationFrame-based scheduler.
+ * @implements {ServiceProvider}
  */
-export function RafSchedulerProvider(): void;
-export class RafSchedulerProvider {
+export class RafSchedulerProvider implements ServiceProvider {
   /**
-   * @returns {RafScheduler} The scheduler object.
+   * Internal task queue, where each item is an array of functions to run.
+   * @type {Array<Array<() => void>>}
    */
-  $get: () => RafScheduler;
+  queue: Array<Array<() => void>>;
+  /**
+   * ID of the currently scheduled animation frame (if any).
+   * Used for cancellation and tracking.
+   * @type {number|null}
+   */
+  cancelFn: number | null;
+  /**
+   * Processes the next batch of tasks in the animation frame.
+   * Executes the first group of functions in the queue, then
+   * schedules the next frame if needed.
+   */
+  nextTick(): void;
+  /**
+   * Returns the scheduler function.
+   * This function allows tasks to be queued for execution on future animation frames.
+   * It also has helper methods and state attached.
+   *
+   * @returns {RafScheduler} The scheduler function with `queue` and `waitUntilQuiet`.
+   */
+  $get(): RafScheduler;
 }
-export type RafSchedulerFunction = Function;
-export type RafSchedulerObject = {
-  /**
-   * - Function to wait until the animation frame is quiet.
-   */
-  waitUntilQuiet: Function;
-};
-export type RafScheduler = RafSchedulerObject & RafSchedulerFunction;
+export type RafScheduler = import("./interface.js").RafScheduler;
+export type ServiceProvider = import("../interface.js").ServiceProvider;

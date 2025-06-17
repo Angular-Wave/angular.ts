@@ -2,6 +2,9 @@ import { defaults, find } from "../../shared/common.js";
 import { propEq } from "../../shared/hof.js";
 import { Glob } from "../common/glob.js";
 import { hasOwn, isFunction, isObject } from "../../shared/utils.js";
+
+/** @typedef {import('./interface.js').StateDeclaration} StateDeclaration */
+
 /**
  * Internal representation of a ng-router state.
  *
@@ -11,6 +14,7 @@ import { hasOwn, isFunction, isObject } from "../../shared/utils.js";
  *
  * This class prototypally inherits from the corresponding [[StateDeclaration]].
  * Each of its own properties (i.e., `hasOwnProperty`) are built using builders from the [[StateBuilder]].
+ * @implements {StateDeclaration}
  */
 export class StateObject {
   name = undefined;
@@ -21,9 +25,17 @@ export class StateObject {
   url = undefined;
   includes = undefined;
 
+  /**
+   * @param {import('./interface.js').StateDeclaration} config
+   */
   constructor(config) {
     Object.assign(this, config);
-    this.$$state = () => this;
+    this.$$state = () => {
+      return this;
+    };
+    /**
+     * @type {import('./interface.js').StateDeclaration}
+     */
     this.self = config;
     /**
      * @type {?Glob}

@@ -137,7 +137,6 @@ export function $StateRefDirective(
         : {};
 
       function update() {
-        // TODO this update used to happen inside a digest watche
         rawDef.ngStateParams = Object.assign({}, scope.$eval(ref.paramExpr));
         const def = getDef();
         if (unlinkInfoFn) {
@@ -228,14 +227,10 @@ export function $StateRefDynamicDirective(
         rawDef[field] = attrs[field] ? scope.$eval(attrs[field]) : null;
         attrs.$observe(field, (expr) => {
           watchDeregFns[field]();
-          watchDeregFns[field] = scope.$watch(
-            expr,
-            (newval) => {
-              rawDef[field] = newval;
-              update();
-            },
-            true,
-          );
+          watchDeregFns[field] = scope.$watch(expr, (newval) => {
+            rawDef[field] = newval;
+            update();
+          });
         });
       });
       update();

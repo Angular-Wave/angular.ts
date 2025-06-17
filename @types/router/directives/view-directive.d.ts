@@ -18,7 +18,7 @@ export namespace $ViewDirectiveFill {
  * - `name`: (Optional) A view name.
  *   The name should be unique amongst the other views in the same state.
  *   You can have views of the same name that live in different states.
- *   The ng-view can be targeted in a View using the name ([[Ng1StateDeclaration.views]]).
+ *   The ng-view can be targeted in a View using the name ([[StateDeclaration.views]]).
  *
  * - `autoscroll`: an expression. When it evaluates to true, the `ng-view` will be scrolled into view when it is activated.
  *   Uses [[$ngViewScroll]] to do the scrolling.
@@ -49,7 +49,7 @@ export namespace $ViewDirectiveFill {
  * ```
  *
  * The above is a convenient shortcut equivalent to specifying your view explicitly with the
- * [[Ng1StateDeclaration.views]] config property, by name, in this case an empty name:
+ * [[StateDeclaration.views]] config property, by name, in this case an empty name:
  *
  * ```js
  * $stateProvider.state("home", {
@@ -119,7 +119,7 @@ export namespace $ViewDirectiveFill {
  * Resolve data:
  *
  * The resolved data from the state's `resolve` block is placed on the scope as `$resolve` (this
- * can be customized using [[Ng1ViewDeclaration.resolveAs]]).  This can be then accessed from the template.
+ * can be customized using [[ViewDeclaration.resolveAs]]).  This can be then accessed from the template.
  *
  * Note that when `controllerAs` is being used, `$resolve` is set on the controller instance *after* the
  * controller is instantiated.  The `$onInit()` hook can be used to perform initialization code which

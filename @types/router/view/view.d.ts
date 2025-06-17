@@ -38,12 +38,12 @@ export class ViewService {
   /**
    * @param path
    * @param decl
-   * @return {import("../state/views.js").Ng1ViewConfig}
+   * @return {import("../state/views.js").ViewConfig}
    */
   createViewConfig(
     path: any,
     decl: any,
-  ): import("../state/views.js").Ng1ViewConfig;
+  ): import("../state/views.js").ViewConfig;
   /**
    * Deactivates a ViewConfig.
    *

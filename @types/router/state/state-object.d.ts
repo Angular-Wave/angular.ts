@@ -1,3 +1,4 @@
+/** @typedef {import('./interface.js').StateDeclaration} StateDeclaration */
 /**
  * Internal representation of a ng-router state.
  *
@@ -7,9 +8,13 @@
  *
  * This class prototypally inherits from the corresponding [[StateDeclaration]].
  * Each of its own properties (i.e., `hasOwnProperty`) are built using builders from the [[StateBuilder]].
+ * @implements {StateDeclaration}
  */
-export class StateObject {
-  constructor(config: any);
+export class StateObject implements StateDeclaration {
+  /**
+   * @param {import('./interface.js').StateDeclaration} config
+   */
+  constructor(config: import("./interface.js").StateDeclaration);
   name: any;
   navigable: any;
   /** @type {?StateObject} */
@@ -18,7 +23,10 @@ export class StateObject {
   url: any;
   includes: any;
   $$state: () => this;
-  self: any;
+  /**
+   * @type {import('./interface.js').StateDeclaration}
+   */
+  self: import("./interface.js").StateDeclaration;
   __stateObjectCache: {
     nameGlob: Glob;
   };
@@ -71,4 +79,5 @@ export namespace StateObject {
   /** Predicate which returns true if the object is an internal [[StateObject]] object */
   function isState(obj: any): boolean;
 }
+export type StateDeclaration = import("./interface.js").StateDeclaration;
 import { Glob } from "../common/glob.js";

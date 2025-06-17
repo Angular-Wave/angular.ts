@@ -1,7 +1,4 @@
-export function getNg1ViewConfigFactory(): (
-  path: any,
-  view: any,
-) => Ng1ViewConfig;
+export function getViewConfigFactory(): (path: any, view: any) => ViewConfig;
 /**
  * This is a [[StateBuilder.builder]] function for angular1 `views`.
  *
@@ -13,7 +10,7 @@ export function getNg1ViewConfigFactory(): (
  *
  */
 export function ng1ViewsBuilder(state: any): {};
-export class Ng1ViewConfig {
+export class ViewConfig {
   /**
    * Normalizes a view's name from a state.views configuration block.
    *

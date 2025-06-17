@@ -18,14 +18,18 @@ export class Transition implements IHookRegistry {
    *        encapsulates the "from state".
    * @param targetState The target state and parameters being transitioned to (also, the transition options)
    * @param {import('../transition/transition-service.js').TransitionProvider} transitionService The [[TransitionService]] instance
+   * @param {import('../globals.js').RouterGlobals} globals
    */
   constructor(
     fromPath: any,
     targetState: any,
     transitionService: import("../transition/transition-service.js").TransitionProvider,
-    globals: any,
+    globals: import("../globals.js").RouterGlobals,
   );
-  globals: any;
+  /**
+   * @type {import('../globals.js').RouterGlobals}
+   */
+  globals: import("../globals.js").RouterGlobals;
   transitionService: import("../transition/transition-service.js").TransitionProvider;
   _deferred: any;
   /**
@@ -67,10 +71,9 @@ export class Transition implements IHookRegistry {
   getHooks(hookName: any): any;
   applyViewConfigs(): void;
   /**
-   * @internal
-   * @returns the internal from [State] object
+   * @returns {import('../state/state-object.js').StateObject} the internal from [State] object
    */
-  $from(): any;
+  $from(): import("../state/state-object.js").StateObject;
   /**
    * @returns {import('../state/state-object.js').StateObject} the internal to [State] object
    */
@@ -82,7 +85,7 @@ export class Transition implements IHookRegistry {
    *
    * @returns The state declaration object for the Transition's ("from state").
    */
-  from(): any;
+  from(): import("../state/interface.ts").StateDeclaration;
   /**
    * Returns the "to state"
    *
@@ -90,7 +93,7 @@ export class Transition implements IHookRegistry {
    *
    * @returns The state declaration object for the Transition's target state ("to state").
    */
-  to(): any;
+  to(): import("../state/interface.ts").StateDeclaration;
   /**
    * Gets the Target State
    *

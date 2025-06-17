@@ -76,7 +76,7 @@ export interface ViewDeclaration {
   /**
    * The name of the component to use for this view.
    *
-   * A property of [[Ng1StateDeclaration]] or [[Ng1ViewDeclaration]]:
+   * A property of [[StateDeclaration]] or [[ViewDeclaration]]:
    *
    * The name of an [angular 1.5+ `.component()`](https://docs.angularjs.org/guide/component) (or directive with
    * bindToController and/or scope declaration) which will be used for this view.
@@ -130,7 +130,7 @@ export interface ViewDeclaration {
   /**
    * An object which maps `resolve`s to [[component]] `bindings`.
    *
-   * A property of [[Ng1StateDeclaration]] or [[Ng1ViewDeclaration]]:
+   * A property of [[StateDeclaration]] or [[ViewDeclaration]]:
    *
    * When using a [[component]] declaration (`component: 'myComponent'`), each input binding for the component is supplied
    * data from a resolve of the same name, by default.  You may supply data from a different resolve name by mapping it here.
@@ -172,7 +172,7 @@ export interface ViewDeclaration {
   /**
    * Dynamic component provider function.
    *
-   * A property of [[Ng1StateDeclaration]] or [[Ng1ViewDeclaration]]:
+   * A property of [[StateDeclaration]] or [[ViewDeclaration]]:
    *
    * This is an injectable provider function which returns the name of the component to use.
    * The provider will invoked during a Transition in which the view's state is entered.
@@ -194,7 +194,7 @@ export interface ViewDeclaration {
   /**
    * The view's controller function or name
    *
-   * A property of [[Ng1StateDeclaration]] or [[Ng1ViewDeclaration]]:
+   * A property of [[StateDeclaration]] or [[ViewDeclaration]]:
    *
    * The controller function, or the name of a registered controller.  The controller function will be used
    * to control the contents of the [[directives.uiView]] directive.
@@ -209,7 +209,7 @@ export interface ViewDeclaration {
   /**
    * A controller alias name.
    *
-   * A property of [[Ng1StateDeclaration]] or [[Ng1ViewDeclaration]]:
+   * A property of [[StateDeclaration]] or [[ViewDeclaration]]:
    *
    * If present, the controller will be published to scope under the `controllerAs` name.
    * See: https://docs.angularjs.org/api/ng/directive/ngController
@@ -219,7 +219,7 @@ export interface ViewDeclaration {
   /**
    * Dynamic controller provider function.
    *
-   * A property of [[Ng1StateDeclaration]] or [[Ng1ViewDeclaration]]:
+   * A property of [[StateDeclaration]] or [[ViewDeclaration]]:
    *
    * This is an injectable provider function which returns the actual controller function, or the name
    * of a registered controller.  The provider will invoked during a Transition in which the view's state is
@@ -245,7 +245,7 @@ export interface ViewDeclaration {
   /**
    * The scope variable name to use for resolve data.
    *
-   * A property of [[Ng1StateDeclaration]] or [[Ng1ViewDeclaration]]:
+   * A property of [[StateDeclaration]] or [[ViewDeclaration]]:
    *
    * When a view is activated, the resolved data for the state which the view belongs to is put on the scope.
    * This property sets the name of the scope variable to use for the resolved data.
@@ -257,7 +257,7 @@ export interface ViewDeclaration {
   /**
    * The HTML template for the view.
    *
-   * A property of [[Ng1StateDeclaration]] or [[Ng1ViewDeclaration]]:
+   * A property of [[StateDeclaration]] or [[ViewDeclaration]]:
    *
    * HTML template as a string, or a function which returns an html template as a string.
    * This template will be used to render the corresponding [[directives.uiView]] directive.
@@ -283,7 +283,7 @@ export interface ViewDeclaration {
   /**
    * The URL for the HTML template for the view.
    *
-   * A property of [[Ng1StateDeclaration]] or [[Ng1ViewDeclaration]]:
+   * A property of [[StateDeclaration]] or [[ViewDeclaration]]:
    *
    * A path or a function that returns a path to an html template.
    * The template will be fetched and used to render the corresponding [[directives.uiView]] directive.
@@ -307,7 +307,7 @@ export interface ViewDeclaration {
   /**
    * Injected function which returns the HTML template.
    *
-   * A property of [[Ng1StateDeclaration]] or [[Ng1ViewDeclaration]]:
+   * A property of [[StateDeclaration]] or [[ViewDeclaration]]:
    *
    * Injected function which returns the HTML template.
    * The template will be used to render the corresponding [[directives.uiView]] directive.

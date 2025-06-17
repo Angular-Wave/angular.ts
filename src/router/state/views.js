@@ -6,12 +6,12 @@ import { ResolveContext } from "../resolve/resolve-context.js";
 import { Resolvable } from "../resolve/resolvable.js";
 import { annotate } from "../../core/di/injector.js";
 
-export function getNg1ViewConfigFactory() {
+export function getViewConfigFactory() {
   let templateFactory = null;
   return (path, view) => {
     templateFactory =
       templateFactory || window["angular"].$injector.get("$templateFactory"); // TODO: remove static injector
-    return new Ng1ViewConfig(path, view, templateFactory);
+    return new ViewConfig(path, view, templateFactory);
   };
 }
 
@@ -75,7 +75,7 @@ export function ng1ViewsBuilder(state) {
     config.resolveAs = config.resolveAs || "$resolve";
     config.$context = state;
     config.$name = name;
-    const normalized = Ng1ViewConfig.normalizeUIViewTarget(
+    const normalized = ViewConfig.normalizeUIViewTarget(
       config.$context,
       config.$name,
     );
@@ -91,7 +91,7 @@ export function ng1ViewsBuilder(state) {
  */
 let id = 0;
 
-export class Ng1ViewConfig {
+export class ViewConfig {
   /**
    * @param {Array<import('../path/path-node.js').PathNode>} path
    * @param viewDecl

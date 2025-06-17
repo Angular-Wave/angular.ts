@@ -9,7 +9,7 @@ import {
 import { parse } from "../../shared/hof.js";
 import { ResolveContext } from "../resolve/resolve-context.js";
 import { trace } from "../common/trace.js";
-import { Ng1ViewConfig } from "../state/views.js";
+import { ViewConfig } from "../state/views.js";
 import {
   dealoc,
   getCacheData,
@@ -26,7 +26,7 @@ import { getLocals } from "../state/state-registry.js";
  * - `name`: (Optional) A view name.
  *   The name should be unique amongst the other views in the same state.
  *   You can have views of the same name that live in different states.
- *   The ng-view can be targeted in a View using the name ([[Ng1StateDeclaration.views]]).
+ *   The ng-view can be targeted in a View using the name ([[StateDeclaration.views]]).
  *
  * - `autoscroll`: an expression. When it evaluates to true, the `ng-view` will be scrolled into view when it is activated.
  *   Uses [[$ngViewScroll]] to do the scrolling.
@@ -57,7 +57,7 @@ import { getLocals } from "../state/state-registry.js";
  * ```
  *
  * The above is a convenient shortcut equivalent to specifying your view explicitly with the
- * [[Ng1StateDeclaration.views]] config property, by name, in this case an empty name:
+ * [[StateDeclaration.views]] config property, by name, in this case an empty name:
  *
  * ```js
  * $stateProvider.state("home", {
@@ -127,7 +127,7 @@ import { getLocals } from "../state/state-registry.js";
  * Resolve data:
  *
  * The resolved data from the state's `resolve` block is placed on the scope as `$resolve` (this
- * can be customized using [[Ng1ViewDeclaration.resolveAs]]).  This can be then accessed from the template.
+ * can be customized using [[ViewDeclaration.resolveAs]]).  This can be then accessed from the template.
  *
  * Note that when `controllerAs` is being used, `$resolve` is set on the controller instance *after* the
  * controller is instantiated.  The `$onInit()` hook can be used to perform initialization code which
@@ -213,7 +213,7 @@ export let ngView = [
           };
           trace.traceUIViewEvent("Linking", activeUIView);
           function configUpdatedCallback(config) {
-            if (config && !(config instanceof Ng1ViewConfig)) return;
+            if (config && !(config instanceof ViewConfig)) return;
             if (configsEqual(viewConfig, config)) return;
             trace.traceUIViewConfigUpdated(
               activeUIView,

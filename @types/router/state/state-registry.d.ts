@@ -8,10 +8,16 @@
  */
 export class StateRegistryProvider implements ServiceProvider {
   static $inject: string[];
+  /**
+   * @param urlService
+   * @param stateService
+   * @param {import('../globals.js').RouterGlobals} globals
+   * @param viewService
+   */
   constructor(
     urlService: any,
     stateService: any,
-    globals: any,
+    globals: import("../globals.js").RouterGlobals,
     viewService: any,
   );
   states: {};
@@ -26,7 +32,7 @@ export class StateRegistryProvider implements ServiceProvider {
   $get: import("../../interface.ts").AnnotatedFactory;
   /**
    * This is a [[StateBuilder.builder]] function for angular1 `onEnter`, `onExit`,
-   * `onRetain` callback hooks on a [[Ng1StateDeclaration]].
+   * `onRetain` callback hooks on a [[StateDeclaration]].
    *
    * When the [[StateBuilder]] builds a [[StateObject]] object from a raw [[StateDeclaration]], this builder
    * ensures that those hooks are injectable for @uirouter/angularjs (ng1).

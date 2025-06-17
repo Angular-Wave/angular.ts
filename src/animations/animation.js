@@ -322,6 +322,7 @@ export function AnimationProvider() {
               }
             }
           }
+          // @ts-ignore
           $$rAFScheduler(finalAnimations);
         });
 

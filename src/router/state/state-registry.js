@@ -22,6 +22,13 @@ export class StateRegistryProvider {
     "$routerGlobalsProvider",
     "$viewProvider",
   ];
+
+  /**
+   * @param urlService
+   * @param stateService
+   * @param {import('../globals.js').RouterGlobals} globals
+   * @param viewService
+   */
   constructor(urlService, stateService, globals, viewService) {
     this.states = {};
     stateService.stateRegistry = this; // <- circular wiring
@@ -70,7 +77,7 @@ export class StateRegistryProvider {
 
   /**
    * This is a [[StateBuilder.builder]] function for angular1 `onEnter`, `onExit`,
-   * `onRetain` callback hooks on a [[Ng1StateDeclaration]].
+   * `onRetain` callback hooks on a [[StateDeclaration]].
    *
    * When the [[StateBuilder]] builds a [[StateObject]] object from a raw [[StateDeclaration]], this builder
    * ensures that those hooks are injectable for @uirouter/angularjs (ng1).

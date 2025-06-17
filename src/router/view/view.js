@@ -1,7 +1,7 @@
 import { equals, applyPairs, removeFrom, find } from "../../shared/common.js";
 import { curry } from "../../shared/hof.js";
 import { trace } from "../common/trace.js";
-import { getNg1ViewConfigFactory } from "../state/views.js";
+import { getViewConfigFactory } from "../state/views.js";
 /**
  * The View service
  *
@@ -36,7 +36,7 @@ export class ViewService {
         return () => removeFrom(this._listeners, listener);
       },
     };
-    this.viewConfigFactory(getNg1ViewConfigFactory());
+    this.viewConfigFactory(getViewConfigFactory());
   }
 
   $get = [() => this];
@@ -56,7 +56,7 @@ export class ViewService {
   /**
    * @param path
    * @param decl
-   * @return {import("../state/views.js").Ng1ViewConfig}
+   * @return {import("../state/views.js").ViewConfig}
    */
   createViewConfig(path, decl) {
     /** @type {function(any, any): any} */

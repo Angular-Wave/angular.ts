@@ -35,6 +35,12 @@ describe("RafSchedulerProvider", function () {
     callbacks.forEach((cb) => cb && cb());
   }
 
+  it("can be instatiated", () => {
+    const ref = new RafSchedulerProvider();
+    expect(ref).toBeDefined();
+    expect(ref.queue.length).toEqual(0);
+  });
+
   it("should schedule tasks and process them", function () {
     const task1 = jasmine.createSpy("task1");
     const task2 = jasmine.createSpy("task2");

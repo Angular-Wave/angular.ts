@@ -14,10 +14,8 @@
           }
         }
         class TodoController {
-          constructor($element) {
+          constructor() {
             this.greeting = "Todos";
-            this.counter = 123;
-            this.name = "dfsf";
             this.model = {
               name: "John",
               lastName: "Doe",
@@ -26,7 +24,6 @@
               new Todo("Learn AngularTS"),
               new Todo("Build an AngularTS app"),
             ];
-            window.test = this;
           }
 
           get() {
@@ -64,13 +61,7 @@
         window.angular
           .module("todo", [])
           .controller("TodoCtrl", TodoController)
-          .controller("DemoCtrl", Demo)
-          .run(($rootScope) => {
-            $rootScope.model = [
-              { name: "a", item: ["a1", "a2"] },
-              { name: "b", item: ["b1", "b2"] },
-            ];
-          });
+          .controller("DemoCtrl", Demo);
       });
     </script>
   </head>

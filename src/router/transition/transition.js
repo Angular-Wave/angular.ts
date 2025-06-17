@@ -44,8 +44,12 @@ export class Transition {
    *        encapsulates the "from state".
    * @param targetState The target state and parameters being transitioned to (also, the transition options)
    * @param {import('../transition/transition-service.js').TransitionProvider} transitionService The [[TransitionService]] instance
+   * @param {import('../globals.js').RouterGlobals} globals
    */
   constructor(fromPath, targetState, transitionService, globals) {
+    /**
+     * @type {import('../globals.js').RouterGlobals}
+     */
     this.globals = globals;
     this.transitionService = transitionService;
     this._deferred = Promise.withResolvers();
@@ -118,8 +122,7 @@ export class Transition {
     );
   }
   /**
-   * @internal
-   * @returns the internal from [State] object
+   * @returns {import('../state/state-object.js').StateObject} the internal from [State] object
    */
   $from() {
     return tail(this._treeChanges.from).state;
