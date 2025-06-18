@@ -98,20 +98,22 @@
         </div>
         <section class="tsd-panel tsd-comment">
           <div class="tsd-comment tsd-typography">
-            <div class="tsd-tag-description">
-              <h4 class="tsd-anchor-link" id="description">
-                Description<a
-                  href="#description"
+            <p>
+              Private service to sanitize uris for links and images. Used by
+              $compile.
+            </p>
+          </div>
+          <div class="tsd-comment tsd-typography">
+            <div class="tsd-tag-implements">
+              <h4 class="tsd-anchor-link" id="implements">
+                Implements<a
+                  href="#implements"
                   aria-label="Permalink"
                   class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h4>
-              <p>
-                Private service to sanitize uris for links and images. Used by
-                $compile.
-              </p>
             </div>
           </div>
         </section>
@@ -120,8 +122,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/core/sanitize/sanitize-uri.js#L9"
-                >core/sanitize/sanitize-uri.js:9</a
+                href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/core/sanitize/sanitize-uri.js#L10"
+                >src/core/sanitize/sanitize-uri.js:10</a
               >
             </li>
           </ul>
@@ -157,15 +159,15 @@
                   </div>
                 </section>
                 <section class="tsd-index-section">
-                  <h3 class="tsd-index-heading">Properties</h3>
+                  <h3 class="tsd-index-heading">Methods</h3>
                   <div class="tsd-index-list">
                     <a href="#get" class="tsd-index-link"
                       ><svg
                         class="tsd-kind-icon"
                         viewBox="0 0 24 24"
-                        aria-label="Property"
+                        aria-label="Method"
                       >
-                        <use href="../assets/icons.svg#icon-1024"></use></svg
+                        <use href="../assets/icons.svg#icon-2048"></use></svg
                       ><span>$get</span></a
                     >
                     <a
@@ -174,9 +176,9 @@
                       ><svg
                         class="tsd-kind-icon"
                         viewBox="0 0 24 24"
-                        aria-label="Property"
+                        aria-label="Method"
                       >
-                        <use href="../assets/icons.svg#icon-1024"></use></svg
+                        <use href="../assets/icons.svg#icon-2048"></use></svg
                       ><span
                         >a<wbr />Href<wbr />Sanitization<wbr />Trusted<wbr />Url<wbr />List</span
                       ></a
@@ -187,9 +189,9 @@
                       ><svg
                         class="tsd-kind-icon"
                         viewBox="0 0 24 24"
-                        aria-label="Property"
+                        aria-label="Method"
                       >
-                        <use href="../assets/icons.svg#icon-1024"></use></svg
+                        <use href="../assets/icons.svg#icon-2048"></use></svg
                       ><span
                         >img<wbr />Src<wbr />Sanitization<wbr />Trusted<wbr />Url<wbr />List</span
                       ></a
@@ -256,32 +258,13 @@
                         >SanitizeUriProvider</a
                       >
                     </h4>
-                    <div class="tsd-comment tsd-typography">
-                      <div class="tsd-tag-description">
-                        <h4 class="tsd-anchor-link" id="description-1">
-                          Description<a
-                            href="#description-1"
-                            aria-label="Permalink"
-                            class="tsd-anchor-icon"
-                            ><svg viewBox="0 0 24 24" aria-hidden="true">
-                              <use
-                                href="../assets/icons.svg#icon-anchor"
-                              ></use></svg
-                          ></a>
-                        </h4>
-                        <p>
-                          Private service to sanitize uris for links and images.
-                          Used by $compile.
-                        </p>
-                      </div>
-                    </div>
                     <aside class="tsd-sources">
                       <ul>
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/core/sanitize/sanitize-uri.js#L9"
-                            >core/sanitize/sanitize-uri.js:9</a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/core/sanitize/sanitize-uri.js#L11"
+                            >src/core/sanitize/sanitize-uri.js:11</a
                           >
                         </li>
                       </ul>
@@ -293,7 +276,7 @@
           </section>
         </details>
         <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
-          <summary class="tsd-accordion-summary" data-key="section-Properties">
+          <summary class="tsd-accordion-summary" data-key="section-Methods">
             <svg
               width="20"
               height="20"
@@ -303,7 +286,7 @@
             >
               <use href="../assets/icons.svg#icon-chevronDown"></use>
             </svg>
-            <h2>Properties</h2>
+            <h2>Methods</h2>
           </summary>
           <section>
             <section class="tsd-panel tsd-member">
@@ -314,34 +297,49 @@
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
-              <div class="tsd-signature">
-                <span class="tsd-kind-property">$get</span
-                ><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-symbol">()</span>
-                <span class="tsd-signature-symbol">=&gt;</span>
-                <span class="tsd-signature-symbol">(</span
-                ><span class="tsd-kind-parameter">uri</span
-                ><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">any</span
-                ><span class="tsd-signature-symbol">,</span>
-                <span class="tsd-kind-parameter">isMediaUrl</span
-                ><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">any</span
-                ><span class="tsd-signature-symbol">)</span>
-                <span class="tsd-signature-symbol">=&gt;</span>
-                <span class="tsd-signature-type">any</span>
-              </div>
-              <aside class="tsd-sources">
-                <ul>
-                  <li>
-                    Defined in
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="get-1">
+                    <span class="tsd-kind-call-signature">$get</span
+                    ><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/core/sanitize/sanitize-uri.js#L71"
-                      >core/sanitize/sanitize-uri.js:71</a
-                    >
-                  </li>
-                </ul>
-              </aside>
+                      href="../interfaces/core_sanitize_interface.SanitizerFn.html"
+                      class="tsd-signature-type tsd-kind-interface"
+                      >SanitizerFn</a
+                    ><a
+                      href="#get-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <h4 class="tsd-returns-title">
+                      Returns
+                      <a
+                        href="../interfaces/core_sanitize_interface.SanitizerFn.html"
+                        class="tsd-signature-type tsd-kind-interface"
+                        >SanitizerFn</a
+                      >
+                    </h4>
+                    <p>Sanitizer function.</p>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/core/sanitize/sanitize-uri.js#L58"
+                            >src/core/sanitize/sanitize-uri.js:58</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
             </section>
             <section class="tsd-panel tsd-member">
               <h3 class="tsd-anchor-link" id="ahrefsanitizationtrustedurllist">
@@ -355,133 +353,77 @@
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
-              <div class="tsd-signature">
-                <span class="tsd-kind-property"
-                  >aHrefSanitizationTrustedUrlList</span
-                ><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-symbol">(</span><br />    <span
-                  class="tsd-kind-parameter"
-                  >regexp</span
-                ><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">RegExp</span
-                ><span class="tsd-signature-symbol">,</span><br /><span
-                  class="tsd-signature-symbol"
-                  >)</span
-                >
-                <span class="tsd-signature-symbol">=&gt;</span>
-                <span class="tsd-signature-type">RegExp</span>
-                <span class="tsd-signature-symbol">|</span>
-                <a href="" class="tsd-signature-type tsd-kind-class"
-                  >SanitizeUriProvider</a
-                >
-              </div>
-              <div class="tsd-type-declaration">
-                <h4>Type declaration</h4>
-                <ul class="tsd-parameters">
-                  <li class="tsd-parameter-signature">
-                    <ul class="tsd-signatures">
-                      <li class="tsd-signature">
-                        <span class="tsd-signature-symbol">(</span
-                        ><span class="tsd-kind-parameter">regexp</span
-                        ><span class="tsd-signature-symbol">:</span>
-                        <span class="tsd-signature-type">RegExp</span
-                        ><span class="tsd-signature-symbol">)</span
-                        ><span class="tsd-signature-symbol">:</span>
-                        <span class="tsd-signature-type">RegExp</span>
-                        <span class="tsd-signature-symbol">|</span>
-                        <a href="" class="tsd-signature-type tsd-kind-class"
-                          >SanitizeUriProvider</a
-                        >
-                      </li>
-                      <li class="tsd-description">
-                        <div class="tsd-parameters">
-                          <h4 class="tsd-parameters-title">Parameters</h4>
-                          <ul class="tsd-parameter-list">
-                            <li>
-                              <span
-                                ><span class="tsd-kind-parameter">regexp</span>:
-                                <span class="tsd-signature-type"
-                                  >RegExp</span
-                                ></span
-                              >
-                              <div class="tsd-comment tsd-typography">
-                                <p>New regexp to trust urls with.</p>
-                              </div>
-                              <div class="tsd-comment tsd-typography"></div>
-                            </li>
-                          </ul>
-                        </div>
-                        <h4 class="tsd-returns-title">
-                          Returns
-                          <span class="tsd-signature-type">RegExp</span>
-                          <span class="tsd-signature-symbol">|</span>
-                          <a href="" class="tsd-signature-type tsd-kind-class"
-                            >SanitizeUriProvider</a
-                          >
-                        </h4>
-                        <p>
-                          Current RegExp if called without value or self for
-                          chaining otherwise.
-                        </p>
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </div>
-              <div class="tsd-comment tsd-typography">
-                <div class="tsd-tag-description">
-                  <h4 class="tsd-anchor-link" id="description-2">
-                    Description<a
-                      href="#description-2"
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div
+                    class="tsd-signature tsd-anchor-link"
+                    id="ahrefsanitizationtrustedurllist-1"
+                  >
+                    <span class="tsd-kind-call-signature"
+                      >aHrefSanitizationTrustedUrlList</span
+                    ><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">regexp</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">RegExp</span
+                    ><span class="tsd-signature-symbol">)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">RegExp</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <a href="" class="tsd-signature-type tsd-kind-class"
+                      >SanitizeUriProvider</a
+                    ><a
+                      href="#ahrefsanitizationtrustedurllist-1"
                       aria-label="Permalink"
                       class="tsd-anchor-icon"
                       ><svg viewBox="0 0 24 24" aria-hidden="true">
                         <use href="../assets/icons.svg#icon-anchor"></use></svg
                     ></a>
-                  </h4>
-                  <p>
-                    Retrieves or overrides the default regular expression that
-                    is used for determining trusted safe urls during a[href]
-                    sanitization.
-                  </p>
-                  <p>
-                    The sanitization is a security measure aimed at prevent XSS
-                    attacks via HTML anchor links.
-                  </p>
-                  <p>
-                    Any url due to be assigned to an
-                    <code>a[href]</code> attribute via interpolation is marked
-                    as requiring the $sce.URL security context. When
-                    interpolation occurs a call is made to
-                    <code>$sce.trustAsUrl(url)</code> which in turn may call
-                    <code>$$sanitizeUri(url, isMedia)</code> to sanitize the
-                    potentially malicious URL.
-                  </p>
-                  <p>
-                    If the URL matches the
-                    <code>aHrefSanitizationTrustedUrlList</code> regular
-                    expression, it is returned unchanged.
-                  </p>
-                  <p>
-                    If there is no match the URL is returned prefixed with
-                    <code>'unsafe:'</code> to ensure that when it is written to
-                    the DOM it is inactive and potentially malicious code will
-                    not be executed.
-                  </p>
-                </div>
-              </div>
-              <aside class="tsd-sources">
-                <ul>
-                  <li>
-                    Defined in
-                    <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/core/sanitize/sanitize-uri.js#L34"
-                      >core/sanitize/sanitize-uri.js:34</a
-                    >
-                  </li>
-                </ul>
-              </aside>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>
+                        Retrieves or overrides the regexp used to trust URLs for
+                        a[href] sanitization.
+                      </p>
+                    </div>
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">regexp</span>:
+                            <span class="tsd-signature-type">RegExp</span></span
+                          >
+                          <div class="tsd-comment tsd-typography">
+                            <p>New regexp to trust URLs with.</p>
+                          </div>
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">RegExp</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <a href="" class="tsd-signature-type tsd-kind-class"
+                        >SanitizeUriProvider</a
+                      >
+                    </h4>
+                    <p>Current regexp if no param, or self for chaining.</p>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/core/sanitize/sanitize-uri.js#L33"
+                            >src/core/sanitize/sanitize-uri.js:33</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
             </section>
             <section class="tsd-panel tsd-member">
               <h3 class="tsd-anchor-link" id="imgsrcsanitizationtrustedurllist">
@@ -495,133 +437,77 @@
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
-              <div class="tsd-signature">
-                <span class="tsd-kind-property"
-                  >imgSrcSanitizationTrustedUrlList</span
-                ><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-symbol">(</span><br />    <span
-                  class="tsd-kind-parameter"
-                  >regexp</span
-                ><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">RegExp</span
-                ><span class="tsd-signature-symbol">,</span><br /><span
-                  class="tsd-signature-symbol"
-                  >)</span
-                >
-                <span class="tsd-signature-symbol">=&gt;</span>
-                <span class="tsd-signature-type">RegExp</span>
-                <span class="tsd-signature-symbol">|</span>
-                <a href="" class="tsd-signature-type tsd-kind-class"
-                  >SanitizeUriProvider</a
-                >
-              </div>
-              <div class="tsd-type-declaration">
-                <h4>Type declaration</h4>
-                <ul class="tsd-parameters">
-                  <li class="tsd-parameter-signature">
-                    <ul class="tsd-signatures">
-                      <li class="tsd-signature">
-                        <span class="tsd-signature-symbol">(</span
-                        ><span class="tsd-kind-parameter">regexp</span
-                        ><span class="tsd-signature-symbol">:</span>
-                        <span class="tsd-signature-type">RegExp</span
-                        ><span class="tsd-signature-symbol">)</span
-                        ><span class="tsd-signature-symbol">:</span>
-                        <span class="tsd-signature-type">RegExp</span>
-                        <span class="tsd-signature-symbol">|</span>
-                        <a href="" class="tsd-signature-type tsd-kind-class"
-                          >SanitizeUriProvider</a
-                        >
-                      </li>
-                      <li class="tsd-description">
-                        <div class="tsd-parameters">
-                          <h4 class="tsd-parameters-title">Parameters</h4>
-                          <ul class="tsd-parameter-list">
-                            <li>
-                              <span
-                                ><span class="tsd-kind-parameter">regexp</span>:
-                                <span class="tsd-signature-type"
-                                  >RegExp</span
-                                ></span
-                              >
-                              <div class="tsd-comment tsd-typography">
-                                <p>New regexp to trust urls with.</p>
-                              </div>
-                              <div class="tsd-comment tsd-typography"></div>
-                            </li>
-                          </ul>
-                        </div>
-                        <h4 class="tsd-returns-title">
-                          Returns
-                          <span class="tsd-signature-type">RegExp</span>
-                          <span class="tsd-signature-symbol">|</span>
-                          <a href="" class="tsd-signature-type tsd-kind-class"
-                            >SanitizeUriProvider</a
-                          >
-                        </h4>
-                        <p>
-                          Current RegExp if called without value or self for
-                          chaining otherwise.
-                        </p>
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </div>
-              <div class="tsd-comment tsd-typography">
-                <div class="tsd-tag-description">
-                  <h4 class="tsd-anchor-link" id="description-3">
-                    Description<a
-                      href="#description-3"
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div
+                    class="tsd-signature tsd-anchor-link"
+                    id="imgsrcsanitizationtrustedurllist-1"
+                  >
+                    <span class="tsd-kind-call-signature"
+                      >imgSrcSanitizationTrustedUrlList</span
+                    ><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">regexp</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">RegExp</span
+                    ><span class="tsd-signature-symbol">)</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">RegExp</span>
+                    <span class="tsd-signature-symbol">|</span>
+                    <a href="" class="tsd-signature-type tsd-kind-class"
+                      >SanitizeUriProvider</a
+                    ><a
+                      href="#imgsrcsanitizationtrustedurllist-1"
                       aria-label="Permalink"
                       class="tsd-anchor-icon"
                       ><svg viewBox="0 0 24 24" aria-hidden="true">
                         <use href="../assets/icons.svg#icon-anchor"></use></svg
                     ></a>
-                  </h4>
-                  <p>
-                    Retrieves or overrides the default regular expression that
-                    is used for determining trusted safe urls during img[src]
-                    sanitization.
-                  </p>
-                  <p>
-                    The sanitization is a security measure aimed at prevent XSS
-                    attacks via HTML image src links.
-                  </p>
-                  <p>
-                    Any URL due to be assigned to an
-                    <code>img[src]</code> attribute via interpolation is marked
-                    as requiring the $sce.MEDIA_URL security context. When
-                    interpolation occurs a call is made to
-                    <code>$sce.trustAsMediaUrl(url)</code> which in turn may
-                    call <code>$$sanitizeUri(url, isMedia)</code> to sanitize
-                    the potentially malicious URL.
-                  </p>
-                  <p>
-                    If the URL matches the
-                    <code>imgSrcSanitizationTrustedUrlList</code> regular
-                    expression, it is returned unchanged.
-                  </p>
-                  <p>
-                    If there is no match the URL is returned prefixed with
-                    <code>'unsafe:'</code> to ensure that when it is written to
-                    the DOM it is inactive and potentially malicious code will
-                    not be executed.
-                  </p>
-                </div>
-              </div>
-              <aside class="tsd-sources">
-                <ul>
-                  <li>
-                    Defined in
-                    <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/core/sanitize/sanitize-uri.js#L63"
-                      >core/sanitize/sanitize-uri.js:63</a
-                    >
-                  </li>
-                </ul>
-              </aside>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>
+                        Retrieves or overrides the regexp used to trust URLs for
+                        img[src] sanitization.
+                      </p>
+                    </div>
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">regexp</span>:
+                            <span class="tsd-signature-type">RegExp</span></span
+                          >
+                          <div class="tsd-comment tsd-typography">
+                            <p>New regexp to trust URLs with.</p>
+                          </div>
+                          <div class="tsd-comment tsd-typography"></div>
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">RegExp</span>
+                      <span class="tsd-signature-symbol">|</span>
+                      <a href="" class="tsd-signature-type tsd-kind-class"
+                        >SanitizeUriProvider</a
+                      >
+                    </h4>
+                    <p>Current regexp if no param, or self for chaining.</p>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/core/sanitize/sanitize-uri.js#L47"
+                            >src/core/sanitize/sanitize-uri.js:47</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
             </section>
           </section>
         </details>
@@ -800,7 +686,7 @@
               <details open class="tsd-accordion tsd-page-navigation-section">
                 <summary
                   class="tsd-accordion-summary"
-                  data-key="section-Properties"
+                  data-key="section-Methods"
                 >
                   <svg
                     width="20"
@@ -810,24 +696,24 @@
                     aria-hidden="true"
                   >
                     <use href="../assets/icons.svg#icon-chevronDown"></use></svg
-                  >Properties
+                  >Methods
                 </summary>
                 <div>
                   <a href="#get"
                     ><svg
                       class="tsd-kind-icon"
                       viewBox="0 0 24 24"
-                      aria-label="Property"
+                      aria-label="Method"
                     >
-                      <use href="../assets/icons.svg#icon-1024"></use></svg
+                      <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span>$get</span></a
                   ><a href="#ahrefsanitizationtrustedurllist"
                     ><svg
                       class="tsd-kind-icon"
                       viewBox="0 0 24 24"
-                      aria-label="Property"
+                      aria-label="Method"
                     >
-                      <use href="../assets/icons.svg#icon-1024"></use></svg
+                      <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span
                       >a<wbr />Href<wbr />Sanitization<wbr />Trusted<wbr />Url<wbr />List</span
                     ></a
@@ -835,9 +721,9 @@
                     ><svg
                       class="tsd-kind-icon"
                       viewBox="0 0 24 24"
-                      aria-label="Property"
+                      aria-label="Method"
                     >
-                      <use href="../assets/icons.svg#icon-1024"></use></svg
+                      <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span
                       >img<wbr />Src<wbr />Sanitization<wbr />Trusted<wbr />Url<wbr />List</span
                     ></a

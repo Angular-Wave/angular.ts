@@ -98,17 +98,32 @@
         </div>
         <section class="tsd-panel tsd-comment">
           <div class="tsd-comment tsd-typography">
-            <p>Creates a requestAnimationFrame scheduler.</p>
+            <p>
+              Service provider that creates a requestAnimationFrame-based
+              scheduler.
+            </p>
           </div>
-          <div class="tsd-comment tsd-typography"></div>
+          <div class="tsd-comment tsd-typography">
+            <div class="tsd-tag-implements">
+              <h4 class="tsd-anchor-link" id="implements">
+                Implements<a
+                  href="#implements"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h4>
+            </div>
+          </div>
         </section>
         <aside class="tsd-sources">
           <ul>
             <li>
               Defined in
               <a
-                href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/animations/raf-scheduler.js#L11"
-                >animations/raf-scheduler.js:11</a
+                href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/animations/raf-scheduler.js#L10"
+                >src/animations/raf-scheduler.js:10</a
               >
             </li>
           </ul>
@@ -146,14 +161,46 @@
                 <section class="tsd-index-section">
                   <h3 class="tsd-index-heading">Properties</h3>
                   <div class="tsd-index-list">
-                    <a href="#get" class="tsd-index-link"
+                    <a href="#cancelfn" class="tsd-index-link"
                       ><svg
                         class="tsd-kind-icon"
                         viewBox="0 0 24 24"
                         aria-label="Property"
                       >
                         <use href="../assets/icons.svg#icon-1024"></use></svg
+                      ><span>cancel<wbr />Fn</span></a
+                    >
+                    <a href="#queue" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
+                        <use href="../assets/icons.svg#icon-1024"></use></svg
+                      ><span>queue</span></a
+                    >
+                  </div>
+                </section>
+                <section class="tsd-index-section">
+                  <h3 class="tsd-index-heading">Methods</h3>
+                  <div class="tsd-index-list">
+                    <a href="#get" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
+                        <use href="../assets/icons.svg#icon-2048"></use></svg
                       ><span>$get</span></a
+                    >
+                    <a href="#nexttick" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Method"
+                      >
+                        <use href="../assets/icons.svg#icon-2048"></use></svg
+                      ><span>next<wbr />Tick</span></a
                     >
                   </div>
                 </section>
@@ -211,23 +258,19 @@
                     ></a>
                   </div>
                   <div class="tsd-description">
-                    <div class="tsd-comment tsd-typography">
-                      <p>Creates a requestAnimationFrame scheduler.</p>
-                    </div>
                     <h4 class="tsd-returns-title">
                       Returns
                       <a href="" class="tsd-signature-type tsd-kind-class"
                         >RafSchedulerProvider</a
                       >
                     </h4>
-                    <div class="tsd-comment tsd-typography"></div>
                     <aside class="tsd-sources">
                       <ul>
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/animations/raf-scheduler.js#L11"
-                            >animations/raf-scheduler.js:11</a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/animations/raf-scheduler.js#L11"
+                            >src/animations/raf-scheduler.js:11</a
                           >
                         </li>
                       </ul>
@@ -253,53 +296,26 @@
           </summary>
           <section>
             <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="get">
-                <span>$get</span
-                ><a href="#get" aria-label="Permalink" class="tsd-anchor-icon"
+              <h3 class="tsd-anchor-link" id="cancelfn">
+                <span>cancel<wbr />Fn</span
+                ><a
+                  href="#cancelfn"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
               <div class="tsd-signature">
-                <span class="tsd-kind-property">$get</span
+                <span class="tsd-kind-property">cancelFn</span
                 ><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-symbol">()</span>
-                <span class="tsd-signature-symbol">=&gt;</span>
-                <a
-                  href="../types/animations_raf-scheduler.RafScheduler.html"
-                  class="tsd-signature-type tsd-kind-type-alias"
-                  >RafScheduler</a
-                >
+                <span class="tsd-signature-type">number</span>
               </div>
-              <div class="tsd-type-declaration">
-                <h4>Type declaration</h4>
-                <ul class="tsd-parameters">
-                  <li class="tsd-parameter-signature">
-                    <ul class="tsd-signatures">
-                      <li class="tsd-signature">
-                        <span class="tsd-signature-symbol">()</span
-                        ><span class="tsd-signature-symbol">:</span>
-                        <a
-                          href="../types/animations_raf-scheduler.RafScheduler.html"
-                          class="tsd-signature-type tsd-kind-type-alias"
-                          >RafScheduler</a
-                        >
-                      </li>
-                      <li class="tsd-description">
-                        <h4 class="tsd-returns-title">
-                          Returns
-                          <a
-                            href="../types/animations_raf-scheduler.RafScheduler.html"
-                            class="tsd-signature-type tsd-kind-type-alias"
-                            >RafScheduler</a
-                          >
-                        </h4>
-                        <p>The scheduler object.</p>
-                        <div class="tsd-comment tsd-typography"></div>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
+              <div class="tsd-comment tsd-typography">
+                <p>
+                  ID of the currently scheduled animation frame (if any). Used
+                  for cancellation and tracking.
+                </p>
               </div>
               <div class="tsd-comment tsd-typography"></div>
               <aside class="tsd-sources">
@@ -307,12 +323,224 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/animations/raf-scheduler.js#L73"
-                      >animations/raf-scheduler.js:73</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/animations/raf-scheduler.js#L23"
+                      >src/animations/raf-scheduler.js:23</a
+                    >
+                  </li>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/animations/raf-scheduler.js#L38"
+                      >src/animations/raf-scheduler.js:38</a
+                    >
+                  </li>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/animations/raf-scheduler.js#L39"
+                      >src/animations/raf-scheduler.js:39</a
+                    >
+                  </li>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/animations/raf-scheduler.js#L80"
+                      >src/animations/raf-scheduler.js:80</a
+                    >
+                  </li>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/animations/raf-scheduler.js#L83"
+                      >src/animations/raf-scheduler.js:83</a
+                    >
+                  </li>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/animations/raf-scheduler.js#L84"
+                      >src/animations/raf-scheduler.js:84</a
                     >
                   </li>
                 </ul>
               </aside>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="queue">
+                <span>queue</span
+                ><a href="#queue" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <div class="tsd-signature">
+                <span class="tsd-kind-property">queue</span
+                ><span class="tsd-signature-symbol">:</span> (<span
+                  class="tsd-signature-symbol"
+                  >()</span
+                >
+                <span class="tsd-signature-symbol">=&gt;</span>
+                <span class="tsd-signature-type">void</span>)<span
+                  class="tsd-signature-symbol"
+                  >[]</span
+                ><span class="tsd-signature-symbol">[]</span>
+              </div>
+              <div class="tsd-comment tsd-typography">
+                <p>
+                  Internal task queue, where each item is an array of functions
+                  to run.
+                </p>
+              </div>
+              <div class="tsd-comment tsd-typography"></div>
+              <aside class="tsd-sources">
+                <ul>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/animations/raf-scheduler.js#L16"
+                      >src/animations/raf-scheduler.js:16</a
+                    >
+                  </li>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/animations/raf-scheduler.js#L61"
+                      >src/animations/raf-scheduler.js:61</a
+                    >
+                  </li>
+                </ul>
+              </aside>
+            </section>
+          </section>
+        </details>
+        <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
+          <summary class="tsd-accordion-summary" data-key="section-Methods">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Methods</h2>
+          </summary>
+          <section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="get">
+                <span>$get</span
+                ><a href="#get" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="get-1">
+                    <span class="tsd-kind-call-signature">$get</span
+                    ><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <a
+                      href="../types/animations_interface.RafScheduler.html"
+                      class="tsd-signature-type tsd-kind-type-alias"
+                      >RafScheduler</a
+                    ><a
+                      href="#get-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>
+                        Returns the scheduler function. This function allows
+                        tasks to be queued for execution on future animation
+                        frames. It also has helper methods and state attached.
+                      </p>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns
+                      <a
+                        href="../types/animations_interface.RafScheduler.html"
+                        class="tsd-signature-type tsd-kind-type-alias"
+                        >RafScheduler</a
+                      >
+                    </h4>
+                    <p>
+                      The scheduler function with <code>queue</code> and
+                      <code>waitUntilQuiet</code>.
+                    </p>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/animations/raf-scheduler.js#L52"
+                            >src/animations/raf-scheduler.js:52</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="nexttick">
+                <span>next<wbr />Tick</span
+                ><a
+                  href="#nexttick"
+                  aria-label="Permalink"
+                  class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="nexttick-1">
+                    <span class="tsd-kind-call-signature">nextTick</span
+                    ><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">void</span
+                    ><a
+                      href="#nexttick-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>
+                        Processes the next batch of tasks in the animation
+                        frame. Executes the first group of functions in the
+                        queue, then schedules the next frame if needed.
+                      </p>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <span class="tsd-signature-type">void</span>
+                    </h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/animations/raf-scheduler.js#L31"
+                            >src/animations/raf-scheduler.js:31</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
             </section>
           </section>
         </details>
@@ -504,14 +732,57 @@
                   >Properties
                 </summary>
                 <div>
-                  <a href="#get"
+                  <a href="#cancelfn"
                     ><svg
                       class="tsd-kind-icon"
                       viewBox="0 0 24 24"
                       aria-label="Property"
                     >
                       <use href="../assets/icons.svg#icon-1024"></use></svg
+                    ><span>cancel<wbr />Fn</span></a
+                  ><a href="#queue"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
+                      <use href="../assets/icons.svg#icon-1024"></use></svg
+                    ><span>queue</span></a
+                  >
+                </div>
+              </details>
+              <details open class="tsd-accordion tsd-page-navigation-section">
+                <summary
+                  class="tsd-accordion-summary"
+                  data-key="section-Methods"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
+                  >Methods
+                </summary>
+                <div>
+                  <a href="#get"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
+                      <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span>$get</span></a
+                  ><a href="#nexttick"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Method"
+                    >
+                      <use href="../assets/icons.svg#icon-2048"></use></svg
+                    ><span>next<wbr />Tick</span></a
                   >
                 </div>
               </details>

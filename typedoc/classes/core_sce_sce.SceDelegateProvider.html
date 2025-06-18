@@ -161,8 +161,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/core/sce/sce.js#L166"
-                >core/sce/sce.js:166</a
+                href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/core/sce/sce.js#L245"
+                >src/core/sce/sce.js:245</a
               >
             </li>
           </ul>
@@ -296,86 +296,19 @@
                     ></a>
                   </div>
                   <div class="tsd-description">
-                    <div class="tsd-comment tsd-typography">
-                      <p>
-                        The <code>$sceDelegateProvider</code> provider allows
-                        developers to configure the ng.$sceDelegate $sceDelegate
-                        service, used as a delegate for ng.$sce Strict
-                        Contextual Escaping (SCE).
-                      </p>
-                      <p>
-                        The <code>$sceDelegateProvider</code> allows one to
-                        get/set the <code>trustedResourceUrlList</code> and
-                        <code>bannedResourceUrlList</code> used to ensure that
-                        the URLs used for sourcing AngularTS templates and other
-                        script-running URLs are safe (all places that use the
-                        <code>$sce.RESOURCE_URL</code> context). See
-                        ng.$sceDelegateProvider#trustedResourceUrlList
-                        $sceDelegateProvider.trustedResourceUrlList and
-                        ng.$sceDelegateProvider#bannedResourceUrlList
-                        $sceDelegateProvider.bannedResourceUrlList,
-                      </p>
-                      <p>
-                        For the general details about this service in AngularTS,
-                        read the main page for ng.$sce Strict Contextual
-                        Escaping (SCE).
-                      </p>
-                      <p>
-                        <strong>Example</strong>: Consider the following case.
-                        <a name="example"></a>
-                      </p>
-                      <ul>
-                        <li>
-                          your app is hosted at url
-                          <code>http://myapp.example.com/</code>
-                        </li>
-                        <li>
-                          but some of your templates are hosted on other domains
-                          you control such as
-                          <code>http://srv01.assets.example.com/</code>,
-                          <code>http://srv02.assets.example.com/</code>, etc.
-                        </li>
-                        <li>
-                          and you have an open redirect at
-                          <code>http://myapp.example.com/clickThru?...</code>.
-                        </li>
-                      </ul>
-                      <p>
-                        Here is what a secure configuration for this scenario
-                        might look like:
-                      </p>
-                      <pre><code><span class="hl-1"> </span><span class="hl-10">angular</span><span class="hl-1">.</span><span class="hl-0">module</span><span class="hl-1">(</span><span class="hl-2">&#39;myApp&#39;</span><span class="hl-1">, []).</span><span class="hl-0">config</span><span class="hl-1">(</span><span class="hl-11">function</span><span class="hl-1">(</span><span class="hl-10">$sceDelegateProvider</span><span class="hl-1">) {</span><br/><span class="hl-1">   </span><span class="hl-10">$sceDelegateProvider</span><span class="hl-1">.</span><span class="hl-0">trustedResourceUrlList</span><span class="hl-1">([</span><br/><span class="hl-1">     </span><span class="hl-9">// Allow same origin resource loads.</span><br/><span class="hl-1">     </span><span class="hl-2">&#39;self&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">     </span><span class="hl-9">// Allow loading from our assets domain.  Notice the difference between * and **.</span><br/><span class="hl-1">     </span><span class="hl-2">&#39;http://srv*.assets.example.com/**&#39;</span><br/><span class="hl-1">   ]);</span><br/><br/><span class="hl-1">   </span><span class="hl-9">// The banned resource URL list overrides the trusted resource URL list so the open redirect</span><br/><span class="hl-1">   </span><span class="hl-9">// here is blocked.</span><br/><span class="hl-1">   </span><span class="hl-10">$sceDelegateProvider</span><span class="hl-1">.</span><span class="hl-0">bannedResourceUrlList</span><span class="hl-1">([</span><br/><span class="hl-1">     </span><span class="hl-2">&#39;http://myapp.example.com/clickThru**&#39;</span><br/><span class="hl-1">   ]);</span><br/><span class="hl-1"> });</span>
-</code><button>Copy</button></pre>
-
-                      <p>
-                        Note that an empty trusted resource URL list will block
-                        every resource URL from being loaded, and will require
-                        you to manually mark each one as trusted with
-                        <code>$sce.trustAsResourceUrl</code>. However, templates
-                        requested by ng.$templateRequest $templateRequest that
-                        are present in ng.$templateCache $templateCache will not
-                        go through this check. If you have a mechanism to
-                        populate your templates in that cache at config time,
-                        then it is a good idea to remove 'self' from the trusted
-                        resource URL lsit. This helps to mitigate the security
-                        impact of certain types of issues, like for instance
-                        attacker-controlled <code>ng-includes</code>.
-                      </p>
-                    </div>
                     <h4 class="tsd-returns-title">
                       Returns
                       <a href="" class="tsd-signature-type tsd-kind-class"
                         >SceDelegateProvider</a
                       >
                     </h4>
-                    <div class="tsd-comment tsd-typography"></div>
                     <aside class="tsd-sources">
                       <ul>
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/core/sce/sce.js#L166"
-                            >core/sce/sce.js:166</a
+                            href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/core/sce/sce.js#L246"
+                            >src/core/sce/sce.js:246</a
                           >
                         </li>
                       </ul>
@@ -436,7 +369,7 @@
                   >$exceptionHandler</span
                 ><span class="tsd-signature-symbol">:</span>
                 <a
-                  href="../types/core_exception-handler.ErrorHandler.html"
+                  href="../types/core_error-handler.ErrorHandler.html"
                   class="tsd-signature-type tsd-kind-type-alias"
                   >ErrorHandler</a
                 ><span class="tsd-signature-symbol">,</span><br />        <span
@@ -511,7 +444,7 @@
                       >$exceptionHandler</span
                     ><span class="tsd-signature-symbol">:</span>
                     <a
-                      href="../types/core_exception-handler.ErrorHandler.html"
+                      href="../types/core_error-handler.ErrorHandler.html"
                       class="tsd-signature-type tsd-kind-type-alias"
                       >ErrorHandler</a
                     ><span class="tsd-signature-symbol">,</span><br /><span
@@ -586,7 +519,7 @@
                               >$exceptionHandler</span
                             ><span class="tsd-signature-symbol">:</span>
                             <a
-                              href="../types/core_exception-handler.ErrorHandler.html"
+                              href="../types/core_error-handler.ErrorHandler.html"
                               class="tsd-signature-type tsd-kind-type-alias"
                               >ErrorHandler</a
                             ><span class="tsd-signature-symbol">,</span
@@ -670,7 +603,7 @@
                                       >$exceptionHandler</span
                                     >:
                                     <a
-                                      href="../types/core_exception-handler.ErrorHandler.html"
+                                      href="../types/core_error-handler.ErrorHandler.html"
                                       class="tsd-signature-type tsd-kind-type-alias"
                                       >ErrorHandler</a
                                     ></span
@@ -799,8 +732,8 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/core/sce/sce.js#L230"
-                      >core/sce/sce.js:230</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/core/sce/sce.js#L310"
+                      >src/core/sce/sce.js:310</a
                     >
                   </li>
                 </ul>
@@ -918,8 +851,8 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/core/sce/sce.js#L223"
-                      >core/sce/sce.js:223</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/core/sce/sce.js#L303"
+                      >src/core/sce/sce.js:303</a
                     >
                   </li>
                 </ul>
@@ -979,8 +912,8 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/core/sce/sce.js#L167"
-                      >core/sce/sce.js:167</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/core/sce/sce.js#L247"
+                      >src/core/sce/sce.js:247</a
                     >
                   </li>
                 </ul>
@@ -1099,8 +1032,8 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/Angular-Wave/angular.ts/blob/af6af0b1f42b3769a95e2d5a9fadef08bd831477/src/core/sce/sce.js#L194"
-                      >core/sce/sce.js:194</a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/core/sce/sce.js#L274"
+                      >src/core/sce/sce.js:274</a
                     >
                   </li>
                 </ul>

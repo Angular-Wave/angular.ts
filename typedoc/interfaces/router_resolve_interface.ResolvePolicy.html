@@ -1,0 +1,674 @@
+<!doctype html>
+<html class="default" lang="en" data-base="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <title>ResolvePolicy | @angular-wave/angular.ts</title>
+    <meta
+      name="description"
+      content="Documentation for @angular-wave/angular.ts"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../assets/style.css" />
+    <link rel="stylesheet" href="../assets/highlight.css" />
+    <script defer src="../assets/main.js"></script>
+    <script async src="../assets/icons.js" id="tsd-icons-script"></script>
+    <script async src="../assets/search.js" id="tsd-search-script"></script>
+    <script async src="../assets/navigation.js" id="tsd-nav-script"></script>
+    <script
+      async
+      src="../assets/hierarchy.js"
+      id="tsd-hierarchy-script"
+    ></script>
+  </head>
+  <body>
+    <script>
+      document.documentElement.dataset.theme =
+        localStorage.getItem("tsd-theme") || "os";
+      document.body.style.display = "none";
+      setTimeout(
+        () =>
+          window.app
+            ? app.showPage()
+            : document.body.style.removeProperty("display"),
+        500,
+      );
+    </script>
+    <header class="tsd-page-toolbar">
+      <div class="tsd-toolbar-contents container">
+        <a href="../index.html" class="title">@angular-wave/angular.ts</a>
+        <div id="tsd-toolbar-links"></div>
+        <button id="tsd-search-trigger" class="tsd-widget" aria-label="Search">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <use href="../assets/icons.svg#icon-search"></use>
+          </svg>
+        </button>
+        <dialog id="tsd-search" aria-label="Search">
+          <input
+            role="combobox"
+            id="tsd-search-input"
+            aria-controls="tsd-search-results"
+            aria-autocomplete="list"
+            aria-expanded="true"
+            autocapitalize="off"
+            autocomplete="off"
+            placeholder="Search the docs"
+            maxlength="100"
+          />
+          <ul role="listbox" id="tsd-search-results"></ul>
+          <div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+            <div>Preparing search index...</div>
+          </div>
+        </dialog>
+        <a
+          href="#"
+          class="tsd-widget menu"
+          id="tsd-toolbar-menu-trigger"
+          data-toggle="menu"
+          aria-label="Menu"
+          ><svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden="true"
+          >
+            <use href="../assets/icons.svg#icon-menu"></use></svg
+        ></a>
+      </div>
+    </header>
+    <div class="container container-main">
+      <div class="col-content">
+        <div class="tsd-page-title">
+          <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+            <li>
+              <a href="../modules/router_resolve_interface.html"
+                >router/resolve/interface</a
+              >
+            </li>
+            <li><a href="" aria-current="page">ResolvePolicy</a></li>
+          </ul>
+          <h1>Interface ResolvePolicy</h1>
+        </div>
+        <section class="tsd-panel tsd-comment">
+          <div class="tsd-comment tsd-typography">
+            <p>Defines how a resolve is processed during a transition</p>
+            <p>
+              This object is the [[StateDeclaration.resolvePolicy]] property.
+            </p>
+            <h4 id="example" class="tsd-anchor-link">
+              Example:<a
+                href="#example"
+                aria-label="Permalink"
+                class="tsd-anchor-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true">
+                  <use href="../assets/icons.svg#icon-anchor"></use></svg
+              ></a>
+            </h4>
+            <pre><code class="js"><span class="hl-9">// Fetched when the resolve&#39;s state is being entered.</span><br/><span class="hl-9">// Wait for the promise to resolve.</span><br/><span class="hl-11">var</span><span class="hl-1"> </span><span class="hl-10">policy1</span><span class="hl-1"> = { </span><span class="hl-10">when:</span><span class="hl-1"> </span><span class="hl-2">&quot;LAZY&quot;</span><span class="hl-1">, </span><span class="hl-10">async:</span><span class="hl-1"> </span><span class="hl-2">&quot;WAIT&quot;</span><span class="hl-1"> }</span><br/><br/><span class="hl-9">// Fetched when the Transition is starting.</span><br/><span class="hl-9">// Do not wait for the returned promise to resolve.</span><br/><span class="hl-9">// Inject the raw promise/value</span><br/><span class="hl-11">var</span><span class="hl-1"> </span><span class="hl-10">policy2</span><span class="hl-1"> = { </span><span class="hl-10">when:</span><span class="hl-1"> </span><span class="hl-2">&quot;EAGER&quot;</span><span class="hl-1">, </span><span class="hl-10">async:</span><span class="hl-1"> </span><span class="hl-2">&quot;NOWAIT&quot;</span><span class="hl-1"> }</span>
+</code><button type="button">Copy</button></pre>
+
+            <p>
+              The policy for a given Resolvable is merged from three sources
+              (highest priority first):
+            </p>
+            <ul>
+              <li>
+                <ol>
+                  <li>Individual resolve definition</li>
+                </ol>
+              </li>
+              <li>
+                <ol start="2">
+                  <li>State definition</li>
+                </ol>
+              </li>
+              <li>
+                <ol start="3">
+                  <li>Global default</li>
+                </ol>
+              </li>
+            </ul>
+            <h4 id="example-1" class="tsd-anchor-link">
+              Example:<a
+                href="#example-1"
+                aria-label="Permalink"
+                class="tsd-anchor-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true">
+                  <use href="../assets/icons.svg#icon-anchor"></use></svg
+              ></a>
+            </h4>
+            <pre><code class="js"><span class="hl-9">// Wait for an Observable to emit one item.</span><br/><span class="hl-9">// Since `wait` is not specified, it uses the `wait`</span><br/><span class="hl-9">// policy defined on the state, or the global default</span><br/><span class="hl-9">// if no `wait` policy is defined on the state</span><br/><span class="hl-8">import</span><span class="hl-1"> { </span><span class="hl-10">RXWAIT</span><span class="hl-1"> } </span><span class="hl-8">from</span><span class="hl-1"> </span><span class="hl-2">&#39;@uirouter/rx&#39;</span><span class="hl-1">;</span><br/><br/><span class="hl-11">var</span><span class="hl-1"> </span><span class="hl-10">myResolvablePolicy</span><span class="hl-1"> = { </span><span class="hl-10">async:</span><span class="hl-1"> </span><span class="hl-13">RXWAIT</span><span class="hl-1"> }</span>
+</code><button type="button">Copy</button></pre>
+          </div>
+          <div class="tsd-comment tsd-typography"></div>
+        </section>
+        <div class="tsd-signature">
+          <span class="tsd-signature-keyword">interface</span>
+          <span class="tsd-kind-interface">ResolvePolicy</span>
+          <span class="tsd-signature-symbol">{</span><br />    <a
+            class="tsd-kind-property"
+            href="#async"
+            >async</a
+          ><span class="tsd-signature-symbol">?:</span>
+          <a
+            href="../types/router_resolve_interface.PolicyAsync.html"
+            class="tsd-signature-type tsd-kind-type-alias"
+            >PolicyAsync</a
+          ><span class="tsd-signature-symbol">;</span><br />    <a
+            class="tsd-kind-property"
+            href="#when"
+            >when</a
+          ><span class="tsd-signature-symbol">?:</span>
+          <a
+            href="../types/router_resolve_interface.PolicyWhen.html"
+            class="tsd-signature-type tsd-kind-type-alias"
+            >PolicyWhen</a
+          ><span class="tsd-signature-symbol">;</span><br /><span
+            class="tsd-signature-symbol"
+            >}</span
+          >
+        </div>
+        <aside class="tsd-sources">
+          <ul>
+            <li>
+              Defined in
+              <a
+                href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/router/resolve/interface.ts#L118"
+                >src/router/resolve/interface.ts:118</a
+              >
+            </li>
+          </ul>
+        </aside>
+        <section class="tsd-panel-group tsd-index-group">
+          <section class="tsd-panel tsd-index-panel">
+            <details class="tsd-index-content tsd-accordion" open>
+              <summary class="tsd-accordion-summary tsd-index-summary">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <use href="../assets/icons.svg#icon-chevronDown"></use>
+                </svg>
+                <h5 class="tsd-index-heading uppercase">Index</h5>
+              </summary>
+              <div class="tsd-accordion-details">
+                <section class="tsd-index-section">
+                  <h3 class="tsd-index-heading">Properties</h3>
+                  <div class="tsd-index-list">
+                    <a href="#async" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
+                        <use href="../assets/icons.svg#icon-1024"></use></svg
+                      ><span>async?</span></a
+                    >
+                    <a href="#when" class="tsd-index-link"
+                      ><svg
+                        class="tsd-kind-icon"
+                        viewBox="0 0 24 24"
+                        aria-label="Property"
+                      >
+                        <use href="../assets/icons.svg#icon-1024"></use></svg
+                      ><span>when?</span></a
+                    >
+                  </div>
+                </section>
+              </div>
+            </details>
+          </section>
+        </section>
+        <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
+          <summary class="tsd-accordion-summary" data-key="section-Properties">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Properties</h2>
+          </summary>
+          <section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="async">
+                <code class="tsd-tag">Optional</code><span>async</span
+                ><a href="#async" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <div class="tsd-signature">
+                <span class="tsd-kind-property">async</span
+                ><span class="tsd-signature-symbol">?:</span>
+                <a
+                  href="../types/router_resolve_interface.PolicyAsync.html"
+                  class="tsd-signature-type tsd-kind-type-alias"
+                  >PolicyAsync</a
+                >
+              </div>
+              <div class="tsd-comment tsd-typography">
+                <p>
+                  Determines the unwrapping behavior of asynchronous resolve
+                  values.
+                </p>
+                <ul>
+                  <li>
+                    <p><code>WAIT</code> (default)</p>
+                    <ul>
+                      <li>
+                        If a promise is returned from the resolveFn, wait for
+                        the promise before proceeding
+                      </li>
+                      <li>The unwrapped value from the promise</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <p><code>NOWAIT</code></p>
+                    <ul>
+                      <li>
+                        If a promise is returned from the resolve, do not wait
+                        for the promise.
+                      </li>
+                      <li>Any other value returned is wrapped in a promise.</li>
+                      <li>The promise will not be unwrapped.</li>
+                      <li>
+                        The promise itself will be provided when the resolve is
+                        injected or bound elsewhere.
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <p>
+                      <a
+                        href="router_resolve_interface.CustomAsyncPolicy.html"
+                        class="tsd-kind-interface"
+                        >CustomAsyncPolicy</a
+                      >
+                    </p>
+                    <ul>
+                      <li>
+                        You can define a custom function that will be called
+                        with the resolveFn value.
+                      </li>
+                      <li>This function must return a promise.</li>
+                      <li>
+                        The transition will wait for this promise before
+                        proceeding
+                      </li>
+                    </ul>
+                    <p>
+                      NOTE: The previous <code>RXWAIT</code> policy has become a
+                      CustomAsyncPolicy function exported in
+                      <code>@uirouter/rx</code> package.
+                    </p>
+                  </li>
+                </ul>
+                <h4 id="example-2" class="tsd-anchor-link">
+                  Example:<a
+                    href="#example-2"
+                    aria-label="Permalink"
+                    class="tsd-anchor-icon"
+                    ><svg viewBox="0 0 24 24" aria-hidden="true">
+                      <use href="../assets/icons.svg#icon-anchor"></use></svg
+                  ></a>
+                </h4>
+                <p>
+                  The <code>Transition</code> will not wait for the resolve
+                  promise(s) from <code>main</code> to settle before continuing.
+                  Resolves for <code>main</code> will be provided to components
+                  wrapped in a <code>Promise</code>.
+                </p>
+                <p>
+                  The <code>Transition</code> will wait for the
+                  <code>main.home</code> resolve promises. Resolved values will
+                  be unwrapped before being provided to components.
+                </p>
+                <pre><code class="js"><span class="hl-11">var</span><span class="hl-1"> </span><span class="hl-10">mainState</span><span class="hl-1"> = {</span><br/><span class="hl-1">  </span><span class="hl-10">name:</span><span class="hl-1"> </span><span class="hl-2">&#39;main&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-10">resolve:</span><span class="hl-1"> </span><span class="hl-10">mainResolves</span><span class="hl-1">, </span><span class="hl-9">// defined elsewhere</span><br/><span class="hl-1">  </span><span class="hl-10">resolvePolicy:</span><span class="hl-1"> { </span><span class="hl-10">async:</span><span class="hl-1"> </span><span class="hl-2">&#39;NOWAIT&#39;</span><span class="hl-1"> },</span><br/><span class="hl-1">}</span><br/><span class="hl-11">var</span><span class="hl-1"> </span><span class="hl-10">homeState</span><span class="hl-1"> = {</span><br/><span class="hl-1">  </span><span class="hl-10">name:</span><span class="hl-1"> </span><span class="hl-2">&#39;main.home&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-10">resolve:</span><span class="hl-1"> </span><span class="hl-10">homeResolves</span><span class="hl-1">, </span><span class="hl-9">// defined elsewhere</span><br/><span class="hl-1">  </span><span class="hl-10">resolvePolicy:</span><span class="hl-1"> { </span><span class="hl-10">async:</span><span class="hl-1"> </span><span class="hl-2">&#39;WAIT&#39;</span><span class="hl-1"> }, </span><span class="hl-9">// default</span><br/><span class="hl-1">}</span>
+</code><button type="button">Copy</button></pre>
+              </div>
+              <div class="tsd-comment tsd-typography"></div>
+              <aside class="tsd-sources">
+                <ul>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/router/resolve/interface.ts#L201"
+                      >src/router/resolve/interface.ts:201</a
+                    >
+                  </li>
+                </ul>
+              </aside>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="when">
+                <code class="tsd-tag">Optional</code><span>when</span
+                ><a href="#when" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <div class="tsd-signature">
+                <span class="tsd-kind-property">when</span
+                ><span class="tsd-signature-symbol">?:</span>
+                <a
+                  href="../types/router_resolve_interface.PolicyWhen.html"
+                  class="tsd-signature-type tsd-kind-type-alias"
+                  >PolicyWhen</a
+                >
+              </div>
+              <div class="tsd-comment tsd-typography">
+                <p>
+                  Defines when a Resolvable is resolved (fetched) during a
+                  transition
+                </p>
+                <ul>
+                  <li>
+                    <code>LAZY</code> (default)
+                    <ul>
+                      <li>Resolved as the resolve's state is being entered</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>EAGER</code>
+                    <ul>
+                      <li>Resolved as the transition is starting</li>
+                    </ul>
+                  </li>
+                </ul>
+                <h4 id="example-3" class="tsd-anchor-link">
+                  Example:<a
+                    href="#example-3"
+                    aria-label="Permalink"
+                    class="tsd-anchor-icon"
+                    ><svg viewBox="0 0 24 24" aria-hidden="true">
+                      <use href="../assets/icons.svg#icon-anchor"></use></svg
+                  ></a>
+                </h4>
+                <p>
+                  Resolves for <code>main</code> and <code>main.home</code> are
+                  fetched when each state is entered. All of
+                  <code>main</code> resolves are processed before fetching
+                  <code>main.home</code> resolves.
+                </p>
+                <pre><code class="js"><span class="hl-11">var</span><span class="hl-1"> </span><span class="hl-10">state</span><span class="hl-1"> = {</span><br/><span class="hl-1">  </span><span class="hl-10">name:</span><span class="hl-1"> </span><span class="hl-2">&#39;main&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-10">resolve:</span><span class="hl-1"> </span><span class="hl-10">mainResolves</span><span class="hl-1">, </span><span class="hl-9">// defined elsewhere</span><br/><span class="hl-1">  </span><span class="hl-10">resolvePolicy:</span><span class="hl-1"> { </span><span class="hl-10">when:</span><span class="hl-1"> </span><span class="hl-2">&#39;LAZY&#39;</span><span class="hl-1"> }, </span><span class="hl-9">// default</span><br/><span class="hl-1">}</span><br/><br/><span class="hl-11">var</span><span class="hl-1"> </span><span class="hl-10">state</span><span class="hl-1"> = {</span><br/><span class="hl-1">  </span><span class="hl-10">name:</span><span class="hl-1"> </span><span class="hl-2">&#39;main.home&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-10">resolve:</span><span class="hl-1"> </span><span class="hl-10">homeResolves</span><span class="hl-1">, </span><span class="hl-9">// defined elsewhere</span><br/><span class="hl-1">  </span><span class="hl-10">resolvePolicy:</span><span class="hl-1"> { </span><span class="hl-10">when:</span><span class="hl-1"> </span><span class="hl-2">&#39;LAZY&#39;</span><span class="hl-1"> }, </span><span class="hl-9">// default</span><br/><span class="hl-1">}</span>
+</code><button type="button">Copy</button></pre>
+
+                <h4 id="example-4" class="tsd-anchor-link">
+                  Example:<a
+                    href="#example-4"
+                    aria-label="Permalink"
+                    class="tsd-anchor-icon"
+                    ><svg viewBox="0 0 24 24" aria-hidden="true">
+                      <use href="../assets/icons.svg#icon-anchor"></use></svg
+                  ></a>
+                </h4>
+                <p>
+                  Resolves for <code>main</code> and <code>main.home</code> are
+                  fetched at the same time when the transition starts. This
+                  happens earlier in the lifecycle than when states are entered.
+                  All of the <code>main</code> and
+                  <code>main.home</code> resolves are fetched as soon as
+                  possible.
+                </p>
+                <pre><code class="js"><span class="hl-11">var</span><span class="hl-1"> </span><span class="hl-10">mainState</span><span class="hl-1"> = {</span><br/><span class="hl-1">  </span><span class="hl-10">name:</span><span class="hl-1"> </span><span class="hl-2">&#39;main&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-10">resolve:</span><span class="hl-1"> </span><span class="hl-10">mainResolves</span><span class="hl-1">, </span><span class="hl-9">// defined elsewhere</span><br/><span class="hl-1">  </span><span class="hl-10">resolvePolicy:</span><span class="hl-1"> { </span><span class="hl-10">when:</span><span class="hl-1"> </span><span class="hl-2">&#39;EAGER&#39;</span><span class="hl-1"> },</span><br/><span class="hl-1">}</span><br/><br/><span class="hl-11">var</span><span class="hl-1"> </span><span class="hl-10">homeState</span><span class="hl-1"> = {</span><br/><span class="hl-1">  </span><span class="hl-10">name:</span><span class="hl-1"> </span><span class="hl-2">&#39;main.home&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-10">resolve:</span><span class="hl-1"> </span><span class="hl-10">homeResolves</span><span class="hl-1">, </span><span class="hl-9">// defined elsewhere</span><br/><span class="hl-1">  </span><span class="hl-10">resolvePolicy:</span><span class="hl-1"> { </span><span class="hl-10">when:</span><span class="hl-1"> </span><span class="hl-2">&#39;EAGER&#39;</span><span class="hl-1"> },</span><br/><span class="hl-1">}</span>
+</code><button type="button">Copy</button></pre>
+              </div>
+              <div class="tsd-comment tsd-typography"></div>
+              <aside class="tsd-sources">
+                <ul>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/Angular-Wave/angular.ts/blob/e14e445af22a0918c5aea3160db49b26512bc6c0/src/router/resolve/interface.ts#L162"
+                      >src/router/resolve/interface.ts:162</a
+                    >
+                  </li>
+                </ul>
+              </aside>
+            </section>
+          </section>
+        </details>
+      </div>
+      <div class="col-sidebar">
+        <div class="page-menu">
+          <div class="tsd-navigation settings">
+            <details class="tsd-accordion">
+              <summary class="tsd-accordion-summary">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <use href="../assets/icons.svg#icon-chevronDown"></use>
+                </svg>
+                <h3>Settings</h3>
+              </summary>
+              <div class="tsd-accordion-details">
+                <div class="tsd-filter-visibility">
+                  <span class="settings-label">Member Visibility</span>
+                  <ul id="tsd-filter-options">
+                    <li class="tsd-filter-item">
+                      <label class="tsd-filter-input"
+                        ><input
+                          type="checkbox"
+                          id="tsd-filter-protected"
+                          name="protected"
+                        /><svg
+                          width="32"
+                          height="32"
+                          viewBox="0 0 32 32"
+                          aria-hidden="true"
+                        >
+                          <rect
+                            class="tsd-checkbox-background"
+                            width="30"
+                            height="30"
+                            x="1"
+                            y="1"
+                            rx="6"
+                            fill="none"
+                          ></rect>
+                          <path
+                            class="tsd-checkbox-checkmark"
+                            d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25"
+                            stroke="none"
+                            stroke-width="3.5"
+                            stroke-linejoin="round"
+                            fill="none"
+                          ></path></svg
+                        ><span>Protected</span></label
+                      >
+                    </li>
+                    <li class="tsd-filter-item">
+                      <label class="tsd-filter-input"
+                        ><input
+                          type="checkbox"
+                          id="tsd-filter-inherited"
+                          name="inherited"
+                          checked
+                        /><svg
+                          width="32"
+                          height="32"
+                          viewBox="0 0 32 32"
+                          aria-hidden="true"
+                        >
+                          <rect
+                            class="tsd-checkbox-background"
+                            width="30"
+                            height="30"
+                            x="1"
+                            y="1"
+                            rx="6"
+                            fill="none"
+                          ></rect>
+                          <path
+                            class="tsd-checkbox-checkmark"
+                            d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25"
+                            stroke="none"
+                            stroke-width="3.5"
+                            stroke-linejoin="round"
+                            fill="none"
+                          ></path></svg
+                        ><span>Inherited</span></label
+                      >
+                    </li>
+                    <li class="tsd-filter-item">
+                      <label class="tsd-filter-input"
+                        ><input
+                          type="checkbox"
+                          id="tsd-filter-external"
+                          name="external"
+                        /><svg
+                          width="32"
+                          height="32"
+                          viewBox="0 0 32 32"
+                          aria-hidden="true"
+                        >
+                          <rect
+                            class="tsd-checkbox-background"
+                            width="30"
+                            height="30"
+                            x="1"
+                            y="1"
+                            rx="6"
+                            fill="none"
+                          ></rect>
+                          <path
+                            class="tsd-checkbox-checkmark"
+                            d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25"
+                            stroke="none"
+                            stroke-width="3.5"
+                            stroke-linejoin="round"
+                            fill="none"
+                          ></path></svg
+                        ><span>External</span></label
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <div class="tsd-theme-toggle">
+                  <label class="settings-label" for="tsd-theme">Theme</label
+                  ><select id="tsd-theme">
+                    <option value="os">OS</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                  </select>
+                </div>
+              </div>
+            </details>
+          </div>
+          <details open class="tsd-accordion tsd-page-navigation">
+            <summary class="tsd-accordion-summary">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <use href="../assets/icons.svg#icon-chevronDown"></use>
+              </svg>
+              <h3>On This Page</h3>
+            </summary>
+            <div class="tsd-accordion-details">
+              <a href="#example"><span>Example:</span></a
+              ><a href="#example-1"><span>Example:</span></a>
+              <details open class="tsd-accordion tsd-page-navigation-section">
+                <summary
+                  class="tsd-accordion-summary"
+                  data-key="section-Properties"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
+                  >Properties
+                </summary>
+                <div>
+                  <a href="#async"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
+                      <use href="../assets/icons.svg#icon-1024"></use></svg
+                    ><span>async</span></a
+                  >
+                  <ul>
+                    <li>
+                      <ul>
+                        <li>
+                          <ul>
+                            <li>
+                              <ul>
+                                <li>
+                                  <a href="#example-2"><span>Example:</span></a>
+                                </li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                  <a href="#when"
+                    ><svg
+                      class="tsd-kind-icon"
+                      viewBox="0 0 24 24"
+                      aria-label="Property"
+                    >
+                      <use href="../assets/icons.svg#icon-1024"></use></svg
+                    ><span>when</span></a
+                  >
+                  <ul>
+                    <li>
+                      <a href="#example-3"><span>Example:</span></a>
+                    </li>
+                    <li>
+                      <a href="#example-4"><span>Example:</span></a>
+                    </li>
+                  </ul>
+                </div>
+              </details>
+            </div>
+          </details>
+        </div>
+        <div class="site-menu">
+          <nav class="tsd-navigation">
+            <a href="../modules.html">@angular-wave/angular.ts</a>
+            <ul class="tsd-small-nested-navigation" id="tsd-nav-container">
+              <li>Loading...</li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <p class="tsd-generator">
+        Generated using
+        <a href="https://typedoc.org/" target="_blank">TypeDoc</a>
+      </p>
+    </footer>
+    <div class="overlay"></div>
+  </body>
+</html>
