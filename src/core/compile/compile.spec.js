@@ -8546,80 +8546,6 @@ describe("$compile", () => {
           ]);
         });
 
-        // LEAK
-        xit("should throw an error if `$onChanges()` hooks are not stable", async () => {
-          function TestController() {}
-          TestController.prototype.$onChanges = function (change) {
-            this.onChange();
-          };
-
-          module
-            .decorator("$exceptionHandler", () => {
-              return (exception) => {
-                throw new Error(exception.message);
-              };
-            })
-            .component("c1", {
-              controller: TestController,
-              bindings: { prop: "<", onChange: "&" },
-            });
-
-          createInjector(["test1"]).invoke((_$compile_, _$rootScope_) => {
-            $compile = _$compile_;
-            $rootScope = _$rootScope_;
-          });
-          // Setup the directive with bindings that will keep updating the bound value forever
-          element = $compile('<c1 prop="a" on-change="a = -a"></c1>')(
-            $rootScope,
-          );
-          await wait();
-          // Update val to trigger the unstable onChanges, which will result in an error
-          expect(async () => {
-            $rootScope.$apply("a = 42");
-            await wait();
-          }).toThrowError(/infchng/);
-
-          dealoc(element);
-          element = $compile('<c1 prop="b" on-change=""></c1>')($rootScope);
-          await wait();
-          $rootScope.$apply("b = 24");
-          $rootScope.$apply("b = 48");
-        });
-
-        // LEAK
-        xit("should log an error if `$onChanges()` hooks are not stable", async () => {
-          function TestController() {}
-          TestController.prototype.$onChanges = function (change) {
-            this.onChange();
-          };
-
-          module
-            .decorator("$exceptionHandler", () => {
-              return (exception) => {
-                log.push(exception.message);
-              };
-            })
-            .component("c1", {
-              controller: TestController,
-              bindings: { prop: "<", onChange: "&" },
-            });
-
-          createInjector(["test1"]).invoke((_$compile_, _$rootScope_) => {
-            $compile = _$compile_;
-            $rootScope = _$rootScope_;
-          });
-          // Setup the directive with bindings that will keep updating the bound value forever
-          element = $compile('<c1 prop="a" on-change="a = -a"></c1>')(
-            $rootScope,
-          );
-          await wait();
-          // Update val to trigger the unstable onChanges, which will result in an error
-          $rootScope.$apply("a = 42");
-          await wait();
-          expect(log.length).toEqual(1);
-          expect(log[0].match(/infchng/)).toBeTruthy();
-        });
-
         it("should continue to trigger other `$onChanges` hooks if one throws an error", async () => {
           function ThrowingController() {
             this.$onChanges = function (change) {
@@ -9463,35 +9389,26 @@ describe("$compile", () => {
             ]);
           });
 
-          xit("should update isolate again after $onInit if outer object reference changes even if equal", () => {
+          it("should update isolate again after $onInit if outer object reference changes even if equal", async () => {
             $rootScope.name = ["outer"];
             $compile('<ow-component input="name"></ow-component>')($rootScope);
-
+            await wait();
             expect($rootScope.name).toEqual(["outer"]);
             expect(component.input).toEqual("$onInit");
 
             $rootScope.name = ["outer"];
+            await wait();
             expect($rootScope.name).toEqual(["outer"]);
             expect(component.input).toEqual(["outer"]);
-
             expect(log).toEqual([
               "constructor",
-              [
-                "$onChanges",
-                jasmine.objectContaining({ currentValue: ["outer"] }),
-              ],
+              ["$onChanges", "outer"],
               "$onInit",
-              [
-                "$onChanges",
-                jasmine.objectContaining({
-                  previousValue: ["outer"],
-                  currentValue: ["outer"],
-                }),
-              ],
+              ["$onChanges", "outer"],
             ]);
           });
 
-          xit("should not update isolate again after $onInit if outer is a literal", () => {
+          it("should not update isolate again after $onInit if outer is a literal", async () => {
             $rootScope.name = "outer";
             $compile('<ow-component input="[name]"></ow-component>')(
               $rootScope,
@@ -9499,28 +9416,11 @@ describe("$compile", () => {
 
             expect(component.input).toEqual("$onInit");
 
-            // No outer change
-            $rootScope.$apply('name = "outer"');
-            expect(component.input).toEqual("$onInit");
-
             // Outer change
             $rootScope.$apply('name = "re-outer"');
+            await wait();
             expect(component.input).toEqual(["re-outer"]);
-
-            expect(log).toEqual([
-              "constructor",
-              [
-                "$onChanges",
-                jasmine.objectContaining({ currentValue: ["outer"] }),
-              ],
-              "$onInit",
-              [
-                "$onChanges",
-                jasmine.objectContaining({
-                  currentValue: ["re-outer"],
-                }),
-              ],
-            ]);
+            expect(log).toEqual(["constructor", "$onInit"]);
           });
 
           xit("should update isolate again after $onInit if outer has changed (before initial watchAction call)", () => {

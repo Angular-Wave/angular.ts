@@ -176,13 +176,18 @@ export type CompileFn = (
 ) => PublicLinkFn;
 export type LinkFnMapping = {
   index: number;
-  nodeLinkFn?: NodeLinkFn;
+  nodeLinkFnCtx?: NodeLinkFnCtx;
   childLinkFn?: CompositeLinkFn;
 };
 export type CompileNodesFn = () => CompositeLinkFn;
 export type NodeLinkFn = () => Node | Element | NodeList;
 export type NodeLinkFnCtx = {
   nodeLinkFn: NodeLinkFn;
+  terminal: boolean;
+  transclude: TranscludeFn;
+  transcludeOnThisElement: boolean;
+  templateOnThisElement: boolean;
+  newScope: boolean;
 };
 export type ApplyDirectivesToNodeFn = () => NodeLinkFn;
 export type CompositeLinkFn = (
