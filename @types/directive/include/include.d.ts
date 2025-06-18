@@ -31,11 +31,11 @@ export namespace ngIncludeDirective {
 }
 /**
  * @param {import("../../core/compile/compile.js").CompileFn} $compile
- * @returns {import("../../types.js").Directive}
+ * @returns {import("../../interface.ts").Directive}
  */
 export function ngIncludeFillContentDirective(
   $compile: import("../../core/compile/compile.js").CompileFn,
-): import("../../types.js").Directive;
+): import("../../interface.ts").Directive;
 export namespace ngIncludeFillContentDirective {
   let $inject_1: string[];
   export { $inject_1 as $inject };

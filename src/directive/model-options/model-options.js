@@ -16,7 +16,7 @@ class NgModelOptionsController {
   static $inject = ["$attrs", "$scope"];
 
   /**
-   * @param {import('../../types.js').Attributes} $attrs
+   * @param {import('../../core/compile/attributes.js').Attributes} $attrs
    * @param {import('../../core/scope/scope.js').Scope} $scope
    */
   constructor($attrs, $scope) {
@@ -31,7 +31,7 @@ class NgModelOptionsController {
       ? this.parentCtrl.$options
       : defaultModelOptions;
     const modelOptionsDefinition = this.$$scope.$eval(
-      this.$$attrs.ngModelOptions,
+      this.$$attrs["ngModelOptions"],
     );
 
     this.$options = parentOptions.createChild(modelOptionsDefinition);
@@ -119,7 +119,7 @@ export const defaultModelOptions = new ModelOptions({
 });
 
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
 export const ngModelOptionsDirective = function () {
   return {

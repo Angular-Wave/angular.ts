@@ -1,3 +1,5 @@
+import { Attributes } from "./core/compile/attributes.js";
+import { Scope } from "./core/scope/scope.js";
 /**
  * A JavaScript expression represented as a string.
  *
@@ -87,3 +89,214 @@ export type FilterFn = (input: any, ...args: any[]) => any;
  * A filter factory function that returns a FilterFn.
  */
 export type FilterFactory = (...args: any[]) => FilterFn;
+/**
+ * A controller constructor function used in AngularJS.
+ */
+export type ControllerConstructor = (...args: any[]) => void | Controller;
+/**
+ * Describes the changes in component bindings during `$onChanges`.
+ */
+export interface ChangesObject<T = any> {
+  /** New value of the binding */
+  currentValue: T;
+  /** Whether this is the first change */
+  isFirstChange: () => boolean;
+}
+/**
+ * Mapping of binding property names to their change metadata.
+ */
+export type OnChangesObject = Record<string, ChangesObject>;
+/**
+ * AngularJS component lifecycle interface.
+ */
+export interface Controller {
+  /** Optional controller name (used in debugging) */
+  name?: string;
+  /** Called when the controller is initialized */
+  $onInit?: () => void;
+  /** Called when one-way bindings are updated */
+  $onChanges?: (changes: OnChangesObject) => void;
+  /** Called before the controller is destroyed */
+  $onDestroy?: () => void;
+  /** Called after the component is linked */
+  $postLink?: () => void;
+}
+/**
+ * Defines a component's configuration object.
+ */
+export interface ComponentOptions {
+  /** Controller function or injectable string reference */
+  controller?: string | Injectable;
+  /** Alias name for the controller in templates */
+  controllerAs?: string;
+  /** Inline HTML template */
+  template?: string | Injectable;
+  /** URL of the HTML template */
+  templateUrl?: string | Injectable;
+  /** Binding definitions (e.g., `@`, `=`, `<`) */
+  bindings?: Record<string, string>;
+  /** Enable transclusion or specify named slots */
+  transclude?: boolean | Record<string, string>;
+  /** Required controllers from other directives */
+  require?: Record<string, string>;
+}
+/**
+ * A controller instance or object map used in directives.
+ */
+export type DirectiveController =
+  | Controller
+  | Controller[]
+  | {
+      [key: string]: Controller;
+    };
+/**
+ * Represents a controller used within directive link functions.
+ */
+export type TController = DirectiveController | NgModelController;
+/**
+ * Defines optional pre/post link functions in directive compile phase.
+ */
+export interface DirectivePrePost {
+  pre?: DirectiveLinkFn;
+  post?: DirectiveLinkFn;
+}
+/**
+ * A link function executed during directive linking.
+ */
+export type DirectiveLinkFn = (
+  scope: Scope,
+  element: HTMLElement,
+  attrs: Attributes,
+  controller?: TController,
+  transclude?: (...args: any[]) => any,
+) => void;
+/**
+ * A compile function used to prepare directives before linking.
+ */
+export type DirectiveCompileFn = (
+  templateElement: HTMLElement,
+  templateAttributes: Attributes,
+  transclude: (...args: any[]) => any,
+) => void | DirectiveLinkFn | DirectivePrePost;
+/**
+ * Defines the structure of an AngularJS directive.
+ */
+export interface Directive {
+  /** Optional name (usually inferred) */
+  name?: string;
+  /** Restict option: 'A' and/or 'E' */
+  restrict?: string;
+  /** Compile function for the directive */
+  compile?: DirectiveCompileFn;
+  /** Controller constructor or injectable string name */
+  controller?: string | Injectable | any;
+  /** Alias name for the controller in templates */
+  controllerAs?: string;
+  /** Whether to bind scope to controller */
+  bindToController?: boolean | Record<string, string>;
+  /** Link function(s) executed during linking */
+  link?: DirectiveLinkFn | DirectivePrePost;
+  /** Priority of the directive */
+  priority?: number;
+  /** Stops further directive processing if true */
+  terminal?: boolean;
+  /** Replaces the element with the template if true */
+  replace?: boolean;
+  /** Required controllers for the directive */
+  require?: string | string[] | Record<string, string>;
+  /** Scope configuration (`true`, `false`, or object for isolate scope) */
+  scope?: boolean | Record<string, string>;
+  /** Inline template */
+  template?: string | ((element: Element, attrs: Attributes) => string);
+  /** Template namespace (e.g., SVG, HTML) */
+  templateNamespace?: string;
+  /** Template URL for loading from server */
+  templateUrl?: string | ((element: Element, attrs: Attributes) => string);
+  /** Enables transclusion or configures named slots */
+  transclude?: boolean | "element" | Record<string, string>;
+  /** Internal hook for directive compilation state */
+  $$addStateInfo?: (...args: any[]) => any;
+}
+/**
+ * A factory function returning a directive definition.
+ */
+export type DirectiveFactory = (...args: any[]) => Directive | DirectiveLinkFn;
+/**
+ * Represents advanced transclusion functions used in directives.
+ */
+export interface TranscludeFunctionObject {
+  /** Transcludes content with a new scope */
+  transcludeWithScope(
+    scope: Scope,
+    cloneAttachFn: CloneAttachFunction,
+    element?: Element,
+    slotName?: string,
+  ): Element;
+  /** Transcludes content without creating a new scope */
+  transcludeWithoutScope(
+    cloneAttachFn?: CloneAttachFunction,
+    element?: Element,
+    slotName?: string,
+  ): Element;
+  /** Checks if a named slot is filled */
+  isSlotFilled(slotName: string): boolean;
+}
+/**
+ * Callback used when transcluded content is cloned.
+ */
+export type CloneAttachFunction = (
+  clonedElement?: Element,
+  scope?: Scope,
+) => any;
+/**
+ * Configuration for ngModel behavior.
+ */
+export interface NgModelOptions {
+  /** Space-separated event names that trigger updates */
+  updateOn?: string;
+  /** Delay in milliseconds or event-specific debounce times */
+  debounce?: number | Record<string, number>;
+  /** Whether to allow invalid values */
+  allowInvalid?: boolean;
+  /** Enables getter/setter style ngModel */
+  getterSetter?: boolean;
+  /** Timezone used for Date objects */
+  timezone?: string;
+  /** Time display format including seconds */
+  timeSecondsFormat?: string;
+  /** Whether to remove trailing :00 seconds */
+  timeStripZeroSeconds?: boolean;
+}
+/**
+ * Controller API for ngModel directive.
+ */
+export interface NgModelController {
+  /** Updates the view when the model changes */
+  $render(): void;
+  /** Sets the validity state of the control */
+  $setValidity(validationErrorKey: string, isValid: boolean): void;
+  /** Updates the model value */
+  $setViewValue(value: any, trigger?: string): void;
+  /** Marks the control as pristine */
+  $setPristine(): void;
+  /** Marks the control as dirty */
+  $setDirty(): void;
+  /** Re-validates the model */
+  $validate(): void;
+  /** Marks the control as touched */
+  $setTouched(): void;
+  /** Marks the control as untouched */
+  $setUntouched(): void;
+  /** Rolls back to previous view value */
+  $rollbackViewValue(): void;
+  /** Commits the current view value to the model */
+  $commitViewValue(): void;
+  /** Processes view-to-model transformations */
+  $processModelValue(): void;
+  /** Determines if value is considered empty */
+  $isEmpty(value: any): boolean;
+  /** Overrides the model options dynamically */
+  $overrideModelOptions(options: NgModelOptions): void;
+  /** Current value shown in the view */
+  $viewValue: any;
+}

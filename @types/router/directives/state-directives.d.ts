@@ -14,13 +14,13 @@ export namespace $StateRefDirective {
  * @param $state
  * @param $stateRegistry
  * @param $transitions
- * @returns {import("../../types.js").Directive}
+ * @returns {import("../../interface.ts").Directive}
  */
 export function $StateRefDynamicDirective(
   $state: any,
   $stateRegistry: any,
   $transitions: any,
-): import("../../types.js").Directive;
+): import("../../interface.ts").Directive;
 export namespace $StateRefDynamicDirective {
   let $inject_1: string[];
   export { $inject_1 as $inject };
@@ -31,7 +31,7 @@ export namespace $StateRefDynamicDirective {
  * @param {*} $interpolate
  * @param {*} $stateRegistry
  * @param {*} $transitions
- * @returns {import("../../types.js").Directive}
+ * @returns {import("../../interface.ts").Directive}
  */
 export function $StateRefActiveDirective(
   $state: any,
@@ -39,7 +39,7 @@ export function $StateRefActiveDirective(
   $interpolate: any,
   $stateRegistry: any,
   $transitions: any,
-): import("../../types.js").Directive;
+): import("../../interface.ts").Directive;
 export namespace $StateRefActiveDirective {
   let $inject_2: string[];
   export { $inject_2 as $inject };

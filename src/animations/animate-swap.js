@@ -1,6 +1,6 @@
 ngAnimateSwapDirective.$inject = ["$animate"];
 /**
- * @returns {import('../types.js').Directive}
+ * @returns {import('../interface.ts').Directive}
  */
 export function ngAnimateSwapDirective($animate) {
   return {
@@ -12,22 +12,25 @@ export function ngAnimateSwapDirective($animate) {
     link(scope, $element, attrs, ctrl, $transclude) {
       let previousElement;
       let previousScope;
-      scope.$watchCollection(attrs.ngAnimateSwap || attrs.for, (value) => {
-        if (previousElement) {
-          $animate.leave(previousElement);
-        }
-        if (previousScope) {
-          previousScope.$destroy();
-          previousScope = null;
-        }
-        if (value) {
-          $transclude((clone, childScope) => {
-            previousElement = clone;
-            previousScope = childScope;
-            $animate.enter(clone, null, $element);
-          });
-        }
-      });
+      scope.$watchCollection(
+        attrs["ngAnimateSwap"] || attrs["for"],
+        (value) => {
+          if (previousElement) {
+            $animate.leave(previousElement);
+          }
+          if (previousScope) {
+            previousScope.$destroy();
+            previousScope = null;
+          }
+          if (value) {
+            $transclude((clone, childScope) => {
+              previousElement = clone;
+              previousScope = childScope;
+              $animate.enter(clone, null, $element);
+            });
+          }
+        },
+      );
     },
   };
 }

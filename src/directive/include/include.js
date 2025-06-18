@@ -125,7 +125,7 @@ ngIncludeFillContentDirective.$inject = ["$compile"];
 
 /**
  * @param {import("../../core/compile/compile.js").CompileFn} $compile
- * @returns {import("../../types.js").Directive}
+ * @returns {import("../../interface.ts").Directive}
  */
 export function ngIncludeFillContentDirective($compile) {
   return {

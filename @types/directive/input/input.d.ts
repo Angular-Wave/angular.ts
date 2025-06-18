@@ -67,13 +67,13 @@ export namespace inputDirective {
   let $inject: string[];
 }
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
-export function hiddenInputBrowserCacheDirective(): import("../../types.js").Directive;
+export function hiddenInputBrowserCacheDirective(): import("../../interface.ts").Directive;
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
-export function ngValueDirective(): import("../../types.js").Directive;
+export function ngValueDirective(): import("../../interface.ts").Directive;
 export const ISO_DATE_REGEXP: RegExp;
 export const URL_REGEXP: RegExp;
 export const EMAIL_REGEXP: RegExp;

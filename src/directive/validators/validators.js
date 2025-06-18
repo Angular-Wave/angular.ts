@@ -37,7 +37,7 @@ export const requiredDirective = [
   "$parse",
   /**
    * @param {import("../../core/parse/parse.js").ParseService} $parse
-   * @returns {import("../../types.js").Directive}
+   * @returns {import("../../interface.ts").Directive}
    */
   ($parse) => ({
     restrict: "A",
@@ -46,22 +46,23 @@ export const requiredDirective = [
       /**
        * @param {import("../../core/scope/scope.js").Scope} scope
        * @param {Element} _elm
-       * @param {import("../../types.js").Attributes} attr
-       * @param {import("../../types.js").NgModelController} ctrl
+       * @param {import("../../core/compile/attributes.js").Attributes} attr
+       * @param {import("../../interface.ts").NgModelController} ctrl
        * @returns
        */
       (scope, _elm, attr, ctrl) => {
         if (!ctrl) return;
         // For boolean attributes like required, presence means true
-        let value = hasOwn(attr, "required") || $parse(attr.ngRequired)(scope);
+        let value =
+          hasOwn(attr, "required") || $parse(attr["ngRequired"])(scope);
 
-        if (!attr.ngRequired) {
+        if (!attr["ngRequired"]) {
           // force truthy in case we are on non input element
           // (input elements do this automatically for boolean attributes like required)
-          attr.required = true;
+          attr["required"] = true;
         }
 
-        ctrl.$validators.required = (_modelValue, viewValue) => {
+        ctrl["$validators"].required = (_modelValue, viewValue) => {
           return !value || !ctrl.$isEmpty(viewValue);
         };
 
@@ -118,7 +119,7 @@ export const patternDirective = [
   "$parse",
   /**
    * @param {import("../../core/parse/parse.js").ParseService} $parse
-   * @returns {import("../../types.js").Directive}
+   * @returns {import("../../interface.ts").Directive}
    */
   ($parse) => {
     return {
@@ -128,33 +129,33 @@ export const patternDirective = [
         var patternExp;
         var parseFn;
 
-        if (tAttr.ngPattern) {
-          patternExp = tAttr.ngPattern;
+        if (tAttr["ngPattern"]) {
+          patternExp = tAttr["ngPattern"];
 
           // ngPattern might be a scope expression, or an inlined regex, which is not parsable.
           // We get value of the attribute here, so we can compare the old and the new value
           // in the observer to avoid unnecessary validations
           if (
-            tAttr.ngPattern.charAt(0) === "/" &&
-            REGEX_STRING_REGEXP.test(tAttr.ngPattern)
+            tAttr["ngPattern"].charAt(0) === "/" &&
+            REGEX_STRING_REGEXP.test(tAttr["ngPattern"])
           ) {
             parseFn = function () {
-              return tAttr.ngPattern;
+              return tAttr["ngPattern"];
             };
           } else {
-            parseFn = $parse(tAttr.ngPattern);
+            parseFn = $parse(tAttr["ngPattern"]);
           }
         }
 
         return function (scope, elm, attr, ctrl) {
           if (!ctrl) return;
 
-          var attrVal = attr.pattern;
+          var attrVal = attr["pattern"];
 
-          if (attr.ngPattern) {
+          if (attr["ngPattern"]) {
             attrVal = parseFn(scope);
           } else {
-            patternExp = attr.pattern;
+            patternExp = attr["pattern"];
           }
 
           var regexp = parsePatternAttr(attrVal, patternExp, elm);
@@ -167,13 +168,14 @@ export const patternDirective = [
               (oldRegexp && oldRegexp.toString()) !==
               (regexp && regexp.toString())
             ) {
-              ctrl.$validate();
+              ctrl["$validate"]();
             }
           });
 
-          ctrl.$validators.pattern = function (modelValue, viewValue) {
+          ctrl["$validators"]["pattern"] = function (modelValue, viewValue) {
             // HTML5 pattern constraint validates the input value, so we validate the viewValue
             return (
+              // @ts-ignore
               ctrl.$isEmpty(viewValue) ||
               isUndefined(regexp) ||
               regexp.test(viewValue)
@@ -219,7 +221,7 @@ export const maxlengthDirective = [
   "$parse",
   /**
    * @param {import("../../core/parse/parse.js").ParseService} $parse
-   * @returns {import("../../types.js").Directive}
+   * @returns {import("../../interface.ts").Directive}
    */
   ($parse) => ({
     restrict: "A",
@@ -228,14 +230,14 @@ export const maxlengthDirective = [
       /**
        * @param {import("../../core/scope/scope.js").Scope} scope
        * @param {*} _elm
-       * @param {import("../../types.js").Attributes} attr
-       * @param {import("../../types.js").NgModelController} ctrl
+       * @param {import("../../core/compile/attributes.js").Attributes} attr
+       * @param {import("../../interface.ts").NgModelController} ctrl
        * @returns
        */
       (scope, _elm, attr, ctrl) => {
         if (!ctrl) return;
 
-        let maxlength = attr.maxlength || $parse(attr.ngMaxlength)(scope);
+        let maxlength = attr["maxlength"] || $parse(attr["ngMaxlength"])(scope);
         let maxlengthParsed = parseLength(maxlength);
 
         attr.$observe("maxlength", (value) => {
@@ -245,7 +247,7 @@ export const maxlengthDirective = [
             ctrl.$validate();
           }
         });
-        ctrl.$validators.maxlength = function (modelValue, viewValue) {
+        ctrl["$validators"].maxlength = function (_modelValue, viewValue) {
           return (
             maxlengthParsed < 0 ||
             ctrl.$isEmpty(viewValue) ||

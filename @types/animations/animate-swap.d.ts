@@ -1,9 +1,9 @@
 /**
- * @returns {import('../types.js').Directive}
+ * @returns {import('../interface.ts').Directive}
  */
 export function ngAnimateSwapDirective(
   $animate: any,
-): import("../types.js").Directive;
+): import("../interface.ts").Directive;
 export namespace ngAnimateSwapDirective {
   let $inject: string[];
 }

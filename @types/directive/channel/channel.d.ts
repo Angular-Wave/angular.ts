@@ -15,6 +15,6 @@
  * JavaScript:
  * angular.EventBus.publish('userChannel', { user: { firstName: 'John', lastName: 'Smith' } });
  *
- * @returns {import("../../types.js").Directive}
+ * @returns {import("../../interface.ts").Directive}
  */
-export function ngChannelDirective(): import("../../types.js").Directive;
+export function ngChannelDirective(): import("../../interface.ts").Directive;

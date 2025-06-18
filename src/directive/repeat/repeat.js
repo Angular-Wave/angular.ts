@@ -28,7 +28,7 @@ ngRepeatDirective.$inject = ["$animate"];
 /**
  * TODO // Add type for animate service
  * @param {*}  $animate
- * @returns {import("../../types.js").Directive}
+ * @returns {import("../../interface.ts").Directive}
  */
 export function ngRepeatDirective($animate) {
   function updateScope(
@@ -78,8 +78,8 @@ export function ngRepeatDirective($animate) {
     priority: 1000,
     terminal: true,
     compile: (_$element, $attr) => {
-      const expression = $attr.ngRepeat;
-      const hasAnimate = !!$attr.animate;
+      const expression = $attr["ngRepeat"];
+      const hasAnimate = !!$attr["animate"];
 
       let match = expression.match(
         /^\s*([\s\S]+?)\s+in\s+([\s\S]+?)(?:\s+as\s+([\s\S]+?))?(?:\s+track\s+by\s+([\s\S]+?))?\s*$/,
@@ -278,9 +278,11 @@ export function ngRepeatDirective($animate) {
                   if (hasAnimate) {
                     $animate.enter(clone, null, previousNode);
                   } else {
+                    // @ts-ignore
                     previousNode.after(clone);
                   }
 
+                  // @ts-ignore
                   previousNode = endNode;
                   // Note: We only need the first/last node of the cloned nodes.
                   // However, we need to keep the reference to the dom wrapper as it might be changed later

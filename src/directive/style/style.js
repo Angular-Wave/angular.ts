@@ -1,12 +1,12 @@
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
 export function ngStyleDirective() {
   return {
     restrict: "A",
     link: (scope, element, attr) => {
       let oldStyles;
-      scope.$watch(attr.ngStyle, (newStyles) => {
+      scope.$watch(attr["ngStyle"], (newStyles) => {
         if (oldStyles) {
           const oldKeys = Object.keys(oldStyles);
           for (let i = 0, length = oldKeys.length; i < length; i++) {

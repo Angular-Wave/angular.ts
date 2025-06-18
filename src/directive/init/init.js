@@ -1,7 +1,7 @@
 import { getController } from "../../shared/dom.js";
 
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
 export function ngInitDirective() {
   return {

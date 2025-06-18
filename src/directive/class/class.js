@@ -2,7 +2,7 @@ import { getCacheData, setCacheData } from "../../shared/dom.js";
 import { hasAnimate, isObject, isString } from "../../shared/utils.js";
 
 /**
- * @returns {() => import("../../types.js").Directive}
+ * @returns {() => import("../../interface.ts").Directive}
  */
 function classDirective(name, selector) {
   name = `ngClass${name}`;

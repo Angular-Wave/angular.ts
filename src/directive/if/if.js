@@ -6,7 +6,7 @@ ngIfDirective.$inject = ["$animate"];
  *
  * TODO // Add type for animate service
  * @param {*}  $animate
- * @returns {import("../../types.js").Directive}
+ * @returns {import("../../interface.ts").Directive}
  */
 export function ngIfDirective($animate) {
   return {

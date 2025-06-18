@@ -1,4 +1,4 @@
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
-export function ngNonBindableDirective(): import("../../types.js").Directive;
+export function ngNonBindableDirective(): import("../../interface.ts").Directive;

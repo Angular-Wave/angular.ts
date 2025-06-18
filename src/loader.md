@@ -18,7 +18,7 @@
 - @name ngApp
 -
 - @element ANY
-- @param {import('./types.js').Module} ngApp an optional application
+- @param {import('./interface.ts').Module} ngApp an optional application
 - {@link angular.module module} name to load.
 - @param {boolean=} ngStrictDi if this attribute is present on the app element, the injector will be
 - created in "strict-di" mode. This means that the application will fail to invoke functions which

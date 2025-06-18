@@ -4,7 +4,7 @@ import { hasAnimate } from "../../shared/utils.js";
 ngSwitchDirective.$inject = ["$animate"];
 
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
 export function ngSwitchDirective($animate) {
   return {
@@ -20,7 +20,7 @@ export function ngSwitchDirective($animate) {
       },
     ],
     link(scope, _element, attr, ngSwitchController) {
-      const watchExpr = attr.ngSwitch || attr.on;
+      const watchExpr = attr["ngSwitch"] || attr["on"];
       let selectedTranscludes = [];
       const selectedElements = [];
       const previousLeaveAnimations = [];
@@ -86,7 +86,7 @@ export function ngSwitchDirective($animate) {
 }
 
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
 export function ngSwitchWhenDirective() {
   return {
@@ -96,8 +96,8 @@ export function ngSwitchWhenDirective() {
     restrict: "EA",
     require: "^ngSwitch",
     link(scope, element, attrs, ctrl, $transclude) {
-      const cases = attrs.ngSwitchWhen
-        .split(attrs.ngSwitchWhenSeparator)
+      const cases = attrs["ngSwitchWhen"]
+        .split(attrs["ngSwitchWhenSeparator"])
         .sort()
         .filter(
           // Filter duplicate cases
@@ -116,7 +116,7 @@ export function ngSwitchWhenDirective() {
 }
 
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
 export function ngSwitchDefaultDirective() {
   return {

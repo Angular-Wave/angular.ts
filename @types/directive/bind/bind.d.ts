@@ -1,17 +1,17 @@
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
-export function ngBindDirective(): import("../../types.js").Directive;
+export function ngBindDirective(): import("../../interface.ts").Directive;
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
-export function ngBindTemplateDirective(): import("../../types.js").Directive;
+export function ngBindTemplateDirective(): import("../../interface.ts").Directive;
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
 export function ngBindHtmlDirective(
   $parse: any,
-): import("../../types.js").Directive;
+): import("../../interface.ts").Directive;
 export namespace ngBindHtmlDirective {
   let $inject: string[];
 }

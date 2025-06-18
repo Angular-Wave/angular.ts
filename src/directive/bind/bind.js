@@ -1,7 +1,7 @@
 import { isUndefined, stringify, isNull, isProxy } from "../../shared/utils.js";
 
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
 export function ngBindDirective() {
   return {
@@ -20,7 +20,7 @@ export function ngBindDirective() {
 }
 
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
 export function ngBindTemplateDirective() {
   return {
@@ -40,20 +40,20 @@ export function ngBindTemplateDirective() {
 
 ngBindHtmlDirective.$inject = ["$parse"];
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
 export function ngBindHtmlDirective($parse) {
   return {
     restrict: "A",
     compile(_tElement, tAttrs) {
-      $parse(tAttrs.ngBindHtml); // checks for interpolation errors
+      $parse(tAttrs["ngBindHtml"]); // checks for interpolation errors
       return (
         /**
          * @param {import('../../core/scope/scope.js').Scope} scope
          * @param {Element} element
          */
         (scope, element) => {
-          scope.$watch(tAttrs.ngBindHtml, (val) => {
+          scope.$watch(tAttrs["ngBindHtml"], (val) => {
             if (isUndefined(val) || isNull(val)) {
               val = "";
             }

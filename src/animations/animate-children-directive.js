@@ -6,12 +6,12 @@ $$AnimateChildrenDirective.$inject = ["$interpolate"];
 
 /**
  * @param {*} $interpolate
- * @returns {import("../types.js").Directive}
+ * @returns {import("../interface.ts").Directive}
  */
 export function $$AnimateChildrenDirective($interpolate) {
   return {
     link(scope, element, attrs) {
-      const val = attrs.ngAnimateChildren;
+      const val = attrs["ngAnimateChildren"];
       if (isString(val) && val.length === 0) {
         // empty attribute
         setCacheData(element, NG_ANIMATE_CHILDREN_DATA, true);

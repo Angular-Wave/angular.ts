@@ -3,7 +3,7 @@ import { kebabToCamel } from "../../shared/dom.js";
 /**
  * @param {string} source - the name of the attribute to be observed
  * @param {string} prop - the scope property to be updated with attribute value
- * @returns {import("../../types.js").Directive}
+ * @returns {import("../../interface.ts").Directive}
  */
 export function ngObserveDirective(source, prop) {
   return {

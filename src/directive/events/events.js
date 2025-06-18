@@ -38,7 +38,7 @@ export const ngEventDirectives = {};
  * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
  * @param {string} directiveName
  * @param {string} eventName
- * @returns {import("../../types.js").Directive}
+ * @returns {import("../../interface.ts").Directive}
  */
 export function createEventDirective(
   $parse,

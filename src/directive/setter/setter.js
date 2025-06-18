@@ -1,12 +1,12 @@
 ngSetterDirective.$inject = ["$parse"];
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
 export function ngSetterDirective($parse) {
   return {
     restrict: "A",
     link(scope, element, attrs) {
-      const modelExpression = attrs.ngSetter;
+      const modelExpression = attrs["ngSetter"];
 
       if (!modelExpression) {
         console.warn("ngSetter: Model expression is not provided.");

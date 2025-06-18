@@ -2,11 +2,11 @@
  *
  * TODO // Add type for animate service
  * @param {*}  $animate
- * @returns {import("../../types.js").Directive}
+ * @returns {import("../../interface.ts").Directive}
  */
 export function ngIfDirective(
   $animate: any,
-): import("../../types.js").Directive;
+): import("../../interface.ts").Directive;
 export namespace ngIfDirective {
   let $inject: string[];
 }

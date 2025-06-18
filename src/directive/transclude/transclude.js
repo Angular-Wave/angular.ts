@@ -23,7 +23,7 @@ export const ngTranscludeDirective = [
 
   /**
    * @param {import("../../core/compile/compile.js").CompileFn} $compile
-   * @returns {import("../../types.js").Directive}
+   * @returns {import("../../interface.ts").Directive}
    */
   function ($compile) {
     return {

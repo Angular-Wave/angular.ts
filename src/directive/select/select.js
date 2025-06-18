@@ -402,7 +402,7 @@ class SelectController {
 }
 
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
 export function selectDirective() {
   return {
@@ -545,7 +545,7 @@ export function selectDirective() {
 // of dynamically created (and destroyed) option elements to their containing select
 // directive via its controller.
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
 optionDirective.$inject = ["$interpolate"];
 export function optionDirective($interpolate) {

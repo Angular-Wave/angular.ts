@@ -1,10 +1,10 @@
 /**
  * @param {import('../../core/cache/cache-factory').TemplateCache} $templateCache
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
 export function scriptDirective(
   $templateCache: any,
-): import("../../types.js").Directive;
+): import("../../interface.ts").Directive;
 export namespace scriptDirective {
   let $inject: string[];
 }

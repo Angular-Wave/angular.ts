@@ -1,3 +1,3 @@
-export const ngClassDirective: () => import("../../types.js").Directive;
-export const ngClassOddDirective: () => import("../../types.js").Directive;
-export const ngClassEvenDirective: () => import("../../types.js").Directive;
+export const ngClassDirective: () => import("../../interface.ts").Directive;
+export const ngClassOddDirective: () => import("../../interface.ts").Directive;
+export const ngClassEvenDirective: () => import("../../interface.ts").Directive;

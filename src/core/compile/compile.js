@@ -1055,11 +1055,11 @@ export class CompileProvider {
          * @param {Attributes|any} attrs The shared attrs object which is used to populate the normalized attributes.
          * @param {number=} maxPriority Max directive priority.
          * @param {string} [ignoreDirective]
-         * @return {import('../../types.js').Directive[]} An array to which the directives are added to. This array is sorted before the function returns.
+         * @return {import('../../interface.ts').Directive[]} An array to which the directives are added to. This array is sorted before the function returns.
          */
         function collectDirectives(node, attrs, maxPriority, ignoreDirective) {
           /**
-           * @type {import('../../types.js').Directive[]}
+           * @type {import('../../interface.ts').Directive[]}
            */
           const directives = [];
           const { nodeType } = node;
@@ -2281,7 +2281,7 @@ export class CompileProvider {
 
         /**
          *
-         * @param {import("../../types.js").Directive[]} directives
+         * @param {import("../../interface.ts").Directive[]} directives
          * @param {NodeRef} $compileNode
          * @param {Attributes} tAttrs
          * @param {Element} $rootElement

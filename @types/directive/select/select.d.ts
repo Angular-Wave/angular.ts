@@ -1,7 +1,7 @@
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
-export function selectDirective(): import("../../types.js").Directive;
+export function selectDirective(): import("../../interface.ts").Directive;
 export function optionDirective($interpolate: any): {
   restrict: string;
   priority: number;

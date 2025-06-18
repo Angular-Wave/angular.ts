@@ -1,4 +1,4 @@
 /**
- * @returns {import("../../types.js").Directive}
+ * @returns {import("../../interface.ts").Directive}
  */
-export function ngControllerDirective(): import("../../types.js").Directive;
+export function ngControllerDirective(): import("../../interface.ts").Directive;

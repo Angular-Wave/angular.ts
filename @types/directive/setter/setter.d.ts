@@ -1,9 +1,9 @@
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
 export function ngSetterDirective(
   $parse: any,
-): import("../../types.js").Directive;
+): import("../../interface.ts").Directive;
 export namespace ngSetterDirective {
   let $inject: string[];
 }

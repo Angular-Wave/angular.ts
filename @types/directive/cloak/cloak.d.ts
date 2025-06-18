@@ -1,4 +1,4 @@
 /**
- * @returns {import('../../types.js').Directive}
+ * @returns {import('../../interface.ts').Directive}
  */
-export function ngCloakDirective(): import("../../types.js").Directive;
+export function ngCloakDirective(): import("../../interface.ts").Directive;
