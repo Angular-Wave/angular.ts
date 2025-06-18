@@ -27,7 +27,7 @@ export class Parser {
   /**
    *
    * @param {string} exp - Expression to be parsed
-   * @returns {import("../parse.js").CompiledExpression}
+   * @returns {import("../interface.ts").CompiledExpression}
    */
   parse(exp) {
     const { ast } = this.getAst(exp);

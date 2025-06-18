@@ -22,7 +22,7 @@ export class InterpolateProvider {
   $get: (
     | string
     | ((
-        $parse: import("../parse/parse.js").ParseService,
+        $parse: import("../parse/interface.ts").ParseService,
         $sce: any,
       ) => {
         (

@@ -15,16 +15,16 @@ export class ASTInterpreter {
   /**
    * Compiles the AST into a function.
    * @param {import("./ast/ast").ASTNode} ast - The AST to compile.
-   * @returns {import("./parse").CompiledExpression}
+   * @returns {import("./interface.ts").CompiledExpression}
    */
   compile(ast) {
     let decoratedNode = findConstantAndWatchExpressions(ast, this.$filter);
     /** @type {import("./ast/ast").ASTNode} */
     let assignable;
-    /** @type {import("./parse").CompiledExpression} */
+    /** @type {import("./interface.ts").CompiledExpression} */
     let assign;
     if ((assignable = assignableAST(decoratedNode))) {
-      assign = /** @type {import("./parse").CompiledExpression} */ (
+      assign = /** @type {import("./interface.ts").CompiledExpression} */ (
         this.recurse(assignable)
       );
     }
@@ -33,9 +33,10 @@ export class ASTInterpreter {
     if (toWatch) {
       inputs = [];
       for (const [key, watch] of Object.entries(toWatch)) {
-        const input = /** @type {import("./parse").CompiledExpression} */ (
-          this.recurse(watch)
-        );
+        const input =
+          /** @type {import("./interface.ts").CompiledExpression} */ (
+            this.recurse(watch)
+          );
         input.isPure = watch.isPure;
         watch.input = input;
         inputs.push(input);
@@ -47,7 +48,7 @@ export class ASTInterpreter {
       expressions.push(this.recurse(expression.expression));
     });
 
-    /** @type {import("./parse").CompiledExpression} */
+    /** @type {import("./interface.ts").CompiledExpression} */
     const fn =
       decoratedNode.body.length === 0
         ? () => {}
@@ -75,7 +76,7 @@ export class ASTInterpreter {
    * @param {import("./ast/ast").ASTNode} ast - The AST node.
    * @param {Object} [context] - The context.
    * @param {boolean|1} [create] - The create flag.
-   * @returns {import("./parse").CompiledExpressionFunction} The recursive function.
+   * @returns {import("./interface.ts").CompiledExpressionFunction} The recursive function.
    */
   recurse(ast, context, create) {
     let left;
@@ -97,11 +98,13 @@ export class ASTInterpreter {
         right = this.recurse(ast.right);
         return this[`binary${ast.operator}`](left, right, context);
       case ASTType.ConditionalExpression:
-        return this["ternary?:"](
-          this.recurse(ast.test),
-          this.recurse(ast.alternate),
-          this.recurse(ast.consequent),
-          context,
+        return /** @type {import("./interface.ts").CompiledExpressionFunction} */ (
+          this["ternary?:"](
+            this.recurse(ast.test),
+            this.recurse(ast.alternate),
+            this.recurse(ast.consequent),
+            context,
+          )
         );
       case ASTType.Identifier:
         return self.identifier(ast.name, context, create);
@@ -111,19 +114,21 @@ export class ASTInterpreter {
           right = ast.property.name;
         }
         if (ast.computed) right = this.recurse(ast.property);
-        return ast.computed
-          ? this.computedMember(
-              left,
-              /** @type {function } */ (right),
-              context,
-              create,
-            )
-          : this.nonComputedMember(
-              left,
-              /** @type {string } */ (right),
-              context,
-              create,
-            );
+        return /** @type {import("./interface.ts").CompiledExpressionFunction} */ (
+          ast.computed
+            ? this.computedMember(
+                left,
+                /** @type {function } */ (right),
+                context,
+                create,
+              )
+            : this.nonComputedMember(
+                left,
+                /** @type {string } */ (right),
+                context,
+                create,
+              )
+        );
       case ASTType.CallExpression:
         args = [];
         ast.arguments.forEach((expr) => {
@@ -505,7 +510,7 @@ export class ASTInterpreter {
    * Returns the value of a literal.
    * @param {*} value - The literal value.
    * @param {Object} [context] - The context.
-   * @returns {function} The function returning the literal value.
+   * @returns {import("./interface.ts").CompiledExpressionFunction} The function returning the literal value.
    */
   value(value, context) {
     return function () {
@@ -518,7 +523,7 @@ export class ASTInterpreter {
    * @param {string} name - The identifier name.
    * @param {Object} [context] - The context.
    * @param {boolean|1} [create] - Whether to create the identifier if it does not exist.
-   * @returns {function} The function returning the identifier value.
+   * @returns {import("./interface.ts").CompiledExpressionFunction} The function returning the identifier value.
    */
   identifier(name, context, create) {
     return function (scope, locals) {

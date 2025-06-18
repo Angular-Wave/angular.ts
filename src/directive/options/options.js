@@ -30,7 +30,7 @@ export const ngOptionsDirective = [
   /**
    *
    * @param {import("../../core/compile/compile.js").CompileFn} $compile
-   * @param {import("../../core/parse/parse.js").ParseService} $parse
+   * @param {import("../../core/parse/interface.ts").ParseService} $parse
    * @returns
    */
   function ($compile, $parse) {

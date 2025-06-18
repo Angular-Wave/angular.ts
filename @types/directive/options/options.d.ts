@@ -2,7 +2,7 @@ export const ngOptionsDirective: (
   | string
   | ((
       $compile: import("../../core/compile/compile.js").CompileFn,
-      $parse: import("../../core/parse/parse.js").ParseService,
+      $parse: import("../../core/parse/interface.ts").ParseService,
     ) => {
       restrict: string;
       terminal: boolean;

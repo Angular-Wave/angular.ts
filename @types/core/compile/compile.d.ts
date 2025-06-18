@@ -125,7 +125,7 @@ export class CompileProvider {
         $interpolate: any,
         $exceptionHandler: import("../exception-handler.js").ErrorHandler,
         $templateRequest: any,
-        $parse: import("../parse/parse.js").ParseService,
+        $parse: import("../parse/interface.ts").ParseService,
         $controller: any,
         $rootScope: import("../scope/scope.js").Scope,
         $sce: any,

@@ -1,22 +1,24 @@
-ngSetterDirective.$inject = ["$parse"];
+ngSetterDirective.$inject = ["$parse", "$log"];
 /**
+ * @param {import('../../core/parse/interface.ts').ParseService} $parse
+ * @param {import('../../services/log.js').LogService} $log
  * @returns {import('../../interface.ts').Directive}
  */
-export function ngSetterDirective($parse) {
+export function ngSetterDirective($parse, $log) {
   return {
     restrict: "A",
     link(scope, element, attrs) {
       const modelExpression = attrs["ngSetter"];
 
       if (!modelExpression) {
-        console.warn("ngSetter: Model expression is not provided.");
+        $log.warn("ngSetter: Model expression is not provided.");
         return;
       }
 
       const assignModel = $parse(modelExpression).assign;
 
       if (!assignModel) {
-        console.warn("ngSetter: Invalid model expression.");
+        $log.warn("ngSetter: Invalid model expression.");
         return;
       }
 

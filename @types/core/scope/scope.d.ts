@@ -26,7 +26,7 @@ export class RootScopeProvider {
     | string
     | ((
         exceptionHandler: import("../exception-handler.js").ErrorHandler,
-        parse: import("../parse/parse.js").ParseService,
+        parse: import("../parse/interface.ts").ParseService,
       ) => Scope)
   )[];
 }
@@ -35,7 +35,7 @@ export class RootScopeProvider {
  * @typedef {Object} Listener
  * @property {Object} originalTarget - The original target object.
  * @property {ListenerFunction} listenerFn - The function invoked when changes are detected.
- * @property {import("../parse/parse.js").CompiledExpression} watchFn
+ * @property {import("../parse/interface.ts").CompiledExpression} watchFn
  * @property {number} id - Deregistration id
  * @property {number} scopeId - The scope that created the Listener
  * @property {string[]} property
@@ -254,7 +254,7 @@ export type Listener = {
    * - The function invoked when changes are detected.
    */
   listenerFn: ListenerFunction;
-  watchFn: import("../parse/parse.js").CompiledExpression;
+  watchFn: import("../parse/interface.ts").CompiledExpression;
   /**
    * - Deregistration id
    */

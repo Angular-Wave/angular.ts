@@ -57,7 +57,7 @@ export class InterpolateProvider {
     "$sce",
     /**
      *
-     * @param {import("../parse/parse.js").ParseService} $parse
+     * @param {import("../parse/interface.ts").ParseService} $parse
      * @param {*} $sce
      * @returns
      */

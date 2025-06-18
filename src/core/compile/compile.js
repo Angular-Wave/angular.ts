@@ -621,7 +621,7 @@ export class CompileProvider {
        * @param {*} $interpolate
        * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
        * @param {*} $templateRequest
-       * @param {import("../parse/parse.js").ParseService} $parse
+       * @param {import("../parse/interface.ts").ParseService} $parse
        * @param {*} $controller
        * @param {import('../scope/scope.js').Scope} $rootScope
        * @param {*} $sce

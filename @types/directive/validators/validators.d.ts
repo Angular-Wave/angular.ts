@@ -24,7 +24,7 @@
 export const requiredDirective: (
   | string
   | ((
-      $parse: import("../../core/parse/parse.js").ParseService,
+      $parse: import("../../core/parse/interface.ts").ParseService,
     ) => import("../../interface.ts").Directive)
 )[];
 /**
@@ -69,7 +69,7 @@ export const requiredDirective: (
 export const patternDirective: (
   | string
   | ((
-      $parse: import("../../core/parse/parse.js").ParseService,
+      $parse: import("../../core/parse/interface.ts").ParseService,
     ) => import("../../interface.ts").Directive)
 )[];
 /**
@@ -105,7 +105,7 @@ export const patternDirective: (
 export const maxlengthDirective: (
   | string
   | ((
-      $parse: import("../../core/parse/parse.js").ParseService,
+      $parse: import("../../core/parse/interface.ts").ParseService,
     ) => import("../../interface.ts").Directive)
 )[];
 /**

@@ -3,46 +3,6 @@ import { PURITY_RELATIVE } from "./interpreter.js";
 import { Lexer } from "./lexer/lexer.js";
 import { Parser } from "./parser/parser.js";
 
-/**
- * @typedef {Object} CompiledExpressionProps
- * @property {boolean} literal - Indicates if the expression is a literal.
- * @property {boolean} constant - Indicates if the expression is constant.
- * @property {boolean} [isPure]
- * @property {boolean} oneTime
- * @property {import("./interpreter.js").DecoratedASTNode} decoratedNode
- * @property {function(import('../scope/scope.js').Scope, Function, boolean, CompiledExpression, string | ((scope:  import('../scope/scope.js').Scope) => any) | CompiledExpression): any} [$$watchDelegate]
- * @property {any[]|Function} inputs
- * @property {function(any, any): any} [assign] - Assigns a value to a context. If value is not provided,
- */
-
-/**
- * @typedef {Object} CompiledExpressionHandlerMap
- * @property {boolean} literal - Indicates if the expression is a literal.
- * @property {boolean} constant - Indicates if the expression is constant.
- * @property {boolean} [isPure]
- * @property {boolean} oneTime
- * @property {Map<string, Function>} keyMap - property keys to observe
- */
-
-/**
- * @typedef {Function} CompiledExpressionFunction
- * @param {import('../scope/scope.js').Scope} context - An object against which any expressions embedded in the strings are evaluated against (typically a scope object).
- * @param {object} [locals] - local variables context object, useful for overriding values in `context`.
- * @param {any} [assign]
- * @returns {any}
- * undefined is gonna be used since the implementation
- * does not check the parameter. Let's force a value for consistency. If consumer
- * wants to undefine it, pass the undefined value explicitly.
- */
-
-/**
- * @typedef {CompiledExpressionFunction & CompiledExpressionProps} CompiledExpression
- */
-
-/**
- * @typedef {function(CompiledExpression|string|function(import('../scope/scope.js').Scope):any, function(any, import('../scope/scope.js').Scope, any):any=, boolean=): CompiledExpression} ParseService
- */
-
 export function ParseProvider() {
   const cache = Object.create(null);
 
@@ -83,7 +43,7 @@ export function ParseProvider() {
     /**
      *
      * @param {(any) => any} $filter
-     * @returns {ParseService}
+     * @returns {import('./interface').ParseService}
      */
     function ($filter) {
       /** @type {import("./lexer/lexer.js").LexerOptions} */
@@ -128,7 +88,7 @@ export function ParseProvider() {
       /**
        * @param {Function} parsedExpression
        * @param interceptorFn
-       * @returns {CompiledExpression|*}
+       * @returns {import('./interface').CompiledExpression|*}
        */
       function addInterceptor(parsedExpression, interceptorFn) {
         if (!interceptorFn) return parsedExpression;
@@ -231,8 +191,8 @@ export function constantWatchDelegate(
 
 /**
  *
- * @param {CompiledExpression} parsedExpression
- * @returns {CompiledExpression}
+ * @param {import('./interface.ts').CompiledExpression} parsedExpression
+ * @returns {import('./interface.ts').CompiledExpression}
  */
 function addWatchDelegate(parsedExpression) {
   if (parsedExpression.constant) {
@@ -249,7 +209,7 @@ function addWatchDelegate(parsedExpression) {
  * @param {import('../scope/scope.js').Scope} scope
  * @param {Function} listener
  * @param {*} objectEquality
- * @param {CompiledExpression} parsedExpression
+ * @param {import('./interface').CompiledExpression} parsedExpression
  * @returns
  */
 function inputsWatchDelegate(
@@ -276,9 +236,7 @@ function inputsWatchDelegate(
             inputExpression.isPure,
           )
         ) {
-          lastResult = parsedExpression($scope, undefined, undefined, [
-            newInputValue,
-          ]);
+          lastResult = parsedExpression($scope, undefined, [newInputValue]);
           oldInputValueOf = newInputValue && getValueOf(newInputValue);
         }
         return lastResult;
@@ -315,12 +273,7 @@ function inputsWatchDelegate(
         }
 
         if (changed) {
-          lastResult = parsedExpression(
-            scope,
-            undefined,
-            undefined,
-            oldInputValues,
-          );
+          lastResult = parsedExpression(scope, undefined, oldInputValues);
         }
 
         return lastResult;

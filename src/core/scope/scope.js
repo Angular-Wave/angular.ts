@@ -25,7 +25,7 @@ export function nextId() {
 }
 
 /**
- * @type {import('../parse/parse.js').ParseService}
+ * @type {import('../parse/interface.ts').ParseService}
  */
 let $parse;
 
@@ -56,7 +56,7 @@ export class RootScopeProvider {
     "$parse",
     /**
      * @param {import('../exception-handler.js').ErrorHandler} exceptionHandler
-     * @param {import('../parse/parse.js').ParseService} parse
+     * @param {import('../parse/interface.ts').ParseService} parse
      */
     (exceptionHandler, parse) => {
       $exceptionHandler = exceptionHandler;
@@ -118,7 +118,7 @@ export function createScope(target = {}, context) {
  * @typedef {Object} Listener
  * @property {Object} originalTarget - The original target object.
  * @property {ListenerFunction} listenerFn - The function invoked when changes are detected.
- * @property {import("../parse/parse.js").CompiledExpression} watchFn
+ * @property {import("../parse/interface.ts").CompiledExpression} watchFn
  * @property {number} id - Deregistration id
  * @property {number} scopeId - The scope that created the Listener
  * @property {string[]} property
@@ -615,6 +615,7 @@ export class Scope {
     if (get.constant) {
       if (listenerFn) {
         Promise.resolve().then(() => {
+          // @ts-ignore
           let res = get();
           while (isFunction(res)) {
             res = res();

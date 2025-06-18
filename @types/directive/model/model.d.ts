@@ -53,7 +53,7 @@ export class NgModelController {
    * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
    * @param {import('../../core/compile/attributes.js').Attributes} $attr
    * @param {Element} $element
-   * @param {import("../../core/parse/parse.js").ParseService} $parse
+   * @param {import("../../core/parse/interface.ts").ParseService} $parse
    * @param {*} $animate
    * @param {*} $interpolate
    */
@@ -62,7 +62,7 @@ export class NgModelController {
     $exceptionHandler: import("../../core/exception-handler.js").ErrorHandler,
     $attr: import("../../core/compile/attributes.js").Attributes,
     $element: Element,
-    $parse: import("../../core/parse/parse.js").ParseService,
+    $parse: import("../../core/parse/interface.ts").ParseService,
     $animate: any,
     $interpolate: any,
   );
@@ -119,16 +119,16 @@ export class NgModelController {
   };
   $$updateEvents: string;
   $$updateEventHandler(ev: any): void;
-  $$parsedNgModel: import("../../core/parse/parse.js").CompiledExpression;
-  $$parsedNgModelAssign: (arg0: any, arg1: any) => any;
+  $$parsedNgModel: import("../../core/parse/interface.ts").CompiledExpression;
+  $$parsedNgModelAssign: (context: any, value: any) => any;
   /**
-   * @type {import("../../core/parse/parse").CompiledExpression |
+   * @type {import("../../core/parse/interface.ts").CompiledExpression |
    *        (function(import("../../core/scope/scope.js").Scope): any)}
    */
   $$ngModelGet:
-    | any
+    | import("../../core/parse/interface.ts").CompiledExpression
     | ((arg0: import("../../core/scope/scope.js").Scope) => any);
-  $$ngModelSet: (arg0: any, arg1: any) => any;
+  $$ngModelSet: (context: any, value: any) => any;
   $$pendingDebounce: number;
   $$parserValid: boolean;
   /** @type {string} */
@@ -140,7 +140,7 @@ export class NgModelController {
   $$attr: import("../../core/compile/attributes.js").Attributes;
   $$element: Element;
   $$animate: any;
-  $$parse: import("../../core/parse/parse.js").ParseService;
+  $$parse: import("../../core/parse/interface.ts").ParseService;
   $$exceptionHandler: import("../../core/error-handler.ts").ErrorHandler;
   $$hasNativeValidators: boolean;
   $$classCache: {};

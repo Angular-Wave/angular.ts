@@ -36,7 +36,7 @@ import { startingTag } from "../../shared/dom.js";
 export const requiredDirective = [
   "$parse",
   /**
-   * @param {import("../../core/parse/parse.js").ParseService} $parse
+   * @param {import("../../core/parse/interface.ts").ParseService} $parse
    * @returns {import("../../interface.ts").Directive}
    */
   ($parse) => ({
@@ -118,7 +118,7 @@ export const requiredDirective = [
 export const patternDirective = [
   "$parse",
   /**
-   * @param {import("../../core/parse/parse.js").ParseService} $parse
+   * @param {import("../../core/parse/interface.ts").ParseService} $parse
    * @returns {import("../../interface.ts").Directive}
    */
   ($parse) => {
@@ -220,7 +220,7 @@ export const patternDirective = [
 export const maxlengthDirective = [
   "$parse",
   /**
-   * @param {import("../../core/parse/parse.js").ParseService} $parse
+   * @param {import("../../core/parse/interface.ts").ParseService} $parse
    * @returns {import("../../interface.ts").Directive}
    */
   ($parse) => ({

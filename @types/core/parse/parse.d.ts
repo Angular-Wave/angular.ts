@@ -1,38 +1,3 @@
-/**
- * @typedef {Object} CompiledExpressionProps
- * @property {boolean} literal - Indicates if the expression is a literal.
- * @property {boolean} constant - Indicates if the expression is constant.
- * @property {boolean} [isPure]
- * @property {boolean} oneTime
- * @property {import("./interpreter.js").DecoratedASTNode} decoratedNode
- * @property {function(import('../scope/scope.js').Scope, Function, boolean, CompiledExpression, string | ((scope:  import('../scope/scope.js').Scope) => any) | CompiledExpression): any} [$$watchDelegate]
- * @property {any[]|Function} inputs
- * @property {function(any, any): any} [assign] - Assigns a value to a context. If value is not provided,
- */
-/**
- * @typedef {Object} CompiledExpressionHandlerMap
- * @property {boolean} literal - Indicates if the expression is a literal.
- * @property {boolean} constant - Indicates if the expression is constant.
- * @property {boolean} [isPure]
- * @property {boolean} oneTime
- * @property {Map<string, Function>} keyMap - property keys to observe
- */
-/**
- * @typedef {Function} CompiledExpressionFunction
- * @param {import('../scope/scope.js').Scope} context - An object against which any expressions embedded in the strings are evaluated against (typically a scope object).
- * @param {object} [locals] - local variables context object, useful for overriding values in `context`.
- * @param {any} [assign]
- * @returns {any}
- * undefined is gonna be used since the implementation
- * does not check the parameter. Let's force a value for consistency. If consumer
- * wants to undefine it, pass the undefined value explicitly.
- */
-/**
- * @typedef {CompiledExpressionFunction & CompiledExpressionProps} CompiledExpression
- */
-/**
- * @typedef {function(CompiledExpression|string|function(import('../scope/scope.js').Scope):any, function(any, import('../scope/scope.js').Scope, any):any=, boolean=): CompiledExpression} ParseService
- */
 export function ParseProvider(): void;
 export class ParseProvider {
   /**
@@ -59,7 +24,7 @@ export class ParseProvider {
     identifierStart?: (arg0: any) => boolean,
     identifierContinue?: (arg0: any) => boolean,
   ) => ParseProvider;
-  $get: (string | (($filter: (any: any) => any) => ParseService))[];
+  $get: (string | (($filter: (any: any) => any) => any))[];
 }
 export function constantWatchDelegate(
   scope: any,
@@ -67,60 +32,3 @@ export function constantWatchDelegate(
   objectEquality: any,
   parsedExpression: any,
 ): any;
-export type CompiledExpressionProps = {
-  /**
-   * - Indicates if the expression is a literal.
-   */
-  literal: boolean;
-  /**
-   * - Indicates if the expression is constant.
-   */
-  constant: boolean;
-  isPure?: boolean;
-  oneTime: boolean;
-  decoratedNode: import("./interpreter.js").DecoratedASTNode;
-  $$watchDelegate?: (
-    arg0: import("../scope/scope.js").Scope,
-    arg1: Function,
-    arg2: boolean,
-    arg3: CompiledExpression,
-    arg4:
-      | string
-      | ((scope: import("../scope/scope.js").Scope) => any)
-      | CompiledExpression,
-  ) => any;
-  inputs: any[] | Function;
-  /**
-   * - Assigns a value to a context. If value is not provided,
-   */
-  assign?: (arg0: any, arg1: any) => any;
-};
-export type CompiledExpressionHandlerMap = {
-  /**
-   * - Indicates if the expression is a literal.
-   */
-  literal: boolean;
-  /**
-   * - Indicates if the expression is constant.
-   */
-  constant: boolean;
-  isPure?: boolean;
-  oneTime: boolean;
-  /**
-   * - property keys to observe
-   */
-  keyMap: Map<string, Function>;
-};
-export type CompiledExpressionFunction = Function;
-export type CompiledExpression = CompiledExpressionFunction &
-  CompiledExpressionProps;
-export type ParseService = (
-  arg0:
-    | CompiledExpression
-    | string
-    | ((arg0: import("../scope/scope.js").Scope) => any),
-  arg1:
-    | ((arg0: any, arg1: import("../scope/scope.js").Scope, arg2: any) => any)
-    | undefined,
-  arg2: boolean | undefined,
-) => CompiledExpression;

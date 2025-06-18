@@ -14,17 +14,21 @@ export class ASTInterpreter {
   /**
    * Compiles the AST into a function.
    * @param {import("./ast/ast").ASTNode} ast - The AST to compile.
-   * @returns {import("./parse").CompiledExpression}
+   * @returns {import("./interface.ts").CompiledExpression}
    */
-  compile(ast: any): any;
+  compile(ast: any): import("./interface.ts").CompiledExpression;
   /**
    * Recurses the AST nodes.
    * @param {import("./ast/ast").ASTNode} ast - The AST node.
    * @param {Object} [context] - The context.
    * @param {boolean|1} [create] - The create flag.
-   * @returns {import("./parse").CompiledExpressionFunction} The recursive function.
+   * @returns {import("./interface.ts").CompiledExpressionFunction} The recursive function.
    */
-  recurse(ast: any, context?: any, create?: boolean | 1): any;
+  recurse(
+    ast: any,
+    context?: any,
+    create?: boolean | 1,
+  ): import("./interface.ts").CompiledExpressionFunction;
   /**
    * Unary plus operation.
    * @param {function} argument - The argument function.
@@ -189,17 +193,24 @@ export class ASTInterpreter {
    * Returns the value of a literal.
    * @param {*} value - The literal value.
    * @param {Object} [context] - The context.
-   * @returns {function} The function returning the literal value.
+   * @returns {import("./interface.ts").CompiledExpressionFunction} The function returning the literal value.
    */
-  value(value: any, context?: any): Function;
+  value(
+    value: any,
+    context?: any,
+  ): import("./interface.ts").CompiledExpressionFunction;
   /**
    * Returns the value of an identifier.
    * @param {string} name - The identifier name.
    * @param {Object} [context] - The context.
    * @param {boolean|1} [create] - Whether to create the identifier if it does not exist.
-   * @returns {function} The function returning the identifier value.
+   * @returns {import("./interface.ts").CompiledExpressionFunction} The function returning the identifier value.
    */
-  identifier(name: string, context?: any, create?: boolean | 1): Function;
+  identifier(
+    name: string,
+    context?: any,
+    create?: boolean | 1,
+  ): import("./interface.ts").CompiledExpressionFunction;
   /**
    * Returns the value of a computed member expression.
    * @param {function} left - The left operand function.

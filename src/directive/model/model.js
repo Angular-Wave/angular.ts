@@ -81,7 +81,7 @@ export class NgModelController {
    * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
    * @param {import('../../core/compile/attributes.js').Attributes} $attr
    * @param {Element} $element
-   * @param {import("../../core/parse/parse.js").ParseService} $parse
+   * @param {import("../../core/parse/interface.ts").ParseService} $parse
    * @param {*} $animate
    * @param {*} $interpolate
    */
@@ -138,7 +138,7 @@ export class NgModelController {
     this.$$parsedNgModelAssign = this.$$parsedNgModel.assign;
 
     /**
-     * @type {import("../../core/parse/parse").CompiledExpression |
+     * @type {import("../../core/parse/interface.ts").CompiledExpression |
      *        (function(import("../../core/scope/scope.js").Scope): any)}
      */
     this.$$ngModelGet = this.$$parsedNgModel;

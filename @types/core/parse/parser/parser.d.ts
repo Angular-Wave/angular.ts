@@ -22,9 +22,9 @@ export class Parser {
   /**
    *
    * @param {string} exp - Expression to be parsed
-   * @returns {import("../parse.js").CompiledExpression}
+   * @returns {import("../interface.ts").CompiledExpression}
    */
-  parse(exp: string): import("../parse.js").CompiledExpression;
+  parse(exp: string): import("../interface.ts").CompiledExpression;
   /**
    * @param {string} exp - Expression to be parsed
    * @returns {ParsedAST}
