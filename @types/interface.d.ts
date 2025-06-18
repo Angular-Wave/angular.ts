@@ -53,13 +53,13 @@ export interface Provider {
    * @param name - The name of the service.
    * @param factoryFn - A function (or annotated array) that returns the service instance.
    */
-  factory(name: string, factoryFn: Function): ServiceProvider;
+  factory(name: string, factoryFn: Injectable): ServiceProvider;
   /**
    * Register a constructor function to create a service.
    * @param name - The name of the service.
    * @param constructor - A class or function to instantiate.
    */
-  service(name: string, constructor: Function): ServiceProvider;
+  service(name: string, constructor: Injectable): ServiceProvider;
   /**
    * Register a fixed value as a service.
    * @param name - The name of the service.
@@ -77,7 +77,7 @@ export interface Provider {
    * @param name - The name of the service to decorate.
    * @param fn - A function that takes `$delegate` and returns a decorated service.
    */
-  decorator(name: string, fn: Function): void;
+  decorator(name: string, fn: Injectable): void;
 }
 /**
  * A filter function takes an input and optional arguments, and returns a transformed value.

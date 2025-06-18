@@ -261,6 +261,7 @@ export class Attributes {
   }
 
   sanitizeSrcset(value, invokeType) {
+    let i;
     if (!value) {
       return value;
     }
@@ -281,21 +282,21 @@ export class Attributes {
     // `$sce.trustAsHtml` on the whole `img` tag and inject it into the DOM using the
     // `ng-bind-html` directive.
 
-    var result = "";
+    let result = "";
 
     // first check if there are spaces because it's not the same pattern
-    var trimmedSrcset = trim(value);
+    const trimmedSrcset = trim(value);
     //                (   999x   ,|   999w   ,|   ,|,   )
-    var srcPattern = /(\s+\d+x\s*,|\s+\d+w\s*,|\s+,|,\s+)/;
-    var pattern = /\s/.test(trimmedSrcset) ? srcPattern : /(,)/;
+    const srcPattern = /(\s+\d+x\s*,|\s+\d+w\s*,|\s+,|,\s+)/;
+    const pattern = /\s/.test(trimmedSrcset) ? srcPattern : /(,)/;
 
     // split srcset into tuple of uri and descriptor except for the last item
-    var rawUris = trimmedSrcset.split(pattern);
+    const rawUris = trimmedSrcset.split(pattern);
 
     // for each tuples
-    var nbrUrisWith2parts = Math.floor(rawUris.length / 2);
-    for (var i = 0; i < nbrUrisWith2parts; i++) {
-      var innerIdx = i * 2;
+    const nbrUrisWith2parts = Math.floor(rawUris.length / 2);
+    for (i = 0; i < nbrUrisWith2parts; i++) {
+      const innerIdx = i * 2;
       // sanitize the uri
       result += this.$sce.getTrustedMediaUrl(trim(rawUris[innerIdx]));
       // add the descriptor
@@ -303,7 +304,7 @@ export class Attributes {
     }
 
     // split the last item into uri and descriptor
-    var lastTuple = trim(rawUris[i * 2]).split(/\s/);
+    const lastTuple = trim(rawUris[i * 2]).split(/\s/);
 
     // sanitize the last uri
     result += this.$sce.getTrustedMediaUrl(trim(lastTuple[0]));

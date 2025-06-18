@@ -167,7 +167,7 @@
  * @typedef {Object} TranscludeFunctionObject
  * @property {function(TScope, CloneAttachFunction, Element=, string=): Element} transcludeWithScope
  * @property {function(CloneAttachFunction=, Element=, string=): Element} transcludeWithoutScope
- * @property {function(string): boolean} isSlotFilled - Returns true if the specified slot contains content (i.e., one or more DOM nodes)
+ * @property {function(string): boolean} isSlotFilled - Returns true if the specified slot contains content (i.e., one or more DOM ns)
  */
 
 /**
@@ -183,6 +183,8 @@
  * Directive definition object.
  *
  * @typedef {Object} Directive
+ * @property {string} [name]
+ * Name of the directive
  * @property {DirectiveCompileFn | undefined} [compile]
  * Compile function for the directive.
  * @property {string | Injectable<ControllerConstructor> | undefined} [controller]

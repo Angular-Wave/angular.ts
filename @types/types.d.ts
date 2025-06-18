@@ -117,7 +117,7 @@ export type TranscludeFunctionObject = {
     arg2: string | undefined,
   ) => Element;
   /**
-   * - Returns true if the specified slot contains content (i.e., one or more DOM nodes)
+   * - Returns true if the specified slot contains content (i.e., one or more DOM ns)
    */
   isSlotFilled: (arg0: string) => boolean;
 };
@@ -138,6 +138,10 @@ export type DirectivePrePost = {
  * Directive definition object.
  */
 export type Directive = {
+  /**
+   * Name of the directive
+   */
+  name?: string;
   /**
    * Compile function for the directive.
    */

@@ -252,9 +252,8 @@ $StateRefActiveDirective.$inject = [
 ];
 
 /**
- *
  * @param {*} $state
- * @param {*} $routerGlobals
+ * @param {import('../globals.js').RouterGlobals} $routerGlobals
  * @param {*} $interpolate
  * @param {*} $stateRegistry
  * @param {*} $transitions

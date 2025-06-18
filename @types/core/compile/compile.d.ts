@@ -1,9 +1,14 @@
-export function CompileProvider(
-  $provide: any,
-  $$sanitizeUriProvider: any,
-): void;
+export const DirectiveSuffix: "Directive";
 export class CompileProvider {
-  constructor($provide: any, $$sanitizeUriProvider: any);
+  static $inject: string[];
+  /**
+   * @param {import('../../interface.js').Provider} $provide
+   * @param $$sanitizeUriProvider
+   */
+  constructor(
+    $provide: import("../../interface.js").Provider,
+    $$sanitizeUriProvider: any,
+  );
   /**
    * Register a new directive with the compiler.
    *
@@ -134,10 +139,6 @@ export class CompileProvider {
       ) => PublicLinkFn)
   )[];
 }
-export namespace CompileProvider {
-  let $inject: string[];
-}
-export const DirectiveSuffix: "Directive";
 /**
  * A function passed as the fifth argument to a {@type PublicLinkFn} link function.
  * It behaves like a linking function, with the `scope` argument automatically created
@@ -165,7 +166,7 @@ export type PublicLinkFn = (
   scope: import("../scope/scope.js").Scope,
   cloneConnectFn?: TranscludeFn,
   options?: any,
-) => Element | Node | ChildNode;
+) => Element | Node | ChildNode | Node[];
 export type CompileFn = (
   compileNode: string | Element | Node | ChildNode | NodeList,
   transcludeFn?: TranscludeFn,
@@ -179,9 +180,10 @@ export type LinkFnMapping = {
   childLinkFn?: CompositeLinkFn;
 };
 export type CompileNodesFn = () => CompositeLinkFn;
-export type NodeLinkFn = (
-  childLinkFn: CompositeLinkFn,
-) => Node | Element | NodeList;
+export type NodeLinkFn = () => Node | Element | NodeList;
+export type NodeLinkFnCtx = {
+  nodeLinkFn: NodeLinkFn;
+};
 export type ApplyDirectivesToNodeFn = () => NodeLinkFn;
 export type CompositeLinkFn = (
   scope: import("../scope/scope.js").Scope,
