@@ -43,7 +43,7 @@ export interface CompiledExpressionProps {
  * Evaluates the compiled expression.
  */
 export type CompiledExpressionFunction = (
-  context: Scope,
+  context?: Scope,
   locals?: object,
   assign?: any,
 ) => any;
@@ -78,7 +78,7 @@ export interface CompiledExpressionHandlerMap {
  * @returns A compiled expression.
  */
 export type ParseService = (
-  expression: CompiledExpression | string | ((scope: Scope) => any),
+  expression?: CompiledExpression | string | ((scope: Scope) => any),
   interceptorFn?: (value: any, scope: Scope, locals: any) => any,
   expensiveChecks?: boolean,
 ) => CompiledExpression;

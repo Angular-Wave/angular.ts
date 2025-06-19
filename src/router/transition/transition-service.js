@@ -65,6 +65,7 @@ export class TransitionProvider {
 
   /**
    * @param {import('../globals.js').RouterGlobals} globals
+   * @param viewService
    */
   constructor(globals, viewService) {
     this._transitionCount = 0;

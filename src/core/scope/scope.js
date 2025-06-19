@@ -227,6 +227,7 @@ export class Scope {
    * @param {Object} target - The target object.
    * @param {string} property - The name of the property being set.
    * @param {*} value - The new value being assigned to the property.
+   * @param {Proxy} proxy - The proxy intercepting property access
    * @returns {boolean} - Returns true to indicate success of the operation.
    */
   set(target, property, value, proxy) {
@@ -615,7 +616,6 @@ export class Scope {
     if (get.constant) {
       if (listenerFn) {
         Promise.resolve().then(() => {
-          // @ts-ignore
           let res = get();
           while (isFunction(res)) {
             res = res();
@@ -994,12 +994,19 @@ export class Scope {
     return await this.$eval(expr, locals);
   }
 
+  /**
+   * @param {Object} newTarget
+   */
   $merge(newTarget) {
     Object.entries(newTarget).forEach(([key, value]) => {
-      this.set(this.$target, key, value);
+      this.set(this.$target, key, value, this.$proxy);
     });
   }
 
+  /**
+   * @param {import('../../interface.js').Expression} expr
+   * @returns {any}
+   */
   $apply(expr) {
     try {
       return $parse(expr)(this.$proxy);
@@ -1008,6 +1015,11 @@ export class Scope {
     }
   }
 
+  /**
+   * @param {string} name
+   * @param {Function} listener
+   * @returns {(function(): void)|*}
+   */
   $on(name, listener) {
     let namedListeners = this.$$listeners.get(name);
     if (!namedListeners) {
@@ -1030,7 +1042,7 @@ export class Scope {
   /**
    * @param {string} name
    * @param  {...any} args
-   * @returns
+   * @returns {void}
    */
   $emit(name, ...args) {
     return this.eventHelper(

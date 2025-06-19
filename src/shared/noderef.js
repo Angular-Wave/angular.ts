@@ -66,7 +66,7 @@ export class NodeRef {
       this._node = element;
     }
 
-    // Nandle array of elements
+    // Handle array of elements
     else if (element instanceof Array) {
       if (element.length == 1) {
         this.initial = element[0].cloneNode(true);
@@ -109,8 +109,6 @@ export class NodeRef {
     } else {
       this._element = undefined;
     }
-    // this._nodes = undefined;
-    // this.isList = false;
   }
 
   /** @param {Array<Node>} nodes */

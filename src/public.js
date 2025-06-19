@@ -127,6 +127,7 @@ import {
 } from "./router/directives/view-directive.js";
 import { ngChannelDirective } from "./directive/channel/channel.js";
 import { ngSetterDirective } from "./directive/setter/setter.js";
+import { PubSubProvider } from "./core/pubsub/pubsub.js";
 
 //injected by Rollup plugin
 export const VERSION = "[VI]{version}[/VI]";
@@ -143,6 +144,7 @@ export function publishExternalAPI(angular) {
       [],
       [
         "$provide",
+        /** @type {import('./interface.js').Provider} */
         ($provide) => {
           // $$sanitizeUriProvider needs to be before $compileProvider as it is used by it.
           $provide.provider({
@@ -266,12 +268,17 @@ export function publishExternalAPI(angular) {
             $templateFactory: TemplateFactoryProvider,
             $urlService: UrlService,
             $stateRegistry: StateRegistryProvider,
+            $eventBus: PubSubProvider,
           });
         },
       ],
     )
     .factory("$stateParams", [
       "$routerGlobals",
+      /**
+       * @param {import('./router/globals.js').RouterGlobals} globals
+       * @returns {import('./router/params/state-params.js').StateParams }
+       */
       function (globals) {
         return globals.params;
       },

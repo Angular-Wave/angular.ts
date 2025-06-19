@@ -29,15 +29,7 @@ describe("ast", () => {
   beforeEach(() => {
     createAst = function () {
       const lexer = new Lexer({});
-      const ast = new AST(lexer, {
-        csp: false,
-        literals: {
-          true: true,
-          false: false,
-          undefined: undefined,
-          null: null,
-        },
-      });
+      const ast = new AST(lexer);
       return ast.ast.apply(ast, arguments);
     };
   });

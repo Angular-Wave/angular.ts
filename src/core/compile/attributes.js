@@ -17,6 +17,9 @@ const $compileMinErr = minErr("$compile");
 const SIMPLE_ATTR_NAME = /^\w/;
 const specialAttrHolder = document.createElement("div");
 
+/**
+ * @implements {Record<string, any>}
+ */
 export class Attributes {
   static $nonscope = true;
 
@@ -26,7 +29,7 @@ export class Attributes {
    * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
    * @param {*} $sce
    * @param {import("../../shared/noderef.js").NodeRef} [nodeRef]
-   * @param {*} [attributesToCopy]
+   * @param {Object} [attributesToCopy]
    */
   constructor(
     $rootScope,

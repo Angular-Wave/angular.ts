@@ -1,3 +1,19 @@
+/** @typedef {import('../../interface.js').ServiceProvider} ServiceProvider
+
+/**
+ * Configurable provider for an injectable event bus
+ * @implements {ServiceProvider}
+ */
+export class PubSubProvider implements ServiceProvider {
+  /**
+   * @type {PubSub}
+   */
+  eventBus: PubSub;
+  /**
+   * @returns {PubSub}
+   */
+  $get: () => PubSub;
+}
 export class PubSub {
   /**
    * Runs a function asynchronously.
@@ -162,3 +178,8 @@ export class PubSub {
   dispose(): void;
 }
 export const EventBus: PubSub;
+/**
+ * /**
+ * Configurable provider for an injectable event bus
+ */
+export type ServiceProvider = import("../../interface.js").ServiceProvider;

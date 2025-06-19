@@ -155,7 +155,7 @@ export class CompileProvider {
      * @param {import("../scope/scope.js").Scope} scope
      * @param {string} directiveName
      * @param {boolean} isController
-     * @returns {Object} a configuartion object for attribute bindings
+     * @returns {Object} a configuration object for attribute bindings
      */
     function parseIsolateBindings(scope, directiveName, isController) {
       const LOCAL_REGEXP = /^([@&]|[=<]())(\??)\s*([\w$]*)$/;

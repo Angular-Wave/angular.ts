@@ -20,5 +20,4 @@ export function annotate(
   strictDi?: boolean,
   name?: string,
 ): Array<string>;
-/** @type {String[]} Used only for error reporting of circular dependencies*/
-export const path: string[];
+import { InjectorService } from "./internal-injector.js";

@@ -24,6 +24,7 @@ export class TransitionProvider {
   static $inject: string[];
   /**
    * @param {import('../globals.js').RouterGlobals} globals
+   * @param viewService
    */
   constructor(globals: import("../globals.js").RouterGlobals, viewService: any);
   _transitionCount: number;

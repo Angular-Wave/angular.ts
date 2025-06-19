@@ -1,3 +1,23 @@
+/** @typedef {import('../../interface.js').ServiceProvider} ServiceProvider
+
+/**
+ * Configurable provider for an injectable event bus
+ * @implements {ServiceProvider}
+ */
+export class PubSubProvider {
+  constructor() {
+    /**
+     * @type {PubSub}
+     */
+    this.eventBus = EventBus;
+  }
+
+  /**
+   * @returns {PubSub}
+   */
+  $get = () => this.eventBus;
+}
+
 export class PubSub {
   /**
    * Topic-based publish/subscribe channel.  Maintains a map of topics to

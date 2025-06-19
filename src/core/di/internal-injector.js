@@ -21,6 +21,7 @@ class AbstractInjector {
     this.cache = {};
     /** @type {boolean} */
     this.strictDi = strictDi;
+    /** @type {string[]} */
     this.path = [];
     /** @type {Object.<string, import("./ng-module.js").NgModule>} */
     this.modules = {};
@@ -139,6 +140,7 @@ class AbstractInjector {
   /**
    * @abstract
    * @param {string} _serviceName
+   * @returns {any}
    */
   factory(_serviceName) {
     console.error(`Unhandled ${_serviceName}`);

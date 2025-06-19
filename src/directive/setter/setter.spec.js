@@ -2,17 +2,18 @@ import { Angular } from "../../loader.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("setter", () => {
-  let $compile, $rootScope, $parse, observerSpy;
+  let $compile, $rootScope, $parse, observerSpy, $log;
 
   beforeEach(() => {
     window.angular = new Angular();
     angular.module("myModule", ["ng"]);
     angular
       .bootstrap(document.getElementById("app"), ["myModule"])
-      .invoke((_$compile_, _$rootScope_, _$parse_) => {
+      .invoke((_$compile_, _$rootScope_, _$parse_, _$log_) => {
         $compile = _$compile_;
         $rootScope = _$rootScope_;
         $parse = _$parse_;
+        $log = _$log_;
       });
     observerSpy = jasmine.createSpyObj("MutationObserver", [
       "observe",
@@ -42,12 +43,12 @@ describe("setter", () => {
   });
 
   it("should warn if no model expression is provided", async () => {
-    spyOn(console, "warn");
+    spyOn($log, "warn");
 
     $compile("<div ng-setter></div>")($rootScope);
     await wait();
 
-    expect(console.warn).toHaveBeenCalledWith(
+    expect($log.warn).toHaveBeenCalledWith(
       "ngSetter: Model expression is not provided.",
     );
   });

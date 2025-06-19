@@ -1,4 +1,11 @@
+/** @typedef {import('../interface.ts').ServiceProvider} ServiceProvider */
+/** @typedef {import('../interface.ts').AnnotatedFactory} AnnotatedFactory */
+
+/**
+ * @implements {ServiceProvider}
+ */
 export class TaskTrackerFactoryProvider {
+  /** @type {AnnotatedFactory} */
   $get = [
     "$log",
     /**

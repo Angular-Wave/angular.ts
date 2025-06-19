@@ -47,7 +47,7 @@ export function uppercase(string) {
 }
 
 /**
- * @param {*} obj
+ * @param {*} obj Reference to check.
  * @return {boolean} Returns true if `obj` is an array or array-like object (NodeList, Arguments,
  *                   String ...)
  */
@@ -107,6 +107,7 @@ export function isObject(value) {
 /**
  * Determines if a value is an object with a null prototype
  *
+ * @param {*} value Reference to check.
  * @returns {boolean} True if `value` is an `Object` with a null prototype
  */
 export function isBlankObject(value) {
@@ -806,7 +807,7 @@ export function parseKeyValue(keyValue) {
       key = tryDecodeURIComponent(key);
       if (isDefined(key)) {
         val = isDefined(val) ? tryDecodeURIComponent(val) : true;
-        if (!hasOwn(obj, key)) {
+        if (!hasOwn(obj, /** @type {string} */ (key))) {
           obj[key] = val;
         } else if (Array.isArray(obj[key])) {
           obj[key].push(val);
@@ -846,13 +847,13 @@ export function toKeyValue(obj) {
  * Tries to decode the URI component without throwing an exception.
  *
  * @param  {string} value potential URI component to check.
- * @returns {string}
+ * @returns {string|void}
  */
 export function tryDecodeURIComponent(value) {
   try {
     return decodeURIComponent(value);
   } catch {
-    value;
+    return;
   }
 }
 
@@ -1173,24 +1174,6 @@ function hasCustomOrDataAttribute(node, attr) {
 export function isObjectEmpty(obj) {
   if (!obj) return true;
   return !Object.keys(obj).length;
-}
-
-/**
- * Replaces the attributes and child elements of an existing element (`replacedElem`)
- * with those of a new element (`newElem`), while keeping the original reference.
- *
- * @param {HTMLElement} replacedElem - The element to be replaced (its content and attributes will be updated).
- * @param {HTMLElement} newElem - The element providing the new attributes and content.
- */
-export function replaceInline(replacedElem, newElem) {
-  for (const attr of Array.from(newElem.attributes)) {
-    replacedElem.setAttribute(attr.name, attr.value);
-  }
-  replacedElem.innerHTML = "";
-
-  for (const child of Array.from(newElem.childNodes)) {
-    replacedElem.appendChild(child.cloneNode(true));
-  }
 }
 
 /**

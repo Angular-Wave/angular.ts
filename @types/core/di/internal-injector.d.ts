@@ -8,6 +8,12 @@ export class ProviderInjector extends AbstractInjector {
    * @param {boolean} strictDi - Indicates if strict dependency injection is enforced.
    */
   constructor(cache: any, strictDi: boolean);
+  /**
+   * Factory method for creating services.
+   * @param {string} caller - The name of the caller requesting the service.
+   * @throws {Error} If the provider is unknown.
+   */
+  factory(caller: string): void;
 }
 /**
  * Injector for factories and services
@@ -21,11 +27,6 @@ export class InjectorService extends AbstractInjector {
    */
   constructor(strictDi: boolean, providerInjector: ProviderInjector);
   providerInjector: ProviderInjector;
-  /**
-   * @param {string} serviceName
-   * @returns {*}
-   */
-  factory(serviceName: string): any;
   /**
    *
    * @param {string} name
@@ -44,7 +45,8 @@ declare class AbstractInjector {
   cache: any;
   /** @type {boolean} */
   strictDi: boolean;
-  path: any[];
+  /** @type {string[]} */
+  path: string[];
   /** @type {Object.<string, import("./ng-module.js").NgModule>} */
   modules: {
     [x: string]: import("./ng-module.js").NgModule;
@@ -94,7 +96,8 @@ declare class AbstractInjector {
   /**
    * @abstract
    * @param {string} _serviceName
+   * @returns {any}
    */
-  factory(_serviceName: string): void;
+  factory(_serviceName: string): any;
 }
 export {};

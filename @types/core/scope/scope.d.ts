@@ -119,9 +119,15 @@ export class Scope {
    * @param {Object} target - The target object.
    * @param {string} property - The name of the property being set.
    * @param {*} value - The new value being assigned to the property.
+   * @param {Proxy} proxy - The proxy intercepting property access
    * @returns {boolean} - Returns true to indicate success of the operation.
    */
-  set(target: any, property: string, value: any, proxy: any): boolean;
+  set(
+    target: any,
+    property: string,
+    value: any,
+    proxy: ProxyConstructor,
+  ): boolean;
   checkeListenersForAllKeys(value: any): void;
   /**
    * Intercepts property access on the target object. It checks for specific
@@ -196,13 +202,25 @@ export class Scope {
   deregisterForeignKey(key: any, id: any): boolean;
   $eval(expr: any, locals: any): any;
   $evalAsync(expr: any, locals: any): Promise<any>;
+  /**
+   * @param {Object} newTarget
+   */
   $merge(newTarget: any): void;
-  $apply(expr: any): any;
-  $on(name: any, listener: any): () => void;
+  /**
+   * @param {import('../../interface.js').Expression} expr
+   * @returns {any}
+   */
+  $apply(expr: import("../../interface.js").Expression): any;
+  /**
+   * @param {string} name
+   * @param {Function} listener
+   * @returns {(function(): void)|*}
+   */
+  $on(name: string, listener: Function): (() => void) | any;
   /**
    * @param {string} name
    * @param  {...any} args
-   * @returns
+   * @returns {void}
    */
   $emit(name: string, ...args: any[]): void;
   /**

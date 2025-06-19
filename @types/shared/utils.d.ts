@@ -23,7 +23,7 @@ export function lowercase(string: string): string;
  */
 export function uppercase(string: string): string;
 /**
- * @param {*} obj
+ * @param {*} obj Reference to check.
  * @return {boolean} Returns true if `obj` is an array or array-like object (NodeList, Arguments,
  *                   String ...)
  */
@@ -53,6 +53,7 @@ export function isObject(value: any): boolean;
 /**
  * Determines if a value is an object with a null prototype
  *
+ * @param {*} value Reference to check.
  * @returns {boolean} True if `value` is an `Object` with a null prototype
  */
 export function isBlankObject(value: any): boolean;
@@ -390,9 +391,9 @@ export function toKeyValue(obj: any): string;
  * Tries to decode the URI component without throwing an exception.
  *
  * @param  {string} value potential URI component to check.
- * @returns {string}
+ * @returns {string|void}
  */
-export function tryDecodeURIComponent(value: string): string;
+export function tryDecodeURIComponent(value: string): string | void;
 /**
  * We need our custom method because encodeURIComponent is too aggressive and doesn't follow
  * http://www.ietf.org/rfc/rfc3986.txt with regards to the character set (pchar) allowed in path
@@ -509,17 +510,6 @@ export function hasAnimate(node: Node): boolean;
  * @returns {boolean}
  */
 export function isObjectEmpty(obj: any | null | undefined): boolean;
-/**
- * Replaces the attributes and child elements of an existing element (`replacedElem`)
- * with those of a new element (`newElem`), while keeping the original reference.
- *
- * @param {HTMLElement} replacedElem - The element to be replaced (its content and attributes will be updated).
- * @param {HTMLElement} newElem - The element providing the new attributes and content.
- */
-export function replaceInline(
-  replacedElem: HTMLElement,
-  newElem: HTMLElement,
-): void;
 /**
  * Checks whether the given object has the specified property as its own (not inherited).
  *

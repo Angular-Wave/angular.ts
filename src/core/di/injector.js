@@ -9,8 +9,8 @@ import {
   isObject,
   assert,
 } from "../../shared/utils.js";
-import { INJECTOR_LITERAL } from "./ng-module";
-import { ProviderInjector, InjectorService } from "./internal-injector";
+import { INJECTOR_LITERAL } from "./ng-module.js";
+import { ProviderInjector, InjectorService } from "./internal-injector.js";
 
 const ARROW_ARG = /^([^(]+?)=>/;
 const FN_ARGS = /^[^(]*\(\s*([^)]*)\)/m;
@@ -18,10 +18,7 @@ const FN_ARG_SPLIT = /,/;
 const FN_ARG = /^\s*(_?)(\S+?)\1\s*$/;
 const STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/gm;
 const $injectorMinErr = minErr(INJECTOR_LITERAL);
-
 const providerSuffix = "Provider";
-/** @type {String[]} Used only for error reporting of circular dependencies*/
-export const path = [];
 
 /**
  *

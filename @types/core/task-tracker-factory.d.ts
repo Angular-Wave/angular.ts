@@ -1,8 +1,11 @@
-export class TaskTrackerFactoryProvider {
-  $get: (
-    | string
-    | ((log: import("../services/log.js").LogService) => TaskTracker)
-  )[];
+/** @typedef {import('../interface.ts').ServiceProvider} ServiceProvider */
+/** @typedef {import('../interface.ts').AnnotatedFactory} AnnotatedFactory */
+/**
+ * @implements {ServiceProvider}
+ */
+export class TaskTrackerFactoryProvider implements ServiceProvider {
+  /** @type {AnnotatedFactory} */
+  $get: AnnotatedFactory;
 }
 /**
  * A factory function to create `TaskTracker` instances.
@@ -69,3 +72,5 @@ export class TaskTracker {
    */
   private getLastCallbackForType;
 }
+export type ServiceProvider = import("../interface.ts").ServiceProvider;
+export type AnnotatedFactory = import("../interface.ts").AnnotatedFactory;

@@ -1,4 +1,7 @@
-export class Attributes {
+/**
+ * @implements {Record<string, any>}
+ */
+export class Attributes implements Record<string, any> {
   static $nonscope: boolean;
   /**
    * @param {import('../scope/scope.js').Scope} $rootScope
@@ -6,7 +9,7 @@ export class Attributes {
    * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
    * @param {*} $sce
    * @param {import("../../shared/noderef.js").NodeRef} [nodeRef]
-   * @param {*} [attributesToCopy]
+   * @param {Object} [attributesToCopy]
    */
   constructor(
     $rootScope: import("../scope/scope.js").Scope,

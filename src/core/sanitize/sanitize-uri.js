@@ -59,6 +59,7 @@ export class SanitizeUriProvider {
     return (uri, isMediaUrl) => {
       if (!uri) return uri;
 
+      /** @type {RegExp} */
       const regex = isMediaUrl
         ? this._imgSrcSanitizationTrustedUrlList
         : this._aHrefSanitizationTrustedUrlList;
