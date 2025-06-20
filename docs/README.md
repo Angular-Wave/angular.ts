@@ -37,7 +37,10 @@ A simple way to get started is to use this project as a template, which gives yo
 git clone --depth 1 https://github.com/me/example.git
 ```
 
-You can now edit your own versions of the site’s source files.
+Depending on your environment you may need to adjust the top-level `module` settings in your project's Hugo config file, for example, by adding a proxy to use when downloading remote modules.
+You can find details of what these configuration settings do in the [Hugo modules documentation](https://gohugo.io/hugo-modules/configuration/#module-config-top-level). 
+
+Once your settings are adjusted, you can edit your own versions of the site’s source files.
 
 If you want to do SCSS edits and want to publish these, you need to install `PostCSS`
 
@@ -96,7 +99,6 @@ To remove the produced images run:
 ```bash
 docker-compose rm
 ```
-
 For more information see the [Docker Compose documentation][].
 
 ## Using a local Docsy clone
@@ -107,7 +109,7 @@ Clone the latest version of the docsy theme into the parent folder of your proje
 
 ```shell
 cd root-of-your-site
-git clone --branch v0.7.2 https://github.com/google/docsy.git ../docsy
+git clone --branch v0.12.0 https://github.com/google/docsy.git ../docsy
 ```
 
 Now run:
@@ -122,7 +124,7 @@ or, when using npm, prepend `local` to the script you want to invoke, e.g.:
 npm run local serve
 ```
 
-By using the `HUGO_MODULE_WORKSPACE` directive (either directly or via prefix `local` when using npm), the server now watches all files and directories inside the sibling directory `../docsy` , too. Any changes inside the local `docsy` theme clone are now immediately picked up (hot reload), you can instantly see the effect of your local edits.
+By using the `HUGO_MODULE_WORKSPACE` directive (either directly or via prefix `local` when using npm), the server now watches all files and directories inside the sibling directory `../docsy` , too. Any changes inside the local `docsy` theme clone are  now immediately picked up (hot reload), you can instantly see the effect of your local edits.
 
 In the command above, we used the environment variable `HUGO_MODULE_WORKSPACE` to tell hugo about the local workspace file `docsy.work`. Alternatively, you can declare the workspace file inside your settings file `hugo.toml`:
 
@@ -146,7 +148,7 @@ Error: Error building site: "C:\Users\foo\path\to\docsy-example\content\en\_inde
 Built in 27 ms
 ```
 
-This error occurs if you are running an outdated version of Hugo. As of docsy theme version `v0.7.0`, hugo version `0.110.0` or higher is required.
+This error occurs if you are running an outdated version of Hugo. As of docsy theme version `v0.12.0`, hugo version `0.146.0` or higher is required.
 See this [section](https://www.docsy.dev/docs/get-started/docsy-as-module/installation-prerequisites/#install-hugo) of the user guide for instructions on how to install Hugo.
 
 Or you may be confronted with the following error:
@@ -171,8 +173,9 @@ $ hugo server
 Error: failed to download modules: binary with name "go" not found
 ```
 
-This error occurs if you have not installed the `go` programming language on your system.
+This error occurs if the `go` programming language is not available on your system.
 See this [section](https://www.docsy.dev/docs/get-started/docsy-as-module/installation-prerequisites/#install-go-language) of the user guide for instructions on how to install `go`.
+
 
 [alternate dashboard]: https://app.netlify.com/sites/goldydocs/deploys
 [deploys]: https://app.netlify.com/sites/docsy-example/deploys
