@@ -1,5 +1,5 @@
 baseURL = "https://example.docsy.dev/"
-title = "Goldydocs"
+title = "AngularTS"
 
 # Language settings
 contentDir = "content/en"
@@ -55,7 +55,7 @@ anchor = "smart"
 [languages]
 [languages.en]
 languageName ="English"
-title = "Goldydocs"
+title = "AngularTS"
 [languages.en.params]
 description = "A Docsy example site"
 
