@@ -360,7 +360,9 @@ export class Scope {
       if (isUndefined(target[property]) && isProxy(value)) {
         this.foreignProxies.add(value);
         target[property] = value;
-        return true;
+        if (!this.watchers.has(property)) {
+          return true;
+        }
       }
 
       if (isUndefined(value)) {

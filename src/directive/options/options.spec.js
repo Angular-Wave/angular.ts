@@ -203,22 +203,22 @@ xdescribe("ngOptions", () => {
             },
           }));
 
-        $provide.decorator("ngOptionsDirective", ($delegate) => {
-          const origPreLink = $delegate[0].link.pre;
-          const origPostLink = $delegate[0].link.post;
+        // $provide.decorator("ngOptionsDirective", ($delegate) => {
+        //   const origPreLink = $delegate[0].link.pre;
+        //   const origPostLink = $delegate[0].link.post;
 
-          $delegate[0].compile = function () {
-            return {
-              pre: origPreLink,
-              post() {
-                linkLog.push("linkNgOptions");
-                origPostLink.apply(this, arguments);
-              },
-            };
-          };
+        //   $delegate[0].compile = function () {
+        //     return {
+        //       pre: origPreLink,
+        //       post() {
+        //         linkLog.push("linkNgOptions");
+        //         origPostLink.apply(this, arguments);
+        //       },
+        //     };
+        //   };
 
-          return $delegate;
-        });
+        //   return $delegate;
+        // });
       },
     ]);
     $compile = injector.get("$compile");
@@ -277,13 +277,13 @@ xdescribe("ngOptions", () => {
     );
   }
 
-  it('should throw when not formated "? for ? in ?"', async () => {
+  fit('should throw when not formated "? for ? in ?"', async () => {
     compile('<select ng-model="selected" ng-options="i dont parse"></select>');
     await wait();
     expect(errors[0]).toMatch("iexp");
   });
 
-  it("should have a dependency on ngModel", async () => {
+  fit("should have a dependency on ngModel", async () => {
     try {
       await compile('<select ng-options="item in items"></select>');
       await wait();
@@ -292,37 +292,36 @@ xdescribe("ngOptions", () => {
     }
   });
 
-  it("should render a list", async () => {
+  fit("should render a list", async () => {
     element.innerHTML =
       '<select ng-model="selected" ng-options="value.name for value in values"></select>';
     injector = window.angular.bootstrap(element, ["myModule"]);
+    await wait();
     scope = injector.get("$rootScope");
     await wait();
     scope.values = [{ name: "A" }, { name: "B" }, { name: "C" }];
     await wait();
-    debugger;
-    scope.selected = { name: "B" };
-
+    scope.selected = scope.values[1];
     await wait();
     const options = element.querySelectorAll("option");
     expect(options.length).toEqual(3);
-    // expect(options[0]).toEqualOption(scope.values[0], "A");
-    // expect(options[1]).toEqualOption(scope.values[1], "B");
-    // expect(options[2]).toEqualOption(scope.values[2], "C");
-    // expect(options[1].selected).toEqual(true);
+    expect(options[0]).toEqualOption(scope.values[0], "A");
+    expect(options[1]).toEqualOption(scope.values[1], "B");
+    expect(options[2]).toEqualOption(scope.values[2], "C");
+    expect(options[1].selected).toEqual(true);
   });
 
-  it("should not include properties with non-numeric keys in array-like collections when using array syntax", () => {
-    createSelect({
-      "ng-model": "selected",
-      "ng-options": "value for value in values",
-    });
-
+  it("should not include properties with non-numeric keys in array-like collections when using array syntax", async () => {
+    element.innerHTML =
+      '<select ng-model="selected" ng-options="value for value in values"></select>';
+    injector = window.angular.bootstrap(element, ["myModule"]);
+    await wait();
     scope.$apply(() => {
       scope.values = { 0: "X", 1: "Y", 2: "Z", a: "A", length: 3 };
-      scope.selected = scope.values[1];
     });
-
+    await wait();
+    scope.selected = scope.values[1];
+    await wait();
     const options = element.querySelectorAll("option");
     expect(options.length).toEqual(3);
     expect(options[0]).toEqualOption("X");
