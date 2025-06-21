@@ -381,11 +381,10 @@ export const ngOptionsDirective = [
         // compile the element since there might be bindings in it
         const linkFn = $compile(selectCtrl.emptyOption);
         assertArg(linkFn, "LinkFn required");
+        selectElement.prepend(selectCtrl.emptyOption);
         linkFn(scope);
 
-        selectElement.prepend(selectCtrl.emptyOption);
-
-        if (selectCtrl.emptyOption[0].nodeType === Node.COMMENT_NODE) {
+        if (selectCtrl.emptyOption.nodeType === Node.COMMENT_NODE) {
           // This means the empty option has currently no actual DOM node, probably because
           // it has been modified by a transclusion directive.
           selectCtrl.hasEmptyOption = false;

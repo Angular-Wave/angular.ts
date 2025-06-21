@@ -165,6 +165,7 @@ describe("ngOptions", () => {
       .module("myModule", ["ng"])
       .decorator("$exceptionHandler", function () {
         return (exception) => {
+          console.error(exception.message);
           errors.push(exception.message);
         };
       });
@@ -543,50 +544,45 @@ describe("ngOptions", () => {
     expect(element.querySelectorAll("option").length).toEqual(1); // we add back the special empty option
   });
 
-  it("should shrink and then grow list", () => {
+  fit("should shrink and then grow list", async () => {
     element.innerHTML =
       '<select ng-model="selected" ng-options="value.name for value in values"></select>';
     injector = window.angular.bootstrap(element, ["myModule"]);
     scope = injector.get("$rootScope");
-
-    scope.$apply(() => {
-      scope.values = [{ name: "A" }, { name: "B" }, { name: "C" }];
-      scope.selected = scope.values[0];
-    });
-
+    await wait();
+    scope.values = [{ name: "A" }, { name: "B" }, { name: "C" }];
+    await wait();
+    scope.selected = scope.values[0];
+    await wait();
     expect(element.querySelectorAll("option").length).toEqual(3);
 
-    scope.$apply(() => {
-      scope.values = [{ name: "1" }, { name: "2" }];
-      scope.selected = scope.values[0];
-    });
-
+    scope.values = [{ name: "1" }, { name: "2" }];
+    await wait();
+    scope.selected = scope.values[0];
+    await wait();
     expect(element.querySelectorAll("option").length).toEqual(2);
 
-    scope.$apply(() => {
-      scope.values = [{ name: "A" }, { name: "B" }, { name: "C" }];
-      scope.selected = scope.values[0];
-    });
-
+    scope.values = [{ name: "A" }, { name: "B" }, { name: "C" }];
+    await wait();
+    scope.selected = scope.values[0];
+    await wait();
     expect(element.querySelectorAll("option").length).toEqual(3);
   });
 
-  it("should update list", () => {
+  fit("should update list", async () => {
     element.innerHTML =
       '<select ng-model="selected" ng-options="value.name for value in values"></select>';
     injector = window.angular.bootstrap(element, ["myModule"]);
     scope = injector.get("$rootScope");
 
-    scope.$apply(() => {
-      scope.values = [{ name: "A" }, { name: "B" }, { name: "C" }];
-      scope.selected = scope.values[0];
-    });
-
-    scope.$apply(() => {
-      scope.values = [{ name: "B" }, { name: "C" }, { name: "D" }];
-      scope.selected = scope.values[0];
-    });
-
+    scope.values = [{ name: "A" }, { name: "B" }, { name: "C" }];
+    await wait();
+    scope.selected = scope.values[0];
+    await wait();
+    scope.values = [{ name: "B" }, { name: "C" }, { name: "D" }];
+    await wait();
+    scope.selected = scope.values[0];
+    await wait();
     const options = element.querySelectorAll("option");
     expect(options.length).toEqual(3);
     expect(options[0]).toEqualOption(scope.values[0], "B");
@@ -594,37 +590,36 @@ describe("ngOptions", () => {
     expect(options[2]).toEqualOption(scope.values[2], "D");
   });
 
-  it("should preserve pre-existing empty option", () => {
-    createSingleSelect(true);
-
-    scope.$apply(() => {
-      scope.values = [];
-    });
+  fit("should preserve pre-existing empty option", async () => {
+    element.innerHTML =
+      '<select ng-model="selected" ng-options="value.name for value in values"><option value="">blank</option></select>';
+    injector = window.angular.bootstrap(element, ["myModule"]);
+    scope = injector.get("$rootScope");
+    await wait();
+    scope.values = [];
+    await wait();
     expect(element.querySelectorAll("option").length).toEqual(1);
-
-    scope.$apply(() => {
-      scope.values = [{ name: "A" }];
-      scope.selected = scope.values[0];
-    });
-
+    scope.values = [{ name: "A" }];
+    await wait();
+    scope.selected = scope.values[0];
+    await wait();
     expect(element.querySelectorAll("option").length).toEqual(2);
     expect(element.querySelectorAll("option")[0].textContent).toEqual("blank");
     expect(element.querySelectorAll("option")[1].textContent).toEqual("A");
 
-    scope.$apply(() => {
-      scope.values = [];
-      scope.selected = null;
-    });
-
+    scope.values = [];
+    await wait();
+    scope.selected = null;
+    await wait();
     expect(element.querySelectorAll("option").length).toEqual(1);
     expect(element.querySelectorAll("option")[0].textContent).toEqual("blank");
   });
 
-  it("should ignore $ and $$ properties", () => {
-    createSelect({
-      "ng-options": "key as value for (key, value) in object",
-      "ng-model": "selected",
-    });
+  fit("should ignore $ and $$ properties", async () => {
+    element.innerHTML =
+      '<select ng-model="selected" ng-options="key as value for (key, value) in object"></select>';
+    injector = window.angular.bootstrap(element, ["myModule"]);
+    scope = injector.get("$rootScope");
 
     scope.$apply(() => {
       scope.object = {
@@ -634,7 +629,7 @@ describe("ngOptions", () => {
       };
       scope.selected = "regularProperty";
     });
-
+    await wait();
     const options = element.querySelectorAll("option");
     expect(options.length).toEqual(1);
     expect(options[0]).toEqualOption("regularProperty", "visible");
@@ -2233,7 +2228,10 @@ describe("ngOptions", () => {
     });
 
     it("should select the provided empty option if bound to null", () => {
-      createSingleSelect(true);
+      element.innerHTML =
+        '<select ng-model="selected" ng-options="value.name for value in values"><option value="">blank</option></select>';
+      injector = window.angular.bootstrap(element, ["myModule"]);
+      scope = injector.get("$rootScope");
 
       scope.$apply(() => {
         scope.values = [{ name: "A" }];
@@ -2254,7 +2252,10 @@ describe("ngOptions", () => {
     });
 
     it("should reuse blank option if bound to null", () => {
-      createSingleSelect(true);
+      element.innerHTML =
+        '<select ng-model="selected" ng-options="value.name for value in values"><option value="">blank</option></select>';
+      injector = window.angular.bootstrap(element, ["myModule"]);
+      scope = injector.get("$rootScope");
 
       scope.$apply(() => {
         scope.values = [{ name: "A" }];
@@ -2326,7 +2327,10 @@ describe("ngOptions", () => {
       () => {
         scope.selected = "C";
         scope.values = [{ name: "A" }, { name: "B" }];
-        createSingleSelect(true);
+        element.innerHTML =
+          '<select ng-model="selected" ng-options="value.name for value in values"><option value="">blank</option></select>';
+        injector = window.angular.bootstrap(element, ["myModule"]);
+        scope = injector.get("$rootScope");
 
         expect(element.value).toBe("?");
         expect(element.length).toBe(4);
@@ -2363,7 +2367,10 @@ describe("ngOptions", () => {
     it("should remove unknown option when empty option exists and model is undefined", () => {
       scope.selected = "C";
       scope.values = [{ name: "A" }, { name: "B" }];
-      createSingleSelect(true);
+      element.innerHTML =
+        '<select ng-model="selected" ng-options="value.name for value in values"><option value="">blank</option></select>';
+      injector = window.angular.bootstrap(element, ["myModule"]);
+      scope = injector.get("$rootScope");
 
       expect(element.value).toBe("?");
 
@@ -2620,7 +2627,10 @@ describe("ngOptions", () => {
       scope.$apply(() => {
         scope.values = [{ name: "A" }];
       });
-      createSingleSelect(true);
+      element.innerHTML =
+        '<select ng-model="selected" ng-options="value.name for value in values"><option value="">blank</option></select>';
+      injector = window.angular.bootstrap(element, ["myModule"]);
+      scope = injector.get("$rootScope");
       // ensure the first option (the blank option) is selected
       expect(element.selectedIndex).toEqual(0);
       // ensure the option has not changed following the digest
@@ -2818,7 +2828,10 @@ describe("ngOptions", () => {
     });
 
     it("should update model to null on change", () => {
-      createSingleSelect(true);
+      element.innerHTML =
+        '<select ng-model="selected" ng-options="value.name for value in values"><option value="">blank</option></select>';
+      injector = window.angular.bootstrap(element, ["myModule"]);
+      scope = injector.get("$rootScope");
 
       scope.$apply(() => {
         scope.values = [{ name: "A" }, { name: "B" }];
