@@ -364,7 +364,6 @@ export class Scope {
           return true;
         }
       }
-
       if (isUndefined(value)) {
         target[property] = value;
       } else {

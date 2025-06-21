@@ -899,13 +899,19 @@ function radioInputType(scope, element, attr, ctrl) {
   };
 
   element.addEventListener("change", listener);
-
+  // NgModelController call
   ctrl.$render = function () {
     let { value } = attr;
     if (doTrim) {
       value = trim(value);
     }
-    element.checked = value === ctrl.$viewValue;
+    const deproxy = isProxy(ctrl.$viewValue)
+      ? ctrl.$viewValue.$target
+      : ctrl.$viewValue;
+    // the proxy may reach down two levels
+    element.checked =
+      (isProxy(value) ? value.$target : value) ===
+      (isProxy(deproxy) ? deproxy.$target : deproxy);
   };
 
   attr.$observe("value", ctrl.$render);
