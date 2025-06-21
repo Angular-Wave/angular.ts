@@ -12,6 +12,12 @@ import {
 
 const ngOptionsMinErr = minErr("ngOptions");
 
+/** @type {HTMLOptionElement} */
+const optionTemplate = document.createElement("option");
+
+/** @type {HTMLOptGroupElement} */
+const optGroupTemplate = document.createElement("optgroup");
+
 const NG_OPTIONS_REGEXP =
   /^\s*([\s\S]+?)(?:\s+as\s+([\s\S]+?))?(?:\s+group\s+by\s+([\s\S]+?))?(?:\s+disable\s+when\s+([\s\S]+?))?\s+for\s+(?:([$\w][$\w]*)|(?:\(\s*([$\w][$\w]*)\s*,\s*([$\w][$\w]*)\s*\)))\s+in\s+([\s\S]+?)(?:\s+track\s+by\s+([\s\S]+?))?$/;
 // 1: value expression (valueFn)
@@ -34,6 +40,12 @@ export const ngOptionsDirective = [
    * @returns
    */
   function ($compile, $parse) {
+    /**
+     * @param {import('../../interface.ts').Expression} optionsExp
+     * @param {HTMLSelectElement} selectElement
+     * @param {import('../../core/scope/scope.js').Scope} scope
+     * @returns
+     */
     function parseOptionsExpression(optionsExp, selectElement, scope) {
       const match = optionsExp.match(NG_OPTIONS_REGEXP);
       if (!match) {
@@ -160,7 +172,9 @@ export const ngOptionsDirective = [
         }),
 
         getOptions() {
+          /** @type {Option[]} */
           const optionItems = [];
+          /** @type {Object.<string, Option>} */
           const selectValueMap = {};
 
           // The option values were already computed in the `getWatchables` fn,
@@ -211,23 +225,17 @@ export const ngOptionsDirective = [
       };
     }
 
-    // Support: IE 9 only
-    // We can't just ('<option>') since JQLite is not smart enough
-    // to create it in <select> and IE barfs otherwise.
-    const optionTemplate = document.createElement("option");
-    const optGroupTemplate = document.createElement("optgroup");
-
     /**
      *
      * @param {import("../../core/scope/scope.js").Scope} scope
      * @param {HTMLSelectElement} selectElement
-     * @param {*} attr
+     * @param {import("../../core/compile/attributes.js").Attributes} attr
      * @param {*} ctrls
      */
     function ngOptionsPostLink(scope, selectElement, attr, ctrls) {
       const selectCtrl = ctrls[0];
       const ngModelCtrl = ctrls[1];
-      const { multiple } = attr;
+      const multiple = attr["multiple"];
 
       // The emptyOption allows the application developer to provide their own custom "empty"
       // option when the viewValue does not match any of the option values.
@@ -254,7 +262,7 @@ export const ngOptionsDirective = [
 
       let options;
       const ngOptions = parseOptionsExpression(
-        attr.ngOptions,
+        attr["ngOptions"],
         selectElement,
         scope,
       );
@@ -313,14 +321,14 @@ export const ngOptionsDirective = [
         // If we are using `track by` then we must watch the tracked value on the model
         // since ngModel only watches for object identity change
         // FIXME: When a user selects an option, this watch will fire needlessly
-        // if (ngOptions.trackBy) {
-        //   scope.$watch(
-        //     () => ngOptions.getTrackByValue(ngModelCtrl.$viewValue),
-        //     () => {
-        //       ngModelCtrl.$render();
-        //     },
-        //   );
-        // }
+        if (ngOptions.trackBy) {
+          scope.$watch(
+            ngOptions.getTrackByValue(ngModelCtrl.$viewValue),
+            () => {
+              ngModelCtrl.$render();
+            },
+          );
+        }
       } else {
         selectCtrl.writeValue = function writeNgOptionsMultiple(values) {
           // The options might not be defined yet when ngModel tries to render
@@ -419,7 +427,12 @@ export const ngOptionsDirective = [
       // ------------------------------------------------------------------ //
 
       function addOptionElement(option, parent) {
-        const optionElement = optionTemplate.cloneNode(false);
+        /**
+         * @type {HTMLOptionElement}
+         */
+        const optionElement = /** @type {HTMLOptionElement} */ (
+          optionTemplate.cloneNode(false)
+        );
         parent.appendChild(optionElement);
         updateOptionElement(option, optionElement);
       }

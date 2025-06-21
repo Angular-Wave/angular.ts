@@ -12,7 +12,7 @@ export const ngOptionsDirective: (
         post: (
           scope: import("../../core/scope/scope.js").Scope,
           selectElement: HTMLSelectElement,
-          attr: any,
+          attr: import("../../core/compile/attributes.js").Attributes,
           ctrls: any,
         ) => void;
       };

@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>AngularTS</title>
+    <link rel="shortcut icon" type="image/png" href="images/favicon.ico" />
+    <script
+      type="module"
+      src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.32/angular.min.js"
+    ></script>
+  </head>
+  <body ng-app>
+    <section ng-init='values = [{ name: "A" }, { name: "B" }, { name: "C" }]'>
+      <select
+        ng-model="selected"
+        ng-options="value.name for value in values"
+      ></select>
+      {{ selected.name }}
+      <button ng-click="selected = values[0]">Select A</button>
+      <button ng-click="selected = values[1]">Select B</button>
+      <button ng-click="selected = values[2]">Select C</button>
+    </section>
+
+    <section ng-init='values1 = { 0: "X", 1: "Y", 2: "Z", a: "A", length: 3 }'>
+      <select
+        ng-model="selected1"
+        ng-options="value for value in values1"
+      ></select>
+      {{ selected1 }}
+      <button ng-click="selected1 = values1[0]">Select X</button>
+      <button ng-click="selected1 = values1[1]">Select Y</button>
+      <button ng-click="selected1 = values1[2]">Select Z</button>
+    </section>
+  </body>
+</html>
