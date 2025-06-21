@@ -146,8 +146,6 @@ export class Scope {
   ): any;
   propertyMap: {
     $watch: any;
-    $watchGroup: any;
-    $watchCollection: any;
     $new: any;
     $newIsolate: any;
     $destroy: any;
@@ -191,14 +189,13 @@ export class Scope {
     listenerFn?: ListenerFunction,
     lazy?: boolean,
   ): () => void;
-  $watchGroup(watchArray: any, listenerFn: any): void;
-  $watchCollection(watchProp: any, listenerFn: any): () => void;
   $new(childInstance: any): any;
   $newIsolate(instance: any): any;
   $transcluded(parentInstance: any): any;
-  registerKey(key: any, listener: any): void;
-  registerForeignKey(key: any, listener: any): void;
-  deregisterKey(key: any, id: any): boolean;
+  /**
+   * @private
+   */
+  private deregisterKey;
   deregisterForeignKey(key: any, id: any): boolean;
   $eval(expr: any, locals: any): any;
   $evalAsync(expr: any, locals: any): Promise<any>;
@@ -242,11 +239,11 @@ export class Scope {
   $postUpdate(fn: any): void;
   $destroy(): void;
   /**
-   * Invokes the registered listener function with watched property changes.
+   * @private
    *
    * @param {Listener} listener - The property path that was changed.
    */
-  notifyListener(listener: Listener, target: any): void;
+  private notifyListener;
   /**
    * Searches the scope instance
    *
@@ -254,6 +251,7 @@ export class Scope {
    * @returns {Scope|undefined}
    */
   $getById(id: string | number): Scope | undefined;
+  #private;
 }
 export type AsyncQueueTask = {
   handler: Scope;

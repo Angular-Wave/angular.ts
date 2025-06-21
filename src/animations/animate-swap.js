@@ -12,25 +12,22 @@ export function ngAnimateSwapDirective($animate) {
     link(scope, $element, attrs, ctrl, $transclude) {
       let previousElement;
       let previousScope;
-      scope.$watchCollection(
-        attrs["ngAnimateSwap"] || attrs["for"],
-        (value) => {
-          if (previousElement) {
-            $animate.leave(previousElement);
-          }
-          if (previousScope) {
-            previousScope.$destroy();
-            previousScope = null;
-          }
-          if (value) {
-            $transclude((clone, childScope) => {
-              previousElement = clone;
-              previousScope = childScope;
-              $animate.enter(clone, null, $element);
-            });
-          }
-        },
-      );
+      scope.$watch(attrs["ngAnimateSwap"] || attrs["for"], (value) => {
+        if (previousElement) {
+          $animate.leave(previousElement);
+        }
+        if (previousScope) {
+          previousScope.$destroy();
+          previousScope = null;
+        }
+        if (value) {
+          $transclude((clone, childScope) => {
+            previousElement = clone;
+            previousScope = childScope;
+            $animate.enter(clone, null, $element);
+          });
+        }
+      });
     },
   };
 }

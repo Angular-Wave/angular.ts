@@ -478,8 +478,6 @@ export class Scope {
 
     this.propertyMap = {
       $watch: this.$watch.bind(this),
-      $watchGroup: this.$watchGroup.bind(this),
-      $watchCollection: this.$watchCollection.bind(this),
       $new: this.$new.bind(this),
       $newIsolate: this.$newIsolate.bind(this),
       $destroy: this.$destroy.bind(this),
@@ -499,7 +497,7 @@ export class Scope {
       $root: this.$root,
       $children: this.$children,
       $id: this.$id,
-      registerForeignKey: this.registerForeignKey.bind(this),
+      registerForeignKey: this.#registerForeignKey.bind(this),
       notifyListener: this.notifyListener.bind(this),
       $merge: this.$merge.bind(this),
       $getById: this.$getById.bind(this),
@@ -675,7 +673,7 @@ export class Scope {
         keys.push(get.decoratedNode.body[0].expression.left.toWatch[0]?.name);
         keys.push(get.decoratedNode.body[0].expression.right.toWatch[0]?.name);
         keys.forEach((key) => {
-          this.registerKey(key, listener);
+          this.#registerKey(key, listener);
         });
         return () => {
           keys.forEach((key) => {
@@ -716,7 +714,7 @@ export class Scope {
           }
         });
         keys.forEach((key) => {
-          this.registerKey(key, listener);
+          this.#registerKey(key, listener);
           this.scheduleListener([listener]);
         });
 
@@ -745,7 +743,7 @@ export class Scope {
             watchProp.split(".").slice(0, -1).join("."),
           )(listener.originalTarget);
           if (potentialProxy && this.foreignProxies.has(potentialProxy)) {
-            potentialProxy.$handler.registerForeignKey(key, listener);
+            potentialProxy.$handler.#registerForeignKey(key, listener);
             potentialProxy.$handler.scheduleListener([listener]);
             return () => {
               return potentialProxy.$handler.deregisterKey(key, listener.id);
@@ -779,7 +777,7 @@ export class Scope {
           })
           .filter((x) => !!x);
         keys.forEach((key) => {
-          this.registerKey(key, listener);
+          this.#registerKey(key, listener);
           this.scheduleListener([listener]);
         });
         return () => {
@@ -846,10 +844,10 @@ export class Scope {
 
     if (keySet.length > 0) {
       keySet.forEach((key) => {
-        this.registerKey(key, listener);
+        this.#registerKey(key, listener);
       });
     } else {
-      this.registerKey(key, listener);
+      this.#registerKey(key, listener);
     }
 
     if (!lazy) {
@@ -869,14 +867,6 @@ export class Scope {
         return this.deregisterKey(key, listener.id);
       }
     };
-  }
-
-  $watchGroup(watchArray, listenerFn) {
-    watchArray.forEach((x) => this.$watch(x, listenerFn));
-  }
-
-  $watchCollection(watchProp, listenerFn) {
-    return this.$watch(watchProp, listenerFn);
   }
 
   $new(childInstance) {
@@ -908,7 +898,6 @@ export class Scope {
 
   $newIsolate(instance) {
     let child = instance ? Object.create(instance) : Object.create(null);
-    // child.$root = this.$root;
     const proxy = new Proxy(child, new Scope(this, this.$root));
     this.$children.push(proxy);
     return proxy;
@@ -921,7 +910,7 @@ export class Scope {
     return proxy;
   }
 
-  registerKey(key, listener) {
+  #registerKey(key, listener) {
     if (this.watchers.has(key)) {
       this.watchers.get(key).push(listener);
     } else {
@@ -929,14 +918,16 @@ export class Scope {
     }
   }
 
-  registerForeignKey(key, listener) {
+  #registerForeignKey(key, listener) {
     if (this.foreignListeners.has(key)) {
       this.foreignListeners.get(key).push(listener);
     } else {
       this.foreignListeners.set(key, [listener]);
     }
   }
-
+  /**
+   * @private
+   */
   deregisterKey(key, id) {
     const listenerList = this.watchers.get(key);
     if (!listenerList) return false;
@@ -1182,7 +1173,7 @@ export class Scope {
   }
 
   /**
-   * Invokes the registered listener function with watched property changes.
+   * @private
    *
    * @param {Listener} listener - The property path that was changed.
    */

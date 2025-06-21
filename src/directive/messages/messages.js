@@ -25,7 +25,7 @@ class NgMessageCtrl {
     this.head = undefined;
     this.default = undefined;
 
-    this.$scope.$watchCollection(
+    this.$scope.$watch(
       this.$attrs["ngMessages"] || this.$attrs["for"],
       this.render.bind(this),
     );
