@@ -1,3 +1,10 @@
+name: GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 jobs:
   deploy:
     runs-on: ubuntu-22.04
