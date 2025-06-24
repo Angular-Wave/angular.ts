@@ -1,4 +1,4 @@
-baseURL: https://example.docsy.dev
+baseURL: https://angular-wave.github.io/angular.ts/
 title: AngularTS
 
 # cSpell:ignore goldmark github hugo readingtime docsy subdir lastmod pygments linenos catmullrom norsk gu
