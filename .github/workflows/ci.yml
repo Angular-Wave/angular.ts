@@ -12,20 +12,56 @@ on:
       - master
 
 jobs:
-  # 1. Lint check
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.deps-cache.outputs.cache-hit }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Cache node_modules
+        id: deps-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/ms-playwright
+          key: deps-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            deps-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers (cached)
+        run: npx playwright install --with-deps
+
+      - name: Upload node_modules for reuse
+        if: steps.deps-cache.outputs.cache-hit != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: node_modules
+          path: node_modules
+
   lint:
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      - name: Install dependencies
-        run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: node_modules
+          path: node_modules
       - name: Run lint check
         run: ./node_modules/.bin/eslint ./src
 
-  # 2. TypeScript check
   typescript:
     needs: lint
     runs-on: ubuntu-latest
@@ -34,12 +70,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      - name: Install dependencies
-        run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: node_modules
+          path: node_modules
       - name: Run TypeScript check
         run: ./node_modules/.bin/tsc
 
-  # 3. Playwright tests
   playwright:
     needs: typescript
     runs-on: ubuntu-latest
@@ -48,9 +85,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      - name: Install dependencies
-        run: npm ci
-      - name: Install Playwright Browsers
+      - uses: actions/download-artifact@v4
+        with:
+          name: node_modules
+          path: node_modules
+      - name: Install Playwright browsers (cached)
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         run: npx playwright test
