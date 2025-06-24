@@ -3,11 +3,11 @@ export class CompileProvider {
   static $inject: string[];
   /**
    * @param {import('../../interface.js').Provider} $provide
-   * @param $$sanitizeUriProvider
+   * @param {import('../sanitize/sanitize-uri.js').SanitizeUriProvider} $$sanitizeUriProvider
    */
   constructor(
     $provide: import("../../interface.js").Provider,
-    $$sanitizeUriProvider: any,
+    $$sanitizeUriProvider: import("../sanitize/sanitize-uri.js").SanitizeUriProvider,
   );
   /**
    * Register a new directive with the compiler.
@@ -80,12 +80,12 @@ export class CompileProvider {
    * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
    *
    * @param {RegExp=} regexp New regexp to trust urls with.
-   * @returns {RegExp|CompileProvider} Current RegExp if called without value or self for
+   * @returns {RegExp|import('../sanitize/sanitize-uri.js').SanitizeUriProvider} Current RegExp if called without value or self for
    *    chaining otherwise.
    */
   aHrefSanitizationTrustedUrlList: (
     regexp?: RegExp | undefined,
-  ) => RegExp | CompileProvider;
+  ) => RegExp | import("../sanitize/sanitize-uri.js").SanitizeUriProvider;
   /**
    * Retrieves or overrides the default regular expression that is used for determining trusted safe
    * urls during img[src] sanitization.
@@ -98,12 +98,12 @@ export class CompileProvider {
    * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
    *
    * @param {RegExp=} regexp New regexp to trust urls with.
-   * @returns {RegExp|CompileProvider} Current RegExp if called without value or self for
+   * @returns {RegExp|import('../sanitize/sanitize-uri.js').SanitizeUriProvider} Current RegExp if called without value or self for
    *    chaining otherwise.
    */
   imgSrcSanitizationTrustedUrlList: (
     regexp?: RegExp | undefined,
-  ) => RegExp | CompileProvider;
+  ) => RegExp | import("../sanitize/sanitize-uri.js").SanitizeUriProvider;
   strictComponentBindingsEnabled: (enabled: any) => boolean | this;
   /**
    * Defines the security context for DOM properties bound by ng-prop-*.

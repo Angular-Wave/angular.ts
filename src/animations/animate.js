@@ -35,6 +35,8 @@ function prepareAnimateOptions(options) {
 }
 
 AnimateProvider.$inject = ["$provide"];
+
+/** @param {import('../interface.ts').Provider} $provide */
 export function AnimateProvider($provide) {
   const provider = this;
   let classNameFilter = null;
@@ -74,7 +76,7 @@ export function AnimateProvider($provide) {
    * ```
    *
    * @param {string} name The name of the animation (this is what the class-based CSS value will be compared to).
-   * @param {Function} factory The factory function that will be executed to return the animation
+   * @param {import("../interface.ts").Injectable} factory The factory function that will be executed to return the animation
    *                           object.
    */
   this.register = function (name, factory) {

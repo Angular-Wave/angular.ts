@@ -264,13 +264,13 @@ export class Scope {
           const listeners = this.watchers.get(property);
 
           if (listeners) {
-            this.scheduleListener(listeners);
+            this.#scheduleListener(listeners);
           }
 
           const foreignListeners = this.foreignListeners.get(property);
 
           if (foreignListeners) {
-            this.scheduleListener(foreignListeners);
+            this.#scheduleListener(foreignListeners);
           }
         }
 
@@ -295,16 +295,16 @@ export class Scope {
           const listeners = this.watchers.get(property);
 
           if (listeners) {
-            this.scheduleListener(listeners);
+            this.#scheduleListener(listeners);
           }
 
           const foreignListeners = this.foreignListeners.get(property);
 
           if (foreignListeners) {
-            this.scheduleListener(foreignListeners);
+            this.#scheduleListener(foreignListeners);
           }
 
-          this.checkeListenersForAllKeys(value);
+          this.#checkeListenersForAllKeys(value);
         }
         target[property] = createScope(value, this);
         //setDeepValue(target[property], value);
@@ -325,7 +325,7 @@ export class Scope {
           let listeners = this.watchers.get(property);
 
           if (listeners) {
-            this.scheduleListener(listeners);
+            this.#scheduleListener(listeners);
           }
         }
 
@@ -337,7 +337,7 @@ export class Scope {
         let listeners = this.watchers.get(property);
 
         if (listeners) {
-          this.scheduleListener(listeners);
+          this.#scheduleListener(listeners);
         }
 
         if (Array.isArray(target)) {
@@ -346,7 +346,7 @@ export class Scope {
             keys.forEach((key) => {
               const listeners = this.watchers.get(key);
               if (listeners) {
-                this.scheduleListener(listeners);
+                this.#scheduleListener(listeners);
               }
             });
             decodeURI;
@@ -392,7 +392,7 @@ export class Scope {
         this.watchers.get(property)?.forEach((l) => listeners.push(l));
         if (listeners.length > 0) {
           // check if the listener actually appllies to this target
-          this.scheduleListener(listeners, (x) => {
+          this.#scheduleListener(listeners, (x) => {
             return x.filter((x) => {
               if (!x.watchProp) return true;
               // Compute the expected target based on `watchProp`
@@ -420,7 +420,7 @@ export class Scope {
             );
           }
 
-          this.scheduleListener(foreignListeners);
+          this.#scheduleListener(foreignListeners);
         }
       }
 
@@ -430,7 +430,7 @@ export class Scope {
           const listeners = this.watchers.get(key);
           if (listeners) {
             if (this.scheduled !== listeners) {
-              this.scheduleListener(listeners);
+              this.#scheduleListener(listeners);
             }
           }
         });
@@ -438,22 +438,6 @@ export class Scope {
 
       return true;
     }
-  }
-
-  checkeListenersForAllKeys(value) {
-    if (isUndefined(value)) {
-      return;
-    }
-    Object.keys(value).forEach((k) => {
-      const listeners = this.watchers.get(k);
-
-      if (listeners) {
-        this.scheduleListener(listeners);
-      }
-      if (isObject(value[k])) {
-        this.checkeListenersForAllKeys(value[k]);
-      }
-    });
   }
 
   /**
@@ -485,7 +469,7 @@ export class Scope {
       $apply: this.$apply.bind(this),
       $evalAsync: this.$evalAsync.bind(this),
       $postUpdate: this.$postUpdate.bind(this),
-      $isRoot: this.isRoot.bind(this),
+      $isRoot: this.#isRoot.bind(this),
       $target: target,
       $proxy: this.$proxy,
       $on: this.$on.bind(this),
@@ -497,8 +481,6 @@ export class Scope {
       $root: this.$root,
       $children: this.$children,
       $id: this.$id,
-      registerForeignKey: this.#registerForeignKey.bind(this),
-      notifyListener: this.notifyListener.bind(this),
       $merge: this.$merge.bind(this),
       $getById: this.$getById.bind(this),
     };
@@ -519,7 +501,7 @@ export class Scope {
 
       // TODO aditional testing
       if (property === "unshift") {
-        this.scheduleListener(this.scheduled);
+        this.#scheduleListener(this.scheduled);
       }
     }
 
@@ -532,26 +514,6 @@ export class Scope {
     }
   }
 
-  /**
-   * @private
-   * @param {Listener[]} listeners
-   */
-  scheduleListener(listeners, filter = (val) => val) {
-    Promise.resolve().then(() => {
-      let index = 0;
-      let filteredListeners = filter(listeners);
-      while (index < filteredListeners.length) {
-        const listener = filteredListeners[index];
-        if (listener.foreignListener) {
-          listener.foreignListener.notifyListener(listener, this.$target);
-        } else {
-          this.notifyListener(listener, this.$target);
-        }
-        index++;
-      }
-    });
-  }
-
   deleteProperty(target, property) {
     // Currently deletes $model
     if (target[property] && target[property][isProxySymbol]) {
@@ -559,20 +521,20 @@ export class Scope {
 
       let listeners = this.watchers.get(property);
       if (listeners) {
-        this.scheduleListener(listeners);
+        this.#scheduleListener(listeners);
       }
       if (this.objectListeners.has(this.$proxy)) {
         let keys = this.objectListeners.get(this.$proxy);
         keys.forEach((key) => {
           listeners = this.watchers.get(key);
           if (listeners) {
-            this.scheduleListener(listeners);
+            this.#scheduleListener(listeners);
           }
         });
       }
 
       if (this.scheduled) {
-        this.scheduleListener(this.scheduled);
+        this.#scheduleListener(this.scheduled);
         this.scheduled = [];
       }
       return true;
@@ -585,17 +547,52 @@ export class Scope {
       keys.forEach((key) => {
         const listeners = this.watchers.get(key);
         if (listeners) {
-          this.scheduleListener(listeners);
+          this.#scheduleListener(listeners);
         }
       });
     } else {
       const listeners = this.watchers.get(property);
       if (listeners) {
-        this.scheduleListener(listeners, target[property]);
+        this.#scheduleListener(listeners, target[property]);
       }
     }
 
     return true;
+  }
+
+  #checkeListenersForAllKeys(value) {
+    if (isUndefined(value)) {
+      return;
+    }
+    Object.keys(value).forEach((k) => {
+      const listeners = this.watchers.get(k);
+
+      if (listeners) {
+        this.#scheduleListener(listeners);
+      }
+      if (isObject(value[k])) {
+        this.#checkeListenersForAllKeys(value[k]);
+      }
+    });
+  }
+
+  /**
+   * @param {Listener[]} listeners
+   */
+  #scheduleListener(listeners, filter = (val) => val) {
+    Promise.resolve().then(() => {
+      let index = 0;
+      let filteredListeners = filter(listeners);
+      while (index < filteredListeners.length) {
+        const listener = filteredListeners[index];
+        if (listener.foreignListener) {
+          listener.foreignListener.#notifyListener(listener, this.$target);
+        } else {
+          this.#notifyListener(listener, this.$target);
+        }
+        index++;
+      }
+    });
   }
 
   /**
@@ -677,7 +674,7 @@ export class Scope {
         });
         return () => {
           keys.forEach((key) => {
-            this.deregisterKey(key, listener.id);
+            this.#deregisterKey(key, listener.id);
           });
         };
       }
@@ -715,12 +712,12 @@ export class Scope {
         });
         keys.forEach((key) => {
           this.#registerKey(key, listener);
-          this.scheduleListener([listener]);
+          this.#scheduleListener([listener]);
         });
 
         return () => {
           keys.forEach((key) => {
-            this.deregisterKey(key, listener.id);
+            this.#deregisterKey(key, listener.id);
           });
         };
       }
@@ -744,9 +741,9 @@ export class Scope {
           )(listener.originalTarget);
           if (potentialProxy && this.foreignProxies.has(potentialProxy)) {
             potentialProxy.$handler.#registerForeignKey(key, listener);
-            potentialProxy.$handler.scheduleListener([listener]);
+            potentialProxy.$handler.#scheduleListener([listener]);
             return () => {
-              return potentialProxy.$handler.deregisterKey(key, listener.id);
+              return potentialProxy.$handler.#deregisterKey(key, listener.id);
             };
           }
         }
@@ -778,11 +775,11 @@ export class Scope {
           .filter((x) => !!x);
         keys.forEach((key) => {
           this.#registerKey(key, listener);
-          this.scheduleListener([listener]);
+          this.#scheduleListener([listener]);
         });
         return () => {
           keys.forEach((key) => {
-            this.deregisterKey(key, listener.id);
+            this.#deregisterKey(key, listener.id);
           });
         };
       }
@@ -851,20 +848,20 @@ export class Scope {
     }
 
     if (!lazy) {
-      this.scheduleListener([listener]);
+      this.#scheduleListener([listener]);
     }
     return () => {
       if (keySet.length > 0) {
         let res = true;
         keySet.forEach((key) => {
-          let success = this.deregisterKey(key, listener.id);
+          let success = this.#deregisterKey(key, listener.id);
           if (!success) {
             res = false;
           }
         });
         return res;
       } else {
-        return this.deregisterKey(key, listener.id);
+        return this.#deregisterKey(key, listener.id);
       }
     };
   }
@@ -925,10 +922,8 @@ export class Scope {
       this.foreignListeners.set(key, [listener]);
     }
   }
-  /**
-   * @private
-   */
-  deregisterKey(key, id) {
+
+  #deregisterKey(key, id) {
     const listenerList = this.watchers.get(key);
     if (!listenerList) return false;
 
@@ -944,21 +939,21 @@ export class Scope {
     return true;
   }
 
-  deregisterForeignKey(key, id) {
-    const listenerList = this.foreignListeners.get(key);
-    if (!listenerList) return false;
+  // deregisterForeignKey(key, id) {
+  //   const listenerList = this.foreignListeners.get(key);
+  //   if (!listenerList) return false;
 
-    const index = listenerList.findIndex((x) => x.id === id);
-    if (index === -1) return false;
+  //   const index = listenerList.findIndex((x) => x.id === id);
+  //   if (index === -1) return false;
 
-    listenerList.splice(index, 1);
-    if (listenerList.length) {
-      this.foreignListeners.set(key, listenerList);
-    } else {
-      this.foreignListeners.delete(key);
-    }
-    return true;
-  }
+  //   listenerList.splice(index, 1);
+  //   if (listenerList.length) {
+  //     this.foreignListeners.set(key, listenerList);
+  //   } else {
+  //     this.foreignListeners.delete(key);
+  //   }
+  //   return true;
+  // }
 
   $eval(expr, locals) {
     const fn = $parse(expr);
@@ -1037,7 +1032,7 @@ export class Scope {
    * @returns {void}
    */
   $emit(name, ...args) {
-    return this.eventHelper(
+    return this.#eventHelper(
       { name: name, event: undefined, broadcast: false },
       ...args,
     );
@@ -1049,21 +1044,20 @@ export class Scope {
    * @returns {any}
    */
   $broadcast(name, ...args) {
-    return this.eventHelper(
+    return this.#eventHelper(
       { name: name, event: undefined, broadcast: true },
       ...args,
     );
   }
 
   /**
-   * @private
    * @returns {void}
    */
-  eventHelper({ name, event, broadcast }, ...args) {
+  #eventHelper({ name, event, broadcast }, ...args) {
     if (!broadcast) {
       if (!this.$$listeners.has(name)) {
         if (this.$parent) {
-          return this.$parent.$handler.eventHelper(
+          return this.$parent.$handler.#eventHelper(
             { name: name, event: event, broadcast: broadcast },
             ...args,
           );
@@ -1118,7 +1112,7 @@ export class Scope {
     if (broadcast) {
       if (this.$children.length > 0) {
         this.$children.forEach((child) => {
-          event = child["$handler"].eventHelper(
+          event = child["$handler"].#eventHelper(
             { name: name, event: event, broadcast: broadcast },
             ...args,
           );
@@ -1127,7 +1121,7 @@ export class Scope {
       return event;
     } else {
       if (this.$parent) {
-        return this.$parent?.eventHelper(
+        return this.$parent.#eventHelper(
           { name: name, event: event, broadcast: broadcast },
           ...args,
         );
@@ -1138,10 +1132,9 @@ export class Scope {
   }
 
   /**
-   * @private
    * @returns {boolean}
    */
-  isRoot() {
+  #isRoot() {
     return this.$root == /** @type {Scope} */ (this);
   }
 
@@ -1160,7 +1153,7 @@ export class Scope {
       );
     });
 
-    if (this.isRoot()) {
+    if (this.#isRoot()) {
       this.watchers.clear();
     } else {
       let i = this.$parent.$children.filter((x) => x.$id == this.$id)[0];
@@ -1173,11 +1166,9 @@ export class Scope {
   }
 
   /**
-   * @private
-   *
    * @param {Listener} listener - The property path that was changed.
    */
-  notifyListener(listener, target) {
+  #notifyListener(listener, target) {
     const { originalTarget, listenerFn, watchFn } = listener;
     try {
       let newVal = watchFn(originalTarget);
@@ -1235,6 +1226,8 @@ export class Scope {
     }
   }
 }
+
+/*------------- Private helpers -------------*/
 
 /**
  * @param {Scope} model

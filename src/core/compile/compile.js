@@ -143,7 +143,7 @@ export class CompileProvider {
 
   /**
    * @param {import('../../interface.js').Provider} $provide
-   * @param $$sanitizeUriProvider
+   * @param {import('../sanitize/sanitize-uri.js').SanitizeUriProvider} $$sanitizeUriProvider
    */
   constructor($provide, $$sanitizeUriProvider) {
     const hasDirectives = {};
@@ -451,13 +451,13 @@ export class CompileProvider {
      * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
      *
      * @param {RegExp=} regexp New regexp to trust urls with.
-     * @returns {RegExp|CompileProvider} Current RegExp if called without value or self for
+     * @returns {RegExp|import('../sanitize/sanitize-uri.js').SanitizeUriProvider} Current RegExp if called without value or self for
      *    chaining otherwise.
      */
     this.aHrefSanitizationTrustedUrlList = function (regexp) {
       if (isDefined(regexp)) {
         $$sanitizeUriProvider.aHrefSanitizationTrustedUrlList(regexp);
-        return this;
+        return;
       }
       return $$sanitizeUriProvider.aHrefSanitizationTrustedUrlList();
     };
@@ -474,13 +474,13 @@ export class CompileProvider {
      * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
      *
      * @param {RegExp=} regexp New regexp to trust urls with.
-     * @returns {RegExp|CompileProvider} Current RegExp if called without value or self for
+     * @returns {RegExp|import('../sanitize/sanitize-uri.js').SanitizeUriProvider} Current RegExp if called without value or self for
      *    chaining otherwise.
      */
     this.imgSrcSanitizationTrustedUrlList = function (regexp) {
       if (isDefined(regexp)) {
         $$sanitizeUriProvider.imgSrcSanitizationTrustedUrlList(regexp);
-        return this;
+        return;
       }
       return $$sanitizeUriProvider.imgSrcSanitizationTrustedUrlList();
     };

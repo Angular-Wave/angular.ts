@@ -4590,8 +4590,7 @@ describe("$compile", () => {
           expect($compileProvider.aHrefSanitizationTrustedUrlList()).toBe(
             $$sanitizeUriProvider.aHrefSanitizationTrustedUrlList(),
           );
-          returnVal = $compileProvider.aHrefSanitizationTrustedUrlList(newRe);
-          expect(returnVal).toBe($compileProvider);
+          $compileProvider.aHrefSanitizationTrustedUrlList(newRe);
           expect($$sanitizeUriProvider.aHrefSanitizationTrustedUrlList()).toBe(
             newRe,
           );
@@ -4612,8 +4611,7 @@ describe("$compile", () => {
           expect($compileProvider.imgSrcSanitizationTrustedUrlList()).toBe(
             $$sanitizeUriProvider.imgSrcSanitizationTrustedUrlList(),
           );
-          returnVal = $compileProvider.imgSrcSanitizationTrustedUrlList(newRe);
-          expect(returnVal).toBe($compileProvider);
+          $compileProvider.imgSrcSanitizationTrustedUrlList(newRe);
           expect($$sanitizeUriProvider.imgSrcSanitizationTrustedUrlList()).toBe(
             newRe,
           );

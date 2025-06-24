@@ -269,7 +269,7 @@ function ngMessageDirectiveFactory(isDefault) {
 
           if (dynamicExp) {
             assignRecords(scope.$eval(dynamicExp));
-            scope.$watchCollection(dynamicExp, assignRecords);
+            scope.$watch(dynamicExp, assignRecords);
           } else {
             assignRecords(staticExp);
           }

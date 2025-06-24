@@ -1,6 +1,10 @@
-export function AnimateProvider($provide: any): void;
+/** @param {import('../interface.ts').Provider} $provide */
+export function AnimateProvider(
+  $provide: import("../interface.ts").Provider,
+): void;
 export class AnimateProvider {
-  constructor($provide: any);
+  /** @param {import('../interface.ts').Provider} $provide */
+  constructor($provide: import("../interface.ts").Provider);
   $$registeredAnimations: any;
   /**
    * Registers a new injectable animation factory function. The factory function produces the
@@ -34,10 +38,13 @@ export class AnimateProvider {
    * ```
    *
    * @param {string} name The name of the animation (this is what the class-based CSS value will be compared to).
-   * @param {Function} factory The factory function that will be executed to return the animation
+   * @param {import("../interface.ts").Injectable} factory The factory function that will be executed to return the animation
    *                           object.
    */
-  register: (name: string, factory: Function) => void;
+  register: (
+    name: string,
+    factory: import("../interface.ts").Injectable,
+  ) => void;
   /**
    * Sets and/or returns the custom filter function that is used to "filter" animations, i.e.
    * determine if an animation is allowed or not. When no filter is specified (the default), no

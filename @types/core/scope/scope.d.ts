@@ -128,7 +128,6 @@ export class Scope {
     value: any,
     proxy: ProxyConstructor,
   ): boolean;
-  checkeListenersForAllKeys(value: any): void;
   /**
    * Intercepts property access on the target object. It checks for specific
    * properties (`watch` and `sync`) and binds their methods. For other properties,
@@ -165,16 +164,9 @@ export class Scope {
     $root: Scope;
     $children: Scope[];
     $id: number;
-    registerForeignKey: any;
-    notifyListener: any;
     $merge: any;
     $getById: any;
   };
-  /**
-   * @private
-   * @param {Listener[]} listeners
-   */
-  private scheduleListener;
   deleteProperty(target: any, property: any): boolean;
   /**
    * Registers a watcher for a property along with a listener function. The listener
@@ -192,11 +184,6 @@ export class Scope {
   $new(childInstance: any): any;
   $newIsolate(instance: any): any;
   $transcluded(parentInstance: any): any;
-  /**
-   * @private
-   */
-  private deregisterKey;
-  deregisterForeignKey(key: any, id: any): boolean;
   $eval(expr: any, locals: any): any;
   $evalAsync(expr: any, locals: any): Promise<any>;
   /**
@@ -226,24 +213,8 @@ export class Scope {
    * @returns {any}
    */
   $broadcast(name: string, ...args: any[]): any;
-  /**
-   * @private
-   * @returns {void}
-   */
-  private eventHelper;
-  /**
-   * @private
-   * @returns {boolean}
-   */
-  private isRoot;
   $postUpdate(fn: any): void;
   $destroy(): void;
-  /**
-   * @private
-   *
-   * @param {Listener} listener - The property path that was changed.
-   */
-  private notifyListener;
   /**
    * Searches the scope instance
    *
