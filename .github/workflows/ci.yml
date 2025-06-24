@@ -5,9 +5,11 @@ permissions:
 
 on:
   push:
-    branches: [main, master]
+    branches: 
+      - master
   pull_request:
-    branches: [main, master]
+    branches:
+      - master
 
 jobs:
   # 1. Lint check
