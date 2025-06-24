@@ -33,6 +33,7 @@ jobs:
           restore-keys: ${{ runner.os }}-npm-
 
       - name: Install npm dependencies (PostCSS etc.)
+        working-directory: ./docs
         run: npm ci
 
       - name: Setup Hugo
