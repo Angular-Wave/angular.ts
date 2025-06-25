@@ -10,19 +10,26 @@ describe("templateFactory", () => {
     $scope,
     $compile,
     $stateRegistry,
-    $stateService;
+    $stateService,
+    error;
 
   beforeEach(() => {
     window.angular = new Angular();
-    window.angular.module("defaultModule", []);
+    window.angular
+      .module("defaultModule", [])
+      .decorator("$exceptionHandler", () => {
+        return (exception) => {
+          error = exception.message;
+        };
+      });
     $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
     $injector.invoke(
       (_$templateFactory_, _$httpBackend_, _$sce_, $rootScope) => {
-        ($templateFactory = _$templateFactory_),
-          ($httpBackend = _$httpBackend_),
-          ($sce = _$sce_);
+        $templateFactory = _$templateFactory_;
+        $httpBackend = _$httpBackend_;
+        $sce = _$sce_;
         $scope = $rootScope;
       },
     );
@@ -39,13 +46,12 @@ describe("templateFactory", () => {
       expect(await res).toEqual("Hello");
     });
 
-    xit("rejects untrusted URLs", async () => {
+    it("rejects untrusted URLs", async () => {
       let error = "No error thrown";
       try {
-        $templateFactory.fromUrl("http://evil.com/views/view.html");
-        await wait();
+        await $templateFactory.fromUrl("http://evil.com/views/view.html");
       } catch (e) {
-        error = e.message;
+        error = e;
       }
       expect(error).toMatch(/sce:insecurl/);
     });

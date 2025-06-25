@@ -137,15 +137,15 @@ export function ngRepeatDirective($animate) {
         let lastBlockMap = Object.create(null);
         // watch props
         $scope.$watch(rhs, (collection) => {
-          var index,
+          let index,
             length,
             previousNode = $element, // node that cloned nodes should be inserted after
             // initialized to the comment node anchor
-            nextNode,
-            // Same as lastBlockMap but it has the current state. It will become the
+            nextNode;
+          const // Same as lastBlockMap but it has the current state. It will become the
             // lastBlockMap on the next iteration.
-            nextBlockMap = Object.create(null),
-            collectionLength,
+            nextBlockMap = Object.create(null);
+          let collectionLength,
             key,
             value, // key/value of iteration
             trackById,
@@ -211,7 +211,7 @@ export function ngRepeatDirective($animate) {
           }
 
           // remove leftover items
-          for (var blockKey in lastBlockMap) {
+          for (let blockKey in lastBlockMap) {
             block = lastBlockMap[blockKey];
             elementsToRemove = block.clone;
             if (hasAnimate) {

@@ -1822,7 +1822,7 @@ describe("select", () => {
           await wait();
           let elems = element.querySelectorAll("option");
 
-          for (var i = 0; i < elems.length; i++) {
+          for (let i = 0; i < elems.length; i++) {
             elems[i][0].selected = true;
           }
           browserTrigger(element, "change");

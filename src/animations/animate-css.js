@@ -267,6 +267,7 @@ export function AnimateCssProvider() {
         // all of the animation functions should create
         // a copy of the options data, however, if a
         // parent service has already created a copy then
+        let delayStyle;
         // we should stick to using that
         let options = initialOptions || {};
         if (!options.$$prepared) {
@@ -479,13 +480,12 @@ export function AnimateCssProvider() {
           return closeAndReturnNoopAnimator();
         }
 
-        var activeClasses = pendClasses(
+        let activeClasses = pendClasses(
           preparationClasses,
           ACTIVE_CLASS_SUFFIX,
         );
 
         if (options.delay != null) {
-          var delayStyle;
           if (typeof options.delay !== "boolean") {
             delayStyle = parseFloat(options.delay);
             // number in options.delay means we have to recalculate the delay for the closing timeout

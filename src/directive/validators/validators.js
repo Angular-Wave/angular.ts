@@ -126,8 +126,8 @@ export const patternDirective = [
       restrict: "A",
       require: "?ngModel",
       compile: (_Elm, tAttr) => {
-        var patternExp;
-        var parseFn;
+        let patternExp;
+        let parseFn;
 
         if (tAttr["ngPattern"]) {
           patternExp = tAttr["ngPattern"];
@@ -150,7 +150,7 @@ export const patternDirective = [
         return function (scope, elm, attr, ctrl) {
           if (!ctrl) return;
 
-          var attrVal = attr["pattern"];
+          let attrVal = attr["pattern"];
 
           if (attr["ngPattern"]) {
             attrVal = parseFn(scope);
@@ -158,9 +158,9 @@ export const patternDirective = [
             patternExp = attr["pattern"];
           }
 
-          var regexp = parsePatternAttr(attrVal, patternExp, elm);
+          let regexp = parsePatternAttr(attrVal, patternExp, elm);
           attr.$observe("pattern", function (newVal) {
-            var oldRegexp = regexp;
+            const oldRegexp = regexp;
 
             regexp = parsePatternAttr(newVal, patternExp, elm);
 

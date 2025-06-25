@@ -256,7 +256,7 @@ export function resolveElementClasses(existing, toAdd, toRemove) {
   };
 
   Object.entries(flags).forEach(([klass, val]) => {
-    var prop, allow;
+    let prop, allow;
     if (val === ADD_CLASS) {
       prop = "addClass";
       allow = !existing[klass] || existing[klass + REMOVE_CLASS_SUFFIX];

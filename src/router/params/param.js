@@ -8,7 +8,7 @@ const isShorthand = (cfg) =>
     Object.prototype.hasOwnProperty.bind(cfg || {}),
   ).length === 0;
 
-var DefType;
+let DefType;
 (function (DefType) {
   DefType[(DefType["PATH"] = 0)] = "PATH";
   DefType[(DefType["SEARCH"] = 1)] = "SEARCH";

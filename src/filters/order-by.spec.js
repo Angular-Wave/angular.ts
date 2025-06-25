@@ -8,8 +8,8 @@ describe("Filter: orderBy", () => {
   beforeEach(() => {
     window.angular = new Angular();
     window.angular.module("myModule", ["ng"]);
-    var injector = createInjector(["myModule"]);
-    var $filter = injector.get("$filter");
+    const injector = createInjector(["myModule"]);
+    const $filter = injector.get("$filter");
     orderBy = orderByFilter = $filter("orderBy");
   });
 
@@ -710,8 +710,8 @@ describe("Filter: orderBy", () => {
     beforeEach(() => {
       window.angular = new Angular();
       window.angular.module("myModule", ["ng"]);
-      var injector = createInjector(["myModule"]);
-      var $filter = injector.get("$filter");
+      const injector = createInjector(["myModule"]);
+      const $filter = injector.get("$filter");
       orderBy = function (collection) {
         const args = Array.prototype.slice.call(arguments, 0);
         args[0] = arrayLike(args[0]);

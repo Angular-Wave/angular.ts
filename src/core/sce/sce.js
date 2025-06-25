@@ -313,7 +313,7 @@ export class SceDelegateProvider {
       "$exceptionHandler",
       /**
        *
-       * @param {import("../../core/di/internal-injector").InjectorService} $injector
+       * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
        * @param {*} $$sanitizeUri
        * @param {ErrorHandler} $exceptionHandler
        * @returns
@@ -540,14 +540,11 @@ export class SceDelegateProvider {
             if (isResourceUrlAllowedByPolicy(maybeTrusted)) {
               return maybeTrusted;
             }
-            $exceptionHandler(
-              $sceMinErr(
-                "insecurl",
-                "Blocked loading resource from url not allowed by $sceDelegate policy.  URL: {0}",
-                maybeTrusted.toString(),
-              ),
+            throw $sceMinErr(
+              "insecurl",
+              "Blocked loading resource from url not allowed by $sceDelegate policy.  URL: {0}",
+              maybeTrusted.toString(),
             );
-            return;
           } else if (type === SCE_CONTEXTS.HTML) {
             // htmlSanitizer throws its own error when no sanitizer is available.
             return htmlSanitizer();
@@ -588,8 +585,7 @@ export function SceProvider() {
   this.$get = [
     "$parse",
     "$sceDelegate",
-    "$exceptionHandler",
-    function ($parse, $sceDelegate, $exceptionHandler) {
+    function ($parse, $sceDelegate) {
       const sce = shallowCopy(SCE_CONTEXTS);
 
       /**
@@ -833,11 +829,7 @@ export function SceProvider() {
           return parse(enumValue, expr);
         };
         sce[snakeToCamel(`get_trusted_${lName}`)] = function (value) {
-          try {
-            return getTrusted(enumValue, value);
-          } catch (e) {
-            $exceptionHandler(e);
-          }
+          return getTrusted(enumValue, value);
         };
         sce[snakeToCamel(`trust_as_${lName}`)] = function (value) {
           return trustAs(enumValue, value);

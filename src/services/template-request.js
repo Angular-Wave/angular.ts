@@ -1,7 +1,7 @@
-import { defaultHttpResponseTransform } from "./http/http";
+import { defaultHttpResponseTransform } from "./http/http.js";
 import { extend, isString, minErr } from "../shared/utils.js";
 
-var $templateRequestMinErr = minErr("$templateRequest");
+const $templateRequestMinErr = minErr("$templateRequest");
 
 /**
  * Used to configure the options passed to the {@link $http} service when making a template request.
@@ -10,7 +10,7 @@ var $templateRequestMinErr = minErr("$templateRequest");
  * requesting a template.
  */
 export function TemplateRequestProvider() {
-  var httpOptions;
+  let httpOptions;
 
   /**
    * The options to be passed to the {@link $http} service when making the request.
@@ -76,13 +76,17 @@ export function TemplateRequestProvider() {
         // AngularTS accept any script directive, no matter its name. However, we
         // still need to unwrap trusted types.
         if (!isString(tpl) || !$templateCache.has(tpl)) {
-          tpl = $sce.getTrustedResourceUrl(tpl);
-          if (!tpl) {
-            return Promise.reject("Template not found");
+          try {
+            tpl = $sce.getTrustedResourceUrl(tpl);
+            if (!tpl) {
+              return Promise.reject("Template not found");
+            }
+          } catch (e) {
+            return Promise.reject(e.message);
           }
         }
 
-        var transformResponse =
+        let transformResponse =
           $http.defaults && $http.defaults.transformResponse;
 
         if (Array.isArray(transformResponse)) {

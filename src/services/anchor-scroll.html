@@ -29,7 +29,7 @@
             function ($anchorScroll, $location, $scope) {
               $scope.gotoAnchor = function (x) {
                 window.$locationTest = $location;
-                var newHash = "anchor" + x;
+                const newHash = "anchor" + x;
                 if ($location.hash() !== newHash) {
                   // set the $location.hash to `newHash` and
                   // $anchorScroll will automatically scroll to it

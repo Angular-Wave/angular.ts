@@ -1467,7 +1467,7 @@ export class CompileProvider {
             // RECURSION
             // We only pass the isolate scope, if the isolate directive has a template,
             // otherwise the child elements do not belong to the isolate directive.
-            var scopeToChild = scope;
+            let scopeToChild = scope;
             if (
               newIsolateScopeDirective &&
               (newIsolateScopeDirective.template ||
@@ -2472,6 +2472,8 @@ export class CompileProvider {
             .catch((error) => {
               if (isError(error)) {
                 $exceptionHandler(error);
+              } else {
+                $exceptionHandler(new Error(error));
               }
             });
 
@@ -2579,11 +2581,12 @@ export class CompileProvider {
           type = (type || "html").toLowerCase();
           switch (type) {
             case "svg":
-            case "math":
-              /** @type {HTMLDivElement} */
-              var wrapper = document.createElement("div");
+            case "math": {
+              const wrapper =
+                /** @type {HTMLDivElement} */ document.createElement("div");
               wrapper.innerHTML = `<${type}>${template}</${type}>`;
               return wrapper.childNodes[0].childNodes;
+            }
             default:
               return template;
           }
@@ -2659,21 +2662,22 @@ export class CompileProvider {
           // If you want to programmatically set explicitly trusted unsafe URLs, you should use
           // `$sce.trustAsHtml` on the whole `img` tag and inject it into the DOM using the
           // `ng-bind-html` directive.
-          var result = "";
+          let result = "";
 
           // first check if there are spaces because it's not the same pattern
-          var trimmedSrcset = trim(value);
+          const trimmedSrcset = trim(value);
           //                (   999x   ,|   999w   ,|   ,|,   )
-          var srcPattern = /(\s+\d+x\s*,|\s+\d+w\s*,|\s+,|,\s+)/;
-          var pattern = /\s/.test(trimmedSrcset) ? srcPattern : /(,)/;
+          const srcPattern = /(\s+\d+x\s*,|\s+\d+w\s*,|\s+,|,\s+)/;
+          const pattern = /\s/.test(trimmedSrcset) ? srcPattern : /(,)/;
 
           // split srcset into tuple of uri and descriptor except for the last item
-          var rawUris = trimmedSrcset.split(pattern);
+          const rawUris = trimmedSrcset.split(pattern);
 
           // for each tuples
-          var nbrUrisWith2parts = Math.floor(rawUris.length / 2);
-          for (var i = 0; i < nbrUrisWith2parts; i++) {
-            var innerIdx = i * 2;
+          const nbrUrisWith2parts = Math.floor(rawUris.length / 2);
+          let i;
+          for (i = 0; i < nbrUrisWith2parts; i++) {
+            const innerIdx = i * 2;
             // sanitize the uri
             result += $sce.getTrustedMediaUrl(trim(rawUris[innerIdx]));
             // add the descriptor
@@ -2681,7 +2685,7 @@ export class CompileProvider {
           }
 
           // split the last item into uri and descriptor
-          var lastTuple = trim(rawUris[i * 2]).split(/\s/);
+          const lastTuple = trim(rawUris[i * 2]).split(/\s/);
 
           // sanitize the last uri
           result += $sce.getTrustedMediaUrl(trim(lastTuple[0]));
@@ -2985,7 +2989,7 @@ export class CompileProvider {
                   removeWatchCollection.push(removeWatch);
                   break;
 
-                case "=":
+                case "=": {
                   if (!hasOwn(attrs, attrName)) {
                     if (optional) {
                       break;
@@ -2998,7 +3002,6 @@ export class CompileProvider {
                   }
 
                   parentGet = $parse(attrs[attrName]);
-                  var complexExpression = !!parentGet.inputs;
                   if (parentGet.literal) {
                     compare = equals;
                   } else {
@@ -3023,7 +3026,7 @@ export class CompileProvider {
                   lastValue = destination.$target[scopeName] = parentGet(
                     scope.$target,
                   );
-                  var parentValueWatch = function parentValueWatch(
+                  const parentValueWatch = function parentValueWatch(
                     parentValue,
                   ) {
                     if (!compare(parentValue, destination[scopeName])) {
@@ -3055,7 +3058,7 @@ export class CompileProvider {
                       scope.$watch(
                         expr,
                         (val) => {
-                          var res = $parse(attrs[attrName], parentValueWatch);
+                          const res = $parse(attrs[attrName], parentValueWatch);
                           if (val) {
                             if (parentGet.literal) {
                               scope.$target[attrName] = val;
@@ -3081,7 +3084,7 @@ export class CompileProvider {
                           return;
                         }
                         if (
-                          (complexExpression && !parentGet.literal) ||
+                          (!!parentGet.inputs && !parentGet.literal) ||
                           (isUndefined(attrs[attrName]) && isDefined(val))
                         ) {
                           destination.$target[attrName] = lastValue;
@@ -3113,6 +3116,7 @@ export class CompileProvider {
                   }
                   removeWatchCollection.push(removeWatch);
                   break;
+                }
 
                 case "<":
                   if (!hasOwn(attrs, attrName)) {

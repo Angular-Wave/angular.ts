@@ -423,7 +423,7 @@ describe("Scope", () => {
     });
 
     it("can register listeners via watch", async () => {
-      var listenerFn = jasmine.createSpy();
+      const listenerFn = jasmine.createSpy();
       scope.$watch("a", listenerFn);
       scope.a = 1;
       await wait();
@@ -431,7 +431,7 @@ describe("Scope", () => {
     });
 
     it("can calls a listener upon registration", async () => {
-      var listenerFn = jasmine.createSpy();
+      const listenerFn = jasmine.createSpy();
       scope.$watch("a", listenerFn);
       await wait();
       expect(listenerFn).toHaveBeenCalled();
@@ -636,7 +636,7 @@ describe("Scope", () => {
     });
 
     it("calls listener with undefined old value the first time", async () => {
-      var newValueGiven;
+      let newValueGiven;
       scope.$watch("someValue", function (newValue, scope) {
         newValueGiven = newValue;
       });
@@ -646,7 +646,7 @@ describe("Scope", () => {
     });
 
     it("calls listener with new value and old value the first time if defined", async () => {
-      var newValueGiven;
+      let newValueGiven;
       scope.someValue = 123;
 
       scope.$watch("someValue", function (newValue) {
@@ -659,7 +659,7 @@ describe("Scope", () => {
     });
 
     it("calls listener with with the instance of a scope as 2nd argument", async () => {
-      var scopeInstance;
+      let scopeInstance;
       scope.someValue = 123;
 
       scope.$watch("someValue", function (_1, m) {
@@ -1554,7 +1554,7 @@ describe("Scope", () => {
 
       it("can pass the new value of the array as well as the previous value of the dropped item", async () => {
         scope.aValue = [];
-        var newValueGiven;
+        let newValueGiven;
         scope.$watch("aValue", function (newValue) {
           newValueGiven = newValue;
         });
@@ -1578,7 +1578,7 @@ describe("Scope", () => {
 
       it("can detect removal of items", async () => {
         scope.aValue = [2, 3];
-        var newValueGiven;
+        let newValueGiven;
         scope.$watch("aValue", function (newValue) {
           newValueGiven = newValue;
         });
@@ -1592,7 +1592,7 @@ describe("Scope", () => {
         // first time should be identical
         scope.aValue = ["a", "b"];
         scope.counter = 0;
-        var newValueGiven;
+        let newValueGiven;
         scope.$watch("aValue", function (newValue, m) {
           newValueGiven = newValue;
           m.counter++;
@@ -1609,7 +1609,7 @@ describe("Scope", () => {
       it("should trigger when property changes into array", async () => {
         scope.aValue = "test";
         scope.counter = 0;
-        var newValue;
+        let newValue;
         scope.$watch("aValue", function (newV, m) {
           m.counter++;
           newValue = newV;
@@ -2064,7 +2064,7 @@ describe("Scope", () => {
 
     it("executes $eval'ed function and returns result", function () {
       scope.aValue = 42;
-      var result = scope.$eval(function (scope) {
+      const result = scope.$eval(function (scope) {
         return scope.aValue;
       });
       expect(result).toBe(42);
@@ -2072,7 +2072,7 @@ describe("Scope", () => {
 
     it("passes the second $eval argument straight through", function () {
       scope.aValue = 42;
-      var result = scope.$eval(function (scope, arg) {
+      const result = scope.$eval(function (scope, arg) {
         return scope.aValue + arg;
       }, 2);
       expect(result).toBe(44);

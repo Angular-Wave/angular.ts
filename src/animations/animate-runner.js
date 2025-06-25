@@ -1,13 +1,13 @@
 export function AnimateAsyncRunFactoryProvider() {
   this.$get = [
     function () {
-      var waitQueue = [];
+      let waitQueue = [];
 
       function waitForTick(fn) {
         waitQueue.push(fn);
         if (waitQueue.length > 1) return;
         window.requestAnimationFrame(function () {
-          for (var i = 0; i < waitQueue.length; i++) {
+          for (let i = 0; i < waitQueue.length; i++) {
             waitQueue[i]();
           }
           waitQueue = [];
@@ -15,7 +15,7 @@ export function AnimateAsyncRunFactoryProvider() {
       }
 
       return function () {
-        var passed = false;
+        let passed = false;
         waitForTick(function () {
           passed = true;
         });

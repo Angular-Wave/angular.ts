@@ -937,7 +937,6 @@ describe("ngSrefActive", () => {
       url: "/lazy",
       lazyLoad: () => {
         return Promise.resolve().then(() => {
-          debugger;
           _stateProvider
             .state({ name: "contacts.lazy", abstract: true, url: "/lazy" })
             .state({ name: "contacts.lazy.s1", url: "/s1" })
@@ -949,7 +948,6 @@ describe("ngSrefActive", () => {
     app.innerHTML =
       '<div ng-sref-active="active"><a ng-sref="contacts.lazy.s1">Lazy</a></div><div ng-sref-active="active"><a ng-sref="contacts.lazy.s2"></a></div>';
     $compile(app)($rootScope);
-    debugger;
     $state.transitionTo("contacts.lazy.s1");
     await wait(100);
 

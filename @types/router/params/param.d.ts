@@ -49,4 +49,4 @@ export class Param {
   validates(value: any): boolean;
   toString(): string;
 }
-export var DefType: any;
+export let DefType: any;

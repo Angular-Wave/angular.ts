@@ -7,10 +7,10 @@ export function ParseProvider() {
   const cache = Object.create(null);
 
   /** @type {function(any):boolean?} */
-  var identStart;
+  let identStart;
 
   /** @type {function(any):boolean?} */
-  var identContinue;
+  let identContinue;
 
   /**
    * Allows defining the set of characters that are allowed in AngularTS expressions. The function
@@ -47,7 +47,7 @@ export function ParseProvider() {
      */
     function ($filter) {
       /** @type {import("./lexer/lexer.js").LexerOptions} */
-      var $lexerOptions = {
+      const $lexerOptions = {
         isIdentifierStart: isFunction(identStart) && identStart,
         isIdentifierContinue: isFunction(identContinue) && identContinue,
       };
@@ -59,7 +59,7 @@ export function ParseProvider() {
        * @returns any
        */
       function $parse(exp, interceptorFn) {
-        var parsedExpression, cacheKey;
+        let parsedExpression, cacheKey;
 
         switch (typeof exp) {
           case "string":
@@ -69,8 +69,8 @@ export function ParseProvider() {
             parsedExpression = cache[cacheKey];
 
             if (!parsedExpression) {
-              var lexer = new Lexer($lexerOptions);
-              var parser = new Parser(lexer, $filter);
+              const lexer = new Lexer($lexerOptions);
+              const parser = new Parser(lexer, $filter);
               parsedExpression = parser.parse(exp);
 
               cache[cacheKey] = addWatchDelegate(parsedExpression);

@@ -88,7 +88,7 @@ describe("view", () => {
       PathUtils.applyViewConfigs($view, path, _states);
     });
 
-    xit("uses the controllerProvider to get controller dynamically", async () => {
+    it("uses the controllerProvider to get controller dynamically", async () => {
       $controllerProvider.register("AcmeFooController", () => {});
       elem.innerHTML = "<div><ng-view></ng-view></div>";
       $compile(elem)(scope);
