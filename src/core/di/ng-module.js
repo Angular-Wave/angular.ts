@@ -1,3 +1,4 @@
+import { $injectTokens } from "../../injection-tokens.js";
 import {
   isFunction,
   isDefined,
@@ -6,7 +7,6 @@ import {
   assert,
 } from "../../shared/utils.js";
 
-export const PROVIDE_LITERAL = "$provide";
 export const INJECTOR_LITERAL = "$injector";
 export const COMPILE_LITERAL = "$compileProvider";
 export const ANIMATION_LITERAL = "$animateProvider";
@@ -83,7 +83,7 @@ export class NgModule {
    * @returns {NgModule}
    */
   value(name, object) {
-    this.invokeQueue.push([PROVIDE_LITERAL, "value", [name, object]]);
+    this.invokeQueue.push([$injectTokens.$provide, "value", [name, object]]);
     return this;
   }
 
@@ -93,7 +93,11 @@ export class NgModule {
    * @returns {NgModule}
    */
   constant(name, object) {
-    this.invokeQueue.unshift([PROVIDE_LITERAL, "constant", [name, object]]);
+    this.invokeQueue.unshift([
+      $injectTokens.$provide,
+      "constant",
+      [name, object],
+    ]);
     return this;
   }
 
@@ -139,7 +143,7 @@ export class NgModule {
       providerFunction.$$moduleName = name;
     }
     this.invokeQueue.push([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "factory",
       [name, providerFunction],
     ]);
@@ -156,7 +160,7 @@ export class NgModule {
       serviceFunction.$$moduleName = name;
     }
     this.invokeQueue.push([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "service",
       [name, serviceFunction],
     ]);
@@ -172,7 +176,11 @@ export class NgModule {
     if (providerType && isFunction(providerType)) {
       providerType.$$moduleName = name;
     }
-    this.invokeQueue.push([PROVIDE_LITERAL, "provider", [name, providerType]]);
+    this.invokeQueue.push([
+      $injectTokens.$provide,
+      "provider",
+      [name, providerType],
+    ]);
     return this;
   }
 
@@ -185,7 +193,11 @@ export class NgModule {
     if (decorFn && isFunction(decorFn)) {
       decorFn.$$moduleName = name;
     }
-    this.configBlocks.push([PROVIDE_LITERAL, "decorator", [name, decorFn]]);
+    this.configBlocks.push([
+      $injectTokens.$provide,
+      "decorator",
+      [name, decorFn],
+    ]);
     return this;
   }
 

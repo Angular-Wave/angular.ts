@@ -1,7 +1,7 @@
 import type { DecoratedASTNode } from "./interpreter.js";
 import type { Scope } from "../scope/scope.js";
 /**
- * Describes metadata and behavior for a compiled AngularJS expression.
+ * Describes metadata and behavior for a compiled AngularTS expression.
  */
 export interface CompiledExpressionProps {
   /** Indicates if the expression is a literal. */

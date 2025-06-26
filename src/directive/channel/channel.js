@@ -22,7 +22,6 @@ import { isObject } from "../../shared/utils.js";
  */
 export function ngChannelDirective() {
   return {
-    restrict: "EA",
     link: (scope, element, attrs) => {
       const hasTemplate = element.childNodes.length > 0;
       const channel = attrs["ngChannel"];

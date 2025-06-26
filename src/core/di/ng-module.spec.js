@@ -1,12 +1,12 @@
 import {
   INJECTOR_LITERAL,
   NgModule,
-  PROVIDE_LITERAL,
   COMPILE_LITERAL,
   ANIMATION_LITERAL,
   FILTER_LITERAL,
   CONTROLLER_LITERAL,
-} from "./ng-module";
+} from "./ng-module.js";
+import { $injectTokens } from "../../injection-tokens.js";
 
 describe("NgModule", () => {
   /** @type {NgModule} */
@@ -36,7 +36,7 @@ describe("NgModule", () => {
     // when contants are registered
     ngModule.constant("aConstant", 42);
     expect(ngModule.invokeQueue[0]).toEqual([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "constant",
       ["aConstant", 42],
     ]);
@@ -44,12 +44,12 @@ describe("NgModule", () => {
     // then they are prepended to invocation queue
     ngModule.constant("bConstant", 24);
     expect(ngModule.invokeQueue[0]).toEqual([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "constant",
       ["bConstant", 24],
     ]);
     expect(ngModule.invokeQueue[1]).toEqual([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "constant",
       ["aConstant", 42],
     ]);
@@ -59,7 +59,7 @@ describe("NgModule", () => {
     // when value are registered
     ngModule.value("aValue", 42);
     expect(ngModule.invokeQueue[0]).toEqual([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "value",
       ["aValue", 42],
     ]);
@@ -67,12 +67,12 @@ describe("NgModule", () => {
     // then are pushed to invocation queue
     ngModule.value("bValue", 24);
     expect(ngModule.invokeQueue[1]).toEqual([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "value",
       ["bValue", 24],
     ]);
     expect(ngModule.invokeQueue[0]).toEqual([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "value",
       ["aValue", 42],
     ]);
@@ -120,13 +120,13 @@ describe("NgModule", () => {
   it("can store factories", () => {
     ngModule.factory("aFactory", a).factory("bFactory", b);
     expect(ngModule.invokeQueue[0]).toEqual([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "factory",
       ["aFactory", a],
     ]);
 
     expect(ngModule.invokeQueue[1]).toEqual([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "factory",
       ["bFactory", b],
     ]);
@@ -139,13 +139,13 @@ describe("NgModule", () => {
   it("can store services", () => {
     ngModule.service("aService", a).service("bService", b);
     expect(ngModule.invokeQueue[0]).toEqual([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "service",
       ["aService", a],
     ]);
 
     expect(ngModule.invokeQueue[1]).toEqual([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "service",
       ["bService", b],
     ]);
@@ -158,13 +158,13 @@ describe("NgModule", () => {
   it("can store providers", () => {
     ngModule.provider("aProvider", a).provider("bProvider", b);
     expect(ngModule.invokeQueue[0]).toEqual([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "provider",
       ["aProvider", a],
     ]);
 
     expect(ngModule.invokeQueue[1]).toEqual([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "provider",
       ["bProvider", b],
     ]);
@@ -177,13 +177,13 @@ describe("NgModule", () => {
   it("can store decorators", () => {
     ngModule.decorator("aDecorator", a).decorator("bDecorator", b);
     expect(ngModule.configBlocks[0]).toEqual([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "decorator",
       ["aDecorator", a],
     ]);
 
     expect(ngModule.configBlocks[1]).toEqual([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "decorator",
       ["bDecorator", b],
     ]);

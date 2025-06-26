@@ -104,7 +104,7 @@ export type FilterFn = (input: any, ...args: any[]) => any;
 export type FilterFactory = (...args: any[]) => FilterFn;
 
 /**
- * A controller constructor function used in AngularJS.
+ * A controller constructor function used in AngularTS.
  */
 export type ControllerConstructor = (...args: any[]) => void | Controller;
 
@@ -124,7 +124,7 @@ export interface ChangesObject<T = any> {
 export type OnChangesObject = Record<string, ChangesObject>;
 
 /**
- * AngularJS component lifecycle interface.
+ * AngularTS component lifecycle interface.
  */
 export interface Controller {
   /** Optional controller name (used in debugging) */
@@ -201,12 +201,12 @@ export type DirectiveCompileFn = (
 ) => void | DirectiveLinkFn | DirectivePrePost;
 
 /**
- * Defines the structure of an AngularJS directive.
+ * Defines the structure of an AngularTS directive.
  */
 export interface Directive {
   /** Optional name (usually inferred) */
   name?: string;
-  /** Restict option: 'A' and/or 'E' */
+  /** Restrict option: 'A' and/or 'E'. Defaults to 'EA' */
   restrict?: string;
   /** Compile function for the directive */
   compile?: DirectiveCompileFn;

@@ -1,4 +1,5 @@
 import { extend, hasOwn } from "../../shared/utils.js";
+import { $injectTokens } from "../../injection-tokens.js";
 
 const ARIA_DISABLE_ATTR = "ngAriaDisable";
 
@@ -84,7 +85,7 @@ export function AriaProvider() {
   };
 }
 
-ngDisabledAriaDirective.$inject = ["$aria"];
+ngDisabledAriaDirective.$inject = [$injectTokens.$aria];
 export function ngDisabledAriaDirective($aria) {
   return $aria.$$watchExpr(
     "ngDisabled",
@@ -94,7 +95,7 @@ export function ngDisabledAriaDirective($aria) {
   );
 }
 
-ngShowAriaDirective.$inject = ["$aria"];
+ngShowAriaDirective.$inject = [$injectTokens.$aria];
 export function ngShowAriaDirective($aria) {
   return $aria.$$watchExpr("ngShow", "aria-hidden", [], true);
 }
@@ -113,11 +114,11 @@ export function ngMessagesAriaDirective() {
   };
 }
 
-ngClickAriaDirective.$inject = ["$aria", "$parse"];
+ngClickAriaDirective.$inject = [$injectTokens.$aria, $injectTokens.$parse];
 export function ngClickAriaDirective($aria, $parse) {
   return {
     restrict: "A",
-    compile(elem, attr) {
+    compile(_elem, attr) {
       if (hasOwn(attr, ARIA_DISABLE_ATTR)) return;
 
       const fn = $parse(attr.ngClick);
@@ -177,7 +178,7 @@ export function ngClickAriaDirective($aria, $parse) {
   };
 }
 
-ngRequiredAriaDirective.$inject = ["$aria"];
+ngRequiredAriaDirective.$inject = [$injectTokens.$aria];
 export function ngRequiredAriaDirective($aria) {
   return $aria.$$watchExpr(
     "ngRequired",
@@ -197,7 +198,7 @@ export function ngCheckedAriaDirective($aria) {
   );
 }
 
-ngValueAriaDirective.$inject = ["$aria"];
+ngValueAriaDirective.$inject = [$injectTokens.$aria];
 export function ngValueAriaDirective($aria) {
   return $aria.$$watchExpr(
     "ngValue",
@@ -207,12 +208,12 @@ export function ngValueAriaDirective($aria) {
   );
 }
 
-ngHideAriaDirective.$inject = ["$aria"];
+ngHideAriaDirective.$inject = [$injectTokens.$aria];
 export function ngHideAriaDirective($aria) {
   return $aria.$$watchExpr("ngHide", "aria-hidden", [], false);
 }
 
-ngReadonlyAriaDirective.$inject = ["$aria"];
+ngReadonlyAriaDirective.$inject = [$injectTokens.$aria];
 export function ngReadonlyAriaDirective($aria) {
   return $aria.$$watchExpr(
     "ngReadonly",
@@ -222,7 +223,7 @@ export function ngReadonlyAriaDirective($aria) {
   );
 }
 
-ngModelAriaDirective.$inject = ["$aria"];
+ngModelAriaDirective.$inject = [$injectTokens.$aria];
 export function ngModelAriaDirective($aria) {
   function shouldAttachAttr(attr, normalizedAttr, elem, allowNonAriaNodes) {
     return (
@@ -365,7 +366,7 @@ export function ngModelAriaDirective($aria) {
   };
 }
 
-ngDblclickAriaDirective.$inject = ["$aria"];
+ngDblclickAriaDirective.$inject = [$injectTokens.$aria];
 export function ngDblclickAriaDirective($aria) {
   return function (scope, elem, attr) {
     if (hasOwn(attr, ARIA_DISABLE_ATTR)) return;

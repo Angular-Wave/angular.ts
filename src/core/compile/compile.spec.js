@@ -258,7 +258,6 @@ describe("$compile", () => {
     let el;
     myModule.directive("myDirective", () => {
       return {
-        restrict: "EA",
         compile: function (element) {
           el = element;
         },
@@ -272,7 +271,6 @@ describe("$compile", () => {
   it("compiles element directives from a single element", () => {
     myModule.directive("myDirective", () => {
       return {
-        restrict: "EA",
         compile: function (element) {
           setCacheData(element, "hasCompiled", true);
         },
@@ -289,7 +287,6 @@ describe("$compile", () => {
     let idx = 1;
     myModule.directive("myDirective", () => {
       return {
-        restrict: "EA",
         compile: function (element) {
           setCacheData(element, "idx", idx++);
         },
@@ -308,7 +305,6 @@ describe("$compile", () => {
     let idx = 1;
     myModule.directive("myDirective", () => {
       return {
-        restrict: "EA",
         compile: function (element) {
           setCacheData(element, "dir", idx++);
         },
@@ -327,7 +323,6 @@ describe("$compile", () => {
     let idx = 1;
     myModule.directive("myDir", () => {
       return {
-        restrict: "EA",
         compile: function (element) {
           setCacheData(element, "dir", idx++);
         },
@@ -348,7 +343,6 @@ describe("$compile", () => {
         () => {
           myModule.directive("myDirective", () => {
             return {
-              restrict: "EA",
               compile: function (element) {
                 setCacheData(element, "hasCompiled", true);
               },
@@ -374,7 +368,6 @@ describe("$compile", () => {
   it("compiles attribute directives", () => {
     myModule.directive("myDirective", () => {
       return {
-        restrict: "EA",
         compile: function (element) {
           setCacheData(element, "hasCompiled", true);
         },
@@ -390,7 +383,6 @@ describe("$compile", () => {
   it("compiles attribute directives with prefixes", () => {
     myModule.directive("myDirective", () => {
       return {
-        restrict: "EA",
         compile: function (element) {
           setCacheData(element, "hasCompiled", true);
         },
@@ -406,7 +398,6 @@ describe("$compile", () => {
     myModule
       .directive("myDirective", () => {
         return {
-          restrict: "EA",
           compile: function (element) {
             setCacheData(element, "hasCompiled", true);
           },
@@ -414,7 +405,6 @@ describe("$compile", () => {
       })
       .directive("mySecondDirective", () => {
         return {
-          restrict: "EA",
           compile: function (element) {
             setCacheData(element, "secondCompiled", true);
           },
@@ -431,7 +421,6 @@ describe("$compile", () => {
     myModule
       .directive("myDirective", () => {
         return {
-          restrict: "EA",
           compile: function (element) {
             setCacheData(element, "hasCompiled", true);
           },
@@ -439,7 +428,6 @@ describe("$compile", () => {
       })
       .directive("mySecondDirective", () => {
         return {
-          restrict: "EA",
           compile: function (element) {
             setCacheData(element, "secondCompiled", true);
           },
@@ -456,7 +444,6 @@ describe("$compile", () => {
   it("compiles attribute directives with ng-attr prefix", () => {
     myModule.directive("myDirective", () => {
       return {
-        restrict: "EA",
         compile: function (element) {
           setCacheData(element, "hasCompiled", true);
         },
@@ -471,7 +458,6 @@ describe("$compile", () => {
   it("compiles attribute directives with ng-attr prefix", () => {
     myModule.directive("myDirective", () => {
       return {
-        restrict: "EA",
         compile: function (element) {
           setCacheData(element, "hasCompiled", true);
         },
@@ -830,7 +816,6 @@ describe("$compile", () => {
       let givenAttrs;
       registerDirectives(dirName, () => {
         return {
-          restrict: "EA",
           compile: function (element, attrs) {
             givenAttrs = attrs;
           },
@@ -4656,7 +4641,6 @@ describe("$compile", () => {
 
     it("should register a directive", () => {
       myModule.directive("div", () => ({
-        restrict: "EA",
         link(scope, element) {
           log = "OK";
           element.innerText = "SUCCESS";
@@ -4671,14 +4655,12 @@ describe("$compile", () => {
     it("should allow registration of multiple directives with same name", () => {
       myModule
         .directive("div", () => ({
-          restrict: "EA",
           link: {
             pre: () => log.push("pre1"),
             post: () => log.push("post1"),
           },
         }))
         .directive("div", () => ({
-          restrict: "EA",
           link: {
             pre: () => log.push("pre2"),
             post: () => log.push("post2"),
@@ -7364,7 +7346,6 @@ describe("$compile", () => {
         module = window.angular.module("test1", ["ng"]);
         ["a", "b", "c"].forEach((name) => {
           module.directive(name, () => ({
-            restrict: "EA",
             compile() {
               log.push(`t${name.toUpperCase()}`);
               return {
@@ -7468,7 +7449,6 @@ describe("$compile", () => {
           let value;
           module.directive({
             input: () => ({
-              restrict: "EA",
               link(scope, element, attr) {
                 value = attr.required;
               },
@@ -7489,7 +7469,6 @@ describe("$compile", () => {
           let value;
           module.directive({
             div: () => ({
-              restrict: "EA",
               link(scope, element, attr) {
                 value = attr.required;
               },
@@ -7617,7 +7596,6 @@ describe("$compile", () => {
           beforeEach(async () => {
             ["input", "a", "img"].forEach((tag) => {
               module.directive(tag, () => ({
-                restrict: "EA",
                 link(scope, element, attr) {
                   scope.$target.attr = attr;
                 },
@@ -7736,16 +7714,15 @@ describe("$compile", () => {
         module
           .directive("d1", () => ({
             scope: true,
-            restrict: "EA",
+
             controller: TestController,
           }))
           .directive("d2", () => ({
             scope: {},
-            restrict: "EA",
+
             controller: TestController,
           }))
           .directive("d3", () => ({
-            restrict: "EA",
             controller: TestController,
           }));
 

@@ -19,6 +19,7 @@ import { publishExternalAPI } from "./public.js";
 import { VERSION } from "./public.js";
 import { unnestR } from "./shared/common.js";
 import { EventBus } from "./core/pubsub/pubsub.js";
+import { $injectTokens } from "./injection-tokens.js";
 
 const ngMinErr = minErr("ng");
 const $injectorMinErr = minErr("$injector");
@@ -57,6 +58,7 @@ export class Angular {
     this.errorHandlingConfig = errorHandlingConfig;
 
     window["angular"] = this;
+    this.$injectTokens = $injectTokens;
     publishExternalAPI(this);
   }
 

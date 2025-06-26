@@ -1,26 +1,37 @@
 import { isDefined } from "../../shared/utils.js";
 import { hasAnimate } from "../../shared/utils.js";
+import { $injectTokens } from "../../injection-tokens.js";
 
-ngIncludeDirective.$inject = ["$templateRequest", "$anchorScroll", "$animate"];
+ngIncludeDirective.$inject = [
+  $injectTokens.$templateRequest,
+  $injectTokens.$anchorScroll,
+  $injectTokens.$animate,
+  $injectTokens.$exceptionHandler,
+];
 
 /**
  *
  * @param {*} $templateRequest
  * @param {import("../../services/anchor-scroll.js").AnchorScrollFunction} $anchorScroll
  * @param {*} $animate
- * @returns
+ * @param {import('../../core/error-handler.js').ErrorHandler} $exceptionHandler
+ * @returns {import('../../interface.js').Directive}
  */
-export function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
+export function ngIncludeDirective(
+  $templateRequest,
+  $anchorScroll,
+  $animate,
+  $exceptionHandler,
+) {
   return {
-    restrict: "EA",
     priority: 400,
     terminal: true,
     transclude: "element",
     controller: () => {},
     compile(_element, attr) {
-      const srcExp = attr.ngInclude || attr.src;
-      const onloadExp = attr.onload || "";
-      const autoScrollExp = attr.autoscroll;
+      const srcExp = attr["ngInclude"] || attr["src"];
+      const onloadExp = attr["onload"] || "";
+      const autoScrollExp = attr["autoscroll"];
 
       return (scope, $element, _$attr, ctrl, $transclude) => {
         function maybeScroll() {
@@ -73,7 +84,7 @@ export function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
                 if (scope.$$destroyed) return;
                 if (thisChangeId !== changeCounter) return;
                 const newScope = scope.$new();
-                ctrl.template = response;
+                ctrl["template"] = response;
 
                 // Note: This will also link all children of ng-include that were contained in the original
                 // html. If that content contains controllers, ... they could pollute/change the scope.
@@ -96,19 +107,20 @@ export function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
                 currentScope.$emit("$includeContentLoaded", src);
                 scope.$eval(onloadExp);
               },
-              () => {
+              (err) => {
                 if (scope.$$destroyed) return;
 
                 if (thisChangeId === changeCounter) {
                   cleanupLastIncludeContent();
                   scope.$emit("$includeContentError", src);
                 }
+                $exceptionHandler(new Error(err));
               },
             );
             scope.$emit("$includeContentRequested", src);
           } else {
             cleanupLastIncludeContent();
-            ctrl.template = null;
+            ctrl["template"] = null;
           }
         });
       };
@@ -129,7 +141,6 @@ ngIncludeFillContentDirective.$inject = ["$compile"];
  */
 export function ngIncludeFillContentDirective($compile) {
   return {
-    restrict: "EA",
     priority: -400,
     require: "ngInclude",
     link(scope, $element, _$attr, ctrl) {

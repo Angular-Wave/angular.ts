@@ -93,7 +93,7 @@ export function ngSwitchWhenDirective() {
     transclude: "element",
     terminal: true,
     priority: 1200,
-    restrict: "EA",
+
     require: "^ngSwitch",
     link(scope, element, attrs, ctrl, $transclude) {
       const cases = attrs["ngSwitchWhen"]
@@ -120,7 +120,6 @@ export function ngSwitchWhenDirective() {
  */
 export function ngSwitchDefaultDirective() {
   return {
-    restrict: "EA",
     transclude: "element",
     terminal: true,
     priority: 1200,

@@ -1,11 +1,11 @@
 import { isUndefined, stringify, isNull, isProxy } from "../../shared/utils.js";
+import { $injectTokens } from "../../injection-tokens.js";
 
 /**
  * @returns {import('../../interface.ts').Directive}
  */
 export function ngBindDirective() {
   return {
-    restrict: "EA",
     /**
      * @param {import('../../core/scope/scope.js').Scope} scope
      * @param {Element} element
@@ -24,7 +24,6 @@ export function ngBindDirective() {
  */
 export function ngBindTemplateDirective() {
   return {
-    restrict: "EA",
     /**
      * @param {import('../../core/scope/scope.js').Scope} _scope
      * @param {Element} element
@@ -38,7 +37,7 @@ export function ngBindTemplateDirective() {
   };
 }
 
-ngBindHtmlDirective.$inject = ["$parse"];
+ngBindHtmlDirective.$inject = [$injectTokens.$parse];
 /**
  * @returns {import('../../interface.ts').Directive}
  */

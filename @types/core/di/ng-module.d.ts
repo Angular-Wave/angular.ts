@@ -1,4 +1,3 @@
-export const PROVIDE_LITERAL: "$provide";
 export const INJECTOR_LITERAL: "$injector";
 export const COMPILE_LITERAL: "$compileProvider";
 export const ANIMATION_LITERAL: "$animateProvider";

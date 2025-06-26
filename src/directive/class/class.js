@@ -9,7 +9,6 @@ function classDirective(name, selector) {
 
   return function () {
     return {
-      restrict: "EA",
       /**
        * @param {import("../../core/scope/scope.js").Scope} scope
        * @param {Element} element

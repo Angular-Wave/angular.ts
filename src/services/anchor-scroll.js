@@ -24,10 +24,6 @@ export class AnchorScrollProvider {
     this.autoScrollingEnabled = true;
   }
 
-  disableAutoScrolling() {
-    this.autoScrollingEnabled = false;
-  }
-
   $get = [
     "$location",
     "$rootScope",

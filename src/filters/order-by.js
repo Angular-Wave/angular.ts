@@ -6,8 +6,9 @@ import {
   isString,
   minErr,
 } from "../shared/utils.js";
+import { $injectTokens } from "../injection-tokens.js";
 
-orderByFilter.$inject = ["$parse"];
+orderByFilter.$inject = [$injectTokens.$parse];
 
 /**
  * @returns {import('../interface.ts').FilterFn}

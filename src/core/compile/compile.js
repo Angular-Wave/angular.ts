@@ -1296,6 +1296,7 @@ export class CompileProvider {
             let controllerScope;
             let elementControllers;
             let transcludeFn;
+            let scopeToChild = scope;
 
             /** @type {NodeRef} */
             let $element;
@@ -1467,7 +1468,7 @@ export class CompileProvider {
             // RECURSION
             // We only pass the isolate scope, if the isolate directive has a template,
             // otherwise the child elements do not belong to the isolate directive.
-            let scopeToChild = scope;
+
             if (
               newIsolateScopeDirective &&
               (newIsolateScopeDirective.template ||

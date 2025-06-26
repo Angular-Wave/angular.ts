@@ -1,5 +1,6 @@
 import { minErr, hashKey, isArrayLike, hasOwn } from "../../shared/utils.js";
 import { getBlockNodes } from "../../shared/dom.js";
+import { $injectTokens } from "../../injection-tokens.js";
 
 const NG_REMOVED = "$$NG_REMOVED";
 const ngRepeatMinErr = minErr("ngRepeat");
@@ -23,7 +24,7 @@ const ngRepeatMinErr = minErr("ngRepeat");
 const VAR_OR_TUPLE_REGEX =
   /^(?:(\s*[$\w]+)|\(\s*([$\w]+)\s*,\s*([$\w]+)\s*\))$/;
 
-ngRepeatDirective.$inject = ["$animate"];
+ngRepeatDirective.$inject = [$injectTokens.$animate];
 
 /**
  * TODO // Add type for animate service

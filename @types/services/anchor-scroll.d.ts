@@ -10,7 +10,6 @@
  */
 export class AnchorScrollProvider {
   autoScrollingEnabled: boolean;
-  disableAutoScrolling(): void;
   $get: (
     | string
     | ((

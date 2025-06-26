@@ -1,0 +1,15 @@
+/**
+ * A helper list of tokens matching the standard injectables that come predefined in the core `ng` module.
+ * These string tokens are commonly injected into services, directives, or components via `$inject`.
+ *
+ * Example:
+ * ```js
+ *
+ * myDirective.$inject = [
+ *   angular.$injectTokens.$animate,
+ *   angular.$injectTokens.$templateRequest,
+ * ];
+ * ```
+ * @type Readonly<Record<string, string>>
+ */
+export const $injectTokens: Readonly<Record<string, string>>;

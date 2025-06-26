@@ -3,29 +3,15 @@
  * @param {*} $templateRequest
  * @param {import("../../services/anchor-scroll.js").AnchorScrollFunction} $anchorScroll
  * @param {*} $animate
- * @returns
+ * @param {import('../../core/error-handler.js').ErrorHandler} $exceptionHandler
+ * @returns {import('../../interface.js').Directive}
  */
 export function ngIncludeDirective(
   $templateRequest: any,
   $anchorScroll: import("../../services/anchor-scroll.js").AnchorScrollFunction,
   $animate: any,
-): {
-  restrict: string;
-  priority: number;
-  terminal: boolean;
-  transclude: string;
-  controller: () => void;
-  compile(
-    _element: any,
-    attr: any,
-  ): (
-    scope: any,
-    $element: any,
-    _$attr: any,
-    ctrl: any,
-    $transclude: any,
-  ) => void;
-};
+  $exceptionHandler: import("../../core/error-handler.js").ErrorHandler,
+): import("../../interface.js").Directive;
 export namespace ngIncludeDirective {
   let $inject: string[];
 }

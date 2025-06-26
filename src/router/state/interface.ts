@@ -459,10 +459,10 @@ export interface StateDeclaration {
    * - Each key (string) is the name of the dependency.
    * - Each value (function) is an injectable function which returns the dependency, or a promise for the dependency.
    *
-   * This style is based on AngularJS injectable functions, but can be used with any UI-Router implementation.
-   * If your code will be minified, the function should be ["annotated" in the AngularJS manner](https://docs.angularjs.org/guide/di#dependency-annotation).
+   * This style is based on AngularTS injectable functions, but can be used with any UI-Router implementation.
+   * If your code will be minified, the function should be ["annotated" in the AngularTS manner](https://docs.angularjs.org/guide/di#dependency-annotation).
    *
-   * #### AngularJS Example:
+   * #### AngularTS Example:
    * ```js
    * resolve: {
    *   // If you inject `myStateDependency` into a controller, you'll get "abc"

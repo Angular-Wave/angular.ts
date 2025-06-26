@@ -3,7 +3,6 @@ export function $ViewDirectiveFill(
   $controller: any,
   $transitions: any,
 ): {
-  restrict: string;
   priority: number;
   compile: (tElement: any) => (scope: any, $element: any) => void;
 };
@@ -144,7 +143,6 @@ export let ngView: (
       $interpolate: any,
     ) => {
       count: number;
-      restrict: string;
       terminal: boolean;
       priority: number;
       transclude: string;
