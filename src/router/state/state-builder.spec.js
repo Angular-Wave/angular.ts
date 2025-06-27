@@ -1,22 +1,28 @@
 import { StateBuilder } from "./state-builder.js";
+import { Angular } from "../../loader.js";
 
 // TODO refactor this to url service as it is using the provider right now
-xdescribe("StateBuilder", function () {
+describe("StateBuilder", function () {
   const parent = { name: "" };
-  let builder,
-    matcher,
-    urlMatcherFactoryProvider = {
-      compile: function () {},
-      isMatcher: function () {},
-    };
+  let builder;
+  let $stateRegistry;
 
   beforeEach(function () {
-    matcher = new StateBuilder({});
-    builder = new StateBuilder(matcher, urlMatcherFactoryProvider);
-    builder.builder("views", ng1ViewsBuilder);
+    window.angular = new Angular();
+    window.angular.module("default", []);
+    let $injector = window.angular.bootstrap(document.getElementById("app"), [
+      "default",
+    ]);
+    $stateRegistry = $injector.get("$stateRegistry");
+    builder = $stateRegistry.builder;
   });
 
-  xit("should use the state object to build a default view, when no `views` property is found", function () {
+  it("expect it to be configured by state registry", () => {
+    expect($stateRegistry).toBeDefined();
+    expect($stateRegistry.builder).toBeDefined();
+  });
+
+  it("should use the state object to build a default view, when no `views` property is found", function () {
     const config = {
       url: "/foo",
       templateUrl: "/foo.html",
@@ -27,7 +33,7 @@ xdescribe("StateBuilder", function () {
 
     expect(built.$default).not.toEqual(config);
     expect(built.$default).toEqual(
-      expect.objectContaining({
+      jasmine.objectContaining({
         templateUrl: "/foo.html",
         controller: "FooController",
         resolveAs: "$resolve",
@@ -35,7 +41,7 @@ xdescribe("StateBuilder", function () {
     );
   });
 
-  xit("It should use the views object to build views, when defined", function () {
+  it("It should use the views object to build views, when defined", function () {
     const config = { a: { foo: "bar", controller: "FooController" } };
     const builtViews = builder.builder("views")({
       parent: parent,
@@ -45,7 +51,7 @@ xdescribe("StateBuilder", function () {
     expect(builtViews.a.controller).toEqual(config.a.controller);
   });
 
-  xit("should not allow a view config with both component and template keys", function () {
+  it("should not allow a view config with both component and template keys", function () {
     const config = {
       name: "foo",
       url: "/foo",
@@ -69,7 +75,7 @@ xdescribe("StateBuilder", function () {
     ).toThrow();
   });
 
-  xit("should replace a resolve: string value with a function that injects the service of the same name", function () {
+  it("should replace a resolve: string value with a function that injects the service of the same name", function () {
     const config = { resolve: { foo: "bar" } };
     expect(builder.builder("resolvables")).toBeDefined();
     const built = builder.builder("resolvables")(config);

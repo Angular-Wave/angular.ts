@@ -53,8 +53,15 @@ export function resolvablesBuilder(state: any): any[];
  * using the [[builder]] method.
  */
 export class StateBuilder {
-  constructor(matcher: any, urlService: any);
-  matcher: any;
+  /**
+   * @param {import('./state-matcher.js').StateMatcher} matcher
+   * @param urlService
+   */
+  constructor(
+    matcher: import("./state-matcher.js").StateMatcher,
+    urlService: any,
+  );
+  matcher: import("./state-matcher.js").StateMatcher;
   $injector: any;
   builders: {
     name: ((state: any) => any)[];

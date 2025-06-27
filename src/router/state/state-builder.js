@@ -263,6 +263,10 @@ export function resolvablesBuilder(state) {
  * using the [[builder]] method.
  */
 export class StateBuilder {
+  /**
+   * @param {import('./state-matcher.js').StateMatcher} matcher
+   * @param urlService
+   */
   constructor(matcher, urlService) {
     this.matcher = matcher;
     this.$injector = undefined;

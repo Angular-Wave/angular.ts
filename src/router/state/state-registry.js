@@ -6,6 +6,7 @@ import { propEq } from "../../shared/hof.js";
 import { ResolveContext } from "../resolve/resolve-context.js";
 import { ng1ViewsBuilder } from "./views.js";
 import { isString } from "../../shared/utils.js";
+import { $injectTokens, provider } from "../../injection-tokens.js";
 
 /** @typedef {import('../../interface.ts').ServiceProvider} ServiceProvider } */
 /**
@@ -16,12 +17,12 @@ import { isString } from "../../shared/utils.js";
  * @implements {ServiceProvider}
  */
 export class StateRegistryProvider {
-  static $inject = [
-    "$urlServiceProvider",
-    "$stateProvider",
-    "$routerGlobalsProvider",
-    "$viewProvider",
-  ];
+  static $inject = provider([
+    $injectTokens.$urlService,
+    $injectTokens.$state,
+    $injectTokens.$routerGlobals,
+    $injectTokens.$view,
+  ]);
 
   /**
    * @param urlService

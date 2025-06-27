@@ -61,3 +61,11 @@ export const $injectTokens = Object.freeze({
   $filterProvider: "$filterProvider",
   $controllerProvider: "$controllerProvider",
 });
+
+/**
+ * Utility for mapping to service-names to providers
+ * @param {String[]} services
+ */
+export function provider(services) {
+  return services.map((x) => x + "Provider");
+}
