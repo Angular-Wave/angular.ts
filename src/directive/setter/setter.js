@@ -50,7 +50,7 @@ export function ngSetterDirective($parse, $log) {
           characterData: true,
         });
       } else {
-        console.warn("ngSetter: Element is not a valid DOM node.");
+        $log.warn("ngSetter: Element is not a valid DOM node.");
         return;
       }
 

@@ -2,5 +2,7 @@
 {
   "entryPoints": ["src"],
   "entryPointStrategy": "expand",
-  "out": "./typedoc"
+  "out": "./typedoc",
+  "disableSources": true,
+  "name": "AngularTS"
 }
