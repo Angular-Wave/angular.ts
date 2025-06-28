@@ -1,8 +1,9 @@
-/* Version: 0.7.0 - June 28, 2025 13:06:07 */
-(function (factory) {
-  typeof define === 'function' && define.amd ? define(factory) :
-  factory();
-})((function () { 'use strict';
+/* Version: 0.7.1 - June 28, 2025 21:26:14 */
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.angular = {}));
+})(this, (function (exports) { 'use strict';
 
   const VALID_CLASS = "ng-valid";
   const INVALID_CLASS = "ng-invalid";
@@ -35684,7 +35685,7 @@
 
   // @private
 
-  const VERSION = "0.7.0";
+  const VERSION = "0.7.1";
 
   /**
    * Initializes core `ng` module.
@@ -36127,5 +36128,7 @@
   document.addEventListener("DOMContentLoaded", () => angular.init(document), {
     once: true,
   });
+
+  exports.angular = angular;
 
 }));

@@ -1,4 +1,4 @@
-/* Version: 0.7.0 - June 28, 2025 13:06:09 */
+/* Version: 0.7.1 - June 28, 2025 21:26:16 */
 const VALID_CLASS = "ng-valid";
 const INVALID_CLASS = "ng-invalid";
 const PRISTINE_CLASS = "ng-pristine";
@@ -35679,7 +35679,7 @@ function ngSetterDirective($parse, $log) {
 
 // @private
 
-const VERSION = "0.7.0";
+const VERSION = "0.7.1";
 
 /**
  * Initializes core `ng` module.
@@ -36122,3 +36122,5 @@ const angular = new Angular();
 document.addEventListener("DOMContentLoaded", () => angular.init(document), {
   once: true,
 });
+
+export { angular };
