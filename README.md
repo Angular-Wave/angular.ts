@@ -3,21 +3,21 @@
 ![Build status](https://github.com/Angular-Wave/angular.ts/actions/workflows/ci.yml/badge.svg)
 [![stats](https://data.jsdelivr.com/v1/package/npm/@angular-wave/angular.ts/badge?style=rounded)](https://www.jsdelivr.com/package/npm/@angular-wave/angular.ts)
 
-This project preserves, modernises and expands the original [AngularTS](https://github.com/angular/angular.js)
-framework. AngularTS is "AngularTS: The Good Parts". It takes the three core pillars of the original &ndash; a string-interpolation engine,
+This project preserves, modernises and expands the original [AngularJS](https://angularjs.org/)
+framework. AngularTS is "AngularJS: The Good Parts". It takes the three core pillars of the original &ndash; a string-interpolation engine,
 dependency injection, two-way data-binding &ndash; and adds a reactive change-detection model on top of modern build tooling with strong typechecking of TypeScript.
 
-The result is a high-performance, buildless, progressive and battle-tested JS framework that stays as close to Web standards as possible.
+With AngularJS, you get a decade-long optimization effort of Angular Team at Google, plus a massive testing suite, required for applications like Google Cloud and Kubernetes.
+AngularTS adds:
 
-With AngularTS, you get a decade-long optimization effort of Angular Team at Google and massive testing suite, required for applications like Google Cloud and Kubernetes, plus:
-
-- a fully reactive change-detection model without digests or virtual DOMs.
+- a fully reactive change-detection model without digests or virtual DOMs, like `Vue`
 - access to native DOM APIs at component and directive level (no `JQuery`or `JQLite`)
 - access to native Promises API (no `$q` or `$timetout`)
 - built-in enterprise-level router (`ui-router` ported as `ng-router`)
 - built-in animations (`animate`)
-- new directives, inspired by HTMX
+- new directives, inspired by `HTMX`
 
+The result is a high-performance, buildless, progressive and battle-tested JS framework that stays as close to Web standards as possible.
 If you write server-rendered web applications for desktop and mobile, and do not wish to leave the comfort of your tech-stack, this is your new secret weapon.
 
 ### Getting started
@@ -73,8 +73,6 @@ We've set up a separate document for our
 
 We've set up a separate document for
 [developers](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md).
-
-[![Analytics](https://ga-beacon.appspot.com/UA-8594346-11/angular.js/README.md?pixel)](https://github.com/igrigorik/ga-beacon)
 
 ## What to use AngularTS for and when to use it
 
