@@ -1,4 +1,4 @@
-/* Version: 0.7.1 - June 28, 2025 21:26:14 */
+/* Version: 0.7.2 - June 28, 2025 21:48:50 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -35685,7 +35685,7 @@
 
   // @private
 
-  const VERSION = "0.7.1";
+  const VERSION = "0.7.2";
 
   /**
    * Initializes core `ng` module.

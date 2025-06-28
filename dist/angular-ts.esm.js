@@ -1,4 +1,4 @@
-/* Version: 0.7.1 - June 28, 2025 21:26:16 */
+/* Version: 0.7.2 - June 28, 2025 21:48:51 */
 const VALID_CLASS = "ng-valid";
 const INVALID_CLASS = "ng-invalid";
 const PRISTINE_CLASS = "ng-pristine";
@@ -35679,7 +35679,7 @@ function ngSetterDirective($parse, $log) {
 
 // @private
 
-const VERSION = "0.7.1";
+const VERSION = "0.7.2";
 
 /**
  * Initializes core `ng` module.
