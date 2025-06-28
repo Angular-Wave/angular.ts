@@ -1,4 +1,4 @@
-/* Version: 0.7.0 - June 26, 2025 00:03:42 */
+/* Version: 0.7.0 - June 28, 2025 13:06:09 */
 const VALID_CLASS = "ng-valid";
 const INVALID_CLASS = "ng-invalid";
 const PRISTINE_CLASS = "ng-pristine";
@@ -1707,7 +1707,78 @@ function extractElementNode$1(element) {
   }
 }
 
-const PROVIDE_LITERAL = "$provide";
+/**
+ * A helper list of tokens matching the standard injectables that come predefined in the core `ng` module.
+ * These string tokens are commonly injected into services, directives, or components via `$inject`.
+ *
+ * Example:
+ * ```js
+ *
+ * myDirective.$inject = [
+ *   angular.$injectTokens.$animate,
+ *   angular.$injectTokens.$templateRequest,
+ * ];
+ * ```
+ * @type Readonly<Record<string, string>>
+ */
+const $injectTokens = Object.freeze({
+  $$AnimateRunner: "$$AnimateRunner",
+  $$animateAsyncRun: "$$animateAsyncRun",
+  $$animateCache: "$$animateCache",
+  $$animateCssDriver: "$$animateCssDriver",
+  $$animateJs: "$$animateJs",
+  $$animateJsDriver: "$$animateJsDriver",
+  $$animateQueue: "$$animateQueue",
+  $$animation: "$$animation",
+  $$rAFScheduler: "$$rAFScheduler",
+  $$taskTrackerFactory: "$$taskTrackerFactory",
+  $anchorScroll: "$anchorScroll",
+  $animate: "$animate",
+  $animateCss: "$animateCss",
+  $aria: "$aria",
+  $browser: "$browser",
+  $controller: "$controller",
+  $eventBus: "$eventBus",
+  $exceptionHandler: "$exceptionHandler",
+  $filter: "$filter",
+  $http: "$http",
+  $httpBackend: "$httpBackend",
+  $httpParamSerializer: "$httpParamSerializer",
+  $interpolate: "$interpolate",
+  $location: "$location",
+  $log: "$log",
+  $ngViewScroll: "$ngViewScroll",
+  $parse: "$parse",
+  $rootScope: "$rootScope",
+  $routerGlobals: "$routerGlobals",
+  $sce: "$sce",
+  $sceDelegate: "$sceDelegate",
+  $state: "$state",
+  $stateRegistry: "$stateRegistry",
+  $templateCache: "$templateCache",
+  $templateFactory: "$templateFactory",
+  $templateRequest: "$templateRequest",
+  $transitions: "$transitions",
+  $urlConfig: "$urlConfig",
+  $urlService: "$urlService",
+  $view: "$view",
+  // provide literals
+  $provide: "$provide",
+  $injector: "$injector",
+  $compileProvider: "$compileProvider",
+  $animateProvider: "$animateProvider",
+  $filterProvider: "$filterProvider",
+  $controllerProvider: "$controllerProvider",
+});
+
+/**
+ * Utility for mapping to service-names to providers
+ * @param {String[]} services
+ */
+function provider(services) {
+  return services.map((x) => x + "Provider");
+}
+
 const INJECTOR_LITERAL = "$injector";
 const COMPILE_LITERAL = "$compileProvider";
 const ANIMATION_LITERAL = "$animateProvider";
@@ -1784,7 +1855,7 @@ class NgModule {
    * @returns {NgModule}
    */
   value(name, object) {
-    this.invokeQueue.push([PROVIDE_LITERAL, "value", [name, object]]);
+    this.invokeQueue.push([$injectTokens.$provide, "value", [name, object]]);
     return this;
   }
 
@@ -1794,7 +1865,11 @@ class NgModule {
    * @returns {NgModule}
    */
   constant(name, object) {
-    this.invokeQueue.unshift([PROVIDE_LITERAL, "constant", [name, object]]);
+    this.invokeQueue.unshift([
+      $injectTokens.$provide,
+      "constant",
+      [name, object],
+    ]);
     return this;
   }
 
@@ -1840,7 +1915,7 @@ class NgModule {
       providerFunction.$$moduleName = name;
     }
     this.invokeQueue.push([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "factory",
       [name, providerFunction],
     ]);
@@ -1857,7 +1932,7 @@ class NgModule {
       serviceFunction.$$moduleName = name;
     }
     this.invokeQueue.push([
-      PROVIDE_LITERAL,
+      $injectTokens.$provide,
       "service",
       [name, serviceFunction],
     ]);
@@ -1873,7 +1948,11 @@ class NgModule {
     if (providerType && isFunction(providerType)) {
       providerType.$$moduleName = name;
     }
-    this.invokeQueue.push([PROVIDE_LITERAL, "provider", [name, providerType]]);
+    this.invokeQueue.push([
+      $injectTokens.$provide,
+      "provider",
+      [name, providerType],
+    ]);
     return this;
   }
 
@@ -1886,7 +1965,11 @@ class NgModule {
     if (decorFn && isFunction(decorFn)) {
       decorFn.$$moduleName = name;
     }
-    this.configBlocks.push([PROVIDE_LITERAL, "decorator", [name, decorFn]]);
+    this.configBlocks.push([
+      $injectTokens.$provide,
+      "decorator",
+      [name, decorFn],
+    ]);
     return this;
   }
 
@@ -5586,6 +5669,7 @@ class CompileProvider {
             let controllerScope;
             let elementControllers;
             let transcludeFn;
+            let scopeToChild = scope;
 
             /** @type {NodeRef} */
             let $element;
@@ -5757,7 +5841,7 @@ class CompileProvider {
             // RECURSION
             // We only pass the isolate scope, if the isolate directive has a template,
             // otherwise the child elements do not belong to the isolate directive.
-            let scopeToChild = scope;
+
             if (
               newIsolateScopeDirective &&
               (newIsolateScopeDirective.template ||
@@ -11163,7 +11247,6 @@ function optionDirective($interpolate) {
  */
 function ngBindDirective() {
   return {
-    restrict: "EA",
     /**
      * @param {import('../../core/scope/scope.js').Scope} scope
      * @param {Element} element
@@ -11182,7 +11265,6 @@ function ngBindDirective() {
  */
 function ngBindTemplateDirective() {
   return {
-    restrict: "EA",
     /**
      * @param {import('../../core/scope/scope.js').Scope} _scope
      * @param {Element} element
@@ -11196,7 +11278,7 @@ function ngBindTemplateDirective() {
   };
 }
 
-ngBindHtmlDirective.$inject = ["$parse"];
+ngBindHtmlDirective.$inject = [$injectTokens.$parse];
 /**
  * @returns {import('../../interface.ts').Directive}
  */
@@ -11231,7 +11313,6 @@ function classDirective(name, selector) {
 
   return function () {
     return {
-      restrict: "EA",
       /**
        * @param {import("../../core/scope/scope.js").Scope} scope
        * @param {Element} element
@@ -11395,7 +11476,6 @@ const ngClassEvenDirective = classDirective("Even", 1);
  */
 function ngCloakDirective() {
   return {
-    restrict: "EA",
     compile(element, attr) {
       attr.$set("ngCloak", undefined);
       element.classList.remove("ng-cloak");
@@ -11551,26 +11631,36 @@ function ngIfDirective($animate) {
   };
 }
 
-ngIncludeDirective.$inject = ["$templateRequest", "$anchorScroll", "$animate"];
+ngIncludeDirective.$inject = [
+  $injectTokens.$templateRequest,
+  $injectTokens.$anchorScroll,
+  $injectTokens.$animate,
+  $injectTokens.$exceptionHandler,
+];
 
 /**
  *
  * @param {*} $templateRequest
  * @param {import("../../services/anchor-scroll.js").AnchorScrollFunction} $anchorScroll
  * @param {*} $animate
- * @returns
+ * @param {import('../../core/error-handler.js').ErrorHandler} $exceptionHandler
+ * @returns {import('../../interface.js').Directive}
  */
-function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
+function ngIncludeDirective(
+  $templateRequest,
+  $anchorScroll,
+  $animate,
+  $exceptionHandler,
+) {
   return {
-    restrict: "EA",
     priority: 400,
     terminal: true,
     transclude: "element",
     controller: () => {},
     compile(_element, attr) {
-      const srcExp = attr.ngInclude || attr.src;
-      const onloadExp = attr.onload || "";
-      const autoScrollExp = attr.autoscroll;
+      const srcExp = attr["ngInclude"] || attr["src"];
+      const onloadExp = attr["onload"] || "";
+      const autoScrollExp = attr["autoscroll"];
 
       return (scope, $element, _$attr, ctrl, $transclude) => {
         function maybeScroll() {
@@ -11623,7 +11713,7 @@ function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
                 if (scope.$$destroyed) return;
                 if (thisChangeId !== changeCounter) return;
                 const newScope = scope.$new();
-                ctrl.template = response;
+                ctrl["template"] = response;
 
                 // Note: This will also link all children of ng-include that were contained in the original
                 // html. If that content contains controllers, ... they could pollute/change the scope.
@@ -11646,19 +11736,20 @@ function ngIncludeDirective($templateRequest, $anchorScroll, $animate) {
                 currentScope.$emit("$includeContentLoaded", src);
                 scope.$eval(onloadExp);
               },
-              () => {
+              (err) => {
                 if (scope.$$destroyed) return;
 
                 if (thisChangeId === changeCounter) {
                   cleanupLastIncludeContent();
                   scope.$emit("$includeContentError", src);
                 }
+                $exceptionHandler(new Error(err));
               },
             );
             scope.$emit("$includeContentRequested", src);
           } else {
             cleanupLastIncludeContent();
-            ctrl.template = null;
+            ctrl["template"] = null;
           }
         });
       };
@@ -11679,7 +11770,6 @@ ngIncludeFillContentDirective.$inject = ["$compile"];
  */
 function ngIncludeFillContentDirective($compile) {
   return {
-    restrict: "EA",
     priority: -400,
     require: "ngInclude",
     link(scope, $element, _$attr, ctrl) {
@@ -11715,7 +11805,6 @@ function ngInitDirective() {
  */
 function ngNonBindableDirective() {
   return {
-    restrict: "EA",
     terminal: true,
     priority: 1000,
   };
@@ -11825,7 +11914,7 @@ const ngRepeatMinErr = minErr("ngRepeat");
 const VAR_OR_TUPLE_REGEX =
   /^(?:(\s*[$\w]+)|\(\s*([$\w]+)\s*,\s*([$\w]+)\s*\))$/;
 
-ngRepeatDirective.$inject = ["$animate"];
+ngRepeatDirective.$inject = [$injectTokens.$animate];
 
 /**
  * TODO // Add type for animate service
@@ -12229,7 +12318,7 @@ function ngSwitchWhenDirective() {
     transclude: "element",
     terminal: true,
     priority: 1200,
-    restrict: "EA",
+
     require: "^ngSwitch",
     link(scope, element, attrs, ctrl, $transclude) {
       const cases = attrs["ngSwitchWhen"]
@@ -12256,7 +12345,6 @@ function ngSwitchWhenDirective() {
  */
 function ngSwitchDefaultDirective() {
   return {
-    restrict: "EA",
     transclude: "element",
     terminal: true,
     priority: 1200,
@@ -12834,7 +12922,6 @@ const ngTranscludeDirective = [
    */
   function ($compile) {
     return {
-      restrict: "EA",
       compile: function ngTranscludeCompile(tElement) {
         // Remove and cache any original content to act as a fallback
         const fallbackLinkFn = $compile(tElement.childNodes);
@@ -12995,7 +13082,7 @@ Object.entries(ALIASED_ATTR).forEach(([ngAttr]) => {
 ["src", "srcset", "href"].forEach((attrName) => {
   const normalized = directiveNormalize(`ng-${attrName}`);
   ngAttributeAliasDirectives[normalized] = [
-    "$sce",
+    $injectTokens.$sce,
     function ($sce) {
       return {
         priority: 99, // it needs to run after the attributes are interpolated
@@ -13383,10 +13470,6 @@ function parseLength(val) {
 class AnchorScrollProvider {
   constructor() {
     this.autoScrollingEnabled = true;
-  }
-
-  disableAutoScrolling() {
-    this.autoScrollingEnabled = false;
   }
 
   $get = [
@@ -14882,7 +14965,7 @@ class TemplateCacheProvider {
 
 /** @typedef {import('../services/log').LogService} LogService */
 
-/** @typedef {import("./error-handler.ts").ErrorHandler }  ErrorHandler */
+/** @typedef {import("./error-handler.ts").ErrorHandler}  ErrorHandler */
 
 /**
  * Provider for `$exceptionHandler` service. Delegates uncaught exceptions to `$log.error()` by default.
@@ -15176,7 +15259,7 @@ function sliceFn(input, begin, end) {
   return [].slice.call(input, begin, end);
 }
 
-orderByFilter.$inject = ["$parse"];
+orderByFilter.$inject = [$injectTokens.$parse];
 
 /**
  * @returns {import('../interface.ts').FilterFn}
@@ -22253,7 +22336,7 @@ function AriaProvider() {
   };
 }
 
-ngDisabledAriaDirective.$inject = ["$aria"];
+ngDisabledAriaDirective.$inject = [$injectTokens.$aria];
 function ngDisabledAriaDirective($aria) {
   return $aria.$$watchExpr(
     "ngDisabled",
@@ -22263,7 +22346,7 @@ function ngDisabledAriaDirective($aria) {
   );
 }
 
-ngShowAriaDirective.$inject = ["$aria"];
+ngShowAriaDirective.$inject = [$injectTokens.$aria];
 function ngShowAriaDirective($aria) {
   return $aria.$$watchExpr("ngShow", "aria-hidden", [], true);
 }
@@ -22282,11 +22365,11 @@ function ngMessagesAriaDirective() {
   };
 }
 
-ngClickAriaDirective.$inject = ["$aria", "$parse"];
+ngClickAriaDirective.$inject = [$injectTokens.$aria, $injectTokens.$parse];
 function ngClickAriaDirective($aria, $parse) {
   return {
     restrict: "A",
-    compile(elem, attr) {
+    compile(_elem, attr) {
       if (hasOwn(attr, ARIA_DISABLE_ATTR)) return;
 
       const fn = $parse(attr.ngClick);
@@ -22346,7 +22429,7 @@ function ngClickAriaDirective($aria, $parse) {
   };
 }
 
-ngRequiredAriaDirective.$inject = ["$aria"];
+ngRequiredAriaDirective.$inject = [$injectTokens.$aria];
 function ngRequiredAriaDirective($aria) {
   return $aria.$$watchExpr(
     "ngRequired",
@@ -22366,7 +22449,7 @@ function ngCheckedAriaDirective($aria) {
   );
 }
 
-ngValueAriaDirective.$inject = ["$aria"];
+ngValueAriaDirective.$inject = [$injectTokens.$aria];
 function ngValueAriaDirective($aria) {
   return $aria.$$watchExpr(
     "ngValue",
@@ -22376,12 +22459,12 @@ function ngValueAriaDirective($aria) {
   );
 }
 
-ngHideAriaDirective.$inject = ["$aria"];
+ngHideAriaDirective.$inject = [$injectTokens.$aria];
 function ngHideAriaDirective($aria) {
   return $aria.$$watchExpr("ngHide", "aria-hidden", [], false);
 }
 
-ngReadonlyAriaDirective.$inject = ["$aria"];
+ngReadonlyAriaDirective.$inject = [$injectTokens.$aria];
 function ngReadonlyAriaDirective($aria) {
   return $aria.$$watchExpr(
     "ngReadonly",
@@ -22391,7 +22474,7 @@ function ngReadonlyAriaDirective($aria) {
   );
 }
 
-ngModelAriaDirective.$inject = ["$aria"];
+ngModelAriaDirective.$inject = [$injectTokens.$aria];
 function ngModelAriaDirective($aria) {
   function shouldAttachAttr(attr, normalizedAttr, elem, allowNonAriaNodes) {
     return (
@@ -22534,7 +22617,7 @@ function ngModelAriaDirective($aria) {
   };
 }
 
-ngDblclickAriaDirective.$inject = ["$aria"];
+ngDblclickAriaDirective.$inject = [$injectTokens.$aria];
 function ngDblclickAriaDirective($aria) {
   return function (scope, elem, attr) {
     if (hasOwn(attr, ARIA_DISABLE_ATTR)) return;
@@ -25687,7 +25770,7 @@ function ngAnimateSwapDirective($animate) {
   };
 }
 
-$$AnimateChildrenDirective.$inject = ["$interpolate"];
+$$AnimateChildrenDirective.$inject = [$injectTokens.$interpolate];
 
 /**
  * @param {*} $interpolate
@@ -34172,6 +34255,10 @@ function resolvablesBuilder(state) {
  * using the [[builder]] method.
  */
 class StateBuilder {
+  /**
+   * @param {import('./state-matcher.js').StateMatcher} matcher
+   * @param urlService
+   */
   constructor(matcher, urlService) {
     this.matcher = matcher;
     this.$injector = undefined;
@@ -34379,12 +34466,12 @@ class StateQueueManager {
  * @implements {ServiceProvider}
  */
 class StateRegistryProvider {
-  static $inject = [
-    "$urlServiceProvider",
-    "$stateProvider",
-    "$routerGlobalsProvider",
-    "$viewProvider",
-  ];
+  static $inject = provider([
+    $injectTokens.$urlService,
+    $injectTokens.$state,
+    $injectTokens.$routerGlobals,
+    $injectTokens.$view,
+  ]);
 
   /**
    * @param urlService
@@ -35177,7 +35264,7 @@ let ngView = [
     };
     const directive = {
       count: 0,
-      restrict: "EA",
+
       terminal: true,
       priority: 400,
       transclude: "element",
@@ -35312,7 +35399,6 @@ function $ViewDirectiveFill($compile, $controller, $transitions) {
   const getControllerAs = parse("viewDecl.controllerAs");
   const getResolveAs = parse("viewDecl.resolveAs");
   return {
-    restrict: "EA",
     priority: -400,
     compile: function (tElement) {
       const initial = tElement.innerHTML;
@@ -35508,7 +35594,6 @@ function registerControllerCallbacks(
  */
 function ngChannelDirective() {
   return {
-    restrict: "EA",
     link: (scope, element, attrs) => {
       const hasTemplate = element.childNodes.length > 0;
       const channel = attrs["ngChannel"];
@@ -35582,7 +35667,7 @@ function ngSetterDirective($parse, $log) {
           characterData: true,
         });
       } else {
-        console.warn("ngSetter: Element is not a valid DOM node.");
+        $log.warn("ngSetter: Element is not a valid DOM node.");
         return;
       }
 
@@ -35790,6 +35875,7 @@ class Angular {
     this.errorHandlingConfig = errorHandlingConfig;
 
     window["angular"] = this;
+    this.$injectTokens = $injectTokens;
     publishExternalAPI(this);
   }
 
