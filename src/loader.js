@@ -42,7 +42,7 @@ export class Angular {
     this.Cache = Cache;
 
     /** @type {import('./core/pubsub/pubsub.js').PubSub} */
-    this.EventBus = EventBus;
+    this.$eventBus = EventBus;
 
     /**
      * @type {string} `version` from `package.json`

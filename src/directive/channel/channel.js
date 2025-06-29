@@ -16,7 +16,7 @@ import { isObject } from "../../shared/utils.js";
  * <div ng-channel="userChannel">Hello {{ user.firstName }} {{ user.lastName }}</div>
  *
  * JavaScript:
- * angular.EventBus.publish('userChannel', { user: { firstName: 'John', lastName: 'Smith' } });
+ * angular.$eventBus.publish('userChannel', { user: { firstName: 'John', lastName: 'Smith' } });
  *
  * @returns {import("../../interface.ts").Directive}
  */
