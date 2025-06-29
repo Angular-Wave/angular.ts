@@ -31,6 +31,8 @@ types:
 
 jsdoc: 
 	@npm run generate-docs
+	@npx prettier ./typedoc --write
+	mv typedoc docs/static/typedoc
 
 serve:
 	@npm run serve
