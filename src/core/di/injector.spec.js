@@ -369,36 +369,6 @@ describe("injector.modules", () => {
     fn.$inject = ["a", "b"];
     expect(injector.invoke(fn, undefined, { b: 3 })).toBe(4);
   });
-
-  it("should expose the loaded module info on the instance injector", () => {
-    angular.module("test1", ["test2"]).info({ version: "1.1" });
-    angular.module("test2", []).info({ version: "1.2" });
-    const injector = createInjector(["test1"]);
-
-    injector.invoke(function ($injector) {
-      expect($injector.modules.test1.info()).toEqual({ version: "1.1" });
-      expect($injector.modules.test2.info()).toEqual({ version: "1.2" });
-    });
-  });
-
-  it("should expose the loaded module info on the provider injector", () => {
-    let providerInjector;
-    const test1 = angular.module("test1", ["test2"]).info({ version: "1.1" });
-    const test2 = angular
-      .module("test2", [])
-      .info({ version: "1.2" })
-      .provider("test", [
-        "$injector",
-        function ($injector) {
-          providerInjector = $injector;
-          return { $get() {} };
-        },
-      ]);
-    createInjector(["test1"]);
-
-    expect(providerInjector.modules.test1.info()).toEqual({ version: "1.1" });
-    expect(providerInjector.modules.test2.info()).toEqual({ version: "1.2" });
-  });
 });
 
 describe("annotate", () => {

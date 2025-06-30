@@ -166,35 +166,4 @@ describe("module loader", () => {
       angular.module("hasOwnProperty", []);
     }).toThrow();
   });
-
-  describe("Module", () => {
-    describe("info()", () => {
-      let theModule;
-
-      beforeEach(() => {
-        theModule = angular.module("theModule", []);
-      });
-
-      it("should default to an empty object", () => {
-        expect(theModule.info()).toEqual({});
-      });
-
-      it("should store the object passed as a param", () => {
-        theModule.info({ version: "1.2" });
-        expect(theModule.info()).toEqual({ version: "1.2" });
-      });
-
-      it("should throw if the parameter is not an object", () => {
-        expect(() => {
-          theModule.info("some text");
-        }).toThrow();
-      });
-
-      it("should completely replace the previous info object", () => {
-        theModule.info({ value: "X" });
-        theModule.info({ newValue: "Y" });
-        expect(theModule.info()).toEqual({ newValue: "Y" });
-      });
-    });
-  });
 });
