@@ -1,8 +1,6 @@
 /**
  * @typedef {Object} ExpandoStore
- *
  * @property {!Object<string, any>} data
- * @property {!Object} events
  *
  */
 export const EXPANDO: "ng";
@@ -27,5 +25,4 @@ export type ExpandoStore = {
   data: {
     [x: string]: any;
   };
-  events: any;
 };

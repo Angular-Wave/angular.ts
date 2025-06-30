@@ -138,7 +138,6 @@ export function getExpando(element, createIfNecessary = false) {
   if (createIfNecessary && !expandoStore) {
     element[EXPANDO] = expandoId = jqNextId();
     expandoStore = {
-      events: {},
       data: {},
     };
     Cache.set(expandoId, expandoStore);
@@ -259,19 +258,15 @@ export function dealoc(element, onlyDescendants) {
 }
 
 /**
- * If `ExpandoStore.data` and `ExpandoStore.events` are empty,
- * then delete element's `ExpandoStore` and set its `ExpandoId`
+ * If expando store data is empty, then delete it and set its expando id.
  * to undefined.
  * @param {Element} element
  */
 function removeIfEmptyData(element) {
   const expandoId = element[EXPANDO];
-  const { events, data } = Cache.get(expandoId);
+  const { data } = Cache.get(expandoId);
 
-  if (
-    (!data || !Object.keys(data).length) &&
-    (!events || !Object.keys(events).length)
-  ) {
+  if (!data || !Object.keys(data).length) {
     Cache.delete(expandoId);
     element[EXPANDO] = undefined; // don't delete DOM expandos. Chrome don't like it
   }
@@ -596,10 +591,6 @@ export function getBooleanAttrName(element, name) {
  */
 export function cleanElementData(nodes) {
   for (let i = 0, ii = nodes.length; i < ii; i++) {
-    const events = (Cache.get(nodes[i][EXPANDO]) || {}).events;
-    if (events && events.$destroy) {
-      nodes[i].dispatchEvent(new Event("$destroy"));
-    }
     removeElementData(nodes[i]);
   }
 }
