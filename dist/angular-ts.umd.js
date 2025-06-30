@@ -1,4 +1,4 @@
-/* Version: 0.7.2 - June 28, 2025 21:48:50 */
+/* Version: 0.7.2 - July 1, 2025 01:16:00 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -1138,10 +1138,7 @@
 
   /**
    * @typedef {Object} ExpandoStore
-   *
    * @property {!Object<string, any>} data
-   * @property {!Object} events
-   * @property {?Function} handle
    *
    */
 
@@ -1278,9 +1275,7 @@
     if (createIfNecessary && !expandoStore) {
       element[EXPANDO] = expandoId = jqNextId();
       expandoStore = {
-        events: {},
         data: {},
-        handle: null,
       };
       Cache.set(expandoId, expandoStore);
     }
@@ -1339,19 +1334,15 @@
   }
 
   /**
-   * If `ExpandoStore.data` and `ExpandoStore.events` are empty,
-   * then delete element's `ExpandoStore` and set its `ExpandoId`
+   * If expando store data is empty, then delete it and set its expando id.
    * to undefined.
    * @param {Element} element
    */
   function removeIfEmptyData(element) {
     const expandoId = element[EXPANDO];
-    const { events, data } = Cache.get(expandoId);
+    const { data } = Cache.get(expandoId);
 
-    if (
-      (!data || !Object.keys(data).length) &&
-      (!events || !Object.keys(events).length)
-    ) {
+    if (!data || !Object.keys(data).length) {
       Cache.delete(expandoId);
       element[EXPANDO] = undefined; // don't delete DOM expandos. Chrome don't like it
     }
@@ -1628,10 +1619,6 @@
    */
   function cleanElementData(nodes) {
     for (let i = 0, ii = nodes.length; i < ii; i++) {
-      const events = (Cache.get(nodes[i][EXPANDO]) || {}).events;
-      if (events && events.$destroy) {
-        nodes[i].dispatchEvent(new Event("$destroy"));
-      }
       removeElementData(nodes[i]);
     }
   }
@@ -1834,25 +1821,9 @@
       /** @type {!Array.<Function>} */
       this.runBlocks = [];
 
-      /** @type {Object} */
-      this.infoState = {};
-
       if (configFn) {
         this.config(configFn);
       }
-    }
-
-    /**
-     * @param {Object} value
-     * @returns
-     */
-    info(value) {
-      if (isDefined(value)) {
-        assert(isObject(value), "module info value must be an object");
-        this.infoState = value;
-        return this;
-      }
-      return this.infoState;
     }
 
     /**
@@ -2183,7 +2154,6 @@
 
   /**
    * Injector for providers
-   * @extends {AbstractInjector}
    */
   class ProviderInjector extends AbstractInjector {
     /**
@@ -2213,15 +2183,13 @@
 
   /**
    * Injector for factories and services
-   * @extends {AbstractInjector}
    */
   class InjectorService extends AbstractInjector {
     /**
-     *
-     * @param {boolean} strictDi - Indicates if strict dependency injection is enforced.
      * @param {ProviderInjector} providerInjector
+     * @param {boolean} strictDi - Indicates if strict dependency injection is enforced.
      */
-    constructor(strictDi, providerInjector) {
+    constructor(providerInjector, strictDi) {
       super(strictDi);
       this.providerInjector = providerInjector;
       this.modules = this.providerInjector.modules;
@@ -2359,7 +2327,7 @@
       strictDi,
     ));
 
-    const protoInstanceInjector = new InjectorService(strictDi, providerInjector);
+    const protoInstanceInjector = new InjectorService(providerInjector, strictDi);
 
     providerCache.$injectorProvider = {
       // $injectionProvider return instance injector
@@ -22295,6 +22263,7 @@
    * Requires the {@link ngAria} module to be installed.
    *
    */
+  
   function AriaProvider() {
     let config = {
       ariaHidden: true,
@@ -35594,7 +35563,7 @@
    * <div ng-channel="userChannel">Hello {{ user.firstName }} {{ user.lastName }}</div>
    *
    * JavaScript:
-   * angular.EventBus.publish('userChannel', { user: { firstName: 'John', lastName: 'Smith' } });
+   * angular.$eventBus.publish('userChannel', { user: { firstName: 'John', lastName: 'Smith' } });
    *
    * @returns {import("../../interface.ts").Directive}
    */
@@ -35684,8 +35653,6 @@
   }
 
   // @private
-
-  const VERSION = "0.7.2";
 
   /**
    * Initializes core `ng` module.
@@ -35838,8 +35805,7 @@
           return globals.params;
         },
       ])
-      .value("$trace", trace)
-      .info({ version: VERSION });
+      .value("$trace", trace);
 
     return ng;
   }
@@ -35862,15 +35828,15 @@
       Cache.clear(); // a ensure new instance of angular gets a clean cache
 
       /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
-      this.Cache = Cache;
+      this.$cache = Cache;
 
       /** @type {import('./core/pubsub/pubsub.js').PubSub} */
-      this.EventBus = EventBus;
+      this.$eventBus = EventBus;
 
       /**
-       * @type {string} `version` from `package.json`
+       * @type {string} `version` from `package.json` inserved via rollup
        */
-      this.version = VERSION;
+      this.version = "0.7.2";
 
       /** @type {!Array<string|any>} */
       this.bootsrappedModules = [];

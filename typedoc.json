@@ -1,8 +1,9 @@
 // typedoc.json
 {
-  "entryPoints": ["src"],
+  "entryPoints": ["src/interface.ts"],
   "entryPointStrategy": "expand",
   "out": "./typedoc",
   "disableSources": true,
-  "name": "AngularTS"
+  "name": "AngularTS",
+  "readme": "none"
 }

@@ -3,8 +3,6 @@ import { hasAnimate } from "../../shared/utils.js";
 
 ngIfDirective.$inject = ["$animate"];
 /**
- *
- * TODO // Add type for animate service
  * @param {*}  $animate
  * @returns {import("../../interface.ts").Directive}
  */

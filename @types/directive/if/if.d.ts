@@ -1,6 +1,4 @@
 /**
- *
- * TODO // Add type for animate service
  * @param {*}  $animate
  * @returns {import("../../interface.ts").Directive}
  */
