@@ -149,7 +149,6 @@ class AbstractInjector {
 
 /**
  * Injector for providers
- * @extends {AbstractInjector}
  */
 export class ProviderInjector extends AbstractInjector {
   /**
@@ -179,15 +178,13 @@ export class ProviderInjector extends AbstractInjector {
 
 /**
  * Injector for factories and services
- * @extends {AbstractInjector}
  */
 export class InjectorService extends AbstractInjector {
   /**
-   *
-   * @param {boolean} strictDi - Indicates if strict dependency injection is enforced.
    * @param {ProviderInjector} providerInjector
+   * @param {boolean} strictDi - Indicates if strict dependency injection is enforced.
    */
-  constructor(strictDi, providerInjector) {
+  constructor(providerInjector, strictDi) {
     super(strictDi);
     this.providerInjector = providerInjector;
     this.modules = this.providerInjector.modules;

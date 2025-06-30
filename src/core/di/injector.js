@@ -51,7 +51,7 @@ export function createInjector(modulesToLoad, strictDi = false) {
     strictDi,
   ));
 
-  const protoInstanceInjector = new InjectorService(strictDi, providerInjector);
+  const protoInstanceInjector = new InjectorService(providerInjector, strictDi);
 
   providerCache.$injectorProvider = {
     // $injectionProvider return instance injector
