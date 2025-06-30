@@ -6,11 +6,11 @@
  */
 export class Angular {
   /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
-  Cache: Map<number, any>;
+  $cache: Map<number, any>;
   /** @type {import('./core/pubsub/pubsub.js').PubSub} */
   $eventBus: import("./core/pubsub/pubsub.js").PubSub;
   /**
-   * @type {string} `version` from `package.json`
+   * @type {string} `version` from `package.json` inserved via rollup
    */
   version: string;
   /** @type {!Array<string|any>} */

@@ -130,8 +130,6 @@ import { ngChannelDirective } from "./directive/channel/channel.js";
 import { ngSetterDirective } from "./directive/setter/setter.js";
 import { PubSubProvider } from "./core/pubsub/pubsub.js";
 
-export const VERSION = "[VI]{version}[/VI]";
-
 /**
  * Initializes core `ng` module.
  * @param {import('./loader.js').Angular} angular
@@ -283,8 +281,7 @@ export function publishExternalAPI(angular) {
         return globals.params;
       },
     ])
-    .value("$trace", trace)
-    .info({ version: VERSION });
+    .value("$trace", trace);
 
   return ng;
 }

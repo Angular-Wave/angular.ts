@@ -26,12 +26,6 @@ describe("NgModule", () => {
     expect(() => new NgModule("test")).toThrowError();
   });
 
-  it("can store info state as objects", () => {
-    expect(() => ngModule.info(false)).toThrowError();
-    ngModule.info({ a: 1 });
-    expect(ngModule.info().a).toBe(1);
-  });
-
   it("can store constants", () => {
     // when contants are registered
     ngModule.constant("aConstant", 42);

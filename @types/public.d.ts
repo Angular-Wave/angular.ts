@@ -6,4 +6,3 @@
 export function publishExternalAPI(
   angular: import("./loader.js").Angular,
 ): import("./core/di/ng-module.js").NgModule;
-export const VERSION: "[VI]{version}[/VI]";

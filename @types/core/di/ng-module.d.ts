@@ -39,13 +39,6 @@ export class NgModule {
   configBlocks: Array<Array<any>>;
   /** @type {!Array.<Function>} */
   runBlocks: Array<Function>;
-  /** @type {Object} */
-  infoState: any;
-  /**
-   * @param {Object} value
-   * @returns
-   */
-  info(value: any): any;
   /**
    * @param {string} name
    * @param {any} object

@@ -1,11 +1,5 @@
 import { $injectTokens } from "../../injection-tokens.js";
-import {
-  isFunction,
-  isDefined,
-  isObject,
-  isString,
-  assert,
-} from "../../shared/utils.js";
+import { isFunction, isString, assert } from "../../shared/utils.js";
 
 export const INJECTOR_LITERAL = "$injector";
 export const COMPILE_LITERAL = "$compileProvider";
@@ -56,25 +50,9 @@ export class NgModule {
     /** @type {!Array.<Function>} */
     this.runBlocks = [];
 
-    /** @type {Object} */
-    this.infoState = {};
-
     if (configFn) {
       this.config(configFn);
     }
-  }
-
-  /**
-   * @param {Object} value
-   * @returns
-   */
-  info(value) {
-    if (isDefined(value)) {
-      assert(isObject(value), "module info value must be an object");
-      this.infoState = value;
-      return this;
-    }
-    return this.infoState;
   }
 
   /**
