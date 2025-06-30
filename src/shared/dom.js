@@ -140,7 +140,6 @@ export function getExpando(element, createIfNecessary = false) {
     expandoStore = {
       events: {},
       data: {},
-      handle: null,
     };
     Cache.set(expandoId, expandoStore);
   }

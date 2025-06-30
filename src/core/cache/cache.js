@@ -3,7 +3,6 @@
  *
  * @property {!Object<string, any>} data
  * @property {!Object} events
- * @property {?Function} handle
  *
  */
 

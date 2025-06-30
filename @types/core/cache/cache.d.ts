@@ -3,7 +3,6 @@
  *
  * @property {!Object<string, any>} data
  * @property {!Object} events
- * @property {?Function} handle
  *
  */
 export const EXPANDO: "ng";
@@ -29,5 +28,4 @@ export type ExpandoStore = {
     [x: string]: any;
   };
   events: any;
-  handle: Function | null;
 };
