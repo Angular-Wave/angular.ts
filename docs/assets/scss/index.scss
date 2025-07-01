@@ -1,3 +1,14 @@
-#td-cover-block-0::after {
-  background-color: white !important; // override dark overlay
+#td-cover-block-0 {
+  
+  h1 {
+    font-weight: 900;
+
+    & span {
+      color: var(--bs-secondary);
+    }
+  }
+  
+  &::after {
+    background-color: white !important; // override dark overlay
+  }
 }

@@ -51,3 +51,6 @@ test:
 test-ui:
 	@echo $(INFO) "Playwright test JS with ui"
 	@$(PLAYWRIGHT_TEST) --ui
+
+hugo:
+	hugo server --source=docs --disableFastRender

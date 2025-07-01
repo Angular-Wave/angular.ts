@@ -1,0 +1,8 @@
+body {
+    font-family: 'Inter', sans-serif !important;
+    & .navbar-brand__name {
+        margin-left: -5px;
+    }
+}
+
+@import "index.scss";
