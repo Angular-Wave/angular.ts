@@ -29,10 +29,10 @@ export class PubSub {
    * strings corresponding to native Object properties, e.g. "constructor",
    * "toString", "hasOwnProperty", etc.
    *
-   * @param {boolean=} opt_async Enable asynchronous behavior.  Recommended for
+   * @param {boolean=} async Enable asynchronous behavior.  Recommended for
    *     new code.  See notes on the publish() method.
    */
-  constructor(opt_async = false) {
+  constructor(async = false) {
     this.disposed = false;
 
     /**
@@ -89,7 +89,7 @@ export class PubSub {
     /**
      * @private @const {boolean}
      */
-    this.async_ = Boolean(opt_async);
+    this.async_ = Boolean(async);
   }
 
   /**
@@ -173,9 +173,9 @@ export class PubSub {
    * @param {Array} args Arguments to pass to the function.
    */
   static runAsync_(fn, context, args) {
-    setTimeout(() => {
+    Promise.resolve().then(() => {
       fn.apply(context, args);
-    }, 0);
+    });
   }
 
   /**
@@ -241,7 +241,7 @@ export class PubSub {
    * the order in which they were added, passing all arguments along.
    *
    * If this object was created with async=true, subscribed functions are called
-   * via setTimeout().  Otherwise, the functions are called directly, and if
+   * via Promise.resolve().  Otherwise, the functions are called directly, and if
    * any of them throw an uncaught error, publishing is aborted.
    *
    * @param {string} topic Topic to publish to.

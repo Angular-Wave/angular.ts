@@ -166,8 +166,13 @@ export function arrayTuples(...args: any[]): any[][];
  * ```
  */
 export function applyPairs(memo: any, keyValTuple: any): any;
-/** Get the last element of an array */
-export function tail(arr: any): any;
+/**
+ * Returns the last element of an array, or undefined if the array is empty.
+ * @template T
+ * @param {T[]} arr - The input array.
+ * @returns {T | undefined} The last element or undefined.
+ */
+export function tail<T>(arr: T[]): T | undefined;
 /**
  * shallow copy from src to dest
  */
@@ -179,19 +184,13 @@ export function copy(src: any, dest: any): any;
 export const removeFrom: any;
 /** pushes a values to an array and returns the value */
 export const pushTo: any;
-export function deregAll(functions: any): any;
 export function allTrueR(memo: any, elem: any): any;
 export function anyTrueR(memo: any, elem: any): any;
 export function unnestR(memo: any, elem: any): any;
 export function flattenR(memo: any, elem: any): any;
 export function uniqR(acc: any, token: any): any;
 export function unnest(arr: any): any;
-export function flatten(arr: any): any;
 export function assertPredicate(
-  predicateOrMap: any,
-  errMsg?: string,
-): (obj: any) => any;
-export function assertMap(
   predicateOrMap: any,
   errMsg?: string,
 ): (obj: any) => any;

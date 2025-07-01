@@ -241,6 +241,31 @@ export function domInsert(
   afterElement: any,
 ): void;
 /**
+ * Selects DOM event to listen for based on the element type.
+ *
+ * @param {Element} element - The DOM element to inspect.
+ * @returns {"click" | "change" | "submit"} The name of the event to listen for.
+ */
+export function getEventNameForElement(
+  element: Element,
+): "click" | "change" | "submit";
+/**
+ * Handles DOM manipulation based on a swap strategy and server-rendered HTML.
+ *
+ * @param {string} html - The HTML string returned from the server.
+ * @param {string} swap - The swap mode (e.g., "innerHTML", "textContent", "beforebegin").
+ * @param {Element} target - The target DOM element to apply the swap to.
+ * @param {import('../core/scope/scope.js').Scope} scope
+ * @param {import('../core/compile/compile.js').CompileFn} $compile
+ */
+export function handleSwapResponse(
+  html: string,
+  swap: string,
+  target: Element,
+  scope: import("../core/scope/scope.js").Scope,
+  $compile: import("../core/compile/compile.js").CompileFn,
+): void;
+/**
  * A list of boolean attributes in HTML.
  * @type {string[]}
  */

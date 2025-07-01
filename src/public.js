@@ -129,13 +129,14 @@ import {
 import { ngChannelDirective } from "./directive/channel/channel.js";
 import { ngSetterDirective } from "./directive/setter/setter.js";
 import { PubSubProvider } from "./core/pubsub/pubsub.js";
+import { ngGetDirective } from "./directive/get/get.js";
 
 /**
  * Initializes core `ng` module.
  * @param {import('./loader.js').Angular} angular
  * @returns {import('./core/di/ng-module.js').NgModule} `ng` module
  */
-export function publishExternalAPI(angular) {
+export function registerNgModule(angular) {
   const ng = angular
     .module(
       "ng",
@@ -167,6 +168,7 @@ export function publishExternalAPI(angular) {
               ngController: ngControllerDirective,
               ngDisabled: ngDisabledAriaDirective,
               ngForm: ngFormDirective,
+              ngGet: ngGetDirective,
               ngHide: ngHideDirective,
               ngIf: ngIfDirective,
               ngInclude: ngIncludeDirective,

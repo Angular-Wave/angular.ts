@@ -1,9 +1,5 @@
 import { defaultModelOptions } from "./model-options.js";
-import {
-  createElementFromHTML,
-  dealoc,
-  getController,
-} from "../../shared/dom.js";
+import { dealoc, getController } from "../../shared/dom.js";
 import { Angular } from "../../loader.js";
 import { bootstrap, wait } from "../../shared/test-utils.js";
 

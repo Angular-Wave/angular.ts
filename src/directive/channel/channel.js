@@ -1,9 +1,10 @@
-import { EventBus } from "../../core/pubsub/pubsub.js";
 import { isObject } from "../../shared/utils.js";
+import { $injectTokens } from "../../injection-tokens.js";
 
+ngChannelDirective.$inject = [$injectTokens.$eventBus];
 /**
  * Dynamically updates an element's content based on events published on a specified channel.
- * If data is sent via `EventBus` on the specified `ngChannel`, the directive attempts to update the element's content accordingly,
+ * If data is sent via `$eventBus` on the specified `ngChannel`, the directive attempts to update the element's content accordingly,
  * either by directly setting the inner HTML or merging the scope's data if the element contains a template.
  *
  * If the element has a template and incoming data is an object, the directive will merge all key/value pairs onto the scope,
@@ -18,15 +19,16 @@ import { isObject } from "../../shared/utils.js";
  * JavaScript:
  * angular.$eventBus.publish('userChannel', { user: { firstName: 'John', lastName: 'Smith' } });
  *
+ * @param {import("../../core/pubsub/pubsub.js").PubSub} $eventBus
  * @returns {import("../../interface.ts").Directive}
  */
-export function ngChannelDirective() {
+export function ngChannelDirective($eventBus) {
   return {
     link: (scope, element, attrs) => {
       const hasTemplate = element.childNodes.length > 0;
       const channel = attrs["ngChannel"];
 
-      const key = EventBus.subscribe(channel, async (val) => {
+      const key = $eventBus.subscribe(channel, (val) => {
         if (!hasTemplate) {
           element.innerHTML = val;
         } else {
@@ -37,7 +39,7 @@ export function ngChannelDirective() {
       });
 
       scope.$on("$destroy", () => {
-        EventBus.unsubscribeByKey(key);
+        $eventBus.unsubscribeByKey(key);
       });
     },
   };

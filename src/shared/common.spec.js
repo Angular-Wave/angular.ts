@@ -1,4 +1,4 @@
-import { defaults, filter, map, pick } from "./common.js";
+import { defaults, filter, map, pick, tail } from "./common.js";
 import { is, pattern, val } from "./hof.js";
 import { isInjectable } from "./predicates.js";
 import { Queue } from "../router/common/queue.js";
@@ -122,7 +122,7 @@ describe("common", function () {
     });
   });
 
-  describe("map", () => {
+  describe("map on arrays", () => {
     it("should map arrays", () => {
       const src = [1, 2, 3, 4];
       const dest = map(src, (x) => x * 2);
@@ -140,7 +140,7 @@ describe("common", function () {
     });
   });
 
-  describe("map", () => {
+  describe("map on objects", () => {
     it("should map objects", () => {
       const src = { foo: 1, bar: 2, baz: 3 };
       const dest = map(src, (x) => x * 2);
@@ -155,6 +155,37 @@ describe("common", function () {
 
       expect(src).toEqual({ foo: 2, bar: 4, baz: 6 });
       expect(dest).toEqual({ foo: 2, bar: 4, baz: 6 });
+    });
+  });
+
+  describe("tail", () => {
+    it("should return the last element of a non-empty array", () => {
+      expect(tail([1, 2, 3])).toBe(3);
+      expect(tail(["a", "b", "c"])).toBe("c");
+      expect(tail([true, false])).toBe(false);
+    });
+
+    it("should return undefined for an empty array", () => {
+      expect(tail([])).toBeUndefined();
+    });
+
+    it("should return the correct value even if it is falsy", () => {
+      expect(tail([0])).toBe(0);
+      expect(tail([""])).toBe("");
+      expect(tail([null])).toBeNull();
+      expect(tail([undefined])).toBeUndefined(); // still valid
+      expect(tail([false])).toBe(false);
+    });
+
+    it("should work with different types", () => {
+      const obj = { name: "Alice" };
+      expect(tail([obj])).toBe(obj);
+
+      const arr = [
+        [1, 2],
+        [3, 4],
+      ];
+      expect(tail(arr)).toEqual([3, 4]);
     });
   });
 

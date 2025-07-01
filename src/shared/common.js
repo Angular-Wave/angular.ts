@@ -139,12 +139,6 @@ export const pushTo = curry((arr, val) => {
   return val;
 });
 
-/** Given an array of (deregistration) functions, calls all functions and removes each one from the source array */
-export const deregAll = (functions) =>
-  functions.slice().forEach((fn) => {
-    typeof fn === "function" && fn();
-    removeFrom(functions, fn);
-  });
 /**
  * Applies a set of defaults to an options object.  The options object is filtered
  * to only those properties of the objects in the defaultsList.
@@ -312,17 +306,7 @@ export const uniqR = (acc, token) =>
  * ```
  */
 export const unnest = (arr) => arr.reduce(unnestR, []);
-/**
- * Return a completely flattened version of an array.
- *
- * @example
- * ```
- *
- * let input = [ [ "a", "b" ], [ "c", "d" ], [ [ "double", "nested" ] ] ];
- * flatten(input) // [ "a", "b", "c", "d", "double, "nested" ]
- * ```
- */
-export const flatten = (arr) => arr.reduce(flattenR, []);
+
 /**
  * Given a .filter Predicate, builds a .filter Predicate which throws an error if any elements do not pass.
  * @example
@@ -337,23 +321,7 @@ export const flatten = (arr) => arr.reduce(flattenR, []);
  * ```
  */
 export const assertPredicate = assertFn;
-/**
- * Given a .map function, builds a .map function which throws an error if any mapped elements do not pass a truthyness test.
- * @example
- * ```
- *
- * var data = { foo: 1, bar: 2 };
- *
- * let keys = [ 'foo', 'bar' ]
- * let values = keys.map(assertMap(key => data[key], "Key not found"));
- * // values is [1, 2]
- *
- * let keys = [ 'foo', 'bar', 'baz' ]
- * let values = keys.map(assertMap(key => data[key], "Key not found"));
- * // throws Error("Key not found")
- * ```
- */
-export const assertMap = assertFn;
+
 export function assertFn(predicateOrMap, errMsg = "assert failure") {
   return (obj) => {
     const result = predicateOrMap(obj);
@@ -444,10 +412,17 @@ export function applyPairs(memo, keyValTuple) {
   memo[key] = value;
   return memo;
 }
-/** Get the last element of an array */
+
+/**
+ * Returns the last element of an array, or undefined if the array is empty.
+ * @template T
+ * @param {T[]} arr - The input array.
+ * @returns {T | undefined} The last element or undefined.
+ */
 export function tail(arr) {
-  return (arr.length && arr[arr.length - 1]) || undefined;
+  return arr.length > 0 ? arr[arr.length - 1] : undefined;
 }
+
 /**
  * shallow copy from src to dest
  */

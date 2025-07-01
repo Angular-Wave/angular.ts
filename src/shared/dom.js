@@ -254,7 +254,6 @@ export function dealoc(element, onlyDescendants) {
   }
   delete element[EXPANDO];
   element.innerHTML = "";
-  element;
 }
 
 /**
@@ -697,5 +696,96 @@ function extractElementNode(element) {
     if (elm.nodeType === Node.ELEMENT_NODE) {
       return elm;
     }
+  }
+}
+
+/**
+ * Selects DOM event to listen for based on the element type.
+ *
+ * @param {Element} element - The DOM element to inspect.
+ * @returns {"click" | "change" | "submit"} The name of the event to listen for.
+ */
+export function getEventNameForElement(element) {
+  const tag = element.tagName.toLowerCase();
+  if (["input", "textarea", "select"].includes(tag)) {
+    return "change";
+  } else if (tag === "form") {
+    return "submit";
+  }
+  return "click";
+}
+
+/**
+ * Handles DOM manipulation based on a swap strategy and server-rendered HTML.
+ *
+ * @param {string} html - The HTML string returned from the server.
+ * @param {string} swap - The swap mode (e.g., "innerHTML", "textContent", "beforebegin").
+ * @param {Element} target - The target DOM element to apply the swap to.
+ * @param {import('../core/scope/scope.js').Scope} scope
+ * @param {import('../core/compile/compile.js').CompileFn} $compile
+ */
+export function handleSwapResponse(html, swap, target, scope, $compile) {
+  let nodes = [];
+  if (!["textcontent", "delete", "none"].includes(swap)) {
+    const compiled = $compile(html)(scope);
+    nodes =
+      compiled instanceof DocumentFragment
+        ? Array.from(compiled.childNodes)
+        : [compiled];
+  }
+
+  switch (swap) {
+    case "innerhtml":
+      target.replaceChildren(...nodes);
+      break;
+
+    case "outerhtml": {
+      const parent = target.parentNode;
+      if (!parent) return;
+      const frag = document.createDocumentFragment();
+      nodes.forEach((n) => frag.appendChild(n));
+      parent.replaceChild(frag, target);
+      break;
+    }
+
+    case "textcontent":
+      target.textContent = html;
+      break;
+
+    case "beforebegin":
+      nodes.forEach((node) => target.parentNode.insertBefore(node, target));
+      break;
+
+    case "afterbegin":
+      nodes
+        .slice()
+        .reverse()
+        .forEach((node) => target.insertBefore(node, target.firstChild));
+      break;
+
+    case "beforeend":
+      nodes.forEach((node) => target.appendChild(node));
+      break;
+
+    case "afterend":
+      nodes
+        .slice()
+        .reverse()
+        .forEach((node) =>
+          target.parentNode.insertBefore(node, target.nextSibling),
+        );
+      break;
+
+    case "delete":
+      target.remove();
+      break;
+
+    case "none":
+      // Do nothing
+      break;
+
+    default:
+      target.replaceChildren(...nodes);
+      break;
   }
 }

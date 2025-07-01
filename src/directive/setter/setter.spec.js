@@ -6,7 +6,7 @@ describe("setter", () => {
 
   beforeEach(() => {
     window.angular = new Angular();
-    angular.module("myModule", ["ng"]);
+    angular.module("myModule", []);
     angular
       .bootstrap(document.getElementById("app"), ["myModule"])
       .invoke((_$compile_, _$rootScope_, _$parse_, _$log_) => {

@@ -3204,7 +3204,9 @@ export class CompileProvider {
           }
 
           function triggerOnChangesHook() {
-            destination["$onChanges"] && destination["$onChanges"](changes);
+            destination["$onChanges"] &&
+              changes &&
+              destination["$onChanges"](changes);
             // Now clear the changes so that we schedule onChanges when more changes arrive
             changes = undefined;
           }

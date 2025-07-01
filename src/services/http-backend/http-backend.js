@@ -146,8 +146,10 @@ export function createHttpBackend($browser) {
     // http.timeout = promise             abort
     // xhr.abort()                        abort (The xhr object is normally inaccessible, but
     //                                    can be exposed with the xhrFactory)
+    /** @type {number} */
+    let timeoutId;
     if (timeout > 0) {
-      var timeoutId = setTimeout(() => {
+      timeoutId = setTimeout(() => {
         timeoutRequest("timeout");
       }, timeout);
     } else if (isPromiseLike(timeout)) {

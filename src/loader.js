@@ -15,7 +15,7 @@ import {
 import { annotate, createInjector } from "./core/di/injector.js";
 import { NgModule } from "./core/di/ng-module.js";
 import { Cache } from "./core/cache/cache.js";
-import { publishExternalAPI } from "./public.js";
+import { registerNgModule } from "./public.js";
 import { unnestR } from "./shared/common.js";
 import { EventBus } from "./core/pubsub/pubsub.js";
 import { $injectTokens } from "./injection-tokens.js";
@@ -37,16 +37,16 @@ export class Angular {
   constructor() {
     Cache.clear(); // a ensure new instance of angular gets a clean cache
 
-    /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
+    /** @type {Map<number, import("./core/cache/cache.js").ExpandoStore>} */
     this.$cache = Cache;
 
     /** @type {import('./core/pubsub/pubsub.js').PubSub} */
     this.$eventBus = EventBus;
 
     /**
-     * @type {string} `version` from `package.json` inserved via rollup
+     * @type {string} `version` from `package.json`
      */
-    this.version = "[VI]{version}[/VI]";
+    this.version = "[VI]{version}[/VI]"; //inserted via rollup plugin
 
     /** @type {!Array<string|any>} */
     this.bootsrappedModules = [];
@@ -58,7 +58,7 @@ export class Angular {
 
     window["angular"] = this;
     this.$injectTokens = $injectTokens;
-    publishExternalAPI(this);
+    registerNgModule(this);
   }
 
   /**

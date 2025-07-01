@@ -4,7 +4,7 @@
 export function ngStyleDirective() {
   return {
     restrict: "A",
-    link: (scope, element, attr) => {
+    link(scope, element, attr) {
       let oldStyles;
       scope.$watch(attr["ngStyle"], (newStyles) => {
         if (oldStyles) {

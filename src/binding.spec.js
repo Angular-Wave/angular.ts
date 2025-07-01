@@ -1,4 +1,4 @@
-import { createElementFromHTML, dealoc } from "./shared/dom.js";
+import { createElementFromHTML } from "./shared/dom.js";
 import { Angular } from "./loader.js";
 import { browserTrigger, wait } from "./shared/test-utils.js";
 

@@ -100,7 +100,6 @@ describe("ngInclude", () => {
       $rootScope = injector.get("$rootScope");
       $rootScope.url = "http://example.com/myUrl";
       await wait(100);
-      debugger;
       expect(errorLog[0]).toMatch(/insecurl/);
     });
 

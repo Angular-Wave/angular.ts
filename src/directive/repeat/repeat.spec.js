@@ -1,5 +1,5 @@
 import { Angular } from "../../loader.js";
-import { createElementFromHTML, dealoc, getScope } from "../../shared/dom.js";
+import { createElementFromHTML, dealoc } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("ngRepeat", () => {

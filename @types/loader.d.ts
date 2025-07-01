@@ -5,12 +5,12 @@
  * @property {boolean} [strictDi] - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.
  */
 export class Angular {
-  /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
-  $cache: Map<number, any>;
+  /** @type {Map<number, import("./core/cache/cache.js").ExpandoStore>} */
+  $cache: Map<number, import("./core/cache/cache.js").ExpandoStore>;
   /** @type {import('./core/pubsub/pubsub.js').PubSub} */
   $eventBus: import("./core/pubsub/pubsub.js").PubSub;
   /**
-   * @type {string} `version` from `package.json` inserved via rollup
+   * @type {string} `version` from `package.json`
    */
   version: string;
   /** @type {!Array<string|any>} */
