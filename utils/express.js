@@ -128,6 +128,10 @@ app.get("/404", (req, res) => {
   res.sendStatus(404);
 });
 
+app.get("/422", (req, res) => {
+  res.status(422).send("Invalid data");
+});
+
 app.get("/never", (req, res) => {
   setTimeout(() => {}, 500);
 });

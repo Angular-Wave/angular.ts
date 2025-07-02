@@ -253,14 +253,14 @@ export function getEventNameForElement(
  * Handles DOM manipulation based on a swap strategy and server-rendered HTML.
  *
  * @param {string} html - The HTML string returned from the server.
- * @param {string} swap - The swap mode (e.g., "innerHTML", "textContent", "beforebegin").
+ * @param {import("../interface.ts").SwapInsertPosition} swap
  * @param {Element} target - The target DOM element to apply the swap to.
  * @param {import('../core/scope/scope.js').Scope} scope
  * @param {import('../core/compile/compile.js').CompileFn} $compile
  */
 export function handleSwapResponse(
   html: string,
-  swap: string,
+  swap: import("../interface.ts").SwapInsertPosition,
   target: Element,
   scope: import("../core/scope/scope.js").Scope,
   $compile: import("../core/compile/compile.js").CompileFn,

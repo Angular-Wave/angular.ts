@@ -2,11 +2,13 @@ import { Attributes } from "./core/compile/attributes.js";
 import { Scope } from "./core/scope/scope.js";
 
 /**
- * A JavaScript expression represented as a string.
+ * A JavaScript expression represented as a string, typically used in interpolation bindings.
  *
- * Often used in interpolation bindings such as:
- * `<span title="{{ attrBinding }}">{{ textBinding }}</span>`.
- * Evaluated in the context of a {@link import('./core/scope/scope.js').Scope `scope`} object.
+ * Example:
+ * ```html
+ * <span title="{{ attrBinding }}">{{ textBinding }}</span>
+ * ```
+ *
  */
 export type Expression = string;
 
@@ -327,3 +329,14 @@ export interface NgModelController {
   /** Current value shown in the view */
   $viewValue: any;
 }
+
+/**
+ * Possible values for `data-swap` attribute
+ */
+export type SwapInsertPosition =
+  | InsertPosition
+  | "textContent"
+  | "innerHTML"
+  | "outerHTML"
+  | "delete"
+  | "none";

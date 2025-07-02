@@ -1,4 +1,7 @@
-import { getEventNameForElement, handleSwapResponse } from "../../shared/dom";
+import {
+  getEventNameForElement,
+  handleSwapResponse,
+} from "../../shared/dom.js";
 
 ngGetDirective.$inject = ["$http", "$compile", "$log"];
 
@@ -17,10 +20,13 @@ export function ngGetDirective($http, $compile, $log) {
       const tag = element.tagName.toLowerCase();
 
       element.addEventListener(eventName, (event) => {
+        if (/** @type {HTMLButtonElement} */ (element).disabled) {
+          return;
+        }
         if (tag === "form") {
           event.preventDefault();
         }
-        const swap = (element.dataset.swap || "innerHTML").toLowerCase();
+        const swap = element.dataset.swap || "innerHTML";
         const targetSelector = element.dataset.target;
         const target = targetSelector
           ? document.querySelector(targetSelector)
@@ -31,10 +37,23 @@ export function ngGetDirective($http, $compile, $log) {
           return;
         }
 
-        $http.get(attrs["ngGet"]).then((res) => {
+        function handler(res) {
           const html = res.data;
-          handleSwapResponse(html, swap, target, scope, $compile);
-        });
+          handleSwapResponse(
+            html,
+            /** @type {import("../../interface.ts").SwapInsertPosition} */ (
+              swap
+            ),
+            target,
+            scope,
+            $compile,
+          );
+        }
+
+        $http
+          .get(attrs["ngGet"])
+          .then((res) => handler(res))
+          .catch((err) => handler(err));
       });
     },
   };

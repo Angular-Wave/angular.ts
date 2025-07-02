@@ -719,7 +719,7 @@ export function getEventNameForElement(element) {
  * Handles DOM manipulation based on a swap strategy and server-rendered HTML.
  *
  * @param {string} html - The HTML string returned from the server.
- * @param {string} swap - The swap mode (e.g., "innerHTML", "textContent", "beforebegin").
+ * @param {import("../interface.ts").SwapInsertPosition} swap
  * @param {Element} target - The target DOM element to apply the swap to.
  * @param {import('../core/scope/scope.js').Scope} scope
  * @param {import('../core/compile/compile.js').CompileFn} $compile
@@ -735,11 +735,11 @@ export function handleSwapResponse(html, swap, target, scope, $compile) {
   }
 
   switch (swap) {
-    case "innerhtml":
+    case "innerHTML":
       target.replaceChildren(...nodes);
       break;
 
-    case "outerhtml": {
+    case "outerHTML": {
       const parent = target.parentNode;
       if (!parent) return;
       const frag = document.createDocumentFragment();
@@ -748,7 +748,7 @@ export function handleSwapResponse(html, swap, target, scope, $compile) {
       break;
     }
 
-    case "textcontent":
+    case "textContent":
       target.textContent = html;
       break;
 
