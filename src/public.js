@@ -1,4 +1,3 @@
-// @private
 import { CompileProvider } from "./core/compile/compile.js";
 import {
   inputDirective,
@@ -129,7 +128,12 @@ import {
 import { ngChannelDirective } from "./directive/channel/channel.js";
 import { ngSetterDirective } from "./directive/setter/setter.js";
 import { PubSubProvider } from "./core/pubsub/pubsub.js";
-import { ngGetDirective } from "./directive/get/get.js";
+import {
+  ngDeleteDirective,
+  ngGetDirective,
+  ngPostDirective,
+  ngPutDirective,
+} from "./directive/http/http.js";
 
 /**
  * Initializes core `ng` module.
@@ -166,6 +170,7 @@ export function registerNgModule(angular) {
               ngClassOdd: ngClassOddDirective,
               ngCloak: ngCloakDirective,
               ngController: ngControllerDirective,
+              ngDelete: ngDeleteDirective,
               ngDisabled: ngDisabledAriaDirective,
               ngForm: ngFormDirective,
               ngGet: ngGetDirective,
@@ -179,6 +184,8 @@ export function registerNgModule(angular) {
               ngMessagesInclude: ngMessagesIncludeDirective,
               ngMessageDefault: ngMessageDefaultDirective,
               ngNonBindable: ngNonBindableDirective,
+              ngPost: ngPostDirective,
+              ngPut: ngPutDirective,
               ngRef: ngRefDirective,
               ngRepeat: ngRepeatDirective,
               ngSetter: ngSetterDirective,

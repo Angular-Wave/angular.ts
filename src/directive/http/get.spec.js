@@ -65,6 +65,17 @@ describe("ngGet", () => {
   });
 
   describe("data-swap", () => {
+    it("should not change anything if swap is 'none'", async () => {
+      const scope = $rootScope.$new();
+      el.innerHTML =
+        '<button ng-get="/mock/div" data-swap="none" data-target="#found">Load</button><div id="found">Original</div>';
+      $compile(el)(scope);
+      browserTrigger(el.querySelector("button"), "click");
+      await wait(100);
+      const found = el.querySelector("#found");
+      expect(found.textContent).toBe("Original");
+    });
+
     it("should replace outerHTML on click", async () => {
       const scope = $rootScope.$new();
       el.innerHTML =
@@ -103,6 +114,16 @@ describe("ngGet", () => {
       browserTrigger(el.querySelector("button"), "click");
       await wait(100);
       expect(el.firstChild.lastChild.innerText).toBe("Hello");
+    });
+
+    it("should delete the target on click", async () => {
+      const scope = $rootScope.$new();
+      el.innerHTML =
+        '<button ng-get="/mock/hello" data-swap="delete" data-target="#found">Load</button><div id="found"></div>';
+      $compile(el)(scope);
+      browserTrigger(el.querySelector("button"), "click");
+      await wait(100);
+      expect(el.querySelector("#found")).toBeNull();
     });
   });
 
@@ -162,6 +183,29 @@ describe("ngGet", () => {
       await wait(100);
       const found = el.querySelector("#found");
       expect(found.textContent).toBe("Hello");
+    });
+
+    it("should insert afterbegin on click", async () => {
+      const scope = $rootScope.$new();
+      el.innerHTML =
+        '<button ng-get="/mock/div" data-swap="afterbegin" data-target="#found">Load</button><div id="found"><div>World</div></div>';
+      $compile(el)(scope);
+      browserTrigger(el.querySelector("button"), "click");
+      await wait(100);
+      const found = el.querySelector("#found");
+      expect(found.textContent).toBe("HelloWorld");
+    });
+
+    it("should insert afterend on click", async () => {
+      const scope = $rootScope.$new();
+      el.innerHTML =
+        '<button ng-get="/mock/div" data-swap="afterend" data-target="#found">Load</button><div id="found"><div>World</div></div>';
+      $compile(el)(scope);
+      browserTrigger(el.querySelector("button"), "click");
+      await wait(100);
+      const found = el.querySelector("#found");
+      const next = found.nextSibling;
+      expect(el.lastChild.textContent).toBe("Hello");
     });
   });
 });
