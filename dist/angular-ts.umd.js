@@ -1,4 +1,4 @@
-/* Version: 0.7.2 - July 1, 2025 01:16:00 */
+/* Version: 0.7.3 - July 4, 2025 23:40:50 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -7551,7 +7551,9 @@
             }
 
             function triggerOnChangesHook() {
-              destination["$onChanges"] && destination["$onChanges"](changes);
+              destination["$onChanges"] &&
+                changes &&
+                destination["$onChanges"](changes);
               // Now clear the changes so that we schedule onChanges when more changes arrive
               changes = undefined;
             }
@@ -11535,8 +11537,6 @@
 
   ngIfDirective.$inject = ["$animate"];
   /**
-   *
-   * TODO // Add type for animate service
    * @param {*}  $animate
    * @returns {import("../../interface.ts").Directive}
    */
@@ -12178,7 +12178,7 @@
   function ngStyleDirective() {
     return {
       restrict: "A",
-      link: (scope, element, attr) => {
+      link(scope, element, attr) {
         let oldStyles;
         scope.$watch(attr["ngStyle"], (newStyles) => {
           if (oldStyles) {
@@ -14937,7 +14937,7 @@
    * @see {@link angular.ErrorHandler AngularTS ErrorHandler}
    */
 
-  /** @typedef {import('../services/log').LogService} LogService */
+  /** @typedef {import('../services/log.js').LogService} LogService */
 
   /** @typedef {import("./error-handler.ts").ErrorHandler}  ErrorHandler */
 
@@ -19189,8 +19189,10 @@
       // http.timeout = promise             abort
       // xhr.abort()                        abort (The xhr object is normally inaccessible, but
       //                                    can be exposed with the xhrFactory)
+      /** @type {number} */
+      let timeoutId;
       if (timeout > 0) {
-        var timeoutId = setTimeout(() => {
+        timeoutId = setTimeout(() => {
           timeoutRequest("timeout");
         }, timeout);
       } else if (isPromiseLike(timeout)) {
@@ -22263,7 +22265,6 @@
    * Requires the {@link ngAria} module to be installed.
    *
    */
-  
   function AriaProvider() {
     let config = {
       ariaHidden: true,
@@ -26076,6 +26077,7 @@
     arr.push(val);
     return val;
   });
+
   /**
    * Applies a set of defaults to an options object.  The options object is filtered
    * to only those properties of the objects in the defaultsList.
@@ -26243,6 +26245,7 @@
    * ```
    */
   const unnest = (arr) => arr.reduce(unnestR, []);
+
   /**
    * Given a .filter Predicate, builds a .filter Predicate which throws an error if any elements do not pass.
    * @example
@@ -26257,6 +26260,7 @@
    * ```
    */
   const assertPredicate = assertFn;
+
   function assertFn(predicateOrMap, errMsg = "assert failure") {
     return (obj) => {
       const result = predicateOrMap(obj);
@@ -26337,10 +26341,17 @@
     memo[key] = value;
     return memo;
   }
-  /** Get the last element of an array */
+
+  /**
+   * Returns the last element of an array, or undefined if the array is empty.
+   * @template T
+   * @param {T[]} arr - The input array.
+   * @returns {T | undefined} The last element or undefined.
+   */
   function tail(arr) {
-    return (arr.length && arr[arr.length - 1]) || undefined;
+    return arr.length > 0 ? arr[arr.length - 1] : undefined;
   }
+
   /**
    * shallow copy from src to dest
    */
@@ -28973,10 +28984,10 @@
      * strings corresponding to native Object properties, e.g. "constructor",
      * "toString", "hasOwnProperty", etc.
      *
-     * @param {boolean=} opt_async Enable asynchronous behavior.  Recommended for
+     * @param {boolean=} async Enable asynchronous behavior.  Recommended for
      *     new code.  See notes on the publish() method.
      */
-    constructor(opt_async = false) {
+    constructor(async = false) {
       this.disposed = false;
 
       /**
@@ -29033,7 +29044,7 @@
       /**
        * @private @const {boolean}
        */
-      this.async_ = Boolean(opt_async);
+      this.async_ = Boolean(async);
     }
 
     /**
@@ -29117,9 +29128,9 @@
      * @param {Array} args Arguments to pass to the function.
      */
     static runAsync_(fn, context, args) {
-      setTimeout(() => {
+      Promise.resolve().then(() => {
         fn.apply(context, args);
-      }, 0);
+      });
     }
 
     /**
@@ -29185,7 +29196,7 @@
      * the order in which they were added, passing all arguments along.
      *
      * If this object was created with async=true, subscribed functions are called
-     * via setTimeout().  Otherwise, the functions are called directly, and if
+     * via Promise.resolve().  Otherwise, the functions are called directly, and if
      * any of them throw an uncaught error, publishing is aborted.
      *
      * @param {string} topic Topic to publish to.
@@ -35548,9 +35559,10 @@
     }
   }
 
+  ngChannelDirective.$inject = [$injectTokens.$eventBus];
   /**
    * Dynamically updates an element's content based on events published on a specified channel.
-   * If data is sent via `EventBus` on the specified `ngChannel`, the directive attempts to update the element's content accordingly,
+   * If data is sent via `$eventBus` on the specified `ngChannel`, the directive attempts to update the element's content accordingly,
    * either by directly setting the inner HTML or merging the scope's data if the element contains a template.
    *
    * If the element has a template and incoming data is an object, the directive will merge all key/value pairs onto the scope,
@@ -35565,15 +35577,16 @@
    * JavaScript:
    * angular.$eventBus.publish('userChannel', { user: { firstName: 'John', lastName: 'Smith' } });
    *
+   * @param {import("../../core/pubsub/pubsub.js").PubSub} $eventBus
    * @returns {import("../../interface.ts").Directive}
    */
-  function ngChannelDirective() {
+  function ngChannelDirective($eventBus) {
     return {
       link: (scope, element, attrs) => {
         const hasTemplate = element.childNodes.length > 0;
         const channel = attrs["ngChannel"];
 
-        const key = EventBus.subscribe(channel, async (val) => {
+        const key = $eventBus.subscribe(channel, (val) => {
           if (!hasTemplate) {
             element.innerHTML = val;
           } else {
@@ -35584,7 +35597,7 @@
         });
 
         scope.$on("$destroy", () => {
-          EventBus.unsubscribeByKey(key);
+          $eventBus.unsubscribeByKey(key);
         });
       },
     };
@@ -35652,14 +35665,252 @@
     };
   }
 
-  // @private
+  /**
+   * @param {"get" | "delete" | "post" | "put"} method
+   * @returns {import('../../interface.ts').DirectiveFactory}
+   */
+  function defineDirective(method) {
+    const attrName = "ng" + method.charAt(0).toUpperCase() + method.slice(1);
+    const directive = createHttpDirective(method, attrName);
+    directive["$inject"] = ["$http", "$compile", "$log"];
+    return directive;
+  }
+
+  const ngGetDirective = defineDirective("get");
+  const ngDeleteDirective = defineDirective("delete");
+  const ngPostDirective = defineDirective("post");
+  const ngPutDirective = defineDirective("put");
+
+  /**
+   * Selects DOM event to listen for based on the element type.
+   *
+   * @param {Element} element - The DOM element to inspect.
+   * @returns {EventType} The name of the event to listen for.
+   */
+  function getEventNameForElement(element) {
+    const tag = element.tagName.toLowerCase();
+    if (["input", "textarea", "select"].includes(tag)) {
+      return "change";
+    } else if (tag === "form") {
+      return "submit";
+    }
+    return "click";
+  }
+
+  /**
+   * Handles DOM manipulation based on a swap strategy and server-rendered HTML.
+   *
+   * @param {string} html - The HTML string returned from the server.
+   * @param {import("../../interface.ts").SwapInsertPosition} swap
+   * @param {Element} target - The target DOM element to apply the swap to.
+   * @param {import('../../core/scope/scope.js').Scope} scope
+   * @param {import('../../core/compile/compile.js').CompileFn} $compile
+   */
+  function handleSwapResponse(html, swap, target, scope, $compile) {
+    let nodes = [];
+    if (!["textcontent", "delete", "none"].includes(swap)) {
+      if (!html) {
+        return;
+      }
+
+      if (isObject(html)) {
+        scope.$merge(html);
+        return;
+      }
+
+      const compiled = $compile(html)(scope);
+      nodes =
+        compiled instanceof DocumentFragment
+          ? Array.from(compiled.childNodes)
+          : [compiled];
+    }
+
+    switch (swap) {
+      case "innerHTML":
+        target.replaceChildren(...nodes);
+        break;
+
+      case "outerHTML": {
+        const parent = target.parentNode;
+        if (!parent) return;
+        const frag = document.createDocumentFragment();
+        nodes.forEach((n) => frag.appendChild(n));
+        parent.replaceChild(frag, target);
+        break;
+      }
+
+      case "textContent":
+        target.textContent = html;
+        break;
+
+      case "beforebegin":
+        nodes.forEach((node) => target.parentNode.insertBefore(node, target));
+        break;
+
+      case "afterbegin":
+        nodes
+          .slice()
+          .reverse()
+          .forEach((node) => target.insertBefore(node, target.firstChild));
+        break;
+
+      case "beforeend":
+        nodes.forEach((node) => target.appendChild(node));
+        break;
+
+      case "afterend":
+        nodes
+          .slice()
+          .reverse()
+          .forEach((node) =>
+            target.parentNode.insertBefore(node, target.nextSibling),
+          );
+        break;
+
+      case "delete":
+        target.remove();
+        break;
+
+      case "none":
+        break;
+
+      default:
+        target.replaceChildren(...nodes);
+        break;
+    }
+  }
+
+  /**
+   * Creates an HTTP directive factory that supports GET, DELETE, POST, PUT.
+   *
+   * @param {"get" | "delete" | "post" | "put"} method - HTTP method to use.
+   * @param {string} attrName - Attribute name containing the URL.
+   * @returns {import('../../interface.ts').DirectiveFactory}
+   */
+  function createHttpDirective(method, attrName) {
+    /**
+     * @param {{ [key: string]: Function }} $http
+     * @param {import("../../core/compile/compile.js").CompileFn} $compile
+     * @param {import("../../services/log.js").LogService} $log
+     * @returns {import('../../interface.ts').Directive}
+     */
+    return function ($http, $compile, $log) {
+      /**
+       * Collects form data from the element or its associated form.
+       *
+       * @param {HTMLElement} element
+       * @returns {Object<string, any>}
+       */
+      function collectFormData(element) {
+        /** @type {HTMLFormElement | null} */
+        let form = null;
+
+        const tag = element.tagName.toLowerCase();
+
+        if (tag === "form") {
+          /** @type {HTMLFormElement} */
+          form = /** @type {HTMLFormElement} */ (element);
+        } else if ("form" in element && element.form) {
+          /** @type {HTMLFormElement} */
+          form = /** @type {HTMLFormElement} */ (element.form);
+        } else if (element.hasAttribute("form")) {
+          const formId = element.getAttribute("form");
+          if (formId) {
+            /** @type {HTMLElement | null} */
+            const maybeForm = document.getElementById(formId);
+            if (maybeForm && maybeForm.tagName.toLowerCase() === "form") {
+              form = /** @type {HTMLFormElement} */ (maybeForm);
+            }
+          }
+        }
+
+        if (!form) {
+          if (
+            "name" in element &&
+            typeof element.name === "string" &&
+            element.name.length > 0
+          ) {
+            if (
+              element instanceof HTMLInputElement ||
+              element instanceof HTMLTextAreaElement ||
+              element instanceof HTMLSelectElement
+            ) {
+              const key = element.name;
+              const value = element.value;
+              return { [key]: value };
+            }
+          }
+          return {};
+        }
+
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => {
+          data[key] = value;
+        });
+        return data;
+      }
+
+      return {
+        restrict: "A",
+        terminal: true,
+        link(scope, element, attrs) {
+          /** @type {EventType} */
+          const eventName = getEventNameForElement(element);
+          const tag = element.tagName.toLowerCase();
+
+          element.addEventListener(eventName, (event) => {
+            if (/** @type {HTMLButtonElement} */ (element).disabled) return;
+            if (tag === "form") event.preventDefault();
+
+            const swap = element.dataset.swap || "innerHTML";
+            const targetSelector = element.dataset.target;
+            const target = targetSelector
+              ? document.querySelector(targetSelector)
+              : element;
+
+            if (!target) {
+              $log.warn(`${attrName}: target "${targetSelector}" not found`);
+              return;
+            }
+
+            const url = attrs[attrName];
+            if (!url) {
+              $log.warn(`${attrName}: no URL specified`);
+              return;
+            }
+
+            const handler = (res) => {
+              const html = res.data;
+              handleSwapResponse(
+                html,
+                /** @type {import("../../interface.ts").SwapInsertPosition} */ (
+                  swap
+                ),
+                target,
+                scope,
+                $compile,
+              );
+            };
+
+            if (method === "post" || method === "put") {
+              const data = collectFormData(element);
+              $http[method](url, data).then(handler).catch(handler);
+            } else {
+              $http[method](url).then(handler).catch(handler);
+            }
+          });
+        },
+      };
+    };
+  }
 
   /**
    * Initializes core `ng` module.
    * @param {import('./loader.js').Angular} angular
    * @returns {import('./core/di/ng-module.js').NgModule} `ng` module
    */
-  function publishExternalAPI(angular) {
+  function registerNgModule(angular) {
     const ng = angular
       .module(
         "ng",
@@ -35689,8 +35940,10 @@
                 ngClassOdd: ngClassOddDirective,
                 ngCloak: ngCloakDirective,
                 ngController: ngControllerDirective,
+                ngDelete: ngDeleteDirective,
                 ngDisabled: ngDisabledAriaDirective,
                 ngForm: ngFormDirective,
+                ngGet: ngGetDirective,
                 ngHide: ngHideDirective,
                 ngIf: ngIfDirective,
                 ngInclude: ngIncludeDirective,
@@ -35701,6 +35954,8 @@
                 ngMessagesInclude: ngMessagesIncludeDirective,
                 ngMessageDefault: ngMessageDefaultDirective,
                 ngNonBindable: ngNonBindableDirective,
+                ngPost: ngPostDirective,
+                ngPut: ngPutDirective,
                 ngRef: ngRefDirective,
                 ngRepeat: ngRepeatDirective,
                 ngSetter: ngSetterDirective,
@@ -35827,16 +36082,16 @@
     constructor() {
       Cache.clear(); // a ensure new instance of angular gets a clean cache
 
-      /** @type {Map<number, import("./core/cache/cache").ExpandoStore>} */
+      /** @type {Map<number, import("./core/cache/cache.js").ExpandoStore>} */
       this.$cache = Cache;
 
       /** @type {import('./core/pubsub/pubsub.js').PubSub} */
       this.$eventBus = EventBus;
 
       /**
-       * @type {string} `version` from `package.json` inserved via rollup
+       * @type {string} `version` from `package.json`
        */
-      this.version = "0.7.2";
+      this.version = "0.7.3"; //inserted via rollup plugin
 
       /** @type {!Array<string|any>} */
       this.bootsrappedModules = [];
@@ -35848,7 +36103,7 @@
 
       window["angular"] = this;
       this.$injectTokens = $injectTokens;
-      publishExternalAPI(this);
+      registerNgModule(this);
     }
 
     /**
