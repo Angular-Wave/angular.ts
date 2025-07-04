@@ -1,3 +1,5 @@
+import { isObject } from "../../shared/utils.js";
+
 /**
  * @param {"get" | "delete" | "post" | "put"} method
  * @returns {import('../../interface.ts').DirectiveFactory}
@@ -17,8 +19,6 @@ export const ngPutDirective = defineDirective("put");
 /**
  * @typedef {"click" | "change" | "submit"} EventType
  */
-
-import { isObject } from "../../shared/utils";
 
 /**
  * Selects DOM event to listen for based on the element type.
@@ -128,7 +128,7 @@ export function handleSwapResponse(html, swap, target, scope, $compile) {
  */
 export function createHttpDirective(method, attrName) {
   /**
-   * @param {{ [key: string]: Function }} $http
+   * @param {import("interface.ts").HttpService} $http
    * @param {import("../../core/compile/compile.js").CompileFn} $compile
    * @param {import("../../services/log.js").LogService} $log
    * @returns {import('../../interface.ts').Directive}

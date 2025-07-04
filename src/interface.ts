@@ -1,6 +1,6 @@
 import { Attributes } from "./core/compile/attributes.js";
 import { Scope } from "./core/scope/scope.js";
-
+export * from "./services/http/interface.ts";
 /**
  * A JavaScript expression represented as a string, typically used in interpolation bindings.
  *

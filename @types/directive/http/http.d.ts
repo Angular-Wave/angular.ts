@@ -1,4 +1,7 @@
 /**
+ * @typedef {"click" | "change" | "submit"} EventType
+ */
+/**
  * Selects DOM event to listen for based on the element type.
  *
  * @param {Element} element - The DOM element to inspect.

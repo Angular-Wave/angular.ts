@@ -57,8 +57,8 @@ export class HttpProvider {
     | ((
         $browser: any,
         $httpBackend: any,
-        $rootScope: any,
-        $injector: any,
+        $rootScope: import("../../core/scope/scope.js").Scope,
+        $injector: import("../../core/di/internal-injector.js").InjectorService,
         $sce: any,
       ) => {
         (requestConfig: any): Promise<any>;

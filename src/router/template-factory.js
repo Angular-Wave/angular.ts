@@ -26,7 +26,7 @@ export class TemplateFactoryProvider {
     "$templateRequest",
     "$injector",
     /**
-     * @param {any} $http
+     * @param {import("interface.ts").HttpService} $http
      * @param {import("../core/cache/cache-factory.js").TemplateCache} $templateCache
      * @param {any} $templateRequest
      * @param {import("../core/di/internal-injector.js").InjectorService} $injector
@@ -126,7 +126,7 @@ export class TemplateFactoryProvider {
     if (url == null) return null;
     if (this._useHttp) {
       return this.$http
-        .get(url, {
+        .get(/** @type {string} */ (url), {
           cache: this.$templateCache,
           headers: { Accept: "text/html" },
         })

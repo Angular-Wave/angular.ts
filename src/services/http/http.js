@@ -386,8 +386,8 @@ export function HttpProvider() {
      *
      * @param {*} $browser
      * @param {*} $httpBackend
-     * @param {*} $rootScope
-     * @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @param {import("../../core/scope/scope.js").Scope} $rootScope
+     * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
      * @param {*} $sce
      * @returns
      */
@@ -825,9 +825,9 @@ export function HttpProvider() {
             Object.entries(eventHandlers).forEach(([key, eventHandler]) => {
               applyHandlers[key] = function (event) {
                 if (useApplyAsync) {
-                  setTimeout(() => $rootScope.$apply(callEventHandler));
+                  setTimeout(() => callEventHandler());
                 } else {
-                  $rootScope.$apply(callEventHandler);
+                  callEventHandler();
                 }
 
                 function callEventHandler() {
