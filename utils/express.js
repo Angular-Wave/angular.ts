@@ -2,7 +2,11 @@ import express from "express";
 const app = express();
 const port = 3000;
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use("/post", express.json());
+app.use("/form", express.json());
 app.use("/nocontent", express.json());
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*"); // Change * to your desired origin if needed
@@ -62,6 +66,11 @@ app.patch("/patch", (req, res) => {
 
 app.post("/hello", (req, res) => {
   res.json("Hello");
+});
+
+app.post("/posthtml", (req, res) => {
+  console.log(req.body);
+  res.send(`<div>Post response ${req.body.name} </div>`);
 });
 
 app.get("/interpolation", (req, res) => {

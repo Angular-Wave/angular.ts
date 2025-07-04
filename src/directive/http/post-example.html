@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>AngularTS</title>
+    <link rel="shortcut icon" type="image/png" href="images/favicon.ico" />
+    <script type="module" src="/src/index.js"></script>
+  </head>
+  <body ng-app>
+    InnerHTML
+    <form ng-post="/mock/posthtml">
+      <input name="name" />
+      <button type="submit">Test</button>
+    </form>
+
+    Target
+    <form ng-post="/mock/posthtml" data-target="#output">
+      <input name="name" />
+      <button type="submit">Test</button>
+    </form>
+    <div id="output"></div>
+
+    Target
+    <form ng-post="/mock/posthtml" data-target="#output">
+      <input name="name" />
+      <button type="submit">Test</button>
+    </form>
+    <div id="output"></div>
+  </body>
+</html>
