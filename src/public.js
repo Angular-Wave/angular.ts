@@ -68,7 +68,7 @@ import {
 } from "./services/http/http.js";
 import { HttpBackendProvider } from "./services/http-backend/http-backend.js";
 import { LocationProvider } from "./core/location/location.js";
-import { LogProvider } from "./services/log.js";
+import { LogProvider } from "./services/log/log.js";
 import { ParseProvider } from "./core/parse/parse.js";
 import { RootScopeProvider } from "./core/scope/scope.js";
 import { SceProvider, SceDelegateProvider } from "./core/sce/sce.js";

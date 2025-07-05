@@ -11,7 +11,7 @@ To reveal the location of the calls to `$log` in the JavaScript console, you can
 
 Note: Not all browsers support blackboxing.
 
-The default is to log `debug` messages. You can use [`ng.$logProvider.debugEnabled`](https://docs.angularjs.org/api/ng/provider/$logProvider#debugEnabled) to change this.
+The default is to log `debug` messages. You can use [`ng.$logProvider.debug`](https://docs.angularjs.org/api/ng/provider/$logProvider#debugEnabled) to change this.
 
 ## Example
 

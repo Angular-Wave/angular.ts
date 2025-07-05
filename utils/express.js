@@ -5,7 +5,6 @@ const port = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/post", express.json());
 app.use("/form", express.json());
 app.use("/nocontent", express.json());
 app.use((req, res, next) => {
@@ -61,10 +60,6 @@ app.put("/put", (req, res) => {
 });
 
 app.patch("/patch", (req, res) => {
-  res.json("Hello");
-});
-
-app.post("/hello", (req, res) => {
   res.json("Hello");
 });
 

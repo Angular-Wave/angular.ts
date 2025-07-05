@@ -42,7 +42,7 @@
  * @see {@link angular.ErrorHandler AngularTS ErrorHandler}
  */
 
-/** @typedef {import('../services/log.js').LogService} LogService */
+/** @typedef {import('../services/log/interface.ts').LogService} LogService */
 
 /** @typedef {import("./error-handler.ts").ErrorHandler}  ErrorHandler */
 

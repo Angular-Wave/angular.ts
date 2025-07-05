@@ -15,9 +15,9 @@ export class TaskTrackerFactoryProvider implements ServiceProvider {
  */
 export class TaskTracker {
   /**
-   * @param {import('../services/log.js').LogService} log - The logging service.
+   * @param {import('../services/log/interface.ts').LogService} log - The logging service.
    */
-  constructor(log: import("../services/log.js").LogService);
+  constructor(log: import("../services/log/interface.ts").LogService);
   /** @private */
   private log;
   /** @private */

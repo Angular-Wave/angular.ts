@@ -11,7 +11,7 @@ export class TaskTrackerFactoryProvider {
     /**
      * Creates a new `TaskTracker` instance.
      *
-     * @param {import('../services/log.js').LogService} log - The logging service.
+     * @param {import('../services/log/interface.ts').LogService} log - The logging service.
      * @returns {TaskTracker} A new `TaskTracker` instance.
      */
     (log) => new TaskTracker(log),
@@ -26,7 +26,7 @@ export class TaskTrackerFactoryProvider {
  */
 export class TaskTracker {
   /**
-   * @param {import('../services/log.js').LogService} log - The logging service.
+   * @param {import('../services/log/interface.ts').LogService} log - The logging service.
    */
   constructor(log) {
     /** @private */

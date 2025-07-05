@@ -14931,7 +14931,7 @@ class TemplateCacheProvider {
  * @see {@link angular.ErrorHandler AngularTS ErrorHandler}
  */
 
-/** @typedef {import('../services/log.js').LogService} LogService */
+/** @typedef {import('../services/log/log.js').LogService} LogService */
 
 /** @typedef {import("./error-handler.ts").ErrorHandler}  ErrorHandler */
 
@@ -21535,7 +21535,7 @@ class TaskTrackerFactoryProvider {
     /**
      * Creates a new `TaskTracker` instance.
      *
-     * @param {import('../services/log.js').LogService} log - The logging service.
+     * @param {import('../services/log/log.js').LogService} log - The logging service.
      * @returns {TaskTracker} A new `TaskTracker` instance.
      */
     (log) => new TaskTracker(log),
@@ -21550,7 +21550,7 @@ class TaskTrackerFactoryProvider {
  */
 class TaskTracker {
   /**
-   * @param {import('../services/log.js').LogService} log - The logging service.
+   * @param {import('../services/log/log.js').LogService} log - The logging service.
    */
   constructor(log) {
     /** @private */
@@ -35600,7 +35600,7 @@ function ngChannelDirective($eventBus) {
 ngSetterDirective.$inject = ["$parse", "$log"];
 /**
  * @param {import('../../core/parse/interface.ts').ParseService} $parse
- * @param {import('../../services/log.js').LogService} $log
+ * @param {import('../../services/log/log.js').LogService} $log
  * @returns {import('../../interface.ts').Directive}
  */
 function ngSetterDirective($parse, $log) {
@@ -35785,7 +35785,7 @@ function createHttpDirective(method, attrName) {
   /**
    * @param {{ [key: string]: Function }} $http
    * @param {import("../../core/compile/compile.js").CompileFn} $compile
-   * @param {import("../../services/log.js").LogService} $log
+   * @param {import("../../services/log/log.js").LogService} $log
    * @returns {import('../../interface.ts').Directive}
    */
   return function ($http, $compile, $log) {

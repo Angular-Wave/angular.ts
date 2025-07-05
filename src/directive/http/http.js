@@ -130,7 +130,7 @@ export function createHttpDirective(method, attrName) {
   /**
    * @param {import("interface.ts").HttpService} $http
    * @param {import("../../core/compile/compile.js").CompileFn} $compile
-   * @param {import("../../services/log.js").LogService} $log
+   * @param {import("../../services/log/interface.ts").LogService} $log
    * @returns {import('../../interface.ts').Directive}
    */
   return function ($http, $compile, $log) {
