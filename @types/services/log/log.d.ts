@@ -2,6 +2,7 @@
  * Use the `$logProvider` to configure how the application logs messages
  */
 export class LogProvider {
+  /** @type {boolean} */
   debug: boolean;
   /** @type {import("./interface.ts").LoggerServiceFactory | null} */
   _override: import("./interface.ts").LoggerServiceFactory | null;

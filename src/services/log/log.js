@@ -5,6 +5,7 @@ import { isError } from "../../shared/utils.js";
  */
 export class LogProvider {
   constructor() {
+    /** @type {boolean} */
     this.debug = false;
     /** @type {import("./interface.ts").LoggerServiceFactory | null} */
     this._override = null;
