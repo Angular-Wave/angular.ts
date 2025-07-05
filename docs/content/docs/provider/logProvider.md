@@ -1,16 +1,16 @@
 ---
 title: $logProvider
 description: >
-  Configuration provider for the [$log](../service/log) service.
+  Configuration provider for the [$log](/docs/service/log) service.
 ---
 
-Instance of [LogProvider](../../../typedoc/classes/LogProvider.html) for configuring how the application logs messages.
+Instance of [LogProvider](/typedoc/classes/LogProvider.html) for configuring how the application logs messages.
 
 ------
 
 #### $logProvider.debug
 
-Enable or disable debug-level logging. Also see [debug property](../../../typedoc/classes/LogProvider.html#debug).
+Enable or disable debug-level logging. Also see [debug property](/typedoc/classes/LogProvider.html#debug).
 
 - **Type:** boolean  
 - **Default:** `false`
@@ -28,9 +28,9 @@ Enable or disable debug-level logging. Also see [debug property](../../../typedo
 
 #### $logProvider.setLogger()
 
-Override the default logger with a custom implementation of the [LogService](../../../typedoc/interfaces/LogService.html) interface.
+Override the default logger with a custom implementation of the [LogService](/typedoc/interfaces/LogService.html) interface.
 
-- **Parameter:** [LogService](../../../typedoc/interfaces/LogService.html)
+- **Parameter:** [LogService](/typedoc/interfaces/LogService.html)
 
 - **Example:**
 
@@ -49,4 +49,4 @@ Override the default logger with a custom implementation of the [LogService](../
 
 ------
 
-For the logging service, see [$log](../../services/log).
+For the logging service, see [$log](/docs/service/log).
