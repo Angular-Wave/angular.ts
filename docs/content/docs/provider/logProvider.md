@@ -1,7 +1,7 @@
 ---
 title: $logProvider
 description: >
-  Configuration provider for the [$log](../../services/log) service.
+  Configuration provider for the [$log](../service/log) service.
 ---
 
 Instance of [LogProvider](../../../typedoc/classes/LogProvider.html) for configuring how the application logs messages.
