@@ -15,7 +15,7 @@ To reveal the location of the calls to `$log` in the JavaScript console, you can
 > The default is to log `debug` messages. You can use [`$logProvider.debug`](/docs/provider/logprovider/#logprovidersetlogger) to change this.
 
 
-##### Example
+##### **Example***
 
 ```js
 angular.module('demo')
@@ -28,4 +28,27 @@ angular.module('demo')
     });
 ```
 
-For configuration, see [$logProvider](/docs/provider/logprovider)
+For configuration and custom implementations, see [$logProvider](/docs/provider/logprovider). 
+
+You can also optionally override any of the `$log` service methods with `$provide` decorator.
+Below is a simple example that overrides default `console.error` to logs errors to both console and a backend endpoint.
+
+##### **Example***
+
+
+```js
+angular.module('demo')
+  .config(($provide) => {
+    $provide.decorator('$log', ($delegate, $http, $exceptionHandler) => {
+      const originalError = $delegate.error;
+      $delegate.error = () => {
+        originalError.apply($delegate, arguments);
+        const errorMessage = Array.prototype.slice.call(arguments).join(' ');
+        $http.post('/api/log/error', { message: errorMessage });
+      };
+      return $delegate;
+    })
+  });
+```
+
+\* array notation and HTTP error handling omitted for brevity

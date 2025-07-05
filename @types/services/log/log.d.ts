@@ -1,5 +1,5 @@
 /**
- * Use the `$logProvider` to configure how the application logs messages
+ * Configuration provider for `$log` service
  */
 export class LogProvider {
   /** @type {boolean} */
@@ -7,12 +7,17 @@ export class LogProvider {
   /** @private @type {import("./interface.ts").LogServiceFactory | null} */
   private _override;
   /**
-   * Override the default
+   * Override the default {@link LogService} implemenation
    * @param {import("./interface.ts").LogServiceFactory} fn
    */
   setLogger(fn: import("./interface.ts").LogServiceFactory): void;
-  formatError(arg: any): any;
-  consoleLog(type: any): (...args: any[]) => any;
+  /** @private */
+  private formatError;
+  /**
+   * @private
+   * @param {string} type
+   */
+  private consoleLog;
   /**
    * @returns {import("./interface.ts").LogService}
    */

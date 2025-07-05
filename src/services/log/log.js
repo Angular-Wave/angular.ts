@@ -1,7 +1,7 @@
 import { isError } from "../../shared/utils.js";
 
 /**
- * Use the `$logProvider` to configure how the application logs messages
+ * Configuration provider for `$log` service
  */
 export class LogProvider {
   /** @private */
@@ -13,13 +13,14 @@ export class LogProvider {
   }
 
   /**
-   * Override the default
+   * Override the default {@link LogService} implemenation
    * @param {import("./interface.ts").LogServiceFactory} fn
    */
   setLogger(fn) {
     this._override = fn;
   }
 
+  /** @private */
   formatError(arg) {
     if (isError(arg)) {
       if (arg.stack) {
@@ -34,6 +35,10 @@ export class LogProvider {
     return arg;
   }
 
+  /**
+   * @private
+   * @param {string} type
+   */
   consoleLog(type) {
     const console = window.console || {};
     const logFn = console[type] || console.log || (() => {});
