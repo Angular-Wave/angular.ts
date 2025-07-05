@@ -5,7 +5,7 @@ export type LogCall = (...args: any[]) => void;
 /**
  * A function that returns a LogService implementation.
  */
-export type LoggerServiceFactory = (...args: any[]) => LogService;
+export type LogServiceFactory = (...args: any[]) => LogService;
 /**
  * Service for logging messages at various levels.
  */

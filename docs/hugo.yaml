@@ -33,7 +33,7 @@ permalinks:
 imaging:
   resampleFilter: CatmullRom
   quality: 75
-  anchor: smart
+  anchor: Smart
 
 markup:
   goldmark:
@@ -197,4 +197,4 @@ menu:
   main:
     - name: 'API'
       url: '/typedoc/index.html'
-      weight: 10
+      weight: 50

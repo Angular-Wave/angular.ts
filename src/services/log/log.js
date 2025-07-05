@@ -4,16 +4,17 @@ import { isError } from "../../shared/utils.js";
  * Use the `$logProvider` to configure how the application logs messages
  */
 export class LogProvider {
+  /** @private */
   constructor() {
     /** @type {boolean} */
     this.debug = false;
-    /** @type {import("./interface.ts").LoggerServiceFactory | null} */
+    /** @private @type {import("./interface.ts").LogServiceFactory | null} */
     this._override = null;
   }
 
   /**
    * Override the default
-   * @param {import("./interface.ts").LoggerServiceFactory} fn
+   * @param {import("./interface.ts").LogServiceFactory} fn
    */
   setLogger(fn) {
     this._override = fn;
@@ -43,6 +44,9 @@ export class LogProvider {
     };
   }
 
+  /**
+   * @returns {import("./interface.ts").LogService}
+   */
   $get() {
     if (this._override) {
       return this._override();

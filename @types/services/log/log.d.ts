@@ -4,20 +4,17 @@
 export class LogProvider {
   /** @type {boolean} */
   debug: boolean;
-  /** @type {import("./interface.ts").LoggerServiceFactory | null} */
-  _override: import("./interface.ts").LoggerServiceFactory | null;
+  /** @private @type {import("./interface.ts").LogServiceFactory | null} */
+  private _override;
   /**
    * Override the default
-   * @param {import("./interface.ts").LoggerServiceFactory} fn
+   * @param {import("./interface.ts").LogServiceFactory} fn
    */
-  setLogger(fn: import("./interface.ts").LoggerServiceFactory): void;
+  setLogger(fn: import("./interface.ts").LogServiceFactory): void;
   formatError(arg: any): any;
   consoleLog(type: any): (...args: any[]) => any;
-  $get(): {
-    log: (...args: any[]) => any;
-    info: (...args: any[]) => any;
-    warn: (...args: any[]) => any;
-    error: (...args: any[]) => any;
-    debug: (...args: any[]) => void;
-  };
+  /**
+   * @returns {import("./interface.ts").LogService}
+   */
+  $get(): import("./interface.ts").LogService;
 }
