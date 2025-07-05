@@ -53,4 +53,4 @@ test-ui:
 	@$(PLAYWRIGHT_TEST) --ui
 
 hugo:
-	hugo server --source=docs --disableFastRender --baseURL=http://localhost:1313/
+	hugo server --source=docs --disableFastRender
