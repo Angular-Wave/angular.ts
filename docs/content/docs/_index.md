@@ -39,13 +39,13 @@ without any manual DOM manipulation.  The `{{count}}` expression above is an exa
 As the value of `count` variable increases, our UI is automatically updated with the new state.
 
 - **Island-first and zero-cost:** AngularTS creates an application on any HTML tag with `ng-app` attribute, 
-allowing multiple independent applications to live on a single page. The enables AngularTS to work along your existing tech-stack 
+allowing multiple independent applications to live on a single page. The enables AngularTS to work alongside your existing tech-stack 
 where the majority of your page is rendered on the server, while AngularTS is isolated to small “islands” (regions of your page)
 where custom interactivity or personalization is required. 
 
 - **Micro-framework appearance:** With its minimal setup, AngularTS is well-suited for quick experiments, LLM-generated code, 
-and learning web development in general. But beneath its lightweight surface, it supports structured enterprise-design patterns, 
-MVC architecture, and components-driven design. With its rich directive library, state-based routing and animations, AngularTS is
+and learning web development in general. But beneath its lightweight surface, it supports structured enterprise design-patterns, 
+MVC architecture, and component-driven design. With its rich directive library, state-based routing and animations, AngularTS is
 a feature-complete package for building large SPAs, server, mobile, and desktop applications.
 
 
