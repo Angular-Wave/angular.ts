@@ -16,7 +16,7 @@ The default implementation returns the global `angular.EventBus` instance, which
 
 #### $eventBusProvider.eventBus
 
-Customize 
+Customize event bus instance.
 
 - **Type:** [PubSub](../../../typedoc/classes/PubSub.html)  
 - **Default:** `angular.EventBus`
