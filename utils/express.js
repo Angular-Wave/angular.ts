@@ -2,10 +2,7 @@ import express from "express";
 const app = express();
 const port = 3000;
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.use("/form", express.json());
+app.use("/post", express.json());
 app.use("/nocontent", express.json());
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*"); // Change * to your desired origin if needed
@@ -63,9 +60,8 @@ app.patch("/patch", (req, res) => {
   res.json("Hello");
 });
 
-app.post("/posthtml", (req, res) => {
-  console.log(req.body);
-  res.send(`<div>Post response ${req.body.name} </div>`);
+app.post("/hello", (req, res) => {
+  res.json("Hello");
 });
 
 app.get("/interpolation", (req, res) => {
@@ -163,4 +159,11 @@ app.listen(port, () => {
 // messageSpec.js
 app.get("/my-messages", (req, res) => {
   res.send('<div ng-message="required">You did not enter a value</div>');
+});
+
+app.use("/posthtml", express.json());
+app.use("/posthtml", express.urlencoded({ extended: true }));
+app.post("/posthtml", (req, res) => {
+  console.log(req.body);
+  res.send(`<div>Post response ${req.body.name} </div>`);
 });
