@@ -6,6 +6,8 @@ description: >
 
 Instance of [LogProvider](../../../typedoc/classes/LogProvider.html) for configuring how the application logs messages.
 
+### Properties
+
 ------
 
 #### $logProvider.debug
@@ -23,6 +25,9 @@ Enable or disable debug-level logging. Also see [debug property](../../../typedo
         $logProvider.debug = true;
       });
     ```
+
+
+### Methods
 
 ------
 
@@ -49,4 +54,4 @@ Override the default logger with a custom implementation of the [LogService](../
 
 ------
 
-For the logging service, see [$log](../../../docs/service/log).
+For service description, see [$log](../../../docs/service/log).
