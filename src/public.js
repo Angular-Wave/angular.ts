@@ -127,7 +127,7 @@ import {
 } from "./router/directives/view-directive.js";
 import { ngChannelDirective } from "./directive/channel/channel.js";
 import { ngSetterDirective } from "./directive/setter/setter.js";
-import { PubSubProvider } from "./core/pubsub/pubsub.js";
+import { PubSubProvider } from "./services/pubsub/pubsub.js";
 import {
   ngDeleteDirective,
   ngGetDirective,

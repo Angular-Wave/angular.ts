@@ -16,7 +16,6 @@ Enable or disable debug-level logging. Also see [debug property](../../../typedo
 
 - **Type:** boolean  
 - **Default:** `false`
-
 - **Example:**
 
     ```js

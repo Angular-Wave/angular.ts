@@ -7,8 +7,8 @@
 export class Angular {
   /** @type {Map<number, import("./core/cache/cache.js").ExpandoStore>} */
   $cache: Map<number, import("./core/cache/cache.js").ExpandoStore>;
-  /** @type {import('./core/pubsub/pubsub.js').PubSub} */
-  $eventBus: import("./core/pubsub/pubsub.js").PubSub;
+  /** @type {import('./services/pubsub/pubsub.js').PubSub} */
+  $eventBus: import("./services/pubsub/pubsub.js").PubSub;
   /**
    * @type {string} `version` from `package.json`
    */

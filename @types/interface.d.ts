@@ -3,6 +3,7 @@ import { Scope } from "./core/scope/scope.js";
 export * from "./services/http/interface.ts";
 export * from "./services/log/interface.ts";
 export * from "./services/log/log.js";
+export * from "./services/pubsub/pubsub.js";
 /**
  * A JavaScript expression represented as a string, typically used in interpolation bindings.
  *

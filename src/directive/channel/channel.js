@@ -19,7 +19,7 @@ ngChannelDirective.$inject = [$injectTokens.$eventBus];
  * JavaScript:
  * angular.$eventBus.publish('userChannel', { user: { firstName: 'John', lastName: 'Smith' } });
  *
- * @param {import("../../core/pubsub/pubsub.js").PubSub} $eventBus
+ * @param {import("../../services/pubsub/pubsub.js").PubSub} $eventBus
  * @returns {import("../../interface.ts").Directive}
  */
 export function ngChannelDirective($eventBus) {

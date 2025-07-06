@@ -2,9 +2,10 @@
 
 /**
  * Configurable provider for an injectable event bus
- * @implements {ServiceProvider}
+ * @extends {ServiceProvider}
  */
 export class PubSubProvider {
+  /** @private */
   constructor() {
     /**
      * @type {PubSub}
@@ -68,7 +69,7 @@ export class PubSub {
      * representation minimizes the number of object allocations and has been
      * shown to be faster than an array of objects with three key-value pairs or
      * three parallel arrays, especially on IE.) Once a subscription is removed
-     * via {@link #unsubscribe} or {@link #unsubscribeByKey}, the three
+     * via {@link unsubscribe} or {@link unsubscribeByKey}, the three
      * corresponding array elements are deleted, and never reused. This means the
      * total number of subscriptions during the lifetime of the pubsub channel is
      * limited by the maximum length of a JavaScript array to (2^32 - 1) / 3 =
@@ -98,7 +99,7 @@ export class PubSub {
    * is specified.  Subscribing the same function to the same topic multiple
    * times will result in multiple function invocations while publishing.
    * Returns a subscription key that can be used to unsubscribe the function from
-   * the topic via {@link #unsubscribeByKey}.
+   * the topic via {@link unsubscribeByKey}.
    *
    * @param {string} topic Topic to subscribe to.
    * @param {Function} fn Function to be invoked when a message is published to
@@ -133,7 +134,7 @@ export class PubSub {
    * method on the given `opt_context` object, or in the global scope if
    * no context is specified, and is then unsubscribed.  Returns a subscription
    * key that can be used to unsubscribe the function from the topic via
-   * {@link #unsubscribeByKey}.
+   * {@link unsubscribeByKey}.
    *
    * @param {string} topic Topic to subscribe to.
    * @param {Function} fn Function to be invoked once and then unsubscribed when
@@ -206,7 +207,7 @@ export class PubSub {
   }
 
   /**
-   * Removes a subscription based on the key returned by {@link #subscribe}.
+   * Removes a subscription based on the key returned by {@link subscribe}.
    * No-op if no matching subscription is found.  Returns a Boolean indicating
    * whether a subscription was removed.
    *

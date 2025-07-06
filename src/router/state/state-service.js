@@ -17,7 +17,7 @@ import { Glob } from "../common/glob.js";
 import { ResolveContext } from "../resolve/resolve-context.js";
 import { lazyLoadState } from "../hooks/lazy-load.js";
 import { val } from "../../shared/hof.js";
-import { EventBus } from "../../core/pubsub/pubsub.js";
+import { EventBus } from "../../services/pubsub/pubsub.js";
 
 const err = minErr("$stateProvider");
 

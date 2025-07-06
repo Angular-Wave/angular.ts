@@ -6,7 +6,7 @@ import { parse } from "../../shared/hof.js";
 import { trace } from "../common/trace.js";
 import { Rejection } from "./reject-factory.js";
 import { TargetState } from "../state/target-state.js";
-import { EventBus } from "../../core/pubsub/pubsub.js";
+import { EventBus } from "../../services/pubsub/pubsub.js";
 
 const defaultOptions = {
   current: () => {},

@@ -15,11 +15,11 @@
  * JavaScript:
  * angular.$eventBus.publish('userChannel', { user: { firstName: 'John', lastName: 'Smith' } });
  *
- * @param {import("../../core/pubsub/pubsub.js").PubSub} $eventBus
+ * @param {import("../../services/pubsub/pubsub.js").PubSub} $eventBus
  * @returns {import("../../interface.ts").Directive}
  */
 export function ngChannelDirective(
-  $eventBus: import("../../core/pubsub/pubsub.js").PubSub,
+  $eventBus: import("../../services/pubsub/pubsub.js").PubSub,
 ): import("../../interface.ts").Directive;
 export namespace ngChannelDirective {
   let $inject: string[];
