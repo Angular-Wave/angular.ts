@@ -1,6 +1,6 @@
 {
   "name": "@angular-wave/angular.ts",
-  "description": "A modern, optimized and typesafe version of AngularJS",
+  "description": "A modern, optimized and type-safe version of AngularJS",
   "license": "MIT",
   "version": "0.7.3",
   "type": "module",

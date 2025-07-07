@@ -16,7 +16,7 @@ import {
   extend,
   assert,
 } from "../../shared/utils.js";
-import { Cache } from "../cache/cache.js";
+import { Cache } from "../../services/cache/cache.js";
 import { wait } from "../../shared/test-utils.js";
 
 function isUnknownElement(el) {

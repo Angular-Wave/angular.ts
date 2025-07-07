@@ -1,20 +1,25 @@
 import { filter, map, allTrueR, find } from "../../shared/common.js";
 import { isInjectable } from "../../shared/predicates.js";
-import { isDefined, isUndefined, isString } from "../../shared/utils.js";
+import {
+  isDefined,
+  isUndefined,
+  isString,
+  hasOwn,
+} from "../../shared/utils.js";
 import { ParamType } from "./param-type.js";
 
 const isShorthand = (cfg) =>
-  ["value", "type", "squash", "array", "dynamic"].filter(
-    Object.prototype.hasOwnProperty.bind(cfg || {}),
-  ).length === 0;
+  ["value", "type", "squash", "array", "dynamic"].filter(hasOwn.bind(cfg || {}))
+    .length === 0;
 
-let DefType;
-(function (DefType) {
-  DefType[(DefType["PATH"] = 0)] = "PATH";
-  DefType[(DefType["SEARCH"] = 1)] = "SEARCH";
-  DefType[(DefType["CONFIG"] = 2)] = "CONFIG";
-})(DefType || (DefType = {}));
-export { DefType };
+/**
+ * @type {{PATH: number, SEARCH: number, CONFIG: number}}
+ */
+export const DefType = {
+  PATH: 0,
+  SEARCH: 1,
+  CONFIG: 2,
+};
 
 function getParamDeclaration(paramName, location, state) {
   const noReloadOnSearch =

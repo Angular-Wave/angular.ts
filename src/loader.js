@@ -14,7 +14,7 @@ import {
 } from "./shared/dom.js";
 import { annotate, createInjector } from "./core/di/injector.js";
 import { NgModule } from "./core/di/ng-module.js";
-import { Cache } from "./core/cache/cache.js";
+import { Cache } from "./services/cache/cache.js";
 import { registerNgModule } from "./public.js";
 import { unnestR } from "./shared/common.js";
 import { EventBus } from "./services/pubsub/pubsub.js";
@@ -37,7 +37,7 @@ export class Angular {
   constructor() {
     Cache.clear(); // a ensure new instance of angular gets a clean cache
 
-    /** @type {Map<number, import("./core/cache/cache.js").ExpandoStore>} */
+    /** @type {Map<number, import("./services/cache/cache.js").ExpandoStore>} */
     this.$cache = Cache;
 
     /** @type {import('./services/pubsub/pubsub.js').PubSub} */

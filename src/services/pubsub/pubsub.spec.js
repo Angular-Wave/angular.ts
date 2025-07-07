@@ -1,12 +1,12 @@
 import { PubSub } from "./pubsub.js";
-import { createInjector } from "../di/injector.js";
+import { createInjector } from "../../core/di/injector.js";
 import { Angular } from "../../loader.js";
 
 describe("PubSubProvider", () => {
   it("should be injectable", () => {
-    let angular = new Angular();
+    const angular = new Angular();
     angular.module("test", ["ng"]);
-    let $injector = createInjector(["test"]);
+    const $injector = createInjector(["test"]);
     expect($injector.has("$eventBus")).toBeTrue();
     expect($injector.get("$eventBus") instanceof PubSub).toBeTrue();
     expect($injector.get("$eventBus").async_).toBeTrue();

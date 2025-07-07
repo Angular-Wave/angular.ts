@@ -9,17 +9,27 @@ import { isDefined, isPromiseLike, isUndefined } from "../../shared/utils.js";
  * {@link ng.$http $http}.
  *
  */
-export function HttpBackendProvider() {
-  this.$get = [
-    "$browser",
-    /**
-     * @param {import('../browser.js').Browser} $browser
-     * @returns
-     */
-    function ($browser) {
-      return createHttpBackend($browser);
-    },
-  ];
+/**
+ * HTTP backend used by the {@link ng.$http service} that delegates to
+ * XMLHttpRequest object and deals with browser incompatibilities.
+ *
+ * You should never need to use this service directly, instead use the higher-level abstractions:
+ * {@link ng.$http $http}.
+ *
+ */
+export class HttpBackendProvider {
+  constructor() {
+    this.$get = [
+      "$browser",
+      /**
+       * @param {import('../browser.js').Browser} $browser
+       * @returns
+       */
+      function ($browser) {
+        return createHttpBackend($browser);
+      },
+    ];
+  }
 }
 
 /**

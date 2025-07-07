@@ -17,9 +17,10 @@ using [`ng-channel`](../../../docs/directive/channel) directive.
 `$eventBus` should not be used for communicating between Angular's own primitives. 
 
 - **For sharing application state**: use custom Services and Factories that encapsulate your business logic and manage your model. 
-- **For intercomponent communication**: use `$scope.$on`, `$scope.$emit`, and `$scope.$broadcast` methods. 
+- **For intercomponent communication**: use `$scope.$on()`, `$scope.$emit()`, and `$scope.$broadcast()` methods. 
 
 The example below demonstrates communication between the global `window` context and a controller.
+**Note**: Ensure topic clean-up after the `$scope` is destroyed
 
 #### Example HTML
 {{< showhtml src="examples/eventbus/eventbus.html" >}}
@@ -37,18 +38,6 @@ The example below demonstrates communication between the global `window` context
 </script>
 
 ------
-
-**Note**: Ensure topic clean-up after the `$scope` is destroyed 
-
-```js
-angular.module("demo", [])
-  .contoller("Test", ($scope, $eventBus) => {
-    const key = $eventBus.subscribe("channel", () => {});
-      $scope.$on('$destroy', function() {
-        $eventBus.unsubscribeByKey(key)
-      });
-  });
-```
 
 For detailed method description, see [PubSub](../../../typedoc/classes/PubSub.html)
 

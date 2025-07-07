@@ -9,6 +9,9 @@
  *   angular.$injectTokens.$animate,
  *   angular.$injectTokens.$templateRequest,
  * ];
+ *
+ * function myDirective($animate, $templateRequest) { ... }
+ *
  * ```
  * @type Readonly<Record<string, string>>
  */

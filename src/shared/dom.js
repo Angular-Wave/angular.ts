@@ -1,13 +1,19 @@
 import { concat, hasOwn, isDefined, isObject } from "./utils.js";
-import {
-  Cache,
-  EXPANDO,
-  ISOLATE_SCOPE_KEY,
-  SCOPE_KEY,
-} from "../core/cache/cache.js";
+import { Cache } from "../services/cache/cache.js";
 
 /** @type {number} */
 let jqId = 1;
+
+/**
+ * Key for storing isolate scope data, attached to an element
+ */
+const ISOLATE_SCOPE_KEY = "$isolateScope";
+const EXPANDO = "ng";
+
+/**
+ * Key for storing scope data, attached to an element
+ */
+const SCOPE_KEY = "$scope";
 
 const DASH_LOWERCASE_REGEXP = /-([a-z])/g;
 const UNDERSCORE_LOWERCASE_REGEXP = /_([a-z])/g;
@@ -129,7 +135,7 @@ export function removeElementData(element, name) {
  *
  * @param {Element} element
  * @param {boolean} [createIfNecessary=false]
- * @returns {import("../core/cache/cache.js").ExpandoStore}
+ * @returns {import("../services/cache/cache.js").ExpandoStore}
  */
 export function getExpando(element, createIfNecessary = false) {
   let expandoId = element[EXPANDO];

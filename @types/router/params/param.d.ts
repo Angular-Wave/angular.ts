@@ -1,3 +1,11 @@
+/**
+ * @type {{PATH: number, SEARCH: number, CONFIG: number}}
+ */
+export const DefType: {
+  PATH: number;
+  SEARCH: number;
+  CONFIG: number;
+};
 export class Param {
   static values(params: any, values?: {}): {};
   /**
@@ -49,4 +57,3 @@ export class Param {
   validates(value: any): boolean;
   toString(): string;
 }
-export let DefType: any;

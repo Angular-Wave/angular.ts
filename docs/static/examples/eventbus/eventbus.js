@@ -1,10 +1,15 @@
 angular.module("demo", [])
   .controller("DemoCtrl", class {
-      static $inject = ["$eventBus", "$scope"];
-      constructor($eventBus, $scope) {
-        $eventBus.subscribe("demo", (val) => {
-        // `this` is not a proxy so we have to access our controller as a scope property
+    static $inject = ["$eventBus", "$scope"];
+    constructor($eventBus, $scope) {
+      const key = $eventBus.subscribe("demo", (val) => {
+        // `this.ms = val` will not work because `this` is not a proxy
+        //  to trigger change detection we access controller as a scope property
         $scope.$ctrl.ms = val;
+      });
+
+      $scope.$on('$destroy', function() {
+        $eventBus.unsubscribeByKey(key)
       });
     }
   });

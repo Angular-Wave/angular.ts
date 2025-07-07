@@ -1,12 +1,12 @@
 import { Angular } from "../../loader.js";
-import { EventBus } from "../../core/pubsub/pubsub";
+import { EventBus } from "../../services/pubsub/pubsub.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("channel", () => {
   let $compile, $scope, element, unsubscribeSpy;
 
   beforeEach(() => {
-    window.angular = new Angular();
+    let angular = new Angular();
     angular.module("myModule", ["ng"]);
     angular
       .bootstrap(document.getElementById("app"), ["myModule"])
