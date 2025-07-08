@@ -70,6 +70,9 @@ function getNavigableBuilder(isRoot) {
   };
 }
 
+/**
+ * @param {import("../params/param-factory.js").ParamFactory} paramFactory
+ */
 function getParamsBuilder(paramFactory) {
   return function (state) {
     const makeConfigParam = (_config, id) =>

@@ -1,11 +1,9 @@
-/**
- * @type {{PATH: number, SEARCH: number, CONFIG: number}}
- */
-export const DefType: {
-  PATH: number;
-  SEARCH: number;
-  CONFIG: number;
-};
+export type DefType = number;
+export namespace DefType {
+  let PATH: number;
+  let SEARCH: number;
+  let CONFIG: number;
+}
 export class Param {
   static values(params: any, values?: {}): {};
   /**
@@ -32,10 +30,24 @@ export class Param {
   static equals(params: any, values1?: {}, values2?: {}): boolean;
   /** Returns true if a the parameter values are valid, according to the Param definitions */
   static validates(params: any, values?: {}): any;
-  constructor(id: any, type: any, location: any, urlConfig: any, state: any);
+  /**
+   *
+   * @param {*} id
+   * @param {*} type
+   * @param {DefType} location
+   * @param {import("../url/url-config.js").UrlConfigProvider} urlConfig
+   * @param {*} state
+   */
+  constructor(
+    id: any,
+    type: any,
+    location: DefType,
+    urlConfig: import("../url/url-config.js").UrlConfigProvider,
+    state: any,
+  );
   isOptional: boolean;
   type: any;
-  location: any;
+  location: number;
   id: any;
   dynamic: boolean;
   raw: boolean;

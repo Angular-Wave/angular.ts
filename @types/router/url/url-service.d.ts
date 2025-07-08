@@ -32,9 +32,9 @@ export class UrlService {
    * The nested [[UrlConfig]] API to configure the URL and retrieve URL information
    *
    * See: [[UrlConfig]] for details
-   * @type {import("./url-config").UrlConfigProvider}
+   * @type {import("./url-config.js").UrlConfigProvider}
    */
-  config: any;
+  config: import("./url-config.js").UrlConfigProvider;
   /** Creates a new [[Param]] for a given location (DefType) */
   paramFactory: ParamFactory;
   /**

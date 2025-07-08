@@ -1,7 +1,13 @@
 import { DefType, Param } from "./param.js";
 
 export class ParamFactory {
+  /**
+   * @param {import("../url/url-config.js").UrlConfigProvider} urlServiceConfig
+   */
   constructor(urlServiceConfig) {
+    /**
+     * @type {import("../url/url-config.js").UrlConfigProvider}
+     */
     this.urlServiceConfig = urlServiceConfig;
   }
 

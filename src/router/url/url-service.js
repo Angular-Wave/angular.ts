@@ -52,7 +52,7 @@ export class UrlService {
      * The nested [[UrlConfig]] API to configure the URL and retrieve URL information
      *
      * See: [[UrlConfig]] for details
-     * @type {import("./url-config").UrlConfigProvider}
+     * @type {import("./url-config.js").UrlConfigProvider}
      */
     this.config = urlConfigProvider;
 

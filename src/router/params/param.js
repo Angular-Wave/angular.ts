@@ -1,19 +1,16 @@
 import { filter, map, allTrueR, find } from "../../shared/common.js";
 import { isInjectable } from "../../shared/predicates.js";
-import {
-  isDefined,
-  isUndefined,
-  isString,
-  hasOwn,
-} from "../../shared/utils.js";
+import { isDefined, isUndefined, isString } from "../../shared/utils.js";
 import { ParamType } from "./param-type.js";
 
 const isShorthand = (cfg) =>
-  ["value", "type", "squash", "array", "dynamic"].filter(hasOwn.bind(cfg || {}))
-    .length === 0;
+  ["value", "type", "squash", "array", "dynamic"].filter(
+    Object.prototype.hasOwnProperty.bind(cfg || {}),
+  ).length === 0;
 
 /**
- * @type {{PATH: number, SEARCH: number, CONFIG: number}}
+ * @private
+ * @enum {number}
  */
 export const DefType = {
   PATH: 0,
@@ -32,6 +29,7 @@ function getParamDeclaration(paramName, location, state) {
   );
   return Object.assign(defaultConfig, paramConfig);
 }
+
 function unwrapShorthand(cfg) {
   cfg = isShorthand(cfg) ? { value: cfg } : cfg;
   getStaticDefaultValue["__cacheable"] = true;
@@ -41,6 +39,7 @@ function unwrapShorthand(cfg) {
   const $$fn = isInjectable(cfg.value) ? cfg.value : getStaticDefaultValue;
   return Object.assign(cfg, { $$fn });
 }
+
 function getType(cfg, urlType, location, id, paramTypes) {
   if (cfg.type && urlType && urlType.name !== "string")
     throw new Error(`Param '${id}' has two type configurations.`);
@@ -65,6 +64,7 @@ function getType(cfg, urlType, location, id, paramTypes) {
   }
   return cfg.type instanceof ParamType ? cfg.type : paramTypes.type(cfg.type);
 }
+
 /** returns false, true, or the squash value to indicate the "default parameter url squash policy". */
 function getSquashPolicy(config, isOptional, defaultPolicy) {
   const squash = config.squash;
@@ -75,6 +75,7 @@ function getSquashPolicy(config, isOptional, defaultPolicy) {
     `Invalid squash policy: '${squash}'. Valid policies: false, true, or arbitrary string`,
   );
 }
+
 function getReplace(config, arrayMode, isOptional, squash) {
   const defaultPolicy = [
     { from: "", to: isOptional || arrayMode ? undefined : "" },
@@ -88,7 +89,16 @@ function getReplace(config, arrayMode, isOptional, squash) {
     (item) => configuredKeys.indexOf(item.from) === -1,
   ).concat(replace);
 }
+
 export class Param {
+  /**
+   *
+   * @param {*} id
+   * @param {*} type
+   * @param {DefType} location
+   * @param {import("../url/url-config.js").UrlConfigProvider} urlConfig
+   * @param {*} state
+   */
   constructor(id, type, location, urlConfig, state) {
     const config = getParamDeclaration(id, location, state);
     type = getType(config, type, location, id, urlConfig.paramTypes);
