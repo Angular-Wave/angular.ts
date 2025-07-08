@@ -1,6 +1,6 @@
-import { Angular } from "../loader.js";
-import { browserTrigger, wait } from "../shared/test-utils.js";
-import { createInjector } from "./di/injector.js";
+import { Angular } from "../../loader.js";
+import { browserTrigger, wait } from "../../shared/test-utils.js";
+import { createInjector } from "../../core/di/injector.js";
 
 describe("ngOn* event binding", () => {
   let $rootScope, module, injector, $compile;
@@ -19,6 +19,8 @@ describe("ngOn* event binding", () => {
     const element = $compile('<span ng-on-foo="name = name + 3"></span>')(
       $rootScope,
     );
+    expect($rootScope.name).toBe("Misko");
+
     browserTrigger(element, "foo");
     expect($rootScope.name).toBe("Misko3");
   });
