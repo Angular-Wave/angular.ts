@@ -1260,7 +1260,7 @@ function removeElementData(element, name) {
  *
  * @param {Element} element
  * @param {boolean} [createIfNecessary=false]
- * @returns {import("../core/cache/cache.js").ExpandoStore}
+ * @returns {import("../core/template-cache/template-cache.js").ExpandoStore}
  */
 function getExpando(element, createIfNecessary = false) {
   let expandoId = element[EXPANDO];
@@ -36076,7 +36076,7 @@ class Angular {
   constructor() {
     Cache.clear(); // a ensure new instance of angular gets a clean cache
 
-    /** @type {Map<number, import("./core/cache/cache.js").ExpandoStore>} */
+    /** @type {Map<number, import("./core/template-cache/template-cache.js").ExpandoStore>} */
     this.$cache = Cache;
 
     /** @type {import('./core/pubsub/pubsub.js').PubSub} */

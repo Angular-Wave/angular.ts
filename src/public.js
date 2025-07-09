@@ -57,7 +57,7 @@ import {
   AnimateAsyncRunFactoryProvider,
   AnimateRunnerFactoryProvider,
 } from "./animations/animate-runner.js";
-import { TemplateCacheProvider } from "./services/cache/cache.js";
+import { TemplateCacheProvider } from "./services/template-cache/template-cache.js";
 import { ControllerProvider } from "./core/controller/controller.js";
 import { ExceptionHandlerProvider } from "./core/exception-handler.js";
 import { FilterProvider } from "./core/filter/filter.js";

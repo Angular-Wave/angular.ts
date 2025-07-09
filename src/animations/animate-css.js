@@ -1,4 +1,8 @@
-import { getCacheData, removeElementData, setCacheData } from "../shared//dom";
+import {
+  getCacheData,
+  removeElementData,
+  setCacheData,
+} from "../shared/dom.js";
 import { isDefined } from "../shared/utils.js";
 import {
   TRANSITION_DURATION_PROP,

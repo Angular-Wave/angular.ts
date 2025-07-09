@@ -27,7 +27,7 @@ export class TemplateFactoryProvider {
     "$injector",
     /**
      * @param {import("interface.ts").HttpService} $http
-     * @param {import("../services/cache/cache.js").TemplateCache} $templateCache
+     * @param {import("../services/template-cache/interface.ts").TemplateCache} $templateCache
      * @param {any} $templateRequest
      * @param {import("../core/di/internal-injector.js").InjectorService} $injector
      * @returns

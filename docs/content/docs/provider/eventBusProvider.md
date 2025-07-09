@@ -29,3 +29,7 @@ Customize event bus instance.
         eventBusProvider.eventBus = new MyCustomPubsub();
       });
     ```
+
+------
+
+For service description, see [$eventBus](../../../docs/service/eventBus).

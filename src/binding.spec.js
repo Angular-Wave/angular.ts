@@ -1,4 +1,4 @@
-import { createElementFromHTML } from "./shared/dom.js";
+import { createElementFromHTML, dealoc } from "./shared/dom.js";
 import { Angular } from "./loader.js";
 import { browserTrigger, wait } from "./shared/test-utils.js";
 
@@ -36,6 +36,8 @@ describe("binding", () => {
       return content;
     };
   });
+
+  afterEach(() => dealoc(document.getElementById("app")));
 
   it("BindUpdate", () => {
     $compile('<div ng-init="a=123"/>')($rootScope);

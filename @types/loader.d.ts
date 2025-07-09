@@ -1,12 +1,20 @@
 /**
+ * Expando cache for adding properties to DOM nodes with JavaScript.
+ * This used to be an Object in JQLite decorator, but swapped out for a Map
+ * for performance reasons and convenience methods. A proxy is available for
+ * additional logic handling.
+ *
+ * @type {Map<number, import('./interface.ts').ExpandoStore>}
+ */
+export const Cache: Map<number, import("./interface.ts").ExpandoStore>;
+/**
  * Configuration option for AngularTS bootstrap process.
  *
  * @typedef {Object} AngularBootstrapConfig
  * @property {boolean} [strictDi] - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.
  */
 export class Angular {
-  /** @type {Map<number, import("./services/cache/cache.js").ExpandoStore>} */
-  $cache: Map<number, import("./services/cache/cache.js").ExpandoStore>;
+  $cache: Map<number, import("./interface.ts").ExpandoStore>;
   /** @type {import('./services/pubsub/pubsub.js').PubSub} */
   $eventBus: import("./services/pubsub/pubsub.js").PubSub;
   /**

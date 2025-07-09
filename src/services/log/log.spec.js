@@ -1,6 +1,6 @@
 import { createInjector } from "../../core/di/injector.js";
 import { Angular } from "../../loader.js";
-import { wait } from "../../shared/test-utils.js";
+import { dealoc } from "../../shared/dom.js";
 
 describe("$logService", () => {
   let $logService,
@@ -22,6 +22,10 @@ describe("$logService", () => {
     window.console["error"] = (msg) => {
       log.push(msg);
     };
+  });
+
+  afterEach(() => {
+    dealoc(el);
   });
 
   it("should be available as a provider", () => {

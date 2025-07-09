@@ -13,14 +13,14 @@ export class TemplateFactoryProvider {
     | string
     | ((
         $http: any,
-        $templateCache: import("../services/cache/cache.js").TemplateCache,
+        $templateCache: import("../services/template-cache/interface.ts").TemplateCache,
         $templateRequest: any,
         $injector: import("../core/di/internal-injector.js").InjectorService,
       ) => this)
   )[];
   $templateRequest: any;
   $http: any;
-  $templateCache: import("../services/cache/cache.js").TemplateCache;
+  $templateCache: import("../interface.ts").TemplateCache;
   $injector: import("../core/di/internal-injector.js").InjectorService;
   /**
    * Forces the provider to use $http service directly

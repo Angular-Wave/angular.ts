@@ -4,6 +4,8 @@ description: >
   Configuration provider for `$log` service.
 ---
 
+### Description
+
 Instance of [LogProvider](../../../typedoc/classes/LogProvider.html) for configuring how the application logs messages.
 
 ### Properties

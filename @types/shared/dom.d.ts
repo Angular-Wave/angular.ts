@@ -25,12 +25,12 @@ export function removeElementData(element: Element, name?: string): void;
  *
  * @param {Element} element
  * @param {boolean} [createIfNecessary=false]
- * @returns {import("../services/cache/cache.js").ExpandoStore}
+ * @returns {import("../interface.ts").ExpandoStore}
  */
 export function getExpando(
   element: Element,
   createIfNecessary?: boolean,
-): import("../services/cache/cache.js").ExpandoStore;
+): import("../interface.ts").ExpandoStore;
 /**
  * Checks if the string contains HTML tags or entities.
  * @param {string} html

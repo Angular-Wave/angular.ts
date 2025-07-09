@@ -4,6 +4,8 @@ export * from "./services/http/interface.ts";
 export * from "./services/log/interface.ts";
 export * from "./services/log/log.js";
 export * from "./services/pubsub/pubsub.js";
+export * from "./services/template-cache/interface.ts";
+export * from "./services/template-cache/template-cache.js";
 /**
  * A JavaScript expression represented as a string, typically used in interpolation bindings.
  *
@@ -14,6 +16,11 @@ export * from "./services/pubsub/pubsub.js";
  *
  */
 export type Expression = string;
+export type ExpandoStore = {
+  data: {
+    [key: string]: any;
+  };
+};
 /**
  * A dependency-annotated factory array used by AngularTS DI system.
  *

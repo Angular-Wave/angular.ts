@@ -1,5 +1,5 @@
 import { concat, hasOwn, isDefined, isObject } from "./utils.js";
-import { Cache } from "../services/cache/cache.js";
+import { Cache } from "../loader.js";
 
 /** @type {number} */
 let jqId = 1;
@@ -135,7 +135,7 @@ export function removeElementData(element, name) {
  *
  * @param {Element} element
  * @param {boolean} [createIfNecessary=false]
- * @returns {import("../services/cache/cache.js").ExpandoStore}
+ * @returns {import("../interface.ts").ExpandoStore}
  */
 export function getExpando(element, createIfNecessary = false) {
   let expandoId = element[EXPANDO];

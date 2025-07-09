@@ -44,7 +44,7 @@ export class TemplateRequestProvider {
     | string
     | ((
         $exceptionHandler: import("../core/exception-handler.js").ErrorHandler,
-        $templateCache: import("../services/cache/cache.js").TemplateCache,
+        $templateCache: import("../services/template-cache/interface.ts").TemplateCache,
         $http: any,
         $sce: any,
       ) => {
