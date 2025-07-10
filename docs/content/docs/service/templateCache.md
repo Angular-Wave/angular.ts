@@ -1,56 +1,64 @@
 ---
 title: $templateCache
 description: >
-    Map object for storing templates
+  Map object for storing templates
 ---
 
-`$templateCache` is a [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) object created by `$templateCacheProvider`.
+`$templateCache` is a
+[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+object created by `$templateCacheProvider`.
 
-
-The first time a template is used, it is loaded in the template cache for quick retrieval. You can load templates directly into the cache in a script tag, by using $templateRequest, or by consuming the $templateCache service directly.
+The first time a template is used, it is loaded in the template cache for quick
+retrieval. You can load templates directly into the cache in a script tag, by
+using $templateRequest, or by consuming the $templateCache service directly.
 
 Adding via the script tag:
 
-#### Example 
+#### Example
 
+```html
 <script type="text/ng-template" id="templateId.html">
   <p>This is the content of the template</p>
 </script>
+```
 
-Note: the script tag containing the template does not need to be included in the head of the document, but it must be a descendent of the $rootElement (e.g. element with ngApp attribute), otherwise the template will be ignored.
+Note: the script tag containing the template does not need to be included in the
+head of the document, but it must be a descendent of the $rootElement (e.g.
+element with `ng-app` attribute), otherwise the template will be ignored.
 
 Adding via the `$templateCache` service:
 
-#### Example 
+#### Example
 
 ```js
-canst myApp = angular
-  .module('myApp', [])
-  .run(($templateCache) => {
-    $templateCache.set('templateId.html', 'This is the content of the template');
-  });
+const myApp = angular.module('myApp', []).run(($templateCache) => {
+  $templateCache.set('templateId.html', 'This is the content of the template');
+});
 ```
 
-To retrieve the template later, simply use it in your component:
+To retrieve the template, simply use it in your component:
 
 ```js
-  myApp.component('myComponent', {
-    templateUrl: 'templateId.html'
-  });
+myApp.component('myComponent', {
+  templateUrl: 'templateId.html',
+});
 ```
 
 or include it with `ng-include`:
 
-```html 
+```html
 <div ng-include="'templateId.html`"></div>
 ```
 
 or get it via the `$templateCache` service:
 
 ```js
-myApp.controller("Test", class {
-  constructor($templateCache) {
-    const tmp = $templateCache.get('templateId.html')
-  }
-});
+myApp.controller(
+  'Test',
+  class {
+    constructor($templateCache) {
+      const tmp = $templateCache.get('templateId.html');
+    }
+  },
+);
 ```

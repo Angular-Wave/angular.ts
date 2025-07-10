@@ -1,11 +1,13 @@
 <section ng-app="demo">
-    <div ng-controller="DemoCtrl as $ctrl">
-        Milliseconds elapsed since the epoch <b>{{ $ctrl.ms }}</b>
-    </div>
+  <div ng-controller="DemoCtrl as $ctrl">
+    Milliseconds elapsed since the epoch <b>{{ $ctrl.ms }}</b>
+  </div>
 </section>
 
 <!--We are using a regular onclick and `angular` global -->
-<button class="btn btn-dark"
-    onclick="angular.$eventBus.publish('demo', Date.now())">
-    Publish time
+<button
+  class="btn btn-dark"
+  onclick="angular.$eventBus.publish('demo', Date.now())"
+>
+  Publish time
 </button>

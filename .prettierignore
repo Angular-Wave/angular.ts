@@ -4,5 +4,6 @@
 dist
 node_modules
 playwright-report
-docs
+docs/public
+docs/resources
 typedoc

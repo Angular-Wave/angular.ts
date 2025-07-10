@@ -1,7 +1,7 @@
 ---
 title: ng-include
 description: >
-   Include a template
+  Include a template
 ---
 
 ### Description

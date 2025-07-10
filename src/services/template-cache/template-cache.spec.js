@@ -46,4 +46,17 @@ describe("$templateCache", () => {
     await wait();
     expect(el.innerText).toEqual("hello");
   });
+
+  it("can be leader via `text/ng-template`", async () => {
+    el.innerHTML = `
+      <script type="text/ng-template" id="templateId.html">
+        <p>This is the content of the template</p>
+      </script>
+    `;
+    $compile(el)($scope);
+    await wait();
+    expect(templateCache.get("templateId.html").trim()).toEqual(
+      "<p>This is the content of the template</p>",
+    );
+  });
 });

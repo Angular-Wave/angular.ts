@@ -1,5 +1,4 @@
 #td-cover-block-0 {
-  
   h1 {
     font-weight: 900;
 
@@ -7,7 +6,7 @@
       color: var(--bs-secondary);
     }
   }
-  
+
   &::after {
     background-color: white !important; // override dark overlay
   }

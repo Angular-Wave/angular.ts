@@ -1,0 +1,24 @@
+<div ng-app>
+  <!-- With empty node -->
+  <div ng-channel="epoch"></div>
+
+  <!-- With template -->
+  <div ng-channel="user">Hello {{ user.firstName }} {{ user.lastName }}</div>
+</div>
+
+<button
+  class="btn btn-dark"
+  onclick='angular.$eventBus.publish("epoch", Date.now())'
+>
+  Publish epoch
+</button>
+
+<button
+  class="btn btn-dark"
+  onclick='angular.$eventBus.publish("user", {user: {
+        firstName: "John",
+        lastName: "Smith" 
+    }})'
+>
+  Publish name
+</button>

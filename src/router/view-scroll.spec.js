@@ -30,6 +30,7 @@ describe("ngView", () => {
     });
 
     it("should return the promise from the timeout", async () => {
+      dealoc(document.getElementById("app"));
       const promise = $ngViewScroll(elem[0]);
 
       await wait(10);

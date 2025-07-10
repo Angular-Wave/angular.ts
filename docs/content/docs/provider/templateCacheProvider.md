@@ -6,28 +6,30 @@ description: >
 
 ### Description
 
-Initializes cache instancce for `$templateCache` service as an empty [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) object.
+Initializes cache instancce for `$templateCache` service as an empty
+[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+object.
 
 ### Properties
 
-------
+---
 
 #### $templateCacheProvider.cache
 
 Customize cache instance.
 
-- **Type:** [TemplateCache](../../../typedoc/type/TemplateCache.html)  
+- **Type:** [TemplateCache](../../../typedoc/types/TemplateCache.html)
 - **Default:** `Map`
 
 - **Example:**
 
-    ```js
-    angular.module('demo', [])
-      .config(($templateCacheProvider) => {
-        templateCacheProvider.cache.set('test.html', 'hello');
-      });
-    ```
+  ```js
+  angular.module('demo', []).config(($templateCacheProvider) => {
+    templateCacheProvider.cache.set('test.html', 'hello');
+  });
+  ```
 
-------
+---
 
-For service description, see [$templateCache](../../../docs/service/templateCache).
+For service description, see
+[$templateCache](../../../docs/service/templatecache).

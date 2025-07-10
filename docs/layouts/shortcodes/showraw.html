@@ -1,2 +1,1 @@
-{{ $code := readFile (printf "static/%s" (.Get "src")) }}
-{{ $code | safeHTML }}
+{{ $code := readFile (printf "static/%s" (.Get "src")) }} {{ $code | safeHTML }}

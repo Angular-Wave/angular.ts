@@ -115,7 +115,7 @@ params:
   #   from_year: 2018
 
   customCSS:
-    - "css/index.css"
+    - 'css/index.css'
 
   # User interface configuration
   ui:

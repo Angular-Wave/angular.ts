@@ -1,12 +1,10 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from '@playwright/test';
 
-const TEST_URL = "docs/static/examples/eventbus/eventbus-test.html";
+const TEST_URL = 'docs/static/examples/eventbus/eventbus-test.html';
 
-test("eventbus example", async ({ page }) => {
+test('eventbus example', async ({ page }) => {
   await page.goto(TEST_URL);
   await page.content();
- 
-  const valueBefore = await page.locator('b').innerText();
   // Click the publish button
   await page.click('button.btn-dark');
 
