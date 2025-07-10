@@ -14,6 +14,7 @@ describe("input", () => {
   let error = [];
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     error = [];
     window.angular = new Angular();
     window.angular

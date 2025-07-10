@@ -13,6 +13,7 @@ describe("event directives", () => {
   let app = document.getElementById("app");
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     angular = window.angular = new Angular();
     window.angular
       .module("myModule", ["ng"])

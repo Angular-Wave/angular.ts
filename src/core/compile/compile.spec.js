@@ -16,7 +16,7 @@ import {
   extend,
   assert,
 } from "../../shared/utils.js";
-import { Cache } from "../../services/template-cache/template-cache.js";
+import { Cache } from "../../shared/cache.js";
 import { wait } from "../../shared/test-utils.js";
 
 function isUnknownElement(el) {
@@ -76,12 +76,17 @@ describe("$compile", () => {
   let angular;
 
   beforeEach(() => {
-    dealoc(document.getElementById("app"));
+    dealoc(ELEMENT);
     log = [];
     bootstrapDefaultApplication();
   });
 
+  afterEach(() => {
+    dealoc(ELEMENT);
+  });
+
   function bootstrapDefaultApplication() {
+    Cache.clear();
     angular = new Angular();
     module = window.angular.module("test1", ["ng"]);
     defaultModule = window.angular.module("defaultModule", ["ng"]);
@@ -6090,6 +6095,7 @@ describe("$compile", () => {
 
         describe("replace and not exactly one root element", () => {
           beforeEach(() => {
+            dealoc(ELEMENT);
             window.angular = new Angular();
             module = window.angular
               .module("test1", ["ng"])
@@ -6411,10 +6417,11 @@ describe("$compile", () => {
             "my-directive.html",
             '<div id="templateContent">template content</div>',
           );
-          expect(ELEMENT.textContent).toEqual("");
-          await wait();
-          expect(ELEMENT.textContent).toEqual("template content");
         });
+
+        expect(ELEMENT.textContent).toEqual("");
+        await wait();
+        expect(ELEMENT.textContent).toEqual("template content");
       });
     });
 

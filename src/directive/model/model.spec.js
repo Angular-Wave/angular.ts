@@ -17,6 +17,7 @@ describe("ngModel", () => {
 
   beforeEach(() => {
     errors = [];
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular
       .module("myModule", ["ng"])
@@ -1554,6 +1555,7 @@ describe("ngModel", () => {
     let module;
 
     beforeEach(() => {
+      dealoc(document.getElementById("app"));
       window.angular = new Angular();
       module = window.angular
         .module("myModule", [])
@@ -1900,6 +1902,7 @@ describe("data-change", () => {
   let el = document.getElementById("app");
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
   });
 

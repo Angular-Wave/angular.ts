@@ -1,4 +1,5 @@
 import { Angular } from "../../loader.js";
+import { dealoc } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("ngClass", () => {
@@ -8,6 +9,7 @@ describe("ngClass", () => {
   let injector;
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular.module("test", []);
     injector = window.angular.bootstrap(document.getElementById("app"), [

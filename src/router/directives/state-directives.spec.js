@@ -1,5 +1,5 @@
 import { Angular } from "../../loader.js";
-import { createElementFromHTML } from "../../shared/dom.js";
+import { createElementFromHTML, dealoc } from "../../shared/dom.js";
 import { browserTrigger, wait } from "../../shared/test-utils.js";
 
 describe("ngStateRef", () => {
@@ -18,6 +18,7 @@ describe("ngStateRef", () => {
     $urlService;
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     app.innerHTML = "";
     window.location.hash = "";
     window.angular = new Angular();
@@ -663,6 +664,7 @@ describe("ngSrefActive", () => {
     _stateProvider;
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     window.location.hash = "";
     window.angular = new Angular();
     let module = window.angular.module("defaultModule", []);

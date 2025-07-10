@@ -1,10 +1,12 @@
 import { Angular } from "../../loader.js";
+import { dealoc } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("setter", () => {
   let $compile, $rootScope, $parse, observerSpy, $log;
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     angular.module("myModule", []);
     angular

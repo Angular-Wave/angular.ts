@@ -8,6 +8,7 @@ describe("ngProp*", () => {
   let logs = [];
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     logs = [];
     window.angular = new Angular();
     window.angular

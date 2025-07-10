@@ -1,10 +1,12 @@
 import { Angular } from "../loader.js";
+import { dealoc } from "../shared/dom.js";
 
 describe("router services", () => {
   let providers;
   let $injector;
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     window["angular"] = new Angular();
     let module = window["angular"].module("defaultModule", []);
     module.config(

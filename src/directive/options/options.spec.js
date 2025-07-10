@@ -160,6 +160,7 @@ describe("ngOptions", () => {
     errors = [];
     element = document.getElementById("app");
     element.innerHTML = "test";
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular
       .module("myModule", ["ng"])

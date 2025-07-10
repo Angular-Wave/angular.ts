@@ -1,5 +1,6 @@
 import {
   createElementFromHTML,
+  dealoc,
   getCacheData,
   setCacheData,
 } from "../../shared/dom.js";
@@ -17,6 +18,7 @@ describe("ngIf", () => {
     let angular;
 
     beforeEach(function () {
+      dealoc(document.getElementById("app"));
       angular = window.angular = new Angular();
       window.angular.module("test", []);
       injector = window.angular.bootstrap(document.getElementById("app"), [

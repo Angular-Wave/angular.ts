@@ -2,6 +2,8 @@ import { getCacheData, setCacheData } from "../../shared/dom.js";
 import { hasAnimate, isObject, isString } from "../../shared/utils.js";
 
 /**
+ * @param {string} name
+ * @param {boolean|number} selector
  * @returns {() => import("../../interface.ts").Directive}
  */
 function classDirective(name, selector) {
@@ -17,6 +19,7 @@ function classDirective(name, selector) {
       link(scope, element, attr) {
         let classCounts = getCacheData(element, "$classCounts");
         let oldModulo = true;
+        /** @type {string|undefined} */
         let oldClassString;
 
         if (!classCounts) {
@@ -35,6 +38,9 @@ function classDirective(name, selector) {
           ngClassWatchAction(toClassString(val));
         });
 
+        /**
+         * @param {string} classString
+         */
         function addClasses(classString) {
           classString = digestClassCounts(split(classString), 1);
           if (hasAnimate(element)) {
@@ -48,6 +54,9 @@ function classDirective(name, selector) {
           }
         }
 
+        /**
+         * @param {string} classString
+         */
         function removeClasses(classString) {
           classString = digestClassCounts(split(classString), -1);
           if (hasAnimate(element)) {
@@ -61,6 +70,10 @@ function classDirective(name, selector) {
           }
         }
 
+        /**
+         * @param {string} oldClassString
+         * @param {string} newClassString
+         */
         function updateClasses(oldClassString, newClassString) {
           const oldClassArray = split(oldClassString);
           const newClassArray = split(newClassString);
@@ -111,6 +124,9 @@ function classDirective(name, selector) {
           oldModulo = newModulo;
         }
 
+        /**
+         * @param {string} newClassString
+         */
         function ngClassWatchAction(newClassString) {
           if (oldModulo === selector) {
             updateClasses(oldClassString, newClassString);

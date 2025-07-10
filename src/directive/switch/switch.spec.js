@@ -8,6 +8,7 @@ describe("ngSwitch", () => {
   let element;
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular.module("test", []);
     let injector = window.angular.bootstrap(

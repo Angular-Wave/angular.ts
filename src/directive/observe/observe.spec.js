@@ -1,11 +1,12 @@
 import { Angular } from "../../loader.js";
-import { createElementFromHTML } from "../../shared/dom.js";
+import { createElementFromHTML, dealoc } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("observe", () => {
   let $compile, $scope, $rootScope, element, observerSpy;
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     angular.module("myModule", ["ng"]);
     angular

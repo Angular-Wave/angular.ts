@@ -1,5 +1,5 @@
 import { concat, hasOwn, isDefined, isObject } from "./utils.js";
-import { Cache } from "../loader.js";
+import { Cache } from "./cache.js";
 
 /** @type {number} */
 let jqId = 1;

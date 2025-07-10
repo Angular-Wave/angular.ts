@@ -1,9 +1,11 @@
 import { Angular } from "../loader.js";
+import { dealoc } from "../shared/dom.js";
 
 describe("router filters", function () {
   let module, $parse, $state, $rootScope, $location;
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     window.location.hash = "";
     window.angular = new Angular();
   });

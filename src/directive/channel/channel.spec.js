@@ -1,11 +1,13 @@
 import { Angular } from "../../loader.js";
 import { EventBus } from "../../services/pubsub/pubsub.js";
+import { dealoc } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("channel", () => {
   let $compile, $scope, element, unsubscribeSpy;
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     let angular = new Angular();
     angular.module("myModule", ["ng"]);
     angular

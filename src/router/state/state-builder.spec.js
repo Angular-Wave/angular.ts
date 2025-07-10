@@ -1,5 +1,6 @@
 import { StateBuilder } from "./state-builder.js";
 import { Angular } from "../../loader.js";
+import { dealoc } from "../../shared/dom.js";
 
 // TODO refactor this to url service as it is using the provider right now
 describe("StateBuilder", function () {
@@ -8,6 +9,7 @@ describe("StateBuilder", function () {
   let $stateRegistry;
 
   beforeEach(function () {
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular.module("default", []);
     let $injector = window.angular.bootstrap(document.getElementById("app"), [

@@ -14,6 +14,7 @@ describe("templateFactory", () => {
     error;
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular
       .module("defaultModule", [])

@@ -57,6 +57,7 @@ describe("select", () => {
   }
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     errors = [];
     window.angular = new Angular();
     window.angular

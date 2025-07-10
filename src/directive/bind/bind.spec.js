@@ -10,6 +10,7 @@ describe("ng-bind", () => {
   let $sce;
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular
       .module("myModule", ["ng"])
@@ -25,10 +26,6 @@ describe("ng-bind", () => {
         $compile = _$compile_;
         $sce = _$sce_;
       });
-  });
-
-  afterEach(() => {
-    dealoc(element);
   });
 
   describe("ngBind", () => {

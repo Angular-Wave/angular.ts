@@ -12,6 +12,7 @@ import {
   getScope,
   setCacheData,
 } from "./shared/dom.js";
+import { Cache } from "./shared/cache.js";
 import { annotate, createInjector } from "./core/di/injector.js";
 import { NgModule } from "./core/di/ng-module.js";
 import { registerNgModule } from "./public.js";
@@ -24,16 +25,6 @@ const $injectorMinErr = minErr("$injector");
 
 /** @type {Object.<string, NgModule>} */
 const modules = {};
-
-/**
- * Expando cache for adding properties to DOM nodes with JavaScript.
- * This used to be an Object in JQLite decorator, but swapped out for a Map
- * for performance reasons and convenience methods. A proxy is available for
- * additional logic handling.
- *
- * @type {Map<number, import('./interface.ts').ExpandoStore>}
- */
-export const Cache = new Map();
 
 /**
  * Configuration option for AngularTS bootstrap process.

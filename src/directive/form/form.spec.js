@@ -17,6 +17,7 @@ describe("form", () => {
   let injector;
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular
       .module("myModule", ["ng"])
@@ -1403,6 +1404,7 @@ describe("form", () => {
       let dummy = document.getElementById("app");
       doc = '<form name="myForm"></form>';
       dummy.append(doc);
+      dealoc(document.getElementById("app"));
       let angular = new Angular();
       window.angular = new Angular();
       myModule = window.angular.module("myModule", []);

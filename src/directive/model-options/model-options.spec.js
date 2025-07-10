@@ -33,6 +33,7 @@ describe("ngModelOptions", () => {
       let injector;
 
       beforeEach(() => {
+        dealoc(document.getElementById("app"));
         window.angular = new Angular();
         window.angular
           .module("myModule", ["ng"])
@@ -1001,6 +1002,7 @@ describe("ngModelOptions", () => {
       let inputElm, module, $rootScope, angular;
 
       beforeEach(() => {
+        dealoc(document.getElementById("app"));
         window.angular = angular = new Angular();
         module = angular.module("myModule", []).directive("foo", () => ({
           replace: true,

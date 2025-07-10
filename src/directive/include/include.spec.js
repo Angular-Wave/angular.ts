@@ -18,6 +18,7 @@ describe("ngInclude", () => {
 
     beforeEach(() => {
       errorLog = [];
+      dealoc(document.getElementById("app"));
       delete window.angular;
       angular = window.angular = new Angular();
       module = angular

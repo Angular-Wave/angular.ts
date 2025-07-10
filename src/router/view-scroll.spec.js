@@ -20,6 +20,7 @@ describe("ngView", () => {
       });
       elem = [{ scrollIntoView: jasmine.createSpy("scrollIntoView") }];
     });
+
     it("should scroll element into view after timeout", async () => {
       $ngViewScroll(elem[0]);
       expect(elem[0].scrollIntoView).not.toHaveBeenCalled();
@@ -31,7 +32,7 @@ describe("ngView", () => {
     it("should return the promise from the timeout", async () => {
       const promise = $ngViewScroll(elem[0]);
 
-      await wait(100);
+      await wait(10);
       expect(elem[0].scrollIntoView).toHaveBeenCalled();
       expect(promise).toBeDefined();
     });
