@@ -39,10 +39,10 @@ to the element:
 
 ---
 
-### Example
+### Demo
 
 {{< showhtml src="examples/ng-class-odd/ng-class-odd.html" >}}
 
-### Demo
-
 {{< showraw src="examples/ng-class-odd/ng-class-odd.html" >}}
+
+---

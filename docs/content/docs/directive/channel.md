@@ -28,11 +28,9 @@ is destroyed.
 - **Type:** `string`
 - **Description:** The name of the channel to subscribe to using `$eventBus`.
 
-### Example
+### Demo
 
 {{< showhtml src="examples/ng-channel/ng-channel.html" >}}
-
-### Demo
 
 {{< showraw src="examples/ng-channel/ng-channel.html" >}}
 

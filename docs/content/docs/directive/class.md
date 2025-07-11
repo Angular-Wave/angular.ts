@@ -55,10 +55,10 @@ to the element:
   <div ng-class="{ active: isActive, disabled: isDisabled }"></div>
   ```
 
-### Example
+### Demo
 
 {{< showhtml src="examples/ng-class/ng-class.html" >}}
 
-### Demo
-
 {{< showraw src="examples/ng-class/ng-class.html" >}}
+
+---

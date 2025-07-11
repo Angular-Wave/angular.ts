@@ -16,7 +16,7 @@ in the meantime.
 
 AngularTS is buildless, type-safe and reactive JS framework for building
 stuctured web applications at any scale. It continues the legacy of
-[AngularJS](https://angularjs.org/) of providing the best developer experience
+[AngularJS](https://angularjs.org/) by providing the best developer experience
 via immediate productivity without the burden of JS ecosystem tooling. Getting
 started with AngularTS does not even require JavaScript. All you need is a
 little bit of HTML. Below is a canonical example of a counter:
@@ -38,6 +38,7 @@ This code demonstrates the following key AngularTS features:
   attributes--called _directives_. Here, we are using `ng-init` directive to
   initialize our application state and `ng-click` directive to add an event
   handler that changes our state.
+
 - **Template-driven:** AngularTS’s built-in template engine automatically keeps
   the UI in sync with your application state, eliminating the need for manual
   DOM tracking and updates. The `{{count}}` expression above is an example of
@@ -45,11 +46,11 @@ This code demonstrates the following key AngularTS features:
   our UI is updated with the new state.
 
 - **Island-first and zero-cost:** AngularTS creates an application on any HTML
-  tag with `ng-app` attribute, allowing multiple independent applications to
-  live on a single page. The enables AngularTS to work alongside your existing
-  tech stack where the majority of your page is rendered on the server, while
-  AngularTS is isolated to small “islands” (regions of your page) where custom
-  interactivity or personalization is required.
+  tag with `ng-app` attribute, allowing multiple independent applications
+  (modules) to live on a single page. The enables AngularTS to work alongside
+  your existing tech stack where the majority of your page is rendered on the
+  server, while AngularTS is isolated to small “islands” (regions of your page)
+  where custom interactivity or personalization is required.
 
 - **Micro-framework appearance:** With its minimal setup, AngularTS is
   well-suited for quick experiments, LLM-generated code, and learning web

@@ -38,10 +38,10 @@ to the element:
 
 ---
 
-### Example
+### Demo
 
 {{< showhtml src="examples/ng-class-even/ng-class-even.html" >}}
 
-### Demo
-
 {{< showraw src="examples/ng-class-even/ng-class-even.html" >}}
+
+---
