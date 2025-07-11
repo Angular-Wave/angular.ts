@@ -7,7 +7,7 @@ description: >
 ### Description
 
 The `ng-copy` directive allows you to specify custom behavior when an element is
-copyed.
+copied.
 
 ### Directive parameters
 
@@ -19,7 +19,7 @@ copyed.
 - **Description:** Expression to evaluate upon
   [copy](https://developer.mozilla.org/en-US/docs/Web/API/Element/copy_event)
   event.
-  [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent)
+  [ClipboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardEvent)
   object is available as `$event`.
 - **Example:**
 
