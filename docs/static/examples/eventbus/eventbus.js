@@ -1,4 +1,4 @@
-angular.module('demo', []).controller(
+window.angular.module('demo', []).controller(
   'DemoCtrl',
   class {
     static $inject = ['$eventBus', '$scope'];

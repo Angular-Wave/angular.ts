@@ -1,7 +1,7 @@
 ---
 title: ng-class-odd
 description: >
-  Apply CSS classes to odd-indexed elements inside `ngRepeat`.
+  Apply CSS classes to odd-indexed elements inside `ng-repeat`.
 ---
 
 ### Description

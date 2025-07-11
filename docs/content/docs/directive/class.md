@@ -10,10 +10,10 @@ The `ng-class` directive allows dynamically setting CSS classes on an HTML
 element by binding to an expression. The directive supports the following
 expression types:
 
-1. **String** — space-delimited class names.
-2. **Object** — keys as class names and values as booleans. Truthy values add
-   the class.
-3. **Array** — containing strings and/or objects as described above.
+- **String** — space-delimited class names.
+- **Object** — keys as class names and values as booleans. Truthy values add the
+  class.
+- **Array** — containing strings and/or objects as described above.
 
 When the expression changes:
 

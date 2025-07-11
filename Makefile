@@ -40,7 +40,7 @@ typedoc: types pretty
 serve:
 	@npm run serve
 
-prepare-release: test check types jsdoc pretty build
+prepare-release: test check types typedoc pretty build
 
 PLAYWRIGHT_TEST := npx playwright test
 

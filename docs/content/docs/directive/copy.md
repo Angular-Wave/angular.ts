@@ -24,7 +24,7 @@ copyed.
 - **Example:**
 
   ```html
-  <div ng-copy="$ctrl.greet($event)"></div>
+  <div contenteditable="true" ng-copy="$ctrl.greet($event)">Content</div>
   ```
 
 ---
