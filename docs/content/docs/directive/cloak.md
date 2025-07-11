@@ -45,7 +45,7 @@ CSS styles are available in npm distribution:
 />
 ```
 
-or using `style` tag:
+### Example
 
 ```html
 <style>
@@ -63,16 +63,12 @@ or using `style` tag:
     position: absolute;
   }
 </style>
-```
-
-### Example
-
-```html
-<section ng-app ng-clock>These tags are invisible {{ hello }}</section>
+<section ng-app ng-cloak>These tags are invisible {{ hello }}</section>
 ```
 
 ### Demo
 
-<section ng-app ng-clock> These tags are invisible {{ hello }} </section>
+<style>@charset "UTF-8";.ng-cloak,.ng-hide:not(.ng-hide-animate),[data-ng-cloak],[ng-cloak]{display:none!important}.ng-animate-shim{visibility:hidden}.ng-anchor{position:absolute}</style>
+<section ng-app ng-cloak> These tags are invisible {{ hello }} </section>
 
 ---
