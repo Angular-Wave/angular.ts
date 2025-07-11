@@ -1,4 +1,4 @@
-/* Version: 0.7.4 - July 12, 2025 01:05:53 */
+/* Version: 0.7.5 - July 12, 2025 01:24:05 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -3968,7 +3968,7 @@
    */
   const ngEventDirectives = {};
 
-  "click copy cut dblclick focus blur keydown keyup keypress load mousedown mouseenter mouseleave mouseout mouseover mouseup paste submit touchstart touchend touchmove"
+  "click copy cut dblclick focus blur keydown keyup keypress load mousedown mouseenter mouseleave mousemove mouseout mouseover mouseup paste submit touchstart touchend touchmove"
     .split(" ")
     .forEach((eventName) => {
       const directiveName = directiveNormalize(`ng-${eventName}`);
@@ -36094,7 +36094,7 @@
       /**
        * @type {string} `version` from `package.json`
        */
-      this.version = "0.7.4"; //inserted via rollup plugin
+      this.version = "0.7.5"; //inserted via rollup plugin
 
       /** @type {!Array<string|any>} */
       this.bootsrappedModules = [];
