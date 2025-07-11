@@ -8,29 +8,26 @@ export const ngEventDirectives = {};
 
 "click copy cut dblclick focus blur keydown keyup keypress load mouseover mousein mouseout mouseleave paste submit touchstart touchend touchmove"
   .split(" ")
-  .forEach(
-    /** @param { string } eventName */
-    (eventName) => {
-      const directiveName = directiveNormalize(`ng-${eventName}`);
-      ngEventDirectives[directiveName] = [
-        "$parse",
-        "$exceptionHandler",
-        /**
-         * @param {import("../../core/parse/interface.ts").ParseService} $parse
-         * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
-         * @returns
-         */
-        ($parse, $exceptionHandler) => {
-          return createEventDirective(
-            $parse,
-            $exceptionHandler,
-            directiveName,
-            eventName,
-          );
-        },
-      ];
-    },
-  );
+  .forEach((eventName) => {
+    const directiveName = directiveNormalize(`ng-${eventName}`);
+    ngEventDirectives[directiveName] = [
+      "$parse",
+      "$exceptionHandler",
+      /**
+       * @param {import("../../core/parse/interface.ts").ParseService} $parse
+       * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
+       * @returns
+       */
+      ($parse, $exceptionHandler) => {
+        return createEventDirective(
+          $parse,
+          $exceptionHandler,
+          directiveName,
+          eventName,
+        );
+      },
+    ];
+  });
 
 /**
  *

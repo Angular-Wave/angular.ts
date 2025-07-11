@@ -18,7 +18,9 @@ is clicked.
 - **Type:** [Expression](../../../typedoc/types/Expression.html)
 - **Description:** Expression to evaluate upon
   [click](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event)
-  event. Event object is available as `$event`.
+  event.
+  [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent)
+  object is available as `$event`.
 - **Example:**
 
   ```html
