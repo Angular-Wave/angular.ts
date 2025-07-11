@@ -1,4 +1,4 @@
-/* Version: 0.7.3 - July 4, 2025 23:40:52 */
+/* Version: 0.7.4 - July 11, 2025 03:03:27 */
 const VALID_CLASS = "ng-valid";
 const INVALID_CLASS = "ng-invalid";
 const PRISTINE_CLASS = "ng-pristine";
@@ -1131,35 +1131,28 @@ function hasOwn(obj, key) {
 }
 
 /**
- * @typedef {Object} ExpandoStore
- * @property {!Object<string, any>} data
- *
- */
-
-const EXPANDO = "ng";
-
-/**
  * Expando cache for adding properties to DOM nodes with JavaScript.
  * This used to be an Object in JQLite decorator, but swapped out for a Map
  * for performance reasons and convenience methods. A proxy is available for
  * additional logic handling.
  *
- * @type {Map<number, ExpandoStore>}
+ * @type {Map<number, import('../interface.ts').ExpandoStore>}
  */
 const Cache = new Map();
 
-/**
- * Key for storing scope data, attached to an element
- */
-const SCOPE_KEY = "$scope";
+/** @type {number} */
+let jqId = 1;
 
 /**
  * Key for storing isolate scope data, attached to an element
  */
 const ISOLATE_SCOPE_KEY = "$isolateScope";
+const EXPANDO = "ng";
 
-/** @type {number} */
-let jqId = 1;
+/**
+ * Key for storing scope data, attached to an element
+ */
+const SCOPE_KEY = "$scope";
 
 const DASH_LOWERCASE_REGEXP = /-([a-z])/g;
 const UNDERSCORE_LOWERCASE_REGEXP = /_([a-z])/g;
@@ -1260,7 +1253,7 @@ function removeElementData(element, name) {
  *
  * @param {Element} element
  * @param {boolean} [createIfNecessary=false]
- * @returns {import("../core/template-cache/template-cache.js").ExpandoStore}
+ * @returns {import("../interface.ts").ExpandoStore}
  */
 function getExpando(element, createIfNecessary = false) {
   let expandoId = element[EXPANDO];
@@ -1705,6 +1698,9 @@ function extractElementNode$1(element) {
  *   angular.$injectTokens.$animate,
  *   angular.$injectTokens.$templateRequest,
  * ];
+ *
+ * function myDirective($animate, $templateRequest) { ... }
+ *
  * ```
  * @type Readonly<Record<string, string>>
  */
@@ -10615,7 +10611,7 @@ function ngValueDirective() {
 scriptDirective.$inject = ["$templateCache"];
 
 /**
- * @param {import('../../core/cache/cache-factory').TemplateCache} $templateCache
+ * @param {import('../../services/template-cache/interface.ts').TemplateCache} $templateCache
  * @returns {import('../../interface.ts').Directive}
  */
 function scriptDirective($templateCache) {
@@ -11276,6 +11272,8 @@ function ngBindHtmlDirective($parse) {
 }
 
 /**
+ * @param {string} name
+ * @param {boolean|number} selector
  * @returns {() => import("../../interface.ts").Directive}
  */
 function classDirective(name, selector) {
@@ -11291,6 +11289,7 @@ function classDirective(name, selector) {
       link(scope, element, attr) {
         let classCounts = getCacheData(element, "$classCounts");
         let oldModulo = true;
+        /** @type {string|undefined} */
         let oldClassString;
 
         if (!classCounts) {
@@ -11309,6 +11308,9 @@ function classDirective(name, selector) {
           ngClassWatchAction(toClassString(val));
         });
 
+        /**
+         * @param {string} classString
+         */
         function addClasses(classString) {
           classString = digestClassCounts(split(classString), 1);
           if (hasAnimate(element)) {
@@ -11322,6 +11324,9 @@ function classDirective(name, selector) {
           }
         }
 
+        /**
+         * @param {string} classString
+         */
         function removeClasses(classString) {
           classString = digestClassCounts(split(classString), -1);
           if (hasAnimate(element)) {
@@ -11335,6 +11340,10 @@ function classDirective(name, selector) {
           }
         }
 
+        /**
+         * @param {string} oldClassString
+         * @param {string} newClassString
+         */
         function updateClasses(oldClassString, newClassString) {
           const oldClassArray = split(oldClassString);
           const newClassArray = split(newClassString);
@@ -11385,6 +11394,9 @@ function classDirective(name, selector) {
           oldModulo = newModulo;
         }
 
+        /**
+         * @param {string} newClassString
+         */
         function ngClassWatchAction(newClassString) {
           if (oldModulo === selector) {
             updateClasses(oldClassString, newClassString);
@@ -14868,23 +14880,17 @@ class AnimateRunner {
 }
 
 /**
- * A cache for maping template names to their respective content.
- *
- * @typedef {Map<string, string>} TemplateCache
- */
-
-/**
- * Service responsible for providing a cache for templates.
- *
- * @class TemplateCacheProvider
- * @description Provides an instance of a template cache that can be used to store and retrieve template content.
+ * Provides an instance of a cache that can be used to store and retrieve template content.
  */
 class TemplateCacheProvider {
+  constructor() {
+    /** @type {import('./interface.ts').TemplateCache} */
+    this.cache = new Map();
+  }
   /**
-   * @description Returns a new instance of a `TemplateCache`, which is a Map used to store templates.
-   * @returns {TemplateCache} A new instance of the template cache (Map object).
+   * @returns {import('./interface.ts').TemplateCache}
    */
-  $get = () => new Map();
+  $get = () => this.cache;
 }
 
 /**
@@ -14931,7 +14937,7 @@ class TemplateCacheProvider {
  * @see {@link angular.ErrorHandler AngularTS ErrorHandler}
  */
 
-/** @typedef {import('../services/log/log.js').LogService} LogService */
+/** @typedef {import('../services/log/interface.ts').LogService} LogService */
 
 /** @typedef {import("./error-handler.ts").ErrorHandler}  ErrorHandler */
 
@@ -18497,8 +18503,8 @@ function HttpProvider() {
      *
      * @param {*} $browser
      * @param {*} $httpBackend
-     * @param {*} $rootScope
-     * @param {import("../../core/di/internal-injector").InjectorService} $injector
+     * @param {import("../../core/scope/scope.js").Scope} $rootScope
+     * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
      * @param {*} $sce
      * @returns
      */
@@ -18936,9 +18942,9 @@ function HttpProvider() {
             Object.entries(eventHandlers).forEach(([key, eventHandler]) => {
               applyHandlers[key] = function (event) {
                 if (useApplyAsync) {
-                  setTimeout(() => $rootScope.$apply(callEventHandler));
+                  setTimeout(() => callEventHandler());
                 } else {
-                  $rootScope.$apply(callEventHandler);
+                  callEventHandler();
                 }
 
                 function callEventHandler() {
@@ -19046,17 +19052,27 @@ function HttpProvider() {
  * {@link ng.$http $http}.
  *
  */
-function HttpBackendProvider() {
-  this.$get = [
-    "$browser",
-    /**
-     * @param {import('../browser.js').Browser} $browser
-     * @returns
-     */
-    function ($browser) {
-      return createHttpBackend($browser);
-    },
-  ];
+/**
+ * HTTP backend used by the {@link ng.$http service} that delegates to
+ * XMLHttpRequest object and deals with browser incompatibilities.
+ *
+ * You should never need to use this service directly, instead use the higher-level abstractions:
+ * {@link ng.$http $http}.
+ *
+ */
+class HttpBackendProvider {
+  constructor() {
+    this.$get = [
+      "$browser",
+      /**
+       * @param {import('../browser.js').Browser} $browser
+       * @returns
+       */
+      function ($browser) {
+        return createHttpBackend($browser);
+      },
+    ];
+  }
 }
 
 /**
@@ -20190,57 +20206,27 @@ function urlsEqual(a, b) {
   return a === b || urlResolve(a).href === urlResolve(b).href;
 }
 
-///////////////////////////////////////////////////////////////////////////
-// LogService
-// see http://docs.angularjs.org/api/ng/service/$log
-// see http://docs.angularjs.org/api/ng/provider/$logProvider
-///////////////////////////////////////////////////////////////////////////
-
 /**
- * @typedef {(...args: any[]) => void} LogCall
- */
-
-/**
- * @typedef {Object} LogService
- * @property {LogCall} debug - Log a debug messages
- * @property {LogCall} error - Log a error message
- * @property {LogCall} info - Log a info message
- * @property {LogCall} log - Log a general message
- * @property {LogCall} warn - Log a warning message
- */
-
-/**
- * @type {LogService}
- */
-let LogService = {
-  debug: undefined,
-  error: undefined,
-  info: undefined,
-  log: undefined,
-  warn: undefined,
-};
-
-/**
- * @type {LogProvider}
- * Use the `$logProvider` to configure how the application logs messages
+ * Configuration provider for `$log` service
  */
 class LogProvider {
+  /** @private */
   constructor() {
-    this.debug = true;
+    /** @type {boolean} */
+    this.debug = false;
+    /** @private @type {import("./interface.ts").LogServiceFactory | null} */
+    this._override = null;
   }
 
   /**
-   * @param {boolean=} flag enable or disable debug level messages
-   * @returns {*} current value if used as getter or itself (chaining) if used as setter
+   * Override the default {@link LogService} implemenation
+   * @param {import("./interface.ts").LogServiceFactory} fn
    */
-  debugEnabled(flag) {
-    if (typeof flag !== "undefined") {
-      this.debug = flag;
-      return this;
-    }
-    return this.debug;
+  setLogger(fn) {
+    this._override = fn;
   }
 
+  /** @private */
   formatError(arg) {
     if (isError(arg)) {
       if (arg.stack) {
@@ -20255,6 +20241,10 @@ class LogProvider {
     return arg;
   }
 
+  /**
+   * @private
+   * @param {string} type
+   */
   consoleLog(type) {
     const console = window.console || {};
     const logFn = console[type] || console.log || (() => {});
@@ -20265,8 +20255,14 @@ class LogProvider {
     };
   }
 
+  /**
+   * @returns {import("./interface.ts").LogService}
+   */
   $get() {
-    LogService = {
+    if (this._override) {
+      return this._override();
+    }
+    return {
       log: this.consoleLog("log"),
       info: this.consoleLog("info"),
       warn: this.consoleLog("warn"),
@@ -20280,7 +20276,6 @@ class LogProvider {
         };
       })(),
     };
-    return LogService;
   }
 }
 
@@ -21535,7 +21530,7 @@ class TaskTrackerFactoryProvider {
     /**
      * Creates a new `TaskTracker` instance.
      *
-     * @param {import('../services/log/log.js').LogService} log - The logging service.
+     * @param {import('../services/log/interface.ts').LogService} log - The logging service.
      * @returns {TaskTracker} A new `TaskTracker` instance.
      */
     (log) => new TaskTracker(log),
@@ -21550,7 +21545,7 @@ class TaskTrackerFactoryProvider {
  */
 class TaskTracker {
   /**
-   * @param {import('../services/log/log.js').LogService} log - The logging service.
+   * @param {import('../services/log/interface.ts').LogService} log - The logging service.
    */
   constructor(log) {
     /** @private */
@@ -21728,8 +21723,8 @@ function TemplateRequestProvider() {
     /**
      *
      * @param {import('../core/exception-handler.js').ErrorHandler} $exceptionHandler
-     * @param {import('../core/cache/cache-factory.js').TemplateCache} $templateCache
-     * @param {*} $http
+     * @param {import('../services/template-cache/interface.ts').TemplateCache} $templateCache
+     * @param {import("interface.ts").HttpService} $http
      * @param {*} $sce
      * @returns
      */
@@ -27660,12 +27655,15 @@ const isShorthand = (cfg) =>
     Object.prototype.hasOwnProperty.bind(cfg || {}),
   ).length === 0;
 
-let DefType;
-(function (DefType) {
-  DefType[(DefType["PATH"] = 0)] = "PATH";
-  DefType[(DefType["SEARCH"] = 1)] = "SEARCH";
-  DefType[(DefType["CONFIG"] = 2)] = "CONFIG";
-})(DefType || (DefType = {}));
+/**
+ * @private
+ * @enum {number}
+ */
+const DefType = {
+  PATH: 0,
+  SEARCH: 1,
+  CONFIG: 2,
+};
 
 function getParamDeclaration(paramName, location, state) {
   const noReloadOnSearch =
@@ -27678,6 +27676,7 @@ function getParamDeclaration(paramName, location, state) {
   );
   return Object.assign(defaultConfig, paramConfig);
 }
+
 function unwrapShorthand(cfg) {
   cfg = isShorthand(cfg) ? { value: cfg } : cfg;
   getStaticDefaultValue["__cacheable"] = true;
@@ -27687,6 +27686,7 @@ function unwrapShorthand(cfg) {
   const $$fn = isInjectable(cfg.value) ? cfg.value : getStaticDefaultValue;
   return Object.assign(cfg, { $$fn });
 }
+
 function getType(cfg, urlType, location, id, paramTypes) {
   if (cfg.type && urlType && urlType.name !== "string")
     throw new Error(`Param '${id}' has two type configurations.`);
@@ -27711,6 +27711,7 @@ function getType(cfg, urlType, location, id, paramTypes) {
   }
   return cfg.type instanceof ParamType ? cfg.type : paramTypes.type(cfg.type);
 }
+
 /** returns false, true, or the squash value to indicate the "default parameter url squash policy". */
 function getSquashPolicy(config, isOptional, defaultPolicy) {
   const squash = config.squash;
@@ -27721,6 +27722,7 @@ function getSquashPolicy(config, isOptional, defaultPolicy) {
     `Invalid squash policy: '${squash}'. Valid policies: false, true, or arbitrary string`,
   );
 }
+
 function getReplace(config, arrayMode, isOptional, squash) {
   const defaultPolicy = [
     { from: "", to: isOptional || arrayMode ? undefined : "" },
@@ -27734,7 +27736,16 @@ function getReplace(config, arrayMode, isOptional, squash) {
     (item) => configuredKeys.indexOf(item.from) === -1,
   ).concat(replace);
 }
+
 class Param {
+  /**
+   *
+   * @param {*} id
+   * @param {*} type
+   * @param {DefType} location
+   * @param {import("../url/url-config.js").UrlConfigProvider} urlConfig
+   * @param {*} state
+   */
   constructor(id, type, location, urlConfig, state) {
     const config = getParamDeclaration(id, location, state);
     type = getType(config, type, location, id, urlConfig.paramTypes);
@@ -28951,9 +28962,10 @@ class Rejection {
 
 /**
  * Configurable provider for an injectable event bus
- * @implements {ServiceProvider}
+ * @extends {ServiceProvider}
  */
 class PubSubProvider {
+  /** @private */
   constructor() {
     /**
      * @type {PubSub}
@@ -29017,7 +29029,7 @@ class PubSub {
      * representation minimizes the number of object allocations and has been
      * shown to be faster than an array of objects with three key-value pairs or
      * three parallel arrays, especially on IE.) Once a subscription is removed
-     * via {@link #unsubscribe} or {@link #unsubscribeByKey}, the three
+     * via {@link unsubscribe} or {@link unsubscribeByKey}, the three
      * corresponding array elements are deleted, and never reused. This means the
      * total number of subscriptions during the lifetime of the pubsub channel is
      * limited by the maximum length of a JavaScript array to (2^32 - 1) / 3 =
@@ -29047,7 +29059,7 @@ class PubSub {
    * is specified.  Subscribing the same function to the same topic multiple
    * times will result in multiple function invocations while publishing.
    * Returns a subscription key that can be used to unsubscribe the function from
-   * the topic via {@link #unsubscribeByKey}.
+   * the topic via {@link unsubscribeByKey}.
    *
    * @param {string} topic Topic to subscribe to.
    * @param {Function} fn Function to be invoked when a message is published to
@@ -29082,7 +29094,7 @@ class PubSub {
    * method on the given `opt_context` object, or in the global scope if
    * no context is specified, and is then unsubscribed.  Returns a subscription
    * key that can be used to unsubscribe the function from the topic via
-   * {@link #unsubscribeByKey}.
+   * {@link unsubscribeByKey}.
    *
    * @param {string} topic Topic to subscribe to.
    * @param {Function} fn Function to be invoked once and then unsubscribed when
@@ -29155,7 +29167,7 @@ class PubSub {
   }
 
   /**
-   * Removes a subscription based on the key returned by {@link #subscribe}.
+   * Removes a subscription based on the key returned by {@link subscribe}.
    * No-op if no matching subscription is found.  Returns a Boolean indicating
    * whether a subscription was removed.
    *
@@ -32061,8 +32073,8 @@ class TemplateFactoryProvider {
     "$templateRequest",
     "$injector",
     /**
-     * @param {any} $http
-     * @param {import("../core/cache/cache-factory.js").TemplateCache} $templateCache
+     * @param {import("interface.ts").HttpService} $http
+     * @param {import("../services/template-cache/interface.ts").TemplateCache} $templateCache
      * @param {any} $templateRequest
      * @param {import("../core/di/internal-injector.js").InjectorService} $injector
      * @returns
@@ -32161,7 +32173,7 @@ class TemplateFactoryProvider {
     if (url == null) return null;
     if (this._useHttp) {
       return this.$http
-        .get(url, {
+        .get(/** @type {string} */ (url), {
           cache: this.$templateCache,
           headers: { Accept: "text/html" },
         })
@@ -33473,7 +33485,13 @@ class UrlRules {
 }
 
 class ParamFactory {
+  /**
+   * @param {import("../url/url-config.js").UrlConfigProvider} urlServiceConfig
+   */
   constructor(urlServiceConfig) {
+    /**
+     * @type {import("../url/url-config.js").UrlConfigProvider}
+     */
     this.urlServiceConfig = urlServiceConfig;
   }
 
@@ -33527,7 +33545,7 @@ class UrlService {
      * The nested [[UrlConfig]] API to configure the URL and retrieve URL information
      *
      * See: [[UrlConfig]] for details
-     * @type {import("./url-config").UrlConfigProvider}
+     * @type {import("./url-config.js").UrlConfigProvider}
      */
     this.config = urlConfigProvider;
 
@@ -34042,6 +34060,9 @@ function getNavigableBuilder(isRoot) {
   };
 }
 
+/**
+ * @param {import("../params/param-factory.js").ParamFactory} paramFactory
+ */
 function getParamsBuilder(paramFactory) {
   return function (state) {
     const makeConfigParam = (_config, id) =>
@@ -35555,38 +35576,22 @@ function registerControllerCallbacks(
 
 ngChannelDirective.$inject = [$injectTokens.$eventBus];
 /**
- * Dynamically updates an element's content based on events published on a specified channel.
- * If data is sent via `$eventBus` on the specified `ngChannel`, the directive attempts to update the element's content accordingly,
- * either by directly setting the inner HTML or merging the scope's data if the element contains a template.
- *
- * If the element has a template and incoming data is an object, the directive will merge all key/value pairs onto the scope,
- * allowing Angular expressions (`{{ yourModel }}`) to be evaluated and rendered.
- *
- * When the scope is destroyed, the directive automatically unsubscribes from the channel.
- * Example:
- *
- * HTML:
- * <div ng-channel="userChannel">Hello {{ user.firstName }} {{ user.lastName }}</div>
- *
- * JavaScript:
- * angular.$eventBus.publish('userChannel', { user: { firstName: 'John', lastName: 'Smith' } });
- *
- * @param {import("../../core/pubsub/pubsub.js").PubSub} $eventBus
+ * @param {import("../../services/pubsub/pubsub.js").PubSub} $eventBus
  * @returns {import("../../interface.ts").Directive}
  */
 function ngChannelDirective($eventBus) {
   return {
     link: (scope, element, attrs) => {
-      const hasTemplate = element.childNodes.length > 0;
       const channel = attrs["ngChannel"];
+      const hasTemplateContent = element.childNodes.length > 0;
 
-      const key = $eventBus.subscribe(channel, (val) => {
-        if (!hasTemplate) {
-          element.innerHTML = val;
-        } else {
-          if (isObject(val)) {
-            scope.$merge(val);
+      const key = $eventBus.subscribe(channel, (value) => {
+        if (hasTemplateContent) {
+          if (isObject(value)) {
+            scope.$merge(value);
           }
+        } else {
+          element.innerHTML = value;
         }
       });
 
@@ -35600,7 +35605,7 @@ function ngChannelDirective($eventBus) {
 ngSetterDirective.$inject = ["$parse", "$log"];
 /**
  * @param {import('../../core/parse/interface.ts').ParseService} $parse
- * @param {import('../../services/log/log.js').LogService} $log
+ * @param {import('../../services/log/interface.ts').LogService} $log
  * @returns {import('../../interface.ts').Directive}
  */
 function ngSetterDirective($parse, $log) {
@@ -35674,6 +35679,10 @@ const ngGetDirective = defineDirective("get");
 const ngDeleteDirective = defineDirective("delete");
 const ngPostDirective = defineDirective("post");
 const ngPutDirective = defineDirective("put");
+
+/**
+ * @typedef {"click" | "change" | "submit"} EventType
+ */
 
 /**
  * Selects DOM event to listen for based on the element type.
@@ -35783,9 +35792,9 @@ function handleSwapResponse(html, swap, target, scope, $compile) {
  */
 function createHttpDirective(method, attrName) {
   /**
-   * @param {{ [key: string]: Function }} $http
+   * @param {import("interface.ts").HttpService} $http
    * @param {import("../../core/compile/compile.js").CompileFn} $compile
-   * @param {import("../../services/log/log.js").LogService} $log
+   * @param {import("../../services/log/interface.ts").LogService} $log
    * @returns {import('../../interface.ts').Directive}
    */
   return function ($http, $compile, $log) {
@@ -36074,18 +36083,15 @@ const modules = {};
 
 class Angular {
   constructor() {
-    Cache.clear(); // a ensure new instance of angular gets a clean cache
-
-    /** @type {Map<number, import("./core/template-cache/template-cache.js").ExpandoStore>} */
     this.$cache = Cache;
 
-    /** @type {import('./core/pubsub/pubsub.js').PubSub} */
+    /** @type {import('./services/pubsub/pubsub.js').PubSub} */
     this.$eventBus = EventBus;
 
     /**
      * @type {string} `version` from `package.json`
      */
-    this.version = "0.7.3"; //inserted via rollup plugin
+    this.version = "0.7.4"; //inserted via rollup plugin
 
     /** @type {!Array<string|any>} */
     this.bootsrappedModules = [];
