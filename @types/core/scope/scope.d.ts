@@ -150,7 +150,6 @@ export class Scope {
     $destroy: any;
     $eval: any;
     $apply: any;
-    $evalAsync: any;
     $postUpdate: any;
     $isRoot: any;
     $target: any;
@@ -185,7 +184,6 @@ export class Scope {
   $newIsolate(instance: any): any;
   $transcluded(parentInstance: any): any;
   $eval(expr: any, locals: any): any;
-  $evalAsync(expr: any, locals: any): Promise<any>;
   /**
    * @param {Object} newTarget
    */

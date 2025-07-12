@@ -209,7 +209,7 @@ describe("ngSwitch", () => {
 
     scope.$watch("value", () => {
       if (scope.value === "bar") {
-        scope.$evalAsync(() => {
+        Promise.resolve().then(() => {
           scope.value = "baz";
         });
       }

@@ -128,7 +128,7 @@ export class AnchorScrollProvider {
           // skip the initial scroll if $location.hash is empty
           if (newVal === oldVal && newVal === "") return;
 
-          const action = () => $rootScope.$evalAsync(scroll);
+          const action = () => Promise.resolve().then(scroll);
           if (document.readyState === "complete") {
             // Force the action to be run async for consistent behavior
             // from the action's point of view

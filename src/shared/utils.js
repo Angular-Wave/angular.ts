@@ -232,7 +232,7 @@ export function isWindow(obj) {
  * @returns {boolean}
  */
 export function isScope(obj) {
-  return obj && obj.$evalAsync && obj.$watch;
+  return obj && obj.$watch;
 }
 
 /**

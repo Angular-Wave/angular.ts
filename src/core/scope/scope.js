@@ -467,7 +467,6 @@ export class Scope {
       $destroy: this.$destroy.bind(this),
       $eval: this.$eval.bind(this),
       $apply: this.$apply.bind(this),
-      $evalAsync: this.$evalAsync.bind(this),
       $postUpdate: this.$postUpdate.bind(this),
       $isRoot: this.#isRoot.bind(this),
       $target: target,
@@ -975,10 +974,6 @@ export class Scope {
     }
 
     return res;
-  }
-
-  async $evalAsync(expr, locals) {
-    return await this.$eval(expr, locals);
   }
 
   /**

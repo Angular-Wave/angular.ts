@@ -103,7 +103,7 @@ class NgMessageCtrl {
   reRender() {
     if (!this.renderLater) {
       this.renderLater = true;
-      this.$scope.$evalAsync(() => {
+      Promise.resolve().then(() => {
         if (this.renderLater && this.cachedCollection) {
           this.render(this.cachedCollection);
         }

@@ -16,6 +16,9 @@ is clicked.
 #### `ng-click`
 
 - **Type:** [Expression](../../../typedoc/types/Expression.html)
+- **Restrict:** `A`
+- **Element:** ANY
+- **Priority:** `0`
 - **Description:** Expression to evaluate upon
   [click](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event)
   event.

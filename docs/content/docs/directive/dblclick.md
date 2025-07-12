@@ -16,6 +16,9 @@ element is double clicked.
 #### `ng-dblclick`
 
 - **Type:** [Expression](../../../typedoc/types/Expression.html)
+- **Restrict:** `A`
+- **Element:** ANY
+- **Priority:** `0`
 - **Description:** Expression to evaluate upon
   [dblclick](https://developer.mozilla.org/en-US/docs/Web/API/Element/dblclick_event)
   event.

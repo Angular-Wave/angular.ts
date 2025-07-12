@@ -6,7 +6,7 @@ import { directiveNormalize } from "../../shared/utils.js";
  */
 export const ngEventDirectives = {};
 
-"click copy cut dblclick focus blur keydown keyup keypress load mousedown mouseenter mouseleave mousemove mouseout mouseover mouseup paste submit touchstart touchend touchmove"
+"click copy cut dblclick focus blur keydown keyup load mousedown mouseenter mouseleave mousemove mouseout mouseover mouseup paste submit touchstart touchend touchmove"
   .split(" ")
   .forEach((eventName) => {
     const directiveName = directiveNormalize(`ng-${eventName}`);

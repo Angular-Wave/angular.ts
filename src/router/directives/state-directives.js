@@ -382,12 +382,10 @@ export function $StateRefActiveDirective(
         const removeClasses = allClasses.filter(
           (cls) => !addClasses.includes(cls),
         );
-        $scope.$evalAsync(() => {
-          addClasses.forEach((className) => $element.classList.add(className));
-          removeClasses.forEach((className) =>
-            $element.classList.remove(className),
-          );
-        });
+        addClasses.forEach((className) => $element.classList.add(className));
+        removeClasses.forEach((className) =>
+          $element.classList.remove(className),
+        );
       }
       update();
     },

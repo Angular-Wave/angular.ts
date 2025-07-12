@@ -775,7 +775,7 @@ export class LocationProvider {
           return;
         }
 
-        $rootScope.$evalAsync(() => {
+        Promise.resolve().then(() => {
           const oldUrl = $location.absUrl();
           const oldState = $location.$$state;
           let defaultPrevented;
