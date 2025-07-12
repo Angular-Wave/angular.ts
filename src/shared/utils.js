@@ -1193,3 +1193,21 @@ export function isObjectEmpty(obj) {
 export function hasOwn(obj, key) {
   return Object.prototype.hasOwnProperty.call(obj, key);
 }
+
+/**
+ * Wraps a function so it can only be called once.
+ * Subsequent calls do nothing and return undefined.
+ *
+ * @param {Function} fn - The function to wrap.
+ * @returns {Function} A new function that will call `fn` only once.
+ */
+export function callBackOnce(fn) {
+  let called = false;
+
+  return function (...args) {
+    if (!called) {
+      called = true;
+      return fn.apply(this, args);
+    }
+  };
+}

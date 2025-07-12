@@ -525,6 +525,14 @@ export function isObjectEmpty(obj: any | null | undefined): boolean;
  * hasOwn({}, 'bar'); // false
  */
 export function hasOwn(obj: object, key: string | number | symbol): boolean;
+/**
+ * Wraps a function so it can only be called once.
+ * Subsequent calls do nothing and return undefined.
+ *
+ * @param {Function} fn - The function to wrap.
+ * @returns {Function} A new function that will call `fn` only once.
+ */
+export function callBackOnce(fn: Function): Function;
 export const isProxySymbol: unique symbol;
 export const ngAttrPrefixes: string[];
 /**
