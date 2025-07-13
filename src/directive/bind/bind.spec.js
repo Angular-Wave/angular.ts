@@ -106,6 +106,19 @@ describe("ng-bind", () => {
         $rootScope.value.$target.toString(),
       );
     });
+
+    it("should support `data-lazy` attribute", async () => {
+      $rootScope.value = 0;
+      await wait();
+      element = $compile('<div ng-bind="value" data-lazy="true">Content</div>')(
+        $rootScope,
+      );
+      expect(element.textContent).toEqual("Content");
+
+      $rootScope.value = 2;
+      await wait();
+      expect(element.textContent).toEqual("2");
+    });
   });
 
   describe("ngBindTemplate", () => {

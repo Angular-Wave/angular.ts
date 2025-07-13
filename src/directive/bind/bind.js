@@ -1,4 +1,10 @@
-import { isUndefined, stringify, isNull, isProxy } from "../../shared/utils.js";
+import {
+  isUndefined,
+  stringify,
+  isNull,
+  isProxy,
+  isDefined,
+} from "../../shared/utils.js";
 import { $injectTokens } from "../../injection-tokens.js";
 
 /**
@@ -12,9 +18,15 @@ export function ngBindDirective() {
      * @param {import('../../core/compile/attributes.js').Attributes} attr
      */
     link(scope, element, attr) {
-      scope.$watch(attr["ngBind"], (value) => {
-        element.textContent = stringify(isProxy(value) ? value.$target : value);
-      });
+      scope.$watch(
+        attr["ngBind"],
+        (value) => {
+          element.textContent = stringify(
+            isProxy(value) ? value.$target : value,
+          );
+        },
+        isDefined(attr["lazy"]),
+      );
     },
   };
 }
