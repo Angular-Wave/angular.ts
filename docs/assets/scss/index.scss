@@ -10,4 +10,16 @@
   &::after {
     background-color: white !important; // override dark overlay
   }
+
+  #download {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: baseline;
+
+    #version {
+      font-weight: 600;
+      margin-right: 2rem;
+    }
+  }
 }

@@ -1,4 +1,4 @@
-/* Version: 0.7.5 - July 12, 2025 01:24:05 */
+/* Version: 0.7.5 - July 13, 2025 16:18:41 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -247,7 +247,7 @@
    * @returns {boolean}
    */
   function isScope(obj) {
-    return obj && obj.$evalAsync && obj.$watch;
+    return obj && obj.$watch;
   }
 
   /**
@@ -1134,6 +1134,24 @@
    */
   function hasOwn(obj, key) {
     return Object.prototype.hasOwnProperty.call(obj, key);
+  }
+
+  /**
+   * Wraps a function so it can only be called once.
+   * Subsequent calls do nothing and return undefined.
+   *
+   * @param {Function} fn - The function to wrap.
+   * @returns {Function} A new function that will call `fn` only once.
+   */
+  function callBackOnce(fn) {
+    let called = false;
+
+    return function (...args) {
+      if (!called) {
+        called = true;
+        return fn.apply(this, args);
+      }
+    };
   }
 
   /**
@@ -3968,7 +3986,7 @@
    */
   const ngEventDirectives = {};
 
-  "click copy cut dblclick focus blur keydown keyup keypress load mousedown mouseenter mouseleave mousemove mouseout mouseover mouseup paste submit touchstart touchend touchmove"
+  "click copy cut dblclick focus blur keydown keyup load mousedown mouseenter mouseleave mousemove mouseout mouseover mouseup paste submit touchstart touchend touchmove"
     .split(" ")
     .forEach((eventName) => {
       const directiveName = directiveNormalize(`ng-${eventName}`);
@@ -11222,9 +11240,15 @@
        * @param {import('../../core/compile/attributes.js').Attributes} attr
        */
       link(scope, element, attr) {
-        scope.$watch(attr["ngBind"], (value) => {
-          element.textContent = stringify$1(isProxy(value) ? value.$target : value);
-        });
+        scope.$watch(
+          attr["ngBind"],
+          (value) => {
+            element.textContent = stringify$1(
+              isProxy(value) ? value.$target : value,
+            );
+          },
+          isDefined(attr["lazy"]),
+        );
       },
     };
   }
@@ -11951,7 +11975,7 @@
       transclude: "element",
       priority: 1000,
       terminal: true,
-      compile: (_$element, $attr) => {
+      compile: ($element, $attr) => {
         const expression = $attr["ngRepeat"];
         const hasAnimate = !!$attr["animate"];
 
@@ -11997,6 +12021,14 @@
           );
         }
 
+        const swap = callBackOnce(() => {
+          if (isDefined($attr["lazy"]) && isDefined($attr["swap"])) {
+            document
+              .querySelectorAll($attr["swap"])
+              .forEach((x) => removeElement(x));
+          }
+        });
+
         return function ngRepeatLink($scope, $element, $attr, ctrl, $transclude) {
           // Store a list of elements from previous run. This is a hash where key is the item from the
           // iterator, and the value is objects with following properties.
@@ -12008,174 +12040,181 @@
           // hasOwnProperty.
           let lastBlockMap = Object.create(null);
           // watch props
-          $scope.$watch(rhs, (collection) => {
-            let index,
-              length,
-              previousNode = $element, // node that cloned nodes should be inserted after
-              // initialized to the comment node anchor
-              nextNode;
-            const // Same as lastBlockMap but it has the current state. It will become the
-              // lastBlockMap on the next iteration.
-              nextBlockMap = Object.create(null);
-            let collectionLength,
-              key,
-              value, // key/value of iteration
-              trackById,
-              trackByIdFn,
-              collectionKeys,
-              block, // last object information {scope, element, id}
-              nextBlockOrder,
-              elementsToRemove;
+          $scope.$watch(
+            rhs,
+            (collection) => {
+              swap();
+              let index,
+                length,
+                previousNode = $element, // node that cloned nodes should be inserted after
+                // initialized to the comment node anchor
+                nextNode;
+              const // Same as lastBlockMap but it has the current state. It will become the
+                // lastBlockMap on the next iteration.
+                nextBlockMap = Object.create(null);
+              let collectionLength,
+                key,
+                value, // key/value of iteration
+                trackById,
+                trackByIdFn,
+                collectionKeys,
+                block, // last object information {scope, element, id}
+                nextBlockOrder,
+                elementsToRemove;
 
-            if (aliasAs) {
-              $scope[aliasAs] = collection;
-            }
+              if (aliasAs) {
+                $scope[aliasAs] = collection;
+              }
 
-            if (isArrayLike(collection)) {
-              collectionKeys = collection;
-              trackByIdFn = trackByIdArrayFn;
-            } else {
-              trackByIdFn = trackByIdObjFn;
-              // if object, extract keys, in enumeration order, unsorted
-              collectionKeys = [];
-              for (const itemKey in collection) {
-                if (hasOwn(collection, itemKey) && itemKey.charAt(0) !== "$") {
-                  collectionKeys.push(itemKey);
+              if (isArrayLike(collection)) {
+                collectionKeys = collection;
+                trackByIdFn = trackByIdArrayFn;
+              } else {
+                trackByIdFn = trackByIdObjFn;
+                // if object, extract keys, in enumeration order, unsorted
+                collectionKeys = [];
+                for (const itemKey in collection) {
+                  if (hasOwn(collection, itemKey) && itemKey.charAt(0) !== "$") {
+                    collectionKeys.push(itemKey);
+                  }
                 }
               }
-            }
 
-            collectionLength = collectionKeys.length;
-            nextBlockOrder = new Array(collectionLength);
+              collectionLength = collectionKeys.length;
+              nextBlockOrder = new Array(collectionLength);
 
-            // locate existing items
-            for (index = 0; index < collectionLength; index++) {
-              key = collection === collectionKeys ? index : collectionKeys[index];
-              value = collection[key];
-              trackById = trackByIdFn($scope, key, value);
-              if (lastBlockMap[trackById]) {
-                // found previously seen block
-                block = lastBlockMap[trackById];
-                delete lastBlockMap[trackById];
-                nextBlockMap[trackById] = block;
-                nextBlockOrder[index] = block;
-              } else if (nextBlockMap[trackById]) {
-                // if collision detected. restore lastBlockMap and throw an error
-                Object.values(nextBlockOrder).forEach((block) => {
-                  if (block && block.scope) lastBlockMap[block.id] = block;
-                });
-                throw ngRepeatMinErr(
-                  "dupes",
-                  "Duplicates keys in a repeater are not allowed. Repeater: {0}, Duplicate key: {1} for value: {2}",
-                  expression,
-                  trackById,
-                  value,
-                );
-              } else {
-                // new never before seen block
-                nextBlockOrder[index] = {
-                  id: trackById,
-                  scope: undefined,
-                  clone: undefined,
-                };
-                nextBlockMap[trackById] = true;
-              }
-            }
-
-            // remove leftover items
-            for (let blockKey in lastBlockMap) {
-              block = lastBlockMap[blockKey];
-              elementsToRemove = block.clone;
-              if (hasAnimate) {
-                $animate.leave(elementsToRemove);
-              } else {
-                elementsToRemove.remove();
-              }
-              if (elementsToRemove.parentNode) {
-                // if the element was not removed yet because of pending animation, mark it as deleted
-                // so that we can ignore it later
-                for (
-                  index = 0, length = elementsToRemove.length;
-                  index < length;
-                  index++
-                ) {
-                  elementsToRemove[index][NG_REMOVED] = true;
+              // locate existing items
+              for (index = 0; index < collectionLength; index++) {
+                key =
+                  collection === collectionKeys ? index : collectionKeys[index];
+                value = collection[key];
+                trackById = trackByIdFn($scope, key, value);
+                if (lastBlockMap[trackById]) {
+                  // found previously seen block
+                  block = lastBlockMap[trackById];
+                  delete lastBlockMap[trackById];
+                  nextBlockMap[trackById] = block;
+                  nextBlockOrder[index] = block;
+                } else if (nextBlockMap[trackById]) {
+                  // if collision detected. restore lastBlockMap and throw an error
+                  Object.values(nextBlockOrder).forEach((block) => {
+                    if (block && block.scope) lastBlockMap[block.id] = block;
+                  });
+                  throw ngRepeatMinErr(
+                    "dupes",
+                    "Duplicates keys in a repeater are not allowed. Repeater: {0}, Duplicate key: {1} for value: {2}",
+                    expression,
+                    trackById,
+                    value,
+                  );
+                } else {
+                  // new never before seen block
+                  nextBlockOrder[index] = {
+                    id: trackById,
+                    scope: undefined,
+                    clone: undefined,
+                  };
+                  nextBlockMap[trackById] = true;
                 }
               }
-              block.scope.$destroy();
-            }
 
-            for (index = 0; index < collectionLength; index++) {
-              key = collection === collectionKeys ? index : collectionKeys[index];
-              value = collection[key];
-              block = nextBlockOrder[index];
-
-              if (block.scope) {
-                // if we have already seen this object, then we need to reuse the
-                // associated scope/element
-
-                nextNode = previousNode;
-
-                // skip nodes that are already pending removal via leave animation
-                do {
-                  nextNode = nextNode.nextSibling;
-                } while (nextNode && nextNode[NG_REMOVED]);
-
-                if (getBlockStart(block) !== nextNode) {
-                  // existing item which got moved
-                  $animate.move(getBlockNodes(block.clone), null, previousNode);
+              // remove leftover items
+              for (let blockKey in lastBlockMap) {
+                block = lastBlockMap[blockKey];
+                elementsToRemove = block.clone;
+                if (hasAnimate) {
+                  $animate.leave(elementsToRemove);
+                } else {
+                  elementsToRemove.remove();
                 }
-                previousNode = getBlockEnd(block);
-                updateScope(
-                  block.scope,
-                  index,
-                  valueIdentifier,
-                  value,
-                  keyIdentifier,
-                  key,
-                  collectionLength,
-                );
-              } else {
-                // new item which we don't know about
-                $transclude(
-                  /**
-                   * Clone attach function
-                   * @param {Array<NodeList>} clone
-                   * @param {import("../../core/scope/scope.js").Scope} scope
-                   */
+                if (elementsToRemove.parentNode) {
+                  // if the element was not removed yet because of pending animation, mark it as deleted
+                  // so that we can ignore it later
+                  for (
+                    index = 0, length = elementsToRemove.length;
+                    index < length;
+                    index++
+                  ) {
+                    elementsToRemove[index][NG_REMOVED] = true;
+                  }
+                }
+                block.scope.$destroy();
+              }
 
-                  (clone, scope) => {
-                    block.scope = scope;
-                    const endNode = clone;
-                    if (hasAnimate) {
-                      $animate.enter(clone, null, previousNode);
-                    } else {
+              for (index = 0; index < collectionLength; index++) {
+                key =
+                  collection === collectionKeys ? index : collectionKeys[index];
+                value = collection[key];
+                block = nextBlockOrder[index];
+
+                if (block.scope) {
+                  // if we have already seen this object, then we need to reuse the
+                  // associated scope/element
+
+                  nextNode = previousNode;
+
+                  // skip nodes that are already pending removal via leave animation
+                  do {
+                    nextNode = nextNode.nextSibling;
+                  } while (nextNode && nextNode[NG_REMOVED]);
+
+                  if (getBlockStart(block) !== nextNode) {
+                    // existing item which got moved
+                    $animate.move(getBlockNodes(block.clone), null, previousNode);
+                  }
+                  previousNode = getBlockEnd(block);
+                  updateScope(
+                    block.scope,
+                    index,
+                    valueIdentifier,
+                    value,
+                    keyIdentifier,
+                    key,
+                    collectionLength,
+                  );
+                } else {
+                  // new item which we don't know about
+                  $transclude(
+                    /**
+                     * Clone attach function
+                     * @param {Array<NodeList>} clone
+                     * @param {import("../../core/scope/scope.js").Scope} scope
+                     */
+
+                    (clone, scope) => {
+                      block.scope = scope;
+                      const endNode = clone;
+                      if (hasAnimate) {
+                        $animate.enter(clone, null, previousNode);
+                      } else {
+                        // @ts-ignore
+                        previousNode.after(clone);
+                      }
+
                       // @ts-ignore
-                      previousNode.after(clone);
-                    }
-
-                    // @ts-ignore
-                    previousNode = endNode;
-                    // Note: We only need the first/last node of the cloned nodes.
-                    // However, we need to keep the reference to the dom wrapper as it might be changed later
-                    // by a directive with templateUrl when its template arrives.
-                    block.clone = clone;
-                    nextBlockMap[block.id] = block;
-                    updateScope(
-                      block.scope,
-                      index,
-                      valueIdentifier,
-                      value,
-                      keyIdentifier,
-                      key,
-                      collectionLength,
-                    );
-                  },
-                );
+                      previousNode = endNode;
+                      // Note: We only need the first/last node of the cloned nodes.
+                      // However, we need to keep the reference to the dom wrapper as it might be changed later
+                      // by a directive with templateUrl when its template arrives.
+                      block.clone = clone;
+                      nextBlockMap[block.id] = block;
+                      updateScope(
+                        block.scope,
+                        index,
+                        valueIdentifier,
+                        value,
+                        keyIdentifier,
+                        key,
+                        collectionLength,
+                      );
+                    },
+                  );
+                }
               }
-            }
-            lastBlockMap = nextBlockMap;
-          });
+              lastBlockMap = nextBlockMap;
+            },
+            isDefined($attr["lazy"]),
+          );
         };
       },
     };
@@ -13559,7 +13598,7 @@
             // skip the initial scroll if $location.hash is empty
             if (newVal === oldVal && newVal === "") return;
 
-            const action = () => $rootScope.$evalAsync(scroll);
+            const action = () => Promise.resolve().then(scroll);
             if (document.readyState === "complete") {
               // Force the action to be run async for consistent behavior
               // from the action's point of view
@@ -20001,7 +20040,7 @@
             return;
           }
 
-          $rootScope.$evalAsync(() => {
+          Promise.resolve().then(() => {
             const oldUrl = $location.absUrl();
             const oldState = $location.$$state;
             let defaultPrevented;
@@ -20729,7 +20768,6 @@
         $destroy: this.$destroy.bind(this),
         $eval: this.$eval.bind(this),
         $apply: this.$apply.bind(this),
-        $evalAsync: this.$evalAsync.bind(this),
         $postUpdate: this.$postUpdate.bind(this),
         $isRoot: this.#isRoot.bind(this),
         $target: target,
@@ -21233,10 +21271,6 @@
       }
 
       return res;
-    }
-
-    async $evalAsync(expr, locals) {
-      return await this.$eval(expr, locals);
     }
 
     /**
@@ -21981,7 +22015,7 @@
     reRender() {
       if (!this.renderLater) {
         this.renderLater = true;
-        this.$scope.$evalAsync(() => {
+        Promise.resolve().then(() => {
           if (this.renderLater && this.cachedCollection) {
             this.render(this.cachedCollection);
           }
@@ -35096,12 +35130,10 @@
           const removeClasses = allClasses.filter(
             (cls) => !addClasses.includes(cls),
           );
-          $scope.$evalAsync(() => {
-            addClasses.forEach((className) => $element.classList.add(className));
-            removeClasses.forEach((className) =>
-              $element.classList.remove(className),
-            );
-          });
+          addClasses.forEach((className) => $element.classList.add(className));
+          removeClasses.forEach((className) =>
+            $element.classList.remove(className),
+          );
         }
         update();
       },
@@ -35609,7 +35641,7 @@
   /**
    * @param {import('../../core/parse/interface.ts').ParseService} $parse
    * @param {import('../../services/log/interface.ts').LogService} $log
-   * @returns {import('../../interface.ts').Directive}
+   * @returns {import('interface.ts').Directive}
    */
   function ngSetterDirective($parse, $log) {
     return {
