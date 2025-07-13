@@ -3,7 +3,7 @@
   <label>Enter name: <input type="text" ng-model="name" /></label><br />
   Hello <span ng-bind="name">I am never displayed</span>!
 
-  <!-- Lazy bind -->
+  <!-- Lazy bind with short-hand `lazy` -->
   <button ng-click="name1 = name">Sync</button>
-  <span ng-bind="name1" data-lazy="true">I am server content</span>!
+  <span ng-bind="name1" lazy>I am server content</span>!
 </section>

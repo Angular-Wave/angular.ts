@@ -20,10 +20,10 @@ user while the page is loading.
 
 An alternative solution to this problem would be using the `ng-cloak` directive.
 
-`ng-bind` can be modified with a `data-lazy` data attribute, which will delay
-update of element content until model is changed. This is useful for rendering
-server-generated content, while keeping the UI dynamic. In other frameworks,
-this technieque is known as
+`ng-bind` can be modified with a `data-lazy` data attribute (or shorthand `lazy`
+attribute), which will delay update of element content until model is changed.
+This is useful for rendering server-generated content, while keeping the UI
+dynamic. In other frameworks, this technieque is known as
 [hydration](<https://en.wikipedia.org/wiki/Hydration_(web_development)>).
 
 ### Directive parameters
@@ -51,17 +51,19 @@ this technieque is known as
 
 #### `data-lazy`
 
-- **Type:** `boolean`
+- **Type:** N/A
 - **Description:** Apply expression once the bound model changes.
 - **Example:**
 
   ```html
-  <div ng-bind="name" data-lazy="true"></div>
+  <div ng-bind="name" data-lazy></div>
+  <!-- or -->
+  <div ng-bind="name" lazy></div>
   ```
 
 ---
 
-#### Demo
+### Demo
 
 {{< showhtml src="examples/ng-bind/ng-bind.html" >}}
 
