@@ -323,7 +323,6 @@ export function createDateInputType(type, regexp, parseDate) {
     element,
     attr,
     ctrl,
-    $browser,
     $filter,
     $parse,
   ) {
@@ -610,15 +609,7 @@ export function isValidForStep(viewValue, stepBase, step) {
   return (value - stepBase) % step === 0;
 }
 
-export function numberInputType(
-  scope,
-  element,
-  attr,
-  ctrl,
-  $browser,
-  $filter,
-  $parse,
-) {
+export function numberInputType(scope, element, attr, ctrl, $filter, $parse) {
   badInputChecker(scope, element, attr, ctrl, "number");
   numberFormatterParser(ctrl);
   baseInputType(scope, element, attr, ctrl);
@@ -934,15 +925,7 @@ function parseConstantExpr($parse, context, name, expression, fallback) {
   return fallback;
 }
 
-function checkboxInputType(
-  scope,
-  element,
-  attr,
-  ctrl,
-  $browser,
-  $filter,
-  $parse,
-) {
+function checkboxInputType(scope, element, attr, ctrl, $filter, $parse) {
   const trueValue = parseConstantExpr(
     $parse,
     scope,
@@ -983,15 +966,14 @@ function checkboxInputType(
 /**
  * @returns {import('../../interface.ts').Directive}
  */
-inputDirective.$inject = ["$browser", "$filter", "$parse"];
+inputDirective.$inject = ["$filter", "$parse"];
 
 /**
- * @param {import('../../services/browser/browser.js').Browser} $browser
  * @param {*} $filter
  * @param {*} $parse
  * @returns
  */
-export function inputDirective($browser, $filter, $parse) {
+export function inputDirective($filter, $parse) {
   return {
     restrict: "E",
     require: ["?ngModel"],
@@ -1003,7 +985,6 @@ export function inputDirective($browser, $filter, $parse) {
             element,
             attr,
             ctrls[0],
-            $browser,
             $filter,
             $parse,
           );

@@ -12,7 +12,6 @@ export function createDateInputType(
   element: any,
   attr: any,
   ctrl: any,
-  $browser: any,
   $filter: any,
   $parse: any,
 ) => void;
@@ -36,7 +35,6 @@ export function numberInputType(
   element: any,
   attr: any,
   ctrl: any,
-  $browser: any,
   $filter: any,
   $parse: any,
 ): void;
@@ -47,13 +45,11 @@ export function rangeInputType(
   ctrl: any,
 ): void;
 /**
- * @param {import('../../services/browser/browser.js').Browser} $browser
  * @param {*} $filter
  * @param {*} $parse
  * @returns
  */
 export function inputDirective(
-  $browser: import("../../services/browser/browser.js").Browser,
   $filter: any,
   $parse: any,
 ): {

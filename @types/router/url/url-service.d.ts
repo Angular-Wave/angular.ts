@@ -4,7 +4,7 @@
 export class UrlService {
   static $inject: string[];
   /**
-   * @param {import("../../core/location/location").LocationProvider} $locationProvider
+   * @param {import("../../services/location/location").LocationProvider} $locationProvider
    * @param {import("../../router/state/state-service.js").StateProvider} stateService
    * @param globals
    * @param {import("../../router/url/url-config.js").UrlConfigProvider} urlConfigProvider
@@ -17,7 +17,7 @@ export class UrlService {
   );
   stateService: import("../../router/state/state-service.js").StateProvider;
   $locationProvider: any;
-  $location: import("../../core/location/location.js").Location;
+  $location: import("../../services/location/location.js").Location;
   /** Provides services related to the URL */
   urlRuleFactory: UrlRuleFactory;
   /**
@@ -59,12 +59,12 @@ export class UrlService {
    *
    * @return the hash (anchor) portion of the url
    */
-  hash: () => string | import("../../core/location/location.js").Location;
+  hash: () => string | import("../../services/location/location.js").Location;
   _urlListeners: any[];
   $get: (
     | string
     | ((
-        $location: import("../../core/location/location.js").Location,
+        $location: import("../../services/location/location.js").Location,
         $rootScope: import("../../core/scope/scope.js").Scope,
       ) => UrlService)
   )[];
@@ -130,7 +130,7 @@ export class UrlService {
     newUrl?: string,
     replace?: boolean,
     state?: any,
-  ): string | import("../../core/location/location.js").Location;
+  ): string | import("../../services/location/location.js").Location;
   /**
    * @internal
    *
@@ -155,7 +155,7 @@ export class UrlService {
   parts(): {
     path: any;
     search: any;
-    hash: string | import("../../core/location/location.js").Location;
+    hash: string | import("../../services/location/location.js").Location;
   };
   /**
    * Activates the best rule for the current URL
@@ -209,7 +209,7 @@ export class UrlService {
    */
   match(url: any): any;
   update(read: any): void;
-  location: string | import("../../core/location/location.js").Location;
+  location: string | import("../../services/location/location.js").Location;
   /**
    * Internal API.
    *

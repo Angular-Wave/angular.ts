@@ -26,7 +26,7 @@ describe("ngStateRef", () => {
     module.config(
       /**
        * @param $stateProvider
-       * @param {import('../../core/location/location.js').LocationProvider} $locationProvider
+       * @param {import('../../services/location/location.js').LocationProvider} $locationProvider
        */
       ($stateProvider, $locationProvider) => {
         _locationProvider = $locationProvider;

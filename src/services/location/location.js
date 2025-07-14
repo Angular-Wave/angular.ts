@@ -1,4 +1,4 @@
-import { trimEmptyHash, urlResolve } from "../url-utils/url-utils.js";
+import { trimEmptyHash, urlResolve } from "../../core/url-utils/url-utils.js";
 import {
   encodeUriSegment,
   isBoolean,
@@ -11,6 +11,7 @@ import {
   parseKeyValue,
   toInt,
   toKeyValue,
+  equals,
 } from "../../shared/utils.js";
 import { getBaseHref } from "../../shared/dom.js";
 
@@ -564,6 +565,111 @@ export class LocationProvider {
       requireBase: true,
       rewriteLinks: true,
     };
+
+    /** @type {Array<import("./interface.js").UrlChangeListener>} */
+    this.urlChangeListeners = [];
+    this.urlChangeInit = false;
+
+    /** @type {History['state']} */
+    this.cachedState = null;
+    /** @typeof {History.state} */
+    this.lastHistoryState = null;
+    /** @type {string} */
+    this.lastBrowserUrl = window.location.href;
+    this.cacheState();
+  }
+
+  /// ///////////////////////////////////////////////////////////
+  // URL API
+  /// ///////////////////////////////////////////////////////////
+
+  setUrl(url, state) {
+    if (state === undefined) {
+      state = null;
+    }
+
+    // setter
+    if (url) {
+      url = urlResolve(url).href;
+
+      if (this.lastBrowserUrl === url && this.lastHistoryState === state) {
+        return this;
+      }
+
+      this.lastBrowserUrl = url;
+      this.lastHistoryState = state;
+      history.pushState(state, "", url);
+      this.cacheState();
+    }
+  }
+
+  /**
+   * Returns the current URL with any empty hash (`#`) removed.
+   * @return {string}
+   */
+  getUrl() {
+    return trimEmptyHash(window.location.href);
+  }
+
+  /**
+   * Returns the cached state.
+   * @returns {History['state']} The cached state.
+   */
+  state() {
+    return this.cachedState;
+  }
+
+  /**
+   * Caches the current state.
+   *
+   * @private
+   */
+  cacheState() {
+    const currentState = history.state ?? null;
+    if (!equals(currentState, this.lastCachedState)) {
+      this.cachedState = currentState;
+      this.lastCachedState = currentState;
+      this.lastHistoryState = currentState;
+    }
+  }
+
+  /**
+   * Fires the state or URL change event.
+   *
+   * @private
+   */
+  fireStateOrUrlChange() {
+    const prevLastHistoryState = this.lastHistoryState;
+    this.cacheState();
+    if (
+      this.lastBrowserUrl === this.getUrl() &&
+      prevLastHistoryState === this.cachedState
+    ) {
+      return;
+    }
+    this.lastBrowserUrl = this.getUrl();
+    this.lastHistoryState = this.cachedState;
+    this.urlChangeListeners.forEach((listener) => {
+      listener(trimEmptyHash(window.location.href), this.cachedState);
+    });
+  }
+
+  /**
+   * Registers a callback to be called when the URL changes.
+   *
+   * @param {import("./interface.js").UrlChangeListener} callback - The callback function to register.
+   * @returns void
+   */
+  onUrlChange(callback) {
+    if (!this.urlChangeInit) {
+      window.addEventListener("popstate", this.fireStateOrUrlChange.bind(this));
+      window.addEventListener(
+        "hashchange",
+        this.fireStateOrUrlChange.bind(this),
+      );
+      this.urlChangeInit = true;
+    }
+    this.urlChangeListeners.push(callback);
   }
 
   /**
@@ -625,16 +731,14 @@ export class LocationProvider {
 
   $get = [
     "$rootScope",
-    "$browser",
     "$rootElement",
     /**
      *
-     * @param {import('../scope/scope.js').Scope} $rootScope
-     * @param {import('../../services/browser/browser.js').Browser} $browser
+     * @param {import('../../core/scope/scope.js').Scope} $rootScope
      * @param {Element} $rootElement
      * @returns
      */
-    ($rootScope, $browser, $rootElement) => {
+    ($rootScope, $rootElement) => {
       /** @type {Location} */
       let $location;
       let LocationMode;
@@ -664,20 +768,20 @@ export class LocationProvider {
       );
       $location.$$parseLinkUrl(initialUrl, initialUrl);
 
-      $location.$$state = $browser.state();
+      $location.$$state = this.state();
 
       const IGNORE_URI_REGEXP = /^\s*(javascript|mailto):/i;
 
-      function setBrowserUrlWithFallback(url, state) {
+      const setBrowserUrlWithFallback = (url, state) => {
         const oldUrl = $location.url();
         const oldState = $location.$$state;
         try {
-          $browser.setUrl(url, state);
+          this.setUrl(url, state);
 
           // Make sure $location.state() returns referentially identical (not just deeply equal)
           // state object; this makes possible quick checking if the state changed in the digest
           // loop. Checking deep equality would be too expensive.
-          $location.$$state = $browser.state();
+          $location.$$state = this.state();
         } catch (e) {
           // Restore old values if pushState fails
           $location.url(/** @type {string} */ (oldUrl));
@@ -685,7 +789,7 @@ export class LocationProvider {
 
           throw e;
         }
-      }
+      };
 
       $rootElement.addEventListener(
         "click",
@@ -760,13 +864,13 @@ export class LocationProvider {
 
       // rewrite hashbang url <> html5 url
       if ($location.absUrl() !== initialUrl) {
-        $browser.setUrl($location.absUrl(), true);
+        this.setUrl($location.absUrl(), true);
       }
 
       let initializing = true;
 
       // update $location when $browser url changes
-      $browser.onUrlChange((newUrl, newState) => {
+      this.onUrlChange((newUrl, newState) => {
         if (!startsWith(newUrl, appBaseNoFile)) {
           // If we are navigating outside of the app then force a reload
           window.location.href = newUrl;
@@ -808,9 +912,9 @@ export class LocationProvider {
         if (initializing || $location.$$urlUpdatedByLocation) {
           $location.$$urlUpdatedByLocation = false;
 
-          const oldUrl = /** @type {string} */ ($browser.getUrl());
+          const oldUrl = /** @type {string} */ (this.getUrl());
           const newUrl = $location.absUrl();
-          const oldState = $browser.state();
+          const oldState = this.state();
           const urlOrStateChanged =
             !urlsEqual(oldUrl, newUrl) ||
             ($location.$$html5 && oldState !== $location.$$state);

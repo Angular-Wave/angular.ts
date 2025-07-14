@@ -253,6 +253,46 @@ export class LocationProvider {
   hashPrefixConf: string;
   /** @type {Html5Mode} */
   html5ModeConf: Html5Mode;
+  /** @type {Array<import("./interface.js").UrlChangeListener>} */
+  urlChangeListeners: Array<import("./interface.js").UrlChangeListener>;
+  urlChangeInit: boolean;
+  /** @type {History['state']} */
+  cachedState: History["state"];
+  /** @typeof {History.state} */
+  lastHistoryState: any;
+  /** @type {string} */
+  lastBrowserUrl: string;
+  setUrl(url: any, state: any): this;
+  /**
+   * Returns the current URL with any empty hash (`#`) removed.
+   * @return {string}
+   */
+  getUrl(): string;
+  /**
+   * Returns the cached state.
+   * @returns {History['state']} The cached state.
+   */
+  state(): History["state"];
+  /**
+   * Caches the current state.
+   *
+   * @private
+   */
+  private cacheState;
+  lastCachedState: any;
+  /**
+   * Fires the state or URL change event.
+   *
+   * @private
+   */
+  private fireStateOrUrlChange;
+  /**
+   * Registers a callback to be called when the URL changes.
+   *
+   * @param {import("./interface.js").UrlChangeListener} callback - The callback function to register.
+   * @returns void
+   */
+  onUrlChange(callback: import("./interface.js").UrlChangeListener): void;
   /**
    * The default value for the prefix is `'!'`.
    * @param {string=} prefix Prefix for hash part (containing path and search)
@@ -279,8 +319,7 @@ export class LocationProvider {
   $get: (
     | string
     | ((
-        $rootScope: import("../scope/scope.js").Scope,
-        $browser: import("../../services/browser/browser.js").Browser,
+        $rootScope: import("../../core/scope/scope.js").Scope,
         $rootElement: Element,
       ) => Location)
   )[];

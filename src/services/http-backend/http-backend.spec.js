@@ -5,7 +5,6 @@ import sinon from "sinon";
 
 describe("$httpBackend", () => {
   let $backend;
-  let $browser;
   let xhr;
   let callback;
   let requests;
@@ -18,9 +17,7 @@ describe("$httpBackend", () => {
       requests.push(req);
     };
     angular = window.angular = new Angular();
-    let $injector = createInjector(["ng"]);
-    $browser = $injector.get("$browser");
-    $backend = createHttpBackend($browser);
+    $backend = createHttpBackend();
     callback = jasmine.createSpy("done");
   });
 

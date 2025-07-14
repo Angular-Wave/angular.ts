@@ -26,7 +26,7 @@ export class UrlService {
   ];
 
   /**
-   * @param {import("../../core/location/location").LocationProvider} $locationProvider
+   * @param {import("../../services/location/location").LocationProvider} $locationProvider
    * @param {import("../../router/state/state-service.js").StateProvider} stateService
    * @param globals
    * @param {import("../../router/url/url-config.js").UrlConfigProvider} urlConfigProvider
@@ -91,7 +91,7 @@ export class UrlService {
     "$rootScope",
     /**
      *
-     * @param {import('../../core/location/location.js').Location} $location
+     * @param {import('../../services/location/location.js').Location} $location
      * @param {import('../../core/scope/scope.js').Scope} $rootScope
      * @returns {UrlService}
      */
