@@ -9,8 +9,8 @@ description: >
 object created by `$templateCacheProvider`.
 
 The first time a template is used, it is loaded in the template cache for quick
-retrieval. You can load templates directly into the cache in a script tag, by
-using $templateRequest, or by consuming the $templateCache service directly.
+retrieval. You can load templates directly into the cache in a script tag by
+using $templateRequest or by consuming the $templateCache service directly.
 
 Adding via the script tag:
 

@@ -75,6 +75,7 @@ export function TemplateRequestProvider() {
         // resources for keys that already are included in there. This also makes
         // AngularTS accept any script directive, no matter its name. However, we
         // still need to unwrap trusted types.
+
         if (!isString(tpl) || !$templateCache.has(tpl)) {
           try {
             tpl = $sce.getTrustedResourceUrl(tpl);
