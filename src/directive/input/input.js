@@ -986,7 +986,7 @@ function checkboxInputType(
 inputDirective.$inject = ["$browser", "$filter", "$parse"];
 
 /**
- * @param {import('../../services/browser').Browser} $browser
+ * @param {import('../../services/browser/browser.js').Browser} $browser
  * @param {*} $filter
  * @param {*} $parse
  * @returns

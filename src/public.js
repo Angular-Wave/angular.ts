@@ -52,7 +52,7 @@ import { ngAttributeAliasDirectives } from "./directive/attrs/attrs.js";
 import { ngEventDirectives } from "./directive/events/events.js";
 import { AnchorScrollProvider } from "./services/anchor-scroll.js";
 import { AnimateProvider } from "./animations/animate.js";
-import { BrowserProvider } from "./services/browser.js";
+import { BrowserProvider } from "./services/browser/browser.js";
 import {
   AnimateAsyncRunFactoryProvider,
   AnimateRunnerFactoryProvider,
@@ -72,7 +72,6 @@ import { LogProvider } from "./services/log/log.js";
 import { ParseProvider } from "./core/parse/parse.js";
 import { RootScopeProvider } from "./core/scope/scope.js";
 import { SceProvider, SceDelegateProvider } from "./core/sce/sce.js";
-import { TaskTrackerFactoryProvider } from "./core/task-tracker-factory.js";
 import { TemplateRequestProvider } from "./services/template-request.js";
 import { SanitizeUriProvider } from "./core/sanitize/sanitize-uri.js";
 import {
@@ -264,7 +263,6 @@ export function registerNgModule(angular) {
             $routerGlobals: RouterGlobals,
             $sce: SceProvider,
             $sceDelegate: SceDelegateProvider,
-            $$taskTrackerFactory: TaskTrackerFactoryProvider,
             $templateCache: TemplateCacheProvider,
             $templateRequest: TemplateRequestProvider,
             $urlConfig: UrlConfigProvider,

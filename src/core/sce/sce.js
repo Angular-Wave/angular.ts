@@ -72,6 +72,7 @@ export function adjustMatcher(matcher) {
       .replace(/\\\*/g, "[^:/.?&;]*");
     return new RegExp(`^${matcher}$`);
   }
+
   if (isRegExp(matcher)) {
     // The only other type of matcher allowed is a Regexp.
     // Match entire URL / disallow partial matches.
@@ -333,6 +334,11 @@ export class SceDelegateProvider {
           htmlSanitizer = $injector.get("$sanitize");
         }
 
+        /**
+         * @param {string|RegExp} matcher
+         * @param {import("../url-utils/interface").ParsedUrl} parsedUrl
+         * @return {boolean}
+         */
         function matchUrl(matcher, parsedUrl) {
           if (matcher === "self") {
             return (
@@ -340,7 +346,7 @@ export class SceDelegateProvider {
             );
           }
           // definitely a regex.  See adjustMatchers()
-          return !!matcher.exec(parsedUrl.href);
+          return !!(/** @type {RegExp} */ (matcher).exec(parsedUrl.href));
         }
 
         function isResourceUrlAllowedByPolicy(url) {

@@ -704,3 +704,13 @@ function extractElementNode(element) {
     }
   }
 }
+
+/**
+ * Returns the base href of the document.
+ *
+ * @returns {string} The base href.
+ */
+export function getBaseHref() {
+  const href = document.querySelector("base")?.getAttribute("href");
+  return href ? href.replace(/^(https?:)?\/\/[^/]*/, "") : "";
+}

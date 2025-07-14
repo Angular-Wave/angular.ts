@@ -83,6 +83,11 @@ export class Glob {
      */
     this.regexp = new RegExp("^" + regexpString + "$");
   }
+
+  /**
+   * @param {string} name
+   * @return {boolean}
+   */
   matches(name) {
     return this.regexp.test("." + name);
   }

@@ -73,5 +73,9 @@ export class Glob {
    * @type {RegExp}
    */
   regexp: RegExp;
-  matches(name: any): boolean;
+  /**
+   * @param {string} name
+   * @return {boolean}
+   */
+  matches(name: string): boolean;
 }

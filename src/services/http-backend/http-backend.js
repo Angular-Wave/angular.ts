@@ -1,4 +1,4 @@
-import { urlResolve } from "../../core/url-utils/url-utils.js";
+import { trimEmptyHash, urlResolve } from "../../core/url-utils/url-utils.js";
 import { isDefined, isPromiseLike, isUndefined } from "../../shared/utils.js";
 
 /**
@@ -19,24 +19,14 @@ import { isDefined, isPromiseLike, isUndefined } from "../../shared/utils.js";
  */
 export class HttpBackendProvider {
   constructor() {
-    this.$get = [
-      "$browser",
-      /**
-       * @param {import('../browser.js').Browser} $browser
-       * @returns
-       */
-      function ($browser) {
-        return createHttpBackend($browser);
-      },
-    ];
+    this.$get = [() => createHttpBackend()];
   }
 }
 
 /**
- * @param {import('../browser.js').Browser} $browser
  * @returns
  */
-export function createHttpBackend($browser) {
+export function createHttpBackend() {
   // TODO(vojta): fix the signature
   return function (
     method,
@@ -50,7 +40,7 @@ export function createHttpBackend($browser) {
     eventHandlers,
     uploadEventHandlers,
   ) {
-    url = url || $browser.url();
+    url = url || trimEmptyHash(window.location.href);
 
     const xhr = new XMLHttpRequest();
     let abortedByTimeout = false;

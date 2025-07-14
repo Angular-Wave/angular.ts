@@ -37,8 +37,8 @@ export class Location {
    * @type {boolean}
    */
   $$replace: boolean;
-  /** @type {import('../url-utils/url-utils').HttpProtocol} */
-  $$protocol: any;
+  /** @type {string} */
+  $$protocol: string;
   /** @type {string} */
   $$host: string;
   /**
@@ -81,9 +81,9 @@ export class Location {
   /**
    *
    * Return protocol of current URL.
-   * @return {import("../url-utils/url-utils").HttpProtocol} protocol of current URL
+   * @return {string} protocol of current URL
    */
-  protocol(): any;
+  protocol(): string;
   /**
    * This method is getter only.
    *
@@ -227,14 +227,15 @@ export class LocationHtml5Url extends Location {
  * This object is exposed as $location service when developer doesn't opt into html5 mode.
  * It also serves as the base class for html5 mode fallback on legacy browsers.
  *
- * @constructor
- * @param {string} appBase application base URL
- * @param {string} appBaseNoFile application base URL stripped of any filename
- * @param {string} hashPrefix hashbang prefix
  */
 export class LocationHashbangUrl extends Location {
-  constructor(appBase: any, appBaseNoFile: any, hashPrefix: any);
-  hashPrefix: any;
+  /**
+   * @param {string} appBase application base URL
+   * @param {string} appBaseNoFile application base URL stripped of any filename
+   * @param {string} hashPrefix hashbang prefix
+   */
+  constructor(appBase: string, appBaseNoFile: string, hashPrefix: string);
+  hashPrefix: string;
   /**
    * Parse given hashbang URL into properties
    * @param {string} url Hashbang URL
@@ -279,7 +280,7 @@ export class LocationProvider {
     | string
     | ((
         $rootScope: import("../scope/scope.js").Scope,
-        $browser: any,
+        $browser: import("../../services/browser/browser.js").Browser,
         $rootElement: Element,
       ) => Location)
   )[];

@@ -12,6 +12,7 @@ import { stripLastPathElement } from "../../shared/strings.js";
 import { UrlMatcher } from "./url-matcher.js";
 import { ParamFactory } from "../params/param-factory.js";
 import { UrlRuleFactory } from "./url-rule.js";
+import { getBaseHref } from "../../shared/dom.js";
 
 /**
  * API for URL management
@@ -34,9 +35,7 @@ export class UrlService {
     this.stateService = stateService;
     this.stateService.urlService = this; // circular wiring
     this.$locationProvider = $locationProvider;
-
     this.$location = undefined;
-    this.$browser = undefined;
 
     /** Provides services related to the URL */
     this.urlRuleFactory = new UrlRuleFactory(this, this.stateService, globals);
@@ -89,18 +88,15 @@ export class UrlService {
 
   $get = [
     "$location",
-    "$browser",
     "$rootScope",
     /**
      *
      * @param {import('../../core/location/location.js').Location} $location
-     * @param {import('../../services/browser.js').Browser} $browser
      * @param {import('../../core/scope/scope.js').Scope} $rootScope
      * @returns {UrlService}
      */
-    ($location, $browser, $rootScope) => {
+    ($location, $rootScope) => {
       this.$location = $location;
-      this.$browser = $browser;
       $rootScope.$on("$locationChangeSuccess", (evt) => {
         this._urlListeners.forEach((fn) => {
           fn(evt);
@@ -124,7 +120,7 @@ export class UrlService {
   baseHref() {
     return (
       this._baseHref ||
-      (this._baseHref = this.$browser.baseHref() || window.location.pathname)
+      (this._baseHref = getBaseHref() || window.location.pathname)
     );
   }
 

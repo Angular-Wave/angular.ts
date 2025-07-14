@@ -18,7 +18,6 @@ export class UrlService {
   stateService: import("../../router/state/state-service.js").StateProvider;
   $locationProvider: any;
   $location: import("../../core/location/location.js").Location;
-  $browser: import("../../services/browser.js").Browser;
   /** Provides services related to the URL */
   urlRuleFactory: UrlRuleFactory;
   /**
@@ -66,7 +65,6 @@ export class UrlService {
     | string
     | ((
         $location: import("../../core/location/location.js").Location,
-        $browser: import("../../services/browser.js").Browser,
         $rootScope: import("../../core/scope/scope.js").Scope,
       ) => UrlService)
   )[];

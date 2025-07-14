@@ -377,21 +377,17 @@ export function HttpProvider() {
   });
 
   this.$get = [
-    "$browser",
     "$httpBackend",
-    "$rootScope",
     "$injector",
     "$sce",
     /**
      *
-     * @param {*} $browser
      * @param {*} $httpBackend
-     * @param {import("../../core/scope/scope.js").Scope} $rootScope
      * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
      * @param {*} $sce
      * @returns
      */
-    function ($browser, $httpBackend, $rootScope, $injector, $sce) {
+    function ($httpBackend, $injector, $sce) {
       /**
        * @type {Map<string, string>}
        */
@@ -461,8 +457,6 @@ export function HttpProvider() {
           ? $injector.get(config.paramSerializer)
           : config.paramSerializer;
 
-        $browser.$$incOutstandingRequestCount("$http");
-
         const requestInterceptors = [];
         const responseInterceptors = [];
         let promise = Promise.resolve(config);
@@ -486,7 +480,6 @@ export function HttpProvider() {
         promise = chainInterceptors(promise, requestInterceptors);
         promise = promise.then(serverRequest);
         promise = chainInterceptors(promise, responseInterceptors);
-        promise = promise.finally(completeOutstandingRequest);
 
         return promise;
 
@@ -501,10 +494,6 @@ export function HttpProvider() {
           interceptors.length = 0;
 
           return promise;
-        }
-
-        function completeOutstandingRequest() {
-          $browser.$$completeOutstandingRequest(() => {}, "$http");
         }
 
         function executeHeaderFns(headers, config) {

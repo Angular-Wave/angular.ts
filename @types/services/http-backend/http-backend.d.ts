@@ -1,10 +1,7 @@
 /**
- * @param {import('../browser.js').Browser} $browser
  * @returns
  */
-export function createHttpBackend(
-  $browser: import("../browser.js").Browser,
-): (
+export function createHttpBackend(): (
   method: any,
   url: any,
   post: any,
@@ -33,21 +30,16 @@ export function createHttpBackend(
  *
  */
 export class HttpBackendProvider {
-  $get: (
-    | string
-    | ((
-        $browser: import("../browser.js").Browser,
-      ) => (
-        method: any,
-        url: any,
-        post: any,
-        callback: any,
-        headers: any,
-        timeout: any,
-        withCredentials: any,
-        responseType: any,
-        eventHandlers: any,
-        uploadEventHandlers: any,
-      ) => void)
-  )[];
+  $get: (() => (
+    method: any,
+    url: any,
+    post: any,
+    callback: any,
+    headers: any,
+    timeout: any,
+    withCredentials: any,
+    responseType: any,
+    eventHandlers: any,
+    uploadEventHandlers: any,
+  ) => void)[];
 }

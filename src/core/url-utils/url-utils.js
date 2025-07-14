@@ -1,31 +1,26 @@
 import { isString } from "../../shared/utils.js";
 
-/**
- * HTTP protocol
- * @typedef {"http"|"https"} HttpProtocol
- */
-
 const urlParsingNode = document.createElement("a");
 const originUrl = urlResolve(window.location.href);
 let baseUrlParsingNode;
 
 urlParsingNode.href = "http://[::1]";
 
+/**
+ * @param {import("./interface.js").ResolvableUrl} url
+ * @return {import("./interface.js").ParsedUrl}
+ */
 export function urlResolve(url) {
-  if (!isString(url)) return url;
+  if (!isString(url))
+    return /** @type {import("./interface.js").ParsedUrl} */ (url);
 
   const href = url;
 
-  urlParsingNode.setAttribute("href", href);
+  urlParsingNode.setAttribute("href", /** @type {string} */ (href));
 
-  let { hostname } = urlParsingNode;
-  // Support: IE 9-11 only, Edge 16-17 only (fixed in 18 Preview)
-  // IE/Edge don't wrap IPv6 addresses' hostnames in square brackets
-  // when parsed out of an anchor element.
-  const ipv6InBrackets = urlParsingNode.hostname === "[::1]";
-  if (!ipv6InBrackets && hostname.indexOf(":") > -1) {
-    hostname = `[${hostname}]`;
-  }
+  const hostname = urlParsingNode.hostname.includes(":")
+    ? `[${urlParsingNode.hostname}]`
+    : urlParsingNode.hostname;
 
   return {
     href: urlParsingNode.href,
@@ -50,7 +45,7 @@ export function urlResolve(url) {
  * Parse a request URL and determine whether this is a same-origin request as the application
  * document.
  *
- * @param {string|object} requestUrl The url of the request as a string that will be resolved
+ * @param {import("./interface.js").ResolvableUrl} requestUrl The url of the request as a string that will be resolved
  * or a parsed URL object.
  * @returns {boolean} Whether the request is for the same origin as the application document.
  */
@@ -64,7 +59,7 @@ export function urlIsSameOrigin(requestUrl) {
  * Note: The base URL is usually the same as the document location (`location.href`) but can
  * be overriden by using the `<base>` tag.
  *
- * @param {string|object} requestUrl The url of the request as a string that will be resolved
+ * @param {import("./interface.js").ResolvableUrl} requestUrl The url of the request as a string that will be resolved
  * or a parsed URL object.
  * @returns {boolean} Whether the URL is same-origin as the document base URL.
  */
@@ -78,7 +73,7 @@ export function urlIsSameOriginAsBaseUrl(requestUrl) {
  *
  * @param {string[]} trustedOriginUrls - A list of URLs (strings), whose origins are trusted.
  *
- * @returns {Function} - A function that receives a URL (string or parsed URL object) and returns
+ * @returns {(url: import("./interface.js").ResolvableUrl) => boolean } - A function that receives a URL (string or parsed URL object) and returns
  *     whether it is of an allowed origin.
  */
 export function urlIsAllowedOriginFactory(trustedOriginUrls) {
@@ -91,7 +86,7 @@ export function urlIsAllowedOriginFactory(trustedOriginUrls) {
    * based on a list of trusted-origin URLs. The current location's origin is implicitly
    * trusted.
    *
-   * @param {string|Object} requestUrl - The URL to be checked (provided as a string that will be
+   * @param {import("./interface.js").ResolvableUrl} requestUrl - The URL to be checked (provided as a string that will be
    *     resolved or a parsed URL object).
    *
    * @returns {boolean} - Whether the specified URL is of an allowed origin.
@@ -107,9 +102,9 @@ export function urlIsAllowedOriginFactory(trustedOriginUrls) {
 /**
  * Determine if two URLs share the same origin.
  *
- * @param {string|Object} url1 - First URL to compare as a string or a normalized URL in the form of
+ * @param {import("./interface.js").ResolvableUrl} url1 - First URL to compare as a string or a normalized URL in the form of
  *     a dictionary object returned by `urlResolve()`.
- * @param {string|object} url2 - Second URL to compare as a string or a normalized URL in the form
+ * @param {import("./interface.js").ResolvableUrl} url2 - Second URL to compare as a string or a normalized URL in the form
  *     of a dictionary object returned by `urlResolve()`.
  *
  * @returns {boolean} - True if both URLs have the same origin, and false otherwise.
@@ -140,4 +135,14 @@ export function getBaseUrl() {
     baseUrlParsingNode = baseUrlParsingNode.cloneNode(false);
   }
   return baseUrlParsingNode.href;
+}
+
+/**
+ * Removes a trailing hash ('#') from the given URL if it exists.
+ *
+ * @param {string} url
+ * @returns {string}
+ */
+export function trimEmptyHash(url) {
+  return url.replace(/#$/, "");
 }

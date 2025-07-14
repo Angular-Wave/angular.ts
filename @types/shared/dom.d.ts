@@ -241,6 +241,12 @@ export function domInsert(
   afterElement: any,
 ): void;
 /**
+ * Returns the base href of the document.
+ *
+ * @returns {string} The base href.
+ */
+export function getBaseHref(): string;
+/**
  * A list of boolean attributes in HTML.
  * @type {string[]}
  */

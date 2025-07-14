@@ -1,4 +1,4 @@
-import { urlResolve } from "../url-utils/url-utils.js";
+import { trimEmptyHash, urlResolve } from "../url-utils/url-utils.js";
 import {
   encodeUriSegment,
   isBoolean,
@@ -12,6 +12,7 @@ import {
   toInt,
   toKeyValue,
 } from "../../shared/utils.js";
+import { getBaseHref } from "../../shared/dom.js";
 
 /**
  * @typedef {Object} DefaultPorts
@@ -78,7 +79,7 @@ export class Location {
      */
     this.$$replace = false;
 
-    /** @type {import('../url-utils/url-utils').HttpProtocol} */
+    /** @type {string} */
     this.$$protocol = parsedUrl.protocol;
 
     /** @type {string} */
@@ -145,7 +146,7 @@ export class Location {
   /**
    *
    * Return protocol of current URL.
-   * @return {import("../url-utils/url-utils").HttpProtocol} protocol of current URL
+   * @return {string} protocol of current URL
    */
   protocol() {
     return this.$$protocol;
@@ -446,12 +447,13 @@ export class LocationHtml5Url extends Location {
  * This object is exposed as $location service when developer doesn't opt into html5 mode.
  * It also serves as the base class for html5 mode fallback on legacy browsers.
  *
- * @constructor
- * @param {string} appBase application base URL
- * @param {string} appBaseNoFile application base URL stripped of any filename
- * @param {string} hashPrefix hashbang prefix
  */
 export class LocationHashbangUrl extends Location {
+  /**
+   * @param {string} appBase application base URL
+   * @param {string} appBaseNoFile application base URL stripped of any filename
+   * @param {string} hashPrefix hashbang prefix
+   */
   constructor(appBase, appBaseNoFile, hashPrefix) {
     super(appBase, appBaseNoFile);
     this.hashPrefix = hashPrefix;
@@ -628,7 +630,7 @@ export class LocationProvider {
     /**
      *
      * @param {import('../scope/scope.js').Scope} $rootScope
-     * @param {import('../../services/browser').Browser} $browser
+     * @param {import('../../services/browser/browser.js').Browser} $browser
      * @param {Element} $rootElement
      * @returns
      */
@@ -636,8 +638,8 @@ export class LocationProvider {
       /** @type {Location} */
       let $location;
       let LocationMode;
-      const baseHref = $browser.baseHref(); // if base[href] is undefined, it defaults to ''
-      const initialUrl = /** @type {string} */ ($browser.url());
+      const baseHref = getBaseHref(); // if base[href] is undefined, it defaults to ''
+      const initialUrl = trimEmptyHash(window.location.href);
       let appBase;
 
       if (this.getHtml5Mode().enabled) {
@@ -670,7 +672,7 @@ export class LocationProvider {
         const oldUrl = $location.url();
         const oldState = $location.$$state;
         try {
-          $browser.url(url, state);
+          $browser.setUrl(url, state);
 
           // Make sure $location.state() returns referentially identical (not just deeply equal)
           // state object; this makes possible quick checking if the state changed in the digest
@@ -751,10 +753,6 @@ export class LocationProvider {
               // in html5mode and also without, so that we are able to abort navigation without
               // getting double entries in the location history.
               event.preventDefault();
-              // update location manually
-              // if ($location.absUrl() !== $browser.url()) {
-              //   $rootScope.$apply();
-              // }
             }
           }
         },
@@ -762,7 +760,7 @@ export class LocationProvider {
 
       // rewrite hashbang url <> html5 url
       if ($location.absUrl() !== initialUrl) {
-        $browser.url($location.absUrl(), true);
+        $browser.setUrl($location.absUrl(), true);
       }
 
       let initializing = true;
@@ -810,7 +808,7 @@ export class LocationProvider {
         if (initializing || $location.$$urlUpdatedByLocation) {
           $location.$$urlUpdatedByLocation = false;
 
-          const oldUrl = /** @type {string} */ ($browser.url());
+          const oldUrl = /** @type {string} */ ($browser.getUrl());
           const newUrl = $location.absUrl();
           const oldState = $browser.state();
           const urlOrStateChanged =

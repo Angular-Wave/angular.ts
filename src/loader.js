@@ -1,10 +1,10 @@
 import {
-  minErr,
-  getNgAttribute,
-  ngAttrPrefixes,
   assertNotHasOwnProperty,
   errorHandlingConfig,
+  getNgAttribute,
   hasOwn,
+  minErr,
+  ngAttrPrefixes,
 } from "./shared/utils.js";
 import {
   getController,
@@ -283,12 +283,7 @@ export class Angular {
           name,
         );
       }
-      const moduleInstance = new NgModule(
-        name,
-        requires,
-        /** @type {Function} */ (configFn),
-      );
-      return moduleInstance;
+      return new NgModule(name, requires, /** @type {Function} */ (configFn));
     });
   }
 }

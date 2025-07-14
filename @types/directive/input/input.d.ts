@@ -47,13 +47,13 @@ export function rangeInputType(
   ctrl: any,
 ): void;
 /**
- * @param {import('../../services/browser').Browser} $browser
+ * @param {import('../../services/browser/browser.js').Browser} $browser
  * @param {*} $filter
  * @param {*} $parse
  * @returns
  */
 export function inputDirective(
-  $browser: any,
+  $browser: import("../../services/browser/browser.js").Browser,
   $filter: any,
   $parse: any,
 ): {

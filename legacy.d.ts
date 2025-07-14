@@ -1,5 +1,3 @@
-/// <reference path="jqlite.d.ts" />
-
 declare var angular: angular.IAngularStatic;
 
 // Support for painless dependency injection
