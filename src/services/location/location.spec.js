@@ -2,9 +2,9 @@ import {
   LocationHtml5Url,
   LocationHashbangUrl,
   LocationProvider,
-} from "./location";
+} from "./location.js";
 import { Angular } from "../../loader.js";
-import { createInjector } from "../di/injector.js";
+import { createInjector } from "../../core/di/injector.js";
 
 describe("$location", () => {
   let module;
