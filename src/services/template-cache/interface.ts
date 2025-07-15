@@ -1,12 +1,10 @@
-export interface MapLike<K, V> {
-  get(key: K): V | undefined;
-  set(key: K, value: V): this;
-  has(key: K): boolean;
-  delete(key: K): boolean;
+/**
+ * A cache interface for mapping template urls to their XHR responses.
+ */
+export interface TemplateCache {
+  get(key: string): any | undefined;
+  set(key: string, value: any): this;
+  has(key: string): boolean;
+  delete(key: string): boolean;
   clear(): void;
 }
-
-/**
- * A cache for mapping template names to their respective content.
- */
-export type TemplateCache = MapLike<string, string>;

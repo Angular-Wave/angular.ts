@@ -2,7 +2,7 @@ import {
   urlIsSameOrigin,
   urlIsSameOriginAsBaseUrl,
   urlResolve,
-} from "./../url-utils/url-utils.js";
+} from "../../shared/url-utils/url-utils.js";
 import {
   hasOwn,
   isFunction,
@@ -16,7 +16,7 @@ import {
 
 import { snakeToCamel } from "../../shared/dom.js";
 
-/** @typedef {import("../error-handler.ts").ErrorHandler }  ErrorHandler */
+/** @typedef {import("../exception/interface.ts").Interface }  ErrorHandler */
 
 const $sceMinErr = minErr("$sce");
 
@@ -336,7 +336,7 @@ export class SceDelegateProvider {
 
         /**
          * @param {string|RegExp} matcher
-         * @param {import("../url-utils/interface").ParsedUrl} parsedUrl
+         * @param {import("../../shared/url-utils/interface").ParsedUrl} parsedUrl
          * @return {boolean}
          */
         function matchUrl(matcher, parsedUrl) {

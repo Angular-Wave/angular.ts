@@ -1,4 +1,5 @@
 /**
+ * @param {*} $animate
  * @returns {import('../../interface.ts').Directive}
  */
 export function ngSwitchDirective(

@@ -4,4 +4,4 @@
  * @param exception - The exception associated with the error.
  * @param [cause] - Optional information about the context in which the error was thrown.
  */
-export type ErrorHandler = (exception: Error, cause?: string) => void;
+export type Interface = (exception: Error, cause?: string) => void;

@@ -9,5 +9,7 @@ export class TemplateCacheProvider {
   /**
    * @returns {import('./interface.ts').TemplateCache}
    */
-  $get = () => this.cache;
+  $get() {
+    return this.cache;
+  }
 }

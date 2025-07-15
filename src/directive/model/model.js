@@ -78,7 +78,7 @@ export class NgModelController {
 
   /**
    * @param {import('../../core/scope/scope.js').Scope} $scope
-   * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
+   * @param {import('../../services/exception/exception-handler.js').ErrorHandler} $exceptionHandler
    * @param {import('../../core/compile/attributes.js').Attributes} $attr
    * @param {Element} $element
    * @param {import("../../core/parse/interface.ts").ParseService} $parse

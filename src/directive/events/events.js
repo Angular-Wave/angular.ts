@@ -15,7 +15,7 @@ export const ngEventDirectives = {};
       "$exceptionHandler",
       /**
        * @param {import("../../core/parse/interface.ts").ParseService} $parse
-       * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
+       * @param {import('../../services/exception/exception-handler.js').ErrorHandler} $exceptionHandler
        * @returns
        */
       ($parse, $exceptionHandler) => {
@@ -32,7 +32,7 @@ export const ngEventDirectives = {};
 /**
  *
  * @param {import("../../core/parse/interface.ts").ParseService} $parse
- * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
+ * @param {import('../../services/exception/exception-handler.js').ErrorHandler} $exceptionHandler
  * @param {string} directiveName
  * @param {string} eventName
  * @returns {import("../../interface.ts").Directive}

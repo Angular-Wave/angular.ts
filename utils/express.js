@@ -72,6 +72,10 @@ app.get("/jsoninterpolation", (req, res) => {
   res.json("{{expr}}");
 });
 
+app.get("/now", (req, res) => {
+  res.send(Date.now().toString(10));
+});
+
 app.get("/scopeinit", (req, res) => {
   res.send('<div ng-init="name=1"></div>');
 });

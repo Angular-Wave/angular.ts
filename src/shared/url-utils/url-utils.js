@@ -14,9 +14,7 @@ export function urlResolve(url) {
   if (!isString(url))
     return /** @type {import("./interface.js").ParsedUrl} */ (url);
 
-  const href = url;
-
-  urlParsingNode.setAttribute("href", /** @type {string} */ (href));
+  urlParsingNode.setAttribute("href", /** @type {string} */ (url));
 
   const hostname = urlParsingNode.hostname.includes(":")
     ? `[${urlParsingNode.hostname}]`

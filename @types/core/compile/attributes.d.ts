@@ -6,7 +6,7 @@ export class Attributes implements Record<string, any> {
   /**
    * @param {import('../scope/scope.js').Scope} $rootScope
    * @param {*} $animate
-   * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
+   * @param {import("../../services/exception/exception-handler.js").ErrorHandler} $exceptionHandler
    * @param {*} $sce
    * @param {import("../../shared/noderef.js").NodeRef} [nodeRef]
    * @param {Object} [attributesToCopy]
@@ -14,14 +14,14 @@ export class Attributes implements Record<string, any> {
   constructor(
     $rootScope: import("../scope/scope.js").Scope,
     $animate: any,
-    $exceptionHandler: import("../exception-handler.js").ErrorHandler,
+    $exceptionHandler: import("../../services/exception/exception-handler.js").ErrorHandler,
     $sce: any,
     nodeRef?: import("../../shared/noderef.js").NodeRef,
     attributesToCopy?: any,
   );
   $rootScope: import("../scope/scope.js").Scope;
   $animate: any;
-  $exceptionHandler: import("../error-handler.ts").ErrorHandler;
+  $exceptionHandler: import("../../services/exception/interface.ts").Interface;
   $sce: any;
   $attr: {};
   /** @type {import("../../shared/noderef.js").NodeRef} */

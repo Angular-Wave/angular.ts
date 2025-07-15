@@ -1,4 +1,4 @@
-import { isObject } from "../../shared/utils.js";
+import { callBackAfterFirst, isDefined, isObject } from "../../shared/utils.js";
 
 /**
  * @param {"get" | "delete" | "post" | "put"} method
@@ -194,9 +194,20 @@ export function createHttpDirective(method, attrName) {
       restrict: "A",
       terminal: true,
       link(scope, element, attrs) {
-        /** @type {EventType} */
-        const eventName = getEventNameForElement(element);
+        const eventName =
+          attrs["trigger"] ||
+          /** @type {EventType} */ getEventNameForElement(element);
+
         const tag = element.tagName.toLowerCase();
+
+        if (isDefined(attrs["latch"])) {
+          attrs.$observe(
+            "latch",
+            callBackAfterFirst(() =>
+              element.dispatchEvent(new Event(eventName)),
+            ),
+          );
+        }
 
         element.addEventListener(eventName, (event) => {
           if (/** @type {HTMLButtonElement} */ (element).disabled) return;

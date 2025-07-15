@@ -50,7 +50,7 @@ export class NgModelController {
   static $inject: string[];
   /**
    * @param {import('../../core/scope/scope.js').Scope} $scope
-   * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
+   * @param {import('../../services/exception/exception-handler.js').ErrorHandler} $exceptionHandler
    * @param {import('../../core/compile/attributes.js').Attributes} $attr
    * @param {Element} $element
    * @param {import("../../core/parse/interface.ts").ParseService} $parse
@@ -59,7 +59,7 @@ export class NgModelController {
    */
   constructor(
     $scope: import("../../core/scope/scope.js").Scope,
-    $exceptionHandler: import("../../core/exception-handler.js").ErrorHandler,
+    $exceptionHandler: import("../../services/exception/exception-handler.js").ErrorHandler,
     $attr: import("../../core/compile/attributes.js").Attributes,
     $element: Element,
     $parse: import("../../core/parse/interface.ts").ParseService,
@@ -141,7 +141,7 @@ export class NgModelController {
   $$element: Element;
   $$animate: any;
   $$parse: import("../../core/parse/interface.ts").ParseService;
-  $$exceptionHandler: import("../../core/error-handler.ts").ErrorHandler;
+  $$exceptionHandler: import("../../services/exception/interface.ts").Interface;
   $$hasNativeValidators: boolean;
   $$classCache: {};
   $$eventRemovers: Set<any>;

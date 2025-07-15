@@ -1,4 +1,5 @@
 import { Angular } from "../../loader.js";
+import { dealoc } from "../../shared/dom.js";
 // import { browserTrigger, wait } from "../../shared/test-utils.js";
 
 describe("ngPut", () => {
@@ -6,6 +7,7 @@ describe("ngPut", () => {
 
   beforeEach(() => {
     el = document.getElementById("app");
+    dealoc(el);
     el.innerHTML = "";
     let angular = new Angular();
     angular.module("default", []);

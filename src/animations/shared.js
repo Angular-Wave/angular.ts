@@ -76,15 +76,6 @@ export function assertArg(arg, name, reason) {
   return arg;
 }
 
-export function mergeClasses(a, b) {
-  if (!a && !b) return "";
-  if (!a) return b;
-  if (!b) return a;
-  if (Array.isArray(a)) a = a.join(" ");
-  if (Array.isArray(b)) b = b.join(" ");
-  return `${a} ${b}`;
-}
-
 export function packageStyles(options) {
   const styles = {};
   if (options && (options.to || options.from)) {

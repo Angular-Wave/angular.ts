@@ -1,4 +1,4 @@
-import { urlIsAllowedOriginFactory } from "../../core/url-utils/url-utils.js";
+import { urlIsAllowedOriginFactory } from "../../shared/url-utils/url-utils.js";
 import {
   minErr,
   isObject,

@@ -58,7 +58,7 @@ import {
 } from "./animations/animate-runner.js";
 import { TemplateCacheProvider } from "./services/template-cache/template-cache.js";
 import { ControllerProvider } from "./core/controller/controller.js";
-import { ExceptionHandlerProvider } from "./core/exception-handler.js";
+import { ExceptionHandlerProvider } from "./services/exception/exception-handler.js";
 import { FilterProvider } from "./core/filter/filter.js";
 import { InterpolateProvider } from "./core/interpolate/interpolate.js";
 import {
@@ -70,7 +70,7 @@ import { LocationProvider } from "./services/location/location.js";
 import { LogProvider } from "./services/log/log.js";
 import { ParseProvider } from "./core/parse/parse.js";
 import { RootScopeProvider } from "./core/scope/scope.js";
-import { SceProvider, SceDelegateProvider } from "./core/sce/sce.js";
+import { SceProvider, SceDelegateProvider } from "./services/sce/sce.js";
 import { TemplateRequestProvider } from "./services/template-request.js";
 import { SanitizeUriProvider } from "./core/sanitize/sanitize-uri.js";
 import {

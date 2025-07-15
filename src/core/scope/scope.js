@@ -29,7 +29,7 @@ export function nextId() {
  */
 let $parse;
 
-/**@type {import('../exception-handler.js').ErrorHandler} */
+/**@type {import('../../services/exception/exception-handler.js').ErrorHandler} */
 let $exceptionHandler;
 
 /**
@@ -55,7 +55,7 @@ export class RootScopeProvider {
     "$exceptionHandler",
     "$parse",
     /**
-     * @param {import('../exception-handler.js').ErrorHandler} exceptionHandler
+     * @param {import('../../services/exception/exception-handler.js').ErrorHandler} exceptionHandler
      * @param {import('../parse/interface.ts').ParseService} parse
      */
     (exceptionHandler, parse) => {

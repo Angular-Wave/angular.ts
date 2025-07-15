@@ -1,4 +1,4 @@
-import { trimEmptyHash, urlResolve } from "../../core/url-utils/url-utils.js";
+import { trimEmptyHash, urlResolve } from "../../shared/url-utils/url-utils.js";
 import { isDefined, isPromiseLike, isUndefined } from "../../shared/utils.js";
 
 /**

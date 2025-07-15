@@ -123,7 +123,7 @@ export class CompileProvider {
     | ((
         $injector: import("../../core/di/internal-injector.js").InjectorService,
         $interpolate: any,
-        $exceptionHandler: import("../exception-handler.js").ErrorHandler,
+        $exceptionHandler: import("../../services/exception/exception-handler.js").ErrorHandler,
         $templateRequest: any,
         $parse: import("../parse/interface.ts").ParseService,
         $controller: any,

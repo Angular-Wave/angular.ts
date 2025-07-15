@@ -60,7 +60,7 @@ export function TemplateRequestProvider() {
     "$sce",
     /**
      *
-     * @param {import('../core/exception-handler.js').ErrorHandler} $exceptionHandler
+     * @param {import('./exception/exception-handler.js').ErrorHandler} $exceptionHandler
      * @param {import('../services/template-cache/interface.ts').TemplateCache} $templateCache
      * @param {import("interface.ts").HttpService} $http
      * @param {*} $sce

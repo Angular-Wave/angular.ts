@@ -1,7 +1,6 @@
-import { createInjector } from "../di/injector.js";
-
+import { createInjector } from "../../core/di/injector.js";
 import { Angular } from "../../loader.js";
-import { adjustMatcher } from "./sce";
+import { adjustMatcher } from "./sce.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("SCE", () => {

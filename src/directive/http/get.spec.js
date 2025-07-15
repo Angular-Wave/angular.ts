@@ -1,11 +1,13 @@
 import { Angular } from "../../loader.js";
 import { browserTrigger, wait } from "../../shared/test-utils.js";
+import { dealoc } from "../../shared/dom.js";
 
-describe("ngGet", () => {
+describe("ng-get", () => {
   let $compile, $rootScope, $log, el;
 
   beforeEach(() => {
     el = document.getElementById("app");
+    dealoc(el);
     el.innerHTML = "";
     let angular = new Angular();
     angular.module("default", []);
@@ -37,6 +39,16 @@ describe("ngGet", () => {
     expect(el.firstChild.innerHTML).toBe("<div>Hello</div>");
   });
 
+  it("should compile innerHTML", async () => {
+    const scope = $rootScope.$new();
+    el.innerHTML = '<button ng-get="/mock/divexpr">Load</button>';
+    scope.expr = "World";
+    $compile(el)(scope);
+    browserTrigger(el.querySelector("button"), "click");
+    await wait(100);
+    expect(el.innerText).toBe("World");
+  });
+
   it("should replace innerHTML on error", async () => {
     const scope = $rootScope.$new();
     el.innerHTML = '<button ng-get="/mock/422">Load</button>';
@@ -55,13 +67,99 @@ describe("ngGet", () => {
     expect(el.innerText).toBe("Load");
   });
 
-  it("should replace innerHTML on statuc error without a body", async () => {
+  it("should replace innerHTML on status error without a body", async () => {
     const scope = $rootScope.$new();
     el.innerHTML = '<button ng-get="/mock/401">Load</button>';
     $compile(el)(scope);
     browserTrigger(el.querySelector("button"), "click");
     await wait(100);
     expect(el.innerText).toBe("Unauthorized");
+  });
+
+  describe("data-trigger", () => {
+    it("should not trigger request on click if element has trigger attribute", async () => {
+      el.innerHTML =
+        '<button ng-get="/mock/hello" data-trigger="mouseover">Load</button>';
+      const scope = $rootScope.$new();
+      $compile(el)(scope);
+      browserTrigger(el.querySelector("button"), "click");
+      await wait(100);
+      expect(el.innerText).toBe("Load");
+    });
+
+    it("should trigger request on new event name if element has trigger attribute", async () => {
+      el.innerHTML =
+        '<button ng-get="/mock/hello" data-trigger="mouseover">Load</button>';
+      const scope = $rootScope.$new();
+      $compile(el)(scope);
+      browserTrigger(el.querySelector("button"), "mouseover");
+      await wait(100);
+      expect(el.innerText).toBe("Hello");
+    });
+  });
+
+  describe("data-latch", () => {
+    it("should trigger request on latch change", async () => {
+      el.innerHTML =
+        '<button ng-get="/mock/now" data-latch="{{ latch }}">Load</button>';
+      const scope = $rootScope.$new();
+      $compile(el)(scope);
+      await wait(100);
+      expect(el.innerText).toBe("Load");
+      scope.latch = true;
+      await wait(100);
+      expect(el.innerText).not.toBe("Load");
+      const firstRes = parseInt(el.innerText);
+      expect(firstRes).toBeLessThan(Date.now());
+
+      scope.latch = !scope.latch;
+      await wait(100);
+      const secondRes = parseInt(el.innerText);
+      expect(secondRes).toBeGreaterThan(firstRes);
+
+      scope.latch = !scope.latch;
+      await wait(100);
+      const thirdRes = parseInt(el.innerText);
+      expect(thirdRes).toBeGreaterThan(secondRes);
+    });
+
+    it("should still work with events with latch change", async () => {
+      el.innerHTML =
+        '<button ng-get="/mock/now" data-latch="{{ latch }}">Load</button>';
+      const scope = $rootScope.$new();
+      $compile(el)(scope);
+      await wait(100);
+      expect(el.innerText).toBe("Load");
+      scope.latch = true;
+      await wait(100);
+      expect(el.innerText).not.toBe("Load");
+      const firstRes = parseInt(el.innerText);
+      expect(firstRes).toBeLessThan(Date.now());
+
+      browserTrigger(el.querySelector("button"), "click");
+      await wait(100);
+      const secondRes = parseInt(el.innerText);
+      expect(secondRes).toBeGreaterThan(firstRes);
+    });
+
+    it("should still work with custom events with latch change", async () => {
+      el.innerHTML =
+        '<button ng-get="/mock/now" data-latch="{{ latch }}" data-trigger="mouseover">Load</button>';
+      const scope = $rootScope.$new();
+      $compile(el)(scope);
+      await wait(100);
+      expect(el.innerText).toBe("Load");
+      scope.latch = true;
+      await wait(100);
+      expect(el.innerText).not.toBe("Load");
+      const firstRes = parseInt(el.innerText);
+      expect(firstRes).toBeLessThan(Date.now());
+
+      browserTrigger(el.querySelector("button"), "mouseover");
+      await wait(100);
+      const secondRes = parseInt(el.innerText);
+      expect(secondRes).toBeGreaterThan(firstRes);
+    });
   });
 
   describe("data-swap", () => {

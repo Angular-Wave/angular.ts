@@ -25,7 +25,7 @@ export class RootScopeProvider {
   $get: (
     | string
     | ((
-        exceptionHandler: import("../exception-handler.js").ErrorHandler,
+        exceptionHandler: import("../../services/exception/exception-handler.js").ErrorHandler,
         parse: import("../parse/interface.ts").ParseService,
       ) => Scope)
   )[];

@@ -1,5 +1,5 @@
 import { isDefined } from "../../shared/utils.js";
-import { urlResolve } from "../url-utils/url-utils.js";
+import { urlResolve } from "../../shared/url-utils/url-utils.js";
 
 /** @typedef {import('../../interface.ts').ServiceProvider} ServiceProvider } */
 

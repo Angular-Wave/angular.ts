@@ -126,14 +126,14 @@ export interface RequestConfig extends RequestShortcutConfig {
       }
     | undefined;
 }
+export type HttpResponseStatus = "complete" | "error" | "timeout" | "abort";
 export interface HttpResponse<T> {
   data: T;
   status: number;
   headers: HttpHeadersGetter;
   config: RequestConfig;
   statusText: string;
-  /** Added in AngularJS 1.6.6 */
-  xhrStatus: "complete" | "error" | "timeout" | "abort";
+  xhrStatus: HttpResponseStatus;
 }
 export type HttpPromise<T> = Promise<HttpResponse<T>>;
 /**

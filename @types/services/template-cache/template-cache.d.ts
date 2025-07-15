@@ -7,5 +7,5 @@ export class TemplateCacheProvider {
   /**
    * @returns {import('./interface.ts').TemplateCache}
    */
-  $get: () => import("./interface.ts").TemplateCache;
+  $get(): import("./interface.ts").TemplateCache;
 }

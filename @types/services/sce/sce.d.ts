@@ -243,4 +243,4 @@ export class SceDelegateProvider {
       })
   )[];
 }
-export type ErrorHandler = import("../error-handler.ts").ErrorHandler;
+export type ErrorHandler = import("../exception/interface.ts").Interface;

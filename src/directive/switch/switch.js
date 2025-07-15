@@ -4,6 +4,7 @@ import { hasAnimate } from "../../shared/utils.js";
 ngSwitchDirective.$inject = ["$animate"];
 
 /**
+ * @param {*} $animate
  * @returns {import('../../interface.ts').Directive}
  */
 export function ngSwitchDirective($animate) {

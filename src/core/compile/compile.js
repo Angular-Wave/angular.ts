@@ -37,7 +37,7 @@ import {
   isProxy,
   hasOwn,
 } from "../../shared/utils.js";
-import { SCE_CONTEXTS } from "../sce/sce.js";
+import { SCE_CONTEXTS } from "../../services/sce/sce.js";
 import { PREFIX_REGEXP } from "../../shared/constants.js";
 import { createEventDirective } from "../../directive/events/events.js";
 import { Attributes } from "./attributes.js";
@@ -291,7 +291,7 @@ export class CompileProvider {
             "$exceptionHandler",
             /**
              * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
-             * @param {import('../exception-handler.js').ErrorHandler} $exceptionHandler
+             * @param {import('../../services/exception/exception-handler.js').ErrorHandler} $exceptionHandler
              */
             function ($injector, $exceptionHandler) {
               const directives = [];
@@ -619,7 +619,7 @@ export class CompileProvider {
       /**
        * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
        * @param {*} $interpolate
-       * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
+       * @param {import("../../services/exception/exception-handler.js").ErrorHandler} $exceptionHandler
        * @param {*} $templateRequest
        * @param {import("../parse/interface.ts").ParseService} $parse
        * @param {*} $controller

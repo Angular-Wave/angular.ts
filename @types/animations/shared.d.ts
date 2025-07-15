@@ -1,5 +1,4 @@
 export function assertArg(arg: any, name: any, reason: any): any;
-export function mergeClasses(a: any, b: any): any;
 export function packageStyles(options: any): {
   to: any;
   from: any;

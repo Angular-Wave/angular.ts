@@ -43,7 +43,7 @@ export class TemplateRequestProvider {
   $get: (
     | string
     | ((
-        $exceptionHandler: import("../core/exception-handler.js").ErrorHandler,
+        $exceptionHandler: import("./exception/exception-handler.js").ErrorHandler,
         $templateCache: import("../services/template-cache/interface.ts").TemplateCache,
         $http: any,
         $sce: any,

@@ -26,7 +26,7 @@ export class Attributes {
   /**
    * @param {import('../scope/scope.js').Scope} $rootScope
    * @param {*} $animate
-   * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
+   * @param {import("../../services/exception/exception-handler.js").ErrorHandler} $exceptionHandler
    * @param {*} $sce
    * @param {import("../../shared/noderef.js").NodeRef} [nodeRef]
    * @param {Object} [attributesToCopy]

@@ -1211,3 +1211,21 @@ export function callBackOnce(fn) {
     }
   };
 }
+
+/**
+ * Wraps a function so it will only be called starting from the second invocation.
+ * The first call does nothing and returns undefined.
+ *
+ * @param {Function} fn - The function to wrap.
+ * @returns {Function} A new function that will skip the first call.
+ */
+export function callBackAfterFirst(fn) {
+  let calledOnce = false;
+
+  return function (...args) {
+    if (calledOnce) {
+      return fn.apply(this, args);
+    }
+    calledOnce = true;
+  };
+}

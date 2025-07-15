@@ -42,9 +42,9 @@
  * @see {@link angular.ErrorHandler AngularTS ErrorHandler}
  */
 
-/** @typedef {import('../services/log/interface.ts').LogService} LogService */
+/** @typedef {import('../log/interface.ts').LogService} LogService */
 
-/** @typedef {import("./error-handler.ts").ErrorHandler}  ErrorHandler */
+/** @typedef {import("./interface.ts").Interface}  ErrorHandler */
 
 /**
  * Provider for `$exceptionHandler` service. Delegates uncaught exceptions to `$log.error()` by default.
