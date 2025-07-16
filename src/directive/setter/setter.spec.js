@@ -7,7 +7,7 @@ describe("setter", () => {
 
   beforeEach(() => {
     dealoc(document.getElementById("app"));
-    window.angular = new Angular();
+    let angular = new Angular();
     angular.module("myModule", []);
     angular
       .bootstrap(document.getElementById("app"), ["myModule"])
@@ -44,34 +44,57 @@ describe("setter", () => {
     expect($rootScope.testModel).toBe("Initial content");
   });
 
+  it("should handle expression content in the element", async () => {
+    $rootScope.testModel = "";
+    $compile('<div ng-setter="testModel"> {{ 2 + 2 }} </div>')($rootScope);
+    await wait();
+
+    expect($rootScope.testModel).toBe("4");
+  });
+
+  it("should handle expression and text content in the element", async () => {
+    $rootScope.testModel = "";
+    $compile('<div ng-setter="testModel"> Res: {{ 2 + 2 }} </div>')($rootScope);
+    await wait();
+
+    expect($rootScope.testModel).toBe("Res: 4");
+  });
+
+  it("should update value if expression changes", async () => {
+    $rootScope.a = 2;
+    $compile('<div ng-setter="testModel"> {{ a + 2 }} </div>')($rootScope);
+    await wait();
+    expect($rootScope.testModel).toBe("4");
+
+    $rootScope.a = 4;
+    await wait();
+    expect($rootScope.testModel).toBe("6");
+  });
+
   it("should warn if no model expression is provided", async () => {
     spyOn($log, "warn");
 
     $compile("<div ng-setter></div>")($rootScope);
     await wait();
 
-    expect($log.warn).toHaveBeenCalledWith(
-      "ngSetter: Model expression is not provided.",
-    );
+    expect($log.warn).toHaveBeenCalledWith("ng-setter: expression null");
+  });
+
+  it("should warn if invalid model expression is provided", async () => {
+    spyOn($log, "warn");
+
+    $compile("<div ng-setter='2+2'></div>")($rootScope);
+    await wait();
+
+    expect($log.warn).toHaveBeenCalledWith("ng-setter: expression invalid");
   });
 
   it("should clean up the MutationObserver on scope destruction", async () => {
     spyOn(window, "MutationObserver").and.returnValue(observerSpy);
-    const element = $compile('<div ng-setter="testModel"></div>')($rootScope);
+    $compile('<div ng-setter="testModel"></div>')($rootScope);
 
     $rootScope.$destroy();
     await wait();
     expect(observerSpy.disconnect).toHaveBeenCalled();
-  });
-
-  it("should gracefully handle invalid DOM elements", async () => {
-    spyOn(console, "warn");
-
-    const element = $compile("<div></div>")($rootScope);
-    await wait();
-
-    expect(console.warn).not.toHaveBeenCalledWith(
-      "ngSetter: Element is not a valid DOM node.",
-    );
   });
 });

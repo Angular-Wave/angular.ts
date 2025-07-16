@@ -1,4 +1,7 @@
-ngSetterDirective.$inject = ["$parse", "$log"];
+import { $injectTokens as $t } from "../../injection-tokens.js";
+
+ngSetterDirective.$inject = [$t.$parse, $t.$log];
+
 /**
  * @param {import('../../core/parse/interface.ts').ParseService} $parse
  * @param {import('../../services/log/interface.ts').LogService} $log
@@ -11,19 +14,19 @@ export function ngSetterDirective($parse, $log) {
       const modelExpression = attrs["ngSetter"];
 
       if (!modelExpression) {
-        $log.warn("ngSetter: Model expression is not provided.");
+        $log.warn("ng-setter: expression null");
         return;
       }
 
       const assignModel = $parse(modelExpression).assign;
 
       if (!assignModel) {
-        $log.warn("ngSetter: Invalid model expression.");
+        $log.warn("ng-setter: expression invalid");
         return;
       }
 
       const updateModel = (value) => {
-        assignModel(scope, value);
+        assignModel(scope, value.trim());
       };
 
       const observer = new MutationObserver((mutationsList) => {
@@ -43,16 +46,11 @@ export function ngSetterDirective($parse, $log) {
         }
       });
 
-      if (element && element) {
-        observer.observe(element, {
-          childList: true,
-          subtree: true,
-          characterData: true,
-        });
-      } else {
-        $log.warn("ngSetter: Element is not a valid DOM node.");
-        return;
-      }
+      observer.observe(element, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+      });
 
       scope.$on("$destroy", () => observer.disconnect());
       updateModel(element.innerHTML);

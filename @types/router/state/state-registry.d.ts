@@ -4,9 +4,8 @@
  *
  * This API is found at `$stateRegistry` ([[UIRouter.stateRegistry]])
  *
- * @implements {ServiceProvider}
  */
-export class StateRegistryProvider implements ServiceProvider {
+export class StateRegistryProvider {
   static $inject: string[];
   /**
    * @param urlService

@@ -1,4 +1,4 @@
-/* Version: 0.7.7 - July 13, 2025 16:59:16 */
+/* Version: 0.7.7 - July 16, 2025 12:06:45 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -1155,10 +1155,26 @@
   }
 
   /**
+   * Wraps a function so it will only be called starting from the second invocation.
+   * The first call does nothing and returns undefined.
+   *
+   * @param {Function} fn - The function to wrap.
+   * @returns {Function} A new function that will skip the first call.
+   */
+  function callBackAfterFirst(fn) {
+    let calledOnce = false;
+
+    return function (...args) {
+      if (calledOnce) {
+        return fn.apply(this, args);
+      }
+      calledOnce = true;
+    };
+  }
+
+  /**
    * Expando cache for adding properties to DOM nodes with JavaScript.
    * This used to be an Object in JQLite decorator, but swapped out for a Map
-   * for performance reasons and convenience methods. A proxy is available for
-   * additional logic handling.
    *
    * @type {Map<number, import('../interface.ts').ExpandoStore>}
    */
@@ -1712,6 +1728,16 @@
   }
 
   /**
+   * Returns the base href of the document.
+   *
+   * @returns {string} The base href.
+   */
+  function getBaseHref() {
+    const href = document.querySelector("base")?.getAttribute("href");
+    return href ? href.replace(/^(https?:)?\/\/[^/]*/, "") : "";
+  }
+
+  /**
    * A helper list of tokens matching the standard injectables that come predefined in the core `ng` module.
    * These string tokens are commonly injected into services, directives, or components via `$inject`.
    *
@@ -1743,7 +1769,7 @@
     $animate: "$animate",
     $animateCss: "$animateCss",
     $aria: "$aria",
-    $browser: "$browser",
+    $compile: "$compile",
     $controller: "$controller",
     $eventBus: "$eventBus",
     $exceptionHandler: "$exceptionHandler",
@@ -3013,32 +3039,25 @@
     }
   }
 
-  /**
-   * HTTP protocol
-   * @typedef {"http"|"https"} HttpProtocol
-   */
-
   const urlParsingNode = document.createElement("a");
   const originUrl = urlResolve(window.location.href);
   let baseUrlParsingNode;
 
   urlParsingNode.href = "http://[::1]";
 
+  /**
+   * @param {import("./interface.js").ResolvableUrl} url
+   * @return {import("./interface.js").ParsedUrl}
+   */
   function urlResolve(url) {
-    if (!isString(url)) return url;
+    if (!isString(url))
+      return /** @type {import("./interface.js").ParsedUrl} */ (url);
 
-    const href = url;
+    urlParsingNode.setAttribute("href", /** @type {string} */ (url));
 
-    urlParsingNode.setAttribute("href", href);
-
-    let { hostname } = urlParsingNode;
-    // Support: IE 9-11 only, Edge 16-17 only (fixed in 18 Preview)
-    // IE/Edge don't wrap IPv6 addresses' hostnames in square brackets
-    // when parsed out of an anchor element.
-    const ipv6InBrackets = urlParsingNode.hostname === "[::1]";
-    if (!ipv6InBrackets && hostname.indexOf(":") > -1) {
-      hostname = `[${hostname}]`;
-    }
+    const hostname = urlParsingNode.hostname.includes(":")
+      ? `[${urlParsingNode.hostname}]`
+      : urlParsingNode.hostname;
 
     return {
       href: urlParsingNode.href,
@@ -3063,7 +3082,7 @@
    * Parse a request URL and determine whether this is a same-origin request as the application
    * document.
    *
-   * @param {string|object} requestUrl The url of the request as a string that will be resolved
+   * @param {import("./interface.js").ResolvableUrl} requestUrl The url of the request as a string that will be resolved
    * or a parsed URL object.
    * @returns {boolean} Whether the request is for the same origin as the application document.
    */
@@ -3077,7 +3096,7 @@
    * Note: The base URL is usually the same as the document location (`location.href`) but can
    * be overriden by using the `<base>` tag.
    *
-   * @param {string|object} requestUrl The url of the request as a string that will be resolved
+   * @param {import("./interface.js").ResolvableUrl} requestUrl The url of the request as a string that will be resolved
    * or a parsed URL object.
    * @returns {boolean} Whether the URL is same-origin as the document base URL.
    */
@@ -3091,7 +3110,7 @@
    *
    * @param {string[]} trustedOriginUrls - A list of URLs (strings), whose origins are trusted.
    *
-   * @returns {Function} - A function that receives a URL (string or parsed URL object) and returns
+   * @returns {(url: import("./interface.js").ResolvableUrl) => boolean } - A function that receives a URL (string or parsed URL object) and returns
    *     whether it is of an allowed origin.
    */
   function urlIsAllowedOriginFactory(trustedOriginUrls) {
@@ -3104,7 +3123,7 @@
      * based on a list of trusted-origin URLs. The current location's origin is implicitly
      * trusted.
      *
-     * @param {string|Object} requestUrl - The URL to be checked (provided as a string that will be
+     * @param {import("./interface.js").ResolvableUrl} requestUrl - The URL to be checked (provided as a string that will be
      *     resolved or a parsed URL object).
      *
      * @returns {boolean} - Whether the specified URL is of an allowed origin.
@@ -3120,9 +3139,9 @@
   /**
    * Determine if two URLs share the same origin.
    *
-   * @param {string|Object} url1 - First URL to compare as a string or a normalized URL in the form of
+   * @param {import("./interface.js").ResolvableUrl} url1 - First URL to compare as a string or a normalized URL in the form of
    *     a dictionary object returned by `urlResolve()`.
-   * @param {string|object} url2 - Second URL to compare as a string or a normalized URL in the form
+   * @param {import("./interface.js").ResolvableUrl} url2 - Second URL to compare as a string or a normalized URL in the form
    *     of a dictionary object returned by `urlResolve()`.
    *
    * @returns {boolean} - True if both URLs have the same origin, and false otherwise.
@@ -3155,7 +3174,17 @@
     return baseUrlParsingNode.href;
   }
 
-  /** @typedef {import("../error-handler.ts").ErrorHandler }  ErrorHandler */
+  /**
+   * Removes a trailing hash ('#') from the given URL if it exists.
+   *
+   * @param {string} url
+   * @returns {string}
+   */
+  function trimEmptyHash(url) {
+    return url.replace(/#$/, "");
+  }
+
+  /** @typedef {import("../exception/interface.ts").Interface }  ErrorHandler */
 
   const $sceMinErr = minErr("$sce");
 
@@ -3211,6 +3240,7 @@
         .replace(/\\\*/g, "[^:/.?&;]*");
       return new RegExp(`^${matcher}$`);
     }
+
     if (isRegExp(matcher)) {
       // The only other type of matcher allowed is a Regexp.
       // Match entire URL / disallow partial matches.
@@ -3472,6 +3502,11 @@
             htmlSanitizer = $injector.get("$sanitize");
           }
 
+          /**
+           * @param {string|RegExp} matcher
+           * @param {import("../../shared/url-utils/interface").ParsedUrl} parsedUrl
+           * @return {boolean}
+           */
           function matchUrl(matcher, parsedUrl) {
             if (matcher === "self") {
               return (
@@ -3479,7 +3514,7 @@
               );
             }
             // definitely a regex.  See adjustMatchers()
-            return !!matcher.exec(parsedUrl.href);
+            return !!(/** @type {RegExp} */ (matcher).exec(parsedUrl.href));
           }
 
           function isResourceUrlAllowedByPolicy(url) {
@@ -3995,7 +4030,7 @@
         "$exceptionHandler",
         /**
          * @param {import("../../core/parse/interface.ts").ParseService} $parse
-         * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
+         * @param {import('../../services/exception/exception-handler.js').ErrorHandler} $exceptionHandler
          * @returns
          */
         ($parse, $exceptionHandler) => {
@@ -4012,7 +4047,7 @@
   /**
    *
    * @param {import("../../core/parse/interface.ts").ParseService} $parse
-   * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
+   * @param {import('../../services/exception/exception-handler.js').ErrorHandler} $exceptionHandler
    * @param {string} directiveName
    * @param {string} eventName
    * @returns {import("../../interface.ts").Directive}
@@ -4053,7 +4088,7 @@
     /**
      * @param {import('../scope/scope.js').Scope} $rootScope
      * @param {*} $animate
-     * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
+     * @param {import("../../services/exception/exception-handler.js").ErrorHandler} $exceptionHandler
      * @param {*} $sce
      * @param {import("../../shared/noderef.js").NodeRef} [nodeRef]
      * @param {Object} [attributesToCopy]
@@ -4651,7 +4686,7 @@
               "$exceptionHandler",
               /**
                * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
-               * @param {import('../exception-handler.js').ErrorHandler} $exceptionHandler
+               * @param {import('../../services/exception/exception-handler.js').ErrorHandler} $exceptionHandler
                */
               function ($injector, $exceptionHandler) {
                 const directives = [];
@@ -4979,7 +5014,7 @@
         /**
          * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
          * @param {*} $interpolate
-         * @param {import("../exception-handler.js").ErrorHandler} $exceptionHandler
+         * @param {import("../../services/exception/exception-handler.js").ErrorHandler} $exceptionHandler
          * @param {*} $templateRequest
          * @param {import("../parse/interface.ts").ParseService} $parse
          * @param {*} $controller
@@ -8464,7 +8499,7 @@
 
     /**
      * @param {import('../../core/scope/scope.js').Scope} $scope
-     * @param {import('../../core/exception-handler.js').ErrorHandler} $exceptionHandler
+     * @param {import('../../services/exception/exception-handler.js').ErrorHandler} $exceptionHandler
      * @param {import('../../core/compile/attributes.js').Attributes} $attr
      * @param {Element} $element
      * @param {import("../../core/parse/interface.ts").ParseService} $parse
@@ -9861,7 +9896,6 @@
       element,
       attr,
       ctrl,
-      $browser,
       $filter,
       $parse,
     ) {
@@ -10138,15 +10172,7 @@
     return (value - stepBase) % step === 0;
   }
 
-  function numberInputType(
-    scope,
-    element,
-    attr,
-    ctrl,
-    $browser,
-    $filter,
-    $parse,
-  ) {
+  function numberInputType(scope, element, attr, ctrl, $filter, $parse) {
     badInputChecker(scope, element, attr, ctrl, "number");
     numberFormatterParser(ctrl);
     baseInputType(scope, element, attr, ctrl);
@@ -10462,15 +10488,7 @@
     return fallback;
   }
 
-  function checkboxInputType(
-    scope,
-    element,
-    attr,
-    ctrl,
-    $browser,
-    $filter,
-    $parse,
-  ) {
+  function checkboxInputType(scope, element, attr, ctrl, $filter, $parse) {
     const trueValue = parseConstantExpr(
       $parse,
       scope,
@@ -10511,15 +10529,14 @@
   /**
    * @returns {import('../../interface.ts').Directive}
    */
-  inputDirective.$inject = ["$browser", "$filter", "$parse"];
+  inputDirective.$inject = ["$filter", "$parse"];
 
   /**
-   * @param {import('../../services/browser').Browser} $browser
    * @param {*} $filter
    * @param {*} $parse
    * @returns
    */
-  function inputDirective($browser, $filter, $parse) {
+  function inputDirective($filter, $parse) {
     return {
       restrict: "E",
       require: ["?ngModel"],
@@ -10531,7 +10548,6 @@
               element,
               attr,
               ctrls[0],
-              $browser,
               $filter,
               $parse,
             );
@@ -11650,7 +11666,7 @@
    * @param {*} $templateRequest
    * @param {import("../../services/anchor-scroll.js").AnchorScrollFunction} $anchorScroll
    * @param {*} $animate
-   * @param {import('../../core/error-handler.js').ErrorHandler} $exceptionHandler
+   * @param {import('../../services/exception/interface.ts').Interface} $exceptionHandler
    * @returns {import('../../interface.js').Directive}
    */
   function ngIncludeDirective(
@@ -11769,7 +11785,7 @@
   // We need this directive so that the element content is already filled when
   // the link function of another directive on the same element as ngInclude
   // is called.
-  ngIncludeFillContentDirective.$inject = ["$compile"];
+  ngIncludeFillContentDirective.$inject = [$injectTokens.$compile];
 
   /**
    * @param {import("../../core/compile/compile.js").CompileFn} $compile
@@ -12251,6 +12267,7 @@
   ngSwitchDirective.$inject = ["$animate"];
 
   /**
+   * @param {*} $animate
    * @returns {import('../../interface.ts').Directive}
    */
   function ngSwitchDirective($animate) {
@@ -14517,216 +14534,6 @@
     ];
   }
 
-  /**
-   * Removes a trailing hash ('#') from the given URL if it exists.
-   *
-   * @param {string} url
-   * @returns {string}
-   */
-  function trimEmptyHash(url) {
-    return url.replace(/#$/, "");
-  }
-
-  /**
-   * @typedef {function(string, string|null): any} UrlChangeListener
-   */
-
-  /**
-   * This object has two goals:
-   *
-   * - hide all the global state in the browser caused by the window object
-   * - abstract away all the browser specific features and inconsistencies
-   */
-  class Browser {
-    /**
-     * @param {import('../core/task-tracker-factory.js').TaskTracker} taskTracker
-     */
-    constructor(taskTracker) {
-      /**
-       * @type {import('../core/task-tracker-factory.js').TaskTracker} taskTracker
-       */
-      this.taskTracker = taskTracker;
-      this.pendingDeferIds = {};
-      /** @type {Array<UrlChangeListener>} */
-      this.urlChangeListeners = [];
-      this.urlChangeInit = false;
-
-      /** @type {any} */
-      this.cachedState = null;
-      /** @type {any} */
-      this.lastHistoryState = null;
-      /** @type {string} */
-      this.lastBrowserUrl = window.location.href;
-      /** @type {HTMLBaseElement | null} */
-      this.baseElement = document.querySelector("base");
-
-      // Task-tracking API
-      this.$$completeOutstandingRequest =
-        this.taskTracker.completeTask.bind(taskTracker);
-      this.$$incOutstandingRequestCount =
-        this.taskTracker.incTaskCount.bind(taskTracker);
-      this.notifyWhenNoOutstandingRequests =
-        this.taskTracker.notifyWhenNoPendingTasks.bind(taskTracker);
-
-      this.cacheState();
-    }
-
-    /// ///////////////////////////////////////////////////////////
-    // URL API
-    /// ///////////////////////////////////////////////////////////
-
-    url(url, state) {
-      if (state === undefined) {
-        state = null;
-      }
-
-      // setter
-      if (url) {
-        url = urlResolve(url).href;
-
-        if (this.lastBrowserUrl === url && this.lastHistoryState === state) {
-          return this;
-        }
-
-        this.lastBrowserUrl = url;
-        this.lastHistoryState = state;
-        history.pushState(state, "", url);
-        this.cacheState();
-        return this;
-      }
-
-      // getter
-      return trimEmptyHash(window.location.href);
-    }
-
-    /**
-     * Returns the cached state.
-     *
-     * @returns {any} The cached state.
-     */
-    state() {
-      return this.cachedState;
-    }
-
-    /**
-     * Caches the current state and fires the URL change event.
-     *
-     * @private
-     */
-    cacheStateAndFireUrlChange() {
-      this.fireStateOrUrlChange();
-    }
-
-    /**
-     * Caches the current state.
-     *
-     * @private
-     */
-    cacheState() {
-      const currentState = history.state ?? null;
-      if (!equals$1(currentState, this.lastCachedState)) {
-        this.cachedState = currentState;
-        this.lastCachedState = currentState;
-        this.lastHistoryState = currentState;
-      }
-    }
-
-    /**
-     * Fires the state or URL change event.
-     *
-     * @private
-     */
-    fireStateOrUrlChange() {
-      const prevLastHistoryState = this.lastHistoryState;
-      this.cacheState();
-
-      if (
-        this.lastBrowserUrl === this.url() &&
-        prevLastHistoryState === this.cachedState
-      ) {
-        return;
-      }
-
-      this.lastBrowserUrl = /** @type {string} */ (this.url());
-      this.lastHistoryState = this.cachedState;
-      this.urlChangeListeners.forEach((listener) => {
-        listener(trimEmptyHash(window.location.href), this.cachedState);
-      });
-    }
-
-    /**
-     * Registers a callback to be called when the URL changes.
-     *
-     * @param {UrlChangeListener} callback - The callback function to register.
-     * @returns {UrlChangeListener} The registered callback function.
-     */
-    onUrlChange(callback) {
-      if (!this.urlChangeInit) {
-        window.addEventListener(
-          "popstate",
-          this.cacheStateAndFireUrlChange.bind(this),
-        );
-        window.addEventListener(
-          "hashchange",
-          this.cacheStateAndFireUrlChange.bind(this),
-        );
-
-        this.urlChangeInit = true;
-      }
-
-      this.urlChangeListeners.push(callback);
-      return callback;
-    }
-
-    $$applicationDestroyed() {
-      window.removeEventListener(
-        "popstate",
-        this.cacheStateAndFireUrlChange.bind(this),
-      );
-      window.removeEventListener(
-        "hashchange",
-        this.cacheStateAndFireUrlChange.bind(this),
-      );
-    }
-
-    $$checkUrlChange() {
-      this.fireStateOrUrlChange();
-    }
-
-    /// ///////////////////////////////////////////////////////////
-    // Misc API
-    /// ///////////////////////////////////////////////////////////
-
-    /**
-     * Returns the base href of the document.
-     *
-     * @returns {string} The base href.
-     */
-    baseHref() {
-      const href = this.baseElement?.getAttribute("href");
-      return href ? href.replace(/^(https?:)?\/\/[^/]*/, "") : "";
-    }
-  }
-
-  /**
-   * This object has two goals:
-   *
-   * - hide all the global state in the browser caused by the window object
-   * - abstract away all the browser specific features and inconsistencies
-   *
-   * Remove this in the future
-   */
-  class BrowserProvider {
-    $get = [
-      "$$taskTrackerFactory",
-      /**
-       * @param {import('../core/task-tracker-factory.js').TaskTracker} $$taskTrackerFactory
-       * @returns {Browser}
-       */
-      ($$taskTrackerFactory) => new Browser($$taskTrackerFactory),
-    ];
-  }
-
   function AnimateAsyncRunFactoryProvider() {
     this.$get = [
       function () {
@@ -14932,7 +14739,9 @@
     /**
      * @returns {import('./interface.ts').TemplateCache}
      */
-    $get = () => this.cache;
+    $get() {
+      return this.cache;
+    }
   }
 
   /**
@@ -14979,9 +14788,9 @@
    * @see {@link angular.ErrorHandler AngularTS ErrorHandler}
    */
 
-  /** @typedef {import('../services/log/interface.ts').LogService} LogService */
+  /** @typedef {import('../log/interface.ts').LogService} LogService */
 
-  /** @typedef {import("./error-handler.ts").ErrorHandler}  ErrorHandler */
+  /** @typedef {import("./interface.ts").Interface}  ErrorHandler */
 
   /**
    * Provider for `$exceptionHandler` service. Delegates uncaught exceptions to `$log.error()` by default.
@@ -15490,49 +15299,48 @@
     return includesFilter;
   }
 
-  FilterProvider.$inject = ["$provide"];
+  const SUFFIX = "Filter";
 
-  /**
-   * @param {import('../../interface.ts').Provider} $provide
-   */
-  function FilterProvider($provide) {
-    const suffix = "Filter";
+  class FilterProvider {
+    static $inject = [$injectTokens.$provide];
+
+    /**
+     * @param {import('../../interface.ts').Provider} $provide
+     */
+    constructor($provide) {
+      this.$provide = $provide;
+      this.register({
+        filter: filterFilter,
+        json: jsonFilter,
+        limitTo: limitToFilter,
+        orderBy: orderByFilter,
+        isState: $IsStateFilter,
+        includedByState: $IncludedByStateFilter,
+      });
+    }
 
     /**
      * @param {string|Record<string, import('../../interface.ts').FilterFactory>} name
-     * @param {import('../../interface.ts').FilterFactory} factory
+     * @param {import('../../interface.ts').FilterFactory} [factory]
      * @return {import('../../interface.ts').ServiceProvider}
      */
-    function register(name, factory) {
+    register(name, factory) {
       if (isObject(name)) {
         Object.entries(name).forEach(([key, filter]) => {
-          register(key, filter);
+          this.register(key, filter);
         });
       }
-      return $provide.factory(name + suffix, factory);
+      return this.$provide.factory(name + SUFFIX, factory);
     }
 
-    this.register = register;
-
-    this.$get = [
-      "$injector",
+    $get = [
+      $injectTokens.$injector,
       /**
        * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
-       * @returns
+       * @returns {import('../../interface.ts').FilterFn}
        */
-      function ($injector) {
-        return function (name) {
-          return $injector.get(name + suffix);
-        };
-      },
+      ($injector) => (/** @type {string} */ name) => $injector.get(name + SUFFIX),
     ];
-
-    register("filter", filterFilter);
-    register("json", jsonFilter);
-    register("limitTo", limitToFilter);
-    register("orderBy", orderByFilter);
-    register("isState", $IsStateFilter);
-    register("includedByState", $IncludedByStateFilter);
   }
 
   const PURITY_ABSOLUTE = 1;
@@ -18536,21 +18344,17 @@
     });
 
     this.$get = [
-      "$browser",
       "$httpBackend",
-      "$rootScope",
       "$injector",
       "$sce",
       /**
        *
-       * @param {*} $browser
        * @param {*} $httpBackend
-       * @param {import("../../core/scope/scope.js").Scope} $rootScope
        * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
        * @param {*} $sce
        * @returns
        */
-      function ($browser, $httpBackend, $rootScope, $injector, $sce) {
+      function ($httpBackend, $injector, $sce) {
         /**
          * @type {Map<string, string>}
          */
@@ -18620,8 +18424,6 @@
             ? $injector.get(config.paramSerializer)
             : config.paramSerializer;
 
-          $browser.$$incOutstandingRequestCount("$http");
-
           const requestInterceptors = [];
           const responseInterceptors = [];
           let promise = Promise.resolve(config);
@@ -18645,7 +18447,6 @@
           promise = chainInterceptors(promise, requestInterceptors);
           promise = promise.then(serverRequest);
           promise = chainInterceptors(promise, responseInterceptors);
-          promise = promise.finally(completeOutstandingRequest);
 
           return promise;
 
@@ -18660,10 +18461,6 @@
             interceptors.length = 0;
 
             return promise;
-          }
-
-          function completeOutstandingRequest() {
-            $browser.$$completeOutstandingRequest(() => {}, "$http");
           }
 
           function executeHeaderFns(headers, config) {
@@ -19104,24 +18901,14 @@
    */
   class HttpBackendProvider {
     constructor() {
-      this.$get = [
-        "$browser",
-        /**
-         * @param {import('../browser.js').Browser} $browser
-         * @returns
-         */
-        function ($browser) {
-          return createHttpBackend($browser);
-        },
-      ];
+      this.$get = [() => createHttpBackend()];
     }
   }
 
   /**
-   * @param {import('../browser.js').Browser} $browser
    * @returns
    */
-  function createHttpBackend($browser) {
+  function createHttpBackend() {
     // TODO(vojta): fix the signature
     return function (
       method,
@@ -19135,7 +18922,7 @@
       eventHandlers,
       uploadEventHandlers,
     ) {
-      url = url || $browser.url();
+      url = url || trimEmptyHash(window.location.href);
 
       const xhr = new XMLHttpRequest();
       let abortedByTimeout = false;
@@ -19343,7 +19130,7 @@
        */
       this.$$replace = false;
 
-      /** @type {import('../url-utils/url-utils').HttpProtocol} */
+      /** @type {string} */
       this.$$protocol = parsedUrl.protocol;
 
       /** @type {string} */
@@ -19410,7 +19197,7 @@
     /**
      *
      * Return protocol of current URL.
-     * @return {import("../url-utils/url-utils").HttpProtocol} protocol of current URL
+     * @return {string} protocol of current URL
      */
     protocol() {
       return this.$$protocol;
@@ -19711,12 +19498,13 @@
    * This object is exposed as $location service when developer doesn't opt into html5 mode.
    * It also serves as the base class for html5 mode fallback on legacy browsers.
    *
-   * @constructor
-   * @param {string} appBase application base URL
-   * @param {string} appBaseNoFile application base URL stripped of any filename
-   * @param {string} hashPrefix hashbang prefix
    */
   class LocationHashbangUrl extends Location {
+    /**
+     * @param {string} appBase application base URL
+     * @param {string} appBaseNoFile application base URL stripped of any filename
+     * @param {string} hashPrefix hashbang prefix
+     */
     constructor(appBase, appBaseNoFile, hashPrefix) {
       super(appBase, appBaseNoFile);
       this.hashPrefix = hashPrefix;
@@ -19827,6 +19615,111 @@
         requireBase: true,
         rewriteLinks: true,
       };
+
+      /** @type {Array<import("./interface.js").UrlChangeListener>} */
+      this.urlChangeListeners = [];
+      this.urlChangeInit = false;
+
+      /** @type {History['state']} */
+      this.cachedState = null;
+      /** @typeof {History.state} */
+      this.lastHistoryState = null;
+      /** @type {string} */
+      this.lastBrowserUrl = window.location.href;
+      this.cacheState();
+    }
+
+    /// ///////////////////////////////////////////////////////////
+    // URL API
+    /// ///////////////////////////////////////////////////////////
+
+    setUrl(url, state) {
+      if (state === undefined) {
+        state = null;
+      }
+
+      // setter
+      if (url) {
+        url = urlResolve(url).href;
+
+        if (this.lastBrowserUrl === url && this.lastHistoryState === state) {
+          return this;
+        }
+
+        this.lastBrowserUrl = url;
+        this.lastHistoryState = state;
+        history.pushState(state, "", url);
+        this.cacheState();
+      }
+    }
+
+    /**
+     * Returns the current URL with any empty hash (`#`) removed.
+     * @return {string}
+     */
+    getUrl() {
+      return trimEmptyHash(window.location.href);
+    }
+
+    /**
+     * Returns the cached state.
+     * @returns {History['state']} The cached state.
+     */
+    state() {
+      return this.cachedState;
+    }
+
+    /**
+     * Caches the current state.
+     *
+     * @private
+     */
+    cacheState() {
+      const currentState = history.state ?? null;
+      if (!equals$1(currentState, this.lastCachedState)) {
+        this.cachedState = currentState;
+        this.lastCachedState = currentState;
+        this.lastHistoryState = currentState;
+      }
+    }
+
+    /**
+     * Fires the state or URL change event.
+     *
+     * @private
+     */
+    fireStateOrUrlChange() {
+      const prevLastHistoryState = this.lastHistoryState;
+      this.cacheState();
+      if (
+        this.lastBrowserUrl === this.getUrl() &&
+        prevLastHistoryState === this.cachedState
+      ) {
+        return;
+      }
+      this.lastBrowserUrl = this.getUrl();
+      this.lastHistoryState = this.cachedState;
+      this.urlChangeListeners.forEach((listener) => {
+        listener(trimEmptyHash(window.location.href), this.cachedState);
+      });
+    }
+
+    /**
+     * Registers a callback to be called when the URL changes.
+     *
+     * @param {import("./interface.js").UrlChangeListener} callback - The callback function to register.
+     * @returns void
+     */
+    onUrlChange(callback) {
+      if (!this.urlChangeInit) {
+        window.addEventListener("popstate", this.fireStateOrUrlChange.bind(this));
+        window.addEventListener(
+          "hashchange",
+          this.fireStateOrUrlChange.bind(this),
+        );
+        this.urlChangeInit = true;
+      }
+      this.urlChangeListeners.push(callback);
     }
 
     /**
@@ -19888,21 +19781,19 @@
 
     $get = [
       "$rootScope",
-      "$browser",
       "$rootElement",
       /**
        *
-       * @param {import('../scope/scope.js').Scope} $rootScope
-       * @param {import('../../services/browser').Browser} $browser
+       * @param {import('../../core/scope/scope.js').Scope} $rootScope
        * @param {Element} $rootElement
        * @returns
        */
-      ($rootScope, $browser, $rootElement) => {
+      ($rootScope, $rootElement) => {
         /** @type {Location} */
         let $location;
         let LocationMode;
-        const baseHref = $browser.baseHref(); // if base[href] is undefined, it defaults to ''
-        const initialUrl = /** @type {string} */ ($browser.url());
+        const baseHref = getBaseHref(); // if base[href] is undefined, it defaults to ''
+        const initialUrl = trimEmptyHash(window.location.href);
         let appBase;
 
         if (this.getHtml5Mode().enabled) {
@@ -19927,20 +19818,20 @@
         );
         $location.$$parseLinkUrl(initialUrl, initialUrl);
 
-        $location.$$state = $browser.state();
+        $location.$$state = this.state();
 
         const IGNORE_URI_REGEXP = /^\s*(javascript|mailto):/i;
 
-        function setBrowserUrlWithFallback(url, state) {
+        const setBrowserUrlWithFallback = (url, state) => {
           const oldUrl = $location.url();
           const oldState = $location.$$state;
           try {
-            $browser.url(url, state);
+            this.setUrl(url, state);
 
             // Make sure $location.state() returns referentially identical (not just deeply equal)
             // state object; this makes possible quick checking if the state changed in the digest
             // loop. Checking deep equality would be too expensive.
-            $location.$$state = $browser.state();
+            $location.$$state = this.state();
           } catch (e) {
             // Restore old values if pushState fails
             $location.url(/** @type {string} */ (oldUrl));
@@ -19948,7 +19839,7 @@
 
             throw e;
           }
-        }
+        };
 
         $rootElement.addEventListener(
           "click",
@@ -20016,10 +19907,6 @@
                 // in html5mode and also without, so that we are able to abort navigation without
                 // getting double entries in the location history.
                 event.preventDefault();
-                // update location manually
-                // if ($location.absUrl() !== $browser.url()) {
-                //   $rootScope.$apply();
-                // }
               }
             }
           },
@@ -20027,13 +19914,13 @@
 
         // rewrite hashbang url <> html5 url
         if ($location.absUrl() !== initialUrl) {
-          $browser.url($location.absUrl(), true);
+          this.setUrl($location.absUrl(), true);
         }
 
         let initializing = true;
 
         // update $location when $browser url changes
-        $browser.onUrlChange((newUrl, newState) => {
+        this.onUrlChange((newUrl, newState) => {
           if (!startsWith(newUrl, appBaseNoFile)) {
             // If we are navigating outside of the app then force a reload
             window.location.href = newUrl;
@@ -20075,9 +19962,9 @@
           if (initializing || $location.$$urlUpdatedByLocation) {
             $location.$$urlUpdatedByLocation = false;
 
-            const oldUrl = /** @type {string} */ ($browser.url());
+            const oldUrl = /** @type {string} */ (this.getUrl());
             const newUrl = $location.absUrl();
-            const oldState = $browser.state();
+            const oldState = this.state();
             const urlOrStateChanged =
               !urlsEqual(oldUrl, newUrl) ||
               ($location.$$html5 && oldState !== $location.$$state);
@@ -20336,7 +20223,7 @@
    */
   let $parse;
 
-  /**@type {import('../exception-handler.js').ErrorHandler} */
+  /**@type {import('../../services/exception/exception-handler.js').ErrorHandler} */
   let $exceptionHandler;
 
   /**
@@ -20357,7 +20244,7 @@
       "$exceptionHandler",
       "$parse",
       /**
-       * @param {import('../exception-handler.js').ErrorHandler} exceptionHandler
+       * @param {import('../../services/exception/exception-handler.js').ErrorHandler} exceptionHandler
        * @param {import('../parse/interface.ts').ParseService} parse
        */
       (exceptionHandler, parse) => {
@@ -21554,152 +21441,6 @@
     return ids;
   }
 
-  /** @typedef {import('../interface.ts').ServiceProvider} ServiceProvider */
-  /** @typedef {import('../interface.ts').AnnotatedFactory} AnnotatedFactory */
-
-  /**
-   * @implements {ServiceProvider}
-   */
-  class TaskTrackerFactoryProvider {
-    /** @type {AnnotatedFactory} */
-    $get = [
-      "$log",
-      /**
-       * Creates a new `TaskTracker` instance.
-       *
-       * @param {import('../services/log/interface.ts').LogService} log - The logging service.
-       * @returns {TaskTracker} A new `TaskTracker` instance.
-       */
-      (log) => new TaskTracker(log),
-    ];
-  }
-
-  /**
-   * A factory function to create `TaskTracker` instances.
-   *
-   * A `TaskTracker` tracks pending tasks (grouped by type) and notifies interested
-   * parties when all pending tasks (or tasks of a specific type) have been completed.
-   */
-  class TaskTracker {
-    /**
-     * @param {import('../services/log/interface.ts').LogService} log - The logging service.
-     */
-    constructor(log) {
-      /** @private */
-      this.log = log;
-
-      /** @private */
-      this.taskCounts = {};
-
-      /** @private */
-      this.taskCallbacks = [];
-
-      /**
-       * Special task types used for tracking all tasks and default tasks.
-       * @type {string}
-       */
-      this.ALL_TASKS_TYPE = "$$all$$";
-
-      /**
-       * Default task type.
-       * @type {string}
-       */
-      this.DEFAULT_TASK_TYPE = "$$default$$";
-    }
-
-    /**
-     * Completes a task and decrements the associated task counter.
-     * If the counter reaches 0, all corresponding callbacks are executed.
-     *
-     * @param {Function} fn - The function to execute when completing the task.
-     * @param {string} [taskType=this.DEFAULT_TASK_TYPE] - The type of task being completed.
-     */
-    completeTask(fn, taskType = this.DEFAULT_TASK_TYPE) {
-      try {
-        fn();
-      } finally {
-        if (this.taskCounts[taskType]) {
-          this.taskCounts[taskType]--;
-          this.taskCounts[this.ALL_TASKS_TYPE]--;
-        }
-
-        const countForType = this.taskCounts[taskType];
-        const countForAll = this.taskCounts[this.ALL_TASKS_TYPE];
-
-        // If either the overall task queue or the specific task type queue is empty, run callbacks.
-        if (!countForAll || !countForType) {
-          const getNextCallback = !countForAll
-            ? this.getLastCallback.bind(this)
-            : () => this.getLastCallbackForType(taskType);
-
-          let nextCb;
-          while ((nextCb = getNextCallback())) {
-            try {
-              nextCb();
-            } catch (e) {
-              this.log.error(e);
-            }
-          }
-        }
-      }
-    }
-
-    /**
-     * Increments the task count for the specified task type.
-     *
-     * @param {string} [taskType=this.DEFAULT_TASK_TYPE] - The type of task whose count will be increased.
-     */
-    incTaskCount(taskType = this.DEFAULT_TASK_TYPE) {
-      this.taskCounts[taskType] = (this.taskCounts[taskType] || 0) + 1;
-      this.taskCounts[this.ALL_TASKS_TYPE] =
-        (this.taskCounts[this.ALL_TASKS_TYPE] || 0) + 1;
-    }
-
-    /**
-     * Registers a callback to be executed when all pending tasks of the specified type are completed.
-     * If there are no pending tasks of the specified type, the callback is executed immediately.
-     *
-     * @param {Function} callback - The function to execute when no pending tasks remain.
-     * @param {string} [taskType=this.ALL_TASKS_TYPE] - The type of tasks to wait for completion.
-     */
-    notifyWhenNoPendingTasks(callback, taskType = this.ALL_TASKS_TYPE) {
-      if (!this.taskCounts[taskType]) {
-        callback();
-      } else {
-        this.taskCallbacks.push({ type: taskType, cb: callback });
-      }
-    }
-
-    /**
-     * Retrieves and removes the last registered callback from the queue.
-     *
-     * @private
-     * @returns {Function|undefined} The last callback function or undefined if none exist.
-     */
-    getLastCallback() {
-      const cbInfo = this.taskCallbacks.pop();
-      return cbInfo ? cbInfo.cb : undefined;
-    }
-
-    /**
-     * Retrieves and removes the last registered callback for the specified task type.
-     *
-     * @private
-     * @param {string} taskType - The type of task for which the callback was registered.
-     * @returns {Function|undefined} The last callback function for the task type, or undefined if none exist.
-     */
-    getLastCallbackForType(taskType) {
-      for (let i = this.taskCallbacks.length - 1; i >= 0; --i) {
-        const cbInfo = this.taskCallbacks[i];
-        if (cbInfo.type === taskType) {
-          this.taskCallbacks.splice(i, 1);
-          return cbInfo.cb;
-        }
-      }
-      return undefined;
-    }
-  }
-
   const $templateRequestMinErr = minErr("$templateRequest");
 
   /**
@@ -21759,7 +21500,7 @@
       "$sce",
       /**
        *
-       * @param {import('../core/exception-handler.js').ErrorHandler} $exceptionHandler
+       * @param {import('./exception/exception-handler.js').ErrorHandler} $exceptionHandler
        * @param {import('../services/template-cache/interface.ts').TemplateCache} $templateCache
        * @param {import("interface.ts").HttpService} $http
        * @param {*} $sce
@@ -21774,6 +21515,7 @@
           // resources for keys that already are included in there. This also makes
           // AngularTS accept any script directive, no matter its name. However, we
           // still need to unwrap trusted types.
+
           if (!isString(tpl) || !$templateCache.has(tpl)) {
             try {
               tpl = $sce.getTrustedResourceUrl(tpl);
@@ -29621,6 +29363,11 @@
        */
       this.regexp = new RegExp("^" + regexpString + "$");
     }
+
+    /**
+     * @param {string} name
+     * @return {boolean}
+     */
     matches(name) {
       return this.regexp.test("." + name);
     }
@@ -33564,9 +33311,7 @@
       this.stateService = stateService;
       this.stateService.urlService = this; // circular wiring
       this.$locationProvider = $locationProvider;
-
       this.$location = undefined;
-      this.$browser = undefined;
 
       /** Provides services related to the URL */
       this.urlRuleFactory = new UrlRuleFactory(this, this.stateService, globals);
@@ -33619,18 +33364,15 @@
 
     $get = [
       "$location",
-      "$browser",
       "$rootScope",
       /**
        *
        * @param {import('../../services/location/location.js').Location} $location
-       * @param {import('../../services/browser.js').Browser} $browser
        * @param {import('../../core/scope/scope.js').Scope} $rootScope
        * @returns {UrlService}
        */
-      ($location, $browser, $rootScope) => {
+      ($location, $rootScope) => {
         this.$location = $location;
-        this.$browser = $browser;
         $rootScope.$on("$locationChangeSuccess", (evt) => {
           this._urlListeners.forEach((fn) => {
             fn(evt);
@@ -33654,7 +33396,7 @@
     baseHref() {
       return (
         this._baseHref ||
-        (this._baseHref = this.$browser.baseHref() || window.location.pathname)
+        (this._baseHref = getBaseHref() || window.location.pathname)
       );
     }
 
@@ -35637,7 +35379,8 @@
     };
   }
 
-  ngSetterDirective.$inject = ["$parse", "$log"];
+  ngSetterDirective.$inject = [$injectTokens.$parse, $injectTokens.$log];
+
   /**
    * @param {import('../../core/parse/interface.ts').ParseService} $parse
    * @param {import('../../services/log/interface.ts').LogService} $log
@@ -35650,19 +35393,19 @@
         const modelExpression = attrs["ngSetter"];
 
         if (!modelExpression) {
-          $log.warn("ngSetter: Model expression is not provided.");
+          $log.warn("ng-setter: expression null");
           return;
         }
 
         const assignModel = $parse(modelExpression).assign;
 
         if (!assignModel) {
-          $log.warn("ngSetter: Invalid model expression.");
+          $log.warn("ng-setter: expression invalid");
           return;
         }
 
         const updateModel = (value) => {
-          assignModel(scope, value);
+          assignModel(scope, value.trim());
         };
 
         const observer = new MutationObserver((mutationsList) => {
@@ -35682,21 +35425,26 @@
           }
         });
 
-        if (element && element) {
-          observer.observe(element, {
-            childList: true,
-            subtree: true,
-            characterData: true,
-          });
-        } else {
-          $log.warn("ngSetter: Element is not a valid DOM node.");
-          return;
-        }
+        observer.observe(element, {
+          childList: true,
+          subtree: true,
+          characterData: true,
+        });
 
         scope.$on("$destroy", () => observer.disconnect());
         updateModel(element.innerHTML);
       },
     };
+  }
+
+  /**
+   * Delays execution for a specified number of milliseconds.
+   *
+   * @param {number} [t=0] - The number of milliseconds to wait. Defaults to 0.
+   * @returns {Promise<void>} A promise that resolves after the delay.
+   */
+  function wait(t = 0) {
+    return new Promise((resolve) => setTimeout(resolve, t));
   }
 
   /**
@@ -35706,7 +35454,7 @@
   function defineDirective(method) {
     const attrName = "ng" + method.charAt(0).toUpperCase() + method.slice(1);
     const directive = createHttpDirective(method, attrName);
-    directive["$inject"] = ["$http", "$compile", "$log"];
+    directive["$inject"] = [$injectTokens.$http, $injectTokens.$compile, $injectTokens.$log, $injectTokens.$parse, $injectTokens.$state];
     return directive;
   }
 
@@ -35830,9 +35578,11 @@
      * @param {import("interface.ts").HttpService} $http
      * @param {import("../../core/compile/compile.js").CompileFn} $compile
      * @param {import("../../services/log/interface.ts").LogService} $log
+     * @param {import("../../core/parse/interface.ts").ParseService} $parse
+     * @param {import("../../router/state/state-service.js").StateProvider} $state
      * @returns {import('../../interface.ts').Directive}
      */
-    return function ($http, $compile, $log) {
+    return function ($http, $compile, $log, $parse, $state) {
       /**
        * Collects form data from the element or its associated form.
        *
@@ -35893,16 +35643,38 @@
         restrict: "A",
         terminal: true,
         link(scope, element, attrs) {
-          /** @type {EventType} */
-          const eventName = getEventNameForElement(element);
+          const eventName =
+            attrs["trigger"] ||
+            /** @type {EventType} */ getEventNameForElement(element);
+
           const tag = element.tagName.toLowerCase();
 
-          element.addEventListener(eventName, (event) => {
+          if (isDefined(attrs["latch"])) {
+            attrs.$observe(
+              "latch",
+              callBackAfterFirst(() =>
+                element.dispatchEvent(new Event(eventName)),
+              ),
+            );
+          }
+
+          let throttled = false;
+          let intervalId;
+
+          if (isDefined(attrs["interval"])) {
+            element.dispatchEvent(new Event(eventName));
+            intervalId = setInterval(
+              () => element.dispatchEvent(new Event(eventName)),
+              parseInt(attrs["interval"]) || 1000,
+            );
+          }
+
+          element.addEventListener(eventName, async (event) => {
             if (/** @type {HTMLButtonElement} */ (element).disabled) return;
             if (tag === "form") event.preventDefault();
 
-            const swap = element.dataset.swap || "innerHTML";
-            const targetSelector = element.dataset.target;
+            const swap = attrs["swap"] || "innerHTML";
+            const targetSelector = attrs["target"];
             const target = targetSelector
               ? document.querySelector(targetSelector)
               : element;
@@ -35919,7 +35691,33 @@
             }
 
             const handler = (res) => {
+              if (isDefined(attrs["loading"])) {
+                attrs.$set("loading", false);
+              }
+
+              if (isDefined(attrs["loadingClass"])) {
+                attrs.$removeClass(attrs["loadingClass"]);
+              }
+
               const html = res.data;
+              if (200 <= res.status && res.status <= 299) {
+                if (isDefined(attrs["success"])) {
+                  $parse(attrs["success"])(scope, { $res: html });
+                }
+
+                if (isDefined(attrs["stateSuccess"])) {
+                  $state.go(attrs["stateSuccess"]);
+                }
+              } else if (400 <= res.status && res.status <= 599) {
+                if (isDefined(attrs["error"])) {
+                  $parse(attrs["error"])(scope, { $res: html });
+                }
+
+                if (isDefined(attrs["stateError"])) {
+                  $state.go(attrs["stateError"]);
+                }
+              }
+
               handleSwapResponse(
                 html,
                 /** @type {import("../../interface.ts").SwapInsertPosition} */ (
@@ -35931,6 +35729,31 @@
               );
             };
 
+            if (isDefined(attrs["delay"])) {
+              await wait(parseInt(attrs["delay"]) | 0);
+            }
+
+            if (throttled) {
+              return;
+            }
+
+            if (isDefined(attrs["throttle"])) {
+              throttled = true;
+              attrs.$set("throttled", true);
+              setTimeout(() => {
+                attrs.$set("throttled", false);
+                throttled = false;
+              }, parseInt(attrs["throttle"]));
+            }
+
+            if (isDefined(attrs["loading"])) {
+              attrs.$set("loading", true);
+            }
+
+            if (isDefined(attrs["loadingClass"])) {
+              attrs.$addClass(attrs["loadingClass"]);
+            }
+
             if (method === "post" || method === "put") {
               const data = collectFormData(element);
               $http[method](url, data).then(handler).catch(handler);
@@ -35938,6 +35761,8 @@
               $http[method](url).then(handler).catch(handler);
             }
           });
+
+          scope.$on("$destroy", () => clearInterval(intervalId));
         },
       };
     };
@@ -36056,7 +35881,6 @@
               $$animateQueue: AnimateQueueProvider,
               $$AnimateRunner: AnimateRunnerFactoryProvider,
               $$animateAsyncRun: AnimateAsyncRunFactoryProvider,
-              $browser: BrowserProvider,
               $controller: ControllerProvider,
               $exceptionHandler: ExceptionHandlerProvider,
               $filter: FilterProvider,
@@ -36072,7 +35896,6 @@
               $routerGlobals: RouterGlobals,
               $sce: SceProvider,
               $sceDelegate: SceDelegateProvider,
-              $$taskTrackerFactory: TaskTrackerFactoryProvider,
               $templateCache: TemplateCacheProvider,
               $templateRequest: TemplateRequestProvider,
               $urlConfig: UrlConfigProvider,
@@ -36366,12 +36189,7 @@
             name,
           );
         }
-        const moduleInstance = new NgModule(
-          name,
-          requires,
-          /** @type {Function} */ (configFn),
-        );
-        return moduleInstance;
+        return new NgModule(name, requires, /** @type {Function} */ (configFn));
       });
     }
   }

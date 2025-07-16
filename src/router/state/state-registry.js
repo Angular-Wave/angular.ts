@@ -14,7 +14,6 @@ import { $injectTokens, provider } from "../../injection-tokens.js";
  *
  * This API is found at `$stateRegistry` ([[UIRouter.stateRegistry]])
  *
- * @implements {ServiceProvider}
  */
 export class StateRegistryProvider {
   static $inject = provider([

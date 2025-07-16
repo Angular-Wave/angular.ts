@@ -1,12 +1,12 @@
 import { isDefined } from "../../shared/utils.js";
 import { hasAnimate } from "../../shared/utils.js";
-import { $injectTokens } from "../../injection-tokens.js";
+import { $injectTokens as $t } from "../../injection-tokens.js";
 
 ngIncludeDirective.$inject = [
-  $injectTokens.$templateRequest,
-  $injectTokens.$anchorScroll,
-  $injectTokens.$animate,
-  $injectTokens.$exceptionHandler,
+  $t.$templateRequest,
+  $t.$anchorScroll,
+  $t.$animate,
+  $t.$exceptionHandler,
 ];
 
 /**
@@ -133,7 +133,7 @@ export function ngIncludeDirective(
 // We need this directive so that the element content is already filled when
 // the link function of another directive on the same element as ngInclude
 // is called.
-ngIncludeFillContentDirective.$inject = ["$compile"];
+ngIncludeFillContentDirective.$inject = [$t.$compile];
 
 /**
  * @param {import("../../core/compile/compile.js").CompileFn} $compile

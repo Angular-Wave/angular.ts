@@ -16,7 +16,7 @@ export function $IsStateFilter($state) {
   const isFilter = function (state, params, options) {
     return $state.is(state, params, options);
   };
-  //isFilter.$stateful = true;
+  isFilter.$stateful = true;
   return isFilter;
 }
 /**
@@ -37,6 +37,6 @@ export function $IncludedByStateFilter($state) {
   const includesFilter = function (state, params, options) {
     return $state.includes(state, params, options);
   };
-  //includesFilter.$stateful = true;
+  includesFilter.$stateful = true;
   return includesFilter;
 }

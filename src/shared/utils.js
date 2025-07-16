@@ -1229,3 +1229,13 @@ export function callBackAfterFirst(fn) {
     calledOnce = true;
   };
 }
+
+/**
+ * Delays execution for a specified number of milliseconds.
+ *
+ * @param {number} [t=0] - The number of milliseconds to wait. Defaults to 0.
+ * @returns {Promise<void>} A promise that resolves after the delay.
+ */
+export function wait(t = 0) {
+  return new Promise((resolve) => setTimeout(resolve, t));
+}

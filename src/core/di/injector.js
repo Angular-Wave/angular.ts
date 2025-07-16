@@ -33,9 +33,6 @@ export function createInjector(modulesToLoad, strictDi = false) {
   const loadedModules = new Map(); // Keep track of loaded modules to avoid circular dependencies
 
   const providerCache = {
-    /**
-     * @type {import('../../interface.ts').Provider}
-     */
     $provide: {
       provider: supportObject(provider),
       factory: supportObject(factory),
@@ -304,10 +301,6 @@ export function annotate(fn, strictDi, name) {
   return $inject;
 }
 
-/**
- * @param {function(string, any):any} delegate
- * @returns {any}
- */
 function supportObject(delegate) {
   return function (key, value) {
     if (isObject(key)) {

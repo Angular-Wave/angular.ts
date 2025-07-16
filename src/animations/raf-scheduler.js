@@ -5,7 +5,7 @@
 
 /**
  * Service provider that creates a requestAnimationFrame-based scheduler.
- * @implements {ServiceProvider}
+ * @type {ServiceProvider}
  */
 export class RafSchedulerProvider {
   constructor() {

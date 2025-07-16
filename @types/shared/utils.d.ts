@@ -541,6 +541,13 @@ export function callBackOnce(fn: Function): Function;
  * @returns {Function} A new function that will skip the first call.
  */
 export function callBackAfterFirst(fn: Function): Function;
+/**
+ * Delays execution for a specified number of milliseconds.
+ *
+ * @param {number} [t=0] - The number of milliseconds to wait. Defaults to 0.
+ * @returns {Promise<void>} A promise that resolves after the delay.
+ */
+export function wait(t?: number): Promise<void>;
 export const isProxySymbol: unique symbol;
 export const ngAttrPrefixes: string[];
 /**

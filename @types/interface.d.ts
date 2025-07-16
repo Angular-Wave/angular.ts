@@ -62,37 +62,37 @@ export interface Provider {
    * @param name - The name of the service.
    * @param provider - An object with a `$get` property that defines how the service is created.
    */
-  provider(name: string, provider: ServiceProvider): ServiceProvider;
+  provider(name: string, provider: ServiceProvider): Provider;
   /**
    * Register a factory function to create a service.
    * @param name - The name of the service.
    * @param factoryFn - A function (or annotated array) that returns the service instance.
    */
-  factory(name: string, factoryFn: Injectable): ServiceProvider;
+  factory(name: string, factoryFn: Injectable): Provider;
   /**
    * Register a constructor function to create a service.
    * @param name - The name of the service.
    * @param constructor - A class or function to instantiate.
    */
-  service(name: string, constructor: Injectable): ServiceProvider;
+  service(name: string, constructor: Injectable): Provider;
   /**
    * Register a fixed value as a service.
    * @param name - The name of the service.
    * @param val - The value to use.
    */
-  value(name: string, val: any): ServiceProvider;
+  value(name: string, val: any): Provider;
   /**
    * Register a constant value (available during config).
    * @param name - The name of the constant.
    * @param val - The constant value.
    */
-  constant(name: string, val: any): void;
+  constant(name: string, val: any): Provider;
   /**
    * Register a decorator function to modify or replace an existing service.
    * @param name - The name of the service to decorate.
    * @param fn - A function that takes `$delegate` and returns a decorated service.
    */
-  decorator(name: string, fn: Injectable): void;
+  decorator(name: string, fn: Injectable): Provider;
 }
 /**
  * A filter function takes an input and optional arguments, and returns a transformed value.

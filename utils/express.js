@@ -116,6 +116,10 @@ app.get("/hello2", (req, res) => {
   res.send("Hello2");
 });
 
+app.get("/include", (req, res) => {
+  res.send("<div ng-include=\"'/mock/hello'\"></div>");
+});
+
 app.get("/third", (req, res) => {
   res.send("<div third>{{1+2}}</div>");
 });
@@ -136,7 +140,7 @@ app.get("/422", (req, res) => {
   res.status(422).send("Invalid data");
 });
 
-app.get("/never", (req, res) => {
+app.get("/never", () => {
   setTimeout(() => {}, 500);
 });
 

@@ -1,3 +1,4 @@
+import { $injectTokens as $t } from "../../injection-tokens.js";
 import { isObject } from "../../shared/utils.js";
 import { filterFilter } from "../../filters/filter.js";
 import { jsonFilter } from "../../filters/filters.js";
@@ -8,48 +9,47 @@ import {
   $IsStateFilter,
 } from "../../router/state-filters.js";
 
-FilterProvider.$inject = ["$provide"];
+const SUFFIX = "Filter";
 
-/**
- * @param {import('../../interface.ts').Provider} $provide
- */
-export function FilterProvider($provide) {
-  const suffix = "Filter";
+export class FilterProvider {
+  static $inject = [$t.$provide];
+
+  /**
+   * @param {import('../../interface.ts').Provider} $provide
+   */
+  constructor($provide) {
+    this.$provide = $provide;
+    this.register({
+      filter: filterFilter,
+      json: jsonFilter,
+      limitTo: limitToFilter,
+      orderBy: orderByFilter,
+      isState: $IsStateFilter,
+      includedByState: $IncludedByStateFilter,
+    });
+  }
 
   /**
    * @param {string|Record<string, import('../../interface.ts').FilterFactory>} name
-   * @param {import('../../interface.ts').FilterFactory} factory
-   * @return {import('../../interface.ts').ServiceProvider}
+   * @param {import('../../interface.ts').FilterFactory} [factory]
+   * @return {import('../../interface.ts').Provider}
    */
-  function register(name, factory) {
+  register(name, factory) {
     if (isObject(name)) {
       const filters = {};
       Object.entries(name).forEach(([key, filter]) => {
-        filters[key] = register(key, filter);
+        filters[key] = this.register(key, filter);
       });
     }
-    return $provide.factory(name + suffix, factory);
+    return this.$provide.factory(name + SUFFIX, factory);
   }
 
-  this.register = register;
-
-  this.$get = [
-    "$injector",
+  $get = [
+    $t.$injector,
     /**
      * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
-     * @returns
+     * @returns {import('../../interface.ts').FilterFn}
      */
-    function ($injector) {
-      return function (name) {
-        return $injector.get(name + suffix);
-      };
-    },
+    ($injector) => (/** @type {string} */ name) => $injector.get(name + SUFFIX),
   ];
-
-  register("filter", filterFilter);
-  register("json", jsonFilter);
-  register("limitTo", limitToFilter);
-  register("orderBy", orderByFilter);
-  register("isState", $IsStateFilter);
-  register("includedByState", $IncludedByStateFilter);
 }

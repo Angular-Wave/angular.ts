@@ -13,12 +13,7 @@ describe("ng-get", () => {
     angular.module("default", []).config([
       "$stateProvider",
       "$locationProvider",
-      ($stateProvider, $locationProvider) => {
-        // $locationProvider.html5ModeConf = {
-        //   enabled: true,
-        //   requireBase: false,
-        //   rewriteLinks: false,
-        // };
+      ($stateProvider) => {
         $stateProvider
           .state({
             name: "success",

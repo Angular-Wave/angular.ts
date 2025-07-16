@@ -4,9 +4,9 @@
  */
 /**
  * Service provider that creates a requestAnimationFrame-based scheduler.
- * @implements {ServiceProvider}
+ * @type {ServiceProvider}
  */
-export class RafSchedulerProvider implements ServiceProvider {
+export class RafSchedulerProvider {
   /**
    * Internal task queue, where each item is an array of functions to run.
    * @type {Array<Array<() => void>>}

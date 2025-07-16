@@ -1,12 +1,12 @@
 import { CompileProvider } from "./core/compile/compile.js";
 import {
+  hiddenInputBrowserCacheDirective,
   inputDirective,
   ngValueDirective,
-  hiddenInputBrowserCacheDirective,
 } from "./directive/input/input.js";
 import { formDirective, ngFormDirective } from "./directive/form/form.js";
 import { scriptDirective } from "./directive/script/script.js";
-import { selectDirective, optionDirective } from "./directive/select/select.js";
+import { optionDirective, selectDirective } from "./directive/select/select.js";
 import {
   ngBindDirective,
   ngBindHtmlDirective,
@@ -34,9 +34,9 @@ import { ngRefDirective } from "./directive/ref/ref.js";
 import { ngRepeatDirective } from "./directive/repeat/repeat.js";
 import { ngStyleDirective } from "./directive/style/style.js";
 import {
+  ngSwitchDefaultDirective,
   ngSwitchDirective,
   ngSwitchWhenDirective,
-  ngSwitchDefaultDirective,
 } from "./directive/switch/switch.js";
 import { ngOptionsDirective } from "./directive/options/options.js";
 import { ngTranscludeDirective } from "./directive/transclude/transclude.js";
@@ -62,15 +62,15 @@ import { ExceptionHandlerProvider } from "./services/exception/exception-handler
 import { FilterProvider } from "./core/filter/filter.js";
 import { InterpolateProvider } from "./core/interpolate/interpolate.js";
 import {
-  HttpProvider,
   HttpParamSerializerProvider,
+  HttpProvider,
 } from "./services/http/http.js";
 import { HttpBackendProvider } from "./services/http-backend/http-backend.js";
 import { LocationProvider } from "./services/location/location.js";
 import { LogProvider } from "./services/log/log.js";
 import { ParseProvider } from "./core/parse/parse.js";
 import { RootScopeProvider } from "./core/scope/scope.js";
-import { SceProvider, SceDelegateProvider } from "./services/sce/sce.js";
+import { SceDelegateProvider, SceProvider } from "./services/sce/sce.js";
 import { TemplateRequestProvider } from "./services/template-request.js";
 import { SanitizeUriProvider } from "./core/sanitize/sanitize-uri.js";
 import {
@@ -139,13 +139,12 @@ import {
  * @returns {import('./core/di/ng-module.js').NgModule} `ng` module
  */
 export function registerNgModule(angular) {
-  const ng = angular
+  return angular
     .module(
       "ng",
       [],
       [
         "$provide",
-        /** @type {import('./interface.js').Provider} */
         ($provide) => {
           // $$sanitizeUriProvider needs to be before $compileProvider as it is used by it.
           $provide.provider({
@@ -233,6 +232,7 @@ export function registerNgModule(angular) {
             })
             .directive(ngAttributeAliasDirectives)
             .directive(ngEventDirectives);
+          // @ts-ignore
           $provide.provider({
             $aria: AriaProvider,
             $anchorScroll: AnchorScrollProvider,
@@ -287,6 +287,4 @@ export function registerNgModule(angular) {
       },
     ])
     .value("$trace", trace);
-
-  return ng;
 }

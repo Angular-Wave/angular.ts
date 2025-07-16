@@ -4,9 +4,8 @@
  *
  * This is where we hold the global mutable state such as current state, current
  * params, current transition, etc.
- * @implements {ServiceProvider}
  */
-export class RouterGlobals implements ServiceProvider {
+export class RouterGlobals {
   /**
    * Current parameter values
    *

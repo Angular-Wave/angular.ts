@@ -137,7 +137,7 @@ export class ASTInterpreter {
         if (ast.filter) right = this.$filter(ast.callee.name);
         if (!ast.filter) right = this.recurse(ast.callee, true);
         return ast.filter
-          ? function (scope, locals, assign) {
+          ? (scope, locals, assign) => {
               const values = [];
               for (let i = 0; i < args.length; ++i) {
                 const res = args[i](scope, locals, assign);
@@ -150,7 +150,7 @@ export class ASTInterpreter {
                 ? { context: undefined, name: undefined, value }
                 : value;
             }
-          : function (scope, locals, assign) {
+          : (scope, locals, assign) => {
               const rhs = right(scope, locals, assign);
               let value;
               if (rhs.value != null && isFunction(rhs.value)) {
@@ -166,7 +166,7 @@ export class ASTInterpreter {
       case ASTType.AssignmentExpression:
         left = this.recurse(ast.left, true, 1);
         right = this.recurse(ast.right);
-        return function (scope, locals, assign) {
+        return (scope, locals, assign) => {
           const lhs = left(scope, locals, assign);
           const rhs = right(scope, locals, assign);
           lhs.context[lhs.name] = rhs;
@@ -177,7 +177,7 @@ export class ASTInterpreter {
         ast.elements.forEach((expr) => {
           args.push(self.recurse(expr));
         });
-        return function (scope, locals, assign) {
+        return (scope, locals, assign) => {
           const value = [];
           for (let i = 0; i < args.length; ++i) {
             value.push(args[i](scope, locals, assign));
@@ -204,7 +204,7 @@ export class ASTInterpreter {
             });
           }
         });
-        return function (scope, locals, assign) {
+        return (scope, locals, assign) => {
           const value = {};
           for (let i = 0; i < args.length; ++i) {
             if (args[i].computed) {
@@ -220,17 +220,12 @@ export class ASTInterpreter {
           return context ? { value } : value;
         };
       case ASTType.ThisExpression:
-        return function (scope) {
-          return context ? { value: scope } : scope;
-        };
+        return (scope) => (context ? { value: scope } : scope);
       case ASTType.LocalsExpression:
-        return function (scope, locals) {
-          return context ? { value: locals } : locals;
-        };
+        return (scope, locals) => (context ? { value: locals } : locals);
       case ASTType.NGValueParameter:
-        return function (scope, locals, assign) {
-          return context ? { value: assign } : assign;
-        };
+        return (scope, locals, assign) =>
+          context ? { value: assign } : assign;
     }
   }
 
@@ -241,7 +236,7 @@ export class ASTInterpreter {
    * @returns {function} The unary plus function.
    */
   "unary+"(argument, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       let arg = argument(scope, locals, assign);
       if (isDefined(arg)) {
         arg = +arg;
@@ -259,7 +254,7 @@ export class ASTInterpreter {
    * @returns {function} The unary minus function.
    */
   "unary-"(argument, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       let arg = argument(scope, locals, assign);
       if (isDefined(arg)) {
         arg = -arg;
@@ -277,7 +272,7 @@ export class ASTInterpreter {
    * @returns {function} The unary negation function.
    */
   "unary!"(argument, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = !argument(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -291,7 +286,7 @@ export class ASTInterpreter {
    * @returns {function} The binary plus function.
    */
   "binary+"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const lhs = left(scope, locals, assign);
       const rhs = right(scope, locals, assign);
       const arg = plusFn(lhs, rhs);
@@ -307,7 +302,7 @@ export class ASTInterpreter {
    * @returns {function} The binary minus function.
    */
   "binary-"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const lhs = left(scope, locals, assign);
       const rhs = right(scope, locals, assign);
       const arg = (isDefined(lhs) ? lhs : 0) - (isDefined(rhs) ? rhs : 0);
@@ -323,14 +318,14 @@ export class ASTInterpreter {
    * @returns {function} The binary multiplication function.
    */
   "binary*"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) * right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
   }
 
   "binary/"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) / right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -344,7 +339,7 @@ export class ASTInterpreter {
    * @returns {function} The binary division function.
    */
   "binary%"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) % right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -358,7 +353,7 @@ export class ASTInterpreter {
    * @returns {function} The binary strict equality function.
    */
   "binary==="(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) === right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -372,7 +367,7 @@ export class ASTInterpreter {
    * @returns {function} The binary strict inequality function.
    */
   "binary!=="(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) !== right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -386,7 +381,7 @@ export class ASTInterpreter {
    * @returns {function} The binary equality function.
    */
   "binary=="(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) == right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -400,7 +395,7 @@ export class ASTInterpreter {
    * @returns {function} The binary inequality function.
    */
   "binary!="(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) != right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -414,7 +409,7 @@ export class ASTInterpreter {
    * @returns {function} The binary less-than function.
    */
   "binary<"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) < right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -428,7 +423,7 @@ export class ASTInterpreter {
    * @returns {function} The binary greater-than function.
    */
   "binary>"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) > right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -442,7 +437,7 @@ export class ASTInterpreter {
    * @returns {function} The binary less-than-or-equal-to function.
    */
   "binary<="(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) <= right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -456,7 +451,7 @@ export class ASTInterpreter {
    * @returns {function} The binary greater-than-or-equal-to function.
    */
   "binary>="(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) >= right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -483,7 +478,7 @@ export class ASTInterpreter {
    * @returns {function} The binary logical OR function.
    */
   "binary||"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) || right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -498,7 +493,7 @@ export class ASTInterpreter {
    * @returns {function} The ternary conditional function.
    */
   "ternary?:"(test, alternate, consequent, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = test(scope, locals, assign)
         ? alternate(scope, locals, assign)
         : consequent(scope, locals, assign);
@@ -513,9 +508,8 @@ export class ASTInterpreter {
    * @returns {import("./interface.ts").CompiledExpressionFunction} The function returning the literal value.
    */
   value(value, context) {
-    return function () {
-      return context ? { context: undefined, name: undefined, value } : value;
-    };
+    return () =>
+      context ? { context: undefined, name: undefined, value } : value;
   }
 
   /**
@@ -526,7 +520,7 @@ export class ASTInterpreter {
    * @returns {import("./interface.ts").CompiledExpressionFunction} The function returning the identifier value.
    */
   identifier(name, context, create) {
-    return function (scope, locals) {
+    return (scope, locals) => {
       const base = locals && name in locals ? locals : scope;
       if (create && create !== 1 && base && base[name] == null) {
         base[name] = {};
@@ -551,7 +545,7 @@ export class ASTInterpreter {
    * @returns {function} The function returning the computed member value.
    */
   computedMember(left, right, context, create) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const lhs = left(scope, locals, assign);
       let rhs;
       let value;
@@ -581,7 +575,7 @@ export class ASTInterpreter {
    * @returns {function} The function returning the non-computed member value.
    */
   nonComputedMember(left, right, context, create) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const lhs = left(scope, locals, assign);
       if (create && create !== 1) {
         if (lhs && lhs[right] == null) {

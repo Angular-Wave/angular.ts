@@ -22,6 +22,7 @@ export function browserTrigger(element, options) {
 
 /**
  * Delays execution for a specified number of milliseconds.
+ * TODO remove
  *
  * @param {number} [t=0] - The number of milliseconds to wait. Defaults to 0.
  * @returns {Promise<void>} A promise that resolves after the delay.

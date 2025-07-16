@@ -8,7 +8,6 @@ import { Queue } from "./common/queue.js";
  *
  * This is where we hold the global mutable state such as current state, current
  * params, current transition, etc.
- * @implements {ServiceProvider}
  */
 export class RouterGlobals {
   constructor() {

@@ -1,9 +1,9 @@
 import { isString } from "../shared/utils.js";
 import { NG_ANIMATE_CHILDREN_DATA } from "./shared.js";
 import { setCacheData } from "../shared/dom.js";
-import { $injectTokens } from "../injection-tokens.js";
+import { $injectTokens as $t } from "../injection-tokens.js";
 
-$$AnimateChildrenDirective.$inject = [$injectTokens.$interpolate];
+$$AnimateChildrenDirective.$inject = [$t.$interpolate];
 
 /**
  * @param {*} $interpolate

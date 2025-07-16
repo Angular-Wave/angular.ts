@@ -1,6 +1,10 @@
 import { $injectTokens as $ } from "../../injection-tokens.js";
-import { wait } from "../../shared/test-utils";
-import { callBackAfterFirst, isDefined, isObject } from "../../shared/utils.js";
+import {
+  callBackAfterFirst,
+  isDefined,
+  isObject,
+  wait,
+} from "../../shared/utils.js";
 
 /**
  * @param {"get" | "delete" | "post" | "put"} method
@@ -13,9 +17,16 @@ function defineDirective(method) {
   return directive;
 }
 
+/** @type {import('../../interface.ts').DirectiveFactory} */
 export const ngGetDirective = defineDirective("get");
+
+/** @type {import('../../interface.ts').DirectiveFactory} */
 export const ngDeleteDirective = defineDirective("delete");
+
+/** @type {import('../../interface.ts').DirectiveFactory} */
 export const ngPostDirective = defineDirective("post");
+
+/** @type {import('../../interface.ts').DirectiveFactory} */
 export const ngPutDirective = defineDirective("put");
 
 /**
