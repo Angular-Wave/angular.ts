@@ -12,14 +12,14 @@ export function getEventNameForElement(element: Element): EventType;
  * Handles DOM manipulation based on a swap strategy and server-rendered HTML.
  *
  * @param {string} html - The HTML string returned from the server.
- * @param {import("../../interface.ts").SwapInsertPosition} swap
+ * @param {import("../../interface.ts").SwapModeType} swap
  * @param {Element} target - The target DOM element to apply the swap to.
  * @param {import('../../core/scope/scope.js').Scope} scope
  * @param {import('../../core/compile/compile.js').CompileFn} $compile
  */
 export function handleSwapResponse(
   html: string,
-  swap: import("../../interface.ts").SwapInsertPosition,
+  swap: import("../../interface.ts").SwapModeType,
   target: Element,
   scope: import("../../core/scope/scope.js").Scope,
   $compile: import("../../core/compile/compile.js").CompileFn,

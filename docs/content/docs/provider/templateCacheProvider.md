@@ -11,8 +11,8 @@ Initializes cache instance for `$templateCache` service as an empty
 object.
 
 An alternative caching implementation can be provided by implementing
-[MapLike](../../../typedoc/interfaces/MapLike.html) interface for web standard
-storage options like `localStorage`, `sessionStorage`, `IndexedDB`, or
+[TemplateCache](../../../typedoc/types/TemplateCache.html) interface for web
+standard storage options like `localStorage`, `sessionStorage`, `IndexedDB`, or
 `Cache API`. You can also use third-party storage engines like
 [pouch](https://github.com/pouchdb/pouchdb) or
 [SQLite](https://github.com/sqlitebrowser/sqlitebrowser). With WebAssembly

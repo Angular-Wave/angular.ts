@@ -53,7 +53,7 @@ export function getEventNameForElement(element) {
  * Handles DOM manipulation based on a swap strategy and server-rendered HTML.
  *
  * @param {string} html - The HTML string returned from the server.
- * @param {import("../../interface.ts").SwapInsertPosition} swap
+ * @param {import("../../interface.ts").SwapModeType} swap
  * @param {Element} target - The target DOM element to apply the swap to.
  * @param {import('../../core/scope/scope.js').Scope} scope
  * @param {import('../../core/compile/compile.js').CompileFn} $compile
@@ -286,9 +286,7 @@ export function createHttpDirective(method, attrName) {
 
             handleSwapResponse(
               html,
-              /** @type {import("../../interface.ts").SwapInsertPosition} */ (
-                swap
-              ),
+              /** @type {import("../../interface.ts").SwapModeType} */ (swap),
               target,
               scope,
               $compile,
