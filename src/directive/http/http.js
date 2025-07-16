@@ -1,3 +1,5 @@
+import { $injectTokens as $ } from "../../injection-tokens.js";
+import { wait } from "../../shared/test-utils";
 import { callBackAfterFirst, isDefined, isObject } from "../../shared/utils.js";
 
 /**
@@ -7,7 +9,7 @@ import { callBackAfterFirst, isDefined, isObject } from "../../shared/utils.js";
 function defineDirective(method) {
   const attrName = "ng" + method.charAt(0).toUpperCase() + method.slice(1);
   const directive = createHttpDirective(method, attrName);
-  directive["$inject"] = ["$http", "$compile", "$log"];
+  directive["$inject"] = [$.$http, $.$compile, $.$log, $.$parse, $.$state];
   return directive;
 }
 
@@ -131,9 +133,11 @@ export function createHttpDirective(method, attrName) {
    * @param {import("interface.ts").HttpService} $http
    * @param {import("../../core/compile/compile.js").CompileFn} $compile
    * @param {import("../../services/log/interface.ts").LogService} $log
+   * @param {import("../../core/parse/interface.ts").ParseService} $parse
+   * @param {import("../../router/state/state-service.js").StateProvider} $state
    * @returns {import('../../interface.ts').Directive}
    */
-  return function ($http, $compile, $log) {
+  return function ($http, $compile, $log, $parse, $state) {
     /**
      * Collects form data from the element or its associated form.
      *
@@ -209,7 +213,18 @@ export function createHttpDirective(method, attrName) {
           );
         }
 
-        element.addEventListener(eventName, (event) => {
+        let throttled = false;
+        let intervalId;
+
+        if (isDefined(attrs["interval"])) {
+          element.dispatchEvent(new Event(eventName));
+          intervalId = setInterval(
+            () => element.dispatchEvent(new Event(eventName)),
+            parseInt(attrs["interval"]) || 1000,
+          );
+        }
+
+        element.addEventListener(eventName, async (event) => {
           if (/** @type {HTMLButtonElement} */ (element).disabled) return;
           if (tag === "form") event.preventDefault();
 
@@ -231,7 +246,33 @@ export function createHttpDirective(method, attrName) {
           }
 
           const handler = (res) => {
+            if (isDefined(attrs["loading"])) {
+              attrs.$set("loading", false);
+            }
+
+            if (isDefined(attrs["loadingClass"])) {
+              attrs.$removeClass(attrs["loadingClass"]);
+            }
+
             const html = res.data;
+            if (200 <= res.status && res.status <= 299) {
+              if (isDefined(attrs["success"])) {
+                $parse(attrs["success"])(scope, { $res: html });
+              }
+
+              if (isDefined(attrs["stateSuccess"])) {
+                $state.go(attrs["stateSuccess"]);
+              }
+            } else if (400 <= res.status && res.status <= 599) {
+              if (isDefined(attrs["error"])) {
+                $parse(attrs["error"])(scope, { $res: html });
+              }
+
+              if (isDefined(attrs["stateError"])) {
+                $state.go(attrs["stateError"]);
+              }
+            }
+
             handleSwapResponse(
               html,
               /** @type {import("../../interface.ts").SwapInsertPosition} */ (
@@ -243,6 +284,31 @@ export function createHttpDirective(method, attrName) {
             );
           };
 
+          if (isDefined(attrs["delay"])) {
+            await wait(parseInt(attrs["delay"]) | 0);
+          }
+
+          if (throttled) {
+            return;
+          }
+
+          if (isDefined(attrs["throttle"])) {
+            throttled = true;
+            attrs.$set("throttled", true);
+            setTimeout(() => {
+              attrs.$set("throttled", false);
+              throttled = false;
+            }, parseInt(attrs["throttle"]));
+          }
+
+          if (isDefined(attrs["loading"])) {
+            attrs.$set("loading", true);
+          }
+
+          if (isDefined(attrs["loadingClass"])) {
+            attrs.$addClass(attrs["loadingClass"]);
+          }
+
           if (method === "post" || method === "put") {
             const data = collectFormData(element);
             $http[method](url, data).then(handler).catch(handler);
@@ -250,6 +316,8 @@ export function createHttpDirective(method, attrName) {
             $http[method](url).then(handler).catch(handler);
           }
         });
+
+        scope.$on("$destroy", () => clearInterval(intervalId));
       },
     };
   };

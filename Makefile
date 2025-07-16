@@ -28,10 +28,11 @@ types:
 	@rm -rf @types
 	@echo "Generating *.d.ts"
 	@npx -p typescript tsc --project tsconfig.types.json
+	$(MAKE) pretty
 
 
 TYPEDOC_DIR = docs/static/typedoc
-typedoc: types pretty
+typedoc: types
 	@rm -rf $(TYPEDOC_DIR)
 	@npm run generate-docs
 	@npx prettier ./typedoc --write

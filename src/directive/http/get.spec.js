@@ -10,7 +10,28 @@ describe("ng-get", () => {
     dealoc(el);
     el.innerHTML = "";
     let angular = new Angular();
-    angular.module("default", []);
+    angular.module("default", []).config([
+      "$stateProvider",
+      "$locationProvider",
+      ($stateProvider, $locationProvider) => {
+        // $locationProvider.html5ModeConf = {
+        //   enabled: true,
+        //   requireBase: false,
+        //   rewriteLinks: false,
+        // };
+        $stateProvider
+          .state({
+            name: "success",
+            url: "/success",
+            template: `success`,
+          })
+          .state({
+            name: "error",
+            url: "/error",
+            template: `error`,
+          });
+      },
+    ]);
     angular
       .bootstrap(el, ["default"])
       .invoke((_$compile_, _$rootScope_, _$log_) => {
@@ -150,6 +171,25 @@ describe("ng-get", () => {
       await wait(100);
       expect(el.innerText).toBe("Load");
       scope.latch = true;
+      await wait(100);
+      expect(el.innerText).not.toBe("Load");
+      const firstRes = parseInt(el.innerText);
+      expect(firstRes).toBeLessThan(Date.now());
+
+      browserTrigger(el.querySelector("button"), "mouseover");
+      await wait(100);
+      const secondRes = parseInt(el.innerText);
+      expect(secondRes).toBeGreaterThan(firstRes);
+    });
+
+    it("should still work with ng-event directives with latch change", async () => {
+      el.innerHTML =
+        '<button ng-get="/mock/now" data-latch="{{ latch }}" ng-mouseover="latch = !latch">Load</button>';
+      const scope = $rootScope.$new();
+      $compile(el)(scope);
+      await wait(100);
+      expect(el.innerText).toBe("Load");
+      browserTrigger(el.querySelector("button"), "mouseover");
       await wait(100);
       expect(el.innerText).not.toBe("Load");
       const firstRes = parseInt(el.innerText);
@@ -304,6 +344,150 @@ describe("ng-get", () => {
       const found = el.querySelector("#found");
       const next = found.nextSibling;
       expect(el.lastChild.textContent).toBe("Hello");
+    });
+  });
+
+  describe("data-delay", () => {
+    it("should accept delay as a data attribute", async () => {
+      const scope = $rootScope.$new();
+      el.innerHTML =
+        '<button ng-get="/mock/hello" data-delay="1000">Load</button>';
+      $compile(el)(scope);
+      browserTrigger(el.querySelector("button"), "click");
+      await wait(100);
+      expect(el.innerText).toBe("Load");
+
+      await wait(1000);
+      expect(el.innerText).toBe("Hello");
+    });
+  });
+
+  describe("data-throttle", () => {
+    it("should accept throttle as a data attribute", async () => {
+      const scope = $rootScope.$new();
+      el.innerHTML =
+        '<button ng-get="/mock/now" data-throttle="1000">Load</button>';
+      $compile(el)(scope);
+      browserTrigger(el.querySelector("button"), "click");
+      await wait(100);
+      const firstRes = parseInt(el.innerText);
+      expect(firstRes).toBeLessThan(Date.now());
+      browserTrigger(el.querySelector("button"), "click");
+      await wait(100);
+      const secondRes = parseInt(el.innerText);
+      expect(secondRes).toBe(firstRes);
+
+      await wait(900);
+      // should release the throttle
+      browserTrigger(el.querySelector("button"), "click");
+      await wait(100);
+      const thirdRes = parseInt(el.innerText);
+      expect(thirdRes).toBeGreaterThan(firstRes);
+    });
+  });
+
+  describe("data-interval", () => {
+    it("should accept delay as a data attribute and should stop on $destroy", async () => {
+      const scope = $rootScope.$new();
+      el.innerHTML =
+        '<button ng-get="/mock/now" data-interval="100">Load</button>';
+      $compile(el)(scope);
+
+      await wait(200);
+      await wait(200);
+      const firstRes = parseInt(el.innerText);
+      expect(firstRes).toBeLessThan(Date.now());
+      await wait(200);
+      await wait(200);
+      const secondRes = parseInt(el.innerText);
+      expect(secondRes).toBeGreaterThan(firstRes);
+      await wait(200);
+      await wait(200);
+      const thirdRes = parseInt(el.innerText);
+      expect(thirdRes).toBeGreaterThan(secondRes);
+
+      scope.$broadcast("$destroy");
+
+      await wait(200);
+      await wait(200);
+      const finalRes = parseInt(el.innerText);
+
+      await wait(1000);
+      await wait(200);
+      expect(parseInt(el.innerText)).toEqual(finalRes);
+    });
+  });
+
+  describe("data-loading", () => {
+    it("should update loading data attribute", async () => {
+      const scope = $rootScope.$new();
+      el.innerHTML = '<button ng-get="/mock/now" data-loading>Load</button>';
+      $compile(el)(scope);
+      browserTrigger(el.querySelector("button"), "click");
+      expect(el.querySelector("button").dataset.loading).toEqual("true");
+      await wait(200);
+      expect(el.querySelector("button").dataset.loading).toEqual("false");
+    });
+  });
+
+  describe("data-loading-class", () => {
+    it("should update class from data-loading-class attribute", async () => {
+      const scope = $rootScope.$new();
+      el.innerHTML =
+        '<button ng-get="/mock/now" data-loading-class="red">Load</button>';
+      $compile(el)(scope);
+      browserTrigger(el.querySelector("button"), "click");
+      expect(el.querySelector("button").classList.contains("red")).toBeTrue();
+      await wait(200);
+      expect(el.querySelector("button").classList.contains("red")).toBeFalse();
+    });
+  });
+
+  describe("data-success", () => {
+    it("should evaluate expression passing result", async () => {
+      const scope = $rootScope.$new();
+      el.innerHTML =
+        '<button ng-get="/mock/hello" data-success="res = $res">Load</button>';
+      $compile(el)(scope);
+      browserTrigger(el.querySelector("button"), "click");
+      await wait(200);
+      expect(scope.res).toEqual("Hello");
+    });
+  });
+
+  describe("data-state-success", () => {
+    it("should call stateService with success state", async () => {
+      const scope = $rootScope.$new();
+      el.innerHTML =
+        '<button ng-get="/mock/hello" data-state-success="success">Load</button><ng-view id="view"></ng-view>';
+      $compile(el)(scope);
+      browserTrigger(el.querySelector("button"), "click");
+      await wait(200);
+      expect(document.getElementById("view").innerHTML).toEqual("success");
+    });
+  });
+
+  describe("data-state-error", () => {
+    it("should call stateService with success state", async () => {
+      const scope = $rootScope.$new();
+      el.innerHTML =
+        '<button ng-get="/mock/422" data-state-success="success" data-state-error="error">Load</button><ng-view id="view"></ng-view>';
+      $compile(el)(scope);
+      browserTrigger(el.querySelector("button"), "click");
+      await wait(200);
+      expect(document.getElementById("view").innerHTML).toEqual("error");
+    });
+  });
+
+  describe("data-error", () => {
+    it("should evaluate expression passing result", async () => {
+      const scope = $rootScope.$new();
+      el.innerHTML =
+        '<button ng-get="/mock/422" data-error="res = $res">Load</button>';
+      $compile(el)(scope);
+      browserTrigger(el.querySelector("button"), "click");
+      await wait(200);
+      expect(scope.res).toEqual("Invalid data");
     });
   });
 });
