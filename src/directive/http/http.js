@@ -228,8 +228,8 @@ export function createHttpDirective(method, attrName) {
           if (/** @type {HTMLButtonElement} */ (element).disabled) return;
           if (tag === "form") event.preventDefault();
 
-          const swap = element.dataset.swap || "innerHTML";
-          const targetSelector = element.dataset.target;
+          const swap = attrs["swap"] || "innerHTML";
+          const targetSelector = attrs["target"];
           const target = targetSelector
             ? document.querySelector(targetSelector)
             : element;
