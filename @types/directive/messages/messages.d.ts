@@ -18,54 +18,15 @@ export namespace ngMessagesIncludeDirective {
   let $inject_1: string[];
   export { $inject_1 as $inject };
 }
-export function ngMessageDirective($animate: any): {
-  restrict: string;
-  transclude: string;
-  priority: number;
-  terminal: boolean;
-  require: string;
-  link(
-    scope: any,
-    element: any,
-    attrs: any,
-    ngMessagesCtrl: any,
-    $transclude: any,
-  ): void;
-};
-export namespace ngMessageDirective {
-  let $inject_2: string[];
-  export { $inject_2 as $inject };
-}
-export function ngMessageExpDirective($animate: any): {
-  restrict: string;
-  transclude: string;
-  priority: number;
-  terminal: boolean;
-  require: string;
-  link(
-    scope: any,
-    element: any,
-    attrs: any,
-    ngMessagesCtrl: any,
-    $transclude: any,
-  ): void;
-};
-export namespace ngMessageExpDirective {}
-export function ngMessageDefaultDirective($animate: any): {
-  restrict: string;
-  transclude: string;
-  priority: number;
-  terminal: boolean;
-  require: string;
-  link(
-    scope: any,
-    element: any,
-    attrs: any,
-    ngMessagesCtrl: any,
-    $transclude: any,
-  ): void;
-};
-export namespace ngMessageDefaultDirective {}
+export const ngMessageDirective: (
+  any: any,
+) => import("../../interface.js").Directive;
+export const ngMessageExpDirective: (
+  any: any,
+) => import("../../interface.js").Directive;
+export const ngMessageDefaultDirective: (
+  any: any,
+) => import("../../interface.js").Directive;
 declare class NgMessageCtrl {
   /**
    * @param {Element} $element

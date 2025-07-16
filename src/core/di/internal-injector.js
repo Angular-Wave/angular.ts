@@ -186,8 +186,11 @@ export class InjectorService extends AbstractInjector {
    */
   constructor(providerInjector, strictDi) {
     super(strictDi);
+
+    /** @type {ProviderInjector} */
     this.providerInjector = providerInjector;
-    this.modules = this.providerInjector.modules;
+    /** @type {Object.<string, import("./ng-module.js").NgModule>} */
+    this.modules = providerInjector.modules;
   }
 
   /**

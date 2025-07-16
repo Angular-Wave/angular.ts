@@ -1,10 +1,15 @@
-import { $injectTokens } from "../../injection-tokens.js";
+import { $injectTokens as $t } from "../../injection-tokens.js";
 import { isFunction, isString, assert } from "../../shared/utils.js";
 
+/** @private */
 export const INJECTOR_LITERAL = "$injector";
+/** @private */
 export const COMPILE_LITERAL = "$compileProvider";
+/** @private */
 export const ANIMATION_LITERAL = "$animateProvider";
+/** @private */
 export const FILTER_LITERAL = "$filterProvider";
+/** @private */
 export const CONTROLLER_LITERAL = "$controllerProvider";
 
 /**
@@ -61,7 +66,7 @@ export class NgModule {
    * @returns {NgModule}
    */
   value(name, object) {
-    this.invokeQueue.push([$injectTokens.$provide, "value", [name, object]]);
+    this.invokeQueue.push([$t.$provide, "value", [name, object]]);
     return this;
   }
 
@@ -71,11 +76,7 @@ export class NgModule {
    * @returns {NgModule}
    */
   constant(name, object) {
-    this.invokeQueue.unshift([
-      $injectTokens.$provide,
-      "constant",
-      [name, object],
-    ]);
+    this.invokeQueue.unshift([$t.$provide, "constant", [name, object]]);
     return this;
   }
 
@@ -120,11 +121,7 @@ export class NgModule {
     if (providerFunction && isFunction(providerFunction)) {
       providerFunction.$$moduleName = name;
     }
-    this.invokeQueue.push([
-      $injectTokens.$provide,
-      "factory",
-      [name, providerFunction],
-    ]);
+    this.invokeQueue.push([$t.$provide, "factory", [name, providerFunction]]);
     return this;
   }
 
@@ -137,11 +134,7 @@ export class NgModule {
     if (serviceFunction && isFunction(serviceFunction)) {
       serviceFunction.$$moduleName = name;
     }
-    this.invokeQueue.push([
-      $injectTokens.$provide,
-      "service",
-      [name, serviceFunction],
-    ]);
+    this.invokeQueue.push([$t.$provide, "service", [name, serviceFunction]]);
     return this;
   }
 
@@ -154,11 +147,7 @@ export class NgModule {
     if (providerType && isFunction(providerType)) {
       providerType.$$moduleName = name;
     }
-    this.invokeQueue.push([
-      $injectTokens.$provide,
-      "provider",
-      [name, providerType],
-    ]);
+    this.invokeQueue.push([$t.$provide, "provider", [name, providerType]]);
     return this;
   }
 
@@ -171,11 +160,7 @@ export class NgModule {
     if (decorFn && isFunction(decorFn)) {
       decorFn.$$moduleName = name;
     }
-    this.configBlocks.push([
-      $injectTokens.$provide,
-      "decorator",
-      [name, decorFn],
-    ]);
+    this.configBlocks.push([$t.$provide, "decorator", [name, decorFn]]);
     return this;
   }
 

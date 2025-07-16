@@ -134,22 +134,5 @@ export namespace $ViewDirectiveFill {
  * });
  * ```
  */
-export let ngView: (
-  | string
-  | ((
-      $view: any,
-      $animate: any,
-      $ngViewScroll: any,
-      $interpolate: any,
-    ) => {
-      count: number;
-      terminal: boolean;
-      priority: number;
-      transclude: string;
-      compile: (
-        _tElement: any,
-        _tAttrs: any,
-        $transclude: any,
-      ) => (scope: any, $element: any, attrs: any) => void;
-    })
-)[];
+/** @type {import("../../interface.js").AnnotatedDirectiveFactory} */
+export let ngView: import("../../interface.js").AnnotatedDirectiveFactory;

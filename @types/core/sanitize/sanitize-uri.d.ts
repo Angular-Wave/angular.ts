@@ -1,4 +1,4 @@
-/** @typedef {import('../../interface.ts').ServiceProvider} ServiceProvider } */
+/** @typedef {import('../../interface.ts').ServiceProvider} ServiceProvider */
 /**
  * Private service to sanitize uris for links and images. Used by $compile.
  * @implements {ServiceProvider}
@@ -33,11 +33,8 @@ export class SanitizeUriProvider implements ServiceProvider {
     regexp?: RegExp | undefined,
   ): RegExp | SanitizeUriProvider;
   /**
-   * @returns {import("./interface.js").SanitizerFn} Sanitizer function.
+   * @returns {import("./interface").SanitizerFn}
    */
-  $get(): import("./interface.js").SanitizerFn;
+  $get(): any;
 }
-/**
- * }
- */
 export type ServiceProvider = import("../../interface.ts").ServiceProvider;

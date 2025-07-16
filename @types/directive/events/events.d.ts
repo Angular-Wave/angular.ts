@@ -12,4 +12,10 @@ export function createEventDirective(
   directiveName: string,
   eventName: string,
 ): import("../../interface.ts").Directive;
-export const ngEventDirectives: {};
+/**
+ * @type {Record<string, import("../../interface.js").DirectiveFactory>}
+ */
+export const ngEventDirectives: Record<
+  string,
+  import("../../interface.js").DirectiveFactory
+>;

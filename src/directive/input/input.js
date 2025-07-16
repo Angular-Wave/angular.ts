@@ -963,15 +963,12 @@ function checkboxInputType(scope, element, attr, ctrl, $filter, $parse) {
   ctrl.$parsers.push((value) => (value ? trueValue : falseValue));
 }
 
-/**
- * @returns {import('../../interface.ts').Directive}
- */
 inputDirective.$inject = ["$filter", "$parse"];
 
 /**
  * @param {*} $filter
  * @param {*} $parse
- * @returns
+ * @returns {import('../../interface.ts').Directive}
  */
 export function inputDirective($filter, $parse) {
   return {
@@ -980,7 +977,7 @@ export function inputDirective($filter, $parse) {
     link: {
       pre(scope, element, attr, ctrls) {
         if (ctrls[0]) {
-          (inputType[lowercase(attr.type)] || inputType.text)(
+          (inputType[lowercase(attr["type"])] || inputType.text)(
             scope,
             element,
             attr,

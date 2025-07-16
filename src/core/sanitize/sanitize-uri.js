@@ -1,7 +1,7 @@
 import { isDefined } from "../../shared/utils.js";
 import { urlResolve } from "../../shared/url-utils/url-utils.js";
 
-/** @typedef {import('../../interface.ts').ServiceProvider} ServiceProvider } */
+/** @typedef {import('../../interface.ts').ServiceProvider} ServiceProvider */
 
 /**
  * Private service to sanitize uris for links and images. Used by $compile.
@@ -53,7 +53,7 @@ export class SanitizeUriProvider {
   }
 
   /**
-   * @returns {import("./interface.js").SanitizerFn} Sanitizer function.
+   * @returns {import("./interface").SanitizerFn}
    */
   $get() {
     return (uri, isMediaUrl) => {

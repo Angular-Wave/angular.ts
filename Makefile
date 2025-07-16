@@ -32,7 +32,7 @@ types:
 
 
 TYPEDOC_DIR = docs/static/typedoc
-typedoc: types
+doc: types
 	@rm -rf $(TYPEDOC_DIR)
 	@npm run generate-docs
 	@npx prettier ./typedoc --write
@@ -41,7 +41,7 @@ typedoc: types
 serve:
 	@npm run serve
 
-prepare-release: test check types typedoc pretty build
+prepare-release: test check types doc pretty build
 
 PLAYWRIGHT_TEST := npx playwright test
 

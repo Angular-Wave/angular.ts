@@ -23,6 +23,7 @@ export class InjectorService extends AbstractInjector {
    * @param {boolean} strictDi - Indicates if strict dependency injection is enforced.
    */
   constructor(providerInjector: ProviderInjector, strictDi: boolean);
+  /** @type {ProviderInjector} */
   providerInjector: ProviderInjector;
   /**
    *

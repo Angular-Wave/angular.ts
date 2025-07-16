@@ -59,15 +59,10 @@ export function createInjector(modulesToLoad, strictDi = false) {
   const runBlocks = loadModules(modulesToLoad);
   instanceInjector = protoInstanceInjector.get(INJECTOR_LITERAL);
 
-  runBlocks.forEach((fn) => {
-    if (fn) instanceInjector.invoke(fn);
-  });
+  runBlocks.forEach((fn) => fn && instanceInjector.invoke(fn));
 
-  instanceInjector.loadNewModules = function (mods) {
-    loadModules(mods).forEach((fn) => {
-      if (fn) instanceInjector.invoke(fn);
-    });
-  };
+  instanceInjector.loadNewModules = (mods) =>
+    loadModules(mods).forEach((fn) => fn && instanceInjector.invoke(fn));
 
   return instanceInjector;
 
@@ -196,7 +191,7 @@ export function createInjector(modulesToLoad, strictDi = false) {
 
       try {
         if (isString(module)) {
-          /** @type {import('./ng-module').NgModule} */
+          /** @type {import('./ng-module.js').NgModule} */
           const moduleFn = window["angular"].module(module);
           instanceInjector.modules[/** @type {string } */ (module)] = moduleFn;
           runBlocks = runBlocks
@@ -262,7 +257,6 @@ function extractArgs(fn) {
 }
 
 /**
- *
  * @param {any} fn
  * @param {boolean} [strictDi]
  * @param {String} [name]

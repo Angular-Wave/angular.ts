@@ -5,6 +5,9 @@ import { $injectTokens } from "../../injection-tokens.js";
 
 export const REGEX_STRING_REGEXP = /^\/(.+)\/([a-z]*)$/;
 
+/**
+ * @type {Record<string, import("../../interface.js").DirectiveFactory>}
+ */
 export const ngAttributeAliasDirectives = {};
 
 // boolean attrs are evaluated
@@ -47,10 +50,10 @@ Object.entries(ALIASED_ATTR).forEach(([ngAttr]) => {
       link(scope, element, attr) {
         // special case ngPattern when a literal regular expression value
         // is used as the expression (this way we don't have to watch anything).
-        if (ngAttr === "ngPattern" && attr.ngPattern.charAt(0) === "/") {
-          const match = attr.ngPattern.match(REGEX_STRING_REGEXP);
+        if (ngAttr === "ngPattern" && attr["ngPattern"].charAt(0) === "/") {
+          const match = attr["ngPattern"].match(REGEX_STRING_REGEXP);
           if (match) {
-            attr.$set("ngPattern", new RegExp(match[1], match[2]));
+            attr.$set("ngPattern", new RegExp(match[1], match[2]).toString());
             return;
           }
         }
@@ -76,7 +79,7 @@ Object.entries(ALIASED_ATTR).forEach(([ngAttr]) => {
 
           if (
             attrName === "href" &&
-            toString.call(element.href) === "[object SVGAnimatedString]"
+            toString.call(element["href"]) === "[object SVGAnimatedString]"
           ) {
             name = "xlinkHref";
             attr.$attr[name] = "href";

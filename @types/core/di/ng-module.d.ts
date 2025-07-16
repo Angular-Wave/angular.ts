@@ -1,7 +1,12 @@
+/** @private */
 export const INJECTOR_LITERAL: "$injector";
+/** @private */
 export const COMPILE_LITERAL: "$compileProvider";
+/** @private */
 export const ANIMATION_LITERAL: "$animateProvider";
+/** @private */
 export const FILTER_LITERAL: "$filterProvider";
+/** @private */
 export const CONTROLLER_LITERAL: "$controllerProvider";
 /**
  * Modules are collections of application configuration information for components:

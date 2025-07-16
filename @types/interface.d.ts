@@ -1,5 +1,6 @@
 import { Attributes } from "./core/compile/attributes.js";
 import { Scope } from "./core/scope/scope.js";
+export * from "./core/di/ng-module.js";
 export * from "./services/http/interface.ts";
 export * from "./services/log/interface.ts";
 export * from "./services/log/log.js";
@@ -58,11 +59,27 @@ export interface ServiceProvider {
  */
 export interface Provider {
   /**
+   * Register a directive
+   * @param name - The name of the directive.
+   * @param provider - An object with a `$get` property that defines how the service is created.
+   */
+  directive(name: string, directive: DirectiveFactory): Provider;
+  /**
+   * Register multiple directives
+   * @param obj
+   */
+  directive(obj: Record<string, DirectiveFactory>): Provider;
+  /**
    * Register a service provider.
    * @param name - The name of the service.
    * @param provider - An object with a `$get` property that defines how the service is created.
    */
-  provider(name: string, provider: ServiceProvider): Provider;
+  provider(name: string, provider: Function): Provider;
+  /**
+   * Register multiple service providers
+   * @param obj
+   */
+  provider(obj: Record<string, Function>): Provider;
   /**
    * Register a factory function to create a service.
    * @param name - The name of the service.
@@ -92,7 +109,7 @@ export interface Provider {
    * @param name - The name of the service to decorate.
    * @param fn - A function that takes `$delegate` and returns a decorated service.
    */
-  decorator(name: string, fn: Injectable): Provider;
+  decorator(name: string, fn: Function): Provider;
 }
 /**
  * A filter function takes an input and optional arguments, and returns a transformed value.
@@ -226,14 +243,16 @@ export interface Directive {
   /** Template URL for loading from server */
   templateUrl?: string | ((element: Element, attrs: Attributes) => string);
   /** Enables transclusion or configures named slots */
-  transclude?: boolean | "element" | Record<string, string>;
+  transclude?: boolean | string | Record<string, string>;
   /** Internal hook for directive compilation state */
   $$addStateInfo?: (...args: any[]) => any;
+  count?: number;
 }
-/**
- * A factory function returning a directive definition.
- */
-export type DirectiveFactory = (...args: any[]) => Directive | DirectiveLinkFn;
+export type DirectiveFactoryFn = (
+  ...args: any[]
+) => Directive | DirectiveLinkFn;
+export type AnnotatedDirectiveFactory = Array<string | DirectiveFactoryFn>;
+export type DirectiveFactory = DirectiveFactoryFn | AnnotatedDirectiveFactory;
 /**
  * Represents advanced transclusion functions used in directives.
  */

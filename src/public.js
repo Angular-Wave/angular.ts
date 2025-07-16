@@ -145,6 +145,7 @@ export function registerNgModule(angular) {
       [],
       [
         "$provide",
+        /** @param {import("./interface.js").Provider} $provide */
         ($provide) => {
           // $$sanitizeUriProvider needs to be before $compileProvider as it is used by it.
           $provide.provider({
@@ -232,7 +233,6 @@ export function registerNgModule(angular) {
             })
             .directive(ngAttributeAliasDirectives)
             .directive(ngEventDirectives);
-          // @ts-ignore
           $provide.provider({
             $aria: AriaProvider,
             $anchorScroll: AnchorScrollProvider,

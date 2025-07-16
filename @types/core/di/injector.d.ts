@@ -9,7 +9,6 @@ export function createInjector(
   strictDi?: boolean,
 ): InjectorService;
 /**
- *
  * @param {any} fn
  * @param {boolean} [strictDi]
  * @param {String} [name]

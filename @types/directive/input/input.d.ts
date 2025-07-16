@@ -47,18 +47,12 @@ export function rangeInputType(
 /**
  * @param {*} $filter
  * @param {*} $parse
- * @returns
+ * @returns {import('../../interface.ts').Directive}
  */
 export function inputDirective(
   $filter: any,
   $parse: any,
-): {
-  restrict: string;
-  require: string[];
-  link: {
-    pre(scope: any, element: any, attr: any, ctrls: any): void;
-  };
-};
+): import("../../interface.ts").Directive;
 export namespace inputDirective {
   let $inject: string[];
 }

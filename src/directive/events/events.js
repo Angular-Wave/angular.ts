@@ -4,6 +4,10 @@ import { directiveNormalize } from "../../shared/utils.js";
  * A collection of directives that allows creation of custom event handlers that are defined as
  * AngularTS expressions and are compiled and executed within the current scope.
  */
+
+/**
+ * @type {Record<string, import("../../interface.js").DirectiveFactory>}
+ */
 export const ngEventDirectives = {};
 
 "click copy cut dblclick focus blur keydown keyup load mousedown mouseenter mouseleave mousemove mouseout mouseover mouseup paste submit touchstart touchend touchmove"

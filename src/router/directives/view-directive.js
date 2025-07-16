@@ -143,11 +143,20 @@ import { getLocals } from "../state/state-registry.js";
  * });
  * ```
  */
+
+/** @type {import("../../interface.js").AnnotatedDirectiveFactory} */
 export let ngView = [
   "$view",
   "$animate",
   "$ngViewScroll",
   "$interpolate",
+  /**
+   * @param {*} $view
+   * @param {*} $animate
+   * @param {*} $ngViewScroll
+   * @param {*} $interpolate
+   * @returns {import("../../interface.js").Directive}
+   */
   function $ViewDirective($view, $animate, $ngViewScroll, $interpolate) {
     function getRenderer() {
       return {
@@ -178,7 +187,6 @@ export let ngView = [
     };
     const directive = {
       count: 0,
-
       terminal: true,
       priority: 400,
       transclude: "element",
