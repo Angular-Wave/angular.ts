@@ -1,4 +1,4 @@
-/* Version: 0.7.7 - July 16, 2025 12:06:47 */
+/* Version: 0.7.8 - July 17, 2025 02:51:20 */
 const VALID_CLASS = "ng-valid";
 const INVALID_CLASS = "ng-invalid";
 const PRISTINE_CLASS = "ng-pristine";
@@ -1167,6 +1167,16 @@ function callBackAfterFirst(fn) {
 }
 
 /**
+ * Delays execution for a specified number of milliseconds.
+ *
+ * @param {number} [t=0] - The number of milliseconds to wait. Defaults to 0.
+ * @returns {Promise<void>} A promise that resolves after the delay.
+ */
+function wait(t = 0) {
+  return new Promise((resolve) => setTimeout(resolve, t));
+}
+
+/**
  * Expando cache for adding properties to DOM nodes with JavaScript.
  * This used to be an Object in JQLite decorator, but swapped out for a Map
  *
@@ -1806,10 +1816,15 @@ function provider(services) {
   return services.map((x) => x + "Provider");
 }
 
+/** @private */
 const INJECTOR_LITERAL = "$injector";
+/** @private */
 const COMPILE_LITERAL = "$compileProvider";
+/** @private */
 const ANIMATION_LITERAL = "$animateProvider";
+/** @private */
 const FILTER_LITERAL = "$filterProvider";
+/** @private */
 const CONTROLLER_LITERAL = "$controllerProvider";
 
 /**
@@ -1876,11 +1891,7 @@ class NgModule {
    * @returns {NgModule}
    */
   constant(name, object) {
-    this.invokeQueue.unshift([
-      $injectTokens.$provide,
-      "constant",
-      [name, object],
-    ]);
+    this.invokeQueue.unshift([$injectTokens.$provide, "constant", [name, object]]);
     return this;
   }
 
@@ -1925,11 +1936,7 @@ class NgModule {
     if (providerFunction && isFunction(providerFunction)) {
       providerFunction.$$moduleName = name;
     }
-    this.invokeQueue.push([
-      $injectTokens.$provide,
-      "factory",
-      [name, providerFunction],
-    ]);
+    this.invokeQueue.push([$injectTokens.$provide, "factory", [name, providerFunction]]);
     return this;
   }
 
@@ -1942,11 +1949,7 @@ class NgModule {
     if (serviceFunction && isFunction(serviceFunction)) {
       serviceFunction.$$moduleName = name;
     }
-    this.invokeQueue.push([
-      $injectTokens.$provide,
-      "service",
-      [name, serviceFunction],
-    ]);
+    this.invokeQueue.push([$injectTokens.$provide, "service", [name, serviceFunction]]);
     return this;
   }
 
@@ -1959,11 +1962,7 @@ class NgModule {
     if (providerType && isFunction(providerType)) {
       providerType.$$moduleName = name;
     }
-    this.invokeQueue.push([
-      $injectTokens.$provide,
-      "provider",
-      [name, providerType],
-    ]);
+    this.invokeQueue.push([$injectTokens.$provide, "provider", [name, providerType]]);
     return this;
   }
 
@@ -1976,11 +1975,7 @@ class NgModule {
     if (decorFn && isFunction(decorFn)) {
       decorFn.$$moduleName = name;
     }
-    this.configBlocks.push([
-      $injectTokens.$provide,
-      "decorator",
-      [name, decorFn],
-    ]);
+    this.configBlocks.push([$injectTokens.$provide, "decorator", [name, decorFn]]);
     return this;
   }
 
@@ -2225,8 +2220,11 @@ class InjectorService extends AbstractInjector {
    */
   constructor(providerInjector, strictDi) {
     super(strictDi);
+
+    /** @type {ProviderInjector} */
     this.providerInjector = providerInjector;
-    this.modules = this.providerInjector.modules;
+    /** @type {Object.<string, import("./ng-module.js").NgModule>} */
+    this.modules = providerInjector.modules;
   }
 
   /**
@@ -2343,9 +2341,6 @@ function createInjector(modulesToLoad, strictDi = false) {
   const loadedModules = new Map(); // Keep track of loaded modules to avoid circular dependencies
 
   const providerCache = {
-    /**
-     * @type {import('../../interface.ts').Provider}
-     */
     $provide: {
       provider: supportObject(provider),
       factory: supportObject(factory),
@@ -2372,15 +2367,10 @@ function createInjector(modulesToLoad, strictDi = false) {
   const runBlocks = loadModules(modulesToLoad);
   instanceInjector = protoInstanceInjector.get(INJECTOR_LITERAL);
 
-  runBlocks.forEach((fn) => {
-    if (fn) instanceInjector.invoke(fn);
-  });
+  runBlocks.forEach((fn) => fn && instanceInjector.invoke(fn));
 
-  instanceInjector.loadNewModules = function (mods) {
-    loadModules(mods).forEach((fn) => {
-      if (fn) instanceInjector.invoke(fn);
-    });
-  };
+  instanceInjector.loadNewModules = (mods) =>
+    loadModules(mods).forEach((fn) => fn && instanceInjector.invoke(fn));
 
   return instanceInjector;
 
@@ -2509,7 +2499,7 @@ function createInjector(modulesToLoad, strictDi = false) {
 
       try {
         if (isString(module)) {
-          /** @type {import('./ng-module').NgModule} */
+          /** @type {import('./ng-module.js').NgModule} */
           const moduleFn = window["angular"].module(module);
           instanceInjector.modules[/** @type {string } */ (module)] = moduleFn;
           runBlocks = runBlocks
@@ -2575,7 +2565,6 @@ function extractArgs(fn) {
 }
 
 /**
- *
  * @param {any} fn
  * @param {boolean} [strictDi]
  * @param {String} [name]
@@ -2614,10 +2603,6 @@ function annotate(fn, strictDi, name) {
   return $inject;
 }
 
-/**
- * @param {function(string, any):any} delegate
- * @returns {any}
- */
 function supportObject(delegate) {
   return function (key, value) {
     if (isObject(key)) {
@@ -4012,6 +3997,10 @@ function SceProvider() {
 /*
  * A collection of directives that allows creation of custom event handlers that are defined as
  * AngularTS expressions and are compiled and executed within the current scope.
+ */
+
+/**
+ * @type {Record<string, import("../../interface.js").DirectiveFactory>}
  */
 const ngEventDirectives = {};
 
@@ -10520,15 +10509,12 @@ function checkboxInputType(scope, element, attr, ctrl, $filter, $parse) {
   ctrl.$parsers.push((value) => (value ? trueValue : falseValue));
 }
 
-/**
- * @returns {import('../../interface.ts').Directive}
- */
 inputDirective.$inject = ["$filter", "$parse"];
 
 /**
  * @param {*} $filter
  * @param {*} $parse
- * @returns
+ * @returns {import('../../interface.ts').Directive}
  */
 function inputDirective($filter, $parse) {
   return {
@@ -10537,7 +10523,7 @@ function inputDirective($filter, $parse) {
     link: {
       pre(scope, element, attr, ctrls) {
         if (ctrls[0]) {
-          (inputType[lowercase(attr.type)] || inputType.text)(
+          (inputType[lowercase(attr["type"])] || inputType.text)(
             scope,
             element,
             attr,
@@ -12409,525 +12395,515 @@ const NG_OPTIONS_REGEXP =
 // 8: collection expression
 // 9: track by expression
 
-const ngOptionsDirective = [
-  "$compile",
-  "$parse",
+ngOptionsDirective.$inject = ["$compile", "$parse"];
+/**
+ *
+ * @param {import("../../core/compile/compile.js").CompileFn} $compile
+ * @param {import("../../core/parse/interface.ts").ParseService} $parse
+ * @returns {import("../../interface.ts").Directive}
+ */
+function ngOptionsDirective($compile, $parse) {
   /**
-   *
-   * @param {import("../../core/compile/compile.js").CompileFn} $compile
-   * @param {import("../../core/parse/interface.ts").ParseService} $parse
+   * @param {import('../../interface.ts').Expression} optionsExp
+   * @param {HTMLSelectElement} selectElement
+   * @param {import('../../core/scope/scope.js').Scope} scope
    * @returns
    */
-  function ($compile, $parse) {
-    /**
-     * @param {import('../../interface.ts').Expression} optionsExp
-     * @param {HTMLSelectElement} selectElement
-     * @param {import('../../core/scope/scope.js').Scope} scope
-     * @returns
-     */
-    function parseOptionsExpression(optionsExp, selectElement, scope) {
-      const match = optionsExp.match(NG_OPTIONS_REGEXP);
-      if (!match) {
-        throw ngOptionsMinErr(
-          "iexp",
-          "Expected expression in form of " +
-            "'_select_ (as _label_)? for (_key_,)?_value_ in _collection_'" +
-            " but got '{0}'. Element: {1}",
-          optionsExp,
-          startingTag(selectElement),
-        );
-      }
-      // Extract the parts from the ngOptions expression
+  function parseOptionsExpression(optionsExp, selectElement, scope) {
+    const match = optionsExp.match(NG_OPTIONS_REGEXP);
+    if (!match) {
+      throw ngOptionsMinErr(
+        "iexp",
+        "Expected expression in form of " +
+          "'_select_ (as _label_)? for (_key_,)?_value_ in _collection_'" +
+          " but got '{0}'. Element: {1}",
+        optionsExp,
+        startingTag(selectElement),
+      );
+    }
+    // Extract the parts from the ngOptions expression
 
-      // The variable name for the value of the item in the collection
-      const valueName = match[5] || match[7];
-      // The variable name for the key of the item in the collection
-      const keyName = match[6];
+    // The variable name for the value of the item in the collection
+    const valueName = match[5] || match[7];
+    // The variable name for the key of the item in the collection
+    const keyName = match[6];
 
-      // An expression that generates the viewValue for an option if there is a label expression
-      const selectAs = / as /.test(match[0]) && match[1];
-      // An expression that is used to track the id of each object in the options collection
-      const trackBy = match[9];
-      // An expression that generates the viewValue for an option if there is no label expression
-      const valueFn = $parse(match[2] ? match[1] : valueName);
-      const selectAsFn = selectAs && $parse(selectAs);
-      const viewValueFn = selectAsFn || valueFn;
-      const trackByFn = trackBy && $parse(trackBy);
+    // An expression that generates the viewValue for an option if there is a label expression
+    const selectAs = / as /.test(match[0]) && match[1];
+    // An expression that is used to track the id of each object in the options collection
+    const trackBy = match[9];
+    // An expression that generates the viewValue for an option if there is no label expression
+    const valueFn = $parse(match[2] ? match[1] : valueName);
+    const selectAsFn = selectAs && $parse(selectAs);
+    const viewValueFn = selectAsFn || valueFn;
+    const trackByFn = trackBy && $parse(trackBy);
 
-      // Get the value by which we are going to track the option
-      // if we have a trackFn then use that (passing scope and locals)
-      // otherwise just hash the given viewValue
-      const getTrackByValueFn = trackBy
-        ? function (value, locals) {
-            return trackByFn(scope, locals);
-          }
-        : function getHashOfValue(value) {
-            return hashKey(value);
-          };
-      const getTrackByValue = function (value, key) {
-        return getTrackByValueFn(value, getLocals(value, key));
-      };
-
-      const displayFn = $parse(match[2] || match[1]);
-      const groupByFn = $parse(match[3] || "");
-      const disableWhenFn = $parse(match[4] || "");
-      const valuesFn = $parse(match[8]);
-
-      const locals = {};
-      let getLocals = keyName
-        ? function (value, key) {
-            locals[keyName] = key;
-            locals[valueName] = value;
-            return locals;
-          }
-        : function (value) {
-            locals[valueName] = value;
-            return locals;
-          };
-
-      class Option {
-        constructor(selectValue, viewValue, label, group, disabled) {
-          this.selectValue = selectValue;
-          this.viewValue = viewValue;
-          this.label = label;
-          this.group = group;
-          this.disabled = disabled;
+    // Get the value by which we are going to track the option
+    // if we have a trackFn then use that (passing scope and locals)
+    // otherwise just hash the given viewValue
+    const getTrackByValueFn = trackBy
+      ? function (value, locals) {
+          return trackByFn(scope, locals);
         }
-      }
+      : function getHashOfValue(value) {
+          return hashKey(value);
+        };
+    const getTrackByValue = function (value, key) {
+      return getTrackByValueFn(value, getLocals(value, key));
+    };
 
-      function getOptionValuesKeys(optionValues) {
-        let optionValuesKeys;
+    const displayFn = $parse(match[2] || match[1]);
+    const groupByFn = $parse(match[3] || "");
+    const disableWhenFn = $parse(match[4] || "");
+    const valuesFn = $parse(match[8]);
 
-        if (!keyName && isArrayLike(optionValues)) {
-          optionValuesKeys = optionValues;
-        } else {
-          // if object, extract keys, in enumeration order, unsorted
-          optionValuesKeys = [];
-          for (const itemKey in optionValues) {
-            if (hasOwn(optionValues, itemKey) && itemKey.charAt(0) !== "$") {
-              optionValuesKeys.push(itemKey);
-            }
-          }
+    const locals = {};
+    let getLocals = keyName
+      ? function (value, key) {
+          locals[keyName] = key;
+          locals[valueName] = value;
+          return locals;
         }
-        return optionValuesKeys;
+      : function (value) {
+          locals[valueName] = value;
+          return locals;
+        };
+
+    class Option {
+      constructor(selectValue, viewValue, label, group, disabled) {
+        this.selectValue = selectValue;
+        this.viewValue = viewValue;
+        this.label = label;
+        this.group = group;
+        this.disabled = disabled;
       }
-
-      return {
-        trackBy,
-        getTrackByValue,
-        getWatchables: $parse(valuesFn, (optionValues) => {
-          // Create a collection of things that we would like to watch (watchedArray)
-          // so that they can all be watched using a single $watchCollection
-          // that only runs the handler once if anything changes
-          const watchedArray = [];
-          optionValues = optionValues || [];
-
-          const optionValuesKeys = getOptionValuesKeys(optionValues);
-          const optionValuesLength = optionValuesKeys.length;
-          for (let index = 0; index < optionValuesLength; index++) {
-            const key =
-              optionValues === optionValuesKeys
-                ? index
-                : optionValuesKeys[index];
-            const value = optionValues[key];
-
-            const locals = getLocals(value, key);
-            const selectValue = getTrackByValueFn(value, locals);
-            watchedArray.push(selectValue);
-
-            // Only need to watch the displayFn if there is a specific label expression
-            if (match[2] || match[1]) {
-              const label = displayFn(scope, locals);
-              watchedArray.push(label);
-            }
-
-            // Only need to watch the disableWhenFn if there is a specific disable expression
-            if (match[4]) {
-              const disableWhen = disableWhenFn(scope, locals);
-              watchedArray.push(disableWhen);
-            }
-          }
-          return watchedArray;
-        }),
-
-        getOptions() {
-          /** @type {Option[]} */
-          const optionItems = [];
-          /** @type {Object.<string, Option>} */
-          const selectValueMap = {};
-
-          // The option values were already computed in the `getWatchables` fn,
-          // which must have been called to trigger `getOptions`
-          const optionValues = valuesFn(scope) || [];
-          const optionValuesKeys = getOptionValuesKeys(optionValues);
-          const optionValuesLength = optionValuesKeys.length;
-
-          for (let index = 0; index < optionValuesLength; index++) {
-            const key =
-              optionValues === optionValuesKeys
-                ? index
-                : optionValuesKeys[index];
-            const value = optionValues[key];
-            const locals = getLocals(value, key);
-            const viewValue = viewValueFn(scope, locals);
-            const selectValue = getTrackByValueFn(viewValue, locals);
-            const label = displayFn(scope, locals);
-            const group = groupByFn(scope, locals);
-            const disabled = disableWhenFn(scope, locals);
-            const optionItem = new Option(
-              selectValue,
-              viewValue,
-              label,
-              group,
-              disabled,
-            );
-
-            optionItems.push(optionItem);
-            selectValueMap[selectValue] = optionItem;
-          }
-
-          return {
-            items: optionItems,
-            selectValueMap,
-            getOptionFromViewValue(value) {
-              return selectValueMap[getTrackByValue(value)];
-            },
-            getViewValueFromOption(option) {
-              // If the viewValue could be an object that may be mutated by the application,
-              // we need to make a copy and not return the reference to the value on the option.
-              return trackBy
-                ? structuredClone(option.viewValue)
-                : option.viewValue;
-            },
-          };
-        },
-      };
     }
 
-    /**
-     *
-     * @param {import("../../core/scope/scope.js").Scope} scope
-     * @param {HTMLSelectElement} selectElement
-     * @param {import("../../core/compile/attributes.js").Attributes} attr
-     * @param {*} ctrls
-     */
-    function ngOptionsPostLink(scope, selectElement, attr, ctrls) {
-      const selectCtrl = ctrls[0];
-      const ngModelCtrl = ctrls[1];
-      const multiple = attr["multiple"];
+    function getOptionValuesKeys(optionValues) {
+      let optionValuesKeys;
 
-      // The emptyOption allows the application developer to provide their own custom "empty"
-      // option when the viewValue does not match any of the option values.
-      for (
-        let i = 0, children = selectElement.childNodes, ii = children.length;
-        i < ii;
-        i++
-      ) {
-        if (/** @type {HTMLOptionElement} */ (children[i]).value === "") {
-          selectCtrl.hasEmptyOption = true;
-          selectCtrl.emptyOption = children[i];
-          break;
-        }
-      }
-
-      // The empty option will be compiled and rendered before we first generate the options
-      emptyElement(selectElement);
-
-      const providedEmptyOption = !!selectCtrl.emptyOption;
-
-      const unknownOption = optionTemplate.cloneNode(false);
-      // TODO double check
-      unknownOption.nodeValue = "?";
-
-      let options;
-      const ngOptions = parseOptionsExpression(
-        attr["ngOptions"],
-        selectElement,
-        scope,
-      );
-      // This stores the newly created options before they are appended to the select.
-      // Since the contents are removed from the fragment when it is appended,
-      // we only need to create it once.
-      const listFragment = document.createDocumentFragment();
-
-      // Overwrite the implementation. ngOptions doesn't use hashes
-      selectCtrl.generateUnknownOptionValue = () => "?";
-
-      // Update the controller methods for multiple selectable options
-      if (!multiple) {
-        selectCtrl.writeValue = function writeNgOptionsValue(value) {
-          // The options might not be defined yet when ngModel tries to render
-          if (!options) return;
-
-          const selectedOption =
-            selectElement.options[selectElement.selectedIndex];
-          const option = options.getOptionFromViewValue(value);
-
-          // Make sure to remove the selected attribute from the previously selected option
-          // Otherwise, screen readers might get confused
-          if (selectedOption) selectedOption.removeAttribute("selected");
-
-          if (option) {
-            // Don't update the option when it is already selected.
-            // For example, the browser will select the first option by default. In that case,
-            // most properties are set automatically - except the `selected` attribute, which we
-            // set always
-
-            if (selectElement.value !== option.selectValue) {
-              selectCtrl.removeUnknownOption();
-
-              selectElement.value = option.selectValue;
-              option.element.selected = true;
-            }
-
-            option.element.setAttribute("selected", "selected");
-          } else {
-            selectCtrl.selectUnknownOrEmptyOption(value);
-          }
-        };
-
-        selectCtrl.readValue = function readNgOptionsValue() {
-          const selectedOption = options.selectValueMap[selectElement.value];
-
-          if (selectedOption && !selectedOption.disabled) {
-            selectCtrl.unselectEmptyOption();
-            selectCtrl.removeUnknownOption();
-            return options.getViewValueFromOption(selectedOption);
-          }
-          return null;
-        };
-
-        // If we are using `track by` then we must watch the tracked value on the model
-        // since ngModel only watches for object identity change
-        // FIXME: When a user selects an option, this watch will fire needlessly
-        if (ngOptions.trackBy) {
-          scope.$watch(
-            ngOptions.getTrackByValue(ngModelCtrl.$viewValue),
-            () => {
-              ngModelCtrl.$render();
-            },
-          );
-        }
+      if (!keyName && isArrayLike(optionValues)) {
+        optionValuesKeys = optionValues;
       } else {
-        selectCtrl.writeValue = function writeNgOptionsMultiple(values) {
-          // The options might not be defined yet when ngModel tries to render
-          if (!options) return;
-
-          // Only set `<option>.selected` if necessary, in order to prevent some browsers from
-          // scrolling to `<option>` elements that are outside the `<select>` element's viewport.
-          const selectedOptions =
-            (values && values.map(getAndUpdateSelectedOption)) || [];
-
-          options.items.forEach((option) => {
-            if (option.element.selected && !includes(selectedOptions, option)) {
-              option.element.selected = false;
-            }
-          });
-        };
-
-        selectCtrl.readValue = function readNgOptionsMultiple() {
-          const selectedValues = selectElement.value || [];
-          const selections = [];
-          // @ts-ignore
-          selectedValues.forEach((value) => {
-            const option = options.selectValueMap[value];
-            if (option && !option.disabled)
-              selections.push(options.getViewValueFromOption(option));
-          });
-
-          return selections;
-        };
-
-        // If we are using `track by` then we must watch these tracked values on the model
-        // since ngModel only watches for object identity change
-        // if (ngOptions.trackBy) {
-        //   scope.$watchCollection(
-        //     () => {
-        //       if (Array.isArray(ngModelCtrl.$viewValue)) {
-        //         return ngModelCtrl.$viewValue.map((value) =>
-        //           ngOptions.getTrackByValue(value),
-        //         );
-        //       }
-        //     },
-        //     () => {
-        //       ngModelCtrl.$render();
-        //     },
-        //   );
-        // }
-      }
-
-      if (providedEmptyOption) {
-        // compile the element since there might be bindings in it
-        const linkFn = $compile(selectCtrl.emptyOption);
-        assertArg$1(linkFn, "LinkFn required");
-        selectElement.prepend(selectCtrl.emptyOption);
-        linkFn(scope);
-
-        if (selectCtrl.emptyOption.nodeType === Node.COMMENT_NODE) {
-          // This means the empty option has currently no actual DOM node, probably because
-          // it has been modified by a transclusion directive.
-          selectCtrl.hasEmptyOption = false;
-
-          // Redefine the registerOption function, which will catch
-          // options that are added by ngIf etc. (rendering of the node is async because of
-          // lazy transclusion)
-          selectCtrl.registerOption = function (optionScope, optionEl) {
-            if (optionEl.value === "") {
-              selectCtrl.hasEmptyOption = true;
-              selectCtrl.emptyOption = optionEl;
-              // This ensures the new empty option is selected if previously no option was selected
-              ngModelCtrl.$render();
-
-              optionEl.addEventListener("$destroy", () => {
-                const needsRerender = selectCtrl.$isEmptyOptionSelected();
-
-                selectCtrl.hasEmptyOption = false;
-                selectCtrl.emptyOption = undefined;
-
-                if (needsRerender) ngModelCtrl.$render();
-              });
-            }
-          };
-        }
-      }
-
-      // We will re-render the option elements if the option values or labels change
-
-      // let watchables = ngOptions.getWatchables();
-      // watchables.forEach((i) => {
-      //   scope.$watch(i, updateOptions);
-      // });
-      scope.$watch(
-        ngOptions.getWatchables.decoratedNode.body[0].expression.name,
-        updateOptions,
-      );
-
-      // ------------------------------------------------------------------ //
-
-      function addOptionElement(option, parent) {
-        /**
-         * @type {HTMLOptionElement}
-         */
-        const optionElement = /** @type {HTMLOptionElement} */ (
-          optionTemplate.cloneNode(false)
-        );
-        parent.appendChild(optionElement);
-        updateOptionElement(option, optionElement);
-      }
-
-      function getAndUpdateSelectedOption(viewValue) {
-        const option = options.getOptionFromViewValue(viewValue);
-        const element = option && option.element;
-
-        if (element && !element.selected) element.selected = true;
-
-        return option;
-      }
-
-      function updateOptionElement(option, element) {
-        option.element = element;
-        element.disabled = option.disabled;
-        // Support: IE 11 only, Edge 12-13 only
-        // NOTE: The label must be set before the value, otherwise IE 11 & Edge create unresponsive
-        // selects in certain circumstances when multiple selects are next to each other and display
-        // the option list in listbox style, i.e. the select is [multiple], or specifies a [size].
-        // See https://github.com/angular/angular.js/issues/11314 for more info.
-        // This is unfortunately untestable with unit / e2e tests
-        if (option.label !== element.label) {
-          element.label = option.label;
-          element.textContent = option.label;
-        }
-        element.value = option.selectValue;
-      }
-
-      function updateOptions() {
-        const previousValue = options && selectCtrl.readValue();
-
-        // We must remove all current options, but cannot simply set innerHTML = null
-        // since the providedEmptyOption might have an ngIf on it that inserts comments which we
-        // must preserve.
-        // Instead, iterate over the current option elements and remove them or their optgroup
-        // parents
-        if (options) {
-          for (let i = options.items.length - 1; i >= 0; i--) {
-            const option = options.items[i];
-            if (isDefined(option.group)) {
-              removeElement(option.element.parentNode);
-            } else {
-              removeElement(option.element);
-            }
-          }
-        }
-
-        options = ngOptions.getOptions();
-
-        const groupElementMap = {};
-
-        options.items.forEach((option) => {
-          let groupElement;
-
-          if (isDefined(option.group)) {
-            // This option is to live in a group
-            // See if we have already created this group
-            groupElement = groupElementMap[option.group];
-
-            if (!groupElement) {
-              groupElement = optGroupTemplate.cloneNode(false);
-              listFragment.appendChild(groupElement);
-
-              // Update the label on the group element
-              // "null" is special cased because of Safari
-              /** @type {HTMLOptGroupElement} */
-              (groupElement).label =
-                option.group === null ? "null" : option.group;
-
-              // Store it for use later
-              groupElementMap[option.group] = groupElement;
-            }
-
-            addOptionElement(option, groupElement);
-          } else {
-            // This option is not in a group
-            addOptionElement(option, listFragment);
-          }
-        });
-
-        selectElement.appendChild(listFragment);
-
-        ngModelCtrl.$render();
-
-        // Check to see if the value has changed due to the update to the options
-        if (!ngModelCtrl.$isEmpty(previousValue)) {
-          const nextValue = selectCtrl.readValue();
-          const isNotPrimitive = ngOptions.trackBy || multiple;
-          if (
-            isNotPrimitive
-              ? !equals$1(previousValue, nextValue)
-              : previousValue !== nextValue
-          ) {
-            ngModelCtrl.$setViewValue(nextValue);
-            ngModelCtrl.$render();
+        // if object, extract keys, in enumeration order, unsorted
+        optionValuesKeys = [];
+        for (const itemKey in optionValues) {
+          if (hasOwn(optionValues, itemKey) && itemKey.charAt(0) !== "$") {
+            optionValuesKeys.push(itemKey);
           }
         }
       }
+      return optionValuesKeys;
     }
 
     return {
-      restrict: "A",
-      terminal: true,
-      require: ["select", "ngModel"],
-      link: {
-        pre: function ngOptionsPreLink(scope, selectElement, attr, ctrls) {
-          // Deactivate the SelectController.register method to prevent
-          // option directives from accidentally registering themselves
-          // (and unwanted $destroy handlers etc.)
-          ctrls[0].registerOption = () => {};
-        },
-        post: ngOptionsPostLink,
+      trackBy,
+      getTrackByValue,
+      getWatchables: $parse(valuesFn, (optionValues) => {
+        // Create a collection of things that we would like to watch (watchedArray)
+        // so that they can all be watched using a single $watchCollection
+        // that only runs the handler once if anything changes
+        const watchedArray = [];
+        optionValues = optionValues || [];
+
+        const optionValuesKeys = getOptionValuesKeys(optionValues);
+        const optionValuesLength = optionValuesKeys.length;
+        for (let index = 0; index < optionValuesLength; index++) {
+          const key =
+            optionValues === optionValuesKeys ? index : optionValuesKeys[index];
+          const value = optionValues[key];
+
+          const locals = getLocals(value, key);
+          const selectValue = getTrackByValueFn(value, locals);
+          watchedArray.push(selectValue);
+
+          // Only need to watch the displayFn if there is a specific label expression
+          if (match[2] || match[1]) {
+            const label = displayFn(scope, locals);
+            watchedArray.push(label);
+          }
+
+          // Only need to watch the disableWhenFn if there is a specific disable expression
+          if (match[4]) {
+            const disableWhen = disableWhenFn(scope, locals);
+            watchedArray.push(disableWhen);
+          }
+        }
+        return watchedArray;
+      }),
+
+      getOptions() {
+        /** @type {Option[]} */
+        const optionItems = [];
+        /** @type {Object.<string, Option>} */
+        const selectValueMap = {};
+
+        // The option values were already computed in the `getWatchables` fn,
+        // which must have been called to trigger `getOptions`
+        const optionValues = valuesFn(scope) || [];
+        const optionValuesKeys = getOptionValuesKeys(optionValues);
+        const optionValuesLength = optionValuesKeys.length;
+
+        for (let index = 0; index < optionValuesLength; index++) {
+          const key =
+            optionValues === optionValuesKeys ? index : optionValuesKeys[index];
+          const value = optionValues[key];
+          const locals = getLocals(value, key);
+          const viewValue = viewValueFn(scope, locals);
+          const selectValue = getTrackByValueFn(viewValue, locals);
+          const label = displayFn(scope, locals);
+          const group = groupByFn(scope, locals);
+          const disabled = disableWhenFn(scope, locals);
+          const optionItem = new Option(
+            selectValue,
+            viewValue,
+            label,
+            group,
+            disabled,
+          );
+
+          optionItems.push(optionItem);
+          selectValueMap[selectValue] = optionItem;
+        }
+
+        return {
+          items: optionItems,
+          selectValueMap,
+          getOptionFromViewValue(value) {
+            return selectValueMap[getTrackByValue(value)];
+          },
+          getViewValueFromOption(option) {
+            // If the viewValue could be an object that may be mutated by the application,
+            // we need to make a copy and not return the reference to the value on the option.
+            return trackBy
+              ? structuredClone(option.viewValue)
+              : option.viewValue;
+          },
+        };
       },
     };
-  },
-];
+  }
+
+  /**
+   *
+   * @param {import("../../core/scope/scope.js").Scope} scope
+   * @param {HTMLSelectElement} selectElement
+   * @param {import("../../core/compile/attributes.js").Attributes} attr
+   * @param {*} ctrls
+   */
+  function ngOptionsPostLink(scope, selectElement, attr, ctrls) {
+    const selectCtrl = ctrls[0];
+    const ngModelCtrl = ctrls[1];
+    const multiple = attr["multiple"];
+
+    // The emptyOption allows the application developer to provide their own custom "empty"
+    // option when the viewValue does not match any of the option values.
+    for (
+      let i = 0, children = selectElement.childNodes, ii = children.length;
+      i < ii;
+      i++
+    ) {
+      if (/** @type {HTMLOptionElement} */ (children[i]).value === "") {
+        selectCtrl.hasEmptyOption = true;
+        selectCtrl.emptyOption = children[i];
+        break;
+      }
+    }
+
+    // The empty option will be compiled and rendered before we first generate the options
+    emptyElement(selectElement);
+
+    const providedEmptyOption = !!selectCtrl.emptyOption;
+
+    const unknownOption = optionTemplate.cloneNode(false);
+    // TODO double check
+    unknownOption.nodeValue = "?";
+
+    let options;
+    const ngOptions = parseOptionsExpression(
+      attr["ngOptions"],
+      selectElement,
+      scope,
+    );
+    // This stores the newly created options before they are appended to the select.
+    // Since the contents are removed from the fragment when it is appended,
+    // we only need to create it once.
+    const listFragment = document.createDocumentFragment();
+
+    // Overwrite the implementation. ngOptions doesn't use hashes
+    selectCtrl.generateUnknownOptionValue = () => "?";
+
+    // Update the controller methods for multiple selectable options
+    if (!multiple) {
+      selectCtrl.writeValue = function writeNgOptionsValue(value) {
+        // The options might not be defined yet when ngModel tries to render
+        if (!options) return;
+
+        const selectedOption =
+          selectElement.options[selectElement.selectedIndex];
+        const option = options.getOptionFromViewValue(value);
+
+        // Make sure to remove the selected attribute from the previously selected option
+        // Otherwise, screen readers might get confused
+        if (selectedOption) selectedOption.removeAttribute("selected");
+
+        if (option) {
+          // Don't update the option when it is already selected.
+          // For example, the browser will select the first option by default. In that case,
+          // most properties are set automatically - except the `selected` attribute, which we
+          // set always
+
+          if (selectElement.value !== option.selectValue) {
+            selectCtrl.removeUnknownOption();
+
+            selectElement.value = option.selectValue;
+            option.element.selected = true;
+          }
+
+          option.element.setAttribute("selected", "selected");
+        } else {
+          selectCtrl.selectUnknownOrEmptyOption(value);
+        }
+      };
+
+      selectCtrl.readValue = function readNgOptionsValue() {
+        const selectedOption = options.selectValueMap[selectElement.value];
+
+        if (selectedOption && !selectedOption.disabled) {
+          selectCtrl.unselectEmptyOption();
+          selectCtrl.removeUnknownOption();
+          return options.getViewValueFromOption(selectedOption);
+        }
+        return null;
+      };
+
+      // If we are using `track by` then we must watch the tracked value on the model
+      // since ngModel only watches for object identity change
+      // FIXME: When a user selects an option, this watch will fire needlessly
+      if (ngOptions.trackBy) {
+        scope.$watch(ngOptions.getTrackByValue(ngModelCtrl.$viewValue), () => {
+          ngModelCtrl.$render();
+        });
+      }
+    } else {
+      selectCtrl.writeValue = function writeNgOptionsMultiple(values) {
+        // The options might not be defined yet when ngModel tries to render
+        if (!options) return;
+
+        // Only set `<option>.selected` if necessary, in order to prevent some browsers from
+        // scrolling to `<option>` elements that are outside the `<select>` element's viewport.
+        const selectedOptions =
+          (values && values.map(getAndUpdateSelectedOption)) || [];
+
+        options.items.forEach((option) => {
+          if (option.element.selected && !includes(selectedOptions, option)) {
+            option.element.selected = false;
+          }
+        });
+      };
+
+      selectCtrl.readValue = function readNgOptionsMultiple() {
+        const selectedValues = selectElement.value || [];
+        const selections = [];
+        // @ts-ignore
+        selectedValues.forEach((value) => {
+          const option = options.selectValueMap[value];
+          if (option && !option.disabled)
+            selections.push(options.getViewValueFromOption(option));
+        });
+
+        return selections;
+      };
+
+      // If we are using `track by` then we must watch these tracked values on the model
+      // since ngModel only watches for object identity change
+      // if (ngOptions.trackBy) {
+      //   scope.$watchCollection(
+      //     () => {
+      //       if (Array.isArray(ngModelCtrl.$viewValue)) {
+      //         return ngModelCtrl.$viewValue.map((value) =>
+      //           ngOptions.getTrackByValue(value),
+      //         );
+      //       }
+      //     },
+      //     () => {
+      //       ngModelCtrl.$render();
+      //     },
+      //   );
+      // }
+    }
+
+    if (providedEmptyOption) {
+      // compile the element since there might be bindings in it
+      const linkFn = $compile(selectCtrl.emptyOption);
+      assertArg$1(linkFn, "LinkFn required");
+      selectElement.prepend(selectCtrl.emptyOption);
+      linkFn(scope);
+
+      if (selectCtrl.emptyOption.nodeType === Node.COMMENT_NODE) {
+        // This means the empty option has currently no actual DOM node, probably because
+        // it has been modified by a transclusion directive.
+        selectCtrl.hasEmptyOption = false;
+
+        // Redefine the registerOption function, which will catch
+        // options that are added by ngIf etc. (rendering of the node is async because of
+        // lazy transclusion)
+        selectCtrl.registerOption = function (optionScope, optionEl) {
+          if (optionEl.value === "") {
+            selectCtrl.hasEmptyOption = true;
+            selectCtrl.emptyOption = optionEl;
+            // This ensures the new empty option is selected if previously no option was selected
+            ngModelCtrl.$render();
+
+            optionEl.addEventListener("$destroy", () => {
+              const needsRerender = selectCtrl.$isEmptyOptionSelected();
+
+              selectCtrl.hasEmptyOption = false;
+              selectCtrl.emptyOption = undefined;
+
+              if (needsRerender) ngModelCtrl.$render();
+            });
+          }
+        };
+      }
+    }
+
+    // We will re-render the option elements if the option values or labels change
+
+    // let watchables = ngOptions.getWatchables();
+    // watchables.forEach((i) => {
+    //   scope.$watch(i, updateOptions);
+    // });
+    scope.$watch(
+      ngOptions.getWatchables.decoratedNode.body[0].expression.name,
+      updateOptions,
+    );
+
+    // ------------------------------------------------------------------ //
+
+    function addOptionElement(option, parent) {
+      /**
+       * @type {HTMLOptionElement}
+       */
+      const optionElement = /** @type {HTMLOptionElement} */ (
+        optionTemplate.cloneNode(false)
+      );
+      parent.appendChild(optionElement);
+      updateOptionElement(option, optionElement);
+    }
+
+    function getAndUpdateSelectedOption(viewValue) {
+      const option = options.getOptionFromViewValue(viewValue);
+      const element = option && option.element;
+
+      if (element && !element.selected) element.selected = true;
+
+      return option;
+    }
+
+    function updateOptionElement(option, element) {
+      option.element = element;
+      element.disabled = option.disabled;
+      // Support: IE 11 only, Edge 12-13 only
+      // NOTE: The label must be set before the value, otherwise IE 11 & Edge create unresponsive
+      // selects in certain circumstances when multiple selects are next to each other and display
+      // the option list in listbox style, i.e. the select is [multiple], or specifies a [size].
+      // See https://github.com/angular/angular.js/issues/11314 for more info.
+      // This is unfortunately untestable with unit / e2e tests
+      if (option.label !== element.label) {
+        element.label = option.label;
+        element.textContent = option.label;
+      }
+      element.value = option.selectValue;
+    }
+
+    function updateOptions() {
+      const previousValue = options && selectCtrl.readValue();
+
+      // We must remove all current options, but cannot simply set innerHTML = null
+      // since the providedEmptyOption might have an ngIf on it that inserts comments which we
+      // must preserve.
+      // Instead, iterate over the current option elements and remove them or their optgroup
+      // parents
+      if (options) {
+        for (let i = options.items.length - 1; i >= 0; i--) {
+          const option = options.items[i];
+          if (isDefined(option.group)) {
+            removeElement(option.element.parentNode);
+          } else {
+            removeElement(option.element);
+          }
+        }
+      }
+
+      options = ngOptions.getOptions();
+
+      const groupElementMap = {};
+
+      options.items.forEach((option) => {
+        let groupElement;
+
+        if (isDefined(option.group)) {
+          // This option is to live in a group
+          // See if we have already created this group
+          groupElement = groupElementMap[option.group];
+
+          if (!groupElement) {
+            groupElement = optGroupTemplate.cloneNode(false);
+            listFragment.appendChild(groupElement);
+
+            // Update the label on the group element
+            // "null" is special cased because of Safari
+            /** @type {HTMLOptGroupElement} */
+            (groupElement).label =
+              option.group === null ? "null" : option.group;
+
+            // Store it for use later
+            groupElementMap[option.group] = groupElement;
+          }
+
+          addOptionElement(option, groupElement);
+        } else {
+          // This option is not in a group
+          addOptionElement(option, listFragment);
+        }
+      });
+
+      selectElement.appendChild(listFragment);
+
+      ngModelCtrl.$render();
+
+      // Check to see if the value has changed due to the update to the options
+      if (!ngModelCtrl.$isEmpty(previousValue)) {
+        const nextValue = selectCtrl.readValue();
+        const isNotPrimitive = ngOptions.trackBy || multiple;
+        if (
+          isNotPrimitive
+            ? !equals$1(previousValue, nextValue)
+            : previousValue !== nextValue
+        ) {
+          ngModelCtrl.$setViewValue(nextValue);
+          ngModelCtrl.$render();
+        }
+      }
+    }
+  }
+
+  return {
+    restrict: "A",
+    terminal: true,
+    require: ["select", "ngModel"],
+    link: {
+      pre: function ngOptionsPreLink(scope, selectElement, attr, ctrls) {
+        // Deactivate the SelectController.register method to prevent
+        // option directives from accidentally registering themselves
+        // (and unwanted $destroy handlers etc.)
+        ctrls[0].registerOption = () => {};
+      },
+      post: ngOptionsPostLink,
+    },
+  };
+}
 
 /**
  * Directive that marks the insertion point for the transcluded DOM of the nearest parent directive that uses transclusion.
@@ -12946,113 +12922,114 @@ const ngOptionsDirective = [
  *                                               or its value is the same as the name of the attribute then the default slot is used.
  */
 const ngTranscludeMinErr = minErr("ngTransclude");
-const ngTranscludeDirective = [
-  "$compile",
 
-  /**
-   * @param {import("../../core/compile/compile.js").CompileFn} $compile
-   * @returns {import("../../interface.ts").Directive}
-   */
-  function ($compile) {
-    return {
-      compile: function ngTranscludeCompile(tElement) {
-        // Remove and cache any original content to act as a fallback
-        const fallbackLinkFn = $compile(tElement.childNodes);
-        emptyElement(tElement);
+ngTranscludeDirective.$inject = ["$compile"];
+/**
+ * @param {import("../../core/compile/compile.js").CompileFn} $compile
+ * @returns {import("../../interface.ts").Directive}
+ */
+function ngTranscludeDirective($compile) {
+  return {
+    compile: function ngTranscludeCompile(tElement) {
+      // Remove and cache any original content to act as a fallback
+      const fallbackLinkFn = $compile(tElement.childNodes);
+      emptyElement(tElement);
+
+      /**
+       *
+       * @param {import("../../core/scope/scope.js").Scope} $scope
+       * @param {Element} $element
+       * @param {import("../../core/compile/attributes.js").Attributes} $attrs
+       * @param {*} _controller
+       * @param {*} $transclude
+       */
+      function ngTranscludePostLink(
+        $scope,
+        $element,
+        $attrs,
+        _controller,
+        $transclude,
+      ) {
+        if (!$transclude) {
+          throw ngTranscludeMinErr(
+            "orphan",
+            "Illegal use of ngTransclude directive in the template! " +
+              "No parent directive that requires a transclusion found. " +
+              "Element: {0}",
+            startingTag($element),
+          );
+        }
+
+        // If the attribute is of the form: `ng-transclude="ng-transclude"` then treat it like the default
+        if ($attrs["ngTransclude"] === $attrs.$attr.ngTransclude) {
+          $attrs["ngTransclude"] = "";
+        }
+        const slotName = $attrs["ngTransclude"] || $attrs["ngTranscludeSlot"];
+
+        // If the slot is required and no transclusion content is provided then this call will throw an error
+        $transclude(ngTranscludeCloneAttachFn, null, slotName);
+
+        // If the slot is optional and no transclusion content is provided then use the fallback content
+        if (slotName && !$transclude.isSlotFilled(slotName)) {
+          useFallbackContent();
+        }
 
         /**
-         *
-         * @param {import("../../core/scope/scope.js").Scope} $scope
-         * @param {Element} $element
-         * @param {import("../../core/compile/attributes.js").Attributes} $attrs
-         * @param {*} _controller
-         * @param {*} $transclude
+         * @param {NodeList | Node} clone
+         * @param {import("../../core/scope/scope.js").Scope} transcludedScope
          */
-        function ngTranscludePostLink(
-          $scope,
-          $element,
-          $attrs,
-          _controller,
-          $transclude,
-        ) {
-          if (!$transclude) {
-            throw ngTranscludeMinErr(
-              "orphan",
-              "Illegal use of ngTransclude directive in the template! " +
-                "No parent directive that requires a transclusion found. " +
-                "Element: {0}",
-              startingTag($element),
-            );
-          }
-
-          // If the attribute is of the form: `ng-transclude="ng-transclude"` then treat it like the default
-          if ($attrs["ngTransclude"] === $attrs.$attr.ngTransclude) {
-            $attrs["ngTransclude"] = "";
-          }
-          const slotName = $attrs["ngTransclude"] || $attrs["ngTranscludeSlot"];
-
-          // If the slot is required and no transclusion content is provided then this call will throw an error
-          $transclude(ngTranscludeCloneAttachFn, null, slotName);
-
-          // If the slot is optional and no transclusion content is provided then use the fallback content
-          if (slotName && !$transclude.isSlotFilled(slotName)) {
-            useFallbackContent();
-          }
-
-          /**
-           * @param {NodeList | Node} clone
-           * @param {import("../../core/scope/scope.js").Scope} transcludedScope
-           */
-          function ngTranscludeCloneAttachFn(clone, transcludedScope) {
-            if (notWhitespace(clone)) {
-              if (clone instanceof NodeList) {
-                Array.from(clone).forEach((el) => {
-                  $element.append(el);
-                });
-              } else {
-                $element.append(/** @type {Node} */ (clone));
-              }
+        function ngTranscludeCloneAttachFn(clone, transcludedScope) {
+          if (notWhitespace(clone)) {
+            if (clone instanceof NodeList) {
+              Array.from(clone).forEach((el) => {
+                $element.append(el);
+              });
             } else {
-              useFallbackContent();
-              // There is nothing linked against the transcluded scope since no content was available,
-              // so it should be safe to clean up the generated scope.
-              transcludedScope.$destroy();
+              $element.append(/** @type {Node} */ (clone));
             }
-          }
-
-          function useFallbackContent() {
-            // Since this is the fallback content rather than the transcluded content,
-            // we link against the scope of this directive rather than the transcluded scope
-            fallbackLinkFn(
-              $scope,
-
-              (clone) => {
-                // @ts-ignore
-                $element.append(clone);
-              },
-            );
-          }
-
-          function notWhitespace(node) {
-            if (node instanceof Array) {
-              return false;
-            } else if (
-              node.nodeType !== Node.TEXT_NODE ||
-              node.nodeValue.trim()
-            ) {
-              return true;
-            }
+          } else {
+            useFallbackContent();
+            // There is nothing linked against the transcluded scope since no content was available,
+            // so it should be safe to clean up the generated scope.
+            transcludedScope.$destroy();
           }
         }
 
-        return ngTranscludePostLink;
-      },
-    };
-  },
-];
+        function useFallbackContent() {
+          // Since this is the fallback content rather than the transcluded content,
+          // we link against the scope of this directive rather than the transcluded scope
+          fallbackLinkFn(
+            $scope,
+
+            (clone) => {
+              // @ts-ignore
+              $element.append(clone);
+            },
+          );
+        }
+
+        function notWhitespace(node) {
+          if (node instanceof Array) {
+            return false;
+          } else if (
+            node.nodeType !== Node.TEXT_NODE ||
+            node.nodeValue.trim()
+          ) {
+            return true;
+          }
+        }
+      }
+
+      return ngTranscludePostLink;
+    },
+  };
+}
 
 const REGEX_STRING_REGEXP = /^\/(.+)\/([a-z]*)$/;
 
+/**
+ * @type {Record<string, import("../../interface.js").DirectiveFactory>}
+ */
 const ngAttributeAliasDirectives = {};
 
 // boolean attrs are evaluated
@@ -13095,10 +13072,10 @@ Object.entries(ALIASED_ATTR).forEach(([ngAttr]) => {
       link(scope, element, attr) {
         // special case ngPattern when a literal regular expression value
         // is used as the expression (this way we don't have to watch anything).
-        if (ngAttr === "ngPattern" && attr.ngPattern.charAt(0) === "/") {
-          const match = attr.ngPattern.match(REGEX_STRING_REGEXP);
+        if (ngAttr === "ngPattern" && attr["ngPattern"].charAt(0) === "/") {
+          const match = attr["ngPattern"].match(REGEX_STRING_REGEXP);
           if (match) {
-            attr.$set("ngPattern", new RegExp(match[1], match[2]));
+            attr.$set("ngPattern", new RegExp(match[1], match[2]).toString());
             return;
           }
         }
@@ -13124,7 +13101,7 @@ Object.entries(ALIASED_ATTR).forEach(([ngAttr]) => {
 
           if (
             attrName === "href" &&
-            toString.call(element.href) === "[object SVGAnimatedString]"
+            toString.call(element["href"]) === "[object SVGAnimatedString]"
           ) {
             name = "xlinkHref";
             attr.$attr[name] = "href";
@@ -15268,7 +15245,7 @@ function $IsStateFilter($state) {
   const isFilter = function (state, params, options) {
     return $state.is(state, params, options);
   };
-  //isFilter.$stateful = true;
+  isFilter.$stateful = true;
   return isFilter;
 }
 /**
@@ -15289,7 +15266,7 @@ function $IncludedByStateFilter($state) {
   const includesFilter = function (state, params, options) {
     return $state.includes(state, params, options);
   };
-  //includesFilter.$stateful = true;
+  includesFilter.$stateful = true;
   return includesFilter;
 }
 
@@ -15316,7 +15293,7 @@ class FilterProvider {
   /**
    * @param {string|Record<string, import('../../interface.ts').FilterFactory>} name
    * @param {import('../../interface.ts').FilterFactory} [factory]
-   * @return {import('../../interface.ts').ServiceProvider}
+   * @return {import('../../interface.ts').Provider}
    */
   register(name, factory) {
     if (isObject(name)) {
@@ -15473,7 +15450,7 @@ class ASTInterpreter {
         if (ast.filter) right = this.$filter(ast.callee.name);
         if (!ast.filter) right = this.recurse(ast.callee, true);
         return ast.filter
-          ? function (scope, locals, assign) {
+          ? (scope, locals, assign) => {
               const values = [];
               for (let i = 0; i < args.length; ++i) {
                 const res = args[i](scope, locals, assign);
@@ -15486,7 +15463,7 @@ class ASTInterpreter {
                 ? { context: undefined, name: undefined, value }
                 : value;
             }
-          : function (scope, locals, assign) {
+          : (scope, locals, assign) => {
               const rhs = right(scope, locals, assign);
               let value;
               if (rhs.value != null && isFunction(rhs.value)) {
@@ -15502,7 +15479,7 @@ class ASTInterpreter {
       case ASTType.AssignmentExpression:
         left = this.recurse(ast.left, true, 1);
         right = this.recurse(ast.right);
-        return function (scope, locals, assign) {
+        return (scope, locals, assign) => {
           const lhs = left(scope, locals, assign);
           const rhs = right(scope, locals, assign);
           lhs.context[lhs.name] = rhs;
@@ -15513,7 +15490,7 @@ class ASTInterpreter {
         ast.elements.forEach((expr) => {
           args.push(self.recurse(expr));
         });
-        return function (scope, locals, assign) {
+        return (scope, locals, assign) => {
           const value = [];
           for (let i = 0; i < args.length; ++i) {
             value.push(args[i](scope, locals, assign));
@@ -15540,7 +15517,7 @@ class ASTInterpreter {
             });
           }
         });
-        return function (scope, locals, assign) {
+        return (scope, locals, assign) => {
           const value = {};
           for (let i = 0; i < args.length; ++i) {
             if (args[i].computed) {
@@ -15556,17 +15533,12 @@ class ASTInterpreter {
           return context ? { value } : value;
         };
       case ASTType.ThisExpression:
-        return function (scope) {
-          return context ? { value: scope } : scope;
-        };
+        return (scope) => (context ? { value: scope } : scope);
       case ASTType.LocalsExpression:
-        return function (scope, locals) {
-          return context ? { value: locals } : locals;
-        };
+        return (scope, locals) => (context ? { value: locals } : locals);
       case ASTType.NGValueParameter:
-        return function (scope, locals, assign) {
-          return context ? { value: assign } : assign;
-        };
+        return (scope, locals, assign) =>
+          context ? { value: assign } : assign;
     }
   }
 
@@ -15577,7 +15549,7 @@ class ASTInterpreter {
    * @returns {function} The unary plus function.
    */
   "unary+"(argument, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       let arg = argument(scope, locals, assign);
       if (isDefined(arg)) {
         arg = +arg;
@@ -15595,7 +15567,7 @@ class ASTInterpreter {
    * @returns {function} The unary minus function.
    */
   "unary-"(argument, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       let arg = argument(scope, locals, assign);
       if (isDefined(arg)) {
         arg = -arg;
@@ -15613,7 +15585,7 @@ class ASTInterpreter {
    * @returns {function} The unary negation function.
    */
   "unary!"(argument, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = !argument(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -15627,7 +15599,7 @@ class ASTInterpreter {
    * @returns {function} The binary plus function.
    */
   "binary+"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const lhs = left(scope, locals, assign);
       const rhs = right(scope, locals, assign);
       const arg = plusFn(lhs, rhs);
@@ -15643,7 +15615,7 @@ class ASTInterpreter {
    * @returns {function} The binary minus function.
    */
   "binary-"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const lhs = left(scope, locals, assign);
       const rhs = right(scope, locals, assign);
       const arg = (isDefined(lhs) ? lhs : 0) - (isDefined(rhs) ? rhs : 0);
@@ -15659,14 +15631,14 @@ class ASTInterpreter {
    * @returns {function} The binary multiplication function.
    */
   "binary*"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) * right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
   }
 
   "binary/"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) / right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -15680,7 +15652,7 @@ class ASTInterpreter {
    * @returns {function} The binary division function.
    */
   "binary%"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) % right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -15694,7 +15666,7 @@ class ASTInterpreter {
    * @returns {function} The binary strict equality function.
    */
   "binary==="(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) === right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -15708,7 +15680,7 @@ class ASTInterpreter {
    * @returns {function} The binary strict inequality function.
    */
   "binary!=="(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) !== right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -15722,7 +15694,7 @@ class ASTInterpreter {
    * @returns {function} The binary equality function.
    */
   "binary=="(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) == right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -15736,7 +15708,7 @@ class ASTInterpreter {
    * @returns {function} The binary inequality function.
    */
   "binary!="(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) != right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -15750,7 +15722,7 @@ class ASTInterpreter {
    * @returns {function} The binary less-than function.
    */
   "binary<"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) < right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -15764,7 +15736,7 @@ class ASTInterpreter {
    * @returns {function} The binary greater-than function.
    */
   "binary>"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) > right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -15778,7 +15750,7 @@ class ASTInterpreter {
    * @returns {function} The binary less-than-or-equal-to function.
    */
   "binary<="(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) <= right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -15792,7 +15764,7 @@ class ASTInterpreter {
    * @returns {function} The binary greater-than-or-equal-to function.
    */
   "binary>="(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) >= right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -15819,7 +15791,7 @@ class ASTInterpreter {
    * @returns {function} The binary logical OR function.
    */
   "binary||"(left, right, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = left(scope, locals, assign) || right(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
@@ -15834,7 +15806,7 @@ class ASTInterpreter {
    * @returns {function} The ternary conditional function.
    */
   "ternary?:"(test, alternate, consequent, context) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const arg = test(scope, locals, assign)
         ? alternate(scope, locals, assign)
         : consequent(scope, locals, assign);
@@ -15849,9 +15821,8 @@ class ASTInterpreter {
    * @returns {import("./interface.ts").CompiledExpressionFunction} The function returning the literal value.
    */
   value(value, context) {
-    return function () {
-      return context ? { context: undefined, name: undefined, value } : value;
-    };
+    return () =>
+      context ? { context: undefined, name: undefined, value } : value;
   }
 
   /**
@@ -15862,7 +15833,7 @@ class ASTInterpreter {
    * @returns {import("./interface.ts").CompiledExpressionFunction} The function returning the identifier value.
    */
   identifier(name, context, create) {
-    return function (scope, locals) {
+    return (scope, locals) => {
       const base = locals && name in locals ? locals : scope;
       if (create && create !== 1 && base && base[name] == null) {
         base[name] = {};
@@ -15887,7 +15858,7 @@ class ASTInterpreter {
    * @returns {function} The function returning the computed member value.
    */
   computedMember(left, right, context, create) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const lhs = left(scope, locals, assign);
       let rhs;
       let value;
@@ -15917,7 +15888,7 @@ class ASTInterpreter {
    * @returns {function} The function returning the non-computed member value.
    */
   nonComputedMember(left, right, context, create) {
-    return function (scope, locals, assign) {
+    return (scope, locals, assign) => {
       const lhs = left(scope, locals, assign);
       if (create && create !== 1) {
         if (lhs && lhs[right] == null) {
@@ -21575,7 +21546,7 @@ function TemplateRequestProvider() {
   ];
 }
 
-/** @typedef {import('../../interface.ts').ServiceProvider} ServiceProvider } */
+/** @typedef {import('../../interface.ts').ServiceProvider} ServiceProvider */
 
 /**
  * Private service to sanitize uris for links and images. Used by $compile.
@@ -21627,7 +21598,7 @@ class SanitizeUriProvider {
   }
 
   /**
-   * @returns {import("./interface.js").SanitizerFn} Sanitizer function.
+   * @returns {import("./interface").SanitizerFn}
    */
   $get() {
     return (uri, isMediaUrl) => {
@@ -21884,6 +21855,10 @@ const ngMessageDirective = ngMessageDirectiveFactory(false);
 const ngMessageExpDirective = ngMessageDirectiveFactory(false);
 const ngMessageDefaultDirective = ngMessageDirectiveFactory(true);
 
+/**
+ * @param {boolean} isDefault
+ * @returns {(any) => import("../../interface.js").Directive}
+ */
 function ngMessageDirectiveFactory(isDefault) {
   ngMessageDirective.$inject = ["$animate"];
   function ngMessageDirective($animate) {
@@ -24964,7 +24939,7 @@ function AnimationProvider() {
 
 /**
  * Service provider that creates a requestAnimationFrame-based scheduler.
- * @implements {ServiceProvider}
+ * @type {ServiceProvider}
  */
 class RafSchedulerProvider {
   constructor() {
@@ -26716,7 +26691,6 @@ class Queue {
  *
  * This is where we hold the global mutable state such as current state, current
  * params, current transition, etc.
- * @implements {ServiceProvider}
  */
 class RouterGlobals {
   constructor() {
@@ -34237,7 +34211,6 @@ class StateQueueManager {
  *
  * This API is found at `$stateRegistry` ([[UIRouter.stateRegistry]])
  *
- * @implements {ServiceProvider}
  */
 class StateRegistryProvider {
   static $inject = provider([
@@ -35001,11 +34974,20 @@ function $StateRefActiveDirective(
  * });
  * ```
  */
+
+/** @type {import("../../interface.js").AnnotatedDirectiveFactory} */
 let ngView = [
   "$view",
   "$animate",
   "$ngViewScroll",
   "$interpolate",
+  /**
+   * @param {*} $view
+   * @param {*} $animate
+   * @param {*} $ngViewScroll
+   * @param {*} $interpolate
+   * @returns {import("../../interface.js").Directive}
+   */
   function $ViewDirective($view, $animate, $ngViewScroll, $interpolate) {
     function getRenderer() {
       return {
@@ -35036,7 +35018,6 @@ let ngView = [
     };
     const directive = {
       count: 0,
-
       terminal: true,
       priority: 400,
       transclude: "element",
@@ -35432,16 +35413,6 @@ function ngSetterDirective($parse, $log) {
 }
 
 /**
- * Delays execution for a specified number of milliseconds.
- *
- * @param {number} [t=0] - The number of milliseconds to wait. Defaults to 0.
- * @returns {Promise<void>} A promise that resolves after the delay.
- */
-function wait(t = 0) {
-  return new Promise((resolve) => setTimeout(resolve, t));
-}
-
-/**
  * @param {"get" | "delete" | "post" | "put"} method
  * @returns {import('../../interface.ts').DirectiveFactory}
  */
@@ -35452,9 +35423,16 @@ function defineDirective(method) {
   return directive;
 }
 
+/** @type {import('../../interface.ts').DirectiveFactory} */
 const ngGetDirective = defineDirective("get");
+
+/** @type {import('../../interface.ts').DirectiveFactory} */
 const ngDeleteDirective = defineDirective("delete");
+
+/** @type {import('../../interface.ts').DirectiveFactory} */
 const ngPostDirective = defineDirective("post");
+
+/** @type {import('../../interface.ts').DirectiveFactory} */
 const ngPutDirective = defineDirective("put");
 
 /**
@@ -35481,7 +35459,7 @@ function getEventNameForElement(element) {
  * Handles DOM manipulation based on a swap strategy and server-rendered HTML.
  *
  * @param {string} html - The HTML string returned from the server.
- * @param {import("../../interface.ts").SwapInsertPosition} swap
+ * @param {import("../../interface.ts").SwapModeType} swap
  * @param {Element} target - The target DOM element to apply the swap to.
  * @param {import('../../core/scope/scope.js').Scope} scope
  * @param {import('../../core/compile/compile.js').CompileFn} $compile
@@ -35714,9 +35692,7 @@ function createHttpDirective(method, attrName) {
 
             handleSwapResponse(
               html,
-              /** @type {import("../../interface.ts").SwapInsertPosition} */ (
-                swap
-              ),
+              /** @type {import("../../interface.ts").SwapModeType} */ (swap),
               target,
               scope,
               $compile,
@@ -35768,13 +35744,13 @@ function createHttpDirective(method, attrName) {
  * @returns {import('./core/di/ng-module.js').NgModule} `ng` module
  */
 function registerNgModule(angular) {
-  const ng = angular
+  return angular
     .module(
       "ng",
       [],
       [
         "$provide",
-        /** @type {import('./interface.js').Provider} */
+        /** @param {import("./interface.js").Provider} $provide */
         ($provide) => {
           // $$sanitizeUriProvider needs to be before $compileProvider as it is used by it.
           $provide.provider({
@@ -35916,8 +35892,6 @@ function registerNgModule(angular) {
       },
     ])
     .value("$trace", trace);
-
-  return ng;
 }
 
 const ngMinErr = minErr("ng");
@@ -35943,7 +35917,7 @@ class Angular {
     /**
      * @type {string} `version` from `package.json`
      */
-    this.version = "0.7.7"; //inserted via rollup plugin
+    this.version = "0.7.8"; //inserted via rollup plugin
 
     /** @type {!Array<string|any>} */
     this.bootsrappedModules = [];
