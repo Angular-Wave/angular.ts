@@ -6,13 +6,16 @@ setup:
 	@npx playwright install
 
 BUILD_DIR = ./dist		
-build:
+build: version
 	@if [ -d "$(BUILD_DIR)" ]; then \
 		echo "Removing $(BUILD_DIR)..."; \
 		rm -r "$(BUILD_DIR)"; \
 	fi
 	@npm i
 	./node_modules/.bin/rollup -c
+
+version:
+	@node utils/version.cjs	
 
 pretty:
 	@npx prettier ./ --write
