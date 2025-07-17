@@ -11,7 +11,7 @@ remote URL and insert, replace, or manipulate it into the DOM. In case of server
 error, the directive displays the error in place of success result. This
 behavior can be modified with error parameters below.
 
-### Directive parameters
+### Parameters
 
 ---
 
@@ -27,7 +27,7 @@ behavior can be modified with error parameters below.
 
 ---
 
-### Directive parameters
+### Modifiers
 
 #### `data-trigger`
 

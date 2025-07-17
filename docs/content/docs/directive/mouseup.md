@@ -9,7 +9,7 @@ description: >
 The `ng-mouseup` directive allows you to specify custom behavior when a pressed
 mouse is released over an element.
 
-### Directive parameters
+### Parameters
 
 ---
 

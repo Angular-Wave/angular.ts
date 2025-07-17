@@ -13,8 +13,8 @@ using `$eventBus`.
   directive will **replace the element's inner HTML** with the published value.
 - If the element **does** contain a template and the published value is an
   **object**, the directive will **merge the object’s key-value pairs into the
-  current scope**, allowing Angular expressions like `{{ user.firstName }}` to
-  be evaluated and rendered.
+  current scope**, allowing Angular expressions like to be evaluated and
+  rendered.
 
 The directive automatically unsubscribes from the event channel when the scope
 is destroyed.

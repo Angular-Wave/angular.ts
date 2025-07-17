@@ -9,7 +9,7 @@ description: >
 The `ng-mouseleave` directive allows you to specify custom behavior when an
 element a mouse leaves entire element.
 
-### Directive parameters
+### Parameters
 
 ---
 

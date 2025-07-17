@@ -47,7 +47,7 @@ This code demonstrates the following key AngularTS features:
 
 - **Island-first and zero-cost:** AngularTS creates an application on any HTML
   tag with `ng-app` attribute, allowing multiple independent applications
-  (modules) to live on a single page. The enables AngularTS to work alongside
+  (modules) to live on a single page. This allows AngularTS to work alongside
   your existing tech stack where the majority of your page is rendered on the
   server, while AngularTS is isolated to small “islands” (regions of your page)
   where custom interactivity or personalization is required.

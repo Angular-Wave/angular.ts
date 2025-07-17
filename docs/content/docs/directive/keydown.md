@@ -9,7 +9,7 @@ description: >
 The `ng-keydown` directive allows you to specify custom behavior when pressing
 keys, regardless of whether they produce a character value.
 
-### Directive parameters
+### Parameters
 
 ---
 

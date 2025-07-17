@@ -9,7 +9,7 @@ description: >
 The `ng-mouseover` directive allows you to specify custom behavior when a mouse
 is placed over an element.
 
-### Directive parameters
+### Parameters
 
 ---
 

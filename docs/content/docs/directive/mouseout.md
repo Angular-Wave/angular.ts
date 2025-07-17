@@ -9,7 +9,7 @@ description: >
 The `ng-mouseout` directive allows you to specify custom behavior when a mouse
 leaves any part of the element or its children.
 
-### Directive parameters
+### Parameters
 
 ---
 

@@ -9,7 +9,7 @@ description: >
 The `ng-copy` directive allows you to specify custom behavior when an element is
 copied.
 
-### Directive parameters
+### Parameters
 
 ---
 

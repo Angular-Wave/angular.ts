@@ -40,7 +40,7 @@ to the element:
 > `ng-class` supports standard CSS3 transitions/animations even if they don’t
 > follow `$animate` service naming conventions.
 
-### Directive parameters
+### Parameters
 
 ---
 

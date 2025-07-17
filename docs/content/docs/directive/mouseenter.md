@@ -9,7 +9,7 @@ description: >
 The `ng-mouseenter` directive allows you to specify custom behavior when a mouse
 enters an element.
 
-### Directive parameters
+### Parameters
 
 ---
 

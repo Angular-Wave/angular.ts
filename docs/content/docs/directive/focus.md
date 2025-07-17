@@ -9,7 +9,7 @@ description: >
 The `ng-focus` directive allows you to specify custom behavior when an element
 is focused.
 
-### Directive parameters
+### Parameters
 
 ---
 

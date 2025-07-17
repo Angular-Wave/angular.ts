@@ -9,7 +9,7 @@ description: >
 The `ng-blur` directive allows you to specify custom behavior when an element
 loses focus.
 
-### Directive parameters
+### Parameters
 
 ---
 

@@ -21,7 +21,7 @@ to the element:
 | [`add-class`](../../service/animate)    | Before the class is applied to the element   |
 | [`remove-class`](../../service/animate) | Before the class is removed from the element |
 
-### Directive parameters
+### Parameters
 
 ---
 

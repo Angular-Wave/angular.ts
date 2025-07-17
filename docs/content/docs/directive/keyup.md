@@ -9,7 +9,7 @@ description: >
 The `ng-keyup` directive allows you to specify custom behavior when releasing
 keys, regardless of whether they produce a character value.
 
-### Directive parameters
+### Parameters
 
 ---
 

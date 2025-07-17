@@ -9,7 +9,7 @@ description: >
 The `ng-mousemove` directive allows you to specify custom custom behavior when a
 mouse is moved over an element.
 
-### Directive parameters
+### Parameters
 
 ---
 

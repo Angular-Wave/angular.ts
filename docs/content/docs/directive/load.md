@@ -15,7 +15,7 @@ event.
 before loading its resource. Demo below is using a large image to showcase
 itself.
 
-### Directive parameters
+### Parameters
 
 ---
 

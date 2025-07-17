@@ -9,7 +9,7 @@ description: >
 The `ng-click` directive allows you to specify custom behavior when an element
 is clicked.
 
-### Directive parameters
+### Parameters
 
 ---
 

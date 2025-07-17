@@ -9,7 +9,7 @@ description: >
 The `ng-dblclick` directive allows you to specify custom behavior when an
 element is double clicked.
 
-### Directive parameters
+### Parameters
 
 ---
 

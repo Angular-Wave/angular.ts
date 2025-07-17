@@ -26,7 +26,7 @@ This is useful for rendering server-generated content, while keeping the UI
 dynamic. In other frameworks, this technieque is known as
 [hydration](<https://en.wikipedia.org/wiki/Hydration_(web_development)>).
 
-### Directive parameters
+### Parameters
 
 ---
 

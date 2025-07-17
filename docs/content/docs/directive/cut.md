@@ -9,7 +9,7 @@ description: >
 The `ng-cut` directive allows you to specify custom behavior when an element is
 cut.
 
-### Directive parameters
+### Parameters
 
 ---
 

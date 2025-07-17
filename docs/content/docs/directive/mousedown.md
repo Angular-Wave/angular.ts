@@ -9,7 +9,7 @@ description: >
 The `ng-mousedown` directive allows you to specify custom behavior when a mouse
 is pressed over an element.
 
-### Directive parameters
+### Parameters
 
 ---
 
