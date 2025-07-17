@@ -8,3 +8,6 @@ script.src =
   '/dist/angular-ts.umd.js';
 script.type = 'text/javascript';
 document.head.appendChild(script);
+script.onload = function () {
+  window.dispatchEvent(new CustomEvent('AngularLoaded'));
+};

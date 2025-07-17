@@ -1,3 +1,4 @@
 <script>
-  {{< showraw src="version.js" >}}
+  {{ $code := readFile "static/version.js" }}
+  {{ $code | safeJS }}
 </script>

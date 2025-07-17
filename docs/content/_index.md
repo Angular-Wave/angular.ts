@@ -16,11 +16,13 @@ title: AngularTS
     Download <i class="fab fa-github ms-2 "></i>
   </a>
   <script defer>
-      window.addEventListener("DOMContentLoaded", () => {
-        const versionSpan = document.getElementById("version");
-        const version = window.angular.version;
-        versionSpan.textContent = `Latest release: ${version}`;
-      });
+    const versionSpan = document.getElementById("version");
+    const updateVersion = () => versionSpan.textContent = `Latest release: ${window.angular.version}`;
+    if (window.angular) {
+      updateVersion()
+    } else {
+      window.addEventListener("AngularLoaded", updateVersion)
+    }    
   </script>
 </div>
 
