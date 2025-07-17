@@ -17,4 +17,12 @@ title: AngularTS
   </a>
 </div>
 
+<div id="npm">
+
+```bash
+  npm i @angular-wave/angular.ts
+```
+
+</div>
+
 {{< /blocks/cover >}}

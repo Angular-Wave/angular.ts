@@ -22,4 +22,27 @@
       margin-right: 2rem;
     }
   }
+
+  #npm {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+
+    .click-to-copy {
+      display: block;
+      float: right;
+    }
+
+    pre {
+      color: white;
+      background-color: gray !important;
+      border-radius: 5px;
+    }
+
+    code > :first-child {
+      padding: 1rem;
+      border-radius: 5px;
+      padding-right: 3rem;
+    }
+  }
 }
