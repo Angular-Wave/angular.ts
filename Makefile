@@ -35,7 +35,7 @@ types:
 
 
 TYPEDOC_DIR = docs/static/typedoc
-doc: types
+doc: 
 	@rm -rf $(TYPEDOC_DIR)
 	@npm run generate-docs
 	@npx prettier ./typedoc --write

@@ -15,8 +15,8 @@ An alternative caching implementation can be provided by implementing
 standard storage options like `localStorage`, `sessionStorage`, `IndexedDB`, or
 `Cache API`. You can also use third-party storage engines like
 [pouch](https://github.com/pouchdb/pouchdb) or
-[SQLite](https://github.com/sqlitebrowser/sqlitebrowser). With WebAssembly
-(WASM), even more powerful and flexible storage backends become possible.
+[SQLite](https://sqlite.org/wasm/doc/trunk/index.md). With WebAssembly (WASM),
+even more powerful and flexible storage backends become possible.
 
 Below is an example implementation using `localStorage`:
 

@@ -114,7 +114,7 @@ behavior can be modified with error parameters below.
 
 - **Type:**
   [delay](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout#delay)
-- **Description:** Ignores subsequent requests for N millisecond
+- **Description:** Ignores subsequent requests for N milliseconds
 - **Example:**
 
   ```html

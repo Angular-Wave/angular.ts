@@ -37,7 +37,20 @@ app.post("/nocontent", (req, res) => {
 });
 
 app.post("/form", (req, res) => {
+  console.log(req.body);
   res.send(req.body);
+});
+
+app.use("/json", express.json());
+app.use("/json", express.urlencoded({ extended: true }));
+app.post("/json", (req, res) => {
+  console.log(req.body);
+  res.json(req.body);
+});
+
+app.post("/hello", (req, res) => {
+  console.log(req.body);
+  res.send("<div>Hello</div>");
 });
 
 app.post("/blob", (req, res) => {
@@ -173,5 +186,12 @@ app.use("/posthtml", express.json());
 app.use("/posthtml", express.urlencoded({ extended: true }));
 app.post("/posthtml", (req, res) => {
   console.log(req.body);
-  res.send(`<div>Post response ${req.body.name} </div>`);
+  res.send(`<div>${req.body.name}</div>`);
+});
+
+app.use("/posterror", express.json());
+app.use("/posterror", express.urlencoded({ extended: true }));
+app.post("/posterror", (req, res) => {
+  console.log(req.body);
+  res.status(422).send(`<div>Error</div>`);
 });

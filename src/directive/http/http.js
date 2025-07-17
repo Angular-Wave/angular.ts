@@ -207,7 +207,6 @@ export function createHttpDirective(method, attrName) {
 
     return {
       restrict: "A",
-      terminal: true,
       link(scope, element, attrs) {
         const eventName =
           attrs["trigger"] ||
