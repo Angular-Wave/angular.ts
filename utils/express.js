@@ -195,3 +195,9 @@ app.post("/posterror", (req, res) => {
   console.log(req.body);
   res.status(422).send(`<div>Error</div>`);
 });
+
+app.use("/urlencoded", express.urlencoded({ extended: true }));
+app.post("/urlencoded", (req, res) => {
+  console.log(req.body); // Access parsed form data
+  res.send("Form data: " + req.body.name);
+});

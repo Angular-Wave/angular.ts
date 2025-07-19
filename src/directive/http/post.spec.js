@@ -58,21 +58,34 @@ describe("ng-post", () => {
   it("should attach parameters of a form and replace innerHTML (default) on click", async () => {
     const scope = $rootScope.$new();
     el.innerHTML =
-      '<form ng-post="/mock/posthtml"><input name="name" value="Bob"></input><button type="submit">Load</button></form>';
+      '<form ng-post="/mock/posthtml"><input name="name" value="Bob" /><button type="submit">Load</button></form>';
     $compile(el)(scope);
     browserTrigger(el.querySelector("form"), "submit");
     await wait(100);
     expect(el.innerText).toBe("Bob");
   });
 
-  it("should attach parameters of a form and replace innerHTML (default) on click", async () => {
+  it("should use json encoding by default", async () => {
     const scope = $rootScope.$new();
     el.innerHTML =
-      '<form ng-post="/mock/json"> {{ name }} <input name="name" value="Bob"></input><button type="submit">Load</button></form>';
+      '<form ng-post="/mock/json"> {{ name }} <input name="name" value="Bob" /><button type="submit">Load</button></form>';
     $compile(el)(scope);
     browserTrigger(el.querySelector("form"), "submit");
     await wait(100);
     expect(el.innerText).toBe("Bob Load");
+  });
+
+  it("should use encoding in enctype", async () => {
+    const scope = $rootScope.$new();
+    el.innerHTML = `
+      <form ng-post="/mock/urlencoded" enctype="application/x-www-form-urlencoded">
+        <input type="text" name="name" value="Bob"/>
+        <button type="submit">Load</button>
+      </form>`;
+    $compile(el)(scope);
+    browserTrigger(el.querySelector("form"), "submit");
+    await wait(100);
+    expect(el.innerText).toBe("Form data: Bob");
   });
 
   // it("should attach parameters of a form and replace innerHTML (default) on click in case of error", async () => {

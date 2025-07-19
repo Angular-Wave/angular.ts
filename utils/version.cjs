@@ -3,10 +3,9 @@ const path = require("path");
 
 const packageJsonPath = path.resolve(__dirname, "../package.json");
 
-// Path where to write the HTML file (adjust as needed)
 const outputPath = path.resolve(
   __dirname,
-  "../docs/layouts/_partials/version.html",
+  "../docs/layouts/sortcodes/version.html",
 );
 
 try {

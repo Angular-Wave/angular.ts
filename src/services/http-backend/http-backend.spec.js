@@ -1,4 +1,3 @@
-import { createInjector } from "../../core/di/injector.js";
 import { Angular } from "../../loader.js";
 import { createHttpBackend } from "./http-backend.js";
 import sinon from "sinon";

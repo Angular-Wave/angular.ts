@@ -3,6 +3,7 @@ import {
   callBackAfterFirst,
   isDefined,
   isObject,
+  toKeyValue,
   wait,
 } from "../../shared/utils.js";
 
@@ -318,8 +319,17 @@ export function createHttpDirective(method, attrName) {
           }
 
           if (method === "post" || method === "put") {
-            const data = collectFormData(element);
-            $http[method](url, data).then(handler).catch(handler);
+            let data;
+            const config = {};
+            if (attrs["enctype"]) {
+              config.headers = {
+                "Content-Type": attrs["enctype"],
+              };
+              data = toKeyValue(collectFormData(element));
+            } else {
+              data = collectFormData(element);
+            }
+            $http[method](url, data, config).then(handler).catch(handler);
           } else {
             $http[method](url).then(handler).catch(handler);
           }
