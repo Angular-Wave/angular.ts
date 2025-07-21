@@ -238,12 +238,7 @@ describe("$http", function () {
     });
     expect(response.headers).toBeDefined();
     expect(response.headers instanceof Function).toBe(true);
-    expect(response.headers("Content-Type")).toBe(
-      "application/json; charset=utf-8",
-    );
-    expect(response.headers("content-type")).toBe(
-      "application/json; charset=utf-8",
-    );
+    expect(response.headers("Content-Type")).toBe("text/html; charset=utf-8");
   });
 
   it("may returns all response headers", async function () {

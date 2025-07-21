@@ -2,24 +2,13 @@ import { trimEmptyHash, urlResolve } from "../../shared/url-utils/url-utils.js";
 import { isDefined, isPromiseLike, isUndefined } from "../../shared/utils.js";
 
 /**
- * HTTP backend used by the {@link ng.$http service} that delegates to
+ * HTTP backend used by the `$http` that delegates to
  * XMLHttpRequest object and deals with browser incompatibilities.
- *
- * You should never need to use this service directly, instead use the higher-level abstractions:
- * {@link ng.$http $http}.
- *
- */
-/**
- * HTTP backend used by the {@link ng.$http service} that delegates to
- * XMLHttpRequest object and deals with browser incompatibilities.
- *
- * You should never need to use this service directly, instead use the higher-level abstractions:
- * {@link ng.$http $http}.
- *
+ * You should never need to use this service directly.
  */
 export class HttpBackendProvider {
   constructor() {
-    this.$get = [() => createHttpBackend()];
+    this.$get = () => createHttpBackend();
   }
 }
 
@@ -27,7 +16,21 @@ export class HttpBackendProvider {
  * @returns
  */
 export function createHttpBackend() {
-  // TODO(vojta): fix the signature
+  /**
+   * Makes an HTTP request using XMLHttpRequest with flexible options.
+   *
+   * @param {string} method - The HTTP method (e.g., "GET", "POST").
+   * @param {string} [url] - The URL to send the request to. Defaults to the current page URL.
+   * @param {*} [post] - The body to send with the request, if any.
+   * @param {function(number, any, string|null, string, string): void} [callback] - Callback invoked when the request completes.
+   * @param {Object<string, string|undefined>} [headers] - Headers to set on the request.
+   * @param {number|Promise<any>} [timeout] - Timeout in ms or a cancellable promise.
+   * @param {boolean} [withCredentials] - Whether to send credentials with the request.
+   * @param {XMLHttpRequestResponseType} [responseType] - The type of data expected in the response.
+   * @param {Object<string, EventListener>} [eventHandlers] - Event listeners for the XMLHttpRequest object.
+   * @param {Object<string, EventListener>} [uploadEventHandlers] - Event listeners for the XMLHttpRequest.upload object.
+   * @returns {void}
+   */
   return function (
     method,
     url,
@@ -44,24 +47,22 @@ export function createHttpBackend() {
 
     const xhr = new XMLHttpRequest();
     let abortedByTimeout = false;
+    let timeoutId;
 
     xhr.open(method, url, true);
+
     if (headers) {
-      Object.entries(headers).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(headers)) {
         if (isDefined(value)) {
           xhr.setRequestHeader(key, value);
         }
-      });
+      }
     }
 
-    xhr.onload = function () {
+    xhr.onload = () => {
+      let status = xhr.status || 0;
       const statusText = xhr.statusText || "";
 
-      let status = xhr.status;
-
-      // fix status code when it is 0 (0 status is undocumented).
-      // Occurs when accessing file resources or on Android 4.1 stock browser
-      // while retrieving files from application cache.
       if (status === 0) {
         status = xhr.response
           ? 200
@@ -71,7 +72,6 @@ export function createHttpBackend() {
       }
 
       completeRequest(
-        callback,
         status,
         xhr.response,
         xhr.getAllResponseHeaders(),
@@ -80,20 +80,11 @@ export function createHttpBackend() {
       );
     };
 
-    xhr.onerror = function () {
-      // The response is always empty
-      // See https://xhr.spec.whatwg.org/#request-error-steps and https://fetch.spec.whatwg.org/#concept-network-error
-      completeRequest(callback, -1, null, null, "", "error");
-    };
-    xhr.ontimeout = function () {
-      // The response is always empty
-      // See https://xhr.spec.whatwg.org/#request-error-steps and https://fetch.spec.whatwg.org/#concept-network-error
-      completeRequest(callback, -1, null, null, "", "timeout");
-    };
+    xhr.onerror = () => completeRequest(-1, null, null, "", "error");
+    xhr.ontimeout = () => completeRequest(-1, null, null, "", "timeout");
 
-    xhr.onabort = function () {
+    xhr.onabort = () => {
       completeRequest(
-        callback,
         -1,
         null,
         null,
@@ -103,16 +94,15 @@ export function createHttpBackend() {
     };
 
     if (eventHandlers) {
-      eventHandlers &&
-        Object.entries(eventHandlers).forEach(([key, value]) => {
-          xhr.addEventListener(key, value);
-        });
+      for (const [key, handler] of Object.entries(eventHandlers)) {
+        xhr.addEventListener(key, handler);
+      }
     }
 
     if (uploadEventHandlers) {
-      Object.entries(uploadEventHandlers).forEach(([key, value]) => {
-        xhr.upload.addEventListener(key, value);
-      });
+      for (const [key, handler] of Object.entries(uploadEventHandlers)) {
+        xhr.upload.addEventListener(key, handler);
+      }
     }
 
     if (withCredentials) {
@@ -123,61 +113,45 @@ export function createHttpBackend() {
       try {
         xhr.responseType = responseType;
       } catch (e) {
-        // WebKit added support for the json responseType value on 09/03/2013
-        // https://bugs.webkit.org/show_bug.cgi?id=73648. Versions of Safari prior to 7 are
-        // known to throw when setting the value "json" as the response type. Other older
-        // browsers implementing the responseType
-        //
-        // The json response type can be ignored if not supported, because JSON payloads are
-        // parsed on the client-side regardless.
-        if (responseType !== "json") {
-          throw e;
-        }
+        if (responseType !== "json") throw e;
       }
     }
 
     xhr.send(isUndefined(post) ? null : post);
 
-    // Since we are using xhr.abort() when a request times out, we have to set a flag that
-    // indicates to requestAborted if the request timed out or was aborted.
-    //
-    // http.timeout = numerical timeout   timeout
-    // http.timeout = $timeout            timeout
-    // http.timeout = promise             abort
-    // xhr.abort()                        abort (The xhr object is normally inaccessible, but
-    //                                    can be exposed with the xhrFactory)
-    /** @type {number} */
-    let timeoutId;
-    if (timeout > 0) {
-      timeoutId = setTimeout(() => {
-        timeoutRequest("timeout");
-      }, timeout);
+    if (typeof timeout === "number" && timeout > 0) {
+      timeoutId = setTimeout(() => timeoutRequest("timeout"), timeout);
     } else if (isPromiseLike(timeout)) {
-      timeout.then(() => {
-        timeoutRequest(isDefined(timeout.$$timeoutId) ? "timeout" : "abort");
+      /** @type {Promise} */ (timeout).then(() => {
+        timeoutRequest(isDefined(timeout["$$timeoutId"]) ? "timeout" : "abort");
       });
     }
 
+    /**
+     * @param {"timeout"|"abort"} reason
+     */
     function timeoutRequest(reason) {
       abortedByTimeout = reason === "timeout";
-      if (xhr) {
-        xhr.abort();
-      }
+      if (xhr) xhr.abort();
     }
 
+    /**
+     * @param {number} status - HTTP status code or -1 for network errors.
+     * @param {*} response - The parsed or raw response from the server.
+     * @param {string|null} headersString - The raw response headers as a string.
+     * @param {string} statusText - The status text returned by the server.
+     * @param {"complete"|"error"|"timeout"|"abort"} xhrStatus - Final status of the request.
+     */
     function completeRequest(
-      callback,
       status,
       response,
       headersString,
       statusText,
       xhrStatus,
     ) {
-      // cancel timeout and subsequent timeout promise resolution
       if (isDefined(timeoutId)) {
         clearTimeout(timeoutId);
       }
-
       callback(status, response, headersString, statusText, xhrStatus);
     }
   };
