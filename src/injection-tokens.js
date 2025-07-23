@@ -44,6 +44,7 @@ export const $injectTokens = Object.freeze({
   $ngViewScroll: "$ngViewScroll",
   $parse: "$parse",
   $rootScope: "$rootScope",
+  $rootElement: "$rootElement",
   $routerGlobals: "$routerGlobals",
   $sce: "$sce",
   $sceDelegate: "$sceDelegate",

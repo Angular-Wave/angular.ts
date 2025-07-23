@@ -30,7 +30,7 @@ describe("ngStateRef", () => {
        */
       ($stateProvider, $locationProvider) => {
         _locationProvider = $locationProvider;
-        $locationProvider.setHashPrefix("");
+        $locationProvider.hashPrefixConf = "";
         $stateProvider
           .state({ name: "top", url: "" })
           .state({ name: "other", url: "/other/:id", template: "other" })

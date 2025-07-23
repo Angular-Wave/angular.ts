@@ -6,31 +6,27 @@ export class UrlService {
   /**
    * @param {import("../../services/location/location").LocationProvider} $locationProvider
    * @param {import("../../router/state/state-service.js").StateProvider} stateService
-   * @param globals
+   * @param {import("../../router/globals.js").RouterGlobals} globals
    * @param {import("../../router/url/url-config.js").UrlConfigProvider} urlConfigProvider
    */
   constructor(
     $locationProvider: any,
     stateService: import("../../router/state/state-service.js").StateProvider,
-    globals: any,
+    globals: import("../../router/globals.js").RouterGlobals,
     urlConfigProvider: import("../../router/url/url-config.js").UrlConfigProvider,
   );
-  stateService: import("../../router/state/state-service.js").StateProvider;
   $locationProvider: any;
+  stateService: import("../../router/state/state-service.js").StateProvider;
   $location: import("../../services/location/location.js").Location;
   /** Provides services related to the URL */
   urlRuleFactory: UrlRuleFactory;
   /**
    * The nested [[UrlRules]] API for managing URL rules and rewrites
-   *
-   * See: [[UrlRules]] for details
    * @type {UrlRules}
    */
   rules: UrlRules;
   /**
    * The nested [[UrlConfig]] API to configure the URL and retrieve URL information
-   *
-   * See: [[UrlConfig]] for details
    * @type {import("./url-config.js").UrlConfigProvider}
    */
   config: import("./url-config.js").UrlConfigProvider;

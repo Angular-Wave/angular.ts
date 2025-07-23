@@ -64,7 +64,7 @@ export function ng1ViewsBuilder(state) {
     name = name || "$default";
     // Account for views: { header: "headerComponent" }
     if (isString(config)) config = { component: config };
-    // Make a shallow copy of the config object
+    // Make a shallow copy of the urlConfig object
     config = Object.assign({}, config);
     // Do not allow a view to mix props for component-style view with props for template/controller-style view
     if (hasAnyKey(compKeys, config) && hasAnyKey(nonCompKeys, config)) {

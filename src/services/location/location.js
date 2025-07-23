@@ -1,7 +1,6 @@
 import { trimEmptyHash, urlResolve } from "../../shared/url-utils/url-utils.js";
 import {
   encodeUriSegment,
-  isBoolean,
   isDefined,
   isNumber,
   isObject,
@@ -15,45 +14,19 @@ import {
 } from "../../shared/utils.js";
 import { getBaseHref } from "../../shared/dom.js";
 
-/**
- * @typedef {Object} DefaultPorts
- * @property {number} http
- * @property {number} https
- * @property {number} ftp
- */
-
-/**
- * Represents the configuration options for HTML5 mode.
- *
- * @typedef {Object} Html5Mode
- * @property {boolean} enabled - (default: false) If true, will rely on `history.pushState` to
- *     change URLs where supported. Falls back to hash-prefixed paths in browsers that do not
- *     support `pushState`.
- * @property {boolean} requireBase - (default: `true`) When html5Mode is enabled, specifies
- *     whether or not a `<base>` tag is required to be present. If both `enabled` and `requireBase`
- *     are true, and a `<base>` tag is not present, an error will be thrown when `$location` is injected.
- *     See the {@link guide/$location $location guide} for more information.
- * @property {boolean|string} rewriteLinks - (default: `true`) When html5Mode is enabled, enables or
- *     disables URL rewriting for relative links. If set to a string, URL rewriting will only apply to links
- *     with an attribute that matches the given string. For example, if set to `'internal-link'`, URL rewriting
- *     will only occur for `<a internal-link>` links. Note that [attribute name normalization](guide/directive#normalization)
- *     does not apply here, so `'internalLink'` will **not** match `'internal-link'`.
- */
-
-/** @type {DefaultPorts} */
+/** @type {import("./interface.ts").DefaultPorts} */
 const DEFAULT_PORTS = { http: 80, https: 443, ftp: 21 };
 const PATH_MATCH = /^([^?#]*)(\?([^#]*))?(#(.*))?$/;
 const $locationMinErr = minErr("$location");
 
-/**
- * @abstract
- */
 export class Location {
   /**
    * @param {string} appBase application base URL
    * @param {string} appBaseNoFile application base URL stripped of any filename
+   * @param {boolean} html5
+   * @param {string} [prefix] URL path prefix for html5 mode or hash prefix for hashbang mode
    */
-  constructor(appBase, appBaseNoFile) {
+  constructor(appBase, appBaseNoFile, html5, prefix) {
     const parsedUrl = urlResolve(appBase);
 
     /** @type {string} */
@@ -61,6 +34,15 @@ export class Location {
 
     /** @type {string} */
     this.appBaseNoFile = appBaseNoFile;
+
+    /** @type {boolean} */
+    this.$$html5 = html5;
+
+    /** @type {string | undefined} */
+    this.basePrefix = html5 ? prefix || "" : undefined;
+
+    /** @type {string | undefined} */
+    this.hashPrefix = html5 ? undefined : prefix;
 
     /**
      * An absolute URL is the full URL, including protocol (http/https ), the optional subdomain (e.g. www ), domain (example.com), and path (which includes the directory and slug).
@@ -304,11 +286,13 @@ export class Location {
   }
 
   /**
-   * @param {string} _url
+   * @param {string} url
    * @returns {string}
    */
-  $$normalizeUrl(_url) {
-    throw new Error(`Method not implemented ${_url}`);
+  $$normalizeUrl(url) {
+    return this.$$html5
+      ? this.appBaseNoFile + url.substring(1)
+      : this.appBase + (url ? this.hashPrefix + url : ""); // first char is always '/'
   }
 
   /**
@@ -332,11 +316,10 @@ export class Location {
       return this.$$state;
     }
 
-    if (!(this instanceof LocationHtml5Url) || !this.$$html5) {
+    if (!this.$$html5) {
       throw $locationMinErr(
         "nostate",
-        "History API state support is available only " +
-          "in HTML5 mode and only in browsers supporting HTML5 History API",
+        "History API state support is available only in HTML5 mode",
       );
     }
     // The user might modify `stateObject` after invoking `$location.state(stateObject)`
@@ -348,32 +331,49 @@ export class Location {
   }
 
   /**
-   * @param {string} _url
-   * @param {string} _url2
+   * @param {string} url
+   * @param {string} relHref
    * @returns {boolean}
    */
-  $$parseLinkUrl(_url, _url2) {
-    throw new Error(`Method not implemented ${_url} ${_url2}`);
-  }
+  $$parseLinkUrl(url, relHref) {
+    if (this.$$html5) {
+      if (relHref && relHref[0] === "#") {
+        // special case for links to hash fragments:
+        // keep the old url and only replace the hash fragment
+        this.hash(relHref.slice(1));
+        return true;
+      }
+      let appUrl;
+      let prevAppUrl;
+      let rewrittenUrl;
 
-  $$parse(_url) {
-    throw new Error(`Method not implemented ${_url}`);
-  }
-}
-
-/**
- * This object is exposed as $location service when HTML5 mode is enabled and supported
- */
-export class LocationHtml5Url extends Location {
-  /**
-   * @param {string} appBase application base URL
-   * @param {string} appBaseNoFile application base URL stripped of any filename
-   * @param {string} basePrefix URL path prefix
-   */
-  constructor(appBase, appBaseNoFile, basePrefix) {
-    super(appBase, appBaseNoFile);
-    this.$$html5 = true;
-    this.basePrefix = basePrefix || "";
+      if (isDefined((appUrl = stripBaseUrl(this.appBase, url)))) {
+        prevAppUrl = appUrl;
+        if (
+          this.basePrefix &&
+          isDefined((appUrl = stripBaseUrl(this.basePrefix, appUrl)))
+        ) {
+          rewrittenUrl =
+            this.appBaseNoFile + (stripBaseUrl("/", appUrl) || appUrl);
+        } else {
+          rewrittenUrl = this.appBase + prevAppUrl;
+        }
+      } else if (isDefined((appUrl = stripBaseUrl(this.appBaseNoFile, url)))) {
+        rewrittenUrl = this.appBaseNoFile + appUrl;
+      } else if (this.appBaseNoFile === `${url}/`) {
+        rewrittenUrl = this.appBaseNoFile;
+      }
+      if (rewrittenUrl) {
+        this.$$parse(rewrittenUrl);
+      }
+      return !!rewrittenUrl;
+    } else {
+      if (stripHash(this.appBase) === stripHash(url)) {
+        this.$$parse(url);
+        return true;
+      }
+      return false;
+    }
   }
 
   /**
@@ -381,176 +381,97 @@ export class LocationHtml5Url extends Location {
    * @param {string} url HTML5 URL
    */
   $$parse(url) {
-    const pathUrl = stripBaseUrl(this.appBaseNoFile, url);
-    if (!isString(pathUrl)) {
-      throw $locationMinErr(
-        "ipthprfx",
-        'Invalid url "{0}", missing path prefix "{1}".',
-        url,
-        this.appBaseNoFile,
-      );
-    }
-
-    parseAppUrl(pathUrl, this, true);
-
-    if (!this.$$path) {
-      this.$$path = "/";
-    }
-
-    this.$$compose();
-  }
-
-  $$normalizeUrl(url) {
-    return this.appBaseNoFile + url.substring(1); // first char is always '/'
-  }
-
-  /**
-   * @param {string} url
-   * @param {string} relHref
-   * @returns {boolean}
-   */
-  $$parseLinkUrl(url, relHref) {
-    if (relHref && relHref[0] === "#") {
-      // special case for links to hash fragments:
-      // keep the old url and only replace the hash fragment
-      this.hash(relHref.slice(1));
-      return true;
-    }
-    let appUrl;
-    let prevAppUrl;
-    let rewrittenUrl;
-
-    if (isDefined((appUrl = stripBaseUrl(this.appBase, url)))) {
-      prevAppUrl = appUrl;
-      if (
-        this.basePrefix &&
-        isDefined((appUrl = stripBaseUrl(this.basePrefix, appUrl)))
-      ) {
-        rewrittenUrl =
-          this.appBaseNoFile + (stripBaseUrl("/", appUrl) || appUrl);
-      } else {
-        rewrittenUrl = this.appBase + prevAppUrl;
+    if (this.$$html5) {
+      const pathUrl = stripBaseUrl(this.appBaseNoFile, url);
+      if (!isString(pathUrl)) {
+        throw $locationMinErr(
+          "ipthprfx",
+          'Invalid url "{0}", missing path prefix "{1}".',
+          url,
+          this.appBaseNoFile,
+        );
       }
-    } else if (isDefined((appUrl = stripBaseUrl(this.appBaseNoFile, url)))) {
-      rewrittenUrl = this.appBaseNoFile + appUrl;
-    } else if (this.appBaseNoFile === `${url}/`) {
-      rewrittenUrl = this.appBaseNoFile;
-    }
-    if (rewrittenUrl) {
-      this.$$parse(rewrittenUrl);
-    }
-    return !!rewrittenUrl;
-  }
-}
 
-/**
- * LocationHashbangUrl represents URL
- * This object is exposed as $location service when developer doesn't opt into html5 mode.
- * It also serves as the base class for html5 mode fallback on legacy browsers.
- *
- */
-export class LocationHashbangUrl extends Location {
-  /**
-   * @param {string} appBase application base URL
-   * @param {string} appBaseNoFile application base URL stripped of any filename
-   * @param {string} hashPrefix hashbang prefix
-   */
-  constructor(appBase, appBaseNoFile, hashPrefix) {
-    super(appBase, appBaseNoFile);
-    this.hashPrefix = hashPrefix;
-  }
+      parseAppUrl(pathUrl, this, true);
 
-  /**
-   * Parse given hashbang URL into properties
-   * @param {string} url Hashbang URL
-   */
-  $$parse(url) {
-    const withoutBaseUrl =
-      stripBaseUrl(this.appBase, url) || stripBaseUrl(this.appBaseNoFile, url);
-    let withoutHashUrl;
-
-    if (!isUndefined(withoutBaseUrl) && withoutBaseUrl.charAt(0) === "#") {
-      // The rest of the URL starts with a hash so we have
-      // got either a hashbang path or a plain hash fragment
-      withoutHashUrl = stripBaseUrl(this.hashPrefix, withoutBaseUrl);
-      if (isUndefined(withoutHashUrl)) {
-        // There was no hashbang prefix so we just have a hash fragment
-        withoutHashUrl = withoutBaseUrl;
+      if (!this.$$path) {
+        this.$$path = "/";
       }
+
+      this.$$compose();
     } else {
-      // There was no hashbang path nor hash fragment:
-      // If we are in HTML5 mode we use what is left as the path;
-      // Otherwise we ignore what is left
-      if (this.$$html5) {
-        withoutHashUrl = withoutBaseUrl;
+      const withoutBaseUrl =
+        stripBaseUrl(this.appBase, url) ||
+        stripBaseUrl(this.appBaseNoFile, url);
+      let withoutHashUrl;
+
+      if (!isUndefined(withoutBaseUrl) && withoutBaseUrl.charAt(0) === "#") {
+        // The rest of the URL starts with a hash so we have
+        // got either a hashbang path or a plain hash fragment
+        withoutHashUrl = stripBaseUrl(this.hashPrefix, withoutBaseUrl);
+        if (isUndefined(withoutHashUrl)) {
+          // There was no hashbang prefix so we just have a hash fragment
+          withoutHashUrl = withoutBaseUrl;
+        }
       } else {
-        withoutHashUrl = "";
-        if (isUndefined(withoutBaseUrl)) {
-          this.appBase = url;
-          /** @type {?} */ (this).replace();
+        // There was no hashbang path nor hash fragment:
+        // If we are in HTML5 mode we use what is left as the path;
+        // Otherwise we ignore what is left
+        if (this.$$html5) {
+          withoutHashUrl = withoutBaseUrl;
+        } else {
+          withoutHashUrl = "";
+          if (isUndefined(withoutBaseUrl)) {
+            this.appBase = url;
+            /** @type {?} */ (this).replace();
+          }
         }
       }
-    }
 
-    parseAppUrl(withoutHashUrl, this, false);
+      parseAppUrl(withoutHashUrl, this, false);
 
-    this.$$path = removeWindowsDriveName(
-      this.$$path,
-      withoutHashUrl,
-      this.appBase,
-    );
+      this.$$path = removeWindowsDriveName(
+        this.$$path,
+        withoutHashUrl,
+        this.appBase,
+      );
 
-    this.$$compose();
+      this.$$compose();
 
-    /*
-     * In Windows, on an anchor node on documents loaded from
-     * the filesystem, the browser will return a pathname
-     * prefixed with the drive name ('/C:/path') when a
-     * pathname without a drive is set:
-     *  * a.setAttribute('href', '/foo')
-     *   * a.pathname === '/C:/foo' //true
-     *
-     * Inside of AngularTS, we're always using pathnames that
-     * do not include drive names for routing.
-     */
-    function removeWindowsDriveName(path, url, base) {
       /*
-      Matches paths for file protocol on windows,
-      such as /C:/foo/bar, and captures only /foo/bar.
-      */
-      const windowsFilePathExp = /^\/[A-Z]:(\/.*)/;
+       * In Windows, on an anchor node on documents loaded from
+       * the filesystem, the browser will return a pathname
+       * prefixed with the drive name ('/C:/path') when a
+       * pathname without a drive is set:
+       *  * a.setAttribute('href', '/foo')
+       *   * a.pathname === '/C:/foo' //true
+       *
+       * Inside of AngularTS, we're always using pathnames that
+       * do not include drive names for routing.
+       */
+      function removeWindowsDriveName(path, url, base) {
+        /*
+        Matches paths for file protocol on windows,
+        such as /C:/foo/bar, and captures only /foo/bar.
+        */
+        const windowsFilePathExp = /^\/[A-Z]:(\/.*)/;
 
-      let firstPathSegmentMatch;
+        let firstPathSegmentMatch;
 
-      // Get the relative path from the input URL.
-      if (startsWith(url, base)) {
-        url = url.replace(base, "");
+        // Get the relative path from the input URL.
+        if (startsWith(url, base)) {
+          url = url.replace(base, "");
+        }
+
+        // The input URL intentionally contains a first path segment that ends with a colon.
+        if (windowsFilePathExp.exec(url)) {
+          return path;
+        }
+
+        firstPathSegmentMatch = windowsFilePathExp.exec(path);
+        return firstPathSegmentMatch ? firstPathSegmentMatch[1] : path;
       }
-
-      // The input URL intentionally contains a first path segment that ends with a colon.
-      if (windowsFilePathExp.exec(url)) {
-        return path;
-      }
-
-      firstPathSegmentMatch = windowsFilePathExp.exec(path);
-      return firstPathSegmentMatch ? firstPathSegmentMatch[1] : path;
     }
-  }
-
-  $$normalizeUrl(url) {
-    return this.appBase + (url ? this.hashPrefix + url : "");
-  }
-
-  /**
-   * @param {string} url
-   * @returns {boolean}
-   */
-  $$parseLinkUrl(url) {
-    if (stripHash(this.appBase) === stripHash(url)) {
-      this.$$parse(url);
-      return true;
-    }
-    return false;
   }
 }
 
@@ -559,14 +480,14 @@ export class LocationProvider {
     /** @type {string} */
     this.hashPrefixConf = "!";
 
-    /** @type {Html5Mode} */
+    /** @type {import("./interface.ts").Html5Mode} */
     this.html5ModeConf = {
       enabled: false,
       requireBase: true,
       rewriteLinks: true,
     };
 
-    /** @type {Array<import("./interface.js").UrlChangeListener>} */
+    /** @type {Array<import("./interface.ts").UrlChangeListener>} */
     this.urlChangeListeners = [];
     this.urlChangeInit = false;
 
@@ -690,40 +611,8 @@ export class LocationProvider {
   }
 
   /**
-   * Configures html5 mode
-   * @param {(boolean|Html5Mode)=} mode If boolean, sets `html5Mode.enabled` to value. Otherwise, accepts html5Mode object
-   *
-   * @returns {void}
-   */
-  setHtml5Mode(mode) {
-    if (isBoolean(mode)) {
-      this.html5ModeConf.enabled = /** @type {boolean} */ (mode);
-    }
-    if (isObject(mode)) {
-      const html5Mode = /** @type {Html5Mode} */ (mode);
-      if (isDefined(html5Mode.enabled) && isBoolean(html5Mode.enabled)) {
-        this.html5ModeConf.enabled = html5Mode.enabled;
-      }
-
-      if (
-        isDefined(html5Mode.requireBase) &&
-        isBoolean(html5Mode.requireBase)
-      ) {
-        this.html5ModeConf.requireBase = html5Mode.requireBase;
-      }
-
-      if (
-        isDefined(html5Mode.rewriteLinks) &&
-        (isBoolean(html5Mode.rewriteLinks) || isString(html5Mode.rewriteLinks))
-      ) {
-        this.html5ModeConf.rewriteLinks = html5Mode.rewriteLinks;
-      }
-    }
-  }
-
-  /**
    * Returns html5 mode cofiguration
-   * @returns {Html5Mode}
+   * @returns {import("./interface.ts").Html5Mode}
    */
   getHtml5Mode() {
     return this.html5ModeConf;
@@ -741,29 +630,27 @@ export class LocationProvider {
     ($rootScope, $rootElement) => {
       /** @type {Location} */
       let $location;
-      let LocationMode;
       const baseHref = getBaseHref(); // if base[href] is undefined, it defaults to ''
       const initialUrl = trimEmptyHash(window.location.href);
       let appBase;
 
-      if (this.getHtml5Mode().enabled) {
-        if (!baseHref && this.getHtml5Mode().requireBase) {
+      if (this.html5ModeConf.enabled) {
+        if (!baseHref && this.html5ModeConf.requireBase) {
           throw $locationMinErr(
             "nobase",
             "$location in HTML5 mode requires a <base> tag to be present!",
           );
         }
         appBase = serverBase(initialUrl) + (baseHref || "/");
-        LocationMode = LocationHtml5Url;
       } else {
         appBase = stripHash(initialUrl);
-        LocationMode = LocationHashbangUrl;
       }
       const appBaseNoFile = stripFile(appBase);
 
-      $location = new LocationMode(
+      $location = new Location(
         appBase,
         appBaseNoFile,
+        this.html5ModeConf.enabled,
         `#${this.getHashPrefix()}`,
       );
       $location.$$parseLinkUrl(initialUrl, initialUrl);
@@ -795,7 +682,7 @@ export class LocationProvider {
         "click",
         /** @param {MouseEvent} event */
         (event) => {
-          const rewriteLinks = this.getHtml5Mode().rewriteLinks;
+          const rewriteLinks = this.html5ModeConf.rewriteLinks;
           // TODO(vojta): rewrite link when opening in new tab/window (in legacy browser)
           // currently we open nice url link and redirect then
 

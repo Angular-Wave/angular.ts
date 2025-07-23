@@ -40,9 +40,9 @@ export class Transition {
    *
    * If the target state is not valid, an error is thrown.
    *
-   * @param fromPath The path of [[PathNode]]s from which the transition is leaving.  The last node in the `fromPath`
+   * @param {Array<import('../path/path-node.js').PathNode>} fromPath The path of [[PathNode]]s from which the transition is leaving.  The last node in the `fromPath`
    *        encapsulates the "from state".
-   * @param targetState The target state and parameters being transitioned to (also, the transition options)
+   * @param {import('../state/target-state.js').TargetState} targetState The target state and parameters being transitioned to (also, the transition options)
    * @param {import('../transition/transition-service.js').TransitionProvider} transitionService The [[TransitionService]] instance
    * @param {import('../globals.js').RouterGlobals} globals
    */
@@ -586,8 +586,8 @@ export class Transition {
         ).length
       );
     };
-    const newTC = this.treeChanges();
-    const pendTC = pending && pending.treeChanges();
+    const newTC = this._treeChanges;
+    const pendTC = pending && pending._treeChanges;
     if (
       pendTC &&
       same(pendTC.to, newTC.to) &&

@@ -589,7 +589,7 @@ export interface StateDeclaration {
    *
    * An optional object which defines multiple views, or explicitly targets specific named ui-views.
    *
-   * - What is a view config
+   * - What is a view urlConfig
    * - What is a ui-view
    * - Shorthand controller/template
    * - Incompatible with ^

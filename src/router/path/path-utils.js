@@ -89,8 +89,13 @@ export class PathUtils {
     // The param keys specified by the incoming toParams
     return toPath.map(makeInheritedParamsNode);
   }
+
   /**
    * Computes the tree changes (entering, exiting) between a fromPath and toPath.
+   * @param {PathNode[]} fromPath
+   * @param {PathNode[]} toPath
+   * @param {boolean} [reloadState]
+   * @returns {import("../transition/interface.js").TreeChanges}
    */
   static treeChanges(fromPath, toPath, reloadState) {
     const max = Math.min(fromPath.length, toPath.length);

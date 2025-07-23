@@ -131,9 +131,9 @@ export class StateProvider {
    * - **params** `{object}` - returns an array of state params that are ensured to
    *   be a super-set of parent's params.
    * - **views** `{object}` - returns a views object where each key is an absolute view
-   *   name (i.e. "viewName@stateName") and each value is the config object
+   *   name (i.e. "viewName@stateName") and each value is the urlConfig object
    *   (template, controller) for the view. Even when you don't use the views object
-   *   explicitly on a state config, one is still created for you internally.
+   *   explicitly on a state urlConfig, one is still created for you internally.
    *   So by decorating this builder function you have access to decorating template
    *   and controller properties.
    * - **ownParams** `{object}` - returns an array of params that belong to the state,
@@ -151,10 +151,10 @@ export class StateProvider {
    *   let result = {},
    *       views = parent(state);
    *
-   *   angular.forEach(views, function (config, name) {
+   *   angular.forEach(views, function (urlConfig, name) {
    *     let autoName = (state.name + '.' + name).replace('.', '/');
-   *     config.templateUrl = config.templateUrl || '/partials/' + autoName + '.html';
-   *     result[name] = config;
+   *     urlConfig.templateUrl = urlConfig.templateUrl || '/partials/' + autoName + '.html';
+   *     result[name] = urlConfig;
    *   });
    *   return result;
    * });
@@ -178,7 +178,7 @@ export class StateProvider {
    * @param {object} func A function that is responsible for decorating the original
    * builder function. The function receives two parameters:
    *
-   *   - `{object}` - state - The state config object.
+   *   - `{object}` - state - The state urlConfig object.
    *   - `{object}` - super - The original builder function.
    *
    * @return {object} $stateProvider - $stateProvider instance
@@ -411,7 +411,7 @@ export class StateProvider {
     const globals = this.globals;
     const latestSuccess = globals.successfulTransitions.peekTail();
     const rootPath = () => [new PathNode(this.stateRegistry.root())];
-    return latestSuccess ? latestSuccess.treeChanges().to : rootPath();
+    return latestSuccess ? latestSuccess._treeChanges.to : rootPath();
   }
   /**
    * Low-level method for transitioning to a new state.

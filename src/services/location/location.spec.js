@@ -1,8 +1,4 @@
-import {
-  LocationHtml5Url,
-  LocationHashbangUrl,
-  LocationProvider,
-} from "./location.js";
+import { Location, LocationProvider } from "./location.js";
 import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
 
@@ -24,12 +20,12 @@ describe("$location", () => {
   describe("defaults", () => {
     it('should have hashPrefix of "!"', () => {
       let provider = new LocationProvider();
-      expect(provider.getHashPrefix()).toBe("!");
+      expect(provider.hashPrefixConf).toBe("!");
     });
 
     it("should not be html5 mode", () => {
       let provider = new LocationProvider();
-      expect(provider.getHtml5Mode().enabled).toBeFalse();
+      expect(provider.html5ModeConf.enabled).toBeFalse();
     });
   });
 
@@ -61,22 +57,14 @@ describe("$location", () => {
 
     it("should not include the drive name in path() on WIN", () => {
       // See issue #4680 for details
-      const locationUrl = new LocationHashbangUrl(
-        "file:///base",
-        "file:///",
-        "#!",
-      );
+      const locationUrl = new Location("file:///base", "file:///", false, "#!");
       locationUrl.$$parse("file:///base#!/foo?a=b&c#hash");
 
       expect(locationUrl.path()).toBe("/foo");
     });
 
     it("should include the drive name if it was provided in the input url", () => {
-      const locationUrl = new LocationHashbangUrl(
-        "file:///base",
-        "file:///",
-        "#!",
-      );
+      const locationUrl = new Location("file:///base", "file:///", false, "#!");
       locationUrl.$$parse("file:///base#!/C:/foo?a=b&c#hash");
 
       expect(locationUrl.path()).toBe("/C:/foo");
@@ -85,9 +73,10 @@ describe("$location", () => {
 
   describe("NewUrl", () => {
     function createLocationHtml5Url() {
-      const locationUrl = new LocationHtml5Url(
+      const locationUrl = new Location(
         "http://www.domain.com:9877/",
         "http://www.domain.com:9877/",
+        true,
       );
       locationUrl.$$parse(
         "http://www.domain.com:9877/path/b?search=a&b=c&d#hash",
@@ -337,25 +326,24 @@ describe("$location", () => {
     });
 
     it("should parse new url", () => {
-      let locationUrl = new LocationHtml5Url(
+      let locationUrl = new Location(
         "http://host.com/",
         "http://host.com/",
+        true,
       );
       locationUrl.$$parse("http://host.com/base");
       expect(locationUrl.path()).toBe("/base");
 
-      locationUrl = new LocationHtml5Url(
-        "http://host.com/",
-        "http://host.com/",
-      );
+      locationUrl = new Location("http://host.com/", "http://host.com/", true);
       locationUrl.$$parse("http://host.com/base#");
       expect(locationUrl.path()).toBe("/base");
     });
 
     it("should prefix path with forward-slash", () => {
-      const locationUrl = new LocationHtml5Url(
+      const locationUrl = new Location(
         "http://server/",
         "http://server/",
+        true,
       );
       locationUrl.path("b");
 
@@ -364,9 +352,10 @@ describe("$location", () => {
     });
 
     it("should set path to forward-slash when empty", () => {
-      const locationUrl = new LocationHtml5Url(
+      const locationUrl = new Location(
         "http://server/",
         "http://server/",
+        true,
       );
       locationUrl.$$parse("http://server/");
       expect(locationUrl.path()).toBe("/");
@@ -398,9 +387,10 @@ describe("$location", () => {
     // });
 
     it("should prepend path with basePath", () => {
-      const locationUrl = new LocationHtml5Url(
+      const locationUrl = new Location(
         "http://server/base/",
         "http://server/base/",
+        true,
       );
       locationUrl.$$parse("http://server/base/abc?a");
       expect(locationUrl.path()).toBe("/abc");
@@ -411,9 +401,10 @@ describe("$location", () => {
     });
 
     it("should throw error when invalid server url given", () => {
-      const locationUrl = new LocationHtml5Url(
+      const locationUrl = new Location(
         "http://server.org/base/abc",
         "http://server.org/base/",
+        true,
       );
 
       expect(() => {
@@ -422,9 +413,10 @@ describe("$location", () => {
     });
 
     it("should throw error when invalid base url given", () => {
-      const locationUrl = new LocationHtml5Url(
+      const locationUrl = new Location(
         "http://server.org/base/abc",
         "http://server.org/base/",
+        true,
       );
 
       expect(() => {
@@ -497,9 +489,10 @@ describe("$location", () => {
       });
 
       it("should decode special characters", () => {
-        const locationUrl = new LocationHtml5Url(
+        const locationUrl = new Location(
           "http://host.com/",
           "http://host.com/",
+          true,
         );
         locationUrl.$$parse(
           "http://host.com/a%20%3C%3E%23?i%20j=%3C%3E%23#x%20%3C%3E%23",
@@ -510,9 +503,10 @@ describe("$location", () => {
       });
 
       it("should not decode encoded forward slashes in the path", () => {
-        const locationUrl = new LocationHtml5Url(
+        const locationUrl = new Location(
           "http://host.com/base/",
           "http://host.com/base/",
+          true,
         );
         locationUrl.$$parse("http://host.com/base/a/ng2;path=%2Fsome%2Fpath");
         expect(locationUrl.path()).toBe("/a/ng2;path=%2Fsome%2Fpath");
@@ -525,9 +519,10 @@ describe("$location", () => {
       });
 
       it("should decode pluses as spaces in urls", () => {
-        const locationUrl = new LocationHtml5Url(
+        const locationUrl = new Location(
           "http://host.com/",
           "http://host.com/",
+          true,
         );
         locationUrl.$$parse("http://host.com/?a+b=c+d");
         expect(locationUrl.search()).toEqual({ "a b": "c d" });
@@ -543,9 +538,10 @@ describe("$location", () => {
 
   describe("HashbangUrl", () => {
     function createHashbangUrl() {
-      const locationUrl = new LocationHashbangUrl(
+      const locationUrl = new Location(
         "http://www.server.org:1234/base",
         "http://www.server.org:1234/",
+        false,
         "#!",
       );
       locationUrl.$$parse("http://www.server.org:1234/base#!/path?a=b&c#hash");
@@ -577,9 +573,10 @@ describe("$location", () => {
     });
 
     it("should preserve query params in base", () => {
-      const locationUrl = new LocationHashbangUrl(
+      const locationUrl = new Location(
         "http://www.server.org:1234/base?base=param",
         "http://www.server.org:1234/",
+        false,
         "#",
       );
       locationUrl.$$parse(
@@ -598,9 +595,10 @@ describe("$location", () => {
     });
 
     it("should prefix path with forward-slash", () => {
-      const locationUrl = new LocationHashbangUrl(
+      const locationUrl = new Location(
         "http://host.com/base",
         "http://host.com/",
+        false,
         "#",
       );
       locationUrl.$$parse("http://host.com/base#path");
@@ -613,9 +611,10 @@ describe("$location", () => {
     });
 
     it("should set path to forward-slash when empty", () => {
-      const locationUrl = new LocationHashbangUrl(
+      const locationUrl = new Location(
         "http://server/base",
         "http://server/",
+        false,
         "#!",
       );
       locationUrl.$$parse("http://server/base");
@@ -686,9 +685,10 @@ describe("$location", () => {
       });
 
       it("should decode special characters", () => {
-        const locationUrl = new LocationHashbangUrl(
+        const locationUrl = new Location(
           "http://host.com/a",
           "http://host.com/",
+          false,
           "#",
         );
         locationUrl.$$parse(
@@ -699,19 +699,22 @@ describe("$location", () => {
         expect(locationUrl.hash()).toBe("x <>#");
       });
 
-      it("should return decoded characters for search specified in URL", () => {
-        const locationUrl = new LocationHtml5Url(
+      fit("should return decoded characters for search specified in URL", () => {
+        const locationUrl = new Location(
           "http://host.com/",
           "http://host.com/",
+          false,
         );
+
         locationUrl.$$parse("http://host.com/?q=1%2F2%203");
         expect(locationUrl.search()).toEqual({ q: "1/2 3" });
       });
 
       it("should return decoded characters for search specified with setter", () => {
-        const locationUrl = new LocationHtml5Url(
+        const locationUrl = new Location(
           "http://host.com/",
           "http://host.com/",
+          true,
         );
         locationUrl.$$parse("http://host.com/");
         locationUrl.search("q", "1/2 3");
@@ -719,9 +722,10 @@ describe("$location", () => {
       });
 
       it("should return an array for duplicate params", () => {
-        const locationUrl = new LocationHtml5Url(
+        const locationUrl = new Location(
           "http://host.com",
           "http://host.com",
+          true,
         );
         locationUrl.$$parse("http://host.com");
         locationUrl.search("q", ["1/2 3", "4/5 6"]);
@@ -729,9 +733,10 @@ describe("$location", () => {
       });
 
       it("should encode an array correctly from search and add to url", () => {
-        const locationUrl = new LocationHtml5Url(
+        const locationUrl = new Location(
           "http://host.com",
           "http://host.com",
+          true,
         );
         locationUrl.$$parse("http://host.com");
         locationUrl.search({ q: ["1/2 3", "4/5 6"] });
@@ -741,9 +746,10 @@ describe("$location", () => {
       });
 
       it("should rewrite params when specifying a single param in search", () => {
-        const locationUrl = new LocationHtml5Url(
+        const locationUrl = new Location(
           "http://host.com",
           "http://host.com",
+          true,
         );
         locationUrl.$$parse("http://host.com");
         locationUrl.search({ q: "1/2 3" });
@@ -753,9 +759,10 @@ describe("$location", () => {
       });
 
       it("url() should decode non-component special characters in hashbang mode", () => {
-        const locationUrl = new LocationHashbangUrl(
+        const locationUrl = new Location(
           "http://host.com",
           "http://host.com",
+          false,
         );
         locationUrl.$$parse("http://host.com");
         locationUrl.url("/foo%3Abar");
@@ -763,9 +770,10 @@ describe("$location", () => {
       });
 
       it("url() should decode non-component special characters in html5 mode", () => {
-        const locationUrl = new LocationHtml5Url(
+        const locationUrl = new Location(
           "http://host.com",
           "http://host.com",
+          true,
         );
         locationUrl.$$parse("http://host.com");
         locationUrl.url("/foo%3Abar");
@@ -3007,102 +3015,40 @@ describe("$location", () => {
   // });
 
   describe("$locationProvider", () => {
-    describe("html5Mode", () => {
-      it("should set enabled, requireBase and rewriteLinks when called with object", () => {
+    describe("html5ModeConf", () => {
+      it("should have default values", () => {
         module.config(($locationProvider) => {
-          $locationProvider.setHtml5Mode({
-            enabled: true,
-            requireBase: false,
-            rewriteLinks: false,
-          });
-          expect($locationProvider.getHtml5Mode()).toEqual({
-            enabled: true,
-            requireBase: false,
-            rewriteLinks: false,
-          });
-        });
-        createInjector(["test1"]);
-      });
-
-      it("should only overwrite existing properties if values are of the correct type", () => {
-        module.config(($locationProvider) => {
-          $locationProvider.setHtml5Mode({
-            enabled: "duh",
-            requireBase: "probably",
-            rewriteLinks: 0,
-          });
-
-          expect($locationProvider.getHtml5Mode()).toEqual({
+          expect($locationProvider.html5ModeConf).toEqual({
             enabled: false,
             requireBase: true,
             rewriteLinks: true,
           });
         });
-
-        createInjector(["test1"]);
-      });
-
-      it("should support setting rewriteLinks to a string", () => {
-        module.config(($locationProvider) => {
-          $locationProvider.setHtml5Mode({
-            rewriteLinks: "yes-rewrite",
-          });
-
-          expect($locationProvider.getHtml5Mode().rewriteLinks).toEqual(
-            "yes-rewrite",
-          );
-        });
-
-        createInjector(["test1"]);
-      });
-
-      it("should not set unknown input properties to html5Mode object", () => {
-        module.config(($locationProvider) => {
-          $locationProvider.setHtml5Mode({
-            someProp: "foo",
-          });
-
-          expect($locationProvider.getHtml5Mode()).toEqual({
-            enabled: false,
-            requireBase: true,
-            rewriteLinks: true,
-          });
-        });
-
-        createInjector(["test1"]);
-      });
-
-      it("should default to enabled:false, requireBase:true and rewriteLinks:true", () => {
-        module.config(($locationProvider) => {
-          expect($locationProvider.getHtml5Mode()).toEqual({
-            enabled: false,
-            requireBase: true,
-            rewriteLinks: true,
-          });
-        });
-
         createInjector(["test1"]);
       });
     });
   });
 
-  describe("LocationHtml5Url", () => {
+  describe("Location with html5 url", () => {
     let locationUrl;
     let locationUmlautUrl;
     let locationIndexUrl;
 
     beforeEach(() => {
-      locationUrl = new LocationHtml5Url(
+      locationUrl = new Location(
         "http://server/pre/",
         "http://server/pre/",
+        true,
       );
-      locationUmlautUrl = new LocationHtml5Url(
+      locationUmlautUrl = new Location(
         "http://särver/pre/",
         "http://särver/pre/",
+        true,
       );
-      locationIndexUrl = new LocationHtml5Url(
+      locationIndexUrl = new Location(
         "http://server/pre/index.html",
         "http://server/pre/",
+        true,
       );
     });
 
@@ -3213,13 +3159,14 @@ describe("$location", () => {
     });
   });
 
-  describe("LocationHashbangUrl", () => {
+  describe("Location with hashbang url", () => {
     let locationUrl;
 
     it("should rewrite URL", () => {
-      locationUrl = new LocationHashbangUrl(
+      locationUrl = new Location(
         "http://server/pre/",
         "http://server/pre/",
+        false,
         "#",
       );
 
@@ -3239,9 +3186,10 @@ describe("$location", () => {
     });
 
     it("should not set hash if one was not originally specified", () => {
-      locationUrl = new LocationHashbangUrl(
+      locationUrl = new Location(
         "http://server/pre/index.html",
         "http://server/pre/",
+        fasle,
         "#",
       );
 
@@ -3251,9 +3199,10 @@ describe("$location", () => {
     });
 
     it("should parse hash if one was specified", () => {
-      locationUrl = new LocationHashbangUrl(
+      locationUrl = new Location(
         "http://server/pre/index.html",
         "http://server/pre/",
+        false,
         "#",
       );
 
@@ -3265,9 +3214,10 @@ describe("$location", () => {
     });
 
     it("should prefix hash url with / if one was originally missing", () => {
-      locationUrl = new LocationHashbangUrl(
+      locationUrl = new Location(
         "http://server/pre/index.html",
         "http://server/pre/",
+        false,
         "#",
       );
 
@@ -3281,9 +3231,10 @@ describe("$location", () => {
     });
 
     it("should not strip stuff from path just because it looks like Windows drive when it's not", () => {
-      locationUrl = new LocationHashbangUrl(
+      locationUrl = new Location(
         "http://server/pre/index.html",
         "http://server/pre/",
+        false,
         "#",
       );
 
@@ -3297,9 +3248,10 @@ describe("$location", () => {
     });
 
     it("should allow navigating outside the original base URL", () => {
-      locationUrl = new LocationHashbangUrl(
+      locationUrl = new Location(
         "http://server/pre/index.html",
         "http://server/pre/",
+        false,
         "#",
       );
 

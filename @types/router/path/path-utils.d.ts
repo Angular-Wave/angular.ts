@@ -34,19 +34,16 @@ export class PathUtils {
   static inheritParams(fromPath: any, toPath: any, toKeys?: any[]): any;
   /**
    * Computes the tree changes (entering, exiting) between a fromPath and toPath.
+   * @param {PathNode[]} fromPath
+   * @param {PathNode[]} toPath
+   * @param {boolean} [reloadState]
+   * @returns {import("../transition/interface.js").TreeChanges}
    */
   static treeChanges(
-    fromPath: any,
-    toPath: any,
-    reloadState: any,
-  ): {
-    from: any;
-    to: any;
-    retained: any;
-    retainedWithToParams: any;
-    exiting: any;
-    entering: any;
-  };
+    fromPath: PathNode[],
+    toPath: PathNode[],
+    reloadState?: boolean,
+  ): import("../transition/interface.js").TreeChanges;
   /**
    * Returns a new path which is: the subpath of the first path which matches the second path.
    *

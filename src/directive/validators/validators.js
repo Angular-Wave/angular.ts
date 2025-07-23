@@ -9,6 +9,7 @@ import {
 } from "../../shared/utils.js";
 import { REGEX_STRING_REGEXP } from "./../attrs/attrs.js";
 import { startingTag } from "../../shared/dom.js";
+import { $injectTokens as $t } from "../../injection-tokens.js";
 
 /**
  *
@@ -34,7 +35,7 @@ import { startingTag } from "../../shared/dom.js";
  *
  */
 export const requiredDirective = [
-  "$parse",
+  $t.$parse,
   /**
    * @param {import("../../core/parse/interface.ts").ParseService} $parse
    * @returns {import("../../interface.ts").Directive}
@@ -116,75 +117,72 @@ export const requiredDirective = [
  * </div>
  */
 export const patternDirective = [
-  "$parse",
+  $t.$parse,
   /**
    * @param {import("../../core/parse/interface.ts").ParseService} $parse
    * @returns {import("../../interface.ts").Directive}
    */
-  ($parse) => {
-    return {
-      restrict: "A",
-      require: "?ngModel",
-      compile: (_Elm, tAttr) => {
-        let patternExp;
-        let parseFn;
+  ($parse) => ({
+    restrict: "A",
+    require: "?ngModel",
+    compile: (_Elm, tAttr) => {
+      let patternExp;
+      let parseFn;
 
-        if (tAttr["ngPattern"]) {
-          patternExp = tAttr["ngPattern"];
+      if (tAttr["ngPattern"]) {
+        patternExp = tAttr["ngPattern"];
 
-          // ngPattern might be a scope expression, or an inlined regex, which is not parsable.
-          // We get value of the attribute here, so we can compare the old and the new value
-          // in the observer to avoid unnecessary validations
-          if (
-            tAttr["ngPattern"].charAt(0) === "/" &&
-            REGEX_STRING_REGEXP.test(tAttr["ngPattern"])
-          ) {
-            parseFn = function () {
-              return tAttr["ngPattern"];
-            };
-          } else {
-            parseFn = $parse(tAttr["ngPattern"]);
-          }
+        // ngPattern might be a scope expression, or an inlined regex, which is not parsable.
+        // We get value of the attribute here, so we can compare the old and the new value
+        // in the observer to avoid unnecessary validations
+        if (
+          tAttr["ngPattern"].charAt(0) === "/" &&
+          REGEX_STRING_REGEXP.test(tAttr["ngPattern"])
+        ) {
+          parseFn = function () {
+            return tAttr["ngPattern"];
+          };
+        } else {
+          parseFn = $parse(tAttr["ngPattern"]);
+        }
+      }
+
+      return function (scope, elm, attr, ctrl) {
+        if (!ctrl) return;
+        let attrVal = attr["pattern"];
+
+        if (attr["ngPattern"]) {
+          attrVal = parseFn(scope);
+        } else {
+          patternExp = attr["pattern"];
         }
 
-        return function (scope, elm, attr, ctrl) {
-          if (!ctrl) return;
+        let regexp = parsePatternAttr(attrVal, patternExp, elm);
+        attr.$observe("pattern", (newVal) => {
+          const oldRegexp = regexp;
 
-          let attrVal = attr["pattern"];
+          regexp = parsePatternAttr(newVal, patternExp, elm);
 
-          if (attr["ngPattern"]) {
-            attrVal = parseFn(scope);
-          } else {
-            patternExp = attr["pattern"];
+          if (
+            (oldRegexp && oldRegexp.toString()) !==
+            (regexp && regexp.toString())
+          ) {
+            ctrl["$validate"]();
           }
+        });
 
-          let regexp = parsePatternAttr(attrVal, patternExp, elm);
-          attr.$observe("pattern", function (newVal) {
-            const oldRegexp = regexp;
-
-            regexp = parsePatternAttr(newVal, patternExp, elm);
-
-            if (
-              (oldRegexp && oldRegexp.toString()) !==
-              (regexp && regexp.toString())
-            ) {
-              ctrl["$validate"]();
-            }
-          });
-
-          ctrl["$validators"]["pattern"] = function (modelValue, viewValue) {
-            // HTML5 pattern constraint validates the input value, so we validate the viewValue
-            return (
-              // @ts-ignore
-              ctrl.$isEmpty(viewValue) ||
-              isUndefined(regexp) ||
-              regexp.test(viewValue)
-            );
-          };
+        ctrl["$validators"]["pattern"] = (_modelValue, viewValue) => {
+          // HTML5 pattern constraint validates the input value, so we validate the viewValue
+          return (
+            // @ts-ignore
+            ctrl.$isEmpty(viewValue) ||
+            isUndefined(regexp) ||
+            regexp.test(viewValue)
+          );
         };
-      },
-    };
-  },
+      };
+    },
+  }),
 ];
 
 /**
@@ -218,7 +216,7 @@ export const patternDirective = [
  *
  */
 export const maxlengthDirective = [
-  "$parse",
+  $t.$parse,
   /**
    * @param {import("../../core/parse/interface.ts").ParseService} $parse
    * @returns {import("../../interface.ts").Directive}
@@ -290,32 +288,28 @@ export const maxlengthDirective = [
  *
  */
 export const minlengthDirective = [
-  "$parse",
-  function ($parse) {
-    return {
-      restrict: "A",
-      require: "?ngModel",
-      link(scope, elm, attr, ctrl) {
-        if (!ctrl) return;
+  $t.$parse,
+  ($parse) => ({
+    restrict: "A",
+    require: "?ngModel",
+    link(scope, elm, attr, ctrl) {
+      if (!ctrl) return;
 
-        let minlength = attr.minlength || $parse(attr.ngMinlength)(scope);
-        let minlengthParsed = parseLength(minlength) || -1;
+      let minlength = attr.minlength || $parse(attr.ngMinlength)(scope);
+      let minlengthParsed = parseLength(minlength) || -1;
 
-        attr.$observe("minlength", (value) => {
-          if (minlength !== value) {
-            minlengthParsed = parseLength(value) || -1;
-            minlength = value;
-            ctrl.$validate();
-          }
-        });
-        ctrl.$validators.minlength = function (modelValue, viewValue) {
-          return (
-            ctrl.$isEmpty(viewValue) || viewValue.length >= minlengthParsed
-          );
-        };
-      },
-    };
-  },
+      attr.$observe("minlength", (value) => {
+        if (minlength !== value) {
+          minlengthParsed = parseLength(value) || -1;
+          minlength = value;
+          ctrl.$validate();
+        }
+      });
+      ctrl.$validators.minlength = function (modelValue, viewValue) {
+        return ctrl.$isEmpty(viewValue) || viewValue.length >= minlengthParsed;
+      };
+    },
+  }),
 ];
 
 function parsePatternAttr(regex, patternExp, elm) {
@@ -326,7 +320,12 @@ function parsePatternAttr(regex, patternExp, elm) {
   }
 
   if (isString(regex)) {
-    regex = new RegExp(`^${regex}$`);
+    const match = regex.match(/^\/(.*)\/([gimsuy]*)$/);
+    if (match) {
+      regex = new RegExp(match[1], match[2]);
+    } else {
+      regex = new RegExp(`^${regex}$`);
+    }
   }
 
   if (!regex.test) {

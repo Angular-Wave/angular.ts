@@ -9,29 +9,34 @@ export function stripBaseUrl(base: string, url: string): string;
 export function stripHash(url: any): any;
 export function stripFile(url: any): any;
 export function serverBase(url: any): any;
-/**
- * @abstract
- */
 export class Location {
   /**
    * @param {string} appBase application base URL
    * @param {string} appBaseNoFile application base URL stripped of any filename
+   * @param {boolean} html5
+   * @param {string} [prefix] URL path prefix for html5 mode or hash prefix for hashbang mode
    */
-  constructor(appBase: string, appBaseNoFile: string);
+  constructor(
+    appBase: string,
+    appBaseNoFile: string,
+    html5: boolean,
+    prefix?: string,
+  );
   /** @type {string} */
   appBase: string;
   /** @type {string} */
   appBaseNoFile: string;
+  /** @type {boolean} */
+  $$html5: boolean;
+  /** @type {string | undefined} */
+  basePrefix: string | undefined;
+  /** @type {string | undefined} */
+  hashPrefix: string | undefined;
   /**
    * An absolute URL is the full URL, including protocol (http/https ), the optional subdomain (e.g. www ), domain (example.com), and path (which includes the directory and slug).
    * @type {string}
    */
   $$absUrl: string;
-  /**
-   * If html5 mode is enabled
-   * @type {boolean}
-   */
-  $$html5: boolean;
   /**
    * Has any change been replacing?
    * @type {boolean}
@@ -174,10 +179,10 @@ export class Location {
   $$compose(): void;
   $$url: string;
   /**
-   * @param {string} _url
+   * @param {string} url
    * @returns {string}
    */
-  $$normalizeUrl(_url: string): string;
+  $$normalizeUrl(url: string): string;
   /**
    * This method is getter / setter.
    *
@@ -197,64 +202,24 @@ export class Location {
   state(state: any, ...args: any[]): any;
   $$state: any;
   /**
-   * @param {string} _url
-   * @param {string} _url2
+   * @param {string} url
+   * @param {string} relHref
    * @returns {boolean}
    */
-  $$parseLinkUrl(_url: string, _url2: string): boolean;
-  $$parse(_url: any): void;
-}
-/**
- * This object is exposed as $location service when HTML5 mode is enabled and supported
- */
-export class LocationHtml5Url extends Location {
-  /**
-   * @param {string} appBase application base URL
-   * @param {string} appBaseNoFile application base URL stripped of any filename
-   * @param {string} basePrefix URL path prefix
-   */
-  constructor(appBase: string, appBaseNoFile: string, basePrefix: string);
-  basePrefix: string;
+  $$parseLinkUrl(url: string, relHref: string): boolean;
   /**
    * Parse given HTML5 (regular) URL string into properties
    * @param {string} url HTML5 URL
    */
   $$parse(url: string): void;
-  $$normalizeUrl(url: any): string;
-}
-/**
- * LocationHashbangUrl represents URL
- * This object is exposed as $location service when developer doesn't opt into html5 mode.
- * It also serves as the base class for html5 mode fallback on legacy browsers.
- *
- */
-export class LocationHashbangUrl extends Location {
-  /**
-   * @param {string} appBase application base URL
-   * @param {string} appBaseNoFile application base URL stripped of any filename
-   * @param {string} hashPrefix hashbang prefix
-   */
-  constructor(appBase: string, appBaseNoFile: string, hashPrefix: string);
-  hashPrefix: string;
-  /**
-   * Parse given hashbang URL into properties
-   * @param {string} url Hashbang URL
-   */
-  $$parse(url: string): void;
-  $$normalizeUrl(url: any): string;
-  /**
-   * @param {string} url
-   * @returns {boolean}
-   */
-  $$parseLinkUrl(url: string): boolean;
 }
 export class LocationProvider {
   /** @type {string} */
   hashPrefixConf: string;
-  /** @type {Html5Mode} */
-  html5ModeConf: Html5Mode;
-  /** @type {Array<import("./interface.js").UrlChangeListener>} */
-  urlChangeListeners: Array<import("./interface.js").UrlChangeListener>;
+  /** @type {import("./interface.ts").Html5Mode} */
+  html5ModeConf: import("./interface.ts").Html5Mode;
+  /** @type {Array<import("./interface.ts").UrlChangeListener>} */
+  urlChangeListeners: Array<import("./interface.ts").UrlChangeListener>;
   urlChangeInit: boolean;
   /** @type {History['state']} */
   cachedState: History["state"];
@@ -305,17 +270,10 @@ export class LocationProvider {
    */
   getHashPrefix(): string;
   /**
-   * Configures html5 mode
-   * @param {(boolean|Html5Mode)=} mode If boolean, sets `html5Mode.enabled` to value. Otherwise, accepts html5Mode object
-   *
-   * @returns {void}
-   */
-  setHtml5Mode(mode?: (boolean | Html5Mode) | undefined): void;
-  /**
    * Returns html5 mode cofiguration
-   * @returns {Html5Mode}
+   * @returns {import("./interface.ts").Html5Mode}
    */
-  getHtml5Mode(): Html5Mode;
+  getHtml5Mode(): import("./interface.ts").Html5Mode;
   $get: (
     | string
     | ((
@@ -324,34 +282,3 @@ export class LocationProvider {
       ) => Location)
   )[];
 }
-export type DefaultPorts = {
-  http: number;
-  https: number;
-  ftp: number;
-};
-/**
- * Represents the configuration options for HTML5 mode.
- */
-export type Html5Mode = {
-  /**
-   * - (default: false) If true, will rely on `history.pushState` to
-   * change URLs where supported. Falls back to hash-prefixed paths in browsers that do not
-   * support `pushState`.
-   */
-  enabled: boolean;
-  /**
-   * - (default: `true`) When html5Mode is enabled, specifies
-   * whether or not a `<base>` tag is required to be present. If both `enabled` and `requireBase`
-   * are true, and a `<base>` tag is not present, an error will be thrown when `$location` is injected.
-   * See the {@link guide /$location $location guide} for more information.
-   */
-  requireBase: boolean;
-  /**
-   * - (default: `true`) When html5Mode is enabled, enables or
-   * disables URL rewriting for relative links. If set to a string, URL rewriting will only apply to links
-   * with an attribute that matches the given string. For example, if set to `'internal-link'`, URL rewriting
-   * will only occur for `<a internal-link>` links. Note that [attribute name normalization](guide/directive#normalization)
-   * does not apply here, so `'internalLink'` will **not** match `'internal-link'`.
-   */
-  rewriteLinks: boolean | string;
-};

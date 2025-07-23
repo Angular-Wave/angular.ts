@@ -28,13 +28,13 @@ export class UrlService {
   /**
    * @param {import("../../services/location/location").LocationProvider} $locationProvider
    * @param {import("../../router/state/state-service.js").StateProvider} stateService
-   * @param globals
+   * @param {import("../../router/globals.js").RouterGlobals} globals
    * @param {import("../../router/url/url-config.js").UrlConfigProvider} urlConfigProvider
    */
   constructor($locationProvider, stateService, globals, urlConfigProvider) {
+    this.$locationProvider = $locationProvider;
     this.stateService = stateService;
     this.stateService.urlService = this; // circular wiring
-    this.$locationProvider = $locationProvider;
     this.$location = undefined;
 
     /** Provides services related to the URL */
@@ -42,15 +42,11 @@ export class UrlService {
 
     /**
      * The nested [[UrlRules]] API for managing URL rules and rewrites
-     *
-     * See: [[UrlRules]] for details
      * @type {UrlRules}
      */
     this.rules = new UrlRules(this.urlRuleFactory);
     /**
      * The nested [[UrlConfig]] API to configure the URL and retrieve URL information
-     *
-     * See: [[UrlConfig]] for details
      * @type {import("./url-config.js").UrlConfigProvider}
      */
     this.config = urlConfigProvider;
@@ -112,7 +108,7 @@ export class UrlService {
    */
   html5Mode() {
     return (
-      this.$locationProvider.getHtml5Mode().enabled &&
+      this.$locationProvider.html5ModeConf.enabled &&
       typeof history !== "undefined"
     );
   }
@@ -372,7 +368,7 @@ export class UrlService {
     options = options || { absolute: false };
     const isHtml5 = this.html5Mode();
     if (!isHtml5 && url !== null) {
-      url = "#" + this.$locationProvider.getHashPrefix() + url;
+      url = "#" + this.$locationProvider.hashPrefixConf + url;
     }
     url = appendBasePath(url, isHtml5, options.absolute, this.baseHref());
     if (!options.absolute || !url) {

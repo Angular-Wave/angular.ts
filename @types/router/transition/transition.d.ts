@@ -14,15 +14,15 @@ export class Transition implements IHookRegistry {
    *
    * If the target state is not valid, an error is thrown.
    *
-   * @param fromPath The path of [[PathNode]]s from which the transition is leaving.  The last node in the `fromPath`
+   * @param {Array<import('../path/path-node.js').PathNode>} fromPath The path of [[PathNode]]s from which the transition is leaving.  The last node in the `fromPath`
    *        encapsulates the "from state".
-   * @param targetState The target state and parameters being transitioned to (also, the transition options)
+   * @param {import('../state/target-state.js').TargetState} targetState The target state and parameters being transitioned to (also, the transition options)
    * @param {import('../transition/transition-service.js').TransitionProvider} transitionService The [[TransitionService]] instance
    * @param {import('../globals.js').RouterGlobals} globals
    */
   constructor(
-    fromPath: any,
-    targetState: any,
+    fromPath: Array<import("../path/path-node.js").PathNode>,
+    targetState: import("../state/target-state.js").TargetState,
     transitionService: import("../transition/transition-service.js").TransitionProvider,
     globals: import("../globals.js").RouterGlobals,
   );
@@ -44,17 +44,10 @@ export class Transition implements IHookRegistry {
   _hookBuilder: HookBuilder;
   /** Checks if this transition is currently active/running. */
   isActive: () => boolean;
-  _targetState: any;
+  _targetState: import("../state/target-state.js").TargetState;
   _options: any;
   $id: number;
-  _treeChanges: {
-    from: any;
-    to: any;
-    retained: any;
-    retainedWithToParams: any;
-    exiting: any;
-    entering: any;
-  };
+  _treeChanges: import("./interface.js").TreeChanges;
   onStart: any;
   onBefore: any;
   onSuccess: any;
@@ -101,7 +94,7 @@ export class Transition implements IHookRegistry {
    *
    * @returns the [[TargetState]] of this Transition
    */
-  targetState(): any;
+  targetState(): import("../state/target-state.js").TargetState;
   /**
    * Determines whether two transitions are equivalent.
    * @deprecated
@@ -319,7 +312,11 @@ export class Transition implements IHookRegistry {
    * @returns a list of ViewConfig objects for the given path.
    */
   views(pathname: string, state: any): any;
-  treeChanges(pathname: any): any;
+  treeChanges(
+    pathname: any,
+  ):
+    | import("../path/path-node.js").PathNode[]
+    | import("./interface.js").TreeChanges;
   /**
    * Creates a new transition that is a redirection of the current one.
    *

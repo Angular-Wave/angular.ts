@@ -1,6 +1,6 @@
 import { Angular } from "../../loader.js";
 import { wait } from "../../shared/test-utils.js";
-import { getController } from "../../shared/dom.js";
+import { dealoc, getController } from "../../shared/dom.js";
 
 describe("validators", () => {
   let $rootScope;
@@ -9,6 +9,7 @@ describe("validators", () => {
   let errors = [];
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     errors = [];
     window.angular = new Angular();
     window.angular
@@ -27,7 +28,7 @@ describe("validators", () => {
   });
 
   describe("pattern", () => {
-    it("should validate in-lined pattern", () => {
+    it("should validate in-lined pattern", async () => {
       inputElm = $compile(
         '<input type="text" ng-model="value" ng-pattern="/^\\d\\d\\d-\\d\\d-\\d\\d\\d\\d$/" />',
       )($rootScope);
@@ -246,7 +247,7 @@ describe("validators", () => {
       inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.form.test.$error.pattern).toBe(true);
       expect(inputElm.classList.contains("ng-invalid")).toBeTrue();
-
+      //
       inputElm.setAttribute("value", "12345");
       inputElm.dispatchEvent(new Event("change"));
       expect($rootScope.form.test.$error.pattern).toBe(true);
