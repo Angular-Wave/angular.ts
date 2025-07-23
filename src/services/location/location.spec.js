@@ -316,15 +316,6 @@ describe("$location", () => {
       expect(locationUrl.hash()).toBe("");
     });
 
-    it("replace should set $$replace flag and return itself", () => {
-      const locationUrl = createLocationHtml5Url();
-      expect(locationUrl.$$replace).toBe(false);
-
-      locationUrl.replace();
-      expect(locationUrl.$$replace).toBe(true);
-      expect(locationUrl.replace()).toBe(locationUrl);
-    });
-
     it("should parse new url", () => {
       let locationUrl = new Location(
         "http://host.com/",
@@ -699,13 +690,12 @@ describe("$location", () => {
         expect(locationUrl.hash()).toBe("x <>#");
       });
 
-      fit("should return decoded characters for search specified in URL", () => {
+      it("should return decoded characters for search specified in URL", () => {
         const locationUrl = new Location(
           "http://host.com/",
           "http://host.com/",
-          false,
+          true,
         );
-
         locationUrl.$$parse("http://host.com/?q=1%2F2%203");
         expect(locationUrl.search()).toEqual({ q: "1/2 3" });
       });
@@ -3189,7 +3179,7 @@ describe("$location", () => {
       locationUrl = new Location(
         "http://server/pre/index.html",
         "http://server/pre/",
-        fasle,
+        false,
         "#",
       );
 

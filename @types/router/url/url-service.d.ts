@@ -117,14 +117,12 @@ export class UrlService {
    * @param {string} [newUrl] The new value for the URL.
    *               This url should reflect only the new internal [[path]], [[search]], and [[hash]] values.
    *               It should not include the protocol, site, port, or base path of an absolute HREF.
-   * @param {boolean} [replace] When true, replaces the current history entry (instead of appending it) with this new url
    * @param {any} [state] The history's state object, i.e., pushState (if the LocationServices implementation supports it)
    *
    * @return the url (after potentially being processed)
    */
   url(
     newUrl?: string,
-    replace?: boolean,
     state?: any,
   ): string | import("../../services/location/location.js").Location;
   /**

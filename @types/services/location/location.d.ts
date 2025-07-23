@@ -37,11 +37,6 @@ export class Location {
    * @type {string}
    */
   $$absUrl: string;
-  /**
-   * Has any change been replacing?
-   * @type {boolean}
-   */
-  $$replace: boolean;
   /** @type {string} */
   $$protocol: string;
   /** @type {string} */
@@ -155,11 +150,6 @@ export class Location {
    */
   hash(hash?: (string | number) | undefined): string | Location;
   /**
-   * If called, all changes to $location during the current `$digest` will replace the current history
-   * record, instead of adding a new one.
-   */
-  replace(): this;
-  /**
    * Returns or sets the search part (as object) of current URL when called without any parameter
    *
    * @param {string|Object=} search New search params - string or hash object.
@@ -258,22 +248,6 @@ export class LocationProvider {
    * @returns void
    */
   onUrlChange(callback: import("./interface.js").UrlChangeListener): void;
-  /**
-   * The default value for the prefix is `'!'`.
-   * @param {string=} prefix Prefix for hash part (containing path and search)
-   * @returns {void}
-   */
-  setHashPrefix(prefix?: string | undefined): void;
-  /**
-   * Current hash prefix
-   * @returns {string}
-   */
-  getHashPrefix(): string;
-  /**
-   * Returns html5 mode cofiguration
-   * @returns {import("./interface.ts").Html5Mode}
-   */
-  getHtml5Mode(): import("./interface.ts").Html5Mode;
   $get: (
     | string
     | ((

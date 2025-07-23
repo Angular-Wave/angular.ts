@@ -50,18 +50,6 @@ export class Location {
      */
     this.$$absUrl = "";
 
-    /**
-     * If html5 mode is enabled
-     * @type {boolean}
-     */
-    this.$$html5 = false;
-
-    /**
-     * Has any change been replacing?
-     * @type {boolean}
-     */
-    this.$$replace = false;
-
     /** @type {string} */
     this.$$protocol = parsedUrl.protocol;
 
@@ -221,15 +209,6 @@ export class Location {
 
     this.$$hash = hash !== null ? hash.toString() : "";
     this.$$compose();
-    return this;
-  }
-
-  /**
-   * If called, all changes to $location during the current `$digest` will replace the current history
-   * record, instead of adding a new one.
-   */
-  replace() {
-    this.$$replace = true;
     return this;
   }
 
@@ -423,7 +402,6 @@ export class Location {
           withoutHashUrl = "";
           if (isUndefined(withoutBaseUrl)) {
             this.appBase = url;
-            /** @type {?} */ (this).replace();
           }
         }
       }
@@ -593,31 +571,6 @@ export class LocationProvider {
     this.urlChangeListeners.push(callback);
   }
 
-  /**
-   * The default value for the prefix is `'!'`.
-   * @param {string=} prefix Prefix for hash part (containing path and search)
-   * @returns {void}
-   */
-  setHashPrefix(prefix) {
-    this.hashPrefixConf = prefix;
-  }
-
-  /**
-   * Current hash prefix
-   * @returns {string}
-   */
-  getHashPrefix() {
-    return this.hashPrefixConf;
-  }
-
-  /**
-   * Returns html5 mode cofiguration
-   * @returns {import("./interface.ts").Html5Mode}
-   */
-  getHtml5Mode() {
-    return this.html5ModeConf;
-  }
-
   $get = [
     "$rootScope",
     "$rootElement",
@@ -651,7 +604,7 @@ export class LocationProvider {
         appBase,
         appBaseNoFile,
         this.html5ModeConf.enabled,
-        `#${this.getHashPrefix()}`,
+        `#${this.hashPrefixConf}`,
       );
       $location.$$parseLinkUrl(initialUrl, initialUrl);
 
@@ -838,11 +791,6 @@ export class LocationProvider {
             });
           }
         }
-
-        $location.$$replace = false;
-
-        // we don't need to return anything because $evalAsync will make the digest loop dirty when
-        // there is a change
       };
 
       updateBrowser();

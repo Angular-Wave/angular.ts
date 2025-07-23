@@ -167,14 +167,12 @@ export class UrlService {
    * @param {string} [newUrl] The new value for the URL.
    *               This url should reflect only the new internal [[path]], [[search]], and [[hash]] values.
    *               It should not include the protocol, site, port, or base path of an absolute HREF.
-   * @param {boolean} [replace] When true, replaces the current history entry (instead of appending it) with this new url
    * @param {any} [state] The history's state object, i.e., pushState (if the LocationServices implementation supports it)
    *
    * @return the url (after potentially being processed)
    */
-  url(newUrl, replace = false, state) {
+  url(newUrl, state) {
     if (isDefined(newUrl)) this.$location.url(newUrl);
-    if (replace) this.$location.replace();
     if (state) this.$location.state(state);
     return this.$location.url();
   }
@@ -239,7 +237,7 @@ export class UrlService {
      */
     const best = this.match(url);
     const applyResult = pattern([
-      [isString, (newurl) => this.url(newurl, true)],
+      [isString, (newurl) => this.url(newurl)],
       [
         TargetState.isDef,
         (def) => stateService.go(def.state, def.params, def.options),
