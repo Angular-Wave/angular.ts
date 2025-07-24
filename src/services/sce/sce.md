@@ -82,13 +82,13 @@
 - In privileged contexts, directives and code will bind to the result of {@link ng.$sce#getTrusted
 - $sce.getTrusted(context, value)} rather than to the value directly. Think of this function as
 - a way to enforce the required security context in your data sink. Directives use {@link
-- ng.$sce#parseAs $sce.parseAs} rather than `$parse` to watch attribute bindings, which performs
+- ng.$sceparseAs $sce.parseAs} rather than `$parse` to watch attribute bindings, which performs
 - the {@link ng.$sce#getTrusted $sce.getTrusted} behind the scenes on non-constant literals. Also,
 - when binding without directives, AngularTS will understand the context of your bindings
 - automatically.
 -
 - As an example, {@link ng.directive:ngBindHtml ngBindHtml} uses {@link
-- ng.$sce#parseAsHtml $sce.parseAsHtml(binding expression)}. Here's the actual code (slightly
+- ng.$sceparseAsHtml $sce.parseAsHtml(binding expression)}. Here's the actual code (slightly
 - simplified):
 -
 - ```

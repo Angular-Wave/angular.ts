@@ -1,25 +1,133 @@
 /**
+ * ///////////////////////////
+ *          HELPERS
+ * ///////////////////////////
+ */
+/**
+ * Encodes a URL path by encoding each path segment individually using `encodeUriSegment`,
+ * while preserving forward slashes (`/`) as segment separators.
  *
+ * This function first decodes any existing percent-encodings (such as `%20` or `%2F`)
+ * in each segment to prevent double encoding, except for encoded forward slashes (`%2F`),
+ * which are replaced with literal slashes before decoding to keep path boundaries intact.
+ *
+ * After decoding, each segment is re-encoded with `encodeUriSegment` according to RFC 3986,
+ * encoding only characters that must be encoded in a path segment.
+ *
+ * The encoded segments are then rejoined with `/` to form the encoded path.
+ *
+ * @param {string} path - The URL path string to encode. May contain multiple segments separated by `/`.
+ * @returns {string} The encoded path, where each segment is encoded, but forward slashes are preserved.
+ *
+ * @example
+ * encodePath("user profile/images/pic 1.jpg")
+ * // returns "user%20profile/images/pic%201.jpg"
+ *
+ * @example
+ * encodePath("folder1%2Fsub/folder2")
+ * // returns "folder1%2Fsub/folder2"
+ */
+export function encodePath(path: string): string;
+/**
+ * Decodes each segment of a URL path.
+ *
+ * Splits the input path by "/", decodes each segment using decodeURIComponent,
+ * and if html5Mode is enabled, re-encodes any forward slashes inside segments
+ * as "%2F" to avoid confusion with path separators.
+ *
+ * @param {string} path - The URL path to decode.
+ * @param {boolean} html5Mode - If true, encodes forward slashes in segments as "%2F".
+ * @returns {string} The decoded path with segments optionally encoding slashes.
+ */
+export function decodePath(path: string, html5Mode: boolean): string;
+/**
+ * Normalizes a URL path by encoding the path segments, query parameters, and hash fragment.
+ *
+ * - Path segments are encoded using `encodePath`, which encodes each segment individually.
+ * - Query parameters (`searchValue`) are converted to a query string using `toKeyValue`.
+ * - Hash fragment (`hashValue`) is encoded using `encodeUriSegment` and prefixed with `#`.
+ *
+ * This function returns a fully constructed URL path with optional query and hash components.
+ *
+ * @param {string} pathValue - The base URL path (e.g., "folder/item name").
+ * @param {Object.<string, any> | string | null} searchValue - An object or string representing query parameters.
+ *   - If an object, it can contain strings, numbers, booleans, or arrays of values.
+ *   - If a string, it is assumed to be a raw query string.
+ *   - If null or undefined, no query string is added.
+ * @param {string | null} hashValue - The URL fragment (everything after `#`). If null or undefined, no hash is added.
+ *
+ * @returns {string} The normalized URL path including encoded path, optional query string, and optional hash.
+ *
+ * @example
+ * normalizePath("products/list", { category: "books", page: 2 }, "section1")
+ * // returns "products/list?category=books&page=2#section1"
+ *
+ * @example
+ * normalizePath("user profile/images", null, null)
+ * // returns "user%20profile/images"
+ */
+export function normalizePath(
+  pathValue: string,
+  searchValue:
+    | {
+        [x: string]: any;
+      }
+    | string
+    | null,
+  hashValue: string | null,
+): string;
+/**
+ * Parses the application URL and updates the location object with path, search, and hash.
+ *
+ * @param {string} url - The URL string to parse.
+ * @param {Object} locationObj - The location object to be updated.
+ * @param {string} locationObj.$$path - The path component (will be set).
+ * @param {Object.<string, (string|boolean|string[])>} locationObj.$$search - The parsed query parameters (will be set).
+ * @param {string} locationObj.$$hash - The decoded URL fragment (will be set).
+ * @param {boolean} html5Mode - Whether HTML5 mode is enabled (affects decoding).
+ * @throws Will throw an error if the URL starts with invalid slashes.
+ */
+export function parseAppUrl(
+  url: string,
+  locationObj: {
+    $$path: string;
+    $$search: {
+      [x: string]: string | boolean | string[];
+    };
+    $$hash: string;
+  },
+  html5Mode: boolean,
+): void;
+/**
+ *
+ * Returns the substring of `url` after the `base` string if `url` starts with `base`.
+ * Returns `undefined` if `url` does not start with `base`.
  * @param {string} base
  * @param {string} url
  * @returns {string} returns text from `url` after `base` or `undefined` if it does not begin with
  *                   the expected string.
  */
 export function stripBaseUrl(base: string, url: string): string;
-export function stripHash(url: any): any;
+/**
+ * Removes the hash fragment (including the '#') from the given URL string.
+ *
+ * @param {string} url - The URL string to process.
+ * @returns {string} The URL without the hash fragment.
+ */
+export function stripHash(url: string): string;
 export function stripFile(url: any): any;
 export function serverBase(url: any): any;
 export class Location {
   /**
    * @param {string} appBase application base URL
    * @param {string} appBaseNoFile application base URL stripped of any filename
-   * @param {boolean} html5
+   * @param {boolean} [html5] Defaults to true
    * @param {string} [prefix] URL path prefix for html5 mode or hash prefix for hashbang mode
    */
   constructor(
     appBase: string,
     appBaseNoFile: string,
-    html5: boolean,
+    html5?: boolean,
     prefix?: string,
   );
   /** @type {string} */
@@ -27,25 +135,40 @@ export class Location {
   /** @type {string} */
   appBaseNoFile: string;
   /** @type {boolean} */
-  $$html5: boolean;
+  html5: boolean;
   /** @type {string | undefined} */
   basePrefix: string | undefined;
   /** @type {string | undefined} */
   hashPrefix: string | undefined;
   /**
-   * An absolute URL is the full URL, including protocol (http/https ), the optional subdomain (e.g. www ), domain (example.com), and path (which includes the directory and slug).
+   * An absolute URL is the full URL, including protocol (http/https ), the optional subdomain (e.g. www ), domain (example.com), and path (which includes the directory and slug)
+   * with all segments encoded according to rules specified in [RFC 3986](http://www.ietf.org/rfc/rfc3986.txt).
    * @type {string}
    */
-  $$absUrl: string;
-  /** @type {string} */
-  $$protocol: string;
-  /** @type {string} */
-  $$host: string;
+  absUrl: string;
   /**
-   * The port, without ":"
+   * The protocol scheme of the URL, without the trailing colon.
+   * Example: "http" or "https"
+   * @type {string}
+   */
+  protocol: string;
+  /**
+   * Return host of current URL.
+   * Note: compared to the non-AngularTS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
+   * @type {string}
+   */
+  host: string;
+  /**
+   * Port of current URL.
+   *
+   * ```js
+   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
+   * let port = $location.port;
+   * // => 80
+   * ```
    * @type {number}
    */
-  $$port: number;
+  port: number;
   /**
    * The pathname, beginning with "/"
    * @type {string}
@@ -62,13 +185,6 @@ export class Location {
    */
   $$urlUpdatedByLocation: boolean;
   /**
-   * Return full URL representation with all segments encoded according to rules specified in
-   * [RFC 3986](http://www.ietf.org/rfc/rfc3986.txt).
-   *
-   * @return {string} full URL
-   */
-  absUrl(): string;
-  /**
    * This method is getter / setter.
    *
    * Return URL (e.g. `/path?a=b#hash`) when called without any parameter.
@@ -78,38 +194,6 @@ export class Location {
    * @return {Location|string} url
    */
   url(url?: string | undefined): Location | string;
-  /**
-   *
-   * Return protocol of current URL.
-   * @return {string} protocol of current URL
-   */
-  protocol(): string;
-  /**
-   * This method is getter only.
-   *
-   * Return host of current URL.
-   *
-   * Note: compared to the non-AngularTS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
-   *
-   *
-   * @return {string} host of current URL.
-   */
-  host(): string;
-  /**
-   * This method is getter only.
-   *
-   * Return port of current URL.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let port = $location.port();
-   * // => 80
-   * ```
-   *
-   * @return {number} port
-   */
-  port(): number;
   /**
    * This method is getter / setter.
    *
@@ -162,11 +246,6 @@ export class Location {
     ...args: any[]
   ): any | Location;
   $$search: any;
-  /**
-   * Compose url and update `url` and `absUrl` property
-   * @returns {void}
-   */
-  $$compose(): void;
   $$url: string;
   /**
    * @param {string} url
@@ -196,12 +275,13 @@ export class Location {
    * @param {string} relHref
    * @returns {boolean}
    */
-  $$parseLinkUrl(url: string, relHref: string): boolean;
+  parseLinkUrl(url: string, relHref: string): boolean;
   /**
    * Parse given HTML5 (regular) URL string into properties
    * @param {string} url HTML5 URL
    */
-  $$parse(url: string): void;
+  parse(url: string): void;
+  #private;
 }
 export class LocationProvider {
   /** @type {string} */
@@ -235,19 +315,6 @@ export class LocationProvider {
    */
   private cacheState;
   lastCachedState: any;
-  /**
-   * Fires the state or URL change event.
-   *
-   * @private
-   */
-  private fireStateOrUrlChange;
-  /**
-   * Registers a callback to be called when the URL changes.
-   *
-   * @param {import("./interface.js").UrlChangeListener} callback - The callback function to register.
-   * @returns void
-   */
-  onUrlChange(callback: import("./interface.js").UrlChangeListener): void;
   $get: (
     | string
     | ((
@@ -255,4 +322,5 @@ export class LocationProvider {
         $rootElement: Element,
       ) => Location)
   )[];
+  #private;
 }

@@ -373,12 +373,12 @@ export class UrlService {
       return url;
     }
     const slash = !isHtml5 && url ? "/" : "";
-    const cfgPort = this.$location.port();
+    const cfgPort = this.$location.port;
     const port = cfgPort === 80 || cfgPort === 443 ? "" : ":" + cfgPort;
     return [
-      this.$location.protocol(),
+      this.$location.protocol,
       "://",
-      this.$location.host(),
+      this.$location.host,
       port,
       slash,
       url,

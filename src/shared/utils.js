@@ -867,6 +867,7 @@ export function tryDecodeURIComponent(value) {
  *    unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
  *    sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
  *                     / "*" / "+" / "," / ";" / "="
+ * @param {string} val
  */
 export function encodeUriSegment(val) {
   return encodeUriQuery(val, true)
@@ -1238,4 +1239,34 @@ export function callBackAfterFirst(fn) {
  */
 export function wait(t = 0) {
   return new Promise((resolve) => setTimeout(resolve, t));
+}
+
+/**
+ * Checks if a given string starts with a specified substring.
+ *
+ * This is a simple polyfill-like function that mimics the behavior of
+ * `String.prototype.startsWith` without using the built-in method.
+ *
+ * @param {string} str - The full string to evaluate.
+ * @param {string} search - The substring to test against the beginning of `str`.
+ * @returns {boolean} `true` if `str` starts with `search`, otherwise `false`.
+ *
+ * @example
+ * startsWith("hello world", "hello");
+ * // returns true
+ *
+ * @example
+ * startsWith("hello world", "world");
+ * // returns false
+ *
+ * @example
+ * startsWith("test", "");
+ * // returns true (empty search string always matches)
+ *
+ * @example
+ * startsWith("abc", "abcd");
+ * // returns false
+ */
+export function startsWith(str, search) {
+  return str.slice(0, search.length) === search;
 }

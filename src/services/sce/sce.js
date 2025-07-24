@@ -761,7 +761,7 @@ export function SceProvider() {
 
       /**
        * Shorthand method.  `$sce.parseAsHtml(expression string)` →
-       *     {@link ng.$sce#parseAs `$sce.parseAs($sce.HTML, value)`}
+       *     {@link ng.$sceparseAs `$sce.parseAs($sce.HTML, value)`}
        *
        * @param {string} expression String expression to compile.
        * @return {function(context, locals)} A function which represents the compiled expression:
@@ -774,7 +774,7 @@ export function SceProvider() {
 
       /**
        * Shorthand method.  `$sce.parseAsCss(value)` →
-       *     {@link ng.$sce#parseAs `$sce.parseAs($sce.CSS, value)`}
+       *     {@link ng.$sceparseAs `$sce.parseAs($sce.CSS, value)`}
        *
        * @param {string} expression String expression to compile.
        * @return {function(context, locals)} A function which represents the compiled expression:
@@ -787,7 +787,7 @@ export function SceProvider() {
 
       /**
        * Shorthand method.  `$sce.parseAsUrl(value)` →
-       *     {@link ng.$sce#parseAs `$sce.parseAs($sce.URL, value)`}
+       *     {@link ng.$sceparseAs `$sce.parseAs($sce.URL, value)`}
        *
        * @param {string} expression String expression to compile.
        * @return {function(context, locals)} A function which represents the compiled expression:
@@ -800,7 +800,7 @@ export function SceProvider() {
 
       /**
        * Shorthand method.  `$sce.parseAsResourceUrl(value)` →
-       *     {@link ng.$sce#parseAs `$sce.parseAs($sce.RESOURCE_URL, value)`}
+       *     {@link ng.$sceparseAs `$sce.parseAs($sce.RESOURCE_URL, value)`}
        *
        * @param {string} expression String expression to compile.
        * @return {function(context, locals)} A function which represents the compiled expression:
@@ -813,7 +813,7 @@ export function SceProvider() {
 
       /**
        * Shorthand method.  `$sce.parseAsJs(value)` →
-       *     {@link ng.$sce#parseAs `$sce.parseAs($sce.JS, value)`}
+       *     {@link ng.$sceparseAs `$sce.parseAs($sce.JS, value)`}
        *
        * @param {string} expression String expression to compile.
        * @return {function(context, locals)} A function which represents the compiled expression:

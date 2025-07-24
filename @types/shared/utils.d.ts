@@ -404,8 +404,9 @@ export function tryDecodeURIComponent(value: string): string | void;
  *    unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
  *    sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
  *                     / "*" / "+" / "," / ";" / "="
+ * @param {string} val
  */
-export function encodeUriSegment(val: any): string;
+export function encodeUriSegment(val: string): string;
 /**
  * This method is intended for encoding *key* or *value* parts of query component. We need a custom
  * method because encodeURIComponent is too aggressive and encodes stuff that doesn't have to be
@@ -548,6 +549,33 @@ export function callBackAfterFirst(fn: Function): Function;
  * @returns {Promise<void>} A promise that resolves after the delay.
  */
 export function wait(t?: number): Promise<void>;
+/**
+ * Checks if a given string starts with a specified substring.
+ *
+ * This is a simple polyfill-like function that mimics the behavior of
+ * `String.prototype.startsWith` without using the built-in method.
+ *
+ * @param {string} str - The full string to evaluate.
+ * @param {string} search - The substring to test against the beginning of `str`.
+ * @returns {boolean} `true` if `str` starts with `search`, otherwise `false`.
+ *
+ * @example
+ * startsWith("hello world", "hello");
+ * // returns true
+ *
+ * @example
+ * startsWith("hello world", "world");
+ * // returns false
+ *
+ * @example
+ * startsWith("test", "");
+ * // returns true (empty search string always matches)
+ *
+ * @example
+ * startsWith("abc", "abcd");
+ * // returns false
+ */
+export function startsWith(str: string, search: string): boolean;
 export const isProxySymbol: unique symbol;
 export const ngAttrPrefixes: string[];
 /**

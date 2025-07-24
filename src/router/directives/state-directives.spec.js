@@ -30,6 +30,7 @@ describe("ngStateRef", () => {
        */
       ($stateProvider, $locationProvider) => {
         _locationProvider = $locationProvider;
+        $locationProvider.html5ModeConf.enabled = false;
         $locationProvider.hashPrefixConf = "";
         $stateProvider
           .state({ name: "top", url: "" })

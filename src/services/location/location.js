@@ -11,6 +11,7 @@ import {
   toInt,
   toKeyValue,
   equals,
+  startsWith,
 } from "../../shared/utils.js";
 import { getBaseHref } from "../../shared/dom.js";
 
@@ -23,7 +24,7 @@ export class Location {
   /**
    * @param {string} appBase application base URL
    * @param {string} appBaseNoFile application base URL stripped of any filename
-   * @param {boolean} html5
+   * @param {boolean} [html5] Defaults to true
    * @param {string} [prefix] URL path prefix for html5 mode or hash prefix for hashbang mode
    */
   constructor(appBase, appBaseNoFile, html5, prefix) {
@@ -36,7 +37,7 @@ export class Location {
     this.appBaseNoFile = appBaseNoFile;
 
     /** @type {boolean} */
-    this.$$html5 = html5;
+    this.html5 = html5;
 
     /** @type {string | undefined} */
     this.basePrefix = html5 ? prefix || "" : undefined;
@@ -45,22 +46,37 @@ export class Location {
     this.hashPrefix = html5 ? undefined : prefix;
 
     /**
-     * An absolute URL is the full URL, including protocol (http/https ), the optional subdomain (e.g. www ), domain (example.com), and path (which includes the directory and slug).
+     * An absolute URL is the full URL, including protocol (http/https ), the optional subdomain (e.g. www ), domain (example.com), and path (which includes the directory and slug)
+     * with all segments encoded according to rules specified in [RFC 3986](http://www.ietf.org/rfc/rfc3986.txt).
      * @type {string}
      */
-    this.$$absUrl = "";
-
-    /** @type {string} */
-    this.$$protocol = parsedUrl.protocol;
-
-    /** @type {string} */
-    this.$$host = parsedUrl.hostname;
+    this.absUrl = "";
 
     /**
-     * The port, without ":"
+     * The protocol scheme of the URL, without the trailing colon.
+     * Example: "http" or "https"
+     * @type {string}
+     */
+    this.protocol = parsedUrl.protocol;
+
+    /**
+     * Return host of current URL.
+     * Note: compared to the non-AngularTS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
+     * @type {string}
+     */
+    this.host = parsedUrl.hostname;
+
+    /**
+     * Port of current URL.
+     *
+     * ```js
+     * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
+     * let port = $location.port;
+     * // => 80
+     * ```
      * @type {number}
      */
-    this.$$port =
+    this.port =
       toInt(parsedUrl.port) || DEFAULT_PORTS[parsedUrl.protocol] || null;
 
     /**
@@ -83,16 +99,6 @@ export class Location {
   }
 
   /**
-   * Return full URL representation with all segments encoded according to rules specified in
-   * [RFC 3986](http://www.ietf.org/rfc/rfc3986.txt).
-   *
-   * @return {string} full URL
-   */
-  absUrl() {
-    return this.$$absUrl;
-  }
-
-  /**
    * This method is getter / setter.
    *
    * Return URL (e.g. `/path?a=b#hash`) when called without any parameter.
@@ -112,47 +118,6 @@ export class Location {
     this.hash(match[5] || "");
 
     return this;
-  }
-
-  /**
-   *
-   * Return protocol of current URL.
-   * @return {string} protocol of current URL
-   */
-  protocol() {
-    return this.$$protocol;
-  }
-
-  /**
-   * This method is getter only.
-   *
-   * Return host of current URL.
-   *
-   * Note: compared to the non-AngularTS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
-   *
-   *
-   * @return {string} host of current URL.
-   */
-  host() {
-    return this.$$host;
-  }
-
-  /**
-   * This method is getter only.
-   *
-   * Return port of current URL.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let port = $location.port();
-   * // => 80
-   * ```
-   *
-   * @return {number} port
-   */
-  port() {
-    return this.$$port;
   }
 
   /**
@@ -181,7 +146,7 @@ export class Location {
     }
     let newPath = path !== null ? path.toString() : "";
     this.$$path = newPath.charAt(0) === "/" ? newPath : `/${newPath}`;
-    this.$$compose();
+    this.#compose();
     return this;
   }
 
@@ -208,7 +173,7 @@ export class Location {
     }
 
     this.$$hash = hash !== null ? hash.toString() : "";
-    this.$$compose();
+    this.#compose();
     return this;
   }
 
@@ -250,7 +215,7 @@ export class Location {
         }
     }
 
-    this.$$compose();
+    this.#compose();
     return this;
   }
 
@@ -258,9 +223,9 @@ export class Location {
    * Compose url and update `url` and `absUrl` property
    * @returns {void}
    */
-  $$compose() {
+  #compose() {
     this.$$url = normalizePath(this.$$path, this.$$search, this.$$hash);
-    this.$$absUrl = this.$$normalizeUrl(this.$$url);
+    this.absUrl = this.$$normalizeUrl(this.$$url);
     this.$$urlUpdatedByLocation = true;
   }
 
@@ -269,7 +234,7 @@ export class Location {
    * @returns {string}
    */
   $$normalizeUrl(url) {
-    return this.$$html5
+    return this.html5
       ? this.appBaseNoFile + url.substring(1)
       : this.appBase + (url ? this.hashPrefix + url : ""); // first char is always '/'
   }
@@ -295,7 +260,7 @@ export class Location {
       return this.$$state;
     }
 
-    if (!this.$$html5) {
+    if (!this.html5) {
       throw $locationMinErr(
         "nostate",
         "History API state support is available only in HTML5 mode",
@@ -314,8 +279,8 @@ export class Location {
    * @param {string} relHref
    * @returns {boolean}
    */
-  $$parseLinkUrl(url, relHref) {
-    if (this.$$html5) {
+  parseLinkUrl(url, relHref) {
+    if (this.html5) {
       if (relHref && relHref[0] === "#") {
         // special case for links to hash fragments:
         // keep the old url and only replace the hash fragment
@@ -343,12 +308,12 @@ export class Location {
         rewrittenUrl = this.appBaseNoFile;
       }
       if (rewrittenUrl) {
-        this.$$parse(rewrittenUrl);
+        this.parse(rewrittenUrl);
       }
       return !!rewrittenUrl;
     } else {
       if (stripHash(this.appBase) === stripHash(url)) {
-        this.$$parse(url);
+        this.parse(url);
         return true;
       }
       return false;
@@ -359,8 +324,8 @@ export class Location {
    * Parse given HTML5 (regular) URL string into properties
    * @param {string} url HTML5 URL
    */
-  $$parse(url) {
-    if (this.$$html5) {
+  parse(url) {
+    if (this.html5) {
       const pathUrl = stripBaseUrl(this.appBaseNoFile, url);
       if (!isString(pathUrl)) {
         throw $locationMinErr(
@@ -377,7 +342,7 @@ export class Location {
         this.$$path = "/";
       }
 
-      this.$$compose();
+      this.#compose();
     } else {
       const withoutBaseUrl =
         stripBaseUrl(this.appBase, url) ||
@@ -396,7 +361,7 @@ export class Location {
         // There was no hashbang path nor hash fragment:
         // If we are in HTML5 mode we use what is left as the path;
         // Otherwise we ignore what is left
-        if (this.$$html5) {
+        if (this.html5) {
           withoutHashUrl = withoutBaseUrl;
         } else {
           withoutHashUrl = "";
@@ -414,7 +379,7 @@ export class Location {
         this.appBase,
       );
 
-      this.$$compose();
+      this.#compose();
 
       /*
        * In Windows, on an anchor node on documents loaded from
@@ -460,8 +425,8 @@ export class LocationProvider {
 
     /** @type {import("./interface.ts").Html5Mode} */
     this.html5ModeConf = {
-      enabled: false,
-      requireBase: true,
+      enabled: true,
+      requireBase: false,
       rewriteLinks: true,
     };
 
@@ -534,10 +499,8 @@ export class LocationProvider {
 
   /**
    * Fires the state or URL change event.
-   *
-   * @private
    */
-  fireStateOrUrlChange() {
+  #fireStateOrUrlChange() {
     const prevLastHistoryState = this.lastHistoryState;
     this.cacheState();
     if (
@@ -559,12 +522,15 @@ export class LocationProvider {
    * @param {import("./interface.js").UrlChangeListener} callback - The callback function to register.
    * @returns void
    */
-  onUrlChange(callback) {
+  #onUrlChange(callback) {
     if (!this.urlChangeInit) {
-      window.addEventListener("popstate", this.fireStateOrUrlChange.bind(this));
+      window.addEventListener(
+        "popstate",
+        this.#fireStateOrUrlChange.bind(this),
+      );
       window.addEventListener(
         "hashchange",
-        this.fireStateOrUrlChange.bind(this),
+        this.#fireStateOrUrlChange.bind(this),
       );
       this.urlChangeInit = true;
     }
@@ -606,7 +572,7 @@ export class LocationProvider {
         this.html5ModeConf.enabled,
         `#${this.hashPrefixConf}`,
       );
-      $location.$$parseLinkUrl(initialUrl, initialUrl);
+      $location.parseLinkUrl(initialUrl, initialUrl);
 
       $location.$$state = this.state();
 
@@ -692,7 +658,7 @@ export class LocationProvider {
             !elm.getAttribute("target") &&
             !event.defaultPrevented
           ) {
-            if ($location.$$parseLinkUrl(absHref, relHref)) {
+            if ($location.parseLinkUrl(absHref, relHref)) {
               // We do a preventDefault for all urls that are part of the AngularTS application,
               // in html5mode and also without, so that we are able to abort navigation without
               // getting double entries in the location history.
@@ -703,14 +669,14 @@ export class LocationProvider {
       );
 
       // rewrite hashbang url <> html5 url
-      if ($location.absUrl() !== initialUrl) {
-        this.setUrl($location.absUrl(), true);
+      if ($location.absUrl !== initialUrl) {
+        this.setUrl($location.absUrl, true);
       }
 
       let initializing = true;
 
       // update $location when $browser url changes
-      this.onUrlChange((newUrl, newState) => {
+      this.#onUrlChange((newUrl, newState) => {
         if (!startsWith(newUrl, appBaseNoFile)) {
           // If we are navigating outside of the app then force a reload
           window.location.href = newUrl;
@@ -718,10 +684,10 @@ export class LocationProvider {
         }
 
         Promise.resolve().then(() => {
-          const oldUrl = $location.absUrl();
+          const oldUrl = $location.absUrl;
           const oldState = $location.$$state;
           let defaultPrevented;
-          $location.$$parse(newUrl);
+          $location.parse(newUrl);
           $location.$$state = newState;
 
           defaultPrevented = $rootScope.$broadcast(
@@ -734,10 +700,10 @@ export class LocationProvider {
 
           // if the location was changed by a `$locationChangeStart` handler then stop
           // processing this location change
-          if ($location.absUrl() !== newUrl) return;
+          if ($location.absUrl !== newUrl) return;
 
           if (defaultPrevented) {
-            $location.$$parse(oldUrl);
+            $location.parse(oldUrl);
             $location.$$state = oldState;
             setBrowserUrlWithFallback(oldUrl, oldState);
           } else {
@@ -753,17 +719,17 @@ export class LocationProvider {
           $location.$$urlUpdatedByLocation = false;
 
           const oldUrl = /** @type {string} */ (this.getUrl());
-          const newUrl = $location.absUrl();
+          const newUrl = $location.absUrl;
           const oldState = this.state();
           const urlOrStateChanged =
             !urlsEqual(oldUrl, newUrl) ||
-            ($location.$$html5 && oldState !== $location.$$state);
+            ($location.html5 && oldState !== $location.$$state);
 
           if (initializing || urlOrStateChanged) {
             initializing = false;
 
             setTimeout(() => {
-              const newUrl = $location.absUrl();
+              const newUrl = $location.absUrl;
               const { defaultPrevented } = $rootScope.$broadcast(
                 "$locationChangeStart",
                 newUrl,
@@ -774,10 +740,10 @@ export class LocationProvider {
 
               // if the location was changed by a `$locationChangeStart` handler then stop
               // processing this location change
-              if ($location.absUrl() !== newUrl) return;
+              if ($location.absUrl !== newUrl) return;
 
               if (defaultPrevented) {
-                $location.$$parse(oldUrl);
+                $location.parse(oldUrl);
                 $location.$$state = oldState;
               } else {
                 if (urlOrStateChanged) {
@@ -801,7 +767,7 @@ export class LocationProvider {
       function afterLocationChange(oldUrl, oldState) {
         $rootScope.$broadcast(
           "$locationChangeSuccess",
-          $location.absUrl(),
+          $location.absUrl,
           oldUrl,
           $location.$$state,
           oldState,
@@ -818,24 +784,57 @@ export class LocationProvider {
  */
 
 /**
- * Encode path using encodeUriSegment, ignoring forward slashes
+ * Encodes a URL path by encoding each path segment individually using `encodeUriSegment`,
+ * while preserving forward slashes (`/`) as segment separators.
  *
- * @param {string} path Path to encode
- * @returns {string}
+ * This function first decodes any existing percent-encodings (such as `%20` or `%2F`)
+ * in each segment to prevent double encoding, except for encoded forward slashes (`%2F`),
+ * which are replaced with literal slashes before decoding to keep path boundaries intact.
+ *
+ * After decoding, each segment is re-encoded with `encodeUriSegment` according to RFC 3986,
+ * encoding only characters that must be encoded in a path segment.
+ *
+ * The encoded segments are then rejoined with `/` to form the encoded path.
+ *
+ * @param {string} path - The URL path string to encode. May contain multiple segments separated by `/`.
+ * @returns {string} The encoded path, where each segment is encoded, but forward slashes are preserved.
+ *
+ * @example
+ * encodePath("user profile/images/pic 1.jpg")
+ * // returns "user%20profile/images/pic%201.jpg"
+ *
+ * @example
+ * encodePath("folder1%2Fsub/folder2")
+ * // returns "folder1%2Fsub/folder2"
  */
-function encodePath(path) {
+export function encodePath(path) {
   const segments = path.split("/");
   let i = segments.length;
 
   while (i--) {
-    // decode forward slashes to prevent them from being double encoded
-    segments[i] = encodeUriSegment(segments[i].replace(/%2F/g, "/"));
+    // Decode any existing encodings (e.g. %20, %2F) to prevent double-encoding
+    // But keep slashes intact (they were split on)
+    const decodedSegment = decodeURIComponent(
+      segments[i].replace(/%2F/gi, "/"),
+    );
+    segments[i] = encodeUriSegment(decodedSegment);
   }
 
   return segments.join("/");
 }
 
-function decodePath(path, html5Mode) {
+/**
+ * Decodes each segment of a URL path.
+ *
+ * Splits the input path by "/", decodes each segment using decodeURIComponent,
+ * and if html5Mode is enabled, re-encodes any forward slashes inside segments
+ * as "%2F" to avoid confusion with path separators.
+ *
+ * @param {string} path - The URL path to decode.
+ * @param {boolean} html5Mode - If true, encodes forward slashes in segments as "%2F".
+ * @returns {string} The decoded path with segments optionally encoding slashes.
+ */
+export function decodePath(path, html5Mode) {
   const segments = path.split("/");
   let i = segments.length;
 
@@ -850,7 +849,33 @@ function decodePath(path, html5Mode) {
   return segments.join("/");
 }
 
-function normalizePath(pathValue, searchValue, hashValue) {
+/**
+ * Normalizes a URL path by encoding the path segments, query parameters, and hash fragment.
+ *
+ * - Path segments are encoded using `encodePath`, which encodes each segment individually.
+ * - Query parameters (`searchValue`) are converted to a query string using `toKeyValue`.
+ * - Hash fragment (`hashValue`) is encoded using `encodeUriSegment` and prefixed with `#`.
+ *
+ * This function returns a fully constructed URL path with optional query and hash components.
+ *
+ * @param {string} pathValue - The base URL path (e.g., "folder/item name").
+ * @param {Object.<string, any> | string | null} searchValue - An object or string representing query parameters.
+ *   - If an object, it can contain strings, numbers, booleans, or arrays of values.
+ *   - If a string, it is assumed to be a raw query string.
+ *   - If null or undefined, no query string is added.
+ * @param {string | null} hashValue - The URL fragment (everything after `#`). If null or undefined, no hash is added.
+ *
+ * @returns {string} The normalized URL path including encoded path, optional query string, and optional hash.
+ *
+ * @example
+ * normalizePath("products/list", { category: "books", page: 2 }, "section1")
+ * // returns "products/list?category=books&page=2#section1"
+ *
+ * @example
+ * normalizePath("user profile/images", null, null)
+ * // returns "user%20profile/images"
+ */
+export function normalizePath(pathValue, searchValue, hashValue) {
   const search = toKeyValue(searchValue);
   const hash = hashValue ? `#${encodeUriSegment(hashValue)}` : "";
   const path = encodePath(pathValue);
@@ -858,7 +883,18 @@ function normalizePath(pathValue, searchValue, hashValue) {
   return path + (search ? `?${search}` : "") + hash;
 }
 
-function parseAppUrl(url, locationObj, html5Mode) {
+/**
+ * Parses the application URL and updates the location object with path, search, and hash.
+ *
+ * @param {string} url - The URL string to parse.
+ * @param {Object} locationObj - The location object to be updated.
+ * @param {string} locationObj.$$path - The path component (will be set).
+ * @param {Object.<string, (string|boolean|string[])>} locationObj.$$search - The parsed query parameters (will be set).
+ * @param {string} locationObj.$$hash - The decoded URL fragment (will be set).
+ * @param {boolean} html5Mode - Whether HTML5 mode is enabled (affects decoding).
+ * @throws Will throw an error if the URL starts with invalid slashes.
+ */
+export function parseAppUrl(url, locationObj, html5Mode) {
   if (/^\s*[\\/]{2,}/.test(url)) {
     throw $locationMinErr("badpath", 'Invalid url "{0}".', url);
   }
@@ -882,12 +918,10 @@ function parseAppUrl(url, locationObj, html5Mode) {
   }
 }
 
-function startsWith(str, search) {
-  return str.slice(0, search.length) === search;
-}
-
 /**
  *
+ * Returns the substring of `url` after the `base` string if `url` starts with `base`.
+ * Returns `undefined` if `url` does not start with `base`.
  * @param {string} base
  * @param {string} url
  * @returns {string} returns text from `url` after `base` or `undefined` if it does not begin with
@@ -899,6 +933,12 @@ export function stripBaseUrl(base, url) {
   }
 }
 
+/**
+ * Removes the hash fragment (including the '#') from the given URL string.
+ *
+ * @param {string} url - The URL string to process.
+ * @returns {string} The URL without the hash fragment.
+ */
 export function stripHash(url) {
   const index = url.indexOf("#");
   return index === -1 ? url : url.substring(0, index);
@@ -914,7 +954,7 @@ export function serverBase(url) {
 }
 
 // Determine if two URLs are equal despite potentially having different encoding/normalizing
-//  such as $location.absUrl() vs $browser.url()
+//  such as $location.absUrl vs $browser.url()
 // See https://github.com/angular/angular.js/issues/16592
 function urlsEqual(a, b) {
   return a === b || urlResolve(a).href === urlResolve(b).href;

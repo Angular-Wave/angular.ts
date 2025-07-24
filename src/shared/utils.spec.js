@@ -1,4 +1,4 @@
-import { hashKey } from "./utils.js";
+import { hashKey, startsWith } from "./utils.js";
 
 describe("api", () => {
   describe("hashKey()", () => {
@@ -139,6 +139,40 @@ describe("api", () => {
           },
         }),
       ).toEqual(42);
+    });
+  });
+
+  describe("startsWith", () => {
+    it("should return true when string starts with search string", () => {
+      expect(startsWith("hello world", "hello")).toBe(true);
+    });
+
+    it("should return false when string does not start with search string", () => {
+      expect(startsWith("hello world", "world")).toBe(false);
+    });
+
+    it("should return true when both strings are equal", () => {
+      expect(startsWith("test", "test")).toBe(true);
+    });
+
+    it("should return true when search string is empty", () => {
+      expect(startsWith("abc", "")).toBe(true); // matches JavaScript's native behavior
+    });
+
+    it("should return false when original string is empty and search is not", () => {
+      expect(startsWith("", "a")).toBe(false);
+    });
+
+    it("should return true with special characters at the beginning", () => {
+      expect(startsWith("💡 idea", "💡")).toBe(true);
+    });
+
+    it("should be case-sensitive", () => {
+      expect(startsWith("Hello", "hello")).toBe(false);
+    });
+
+    it("should return false if search is longer than the string", () => {
+      expect(startsWith("short", "shorter")).toBe(false);
     });
   });
 });
