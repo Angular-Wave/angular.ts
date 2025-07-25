@@ -5,6 +5,7 @@ import {
   isString,
   getNodeName,
 } from "../shared/utils.js";
+import { $injectTokens as $t } from "../injection-tokens.js";
 
 /**
  * @typedef {Object} AnchorScrollObject
@@ -25,8 +26,8 @@ export class AnchorScrollProvider {
   }
 
   $get = [
-    "$location",
-    "$rootScope",
+    $t.$location,
+    $t.$rootScope,
     /**
      *
      * @param {import('../services/location/location.js').Location} $location
@@ -104,7 +105,7 @@ export class AnchorScrollProvider {
           ? hash
           : isNumber(hash)
             ? hash.toString()
-            : $location.hash();
+            : $location.getHash();
         let elm;
 
         // empty hash, scroll to the top of the page
@@ -121,7 +122,7 @@ export class AnchorScrollProvider {
       };
 
       // does not scroll when user clicks on anchor link that is currently on
-      // (no url change, no $location.hash() change), browser native does scroll
+      // (no url change, no $location.getHash() change), browser native does scroll
       if (this.autoScrollingEnabled) {
         $rootScope["$location"] = $location;
         $rootScope.$watch("$location.$$hash", (newVal, oldVal) => {

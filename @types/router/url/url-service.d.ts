@@ -15,9 +15,10 @@ export class UrlService {
     globals: import("../../router/globals.js").RouterGlobals,
     urlConfigProvider: import("../../router/url/url-config.js").UrlConfigProvider,
   );
+  /** @type {import("../../services/location/location").Location} */
+  $location: any;
   $locationProvider: any;
   stateService: import("../../router/state/state-service.js").StateProvider;
-  $location: import("../../services/location/location.js").Location;
   /** Provides services related to the URL */
   urlRuleFactory: UrlRuleFactory;
   /**
@@ -55,7 +56,7 @@ export class UrlService {
    *
    * @return the hash (anchor) portion of the url
    */
-  hash: () => string | import("../../services/location/location.js").Location;
+  hash: () => any;
   _urlListeners: any[];
   $get: (
     | string
@@ -121,10 +122,7 @@ export class UrlService {
    *
    * @return the url (after potentially being processed)
    */
-  url(
-    newUrl?: string,
-    state?: any,
-  ): string | import("../../services/location/location.js").Location;
+  url(newUrl?: string, state?: any): any;
   /**
    * @internal
    *
@@ -142,15 +140,14 @@ export class UrlService {
    */
   onChange(callback: any): () => any;
   /**
-   * Gets the current URL parts
+   * Gets the current URL parts.
    *
-   * This method returns the different parts of the current URL (the [[path]], [[search]], and [[hash]]) as a [[UrlParts]] object.
+   * Returns an object with the `path`, `search`, and `hash` components
+   * of the current browser location.
+   *
+   * @returns {import("../../services/location/interface.ts").UrlParts} The current URL's path, search, and hash.
    */
-  parts(): {
-    path: any;
-    search: any;
-    hash: string | import("../../services/location/location.js").Location;
-  };
+  parts(): import("../../services/location/interface.ts").UrlParts;
   /**
    * Activates the best rule for the current URL
    *
@@ -190,9 +187,9 @@ export class UrlService {
    * });
    * ```
    *
-   * @param enabled `true` or `false` to start or stop listening to URL changes
+   * @param {boolean} enabled `true` or `false` to start or stop listening to URL changes
    */
-  listen(enabled: any): any;
+  listen(enabled: boolean): any;
   _stopListeningFn: any;
   /**
    * Matches a URL
@@ -203,7 +200,7 @@ export class UrlService {
    */
   match(url: any): any;
   update(read: any): void;
-  location: string | import("../../services/location/location.js").Location;
+  location: any;
   /**
    * Internal API.
    *

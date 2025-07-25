@@ -115,8 +115,45 @@ export function stripBaseUrl(base: string, url: string): string;
  * @returns {string} The URL without the hash fragment.
  */
 export function stripHash(url: string): string;
-export function stripFile(url: any): any;
-export function serverBase(url: any): any;
+/**
+ * Removes the file name (and any hash) from a URL, returning the base directory path.
+ *
+ * For example:
+ * - Input: "https://example.com/path/to/file.js"
+ *   Output: "https://example.com/path/to/"
+ *
+ * - Input: "https://example.com/path/to/file.js#section"
+ *   Output: "https://example.com/path/to/"
+ *
+ * @param {string} url - The URL from which to strip the file name and hash.
+ * @returns {string} The base path of the URL, ending with a slash.
+ */
+export function stripFile(url: string): string;
+/**
+ * Extracts the base server URL (scheme, host, and optional port) from a full URL.
+ *
+ * If no path is present, returns the full URL.
+ *
+ * For example:
+ * - Input: "https://example.com/path/to/file"
+ *   Output: "https://example.com"
+ *
+ * - Input: "http://localhost:3000/api/data"
+ *   Output: "http://localhost:3000"
+ *
+ * @param {string} url - The full URL to extract the server base from.
+ * @returns {string} The server base, including scheme and host (and port if present).
+ */
+export function serverBase(url: string): string;
+/**
+ * Determine if two URLs are equal despite potential differences in encoding,
+ * trailing slashes, or empty hash fragments, such as between $location.absUrl() and $browser.url().
+ *
+ * @param {string} a - First URL to compare.
+ * @param {string} b - Second URL to compare.
+ * @returns {boolean} True if URLs are equivalent after normalization.
+ */
+export function urlsEqual(a: string, b: string): boolean;
 export class Location {
   /**
    * @param {string} appBase application base URL
@@ -185,8 +222,7 @@ export class Location {
    */
   $$urlUpdatedByLocation: boolean;
   /**
-   * This method is getter / setter.
-   *
+   * @deprecated
    * Return URL (e.g. `/path?a=b#hash`) when called without any parameter.
    * Change path, search and hash, when called with parameter and return `$location`.
    *
@@ -195,6 +231,20 @@ export class Location {
    */
   url(url?: string | undefined): Location | string;
   /**
+   * Change path, search and hash, when called with parameter and return `$location`.
+   *
+   * @param {string} url New URL without base prefix (e.g. `/path?a=b#hash`)
+   * @return {Location} url
+   */
+  setUrl(url: string): Location;
+  /**
+   * Return URL (e.g. `/path?a=b#hash`) when called without any parameter.
+   *
+   * @return {string} url
+   */
+  getUrl(): string;
+  /**
+   * @deprecated
    * This method is getter / setter.
    *
    * Return path of current URL when called without any parameter.
@@ -216,6 +266,21 @@ export class Location {
    */
   path(path?: (string | number) | undefined): string | object;
   /**
+   * Change path parameter and return `$location`.
+   *
+   * @param {(string|number)} path New path
+   * @return {Location}
+   */
+  setPath(path: string | number): Location;
+  /**
+   *
+   * Return path of current URL when called without any parameter.
+   *
+   * @return {(string|object)} path if called with no parameters, or `$location` if called with a parameter
+   */
+  getPath(): string | object;
+  /**
+   * @deprecated
    * This method is getter / setter.
    *
    * Returns the hash fragment when called without any parameters.
@@ -225,7 +290,7 @@ export class Location {
    *
    * ```js
    * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo#hashValue
-   * let hash = $location.hash();
+   * let hash = $location.getHash();
    * // => "hashValue"
    * ```
    *
@@ -234,6 +299,18 @@ export class Location {
    */
   hash(hash?: (string | number) | undefined): string | Location;
   /**
+   * Changes the hash fragment when called with a parameter and returns `$location`.
+   * @param {(string|number)} hash New hash fragment
+   * @return {Location} hash
+   */
+  setHash(hash: string | number): Location;
+  /**
+   * Returns the hash fragment when called without any parameters.
+   * @return {string} hash
+   */
+  getHash(): string;
+  /**
+   * @deprecated
    * Returns or sets the search part (as object) of current URL when called without any parameter
    *
    * @param {string|Object=} search New search params - string or hash object.
@@ -246,12 +323,25 @@ export class Location {
     ...args: any[]
   ): any | Location;
   $$search: any;
-  $$url: string;
   /**
-   * @param {string} url
-   * @returns {string}
+   * Sets the search part (as object) of current URL
+   *
+   * @param {string|Object} search New search params - string or hash object.
+   * @param {(string|number|Array<string>|boolean)=} paramValue If search is a string or number, then paramValue will override only a single search property.
+   * @returns {Object} Search object or Location object
    */
-  $$normalizeUrl(url: string): string;
+  setSearch(
+    search: string | any,
+    paramValue?: (string | number | Array<string> | boolean) | undefined,
+    ...args: any[]
+  ): any;
+  /**
+   * Returns the search part (as object) of current URL
+   *
+   * @returns {Object} Search object or Location object
+   */
+  getSearch(): any;
+  $$url: string;
   /**
    * This method is getter / setter.
    *
@@ -297,12 +387,19 @@ export class LocationProvider {
   lastHistoryState: any;
   /** @type {string} */
   lastBrowserUrl: string;
-  setUrl(url: any, state: any): this;
+  /**
+   * Updates the browser's current URL and history state.
+   *
+   * @param {string|undefined} url - The target URL to navigate to.
+   * @param {*} [state=null] - Optional history state object to associate with the new URL.
+   * @returns {LocationProvider}
+   */
+  setUrl(url: string | undefined, state?: any): LocationProvider;
   /**
    * Returns the current URL with any empty hash (`#`) removed.
    * @return {string}
    */
-  getUrl(): string;
+  getBrowserUrl(): string;
   /**
    * Returns the cached state.
    * @returns {History['state']} The cached state.

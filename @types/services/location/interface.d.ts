@@ -40,3 +40,24 @@ export interface DefaultPorts {
   https: number;
   ftp: number;
 }
+/**
+ * Represents the individual components of a URL.
+ */
+export interface UrlParts {
+  /**
+   * The URL path (e.g. `/dashboard`, `/users/123`).
+   */
+  path: string;
+  /**
+   * The parsed query string as an object.
+   * Mirrors AngularJS’s `$location.search()` format.
+   */
+  search: Record<
+    string,
+    string | number | boolean | (string | number | boolean)[]
+  >;
+  /**
+   * The fragment identifier (everything after `#`, not including the `#` itself).
+   */
+  hash: string;
+}

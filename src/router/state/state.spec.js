@@ -457,7 +457,7 @@ describe("$state", () => {
         }).forEach(([k, v]) => {
           expect($stateParams[k]).toEqual(v);
         });
-        expect($location.url()).toEqual(
+        expect($location.getBrowserUrl()).toEqual(
           "/dynstate/p1/pd1?search=s1&searchDyn=sd1",
         );
       });
@@ -841,7 +841,7 @@ describe("$state", () => {
           await $state.go(".", { term: "goodbye" });
 
           expect($stateParams.term).toEqual("goodbye");
-          expect($location.url()).toEqual("/search?term=goodbye");
+          expect($location.getBrowserUrl()).toEqual("/search?term=goodbye");
           expect(entered).toBeFalsy();
         });
       });
@@ -976,19 +976,19 @@ describe("$state", () => {
 
     it("updates the location #fragment", async () => {
       await $state.transitionTo("home.item", { id: "world", "#": "frag" });
-      expect($location.url()).toBe("/front/world#frag");
-      expect($location.hash()).toBe("frag");
+      expect($location.getBrowserUrl()).toBe("/front/world#frag");
+      expect($location.getHash()).toBe("frag");
     });
 
     // passes in isolation. on success callback being polluted
     it("runs a transition when the location #fragment is updated", async () => {
       $state.transitionTo("home.item", { id: "world", "#": "frag" });
       await wait(100);
-      expect($location.hash()).toBe("frag");
+      expect($location.getHash()).toBe("frag");
 
       $state.transitionTo("home.item", { id: "world", "#": "blarg" });
       await wait(100);
-      expect($location.hash()).toBe("blarg");
+      expect($location.getHash()).toBe("blarg");
     });
 
     it("injects $transition$ into resolves", async () => {

@@ -13,17 +13,21 @@ import { UrlMatcher } from "./url-matcher.js";
 import { ParamFactory } from "../params/param-factory.js";
 import { UrlRuleFactory } from "./url-rule.js";
 import { getBaseHref } from "../../shared/dom.js";
+import { $injectTokens as $t, provider } from "../../injection-tokens.js";
 
 /**
  * API for URL management
  */
 export class UrlService {
-  static $inject = [
-    "$locationProvider",
-    "$stateProvider",
-    "$routerGlobalsProvider",
-    "$urlConfigProvider",
-  ];
+  static $inject = provider([
+    $t.$location,
+    $t.$state,
+    $t.$routerGlobals,
+    $t.$urlConfig,
+  ]);
+
+  /** @type {import("../../services/location/location").Location} */
+  $location;
 
   /**
    * @param {import("../../services/location/location").LocationProvider} $locationProvider
@@ -35,7 +39,6 @@ export class UrlService {
     this.$locationProvider = $locationProvider;
     this.stateService = stateService;
     this.stateService.urlService = this; // circular wiring
-    this.$location = undefined;
 
     /** Provides services related to the URL */
     this.urlRuleFactory = new UrlRuleFactory(this, this.stateService, globals);
@@ -83,8 +86,8 @@ export class UrlService {
   }
 
   $get = [
-    "$location",
-    "$rootScope",
+    $t.$location,
+    $t.$rootScope,
     /**
      *
      * @param {import('../../services/location/location.js').Location} $location
@@ -98,7 +101,7 @@ export class UrlService {
           fn(evt);
         });
       });
-      this.listen();
+      this.listen(true);
       return this;
     },
   ];
@@ -174,7 +177,7 @@ export class UrlService {
   url(newUrl, state) {
     if (isDefined(newUrl)) this.$location.url(newUrl);
     if (state) this.$location.state(state);
-    return this.$location.url();
+    return this.$location.getUrl();
   }
 
   /**
@@ -198,13 +201,21 @@ export class UrlService {
   }
 
   /**
-   * Gets the current URL parts
+   * Gets the current URL parts.
    *
-   * This method returns the different parts of the current URL (the [[path]], [[search]], and [[hash]]) as a [[UrlParts]] object.
+   * Returns an object with the `path`, `search`, and `hash` components
+   * of the current browser location.
+   *
+   * @returns {import("../../services/location/interface.ts").UrlParts} The current URL's path, search, and hash.
    */
   parts() {
-    return { path: this.path(), search: this.search(), hash: this.hash() };
+    return {
+      path: this.$location.getPath(),
+      search: this.$location.getSearch(),
+      hash: this.$location.getHash(),
+    };
   }
+
   /**
    * Activates the best rule for the current URL
    *
@@ -228,9 +239,9 @@ export class UrlService {
     if (evt && evt.defaultPrevented) return;
     const stateService = this.stateService;
     const url = {
-      path: this.path(),
-      search: this.search(),
-      hash: this.hash(),
+      path: this.$location.getPath(),
+      search: this.$location.getSearch(),
+      hash: this.$location.getHash(),
     };
     /**
      * @type {*}
@@ -270,10 +281,10 @@ export class UrlService {
    * });
    * ```
    *
-   * @param enabled `true` or `false` to start or stop listening to URL changes
+   * @param {boolean} enabled `true` or `false` to start or stop listening to URL changes
    */
   listen(enabled) {
-    if (enabled === false) {
+    if (!enabled) {
       this._stopListeningFn && this._stopListeningFn();
       delete this._stopListeningFn;
     } else {

@@ -7,6 +7,9 @@ import {
   parseAppUrl,
   stripBaseUrl,
   stripHash,
+  stripFile,
+  serverBase,
+  urlsEqual,
 } from "./location.js";
 import { Angular } from "../../loader.js";
 import { createInjector } from "../../core/di/injector.js";
@@ -106,7 +109,7 @@ describe("$location", () => {
       expect(locationUrl.path()).toBe("/path/b");
       expect(locationUrl.search()).toEqual({ search: "a", b: "c", d: true });
       expect(locationUrl.hash()).toBe("hash");
-      expect(locationUrl.url()).toBe("/path/b?search=a&b=c&d#hash");
+      expect(locationUrl.getUrl()).toBe("/path/b?search=a&b=c&d#hash");
     });
 
     it("path() should change path", () => {
@@ -278,7 +281,7 @@ describe("$location", () => {
     it("url() should change the path, search and hash", () => {
       const locationUrl = createLocationHtml5Url();
       locationUrl.url("/some/path?a=b&c=d#hhh");
-      expect(locationUrl.url()).toBe("/some/path?a=b&c=d#hhh");
+      expect(locationUrl.getUrl()).toBe("/some/path?a=b&c=d#hhh");
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/some/path?a=b&c=d#hhh",
       );
@@ -292,51 +295,47 @@ describe("$location", () => {
       locationUrl.url("#some-hash");
 
       expect(locationUrl.hash()).toBe("some-hash");
-      expect(locationUrl.url()).toBe("/path/b?search=a&b=c&d#some-hash");
+      expect(locationUrl.getUrl()).toBe("/path/b?search=a&b=c&d#some-hash");
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/path/b?search=a&b=c&d#some-hash",
       );
     });
 
-    it("url() should change only search and hash when no path specified", () => {
+    it("setUrl() should change only search and hash when no path specified", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.url("?a=b");
+      locationUrl.setUrl("?a=b");
 
-      expect(locationUrl.search()).toEqual({ a: "b" });
-      expect(locationUrl.hash()).toBe("");
-      expect(locationUrl.path()).toBe("/path/b");
+      expect(locationUrl.getSearch()).toEqual({ a: "b" });
+      expect(locationUrl.getHash()).toBe("");
+      expect(locationUrl.getPath()).toBe("/path/b");
     });
 
     it("url() should reset search and hash when only path specified", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.url("/new/path");
+      locationUrl.setUrl("/new/path");
 
-      expect(locationUrl.path()).toBe("/new/path");
-      expect(locationUrl.search()).toEqual({});
-      expect(locationUrl.hash()).toBe("");
+      expect(locationUrl.getPath()).toBe("/new/path");
+      expect(locationUrl.getSearch()).toEqual({});
+      expect(locationUrl.getHash()).toBe("");
     });
 
     it("url() should change path when empty string specified", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.url("");
+      locationUrl.setUrl("");
 
-      expect(locationUrl.path()).toBe("/");
-      expect(locationUrl.search()).toEqual({});
-      expect(locationUrl.hash()).toBe("");
+      expect(locationUrl.getPath()).toBe("/");
+      expect(locationUrl.getSearch()).toEqual({});
+      expect(locationUrl.getHash()).toBe("");
     });
 
     it("should parse new url", () => {
-      let locationUrl = new Location(
-        "http://host.com/",
-        "http://host.com/",
-        true,
-      );
+      let locationUrl = new Location("http://host.com/", "http://host.com/");
       locationUrl.parse("http://host.com/base");
-      expect(locationUrl.path()).toBe("/base");
+      expect(locationUrl.getPath()).toBe("/base");
 
       locationUrl = new Location("http://host.com/", "http://host.com/", true);
       locationUrl.parse("http://host.com/base#");
-      expect(locationUrl.path()).toBe("/base");
+      expect(locationUrl.getPath()).toBe("/base");
     });
 
     it("should prefix path with forward-slash", () => {
@@ -345,9 +344,9 @@ describe("$location", () => {
         "http://server/",
         true,
       );
-      locationUrl.path("b");
+      locationUrl.setPath("b");
 
-      expect(locationUrl.path()).toBe("/b");
+      expect(locationUrl.getPath()).toBe("/b");
       expect(locationUrl.absUrl).toBe("http://server/b");
     });
 
@@ -443,7 +442,7 @@ describe("$location", () => {
       it("should allow to set both URL and state", () => {
         const locationUrl = createLocationHtml5Url();
         locationUrl.url("/foo").state({ a: 2 });
-        expect(locationUrl.url()).toEqual("/foo");
+        expect(locationUrl.getUrl()).toEqual("/foo");
         expect(locationUrl.state()).toEqual({ a: 2 });
       });
 
@@ -510,7 +509,7 @@ describe("$location", () => {
         expect(locationUrl.path()).toBe("/a/ng2;path=%2Fsome%2Fpath");
         expect(locationUrl.search()).toEqual({});
         expect(locationUrl.hash()).toBe("");
-        expect(locationUrl.url()).toBe("/a/ng2;path=%2Fsome%2Fpath");
+        expect(locationUrl.getUrl()).toBe("/a/ng2;path=%2Fsome%2Fpath");
         expect(locationUrl.absUrl).toBe(
           "http://host.com/base/a/ng2;path=%2Fsome%2Fpath",
         );
@@ -1115,6 +1114,112 @@ describe("$location", () => {
     });
   });
 
+  describe("stripFile", () => {
+    it("removes filename from URL without hash", () => {
+      const input = "https://example.com/path/to/file.js";
+      const expected = "https://example.com/path/to/";
+      expect(stripFile(input)).toBe(expected);
+    });
+
+    it("removes filename and hash from URL", () => {
+      const input = "https://example.com/path/to/file.js#section";
+      const expected = "https://example.com/path/to/";
+      expect(stripFile(input)).toBe(expected);
+    });
+
+    it("handles root URL with file", () => {
+      const input = "https://example.com/file.js";
+      const expected = "https://example.com/";
+      expect(stripFile(input)).toBe(expected);
+    });
+
+    it("handles URL with no file", () => {
+      const input = "https://example.com/path/to/";
+      const expected = "https://example.com/path/to/";
+      expect(stripFile(input)).toBe(expected);
+    });
+
+    it("handles relative URL with file and hash", () => {
+      const input = "docs/static/app.js#v1";
+      const expected = "docs/static/";
+      expect(stripFile(input)).toBe(expected);
+    });
+  });
+
+  describe("serverBase", () => {
+    it("returns server base for https URL without port", () => {
+      const input = "https://example.com/path/to/resource";
+      const expected = "https://example.com";
+      expect(serverBase(input)).toBe(expected);
+    });
+
+    it("returns server base for http URL with port", () => {
+      const input = "http://localhost:8080/api/data";
+      const expected = "http://localhost:8080";
+      expect(serverBase(input)).toBe(expected);
+    });
+
+    it("returns server base for URL with subdomain", () => {
+      const input = "https://api.example.com/v1/query";
+      const expected = "https://api.example.com";
+      expect(serverBase(input)).toBe(expected);
+    });
+
+    it("returns full URL if no path is present", () => {
+      const input = "https://example.com";
+      const expected = "https://example.com";
+      expect(serverBase(input)).toBe(expected);
+    });
+
+    it("handles trailing slash after host", () => {
+      const input = "https://example.com/";
+      const expected = "https://example.com";
+      expect(serverBase(input)).toBe(expected);
+    });
+  });
+
+  describe("urlsEqual", () => {
+    it("matches same URL", () => {
+      expect(
+        urlsEqual("http://example.com/foo", "http://example.com/foo"),
+      ).toBe(true);
+    });
+
+    it("ignores trailing slash", () => {
+      expect(
+        urlsEqual("http://example.com/foo/", "http://example.com/foo"),
+      ).toBe(true);
+    });
+
+    it("ignores encoded spaces", () => {
+      expect(
+        urlsEqual("http://example.com/foo%20bar", "http://example.com/foo bar"),
+      ).toBe(true);
+    });
+
+    it("ignores empty hash", () => {
+      expect(
+        urlsEqual("http://example.com/foo#", "http://example.com/foo"),
+      ).toBe(true);
+    });
+
+    it("resolves relative to base href", () => {
+      const base = document.createElement("base");
+      base.href = "http://localhost/";
+      document.head.appendChild(base);
+
+      expect(urlsEqual("/bar", "http://localhost/bar")).toBe(true);
+
+      document.head.removeChild(base); // cleanup
+    });
+
+    it("returns false for different paths", () => {
+      expect(
+        urlsEqual("http://example.com/foo", "http://example.com/bar"),
+      ).toBe(false);
+    });
+  });
+
   // describe("location watch", () => {
   //   it("should not update browser if only the empty hash fragment is cleared", () => {
   //     initService({ supportHistory: true });
@@ -1240,7 +1345,7 @@ describe("$location", () => {
   //       $rootScope,
   //       $window,
   //     ) => {
-  //       $location.url("baz");
+  //       $location.setUrl("baz");
   //       $rootScope.$digest();
 
   //       const originalUrl = $window.location.href;
@@ -1270,7 +1375,7 @@ describe("$location", () => {
   //       $rootScope,
   //       $window,
   //     ) => {
-  //       $location.url("baz");
+  //       $location.setUrl("baz");
   //       $rootScope.$digest();
 
   //       $rootScope.$apply(() => {
@@ -1608,16 +1713,16 @@ describe("$location", () => {
   //     mockUpBrowser({ initialUrl: "http://new.com/a/b#!", baseHref: "/a/b" });
   //     inject(($rootScope, $browser, $location) => {
   //       // init watches
-  //       $location.url("/initUrl");
+  //       $location.setUrl("/initUrl");
   //       $rootScope.$apply();
 
   //       // changes url but resets it before digest
-  //       $location.url("/newUrl").replace().url("/initUrl");
+  //       $location.setUrl("/newUrl").replace().url("/initUrl");
   //       $rootScope.$apply();
   //       expect($location.$$replace).toBe(false);
 
   //       // set the url to the old value
-  //       $location.url("/newUrl").replace();
+  //       $location.setUrl("/newUrl").replace();
   //       $rootScope.$apply();
   //       expect($location.$$replace).toBe(false);
 
@@ -1687,7 +1792,7 @@ describe("$location", () => {
 
   //       expect($location.path()).toBe("/c");
   //       expect($location.search()).toEqual({ d: "e" });
-  //       expect($location.hash()).toBe("f");
+  //       expect($location.getHash()).toBe("f");
   //       expect($location.state()).toEqual({ b: 4 });
   //     });
   //   });
@@ -1805,7 +1910,7 @@ describe("$location", () => {
 
   //     inject(($rootScope, $location) => {
   //       // init watches
-  //       $location.url("/initUrl").state({ a: 2 });
+  //       $location.setUrl("/initUrl").state({ a: 2 });
   //       $rootScope.$apply();
 
   //       // changes url & state but resets them before digest
@@ -1819,7 +1924,7 @@ describe("$location", () => {
   //       expect($location.$$replace).toBe(false);
 
   //       // set the url to the old value
-  //       $location.url("/newUrl").state({ a: 2 }).replace();
+  //       $location.setUrl("/newUrl").state({ a: 2 }).replace();
   //       $rootScope.$apply();
   //       expect($location.$$replace).toBe(false);
 
@@ -1863,7 +1968,7 @@ describe("$location", () => {
   //     mockUpBrowser({ initialUrl: "http://new.com/a/b/", baseHref: "/a/b/" });
 
   //     inject(($rootScope, $location) => {
-  //       $location.url("/foo").state({ a: 2 });
+  //       $location.setUrl("/foo").state({ a: 2 });
   //       $rootScope.$apply();
   //       expect($location.state()).toEqual({ a: 2 });
   //     });
@@ -1874,14 +1979,14 @@ describe("$location", () => {
   //     mockUpBrowser({ initialUrl: "http://new.com/a/b/", baseHref: "/a/b/" });
 
   //     inject(($rootScope, $location, $browser) => {
-  //       $location.url("/foo").state({ a: 2 });
+  //       $location.setUrl("/foo").state({ a: 2 });
   //       $rootScope.$apply();
 
   //       const $browserUrl = spyOnlyCallsWithArgs(
   //         $browser,
   //         "url",
   //       ).and.callThrough();
-  //       $location.url("/bar");
+  //       $location.setUrl("/bar");
   //       $rootScope.$apply();
 
   //       expect($browserUrl).toHaveBeenCalled();
@@ -2571,7 +2676,7 @@ describe("$location", () => {
   //           $location.hash("foo");
   //         });
   //         browserTrigger(link, "click");
-  //         expect($location.hash()).toBe("link");
+  //         expect($location.getHash()).toBe("link");
   //         expectRewriteTo(
   //           $browser,
   //           "http://host.com/base/index.html#!/some#link",
@@ -2595,7 +2700,7 @@ describe("$location", () => {
   //           $location.hash("foo");
   //         });
   //         browserTrigger(link, "click");
-  //         expect($location.hash()).toBe("link");
+  //         expect($location.getHash()).toBe("link");
   //         expectRewriteTo($browser, "http://host.com/base/some#link");
   //       },
   //     );
@@ -2907,9 +3012,9 @@ describe("$location", () => {
   //       $log.info("after", newUrl, oldUrl, $browser.url());
   //     });
 
-  //     expect($location.url()).toEqual("");
-  //     $location.url("/somePath");
-  //     expect($location.url()).toEqual("/somePath");
+  //     expect($location.getBrowserUrl()).toEqual("");
+  //     $location.setUrl("/somePath");
+  //     expect($location.getBrowserUrl()).toEqual("/somePath");
   //     expect($browser.url()).toEqual("http://server/");
   //     expect($log.info.logs).toEqual([]);
 
@@ -2927,7 +3032,7 @@ describe("$location", () => {
   //       "http://server/",
   //       "http://server/#!/somePath",
   //     ]);
-  //     expect($location.url()).toEqual("/somePath");
+  //     expect($location.getBrowserUrl()).toEqual("/somePath");
   //     expect($browser.url()).toEqual("http://server/#!/somePath");
   //   }));
 
@@ -2938,7 +3043,7 @@ describe("$location", () => {
   //     $log,
   //   ) => {
   //     expect($browser.url()).toEqual("http://server/");
-  //     expect($location.url()).toEqual("");
+  //     expect($location.getBrowserUrl()).toEqual("");
 
   //     $rootScope.$on("$locationChangeStart", (event, newUrl, oldUrl) => {
   //       $log.info("before", newUrl, oldUrl, $browser.url());
@@ -2948,9 +3053,9 @@ describe("$location", () => {
   //       throw new Error("location should have been canceled");
   //     });
 
-  //     expect($location.url()).toEqual("");
-  //     $location.url("/somePath");
-  //     expect($location.url()).toEqual("/somePath");
+  //     expect($location.getBrowserUrl()).toEqual("");
+  //     $location.setUrl("/somePath");
+  //     expect($location.getBrowserUrl()).toEqual("/somePath");
   //     expect($browser.url()).toEqual("http://server/");
   //     expect($log.info.logs).toEqual([]);
 
@@ -2963,7 +3068,7 @@ describe("$location", () => {
   //       "http://server/",
   //     ]);
   //     expect($log.info.logs[1]).toBeUndefined();
-  //     expect($location.url()).toEqual("");
+  //     expect($location.getBrowserUrl()).toEqual("");
   //     expect($browser.url()).toEqual("http://server/");
   //   }));
 
@@ -2976,14 +3081,14 @@ describe("$location", () => {
   //     $rootScope.$on("$locationChangeStart", (event, newUrl, oldUrl) => {
   //       $log.info("before", newUrl, oldUrl, $browser.url());
   //       if (newUrl === "http://server/#!/somePath") {
-  //         $location.url("/redirectPath");
+  //         $location.setUrl("/redirectPath");
   //       }
   //     });
   //     $rootScope.$on("$locationChangeSuccess", (event, newUrl, oldUrl) => {
   //       $log.info("after", newUrl, oldUrl, $browser.url());
   //     });
 
-  //     $location.url("/somePath");
+  //     $location.setUrl("/somePath");
   //     $rootScope.$apply();
 
   //     expect($log.info.logs.shift()).toEqual([
@@ -3005,7 +3110,7 @@ describe("$location", () => {
   //       "http://server/#!/redirectPath",
   //     ]);
 
-  //     expect($location.url()).toEqual("/redirectPath");
+  //     expect($location.getBrowserUrl()).toEqual("/redirectPath");
   //     expect($browser.url()).toEqual("http://server/#!/redirectPath");
   //   }));
 
@@ -3019,14 +3124,14 @@ describe("$location", () => {
   //       $log.info("before", newUrl, oldUrl, $browser.url());
   //       if (newUrl === "http://server/#!/somePath") {
   //         event.preventDefault();
-  //         $location.url("/redirectPath");
+  //         $location.setUrl("/redirectPath");
   //       }
   //     });
   //     $rootScope.$on("$locationChangeSuccess", (event, newUrl, oldUrl) => {
   //       $log.info("after", newUrl, oldUrl, $browser.url());
   //     });
 
-  //     $location.url("/somePath");
+  //     $location.setUrl("/somePath");
   //     $rootScope.$apply();
 
   //     expect($log.info.logs.shift()).toEqual([
@@ -3048,7 +3153,7 @@ describe("$location", () => {
   //       "http://server/#!/redirectPath",
   //     ]);
 
-  //     expect($location.url()).toEqual("/redirectPath");
+  //     expect($location.getBrowserUrl()).toEqual("/redirectPath");
   //     expect($browser.url()).toEqual("http://server/#!/redirectPath");
   //   }));
 
@@ -3061,16 +3166,16 @@ describe("$location", () => {
   //     $rootScope.$on("$locationChangeStart", (event, newUrl, oldUrl) => {
   //       $log.info("before", newUrl, oldUrl, $browser.url());
   //       if (newUrl === "http://server/#!/somePath") {
-  //         $location.url("/redirectPath");
+  //         $location.setUrl("/redirectPath");
   //       } else if (newUrl === "http://server/#!/redirectPath") {
-  //         $location.url("/redirectPath2");
+  //         $location.setUrl("/redirectPath2");
   //       }
   //     });
   //     $rootScope.$on("$locationChangeSuccess", (event, newUrl, oldUrl) => {
   //       $log.info("after", newUrl, oldUrl, $browser.url());
   //     });
 
-  //     $location.url("/somePath");
+  //     $location.setUrl("/somePath");
   //     $rootScope.$apply();
 
   //     expect($log.info.logs.shift()).toEqual([
@@ -3098,7 +3203,7 @@ describe("$location", () => {
   //       "http://server/#!/redirectPath2",
   //     ]);
 
-  //     expect($location.url()).toEqual("/redirectPath2");
+  //     expect($location.getBrowserUrl()).toEqual("/redirectPath2");
   //     expect($browser.url()).toEqual("http://server/#!/redirectPath2");
   //   }));
 
@@ -3111,7 +3216,7 @@ describe("$location", () => {
   //     $rootScope.$apply(); // clear initial $locationChangeStart
 
   //     expect($browser.url()).toEqual("http://server/");
-  //     expect($location.url()).toEqual("");
+  //     expect($location.getBrowserUrl()).toEqual("");
 
   //     $rootScope.$on("$locationChangeStart", (event, newUrl, oldUrl) => {
   //       $log.info("start", newUrl, oldUrl);
@@ -3141,11 +3246,11 @@ describe("$location", () => {
   //     $rootScope,
   //     $log,
   //   ) => {
-  //     $location.url("/somepath");
+  //     $location.setUrl("/somepath");
   //     $rootScope.$apply();
 
   //     expect($browser.url()).toEqual("http://server/#!/somepath");
-  //     expect($location.url()).toEqual("/somepath");
+  //     expect($location.getBrowserUrl()).toEqual("/somepath");
 
   //     $rootScope.$on("$locationChangeStart", (event, newUrl, oldUrl) => {
   //       $log.info("start", newUrl, oldUrl);
@@ -3178,7 +3283,7 @@ describe("$location", () => {
   //     $rootScope.$on("$locationChangeStart", (event, newUrl, oldUrl) => {
   //       $log.info("before", newUrl, oldUrl, $browser.url());
   //       if (newUrl === "http://server/#!/somePath") {
-  //         $location.url("/redirectPath");
+  //         $location.setUrl("/redirectPath");
   //       }
   //     });
   //     $rootScope.$on("$locationChangeSuccess", (event, newUrl, oldUrl) => {
@@ -3207,7 +3312,7 @@ describe("$location", () => {
   //       "http://server/#!/redirectPath",
   //     ]);
 
-  //     expect($location.url()).toEqual("/redirectPath");
+  //     expect($location.getBrowserUrl()).toEqual("/redirectPath");
   //     expect($browser.url()).toEqual("http://server/#!/redirectPath");
   //   }));
 
@@ -3221,7 +3326,7 @@ describe("$location", () => {
   //       $log.info("before", newUrl, oldUrl, $browser.url());
   //       if (newUrl === "http://server/#!/somePath") {
   //         event.preventDefault();
-  //         $location.url("/redirectPath");
+  //         $location.setUrl("/redirectPath");
   //       }
   //     });
   //     $rootScope.$on("$locationChangeSuccess", (event, newUrl, oldUrl) => {
@@ -3250,7 +3355,7 @@ describe("$location", () => {
   //       "http://server/#!/redirectPath",
   //     ]);
 
-  //     expect($location.url()).toEqual("/redirectPath");
+  //     expect($location.getBrowserUrl()).toEqual("/redirectPath");
   //     expect($browser.url()).toEqual("http://server/#!/redirectPath");
   //   }));
 
@@ -3527,7 +3632,7 @@ describe("$location", () => {
       );
 
       locationUrl.parse("http://server/pre/index.html");
-      expect(locationUrl.url()).toBe("");
+      expect(locationUrl.getUrl()).toBe("");
       expect(locationUrl.absUrl).toBe("http://server/pre/index.html");
     });
 
@@ -3540,7 +3645,7 @@ describe("$location", () => {
       );
 
       locationUrl.parse("http://server/pre/index.html#/foo/bar");
-      expect(locationUrl.url()).toBe("/foo/bar");
+      expect(locationUrl.getUrl()).toBe("/foo/bar");
       expect(locationUrl.absUrl).toBe("http://server/pre/index.html#/foo/bar");
     });
 
@@ -3553,7 +3658,7 @@ describe("$location", () => {
       );
 
       locationUrl.parse("http://server/pre/index.html#not-starting-with-slash");
-      expect(locationUrl.url()).toBe("/not-starting-with-slash");
+      expect(locationUrl.getUrl()).toBe("/not-starting-with-slash");
       expect(locationUrl.absUrl).toBe(
         "http://server/pre/index.html#/not-starting-with-slash",
       );
@@ -3570,7 +3675,7 @@ describe("$location", () => {
       locationUrl.parse(
         "http://server/pre/index.html#http%3A%2F%2Fexample.com%2F",
       );
-      expect(locationUrl.url()).toBe("/http://example.com/");
+      expect(locationUrl.getUrl()).toBe("/http://example.com/");
       expect(locationUrl.absUrl).toBe(
         "http://server/pre/index.html#/http://example.com/",
       );
@@ -3585,7 +3690,7 @@ describe("$location", () => {
       );
 
       locationUrl.parse("http://server/next/index.html");
-      expect(locationUrl.url()).toBe("");
+      expect(locationUrl.getUrl()).toBe("");
       expect(locationUrl.absUrl).toBe("http://server/next/index.html");
     });
   });

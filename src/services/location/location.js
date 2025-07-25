@@ -27,7 +27,7 @@ export class Location {
    * @param {boolean} [html5] Defaults to true
    * @param {string} [prefix] URL path prefix for html5 mode or hash prefix for hashbang mode
    */
-  constructor(appBase, appBaseNoFile, html5, prefix) {
+  constructor(appBase, appBaseNoFile, html5 = true, prefix) {
     const parsedUrl = urlResolve(appBase);
 
     /** @type {string} */
@@ -99,8 +99,7 @@ export class Location {
   }
 
   /**
-   * This method is getter / setter.
-   *
+   * @deprecated
    * Return URL (e.g. `/path?a=b#hash`) when called without any parameter.
    * Change path, search and hash, when called with parameter and return `$location`.
    *
@@ -108,19 +107,40 @@ export class Location {
    * @return {Location|string} url
    */
   url(url) {
-    if (isUndefined(url)) {
-      return this.$$url;
-    }
-
     const match = PATH_MATCH.exec(url);
-    if (match[1] || url === "") this.path(decodeURIComponent(match[1]));
-    if (match[2] || match[1] || url === "") this.search(match[3] || "");
-    this.hash(match[5] || "");
+    if (match[1] || url === "") this.setPath(decodeURIComponent(match[1]));
+    if (match[2] || match[1] || url === "") this.setSearch(match[3] || "");
+    this.setHash(match[5] || "");
 
     return this;
   }
 
   /**
+   * Change path, search and hash, when called with parameter and return `$location`.
+   *
+   * @param {string} url New URL without base prefix (e.g. `/path?a=b#hash`)
+   * @return {Location} url
+   */
+  setUrl(url) {
+    const match = PATH_MATCH.exec(url);
+    if (match[1] || url === "") this.setPath(decodeURIComponent(match[1]));
+    if (match[2] || match[1] || url === "") this.setSearch(match[3] || "");
+    this.setHash(match[5] || "");
+
+    return this;
+  }
+
+  /**
+   * Return URL (e.g. `/path?a=b#hash`) when called without any parameter.
+   *
+   * @return {string} url
+   */
+  getUrl() {
+    return this.$$url;
+  }
+
+  /**
+   * @deprecated
    * This method is getter / setter.
    *
    * Return path of current URL when called without any parameter.
@@ -151,6 +171,30 @@ export class Location {
   }
 
   /**
+   * Change path parameter and return `$location`.
+   *
+   * @param {(string|number)} path New path
+   * @return {Location}
+   */
+  setPath(path) {
+    let newPath = path !== null ? path.toString() : "";
+    this.$$path = newPath.charAt(0) === "/" ? newPath : `/${newPath}`;
+    this.#compose();
+    return this;
+  }
+
+  /**
+   *
+   * Return path of current URL when called without any parameter.
+   *
+   * @return {(string|object)} path if called with no parameters, or `$location` if called with a parameter
+   */
+  getPath() {
+    return this.$$path;
+  }
+
+  /**
+   * @deprecated
    * This method is getter / setter.
    *
    * Returns the hash fragment when called without any parameters.
@@ -160,7 +204,7 @@ export class Location {
    *
    * ```js
    * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo#hashValue
-   * let hash = $location.hash();
+   * let hash = $location.getHash();
    * // => "hashValue"
    * ```
    *
@@ -178,6 +222,26 @@ export class Location {
   }
 
   /**
+   * Changes the hash fragment when called with a parameter and returns `$location`.
+   * @param {(string|number)} hash New hash fragment
+   * @return {Location} hash
+   */
+  setHash(hash) {
+    this.$$hash = hash !== null ? hash.toString() : "";
+    this.#compose();
+    return this;
+  }
+
+  /**
+   * Returns the hash fragment when called without any parameters.
+   * @return {string} hash
+   */
+  getHash() {
+    return this.$$hash;
+  }
+
+  /**
+   * @deprecated
    * Returns or sets the search part (as object) of current URL when called without any parameter
    *
    * @param {string|Object=} search New search params - string or hash object.
@@ -220,23 +284,64 @@ export class Location {
   }
 
   /**
+   * Sets the search part (as object) of current URL
+   *
+   * @param {string|Object} search New search params - string or hash object.
+   * @param {(string|number|Array<string>|boolean)=} paramValue If search is a string or number, then paramValue will override only a single search property.
+   * @returns {Object} Search object or Location object
+   */
+  setSearch(search, paramValue) {
+    switch (arguments.length) {
+      case 1:
+        if (isString(search) || isNumber(search)) {
+          search = search.toString();
+          this.$$search = parseKeyValue(search);
+        } else if (isObject(search)) {
+          search = structuredClone(search, {});
+          // remove object undefined or null properties
+          Object.entries(search).forEach(([key, value]) => {
+            if (value == null) delete search[key];
+          });
+
+          this.$$search = search;
+        } else {
+          throw $locationMinErr(
+            "isrcharg",
+            "The first argument of the `$location#search()` call must be a string or an object.",
+          );
+        }
+        break;
+      default:
+        if (isUndefined(paramValue) || paramValue === null) {
+          delete this.$$search[search];
+        } else {
+          this.$$search[search] = paramValue;
+        }
+    }
+
+    this.#compose();
+    return this;
+  }
+
+  /**
+   * Returns the search part (as object) of current URL
+   *
+   * @returns {Object} Search object or Location object
+   */
+  getSearch() {
+    return this.$$search;
+  }
+
+  /**
    * Compose url and update `url` and `absUrl` property
    * @returns {void}
    */
   #compose() {
     this.$$url = normalizePath(this.$$path, this.$$search, this.$$hash);
-    this.absUrl = this.$$normalizeUrl(this.$$url);
+    this.absUrl = this.html5
+      ? this.appBaseNoFile + this.$$url.substring(1)
+      : this.appBase + (this.$$url ? this.hashPrefix + this.$$url : "");
     this.$$urlUpdatedByLocation = true;
-  }
-
-  /**
-   * @param {string} url
-   * @returns {string}
-   */
-  $$normalizeUrl(url) {
-    return this.html5
-      ? this.appBaseNoFile + url.substring(1)
-      : this.appBase + (url ? this.hashPrefix + url : ""); // first char is always '/'
   }
 
   /**
@@ -284,7 +389,7 @@ export class Location {
       if (relHref && relHref[0] === "#") {
         // special case for links to hash fragments:
         // keep the old url and only replace the hash fragment
-        this.hash(relHref.slice(1));
+        this.setHash(relHref.slice(1));
         return true;
       }
       let appUrl;
@@ -447,6 +552,13 @@ export class LocationProvider {
   // URL API
   /// ///////////////////////////////////////////////////////////
 
+  /**
+   * Updates the browser's current URL and history state.
+   *
+   * @param {string|undefined} url - The target URL to navigate to.
+   * @param {*} [state=null] - Optional history state object to associate with the new URL.
+   * @returns {LocationProvider}
+   */
   setUrl(url, state) {
     if (state === undefined) {
       state = null;
@@ -471,7 +583,7 @@ export class LocationProvider {
    * Returns the current URL with any empty hash (`#`) removed.
    * @return {string}
    */
-  getUrl() {
+  getBrowserUrl() {
     return trimEmptyHash(window.location.href);
   }
 
@@ -504,12 +616,12 @@ export class LocationProvider {
     const prevLastHistoryState = this.lastHistoryState;
     this.cacheState();
     if (
-      this.lastBrowserUrl === this.getUrl() &&
+      this.lastBrowserUrl === this.getBrowserUrl() &&
       prevLastHistoryState === this.cachedState
     ) {
       return;
     }
-    this.lastBrowserUrl = this.getUrl();
+    this.lastBrowserUrl = this.getBrowserUrl();
     this.lastHistoryState = this.cachedState;
     this.urlChangeListeners.forEach((listener) => {
       listener(trimEmptyHash(window.location.href), this.cachedState);
@@ -579,7 +691,7 @@ export class LocationProvider {
       const IGNORE_URI_REGEXP = /^\s*(javascript|mailto):/i;
 
       const setBrowserUrlWithFallback = (url, state) => {
-        const oldUrl = $location.url();
+        const oldUrl = $location.getUrl();
         const oldState = $location.$$state;
         try {
           this.setUrl(url, state);
@@ -590,7 +702,7 @@ export class LocationProvider {
           $location.$$state = this.state();
         } catch (e) {
           // Restore old values if pushState fails
-          $location.url(/** @type {string} */ (oldUrl));
+          $location.setUrl(/** @type {string} */ (oldUrl));
           $location.$$state = oldState;
 
           throw e;
@@ -718,7 +830,7 @@ export class LocationProvider {
         if (initializing || $location.$$urlUpdatedByLocation) {
           $location.$$urlUpdatedByLocation = false;
 
-          const oldUrl = /** @type {string} */ (this.getUrl());
+          const oldUrl = /** @type {string} */ (this.getBrowserUrl());
           const newUrl = $location.absUrl;
           const oldState = this.state();
           const urlOrStateChanged =
@@ -944,18 +1056,78 @@ export function stripHash(url) {
   return index === -1 ? url : url.substring(0, index);
 }
 
+/**
+ * Removes the file name (and any hash) from a URL, returning the base directory path.
+ *
+ * For example:
+ * - Input: "https://example.com/path/to/file.js"
+ *   Output: "https://example.com/path/to/"
+ *
+ * - Input: "https://example.com/path/to/file.js#section"
+ *   Output: "https://example.com/path/to/"
+ *
+ * @param {string} url - The URL from which to strip the file name and hash.
+ * @returns {string} The base path of the URL, ending with a slash.
+ */
 export function stripFile(url) {
   return url.substring(0, stripHash(url).lastIndexOf("/") + 1);
 }
 
-/* return the server only (scheme://host:port) */
+/**
+ * Extracts the base server URL (scheme, host, and optional port) from a full URL.
+ *
+ * If no path is present, returns the full URL.
+ *
+ * For example:
+ * - Input: "https://example.com/path/to/file"
+ *   Output: "https://example.com"
+ *
+ * - Input: "http://localhost:3000/api/data"
+ *   Output: "http://localhost:3000"
+ *
+ * @param {string} url - The full URL to extract the server base from.
+ * @returns {string} The server base, including scheme and host (and port if present).
+ */
 export function serverBase(url) {
-  return url.substring(0, url.indexOf("/", url.indexOf("//") + 2));
+  const start = url.indexOf("//") + 2;
+  const slashIndex = url.indexOf("/", start);
+  return slashIndex === -1 ? url : url.substring(0, slashIndex);
 }
 
-// Determine if two URLs are equal despite potentially having different encoding/normalizing
-//  such as $location.absUrl vs $browser.url()
-// See https://github.com/angular/angular.js/issues/16592
-function urlsEqual(a, b) {
-  return a === b || urlResolve(a).href === urlResolve(b).href;
+/**
+ * Determine if two URLs are equal despite potential differences in encoding,
+ * trailing slashes, or empty hash fragments, such as between $location.absUrl() and $browser.url().
+ *
+ * @param {string} a - First URL to compare.
+ * @param {string} b - Second URL to compare.
+ * @returns {boolean} True if URLs are equivalent after normalization.
+ */
+export function urlsEqual(a, b) {
+  return normalizeUrl(a) === normalizeUrl(b);
+}
+
+/**
+ * Normalize a URL by resolving it via a DOM anchor element,
+ * removing trailing slashes (except root), and trimming empty hashes.
+ *
+ * @param {string} url - URL to normalize.
+ * @returns {string} Normalized URL string.
+ */
+function normalizeUrl(url) {
+  const anchor = document.createElement("a");
+  anchor.href = url;
+
+  let normalized = anchor.href;
+
+  // Remove trailing slash unless it's root (e.g., https://example.com/)
+  if (normalized.endsWith("/") && !/^https?:\/\/[^/]+\/$/.test(normalized)) {
+    normalized = normalized.slice(0, -1);
+  }
+
+  // Remove empty hash (e.g., https://example.com/foo# -> https://example.com/foo)
+  if (normalized.endsWith("#")) {
+    normalized = normalized.slice(0, -1);
+  }
+
+  return normalized;
 }

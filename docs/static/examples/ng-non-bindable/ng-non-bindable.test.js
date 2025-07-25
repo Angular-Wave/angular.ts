@@ -7,5 +7,5 @@ test('ng-non-bindable example', async ({ page }) => {
   await page.goto(TEST_URL);
   await page.content();
 
-  await expect(page.locator('div')).toHaveText('{{ 2 + 2 }}');
+  await expect(page.locator('div[ng-non-bindable]')).toHaveText('{{ 2 + 2 }}');
 });
