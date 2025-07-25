@@ -457,7 +457,7 @@ describe("$state", () => {
         }).forEach(([k, v]) => {
           expect($stateParams[k]).toEqual(v);
         });
-        expect($location.getBrowserUrl()).toEqual(
+        expect($location.getUrl()).toEqual(
           "/dynstate/p1/pd1?search=s1&searchDyn=sd1",
         );
       });
@@ -841,7 +841,7 @@ describe("$state", () => {
           await $state.go(".", { term: "goodbye" });
 
           expect($stateParams.term).toEqual("goodbye");
-          expect($location.getBrowserUrl()).toEqual("/search?term=goodbye");
+          expect($location.getUrl()).toEqual("/search?term=goodbye");
           expect(entered).toBeFalsy();
         });
       });
@@ -976,7 +976,7 @@ describe("$state", () => {
 
     it("updates the location #fragment", async () => {
       await $state.transitionTo("home.item", { id: "world", "#": "frag" });
-      expect($location.getBrowserUrl()).toBe("/front/world#frag");
+      expect($location.getUrl()).toBe("/front/world#frag");
       expect($location.getHash()).toBe("frag");
     });
 

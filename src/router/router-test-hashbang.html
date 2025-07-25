@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>AngularTS</title>
+    <link rel="shortcut icon" type="image/png" href="images/favicon.ico" />
+    <script type="module" src="../index.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        window.angular
+          .module("router", [])
+          .controller(
+            "Demo",
+            class {
+              constructor($location, $scope) {
+                window.$location = this.$location = $location;
+                this.routes = {
+                  "/admin/users/hello": { templateUrl: "/mock/hello" },
+                  "/admin/users/hello2": { templateUrl: "/mock/hello2" },
+                };
+
+                window.addEventListener("popstate", () => {
+                  debugger;
+                  $scope.$ctrl.selectedRoute =
+                    $scope.$ctrl.routes[$location.$$hash];
+                });
+                window.addEventListener("hashchange", () => {
+                  $scope.$ctrl.selectedRoute =
+                    $scope.$ctrl.routes[$location.$$hash];
+                });
+              }
+
+              go() {
+                this.$location.search({ a: "b", c: true });
+              }
+            },
+          )
+          .config([
+            "$stateProvider",
+            "$locationProvider",
+            ($stateProvider, $locationProvider) => {
+              $locationProvider.html5ModeConf = {
+                enabled: false,
+                requireBase: false,
+                rewriteLinks: false,
+              };
+              $stateProvider
+                .state({
+                  name: "home",
+                  url: "",
+                  template: `
+                    <h1>Home</h1>
+                    <a ng-sref="page1">Page 1</a>
+                    <a ng-sref="page2">Page 2</a>
+                `,
+                })
+                .state({
+                  name: "page1",
+                  url: "/page1",
+                  template: "<h3>Its the NG-Router hello world app!</h3>",
+                })
+                .state({
+                  name: "page2",
+                  url: "/page2",
+                  template: "This is another template",
+                });
+            },
+          ]);
+      });
+    </script>
+  </head>
+  <body ng-app="router">
+    <div ng-controller="Demo as $ctrl">
+      <button ng-click="$ctrl.go()">Go 1</button>
+      <div class="navbar-inner">
+        <ul class="nav">
+          <li><a href="#/admin/users/hello">Hello</a></li>
+          <li><a href="#/admin/users/hello2">Hello 2</a></li>
+        </ul>
+      </div>
+      {{$ctrl.selectedRoute.templateUrl}}
+      <div ng-include="$ctrl.selectedRoute.templateUrl">
+        <!-- Route-dependent content goes here -->
+      </div>
+    </div>
+
+    <ng-view></ng-view>
+  </body>
+</html>

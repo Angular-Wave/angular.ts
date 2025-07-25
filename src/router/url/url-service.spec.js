@@ -610,7 +610,7 @@ describe("UrlMatcher", () => {
       expect(m.exec("/foo/")).toEqual({ param1: undefined });
       expect(m.exec("/foo/bar")).toEqual({ param1: ["bar"] });
       $url.url("/foo/bar-baz");
-      expect(m.exec($location.getBrowserUrl())).toEqual({
+      expect(m.exec($location.getUrl())).toEqual({
         param1: ["bar", "baz"],
       });
 

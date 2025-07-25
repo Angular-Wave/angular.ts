@@ -3012,9 +3012,9 @@ describe("$location", () => {
   //       $log.info("after", newUrl, oldUrl, $browser.url());
   //     });
 
-  //     expect($location.getBrowserUrl()).toEqual("");
+  //     expect($location.getUrl()).toEqual("");
   //     $location.setUrl("/somePath");
-  //     expect($location.getBrowserUrl()).toEqual("/somePath");
+  //     expect($location.getUrl()).toEqual("/somePath");
   //     expect($browser.url()).toEqual("http://server/");
   //     expect($log.info.logs).toEqual([]);
 
@@ -3032,7 +3032,7 @@ describe("$location", () => {
   //       "http://server/",
   //       "http://server/#!/somePath",
   //     ]);
-  //     expect($location.getBrowserUrl()).toEqual("/somePath");
+  //     expect($location.getUrl()).toEqual("/somePath");
   //     expect($browser.url()).toEqual("http://server/#!/somePath");
   //   }));
 
@@ -3043,7 +3043,7 @@ describe("$location", () => {
   //     $log,
   //   ) => {
   //     expect($browser.url()).toEqual("http://server/");
-  //     expect($location.getBrowserUrl()).toEqual("");
+  //     expect($location.getUrl()).toEqual("");
 
   //     $rootScope.$on("$locationChangeStart", (event, newUrl, oldUrl) => {
   //       $log.info("before", newUrl, oldUrl, $browser.url());
@@ -3053,9 +3053,9 @@ describe("$location", () => {
   //       throw new Error("location should have been canceled");
   //     });
 
-  //     expect($location.getBrowserUrl()).toEqual("");
+  //     expect($location.getUrl()).toEqual("");
   //     $location.setUrl("/somePath");
-  //     expect($location.getBrowserUrl()).toEqual("/somePath");
+  //     expect($location.getUrl()).toEqual("/somePath");
   //     expect($browser.url()).toEqual("http://server/");
   //     expect($log.info.logs).toEqual([]);
 
@@ -3068,7 +3068,7 @@ describe("$location", () => {
   //       "http://server/",
   //     ]);
   //     expect($log.info.logs[1]).toBeUndefined();
-  //     expect($location.getBrowserUrl()).toEqual("");
+  //     expect($location.getUrl()).toEqual("");
   //     expect($browser.url()).toEqual("http://server/");
   //   }));
 
@@ -3110,7 +3110,7 @@ describe("$location", () => {
   //       "http://server/#!/redirectPath",
   //     ]);
 
-  //     expect($location.getBrowserUrl()).toEqual("/redirectPath");
+  //     expect($location.getUrl()).toEqual("/redirectPath");
   //     expect($browser.url()).toEqual("http://server/#!/redirectPath");
   //   }));
 
@@ -3153,7 +3153,7 @@ describe("$location", () => {
   //       "http://server/#!/redirectPath",
   //     ]);
 
-  //     expect($location.getBrowserUrl()).toEqual("/redirectPath");
+  //     expect($location.getUrl()).toEqual("/redirectPath");
   //     expect($browser.url()).toEqual("http://server/#!/redirectPath");
   //   }));
 
@@ -3203,7 +3203,7 @@ describe("$location", () => {
   //       "http://server/#!/redirectPath2",
   //     ]);
 
-  //     expect($location.getBrowserUrl()).toEqual("/redirectPath2");
+  //     expect($location.getUrl()).toEqual("/redirectPath2");
   //     expect($browser.url()).toEqual("http://server/#!/redirectPath2");
   //   }));
 
@@ -3216,7 +3216,7 @@ describe("$location", () => {
   //     $rootScope.$apply(); // clear initial $locationChangeStart
 
   //     expect($browser.url()).toEqual("http://server/");
-  //     expect($location.getBrowserUrl()).toEqual("");
+  //     expect($location.getUrl()).toEqual("");
 
   //     $rootScope.$on("$locationChangeStart", (event, newUrl, oldUrl) => {
   //       $log.info("start", newUrl, oldUrl);
@@ -3250,7 +3250,7 @@ describe("$location", () => {
   //     $rootScope.$apply();
 
   //     expect($browser.url()).toEqual("http://server/#!/somepath");
-  //     expect($location.getBrowserUrl()).toEqual("/somepath");
+  //     expect($location.getUrl()).toEqual("/somepath");
 
   //     $rootScope.$on("$locationChangeStart", (event, newUrl, oldUrl) => {
   //       $log.info("start", newUrl, oldUrl);
@@ -3312,7 +3312,7 @@ describe("$location", () => {
   //       "http://server/#!/redirectPath",
   //     ]);
 
-  //     expect($location.getBrowserUrl()).toEqual("/redirectPath");
+  //     expect($location.getUrl()).toEqual("/redirectPath");
   //     expect($browser.url()).toEqual("http://server/#!/redirectPath");
   //   }));
 
@@ -3355,7 +3355,7 @@ describe("$location", () => {
   //       "http://server/#!/redirectPath",
   //     ]);
 
-  //     expect($location.getBrowserUrl()).toEqual("/redirectPath");
+  //     expect($location.getUrl()).toEqual("/redirectPath");
   //     expect($browser.url()).toEqual("http://server/#!/redirectPath");
   //   }));
 
