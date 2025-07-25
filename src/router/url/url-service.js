@@ -284,7 +284,7 @@ export class UrlService {
    * @param {boolean} enabled `true` or `false` to start or stop listening to URL changes
    */
   listen(enabled) {
-    if (!enabled) {
+    if (enabled === false) {
       this._stopListeningFn && this._stopListeningFn();
       delete this._stopListeningFn;
     } else {
