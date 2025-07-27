@@ -15,8 +15,8 @@ describe("UrlMatcher", () => {
       "defaultModule",
     ]);
 
-    $injector.invoke(($urlService, _$location_) => {
-      $url = $urlService;
+    $injector.invoke((_$url_, _$location_) => {
+      $url = _$url_;
       $location = _$location_;
     });
   });
@@ -359,7 +359,7 @@ describe("UrlMatcher", () => {
       expect(matcher).not.toBe(base);
     });
 
-    it("should respect $urlServiceProvider.strictMode", () => {
+    it("should respect $urlProvider.strictMode", () => {
       let m = $url.compile("/");
       $url.config.strictMode(false);
       m = m.append($url.compile("foo"));
@@ -367,7 +367,7 @@ describe("UrlMatcher", () => {
       expect(m.exec("/foo/")).toEqual({});
     });
 
-    it("should respect $urlServiceProvider.caseInsensitive", () => {
+    it("should respect $urlProvider.caseInsensitive", () => {
       let m = $url.compile("/");
       $url.config.caseInsensitive(true);
       m = m.append($url.compile("foo"));
@@ -375,7 +375,7 @@ describe("UrlMatcher", () => {
       expect(m.exec("/FOO")).toEqual({});
     });
 
-    it("should respect $urlServiceProvider.caseInsensitive when validating regex params", () => {
+    it("should respect $urlProvider.caseInsensitive when validating regex params", () => {
       let m = $url.compile("/");
       $url.config.caseInsensitive(true);
       m = m.append($url.compile("foo/{param:bar}"));
@@ -441,15 +441,21 @@ describe("UrlMatcher", () => {
       });
 
       $url.url("/foo");
-      expect(m.exec($url.path(), $url.search())).toEqual({ param1: undefined });
+      expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
+        param1: undefined,
+      });
       $url.url("/foo?param1=bar");
-      expect(m.exec($url.path(), $url.search())).toEqual({ param1: "bar" }); // auto unwrap
+      expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
+        param1: "bar",
+      }); // auto unwrap
       $url.url("/foo?param1=");
-      expect(m.exec($url.path(), $url.search())).toEqual({ param1: undefined });
+      expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
+        param1: undefined,
+      });
       $url.url("/foo?param1=bar&param1=baz");
-      if (Array.isArray($url.search()))
+      if (Array.isArray($url.getSearch()))
         // conditional for angular 1.0.8
-        expect(m.exec($url.path(), $url.search())).toEqual({
+        expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
           param1: ["bar", "baz"],
         });
 
@@ -485,15 +491,21 @@ describe("UrlMatcher", () => {
       });
 
       $url.url("/foo");
-      expect(m.exec($url.path(), $url.search())).toEqual({ param1: undefined });
+      expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
+        param1: undefined,
+      });
       $url.url("/foo?param1=");
-      expect(m.exec($url.path(), $url.search())).toEqual({ param1: undefined });
+      expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
+        param1: undefined,
+      });
       $url.url("/foo?param1=bar");
-      expect(m.exec($url.path(), $url.search())).toEqual({ param1: ["bar"] });
+      expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
+        param1: ["bar"],
+      });
       $url.url("/foo?param1=bar&param1=baz");
-      if (Array.isArray($url.search()))
+      if (Array.isArray($url.getSearch()))
         // conditional for angular 1.0.8
-        expect(m.exec($url.path(), $url.search())).toEqual({
+        expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
           param1: ["bar", "baz"],
         });
 
@@ -512,16 +524,16 @@ describe("UrlMatcher", () => {
       expect(m.exec("/foo")).toEqual({ "param1[]": undefined });
 
       $url.url("/foo?param1[]=bar");
-      expect(m.exec($url.path(), $url.search())).toEqual({
+      expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
         "param1[]": ["bar"],
       });
       expect(m.format({ "param1[]": "bar" })).toBe("/foo?param1[]=bar");
       expect(m.format({ "param1[]": ["bar"] })).toBe("/foo?param1[]=bar");
 
       $url.url("/foo?param1[]=bar&param1[]=baz");
-      if (Array.isArray($url.search()))
+      if (Array.isArray($url.getSearch()))
         // conditional for angular 1.0.8
-        expect(m.exec($url.path(), $url.search())).toEqual({
+        expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
           "param1[]": ["bar", "baz"],
         });
       expect(m.format({ "param1[]": ["bar", "baz"] })).toBe(
@@ -575,14 +587,16 @@ describe("UrlMatcher", () => {
       expect(m.exec("/foo")).toEqual({ param1: undefined });
 
       $url.url("/foo?param1=bar");
-      expect(m.exec($url.path(), $url.search())).toEqual({ param1: "bar" });
+      expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
+        param1: "bar",
+      });
       expect(m.format({ param1: "bar" })).toBe("/foo?param1=bar");
       expect(m.format({ param1: ["bar"] })).toBe("/foo?param1=bar");
 
       $url.url("/foo?param1=bar&param1=baz");
-      if (Array.isArray($url.search()))
+      if (Array.isArray($url.getSearch()))
         // conditional for angular 1.0.8
-        expect(m.exec($url.path(), $url.search())).toEqual({
+        expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
           param1: "bar,baz",
         }); // coerced to string
       expect(m.format({ param1: ["bar", "baz"] })).toBe(
@@ -635,15 +649,15 @@ describe("UrlMatcher", () => {
       expect(m.exec("/foo/1-2")).toEqual({ "param1[]": ["1", "2"] });
 
       $url.url("/foo/");
-      expect(m.exec($url.path(), $url.search())).toEqual({
+      expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
         "param1[]": undefined,
       });
       $url.url("/foo/bar");
-      expect(m.exec($url.path(), $url.search())).toEqual({
+      expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
         "param1[]": ["bar"],
       });
       $url.url("/foo/bar-baz");
-      expect(m.exec($url.path(), $url.search())).toEqual({
+      expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
         "param1[]": ["bar", "baz"],
       });
 
@@ -687,19 +701,19 @@ describe("UrlMatcher", () => {
 
       // check that we handle $location.url decodes correctly
       $url.url(m.format({ "param1[]": ["bar-", "-baz"] }));
-      expect(m.exec($url.path(), $url.search())).toEqual({
+      expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
         "param1[]": ["bar-", "-baz"],
       });
 
       // check that we handle $location.url decodes correctly for multiple hyphens
       $url.url(m.format({ "param1[]": ["bar-bar-bar-", "-baz-baz-baz"] }));
-      expect(m.exec($url.path(), $url.search())).toEqual({
+      expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
         "param1[]": ["bar-bar-bar-", "-baz-baz-baz"],
       });
 
       // check that pre-encoded values are passed correctly
       $url.url(m.format({ "param1[]": ["%2C%20%5C%2C", "-baz"] }));
-      expect(m.exec($url.path(), $url.search())).toEqual({
+      expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
         "param1[]": ["%2C%20%5C%2C", "-baz"],
       });
     });
@@ -710,9 +724,9 @@ describe("UrlMatcher", () => {
 //   describe(".type()", ( ) => {
 //     let $url;
 //     beforeEach(
-//       module("ng.router.util", function ($urlServiceProvider) {
-//         $url = $urlServiceProvider;
-//         $urlServiceProvider.type("myType", {}, ( ) => {
+//       module("ng.router.util", function ($urlProvider) {
+//         $url = $urlProvider;
+//         $urlProvider.type("myType", {}, ( ) => {
 //           return {
 //             decode: ( ) => {
 //               return { status: "decoded" };
@@ -746,9 +760,9 @@ describe("UrlMatcher", () => {
 //   let $url;
 //   let $url;
 
-//   beforeEach(function ($urlMatcherFactory, $urlService) {
+//   beforeEach(function ($urlMatcherFactory, $url) {
 //     $url = $urlMatcherFactory;
-//     $url = $urlService;
+//     $url = $url;
 //   });
 
 //   it("compiles patterns", ( ) => {
@@ -905,13 +919,13 @@ describe("UrlMatcher", () => {
 //       const m = $url.compile("/foo/{fooid:int}?{bar:int}");
 
 //       $url.url("/foo/5?bar=1");
-//       expect(m.exec($url.path(), $url.search())).toEqual({ fooid: 5, bar: 1 });
+//       expect(m.exec($url.getPath(), $url.getSearch())).toEqual({ fooid: 5, bar: 1 });
 //       expect(m.format({ fooid: 5, bar: 1 })).toEqual("/foo/5?bar=1");
 
 //       $url.url("/foo/5?bar=1&bar=2&bar=3");
-//       if (Array.isArray($url.search()))
+//       if (Array.isArray($url.getSearch()))
 //         // conditional for angular 1.0.8
-//         expect(m.exec($url.path(), $url.search())).toEqual({
+//         expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
 //           fooid: 5,
 //           bar: [1, 2, 3],
 //         });
@@ -939,11 +953,11 @@ describe("UrlMatcher", () => {
 //       });
 
 //       $url.url("/foo?bar=fox");
-//       expect(m.exec($url.path(), $url.search())).toEqual({ bar: ["fox"] });
+//       expect(m.exec($url.getPath(), $url.getSearch())).toEqual({ bar: ["fox"] });
 //       expect(m.format({ bar: ["fox"] })).toEqual("/foo?bar=fox");
 
 //       $url.url("/foo?bar=quick-brown-fox");
-//       expect(m.exec($url.path(), $url.search())).toEqual({
+//       expect(m.exec($url.getPath(), $url.getSearch())).toEqual({
 //         bar: ["quick", "brown", "fox"],
 //       });
 //       expect(m.format({ bar: ["quick", "brown", "fox"] })).toEqual(

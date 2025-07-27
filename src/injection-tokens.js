@@ -55,7 +55,7 @@ export const $injectTokens = Object.freeze({
   $templateRequest: "$templateRequest",
   $transitions: "$transitions",
   $urlConfig: "$urlConfig",
-  $urlService: "$urlService",
+  $url: "$url",
   $view: "$view",
   // provide literals
   $provide: "$provide",

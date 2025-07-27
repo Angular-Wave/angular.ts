@@ -656,7 +656,7 @@ describe("$state", () => {
           await wait(100);
           expect($stateParams.search).toBe("s1");
           expect($stateParams.searchDyn).toBe("sd2");
-          expect($location.search()).toEqual({
+          expect($location.getSearch()).toEqual({
             search: "s1",
             searchDyn: "sd2",
           });
@@ -666,7 +666,7 @@ describe("$state", () => {
           await $state.go(".", { searchDyn: "sd2" });
           expect($stateParams.search).toBe("s1");
           expect($stateParams.searchDyn).toBe("sd2");
-          expect($location.search()).toEqual({
+          expect($location.getSearch()).toEqual({
             search: "s1",
             searchDyn: "sd2",
           });
@@ -817,7 +817,7 @@ describe("$state", () => {
           $location.search({ term: "hello" });
           $rootScope.$broadcast("$locationChangeSuccess");
 
-          expect($location.search()).toEqual({ term: "hello" });
+          expect($location.getSearch()).toEqual({ term: "hello" });
           expect(entered).toBeFalsy();
         });
 
@@ -833,7 +833,7 @@ describe("$state", () => {
           expect($state.current).toBe(RS);
           expect(entered).toBeFalsy();
           expect(success).toBeTruthy();
-          expect($location.search()).toEqual({ term: "hello" });
+          expect($location.getSearch()).toEqual({ term: "hello" });
         });
 
         it("updates URL when (triggered by $state transition)", async () => {

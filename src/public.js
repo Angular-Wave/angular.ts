@@ -269,7 +269,7 @@ export function registerNgModule(angular) {
             $state: StateProvider,
             $ngViewScroll: ViewScrollProvider,
             $templateFactory: TemplateFactoryProvider,
-            $urlService: UrlService,
+            $url: UrlService,
             $stateRegistry: StateRegistryProvider,
             $eventBus: PubSubProvider,
           });

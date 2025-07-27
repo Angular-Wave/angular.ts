@@ -57,32 +57,39 @@ export class UrlService {
     /** Creates a new [[Param]] for a given location (DefType) */
     this.paramFactory = new ParamFactory(this.config);
 
-    /**
-     * Gets the path part of the current url
-     *
-     * If the current URL is `/some/path?query=value#anchor`, this returns `/some/path`
-     *
-     * @return the path portion of the url
-     */
-    this.path = () => this.$location.path();
-    /**
-     * Gets the search part of the current url as an object
-     *
-     * If the current URL is `/some/path?query=value#anchor`, this returns `{ query: 'value' }`
-     *
-     * @return the search (query) portion of the url, as an object
-     */
-    this.search = () => this.$location.search();
-    /**
-     * Gets the hash part of the current url
-     *
-     * If the current URL is `/some/path?query=value#anchor`, this returns `anchor`
-     *
-     * @return the hash (anchor) portion of the url
-     */
-    this.hash = () => this.$location.hash();
-
     this._urlListeners = [];
+  }
+
+  /**
+   * Gets the path part of the current url
+   *
+   * If the current URL is `/some/path?query=value#anchor`, this returns `/some/path`
+   *
+   * @return {string} the path portion of the url
+   */
+  getPath() {
+    return this.$location.getPath();
+  }
+
+  /**
+   * Gets the search part of the current url as an object
+   *
+   * If the current URL is `/some/path?query=value#anchor`, this returns `{ query: 'value' }`
+   *
+   * @return {Object} the search (query) portion of the url, as an object
+   */
+  getSearch() {
+    return this.$location.getSearch();
+  }
+  /**
+   * Gets the hash part of the current url
+   *
+   * If the current URL is `/some/path?query=value#anchor`, this returns `anchor`
+   *
+   * @return {string} the hash (anchor) portion of the url
+   */
+  getHash() {
+    return this.$location.getHash();
   }
 
   $get = [
@@ -116,6 +123,9 @@ export class UrlService {
     );
   }
 
+  /**
+   * @returns {string}
+   */
   baseHref() {
     return (
       this._baseHref ||
@@ -175,13 +185,13 @@ export class UrlService {
    * @return the url (after potentially being processed)
    */
   url(newUrl, state) {
-    if (isDefined(newUrl)) this.$location.url(newUrl);
-    if (state) this.$location.state(state);
+    if (isDefined(newUrl)) this.$location.setUrl(newUrl);
+    if (state) this.$location.setState(state);
     return this.$location.getUrl();
   }
 
   /**
-   * @internal
+   * @private
    *
    * Registers a low level url change handler
    *
@@ -192,8 +202,8 @@ export class UrlService {
    * let deregisterFn = locationServices.onChange((evt) => console.log("url change", evt));
    * ```
    *
-   * @param callback a function that will be called when the url is changing
-   * @return a function that de-registers the callback
+   * @param {Function} callback a function that will be called when the url is changing
+   * @return {Function} a function that de-registers the callback
    */
   onChange(callback) {
     this._urlListeners.push(callback);
@@ -359,7 +369,7 @@ export class UrlService {
    * ```js
    * matcher = $umf.compile("/about/:person");
    * params = { person: "bob" };
-   * $bob = $urlService.href(matcher, params);
+   * $bob = $url.href(matcher, params);
    * // $bob == "/about/bob";
    * ```
    *

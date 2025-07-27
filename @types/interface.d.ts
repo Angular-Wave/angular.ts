@@ -4,6 +4,8 @@ export * from "./core/di/ng-module.js";
 export * from "./services/http/interface.ts";
 export * from "./services/log/interface.ts";
 export * from "./services/log/log.js";
+export * from "./services/location/interface.ts";
+export * from "./services/location/location.js";
 export * from "./services/pubsub/pubsub.js";
 export * from "./services/template-cache/interface.ts";
 export * from "./services/template-cache/template-cache.js";

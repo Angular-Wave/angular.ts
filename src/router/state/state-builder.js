@@ -30,7 +30,7 @@ function dataBuilder(state) {
   return state.data;
 }
 
-function getUrlBuilder($urlService, root) {
+function getUrlBuilder($url, root) {
   return function (stateObject) {
     let stateDec = stateObject.self;
     // For future states, i.e., states whose name ends with `.**`,
@@ -50,9 +50,9 @@ function getUrlBuilder($urlService, root) {
     const parsed = parseUrl(stateDec.url);
     const url = !parsed
       ? stateDec.url
-      : $urlService.compile(parsed.val, { state: stateDec });
+      : $url.compile(parsed.val, { state: stateDec });
     if (!url) return null;
-    if (!$urlService.isMatcher(url))
+    if (!$url.isMatcher(url))
       throw new Error(`Invalid url '${url}' in state '${stateObject}'`);
     return parsed && parsed.root
       ? url

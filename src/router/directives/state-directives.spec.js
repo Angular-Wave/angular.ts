@@ -15,7 +15,7 @@ describe("ngStateRef", () => {
     $injector,
     $state,
     $stateParams,
-    $urlService;
+    $url;
 
   beforeEach(() => {
     dealoc(document.getElementById("app"));
@@ -62,8 +62,8 @@ describe("ngStateRef", () => {
     $compile = $injector.get("$compile");
     $state = $injector.get("$state");
     $stateParams = $injector.get("$stateParams");
-    $urlService = $injector.get("$urlService");
-    $urlService.listen();
+    $url = $injector.get("$url");
+    $url.listen();
   });
 
   afterEach(() => (window.location.hash = ""));

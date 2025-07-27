@@ -67,7 +67,7 @@ function getHandlerFn(handler) {
  *
  * The most commonly used methods are [[otherwise]] and [[when]].
  *
- * This API is found at `$urlService.rules` (see: [[UIRouter.urlService]], [[URLService.rules]])
+ * This API is found at `$url.rules` (see: [[UIRouter.urlService]], [[URLService.rules]])
  */
 export class UrlRules {
   constructor(urlRuleFactory) {

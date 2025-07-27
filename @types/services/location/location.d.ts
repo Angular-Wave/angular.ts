@@ -212,6 +212,11 @@ export class Location {
    */
   $$path: string;
   /**
+   * Current url
+   * @type {string}
+   */
+  $$url: string;
+  /**
    * The hash string, minus the hash symbol
    * @type {string}
    */
@@ -244,28 +249,6 @@ export class Location {
    */
   getUrl(): string;
   /**
-   * @deprecated
-   * This method is getter / setter.
-   *
-   * Return path of current URL when called without any parameter.
-   *
-   * Change path when called with parameter and return `$location`.
-   *
-   * Note: Path should always begin with forward slash (/), this method will add the forward slash
-   * if it is missing.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let path = $location.path();
-   * // => "/some/path"
-   * ```
-   *
-   * @param {(string|number)=} path New path
-   * @return {(string|object)} path if called with no parameters, or `$location` if called with a parameter
-   */
-  path(path?: (string | number) | undefined): string | object;
-  /**
    * Change path parameter and return `$location`.
    *
    * @param {(string|number)} path New path
@@ -274,30 +257,11 @@ export class Location {
   setPath(path: string | number): Location;
   /**
    *
-   * Return path of current URL when called without any parameter.
+   * Return path of current URL
    *
-   * @return {(string|object)} path if called with no parameters, or `$location` if called with a parameter
+   * @return {string}
    */
-  getPath(): string | object;
-  /**
-   * @deprecated
-   * This method is getter / setter.
-   *
-   * Returns the hash fragment when called without any parameters.
-   *
-   * Changes the hash fragment when called with a parameter and returns `$location`.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo#hashValue
-   * let hash = $location.getHash();
-   * // => "hashValue"
-   * ```
-   *
-   * @param {(string|number)=} hash New hash fragment
-   * @return {string|Location} hash
-   */
-  hash(hash?: (string | number) | undefined): string | Location;
+  getPath(): string;
   /**
    * Changes the hash fragment when called with a parameter and returns `$location`.
    * @param {(string|number)} hash New hash fragment
@@ -341,12 +305,12 @@ export class Location {
    * @returns {Object} Search object or Location object
    */
   getSearch(): any;
-  $$url: string;
   /**
-   * This method is getter / setter.
-   *
-   * Return the history state object when called without any parameter.
-   *
+   * Compose url and update `url` and `absUrl` property
+   * @returns {void}
+   */
+  $$compose(): void;
+  /**
    * Change the history state object when called with one parameter and return `$location`.
    * The state object is later passed to `pushState` or `replaceState`.
    * See {@link https://developer.mozilla.org/en-US/docs/Web/API/History/pushState#state|History.state}
@@ -354,12 +318,16 @@ export class Location {
    * NOTE: This method is supported only in HTML5 mode and only in browsers supporting
    * the HTML5 History API (i.e. methods `pushState` and `replaceState`). If you need to support
    * older browsers (like IE9 or Android < 4.0), don't use this method.
-   *
-   * @param {any} state State object for pushState or replaceState
-   * @return {any} state
+   * @param {any} state
+   * @returns {Location}
    */
-  state(state: any, ...args: any[]): any;
+  setState(state: any): Location;
   $$state: any;
+  /**
+   * Return the history state object
+   * @returns {any}
+   */
+  getState(): any;
   /**
    * @param {string} url
    * @param {string} relHref
@@ -371,7 +339,6 @@ export class Location {
    * @param {string} url HTML5 URL
    */
   parse(url: string): void;
-  #private;
 }
 export class LocationProvider {
   /** @type {string} */
@@ -383,8 +350,8 @@ export class LocationProvider {
   urlChangeInit: boolean;
   /** @type {History['state']} */
   cachedState: History["state"];
-  /** @typeof {History.state} */
-  lastHistoryState: any;
+  /** @type {History['state']} */
+  lastHistoryState: History["state"];
   /** @type {string} */
   lastBrowserUrl: string;
   /**

@@ -74,14 +74,14 @@ describe("$location", () => {
       const locationUrl = new Location("file:///base", "file:///", false, "#!");
       locationUrl.parse("file:///base#!/foo?a=b&c#hash");
 
-      expect(locationUrl.path()).toBe("/foo");
+      expect(locationUrl.getPath()).toBe("/foo");
     });
 
     it("should include the drive name if it was provided in the input url", () => {
       const locationUrl = new Location("file:///base", "file:///", false, "#!");
       locationUrl.parse("file:///base#!/C:/foo?a=b&c#hash");
 
-      expect(locationUrl.path()).toBe("/C:/foo");
+      expect(locationUrl.getPath()).toBe("/C:/foo");
     });
   });
 
@@ -106,16 +106,16 @@ describe("$location", () => {
       expect(locationUrl.protocol).toBe("http");
       expect(locationUrl.host).toBe("www.domain.com");
       expect(locationUrl.port).toBe(9877);
-      expect(locationUrl.path()).toBe("/path/b");
-      expect(locationUrl.search()).toEqual({ search: "a", b: "c", d: true });
-      expect(locationUrl.hash()).toBe("hash");
+      expect(locationUrl.getPath()).toBe("/path/b");
+      expect(locationUrl.getSearch()).toEqual({ search: "a", b: "c", d: true });
+      expect(locationUrl.getHash()).toBe("hash");
       expect(locationUrl.getUrl()).toBe("/path/b?search=a&b=c&d#hash");
     });
 
     it("path() should change path", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.path("/new/path");
-      expect(locationUrl.path()).toBe("/new/path");
+      locationUrl.setPath("/new/path");
+      expect(locationUrl.getPath()).toBe("/new/path");
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/new/path?search=a&b=c&d#hash",
       );
@@ -123,8 +123,8 @@ describe("$location", () => {
 
     it("path() should not break on numeric values", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.path(1);
-      expect(locationUrl.path()).toBe("/1");
+      locationUrl.setPath(1);
+      expect(locationUrl.getPath()).toBe("/1");
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/1?search=a&b=c&d#hash",
       );
@@ -132,8 +132,8 @@ describe("$location", () => {
 
     it("path() should allow using 0 as path", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.path(0);
-      expect(locationUrl.path()).toBe("/0");
+      locationUrl.setPath(0);
+      expect(locationUrl.getPath()).toBe("/0");
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/0?search=a&b=c&d#hash",
       );
@@ -141,16 +141,16 @@ describe("$location", () => {
 
     it("path() should set to empty path on null value", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.path("/foo");
-      expect(locationUrl.path()).toBe("/foo");
-      locationUrl.path(null);
-      expect(locationUrl.path()).toBe("/");
+      locationUrl.setPath("/foo");
+      expect(locationUrl.getPath()).toBe("/foo");
+      locationUrl.setPath(null);
+      expect(locationUrl.getPath()).toBe("/");
     });
 
     it("search() should accept string", () => {
       const locationUrl = createLocationHtml5Url();
       locationUrl.search("x=y&c");
-      expect(locationUrl.search()).toEqual({ x: "y", c: true });
+      expect(locationUrl.getSearch()).toEqual({ x: "y", c: true });
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/path/b?x=y&c#hash",
       );
@@ -159,7 +159,7 @@ describe("$location", () => {
     it("search() should accept object", () => {
       const locationUrl = createLocationHtml5Url();
       locationUrl.search({ one: 1, two: true });
-      expect(locationUrl.search()).toEqual({ one: 1, two: true });
+      expect(locationUrl.getSearch()).toEqual({ one: 1, two: true });
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/path/b?one=1&two#hash",
       );
@@ -171,7 +171,7 @@ describe("$location", () => {
       locationUrl.search(obj);
       expect(obj).toEqual({ one: 1, two: true, three: null });
       obj.one = "changed";
-      expect(locationUrl.search()).toEqual({ one: 1, two: true });
+      expect(locationUrl.getSearch()).toEqual({ one: 1, two: true });
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/path/b?one=1&two#hash",
       );
@@ -182,7 +182,7 @@ describe("$location", () => {
       locationUrl.search({ id: "old", preserved: true });
       locationUrl.search("id", "new");
 
-      expect(locationUrl.search()).toEqual({ id: "new", preserved: true });
+      expect(locationUrl.getSearch()).toEqual({ id: "new", preserved: true });
     });
 
     it("search() should remove single parameter", () => {
@@ -190,22 +190,22 @@ describe("$location", () => {
       locationUrl.search({ id: "old", preserved: true });
       locationUrl.search("id", null);
 
-      expect(locationUrl.search()).toEqual({ preserved: true });
+      expect(locationUrl.getSearch()).toEqual({ preserved: true });
     });
 
     it("search() should remove multiple parameters", () => {
       const locationUrl = createLocationHtml5Url();
       locationUrl.search({ one: 1, two: true });
-      expect(locationUrl.search()).toEqual({ one: 1, two: true });
+      expect(locationUrl.getSearch()).toEqual({ one: 1, two: true });
       locationUrl.search({ one: null, two: null });
-      expect(locationUrl.search()).toEqual({});
+      expect(locationUrl.getSearch()).toEqual({});
       expect(locationUrl.absUrl).toBe("http://www.domain.com:9877/path/b#hash");
     });
 
     it("search() should accept numeric keys", () => {
       const locationUrl = createLocationHtml5Url();
       locationUrl.search({ 1: "one", 2: "two" });
-      expect(locationUrl.search()).toEqual({ 1: "one", 2: "two" });
+      expect(locationUrl.getSearch()).toEqual({ 1: "one", 2: "two" });
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/path/b?1=one&2=two#hash",
       );
@@ -214,22 +214,22 @@ describe("$location", () => {
     it("search() should handle multiple value", () => {
       const locationUrl = createLocationHtml5Url();
       locationUrl.search("a&b");
-      expect(locationUrl.search()).toEqual({ a: true, b: true });
+      expect(locationUrl.getSearch()).toEqual({ a: true, b: true });
 
       locationUrl.search("a", null);
 
-      expect(locationUrl.search()).toEqual({ b: true });
+      expect(locationUrl.getSearch()).toEqual({ b: true });
 
       locationUrl.search("b", undefined);
-      expect(locationUrl.search()).toEqual({});
+      expect(locationUrl.getSearch()).toEqual({});
     });
 
     it("search() should handle single value", () => {
       const locationUrl = createLocationHtml5Url();
       locationUrl.search("ignore");
-      expect(locationUrl.search()).toEqual({ ignore: true });
+      expect(locationUrl.getSearch()).toEqual({ ignore: true });
       locationUrl.search(1);
-      expect(locationUrl.search()).toEqual({ 1: true });
+      expect(locationUrl.getSearch()).toEqual({ 1: true });
     });
 
     it("search() should throw error an incorrect argument", () => {
@@ -244,8 +244,8 @@ describe("$location", () => {
 
     it("hash() should change hash fragment", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.hash("new-hash");
-      expect(locationUrl.hash()).toBe("new-hash");
+      locationUrl.setHash("new-hash");
+      expect(locationUrl.getHash()).toBe("new-hash");
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/path/b?search=a&b=c&d#new-hash",
       );
@@ -253,8 +253,8 @@ describe("$location", () => {
 
     it("hash() should accept numeric parameter", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.hash(5);
-      expect(locationUrl.hash()).toBe("5");
+      locationUrl.setHash(5);
+      expect(locationUrl.getHash()).toBe("5");
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/path/b?search=a&b=c&d#5",
       );
@@ -262,8 +262,8 @@ describe("$location", () => {
 
     it("hash() should allow using 0", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.hash(0);
-      expect(locationUrl.hash()).toBe("0");
+      locationUrl.setHash(0);
+      expect(locationUrl.getHash()).toBe("0");
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/path/b?search=a&b=c&d#0",
       );
@@ -271,30 +271,30 @@ describe("$location", () => {
 
     it("hash() should accept null parameter", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.hash(null);
-      expect(locationUrl.hash()).toBe("");
+      locationUrl.setHash(null);
+      expect(locationUrl.getHash()).toBe("");
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/path/b?search=a&b=c&d",
       );
     });
 
-    it("url() should change the path, search and hash", () => {
+    it("url getter/setter should change the path, search and hash", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.url("/some/path?a=b&c=d#hhh");
+      locationUrl.setUrl("/some/path?a=b&c=d#hhh");
       expect(locationUrl.getUrl()).toBe("/some/path?a=b&c=d#hhh");
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/some/path?a=b&c=d#hhh",
       );
-      expect(locationUrl.path()).toBe("/some/path");
-      expect(locationUrl.search()).toEqual({ a: "b", c: "d" });
-      expect(locationUrl.hash()).toBe("hhh");
+      expect(locationUrl.getPath()).toBe("/some/path");
+      expect(locationUrl.getSearch()).toEqual({ a: "b", c: "d" });
+      expect(locationUrl.getHash()).toBe("hhh");
     });
 
-    it("url() should change only hash when no search and path specified", () => {
+    it("url getter/setter should change only hash when no search and path specified", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.url("#some-hash");
+      locationUrl.setUrl("#some-hash");
 
-      expect(locationUrl.hash()).toBe("some-hash");
+      expect(locationUrl.getHash()).toBe("some-hash");
       expect(locationUrl.getUrl()).toBe("/path/b?search=a&b=c&d#some-hash");
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/path/b?search=a&b=c&d#some-hash",
@@ -310,7 +310,7 @@ describe("$location", () => {
       expect(locationUrl.getPath()).toBe("/path/b");
     });
 
-    it("url() should reset search and hash when only path specified", () => {
+    it("setUrl() should reset search and hash when only path specified", () => {
       const locationUrl = createLocationHtml5Url();
       locationUrl.setUrl("/new/path");
 
@@ -319,7 +319,7 @@ describe("$location", () => {
       expect(locationUrl.getHash()).toBe("");
     });
 
-    it("url() should change path when empty string specified", () => {
+    it("setUrl() should change path when empty string specified", () => {
       const locationUrl = createLocationHtml5Url();
       locationUrl.setUrl("");
 
@@ -357,32 +357,32 @@ describe("$location", () => {
         true,
       );
       locationUrl.parse("http://server/");
-      expect(locationUrl.path()).toBe("/");
+      expect(locationUrl.getPath()).toBe("/");
       expect(locationUrl.absUrl).toBe("http://server/");
     });
 
     it("setters should return Url object to allow chaining", () => {
       const locationUrl = createLocationHtml5Url();
-      expect(locationUrl.path("/any")).toBe(locationUrl);
+      expect(locationUrl.setPath("/any")).toBe(locationUrl);
       expect(locationUrl.search("")).toBe(locationUrl);
-      expect(locationUrl.hash("aaa")).toBe(locationUrl);
-      expect(locationUrl.url("/some")).toBe(locationUrl);
+      expect(locationUrl.setHash("aaa")).toBe(locationUrl);
+      expect(locationUrl.setUrl("/some")).toBe(locationUrl);
     });
 
     it("should not preserve old properties when parsing new url", () => {
       const locationUrl = createLocationHtml5Url();
       locationUrl.parse("http://www.domain.com:9877/a");
 
-      expect(locationUrl.path()).toBe("/a");
-      expect(locationUrl.search()).toEqual({});
-      expect(locationUrl.hash()).toBe("");
+      expect(locationUrl.getPath()).toBe("/a");
+      expect(locationUrl.getSearch()).toEqual({});
+      expect(locationUrl.getHash()).toBe("");
       expect(locationUrl.absUrl).toBe("http://www.domain.com:9877/a");
     });
 
     // it("should not rewrite when hashbang url is not given", () => {
     //   initService({ html5Mode: true, hashPrefix: "!", supportHistory: true });
     //   initBrowser({ url: "http://domain.com/base/a/b", basePath: "/base" });
-    //   expect($browser.url()).toBe("http://domain.com/base/a/b");
+    //   expect($browser.getUrl()).toBe("http://domain.com/base/a/b");
     // });
 
     it("should prepend path with basePath", () => {
@@ -392,10 +392,10 @@ describe("$location", () => {
         true,
       );
       locationUrl.parse("http://server/base/abc?a");
-      expect(locationUrl.path()).toBe("/abc");
-      expect(locationUrl.search()).toEqual({ a: true });
+      expect(locationUrl.getPath()).toBe("/abc");
+      expect(locationUrl.getSearch()).toEqual({ a: true });
 
-      locationUrl.path("/new/path");
+      locationUrl.setPath("/new/path");
       expect(locationUrl.absUrl).toBe("http://server/base/new/path?a");
     });
 
@@ -428,49 +428,51 @@ describe("$location", () => {
         const locationUrl = createLocationHtml5Url();
         expect(locationUrl.$$state).toEqual(undefined);
 
-        const returned = locationUrl.state({ a: 2 });
+        const returned = locationUrl.setState({ a: 2 });
         expect(locationUrl.$$state).toEqual({ a: 2 });
         expect(returned).toBe(locationUrl);
       });
 
       it("should set state", () => {
         const locationUrl = createLocationHtml5Url();
-        locationUrl.state({ a: 2 });
-        expect(locationUrl.state()).toEqual({ a: 2 });
+        locationUrl.setState({ a: 2 });
+        expect(locationUrl.getState()).toEqual({ a: 2 });
       });
 
       it("should allow to set both URL and state", () => {
         const locationUrl = createLocationHtml5Url();
-        locationUrl.url("/foo").state({ a: 2 });
+        locationUrl.url("/foo").setState({ a: 2 });
         expect(locationUrl.getUrl()).toEqual("/foo");
-        expect(locationUrl.state()).toEqual({ a: 2 });
+        expect(locationUrl.getState()).toEqual({ a: 2 });
       });
 
       it("should allow to mix state and various URL functions", () => {
         const locationUrl = createLocationHtml5Url();
         locationUrl
-          .path("/foo")
-          .hash("abcd")
-          .state({ a: 2 })
-          .search("bar", "baz");
+          .setPath("/foo")
+          .setHash("abcd")
+          .setState({ a: 2 })
+          .setSearch("bar", "baz");
 
-        expect(locationUrl.path()).toEqual("/foo");
-        expect(locationUrl.state()).toEqual({ a: 2 });
-        expect(locationUrl.search() && locationUrl.search().bar).toBe("baz");
-        expect(locationUrl.hash()).toEqual("abcd");
+        expect(locationUrl.getPath()).toEqual("/foo");
+        expect(locationUrl.getState()).toEqual({ a: 2 });
+        expect(locationUrl.getSearch() && locationUrl.getSearch().bar).toBe(
+          "baz",
+        );
+        expect(locationUrl.getHash()).toEqual("abcd");
       });
     });
 
     describe("encoding", () => {
       it("should encode special characters", () => {
         const locationUrl = createLocationHtml5Url();
-        locationUrl.path("/a <>#");
+        locationUrl.setPath("/a <>#");
         locationUrl.search({ "i j": "<>#" });
-        locationUrl.hash("<>#");
+        locationUrl.setHash("<>#");
 
-        expect(locationUrl.path()).toBe("/a <>#");
-        expect(locationUrl.search()).toEqual({ "i j": "<>#" });
-        expect(locationUrl.hash()).toBe("<>#");
+        expect(locationUrl.getPath()).toBe("/a <>#");
+        expect(locationUrl.getSearch()).toEqual({ "i j": "<>#" });
+        expect(locationUrl.getHash()).toBe("<>#");
         expect(locationUrl.absUrl).toBe(
           "http://www.domain.com:9877/a%20%3C%3E%23?i%20j=%3C%3E%23#%3C%3E%23",
         );
@@ -478,9 +480,9 @@ describe("$location", () => {
 
       it("should not encode !$:@", () => {
         const locationUrl = createLocationHtml5Url();
-        locationUrl.path("/!$:@");
+        locationUrl.setPath("/!$:@");
         locationUrl.search("");
-        locationUrl.hash("!$:@");
+        locationUrl.setHash("!$:@");
 
         expect(locationUrl.absUrl).toBe("http://www.domain.com:9877/!$:@#!$:@");
       });
@@ -494,9 +496,9 @@ describe("$location", () => {
         locationUrl.parse(
           "http://host.com/a%20%3C%3E%23?i%20j=%3C%3E%23#x%20%3C%3E%23",
         );
-        expect(locationUrl.path()).toBe("/a <>#");
-        expect(locationUrl.search()).toEqual({ "i j": "<>#" });
-        expect(locationUrl.hash()).toBe("x <>#");
+        expect(locationUrl.getPath()).toBe("/a <>#");
+        expect(locationUrl.getSearch()).toEqual({ "i j": "<>#" });
+        expect(locationUrl.getHash()).toBe("x <>#");
       });
 
       it("should not decode encoded forward slashes in the path", () => {
@@ -506,9 +508,9 @@ describe("$location", () => {
           true,
         );
         locationUrl.parse("http://host.com/base/a/ng2;path=%2Fsome%2Fpath");
-        expect(locationUrl.path()).toBe("/a/ng2;path=%2Fsome%2Fpath");
-        expect(locationUrl.search()).toEqual({});
-        expect(locationUrl.hash()).toBe("");
+        expect(locationUrl.getPath()).toBe("/a/ng2;path=%2Fsome%2Fpath");
+        expect(locationUrl.getSearch()).toEqual({});
+        expect(locationUrl.getHash()).toBe("");
         expect(locationUrl.getUrl()).toBe("/a/ng2;path=%2Fsome%2Fpath");
         expect(locationUrl.absUrl).toBe(
           "http://host.com/base/a/ng2;path=%2Fsome%2Fpath",
@@ -522,13 +524,13 @@ describe("$location", () => {
           true,
         );
         locationUrl.parse("http://host.com/?a+b=c+d");
-        expect(locationUrl.search()).toEqual({ "a b": "c d" });
+        expect(locationUrl.getSearch()).toEqual({ "a b": "c d" });
       });
 
       it("should retain pluses when setting search queries", () => {
         const locationUrl = createLocationHtml5Url();
         locationUrl.search({ "a+b": "c+d" });
-        expect(locationUrl.search()).toEqual({ "a+b": "c+d" });
+        expect(locationUrl.getSearch()).toEqual({ "a+b": "c+d" });
       });
     });
   });
@@ -550,9 +552,9 @@ describe("$location", () => {
       expect(locationUrl.protocol).toBe("http");
       expect(locationUrl.host).toBe("www.server.org");
       expect(locationUrl.port).toBe(1234);
-      expect(locationUrl.path()).toBe("/path");
-      expect(locationUrl.search()).toEqual({ a: "b", c: true });
-      expect(locationUrl.hash()).toBe("hash");
+      expect(locationUrl.getPath()).toBe("/path");
+      expect(locationUrl.getSearch()).toEqual({ a: "b", c: true });
+      expect(locationUrl.getHash()).toBe("hash");
     });
 
     it("absUrl should return hashbang url", () => {
@@ -561,9 +563,9 @@ describe("$location", () => {
         "http://www.server.org:1234/base#!/path?a=b&c#hash",
       );
 
-      locationUrl.path("/new/path");
+      locationUrl.setPath("/new/path");
       locationUrl.search({ one: 1 });
-      locationUrl.hash("hhh");
+      locationUrl.setHash("hhh");
       expect(locationUrl.absUrl).toBe(
         "http://www.server.org:1234/base#!/new/path?one=1#hhh",
       );
@@ -583,9 +585,9 @@ describe("$location", () => {
         "http://www.server.org:1234/base?base=param#/path?a=b&c#hash",
       );
 
-      locationUrl.path("/new/path");
+      locationUrl.setPath("/new/path");
       locationUrl.search({ one: 1 });
-      locationUrl.hash("hhh");
+      locationUrl.setHash("hhh");
       expect(locationUrl.absUrl).toBe(
         "http://www.server.org:1234/base?base=param#/new/path?one=1#hhh",
       );
@@ -599,11 +601,11 @@ describe("$location", () => {
         "#",
       );
       locationUrl.parse("http://host.com/base#path");
-      expect(locationUrl.path()).toBe("/path");
+      expect(locationUrl.getPath()).toBe("/path");
       expect(locationUrl.absUrl).toBe("http://host.com/base#/path");
 
-      locationUrl.path("wrong");
-      expect(locationUrl.path()).toBe("/wrong");
+      locationUrl.setPath("wrong");
+      expect(locationUrl.getPath()).toBe("/wrong");
       expect(locationUrl.absUrl).toBe("http://host.com/base#/wrong");
     });
 
@@ -615,9 +617,9 @@ describe("$location", () => {
         "#!",
       );
       locationUrl.parse("http://server/base");
-      locationUrl.path("aaa");
+      locationUrl.setPath("aaa");
 
-      expect(locationUrl.path()).toBe("/aaa");
+      expect(locationUrl.getPath()).toBe("/aaa");
       expect(locationUrl.absUrl).toBe("http://server/base#!/aaa");
     });
 
@@ -625,9 +627,9 @@ describe("$location", () => {
       const locationUrl = createHashbangUrl();
       locationUrl.parse("http://www.server.org:1234/base#!/");
 
-      expect(locationUrl.path()).toBe("/");
-      expect(locationUrl.search()).toEqual({});
-      expect(locationUrl.hash()).toBe("");
+      expect(locationUrl.getPath()).toBe("/");
+      expect(locationUrl.getSearch()).toEqual({});
+      expect(locationUrl.getHash()).toBe("");
       expect(locationUrl.absUrl).toBe("http://www.server.org:1234/base#!/");
     });
 
@@ -638,33 +640,33 @@ describe("$location", () => {
       expect(locationUrl.absUrl).toBe(
         "http://www.server.org:1234/base#!#%2Fpath",
       );
-      expect(locationUrl.hash()).toBe("/path");
-      expect(locationUrl.path()).toBe("");
+      expect(locationUrl.getHash()).toBe("/path");
+      expect(locationUrl.getPath()).toBe("");
 
       locationUrl.parse("http://www.server.org:1234/base#");
       expect(locationUrl.absUrl).toBe("http://www.server.org:1234/base");
-      expect(locationUrl.hash()).toBe("");
-      expect(locationUrl.path()).toBe("");
+      expect(locationUrl.getHash()).toBe("");
+      expect(locationUrl.getPath()).toBe("");
     });
 
     it("should ignore extra path segments if no hashbang is given", () => {
       const locationUrl = createHashbangUrl();
       locationUrl.parse("http://www.server.org:1234/base/extra/path");
       expect(locationUrl.absUrl).toBe("http://www.server.org:1234/base");
-      expect(locationUrl.path()).toBe("");
-      expect(locationUrl.hash()).toBe("");
+      expect(locationUrl.getPath()).toBe("");
+      expect(locationUrl.getHash()).toBe("");
     });
 
     describe("encoding", () => {
       it("should encode special characters", () => {
         const locationUrl = createHashbangUrl();
-        locationUrl.path("/a <>#");
+        locationUrl.setPath("/a <>#");
         locationUrl.search({ "i j": "<>#" });
-        locationUrl.hash("<>#");
+        locationUrl.setHash("<>#");
 
-        expect(locationUrl.path()).toBe("/a <>#");
-        expect(locationUrl.search()).toEqual({ "i j": "<>#" });
-        expect(locationUrl.hash()).toBe("<>#");
+        expect(locationUrl.getPath()).toBe("/a <>#");
+        expect(locationUrl.getSearch()).toEqual({ "i j": "<>#" });
+        expect(locationUrl.getHash()).toBe("<>#");
         expect(locationUrl.absUrl).toBe(
           "http://www.server.org:1234/base#!/a%20%3C%3E%23?i%20j=%3C%3E%23#%3C%3E%23",
         );
@@ -672,9 +674,9 @@ describe("$location", () => {
 
       it("should not encode !$:@", () => {
         const locationUrl = createHashbangUrl();
-        locationUrl.path("/!$:@");
+        locationUrl.setPath("/!$:@");
         locationUrl.search("");
-        locationUrl.hash("!$:@");
+        locationUrl.setHash("!$:@");
 
         expect(locationUrl.absUrl).toBe(
           "http://www.server.org:1234/base#!/!$:@#!$:@",
@@ -691,9 +693,9 @@ describe("$location", () => {
         locationUrl.parse(
           "http://host.com/a#/%20%3C%3E%23?i%20j=%3C%3E%23#x%20%3C%3E%23",
         );
-        expect(locationUrl.path()).toBe("/ <>#");
-        expect(locationUrl.search()).toEqual({ "i j": "<>#" });
-        expect(locationUrl.hash()).toBe("x <>#");
+        expect(locationUrl.getPath()).toBe("/ <>#");
+        expect(locationUrl.getSearch()).toEqual({ "i j": "<>#" });
+        expect(locationUrl.getHash()).toBe("x <>#");
       });
 
       it("should return decoded characters for search specified in URL", () => {
@@ -703,7 +705,7 @@ describe("$location", () => {
           true,
         );
         locationUrl.parse("http://host.com/?q=1%2F2%203");
-        expect(locationUrl.search()).toEqual({ q: "1/2 3" });
+        expect(locationUrl.getSearch()).toEqual({ q: "1/2 3" });
       });
 
       it("should return decoded characters for search specified with setter", () => {
@@ -714,7 +716,7 @@ describe("$location", () => {
         );
         locationUrl.parse("http://host.com/");
         locationUrl.search("q", "1/2 3");
-        expect(locationUrl.search()).toEqual({ q: "1/2 3" });
+        expect(locationUrl.getSearch()).toEqual({ q: "1/2 3" });
       });
 
       it("should return an array for duplicate params", () => {
@@ -725,7 +727,7 @@ describe("$location", () => {
         );
         locationUrl.parse("http://host.com");
         locationUrl.search("q", ["1/2 3", "4/5 6"]);
-        expect(locationUrl.search()).toEqual({ q: ["1/2 3", "4/5 6"] });
+        expect(locationUrl.getSearch()).toEqual({ q: ["1/2 3", "4/5 6"] });
       });
 
       it("should encode an array correctly from search and add to url", () => {
@@ -735,7 +737,7 @@ describe("$location", () => {
           true,
         );
         locationUrl.parse("http://host.com");
-        locationUrl.search({ q: ["1/2 3", "4/5 6"] });
+        locationUrl.setSearch({ q: ["1/2 3", "4/5 6"] });
         expect(locationUrl.absUrl).toEqual(
           "http://host.com?q=1%2F2%203&q=4%2F5%206",
         );
@@ -748,13 +750,13 @@ describe("$location", () => {
           true,
         );
         locationUrl.parse("http://host.com");
-        locationUrl.search({ q: "1/2 3" });
+        locationUrl.setSearch({ q: "1/2 3" });
         expect(locationUrl.absUrl).toEqual("http://host.com?q=1%2F2%203");
-        locationUrl.search({ q: "4/5 6" });
+        locationUrl.setSearch({ q: "4/5 6" });
         expect(locationUrl.absUrl).toEqual("http://host.com?q=4%2F5%206");
       });
 
-      it("url() should decode non-component special characters in hashbang mode", () => {
+      it("url getter/setter should decode non-component special characters in hashbang mode", () => {
         const locationUrl = new Location(
           "http://host.com",
           "http://host.com",
@@ -762,10 +764,10 @@ describe("$location", () => {
         );
         locationUrl.parse("http://host.com");
         locationUrl.url("/foo%3Abar");
-        expect(locationUrl.path()).toEqual("/foo:bar");
+        expect(locationUrl.getPath()).toEqual("/foo:bar");
       });
 
-      it("url() should decode non-component special characters in html5 mode", () => {
+      it("url getter/setter should decode non-component special characters in html5 mode", () => {
         const locationUrl = new Location(
           "http://host.com",
           "http://host.com",
@@ -773,7 +775,7 @@ describe("$location", () => {
         );
         locationUrl.parse("http://host.com");
         locationUrl.url("/foo%3Abar");
-        expect(locationUrl.path()).toEqual("/foo:bar");
+        expect(locationUrl.getPath()).toEqual("/foo:bar");
       });
     });
   });
@@ -1255,8 +1257,8 @@ describe("$location", () => {
   //       let handlerCalled = false;
   //       $rootScope.$on("$locationChangeSuccess", () => {
   //         handlerCalled = true;
-  //         if ($location.path() !== "/") {
-  //           $location.path("/").replace();
+  //         if ($location.getPath() !== "/") {
+  //           $location.setPath("/").replace();
   //         }
   //       });
   //       expect($browser.url()).toEqual("http://server/base/#!/home");
@@ -1394,7 +1396,7 @@ describe("$location", () => {
   //   function updatePathOnLocationChangeSuccessTo(newPath, newParams) {
   //     inject(($rootScope, $location) => {
   //       $rootScope.$on("$locationChangeSuccess", (event, newUrl, oldUrl) => {
-  //         $location.path(newPath);
+  //         $location.setPath(newPath);
   //         if (newParams) {
   //           $location.search(newParams);
   //         }
@@ -1417,7 +1419,7 @@ describe("$location", () => {
   //         $rootScope.$digest();
 
   //         expect($browser.url()).toEqual("http://server/app/#!/Home");
-  //         expect($location.path()).toEqual("/Home");
+  //         expect($location.getPath()).toEqual("/Home");
   //         expect($browserUrl).toHaveBeenCalledTimes(1);
   //       });
   //     });
@@ -1439,7 +1441,7 @@ describe("$location", () => {
   //         $rootScope.$digest();
 
   //         expect($browser.url()).toEqual("http://server/app/#!/");
-  //         expect($location.path()).toEqual("/");
+  //         expect($location.getPath()).toEqual("/");
   //         expect($browserUrl).toHaveBeenCalledTimes(1);
   //         expect($browserUrl.calls.argsFor(0)).toEqual([
   //           "http://server/app/#!/",
@@ -1462,7 +1464,7 @@ describe("$location", () => {
   //         $rootScope.$digest();
 
   //         expect($browser.url()).toEqual("http://server/app/#!/Home");
-  //         expect($location.path()).toEqual("/Home");
+  //         expect($location.getPath()).toEqual("/Home");
   //         expect($browserUrl).toHaveBeenCalledTimes(1);
   //         expect($browserUrl.calls.argsFor(0)).toEqual([
   //           "http://server/app/#!/Home",
@@ -1485,7 +1487,7 @@ describe("$location", () => {
   //         $rootScope.$digest();
 
   //         expect($browser.url()).toEqual("http://server/app/#!/");
-  //         expect($location.path()).toEqual("/");
+  //         expect($location.getPath()).toEqual("/");
   //         expect($browserUrl).toHaveBeenCalledTimes(1);
   //       });
   //     });
@@ -1507,7 +1509,7 @@ describe("$location", () => {
   //         $rootScope.$digest();
 
   //         expect($browser.url()).toEqual("http://server/app/Home");
-  //         expect($location.path()).toEqual("/Home");
+  //         expect($location.getPath()).toEqual("/Home");
   //         expect($browserUrl).toHaveBeenCalledTimes(1);
   //       });
   //     });
@@ -1527,7 +1529,7 @@ describe("$location", () => {
   //         $rootScope.$digest();
 
   //         expect($browser.url()).toEqual("http://server/app/");
-  //         expect($location.path()).toEqual("/");
+  //         expect($location.getPath()).toEqual("/");
   //         expect($browserUrl).not.toHaveBeenCalled();
   //       });
   //     });
@@ -1547,7 +1549,7 @@ describe("$location", () => {
   //         $rootScope.$digest();
 
   //         expect($browser.url()).toEqual("http://server/app/Home");
-  //         expect($location.path()).toEqual("/Home");
+  //         expect($location.getPath()).toEqual("/Home");
   //         expect($browserUrl).toHaveBeenCalledTimes(1);
   //       });
   //     });
@@ -1567,7 +1569,7 @@ describe("$location", () => {
   //         $rootScope.$digest();
 
   //         expect($browser.url()).toEqual("http://server/app/");
-  //         expect($location.path()).toEqual("/");
+  //         expect($location.getPath()).toEqual("/");
   //         expect($browserUrl).not.toHaveBeenCalled();
   //       });
   //     });
@@ -1587,8 +1589,8 @@ describe("$location", () => {
 
   //         $rootScope.$digest();
 
-  //         expect($location.path()).toEqual("/");
-  //         expect($location.search()).toEqual({ q: "'" });
+  //         expect($location.getPath()).toEqual("/");
+  //         expect($location.getSearch()).toEqual({ q: "'" });
   //         expect($browserUrl).toHaveBeenCalledTimes(1);
   //       });
   //     });
@@ -1604,7 +1606,7 @@ describe("$location", () => {
   //       $window.location.href = "http://new.com/a/b#!/aaa";
   //       $browser.$$checkUrlChange();
   //       expect($location.absUrl).toBe("http://new.com/a/b#!/aaa");
-  //       expect($location.path()).toBe("/aaa");
+  //       expect($location.getPath()).toBe("/aaa");
   //       expect($location.parse).toHaveBeenCalled();
   //     });
   //   });
@@ -1658,7 +1660,7 @@ describe("$location", () => {
   //         $browser,
   //         "url",
   //       ).and.callThrough();
-  //       $location.path("/new/path");
+  //       $location.setPath("/new/path");
   //       expect($browserUrl).not.toHaveBeenCalled();
   //       $rootScope.$apply();
 
@@ -1675,7 +1677,7 @@ describe("$location", () => {
   //         $browser,
   //         "url",
   //       ).and.callThrough();
-  //       $location.path("/new/path");
+  //       $location.setPath("/new/path");
 
   //       $rootScope.$watch(() => {
   //         $location.search("a=b");
@@ -1695,7 +1697,7 @@ describe("$location", () => {
   //         $browser,
   //         "url",
   //       ).and.callThrough();
-  //       $location.path("/n/url").replace();
+  //       $location.setPath("/n/url").replace();
   //       $rootScope.$apply();
 
   //       expect($browserUrl).toHaveBeenCalled();
@@ -1740,7 +1742,7 @@ describe("$location", () => {
   //       $rootScope.$watch(
   //         () => true,
   //         () => {
-  //           $location.path("/changed");
+  //           $location.setPath("/changed");
   //         },
   //       );
 
@@ -1753,7 +1755,7 @@ describe("$location", () => {
   //     initService({ html5Mode: false, hashPrefix: "", supportHistory: true });
   //     mockUpBrowser({ initialUrl: "http://new.com/a/b", baseHref: "/a/b" });
   //     inject(($rootScope, $browser, $location) => {
-  //       $location.hash("test");
+  //       $location.setHash("test");
 
   //       $rootScope.$digest();
   //       expect($browser.url()).toBe("http://new.com/a/b##test");
@@ -1770,7 +1772,7 @@ describe("$location", () => {
   //       state: { a: 2 },
   //     });
   //     inject(($location) => {
-  //       expect($location.state()).toEqual({ a: 2 });
+  //       expect($location.getState()).toEqual({ a: 2 });
   //     });
   //   });
 
@@ -1781,7 +1783,7 @@ describe("$location", () => {
   //       $window.history.pushState({ b: 3 });
   //       $rootScope.$digest();
 
-  //       expect($location.state()).toEqual({ b: 3 });
+  //       expect($location.getState()).toEqual({ b: 3 });
 
   //       $window.history.pushState(
   //         { b: 4 },
@@ -1790,10 +1792,10 @@ describe("$location", () => {
   //       );
   //       $rootScope.$digest();
 
-  //       expect($location.path()).toBe("/c");
-  //       expect($location.search()).toEqual({ d: "e" });
+  //       expect($location.getPath()).toBe("/c");
+  //       expect($location.getSearch()).toEqual({ d: "e" });
   //       expect($location.getHash()).toBe("f");
-  //       expect($location.state()).toEqual({ b: 4 });
+  //       expect($location.getState()).toEqual({ b: 4 });
   //     });
   //   });
 
@@ -1809,8 +1811,8 @@ describe("$location", () => {
   //       $rootScope.$digest();
 
   //       expect($location.absUrl).toEqual("http://server/app/Home?q='");
-  //       expect($location.path()).toEqual("/Home");
-  //       expect($location.search()).toEqual({ q: "'" });
+  //       expect($location.getPath()).toEqual("/Home");
+  //       expect($location.getSearch()).toEqual({ q: "'" });
   //     });
   //   });
 
@@ -1826,8 +1828,8 @@ describe("$location", () => {
   //       ($window).triggerHandler("popstate");
 
   //       expect($location.absUrl).toEqual("http://server/app/Home?q='");
-  //       expect($location.path()).toEqual("/Home");
-  //       expect($location.search()).toEqual({ q: "'" });
+  //       expect($location.getPath()).toEqual("/Home");
+  //       expect($location.getSearch()).toEqual({ q: "'" });
   //     });
   //   });
 
@@ -1839,7 +1841,7 @@ describe("$location", () => {
   //         $browser,
   //         "url",
   //       ).and.callThrough();
-  //       $location.path("/n/url").state({ a: 2 }).replace();
+  //       $location.setPath("/n/url").state({ a: 2 }).replace();
   //       $rootScope.$apply();
 
   //       expect($browserUrl).toHaveBeenCalled();
@@ -1863,11 +1865,11 @@ describe("$location", () => {
   //         "url",
   //       ).and.callThrough();
   //       $location
-  //         .path("/n/url")
+  //         .setPath("/n/url")
   //         .state({ a: 2 })
   //         .replace()
   //         .state({ b: 3 })
-  //         .path("/o/url");
+  //         .setPath("/o/url");
   //       $rootScope.$apply();
 
   //       expect($browserUrl).toHaveBeenCalled();
@@ -1890,7 +1892,7 @@ describe("$location", () => {
   //         $browser,
   //         "url",
   //       ).and.callThrough();
-  //       $location.state({ a: 2 }).replace().state({ b: 3 });
+  //       $location.setState({ a: 2 }).replace().state({ b: 3 });
   //       $rootScope.$apply();
 
   //       expect($browserUrl).toHaveBeenCalled();
@@ -1941,7 +1943,7 @@ describe("$location", () => {
 
   //     inject(($rootScope, $location, $browser) => {
   //       const o = { a: 2 };
-  //       $location.state(o);
+  //       $location.setState(o);
   //       o.a = 3;
   //       $rootScope.$apply();
   //       expect($browser.state()).toEqual({ a: 3 });
@@ -1952,14 +1954,14 @@ describe("$location", () => {
   //     });
   //   });
 
-  //   it("should make $location.state() referencially identical with $browser.state() after digest", () => {
+  //   it("should make $location.getState() referencially identical with $browser.state() after digest", () => {
   //     initService({ html5Mode: true, supportHistory: true });
   //     mockUpBrowser({ initialUrl: "http://new.com/a/b/", baseHref: "/a/b/" });
 
   //     inject(($rootScope, $location, $browser) => {
-  //       $location.state({ a: 2 });
+  //       $location.setState({ a: 2 });
   //       $rootScope.$apply();
-  //       expect($location.state()).toBe($browser.state());
+  //       expect($location.getState()).toBe($browser.state());
   //     });
   //   });
 
@@ -1970,7 +1972,7 @@ describe("$location", () => {
   //     inject(($rootScope, $location) => {
   //       $location.setUrl("/foo").state({ a: 2 });
   //       $rootScope.$apply();
-  //       expect($location.state()).toEqual({ a: 2 });
+  //       expect($location.getState()).toEqual({ a: 2 });
   //     });
   //   });
 
@@ -2025,7 +2027,7 @@ describe("$location", () => {
   //     });
   //     inject(($rootScope, $location, $browser) => {
   //       expect($browser.url()).toBe("http://domain.com/base/index.html#!/a/b");
-  //       $location.path("/new");
+  //       $location.setPath("/new");
   //       $location.search({ a: true });
   //       $rootScope.$apply();
   //       expect($browser.url()).toBe(
@@ -2042,7 +2044,7 @@ describe("$location", () => {
   //     });
   //     inject(($rootScope, $location, $browser) => {
   //       expect($browser.url()).toBe("http://domain.com/base/index.html#/a/b");
-  //       $location.path("/new");
+  //       $location.setPath("/new");
   //       $location.search({ a: true });
   //       $rootScope.$apply();
   //       expect($browser.url()).toBe("http://domain.com/base/index.html#/new?a");
@@ -2064,7 +2066,7 @@ describe("$location", () => {
   //         expect($browser.url()).toBe(
   //           "http://domain.com/base/index.html#!!/a/b",
   //         );
-  //         $location.path("/new");
+  //         $location.setPath("/new");
   //         $location.search({ a: true });
   //         $rootScope.$apply();
   //         expect($browser.url()).toBe(
@@ -2116,7 +2118,7 @@ describe("$location", () => {
   //     });
   //     inject(($rootScope, $location, $browser) => {
   //       expect($browser.url()).toBe("http://domain.com/base/old/index.html#a");
-  //       $location.path("/new");
+  //       $location.setPath("/new");
   //       $location.search({ a: true });
   //       $rootScope.$apply();
   //       expect($browser.url()).toBe("http://domain.com/base/new?a#a");
@@ -2131,11 +2133,11 @@ describe("$location", () => {
   //     });
   //     inject(($rootScope, $location, $browser) => {
   //       expect($browser.url()).toBe("http://domain.com/base/a/b");
-  //       $location.path("/new");
-  //       $location.hash("abc");
+  //       $location.setPath("/new");
+  //       $location.setHash("abc");
   //       $rootScope.$apply();
   //       expect($browser.url()).toBe("http://domain.com/base/new#abc");
-  //       expect($location.path()).toBe("/new");
+  //       expect($location.getPath()).toBe("/new");
   //     });
   //   });
 
@@ -2147,7 +2149,7 @@ describe("$location", () => {
   //     });
   //     inject(($rootScope, $location, $browser) => {
   //       expect($browser.url()).toBe("http://domain.com/base/a/b");
-  //       expect($location.path()).toBe("/a/b");
+  //       expect($location.getPath()).toBe("/a/b");
   //     });
   //   });
   // });
@@ -2344,7 +2346,7 @@ describe("$location", () => {
   //     );
   //   });
 
-  //   it('should produce relative paths correctly when $location.path() is "/" when history enabled on old browser', () => {
+  //   it('should produce relative paths correctly when $location.getPath() is "/" when history enabled on old browser', () => {
   //     configureTestLink({ linkHref: "partial1" });
   //     initService({ html5Mode: true, supportHistory: false, hashPrefix: "!" });
   //     inject(
@@ -2355,7 +2357,7 @@ describe("$location", () => {
   //       setupRewriteChecks(),
   //       ($browser, $location, $rootScope) => {
   //         $rootScope.$apply(() => {
-  //           $location.path("/");
+  //           $location.setPath("/");
   //         });
   //         browserTrigger(link, "click");
   //         expectRewriteTo(
@@ -2672,8 +2674,8 @@ describe("$location", () => {
   //       setupRewriteChecks(),
   //       ($browser, $location, $rootScope) => {
   //         $rootScope.$apply(() => {
-  //           $location.path("/some");
-  //           $location.hash("foo");
+  //           $location.setPath("/some");
+  //           $location.setHash("foo");
   //         });
   //         browserTrigger(link, "click");
   //         expect($location.getHash()).toBe("link");
@@ -2696,8 +2698,8 @@ describe("$location", () => {
   //       setupRewriteChecks(),
   //       ($browser, $location, $rootScope) => {
   //         $rootScope.$apply(() => {
-  //           $location.path("/some");
-  //           $location.hash("foo");
+  //           $location.setPath("/some");
+  //           $location.setHash("foo");
   //         });
   //         browserTrigger(link, "click");
   //         expect($location.getHash()).toBe("link");
@@ -3431,17 +3433,17 @@ describe("$location", () => {
   //     const base = $browser.url();
 
   //     $rootScope.$on("$locationChangeStart", () => {
-  //       log($location.path());
+  //       log($location.getPath());
   //     });
 
   //     // change through $location service
   //     $rootScope.$apply(() => {
-  //       $location.path("/myNewPath");
+  //       $location.setPath("/myNewPath");
   //     });
 
   //     // reset location
   //     $rootScope.$apply(() => {
-  //       $location.path("");
+  //       $location.setPath("");
   //     });
 
   //     // change through $browser
@@ -3593,7 +3595,7 @@ describe("$location", () => {
     // });
 
     it("should support state", () => {
-      expect(locationUrl.state({ a: 2 }).state()).toEqual({ a: 2 });
+      expect(locationUrl.setState({ a: 2 }).getState()).toEqual({ a: 2 });
     });
   });
 

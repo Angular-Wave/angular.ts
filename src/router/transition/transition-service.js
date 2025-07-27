@@ -31,6 +31,7 @@ import { registerIgnoredTransitionHook } from "../hooks/ignored-transition.js";
 import { registerInvalidTransitionHook } from "../hooks/invalid-transition.js";
 import { registerRedirectToHook } from "../hooks/redirect-to.js";
 import { registerUpdateUrl } from "../hooks/url.js";
+import { $injectTokens as $t, provider } from "../../injection-tokens.js";
 /**
  * The default [[Transition]] options.
  *
@@ -61,7 +62,7 @@ export let defaultTransOpts = {
  * This API is located at `router.transitionService` ([[UIRouter.transitionService]])
  */
 export class TransitionProvider {
-  static $inject = ["$routerGlobalsProvider", "$viewProvider"];
+  static $inject = provider([$t.$routerGlobals, $t.$view]);
 
   /**
    * @param {import('../globals.js').RouterGlobals} globals
@@ -92,10 +93,10 @@ export class TransitionProvider {
   }
 
   $get = [
-    "$state",
-    "$urlService",
-    "$stateRegistry",
-    "$view",
+    $t.$state,
+    $t.$url,
+    $t.$stateRegistry,
+    $t.$view,
     (stateService, urlService, stateRegistry, viewService) => {
       // Lazy load state trees
       this._deregisterHookFns.lazyLoad = registerLazyLoadHook(

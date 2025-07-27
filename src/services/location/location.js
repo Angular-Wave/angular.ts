@@ -14,6 +14,7 @@ import {
   startsWith,
 } from "../../shared/utils.js";
 import { getBaseHref } from "../../shared/dom.js";
+import { $injectTokens as $t } from "../../injection-tokens.js";
 
 /** @type {import("./interface.ts").DefaultPorts} */
 const DEFAULT_PORTS = { http: 80, https: 443, ftp: 21 };
@@ -86,6 +87,12 @@ export class Location {
     this.$$path = undefined;
 
     /**
+     * Current url
+     * @type {string}
+     */
+    this.$$url = undefined;
+
+    /**
      * The hash string, minus the hash symbol
      * @type {string}
      */
@@ -140,37 +147,6 @@ export class Location {
   }
 
   /**
-   * @deprecated
-   * This method is getter / setter.
-   *
-   * Return path of current URL when called without any parameter.
-   *
-   * Change path when called with parameter and return `$location`.
-   *
-   * Note: Path should always begin with forward slash (/), this method will add the forward slash
-   * if it is missing.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let path = $location.path();
-   * // => "/some/path"
-   * ```
-   *
-   * @param {(string|number)=} path New path
-   * @return {(string|object)} path if called with no parameters, or `$location` if called with a parameter
-   */
-  path(path) {
-    if (isUndefined(path)) {
-      return this.$$path;
-    }
-    let newPath = path !== null ? path.toString() : "";
-    this.$$path = newPath.charAt(0) === "/" ? newPath : `/${newPath}`;
-    this.#compose();
-    return this;
-  }
-
-  /**
    * Change path parameter and return `$location`.
    *
    * @param {(string|number)} path New path
@@ -179,46 +155,18 @@ export class Location {
   setPath(path) {
     let newPath = path !== null ? path.toString() : "";
     this.$$path = newPath.charAt(0) === "/" ? newPath : `/${newPath}`;
-    this.#compose();
+    this.$$compose();
     return this;
   }
 
   /**
    *
-   * Return path of current URL when called without any parameter.
+   * Return path of current URL
    *
-   * @return {(string|object)} path if called with no parameters, or `$location` if called with a parameter
+   * @return {string}
    */
   getPath() {
     return this.$$path;
-  }
-
-  /**
-   * @deprecated
-   * This method is getter / setter.
-   *
-   * Returns the hash fragment when called without any parameters.
-   *
-   * Changes the hash fragment when called with a parameter and returns `$location`.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo#hashValue
-   * let hash = $location.getHash();
-   * // => "hashValue"
-   * ```
-   *
-   * @param {(string|number)=} hash New hash fragment
-   * @return {string|Location} hash
-   */
-  hash(hash) {
-    if (isUndefined(hash)) {
-      return this.$$hash;
-    }
-
-    this.$$hash = hash !== null ? hash.toString() : "";
-    this.#compose();
-    return this;
   }
 
   /**
@@ -228,7 +176,7 @@ export class Location {
    */
   setHash(hash) {
     this.$$hash = hash !== null ? hash.toString() : "";
-    this.#compose();
+    this.$$compose();
     return this;
   }
 
@@ -279,7 +227,7 @@ export class Location {
         }
     }
 
-    this.#compose();
+    this.$$compose();
     return this;
   }
 
@@ -319,7 +267,7 @@ export class Location {
         }
     }
 
-    this.#compose();
+    this.$$compose();
     return this;
   }
 
@@ -336,7 +284,7 @@ export class Location {
    * Compose url and update `url` and `absUrl` property
    * @returns {void}
    */
-  #compose() {
+  $$compose() {
     this.$$url = normalizePath(this.$$path, this.$$search, this.$$hash);
     this.absUrl = this.html5
       ? this.appBaseNoFile + this.$$url.substring(1)
@@ -345,10 +293,6 @@ export class Location {
   }
 
   /**
-   * This method is getter / setter.
-   *
-   * Return the history state object when called without any parameter.
-   *
    * Change the history state object when called with one parameter and return `$location`.
    * The state object is later passed to `pushState` or `replaceState`.
    * See {@link https://developer.mozilla.org/en-US/docs/Web/API/History/pushState#state|History.state}
@@ -356,27 +300,30 @@ export class Location {
    * NOTE: This method is supported only in HTML5 mode and only in browsers supporting
    * the HTML5 History API (i.e. methods `pushState` and `replaceState`). If you need to support
    * older browsers (like IE9 or Android < 4.0), don't use this method.
-   *
-   * @param {any} state State object for pushState or replaceState
-   * @return {any} state
+   * @param {any} state
+   * @returns {Location}
    */
-  state(state) {
-    if (!arguments.length) {
-      return this.$$state;
-    }
-
+  setState(state) {
     if (!this.html5) {
       throw $locationMinErr(
         "nostate",
         "History API state support is available only in HTML5 mode",
       );
     }
-    // The user might modify `stateObject` after invoking `$location.state(stateObject)`
+    // The user might modify `stateObject` after invoking `$location.setState(stateObject)`
     // but we're changing the $$state reference to $browser.state() during the $digest
     // so the modification window is narrow.
     this.$$state = isUndefined(state) ? null : state;
     this.$$urlUpdatedByLocation = true;
     return this;
+  }
+
+  /**
+   * Return the history state object
+   * @returns {any}
+   */
+  getState() {
+    return this.$$state;
   }
 
   /**
@@ -447,7 +394,7 @@ export class Location {
         this.$$path = "/";
       }
 
-      this.#compose();
+      this.$$compose();
     } else {
       const withoutBaseUrl =
         stripBaseUrl(this.appBase, url) ||
@@ -484,7 +431,7 @@ export class Location {
         this.appBase,
       );
 
-      this.#compose();
+      this.$$compose();
 
       /*
        * In Windows, on an anchor node on documents loaded from
@@ -541,7 +488,7 @@ export class LocationProvider {
 
     /** @type {History['state']} */
     this.cachedState = null;
-    /** @typeof {History.state} */
+    /** @type {History['state']} */
     this.lastHistoryState = null;
     /** @type {string} */
     this.lastBrowserUrl = window.location.href;
@@ -650,8 +597,8 @@ export class LocationProvider {
   }
 
   $get = [
-    "$rootScope",
-    "$rootElement",
+    $t.$rootScope,
+    $t.$rootElement,
     /**
      *
      * @param {import('../../core/scope/scope.js').Scope} $rootScope
@@ -696,7 +643,7 @@ export class LocationProvider {
         try {
           this.setUrl(url, state);
 
-          // Make sure $location.state() returns referentially identical (not just deeply equal)
+          // Make sure $location.getState() returns referentially identical (not just deeply equal)
           // state object; this makes possible quick checking if the state changed in the digest
           // loop. Checking deep equality would be too expensive.
           $location.$$state = this.state();

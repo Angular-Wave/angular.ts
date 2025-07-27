@@ -33,31 +33,31 @@ export class UrlService {
   config: import("./url-config.js").UrlConfigProvider;
   /** Creates a new [[Param]] for a given location (DefType) */
   paramFactory: ParamFactory;
+  _urlListeners: any[];
   /**
    * Gets the path part of the current url
    *
    * If the current URL is `/some/path?query=value#anchor`, this returns `/some/path`
    *
-   * @return the path portion of the url
+   * @return {string} the path portion of the url
    */
-  path: () => any;
+  getPath(): string;
   /**
    * Gets the search part of the current url as an object
    *
    * If the current URL is `/some/path?query=value#anchor`, this returns `{ query: 'value' }`
    *
-   * @return the search (query) portion of the url, as an object
+   * @return {Object} the search (query) portion of the url, as an object
    */
-  search: () => any;
+  getSearch(): any;
   /**
    * Gets the hash part of the current url
    *
    * If the current URL is `/some/path?query=value#anchor`, this returns `anchor`
    *
-   * @return the hash (anchor) portion of the url
+   * @return {string} the hash (anchor) portion of the url
    */
-  hash: () => any;
-  _urlListeners: any[];
+  getHash(): string;
   $get: (
     | string
     | ((
@@ -69,6 +69,9 @@ export class UrlService {
    * @returns {boolean}
    */
   html5Mode(): boolean;
+  /**
+   * @returns {string}
+   */
   baseHref(): string;
   _baseHref: string;
   /**
@@ -124,7 +127,7 @@ export class UrlService {
    */
   url(newUrl?: string, state?: any): any;
   /**
-   * @internal
+   * @private
    *
    * Registers a low level url change handler
    *
@@ -135,10 +138,10 @@ export class UrlService {
    * let deregisterFn = locationServices.onChange((evt) => console.log("url change", evt));
    * ```
    *
-   * @param callback a function that will be called when the url is changing
-   * @return a function that de-registers the callback
+   * @param {Function} callback a function that will be called when the url is changing
+   * @return {Function} a function that de-registers the callback
    */
-  onChange(callback: any): () => any;
+  private onChange;
   /**
    * Gets the current URL parts.
    *
@@ -219,7 +222,7 @@ export class UrlService {
    * ```js
    * matcher = $umf.compile("/about/:person");
    * params = { person: "bob" };
-   * $bob = $urlService.href(matcher, params);
+   * $bob = $url.href(matcher, params);
    * // $bob == "/about/bob";
    * ```
    *

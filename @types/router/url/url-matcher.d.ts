@@ -112,8 +112,8 @@ export class UrlMatcher {
    * // returns { id: 'bob', q: 'hello', r: null }
    * ```
    *
-   * @param path    The URL path to match, e.g. `$location.path()`.
-   * @param search  URL search parameters, e.g. `$location.search()`.
+   * @param path    The URL path to match, e.g. `$location.getPath()`.
+   * @param search  URL search parameters, e.g. `$location.getSearch()`.
    * @param hash    URL hash e.g. `$location.getHash()`.
    *
    * @returns The captured parameter values.

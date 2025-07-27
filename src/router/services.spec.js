@@ -11,14 +11,14 @@ describe("router services", () => {
     let module = window["angular"].module("defaultModule", []);
     module.config(
       (
-        $urlServiceProvider,
+        $urlProvider,
         $stateRegistryProvider,
         $routerGlobalsProvider,
         $transitionsProvider,
         $stateProvider,
       ) => {
         providers = {
-          $urlServiceProvider,
+          $urlProvider,
           $stateRegistryProvider,
           $routerGlobalsProvider,
           $transitionsProvider,
@@ -33,7 +33,7 @@ describe("router services", () => {
   });
 
   it("Should expose ng-router providers from the UIRouter instance", () => {
-    expect(providers.$urlServiceProvider).toBeDefined();
+    expect(providers.$urlProvider).toBeDefined();
     expect(providers.$stateRegistryProvider).toBeDefined();
     expect(providers.$stateRegistryProvider).toBeDefined();
     expect(providers.$transitionsProvider).toBeDefined();
@@ -41,7 +41,7 @@ describe("router services", () => {
   });
 
   it("Should expose ng-router services from the UIRouter instance", () => {
-    expect($injector.get("$urlService")).toBeDefined();
+    expect($injector.get("$url")).toBeDefined();
     expect($injector.get("$stateRegistry")).toBeDefined();
     expect($injector.get("$routerGlobals")).toBeDefined();
     expect($injector.get("$transitions")).toBeDefined();
