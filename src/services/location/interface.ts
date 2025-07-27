@@ -56,7 +56,7 @@ export interface UrlParts {
 
   /**
    * The parsed query string as an object.
-   * Mirrors AngularJS’s `$location.search()` format.
+   * Mirrors AngularJS’s `$location.setSearch()` format.
    */
   search: Record<
     string,

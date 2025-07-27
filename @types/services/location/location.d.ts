@@ -1,9 +1,10 @@
 /**
  * ///////////////////////////
- *          HELPERS
+ *     PRIVATE HELPERS
  * ///////////////////////////
  */
 /**
+ * @private
  * Encodes a URL path by encoding each path segment individually using `encodeUriSegment`,
  * while preserving forward slashes (`/`) as segment separators.
  *
@@ -29,6 +30,7 @@
  */
 export function encodePath(path: string): string;
 /**
+ * @private
  * Decodes each segment of a URL path.
  *
  * Splits the input path by "/", decodes each segment using decodeURIComponent,
@@ -41,6 +43,7 @@ export function encodePath(path: string): string;
  */
 export function decodePath(path: string, html5Mode: boolean): string;
 /**
+ * @private
  * Normalizes a URL path by encoding the path segments, query parameters, and hash fragment.
  *
  * - Path segments are encoded using `encodePath`, which encodes each segment individually.
@@ -77,6 +80,7 @@ export function normalizePath(
   hashValue: string | null,
 ): string;
 /**
+ * @private
  * Parses the application URL and updates the location object with path, search, and hash.
  *
  * @param {string} url - The URL string to parse.
@@ -99,7 +103,7 @@ export function parseAppUrl(
   html5Mode: boolean,
 ): void;
 /**
- *
+ * @private
  * Returns the substring of `url` after the `base` string if `url` starts with `base`.
  * Returns `undefined` if `url` does not start with `base`.
  * @param {string} base
@@ -116,6 +120,7 @@ export function stripBaseUrl(base: string, url: string): string;
  */
 export function stripHash(url: string): string;
 /**
+ * @private
  * Removes the file name (and any hash) from a URL, returning the base directory path.
  *
  * For example:
@@ -130,6 +135,7 @@ export function stripHash(url: string): string;
  */
 export function stripFile(url: string): string;
 /**
+ * @private
  * Extracts the base server URL (scheme, host, and optional port) from a full URL.
  *
  * If no path is present, returns the full URL.
@@ -146,6 +152,7 @@ export function stripFile(url: string): string;
  */
 export function serverBase(url: string): string;
 /**
+ * @private
  * Determine if two URLs are equal despite potential differences in encoding,
  * trailing slashes, or empty hash fragments, such as between $location.absUrl() and $browser.url().
  *
@@ -227,14 +234,10 @@ export class Location {
    */
   $$urlUpdatedByLocation: boolean;
   /**
-   * @deprecated
-   * Return URL (e.g. `/path?a=b#hash`) when called without any parameter.
-   * Change path, search and hash, when called with parameter and return `$location`.
-   *
-   * @param {string=} url New URL without base prefix (e.g. `/path?a=b#hash`)
-   * @return {Location|string} url
+   * Callback to update browser url
+   * @type {Function}
    */
-  url(url?: string | undefined): Location | string;
+  $$updateBrowser: Function;
   /**
    * Change path, search and hash, when called with parameter and return `$location`.
    *
@@ -274,20 +277,6 @@ export class Location {
    */
   getHash(): string;
   /**
-   * @deprecated
-   * Returns or sets the search part (as object) of current URL when called without any parameter
-   *
-   * @param {string|Object=} search New search params - string or hash object.
-   * @param {(string|number|Array<string>|boolean)=} paramValue If search is a string or number, then paramValue will override only a single search property.
-   * @returns {Object|Location} Search object or Location object
-   */
-  search(
-    search?: (string | any) | undefined,
-    paramValue?: (string | number | Array<string> | boolean) | undefined,
-    ...args: any[]
-  ): any | Location;
-  $$search: any;
-  /**
    * Sets the search part (as object) of current URL
    *
    * @param {string|Object} search New search params - string or hash object.
@@ -299,6 +288,7 @@ export class Location {
     paramValue?: (string | number | Array<string> | boolean) | undefined,
     ...args: any[]
   ): any;
+  $$search: any;
   /**
    * Returns the search part (as object) of current URL
    *

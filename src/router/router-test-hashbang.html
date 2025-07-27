@@ -18,16 +18,6 @@
                   "/admin/users/hello": { templateUrl: "/mock/hello" },
                   "/admin/users/hello2": { templateUrl: "/mock/hello2" },
                 };
-
-                window.addEventListener("popstate", () => {
-                  debugger;
-                  $scope.$ctrl.selectedRoute =
-                    $scope.$ctrl.routes[$location.$$hash];
-                });
-                window.addEventListener("hashchange", () => {
-                  $scope.$ctrl.selectedRoute =
-                    $scope.$ctrl.routes[$location.$$hash];
-                });
               }
 
               go() {

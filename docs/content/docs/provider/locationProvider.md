@@ -21,6 +21,6 @@ are stored.
 
   ```js
   angular.module('demo', []).config(($locationProvider) => {
-    $locationProvider.enabled = false;
+    $locationProvider.html5ModeConf.enabled = false;
   });
   ```

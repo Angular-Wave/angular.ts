@@ -441,7 +441,7 @@ describe("$location", () => {
 
       it("should allow to set both URL and state", () => {
         const locationUrl = createLocationHtml5Url();
-        locationUrl.url("/foo").setState({ a: 2 });
+        locationUrl.setUrl("/foo").setState({ a: 2 });
         expect(locationUrl.getUrl()).toEqual("/foo");
         expect(locationUrl.getState()).toEqual({ a: 2 });
       });
@@ -763,7 +763,7 @@ describe("$location", () => {
           false,
         );
         locationUrl.parse("http://host.com");
-        locationUrl.url("/foo%3Abar");
+        locationUrl.setUrl("/foo%3Abar");
         expect(locationUrl.getPath()).toEqual("/foo:bar");
       });
 
@@ -774,7 +774,7 @@ describe("$location", () => {
           true,
         );
         locationUrl.parse("http://host.com");
-        locationUrl.url("/foo%3Abar");
+        locationUrl.setUrl("/foo%3Abar");
         expect(locationUrl.getPath()).toEqual("/foo:bar");
       });
     });
@@ -1398,7 +1398,7 @@ describe("$location", () => {
   //       $rootScope.$on("$locationChangeSuccess", (event, newUrl, oldUrl) => {
   //         $location.setPath(newPath);
   //         if (newParams) {
-  //           $location.search(newParams);
+  //           $location.setSearch(newParams);
   //         }
   //       });
   //     });
@@ -1680,7 +1680,7 @@ describe("$location", () => {
   //       $location.setPath("/new/path");
 
   //       $rootScope.$watch(() => {
-  //         $location.search("a=b");
+  //         $location.setSearch("a=b");
   //       });
 
   //       $rootScope.$apply();
@@ -2028,7 +2028,7 @@ describe("$location", () => {
   //     inject(($rootScope, $location, $browser) => {
   //       expect($browser.url()).toBe("http://domain.com/base/index.html#!/a/b");
   //       $location.setPath("/new");
-  //       $location.search({ a: true });
+  //       $location.setSearch({ a: true });
   //       $rootScope.$apply();
   //       expect($browser.url()).toBe(
   //         "http://domain.com/base/index.html#!/new?a",
@@ -2045,7 +2045,7 @@ describe("$location", () => {
   //     inject(($rootScope, $location, $browser) => {
   //       expect($browser.url()).toBe("http://domain.com/base/index.html#/a/b");
   //       $location.setPath("/new");
-  //       $location.search({ a: true });
+  //       $location.setSearch({ a: true });
   //       $rootScope.$apply();
   //       expect($browser.url()).toBe("http://domain.com/base/index.html#/new?a");
   //     });
@@ -2067,7 +2067,7 @@ describe("$location", () => {
   //           "http://domain.com/base/index.html#!!/a/b",
   //         );
   //         $location.setPath("/new");
-  //         $location.search({ a: true });
+  //         $location.setSearch({ a: true });
   //         $rootScope.$apply();
   //         expect($browser.url()).toBe(
   //           "http://domain.com/base/index.html#!!/new?a",
@@ -2119,7 +2119,7 @@ describe("$location", () => {
   //     inject(($rootScope, $location, $browser) => {
   //       expect($browser.url()).toBe("http://domain.com/base/old/index.html#a");
   //       $location.setPath("/new");
-  //       $location.search({ a: true });
+  //       $location.setSearch({ a: true });
   //       $rootScope.$apply();
   //       expect($browser.url()).toBe("http://domain.com/base/new?a#a");
   //     });

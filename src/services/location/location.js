@@ -103,23 +103,12 @@ export class Location {
      * @type {boolean}
      */
     this.$$urlUpdatedByLocation = false;
-  }
 
-  /**
-   * @deprecated
-   * Return URL (e.g. `/path?a=b#hash`) when called without any parameter.
-   * Change path, search and hash, when called with parameter and return `$location`.
-   *
-   * @param {string=} url New URL without base prefix (e.g. `/path?a=b#hash`)
-   * @return {Location|string} url
-   */
-  url(url) {
-    const match = PATH_MATCH.exec(url);
-    if (match[1] || url === "") this.setPath(decodeURIComponent(match[1]));
-    if (match[2] || match[1] || url === "") this.setSearch(match[3] || "");
-    this.setHash(match[5] || "");
-
-    return this;
+    /**
+     * Callback to update browser url
+     * @type {Function}
+     */
+    this.$$updateBrowser = undefined;
   }
 
   /**
@@ -189,49 +178,6 @@ export class Location {
   }
 
   /**
-   * @deprecated
-   * Returns or sets the search part (as object) of current URL when called without any parameter
-   *
-   * @param {string|Object=} search New search params - string or hash object.
-   * @param {(string|number|Array<string>|boolean)=} paramValue If search is a string or number, then paramValue will override only a single search property.
-   * @returns {Object|Location} Search object or Location object
-   */
-  search(search, paramValue) {
-    switch (arguments.length) {
-      case 0:
-        return this.$$search;
-      case 1:
-        if (isString(search) || isNumber(search)) {
-          search = search.toString();
-          this.$$search = parseKeyValue(search);
-        } else if (isObject(search)) {
-          search = structuredClone(search, {});
-          // remove object undefined or null properties
-          Object.entries(search).forEach(([key, value]) => {
-            if (value == null) delete search[key];
-          });
-
-          this.$$search = search;
-        } else {
-          throw $locationMinErr(
-            "isrcharg",
-            "The first argument of the `$location#search()` call must be a string or an object.",
-          );
-        }
-        break;
-      default:
-        if (isUndefined(paramValue) || paramValue === null) {
-          delete this.$$search[search];
-        } else {
-          this.$$search[search] = paramValue;
-        }
-    }
-
-    this.$$compose();
-    return this;
-  }
-
-  /**
    * Sets the search part (as object) of current URL
    *
    * @param {string|Object} search New search params - string or hash object.
@@ -290,6 +236,7 @@ export class Location {
       ? this.appBaseNoFile + this.$$url.substring(1)
       : this.appBase + (this.$$url ? this.hashPrefix + this.$$url : "");
     this.$$urlUpdatedByLocation = true;
+    setTimeout(() => this.$$updateBrowser());
   }
 
   /**
@@ -820,6 +767,7 @@ export class LocationProvider {
 
       updateBrowser();
       $rootScope.$on("$updateBrowser", updateBrowser);
+      $location.$$updateBrowser = updateBrowser;
 
       return $location;
 
@@ -838,11 +786,12 @@ export class LocationProvider {
 
 /**
  * ///////////////////////////
- *          HELPERS
+ *     PRIVATE HELPERS
  * ///////////////////////////
  */
 
 /**
+ * @private
  * Encodes a URL path by encoding each path segment individually using `encodeUriSegment`,
  * while preserving forward slashes (`/`) as segment separators.
  *
@@ -883,6 +832,7 @@ export function encodePath(path) {
 }
 
 /**
+ * @private
  * Decodes each segment of a URL path.
  *
  * Splits the input path by "/", decodes each segment using decodeURIComponent,
@@ -909,6 +859,7 @@ export function decodePath(path, html5Mode) {
 }
 
 /**
+ * @private
  * Normalizes a URL path by encoding the path segments, query parameters, and hash fragment.
  *
  * - Path segments are encoded using `encodePath`, which encodes each segment individually.
@@ -943,6 +894,7 @@ export function normalizePath(pathValue, searchValue, hashValue) {
 }
 
 /**
+ * @private
  * Parses the application URL and updates the location object with path, search, and hash.
  *
  * @param {string} url - The URL string to parse.
@@ -978,7 +930,7 @@ export function parseAppUrl(url, locationObj, html5Mode) {
 }
 
 /**
- *
+ * @private
  * Returns the substring of `url` after the `base` string if `url` starts with `base`.
  * Returns `undefined` if `url` does not start with `base`.
  * @param {string} base
@@ -1004,6 +956,7 @@ export function stripHash(url) {
 }
 
 /**
+ * @private
  * Removes the file name (and any hash) from a URL, returning the base directory path.
  *
  * For example:
@@ -1021,6 +974,7 @@ export function stripFile(url) {
 }
 
 /**
+ * @private
  * Extracts the base server URL (scheme, host, and optional port) from a full URL.
  *
  * If no path is present, returns the full URL.
@@ -1042,6 +996,7 @@ export function serverBase(url) {
 }
 
 /**
+ * @private
  * Determine if two URLs are equal despite potential differences in encoding,
  * trailing slashes, or empty hash fragments, such as between $location.absUrl() and $browser.url().
  *

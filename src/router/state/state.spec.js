@@ -101,8 +101,9 @@ describe("$state", () => {
       // some tests are polluting the cache
       window.angular = new Angular();
       module = window.angular.module("defaultModule", []);
-      module.config((_$stateProvider_, _$provide_) => {
+      module.config((_$stateProvider_, _$provide_, _$locationProvider_) => {
         $stateProvider = _$stateProvider_;
+        _$locationProvider_.html5ModeConf.enabled = false;
       });
       window.angular.bootstrap(document.getElementById("app"), [
         "defaultModule",
@@ -143,10 +144,10 @@ describe("$state", () => {
       dealoc(document.getElementById("app"));
       window.angular = new Angular();
       module = window.angular.module("defaultModule", []);
-      module.config((_$stateProvider_, _$provide_) => {
+      module.config((_$stateProvider_, _$provide_, _$locationProvider_) => {
         $stateProvider = _$stateProvider_;
         $provide = _$provide_;
-
+        _$locationProvider_.html5ModeConf.enabled = false;
         [A, B, C, D, DD, E, H, HH, HHH].forEach(function (state) {
           state.onEnter = callbackLogger(state, "onEnter");
           state.onExit = callbackLogger(state, "onExit");
@@ -617,14 +618,14 @@ describe("$state", () => {
         });
 
         it("does not exit nor enter a state when only dynamic params change (triggered via url)", async () => {
-          $location.search({ search: "s1", searchDyn: "sd2" });
+          $location.setSearch({ search: "s1", searchDyn: "sd2" });
           $rootScope.$broadcast("$locationChangeSuccess");
           await wait(100);
           expect(dynlog).toBe("success;[searchDyn=sd2];");
         });
 
         it("exits and enters a state when any non-dynamic params change (triggered via url)", async () => {
-          $location.search({ search: "s2", searchDyn: "sd2" });
+          $location.setSearch({ search: "s2", searchDyn: "sd2" });
           $rootScope.$broadcast("$locationChangeSuccess");
           await wait(100);
           expect(dynlog).toBe("exit:dyn;enter:dyn;success;");
@@ -650,8 +651,8 @@ describe("$state", () => {
           });
         });
 
-        it("updates $stateParams and $location.search when only dynamic params change (triggered via url)", async () => {
-          $location.search({ search: "s1", searchDyn: "sd2" });
+        it("updates $stateParams and $location.setSearch when only dynamic params change (triggered via url)", async () => {
+          $location.setSearch({ search: "s1", searchDyn: "sd2" });
           $rootScope.$broadcast("$locationChangeSuccess");
           await wait(100);
           expect($stateParams.search).toBe("s1");
@@ -662,7 +663,7 @@ describe("$state", () => {
           });
         });
 
-        it("updates $stateParams and $location.search when only dynamic params change (triggered via $state transition)", async () => {
+        it("updates $stateParams and $location.setSearch when only dynamic params change (triggered via $state transition)", async () => {
           await $state.go(".", { searchDyn: "sd2" });
           expect($stateParams.search).toBe("s1");
           expect($stateParams.searchDyn).toBe("sd2");
@@ -683,7 +684,7 @@ describe("$state", () => {
         //     observedParamValue = newval;
         //   });
         //   await wait(100);
-        //   $location.search({ search: "s1", searchDyn: "sd2" });
+        //   $location.setSearch({ search: "s1", searchDyn: "sd2" });
         //   $rootScope.$broadcast("$locationChangeSuccess");
 
         //   await wait(100);
@@ -806,7 +807,7 @@ describe("$state", () => {
         // this passes in isolation
         it("updates $stateParams", async () => {
           await initStateTo(RS);
-          $location.search({ term: "hello" });
+          $location.setSearch({ term: "hello" });
           $rootScope.$broadcast("$locationChangeSuccess");
           await wait(100);
           expect($stateParams.term).toEqual("hello");
@@ -814,7 +815,7 @@ describe("$state", () => {
         });
 
         it("doesn't re-enter state (triggered by url change)", async () => {
-          $location.search({ term: "hello" });
+          $location.setSearch({ term: "hello" });
           $rootScope.$broadcast("$locationChangeSuccess");
 
           expect($location.getSearch()).toEqual({ term: "hello" });
