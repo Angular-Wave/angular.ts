@@ -1,4 +1,9 @@
-export function ParseProvider(): void;
+export function constantWatchDelegate(
+  scope: any,
+  listener: any,
+  objectEquality: any,
+  parsedExpression: any,
+): any;
 export class ParseProvider {
   /**
    * Allows defining the set of characters that are allowed in AngularTS expressions. The function
@@ -26,9 +31,3 @@ export class ParseProvider {
   ) => ParseProvider;
   $get: (string | (($filter: (any: any) => any) => any))[];
 }
-export function constantWatchDelegate(
-  scope: any,
-  listener: any,
-  objectEquality: any,
-  parsedExpression: any,
-): any;

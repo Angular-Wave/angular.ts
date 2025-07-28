@@ -21,6 +21,8 @@ const DEFAULT_PORTS = { http: 80, https: 443, ftp: 21 };
 const PATH_MATCH = /^([^?#]*)(\?([^#]*))?(#(.*))?$/;
 const $locationMinErr = minErr("$location");
 
+let urlUpdatedByLocation = false;
+
 export class Location {
   /**
    * @param {string} appBase application base URL
@@ -81,30 +83,28 @@ export class Location {
       toInt(parsedUrl.port) || DEFAULT_PORTS[parsedUrl.protocol] || null;
 
     /**
+     * @ignore
      * The pathname, beginning with "/"
      * @type {string}
      */
     this.$$path = undefined;
 
     /**
+     * @ignore
      * Current url
      * @type {string}
      */
     this.$$url = undefined;
 
     /**
+     * @ignore
      * The hash string, minus the hash symbol
      * @type {string}
      */
     this.$$hash = undefined;
 
     /**
-     * Helper property for scope watch changes
-     * @type {boolean}
-     */
-    this.$$urlUpdatedByLocation = false;
-
-    /**
+     * @ignore
      * Callback to update browser url
      * @type {Function}
      */
@@ -227,16 +227,16 @@ export class Location {
   }
 
   /**
+   * @private
    * Compose url and update `url` and `absUrl` property
-   * @returns {void}
    */
   $$compose() {
     this.$$url = normalizePath(this.$$path, this.$$search, this.$$hash);
     this.absUrl = this.html5
       ? this.appBaseNoFile + this.$$url.substring(1)
       : this.appBase + (this.$$url ? this.hashPrefix + this.$$url : "");
-    this.$$urlUpdatedByLocation = true;
-    setTimeout(() => this.$$updateBrowser());
+    urlUpdatedByLocation = true;
+    setTimeout(() => this.$$updateBrowser && this.$$updateBrowser());
   }
 
   /**
@@ -261,7 +261,7 @@ export class Location {
     // but we're changing the $$state reference to $browser.state() during the $digest
     // so the modification window is narrow.
     this.$$state = isUndefined(state) ? null : state;
-    this.$$urlUpdatedByLocation = true;
+    urlUpdatedByLocation = true;
     return this;
   }
 
@@ -721,8 +721,8 @@ export class LocationProvider {
 
       // update browser
       const updateBrowser = () => {
-        if (initializing || $location.$$urlUpdatedByLocation) {
-          $location.$$urlUpdatedByLocation = false;
+        if (initializing || urlUpdatedByLocation) {
+          urlUpdatedByLocation = false;
 
           const oldUrl = /** @type {string} */ (this.getBrowserUrl());
           const newUrl = $location.absUrl;
@@ -764,10 +764,9 @@ export class LocationProvider {
           }
         }
       };
-
+      $location.$$updateBrowser = updateBrowser;
       updateBrowser();
       $rootScope.$on("$updateBrowser", updateBrowser);
-      $location.$$updateBrowser = updateBrowser;
 
       return $location;
 
@@ -791,7 +790,7 @@ export class LocationProvider {
  */
 
 /**
- * @private
+ * @ignore
  * Encodes a URL path by encoding each path segment individually using `encodeUriSegment`,
  * while preserving forward slashes (`/`) as segment separators.
  *
@@ -832,7 +831,7 @@ export function encodePath(path) {
 }
 
 /**
- * @private
+ * @ignore
  * Decodes each segment of a URL path.
  *
  * Splits the input path by "/", decodes each segment using decodeURIComponent,
@@ -859,7 +858,7 @@ export function decodePath(path, html5Mode) {
 }
 
 /**
- * @private
+ * @ignore
  * Normalizes a URL path by encoding the path segments, query parameters, and hash fragment.
  *
  * - Path segments are encoded using `encodePath`, which encodes each segment individually.
@@ -894,7 +893,7 @@ export function normalizePath(pathValue, searchValue, hashValue) {
 }
 
 /**
- * @private
+ * @ignore
  * Parses the application URL and updates the location object with path, search, and hash.
  *
  * @param {string} url - The URL string to parse.
@@ -930,7 +929,7 @@ export function parseAppUrl(url, locationObj, html5Mode) {
 }
 
 /**
- * @private
+ * @ignore
  * Returns the substring of `url` after the `base` string if `url` starts with `base`.
  * Returns `undefined` if `url` does not start with `base`.
  * @param {string} base
@@ -945,6 +944,7 @@ export function stripBaseUrl(base, url) {
 }
 
 /**
+ * @ignore
  * Removes the hash fragment (including the '#') from the given URL string.
  *
  * @param {string} url - The URL string to process.
@@ -956,7 +956,7 @@ export function stripHash(url) {
 }
 
 /**
- * @private
+ * @ignore
  * Removes the file name (and any hash) from a URL, returning the base directory path.
  *
  * For example:
@@ -974,7 +974,7 @@ export function stripFile(url) {
 }
 
 /**
- * @private
+ * @ignore
  * Extracts the base server URL (scheme, host, and optional port) from a full URL.
  *
  * If no path is present, returns the full URL.
@@ -996,7 +996,7 @@ export function serverBase(url) {
 }
 
 /**
- * @private
+ * @ignore
  * Determine if two URLs are equal despite potential differences in encoding,
  * trailing slashes, or empty hash fragments, such as between $location.absUrl() and $browser.url().
  *
@@ -1009,6 +1009,7 @@ export function urlsEqual(a, b) {
 }
 
 /**
+ * @ignore
  * Normalize a URL by resolving it via a DOM anchor element,
  * removing trailing slashes (except root), and trimming empty hashes.
  *

@@ -149,7 +149,7 @@ describe("$location", () => {
 
     it("search() should accept string", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.search("x=y&c");
+      locationUrl.setSearch("x=y&c");
       expect(locationUrl.getSearch()).toEqual({ x: "y", c: true });
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/path/b?x=y&c#hash",
@@ -158,7 +158,7 @@ describe("$location", () => {
 
     it("search() should accept object", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.search({ one: 1, two: true });
+      locationUrl.setSearch({ one: 1, two: true });
       expect(locationUrl.getSearch()).toEqual({ one: 1, two: true });
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/path/b?one=1&two#hash",
@@ -168,7 +168,7 @@ describe("$location", () => {
     it("search() should copy object", () => {
       const locationUrl = createLocationHtml5Url();
       const obj = { one: 1, two: true, three: null };
-      locationUrl.search(obj);
+      locationUrl.setSearch(obj);
       expect(obj).toEqual({ one: 1, two: true, three: null });
       obj.one = "changed";
       expect(locationUrl.getSearch()).toEqual({ one: 1, two: true });
@@ -179,32 +179,32 @@ describe("$location", () => {
 
     it("search() should change single parameter", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.search({ id: "old", preserved: true });
-      locationUrl.search("id", "new");
+      locationUrl.setSearch({ id: "old", preserved: true });
+      locationUrl.setSearch("id", "new");
 
       expect(locationUrl.getSearch()).toEqual({ id: "new", preserved: true });
     });
 
     it("search() should remove single parameter", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.search({ id: "old", preserved: true });
-      locationUrl.search("id", null);
+      locationUrl.setSearch({ id: "old", preserved: true });
+      locationUrl.setSearch("id", null);
 
       expect(locationUrl.getSearch()).toEqual({ preserved: true });
     });
 
     it("search() should remove multiple parameters", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.search({ one: 1, two: true });
+      locationUrl.setSearch({ one: 1, two: true });
       expect(locationUrl.getSearch()).toEqual({ one: 1, two: true });
-      locationUrl.search({ one: null, two: null });
+      locationUrl.setSearch({ one: null, two: null });
       expect(locationUrl.getSearch()).toEqual({});
       expect(locationUrl.absUrl).toBe("http://www.domain.com:9877/path/b#hash");
     });
 
     it("search() should accept numeric keys", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.search({ 1: "one", 2: "two" });
+      locationUrl.setSearch({ 1: "one", 2: "two" });
       expect(locationUrl.getSearch()).toEqual({ 1: "one", 2: "two" });
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/path/b?1=one&2=two#hash",
@@ -213,32 +213,32 @@ describe("$location", () => {
 
     it("search() should handle multiple value", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.search("a&b");
+      locationUrl.setSearch("a&b");
       expect(locationUrl.getSearch()).toEqual({ a: true, b: true });
 
-      locationUrl.search("a", null);
+      locationUrl.setSearch("a", null);
 
       expect(locationUrl.getSearch()).toEqual({ b: true });
 
-      locationUrl.search("b", undefined);
+      locationUrl.setSearch("b", undefined);
       expect(locationUrl.getSearch()).toEqual({});
     });
 
     it("search() should handle single value", () => {
       const locationUrl = createLocationHtml5Url();
-      locationUrl.search("ignore");
+      locationUrl.setSearch("ignore");
       expect(locationUrl.getSearch()).toEqual({ ignore: true });
-      locationUrl.search(1);
+      locationUrl.setSearch(1);
       expect(locationUrl.getSearch()).toEqual({ 1: true });
     });
 
     it("search() should throw error an incorrect argument", () => {
       const locationUrl = createLocationHtml5Url();
       expect(() => {
-        locationUrl.search(null);
+        locationUrl.setSearch(null);
       }).toThrowError(/isrcharg/);
       expect(() => {
-        locationUrl.search(undefined);
+        locationUrl.setSearch(undefined);
       }).toThrowError(/isrcharg/);
     });
 
@@ -364,7 +364,7 @@ describe("$location", () => {
     it("setters should return Url object to allow chaining", () => {
       const locationUrl = createLocationHtml5Url();
       expect(locationUrl.setPath("/any")).toBe(locationUrl);
-      expect(locationUrl.search("")).toBe(locationUrl);
+      expect(locationUrl.setSearch("")).toBe(locationUrl);
       expect(locationUrl.setHash("aaa")).toBe(locationUrl);
       expect(locationUrl.setUrl("/some")).toBe(locationUrl);
     });
@@ -467,7 +467,7 @@ describe("$location", () => {
       it("should encode special characters", () => {
         const locationUrl = createLocationHtml5Url();
         locationUrl.setPath("/a <>#");
-        locationUrl.search({ "i j": "<>#" });
+        locationUrl.setSearch({ "i j": "<>#" });
         locationUrl.setHash("<>#");
 
         expect(locationUrl.getPath()).toBe("/a <>#");
@@ -481,7 +481,7 @@ describe("$location", () => {
       it("should not encode !$:@", () => {
         const locationUrl = createLocationHtml5Url();
         locationUrl.setPath("/!$:@");
-        locationUrl.search("");
+        locationUrl.setSearch("");
         locationUrl.setHash("!$:@");
 
         expect(locationUrl.absUrl).toBe("http://www.domain.com:9877/!$:@#!$:@");
@@ -529,7 +529,7 @@ describe("$location", () => {
 
       it("should retain pluses when setting search queries", () => {
         const locationUrl = createLocationHtml5Url();
-        locationUrl.search({ "a+b": "c+d" });
+        locationUrl.setSearch({ "a+b": "c+d" });
         expect(locationUrl.getSearch()).toEqual({ "a+b": "c+d" });
       });
     });
@@ -564,7 +564,7 @@ describe("$location", () => {
       );
 
       locationUrl.setPath("/new/path");
-      locationUrl.search({ one: 1 });
+      locationUrl.setSearch({ one: 1 });
       locationUrl.setHash("hhh");
       expect(locationUrl.absUrl).toBe(
         "http://www.server.org:1234/base#!/new/path?one=1#hhh",
@@ -586,7 +586,7 @@ describe("$location", () => {
       );
 
       locationUrl.setPath("/new/path");
-      locationUrl.search({ one: 1 });
+      locationUrl.setSearch({ one: 1 });
       locationUrl.setHash("hhh");
       expect(locationUrl.absUrl).toBe(
         "http://www.server.org:1234/base?base=param#/new/path?one=1#hhh",
@@ -661,7 +661,7 @@ describe("$location", () => {
       it("should encode special characters", () => {
         const locationUrl = createHashbangUrl();
         locationUrl.setPath("/a <>#");
-        locationUrl.search({ "i j": "<>#" });
+        locationUrl.setSearch({ "i j": "<>#" });
         locationUrl.setHash("<>#");
 
         expect(locationUrl.getPath()).toBe("/a <>#");
@@ -675,7 +675,7 @@ describe("$location", () => {
       it("should not encode !$:@", () => {
         const locationUrl = createHashbangUrl();
         locationUrl.setPath("/!$:@");
-        locationUrl.search("");
+        locationUrl.setSearch("");
         locationUrl.setHash("!$:@");
 
         expect(locationUrl.absUrl).toBe(
@@ -715,7 +715,7 @@ describe("$location", () => {
           true,
         );
         locationUrl.parse("http://host.com/");
-        locationUrl.search("q", "1/2 3");
+        locationUrl.setSearch("q", "1/2 3");
         expect(locationUrl.getSearch()).toEqual({ q: "1/2 3" });
       });
 
@@ -726,7 +726,7 @@ describe("$location", () => {
           true,
         );
         locationUrl.parse("http://host.com");
-        locationUrl.search("q", ["1/2 3", "4/5 6"]);
+        locationUrl.setSearch("q", ["1/2 3", "4/5 6"]);
         expect(locationUrl.getSearch()).toEqual({ q: ["1/2 3", "4/5 6"] });
       });
 

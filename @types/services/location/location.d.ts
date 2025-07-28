@@ -4,7 +4,7 @@
  * ///////////////////////////
  */
 /**
- * @private
+ * @ignore
  * Encodes a URL path by encoding each path segment individually using `encodeUriSegment`,
  * while preserving forward slashes (`/`) as segment separators.
  *
@@ -30,7 +30,7 @@
  */
 export function encodePath(path: string): string;
 /**
- * @private
+ * @ignore
  * Decodes each segment of a URL path.
  *
  * Splits the input path by "/", decodes each segment using decodeURIComponent,
@@ -43,7 +43,7 @@ export function encodePath(path: string): string;
  */
 export function decodePath(path: string, html5Mode: boolean): string;
 /**
- * @private
+ * @ignore
  * Normalizes a URL path by encoding the path segments, query parameters, and hash fragment.
  *
  * - Path segments are encoded using `encodePath`, which encodes each segment individually.
@@ -80,7 +80,7 @@ export function normalizePath(
   hashValue: string | null,
 ): string;
 /**
- * @private
+ * @ignore
  * Parses the application URL and updates the location object with path, search, and hash.
  *
  * @param {string} url - The URL string to parse.
@@ -103,7 +103,7 @@ export function parseAppUrl(
   html5Mode: boolean,
 ): void;
 /**
- * @private
+ * @ignore
  * Returns the substring of `url` after the `base` string if `url` starts with `base`.
  * Returns `undefined` if `url` does not start with `base`.
  * @param {string} base
@@ -113,6 +113,7 @@ export function parseAppUrl(
  */
 export function stripBaseUrl(base: string, url: string): string;
 /**
+ * @ignore
  * Removes the hash fragment (including the '#') from the given URL string.
  *
  * @param {string} url - The URL string to process.
@@ -120,7 +121,7 @@ export function stripBaseUrl(base: string, url: string): string;
  */
 export function stripHash(url: string): string;
 /**
- * @private
+ * @ignore
  * Removes the file name (and any hash) from a URL, returning the base directory path.
  *
  * For example:
@@ -135,7 +136,7 @@ export function stripHash(url: string): string;
  */
 export function stripFile(url: string): string;
 /**
- * @private
+ * @ignore
  * Extracts the base server URL (scheme, host, and optional port) from a full URL.
  *
  * If no path is present, returns the full URL.
@@ -152,7 +153,7 @@ export function stripFile(url: string): string;
  */
 export function serverBase(url: string): string;
 /**
- * @private
+ * @ignore
  * Determine if two URLs are equal despite potential differences in encoding,
  * trailing slashes, or empty hash fragments, such as between $location.absUrl() and $browser.url().
  *
@@ -214,26 +215,25 @@ export class Location {
    */
   port: number;
   /**
+   * @ignore
    * The pathname, beginning with "/"
    * @type {string}
    */
   $$path: string;
   /**
+   * @ignore
    * Current url
    * @type {string}
    */
   $$url: string;
   /**
+   * @ignore
    * The hash string, minus the hash symbol
    * @type {string}
    */
   $$hash: string;
   /**
-   * Helper property for scope watch changes
-   * @type {boolean}
-   */
-  $$urlUpdatedByLocation: boolean;
-  /**
+   * @ignore
    * Callback to update browser url
    * @type {Function}
    */
@@ -296,10 +296,10 @@ export class Location {
    */
   getSearch(): any;
   /**
+   * @private
    * Compose url and update `url` and `absUrl` property
-   * @returns {void}
    */
-  $$compose(): void;
+  private $$compose;
   /**
    * Change the history state object when called with one parameter and return `$location`.
    * The state object is later passed to `pushState` or `replaceState`.

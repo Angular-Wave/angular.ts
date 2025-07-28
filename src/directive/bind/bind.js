@@ -51,6 +51,7 @@ export function ngBindTemplateDirective() {
 
 ngBindHtmlDirective.$inject = [$injectTokens.$parse];
 /**
+ * @param {import('../../core/parse/interface.ts').ParseService} $parse
  * @returns {import('../../interface.ts').Directive}
  */
 export function ngBindHtmlDirective($parse) {
