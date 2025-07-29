@@ -853,7 +853,7 @@ export function tryDecodeURIComponent(value) {
   try {
     return decodeURIComponent(value);
   } catch {
-    return;
+    /* empty */
   }
 }
 

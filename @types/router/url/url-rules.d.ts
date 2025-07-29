@@ -9,11 +9,12 @@
  * This API is found at `$url.rules` (see: [[UIRouter.urlService]], [[URLService.rules]])
  */
 export class UrlRules {
-  constructor(urlRuleFactory: any);
-  _sortFn: any;
+  /** @param {UrlRuleFactory} urlRuleFactory */
+  constructor(urlRuleFactory: UrlRuleFactory);
+  _sortFn: typeof defaultRuleSortFn;
   _rules: any[];
   _id: number;
-  urlRuleFactory: any;
+  urlRuleFactory: UrlRuleFactory;
   /**
    * Defines the initial state, path, or behavior to use when the app starts.
    *
@@ -94,7 +95,7 @@ export class UrlRules {
    * @param handler The url path to redirect to, or a function which returns the url path (or performs custom logic).
    */
   otherwise(handler: any): void;
-  _otherwiseFn: any;
+  _otherwiseFn: import("./url-rule.js").BaseUrlRule;
   _sorted: boolean;
   /**
    * Remove a rule previously registered
@@ -225,5 +226,24 @@ export class UrlRules {
    *
    * @return the registered [[UrlRule]]
    */
-  when(matcher: any, handler: any, options: any): any;
+  when(
+    matcher: any,
+    handler: any,
+    options: any,
+  ): import("./url-rule.js").BaseUrlRule;
 }
+/**
+ * Default rule priority sorting function.
+ *
+ * Sorts rules by:
+ *
+ * - Explicit priority (set rule priority using [[UrlRules.when]])
+ * - Rule type (STATE: 4, URLMATCHER: 4, REGEXP: 3, RAW: 2, OTHER: 1)
+ * - `UrlMatcher` specificity ([[UrlMatcher.compare]]): works for STATE and URLMATCHER types to pick the most specific rule.
+ * - Rule registration order (for rule types other than STATE and URLMATCHER)
+ *   - Equally sorted State and UrlMatcher rules will each match the URL.
+ *     Then, the *best* match is chosen based on how many parameter values were matched.
+ */
+declare function defaultRuleSortFn(a: any, b: any): number;
+import { UrlRuleFactory } from "./url-rule.js";
+export {};

@@ -391,7 +391,6 @@ describe("input", () => {
             '<form name="form"><input type="month" ng-model="value" name="alias" min="{{ minVal }}" /></form>',
           )(scope);
           await wait();
-          return;
         });
 
         it("should invalidate", () => {

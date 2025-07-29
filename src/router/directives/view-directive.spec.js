@@ -852,7 +852,7 @@ describe("ngView named", () => {
 
   // Test for https://github.com/angular-ui/ui-router/issues/3355
   xit("should target weird nested view setups using the view's simple name", async () => {
-    const tpl = `
+    elem.innerHTML = `
       <div>
         <div ng-view="main">
           MAIN-DEFAULT-
@@ -862,7 +862,6 @@ describe("ngView named", () => {
         </div>
       </div>
     `;
-    elem.innerHTML = tpl;
     $compile(elem)($rootScope);
 
     $state.go("test");

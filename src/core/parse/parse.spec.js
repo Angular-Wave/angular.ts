@@ -94,11 +94,11 @@ describe("parser", () => {
         expect(scope.$eval("1<=1")).toBeTruthy();
         expect(scope.$eval("1>2")).toEqual(1 > 2);
         expect(scope.$eval("2>=1")).toEqual(2 >= 1);
-        expect(scope.$eval("true==2<3")).toEqual(2 < 3 == true);
-        expect(scope.$eval("true===2<3")).toEqual(2 < 3 === true);
+        expect(scope.$eval("true==2<3")).toEqual(2 < 3);
+        expect(scope.$eval("true===2<3")).toEqual(2 < 3);
 
         expect(scope.$eval("true===3===3")).toEqual((true === 3) === 3);
-        expect(scope.$eval("3===3===true")).toEqual((3 === 3) === true);
+        expect(scope.$eval("3===3===true")).toEqual(true);
         expect(scope.$eval("3 >= 3 > 2")).toEqual(3 >= 3 > 2);
       });
 
@@ -106,16 +106,16 @@ describe("parser", () => {
         expect(scope.$eval("0&&2")).toEqual(0 && 2);
         expect(scope.$eval("0||2")).toEqual(0 || 2);
         expect(scope.$eval("0||1&&2")).toEqual(0 || (1 && 2));
-        expect(scope.$eval("true&&a")).toEqual(true && undefined);
-        expect(scope.$eval("true&&a()")).toEqual(true && undefined);
-        expect(scope.$eval("true&&a()()")).toEqual(true && undefined);
-        expect(scope.$eval("true&&a.b")).toEqual(true && undefined);
-        expect(scope.$eval("true&&a.b.c")).toEqual(true && undefined);
-        expect(scope.$eval("false||a")).toEqual(false || undefined);
-        expect(scope.$eval("false||a()")).toEqual(false || undefined);
-        expect(scope.$eval("false||a()()")).toEqual(false || undefined);
-        expect(scope.$eval("false||a.b")).toEqual(false || undefined);
-        expect(scope.$eval("false||a.b.c")).toEqual(false || undefined);
+        expect(scope.$eval("true&&a")).toEqual(undefined);
+        expect(scope.$eval("true&&a()")).toEqual(undefined);
+        expect(scope.$eval("true&&a()()")).toEqual(undefined);
+        expect(scope.$eval("true&&a.b")).toEqual(undefined);
+        expect(scope.$eval("true&&a.b.c")).toEqual(undefined);
+        expect(scope.$eval("false||a")).toEqual(undefined);
+        expect(scope.$eval("false||a()")).toEqual(undefined);
+        expect(scope.$eval("false||a()()")).toEqual(undefined);
+        expect(scope.$eval("false||a.b")).toEqual(undefined);
+        expect(scope.$eval("false||a.b.c")).toEqual(undefined);
       });
 
       it("should parse ternary", () => {
@@ -278,10 +278,11 @@ describe("parser", () => {
 
       [2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 42, 99].forEach((pathLength) => {
         it(`should resolve nested paths of length ${pathLength}`, () => {
+          let i;
           // Create a nested object {x2: {x3: {x4: ... {x[n]: 42} ... }}}.
           let obj = 42;
           const locals = {};
-          for (var i = pathLength; i >= 2; i--) {
+          for (i = pathLength; i >= 2; i--) {
             const newObj = {};
             newObj[`x${i}`] = obj;
             obj = newObj;
@@ -613,7 +614,7 @@ describe("parser", () => {
       });
 
       it("should evaluate negation", () => {
-        expect(scope.$eval("!false || true")).toEqual(!false || true);
+        expect(scope.$eval("!false || true")).toEqual(true);
         expect(scope.$eval("!11 == 10")).toEqual(!11 == 10);
         expect(scope.$eval("12/6/2")).toEqual(12 / 6 / 2);
       });

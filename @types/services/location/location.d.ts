@@ -84,24 +84,10 @@ export function normalizePath(
  * Parses the application URL and updates the location object with path, search, and hash.
  *
  * @param {string} url - The URL string to parse.
- * @param {Object} locationObj - The location object to be updated.
- * @param {string} locationObj.$$path - The path component (will be set).
- * @param {Object.<string, (string|boolean|string[])>} locationObj.$$search - The parsed query parameters (will be set).
- * @param {string} locationObj.$$hash - The decoded URL fragment (will be set).
  * @param {boolean} html5Mode - Whether HTML5 mode is enabled (affects decoding).
  * @throws Will throw an error if the URL starts with invalid slashes.
  */
-export function parseAppUrl(
-  url: string,
-  locationObj: {
-    $$path: string;
-    $$search: {
-      [x: string]: string | boolean | string[];
-    };
-    $$hash: string;
-  },
-  html5Mode: boolean,
-): void;
+export function parseAppUrl(url: string, html5Mode: boolean): void;
 /**
  * @ignore
  * Returns the substring of `url` after the `base` string if `url` starts with `base`.
@@ -192,12 +178,6 @@ export class Location {
    */
   absUrl: string;
   /**
-   * The protocol scheme of the URL, without the trailing colon.
-   * Example: "http" or "https"
-   * @type {string}
-   */
-  protocol: string;
-  /**
    * Return host of current URL.
    * Note: compared to the non-AngularTS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
    * @type {string}
@@ -216,22 +196,10 @@ export class Location {
   port: number;
   /**
    * @ignore
-   * The pathname, beginning with "/"
-   * @type {string}
-   */
-  $$path: string;
-  /**
-   * @ignore
    * Current url
    * @type {string}
    */
   $$url: string;
-  /**
-   * @ignore
-   * The hash string, minus the hash symbol
-   * @type {string}
-   */
-  $$hash: string;
   /**
    * @ignore
    * Callback to update browser url
@@ -288,7 +256,6 @@ export class Location {
     paramValue?: (string | number | Array<string> | boolean) | undefined,
     ...args: any[]
   ): any;
-  $$search: any;
   /**
    * Returns the search part (as object) of current URL
    *

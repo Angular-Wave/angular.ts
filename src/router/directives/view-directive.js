@@ -1,10 +1,5 @@
 import { filter, tail, unnestR } from "../../shared/common.js";
-import {
-  hasAnimate,
-  isDefined,
-  isFunction,
-  // isString,
-} from "../../shared/utils.js";
+import { hasAnimate, isDefined, isFunction } from "../../shared/utils.js";
 // import { kebobString } from "../../shared/strings.js";
 import { parse } from "../../shared/hof.js";
 import { ResolveContext } from "../resolve/resolve-context.js";
@@ -283,7 +278,7 @@ export let ngView = [
              * @param {string} viewName Name of the view.
              */
             newScope.$emit("$viewContentLoading", name);
-            const cloned = $transclude(newScope, function (clone) {
+            currentEl = $transclude(newScope, function (clone) {
               setCacheData(clone, "$ngViewAnim", $ngViewAnim);
               setCacheData(clone, "$ngView", $ngViewData);
               renderer.enter(clone, $element, function () {
@@ -299,7 +294,6 @@ export let ngView = [
               });
               cleanupLastView();
             });
-            currentEl = cloned;
             currentScope = newScope;
             /**
              * Fired once the view is **loaded**, *after* the DOM is rendered.

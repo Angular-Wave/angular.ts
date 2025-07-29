@@ -5,7 +5,7 @@ const packageJsonPath = path.resolve(__dirname, "../package.json");
 
 const outputPath = path.resolve(
   __dirname,
-  "../docs/layouts/sortcodes/version.html",
+  "../docs/layouts/shortcodes/version.html",
 );
 
 try {

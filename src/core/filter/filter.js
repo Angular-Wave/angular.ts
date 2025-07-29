@@ -12,7 +12,7 @@ import {
 const SUFFIX = "Filter";
 
 export class FilterProvider {
-  static $inject = [$t.$provide];
+  /* @ignore */ static $inject = [$t.$provide];
 
   /**
    * @param {import('../../interface.ts').Provider} $provide

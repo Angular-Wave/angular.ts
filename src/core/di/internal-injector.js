@@ -109,8 +109,7 @@ class AbstractInjector {
 
     if (isClass(/** @type {Function} */ (fn))) {
       args.unshift(null);
-      const res = new (Function.prototype.bind.apply(fn, args))();
-      return res;
+      return new (Function.prototype.bind.apply(fn, args))();
     } else {
       return /** @type {Function} */ (fn).apply(self, args);
     }
@@ -199,8 +198,7 @@ export class InjectorService extends AbstractInjector {
    */
   factory(serviceName) {
     const provider = this.providerInjector.get(serviceName + providerSuffix);
-    const res = this.invoke(provider.$get, provider, undefined, serviceName);
-    return res;
+    return this.invoke(provider.$get, provider, undefined, serviceName);
   }
 
   /**
@@ -234,8 +232,7 @@ function stringifyFn(fn) {
  */
 function extractArgs(fn) {
   const fnText = stringifyFn(fn).replace(STRIP_COMMENTS, "");
-  const args = fnText.match(ARROW_ARG) || fnText.match(FN_ARGS);
-  return args;
+  return fnText.match(ARROW_ARG) || fnText.match(FN_ARGS);
 }
 
 /**

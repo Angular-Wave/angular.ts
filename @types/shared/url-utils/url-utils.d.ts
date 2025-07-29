@@ -56,11 +56,6 @@ export function urlsAreSameOrigin(
   url2: import("./interface.js").ResolvableUrl,
 ): boolean;
 /**
- * Returns the current document base URL.
- * @returns {string}
- */
-export function getBaseUrl(): string;
-/**
  * Removes a trailing hash ('#') from the given URL if it exists.
  *
  * @param {string} url

@@ -9,21 +9,22 @@ import {
   VALID_CLASS,
 } from "../../shared/constants.js";
 import {
-  minErr,
-  isNumber,
-  isNumberNaN,
-  isPromiseLike,
-  isUndefined,
-  isFunction,
   hasAnimate,
   isBoolean,
-  snakeCase,
+  isFunction,
+  isNumber,
+  isNumberNaN,
   isObjectEmpty,
+  isPromiseLike,
   isProxy,
+  isUndefined,
+  minErr,
+  snakeCase,
 } from "../../shared/utils.js";
 import { nullFormCtrl, PENDING_CLASS } from "../form/form.js";
 import { defaultModelOptions } from "../model-options/model-options.js";
 import { startingTag } from "../../shared/dom.js";
+import { $injectTokens as $t } from "../../injection-tokens.js";
 
 export const ngModelMinErr = minErr("ngModel");
 
@@ -66,14 +67,14 @@ export const ngModelMinErr = minErr("ngModel");
 
 export class NgModelController {
   static $nonscope = true;
-  static $inject = [
+  /* @ignore */ static $inject = [
     "$scope",
-    "$exceptionHandler",
+    $t.$exceptionHandler,
     "$attrs",
     "$element",
-    "$parse",
-    "$animate",
-    "$interpolate",
+    $t.$parse,
+    $t.$animate,
+    $t.$interpolate,
   ];
 
   /**
@@ -720,8 +721,7 @@ export class NgModelController {
   }
 
   $$parseAndValidate() {
-    const viewValue = this.$$lastCommittedViewValue;
-    let modelValue = viewValue;
+    let modelValue = this.$$lastCommittedViewValue;
     const that = this;
 
     this.$$parserValid = isUndefined(modelValue) ? undefined : true;

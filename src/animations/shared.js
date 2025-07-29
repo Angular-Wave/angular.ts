@@ -1,4 +1,4 @@
-import { isString, minErr, extend } from "../shared/utils.js";
+import { extend, isString, minErr } from "../shared/utils.js";
 import { ASTType } from "../core/parse/ast-type.js";
 
 export const ADD_CLASS_SUFFIX = "-add";
@@ -331,8 +331,7 @@ export function blockKeyframeAnimations(node, applyBlock) {
 
 export function applyInlineStyle(node, styleTuple) {
   const prop = styleTuple[0];
-  const value = styleTuple[1];
-  node.style[prop] = value;
+  node.style[prop] = styleTuple[1];
 }
 
 export function concatWithSpace(a, b) {

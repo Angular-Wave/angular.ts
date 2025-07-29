@@ -2,7 +2,7 @@ import { wait } from "../../shared/test-utils.js";
 import { $postUpdateQueue, createScope } from "./scope.js";
 import { Angular } from "../../loader.js";
 import { createInjector } from "../di/injector.js";
-import { isDefined, sliceArgs, isProxy } from "../../shared/utils.js";
+import { isDefined, isProxy, sliceArgs } from "../../shared/utils.js";
 
 describe("Scope", () => {
   let scope;
@@ -1729,8 +1729,7 @@ describe("Scope", () => {
     describe("watching other proxies", () => {
       it("should register a foreign proxies ", async () => {
         let scope1 = createScope();
-        let scope2 = createScope({ b: 2 });
-        scope1.service = scope2;
+        scope1.service = createScope({ b: 2 });
         expect(scope1.$handler.foreignProxies.size).toEqual(1);
       });
 

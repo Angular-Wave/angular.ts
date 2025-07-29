@@ -19,6 +19,7 @@ import { $injectTokens as $t, provider } from "../../injection-tokens.js";
  * API for URL management
  */
 export class UrlService {
+  /* @ignore */
   static $inject = provider([
     $t.$location,
     $t.$state,
@@ -112,16 +113,6 @@ export class UrlService {
       return this;
     },
   ];
-
-  /**
-   * @returns {boolean}
-   */
-  html5Mode() {
-    return (
-      this.$locationProvider.html5ModeConf.enabled &&
-      typeof history !== "undefined"
-    );
-  }
 
   /**
    * @returns {string}
@@ -385,8 +376,8 @@ export class UrlService {
     let url = urlMatcher.format(params);
     if (url == null) return null;
     options = options || { absolute: false };
-    const isHtml5 = this.html5Mode();
-    if (!isHtml5 && url !== null) {
+    const isHtml5 = this.$locationProvider.html5ModeConf.enabled;
+    if (!isHtml5) {
       url = "#" + this.$locationProvider.hashPrefixConf + url;
     }
     url = appendBasePath(url, isHtml5, options.absolute, this.baseHref());
@@ -397,8 +388,7 @@ export class UrlService {
     const cfgPort = this.$location.port;
     const port = cfgPort === 80 || cfgPort === 443 ? "" : ":" + cfgPort;
     return [
-      this.$location.protocol,
-      "://",
+      `${window.location.protocol}//`,
       this.$location.host,
       port,
       slash,

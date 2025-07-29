@@ -23,6 +23,25 @@ const $locationMinErr = minErr("$location");
 
 let urlUpdatedByLocation = false;
 
+/**
+ * @ignore
+ * The pathname, beginning with "/"
+ * @type {string}
+ */
+let $$path;
+
+/**
+ * @type {Object.<string,boolean|Array>}
+ */
+let $$search;
+
+/**
+ * @ignore
+ * The hash string, minus the hash symbol
+ * @type {string}
+ */
+let $$hash;
+
 export class Location {
   /**
    * @param {string} appBase application base URL
@@ -56,13 +75,6 @@ export class Location {
     this.absUrl = "";
 
     /**
-     * The protocol scheme of the URL, without the trailing colon.
-     * Example: "http" or "https"
-     * @type {string}
-     */
-    this.protocol = parsedUrl.protocol;
-
-    /**
      * Return host of current URL.
      * Note: compared to the non-AngularTS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
      * @type {string}
@@ -80,14 +92,9 @@ export class Location {
      * @type {number}
      */
     this.port =
-      toInt(parsedUrl.port) || DEFAULT_PORTS[parsedUrl.protocol] || null;
-
-    /**
-     * @ignore
-     * The pathname, beginning with "/"
-     * @type {string}
-     */
-    this.$$path = undefined;
+      toInt(parsedUrl.port) ||
+      DEFAULT_PORTS[window.location.protocol.slice(0, -1)] ||
+      null;
 
     /**
      * @ignore
@@ -95,13 +102,6 @@ export class Location {
      * @type {string}
      */
     this.$$url = undefined;
-
-    /**
-     * @ignore
-     * The hash string, minus the hash symbol
-     * @type {string}
-     */
-    this.$$hash = undefined;
 
     /**
      * @ignore
@@ -143,7 +143,7 @@ export class Location {
    */
   setPath(path) {
     let newPath = path !== null ? path.toString() : "";
-    this.$$path = newPath.charAt(0) === "/" ? newPath : `/${newPath}`;
+    $$path = newPath.charAt(0) === "/" ? newPath : `/${newPath}`;
     this.$$compose();
     return this;
   }
@@ -155,7 +155,7 @@ export class Location {
    * @return {string}
    */
   getPath() {
-    return this.$$path;
+    return $$path;
   }
 
   /**
@@ -164,7 +164,7 @@ export class Location {
    * @return {Location} hash
    */
   setHash(hash) {
-    this.$$hash = hash !== null ? hash.toString() : "";
+    $$hash = hash !== null ? hash.toString() : "";
     this.$$compose();
     return this;
   }
@@ -174,7 +174,7 @@ export class Location {
    * @return {string} hash
    */
   getHash() {
-    return this.$$hash;
+    return $$hash;
   }
 
   /**
@@ -189,7 +189,7 @@ export class Location {
       case 1:
         if (isString(search) || isNumber(search)) {
           search = search.toString();
-          this.$$search = parseKeyValue(search);
+          $$search = parseKeyValue(search);
         } else if (isObject(search)) {
           search = structuredClone(search, {});
           // remove object undefined or null properties
@@ -197,7 +197,7 @@ export class Location {
             if (value == null) delete search[key];
           });
 
-          this.$$search = search;
+          $$search = search;
         } else {
           throw $locationMinErr(
             "isrcharg",
@@ -207,9 +207,10 @@ export class Location {
         break;
       default:
         if (isUndefined(paramValue) || paramValue === null) {
-          delete this.$$search[search];
+          delete $$search[search];
         } else {
-          this.$$search[search] = paramValue;
+          // @ts-ignore
+          $$search[search] = paramValue;
         }
     }
 
@@ -223,7 +224,7 @@ export class Location {
    * @returns {Object} Search object or Location object
    */
   getSearch() {
-    return this.$$search;
+    return $$search;
   }
 
   /**
@@ -231,7 +232,7 @@ export class Location {
    * Compose url and update `url` and `absUrl` property
    */
   $$compose() {
-    this.$$url = normalizePath(this.$$path, this.$$search, this.$$hash);
+    this.$$url = normalizePath($$path, $$search, $$hash);
     this.absUrl = this.html5
       ? this.appBaseNoFile + this.$$url.substring(1)
       : this.appBase + (this.$$url ? this.hashPrefix + this.$$url : "");
@@ -335,10 +336,10 @@ export class Location {
         );
       }
 
-      parseAppUrl(pathUrl, this, true);
+      parseAppUrl(pathUrl, true);
 
-      if (!this.$$path) {
-        this.$$path = "/";
+      if (!$$path) {
+        $$path = "/";
       }
 
       this.$$compose();
@@ -370,13 +371,9 @@ export class Location {
         }
       }
 
-      parseAppUrl(withoutHashUrl, this, false);
+      parseAppUrl(withoutHashUrl, false);
 
-      this.$$path = removeWindowsDriveName(
-        this.$$path,
-        withoutHashUrl,
-        this.appBase,
-      );
+      $$path = removeWindowsDriveName($$path, withoutHashUrl, this.appBase);
 
       this.$$compose();
 
@@ -457,8 +454,6 @@ export class LocationProvider {
     if (state === undefined) {
       state = null;
     }
-
-    // setter
     if (url) {
       url = urlResolve(url).href;
 
@@ -550,7 +545,7 @@ export class LocationProvider {
      *
      * @param {import('../../core/scope/scope.js').Scope} $rootScope
      * @param {Element} $rootElement
-     * @returns
+     * @returns {Location}
      */
     ($rootScope, $rootElement) => {
       /** @type {Location} */
@@ -897,14 +892,10 @@ export function normalizePath(pathValue, searchValue, hashValue) {
  * Parses the application URL and updates the location object with path, search, and hash.
  *
  * @param {string} url - The URL string to parse.
- * @param {Object} locationObj - The location object to be updated.
- * @param {string} locationObj.$$path - The path component (will be set).
- * @param {Object.<string, (string|boolean|string[])>} locationObj.$$search - The parsed query parameters (will be set).
- * @param {string} locationObj.$$hash - The decoded URL fragment (will be set).
  * @param {boolean} html5Mode - Whether HTML5 mode is enabled (affects decoding).
  * @throws Will throw an error if the URL starts with invalid slashes.
  */
-export function parseAppUrl(url, locationObj, html5Mode) {
+export function parseAppUrl(url, html5Mode) {
   if (/^\s*[\\/]{2,}/.test(url)) {
     throw $locationMinErr("badpath", 'Invalid url "{0}".', url);
   }
@@ -918,13 +909,13 @@ export function parseAppUrl(url, locationObj, html5Mode) {
     prefixed && match.pathname.charAt(0) === "/"
       ? match.pathname.substring(1)
       : match.pathname;
-  locationObj.$$path = decodePath(path, html5Mode);
-  locationObj.$$search = parseKeyValue(match.search);
-  locationObj.$$hash = decodeURIComponent(match.hash);
+  $$path = decodePath(path, html5Mode);
+  $$search = parseKeyValue(match.search);
+  $$hash = decodeURIComponent(match.hash);
 
   // make sure path starts with '/';
-  if (locationObj.$$path && locationObj.$$path.charAt(0) !== "/") {
-    locationObj.$$path = `/${locationObj.$$path}`;
+  if ($$path && $$path.charAt(0) !== "/") {
+    $$path = `/${$$path}`;
   }
 }
 

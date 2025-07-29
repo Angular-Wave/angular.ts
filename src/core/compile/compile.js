@@ -139,7 +139,7 @@ const EVENT_HANDLER_ATTR_REGEXP = /^(on[a-z]+|formaction)$/;
 export const DirectiveSuffix = "Directive";
 
 export class CompileProvider {
-  static $inject = ["$provide", "$$sanitizeUriProvider"];
+  /* @ignore */ static $inject = ["$provide", "$$sanitizeUriProvider"];
 
   /**
    * @param {import('../../interface.js').Provider} $provide
@@ -1216,8 +1216,7 @@ export class CompileProvider {
               // Null out all of these references for garbage collection
               compileNodes = transcludeFn = previousCompileContext = null;
             }
-            const linked = compiled.apply(this, arguments);
-            return linked;
+            return compiled.apply(this, arguments);
           };
         }
 
@@ -1561,14 +1560,13 @@ export class CompileProvider {
                 //  * `undefined` - a slot that was not declared (i.e. invalid)
                 const slotTranscludeFn = boundTranscludeFn.$$slots[slotName];
                 if (slotTranscludeFn) {
-                  const slotTranscludeRes = slotTranscludeFn(
+                  return slotTranscludeFn(
                     scope,
                     cloneAttachFn,
                     transcludeControllers,
                     futureParentElement,
                     scopeToChild,
                   );
-                  return slotTranscludeRes;
                 }
 
                 if (isUndefined(slotTranscludeFn)) {
@@ -1581,14 +1579,13 @@ export class CompileProvider {
                   );
                 }
               } else {
-                const boundTranscludeRes = boundTranscludeFn(
+                return boundTranscludeFn(
                   scope,
                   cloneAttachFn,
                   transcludeControllers,
                   futureParentElement,
                   scopeToChild,
                 );
-                return boundTranscludeRes;
               }
             }
           };

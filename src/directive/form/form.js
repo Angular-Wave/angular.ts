@@ -96,7 +96,13 @@ const SUBMITTED_CLASS = "ng-submitted";
 
 export class FormController {
   static $nonscope = true;
-  static $inject = ["$element", "$attrs", "$scope", "$animate", "$interpolate"];
+  /* @ignore */ static $inject = [
+    "$element",
+    "$attrs",
+    "$scope",
+    "$animate",
+    "$interpolate",
+  ];
 
   /**
    * @param {Element} $element
@@ -560,7 +566,7 @@ const formDirectiveFactory = function (isNgForm) {
   return [
     "$parse",
     function ($parse) {
-      const formDirective = {
+      return {
         name: "form",
         restrict: isNgForm ? "EA" : "E",
         require: ["form", "^^?form"], // first is the form's own ctrl, second is an optional parent form
@@ -641,9 +647,6 @@ const formDirectiveFactory = function (isNgForm) {
           };
         },
       };
-
-      return formDirective;
-
       function getSetter(expression) {
         if (expression === "") {
           // create an assignable expression, so forms with an empty name can be renamed later

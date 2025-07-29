@@ -1,9 +1,9 @@
 import {
-  minErr,
+  extend,
   isDefined,
   isUndefined,
+  minErr,
   stringify,
-  extend,
 } from "../../shared/utils.js";
 import { constantWatchDelegate } from "../parse/parse.js";
 
@@ -322,8 +322,7 @@ export class InterpolateProvider {
                       let j = 0;
                       for (; j < ii; j++) {
                         let fn = parseFns[j];
-                        let res = fn(context);
-                        vals[j] = res;
+                        vals[j] = fn(context);
                       }
                       cb(compute(vals));
                     });
@@ -332,8 +331,7 @@ export class InterpolateProvider {
                   values[i] = parseFns[i](context);
                 }
 
-                let res = compute(values);
-                return res;
+                return compute(values);
               } catch (err) {
                 interr(text, err);
               }

@@ -13,7 +13,7 @@ const DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/;
 
 class NgModelOptionsController {
   static $nonscope = true;
-  static $inject = ["$attrs", "$scope"];
+  /* @ignore */ static $inject = ["$attrs", "$scope"];
 
   /**
    * @param {import('../../core/compile/attributes.js').Attributes} $attrs

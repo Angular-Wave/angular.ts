@@ -4,6 +4,7 @@ import { Resolvable } from "./resolve/resolvable.js";
 import { kebobString } from "../shared/strings.js";
 import { annotate } from "../core/di/injector.js";
 import { DirectiveSuffix } from "../core/compile/compile.js";
+import { $injectTokens as $t } from "../injection-tokens.js";
 
 /**
  * @typedef BindingTuple
@@ -21,10 +22,10 @@ export class TemplateFactoryProvider {
   }
 
   $get = [
-    "$http",
-    "$templateCache",
-    "$templateRequest",
-    "$injector",
+    $t.$http,
+    $t.$templateCache,
+    $t.$templateRequest,
+    $t.$injector,
     /**
      * @param {import("interface.ts").HttpService} $http
      * @param {import("../services/template-cache/interface.ts").TemplateCache} $templateCache

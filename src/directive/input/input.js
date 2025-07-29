@@ -1,19 +1,19 @@
 import {
+  addDateMinutes,
+  convertTimezoneToLocal,
+  equals,
+  isDate,
   isDefined,
-  isUndefined,
-  isString,
-  lowercase,
-  trim,
-  isObject,
   isNumber,
   isNumberNaN,
-  isDate,
-  convertTimezoneToLocal,
-  addDateMinutes,
-  timezoneToOffset,
-  nextUid,
-  equals,
+  isObject,
   isProxy,
+  isString,
+  isUndefined,
+  lowercase,
+  nextUid,
+  timezoneToOffset,
+  trim,
 } from "../../shared/utils.js";
 import { ngModelMinErr } from "./../model/model";
 
@@ -502,9 +502,8 @@ export function createDateInputType(type, regexp, parseDate) {
 }
 
 export function badInputChecker(scope, element, attr, ctrl, parserName) {
-  const node = element;
   const nativeValidation = (ctrl.$$hasNativeValidators = isObject(
-    node.validity,
+    element.validity,
   ));
 
   if (nativeValidation) {
@@ -1051,12 +1050,11 @@ export function ngValueDirective() {
     // TODO REMOVE IS SUPPORT
     // Support: IE9 only
     // In IE9 values are converted to string (e.g. `input.value = null` results in `input.value === 'null'`).
-    const propValue = isDefined(value)
+    element["value"] = isDefined(value)
       ? isProxy(value)
         ? value.$target
         : value
       : null;
-    element["value"] = propValue;
     attr.$set("value", value);
   }
 

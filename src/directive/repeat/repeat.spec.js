@@ -88,8 +88,7 @@ describe("ngRepeat", () => {
       "<a class='test' name='y'>b</a>" +
       "<a class='test' name='x'>c</a>";
 
-    const htmlCollection = document.getElementsByClassName("test");
-    scope.items = htmlCollection;
+    scope.items = document.getElementsByClassName("test");
     await wait();
     expect(element.querySelectorAll("li").length).toEqual(3);
     expect(element.textContent).toEqual("x;y;x;");

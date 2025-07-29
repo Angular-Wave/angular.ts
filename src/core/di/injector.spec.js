@@ -296,7 +296,7 @@ describe("injector.modules", () => {
     module.constant("b", 2);
     const injector = createInjector(["myModule"]);
     class Foo {
-      static $inject = ["a", "b"];
+      /* @ignore */ static $inject = ["a", "b"];
       constructor(a, b) {
         this.c = a + b;
       }

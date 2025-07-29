@@ -1,4 +1,3 @@
-// typedoc.json
 {
   "entryPoints": ["src/interface.ts"],
   "entryPointStrategy": "expand",

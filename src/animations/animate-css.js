@@ -5,33 +5,33 @@ import {
 } from "../shared/dom.js";
 import { isDefined } from "../shared/utils.js";
 import {
-  TRANSITION_DURATION_PROP,
-  TRANSITION_DELAY_PROP,
+  ACTIVE_CLASS_SUFFIX,
+  ADD_CLASS_SUFFIX,
   ANIMATION_DELAY_PROP,
-  TRANSITION_PROP,
-  PROPERTY_KEY,
   ANIMATION_DURATION_PROP,
   ANIMATION_ITERATION_COUNT_KEY,
   ANIMATION_PROP,
-  DURATION_KEY,
+  ANIMATIONEND_EVENT,
   applyAnimationClassesFactory,
-  pendClasses,
-  prepareAnimationOptions,
-  packageStyles,
-  EVENT_CLASS_PREFIX,
-  ADD_CLASS_SUFFIX,
-  REMOVE_CLASS_SUFFIX,
-  applyInlineStyle,
-  SAFE_FAST_FORWARD_DURATION_VALUE,
-  ACTIVE_CLASS_SUFFIX,
   applyAnimationFromStyles,
   applyAnimationStyles,
-  blockKeyframeAnimations,
-  removeFromArray,
-  TIMING_KEY,
-  TRANSITIONEND_EVENT,
-  ANIMATIONEND_EVENT,
   applyAnimationToStyles,
+  applyInlineStyle,
+  blockKeyframeAnimations,
+  DURATION_KEY,
+  EVENT_CLASS_PREFIX,
+  packageStyles,
+  pendClasses,
+  prepareAnimationOptions,
+  PROPERTY_KEY,
+  REMOVE_CLASS_SUFFIX,
+  removeFromArray,
+  SAFE_FAST_FORWARD_DURATION_VALUE,
+  TIMING_KEY,
+  TRANSITION_DELAY_PROP,
+  TRANSITION_DURATION_PROP,
+  TRANSITION_PROP,
+  TRANSITIONEND_EVENT,
 } from "./shared.js";
 
 const ANIMATE_TIMER_KEY = "$$animateCss";
@@ -771,8 +771,7 @@ export function AnimateCssProvider() {
 
             temporaryStyles.forEach((entry) => {
               const key = entry[0];
-              const value = entry[1];
-              node.style[key] = value;
+              node.style[key] = entry[1];
             });
 
             applyAnimationClasses(element, options);

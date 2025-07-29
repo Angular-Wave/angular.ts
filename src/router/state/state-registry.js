@@ -16,7 +16,7 @@ import { $injectTokens, provider } from "../../injection-tokens.js";
  *
  */
 export class StateRegistryProvider {
-  static $inject = provider([
+  /* @ignore */ static $inject = provider([
     $injectTokens.$url,
     $injectTokens.$state,
     $injectTokens.$routerGlobals,

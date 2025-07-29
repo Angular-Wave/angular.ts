@@ -16,6 +16,9 @@
  * @type Readonly<Record<string, string>>
  */
 export const $injectTokens = Object.freeze({
+  $attrs: "$attrs",
+  $scope: "$scope",
+  $element: "$element",
   $$AnimateRunner: "$$AnimateRunner",
   $$animateAsyncRun: "$$animateAsyncRun",
   $$animateCache: "$$animateCache",

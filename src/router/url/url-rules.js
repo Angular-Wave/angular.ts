@@ -5,7 +5,9 @@ import { isDefined, isFunction, isString } from "../../shared/utils.js";
 import { removeFrom } from "../../shared/common.js";
 import { UrlRuleFactory } from "./url-rule.js";
 
-const prioritySort = (a, b) => (b.priority || 0) - (a.priority || 0);
+function prioritySort(a, b) {
+  return (b.priority || 0) - (a.priority || 0);
+}
 
 const typeSort = (a, b) => {
   const weights = { STATE: 4, URLMATCHER: 4, REGEXP: 3, RAW: 2, OTHER: 1 };
@@ -36,8 +38,7 @@ const idSort = (a, b) => {
  *   - Equally sorted State and UrlMatcher rules will each match the URL.
  *     Then, the *best* match is chosen based on how many parameter values were matched.
  */
-let defaultRuleSortFn;
-defaultRuleSortFn = (a, b) => {
+function defaultRuleSortFn(a, b) {
   let cmp = prioritySort(a, b);
   if (cmp !== 0) return cmp;
   cmp = typeSort(a, b);
@@ -45,7 +46,8 @@ defaultRuleSortFn = (a, b) => {
   cmp = urlMatcherSort(a, b);
   if (cmp !== 0) return cmp;
   return idSort(a, b);
-};
+}
+
 function getHandlerFn(handler) {
   if (
     !isFunction(handler) &&
@@ -70,6 +72,7 @@ function getHandlerFn(handler) {
  * This API is found at `$url.rules` (see: [[UIRouter.urlService]], [[URLService.rules]])
  */
 export class UrlRules {
+  /** @param {UrlRuleFactory} urlRuleFactory */
   constructor(urlRuleFactory) {
     this._sortFn = defaultRuleSortFn;
     this._rules = [];

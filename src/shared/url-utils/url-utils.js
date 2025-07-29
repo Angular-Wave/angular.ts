@@ -2,7 +2,6 @@ import { isString } from "../../shared/utils.js";
 
 const urlParsingNode = document.createElement("a");
 const originUrl = urlResolve(window.location.href);
-let baseUrlParsingNode;
 
 urlParsingNode.href = "http://[::1]";
 
@@ -62,7 +61,7 @@ export function urlIsSameOrigin(requestUrl) {
  * @returns {boolean} Whether the URL is same-origin as the document base URL.
  */
 export function urlIsSameOriginAsBaseUrl(requestUrl) {
-  return urlsAreSameOrigin(requestUrl, getBaseUrl());
+  return urlsAreSameOrigin(requestUrl, document.baseURI);
 }
 
 /**
@@ -112,27 +111,6 @@ export function urlsAreSameOrigin(url1, url2) {
   url2 = urlResolve(url2);
 
   return url1.protocol === url2.protocol && url1.host === url2.host;
-}
-
-/**
- * Returns the current document base URL.
- * @returns {string}
- */
-export function getBaseUrl() {
-  if (document.baseURI) {
-    return document.baseURI;
-  }
-
-  // `document.baseURI` is available everywhere except IE
-  if (!baseUrlParsingNode) {
-    baseUrlParsingNode = document.createElement("a");
-    baseUrlParsingNode.href = ".";
-
-    // Work-around for IE bug described in Implementation Notes. The fix in `urlResolve()` is not
-    // suitable here because we need to track changes to the base URL.
-    baseUrlParsingNode = baseUrlParsingNode.cloneNode(false);
-  }
-  return baseUrlParsingNode.href;
 }
 
 /**

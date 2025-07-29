@@ -68,7 +68,7 @@ export interface Provider {
   /**
    * Register a directive
    * @param name - The name of the directive.
-   * @param provider - An object with a `$get` property that defines how the service is created.
+   * @param directive - An object with a `$get` property that defines how the service is created.
    */
   directive(name: string, directive: DirectiveFactory): Provider;
 

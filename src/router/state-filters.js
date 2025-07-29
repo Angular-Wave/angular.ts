@@ -1,3 +1,7 @@
+import { $injectTokens as $t } from "../injection-tokens.js";
+
+$IsStateFilter.$inject = [$t.$state];
+
 /**
  * `isState` Filter: truthy if the current state is the parameter
  *
@@ -7,18 +11,19 @@
  * ```html
  * <div ng-if="'stateName' | isState">show if state is 'stateName'</div>
  * ```
- */
-$IsStateFilter.$inject = ["$state"];
-/**
+ *
+ * @param {import('./state/state-service.js').StateProvider} $state
  * @returns {import('../interface.ts').FilterFn}
  */
 export function $IsStateFilter($state) {
-  const isFilter = function (state, params, options) {
-    return $state.is(state, params, options);
-  };
+  const isFilter = (state, params, options) =>
+    $state.is(state, params, options);
   isFilter.$stateful = true;
   return isFilter;
 }
+
+$IncludedByStateFilter.$inject = [$t.$state];
+
 /**
  * `includedByState` Filter: truthy if the current state includes the parameter
  *
@@ -28,9 +33,8 @@ export function $IsStateFilter($state) {
  * ```html
  * <div ng-if="'fullOrPartialStateName' | includedByState">show if state includes 'fullOrPartialStateName'</div>
  * ```
- */
-$IncludedByStateFilter.$inject = ["$state"];
-/**
+ *
+ * @param {import('./state/state-service.js').StateProvider} $state
  * @returns {import('../interface.ts').FilterFn}
  */
 export function $IncludedByStateFilter($state) {

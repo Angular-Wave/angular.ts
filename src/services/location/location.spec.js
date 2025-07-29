@@ -103,7 +103,6 @@ describe("$location", () => {
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/path/b?search=a&b=c&d#hash",
       );
-      expect(locationUrl.protocol).toBe("http");
       expect(locationUrl.host).toBe("www.domain.com");
       expect(locationUrl.port).toBe(9877);
       expect(locationUrl.getPath()).toBe("/path/b");
@@ -549,7 +548,6 @@ describe("$location", () => {
 
     it("should parse hashbang url into path and search", () => {
       const locationUrl = createHashbangUrl();
-      expect(locationUrl.protocol).toBe("http");
       expect(locationUrl.host).toBe("www.server.org");
       expect(locationUrl.port).toBe(1234);
       expect(locationUrl.getPath()).toBe("/path");
@@ -1010,50 +1008,53 @@ describe("$location", () => {
     let locationObj;
 
     beforeEach(() => {
-      locationObj = {};
+      locationObj = new Location(
+        "http://www.domain.com:9877/",
+        "http://www.domain.com:9877/",
+      );
     });
 
     it("should throw error on url starting with // or \\\\", () => {
-      expect(() =>
-        parseAppUrl("//invalid/path", locationObj, false),
-      ).toThrowError(/Invalid url/);
-      expect(() =>
-        parseAppUrl("\\\\invalid\\path", locationObj, false),
-      ).toThrowError(/Invalid url/);
+      expect(() => parseAppUrl("//invalid/path", false)).toThrowError(
+        /Invalid url/,
+      );
+      expect(() => parseAppUrl("\\\\invalid\\path", false)).toThrowError(
+        /Invalid url/,
+      );
     });
 
     it("should add leading slash if missing and parse url correctly", () => {
-      parseAppUrl("some/path?foo=bar#hashValue", locationObj, false);
-      expect(locationObj.$$path).toBe("/some/path");
-      expect(locationObj.$$search).toEqual(
+      parseAppUrl("some/path?foo=bar#hashValue", false);
+      expect(locationObj.getPath()).toBe("/some/path");
+      expect(locationObj.getSearch()).toEqual(
         jasmine.objectContaining({ foo: "bar" }),
       );
-      expect(locationObj.$$hash).toBe("hashValue");
+      expect(locationObj.getHash()).toBe("hashValue");
     });
 
     it("should keep leading slash if present", () => {
       parseAppUrl("/already/slashed?x=1#abc", locationObj, false);
-      expect(locationObj.$$path).toBe("/already/slashed");
-      expect(locationObj.$$search).toEqual(
+      expect(locationObj.getPath()).toBe("/already/slashed");
+      expect(locationObj.getSearch()).toEqual(
         jasmine.objectContaining({ x: "1" }),
       );
-      expect(locationObj.$$hash).toBe("abc");
+      expect(locationObj.getHash()).toBe("abc");
     });
 
     it("should remove leading slash from path if prefixed and path starts with slash", () => {
       parseAppUrl("foo/bar", locationObj, false);
-      expect(locationObj.$$path.charAt(0)).toBe("/");
-      expect(locationObj.$$path).toBe("/foo/bar");
+      expect(locationObj.getPath().charAt(0)).toBe("/");
+      expect(locationObj.getPath()).toBe("/foo/bar");
     });
 
     it("should set empty $$search when no query params", () => {
       parseAppUrl("/pathOnly", locationObj, false);
-      expect(locationObj.$$search).toEqual({});
+      expect(locationObj.getSearch()).toEqual({});
     });
 
     it("should decode hash correctly", () => {
       parseAppUrl("/path#%23encoded", locationObj, false);
-      expect(locationObj.$$hash).toBe("#encoded");
+      expect(locationObj.getHash()).toBe("#encoded");
     });
   });
 

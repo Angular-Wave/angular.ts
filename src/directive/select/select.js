@@ -27,7 +27,7 @@ class SelectController {
   /**
    * @type {Array<string>}
    */
-  static $inject = ["$element", "$scope"];
+  /* @ignore */ static $inject = ["$element", "$scope"];
 
   /**
    * @param {HTMLSelectElement} $element

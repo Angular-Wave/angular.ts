@@ -142,6 +142,7 @@ export class BaseUrlRule {
   $id: number;
   _group: any;
   handler: any;
+  priority: any;
   /**
    * This function should be overridden
    * @param {*} [params]

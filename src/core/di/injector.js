@@ -1,16 +1,16 @@
 import {
+  assert,
+  assertArg,
   assertArgFn,
-  minErr,
+  assertNotHasOwnProperty,
   isFunction,
+  isObject,
   isString,
   isUndefined,
-  assertArg,
-  assertNotHasOwnProperty,
-  isObject,
-  assert,
+  minErr,
 } from "../../shared/utils.js";
 import { INJECTOR_LITERAL } from "./ng-module.js";
-import { ProviderInjector, InjectorService } from "./internal-injector.js";
+import { InjectorService, ProviderInjector } from "./internal-injector.js";
 
 const ARROW_ARG = /^([^(]+?)=>/;
 const FN_ARGS = /^[^(]*\(\s*([^)]*)\)/m;
@@ -252,8 +252,7 @@ function stringifyFn(fn) {
  */
 function extractArgs(fn) {
   const fnText = stringifyFn(fn).replace(STRIP_COMMENTS, "");
-  const args = fnText.match(ARROW_ARG) || fnText.match(FN_ARGS);
-  return args;
+  return fnText.match(ARROW_ARG) || fnText.match(FN_ARGS);
 }
 
 /**

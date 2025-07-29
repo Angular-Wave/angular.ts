@@ -1,7 +1,8 @@
-import { equals, applyPairs, removeFrom, find } from "../../shared/common.js";
+import { applyPairs, equals, find, removeFrom } from "../../shared/common.js";
 import { curry } from "../../shared/hof.js";
 import { trace } from "../common/trace.js";
 import { getViewConfigFactory } from "../state/views.js";
+
 /**
  * The View service
  *
@@ -26,8 +27,7 @@ export class ViewService {
     this._listeners = [];
     this._pluginapi = {
       _registeredUIView: (id) => {
-        const res = find(this._ngViews, (view) => view.id === id);
-        return res;
+        return find(this._ngViews, (view) => view.id === id);
       },
       _registeredUIViews: () => this._ngViews,
       _activeViewConfigs: () => this._viewConfigs,
@@ -65,8 +65,7 @@ export class ViewService {
       throw new Error(
         "ViewService: No view config factory registered for type " + decl.$type,
       );
-    const cfgs = cfgFactory(path, decl);
-    return cfgs;
+    return cfgFactory(path, decl);
   }
   /**
    * Deactivates a ViewConfig.

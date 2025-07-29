@@ -1,26 +1,26 @@
 import {
-  lowercase,
-  uppercase,
-  extend,
-  isDefined,
-  isDate,
-  isRegExp,
-  isElement,
-  shallowCopy,
-  equals,
-  isWindow,
-  hashKey,
-  toKeyValue,
-  parseKeyValue,
-  isError,
-  isArrayLike,
-  encodeUriSegment,
   encodeUriQuery,
-  toJson,
+  encodeUriSegment,
+  equals,
+  extend,
   fromJson,
-  nextUid,
   getNodeName,
+  hashKey,
+  isArrayLike,
+  isDate,
+  isDefined,
+  isElement,
+  isError,
+  isRegExp,
+  isWindow,
+  lowercase,
+  nextUid,
+  parseKeyValue,
+  shallowCopy,
   snakeCase,
+  toJson,
+  toKeyValue,
+  uppercase,
 } from "./shared/utils.js";
 import { createElementFromHTML, dealoc, startingTag } from "./shared/dom.js";
 import { Angular } from "./loader.js";
@@ -594,15 +594,16 @@ describe("angular", () => {
 
     it("should look for ngApp directive using querySelectorAll", () => {
       window.angular.module("ABC", []);
-      const appElement = createElementFromHTML('<div ng-app="ABC"></div>');
-      element.querySelector["[ng-app]"] = appElement;
+      element.querySelector["[ng-app]"] = createElementFromHTML(
+        '<div ng-app="ABC"></div>',
+      );
       window.angular.init(element);
       expect(bootstrapSpy).toHaveBeenCalled();
     });
 
     it("should bootstrap anonymously", () => {
-      const appElement = createElementFromHTML("<div ng-app></div>");
-      element.querySelector["[ng-app]"] = appElement;
+      element.querySelector["[ng-app]"] =
+        createElementFromHTML("<div ng-app></div>");
       window.angular.init(element);
       expect(bootstrapSpy).toHaveBeenCalled();
     });

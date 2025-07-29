@@ -1,16 +1,16 @@
 import {
-  isUndefined,
-  nextUid,
-  isObject,
-  concat,
-  isFunction,
   assert,
-  isString,
+  concat,
+  hasOwn,
   isDefined,
+  isFunction,
   isNull,
+  isObject,
   isProxy,
   isProxySymbol,
-  hasOwn,
+  isString,
+  isUndefined,
+  nextUid,
 } from "../../shared/utils.js";
 import { ASTType } from "../parse/ast-type.js";
 
@@ -97,7 +97,7 @@ export function createScope(target = {}, context) {
               Array.isArray(target.$nonscope) &&
               target.$nonscope.includes(key))
           ) {
-            continue;
+            /* empty */
           } else {
             target[key] = createScope(target[key], proxy.$handler);
           }
@@ -577,6 +577,7 @@ export class Scope {
 
   /**
    * @param {Listener[]} listeners
+   * @param {Function} filter
    */
   #scheduleListener(listeners, filter = (val) => val) {
     Promise.resolve().then(() => {
@@ -1231,8 +1232,7 @@ export class Scope {
 function calculateWatcherCount(model) {
   const childIds = collectChildIds(model).add(model.$id);
 
-  /** @type {number} */
-  const count = Array.from(model.watchers.values()).reduce(
+  return Array.from(model.watchers.values()).reduce(
     (count, watcherArray) =>
       count +
       watcherArray.reduce(
@@ -1242,7 +1242,6 @@ function calculateWatcherCount(model) {
       ),
     0,
   );
-  return count;
 }
 
 /**

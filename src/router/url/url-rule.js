@@ -211,6 +211,7 @@ export class BaseUrlRule {
     this.$id = -1;
     this._group = undefined;
     this.handler = handler || ((x) => x);
+    this.priority = undefined;
   }
 
   /**

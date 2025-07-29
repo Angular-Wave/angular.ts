@@ -327,7 +327,6 @@ export class SceDelegateProvider {
               "Attempting to use an unsafe value in a safe context.",
             ),
           );
-          return;
         };
 
         if ($injector.has("$sanitize")) {
@@ -562,7 +561,6 @@ export class SceDelegateProvider {
               "Attempting to use an unsafe value in a safe context.",
             ),
           );
-          return;
         }
 
         return { trustAs, getTrusted, valueOf };

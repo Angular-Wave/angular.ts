@@ -66,10 +66,6 @@ export class UrlService {
       ) => UrlService)
   )[];
   /**
-   * @returns {boolean}
-   */
-  html5Mode(): boolean;
-  /**
    * @returns {string}
    */
   baseHref(): string;
