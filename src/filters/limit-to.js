@@ -4,7 +4,6 @@ import {
   isNumber,
   isNumberNaN,
   isString,
-  toInt,
 } from "../shared/utils.js";
 
 /**
@@ -23,7 +22,7 @@ export function limitToFilter() {
     if (Math.abs(Number(limit)) === Infinity) {
       limit = Number(limit);
     } else {
-      limit = toInt(/** @type {string} */ (limit));
+      limit = parseInt(/** @type {string} */ (limit), 10);
     }
     if (isNumberNaN(limit)) return input;
 
@@ -33,7 +32,7 @@ export function limitToFilter() {
     begin =
       !begin || isNaN(/** @type {any} */ (begin))
         ? 0
-        : toInt(/** @type {string} */ (begin));
+        : parseInt(/** @type {string} */ (begin), 10);
     begin =
       begin < 0 ? Math.max(0, /** @type {[]} */ (input).length + begin) : begin;
 

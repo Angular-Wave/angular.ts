@@ -1,6 +1,6 @@
 import { defaults, find } from "../../shared/common.js";
 import { propEq } from "../../shared/hof.js";
-import { Glob } from "../common/glob.js";
+import { Glob } from "../glob/glob.js";
 import { hasOwn, isFunction, isObject } from "../../shared/utils.js";
 
 /** @typedef {import('./interface.js').StateDeclaration} StateDeclaration */

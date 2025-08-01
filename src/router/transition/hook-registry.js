@@ -1,6 +1,6 @@
 import { removeFrom, tail, map } from "../../shared/common.js";
 import { isString, isFunction } from "../../shared/utils.js";
-import { Glob } from "../common/glob.js";
+import { Glob } from "../glob/glob.js";
 import { TransitionHookScope } from "./interface.js";
 /**
  * Determines if the given state matches the matchCriteria

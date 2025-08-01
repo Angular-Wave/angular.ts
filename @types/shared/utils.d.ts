@@ -197,11 +197,6 @@ export function baseExtend(dst: any, objs: any, deep: any): any;
  */
 export function extend(dst: any, ...src: any[]): any;
 /**
- * @param {string} str
- * @returns {number}
- */
-export function toInt(str: string): number;
-/**
  * @param {any} num
  * @returns {boolean}
  */

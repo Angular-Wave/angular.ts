@@ -8,7 +8,6 @@ import {
   isUndefined,
   minErr,
   parseKeyValue,
-  toInt,
   toKeyValue,
   equals,
   startsWith,
@@ -16,8 +15,6 @@ import {
 import { getBaseHref } from "../../shared/dom.js";
 import { $injectTokens as $t } from "../../injection-tokens.js";
 
-/** @type {import("./interface.ts").DefaultPorts} */
-const DEFAULT_PORTS = { http: 80, https: 443, ftp: 21 };
 const PATH_MATCH = /^([^?#]*)(\?([^#]*))?(#(.*))?$/;
 const $locationMinErr = minErr("$location");
 
@@ -50,8 +47,6 @@ export class Location {
    * @param {string} [prefix] URL path prefix for html5 mode or hash prefix for hashbang mode
    */
   constructor(appBase, appBaseNoFile, html5 = true, prefix) {
-    const parsedUrl = urlResolve(appBase);
-
     /** @type {string} */
     this.appBase = appBase;
 
@@ -73,28 +68,6 @@ export class Location {
      * @type {string}
      */
     this.absUrl = "";
-
-    /**
-     * Return host of current URL.
-     * Note: compared to the non-AngularTS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
-     * @type {string}
-     */
-    this.host = parsedUrl.hostname;
-
-    /**
-     * Port of current URL.
-     *
-     * ```js
-     * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-     * let port = $location.port;
-     * // => 80
-     * ```
-     * @type {number}
-     */
-    this.port =
-      toInt(parsedUrl.port) ||
-      DEFAULT_PORTS[window.location.protocol.slice(0, -1)] ||
-      null;
 
     /**
      * @ignore
@@ -455,7 +428,7 @@ export class LocationProvider {
       state = null;
     }
     if (url) {
-      url = urlResolve(url).href;
+      url = new URL(url).href;
 
       if (this.lastBrowserUrl === url && this.lastHistoryState === state) {
         return this;
@@ -611,7 +584,6 @@ export class LocationProvider {
             event.ctrlKey ||
             event.metaKey ||
             event.shiftKey ||
-            event.which === 2 ||
             event.button === 2
           ) {
             return;
@@ -646,7 +618,7 @@ export class LocationProvider {
             // an animation.
 
             const scvAnimatedString = /** @type {unknown} */ (absHref);
-            absHref = urlResolve(
+            absHref = new URL(
               /** @type {SVGAnimatedString } */ (scvAnimatedString).animVal,
             ).href;
           }

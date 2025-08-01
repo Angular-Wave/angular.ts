@@ -79,7 +79,7 @@ describe("urlUtils", () => {
     beforeEach(() => {
       urlIsAllowedOrigin = urlIsAllowedOriginFactory([
         "https://foo.com/",
-        `${origin.protocol}://bar.com:1337/`,
+        `${origin.protocol}//bar.com:1337/`,
       ]);
     });
 
@@ -89,7 +89,7 @@ describe("urlUtils", () => {
 
     it("should check against the list of trusted origins", () => {
       expect(urlIsAllowedOrigin("https://foo.com/path")).toBe(true);
-      expect(urlIsAllowedOrigin(`${origin.protocol}://bar.com:1337/path`)).toBe(
+      expect(urlIsAllowedOrigin(`${origin.protocol}//bar.com:1337/path`)).toBe(
         true,
       );
       expect(urlIsAllowedOrigin("https://baz.com:1337/path")).toBe(false);
@@ -104,7 +104,8 @@ describe("urlUtils", () => {
     });
 
     it("should return true only if the origins (protocol, hostname, post) match", () => {
-      const differentProtocol = origin.protocol !== "http" ? "http" : "https";
+      const differentProtocol =
+        origin.protocol !== "http:" ? "http:" : "https:";
       const differentPort = (parseInt(origin.port, 10) || 0) + 1;
       let url;
 
@@ -113,7 +114,7 @@ describe("urlUtils", () => {
       expect(urlIsAllowedOrigin(url)).toBe(true);
 
       // Same origin
-      url = `${origin.protocol}://${origin.host}/path`;
+      url = `${origin.protocol}//${origin.host}/path`;
       expect(urlIsAllowedOrigin(url)).toBe(true);
 
       // Same origin - implicit protocol
@@ -121,15 +122,15 @@ describe("urlUtils", () => {
       expect(urlIsAllowedOrigin(url)).toBe(true);
 
       // Same origin - different protocol
-      url = `${differentProtocol}://${origin.host}/path`;
+      url = `${differentProtocol}//${origin.host}/path`;
       expect(urlIsAllowedOrigin(url)).toBe(false);
 
       // Same origin - different port
-      url = `${origin.protocol}://${origin.hostname}:${differentPort}/path`;
+      url = `${origin.protocol}//${origin.hostname}:${differentPort}/path`;
       expect(urlIsAllowedOrigin(url)).toBe(false);
 
       // Allowed origin
-      url = `${origin.protocol}://bar.com:1337/path`;
+      url = `${origin.protocol}//bar.com:1337/path`;
       expect(urlIsAllowedOrigin(url)).toBe(true);
 
       // Allowed origin - implicit protocol
@@ -137,11 +138,11 @@ describe("urlUtils", () => {
       expect(urlIsAllowedOrigin(url)).toBe(true);
 
       // Allowed origin - different protocol
-      url = `${differentProtocol}://bar.com:1337/path`;
+      url = `${differentProtocol}//bar.com:1337/path`;
       expect(urlIsAllowedOrigin(url)).toBe(false);
 
       // Allowed origin - different port
-      url = `${origin.protocol}://bar.com:1338/path`;
+      url = `${origin.protocol}//bar.com:1338/path`;
       expect(urlIsAllowedOrigin(url)).toBe(false);
     });
   });

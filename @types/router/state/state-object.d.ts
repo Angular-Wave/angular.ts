@@ -80,4 +80,4 @@ export namespace StateObject {
   function isState(obj: any): boolean;
 }
 export type StateDeclaration = import("./interface.js").StateDeclaration;
-import { Glob } from "../common/glob.js";
+import { Glob } from "../glob/glob.js";

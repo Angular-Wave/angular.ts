@@ -18,7 +18,7 @@ version:
 	@node utils/version.cjs	
 
 pretty:
-	@npx prettier ./ --write
+	@npx prettier ./ --write --cache --log-level=silent
 	
 lint:
 	@npx eslint ./src --fix

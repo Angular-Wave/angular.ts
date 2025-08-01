@@ -182,8 +182,6 @@ export function copy(src: any, dest: any): any;
  * The same array is returned
  */
 export const removeFrom: any;
-/** pushes a values to an array and returns the value */
-export const pushTo: any;
 export function allTrueR(memo: any, elem: any): any;
 export function anyTrueR(memo: any, elem: any): any;
 export function unnestR(memo: any, elem: any): any;

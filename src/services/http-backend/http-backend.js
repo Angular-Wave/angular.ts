@@ -1,4 +1,4 @@
-import { trimEmptyHash, urlResolve } from "../../shared/url-utils/url-utils.js";
+import { trimEmptyHash } from "../../shared/url-utils/url-utils.js";
 import { isDefined, isPromiseLike, isUndefined } from "../../shared/utils.js";
 
 /**
@@ -66,7 +66,7 @@ export function createHttpBackend() {
       if (status === 0) {
         status = xhr.response
           ? 200
-          : urlResolve(url).protocol === "file"
+          : new URL(url).protocol === "file:"
             ? 404
             : 0;
       }

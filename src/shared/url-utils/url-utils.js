@@ -1,9 +1,6 @@
 import { isString } from "../../shared/utils.js";
 
-const urlParsingNode = document.createElement("a");
 const originUrl = urlResolve(window.location.href);
-
-urlParsingNode.href = "http://[::1]";
 
 /**
  * @param {import("./interface.js").ResolvableUrl} url
@@ -13,7 +10,10 @@ export function urlResolve(url) {
   if (!isString(url))
     return /** @type {import("./interface.js").ParsedUrl} */ (url);
 
-  urlParsingNode.setAttribute("href", /** @type {string} */ (url));
+  const urlParsingNode = new URL(
+    /** @type {string} */ (url),
+    window.location.href,
+  );
 
   const hostname = urlParsingNode.hostname.includes(":")
     ? `[${urlParsingNode.hostname}]`
@@ -21,9 +21,7 @@ export function urlResolve(url) {
 
   return {
     href: urlParsingNode.href,
-    protocol: urlParsingNode.protocol
-      ? urlParsingNode.protocol.replace(/:$/, "")
-      : "",
+    protocol: urlParsingNode.protocol,
     host: urlParsingNode.host,
     search: urlParsingNode.search
       ? urlParsingNode.search.replace(/^\?/, "")

@@ -1,7 +1,7 @@
 import { defaults, filter, map, pick, tail } from "./common.js";
 import { is, pattern, val } from "./hof.js";
 import { isInjectable } from "./predicates.js";
-import { Queue } from "../router/common/queue.js";
+import { Queue } from "./queue.js";
 
 describe("common", function () {
   describe("filter", function () {

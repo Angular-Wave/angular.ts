@@ -385,12 +385,9 @@ export class UrlService {
       return url;
     }
     const slash = !isHtml5 && url ? "/" : "";
-    const cfgPort = this.$location.port;
-    const port = cfgPort === 80 || cfgPort === 443 ? "" : ":" + cfgPort;
     return [
       `${window.location.protocol}//`,
-      this.$location.host,
-      port,
+      window.location.host,
       slash,
       url,
     ].join("");

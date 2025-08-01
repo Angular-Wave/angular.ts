@@ -1,5 +1,3 @@
-import { pushTo } from "../../shared/common.js";
-
 /**
  * A simple bounded FIFO queue with optional eviction notifications.
  * @template T
@@ -18,12 +16,14 @@ export class Queue {
 
     /** @type {Array<(item: T) => void>} */
     this._evictListeners = [];
+  }
 
-    /**
-     * Register a listener that will be called with the evicted item.
-     * @type {(listener: (item: T) => void) => void}
-     */
-    this.onEvict = pushTo(this._evictListeners);
+  /**
+   * Register a listener that will be called with the evicted item.
+   * @param {(item: T) => void} listener
+   */
+  onEvict(listener) {
+    this._evictListeners.push(listener);
   }
 
   /**

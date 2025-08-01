@@ -44,4 +44,4 @@ export class RouterGlobals {
  */
 export type ServiceProvider = import("../interface.ts").ServiceProvider;
 import { StateParams } from "./params/state-params.js";
-import { Queue } from "./common/queue.js";
+import { Queue } from "../shared/queue.js";

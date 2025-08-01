@@ -16,9 +16,9 @@ export class Queue<T> {
   _evictListeners: Array<(item: T) => void>;
   /**
    * Register a listener that will be called with the evicted item.
-   * @type {(listener: (item: T) => void) => void}
+   * @param {(item: T) => void} listener
    */
-  onEvict: (listener: (item: T) => void) => void;
+  onEvict(listener: (item: T) => void): void;
   /**
    * Adds an item to the end of the queue, evicting the head if over limit.
    * @param {T} item

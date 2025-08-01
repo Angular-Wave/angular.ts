@@ -1,5 +1,5 @@
 import { StateParams } from "./params/state-params.js";
-import { Queue } from "./common/queue.js";
+import { Queue } from "../shared/queue.js";
 
 /** @typedef {import('../interface.ts').ServiceProvider} ServiceProvider } */
 

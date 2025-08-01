@@ -291,6 +291,7 @@ export function HttpProvider() {
   });
 
   let useApplyAsync = false;
+
   /**
    * Configure $http service to combine processing of multiple http responses received at around
    * the same time via {@link ng.$rootScope.Scope#$applyAsync $rootScope.$applyAsync}. This can result in
@@ -323,7 +324,7 @@ export function HttpProvider() {
    *
    * {@link ng.$http#interceptors Interceptors detailed info}
    */
-  const interceptorFactories = (this.interceptors = []);
+  this.interceptors = [];
 
   /**
    * Array containing URLs whose origins are trusted to receive the XSRF token. See the
@@ -360,8 +361,10 @@ export function HttpProvider() {
    *     $http.get('https://stats.example.com/activity').then(...);
    *   }]);
    * ```
+   *
+   * @type {string[]}
    */
-  const xsrfTrustedOrigins = (this.xsrfTrustedOrigins = []);
+  this.xsrfTrustedOrigins = [];
 
   /**
    * This property is deprecated. Use {@link $httpProvider#xsrfTrustedOrigins xsrfTrustedOrigins}
@@ -407,7 +410,7 @@ export function HttpProvider() {
        */
       const reversedInterceptors = [];
 
-      interceptorFactories.forEach((interceptorFactory) => {
+      this.interceptors.forEach((interceptorFactory) => {
         reversedInterceptors.unshift(
           isString(interceptorFactory)
             ? $injector.get(interceptorFactory)
@@ -418,7 +421,9 @@ export function HttpProvider() {
       /**
        * A function to check request URLs against a list of allowed origins.
        */
-      const urlIsAllowedOrigin = urlIsAllowedOriginFactory(xsrfTrustedOrigins);
+      const urlIsAllowedOrigin = urlIsAllowedOriginFactory(
+        this.xsrfTrustedOrigins,
+      );
 
       /**
        * @property {Array.<Object>} requestConfig Array of config objects for currently pending

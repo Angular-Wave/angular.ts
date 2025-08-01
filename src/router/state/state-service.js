@@ -6,14 +6,14 @@ import {
   silentRejection,
 } from "../../shared/common.js";
 import { isDefined, isObject, isString, minErr } from "../../shared/utils.js";
-import { Queue } from "../common/queue.js";
+import { Queue } from "../../shared/queue.js";
 import { makeTargetState } from "../path/path-utils.js";
 import { PathNode } from "../path/path-node.js";
 import { defaultTransOpts } from "../transition/transition-service.js";
 import { Rejection, RejectType } from "../transition/reject-factory.js";
 import { TargetState } from "./target-state.js";
 import { Param } from "../params/param.js";
-import { Glob } from "../common/glob.js";
+import { Glob } from "../glob/glob.js";
 import { ResolveContext } from "../resolve/resolve-context.js";
 import { lazyLoadState } from "../hooks/lazy-load.js";
 import { val } from "../../shared/hof.js";

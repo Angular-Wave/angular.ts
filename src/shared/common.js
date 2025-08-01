@@ -133,11 +133,6 @@ export function _removeFrom(array, obj) {
   if (idx >= 0) array.splice(idx, 1);
   return array;
 }
-/** pushes a values to an array and returns the value */
-export const pushTo = curry((arr, val) => {
-  arr.push(val);
-  return val;
-});
 
 /**
  * Applies a set of defaults to an options object.  The options object is filtered

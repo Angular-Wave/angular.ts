@@ -1,5 +1,3 @@
-export type HttpProtocol = "http" | "https";
-
 /**
  * A normalized representation of a parsed URL.
  */

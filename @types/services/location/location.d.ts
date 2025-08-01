@@ -178,23 +178,6 @@ export class Location {
    */
   absUrl: string;
   /**
-   * Return host of current URL.
-   * Note: compared to the non-AngularTS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
-   * @type {string}
-   */
-  host: string;
-  /**
-   * Port of current URL.
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let port = $location.port;
-   * // => 80
-   * ```
-   * @type {number}
-   */
-  port: number;
-  /**
    * @ignore
    * Current url
    * @type {string}

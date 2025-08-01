@@ -376,14 +376,6 @@ export function extend(dst, ...src) {
 }
 
 /**
- * @param {string} str
- * @returns {number}
- */
-export function toInt(str) {
-  return parseInt(str, 10);
-}
-
-/**
  * @param {any} num
  * @returns {boolean}
  */

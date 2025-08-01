@@ -1,7 +1,6 @@
 import {
   isNumberNaN,
   isString,
-  toInt,
   minErr,
   isUndefined,
   isProxy,
@@ -342,6 +341,6 @@ function parsePatternAttr(regex, patternExp, elm) {
 }
 
 function parseLength(val) {
-  const intVal = toInt(val);
+  const intVal = parseInt(val, 10);
   return isNumberNaN(intVal) ? -1 : intVal;
 }

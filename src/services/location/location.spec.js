@@ -103,8 +103,6 @@ describe("$location", () => {
       expect(locationUrl.absUrl).toBe(
         "http://www.domain.com:9877/path/b?search=a&b=c&d#hash",
       );
-      expect(locationUrl.host).toBe("www.domain.com");
-      expect(locationUrl.port).toBe(9877);
       expect(locationUrl.getPath()).toBe("/path/b");
       expect(locationUrl.getSearch()).toEqual({ search: "a", b: "c", d: true });
       expect(locationUrl.getHash()).toBe("hash");
@@ -548,8 +546,6 @@ describe("$location", () => {
 
     it("should parse hashbang url into path and search", () => {
       const locationUrl = createHashbangUrl();
-      expect(locationUrl.host).toBe("www.server.org");
-      expect(locationUrl.port).toBe(1234);
       expect(locationUrl.getPath()).toBe("/path");
       expect(locationUrl.getSearch()).toEqual({ a: "b", c: true });
       expect(locationUrl.getHash()).toBe("hash");
@@ -3476,20 +3472,14 @@ describe("$location", () => {
     let locationIndexUrl;
 
     beforeEach(() => {
-      locationUrl = new Location(
-        "http://server/pre/",
-        "http://server/pre/",
-        true,
-      );
+      locationUrl = new Location("http://server/pre/", "http://server/pre/");
       locationUmlautUrl = new Location(
         "http://särver/pre/",
         "http://särver/pre/",
-        true,
       );
       locationIndexUrl = new Location(
         "http://server/pre/index.html",
         "http://server/pre/",
-        true,
       );
     });
 
