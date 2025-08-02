@@ -1,4 +1,4 @@
-/* Version: 0.7.8 - July 17, 2025 11:49:51 */
+/* Version: 0.8.0 - August 2, 2025 17:22:31 */
 const VALID_CLASS = "ng-valid";
 const INVALID_CLASS = "ng-invalid";
 const PRISTINE_CLASS = "ng-pristine";
@@ -347,14 +347,6 @@ function baseExtend(dst, objs, deep) {
  */
 function extend(dst, ...src) {
   return baseExtend(dst, src);
-}
-
-/**
- * @param {string} str
- * @returns {number}
- */
-function toInt(str) {
-  return parseInt(str, 10);
 }
 
 /**
@@ -789,7 +781,7 @@ function tryDecodeURIComponent(value) {
   try {
     return decodeURIComponent(value);
   } catch {
-    return;
+    /* empty */
   }
 }
 
@@ -803,6 +795,7 @@ function tryDecodeURIComponent(value) {
  *    unreserved    = ALPHA / DIGIT / "-" / "." / "_" / "~"
  *    sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
  *                     / "*" / "+" / "," / ";" / "="
+ * @param {string} val
  */
 function encodeUriSegment(val) {
   return encodeUriQuery(val, true)
@@ -1174,6 +1167,36 @@ function callBackAfterFirst(fn) {
  */
 function wait(t = 0) {
   return new Promise((resolve) => setTimeout(resolve, t));
+}
+
+/**
+ * Checks if a given string starts with a specified substring.
+ *
+ * This is a simple polyfill-like function that mimics the behavior of
+ * `String.prototype.startsWith` without using the built-in method.
+ *
+ * @param {string} str - The full string to evaluate.
+ * @param {string} search - The substring to test against the beginning of `str`.
+ * @returns {boolean} `true` if `str` starts with `search`, otherwise `false`.
+ *
+ * @example
+ * startsWith("hello world", "hello");
+ * // returns true
+ *
+ * @example
+ * startsWith("hello world", "world");
+ * // returns false
+ *
+ * @example
+ * startsWith("test", "");
+ * // returns true (empty search string always matches)
+ *
+ * @example
+ * startsWith("abc", "abcd");
+ * // returns false
+ */
+function startsWith(str, search) {
+  return str.slice(0, search.length) === search;
 }
 
 /**
@@ -1759,6 +1782,9 @@ function getBaseHref() {
  * @type Readonly<Record<string, string>>
  */
 const $injectTokens = Object.freeze({
+  $attrs: "$attrs",
+  $scope: "$scope",
+  $element: "$element",
   $$AnimateRunner: "$$AnimateRunner",
   $$animateAsyncRun: "$$animateAsyncRun",
   $$animateCache: "$$animateCache",
@@ -1787,6 +1813,7 @@ const $injectTokens = Object.freeze({
   $ngViewScroll: "$ngViewScroll",
   $parse: "$parse",
   $rootScope: "$rootScope",
+  $rootElement: "$rootElement",
   $routerGlobals: "$routerGlobals",
   $sce: "$sce",
   $sceDelegate: "$sceDelegate",
@@ -1797,7 +1824,7 @@ const $injectTokens = Object.freeze({
   $templateRequest: "$templateRequest",
   $transitions: "$transitions",
   $urlConfig: "$urlConfig",
-  $urlService: "$urlService",
+  $url: "$url",
   $view: "$view",
   // provide literals
   $provide: "$provide",
@@ -2143,8 +2170,7 @@ class AbstractInjector {
 
     if (isClass(/** @type {Function} */ (fn))) {
       args.unshift(null);
-      const res = new (Function.prototype.bind.apply(fn, args))();
-      return res;
+      return new (Function.prototype.bind.apply(fn, args))();
     } else {
       return /** @type {Function} */ (fn).apply(self, args);
     }
@@ -2233,8 +2259,7 @@ class InjectorService extends AbstractInjector {
    */
   factory(serviceName) {
     const provider = this.providerInjector.get(serviceName + providerSuffix$1);
-    const res = this.invoke(provider.$get, provider, undefined, serviceName);
-    return res;
+    return this.invoke(provider.$get, provider, undefined, serviceName);
   }
 
   /**
@@ -2268,8 +2293,7 @@ function stringifyFn$1(fn) {
  */
 function extractArgs$1(fn) {
   const fnText = stringifyFn$1(fn).replace(STRIP_COMMENTS$1, "");
-  const args = fnText.match(ARROW_ARG$1) || fnText.match(FN_ARGS$1);
-  return args;
+  return fnText.match(ARROW_ARG$1) || fnText.match(FN_ARGS$1);
 }
 
 /**
@@ -2560,8 +2584,7 @@ function stringifyFn(fn) {
  */
 function extractArgs(fn) {
   const fnText = stringifyFn(fn).replace(STRIP_COMMENTS, "");
-  const args = fnText.match(ARROW_ARG) || fnText.match(FN_ARGS);
-  return args;
+  return fnText.match(ARROW_ARG) || fnText.match(FN_ARGS);
 }
 
 /**
@@ -3018,11 +3041,7 @@ class ControllerProvider {
   }
 }
 
-const urlParsingNode = document.createElement("a");
 const originUrl = urlResolve(window.location.href);
-let baseUrlParsingNode;
-
-urlParsingNode.href = "http://[::1]";
 
 /**
  * @param {import("./interface.js").ResolvableUrl} url
@@ -3032,7 +3051,10 @@ function urlResolve(url) {
   if (!isString(url))
     return /** @type {import("./interface.js").ParsedUrl} */ (url);
 
-  urlParsingNode.setAttribute("href", /** @type {string} */ (url));
+  const urlParsingNode = new URL(
+    /** @type {string} */ (url),
+    window.location.href,
+  );
 
   const hostname = urlParsingNode.hostname.includes(":")
     ? `[${urlParsingNode.hostname}]`
@@ -3040,9 +3062,7 @@ function urlResolve(url) {
 
   return {
     href: urlParsingNode.href,
-    protocol: urlParsingNode.protocol
-      ? urlParsingNode.protocol.replace(/:$/, "")
-      : "",
+    protocol: urlParsingNode.protocol,
     host: urlParsingNode.host,
     search: urlParsingNode.search
       ? urlParsingNode.search.replace(/^\?/, "")
@@ -3080,7 +3100,7 @@ function urlIsSameOrigin(requestUrl) {
  * @returns {boolean} Whether the URL is same-origin as the document base URL.
  */
 function urlIsSameOriginAsBaseUrl(requestUrl) {
-  return urlsAreSameOrigin(requestUrl, getBaseUrl());
+  return urlsAreSameOrigin(requestUrl, document.baseURI);
 }
 
 /**
@@ -3130,27 +3150,6 @@ function urlsAreSameOrigin(url1, url2) {
   url2 = urlResolve(url2);
 
   return url1.protocol === url2.protocol && url1.host === url2.host;
-}
-
-/**
- * Returns the current document base URL.
- * @returns {string}
- */
-function getBaseUrl() {
-  if (document.baseURI) {
-    return document.baseURI;
-  }
-
-  // `document.baseURI` is available everywhere except IE
-  if (!baseUrlParsingNode) {
-    baseUrlParsingNode = document.createElement("a");
-    baseUrlParsingNode.href = ".";
-
-    // Work-around for IE bug described in Implementation Notes. The fix in `urlResolve()` is not
-    // suitable here because we need to track changes to the base URL.
-    baseUrlParsingNode = baseUrlParsingNode.cloneNode(false);
-  }
-  return baseUrlParsingNode.href;
 }
 
 /**
@@ -3474,7 +3473,6 @@ class SceDelegateProvider {
               "Attempting to use an unsafe value in a safe context.",
             ),
           );
-          return;
         };
 
         if ($injector.has("$sanitize")) {
@@ -3709,7 +3707,6 @@ class SceDelegateProvider {
               "Attempting to use an unsafe value in a safe context.",
             ),
           );
-          return;
         }
 
         return { trustAs, getTrusted, valueOf };
@@ -3908,7 +3905,7 @@ function SceProvider() {
 
       /**
        * Shorthand method.  `$sce.parseAsHtml(expression string)` →
-       *     {@link ng.$sce#parseAs `$sce.parseAs($sce.HTML, value)`}
+       *     {@link ng.$sceparseAs `$sce.parseAs($sce.HTML, value)`}
        *
        * @param {string} expression String expression to compile.
        * @return {function(context, locals)} A function which represents the compiled expression:
@@ -3921,7 +3918,7 @@ function SceProvider() {
 
       /**
        * Shorthand method.  `$sce.parseAsCss(value)` →
-       *     {@link ng.$sce#parseAs `$sce.parseAs($sce.CSS, value)`}
+       *     {@link ng.$sceparseAs `$sce.parseAs($sce.CSS, value)`}
        *
        * @param {string} expression String expression to compile.
        * @return {function(context, locals)} A function which represents the compiled expression:
@@ -3934,7 +3931,7 @@ function SceProvider() {
 
       /**
        * Shorthand method.  `$sce.parseAsUrl(value)` →
-       *     {@link ng.$sce#parseAs `$sce.parseAs($sce.URL, value)`}
+       *     {@link ng.$sceparseAs `$sce.parseAs($sce.URL, value)`}
        *
        * @param {string} expression String expression to compile.
        * @return {function(context, locals)} A function which represents the compiled expression:
@@ -3947,7 +3944,7 @@ function SceProvider() {
 
       /**
        * Shorthand method.  `$sce.parseAsResourceUrl(value)` →
-       *     {@link ng.$sce#parseAs `$sce.parseAs($sce.RESOURCE_URL, value)`}
+       *     {@link ng.$sceparseAs `$sce.parseAs($sce.RESOURCE_URL, value)`}
        *
        * @param {string} expression String expression to compile.
        * @return {function(context, locals)} A function which represents the compiled expression:
@@ -3960,7 +3957,7 @@ function SceProvider() {
 
       /**
        * Shorthand method.  `$sce.parseAsJs(value)` →
-       *     {@link ng.$sce#parseAs `$sce.parseAs($sce.JS, value)`}
+       *     {@link ng.$sceparseAs `$sce.parseAs($sce.JS, value)`}
        *
        * @param {string} expression String expression to compile.
        * @return {function(context, locals)} A function which represents the compiled expression:
@@ -4517,7 +4514,7 @@ const EVENT_HANDLER_ATTR_REGEXP = /^(on[a-z]+|formaction)$/;
 const DirectiveSuffix = "Directive";
 
 class CompileProvider {
-  static $inject = ["$provide", "$$sanitizeUriProvider"];
+  /* @ignore */ static $inject = ["$provide", "$$sanitizeUriProvider"];
 
   /**
    * @param {import('../../interface.js').Provider} $provide
@@ -5592,8 +5589,7 @@ class CompileProvider {
               // Null out all of these references for garbage collection
               compileNodes = transcludeFn = previousCompileContext = null;
             }
-            const linked = compiled.apply(this, arguments);
-            return linked;
+            return compiled.apply(this, arguments);
           };
         }
 
@@ -5937,14 +5933,13 @@ class CompileProvider {
                 //  * `undefined` - a slot that was not declared (i.e. invalid)
                 const slotTranscludeFn = boundTranscludeFn.$$slots[slotName];
                 if (slotTranscludeFn) {
-                  const slotTranscludeRes = slotTranscludeFn(
+                  return slotTranscludeFn(
                     scope,
                     cloneAttachFn,
                     transcludeControllers,
                     futureParentElement,
                     scopeToChild,
                   );
-                  return slotTranscludeRes;
                 }
 
                 if (isUndefined(slotTranscludeFn)) {
@@ -5957,14 +5952,13 @@ class CompileProvider {
                   );
                 }
               } else {
-                const boundTranscludeRes = boundTranscludeFn(
+                return boundTranscludeFn(
                   scope,
                   cloneAttachFn,
                   transcludeControllers,
                   futureParentElement,
                   scopeToChild,
                 );
-                return boundTranscludeRes;
               }
             }
           };
@@ -7728,7 +7722,13 @@ const SUBMITTED_CLASS = "ng-submitted";
 
 class FormController {
   static $nonscope = true;
-  static $inject = ["$element", "$attrs", "$scope", "$animate", "$interpolate"];
+  /* @ignore */ static $inject = [
+    "$element",
+    "$attrs",
+    "$scope",
+    "$animate",
+    "$interpolate",
+  ];
 
   /**
    * @param {Element} $element
@@ -8192,7 +8192,7 @@ const formDirectiveFactory = function (isNgForm) {
   return [
     "$parse",
     function ($parse) {
-      const formDirective = {
+      return {
         name: "form",
         restrict: isNgForm ? "EA" : "E",
         require: ["form", "^^?form"], // first is the form's own ctrl, second is an optional parent form
@@ -8271,9 +8271,6 @@ const formDirectiveFactory = function (isNgForm) {
           };
         },
       };
-
-      return formDirective;
-
       function getSetter(expression) {
         if (expression === "") {
           // create an assignable expression, so forms with an empty name can be renamed later
@@ -8301,7 +8298,7 @@ const DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/;
 
 class NgModelOptionsController {
   static $nonscope = true;
-  static $inject = ["$attrs", "$scope"];
+  /* @ignore */ static $inject = ["$attrs", "$scope"];
 
   /**
    * @param {import('../../core/compile/attributes.js').Attributes} $attrs
@@ -8470,14 +8467,14 @@ const ngModelMinErr = minErr("ngModel");
 
 class NgModelController {
   static $nonscope = true;
-  static $inject = [
+  /* @ignore */ static $inject = [
     "$scope",
-    "$exceptionHandler",
+    $injectTokens.$exceptionHandler,
     "$attrs",
     "$element",
-    "$parse",
-    "$animate",
-    "$interpolate",
+    $injectTokens.$parse,
+    $injectTokens.$animate,
+    $injectTokens.$interpolate,
   ];
 
   /**
@@ -9124,8 +9121,7 @@ class NgModelController {
   }
 
   $$parseAndValidate() {
-    const viewValue = this.$$lastCommittedViewValue;
-    let modelValue = viewValue;
+    let modelValue = this.$$lastCommittedViewValue;
     const that = this;
 
     this.$$parserValid = isUndefined(modelValue) ? undefined : true;
@@ -10048,9 +10044,8 @@ function createDateInputType(type, regexp, parseDate) {
 }
 
 function badInputChecker(scope, element, attr, ctrl, parserName) {
-  const node = element;
   const nativeValidation = (ctrl.$$hasNativeValidators = isObject(
-    node.validity,
+    element.validity,
   ));
 
   if (nativeValidation) {
@@ -10597,12 +10592,11 @@ function ngValueDirective() {
     // TODO REMOVE IS SUPPORT
     // Support: IE9 only
     // In IE9 values are converted to string (e.g. `input.value = null` results in `input.value === 'null'`).
-    const propValue = isDefined(value)
+    element["value"] = isDefined(value)
       ? isProxy(value)
         ? value.$target
         : value
       : null;
-    element["value"] = propValue;
     attr.$set("value", value);
   }
 
@@ -10661,7 +10655,7 @@ class SelectController {
   /**
    * @type {Array<string>}
    */
-  static $inject = ["$element", "$scope"];
+  /* @ignore */ static $inject = ["$element", "$scope"];
 
   /**
    * @param {HTMLSelectElement} $element
@@ -11269,6 +11263,7 @@ function ngBindTemplateDirective() {
 
 ngBindHtmlDirective.$inject = [$injectTokens.$parse];
 /**
+ * @param {import('../../core/parse/interface.ts').ParseService} $parse
  * @returns {import('../../interface.ts').Directive}
  */
 function ngBindHtmlDirective($parse) {
@@ -13151,7 +13146,7 @@ Object.entries(ALIASED_ATTR).forEach(([ngAttr]) => {
  *
  */
 const requiredDirective = [
-  "$parse",
+  $injectTokens.$parse,
   /**
    * @param {import("../../core/parse/interface.ts").ParseService} $parse
    * @returns {import("../../interface.ts").Directive}
@@ -13233,75 +13228,72 @@ const requiredDirective = [
  * </div>
  */
 const patternDirective = [
-  "$parse",
+  $injectTokens.$parse,
   /**
    * @param {import("../../core/parse/interface.ts").ParseService} $parse
    * @returns {import("../../interface.ts").Directive}
    */
-  ($parse) => {
-    return {
-      restrict: "A",
-      require: "?ngModel",
-      compile: (_Elm, tAttr) => {
-        let patternExp;
-        let parseFn;
+  ($parse) => ({
+    restrict: "A",
+    require: "?ngModel",
+    compile: (_Elm, tAttr) => {
+      let patternExp;
+      let parseFn;
 
-        if (tAttr["ngPattern"]) {
-          patternExp = tAttr["ngPattern"];
+      if (tAttr["ngPattern"]) {
+        patternExp = tAttr["ngPattern"];
 
-          // ngPattern might be a scope expression, or an inlined regex, which is not parsable.
-          // We get value of the attribute here, so we can compare the old and the new value
-          // in the observer to avoid unnecessary validations
-          if (
-            tAttr["ngPattern"].charAt(0) === "/" &&
-            REGEX_STRING_REGEXP.test(tAttr["ngPattern"])
-          ) {
-            parseFn = function () {
-              return tAttr["ngPattern"];
-            };
-          } else {
-            parseFn = $parse(tAttr["ngPattern"]);
-          }
+        // ngPattern might be a scope expression, or an inlined regex, which is not parsable.
+        // We get value of the attribute here, so we can compare the old and the new value
+        // in the observer to avoid unnecessary validations
+        if (
+          tAttr["ngPattern"].charAt(0) === "/" &&
+          REGEX_STRING_REGEXP.test(tAttr["ngPattern"])
+        ) {
+          parseFn = function () {
+            return tAttr["ngPattern"];
+          };
+        } else {
+          parseFn = $parse(tAttr["ngPattern"]);
+        }
+      }
+
+      return function (scope, elm, attr, ctrl) {
+        if (!ctrl) return;
+        let attrVal = attr["pattern"];
+
+        if (attr["ngPattern"]) {
+          attrVal = parseFn(scope);
+        } else {
+          patternExp = attr["pattern"];
         }
 
-        return function (scope, elm, attr, ctrl) {
-          if (!ctrl) return;
+        let regexp = parsePatternAttr(attrVal, patternExp, elm);
+        attr.$observe("pattern", (newVal) => {
+          const oldRegexp = regexp;
 
-          let attrVal = attr["pattern"];
+          regexp = parsePatternAttr(newVal, patternExp, elm);
 
-          if (attr["ngPattern"]) {
-            attrVal = parseFn(scope);
-          } else {
-            patternExp = attr["pattern"];
+          if (
+            (oldRegexp && oldRegexp.toString()) !==
+            (regexp && regexp.toString())
+          ) {
+            ctrl["$validate"]();
           }
+        });
 
-          let regexp = parsePatternAttr(attrVal, patternExp, elm);
-          attr.$observe("pattern", function (newVal) {
-            const oldRegexp = regexp;
-
-            regexp = parsePatternAttr(newVal, patternExp, elm);
-
-            if (
-              (oldRegexp && oldRegexp.toString()) !==
-              (regexp && regexp.toString())
-            ) {
-              ctrl["$validate"]();
-            }
-          });
-
-          ctrl["$validators"]["pattern"] = function (modelValue, viewValue) {
-            // HTML5 pattern constraint validates the input value, so we validate the viewValue
-            return (
-              // @ts-ignore
-              ctrl.$isEmpty(viewValue) ||
-              isUndefined(regexp) ||
-              regexp.test(viewValue)
-            );
-          };
+        ctrl["$validators"]["pattern"] = (_modelValue, viewValue) => {
+          // HTML5 pattern constraint validates the input value, so we validate the viewValue
+          return (
+            // @ts-ignore
+            ctrl.$isEmpty(viewValue) ||
+            isUndefined(regexp) ||
+            regexp.test(viewValue)
+          );
         };
-      },
-    };
-  },
+      };
+    },
+  }),
 ];
 
 /**
@@ -13335,7 +13327,7 @@ const patternDirective = [
  *
  */
 const maxlengthDirective = [
-  "$parse",
+  $injectTokens.$parse,
   /**
    * @param {import("../../core/parse/interface.ts").ParseService} $parse
    * @returns {import("../../interface.ts").Directive}
@@ -13407,32 +13399,28 @@ const maxlengthDirective = [
  *
  */
 const minlengthDirective = [
-  "$parse",
-  function ($parse) {
-    return {
-      restrict: "A",
-      require: "?ngModel",
-      link(scope, elm, attr, ctrl) {
-        if (!ctrl) return;
+  $injectTokens.$parse,
+  ($parse) => ({
+    restrict: "A",
+    require: "?ngModel",
+    link(scope, elm, attr, ctrl) {
+      if (!ctrl) return;
 
-        let minlength = attr.minlength || $parse(attr.ngMinlength)(scope);
-        let minlengthParsed = parseLength(minlength) || -1;
+      let minlength = attr.minlength || $parse(attr.ngMinlength)(scope);
+      let minlengthParsed = parseLength(minlength) || -1;
 
-        attr.$observe("minlength", (value) => {
-          if (minlength !== value) {
-            minlengthParsed = parseLength(value) || -1;
-            minlength = value;
-            ctrl.$validate();
-          }
-        });
-        ctrl.$validators.minlength = function (modelValue, viewValue) {
-          return (
-            ctrl.$isEmpty(viewValue) || viewValue.length >= minlengthParsed
-          );
-        };
-      },
-    };
-  },
+      attr.$observe("minlength", (value) => {
+        if (minlength !== value) {
+          minlengthParsed = parseLength(value) || -1;
+          minlength = value;
+          ctrl.$validate();
+        }
+      });
+      ctrl.$validators.minlength = function (modelValue, viewValue) {
+        return ctrl.$isEmpty(viewValue) || viewValue.length >= minlengthParsed;
+      };
+    },
+  }),
 ];
 
 function parsePatternAttr(regex, patternExp, elm) {
@@ -13443,7 +13431,12 @@ function parsePatternAttr(regex, patternExp, elm) {
   }
 
   if (isString(regex)) {
-    regex = new RegExp(`^${regex}$`);
+    const match = regex.match(/^\/(.*)\/([gimsuy]*)$/);
+    if (match) {
+      regex = new RegExp(match[1], match[2]);
+    } else {
+      regex = new RegExp(`^${regex}$`);
+    }
   }
 
   if (!regex.test) {
@@ -13460,7 +13453,7 @@ function parsePatternAttr(regex, patternExp, elm) {
 }
 
 function parseLength(val) {
-  const intVal = toInt(val);
+  const intVal = parseInt(val, 10);
   return isNumberNaN(intVal) ? -1 : intVal;
 }
 
@@ -13483,8 +13476,8 @@ class AnchorScrollProvider {
   }
 
   $get = [
-    "$location",
-    "$rootScope",
+    $injectTokens.$location,
+    $injectTokens.$rootScope,
     /**
      *
      * @param {import('../services/location/location.js').Location} $location
@@ -13562,7 +13555,7 @@ class AnchorScrollProvider {
           ? hash
           : isNumber(hash)
             ? hash.toString()
-            : $location.hash();
+            : $location.getHash();
         let elm;
 
         // empty hash, scroll to the top of the page
@@ -13579,7 +13572,7 @@ class AnchorScrollProvider {
       };
 
       // does not scroll when user clicks on anchor link that is currently on
-      // (no url change, no $location.hash() change), browser native does scroll
+      // (no url change, no $location.getHash() change), browser native does scroll
       if (this.autoScrollingEnabled) {
         $rootScope["$location"] = $location;
         $rootScope.$watch("$location.$$hash", (newVal, oldVal) => {
@@ -13952,8 +13945,7 @@ function blockKeyframeAnimations(node, applyBlock) {
 
 function applyInlineStyle(node, styleTuple) {
   const prop = styleTuple[0];
-  const value = styleTuple[1];
-  node.style[prop] = value;
+  node.style[prop] = styleTuple[1];
 }
 
 function concatWithSpace(a, b) {
@@ -15023,7 +15015,7 @@ function limitToFilter() {
     if (Math.abs(Number(limit)) === Infinity) {
       limit = Number(limit);
     } else {
-      limit = toInt(/** @type {string} */ (limit));
+      limit = parseInt(/** @type {string} */ (limit), 10);
     }
     if (isNumberNaN(limit)) return input;
 
@@ -15033,7 +15025,7 @@ function limitToFilter() {
     begin =
       !begin || isNaN(/** @type {any} */ (begin))
         ? 0
-        : toInt(/** @type {string} */ (begin));
+        : parseInt(/** @type {string} */ (begin), 10);
     begin =
       begin < 0 ? Math.max(0, /** @type {[]} */ (input).length + begin) : begin;
 
@@ -15227,6 +15219,8 @@ function orderByFilter($parse) {
   }
 }
 
+$IsStateFilter.$inject = [$injectTokens.$state];
+
 /**
  * `isState` Filter: truthy if the current state is the parameter
  *
@@ -15236,18 +15230,19 @@ function orderByFilter($parse) {
  * ```html
  * <div ng-if="'stateName' | isState">show if state is 'stateName'</div>
  * ```
- */
-$IsStateFilter.$inject = ["$state"];
-/**
+ *
+ * @param {import('./state/state-service.js').StateProvider} $state
  * @returns {import('../interface.ts').FilterFn}
  */
 function $IsStateFilter($state) {
-  const isFilter = function (state, params, options) {
-    return $state.is(state, params, options);
-  };
+  const isFilter = (state, params, options) =>
+    $state.is(state, params, options);
   isFilter.$stateful = true;
   return isFilter;
 }
+
+$IncludedByStateFilter.$inject = [$injectTokens.$state];
+
 /**
  * `includedByState` Filter: truthy if the current state includes the parameter
  *
@@ -15257,9 +15252,8 @@ function $IsStateFilter($state) {
  * ```html
  * <div ng-if="'fullOrPartialStateName' | includedByState">show if state includes 'fullOrPartialStateName'</div>
  * ```
- */
-$IncludedByStateFilter.$inject = ["$state"];
-/**
+ *
+ * @param {import('./state/state-service.js').StateProvider} $state
  * @returns {import('../interface.ts').FilterFn}
  */
 function $IncludedByStateFilter($state) {
@@ -15273,7 +15267,7 @@ function $IncludedByStateFilter($state) {
 const SUFFIX = "Filter";
 
 class FilterProvider {
-  static $inject = [$injectTokens.$provide];
+  /* @ignore */ static $inject = [$injectTokens.$provide];
 
   /**
    * @param {import('../../interface.ts').Provider} $provide
@@ -17176,173 +17170,177 @@ function isConstant(ast) {
   return ast.constant;
 }
 
-function ParseProvider() {
-  const cache = Object.create(null);
+class ParseProvider {
+  constructor() {
+    const cache = Object.create(null);
 
-  /** @type {function(any):boolean?} */
-  let identStart;
+    /** @type {function(any):boolean?} */
+    let identStart;
 
-  /** @type {function(any):boolean?} */
-  let identContinue;
+    /** @type {function(any):boolean?} */
+    let identContinue;
 
-  /**
-   * Allows defining the set of characters that are allowed in AngularTS expressions. The function
-   * `identifierStart` will get called to know if a given character is a valid character to be the
-   * first character for an identifier. The function `identifierContinue` will get called to know if
-   * a given character is a valid character to be a follow-up identifier character. The functions
-   * `identifierStart` and `identifierContinue` will receive as arguments the single character to be
-   * identifier and the character code point. These arguments will be `string` and `numeric`. Keep in
-   * mind that the `string` parameter can be two characters long depending on the character
-   * representation. It is expected for the function to return `true` or `false`, whether that
-   * character is allowed or not.
-   *
-   * Since this function will be called extensively, keep the implementation of these functions fast,
-   * as the performance of these functions have a direct impact on the expressions parsing speed.
-   *
-   * @param {function(any):boolean} [identifierStart] The function that will decide whether the given character is
-   *   a valid identifier start character.
-   * @param {function(any):boolean} [identifierContinue] The function that will decide whether the given character is
-   *   a valid identifier continue character.
-   * @returns {ParseProvider}
-   */
-  this.setIdentifierFns = function (identifierStart, identifierContinue) {
-    identStart = identifierStart;
-    identContinue = identifierContinue;
-    return this;
-  };
-
-  this.$get = [
-    "$filter",
     /**
+     * Allows defining the set of characters that are allowed in AngularTS expressions. The function
+     * `identifierStart` will get called to know if a given character is a valid character to be the
+     * first character for an identifier. The function `identifierContinue` will get called to know if
+     * a given character is a valid character to be a follow-up identifier character. The functions
+     * `identifierStart` and `identifierContinue` will receive as arguments the single character to be
+     * identifier and the character code point. These arguments will be `string` and `numeric`. Keep in
+     * mind that the `string` parameter can be two characters long depending on the character
+     * representation. It is expected for the function to return `true` or `false`, whether that
+     * character is allowed or not.
      *
-     * @param {(any) => any} $filter
-     * @returns {import('./interface').ParseService}
+     * Since this function will be called extensively, keep the implementation of these functions fast,
+     * as the performance of these functions have a direct impact on the expressions parsing speed.
+     *
+     * @param {function(any):boolean} [identifierStart] The function that will decide whether the given character is
+     *   a valid identifier start character.
+     * @param {function(any):boolean} [identifierContinue] The function that will decide whether the given character is
+     *   a valid identifier continue character.
+     * @returns {ParseProvider}
      */
-    function ($filter) {
-      /** @type {import("./lexer/lexer.js").LexerOptions} */
-      const $lexerOptions = {
-        isIdentifierStart: isFunction(identStart) && identStart,
-        isIdentifierContinue: isFunction(identContinue) && identContinue,
-      };
-      return $parse;
+    this.setIdentifierFns = function (identifierStart, identifierContinue) {
+      identStart = identifierStart;
+      identContinue = identifierContinue;
+      return this;
+    };
 
+    this.$get = [
+      "$filter",
       /**
-       * @param {string} exp
-       * @param interceptorFn
-       * @returns any
+       *
+       * @param {(any) => any} $filter
+       * @returns {import('./interface').ParseService}
        */
-      function $parse(exp, interceptorFn) {
-        let parsedExpression, cacheKey;
-
-        switch (typeof exp) {
-          case "string":
-            exp = exp.trim();
-            cacheKey = exp;
-
-            parsedExpression = cache[cacheKey];
-
-            if (!parsedExpression) {
-              const lexer = new Lexer($lexerOptions);
-              const parser = new Parser(lexer, $filter);
-              parsedExpression = parser.parse(exp);
-
-              cache[cacheKey] = addWatchDelegate(parsedExpression);
-            }
-            return addInterceptor(parsedExpression, interceptorFn);
-
-          case "function":
-            return addInterceptor(exp, interceptorFn);
-
-          default:
-            return addInterceptor(() => {}, interceptorFn);
-        }
-      }
-
-      /**
-       * @param {Function} parsedExpression
-       * @param interceptorFn
-       * @returns {import('./interface').CompiledExpression|*}
-       */
-      function addInterceptor(parsedExpression, interceptorFn) {
-        if (!interceptorFn) return parsedExpression;
-
-        // Extract any existing interceptors out of the parsedExpression
-        // to ensure the original parsedExpression is always the $$intercepted
-        // @ts-ignore
-        if (parsedExpression.$$interceptor) {
-          interceptorFn = chainInterceptors(
-            // @ts-ignore
-            parsedExpression.$$interceptor,
-            interceptorFn,
-          );
-          // @ts-ignore
-          parsedExpression = parsedExpression.$$intercepted;
-        }
-
-        let useInputs = false;
-
-        const fn = function interceptedExpression(
-          scope,
-          locals,
-          assign,
-          inputs,
-        ) {
-          const value =
-            useInputs && inputs
-              ? inputs[0]
-              : parsedExpression(scope, locals, assign, inputs);
-          // Do not invoke for getters
-          if (scope?.getter) {
-            return;
-          }
-          const res = isFunction(value) ? value() : value;
-          return interceptorFn(isProxy(res) ? res.$target : res);
+      function ($filter) {
+        /** @type {import("./lexer/lexer.js").LexerOptions} */
+        const $lexerOptions = {
+          isIdentifierStart: isFunction(identStart) && identStart,
+          isIdentifierContinue: isFunction(identContinue) && identContinue,
         };
+        return $parse;
 
-        // Maintain references to the interceptor/intercepted
-        fn.$$intercepted = parsedExpression;
-        fn.$$interceptor = interceptorFn;
+        /**
+         * @param {string} exp
+         * @param interceptorFn
+         * @returns any
+         */
+        function $parse(exp, interceptorFn) {
+          let parsedExpression, cacheKey;
 
-        // Propagate the literal/oneTime/constant attributes
-        // @ts-ignore
-        fn.literal = parsedExpression.literal;
-        // @ts-ignore
-        fn.oneTime = parsedExpression.oneTime;
-        // @ts-ignore
-        fn.constant = parsedExpression.constant;
-        // @ts-ignore
-        fn.decoratedNode = parsedExpression.decoratedNode;
+          switch (typeof exp) {
+            case "string":
+              exp = exp.trim();
+              cacheKey = exp;
 
-        // Treat the interceptor like filters.
-        // If it is not $stateful then only watch its inputs.
-        // If the expression itself has no inputs then use the full expression as an input.
-        if (!interceptorFn.$stateful) {
-          // @ts-ignore
-          useInputs = !parsedExpression.inputs;
-          // @ts-ignore
-          fn.inputs = parsedExpression.inputs
-            ? // @ts-ignore
-              parsedExpression.inputs
-            : [parsedExpression];
+              parsedExpression = cache[cacheKey];
 
-          if (!interceptorFn.$$pure) {
-            fn.inputs = fn.inputs.map(function (e) {
-              // Remove the isPure flag of inputs when it is not absolute because they are now wrapped in a
-              // non-pure interceptor function.
-              if (e.isPure === PURITY_RELATIVE) {
-                return function depurifier(s) {
-                  return e(s);
-                };
+              if (!parsedExpression) {
+                const lexer = new Lexer($lexerOptions);
+                const parser = new Parser(lexer, $filter);
+                parsedExpression = parser.parse(exp);
+
+                cache[cacheKey] = addWatchDelegate(parsedExpression);
               }
-              return e;
-            });
+              return addInterceptor(parsedExpression, interceptorFn);
+
+            case "function":
+              return addInterceptor(exp, interceptorFn);
+
+            default:
+              return addInterceptor(() => {}, interceptorFn);
           }
         }
 
-        return addWatchDelegate(fn);
-      }
-    },
-  ];
+        /**
+         * @param {Function} parsedExpression
+         * @param interceptorFn
+         * @returns {import('./interface').CompiledExpression|*}
+         */
+        function addInterceptor(parsedExpression, interceptorFn) {
+          if (!interceptorFn) {
+            return parsedExpression;
+          }
+
+          // Extract any existing interceptors out of the parsedExpression
+          // to ensure the original parsedExpression is always the $$intercepted
+          // @ts-ignore
+          if (parsedExpression.$$interceptor) {
+            interceptorFn = chainInterceptors(
+              // @ts-ignore
+              parsedExpression.$$interceptor,
+              interceptorFn,
+            );
+            // @ts-ignore
+            parsedExpression = parsedExpression.$$intercepted;
+          }
+
+          let useInputs = false;
+
+          const fn = function interceptedExpression(
+            scope,
+            locals,
+            assign,
+            inputs,
+          ) {
+            const value =
+              useInputs && inputs
+                ? inputs[0]
+                : parsedExpression(scope, locals, assign, inputs);
+            // Do not invoke for getters
+            if (scope?.getter) {
+              return;
+            }
+            const res = isFunction(value) ? value() : value;
+            return interceptorFn(isProxy(res) ? res.$target : res);
+          };
+
+          // Maintain references to the interceptor/intercepted
+          fn.$$intercepted = parsedExpression;
+          fn.$$interceptor = interceptorFn;
+
+          // Propagate the literal/oneTime/constant attributes
+          // @ts-ignore
+          fn.literal = parsedExpression.literal;
+          // @ts-ignore
+          fn.oneTime = parsedExpression.oneTime;
+          // @ts-ignore
+          fn.constant = parsedExpression.constant;
+          // @ts-ignore
+          fn.decoratedNode = parsedExpression.decoratedNode;
+
+          // Treat the interceptor like filters.
+          // If it is not $stateful then only watch its inputs.
+          // If the expression itself has no inputs then use the full expression as an input.
+          if (!interceptorFn.$stateful) {
+            // @ts-ignore
+            useInputs = !parsedExpression.inputs;
+            // @ts-ignore
+            fn.inputs = parsedExpression.inputs
+              ? // @ts-ignore
+                parsedExpression.inputs
+              : [parsedExpression];
+
+            if (!interceptorFn.$$pure) {
+              fn.inputs = fn.inputs.map(function (e) {
+                // Remove the isPure flag of inputs when it is not absolute because they are now wrapped in a
+                // non-pure interceptor function.
+                if (e.isPure === PURITY_RELATIVE) {
+                  return function depurifier(s) {
+                    return e(s);
+                  };
+                }
+                return e;
+              });
+            }
+          }
+
+          return addWatchDelegate(fn);
+        }
+      },
+    ];
+  }
 }
 
 function constantWatchDelegate(
@@ -17820,8 +17818,7 @@ class InterpolateProvider {
                       let j = 0;
                       for (; j < ii; j++) {
                         let fn = parseFns[j];
-                        let res = fn(context);
-                        vals[j] = res;
+                        vals[j] = fn(context);
                       }
                       cb(compute(vals));
                     });
@@ -17830,8 +17827,7 @@ class InterpolateProvider {
                   values[i] = parseFns[i](context);
                 }
 
-                let res = compute(values);
-                return res;
+                return compute(values);
               } catch (err) {
                 interr(text, err);
               }
@@ -18223,6 +18219,7 @@ function HttpProvider() {
   });
 
   let useApplyAsync = false;
+
   /**
    * Configure $http service to combine processing of multiple http responses received at around
    * the same time via {@link ng.$rootScope.Scope#$applyAsync $rootScope.$applyAsync}. This can result in
@@ -18255,7 +18252,7 @@ function HttpProvider() {
    *
    * {@link ng.$http#interceptors Interceptors detailed info}
    */
-  const interceptorFactories = (this.interceptors = []);
+  this.interceptors = [];
 
   /**
    * Array containing URLs whose origins are trusted to receive the XSRF token. See the
@@ -18292,8 +18289,10 @@ function HttpProvider() {
    *     $http.get('https://stats.example.com/activity').then(...);
    *   }]);
    * ```
+   *
+   * @type {string[]}
    */
-  const xsrfTrustedOrigins = (this.xsrfTrustedOrigins = []);
+  this.xsrfTrustedOrigins = [];
 
   /**
    * This property is deprecated. Use {@link $httpProvider#xsrfTrustedOrigins xsrfTrustedOrigins}
@@ -18339,7 +18338,7 @@ function HttpProvider() {
        */
       const reversedInterceptors = [];
 
-      interceptorFactories.forEach((interceptorFactory) => {
+      this.interceptors.forEach((interceptorFactory) => {
         reversedInterceptors.unshift(
           isString(interceptorFactory)
             ? $injector.get(interceptorFactory)
@@ -18350,7 +18349,9 @@ function HttpProvider() {
       /**
        * A function to check request URLs against a list of allowed origins.
        */
-      const urlIsAllowedOrigin = urlIsAllowedOriginFactory(xsrfTrustedOrigins);
+      const urlIsAllowedOrigin = urlIsAllowedOriginFactory(
+        this.xsrfTrustedOrigins,
+      );
 
       /**
        * @property {Array.<Object>} requestConfig Array of config objects for currently pending
@@ -18849,24 +18850,13 @@ function HttpProvider() {
 }
 
 /**
- * HTTP backend used by the {@link ng.$http service} that delegates to
+ * HTTP backend used by the `$http` that delegates to
  * XMLHttpRequest object and deals with browser incompatibilities.
- *
- * You should never need to use this service directly, instead use the higher-level abstractions:
- * {@link ng.$http $http}.
- *
- */
-/**
- * HTTP backend used by the {@link ng.$http service} that delegates to
- * XMLHttpRequest object and deals with browser incompatibilities.
- *
- * You should never need to use this service directly, instead use the higher-level abstractions:
- * {@link ng.$http $http}.
- *
+ * You should never need to use this service directly.
  */
 class HttpBackendProvider {
   constructor() {
-    this.$get = [() => createHttpBackend()];
+    this.$get = () => createHttpBackend();
   }
 }
 
@@ -18874,7 +18864,21 @@ class HttpBackendProvider {
  * @returns
  */
 function createHttpBackend() {
-  // TODO(vojta): fix the signature
+  /**
+   * Makes an HTTP request using XMLHttpRequest with flexible options.
+   *
+   * @param {string} method - The HTTP method (e.g., "GET", "POST").
+   * @param {string} [url] - The URL to send the request to. Defaults to the current page URL.
+   * @param {*} [post] - The body to send with the request, if any.
+   * @param {function(number, any, string|null, string, string): void} [callback] - Callback invoked when the request completes.
+   * @param {Object<string, string|undefined>} [headers] - Headers to set on the request.
+   * @param {number|Promise<any>} [timeout] - Timeout in ms or a cancellable promise.
+   * @param {boolean} [withCredentials] - Whether to send credentials with the request.
+   * @param {XMLHttpRequestResponseType} [responseType] - The type of data expected in the response.
+   * @param {Object<string, EventListener>} [eventHandlers] - Event listeners for the XMLHttpRequest object.
+   * @param {Object<string, EventListener>} [uploadEventHandlers] - Event listeners for the XMLHttpRequest.upload object.
+   * @returns {void}
+   */
   return function (
     method,
     url,
@@ -18891,34 +18895,31 @@ function createHttpBackend() {
 
     const xhr = new XMLHttpRequest();
     let abortedByTimeout = false;
+    let timeoutId;
 
     xhr.open(method, url, true);
+
     if (headers) {
-      Object.entries(headers).forEach(([key, value]) => {
+      for (const [key, value] of Object.entries(headers)) {
         if (isDefined(value)) {
           xhr.setRequestHeader(key, value);
         }
-      });
+      }
     }
 
-    xhr.onload = function () {
+    xhr.onload = () => {
+      let status = xhr.status || 0;
       const statusText = xhr.statusText || "";
 
-      let status = xhr.status;
-
-      // fix status code when it is 0 (0 status is undocumented).
-      // Occurs when accessing file resources or on Android 4.1 stock browser
-      // while retrieving files from application cache.
       if (status === 0) {
         status = xhr.response
           ? 200
-          : urlResolve(url).protocol === "file"
+          : new URL(url).protocol === "file:"
             ? 404
             : 0;
       }
 
       completeRequest(
-        callback,
         status,
         xhr.response,
         xhr.getAllResponseHeaders(),
@@ -18927,20 +18928,11 @@ function createHttpBackend() {
       );
     };
 
-    xhr.onerror = function () {
-      // The response is always empty
-      // See https://xhr.spec.whatwg.org/#request-error-steps and https://fetch.spec.whatwg.org/#concept-network-error
-      completeRequest(callback, -1, null, null, "", "error");
-    };
-    xhr.ontimeout = function () {
-      // The response is always empty
-      // See https://xhr.spec.whatwg.org/#request-error-steps and https://fetch.spec.whatwg.org/#concept-network-error
-      completeRequest(callback, -1, null, null, "", "timeout");
-    };
+    xhr.onerror = () => completeRequest(-1, null, null, "", "error");
+    xhr.ontimeout = () => completeRequest(-1, null, null, "", "timeout");
 
-    xhr.onabort = function () {
+    xhr.onabort = () => {
       completeRequest(
-        callback,
         -1,
         null,
         null,
@@ -18950,16 +18942,15 @@ function createHttpBackend() {
     };
 
     if (eventHandlers) {
-      eventHandlers &&
-        Object.entries(eventHandlers).forEach(([key, value]) => {
-          xhr.addEventListener(key, value);
-        });
+      for (const [key, handler] of Object.entries(eventHandlers)) {
+        xhr.addEventListener(key, handler);
+      }
     }
 
     if (uploadEventHandlers) {
-      Object.entries(uploadEventHandlers).forEach(([key, value]) => {
-        xhr.upload.addEventListener(key, value);
-      });
+      for (const [key, handler] of Object.entries(uploadEventHandlers)) {
+        xhr.upload.addEventListener(key, handler);
+      }
     }
 
     if (withCredentials) {
@@ -18970,317 +18961,198 @@ function createHttpBackend() {
       try {
         xhr.responseType = responseType;
       } catch (e) {
-        // WebKit added support for the json responseType value on 09/03/2013
-        // https://bugs.webkit.org/show_bug.cgi?id=73648. Versions of Safari prior to 7 are
-        // known to throw when setting the value "json" as the response type. Other older
-        // browsers implementing the responseType
-        //
-        // The json response type can be ignored if not supported, because JSON payloads are
-        // parsed on the client-side regardless.
-        if (responseType !== "json") {
-          throw e;
-        }
+        if (responseType !== "json") throw e;
       }
     }
 
     xhr.send(isUndefined(post) ? null : post);
 
-    // Since we are using xhr.abort() when a request times out, we have to set a flag that
-    // indicates to requestAborted if the request timed out or was aborted.
-    //
-    // http.timeout = numerical timeout   timeout
-    // http.timeout = $timeout            timeout
-    // http.timeout = promise             abort
-    // xhr.abort()                        abort (The xhr object is normally inaccessible, but
-    //                                    can be exposed with the xhrFactory)
-    /** @type {number} */
-    let timeoutId;
-    if (timeout > 0) {
-      timeoutId = setTimeout(() => {
-        timeoutRequest("timeout");
-      }, timeout);
+    if (typeof timeout === "number" && timeout > 0) {
+      timeoutId = setTimeout(() => timeoutRequest("timeout"), timeout);
     } else if (isPromiseLike(timeout)) {
-      timeout.then(() => {
-        timeoutRequest(isDefined(timeout.$$timeoutId) ? "timeout" : "abort");
+      /** @type {Promise} */ (timeout).then(() => {
+        timeoutRequest(isDefined(timeout["$$timeoutId"]) ? "timeout" : "abort");
       });
     }
 
+    /**
+     * @param {"timeout"|"abort"} reason
+     */
     function timeoutRequest(reason) {
       abortedByTimeout = reason === "timeout";
-      if (xhr) {
-        xhr.abort();
-      }
+      if (xhr) xhr.abort();
     }
 
+    /**
+     * @param {number} status - HTTP status code or -1 for network errors.
+     * @param {*} response - The parsed or raw response from the server.
+     * @param {string|null} headersString - The raw response headers as a string.
+     * @param {string} statusText - The status text returned by the server.
+     * @param {"complete"|"error"|"timeout"|"abort"} xhrStatus - Final status of the request.
+     */
     function completeRequest(
-      callback,
       status,
       response,
       headersString,
       statusText,
       xhrStatus,
     ) {
-      // cancel timeout and subsequent timeout promise resolution
       if (isDefined(timeoutId)) {
         clearTimeout(timeoutId);
       }
-
       callback(status, response, headersString, statusText, xhrStatus);
     }
   };
 }
 
-/**
- * @typedef {Object} DefaultPorts
- * @property {number} http
- * @property {number} https
- * @property {number} ftp
- */
-
-/**
- * Represents the configuration options for HTML5 mode.
- *
- * @typedef {Object} Html5Mode
- * @property {boolean} enabled - (default: false) If true, will rely on `history.pushState` to
- *     change URLs where supported. Falls back to hash-prefixed paths in browsers that do not
- *     support `pushState`.
- * @property {boolean} requireBase - (default: `true`) When html5Mode is enabled, specifies
- *     whether or not a `<base>` tag is required to be present. If both `enabled` and `requireBase`
- *     are true, and a `<base>` tag is not present, an error will be thrown when `$location` is injected.
- *     See the {@link guide/$location $location guide} for more information.
- * @property {boolean|string} rewriteLinks - (default: `true`) When html5Mode is enabled, enables or
- *     disables URL rewriting for relative links. If set to a string, URL rewriting will only apply to links
- *     with an attribute that matches the given string. For example, if set to `'internal-link'`, URL rewriting
- *     will only occur for `<a internal-link>` links. Note that [attribute name normalization](guide/directive#normalization)
- *     does not apply here, so `'internalLink'` will **not** match `'internal-link'`.
- */
-
-/** @type {DefaultPorts} */
-const DEFAULT_PORTS = { http: 80, https: 443, ftp: 21 };
 const PATH_MATCH = /^([^?#]*)(\?([^#]*))?(#(.*))?$/;
 const $locationMinErr = minErr("$location");
 
+let urlUpdatedByLocation = false;
+
 /**
- * @abstract
+ * @ignore
+ * The pathname, beginning with "/"
+ * @type {string}
  */
+let $$path;
+
+/**
+ * @type {Object.<string,boolean|Array>}
+ */
+let $$search;
+
+/**
+ * @ignore
+ * The hash string, minus the hash symbol
+ * @type {string}
+ */
+let $$hash;
+
 class Location {
   /**
    * @param {string} appBase application base URL
    * @param {string} appBaseNoFile application base URL stripped of any filename
+   * @param {boolean} [html5] Defaults to true
+   * @param {string} [prefix] URL path prefix for html5 mode or hash prefix for hashbang mode
    */
-  constructor(appBase, appBaseNoFile) {
-    const parsedUrl = urlResolve(appBase);
-
+  constructor(appBase, appBaseNoFile, html5 = true, prefix) {
     /** @type {string} */
     this.appBase = appBase;
 
     /** @type {string} */
     this.appBaseNoFile = appBaseNoFile;
 
+    /** @type {boolean} */
+    this.html5 = html5;
+
+    /** @type {string | undefined} */
+    this.basePrefix = html5 ? prefix || "" : undefined;
+
+    /** @type {string | undefined} */
+    this.hashPrefix = html5 ? undefined : prefix;
+
     /**
-     * An absolute URL is the full URL, including protocol (http/https ), the optional subdomain (e.g. www ), domain (example.com), and path (which includes the directory and slug).
+     * An absolute URL is the full URL, including protocol (http/https ), the optional subdomain (e.g. www ), domain (example.com), and path (which includes the directory and slug)
+     * with all segments encoded according to rules specified in [RFC 3986](http://www.ietf.org/rfc/rfc3986.txt).
      * @type {string}
      */
-    this.$$absUrl = "";
+    this.absUrl = "";
 
     /**
-     * If html5 mode is enabled
-     * @type {boolean}
-     */
-    this.$$html5 = false;
-
-    /**
-     * Has any change been replacing?
-     * @type {boolean}
-     */
-    this.$$replace = false;
-
-    /** @type {string} */
-    this.$$protocol = parsedUrl.protocol;
-
-    /** @type {string} */
-    this.$$host = parsedUrl.hostname;
-
-    /**
-     * The port, without ":"
-     * @type {number}
-     */
-    this.$$port =
-      toInt(parsedUrl.port) || DEFAULT_PORTS[parsedUrl.protocol] || null;
-
-    /**
-     * The pathname, beginning with "/"
+     * @ignore
+     * Current url
      * @type {string}
      */
-    this.$$path = undefined;
+    this.$$url = undefined;
 
     /**
-     * The hash string, minus the hash symbol
-     * @type {string}
+     * @ignore
+     * Callback to update browser url
+     * @type {Function}
      */
-    this.$$hash = undefined;
-
-    /**
-     * Helper property for scope watch changes
-     * @type {boolean}
-     */
-    this.$$urlUpdatedByLocation = false;
+    this.$$updateBrowser = undefined;
   }
 
   /**
-   * Return full URL representation with all segments encoded according to rules specified in
-   * [RFC 3986](http://www.ietf.org/rfc/rfc3986.txt).
-   *
-   * @return {string} full URL
-   */
-  absUrl() {
-    return this.$$absUrl;
-  }
-
-  /**
-   * This method is getter / setter.
-   *
-   * Return URL (e.g. `/path?a=b#hash`) when called without any parameter.
    * Change path, search and hash, when called with parameter and return `$location`.
    *
-   * @param {string=} url New URL without base prefix (e.g. `/path?a=b#hash`)
-   * @return {Location|string} url
+   * @param {string} url New URL without base prefix (e.g. `/path?a=b#hash`)
+   * @return {Location} url
    */
-  url(url) {
-    if (isUndefined(url)) {
-      return this.$$url;
-    }
-
+  setUrl(url) {
     const match = PATH_MATCH.exec(url);
-    if (match[1] || url === "") this.path(decodeURIComponent(match[1]));
-    if (match[2] || match[1] || url === "") this.search(match[3] || "");
-    this.hash(match[5] || "");
+    if (match[1] || url === "") this.setPath(decodeURIComponent(match[1]));
+    if (match[2] || match[1] || url === "") this.setSearch(match[3] || "");
+    this.setHash(match[5] || "");
 
     return this;
   }
 
   /**
+   * Return URL (e.g. `/path?a=b#hash`) when called without any parameter.
    *
-   * Return protocol of current URL.
-   * @return {string} protocol of current URL
+   * @return {string} url
    */
-  protocol() {
-    return this.$$protocol;
+  getUrl() {
+    return this.$$url;
   }
 
   /**
-   * This method is getter only.
+   * Change path parameter and return `$location`.
    *
-   * Return host of current URL.
-   *
-   * Note: compared to the non-AngularTS version `location.host` which returns `hostname:port`, this returns the `hostname` portion only.
-   *
-   *
-   * @return {string} host of current URL.
+   * @param {(string|number)} path New path
+   * @return {Location}
    */
-  host() {
-    return this.$$host;
-  }
-
-  /**
-   * This method is getter only.
-   *
-   * Return port of current URL.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let port = $location.port();
-   * // => 80
-   * ```
-   *
-   * @return {number} port
-   */
-  port() {
-    return this.$$port;
-  }
-
-  /**
-   * This method is getter / setter.
-   *
-   * Return path of current URL when called without any parameter.
-   *
-   * Change path when called with parameter and return `$location`.
-   *
-   * Note: Path should always begin with forward slash (/), this method will add the forward slash
-   * if it is missing.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo
-   * let path = $location.path();
-   * // => "/some/path"
-   * ```
-   *
-   * @param {(string|number)=} path New path
-   * @return {(string|object)} path if called with no parameters, or `$location` if called with a parameter
-   */
-  path(path) {
-    if (isUndefined(path)) {
-      return this.$$path;
-    }
+  setPath(path) {
     let newPath = path !== null ? path.toString() : "";
-    this.$$path = newPath.charAt(0) === "/" ? newPath : `/${newPath}`;
+    $$path = newPath.charAt(0) === "/" ? newPath : `/${newPath}`;
     this.$$compose();
     return this;
   }
 
   /**
-   * This method is getter / setter.
    *
-   * Returns the hash fragment when called without any parameters.
+   * Return path of current URL
    *
+   * @return {string}
+   */
+  getPath() {
+    return $$path;
+  }
+
+  /**
    * Changes the hash fragment when called with a parameter and returns `$location`.
-   *
-   *
-   * ```js
-   * // given URL http://example.com/#/some/path?foo=bar&baz=xoxo#hashValue
-   * let hash = $location.hash();
-   * // => "hashValue"
-   * ```
-   *
-   * @param {(string|number)=} hash New hash fragment
-   * @return {string|Location} hash
+   * @param {(string|number)} hash New hash fragment
+   * @return {Location} hash
    */
-  hash(hash) {
-    if (isUndefined(hash)) {
-      return this.$$hash;
-    }
-
-    this.$$hash = hash !== null ? hash.toString() : "";
+  setHash(hash) {
+    $$hash = hash !== null ? hash.toString() : "";
     this.$$compose();
     return this;
   }
 
   /**
-   * If called, all changes to $location during the current `$digest` will replace the current history
-   * record, instead of adding a new one.
+   * Returns the hash fragment when called without any parameters.
+   * @return {string} hash
    */
-  replace() {
-    this.$$replace = true;
-    return this;
+  getHash() {
+    return $$hash;
   }
 
   /**
-   * Returns or sets the search part (as object) of current URL when called without any parameter
+   * Sets the search part (as object) of current URL
    *
-   * @param {string|Object=} search New search params - string or hash object.
+   * @param {string|Object} search New search params - string or hash object.
    * @param {(string|number|Array<string>|boolean)=} paramValue If search is a string or number, then paramValue will override only a single search property.
-   * @returns {Object|Location} Search object or Location object
+   * @returns {Object} Search object or Location object
    */
-  search(search, paramValue) {
+  setSearch(search, paramValue) {
     switch (arguments.length) {
-      case 0:
-        return this.$$search;
       case 1:
         if (isString(search) || isNumber(search)) {
           search = search.toString();
-          this.$$search = parseKeyValue(search);
+          $$search = parseKeyValue(search);
         } else if (isObject(search)) {
           search = structuredClone(search, {});
           // remove object undefined or null properties
@@ -19288,7 +19160,7 @@ class Location {
             if (value == null) delete search[key];
           });
 
-          this.$$search = search;
+          $$search = search;
         } else {
           throw $locationMinErr(
             "isrcharg",
@@ -19298,9 +19170,10 @@ class Location {
         break;
       default:
         if (isUndefined(paramValue) || paramValue === null) {
-          delete this.$$search[search];
+          delete $$search[search];
         } else {
-          this.$$search[search] = paramValue;
+          // @ts-ignore
+          $$search[search] = paramValue;
         }
     }
 
@@ -19309,28 +19182,28 @@ class Location {
   }
 
   /**
+   * Returns the search part (as object) of current URL
+   *
+   * @returns {Object} Search object or Location object
+   */
+  getSearch() {
+    return $$search;
+  }
+
+  /**
+   * @private
    * Compose url and update `url` and `absUrl` property
-   * @returns {void}
    */
   $$compose() {
-    this.$$url = normalizePath(this.$$path, this.$$search, this.$$hash);
-    this.$$absUrl = this.$$normalizeUrl(this.$$url);
-    this.$$urlUpdatedByLocation = true;
+    this.$$url = normalizePath($$path, $$search, $$hash);
+    this.absUrl = this.html5
+      ? this.appBaseNoFile + this.$$url.substring(1)
+      : this.appBase + (this.$$url ? this.hashPrefix + this.$$url : "");
+    urlUpdatedByLocation = true;
+    setTimeout(() => this.$$updateBrowser && this.$$updateBrowser());
   }
 
   /**
-   * @param {string} _url
-   * @returns {string}
-   */
-  $$normalizeUrl(_url) {
-    throw new Error(`Method not implemented ${_url}`);
-  }
-
-  /**
-   * This method is getter / setter.
-   *
-   * Return the history state object when called without any parameter.
-   *
    * Change the history state object when called with one parameter and return `$location`.
    * The state object is later passed to `pushState` or `replaceState`.
    * See {@link https://developer.mozilla.org/en-US/docs/Web/API/History/pushState#state|History.state}
@@ -19338,85 +19211,30 @@ class Location {
    * NOTE: This method is supported only in HTML5 mode and only in browsers supporting
    * the HTML5 History API (i.e. methods `pushState` and `replaceState`). If you need to support
    * older browsers (like IE9 or Android < 4.0), don't use this method.
-   *
-   * @param {any} state State object for pushState or replaceState
-   * @return {any} state
+   * @param {any} state
+   * @returns {Location}
    */
-  state(state) {
-    if (!arguments.length) {
-      return this.$$state;
-    }
-
-    if (!(this instanceof LocationHtml5Url) || !this.$$html5) {
+  setState(state) {
+    if (!this.html5) {
       throw $locationMinErr(
         "nostate",
-        "History API state support is available only " +
-          "in HTML5 mode and only in browsers supporting HTML5 History API",
+        "History API state support is available only in HTML5 mode",
       );
     }
-    // The user might modify `stateObject` after invoking `$location.state(stateObject)`
+    // The user might modify `stateObject` after invoking `$location.setState(stateObject)`
     // but we're changing the $$state reference to $browser.state() during the $digest
     // so the modification window is narrow.
     this.$$state = isUndefined(state) ? null : state;
-    this.$$urlUpdatedByLocation = true;
+    urlUpdatedByLocation = true;
     return this;
   }
 
   /**
-   * @param {string} _url
-   * @param {string} _url2
-   * @returns {boolean}
+   * Return the history state object
+   * @returns {any}
    */
-  $$parseLinkUrl(_url, _url2) {
-    throw new Error(`Method not implemented ${_url} ${_url2}`);
-  }
-
-  $$parse(_url) {
-    throw new Error(`Method not implemented ${_url}`);
-  }
-}
-
-/**
- * This object is exposed as $location service when HTML5 mode is enabled and supported
- */
-class LocationHtml5Url extends Location {
-  /**
-   * @param {string} appBase application base URL
-   * @param {string} appBaseNoFile application base URL stripped of any filename
-   * @param {string} basePrefix URL path prefix
-   */
-  constructor(appBase, appBaseNoFile, basePrefix) {
-    super(appBase, appBaseNoFile);
-    this.$$html5 = true;
-    this.basePrefix = basePrefix || "";
-  }
-
-  /**
-   * Parse given HTML5 (regular) URL string into properties
-   * @param {string} url HTML5 URL
-   */
-  $$parse(url) {
-    const pathUrl = stripBaseUrl(this.appBaseNoFile, url);
-    if (!isString(pathUrl)) {
-      throw $locationMinErr(
-        "ipthprfx",
-        'Invalid url "{0}", missing path prefix "{1}".',
-        url,
-        this.appBaseNoFile,
-      );
-    }
-
-    parseAppUrl(pathUrl, this, true);
-
-    if (!this.$$path) {
-      this.$$path = "/";
-    }
-
-    this.$$compose();
-  }
-
-  $$normalizeUrl(url) {
-    return this.appBaseNoFile + url.substring(1); // first char is always '/'
+  getState() {
+    return this.$$state;
   }
 
   /**
@@ -19424,148 +19242,138 @@ class LocationHtml5Url extends Location {
    * @param {string} relHref
    * @returns {boolean}
    */
-  $$parseLinkUrl(url, relHref) {
-    if (relHref && relHref[0] === "#") {
-      // special case for links to hash fragments:
-      // keep the old url and only replace the hash fragment
-      this.hash(relHref.slice(1));
-      return true;
-    }
-    let appUrl;
-    let prevAppUrl;
-    let rewrittenUrl;
-
-    if (isDefined((appUrl = stripBaseUrl(this.appBase, url)))) {
-      prevAppUrl = appUrl;
-      if (
-        this.basePrefix &&
-        isDefined((appUrl = stripBaseUrl(this.basePrefix, appUrl)))
-      ) {
-        rewrittenUrl =
-          this.appBaseNoFile + (stripBaseUrl("/", appUrl) || appUrl);
-      } else {
-        rewrittenUrl = this.appBase + prevAppUrl;
+  parseLinkUrl(url, relHref) {
+    if (this.html5) {
+      if (relHref && relHref[0] === "#") {
+        // special case for links to hash fragments:
+        // keep the old url and only replace the hash fragment
+        this.setHash(relHref.slice(1));
+        return true;
       }
-    } else if (isDefined((appUrl = stripBaseUrl(this.appBaseNoFile, url)))) {
-      rewrittenUrl = this.appBaseNoFile + appUrl;
-    } else if (this.appBaseNoFile === `${url}/`) {
-      rewrittenUrl = this.appBaseNoFile;
-    }
-    if (rewrittenUrl) {
-      this.$$parse(rewrittenUrl);
-    }
-    return !!rewrittenUrl;
-  }
-}
+      let appUrl;
+      let prevAppUrl;
+      let rewrittenUrl;
 
-/**
- * LocationHashbangUrl represents URL
- * This object is exposed as $location service when developer doesn't opt into html5 mode.
- * It also serves as the base class for html5 mode fallback on legacy browsers.
- *
- */
-class LocationHashbangUrl extends Location {
-  /**
-   * @param {string} appBase application base URL
-   * @param {string} appBaseNoFile application base URL stripped of any filename
-   * @param {string} hashPrefix hashbang prefix
-   */
-  constructor(appBase, appBaseNoFile, hashPrefix) {
-    super(appBase, appBaseNoFile);
-    this.hashPrefix = hashPrefix;
-  }
-
-  /**
-   * Parse given hashbang URL into properties
-   * @param {string} url Hashbang URL
-   */
-  $$parse(url) {
-    const withoutBaseUrl =
-      stripBaseUrl(this.appBase, url) || stripBaseUrl(this.appBaseNoFile, url);
-    let withoutHashUrl;
-
-    if (!isUndefined(withoutBaseUrl) && withoutBaseUrl.charAt(0) === "#") {
-      // The rest of the URL starts with a hash so we have
-      // got either a hashbang path or a plain hash fragment
-      withoutHashUrl = stripBaseUrl(this.hashPrefix, withoutBaseUrl);
-      if (isUndefined(withoutHashUrl)) {
-        // There was no hashbang prefix so we just have a hash fragment
-        withoutHashUrl = withoutBaseUrl;
+      if (isDefined((appUrl = stripBaseUrl(this.appBase, url)))) {
+        prevAppUrl = appUrl;
+        if (
+          this.basePrefix &&
+          isDefined((appUrl = stripBaseUrl(this.basePrefix, appUrl)))
+        ) {
+          rewrittenUrl =
+            this.appBaseNoFile + (stripBaseUrl("/", appUrl) || appUrl);
+        } else {
+          rewrittenUrl = this.appBase + prevAppUrl;
+        }
+      } else if (isDefined((appUrl = stripBaseUrl(this.appBaseNoFile, url)))) {
+        rewrittenUrl = this.appBaseNoFile + appUrl;
+      } else if (this.appBaseNoFile === `${url}/`) {
+        rewrittenUrl = this.appBaseNoFile;
       }
+      if (rewrittenUrl) {
+        this.parse(rewrittenUrl);
+      }
+      return !!rewrittenUrl;
     } else {
-      // There was no hashbang path nor hash fragment:
-      // If we are in HTML5 mode we use what is left as the path;
-      // Otherwise we ignore what is left
-      if (this.$$html5) {
-        withoutHashUrl = withoutBaseUrl;
+      if (stripHash(this.appBase) === stripHash(url)) {
+        this.parse(url);
+        return true;
+      }
+      return false;
+    }
+  }
+
+  /**
+   * Parse given HTML5 (regular) URL string into properties
+   * @param {string} url HTML5 URL
+   */
+  parse(url) {
+    if (this.html5) {
+      const pathUrl = stripBaseUrl(this.appBaseNoFile, url);
+      if (!isString(pathUrl)) {
+        throw $locationMinErr(
+          "ipthprfx",
+          'Invalid url "{0}", missing path prefix "{1}".',
+          url,
+          this.appBaseNoFile,
+        );
+      }
+
+      parseAppUrl(pathUrl, true);
+
+      if (!$$path) {
+        $$path = "/";
+      }
+
+      this.$$compose();
+    } else {
+      const withoutBaseUrl =
+        stripBaseUrl(this.appBase, url) ||
+        stripBaseUrl(this.appBaseNoFile, url);
+      let withoutHashUrl;
+
+      if (!isUndefined(withoutBaseUrl) && withoutBaseUrl.charAt(0) === "#") {
+        // The rest of the URL starts with a hash so we have
+        // got either a hashbang path or a plain hash fragment
+        withoutHashUrl = stripBaseUrl(this.hashPrefix, withoutBaseUrl);
+        if (isUndefined(withoutHashUrl)) {
+          // There was no hashbang prefix so we just have a hash fragment
+          withoutHashUrl = withoutBaseUrl;
+        }
       } else {
-        withoutHashUrl = "";
-        if (isUndefined(withoutBaseUrl)) {
-          this.appBase = url;
-          /** @type {?} */ (this).replace();
+        // There was no hashbang path nor hash fragment:
+        // If we are in HTML5 mode we use what is left as the path;
+        // Otherwise we ignore what is left
+        if (this.html5) {
+          withoutHashUrl = withoutBaseUrl;
+        } else {
+          withoutHashUrl = "";
+          if (isUndefined(withoutBaseUrl)) {
+            this.appBase = url;
+          }
         }
       }
-    }
 
-    parseAppUrl(withoutHashUrl, this, false);
+      parseAppUrl(withoutHashUrl, false);
 
-    this.$$path = removeWindowsDriveName(
-      this.$$path,
-      withoutHashUrl,
-      this.appBase,
-    );
+      $$path = removeWindowsDriveName($$path, withoutHashUrl, this.appBase);
 
-    this.$$compose();
+      this.$$compose();
 
-    /*
-     * In Windows, on an anchor node on documents loaded from
-     * the filesystem, the browser will return a pathname
-     * prefixed with the drive name ('/C:/path') when a
-     * pathname without a drive is set:
-     *  * a.setAttribute('href', '/foo')
-     *   * a.pathname === '/C:/foo' //true
-     *
-     * Inside of AngularTS, we're always using pathnames that
-     * do not include drive names for routing.
-     */
-    function removeWindowsDriveName(path, url, base) {
       /*
-      Matches paths for file protocol on windows,
-      such as /C:/foo/bar, and captures only /foo/bar.
-      */
-      const windowsFilePathExp = /^\/[A-Z]:(\/.*)/;
+       * In Windows, on an anchor node on documents loaded from
+       * the filesystem, the browser will return a pathname
+       * prefixed with the drive name ('/C:/path') when a
+       * pathname without a drive is set:
+       *  * a.setAttribute('href', '/foo')
+       *   * a.pathname === '/C:/foo' //true
+       *
+       * Inside of AngularTS, we're always using pathnames that
+       * do not include drive names for routing.
+       */
+      function removeWindowsDriveName(path, url, base) {
+        /*
+        Matches paths for file protocol on windows,
+        such as /C:/foo/bar, and captures only /foo/bar.
+        */
+        const windowsFilePathExp = /^\/[A-Z]:(\/.*)/;
 
-      let firstPathSegmentMatch;
+        let firstPathSegmentMatch;
 
-      // Get the relative path from the input URL.
-      if (startsWith(url, base)) {
-        url = url.replace(base, "");
+        // Get the relative path from the input URL.
+        if (startsWith(url, base)) {
+          url = url.replace(base, "");
+        }
+
+        // The input URL intentionally contains a first path segment that ends with a colon.
+        if (windowsFilePathExp.exec(url)) {
+          return path;
+        }
+
+        firstPathSegmentMatch = windowsFilePathExp.exec(path);
+        return firstPathSegmentMatch ? firstPathSegmentMatch[1] : path;
       }
-
-      // The input URL intentionally contains a first path segment that ends with a colon.
-      if (windowsFilePathExp.exec(url)) {
-        return path;
-      }
-
-      firstPathSegmentMatch = windowsFilePathExp.exec(path);
-      return firstPathSegmentMatch ? firstPathSegmentMatch[1] : path;
     }
-  }
-
-  $$normalizeUrl(url) {
-    return this.appBase + (url ? this.hashPrefix + url : "");
-  }
-
-  /**
-   * @param {string} url
-   * @returns {boolean}
-   */
-  $$parseLinkUrl(url) {
-    if (stripHash(this.appBase) === stripHash(url)) {
-      this.$$parse(url);
-      return true;
-    }
-    return false;
   }
 }
 
@@ -19574,20 +19382,20 @@ class LocationProvider {
     /** @type {string} */
     this.hashPrefixConf = "!";
 
-    /** @type {Html5Mode} */
+    /** @type {import("./interface.ts").Html5Mode} */
     this.html5ModeConf = {
-      enabled: false,
-      requireBase: true,
+      enabled: true,
+      requireBase: false,
       rewriteLinks: true,
     };
 
-    /** @type {Array<import("./interface.js").UrlChangeListener>} */
+    /** @type {Array<import("./interface.ts").UrlChangeListener>} */
     this.urlChangeListeners = [];
     this.urlChangeInit = false;
 
     /** @type {History['state']} */
     this.cachedState = null;
-    /** @typeof {History.state} */
+    /** @type {History['state']} */
     this.lastHistoryState = null;
     /** @type {string} */
     this.lastBrowserUrl = window.location.href;
@@ -19598,14 +19406,19 @@ class LocationProvider {
   // URL API
   /// ///////////////////////////////////////////////////////////
 
+  /**
+   * Updates the browser's current URL and history state.
+   *
+   * @param {string|undefined} url - The target URL to navigate to.
+   * @param {*} [state=null] - Optional history state object to associate with the new URL.
+   * @returns {LocationProvider}
+   */
   setUrl(url, state) {
     if (state === undefined) {
       state = null;
     }
-
-    // setter
     if (url) {
-      url = urlResolve(url).href;
+      url = new URL(url).href;
 
       if (this.lastBrowserUrl === url && this.lastHistoryState === state) {
         return this;
@@ -19622,7 +19435,7 @@ class LocationProvider {
    * Returns the current URL with any empty hash (`#`) removed.
    * @return {string}
    */
-  getUrl() {
+  getBrowserUrl() {
     return trimEmptyHash(window.location.href);
   }
 
@@ -19650,19 +19463,17 @@ class LocationProvider {
 
   /**
    * Fires the state or URL change event.
-   *
-   * @private
    */
-  fireStateOrUrlChange() {
+  #fireStateOrUrlChange() {
     const prevLastHistoryState = this.lastHistoryState;
     this.cacheState();
     if (
-      this.lastBrowserUrl === this.getUrl() &&
+      this.lastBrowserUrl === this.getBrowserUrl() &&
       prevLastHistoryState === this.cachedState
     ) {
       return;
     }
-    this.lastBrowserUrl = this.getUrl();
+    this.lastBrowserUrl = this.getBrowserUrl();
     this.lastHistoryState = this.cachedState;
     this.urlChangeListeners.forEach((listener) => {
       listener(trimEmptyHash(window.location.href), this.cachedState);
@@ -19675,131 +19486,75 @@ class LocationProvider {
    * @param {import("./interface.js").UrlChangeListener} callback - The callback function to register.
    * @returns void
    */
-  onUrlChange(callback) {
+  #onUrlChange(callback) {
     if (!this.urlChangeInit) {
-      window.addEventListener("popstate", this.fireStateOrUrlChange.bind(this));
+      window.addEventListener(
+        "popstate",
+        this.#fireStateOrUrlChange.bind(this),
+      );
       window.addEventListener(
         "hashchange",
-        this.fireStateOrUrlChange.bind(this),
+        this.#fireStateOrUrlChange.bind(this),
       );
       this.urlChangeInit = true;
     }
     this.urlChangeListeners.push(callback);
   }
 
-  /**
-   * The default value for the prefix is `'!'`.
-   * @param {string=} prefix Prefix for hash part (containing path and search)
-   * @returns {void}
-   */
-  setHashPrefix(prefix) {
-    this.hashPrefixConf = prefix;
-  }
-
-  /**
-   * Current hash prefix
-   * @returns {string}
-   */
-  getHashPrefix() {
-    return this.hashPrefixConf;
-  }
-
-  /**
-   * Configures html5 mode
-   * @param {(boolean|Html5Mode)=} mode If boolean, sets `html5Mode.enabled` to value. Otherwise, accepts html5Mode object
-   *
-   * @returns {void}
-   */
-  setHtml5Mode(mode) {
-    if (isBoolean(mode)) {
-      this.html5ModeConf.enabled = /** @type {boolean} */ (mode);
-    }
-    if (isObject(mode)) {
-      const html5Mode = /** @type {Html5Mode} */ (mode);
-      if (isDefined(html5Mode.enabled) && isBoolean(html5Mode.enabled)) {
-        this.html5ModeConf.enabled = html5Mode.enabled;
-      }
-
-      if (
-        isDefined(html5Mode.requireBase) &&
-        isBoolean(html5Mode.requireBase)
-      ) {
-        this.html5ModeConf.requireBase = html5Mode.requireBase;
-      }
-
-      if (
-        isDefined(html5Mode.rewriteLinks) &&
-        (isBoolean(html5Mode.rewriteLinks) || isString(html5Mode.rewriteLinks))
-      ) {
-        this.html5ModeConf.rewriteLinks = html5Mode.rewriteLinks;
-      }
-    }
-  }
-
-  /**
-   * Returns html5 mode cofiguration
-   * @returns {Html5Mode}
-   */
-  getHtml5Mode() {
-    return this.html5ModeConf;
-  }
-
   $get = [
-    "$rootScope",
-    "$rootElement",
+    $injectTokens.$rootScope,
+    $injectTokens.$rootElement,
     /**
      *
      * @param {import('../../core/scope/scope.js').Scope} $rootScope
      * @param {Element} $rootElement
-     * @returns
+     * @returns {Location}
      */
     ($rootScope, $rootElement) => {
       /** @type {Location} */
       let $location;
-      let LocationMode;
       const baseHref = getBaseHref(); // if base[href] is undefined, it defaults to ''
       const initialUrl = trimEmptyHash(window.location.href);
       let appBase;
 
-      if (this.getHtml5Mode().enabled) {
-        if (!baseHref && this.getHtml5Mode().requireBase) {
+      if (this.html5ModeConf.enabled) {
+        if (!baseHref && this.html5ModeConf.requireBase) {
           throw $locationMinErr(
             "nobase",
             "$location in HTML5 mode requires a <base> tag to be present!",
           );
         }
         appBase = serverBase(initialUrl) + (baseHref || "/");
-        LocationMode = LocationHtml5Url;
       } else {
         appBase = stripHash(initialUrl);
-        LocationMode = LocationHashbangUrl;
       }
       const appBaseNoFile = stripFile(appBase);
 
-      $location = new LocationMode(
+      $location = new Location(
         appBase,
         appBaseNoFile,
-        `#${this.getHashPrefix()}`,
+        this.html5ModeConf.enabled,
+        `#${this.hashPrefixConf}`,
       );
-      $location.$$parseLinkUrl(initialUrl, initialUrl);
+      $location.parseLinkUrl(initialUrl, initialUrl);
 
       $location.$$state = this.state();
 
       const IGNORE_URI_REGEXP = /^\s*(javascript|mailto):/i;
 
       const setBrowserUrlWithFallback = (url, state) => {
-        const oldUrl = $location.url();
+        const oldUrl = $location.getUrl();
         const oldState = $location.$$state;
         try {
           this.setUrl(url, state);
 
-          // Make sure $location.state() returns referentially identical (not just deeply equal)
+          // Make sure $location.getState() returns referentially identical (not just deeply equal)
           // state object; this makes possible quick checking if the state changed in the digest
           // loop. Checking deep equality would be too expensive.
           $location.$$state = this.state();
         } catch (e) {
           // Restore old values if pushState fails
-          $location.url(/** @type {string} */ (oldUrl));
+          $location.setUrl(/** @type {string} */ (oldUrl));
           $location.$$state = oldState;
 
           throw e;
@@ -19810,7 +19565,7 @@ class LocationProvider {
         "click",
         /** @param {MouseEvent} event */
         (event) => {
-          const rewriteLinks = this.getHtml5Mode().rewriteLinks;
+          const rewriteLinks = this.html5ModeConf.rewriteLinks;
           // TODO(vojta): rewrite link when opening in new tab/window (in legacy browser)
           // currently we open nice url link and redirect then
 
@@ -19819,7 +19574,6 @@ class LocationProvider {
             event.ctrlKey ||
             event.metaKey ||
             event.shiftKey ||
-            event.which === 2 ||
             event.button === 2
           ) {
             return;
@@ -19854,7 +19608,7 @@ class LocationProvider {
             // an animation.
 
             const scvAnimatedString = /** @type {unknown} */ (absHref);
-            absHref = urlResolve(
+            absHref = new URL(
               /** @type {SVGAnimatedString } */ (scvAnimatedString).animVal,
             ).href;
           }
@@ -19867,7 +19621,7 @@ class LocationProvider {
             !elm.getAttribute("target") &&
             !event.defaultPrevented
           ) {
-            if ($location.$$parseLinkUrl(absHref, relHref)) {
+            if ($location.parseLinkUrl(absHref, relHref)) {
               // We do a preventDefault for all urls that are part of the AngularTS application,
               // in html5mode and also without, so that we are able to abort navigation without
               // getting double entries in the location history.
@@ -19878,14 +19632,14 @@ class LocationProvider {
       );
 
       // rewrite hashbang url <> html5 url
-      if ($location.absUrl() !== initialUrl) {
-        this.setUrl($location.absUrl(), true);
+      if ($location.absUrl !== initialUrl) {
+        this.setUrl($location.absUrl, true);
       }
 
       let initializing = true;
 
       // update $location when $browser url changes
-      this.onUrlChange((newUrl, newState) => {
+      this.#onUrlChange((newUrl, newState) => {
         if (!startsWith(newUrl, appBaseNoFile)) {
           // If we are navigating outside of the app then force a reload
           window.location.href = newUrl;
@@ -19893,10 +19647,10 @@ class LocationProvider {
         }
 
         Promise.resolve().then(() => {
-          const oldUrl = $location.absUrl();
+          const oldUrl = $location.absUrl;
           const oldState = $location.$$state;
           let defaultPrevented;
-          $location.$$parse(newUrl);
+          $location.parse(newUrl);
           $location.$$state = newState;
 
           defaultPrevented = $rootScope.$broadcast(
@@ -19909,10 +19663,10 @@ class LocationProvider {
 
           // if the location was changed by a `$locationChangeStart` handler then stop
           // processing this location change
-          if ($location.absUrl() !== newUrl) return;
+          if ($location.absUrl !== newUrl) return;
 
           if (defaultPrevented) {
-            $location.$$parse(oldUrl);
+            $location.parse(oldUrl);
             $location.$$state = oldState;
             setBrowserUrlWithFallback(oldUrl, oldState);
           } else {
@@ -19924,21 +19678,21 @@ class LocationProvider {
 
       // update browser
       const updateBrowser = () => {
-        if (initializing || $location.$$urlUpdatedByLocation) {
-          $location.$$urlUpdatedByLocation = false;
+        if (initializing || urlUpdatedByLocation) {
+          urlUpdatedByLocation = false;
 
-          const oldUrl = /** @type {string} */ (this.getUrl());
-          const newUrl = $location.absUrl();
+          const oldUrl = /** @type {string} */ (this.getBrowserUrl());
+          const newUrl = $location.absUrl;
           const oldState = this.state();
           const urlOrStateChanged =
             !urlsEqual(oldUrl, newUrl) ||
-            ($location.$$html5 && oldState !== $location.$$state);
+            ($location.html5 && oldState !== $location.$$state);
 
           if (initializing || urlOrStateChanged) {
             initializing = false;
 
             setTimeout(() => {
-              const newUrl = $location.absUrl();
+              const newUrl = $location.absUrl;
               const { defaultPrevented } = $rootScope.$broadcast(
                 "$locationChangeStart",
                 newUrl,
@@ -19949,10 +19703,10 @@ class LocationProvider {
 
               // if the location was changed by a `$locationChangeStart` handler then stop
               // processing this location change
-              if ($location.absUrl() !== newUrl) return;
+              if ($location.absUrl !== newUrl) return;
 
               if (defaultPrevented) {
-                $location.$$parse(oldUrl);
+                $location.parse(oldUrl);
                 $location.$$state = oldState;
               } else {
                 if (urlOrStateChanged) {
@@ -19966,13 +19720,8 @@ class LocationProvider {
             });
           }
         }
-
-        $location.$$replace = false;
-
-        // we don't need to return anything because $evalAsync will make the digest loop dirty when
-        // there is a change
       };
-
+      $location.$$updateBrowser = updateBrowser;
       updateBrowser();
       $rootScope.$on("$updateBrowser", updateBrowser);
 
@@ -19981,7 +19730,7 @@ class LocationProvider {
       function afterLocationChange(oldUrl, oldState) {
         $rootScope.$broadcast(
           "$locationChangeSuccess",
-          $location.absUrl(),
+          $location.absUrl,
           oldUrl,
           $location.$$state,
           oldState,
@@ -19993,28 +19742,63 @@ class LocationProvider {
 
 /**
  * ///////////////////////////
- *          HELPERS
+ *     PRIVATE HELPERS
  * ///////////////////////////
  */
 
 /**
- * Encode path using encodeUriSegment, ignoring forward slashes
+ * @ignore
+ * Encodes a URL path by encoding each path segment individually using `encodeUriSegment`,
+ * while preserving forward slashes (`/`) as segment separators.
  *
- * @param {string} path Path to encode
- * @returns {string}
+ * This function first decodes any existing percent-encodings (such as `%20` or `%2F`)
+ * in each segment to prevent double encoding, except for encoded forward slashes (`%2F`),
+ * which are replaced with literal slashes before decoding to keep path boundaries intact.
+ *
+ * After decoding, each segment is re-encoded with `encodeUriSegment` according to RFC 3986,
+ * encoding only characters that must be encoded in a path segment.
+ *
+ * The encoded segments are then rejoined with `/` to form the encoded path.
+ *
+ * @param {string} path - The URL path string to encode. May contain multiple segments separated by `/`.
+ * @returns {string} The encoded path, where each segment is encoded, but forward slashes are preserved.
+ *
+ * @example
+ * encodePath("user profile/images/pic 1.jpg")
+ * // returns "user%20profile/images/pic%201.jpg"
+ *
+ * @example
+ * encodePath("folder1%2Fsub/folder2")
+ * // returns "folder1%2Fsub/folder2"
  */
 function encodePath(path) {
   const segments = path.split("/");
   let i = segments.length;
 
   while (i--) {
-    // decode forward slashes to prevent them from being double encoded
-    segments[i] = encodeUriSegment(segments[i].replace(/%2F/g, "/"));
+    // Decode any existing encodings (e.g. %20, %2F) to prevent double-encoding
+    // But keep slashes intact (they were split on)
+    const decodedSegment = decodeURIComponent(
+      segments[i].replace(/%2F/gi, "/"),
+    );
+    segments[i] = encodeUriSegment(decodedSegment);
   }
 
   return segments.join("/");
 }
 
+/**
+ * @ignore
+ * Decodes each segment of a URL path.
+ *
+ * Splits the input path by "/", decodes each segment using decodeURIComponent,
+ * and if html5Mode is enabled, re-encodes any forward slashes inside segments
+ * as "%2F" to avoid confusion with path separators.
+ *
+ * @param {string} path - The URL path to decode.
+ * @param {boolean} html5Mode - If true, encodes forward slashes in segments as "%2F".
+ * @returns {string} The decoded path with segments optionally encoding slashes.
+ */
 function decodePath(path, html5Mode) {
   const segments = path.split("/");
   let i = segments.length;
@@ -20030,6 +19814,33 @@ function decodePath(path, html5Mode) {
   return segments.join("/");
 }
 
+/**
+ * @ignore
+ * Normalizes a URL path by encoding the path segments, query parameters, and hash fragment.
+ *
+ * - Path segments are encoded using `encodePath`, which encodes each segment individually.
+ * - Query parameters (`searchValue`) are converted to a query string using `toKeyValue`.
+ * - Hash fragment (`hashValue`) is encoded using `encodeUriSegment` and prefixed with `#`.
+ *
+ * This function returns a fully constructed URL path with optional query and hash components.
+ *
+ * @param {string} pathValue - The base URL path (e.g., "folder/item name").
+ * @param {Object.<string, any> | string | null} searchValue - An object or string representing query parameters.
+ *   - If an object, it can contain strings, numbers, booleans, or arrays of values.
+ *   - If a string, it is assumed to be a raw query string.
+ *   - If null or undefined, no query string is added.
+ * @param {string | null} hashValue - The URL fragment (everything after `#`). If null or undefined, no hash is added.
+ *
+ * @returns {string} The normalized URL path including encoded path, optional query string, and optional hash.
+ *
+ * @example
+ * normalizePath("products/list", { category: "books", page: 2 }, "section1")
+ * // returns "products/list?category=books&page=2#section1"
+ *
+ * @example
+ * normalizePath("user profile/images", null, null)
+ * // returns "user%20profile/images"
+ */
 function normalizePath(pathValue, searchValue, hashValue) {
   const search = toKeyValue(searchValue);
   const hash = hashValue ? `#${encodeUriSegment(hashValue)}` : "";
@@ -20038,7 +19849,15 @@ function normalizePath(pathValue, searchValue, hashValue) {
   return path + (search ? `?${search}` : "") + hash;
 }
 
-function parseAppUrl(url, locationObj, html5Mode) {
+/**
+ * @ignore
+ * Parses the application URL and updates the location object with path, search, and hash.
+ *
+ * @param {string} url - The URL string to parse.
+ * @param {boolean} html5Mode - Whether HTML5 mode is enabled (affects decoding).
+ * @throws Will throw an error if the URL starts with invalid slashes.
+ */
+function parseAppUrl(url, html5Mode) {
   if (/^\s*[\\/]{2,}/.test(url)) {
     throw $locationMinErr("badpath", 'Invalid url "{0}".', url);
   }
@@ -20052,22 +19871,20 @@ function parseAppUrl(url, locationObj, html5Mode) {
     prefixed && match.pathname.charAt(0) === "/"
       ? match.pathname.substring(1)
       : match.pathname;
-  locationObj.$$path = decodePath(path, html5Mode);
-  locationObj.$$search = parseKeyValue(match.search);
-  locationObj.$$hash = decodeURIComponent(match.hash);
+  $$path = decodePath(path, html5Mode);
+  $$search = parseKeyValue(match.search);
+  $$hash = decodeURIComponent(match.hash);
 
   // make sure path starts with '/';
-  if (locationObj.$$path && locationObj.$$path.charAt(0) !== "/") {
-    locationObj.$$path = `/${locationObj.$$path}`;
+  if ($$path && $$path.charAt(0) !== "/") {
+    $$path = `/${$$path}`;
   }
 }
 
-function startsWith(str, search) {
-  return str.slice(0, search.length) === search;
-}
-
 /**
- *
+ * @ignore
+ * Returns the substring of `url` after the `base` string if `url` starts with `base`.
+ * Returns `undefined` if `url` does not start with `base`.
  * @param {string} base
  * @param {string} url
  * @returns {string} returns text from `url` after `base` or `undefined` if it does not begin with
@@ -20079,25 +19896,96 @@ function stripBaseUrl(base, url) {
   }
 }
 
+/**
+ * @ignore
+ * Removes the hash fragment (including the '#') from the given URL string.
+ *
+ * @param {string} url - The URL string to process.
+ * @returns {string} The URL without the hash fragment.
+ */
 function stripHash(url) {
   const index = url.indexOf("#");
   return index === -1 ? url : url.substring(0, index);
 }
 
+/**
+ * @ignore
+ * Removes the file name (and any hash) from a URL, returning the base directory path.
+ *
+ * For example:
+ * - Input: "https://example.com/path/to/file.js"
+ *   Output: "https://example.com/path/to/"
+ *
+ * - Input: "https://example.com/path/to/file.js#section"
+ *   Output: "https://example.com/path/to/"
+ *
+ * @param {string} url - The URL from which to strip the file name and hash.
+ * @returns {string} The base path of the URL, ending with a slash.
+ */
 function stripFile(url) {
   return url.substring(0, stripHash(url).lastIndexOf("/") + 1);
 }
 
-/* return the server only (scheme://host:port) */
+/**
+ * @ignore
+ * Extracts the base server URL (scheme, host, and optional port) from a full URL.
+ *
+ * If no path is present, returns the full URL.
+ *
+ * For example:
+ * - Input: "https://example.com/path/to/file"
+ *   Output: "https://example.com"
+ *
+ * - Input: "http://localhost:3000/api/data"
+ *   Output: "http://localhost:3000"
+ *
+ * @param {string} url - The full URL to extract the server base from.
+ * @returns {string} The server base, including scheme and host (and port if present).
+ */
 function serverBase(url) {
-  return url.substring(0, url.indexOf("/", url.indexOf("//") + 2));
+  const start = url.indexOf("//") + 2;
+  const slashIndex = url.indexOf("/", start);
+  return slashIndex === -1 ? url : url.substring(0, slashIndex);
 }
 
-// Determine if two URLs are equal despite potentially having different encoding/normalizing
-//  such as $location.absUrl() vs $browser.url()
-// See https://github.com/angular/angular.js/issues/16592
+/**
+ * @ignore
+ * Determine if two URLs are equal despite potential differences in encoding,
+ * trailing slashes, or empty hash fragments, such as between $location.absUrl() and $browser.url().
+ *
+ * @param {string} a - First URL to compare.
+ * @param {string} b - Second URL to compare.
+ * @returns {boolean} True if URLs are equivalent after normalization.
+ */
 function urlsEqual(a, b) {
-  return a === b || urlResolve(a).href === urlResolve(b).href;
+  return normalizeUrl(a) === normalizeUrl(b);
+}
+
+/**
+ * @ignore
+ * Normalize a URL by resolving it via a DOM anchor element,
+ * removing trailing slashes (except root), and trimming empty hashes.
+ *
+ * @param {string} url - URL to normalize.
+ * @returns {string} Normalized URL string.
+ */
+function normalizeUrl(url) {
+  const anchor = document.createElement("a");
+  anchor.href = url;
+
+  let normalized = anchor.href;
+
+  // Remove trailing slash unless it's root (e.g., https://example.com/)
+  if (normalized.endsWith("/") && !/^https?:\/\/[^/]+\/$/.test(normalized)) {
+    normalized = normalized.slice(0, -1);
+  }
+
+  // Remove empty hash (e.g., https://example.com/foo# -> https://example.com/foo)
+  if (normalized.endsWith("#")) {
+    normalized = normalized.slice(0, -1);
+  }
+
+  return normalized;
 }
 
 /**
@@ -20251,7 +20139,7 @@ function createScope(target = {}, context) {
               Array.isArray(target.$nonscope) &&
               target.$nonscope.includes(key))
           ) {
-            continue;
+            /* empty */
           } else {
             target[key] = createScope(target[key], proxy.$handler);
           }
@@ -20730,6 +20618,7 @@ class Scope {
 
   /**
    * @param {Listener[]} listeners
+   * @param {Function} filter
    */
   #scheduleListener(listeners, filter = (val) => val) {
     Promise.resolve().then(() => {
@@ -21380,8 +21269,7 @@ class Scope {
 function calculateWatcherCount(model) {
   const childIds = collectChildIds(model).add(model.$id);
 
-  /** @type {number} */
-  const count = Array.from(model.watchers.values()).reduce(
+  return Array.from(model.watchers.values()).reduce(
     (count, watcherArray) =>
       count +
       watcherArray.reduce(
@@ -21391,7 +21279,6 @@ function calculateWatcherCount(model) {
       ),
     0,
   );
-  return count;
 }
 
 /**
@@ -23082,8 +22969,7 @@ function AnimateCssProvider() {
 
             temporaryStyles.forEach((entry) => {
               const key = entry[0];
-              const value = entry[1];
-              node.style[key] = value;
+              node.style[key] = entry[1];
             });
 
             applyAnimationClasses(element, options);
@@ -25809,11 +25695,6 @@ function _removeFrom(array, obj) {
   if (idx >= 0) array.splice(idx, 1);
   return array;
 }
-/** pushes a values to an array and returns the value */
-const pushTo = curry((arr, val) => {
-  arr.push(val);
-  return val;
-});
 
 /**
  * Applies a set of defaults to an options object.  The options object is filtered
@@ -26598,12 +26479,14 @@ class Queue {
 
     /** @type {Array<(item: T) => void>} */
     this._evictListeners = [];
+  }
 
-    /**
-     * Register a listener that will be called with the evicted item.
-     * @type {(listener: (item: T) => void) => void}
-     */
-    this.onEvict = pushTo(this._evictListeners);
+  /**
+   * Register a listener that will be called with the evicted item.
+   * @param {(item: T) => void} listener
+   */
+  onEvict(listener) {
+    this._evictListeners.push(listener);
   }
 
   /**
@@ -27798,8 +27681,13 @@ class PathUtils {
     // The param keys specified by the incoming toParams
     return toPath.map(makeInheritedParamsNode);
   }
+
   /**
    * Computes the tree changes (entering, exiting) between a fromPath and toPath.
+   * @param {PathNode[]} fromPath
+   * @param {PathNode[]} toPath
+   * @param {boolean} [reloadState]
+   * @returns {import("../transition/interface.js").TreeChanges}
    */
   static treeChanges(fromPath, toPath, reloadState) {
     const max = Math.min(fromPath.length, toPath.length);
@@ -28165,7 +28053,7 @@ function ng1ViewsBuilder(state) {
     name = name || "$default";
     // Account for views: { header: "headerComponent" }
     if (isString(config)) config = { component: config };
-    // Make a shallow copy of the config object
+    // Make a shallow copy of the urlConfig object
     config = Object.assign({}, config);
     // Do not allow a view to mix props for component-style view with props for template/controller-style view
     if (hasAnyKey(compKeys, config) && hasAnyKey(nonCompKeys, config)) {
@@ -28319,8 +28207,7 @@ class ViewService {
     this._listeners = [];
     this._pluginapi = {
       _registeredUIView: (id) => {
-        const res = find(this._ngViews, (view) => view.id === id);
-        return res;
+        return find(this._ngViews, (view) => view.id === id);
       },
       _registeredUIViews: () => this._ngViews,
       _activeViewConfigs: () => this._viewConfigs,
@@ -28358,8 +28245,7 @@ class ViewService {
       throw new Error(
         "ViewService: No view config factory registered for type " + decl.$type,
       );
-    const cfgs = cfgFactory(path, decl);
-    return cfgs;
+    return cfgFactory(path, decl);
   }
   /**
    * Deactivates a ViewConfig.
@@ -29666,9 +29552,9 @@ class Transition {
    *
    * If the target state is not valid, an error is thrown.
    *
-   * @param fromPath The path of [[PathNode]]s from which the transition is leaving.  The last node in the `fromPath`
+   * @param {Array<import('../path/path-node.js').PathNode>} fromPath The path of [[PathNode]]s from which the transition is leaving.  The last node in the `fromPath`
    *        encapsulates the "from state".
-   * @param targetState The target state and parameters being transitioned to (also, the transition options)
+   * @param {import('../state/target-state.js').TargetState} targetState The target state and parameters being transitioned to (also, the transition options)
    * @param {import('../transition/transition-service.js').TransitionProvider} transitionService The [[TransitionService]] instance
    * @param {import('../globals.js').RouterGlobals} globals
    */
@@ -30212,8 +30098,8 @@ class Transition {
         ).length
       );
     };
-    const newTC = this.treeChanges();
-    const pendTC = pending && pending.treeChanges();
+    const newTC = this._treeChanges;
+    const pendTC = pending && pending._treeChanges;
     if (
       pendTC &&
       same(pendTC.to, newTC.to) &&
@@ -30854,7 +30740,7 @@ let defaultTransOpts = {
  * This API is located at `router.transitionService` ([[UIRouter.transitionService]])
  */
 class TransitionProvider {
-  static $inject = ["$routerGlobalsProvider", "$viewProvider"];
+  /* @ignore */ static $inject = provider([$injectTokens.$routerGlobals, $injectTokens.$view]);
 
   /**
    * @param {import('../globals.js').RouterGlobals} globals
@@ -30885,10 +30771,10 @@ class TransitionProvider {
   }
 
   $get = [
-    "$state",
-    "$urlService",
-    "$stateRegistry",
-    "$view",
+    $injectTokens.$state,
+    $injectTokens.$url,
+    $injectTokens.$stateRegistry,
+    $injectTokens.$view,
     (stateService, urlService, stateRegistry, viewService) => {
       // Lazy load state trees
       this._deregisterHookFns.lazyLoad = registerLazyLoadHook(
@@ -31126,7 +31012,10 @@ class StateProvider {
     return this.globals.$current;
   }
 
-  static $inject = ["$routerGlobalsProvider", "$transitionsProvider"];
+  /* @ignore */ static $inject = [
+    "$routerGlobalsProvider",
+    "$transitionsProvider",
+  ];
 
   // Needs access to urlService, stateRegistry
   /**
@@ -31205,9 +31094,9 @@ class StateProvider {
    * - **params** `{object}` - returns an array of state params that are ensured to
    *   be a super-set of parent's params.
    * - **views** `{object}` - returns a views object where each key is an absolute view
-   *   name (i.e. "viewName@stateName") and each value is the config object
+   *   name (i.e. "viewName@stateName") and each value is the urlConfig object
    *   (template, controller) for the view. Even when you don't use the views object
-   *   explicitly on a state config, one is still created for you internally.
+   *   explicitly on a state urlConfig, one is still created for you internally.
    *   So by decorating this builder function you have access to decorating template
    *   and controller properties.
    * - **ownParams** `{object}` - returns an array of params that belong to the state,
@@ -31225,10 +31114,10 @@ class StateProvider {
    *   let result = {},
    *       views = parent(state);
    *
-   *   angular.forEach(views, function (config, name) {
+   *   angular.forEach(views, function (urlConfig, name) {
    *     let autoName = (state.name + '.' + name).replace('.', '/');
-   *     config.templateUrl = config.templateUrl || '/partials/' + autoName + '.html';
-   *     result[name] = config;
+   *     urlConfig.templateUrl = urlConfig.templateUrl || '/partials/' + autoName + '.html';
+   *     result[name] = urlConfig;
    *   });
    *   return result;
    * });
@@ -31252,7 +31141,7 @@ class StateProvider {
    * @param {object} func A function that is responsible for decorating the original
    * builder function. The function receives two parameters:
    *
-   *   - `{object}` - state - The state config object.
+   *   - `{object}` - state - The state urlConfig object.
    *   - `{object}` - super - The original builder function.
    *
    * @return {object} $stateProvider - $stateProvider instance
@@ -31485,7 +31374,7 @@ class StateProvider {
     const globals = this.globals;
     const latestSuccess = globals.successfulTransitions.peekTail();
     const rootPath = () => [new PathNode(this.stateRegistry.root())];
-    return latestSuccess ? latestSuccess.treeChanges().to : rootPath();
+    return latestSuccess ? latestSuccess._treeChanges.to : rootPath();
   }
   /**
    * Low-level method for transitioning to a new state.
@@ -31820,10 +31709,10 @@ class TemplateFactoryProvider {
   }
 
   $get = [
-    "$http",
-    "$templateCache",
-    "$templateRequest",
-    "$injector",
+    $injectTokens.$http,
+    $injectTokens.$templateCache,
+    $injectTokens.$templateRequest,
+    $injectTokens.$injector,
     /**
      * @param {import("interface.ts").HttpService} $http
      * @param {import("../services/template-cache/interface.ts").TemplateCache} $templateCache
@@ -32366,9 +32255,9 @@ class UrlMatcher {
    * // returns { id: 'bob', q: 'hello', r: null }
    * ```
    *
-   * @param path    The URL path to match, e.g. `$location.path()`.
-   * @param search  URL search parameters, e.g. `$location.search()`.
-   * @param hash    URL hash e.g. `$location.hash()`.
+   * @param path    The URL path to match, e.g. `$location.getPath()`.
+   * @param search  URL search parameters, e.g. `$location.getSearch()`.
+   * @param hash    URL hash e.g. `$location.getHash()`.
    *
    * @returns The captured parameter values.
    */
@@ -32882,6 +32771,7 @@ class BaseUrlRule {
     this.$id = -1;
     this._group = undefined;
     this.handler = handler || ((x) => x);
+    this.priority = undefined;
   }
 
   /**
@@ -32895,7 +32785,9 @@ class BaseUrlRule {
   }
 }
 
-const prioritySort = (a, b) => (b.priority || 0) - (a.priority || 0);
+function prioritySort(a, b) {
+  return (b.priority || 0) - (a.priority || 0);
+}
 
 const typeSort = (a, b) => {
   const weights = { STATE: 4, URLMATCHER: 4, REGEXP: 3, RAW: 2, OTHER: 1 };
@@ -32926,8 +32818,7 @@ const idSort = (a, b) => {
  *   - Equally sorted State and UrlMatcher rules will each match the URL.
  *     Then, the *best* match is chosen based on how many parameter values were matched.
  */
-let defaultRuleSortFn;
-defaultRuleSortFn = (a, b) => {
+function defaultRuleSortFn(a, b) {
   let cmp = prioritySort(a, b);
   if (cmp !== 0) return cmp;
   cmp = typeSort(a, b);
@@ -32935,7 +32826,8 @@ defaultRuleSortFn = (a, b) => {
   cmp = urlMatcherSort(a, b);
   if (cmp !== 0) return cmp;
   return idSort(a, b);
-};
+}
+
 function getHandlerFn(handler) {
   if (
     !isFunction(handler) &&
@@ -32957,9 +32849,10 @@ function getHandlerFn(handler) {
  *
  * The most commonly used methods are [[otherwise]] and [[when]].
  *
- * This API is found at `$urlService.rules` (see: [[UIRouter.urlService]], [[URLService.rules]])
+ * This API is found at `$url.rules` (see: [[UIRouter.urlService]], [[URLService.rules]])
  */
 class UrlRules {
+  /** @param {UrlRuleFactory} urlRuleFactory */
   constructor(urlRuleFactory) {
     this._sortFn = defaultRuleSortFn;
     this._rules = [];
@@ -33262,39 +33155,37 @@ class ParamFactory {
  * API for URL management
  */
 class UrlService {
-  static $inject = [
-    "$locationProvider",
-    "$stateProvider",
-    "$routerGlobalsProvider",
-    "$urlConfigProvider",
-  ];
+  static $inject = provider([
+    $injectTokens.$location,
+    $injectTokens.$state,
+    $injectTokens.$routerGlobals,
+    $injectTokens.$urlConfig,
+  ]);
+
+  /** @type {import("../../services/location/location").Location} */
+  $location;
 
   /**
    * @param {import("../../services/location/location").LocationProvider} $locationProvider
    * @param {import("../../router/state/state-service.js").StateProvider} stateService
-   * @param globals
+   * @param {import("../../router/globals.js").RouterGlobals} globals
    * @param {import("../../router/url/url-config.js").UrlConfigProvider} urlConfigProvider
    */
   constructor($locationProvider, stateService, globals, urlConfigProvider) {
+    this.$locationProvider = $locationProvider;
     this.stateService = stateService;
     this.stateService.urlService = this; // circular wiring
-    this.$locationProvider = $locationProvider;
-    this.$location = undefined;
 
     /** Provides services related to the URL */
     this.urlRuleFactory = new UrlRuleFactory(this, this.stateService, globals);
 
     /**
      * The nested [[UrlRules]] API for managing URL rules and rewrites
-     *
-     * See: [[UrlRules]] for details
      * @type {UrlRules}
      */
     this.rules = new UrlRules(this.urlRuleFactory);
     /**
      * The nested [[UrlConfig]] API to configure the URL and retrieve URL information
-     *
-     * See: [[UrlConfig]] for details
      * @type {import("./url-config.js").UrlConfigProvider}
      */
     this.config = urlConfigProvider;
@@ -33302,37 +33193,44 @@ class UrlService {
     /** Creates a new [[Param]] for a given location (DefType) */
     this.paramFactory = new ParamFactory(this.config);
 
-    /**
-     * Gets the path part of the current url
-     *
-     * If the current URL is `/some/path?query=value#anchor`, this returns `/some/path`
-     *
-     * @return the path portion of the url
-     */
-    this.path = () => this.$location.path();
-    /**
-     * Gets the search part of the current url as an object
-     *
-     * If the current URL is `/some/path?query=value#anchor`, this returns `{ query: 'value' }`
-     *
-     * @return the search (query) portion of the url, as an object
-     */
-    this.search = () => this.$location.search();
-    /**
-     * Gets the hash part of the current url
-     *
-     * If the current URL is `/some/path?query=value#anchor`, this returns `anchor`
-     *
-     * @return the hash (anchor) portion of the url
-     */
-    this.hash = () => this.$location.hash();
-
     this._urlListeners = [];
   }
 
+  /**
+   * Gets the path part of the current url
+   *
+   * If the current URL is `/some/path?query=value#anchor`, this returns `/some/path`
+   *
+   * @return {string} the path portion of the url
+   */
+  getPath() {
+    return this.$location.getPath();
+  }
+
+  /**
+   * Gets the search part of the current url as an object
+   *
+   * If the current URL is `/some/path?query=value#anchor`, this returns `{ query: 'value' }`
+   *
+   * @return {Object} the search (query) portion of the url, as an object
+   */
+  getSearch() {
+    return this.$location.getSearch();
+  }
+  /**
+   * Gets the hash part of the current url
+   *
+   * If the current URL is `/some/path?query=value#anchor`, this returns `anchor`
+   *
+   * @return {string} the hash (anchor) portion of the url
+   */
+  getHash() {
+    return this.$location.getHash();
+  }
+
   $get = [
-    "$location",
-    "$rootScope",
+    $injectTokens.$location,
+    $injectTokens.$rootScope,
     /**
      *
      * @param {import('../../services/location/location.js').Location} $location
@@ -33346,21 +33244,14 @@ class UrlService {
           fn(evt);
         });
       });
-      this.listen();
+      this.listen(true);
       return this;
     },
   ];
 
   /**
-   * @returns {boolean}
+   * @returns {string}
    */
-  html5Mode() {
-    return (
-      this.$locationProvider.getHtml5Mode().enabled &&
-      typeof history !== "undefined"
-    );
-  }
-
   baseHref() {
     return (
       this._baseHref ||
@@ -33415,20 +33306,18 @@ class UrlService {
    * @param {string} [newUrl] The new value for the URL.
    *               This url should reflect only the new internal [[path]], [[search]], and [[hash]] values.
    *               It should not include the protocol, site, port, or base path of an absolute HREF.
-   * @param {boolean} [replace] When true, replaces the current history entry (instead of appending it) with this new url
    * @param {any} [state] The history's state object, i.e., pushState (if the LocationServices implementation supports it)
    *
    * @return the url (after potentially being processed)
    */
-  url(newUrl, replace = false, state) {
-    if (isDefined(newUrl)) this.$location.url(newUrl);
-    if (replace) this.$location.replace();
-    if (state) this.$location.state(state);
-    return this.$location.url();
+  url(newUrl, state) {
+    if (isDefined(newUrl)) this.$location.setUrl(newUrl);
+    if (state) this.$location.setState(state);
+    return this.$location.getUrl();
   }
 
   /**
-   * @internal
+   * @private
    *
    * Registers a low level url change handler
    *
@@ -33439,8 +33328,8 @@ class UrlService {
    * let deregisterFn = locationServices.onChange((evt) => console.log("url change", evt));
    * ```
    *
-   * @param callback a function that will be called when the url is changing
-   * @return a function that de-registers the callback
+   * @param {Function} callback a function that will be called when the url is changing
+   * @return {Function} a function that de-registers the callback
    */
   onChange(callback) {
     this._urlListeners.push(callback);
@@ -33448,13 +33337,21 @@ class UrlService {
   }
 
   /**
-   * Gets the current URL parts
+   * Gets the current URL parts.
    *
-   * This method returns the different parts of the current URL (the [[path]], [[search]], and [[hash]]) as a [[UrlParts]] object.
+   * Returns an object with the `path`, `search`, and `hash` components
+   * of the current browser location.
+   *
+   * @returns {import("../../services/location/interface.ts").UrlParts} The current URL's path, search, and hash.
    */
   parts() {
-    return { path: this.path(), search: this.search(), hash: this.hash() };
+    return {
+      path: this.$location.getPath(),
+      search: this.$location.getSearch(),
+      hash: this.$location.getHash(),
+    };
   }
+
   /**
    * Activates the best rule for the current URL
    *
@@ -33478,16 +33375,16 @@ class UrlService {
     if (evt && evt.defaultPrevented) return;
     const stateService = this.stateService;
     const url = {
-      path: this.path(),
-      search: this.search(),
-      hash: this.hash(),
+      path: this.$location.getPath(),
+      search: this.$location.getSearch(),
+      hash: this.$location.getHash(),
     };
     /**
      * @type {*}
      */
     const best = this.match(url);
     const applyResult = pattern([
-      [isString, (newurl) => this.url(newurl, true)],
+      [isString, (newurl) => this.url(newurl)],
       [
         TargetState.isDef,
         (def) => stateService.go(def.state, def.params, def.options),
@@ -33520,7 +33417,7 @@ class UrlService {
    * });
    * ```
    *
-   * @param enabled `true` or `false` to start or stop listening to URL changes
+   * @param {boolean} enabled `true` or `false` to start or stop listening to URL changes
    */
   listen(enabled) {
     if (enabled === false) {
@@ -33598,7 +33495,7 @@ class UrlService {
    * ```js
    * matcher = $umf.compile("/about/:person");
    * params = { person: "bob" };
-   * $bob = $urlService.href(matcher, params);
+   * $bob = $url.href(matcher, params);
    * // $bob == "/about/bob";
    * ```
    *
@@ -33614,22 +33511,18 @@ class UrlService {
     let url = urlMatcher.format(params);
     if (url == null) return null;
     options = options || { absolute: false };
-    const isHtml5 = this.html5Mode();
-    if (!isHtml5 && url !== null) {
-      url = "#" + this.$locationProvider.getHashPrefix() + url;
+    const isHtml5 = this.$locationProvider.html5ModeConf.enabled;
+    if (!isHtml5) {
+      url = "#" + this.$locationProvider.hashPrefixConf + url;
     }
     url = appendBasePath(url, isHtml5, options.absolute, this.baseHref());
     if (!options.absolute || !url) {
       return url;
     }
     const slash = !isHtml5 && url ? "/" : "";
-    const cfgPort = this.$location.port();
-    const port = cfgPort === 80 || cfgPort === 443 ? "" : ":" + cfgPort;
     return [
-      this.$location.protocol(),
-      "://",
-      this.$location.host(),
-      port,
+      `${window.location.protocol}//`,
+      window.location.host,
       slash,
       url,
     ].join("");
@@ -33767,7 +33660,7 @@ function dataBuilder(state) {
   return state.data;
 }
 
-function getUrlBuilder($urlService, root) {
+function getUrlBuilder($url, root) {
   return function (stateObject) {
     let stateDec = stateObject.self;
     // For future states, i.e., states whose name ends with `.**`,
@@ -33787,9 +33680,9 @@ function getUrlBuilder($urlService, root) {
     const parsed = parseUrl(stateDec.url);
     const url = !parsed
       ? stateDec.url
-      : $urlService.compile(parsed.val, { state: stateDec });
+      : $url.compile(parsed.val, { state: stateDec });
     if (!url) return null;
-    if (!$urlService.isMatcher(url))
+    if (!$url.isMatcher(url))
       throw new Error(`Invalid url '${url}' in state '${stateObject}'`);
     return parsed && parsed.root
       ? url
@@ -34213,8 +34106,8 @@ class StateQueueManager {
  *
  */
 class StateRegistryProvider {
-  static $inject = provider([
-    $injectTokens.$urlService,
+  /* @ignore */ static $inject = provider([
+    $injectTokens.$url,
     $injectTokens.$state,
     $injectTokens.$routerGlobals,
     $injectTokens.$view,
@@ -35114,7 +35007,7 @@ let ngView = [
              * @param {string} viewName Name of the view.
              */
             newScope.$emit("$viewContentLoading", name);
-            const cloned = $transclude(newScope, function (clone) {
+            currentEl = $transclude(newScope, function (clone) {
               setCacheData(clone, "$ngViewAnim", $ngViewAnim);
               setCacheData(clone, "$ngView", $ngViewData);
               renderer.enter(clone, $element, function () {
@@ -35130,7 +35023,6 @@ let ngView = [
               });
               cleanupLastView();
             });
-            currentEl = cloned;
             currentScope = newScope;
             /**
              * Fired once the view is **loaded**, *after* the DOM is rendered.
@@ -35613,7 +35505,6 @@ function createHttpDirective(method, attrName) {
 
     return {
       restrict: "A",
-      terminal: true,
       link(scope, element, attrs) {
         const eventName =
           attrs["trigger"] ||
@@ -35725,8 +35616,17 @@ function createHttpDirective(method, attrName) {
           }
 
           if (method === "post" || method === "put") {
-            const data = collectFormData(element);
-            $http[method](url, data).then(handler).catch(handler);
+            let data;
+            const config = {};
+            if (attrs["enctype"]) {
+              config.headers = {
+                "Content-Type": attrs["enctype"],
+              };
+              data = toKeyValue(collectFormData(element));
+            } else {
+              data = collectFormData(element);
+            }
+            $http[method](url, data, config).then(handler).catch(handler);
           } else {
             $http[method](url).then(handler).catch(handler);
           }
@@ -35740,7 +35640,7 @@ function createHttpDirective(method, attrName) {
 
 /**
  * Initializes core `ng` module.
- * @param {import('./loader.js').Angular} angular
+ * @param {import('./angular.js').Angular} angular
  * @returns {import('./core/di/ng-module.js').NgModule} `ng` module
  */
 function registerNgModule(angular) {
@@ -35749,7 +35649,7 @@ function registerNgModule(angular) {
       "ng",
       [],
       [
-        "$provide",
+        $injectTokens.$provide,
         /** @param {import("./interface.js").Provider} $provide */
         ($provide) => {
           // $$sanitizeUriProvider needs to be before $compileProvider as it is used by it.
@@ -35757,7 +35657,7 @@ function registerNgModule(angular) {
             $$sanitizeUri: SanitizeUriProvider,
           });
           $provide
-            .provider("$compile", CompileProvider)
+            .provider($injectTokens.$compile, CompileProvider)
             .directive({
               input: inputDirective,
               textarea: inputDirective,
@@ -35874,7 +35774,7 @@ function registerNgModule(angular) {
             $state: StateProvider,
             $ngViewScroll: ViewScrollProvider,
             $templateFactory: TemplateFactoryProvider,
-            $urlService: UrlService,
+            $url: UrlService,
             $stateRegistry: StateRegistryProvider,
             $eventBus: PubSubProvider,
           });
@@ -35882,14 +35782,12 @@ function registerNgModule(angular) {
       ],
     )
     .factory("$stateParams", [
-      "$routerGlobals",
+      $injectTokens.$routerGlobals,
       /**
        * @param {import('./router/globals.js').RouterGlobals} globals
        * @returns {import('./router/params/state-params.js').StateParams }
        */
-      function (globals) {
-        return globals.params;
-      },
+      (globals) => globals.params,
     ])
     .value("$trace", trace);
 }
@@ -35917,7 +35815,7 @@ class Angular {
     /**
      * @type {string} `version` from `package.json`
      */
-    this.version = "0.7.8"; //inserted via rollup plugin
+    this.version = "0.8.0"; //inserted via rollup plugin
 
     /** @type {!Array<string|any>} */
     this.bootsrappedModules = [];
