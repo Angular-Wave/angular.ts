@@ -48,15 +48,4 @@ export default [
     ],
     plugins: [versionInjector()],
   },
-
-  // DOCS version update
-  {
-    input: "utils/version.js",
-    output: [
-      {
-        file: "docs/static/version.js",
-      },
-    ],
-    plugins: [versionInjector()],
-  },
 ];
