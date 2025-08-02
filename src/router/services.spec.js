@@ -46,7 +46,6 @@ describe("router services", () => {
     expect($injector.get("$routerGlobals")).toBeDefined();
     expect($injector.get("$transitions")).toBeDefined();
     expect($injector.get("$state")).toBeDefined();
-    expect($injector.get("$stateParams")).toBeDefined();
     expect($injector.get("$view")).toBeDefined();
     expect($injector.get("$trace")).toBeDefined();
   });

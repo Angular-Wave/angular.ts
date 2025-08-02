@@ -132,6 +132,7 @@ import {
   ngPostDirective,
   ngPutDirective,
 } from "./directive/http/http.js";
+import { $injectTokens as $t } from "./injection-tokens.js";
 
 /**
  * Initializes core `ng` module.
@@ -144,7 +145,7 @@ export function registerNgModule(angular) {
       "ng",
       [],
       [
-        "$provide",
+        $t.$provide,
         /** @param {import("./interface.js").Provider} $provide */
         ($provide) => {
           // $$sanitizeUriProvider needs to be before $compileProvider as it is used by it.
@@ -152,7 +153,7 @@ export function registerNgModule(angular) {
             $$sanitizeUri: SanitizeUriProvider,
           });
           $provide
-            .provider("$compile", CompileProvider)
+            .provider($t.$compile, CompileProvider)
             .directive({
               input: inputDirective,
               textarea: inputDirective,
@@ -277,14 +278,12 @@ export function registerNgModule(angular) {
       ],
     )
     .factory("$stateParams", [
-      "$routerGlobals",
+      $t.$routerGlobals,
       /**
        * @param {import('./router/globals.js').RouterGlobals} globals
        * @returns {import('./router/params/state-params.js').StateParams }
        */
-      function (globals) {
-        return globals.params;
-      },
+      (globals) => globals.params,
     ])
     .value("$trace", trace);
 }

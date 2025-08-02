@@ -1832,9 +1832,9 @@ describe("angular 1.5+ style .component()", () => {
         name: "ng12-dynamic-directive",
         url: "/ng12dynamicDirective/:type",
         componentProvider: [
-          "$stateParams",
-          function ($stateParams) {
-            return $stateParams.type;
+          "$routerGlobals",
+          function ($routerGlobals) {
+            return $routerGlobals.params.type;
           },
         ],
       });
@@ -1860,9 +1860,9 @@ describe("angular 1.5+ style .component()", () => {
         name: "dynamicComponent",
         url: "/dynamicComponent/:type",
         componentProvider: [
-          "$stateParams",
-          function ($stateParams) {
-            return $stateParams.type;
+          "$routerGlobals",
+          function ($routerGlobals) {
+            return $routerGlobals.params.type;
           },
         ],
       });
