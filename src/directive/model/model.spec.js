@@ -1,5 +1,5 @@
 import { createElementFromHTML, dealoc } from "../../shared/dom.js";
-import { Angular } from "../../loader.js";
+import { Angular } from "../../angular.js";
 import { NgModelController } from "./model.js";
 import { isDefined, isObject } from "../../shared/utils.js";
 import { browserTrigger, wait } from "../../shared/test-utils.js";

@@ -1,4 +1,4 @@
-import { Angular } from "../../loader.js";
+import { Angular } from "../../angular.js";
 import { createInjector, annotate } from "./injector.js";
 import { extend } from "../../shared/utils.js";
 

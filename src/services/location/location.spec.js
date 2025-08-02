@@ -11,7 +11,7 @@ import {
   serverBase,
   urlsEqual,
 } from "./location.js";
-import { Angular } from "../../loader.js";
+import { Angular } from "../../angular.js";
 import { createInjector } from "../../core/di/injector.js";
 
 describe("$location", () => {

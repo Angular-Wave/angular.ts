@@ -1,5 +1,5 @@
 import { createElementFromHTML, dealoc } from "../shared/dom.js";
-import { Angular } from "../loader.js";
+import { Angular } from "../angular.js";
 
 describe("$rootElement", () => {
   let angular = new Angular();

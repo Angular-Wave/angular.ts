@@ -1,5 +1,5 @@
 import { StateBuilder } from "./state-builder.js";
-import { Angular } from "../../loader.js";
+import { Angular } from "../../angular.js";
 import { dealoc } from "../../shared/dom.js";
 
 // TODO refactor this to url service as it is using the provider right now

@@ -1,5 +1,5 @@
 import { dealoc } from "../shared/dom.js";
-import { Angular } from "../loader.js";
+import { Angular } from "../angular.js";
 import { wait } from "../shared/test-utils.js";
 
 describe("view hooks", () => {

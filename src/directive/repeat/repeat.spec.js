@@ -1,4 +1,4 @@
-import { Angular } from "../../loader.js";
+import { Angular } from "../../angular.js";
 import { createElementFromHTML, dealoc } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";
 

@@ -1,5 +1,5 @@
 import { dealoc } from "../../shared/dom.js";
-import { Angular } from "../../loader.js";
+import { Angular } from "../../angular.js";
 import { createInjector } from "../../core/di/injector.js";
 
 describe("ngClick", () => {

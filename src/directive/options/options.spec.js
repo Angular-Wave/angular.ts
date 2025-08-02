@@ -1,6 +1,6 @@
 import { createInjector } from "../../core/di/injector.js";
 import { dealoc, getController } from "../../shared/dom.js";
-import { Angular } from "../../loader.js";
+import { Angular } from "../../angular.js";
 import {
   isBoolean,
   hashKey,

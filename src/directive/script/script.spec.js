@@ -1,4 +1,4 @@
-import { Angular } from "../../loader.js";
+import { Angular } from "../../angular.js";
 import { createInjector } from "../../core/di/injector.js";
 import { createElementFromHTML } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";

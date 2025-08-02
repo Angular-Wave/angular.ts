@@ -1,4 +1,4 @@
-import { Angular } from "../loader.js";
+import { Angular } from "../angular.js";
 import { createInjector } from "../core/di/injector.js";
 import { toJson } from "../shared/utils.js";
 

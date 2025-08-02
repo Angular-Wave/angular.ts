@@ -1,6 +1,6 @@
 import { wait } from "../../shared/test-utils.js";
 import { $postUpdateQueue, createScope } from "./scope.js";
-import { Angular } from "../../loader.js";
+import { Angular } from "../../angular.js";
 import { createInjector } from "../di/injector.js";
 import { isDefined, isProxy, sliceArgs } from "../../shared/utils.js";
 

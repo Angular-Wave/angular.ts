@@ -1,4 +1,4 @@
-import { Angular } from "../../loader.js";
+import { Angular } from "../../angular.js";
 import { createInjector } from "../di/injector.js";
 import {
   dealoc,

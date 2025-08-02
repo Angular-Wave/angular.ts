@@ -1,5 +1,5 @@
 import { dealoc } from "../../shared/dom.js";
-import { Angular } from "../../loader.js";
+import { Angular } from "../../angular.js";
 import { curry } from "../../shared/hof.js";
 import { StateMatcher } from "../state/state-matcher.js";
 import { StateBuilder } from "../state/state-builder.js";

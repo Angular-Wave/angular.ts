@@ -1,5 +1,5 @@
 import { createInjector } from "../../core/di/injector.js";
-import { Angular } from "../../loader.js";
+import { Angular } from "../../angular.js";
 import { dealoc, getController } from "../../shared/dom.js";
 import { browserTrigger, wait } from "../../shared/test-utils.js";
 

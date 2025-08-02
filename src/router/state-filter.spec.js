@@ -1,4 +1,4 @@
-import { Angular } from "../loader.js";
+import { Angular } from "../angular.js";
 import { dealoc } from "../shared/dom.js";
 
 describe("router filters", function () {

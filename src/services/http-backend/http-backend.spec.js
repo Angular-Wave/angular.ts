@@ -1,4 +1,4 @@
-import { Angular } from "../../loader.js";
+import { Angular } from "../../angular.js";
 import { createHttpBackend } from "./http-backend.js";
 import sinon from "sinon";
 
