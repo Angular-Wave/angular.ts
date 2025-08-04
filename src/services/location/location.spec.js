@@ -529,6 +529,12 @@ describe("$location", () => {
         locationUrl.setSearch({ "a+b": "c+d" });
         expect(locationUrl.getSearch()).toEqual({ "a+b": "c+d" });
       });
+
+      fit("should not drop encodings on already enconded params", () => {
+        const locationUrl = createLocationHtml5Url();
+        locationUrl.setUrl("/path/foo%2Fbar/baz%2Fqux");
+        expect(locationUrl.getPath()).toEqual("/path/foo%2Fbar/baz%2Fqux");
+      });
     });
   });
 

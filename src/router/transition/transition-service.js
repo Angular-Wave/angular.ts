@@ -62,10 +62,10 @@ export let defaultTransOpts = {
  * This API is located at `router.transitionService` ([[UIRouter.transitionService]])
  */
 export class TransitionProvider {
-  /* @ignore */ static $inject = provider([$t.$routerGlobals, $t.$view]);
+  /* @ignore */ static $inject = provider([$t.$router, $t.$view]);
 
   /**
-   * @param {import('../globals.js').RouterGlobals} globals
+   * @param {import('../globals.js').Router} globals
    * @param viewService
    */
   constructor(globals, viewService) {

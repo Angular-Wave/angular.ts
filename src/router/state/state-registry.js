@@ -19,14 +19,14 @@ export class StateRegistryProvider {
   /* @ignore */ static $inject = provider([
     $injectTokens.$url,
     $injectTokens.$state,
-    $injectTokens.$routerGlobals,
+    $injectTokens.$router,
     $injectTokens.$view,
   ]);
 
   /**
    * @param urlService
    * @param stateService
-   * @param {import('../globals.js').RouterGlobals} globals
+   * @param {import('../globals.js').Router} globals
    * @param viewService
    */
   constructor(urlService, stateService, globals, viewService) {

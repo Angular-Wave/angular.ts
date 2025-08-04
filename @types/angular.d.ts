@@ -18,7 +18,7 @@ export class Angular {
   getInjector: typeof getInjector;
   getScope: typeof getScope;
   errorHandlingConfig: typeof errorHandlingConfig;
-  $injectTokens: Readonly<Record<string, string>>;
+  $t: Readonly<Record<string, string>>;
   /**
    * Use this function to manually start up AngularTS application.
    *

@@ -4,7 +4,7 @@ import { wait } from "../shared/test-utils.js";
 
 describe("ngView", () => {
   describe("scrollIntoView", () => {
-    let elem, $anchorScroll, $ngViewScroll;
+    let elem, $anchorScroll, $viewScroll;
 
     beforeEach(() => {
       dealoc(document.getElementById("app"));
@@ -14,15 +14,15 @@ describe("ngView", () => {
         "defaultModule",
       ]);
 
-      $injector.invoke((_$ngViewScroll_, _$anchorScroll_) => {
+      $injector.invoke((_$viewScroll_, _$anchorScroll_) => {
         $anchorScroll = _$anchorScroll_;
-        $ngViewScroll = _$ngViewScroll_;
+        $viewScroll = _$viewScroll_;
       });
       elem = [{ scrollIntoView: jasmine.createSpy("scrollIntoView") }];
     });
 
     it("should scroll element into view after timeout", async () => {
-      $ngViewScroll(elem[0]);
+      $viewScroll(elem[0]);
       expect(elem[0].scrollIntoView).not.toHaveBeenCalled();
 
       await wait(100);
@@ -31,7 +31,7 @@ describe("ngView", () => {
 
     it("should return the promise from the timeout", async () => {
       dealoc(document.getElementById("app"));
-      const promise = $ngViewScroll(elem[0]);
+      const promise = $viewScroll(elem[0]);
 
       await wait(10);
       expect(elem[0].scrollIntoView).toHaveBeenCalled();
@@ -40,32 +40,32 @@ describe("ngView", () => {
   });
 
   describe("useAnchorScroll", () => {
-    let elem, $anchorScroll, $ngViewScroll;
+    let elem, $anchorScroll, $viewScroll;
 
     beforeEach(() => {
       dealoc(document.getElementById("app"));
       window.angular = new Angular();
       let module = window.angular.module("defaultModule", []);
-      module.config(($provide, $ngViewScrollProvider) => {
+      module.config(($provide, $viewScrollProvider) => {
         $provide.decorator("$anchorScroll", function ($delegate) {
           return jasmine.createSpy("$anchorScroll");
         });
-        $ngViewScrollProvider.useAnchorScroll();
+        $viewScrollProvider.useAnchorScroll();
       });
 
       let $injector = window.angular.bootstrap(document.getElementById("app"), [
         "defaultModule",
       ]);
 
-      $injector.invoke((_$ngViewScroll_, _$anchorScroll_) => {
+      $injector.invoke((_$viewScroll_, _$anchorScroll_) => {
         $anchorScroll = _$anchorScroll_;
-        $ngViewScroll = _$ngViewScroll_;
+        $viewScroll = _$viewScroll_;
       });
       elem = [{ scrollIntoView: jasmine.createSpy("scrollIntoView") }];
     });
 
     it("should call $anchorScroll", () => {
-      $ngViewScroll();
+      $viewScroll();
       expect($anchorScroll).toHaveBeenCalled();
     });
   });

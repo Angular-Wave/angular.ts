@@ -30,7 +30,7 @@ export class StateProvider {
   /**
    * The latest successful state parameters
    *
-   * @deprecated This is a passthrough through to [[RouterGlobals.params]]
+   * @deprecated This is a passthrough through to [[Router.params]]
    */
   get params() {
     return this.globals.params;
@@ -38,7 +38,7 @@ export class StateProvider {
   /**
    * The current [[StateDeclaration]]
    *
-   * @deprecated This is a passthrough through to [[RouterGlobals.current]]
+   * @deprecated This is a passthrough through to [[Router.current]]
    */
   get current() {
     return this.globals.current;
@@ -46,21 +46,18 @@ export class StateProvider {
   /**
    * The current [[StateObject]] (an internal API)
    *
-   * @deprecated This is a passthrough through to [[RouterGlobals.$current]]
+   * @deprecated This is a passthrough through to [[Router.$current]]
    */
   get $current() {
     return this.globals.$current;
   }
 
-  /* @ignore */ static $inject = [
-    "$routerGlobalsProvider",
-    "$transitionsProvider",
-  ];
+  /* @ignore */ static $inject = ["$routerProvider", "$transitionsProvider"];
 
   // Needs access to urlService, stateRegistry
   /**
    *
-   * @param {import('../globals.js').RouterGlobals} globals
+   * @param {import('../globals.js').Router} globals
    * @param {*} transitionService
    */
   constructor(globals, transitionService) {

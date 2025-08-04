@@ -52,9 +52,9 @@ export class Angular {
     this.getInjector = getInjector;
     this.getScope = getScope;
     this.errorHandlingConfig = errorHandlingConfig;
+    this.$t = $injectTokens;
 
     window["angular"] = this;
-    this.$injectTokens = $injectTokens;
     registerNgModule(this);
   }
 

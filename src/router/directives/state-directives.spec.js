@@ -61,7 +61,7 @@ describe("ngStateRef", () => {
     $rootScope = $injector.get("$rootScope");
     $compile = $injector.get("$compile");
     $state = $injector.get("$state");
-    $stateParams = $injector.get("$routerGlobals").params;
+    $stateParams = $injector.get("$router").params;
     $url = $injector.get("$url");
     $url.listen();
   });
@@ -705,7 +705,7 @@ describe("ngSrefActive", () => {
     $rootScope = $injector.get("$rootScope");
     $compile = $injector.get("$compile");
     $state = $injector.get("$state");
-    $stateParams = $injector.get("$routerGlobals").params;
+    $stateParams = $injector.get("$router").params;
   });
 
   it("should update class for sibling ngSref", async () => {

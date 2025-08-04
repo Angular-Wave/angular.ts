@@ -13,14 +13,14 @@ describe("router services", () => {
       (
         $urlProvider,
         $stateRegistryProvider,
-        $routerGlobalsProvider,
+        $routerProvider,
         $transitionsProvider,
         $stateProvider,
       ) => {
         providers = {
           $urlProvider,
           $stateRegistryProvider,
-          $routerGlobalsProvider,
+          $routerProvider,
           $transitionsProvider,
           $stateProvider,
         };
@@ -43,7 +43,7 @@ describe("router services", () => {
   it("Should expose ng-router services from the UIRouter instance", () => {
     expect($injector.get("$url")).toBeDefined();
     expect($injector.get("$stateRegistry")).toBeDefined();
-    expect($injector.get("$routerGlobals")).toBeDefined();
+    expect($injector.get("$router")).toBeDefined();
     expect($injector.get("$transitions")).toBeDefined();
     expect($injector.get("$state")).toBeDefined();
     expect($injector.get("$view")).toBeDefined();

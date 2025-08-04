@@ -97,13 +97,6 @@ export const parse = (name) =>
   );
 
 /**
- * Given two functions that return truthy or falsey values, returns a function that returns truthy
- * if at least one of the functions returns truthy for the given arguments
- */
-export function or(fn1, fn2) {
-  return (...args) => fn1.apply(null, args) || fn2.apply(null, args);
-}
-/**
  * Check if all the elements of an array match a predicate function
  *
  * @param fn1 a predicate function `fn1`

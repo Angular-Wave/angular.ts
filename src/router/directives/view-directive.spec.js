@@ -12,7 +12,7 @@ describe("ngView", () => {
     app,
     $injector,
     $state,
-    $ngViewScroll;
+    $viewScroll;
 
   const aState = {
       name: "a",
@@ -129,8 +129,8 @@ describe("ngView", () => {
     app = window.angular
       .module("defaultModule", [])
       .config(($provide, _$stateProvider_) => {
-        $provide.decorator("$ngViewScroll", () => {
-          return jasmine.createSpy("$ngViewScroll");
+        $provide.decorator("$viewScroll", () => {
+          return jasmine.createSpy("$viewScroll");
         });
 
         _$stateProvider_
@@ -156,11 +156,11 @@ describe("ngView", () => {
       "defaultModule",
     ]);
 
-    $injector.invoke((_$state_, $rootScope, _$compile_, _$ngViewScroll_) => {
+    $injector.invoke((_$state_, $rootScope, _$compile_, _$viewScroll_) => {
       scope = $rootScope.$new();
       $compile = _$compile_;
       $state = _$state_;
-      $ngViewScroll = _$ngViewScroll_;
+      $viewScroll = _$viewScroll_;
     });
   });
 
@@ -312,7 +312,7 @@ describe("ngView", () => {
 
       $state.transitionTo(aState);
       await wait(100);
-      expect($ngViewScroll).not.toHaveBeenCalled();
+      expect($viewScroll).not.toHaveBeenCalled();
     });
 
     it("should autoscroll when expression is missing", async () => {
@@ -324,7 +324,7 @@ describe("ngView", () => {
 
       // animateFlush($animate);
 
-      expect($ngViewScroll).toHaveBeenCalledWith(elem.querySelector("ng-view"));
+      expect($viewScroll).toHaveBeenCalledWith(elem.querySelector("ng-view"));
     });
 
     it("should autoscroll based on expression", async () => {
@@ -336,12 +336,12 @@ describe("ngView", () => {
       $state.transitionTo(aState);
       await wait(100);
 
-      expect($ngViewScroll).not.toHaveBeenCalled();
+      expect($viewScroll).not.toHaveBeenCalled();
 
       scope.doScroll = true;
       $state.transitionTo(bState);
       await wait(100);
-      expect($ngViewScroll).toHaveBeenCalledWith(elem.querySelector("ng-view"));
+      expect($viewScroll).toHaveBeenCalledWith(elem.querySelector("ng-view"));
     });
   });
 
@@ -809,7 +809,7 @@ describe("ngView named", () => {
     $injector,
     $state,
     $rootScope,
-    $ngViewScroll;
+    $viewScroll;
 
   beforeEach(() => {
     window.angular = new Angular();
@@ -831,12 +831,12 @@ describe("ngView named", () => {
       "defaultModule",
     ]);
 
-    $injector.invoke((_$state_, _$rootScope_, _$compile_, _$ngViewScroll_) => {
+    $injector.invoke((_$state_, _$rootScope_, _$compile_, _$viewScroll_) => {
       $rootScope = _$rootScope_;
       scope = $rootScope.$new();
       $compile = _$compile_;
       $state = _$state_;
-      $ngViewScroll = _$ngViewScroll_;
+      $viewScroll = _$viewScroll_;
     });
   });
 
@@ -903,7 +903,7 @@ describe("ngView transclusion", () => {
       "defaultModule",
     ]);
 
-    $injector.invoke((_$state_, _$rootScope_, _$compile_, _$ngViewScroll_) => {
+    $injector.invoke((_$state_, _$rootScope_, _$compile_, _$viewScroll_) => {
       $rootScope = _$rootScope_;
       scope = $rootScope.$new();
       $compile = _$compile_;
@@ -973,7 +973,7 @@ describe("ngView controllers or onEnter handlers", () => {
       "defaultModule",
     ]);
 
-    $injector.invoke((_$state_, _$rootScope_, _$compile_, _$ngViewScroll_) => {
+    $injector.invoke((_$state_, _$rootScope_, _$compile_, _$viewScroll_) => {
       $rootScope = _$rootScope_;
       scope = $rootScope.$new();
       $compile = _$compile_;
@@ -1832,9 +1832,9 @@ describe("angular 1.5+ style .component()", () => {
         name: "ng12-dynamic-directive",
         url: "/ng12dynamicDirective/:type",
         componentProvider: [
-          "$routerGlobals",
-          function ($routerGlobals) {
-            return $routerGlobals.params.type;
+          "$router",
+          function ($router) {
+            return $router.params.type;
           },
         ],
       });
@@ -1860,9 +1860,9 @@ describe("angular 1.5+ style .component()", () => {
         name: "dynamicComponent",
         url: "/dynamicComponent/:type",
         componentProvider: [
-          "$routerGlobals",
-          function ($routerGlobals) {
-            return $routerGlobals.params.type;
+          "$router",
+          function ($router) {
+            return $router.params.type;
           },
         ],
       });

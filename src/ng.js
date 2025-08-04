@@ -105,7 +105,7 @@ import { AnimateJsDriverProvider } from "./animations/animate-js-driver.js";
 import { ngAnimateSwapDirective } from "./animations/animate-swap.js";
 import { $$AnimateChildrenDirective } from "./animations/animate-children-directive.js";
 import { UrlConfigProvider } from "./router/url/url-config.js";
-import { RouterGlobals } from "./router/globals.js";
+import { Router } from "./router/globals.js";
 import { ViewService } from "./router/view/view.js";
 import { TransitionProvider } from "./router/transition/transition-service.js";
 import { StateProvider } from "./router/state/state-service.js";
@@ -259,7 +259,7 @@ export function registerNgModule(angular) {
             $parse: ParseProvider,
             $$rAFScheduler: RafSchedulerProvider,
             $rootScope: RootScopeProvider,
-            $routerGlobals: RouterGlobals,
+            $router: Router,
             $sce: SceProvider,
             $sceDelegate: SceDelegateProvider,
             $templateCache: TemplateCacheProvider,
@@ -268,7 +268,7 @@ export function registerNgModule(angular) {
             $view: ViewService,
             $transitions: TransitionProvider,
             $state: StateProvider,
-            $ngViewScroll: ViewScrollProvider,
+            $viewScroll: ViewScrollProvider,
             $templateFactory: TemplateFactoryProvider,
             $url: UrlService,
             $stateRegistry: StateRegistryProvider,
@@ -278,9 +278,9 @@ export function registerNgModule(angular) {
       ],
     )
     .factory("$stateParams", [
-      $t.$routerGlobals,
+      $t.$router,
       /**
-       * @param {import('./router/globals.js').RouterGlobals} globals
+       * @param {import('./router/globals.js').Router} globals
        * @returns {import('./router/params/state-params.js').StateParams }
        */
       (globals) => globals.params,

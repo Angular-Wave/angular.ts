@@ -9,10 +9,19 @@
  * - [[StateObject]]
  */
 export class UrlRuleFactory {
-  constructor(urlService: any, stateService: any, routerGlobals: any);
-  urlService: any;
-  stateService: any;
-  routerGlobals: any;
+  /**
+   * @param {import('../url/url-service.js').UrlService} urlService
+   * @param {import('../state/state-service.js').StateProvider} stateService
+   * @param {import('../globals.js').Router} routerGlobals
+   */
+  constructor(
+    urlService: import("../url/url-service.js").UrlService,
+    stateService: import("../state/state-service.js").StateProvider,
+    routerGlobals: import("../globals.js").Router,
+  );
+  urlService: import("../url/url-service.js").UrlService;
+  stateService: import("../state/state-service.js").StateProvider;
+  routerGlobals: import("../globals.js").Router;
   /**
    *
    * @param {*} what

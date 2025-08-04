@@ -245,7 +245,7 @@ export function $StateRefDynamicDirective(
 
 $StateRefActiveDirective.$inject = [
   "$state",
-  "$routerGlobals",
+  "$router",
   "$interpolate",
   "$stateRegistry",
   "$transitions",
@@ -253,7 +253,7 @@ $StateRefActiveDirective.$inject = [
 
 /**
  * @param {*} $state
- * @param {import('../globals.js').RouterGlobals} $routerGlobals
+ * @param {import('../globals.js').Router} $router
  * @param {*} $interpolate
  * @param {*} $stateRegistry
  * @param {*} $transitions
@@ -261,7 +261,7 @@ $StateRefActiveDirective.$inject = [
  */
 export function $StateRefActiveDirective(
   $state,
-  $routerGlobals,
+  $router,
   $interpolate,
   $stateRegistry,
   $transitions,
@@ -300,8 +300,8 @@ export function $StateRefActiveDirective(
         trans.promise.then(update, () => {});
       }
       $scope.$on("$destroy", setupEventListeners());
-      if ($routerGlobals.transition) {
-        updateAfterTransition($routerGlobals.transition);
+      if ($router.transition) {
+        updateAfterTransition($router.transition);
       }
       function setupEventListeners() {
         const deregisterStatesChangedListener =

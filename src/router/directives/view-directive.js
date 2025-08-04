@@ -24,7 +24,7 @@ import { getLocals } from "../state/state-registry.js";
  *   The ng-view can be targeted in a View using the name ([[StateDeclaration.views]]).
  *
  * - `autoscroll`: an expression. When it evaluates to true, the `ng-view` will be scrolled into view when it is activated.
- *   Uses [[$ngViewScroll]] to do the scrolling.
+ *   Uses [[$viewScroll]] to do the scrolling.
  *
  * - `onload`: Expression to evaluate whenever the view updates.
  *
@@ -143,16 +143,16 @@ import { getLocals } from "../state/state-registry.js";
 export let ngView = [
   "$view",
   "$animate",
-  "$ngViewScroll",
+  "$viewScroll",
   "$interpolate",
   /**
    * @param {*} $view
    * @param {*} $animate
-   * @param {*} $ngViewScroll
+   * @param {*} $viewScroll
    * @param {*} $interpolate
    * @returns {import("../../interface.js").Directive}
    */
-  function $ViewDirective($view, $animate, $ngViewScroll, $interpolate) {
+  function $ViewDirective($view, $animate, $viewScroll, $interpolate) {
     function getRenderer() {
       return {
         enter: function (element, target, cb) {
@@ -289,7 +289,7 @@ export let ngView = [
                   (isDefined(autoScrollExp) && !autoScrollExp) ||
                   scope.$eval(autoScrollExp)
                 ) {
-                  $ngViewScroll(clone);
+                  $viewScroll(clone);
                 }
               });
               cleanupLastView();

@@ -20,7 +20,7 @@ export namespace $ViewDirectiveFill {
  *   The ng-view can be targeted in a View using the name ([[StateDeclaration.views]]).
  *
  * - `autoscroll`: an expression. When it evaluates to true, the `ng-view` will be scrolled into view when it is activated.
- *   Uses [[$ngViewScroll]] to do the scrolling.
+ *   Uses [[$viewScroll]] to do the scrolling.
  *
  * - `onload`: Expression to evaluate whenever the view updates.
  *

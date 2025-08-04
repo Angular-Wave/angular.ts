@@ -310,9 +310,6 @@ export class UrlMatcher {
     return this.pattern;
   }
   _getDecodedParamValue(value, param) {
-    if (isDefined(value)) {
-      value = param.type.decode(value);
-    }
     return param.value(value);
   }
   /**

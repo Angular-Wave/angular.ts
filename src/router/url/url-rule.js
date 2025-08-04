@@ -6,7 +6,7 @@ import {
   isUndefined,
   assert,
 } from "../../shared/utils.js";
-import { is, or, pattern } from "../../shared/hof.js";
+import { is, pattern } from "../../shared/hof.js";
 import { StateObject } from "../state/state-object.js";
 /**
  * Creates a [[UrlRule]]
@@ -19,6 +19,11 @@ import { StateObject } from "../state/state-object.js";
  * - [[StateObject]]
  */
 export class UrlRuleFactory {
+  /**
+   * @param {import('../url/url-service.js').UrlService} urlService
+   * @param {import('../state/state-service.js').StateProvider} stateService
+   * @param {import('../globals.js').Router} routerGlobals
+   */
   constructor(urlService, stateService, routerGlobals) {
     this.urlService = urlService;
     this.stateService = stateService;
@@ -37,7 +42,7 @@ export class UrlRuleFactory {
       [isString, (_what) => makeRule(this.urlService.compile(_what))],
       [is(UrlMatcher), (_what) => this.fromUrlMatcher(_what, handler)],
       [
-        or(isState, isStateDeclaration),
+        (...args) => isState(...args) || isStateDeclaration(...args),
         (_what) => this.fromState(_what, this.stateService, this.routerGlobals),
       ],
       [is(RegExp), (_what) => this.fromRegExp(_what, handler)],

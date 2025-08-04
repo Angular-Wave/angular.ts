@@ -9,7 +9,7 @@ describe("public", () => {
   it("sets up the angular object and the module loader", () => {
     expect(window.angular).toBeDefined();
     expect(window.angular.module).toBeDefined();
-    expect(window.angular.$injectTokens).toBeDefined();
+    expect(window.angular.$t).toBeDefined();
   });
 
   it("sets up the ng module", () => {

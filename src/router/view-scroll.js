@@ -1,3 +1,5 @@
+import { $injectTokens as $t } from "../injection-tokens.js";
+
 export class ViewScrollProvider {
   constructor() {
     this.enabled = false;
@@ -8,7 +10,7 @@ export class ViewScrollProvider {
   }
 
   $get = [
-    "$anchorScroll",
+    $t.$anchorScroll,
     /**
      * @param {import('../services/anchor-scroll.js').AnchorScrollObject} $anchorScroll
      * @returns {import('../services/anchor-scroll.js').AnchorScrollObject|Function}

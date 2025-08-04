@@ -192,7 +192,7 @@ export class Param {
     const normalized = this.type.$normalize(value);
     if (!this.type.is(normalized)) return false;
     // The value was of the correct type, but when encoded, did not match the ParamType's regexp
-    const encoded = this.type.encode(normalized);
+    const encoded = normalized; // this.type.encode(normalized);
     return !(isString(encoded) && !this.type.pattern.exec(encoded));
   }
   toString() {

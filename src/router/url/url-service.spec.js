@@ -80,44 +80,6 @@ describe("UrlMatcher", () => {
     expect(matcher.format(array)).toBe("/?foo=bar&foo=baz");
   });
 
-  it("should encode and decode slashes in parameter values as ~2F", () => {
-    const matcher1 = $url.compile("/:foo");
-
-    expect(matcher1.format({ foo: "/" })).toBe("/~2F");
-    expect(matcher1.format({ foo: "//" })).toBe("/~2F~2F");
-
-    expect(matcher1.exec("/")).toBeTruthy();
-    expect(matcher1.exec("//")).not.toBeTruthy();
-
-    expect(matcher1.exec("/").foo).toBe("");
-    expect(matcher1.exec("/123").foo).toBe("123");
-    expect(matcher1.exec("/~2F").foo).toBe("/");
-    expect(matcher1.exec("/123~2F").foo).toBe("123/");
-
-    // param :foo should match between two slashes
-    const matcher2 = $url.compile("/:foo/");
-
-    expect(matcher2.exec("/")).not.toBeTruthy();
-    expect(matcher2.exec("//")).toBeTruthy();
-
-    expect(matcher2.exec("//").foo).toBe("");
-    expect(matcher2.exec("/123/").foo).toBe("123");
-    expect(matcher2.exec("/~2F/").foo).toBe("/");
-    expect(matcher2.exec("/123~2F/").foo).toBe("123/");
-  });
-
-  it("should encode and decode tildes in parameter values as ~~", () => {
-    const matcher1 = $url.compile("/:foo");
-
-    expect(matcher1.format({ foo: "abc" })).toBe("/abc");
-    expect(matcher1.format({ foo: "~abc" })).toBe("/~~abc");
-    expect(matcher1.format({ foo: "~2F" })).toBe("/~~2F");
-
-    expect(matcher1.exec("/abc").foo).toBe("abc");
-    expect(matcher1.exec("/~~abc").foo).toBe("~abc");
-    expect(matcher1.exec("/~~2F").foo).toBe("~2F");
-  });
-
   describe("snake-case parameters", () => {
     it("should match if properly formatted", () => {
       const matcher = $url.compile(

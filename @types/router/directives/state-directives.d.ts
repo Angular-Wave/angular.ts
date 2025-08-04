@@ -27,7 +27,7 @@ export namespace $StateRefDynamicDirective {
 }
 /**
  * @param {*} $state
- * @param {import('../globals.js').RouterGlobals} $routerGlobals
+ * @param {import('../globals.js').Router} $router
  * @param {*} $interpolate
  * @param {*} $stateRegistry
  * @param {*} $transitions
@@ -35,7 +35,7 @@ export namespace $StateRefDynamicDirective {
  */
 export function $StateRefActiveDirective(
   $state: any,
-  $routerGlobals: import("../globals.js").RouterGlobals,
+  $router: import("../globals.js").Router,
   $interpolate: any,
   $stateRegistry: any,
   $transitions: any,

@@ -55,11 +55,6 @@ export function compose(...args: any[]): () => any;
  */
 export function pipe(...args: any[]): any;
 /**
- * Given two functions that return truthy or falsey values, returns a function that returns truthy
- * if at least one of the functions returns truthy for the given arguments
- */
-export function or(fn1: any, fn2: any): (...args: any[]) => any;
-/**
  * Sorta like Pattern Matching (a functional programming conditional construct)
  *
  * See http://c2.com/cgi/wiki?PatternMatching
