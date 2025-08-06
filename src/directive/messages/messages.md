@@ -352,7 +352,6 @@
   _ `ngMessages` is a directive that is designed to show and hide messages based on the state
   _ of a key/value object that it listens on. The directive itself complements error message
   _ reporting with the `ngModel` $error object (which stores a key/value state of validation errors).
-
   -
   - `ngMessages` manages the state of internal messages within its container element. The internal
   - messages use the `ngMessage` directive and will be inserted/removed from the page depending
@@ -440,7 +439,6 @@
   _ determine what messages are overridden due to the placement of the ngMessagesInclude directive. \*
   _ @usage
   _ `html
-
   - <!-- using attribute directives -->
   - <ANY ng-messages="expression" role="alert">
   - <ANY ng-messages-include="remoteTplString">...</ANY>
@@ -473,7 +471,6 @@ _ {@link module:ngMessages Click here} to learn more about`ngMessages`and`ngMess
   _ {@link module:ngMessages `ngMessages` module documentation}. \*
   _ @usage
   _ `html
-
   - <!-- using attribute directives -->
   - <ANY ng-messages="expression" role="alert">
   - <ANY ng-message="stringValue">...</ANY>
@@ -502,7 +499,6 @@ _ {@link module:ngMessages Click here} to learn more about`ngMessages`and`ngMess
   _
   _ @usage
   _ `html
-
   - <!-- using attribute directives -->
   - <ANY ng-messages="expression">
   - <ANY ng-message-exp="expressionValue">...</ANY>

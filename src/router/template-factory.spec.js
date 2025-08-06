@@ -78,9 +78,9 @@ describe("templateFactory", () => {
       ]);
       $injector.invoke(
         (_$templateFactory_, _$httpBackend_, _$sce_, $rootScope) => {
-          ($templateFactory = _$templateFactory_),
+          (($templateFactory = _$templateFactory_),
             ($httpBackend = _$httpBackend_),
-            ($sce = _$sce_);
+            ($sce = _$sce_));
           $scope = $rootScope;
         },
       );
@@ -119,9 +119,9 @@ describe("templateFactory", () => {
           _$state_,
           _$compile_,
         ) => {
-          ($templateFactory = _$templateFactory_),
+          (($templateFactory = _$templateFactory_),
             ($httpBackend = _$httpBackend_),
-            ($sce = _$sce_);
+            ($sce = _$sce_));
           $scope = $rootScope;
           $stateRegistry = _$stateRegistry_;
           $stateService = _$state_;

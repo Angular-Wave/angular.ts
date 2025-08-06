@@ -17,7 +17,7 @@
     "AngularTS"
   ],
   "engines": {
-    "node": ">=18.18.2"
+    "node": ">=24.0.0"
   },
   "scripts": {
     "serve": "npm-run-all --parallel dev express",
