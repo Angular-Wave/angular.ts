@@ -27,7 +27,6 @@ export class ParamType {
   /**
    * @param def  A configuration object which contains the custom type definition.  The object's
    *        properties will override the default methods and/or pattern in `ParamType`'s public interface.
-   * @returns a new ParamType object
    */
   constructor(def) {
     this.pattern = /.*/;

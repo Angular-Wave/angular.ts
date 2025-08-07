@@ -18,7 +18,7 @@ import { NgModule } from "./core/di/ng-module.js";
 import { registerNgModule } from "./ng.js";
 import { unnestR } from "./shared/common.js";
 import { EventBus } from "./services/pubsub/pubsub.js";
-import { $injectTokens } from "./injection-tokens.js";
+import { $injectTokens as $t } from "./injection-tokens.js";
 
 const ngMinErr = minErr("ng");
 const $injectorMinErr = minErr("$injector");
@@ -52,7 +52,7 @@ export class Angular {
     this.getInjector = getInjector;
     this.getScope = getScope;
     this.errorHandlingConfig = errorHandlingConfig;
-    this.$t = $injectTokens;
+    this.$t = $t;
 
     window["angular"] = this;
     registerNgModule(this);
@@ -131,14 +131,14 @@ export class Angular {
 
     const injector = createInjector(this.bootsrappedModules, config.strictDi);
     injector.invoke([
-      "$rootScope",
-      "$rootElement",
-      "$compile",
-      "$injector",
+      $t.$rootScope,
+      $t.$rootElement,
+      $t.$compile,
+      $t.$injector,
       /**
        * @param {import('./core/scope/scope.js').Scope} scope
        * @param {Element} el
-       * @param {*} compile
+       * @param {import("./core/compile/compile.js").CompileFn} compile
        * @param {import("./core/di/internal-injector.js").InjectorService} $injector
        */
       (scope, el, compile, $injector) => {
@@ -161,7 +161,7 @@ export class Angular {
         }
 
         $injector
-          .get("$stateRegistry")
+          .get($t.$stateRegistry)
           .get()
           .map((x) => x.$$state().resolvables)
           .reduce(unnestR, [])
@@ -266,7 +266,7 @@ export class Angular {
    * @param {string} name The name of the module to create or retrieve.
    * @param {Array.<string>} [requires] If specified then new module is being created. If
    *        unspecified then the module is being retrieved for further configuration.
-   * @param {Array<any>|Function} [configFn] Optional configuration function for the module that gets
+   * @param {import("./interface.js").Injectable} [configFn] Optional configuration function for the module that gets
    *        passed to {@link NgModule.config NgModule.config()}.
    * @returns {NgModule} A newly registered module.
    */
@@ -283,7 +283,7 @@ export class Angular {
           name,
         );
       }
-      return new NgModule(name, requires, /** @type {Function} */ (configFn));
+      return new NgModule(name, requires, configFn);
     });
   }
 }

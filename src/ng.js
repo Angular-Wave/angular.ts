@@ -105,7 +105,7 @@ import { AnimateJsDriverProvider } from "./animations/animate-js-driver.js";
 import { ngAnimateSwapDirective } from "./animations/animate-swap.js";
 import { $$AnimateChildrenDirective } from "./animations/animate-children-directive.js";
 import { UrlConfigProvider } from "./router/url/url-config.js";
-import { Router } from "./router/globals.js";
+import { Router } from "./router/router.js";
 import { ViewService } from "./router/view/view.js";
 import { TransitionProvider } from "./router/transition/transition-service.js";
 import { StateProvider } from "./router/state/state-service.js";
@@ -280,7 +280,7 @@ export function registerNgModule(angular) {
     .factory("$stateParams", [
       $t.$router,
       /**
-       * @param {import('./router/globals.js').Router} globals
+       * @param {import('./router/router.js').Router} globals
        * @returns {import('./router/params/state-params.js').StateParams }
        */
       (globals) => globals.params,

@@ -26,7 +26,7 @@ export class NgModule {
   /**
    * @param {string} name - Name of the module
    * @param {Array<string>} requires - List of modules which the injector will load before the current module
-   * @param {Function} [configFn]
+   * @param {import("../../interface.js").Injectable} [configFn]
    */
   constructor(name, requires, configFn) {
     assert(isString(name), "name required");
@@ -52,7 +52,7 @@ export class NgModule {
     /** @type {!Array<Array<*>>} */
     this.configBlocks = [];
 
-    /** @type {!Array.<Function>} */
+    /** @type {!Array.<import("../../interface.js").Injectable>} */
     this.runBlocks = [];
 
     if (configFn) {
@@ -82,7 +82,7 @@ export class NgModule {
 
   /**
    *
-   * @param {Function} configFn
+   * @param {import("../../interface.js").Injectable} configFn
    * @returns {NgModule}
    */
   config(configFn) {
@@ -91,7 +91,7 @@ export class NgModule {
   }
 
   /**
-   * @param {Function} block
+   * @param {import("../../interface.js").Injectable} block
    * @returns {NgModule}
    */
   run(block) {
@@ -101,12 +101,12 @@ export class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} options
+   * @param {import("../../interface.js").Injectable} options
    * @returns {NgModule}
    */
   component(name, options) {
     if (options && isFunction(options)) {
-      options.$$moduleName = name;
+      options["$$moduleName"] = name;
     }
     this.invokeQueue.push([COMPILE_LITERAL, "component", [name, options]]);
     return this;
@@ -114,12 +114,12 @@ export class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} providerFunction
+   * @param {import("../../interface.js").Injectable} providerFunction
    * @returns {NgModule}
    */
   factory(name, providerFunction) {
     if (providerFunction && isFunction(providerFunction)) {
-      providerFunction.$$moduleName = name;
+      providerFunction["$$moduleName"] = name;
     }
     this.invokeQueue.push([$t.$provide, "factory", [name, providerFunction]]);
     return this;
@@ -127,12 +127,12 @@ export class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} serviceFunction
+   * @param {import("../../interface.js").Injectable} serviceFunction
    * @returns {NgModule}
    */
   service(name, serviceFunction) {
     if (serviceFunction && isFunction(serviceFunction)) {
-      serviceFunction.$$moduleName = name;
+      serviceFunction["$$moduleName"] = name;
     }
     this.invokeQueue.push([$t.$provide, "service", [name, serviceFunction]]);
     return this;
@@ -140,12 +140,12 @@ export class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} providerType
+   * @param {import("../../interface.js").Injectable} providerType
    * @returns {NgModule}
    */
   provider(name, providerType) {
     if (providerType && isFunction(providerType)) {
-      providerType.$$moduleName = name;
+      providerType["$$moduleName"] = name;
     }
     this.invokeQueue.push([$t.$provide, "provider", [name, providerType]]);
     return this;
@@ -153,12 +153,12 @@ export class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} decorFn
+   * @param {import("../../interface.js").Injectable} decorFn
    * @returns {NgModule}
    */
   decorator(name, decorFn) {
     if (decorFn && isFunction(decorFn)) {
-      decorFn.$$moduleName = name;
+      decorFn["$$moduleName"] = name;
     }
     this.configBlocks.push([$t.$provide, "decorator", [name, decorFn]]);
     return this;
@@ -166,12 +166,12 @@ export class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} directiveFactory
+   * @param {import("../../interface.js").Injectable} directiveFactory
    * @returns {NgModule}
    */
   directive(name, directiveFactory) {
     if (directiveFactory && isFunction(directiveFactory)) {
-      directiveFactory.$$moduleName = name;
+      directiveFactory["$$moduleName"] = name;
     }
     this.invokeQueue.push([
       COMPILE_LITERAL,
@@ -183,12 +183,12 @@ export class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} animationFactory
+   * @param {import("../../interface.js").Injectable} animationFactory
    * @returns {NgModule}
    */
   animation(name, animationFactory) {
     if (animationFactory && isFunction(animationFactory)) {
-      animationFactory.$$moduleName = name;
+      animationFactory["$$moduleName"] = name;
     }
     this.invokeQueue.push([
       ANIMATION_LITERAL,
@@ -198,9 +198,14 @@ export class NgModule {
     return this;
   }
 
+  /**
+   * @param {string} name
+   * @param {import("../../interface.js").Injectable} filterFn
+   * @return {NgModule}
+   */
   filter(name, filterFn) {
     if (filterFn && isFunction(filterFn)) {
-      filterFn.$$moduleName = name;
+      filterFn["$$moduleName"] = name;
     }
     this.invokeQueue.push([FILTER_LITERAL, "register", [name, filterFn]]);
     return this;
@@ -208,12 +213,12 @@ export class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} ctlFn
+   * @param {import("../../interface.js").Injectable} ctlFn
    * @returns {NgModule}
    */
   controller(name, ctlFn) {
     if (ctlFn && isFunction(ctlFn)) {
-      ctlFn.$$moduleName = name;
+      ctlFn["$$moduleName"] = name;
     }
     this.invokeQueue.push([CONTROLLER_LITERAL, "register", [name, ctlFn]]);
     return this;

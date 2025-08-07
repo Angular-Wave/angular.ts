@@ -93,17 +93,14 @@ export class Location {
   setUrl(url) {
     const match = PATH_MATCH.exec(url);
 
-    // Use raw (still encoded) path
     if (match[1] !== undefined || url === "") {
-      this.setPath(match[1] || ""); // Do NOT decodeURIComponent here
+      this.setPath(match[1] || "");
     }
 
-    // Safe to parse search — decodeURIComponent can be used inside setSearch if needed
     if (match[2] !== undefined || match[1] !== undefined || url === "") {
       this.setSearch(match[3] || "");
     }
 
-    // Hash is typically safe to decode, but you can decide based on your use case
     this.setHash(match[5] || "");
 
     return this;

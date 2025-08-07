@@ -50,7 +50,6 @@
  *
  */
 export class UrlMatcher {
-  static encodeDashes(str: any): string;
   /** @internal Given a matcher, return an array with the matcher's path segments and path params, in order */
   static pathSegmentsAndParams(matcher: any): any;
   /** @internal Given a matcher, return an array with the matcher's query params */

@@ -26,7 +26,7 @@ export class StateRegistryProvider {
   /**
    * @param urlService
    * @param stateService
-   * @param {import('../globals.js').Router} globals
+   * @param {import('../router.js').Router} globals
    * @param viewService
    */
   constructor(urlService, stateService, globals, viewService) {

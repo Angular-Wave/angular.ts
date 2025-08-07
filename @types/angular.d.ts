@@ -124,14 +124,14 @@ export class Angular {
    * @param {string} name The name of the module to create or retrieve.
    * @param {Array.<string>} [requires] If specified then new module is being created. If
    *        unspecified then the module is being retrieved for further configuration.
-   * @param {Array<any>|Function} [configFn] Optional configuration function for the module that gets
+   * @param {import("./interface.js").Injectable} [configFn] Optional configuration function for the module that gets
    *        passed to {@link NgModule.config NgModule.config()}.
    * @returns {NgModule} A newly registered module.
    */
   module(
     name: string,
     requires?: Array<string>,
-    configFn?: Array<any> | Function,
+    configFn?: import("./interface.js").Injectable,
   ): NgModule;
 }
 /**

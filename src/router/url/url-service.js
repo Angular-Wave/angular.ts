@@ -32,7 +32,7 @@ export class UrlService {
   /**
    * @param {import("../../services/location/location").LocationProvider} $locationProvider
    * @param {import("../../router/state/state-service.js").StateProvider} stateService
-   * @param {import("../../router/globals.js").Router} globals
+   * @param {import("../router.js").Router} globals
    * @param {import("../../router/url/url-config.js").UrlConfigProvider} urlConfigProvider
    */
   constructor($locationProvider, stateService, globals, urlConfigProvider) {
@@ -175,7 +175,10 @@ export class UrlService {
    * @return the url (after potentially being processed)
    */
   url(newUrl, state) {
-    if (isDefined(newUrl)) this.$location.setUrl(newUrl);
+    if (isDefined(newUrl)) {
+      const decodeUri = decodeURIComponent(newUrl);
+      this.$location.setUrl(decodeUri);
+    }
     if (state) this.$location.setState(state);
     return this.$location.getUrl();
   }

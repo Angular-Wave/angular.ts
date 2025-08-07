@@ -44,11 +44,11 @@ export class Transition {
    *        encapsulates the "from state".
    * @param {import('../state/target-state.js').TargetState} targetState The target state and parameters being transitioned to (also, the transition options)
    * @param {import('../transition/transition-service.js').TransitionProvider} transitionService The [[TransitionService]] instance
-   * @param {import('../globals.js').Router} globals
+   * @param {import('../router.js').Router} globals
    */
   constructor(fromPath, targetState, transitionService, globals) {
     /**
-     * @type {import('../globals.js').Router}
+     * @type {import('../router.js').Router}
      */
     this.globals = globals;
     this.transitionService = transitionService;

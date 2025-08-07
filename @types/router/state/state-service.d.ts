@@ -7,10 +7,10 @@ export class StateProvider {
   static $inject: string[];
   /**
    *
-   * @param {import('../globals.js').Router} globals
+   * @param {import('../router.js').Router} globals
    * @param {*} transitionService
    */
-  constructor(globals: import("../globals.js").Router, transitionService: any);
+  constructor(globals: import("../router.js").Router, transitionService: any);
   /**
    * The latest successful state parameters
    *
@@ -31,7 +31,7 @@ export class StateProvider {
   get $current(): import("./state-object.js").StateObject;
   stateRegistry: any;
   urlService: any;
-  globals: import("../globals.js").Router;
+  globals: import("../router.js").Router;
   transitionService: any;
   invalidCallbacks: any[];
   _defaultErrorHandler: ($error$: any) => never;

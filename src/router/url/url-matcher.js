@@ -93,13 +93,6 @@ const defaultConfig = {
  *
  */
 export class UrlMatcher {
-  static encodeDashes(str) {
-    // Replace dashes with encoded "\-"
-    return encodeURIComponent(str).replace(
-      /-/g,
-      (c) => `%5C%${c.charCodeAt(0).toString(16).toUpperCase()}`,
-    );
-  }
   /** @internal Given a matcher, return an array with the matcher's path segments and path params, in order */
   static pathSegmentsAndParams(matcher) {
     const staticSegments = matcher._segments;
@@ -500,7 +493,7 @@ export class UrlMatcher {
       if (encoded == null) return acc;
       // If this parameter value is an array, encode the value using encodeDashes
       if (Array.isArray(encoded))
-        return acc + map(encoded, UrlMatcher.encodeDashes).join("-");
+        return acc + map(encoded, encodeDashes).join("-");
       // If the parameter type is "raw", then do not encodeURIComponent
       if (param.raw) return acc + encoded;
       // Encode the value
@@ -529,3 +522,11 @@ export class UrlMatcher {
 }
 
 UrlMatcher.nameValidator = /^\w+([-.]+\w+)*(?:\[\])?$/;
+
+function encodeDashes(str) {
+  // Replace dashes with encoded "\-"
+  return encodeURIComponent(str).replace(
+    /-/g,
+    (c) => `%5C%${c.charCodeAt(0).toString(16).toUpperCase()}`,
+  );
+}

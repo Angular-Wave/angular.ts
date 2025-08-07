@@ -1787,7 +1787,7 @@ describe("parser", () => {
       });
 
       [0, false, "", NaN].forEach((falsyValue) => {
-        ("should not overwrite $prop scope properties when assigning",
+        "should not overwrite $prop scope properties when assigning",
           () => {
             let scope;
 
@@ -1817,7 +1817,7 @@ describe("parser", () => {
                 /* ignore exception */
               }
             }
-          });
+          };
       });
     });
 

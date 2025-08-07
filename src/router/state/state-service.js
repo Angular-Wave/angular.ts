@@ -57,7 +57,7 @@ export class StateProvider {
   // Needs access to urlService, stateRegistry
   /**
    *
-   * @param {import('../globals.js').Router} globals
+   * @param {import('../router.js').Router} globals
    * @param {*} transitionService
    */
   constructor(globals, transitionService) {

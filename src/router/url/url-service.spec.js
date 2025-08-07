@@ -10,7 +10,12 @@ describe("UrlMatcher", () => {
   beforeEach(() => {
     dealoc(document.getElementById("app"));
     window.angular = new Angular();
-    window.angular.module("defaultModule", []);
+    window.angular
+      .module("defaultModule", [])
+      .config(
+        ($locationProvider) =>
+          ($locationProvider.html5ModeConf.enabled = false),
+      );
     $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);

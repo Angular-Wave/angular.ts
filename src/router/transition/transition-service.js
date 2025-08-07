@@ -65,7 +65,7 @@ export class TransitionProvider {
   /* @ignore */ static $inject = provider([$t.$router, $t.$view]);
 
   /**
-   * @param {import('../globals.js').Router} globals
+   * @param {import('../router.js').Router} globals
    * @param viewService
    */
   constructor(globals, viewService) {
